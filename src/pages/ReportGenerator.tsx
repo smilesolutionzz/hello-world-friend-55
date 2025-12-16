@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,7 +36,9 @@ import {
   ChevronDown,
   ChevronUp,
   Eye,
-  Calendar
+  Calendar,
+  Gift,
+  Crown
 } from 'lucide-react';
 
 const ReportGenerator = () => {
@@ -435,114 +438,211 @@ const ReportGenerator = () => {
 
         {!reportData ? (
           <div className="max-w-5xl mx-auto space-y-8">
-            {/* 사용자 직접 입력 섹션 */}
-            <Card className="bg-gradient-to-br from-slate-900/90 to-indigo-900/90 border-2 border-indigo-500/30 shadow-2xl shadow-indigo-500/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-2xl text-indigo-100">
-                  <Sparkles className="w-7 h-7 text-yellow-400" />
-                  리포트 대상자 정보 및 추가 입력
-                </CardTitle>
-                <p className="text-sm text-indigo-300 mt-2">
-                  💡 입력한 정보는 AI가 종합 리포트 생성 시 중요한 참고자료로 활용됩니다
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* 개인정보 입력 */}
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      이름 *
-                    </label>
-                    <input
-                      type="text"
-                      value={userInput.name}
-                      onChange={(e) => setUserInput({...userInput, name: e.target.value})}
-                      placeholder="예: 홍길동"
-                      className="w-full p-3 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      maxLength={50}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      생년월일 *
-                    </label>
-                    <input
-                      type="date"
-                      value={userInput.birthDate}
-                      onChange={(e) => setUserInput({...userInput, birthDate: e.target.value})}
-                      className="w-full p-3 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      성별 *
-                    </label>
-                    <select
-                      value={userInput.gender}
-                      onChange={(e) => setUserInput({...userInput, gender: e.target.value})}
-                      className="w-full p-3 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    >
-                      <option value="">선택하세요</option>
-                      <option value="남성">남성</option>
-                      <option value="여성">여성</option>
-                      <option value="기타">기타</option>
-                    </select>
-                  </div>
-                </div>
+            {/* 탭 네비게이션 */}
+            <Tabs defaultValue="free" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 bg-slate-900/80 border border-purple-500/30 p-1 rounded-xl">
+                <TabsTrigger 
+                  value="free" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-blue-600 data-[state=active]:text-white rounded-lg py-3 text-base font-semibold"
+                >
+                  <Gift className="w-4 h-4 mr-2" />
+                  무료 AI 분석
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="premium" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white rounded-lg py-3 text-base font-semibold"
+                >
+                  <Crown className="w-4 h-4 mr-2" />
+                  프리미엄 상세 분석
+                </TabsTrigger>
+              </TabsList>
 
-                {/* 최근 고민 입력 */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
-                    <Heart className="w-4 h-4" />
-                    최근 가장 큰 고민이나 걱정거리
-                  </label>
-                  <textarea
-                    value={userInput.recentConcerns}
-                    onChange={(e) => setUserInput({...userInput, recentConcerns: e.target.value})}
-                    placeholder="예: 아이가 또래 친구들과 잘 어울리지 못하는 것 같아 걱정됩니다. 말수가 적고 혼자 노는 시간이 많습니다..."
-                    className="w-full min-h-[120px] p-4 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-                    maxLength={1000}
-                  />
-                  <p className="text-xs text-slate-400 text-right">
-                    {userInput.recentConcerns.length}/1000
+              {/* 무료 분석 탭 */}
+              <TabsContent value="free" className="mt-6 space-y-6">
+                <div className="text-center p-4 bg-cyan-500/10 border border-cyan-400/30 rounded-xl">
+                  <p className="text-cyan-200 font-medium">
+                    🎁 토큰 소모 없이 <strong>무료</strong>로 AI 심층 분석 리포트를 받아보세요!
                   </p>
                 </div>
 
-                {/* 발달/심리 소견 입력 */}
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold text-indigo-200 flex items-center gap-2">
-                    <Brain className="w-4 h-4" />
-                    관찰한 발달/심리적 특징이나 변화
-                  </label>
-                  <textarea
-                    value={userInput.developmentalNotes}
-                    onChange={(e) => setUserInput({...userInput, developmentalNotes: e.target.value})}
-                    placeholder="예: 최근 3개월간 언어 표현이 늘었지만, 감정 조절에 어려움을 보입니다. 작은 일에도 쉽게 좌절하고 울음을 터뜨립니다..."
-                    className="w-full min-h-[120px] p-4 bg-slate-800/50 border border-indigo-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                    maxLength={1000}
-                  />
-                  <p className="text-xs text-slate-400 text-right">
-                    {userInput.developmentalNotes.length}/1000
+                {/* 간단 입력 폼 (무료용) */}
+                <Card className="bg-gradient-to-br from-slate-900/90 to-cyan-900/40 border-2 border-cyan-500/30">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-3 text-xl text-cyan-100">
+                      <Sparkles className="w-6 h-6 text-yellow-400" />
+                      분석 정보 입력
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-cyan-200">이름</label>
+                        <input
+                          type="text"
+                          value={userInput.name}
+                          onChange={(e) => setUserInput({...userInput, name: e.target.value})}
+                          placeholder="예: 홍길동"
+                          className="w-full p-3 bg-slate-800/50 border border-cyan-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                          maxLength={50}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-cyan-200">생년월일</label>
+                        <input
+                          type="date"
+                          value={userInput.birthDate}
+                          onChange={(e) => setUserInput({...userInput, birthDate: e.target.value})}
+                          className="w-full p-3 bg-slate-800/50 border border-cyan-400/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-cyan-200">성별</label>
+                        <select
+                          value={userInput.gender}
+                          onChange={(e) => setUserInput({...userInput, gender: e.target.value})}
+                          className="w-full p-3 bg-slate-800/50 border border-cyan-400/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                        >
+                          <option value="">선택하세요</option>
+                          <option value="남성">남성</option>
+                          <option value="여성">여성</option>
+                          <option value="기타">기타</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-cyan-200 flex items-center gap-2">
+                        <Heart className="w-4 h-4" />
+                        고민이나 걱정거리
+                      </label>
+                      <textarea
+                        value={userInput.recentConcerns}
+                        onChange={(e) => setUserInput({...userInput, recentConcerns: e.target.value})}
+                        placeholder="예: 아이가 또래 친구들과 잘 어울리지 못하는 것 같아 걱정됩니다..."
+                        className="w-full min-h-[100px] p-4 bg-slate-800/50 border border-cyan-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
+                        maxLength={1000}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* 무료 Perplexity AI 심층 분석 섹션 */}
+                <PerplexityDeepReport 
+                  assessments={userData?.assessments || []}
+                  userInput={userInput}
+                />
+              </TabsContent>
+
+              {/* 프리미엄 상세 분석 탭 */}
+              <TabsContent value="premium" className="mt-6 space-y-6">
+                <div className="text-center p-4 bg-purple-500/10 border border-purple-400/30 rounded-xl">
+                  <p className="text-purple-200 font-medium">
+                    👑 축적된 모든 데이터를 통합 분석한 <strong>전문가급 프리미엄 리포트</strong>를 생성합니다
                   </p>
                 </div>
 
-                <div className="p-4 bg-blue-500/10 border border-blue-400/30 rounded-lg">
-                  <p className="text-xs text-blue-200">
-                    💬 <strong>작성 팁:</strong> 구체적이고 상세할수록 정확한 분석이 가능합니다. 
-                    언제부터 어떤 상황에서 어떤 행동이나 변화가 있었는지 자세히 적어주세요.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+                {/* 사용자 직접 입력 섹션 */}
+                <Card className="bg-gradient-to-br from-slate-900/90 to-indigo-900/90 border-2 border-indigo-500/30 shadow-2xl shadow-indigo-500/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-3 text-2xl text-indigo-100">
+                      <Sparkles className="w-7 h-7 text-yellow-400" />
+                      리포트 대상자 정보 및 추가 입력
+                    </CardTitle>
+                    <p className="text-sm text-indigo-300 mt-2">
+                      💡 입력한 정보는 AI가 종합 리포트 생성 시 중요한 참고자료로 활용됩니다
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* 개인정보 입력 */}
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                          <Users className="w-4 h-4" />
+                          이름 *
+                        </label>
+                        <input
+                          type="text"
+                          value={userInput.name}
+                          onChange={(e) => setUserInput({...userInput, name: e.target.value})}
+                          placeholder="예: 홍길동"
+                          className="w-full p-3 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          maxLength={50}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                          <Calendar className="w-4 h-4" />
+                          생년월일 *
+                        </label>
+                        <input
+                          type="date"
+                          value={userInput.birthDate}
+                          onChange={(e) => setUserInput({...userInput, birthDate: e.target.value})}
+                          className="w-full p-3 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                          <Users className="w-4 h-4" />
+                          성별 *
+                        </label>
+                        <select
+                          value={userInput.gender}
+                          onChange={(e) => setUserInput({...userInput, gender: e.target.value})}
+                          className="w-full p-3 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        >
+                          <option value="">선택하세요</option>
+                          <option value="남성">남성</option>
+                          <option value="여성">여성</option>
+                          <option value="기타">기타</option>
+                        </select>
+                      </div>
+                    </div>
 
-            {/* 무료 Perplexity AI 심층 분석 섹션 */}
-            <PerplexityDeepReport 
-              assessments={userData?.assessments || []}
-              userInput={userInput}
-            />
+                    {/* 최근 고민 입력 */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                        <Heart className="w-4 h-4" />
+                        최근 가장 큰 고민이나 걱정거리
+                      </label>
+                      <textarea
+                        value={userInput.recentConcerns}
+                        onChange={(e) => setUserInput({...userInput, recentConcerns: e.target.value})}
+                        placeholder="예: 아이가 또래 친구들과 잘 어울리지 못하는 것 같아 걱정됩니다. 말수가 적고 혼자 노는 시간이 많습니다..."
+                        className="w-full min-h-[120px] p-4 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                        maxLength={1000}
+                      />
+                      <p className="text-xs text-slate-400 text-right">
+                        {userInput.recentConcerns.length}/1000
+                      </p>
+                    </div>
+
+                    {/* 발달/심리 소견 입력 */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-semibold text-indigo-200 flex items-center gap-2">
+                        <Brain className="w-4 h-4" />
+                        관찰한 발달/심리적 특징이나 변화
+                      </label>
+                      <textarea
+                        value={userInput.developmentalNotes}
+                        onChange={(e) => setUserInput({...userInput, developmentalNotes: e.target.value})}
+                        placeholder="예: 최근 3개월간 언어 표현이 늘었지만, 감정 조절에 어려움을 보입니다. 작은 일에도 쉽게 좌절하고 울음을 터뜨립니다..."
+                        className="w-full min-h-[120px] p-4 bg-slate-800/50 border border-indigo-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                        maxLength={1000}
+                      />
+                      <p className="text-xs text-slate-400 text-right">
+                        {userInput.developmentalNotes.length}/1000
+                      </p>
+                    </div>
+
+                    <div className="p-4 bg-blue-500/10 border border-blue-400/30 rounded-lg">
+                      <p className="text-xs text-blue-200">
+                        💬 <strong>작성 팁:</strong> 구체적이고 상세할수록 정확한 분석이 가능합니다. 
+                        언제부터 어떤 상황에서 어떤 행동이나 변화가 있었는지 자세히 적어주세요.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
 
             {/* 데이터 현황 카드 */}
             <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30 shadow-2xl shadow-purple-500/20">
@@ -1023,6 +1123,8 @@ const ReportGenerator = () => {
                 생성 시간: 약 30초 ~ 1분 (데이터 양에 따라 다를 수 있습니다)
               </p>
             </div>
+              </TabsContent>
+            </Tabs>
           </div>
         ) : (
           /* 생성된 프리미엄 리포트 */

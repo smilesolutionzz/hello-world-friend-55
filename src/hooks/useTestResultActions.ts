@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useEnhancedTestSave } from './useEnhancedTestSave';
+import type { DomainScore, EnvironmentalFactors } from '@/types/enhancedTestResult';
 
 export const useTestResultActions = () => {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  
+  // 고급 저장 훅 통합
+  const enhancedSave = useEnhancedTestSave();
 
   const generatePDFReport = async (testData: {
     testType: string;
@@ -178,6 +183,70 @@ export const useTestResultActions = () => {
     }
   };
 
+  // 고급 저장 (상세 데이터 포함)
+  const saveTestResultEnhanced = async (testData: {
+    testType: string;
+    results: any;
+    analysis?: string;
+    testInfo?: any;
+    ageGroup?: string;
+    chartData?: any;
+    // 고급 옵션
+    responses?: Array<{
+      questionId: string;
+      questionText?: string;
+      answer: number | string;
+      responseTimeMs?: number;
+    }>;
+    environmentalFactors?: EnvironmentalFactors;
+    userNotes?: string;
+    userAge?: number;
+    gender?: string;
+  }, options?: { silent?: boolean; runAIAnalysis?: boolean }) => {
+    // 도메인 점수 변환
+    const domainScores: DomainScore[] = Object.entries(testData.results)
+      .filter(([key]) => !['total', 'average', 'severity', 'level', 'riskLevel'].includes(key))
+      .map(([domain, score]) => ({
+        domain,
+        rawScore: Number(score) || 0,
+        maxScore: 100,
+        percentage: Math.min(100, Math.round(Number(score) || 0))
+      }));
+
+    const totalScore = testData.results.total || 
+      testData.results.average ||
+      domainScores.reduce((sum, d) => sum + d.rawScore, 0);
+
+    return enhancedSave.saveEnhancedTestResult({
+      testType: testData.testType,
+      totalScore,
+      maxPossibleScore: domainScores.length * 100 || 100,
+      domainScores,
+      responses: testData.responses || [],
+      answeredCount: testData.responses?.length || Object.keys(testData.results).length,
+      skippedCount: 0,
+      ageGroup: testData.ageGroup,
+      userAge: testData.userAge,
+      gender: testData.gender,
+      userNotes: testData.userNotes,
+      environmentalFactors: testData.environmentalFactors,
+      aiAnalysis: testData.analysis ? {
+        summary: testData.analysis.substring(0, 200),
+        detailedAnalysis: testData.analysis,
+        strengths: [],
+        areasOfConcern: [],
+        personalizedRecommendations: [],
+        analysisTimestamp: new Date().toISOString()
+      } : undefined
+    }, {
+      silent: options?.silent,
+      generateComparison: true,
+      calculateRisk: true,
+      runAIAnalysis: options?.runAIAnalysis
+    });
+  };
+
+  // 기본 저장 (하위 호환성 유지)
   const saveTestResult = async (testData: {
     testType: string;
     results: any;
@@ -237,37 +306,101 @@ export const useTestResultActions = () => {
         testTypeId = newTestType.id;
       }
 
-      // 검사 결과를 기존 test_results 테이블 구조에 맞게 저장
-      const testResultData = {
-        test_type_id: testTypeId,
-        user_id: (await supabase.auth.getUser()).data.user?.id,
-        scores: {
-          results: testData.results,
-          analysis: testData.analysis,
-          chartData: testData.chartData,
-          testInfo: testData.testInfo,
-          ageGroup: testData.ageGroup,
-          riskLevel: testData.results?.severity || testData.results?.riskLevel || 'unknown',
-          scoreSummary: {
-            average: testData.results?.average,
-            total: testData.results?.total,
-            severity: testData.results?.severity
-          }
+      // 이전 검사 비교 데이터 생성
+      const { data: previousResults } = await supabase
+        .from('test_results')
+        .select('id, scores, completed_at')
+        .eq('user_id', user.id)
+        .eq('test_type_id', testTypeId)
+        .order('completed_at', { ascending: false })
+        .limit(5);
+
+      const comparisonData = previousResults && previousResults.length > 0 ? {
+        previousTestId: previousResults[0].id,
+        previousTestDate: previousResults[0].completed_at,
+        previousTotalScore: (previousResults[0].scores as any)?.totalScore || 
+          (previousResults[0].scores as any)?.results?.total,
+        consecutiveTestCount: previousResults.length + 1,
+        trend: 'stable' as const
+      } : {
+        trend: 'first_test' as const,
+        consecutiveTestCount: 1
+      };
+
+      // 도메인 점수 변환
+      const domainScores: DomainScore[] = Object.entries(testData.results)
+        .filter(([key]) => !['total', 'average', 'severity', 'level', 'riskLevel'].includes(key))
+        .map(([domain, score]) => ({
+          domain,
+          rawScore: Number(score) || 0,
+          maxScore: 100,
+          percentage: Math.min(100, Math.round(Number(score) || 0))
+        }));
+
+      const totalScore = testData.results.total || 
+        testData.results.average ||
+        domainScores.reduce((sum, d) => sum + d.rawScore, 0);
+
+      // 검사 결과를 고급 형식으로 저장
+      const enhancedScores = {
+        // 기본 정보
+        testType: testData.testType,
+        testVersion: '1.0',
+        
+        // 점수 데이터
+        totalScore,
+        maxPossibleScore: domainScores.length * 100 || 100,
+        percentageScore: Math.round((totalScore / (domainScores.length * 100 || 100)) * 100),
+        domainScores,
+        
+        // 레거시 호환
+        results: testData.results,
+        analysis: testData.analysis,
+        chartData: testData.chartData,
+        testInfo: testData.testInfo,
+        ageGroup: testData.ageGroup,
+        
+        // 비교 데이터
+        comparisonData,
+        
+        // 세션 정보
+        sessionMetadata: {
+          startTime: new Date().toISOString(),
+          endTime: new Date().toISOString(),
+          durationSeconds: 0,
+          completionRate: 100,
+          deviceType: window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop'
+        },
+        
+        // 메타데이터
+        riskLevel: testData.results?.severity || testData.results?.riskLevel || 'unknown',
+        scoreSummary: {
+          average: testData.results?.average,
+          total: testData.results?.total,
+          severity: testData.results?.severity
         }
       };
 
       const { data, error } = await supabase
         .from('test_results')
-        .insert(testResultData)
+        .insert({
+          test_type_id: testTypeId,
+          user_id: user.id,
+          scores: enhancedScores as any
+        })
         .select()
         .single();
 
       if (error) throw error;
 
-      if (data) {
+      if (data && !options?.silent) {
+        const changeText = comparisonData.previousTotalScore 
+          ? `이전 검사 대비 ${totalScore - comparisonData.previousTotalScore > 0 ? '+' : ''}${totalScore - comparisonData.previousTotalScore}점 변화`
+          : '첫 번째 검사가 저장되었습니다.';
+          
         toast({
           title: "검사 결과 저장 완료",
-          description: "검사 결과가 성공적으로 저장되었습니다. 나의 검사기록에서 확인하실 수 있습니다.",
+          description: changeText,
         });
         return true;
       }
@@ -289,7 +422,14 @@ export const useTestResultActions = () => {
   return {
     generatePDFReport,
     saveTestResult,
+    saveTestResultEnhanced,
     isGeneratingPDF,
     isSaving,
+    // 고급 세션 관리 함수들
+    startTestSession: enhancedSave.startTestSession,
+    recordQuestionTime: enhancedSave.recordQuestionTime,
+    pauseSession: enhancedSave.pauseSession,
+    resumeSession: enhancedSave.resumeSession,
+    isAnalyzing: enhancedSave.isAnalyzing
   };
 };

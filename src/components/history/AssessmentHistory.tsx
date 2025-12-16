@@ -11,10 +11,13 @@ import {
   Clock,
   FileText,
   Eye,
-  Brain
+  Brain,
+  Sparkles
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface CombinedAssessment {
   id: string;
@@ -52,7 +55,6 @@ const AssessmentHistory = () => {
         return;
       }
       
-      // Load from assessments table
       const { data: assessmentsData, error: assessmentsError } = await supabase
         .from('assessments')
         .select(`
@@ -66,7 +68,6 @@ const AssessmentHistory = () => {
         console.error('❌ Error loading assessments:', assessmentsError);
       }
       
-      // Load from test_results table
       const { data: testResultsData, error: testResultsError } = await supabase
         .from('test_results')
         .select(`
@@ -80,10 +81,8 @@ const AssessmentHistory = () => {
         console.error('❌ Error loading test_results:', testResultsError);
       }
       
-      // Transform and combine data
       const combinedData: CombinedAssessment[] = [];
       
-      // Transform assessments data
       if (assessmentsData) {
         assessmentsData.forEach(assessment => {
           combinedData.push({
@@ -102,7 +101,6 @@ const AssessmentHistory = () => {
         });
       }
       
-      // Transform test_results data
       if (testResultsData) {
         testResultsData.forEach(result => {
           const scores = result.scores as any;
@@ -122,14 +120,12 @@ const AssessmentHistory = () => {
         });
       }
       
-      // Sort by date
       combinedData.sort((a, b) => new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime());
       
-      // Remove duplicates (prefer test_results if same time)
       const uniqueData = combinedData.filter((item, index, self) => {
         const isDuplicate = self.findIndex(other => {
           const timeDiff = Math.abs(new Date(item.completed_at).getTime() - new Date(other.completed_at).getTime());
-          return timeDiff < 60000 && item.source !== other.source; // Within 1 minute
+          return timeDiff < 60000 && item.source !== other.source;
         });
         return isDuplicate === -1 || isDuplicate === index;
       });
@@ -152,21 +148,40 @@ const AssessmentHistory = () => {
     return names[ageGroup || ''] || '심리검사';
   };
 
+  const getRiskConfig = (level?: 'low' | 'medium' | 'high') => {
+    const configs = {
+      low: { 
+        bgClass: "bg-emerald-500/10 border-emerald-500/20", 
+        textClass: "text-emerald-600 dark:text-emerald-400",
+        label: "낮음", 
+        icon: CheckCircle,
+        gradient: "from-emerald-500 to-green-500"
+      },
+      medium: { 
+        bgClass: "bg-amber-500/10 border-amber-500/20", 
+        textClass: "text-amber-600 dark:text-amber-400",
+        label: "보통", 
+        icon: Clock,
+        gradient: "from-amber-500 to-orange-500"
+      },
+      high: { 
+        bgClass: "bg-rose-500/10 border-rose-500/20", 
+        textClass: "text-rose-600 dark:text-rose-400",
+        label: "높음", 
+        icon: AlertTriangle,
+        gradient: "from-rose-500 to-red-500"
+      }
+    };
+    return configs[level || 'low'];
+  };
+
   const getRiskBadge = (level?: 'low' | 'medium' | 'high') => {
     if (!level) return null;
-    
-    const configs = {
-      low: { color: "bg-green-100 text-green-700", label: "낮음", icon: CheckCircle },
-      medium: { color: "bg-yellow-100 text-yellow-700", label: "보통", icon: Clock },
-      high: { color: "bg-red-100 text-red-700", label: "높음", icon: AlertTriangle }
-    };
-    
-    const config = configs[level];
-    if (!config) return null;
+    const config = getRiskConfig(level);
     const Icon = config.icon;
     
     return (
-      <Badge className={config.color}>
+      <Badge className={cn("border", config.bgClass, config.textClass)}>
         <Icon className="w-3 h-3 mr-1" />
         위험도 {config.label}
       </Badge>
@@ -183,7 +198,6 @@ const AssessmentHistory = () => {
   };
 
   const handleViewDetail = (assessment: CombinedAssessment) => {
-    // 모든 결과를 동일한 상세 페이지로 이동하고 state로 데이터 전달
     navigate(`/assessment/${assessment.id}`, { 
       state: { 
         assessment: assessment,
@@ -199,205 +213,280 @@ const AssessmentHistory = () => {
     if (totalScore !== undefined) {
       return (
         <div className="text-right">
-          <div className="text-2xl font-bold text-primary">{typeof totalScore === 'number' ? totalScore.toFixed(0) : totalScore}점</div>
-          <div className="text-xs text-slate-400">총점</div>
+          <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+            {typeof totalScore === 'number' ? totalScore.toFixed(0) : totalScore}
+            <span className="text-sm font-normal text-muted-foreground ml-1">점</span>
+          </div>
         </div>
       );
     }
     return null;
   };
 
+  const stats = [
+    {
+      label: "총 검사",
+      value: assessments.length,
+      icon: TrendingUp,
+      gradient: "from-blue-500 to-cyan-500",
+      bgClass: "bg-blue-500/10"
+    },
+    {
+      label: "정상 범위",
+      value: assessments.filter(a => a.risk_level === 'low').length,
+      icon: CheckCircle,
+      gradient: "from-emerald-500 to-green-500",
+      bgClass: "bg-emerald-500/10"
+    },
+    {
+      label: "주의 필요",
+      value: assessments.filter(a => a.risk_level === 'medium').length,
+      icon: Clock,
+      gradient: "from-amber-500 to-orange-500",
+      bgClass: "bg-amber-500/10"
+    },
+    {
+      label: "프리미엄",
+      value: assessments.filter(a => a.source === 'test_results').length,
+      icon: Brain,
+      gradient: "from-purple-500 to-pink-500",
+      bgClass: "bg-purple-500/10"
+    }
+  ];
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-slate-400">검사 기록을 불러오는 중...</p>
+      <div className="flex items-center justify-center p-12">
+        <div className="text-center space-y-4">
+          <div className="relative w-16 h-16 mx-auto">
+            <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
+            <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+          </div>
+          <p className="text-muted-foreground">검사 기록을 불러오는 중...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 md:space-y-6">
+    <div className="space-y-5 md:space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="min-w-0">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground whitespace-normal break-words">검사 기록</h2>
-          <p className="text-sm md:text-base text-muted-foreground mt-1 whitespace-normal break-words">완료한 모든 심리검사 결과를 확인하세요</p>
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      >
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+            검사 기록
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">완료한 심리검사 결과를 확인하세요</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
-          <Button variant="outline" size="sm" onClick={() => navigate('/premium-assessment')} className="w-full sm:w-auto">
-            <FileText className="w-4 h-4 mr-2" />
-            프리미엄 검사
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => navigate('/premium-assessment')}
+            className="rounded-xl border-border/50 hover:bg-muted/50"
+          >
+            <Sparkles className="w-4 h-4 mr-1.5 text-purple-500" />
+            <span className="hidden sm:inline">프리미엄</span>
           </Button>
-          <Button size="sm" onClick={() => navigate('/assessment')} className="w-full sm:w-auto">
-            <TrendingUp className="w-4 h-4 mr-2" />
-            새 검사 시작
+          <Button 
+            size="sm" 
+            onClick={() => navigate('/assessment')}
+            className="rounded-xl bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/20"
+          >
+            <TrendingUp className="w-4 h-4 mr-1.5" />
+            새 검사
           </Button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Assessment Analytics */}
-      <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
-        <Card className="p-3 md:p-4 bg-card border-border">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
-            </div>
-            <div>
-              <div className="text-lg md:text-xl font-bold text-foreground">{assessments.length}</div>
-              <div className="text-xs md:text-sm text-muted-foreground">총 검사 수</div>
-            </div>
-          </div>
-        </Card>
-        
-        <Card className="p-3 md:p-4 bg-card border-border">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-500" />
-            </div>
-            <div>
-              <div className="text-lg md:text-xl font-bold text-foreground">
-                {assessments.filter(a => a.risk_level === 'low').length}
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        {stats.map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+          >
+            <Card className="p-3 md:p-4 bg-card/80 backdrop-blur-sm border-border/50 rounded-2xl hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center gap-3">
+                <div className={cn(
+                  "w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center",
+                  stat.bgClass
+                )}>
+                  <stat.icon className={cn(
+                    "w-5 h-5 md:w-6 md:h-6 bg-gradient-to-br bg-clip-text",
+                    `text-transparent bg-gradient-to-r ${stat.gradient}`
+                  )} style={{ filter: 'none' }} />
+                  <stat.icon className={cn(
+                    "w-5 h-5 md:w-6 md:h-6 absolute",
+                    stat.gradient.includes('blue') ? 'text-blue-500' :
+                    stat.gradient.includes('emerald') ? 'text-emerald-500' :
+                    stat.gradient.includes('amber') ? 'text-amber-500' : 'text-purple-500'
+                  )} />
+                </div>
+                <div>
+                  <div className="text-xl md:text-2xl font-bold text-foreground">{stat.value}</div>
+                  <div className="text-xs text-muted-foreground">{stat.label}</div>
+                </div>
               </div>
-              <div className="text-xs md:text-sm text-muted-foreground">정상 범위</div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-3 md:p-4 bg-card border-border">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-yellow-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <Clock className="w-4 h-4 md:w-5 md:h-5 text-yellow-500" />
-            </div>
-            <div>
-              <div className="text-lg md:text-xl font-bold text-foreground">
-                {assessments.filter(a => a.risk_level === 'medium').length}
-              </div>
-              <div className="text-xs md:text-sm text-muted-foreground">주의 필요</div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-3 md:p-4 bg-card border-border">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <Brain className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
-            </div>
-            <div>
-              <div className="text-lg md:text-xl font-bold text-foreground">
-                {assessments.filter(a => a.source === 'test_results').length}
-              </div>
-              <div className="text-xs md:text-sm text-muted-foreground">프리미엄 검사</div>
-            </div>
-          </div>
-        </Card>
+            </Card>
+          </motion.div>
+        ))}
       </div>
 
       {/* Assessment List */}
       {assessments.length > 0 ? (
         <div className="space-y-3 md:space-y-4">
-          {assessments.map(assessment => (
-            <Card key={`${assessment.source}-${assessment.id}`} className="p-4 md:p-6 bg-card border-border hover:border-primary/30 transition-colors">
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                <div className="flex items-start gap-3 md:gap-4 flex-1">
-                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    assessment.source === 'test_results' 
-                      ? 'bg-gradient-to-br from-purple-500/20 to-blue-500/20' 
-                      : 'bg-primary/20'
-                  }`}>
-                    {assessment.source === 'test_results' ? (
-                      <Brain className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
-                    ) : (
-                      <User className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-                    )}
+          {assessments.map((assessment, index) => {
+            const riskConfig = getRiskConfig(assessment.risk_level);
+            
+            return (
+              <motion.div
+                key={`${assessment.source}-${assessment.id}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <Card className="group p-4 md:p-5 bg-card/80 backdrop-blur-sm border-border/50 rounded-2xl hover:shadow-xl hover:border-primary/30 transition-all duration-300 overflow-hidden relative">
+                  {/* Subtle gradient accent */}
+                  {assessment.risk_level && (
+                    <div className={cn(
+                      "absolute top-0 left-0 w-1 h-full bg-gradient-to-b",
+                      riskConfig.gradient
+                    )} />
+                  )}
+                  
+                  <div className="flex flex-col md:flex-row md:items-center gap-4">
+                    <div className="flex items-start gap-3 md:gap-4 flex-1">
+                      {/* Icon */}
+                      <div className={cn(
+                        "w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105",
+                        assessment.source === 'test_results' 
+                          ? 'bg-gradient-to-br from-purple-500/20 to-pink-500/20' 
+                          : 'bg-gradient-to-br from-primary/20 to-blue-500/20'
+                      )}>
+                        {assessment.source === 'test_results' ? (
+                          <Brain className="w-6 h-6 md:w-7 md:h-7 text-purple-500" />
+                        ) : (
+                          <User className="w-6 h-6 md:w-7 md:h-7 text-primary" />
+                        )}
+                      </div>
+                      
+                      {/* Content */}
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-semibold text-base md:text-lg text-foreground">
+                            {assessment.test_name}
+                          </h3>
+                          {assessment.source === 'test_results' && (
+                            <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30 text-xs">
+                              <Sparkles className="w-3 h-3 mr-1" />
+                              프리미엄
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        {assessment.test_description && (
+                          <p className="text-sm text-muted-foreground line-clamp-1">{assessment.test_description}</p>
+                        )}
+                        
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>{new Date(assessment.completed_at).toLocaleDateString('ko-KR', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })}</span>
+                        </div>
+                        
+                        <div className="flex flex-wrap items-center gap-2">
+                          {assessment.age_group && (
+                            <Badge variant="outline" className="text-xs rounded-lg border-border/50 bg-muted/50">
+                              {getAgeGroupLabel(assessment.age_group)}
+                              {assessment.age_at_assessment && ` · ${assessment.age_at_assessment}세`}
+                            </Badge>
+                          )}
+                          {getRiskBadge(assessment.risk_level)}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Score & Action */}
+                    <div className="flex items-center justify-between md:justify-end gap-4 pt-2 md:pt-0 border-t md:border-t-0 border-border/30">
+                      {getScoreDisplay(assessment.results)}
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="rounded-xl border-border/50 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+                        onClick={() => handleViewDetail(assessment)}
+                      >
+                        <Eye className="w-4 h-4 mr-1.5" />
+                        상세
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-base md:text-lg text-foreground">{assessment.test_name}</h3>
-                      {assessment.source === 'test_results' && (
-                        <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/30 text-xs">
-                          프리미엄
-                        </Badge>
-                      )}
-                    </div>
-                    {assessment.test_description && (
-                      <p className="text-sm text-muted-foreground mt-1">{assessment.test_description}</p>
-                    )}
-                    <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mt-2">
-                      <Calendar className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
-                      <span>{new Date(assessment.completed_at).toLocaleDateString('ko-KR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}</span>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2 mt-2">
-                      {assessment.age_group && (
-                        <Badge variant="outline" className="text-xs">
-                          {getAgeGroupLabel(assessment.age_group)}
-                          {assessment.age_at_assessment && ` (${assessment.age_at_assessment}세)`}
-                        </Badge>
-                      )}
-                      {getRiskBadge(assessment.risk_level)}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                  {getScoreDisplay(assessment.results)}
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="flex-shrink-0"
-                    onClick={() => handleViewDetail(assessment)}
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    상세보기
-                  </Button>
-                </div>
-              </div>
 
-              {assessment.analysis && (
-                <div className="bg-muted/50 rounded-lg p-4 mt-4 border border-border">
-                  <h4 className="font-medium text-sm mb-2 flex items-center gap-2 text-foreground">
-                    <FileText className="w-4 h-4" />
-                    AI 분석 결과
-                  </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {assessment.analysis.substring(0, 200)}
-                    {assessment.analysis.length > 200 && "..."}
-                  </p>
-                </div>
-              )}
+                  {/* Analysis Preview */}
+                  {assessment.analysis && (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="mt-4 p-3 md:p-4 rounded-xl bg-muted/30 border border-border/30"
+                    >
+                      <h4 className="font-medium text-sm mb-1.5 flex items-center gap-2 text-foreground">
+                        <FileText className="w-4 h-4 text-primary" />
+                        AI 분석
+                      </h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                        {assessment.analysis}
+                      </p>
+                    </motion.div>
+                  )}
 
-              {assessment.recommendations && (
-                <div className="bg-blue-500/10 rounded-lg p-4 mt-4 border border-blue-500/30">
-                  <h4 className="font-medium text-sm mb-2 text-blue-600 dark:text-blue-400">권장사항</h4>
-                  <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed">
-                    {assessment.recommendations.substring(0, 150)}
-                    {assessment.recommendations.length > 150 && "..."}
-                  </p>
-                </div>
-              )}
-            </Card>
-          ))}
+                  {assessment.recommendations && (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="mt-3 p-3 md:p-4 rounded-xl bg-blue-500/5 border border-blue-500/20"
+                    >
+                      <h4 className="font-medium text-sm mb-1.5 text-blue-600 dark:text-blue-400">💡 권장사항</h4>
+                      <p className="text-sm text-blue-700/80 dark:text-blue-300/80 leading-relaxed line-clamp-2">
+                        {assessment.recommendations}
+                      </p>
+                    </motion.div>
+                  )}
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
       ) : (
-        <Card className="p-12 text-center bg-card border-border">
-          <TrendingUp className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-xl font-semibold mb-2 text-foreground">아직 검사 기록이 없습니다</h3>
-          <p className="text-muted-foreground mb-6">
-            심리검사를 통해 정확한 상태를 파악해보세요
-          </p>
-          <Button onClick={() => navigate('/assessment')}>
-            <TrendingUp className="w-4 h-4 mr-2" />
-            첫 번째 검사 시작하기
-          </Button>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <Card className="p-8 md:p-12 text-center bg-card/80 backdrop-blur-sm border-border/50 rounded-3xl">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center">
+              <TrendingUp className="w-10 h-10 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2 text-foreground">아직 검사 기록이 없습니다</h3>
+            <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+              심리검사를 통해 정확한 상태를 파악해보세요
+            </p>
+            <Button 
+              onClick={() => navigate('/assessment')}
+              className="rounded-xl bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/20"
+            >
+              <TrendingUp className="w-4 h-4 mr-2" />
+              첫 번째 검사 시작
+            </Button>
+          </Card>
+        </motion.div>
       )}
     </div>
   );

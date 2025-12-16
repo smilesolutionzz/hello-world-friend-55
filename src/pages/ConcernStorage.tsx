@@ -6,11 +6,11 @@ import { MilestonesBadges } from '@/components/storage/MilestonesBadges';
 import { ReminderBanner } from '@/components/storage/ReminderBanner';
 import { AIInsightSummary } from '@/components/storage/AIInsightSummary';
 import { MonthlyReport } from '@/components/storage/MonthlyReport';
-import { Heart, ClipboardCheck, FolderHeart, LayoutDashboard } from 'lucide-react';
+import { Heart, ClipboardCheck, FolderHeart, LayoutDashboard, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { supabase } from '@/integrations/supabase/client';
-import { Skeleton } from '@/components/ui/skeleton';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ConcernData {
   id: string;
@@ -46,7 +46,6 @@ const ConcernStorage = () => {
         return;
       }
 
-      // 병렬로 데이터 로드
       const [concernsResult, assessmentsResult, testResultsResult] = await Promise.all([
         supabase
           .from('concern_storage')
@@ -69,7 +68,6 @@ const ConcernStorage = () => {
         setConcerns(concernsResult.data as ConcernData[]);
       }
 
-      // assessments와 test_results 병합
       const combinedAssessments: AssessmentData[] = [];
       
       if (assessmentsResult.data) {
@@ -96,7 +94,6 @@ const ConcernStorage = () => {
         });
       }
 
-      // 날짜순 정렬
       combinedAssessments.sort((a, b) => 
         new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime()
       );
@@ -109,28 +106,47 @@ const ConcernStorage = () => {
     }
   };
 
-  // 마지막 기록 날짜
   const lastConcernDate = concerns[0]?.created_at || null;
   const lastAssessmentDate = assessments[0]?.completed_at || null;
+
+  const tabs = [
+    { id: 'overview', label: '대시보드', icon: LayoutDashboard },
+    { id: 'concerns', label: '고민', icon: Heart, count: concerns.length },
+    { id: 'assessments', label: '검사', icon: ClipboardCheck, count: assessments.length },
+  ];
 
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
         <UnifiedNavigation />
-        <header className="sticky top-16 z-10 bg-background/80 backdrop-blur-md border-b">
-          <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-center gap-2">
-            <FolderHeart className="w-5 h-5 text-primary" />
-            <h1 className="font-semibold text-lg">내 기록</h1>
+        <div className="relative">
+          {/* Decorative background */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
+            <div className="absolute top-60 -left-40 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
           </div>
-        </header>
-        <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-          <Skeleton className="h-32 w-full" />
-          <div className="grid md:grid-cols-2 gap-4">
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-64 w-full" />
-          </div>
-          <Skeleton className="h-80 w-full" />
-        </main>
+          
+          <header className="sticky top-16 z-10 bg-background/60 backdrop-blur-xl border-b border-border/50">
+            <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                <FolderHeart className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <h1 className="font-bold text-xl">내 기록</h1>
+            </div>
+          </header>
+          
+          <main className="max-w-5xl mx-auto px-4 py-8 space-y-6 relative">
+            {/* Loading skeleton with modern style */}
+            <div className="space-y-6 animate-pulse">
+              <div className="h-24 rounded-3xl bg-gradient-to-r from-muted/50 to-muted/30" />
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="h-72 rounded-3xl bg-gradient-to-r from-muted/50 to-muted/30" />
+                <div className="h-72 rounded-3xl bg-gradient-to-r from-muted/50 to-muted/30" />
+              </div>
+              <div className="h-80 rounded-3xl bg-gradient-to-r from-muted/50 to-muted/30" />
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
@@ -139,98 +155,184 @@ const ConcernStorage = () => {
     <div className="min-h-screen bg-background">
       <UnifiedNavigation />
       
-      {/* 헤더 */}
-      <header className="sticky top-16 z-10 bg-background/80 backdrop-blur-md border-b">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-center gap-2">
-          <FolderHeart className="w-5 h-5 text-primary" />
-          <h1 className="font-semibold text-lg">내 기록</h1>
+      <div className="relative">
+        {/* Decorative background blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-purple-500/10 rounded-full blur-3xl"
+          />
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="absolute top-60 -left-40 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-full blur-3xl"
+          />
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.4 }}
+            className="absolute bottom-40 right-20 w-72 h-72 bg-gradient-to-br from-pink-500/10 to-orange-500/10 rounded-full blur-3xl"
+          />
         </div>
-      </header>
 
-      {/* 탭 네비게이션 */}
-      <div className="border-b bg-background">
-        <div className="max-w-4xl mx-auto px-4">
-          <nav className="flex">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={cn(
-                "flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors",
-                activeTab === 'overview'
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
+        {/* Header */}
+        <header className="sticky top-16 z-10 bg-background/60 backdrop-blur-xl border-b border-border/50">
+          <div className="max-w-5xl mx-auto px-4 py-4">
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center justify-center gap-3"
             >
-              <LayoutDashboard className="w-4 h-4 mx-auto mb-1" />
-              대시보드
-            </button>
-            <button
-              onClick={() => setActiveTab('concerns')}
-              className={cn(
-                "flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors",
-                activeTab === 'concerns'
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Heart className={cn("w-4 h-4 mx-auto mb-1", activeTab === 'concerns' && "fill-current")} />
-              고민 ({concerns.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('assessments')}
-              className={cn(
-                "flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors",
-                activeTab === 'assessments'
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <ClipboardCheck className="w-4 h-4 mx-auto mb-1" />
-              검사 ({assessments.length})
-            </button>
-          </nav>
-        </div>
-      </div>
-
-      {/* 콘텐츠 영역 */}
-      <main className="max-w-4xl mx-auto px-4 py-6">
-        {activeTab === 'overview' ? (
-          <div className="space-y-6">
-            {/* 리마인더 배너 */}
-            <ReminderBanner 
-              lastConcernDate={lastConcernDate}
-              lastAssessmentDate={lastAssessmentDate}
-            />
-
-            {/* 마일스톤 & 뱃지 */}
-            <MilestonesBadges 
-              concernCount={concerns.length}
-              assessmentCount={assessments.length}
-            />
-
-            {/* 성장 차트 & AI 인사이트 */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <AIInsightSummary 
-                concerns={concerns}
-                assessments={assessments}
-              />
-              <MonthlyReport 
-                concerns={concerns}
-                assessments={assessments}
-              />
-            </div>
-
-            {/* 성장 그래프 */}
-            <GrowthChart 
-              concerns={concerns}
-              assessments={assessments}
-            />
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/20">
+                <FolderHeart className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div>
+                <h1 className="font-bold text-xl text-foreground">내 기록</h1>
+                <p className="text-xs text-muted-foreground">나의 성장 여정을 확인하세요</p>
+              </div>
+            </motion.div>
           </div>
-        ) : activeTab === 'concerns' ? (
-          <ConcernStorageList />
-        ) : (
-          <AssessmentHistory />
-        )}
-      </main>
+        </header>
+
+        {/* Modern Tab Navigation */}
+        <div className="sticky top-[8.5rem] z-10 bg-background/60 backdrop-blur-xl border-b border-border/30">
+          <div className="max-w-5xl mx-auto px-4">
+            <nav className="flex gap-2 py-3">
+              {tabs.map((tab, index) => {
+                const isActive = activeTab === tab.id;
+                const Icon = tab.icon;
+                
+                return (
+                  <motion.button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className={cn(
+                      "relative flex-1 py-3 px-4 rounded-2xl font-medium text-sm transition-all duration-300",
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                        : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <Icon className={cn(
+                        "w-4 h-4",
+                        isActive && tab.id === 'concerns' && "fill-current"
+                      )} />
+                      <span>{tab.label}</span>
+                      {tab.count !== undefined && (
+                        <span className={cn(
+                          "px-2 py-0.5 rounded-full text-xs font-semibold",
+                          isActive 
+                            ? "bg-primary-foreground/20 text-primary-foreground" 
+                            : "bg-muted-foreground/20 text-muted-foreground"
+                        )}>
+                          {tab.count}
+                        </span>
+                      )}
+                    </div>
+                  </motion.button>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <main className="max-w-5xl mx-auto px-4 py-8 relative">
+          <AnimatePresence mode="wait">
+            {activeTab === 'overview' ? (
+              <motion.div
+                key="overview"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-8"
+              >
+                {/* Reminder Banner */}
+                <ReminderBanner 
+                  lastConcernDate={lastConcernDate}
+                  lastAssessmentDate={lastAssessmentDate}
+                />
+
+                {/* Milestones & Badges */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <MilestonesBadges 
+                    concernCount={concerns.length}
+                    assessmentCount={assessments.length}
+                  />
+                </motion.div>
+
+                {/* AI Insight & Monthly Report Grid */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <AIInsightSummary 
+                      concerns={concerns}
+                      assessments={assessments}
+                    />
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <MonthlyReport 
+                      concerns={concerns}
+                      assessments={assessments}
+                    />
+                  </motion.div>
+                </div>
+
+                {/* Growth Chart */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <GrowthChart 
+                    concerns={concerns}
+                    assessments={assessments}
+                  />
+                </motion.div>
+              </motion.div>
+            ) : activeTab === 'concerns' ? (
+              <motion.div
+                key="concerns"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ConcernStorageList />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="assessments"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <AssessmentHistory />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
+      </div>
     </div>
   );
 };

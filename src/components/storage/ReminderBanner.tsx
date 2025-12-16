@@ -1,11 +1,11 @@
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Bell, Clock, AlertCircle, Sparkles, ArrowRight } from 'lucide-react';
+import { Bell, Clock, Sparkles, ArrowRight, PenLine, FileSearch } from 'lucide-react';
 import { formatDistanceToNow, differenceInDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface ReminderBannerProps {
   lastConcernDate?: string | null;
@@ -26,7 +26,6 @@ export const ReminderBanner: React.FC<ReminderBannerProps> = ({
     ? differenceInDays(new Date(), new Date(lastAssessmentDate))
     : null;
 
-  // 7일 이상 기록이 없으면 리마인더 표시
   const showConcernReminder = daysSinceLastConcern === null || daysSinceLastConcern >= 7;
   const showAssessmentReminder = daysSinceLastAssessment === null || daysSinceLastAssessment >= 14;
 
@@ -46,103 +45,115 @@ export const ReminderBanner: React.FC<ReminderBannerProps> = ({
     return 'low';
   };
 
-  const urgencyColors = {
-    low: 'from-blue-500/10 to-blue-500/5 border-blue-500/20',
-    medium: 'from-orange-500/10 to-orange-500/5 border-orange-500/20',
-    high: 'from-red-500/10 to-red-500/5 border-red-500/20'
+  const urgencyConfig = {
+    low: { 
+      gradient: 'from-blue-500/20 via-blue-500/10 to-transparent',
+      border: 'border-blue-500/30',
+      iconBg: 'from-blue-500 to-cyan-500',
+      shadow: 'shadow-blue-500/20'
+    },
+    medium: { 
+      gradient: 'from-amber-500/20 via-amber-500/10 to-transparent',
+      border: 'border-amber-500/30',
+      iconBg: 'from-amber-500 to-orange-500',
+      shadow: 'shadow-amber-500/20'
+    },
+    high: { 
+      gradient: 'from-rose-500/20 via-rose-500/10 to-transparent',
+      border: 'border-rose-500/30',
+      iconBg: 'from-rose-500 to-red-500',
+      shadow: 'shadow-rose-500/20'
+    }
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {showConcernReminder && (
-        <Card className={cn(
-          "bg-gradient-to-r border overflow-hidden",
-          urgencyColors[getUrgencyLevel(daysSinceLastConcern)]
-        )}>
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <div className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
-                getUrgencyLevel(daysSinceLastConcern) === 'high' 
-                  ? "bg-red-500/20" 
-                  : getUrgencyLevel(daysSinceLastConcern) === 'medium'
-                    ? "bg-orange-500/20"
-                    : "bg-blue-500/20"
-              )}>
-                {daysSinceLastConcern === null ? (
-                  <Sparkles className="w-5 h-5 text-primary" />
-                ) : (
-                  <Bell className="w-5 h-5 text-orange-500" />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-foreground">
-                  {daysSinceLastConcern === null 
-                    ? '첫 고민을 기록해보세요!' 
-                    : `마지막 기록: ${getTimeAgoText(lastConcernDate)}`}
-                </h4>
-                <p className="text-sm text-muted-foreground mt-0.5">
-                  {daysSinceLastConcern === null 
-                    ? '고민을 기록하면 AI가 맞춤 분석을 제공해드려요'
-                    : daysSinceLastConcern >= 30
-                      ? '한 달 이상 기록이 없어요. 꾸준한 기록이 성장의 열쇠예요!'
-                      : '정기적인 기록이 변화를 추적하는 데 도움이 돼요'}
-                </p>
-              </div>
-              <Button 
-                size="sm" 
-                onClick={() => navigate('/')}
-                className="flex-shrink-0"
-              >
-                기록하기
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={cn(
+            "relative rounded-3xl border overflow-hidden p-5",
+            `bg-gradient-to-r ${urgencyConfig[getUrgencyLevel(daysSinceLastConcern)].gradient}`,
+            urgencyConfig[getUrgencyLevel(daysSinceLastConcern)].border
+          )}
+        >
+          <div className="flex items-center gap-4">
+            <div className={cn(
+              "w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center flex-shrink-0 shadow-lg",
+              urgencyConfig[getUrgencyLevel(daysSinceLastConcern)].iconBg,
+              urgencyConfig[getUrgencyLevel(daysSinceLastConcern)].shadow
+            )}>
+              {daysSinceLastConcern === null ? (
+                <Sparkles className="w-6 h-6 text-white" />
+              ) : (
+                <PenLine className="w-6 h-6 text-white" />
+              )}
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-bold text-foreground text-base">
+                {daysSinceLastConcern === null 
+                  ? '첫 고민을 기록해보세요!' 
+                  : `마지막 기록: ${getTimeAgoText(lastConcernDate)}`}
+              </h4>
+              <p className="text-sm text-muted-foreground mt-1">
+                {daysSinceLastConcern === null 
+                  ? '고민을 기록하면 AI가 맞춤 분석을 제공해드려요'
+                  : daysSinceLastConcern >= 30
+                    ? '한 달 이상 기록이 없어요. 꾸준한 기록이 성장의 열쇠예요!'
+                    : '정기적인 기록이 변화를 추적하는 데 도움이 돼요'}
+              </p>
+            </div>
+            <Button 
+              onClick={() => navigate('/')}
+              className="flex-shrink-0 rounded-2xl h-12 px-5 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25"
+            >
+              기록하기
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </motion.div>
       )}
 
       {showAssessmentReminder && (
-        <Card className={cn(
-          "bg-gradient-to-r border overflow-hidden",
-          urgencyColors[getUrgencyLevel(daysSinceLastAssessment)]
-        )}>
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <div className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
-                getUrgencyLevel(daysSinceLastAssessment) === 'high' 
-                  ? "bg-red-500/20" 
-                  : getUrgencyLevel(daysSinceLastAssessment) === 'medium'
-                    ? "bg-orange-500/20"
-                    : "bg-purple-500/20"
-              )}>
-                <Clock className="w-5 h-5 text-purple-500" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-foreground">
-                  {daysSinceLastAssessment === null 
-                    ? '첫 검사를 받아보세요!' 
-                    : `마지막 검사: ${getTimeAgoText(lastAssessmentDate)}`}
-                </h4>
-                <p className="text-sm text-muted-foreground mt-0.5">
-                  {daysSinceLastAssessment === null 
-                    ? '심리검사로 현재 상태를 정확히 파악해보세요'
-                    : '정기적인 검사로 변화를 추적하세요. 2주마다 검사를 권장해요!'}
-                </p>
-              </div>
-              <Button 
-                size="sm" 
-                variant="outline"
-                onClick={() => navigate('/assessment')}
-                className="flex-shrink-0"
-              >
-                검사하기
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className={cn(
+            "relative rounded-3xl border overflow-hidden p-5",
+            `bg-gradient-to-r ${urgencyConfig[getUrgencyLevel(daysSinceLastAssessment)].gradient}`,
+            urgencyConfig[getUrgencyLevel(daysSinceLastAssessment)].border
+          )}
+        >
+          <div className="flex items-center gap-4">
+            <div className={cn(
+              "w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-500/20"
+            )}>
+              <FileSearch className="w-6 h-6 text-white" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-bold text-foreground text-base">
+                {daysSinceLastAssessment === null 
+                  ? '첫 검사를 받아보세요!' 
+                  : `마지막 검사: ${getTimeAgoText(lastAssessmentDate)}`}
+              </h4>
+              <p className="text-sm text-muted-foreground mt-1">
+                {daysSinceLastAssessment === null 
+                  ? '심리검사로 현재 상태를 정확히 파악해보세요'
+                  : '정기적인 검사로 변화를 추적하세요. 2주마다 검사를 권장해요!'}
+              </p>
+            </div>
+            <Button 
+              variant="outline"
+              onClick={() => navigate('/assessment')}
+              className="flex-shrink-0 rounded-2xl h-12 px-5 border-2 hover:bg-muted/50"
+            >
+              검사하기
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </motion.div>
       )}
     </div>
   );

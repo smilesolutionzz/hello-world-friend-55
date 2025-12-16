@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, X, MessageCircle } from 'lucide-react';
+import { ArrowLeft, X, MessageCircle, EyeOff } from 'lucide-react';
 import { MetaverseSessionEntrance, type RoomType } from '../shared/MetaverseSessionEntrance';
+import { DraggableFloatingButton } from '../shared/DraggableFloatingButton';
 import CounselingRoom from '@/components/3d/CounselingRoom';
 import { useMetaverseSession } from '@/hooks/useMetaverseSession';
 import { StructuredCounseling } from '@/components/metaverse/StructuredCounseling';
@@ -97,15 +98,15 @@ export const StructuredCounselingMode = ({ ageGroup, character }: StructuredCoun
         />
       )}
 
-      {/* 대화창 열기 버튼 (대화창이 숨겨졌을 때만 표시) */}
+      {/* 대화창 열기 버튼 (대화창이 숨겨졌을 때만 표시) - 드래그 가능 */}
       {!showChat && !counselingResult && (
-        <Button
+        <DraggableFloatingButton
           onClick={handleOpenChat}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 bg-primary hover:bg-primary/90 shadow-lg"
+          initialPosition={{ x: 50, y: 85 }}
         >
           <MessageCircle className="w-5 h-5 mr-2" />
           대화 계속하기
-        </Button>
+        </DraggableFloatingButton>
       )}
 
       {/* 대시보드로 이동 버튼 */}
@@ -152,13 +153,16 @@ export const StructuredCounselingMode = ({ ageGroup, character }: StructuredCoun
               onMessage={(message, isUser) => console.log(`${isUser ? '사용자' : 'AI'}:`, message)}
             />
 
-            <Button 
+            {/* 대화창 숨기기 버튼 - 드래그 가능 */}
+            <DraggableFloatingButton
               onClick={handleCloseChat}
               variant="outline"
-              className="mt-6"
+              initialPosition={{ x: 50, y: 92 }}
+              className="bg-black/60 border-white/20 text-white hover:bg-black/80"
             >
+              <EyeOff className="w-4 h-4 mr-2" />
               대화창 숨기기
-            </Button>
+            </DraggableFloatingButton>
           </div>
         )}
       </CounselingRoom>

@@ -336,3 +336,19 @@ verify_jwt = true
 
 [functions.generate-storage-insight]
 verify_jwt = true  # 🔒 보안: 저장소 AI 인사이트 인증 필수
+
+# 청소년 위기 대응 시스템
+[functions.crisis-detection-ai]
+verify_jwt = false  # 위기 감지는 빠른 접근 필요
+
+[functions.emotion-analysis-advanced]
+verify_jwt = false
+
+[functions.nearby-counseling-centers]
+verify_jwt = false  # 긴급 시 빠른 접근 필요
+
+[functions.guardian-alert]
+verify_jwt = true  # 🔒 보안: 보호자 알림은 인증 필수
+
+[functions.crisis-voice-counselor]
+verify_jwt = false  # 위기 상담은 빠른 접근 필요

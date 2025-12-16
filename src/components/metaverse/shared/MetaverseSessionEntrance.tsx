@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Sofa, Building2, Home, Bed, GraduationCap, Users, Trees, Gamepad2, Package, Palette, BookOpen, Flower2, Music, Link2 } from 'lucide-react';
-import { AvatarPreview } from '@/components/metaverse/AvatarPreview';
-import { AvatarGallery } from '@/components/metaverse/AvatarGallery';
+import { Sofa, Building2, Home, Bed, GraduationCap, Users, Trees, Gamepad2, Package, Palette, BookOpen, Flower2, CheckCircle2 } from 'lucide-react';
+import { FIXED_AVATAR } from '@/components/metaverse/AvatarGallery';
 
 export type RoomType = 'counseling' | 'office' | 'home' | 'bedroom' | 'school' | 'club' | 'living' | 'outdoor' | 'playground' | 'toyroom' | 'artroom' | 'library' | 'garden';
 
@@ -37,38 +36,18 @@ interface MetaverseSessionEntranceProps {
   }) => void;
   showConsultTopic?: boolean;
   showMovementToggle?: boolean;
-  onAvatarCreatorOpen?: () => void;
-  initialAvatarUrl?: string;
-  onAvatarUrlChange?: (url: string) => void;
 }
 
 export const MetaverseSessionEntrance = ({ 
   onEnter, 
   showConsultTopic = true,
-  showMovementToggle = true,
-  onAvatarCreatorOpen,
-  initialAvatarUrl = '',
-  onAvatarUrlChange
+  showMovementToggle = true
 }: MetaverseSessionEntranceProps) => {
   const [userName, setUserName] = useState('');
   const [consultTopic, setConsultTopic] = useState('');
   const [selectedRoom, setSelectedRoom] = useState<RoomType>('counseling');
-  const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);
-  const [showGallery, setShowGallery] = useState(false);
   const [enableMovement, setEnableMovement] = useState(true);
   const [showSubtitles, setShowSubtitles] = useState(true);
-  
-  // initialAvatarUrl이 변경되면 로컬 state도 업데이트
-  useEffect(() => {
-    if (initialAvatarUrl) {
-      setAvatarUrl(initialAvatarUrl);
-    }
-  }, [initialAvatarUrl]);
-
-  const handleAvatarUrlChange = (url: string) => {
-    setAvatarUrl(url);
-    onAvatarUrlChange?.(url);
-  };
 
   const handleEnter = () => {
     if (!userName.trim()) return;
@@ -78,7 +57,7 @@ export const MetaverseSessionEntrance = ({
       userName: userName.trim(),
       consultTopic: consultTopic.trim(),
       selectedRoom,
-      avatarUrl,
+      avatarUrl: FIXED_AVATAR.url,
       enableMovement,
       showSubtitles
     });
@@ -144,40 +123,18 @@ export const MetaverseSessionEntrance = ({
             </div>
           </div>
 
-          {/* 아바타 설정 */}
+          {/* 고정 아바타 표시 */}
           <div className="space-y-3">
-            <Label className="flex items-center gap-2 text-white">
-              <Link2 className="w-4 h-4" />
-              ReadyPlayer.me 아바타 (선택)
-            </Label>
-            
-            {avatarUrl && <AvatarPreview avatarUrl={avatarUrl} onUrlChange={setAvatarUrl} />}
-            
-            <Input
-              type="text"
-              value={avatarUrl}
-              onChange={(e) => handleAvatarUrlChange(e.target.value)}
-              placeholder="Ready Player Me URL (.glb) 붙여넣기"
-              className="bg-background/50 border-purple-500/30 text-white placeholder:text-white/40"
-            />
-            
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                onClick={onAvatarCreatorOpen}
-                variant="outline"
-                className="flex-1 bg-background/50 border-purple-500/30 hover:bg-purple-500/20 text-white"
-              >
-                아바타 생성
-              </Button>
-              <Button
-                type="button"
-                onClick={() => setShowGallery(true)}
-                variant="outline"
-                className="flex-1 bg-background/50 border-purple-500/30 hover:bg-purple-500/20 text-white"
-              >
-                갤러리
-              </Button>
+            <Label className="text-white">아바타</Label>
+            <div className="flex items-center gap-4 p-4 rounded-lg bg-purple-500/20 border border-purple-500/30">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400/30 to-pink-400/30 flex items-center justify-center">
+                <span className="text-3xl">👤</span>
+              </div>
+              <div className="flex-1">
+                <div className="font-medium text-white">{FIXED_AVATAR.name}</div>
+                <div className="text-sm text-white/60">기본 아바타가 사용됩니다</div>
+              </div>
+              <CheckCircle2 className="w-5 h-5 text-green-400" />
             </div>
           </div>
 
@@ -219,29 +176,6 @@ export const MetaverseSessionEntrance = ({
         </div>
       </Card>
 
-      {showGallery && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <Card className="max-w-2xl w-full p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold">아바타 갤러리</h3>
-              <Button
-                onClick={() => setShowGallery(false)}
-                variant="ghost"
-                size="sm"
-              >
-                닫기
-              </Button>
-            </div>
-            <AvatarGallery
-              selectedUrl={avatarUrl}
-              onSelect={(url) => {
-                handleAvatarUrlChange(url);
-                setShowGallery(false);
-              }}
-            />
-          </Card>
-        </div>
-      )}
     </>
   );
 };

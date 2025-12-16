@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, X, MessageCircle } from 'lucide-react';
 import { MetaverseSessionEntrance, type RoomType } from '../shared/MetaverseSessionEntrance';
-import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
 import CounselingRoom from '@/components/3d/CounselingRoom';
 import { useMetaverseSession } from '@/hooks/useMetaverseSession';
 import { StructuredCounseling } from '@/components/metaverse/StructuredCounseling';
@@ -20,7 +19,6 @@ interface StructuredCounselingModeProps {
 export const StructuredCounselingMode = ({ ageGroup, character }: StructuredCounselingModeProps) => {
   const navigate = useNavigate();
   const { hasEntered, handleEnter: onEnter, handleExit } = useMetaverseSession();
-  const { avatarUrl, setAvatarUrl, openAvatarCreator } = useReadyPlayerMe();
   
   const [sessionConfig, setSessionConfig] = useState<{
     userName: string;
@@ -83,9 +81,6 @@ export const StructuredCounselingMode = ({ ageGroup, character }: StructuredCoun
           onEnter={handleEnterSession}
           showConsultTopic={false}
           showMovementToggle={true}
-          onAvatarCreatorOpen={openAvatarCreator}
-          initialAvatarUrl={avatarUrl}
-          onAvatarUrlChange={setAvatarUrl}
         />
       </div>
     );

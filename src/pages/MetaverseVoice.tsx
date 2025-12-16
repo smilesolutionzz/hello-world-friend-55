@@ -87,6 +87,9 @@ const MetaverseVoicePage = () => {
           </TabsList>
 
           <TabsContent value="structured" className="mt-0">
+            <div className="mb-4 p-3 bg-amber-500/20 border border-amber-500/40 rounded-lg md:hidden">
+              <p className="text-amber-200 text-sm text-center">💻 PC에서 사용하시면 더욱 원활하게 이용할 수 있습니다.</p>
+            </div>
             {!structuredConfig ? (
               <CounselingSetup onStart={handleStructuredStart} />
             ) : (
@@ -98,6 +101,9 @@ const MetaverseVoicePage = () => {
           </TabsContent>
 
           <TabsContent value="therapy" className="mt-0">
+            <div className="mb-4 p-3 bg-amber-500/20 border border-amber-500/40 rounded-lg md:hidden">
+              <p className="text-amber-200 text-sm text-center">💻 PC에서 사용하시면 더욱 원활하게 이용할 수 있습니다.</p>
+            </div>
             {!therapistType ? (
               <TherapistSelector onSelect={handleTherapistSelect} />
             ) : (
@@ -109,6 +115,9 @@ const MetaverseVoicePage = () => {
           </TabsContent>
 
           <TabsContent value="roleplay" className="mt-0">
+            <div className="mb-4 p-3 bg-amber-500/20 border border-amber-500/40 rounded-lg md:hidden">
+              <p className="text-amber-200 text-sm text-center">💻 PC에서 사용하시면 더욱 원활하게 이용할 수 있습니다.</p>
+            </div>
             {!roleplayScenario ? (
               <RolePlaySetup onStart={handleRoleplayStart} />
             ) : (
@@ -117,6 +126,9 @@ const MetaverseVoicePage = () => {
           </TabsContent>
 
           <TabsContent value="free" className="mt-0">
+            <div className="mb-4 p-3 bg-amber-500/20 border border-amber-500/40 rounded-lg md:hidden">
+              <p className="text-amber-200 text-sm text-center">💻 PC에서 사용하시면 더욱 원활하게 이용할 수 있습니다.</p>
+            </div>
             <FreeCounseling />
           </TabsContent>
         </Tabs>

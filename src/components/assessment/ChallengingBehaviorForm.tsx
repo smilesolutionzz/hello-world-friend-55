@@ -199,18 +199,33 @@ const ChallengingBehaviorForm = ({ onComplete, onBack }: ChallengingBehaviorForm
               onValueChange={(value) => handleAnswer(parseInt(value))}
               className="space-y-3"
             >
-              {scoringOptions.map((option) => (
-                <div
-                  key={option.value}
-                  className="flex items-start space-x-3 p-4 rounded-lg border hover:bg-muted/50 transition-colors"
-                >
-                  <RadioGroupItem value={option.value.toString()} id={`option-${option.value}`} />
-                  <Label htmlFor={`option-${option.value}`} className="flex-1 cursor-pointer">
-                    <div className="font-medium">{option.label}</div>
-                    <div className="text-sm text-muted-foreground">{option.description}</div>
-                  </Label>
-                </div>
-              ))}
+              {scoringOptions.map((option) => {
+                const isSelected = answers[currentIndex] === option.value;
+                return (
+                  <div
+                    key={option.value}
+                    className={`flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer ${
+                      isSelected 
+                        ? 'border-primary bg-primary/10 shadow-md' 
+                        : 'border-border hover:bg-muted/50 hover:border-primary/30'
+                    }`}
+                    onClick={() => handleAnswer(option.value)}
+                  >
+                    <RadioGroupItem 
+                      value={option.value.toString()} 
+                      id={`option-${option.value}`}
+                      className={isSelected ? 'border-primary text-primary' : ''}
+                    />
+                    <Label htmlFor={`option-${option.value}`} className="flex-1 cursor-pointer">
+                      <div className={`font-medium ${isSelected ? 'text-primary' : ''}`}>{option.label}</div>
+                      <div className="text-sm text-muted-foreground">{option.description}</div>
+                    </Label>
+                    {isSelected && (
+                      <span className="text-primary text-sm font-medium">✓</span>
+                    )}
+                  </div>
+                );
+              })}
             </RadioGroup>
 
             <div className="flex justify-between mt-6">

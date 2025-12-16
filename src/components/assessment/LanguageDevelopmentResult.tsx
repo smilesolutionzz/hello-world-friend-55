@@ -207,7 +207,7 @@ ${aiAnalysis || generateFallbackInterpretation()}
   const StatusIcon = totalInterpretation.icon;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-pink-50/30 to-violet-50/30 dark:from-background dark:via-pink-950/10 dark:to-violet-950/10">
+    <div className="min-h-screen bg-white dark:bg-background">
       <div className="container mx-auto px-4 py-4 md:py-8 max-w-4xl">
         
         {/* 헤더 - 모바일 최적화 */}

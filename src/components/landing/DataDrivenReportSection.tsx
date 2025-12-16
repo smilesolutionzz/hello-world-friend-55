@@ -106,11 +106,11 @@ const DataDrivenReportSection = () => {
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
-                onClick={() => navigate('/pmf-onboarding')}
+                onClick={() => navigate('/report-generator')}
                 className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold px-8 py-6 rounded-xl"
               >
                 <Brain className="w-5 h-5 mr-2" />
-                3분 분석 시작
+                리포트 분석하기
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>

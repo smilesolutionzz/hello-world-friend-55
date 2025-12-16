@@ -48,8 +48,8 @@ const Footer = () => {
                 >
                   <BookOpen className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   <div>
-                    <div className="font-medium text-white">Memory Legacy</div>
-                    <div className="text-xs text-slate-400">추억을 책으로</div>
+                    <div className="font-medium text-white">요양시설 · 주간발달센터</div>
+                    <div className="text-xs text-slate-400">전용 AI 솔루션</div>
                   </div>
                 </a>
               </li>

@@ -50,7 +50,7 @@ const navItems = [
     icon: Bot,
     children: [
       { label: 'AI 상담', path: '/ai-assistant', desc: '24시간 AI 심리 상담', icon: MessageCircle },
-      { label: 'AI 아지트', path: '/metaverse-voice', desc: '음성으로 AI와 대화', badge: 'NEW', icon: Mic },
+      { label: 'AI 아지트', path: '/metaverse-voice', desc: '음성으로 AI와 대화', badge: 'NEW', icon: Mic, mobileNote: '(PC 권장)' },
       { label: 'AI 관찰일지', path: '/observation', desc: '개인 관찰일지 AI 분석', icon: FileText },
     ]
   },
@@ -369,6 +369,9 @@ export const UnifiedNavigation = () => {
                                 >
                                   {child.icon ? <child.icon className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
                                   <span className="text-sm">{child.label}</span>
+                                  {child.mobileNote && (
+                                    <span className="text-[10px] text-amber-600 dark:text-amber-400">{child.mobileNote}</span>
+                                  )}
                                   {child.badge && (
                                     <Badge className="bg-green-500/10 text-green-600 border-0 text-[10px] ml-auto">
                                       {child.badge}

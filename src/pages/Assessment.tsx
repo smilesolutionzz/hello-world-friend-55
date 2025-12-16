@@ -123,6 +123,28 @@ const Assessment = () => {
       handleTestTypeSelect(stateTestType);
     }
     
+    // location.state에서 selectedTest 확인 (추천 검사에서 온 경우)
+    const selectedTest = location.state?.selectedTest;
+    if (selectedTest) {
+      console.log('🔍 Selected test from state:', selectedTest);
+      // 테스트 ID를 적절한 단계로 매핑
+      const testMapping: Record<string, string> = {
+        'adaptive-behavior-test': 'adaptive-behavior-test',
+        'challenging-behavior-test': 'challenging-behavior-test',
+        'sensory-integration-test': 'sensory-integration-test',
+        'social-development-test': 'social-development-test',
+        'developmental-delay-test': 'developmental-delay-test',
+        'learning-disability-test': 'learning-disability-test',
+        'adhd-test': 'adhd-test',
+        'self-esteem-test': 'selfesteem-test',
+        'language-development-test': 'language-test',
+        'autism-screening-test': 'developmental-delay-test',
+        'parenting-style-test': 'test-type', // 양육방식 검사는 기본 화면으로
+      };
+      const targetStep = testMapping[selectedTest] || 'test-type';
+      setCurrentStep(targetStep as any);
+    }
+    
     // URL 경로에 따른 자동 테스트 시작
     if (location.pathname === '/assessment/stress-test') {
       console.log('🔍 Stress test path detected, starting stress test...');

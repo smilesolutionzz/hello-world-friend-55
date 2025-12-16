@@ -223,6 +223,13 @@ const AssessmentHistory = () => {
     return null;
   };
 
+  // 이번 달 검사 수 계산
+  const thisMonthCount = assessments.filter(a => {
+    const date = new Date(a.completed_at);
+    const now = new Date();
+    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+  }).length;
+
   const stats = [
     {
       label: "총 검사",
@@ -232,16 +239,16 @@ const AssessmentHistory = () => {
       bgClass: "bg-blue-500/10"
     },
     {
-      label: "정상 범위",
-      value: assessments.filter(a => a.risk_level === 'low').length,
-      icon: CheckCircle,
+      label: "이번 달",
+      value: thisMonthCount,
+      icon: Calendar,
       gradient: "from-emerald-500 to-green-500",
       bgClass: "bg-emerald-500/10"
     },
     {
-      label: "주의 필요",
-      value: assessments.filter(a => a.risk_level === 'medium').length,
-      icon: Clock,
+      label: "기본 검사",
+      value: assessments.filter(a => a.source === 'assessments').length,
+      icon: FileText,
       gradient: "from-amber-500 to-orange-500",
       bgClass: "bg-amber-500/10"
     },

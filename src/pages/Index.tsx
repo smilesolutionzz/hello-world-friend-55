@@ -147,11 +147,6 @@ const Index = () => {
             {/* 1️⃣ Hero Section - AI 분석 입력창 포함 */}
             <HeroSection />
             
-            {/* 🔥 프로모션 배너 - 프리미엄 패스 유도 */}
-            <LazyLoad rootMargin="200px">
-              <MainPromoSection />
-            </LazyLoad>
-            
             {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
             <LazyLoad rootMargin="200px">
               <ValueComparisonSection />
@@ -175,6 +170,11 @@ const Index = () => {
             {/* 6️⃣ 파트너 & 신뢰 */}
             <LazyLoad rootMargin="200px">
               <PartnerTrustSection />
+            </LazyLoad>
+            
+            {/* 🔥 프로모션 배너 - 서비스 가치 확인 후 유도 */}
+            <LazyLoad rootMargin="200px">
+              <MainPromoSection />
             </LazyLoad>
             
             {/* 7️⃣ CTA 배너 */}

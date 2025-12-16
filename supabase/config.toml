@@ -333,3 +333,6 @@ verify_jwt = true
 
 [functions.confirm-lifetime-payment]
 verify_jwt = true
+
+[functions.generate-storage-insight]
+verify_jwt = true  # 🔒 보안: 저장소 AI 인사이트 인증 필수

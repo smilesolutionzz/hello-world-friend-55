@@ -352,3 +352,6 @@ verify_jwt = true  # 🔒 보안: 보호자 알림은 인증 필수
 
 [functions.crisis-voice-counselor]
 verify_jwt = false  # 위기 상담은 빠른 접근 필요
+
+[functions.crawl-crisis-resources]
+verify_jwt = false  # 위기 자원 크롤링은 빠른 접근 필요

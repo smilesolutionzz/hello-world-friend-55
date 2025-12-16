@@ -1078,6 +1078,11 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                 <p className="text-purple-200/80">
                   가상 공간에서 AI 상담사와 실시간 음성 대화 • 자유롭게 이동하며 상담하세요
                 </p>
+                <div className="mt-4 p-3 bg-amber-500/20 border border-amber-500/40 rounded-lg md:hidden">
+                  <p className="text-amber-200 text-sm flex items-center justify-center gap-2">
+                    💻 AI 아지트는 PC에서 사용하시면 더욱 원활하게 이용하실 수 있습니다.
+                  </p>
+                </div>
               </div>
 
               <div className="space-y-6">

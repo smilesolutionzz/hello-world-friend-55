@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles, RefreshCw, TrendingUp, TrendingDown, Minus, Brain, Lightbulb } from 'lucide-react';
+import { Sparkles, RefreshCw, TrendingUp, TrendingDown, Minus, Brain, Lightbulb, Wand2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface AIInsightSummaryProps {
   concerns: Array<{
@@ -33,7 +33,6 @@ export const AIInsightSummary: React.FC<AIInsightSummaryProps> = ({ concerns, as
   const [hasGenerated, setHasGenerated] = useState(false);
   const { toast } = useToast();
 
-  // 데이터가 충분한지 확인
   const hasEnoughData = concerns.length >= 3 || assessments.length >= 2;
 
   const generateInsight = async () => {
@@ -41,7 +40,6 @@ export const AIInsightSummary: React.FC<AIInsightSummaryProps> = ({ concerns, as
     
     setLoading(true);
     try {
-      // 최근 데이터 준비
       const recentConcerns = concerns.slice(0, 10).map(c => ({
         date: c.created_at,
         type: c.analysis_type,
@@ -65,8 +63,6 @@ export const AIInsightSummary: React.FC<AIInsightSummaryProps> = ({ concerns, as
       setHasGenerated(true);
     } catch (error) {
       console.error('AI 인사이트 생성 오류:', error);
-      
-      // 폴백: 로컬 분석
       const localInsight = generateLocalInsight();
       setInsight(localInsight);
       setHasGenerated(true);
@@ -75,12 +71,10 @@ export const AIInsightSummary: React.FC<AIInsightSummaryProps> = ({ concerns, as
     }
   };
 
-  // 로컬 폴백 분석
   const generateLocalInsight = (): InsightData => {
     const recentConcerns = concerns.slice(0, 10);
     const olderConcerns = concerns.slice(10, 20);
     
-    // 심각도 트렌드 분석
     const recentHighCount = recentConcerns.filter(c => c.analysis_severity === '높음').length;
     const olderHighCount = olderConcerns.filter(c => c.analysis_severity === '높음').length;
     
@@ -92,7 +86,6 @@ export const AIInsightSummary: React.FC<AIInsightSummaryProps> = ({ concerns, as
       else if (recentRatio > olderRatio + 0.1) trend = 'declining';
     }
 
-    // 주요 고민 유형 분석
     const typeCount: Record<string, number> = {};
     recentConcerns.forEach(c => {
       typeCount[c.analysis_type] = (typeCount[c.analysis_type] || 0) + 1;
@@ -102,7 +95,6 @@ export const AIInsightSummary: React.FC<AIInsightSummaryProps> = ({ concerns, as
       .slice(0, 3)
       .map(([type]) => type);
 
-    // 인사이트 생성
     const keyInsights: string[] = [];
     if (topTypes.length > 0) {
       keyInsights.push(`최근 주요 고민 유형: ${topTypes.join(', ')}`);
@@ -132,112 +124,170 @@ export const AIInsightSummary: React.FC<AIInsightSummaryProps> = ({ concerns, as
     };
   };
 
-  const TrendIcon = insight?.trend === 'improving' ? TrendingUp : insight?.trend === 'declining' ? TrendingDown : Minus;
-  const trendColor = insight?.trend === 'improving' ? 'text-green-500' : insight?.trend === 'declining' ? 'text-red-500' : 'text-blue-500';
-  const trendBg = insight?.trend === 'improving' ? 'bg-green-500/10' : insight?.trend === 'declining' ? 'bg-red-500/10' : 'bg-blue-500/10';
+  const trendConfig = {
+    improving: { 
+      icon: TrendingUp, 
+      color: 'text-emerald-500', 
+      bg: 'bg-gradient-to-br from-emerald-500/20 to-green-500/10',
+      border: 'border-emerald-500/30',
+      label: '긍정적 변화' 
+    },
+    declining: { 
+      icon: TrendingDown, 
+      color: 'text-rose-500', 
+      bg: 'bg-gradient-to-br from-rose-500/20 to-red-500/10',
+      border: 'border-rose-500/30',
+      label: '주의 필요' 
+    },
+    stable: { 
+      icon: Minus, 
+      color: 'text-blue-500', 
+      bg: 'bg-gradient-to-br from-blue-500/20 to-cyan-500/10',
+      border: 'border-blue-500/30',
+      label: '안정적' 
+    }
+  };
 
   if (!hasEnoughData) {
     return (
-      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-        <CardContent className="p-6 text-center">
-          <Brain className="w-12 h-12 mx-auto mb-3 text-primary/50" />
-          <h3 className="font-semibold text-foreground mb-2">AI 인사이트를 준비 중이에요</h3>
-          <p className="text-sm text-muted-foreground">
-            더 정확한 분석을 위해 최소 3개의 고민 또는 2개의 검사 기록이 필요해요.
-            <br />현재: 고민 {concerns.length}개, 검사 {assessments.length}개
-          </p>
-        </CardContent>
-      </Card>
+      <div className="rounded-3xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 p-6 text-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+          <Brain className="w-8 h-8 text-primary/60" />
+        </div>
+        <h3 className="font-bold text-foreground mb-2">AI 인사이트 준비 중</h3>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          더 정확한 분석을 위해 최소 3개의 고민 또는<br />2개의 검사 기록이 필요해요.
+        </p>
+        <div className="mt-4 flex justify-center gap-4 text-xs text-muted-foreground">
+          <span className="px-3 py-1.5 rounded-full bg-muted/50">고민 {concerns.length}개</span>
+          <span className="px-3 py-1.5 rounded-full bg-muted/50">검사 {assessments.length}개</span>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card className="bg-card border-border overflow-hidden">
-      <CardHeader className="pb-2">
+    <div className="rounded-3xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-xl overflow-hidden h-full">
+      {/* Header */}
+      <div className="p-5 border-b border-border/50">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" />
-            AI 인사이트
-          </CardTitle>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className="font-bold text-foreground">AI 인사이트</h3>
+              <p className="text-xs text-muted-foreground">맞춤형 분석 리포트</p>
+            </div>
+          </div>
           {hasGenerated && (
             <Button 
               variant="ghost" 
-              size="sm"
+              size="icon"
               onClick={generateInsight}
               disabled={loading}
+              className="rounded-xl hover:bg-muted/50"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
             </Button>
           )}
         </div>
-      </CardHeader>
-      <CardContent>
-        {!hasGenerated ? (
-          <div className="text-center py-6">
-            <Brain className="w-12 h-12 mx-auto mb-3 text-primary" />
-            <p className="text-sm text-muted-foreground mb-4">
-              AI가 당신의 기록을 분석하여<br />맞춤형 인사이트를 제공해드려요
-            </p>
-            <Button onClick={generateInsight} disabled={loading}>
-              {loading ? (
-                <>
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  분석 중...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  인사이트 생성하기
-                </>
-              )}
-            </Button>
-          </div>
-        ) : insight ? (
-          <div className="space-y-4">
-            {/* 트렌드 배지 */}
-            <div className={`flex items-center gap-2 p-3 rounded-lg ${trendBg}`}>
-              <TrendIcon className={`w-5 h-5 ${trendColor}`} />
-              <span className="text-sm font-medium">
-                {insight.trend === 'improving' ? '긍정적 변화' : 
-                 insight.trend === 'declining' ? '주의 필요' : '안정적'}
-              </span>
-            </div>
+      </div>
 
-            {/* 요약 */}
-            <p className="text-sm text-foreground leading-relaxed">
-              {insight.summary}
-            </p>
-
-            {/* 주요 인사이트 */}
-            <div className="space-y-2">
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                주요 발견
-              </h4>
-              <ul className="space-y-2">
-                {insight.keyInsights.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                    <span className="text-muted-foreground">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* 권장사항 */}
-            <div className="p-3 bg-muted/50 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Lightbulb className="w-4 h-4 text-yellow-500" />
-                <span className="text-xs font-semibold">권장사항</span>
+      {/* Content */}
+      <div className="p-5">
+        <AnimatePresence mode="wait">
+          {!hasGenerated ? (
+            <motion.div 
+              key="generate"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-center py-6"
+            >
+              <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-violet-500/20 to-purple-500/10 flex items-center justify-center">
+                <Wand2 className="w-10 h-10 text-primary" />
               </div>
-              <ul className="space-y-1">
-                {insight.recommendations.slice(0, 2).map((rec, i) => (
-                  <li key={i} className="text-xs text-muted-foreground">• {rec}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ) : null}
-      </CardContent>
-    </Card>
+              <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+                AI가 당신의 기록을 분석하여<br />맞춤형 인사이트를 제공해드려요
+              </p>
+              <Button 
+                onClick={generateInsight} 
+                disabled={loading}
+                className="rounded-2xl px-6 h-12 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 shadow-lg shadow-violet-500/25"
+              >
+                {loading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                    분석 중...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    인사이트 생성하기
+                  </>
+                )}
+              </Button>
+            </motion.div>
+          ) : insight ? (
+            <motion.div 
+              key="insight"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-4"
+            >
+              {/* Trend Badge */}
+              <div className={cn(
+                "flex items-center gap-2.5 p-3.5 rounded-2xl border",
+                trendConfig[insight.trend].bg,
+                trendConfig[insight.trend].border
+              )}>
+                {React.createElement(trendConfig[insight.trend].icon, {
+                  className: cn("w-5 h-5", trendConfig[insight.trend].color)
+                })}
+                <span className={cn("text-sm font-semibold", trendConfig[insight.trend].color)}>
+                  {trendConfig[insight.trend].label}
+                </span>
+              </div>
+
+              {/* Summary */}
+              <p className="text-sm text-foreground leading-relaxed">
+                {insight.summary}
+              </p>
+
+              {/* Key Insights */}
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  주요 발견
+                </h4>
+                <ul className="space-y-2">
+                  {insight.keyInsights.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 mt-2 flex-shrink-0" />
+                      <span className="text-muted-foreground">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Recommendations */}
+              <div className="p-4 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 rounded-2xl border border-amber-500/20">
+                <div className="flex items-center gap-2 mb-2.5">
+                  <Lightbulb className="w-4 h-4 text-amber-500" />
+                  <span className="text-xs font-bold text-amber-600">권장사항</span>
+                </div>
+                <ul className="space-y-1.5">
+                  {insight.recommendations.slice(0, 2).map((rec, i) => (
+                    <li key={i} className="text-xs text-muted-foreground leading-relaxed">
+                      • {rec}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+      </div>
+    </div>
   );
 };

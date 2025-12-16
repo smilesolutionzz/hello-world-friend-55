@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { CalendarDays, Download, ChevronRight, TrendingUp, TrendingDown, Minus, FileText } from 'lucide-react';
+import { CalendarDays, TrendingUp, TrendingDown, CalendarRange } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, subMonths, isWithinInterval } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface MonthlyReportProps {
   concerns: Array<{
@@ -31,9 +30,6 @@ interface MonthData {
 }
 
 export const MonthlyReport: React.FC<MonthlyReportProps> = ({ concerns, assessments }) => {
-  const navigate = useNavigate();
-
-  // 월별 데이터 계산
   const monthlyData = useMemo(() => {
     const months: MonthData[] = [];
     const now = new Date();
@@ -51,7 +47,6 @@ export const MonthlyReport: React.FC<MonthlyReportProps> = ({ concerns, assessme
         isWithinInterval(new Date(a.completed_at), { start: monthStart, end: monthEnd })
       );
 
-      // 타입별 카운트
       const typeCount: Record<string, number> = {};
       monthConcerns.forEach(c => {
         typeCount[c.analysis_type] = (typeCount[c.analysis_type] || 0) + 1;
@@ -61,7 +56,6 @@ export const MonthlyReport: React.FC<MonthlyReportProps> = ({ concerns, assessme
         .slice(0, 2)
         .map(([type]) => type);
 
-      // 평균 점수
       const scores = monthAssessments
         .map(a => a.results?.total_score || a.results?.predicted_score || a.results?.score)
         .filter(s => typeof s === 'number');
@@ -82,7 +76,6 @@ export const MonthlyReport: React.FC<MonthlyReportProps> = ({ concerns, assessme
     return months;
   }, [concerns, assessments]);
 
-  // 이번 달 vs 지난 달 비교
   const comparison = useMemo(() => {
     if (monthlyData.length < 2) return null;
     
@@ -109,109 +102,168 @@ export const MonthlyReport: React.FC<MonthlyReportProps> = ({ concerns, assessme
   }
 
   return (
-    <Card className="bg-card border-border">
-      <CardHeader className="pb-2">
+    <div className="rounded-3xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-xl overflow-hidden h-full">
+      {/* Header */}
+      <div className="p-5 border-b border-border/50">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <CalendarDays className="w-5 h-5 text-primary" />
-            월간 리포트
-          </CardTitle>
-          <Badge variant="outline" className="text-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <CalendarRange className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className="font-bold text-foreground">월간 리포트</h3>
+              <p className="text-xs text-muted-foreground">이번 달 활동 요약</p>
+            </div>
+          </div>
+          <Badge className="rounded-xl px-3 py-1 bg-gradient-to-r from-primary/10 to-primary/5 text-primary border-primary/20">
             {format(new Date(), 'yyyy년 M월', { locale: ko })}
           </Badge>
         </div>
-      </CardHeader>
-      <CardContent>
-        {/* 이번 달 요약 */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="p-3 rounded-lg bg-muted/50">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">고민 기록</span>
+      </div>
+
+      <div className="p-5 space-y-5">
+        {/* Monthly Stats */}
+        <div className="grid grid-cols-2 gap-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="p-4 rounded-2xl bg-gradient-to-br from-violet-500/10 to-purple-500/5 border border-violet-500/20"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-muted-foreground">고민 기록</span>
               {comparison && comparison.concernTrend !== 'same' && (
-                <Badge variant="secondary" className="text-xs">
+                <span className={cn(
+                  "text-xs font-bold px-2 py-0.5 rounded-full",
+                  comparison.concernTrend === 'up' 
+                    ? "bg-emerald-500/20 text-emerald-600" 
+                    : "bg-rose-500/20 text-rose-600"
+                )}>
                   {comparison.concernTrend === 'up' ? '+' : ''}{comparison.concernChange}
-                </Badge>
+                </span>
               )}
             </div>
-            <p className="text-2xl font-bold text-foreground mt-1">{currentMonth.concernCount}</p>
-          </div>
-          <div className="p-3 rounded-lg bg-muted/50">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">검사 완료</span>
+            <p className="text-3xl font-bold bg-gradient-to-r from-violet-500 to-purple-500 bg-clip-text text-transparent">
+              {currentMonth.concernCount}
+            </p>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 }}
+            className="p-4 rounded-2xl bg-gradient-to-br from-blue-500/10 to-cyan-500/5 border border-blue-500/20"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-muted-foreground">검사 완료</span>
               {comparison && comparison.assessmentChange !== 0 && (
-                <Badge variant="secondary" className="text-xs">
+                <span className={cn(
+                  "text-xs font-bold px-2 py-0.5 rounded-full",
+                  comparison.assessmentChange > 0 
+                    ? "bg-emerald-500/20 text-emerald-600" 
+                    : "bg-rose-500/20 text-rose-600"
+                )}>
                   {comparison.assessmentChange > 0 ? '+' : ''}{comparison.assessmentChange}
-                </Badge>
+                </span>
               )}
             </div>
-            <p className="text-2xl font-bold text-foreground mt-1">{currentMonth.assessmentCount}</p>
-          </div>
+            <p className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
+              {currentMonth.assessmentCount}
+            </p>
+          </motion.div>
         </div>
 
-        {/* 트렌드 표시 */}
+        {/* Severity Trend */}
         {comparison && comparison.severityTrend !== 'same' && (
-          <div className={`p-3 rounded-lg mb-4 ${
-            comparison.severityTrend === 'improving' 
-              ? 'bg-green-500/10 border border-green-500/20' 
-              : 'bg-red-500/10 border border-red-500/20'
-          }`}>
-            <div className="flex items-center gap-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={cn(
+              "p-4 rounded-2xl border",
+              comparison.severityTrend === 'improving' 
+                ? "bg-gradient-to-r from-emerald-500/10 to-green-500/5 border-emerald-500/20" 
+                : "bg-gradient-to-r from-rose-500/10 to-red-500/5 border-rose-500/20"
+            )}
+          >
+            <div className="flex items-center gap-3">
               {comparison.severityTrend === 'improving' ? (
-                <TrendingDown className="w-4 h-4 text-green-500" />
+                <TrendingDown className="w-5 h-5 text-emerald-500" />
               ) : (
-                <TrendingUp className="w-4 h-4 text-red-500" />
+                <TrendingUp className="w-5 h-5 text-rose-500" />
               )}
-              <span className="text-sm font-medium">
+              <span className={cn(
+                "text-sm font-medium",
+                comparison.severityTrend === 'improving' ? "text-emerald-600" : "text-rose-600"
+              )}>
                 {comparison.severityTrend === 'improving' 
                   ? '지난달 대비 높은 심각도 고민이 감소했어요!' 
                   : '지난달 대비 높은 심각도 고민이 증가했어요'}
               </span>
             </div>
-          </div>
+          </motion.div>
         )}
 
-        {/* 주요 고민 유형 */}
+        {/* Top Concern Types */}
         {currentMonth.topTypes.length > 0 && (
-          <div className="mb-4">
-            <p className="text-xs text-muted-foreground mb-2">이번 달 주요 고민</p>
+          <div>
+            <p className="text-xs font-medium text-muted-foreground mb-2">이번 달 주요 고민</p>
             <div className="flex flex-wrap gap-2">
               {currentMonth.topTypes.map(type => (
-                <Badge key={type} variant="secondary">{type}</Badge>
+                <Badge 
+                  key={type} 
+                  className="rounded-xl px-3 py-1.5 bg-muted/50 text-foreground border-0 font-medium"
+                >
+                  {type}
+                </Badge>
               ))}
             </div>
           </div>
         )}
 
-        {/* 평균 점수 */}
+        {/* Average Score */}
         {currentMonth.avgScore !== null && (
-          <div className="mb-4">
+          <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-muted-foreground">이번 달 평균 검사 점수</span>
-              <span className="text-sm font-bold text-primary">{currentMonth.avgScore}점</span>
+              <span className="text-xs font-medium text-muted-foreground">이번 달 평균 검사 점수</span>
+              <span className="text-sm font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                {currentMonth.avgScore}점
+              </span>
             </div>
             <Progress value={currentMonth.avgScore} className="h-2" />
           </div>
         )}
 
-        {/* 최근 3개월 미니 히스토리 */}
-        <div className="pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground mb-3">최근 3개월</p>
-          <div className="flex gap-2">
+        {/* 3-Month History */}
+        <div className="pt-4 border-t border-border/50">
+          <p className="text-xs font-medium text-muted-foreground mb-3">최근 3개월</p>
+          <div className="flex gap-3">
             {monthlyData.map((data, i) => (
-              <div 
-                key={i} 
-                className={`flex-1 p-2 rounded-lg text-center ${i === 0 ? 'bg-primary/10' : 'bg-muted/30'}`}
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className={cn(
+                  "flex-1 p-3 rounded-2xl text-center transition-all",
+                  i === 0 
+                    ? "bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/20" 
+                    : "bg-muted/30"
+                )}
               >
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground mb-1">
                   {format(data.month, 'M월', { locale: ko })}
                 </p>
-                <p className="text-lg font-bold text-foreground">{data.concernCount + data.assessmentCount}</p>
+                <p className={cn(
+                  "text-xl font-bold",
+                  i === 0 ? "text-primary" : "text-foreground"
+                )}>
+                  {data.concernCount + data.assessmentCount}
+                </p>
                 <p className="text-[10px] text-muted-foreground">기록</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };

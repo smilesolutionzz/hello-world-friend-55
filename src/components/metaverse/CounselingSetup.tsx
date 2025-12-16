@@ -13,7 +13,9 @@ interface CounselingSetupProps {
 
 export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<AgeGroup>('child');
-  const [selectedCharacter, setSelectedCharacter] = useState<CharacterType>('elephant');
+  // 코끼리 선생님 고정
+  const selectedCharacter: CharacterType = 'elephant';
+  const elephantCharacter = CHARACTERS.elephant;
 
   const ageGroupOptions = [
     { 
@@ -46,10 +48,6 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
     }
   ];
 
-  const availableCharacters = Object.values(CHARACTERS).filter(
-    c => c.ageGroups.includes(selectedAgeGroup)
-  );
-
   return (
     <div className="space-y-6 max-w-4xl mx-auto p-6">
       <div className="text-center space-y-2 mb-8">
@@ -70,20 +68,23 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
       </div>
 
       <Card className="p-6 space-y-6 bg-black/40 backdrop-blur-sm border-white/20">
+        {/* 고정 캐릭터 표시 */}
+        <div className="flex items-center gap-4 p-4 rounded-lg bg-white/10 border border-white/20">
+          <div className="text-5xl">🐘</div>
+          <div className="flex-1">
+            <div className="font-semibold text-white text-lg">{elephantCharacter.name}</div>
+            <div className="text-sm text-white/80">{elephantCharacter.personality}</div>
+            <Badge variant="secondary" className="text-xs mt-2 bg-white/20 text-white border-white/30">
+              {elephantCharacter.voice} 목소리
+            </Badge>
+          </div>
+        </div>
+
         <div className="space-y-4">
-          <Label className="text-lg font-semibold text-white">1. 연령대를 선택해주세요</Label>
+          <Label className="text-lg font-semibold text-white">연령대를 선택해주세요</Label>
           <RadioGroup 
             value={selectedAgeGroup} 
-            onValueChange={(value) => {
-              setSelectedAgeGroup(value as AgeGroup);
-              // 연령대 변경 시 해당 연령대에 맞는 첫 번째 캐릭터 자동 선택
-              const firstAvailable = Object.values(CHARACTERS).find(
-                c => c.ageGroups.includes(value as AgeGroup)
-              );
-              if (firstAvailable) {
-                setSelectedCharacter(firstAvailable.type);
-              }
-            }}
+            onValueChange={(value) => setSelectedAgeGroup(value as AgeGroup)}
             className="grid grid-cols-1 md:grid-cols-2 gap-4"
           >
             {ageGroupOptions.map((option) => {
@@ -115,52 +116,6 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
                 </div>
               );
             })}
-          </RadioGroup>
-        </div>
-
-        <div className="space-y-4">
-          <Label className="text-lg font-semibold text-white">2. 대화할 캐릭터를 선택해주세요</Label>
-          <p className="text-sm text-white/80">
-            각 캐릭터는 고유한 성격과 목소리를 가지고 있어요
-          </p>
-          <RadioGroup 
-            value={selectedCharacter} 
-            onValueChange={(value) => setSelectedCharacter(value as CharacterType)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
-          >
-            {availableCharacters.map((character) => (
-              <div key={character.type} className="relative">
-                <RadioGroupItem
-                  value={character.type}
-                  id={character.type}
-                  className="peer sr-only"
-                />
-                <Label
-                  htmlFor={character.type}
-                  className={`
-                    flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer
-                    transition-all hover:shadow-md bg-white/10 backdrop-blur-sm
-                    peer-data-[state=checked]:border-white peer-data-[state=checked]:bg-white/20
-                    border-white/30 text-white
-                  `}
-                >
-                  <div className="text-4xl">
-                    {character.type === 'elephant' && '🐘'}
-                    {character.type === 'bear' && '🐻'}
-                    {character.type === 'rabbit' && '🐰'}
-                    {character.type === 'fox' && '🦊'}
-                    {character.type === 'owl' && '🦉'}
-                  </div>
-                  <div className="space-y-2 flex-1">
-                    <div className="font-semibold">{character.name}</div>
-                    <div className="text-sm text-white/80">{character.personality}</div>
-                    <Badge variant="secondary" className="text-xs bg-white/20 text-white border-white/30">
-                      {character.voice} 목소리
-                    </Badge>
-                  </div>
-                </Label>
-              </div>
-            ))}
           </RadioGroup>
         </div>
 

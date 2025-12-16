@@ -275,63 +275,90 @@ ${professionalHelp}
   }
 
   return (
-    <div id="stress-result-content" className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
+    <div id="stress-result-content" className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-4 md:py-8">
+      <div className="container mx-auto px-3 md:px-4 max-w-6xl">
         <PDFHeader testName="스트레스 전문가 분석 결과" />
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="p-3 rounded-full bg-blue-500/10">
-              <Brain className="w-8 h-8 text-blue-500" />
+        
+        {/* 모바일 최적화 헤더 */}
+        <div className="mb-4 md:mb-8">
+          {/* 모바일 */}
+          <div className="md:hidden">
+            <div className="flex items-center justify-between mb-2">
+              {onBack && (
+                <Button variant="ghost" size="sm" onClick={onBack} className="h-8 px-2 -ml-2">
+                  <ArrowLeft className="w-4 h-4 mr-1" />
+                  <span className="text-xs">뒤로</span>
+                </Button>
+              )}
+              <Button variant="ghost" size="sm" onClick={handlePDFDownload} disabled={isDownloadingPDF} className="h-8 px-2">
+                <Download className={`w-4 h-4 ${isDownloadingPDF ? 'animate-spin' : ''}`} />
+              </Button>
             </div>
-            <h1 className="text-3xl font-bold">스트레스 전문가 분석 결과</h1>
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-full bg-blue-500/10">
+                <Brain className="w-5 h-5 text-blue-500" />
+              </div>
+              <h1 className="text-lg font-bold">스트레스 분석 결과</h1>
+            </div>
+          </div>
+          
+          {/* 데스크톱 */}
+          <div className="hidden md:block text-center">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="p-3 rounded-full bg-blue-500/10">
+                <Brain className="w-8 h-8 text-blue-500" />
+              </div>
+              <h1 className="text-2xl lg:text-3xl font-bold">스트레스 전문가 분석 결과</h1>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* 결과 요약 - 모바일 최적화 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6 mb-4 md:mb-8">
           <Card className={`border-2 ${stressInfo.bgColor}`}>
-            <CardHeader className="text-center">
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <IconComponent className={`w-12 h-12 ${stressInfo.color}`} />
-                <CardTitle className={`text-2xl ${stressInfo.color}`}>
-                  스트레스 수준: {stressInfo.level}
+            <CardHeader className="p-3 md:p-6 text-center">
+              <div className="flex items-center justify-center gap-2 md:gap-3 mb-2">
+                <IconComponent className={`w-8 h-8 md:w-12 md:h-12 ${stressInfo.color}`} />
+                <CardTitle className={`text-lg md:text-2xl ${stressInfo.color}`}>
+                  스트레스: {stressInfo.level}
                 </CardTitle>
               </div>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-sm md:text-lg">
                 총점 {result.total}점 / 평균 {result.average.toFixed(1)}점
               </p>
             </CardHeader>
-            <CardContent>
-              <div className={`p-4 rounded-lg ${stressInfo.bgColor} mb-4`}>
-                <p className={`text-sm ${stressInfo.color} mb-3`}>
+            <CardContent className="p-3 md:p-6 pt-0">
+              <div className={`p-2 md:p-4 rounded-lg ${stressInfo.bgColor} mb-3 md:mb-4`}>
+                <p className={`text-xs md:text-sm ${stressInfo.color} mb-2`}>
                   {stressInfo.description}
                 </p>
-                <p className={`text-xs ${stressInfo.color} font-medium`}>
-                  💡 전문가 조언: {stressInfo.advice}
+                <p className={`text-[10px] md:text-xs ${stressInfo.color} font-medium`}>
+                  💡 {stressInfo.advice}
                 </p>
               </div>
               
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+              <div className="space-y-1 md:space-y-2">
+                <div className="flex justify-between text-xs md:text-sm">
                   <span>스트레스 수준</span>
                   <span className={stressInfo.color}>{((result.total / 48) * 100).toFixed(0)}%</span>
                 </div>
-                <Progress value={(result.total / 48) * 100} className="h-2" />
+                <Progress value={(result.total / 48) * 100} className="h-1.5 md:h-2" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
-                스트레스 영역별 분석
+            <CardHeader className="p-3 md:p-6 pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm md:text-base">
+                <BarChart3 className="w-4 h-4 md:w-5 md:h-5" />
+                영역별 분석
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={250}>
-                <RadarChart data={radarData}>
-                  <PolarGrid />
-                  <PolarAngleAxis dataKey="domain" className="text-xs" />
+            <CardContent className="p-2 md:p-6 pt-0">
+              <ResponsiveContainer width="100%" height={180}>
+                <RadarChart data={radarData} margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
+                  <PolarGrid stroke="hsl(var(--border))" />
+                  <PolarAngleAxis dataKey="domain" tick={{ fontSize: 9 }} />
                   <PolarRadiusAxis domain={[0, 5]} tick={false} />
                   <Radar
                     name="점수"
@@ -341,32 +368,28 @@ ${professionalHelp}
                     fillOpacity={0.3}
                     strokeWidth={2}
                   />
-                  <Tooltip />
+                  <Tooltip contentStyle={{ fontSize: '12px', borderRadius: '8px' }} />
                 </RadarChart>
               </ResponsiveContainer>
-              <p className="text-xs text-muted-foreground mt-2 text-center">
-                * 높은 점수일수록 해당 영역의 스트레스 관리가 잘 되고 있음
+              <p className="text-[10px] md:text-xs text-muted-foreground mt-1 text-center">
+                * 높을수록 스트레스 관리가 잘 됨
               </p>
             </CardContent>
           </Card>
         </div>
 
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>문항별 스트레스 응답 패턴</CardTitle>
+        {/* 문항별 패턴 - 모바일에서 숨김 또는 축소 */}
+        <Card className="mb-4 md:mb-6 hidden md:block">
+          <CardHeader className="p-3 md:p-6 pb-2">
+            <CardTitle className="text-sm md:text-base">문항별 응답 패턴</CardTitle>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={200}>
+          <CardContent className="p-2 md:p-6 pt-0">
+            <ResponsiveContainer width="100%" height={150}>
               <LineChart data={lineData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="question" />
-                <YAxis domain={[0, 4]} />
-                <Tooltip 
-                  formatter={(value, name) => [
-                    name === 'score' ? `응답값: ${value}` : `조정값: ${value}`,
-                    name === 'score' ? '원점수' : '스트레스 수준'
-                  ]}
-                />
+                <XAxis dataKey="question" tick={{ fontSize: 10 }} />
+                <YAxis domain={[0, 4]} tick={{ fontSize: 10 }} width={25} />
+                <Tooltip contentStyle={{ fontSize: '12px', borderRadius: '8px' }} />
                 <Line 
                   type="monotone" 
                   dataKey="score" 
@@ -376,30 +399,31 @@ ${professionalHelp}
                 />
               </LineChart>
             </ResponsiveContainer>
-            <p className="text-xs text-muted-foreground mt-2">
-              * 각 문항별 응답 점수 (0: 매우 좋음, 4: 매우 나쁨)
+            <p className="text-[10px] md:text-xs text-muted-foreground mt-1">
+              * 각 문항별 응답 점수 (0: 좋음, 4: 나쁨)
             </p>
           </CardContent>
         </Card>
 
-        <Card className="mb-6">
-          <CardHeader>
+        {/* AI 분석 - 모바일 최적화 */}
+        <Card className="mb-4 md:mb-6">
+          <CardHeader className="p-3 md:p-6 pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle>AI 전문가 상세 분석</CardTitle>
+              <CardTitle className="text-sm md:text-base">AI 전문가 분석</CardTitle>
               {!isAnalyzing && analysis && (
                 <TextToSpeechButton text={analysis} />
               )}
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 md:p-6 pt-0">
             {isAnalyzing ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                <span className="ml-3 text-muted-foreground">AI가 분석 중입니다...</span>
+              <div className="flex items-center justify-center py-4 md:py-8">
+                <Loader2 className="w-5 h-5 md:w-8 md:h-8 animate-spin text-primary" />
+                <span className="ml-2 text-xs md:text-sm text-muted-foreground">AI 분석 중...</span>
               </div>
             ) : (
               <div className="prose prose-sm max-w-none">
-                <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                <div className="whitespace-pre-wrap text-xs md:text-sm leading-relaxed max-h-60 md:max-h-none overflow-y-auto">
                   {analysis}
                 </div>
               </div>

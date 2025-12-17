@@ -20,17 +20,17 @@ export const SessionManager = () => {
         if (session) {
           console.log('✅ 포커스 시 세션 유지됨:', session.user.email);
           
-          // 토큰 만료 시간 확인
+          // 세션 만료 시간 확인
           const expiresAt = session.expires_at ? new Date(session.expires_at * 1000) : null;
           const now = new Date();
           
           if (expiresAt && expiresAt > now) {
             const timeUntilExpiry = expiresAt.getTime() - now.getTime();
-            console.log(`⏰ 토큰 만료까지: ${Math.round(timeUntilExpiry / 1000 / 60)}분`);
+            console.log(`⏰ 세션 만료까지: ${Math.round(timeUntilExpiry / 1000 / 60)}분`);
             
             // 30분 이내 만료 시 자동 갱신
             if (timeUntilExpiry < 30 * 60 * 1000) {
-              console.log('🔄 토큰 자동 갱신 시도');
+              console.log('🔄 세션 자동 갱신 시도');
               await supabase.auth.refreshSession();
             }
           }

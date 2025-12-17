@@ -77,7 +77,7 @@ export const EnhancedUserDataViewer = () => {
 
       const profile = profiles[0];
 
-      // 토큰 정보 조회
+      // 캐시 정보 조회
       const { data: tokenData } = await supabase
         .from('user_tokens')
         .select('current_tokens')
@@ -329,8 +329,8 @@ export const EnhancedUserDataViewer = () => {
                 <div className="flex items-center gap-2">
                   <Coins className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-muted-foreground">보유 토큰</p>
-                    <p className="font-medium">{userData.current_tokens}개</p>
+                    <p className="text-sm text-muted-foreground">보유 캐시</p>
+                    <p className="font-medium">{(userData.current_tokens * 100).toLocaleString()}원</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">

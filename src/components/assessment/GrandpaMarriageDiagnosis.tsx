@@ -194,8 +194,8 @@ export default function GrandpaMarriageDiagnosis({ onComplete, onBack }: Grandpa
       const hasTokens = await checkTokenAvailability(TOKEN_COSTS.INNER_ANIMAL);
       if (!hasTokens) {
         toast({
-          title: "토큰이 부족합니다",
-          description: "욕쟁이 할아버지 진단을 받으려면 토큰이 필요해요!",
+          title: "캐시가 부족합니다",
+          description: "욕쟁이 할아버지 진단을 받으려면 캐시가 필요해요!",
           variant: "destructive"
         });
         return;
@@ -203,7 +203,7 @@ export default function GrandpaMarriageDiagnosis({ onComplete, onBack }: Grandpa
 
       const success = await consumeTokens(TOKEN_COSTS.INNER_ANIMAL);
       if (!success) {
-        throw new Error("토큰 차감에 실패했습니다");
+        throw new Error("캐시 차감에 실패했습니다");
       }
 
       // 아이 유무 확인
@@ -442,7 +442,7 @@ export default function GrandpaMarriageDiagnosis({ onComplete, onBack }: Grandpa
 
             <div className="text-center">
               <p className="text-sm text-blue-600 font-medium">
-                💰 소모 토큰: {TOKEN_COSTS.INNER_ANIMAL}개 | 👴 할아버지가 제대로 판단해드려요!
+                💰 소모 캐시: {TOKEN_COSTS.INNER_ANIMAL * 100}원 | 👴 할아버지가 제대로 판단해드려요!
               </p>
             </div>
           </div>

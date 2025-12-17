@@ -131,7 +131,7 @@ export const CareerPackage = () => {
                             </div>
                             <div className="flex items-center gap-1">
                               {test.tokens > 0 ? (
-                                <span className="text-primary font-medium">{test.tokens}토큰</span>
+                                <span className="text-primary font-medium">{(test.tokens * 100).toLocaleString()}캐시</span>
                               ) : (
                                 <span className="text-green-500 font-medium">무료</span>
                               )}

@@ -79,8 +79,8 @@ const NewPricingPlans = () => {
           
           <CardContent className="space-y-6">
             <div className="space-y-3">
-              {[
-                '무료 10토큰 제공',
+            {[
+                '무료 1,000캐시 제공',
                 '심리검사 2-3회 체험',
                 '기본 관찰일지 5회',
                 'AI 기본 분석',

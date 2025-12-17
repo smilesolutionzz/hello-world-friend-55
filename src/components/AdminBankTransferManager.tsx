@@ -64,7 +64,7 @@ const AdminBankTransferManager = () => {
       if (!request) return;
 
       if (action === 'approve') {
-        // 1. 토큰 지급
+        // 1. 캐시 지급
         const { error: tokenError } = await supabase.functions.invoke('admin-add-tokens', {
           body: { 
             email: request.user_email,
@@ -90,7 +90,7 @@ const AdminBankTransferManager = () => {
       toast({
         title: action === 'approve' ? "승인 완료" : "거절 완료",
         description: action === 'approve' 
-          ? `${request.user_email}에 ${request.requested_tokens}토큰이 지급되었습니다.`
+          ? `${request.user_email}에 ${(request.requested_tokens * 100).toLocaleString()}캐시가 지급되었습니다.`
           : "요청이 거절되었습니다.",
       });
 
@@ -188,8 +188,8 @@ const AdminBankTransferManager = () => {
                     <p className="font-medium">₩{request.transfer_amount.toLocaleString()}</p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">요청 토큰</Label>
-                    <p className="font-medium">{request.requested_tokens}토큰</p>
+                    <Label className="text-sm text-muted-foreground">요청 캐시</Label>
+                    <p className="font-medium">{(request.requested_tokens * 100).toLocaleString()}캐시</p>
                   </div>
                   <div>
                     <Label className="text-sm text-muted-foreground">입금은행</Label>
@@ -238,7 +238,7 @@ const AdminBankTransferManager = () => {
                           className="bg-green-500 hover:bg-green-600"
                         >
                           <CheckCircle className="w-4 h-4 mr-2" />
-                          {processingId === request.id ? '처리중...' : '승인 & 토큰 지급'}
+                          {processingId === request.id ? '처리중...' : '승인 & 캐시 지급'}
                         </Button>
                         <Button
                           onClick={() => processRequest(request.id, 'reject')}

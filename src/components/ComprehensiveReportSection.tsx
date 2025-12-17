@@ -42,8 +42,8 @@ export function ComprehensiveReportSection({
   const handleRequestReport = async () => {
     if (!hasEnoughTokens) {
       toast({
-        title: "토큰 부족",
-        description: `종합 리포팅에는 ${tokenCost}토큰이 필요합니다.`,
+        title: "캐시 부족",
+        description: `종합 리포팅에는 ${tokenCost * 100}캐시가 필요합니다.`,
         variant: "destructive",
       });
       return;
@@ -63,13 +63,13 @@ export function ComprehensiveReportSection({
     try {
       console.log('종합 리포팅 신청 시작...');
       
-      // 먼저 토큰 소모
-      console.log(`토큰 소모 시도: ${tokenCost}토큰`);
+      // 먼저 캐시 소모
+      console.log(`캐시 소모 시도: ${tokenCost * 100}캐시`);
       const tokenSuccess = await consumeTokens(tokenCost);
-      console.log('토큰 소모 결과:', tokenSuccess);
+      console.log('캐시 소모 결과:', tokenSuccess);
       
       if (!tokenSuccess) {
-        throw new Error("토큰 소모 실패");
+        throw new Error("캐시 소모 실패");
       }
 
       console.log('종합 리포팅 API 호출 중...');
@@ -109,14 +109,14 @@ export function ComprehensiveReportSection({
     } catch (error: any) {
       console.error('Error requesting comprehensive report:', error);
       
-      // 토큰 복구 시도 (에러 발생시)
-      if (error?.message !== "토큰 소모 실패") {
-        console.log('에러로 인한 토큰 복구 시도...');
-        // 실패한 경우 토큰 복구는 별도 처리 필요
+      // 캐시 복구 시도 (에러 발생시)
+      if (error?.message !== "캐시 소모 실패") {
+        console.log('에러로 인한 캐시 복구 시도...');
+        // 실패한 경우 캐시 복구는 별도 처리 필요
       }
       
-      const errorMessage = error?.message?.includes('토큰') ? 
-        '토큰이 부족합니다. 토큰을 충전해주세요.' :
+      const errorMessage = error?.message?.includes('캐시') ? 
+        '캐시가 부족합니다. 캐시를 충전해주세요.' :
         '종합 리포팅 신청 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
       
       toast({
@@ -186,15 +186,15 @@ export function ComprehensiveReportSection({
         </div>
       </div>
 
-      {/* 토큰 정보 및 버튼 */}
+      {/* 캐시 정보 및 버튼 */}
       <div className="flex items-center justify-between pt-4 border-t border-border/40">
         <div className="flex items-center gap-2">
           <Coins className="w-4 h-4 text-primary" />
-          <span className="font-bold text-primary">{tokenCost}토큰</span>
+          <span className="font-bold text-primary">{(tokenCost * 100).toLocaleString()}캐시</span>
           {!hasEnoughTokens && (
             <Badge variant="destructive" className="text-xs">
               <AlertCircle className="w-3 h-3 mr-1" />
-              토큰 부족
+              캐시 부족
             </Badge>
           )}
         </div>

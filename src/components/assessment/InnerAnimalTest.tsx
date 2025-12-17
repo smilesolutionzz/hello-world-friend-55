@@ -179,8 +179,8 @@ export default function InnerAnimalTest({ onComplete, onBack }: InnerAnimalTestP
   const handleSubmit = async () => {
     if (!checkTokenAvailability(TOKEN_COSTS.INNER_ANIMAL)) {
       toast({
-        title: "토큰이 부족합니다",
-        description: `이 테스트를 위해서는 ${TOKEN_COSTS.INNER_ANIMAL}토큰이 필요합니다.`,
+        title: "캐시가 부족합니다",
+        description: `이 테스트를 위해서는 ${TOKEN_COSTS.INNER_ANIMAL * 100}원이 필요합니다.`,
         variant: "destructive"
       });
       return;
@@ -191,7 +191,7 @@ export default function InnerAnimalTest({ onComplete, onBack }: InnerAnimalTestP
     try {
       const success = await consumeTokens(TOKEN_COSTS.INNER_ANIMAL);
       if (!success) {
-        throw new Error("토큰 차감에 실패했습니다");
+        throw new Error("캐시 차감에 실패했습니다");
       }
 
       const { data, error } = await supabase.functions.invoke('inner-animal-analyzer', {
@@ -311,7 +311,7 @@ export default function InnerAnimalTest({ onComplete, onBack }: InnerAnimalTestP
           </div>
 
           <div className="text-center text-sm text-muted-foreground">
-            💰 소모 토큰: {TOKEN_COSTS.INNER_ANIMAL}개
+            💰 소모 캐시: {TOKEN_COSTS.INNER_ANIMAL * 100}원
           </div>
         </CardContent>
       </Card>

@@ -426,7 +426,7 @@ const PerplexityDeepReport: React.FC<PerplexityDeepReportProps> = ({
           <div className="p-4 bg-purple-500/10 rounded-xl border border-purple-400/20">
             <Zap className="w-6 h-6 text-purple-400 mb-2" />
             <p className="text-sm font-semibold text-purple-200">무료 제공</p>
-            <p className="text-xs text-purple-300/80 mt-1">토큰 차감 없음</p>
+            <p className="text-xs text-purple-300/80 mt-1">캐시 차감 없음</p>
           </div>
         </div>
 

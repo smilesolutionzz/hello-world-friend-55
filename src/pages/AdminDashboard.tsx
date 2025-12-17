@@ -445,7 +445,7 @@ export default function AdminDashboard() {
   };
 
   const handleCancelPayment = async (paymentId: string) => {
-    if (!confirm('이 결제를 취소하시겠습니까? 지급된 토큰이 회수됩니다.')) {
+    if (!confirm('이 결제를 취소하시겠습니까? 지급된 캐시가 회수됩니다.')) {
       return;
     }
 
@@ -462,7 +462,7 @@ export default function AdminDashboard() {
       if (error) throw error;
 
       if (data.success) {
-        alert(`결제가 취소되었습니다. ${data.tokensDeducted || 0}토큰이 회수되었습니다.`);
+        alert(`결제가 취소되었습니다. ${(data.tokensDeducted || 0) * 100}원 캐시가 회수되었습니다.`);
         await loadAllData();
       } else {
         throw new Error(data.error || '취소 실패');
@@ -691,9 +691,9 @@ export default function AdminDashboard() {
                       <div className="grid gap-6">
                         <Card>
                           <CardHeader>
-                            <CardTitle>토큰 관리</CardTitle>
+                            <CardTitle>캐시 관리</CardTitle>
                             <CardDescription>
-                              사용자에게 토큰을 직접 지급할 수 있습니다.
+                              사용자에게 캐시를 직접 지급할 수 있습니다.
                             </CardDescription>
                           </CardHeader>
                           <CardContent>

@@ -179,8 +179,8 @@ export default function PastLifeJobTest({ onComplete, onBack }: PastLifeJobTestP
   const handleSubmit = async () => {
     if (!checkTokenAvailability(TOKEN_COSTS.PAST_LIFE_JOB)) {
       toast({
-        title: "토큰이 부족합니다",
-        description: `이 테스트를 위해서는 ${TOKEN_COSTS.PAST_LIFE_JOB}토큰이 필요합니다.`,
+        title: "캐시가 부족합니다",
+        description: `이 테스트를 위해서는 ${TOKEN_COSTS.PAST_LIFE_JOB * 100}원이 필요합니다.`,
         variant: "destructive"
       });
       return;
@@ -191,7 +191,7 @@ export default function PastLifeJobTest({ onComplete, onBack }: PastLifeJobTestP
     try {
       const success = await consumeTokens(TOKEN_COSTS.PAST_LIFE_JOB);
       if (!success) {
-        throw new Error("토큰 차감에 실패했습니다");
+        throw new Error("캐시 차감에 실패했습니다");
       }
 
       const { data, error } = await supabase.functions.invoke('past-life-job-analyzer', {
@@ -311,7 +311,7 @@ export default function PastLifeJobTest({ onComplete, onBack }: PastLifeJobTestP
           </div>
 
           <div className="text-center text-sm text-muted-foreground">
-            💰 소모 토큰: {TOKEN_COSTS.PAST_LIFE_JOB}개
+            💰 소모 캐시: {TOKEN_COSTS.PAST_LIFE_JOB * 100}원
           </div>
         </CardContent>
       </Card>

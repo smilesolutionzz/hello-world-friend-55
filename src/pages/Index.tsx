@@ -96,7 +96,7 @@ const Index = () => {
               if (success) {
                 toast({
                   title: "🎉 추천 보상 완료!",
-                  description: "5토큰을 받았고, 추천인은 10토큰을 받았습니다!",
+                  description: "500원 캐시를 받았고, 추천인은 1,000원 캐시를 받았습니다!",
                 });
               }
             }
@@ -104,14 +104,14 @@ const Index = () => {
             if (!isMounted) return;
             toast({
               title: "🎉 추천 링크로 접속했습니다!",
-              description: "회원가입하시면 본인은 5토큰, 추천인은 10토큰을 받아요!",
+              description: "회원가입하시면 본인은 500원, 추천인은 1,000원 캐시를 받아요!",
             });
           }
         } catch (error) {
           if (!isMounted) return;
           toast({
             title: "🎉 추천 링크로 접속했습니다!",
-            description: "회원가입하시면 본인은 5토큰, 추천인은 10토큰을 받아요!",
+            description: "회원가입하시면 본인은 500원, 추천인은 1,000원 캐시를 받아요!",
           });
         }
       }

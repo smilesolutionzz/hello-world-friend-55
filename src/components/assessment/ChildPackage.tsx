@@ -110,7 +110,7 @@ export const ChildPackage = () => {
                               {test.duration}
                             </div>
                             <div className="flex items-center gap-1">
-                              <span className="text-primary font-medium">{test.tokens}토큰</span>
+                              <span className="text-primary font-medium">{test.tokens * 100}원</span>
                               <span className="text-xs">👶</span>
                             </div>
                           </div>

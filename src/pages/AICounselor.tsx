@@ -88,17 +88,17 @@ const AICounselor = () => {
   const handleSendMessage = async () => {
     if (!currentMessage.trim() || isStreaming) return;
 
-    // 토큰 체크
+    // 캐시 체크
     if (!checkTokenAvailability(TOKEN_COSTS.AI_COUNSELOR_CHAT)) {
       toast({
-        title: "토큰이 부족합니다",
-        description: `AI 상담을 위해 ${TOKEN_COSTS.AI_COUNSELOR_CHAT}개의 토큰이 필요합니다.`,
+        title: "캐시가 부족합니다",
+        description: `AI 상담을 위해 ${TOKEN_COSTS.AI_COUNSELOR_CHAT * 100}원이 필요합니다.`,
         variant: "destructive"
       });
       return;
     }
 
-    // 토큰 차감
+    // 캐시 차감
     const success = await consumeTokens(TOKEN_COSTS.AI_COUNSELOR_CHAT);
     if (!success) {
       toast({

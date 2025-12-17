@@ -24,8 +24,8 @@ export const CommunityRewards = () => {
     setConcern('');
     
     toast({
-      title: "🎉 토큰 획득!",
-      description: `고민 공유로 ${earnedTokens} 토큰을 받았습니다. 상담료 할인에 사용하세요!`
+      title: "🎉 캐시 획득!",
+      description: `고민 공유로 ${earnedTokens * 100}원 캐시를 받았습니다. 상담료 할인에 사용하세요!`
     });
   };
 
@@ -34,16 +34,16 @@ export const CommunityRewards = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-white font-bold text-2xl mb-2">
-            커뮤니티 참여하고 토큰 받기
+            커뮤니티 참여하고 캐시 받기
           </h3>
           <p className="text-white/70 text-sm">
-            고민을 공유하고 다른 사람을 응원하면 토큰을 드립니다
+            고민을 공유하고 다른 사람을 응원하면 캐시를 드립니다
           </p>
         </div>
         <div className="text-center bg-yellow-500/20 px-6 py-3 rounded-2xl">
           <Coins className="w-8 h-8 text-yellow-400 mx-auto mb-1" />
-          <p className="text-yellow-400 font-bold text-2xl">{tokens}</p>
-          <p className="text-yellow-300 text-xs">보유 토큰</p>
+          <p className="text-yellow-400 font-bold text-2xl">{tokens * 100}원</p>
+          <p className="text-yellow-300 text-xs">보유 캐시</p>
         </div>
       </div>
 
@@ -54,7 +54,7 @@ export const CommunityRewards = () => {
             <span className="text-white font-bold">고민 공유</span>
           </div>
           <p className="text-white/60 text-sm mb-2">익명으로 고민 작성</p>
-          <p className="text-yellow-400 font-bold">+50 토큰</p>
+          <p className="text-yellow-400 font-bold">+5,000원</p>
         </div>
 
         <div className="bg-white/5 p-4 rounded-xl">
@@ -63,7 +63,7 @@ export const CommunityRewards = () => {
             <span className="text-white font-bold">응원하기</span>
           </div>
           <p className="text-white/60 text-sm mb-2">다른 사람 위로/댓글</p>
-          <p className="text-yellow-400 font-bold">+10 토큰</p>
+          <p className="text-yellow-400 font-bold">+1,000원</p>
         </div>
 
         <div className="bg-white/5 p-4 rounded-xl">
@@ -72,7 +72,7 @@ export const CommunityRewards = () => {
             <span className="text-white font-bold">인기 글</span>
           </div>
           <p className="text-white/60 text-sm mb-2">많은 공감 받으면</p>
-          <p className="text-yellow-400 font-bold">+100 토큰</p>
+          <p className="text-yellow-400 font-bold">+10,000원</p>
         </div>
       </div>
 
@@ -89,11 +89,11 @@ export const CommunityRewards = () => {
           className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold py-6"
         >
           <Coins className="w-5 h-5 mr-2" />
-          고민 공유하고 50 토큰 받기
+          고민 공유하고 5,000원 캐시 받기
         </Button>
 
         <p className="text-white/50 text-xs text-center">
-          * 토큰은 전문가 상담료 결제 시 1토큰 = 10원으로 사용 가능합니다
+          * 캐시는 전문가 상담료 결제 시 사용 가능합니다
         </p>
       </div>
     </div>

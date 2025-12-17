@@ -285,7 +285,7 @@ const FunTests = () => {
             </div>
             <div className="space-y-3 text-blue-700">
               <p className="text-lg">
-                🎯 <strong>토큰 시스템:</strong> 각 테스트마다 토큰이 소모됩니다 (1-2토큰)
+                🎯 <strong>캐시 시스템:</strong> 각 테스트마다 캐시가 소모됩니다 (100~200원)
               </p>
               <p className="text-lg">
                 🎨 <strong>AI 이미지:</strong> 결과에 맞는 맞춤형 이미지를 자동 생성합니다

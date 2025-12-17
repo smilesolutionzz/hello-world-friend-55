@@ -43,7 +43,7 @@ const tutorialSteps: TutorialStep[] = [
   {
     id: 'expert-service',
     title: '전문가 서비스',
-    description: '검증된 발달/심리 전문가를 직접 고용하고, 토큰을 충전하여 프리미엄 서비스를 이용할 수 있습니다.',
+    description: '검증된 발달/심리 전문가를 직접 고용하고, 캐시를 충전하여 프리미엄 서비스를 이용할 수 있습니다.',
     icon: UserCheck,
     menuSelector: '[data-tutorial="expert-service"]'
   },

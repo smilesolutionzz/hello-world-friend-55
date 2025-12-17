@@ -1,10 +1,10 @@
-// 각 기능별 토큰 소진량 정의
-// 1토큰 = 100원 기준
-// 간편테스트: 5토큰 (500원)
-// 심층테스트: 30토큰 (3,000원)
+// 각 기능별 캐시 소진량 정의
+// 1캐시 = 100원 기준
+// 간편테스트: 5캐시 (500원)
+// 심층테스트: 30캐시 (3,000원)
 
 export const TOKEN_COSTS = {
-  // ========== 간편테스트 (5토큰 = 500원) ==========
+  // ========== 간편테스트 (5캐시 = 500원) ==========
   // 전문 심리검사 및 발달검사
   PSYCHOLOGICAL_TEST: 5,     // 마음상태 체크
   FOCUS_CHECK: 5,           // AIH 집중력 자가점검
@@ -31,7 +31,7 @@ export const TOKEN_COSTS = {
   AI_COACH: 5,              // AI 코치 세션
   EXPERT_MATCHING: 5,       // 전문가 매칭
   
-  // ========== 심층테스트 (30토큰 = 3,000원) ==========
+  // ========== 심층테스트 (30캐시 = 3,000원) ==========
   PREMIUM_ASSESSMENT: 30,        // 프리미엄 심층테스트
   OBSERVATION_ANALYSIS: 30,      // 관찰 분석 (심층)
   PROFESSIONAL_REPORT: 30,       // 전문가 리포트 생성
@@ -45,14 +45,14 @@ export const TOKEN_COSTS = {
   IEP_GENERATION: 0,        // IEP 생성
   CRISIS_DETECTION: 0,      // 위기감지 (긴급상황)
   
-  // ========== 엔터테인먼트 (1토큰 = 100원) ==========
+  // ========== 엔터테인먼트 (1캐시 = 100원) ==========
   PAST_LIFE_JOB: 1,         // 전생 직업 분석
   ANIMAL_FACE_MATCH: 1,     // 얼굴 닮은 동물 찾기
   INNER_ANIMAL: 1,          // 내면 동물 찾기
   CONTENT_RECOMMENDATION: 1, // 컨텐츠 추천
   
   // AI 상담 (사용량 기반)
-  AI_COUNSELOR_CHAT: 1,     // AI 상담사 10메시지당 1토큰
+  AI_COUNSELOR_CHAT: 1,     // AI 상담사 10메시지당 1캐시
 } as const;
 
 // 기능별 설명
@@ -64,10 +64,10 @@ export const TOKEN_COST_DESCRIPTIONS = {
   200: "박사급 종합 리포트 (20,000원)",
 } as const;
 
-// 토큰 패키지 추천
+// 캐시 패키지 추천
 export const TOKEN_PACKAGES = {
   STARTER: {
-    name: "토큰팩 50",
+    name: "캐시팩 50",
     tokens: 50,
     price: 9900,
     recommended_for: "기본 검사 및 분석",
@@ -75,18 +75,18 @@ export const TOKEN_PACKAGES = {
     value_highlight: "3분 심리검사 최대 10회 이용 가능",
     features: [
       "✓ 필요한 만큼 결제",
-      "✓ 토큰 영구 보관", 
+      "✓ 캐시 영구 보관", 
       "✓ 서비스 체험용",
       "✓ 부담 없는 시작"
     ]
   },
   PRO: {
-    name: "토큰팩 150 (추천)", 
+    name: "캐시팩 150 (추천)", 
     tokens: 150,
     price: 19900,
     recommended_for: "정기적 상담 및 분석",
     best_for: ["3분 심리검사 30회", "프리미엄 분석 7회", "AI 상담 150메시지", "무료 검사 무제한"],
-    value_highlight: "1토큰당 132원으로 가장 합리적",
+    value_highlight: "1캐시당 132원으로 가장 합리적",
     features: [
       "✓ 가장 인기있는 선택",
       "✓ 정기적 이용에 최적",
@@ -96,12 +96,12 @@ export const TOKEN_PACKAGES = {
     is_popular: true
   },
   PREMIUM: {
-    name: "토큰팩 400",
+    name: "캐시팩 400",
     tokens: 400,
     price: 39900,
     recommended_for: "전문적 분석 및 집중 케어",
     best_for: ["3분 심리검사 80회", "프리미엄 분석 20회", "종합리포트 2회", "모든 기능 자유 이용"],
-    value_highlight: "토큰당 99원으로 최고 할인율",
+    value_highlight: "캐시당 99원으로 최고 할인율",
     features: [
       "✓ 최고 할인율 적용",
       "✓ 장기간 안심 이용",

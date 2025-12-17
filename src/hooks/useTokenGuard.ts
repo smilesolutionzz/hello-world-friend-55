@@ -43,7 +43,7 @@ export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
 
         // Visibility 변경 중에는 리다이렉트하지 않음
         if (isVisibilityChanging) {
-          console.log('⏳ Visibility changing - skipping token redirect');
+          console.log('⏳ Visibility changing - skipping cash redirect');
           return;
         }
 
@@ -56,16 +56,16 @@ export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
           return;
         }
 
-        // 무료 사용자는 토큰으로만 이용 가능
+        // 무료 사용자는 캐시로만 이용 가능
         const hasEnoughTokens = checkTokenAvailability(requiredTokens);
-        console.log(`🔒 Free user - Token check: Required ${requiredTokens}, Balance: ${balance?.current_tokens}, Has enough: ${hasEnoughTokens}`);
+        console.log(`🔒 Free user - Cash check: Required ${requiredTokens}, Balance: ${balance?.current_tokens}, Has enough: ${hasEnoughTokens}`);
         
         if (!hasEnoughTokens) {
-          console.log('❌ Insufficient tokens - redirecting to subscription');
+          console.log('❌ Insufficient cash - redirecting to subscription');
           navigate('/subscription');
           setAllowed(false);
         } else {
-          console.log('✅ Sufficient tokens - access granted');
+          console.log('✅ Sufficient cash - access granted');
           setAllowed(true);
         }
       } catch (error) {

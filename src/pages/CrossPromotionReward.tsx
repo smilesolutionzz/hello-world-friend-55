@@ -61,7 +61,7 @@ const CrossPromotionReward = () => {
       if (result?.success) {
         toast({
           title: "🎉 보상 지급 완료!",
-          description: result.message || `${result.reward_tokens}토큰이 지급되었습니다!`,
+          description: result.message || `${result.reward_tokens}캐시가 지급되었습니다!`,
         });
         setVerificationCode('');
         setSelectedService(null);
@@ -99,7 +99,7 @@ const CrossPromotionReward = () => {
               자매 서비스 가입 보상
             </h1>
             <p className="text-xl text-muted-foreground">
-              다른 서비스에 가입하고 토큰을 받으세요!
+              다른 서비스에 가입하고 캐시를 받으세요!
             </p>
           </div>
 
@@ -138,7 +138,7 @@ const CrossPromotionReward = () => {
                   <CardContent>
                     <div className="flex items-center justify-between mb-4">
                       <Badge variant="secondary" className="text-lg px-3 py-1">
-                        +{service.reward} 토큰
+                        +{service.reward} 캐시
                       </Badge>
                       <Button
                         variant="outline"
@@ -187,7 +187,7 @@ const CrossPromotionReward = () => {
                   <li>위에서 원하는 서비스를 선택하세요</li>
                   <li>"가입하러 가기" 버튼을 눌러 해당 서비스에 가입하세요</li>
                   <li>가입 완료 후 이메일로 받은 인증 코드를 입력하세요</li>
-                  <li>"보상 받기" 버튼을 누르면 토큰이 지급됩니다!</li>
+                  <li>"보상 받기" 버튼을 누르면 캐시가 지급됩니다!</li>
                 </ol>
               </div>
 

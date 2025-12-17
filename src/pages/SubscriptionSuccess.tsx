@@ -50,7 +50,7 @@ export default function SubscriptionSuccess() {
         
         toast({
           title: "구독 완료!",
-          description: `${data.subscription.tokens_added}개 토큰이 지급되었습니다.`,
+          description: `${data.subscription.tokens_added}개 캐시가 지급되었습니다.`,
         });
       } catch (error: any) {
         console.error('Payment confirmation error:', error);
@@ -99,10 +99,10 @@ export default function SubscriptionSuccess() {
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <Coins className="w-5 h-5 text-yellow-500" />
-                    <span className="font-semibold">토큰 지급 완료</span>
+                    <span className="font-semibold">캐시 지급 완료</span>
                   </div>
                   <p className="text-lg font-bold text-green-600">
-                    {subscriptionData.tokens_added}개 토큰
+                    {subscriptionData.tokens_added}개 캐시
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
                     즉시 사용 가능합니다

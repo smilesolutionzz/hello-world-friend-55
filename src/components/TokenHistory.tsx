@@ -50,7 +50,7 @@ export const TokenHistory = () => {
     try {
       setLoading(true);
 
-      // 토큰 사용 내역 조회
+      // 캐시 사용 내역 조회
       const { data: historyData, error: historyError } = await supabase
         .from('usage_tracking')
         .select('*')
@@ -60,7 +60,7 @@ export const TokenHistory = () => {
 
       if (historyError) throw historyError;
 
-      // 토큰 주문 내역 조회
+      // 캐시 주문 내역 조회
       const { data: ordersData, error: ordersError } = await supabase
         .from('token_orders')
         .select('*')
@@ -70,7 +70,7 @@ export const TokenHistory = () => {
 
       if (ordersError) throw ordersError;
 
-      // 현재 토큰 잔액 조회
+      // 현재 캐시 잔액 조회
       const { data: balanceData, error: balanceError } = await supabase
         .from('user_tokens')
         .select('*')
@@ -83,8 +83,8 @@ export const TokenHistory = () => {
       setTokenOrders(ordersData || []);
       setCurrentBalance(balanceData);
     } catch (error) {
-      console.error('토큰 내역 조회 실패:', error);
-      toast.error('토큰 내역을 불러올 수 없습니다.');
+      console.error('캐시 내역 조회 실패:', error);
+      toast.error('캐시 내역을 불러올 수 없습니다.');
     } finally {
       setLoading(false);
     }
@@ -162,12 +162,12 @@ export const TokenHistory = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* 현재 토큰 상태 */}
+      {/* 현재 캐시 상태 */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Coins className="w-5 h-5 text-primary" />
-            토큰 현황
+            캐시 현황
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -200,12 +200,12 @@ export const TokenHistory = () => {
         </CardContent>
       </Card>
 
-      {/* 토큰 사용 내역 */}
+      {/* 캐시 사용 내역 */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <History className="w-5 h-5" />
-            토큰 사용 내역
+            캐시 사용 내역
           </CardTitle>
           <Button onClick={fetchTokenHistory} variant="outline" size="sm">
             <RefreshCw className="w-4 h-4" />
@@ -214,7 +214,7 @@ export const TokenHistory = () => {
         <CardContent>
           {tokenHistory.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              아직 토큰 사용 내역이 없습니다.
+              아직 캐시 사용 내역이 없습니다.
             </div>
           ) : (
             <div className="space-y-4">
@@ -245,7 +245,7 @@ export const TokenHistory = () => {
                         variant={typeInfo.isIncrease ? "default" : "destructive"}
                         className={typeInfo.isIncrease ? "bg-green-100 text-green-800" : ""}
                       >
-                        {typeInfo.isIncrease ? '+' : '-'}{item.count}토큰
+                        {typeInfo.isIncrease ? '+' : '-'}{item.count}캐시
                       </Badge>
                     </div>
                   </div>
@@ -256,7 +256,7 @@ export const TokenHistory = () => {
         </CardContent>
       </Card>
 
-      {/* 토큰 구매 내역 */}
+      {/* 캐시 구매 내역 */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -270,7 +270,7 @@ export const TokenHistory = () => {
               아직 구매 내역이 없습니다.
               <div className="mt-4">
                 <Button onClick={() => navigate('/token-subscription')}>
-                  토큰 구매하기
+                  캐시 구매하기
                 </Button>
               </div>
             </div>
@@ -282,7 +282,7 @@ export const TokenHistory = () => {
                     <ShoppingCart className="w-4 h-4 text-blue-600" />
                     <div>
                       <div className="font-medium">
-                        {order.tokens_purchased}토큰 구매
+                        {order.tokens_purchased}캐시 구매
                       </div>
                       <div className="text-sm text-muted-foreground">
                         {order.amount.toLocaleString()}원
@@ -314,12 +314,12 @@ export const TokenHistory = () => {
               <Coins className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-blue-900 mb-2">토큰 시스템 안내</h3>
+              <h3 className="font-semibold text-blue-900 mb-2">캐시 시스템 안내</h3>
               <ul className="text-sm text-blue-800 space-y-1">
-                <li>• 매일 3토큰씩 무료로 지급됩니다</li>
-                <li>• 친구 추천시 추천인은 10토큰, 가입자는 5토큰을 받습니다</li>
-                <li>• 심리테스트 및 관찰일지 분석시 토큰이 차감됩니다</li>
-                <li>• 토큰은 유효기간이 없으며, 언제든지 사용할 수 있습니다</li>
+                <li>• 매일 3캐시씩 무료로 지급됩니다</li>
+                <li>• 친구 추천시 추천인은 10캐시, 가입자는 5캐시를 받습니다</li>
+                <li>• 심리테스트 및 관찰일지 분석시 캐시가 차감됩니다</li>
+                <li>• 캐시는 유효기간이 없으며, 언제든지 사용할 수 있습니다</li>
               </ul>
             </div>
           </div>

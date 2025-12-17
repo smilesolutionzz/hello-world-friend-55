@@ -23,15 +23,15 @@ export function useTokens() {
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
-        console.error('토큰 잔액 조회 오류:', error);
+        console.error('캐시 잔액 조회 오류:', error);
         return;
       }
 
       const newBalance = data || { current_tokens: 0, total_purchased: 0, total_used: 0, referral_bonus: 0 };
       setTokenBalance(newBalance);
-      console.log('토큰 잔액 업데이트:', newBalance);
+      console.log('캐시 잔액 업데이트:', newBalance);
     } catch (error) {
-      console.error('토큰 잔액 조회 오류:', error);
+      console.error('캐시 잔액 조회 오류:', error);
     } finally {
       setLoading(false);
     }
@@ -52,9 +52,9 @@ export function useTokens() {
     consumeTokens: async (amount: number) => {
       if (!user || !tokenBalance) return false;
       
-      // 베타테스트 기간 중에는 토큰 소비하지 않음
+      // 베타테스트 기간 중에는 캐시 소비하지 않음
       if (isBetaTestPeriod()) {
-        console.log(`🎉 Beta Test: Token consumption skipped (${amount} tokens)`);
+        console.log(`🎉 Beta Test: Cash consumption skipped (${amount} cash)`);
         return true;
       }
       
@@ -62,7 +62,7 @@ export function useTokens() {
       if (newBalance < 0) return false;
 
       try {
-        // 토큰 소진 및 사용량 업데이트
+        // 캐시 소진 및 사용량 업데이트
         const { error } = await supabase
           .from('user_tokens')
           .update({
@@ -83,33 +83,33 @@ export function useTokens() {
             count: amount
           });
         
-        // 토큰 잔액 실시간 새로고침
+        // 캐시 잔액 실시간 새로고침
         setTimeout(() => {
           fetchBalance();
         }, 500);
-        console.log(`토큰 소진 완료: ${amount}토큰, 잔액: ${newBalance}`);
+        console.log(`캐시 소진 완료: ${amount}캐시, 잔액: ${newBalance}`);
         return true;
       } catch (error) {
-        console.error('Error consuming tokens:', error);
+        console.error('Error consuming cash:', error);
         return false;
       }
     },
     checkTokenAvailability: (amount: number) => {
       // 베타테스트 기간 중에는 항상 true 반환
       if (isBetaTestPeriod()) {
-        console.log('🎉 Beta Test: Token availability check bypassed');
+        console.log('🎉 Beta Test: Cash availability check bypassed');
         return true;
       }
       
-      // 로딩 중이거나 토큰 정보가 없으면 false 반환
+      // 로딩 중이거나 캐시 정보가 없으면 false 반환
       if (loading || !tokenBalance) {
-        console.log(`🔍 Token Check: Loading=${loading}, TokenBalance=${!!tokenBalance}`);
+        console.log(`🔍 Cash Check: Loading=${loading}, TokenBalance=${!!tokenBalance}`);
         return false;
       }
       
-      // 현재 토큰이 요구 토큰보다 많거나 같으면 true
+      // 현재 캐시가 요구 캐시보다 많거나 같으면 true
       const hasEnough = tokenBalance.current_tokens >= amount;
-      console.log(`💰 Token Check: 보유 ${tokenBalance.current_tokens}, 필요 ${amount}, 충분: ${hasEnough}`);
+      console.log(`💰 Cash Check: 보유 ${tokenBalance.current_tokens}, 필요 ${amount}, 충분: ${hasEnough}`);
       return hasEnough;
     }
   };

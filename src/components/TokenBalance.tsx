@@ -53,12 +53,11 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
           // 5분 이내에 받은 보너스라면 알림 표시
           if (minutesDiff <= 5) {
             setShowDailyBonusAlert(true);
-            toast.success(`🎉 일일 보너스 ${data[0].count}토큰이 지급되었습니다!`);
+            toast.success(`🎉 일일 보너스 ${data[0].count}캐시가 지급되었습니다!`);
           }
         }
       } catch (error: any) {
         console.error('일일 보너스 정보 조회 실패:', error);
-        // 조용히 실패 처리 - 사용자에게는 보이지 않음
       }
     };
 
@@ -89,10 +88,8 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
   const currentTokens = tokenBalance?.current_tokens || 0;
   const isLowBalance = currentTokens <= 5;
   
-  // 디버깅을 위한 로그
-  console.log('TokenBalance - 현재 토큰:', currentTokens, '낮은 잔액:', isLowBalance);
+  console.log('TokenBalance - 현재 캐시:', currentTokens, '낮은 잔액:', isLowBalance);
   
-  // 로그인하지 않은 사용자는 토큰 정보 숨김
   if (!user && compact) {
     return null;
   }
@@ -118,29 +115,26 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
             >
               <Coins className="w-3 h-3 animate-pulse" />
               <span className="font-bold">{currentTokens}</span>
-              <span className="text-[10px] opacity-90">토큰</span>
+              <span className="text-[10px] opacity-90">캐시</span>
             </Badge>
           </div>
         </PopoverTrigger>
         <PopoverContent className="w-80" side="bottom" align="start">
           <div className="relative">
-            {/* 말풍선 화살표 효과 */}
             <div className="absolute -top-2 left-4 w-4 h-4 bg-white border-l border-t border-border transform rotate-45"></div>
             <Card className="border-0 shadow-none">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Coins className="w-5 h-5 text-primary" />
-                토큰 보유 현황
+                캐시 보유 현황
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* 현재 보유 토큰 */}
               <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                 <span className="text-sm font-medium">현재 보유</span>
                 <div className="text-xl font-bold text-primary">{currentTokens}개</div>
               </div>
 
-              {/* 토큰 사용 통계 */}
               {tokenBalance && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
@@ -158,28 +152,25 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 </div>
               )}
 
-              {/* 경고 메시지 */}
               {isLowBalance && (
                 <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
                   <div className="flex items-center gap-2 text-destructive text-sm">
                     <Info className="w-4 h-4" />
-                    토큰이 부족합니다. 서비스 이용을 위해 충전해주세요.
+                    캐시가 부족합니다. 서비스 이용을 위해 충전해주세요.
                   </div>
                 </div>
               )}
 
-              {/* 일일 보너스 정보 */}
               {dailyBonusInfo && (
                 <Alert className="bg-green-50 border-green-200">
                   <Calendar className="w-4 h-4 text-green-600" />
                   <AlertDescription className="text-green-800">
                     <strong>오늘의 일일 보너스</strong><br />
-                    {dailyBonusInfo.count}토큰이 지급되었습니다 ({new Date(dailyBonusInfo.created_at).toLocaleTimeString()})
+                    {dailyBonusInfo.count}캐시가 지급되었습니다 ({new Date(dailyBonusInfo.created_at).toLocaleTimeString()})
                   </AlertDescription>
                 </Alert>
               )}
 
-              {/* 로그인 사용자 정보 */}
               {user && (
                 <div className="p-3 rounded-lg bg-muted/20 border border-muted/30">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -190,7 +181,6 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 </div>
               )}
 
-              {/* 토큰 관리 버튼들 */}
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   onClick={() => navigate('/token-history')}
@@ -210,7 +200,6 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 </Button>
               </div>
 
-              {/* 자주묻는질문 버튼 */}
               <Button
                 onClick={() => navigate('/token-subscription')}
                 className="w-full"
@@ -220,7 +209,6 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 자주묻는질문
               </Button>
 
-              {/* 추천 혜택 안내 */}
               <Button
                 onClick={() => navigate('/?section=referral')}
                 variant="secondary"
@@ -228,7 +216,7 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 className="w-full bg-gradient-to-r from-secondary/10 to-primary/10 hover:from-secondary/20 hover:to-primary/20 border border-secondary/20"
               >
                 <Gift className="w-3 h-3 mr-1" />
-                친구 추천시 10토큰 무료 지급!
+                친구 추천시 10캐시 무료 지급!
               </Button>
             </CardContent>
             </Card>
@@ -246,7 +234,7 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
             <div className="flex items-center gap-2">
               <Coins className={`w-4 h-4 ${isLowBalance ? 'text-destructive' : 'text-primary'}`} />
               <span className="text-sm font-medium text-muted-foreground">
-                보유 토큰
+                보유 캐시
               </span>
             </div>
             <div className="text-2xl font-bold flex items-center gap-2">
@@ -254,7 +242,7 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
               <span className="text-sm font-normal text-muted-foreground">개</span>
             </div>
             {isLowBalance && (
-              <p className="text-xs text-destructive">토큰이 부족합니다</p>
+              <p className="text-xs text-destructive">캐시가 부족합니다</p>
             )}
           </div>
           
@@ -275,11 +263,10 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                     <TrendingUp className="w-3 h-3" />
                     총 사용: {tokenBalance.total_used}개
                   </div>
-                  {/* 일일 보너스 표시 */}
                   {tokenBalance.last_daily_bonus_date === new Date().toISOString().split('T')[0] && (
                     <div className="flex items-center gap-1 justify-center text-green-600">
                       <Gift className="w-3 h-3" />
-                      오늘 일일보너스 3토큰 지급됨
+                      오늘 일일보너스 3캐시 지급됨
                     </div>
                   )}
                   <Button
@@ -289,7 +276,7 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                     className="text-xs h-auto p-1 text-primary/60 hover:text-primary hover:bg-primary/5"
                   >
                     <Gift className="w-3 h-3 mr-1" />
-                    친구 추천시 10토큰
+                    친구 추천시 10캐시
                   </Button>
                 </div>
               )}

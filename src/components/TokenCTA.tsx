@@ -21,7 +21,7 @@ const TokenCTA = ({
       case 'observation':
         return {
           title: title || "더 자세한 분석이 필요하신가요?",
-          description: description || "토큰을 구매하고 심화 분석 리포트를 받아보세요.",
+          description: description || "캐시를 구매하고 심화 분석 리포트를 받아보세요.",
           icon: <Sparkles className="h-6 w-6" />
         };
       case 'report':
@@ -33,7 +33,7 @@ const TokenCTA = ({
       case 'assessment':
         return {
           title: title || "더 정확한 분석을 원하시나요?",
-          description: description || "토큰으로 상세 분석과 전문가 상담을 받아보세요",
+          description: description || "캐시로 상세 분석과 전문가 상담을 받아보세요",
           icon: <Sparkles className="h-6 w-6" />
         };
       case 'ai-counselor':
@@ -85,7 +85,7 @@ const TokenCTA = ({
             aria-label="구독 플랜 보기"
           >
             <Crown className="h-4 w-4" />
-            토큰 구매하기
+            캐시 구매하기
           </Button>
           
           <Button 

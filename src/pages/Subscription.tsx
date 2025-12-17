@@ -23,7 +23,7 @@ interface TokenPackage {
 
 const TOKEN_PACKAGES: TokenPackage[] = [
   {
-    name: '토큰팩 50',
+    name: '캐시팩 50',
     tokens: 50,
     price: 9900,
     bonus: 0,
@@ -33,12 +33,12 @@ const TOKEN_PACKAGES: TokenPackage[] = [
       'AI 상담 50메시지',
       '꿈해석 12회',
       '관찰일지 분석 12회',
-      '토큰 영구 보관',
+      '캐시 영구 보관',
       '부담 없는 시작'
     ]
   },
   {
-    name: '토큰팩 150',
+    name: '캐시팩 150',
     tokens: 150,
     price: 19900,
     bonus: 0,
@@ -50,12 +50,12 @@ const TOKEN_PACKAGES: TokenPackage[] = [
       '관찰일지 분석 37회',
       '사주분석 25회',
       '꿈해석 37회',
-      '1토큰당 132원으로 가장 합리적',
+      '1캐시당 132원으로 가장 합리적',
       '정기적 이용에 최적'
     ]
   },
   {
-    name: '토큰팩 400',
+    name: '캐시팩 400',
     tokens: 400,
     price: 39900,
     bonus: 0,
@@ -65,7 +65,7 @@ const TOKEN_PACKAGES: TokenPackage[] = [
       'IEP 생성 8회',
       '종합리포트 2회',
       '모든 기능 자유 이용',
-      '토큰당 99원으로 최고 할인율',
+      '캐시당 99원으로 최고 할인율',
       '장기간 안심 이용',
       '전문가급 서비스'
     ]
@@ -89,7 +89,7 @@ const Subscription = () => {
       if (!session) {
         toast({ 
           title: "로그인 필요", 
-          description: "토큰을 구매하려면 먼저 로그인해주세요." 
+          description: "캐시를 구매하려면 먼저 로그인해주세요." 
         });
         navigate('/auth');
         return;
@@ -99,10 +99,10 @@ const Subscription = () => {
       navigate('/token-subscription');
 
     } catch (error: any) {
-      console.error('토큰 구매 오류:', error);
+      console.error('캐시 구매 오류:', error);
       toast({ 
         title: "오류", 
-        description: error.message || "토큰 구매 중 오류가 발생했습니다.", 
+        description: error.message || "캐시 구매 중 오류가 발생했습니다.", 
         variant: "destructive" 
       });
     } finally {
@@ -125,7 +125,7 @@ const Subscription = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <UnifiedNavigation />
       
-      {/* 토큰제 안내 배너 */}
+      {/* 캐시제 안내 배너 */}
       <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white py-6 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 animate-pulse"></div>
         <div className="container mx-auto relative z-10">
@@ -157,7 +157,7 @@ const Subscription = () => {
         <div className="max-w-4xl mx-auto mb-16">
           <div className="flex items-center gap-4">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
-            <span className="text-muted-foreground font-medium">또는 토큰으로 이용하기</span>
+            <span className="text-muted-foreground font-medium">또는 캐시로 이용하기</span>
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
           </div>
         </div>
@@ -170,7 +170,7 @@ const Subscription = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            토큰 패키지 선택
+            캐시 패키지 선택
           </h1>
           <p className="text-sm md:text-xl text-muted-foreground mb-8 whitespace-nowrap">
             부담 없이 시작하고, 언제든 충전하세요
@@ -214,13 +214,13 @@ const Subscription = () => {
                 
                 <div className="space-y-2">
                   <div className="text-4xl font-bold text-foreground">
-                    {pkg.tokens} <span className="text-xl text-muted-foreground">토큰</span>
+                    {pkg.tokens} <span className="text-xl text-muted-foreground">캐시</span>
                   </div>
                   <div className="text-3xl font-bold text-primary">
                     ₩{formatPrice(pkg.price)}
                   </div>
                   <div className="mt-2 text-sm text-muted-foreground">
-                    토큰당 ₩{Math.round(pkg.price / pkg.tokens)}
+                    캐시당 ₩{Math.round(pkg.price / pkg.tokens)}
                   </div>
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-2">
                     <Clock className="w-4 h-4" />

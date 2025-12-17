@@ -1,6 +1,11 @@
-// 각 기능별 토큰 소진량 정의 (균일화 버전)
+// 각 기능별 토큰 소진량 정의
+// 1토큰 = 100원 기준
+// 간편테스트: 5토큰 (500원)
+// 심층테스트: 30토큰 (3,000원)
+
 export const TOKEN_COSTS = {
-  // 전문 심리검사 및 발달검사 (5토큰 통일)
+  // ========== 간편테스트 (5토큰 = 500원) ==========
+  // 전문 심리검사 및 발달검사
   PSYCHOLOGICAL_TEST: 5,     // 마음상태 체크
   FOCUS_CHECK: 5,           // AIH 집중력 자가점검
   DEPRESSION_TEST: 5,       // 우울감 자가체크  
@@ -8,13 +13,13 @@ export const TOKEN_COSTS = {
   LANGUAGE_TEST: 5,         // 언어발달 자가체크
   HAN_MEDICINE_TEST: 5,     // 한의학 체질 분석
   
-  // 아동·청소년 발달검사 (5토큰 통일)
+  // 아동·청소년 발달검사
   DEVELOPMENTAL_DELAY_TEST: 5,  // 발달지연 검사
   SENSORY_INTEGRATION_TEST: 5,  // 감각통합장애 검사
   LEARNING_DISABILITY_TEST: 5,  // 학습장애 검사
   SOCIAL_DEVELOPMENT_TEST: 5,   // 사회성 발달 검사
   
-  // AIH 전문가 창작 검사 - 발달 심리전문가 직접 개발 (5토큰으로 통일)
+  // AIH 전문가 창작 검사
   FIVE_D_PERSONALITY: 5,        // 5D 성격 분석
   RELATIONSHIP_TYPE: 5,         // 관계유형 진단
   STRESS_INDEX: 5,              // 스트레스 지수 측정
@@ -22,25 +27,25 @@ export const TOKEN_COSTS = {
   SELF_WORTH: 5,                // 자존감 측정
   DEFENSE_MECHANISM: 5,         // 방어기제 분석
   
-  
-  // 재미있는 AI 검사 (무료)
-  DREAM_INTERPRETATION: 0,  // 꿈 해석 (무료)
-  SAJU_ANALYSIS: 0,         // 사주 분석 (무료)
-  
-  // 고급 분석 (5토큰)
+  // 고급 분석 (간편)
   AI_COACH: 5,              // AI 코치 세션
   EXPERT_MATCHING: 5,       // 전문가 매칭
   
-  // 프리미엄 기능
-  OBSERVATION_ANALYSIS: 20,  // 관찰 분석
-  PREMIUM_ASSESSMENT: 30,    // 프리미엄 심층테스트 (3,000원)
-  PROFESSIONAL_REPORT: 20,   // 전문가 리포트 생성
+  // ========== 심층테스트 (30토큰 = 3,000원) ==========
+  PREMIUM_ASSESSMENT: 30,        // 프리미엄 심층테스트
+  OBSERVATION_ANALYSIS: 30,      // 관찰 분석 (심층)
+  PROFESSIONAL_REPORT: 30,       // 전문가 리포트 생성
   
-  // 최고급 서비스 (고가격대)
-  COMPREHENSIVE_REPORT: 200, // 박사급 종합 리포팅 (200토큰)
-  IEP_GENERATION: 0,       // IEP 생성 (무료)
+  // ========== 최고급 서비스 ==========
+  COMPREHENSIVE_REPORT: 200, // 박사급 종합 리포팅 (20,000원)
   
-  // 엔터테인먼트 (최저가격대)
+  // ========== 무료 서비스 ==========
+  DREAM_INTERPRETATION: 0,  // 꿈 해석
+  SAJU_ANALYSIS: 0,         // 사주 분석
+  IEP_GENERATION: 0,        // IEP 생성
+  CRISIS_DETECTION: 0,      // 위기감지 (긴급상황)
+  
+  // ========== 엔터테인먼트 (1토큰 = 100원) ==========
   PAST_LIFE_JOB: 1,         // 전생 직업 분석
   ANIMAL_FACE_MATCH: 1,     // 얼굴 닮은 동물 찾기
   INNER_ANIMAL: 1,          // 내면 동물 찾기
@@ -48,19 +53,15 @@ export const TOKEN_COSTS = {
   
   // AI 상담 (사용량 기반)
   AI_COUNSELOR_CHAT: 1,     // AI 상담사 10메시지당 1토큰
-  
-  // 무료 유지 서비스
-  CRISIS_DETECTION: 0,      // 위기감지 (긴급상황이므로 무료 유지)
 } as const;
 
 // 기능별 설명
 export const TOKEN_COST_DESCRIPTIONS = {
   0: "무료 서비스",
-  1: "엔터테인먼트 테스트 또는 AI 상담 10메시지",
-  5: "전문 심리검사 및 AIH 전문가 창작 검사", 
-  20: "프리미엄 분석 및 전문가급 리포트",
-  30: "프리미엄 심층테스트 (3,000원)",
-  200: "모든 데이터 종합 박사급 분석 리포트 (3일내 휴대폰 전송)",
+  1: "엔터테인먼트 (100원)",
+  5: "간편테스트 (500원)", 
+  30: "심층테스트 (3,000원)",
+  200: "박사급 종합 리포트 (20,000원)",
 } as const;
 
 // 토큰 패키지 추천

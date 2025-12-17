@@ -133,14 +133,14 @@ const Subscription = () => {
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center gap-2">
                 <Heart className="w-5 h-5 fill-current animate-pulse" />
-                <span className="font-bold text-lg">🎁 사회 공헌 프로젝트</span>
+                <span className="font-bold text-lg">🎁 오픈 베타 무료 체험</span>
                 <Heart className="w-5 h-5 fill-current animate-pulse" />
               </div>
               <p className="text-sm md:text-base font-medium">
-                더 많은 분들이 심리 건강 서비스를 이용할 수 있도록, <strong>3개월간 모든 기능을 무료로 제공</strong>합니다
+                더 좋은 서비스를 만들기 위해 <strong>3개월간 모든 기능을 무료로 제공</strong>합니다
               </p>
               <p className="text-xs md:text-sm opacity-90">
-                {getBetaTestMessage()} | 사회의 정신건강 증진을 위한 PMF 검증 기간입니다
+                {getBetaTestMessage()} | 여러분의 소중한 피드백이 서비스 발전에 큰 힘이 됩니다 💪
               </p>
             </div>
           </div>

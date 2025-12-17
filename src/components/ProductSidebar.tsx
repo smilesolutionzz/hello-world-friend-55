@@ -186,7 +186,7 @@ const ProductSidebar = () => {
               className="w-full border-green-500 text-green-400 hover:bg-green-900/30 text-sm font-medium bg-transparent"
               onClick={() => navigate('/assessment')}
             >
-              ⚡ 3분 심리테스트 (2토큰)
+              ⚡ 3분 심리테스트 (200원)
             </Button>
           </div>
         </div>
@@ -203,14 +203,14 @@ const ProductSidebar = () => {
               className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium"
               onClick={() => navigate('/observation')}
             >
-              📝 관찰일지 (3토큰)
+              📝 관찰일지 (300원)
             </Button>
             <Button 
               size="sm"
               className="w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium"
               onClick={() => navigate('/premium-assessment')}
             >
-              👑 프리미엄 검사 (8토큰)
+              👑 프리미엄 검사 (2,000원)
             </Button>
           </div>
         </div>
@@ -227,14 +227,14 @@ const ProductSidebar = () => {
               className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium"
               onClick={() => navigate('/expert-hiring')}
             >
-              👨‍⚕️ 20분 상담 (150토큰)
+              👨‍⚕️ 20분 상담 (15,000원)
             </Button>
             <Button 
               size="sm"
               className="w-full bg-red-600 hover:bg-red-700 text-white text-sm font-medium"
               onClick={scrollToComprehensiveReport}
             >
-              📊 박사급 리포트 (200토큰)
+              📊 박사급 리포트 (20,000원)
             </Button>
           </div>
         </div>
@@ -251,8 +251,8 @@ const ProductSidebar = () => {
             </div>
             <h3 className="font-bold mb-1 text-lg">무료 체험 이벤트</h3>
             <p className="text-sm text-purple-100 mb-3 font-medium">
-              회원가입시 10토큰 지급되고
-              <br />매일 로그인시 2토큰씩 추가지급됩니다. 궁금증을 해결하세요
+              회원가입시 1,000원 캐시 지급되고
+              <br />매일 로그인시 200원씩 추가지급됩니다. 궁금증을 해결하세요
             </p>
             <Button 
               size="sm"
@@ -272,10 +272,10 @@ const ProductSidebar = () => {
           onClick={() => navigate('/token-subscription')}
         >
           <Zap className="w-4 h-4 mr-2" />
-          토큰 충전
+          캐시 충전
         </Button>
         <p className="text-sm text-gray-300 text-center font-medium">
-          토큰팩 또는 무제한 플랜으로 업그레이드하세요
+          캐시팩 또는 무제한 플랜으로 업그레이드하세요
         </p>
       </div>
     </div>

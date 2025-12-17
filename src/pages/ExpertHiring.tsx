@@ -1524,8 +1524,8 @@ const ExpertHiring = () => {
                 <Zap className="w-4 h-4 md:w-5 md:h-5 text-primary" />
               </div>
               <div className="min-w-0">
-                <p className="font-semibold text-xs md:text-sm truncate">토큰 사용</p>
-                <p className="text-[10px] md:text-xs text-muted-foreground truncate">30분 = 200토큰</p>
+                <p className="font-semibold text-xs md:text-sm truncate">캐시 사용</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground truncate">30분 = 20,000원</p>
               </div>
             </CardContent>
           </Card>

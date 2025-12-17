@@ -41,7 +41,7 @@ const PremiumFeature = ({ children }: { children: React.ReactNode }) => {
         </CardHeader>
         <CardContent>
           <Button onClick={() => navigate('/token-subscription')}>
-            토큰 구매하기
+            캐시 구매하기
           </Button>
         </CardContent>
       </Card>

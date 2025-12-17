@@ -159,8 +159,8 @@ const Pricing = () => {
                   <CreditCard className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm">토큰 사용량</p>
-                  <p className="text-xs text-muted-foreground">30분 상담 = 200토큰</p>
+                  <p className="font-semibold text-sm">캐시 사용량</p>
+                  <p className="text-xs text-muted-foreground">30분 상담 = 20,000원</p>
                 </div>
               </CardContent>
             </Card>
@@ -300,7 +300,7 @@ const Pricing = () => {
                   <p className="text-muted-foreground">
                     <strong>상담 시간:</strong> 기본 30분, 연장 시 60분 선택 가능<br />
                     <strong>상담 방식:</strong> 화상상담(Zoom), 전화상담, 채팅상담 중 선택<br />
-                    <strong>토큰 사용:</strong> 30분 상담 = 200토큰, 60분 상담 = 360토큰<br />
+                    <strong>캐시 사용:</strong> 30분 상담 = 20,000원, 60분 상담 = 36,000원<br />
                     <strong>해외 거주자:</strong> 시차를 고려한 예약 가능, 한국 전문가와 화상 연결
                   </p>
                 </CardContent>

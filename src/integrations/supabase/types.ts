@@ -6733,6 +6733,78 @@ export type Database = {
         }
         Relationships: []
       }
+      pmf_events: {
+        Row: {
+          created_at: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          page_path: string | null
+          screen_size: string | null
+          session_id: string | null
+          timestamp: string | null
+          user_agent: string | null
+          user_id: string | null
+          user_segment: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          page_path?: string | null
+          screen_size?: string | null
+          session_id?: string | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          user_segment?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          page_path?: string | null
+          screen_size?: string | null
+          session_id?: string | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          user_segment?: string | null
+        }
+        Relationships: []
+      }
+      pmf_feedback: {
+        Row: {
+          context: string | null
+          created_at: string | null
+          feedback_text: string | null
+          id: string
+          nps_score: number | null
+          user_id: string | null
+          would_pay: boolean | null
+        }
+        Insert: {
+          context?: string | null
+          created_at?: string | null
+          feedback_text?: string | null
+          id?: string
+          nps_score?: number | null
+          user_id?: string | null
+          would_pay?: boolean | null
+        }
+        Update: {
+          context?: string | null
+          created_at?: string | null
+          feedback_text?: string | null
+          id?: string
+          nps_score?: number | null
+          user_id?: string | null
+          would_pay?: boolean | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"] | null

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Coins, Check, Sparkles, Brain, Zap, Trophy, Clock } from 'lucide-react';
+import { Coins, Check, Sparkles, Brain, Zap, Trophy, Clock, Heart } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
@@ -11,7 +11,7 @@ import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import TokenBalance from '@/components/TokenBalance';
 import { PromotionBanner } from '@/components/promotion/PromotionBanner';
 import { LifetimeCountdownCard } from '@/components/pricing/LifetimeCountdownCard';
-
+import { isBetaTestPeriod, getBetaTestMessage } from '@/utils/betaTest';
 interface TokenPackage {
   name: string;
   tokens: number;
@@ -124,6 +124,28 @@ const Subscription = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <UnifiedNavigation />
+      
+      {/* 베타 테스트 무료 제공 배너 */}
+      {isBetaTestPeriod() && (
+        <div className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white py-4 px-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 via-teal-400/20 to-cyan-400/20 animate-pulse"></div>
+          <div className="container mx-auto relative z-10">
+            <div className="text-center space-y-2">
+              <div className="flex items-center justify-center gap-2">
+                <Heart className="w-5 h-5 fill-current animate-pulse" />
+                <span className="font-bold text-lg">🎁 사회 공헌 프로젝트</span>
+                <Heart className="w-5 h-5 fill-current animate-pulse" />
+              </div>
+              <p className="text-sm md:text-base font-medium">
+                더 많은 분들이 심리 건강 서비스를 이용할 수 있도록, <strong>3개월간 모든 기능을 무료로 제공</strong>합니다
+              </p>
+              <p className="text-xs md:text-sm opacity-90">
+                {getBetaTestMessage()} | 사회의 정신건강 증진을 위한 PMF 검증 기간입니다
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* 캐시제 안내 배너 */}
       <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white py-6 px-4 relative overflow-hidden">

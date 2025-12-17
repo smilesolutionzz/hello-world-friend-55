@@ -233,10 +233,10 @@ const ObservationForm: React.FC<ObservationFormProps> = ({
 
       setFormState('analyzing');
 
-      // 토큰 소모량 계산 (템플릿 타입에 따라)
+      // 캐시 소모량 계산 (템플릿 타입에 따라)
       const tokenCost = isDetailedTemplate ? 5 : 3;
       
-      // 현재 토큰 잔액 확인
+      // 현재 캐시 잔액 확인
       const { data: tokenData, error: tokenError } = await supabase
         .from('user_tokens')
         .select('current_tokens')
@@ -245,8 +245,8 @@ const ObservationForm: React.FC<ObservationFormProps> = ({
 
       if (tokenError || !tokenData || tokenData.current_tokens < tokenCost) {
         toast({
-          title: "토큰 부족",
-          description: `분석을 위해 ${tokenCost}개의 토큰이 필요합니다. 토큰을 충전해주세요.`,
+          title: "캐시 부족",
+          description: `분석을 위해 ${tokenCost * 100}캐시가 필요합니다. 캐시를 충전해주세요.`,
           variant: "destructive"
         });
         setFormState('idle');
@@ -265,7 +265,7 @@ const ObservationForm: React.FC<ObservationFormProps> = ({
           targetName,
           observationDate,
           templateType: templateType, // 템플릿 정보 추가
-          tokenCost: tokenCost // 토큰 비용 전달
+          tokenCost: tokenCost // 캐시 비용 전달
         }
       });
 

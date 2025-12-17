@@ -54,8 +54,8 @@ export const PremiumAnalysisOffer: React.FC<PremiumAnalysisOfferProps> = ({
 
       if (!tokenData || tokenData.current_tokens < 10) {
         toast({
-          title: '토큰 부족',
-          description: '프리미엄 분석에는 10토큰이 필요합니다. 토큰을 충전해주세요.',
+          title: '캐시 부족',
+          description: '프리미엄 분석에는 1,000캐시가 필요합니다. 캐시를 충전해주세요.',
           variant: 'destructive'
         });
         navigate('/token-subscription');
@@ -166,7 +166,7 @@ export const PremiumAnalysisOffer: React.FC<PremiumAnalysisOfferProps> = ({
             ) : (
               <>
                 <Sparkles className="mr-2 h-5 w-5" />
-                프리미엄 분석 시작하기 (10토큰)
+                프리미엄 분석 시작하기 (1,000캐시)
               </>
             )}
           </Button>

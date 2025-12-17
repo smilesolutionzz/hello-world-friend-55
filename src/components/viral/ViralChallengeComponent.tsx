@@ -27,7 +27,7 @@ const ViralChallengeComponent = () => {
       title: "7일 마음챙김 챌린지",
       description: "7일 동안 매일 심리상태를 체크하고 친구들과 공유하세요",
       participants: 234,
-      reward: "완주 시 무료 토큰 20개 + 프리미엄 1주일",
+      reward: "완주 시 무료 2,000캐시 + 프리미엄 1주일",
       progress: 3,
       total: 7,
       icon: Heart,
@@ -39,7 +39,7 @@ const ViralChallengeComponent = () => {
       title: "가족 심리건강 체크",
       description: "가족 구성원 모두의 심리상태를 체크하고 결과를 공유해보세요",
       participants: 156,
-      reward: "가족 모두 무료 토큰 15개씩",
+      reward: "가족 모두 무료 1,500캐시씩",
       progress: 1,
       total: 4,
       icon: Users,
@@ -50,7 +50,7 @@ const ViralChallengeComponent = () => {
       title: "친구 추천 챌린지",
       description: "친구 5명을 초대하여 함께 심리테스트를 받아보세요",
       participants: 89,
-      reward: "친구 1명당 토큰 10개 (최대 50개)",
+      reward: "친구 1명당 1,000캐시 (최대 5,000캐시)",
       progress: userShares,
       total: 5,
       icon: Share2,
@@ -60,10 +60,10 @@ const ViralChallengeComponent = () => {
   ];
 
   const milestones = [
-    { shares: 1, reward: "무료 토큰 5개", achieved: userShares >= 1 },
-    { shares: 3, reward: "무료 토큰 15개 + 기본 프리미엄 3일", achieved: userShares >= 3 },
-    { shares: 5, reward: "무료 토큰 30개 + 프리미엄 1주일", achieved: userShares >= 5 },
-    { shares: 10, reward: "무료 토큰 50개 + 프리미엄 1개월", achieved: userShares >= 10 }
+    { shares: 1, reward: "무료 500캐시", achieved: userShares >= 1 },
+    { shares: 3, reward: "무료 1,500캐시 + 기본 프리미엄 3일", achieved: userShares >= 3 },
+    { shares: 5, reward: "무료 3,000캐시 + 프리미엄 1주일", achieved: userShares >= 5 },
+    { shares: 10, reward: "무료 5,000캐시 + 프리미엄 1개월", achieved: userShares >= 10 }
   ];
 
   const handleShare = (challengeId: number) => {
@@ -108,7 +108,7 @@ const ViralChallengeComponent = () => {
           <Trophy className="w-8 h-8 text-yellow-500" />
         </div>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          친구들과 함께 참여하고 <span className="font-semibold text-primary">무료 토큰과 프리미엄 혜택</span>을 받아보세요!
+          친구들과 함께 참여하고 <span className="font-semibold text-primary">무료 캐시와 프리미엄 혜택</span>을 받아보세요!
         </p>
       </div>
 
@@ -125,8 +125,8 @@ const ViralChallengeComponent = () => {
               <div className="text-sm text-muted-foreground">내 공유 수</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600">{earnedTokens}</div>
-              <div className="text-sm text-muted-foreground">획득한 토큰</div>
+              <div className="text-2xl font-bold text-yellow-600">{(earnedTokens * 100).toLocaleString()}</div>
+              <div className="text-sm text-muted-foreground">획득한 캐시</div>
             </div>
           </div>
         </CardContent>
@@ -271,7 +271,7 @@ const ViralChallengeComponent = () => {
             className="bg-white text-primary hover:bg-gray-100"
           >
             <Share2 className="w-4 h-4 mr-2" />
-            지금 공유하고 토큰 받기
+            지금 공유하고 캐시 받기
           </Button>
         </CardContent>
       </Card>

@@ -135,7 +135,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   const currentAnswer = answers[currentQuestion];
   const canProceed = currentAnswer !== ""; // 빈 문자열이 아니어야 함
 
-  // 토큰 게이트 표시
+  // 캐시 게이트 표시
   if (!hasStarted) {
     return (
       <TokenGate

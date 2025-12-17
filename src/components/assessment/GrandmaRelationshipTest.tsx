@@ -229,8 +229,8 @@ export default function GrandmaRelationshipTest({ onComplete, onBack }: GrandmaR
   const handleSubmit = async () => {
     if (!checkTokenAvailability(TOKEN_COSTS.INNER_ANIMAL)) {
       toast({
-        title: "토큰이 부족합니다",
-        description: `이 테스트를 위해서는 ${TOKEN_COSTS.INNER_ANIMAL}토큰이 필요합니다.`,
+        title: "캐시가 부족합니다",
+        description: `이 테스트를 위해서는 ${TOKEN_COSTS.INNER_ANIMAL * 100}캐시가 필요합니다.`,
         variant: "destructive"
       });
       return;
@@ -241,7 +241,7 @@ export default function GrandmaRelationshipTest({ onComplete, onBack }: GrandmaR
     try {
       const success = await consumeTokens(TOKEN_COSTS.INNER_ANIMAL);
       if (!success) {
-        throw new Error("토큰 차감에 실패했습니다");
+        throw new Error("캐시 차감에 실패했습니다");
       }
 
       // 점수 계산
@@ -408,7 +408,7 @@ export default function GrandmaRelationshipTest({ onComplete, onBack }: GrandmaR
             </div>
 
             <div className="text-center text-sm text-red-600 bg-red-50 p-3 rounded-lg">
-              💰 소모 토큰: {TOKEN_COSTS.INNER_ANIMAL}개 | 👵 할머니의 솔직한 조언을 들을 준비 되셨나요?
+              💰 소모 캐시: {TOKEN_COSTS.INNER_ANIMAL * 100}원 | 👵 할머니의 솔직한 조언을 들을 준비 되셨나요?
             </div>
           </CardContent>
         </Card>

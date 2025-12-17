@@ -48,11 +48,11 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
       return;
     }
 
-    // 토큰 확인
+    // 캐시 확인
     if (!checkTokenAvailability(TOKEN_COSTS.SAJU_ANALYSIS)) {
       toast({
-        title: "토큰 부족",
-        description: `사주 분석에는 ${TOKEN_COSTS.SAJU_ANALYSIS}토큰이 필요합니다. 토큰을 충전해주세요.`,
+        title: "캐시 부족",
+        description: `사주 분석에는 ${TOKEN_COSTS.SAJU_ANALYSIS * 100}캐시가 필요합니다. 캐시를 충전해주세요.`,
         variant: "destructive"
       });
       return;
@@ -60,12 +60,12 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
 
     setIsLoading(true);
     try {
-      // 토큰 소진 먼저 진행
+      // 캐시 소진 먼저 진행
       const tokenConsumed = await consumeTokens(TOKEN_COSTS.SAJU_ANALYSIS);
       if (!tokenConsumed) {
         toast({
-          title: "토큰 소진 실패",
-          description: "토큰을 소진하는 중 오류가 발생했습니다.",
+          title: "캐시 소진 실패",
+          description: "캐시를 소진하는 중 오류가 발생했습니다.",
           variant: "destructive"
         });
         return;
@@ -93,9 +93,9 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
       });
     } catch (error: any) {
       console.error('Saju analysis error:', error);
-      if (error.message?.includes('토큰')) {
+      if (error.message?.includes('캐시')) {
         toast({
-          title: "토큰 부족",
+          title: "캐시 부족",
           description: error.message,
           variant: "destructive"
         });

@@ -71,7 +71,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
 
   const getCostLabel = (cost: number) => {
     if (cost === 0) return '무료';
-    return `${cost}토큰`;
+    return `${(cost * 100).toLocaleString()}캐시`;
   };
 
   const getRecommendedPath = () => [

@@ -55,8 +55,8 @@ export const PackagesView = () => {
 
       if (!tokenData || tokenData.current_tokens < pkg.total_tokens) {
         toast({
-          title: '토큰 부족',
-          description: `${pkg.total_tokens}토큰이 필요합니다. 현재: ${tokenData?.current_tokens || 0}토큰`,
+          title: '캐시 부족',
+          description: `${pkg.total_tokens * 100}캐시가 필요합니다. 현재: ${(tokenData?.current_tokens || 0) * 100}캐시`,
           variant: 'destructive',
         });
         return;
@@ -131,13 +131,13 @@ export const PackagesView = () => {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold">{pkg.total_tokens}</span>
-                  <span className="text-muted-foreground">토큰</span>
+                  <span className="text-3xl font-bold">{(pkg.total_tokens * 100).toLocaleString()}</span>
+                  <span className="text-muted-foreground">캐시</span>
                 </div>
                 {pkg.discount_percentage > 0 && (
                   <div className="flex items-center gap-2">
                     <span className="text-sm line-through text-muted-foreground">
-                      {Math.round(pkg.total_tokens / (1 - pkg.discount_percentage / 100))}토큰
+                      {Math.round((pkg.total_tokens * 100) / (1 - pkg.discount_percentage / 100)).toLocaleString()}캐시
                     </span>
                     <Badge variant="secondary">
                       {pkg.discount_percentage}% 할인
@@ -153,7 +153,7 @@ export const PackagesView = () => {
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-primary" />
-                  <span>회당 {pkg.price_per_session}토큰</span>
+                  <span>회당 {(pkg.price_per_session * 100).toLocaleString()}캐시</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-primary" />

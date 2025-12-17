@@ -12,6 +12,7 @@ import ErrorBoundary from "@/components/ui/error-boundary";
 import NetworkStatus from "@/components/common/NetworkStatus";
 import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 import Analytics from "@/components/common/Analytics";
+import { FeedbackButton } from "@/components/feedback/FeedbackButton";
 import { ConversionTracker } from "@/components/analytics/ConversionTracker";
 import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
@@ -358,6 +359,7 @@ const App = () => {
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
               </Routes>
+              <FeedbackButton />
             </ErrorBoundary>
           </BrowserRouter>
           </TooltipProvider>

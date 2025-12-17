@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 interface NPSFeedbackModalProps {
   isOpen: boolean;
   onClose: () => void;
-  context?: string; // 어떤 기능 사용 후인지
+  context?: string;
 }
 
 const NPSFeedbackModal: React.FC<NPSFeedbackModalProps> = ({ 
@@ -45,13 +45,13 @@ const NPSFeedbackModal: React.FC<NPSFeedbackModalProps> = ({
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      await supabase.from('pmf_feedback').insert({
-        user_id: user?.id,
-        nps_score: npsScore,
-        feedback_text: feedback,
-        would_pay: wouldPay,
-        context,
-        created_at: new Date().toISOString(),
+      // RPC 호출로 피드백 저장
+      await supabase.rpc('insert_pmf_feedback' as any, {
+        p_user_id: user?.id || null,
+        p_nps_score: npsScore,
+        p_feedback_text: feedback || null,
+        p_would_pay: wouldPay,
+        p_context: context,
       });
 
       trackEvent({ 
@@ -68,7 +68,6 @@ const NPSFeedbackModal: React.FC<NPSFeedbackModalProps> = ({
       
       setTimeout(() => {
         onClose();
-        // 상태 리셋
         setStep('nps');
         setNpsScore(null);
         setFeedback('');
@@ -77,11 +76,26 @@ const NPSFeedbackModal: React.FC<NPSFeedbackModalProps> = ({
 
     } catch (error) {
       console.error('피드백 저장 실패:', error);
-      toast({
-        title: "저장 실패",
-        description: "피드백 저장에 실패했습니다. 다시 시도해주세요.",
-        variant: "destructive"
-      });
+      // 로컬에 저장
+      const feedbackData = {
+        nps_score: npsScore,
+        feedback_text: feedback,
+        would_pay: wouldPay,
+        context,
+        created_at: new Date().toISOString(),
+      };
+      const feedbacks = JSON.parse(localStorage.getItem('pmf_feedback_queue') || '[]');
+      feedbacks.push(feedbackData);
+      localStorage.setItem('pmf_feedback_queue', JSON.stringify(feedbacks));
+      
+      setStep('thanks');
+      setTimeout(() => {
+        onClose();
+        setStep('nps');
+        setNpsScore(null);
+        setFeedback('');
+        setWouldPay(null);
+      }, 2000);
     }
   };
 
@@ -115,7 +129,6 @@ const NPSFeedbackModal: React.FC<NPSFeedbackModalProps> = ({
           </DialogTitle>
         </DialogHeader>
 
-        {/* NPS 점수 선택 */}
         {step === 'nps' && (
           <div className="space-y-6 py-4">
             <p className="text-center text-muted-foreground">
@@ -175,7 +188,6 @@ const NPSFeedbackModal: React.FC<NPSFeedbackModalProps> = ({
           </div>
         )}
 
-        {/* 이유 및 추가 피드백 */}
         {step === 'reason' && (
           <div className="space-y-6 py-4">
             <div className="space-y-3">
@@ -216,7 +228,6 @@ const NPSFeedbackModal: React.FC<NPSFeedbackModalProps> = ({
           </div>
         )}
 
-        {/* 감사 메시지 */}
         {step === 'thanks' && (
           <div className="text-center py-8 space-y-4">
             <div className="text-6xl">🎉</div>

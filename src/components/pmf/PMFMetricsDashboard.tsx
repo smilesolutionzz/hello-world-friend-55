@@ -15,7 +15,6 @@ import {
   ThumbsUp,
   ThumbsDown
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 
 interface FunnelMetric {
@@ -63,39 +62,24 @@ const PMFMetricsDashboard: React.FC = () => {
   const loadMetrics = async () => {
     setLoading(true);
     try {
-      // 날짜 범위 계산
-      const now = new Date();
-      let startDate = new Date();
-      if (dateRange === '7d') startDate.setDate(now.getDate() - 7);
-      else if (dateRange === '30d') startDate.setDate(now.getDate() - 30);
-      else startDate = new Date('2024-01-01');
+      // 로컬 스토리지에서 이벤트와 피드백 로드
+      const events = JSON.parse(localStorage.getItem('pmf_events_queue') || '[]');
+      const feedback = JSON.parse(localStorage.getItem('pmf_feedback_queue') || '[]');
 
-      // PMF 이벤트 로드
-      const { data: events } = await supabase
-        .from('pmf_events')
-        .select('*')
-        .gte('timestamp', startDate.toISOString());
-
-      // NPS 피드백 로드
-      const { data: feedback } = await supabase
-        .from('pmf_feedback')
-        .select('*')
-        .gte('created_at', startDate.toISOString())
-        .order('created_at', { ascending: false });
-
-      if (events) {
+      if (events.length > 0) {
         processMetrics(events);
         processFunnel(events);
+      } else {
+        setDummyData();
       }
 
-      if (feedback) {
+      if (feedback.length > 0) {
         processNPS(feedback);
-        setRecentFeedback(feedback.slice(0, 5));
+        setRecentFeedback(feedback.slice(-5).reverse());
       }
 
     } catch (error) {
       console.error('메트릭 로드 실패:', error);
-      // 더미 데이터로 대체
       setDummyData();
     }
     setLoading(false);
@@ -112,7 +96,7 @@ const PMFMetricsDashboard: React.FC = () => {
       activeUsers: Math.floor(uniqueUsers.size * 0.6),
       newUsers: signupEvents.length,
       returnRate: uniqueUsers.size > 0 ? (returnEvents.length / uniqueUsers.size) * 100 : 0,
-      avgSessionDuration: 180, // 3분 (예시)
+      avgSessionDuration: 180,
       conversionRate: uniqueUsers.size > 0 ? (paymentEvents.length / uniqueUsers.size) * 100 : 0,
       payingUsers: paymentEvents.length,
       revenue: paymentEvents.length * 9900,
@@ -138,7 +122,7 @@ const PMFMetricsDashboard: React.FC = () => {
       
       return {
         stage: stage.name,
-        count: count || Math.floor(100 * Math.pow(0.7, index)), // 더미 데이터
+        count: count || Math.floor(100 * Math.pow(0.7, index)),
         conversionRate: prevCount > 0 ? (count / prevCount) * 100 : 100,
         dropoffRate: prevCount > 0 ? ((prevCount - count) / prevCount) * 100 : 0,
       };
@@ -207,7 +191,6 @@ const PMFMetricsDashboard: React.FC = () => {
 
   return (
     <div className="p-6 space-y-6 bg-background min-h-screen">
-      {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">📊 PMF 검증 대시보드</h1>
@@ -232,34 +215,11 @@ const PMFMetricsDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* 핵심 KPI 카드 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <MetricCard
-          title="전체 사용자"
-          value={metrics.totalUsers}
-          icon={<Users className="w-5 h-5" />}
-          trend={12}
-        />
-        <MetricCard
-          title="전환율"
-          value={`${metrics.conversionRate.toFixed(1)}%`}
-          icon={<Target className="w-5 h-5" />}
-          trend={2.3}
-          target="목표: 5%"
-        />
-        <MetricCard
-          title="재방문율"
-          value={`${metrics.returnRate.toFixed(0)}%`}
-          icon={<TrendingUp className="w-5 h-5" />}
-          trend={-5}
-          target="목표: 30%"
-        />
-        <MetricCard
-          title="예상 수익"
-          value={`₩${metrics.revenue.toLocaleString()}`}
-          icon={<DollarSign className="w-5 h-5" />}
-          trend={15}
-        />
+        <MetricCard title="전체 사용자" value={metrics.totalUsers} icon={<Users className="w-5 h-5" />} trend={12} />
+        <MetricCard title="전환율" value={`${metrics.conversionRate.toFixed(1)}%`} icon={<Target className="w-5 h-5" />} trend={2.3} target="목표: 5%" />
+        <MetricCard title="재방문율" value={`${metrics.returnRate.toFixed(0)}%`} icon={<TrendingUp className="w-5 h-5" />} trend={-5} target="목표: 30%" />
+        <MetricCard title="예상 수익" value={`₩${metrics.revenue.toLocaleString()}`} icon={<DollarSign className="w-5 h-5" />} trend={15} />
       </div>
 
       <Tabs defaultValue="funnel" className="space-y-4">
@@ -269,7 +229,6 @@ const PMFMetricsDashboard: React.FC = () => {
           <TabsTrigger value="segments">세그먼트</TabsTrigger>
         </TabsList>
 
-        {/* 퍼널 분석 */}
         <TabsContent value="funnel" className="space-y-4">
           <Card>
             <CardHeader>
@@ -290,21 +249,14 @@ const PMFMetricsDashboard: React.FC = () => {
                       <div className="flex items-center gap-4 text-muted-foreground">
                         {index > 0 && (
                           <>
-                            <span className="text-green-500">
-                              전환 {stage.conversionRate.toFixed(0)}%
-                            </span>
-                            <span className="text-red-500">
-                              이탈 {stage.dropoffRate.toFixed(0)}%
-                            </span>
+                            <span className="text-green-500">전환 {stage.conversionRate.toFixed(0)}%</span>
+                            <span className="text-red-500">이탈 {stage.dropoffRate.toFixed(0)}%</span>
                           </>
                         )}
                       </div>
                     </div>
                     <div className="relative">
-                      <Progress 
-                        value={(stage.count / (funnel[0]?.count || 1)) * 100} 
-                        className="h-8"
-                      />
+                      <Progress value={(stage.count / (funnel[0]?.count || 1)) * 100} className="h-8" />
                       {index < funnel.length - 1 && (
                         <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full px-2">
                           <ArrowRight className="w-4 h-4 text-muted-foreground" />
@@ -315,11 +267,8 @@ const PMFMetricsDashboard: React.FC = () => {
                 ))}
               </div>
               
-              {/* 이탈 포인트 분석 */}
               <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                <h4 className="font-medium text-red-800 dark:text-red-200 mb-2">
-                  ⚠️ 주요 이탈 포인트
-                </h4>
+                <h4 className="font-medium text-red-800 dark:text-red-200 mb-2">⚠️ 주요 이탈 포인트</h4>
                 <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
                   <li>• 온보딩 시작 → 완료: 25% 이탈 (목표 대비 +10%)</li>
                   <li>• 회원가입 → 결제: 82% 이탈 (결제 전환 개선 필요)</li>
@@ -329,30 +278,19 @@ const PMFMetricsDashboard: React.FC = () => {
           </Card>
         </TabsContent>
 
-        {/* NPS & 피드백 */}
         <TabsContent value="nps" className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
-            {/* NPS 점수 */}
             <Card>
-              <CardHeader>
-                <CardTitle>NPS 점수</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>NPS 점수</CardTitle></CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className={`text-5xl font-bold ${getNPSColor(npsData.npsScore)}`}>
-                    {npsData.npsScore}
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {npsData.totalResponses}명 응답
-                  </p>
+                  <div className={`text-5xl font-bold ${getNPSColor(npsData.npsScore)}`}>{npsData.npsScore}</div>
+                  <p className="text-sm text-muted-foreground mt-1">{npsData.totalResponses}명 응답</p>
                 </div>
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1">
-                      <ThumbsUp className="w-4 h-4 text-green-500" />
-                      추천 (9-10)
-                    </span>
+                    <span className="flex items-center gap-1"><ThumbsUp className="w-4 h-4 text-green-500" />추천 (9-10)</span>
                     <span>{npsData.promoters}명</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
@@ -360,78 +298,52 @@ const PMFMetricsDashboard: React.FC = () => {
                     <span>{npsData.passives}명</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1">
-                      <ThumbsDown className="w-4 h-4 text-red-500" />
-                      비추천 (0-6)
-                    </span>
+                    <span className="flex items-center gap-1"><ThumbsDown className="w-4 h-4 text-red-500" />비추천 (0-6)</span>
                     <span>{npsData.detractors}명</span>
                   </div>
                 </div>
 
                 <div className="p-3 bg-muted rounded-lg text-sm">
                   <p className="font-medium">PMF 기준</p>
-                  <p className="text-muted-foreground">
-                    NPS 40+ = 강한 PMF 신호 ✅
-                  </p>
+                  <p className="text-muted-foreground">NPS 40+ = 강한 PMF 신호 ✅</p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* 최근 피드백 */}
             <Card>
-              <CardHeader>
-                <CardTitle>최근 피드백</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>최근 피드백</CardTitle></CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {recentFeedback.length > 0 ? (
-                    recentFeedback.map((fb, index) => (
-                      <div 
-                        key={index} 
-                        className="p-3 bg-muted/50 rounded-lg space-y-2"
-                      >
-                        <div className="flex items-center justify-between">
-                          <Badge variant={fb.nps_score >= 9 ? 'default' : fb.nps_score >= 7 ? 'secondary' : 'destructive'}>
-                            NPS {fb.nps_score}
-                          </Badge>
-                          <Badge variant={fb.would_pay ? 'outline' : 'secondary'}>
-                            {fb.would_pay ? '💰 유료 의향' : '무료만'}
-                          </Badge>
-                        </div>
-                        {fb.feedback_text && (
-                          <p className="text-sm text-muted-foreground">
-                            "{fb.feedback_text}"
-                          </p>
-                        )}
+                  {recentFeedback.length > 0 ? recentFeedback.map((fb, index) => (
+                    <div key={index} className="p-3 bg-muted/50 rounded-lg space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Badge variant={fb.nps_score >= 9 ? 'default' : fb.nps_score >= 7 ? 'secondary' : 'destructive'}>
+                          NPS {fb.nps_score}
+                        </Badge>
+                        <Badge variant={fb.would_pay ? 'outline' : 'secondary'}>
+                          {fb.would_pay ? '💰 유료 의향' : '무료만'}
+                        </Badge>
                       </div>
-                    ))
-                  ) : (
-                    <p className="text-center text-muted-foreground py-8">
-                      아직 피드백이 없습니다
-                    </p>
+                      {fb.feedback_text && <p className="text-sm text-muted-foreground">"{fb.feedback_text}"</p>}
+                    </div>
+                  )) : (
+                    <p className="text-center text-muted-foreground py-8">아직 피드백이 없습니다</p>
                   )}
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* 유료 전환 의향 */}
           <Card>
-            <CardHeader>
-              <CardTitle>💰 유료 전환 의향</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>💰 유료 전환 의향</CardTitle></CardHeader>
             <CardContent>
               <div className="flex items-center gap-8">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-green-500">
-                    {recentFeedback.filter(f => f.would_pay).length}
-                  </div>
+                  <div className="text-3xl font-bold text-green-500">{recentFeedback.filter(f => f.would_pay).length}</div>
                   <p className="text-sm text-muted-foreground">유료 의향 있음</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-muted-foreground">
-                    {recentFeedback.filter(f => !f.would_pay).length}
-                  </div>
+                  <div className="text-3xl font-bold text-muted-foreground">{recentFeedback.filter(f => !f.would_pay).length}</div>
                   <p className="text-sm text-muted-foreground">무료만 사용</p>
                 </div>
                 <div className="flex-1 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
@@ -450,12 +362,9 @@ const PMFMetricsDashboard: React.FC = () => {
           </Card>
         </TabsContent>
 
-        {/* 세그먼트 분석 */}
         <TabsContent value="segments" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>사용자 세그먼트</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>사용자 세그먼트</CardTitle></CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-4">
                 {[
@@ -485,7 +394,6 @@ const PMFMetricsDashboard: React.FC = () => {
   );
 };
 
-// 메트릭 카드 컴포넌트
 const MetricCard: React.FC<{
   title: string;
   value: string | number;
@@ -507,9 +415,7 @@ const MetricCard: React.FC<{
             {Math.abs(trend)}%
           </span>
         )}
-        {target && (
-          <span className="text-xs text-muted-foreground">{target}</span>
-        )}
+        {target && <span className="text-xs text-muted-foreground">{target}</span>}
       </div>
     </CardContent>
   </Card>

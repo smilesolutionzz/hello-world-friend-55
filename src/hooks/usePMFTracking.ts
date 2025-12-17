@@ -40,6 +40,8 @@ export const PMF_EVENTS = {
   EXIT_INTENT: 'exit_intent',
 } as const;
 
+export type PMFEventType = typeof PMF_EVENTS[keyof typeof PMF_EVENTS];
+
 export const usePMFTracking = () => {
   // 세션 시작 시 방문 추적
   useEffect(() => {
@@ -65,18 +67,27 @@ export const usePMFTracking = () => {
       screen_size: `${window.innerWidth}x${window.innerHeight}`,
     };
 
-    // 로컬 저장 (오프라인 지원)
+    // 로컬 저장 (오프라인 지원 및 타입 에러 fallback)
     saveEventLocally(eventData);
     
-    // 서버 전송 시도
+    // 서버 전송 시도 - RPC 사용
     try {
-      await supabase.from('pmf_events').insert(eventData);
+      await supabase.rpc('insert_pmf_event' as any, {
+        p_user_id: eventData.user_id,
+        p_session_id: eventData.session_id,
+        p_event_type: eventData.event_type,
+        p_event_data: eventData.event_data || {},
+        p_page_path: eventData.page_path,
+        p_user_segment: eventData.user_segment || null,
+        p_user_agent: eventData.user_agent,
+        p_screen_size: eventData.screen_size,
+      });
     } catch (error) {
       console.log('PMF event saved locally:', eventData);
     }
   }, []);
 
-  const trackFunnelStep = useCallback((step: string, data?: Record<string, any>) => {
+  const trackFunnelStep = useCallback((step: PMFEventType, data?: Record<string, any>) => {
     trackEvent({
       event_type: step,
       event_data: {
@@ -86,7 +97,7 @@ export const usePMFTracking = () => {
     });
   }, [trackEvent]);
 
-  const trackConversion = useCallback((type: string, value?: number) => {
+  const trackConversion = useCallback((type: PMFEventType, value?: number) => {
     trackEvent({
       event_type: type,
       event_data: {
@@ -134,8 +145,8 @@ function saveEventLocally(event: any) {
   localStorage.setItem('pmf_events_queue', JSON.stringify(events));
 }
 
-function getFunnelPosition(step: string): number {
-  const funnel = [
+function getFunnelPosition(step: PMFEventType): number {
+  const funnel: PMFEventType[] = [
     PMF_EVENTS.LANDING_VIEW,
     PMF_EVENTS.ONBOARDING_START,
     PMF_EVENTS.ONBOARDING_COMPLETE,

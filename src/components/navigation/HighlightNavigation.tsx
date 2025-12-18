@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard, MessageCircle } from 'lucide-react';
+import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard, MessageCircle, Menu, X } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -13,11 +13,19 @@ import {
 } from "@/components/ui/navigation-menu";
 import { RealtimeChatWidget } from '@/components/chat/RealtimeChatWidget';
 import { AnimatePresence } from 'framer-motion';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export const HighlightNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const serviceItems = [
     { 
@@ -91,88 +99,102 @@ export const HighlightNavigation = () => {
     },
   ];
 
+  const handleMobileNavigate = (path: string) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleMobileChatOpen = () => {
+    setIsMobileMenuOpen(false);
+    setIsChatOpen(true);
+  };
+
   return (
     <nav className="bg-card border-b border-border">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-4 lg:px-6">
         <div className="flex items-center justify-between py-4">
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 lg:gap-8">
             <button 
               onClick={() => navigate('/')}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <img src={logo} alt="AI Highlight" className="h-10 w-10" />
+              <img src={logo} alt="AI Highlight" className="h-8 w-8 lg:h-10 lg:w-10" />
             </button>
             
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-accent/50">
-                    서비스
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="w-[500px] p-6 bg-background">
-                      <h3 className="text-lg font-bold mb-4">어떤 서비스를 찾고 계신가요?</h3>
-                      <div className="grid gap-3">
-                        {serviceItems.map((item) => (
-                          <NavigationMenuLink
-                            key={item.path}
-                            asChild
-                          >
-                            <button
-                              onClick={() => navigate(item.path)}
-                              className="flex items-start gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors text-left w-full group"
+            {/* 데스크탑 네비게이션 메뉴 */}
+            <div className="hidden lg:block">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="bg-transparent hover:bg-accent/50">
+                      서비스
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="w-[500px] p-6 bg-background">
+                        <h3 className="text-lg font-bold mb-4">어떤 서비스를 찾고 계신가요?</h3>
+                        <div className="grid gap-3">
+                          {serviceItems.map((item) => (
+                            <NavigationMenuLink
+                              key={item.path}
+                              asChild
                             >
-                              <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                                <item.icon className="h-5 w-5 text-primary" />
-                              </div>
-                              <div className="flex-1">
-                                <div className="font-semibold text-sm mb-1">{item.label}</div>
-                                <div className="text-xs text-muted-foreground">{item.description}</div>
-                              </div>
-                            </button>
-                          </NavigationMenuLink>
-                        ))}
+                              <button
+                                onClick={() => navigate(item.path)}
+                                className="flex items-start gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors text-left w-full group"
+                              >
+                                <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                  <item.icon className="h-5 w-5 text-primary" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="font-semibold text-sm mb-1">{item.label}</div>
+                                  <div className="text-xs text-muted-foreground">{item.description}</div>
+                                </div>
+                              </button>
+                            </NavigationMenuLink>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
 
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-accent/50">
-                    계정
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="w-[350px] p-6 bg-background">
-                      <h3 className="text-lg font-bold mb-4">계정 관리</h3>
-                      <div className="grid gap-3">
-                        {accountItems.map((item) => (
-                          <NavigationMenuLink
-                            key={item.path}
-                            asChild
-                          >
-                            <button
-                              onClick={() => navigate(item.path)}
-                              className="flex items-start gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors text-left w-full group"
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="bg-transparent hover:bg-accent/50">
+                      계정
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="w-[350px] p-6 bg-background">
+                        <h3 className="text-lg font-bold mb-4">계정 관리</h3>
+                        <div className="grid gap-3">
+                          {accountItems.map((item) => (
+                            <NavigationMenuLink
+                              key={item.path}
+                              asChild
                             >
-                              <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                                <item.icon className="h-5 w-5 text-primary" />
-                              </div>
-                              <div className="flex-1">
-                                <div className="font-semibold text-sm mb-1">{item.label}</div>
-                                <div className="text-xs text-muted-foreground">{item.description}</div>
-                              </div>
-                            </button>
-                          </NavigationMenuLink>
-                        ))}
+                              <button
+                                onClick={() => navigate(item.path)}
+                                className="flex items-start gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors text-left w-full group"
+                              >
+                                <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                  <item.icon className="h-5 w-5 text-primary" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="font-semibold text-sm mb-1">{item.label}</div>
+                                  <div className="text-xs text-muted-foreground">{item.description}</div>
+                                </div>
+                              </button>
+                            </NavigationMenuLink>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* 데스크탑 우측 버튼 */}
+          <div className="hidden lg:flex items-center gap-2">
             <Button
               onClick={() => setIsChatOpen(true)}
               variant="ghost"
@@ -194,6 +216,79 @@ export const HighlightNavigation = () => {
               <Home className="h-4 w-4 mr-2" />
               홈
             </Button>
+          </div>
+
+          {/* 모바일 햄버거 메뉴 */}
+          <div className="lg:hidden">
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle className="text-left">메뉴</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 space-y-6">
+                  {/* 상담 버튼 - 모바일 메뉴 상단 */}
+                  <button
+                    onClick={handleMobileChatOpen}
+                    className="flex items-center gap-3 w-full p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors"
+                  >
+                    <MessageCircle className="h-5 w-5 text-primary" />
+                    <span className="font-semibold text-primary">실시간 상담</span>
+                    <span className="ml-auto flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                  </button>
+
+                  {/* 홈 */}
+                  <button
+                    onClick={() => handleMobileNavigate('/')}
+                    className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-accent/50 transition-colors"
+                  >
+                    <Home className="h-5 w-5 text-muted-foreground" />
+                    <span className="font-medium">홈</span>
+                  </button>
+
+                  {/* 서비스 */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">서비스</h3>
+                    <div className="space-y-1">
+                      {serviceItems.map((item) => (
+                        <button
+                          key={item.path}
+                          onClick={() => handleMobileNavigate(item.path)}
+                          className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-accent/50 transition-colors"
+                        >
+                          <item.icon className="h-5 w-5 text-muted-foreground" />
+                          <span className="font-medium">{item.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 계정 */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-3">계정</h3>
+                    <div className="space-y-1">
+                      {accountItems.map((item) => (
+                        <button
+                          key={item.path}
+                          onClick={() => handleMobileNavigate(item.path)}
+                          className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-accent/50 transition-colors"
+                        >
+                          <item.icon className="h-5 w-5 text-muted-foreground" />
+                          <span className="font-medium">{item.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>

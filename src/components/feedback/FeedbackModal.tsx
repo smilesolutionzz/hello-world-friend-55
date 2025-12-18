@@ -17,6 +17,7 @@ import { Star, Send, Sparkles, Bug, Lightbulb, Heart } from 'lucide-react';
 interface FeedbackModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onFeedbackSubmitted?: () => void;
 }
 
 const FEEDBACK_TYPES = [
@@ -26,7 +27,7 @@ const FEEDBACK_TYPES = [
   { value: 'praise', label: '칭찬/응원', icon: Heart, color: 'text-pink-500' },
 ];
 
-export const FeedbackModal = ({ isOpen, onClose }: FeedbackModalProps) => {
+export const FeedbackModal = ({ isOpen, onClose, onFeedbackSubmitted }: FeedbackModalProps) => {
   const [feedbackType, setFeedbackType] = useState('improvement');
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -72,6 +73,7 @@ export const FeedbackModal = ({ isOpen, onClose }: FeedbackModalProps) => {
       setFeedbackText('');
       setRating(0);
       setFeedbackType('improvement');
+      onFeedbackSubmitted?.();
       onClose();
     } catch (error) {
       console.error('피드백 저장 오류:', error);

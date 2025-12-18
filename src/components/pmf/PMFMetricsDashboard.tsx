@@ -13,9 +13,11 @@ import {
   ArrowRight,
   RefreshCw,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
+  Database
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FunnelMetric {
   stage: string;
@@ -35,6 +37,7 @@ interface NPSData {
 const PMFMetricsDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<'7d' | '30d' | 'all'>('7d');
+  const [dataSource, setDataSource] = useState<'database' | 'demo'>('database');
   const [metrics, setMetrics] = useState({
     totalUsers: 0,
     activeUsers: 0,
@@ -57,32 +60,96 @@ const PMFMetricsDashboard: React.FC = () => {
 
   useEffect(() => {
     loadMetrics();
-  }, [dateRange]);
+  }, [dateRange, dataSource]);
+
+  const getDateFilter = () => {
+    const now = new Date();
+    if (dateRange === '7d') {
+      return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    } else if (dateRange === '30d') {
+      return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    }
+    return null;
+  };
 
   const loadMetrics = async () => {
     setLoading(true);
-    try {
-      // 로컬 스토리지에서 이벤트와 피드백 로드
-      const events = JSON.parse(localStorage.getItem('pmf_events_queue') || '[]');
-      const feedback = JSON.parse(localStorage.getItem('pmf_feedback_queue') || '[]');
+    
+    if (dataSource === 'demo') {
+      setDummyData();
+      setLoading(false);
+      return;
+    }
 
-      if (events.length > 0) {
+    try {
+      const dateFilter = getDateFilter();
+      
+      // Supabase에서 실제 이벤트 데이터 로드
+      let eventsQuery = supabase.from('pmf_events').select('*');
+      if (dateFilter) {
+        eventsQuery = eventsQuery.gte('created_at', dateFilter);
+      }
+      const { data: events, error: eventsError } = await eventsQuery;
+      
+      // Supabase에서 실제 피드백 데이터 로드
+      let feedbackQuery = supabase.from('pmf_feedback').select('*');
+      if (dateFilter) {
+        feedbackQuery = feedbackQuery.gte('created_at', dateFilter);
+      }
+      const { data: feedback, error: feedbackError } = await feedbackQuery;
+
+      if (eventsError) console.error('이벤트 로드 실패:', eventsError);
+      if (feedbackError) console.error('피드백 로드 실패:', feedbackError);
+
+      if (events && events.length > 0) {
         processMetrics(events);
         processFunnel(events);
       } else {
-        setDummyData();
+        // 실제 데이터가 없으면 빈 상태 표시
+        setEmptyData();
       }
 
-      if (feedback.length > 0) {
+      if (feedback && feedback.length > 0) {
         processNPS(feedback);
         setRecentFeedback(feedback.slice(-5).reverse());
+      } else {
+        setNpsData({
+          promoters: 0,
+          passives: 0,
+          detractors: 0,
+          npsScore: 0,
+          totalResponses: 0,
+        });
+        setRecentFeedback([]);
       }
 
     } catch (error) {
       console.error('메트릭 로드 실패:', error);
-      setDummyData();
+      setEmptyData();
     }
     setLoading(false);
+  };
+
+  const setEmptyData = () => {
+    setMetrics({
+      totalUsers: 0,
+      activeUsers: 0,
+      newUsers: 0,
+      returnRate: 0,
+      avgSessionDuration: 0,
+      conversionRate: 0,
+      payingUsers: 0,
+      revenue: 0,
+    });
+    setFunnel([
+      { stage: '랜딩 방문', count: 0, conversionRate: 0, dropoffRate: 0 },
+      { stage: '온보딩 시작', count: 0, conversionRate: 0, dropoffRate: 0 },
+      { stage: '온보딩 완료', count: 0, conversionRate: 0, dropoffRate: 0 },
+      { stage: '무료 체험', count: 0, conversionRate: 0, dropoffRate: 0 },
+      { stage: '첫 관찰일지', count: 0, conversionRate: 0, dropoffRate: 0 },
+      { stage: '회원가입', count: 0, conversionRate: 0, dropoffRate: 0 },
+      { stage: '결제 완료', count: 0, conversionRate: 0, dropoffRate: 0 },
+    ]);
   };
 
   const processMetrics = (events: any[]) => {
@@ -122,8 +189,8 @@ const PMFMetricsDashboard: React.FC = () => {
       
       return {
         stage: stage.name,
-        count: count || Math.floor(100 * Math.pow(0.7, index)),
-        conversionRate: prevCount > 0 ? (count / prevCount) * 100 : 100,
+        count: count,
+        conversionRate: prevCount > 0 ? (count / prevCount) * 100 : (index === 0 ? 100 : 0),
         dropoffRate: prevCount > 0 ? ((prevCount - count) / prevCount) * 100 : 0,
       };
     });
@@ -191,17 +258,38 @@ const PMFMetricsDashboard: React.FC = () => {
 
   return (
     <div className="p-6 space-y-6 bg-background min-h-screen">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold">📊 PMF 검증 대시보드</h1>
           <p className="text-muted-foreground">핵심 지표로 Product-Market Fit 확인</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* 데이터 소스 토글 */}
+          <div className="flex gap-1">
+            <Button
+              variant={dataSource === 'database' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setDataSource('database')}
+              className="gap-1"
+            >
+              <Database className="w-3 h-3" />
+              실제 데이터
+            </Button>
+            <Button
+              variant={dataSource === 'demo' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setDataSource('demo')}
+            >
+              데모
+            </Button>
+          </div>
+          
+          {/* 기간 필터 */}
           <div className="flex gap-1">
             {(['7d', '30d', 'all'] as const).map((range) => (
               <Button
                 key={range}
-                variant={dateRange === range ? 'default' : 'outline'}
+                variant={dateRange === range ? 'secondary' : 'ghost'}
                 size="sm"
                 onClick={() => setDateRange(range)}
               >
@@ -214,6 +302,23 @@ const PMFMetricsDashboard: React.FC = () => {
           </Button>
         </div>
       </div>
+
+      {/* 데이터 소스 안내 */}
+      {dataSource === 'database' && metrics.totalUsers === 0 && !loading && (
+        <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+            ⚠️ 아직 수집된 데이터가 없습니다. 사용자가 서비스를 이용하면 자동으로 이벤트가 기록됩니다.
+            <br />
+            <span className="text-xs text-yellow-600 dark:text-yellow-400">데모 데이터를 보려면 위의 "데모" 버튼을 클릭하세요.</span>
+          </p>
+        </div>
+      )}
+      
+      {dataSource === 'demo' && (
+        <Badge variant="outline" className="text-xs">
+          📌 데모 데이터를 표시하고 있습니다
+        </Badge>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <MetricCard title="전체 사용자" value={metrics.totalUsers} icon={<Users className="w-5 h-5" />} trend={12} />

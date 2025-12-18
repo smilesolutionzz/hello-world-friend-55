@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageSquarePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FeedbackModal } from './FeedbackModal';
 import { isBetaTestPeriod } from '@/utils/betaTest';
 
+const FEEDBACK_SUBMITTED_KEY = 'feedback_submitted';
+
 export const FeedbackButton = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  // 베타 테스트 기간에만 표시
-  if (!isBetaTestPeriod()) return null;
+  useEffect(() => {
+    const submitted = localStorage.getItem(FEEDBACK_SUBMITTED_KEY);
+    if (submitted === 'true') {
+      setHasSubmitted(true);
+    }
+  }, []);
+
+  const handleFeedbackSubmitted = () => {
+    setHasSubmitted(true);
+    localStorage.setItem(FEEDBACK_SUBMITTED_KEY, 'true');
+  };
+
+  // 베타 테스트 기간이 아니거나 이미 피드백을 보낸 경우 숨김
+  if (!isBetaTestPeriod() || hasSubmitted) return null;
 
   return (
     <>
@@ -20,7 +35,11 @@ export const FeedbackButton = () => {
         <MessageSquarePlus className="h-6 w-6" />
       </Button>
       
-      <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <FeedbackModal 
+        isOpen={isOpen} 
+        onClose={() => setIsOpen(false)} 
+        onFeedbackSubmitted={handleFeedbackSubmitted}
+      />
     </>
   );
 };

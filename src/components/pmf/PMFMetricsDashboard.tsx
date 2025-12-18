@@ -34,6 +34,13 @@ interface NPSData {
   totalResponses: number;
 }
 
+interface SegmentData {
+  name: string;
+  count: number;
+  conversion: number;
+  color: string;
+}
+
 const PMFMetricsDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<'7d' | '30d' | 'all'>('7d');
@@ -57,6 +64,7 @@ const PMFMetricsDashboard: React.FC = () => {
     totalResponses: 0,
   });
   const [recentFeedback, setRecentFeedback] = useState<any[]>([]);
+  const [segments, setSegments] = useState<SegmentData[]>([]);
 
   useEffect(() => {
     loadMetrics();
@@ -104,8 +112,8 @@ const PMFMetricsDashboard: React.FC = () => {
       if (events && events.length > 0) {
         processMetrics(events);
         processFunnel(events);
+        processSegments(events);
       } else {
-        // 실제 데이터가 없으면 빈 상태 표시
         setEmptyData();
       }
 
@@ -149,6 +157,12 @@ const PMFMetricsDashboard: React.FC = () => {
       { stage: '첫 관찰일지', count: 0, conversionRate: 0, dropoffRate: 0 },
       { stage: '회원가입', count: 0, conversionRate: 0, dropoffRate: 0 },
       { stage: '결제 완료', count: 0, conversionRate: 0, dropoffRate: 0 },
+    ]);
+    setSegments([
+      { name: '자녀 발달 걱정 부모', count: 0, conversion: 0, color: 'bg-blue-500' },
+      { name: '본인 심리상태 궁금', count: 0, conversion: 0, color: 'bg-purple-500' },
+      { name: 'B2B 기관', count: 0, conversion: 0, color: 'bg-green-500' },
+      { name: '전문가', count: 0, conversion: 0, color: 'bg-orange-500' },
     ]);
   };
 
@@ -213,6 +227,62 @@ const PMFMetricsDashboard: React.FC = () => {
     });
   };
 
+  const processSegments = (events: any[]) => {
+    const segmentColors: Record<string, string> = {
+      'parent': 'bg-blue-500',
+      'self': 'bg-purple-500',
+      'b2b': 'bg-green-500',
+      'expert': 'bg-orange-500',
+      'unknown': 'bg-gray-500',
+    };
+    
+    const segmentNames: Record<string, string> = {
+      'parent': '자녀 발달 걱정 부모',
+      'self': '본인 심리상태 궁금',
+      'b2b': 'B2B 기관',
+      'expert': '전문가',
+      'unknown': '기타',
+    };
+
+    // 세그먼트별 사용자 그룹화
+    const segmentGroups: Record<string, Set<string>> = {};
+    const paymentEvents = new Set(
+      events
+        .filter(e => e.event_type === 'payment_success')
+        .map(e => e.user_id || e.session_id)
+    );
+
+    events.forEach(event => {
+      const segment = event.user_segment || 'unknown';
+      const userId = event.user_id || event.session_id;
+      if (!segmentGroups[segment]) {
+        segmentGroups[segment] = new Set();
+      }
+      segmentGroups[segment].add(userId);
+    });
+
+    const segmentData: SegmentData[] = Object.entries(segmentGroups).map(([key, users]) => {
+      const userArray = Array.from(users);
+      const convertedUsers = userArray.filter(u => paymentEvents.has(u)).length;
+      
+      return {
+        name: segmentNames[key] || key,
+        count: users.size,
+        conversion: users.size > 0 ? (convertedUsers / users.size) * 100 : 0,
+        color: segmentColors[key] || 'bg-gray-500',
+      };
+    });
+
+    // 정렬: count 기준 내림차순
+    segmentData.sort((a, b) => b.count - a.count);
+    setSegments(segmentData.length > 0 ? segmentData : [
+      { name: '자녀 발달 걱정 부모', count: 0, conversion: 0, color: 'bg-blue-500' },
+      { name: '본인 심리상태 궁금', count: 0, conversion: 0, color: 'bg-purple-500' },
+      { name: 'B2B 기관', count: 0, conversion: 0, color: 'bg-green-500' },
+      { name: '전문가', count: 0, conversion: 0, color: 'bg-orange-500' },
+    ]);
+  };
+
   const setDummyData = () => {
     setMetrics({
       totalUsers: 127,
@@ -247,6 +317,13 @@ const PMFMetricsDashboard: React.FC = () => {
       { nps_score: 9, feedback_text: 'AI 분석이 정말 정확해요!', would_pay: true, created_at: new Date().toISOString() },
       { nps_score: 7, feedback_text: '더 많은 검사 종류가 있으면 좋겠어요', would_pay: true, created_at: new Date().toISOString() },
       { nps_score: 5, feedback_text: '속도가 좀 느린 것 같아요', would_pay: false, created_at: new Date().toISOString() },
+    ]);
+
+    setSegments([
+      { name: '자녀 발달 걱정 부모', count: 45, conversion: 8.2, color: 'bg-blue-500' },
+      { name: '본인 심리상태 궁금', count: 38, conversion: 4.5, color: 'bg-purple-500' },
+      { name: 'B2B 기관', count: 12, conversion: 25, color: 'bg-green-500' },
+      { name: '전문가', count: 8, conversion: 15, color: 'bg-orange-500' },
     ]);
   };
 
@@ -472,12 +549,7 @@ const PMFMetricsDashboard: React.FC = () => {
             <CardHeader><CardTitle>사용자 세그먼트</CardTitle></CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-4">
-                {[
-                  { name: '자녀 발달 걱정 부모', count: 45, conversion: 8.2, color: 'bg-blue-500' },
-                  { name: '본인 심리상태 궁금', count: 38, conversion: 4.5, color: 'bg-purple-500' },
-                  { name: 'B2B 기관', count: 12, conversion: 25, color: 'bg-green-500' },
-                  { name: '전문가', count: 8, conversion: 15, color: 'bg-orange-500' },
-                ].map((segment) => (
+                {segments.map((segment) => (
                   <div key={segment.name} className="p-4 border rounded-lg space-y-2">
                     <div className="flex items-center gap-2">
                       <div className={`w-3 h-3 rounded-full ${segment.color}`} />
@@ -485,12 +557,15 @@ const PMFMetricsDashboard: React.FC = () => {
                     </div>
                     <div className="flex justify-between text-sm text-muted-foreground">
                       <span>{segment.count}명</span>
-                      <span className="text-green-500">전환율 {segment.conversion}%</span>
+                      <span className="text-green-500">전환율 {segment.conversion.toFixed(1)}%</span>
                     </div>
                     <Progress value={segment.conversion * 4} className="h-2" />
                   </div>
                 ))}
               </div>
+              {segments.length === 0 && (
+                <p className="text-center text-muted-foreground py-8">세그먼트 데이터가 없습니다</p>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

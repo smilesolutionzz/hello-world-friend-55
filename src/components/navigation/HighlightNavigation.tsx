@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard } from 'lucide-react';
+import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard, MessageCircle } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,10 +11,13 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { RealtimeChatWidget } from '@/components/chat/RealtimeChatWidget';
+import { AnimatePresence } from 'framer-motion';
 
 export const HighlightNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const serviceItems = [
     { 
@@ -171,7 +173,19 @@ export const HighlightNavigation = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <ThemeToggle />
+            <Button
+              onClick={() => setIsChatOpen(true)}
+              variant="ghost"
+              size="sm"
+              className="relative"
+            >
+              <MessageCircle className="h-4 w-4 mr-2" />
+              상담
+              <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+            </Button>
             <Button
               onClick={() => navigate('/')}
               variant="ghost"
@@ -183,6 +197,13 @@ export const HighlightNavigation = () => {
           </div>
         </div>
       </div>
+
+      {/* Chat Widget */}
+      <AnimatePresence>
+        {isChatOpen && (
+          <RealtimeChatWidget onClose={() => setIsChatOpen(false)} />
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

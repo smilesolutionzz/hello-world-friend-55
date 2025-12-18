@@ -166,7 +166,6 @@ import B2BAdvertising from "./pages/B2BAdvertising";
 
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
-import { ThemeToggle } from "./components/ThemeToggle";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -195,7 +194,6 @@ const App = () => {
               <NetworkStatus />
               <SessionManager />
               <UpdatePrompt />
-              <ThemeToggle />
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />

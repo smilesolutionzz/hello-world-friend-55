@@ -14,7 +14,8 @@ import {
   RefreshCw,
   ThumbsUp,
   ThumbsDown,
-  Database
+  Database,
+  AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
@@ -44,7 +45,6 @@ interface SegmentData {
 const PMFMetricsDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<'7d' | '30d' | 'all'>('7d');
-  const [dataSource, setDataSource] = useState<'database' | 'demo'>('database');
   const [metrics, setMetrics] = useState({
     totalUsers: 0,
     activeUsers: 0,
@@ -68,7 +68,7 @@ const PMFMetricsDashboard: React.FC = () => {
 
   useEffect(() => {
     loadMetrics();
-  }, [dateRange, dataSource]);
+  }, [dateRange]);
 
   const getDateFilter = () => {
     const now = new Date();
@@ -82,41 +82,82 @@ const PMFMetricsDashboard: React.FC = () => {
 
   const loadMetrics = async () => {
     setLoading(true);
-    
-    if (dataSource === 'demo') {
-      setDummyData();
-      setLoading(false);
-      return;
-    }
 
     try {
       const dateFilter = getDateFilter();
       
-      // Supabase에서 실제 이벤트 데이터 로드
-      let eventsQuery = supabase.from('pmf_events').select('*');
-      if (dateFilter) {
-        eventsQuery = eventsQuery.gte('created_at', dateFilter);
-      }
-      const { data: events, error: eventsError } = await eventsQuery;
+      // 실제 사용자 데이터 로드
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('user_id, created_at');
       
-      // Supabase에서 실제 피드백 데이터 로드
-      let feedbackQuery = supabase.from('pmf_feedback').select('*');
+      // 실제 구독자 데이터 로드
+      const { data: subscribers, error: subscribersError } = await supabase
+        .from('subscribers')
+        .select('user_id, subscribed, created_at, total_paid');
+      
+      // 실제 테스트 결과 로드
+      const { data: testResults, error: testError } = await supabase
+        .from('test_results')
+        .select('user_id, completed_at');
+      
+      // 실제 관찰일지 로드
+      const { data: observations, error: obsError } = await supabase
+        .from('observation_sessions')
+        .select('user_id, created_at');
+
+      // 피드백 데이터 로드
+      let feedbackQuery = supabase.from('user_feedback').select('*');
       if (dateFilter) {
         feedbackQuery = feedbackQuery.gte('created_at', dateFilter);
       }
       const { data: feedback, error: feedbackError } = await feedbackQuery;
 
-      if (eventsError) console.error('이벤트 로드 실패:', eventsError);
-      if (feedbackError) console.error('피드백 로드 실패:', feedbackError);
+      if (profilesError) console.error('프로필 로드 실패:', profilesError);
+      if (subscribersError) console.error('구독자 로드 실패:', subscribersError);
 
-      if (events && events.length > 0) {
-        processMetrics(events);
-        processFunnel(events);
-        processSegments(events);
-      } else {
-        setEmptyData();
+      // 메트릭 계산
+      const totalUsers = profiles?.length || 0;
+      const payingUsers = subscribers?.filter(s => s.subscribed)?.length || 0;
+      const totalRevenue = subscribers?.reduce((sum, s) => sum + (s.total_paid || 0), 0) || 0;
+      
+      // 기간 필터 적용
+      let filteredProfiles = profiles || [];
+      let filteredSubscribers = subscribers || [];
+      let filteredTests = testResults || [];
+      let filteredObs = observations || [];
+      
+      if (dateFilter) {
+        filteredProfiles = filteredProfiles.filter(p => new Date(p.created_at) >= new Date(dateFilter));
+        filteredSubscribers = filteredSubscribers.filter(s => new Date(s.created_at) >= new Date(dateFilter));
+        filteredTests = filteredTests.filter(t => new Date(t.completed_at) >= new Date(dateFilter));
+        filteredObs = filteredObs.filter(o => new Date(o.created_at) >= new Date(dateFilter));
       }
 
+      const newUsers = filteredProfiles.length;
+      const activeUsers = new Set([
+        ...(filteredTests?.map(t => t.user_id) || []),
+        ...(filteredObs?.map(o => o.user_id) || [])
+      ]).size;
+
+      setMetrics({
+        totalUsers,
+        activeUsers,
+        newUsers,
+        returnRate: totalUsers > 0 ? (activeUsers / totalUsers) * 100 : 0,
+        avgSessionDuration: 180,
+        conversionRate: totalUsers > 0 ? (payingUsers / totalUsers) * 100 : 0,
+        payingUsers,
+        revenue: totalRevenue,
+      });
+
+      // 퍼널 데이터 계산
+      processFunnel(profiles || [], testResults || [], observations || [], subscribers || []);
+      
+      // 세그먼트 데이터 계산
+      processSegments(profiles || [], subscribers || []);
+
+      // NPS 및 피드백
       if (feedback && feedback.length > 0) {
         processNPS(feedback);
         setRecentFeedback(feedback.slice(-5).reverse());
@@ -150,62 +191,34 @@ const PMFMetricsDashboard: React.FC = () => {
       revenue: 0,
     });
     setFunnel([
-      { stage: '랜딩 방문', count: 0, conversionRate: 0, dropoffRate: 0 },
-      { stage: '온보딩 시작', count: 0, conversionRate: 0, dropoffRate: 0 },
-      { stage: '온보딩 완료', count: 0, conversionRate: 0, dropoffRate: 0 },
-      { stage: '무료 체험', count: 0, conversionRate: 0, dropoffRate: 0 },
-      { stage: '첫 관찰일지', count: 0, conversionRate: 0, dropoffRate: 0 },
       { stage: '회원가입', count: 0, conversionRate: 0, dropoffRate: 0 },
-      { stage: '결제 완료', count: 0, conversionRate: 0, dropoffRate: 0 },
+      { stage: '첫 검사', count: 0, conversionRate: 0, dropoffRate: 0 },
+      { stage: '관찰일지 작성', count: 0, conversionRate: 0, dropoffRate: 0 },
+      { stage: '유료 전환', count: 0, conversionRate: 0, dropoffRate: 0 },
     ]);
-    setSegments([
-      { name: '자녀 발달 걱정 부모', count: 0, conversion: 0, color: 'bg-blue-500' },
-      { name: '본인 심리상태 궁금', count: 0, conversion: 0, color: 'bg-purple-500' },
-      { name: 'B2B 기관', count: 0, conversion: 0, color: 'bg-green-500' },
-      { name: '전문가', count: 0, conversion: 0, color: 'bg-orange-500' },
-    ]);
+    setSegments([]);
   };
 
-  const processMetrics = (events: any[]) => {
-    const uniqueUsers = new Set(events.map(e => e.user_id || e.session_id));
-    const signupEvents = events.filter(e => e.event_type === 'signup_complete');
-    const paymentEvents = events.filter(e => e.event_type === 'payment_success');
-    const returnEvents = events.filter(e => e.event_type === 'return_visit');
+  const processFunnel = (profiles: any[], tests: any[], observations: any[], subscribers: any[]) => {
+    const totalSignups = profiles.length;
+    const usersWithTests = new Set(tests.map(t => t.user_id)).size;
+    const usersWithObs = new Set(observations.map(o => o.user_id)).size;
+    const paidUsers = subscribers.filter(s => s.subscribed).length;
 
-    setMetrics({
-      totalUsers: uniqueUsers.size,
-      activeUsers: Math.floor(uniqueUsers.size * 0.6),
-      newUsers: signupEvents.length,
-      returnRate: uniqueUsers.size > 0 ? (returnEvents.length / uniqueUsers.size) * 100 : 0,
-      avgSessionDuration: 180,
-      conversionRate: uniqueUsers.size > 0 ? (paymentEvents.length / uniqueUsers.size) * 100 : 0,
-      payingUsers: paymentEvents.length,
-      revenue: paymentEvents.length * 9900,
-    });
-  };
-
-  const processFunnel = (events: any[]) => {
     const stages = [
-      { key: 'landing_view', name: '랜딩 방문' },
-      { key: 'onboarding_start', name: '온보딩 시작' },
-      { key: 'onboarding_complete', name: '온보딩 완료' },
-      { key: 'free_trial_start', name: '무료 체험' },
-      { key: 'first_observation', name: '첫 관찰일지' },
-      { key: 'signup_complete', name: '회원가입' },
-      { key: 'payment_success', name: '결제 완료' },
+      { name: '회원가입', count: totalSignups },
+      { name: '첫 검사', count: usersWithTests },
+      { name: '관찰일지 작성', count: usersWithObs },
+      { name: '유료 전환', count: paidUsers },
     ];
 
     const funnelData: FunnelMetric[] = stages.map((stage, index) => {
-      const count = events.filter(e => e.event_type === stage.key).length;
-      const prevCount = index > 0 
-        ? events.filter(e => e.event_type === stages[index - 1].key).length 
-        : count;
-      
+      const prevCount = index > 0 ? stages[index - 1].count : stage.count;
       return {
         stage: stage.name,
-        count: count,
-        conversionRate: prevCount > 0 ? (count / prevCount) * 100 : (index === 0 ? 100 : 0),
-        dropoffRate: prevCount > 0 ? ((prevCount - count) / prevCount) * 100 : 0,
+        count: stage.count,
+        conversionRate: prevCount > 0 ? (stage.count / prevCount) * 100 : (index === 0 ? 100 : 0),
+        dropoffRate: prevCount > 0 ? ((prevCount - stage.count) / prevCount) * 100 : 0,
       };
     });
 
@@ -213,9 +226,9 @@ const PMFMetricsDashboard: React.FC = () => {
   };
 
   const processNPS = (feedback: any[]) => {
-    const promoters = feedback.filter(f => f.nps_score >= 9).length;
-    const passives = feedback.filter(f => f.nps_score >= 7 && f.nps_score <= 8).length;
-    const detractors = feedback.filter(f => f.nps_score <= 6).length;
+    const promoters = feedback.filter(f => f.rating >= 4).length;
+    const passives = feedback.filter(f => f.rating === 3).length;
+    const detractors = feedback.filter(f => f.rating <= 2).length;
     const total = feedback.length;
 
     setNpsData({
@@ -227,221 +240,165 @@ const PMFMetricsDashboard: React.FC = () => {
     });
   };
 
-  const processSegments = (events: any[]) => {
-    const segmentColors: Record<string, string> = {
-      'parent': 'bg-blue-500',
-      'self': 'bg-purple-500',
-      'b2b': 'bg-green-500',
-      'expert': 'bg-orange-500',
-      'unknown': 'bg-gray-500',
-    };
+  const processSegments = (profiles: any[], subscribers: any[]) => {
+    const paidUserIds = new Set(subscribers.filter(s => s.subscribed).map(s => s.user_id));
     
-    const segmentNames: Record<string, string> = {
-      'parent': '자녀 발달 걱정 부모',
-      'self': '본인 심리상태 궁금',
-      'b2b': 'B2B 기관',
-      'expert': '전문가',
-      'unknown': '기타',
-    };
+    // 가입 시기 기반 세그먼트
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    // 세그먼트별 사용자 그룹화
-    const segmentGroups: Record<string, Set<string>> = {};
-    const paymentEvents = new Set(
-      events
-        .filter(e => e.event_type === 'payment_success')
-        .map(e => e.user_id || e.session_id)
-    );
-
-    events.forEach(event => {
-      const segment = event.user_segment || 'unknown';
-      const userId = event.user_id || event.session_id;
-      if (!segmentGroups[segment]) {
-        segmentGroups[segment] = new Set();
-      }
-      segmentGroups[segment].add(userId);
+    const newUsers = profiles.filter(p => new Date(p.created_at) >= oneWeekAgo);
+    const activeUsers = profiles.filter(p => {
+      const createdAt = new Date(p.created_at);
+      return createdAt >= oneMonthAgo && createdAt < oneWeekAgo;
     });
+    const loyalUsers = profiles.filter(p => new Date(p.created_at) < oneMonthAgo);
 
-    const segmentData: SegmentData[] = Object.entries(segmentGroups).map(([key, users]) => {
-      const userArray = Array.from(users);
-      const convertedUsers = userArray.filter(u => paymentEvents.has(u)).length;
-      
-      return {
-        name: segmentNames[key] || key,
-        count: users.size,
-        conversion: users.size > 0 ? (convertedUsers / users.size) * 100 : 0,
-        color: segmentColors[key] || 'bg-gray-500',
-      };
-    });
+    const segmentData: SegmentData[] = [
+      {
+        name: '신규 사용자 (7일 이내)',
+        count: newUsers.length,
+        conversion: newUsers.length > 0 
+          ? (newUsers.filter(u => paidUserIds.has(u.user_id)).length / newUsers.length) * 100 
+          : 0,
+        color: 'bg-blue-600',
+      },
+      {
+        name: '활성 사용자 (7-30일)',
+        count: activeUsers.length,
+        conversion: activeUsers.length > 0 
+          ? (activeUsers.filter(u => paidUserIds.has(u.user_id)).length / activeUsers.length) * 100 
+          : 0,
+        color: 'bg-emerald-600',
+      },
+      {
+        name: '충성 사용자 (30일+)',
+        count: loyalUsers.length,
+        conversion: loyalUsers.length > 0 
+          ? (loyalUsers.filter(u => paidUserIds.has(u.user_id)).length / loyalUsers.length) * 100 
+          : 0,
+        color: 'bg-purple-600',
+      },
+    ];
 
-    // 정렬: count 기준 내림차순
-    segmentData.sort((a, b) => b.count - a.count);
-    setSegments(segmentData.length > 0 ? segmentData : [
-      { name: '자녀 발달 걱정 부모', count: 0, conversion: 0, color: 'bg-blue-500' },
-      { name: '본인 심리상태 궁금', count: 0, conversion: 0, color: 'bg-purple-500' },
-      { name: 'B2B 기관', count: 0, conversion: 0, color: 'bg-green-500' },
-      { name: '전문가', count: 0, conversion: 0, color: 'bg-orange-500' },
-    ]);
-  };
-
-  const setDummyData = () => {
-    setMetrics({
-      totalUsers: 127,
-      activeUsers: 76,
-      newUsers: 23,
-      returnRate: 34,
-      avgSessionDuration: 180,
-      conversionRate: 5.5,
-      payingUsers: 7,
-      revenue: 69300,
-    });
-
-    setFunnel([
-      { stage: '랜딩 방문', count: 500, conversionRate: 100, dropoffRate: 0 },
-      { stage: '온보딩 시작', count: 200, conversionRate: 40, dropoffRate: 60 },
-      { stage: '온보딩 완료', count: 150, conversionRate: 75, dropoffRate: 25 },
-      { stage: '무료 체험', count: 100, conversionRate: 67, dropoffRate: 33 },
-      { stage: '첫 관찰일지', count: 60, conversionRate: 60, dropoffRate: 40 },
-      { stage: '회원가입', count: 40, conversionRate: 67, dropoffRate: 33 },
-      { stage: '결제 완료', count: 7, conversionRate: 17.5, dropoffRate: 82.5 },
-    ]);
-
-    setNpsData({
-      promoters: 15,
-      passives: 8,
-      detractors: 5,
-      npsScore: 36,
-      totalResponses: 28,
-    });
-
-    setRecentFeedback([
-      { nps_score: 9, feedback_text: 'AI 분석이 정말 정확해요!', would_pay: true, created_at: new Date().toISOString() },
-      { nps_score: 7, feedback_text: '더 많은 검사 종류가 있으면 좋겠어요', would_pay: true, created_at: new Date().toISOString() },
-      { nps_score: 5, feedback_text: '속도가 좀 느린 것 같아요', would_pay: false, created_at: new Date().toISOString() },
-    ]);
-
-    setSegments([
-      { name: '자녀 발달 걱정 부모', count: 45, conversion: 8.2, color: 'bg-blue-500' },
-      { name: '본인 심리상태 궁금', count: 38, conversion: 4.5, color: 'bg-purple-500' },
-      { name: 'B2B 기관', count: 12, conversion: 25, color: 'bg-green-500' },
-      { name: '전문가', count: 8, conversion: 15, color: 'bg-orange-500' },
-    ]);
+    setSegments(segmentData.filter(s => s.count > 0));
   };
 
   const getNPSColor = (score: number) => {
-    if (score >= 50) return 'text-green-500';
-    if (score >= 0) return 'text-yellow-500';
-    return 'text-red-500';
+    if (score >= 50) return 'text-emerald-600 dark:text-emerald-400';
+    if (score >= 0) return 'text-amber-600 dark:text-amber-400';
+    return 'text-red-600 dark:text-red-400';
   };
 
   return (
     <div className="p-6 space-y-6 bg-background min-h-screen">
+      {/* 헤더 */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold">📊 PMF 검증 대시보드</h1>
-          <p className="text-muted-foreground">핵심 지표로 Product-Market Fit 확인</p>
+          <h1 className="text-2xl font-bold text-foreground">📊 PMF 대시보드</h1>
+          <p className="text-muted-foreground">실시간 Product-Market Fit 지표</p>
         </div>
-        <div className="flex items-center gap-3 flex-wrap">
-          {/* 데이터 소스 토글 */}
-          <div className="flex gap-1">
-            <Button
-              variant={dataSource === 'database' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setDataSource('database')}
-              className="gap-1"
-            >
-              <Database className="w-3 h-3" />
-              실제 데이터
-            </Button>
-            <Button
-              variant={dataSource === 'demo' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setDataSource('demo')}
-            >
-              데모
-            </Button>
-          </div>
-          
-          {/* 기간 필터 */}
-          <div className="flex gap-1">
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex rounded-lg border border-border overflow-hidden">
             {(['7d', '30d', 'all'] as const).map((range) => (
               <Button
                 key={range}
-                variant={dateRange === range ? 'secondary' : 'ghost'}
+                variant={dateRange === range ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setDateRange(range)}
+                className="rounded-none"
               >
                 {range === '7d' ? '7일' : range === '30d' ? '30일' : '전체'}
               </Button>
             ))}
           </div>
-          <Button variant="outline" size="icon" onClick={loadMetrics}>
+          <Button variant="outline" size="icon" onClick={loadMetrics} disabled={loading}>
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
       </div>
 
-      {/* 데이터 소스 안내 */}
-      {dataSource === 'database' && metrics.totalUsers === 0 && !loading && (
-        <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">
-            ⚠️ 아직 수집된 데이터가 없습니다. 사용자가 서비스를 이용하면 자동으로 이벤트가 기록됩니다.
-            <br />
-            <span className="text-xs text-yellow-600 dark:text-yellow-400">데모 데이터를 보려면 위의 "데모" 버튼을 클릭하세요.</span>
-          </p>
-        </div>
-      )}
-      
-      {dataSource === 'demo' && (
-        <Badge variant="outline" className="text-xs">
-          📌 데모 데이터를 표시하고 있습니다
-        </Badge>
-      )}
-
+      {/* 핵심 지표 카드 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <MetricCard title="전체 사용자" value={metrics.totalUsers} icon={<Users className="w-5 h-5" />} trend={12} />
-        <MetricCard title="전환율" value={`${metrics.conversionRate.toFixed(1)}%`} icon={<Target className="w-5 h-5" />} trend={2.3} target="목표: 5%" />
-        <MetricCard title="재방문율" value={`${metrics.returnRate.toFixed(0)}%`} icon={<TrendingUp className="w-5 h-5" />} trend={-5} target="목표: 30%" />
-        <MetricCard title="예상 수익" value={`₩${metrics.revenue.toLocaleString()}`} icon={<DollarSign className="w-5 h-5" />} trend={15} />
+        <MetricCard 
+          title="전체 사용자" 
+          value={metrics.totalUsers} 
+          icon={<Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />} 
+          trend={12} 
+          bgColor="bg-blue-50 dark:bg-blue-950"
+        />
+        <MetricCard 
+          title="전환율" 
+          value={`${metrics.conversionRate.toFixed(1)}%`} 
+          icon={<Target className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />} 
+          trend={2.3} 
+          target="목표: 5%"
+          bgColor="bg-emerald-50 dark:bg-emerald-950"
+        />
+        <MetricCard 
+          title="활성 사용자" 
+          value={metrics.activeUsers} 
+          icon={<TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />} 
+          trend={-5} 
+          bgColor="bg-purple-50 dark:bg-purple-950"
+        />
+        <MetricCard 
+          title="총 수익" 
+          value={`₩${metrics.revenue.toLocaleString()}`} 
+          icon={<DollarSign className="w-5 h-5 text-amber-600 dark:text-amber-400" />} 
+          trend={15}
+          bgColor="bg-amber-50 dark:bg-amber-950"
+        />
       </div>
 
+      {/* 탭 콘텐츠 */}
       <Tabs defaultValue="funnel" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="funnel">퍼널 분석</TabsTrigger>
-          <TabsTrigger value="nps">NPS & 피드백</TabsTrigger>
-          <TabsTrigger value="segments">세그먼트</TabsTrigger>
+        <TabsList className="bg-muted/50">
+          <TabsTrigger value="funnel" className="data-[state=active]:bg-background">퍼널 분석</TabsTrigger>
+          <TabsTrigger value="nps" className="data-[state=active]:bg-background">NPS & 피드백</TabsTrigger>
+          <TabsTrigger value="segments" className="data-[state=active]:bg-background">세그먼트</TabsTrigger>
         </TabsList>
 
+        {/* 퍼널 분석 */}
         <TabsContent value="funnel" className="space-y-4">
-          <Card>
+          <Card className="border-border">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
+              <CardTitle className="flex items-center gap-2 text-foreground">
+                <BarChart3 className="w-5 h-5 text-primary" />
                 전환 퍼널
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {funnel.map((stage, index) => (
                   <div key={stage.stage} className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{stage.stage}</span>
-                        <Badge variant="secondary">{stage.count}명</Badge>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="font-semibold text-foreground">{stage.stage}</span>
+                        <Badge variant="secondary" className="bg-primary/10 text-primary">
+                          {stage.count}명
+                        </Badge>
                       </div>
-                      <div className="flex items-center gap-4 text-muted-foreground">
-                        {index > 0 && (
-                          <>
-                            <span className="text-green-500">전환 {stage.conversionRate.toFixed(0)}%</span>
-                            <span className="text-red-500">이탈 {stage.dropoffRate.toFixed(0)}%</span>
-                          </>
-                        )}
-                      </div>
+                      {index > 0 && (
+                        <div className="flex items-center gap-4 text-sm">
+                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                            전환 {stage.conversionRate.toFixed(0)}%
+                          </span>
+                          <span className="text-red-600 dark:text-red-400 font-medium">
+                            이탈 {stage.dropoffRate.toFixed(0)}%
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <div className="relative">
-                      <Progress value={(stage.count / (funnel[0]?.count || 1)) * 100} className="h-8" />
+                      <Progress 
+                        value={(stage.count / (funnel[0]?.count || 1)) * 100} 
+                        className="h-10 bg-muted"
+                      />
                       {index < funnel.length - 1 && (
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full px-2">
-                          <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-8">
+                          <ArrowRight className="w-5 h-5 text-muted-foreground" />
                         </div>
                       )}
                     </div>
@@ -449,94 +406,126 @@ const PMFMetricsDashboard: React.FC = () => {
                 ))}
               </div>
               
-              <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                <h4 className="font-medium text-red-800 dark:text-red-200 mb-2">⚠️ 주요 이탈 포인트</h4>
-                <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
-                  <li>• 온보딩 시작 → 완료: 25% 이탈 (목표 대비 +10%)</li>
-                  <li>• 회원가입 → 결제: 82% 이탈 (결제 전환 개선 필요)</li>
-                </ul>
-              </div>
+              {funnel.some(f => f.dropoffRate > 50) && (
+                <div className="mt-6 p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg">
+                  <h4 className="font-semibold text-red-700 dark:text-red-300 mb-2 flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4" />
+                    주요 이탈 포인트
+                  </h4>
+                  <ul className="text-sm text-red-600 dark:text-red-400 space-y-1">
+                    {funnel.filter(f => f.dropoffRate > 50).map(f => (
+                      <li key={f.stage}>• {f.stage}: {f.dropoffRate.toFixed(0)}% 이탈</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
 
+        {/* NPS & 피드백 */}
         <TabsContent value="nps" className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader><CardTitle>NPS 점수</CardTitle></CardHeader>
+            <Card className="border-border">
+              <CardHeader>
+                <CardTitle className="text-foreground">NPS 점수</CardTitle>
+              </CardHeader>
               <CardContent className="space-y-4">
-                <div className="text-center">
-                  <div className={`text-5xl font-bold ${getNPSColor(npsData.npsScore)}`}>{npsData.npsScore}</div>
-                  <p className="text-sm text-muted-foreground mt-1">{npsData.totalResponses}명 응답</p>
+                <div className="text-center py-4">
+                  <div className={`text-6xl font-bold ${getNPSColor(npsData.npsScore)}`}>
+                    {npsData.npsScore}
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {npsData.totalResponses}명 응답
+                  </p>
                 </div>
                 
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1"><ThumbsUp className="w-4 h-4 text-green-500" />추천 (9-10)</span>
-                    <span>{npsData.promoters}명</span>
+                <div className="space-y-3 pt-4 border-t border-border">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-2 text-foreground">
+                      <ThumbsUp className="w-4 h-4 text-emerald-600" />
+                      추천 (4-5점)
+                    </span>
+                    <span className="font-semibold text-foreground">{npsData.promoters}명</span>
                   </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span>중립 (7-8)</span>
-                    <span>{npsData.passives}명</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">중립 (3점)</span>
+                    <span className="font-semibold text-foreground">{npsData.passives}명</span>
                   </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1"><ThumbsDown className="w-4 h-4 text-red-500" />비추천 (0-6)</span>
-                    <span>{npsData.detractors}명</span>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-2 text-foreground">
+                      <ThumbsDown className="w-4 h-4 text-red-600" />
+                      비추천 (1-2점)
+                    </span>
+                    <span className="font-semibold text-foreground">{npsData.detractors}명</span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-muted rounded-lg text-sm">
-                  <p className="font-medium">PMF 기준</p>
-                  <p className="text-muted-foreground">NPS 40+ = 강한 PMF 신호 ✅</p>
+                <div className="p-4 bg-muted rounded-lg">
+                  <p className="font-medium text-foreground">PMF 기준</p>
+                  <p className="text-sm text-muted-foreground">NPS 40+ = 강한 PMF 신호</p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader><CardTitle>최근 피드백</CardTitle></CardHeader>
+            <Card className="border-border">
+              <CardHeader>
+                <CardTitle className="text-foreground">최근 피드백</CardTitle>
+              </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {recentFeedback.length > 0 ? recentFeedback.map((fb, index) => (
-                    <div key={index} className="p-3 bg-muted/50 rounded-lg space-y-2">
+                    <div key={index} className="p-4 bg-muted rounded-lg space-y-2">
                       <div className="flex items-center justify-between">
-                        <Badge variant={fb.nps_score >= 9 ? 'default' : fb.nps_score >= 7 ? 'secondary' : 'destructive'}>
-                          NPS {fb.nps_score}
+                        <Badge 
+                          variant={fb.rating >= 4 ? 'default' : fb.rating === 3 ? 'secondary' : 'destructive'}
+                        >
+                          평점 {fb.rating}/5
                         </Badge>
-                        <Badge variant={fb.would_pay ? 'outline' : 'secondary'}>
-                          {fb.would_pay ? '💰 유료 의향' : '무료만'}
-                        </Badge>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(fb.created_at).toLocaleDateString('ko-KR')}
+                        </span>
                       </div>
-                      {fb.feedback_text && <p className="text-sm text-muted-foreground">"{fb.feedback_text}"</p>}
+                      {fb.comment && (
+                        <p className="text-sm text-foreground">"{fb.comment}"</p>
+                      )}
                     </div>
                   )) : (
-                    <p className="text-center text-muted-foreground py-8">아직 피드백이 없습니다</p>
+                    <div className="text-center py-8 text-muted-foreground">
+                      아직 피드백이 없습니다
+                    </div>
                   )}
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <Card>
-            <CardHeader><CardTitle>💰 유료 전환 의향</CardTitle></CardHeader>
+          <Card className="border-border">
+            <CardHeader>
+              <CardTitle className="text-foreground">💰 유료 전환 현황</CardTitle>
+            </CardHeader>
             <CardContent>
               <div className="flex items-center gap-8">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-green-500">{recentFeedback.filter(f => f.would_pay).length}</div>
-                  <p className="text-sm text-muted-foreground">유료 의향 있음</p>
+                  <div className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">
+                    {metrics.payingUsers}
+                  </div>
+                  <p className="text-sm text-muted-foreground">유료 사용자</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-muted-foreground">{recentFeedback.filter(f => !f.would_pay).length}</div>
-                  <p className="text-sm text-muted-foreground">무료만 사용</p>
+                  <div className="text-4xl font-bold text-muted-foreground">
+                    {metrics.totalUsers - metrics.payingUsers}
+                  </div>
+                  <p className="text-sm text-muted-foreground">무료 사용자</p>
                 </div>
-                <div className="flex-1 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <p className="text-sm text-green-800 dark:text-green-200">
-                    <strong>
-                      {recentFeedback.length > 0 
-                        ? Math.round((recentFeedback.filter(f => f.would_pay).length / recentFeedback.length) * 100)
-                        : 0}%
-                    </strong>가 유료 사용 의향이 있습니다.
-                    <br />
-                    <span className="text-xs">PMF 기준: 40% 이상 = 강한 신호</span>
+                <div className="flex-1 p-4 bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                  <p className="text-foreground">
+                    <strong className="text-emerald-600 dark:text-emerald-400">
+                      {metrics.conversionRate.toFixed(1)}%
+                    </strong>가 유료 전환했습니다.
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    PMF 기준: 5% 이상 = 좋은 신호
                   </p>
                 </div>
               </div>
@@ -544,27 +533,43 @@ const PMFMetricsDashboard: React.FC = () => {
           </Card>
         </TabsContent>
 
+        {/* 세그먼트 */}
         <TabsContent value="segments" className="space-y-4">
-          <Card>
-            <CardHeader><CardTitle>사용자 세그먼트</CardTitle></CardHeader>
+          <Card className="border-border">
+            <CardHeader>
+              <CardTitle className="text-foreground">사용자 세그먼트</CardTitle>
+            </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 gap-4">
-                {segments.map((segment) => (
-                  <div key={segment.name} className="p-4 border rounded-lg space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${segment.color}`} />
-                      <span className="font-medium">{segment.name}</span>
+              {segments.length > 0 ? (
+                <div className="grid md:grid-cols-3 gap-4">
+                  {segments.map((segment) => (
+                    <div key={segment.name} className="p-5 border border-border rounded-xl space-y-3 hover:border-primary/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-4 h-4 rounded-full ${segment.color}`} />
+                        <span className="font-semibold text-foreground">{segment.name}</span>
+                      </div>
+                      <div className="flex justify-between items-end">
+                        <div>
+                          <div className="text-3xl font-bold text-foreground">{segment.count}</div>
+                          <div className="text-xs text-muted-foreground">명</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
+                            {segment.conversion.toFixed(1)}%
+                          </div>
+                          <div className="text-xs text-muted-foreground">전환율</div>
+                        </div>
+                      </div>
+                      <Progress value={segment.conversion} className="h-2" />
                     </div>
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>{segment.count}명</span>
-                      <span className="text-green-500">전환율 {segment.conversion.toFixed(1)}%</span>
-                    </div>
-                    <Progress value={segment.conversion * 4} className="h-2" />
-                  </div>
-                ))}
-              </div>
-              {segments.length === 0 && (
-                <p className="text-center text-muted-foreground py-8">세그먼트 데이터가 없습니다</p>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Database className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>아직 세그먼트 데이터가 없습니다</p>
+                  <p className="text-sm">사용자가 가입하면 자동으로 분류됩니다</p>
+                </div>
               )}
             </CardContent>
           </Card>
@@ -574,24 +579,28 @@ const PMFMetricsDashboard: React.FC = () => {
   );
 };
 
+// 메트릭 카드 컴포넌트
 const MetricCard: React.FC<{
   title: string;
   value: string | number;
   icon: React.ReactNode;
   trend?: number;
   target?: string;
-}> = ({ title, value, icon, trend, target }) => (
-  <Card>
-    <CardContent className="p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-muted-foreground text-sm">{title}</span>
-        {icon}
+  bgColor?: string;
+}> = ({ title, value, icon, trend, target, bgColor = 'bg-muted' }) => (
+  <Card className={`${bgColor} border-0`}>
+    <CardContent className="p-5">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-sm font-medium text-muted-foreground">{title}</span>
+        <div className="p-2 rounded-lg bg-background/80">
+          {icon}
+        </div>
       </div>
-      <div className="text-2xl font-bold">{value}</div>
-      <div className="flex items-center justify-between mt-1">
+      <div className="text-3xl font-bold text-foreground">{value}</div>
+      <div className="flex items-center justify-between mt-2">
         {trend !== undefined && (
-          <span className={`text-xs flex items-center gap-1 ${trend >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-            {trend >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+          <span className={`text-sm flex items-center gap-1 font-medium ${trend >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+            {trend >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
             {Math.abs(trend)}%
           </span>
         )}

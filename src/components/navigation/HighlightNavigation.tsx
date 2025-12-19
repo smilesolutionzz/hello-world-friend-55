@@ -231,19 +231,6 @@ export const HighlightNavigation = () => {
                   <SheetTitle className="text-left">메뉴</SheetTitle>
                 </SheetHeader>
                 <div className="mt-6 space-y-6">
-                  {/* 상담 버튼 - 모바일 메뉴 상단 */}
-                  <button
-                    onClick={handleMobileChatOpen}
-                    className="flex items-center gap-3 w-full p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors"
-                  >
-                    <MessageCircle className="h-5 w-5 text-primary" />
-                    <span className="font-semibold text-primary">실시간 상담</span>
-                    <span className="ml-auto flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </span>
-                  </button>
-
                   {/* 홈 */}
                   <button
                     onClick={() => handleMobileNavigate('/')}
@@ -286,6 +273,19 @@ export const HighlightNavigation = () => {
                       ))}
                     </div>
                   </div>
+
+                  {/* 상담 버튼 - 계정 섹션 아래 */}
+                  <button
+                    onClick={handleMobileChatOpen}
+                    className="flex items-center gap-3 w-full p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors"
+                  >
+                    <MessageCircle className="h-5 w-5 text-primary" />
+                    <span className="font-semibold text-primary">실시간 상담</span>
+                    <span className="ml-auto flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                  </button>
                 </div>
               </SheetContent>
             </Sheet>

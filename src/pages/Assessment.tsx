@@ -282,6 +282,14 @@ const Assessment = () => {
       setCurrentStep('career-test');
     } else if (type === 'language') {
       setCurrentStep('language-test');
+    } else if (type === 'depression') {
+      setCurrentStep('depression-test');
+    } else if (type === 'panic') {
+      setCurrentStep('panic-test');
+    } else if (type === 'adhd') {
+      setCurrentStep('adhd-test');
+    } else if (type === 'selfesteem') {
+      setCurrentStep('selfesteem-test');
     } else if (type === 'developmental-delay') {
       setCurrentStep('developmental-delay-test');
     } else if (type === 'sensory-integration') {

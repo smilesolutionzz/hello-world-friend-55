@@ -20,7 +20,7 @@ import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import ErrorBoundary from '@/components/ui/error-boundary';
-import { PlatformGuideFAQButton } from '@/components/faq/PlatformGuideFAQ';
+
 import MainPromoSection from '@/components/promotion/MainPromoSection';
 
 const structuredData = {
@@ -187,7 +187,6 @@ const Index = () => {
           </main>
           
           <BackToTop />
-          <PlatformGuideFAQButton />
           
           <WelcomeOnboarding 
             isOpen={showOnboarding} 

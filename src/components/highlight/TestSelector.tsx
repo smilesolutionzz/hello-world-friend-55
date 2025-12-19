@@ -154,7 +154,7 @@ export const TestSelector = () => {
         navigate('/assessment', { state: { testType: 'panic' } });
         break;
       case 'autism-spectrum-test':
-        navigate('/assessment', { state: { testType: 'psychological' } });
+        navigate('/assessment', { state: { testType: 'social-development' } });
         break;
       case 'developmental-delay-test':
         navigate('/assessment', { state: { testType: 'developmental-delay' } });
@@ -172,7 +172,7 @@ export const TestSelector = () => {
         navigate('/assessment', { state: { testType: 'social-development' } });
         break;
       case 'tic-disorder-test':
-        navigate('/assessment', { state: { testType: 'psychological' } });
+        navigate('/assessment', { state: { testType: 'adhd' } });
         break;
       case 'premium-assessment':
         navigate('/premium-assessment');

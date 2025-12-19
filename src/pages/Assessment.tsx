@@ -846,21 +846,6 @@ const Assessment = () => {
                     </ul>
                   </div>
 
-                  <div 
-                    className="bg-white dark:bg-card hover-glow border-2 border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
-                    onClick={() => handleTestTypeSelect('selfesteem')}
-                  >
-                    <div className="absolute top-3 right-3">
-                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
-                    </div>
-                     <h3 className="text-xl font-bold text-brand-gradient mb-3">정서발달 체크</h3>
-                     <p className="text-muted-foreground mb-3 text-sm">영유아·아동·성인 연령별 정서 및 감정발달 확인 (참고용)</p>
-                     <ul className="space-y-1 text-sm">
-                       <li>• 연령대별 15문항</li>
-                       <li>• 정서발달 상태 확인</li>
-                       <li>• 감정표현 능력 평가</li>
-                     </ul>
-                  </div>
                 </div>
               </div>
             </div>

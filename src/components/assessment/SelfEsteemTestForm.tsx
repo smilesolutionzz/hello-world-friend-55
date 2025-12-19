@@ -108,18 +108,27 @@ export default function SelfEsteemTestForm({ onComplete, onBack }: SelfEsteemTes
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleAnswer = (questionId: string, value: string) => {
-    setAnswers(prev => ({
-      ...prev,
+    const newAnswers = {
+      ...answers,
       [questionId]: value
-    }));
-    handleNext();
+    };
+    setAnswers(newAnswers);
+    
+    // 마지막 문항이면 바로 결과 분석, 아니면 다음 문항으로 이동
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(prev => prev + 1);
+      } else {
+        analyzeResultsWithAnswers(newAnswers);
+      }
+    }, 300);
   };
 
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
-      analyzeResults();
+      analyzeResultsWithAnswers(answers);
     }
   };
 
@@ -129,12 +138,12 @@ export default function SelfEsteemTestForm({ onComplete, onBack }: SelfEsteemTes
     }
   };
 
-  const analyzeResults = () => {
+  const analyzeResultsWithAnswers = (finalAnswers: Record<string, string>) => {
     setIsAnalyzing(true);
     
     setTimeout(() => {
       const scores = questions.map((question, index) => {
-        const rawScore = parseInt(answers[question.id]) || 1;
+        const rawScore = parseInt(finalAnswers[question.id]) || 1;
         // 역문항의 경우 점수를 역산
         return question.reverse ? 6 - rawScore : rawScore;
       });

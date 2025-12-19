@@ -148,15 +148,19 @@ const AssessmentHistory = () => {
     return names[ageGroup || ''] || '심리검사';
   };
 
-  const getRiskConfig = (level?: 'low' | 'medium' | 'high') => {
-    const configs = {
-      low: { 
-        bgClass: "bg-emerald-500/10 border-emerald-500/20", 
-        textClass: "text-emerald-600 dark:text-emerald-400",
-        label: "낮음", 
-        icon: CheckCircle,
-        gradient: "from-emerald-500 to-green-500"
-      },
+  const getRiskConfig = (level?: 'low' | 'medium' | 'high' | null) => {
+    const defaultConfig = { 
+      bgClass: "bg-emerald-500/10 border-emerald-500/20", 
+      textClass: "text-emerald-600 dark:text-emerald-400",
+      label: "낮음", 
+      icon: CheckCircle,
+      gradient: "from-emerald-500 to-green-500"
+    };
+    
+    if (!level) return defaultConfig;
+    
+    const configs: Record<string, typeof defaultConfig> = {
+      low: defaultConfig,
       medium: { 
         bgClass: "bg-amber-500/10 border-amber-500/20", 
         textClass: "text-amber-600 dark:text-amber-400",
@@ -172,7 +176,7 @@ const AssessmentHistory = () => {
         gradient: "from-rose-500 to-red-500"
       }
     };
-    return configs[level || 'low'];
+    return configs[level] || defaultConfig;
   };
 
   const getRiskBadge = (level?: 'low' | 'medium' | 'high') => {

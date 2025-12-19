@@ -9,6 +9,7 @@ import CTABannerSection from "@/components/landing/CTABannerSection";
 import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
 import ValueComparisonSection from "@/components/landing/ValueComparisonSection";
 import TestimonialSection from "@/components/TestimonialSection";
+import EmotionalHookSection from "@/components/landing/EmotionalHookSection";
 import BackToTop from "@/components/common/BackToTop";
 import SEOHead from "@/components/common/SEOHead";
 import { SkipLink } from "@/components/ui/skip-link";
@@ -162,7 +163,12 @@ const Index = () => {
               <DataDrivenReportSection />
             </LazyLoad>
             
-            {/* 5️⃣ 실제 후기 */}
+            {/* 5️⃣ 감성 후킹 - 엄마들의 실제 사연 */}
+            <LazyLoad rootMargin="200px">
+              <EmotionalHookSection />
+            </LazyLoad>
+            
+            {/* 6️⃣ 실제 후기 */}
             <LazyLoad rootMargin="200px">
               <TestimonialSection />
             </LazyLoad>

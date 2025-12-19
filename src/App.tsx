@@ -40,7 +40,6 @@ import HighlightAI from "./pages/HighlightAI";
 import AITherapyStudio from "./pages/AITherapyStudio";
 
 import { TypebotEmbed } from "./components/highlight/TypebotEmbed";
-import { TestResults } from "./components/highlight/TestResults";
 import { PersonalityLoveTest } from "./components/assessment/PersonalityLoveTest";
 import { PersonalityLoveResult } from "./components/assessment/PersonalityLoveResult";
 import RelationshipStyleTest from "./pages/RelationshipStyleTest";
@@ -231,7 +230,7 @@ const App = () => {
           <Route path="/assessment/defense-mechanism-test" element={<DefenseMechanismTest />} />
           <Route path="/assessment/attachment-style-test" element={<AttachmentStyleTest />} />
           <Route path="/assessment/mbti-test" element={<MBTITest />} />
-          <Route path="/assessment/:id" element={<TestResults />} />
+          <Route path="/assessment/:id" element={<AssessmentDetail />} />
           <Route path="/assessment-detail/:id" element={<AssessmentDetail />} />
           <Route path="/fun-tests" element={<FunTests />} />
            <Route path="/fun-test-result" element={<FunTestResult />} />

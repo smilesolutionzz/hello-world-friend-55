@@ -55,7 +55,7 @@ const CompanyIntroVideoSection = () => {
                       소개 영상 보기
                     </p>
                     <p className="text-xs sm:text-sm text-foreground drop-shadow-md">
-                      2분으로 알아보는 AIHUMANPRO
+                      3분 동화로 알아보는 AIHUMANPRO
                     </p>
                   </div>
                 </div>
@@ -67,7 +67,7 @@ const CompanyIntroVideoSection = () => {
               /* YouTube Player */
               <div className="aspect-video">
                 <iframe
-                  src="https://www.youtube.com/embed/tkkIlUpf8nU?autoplay=1&rel=0&modestbranding=1"
+                  src="https://www.youtube.com/embed/EAYwe4C8nds?autoplay=1&rel=0&modestbranding=1"
                   title="AIHUMANPRO 회사 소개 영상"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

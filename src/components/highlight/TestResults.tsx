@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Download, Share, Brain } from 'lucide-react';
+import { ArrowLeft, Brain, Calendar, FileText, RotateCcw, Sparkles, ChevronRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useTokenGuard } from '@/hooks/useTokenGuard';
-import { generateTestResultPDF } from '@/utils/pdfGenerator';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface TestResult {
   id: string;
@@ -19,55 +18,46 @@ interface TestResult {
     description: string;
   };
   ai_analysis?: string;
-  expert_feedback?: string;
+  age_group?: string;
+  source?: 'assessments' | 'test_results';
 }
-
-const PremiumFeature = ({ children }: { children: React.ReactNode }) => {
-  const { allowed, loading } = useTokenGuard(2);
-  const navigate = useNavigate();
-  
-  if (loading) {
-    return <div className="animate-pulse bg-muted h-20 rounded"></div>;
-  }
-  
-  if (!allowed) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>프리미엄 기능</CardTitle>
-          <CardDescription>
-            이 기능은 프리미엄 플랜에서만 사용할 수 있습니다.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button onClick={() => navigate('/token-subscription')}>
-            캐시 구매하기
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-  
-  return <>{children}</>;
-};
 
 export const TestResults = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [result, setResult] = useState<TestResult | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // Check if assessment data was passed via navigation state
+  const passedAssessment = location.state?.assessment;
+
   useEffect(() => {
-    if (id) {
+    if (passedAssessment) {
+      // Use passed data directly
+      setResult({
+        id: passedAssessment.id,
+        scores: passedAssessment.results,
+        completed_at: passedAssessment.completed_at,
+        test_types: {
+          name: passedAssessment.test_name,
+          description: passedAssessment.test_description || '심리검사 결과'
+        },
+        ai_analysis: passedAssessment.analysis,
+        age_group: passedAssessment.age_group,
+        source: passedAssessment.source
+      });
+      setLoading(false);
+    } else if (id) {
       fetchTestResult();
     }
-  }, [id]);
+  }, [id, passedAssessment]);
 
   const fetchTestResult = async () => {
     try {
       // First try to fetch from test_results table
-      const { data: testResultData, error: testResultError } = await supabase
+      const { data: testResultData } = await supabase
         .from('test_results')
         .select(`
           id,
@@ -87,7 +77,8 @@ export const TestResults = () => {
           test_types: {
             name: testResultData.test_types?.name || '심리검사',
             description: testResultData.test_types?.description || '심리검사 결과'
-          }
+          },
+          source: 'test_results'
         });
         setLoading(false);
         return;
@@ -117,7 +108,9 @@ export const TestResults = () => {
             name: getTestNameFromAgeGroup(assessmentData.age_group),
             description: "심리검사 결과"
           },
-          ai_analysis: assessmentData.analysis
+          ai_analysis: assessmentData.analysis,
+          age_group: assessmentData.age_group,
+          source: 'assessments'
         });
       } else {
         toast({
@@ -138,129 +131,43 @@ export const TestResults = () => {
     }
   };
 
-  const generateChartData = (scores: any) => {
-    // scores 안에 results가 중첩되어 있는 경우 처리
-    const actualScores = scores?.results || scores;
-    
-    // scores 객체가 없거나 빈 경우 처리
-    if (!actualScores || typeof actualScores !== 'object') return [];
-    
-    return Object.entries(actualScores)
-      .filter(([key]) => !['total', 'total_score', 'predicted_score', 'score', 'ageGroup', 'severity', 'answers', 'testType', 'analysis', 'testInfo', 'savedAt', 'chartData', 'riskLevel', 'scoreSummary', 'average'].includes(key))
-      .filter(([_, value]) => typeof value === 'number')
-      .map(([key, value]) => ({
-        name: getKoreanLabel(key),
-        score: value as number,
-        fullMark: 100
-      }));
-  };
-
-  const getTestNameFromAgeGroup = (ageGroup: string) => {
+  const getTestNameFromAgeGroup = (ageGroup?: string) => {
     const names: Record<string, string> = {
       infant: '영유아 발달검사',
       child: '아동/청소년 심리검사',
       adult: '성인 심리검사'
     };
-    return names[ageGroup] || '심리검사';
+    return names[ageGroup || ''] || '심리검사';
   };
 
-  const getKoreanLabel = (key: string) => {
+  const getAgeGroupLabel = (ageGroup?: string) => {
     const labels: Record<string, string> = {
-      vocabulary: '어휘력',
-      grammar: '문법',
-      comprehension: '이해력',
-      expression: '표현력',
-      stress_management: '스트레스 관리',
-      emotional_regulation: '감정 조절',
-      adaptability: '적응력',
-      social_support: '사회적 지지',
-      attention: '주의력',
-      hyperactivity: '과잉행동',
-      impulsivity: '충동성',
-      executive: '실행기능',
-      executive_function: '실행기능',
-      language: '언어능력',
-      novelty_seeking: '자극추구',
-      harm_avoidance: '위험회피',
-      reward_dependence: '사회적 민감성',
-      persistence: '인내력',
-      self_directedness: '자율성',
-      cooperativeness: '협조성',
-      self_transcendence: '자기초월',
-      extraversion: '외향성',
-      agreeableness: '친화성',
-      conscientiousness: '성실성',
-      neuroticism: '신경성',
-      openness: '개방성',
-      passionate_romantic: '열정적 로맨티스트',
-      stable_companion: '안정적 동반자',
-      independent_individualist: '독립적 개인주의자',
-      realistic_planner: '계획적 현실주의자',
-      inattention: '부주의',
-      working_memory: '작업기억',
-      emotional_problems: '정서적 문제',
-      behavioral_problems: '행동적 문제',
-      social_adaptation: '사회적 적응',
-      identity_development: '정체성 발달',
-      social_interaction: '사회적 상호작용',
-      communication: '의사소통',
-      behavioral_patterns: '행동 패턴',
-      sensory_responses: '감각 반응',
-      anxiety: '불안',
-      depression: '우울',
-      self_esteem: '자존감',
-      resilience: '회복력',
-      focus: '집중력',
-      memory: '기억력'
+      infant: "유아",
+      child: "아동/청소년",
+      adult: "성인"
     };
-    return labels[key] || key.replace(/_/g, ' ');
+    return labels[ageGroup || ''] || '';
   };
 
-  const getScoreLevel = (score: number) => {
-    if (score >= 80) return { level: '우수', color: 'bg-green-500' };
-    if (score >= 60) return { level: '보통', color: 'bg-yellow-500' };
-    return { level: '개선필요', color: 'bg-red-500' };
-  };
-
-  const generateAIAnalysis = (scores: Record<string, number>, testName: string) => {
-    const totalScore = scores.total_score || scores.predicted_score || 0;
-    const { level } = getScoreLevel(totalScore);
-    
-    if (testName.includes('언어')) {
-      return `언어 검사 결과, 전체 점수는 ${totalScore}점으로 '${level}' 수준입니다. 어휘력과 표현력을 중심으로 꾸준한 학습을 권장합니다.`;
-    } else if (testName.includes('회복력')) {
-      return `회복력 검사 결과, 전체 점수는 ${totalScore}점으로 '${level}' 수준입니다. 스트레스 관리 기법과 감정 조절 능력 향상에 집중해보세요.`;
-    } else if (testName.includes('ADHD')) {
-      return `ADHD 검사 결과, 전체 점수는 ${totalScore}점으로 '${level}' 수준입니다. 주의력과 실행기능 향상을 위한 구체적인 계획을 세워보시기 바랍니다.`;
-    }
-    return `검사 결과, 전체 점수는 ${totalScore}점으로 '${level}' 수준입니다. 상세 결과를 확인하시고 필요시 전문가 상담을 권장드립니다.`;
-  };
-
-  const handleDownloadPDF = async () => {
-    try {
-      const testName = result?.test_types?.name || '심리검사';
-      const testDate = new Date(result?.completed_at || Date.now()).toLocaleDateString('ko-KR');
-      
-      await generateTestResultPDF(testName, '사용자', testDate, 'pdf-content');
-      
-      toast({
-        title: "PDF 다운로드 완료",
-        description: "검사 결과가 PDF로 저장되었습니다.",
-      });
-    } catch (error) {
-      toast({
-        title: "PDF 다운로드 실패",
-        description: "PDF 생성 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
+  const handleRetakeTest = () => {
+    // Navigate to appropriate test page based on age group or test type
+    if (result?.age_group) {
+      navigate('/assessment', { state: { ageGroup: result.age_group } });
+    } else if (result?.source === 'test_results') {
+      navigate('/premium-assessment');
+    } else {
+      navigate('/assessment');
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30">
+        <div className="text-center space-y-4">
+          <div className="relative w-16 h-16 mx-auto">
+            <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
+            <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+          </div>
           <p className="text-muted-foreground">검사 결과를 불러오는 중...</p>
         </div>
       </div>
@@ -269,207 +176,183 @@ export const TestResults = () => {
 
   if (!result) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
-        <Card className="p-8 text-center max-w-md">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30 p-4">
+        <Card className="p-8 text-center max-w-md rounded-2xl border-border/50">
           <Brain className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">결과를 찾을 수 없습니다</h2>
-          <p className="text-muted-foreground mb-4">해당 검사 결과가 존재하지 않거나 접근 권한이 없습니다.</p>
-          <Button onClick={() => navigate(-1)}>
-            뒤로가기
+          <p className="text-muted-foreground mb-6">해당 검사 결과가 존재하지 않거나 접근 권한이 없습니다.</p>
+          <Button onClick={() => navigate(-1)} className="rounded-xl">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            돌아가기
           </Button>
         </Card>
       </div>
     );
   }
 
-  const chartData = generateChartData(result.scores);
-  // Handle nested scores format from auto-save
-  const scoresData = result.scores?.results || result.scores;
-  const totalScore = scoresData?.total || result.scores?.scoreSummary?.total || result.scores.predicted_score || result.scores.total_score || result.scores.score || 0;
-  const { level, color } = getScoreLevel(typeof totalScore === 'number' ? totalScore : 0);
-  const aiAnalysis = result.ai_analysis || result.scores?.analysis || generateAIAnalysis(result.scores, result.test_types.name);
+  const aiAnalysis = result.ai_analysis || result.scores?.analysis;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigate(-1)}
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              돌아가기
-            </Button>
-            <div>
-              <h1 className="font-semibold">{result.test_types.name} 결과</h1>
-              <p className="text-sm text-muted-foreground">
-                {new Date(result.completed_at).toLocaleDateString('ko-KR', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 dark:from-background dark:via-purple-950/10 dark:to-blue-950/10">
+      {/* Header */}
+      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => navigate(-1)}
+            className="rounded-xl"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            돌아가기
+          </Button>
           
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Share className="w-4 h-4 mr-2" />
-              공유
-            </Button>
-            <PremiumFeature>
-              <Button size="sm" onClick={handleDownloadPDF}>
-                <Download className="w-4 h-4 mr-2" />
-                PDF 다운로드
-              </Button>
-            </PremiumFeature>
-          </div>
+          <Button 
+            onClick={handleRetakeTest}
+            size="sm"
+            className="rounded-xl bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/20"
+          >
+            <RotateCcw className="w-4 h-4 mr-2" />
+            다시 검사하기
+          </Button>
         </div>
       </div>
 
-      <div id="pdf-content" className="container mx-auto px-4 py-8 space-y-6">
-        {/* 총점 카드 */}
-        <Card className="overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-purple-500 to-blue-600 text-white text-center">
-            <CardTitle className="text-2xl">검사 결과</CardTitle>
-            <div className="flex items-center justify-center gap-4 mt-4">
-              <div className="text-5xl font-bold">
-                {typeof totalScore === 'number' ? totalScore.toFixed(0) : totalScore}점
+      <div className="container mx-auto px-4 py-6 md:py-8 space-y-6 max-w-3xl">
+        {/* Test Info Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Card className="overflow-hidden rounded-2xl border-border/50 bg-card/80 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-purple-500 to-blue-600 text-white p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                  {result.source === 'test_results' ? (
+                    <Sparkles className="w-7 h-7 text-white" />
+                  ) : (
+                    <Brain className="w-7 h-7 text-white" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-2">
+                    <CardTitle className="text-xl md:text-2xl text-white">
+                      {result.test_types.name}
+                    </CardTitle>
+                    {result.source === 'test_results' && (
+                      <Badge className="bg-white/20 text-white border-white/30 text-xs">
+                        프리미엄
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-purple-100 text-sm">{result.test_types.description}</p>
+                </div>
               </div>
-              <Badge className={`${color} text-white text-lg px-4 py-1`}>
-                {level}
-              </Badge>
-            </div>
-            <p className="text-purple-100 mt-2">
-              {result.test_types.description}
-            </p>
-          </CardHeader>
-        </Card>
-
-        {/* 차트 섹션 */}
-        {chartData.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>영역별 점수 (바 차트)</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                      <YAxis domain={[0, 100]} />
-                      <Tooltip />
-                      <Bar dataKey="score" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>영역별 점수 (레이더 차트)</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart data={chartData}>
-                      <PolarGrid />
-                      <PolarAngleAxis dataKey="name" tick={{ fontSize: 11 }} />
-                      <PolarRadiusAxis domain={[0, 100]} />
-                      <Radar
-                        name="점수"
-                        dataKey="score"
-                        stroke="hsl(var(--primary))"
-                        fill="hsl(var(--primary))"
-                        fillOpacity={0.3}
-                      />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* 상세 점수 */}
-        {chartData.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>영역별 상세 점수</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {chartData.map((item) => {
-                  const scoreLevel = getScoreLevel(item.score);
-                  return (
-                    <div key={item.name} className="p-4 rounded-lg bg-muted/50 border">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium">{item.name}</span>
-                        <Badge className={`${scoreLevel.color} text-white`}>
-                          {scoreLevel.level}
-                        </Badge>
-                      </div>
-                      <div className="text-2xl font-bold text-primary">
-                        {typeof item.score === 'number' ? item.score.toFixed(1) : item.score}점
-                      </div>
-                      <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full ${scoreLevel.color} transition-all duration-500`}
-                          style={{ width: `${Math.min(item.score, 100)}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+            
+            <CardContent className="p-5 space-y-4">
+              {/* Meta Info */}
+              <div className="flex flex-wrap items-center gap-3 text-sm">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Calendar className="w-4 h-4" />
+                  <span>
+                    {new Date(result.completed_at).toLocaleDateString('ko-KR', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </span>
+                </div>
+                {result.age_group && (
+                  <Badge variant="outline" className="rounded-lg border-border/50 bg-muted/50">
+                    {getAgeGroupLabel(result.age_group)}
+                  </Badge>
+                )}
               </div>
+
+              {/* AI Analysis */}
+              {aiAnalysis && (
+                <div className="p-4 rounded-xl bg-gradient-to-br from-muted/50 to-muted/30 border border-border/30">
+                  <h3 className="font-semibold text-sm mb-2 flex items-center gap-2 text-foreground">
+                    <FileText className="w-4 h-4 text-primary" />
+                    AI 분석 결과
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                    {aiAnalysis}
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
-        )}
+        </motion.div>
 
-        {/* AI 분석 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Brain className="w-5 h-5 text-purple-500" />
-              AI 분석
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-              {aiAnalysis}
-            </p>
-          </CardContent>
-        </Card>
+        {/* Action Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="space-y-3"
+        >
+          {/* Retake Test */}
+          <Card 
+            className={cn(
+              "group p-4 rounded-2xl border-border/50 bg-card/80 backdrop-blur-sm",
+              "hover:shadow-lg hover:border-primary/30 transition-all cursor-pointer"
+            )}
+            onClick={handleRetakeTest}
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <RotateCcw className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground">다시 검사하기</h3>
+                <p className="text-sm text-muted-foreground">같은 유형의 검사를 다시 진행합니다</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Card>
 
-        {/* 전문가 피드백 */}
-        <PremiumFeature>
-          {result.expert_feedback ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>전문가 피드백</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  {result.expert_feedback}
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardHeader>
-                <CardTitle>전문가 피드백</CardTitle>
-                <CardDescription>
-                  전문가 피드백이 아직 작성되지 않았습니다.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          )}
-        </PremiumFeature>
+          {/* More Tests */}
+          <Card 
+            className={cn(
+              "group p-4 rounded-2xl border-border/50 bg-card/80 backdrop-blur-sm",
+              "hover:shadow-lg hover:border-purple-500/30 transition-all cursor-pointer"
+            )}
+            onClick={() => navigate('/premium-assessment')}
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Sparkles className="w-6 h-6 text-purple-500" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground">다른 검사 보기</h3>
+                <p className="text-sm text-muted-foreground">프리미엄 심리검사 둘러보기</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Card>
+
+          {/* Expert Consultation */}
+          <Card 
+            className={cn(
+              "group p-4 rounded-2xl border-border/50 bg-card/80 backdrop-blur-sm",
+              "hover:shadow-lg hover:border-blue-500/30 transition-all cursor-pointer"
+            )}
+            onClick={() => navigate('/experts')}
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Brain className="w-6 h-6 text-blue-500" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground">전문가 상담</h3>
+                <p className="text-sm text-muted-foreground">검사 결과에 대해 전문가와 상담하세요</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Card>
+        </motion.div>
       </div>
     </div>
   );

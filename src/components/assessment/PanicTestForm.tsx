@@ -50,39 +50,51 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
-    handleNext();
+    
+    // 마지막 문항이면 바로 결과 처리, 아니면 다음 문항으로 이동
+    setTimeout(() => {
+      if (currentQuestion < panicQuestions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        completeTest(newAnswers);
+      }
+    }, 300);
+  };
+
+  const completeTest = (finalAnswers: string[]) => {
+    // 문자열 답변을 숫자로 변환
+    const numericAnswers = finalAnswers.map(a => {
+      const parsed = parseInt(a);
+      return isNaN(parsed) ? 0 : parsed;
+    });
+    
+    const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
+    const average = Math.round((total / numericAnswers.length) * 10) / 10;
+    
+    let severity = "";
+    if (total <= 15) {
+      severity = "정상";
+    } else if (total <= 30) {
+      severity = "경미";
+    } else if (total <= 45) {
+      severity = "중등도";
+    } else {
+      severity = "심각";
+    }
+    
+    onComplete({
+      answers: numericAnswers,
+      total,
+      average,
+      severity
+    });
   };
 
   const handleNext = () => {
     if (currentQuestion < panicQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 문자열 답변을 숫자로 변환
-      const numericAnswers = answers.map(a => {
-        const parsed = parseInt(a);
-        return isNaN(parsed) ? 0 : parsed;
-      });
-      
-      const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
-      const average = Math.round((total / numericAnswers.length) * 10) / 10;
-      
-      let severity = "";
-      if (total <= 15) {
-        severity = "정상";
-      } else if (total <= 30) {
-        severity = "경미";
-      } else if (total <= 45) {
-        severity = "중등도";
-      } else {
-        severity = "심각";
-      }
-      
-      onComplete({
-        answers: numericAnswers,
-        total,
-        average,
-        severity
-      });
+      completeTest(answers);
     }
   };
 

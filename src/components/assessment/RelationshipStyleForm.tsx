@@ -99,17 +99,24 @@ const RelationshipStyleForm = ({ onComplete, onBack }: RelationshipStyleFormProp
   ];
 
   const handleAnswerChange = (value: string) => {
-    setAnswers({ ...answers, [currentQuestion]: value });
+    const newAnswers = { ...answers, [currentQuestion]: value };
+    setAnswers(newAnswers);
     
-    // 즉시 다음 질문으로 이동
-    handleNext();
+    // 마지막 질문이면 바로 결과 계산, 아니면 다음 질문으로 이동
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        calculateResultWithAnswers(newAnswers);
+      }
+    }, 300);
   };
 
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      calculateResult();
+      calculateResultWithAnswers(answers);
     }
   };
 
@@ -119,7 +126,7 @@ const RelationshipStyleForm = ({ onComplete, onBack }: RelationshipStyleFormProp
     }
   };
 
-  const calculateResult = () => {
+  const calculateResultWithAnswers = (finalAnswers: Record<number, string>) => {
     const scores = {
       secure: 0,
       anxious: 0,
@@ -127,7 +134,7 @@ const RelationshipStyleForm = ({ onComplete, onBack }: RelationshipStyleFormProp
       dismissive: 0
     };
 
-    Object.values(answers).forEach((answer, index) => {
+    Object.values(finalAnswers).forEach((answer, index) => {
       const question = questions[index];
       const selectedOption = question.options.find(opt => opt.value === answer);
       if (selectedOption) {

@@ -68,12 +68,16 @@ export const AttachmentStyleDeepTest: React.FC<AttachmentStyleDeepTestProps> = (
 
   const handleAnswerChange = (value: string) => {
     const score = parseInt(value);
-    setAnswers({ ...answers, [questions[currentQuestion].id]: score });
+    const newAnswers = { ...answers, [questions[currentQuestion].id]: score };
+    setAnswers(newAnswers);
     
     // Auto-advance to next question after a short delay
     setTimeout(() => {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
+      } else {
+        // 마지막 질문이면 결과 계산
+        calculateResultWithAnswers(newAnswers);
       }
     }, 300);
   };
@@ -82,7 +86,7 @@ export const AttachmentStyleDeepTest: React.FC<AttachmentStyleDeepTestProps> = (
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      calculateResult();
+      calculateResultWithAnswers(answers);
     }
   };
 
@@ -92,7 +96,7 @@ export const AttachmentStyleDeepTest: React.FC<AttachmentStyleDeepTestProps> = (
     }
   };
 
-  const calculateResult = () => {
+  const calculateResultWithAnswers = (finalAnswers: Record<number, number>) => {
     setIsAnalyzing(true);
 
     const categoryScores: Record<string, number> = {
@@ -109,7 +113,7 @@ export const AttachmentStyleDeepTest: React.FC<AttachmentStyleDeepTestProps> = (
       fearful: 0,
     };
 
-    Object.entries(answers).forEach(([questionId, score]) => {
+    Object.entries(finalAnswers).forEach(([questionId, score]) => {
       const question = questions.find(q => q.id === parseInt(questionId));
       if (question) {
         categoryScores[question.category] += score;

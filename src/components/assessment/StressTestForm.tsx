@@ -197,14 +197,19 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
   };
 
   const handleAnswer = (questionId: string, value: string) => {
-    setAnswers(prev => ({
-      ...prev,
+    const newAnswers = {
+      ...answers,
       [questionId]: value
-    }));
+    };
+    setAnswers(newAnswers);
     
-    // 자동으로 다음 문항으로 이동 (0.5초 지연)
+    // 마지막 문항이면 바로 결과 분석, 아니면 다음 문항으로 이동
     setTimeout(() => {
-      handleNext();
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(prev => prev + 1);
+      } else {
+        analyzeResultsWithAnswers(newAnswers);
+      }
     }, 500);
   };
 
@@ -212,7 +217,7 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
-      analyzeResults();
+      analyzeResultsWithAnswers(answers);
     }
   };
 
@@ -222,11 +227,11 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
     }
   };
 
-  const analyzeResults = () => {
+  const analyzeResultsWithAnswers = (finalAnswers: Record<string, string>) => {
     setIsAnalyzing(true);
     
     setTimeout(() => {
-      const answerValues = Object.values(answers).map(Number);
+      const answerValues = Object.values(finalAnswers).map(Number);
       const total = answerValues.reduce((sum, value) => sum + value, 0);
       const average = total / answerValues.length;
       

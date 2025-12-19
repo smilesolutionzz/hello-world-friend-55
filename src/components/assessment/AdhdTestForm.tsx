@@ -70,10 +70,59 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
     
-    // 자동으로 다음 문항으로 이동 (0.5초 지연)
+    // 마지막 문항이면 바로 완료 처리, 아니면 다음 문항으로 이동
     setTimeout(() => {
-      handleNext();
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        // 테스트 완료 - 현재 답변을 포함하여 처리
+        completeTest(newAnswers);
+      }
     }, 500);
+  };
+
+  const completeTest = (finalAnswers: string[]) => {
+    // null/NaN 방지 처리
+    const numericAnswers = finalAnswers
+      .map(a => parseInt(a))
+      .filter(a => !isNaN(a)); // NaN 필터링
+    
+    // 모든 문항에 답변했는지 확인
+    if (numericAnswers.length !== questions.length) {
+      console.error('Not all questions answered:', numericAnswers.length, 'of', questions.length);
+      toast({
+        title: "답변 확인 필요",
+        description: "모든 문항에 답변해주세요.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
+    const average = Math.round((total / numericAnswers.length) * 10) / 10;
+    
+    let severity = "";
+    // ADHD 테스트는 1-3점 척도 (1=그렇지않다, 2=보통, 3=그렇다)
+    // 18개 문항 * 3점 = 54점 만점, 최소 18점
+    if (total <= 27) {  // 약 50% 이하
+      severity = "정상 범위";
+    } else if (total <= 36) {  // 약 67% 이하
+      severity = "경계선 수준";
+    } else if (total <= 45) {  // 약 83% 이하
+      severity = "중등도 수준";
+    } else {  // 83% 초과
+      severity = "심각한 수준";
+    }
+    
+    console.log('✅ ADHD Test Complete:', { total, average, severity, answersCount: numericAnswers.length });
+    
+    onComplete({
+      answers: numericAnswers,
+      total,
+      average,
+      ageGroup: ageGroup === 'child' ? '아동청소년' : '성인',
+      severity
+    });
   };
 
   const handleStartTest = async () => {
@@ -87,42 +136,8 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 테스트 완료 - null/NaN 방지 처리
-      const numericAnswers = answers
-        .map(a => parseInt(a))
-        .filter(a => !isNaN(a)); // NaN 필터링
-      
-      // 모든 문항에 답변했는지 확인
-      if (numericAnswers.length !== questions.length) {
-        console.error('Not all questions answered:', numericAnswers.length, 'of', questions.length);
-        return;
-      }
-      
-      const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
-      const average = Math.round((total / numericAnswers.length) * 10) / 10;
-      
-      let severity = "";
-      // ADHD 테스트는 0-3점 척도 (0=전혀없음, 1=가끔, 2=자주, 3=매우자주)
-      // 18개 문항 * 3점 = 54점 만점
-      // 점수가 높을수록 ADHD 증상이 심함
-      // 점수 분포를 재조정하여 더 정확한 평가
-      if (total <= 13) {  // 약 24% 이하
-        severity = "정상 범위";
-      } else if (total <= 22) {  // 약 41% 이하
-        severity = "경계선 수준";
-      } else if (total <= 35) {  // 약 65% 이하
-        severity = "중등도 수준";
-      } else {  // 65% 초과
-        severity = "심각한 수준";
-      }
-      
-      onComplete({
-        answers: numericAnswers,
-        total,
-        average,
-        ageGroup: ageGroup === 'child' ? '아동청소년' : '성인',
-        severity
-      });
+      // 테스트 완료
+      completeTest(answers);
     }
   };
 

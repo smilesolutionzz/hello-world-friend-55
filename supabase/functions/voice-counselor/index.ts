@@ -93,7 +93,7 @@ serve(async (req) => {
     const aiJson = await aiResp.json();
     const assistantText: string = aiJson.choices?.[0]?.message?.content || '죄송합니다. 지금은 응답할 수 없습니다.';
 
-    // 3) Convert reply text to speech (OpenAI TTS)
+    // 3) Convert reply text to speech (OpenAI TTS) - 아이들에게 친근한 목소리 사용
     const ttsResp = await fetch('https://api.openai.com/v1/audio/speech', {
       method: 'POST',
       headers: {
@@ -103,7 +103,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'tts-1',
         input: assistantText,
-        voice: 'alloy',
+        voice: 'shimmer', // 가장 부드럽고 친근한 목소리
         response_format: 'mp3',
       }),
     });

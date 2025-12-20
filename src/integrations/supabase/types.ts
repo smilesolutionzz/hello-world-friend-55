@@ -7430,6 +7430,173 @@ export type Database = {
         }
         Relationships: []
       }
+      shuttle_logs: {
+        Row: {
+          created_at: string
+          dropoff_time: string | null
+          id: string
+          log_date: string
+          notes: string | null
+          pickup_status: string | null
+          pickup_time: string | null
+          resident_id: string | null
+          route_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dropoff_time?: string | null
+          id?: string
+          log_date?: string
+          notes?: string | null
+          pickup_status?: string | null
+          pickup_time?: string | null
+          resident_id?: string | null
+          route_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dropoff_time?: string | null
+          id?: string
+          log_date?: string
+          notes?: string | null
+          pickup_status?: string | null
+          pickup_time?: string | null
+          resident_id?: string | null
+          route_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shuttle_logs_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "shuttle_residents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shuttle_logs_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "shuttle_routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shuttle_residents: {
+        Row: {
+          address: string
+          area: string
+          created_at: string
+          emergency_contact: string | null
+          estimated_pickup_time: string | null
+          id: string
+          is_active: boolean | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          notes: string | null
+          phone: string | null
+          pickup_order: number | null
+          route_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          area: string
+          created_at?: string
+          emergency_contact?: string | null
+          estimated_pickup_time?: string | null
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          pickup_order?: number | null
+          route_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          area?: string
+          created_at?: string
+          emergency_contact?: string | null
+          estimated_pickup_time?: string | null
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          pickup_order?: number | null
+          route_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shuttle_residents_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "shuttle_routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shuttle_routes: {
+        Row: {
+          area: string
+          color: string | null
+          created_at: string
+          departure_time: string
+          driver_name: string | null
+          driver_phone: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          return_time: string
+          updated_at: string
+          user_id: string
+          vehicle_number: string | null
+        }
+        Insert: {
+          area: string
+          color?: string | null
+          created_at?: string
+          departure_time?: string
+          driver_name?: string | null
+          driver_phone?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          return_time?: string
+          updated_at?: string
+          user_id: string
+          vehicle_number?: string | null
+        }
+        Update: {
+          area?: string
+          color?: string | null
+          created_at?: string
+          departure_time?: string
+          driver_name?: string | null
+          driver_phone?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          return_time?: string
+          updated_at?: string
+          user_id?: string
+          vehicle_number?: string | null
+        }
+        Relationships: []
+      }
       social_media_generations: {
         Row: {
           content_type: string

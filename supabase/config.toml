@@ -355,3 +355,6 @@ verify_jwt = false  # 위기 상담은 빠른 접근 필요
 
 [functions.crawl-crisis-resources]
 verify_jwt = false  # 위기 자원 크롤링은 빠른 접근 필요
+
+[functions.energy-flow-analyzer]
+verify_jwt = false

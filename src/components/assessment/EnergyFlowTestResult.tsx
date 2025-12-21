@@ -1,8 +1,11 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Zap, Sun, Moon, Battery, Clock, Heart, AlertTriangle, Download, Share2 } from "lucide-react";
+import { ArrowLeft, Zap, Sun, Moon, Battery, Clock, Heart, AlertTriangle, RefreshCw, Sparkles, Brain, Target, Shield } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface EnergyFlowTestResultProps {
   results: {
@@ -16,10 +19,58 @@ interface EnergyFlowTestResultProps {
   onBack: () => void;
 }
 
+interface AIAnalysis {
+  summary: string;
+  energyTypeAnalysis: string;
+  timeManagement: string;
+  recoveryEnhancement: string;
+  burnoutPrevention: string;
+  weeklyPlan: string;
+  fullAnalysis: string;
+}
+
 export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTestResultProps) {
-  const { totalScore, energyType, peakTime, recoveryStyle, burnoutRisk } = results;
+  const navigate = useNavigate();
+  const { totalScore, energyType, peakTime, recoveryStyle, burnoutRisk, answers } = results;
   const maxScore = 32;
   const percentage = Math.round((totalScore / maxScore) * 100);
+  
+  const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    generateAIAnalysis();
+  }, []);
+
+  const generateAIAnalysis = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke('energy-flow-analyzer', {
+        body: {
+          totalScore,
+          energyType,
+          peakTime,
+          recoveryStyle,
+          burnoutRisk,
+          answers
+        }
+      });
+
+      if (fnError) throw fnError;
+      
+      if (data?.analysis) {
+        setAiAnalysis(data.analysis);
+      }
+    } catch (err) {
+      console.error("AI analysis error:", err);
+      setError("AI 분석을 불러오는 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getEnergyTypeInfo = () => {
     switch (energyType) {
@@ -98,6 +149,100 @@ export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTest
             <p className="text-lg text-center mb-6 bg-amber-50 p-4 rounded-lg">
               {energyInfo.description}
             </p>
+          </CardContent>
+        </Card>
+
+        {/* AI 종합 해석 */}
+        <Card className="border-amber-200 shadow-lg mb-6">
+          <CardHeader className="bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-t-lg">
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              AI 심층 분석 리포트
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-amber-500 border-t-transparent"></div>
+                <p className="text-muted-foreground">AI가 당신의 에너지 패턴을 심층 분석 중입니다...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-8">
+                <p className="text-red-500 mb-4">{error}</p>
+                <Button onClick={generateAIAnalysis} variant="outline">
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  다시 시도
+                </Button>
+              </div>
+            ) : aiAnalysis ? (
+              <div className="space-y-6">
+                {/* 종합 해석 */}
+                {aiAnalysis.summary && (
+                  <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+                    <h4 className="font-semibold text-amber-800 mb-2 flex items-center gap-2">
+                      <Brain className="w-4 h-4" />
+                      종합 해석
+                    </h4>
+                    <p className="text-gray-700 leading-relaxed">{aiAnalysis.summary}</p>
+                  </div>
+                )}
+
+                {/* 에너지 유형 분석 */}
+                {aiAnalysis.energyTypeAnalysis && (
+                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2">
+                      <Zap className="w-4 h-4" />
+                      {energyType} 유형 심층 분석
+                    </h4>
+                    <p className="text-gray-700 leading-relaxed">{aiAnalysis.energyTypeAnalysis}</p>
+                  </div>
+                )}
+
+                {/* 시간대 관리 */}
+                {aiAnalysis.timeManagement && (
+                  <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                    <h4 className="font-semibold text-purple-800 mb-2 flex items-center gap-2">
+                      <Clock className="w-4 h-4" />
+                      시간대별 에너지 관리 전략
+                    </h4>
+                    <p className="text-gray-700 leading-relaxed">{aiAnalysis.timeManagement}</p>
+                  </div>
+                )}
+
+                {/* 회복력 강화 */}
+                {aiAnalysis.recoveryEnhancement && (
+                  <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                    <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                      <Heart className="w-4 h-4" />
+                      회복력 강화 방법
+                    </h4>
+                    <p className="text-gray-700 leading-relaxed">{aiAnalysis.recoveryEnhancement}</p>
+                  </div>
+                )}
+
+                {/* 번아웃 예방 */}
+                {aiAnalysis.burnoutPrevention && (
+                  <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                    <h4 className="font-semibold text-red-800 mb-2 flex items-center gap-2">
+                      <Shield className="w-4 h-4" />
+                      번아웃 예방 가이드
+                    </h4>
+                    <p className="text-gray-700 leading-relaxed">{aiAnalysis.burnoutPrevention}</p>
+                  </div>
+                )}
+
+                {/* 주간 플랜 */}
+                {aiAnalysis.weeklyPlan && (
+                  <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                    <h4 className="font-semibold text-indigo-800 mb-2 flex items-center gap-2">
+                      <Target className="w-4 h-4" />
+                      주간 에너지 관리 플랜
+                    </h4>
+                    <p className="text-gray-700 leading-relaxed whitespace-pre-line">{aiAnalysis.weeklyPlan}</p>
+                  </div>
+                )}
+              </div>
+            ) : null}
           </CardContent>
         </Card>
 
@@ -191,13 +336,19 @@ export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTest
 
         {/* 액션 버튼 */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <Button className="flex-1 bg-amber-600 hover:bg-amber-700">
-            <Download className="w-4 h-4 mr-2" />
-            결과 저장하기
+          <Button 
+            className="flex-1 bg-amber-600 hover:bg-amber-700"
+            onClick={() => navigate('/assessment')}
+          >
+            <Zap className="w-4 h-4 mr-2" />
+            다른 검사 하기
           </Button>
-          <Button variant="outline" className="flex-1">
-            <Share2 className="w-4 h-4 mr-2" />
-            공유하기
+          <Button 
+            variant="outline" 
+            className="flex-1"
+            onClick={() => navigate('/')}
+          >
+            홈으로 돌아가기
           </Button>
         </div>
       </div>

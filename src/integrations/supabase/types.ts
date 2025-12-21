@@ -4982,6 +4982,39 @@ export type Database = {
           },
         ]
       }
+      invites: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          inviter_id: string
+          role: string
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at: string
+          id?: string
+          inviter_id: string
+          role?: string
+          token: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          inviter_id?: string
+          role?: string
+          token?: string
+        }
+        Relationships: []
+      }
       legacy_memories: {
         Row: {
           category: string | null
@@ -5649,6 +5682,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      memberships: {
+        Row: {
+          created_at: string
+          family_owner_id: string
+          id: string
+          invite_id: string | null
+          member_id: string
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          family_owner_id: string
+          id?: string
+          invite_id?: string | null
+          member_id: string
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          family_owner_id?: string
+          id?: string
+          invite_id?: string | null
+          member_id?: string
+          role?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memberships_invite_id_fkey"
+            columns: ["invite_id"]
+            isOneToOne: false
+            referencedRelation: "invites"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       memory_conversations: {
         Row: {

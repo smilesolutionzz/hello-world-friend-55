@@ -1,9 +1,15 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Users, Heart, Shield, MessageCircle, Scale, HandHeart, Star, TrendingUp, Download, Share2 } from "lucide-react";
+import { ArrowLeft, Users, Heart, Shield, MessageCircle, Scale, HandHeart, Star, TrendingUp, Download, Printer, Loader2, Brain, Lightbulb, Target, Sparkles, ChevronRight } from "lucide-react";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useTestActions } from "@/hooks/useTestActions";
+import { useWordDownload } from "@/hooks/useWordDownload";
+import { Link } from "react-router-dom";
 
 interface RelationshipDynamicsResultProps {
   results: {
@@ -17,8 +23,107 @@ interface RelationshipDynamicsResultProps {
   onBack: () => void;
 }
 
+interface AIAnalysis {
+  overallAnalysis: string;
+  categoryAnalysis: string;
+  psychodynamicAnalysis: string;
+  strengthStrategy: string;
+  growthPlan: string;
+  practiceGuide: string;
+  expertRecommendation: string;
+  fullAnalysis: string;
+}
+
 export default function RelationshipDynamicsResult({ results, onBack }: RelationshipDynamicsResultProps) {
   const { categoryScores, totalScore, relationshipType, strengths, growthAreas } = results;
+  const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis | null>(null);
+  const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(true);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const { toast } = useToast();
+  const { saveTestResult, isSaving } = useTestActions();
+  const { generateWordDocument, printDocument } = useWordDownload();
+
+  useEffect(() => {
+    fetchAIAnalysis();
+  }, []);
+
+  const fetchAIAnalysis = async () => {
+    setIsLoadingAnalysis(true);
+    setAnalysisError(null);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('relationship-dynamics-analyzer', {
+        body: {
+          totalScore,
+          relationshipType,
+          categoryScores,
+          strengths,
+          growthAreas
+        }
+      });
+
+      if (error) throw error;
+      if (data?.analysis) {
+        setAiAnalysis(data.analysis);
+      }
+    } catch (error: any) {
+      console.error('AI analysis error:', error);
+      setAnalysisError('AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    } finally {
+      setIsLoadingAnalysis(false);
+    }
+  };
+
+  const handleSaveResult = async () => {
+    await saveTestResult({
+      testType: '관계 역동성 심층 분석',
+      total: totalScore,
+      average: totalScore,
+      severity: relationshipType,
+      answers: results.answers,
+      scores: categoryScores,
+      analysis: aiAnalysis?.fullAnalysis,
+      recommendations: [aiAnalysis?.practiceGuide || '']
+    });
+  };
+
+  const handleDownloadWord = () => {
+    if (!aiAnalysis) return;
+    
+    generateWordDocument({
+      title: '관계 역동성 심층 분석 결과',
+      date: new Date().toLocaleDateString('ko-KR'),
+      sections: [
+        { title: '검사 개요', content: `관계 유형: ${relationshipType}\n종합 점수: ${totalScore}점` },
+        { title: '종합 심리 분석', content: aiAnalysis.overallAnalysis },
+        { title: '영역별 심층 해석', content: aiAnalysis.categoryAnalysis },
+        { title: '심리역동 분석', content: aiAnalysis.psychodynamicAnalysis },
+        { title: '강점 기반 성장 전략', content: aiAnalysis.strengthStrategy },
+        { title: '성장 영역 개선 방안', content: aiAnalysis.growthPlan },
+        { title: '관계 향상 실천 가이드', content: aiAnalysis.practiceGuide },
+        { title: '전문가 권고사항', content: aiAnalysis.expertRecommendation }
+      ]
+    });
+  };
+
+  const handlePrint = () => {
+    if (!aiAnalysis) return;
+    
+    printDocument({
+      title: '관계 역동성 심층 분석 결과',
+      date: new Date().toLocaleDateString('ko-KR'),
+      sections: [
+        { title: '검사 개요', content: `관계 유형: ${relationshipType}\n종합 점수: ${totalScore}점` },
+        { title: '종합 심리 분석', content: aiAnalysis.overallAnalysis },
+        { title: '영역별 심층 해석', content: aiAnalysis.categoryAnalysis },
+        { title: '심리역동 분석', content: aiAnalysis.psychodynamicAnalysis },
+        { title: '강점 기반 성장 전략', content: aiAnalysis.strengthStrategy },
+        { title: '성장 영역 개선 방안', content: aiAnalysis.growthPlan },
+        { title: '관계 향상 실천 가이드', content: aiAnalysis.practiceGuide },
+        { title: '전문가 권고사항', content: aiAnalysis.expertRecommendation }
+      ]
+    });
+  };
 
   const getTypeInfo = () => {
     switch (relationshipType) {
@@ -94,6 +199,12 @@ export default function RelationshipDynamicsResult({ results, onBack }: Relation
     if (score >= 25) return "bg-yellow-500";
     return "bg-red-500";
   };
+
+  const recommendedTests = [
+    { name: "삶의 목적 탐색 검사", path: "/assessment/life-purpose", icon: <Target className="w-5 h-5" /> },
+    { name: "에너지 흐름 검사", path: "/assessment/energy-flow", icon: <Sparkles className="w-5 h-5" /> },
+    { name: "전체 심리검사 목록", path: "/assessment", icon: <Brain className="w-5 h-5" /> }
+  ];
 
   return (
     <>
@@ -183,9 +294,6 @@ export default function RelationshipDynamicsResult({ results, onBack }: Relation
                     </li>
                   ))}
                 </ul>
-                <p className="text-sm text-muted-foreground mt-3">
-                  이 영역에서 당신은 뛰어난 능력을 보이고 있어요!
-                </p>
               </CardContent>
             </Card>
 
@@ -205,49 +313,163 @@ export default function RelationshipDynamicsResult({ results, onBack }: Relation
                     </li>
                   ))}
                 </ul>
-                <p className="text-sm text-muted-foreground mt-3">
-                  이 영역에 조금 더 관심을 기울이면 관계가 더 풍요로워질 거예요.
-                </p>
               </CardContent>
             </Card>
           </div>
 
-          {/* 맞춤 가이드 */}
-          <Card className="border-pink-200 mb-6">
+          {/* AI 심층 분석 리포트 */}
+          <Card className="border-indigo-200 mb-6 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="w-6 h-6" />
+                🧠 AI 임상심리전문가 심층 분석 리포트
+              </CardTitle>
+              <p className="text-white/80 text-sm">20년 경력 임상심리전문가 수준의 상세 해석</p>
+            </CardHeader>
+            <CardContent className="pt-6">
+              {isLoadingAnalysis ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <Loader2 className="w-12 h-12 animate-spin text-indigo-500 mb-4" />
+                  <p className="text-muted-foreground">AI가 심층 분석 중입니다...</p>
+                  <p className="text-sm text-muted-foreground">잠시만 기다려주세요</p>
+                </div>
+              ) : analysisError ? (
+                <div className="text-center py-8">
+                  <p className="text-red-500 mb-4">{analysisError}</p>
+                  <Button onClick={fetchAIAnalysis} variant="outline">다시 시도</Button>
+                </div>
+              ) : aiAnalysis ? (
+                <div className="space-y-6">
+                  {aiAnalysis.overallAnalysis && (
+                    <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border-l-4 border-indigo-500">
+                      <h4 className="font-bold text-indigo-700 mb-2 flex items-center gap-2">
+                        <Brain className="w-5 h-5" />
+                        종합 심리 분석
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.overallAnalysis}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.categoryAnalysis && (
+                    <div className="p-4 bg-pink-50 rounded-lg border-l-4 border-pink-500">
+                      <h4 className="font-bold text-pink-700 mb-2 flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5" />
+                        영역별 심층 해석
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.categoryAnalysis}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.psychodynamicAnalysis && (
+                    <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                      <h4 className="font-bold text-purple-700 mb-2 flex items-center gap-2">
+                        <Heart className="w-5 h-5" />
+                        심리역동 분석
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.psychodynamicAnalysis}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.strengthStrategy && (
+                    <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                      <h4 className="font-bold text-green-700 mb-2 flex items-center gap-2">
+                        <Star className="w-5 h-5" />
+                        강점 기반 성장 전략
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.strengthStrategy}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.growthPlan && (
+                    <div className="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+                      <h4 className="font-bold text-amber-700 mb-2 flex items-center gap-2">
+                        <Target className="w-5 h-5" />
+                        성장 영역 개선 방안
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.growthPlan}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.practiceGuide && (
+                    <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                      <h4 className="font-bold text-blue-700 mb-2 flex items-center gap-2">
+                        <Lightbulb className="w-5 h-5" />
+                        관계 향상 실천 가이드
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.practiceGuide}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.expertRecommendation && (
+                    <div className="p-4 bg-gradient-to-r from-rose-50 to-pink-50 rounded-lg border-l-4 border-rose-500">
+                      <h4 className="font-bold text-rose-700 mb-2 flex items-center gap-2">
+                        <Sparkles className="w-5 h-5" />
+                        전문가 권고사항
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.expertRecommendation}</p>
+                    </div>
+                  )}
+                </div>
+              ) : null}
+            </CardContent>
+          </Card>
+
+          {/* 다른 검사 추천 */}
+          <Card className="border-purple-200 mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Heart className="w-5 h-5 text-pink-600" />
-                맞춤 관계 성장 가이드
+                <Sparkles className="w-5 h-5 text-purple-600" />
+                함께 받아보면 좋은 검사
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="p-4 bg-pink-50 rounded-lg">
-                  <h4 className="font-semibold mb-2">💡 오늘부터 시작할 수 있는 것</h4>
-                  <p>상대방의 이야기를 들을 때 "그랬구나"라고 먼저 공감해주기</p>
-                </div>
-                <div className="p-4 bg-purple-50 rounded-lg">
-                  <h4 className="font-semibold mb-2">📖 추천 실천 과제</h4>
-                  <p>일주일에 한 번, 소중한 사람에게 감사한 점 구체적으로 말해주기</p>
-                </div>
-                <div className="p-4 bg-indigo-50 rounded-lg">
-                  <h4 className="font-semibold mb-2">🎯 장기 목표</h4>
-                  <p>나의 감정과 니즈를 정확히 인식하고, 적절하게 표현하는 연습하기</p>
-                </div>
+              <div className="grid gap-3">
+                {recommendedTests.map((test, index) => (
+                  <Link key={index} to={test.path}>
+                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg hover:from-purple-100 hover:to-pink-100 transition-colors cursor-pointer">
+                      <div className="flex items-center gap-3">
+                        <span className="text-purple-600">{test.icon}</span>
+                        <span className="font-medium">{test.name}</span>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-purple-400" />
+                    </div>
+                  </Link>
+                ))}
               </div>
             </CardContent>
           </Card>
 
           {/* 액션 버튼 */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <Button 
+              onClick={handleSaveResult}
+              disabled={isSaving}
+              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+            >
+              {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              결과 저장
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={handleDownloadWord}
+              disabled={!aiAnalysis}
+            >
               <Download className="w-4 h-4 mr-2" />
-              결과 저장하기
+              Word 다운로드
             </Button>
-            <Button variant="outline" className="flex-1">
-              <Share2 className="w-4 h-4 mr-2" />
-              공유하기
+            <Button 
+              variant="outline" 
+              onClick={handlePrint}
+              disabled={!aiAnalysis}
+            >
+              <Printer className="w-4 h-4 mr-2" />
+              인쇄하기
             </Button>
+            <Link to="/assessment" className="w-full">
+              <Button variant="outline" className="w-full">
+                다른 검사 하기
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

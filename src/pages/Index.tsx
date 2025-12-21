@@ -21,6 +21,7 @@ import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import ErrorBoundary from '@/components/ui/error-boundary';
+import NewAITestsSection from '@/components/landing/NewAITestsSection';
 
 import MainPromoSection from '@/components/promotion/MainPromoSection';
 
@@ -144,9 +145,14 @@ const Index = () => {
           <ScrollProgressBar />
           <UnifiedNavigation />
           
-          <main id="main-content" className="w-full">
+            <main id="main-content" className="w-full">
             {/* 1️⃣ Hero Section - AI 분석 입력창 포함 */}
             <HeroSection />
+            
+            {/* 🆕 이번달 신규 AI 검사 섹션 */}
+            <LazyLoad rootMargin="200px">
+              <NewAITestsSection />
+            </LazyLoad>
             
             {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
             <LazyLoad rootMargin="200px">

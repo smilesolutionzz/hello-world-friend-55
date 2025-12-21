@@ -67,7 +67,7 @@ const CompanyIntroVideoSection = () => {
               /* YouTube Player */
               <div className="aspect-video">
                 <iframe
-                  src="https://www.youtube.com/embed/DRn2_nSnAJU?autoplay=1&rel=0&modestbranding=1"
+                  src="https://www.youtube.com/embed/26ss_PllVrQ?autoplay=1&rel=0&modestbranding=1"
                   title="AIHUMANPRO 회사 소개 영상"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

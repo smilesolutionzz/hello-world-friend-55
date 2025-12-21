@@ -1,9 +1,15 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Compass, Star, Target, Sparkles, Mountain, Heart, Lightbulb, Download, Share2, TrendingUp } from "lucide-react";
+import { ArrowLeft, Compass, Star, Target, Sparkles, Mountain, Heart, Lightbulb, Download, Printer, TrendingUp, Loader2, Brain, Users, ChevronRight, BookOpen } from "lucide-react";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useTestActions } from "@/hooks/useTestActions";
+import { useWordDownload } from "@/hooks/useWordDownload";
+import { Link } from "react-router-dom";
 
 interface LifePurposeTestResultProps {
   results: {
@@ -17,8 +23,111 @@ interface LifePurposeTestResultProps {
   onBack: () => void;
 }
 
+interface AIAnalysis {
+  existentialAnalysis: string;
+  categoryAnalysis: string;
+  psychodynamicAnalysis: string;
+  strengthsAnalysis: string;
+  growthDirection: string;
+  practiceGuide: string;
+  reflectionQuestions: string;
+  expertOpinion: string;
+  fullAnalysis: string;
+}
+
 export default function LifePurposeTestResult({ results, onBack }: LifePurposeTestResultProps) {
   const { categoryScores, totalScore, purposeType, clarityLevel, recommendations } = results;
+  const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis | null>(null);
+  const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(true);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const { toast } = useToast();
+  const { saveTestResult, isSaving } = useTestActions();
+  const { generateWordDocument, printDocument } = useWordDownload();
+
+  useEffect(() => {
+    fetchAIAnalysis();
+  }, []);
+
+  const fetchAIAnalysis = async () => {
+    setIsLoadingAnalysis(true);
+    setAnalysisError(null);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('life-purpose-analyzer', {
+        body: {
+          totalScore,
+          purposeType,
+          clarityLevel,
+          categoryScores,
+          recommendations
+        }
+      });
+
+      if (error) throw error;
+      if (data?.analysis) {
+        setAiAnalysis(data.analysis);
+      }
+    } catch (error: any) {
+      console.error('AI analysis error:', error);
+      setAnalysisError('AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    } finally {
+      setIsLoadingAnalysis(false);
+    }
+  };
+
+  const handleSaveResult = async () => {
+    await saveTestResult({
+      testType: '삶의 의미 및 목적 탐색 검사',
+      total: totalScore,
+      average: totalScore,
+      severity: purposeType,
+      level: clarityLevel,
+      answers: results.answers,
+      scores: categoryScores,
+      analysis: aiAnalysis?.fullAnalysis,
+      recommendations: [aiAnalysis?.practiceGuide || '']
+    });
+  };
+
+  const handleDownloadWord = () => {
+    if (!aiAnalysis) return;
+    
+    generateWordDocument({
+      title: '삶의 의미 및 목적 탐색 검사 결과',
+      date: new Date().toLocaleDateString('ko-KR'),
+      sections: [
+        { title: '검사 개요', content: `목적 유형: ${purposeType}\n방향 명확성: ${clarityLevel}\n종합 점수: ${totalScore}점` },
+        { title: '실존적 의미 분석', content: aiAnalysis.existentialAnalysis },
+        { title: '영역별 심층 해석', content: aiAnalysis.categoryAnalysis },
+        { title: '심리역동 분석', content: aiAnalysis.psychodynamicAnalysis },
+        { title: '강점 및 잠재력 분석', content: aiAnalysis.strengthsAnalysis },
+        { title: '성장 방향 제안', content: aiAnalysis.growthDirection },
+        { title: '일상 실천 가이드', content: aiAnalysis.practiceGuide },
+        { title: '깊은 성찰 질문', content: aiAnalysis.reflectionQuestions },
+        { title: '전문가 종합 소견', content: aiAnalysis.expertOpinion }
+      ]
+    });
+  };
+
+  const handlePrint = () => {
+    if (!aiAnalysis) return;
+    
+    printDocument({
+      title: '삶의 의미 및 목적 탐색 검사 결과',
+      date: new Date().toLocaleDateString('ko-KR'),
+      sections: [
+        { title: '검사 개요', content: `목적 유형: ${purposeType}\n방향 명확성: ${clarityLevel}\n종합 점수: ${totalScore}점` },
+        { title: '실존적 의미 분석', content: aiAnalysis.existentialAnalysis },
+        { title: '영역별 심층 해석', content: aiAnalysis.categoryAnalysis },
+        { title: '심리역동 분석', content: aiAnalysis.psychodynamicAnalysis },
+        { title: '강점 및 잠재력 분석', content: aiAnalysis.strengthsAnalysis },
+        { title: '성장 방향 제안', content: aiAnalysis.growthDirection },
+        { title: '일상 실천 가이드', content: aiAnalysis.practiceGuide },
+        { title: '깊은 성찰 질문', content: aiAnalysis.reflectionQuestions },
+        { title: '전문가 종합 소견', content: aiAnalysis.expertOpinion }
+      ]
+    });
+  };
 
   const getTypeInfo = () => {
     switch (purposeType) {
@@ -98,6 +207,12 @@ export default function LifePurposeTestResult({ results, onBack }: LifePurposeTe
     }
   };
 
+  const recommendedTests = [
+    { name: "관계 역동성 심층 분석", path: "/assessment/relationship-dynamics", icon: <Users className="w-5 h-5" /> },
+    { name: "에너지 흐름 검사", path: "/assessment/energy-flow", icon: <Sparkles className="w-5 h-5" /> },
+    { name: "전체 심리검사 목록", path: "/assessment", icon: <Brain className="w-5 h-5" /> }
+  ];
+
   return (
     <>
       <UnifiedNavigation />
@@ -174,61 +289,169 @@ export default function LifePurposeTestResult({ results, onBack }: LifePurposeTe
             </CardContent>
           </Card>
 
-          {/* 맞춤 성찰 가이드 */}
-          <Card className="border-indigo-200 mb-6">
-            <CardHeader>
+          {/* AI 심층 분석 리포트 */}
+          <Card className="border-purple-200 mb-6 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
               <CardTitle className="flex items-center gap-2">
-                <Lightbulb className="w-5 h-5 text-amber-500" />
-                맞춤 성찰 가이드
+                <Brain className="w-6 h-6" />
+                🧠 AI 임상심리전문가 심층 분석 리포트
               </CardTitle>
+              <p className="text-white/80 text-sm">20년 경력 실존주의 심리치료 전문가 수준의 상세 해석</p>
             </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {recommendations.map((rec, index) => (
-                  <li key={index} className="flex items-start gap-3 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg">
-                    <span className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                      {index + 1}
-                    </span>
-                    <span className="text-gray-700">{rec}</span>
-                  </li>
-                ))}
-              </ul>
+            <CardContent className="pt-6">
+              {isLoadingAnalysis ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <Loader2 className="w-12 h-12 animate-spin text-purple-500 mb-4" />
+                  <p className="text-muted-foreground">AI가 심층 분석 중입니다...</p>
+                  <p className="text-sm text-muted-foreground">잠시만 기다려주세요</p>
+                </div>
+              ) : analysisError ? (
+                <div className="text-center py-8">
+                  <p className="text-red-500 mb-4">{analysisError}</p>
+                  <Button onClick={fetchAIAnalysis} variant="outline">다시 시도</Button>
+                </div>
+              ) : aiAnalysis ? (
+                <div className="space-y-6">
+                  {aiAnalysis.existentialAnalysis && (
+                    <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border-l-4 border-purple-500">
+                      <h4 className="font-bold text-purple-700 mb-2 flex items-center gap-2">
+                        <Mountain className="w-5 h-5" />
+                        실존적 의미 분석
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.existentialAnalysis}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.categoryAnalysis && (
+                    <div className="p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                      <h4 className="font-bold text-indigo-700 mb-2 flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5" />
+                        영역별 심층 해석
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.categoryAnalysis}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.psychodynamicAnalysis && (
+                    <div className="p-4 bg-pink-50 rounded-lg border-l-4 border-pink-500">
+                      <h4 className="font-bold text-pink-700 mb-2 flex items-center gap-2">
+                        <Heart className="w-5 h-5" />
+                        심리역동 분석
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.psychodynamicAnalysis}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.strengthsAnalysis && (
+                    <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                      <h4 className="font-bold text-green-700 mb-2 flex items-center gap-2">
+                        <Star className="w-5 h-5" />
+                        강점 및 잠재력 분석
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.strengthsAnalysis}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.growthDirection && (
+                    <div className="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+                      <h4 className="font-bold text-amber-700 mb-2 flex items-center gap-2">
+                        <Target className="w-5 h-5" />
+                        성장 방향 제안
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.growthDirection}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.practiceGuide && (
+                    <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                      <h4 className="font-bold text-blue-700 mb-2 flex items-center gap-2">
+                        <Lightbulb className="w-5 h-5" />
+                        일상 실천 가이드
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.practiceGuide}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.reflectionQuestions && (
+                    <div className="p-4 bg-teal-50 rounded-lg border-l-4 border-teal-500">
+                      <h4 className="font-bold text-teal-700 mb-2 flex items-center gap-2">
+                        <BookOpen className="w-5 h-5" />
+                        깊은 성찰 질문
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.reflectionQuestions}</p>
+                    </div>
+                  )}
+
+                  {aiAnalysis.expertOpinion && (
+                    <div className="p-4 bg-gradient-to-r from-rose-50 to-pink-50 rounded-lg border-l-4 border-rose-500">
+                      <h4 className="font-bold text-rose-700 mb-2 flex items-center gap-2">
+                        <Sparkles className="w-5 h-5" />
+                        전문가 종합 소견
+                      </h4>
+                      <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.expertOpinion}</p>
+                    </div>
+                  )}
+                </div>
+              ) : null}
             </CardContent>
           </Card>
 
-          {/* 성찰 질문 */}
+          {/* 다른 검사 추천 */}
           <Card className="border-indigo-200 mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-purple-500" />
-                오늘의 성찰 질문
+                <Sparkles className="w-5 h-5 text-indigo-600" />
+                함께 받아보면 좋은 검사
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
-                  <p className="text-purple-800 font-medium">"만약 실패가 존재하지 않는다면, 무엇을 하고 싶은가요?"</p>
-                </div>
-                <div className="p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
-                  <p className="text-indigo-800 font-medium">"5년 전의 나에게 해주고 싶은 조언은 무엇인가요?"</p>
-                </div>
-                <div className="p-4 bg-pink-50 rounded-lg border-l-4 border-pink-500">
-                  <p className="text-pink-800 font-medium">"오늘 내가 진정으로 감사한 것은 무엇인가요?"</p>
-                </div>
+              <div className="grid gap-3">
+                {recommendedTests.map((test, index) => (
+                  <Link key={index} to={test.path}>
+                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg hover:from-indigo-100 hover:to-purple-100 transition-colors cursor-pointer">
+                      <div className="flex items-center gap-3">
+                        <span className="text-indigo-600">{test.icon}</span>
+                        <span className="font-medium">{test.name}</span>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-indigo-400" />
+                    </div>
+                  </Link>
+                ))}
               </div>
             </CardContent>
           </Card>
 
           {/* 액션 버튼 */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button className="flex-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <Button 
+              onClick={handleSaveResult}
+              disabled={isSaving}
+              className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600"
+            >
+              {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              결과 저장
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={handleDownloadWord}
+              disabled={!aiAnalysis}
+            >
               <Download className="w-4 h-4 mr-2" />
-              결과 저장하기
+              Word 다운로드
             </Button>
-            <Button variant="outline" className="flex-1">
-              <Share2 className="w-4 h-4 mr-2" />
-              공유하기
+            <Button 
+              variant="outline" 
+              onClick={handlePrint}
+              disabled={!aiAnalysis}
+            >
+              <Printer className="w-4 h-4 mr-2" />
+              인쇄하기
             </Button>
+            <Link to="/assessment" className="w-full">
+              <Button variant="outline" className="w-full">
+                다른 검사 하기
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

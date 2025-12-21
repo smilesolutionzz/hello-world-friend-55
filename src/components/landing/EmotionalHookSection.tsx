@@ -256,9 +256,9 @@ const EmotionalHookSection = () => {
         >
           <div className="text-center mb-6">
             <h3 className="text-lg md:text-xl font-bold text-white mb-2">
-              📱 실제 검사는 이렇게 진행돼요
+              📱 검사는 이렇게 진행돼요
             </h3>
-            <p className="text-white/60 text-sm">3분이면 끝나는 간편 검사 과정</p>
+            <p className="text-white/60 text-sm">1분 30초면 끝나는 간편 검사 과정</p>
           </div>
 
           <div 
@@ -285,9 +285,9 @@ const EmotionalHookSection = () => {
                   >
                     <Play className="w-8 h-8 text-white ml-1" fill="currentColor" />
                   </motion.div>
-                  <span className="text-white font-medium text-sm md:text-base">클릭해서 시연 영상 보기</span>
-                  <span className="text-white/50 text-xs mt-1">2분 30초</span>
-                </div>
+                    <span className="text-white font-medium text-sm md:text-base">클릭해서 시연 영상 보기</span>
+                    <span className="text-white/50 text-xs mt-1">1분 30초</span>
+                  </div>
                 
                 {/* Fake Progress Steps */}
                 <div className="absolute bottom-4 left-4 right-4 flex gap-2">

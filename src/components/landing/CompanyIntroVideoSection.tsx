@@ -39,10 +39,11 @@ const CompanyIntroVideoSection = () => {
           ) : (
             <div className="aspect-video">
               <iframe
-                src="https://www.youtube.com/embed/26ss_PllVrQ?autoplay=1&rel=0&modestbranding=1"
+                src="https://www.youtube-nocookie.com/embed/26ss_PllVrQ?autoplay=1&rel=0&modestbranding=1&v=2"
                 title="AIHUMANPRO 시연 영상"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
                 className="w-full h-full"
               />

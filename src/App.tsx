@@ -135,6 +135,9 @@ import FingerprintTemperamentTest from "./pages/FingerprintTemperamentTest";
 import DrawingDiaryHTP from "./pages/DrawingDiaryHTP";
 import GrowthDevelopmentReport from "./pages/GrowthDevelopmentReport";
 import ADHDScreening from "./pages/ADHDScreening";
+import EnergyFlowTest from "./pages/EnergyFlowTest";
+import RelationshipDynamicsTest from "./pages/RelationshipDynamicsTest";
+import LifePurposeTest from "./pages/LifePurposeTest";
 
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
@@ -239,6 +242,9 @@ const App = () => {
            <Route path="/drawing-diary-htp" element={<DrawingDiaryHTP />} />
            <Route path="/growth-report" element={<GrowthDevelopmentReport />} />
            <Route path="/adhd-screening" element={<ADHDScreening />} />
+           <Route path="/assessment/energy-flow" element={<EnergyFlowTest />} />
+           <Route path="/assessment/relationship-dynamics" element={<RelationshipDynamicsTest />} />
+           <Route path="/assessment/life-purpose" element={<LifePurposeTest />} />
           
           <Route path="/assessment-history" element={<AssessmentHistory />} />
           <Route path="/life-achievement-history" element={<LifeAchievementHistory />} />

@@ -21,7 +21,7 @@ import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import ErrorBoundary from '@/components/ui/error-boundary';
-import InstagramAnalysisSection from '@/components/landing/InstagramAnalysisSection';
+import FeedAnalysisSection from '@/components/landing/FeedAnalysisSection';
 
 import MainPromoSection from '@/components/promotion/MainPromoSection';
 
@@ -149,9 +149,9 @@ const Index = () => {
             {/* 1️⃣ Hero Section - AI 분석 입력창 포함 */}
             <HeroSection />
             
-            {/* 🆕 인스타그램 심리 분석 섹션 */}
+            {/* 🆕 피드 스크린샷 무의식 분석 섹션 */}
             <LazyLoad rootMargin="200px">
-              <InstagramAnalysisSection />
+              <FeedAnalysisSection />
             </LazyLoad>
             
             {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}

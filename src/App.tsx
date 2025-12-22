@@ -139,6 +139,7 @@ import EnergyFlowTest from "./pages/EnergyFlowTest";
 import RelationshipDynamicsTest from "./pages/RelationshipDynamicsTest";
 import LifePurposeTest from "./pages/LifePurposeTest";
 import InstagramAnalysis from "./pages/InstagramAnalysis";
+import InstagramFeedAnalysis from "./pages/InstagramFeedAnalysis";
 
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
@@ -247,6 +248,7 @@ const App = () => {
            <Route path="/assessment/relationship-dynamics" element={<RelationshipDynamicsTest />} />
             <Route path="/assessment/life-purpose" element={<LifePurposeTest />} />
             <Route path="/assessment/instagram-analysis" element={<InstagramAnalysis />} />
+            <Route path="/assessment/feed-analysis" element={<InstagramFeedAnalysis />} />
           
           <Route path="/assessment-history" element={<AssessmentHistory />} />
           <Route path="/life-achievement-history" element={<LifeAchievementHistory />} />

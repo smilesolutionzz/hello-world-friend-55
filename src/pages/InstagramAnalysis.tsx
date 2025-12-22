@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Instagram, Sparkles, Shield, Users, Brain, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -40,8 +41,11 @@ interface AnalysisResult {
 }
 
 const InstagramAnalysis = () => {
-  const [step, setStep] = useState<Step>("intro");
-  const [username, setUsername] = useState("");
+  const location = useLocation();
+  const prefilledId = (location.state as { prefilledId?: string })?.prefilledId;
+  
+  const [step, setStep] = useState<Step>(prefilledId ? "input" : "intro");
+  const [username, setUsername] = useState(prefilledId || "");
   const [gender, setGender] = useState<"male" | "female" | null>(null);
   const [birthYear, setBirthYear] = useState<number>(1990);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);

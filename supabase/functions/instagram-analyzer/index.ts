@@ -76,8 +76,16 @@ serve(async (req) => {
 
     console.log(`Analyzing Instagram profile: @${username}`);
 
-    // Step 1: Scrape Instagram profile using Firecrawl
+    // Step 1: Scrape Instagram profile using Firecrawl - get images too
     let profileData = null;
+    let feedImages: string[] = [];
+    let profileInfo = {
+      bio: '',
+      followerCount: '',
+      followingCount: '',
+      postCount: '',
+      profileImage: ''
+    };
     
     if (FIRECRAWL_API_KEY) {
       try {
@@ -89,18 +97,54 @@ serve(async (req) => {
           },
           body: JSON.stringify({
             url: `https://www.instagram.com/${username}/`,
-            formats: ['markdown', 'html'],
-            onlyMainContent: true,
-            waitFor: 3000,
+            formats: ['markdown', 'html', 'screenshot', 'links'],
+            onlyMainContent: false,
+            waitFor: 5000,
           }),
         });
 
         if (scrapeResponse.ok) {
           const scrapeData = await scrapeResponse.json();
-          profileData = scrapeData.data?.markdown || scrapeData.markdown || null;
-          console.log('Profile scraped successfully');
+          const data = scrapeData.data || scrapeData;
+          
+          profileData = data.markdown || null;
+          
+          // Extract image URLs from HTML or links
+          const html = data.html || '';
+          const links = data.links || [];
+          
+          // Try to extract Instagram CDN image URLs
+          const imgRegex = /https:\/\/[^"'\s]*?(?:cdninstagram|instagram)[^"'\s]*?\.(?:jpg|jpeg|png|webp)[^"'\s]*/gi;
+          const foundImages = html.match(imgRegex) || [];
+          
+          // Filter for feed images (usually larger sized)
+          feedImages = [...new Set(foundImages)]
+            .filter(url => 
+              url.includes('1080') || 
+              url.includes('640') || 
+              url.includes('480') ||
+              !url.includes('150x150')
+            )
+            .slice(0, 12);
+          
+          // If no images found, try scraping individual post pages
+          if (feedImages.length === 0) {
+            // Use links that look like Instagram posts
+            const postLinks = links.filter((link: string) => 
+              link.includes('/p/') || link.includes('/reel/')
+            ).slice(0, 6);
+            
+            console.log(`Found ${postLinks.length} post links to scrape`);
+          }
+          
+          // Get screenshot as fallback
+          if (data.screenshot) {
+            feedImages.unshift(`data:image/png;base64,${data.screenshot}`);
+          }
+          
+          console.log(`Profile scraped. Found ${feedImages.length} images`);
         } else {
-          console.log('Firecrawl scrape failed, using fallback');
+          console.log('Firecrawl scrape failed:', await scrapeResponse.text());
         }
       } catch (scrapeError) {
         console.error('Scrape error:', scrapeError);
@@ -127,6 +171,9 @@ ${unconsciousTypes.map((type, i) => `${i + 1}. ${type.name} (${type.englishName}
 - 언어 사용 패턴, 이모지 사용, 해시태그 스타일
 - 자기 표현 방식과 숨겨진 욕구
 - 인스타그램 아이디 자체의 선택에서 드러나는 성격 특성
+- 피드 이미지의 주제, 색감, 구도 패턴
+
+각 피드 이미지에 대한 간단한 심리적 해석도 제공해주세요.
 
 반드시 JSON 형식으로 응답해주세요.`;
 
@@ -135,8 +182,9 @@ ${unconsciousTypes.map((type, i) => `${i + 1}. ${type.name} (${type.englishName}
 아이디: @${username}
 ${genderContext ? `성별: ${genderContext}` : ''}
 ${age ? `나이: ${age}세` : ''}
+수집된 피드 이미지 수: ${feedImages.length}개
 
-${profileData ? `수집된 프로필 데이터:\n${profileData.substring(0, 3000)}` : '프로필 데이터 수집 불가 - 아이디와 제공된 정보를 기반으로 분석해주세요.'}
+${profileData ? `수집된 프로필 데이터:\n${profileData.substring(0, 4000)}` : '프로필 데이터 수집 불가 - 아이디와 제공된 정보를 기반으로 분석해주세요.'}
 
 다음 JSON 형식으로 분석 결과를 제공해주세요:
 {
@@ -147,10 +195,24 @@ ${profileData ? `수집된 프로필 데이터:\n${profileData.substring(0, 3000
     "description": "해당 유형에 대한 2-3문장 설명"
   },
   "profileSummary": "프로필 전반적 분석 (3-4문장)",
+  "feedAnalysis": [
+    {
+      "index": 1,
+      "insight": "첫 번째 피드에서 발견된 심리적 패턴 (1-2문장)",
+      "keyword": "핵심 키워드"
+    },
+    {
+      "index": 2,
+      "insight": "두 번째 피드에서 발견된 심리적 패턴 (1-2문장)",
+      "keyword": "핵심 키워드"
+    }
+    // 최대 6개까지
+  ],
   "visualPatterns": {
     "colorPreference": "선호 색감 분석",
     "compositionStyle": "구도/레이아웃 스타일",
-    "emotionalTone": "감정적 톤"
+    "emotionalTone": "감정적 톤",
+    "dominantTheme": "지배적인 주제"
   },
   "languagePatterns": {
     "communicationStyle": "소통 스타일",
@@ -214,13 +276,11 @@ ${profileData ? `수집된 프로필 데이터:\n${profileData.substring(0, 3000
     // Parse JSON from response
     let analysisResult;
     try {
-      // Extract JSON from response (handle markdown code blocks)
       const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/) || content.match(/\{[\s\S]*\}/);
       const jsonString = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : content;
       analysisResult = JSON.parse(jsonString);
     } catch (parseError) {
       console.error('JSON parse error:', parseError);
-      // Create fallback result
       const randomType = unconsciousTypes[Math.floor(Math.random() * unconsciousTypes.length)];
       analysisResult = {
         unconsciousType: {
@@ -230,10 +290,12 @@ ${profileData ? `수집된 프로필 데이터:\n${profileData.substring(0, 3000
           description: `@${username}님의 프로필에서 ${randomType.traits.join(', ')} 특성이 감지되었습니다.`
         },
         profileSummary: content.substring(0, 200),
+        feedAnalysis: [],
         visualPatterns: {
           colorPreference: "분석 중",
           compositionStyle: "분석 중",
-          emotionalTone: "분석 중"
+          emotionalTone: "분석 중",
+          dominantTheme: "분석 중"
         },
         languagePatterns: {
           communicationStyle: "분석 중",
@@ -253,6 +315,9 @@ ${profileData ? `수집된 프로필 데이터:\n${profileData.substring(0, 3000
       };
     }
 
+    // Add feed images to result
+    analysisResult.feedImages = feedImages;
+    
     console.log('Analysis completed successfully');
 
     return new Response(

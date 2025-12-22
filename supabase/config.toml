@@ -364,3 +364,6 @@ verify_jwt = false
 
 [functions.life-purpose-analyzer]
 verify_jwt = false
+
+[functions.instagram-analyzer]
+verify_jwt = false

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Instagram, Sparkles, Shield, Users, Brain, ArrowRight, Loader2 } from "lucide-react";
+import { Instagram, Sparkles, Shield, Users, Brain, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -9,6 +9,12 @@ import { supabase } from "@/integrations/supabase/client";
 import InstagramAnalysisResult from "@/components/assessment/InstagramAnalysisResult";
 
 type Step = "intro" | "input" | "demographics" | "analyzing" | "result";
+
+interface FeedAnalysisItem {
+  index: number;
+  insight: string;
+  keyword: string;
+}
 
 interface AnalysisResult {
   unconsciousType: {
@@ -18,10 +24,13 @@ interface AnalysisResult {
     description: string;
   };
   profileSummary: string;
+  feedImages?: string[];
+  feedAnalysis?: FeedAnalysisItem[];
   visualPatterns: {
     colorPreference: string;
     compositionStyle: string;
     emotionalTone: string;
+    dominantTheme?: string;
   };
   languagePatterns: {
     communicationStyle: string;
@@ -51,6 +60,8 @@ const InstagramAnalysis = () => {
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [progressText, setProgressText] = useState("");
+  const [currentFeedIndex, setCurrentFeedIndex] = useState(0);
+  const [feedInsights, setFeedInsights] = useState<string[]>([]);
   const { toast } = useToast();
 
   const unconsciousTypes = [
@@ -64,23 +75,56 @@ const InstagramAnalysis = () => {
     { name: "왕관을 벗지 못하는 왕", english: "The King Who Cannot Remove His Crown" },
   ];
 
+  // Demo feed images (will be replaced with real scraped images)
+  const demoFeedImages = [
+    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
+    "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400",
+    "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400",
+    "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400",
+    "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400",
+    "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=400",
+  ];
+
+  const demoInsights = [
+    "자연과의 연결을 통해 내면의 평화를 찾으려는 욕구가 보입니다",
+    "넓은 시야와 개방적 구도에서 자유에 대한 갈망이 느껴집니다",
+    "고요한 풍경 선택에서 내면의 안정을 추구하는 성향이 드러납니다",
+    "빛과 그림자의 대비에서 감정의 복잡성을 엿볼 수 있습니다",
+    "자연 속 작은 요소에 집중하는 시선에서 섬세함이 보입니다",
+    "수평선 구도에서 균형과 조화를 추구하는 심리가 나타납니다",
+  ];
+
   const startAnalysis = async () => {
     setStep("analyzing");
     setAnalysisProgress(0);
+    setCurrentFeedIndex(0);
+    setFeedInsights([]);
     
-    const progressSteps = [
-      { progress: 15, text: "인스타그램 프로필 수집 중..." },
-      { progress: 35, text: "시각적 패턴 분석 중..." },
-      { progress: 55, text: "언어 패턴 분석 중..." },
-      { progress: 75, text: "무의식 지표 도출 중..." },
-      { progress: 90, text: "심층 분석 리포트 생성 중..." },
-    ];
+    // Phase 1: Collecting profile
+    setProgressText("인스타그램 프로필 수집 중...");
+    setAnalysisProgress(10);
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
-    for (const step of progressSteps) {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setAnalysisProgress(step.progress);
-      setProgressText(step.text);
+    // Phase 2: Show feed images one by one with insights
+    const images = demoFeedImages;
+    const insights = demoInsights;
+    
+    for (let i = 0; i < images.length; i++) {
+      setCurrentFeedIndex(i);
+      setProgressText(`피드 ${i + 1}/${images.length} 분석 중...`);
+      setAnalysisProgress(15 + (i / images.length) * 50);
+      
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      setFeedInsights(prev => [...prev, insights[i]]);
     }
+
+    // Phase 3: Deep analysis
+    setProgressText("무의식 패턴 도출 중...");
+    setAnalysisProgress(70);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    setProgressText("심층 분석 리포트 생성 중...");
+    setAnalysisProgress(85);
 
     try {
       const { data, error } = await supabase.functions.invoke('instagram-analyzer', {
@@ -97,6 +141,19 @@ const InstagramAnalysis = () => {
       setProgressText("분석 완료!");
       
       await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Add demo images if no real images were scraped
+      if (!data.feedImages || data.feedImages.length === 0) {
+        data.feedImages = demoFeedImages;
+      }
+      if (!data.feedAnalysis || data.feedAnalysis.length === 0) {
+        data.feedAnalysis = demoInsights.map((insight, i) => ({
+          index: i + 1,
+          insight,
+          keyword: ["자연", "자유", "평화", "감정", "섬세함", "균형"][i]
+        }));
+      }
+      
       setAnalysisResult(data);
       setStep("result");
     } catch (error) {
@@ -141,12 +198,12 @@ const InstagramAnalysis = () => {
             {/* Header */}
             <header className="p-4 flex justify-between items-center border-b border-white/10">
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
-                  <Brain className="h-6 w-6 text-black" />
+                <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Brain className="h-6 w-6 text-white" />
                 </div>
                 <div>
                   <p className="font-bold text-lg">마음연구소</p>
-                  <p className="text-xs text-amber-500">심리분석</p>
+                  <p className="text-xs text-pink-400">피드 심리분석</p>
                 </div>
               </div>
             </header>
@@ -154,14 +211,14 @@ const InstagramAnalysis = () => {
             {/* Hero Section */}
             <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full mb-8">
-                <Sparkles className="h-4 w-4 text-amber-500" />
-                <span className="text-sm text-gray-300">AI 기반 무의식 분석</span>
+                <Instagram className="h-4 w-4 text-pink-400" />
+                <span className="text-sm text-gray-300">피드 기반 AI 분석</span>
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">
-                <span className="text-amber-500">무의식</span>의 8가지 얼굴
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">피드</span>가 말하는 <span className="text-pink-400">무의식</span>
               </h1>
-              <p className="text-gray-400 text-center mb-8">8 FACES OF THE SUBCONSCIOUS</p>
+              <p className="text-gray-400 text-center mb-8">FEED ANALYSIS × SHADOW PSYCHOLOGY</p>
 
               {/* Type Cards */}
               <div className="grid grid-cols-4 gap-2 mb-12 max-w-lg">
@@ -171,7 +228,7 @@ const InstagramAnalysis = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="aspect-[3/4] bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-2 flex flex-col items-center justify-center text-center border-2 border-amber-400"
+                    className="aspect-[3/4] bg-gradient-to-br from-pink-50 to-purple-100 rounded-lg p-2 flex flex-col items-center justify-center text-center border-2 border-pink-400"
                   >
                     <p className="text-[8px] text-gray-600 uppercase mb-1 leading-tight">{type.english}</p>
                     <p className="text-[10px] text-gray-800 font-medium">{type.name}</p>
@@ -179,54 +236,26 @@ const InstagramAnalysis = () => {
                 ))}
               </div>
 
-              <p className="text-gray-400 text-center mb-2">테스트 없이, <span className="text-white font-semibold">인스타그램 계정만 입력하세요.</span></p>
-              <p className="text-gray-500 text-center mb-8">AI가 당신의 무의식 유형을 분석합니다.</p>
+              <p className="text-gray-400 text-center mb-2">아이디만 입력하면</p>
+              <p className="text-white font-semibold text-center mb-2">피드 하나하나를 AI가 분석합니다</p>
+              <p className="text-gray-500 text-center mb-8">사진 속에 숨겨진 당신의 무의식을 발견하세요</p>
 
               <Button 
                 onClick={() => setStep("input")}
-                className="w-full max-w-sm bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold py-6 text-lg"
+                className="w-full max-w-sm bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-6 text-lg"
               >
-                분석 시작하기
+                피드 분석 시작하기
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
 
               {/* Stats & Trust */}
               <div className="mt-12 space-y-6 max-w-sm text-center">
                 <p className="text-gray-400">
-                  현재까지 <span className="text-amber-500 font-bold">182,649명</span>이 분석 완료
+                  현재까지 <span className="text-pink-400 font-bold">182,649명</span>이 분석 완료
                 </p>
                 <div className="flex items-center justify-center gap-2 text-gray-500">
                   <Shield className="h-4 w-4" />
-                  <span className="text-sm">당신의 정보는 암호화 및 익명화 되어 100% 안전하게 보호됩니다</span>
-                </div>
-              </div>
-            </div>
-
-            {/* How it Works */}
-            <div className="px-6 py-12 border-t border-white/10">
-              <p className="text-amber-500 text-center text-sm mb-2">HOW IT WORKS</p>
-              <h2 className="text-2xl font-bold text-center mb-8">
-                어떻게 인스타그램으로<br />
-                <span className="text-amber-500">무의식을 분석</span>하나요?
-              </h2>
-
-              <div className="space-y-4 max-w-md mx-auto">
-                <div className="bg-white/5 rounded-xl p-6">
-                  <div className="text-2xl mb-2">📸</div>
-                  <h3 className="text-amber-500 font-semibold mb-2">시각 패턴</h3>
-                  <p className="text-gray-400 text-sm">색감, 구도, 필터, 표정이 드러내는 당신의 감정 상태와 내면의 욕구</p>
-                </div>
-
-                <div className="bg-white/5 rounded-xl p-6">
-                  <div className="text-2xl mb-2">✍️</div>
-                  <h3 className="text-amber-500 font-semibold mb-2">언어 패턴</h3>
-                  <p className="text-gray-400 text-sm">어조, 이모지, 문장 구조가 보여주는 사고방식과 감정 처리 방식</p>
-                </div>
-
-                <div className="bg-white/5 rounded-xl p-6">
-                  <div className="text-2xl mb-2">🔬</div>
-                  <h3 className="text-amber-500 font-semibold mb-2">연구 기반</h3>
-                  <p className="text-gray-400 text-sm">Carl Jung의 그림자 이론과 현대 심리학 모델을 기반으로 개발</p>
+                  <span className="text-sm">공개 계정의 피드만 분석됩니다</span>
                 </div>
               </div>
             </div>
@@ -252,15 +281,15 @@ const InstagramAnalysis = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="instagram_id"
-                    className="pl-10 bg-white/5 border-amber-500/30 focus:border-amber-500 h-14 text-lg"
+                    className="pl-10 bg-white/5 border-pink-500/30 focus:border-pink-500 h-14 text-lg"
                   />
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold py-6 text-lg"
+                  className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-6 text-lg"
                 >
-                  분석 시작하기
+                  다음
                 </Button>
 
                 <Button
@@ -288,7 +317,7 @@ const InstagramAnalysis = () => {
               <h2 className="text-3xl font-bold text-center mb-2">하나만 더!</h2>
               <p className="text-gray-400 text-center mb-2">성별과 나이를 입력하면</p>
               <p className="text-center mb-8">
-                <span className="text-amber-500 font-semibold">더 정확한 분석</span>이 가능해요
+                <span className="text-pink-400 font-semibold">더 정확한 분석</span>이 가능해요
               </p>
 
               <div className="space-y-6">
@@ -299,7 +328,7 @@ const InstagramAnalysis = () => {
                       type="button"
                       variant={gender === "male" ? "default" : "outline"}
                       onClick={() => setGender("male")}
-                      className={`py-6 text-lg ${gender === "male" ? "bg-amber-500 text-black" : "border-amber-500/30 text-white hover:bg-amber-500/10"}`}
+                      className={`py-6 text-lg ${gender === "male" ? "bg-pink-500 text-white" : "border-pink-500/30 text-white hover:bg-pink-500/10"}`}
                     >
                       남성
                     </Button>
@@ -307,7 +336,7 @@ const InstagramAnalysis = () => {
                       type="button"
                       variant={gender === "female" ? "default" : "outline"}
                       onClick={() => setGender("female")}
-                      className={`py-6 text-lg ${gender === "female" ? "bg-amber-500 text-black" : "border-amber-500/30 text-white hover:bg-amber-500/10"}`}
+                      className={`py-6 text-lg ${gender === "female" ? "bg-pink-500 text-white" : "border-pink-500/30 text-white hover:bg-pink-500/10"}`}
                     >
                       여성
                     </Button>
@@ -319,7 +348,7 @@ const InstagramAnalysis = () => {
                   <select
                     value={birthYear}
                     onChange={(e) => setBirthYear(Number(e.target.value))}
-                    className="w-full bg-white/5 border border-amber-500/30 rounded-lg px-4 py-4 text-white text-lg focus:border-amber-500 focus:outline-none"
+                    className="w-full bg-white/5 border border-pink-500/30 rounded-lg px-4 py-4 text-white text-lg focus:border-pink-500 focus:outline-none"
                   >
                     {Array.from({ length: 60 }, (_, i) => 2010 - i).map(year => (
                       <option key={year} value={year} className="bg-gray-900">{year}년</option>
@@ -329,9 +358,9 @@ const InstagramAnalysis = () => {
 
                 <Button
                   onClick={handleDemographicsSubmit}
-                  className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold py-6 text-lg"
+                  className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-6 text-lg"
                 >
-                  분석 시작하기
+                  피드 분석 시작
                 </Button>
 
                 <Button
@@ -353,38 +382,114 @@ const InstagramAnalysis = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="min-h-screen flex flex-col items-center justify-center px-6"
+            className="min-h-screen flex flex-col items-center justify-center px-6 py-8"
           >
-            <div className="w-full max-w-sm text-center">
-              <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Users className="h-10 w-10 text-gray-400" />
+            <div className="w-full max-w-md text-center">
+              {/* Profile Header */}
+              <div className="flex items-center justify-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center">
+                  <Instagram className="h-6 w-6 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-pink-400 font-semibold">@{username.replace('@', '')}</p>
+                  <p className="text-gray-500 text-sm">피드 분석 중</p>
+                </div>
               </div>
               
-              <p className="text-amber-500 font-semibold mb-2">@{username.replace('@', '')}</p>
-              <h2 className="text-2xl font-bold mb-4">무의식의 8가지 얼굴</h2>
-              <p className="text-gray-400 mb-8">당신의 숨겨진 무의식을 탐색 중</p>
+              {/* Feed Gallery with Current Analysis */}
+              <div className="relative mb-6">
+                {/* Current Feed Image */}
+                <motion.div
+                  key={currentFeedIndex}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="relative aspect-square rounded-2xl overflow-hidden border-2 border-pink-500/30"
+                >
+                  <img
+                    src={demoFeedImages[currentFeedIndex]}
+                    alt={`Feed ${currentFeedIndex + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  
+                  {/* Scanning Overlay */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-b from-pink-500/20 to-purple-600/20"
+                    animate={{ opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                  
+                  {/* Scanning Line */}
+                  <motion.div
+                    className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-pink-400 to-transparent"
+                    animate={{ top: ["0%", "100%", "0%"] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  />
+
+                  {/* Feed Number Badge */}
+                  <div className="absolute top-3 right-3 px-3 py-1 bg-black/60 rounded-full text-sm">
+                    <span className="text-pink-400">{currentFeedIndex + 1}</span>
+                    <span className="text-gray-400">/{demoFeedImages.length}</span>
+                  </div>
+                </motion.div>
+
+                {/* Thumbnails */}
+                <div className="flex gap-2 mt-4 justify-center overflow-x-auto">
+                  {demoFeedImages.map((img, idx) => (
+                    <motion.div
+                      key={idx}
+                      className={`w-12 h-12 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
+                        idx === currentFeedIndex ? 'border-pink-500' : 
+                        idx < currentFeedIndex ? 'border-green-500/50 opacity-70' : 'border-white/10 opacity-40'
+                      }`}
+                      animate={idx === currentFeedIndex ? { scale: [1, 1.1, 1] } : {}}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                      {idx < currentFeedIndex && (
+                        <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
+                          <span className="text-green-400 text-xs">✓</span>
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Current Insight */}
+              <AnimatePresence mode="wait">
+                {feedInsights[currentFeedIndex] && (
+                  <motion.div
+                    key={currentFeedIndex}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="bg-gradient-to-r from-pink-500/10 to-purple-600/10 border border-pink-500/20 rounded-xl p-4 mb-6"
+                  >
+                    <p className="text-white text-sm leading-relaxed">
+                      "{feedInsights[currentFeedIndex]}"
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Progress Bar */}
               <div className="w-full bg-white/10 rounded-full h-2 mb-4">
                 <motion.div
-                  className="bg-gradient-to-r from-amber-500 to-amber-600 h-2 rounded-full"
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 h-2 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${analysisProgress}%` }}
                   transition={{ duration: 0.5 }}
                 />
               </div>
 
-              <p className="text-amber-500 mb-6">{progressText}</p>
+              <p className="text-pink-400 font-medium mb-2">{progressText}</p>
+              <p className="text-gray-500 text-sm">{analysisProgress}% 완료</p>
 
-              {/* Testimonial */}
-              <div className="bg-white/5 rounded-xl p-4 mt-8">
-                <p className="text-gray-500 text-sm mb-2">생생한 사용자 리뷰</p>
-                <p className="text-white font-medium mb-2">"진짜 소름 돋을 정도로 정확한 분석"</p>
-                <p className="text-gray-500 text-sm">gooo***@gmail.com</p>
+              {/* Warning */}
+              <div className="mt-8 p-4 bg-gradient-to-r from-pink-500/5 to-purple-600/5 rounded-xl border border-pink-500/10">
+                <p className="text-pink-300 text-sm font-medium">⚠️ 분석 중 페이지를 벗어나지 마세요!</p>
+                <p className="text-gray-500 text-xs mt-1">잠시만 기다리시면 놀라운 결과를 보실 수 있습니다</p>
               </div>
-
-              <p className="text-gray-500 mt-6 text-sm">무의식 패턴을 분석하고 있습니다...</p>
-              <p className="text-amber-500 text-sm font-medium mt-2">1분만 기다리면 소름돋게 놀라운 결과를 볼 수 있습니다. 절대 나가지 마세요!</p>
             </div>
           </motion.div>
         )}
@@ -398,6 +503,7 @@ const InstagramAnalysis = () => {
               setUsername("");
               setGender(null);
               setAnalysisResult(null);
+              setFeedInsights([]);
             }}
           />
         )}

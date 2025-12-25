@@ -58,6 +58,7 @@ const PremiumAssessment = () => {
   const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
   const [currentTest, setCurrentTest] = useState<string | null>(null);
   const [insuranceResults, setInsuranceResults] = useState<any>(null);
+  const [expandedTest, setExpandedTest] = useState<string | null>(null);
   const { trackTestStart, trackTestComplete, trackPageView } = useEventTracking();
   const { consumeTokens, checkTokenAvailability } = useTokens();
 
@@ -327,9 +328,6 @@ const PremiumAssessment = () => {
       />
     );
   }
-
-  // 아코디언 상태 관리
-  const [expandedTest, setExpandedTest] = useState<string | null>(null);
 
   // 검사 카테고리별 정의
   const testCategories = {

@@ -560,12 +560,41 @@ const Assessment = () => {
 
 
   const handleBack = () => {
-    if (currentStep === 'depression-result' || currentStep === 'panic-result' || currentStep === 'adhd-result' || currentStep === 'stress-result' || currentStep === 'bigfive-result' || currentStep === 'attachment-result' || currentStep === 'career-result') {
+    // 결과 페이지에서 뒤로가기 -> 검사 선택 화면으로 (결과 데이터 리셋)
+    const resultSteps = [
+      'depression-result', 'panic-result', 'adhd-result', 'stress-result', 
+      'bigfive-result', 'attachment-result', 'career-result', 'selfesteem-result',
+      'language-result', 'child-result', 'infant-result', 'adult-result',
+      'developmental-delay-result', 'sensory-integration-result', 
+      'learning-disability-result', 'social-development-result',
+      'challenging-behavior-result', 'adaptive-behavior-result'
+    ];
+    
+    // 검사 폼 페이지들
+    const testFormSteps = [
+      'depression-test', 'panic-test', 'adhd-test', 'stress-test',
+      'bigfive-test', 'attachment-test', 'career-test', 'selfesteem-test',
+      'language-test', 'developmental-delay-test', 'sensory-integration-test',
+      'learning-disability-test', 'social-development-test',
+      'challenging-behavior-test', 'adaptive-behavior-test',
+      'dream-interpretation', 'saju-analysis', 'past-life-job', 
+      'animal-face-match', 'inner-animal', 'grandma-relationship',
+      'grandpa-marriage', 'mz-nagging', 'wisdom-advice', 'otrovert', 
+      'life-achievement', 'parent-child-play'
+    ];
+    
+    if (resultSteps.includes(currentStep)) {
+      // 결과 페이지에서 뒤로가기 -> 검사 선택 화면으로
       setCurrentStep('test-type');
+      setTestType(null);
+    } else if (testFormSteps.includes(currentStep)) {
+      // 검사 폼에서 뒤로가기 -> 검사 선택 화면으로
+      setCurrentStep('test-type');
+      setTestType(null);
     } else if (currentStep === 'test-selection') {
       // 검사 선택 단계에서 뒤로가기 -> 연령 선택으로
       setCurrentStep('age-select');
-    } else if (currentStep === 'dream-interpretation' || currentStep === 'saju-analysis' || currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
+    } else if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
       setCurrentStep('test-type');
       setTestType(null);
     } else if (currentStep === 'legal-notice') {
@@ -573,24 +602,15 @@ const Assessment = () => {
       setTestType(null);
       setSelectedAgeGroup(null);
       setSelectedAge(0);
-      setAssessmentResults({});
-      setLanguageResults(null);
-      setPanicResults(null);
-      setDepressionResults(null);
-      setAdhdResults(null);
-      setStressResults(null);
-      setBigfiveResults(null);
-      setAttachmentResults(null);
-      setCareerResults(null);
-      setAnalysisResult("");
-      setSelectedExpert(null);
     } else if (currentStep === 'age-select') {
       setCurrentStep('test-type');
       setTestType(null);
-    } else {
+    } else if (currentStep === 'assessment') {
       setCurrentStep('age-select');
-      setSelectedAgeGroup(null);
-      setSelectedAge(0);
+    } else {
+      // 기본적으로 검사 선택 화면으로
+      setCurrentStep('test-type');
+      setTestType(null);
     }
   };
 

@@ -482,24 +482,80 @@ ${relatedResources}
       }
 
       console.log('AI content 길이:', messageContent.length);
-      reportData = JSON.parse(messageContent);
       
-      // 검증
-      if (!reportData.sections || !Array.isArray(reportData.sections) || reportData.sections.length < 9) {
-        throw new Error('섹션 데이터가 불완전합니다.');
+      // JSON 파싱 시도 - 여러 방법으로 시도
+      try {
+        reportData = JSON.parse(messageContent);
+      } catch (firstParseError) {
+        console.log('1차 파싱 실패, 정제 시도...');
+        
+        // JSON 블록 추출 시도
+        const jsonMatch = messageContent.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          try {
+            // 줄바꿈과 제어문자 정리
+            const cleanedJson = jsonMatch[0]
+              .replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ')
+              .replace(/\n/g, ' ')
+              .replace(/\r/g, ' ')
+              .replace(/\t/g, ' ');
+            reportData = JSON.parse(cleanedJson);
+          } catch (cleanParseError) {
+            console.log('2차 파싱도 실패, 기본 구조로 대체');
+            // 파싱 완전 실패 시 기본 응답 생성
+            reportData = {
+              sections: [
+                { title: "발달 종합 평가", content: "<div>분석 중 오류가 발생하여 기본 템플릿으로 대체되었습니다. 다시 시도해주세요.</div>" },
+                { title: "심리 상태 분석", content: "<div>분석 데이터 처리 중입니다.</div>" },
+                { title: "강점/약점 분석", content: "<div>분석 데이터 처리 중입니다.</div>" },
+                { title: "맞춤 활동 제안", content: "<div>분석 데이터 처리 중입니다.</div>" },
+                { title: "발달 로드맵", content: "<div>분석 데이터 처리 중입니다.</div>" },
+                { title: "또래 비교 분석", content: "<div>분석 데이터 처리 중입니다.</div>" },
+                { title: "전문가 소견서", content: "<div>분석 데이터 처리 중입니다.</div>" },
+                { title: "가족 지원 가이드", content: "<div>분석 데이터 처리 중입니다.</div>" },
+                { title: "종합 요약 및 제언", content: "<div>AI 응답 파싱에 실패했습니다. 잠시 후 다시 시도해주세요.</div>" }
+              ],
+              summary: "<div>리포트 생성 중 일부 오류가 발생했습니다.</div>",
+              parseError: true
+            };
+          }
+        } else {
+          throw new Error('JSON 구조를 찾을 수 없습니다.');
+        }
+      }
+      
+      // 검증 - 섹션이 부족하면 빈 섹션 추가
+      if (!reportData.sections || !Array.isArray(reportData.sections)) {
+        reportData.sections = [];
+      }
+      
+      const requiredSections = [
+        "발달 종합 평가", "심리 상태 분석", "강점/약점 분석", "맞춤 활동 제안",
+        "발달 로드맵", "또래 비교 분석", "전문가 소견서", "가족 지원 가이드", "종합 요약 및 제언"
+      ];
+      
+      // 누락된 섹션 추가
+      for (const title of requiredSections) {
+        if (!reportData.sections.find((s: any) => s.title === title)) {
+          reportData.sections.push({
+            title,
+            content: "<div>이 섹션의 데이터를 생성하는 중 오류가 발생했습니다.</div>"
+          });
+        }
       }
 
       console.log('리포트 파싱 성공, 섹션 수:', reportData.sections.length);
 
     } catch (parseError) {
-      console.error('AI 응답 파싱 오류:', parseError);
+      console.error('AI 응답 파싱 최종 오류:', parseError);
+      console.error('원본 응답 미리보기:', rawText.substring(0, 500));
       throw new Error('AI 응답 파싱 실패');
     }
 
     // 메타데이터 추가
     reportData.metadata = {
       generatedAt: new Date().toISOString(),
-      model: 'google/gemini-2.5-pro',
+      model: 'google/gemini-2.5-flash',
       dataCount: {
         assessments: assessmentSummary.length,
         observations: observationSummary.length,

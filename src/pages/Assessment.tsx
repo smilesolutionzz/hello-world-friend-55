@@ -653,29 +653,21 @@ const Assessment = () => {
         </div>
         
         <div className="relative z-10 container mx-auto px-4 md:px-6 pt-16 pb-16">
-          {/* 간결한 가격 안내 */}
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-sm text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-green-500"></span>
-              무료 검사
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-sm text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-              500원
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-sm text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-purple-500"></span>
-              심층 2,000원
-            </span>
-            <Button 
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/token-subscription')}
-              className="text-sm"
-            >
-              <Coins className="w-4 h-4 mr-1.5" />
-              캐시 충전
-            </Button>
+          {/* 베타 기간 무료 안내 배너 */}
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-green-500/20">
+                <Sparkles className="w-4 h-4 text-green-500" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+                  🎉 베타테스트 기간 - 모든 검사 무료!
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  정식 오픈 전까지 모든 심리검사를 무료로 이용하세요
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="text-center mb-12">
@@ -687,12 +679,12 @@ const Assessment = () => {
             </p>
           </div>
 
-          {/* ========== 전문 심리검사 (최고 중요도) ========== */}
+          {/* ========== 전문 심리검사 ========== */}
           <section className="mb-10">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1.5 h-6 bg-primary rounded-full"></div>
               <h2 className="text-xl font-bold text-foreground">전문 심리검사</h2>
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">500원</span>
+              <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -739,7 +731,7 @@ const Assessment = () => {
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
               <h2 className="text-xl font-bold text-foreground">아동·청소년 발달검사</h2>
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">500원</span>
+              <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
@@ -784,31 +776,29 @@ const Assessment = () => {
               </button>
 
               <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all relative"
+                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all"
                 onClick={() => handleTestTypeSelect('challenging-behavior')}
               >
-                <span className="absolute top-2 right-2 text-[10px] text-green-600 font-medium">무료</span>
                 <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-emerald-600">도전행동 평가</h3>
                 <p className="text-xs text-muted-foreground">문제행동 평가</p>
               </button>
 
               <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all relative"
+                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all"
                 onClick={() => handleTestTypeSelect('adaptive-behavior')}
               >
-                <span className="absolute top-2 right-2 text-[10px] text-green-600 font-medium">무료</span>
                 <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-emerald-600">적응행동 평가</h3>
                 <p className="text-xs text-muted-foreground">일상생활 독립성</p>
               </button>
             </div>
           </section>
 
-          {/* ========== AIH 창작 검사 섹션 ========== */}
+          {/* ========== 성격·진로 검사 섹션 ========== */}
           <section className="mb-10">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
               <h2 className="text-xl font-bold text-foreground">성격·진로 검사</h2>
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">500원</span>
+              <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

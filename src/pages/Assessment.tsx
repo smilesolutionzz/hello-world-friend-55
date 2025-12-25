@@ -661,10 +661,10 @@ const Assessment = () => {
               </span>
               <div>
                 <p className="text-sm font-semibold text-green-600 dark:text-green-400">
-                  🎉 베타테스트 기간 - 모든 검사 무료!
+                  💝 소중한 골든타임, 놓치지 마세요
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  정식 오픈 전까지 모든 심리검사를 무료로 이용하세요
+                  아이의 건강한 성장을 위해 AIHumanPro가 모든 검사를 무료로 제공합니다
                 </p>
               </div>
             </div>
@@ -672,10 +672,10 @@ const Assessment = () => {
 
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
-              마음상태 체크
+              간편테스트
             </h1>
             <p className="text-muted-foreground">
-              3분이면 충분해요 · 결과는 참고용입니다
+              부담 없이 시작하는 첫 걸음 · AI가 빠르게 분석해드려요
             </p>
           </div>
 

@@ -413,18 +413,20 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
             <div className="h-80">
               <h4 className="text-center font-semibold mb-4 text-blue-700 dark:text-blue-300">영역별 점수 분포</h4>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={developmentalDomains} layout="horizontal">
+                <BarChart data={developmentalDomains} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" domain={[0, 100]} />
                   <YAxis 
                     type="category" 
                     dataKey="domain" 
                     width={70}
-                    tick={{ fontSize: 10 }}
+                    tick={{ fontSize: 10, fill: 'currentColor' }}
+                    className="text-muted-foreground"
                   />
                   <Tooltip 
-                    formatter={(value, name) => [`${value}%`, '지연도']}
+                    formatter={(value) => [`${value}%`, '지연도']}
                     labelFormatter={(label) => `${label}`}
+                    contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))' }}
                   />
                   <Bar dataKey="percentage" radius={[0, 4, 4, 0]}>
                     {developmentalDomains.map((entry, index) => (

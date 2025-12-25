@@ -489,11 +489,11 @@ const PremiumAssessment = () => {
               </div>
             </a>
 
-            {/* ========== 신경발달 검사 섹션 ========== */}
+            {/* ========== 신경발달 자가체크 섹션 ========== */}
             <section className="mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
-                <h2 className="text-lg font-bold text-foreground">신경발달 검사</h2>
+                <h2 className="text-lg font-bold text-foreground">신경발달 자가체크</h2>
                 <span className="text-xs text-purple-600 bg-purple-100 dark:bg-purple-900/30 px-2 py-0.5 rounded font-medium">AI 정밀분석</span>
               </div>
 
@@ -546,11 +546,11 @@ const PremiumAssessment = () => {
               </div>
             </section>
 
-            {/* ========== 성격·기질 검사 섹션 ========== */}
+            {/* ========== 성격·기질 자가체크 섹션 ========== */}
             <section className="mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-                <h2 className="text-lg font-bold text-foreground">성격·기질 검사</h2>
+                <h2 className="text-lg font-bold text-foreground">성격·기질 자가체크</h2>
               </div>
 
               <div className="space-y-2">
@@ -602,11 +602,11 @@ const PremiumAssessment = () => {
               </div>
             </section>
 
-            {/* ========== 직장·금전 검사 섹션 ========== */}
+            {/* ========== 직장·금전 자가체크 섹션 ========== */}
             <section className="mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-1.5 h-6 bg-orange-500 rounded-full"></div>
-                <h2 className="text-lg font-bold text-foreground">직장·금전 검사</h2>
+                <h2 className="text-lg font-bold text-foreground">직장·금전 자가체크</h2>
               </div>
 
               <div className="space-y-2">
@@ -658,11 +658,11 @@ const PremiumAssessment = () => {
               </div>
             </section>
 
-            {/* ========== 청소년 검사 섹션 ========== */}
+            {/* ========== 청소년 자가체크 섹션 ========== */}
             <section className="mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-                <h2 className="text-lg font-bold text-foreground">청소년 검사</h2>
+                <h2 className="text-lg font-bold text-foreground">청소년 자가체크</h2>
               </div>
 
               <div className="space-y-2">
@@ -714,11 +714,11 @@ const PremiumAssessment = () => {
               </div>
             </section>
 
-            {/* ========== 특수 AI 검사 섹션 ========== */}
+            {/* ========== 특수 AI 자가체크 섹션 ========== */}
             <section className="mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-1.5 h-6 bg-slate-500 rounded-full"></div>
-                <h2 className="text-lg font-bold text-foreground">특수 AI 검사</h2>
+                <h2 className="text-lg font-bold text-foreground">특수 AI 자가체크</h2>
                 <span className="text-xs text-slate-600 bg-slate-100 dark:bg-slate-900/30 px-2 py-0.5 rounded font-medium">인기</span>
               </div>
 

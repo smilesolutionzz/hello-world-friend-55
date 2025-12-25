@@ -3534,6 +3534,66 @@ export type Database = {
           },
         ]
       }
+      facility_audit_item_status: {
+        Row: {
+          audit_item_id: string | null
+          completed_at: string | null
+          completed_by: string | null
+          created_at: string | null
+          document_url: string | null
+          facility_id: string | null
+          id: string
+          is_completed: boolean | null
+          last_checked_at: string | null
+          next_due_date: string | null
+          notes: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          audit_item_id?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string | null
+          document_url?: string | null
+          facility_id?: string | null
+          id?: string
+          is_completed?: boolean | null
+          last_checked_at?: string | null
+          next_due_date?: string | null
+          notes?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          audit_item_id?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string | null
+          document_url?: string | null
+          facility_id?: string | null
+          id?: string
+          is_completed?: boolean | null
+          last_checked_at?: string | null
+          next_due_date?: string | null
+          notes?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facility_audit_item_status_audit_item_id_fkey"
+            columns: ["audit_item_id"]
+            isOneToOne: false
+            referencedRelation: "voucher_audit_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "facility_audit_item_status_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       facility_audit_schedules: {
         Row: {
           audit_name: string
@@ -10036,6 +10096,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "voucher_audit_categories_voucher_type_id_fkey"
+            columns: ["voucher_type_id"]
+            isOneToOne: false
+            referencedRelation: "voucher_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voucher_audit_items: {
+        Row: {
+          category: string
+          check_frequency: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_critical: boolean | null
+          item_name: string
+          legal_basis: string | null
+          penalty_info: string | null
+          preparation_days: number | null
+          voucher_type_id: string | null
+        }
+        Insert: {
+          category: string
+          check_frequency?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_critical?: boolean | null
+          item_name: string
+          legal_basis?: string | null
+          penalty_info?: string | null
+          preparation_days?: number | null
+          voucher_type_id?: string | null
+        }
+        Update: {
+          category?: string
+          check_frequency?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_critical?: boolean | null
+          item_name?: string
+          legal_basis?: string | null
+          penalty_info?: string | null
+          preparation_days?: number | null
+          voucher_type_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_audit_items_voucher_type_id_fkey"
             columns: ["voucher_type_id"]
             isOneToOne: false
             referencedRelation: "voucher_types"

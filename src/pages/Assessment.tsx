@@ -64,11 +64,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
-import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target, MessageCircle, Coins } from "lucide-react";
+import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target, MessageCircle, Coins, ChevronDown, CheckCircle } from "lucide-react";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const Assessment = () => {
   const navigate = useNavigate();
@@ -107,6 +112,7 @@ const Assessment = () => {
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
   const [currentAssessmentResults, setCurrentAssessmentResults] = useState<any>(null);
+  const [expandedSimpleTest, setExpandedSimpleTest] = useState<string | null>(null);
 
   // URL 파라미터 및 location state에 따른 초기 설정
   useEffect(() => {
@@ -701,194 +707,189 @@ const Assessment = () => {
           </div>
 
           {/* ========== 전문 심리검사 ========== */}
-          <section className="mb-10">
-            <div className="flex items-center gap-3 mb-6">
+          <section className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-primary rounded-full"></div>
-              <h2 className="text-xl font-bold text-foreground">전문 심리검사</h2>
+              <h2 className="text-lg font-bold text-foreground">전문 심리검사</h2>
               <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <button 
-                className="group text-left p-5 rounded-xl border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 transition-all"
-                onClick={() => handleTestTypeSelect('psychological')}
-              >
-                <div className="text-2xl mb-2">🧠</div>
-                <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">마음상태 체크</h3>
-                <p className="text-xs text-muted-foreground">연령별 맞춤 심리상태</p>
-              </button>
-              
-              <button 
-                className="group text-left p-5 rounded-xl border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 transition-all"
-                onClick={() => handleTestTypeSelect('panic')}
-              >
-                <div className="text-2xl mb-2">😰</div>
-                <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">불안감 수준 확인</h3>
-                <p className="text-xs text-muted-foreground">21문항 · 불안 증상 체크</p>
-              </button>
-
-              <button 
-                className="group text-left p-5 rounded-xl border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 transition-all"
-                onClick={() => handleTestTypeSelect('depression')}
-              >
-                <div className="text-2xl mb-2">😔</div>
-                <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">우울감 자가체크</h3>
-                <p className="text-xs text-muted-foreground">21문항 · 우울감 수준</p>
-              </button>
-
-              <button 
-                className="group text-left p-5 rounded-xl border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 transition-all"
-                onClick={() => handleTestTypeSelect('adhd')}
-              >
-                <div className="text-2xl mb-2">🎯</div>
-                <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">주의집중력 자가체크</h3>
-                <p className="text-xs text-muted-foreground">18문항 · ADHD 증상</p>
-              </button>
+            <div className="space-y-2">
+              {[
+                { key: 'psychological', icon: '🧠', title: '마음상태 체크', duration: '약 5-10분', questions: '연령별 맞춤', description: '연령대에 따라 맞춤형 심리상태를 종합적으로 점검합니다.', features: ['영유아/아동/성인 연령별 맞춤', '발달단계별 특화 문항', 'AI 기반 심리상태 분석'] },
+                { key: 'panic', icon: '😰', title: '불안감 수준 확인', duration: '약 5분', questions: '21문항', description: '일상에서 느끼는 불안 증상과 그 정도를 체계적으로 측정합니다.', features: ['불안장애 선별 문항', '신체적/심리적 증상 분석', '위험도 수준 평가'] },
+                { key: 'depression', icon: '😔', title: '우울감 자가체크', duration: '약 5분', questions: '21문항', description: '우울감의 깊이와 일상 영향도를 정밀 측정합니다.', features: ['우울증 선별 기준', '인지/정서/행동 증상 분석', '전문가 상담 권고 기준'] },
+                { key: 'adhd', icon: '🎯', title: '주의집중력 자가체크', duration: '약 3분', questions: '18문항', description: 'ADHD 관련 증상의 유무와 정도를 빠르게 확인합니다.', features: ['주의력결핍 증상 체크', '과잉행동 증상 체크', '일상생활 영향도 평가'] },
+              ].map((test) => {
+                const isExpanded = expandedSimpleTest === test.key;
+                return (
+                  <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
+                    <CollapsibleTrigger asChild>
+                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <span className="text-xl">{test.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-primary truncate">{test.title}</h3>
+                              </div>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
+                            </div>
+                          </div>
+                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+                        </div>
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                        <p className="text-sm text-muted-foreground">{test.description}</p>
+                        <div className="space-y-1.5">
+                          {test.features.map((feature, idx) => (
+                            <div key={idx} className="flex items-center gap-2 text-sm">
+                              <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <Button 
+                          onClick={() => handleTestTypeSelect(test.key as any)}
+                          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                        >
+                          검사 시작하기
+                        </Button>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
             </div>
           </section>
 
           {/* ========== 발달검사 섹션 ========== */}
-          <section className="mb-10">
-            <div className="flex items-center gap-3 mb-6">
+          <section className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-              <h2 className="text-xl font-bold text-foreground">아동·청소년 발달검사</h2>
+              <h2 className="text-lg font-bold text-foreground">아동·청소년 발달검사</h2>
               <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all"
-                onClick={() => handleTestTypeSelect('developmental-delay')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-emerald-600">발달지연 검사</h3>
-                <p className="text-xs text-muted-foreground">전반적 발달 선별</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all"
-                onClick={() => handleTestTypeSelect('language')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-emerald-600">영유아 언어발달</h3>
-                <p className="text-xs text-muted-foreground">2분 빠른 체크</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all"
-                onClick={() => handleTestTypeSelect('sensory-integration')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-emerald-600">감각통합장애</h3>
-                <p className="text-xs text-muted-foreground">감각처리 능력</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all"
-                onClick={() => handleTestTypeSelect('learning-disability')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-emerald-600">학습장애 검사</h3>
-                <p className="text-xs text-muted-foreground">학습능력 평가</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all"
-                onClick={() => handleTestTypeSelect('social-development')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-emerald-600">사회성 발달</h3>
-                <p className="text-xs text-muted-foreground">사회적 상호작용</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all"
-                onClick={() => handleTestTypeSelect('challenging-behavior')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-emerald-600">도전행동 평가</h3>
-                <p className="text-xs text-muted-foreground">문제행동 평가</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all"
-                onClick={() => handleTestTypeSelect('adaptive-behavior')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-emerald-600">적응행동 평가</h3>
-                <p className="text-xs text-muted-foreground">일상생활 독립성</p>
-              </button>
+            <div className="space-y-2">
+              {[
+                { key: 'developmental-delay', icon: '👶', title: '발달지연 검사', duration: '약 5분', questions: '20문항', description: '전반적인 발달 영역(운동, 언어, 인지, 사회성)의 지연 여부를 선별합니다.', features: ['전반적 발달 영역 평가', '연령별 발달 기준 비교', '조기 개입 필요성 확인'] },
+                { key: 'language', icon: '🗣️', title: '영유아 언어발달', duration: '약 2분', questions: '10문항', description: '영유아의 언어 표현 및 이해 능력을 빠르게 점검합니다.', features: ['표현언어 발달 체크', '수용언어 발달 체크', '언어치료 필요성 평가'] },
+                { key: 'sensory-integration', icon: '🎨', title: '감각통합장애', duration: '약 5분', questions: '18문항', description: '시각, 청각, 촉각 등 감각 처리 능력의 이상 여부를 확인합니다.', features: ['감각 과민/둔감 체크', '일상생활 영향도 평가', '감각통합치료 필요성 확인'] },
+                { key: 'learning-disability', icon: '📚', title: '학습장애 검사', duration: '약 5분', questions: '20문항', description: '읽기, 쓰기, 수학 등 학습 영역의 어려움을 평가합니다.', features: ['학습 영역별 능력 평가', '학습 전략 분석', '학습 지원 필요성 확인'] },
+                { key: 'social-development', icon: '👥', title: '사회성 발달', duration: '약 5분', questions: '18문항', description: '또래 관계, 사회적 상호작용 능력을 평가합니다.', features: ['또래 관계 능력 평가', '사회적 상황 이해력', '사회성 발달 지원 방향'] },
+                { key: 'challenging-behavior', icon: '⚠️', title: '도전행동 평가', duration: '약 5분', questions: '15문항', description: '공격성, 자해, 파괴적 행동 등 문제행동을 평가합니다.', features: ['문제행동 유형 분석', '행동 발생 빈도 평가', '중재 전략 제안'] },
+                { key: 'adaptive-behavior', icon: '🏠', title: '적응행동 평가', duration: '약 5분', questions: '20문항', description: '일상생활 자립 능력과 독립성을 평가합니다.', features: ['자조 기술 평가', '가정생활 기술 평가', '지역사회 기술 평가'] },
+              ].map((test) => {
+                const isExpanded = expandedSimpleTest === test.key;
+                return (
+                  <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
+                    <CollapsibleTrigger asChild>
+                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <span className="text-xl">{test.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-emerald-600 truncate">{test.title}</h3>
+                              </div>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
+                            </div>
+                          </div>
+                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+                        </div>
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                        <p className="text-sm text-muted-foreground">{test.description}</p>
+                        <div className="space-y-1.5">
+                          {test.features.map((feature, idx) => (
+                            <div key={idx} className="flex items-center gap-2 text-sm">
+                              <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <Button 
+                          onClick={() => handleTestTypeSelect(test.key as any)}
+                          className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
+                        >
+                          검사 시작하기
+                        </Button>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
             </div>
           </section>
 
           {/* ========== 성격·진로 검사 섹션 ========== */}
-          <section className="mb-10">
-            <div className="flex items-center gap-3 mb-6">
+          <section className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
-              <h2 className="text-xl font-bold text-foreground">성격·진로 검사</h2>
+              <h2 className="text-lg font-bold text-foreground">성격·진로 검사</h2>
               <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all relative"
-                onClick={() => navigate('/assessment/attachment-style-test')}
-              >
-                <span className="absolute top-2 right-2 text-[10px] bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded font-medium">NEW</span>
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-purple-600">애착 유형 심층분석</h3>
-                <p className="text-xs text-muted-foreground">30문항 심층 + AI 분석</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all relative"
-                onClick={() => setCurrentStep('bigfive-test')}
-              >
-                <span className="absolute top-2 right-2 text-[10px] text-orange-600 font-medium">인기</span>
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-purple-600">5차원 성격 분석</h3>
-                <p className="text-xs text-muted-foreground">25문항 5분</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all"
-                onClick={() => setCurrentStep('attachment-test')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-purple-600">관계유형 진단</h3>
-                <p className="text-xs text-muted-foreground">20문항 4분</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all"
-                onClick={() => setCurrentStep('stress-test')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-purple-600">스트레스 지수</h3>
-                <p className="text-xs text-muted-foreground">12문항 4분</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all"
-                onClick={() => setCurrentStep('career-test')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-purple-600">진로흥미 탐색</h3>
-                <p className="text-xs text-muted-foreground">30문항 6분</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all"
-                onClick={() => setCurrentStep('selfesteem-test')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-purple-600">자아가치 측정</h3>
-                <p className="text-xs text-muted-foreground">15문항 4분</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all relative"
-                onClick={() => navigate('/assessment/defense-mechanism-test')}
-              >
-                <span className="absolute top-2 right-2 text-[10px] bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded font-medium">NEW</span>
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-purple-600">방어기제 분석</h3>
-                <p className="text-xs text-muted-foreground">24문항 5분</p>
-              </button>
-
-              <button 
-                className="group text-left p-4 rounded-lg border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all"
-                onClick={() => handleTestTypeSelect('parent-child-play')}
-              >
-                <h3 className="font-medium text-foreground text-sm mb-0.5 group-hover:text-purple-600">부모아동 놀이성향</h3>
-                <p className="text-xs text-muted-foreground">8문항 3분</p>
-              </button>
+            <div className="space-y-2">
+              {[
+                { key: 'attachment-deep', icon: '💜', title: '애착 유형 심층분석', duration: '약 8분', questions: '30문항', badge: 'NEW', description: '성인 애착 유형을 심층 분석하여 관계 패턴을 이해합니다.', features: ['불안-회피 차원 분석', 'AI 기반 심층 해석', '관계 개선 가이드'], onClick: () => navigate('/assessment/attachment-style-test') },
+                { key: 'bigfive', icon: '🌟', title: '5차원 성격 분석', duration: '약 5분', questions: '25문항', badge: '인기', description: '개방성, 성실성, 외향성, 친화성, 신경성 5가지 성격 특성을 분석합니다.', features: ['Big Five 성격 모델 기반', '성격 강점/약점 분석', '대인관계 스타일 이해'], onClick: () => setCurrentStep('bigfive-test') },
+                { key: 'attachment', icon: '🤝', title: '관계유형 진단', duration: '약 4분', questions: '20문항', description: '대인 관계에서의 애착 스타일과 관계 패턴을 진단합니다.', features: ['안정/불안/회피 유형 분류', '관계 강점 발견', '건강한 관계 팁 제공'], onClick: () => setCurrentStep('attachment-test') },
+                { key: 'stress', icon: '🔥', title: '스트레스 지수', duration: '약 4분', questions: '12문항', description: '현재 스트레스 수준과 대처 능력을 측정합니다.', features: ['스트레스 수준 정량화', '스트레스 유형 분석', '맞춤형 해소법 제안'], onClick: () => setCurrentStep('stress-test') },
+                { key: 'career', icon: '🎯', title: '진로흥미 탐색', duration: '약 6분', questions: '30문항', description: '홀랜드 이론 기반으로 적합한 직업 분야를 탐색합니다.', features: ['6가지 직업 흥미 유형', '적성 분야 추천', '진로 방향 가이드'], onClick: () => setCurrentStep('career-test') },
+                { key: 'selfesteem', icon: '💎', title: '자아가치 측정', duration: '약 4분', questions: '15문항', description: '자존감 수준과 자기 가치감을 객관적으로 측정합니다.', features: ['자존감 수준 평가', '자기 인식 분석', '자존감 향상 방법'], onClick: () => setCurrentStep('selfesteem-test') },
+                { key: 'defense', icon: '🛡️', title: '방어기제 분석', duration: '약 5분', questions: '24문항', badge: 'NEW', description: '무의식적 심리 방어 메커니즘을 분석합니다.', features: ['주요 방어기제 유형 분석', '스트레스 대처 패턴 이해', '성숙한 방어기제 개발'], onClick: () => navigate('/assessment/defense-mechanism-test') },
+                { key: 'parent-child-play', icon: '👨‍👧', title: '부모아동 놀이성향', duration: '약 3분', questions: '8문항', description: '부모와 자녀 간의 놀이 상호작용 스타일을 분석합니다.', features: ['놀이 상호작용 패턴', '부모 놀이 참여도', '놀이 활동 추천'], onClick: () => handleTestTypeSelect('parent-child-play') },
+              ].map((test) => {
+                const isExpanded = expandedSimpleTest === test.key;
+                return (
+                  <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
+                    <CollapsibleTrigger asChild>
+                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <span className="text-xl">{test.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-purple-600 truncate">{test.title}</h3>
+                                {test.badge && (
+                                  <Badge className={`${test.badge === 'NEW' ? 'bg-purple-500' : 'bg-orange-500'} text-white text-[9px] md:text-[10px] px-1 md:px-1.5 py-0 flex-shrink-0`}>{test.badge}</Badge>
+                                )}
+                              </div>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
+                            </div>
+                          </div>
+                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+                        </div>
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                        <p className="text-sm text-muted-foreground">{test.description}</p>
+                        <div className="space-y-1.5">
+                          {test.features.map((feature, idx) => (
+                            <div key={idx} className="flex items-center gap-2 text-sm">
+                              <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <Button 
+                          onClick={test.onClick}
+                          className="w-full bg-purple-500 hover:bg-purple-600 text-white"
+                        >
+                          검사 시작하기
+                        </Button>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
             </div>
           </section>
 

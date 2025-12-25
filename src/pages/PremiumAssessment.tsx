@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins } from "lucide-react";
+import { Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins, ChevronDown, Brain, Heart, Briefcase, DollarSign, UserCheck, AlertTriangle, Eye, Baby, Palette, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { useEventTracking } from "@/hooks/useEventTracking";
-import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { useTokens } from "@/hooks/useTokens";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
@@ -27,6 +26,11 @@ import { HexacoResult } from "@/components/assessment/HexacoResult";
 import { InsuranceAnalysisForm } from "@/components/assessment/InsuranceAnalysisForm";
 import { InsuranceAnalysisResult } from "@/components/assessment/InsuranceAnalysisResult";
 import { DrawingAnalyzer } from "@/components/ai-analysis/DrawingAnalyzer";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { 
   premiumAssessmentInfo,
   autismSpectrumScreeningQuestions,
@@ -324,504 +328,447 @@ const PremiumAssessment = () => {
     );
   }
 
+  // 아코디언 상태 관리
+  const [expandedTest, setExpandedTest] = useState<string | null>(null);
+
+  // 검사 카테고리별 정의
+  const testCategories = {
+    neuroDevelopment: {
+      title: "신경발달 검사",
+      color: "bg-purple-500",
+      hoverColor: "hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20",
+      activeColor: "text-purple-600",
+      tests: [
+        { key: 'autismSpectrumScreening', icon: Brain, badge: '🧠 AI 91%', badgeColor: 'bg-purple-500' },
+        { key: 'premiumAdhd', icon: Brain, badge: '✨ NEW', badgeColor: 'bg-pink-500' },
+        { key: 'languageDevelopment', icon: Baby, badge: '🔥 인기', badgeColor: 'bg-red-500' },
+      ]
+    },
+    personality: {
+      title: "성격·기질 검사",
+      color: "bg-blue-500",
+      hoverColor: "hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-950/20",
+      activeColor: "text-blue-600",
+      tests: [
+        { key: 'personality_type', icon: Brain },
+        { key: 'temperament', icon: Users },
+        { key: 'love_personality', icon: Heart, badge: '💕 인기', badgeColor: 'bg-pink-500' },
+      ]
+    },
+    lifeWork: {
+      title: "직장·금전 검사",
+      color: "bg-orange-500",
+      hoverColor: "hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/20",
+      activeColor: "text-orange-600",
+      tests: [
+        { key: 'work_stress', icon: Briefcase },
+        { key: 'financialPsychology', icon: DollarSign },
+        { key: 'cognitive', icon: Brain },
+      ]
+    },
+    teen: {
+      title: "청소년 검사",
+      color: "bg-emerald-500",
+      hoverColor: "hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20",
+      activeColor: "text-emerald-600",
+      tests: [
+        { key: 'teenMentalCompass', icon: UserCheck },
+        { key: 'teenGrowthCapacity', icon: AlertTriangle },
+        { key: 'socialDevelopmentScreening', icon: Eye },
+      ]
+    },
+    special: {
+      title: "특수 검사",
+      color: "bg-slate-500",
+      hoverColor: "hover:border-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-950/20",
+      activeColor: "text-slate-600",
+      tests: [
+        { key: 'otrovert', icon: Users, isSpecial: true, badge: '🎭 1위', badgeColor: 'bg-red-500' },
+        { key: 'mbti', icon: Sparkles, isSpecial: true, badge: '🧠 2위', badgeColor: 'bg-blue-500' },
+        { key: 'hexaco', icon: Crown, isSpecial: true, badge: '💎 NEW', badgeColor: 'bg-purple-500' },
+        { key: 'drawing', icon: Palette, isSpecial: true, badge: 'AI 분석', badgeColor: 'bg-green-500' },
+        { key: 'insurance', icon: Shield, isSpecial: true, badge: 'AI 전문가', badgeColor: 'bg-cyan-500' },
+      ]
+    }
+  };
+
+  // 특수 검사 정보
+  const specialTestInfo: Record<string, any> = {
+    otrovert: {
+      title: "🎭 오트로버트 성격 체크",
+      subtitle: "ASES-OT (Otrovert Spectrum Early Screening)",
+      description: "외향? 내향? NO! 당신은 오트로버트일 수 있습니다. MBTI보다 정확한 20문항 정밀 분석으로 새로운 성격 유형을 발견하세요!",
+      duration: "약 5-8분",
+      questions_count: 20,
+      premium_features: ["외향성-내향성 스펙트럼 정밀 분석", "91% 이상 정확도의 AI 분석", "성격 차원별 레이더 차트 제공"],
+      onClick: () => setCurrentTest('otrovert'),
+    },
+    mbti: {
+      title: "🧠 신박한 MBTI 검사",
+      subtitle: "AI 분석 기반 창작 성격유형 검사",
+      description: "AI가 분석하는 진짜 MBTI! 25문항으로 당신의 성격을 정확하게 파악하고, 기질별 퍼센트 그래프로 시각화합니다",
+      duration: "약 5분",
+      questions_count: 25,
+      premium_features: ["4가지 기질별 퍼센트 분석", "AI 심층 성격 분석", "추천 직업 및 강점/약점 분석"],
+      onClick: () => navigate('/assessment/mbti-test'),
+    },
+    hexaco: {
+      title: "💎 퍼스널리티 컴퍼스",
+      subtitle: "6차원 성격 나침반 검사",
+      description: "진실성, 감성, 사교성, 조화성, 계획성, 탐구성 6가지 차원으로 당신의 성격을 심층 분석합니다",
+      duration: "약 8-10분",
+      questions_count: 48,
+      premium_features: ["6가지 성격 차원 정밀 측정", "직업 및 경력 맞춤 인사이트", "3000자 AI 전문가 리포트"],
+      onClick: () => setCurrentTest('hexaco'),
+    },
+    drawing: {
+      title: "🎨 그림 심리 검사",
+      subtitle: "HTP / KFD AI Analysis",
+      description: "HTP, KFD 등 그림 검사를 AI가 자동으로 분석하여 심리 상태를 파악합니다",
+      duration: "약 3-5분",
+      questions_count: 0,
+      premium_features: ["집-나무-사람(HTP) 분석", "동적 가족화(KFD) 분석", "심리 상태 및 위험도 평가"],
+      onClick: () => setCurrentTest('drawing-analysis'),
+    },
+    insurance: {
+      title: "💙 보험보장분석",
+      subtitle: "Insurance Analysis",
+      description: "증권 사진만 업로드하면 AI가 가족 보장을 분석합니다",
+      duration: "약 5분",
+      questions_count: 0,
+      premium_features: ["보장 내역 자동 추출", "누락 보장 체크", "맞춤형 보완 제안"],
+      onClick: () => setCurrentTest('insurance-analysis'),
+    },
+  };
+
+  const handleTestClick = (key: string, isSpecial?: boolean) => {
+    if (isSpecial) {
+      specialTestInfo[key]?.onClick?.();
+    } else {
+      handleStartAssessment(key);
+    }
+  };
+
   return (
     <AuthenticationGuard fallbackMessage="프리미엄 심리검사를 이용하려면 로그인이 필요합니다." redirectPath="/auth">
       <div>
         <UnifiedNavigation />
-        <div className="min-h-screen relative overflow-hidden pt-4">
-        {/* Modern Premium Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-subtle via-background to-accent/10" />
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-96 h-96 bg-primary/8 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-32 right-16 w-[500px] h-[500px] bg-primary-glow/8 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-accent/6 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
-        </div>
-
-        <div className="relative z-10 container mx-auto px-6 pt-8 pb-16 max-w-7xl">
-        {/* Header - Mobile Optimized */}
-        <div className="mb-10">
-          {/* Title Section - 가로 정렬 */}
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-1.5 sm:gap-3 mb-4">
-              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg flex-shrink-0">
-                <Crown className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+        <div className="min-h-screen bg-background pt-4">
+          <div className="container mx-auto px-4 py-6 max-w-4xl">
+            
+            {/* 헤더 - 심플하게 */}
+            <div className="mb-8 text-center">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Crown className="w-6 h-6 text-yellow-500" />
+                <h1 className="text-2xl font-bold text-foreground">프리미엄 AIH 검사</h1>
               </div>
-              <h1 className="text-lg sm:text-2xl md:text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent whitespace-nowrap">
-                프리미엄 AIH 자기 체크리스트
-              </h1>
-              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg flex-shrink-0">
-                <Crown className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
-              </div>
-            </div>
-            <p className="text-base sm:text-lg text-muted-foreground font-medium px-4 mb-4">
-              전문적이고 정밀한 성향 파악을 위한 AIH전문가의 창작 도구들
-            </p>
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Badge className="bg-purple-500 text-white text-base px-4 py-2 font-bold shadow-lg">
-                <Coins className="w-4 h-4 mr-2" />
+              <p className="text-muted-foreground text-sm mb-3">
+                전문적이고 정밀한 성향 파악을 위한 AIH 창작 도구
+              </p>
+              <Badge className="bg-purple-500 text-white text-sm px-3 py-1">
+                <Coins className="w-3 h-3 mr-1" />
                 각 검사당 3,000원
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground/80 text-center px-4">
-              프리미엄 검사 시작 시 자동으로 3,000원이 차감됩니다
-            </p>
-          </div>
-        </div>
 
-        {/* Premium Features Banner - Redesigned */}
-        <div className="max-w-6xl mx-auto mb-14">
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-            {/* Gradient Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary-glow to-primary" />
-            
-            {/* Pattern Overlay */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-                backgroundSize: '32px 32px'
-              }} />
-            </div>
-            
-            {/* Glow Effects */}
-            <div className="absolute top-0 left-1/4 w-64 h-64 bg-white/20 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-primary-glow/30 rounded-full blur-3xl" />
-            
-            {/* Content */}
-            <div className="relative z-10 p-10 text-white">
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <Sparkles className="w-8 h-8 text-yellow-300 animate-pulse" />
-                <h2 className="text-3xl font-bold">구독자 전용 프리미엄 AIH 검사</h2>
-                <Sparkles className="w-8 h-8 text-yellow-300 animate-pulse" />
-              </div>
-              <div className="grid md:grid-cols-4 gap-8 text-center">
-                <div className="group">
-                  <div className="text-3xl font-bold mb-2 group-hover:scale-110 transition-transform">15가지</div>
-                  <div className="text-sm opacity-90 font-medium">전문 검사</div>
-                </div>
-                <div className="group">
-                  <div className="text-3xl font-bold mb-2 group-hover:scale-110 transition-transform">정밀분석</div>
-                  <div className="text-sm opacity-90 font-medium">과학적 근거</div>
-                </div>
-                <div className="group">
-                  <div className="text-3xl font-bold mb-2 group-hover:scale-110 transition-transform">맞춤형</div>
-                  <div className="text-sm opacity-90 font-medium">개인별 해석</div>
-                </div>
-                <div className="group">
-                  <div className="text-3xl font-bold mb-2 group-hover:scale-110 transition-transform">PDF</div>
-                  <div className="text-sm opacity-90 font-medium">상세 보고서</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Assessment Cards Grid - Enhanced Spacing */}
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {/* 오트로버트 테스트 - 1위 NEW */}
-            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]">
-              {/* 인기 순위 배지 */}
-              <div className="absolute top-2 right-2 z-10 flex gap-1">
-                <Badge className="bg-pink-500 text-white border-0 text-xs px-2 py-1">
-                  NEW
-                </Badge>
-                <Badge className="bg-red-500 text-white border-0 text-xs px-2 py-1">
-                  <Crown className="w-2.5 h-2.5 mr-1" />
-                  1위
-                </Badge>
+            {/* ========== 신경발달 검사 섹션 ========== */}
+            <section className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
+                <h2 className="text-lg font-bold text-foreground">신경발달 검사</h2>
+                <span className="text-xs text-purple-600 bg-purple-100 dark:bg-purple-900/30 px-2 py-0.5 rounded font-medium">AI 정밀분석</span>
               </div>
 
-              {/* Header with Dark Gradient - AIH 스타일 */}
-              <div className="bg-gradient-to-r from-slate-700 to-slate-600 p-6 pr-24 text-white relative">
-                <div className="absolute inset-0 bg-black/10" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-white/20 rounded-lg">
-                      <Users className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg font-bold">🎭 오트로버트 성격 체크</CardTitle>
-                      <p className="text-sm opacity-90">ASES-OT (Otrovert Spectrum Early Screening)</p>
-                    </div>
-                  </div>
-                </div>
+              <div className="space-y-2">
+                {['autismSpectrumScreening', 'premiumAdhd', 'languageDevelopment'].map((key) => {
+                  const info = premiumAssessmentInfo[key as keyof typeof premiumAssessmentInfo];
+                  if (!info) return null;
+                  const isExpanded = expandedTest === key;
+                  
+                  return (
+                    <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : key)}>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full group text-left p-4 rounded-xl border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="font-semibold text-foreground group-hover:text-purple-600">{info.title}</h3>
+                                {info.badge && (
+                                  <Badge className="bg-purple-500 text-white text-[10px] px-1.5 py-0">{info.badge}</Badge>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground">{info.duration} · {info.questions_count}문항</p>
+                            </div>
+                            <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          </div>
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                          <p className="text-sm text-muted-foreground">{info.description}</p>
+                          <div className="space-y-1.5">
+                            {info.premium_features.slice(0, 4).map((feature, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-sm">
+                                <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                                <span className="text-muted-foreground">{feature}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <Button 
+                            onClick={() => handleStartAssessment(key)}
+                            className="w-full bg-purple-500 hover:bg-purple-600 text-white"
+                          >
+                            검사 시작하기
+                          </Button>
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* ========== 성격·기질 검사 섹션 ========== */}
+            <section className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
+                <h2 className="text-lg font-bold text-foreground">성격·기질 검사</h2>
               </div>
 
-              <CardContent className="p-6 space-y-4">
-                {/* Description */}
-                <p className="text-muted-foreground leading-relaxed">
-                  외향? 내향? NO! 당신은 오트로버트일 수 있습니다. MBTI보다 정확한 20문항 정밀 분석으로 새로운 성격 유형을 발견하세요! 🔥
-                </p>
+              <div className="space-y-2">
+                {['personality_type', 'temperament', 'love_personality'].map((key) => {
+                  const info = premiumAssessmentInfo[key as keyof typeof premiumAssessmentInfo];
+                  if (!info) return null;
+                  const isExpanded = expandedTest === key;
+                  
+                  return (
+                    <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : key)}>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full group text-left p-4 rounded-xl border border-border hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-all">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="font-semibold text-foreground group-hover:text-blue-600">{info.title}</h3>
+                                {info.badge && (
+                                  <Badge className="bg-blue-500 text-white text-[10px] px-1.5 py-0">{info.badge}</Badge>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground">{info.duration} · {info.questions_count}문항</p>
+                            </div>
+                            <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          </div>
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                          <p className="text-sm text-muted-foreground">{info.description}</p>
+                          <div className="space-y-1.5">
+                            {info.premium_features.slice(0, 4).map((feature, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-sm">
+                                <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                                <span className="text-muted-foreground">{feature}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <Button 
+                            onClick={() => handleStartAssessment(key)}
+                            className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                          >
+                            검사 시작하기
+                          </Button>
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  );
+                })}
+              </div>
+            </section>
 
-                <p className="text-sm text-muted-foreground">
-                  AI 분석으로 재미있는 결과를 제공합니다
-                </p>
-
-                {/* Test Info */}
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    약 5-8분
-                  </div>
-                  <div className="text-muted-foreground">
-                    20개 문항
-                  </div>
-                </div>
-
-                {/* Premium Features */}
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-sm">프리미엄 분석 내용</h4>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">외향성-내향성 스펙트럼 정밀 분석</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">91% 이상 정확도의 AI 분석</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">성격 차원별 레이더 차트 제공</span>
-                    </div>
-                    <div className="text-xs text-muted-foreground ml-5">
-                      외 3가지...
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Button */}
-                <div className="pt-4">
-                  <Button 
-                    onClick={() => setCurrentTest('otrovert')}
-                    className="w-full bg-gradient-to-r from-slate-700 to-slate-600 hover:opacity-90 text-white"
-                  >
-                    검사 시작하기
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* 신박한 MBTI 테스트 - 2위 NEW */}
-            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]">
-              {/* 인기 순위 배지 */}
-              <div className="absolute top-2 right-2 z-10 flex gap-1">
-                <Badge className="bg-pink-500 text-white border-0 text-xs px-2 py-1">
-                  NEW
-                </Badge>
-                <Badge className="bg-blue-500 text-white border-0 text-xs px-2 py-1">
-                  <Star className="w-2.5 h-2.5 mr-1" />
-                  2위
-                </Badge>
+            {/* ========== 직장·금전 검사 섹션 ========== */}
+            <section className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-1.5 h-6 bg-orange-500 rounded-full"></div>
+                <h2 className="text-lg font-bold text-foreground">직장·금전 검사</h2>
               </div>
 
-              {/* Header with Dark Gradient - AIH 스타일 */}
-              <div className="bg-gradient-to-r from-indigo-700 to-blue-600 p-6 pr-24 text-white relative">
-                <div className="absolute inset-0 bg-black/10" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-white/20 rounded-lg">
-                      <Sparkles className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg font-bold">🧠 신박한 MBTI 검사</CardTitle>
-                      <p className="text-sm opacity-90">AI 분석 기반 창작 성격유형 검사</p>
-                    </div>
-                  </div>
-                </div>
+              <div className="space-y-2">
+                {['work_stress', 'financialPsychology', 'cognitive'].map((key) => {
+                  const info = premiumAssessmentInfo[key as keyof typeof premiumAssessmentInfo];
+                  if (!info) return null;
+                  const isExpanded = expandedTest === key;
+                  
+                  return (
+                    <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : key)}>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full group text-left p-4 rounded-xl border border-border hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 transition-all">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="font-semibold text-foreground group-hover:text-orange-600">{info.title}</h3>
+                                {info.badge && (
+                                  <Badge className="bg-orange-500 text-white text-[10px] px-1.5 py-0">{info.badge}</Badge>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground">{info.duration} · {info.questions_count}문항</p>
+                            </div>
+                            <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          </div>
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                          <p className="text-sm text-muted-foreground">{info.description}</p>
+                          <div className="space-y-1.5">
+                            {info.premium_features.slice(0, 4).map((feature, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-sm">
+                                <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                                <span className="text-muted-foreground">{feature}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <Button 
+                            onClick={() => handleStartAssessment(key)}
+                            className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                          >
+                            검사 시작하기
+                          </Button>
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* ========== 청소년 검사 섹션 ========== */}
+            <section className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+                <h2 className="text-lg font-bold text-foreground">청소년 검사</h2>
               </div>
 
-              <CardContent className="p-6 space-y-4">
-                {/* Description */}
-                <p className="text-muted-foreground leading-relaxed">
-                  AI가 분석하는 진짜 MBTI! 25문항으로 당신의 성격을 정확하게 파악하고, 기질별 퍼센트 그래프로 시각화합니다 🎯
-                </p>
+              <div className="space-y-2">
+                {['teenMentalCompass', 'teenGrowthCapacity', 'socialDevelopmentScreening'].map((key) => {
+                  const info = premiumAssessmentInfo[key as keyof typeof premiumAssessmentInfo];
+                  if (!info) return null;
+                  const isExpanded = expandedTest === key;
+                  
+                  return (
+                    <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : key)}>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full group text-left p-4 rounded-xl border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="font-semibold text-foreground group-hover:text-emerald-600">{info.title}</h3>
+                                {info.badge && (
+                                  <Badge className="bg-emerald-500 text-white text-[10px] px-1.5 py-0">{info.badge}</Badge>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground">{info.duration} · {info.questions_count}문항</p>
+                            </div>
+                            <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          </div>
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                          <p className="text-sm text-muted-foreground">{info.description}</p>
+                          <div className="space-y-1.5">
+                            {info.premium_features.slice(0, 4).map((feature, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-sm">
+                                <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                                <span className="text-muted-foreground">{feature}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <Button 
+                            onClick={() => handleStartAssessment(key)}
+                            className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
+                          >
+                            검사 시작하기
+                          </Button>
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  );
+                })}
+              </div>
+            </section>
 
-                <p className="text-sm text-muted-foreground">
-                  E-I, S-N, T-F, J-P 각 기질별 비율을 그래프로 확인
-                </p>
-
-                {/* Test Info */}
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    약 5분
-                  </div>
-                  <div className="text-muted-foreground">
-                    25개 문항
-                  </div>
-                </div>
-
-                {/* Premium Features */}
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-sm">프리미엄 분석 내용</h4>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">4가지 기질별 퍼센트 분석</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">AI 심층 성격 분석</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">추천 직업 및 강점/약점 분석</span>
-                    </div>
-                    <div className="text-xs text-muted-foreground ml-5">
-                      외 5가지...
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Button */}
-                <div className="pt-4">
-                  <Button 
-                    onClick={() => navigate('/assessment/mbti-test')}
-                    className="w-full bg-gradient-to-r from-indigo-700 to-blue-600 hover:opacity-90 text-white"
-                  >
-                    검사 시작하기
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {Object.entries(premiumAssessmentInfo).map(([key, info]) => (
-              <PremiumAssessmentCard
-                key={key}
-                assessmentKey={key}
-                info={info}
-                onStart={handleStartAssessment}
-                isSubscribed={isSubscribed}
-              />
-            ))}
-
-            {/* 보험보장분석 카드 */}
-            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]"
-              onClick={() => setCurrentTest('insurance-analysis')}
-            >
-              <div className="absolute top-2 right-2 z-10">
-                <Badge className="bg-blue-500 text-white border-0 text-xs px-2 py-1">
-                  AI 전문가
-                </Badge>
+            {/* ========== 특수 AI 검사 섹션 ========== */}
+            <section className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-1.5 h-6 bg-slate-500 rounded-full"></div>
+                <h2 className="text-lg font-bold text-foreground">특수 AI 검사</h2>
+                <span className="text-xs text-slate-600 bg-slate-100 dark:bg-slate-900/30 px-2 py-0.5 rounded font-medium">인기</span>
               </div>
 
-              <div className="bg-gradient-to-r from-blue-700 to-cyan-600 p-6 pr-24 text-white relative">
-                <div className="absolute inset-0 bg-black/10" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-white/20 rounded-lg">
-                      <CheckCircle className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg font-bold">💙 보험보장분석</CardTitle>
-                      <p className="text-sm opacity-90">Insurance Analysis</p>
-                    </div>
-                  </div>
-                </div>
+              <div className="space-y-2">
+                {Object.entries(specialTestInfo).map(([key, info]) => {
+                  const isExpanded = expandedTest === `special_${key}`;
+                  
+                  return (
+                    <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : `special_${key}`)}>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full group text-left p-4 rounded-xl border border-border hover:border-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-950/20 transition-all">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="font-semibold text-foreground group-hover:text-slate-600">{info.title}</h3>
+                              </div>
+                              <p className="text-xs text-muted-foreground">{info.duration}{info.questions_count > 0 ? ` · ${info.questions_count}문항` : ''}</p>
+                            </div>
+                            <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          </div>
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                          <p className="text-sm text-muted-foreground">{info.description}</p>
+                          <div className="space-y-1.5">
+                            {info.premium_features.map((feature: string, idx: number) => (
+                              <div key={idx} className="flex items-center gap-2 text-sm">
+                                <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                                <span className="text-muted-foreground">{feature}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <Button 
+                            onClick={info.onClick}
+                            className="w-full bg-slate-600 hover:bg-slate-700 text-white"
+                          >
+                            검사 시작하기
+                          </Button>
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  );
+                })}
               </div>
+            </section>
 
-              <CardContent className="p-6 space-y-4">
-                <p className="text-muted-foreground leading-relaxed">
-                  증권 사진만 업로드하면 AI가 가족 보장을 분석합니다.
-                </p>
-
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    약 5분
-                  </div>
-                </div>
-
-                <div className="pt-4">
-                  <Button 
-                    onClick={() => setCurrentTest('insurance-analysis')}
-                    className="w-full bg-gradient-to-r from-blue-700 to-cyan-600"
-                  >
-                    분석 시작
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 그림 심리 검사 카드 - AI 분석 */}
-            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]"
-              onClick={() => setCurrentTest('drawing-analysis')}
-            >
-              <div className="absolute top-2 right-2 z-10">
-                <Badge className="bg-green-500 text-white border-0 text-xs px-2 py-1">
-                  AI 분석
-                </Badge>
+            {/* 구독 CTA */}
+            {!isSubscribed && (
+              <div className="mt-8 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800 text-center">
+                <Crown className="w-10 h-10 text-yellow-500 mx-auto mb-3" />
+                <h3 className="text-lg font-bold text-foreground mb-2">프리미엄 회원이 되어보세요</h3>
+                <p className="text-sm text-muted-foreground mb-4">전문적인 심리검사와 상세한 분석 보고서를 받아보실 수 있습니다</p>
+                <Button 
+                  onClick={() => navigate('/token-subscription')}
+                  className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white"
+                >
+                  구독하기
+                </Button>
               </div>
+            )}
 
-              <div className="bg-gradient-to-r from-green-700 to-emerald-600 p-6 pr-24 text-white relative">
-                <div className="absolute inset-0 bg-black/10" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-white/20 rounded-lg">
-                      <Sparkles className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg font-bold">🎨 그림 심리 검사</CardTitle>
-                      <p className="text-sm opacity-90">HTP / KFD AI Analysis</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <CardContent className="p-6 space-y-4">
-                <p className="text-muted-foreground leading-relaxed">
-                  HTP, KFD 등 그림 검사를 AI가 자동으로 분석하여 심리 상태를 파악합니다.
-                </p>
-
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    약 3-5분
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-sm">AI 분석 내용</h4>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">집-나무-사람(HTP) 분석</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">동적 가족화(KFD) 분석</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">심리 상태 및 위험도 평가</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4">
-                  <Button 
-                    onClick={() => setCurrentTest('drawing-analysis')}
-                    className="w-full bg-gradient-to-r from-green-700 to-emerald-600"
-                  >
-                    그림 분석 시작
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 퍼스널리티 컴퍼스 카드 - NEW */}
-            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]"
-              onClick={() => setCurrentTest('hexaco')}
-            >
-              <div className="absolute top-2 right-2 z-10 flex gap-1">
-                <Badge className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white border-0 text-xs px-2 py-1 animate-pulse">
-                  🆕 NEW
-                </Badge>
-                <Badge className="bg-yellow-500 text-white border-0 text-xs px-2 py-1">
-                  <Star className="w-2.5 h-2.5 mr-1" />
-                  심층분석
-                </Badge>
-              </div>
-
-              <div className="bg-gradient-to-r from-indigo-700 to-purple-600 p-6 pr-24 text-white relative">
-                <div className="absolute inset-0 bg-black/10" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-white/20 rounded-lg">
-                      <Crown className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg font-bold">💎 퍼스널리티 컴퍼스</CardTitle>
-                      <p className="text-sm opacity-90">6차원 성격 나침반 검사</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <CardContent className="p-6 space-y-4">
-                <p className="text-muted-foreground leading-relaxed">
-                  진실성, 감성, 사교성, 조화성, 계획성, 탐구성 6가지 차원으로 당신의 성격을 심층 분석합니다. AI가 맞춤형 인사이트를 제공합니다!
-                </p>
-
-                <p className="text-sm text-muted-foreground">
-                  심리학 기반 6차원 성격 모델
-                </p>
-
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    약 8-10분
-                  </div>
-                  <div className="text-muted-foreground">
-                    48개 문항
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-sm">프리미엄 분석 내용</h4>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">6가지 성격 차원 정밀 측정</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">직업 및 경력 맞춤 인사이트</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">대인관계 패턴 심층 분석</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">3000자 AI 전문가 리포트</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4">
-                  <Button 
-                    onClick={() => setCurrentTest('hexaco')}
-                    className="w-full bg-gradient-to-r from-indigo-700 to-purple-600"
-                  >
-                    검사 시작
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-          </div>
-        </div>
-
-        {/* Subscription CTA for Non-subscribers */}
-        {!isSubscribed && (
-          <div className="max-w-4xl mx-auto mt-12">
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-2xl p-8 text-center">
-              <Crown className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-yellow-800 mb-2">
-                프리미엄 회원이 되어보세요
-              </h3>
-              <p className="text-yellow-700 mb-6">
-                전문적인 심리검사와 상세한 분석 보고서를 받아보실 수 있습니다
-              </p>
-              <Button 
-                onClick={() => navigate('/token-subscription')}
-                className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-8 py-3"
-                size="lg"
-              >
-                구독하기
-              </Button>
+            {/* Medical Disclaimer */}
+            <div className="mt-8">
+              <MedicalDisclaimer variant="full" />
             </div>
           </div>
-        )}
-
-        {/* Medical Disclaimer */}
-        <div className="max-w-4xl mx-auto mt-8">
-          <MedicalDisclaimer variant="full" />
         </div>
-        </div>
-      </div>
       </div>
     </AuthenticationGuard>
   );

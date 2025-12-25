@@ -480,11 +480,8 @@ const PremiumAssessment = () => {
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs md:text-sm font-semibold text-white truncate">
-                    🏥 공식검사 · 전문가 비대면 해석
-                  </p>
-                  <p className="text-[10px] md:text-xs text-slate-300 truncate">
-                    온라인코드 발급 → 전문가 직접 해석
+                  <p className="text-[11px] md:text-sm text-white leading-relaxed">
+                    <span className="font-semibold">전문가 직접 해석</span>은 AIHPRO 공식검사 <span className="underline underline-offset-2">스마일솔루션</span>에서 →
                   </p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-white flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />

@@ -456,18 +456,18 @@ const PremiumAssessment = () => {
         <div className="min-h-screen bg-background pt-4">
           <div className="container mx-auto px-4 py-6 max-w-4xl">
             
-            {/* 헤더 - 심플하게 */}
+            {/* 헤더 */}
             <div className="mb-6 text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Crown className="w-5 h-5 md:w-6 md:h-6 text-yellow-500" />
-                <h1 className="text-xl md:text-2xl font-bold text-foreground">프리미엄 AIH 검사</h1>
+                <Crown className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
+                <h1 className="text-xl md:text-2xl font-bold text-foreground">심층테스트</h1>
               </div>
-              <p className="text-muted-foreground text-xs md:text-sm mb-2 whitespace-nowrap">
-                전문적이고 정밀한 성향 파악을 위한 AIH 창작 도구
+              <p className="text-muted-foreground text-xs md:text-sm mb-2">
+                표면적인 결과가 아닌, 진짜 나를 마주하는 시간
               </p>
-              <Badge className="bg-purple-500 text-white text-xs md:text-sm px-2 md:px-3 py-0.5 md:py-1">
+              <Badge className="bg-purple-500/90 text-white text-xs md:text-sm px-2 md:px-3 py-0.5 md:py-1">
                 <Coins className="w-3 h-3 mr-1" />
-                각 검사당 3,000원
+                3,000원
               </Badge>
             </div>
 

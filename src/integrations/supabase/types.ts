@@ -337,6 +337,45 @@ export type Database = {
           },
         ]
       }
+      audit_checklist_items: {
+        Row: {
+          category: string
+          check_frequency: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_critical: boolean | null
+          item_name: string
+          legal_basis: string | null
+          penalty_info: string | null
+          required_documents: string[] | null
+        }
+        Insert: {
+          category: string
+          check_frequency?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_critical?: boolean | null
+          item_name: string
+          legal_basis?: string | null
+          penalty_info?: string | null
+          required_documents?: string[] | null
+        }
+        Update: {
+          category?: string
+          check_frequency?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_critical?: boolean | null
+          item_name?: string
+          legal_basis?: string | null
+          penalty_info?: string | null
+          required_documents?: string[] | null
+        }
+        Relationships: []
+      }
       b2b_ad_analytics: {
         Row: {
           ad_id: string | null
@@ -3438,6 +3477,63 @@ export type Database = {
         }
         Relationships: []
       }
+      facility_audit_checks: {
+        Row: {
+          ai_generated_doc: string | null
+          check_date: string
+          checked_by: string | null
+          checklist_item_id: string | null
+          created_at: string
+          evidence_urls: string[] | null
+          facility_id: string | null
+          id: string
+          notes: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          ai_generated_doc?: string | null
+          check_date?: string
+          checked_by?: string | null
+          checklist_item_id?: string | null
+          created_at?: string
+          evidence_urls?: string[] | null
+          facility_id?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          ai_generated_doc?: string | null
+          check_date?: string
+          checked_by?: string | null
+          checklist_item_id?: string | null
+          created_at?: string
+          evidence_urls?: string[] | null
+          facility_id?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facility_audit_checks_checklist_item_id_fkey"
+            columns: ["checklist_item_id"]
+            isOneToOne: false
+            referencedRelation: "audit_checklist_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "facility_audit_checks_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       facility_staff: {
         Row: {
           facility_id: string
@@ -5587,6 +5683,45 @@ export type Database = {
         }
         Relationships: []
       }
+      mandatory_trainings: {
+        Row: {
+          created_at: string
+          duration_hours: number
+          frequency: string
+          id: string
+          legal_basis: string | null
+          penalty_info: string | null
+          recommended_providers: string[] | null
+          target_audience: string
+          training_name: string
+          training_type: string
+        }
+        Insert: {
+          created_at?: string
+          duration_hours: number
+          frequency: string
+          id?: string
+          legal_basis?: string | null
+          penalty_info?: string | null
+          recommended_providers?: string[] | null
+          target_audience: string
+          training_name: string
+          training_type: string
+        }
+        Update: {
+          created_at?: string
+          duration_hours?: number
+          frequency?: string
+          id?: string
+          legal_basis?: string | null
+          penalty_info?: string | null
+          recommended_providers?: string[] | null
+          target_audience?: string
+          training_name?: string
+          training_type?: string
+        }
+        Relationships: []
+      }
       media_albums: {
         Row: {
           cover_image_url: string | null
@@ -7706,6 +7841,73 @@ export type Database = {
           platform?: string
         }
         Relationships: []
+      }
+      staff_training_records: {
+        Row: {
+          certificate_url: string | null
+          completion_date: string | null
+          created_at: string
+          expiry_date: string | null
+          facility_id: string | null
+          id: string
+          reminder_sent_at: string | null
+          staff_id: string | null
+          status: string
+          training_id: string | null
+          training_provider: string | null
+          updated_at: string
+        }
+        Insert: {
+          certificate_url?: string | null
+          completion_date?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          facility_id?: string | null
+          id?: string
+          reminder_sent_at?: string | null
+          staff_id?: string | null
+          status?: string
+          training_id?: string | null
+          training_provider?: string | null
+          updated_at?: string
+        }
+        Update: {
+          certificate_url?: string | null
+          completion_date?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          facility_id?: string | null
+          id?: string
+          reminder_sent_at?: string | null
+          staff_id?: string | null
+          status?: string
+          training_id?: string | null
+          training_provider?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_training_records_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_training_records_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "facility_staff"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_training_records_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "mandatory_trainings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscribers: {
         Row: {

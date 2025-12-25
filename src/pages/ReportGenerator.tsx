@@ -38,7 +38,11 @@ import {
   Eye,
   Calendar,
   Gift,
-  Crown
+  Crown,
+  Copy,
+  Share2,
+  Mail,
+  FileDown
 } from 'lucide-react';
 
 const ReportGenerator = () => {
@@ -67,10 +71,12 @@ const ReportGenerator = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { tokenBalance, consumeTokens, checkTokenAvailability } = useTokens();
+  const [familyEmail, setFamilyEmail] = useState('');
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const REPORT_TYPES = {
     detailed: { name: '상세 리포트', tokens: 76, price: '15,000원', description: '9개 전체 섹션 + 외부 이미지 분석' },
-    expert: { name: '전문가 리뷰', tokens: 253, price: '50,000원', description: '상세 리포트 + 실제 전문가 검토' }
+    expert: { name: '전문가급 분석', tokens: 253, price: '50,000원', description: '웹검색 기반 최신 연구 + 전문가급 심층 분석' }
   };
 
   // 사용자 데이터 불러오기
@@ -268,30 +274,35 @@ const ReportGenerator = () => {
       return;
     }
 
+    // 개인정보 유효성 검사
+    if (!userInput.name || !userInput.birthDate || !userInput.gender) {
+      toast({
+        title: "필수 정보 누락",
+        description: "이름, 생년월일, 성별은 필수 입력 항목입니다.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsGenerating(true);
     setProgress(0);
 
     try {
       // 진행률 시뮬레이션
       const progressInterval = setInterval(() => {
-        setProgress(prev => Math.min(prev + 10, 90));
-      }, 800);
+        setProgress(prev => Math.min(prev + 5, 90));
+      }, 1000);
 
-      console.log('종합 리포트 생성 시작:', { reportType: selectedReportType, tokens: requiredTokens, userData });
+      console.log('전문가급 리포트 생성 시작:', { reportType: selectedReportType, tokens: requiredTokens });
 
-      // 개인정보 유효성 검사
-      if (!userInput.name || !userInput.birthDate || !userInput.gender) {
-        toast({
-          title: "필수 정보 누락",
-          description: "이름, 생년월일, 성별은 필수 입력 항목입니다.",
-          variant: "destructive"
-        });
-        return;
-      }
+      toast({
+        title: "🔬 전문가급 분석 시작",
+        description: "실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다...",
+      });
 
-      const { data, error } = await supabase.functions.invoke('generate-comprehensive-report', {
+      // 새로운 전문가급 리포트 함수 호출
+      const { data, error } = await supabase.functions.invoke('generate-expert-report', {
         body: {
-          reportType: selectedReportType,
           assessments: userData.assessments,
           observations: userData.observations,
           observationSessions: userData.observationSessions,
@@ -320,13 +331,13 @@ const ReportGenerator = () => {
       if (data?.error === 'LOVABLE_AI_CREDITS_INSUFFICIENT') {
         toast({
           title: "💳 Lovable AI 크레딧 부족",
-          description: data.message || "Lovable AI 크레딧이 부족합니다. 워크스페이스 설정에서 크레딧을 충전해주세요.",
+          description: data.message || "Lovable AI 크레딧이 부족합니다.",
           variant: "destructive"
         });
         return;
       }
 
-      if (data && data.report) {
+      if (data?.success && data?.report) {
         // 토큰 차감
         const consumed = await consumeTokens(requiredTokens);
         if (!consumed) {
@@ -354,23 +365,23 @@ const ReportGenerator = () => {
 
         toast({
           title: `🎉 ${REPORT_TYPES[selectedReportType].name} 생성 완료!`,
-          description: `${requiredTokens}토큰이 차감되었습니다. 리포트가 생성되었습니다.`,
+          description: `${requiredTokens}토큰이 차감되었습니다. 세계 최고 수준의 분석 리포트가 생성되었습니다.`,
         });
+      } else {
+        throw new Error('리포트 데이터가 없습니다.');
       }
     } catch (error: any) {
       console.error('리포트 생성 오류:', error);
       
-      // 에러 메시지에서 크레딧 부족 확인
       const errorMessage = error?.message || error?.toString() || '';
       const isPaymentError = errorMessage.includes('402') || 
                             errorMessage.includes('payment_required') || 
-                            errorMessage.includes('Not enough credits') ||
                             errorMessage.includes('크레딧');
       
       toast({
         title: isPaymentError ? "💳 Lovable AI 크레딧 부족" : "생성 실패",
         description: isPaymentError 
-          ? "Lovable AI 크레딧이 부족합니다. 워크스페이스 설정에서 크레딧을 충전해주세요."
+          ? "Lovable AI 크레딧이 부족합니다."
           : "리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
         variant: "destructive"
       });
@@ -387,18 +398,82 @@ const ReportGenerator = () => {
 
     const opt = {
       margin: 15,
-      filename: `종합리포트_${userData?.profile?.display_name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`,
+      filename: `전문가급분석_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`,
       image: { type: 'jpeg' as const, quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
       jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
     };
 
     html2pdf().set(opt).from(element).save();
+    toast({ title: "📥 PDF 다운로드 시작", description: "리포트를 PDF로 다운로드합니다." });
+  };
 
-    toast({
-      title: "📥 PDF 다운로드 시작",
-      description: "프리미엄 종합 리포트를 다운로드하고 있습니다...",
+  const downloadTXT = () => {
+    if (!reportData) return;
+    
+    let text = `전문가급 종합 분석 리포트\n${'='.repeat(50)}\n`;
+    text += `대상: ${userInput.name || '미입력'}\n생성일: ${new Date().toLocaleDateString('ko-KR')}\n\n`;
+    
+    reportData.sections?.forEach((s: any, i: number) => {
+      text += `[${i + 1}] ${s.title}\n${'-'.repeat(40)}\n`;
+      text += s.content.replace(/<[^>]*>/g, '').trim() + '\n\n';
     });
+    
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `전문가급분석_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({ title: "📄 TXT 다운로드 완료" });
+  };
+
+  const copyToClipboard = async () => {
+    if (!reportData) return;
+    let text = `전문가급 종합 분석 리포트\n대상: ${userInput.name}\n\n`;
+    reportData.sections?.forEach((s: any, i: number) => {
+      text += `${i + 1}. ${s.title}\n${s.content.replace(/<[^>]*>/g, '')}\n\n`;
+    });
+    await navigator.clipboard.writeText(text);
+    toast({ title: "📋 클립보드에 복사됨" });
+  };
+
+  const shareReport = async () => {
+    if (navigator.share) {
+      await navigator.share({
+        title: '전문가급 종합 분석 리포트',
+        text: `${userInput.name}님의 전문가급 분석 리포트`,
+        url: window.location.href
+      });
+    } else {
+      copyToClipboard();
+    }
+  };
+
+  const sendFamilyEmail = async () => {
+    if (!familyEmail || !reportData) {
+      toast({ title: "이메일 주소를 입력해주세요", variant: "destructive" });
+      return;
+    }
+    setIsSendingEmail(true);
+    try {
+      const { error } = await supabase.functions.invoke('send-concern-report', {
+        body: {
+          email: familyEmail,
+          subject: `[AIHPRO] ${userInput.name}님의 전문가급 분석 리포트`,
+          reportSummary: reportData.summary?.replace(/<[^>]*>/g, '') || '',
+          userName: userInput.name
+        }
+      });
+      if (error) throw error;
+      toast({ title: "✅ 이메일 전송 완료", description: `${familyEmail}로 리포트가 전송되었습니다.` });
+      setFamilyEmail('');
+    } catch (e) {
+      toast({ title: "이메일 전송 실패", variant: "destructive" });
+    } finally {
+      setIsSendingEmail(false);
+    }
   };
 
   if (isLoadingData) {
@@ -1130,24 +1205,37 @@ const ReportGenerator = () => {
           /* 생성된 프리미엄 리포트 */
           <div className="space-y-8">
             {/* 액션 버튼 */}
-            <div className="flex flex-wrap justify-end gap-4">
-              <Button
-                onClick={() => setReportData(null)}
-                variant="outline"
-                className="border-purple-400/50 text-purple-200 hover:bg-purple-900/50 hover:text-purple-100"
-              >
-                <Sparkles className="w-4 h-4 mr-2" />
-                새 리포트 생성
+            <div className="flex flex-wrap justify-between gap-4">
+              <Button onClick={() => setReportData(null)} variant="outline" className="border-purple-400/50 text-purple-200 hover:bg-purple-900/50">
+                <Sparkles className="w-4 h-4 mr-2" /> 새 리포트 생성
               </Button>
-              <Button
-                onClick={downloadPDF}
-                size="lg"
-                className="bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 hover:from-emerald-700 hover:via-green-700 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/30"
-              >
-                <Download className="w-5 h-5 mr-2" />
-                PDF 다운로드
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={downloadPDF} className="bg-emerald-600 hover:bg-emerald-700"><Download className="w-4 h-4 mr-2" />PDF</Button>
+                <Button onClick={downloadTXT} variant="outline" className="border-slate-400/50"><FileDown className="w-4 h-4 mr-2" />TXT</Button>
+                <Button onClick={copyToClipboard} variant="outline" className="border-slate-400/50"><Copy className="w-4 h-4 mr-2" />복사</Button>
+                <Button onClick={shareReport} variant="outline" className="border-slate-400/50"><Share2 className="w-4 h-4 mr-2" />공유</Button>
+              </div>
             </div>
+
+            {/* 가족 공유 (이메일) */}
+            <Card className="bg-gradient-to-r from-pink-900/30 to-purple-900/30 border border-pink-500/30">
+              <CardContent className="pt-6">
+                <div className="flex flex-col md:flex-row gap-3 items-center">
+                  <Mail className="w-6 h-6 text-pink-400" />
+                  <span className="text-pink-200 font-semibold">가족에게 리포트 공유</span>
+                  <input
+                    type="email"
+                    value={familyEmail}
+                    onChange={(e) => setFamilyEmail(e.target.value)}
+                    placeholder="family@email.com"
+                    className="flex-1 p-2 bg-slate-800/50 border border-pink-400/30 rounded-lg text-white placeholder:text-slate-500"
+                  />
+                  <Button onClick={sendFamilyEmail} disabled={isSendingEmail} className="bg-pink-600 hover:bg-pink-700">
+                    {isSendingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Mail className="w-4 h-4 mr-2" />이메일 전송</>}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* PDF 생성용 콘텐츠 */}
             <div id="report-content" className="bg-white p-12 rounded-2xl shadow-2xl space-y-10">

@@ -424,7 +424,19 @@ ${relatedResources}
 
     // Lovable AI 호출 (빠른 모델 사용 - 리소스 최적화)
     console.log('Lovable AI 호출 시작 (google/gemini-2.5-flash)');
-    
+
+    const requiredSections = [
+      "발달 종합 평가",
+      "심리 상태 분석",
+      "강점/약점 분석",
+      "맞춤 활동 제안",
+      "발달 로드맵",
+      "또래 비교 분석",
+      "전문가 소견서",
+      "가족 지원 가이드",
+      "종합 요약 및 제언",
+    ] as const;
+
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -435,20 +447,58 @@ ${relatedResources}
         model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
+          { role: 'user', content: userPrompt },
         ],
-        response_format: { type: "json_object" },
-        max_tokens: 8000
+        // Structured output: tool calling (more reliable than asking for raw JSON)
+        tools: [
+          {
+            type: 'function',
+            function: {
+              name: 'generate_expert_report',
+              description: 'Generate the expert report payload with 9 required sections and an overall HTML summary.',
+              parameters: {
+                type: 'object',
+                properties: {
+                  summary: {
+                    type: 'string',
+                    description: 'Overall summary in HTML (at least ~300 Korean chars).',
+                  },
+                  sections: {
+                    type: 'array',
+                    minItems: 9,
+                    maxItems: 9,
+                    items: {
+                      type: 'object',
+                      properties: {
+                        title: { type: 'string', enum: [...requiredSections] },
+                        content: {
+                          type: 'string',
+                          description: 'Section content in HTML (roughly 400-600 Korean chars).',
+                        },
+                      },
+                      required: ['title', 'content'],
+                      additionalProperties: false,
+                    },
+                  },
+                },
+                required: ['summary', 'sections'],
+                additionalProperties: false,
+              },
+            },
+          },
+        ],
+        tool_choice: { type: 'function', function: { name: 'generate_expert_report' } },
+        max_tokens: 8000,
       }),
     });
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
       console.error('AI 응답 오류:', aiResponse.status, errorText);
-      
+
       if (aiResponse.status === 402) {
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             error: 'LOVABLE_AI_CREDITS_INSUFFICIENT',
             message: 'Lovable AI 크레딧이 부족합니다.'
           }),
@@ -465,91 +515,107 @@ ${relatedResources}
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 }
         );
       }
-      
+
       throw new Error(`AI 분석 실패: ${aiResponse.status}`);
     }
 
     const rawText = await aiResponse.text();
     console.log('AI 응답 길이:', rawText?.length);
 
-    let reportData;
+    const placeholderReport = (reason: string) => ({
+      sections: requiredSections.map((title) => ({
+        title,
+        content: `<div>AI 리포트 생성 중 문제가 발생했습니다. (${reason}) 잠시 후 다시 시도해주세요.</div>`,
+      })),
+      summary: `<div>리포트 생성 중 일부 오류가 발생했습니다. (${reason})</div>`,
+      parseError: true,
+    });
+
+    let reportData: any;
     try {
       const aiData = JSON.parse(rawText);
-      const messageContent = aiData.choices?.[0]?.message?.content;
-      
-      if (!messageContent) {
-        throw new Error('AI 응답에 content가 없습니다.');
+
+      // 1) Tool calling (preferred)
+      const toolArgs = aiData?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+      if (toolArgs && typeof toolArgs === 'string') {
+        reportData = JSON.parse(toolArgs);
+      } else {
+        // 2) Fallback: message.content parsing (handles string or array-like content)
+        const contentAny = aiData?.choices?.[0]?.message?.content;
+        const messageContent =
+          typeof contentAny === 'string'
+            ? contentAny
+            : Array.isArray(contentAny)
+              ? contentAny
+                  .map((p: any) => {
+                    if (typeof p === 'string') return p;
+                    return p?.text ?? '';
+                  })
+                  .join('')
+              : '';
+
+        if (!messageContent || messageContent.trim().length === 0) {
+          console.error('AI content 미리보기(빈값):', String(messageContent));
+          reportData = placeholderReport('AI content가 비어있음');
+        } else {
+          console.log('AI content 길이:', messageContent.length);
+          try {
+            reportData = JSON.parse(messageContent);
+          } catch (firstParseError) {
+            console.log('1차 파싱 실패, 정제 시도...');
+
+            // JSON 블록 추출 시도
+            const jsonMatch = messageContent.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+              try {
+                const cleanedJson = jsonMatch[0]
+                  .replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ')
+                  .replace(/\n/g, ' ')
+                  .replace(/\r/g, ' ')
+                  .replace(/\t/g, ' ');
+                reportData = JSON.parse(cleanedJson);
+              } catch {
+                reportData = placeholderReport('정제 후에도 JSON 파싱 실패');
+              }
+            } else {
+              console.error('AI content 미리보기(앞 1200자):', messageContent.substring(0, 1200));
+              reportData = placeholderReport('JSON 구조 없음');
+            }
+          }
+        }
       }
 
-      console.log('AI content 길이:', messageContent.length);
-      
-      // JSON 파싱 시도 - 여러 방법으로 시도
-      try {
-        reportData = JSON.parse(messageContent);
-      } catch (firstParseError) {
-        console.log('1차 파싱 실패, 정제 시도...');
-        
-        // JSON 블록 추출 시도
-        const jsonMatch = messageContent.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          try {
-            // 줄바꿈과 제어문자 정리
-            const cleanedJson = jsonMatch[0]
-              .replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ')
-              .replace(/\n/g, ' ')
-              .replace(/\r/g, ' ')
-              .replace(/\t/g, ' ');
-            reportData = JSON.parse(cleanedJson);
-          } catch (cleanParseError) {
-            console.log('2차 파싱도 실패, 기본 구조로 대체');
-            // 파싱 완전 실패 시 기본 응답 생성
-            reportData = {
-              sections: [
-                { title: "발달 종합 평가", content: "<div>분석 중 오류가 발생하여 기본 템플릿으로 대체되었습니다. 다시 시도해주세요.</div>" },
-                { title: "심리 상태 분석", content: "<div>분석 데이터 처리 중입니다.</div>" },
-                { title: "강점/약점 분석", content: "<div>분석 데이터 처리 중입니다.</div>" },
-                { title: "맞춤 활동 제안", content: "<div>분석 데이터 처리 중입니다.</div>" },
-                { title: "발달 로드맵", content: "<div>분석 데이터 처리 중입니다.</div>" },
-                { title: "또래 비교 분석", content: "<div>분석 데이터 처리 중입니다.</div>" },
-                { title: "전문가 소견서", content: "<div>분석 데이터 처리 중입니다.</div>" },
-                { title: "가족 지원 가이드", content: "<div>분석 데이터 처리 중입니다.</div>" },
-                { title: "종합 요약 및 제언", content: "<div>AI 응답 파싱에 실패했습니다. 잠시 후 다시 시도해주세요.</div>" }
-              ],
-              summary: "<div>리포트 생성 중 일부 오류가 발생했습니다.</div>",
-              parseError: true
-            };
-          }
-        } else {
-          throw new Error('JSON 구조를 찾을 수 없습니다.');
-        }
+      // 검증/보정: sections 항상 9개 & 제목 일치 보장
+      if (!reportData || typeof reportData !== 'object') {
+        reportData = placeholderReport('응답 구조가 올바르지 않음');
       }
-      
-      // 검증 - 섹션이 부족하면 빈 섹션 추가
-      if (!reportData.sections || !Array.isArray(reportData.sections)) {
+
+      if (!Array.isArray(reportData.sections)) {
         reportData.sections = [];
       }
-      
-      const requiredSections = [
-        "발달 종합 평가", "심리 상태 분석", "강점/약점 분석", "맞춤 활동 제안",
-        "발달 로드맵", "또래 비교 분석", "전문가 소견서", "가족 지원 가이드", "종합 요약 및 제언"
-      ];
-      
-      // 누락된 섹션 추가
-      for (const title of requiredSections) {
-        if (!reportData.sections.find((s: any) => s.title === title)) {
-          reportData.sections.push({
-            title,
-            content: "<div>이 섹션의 데이터를 생성하는 중 오류가 발생했습니다.</div>"
-          });
-        }
+
+      // 중복/누락 정리: requiredSections 순서대로 재구성
+      const byTitle = new Map<string, string>();
+      for (const s of reportData.sections) {
+        if (!s?.title || !s?.content) continue;
+        if (typeof s.title !== 'string' || typeof s.content !== 'string') continue;
+        byTitle.set(s.title, s.content);
+      }
+
+      reportData.sections = requiredSections.map((title) => ({
+        title,
+        content: byTitle.get(title) ?? '<div>이 섹션의 데이터를 생성하는 중 오류가 발생했습니다.</div>',
+      }));
+
+      if (typeof reportData.summary !== 'string' || reportData.summary.trim().length === 0) {
+        reportData.summary = '<div>요약 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</div>';
       }
 
       console.log('리포트 파싱 성공, 섹션 수:', reportData.sections.length);
-
     } catch (parseError) {
       console.error('AI 응답 파싱 최종 오류:', parseError);
-      console.error('원본 응답 미리보기:', rawText.substring(0, 500));
-      throw new Error('AI 응답 파싱 실패');
+      console.error('원본 응답 미리보기(앞 1200자):', rawText?.substring(0, 1200));
+      reportData = placeholderReport('rawText JSON 파싱 실패');
     }
 
     // 메타데이터 추가

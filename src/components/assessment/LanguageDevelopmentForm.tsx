@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -6,20 +6,56 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, ArrowRight, CheckCircle, Crown, Baby } from "lucide-react";
 import { allLanguageDevelopmentQuestions, LanguageDevelopmentQuestion } from "@/data/languageDevelopmentQuestions";
+import BirthDateSelector from "./BirthDateSelector";
 
 interface LanguageDevelopmentFormProps {
-  onComplete: (results: Record<string, number>, answers: Record<string, string>) => void;
+  onComplete: (results: any, answers: Record<string, string>) => void;
   onBack: () => void;
 }
 
 const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentFormProps) => {
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
+  const [ageInMonths, setAgeInMonths] = useState<number>(0);
+  const [ageGroup, setAgeGroup] = useState<string>("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
-  const questions = allLanguageDevelopmentQuestions;
+  // 연령에 맞는 문항 필터링
+  const questions = useMemo(() => {
+    if (!ageInMonths) return allLanguageDevelopmentQuestions;
+    
+    // 해당 연령 이하의 문항만 선택 (누적 발달 체크)
+    return allLanguageDevelopmentQuestions.filter(q => {
+      const ageRange = q.ageRange;
+      // "12-17", "18-23" 형태에서 최소값 추출
+      const minAge = parseInt(ageRange.split('-')[0]);
+      // 현재 연령 + 6개월까지의 문항 포함 (약간의 여유)
+      return minAge <= ageInMonths + 6;
+    });
+  }, [ageInMonths]);
+
   const currentQuestion = questions[currentQuestionIndex];
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+  const progress = questions.length > 0 ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0;
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+  const handleBirthDateConfirm = (date: Date, months: number, group: string) => {
+    setBirthDate(date);
+    setAgeInMonths(months);
+    setAgeGroup(group);
+  };
+
+  // 생년월일 미입력 시 생년월일 선택 화면 표시
+  if (!birthDate) {
+    return (
+      <BirthDateSelector
+        testTitle="AIH 영유아 언어발달 자가체크"
+        testSubtitle="심화 언어발달 진단 - 77문항"
+        testDescription="수용언어와 표현언어를 종합적으로 평가하는 연령 맞춤형 전문 검사입니다"
+        onConfirm={handleBirthDateConfirm}
+        onBack={onBack}
+      />
+    );
+  }
 
   const handleAnswerChange = (value: string) => {
     setAnswers(prev => ({
@@ -38,7 +74,6 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
       const expressiveQuestions = questions.filter(q => q.category === 'expressive');
       
       // 옵션 인덱스(0,1,2)를 실제 점수로 변환
-      // 0 = 잘 못함 (0점), 1 = 보통 (0.5점), 2 = 잘함 (1점)
       const receptiveScore = receptiveQuestions.reduce((sum, q) => {
         const answer = answers[q.id] || 0;
         const score = answer === 0 ? 0 : answer === 1 ? 0.5 : 1;
@@ -53,10 +88,10 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
       
       const totalScore = receptiveScore + expressiveScore;
 
-      // 최대 점수: 수용언어 23점, 표현언어 22점, 총 45점 (각 문항 최대 1점)
-      const receptiveMaxScore = 23;
-      const expressiveMaxScore = 22;
-      const totalMaxScore = 45;
+      // 연령별 기대 점수 계산 (연령에 맞는 문항 수 기준)
+      const receptiveMaxScore = receptiveQuestions.length;
+      const expressiveMaxScore = expressiveQuestions.length;
+      const totalMaxScore = questions.length;
 
       const results = {
         receptive: receptiveScore,
@@ -64,7 +99,11 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
         total: totalScore,
         receptive_percentage: Math.round((receptiveScore / receptiveMaxScore) * 100),
         expressive_percentage: Math.round((expressiveScore / expressiveMaxScore) * 100),
-        total_percentage: Math.round((totalScore / totalMaxScore) * 100)
+        total_percentage: Math.round((totalScore / totalMaxScore) * 100),
+        ageInMonths,
+        ageGroup,
+        birthDate: birthDate.toISOString(),
+        questionCount: questions.length
       };
 
       // 답변 데이터를 문자열로 변환하여 전달
@@ -88,7 +127,7 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
     }
   };
 
-  const isAnswered = answers[currentQuestion.id] !== undefined;
+  const isAnswered = answers[currentQuestion?.id] !== undefined;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-peach-bloom/10 to-lavender-mist/20 relative overflow-hidden">

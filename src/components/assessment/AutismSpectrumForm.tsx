@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { autismSpectrumScreeningQuestions } from "@/data/premiumAssessmentQuestions";
 import AnalysisLoadingOverlay from "@/components/analysis/AnalysisLoadingOverlay";
+import BirthDateSelector from "./BirthDateSelector";
 
 interface AutismSpectrumFormProps {
   onComplete: (results: any, answers: Record<string, string>) => void;
@@ -14,10 +15,32 @@ interface AutismSpectrumFormProps {
 }
 
 const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onBack }) => {
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
+  const [ageInMonths, setAgeInMonths] = useState<number>(0);
+  const [ageGroup, setAgeGroup] = useState<string>("");
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const handleBirthDateConfirm = (date: Date, months: number, group: string) => {
+    setBirthDate(date);
+    setAgeInMonths(months);
+    setAgeGroup(group);
+  };
+
+  // 생년월일 미입력 시 생년월일 선택 화면 표시
+  if (!birthDate) {
+    return (
+      <BirthDateSelector
+        testTitle="AIH 신경발달 조기선별검사"
+        testSubtitle="ASES-AIH (Autism Spectrum Early Screening)"
+        testDescription="자폐 스펙트럼의 조기 선별을 위한 과학적 근거 기반의 연령 맞춤형 검사입니다"
+        onConfirm={handleBirthDateConfirm}
+        onBack={onBack}
+      />
+    );
+  }
 
   // Flatten all questions
   const allQuestions = Object.values(autismSpectrumScreeningQuestions).flat();
@@ -96,12 +119,14 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
           : 0;
       });
 
-      // Call the analysis function
+      // Call the analysis function with age info
       const { data, error } = await supabase.functions.invoke('autism-spectrum-analyzer', {
         body: { 
           results,
           answers: finalAnswers,
-          ageGroup: "성인" // This could be dynamic based on user input
+          ageGroup,
+          ageInMonths,
+          birthDate: birthDate.toISOString()
         }
       });
 

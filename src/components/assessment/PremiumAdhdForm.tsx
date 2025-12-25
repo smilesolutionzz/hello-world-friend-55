@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -9,6 +9,7 @@ import { premiumAdhdQuestions, ageSpecificAdhdQuestions, comorbidityScreening, f
 import TokenGate from "@/components/TokenGate";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { useTokens } from "@/hooks/useTokens";
+import BirthDateSelector from "./BirthDateSelector";
 
 interface PremiumAdhdFormProps {
   ageGroup?: 'child' | 'adolescent' | 'adult';
@@ -26,11 +27,46 @@ interface PremiumAdhdFormProps {
     severityLevel: string;
     adhdSubtype: string;
     ageGroup: string;
+    ageInMonths?: number;
+    birthDate?: string;
   }) => void;
   onBack: () => void;
 }
 
-const PremiumAdhdForm = ({ ageGroup = 'adult', onComplete, onBack }: PremiumAdhdFormProps) => {
+const PremiumAdhdForm = ({ ageGroup: initialAgeGroup, onComplete, onBack }: PremiumAdhdFormProps) => {
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
+  const [ageInMonths, setAgeInMonths] = useState<number>(0);
+  const [derivedAgeGroup, setDerivedAgeGroup] = useState<'child' | 'adolescent' | 'adult'>('adult');
+
+  const handleBirthDateConfirm = (date: Date, months: number, group: string) => {
+    setBirthDate(date);
+    setAgeInMonths(months);
+    
+    // 연령에 따른 그룹 결정
+    if (months < 144) { // 12세 미만
+      setDerivedAgeGroup('child');
+    } else if (months < 228) { // 19세 미만
+      setDerivedAgeGroup('adolescent');
+    } else {
+      setDerivedAgeGroup('adult');
+    }
+  };
+
+  // 생년월일 미입력 시 생년월일 선택 화면 표시
+  if (!birthDate) {
+    return (
+      <BirthDateSelector
+        testTitle="AIH 독창적 ADHD 종합평가"
+        testSubtitle="맞춤형 다차원 평가 시스템"
+        testDescription="과학적 근거 기반의 연령별 맞춤 ADHD 증상 분석과 AI 전문가급 해석을 제공합니다"
+        onConfirm={handleBirthDateConfirm}
+        onBack={onBack}
+      />
+    );
+  }
+
+  const ageGroup = initialAgeGroup || derivedAgeGroup;
+
   // 연령에 따른 질문 조합
   const getAllQuestions = () => {
     const coreQuestions = [
@@ -160,7 +196,9 @@ const PremiumAdhdForm = ({ ageGroup = 'adult', onComplete, onBack }: PremiumAdhd
         totalScore,
         severityLevel,
         adhdSubtype,
-        ageGroup: ageGroup === 'child' ? '아동' : ageGroup === 'adolescent' ? '청소년' : '성인'
+        ageGroup: ageGroup === 'child' ? '아동' : ageGroup === 'adolescent' ? '청소년' : '성인',
+        ageInMonths,
+        birthDate: birthDate?.toISOString()
       });
     }
   };

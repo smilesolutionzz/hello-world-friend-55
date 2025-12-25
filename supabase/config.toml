@@ -370,3 +370,9 @@ verify_jwt = false
 
 [functions.feed-screenshot-analyzer]
 verify_jwt = false
+
+[functions.generate-expert-report]
+verify_jwt = true
+
+[functions.send-concern-report]
+verify_jwt = true

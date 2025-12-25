@@ -478,10 +478,11 @@ const PremiumAssessment = () => {
               rel="noopener noreferrer"
               className="block mb-6 p-3 md:p-4 bg-gradient-to-r from-slate-800 to-slate-700 dark:from-slate-700 dark:to-slate-600 rounded-xl border border-slate-600 hover:from-slate-700 hover:to-slate-600 transition-all group shadow-md"
             >
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] md:text-sm text-white leading-relaxed">
-                    <span className="font-semibold">전문가 직접 해석</span>은 AIHPRO 공식검사 <span className="underline underline-offset-2">스마일솔루션</span>에서 →
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1">
+                  <p className="text-xs md:text-sm text-white leading-relaxed">
+                    <span className="font-semibold">전문가 직접 해석</span>은 AIHPRO 공식검사<br className="md:hidden" />
+                    <span className="underline underline-offset-2">스마일솔루션</span>에서 만나보세요 →
                   </p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-white flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />

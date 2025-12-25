@@ -453,7 +453,7 @@ const ReportGenerator = () => {
                   className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white rounded-lg py-3 text-base font-semibold"
                 >
                   <Crown className="w-4 h-4 mr-2" />
-                  프리미엄 상세 분석
+                  전문가급 분석
                 </TabsTrigger>
               </TabsList>
 
@@ -533,7 +533,7 @@ const ReportGenerator = () => {
                 />
               </TabsContent>
 
-              {/* 프리미엄 상세 분석 탭 */}
+              {/* 전문가급 분석 탭 */}
               <TabsContent value="premium" className="mt-6 space-y-6">
                 <div className="text-center p-4 bg-purple-500/10 border border-purple-400/30 rounded-xl">
                   <p className="text-purple-200 font-medium">

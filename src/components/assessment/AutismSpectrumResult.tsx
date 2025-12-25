@@ -235,7 +235,7 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
                 </div>
                 <div>
                   <CardTitle className="text-xl text-purple-900">🧠 AI 전문가 종합 해석</CardTitle>
-                  <CardDescription className="text-purple-600">20년 경력 소아신경발달 전문의 수준의 심층 분석</CardDescription>
+                  <CardDescription className="text-purple-600">AI 기반 신경발달 전문 분석 시스템</CardDescription>
                 </div>
               </div>
             </CardHeader>

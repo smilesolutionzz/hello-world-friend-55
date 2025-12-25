@@ -76,7 +76,7 @@ export function ExpertAnalysisSection({
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground mt-2">
-          심리 전문가 수준의 심층 분석과 맞춤형 제언을 제공합니다
+          AI 기반 심리 분석 시스템의 심층 분석과 맞춤형 제언을 제공합니다
         </p>
       </CardHeader>
       

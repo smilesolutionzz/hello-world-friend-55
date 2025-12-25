@@ -44,7 +44,7 @@ const LoadingCompassion: React.FC<LoadingCompassionProps> = ({
     {
       icon: Users,
       title: "전문가가 스며드는 중...",
-      message: "20년 경력 전문가들이 공감의 마음으로 준비 중입니다",
+      message: "AI 전문 분석 시스템이 공감의 마음으로 준비 중입니다",
       color: "text-green-500"
     }
   ];

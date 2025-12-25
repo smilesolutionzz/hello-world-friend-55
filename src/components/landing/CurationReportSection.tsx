@@ -160,7 +160,7 @@ const CurationReportSection = () => {
             이렇게 활용하세요
           </motion.h3>
           
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 md:gap-10 max-w-5xl mx-auto">
             {flowSteps.map((step, index) => (
               <motion.div
                 key={step.step}
@@ -171,7 +171,7 @@ const CurationReportSection = () => {
                 className="relative"
               >
                 <Card 
-                  className="h-full p-6 bg-white/5 backdrop-blur border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all group cursor-pointer"
+                  className="h-full p-6 bg-white/5 backdrop-blur border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all group cursor-pointer text-center"
                   onClick={() => {
                     if (step.step === 1) navigate('/tests');
                     if (step.step === 2) navigate('/report-generator');
@@ -179,28 +179,28 @@ const CurationReportSection = () => {
                   }}
                 >
                   {/* Step number */}
-                  <div className={`inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r ${step.color} text-white font-bold text-sm mb-4`}>
+                  <div className={`inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r ${step.color} text-white font-bold text-sm mb-4 mx-auto`}>
                     {step.step}
                   </div>
                   
                   {/* Icon */}
-                  <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-r ${step.color} text-white mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                  <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-r ${step.color} text-white mb-4 shadow-lg group-hover:scale-110 transition-transform mx-auto`}>
                     <step.icon className="w-6 h-6" />
                   </div>
                   
                   <h4 className="text-lg font-bold text-white mb-1">{step.title}</h4>
                   <p className="text-sm font-medium text-slate-400 mb-2">{step.subtitle}</p>
                   <p className="text-sm text-slate-500">{step.description}</p>
-                  
-                  {/* Arrow between steps */}
-                  {index < 2 && (
-                    <div className="hidden md:flex absolute -right-3 top-1/2 transform -translate-y-1/2 z-10">
-                      <div className="w-6 h-6 rounded-full bg-slate-700 border border-white/10 shadow-md flex items-center justify-center">
-                        <ArrowRight className="w-3 h-3 text-slate-300" />
-                      </div>
-                    </div>
-                  )}
                 </Card>
+                
+                {/* Arrow between steps - positioned outside the card */}
+                {index < 2 && (
+                  <div className="hidden md:flex absolute -right-5 top-1/2 transform -translate-y-1/2 z-20">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-slate-700 to-slate-600 border border-white/20 shadow-lg flex items-center justify-center">
+                      <ArrowRight className="w-4 h-4 text-white" />
+                    </div>
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>

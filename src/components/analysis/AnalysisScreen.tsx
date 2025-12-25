@@ -219,7 +219,7 @@ ${percentage < 60 ? '우울/불안 전문가와의 즉시 상담을 권장합니
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-            <span className="block text-foreground mb-2">20년 경력 임상심리사급</span>
+            <span className="block text-foreground mb-2">AI 심리 분석 시스템</span>
             <span className="block text-brand-gradient">전문 분석 진행 중</span>
           </h1>
           

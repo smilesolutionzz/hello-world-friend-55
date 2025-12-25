@@ -95,8 +95,8 @@ export const FeedbackModal = ({ isOpen, onClose, onFeedbackSubmitted }: Feedback
             <Sparkles className="h-5 w-5 text-emerald-500" />
             피드백 보내기
           </DialogTitle>
-          <DialogDescription>
-            여러분의 소중한 의견이 더 좋은 서비스를 만듭니다 ✨
+          <DialogDescription className="text-xs md:text-sm whitespace-nowrap">
+            소중한 의견이 더 좋은 서비스를 만듭니다 ✨
           </DialogDescription>
         </DialogHeader>
 

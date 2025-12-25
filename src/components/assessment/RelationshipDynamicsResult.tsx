@@ -324,7 +324,7 @@ export default function RelationshipDynamicsResult({ results, onBack }: Relation
                 <Brain className="w-6 h-6" />
                 🧠 AI 임상심리전문가 심층 분석 리포트
               </CardTitle>
-              <p className="text-white/80 text-sm">20년 경력 임상심리전문가 수준의 상세 해석</p>
+              <p className="text-white/80 text-sm">AI 기반 심리 분석 시스템의 상세 해석</p>
             </CardHeader>
             <CardContent className="pt-6">
               {isLoadingAnalysis ? (

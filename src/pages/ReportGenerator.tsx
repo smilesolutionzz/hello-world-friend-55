@@ -641,10 +641,21 @@ const ReportGenerator = () => {
 
               {/* 전문가급 분석 탭 */}
               <TabsContent value="premium" className="mt-6 space-y-6">
-                <div className="text-center p-4 bg-purple-500/10 border border-purple-400/30 rounded-xl">
-                  <p className="text-purple-200 font-medium">
-                    👑 축적된 모든 데이터를 통합 분석한 <strong>전문가급 프리미엄 리포트</strong>를 생성합니다
-                  </p>
+                {/* 상세 리포트 설명 */}
+                <div className="p-5 bg-gradient-to-r from-purple-500/15 to-indigo-500/15 border-2 border-purple-400/40 rounded-xl">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-purple-500/20 rounded-lg">
+                      <FileText className="w-6 h-6 text-purple-300" />
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="text-purple-100 font-bold text-lg">📊 상세 리포트 (253토큰)</h4>
+                      <p className="text-purple-200/90 text-sm leading-relaxed">
+                        무료 분석보다 <strong className="text-purple-100">훨씬 전문적이고 심층적인</strong> AI 리포트를 즉시 생성합니다.<br/>
+                        <strong className="text-purple-100">9개 전문 섹션</strong>으로 구성된 종합 분석 + 웹검색 기반 최신 연구 반영
+                      </p>
+                      <p className="text-purple-300/70 text-xs">✅ 별도 절차 없이 즉시 생성됩니다</p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* 실제 전문가 검수 안내 */}

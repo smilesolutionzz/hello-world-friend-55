@@ -499,50 +499,54 @@ ${aiAnalysis || generateFallbackInterpretation()}
           </Card>
         </motion.section>
 
-        {/* 섹션 4: AI 분석 */}
+        {/* 섹션 4: AI 분석 - 프리미엄 스타일 */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="mb-6"
         >
-          <Card className="bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 dark:from-violet-950/40 dark:via-purple-950/40 dark:to-fuchsia-950/40 border-violet-200/50 dark:border-violet-700/50 shadow-sm overflow-hidden">
+          <Card className="bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 dark:from-violet-950/40 dark:via-purple-950/40 dark:to-fuchsia-950/40 border-2 border-violet-200 dark:border-violet-700/50 shadow-lg overflow-hidden">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2.5 text-base md:text-lg">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/20">
-                  <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
+              <CardTitle className="flex items-center gap-3 text-lg md:text-xl">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30">
+                  <Sparkles className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div>
-                  <span className="text-slate-900 dark:text-white font-semibold">AI 전문가 분석</span>
-                  <p className="text-xs text-violet-600 dark:text-violet-400 font-normal mt-0.5">
-                    Powered by Advanced AI
+                  <span className="text-slate-900 dark:text-white font-bold">🧠 AI 전문가 심층 분석</span>
+                  <p className="text-sm text-violet-600 dark:text-violet-400 font-normal mt-0.5">
+                    25년 경력 언어치료학 박사 수준의 상세 분석 리포트
                   </p>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               {isAnalyzing ? (
-                <div className="flex flex-col items-center justify-center gap-4 py-10">
+                <div className="flex flex-col items-center justify-center gap-4 py-12 bg-white/60 dark:bg-slate-800/60 rounded-xl">
                   <div className="relative">
-                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
-                      <Brain className="w-7 h-7 text-white animate-pulse" />
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
+                      <Brain className="w-8 h-8 text-white animate-pulse" />
                     </div>
                     <div className="absolute inset-0 rounded-full border-4 border-violet-300 dark:border-violet-600 border-t-transparent animate-spin" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium text-violet-700 dark:text-violet-300">
-                      AI가 분석 중입니다...
+                    <p className="text-base font-medium text-violet-700 dark:text-violet-300">
+                      AI가 심층 분석 중입니다...
                     </p>
-                    <p className="text-xs text-violet-500 dark:text-violet-400 mt-1">
-                      잠시만 기다려주세요
+                    <p className="text-sm text-violet-500 dark:text-violet-400 mt-1">
+                      3000자 이상의 상세한 전문가 분석을 생성하고 있습니다
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-violet-100 dark:border-violet-800/30">
-                  <p className="text-sm md:text-base leading-relaxed whitespace-pre-line text-slate-700 dark:text-slate-200">
+                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-5 md:p-6 border border-violet-100 dark:border-violet-800/30 shadow-inner">
+                  <p className="text-base md:text-lg leading-relaxed whitespace-pre-line text-slate-800 dark:text-slate-200">
                     {aiAnalysis || generateFallbackInterpretation()}
                   </p>
+                  <div className="mt-4 pt-4 border-t border-violet-100 dark:border-violet-800/30 flex items-center justify-between text-xs text-violet-500 dark:text-violet-400">
+                    <span>📝 분석 글자 수: {(aiAnalysis || generateFallbackInterpretation()).length}자</span>
+                    <span>🤖 Powered by Advanced AI</span>
+                  </div>
                 </div>
               )}
             </CardContent>

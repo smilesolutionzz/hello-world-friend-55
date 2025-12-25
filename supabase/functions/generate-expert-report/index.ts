@@ -422,8 +422,8 @@ ${relatedResources}
   "relatedResources": "${relatedResources ? 'true' : 'false'}"
 }`;
 
-    // Lovable AI 호출 (가장 강력한 모델 사용)
-    console.log('Lovable AI 호출 시작 (google/gemini-2.5-pro)');
+    // Lovable AI 호출 (빠른 모델 사용 - 리소스 최적화)
+    console.log('Lovable AI 호출 시작 (google/gemini-2.5-flash)');
     
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -432,12 +432,13 @@ ${relatedResources}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-pro',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        response_format: { type: "json_object" }
+        response_format: { type: "json_object" },
+        max_tokens: 8000
       }),
     });
 

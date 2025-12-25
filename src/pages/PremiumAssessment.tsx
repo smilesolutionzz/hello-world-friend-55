@@ -476,18 +476,18 @@ const PremiumAssessment = () => {
               href="https://smilesolution.kr" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="block mb-6 p-3 md:p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl border border-blue-200 dark:border-blue-800 hover:shadow-md transition-all group"
+              className="block mb-6 p-3 md:p-4 bg-gradient-to-r from-slate-800 to-slate-700 dark:from-slate-700 dark:to-slate-600 rounded-xl border border-slate-600 hover:from-slate-700 hover:to-slate-600 transition-all group shadow-md"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs md:text-sm font-medium text-blue-700 dark:text-blue-300 truncate">
+                  <p className="text-xs md:text-sm font-semibold text-white truncate">
                     🏥 공식검사 · 전문가 비대면 해석
                   </p>
-                  <p className="text-[10px] md:text-xs text-blue-600/80 dark:text-blue-400/80 truncate">
+                  <p className="text-[10px] md:text-xs text-slate-300 truncate">
                     온라인코드 발급 → 전문가 직접 해석
                   </p>
                 </div>
-                <ExternalLink className="w-4 h-4 text-blue-500 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                <ExternalLink className="w-4 h-4 text-white flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
               </div>
             </a>
 

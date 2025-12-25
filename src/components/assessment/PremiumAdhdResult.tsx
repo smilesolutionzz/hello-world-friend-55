@@ -292,24 +292,44 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         </div>
       </Card>
 
-      {/* AI 전문가 해석 */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <Bot className="w-5 h-5" />
-          AI 전문가 심층 분석
-        </h3>
-        {isAnalyzing ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="ml-3">AI가 검사 결과를 심층 분석하고 있습니다...</span>
-          </div>
-        ) : (
-          <div className="prose max-w-none">
-            <div className="whitespace-pre-wrap text-sm leading-relaxed p-4 bg-muted/5 rounded-lg">
-              {analysis}
+      {/* AI 전문가 해석 - 프리미엄 스타일 */}
+      <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 overflow-hidden">
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/30">
+              <Bot className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-purple-900">🧠 AI 전문가 심층 분석</h3>
+              <p className="text-sm text-purple-600">ADHD 전문 정신과 전문의 수준의 임상 분석 리포트</p>
             </div>
           </div>
-        )}
+          
+          {isAnalyzing ? (
+            <div className="flex flex-col items-center justify-center py-12 bg-white/60 rounded-xl">
+              <div className="relative">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                  <Brain className="w-8 h-8 text-white animate-pulse" />
+                </div>
+                <div className="absolute inset-0 rounded-full border-4 border-purple-300 border-t-transparent animate-spin" />
+              </div>
+              <p className="mt-4 font-medium text-purple-700">AI가 심층 분석 중입니다...</p>
+              <p className="text-sm text-purple-500">3000자 이상의 상세한 분석을 생성하고 있습니다</p>
+            </div>
+          ) : (
+            <div className="bg-white/80 rounded-xl p-5 border border-purple-100 shadow-inner">
+              <div className="prose max-w-none">
+                <div className="whitespace-pre-wrap text-base leading-relaxed text-gray-800">
+                  {analysis}
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-purple-100 flex items-center justify-between text-xs text-purple-500">
+                <span>📝 분석 글자 수: {analysis?.length || 0}자</span>
+                <span>🤖 Powered by Advanced AI</span>
+              </div>
+            </div>
+          )}
+        </div>
       </Card>
 
       {/* 액션 버튼들 */}

@@ -226,18 +226,34 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
             </CardContent>
           </Card>
 
-          {/* Overall Interpretation */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="w-5 h-5" />
-                전문가 종합 해석
-              </CardTitle>
+          {/* Overall Interpretation - 프리미엄 전문가 해석 */}
+          <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-lg">
+                  <Brain className="w-6 h-6" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl text-purple-900">🧠 AI 전문가 종합 해석</CardTitle>
+                  <CardDescription className="text-purple-600">20년 경력 소아신경발달 전문의 수준의 심층 분석</CardDescription>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <p className="text-base leading-relaxed">
-                {results.overallInterpretation}
-              </p>
+              <div className="bg-white/80 rounded-xl p-5 border border-purple-100 shadow-inner">
+                <p className="text-base leading-relaxed whitespace-pre-line text-gray-800">
+                  {results.overallInterpretation}
+                </p>
+                {results.overallInterpretation && results.overallInterpretation.length < 300 && (
+                  <p className="mt-4 text-sm text-purple-600 italic">
+                    * 더 자세한 분석이 필요하시면 검사를 다시 진행해주세요.
+                  </p>
+                )}
+              </div>
+              <div className="mt-4 flex items-center justify-between text-xs text-purple-500">
+                <span>분석 글자 수: {results.overallInterpretation?.length || 0}자</span>
+                <span>Powered by Advanced AI</span>
+              </div>
             </CardContent>
           </Card>
 

@@ -23,6 +23,7 @@ import { LazyLoad } from '@/components/ui/lazy-load';
 import ErrorBoundary from '@/components/ui/error-boundary';
 import FeedAnalysisSection from '@/components/landing/FeedAnalysisSection';
 import CurationReportSection from '@/components/landing/CurationReportSection';
+import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
 
 import MainPromoSection from '@/components/promotion/MainPromoSection';
 
@@ -173,6 +174,11 @@ const Index = () => {
             {/* 🆕 나만의 큐레이션 분석리포트 섹션 */}
             <LazyLoad rootMargin="200px">
               <CurationReportSection />
+            </LazyLoad>
+            
+            {/* 🆕 실제 리포트 미리보기 섹션 */}
+            <LazyLoad rootMargin="200px">
+              <ReportPreviewSection />
             </LazyLoad>
             
             {/* 5️⃣ 감성 후킹 - 엄마들의 실제 사연 */}

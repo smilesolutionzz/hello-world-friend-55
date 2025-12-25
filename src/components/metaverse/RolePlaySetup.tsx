@@ -57,6 +57,9 @@ export const RolePlaySetup = ({ onStart }: RolePlaySetupProps) => {
         <p className="text-white/90 drop-shadow-md">
           다양한 상황에서 대화 연습을 해보세요. AI가 상대 역할을 맡아 실제처럼 대화합니다.
         </p>
+        <p className="text-amber-300/90 text-sm">
+          💡 상황을 선택하면 상세 정보와 시작하기 버튼이 나타납니다
+        </p>
         <div className="flex items-center justify-center gap-4 mt-4">
           <Badge variant="outline" className="gap-2 bg-white/10 text-white border-white/30">
             <Target className="w-3 h-3" />

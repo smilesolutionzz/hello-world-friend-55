@@ -4,7 +4,6 @@ import type { User } from '@supabase/supabase-js';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import HeroSection from "@/components/HeroSection";
 import SimplifiedCoreServices from "@/components/landing/SimplifiedCoreServices";
-import DataDrivenReportSection from "@/components/landing/DataDrivenReportSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
 import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
 import ValueComparisonSection from "@/components/landing/ValueComparisonSection";
@@ -22,9 +21,7 @@ import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import ErrorBoundary from '@/components/ui/error-boundary';
 import FeedAnalysisSection from '@/components/landing/FeedAnalysisSection';
-import CurationReportSection from '@/components/landing/CurationReportSection';
 import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
-
 import MainPromoSection from '@/components/promotion/MainPromoSection';
 
 const structuredData = {
@@ -166,17 +163,7 @@ const Index = () => {
               <SimplifiedCoreServices />
             </LazyLoad>
             
-            {/* 4️⃣ 데이터 기반 9가지 리포트 */}
-            <LazyLoad rootMargin="200px">
-              <DataDrivenReportSection />
-            </LazyLoad>
-            
-            {/* 🆕 나만의 큐레이션 분석리포트 섹션 */}
-            <LazyLoad rootMargin="200px">
-              <CurationReportSection />
-            </LazyLoad>
-            
-            {/* 🆕 실제 리포트 미리보기 섹션 */}
+            {/* 4️⃣ 전문가급 리포트 미리보기 */}
             <LazyLoad rootMargin="200px">
               <ReportPreviewSection />
             </LazyLoad>

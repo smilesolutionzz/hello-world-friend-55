@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Brain, Target, Heart, Lightbulb, Users, TrendingUp, Shield, BookOpen, ArrowRight } from 'lucide-react';
+import { FileText, Brain, Target, Heart, Lightbulb, Users, TrendingUp, Shield, BookOpen, ArrowRight, Sparkles, CheckCircle2, Download, Share2, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,6 +14,12 @@ const ReportPreviewSection = () => {
     { icon: Lightbulb, title: '맞춤 개입 전략', preview: '1) 시각적 스케줄 활용 권장 2) 감각 통합 활동 일 15분 권장...' },
     { icon: Users, title: '가정 내 실천 가이드', preview: '아침 루틴: 그림 카드 활용한 순서 안내. 저녁 루틴: 감정 일기 함께 작성...' },
     { icon: TrendingUp, title: '발달 예측 & 경과', preview: '현재 개입 시 6개월 후 예상: 언어 표현력 20% 향상, 또래 상호작용...' },
+  ];
+
+  const features = [
+    { icon: Download, text: 'PDF/TXT 다운로드' },
+    { icon: Share2, text: '카카오톡 공유' },
+    { icon: Mail, text: '가족 이메일 전송' },
   ];
 
   return (
@@ -30,14 +36,15 @@ const ReportPreviewSection = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <span className="inline-block px-4 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 text-sm font-medium mb-4">
-            샘플 미리보기
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-bold mb-4">
+            <Sparkles className="w-4 h-4" />
+            전문가급 AI 분석
           </span>
           <h2 className="text-2xl md:text-4xl font-bold text-white mb-3">
-            실제 분석 리포트는 이렇게 옵니다
+            9가지 심층 분석 리포트
           </h2>
           <p className="text-white/60 text-sm md:text-base max-w-xl mx-auto">
-            AI가 수집된 데이터를 기반으로 9가지 영역의 전문가급 분석을 제공합니다
+            최신 연구 기반 AI가 생성하는 전문가 수준의 맞춤형 분석
           </p>
         </motion.div>
 
@@ -52,7 +59,7 @@ const ReportPreviewSection = () => {
           <div className="bg-slate-800/80 backdrop-blur-sm border border-white/10 rounded-t-2xl p-4 md:p-6">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div>
-                <p className="text-white/50 text-xs mb-1">2025년 1월 6일 생성</p>
+                <p className="text-white/50 text-xs mb-1">2026년 1월 생성</p>
                 <h3 className="text-white font-bold text-lg">전문가급 발달 분석 리포트</h3>
               </div>
               <div className="text-right">
@@ -82,10 +89,6 @@ const ReportPreviewSection = () => {
                 <p className="flex items-start gap-2">
                   <span className="text-blue-500">•</span>
                   <span><strong>권장 개입:</strong> 언어치료 주 2회, 감각통합 활동, 시각적 스케줄 활용</span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="text-purple-500">•</span>
-                  <span><strong>예상 경과:</strong> 조기 개입 시 6개월 내 유의미한 개선 기대</span>
                 </p>
               </div>
             </div>
@@ -123,21 +126,54 @@ const ReportPreviewSection = () => {
           </p>
         </motion.div>
 
-        {/* CTA */}
+        {/* Features & Benefits */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="text-center mt-10"
+          className="max-w-3xl mx-auto mt-10"
         >
-          <Button
-            onClick={() => navigate('/report-generator')}
-            className="px-8 py-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-2xl shadow-lg shadow-amber-500/25"
-          >
-            나만의 리포트 생성하기
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
+          {/* Feature badges */}
+          <div className="flex flex-wrap justify-center gap-3 mb-6">
+            {features.map((feature, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur border border-white/10 rounded-full"
+              >
+                <feature.icon className="w-4 h-4 text-amber-400" />
+                <span className="text-sm font-medium text-slate-200">{feature.text}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Benefits */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+            {[
+              '최신 연구 기반 분석',
+              'Perplexity AI 학술 검색',
+              '관련 기관 정보 수집',
+              '검증된 전문가 연결',
+              '무제한 재생성',
+              '가족 공유 지원',
+            ].map((benefit, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <span className="text-xs md:text-sm text-slate-300">{benefit}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div className="text-center">
+            <Button
+              onClick={() => navigate('/report-generator')}
+              className="px-8 py-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-2xl shadow-lg shadow-amber-500/25"
+            >
+              나만의 리포트 생성하기
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
         </motion.div>
       </div>
     </section>

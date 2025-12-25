@@ -134,29 +134,30 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
         </CardHeader>
         <CardContent>
           <RadioGroup
+            key={currentQuestion}
             value={answers[currentQuestion]}
             onValueChange={handleAnswerChange}
             className="space-y-3"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="0" id="option0" />
-              <Label htmlFor="option0" className="cursor-pointer">전혀 그렇지 않다</Label>
+              <RadioGroupItem value="0" id={`q${currentQuestion}-option0`} />
+              <Label htmlFor={`q${currentQuestion}-option0`} className="cursor-pointer">전혀 그렇지 않다</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="1" id="option1" />
-              <Label htmlFor="option1" className="cursor-pointer">거의 그렇지 않다</Label>
+              <RadioGroupItem value="1" id={`q${currentQuestion}-option1`} />
+              <Label htmlFor={`q${currentQuestion}-option1`} className="cursor-pointer">거의 그렇지 않다</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="2" id="option2" />
-              <Label htmlFor="option2" className="cursor-pointer">가끔 그렇다</Label>
+              <RadioGroupItem value="2" id={`q${currentQuestion}-option2`} />
+              <Label htmlFor={`q${currentQuestion}-option2`} className="cursor-pointer">가끔 그렇다</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="3" id="option3" />
-              <Label htmlFor="option3" className="cursor-pointer">자주 그렇다</Label>
+              <RadioGroupItem value="3" id={`q${currentQuestion}-option3`} />
+              <Label htmlFor={`q${currentQuestion}-option3`} className="cursor-pointer">자주 그렇다</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="4" id="option4" />
-              <Label htmlFor="option4" className="cursor-pointer">매우 그렇다</Label>
+              <RadioGroupItem value="4" id={`q${currentQuestion}-option4`} />
+              <Label htmlFor={`q${currentQuestion}-option4`} className="cursor-pointer">매우 그렇다</Label>
             </div>
           </RadioGroup>
 

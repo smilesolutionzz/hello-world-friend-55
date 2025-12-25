@@ -458,19 +458,31 @@ const ReportGenerator = () => {
     }
     setIsSendingEmail(true);
     try {
+      // send-concern-report 함수의 기대 형식에 맞춰 데이터 전송
+      const summaryText = reportData.summary?.replace(/<[^>]*>/g, '') || '';
+      const sectionsText = reportData.sections?.map((s: any, i: number) => 
+        `[${i + 1}] ${s.title}\n${s.content.replace(/<[^>]*>/g, '')}`
+      ).join('\n\n') || '';
+
       const { error } = await supabase.functions.invoke('send-concern-report', {
         body: {
           email: familyEmail,
-          subject: `[AIHPRO] ${userInput.name}님의 전문가급 분석 리포트`,
-          reportSummary: reportData.summary?.replace(/<[^>]*>/g, '') || '',
-          userName: userInput.name
+          concernText: `${userInput.name}님의 전문가급 분석 리포트`,
+          analysis: {
+            type: '전문가급 종합 분석',
+            severity: '정보',
+            detailedAdvice: summaryText + '\n\n' + sectionsText.substring(0, 3000),
+            recommendations: reportData.sections?.slice(0, 3).map((s: any) => s.title) || [],
+            nextSteps: ['전문가 상담 예약', '정기적인 관찰 일지 작성', '발달 로드맵 따르기'],
+            confidence: 95
+          }
         }
       });
       if (error) throw error;
       toast({ title: "✅ 이메일 전송 완료", description: `${familyEmail}로 리포트가 전송되었습니다.` });
       setFamilyEmail('');
-    } catch (e) {
-      toast({ title: "이메일 전송 실패", variant: "destructive" });
+    } catch (e: any) {
+      toast({ title: "이메일 전송 실패", description: e?.message || "잠시 후 다시 시도해주세요.", variant: "destructive" });
     } finally {
       setIsSendingEmail(false);
     }

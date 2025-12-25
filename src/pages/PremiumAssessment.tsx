@@ -505,18 +505,18 @@ const PremiumAssessment = () => {
                   return (
                     <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : key)}>
                       <CollapsibleTrigger asChild>
-                        <button className="w-full group text-left p-4 rounded-xl border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-foreground group-hover:text-purple-600">{info.title}</h3>
+                        <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-purple-600 truncate">{info.title}</h3>
                                 {info.badge && (
-                                  <Badge className="bg-purple-500 text-white text-[10px] px-1.5 py-0">{info.badge}</Badge>
+                                  <Badge className="bg-purple-500 text-white text-[9px] md:text-[10px] px-1 md:px-1.5 py-0 flex-shrink-0">{info.badge}</Badge>
                                 )}
                               </div>
-                              <p className="text-xs text-muted-foreground">{info.duration} · {info.questions_count}문항</p>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{info.duration} · {info.questions_count}문항</p>
                             </div>
-                            <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                            <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
                           </div>
                         </button>
                       </CollapsibleTrigger>
@@ -561,18 +561,18 @@ const PremiumAssessment = () => {
                   return (
                     <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : key)}>
                       <CollapsibleTrigger asChild>
-                        <button className="w-full group text-left p-4 rounded-xl border border-border hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-all">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-foreground group-hover:text-blue-600">{info.title}</h3>
+                        <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-all">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-blue-600 truncate">{info.title}</h3>
                                 {info.badge && (
-                                  <Badge className="bg-blue-500 text-white text-[10px] px-1.5 py-0">{info.badge}</Badge>
+                                  <Badge className="bg-blue-500 text-white text-[9px] md:text-[10px] px-1 md:px-1.5 py-0 flex-shrink-0">{info.badge}</Badge>
                                 )}
                               </div>
-                              <p className="text-xs text-muted-foreground">{info.duration} · {info.questions_count}문항</p>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{info.duration} · {info.questions_count}문항</p>
                             </div>
-                            <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                            <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
                           </div>
                         </button>
                       </CollapsibleTrigger>
@@ -617,18 +617,18 @@ const PremiumAssessment = () => {
                   return (
                     <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : key)}>
                       <CollapsibleTrigger asChild>
-                        <button className="w-full group text-left p-4 rounded-xl border border-border hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 transition-all">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-foreground group-hover:text-orange-600">{info.title}</h3>
+                        <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 transition-all">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-orange-600 truncate">{info.title}</h3>
                                 {info.badge && (
-                                  <Badge className="bg-orange-500 text-white text-[10px] px-1.5 py-0">{info.badge}</Badge>
+                                  <Badge className="bg-orange-500 text-white text-[9px] md:text-[10px] px-1 md:px-1.5 py-0 flex-shrink-0">{info.badge}</Badge>
                                 )}
                               </div>
-                              <p className="text-xs text-muted-foreground">{info.duration} · {info.questions_count}문항</p>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{info.duration} · {info.questions_count}문항</p>
                             </div>
-                            <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                            <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
                           </div>
                         </button>
                       </CollapsibleTrigger>
@@ -673,18 +673,18 @@ const PremiumAssessment = () => {
                   return (
                     <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : key)}>
                       <CollapsibleTrigger asChild>
-                        <button className="w-full group text-left p-4 rounded-xl border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-foreground group-hover:text-emerald-600">{info.title}</h3>
+                        <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-emerald-600 truncate">{info.title}</h3>
                                 {info.badge && (
-                                  <Badge className="bg-emerald-500 text-white text-[10px] px-1.5 py-0">{info.badge}</Badge>
+                                  <Badge className="bg-emerald-500 text-white text-[9px] md:text-[10px] px-1 md:px-1.5 py-0 flex-shrink-0">{info.badge}</Badge>
                                 )}
                               </div>
-                              <p className="text-xs text-muted-foreground">{info.duration} · {info.questions_count}문항</p>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{info.duration} · {info.questions_count}문항</p>
                             </div>
-                            <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                            <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
                           </div>
                         </button>
                       </CollapsibleTrigger>
@@ -728,15 +728,15 @@ const PremiumAssessment = () => {
                   return (
                     <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : `special_${key}`)}>
                       <CollapsibleTrigger asChild>
-                        <button className="w-full group text-left p-4 rounded-xl border border-border hover:border-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-950/20 transition-all">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-foreground group-hover:text-slate-600">{info.title}</h3>
+                        <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-950/20 transition-all">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-slate-600 truncate">{info.title}</h3>
                               </div>
-                              <p className="text-xs text-muted-foreground">{info.duration}{info.questions_count > 0 ? ` · ${info.questions_count}문항` : ''}</p>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{info.duration}{info.questions_count > 0 ? ` · ${info.questions_count}문항` : ''}</p>
                             </div>
-                            <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                            <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
                           </div>
                         </button>
                       </CollapsibleTrigger>

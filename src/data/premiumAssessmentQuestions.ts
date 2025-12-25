@@ -1691,10 +1691,10 @@ export const premiumAssessmentInfo = {
   // 🔥 TOP 인기 테스트들 (상단 배치)
   languageDevelopment: {
     title: "AIH 영유아 언어발달 자가체크",
-    subtitle: "심화 언어발달 진단 - 77문항",
-    description: "수용언어(39문항)와 표현언어(38문항)를 종합적으로 평가하는 전문 검사",
+    subtitle: "심화 언어발달 진단 - 45문항",
+    description: "수용언어(23문항)와 표현언어(22문항)를 종합적으로 평가하는 전문 검사",
     duration: "15-20분",
-    questions_count: 77,
+    questions_count: 45,
     premium_features: ["연령별 맞춤 문항", "수용/표현언어 분석", "발달 수준 평가", "상세 AI 해석"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
     rank: 1,

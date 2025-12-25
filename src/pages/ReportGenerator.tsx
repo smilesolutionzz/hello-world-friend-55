@@ -84,8 +84,8 @@ const ReportGenerator = () => {
   const [showPreview, setShowPreview] = useState(false);
 
   const REPORT_TYPES = {
-    detailed: { name: '상세 리포트', tokens: 76, price: '15,000원', description: '무료보다 훨씬 전문적인 9개 섹션 AI 분석 (즉시 생성)' },
-    expert: { name: '전문가급 분석', tokens: 253, price: '50,000원', description: 'AI 분석 + 실제 전문가 검수 및 제언 (카톡 신청 필요)' }
+    detailed: { name: '상세 리포트', tokens: 76, price: '15,000원', description: '9개 섹션 AI 심층 분석 리포트 (즉시 생성)' },
+    expert: { name: '전문가급 분석', tokens: 253, price: '50,000원', description: '상세 리포트 생성 → 카톡 공유 → 전문가 검수 및 제언' }
   };
 
   // 사용자 데이터 불러오기
@@ -530,9 +530,9 @@ const ReportGenerator = () => {
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-black leading-tight">
+          <h1 className="text-2xl md:text-4xl lg:text-6xl font-black leading-tight whitespace-nowrap">
             <span className="bg-gradient-to-r from-purple-200 via-pink-200 to-orange-200 bg-clip-text text-transparent drop-shadow-2xl">
-              AI 종합 리포트 생성
+              AI 종합 리포트
             </span>
           </h1>
 

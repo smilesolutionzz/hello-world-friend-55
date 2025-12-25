@@ -510,6 +510,16 @@ const ReportGenerator = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950">
       <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* 뒤로가기 버튼 */}
+        <Button
+          onClick={() => navigate(-1)}
+          variant="outline"
+          className="mb-6 border-purple-400/30 text-purple-200 hover:bg-purple-500/10"
+        >
+          <ArrowRight className="w-4 h-4 mr-2 rotate-180" />
+          뒤로가기
+        </Button>
+
         {/* 프리미엄 헤더 */}
         <div className="text-center mb-16 space-y-6">
           <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-500/20 rounded-full border-2 border-purple-400/40 shadow-lg shadow-purple-500/30">
@@ -634,6 +644,25 @@ const ReportGenerator = () => {
                   <p className="text-purple-200 font-medium">
                     👑 축적된 모든 데이터를 통합 분석한 <strong>전문가급 프리미엄 리포트</strong>를 생성합니다
                   </p>
+                </div>
+
+                {/* 실제 전문가 검수 안내 */}
+                <div className="p-5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 border-2 border-amber-400/40 rounded-xl">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-amber-500/20 rounded-lg">
+                      <Award className="w-6 h-6 text-amber-300" />
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="text-amber-100 font-bold text-lg">🏅 실제 전문가 검수 서비스</h4>
+                      <p className="text-amber-200/90 text-sm leading-relaxed">
+                        전문가급 분석 리포트는 AI 생성 후 <strong className="text-amber-100">실제 발달/심리 전문가가 직접 검수</strong>합니다.<br/>
+                        전문가가 리포트를 검토하여 <strong className="text-amber-100">맞춤형 제언과 추가 조언</strong>을 더해 <strong className="text-amber-100">이메일로 회신</strong>해드립니다.
+                      </p>
+                      <p className="text-amber-300/80 text-xs">
+                        * 전문가 검수 및 회신은 영업일 기준 2~3일 이내 완료됩니다.
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* 사용자 직접 입력 섹션 */}

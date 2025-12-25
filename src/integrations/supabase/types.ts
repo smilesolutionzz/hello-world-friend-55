@@ -3578,6 +3578,59 @@ export type Database = {
           },
         ]
       }
+      facility_staff_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          facility_id: string
+          id: string
+          invitation_code: string
+          invited_by: string | null
+          name: string
+          position: string | null
+          role: Database["public"]["Enums"]["facility_role"]
+          status: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          facility_id: string
+          id?: string
+          invitation_code?: string
+          invited_by?: string | null
+          name: string
+          position?: string | null
+          role?: Database["public"]["Enums"]["facility_role"]
+          status?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          facility_id?: string
+          id?: string
+          invitation_code?: string
+          invited_by?: string | null
+          name?: string
+          position?: string | null
+          role?: Database["public"]["Enums"]["facility_role"]
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facility_staff_invitations_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fact_check_results: {
         Row: {
           check_status: string

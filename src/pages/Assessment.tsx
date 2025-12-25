@@ -659,12 +659,13 @@ const Assessment = () => {
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-green-500/20">
                 <Sparkles className="w-4 h-4 text-green-500" />
               </span>
-              <div>
+              <div className="text-left">
                 <p className="text-sm font-semibold text-green-600 dark:text-green-400">
-                  💝 소중한 골든타임, 놓치지 마세요
+                  🎁 2026년 새해 선물
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  아이의 건강한 성장을 위해 AIHumanPro가 모든 검사를 무료로 제공합니다
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  소중한 골든타임을 위해<br className="sm:hidden" />
+                  <span className="hidden sm:inline"> </span>3개월간 모든 검사 무료
                 </p>
               </div>
             </div>

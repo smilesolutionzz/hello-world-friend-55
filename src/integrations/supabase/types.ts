@@ -3534,6 +3534,62 @@ export type Database = {
           },
         ]
       }
+      facility_audit_schedules: {
+        Row: {
+          audit_name: string
+          audit_type: string
+          auditor_contact: string | null
+          auditor_organization: string | null
+          completed_at: string | null
+          created_at: string
+          facility_id: string
+          id: string
+          notes: string | null
+          result_summary: string | null
+          scheduled_date: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          audit_name: string
+          audit_type: string
+          auditor_contact?: string | null
+          auditor_organization?: string | null
+          completed_at?: string | null
+          created_at?: string
+          facility_id: string
+          id?: string
+          notes?: string | null
+          result_summary?: string | null
+          scheduled_date: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          audit_name?: string
+          audit_type?: string
+          auditor_contact?: string | null
+          auditor_organization?: string | null
+          completed_at?: string | null
+          created_at?: string
+          facility_id?: string
+          id?: string
+          notes?: string | null
+          result_summary?: string | null
+          scheduled_date?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facility_audit_schedules_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       facility_staff: {
         Row: {
           created_at: string | null
@@ -9954,6 +10010,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      voucher_audit_categories: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          is_mandatory: boolean | null
+          voucher_type_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          is_mandatory?: boolean | null
+          voucher_type_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          is_mandatory?: boolean | null
+          voucher_type_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_audit_categories_voucher_type_id_fkey"
+            columns: ["voucher_type_id"]
+            isOneToOne: false
+            referencedRelation: "voucher_types"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       voucher_audit_requirements: {
         Row: {

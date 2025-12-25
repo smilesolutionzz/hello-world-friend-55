@@ -3536,6 +3536,7 @@ export type Database = {
       }
       facility_staff: {
         Row: {
+          created_at: string | null
           facility_id: string
           id: string
           is_active: boolean | null
@@ -3546,6 +3547,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          created_at?: string | null
           facility_id: string
           id?: string
           is_active?: boolean | null
@@ -3556,6 +3558,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          created_at?: string | null
           facility_id?: string
           id?: string
           is_active?: boolean | null

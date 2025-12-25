@@ -29,10 +29,10 @@ export const FeedbackButton = () => {
     <>
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white p-0 animate-bounce hover:animate-none"
+        className="fixed bottom-6 right-6 z-50 h-12 w-12 md:h-14 md:w-14 rounded-full shadow-lg bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white p-0 animate-bounce hover:animate-none"
         title="피드백 보내기"
       >
-        <MessageSquarePlus className="h-6 w-6" />
+        <MessageSquarePlus className="h-5 w-5 md:h-6 md:w-6" />
       </Button>
       
       <FeedbackModal 

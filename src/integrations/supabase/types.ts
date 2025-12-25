@@ -3631,6 +3631,57 @@ export type Database = {
           },
         ]
       }
+      facility_vouchers: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          facility_id: string
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          registered_at: string | null
+          registration_number: string | null
+          voucher_type_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          facility_id: string
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          registered_at?: string | null
+          registration_number?: string | null
+          voucher_type_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          facility_id?: string
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          registered_at?: string | null
+          registration_number?: string | null
+          voucher_type_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facility_vouchers_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "facility_vouchers_voucher_type_id_fkey"
+            columns: ["voucher_type_id"]
+            isOneToOne: false
+            referencedRelation: "voucher_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fact_check_results: {
         Row: {
           check_status: string
@@ -9904,47 +9955,171 @@ export type Database = {
         }
         Relationships: []
       }
+      voucher_audit_requirements: {
+        Row: {
+          additional_notes: string | null
+          audit_item_id: string
+          created_at: string
+          id: string
+          is_mandatory: boolean | null
+          voucher_type_id: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          audit_item_id: string
+          created_at?: string
+          id?: string
+          is_mandatory?: boolean | null
+          voucher_type_id: string
+        }
+        Update: {
+          additional_notes?: string | null
+          audit_item_id?: string
+          created_at?: string
+          id?: string
+          is_mandatory?: boolean | null
+          voucher_type_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_audit_requirements_audit_item_id_fkey"
+            columns: ["audit_item_id"]
+            isOneToOne: false
+            referencedRelation: "audit_checklist_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_audit_requirements_voucher_type_id_fkey"
+            columns: ["voucher_type_id"]
+            isOneToOne: false
+            referencedRelation: "voucher_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       voucher_types: {
         Row: {
           age_max: number | null
           age_min: number | null
+          billing_cycle: string | null
           created_at: string
           description: string | null
           eligibility_criteria: Json | null
+          government_agency: string | null
           id: string
           is_active: boolean
           monthly_amount: number
           name: string
+          required_documents: string[] | null
           session_limit: number
           updated_at: string
+          voucher_code: string | null
         }
         Insert: {
           age_max?: number | null
           age_min?: number | null
+          billing_cycle?: string | null
           created_at?: string
           description?: string | null
           eligibility_criteria?: Json | null
+          government_agency?: string | null
           id?: string
           is_active?: boolean
           monthly_amount?: number
           name: string
+          required_documents?: string[] | null
           session_limit?: number
           updated_at?: string
+          voucher_code?: string | null
         }
         Update: {
           age_max?: number | null
           age_min?: number | null
+          billing_cycle?: string | null
           created_at?: string
           description?: string | null
           eligibility_criteria?: Json | null
+          government_agency?: string | null
           id?: string
           is_active?: boolean
           monthly_amount?: number
           name?: string
+          required_documents?: string[] | null
           session_limit?: number
           updated_at?: string
+          voucher_code?: string | null
         }
         Relationships: []
+      }
+      voucher_usage_records: {
+        Row: {
+          amount: number | null
+          approval_date: string | null
+          created_at: string
+          facility_id: string
+          id: string
+          notes: string | null
+          resident_id: string | null
+          service_duration_minutes: number | null
+          service_type: string
+          status: string | null
+          submission_date: string | null
+          usage_date: string
+          voucher_type_id: string
+        }
+        Insert: {
+          amount?: number | null
+          approval_date?: string | null
+          created_at?: string
+          facility_id: string
+          id?: string
+          notes?: string | null
+          resident_id?: string | null
+          service_duration_minutes?: number | null
+          service_type: string
+          status?: string | null
+          submission_date?: string | null
+          usage_date: string
+          voucher_type_id: string
+        }
+        Update: {
+          amount?: number | null
+          approval_date?: string | null
+          created_at?: string
+          facility_id?: string
+          id?: string
+          notes?: string | null
+          resident_id?: string | null
+          service_duration_minutes?: number | null
+          service_type?: string
+          status?: string | null
+          submission_date?: string | null
+          usage_date?: string
+          voucher_type_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_usage_records_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_usage_records_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voucher_usage_records_voucher_type_id_fkey"
+            columns: ["voucher_type_id"]
+            isOneToOne: false
+            referencedRelation: "voucher_types"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       website_orders: {
         Row: {

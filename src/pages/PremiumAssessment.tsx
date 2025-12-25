@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins, ChevronDown, Brain, Heart, Briefcase, DollarSign, UserCheck, AlertTriangle, Eye, Baby, Palette, Shield } from "lucide-react";
+import { Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins, ChevronDown, Brain, Heart, Briefcase, DollarSign, UserCheck, AlertTriangle, Eye, Baby, Palette, Shield, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
@@ -457,19 +457,39 @@ const PremiumAssessment = () => {
           <div className="container mx-auto px-4 py-6 max-w-4xl">
             
             {/* 헤더 - 심플하게 */}
-            <div className="mb-8 text-center">
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <Crown className="w-6 h-6 text-yellow-500" />
-                <h1 className="text-2xl font-bold text-foreground">프리미엄 AIH 검사</h1>
+            <div className="mb-6 text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Crown className="w-5 h-5 md:w-6 md:h-6 text-yellow-500" />
+                <h1 className="text-xl md:text-2xl font-bold text-foreground">프리미엄 AIH 검사</h1>
               </div>
-              <p className="text-muted-foreground text-sm mb-3">
+              <p className="text-muted-foreground text-xs md:text-sm mb-2 whitespace-nowrap">
                 전문적이고 정밀한 성향 파악을 위한 AIH 창작 도구
               </p>
-              <Badge className="bg-purple-500 text-white text-sm px-3 py-1">
+              <Badge className="bg-purple-500 text-white text-xs md:text-sm px-2 md:px-3 py-0.5 md:py-1">
                 <Coins className="w-3 h-3 mr-1" />
                 각 검사당 3,000원
               </Badge>
             </div>
+
+            {/* 공식검사 안내 배너 */}
+            <a 
+              href="https://smilesolution.kr" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block mb-6 p-3 md:p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl border border-blue-200 dark:border-blue-800 hover:shadow-md transition-all group"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs md:text-sm font-medium text-blue-700 dark:text-blue-300 truncate">
+                    🏥 공식검사 · 전문가 비대면 해석
+                  </p>
+                  <p className="text-[10px] md:text-xs text-blue-600/80 dark:text-blue-400/80 truncate">
+                    온라인코드 발급 → 전문가 직접 해석
+                  </p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-blue-500 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </a>
 
             {/* ========== 신경발달 검사 섹션 ========== */}
             <section className="mb-8">

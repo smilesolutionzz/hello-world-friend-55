@@ -44,6 +44,13 @@ import {
   Mail,
   FileDown
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 const ReportGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -73,6 +80,7 @@ const ReportGenerator = () => {
   const { tokenBalance, consumeTokens, checkTokenAvailability } = useTokens();
   const [familyEmail, setFamilyEmail] = useState('');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const REPORT_TYPES = {
     detailed: { name: '상세 리포트', tokens: 76, price: '15,000원', description: '9개 전체 섹션 + 외부 이미지 분석' },
@@ -1111,34 +1119,221 @@ const ReportGenerator = () => {
               </CardContent>
             </Card>
 
-            {/* 생성 버튼 */}
-            <Button
-              onClick={generateComprehensiveReport}
-              disabled={isGenerating || (userData?.totalDataCount || 0) < 30 || !checkTokenAvailability(REPORT_TYPES[selectedReportType].tokens)}
-              size="lg"
-              className="w-full h-20 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white shadow-2xl shadow-purple-500/50 border-2 border-purple-400/30 group disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isGenerating ? (
-                <div className="flex flex-col items-center gap-2">
+            {/* 미리보기 & 생성 버튼 */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* 미리보기 버튼 */}
+              <Dialog open={showPreview} onOpenChange={setShowPreview}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="h-20 text-lg font-bold border-2 border-purple-400/50 text-purple-200 hover:bg-purple-900/50 sm:w-auto"
+                  >
+                    <Eye className="w-6 h-6 mr-2" />
+                    미리보기
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 border-purple-500/50">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold text-purple-100 flex items-center gap-3">
+                      <Eye className="w-7 h-7 text-purple-400" />
+                      리포트 미리보기
+                    </DialogTitle>
+                  </DialogHeader>
+                  
+                  {/* 미리보기 콘텐츠 */}
+                  <div className="space-y-6 mt-4">
+                    {/* 입력 정보 요약 */}
+                    <Card className="bg-slate-800/50 border-slate-700/50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg text-purple-200 flex items-center gap-2">
+                          <Users className="w-5 h-5" />
+                          입력된 정보
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="grid md:grid-cols-3 gap-4 text-sm">
+                        <div className="p-3 bg-slate-700/50 rounded-lg">
+                          <span className="text-slate-400">이름:</span>
+                          <p className="font-semibold text-white">{userInput.name || '미입력'}</p>
+                        </div>
+                        <div className="p-3 bg-slate-700/50 rounded-lg">
+                          <span className="text-slate-400">생년월일:</span>
+                          <p className="font-semibold text-white">{userInput.birthDate || '미입력'}</p>
+                        </div>
+                        <div className="p-3 bg-slate-700/50 rounded-lg">
+                          <span className="text-slate-400">성별:</span>
+                          <p className="font-semibold text-white">{userInput.gender || '미입력'}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* 데이터 현황 */}
+                    <Card className="bg-slate-800/50 border-slate-700/50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg text-purple-200 flex items-center gap-2">
+                          <Database className="w-5 h-5" />
+                          분석에 사용될 데이터
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <div className="p-3 bg-blue-500/10 border border-blue-400/30 rounded-lg text-center">
+                          <FileText className="w-5 h-5 mx-auto text-blue-400 mb-1" />
+                          <p className="text-2xl font-black text-white">{userData?.totalAssessments || 0}</p>
+                          <p className="text-xs text-blue-300">검사 기록</p>
+                        </div>
+                        <div className="p-3 bg-emerald-500/10 border border-emerald-400/30 rounded-lg text-center">
+                          <BookOpen className="w-5 h-5 mx-auto text-emerald-400 mb-1" />
+                          <p className="text-2xl font-black text-white">{userData?.totalObservations || 0}</p>
+                          <p className="text-xs text-emerald-300">관찰 일지</p>
+                        </div>
+                        <div className="p-3 bg-orange-500/10 border border-orange-400/30 rounded-lg text-center">
+                          <Activity className="w-5 h-5 mx-auto text-orange-400 mb-1" />
+                          <p className="text-2xl font-black text-white">{userData?.totalObservationSessions || 0}</p>
+                          <p className="text-xs text-orange-300">관찰 세션</p>
+                        </div>
+                        <div className="p-3 bg-pink-500/10 border border-pink-400/30 rounded-lg text-center">
+                          <Heart className="w-5 h-5 mx-auto text-pink-400 mb-1" />
+                          <p className="text-2xl font-black text-white">{userData?.totalChatMessages || 0}</p>
+                          <p className="text-xs text-pink-300">상담 메시지</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* 고민/관찰 사항 */}
+                    {(userInput.recentConcerns || userInput.developmentalNotes) && (
+                      <Card className="bg-slate-800/50 border-slate-700/50">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg text-purple-200 flex items-center gap-2">
+                            <Heart className="w-5 h-5" />
+                            작성된 고민/관찰 내용
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          {userInput.recentConcerns && (
+                            <div className="p-3 bg-slate-700/50 rounded-lg">
+                              <p className="text-xs text-slate-400 mb-1">최근 고민:</p>
+                              <p className="text-sm text-slate-200">{userInput.recentConcerns}</p>
+                            </div>
+                          )}
+                          {userInput.developmentalNotes && (
+                            <div className="p-3 bg-slate-700/50 rounded-lg">
+                              <p className="text-xs text-slate-400 mb-1">발달/심리 관찰:</p>
+                              <p className="text-sm text-slate-200">{userInput.developmentalNotes}</p>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* 외부 이미지 분석 */}
+                    {uploadedImages.length > 0 && (
+                      <Card className="bg-slate-800/50 border-slate-700/50">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg text-purple-200 flex items-center gap-2">
+                            <Upload className="w-5 h-5" />
+                            외부 검사 이미지
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-center gap-2 text-emerald-300">
+                            <CheckCircle2 className="w-5 h-5" />
+                            <span>{uploadedImages.length}개 이미지 분석 완료</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* 리포트 구조 미리보기 */}
+                    <Card className="bg-gradient-to-br from-purple-900/30 to-indigo-900/30 border-purple-500/30">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg text-purple-200 flex items-center gap-2">
+                          <Award className="w-5 h-5 text-yellow-400" />
+                          생성될 리포트 구조 (9개 섹션)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid md:grid-cols-3 gap-3">
+                          {[
+                            { icon: Brain, title: '종합 발달 분석', bg: 'bg-blue-500/10 border-blue-400/30', iconColor: 'text-blue-400' },
+                            { icon: Heart, title: '정서/심리 상태', bg: 'bg-pink-500/10 border-pink-400/30', iconColor: 'text-pink-400' },
+                            { icon: TrendingUp, title: '성장 추이 분석', bg: 'bg-emerald-500/10 border-emerald-400/30', iconColor: 'text-emerald-400' },
+                            { icon: Target, title: '맞춤 목표 설정', bg: 'bg-purple-500/10 border-purple-400/30', iconColor: 'text-purple-400' },
+                            { icon: LineChart, title: '강점/약점 분석', bg: 'bg-cyan-500/10 border-cyan-400/30', iconColor: 'text-cyan-400' },
+                            { icon: Users, title: '사회성 발달', bg: 'bg-orange-500/10 border-orange-400/30', iconColor: 'text-orange-400' },
+                            { icon: Shield, title: '위험 요소 체크', bg: 'bg-red-500/10 border-red-400/30', iconColor: 'text-red-400' },
+                            { icon: Activity, title: '일상 패턴 분석', bg: 'bg-teal-500/10 border-teal-400/30', iconColor: 'text-teal-400' },
+                            { icon: BarChart3, title: '전문가 제언', bg: 'bg-indigo-500/10 border-indigo-400/30', iconColor: 'text-indigo-400' },
+                          ].map((item, idx) => (
+                            <div key={idx} className={`p-3 border rounded-lg flex items-center gap-2 ${item.bg}`}>
+                              <item.icon className={`w-4 h-4 ${item.iconColor}`} />
+                              <span className="text-sm text-slate-200">{item.title}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* 선택된 리포트 타입 */}
+                    <div className="p-4 bg-purple-500/20 border border-purple-400/40 rounded-xl">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Crown className="w-6 h-6 text-yellow-400" />
+                          <div>
+                            <p className="font-bold text-white">{REPORT_TYPES[selectedReportType].name}</p>
+                            <p className="text-sm text-purple-300">{REPORT_TYPES[selectedReportType].description}</p>
+                          </div>
+                        </div>
+                        <Badge className="bg-purple-600 text-white text-lg px-4 py-1">
+                          {REPORT_TYPES[selectedReportType].tokens} 토큰
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {/* 생성 버튼 */}
+                    <Button
+                      onClick={() => {
+                        setShowPreview(false);
+                        generateComprehensiveReport();
+                      }}
+                      disabled={isGenerating || (userData?.totalDataCount || 0) < 30 || !checkTokenAvailability(REPORT_TYPES[selectedReportType].tokens)}
+                      className="w-full h-14 text-lg font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700"
+                    >
+                      <Zap className="w-5 h-5 mr-2" />
+                      이 내용으로 리포트 생성하기
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              {/* 생성 버튼 */}
+              <Button
+                onClick={generateComprehensiveReport}
+                disabled={isGenerating || (userData?.totalDataCount || 0) < 30 || !checkTokenAvailability(REPORT_TYPES[selectedReportType].tokens)}
+                size="lg"
+                className="flex-1 h-20 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white shadow-2xl shadow-purple-500/50 border-2 border-purple-400/30 group disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isGenerating ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="flex items-center gap-3">
+                      <Loader2 className="w-7 h-7 animate-spin" />
+                      <span>AI가 종합 분석 중...</span>
+                    </div>
+                    <div className="w-full max-w-md h-2 bg-purple-900/50 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 transition-all duration-300 rounded-full"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                  </div>
+                ) : (
                   <div className="flex items-center gap-3">
-                    <Loader2 className="w-7 h-7 animate-spin" />
-                    <span>AI가 종합 분석 중...</span>
+                    <Zap className="w-7 h-7 group-hover:animate-pulse" />
+                    <span>{REPORT_TYPES[selectedReportType].name} 생성하기 ({REPORT_TYPES[selectedReportType].tokens} 토큰)</span>
+                    <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                   </div>
-                  <div className="w-full max-w-md h-2 bg-purple-900/50 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 transition-all duration-300 rounded-full"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <Zap className="w-7 h-7 group-hover:animate-pulse" />
-                  <span>{REPORT_TYPES[selectedReportType].name} 생성하기 ({REPORT_TYPES[selectedReportType].tokens} 토큰)</span>
-                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                </div>
-              )}
-            </Button>
+                )}
+              </Button>
+            </div>
 
             {/* 외부 검사 이미지 업로드 */}
             <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30">

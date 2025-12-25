@@ -84,8 +84,8 @@ const ReportGenerator = () => {
   const [showPreview, setShowPreview] = useState(false);
 
   const REPORT_TYPES = {
-    detailed: { name: '상세 리포트', tokens: 76, price: '15,000원', description: '9개 전체 섹션 + 외부 이미지 분석' },
-    expert: { name: '전문가급 분석', tokens: 253, price: '50,000원', description: '웹검색 기반 최신 연구 + 전문가급 심층 분석' }
+    detailed: { name: '상세 리포트', tokens: 76, price: '15,000원', description: '무료보다 훨씬 전문적인 9개 섹션 AI 분석 (즉시 생성)' },
+    expert: { name: '전문가급 분석', tokens: 253, price: '50,000원', description: 'AI 분석 + 실제 전문가 검수 및 제언 (카톡 신청 필요)' }
   };
 
   // 사용자 데이터 불러오기

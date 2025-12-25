@@ -42,7 +42,8 @@ import {
   Copy,
   Share2,
   Mail,
-  FileDown
+  FileDown,
+  MessageSquare
 } from 'lucide-react';
 import {
   Dialog,
@@ -652,12 +653,26 @@ const ReportGenerator = () => {
                     <div className="p-2 bg-amber-500/20 rounded-lg">
                       <Award className="w-6 h-6 text-amber-300" />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-3 flex-1">
                       <h4 className="text-amber-100 font-bold text-lg">🏅 실제 전문가 검수 서비스</h4>
                       <p className="text-amber-200/90 text-sm leading-relaxed">
                         전문가급 분석 리포트는 AI 생성 후 <strong className="text-amber-100">실제 발달/심리 전문가가 직접 검수</strong>합니다.<br/>
                         전문가가 리포트를 검토하여 <strong className="text-amber-100">맞춤형 제언과 추가 조언</strong>을 더해 <strong className="text-amber-100">이메일로 회신</strong>해드립니다.
                       </p>
+                      <div className="p-3 bg-yellow-500/20 border border-yellow-400/40 rounded-lg">
+                        <p className="text-yellow-100 text-sm font-medium">
+                          ⚠️ 리포트 생성 후 <strong>카카오톡으로 리포트를 보내주셔야</strong> 전문가 검수가 진행됩니다.
+                        </p>
+                      </div>
+                      <a
+                        href="https://open.kakao.com/o/sHLdK3Ch"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold rounded-lg transition-colors"
+                      >
+                        <MessageSquare className="w-5 h-5" />
+                        카카오톡으로 리포트 보내기
+                      </a>
                       <p className="text-amber-300/80 text-xs">
                         * 전문가 검수 및 회신은 영업일 기준 2~3일 이내 완료됩니다.
                       </p>

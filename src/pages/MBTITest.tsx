@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, ArrowRight, Sparkles, Share2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Sparkles, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { MBTIQuestions } from "@/components/mbti/MBTIQuestions";
 import { MBTIResult } from "@/components/mbti/MBTIResult";
@@ -11,6 +11,7 @@ import { calculateMBTI, calculateMBTIPercentages, MBTIPercentages } from "@/comp
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAutoSaveTestResult } from "@/hooks/useAutoSaveTestResult";
+import ModernAnalysisLoading from "@/components/assessment/ModernAnalysisLoading";
 
 const MBTITest = () => {
   const navigate = useNavigate();
@@ -105,22 +106,29 @@ const MBTITest = () => {
   }
 
   if (isAnalyzing) {
+    const mbtiQuotes = [
+      { text: "성격을 이해하면 관계가 보입니다.", author: "칼 융" },
+      { text: "자기 이해는 타인 이해의 시작입니다.", author: "다니엘 골먼" },
+      { text: "모든 성격 유형에는 고유한 강점이 있습니다.", author: "이자벨 마이어스" },
+      { text: "진정한 자아를 발견하는 것이 인생의 목표입니다.", author: "아브라함 매슬로우" },
+    ];
+
+    const mbtiInsights = [
+      { category: "성격", text: "MBTI는 선천적 성향과 후천적 발달의 조합입니다." },
+      { category: "관계", text: "상호보완적인 성격 유형이 더 강한 팀을 만듭니다." },
+      { category: "성장", text: "약한 기능을 발달시키면 더 균형잡힌 사람이 됩니다." },
+      { category: "소통", text: "성격 유형에 맞는 소통 방식이 효과적입니다." },
+    ];
+
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 via-background to-accent/20">
-        <Card className="p-8 max-w-md text-center">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-16 h-16 mx-auto mb-4"
-          >
-            <Sparkles className="w-16 h-16 text-primary" />
-          </motion.div>
-          <h2 className="text-2xl font-bold mb-2">AI가 분석 중...</h2>
-          <p className="text-muted-foreground">
-            당신의 성격을 깊이 있게 분석하고 있습니다
-          </p>
-        </Card>
-      </div>
+      <ModernAnalysisLoading
+        title="MBTI 성격 분석 중"
+        description="AI가 당신의 답변을 분석하여 성격 유형을 도출하고 있습니다..."
+        estimatedTime={15}
+        icon={Heart}
+        quotes={mbtiQuotes}
+        insights={mbtiInsights}
+      />
     );
   }
 

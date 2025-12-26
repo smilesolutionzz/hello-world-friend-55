@@ -88,81 +88,101 @@ serve(async (req) => {
     let profileData = '';
 
     try {
-      // Get user ID first
+      // instagram-scraper-stable-api 사용 - POST 방식으로 user info 가져오기
       const userInfoResponse = await fetch(
-        `https://instagram-scraper-api2.p.rapidapi.com/v1/info?username_or_id_or_url=${cleanUsername}`,
+        'https://instagram-scraper-stable-api.p.rapidapi.com/get_ig_user_info.php',
         {
-          method: 'GET',
+          method: 'POST',
           headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
             'x-rapidapi-key': RAPIDAPI_KEY,
-            'x-rapidapi-host': 'instagram-scraper-api2.p.rapidapi.com'
-          }
+            'x-rapidapi-host': 'instagram-scraper-stable-api.p.rapidapi.com'
+          },
+          body: `username=${cleanUsername}`
         }
       );
 
       if (userInfoResponse.ok) {
         const userData = await userInfoResponse.json();
-        userInfo = userData.data || userData;
+        console.log('User info response:', JSON.stringify(userData).substring(0, 500));
         
-        profileData = `
+        userInfo = userData.user || userData.data || userData;
+        
+        if (userInfo) {
+          profileData = `
 프로필명: ${userInfo.full_name || cleanUsername}
 사용자명: @${cleanUsername}
-바이오: ${userInfo.biography || '없음'}
-팔로워: ${userInfo.follower_count || 0}
-팔로잉: ${userInfo.following_count || 0}
-게시물 수: ${userInfo.media_count || 0}
+바이오: ${userInfo.biography || userInfo.bio || '없음'}
+팔로워: ${userInfo.follower_count || userInfo.followers || 0}
+팔로잉: ${userInfo.following_count || userInfo.following || 0}
+게시물 수: ${userInfo.media_count || userInfo.posts_count || 0}
 인증 계정: ${userInfo.is_verified ? '예' : '아니오'}
 비즈니스 계정: ${userInfo.is_business ? '예' : '아니오'}
 카테고리: ${userInfo.category || '없음'}
 `;
-        
-        console.log('User info fetched:', userInfo.full_name);
+          
+          console.log('User info fetched:', userInfo.full_name || cleanUsername);
+        }
 
-        // Get user posts
-        const userId = userInfo.pk || userInfo.id;
-        if (userId) {
-          const postsResponse = await fetch(
-            `https://instagram-scraper-api2.p.rapidapi.com/v1/posts?user_id=${userId}`,
-            {
-              method: 'GET',
-              headers: {
-                'x-rapidapi-key': RAPIDAPI_KEY,
-                'x-rapidapi-host': 'instagram-scraper-api2.p.rapidapi.com'
-              }
-            }
-          );
+        // Get user posts using the stable API
+        const postsResponse = await fetch(
+          'https://instagram-scraper-stable-api.p.rapidapi.com/get_ig_user_posts.php',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'x-rapidapi-key': RAPIDAPI_KEY,
+              'x-rapidapi-host': 'instagram-scraper-stable-api.p.rapidapi.com'
+            },
+            body: `username=${cleanUsername}`
+          }
+        );
 
-          if (postsResponse.ok) {
-            const postsData = await postsResponse.json();
-            const posts = postsData.data?.items || postsData.items || [];
+        if (postsResponse.ok) {
+          const postsData = await postsResponse.json();
+          console.log('Posts response:', JSON.stringify(postsData).substring(0, 500));
+          
+          const posts = postsData.posts || postsData.items || postsData.data || [];
+          
+          console.log(`Found ${posts.length} posts`);
+
+          // Extract image URLs from posts
+          for (const post of posts.slice(0, 12)) {
+            // 다양한 이미지 URL 패턴 처리
+            const imageUrl = post.display_url || post.thumbnail_src || post.image_url || 
+                           post.image_versions2?.candidates?.[0]?.url || 
+                           post.thumbnail_url;
             
-            console.log(`Found ${posts.length} posts`);
-
-            // Extract image URLs from posts
-            for (const post of posts.slice(0, 12)) {
-              if (post.image_versions2?.candidates?.[0]?.url) {
-                feedImages.push(post.image_versions2.candidates[0].url);
-              } else if (post.thumbnail_url) {
-                feedImages.push(post.thumbnail_url);
-              } else if (post.carousel_media) {
-                for (const media of post.carousel_media.slice(0, 3)) {
-                  if (media.image_versions2?.candidates?.[0]?.url) {
-                    feedImages.push(media.image_versions2.candidates[0].url);
-                  }
+            if (imageUrl) {
+              feedImages.push(imageUrl);
+            }
+            
+            // 캐러셀 이미지 처리
+            if (post.carousel_media || post.edge_sidecar_to_children?.edges) {
+              const carouselItems = post.carousel_media || 
+                                   post.edge_sidecar_to_children?.edges?.map((e: any) => e.node) || [];
+              for (const media of carouselItems.slice(0, 3)) {
+                const mediaUrl = media.display_url || media.thumbnail_src || 
+                               media.image_versions2?.candidates?.[0]?.url;
+                if (mediaUrl) {
+                  feedImages.push(mediaUrl);
                 }
               }
             }
-
-            // Add post captions to profile data
-            const captions = posts.slice(0, 10)
-              .map((p: any) => p.caption?.text || '')
-              .filter((c: string) => c.length > 0)
-              .slice(0, 5);
-            
-            if (captions.length > 0) {
-              profileData += `\n최근 게시물 캡션:\n${captions.map((c: string, i: number) => `${i + 1}. ${c.substring(0, 200)}`).join('\n')}`;
-            }
           }
+
+          // Add post captions to profile data
+          const captions = posts.slice(0, 10)
+            .map((p: any) => p.caption?.text || p.edge_media_to_caption?.edges?.[0]?.node?.text || p.caption || '')
+            .filter((c: string) => typeof c === 'string' && c.length > 0)
+            .slice(0, 5);
+          
+          if (captions.length > 0) {
+            profileData += `\n최근 게시물 캡션:\n${captions.map((c: string, i: number) => `${i + 1}. ${c.substring(0, 200)}`).join('\n')}`;
+          }
+        } else {
+          const postsErrorText = await postsResponse.text();
+          console.log('RapidAPI posts failed:', postsResponse.status, postsErrorText);
         }
       } else {
         const errorText = await userInfoResponse.text();

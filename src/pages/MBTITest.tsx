@@ -43,7 +43,8 @@ const MBTITest = () => {
     setAnswers(prev => ({ ...prev, [currentQuestion]: score }));
     
     if (currentQuestion < questions.length - 1) {
-      setTimeout(() => setCurrentQuestion(currentQuestion + 1), 300);
+      // 즉시 다음 문항으로 이동
+      setCurrentQuestion(currentQuestion + 1);
     } else {
       // 모든 질문 완료
       analyzeResults();

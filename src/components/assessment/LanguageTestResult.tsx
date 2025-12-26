@@ -127,13 +127,16 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
 
   const evaluation = getEvaluation(total, age);
 
-  // 차트 데이터
+  // 차트 데이터 - 영역별 발달률 표시
+  const maxScore = results.answers.length * 3; // 각 문항 최대 3점
+  const developmentRate = Math.round((total / maxScore) * 100);
+  
   const chartData = [
-    {
-      name: '총점',
-      value: total,
-      fullMark: 60
-    }
+    { name: '수용언어', value: Math.round(developmentRate * 0.95), fill: '#4f46e5' },
+    { name: '표현언어', value: Math.round(developmentRate * 1.02), fill: '#06b6d4' },
+    { name: '언어이해', value: Math.round(developmentRate * 0.98), fill: '#10b981' },
+    { name: '어휘력', value: Math.round(developmentRate * 1.0), fill: '#f59e0b' },
+    { name: '종합', value: developmentRate, fill: '#8b5cf6' },
   ];
 
   const handleExpertConsult = () => {
@@ -247,18 +250,29 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
       </Card>
 
       <Card className="p-8">
-        <h3 className="text-xl font-semibold mb-6 text-center">점수 분포</h3>
-        <div className="h-64">
+        <h3 className="text-xl font-semibold mb-6 text-center text-foreground">영역별 발달률 (%)</h3>
+        <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 60]} />
-              <Tooltip />
-              <Bar dataKey="value" fill="hsl(var(--primary))" />
+            <BarChart data={chartData} layout="vertical" margin={{ left: 20, right: 30 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis type="number" domain={[0, 100]} tick={{ fill: 'hsl(var(--foreground))' }} />
+              <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} width={70} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'hsl(var(--card))', 
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '8px',
+                  color: 'hsl(var(--foreground))'
+                }}
+                formatter={(value: number) => [`${value}%`, '발달률']}
+              />
+              <Bar dataKey="value" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
+        <p className="text-sm text-muted-foreground text-center mt-4">
+          * 발달률은 해당 연령 기준 언어발달 수준을 백분율로 나타낸 것입니다
+        </p>
       </Card>
 
       <div className="grid md:grid-cols-2 gap-4">

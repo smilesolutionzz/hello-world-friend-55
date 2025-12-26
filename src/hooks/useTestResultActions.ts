@@ -6,11 +6,88 @@ import type { DomainScore, EnvironmentalFactors } from '@/types/enhancedTestResu
 
 export const useTestResultActions = () => {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   
   // 고급 저장 훅 통합
   const enhancedSave = useEnhancedTestSave();
+
+  // 결과 화면을 이미지로 저장하는 함수
+  const saveResultAsImage = async (elementId: string, testType: string) => {
+    try {
+      setIsGeneratingImage(true);
+      
+      const element = document.getElementById(elementId);
+      if (!element) {
+        toast({
+          title: "이미지 저장 실패",
+          description: "저장할 결과 영역을 찾을 수 없습니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "이미지 생성 중...",
+        description: "잠시만 기다려주세요.",
+      });
+
+      const html2canvas = (await import('html2canvas')).default;
+      
+      // 원본 스타일 저장
+      const originalBackground = element.style.background;
+      const originalPadding = element.style.padding;
+      
+      // 캡처를 위한 스타일 조정
+      element.style.background = '#ffffff';
+      element.style.padding = '20px';
+      
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        onclone: (clonedDoc) => {
+          // 복제된 문서에서 불필요한 요소 숨기기
+          const clonedElement = clonedDoc.getElementById(elementId);
+          if (clonedElement) {
+            // 버튼들 숨기기
+            const buttons = clonedElement.querySelectorAll('button');
+            buttons.forEach(btn => {
+              (btn as HTMLElement).style.display = 'none';
+            });
+          }
+        }
+      });
+      
+      // 스타일 복원
+      element.style.background = originalBackground;
+      element.style.padding = originalPadding;
+      
+      // 이미지 다운로드
+      const link = document.createElement('a');
+      const filename = `${testType}_결과_${new Date().toLocaleDateString('ko-KR').replace(/\./g, '').replace(/\s/g, '')}.png`;
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+
+      toast({
+        title: "이미지 저장 완료",
+        description: "검사 결과 이미지가 다운로드되었습니다.",
+      });
+    } catch (error) {
+      console.error('이미지 저장 오류:', error);
+      toast({
+        title: "이미지 저장 실패",
+        description: "이미지 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
 
   const generatePDFReport = async (testData: {
     testType: string;
@@ -421,9 +498,11 @@ export const useTestResultActions = () => {
 
   return {
     generatePDFReport,
+    saveResultAsImage,
     saveTestResult,
     saveTestResultEnhanced,
     isGeneratingPDF,
+    isGeneratingImage,
     isSaving,
     // 고급 세션 관리 함수들
     startTestSession: enhancedSave.startTestSession,

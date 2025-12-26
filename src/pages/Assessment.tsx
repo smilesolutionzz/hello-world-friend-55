@@ -713,7 +713,7 @@ const Assessment = () => {
               <div className="relative">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-5 h-5 text-yellow-300" />
-                  <span className="text-xs font-bold text-white/90 bg-white/20 px-2 py-0.5 rounded-full">2025년 1월 신규</span>
+                  <span className="text-xs font-bold text-white/90 bg-white/20 px-2 py-0.5 rounded-full">이달의 신규 업데이트</span>
                 </div>
                 <h2 className="text-lg md:text-xl font-bold text-white mb-3">새로 추가된 검사</h2>
                 <div className="flex flex-wrap gap-2">

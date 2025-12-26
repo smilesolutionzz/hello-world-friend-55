@@ -15,6 +15,7 @@ interface AutismSpectrumFormProps {
 }
 
 const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onBack }) => {
+  // 모든 useState 훅을 최상단에 선언 (React Hooks 규칙)
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [ageInMonths, setAgeInMonths] = useState<number>(0);
   const [ageGroup, setAgeGroup] = useState<string>("");
@@ -29,24 +30,10 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
     setAgeGroup(group);
   };
 
-  // 생년월일 미입력 시 생년월일 선택 화면 표시
-  if (!birthDate) {
-    return (
-      <BirthDateSelector
-        testTitle="AIH 신경발달 조기선별검사"
-        testSubtitle="ASES-AIH (Autism Spectrum Early Screening)"
-        testDescription="자폐 스펙트럼의 조기 선별을 위한 과학적 근거 기반의 연령 맞춤형 검사입니다"
-        onConfirm={handleBirthDateConfirm}
-        onBack={onBack}
-      />
-    );
-  }
-
   // Flatten all questions
   const allQuestions = Object.values(autismSpectrumScreeningQuestions).flat();
   const totalQuestions = allQuestions.length;
   const progress = ((currentStep + 1) / totalQuestions) * 100;
-
   const currentQuestion = allQuestions[currentStep];
 
   const categoryIcons = {
@@ -64,6 +51,19 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
     communication_language: "의사소통 언어",
     adaptive_functioning: "적응기능"
   };
+
+  // 생년월일 미입력 시 생년월일 선택 화면 표시
+  if (!birthDate) {
+    return (
+      <BirthDateSelector
+        testTitle="AIH 신경발달 조기선별검사"
+        testSubtitle="ASES-AIH (Autism Spectrum Early Screening)"
+        testDescription="자폐 스펙트럼의 조기 선별을 위한 과학적 근거 기반의 연령 맞춤형 검사입니다"
+        onConfirm={handleBirthDateConfirm}
+        onBack={onBack}
+      />
+    );
+  }
 
   const handleAnswer = (value: string) => {
     const newAnswers = { ...answers, [currentQuestion.id]: value };

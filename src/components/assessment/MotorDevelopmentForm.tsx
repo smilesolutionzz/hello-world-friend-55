@@ -18,6 +18,27 @@ const MotorDevelopmentForm: React.FC<MotorDevelopmentFormProps> = ({ onComplete,
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  
+  // 생년월일 선택 상태 (최상위로 이동)
+  const [selectedYear, setSelectedYear] = useState<string>('');
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [selectedDay, setSelectedDay] = useState<string>('');
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 15 }, (_, i) => currentYear - i);
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
+  const handleDateChange = (type: 'year' | 'month' | 'day', value: string) => {
+    let y = selectedYear, m = selectedMonth, d = selectedDay;
+    if (type === 'year') { y = value; setSelectedYear(value); }
+    if (type === 'month') { m = value; setSelectedMonth(value); }
+    if (type === 'day') { d = value; setSelectedDay(value); }
+    
+    if (y && m && d) {
+      setBirthDate(new Date(parseInt(y), parseInt(m) - 1, parseInt(d)));
+    }
+  };
 
   // 생년월일 기반 나이(개월) 계산
   const ageInMonths = useMemo(() => {
@@ -197,26 +218,6 @@ const MotorDevelopmentForm: React.FC<MotorDevelopmentFormProps> = ({ onComplete,
 
   // Birth Date Selection
   if (step === 'birthdate') {
-    const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: 15 }, (_, i) => currentYear - i);
-    const months = Array.from({ length: 12 }, (_, i) => i + 1);
-    const days = Array.from({ length: 31 }, (_, i) => i + 1);
-
-    const [selectedYear, setSelectedYear] = useState<string>('');
-    const [selectedMonth, setSelectedMonth] = useState<string>('');
-    const [selectedDay, setSelectedDay] = useState<string>('');
-
-    const handleDateChange = (type: 'year' | 'month' | 'day', value: string) => {
-      let y = selectedYear, m = selectedMonth, d = selectedDay;
-      if (type === 'year') { y = value; setSelectedYear(value); }
-      if (type === 'month') { m = value; setSelectedMonth(value); }
-      if (type === 'day') { d = value; setSelectedDay(value); }
-      
-      if (y && m && d) {
-        setBirthDate(new Date(parseInt(y), parseInt(m) - 1, parseInt(d)));
-      }
-    };
-
     return (
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         <Button variant="ghost" onClick={() => setStep('intro')} className="mb-4">

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, ExternalLink, Download, Mail, UserCheck } from "lucide-react";
+import { ArrowLeft, ExternalLink, Download, Mail, UserCheck, Image } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
@@ -23,7 +23,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const { total, average, ageGroup, age } = results;
   const today = new Date().toLocaleDateString('ko-KR');
   const navigate = useNavigate();
-  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
+  const { generatePDFReport, saveResultAsImage, saveTestResult, isGeneratingPDF, isGeneratingImage, isSaving } = useTestResultActions();
 
   // 자동 저장 - 분석 포함
   useAutoSaveTestResult({
@@ -144,7 +144,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   };
 
   return (
-    <div className="space-y-8">
+    <div id="language-test-result" className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
@@ -291,11 +291,20 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         </Card>
 
         <Card className="p-6">
-          <h3 className="font-semibold mb-4">결과 저장 및 공유</h3>
+          <h3 className="font-semibold mb-4 text-foreground">결과 저장 및 공유</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            검사 결과를 PDF로 저장하거나 데이터베이스에 저장하세요.
+            검사 결과를 이미지로 저장하세요.
           </p>
           <div className="space-y-2">
+            <Button 
+              variant="default"
+              className="w-full btn-brand flex items-center gap-2"
+              onClick={() => saveResultAsImage('language-test-result', '언어발달검사')}
+              disabled={isGeneratingImage}
+            >
+              <Image className="w-4 h-4" />
+              {isGeneratingImage ? '이미지 생성 중...' : '📷 결과 이미지로 저장'}
+            </Button>
             <Button 
               variant="outline" 
               className="w-full flex items-center gap-2"

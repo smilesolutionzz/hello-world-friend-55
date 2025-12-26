@@ -1526,44 +1526,58 @@ const ReportGenerator = () => {
               </div>
 
               {/* 9가지 전문 리포트 */}
-              <div className="space-y-12">
-                <h2 className="text-4xl font-black text-center text-slate-900 pt-10 border-t-4 border-slate-200">
-                  9가지 전문 분석 섹션
+              <div className="space-y-10">
+                <h2 className="text-3xl font-black text-center text-slate-900 pt-10 border-t-4 border-slate-200">
+                  전문 분석 리포트
                 </h2>
 
                 {/* 각 섹션은 reportData의 구조에 맞게 동적으로 렌더링 */}
-                {reportData.sections && reportData.sections.map((section: any, index: number) => (
-                  <div key={index} className="space-y-5">
-                    <h3 className={`text-3xl font-bold flex items-center gap-3 ${
-                      index % 3 === 0 ? 'text-blue-700' :
-                      index % 3 === 1 ? 'text-purple-700' : 'text-emerald-700'
-                    }`}>
-                      <div className={`p-3 rounded-xl ${
-                        index % 3 === 0 ? 'bg-blue-100' :
-                        index % 3 === 1 ? 'bg-purple-100' : 'bg-emerald-100'
-                      }`}>
-                        {index === 0 && <Brain className="w-7 h-7" />}
-                        {index === 1 && <Heart className="w-7 h-7" />}
-                        {index === 2 && <TrendingUp className="w-7 h-7" />}
-                        {index === 3 && <Target className="w-7 h-7" />}
-                        {index === 4 && <LineChart className="w-7 h-7" />}
-                        {index === 5 && <Users className="w-7 h-7" />}
-                        {index === 6 && <Shield className="w-7 h-7" />}
-                        {index === 7 && <Activity className="w-7 h-7" />}
-                        {index === 8 && <BarChart3 className="w-7 h-7" />}
+                {reportData.sections && reportData.sections
+                  .filter((section: any) => {
+                    // 빈 섹션이나 에러 섹션 필터링
+                    const content = section.content || '';
+                    const cleanContent = content.replace(/<[^>]*>/g, '').replace(/\uFFFD/g, '').trim();
+                    return cleanContent.length > 50 && !cleanContent.includes('오류가 발생했습니다');
+                  })
+                  .map((section: any, index: number) => {
+                    const sectionColors = [
+                      { bg: 'bg-blue-50', border: 'border-blue-200', title: 'text-blue-800', icon: 'bg-blue-100' },
+                      { bg: 'bg-purple-50', border: 'border-purple-200', title: 'text-purple-800', icon: 'bg-purple-100' },
+                      { bg: 'bg-emerald-50', border: 'border-emerald-200', title: 'text-emerald-800', icon: 'bg-emerald-100' },
+                      { bg: 'bg-amber-50', border: 'border-amber-200', title: 'text-amber-800', icon: 'bg-amber-100' },
+                      { bg: 'bg-cyan-50', border: 'border-cyan-200', title: 'text-cyan-800', icon: 'bg-cyan-100' },
+                      { bg: 'bg-rose-50', border: 'border-rose-200', title: 'text-rose-800', icon: 'bg-rose-100' },
+                      { bg: 'bg-indigo-50', border: 'border-indigo-200', title: 'text-indigo-800', icon: 'bg-indigo-100' },
+                      { bg: 'bg-teal-50', border: 'border-teal-200', title: 'text-teal-800', icon: 'bg-teal-100' },
+                      { bg: 'bg-violet-50', border: 'border-violet-200', title: 'text-violet-800', icon: 'bg-violet-100' },
+                    ];
+                    const colorIndex = index % sectionColors.length;
+                    const colors = sectionColors[colorIndex];
+                    const icons = [Brain, Heart, TrendingUp, Target, LineChart, Users, Shield, Activity, BarChart3];
+                    const IconComponent = icons[index % icons.length];
+
+                    return (
+                      <div key={index} className="space-y-4">
+                        <h3 className={`text-2xl font-bold flex items-center gap-3 ${colors.title}`}>
+                          <div className={`p-3 rounded-xl ${colors.icon} shadow-sm`}>
+                            <IconComponent className="w-6 h-6" />
+                          </div>
+                          {index + 1}. {section.title}
+                        </h3>
+                        <div className={`p-6 rounded-xl border-2 ${colors.bg} ${colors.border} shadow-sm`}>
+                          <div 
+                            className="prose prose-slate max-w-none leading-relaxed
+                              prose-headings:font-bold prose-headings:text-slate-800
+                              prose-p:text-slate-700 prose-p:leading-relaxed
+                              prose-li:text-slate-700 prose-li:leading-relaxed
+                              prose-strong:text-slate-900
+                              prose-ul:space-y-2 prose-ol:space-y-2"
+                            dangerouslySetInnerHTML={{ __html: sanitizeAIContent(section.content) }} 
+                          />
+                        </div>
                       </div>
-                      {index + 1}. {section.title}
-                    </h3>
-                    <div className={`p-8 rounded-xl border-2 ${
-                      index % 3 === 0 ? 'bg-blue-50 border-blue-200' :
-                      index % 3 === 1 ? 'bg-purple-50 border-purple-200' : 'bg-emerald-50 border-emerald-200'
-                    }`}>
-                      <div className="prose prose-lg max-w-none">
-                        <div dangerouslySetInnerHTML={{ __html: sanitizeAIContent(section.content) }} />
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                    );
+                  })}
               </div>
 
               {/* 종합 요약 */}

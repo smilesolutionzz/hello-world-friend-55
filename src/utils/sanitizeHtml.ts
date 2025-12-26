@@ -5,7 +5,20 @@ import DOMPurify from 'dompurify';
  * XSS 공격을 방지하기 위해 악성 스크립트를 제거합니다
  */
 export const sanitizeAIContent = (html: string): string => {
-  return DOMPurify.sanitize(html, {
+  // 깨진 문자(replacement character)와 이모지 없이 숫자만 있는 라인 정리
+  let cleanedHtml = html
+    // 깨진 문자(replacement character U+FFFD) 제거
+    .replace(/\uFFFD/g, '')
+    // "숫자. �" 패턴 제거 (예: "2. �")
+    .replace(/^\d+\.\s*$/gm, '')
+    // 빈 라인만 있는 문단 정리
+    .replace(/<p>\s*<\/p>/gi, '')
+    .replace(/<div>\s*<\/div>/gi, '')
+    // 연속된 빈 라인 정리
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
+  return DOMPurify.sanitize(cleanedHtml, {
     ALLOWED_TAGS: [
       'p', 'br', 'strong', 'em', 'b', 'i', 'u', 's',
       'ul', 'ol', 'li',

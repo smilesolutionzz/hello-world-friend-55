@@ -2,7 +2,7 @@
 // 위험 신호가 감지되면 즉시 전문가 상담을 안내
 
 export interface RedFlag {
-  type: 'regression' | 'no_eye_contact' | 'speech_decline' | 'response_decline' | 'severe_score' | 'self_harm_risk' | 'social_withdrawal';
+  type: 'regression' | 'no_eye_contact' | 'speech_decline' | 'response_decline' | 'severe_score' | 'self_harm_risk' | 'social_withdrawal' | 'high_risk_score';
   severity: 'warning' | 'critical';
   message: string;
   description: string;
@@ -134,7 +134,8 @@ function getRedFlagMessage(type: RedFlag['type']): string {
     response_decline: '반응 감소가 나타났습니다',
     severe_score: '위험 수준의 점수입니다',
     self_harm_risk: '자해/자살 위험 신호가 감지되었습니다',
-    social_withdrawal: '사회적 위축이 나타났습니다'
+    social_withdrawal: '사회적 위축이 나타났습니다',
+    high_risk_score: '검사 결과 즉각적인 전문가 상담이 필요합니다'
   };
   return messages[type];
 }
@@ -147,7 +148,8 @@ function getRedFlagDescription(type: RedFlag['type']): string {
     response_decline: '반응의 급격한 감소는 즉각적인 평가가 권장됩니다.',
     severe_score: '검사 결과가 전문가 상담이 필요한 수준입니다.',
     self_harm_risk: '즉각적인 전문 도움이 필요합니다. 가까운 정신건강 전문기관에 연락해 주세요.',
-    social_withdrawal: '사회적 고립은 정서적 지원이 필요할 수 있습니다.'
+    social_withdrawal: '사회적 고립은 정서적 지원이 필요할 수 있습니다.',
+    high_risk_score: '검사 결과에서 전문가의 정밀 평가가 시급히 필요한 수준입니다. 가까운 발달센터나 전문의와 상담을 권장드립니다.'
   };
   return descriptions[type];
 }

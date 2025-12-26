@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Download, Save, Brain, Users, Repeat, Volume2, MessageCircle, Target, AlertTriangle, CheckCircle, Info } from "lucide-react";
+import { ArrowLeft, Download, Save, Brain, Users, Repeat, Volume2, MessageCircle, Target, AlertTriangle, CheckCircle, Info, Phone, Bell, ExternalLink, Siren } from "lucide-react";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { useNavigate } from "react-router-dom";
+import RedFlagAlertDialog from "./RedFlagAlertDialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface AutismSpectrumResultProps {
   results: any;
@@ -14,7 +17,42 @@ interface AutismSpectrumResultProps {
 }
 
 const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, answers, onBack }) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [showCrisisAlert, setShowCrisisAlert] = useState(false);
+  const [isAlarmPlaying, setIsAlarmPlaying] = useState(false);
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
+
+  // 위험도가 높음인 경우 위기 알림 표시
+  useEffect(() => {
+    const isHighRisk = results.scores?.riskLevel === "높음" || 
+                       results.crisisIndicators?.needsImmediateAttention;
+    
+    if (isHighRisk) {
+      setShowCrisisAlert(true);
+      setIsAlarmPlaying(true);
+      
+      // 알람 사운드 효과 (진동 패턴)
+      if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200, 100, 200]);
+      }
+      
+      // 긴급 토스트 알림
+      toast({
+        title: "⚠️ 즉각적인 전문가 상담 필요",
+        description: "검사 결과 전문가와의 상담이 시급히 필요합니다.",
+        variant: "destructive",
+        duration: 10000,
+      });
+      
+      // 5초 후 알람 효과 중지
+      const timer = setTimeout(() => {
+        setIsAlarmPlaying(false);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [results, toast]);
 
   // 자동 저장
   useAutoSaveTestResult({
@@ -86,9 +124,87 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
   const riskInfo = getRiskLevelInfo(results.scores?.riskLevel || "알 수 없음");
   const RiskIcon = riskInfo.icon;
 
+  const isHighRisk = results.scores?.riskLevel === "높음" || results.crisisIndicators?.needsImmediateAttention;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-blue-50/20 to-purple-50/20">
+      {/* 위기 경고 다이얼로그 */}
+      <RedFlagAlertDialog
+        isOpen={showCrisisAlert}
+        onClose={() => setShowCrisisAlert(false)}
+        redFlagResult={{
+          hasRedFlags: isHighRisk,
+          flags: isHighRisk ? [
+            {
+              type: 'high_risk_score',
+              severity: 'critical' as const,
+              message: '신경발달 검사 결과 즉각적인 전문가 상담이 필요합니다',
+              description: results.crisisIndicators?.crisisMessage || '검사 결과에서 전문가의 평가가 필요한 소견이 발견되었습니다. 가까운 발달센터나 전문의와 상담을 권장드립니다.'
+            }
+          ] : [],
+          overallSeverity: 'critical' as const
+        }}
+      />
+
       <div className="container mx-auto px-4 py-8">
+        {/* 고위험 경고 배너 (알람 효과) */}
+        {isHighRisk && (
+          <div className={`mb-6 p-4 rounded-xl border-2 border-red-500 bg-gradient-to-r from-red-50 to-orange-50 ${isAlarmPlaying ? 'animate-pulse' : ''}`}>
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-full bg-red-500 text-white ${isAlarmPlaying ? 'animate-bounce' : ''}`}>
+                <Siren className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-red-800 flex items-center gap-2">
+                  <Bell className={`w-5 h-5 ${isAlarmPlaying ? 'animate-ping' : ''}`} />
+                  ⚠️ 즉각적인 전문가 상담이 필요합니다
+                </h3>
+                <p className="text-sm text-red-700 mt-1">
+                  {results.crisisIndicators?.crisisMessage || '검사 결과 전문가의 정밀 평가가 시급히 필요합니다.'}
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button
+                  onClick={() => navigate('/expert-hiring')}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                  size="sm"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  전문가 상담
+                </Button>
+                <Button
+                  onClick={() => window.location.href = 'tel:1644-8295'}
+                  variant="outline"
+                  className="border-red-500 text-red-700 hover:bg-red-50"
+                  size="sm"
+                >
+                  <Phone className="w-4 h-4 mr-2" />
+                  긴급 상담
+                </Button>
+              </div>
+            </div>
+            
+            {/* 긴급 연락처 */}
+            {results.crisisIndicators?.emergencyContacts?.length > 0 && (
+              <div className="mt-4 pt-4 border-t border-red-200">
+                <p className="text-sm font-medium text-red-800 mb-2">🚨 긴급 연락처</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {results.crisisIndicators.emergencyContacts.map((contact: string, idx: number) => (
+                    <a
+                      key={idx}
+                      href={`tel:${contact.split(' ').pop()}`}
+                      className="flex items-center gap-2 text-sm text-red-700 hover:text-red-900 bg-white/50 rounded-lg px-3 py-2"
+                    >
+                      <Phone className="w-4 h-4" />
+                      {contact}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Header - 모바일 최적화 */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <Button variant="ghost" onClick={onBack} className="flex items-center gap-2">

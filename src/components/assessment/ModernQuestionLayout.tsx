@@ -157,19 +157,6 @@ const ModernQuestionLayout: React.FC<ModernQuestionLayoutProps> = ({
               ))}
             </div>
 
-            {/* Auto Progress Indicator */}
-            {showAutoProgress && selectedValue && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-6 text-center"
-              >
-                <div className="inline-flex items-center gap-2 text-sm text-blue-500">
-                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                  <span>잠시 후 자동으로 다음 문항으로 이동합니다...</span>
-                </div>
-              </motion.div>
-            )}
           </motion.div>
         </AnimatePresence>
 

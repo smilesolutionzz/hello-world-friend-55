@@ -225,14 +225,6 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
                   이전
                 </Button>
 
-                <div className="text-center">
-                  {isAnswered && (
-                    <div className="flex items-center gap-1 text-sm text-green-600">
-                      <CheckCircle className="w-4 h-4" />
-                      <span className="animate-pulse">1.2초 후 자동 진행...</span>
-                    </div>
-                  )}
-                </div>
 
                 <Button
                   onClick={handleNext}

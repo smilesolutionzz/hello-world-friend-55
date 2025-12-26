@@ -3,16 +3,18 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Home, RefreshCw, Download, Sparkles } from 'lucide-react';
+import { ArrowLeft, Home, RefreshCw, Download, Sparkles, Share2, Camera, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { categoryInfo } from '@/data/motorDevelopmentQuestions';
 import { 
-  BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip,
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend,
+  ResponsiveContainer
 } from 'recharts';
 import ModernAnalysisLoading from './ModernAnalysisLoading';
 import { supabase } from '@/integrations/supabase/client';
+import { useTestResultActions } from '@/hooks/useTestResultActions';
+import { useToast } from '@/hooks/use-toast';
 
 interface MotorDevelopmentResultProps {
   results: {
@@ -35,6 +37,8 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
   const navigate = useNavigate();
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
+  const { generatePDFReport, saveResultAsImage, isGeneratingPDF, isGeneratingImage } = useTestResultActions();
+  const { toast } = useToast();
 
   useEffect(() => {
     generateAIAnalysis();
@@ -113,20 +117,51 @@ ${results.weaknesses.length > 0
     }
   };
 
-  const chartData = Object.entries(results.categoryScores).map(([key, value]) => ({
-    name: categoryInfo[key as keyof typeof categoryInfo]?.name || key,
-    icon: categoryInfo[key as keyof typeof categoryInfo]?.icon || '📊',
-    score: value,
-    fullMark: 100,
-    fill: value >= 70 ? '#22c55e' : value >= 50 ? '#eab308' : '#ef4444',
-  }));
-
-  // Radar chart data
   const radarData = Object.entries(results.categoryScores).map(([key, value]) => ({
     subject: categoryInfo[key as keyof typeof categoryInfo]?.name || key,
     A: value,
     fullMark: 100,
   }));
+
+  const handleSaveAsPDF = () => {
+    generatePDFReport({
+      testType: 'AIH 아동 운동발달 자가체크',
+      results: {
+        종합점수: `${results.percentage}점`,
+        발달수준: results.developmentLevel,
+        이동운동: `${results.categoryScores.locomotor}%`,
+        물체조작: `${results.categoryScores.object_control}%`,
+        균형감각: `${results.categoryScores.balance}%`,
+        협응력: `${results.categoryScores.coordination}%`,
+        소근육: `${results.categoryScores.fine_motor || 0}%`,
+      },
+      analysis: aiAnalysis,
+    });
+  };
+
+  const handleSaveAsImage = () => {
+    saveResultAsImage('motor-development-result', 'AIH_운동발달');
+  };
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'AIH 아동 운동발달 자가체크 결과',
+          text: `운동발달 검사 결과: ${results.percentage}점 (${results.developmentLevel})`,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "링크 복사 완료",
+          description: "결과 페이지 링크가 클립보드에 복사되었습니다.",
+        });
+      }
+    } catch (error) {
+      console.error('공유 오류:', error);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-2xl" id="motor-development-result">
@@ -208,7 +243,7 @@ ${results.weaknesses.length > 0
         </Card>
       </motion.div>
 
-      {/* Bar Chart */}
+      {/* Category Progress Bars */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -216,40 +251,25 @@ ${results.weaknesses.length > 0
       >
         <Card className="p-5 mb-6">
           <h3 className="font-bold text-lg mb-4">📊 영역별 발달 수준</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} layout="vertical">
-                <XAxis type="number" domain={[0, 100]} />
-                <YAxis 
-                  type="category" 
-                  dataKey="name" 
-                  width={80}
-                  tick={{ fontSize: 12 }}
-                />
-                <Tooltip 
-                  formatter={(value: number) => [`${value}%`, '점수']}
-                  contentStyle={{ borderRadius: '8px' }}
-                />
-                <Bar dataKey="score" radius={[0, 4, 4, 0]}>
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-3 mt-4">
+          <div className="space-y-4">
             {Object.entries(results.categoryScores).map(([key, value]) => {
               const info = categoryInfo[key as keyof typeof categoryInfo];
+              const color = value >= 70 ? 'bg-green-500' : value >= 50 ? 'bg-yellow-500' : 'bg-red-500';
               return (
-                <div key={key} className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-                  <span className="text-xl">{info?.icon}</span>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium">{info?.name}</div>
-                    <Progress value={value} className="h-2 mt-1" />
+                <div key={key} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{info?.icon}</span>
+                      <span className="font-medium text-foreground">{info?.name}</span>
+                    </div>
+                    <span className="font-bold text-foreground">{value}%</span>
                   </div>
-                  <span className="text-sm font-bold">{value}%</span>
+                  <div className="w-full bg-muted rounded-full h-3">
+                    <div 
+                      className={`h-3 rounded-full transition-all ${color}`}
+                      style={{ width: `${value}%` }}
+                    />
+                  </div>
                 </div>
               );
             })}
@@ -265,29 +285,29 @@ ${results.weaknesses.length > 0
           transition={{ delay: 0.4 }}
           className="grid grid-cols-2 gap-4 mb-6"
         >
-          <Card className="p-4 bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800">
-            <h4 className="font-semibold text-green-700 dark:text-green-300 mb-2">💪 강점 영역</h4>
+          <Card className="p-4 bg-green-100 dark:bg-green-900/50 border-green-300 dark:border-green-700">
+            <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">💪 강점 영역</h4>
             {results.strengths.length > 0 ? (
               <ul className="text-sm space-y-1">
                 {results.strengths.map((s, i) => (
-                  <li key={i} className="text-green-600 dark:text-green-400">• {s}</li>
+                  <li key={i} className="text-green-800 dark:text-green-200 font-medium">• {s}</li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-muted-foreground">균형 잡힌 발달</p>
+              <p className="text-sm text-green-700 dark:text-green-300">균형 잡힌 발달</p>
             )}
           </Card>
 
-          <Card className="p-4 bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800">
-            <h4 className="font-semibold text-amber-700 dark:text-amber-300 mb-2">🎯 지원 필요</h4>
+          <Card className="p-4 bg-orange-100 dark:bg-orange-900/50 border-orange-300 dark:border-orange-700">
+            <h4 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">🎯 지원 필요</h4>
             {results.weaknesses.length > 0 ? (
               <ul className="text-sm space-y-1">
                 {results.weaknesses.map((w, i) => (
-                  <li key={i} className="text-amber-600 dark:text-amber-400">• {w}</li>
+                  <li key={i} className="text-orange-800 dark:text-orange-200 font-medium">• {w}</li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-muted-foreground">우려 영역 없음</p>
+              <p className="text-sm text-orange-700 dark:text-orange-300">우려 영역 없음</p>
             )}
           </Card>
         </motion.div>
@@ -312,11 +332,49 @@ ${results.weaknesses.length > 0
         </Card>
       </motion.div>
 
-      {/* Actions */}
+      {/* Save & Share Actions */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
+        className="grid grid-cols-3 gap-2 mb-4"
+      >
+        <Button 
+          onClick={handleSaveAsPDF}
+          variant="outline"
+          size="sm"
+          disabled={isGeneratingPDF}
+          className="flex flex-col items-center gap-1 h-auto py-3"
+        >
+          <FileText className="w-4 h-4" />
+          <span className="text-xs">{isGeneratingPDF ? '생성중...' : 'PDF 저장'}</span>
+        </Button>
+        <Button 
+          onClick={handleSaveAsImage}
+          variant="outline"
+          size="sm"
+          disabled={isGeneratingImage}
+          className="flex flex-col items-center gap-1 h-auto py-3"
+        >
+          <Camera className="w-4 h-4" />
+          <span className="text-xs">{isGeneratingImage ? '생성중...' : '이미지 저장'}</span>
+        </Button>
+        <Button 
+          onClick={handleShare}
+          variant="outline"
+          size="sm"
+          className="flex flex-col items-center gap-1 h-auto py-3"
+        >
+          <Share2 className="w-4 h-4" />
+          <span className="text-xs">공유하기</span>
+        </Button>
+      </motion.div>
+
+      {/* Navigation Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
         className="flex flex-col gap-3"
       >
         <Button 

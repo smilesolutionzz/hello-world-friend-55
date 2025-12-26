@@ -14,11 +14,11 @@ const InstagramAnalysisSection = () => {
 
   const handleAnalyze = () => {
     if (instagramId.trim()) {
-      navigate('/assessment/instagram-analysis', { 
+      navigate('/instagram-analysis', { 
         state: { prefilledId: instagramId.replace('@', '') } 
       });
     } else {
-      navigate('/assessment/instagram-analysis');
+      navigate('/instagram-analysis');
     }
   };
 

@@ -687,11 +687,11 @@ const Assessment = () => {
               </span>
               <div className="text-left">
                 <p className="text-sm font-semibold text-green-600 dark:text-green-400">
-                  🎁 2026년 새해 선물
+                  🎁 2025년 겨울 이벤트
                 </p>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   소중한 골든타임을 위해<br className="sm:hidden" />
-                  <span className="hidden sm:inline"> </span>3개월간 모든 검사 무료
+                  <span className="hidden sm:inline"> </span>1개월간 모든 검사 무료
                 </p>
               </div>
             </div>

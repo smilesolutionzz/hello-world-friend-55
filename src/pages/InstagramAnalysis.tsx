@@ -203,7 +203,7 @@ const InstagramAnalysis = () => {
                   <Brain className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <p className="font-bold text-lg">마음연구소</p>
+                  <p className="font-bold text-lg">AIHPRO</p>
                   <p className="text-xs text-pink-400">피드 심리분석</p>
                 </div>
               </div>

@@ -128,7 +128,7 @@ const InstagramAnalysisResult = ({ result, username, onRestart }: InstagramAnaly
             <Brain className="h-6 w-6 text-black" />
           </div>
           <div>
-            <p className="font-bold text-lg">마음연구소</p>
+            <p className="font-bold text-lg">AIHPRO</p>
             <p className="text-xs text-amber-500">분석 결과</p>
           </div>
         </div>

@@ -209,110 +209,143 @@ const MBTITest = () => {
 
   const currentQ = questions[currentQuestion];
 
+  // 새로운 모던 디자인 적용
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/20 via-background to-accent/20 p-4 py-8">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
+      {/* Background decorations */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative z-10 container max-w-3xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="mb-6">
-          <Button
-            variant="ghost"
+          <Button 
+            variant="ghost" 
             onClick={() => navigate('/assessment')}
-            className="mb-4"
+            className="flex items-center gap-2 text-slate-600 hover:text-slate-900 -ml-2 mb-4"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-4 h-4" />
             뒤로가기
           </Button>
           
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>질문 {currentQuestion + 1} / {questions.length}</span>
-              <span>{Math.round(progress)}% 완료</span>
-            </div>
-            <Progress value={progress} className="h-2" />
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-slate-600">
+              질문 {currentQuestion + 1} / {questions.length}
+            </span>
+            <span className="text-sm font-medium text-slate-600">
+              {Math.round(progress)}% 완료
+            </span>
           </div>
+          
+          <Progress value={progress} className="h-2 bg-slate-200" />
         </div>
 
         {/* Question Card */}
         <AnimatePresence mode="wait">
           <motion.div
             key={currentQuestion}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
+            className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-slate-200/50 border border-white/50 p-6 md:p-8"
           >
-            <Card className="p-6 md:p-8 backdrop-blur-xl bg-card/50 border-2">
-              <div className="mb-8">
-                <div className="inline-block px-3 py-1 bg-primary/20 rounded-full text-sm text-primary font-medium mb-4">
-                  {currentQ.category}
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold mb-2">
-                  {currentQ.question}
-                </h2>
-                {currentQ.context && (
-                  <p className="text-muted-foreground">
-                    {currentQ.context}
-                  </p>
-                )}
-              </div>
+            {/* Category Badge */}
+            <div className="mb-4">
+              <span className="inline-block px-4 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-600">
+                {currentQ.category}
+              </span>
+            </div>
 
-              <div className="space-y-3">
-                {currentQ.options.map((option, index) => (
-                  <motion.button
-                    key={index}
-                    onClick={() => handleAnswer(option.score)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full p-4 md:p-5 rounded-xl border-2 text-left transition-all ${
+            {/* Question Text */}
+            <h2 className="text-xl md:text-2xl font-bold text-slate-800 leading-relaxed mb-2">
+              {currentQ.question}
+            </h2>
+            {currentQ.context && (
+              <p className="text-slate-500 mb-8">{currentQ.context}</p>
+            )}
+            {!currentQ.context && <div className="mb-8" />}
+
+            {/* Options */}
+            <div className="space-y-3">
+              {currentQ.options.map((option, index) => (
+                <motion.button
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={() => handleAnswer(option.score)}
+                  className={`w-full text-left p-4 md:p-5 rounded-2xl border-2 transition-all duration-200 group ${
+                    answers[currentQuestion] === option.score
+                      ? "border-blue-500 bg-blue-50/80 shadow-md shadow-blue-100"
+                      : "border-slate-200/80 bg-white/60 hover:border-blue-300 hover:bg-blue-50/30"
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+                    {/* Radio indicator */}
+                    <div className={`w-5 h-5 mt-0.5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
                       answers[currentQuestion] === option.score
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border hover:border-primary/50 hover:bg-primary/5'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        {answers[currentQuestion] === option.score && (
-                          <div className="w-3 h-3 rounded-full bg-primary" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium mb-1">{option.text}</p>
-                        {option.description && (
-                          <p className="text-sm text-muted-foreground">
-                            {option.description}
-                          </p>
-                        )}
-                      </div>
+                        ? "border-blue-500 bg-blue-500"
+                        : "border-slate-300 group-hover:border-blue-400"
+                    }`}>
+                      {answers[currentQuestion] === option.score && (
+                        <motion.div 
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="w-2 h-2 rounded-full bg-white"
+                        />
+                      )}
                     </div>
-                  </motion.button>
-                ))}
-              </div>
+                    
+                    <div className="flex-1">
+                      <div className={`font-medium text-base md:text-lg ${
+                        answers[currentQuestion] === option.score ? "text-blue-700" : "text-slate-700"
+                      }`}>
+                        {option.text}
+                      </div>
+                      {option.description && (
+                        <div className={`text-sm mt-1 ${
+                          answers[currentQuestion] === option.score ? "text-blue-500" : "text-slate-400"
+                        }`}>
+                          {option.description}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
 
-              {/* Navigation */}
-              <div className="flex gap-3 mt-6">
-                {currentQuestion > 0 && (
-                  <Button
-                    variant="outline"
-                    onClick={handlePrevious}
-                    className="flex-1"
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    이전
-                  </Button>
-                )}
-                {answers[currentQuestion] !== undefined && currentQuestion < questions.length - 1 && (
-                  <Button
-                    onClick={() => setCurrentQuestion(currentQuestion + 1)}
-                    className="flex-1"
-                  >
-                    다음
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-              </div>
-            </Card>
+            {/* Auto Progress Indicator */}
+            {answers[currentQuestion] !== undefined && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 text-center"
+              >
+                <div className="inline-flex items-center gap-2 text-sm text-blue-500">
+                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                  <span>잠시 후 다음 문항으로 이동합니다...</span>
+                </div>
+              </motion.div>
+            )}
           </motion.div>
         </AnimatePresence>
+
+        {/* Navigation */}
+        <div className="mt-6">
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentQuestion === 0}
+            className="w-full py-6 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            이전
+          </Button>
+        </div>
       </div>
     </div>
   );

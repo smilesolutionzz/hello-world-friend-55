@@ -14,6 +14,7 @@ interface LanguageDevelopmentFormProps {
 }
 
 const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentFormProps) => {
+  // 모든 useState 훅을 최상단에 선언 (React Hooks 규칙)
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [ageInMonths, setAgeInMonths] = useState<number>(0);
   const [ageGroup, setAgeGroup] = useState<string>("");

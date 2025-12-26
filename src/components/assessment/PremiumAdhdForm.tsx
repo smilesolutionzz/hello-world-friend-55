@@ -34,9 +34,14 @@ interface PremiumAdhdFormProps {
 }
 
 const PremiumAdhdForm = ({ ageGroup: initialAgeGroup, onComplete, onBack }: PremiumAdhdFormProps) => {
+  // 모든 useState 훅을 최상단에 선언 (React Hooks 규칙)
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [ageInMonths, setAgeInMonths] = useState<number>(0);
   const [derivedAgeGroup, setDerivedAgeGroup] = useState<'child' | 'adolescent' | 'adult'>('adult');
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [hasStarted, setHasStarted] = useState(false);
+  const { consumeTokens } = useTokens();
 
   const handleBirthDateConfirm = (date: Date, months: number, group: string) => {
     setBirthDate(date);
@@ -84,11 +89,6 @@ const PremiumAdhdForm = ({ ageGroup: initialAgeGroup, onComplete, onBack }: Prem
   };
 
   const questions = getAllQuestions();
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, number>>({});
-  const [hasStarted, setHasStarted] = useState(false);
-  const { consumeTokens } = useTokens();
-
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   const handleAnswer = (value: string) => {

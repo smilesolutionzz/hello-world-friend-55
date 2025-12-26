@@ -7592,6 +7592,7 @@ export type Database = {
         Row: {
           admission_date: string | null
           birth_date: string | null
+          care_grade: string | null
           care_level: string | null
           created_at: string | null
           emergency_contact: string | null
@@ -7605,11 +7606,13 @@ export type Database = {
           photo_url: string | null
           room_number: string | null
           settings: Json | null
+          status: string | null
           updated_at: string | null
         }
         Insert: {
           admission_date?: string | null
           birth_date?: string | null
+          care_grade?: string | null
           care_level?: string | null
           created_at?: string | null
           emergency_contact?: string | null
@@ -7623,11 +7626,13 @@ export type Database = {
           photo_url?: string | null
           room_number?: string | null
           settings?: Json | null
+          status?: string | null
           updated_at?: string | null
         }
         Update: {
           admission_date?: string | null
           birth_date?: string | null
+          care_grade?: string | null
           care_level?: string | null
           created_at?: string | null
           emergency_contact?: string | null
@@ -7641,6 +7646,7 @@ export type Database = {
           photo_url?: string | null
           room_number?: string | null
           settings?: Json | null
+          status?: string | null
           updated_at?: string | null
         }
         Relationships: [

@@ -24,7 +24,7 @@ interface MotorDevelopmentResultProps {
     ageInMonths: number;
     questionCount: number;
   };
-  answers: Record<string, number>;
+  answers?: Record<string, number>;
   onBack: () => void;
 }
 

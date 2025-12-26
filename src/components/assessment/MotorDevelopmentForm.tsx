@@ -73,6 +73,7 @@ const MotorDevelopmentForm: React.FC<MotorDevelopmentFormProps> = ({ onComplete,
       object_control: { total: 0, count: 0, max: 0 },
       balance: { total: 0, count: 0, max: 0 },
       coordination: { total: 0, count: 0, max: 0 },
+      fine_motor: { total: 0, count: 0, max: 0 },
     };
 
     filteredQuestions.forEach(q => {
@@ -158,8 +159,8 @@ const MotorDevelopmentForm: React.FC<MotorDevelopmentFormProps> = ({ onComplete,
               <h3 className="font-semibold mb-2">📋 검사 안내</h3>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• 대상 연령: 만 3세 ~ 12세</li>
-                <li>• 소요 시간: 약 5-8분</li>
-                <li>• 문항 수: 연령에 따라 15~22문항</li>
+                <li>• 소요 시간: 약 5-10분</li>
+                <li>• 문항 수: 연령에 따라 20~30문항</li>
               </ul>
             </div>
 

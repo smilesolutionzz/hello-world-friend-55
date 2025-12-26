@@ -748,6 +748,7 @@ const Assessment = () => {
 
             <div className="space-y-2">
               {[
+                { key: 'instagram-unconscious', icon: '📸', title: '인스타그램 무의식 분석', duration: '약 2분', questions: '피드 분석', badge: 'NEW', description: '당신의 인스타그램 피드에 숨겨진 무의식 속 진짜 나를 AI로 분석합니다.', features: ['피드 이미지 심층 분석', '8가지 무의식 유형 진단', '숨겨진 욕구와 내면 발견'], onClick: () => navigate('/instagram-analysis') },
                 { key: 'psychological', icon: '🧠', title: '마음상태 체크', duration: '약 5-10분', questions: '연령별 맞춤', description: '연령대에 따라 맞춤형 심리상태를 종합적으로 점검합니다.', features: ['영유아/아동/성인 연령별 맞춤', '발달단계별 특화 문항', 'AI 기반 심리상태 분석'] },
                 { key: 'panic', icon: '😰', title: '불안감 수준 확인', duration: '약 5분', questions: '21문항', description: '일상에서 느끼는 불안 증상과 그 정도를 체계적으로 측정합니다.', features: ['불안장애 선별 문항', '신체적/심리적 증상 분석', '위험도 수준 평가'] },
                 { key: 'depression', icon: '😔', title: '우울감 자가체크', duration: '약 5분', questions: '21문항', description: '우울감의 깊이와 일상 영향도를 정밀 측정합니다.', features: ['우울증 선별 기준', '인지/정서/행동 증상 분석', '전문가 상담 권고 기준'] },
@@ -764,6 +765,9 @@ const Assessment = () => {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
                                 <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-primary truncate">{test.title}</h3>
+                                {'badge' in test && test.badge && (
+                                  <Badge className="bg-purple-500 text-white text-[9px] md:text-[10px] px-1 md:px-1.5 py-0 flex-shrink-0">{test.badge}</Badge>
+                                )}
                               </div>
                               <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
                             </div>
@@ -784,7 +788,7 @@ const Assessment = () => {
                           ))}
                         </div>
                         <Button 
-                          onClick={() => handleTestTypeSelect(test.key as any)}
+                          onClick={() => 'onClick' in test && test.onClick ? test.onClick() : handleTestTypeSelect(test.key as any)}
                           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                         >
                           검사 시작하기

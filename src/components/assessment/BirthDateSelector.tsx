@@ -28,7 +28,8 @@ const BirthDateSelector: React.FC<BirthDateSelectorProps> = ({
   const [calculatedAge, setCalculatedAge] = useState<{ months: number; years: number; display: string } | null>(null);
 
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 20 }, (_, i) => currentYear - i);
+  // 성인까지 포함 (100년 범위)
+  const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 

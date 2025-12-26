@@ -26,6 +26,8 @@ import { HexacoResult } from "@/components/assessment/HexacoResult";
 import { InsuranceAnalysisForm } from "@/components/assessment/InsuranceAnalysisForm";
 import { InsuranceAnalysisResult } from "@/components/assessment/InsuranceAnalysisResult";
 import { DrawingAnalyzer } from "@/components/ai-analysis/DrawingAnalyzer";
+import MotorDevelopmentForm from "@/components/assessment/MotorDevelopmentForm";
+import MotorDevelopmentResult from "@/components/assessment/MotorDevelopmentResult";
 import {
   Collapsible,
   CollapsibleContent,

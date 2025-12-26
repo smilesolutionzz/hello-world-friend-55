@@ -376,3 +376,6 @@ verify_jwt = true
 
 [functions.send-share-email]
 verify_jwt = true
+
+[functions.instagram-rapidapi]
+verify_jwt = false

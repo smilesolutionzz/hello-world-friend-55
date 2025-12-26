@@ -127,7 +127,8 @@ const InstagramAnalysis = () => {
     setAnalysisProgress(85);
 
     try {
-      const { data, error } = await supabase.functions.invoke('instagram-analyzer', {
+      // Use RapidAPI-based analyzer for direct Instagram ID analysis
+      const { data, error } = await supabase.functions.invoke('instagram-rapidapi', {
         body: { 
           username: username.replace('@', ''),
           gender,

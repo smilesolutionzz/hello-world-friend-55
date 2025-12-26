@@ -1817,7 +1817,7 @@ export const premiumAssessmentInfo = {
   },
   // 🤸 아동 운동발달 자가체크
   motorDevelopment: {
-    title: "아동 운동발달 자가체크",
+    title: "AIH 아동 운동발달 자가체크",
     subtitle: "대근육/소근육 발달 종합평가",
     description: "이동운동, 물체조작, 균형감각, 협응력, 소근육 5개 영역으로 아동의 운동발달을 정밀 분석합니다",
     duration: "약 5-10분",

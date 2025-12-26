@@ -147,7 +147,7 @@ const MotorDevelopmentForm: React.FC<MotorDevelopmentFormProps> = ({ onComplete,
           <div className="text-center mb-6">
             <div className="text-5xl mb-4">🤸</div>
             <h1 className="text-2xl font-bold text-foreground mb-2">
-              아동 운동발달 자가체크
+              AIH 아동 운동발달 자가체크
             </h1>
             <p className="text-muted-foreground">
               AIH Motor Development Self-Check

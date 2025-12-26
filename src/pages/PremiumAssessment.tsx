@@ -525,7 +525,7 @@ const PremiumAssessment = () => {
               </div>
 
               <div className="space-y-2">
-                {['autismSpectrumScreening', 'premiumAdhd', 'languageDevelopment'].map((key) => {
+                {['autismSpectrumScreening', 'premiumAdhd', 'languageDevelopment', 'motorDevelopment'].map((key) => {
                   const info = premiumAssessmentInfo[key as keyof typeof premiumAssessmentInfo];
                   if (!info) return null;
                   const isExpanded = expandedTest === key;

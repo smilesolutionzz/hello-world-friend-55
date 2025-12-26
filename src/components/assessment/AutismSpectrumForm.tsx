@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, Brain, Users, Repeat, Volume2, MessageCircle, Ta
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { autismSpectrumScreeningQuestions } from "@/data/premiumAssessmentQuestions";
-import AnalysisLoadingOverlay from "@/components/analysis/AnalysisLoadingOverlay";
+import ModernAnalysisLoading from "./ModernAnalysisLoading";
 import BirthDateSelector from "./BirthDateSelector";
 
 interface AutismSpectrumFormProps {
@@ -152,12 +152,28 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
   };
 
   if (isLoading) {
+    const autismQuotes = [
+      { text: "아이의 마음을 이해하는 것이 최고의 교육입니다.", author: "마리아 몬테소리" },
+      { text: "다름은 결함이 아니라 다양성입니다.", author: "템플 그랜딘" },
+      { text: "모든 아이는 자신만의 속도로 성장합니다.", author: "에밀리 펄 킹슬리" },
+      { text: "조기 발견과 개입이 미래를 바꿉니다.", author: "발달심리학회" },
+    ];
+
+    const autismInsights = [
+      { category: "발달", text: "조기 개입은 발달 지연 회복에 가장 효과적입니다." },
+      { category: "감각", text: "감각처리 특성은 개인마다 다르게 나타납니다." },
+      { category: "소통", text: "비언어적 의사소통도 중요한 표현 방식입니다." },
+      { category: "지원", text: "적절한 환경 조성이 아이의 잠재력을 이끌어냅니다." },
+    ];
+
     return (
-      <AnalysisLoadingOverlay 
-        isLoading={isLoading}
-        estimatedTime={25}
+      <ModernAnalysisLoading
         title="자폐 스펙트럼 분석 중"
         description="전문적인 AI가 검사 결과를 심층 분석하고 있습니다..."
+        estimatedTime={25}
+        icon={Brain}
+        quotes={autismQuotes}
+        insights={autismInsights}
       />
     );
   }

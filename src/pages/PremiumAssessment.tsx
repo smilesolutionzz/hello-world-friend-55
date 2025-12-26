@@ -253,6 +253,15 @@ const PremiumAssessment = () => {
       );
     }
 
+    if (selectedAssessment === 'motorDevelopment') {
+      return (
+        <MotorDevelopmentResult
+          results={assessmentResults}
+          onBack={handleBack}
+        />
+      );
+    }
+
     return (
       <PremiumAssessmentResult
         assessmentType={selectedAssessment}
@@ -320,6 +329,23 @@ const PremiumAssessment = () => {
       );
     }
 
+    if (selectedAssessment === 'motorDevelopment') {
+      return (
+        <div>
+          <UnifiedNavigation />
+          <div className="pt-4">
+            <MotorDevelopmentForm
+              onComplete={(results: any, answers: Record<string, number>) => {
+                setAssessmentResults(results);
+                setCurrentStep('result');
+              }}
+              onBack={handleBack}
+            />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <PremiumAssessmentForm
         assessmentType={selectedAssessment}
@@ -342,6 +368,7 @@ const PremiumAssessment = () => {
         { key: 'autismSpectrumScreening', icon: Brain, badge: '🧠 AI 91%', badgeColor: 'bg-purple-500' },
         { key: 'premiumAdhd', icon: Brain, badge: '✨ NEW', badgeColor: 'bg-pink-500' },
         { key: 'languageDevelopment', icon: Baby, badge: '🔥 인기', badgeColor: 'bg-red-500' },
+        { key: 'motorDevelopment', icon: Users, badge: '🤸 NEW', badgeColor: 'bg-green-500' },
       ]
     },
     personality: {

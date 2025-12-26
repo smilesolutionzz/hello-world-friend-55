@@ -3,7 +3,7 @@
 
 export interface MotorDevelopmentQuestion {
   id: string;
-  category: 'locomotor' | 'object_control' | 'balance' | 'coordination';
+  category: 'locomotor' | 'object_control' | 'balance' | 'coordination' | 'fine_motor';
   text: string;
   description?: string;
   ageRange: {
@@ -277,6 +277,104 @@ export const motorDevelopmentQuestions: MotorDevelopmentQuestion[] = [
       { value: 1, label: '어려워함', description: '이동 드리블을 어려워합니다' },
     ]
   },
+
+  // === 소근육 발달 (Fine Motor Skills) ===
+  {
+    id: 'fine_1',
+    category: 'fine_motor',
+    text: '연필이나 색연필을 올바르게 쥐고 글씨나 그림을 그릴 수 있나요?',
+    description: '엄지, 검지, 중지를 이용한 세 손가락 잡기',
+    ageRange: { min: 36, max: 144 },
+    options: [
+      { value: 3, label: '능숙하게 잘함', description: '정확한 그립으로 세밀하게 그립니다' },
+      { value: 2, label: '대체로 가능', description: '그립이 불안정하지만 그릴 수 있습니다' },
+      { value: 1, label: '어려워함', description: '연필 잡기가 서툽니다' },
+    ]
+  },
+  {
+    id: 'fine_2',
+    category: 'fine_motor',
+    text: '가위로 직선이나 곡선을 따라 자를 수 있나요?',
+    description: '종이를 선을 따라 가위질하기',
+    ageRange: { min: 36, max: 144 },
+    options: [
+      { value: 3, label: '능숙하게 잘함', description: '선을 따라 정확하게 자릅니다' },
+      { value: 2, label: '대체로 가능', description: '자를 수 있지만 선에서 벗어납니다' },
+      { value: 1, label: '어려워함', description: '가위질을 어려워합니다' },
+    ]
+  },
+  {
+    id: 'fine_3',
+    category: 'fine_motor',
+    text: '단추를 끼우거나 지퍼를 올릴 수 있나요?',
+    description: '옷 입기와 관련된 소근육 활동',
+    ageRange: { min: 36, max: 120 },
+    options: [
+      { value: 3, label: '능숙하게 잘함', description: '혼자서 단추와 지퍼를 다룹니다' },
+      { value: 2, label: '대체로 가능', description: '시간이 걸리지만 할 수 있습니다' },
+      { value: 1, label: '어려워함', description: '도움이 필요합니다' },
+    ]
+  },
+  {
+    id: 'fine_4',
+    category: 'fine_motor',
+    text: '작은 블록이나 레고를 조립할 수 있나요?',
+    description: '작은 부품을 끼우고 조립하는 활동',
+    ageRange: { min: 36, max: 144 },
+    options: [
+      { value: 3, label: '능숙하게 잘함', description: '정교하게 블록을 조립합니다' },
+      { value: 2, label: '대체로 가능', description: '간단한 조립은 가능합니다' },
+      { value: 1, label: '어려워함', description: '작은 블록 조립을 어려워합니다' },
+    ]
+  },
+  {
+    id: 'fine_5',
+    category: 'fine_motor',
+    text: '구슬 꿰기나 실 끼우기를 할 수 있나요?',
+    description: '작은 구멍에 실이나 끈을 통과시키기',
+    ageRange: { min: 36, max: 120 },
+    options: [
+      { value: 3, label: '능숙하게 잘함', description: '정확하게 구슬을 꿸 수 있습니다' },
+      { value: 2, label: '대체로 가능', description: '시간이 걸리지만 가능합니다' },
+      { value: 1, label: '어려워함', description: '구슬 꿰기를 어려워합니다' },
+    ]
+  },
+  {
+    id: 'fine_6',
+    category: 'fine_motor',
+    text: '젓가락이나 포크를 사용해서 음식을 집을 수 있나요?',
+    description: '식사 도구를 사용한 음식 집기',
+    ageRange: { min: 36, max: 120 },
+    options: [
+      { value: 3, label: '능숙하게 잘함', description: '도구를 자연스럽게 사용합니다' },
+      { value: 2, label: '대체로 가능', description: '사용하지만 음식을 흘리기도 합니다' },
+      { value: 1, label: '어려워함', description: '도구 사용이 서툽니다' },
+    ]
+  },
+  {
+    id: 'fine_7',
+    category: 'fine_motor',
+    text: '종이접기(비행기, 배 등)를 할 수 있나요?',
+    description: '종이를 접어 간단한 형태 만들기',
+    ageRange: { min: 48, max: 144 },
+    options: [
+      { value: 3, label: '능숙하게 잘함', description: '여러 가지 종이접기를 합니다' },
+      { value: 2, label: '대체로 가능', description: '간단한 것은 접을 수 있습니다' },
+      { value: 1, label: '어려워함', description: '종이접기를 어려워합니다' },
+    ]
+  },
+  {
+    id: 'fine_8',
+    category: 'fine_motor',
+    text: '신발 끈을 묶을 수 있나요?',
+    description: '끈을 교차하여 매듭짓기',
+    ageRange: { min: 60, max: 144 },
+    options: [
+      { value: 3, label: '능숙하게 잘함', description: '혼자서 끈을 잘 묶습니다' },
+      { value: 2, label: '대체로 가능', description: '시간이 걸리지만 묶을 수 있습니다' },
+      { value: 1, label: '어려워함', description: '끈 묶기가 어렵습니다' },
+    ]
+  },
 ];
 
 export const categoryInfo = {
@@ -299,5 +397,10 @@ export const categoryInfo = {
     name: '협응력',
     description: '여러 신체 부위를 조화롭게 움직이는 능력',
     icon: '🤸',
+  },
+  fine_motor: {
+    name: '소근육',
+    description: '손과 손가락의 정교한 움직임 능력',
+    icon: '✋',
   },
 };

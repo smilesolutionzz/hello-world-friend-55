@@ -7,7 +7,10 @@ import { ArrowLeft, Home, RefreshCw, Download, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { categoryInfo } from '@/data/motorDevelopmentQuestions';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip } from 'recharts';
+import { 
+  BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend
+} from 'recharts';
 import ModernAnalysisLoading from './ModernAnalysisLoading';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -114,7 +117,15 @@ ${results.weaknesses.length > 0
     name: categoryInfo[key as keyof typeof categoryInfo]?.name || key,
     icon: categoryInfo[key as keyof typeof categoryInfo]?.icon || '📊',
     score: value,
+    fullMark: 100,
     fill: value >= 70 ? '#22c55e' : value >= 50 ? '#eab308' : '#ef4444',
+  }));
+
+  // Radar chart data
+  const radarData = Object.entries(results.categoryScores).map(([key, value]) => ({
+    subject: categoryInfo[key as keyof typeof categoryInfo]?.name || key,
+    A: value,
+    fullMark: 100,
   }));
 
   return (
@@ -162,11 +173,46 @@ ${results.weaknesses.length > 0
         </Card>
       </motion.div>
 
-      {/* Category Chart */}
+      {/* Radar Chart - NEW */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
+      >
+        <Card className="p-5 mb-6">
+          <h3 className="font-bold text-lg mb-4">🎯 영역별 발달 레이더</h3>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                <PolarGrid stroke="#e5e7eb" />
+                <PolarAngleAxis 
+                  dataKey="subject" 
+                  tick={{ fontSize: 11, fill: '#6b7280' }}
+                />
+                <PolarRadiusAxis 
+                  angle={30} 
+                  domain={[0, 100]} 
+                  tick={{ fontSize: 10 }}
+                />
+                <Radar
+                  name="발달 수준"
+                  dataKey="A"
+                  stroke="#22c55e"
+                  fill="#22c55e"
+                  fillOpacity={0.5}
+                />
+                <Legend />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* Bar Chart */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
       >
         <Card className="p-5 mb-6">
           <h3 className="font-bold text-lg mb-4">📊 영역별 발달 수준</h3>
@@ -216,7 +262,7 @@ ${results.weaknesses.length > 0
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.4 }}
           className="grid grid-cols-2 gap-4 mb-6"
         >
           <Card className="p-4 bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800">
@@ -251,7 +297,7 @@ ${results.weaknesses.length > 0
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.5 }}
       >
         <Card className="p-5 mb-6 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 border-purple-200 dark:border-purple-800">
           <div className="flex items-center gap-2 mb-4">
@@ -270,7 +316,7 @@ ${results.weaknesses.length > 0
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.6 }}
         className="flex flex-col gap-3"
       >
         <Button 

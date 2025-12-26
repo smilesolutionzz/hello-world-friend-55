@@ -1814,6 +1814,20 @@ export const premiumAssessmentInfo = {
     badge: "✨ NEW",
     priority: 2,
     highlight: true
+  },
+  // 🤸 아동 운동발달 자가체크
+  motorDevelopment: {
+    title: "아동 운동발달 자가체크",
+    subtitle: "대근육/소근육 발달 종합평가",
+    description: "이동운동, 물체조작, 균형감각, 협응력, 소근육 5개 영역으로 아동의 운동발달을 정밀 분석합니다",
+    duration: "약 5-10분",
+    questions_count: 30,
+    premium_features: ["5영역 운동발달 정밀분석", "연령별 맞춤 문항 제공", "대근육/소근육 균형 평가", "가정 활동 프로그램 제안", "AI 전문가 수준 해석"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
+    rank: 4,
+    badge: "🤸 NEW",
+    priority: 1,
+    highlight: true
   }
 };
 

@@ -3,9 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import BirthDateSelector from './BirthDateSelector';
 import { motorDevelopmentQuestions, categoryInfo } from '@/data/motorDevelopmentQuestions';
 
 interface MotorDevelopmentFormProps {
@@ -196,6 +196,26 @@ const MotorDevelopmentForm: React.FC<MotorDevelopmentFormProps> = ({ onComplete,
 
   // Birth Date Selection
   if (step === 'birthdate') {
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 15 }, (_, i) => currentYear - i);
+    const months = Array.from({ length: 12 }, (_, i) => i + 1);
+    const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
+    const [selectedYear, setSelectedYear] = useState<string>('');
+    const [selectedMonth, setSelectedMonth] = useState<string>('');
+    const [selectedDay, setSelectedDay] = useState<string>('');
+
+    const handleDateChange = (type: 'year' | 'month' | 'day', value: string) => {
+      let y = selectedYear, m = selectedMonth, d = selectedDay;
+      if (type === 'year') { y = value; setSelectedYear(value); }
+      if (type === 'month') { m = value; setSelectedMonth(value); }
+      if (type === 'day') { d = value; setSelectedDay(value); }
+      
+      if (y && m && d) {
+        setBirthDate(new Date(parseInt(y), parseInt(m) - 1, parseInt(d)));
+      }
+    };
+
     return (
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         <Button variant="ghost" onClick={() => setStep('intro')} className="mb-4">
@@ -206,10 +226,26 @@ const MotorDevelopmentForm: React.FC<MotorDevelopmentFormProps> = ({ onComplete,
         <Card className="p-6">
           <h2 className="text-xl font-bold text-center mb-6">아이의 생년월일을 선택해주세요</h2>
           
-          <BirthDateSelector
-            onDateSelect={handleBirthDateSelect}
-            selectedDate={birthDate}
-          />
+          <div className="grid grid-cols-3 gap-3">
+            <Select value={selectedYear} onValueChange={(v) => handleDateChange('year', v)}>
+              <SelectTrigger><SelectValue placeholder="년도" /></SelectTrigger>
+              <SelectContent>
+                {years.map(y => <SelectItem key={y} value={y.toString()}>{y}년</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={selectedMonth} onValueChange={(v) => handleDateChange('month', v)}>
+              <SelectTrigger><SelectValue placeholder="월" /></SelectTrigger>
+              <SelectContent>
+                {months.map(m => <SelectItem key={m} value={m.toString()}>{m}월</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={selectedDay} onValueChange={(v) => handleDateChange('day', v)}>
+              <SelectTrigger><SelectValue placeholder="일" /></SelectTrigger>
+              <SelectContent>
+                {days.map(d => <SelectItem key={d} value={d.toString()}>{d}일</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
 
           {birthDate && (
             <div className="mt-4 text-center">

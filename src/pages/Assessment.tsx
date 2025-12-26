@@ -718,6 +718,14 @@ const Assessment = () => {
                 <h2 className="text-lg md:text-xl font-bold text-white mb-3">새로 추가된 검사</h2>
                 <div className="flex flex-wrap gap-2">
                   <button 
+                    onClick={() => navigate('/instagram-analysis')}
+                    className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-lg transition-all"
+                  >
+                    <span className="text-lg">📸</span>
+                    <span className="text-sm font-medium text-white">인스타그램 무의식</span>
+                    <Badge className="bg-yellow-400 text-yellow-900 text-[10px]">NEW</Badge>
+                  </button>
+                  <button 
                     onClick={() => navigate('/assessment/attachment-style-test')}
                     className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-lg transition-all"
                   >

@@ -697,7 +697,7 @@ const Assessment = () => {
             </div>
           </div>
 
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
               간편테스트
             </h1>
@@ -705,6 +705,38 @@ const Assessment = () => {
               부담 없이 시작하는 첫 걸음 · AI가 빠르게 분석해드려요
             </p>
           </div>
+
+          {/* ========== 이번 달 신규 검사 배너 ========== */}
+          <section className="mb-8">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 p-4 md:p-6">
+              <div className="absolute inset-0 opacity-20" style={{backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "20px 20px"}}></div>
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="w-5 h-5 text-yellow-300" />
+                  <span className="text-xs font-bold text-white/90 bg-white/20 px-2 py-0.5 rounded-full">2025년 1월 신규</span>
+                </div>
+                <h2 className="text-lg md:text-xl font-bold text-white mb-3">새로 추가된 검사</h2>
+                <div className="flex flex-wrap gap-2">
+                  <button 
+                    onClick={() => navigate('/assessment/attachment-style-test')}
+                    className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-lg transition-all"
+                  >
+                    <span className="text-lg">💜</span>
+                    <span className="text-sm font-medium text-white">애착 유형 심층분석</span>
+                    <Badge className="bg-yellow-400 text-yellow-900 text-[10px]">NEW</Badge>
+                  </button>
+                  <button 
+                    onClick={() => navigate('/assessment/defense-mechanism-test')}
+                    className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-lg transition-all"
+                  >
+                    <span className="text-lg">🛡️</span>
+                    <span className="text-sm font-medium text-white">방어기제 분석</span>
+                    <Badge className="bg-yellow-400 text-yellow-900 text-[10px]">NEW</Badge>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
 
           {/* ========== 전문 심리검사 ========== */}
           <section className="mb-8">

@@ -113,19 +113,35 @@ const InstagramFeedAnalysis = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
+  const MAX_IMAGES = 3;
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
+    const remaining = Math.max(0, MAX_IMAGES - uploadedImages.length);
+    if (remaining === 0) {
+      toast({
+        title: "업로드 제한",
+        description: "피드 스크린샷은 3장만 업로드할 수 있어요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const fileList = Array.from(files).slice(0, remaining);
     const newImages: string[] = [];
-    Array.from(files).slice(0, 9).forEach(file => {
+
+    fileList.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (event) => {
-        if (event.target?.result) {
-          newImages.push(event.target.result as string);
-          if (newImages.length === Math.min(files.length, 9)) {
-            setUploadedImages(prev => [...prev, ...newImages].slice(0, 9));
-          }
+        if (!event.target?.result) return;
+        newImages.push(event.target.result as string);
+
+        if (newImages.length === fileList.length) {
+          setUploadedImages((prev) => [...prev, ...newImages].slice(0, MAX_IMAGES));
+          // allow selecting the same file again
+          if (fileInputRef.current) fileInputRef.current.value = "";
         }
       };
       reader.readAsDataURL(file);
@@ -322,9 +338,8 @@ ${analysisResult.unconsciousType.icon} ${analysisResult.unconsciousType.name}
                     <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 rounded-2xl flex items-center justify-center">
                       <ImagePlus className="w-8 h-8 text-violet-400" />
                     </div>
-                    <p className="text-white font-medium mb-1">피드 스크린샷 업로드</p>
-                    <p className="text-white/50 text-sm">최소 3장 ~ 최대 9장</p>
-                  </div>
+                    <p className="text-white font-medium mb-1">피드 스크린샷 3장 업로드</p>
+                    <p className="text-white/50 text-sm">정확히 3장을 올려주세요</p>
                 ) : (
                   <div className="space-y-4">
                     <div className="grid grid-cols-3 gap-2">
@@ -348,7 +363,7 @@ ${analysisResult.unconsciousType.icon} ${analysisResult.unconsciousType.name}
                         </motion.div>
                       ))}
                       
-                      {uploadedImages.length < 9 && (
+                      {uploadedImages.length < 3 && (
                         <div
                           onClick={() => fileInputRef.current?.click()}
                           className="aspect-square border-2 border-dashed border-white/20 rounded-xl flex items-center justify-center cursor-pointer hover:border-violet-500/40 transition-colors"
@@ -359,7 +374,7 @@ ${analysisResult.unconsciousType.icon} ${analysisResult.unconsciousType.name}
                     </div>
 
                     <p className="text-center text-white/50 text-sm">
-                      {uploadedImages.length}장 업로드됨 {uploadedImages.length < 3 && "(최소 3장 필요)"}
+                      {uploadedImages.length} / 3장 업로드됨 {uploadedImages.length < 3 && "(3장 필요)"}
                     </p>
 
                     <Button

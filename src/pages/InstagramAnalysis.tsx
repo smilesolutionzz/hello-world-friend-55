@@ -75,56 +75,21 @@ const InstagramAnalysis = () => {
     { name: "왕관을 벗지 못하는 왕", english: "The King Who Cannot Remove His Crown" },
   ];
 
-  // Demo feed images (will be replaced with real scraped images)
-  const demoFeedImages = [
-    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
-    "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400",
-    "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400",
-    "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400",
-    "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400",
-    "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=400",
-  ];
-
-  const demoInsights = [
-    "자연과의 연결을 통해 내면의 평화를 찾으려는 욕구가 보입니다",
-    "넓은 시야와 개방적 구도에서 자유에 대한 갈망이 느껴집니다",
-    "고요한 풍경 선택에서 내면의 안정을 추구하는 성향이 드러납니다",
-    "빛과 그림자의 대비에서 감정의 복잡성을 엿볼 수 있습니다",
-    "자연 속 작은 요소에 집중하는 시선에서 섬세함이 보입니다",
-    "수평선 구도에서 균형과 조화를 추구하는 심리가 나타납니다",
-  ];
+  // Real feed images will be fetched from the API
+  const [realFeedImages, setRealFeedImages] = useState<string[]>([]);
+  const [realInsights, setRealInsights] = useState<string[]>([]);
 
   const startAnalysis = async () => {
     setStep("analyzing");
     setAnalysisProgress(0);
     setCurrentFeedIndex(0);
     setFeedInsights([]);
+    setRealFeedImages([]);
+    setRealInsights([]);
     
-    // Phase 1: Collecting profile
+    // Phase 1: Collecting profile - API 호출
     setProgressText("인스타그램 프로필 수집 중...");
     setAnalysisProgress(10);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // Phase 2: Show feed images one by one with insights
-    const images = demoFeedImages;
-    const insights = demoInsights;
-    
-    for (let i = 0; i < images.length; i++) {
-      setCurrentFeedIndex(i);
-      setProgressText(`피드 ${i + 1}/${images.length} 분석 중...`);
-      setAnalysisProgress(15 + (i / images.length) * 50);
-      
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      setFeedInsights(prev => [...prev, insights[i]]);
-    }
-
-    // Phase 3: Deep analysis
-    setProgressText("무의식 패턴 도출 중...");
-    setAnalysisProgress(70);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    setProgressText("심층 분석 리포트 생성 중...");
-    setAnalysisProgress(85);
 
     try {
       // Use RapidAPI-based analyzer for direct Instagram ID analysis
@@ -138,22 +103,48 @@ const InstagramAnalysis = () => {
 
       if (error) throw error;
 
+      // 피드 이미지가 없으면 실패 처리
+      if (!data.feedImages || data.feedImages.length === 0) {
+        toast({
+          title: "피드 수집 실패",
+          description: "인스타그램 피드를 가져올 수 없습니다. 공개 계정인지 확인하거나 잠시 후 다시 시도해주세요.",
+          variant: "destructive"
+        });
+        setStep("input");
+        return;
+      }
+
+      const images = data.feedImages;
+      const feedAnalysisData = data.feedAnalysis || [];
+      
+      setRealFeedImages(images);
+      setRealInsights(feedAnalysisData.map((item: FeedAnalysisItem) => item.insight));
+
+      // Phase 2: Show feed images one by one with insights
+      for (let i = 0; i < images.length; i++) {
+        setCurrentFeedIndex(i);
+        setProgressText(`피드 ${i + 1}/${images.length} 분석 중...`);
+        setAnalysisProgress(15 + (i / images.length) * 50);
+        
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        if (feedAnalysisData[i]?.insight) {
+          setFeedInsights(prev => [...prev, feedAnalysisData[i].insight]);
+        }
+      }
+
+      // Phase 3: Deep analysis
+      setProgressText("무의식 패턴 도출 중...");
+      setAnalysisProgress(70);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      setProgressText("심층 분석 리포트 생성 중...");
+      setAnalysisProgress(85);
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       setAnalysisProgress(100);
       setProgressText("분석 완료!");
       
       await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Add demo images if no real images were scraped
-      if (!data.feedImages || data.feedImages.length === 0) {
-        data.feedImages = demoFeedImages;
-      }
-      if (!data.feedAnalysis || data.feedAnalysis.length === 0) {
-        data.feedAnalysis = demoInsights.map((insight, i) => ({
-          index: i + 1,
-          insight,
-          keyword: ["자연", "자유", "평화", "감정", "섬세함", "균형"][i]
-        }));
-      }
       
       setAnalysisResult(data);
       setStep("result");
@@ -400,60 +391,71 @@ const InstagramAnalysis = () => {
               {/* Feed Gallery with Current Analysis */}
               <div className="relative mb-6">
                 {/* Current Feed Image */}
-                <motion.div
-                  key={currentFeedIndex}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="relative aspect-square rounded-2xl overflow-hidden border-2 border-pink-500/30"
-                >
-                  <img
-                    src={demoFeedImages[currentFeedIndex]}
-                    alt={`Feed ${currentFeedIndex + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                  
-                  {/* Scanning Overlay */}
+                {realFeedImages.length > 0 ? (
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-b from-pink-500/20 to-purple-600/20"
-                    animate={{ opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  />
-                  
-                  {/* Scanning Line */}
-                  <motion.div
-                    className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-pink-400 to-transparent"
-                    animate={{ top: ["0%", "100%", "0%"] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  />
+                    key={currentFeedIndex}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="relative aspect-square rounded-2xl overflow-hidden border-2 border-pink-500/30"
+                  >
+                    <img
+                      src={realFeedImages[currentFeedIndex]}
+                      alt={`Feed ${currentFeedIndex + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    
+                    {/* Scanning Overlay */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-b from-pink-500/20 to-purple-600/20"
+                      animate={{ opacity: [0.3, 0.6, 0.3] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    />
+                    
+                    {/* Scanning Line */}
+                    <motion.div
+                      className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-pink-400 to-transparent"
+                      animate={{ top: ["0%", "100%", "0%"] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    />
 
-                  {/* Feed Number Badge */}
-                  <div className="absolute top-3 right-3 px-3 py-1 bg-black/60 rounded-full text-sm">
-                    <span className="text-pink-400">{currentFeedIndex + 1}</span>
-                    <span className="text-gray-400">/{demoFeedImages.length}</span>
+                    {/* Feed Number Badge */}
+                    <div className="absolute top-3 right-3 px-3 py-1 bg-black/60 rounded-full text-sm">
+                      <span className="text-pink-400">{currentFeedIndex + 1}</span>
+                      <span className="text-gray-400">/{realFeedImages.length}</span>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <div className="aspect-square rounded-2xl overflow-hidden border-2 border-pink-500/30 bg-gradient-to-br from-pink-500/10 to-purple-600/10 flex items-center justify-center">
+                    <div className="text-center">
+                      <Instagram className="h-12 w-12 text-pink-400 mx-auto mb-3 animate-pulse" />
+                      <p className="text-gray-400 text-sm">피드 수집 중...</p>
+                    </div>
                   </div>
-                </motion.div>
+                )}
 
                 {/* Thumbnails */}
-                <div className="flex gap-2 mt-4 justify-center overflow-x-auto">
-                  {demoFeedImages.map((img, idx) => (
-                    <motion.div
-                      key={idx}
-                      className={`w-12 h-12 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
-                        idx === currentFeedIndex ? 'border-pink-500' : 
-                        idx < currentFeedIndex ? 'border-green-500/50 opacity-70' : 'border-white/10 opacity-40'
-                      }`}
-                      animate={idx === currentFeedIndex ? { scale: [1, 1.1, 1] } : {}}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <img src={img} alt="" className="w-full h-full object-cover" />
-                      {idx < currentFeedIndex && (
-                        <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
-                          <span className="text-green-400 text-xs">✓</span>
-                        </div>
-                      )}
-                    </motion.div>
-                  ))}
-                </div>
+                {realFeedImages.length > 0 && (
+                  <div className="flex gap-2 mt-4 justify-center overflow-x-auto">
+                    {realFeedImages.map((img, idx) => (
+                      <motion.div
+                        key={idx}
+                        className={`w-12 h-12 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
+                          idx === currentFeedIndex ? 'border-pink-500' : 
+                          idx < currentFeedIndex ? 'border-green-500/50 opacity-70' : 'border-white/10 opacity-40'
+                        }`}
+                        animate={idx === currentFeedIndex ? { scale: [1, 1.1, 1] } : {}}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <img src={img} alt="" className="w-full h-full object-cover" />
+                        {idx < currentFeedIndex && (
+                          <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
+                            <span className="text-green-400 text-xs">✓</span>
+                          </div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Current Insight */}

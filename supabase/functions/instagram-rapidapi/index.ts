@@ -90,18 +90,17 @@ serve(async (req) => {
     let profileData = '';
 
     try {
-      const postsResponse = await fetch(
-        'https://instagram-scraper-stable-api.p.rapidapi.com/get_ig_user_posts.php',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'x-rapidapi-key': RAPIDAPI_KEY,
-            'x-rapidapi-host': 'instagram-scraper-stable-api.p.rapidapi.com',
-          },
-          body: `username=${encodeURIComponent(cleanUsername)}`,
-        }
-      );
+      // Use GET request with query parameter (some RapidAPI endpoints prefer this)
+      const postsUrl = `https://instagram-scraper-stable-api.p.rapidapi.com/get_ig_user_posts.php?username=${encodeURIComponent(cleanUsername)}`;
+      console.log('Fetching posts from:', postsUrl);
+      
+      const postsResponse = await fetch(postsUrl, {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-key': RAPIDAPI_KEY,
+          'x-rapidapi-host': 'instagram-scraper-stable-api.p.rapidapi.com',
+        },
+      });
 
       if (!postsResponse.ok) {
         const postsErrorText = await postsResponse.text();

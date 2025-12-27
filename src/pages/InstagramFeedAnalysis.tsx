@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
 type Step = "upload" | "analyzing" | "result";
 
@@ -252,6 +253,7 @@ ${analysisResult.unconsciousType.icon} ${analysisResult.unconsciousType.name}
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
+      <UnifiedNavigation />
       <AnimatePresence mode="wait">
         {step === "upload" && (
           <motion.div

@@ -82,111 +82,88 @@ serve(async (req) => {
       throw new Error('RAPIDAPI_KEY is not configured');
     }
 
-    // Step 1: Get user info using RapidAPI Instagram Scraper
+    // Step 1: Fetch a few feed images (fallback-friendly)
+    // NOTE: 기존 user info 엔드포인트가 404로 실패하여(존재하지 않음),
+    //       우선 "피드 사진 3장"만 안정적으로 가져오는 방식으로 단순화합니다.
     let userInfo = null;
     let feedImages: string[] = [];
     let profileData = '';
 
     try {
-      // instagram-scraper-stable-api 사용 - POST 방식으로 user info 가져오기
-      const userInfoResponse = await fetch(
-        'https://instagram-scraper-stable-api.p.rapidapi.com/get_ig_user_info.php',
+      const postsResponse = await fetch(
+        'https://instagram-scraper-stable-api.p.rapidapi.com/get_ig_user_posts.php',
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'x-rapidapi-key': RAPIDAPI_KEY,
-            'x-rapidapi-host': 'instagram-scraper-stable-api.p.rapidapi.com'
+            'x-rapidapi-host': 'instagram-scraper-stable-api.p.rapidapi.com',
           },
-          body: `username=${cleanUsername}`
+          body: `username=${encodeURIComponent(cleanUsername)}`,
         }
       );
 
-      if (userInfoResponse.ok) {
-        const userData = await userInfoResponse.json();
-        console.log('User info response:', JSON.stringify(userData).substring(0, 500));
-        
-        userInfo = userData.user || userData.data || userData;
-        
-        if (userInfo) {
-          profileData = `
-프로필명: ${userInfo.full_name || cleanUsername}
-사용자명: @${cleanUsername}
-바이오: ${userInfo.biography || userInfo.bio || '없음'}
-팔로워: ${userInfo.follower_count || userInfo.followers || 0}
-팔로잉: ${userInfo.following_count || userInfo.following || 0}
-게시물 수: ${userInfo.media_count || userInfo.posts_count || 0}
-인증 계정: ${userInfo.is_verified ? '예' : '아니오'}
-비즈니스 계정: ${userInfo.is_business ? '예' : '아니오'}
-카테고리: ${userInfo.category || '없음'}
-`;
-          
-          console.log('User info fetched:', userInfo.full_name || cleanUsername);
-        }
+      if (!postsResponse.ok) {
+        const postsErrorText = await postsResponse.text();
+        console.log('RapidAPI posts failed:', postsResponse.status, postsErrorText);
+      } else {
+        const postsData = await postsResponse.json();
+        console.log('Posts response:', JSON.stringify(postsData).substring(0, 500));
 
-        // Get user posts using the stable API
-        const postsResponse = await fetch(
-          'https://instagram-scraper-stable-api.p.rapidapi.com/get_ig_user_posts.php',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'x-rapidapi-key': RAPIDAPI_KEY,
-              'x-rapidapi-host': 'instagram-scraper-stable-api.p.rapidapi.com'
-            },
-            body: `username=${cleanUsername}`
-          }
-        );
+        const posts = postsData?.posts ?? postsData?.items ?? postsData?.data ?? [];
+        console.log(`Found ${Array.isArray(posts) ? posts.length : 0} posts`);
 
-        if (postsResponse.ok) {
-          const postsData = await postsResponse.json();
-          console.log('Posts response:', JSON.stringify(postsData).substring(0, 500));
-          
-          const posts = postsData.posts || postsData.items || postsData.data || [];
-          
-          console.log(`Found ${posts.length} posts`);
+        const unique = new Set<string>();
+        const addUrl = (url?: string) => {
+          if (!url || typeof url !== 'string') return;
+          if (unique.has(url)) return;
+          unique.add(url);
+          feedImages.push(url);
+        };
 
-          // Extract image URLs from posts
-          for (const post of posts.slice(0, 12)) {
-            // 다양한 이미지 URL 패턴 처리
-            const imageUrl = post.display_url || post.thumbnail_src || post.image_url || 
-                           post.image_versions2?.candidates?.[0]?.url || 
-                           post.thumbnail_url;
-            
-            if (imageUrl) {
-              feedImages.push(imageUrl);
-            }
-            
-            // 캐러셀 이미지 처리
-            if (post.carousel_media || post.edge_sidecar_to_children?.edges) {
-              const carouselItems = post.carousel_media || 
-                                   post.edge_sidecar_to_children?.edges?.map((e: any) => e.node) || [];
-              for (const media of carouselItems.slice(0, 3)) {
-                const mediaUrl = media.display_url || media.thumbnail_src || 
-                               media.image_versions2?.candidates?.[0]?.url;
-                if (mediaUrl) {
-                  feedImages.push(mediaUrl);
-                }
+        if (Array.isArray(posts)) {
+          for (const post of posts) {
+            if (feedImages.length >= 3) break;
+
+            const imageUrl =
+              post?.display_url ||
+              post?.thumbnail_src ||
+              post?.image_url ||
+              post?.image_versions2?.candidates?.[0]?.url ||
+              post?.thumbnail_url;
+
+            addUrl(imageUrl);
+
+            // 캐러셀 이미지가 있으면 추가로 한 장만 더 시도
+            const carouselItems =
+              post?.carousel_media ||
+              post?.edge_sidecar_to_children?.edges?.map((e: any) => e?.node) ||
+              [];
+            if (Array.isArray(carouselItems)) {
+              for (const media of carouselItems) {
+                if (feedImages.length >= 3) break;
+                const mediaUrl =
+                  media?.display_url ||
+                  media?.thumbnail_src ||
+                  media?.image_versions2?.candidates?.[0]?.url;
+                addUrl(mediaUrl);
               }
             }
           }
 
-          // Add post captions to profile data
-          const captions = posts.slice(0, 10)
-            .map((p: any) => p.caption?.text || p.edge_media_to_caption?.edges?.[0]?.node?.text || p.caption || '')
-            .filter((c: string) => typeof c === 'string' && c.length > 0)
-            .slice(0, 5);
-          
+          // 캡션 3개만 첨부
+          const captions = posts
+            .slice(0, 10)
+            .map((p: any) => p?.caption?.text || p?.edge_media_to_caption?.edges?.[0]?.node?.text || p?.caption || '')
+            .filter((c: any) => typeof c === 'string' && c.trim().length > 0)
+            .slice(0, 3);
+
           if (captions.length > 0) {
-            profileData += `\n최근 게시물 캡션:\n${captions.map((c: string, i: number) => `${i + 1}. ${c.substring(0, 200)}`).join('\n')}`;
+            profileData += `\n최근 게시물 캡션:\n${captions
+              .map((c: string, i: number) => `${i + 1}. ${c.substring(0, 200)}`)
+              .join('\n')}`;
           }
-        } else {
-          const postsErrorText = await postsResponse.text();
-          console.log('RapidAPI posts failed:', postsResponse.status, postsErrorText);
         }
-      } else {
-        const errorText = await userInfoResponse.text();
-        console.log('RapidAPI user info failed:', userInfoResponse.status, errorText);
       }
     } catch (apiError) {
       console.error('RapidAPI error:', apiError);

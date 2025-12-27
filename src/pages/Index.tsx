@@ -23,6 +23,7 @@ import ErrorBoundary from '@/components/ui/error-boundary';
 import FeedAnalysisSection from '@/components/landing/FeedAnalysisSection';
 import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
 import MainPromoSection from '@/components/promotion/MainPromoSection';
+import InstallPromptBanner from '@/components/pwa/InstallPromptBanner';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -198,6 +199,7 @@ const Index = () => {
           </main>
           
           <BackToTop />
+          <InstallPromptBanner />
           
           <WelcomeOnboarding 
             isOpen={showOnboarding} 

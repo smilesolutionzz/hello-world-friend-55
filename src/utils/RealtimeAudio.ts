@@ -138,23 +138,13 @@ export class RealtimeChat {
           console.log("✅ Session created");
           this.sessionCreated = true;
           
-          if (this.mode === 'roleplay') {
-            console.log("🎭 Triggering AI first message for roleplay...");
-            // 세션 시작 직후 역할극 첫 멘트 생성 트리거
-            setTimeout(() => {
-              if (this.dc?.readyState === 'open') {
-                this.dc.send(JSON.stringify({ type: 'response.create' }));
-              }
-            }, 500);
-          } else if (this.mode === 'therapy') {
-            console.log("🏥 Triggering AI first message for therapy...");
-            // 치료사 모드에서도 먼저 인사하도록 트리거
-            setTimeout(() => {
-              if (this.dc?.readyState === 'open') {
-                this.dc.send(JSON.stringify({ type: 'response.create' }));
-              }
-            }, 500);
-          }
+          // 모든 모드에서 AI가 먼저 인사하도록 트리거
+          console.log(`🎭 Triggering AI first message for ${this.mode} mode...`);
+          setTimeout(() => {
+            if (this.dc?.readyState === 'open') {
+              this.dc.send(JSON.stringify({ type: 'response.create' }));
+            }
+          }, 500);
         }
         
         this.onMessage(event);

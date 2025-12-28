@@ -6,6 +6,7 @@ import { MilestonesBadges } from '@/components/storage/MilestonesBadges';
 import { ReminderBanner } from '@/components/storage/ReminderBanner';
 import { AIInsightSummary } from '@/components/storage/AIInsightSummary';
 import { MonthlyReport } from '@/components/storage/MonthlyReport';
+import { CurationBot } from '@/components/curation/CurationBot';
 import { Heart, ClipboardCheck, FolderHeart, LayoutDashboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
@@ -324,6 +325,12 @@ const ConcernStorage = () => {
             )}
           </AnimatePresence>
         </main>
+        
+        {/* AI 큐레이션 봇 */}
+        <CurationBot 
+          concerns={concerns}
+          assessments={assessments}
+        />
       </div>
     </div>
   );

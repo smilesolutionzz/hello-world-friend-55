@@ -163,7 +163,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   // 모바일 감지 및 UI 상태
   const [isMobile, setIsMobile] = useState(false);
   const [isUICollapsed, setIsUICollapsed] = useState(false);
-  const joystickInputRef = useRef({ x: 0, y: 0 });
+  const [virtualJoystickInput, setVirtualJoystickInput] = useState({ x: 0, y: 0 });
   
   // 문 근처 감지 및 방 이동 UI
   const [showRoomTransition, setShowRoomTransition] = useState(false);
@@ -1438,7 +1438,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         groupMode={groupMode}
         userName={userName}
         avatarPosition={avatarPosition}
-        virtualInput={joystickInputRef.current}
+        virtualInput={virtualJoystickInput}
         character={mode === 'structured' && structuredConfig ? structuredConfig.character : undefined}
         onGroupUsersChange={setGroupUsers}
         userGesture={currentGesture}
@@ -1455,7 +1455,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             <>
               <VirtualJoystick
                 onMove={(x, y) => {
-                  joystickInputRef.current = { x, y };
+                  setVirtualJoystickInput({ x, y });
                 }}
                 onJump={() => {
                   // 스페이스바 이벤트 디스패치

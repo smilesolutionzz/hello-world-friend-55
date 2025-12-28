@@ -21,6 +21,7 @@ import {
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface ConcernData {
   id: string;
@@ -58,8 +59,8 @@ interface CurationBotProps {
   assessments: AssessmentData[];
 }
 
-// 카카오톡 채널 링크
-const KAKAO_CHANNEL_URL = 'https://pf.kakao.com/_CxkxbxfG';
+// 카카오톡 오픈채팅 링크
+const KAKAO_CHANNEL_URL = 'https://open.kakao.com/o/sHLdK3Ch';
 
 export const CurationBot = ({ concerns, assessments }: CurationBotProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -69,6 +70,7 @@ export const CurationBot = ({ concerns, assessments }: CurationBotProps) => {
   const [hasInitialized, setHasInitialized] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // 데이터 분석 기반 추천 생성
   const generateRecommendations = (): Recommendation[] => {
@@ -99,7 +101,7 @@ export const CurationBot = ({ concerns, assessments }: CurationBotProps) => {
         type: 'counseling',
         title: '심층 상담 필요',
         description: `${highRiskAssessments.length}개의 검사에서 주의가 필요한 결과가 나왔어요. AI 상담이나 전문가 상담을 받아보시면 도움이 될 거예요.`,
-        link: '/metaverse-voice',
+        link: '/metaverse-voice-counseling',
         priority: 'high'
       });
     }
@@ -121,7 +123,7 @@ export const CurationBot = ({ concerns, assessments }: CurationBotProps) => {
         type: 'test',
         title: '발달 검사 추천',
         description: '아이의 현재 상태를 더 정확히 파악하기 위해 추가 검사를 진행해보세요.',
-        link: '/tests',
+        link: '/assessment',
         priority: 'medium'
       });
     }
@@ -132,7 +134,7 @@ export const CurationBot = ({ concerns, assessments }: CurationBotProps) => {
         type: 'test',
         title: '종합 발달 검사 권장',
         description: '고민이 많이 누적되어 있어요. 종합 검사를 통해 현재 상태를 객관적으로 확인해보세요.',
-        link: '/tests',
+        link: '/assessment',
         priority: 'high'
       });
     }
@@ -217,7 +219,7 @@ export const CurationBot = ({ concerns, assessments }: CurationBotProps) => {
           type: 'test',
           title: '발달 검사 바로가기',
           description: '다양한 발달 검사를 진행해보세요',
-          link: '/tests',
+          link: '/assessment',
           priority: 'medium'
         }]
       };
@@ -271,10 +273,11 @@ export const CurationBot = ({ concerns, assessments }: CurationBotProps) => {
   };
 
   const handleRecommendationClick = (recommendation: Recommendation) => {
-    if (recommendation.link) {
-      window.location.href = recommendation.link;
-    } else if (recommendation.type === 'expert') {
+    if (recommendation.type === 'expert' || recommendation.type === 'counseling' && !recommendation.link) {
       window.open(KAKAO_CHANNEL_URL, '_blank');
+    } else if (recommendation.link) {
+      setIsOpen(false);
+      navigate(recommendation.link);
     }
   };
 

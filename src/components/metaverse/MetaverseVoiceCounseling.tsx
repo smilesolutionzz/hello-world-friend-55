@@ -1378,7 +1378,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             if (isConnected) {
               chatRef.current?.disconnect();
             }
-            navigate('/metaverse');
+            navigate('/');
           }}
           variant="destructive"
           size="sm"

@@ -150,8 +150,9 @@ export const MilestonesBadges: React.FC<MilestonesBadgesProps> = ({
                   )}
                   
                   {!unlocked && progress > 0 && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-background/80 rounded-xl backdrop-blur-sm">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/90 rounded-xl backdrop-blur-sm">
                       <span className="text-xs font-bold text-foreground">{Math.round(progress)}%</span>
+                      <span className="text-[8px] text-muted-foreground mt-0.5">{milestone.title}</span>
                     </div>
                   )}
                 </motion.div>
@@ -212,8 +213,9 @@ export const MilestonesBadges: React.FC<MilestonesBadgesProps> = ({
                 )}
                 
                 {!unlocked && progress > 0 && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background/80 rounded-2xl backdrop-blur-sm">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/90 rounded-2xl backdrop-blur-sm">
                     <span className="text-sm font-bold text-foreground">{Math.round(progress)}%</span>
+                    <span className="text-[10px] text-muted-foreground mt-0.5">{milestone.title}</span>
                   </div>
                 )}
               </motion.div>

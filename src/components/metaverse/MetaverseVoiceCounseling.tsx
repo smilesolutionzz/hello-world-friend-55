@@ -5,9 +5,10 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut, Gamepad2, Package, Palette, BookOpen, Flower2, Paintbrush, Stethoscope, Volume2, UsersRound, PaintBucket } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut, Gamepad2, Package, Palette, BookOpen, Flower2, Paintbrush, Stethoscope, Volume2, UsersRound, PaintBucket, Settings } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { SpaceManager } from './SpaceManager';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
@@ -1100,187 +1101,215 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <Label className="flex items-center gap-2">
-                    <Sofa className="w-4 h-4" />
-                    상담 공간 선택
-                  </Label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {roomOptions.map((room) => {
-                      const Icon = room.icon;
-                      return (
-                        <Button
-                          key={room.id}
-                          variant={selectedRoom === room.id ? "default" : "outline"}
-                          className="h-auto flex-col gap-2 p-4"
-                          onClick={() => setSelectedRoom(room.id)}
-                        >
-                          <Icon className="w-6 h-6" />
-                          <div className="text-center">
-                            <div className="font-medium">{room.name}</div>
-                            <div className="text-xs opacity-70">{room.description}</div>
-                          </div>
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="consultTopic" className="flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4" />
-                    상담 주제 (선택사항)
-                  </Label>
-                  <Input
-                    id="consultTopic"
-                    placeholder="오늘은 어떤 이야기를 나누고 싶으세요?"
-                    value={consultTopic}
-                    onChange={(e) => setConsultTopic(e.target.value)}
-                  />
-                </div>
-
-                {/* 자유 대화 모드 전용 설정 */}
-                {mode === 'free' && (
-                <div className="space-y-3">
-                  {/* 캐릭터 이동 */}
-                  <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <UserCircle className="w-4 h-4" />
-                      <Label htmlFor="movement" className="cursor-pointer">캐릭터 이동 활성화</Label>
-                    </div>
-                    <Switch
-                      id="movement"
-                      checked={enableMovement}
-                      onCheckedChange={setEnableMovement}
-                    />
-                  </div>
-
-                  {/* 그룹 상담 모드 */}
-                  <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      <Label htmlFor="groupMode" className="cursor-pointer">그룹 상담 모드</Label>
-                    </div>
-                    <Switch
-                      id="groupMode"
-                      checked={groupMode}
-                      onCheckedChange={setGroupMode}
-                    />
-                  </div>
-
-                  {/* 배경음악 선택 */}
-                  <div className="space-y-2 p-3 bg-background/50 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Music className="w-4 h-4" />
-                      <Label>배경음악</Label>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {(Object.keys(MUSIC_OPTIONS) as MusicType[]).map((type) => (
-                        <Button
-                          key={type}
-                          variant={backgroundMusic === type ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setBackgroundMusic(type)}
-                          className="flex flex-col gap-1 h-auto py-2"
-                        >
-                          <span className="text-lg">{MUSIC_OPTIONS[type].icon}</span>
-                          <span className="text-xs">{MUSIC_OPTIONS[type].name}</span>
-                        </Button>
-                      ))}
-                    </div>
-                    {backgroundMusic !== 'none' && (
-                      <div className="space-y-1">
-                        <Label className="text-xs">볼륨</Label>
-                        <Slider
-                          value={[musicVolume * 100]}
-                          onValueChange={(value) => setMusicVolume(value[0] / 100)}
-                          max={100}
-                          step={1}
-                          className="w-full"
-                        />
+                {/* 아코디언으로 정리된 설정 */}
+                <Accordion type="single" collapsible className="w-full space-y-2">
+                  {/* 상담 공간 선택 */}
+                  <AccordionItem value="room" className="border border-purple-500/20 rounded-lg bg-slate-800/50">
+                    <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                      <div className="flex items-center gap-2">
+                        <Sofa className="w-4 h-4 text-purple-400" />
+                        <span className="font-medium">상담 공간</span>
+                        <span className="text-sm text-purple-300 ml-2">
+                          {roomOptions.find(r => r.id === selectedRoom)?.name}
+                        </span>
                       </div>
-                    )}
-                  </div>
-                </div>
-                )}
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4">
+                      <div className="grid grid-cols-3 gap-2">
+                        {roomOptions.map((room) => {
+                          const Icon = room.icon;
+                          return (
+                            <Button
+                              key={room.id}
+                              variant={selectedRoom === room.id ? "default" : "outline"}
+                              className="h-auto flex-col gap-1 p-3 text-xs"
+                              onClick={() => setSelectedRoom(room.id)}
+                            >
+                              <Icon className="w-5 h-5" />
+                              <span>{room.name}</span>
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                {/* 아바타 설정 */}
-                {mode === 'free' && (
-                <div className="space-y-3">
-                  <Label className="flex items-center gap-2">
-                    <Link2 className="w-4 h-4" />
-                    아바타 설정
-                  </Label>
-                  
-                  {/* 샘플 아바타 갤러리 */}
-                  <AvatarGallery 
-                    selectedUrl={avatarUrl}
-                    onSelect={(url) => {
-                      setAvatarUrl(url);
-                      toast({
-                        title: "샘플 아바타 선택됨 ✓",
-                        description: "미리보기에서 확인하세요",
-                      });
-                    }}
-                  />
-                  
-                  <div className="relative">
-                    <Input
-                      placeholder="Ready Player Me URL (.glb) 붙여넣기"
-                      value={avatarUrl}
-                      onChange={(e) => {
-                        const url = e.target.value.trim();
-                        setAvatarUrl(url);
-                        if (url && url.includes('readyplayer.me') && url.endsWith('.glb')) {
-                          toast({
-                            title: "✓ 아바타 로드 중",
-                            description: "아래 미리보기에서 곧 표시됩니다",
-                          });
-                        }
-                      }}
-                      onPaste={(e) => {
-                        // 붙여넣기 시 즉시 처리
-                        setTimeout(() => {
-                          const url = e.currentTarget.value.trim();
-                          if (url && url.includes('readyplayer.me') && url.endsWith('.glb')) {
+                  {/* 상담 주제 */}
+                  <AccordionItem value="topic" className="border border-purple-500/20 rounded-lg bg-slate-800/50">
+                    <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-purple-400" />
+                        <span className="font-medium">상담 주제</span>
+                        {consultTopic && (
+                          <span className="text-sm text-purple-300 ml-2 truncate max-w-[150px]">
+                            {consultTopic}
+                          </span>
+                        )}
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4">
+                      <Input
+                        id="consultTopic"
+                        placeholder="오늘은 어떤 이야기를 나누고 싶으세요?"
+                        value={consultTopic}
+                        onChange={(e) => setConsultTopic(e.target.value)}
+                      />
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* 자유 대화 모드 전용 설정 */}
+                  {mode === 'free' && (
+                    <AccordionItem value="settings" className="border border-purple-500/20 rounded-lg bg-slate-800/50">
+                      <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                        <div className="flex items-center gap-2">
+                          <Settings className="w-4 h-4 text-purple-400" />
+                          <span className="font-medium">상담 설정</span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-4 space-y-3">
+                        {/* 캐릭터 이동 */}
+                        <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <UserCircle className="w-4 h-4" />
+                            <Label htmlFor="movement" className="cursor-pointer text-sm">캐릭터 이동</Label>
+                          </div>
+                          <Switch
+                            id="movement"
+                            checked={enableMovement}
+                            onCheckedChange={setEnableMovement}
+                          />
+                        </div>
+
+                        {/* 그룹 상담 모드 */}
+                        <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Users className="w-4 h-4" />
+                            <Label htmlFor="groupMode" className="cursor-pointer text-sm">그룹 상담</Label>
+                          </div>
+                          <Switch
+                            id="groupMode"
+                            checked={groupMode}
+                            onCheckedChange={setGroupMode}
+                          />
+                        </div>
+
+                        {/* 배경음악 선택 */}
+                        <div className="space-y-2 p-3 bg-slate-700/50 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Music className="w-4 h-4" />
+                            <Label className="text-sm">배경음악</Label>
+                          </div>
+                          <div className="grid grid-cols-3 gap-2">
+                            {(Object.keys(MUSIC_OPTIONS) as MusicType[]).map((type) => (
+                              <Button
+                                key={type}
+                                variant={backgroundMusic === type ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setBackgroundMusic(type)}
+                                className="flex flex-col gap-1 h-auto py-2"
+                              >
+                                <span className="text-lg">{MUSIC_OPTIONS[type].icon}</span>
+                                <span className="text-xs">{MUSIC_OPTIONS[type].name}</span>
+                              </Button>
+                            ))}
+                          </div>
+                          {backgroundMusic !== 'none' && (
+                            <div className="space-y-1">
+                              <Label className="text-xs">볼륨</Label>
+                              <Slider
+                                value={[musicVolume * 100]}
+                                onValueChange={(value) => setMusicVolume(value[0] / 100)}
+                                max={100}
+                                step={1}
+                                className="w-full"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  )}
+
+                  {/* 아바타 설정 */}
+                  {mode === 'free' && (
+                    <AccordionItem value="avatar" className="border border-purple-500/20 rounded-lg bg-slate-800/50">
+                      <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                        <div className="flex items-center gap-2">
+                          <Link2 className="w-4 h-4 text-purple-400" />
+                          <span className="font-medium">아바타 설정</span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-4 space-y-3">
+                        {/* 샘플 아바타 갤러리 */}
+                        <AvatarGallery 
+                          selectedUrl={avatarUrl}
+                          onSelect={(url) => {
+                            setAvatarUrl(url);
                             toast({
-                              title: "✓ 아바타 적용됨",
+                              title: "샘플 아바타 선택됨 ✓",
                               description: "미리보기에서 확인하세요",
                             });
-                          }
-                        }, 100);
-                      }}
-                      className="pr-10"
-                    />
-                    {avatarUrl && avatarUrl.includes('readyplayer.me') && avatarUrl.endsWith('.glb') && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-xl">
-                        ✓
-                      </div>
-                    )}
-                  </div>
+                          }}
+                        />
+                        
+                        <div className="relative">
+                          <Input
+                            placeholder="Ready Player Me URL (.glb) 붙여넣기"
+                            value={avatarUrl}
+                            onChange={(e) => {
+                              const url = e.target.value.trim();
+                              setAvatarUrl(url);
+                              if (url && url.includes('readyplayer.me') && url.endsWith('.glb')) {
+                                toast({
+                                  title: "✓ 아바타 로드 중",
+                                  description: "아래 미리보기에서 곧 표시됩니다",
+                                });
+                              }
+                            }}
+                            onPaste={(e) => {
+                              setTimeout(() => {
+                                const url = e.currentTarget.value.trim();
+                                if (url && url.includes('readyplayer.me') && url.endsWith('.glb')) {
+                                  toast({
+                                    title: "✓ 아바타 적용됨",
+                                    description: "미리보기에서 확인하세요",
+                                  });
+                                }
+                              }, 100);
+                            }}
+                            className="pr-10"
+                          />
+                          {avatarUrl && avatarUrl.includes('readyplayer.me') && avatarUrl.endsWith('.glb') && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-xl">
+                              ✓
+                            </div>
+                          )}
+                        </div>
 
-                  {/* 아바타 미리보기와 커스터마이징 */}
-                  <div className="flex gap-4">
-                    <AvatarPreview avatarUrl={avatarUrl} onUrlChange={setAvatarUrl} />
-                    {isConnected && (
-                      <Button variant="outline" onClick={() => setShowCustomization(!showCustomization)} className="h-auto">
-                        🎨 꾸미기
-                      </Button>
-                    )}
-                  </div>
-                  {showCustomization && <AvatarCustomization onCustomize={setAvatarCustomization} />}
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full gap-2"
-                    onClick={openAvatarCreator}
-                  >
-                    <UserCircle className="w-4 h-4" />
-                    Ready Player Me에서 새로 만들기
-                  </Button>
-                </div>
-                )}
+                        {/* 아바타 미리보기 */}
+                        <div className="flex gap-4">
+                          <AvatarPreview avatarUrl={avatarUrl} onUrlChange={setAvatarUrl} />
+                          {isConnected && (
+                            <Button variant="outline" onClick={() => setShowCustomization(!showCustomization)} className="h-auto">
+                              🎨 꾸미기
+                            </Button>
+                          )}
+                        </div>
+                        {showCustomization && <AvatarCustomization onCustomize={setAvatarCustomization} />}
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full gap-2"
+                          onClick={openAvatarCreator}
+                        >
+                          <UserCircle className="w-4 h-4" />
+                          Ready Player Me에서 새로 만들기
+                        </Button>
+                      </AccordionContent>
+                    </AccordionItem>
+                  )}
+                </Accordion>
 
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">
                   <p className="text-sm text-foreground text-center">

@@ -115,7 +115,7 @@ export const MonthlyReport: React.FC<MonthlyReportProps> = ({ concerns, assessme
               <p className="text-xs text-muted-foreground">이번 달 활동 요약</p>
             </div>
           </div>
-          <Badge className="rounded-xl px-3 py-1 bg-gradient-to-r from-primary/10 to-primary/5 text-primary border-primary/20">
+          <Badge className="rounded-xl px-3 py-1 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-primary/20">
             {format(new Date(), 'yyyy년 M월', { locale: ko })}
           </Badge>
         </div>

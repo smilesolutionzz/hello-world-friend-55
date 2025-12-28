@@ -457,6 +457,13 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     musicPlayer.setVolume(musicVolume);
   }, [musicVolume]);
 
+  // 입장 시 자동으로 대화 시작
+  useEffect(() => {
+    if (hasEntered && !isConnected && !isLoading) {
+      startConversation();
+    }
+  }, [hasEntered]);
+
   // 플레이어와 문 사이의 거리 체크
   useEffect(() => {
     if (!isConnected) return;

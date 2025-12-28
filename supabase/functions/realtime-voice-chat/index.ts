@@ -216,6 +216,39 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
             
             openaiWs?.send(JSON.stringify(sessionConfig));
             console.log(`Session configuration sent - mode: ${mode}, voice: ${characterConfig.voice}`);
+            
+            // structured 모드일 때 AI가 먼저 인사하도록 설정
+            if (mode === "structured") {
+              // 세션 설정이 완료된 후 첫 인사 메시지 요청
+              setTimeout(() => {
+                const firstGreeting = ageGroup === "child" 
+                  ? "안녕! 만나서 반가워! 나는 네 친구 코끼리 선생님이야. 오늘 너랑 재미있는 이야기 나누고 싶어. 먼저 너의 이름이 뭔지 알려줄래?"
+                  : ageGroup === "teen"
+                  ? "안녕하세요! 만나서 반갑습니다. 저는 여러분의 이야기를 들어드릴 상담사예요. 편하게 대화해볼까요? 먼저 오늘 기분이 어떠세요?"
+                  : ageGroup === "parent"
+                  ? "안녕하세요, 만나서 반갑습니다. 저는 육아 고민을 함께 나눌 상담사입니다. 오늘 어떤 이야기를 나누고 싶으신가요?"
+                  : "안녕하세요, 만나서 반갑습니다. 저는 여러분의 이야기를 경청할 상담사입니다. 오늘 하루는 어떠셨나요?";
+                
+                // AI가 먼저 말하도록 conversation.item.create + response.create
+                const conversationItem = {
+                  type: "conversation.item.create",
+                  item: {
+                    type: "message",
+                    role: "user",
+                    content: [
+                      {
+                        type: "input_text",
+                        text: `[시스템: 상담을 시작합니다. 먼저 따뜻하게 인사해주세요. 다음과 같이 인사하세요: "${firstGreeting}"]`
+                      }
+                    ]
+                  }
+                };
+                
+                openaiWs?.send(JSON.stringify(conversationItem));
+                openaiWs?.send(JSON.stringify({ type: "response.create" }));
+                console.log("Structured mode: AI greeting initiated");
+              }, 500);
+            }
           }
           
           // Forward all messages to client

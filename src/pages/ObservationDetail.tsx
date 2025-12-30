@@ -46,7 +46,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -245,38 +245,55 @@ export default function ObservationDetail() {
           </div>
         </motion.div>
 
-        {/* AI 전문가 조언 */}
-        {observation.expert_advice && (
+        {/* AI 전문가 리포트 */}
+        {(observation.expert_advice || observation.detailed_advice) && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card className="bg-primary/5 border-primary/20">
+            <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-amber-200/50 dark:border-amber-700/30">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Brain className="w-4 h-4 text-primary" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg">
+                    <BookOpen className="w-5 h-5 text-white" />
                   </div>
-                  AI 전문가 조언
+                  <div>
+                    <span className="text-lg font-bold">AI 발달 분석 리포트</span>
+                    <p className="text-xs text-muted-foreground font-normal">전문가 수준의 심층 분석</p>
+                  </div>
+                  <Badge variant="secondary" className="ml-auto bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    AI 분석
+                  </Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-sm leading-relaxed">
-                  {observation.expert_advice}
-                </p>
+                {/* 요약 조언 */}
+                {observation.expert_advice && (
+                  <div className="p-4 bg-white/60 dark:bg-background/40 rounded-xl border border-amber-200/30 dark:border-amber-700/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Lightbulb className="w-4 h-4 text-amber-600" />
+                      <span className="font-medium text-sm">핵심 요약</span>
+                    </div>
+                    <p className="text-sm leading-relaxed text-foreground/90">
+                      {observation.expert_advice}
+                    </p>
+                  </div>
+                )}
                 
+                {/* 상세 리포트 - 기본적으로 펼침 */}
                 {observation.detailed_advice && (
-                  <>
+                  <div className="space-y-3">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="w-full justify-between"
+                      className="w-full justify-between bg-white/40 dark:bg-background/20 hover:bg-white/60 dark:hover:bg-background/30"
                       onClick={() => setShowDetailedAdvice(!showDetailedAdvice)}
                     >
-                      <span className="flex items-center gap-2">
-                        <Lightbulb className="w-4 h-4" />
-                        상세 조언 보기
+                      <span className="flex items-center gap-2 font-medium">
+                        <FileText className="w-4 h-4 text-amber-600" />
+                        상세 분석 리포트 {showDetailedAdvice ? '접기' : '펼치기'}
                       </span>
                       {showDetailedAdvice ? (
                         <ChevronUp className="w-4 h-4" />
@@ -285,31 +302,56 @@ export default function ObservationDetail() {
                       )}
                     </Button>
                     
-                    {showDetailedAdvice && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        className="pt-4 border-t space-y-4"
-                      >
-                        {observation.detailed_advice.split(/(?=##\s)/g).map((section, index) => {
-                          const lines = section.trim().split('\n');
-                          const title = lines[0]?.replace(/^##\s*/, '').trim();
-                          const content = lines.slice(1).join('\n').trim();
-                          
-                          if (!title || title.startsWith('---')) return null;
-                          
-                          return (
-                            <div key={index} className="space-y-2">
-                              <h4 className="font-medium text-sm">{title}</h4>
-                              <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                                {content}
-                              </p>
-                            </div>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </>
+                    <AnimatePresence>
+                      {showDetailedAdvice && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="space-y-4 overflow-hidden"
+                        >
+                          {observation.detailed_advice.split(/(?=###?\s)/g).map((section, index) => {
+                            const lines = section.trim().split('\n');
+                            const titleLine = lines[0]?.replace(/^###?\s*\**/, '').replace(/\*+$/, '').trim();
+                            const content = lines.slice(1).join('\n').trim();
+                            
+                            if (!titleLine || titleLine.startsWith('---') || titleLine.length < 2) return null;
+                            
+                            return (
+                              <motion.div 
+                                key={index} 
+                                className="p-4 bg-white/80 dark:bg-background/60 rounded-xl border border-amber-100 dark:border-amber-800/30"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                              >
+                                <h4 className="font-semibold text-sm text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-2">
+                                  <span className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs font-bold">
+                                    {index + 1}
+                                  </span>
+                                  {titleLine}
+                                </h4>
+                                <div className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed pl-8">
+                                  {content.split('\n').map((line, lineIndex) => {
+                                    // 리스트 아이템 스타일링
+                                    if (line.trim().startsWith('*') || line.trim().startsWith('-')) {
+                                      return (
+                                        <p key={lineIndex} className="flex gap-2 mb-1">
+                                          <span className="text-amber-500">•</span>
+                                          <span>{line.replace(/^[\s*-]+/, '')}</span>
+                                        </p>
+                                      );
+                                    }
+                                    return <p key={lineIndex} className="mb-1">{line}</p>;
+                                  })}
+                                </div>
+                              </motion.div>
+                            );
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 )}
               </CardContent>
             </Card>

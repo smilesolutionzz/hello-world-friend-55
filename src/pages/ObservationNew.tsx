@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -17,8 +15,9 @@ import {
   CheckCircle,
   Loader2,
   Lightbulb,
-  BookOpen,
-  Send
+  Feather,
+  List,
+  Save
 } from 'lucide-react';
 import VoiceObservationRecorder from '@/components/observation/VoiceObservationRecorder';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -30,13 +29,11 @@ const ObservationNew = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   
-  // Form state
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [activeMode, setActiveMode] = useState<'voice' | 'text'>('voice');
   const [structuredData, setStructuredData] = useState<any>(null);
   
-  // AI 분석 상태
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [expertAdvice, setExpertAdvice] = useState('');
 
@@ -65,7 +62,6 @@ const ObservationNew = () => {
     setStructuredData(data.structured);
     setActiveMode('text');
     
-    // 자동으로 AI 조언 생성
     if (data.transcription) {
       generateExpertAdvice(data.transcription);
     }
@@ -111,7 +107,6 @@ const ObservationNew = () => {
     setSaving(true);
 
     try {
-      // 저장 전 상세 조언 생성
       let detailedAdvice = '';
       if (content.length > 50) {
         const adviceResponse = await supabase.functions.invoke('generate-expert-advice', {
@@ -134,7 +129,6 @@ const ObservationNew = () => {
         detailed_advice: detailedAdvice || null,
       };
 
-      // 구조화된 데이터 추가
       if (structuredData) {
         observationData.behaviors = structuredData.behaviors;
         observationData.emotions = structuredData.emotions;
@@ -170,265 +164,295 @@ const ObservationNew = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-10 h-10 text-primary mx-auto animate-spin" />
-          <p className="text-muted-foreground">로딩 중...</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-b from-amber-50/80 via-orange-50/50 to-background flex items-center justify-center">
+        <motion.div 
+          className="text-center space-y-4"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto shadow-lg">
+            <Loader2 className="w-8 h-8 text-amber-600 animate-spin" />
+          </div>
+          <p className="text-amber-700 font-medium">로딩 중...</p>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 상단 네비게이션 */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
-        <div className="container mx-auto max-w-3xl px-4 py-4">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/80 via-orange-50/50 to-background">
+      {/* 헤더 */}
+      <header className="sticky top-0 z-50 bg-gradient-to-b from-amber-50/95 to-amber-50/80 backdrop-blur-md border-b border-amber-200/50">
+        <div className="container mx-auto max-w-2xl px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => navigate('/')}
-                className="shrink-0"
+                className="shrink-0 hover:bg-amber-100/50 text-amber-700"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
-              <div>
-                <h1 className="text-lg font-bold flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-primary" />
-                  새 관찰일지
-                </h1>
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center shadow-md">
+                  <Feather className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-amber-900">새 기록</h1>
+                  <p className="text-xs text-amber-600/80">오늘의 관찰</p>
+                </div>
               </div>
             </div>
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => navigate('/observation-list')}
+              className="text-amber-700 hover:bg-amber-100/50"
             >
-              <FileText className="w-4 h-4 mr-2" />
+              <List className="w-4 h-4 mr-2" />
               목록
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto max-w-3xl px-4 py-6 space-y-6">
-        {/* 입력 모드 선택 */}
-        <Tabs value={activeMode} onValueChange={(v) => setActiveMode(v as 'voice' | 'text')}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="voice" className="gap-2">
-              <Mic className="w-4 h-4" />
-              음성 녹음
-            </TabsTrigger>
-            <TabsTrigger value="text" className="gap-2">
-              <FileText className="w-4 h-4" />
-              직접 작성
-            </TabsTrigger>
-          </TabsList>
+      <main className="container mx-auto max-w-2xl px-4 py-6 space-y-6">
+        {/* 모드 선택 버튼 */}
+        <div className="flex gap-2 p-1 bg-white/60 backdrop-blur-sm rounded-2xl border border-amber-200/50">
+          <button
+            onClick={() => setActiveMode('voice')}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
+              activeMode === 'voice'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md'
+                : 'text-amber-700 hover:bg-amber-50'
+            }`}
+          >
+            <Mic className="w-5 h-5" />
+            음성으로 기록
+          </button>
+          <button
+            onClick={() => setActiveMode('text')}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
+              activeMode === 'text'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md'
+                : 'text-amber-700 hover:bg-amber-50'
+            }`}
+          >
+            <FileText className="w-5 h-5" />
+            직접 작성
+          </button>
+        </div>
 
-          {/* 음성 녹음 모드 */}
-          <TabsContent value="voice" className="mt-6">
-            <VoiceObservationRecorder 
-              onObservationCreated={handleVoiceObservationCreated}
-            />
-            
-            {/* 음성 모드 안내 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mt-6 grid grid-cols-3 gap-3"
+        <AnimatePresence mode="wait">
+          {activeMode === 'voice' ? (
+            <motion.div
+              key="voice"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-6"
             >
-              <Card className="text-center p-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-2">
-                  <Mic className="w-5 h-5 text-primary" />
-                </div>
-                <p className="text-xs text-muted-foreground">30초만</p>
-                <p className="text-sm font-medium">빠른 기록</p>
-              </Card>
-              <Card className="text-center p-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-2">
-                  <Brain className="w-5 h-5 text-primary" />
-                </div>
-                <p className="text-xs text-muted-foreground">AI 자동</p>
-                <p className="text-sm font-medium">분석</p>
-              </Card>
-              <Card className="text-center p-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                </div>
-                <p className="text-xs text-muted-foreground">전문가</p>
-                <p className="text-sm font-medium">조언</p>
-              </Card>
+              <VoiceObservationRecorder 
+                onObservationCreated={handleVoiceObservationCreated}
+              />
+              
+              {/* 안내 카드 */}
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { icon: Mic, label: '30초 녹음', desc: '빠른 기록' },
+                  { icon: Brain, label: 'AI 분석', desc: '자동 정리' },
+                  { icon: Sparkles, label: '전문 조언', desc: '맞춤 가이드' },
+                ].map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * idx }}
+                    className="text-center p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-amber-200/50"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto mb-3">
+                      <item.icon className="w-6 h-6 text-amber-600" />
+                    </div>
+                    <p className="text-sm font-semibold text-amber-900">{item.label}</p>
+                    <p className="text-xs text-amber-600/70">{item.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
-          </TabsContent>
+          ) : (
+            <motion.div
+              key="text"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-5"
+            >
+              {/* 제목 입력 */}
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-amber-800">제목</label>
+                <Input
+                  placeholder="예: 오늘 아이의 특별한 순간"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="bg-white/70 border-amber-200/50 focus:border-amber-400 focus:ring-amber-400/20 rounded-xl"
+                />
+              </div>
 
-          {/* 직접 작성 모드 */}
-          <TabsContent value="text" className="mt-6 space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">제목</label>
-              <Input
-                placeholder="예: 오늘 아이의 행동 관찰"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
+              {/* 내용 입력 */}
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-amber-800">관찰 내용</label>
+                <Textarea
+                  placeholder="오늘 관찰한 아이의 행동, 감정, 특별한 순간을 자유롭게 적어주세요..."
+                  value={content}
+                  onChange={(e) => {
+                    setContent(e.target.value);
+                    if (e.target.value.length >= 100 && !expertAdvice && !isAnalyzing) {
+                      generateExpertAdvice(e.target.value);
+                    }
+                  }}
+                  rows={8}
+                  className="resize-none bg-white/70 border-amber-200/50 focus:border-amber-400 focus:ring-amber-400/20 rounded-xl"
+                />
+                <p className="text-xs text-amber-500 text-right">
+                  {content.length}자 {content.length >= 100 && <span className="text-amber-600">✓ AI 분석 가능</span>}
+                </p>
+              </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">관찰 내용</label>
-              <Textarea
-                placeholder="관찰한 내용을 자유롭게 작성해주세요..."
-                value={content}
-                onChange={(e) => {
-                  setContent(e.target.value);
-                  // 내용이 충분하면 AI 분석 트리거
-                  if (e.target.value.length >= 100 && !expertAdvice && !isAnalyzing) {
-                    generateExpertAdvice(e.target.value);
-                  }
-                }}
-                rows={8}
-                className="resize-none"
-              />
-              <p className="text-xs text-muted-foreground text-right">
-                {content.length}자
-              </p>
-            </div>
+              {/* AI 분석 중 */}
+              <AnimatePresence>
+                {isAnalyzing && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="p-4 rounded-2xl bg-amber-50 border border-amber-200/50"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+                        <Loader2 className="w-5 h-5 text-amber-600 animate-spin" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-amber-800">AI가 분석하고 있어요</p>
+                        <p className="text-xs text-amber-600/70">잠시만 기다려주세요...</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-            {/* AI 분석 중 */}
-            <AnimatePresence>
-              {isAnalyzing && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                >
-                  <Card className="bg-primary/5 border-primary/20">
-                    <CardContent className="p-4 flex items-center gap-3">
-                      <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                      <span className="text-sm">AI가 분석 중입니다...</span>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )}
-            </AnimatePresence>
+              {/* AI 조언 */}
+              <AnimatePresence>
+                {expertAdvice && !isAnalyzing && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200/50"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center shrink-0 shadow-md">
+                        <Lightbulb className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-emerald-800 mb-1">
+                          AI 전문가 조언
+                        </p>
+                        <p className="text-sm text-emerald-700 leading-relaxed">
+                          {expertAdvice}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-            {/* AI 조언 */}
-            <AnimatePresence>
-              {expertAdvice && !isAnalyzing && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                >
-                  <Card className="bg-emerald-500/5 border-emerald-500/20">
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
-                          <Lightbulb className="w-4 h-4 text-emerald-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-emerald-700 mb-1">
-                            AI 조언
-                          </p>
-                          <p className="text-sm text-emerald-600/80">
-                            {expertAdvice}
-                          </p>
+              {/* 구조화된 데이터 */}
+              <AnimatePresence>
+                {structuredData && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-amber-200/50 space-y-4"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-amber-500" />
+                      <h3 className="font-semibold text-amber-900">AI 분석 결과</h3>
+                    </div>
+
+                    {structuredData.behaviors?.length > 0 && (
+                      <div>
+                        <p className="text-sm font-medium text-amber-800 mb-2">감지된 행동</p>
+                        <div className="flex flex-wrap gap-2">
+                          {structuredData.behaviors.map((behavior: string, idx: number) => (
+                            <Badge key={idx} className="bg-amber-100 text-amber-800 hover:bg-amber-100 border-amber-200">
+                              {behavior}
+                            </Badge>
+                          ))}
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                    )}
 
-            {/* 구조화된 데이터 표시 */}
-            <AnimatePresence>
-              {structuredData && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                >
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-primary" />
-                        AI 분석 결과
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {structuredData.behaviors?.length > 0 && (
-                        <div>
-                          <p className="text-sm font-medium mb-2">감지된 행동</p>
-                          <div className="flex flex-wrap gap-2">
-                            {structuredData.behaviors.map((behavior: string, idx: number) => (
-                              <Badge key={idx} variant="secondary">
-                                {behavior}
-                              </Badge>
-                            ))}
-                          </div>
+                    {structuredData.emotions?.length > 0 && (
+                      <div>
+                        <p className="text-sm font-medium text-amber-800 mb-2">감정 상태</p>
+                        <div className="flex flex-wrap gap-2">
+                          {structuredData.emotions.map((emotion: string, idx: number) => (
+                            <Badge key={idx} className="bg-orange-100 text-orange-800 hover:bg-orange-100 border-orange-200">
+                              {emotion}
+                            </Badge>
+                          ))}
                         </div>
-                      )}
+                      </div>
+                    )}
 
-                      {structuredData.emotions?.length > 0 && (
-                        <div>
-                          <p className="text-sm font-medium mb-2">감정 상태</p>
-                          <div className="flex flex-wrap gap-2">
-                            {structuredData.emotions.map((emotion: string, idx: number) => (
-                              <Badge key={idx} className="bg-blue-100 text-blue-700 hover:bg-blue-100">
-                                {emotion}
-                              </Badge>
-                            ))}
-                          </div>
+                    {structuredData.recommendedTests?.length > 0 && (
+                      <div>
+                        <p className="text-sm font-medium text-amber-800 mb-2">추천 검사</p>
+                        <div className="space-y-2">
+                          {structuredData.recommendedTests.map((test: string, idx: number) => (
+                            <Button
+                              key={idx}
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start border-amber-200 text-amber-800 hover:bg-amber-50"
+                              onClick={() => navigate('/assessment')}
+                            >
+                              {test}
+                            </Button>
+                          ))}
                         </div>
-                      )}
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-                      {structuredData.recommendedTests?.length > 0 && (
-                        <div>
-                          <p className="text-sm font-medium mb-2">추천 검사</p>
-                          <div className="space-y-2">
-                            {structuredData.recommendedTests.map((test: string, idx: number) => (
-                              <Button
-                                key={idx}
-                                variant="outline"
-                                size="sm"
-                                className="w-full justify-start"
-                                onClick={() => navigate('/assessment')}
-                              >
-                                {test}
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* 저장 버튼 */}
-            <Button
-              onClick={handleSave}
-              disabled={saving || !content.trim()}
-              className="w-full"
-              size="lg"
-            >
-              {saving ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  저장 중...
-                </>
-              ) : (
-                <>
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  관찰일지 저장
-                </>
-              )}
-            </Button>
-          </TabsContent>
-        </Tabs>
+              {/* 저장 버튼 */}
+              <Button
+                onClick={handleSave}
+                disabled={saving || !content.trim()}
+                size="lg"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0 shadow-lg rounded-xl h-14 text-base font-semibold"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    저장 중...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-5 h-5 mr-2" />
+                    기록 저장하기
+                  </>
+                )}
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );

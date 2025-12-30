@@ -3,20 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { 
   Calendar, 
-  FileText, 
   Plus, 
   Sparkles, 
-  Brain, 
-  ArrowRight, 
   Loader2, 
   BookOpen,
   ChevronRight,
   ArrowLeft,
-  Home
+  PenLine,
+  Feather
 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -71,169 +67,155 @@ export default function ObservationList() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-10 h-10 text-primary mx-auto animate-spin" />
-          <p className="text-muted-foreground">로딩 중...</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-b from-amber-50/80 via-orange-50/50 to-background flex items-center justify-center">
+        <motion.div 
+          className="text-center space-y-4"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto shadow-lg">
+            <Loader2 className="w-8 h-8 text-amber-600 animate-spin" />
+          </div>
+          <p className="text-amber-700 font-medium">일지를 불러오는 중...</p>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 상단 네비게이션 */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
-        <div className="container mx-auto max-w-3xl px-4 py-4">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/80 via-orange-50/50 to-background">
+      {/* 헤더 */}
+      <header className="sticky top-0 z-50 bg-gradient-to-b from-amber-50/95 to-amber-50/80 backdrop-blur-md border-b border-amber-200/50">
+        <div className="container mx-auto max-w-2xl px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => navigate('/')}
-                className="shrink-0"
+                className="shrink-0 hover:bg-amber-100/50 text-amber-700"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
-              <div>
-                <h1 className="text-lg font-bold flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-primary" />
-                  AI 관찰일지
-                </h1>
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center shadow-md">
+                  <Feather className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-amber-900">관찰일지</h1>
+                  <p className="text-xs text-amber-600/80">아이의 성장 기록</p>
+                </div>
               </div>
             </div>
             <Button
               onClick={() => navigate("/observation")}
               size="sm"
-              className="gap-2"
+              className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md border-0"
             >
               <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">새 일지</span>
+              새 기록
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto max-w-3xl px-4 py-6">
-        {/* 통계 요약 */}
+      <main className="container mx-auto max-w-2xl px-4 py-6">
+        {/* 통계 */}
         {observations.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-2 gap-3 mb-6"
+            className="flex items-center gap-4 mb-6 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-amber-200/50 shadow-sm"
           >
-            <Card className="bg-primary/5 border-primary/20">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{observations.length}</p>
-                  <p className="text-xs text-muted-foreground">총 기록</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-emerald-500/5 border-emerald-500/20">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                  <Brain className="w-5 h-5 text-emerald-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{observations.filter(o => o.expert_advice).length}</p>
-                  <p className="text-xs text-muted-foreground">AI 분석</p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="flex-1 text-center border-r border-amber-200/50">
+              <p className="text-2xl font-bold text-amber-900">{observations.length}</p>
+              <p className="text-xs text-amber-600">전체 기록</p>
+            </div>
+            <div className="flex-1 text-center">
+              <p className="text-2xl font-bold text-orange-600">{observations.filter(o => o.expert_advice).length}</p>
+              <p className="text-xs text-amber-600">AI 분석</p>
+            </div>
           </motion.div>
         )}
 
-        {/* 관찰일지 목록 */}
+        {/* 빈 상태 */}
         {observations.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-16"
           >
-            <Card className="border-dashed">
-              <CardContent className="py-16 text-center">
-                <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="w-8 h-8 text-muted-foreground" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">
-                  아직 작성된 관찰일지가 없습니다
-                </h3>
-                <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-                  첫 관찰일지를 작성하고 AI의 전문가 수준 분석을 받아보세요
-                </p>
-                <Button onClick={() => navigate("/observation")} className="gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  첫 관찰일지 작성하기
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <BookOpen className="w-12 h-12 text-amber-500" />
+            </div>
+            <h3 className="text-xl font-bold text-amber-900 mb-2">
+              첫 번째 기록을 남겨보세요
+            </h3>
+            <p className="text-amber-600 mb-8 max-w-xs mx-auto leading-relaxed">
+              아이의 소중한 순간을 기록하고<br/>
+              AI의 전문적인 분석을 받아보세요
+            </p>
+            <Button 
+              onClick={() => navigate("/observation")} 
+              size="lg"
+              className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg border-0 rounded-xl"
+            >
+              <PenLine className="w-5 h-5" />
+              첫 기록 작성하기
+            </Button>
           </motion.div>
         ) : (
           <div className="space-y-3">
             {observations.map((obs, index) => (
               <motion.div
                 key={obs.id}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.03 }}
+                transition={{ delay: index * 0.05 }}
+                onClick={() => navigate(`/observation/${obs.id}`)}
+                className="group cursor-pointer"
               >
-                <Card
-                  className="group cursor-pointer hover:shadow-md hover:border-primary/30 transition-all duration-200"
-                  onClick={() => navigate(`/observation/${obs.id}`)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-4">
-                      {/* 날짜 */}
-                      <div className="hidden sm:flex flex-col items-center justify-center w-14 h-14 rounded-xl bg-muted text-center shrink-0">
-                        <span className="text-xs text-muted-foreground">
+                <div className="relative p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-amber-200/50 shadow-sm hover:shadow-md hover:bg-white/90 transition-all duration-300">
+                  {/* AI 분석 배지 */}
+                  {obs.expert_advice && (
+                    <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center shadow-md">
+                      <Sparkles className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+
+                  <div className="flex items-start gap-4">
+                    {/* 날짜 */}
+                    <div className="shrink-0 w-14 text-center">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-100 to-orange-50 flex flex-col items-center justify-center border border-amber-200/50">
+                        <span className="text-xs text-amber-500 font-medium uppercase">
                           {format(new Date(obs.created_at), "MMM", { locale: ko })}
                         </span>
-                        <span className="text-lg font-bold">
+                        <span className="text-xl font-bold text-amber-800">
                           {format(new Date(obs.created_at), "d")}
                         </span>
                       </div>
+                    </div>
 
-                      {/* 내용 */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-1.5">
-                          <h3 className="font-semibold truncate">
-                            {obs.title || "제목 없음"}
-                          </h3>
-                          {obs.expert_advice && (
-                            <Badge variant="secondary" className="shrink-0 gap-1 text-xs">
-                              <Sparkles className="w-3 h-3" />
-                              AI
-                            </Badge>
-                          )}
-                        </div>
-
-                        {/* 모바일 날짜 */}
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2 sm:hidden">
-                          <Calendar className="w-3 h-3" />
-                          {format(new Date(obs.created_at), "M월 d일 (E)", { locale: ko })}
-                        </div>
-
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {obs.content}
-                        </p>
-
-                        {/* PC 날짜 */}
-                        <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground mt-2">
-                          <Calendar className="w-3 h-3" />
-                          {format(new Date(obs.created_at), "yyyy년 M월 d일 (E)", { locale: ko })}
-                        </div>
-                      </div>
-
-                      {/* 화살표 */}
-                      <div className="shrink-0 self-center">
-                        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    {/* 내용 */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-amber-900 mb-1 truncate">
+                        {obs.title || "제목 없음"}
+                      </h3>
+                      <p className="text-sm text-amber-700/70 line-clamp-2 leading-relaxed mb-2">
+                        {obs.content}
+                      </p>
+                      <div className="flex items-center gap-1.5 text-xs text-amber-500">
+                        <Calendar className="w-3 h-3" />
+                        {format(new Date(obs.created_at), "yyyy년 M월 d일 (E)", { locale: ko })}
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+
+                    {/* 화살표 */}
+                    <div className="shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ChevronRight className="w-5 h-5 text-amber-400" />
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>

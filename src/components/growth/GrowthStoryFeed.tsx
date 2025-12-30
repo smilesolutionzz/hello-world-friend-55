@@ -3,9 +3,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Heart, Calendar, ArrowRight, Sparkles, Filter, Search, Quote, Star, TrendingUp, ChevronDown, ChevronUp } from 'lucide-react';
+import { Heart, Calendar, Sparkles, Search, Quote, Star, TrendingUp, ChevronDown, ChevronUp, Trophy, Flame, Zap, Gift, Crown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { mockGrowthStories } from '@/data/mockGrowthStories';
@@ -40,22 +39,22 @@ const GrowthStoryFeed = ({ refreshTrigger }: GrowthStoryFeedProps) => {
   const [visibleCount, setVisibleCount] = useState(6);
 
   const categories = [
-    { value: 'all', label: '전체', icon: '✨' },
-    { value: 'therapy', label: '치료 경험', icon: '💊' },
-    { value: 'education', label: '교육/학습', icon: '📚' },
-    { value: 'emotional', label: '감정 조절', icon: '💝' },
-    { value: 'family', label: '가족 관계', icon: '👨‍👩‍👧' },
-    { value: 'social', label: '사회성', icon: '🤝' },
-    { value: 'personal', label: '개인 성장', icon: '🌱' }
+    { value: 'all', label: '전체', icon: '🎮', emoji: '✨' },
+    { value: 'therapy', label: '치료', icon: '💊', emoji: '🏥' },
+    { value: 'education', label: '학습', icon: '📚', emoji: '🎓' },
+    { value: 'emotional', label: '감정', icon: '💝', emoji: '🌈' },
+    { value: 'family', label: '가족', icon: '👨‍👩‍👧', emoji: '🏠' },
+    { value: 'social', label: '사회성', icon: '🤝', emoji: '🎯' },
+    { value: 'personal', label: '성장', icon: '🌱', emoji: '⭐' }
   ];
 
-  const categoryStyles: { [key: string]: { bg: string; text: string; border: string } } = {
-    therapy: { bg: 'bg-purple-50 dark:bg-purple-950/30', text: 'text-purple-700 dark:text-purple-300', border: 'border-purple-200 dark:border-purple-800' },
-    education: { bg: 'bg-blue-50 dark:bg-blue-950/30', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-200 dark:border-blue-800' },
-    emotional: { bg: 'bg-pink-50 dark:bg-pink-950/30', text: 'text-pink-700 dark:text-pink-300', border: 'border-pink-200 dark:border-pink-800' },
-    family: { bg: 'bg-green-50 dark:bg-green-950/30', text: 'text-green-700 dark:text-green-300', border: 'border-green-200 dark:border-green-800' },
-    social: { bg: 'bg-amber-50 dark:bg-amber-950/30', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-200 dark:border-amber-800' },
-    personal: { bg: 'bg-teal-50 dark:bg-teal-950/30', text: 'text-teal-700 dark:text-teal-300', border: 'border-teal-200 dark:border-teal-800' }
+  const categoryStyles: { [key: string]: { bg: string; text: string; border: string; gradient: string } } = {
+    therapy: { bg: 'bg-purple-100/80 dark:bg-purple-950/50', text: 'text-purple-600 dark:text-purple-300', border: 'border-purple-300 dark:border-purple-700', gradient: 'from-purple-400 to-pink-400' },
+    education: { bg: 'bg-blue-100/80 dark:bg-blue-950/50', text: 'text-blue-600 dark:text-blue-300', border: 'border-blue-300 dark:border-blue-700', gradient: 'from-blue-400 to-cyan-400' },
+    emotional: { bg: 'bg-pink-100/80 dark:bg-pink-950/50', text: 'text-pink-600 dark:text-pink-300', border: 'border-pink-300 dark:border-pink-700', gradient: 'from-pink-400 to-rose-400' },
+    family: { bg: 'bg-green-100/80 dark:bg-green-950/50', text: 'text-green-600 dark:text-green-300', border: 'border-green-300 dark:border-green-700', gradient: 'from-green-400 to-emerald-400' },
+    social: { bg: 'bg-amber-100/80 dark:bg-amber-950/50', text: 'text-amber-600 dark:text-amber-300', border: 'border-amber-300 dark:border-amber-700', gradient: 'from-amber-400 to-orange-400' },
+    personal: { bg: 'bg-teal-100/80 dark:bg-teal-950/50', text: 'text-teal-600 dark:text-teal-300', border: 'border-teal-300 dark:border-teal-700', gradient: 'from-teal-400 to-cyan-400' }
   };
 
   const fetchStories = async () => {
@@ -172,73 +171,136 @@ const GrowthStoryFeed = ({ refreshTrigger }: GrowthStoryFeedProps) => {
 
   return (
     <div className="space-y-6">
-      {/* 검색 및 카테고리 필터 */}
-      <div className="flex flex-col gap-4">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+      {/* 게임 스타일 헤더 */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 text-white shadow-2xl"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full blur-xl" />
+        
+        <div className="relative flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center text-3xl animate-bounce">
+              🎮
+            </div>
+            <div>
+              <h2 className="text-xl font-black tracking-tight">성장 스토리 퀘스트</h2>
+              <p className="text-white/80 text-sm">실제 변화를 경험한 모험가들의 이야기</p>
+            </div>
+          </div>
+          <div className="hidden sm:flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-4 py-2">
+            <Crown className="w-5 h-5 text-yellow-300" />
+            <span className="font-bold">{filteredStories.length}</span>
+            <span className="text-white/70 text-sm">스토리</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* 검색 바 - 게임 스타일 */}
+      <div className="relative">
+        <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-2xl blur opacity-30" />
+        <div className="relative flex items-center gap-2 bg-background rounded-2xl p-2 border-2 border-muted">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
+            <Search className="w-5 h-5 text-white" />
+          </div>
           <Input
-            placeholder="성장 스토리 검색..."
+            placeholder="🔍 스토리 검색하기..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 h-12 text-base rounded-xl bg-muted/50 border-0 focus-visible:ring-2 focus-visible:ring-primary"
+            className="border-0 bg-transparent focus-visible:ring-0 text-base placeholder:text-muted-foreground/60"
           />
         </div>
-        
-        {/* 카테고리 칩 */}
-        <div className="flex flex-wrap gap-2">
-          {categories.map(category => (
-            <Button
-              key={category.value}
-              variant={selectedCategory === category.value ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedCategory(category.value)}
-              className={`rounded-full transition-all ${
-                selectedCategory === category.value 
-                  ? 'shadow-md' 
-                  : 'hover:bg-muted'
-              }`}
-            >
-              <span className="mr-1">{category.icon}</span>
-              {category.label}
-            </Button>
-          ))}
-        </div>
       </div>
-
-      {/* 통계 배너 */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{filteredStories.length}</div>
-          <div className="text-xs text-muted-foreground">성장 스토리</div>
-        </div>
-        <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-            {filteredStories.reduce((sum, s) => sum + s.likes_count, 0).toLocaleString()}
-          </div>
-          <div className="text-xs text-muted-foreground">총 공감</div>
-        </div>
-        <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-green-600 dark:text-green-400">98%</div>
-          <div className="text-xs text-muted-foreground">만족도</div>
-        </div>
-      </div>
-
-      {/* 스토리 그리드 */}
-      {visibleStories.length === 0 ? (
-        <Card className="text-center py-16 bg-muted/30">
-          <CardContent>
-            <Sparkles className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
-              {searchTerm || selectedCategory !== 'all' ? '검색 결과가 없습니다' : '아직 공유된 스토리가 없습니다'}
-            </h3>
-            <p className="text-muted-foreground">
-              {searchTerm || selectedCategory !== 'all' 
-                ? '다른 검색어나 카테고리를 시도해보세요'
-                : '첫 번째로 성장 스토리를 공유해보세요!'
+      
+      {/* 카테고리 - 게임 버튼 스타일 */}
+      <div className="flex flex-wrap gap-2">
+        {categories.map((category, idx) => (
+          <motion.button
+            key={category.value}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: idx * 0.05 }}
+            onClick={() => setSelectedCategory(category.value)}
+            className={`
+              relative px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200
+              ${selectedCategory === category.value 
+                ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-purple-500/30 scale-105' 
+                : 'bg-muted/80 hover:bg-muted text-foreground hover:scale-102 border-2 border-transparent hover:border-purple-300'
               }
-            </p>
-          </CardContent>
-        </Card>
+            `}
+          >
+            <span className="mr-1.5">{category.icon}</span>
+            {category.label}
+            {selectedCategory === category.value && (
+              <motion.div
+                layoutId="activeCategory"
+                className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 -z-10"
+              />
+            )}
+          </motion.button>
+        ))}
+      </div>
+
+      {/* 게임 스타일 통계 카드 */}
+      <div className="grid grid-cols-3 gap-3">
+        <motion.div 
+          whileHover={{ scale: 1.02, y: -2 }}
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 p-4 text-white shadow-lg"
+        >
+          <Trophy className="absolute -right-2 -top-2 w-16 h-16 text-white/10" />
+          <div className="relative">
+            <div className="text-3xl font-black">{filteredStories.length}</div>
+            <div className="text-xs text-white/80 font-medium">🏆 성장 스토리</div>
+          </div>
+        </motion.div>
+        
+        <motion.div 
+          whileHover={{ scale: 1.02, y: -2 }}
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 p-4 text-white shadow-lg"
+        >
+          <Flame className="absolute -right-2 -top-2 w-16 h-16 text-white/10" />
+          <div className="relative">
+            <div className="text-3xl font-black">
+              {filteredStories.reduce((sum, s) => sum + s.likes_count, 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-white/80 font-medium">❤️ 총 공감</div>
+          </div>
+        </motion.div>
+        
+        <motion.div 
+          whileHover={{ scale: 1.02, y: -2 }}
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 p-4 text-white shadow-lg"
+        >
+          <Zap className="absolute -right-2 -top-2 w-16 h-16 text-white/10" />
+          <div className="relative">
+            <div className="text-3xl font-black">98%</div>
+            <div className="text-xs text-white/80 font-medium">⚡ 만족도</div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* 스토리 그리드 - 게임 카드 스타일 */}
+      {visibleStories.length === 0 ? (
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center py-16 rounded-3xl bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-900 dark:to-slate-800 border-2 border-dashed border-muted"
+        >
+          <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-4xl animate-pulse">
+            🎮
+          </div>
+          <h3 className="text-xl font-bold mb-2">
+            {searchTerm || selectedCategory !== 'all' ? '퀘스트를 찾을 수 없어요!' : '첫 번째 모험가가 되어주세요!'}
+          </h3>
+          <p className="text-muted-foreground">
+            {searchTerm || selectedCategory !== 'all' 
+              ? '다른 키워드나 카테고리를 선택해보세요 🔍'
+              : '당신의 성장 스토리를 공유해주세요 ✨'
+            }
+          </p>
+        </motion.div>
       ) : (
         <>
           <div className="grid gap-4 md:grid-cols-2">
@@ -246,59 +308,93 @@ const GrowthStoryFeed = ({ refreshTrigger }: GrowthStoryFeedProps) => {
               {visibleStories.map((story, index) => {
                 const style = categoryStyles[story.category] || categoryStyles.personal;
                 const isExpanded = expandedStory === story.id;
+                const levelBadge = story.likes_count >= 50 ? { icon: '👑', text: 'LEGEND' } 
+                  : story.likes_count >= 30 ? { icon: '💎', text: 'EPIC' }
+                  : story.likes_count >= 10 ? { icon: '⭐', text: 'RARE' }
+                  : { icon: '🌟', text: 'COMMON' };
                 
                 return (
                   <motion.div
                     key={story.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ delay: index * 0.05 }}
+                    initial={{ opacity: 0, y: 30, rotateX: -10 }}
+                    animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ delay: index * 0.06, type: "spring", stiffness: 100 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
                   >
                     <Card 
-                      className={`group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden border-2 ${style.border} ${style.bg}`}
+                      className={`
+                        group cursor-pointer overflow-hidden border-0 shadow-lg
+                        bg-gradient-to-br ${style.bg} backdrop-blur
+                        transition-all duration-300 hover:shadow-2xl
+                        rounded-2xl relative
+                      `}
                       onClick={() => setExpandedStory(isExpanded ? null : story.id)}
                     >
+                      {/* 게임 스타일 레벨 뱃지 */}
+                      <div className="absolute top-3 right-3 z-10">
+                        <div className={`
+                          px-2.5 py-1 rounded-full text-xs font-black
+                          bg-gradient-to-r ${style.gradient} text-white shadow-lg
+                          flex items-center gap-1
+                        `}>
+                          <span>{levelBadge.icon}</span>
+                          <span>{levelBadge.text}</span>
+                        </div>
+                      </div>
+                      
                       <CardContent className="p-0">
                         {/* 헤더 */}
                         <div className="p-5 pb-3">
-                          <div className="flex items-start justify-between gap-3 mb-3">
-                            <Badge className={`${style.text} bg-white/80 dark:bg-background/80 border ${style.border}`}>
-                              {categories.find(c => c.value === story.category)?.icon}{' '}
-                              {categories.find(c => c.value === story.category)?.label}
-                            </Badge>
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                              <Calendar className="w-3 h-3" />
-                              {story.transformation_date && formatDate(story.transformation_date)}
-                            </div>
-                          </div>
+                          <Badge className={`
+                            ${style.text} bg-white/90 dark:bg-background/90 
+                            border-2 ${style.border} font-semibold mb-3
+                            rounded-lg px-3 py-1
+                          `}>
+                            {categories.find(c => c.value === story.category)?.icon}{' '}
+                            {categories.find(c => c.value === story.category)?.label}
+                          </Badge>
                           
-                          <h3 className={`font-bold text-lg leading-tight mb-3 ${style.text}`}>
+                          <h3 className="font-black text-lg leading-tight mb-4 text-foreground">
                             {story.title}
                           </h3>
                           
-                          {/* Before/After 미니 뷰 */}
+                          {/* Before/After 게임 스타일 */}
                           <div className="space-y-3">
-                            <div className="flex items-start gap-2">
-                              <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0 mt-0.5">
-                                <span className="text-xs">😢</span>
+                            <div className="relative">
+                              <div className="absolute left-0 top-0 bottom-0 w-1 rounded-full bg-gradient-to-b from-red-400 to-red-500" />
+                              <div className="pl-4 flex items-start gap-3">
+                                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-red-400 to-rose-500 flex items-center justify-center shrink-0 shadow-lg shadow-red-500/30">
+                                  <span className="text-sm">😢</span>
+                                </div>
+                                <div>
+                                  <span className="text-xs font-bold text-red-500 uppercase tracking-wider">Before</span>
+                                  <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5">
+                                    {story.before_story}
+                                  </p>
+                                </div>
                               </div>
-                              <p className="text-sm text-muted-foreground line-clamp-2">
-                                {story.before_story}
-                              </p>
                             </div>
                             
-                            <div className="flex justify-center">
-                              <TrendingUp className="w-4 h-4 text-green-500" />
+                            <div className="flex justify-center py-1">
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30 animate-bounce">
+                                <TrendingUp className="w-4 h-4 text-white" />
+                              </div>
                             </div>
                             
-                            <div className="flex items-start gap-2">
-                              <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center shrink-0 mt-0.5">
-                                <span className="text-xs">😊</span>
+                            <div className="relative">
+                              <div className="absolute left-0 top-0 bottom-0 w-1 rounded-full bg-gradient-to-b from-green-400 to-emerald-500" />
+                              <div className="pl-4 flex items-start gap-3">
+                                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shrink-0 shadow-lg shadow-green-500/30">
+                                  <span className="text-sm">🎉</span>
+                                </div>
+                                <div>
+                                  <span className="text-xs font-bold text-green-500 uppercase tracking-wider">After</span>
+                                  <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5">
+                                    {story.after_story}
+                                  </p>
+                                </div>
                               </div>
-                              <p className="text-sm text-muted-foreground line-clamp-2">
-                                {story.after_story}
-                              </p>
                             </div>
                           </div>
                         </div>
@@ -312,19 +408,23 @@ const GrowthStoryFeed = ({ refreshTrigger }: GrowthStoryFeedProps) => {
                               exit={{ height: 0, opacity: 0 }}
                               className="overflow-hidden"
                             >
-                              <div className="px-5 pb-4 space-y-4 border-t border-dashed pt-4">
-                                <div className="bg-white/60 dark:bg-background/40 rounded-xl p-4">
+                              <div className="px-5 pb-4 space-y-4 border-t-2 border-dashed border-muted/50 pt-4">
+                                <div className="bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30 rounded-2xl p-4 border-2 border-red-100 dark:border-red-900/50">
                                   <div className="flex items-center gap-2 mb-2">
-                                    <Quote className="w-4 h-4 text-red-400" />
-                                    <span className="font-medium text-sm text-red-600 dark:text-red-400">변화 전</span>
+                                    <div className="w-6 h-6 rounded-lg bg-red-500 flex items-center justify-center">
+                                      <Quote className="w-3 h-3 text-white" />
+                                    </div>
+                                    <span className="font-bold text-sm text-red-600 dark:text-red-400">🔴 변화 전 상태</span>
                                   </div>
                                   <p className="text-sm leading-relaxed">{story.before_story}</p>
                                 </div>
                                 
-                                <div className="bg-white/60 dark:bg-background/40 rounded-xl p-4">
+                                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl p-4 border-2 border-green-100 dark:border-green-900/50">
                                   <div className="flex items-center gap-2 mb-2">
-                                    <Star className="w-4 h-4 text-green-500" />
-                                    <span className="font-medium text-sm text-green-600 dark:text-green-400">변화 후</span>
+                                    <div className="w-6 h-6 rounded-lg bg-green-500 flex items-center justify-center">
+                                      <Star className="w-3 h-3 text-white" />
+                                    </div>
+                                    <span className="font-bold text-sm text-green-600 dark:text-green-400">🟢 변화 후 상태</span>
                                   </div>
                                   <p className="text-sm leading-relaxed">{story.after_story}</p>
                                 </div>
@@ -333,37 +433,47 @@ const GrowthStoryFeed = ({ refreshTrigger }: GrowthStoryFeedProps) => {
                           )}
                         </AnimatePresence>
                         
-                        {/* 푸터 */}
-                        <div className="flex items-center justify-between px-5 py-3 bg-white/40 dark:bg-background/20 border-t">
+                        {/* 게임 스타일 푸터 */}
+                        <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-white/60 to-white/40 dark:from-background/40 dark:to-background/20 border-t-2 border-muted/30">
                           <div className="flex items-center gap-2">
-                            <Avatar className="w-7 h-7">
-                              <AvatarFallback className="text-xs bg-muted">
-                                {story.is_anonymous ? '익명' : 'U'}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-xs text-muted-foreground">
-                              {story.is_anonymous ? '익명의 부모님' : '사용자'}
-                            </span>
+                            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-purple-500/30">
+                              {story.is_anonymous ? '?' : 'U'}
+                            </div>
+                            <div>
+                              <span className="text-xs font-semibold block">
+                                {story.is_anonymous ? '익명의 모험가' : '사용자'}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground">
+                                {story.transformation_date && formatDate(story.transformation_date)}
+                              </span>
+                            </div>
                           </div>
                           
-                          <div className="flex items-center gap-3">
-                            <Button
-                              variant="ghost"
-                              size="sm"
+                          <div className="flex items-center gap-2">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
                               onClick={(e) => handleLike(story.id, e)}
-                              className={`gap-1.5 h-8 px-3 rounded-full transition-all ${
-                                likedStories.has(story.id) 
-                                  ? 'text-pink-500 bg-pink-50 dark:bg-pink-950/30' 
-                                  : 'hover:bg-pink-50 dark:hover:bg-pink-950/30'
-                              }`}
+                              className={`
+                                flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-sm
+                                transition-all duration-200 shadow-lg
+                                ${likedStories.has(story.id) 
+                                  ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-pink-500/30' 
+                                  : 'bg-white dark:bg-background text-pink-500 border-2 border-pink-200 dark:border-pink-800 hover:border-pink-400'
+                                }
+                              `}
                             >
                               <Heart className={`w-4 h-4 ${likedStories.has(story.id) ? 'fill-current' : ''}`} />
-                              <span className="font-medium">{story.likes_count}</span>
-                            </Button>
+                              <span>{story.likes_count}</span>
+                            </motion.button>
                             
-                            <button className="text-muted-foreground hover:text-foreground transition-colors">
+                            <motion.button 
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+                            >
                               {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                            </button>
+                            </motion.button>
                           </div>
                         </div>
                       </CardContent>
@@ -374,22 +484,33 @@ const GrowthStoryFeed = ({ refreshTrigger }: GrowthStoryFeedProps) => {
             </AnimatePresence>
           </div>
           
-          {/* 더보기 버튼 */}
+          {/* 게임 스타일 더보기 버튼 */}
           {visibleCount < filteredStories.length && (
-            <div className="text-center pt-4">
-              <Button
-                variant="outline"
-                size="lg"
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center pt-6"
+            >
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setVisibleCount(prev => prev + 6)}
-                className="rounded-full px-8 gap-2"
+                className="
+                  relative px-8 py-4 rounded-2xl font-black text-lg
+                  bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+                  text-white shadow-2xl shadow-purple-500/30
+                  flex items-center gap-3 mx-auto
+                  hover:shadow-purple-500/40 transition-shadow
+                "
               >
-                더 많은 스토리 보기
-                <ChevronDown className="w-4 h-4" />
-              </Button>
-              <p className="text-sm text-muted-foreground mt-2">
-                {filteredStories.length - visibleCount}개의 스토리가 더 있습니다
+                <Gift className="w-6 h-6" />
+                더 많은 스토리 발견하기
+                <ChevronDown className="w-5 h-5 animate-bounce" />
+              </motion.button>
+              <p className="text-sm text-muted-foreground mt-3 font-medium">
+                🎁 {filteredStories.length - visibleCount}개의 스토리가 기다리고 있어요!
               </p>
-            </div>
+            </motion.div>
           )}
         </>
       )}

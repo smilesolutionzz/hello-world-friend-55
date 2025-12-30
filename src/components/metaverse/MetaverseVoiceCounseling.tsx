@@ -17,7 +17,7 @@ import { MovementGuide } from '@/components/metaverse/CharacterController';
 import { EmotionDetector, EmotionType } from '@/utils/EmotionDetector';
 import { useInteractiveObjects } from '@/components/metaverse/InteractiveObject';
 import { AvatarPreview } from '@/components/metaverse/AvatarPreview';
-import { AvatarGallery } from '@/components/metaverse/AvatarGallery';
+import { AvatarGallery, AvatarType } from '@/components/metaverse/AvatarGallery';
 import { getSoundEffects } from '@/utils/SoundEffects';
 import { getMusicPlayer, MUSIC_OPTIONS, type MusicType } from '@/utils/BackgroundMusic';
 import { GestureManager, GESTURES, type GestureType } from '@/utils/GestureSystem';
@@ -164,6 +164,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [isMobile, setIsMobile] = useState(false);
   const [isUICollapsed, setIsUICollapsed] = useState(false);
   const [virtualJoystickInput, setVirtualJoystickInput] = useState({ x: 0, y: 0 });
+  const [avatarType, setAvatarType] = useState<AvatarType>('cute');
   
   // 문 근처 감지 및 방 이동 UI
   const [showRoomTransition, setShowRoomTransition] = useState(false);
@@ -1269,12 +1270,13 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                       <AccordionContent className="px-4 pb-4 space-y-3">
                         {/* 샘플 아바타 갤러리 */}
                         <AvatarGallery 
-                          selectedUrl={avatarUrl}
-                          onSelect={(url) => {
-                            setAvatarUrl(url);
+                          selectedType={avatarType}
+                          onSelect={(type, url) => {
+                            setAvatarType(type);
+                            if (url) setAvatarUrl(url);
                             toast({
-                              title: "샘플 아바타 선택됨 ✓",
-                              description: "미리보기에서 확인하세요",
+                              title: type === 'cute' ? "귀여운 캐릭터 선택 ✓" : "여성 아바타 선택 ✓",
+                              description: type === 'cute' ? "상담 시 동물 캐릭터가 사용됩니다" : "Ready Player Me 아바타가 사용됩니다",
                             });
                           }}
                         />

@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Mic, Square, Loader2, CheckCircle } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Mic, Square, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface VoiceObservationRecorderProps {
   onObservationCreated: (observation: any) => void;
@@ -58,7 +59,7 @@ const VoiceObservationRecorder: React.FC<VoiceObservationRecorderProps> = ({
       }, 1000);
 
       toast({
-        title: "🎤 녹음 시작",
+        title: "녹음 시작",
         description: "관찰 내용을 자유롭게 말씀해주세요",
       });
     } catch (error) {
@@ -87,7 +88,6 @@ const VoiceObservationRecorder: React.FC<VoiceObservationRecorderProps> = ({
     try {
       const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
       
-      // Convert to base64
       const reader = new FileReader();
       reader.readAsDataURL(audioBlob);
       
@@ -99,8 +99,8 @@ const VoiceObservationRecorder: React.FC<VoiceObservationRecorderProps> = ({
         }
 
         toast({
-          title: "🔄 AI 분석 중...",
-          description: "음성을 텍스트로 변환하고 구조화하는 중입니다",
+          title: "AI 분석 중...",
+          description: "음성을 텍스트로 변환하고 있습니다",
         });
 
         const { data, error } = await supabase.functions.invoke('voice-to-observation', {
@@ -110,8 +110,8 @@ const VoiceObservationRecorder: React.FC<VoiceObservationRecorderProps> = ({
         if (error) throw error;
 
         toast({
-          title: "✅ 변환 완료!",
-          description: "AI가 관찰일지를 자동으로 작성했습니다",
+          title: "변환 완료",
+          description: "AI가 관찰일지를 작성했습니다",
         });
 
         onObservationCreated(data);
@@ -136,58 +136,103 @@ const VoiceObservationRecorder: React.FC<VoiceObservationRecorderProps> = ({
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10">
-      <div className="flex flex-col items-center gap-4">
-        <div className="text-center">
-          <h3 className="text-lg font-semibold mb-2">🎤 음성으로 빠르게 기록하기</h3>
-          <p className="text-sm text-muted-foreground">
-            관찰 내용을 말씀하시면 AI가 자동으로 정리해드립니다
-          </p>
-        </div>
-
-        {isRecording && (
-          <div className="flex items-center gap-2 text-red-500 animate-pulse">
-            <div className="w-3 h-3 bg-red-500 rounded-full" />
-            <span className="font-mono text-lg">{formatTime(recordingTime)}</span>
+    <Card className="overflow-hidden">
+      <CardContent className="p-6">
+        <div className="flex flex-col items-center gap-6">
+          {/* 녹음 버튼 */}
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              {isRecording ? (
+                <motion.div
+                  key="recording"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  className="relative"
+                >
+                  {/* 파동 효과 */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-destructive/20"
+                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-destructive/20"
+                    animate={{ scale: [1, 1.8, 1], opacity: [0.3, 0, 0.3] }}
+                    transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
+                  />
+                  <Button
+                    onClick={stopRecording}
+                    size="lg"
+                    variant="destructive"
+                    className="w-20 h-20 rounded-full relative z-10"
+                  >
+                    <Square className="w-6 h-6" />
+                  </Button>
+                </motion.div>
+              ) : isProcessing ? (
+                <motion.div
+                  key="processing"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  className="w-20 h-20 rounded-full bg-muted flex items-center justify-center"
+                >
+                  <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="idle"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                >
+                  <Button
+                    onClick={startRecording}
+                    size="lg"
+                    className="w-20 h-20 rounded-full"
+                  >
+                    <Mic className="w-8 h-8" />
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        )}
 
-        {isProcessing && (
-          <div className="flex items-center gap-2 text-primary">
-            <Loader2 className="w-5 h-5 animate-spin" />
-            <span>AI가 분석하는 중...</span>
+          {/* 상태 텍스트 */}
+          <div className="text-center space-y-1">
+            {isRecording ? (
+              <>
+                <div className="flex items-center gap-2 justify-center text-destructive">
+                  <span className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+                  <span className="font-mono text-lg font-medium">{formatTime(recordingTime)}</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  녹음 중... 완료되면 버튼을 눌러주세요
+                </p>
+              </>
+            ) : isProcessing ? (
+              <p className="text-sm text-muted-foreground">
+                AI가 음성을 분석하고 있습니다...
+              </p>
+            ) : (
+              <>
+                <p className="font-medium">음성으로 기록하기</p>
+                <p className="text-sm text-muted-foreground">
+                  버튼을 누르고 관찰 내용을 말씀해주세요
+                </p>
+              </>
+            )}
           </div>
-        )}
 
-        <div className="flex gap-3">
+          {/* 팁 */}
           {!isRecording && !isProcessing && (
-            <Button
-              onClick={startRecording}
-              size="lg"
-              className="bg-primary hover:bg-primary/90"
-            >
-              <Mic className="w-5 h-5 mr-2" />
-              녹음 시작
-            </Button>
-          )}
-
-          {isRecording && (
-            <Button
-              onClick={stopRecording}
-              size="lg"
-              variant="destructive"
-            >
-              <Square className="w-5 h-5 mr-2" />
-              녹음 종료
-            </Button>
+            <div className="text-xs text-center text-muted-foreground bg-muted/50 rounded-lg p-3 max-w-sm">
+              💡 "오늘 아이가 어린이집에서..." 처럼 자연스럽게 말씀해주세요
+            </div>
           )}
         </div>
-
-        <div className="text-xs text-muted-foreground text-center max-w-md">
-          💡 팁: "오늘 아이가 어린이집에서..." 처럼 자연스럽게 말씀해주세요. 
-          AI가 자동으로 카테고리와 감정을 분석합니다.
-        </div>
-      </div>
+      </CardContent>
     </Card>
   );
 };

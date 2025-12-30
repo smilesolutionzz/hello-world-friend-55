@@ -306,7 +306,7 @@ const Auth = () => {
                   {loading ? "로그인 중..." : "로그인"}
                 </Button>
                 
-                <div className="text-center mt-4">
+                <div className="flex flex-col items-center gap-2 mt-4">
                   <Button 
                     type="button" 
                     variant="link" 
@@ -315,6 +315,20 @@ const Auth = () => {
                   >
                     비밀번호를 잊으셨나요?
                   </Button>
+                  <div className="text-sm text-muted-foreground">
+                    계정이 없으신가요?{' '}
+                    <Button 
+                      type="button" 
+                      variant="link" 
+                      className="p-0 h-auto text-primary font-semibold hover:underline"
+                      onClick={() => {
+                        const signupTab = document.querySelector('[data-state="inactive"][value="signup"]') as HTMLButtonElement;
+                        signupTab?.click();
+                      }}
+                    >
+                      회원가입
+                    </Button>
+                  </div>
                 </div>
               </form>
             </TabsContent>

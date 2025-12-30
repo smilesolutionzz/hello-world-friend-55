@@ -649,8 +649,28 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     setShowRecordingConsent(false);
     
     try {
+      // 먼저 마이크 장치가 있는지 확인
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const audioInputDevices = devices.filter(device => device.kind === 'audioinput');
+      
+      if (audioInputDevices.length === 0) {
+        throw new Error('마이크가 연결되어 있지 않습니다. 마이크를 연결하고 다시 시도해주세요.');
+      }
+
       // Request microphone permission
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (micError: any) {
+        if (micError.name === 'NotFoundError' || micError.name === 'DevicesNotFoundError') {
+          throw new Error('마이크를 찾을 수 없습니다. 마이크가 연결되어 있는지 확인해주세요.');
+        } else if (micError.name === 'NotAllowedError' || micError.name === 'PermissionDeniedError') {
+          throw new Error('마이크 사용 권한이 거부되었습니다. 브라우저 설정에서 마이크 권한을 허용해주세요.');
+        } else if (micError.name === 'NotReadableError' || micError.name === 'TrackStartError') {
+          throw new Error('마이크가 다른 프로그램에서 사용 중입니다. 다른 앱을 종료하고 다시 시도해주세요.');
+        }
+        throw micError;
+      }
 
       // 감정 인식 시작
       emotionDetectorRef.current = new EmotionDetector((emotionState) => {
@@ -729,7 +749,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
       console.error('Error starting conversation:', error);
       toast({
         title: "연결 실패",
-        description: error instanceof Error ? error.message : '대화를 시작할 수 없습니다',
+        description: error instanceof Error ? error.message : '대화를 시작할 수 없습니다. 마이크 연결을 확인해주세요.',
         variant: "destructive",
       });
     } finally {

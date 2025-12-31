@@ -536,6 +536,27 @@ const InstantAIAnalysis = () => {
 
         {/* 입력 영역 */}
         <div className="p-3 md:p-5 space-y-3 md:space-y-4">
+          {/* 예시 고민 태그들 */}
+          <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3">
+            {[
+              { emoji: '👶', text: '아이가 말을 늦게 시작해서 걱정돼요' },
+              { emoji: '😢', text: '아이가 친구들과 잘 어울리지 못해요' },
+              { emoji: '📚', text: '집중력이 부족하고 산만해요' },
+              { emoji: '😤', text: '아이가 자주 짜증을 내고 화를 내요' },
+              { emoji: '🌙', text: '수면 습관이 불규칙해요' },
+              { emoji: '🍽️', text: '편식이 심하고 식사를 거부해요' },
+            ].map((tag, index) => (
+              <button
+                key={index}
+                onClick={() => setInputText(tag.text)}
+                className="inline-flex items-center gap-1 px-2 md:px-3 py-1 md:py-1.5 bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 rounded-full text-[10px] md:text-xs text-white/70 hover:text-amber-200 transition-all duration-200"
+              >
+                <span>{tag.emoji}</span>
+                <span className="truncate max-w-[80px] md:max-w-none">{tag.text.slice(0, 12)}...</span>
+              </button>
+            ))}
+          </div>
+
           <div className="relative">
             <Textarea
               value={inputText}

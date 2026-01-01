@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { DefenseMechanismTest } from '@/components/assessment/DefenseMechanismTest';
 import { DefenseMechanismResult } from '@/components/assessment/DefenseMechanismResult';
 import { useNavigate } from 'react-router-dom';
+import { useGuestSession } from '@/hooks/useGuestSession';
+import SignupPromptModal from '@/components/guest/SignupPromptModal';
 
 const STORAGE_KEY = 'defenseMechanismTestResult';
 
 const DefenseMechanismTestPage = () => {
   const [result, setResult] = useState<any>(null);
+  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const navigate = useNavigate();
+  const { isGuest, saveGuestResult, guestResults } = useGuestSession();
 
   useEffect(() => {
     const savedResult = sessionStorage.getItem(STORAGE_KEY);
@@ -23,6 +27,10 @@ const DefenseMechanismTestPage = () => {
   const handleComplete = (testResult: any) => {
     setResult(testResult);
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(testResult));
+    if (isGuest) {
+      saveGuestResult('defense_mechanism', '방어기제 검사', testResult);
+      setShowSignupPrompt(true);
+    }
   };
 
   const handleBack = () => {
@@ -35,7 +43,17 @@ const DefenseMechanismTestPage = () => {
   };
 
   if (result) {
-    return <DefenseMechanismResult result={result} onBack={handleBack} />;
+    return (
+      <>
+        <DefenseMechanismResult result={result} onBack={handleBack} />
+        <SignupPromptModal 
+          open={showSignupPrompt} 
+          onClose={() => setShowSignupPrompt(false)}
+          pendingResults={guestResults}
+          currentResult={{ testTitle: '방어기제 검사' }}
+        />
+      </>
+    );
   }
 
   return <DefenseMechanismTest onComplete={handleComplete} onBack={handleBack} />;

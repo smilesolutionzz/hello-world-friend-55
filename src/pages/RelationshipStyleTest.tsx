@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { RelationshipStyleForm } from '@/components/assessment/RelationshipStyleForm';
 import { RelationshipStyleResult } from '@/components/assessment/RelationshipStyleResult';
 import { useNavigate } from 'react-router-dom';
+import { useGuestSession } from '@/hooks/useGuestSession';
+import SignupPromptModal from '@/components/guest/SignupPromptModal';
 
 const STORAGE_KEY = 'relationshipStyleTestResult';
 
 const RelationshipStyleTest = () => {
   const [result, setResult] = useState<any>(null);
+  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const navigate = useNavigate();
+  const { isGuest, saveGuestResult, guestResults } = useGuestSession();
 
-  // 페이지 로드 시 저장된 결과 복원
   useEffect(() => {
     const savedResult = sessionStorage.getItem(STORAGE_KEY);
     if (savedResult) {
@@ -24,6 +27,10 @@ const RelationshipStyleTest = () => {
   const handleComplete = (testResult: any) => {
     setResult(testResult);
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(testResult));
+    if (isGuest) {
+      saveGuestResult('relationship_style', '관계유형 검사', testResult);
+      setShowSignupPrompt(true);
+    }
   };
 
   const handleBack = () => {
@@ -36,7 +43,17 @@ const RelationshipStyleTest = () => {
   };
 
   if (result) {
-    return <RelationshipStyleResult result={result} onBack={handleBack} />;
+    return (
+      <>
+        <RelationshipStyleResult result={result} onBack={handleBack} />
+        <SignupPromptModal 
+          open={showSignupPrompt} 
+          onClose={() => setShowSignupPrompt(false)}
+          pendingResults={guestResults}
+          currentResult={{ testTitle: '관계유형 검사' }}
+        />
+      </>
+    );
   }
 
   return <RelationshipStyleForm onComplete={handleComplete} onBack={handleBack} />;

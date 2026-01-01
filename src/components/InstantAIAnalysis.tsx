@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
+import { ThinkingLoader, ThinkingDots } from '@/components/ui/thinking-loader';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -600,11 +601,16 @@ const InstantAIAnalysis = () => {
                 className="text-[10px] md:text-xs text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 gap-1 md:gap-1.5 h-7 md:h-8 px-2 md:px-3"
               >
                 {isExpanding ? (
-                  <Loader2 className="w-3 h-3 md:w-3.5 md:h-3.5 animate-spin" />
+                  <>
+                    <ThinkingDots className="text-amber-400" />
+                    <span className="ml-1">다듬는 중...</span>
+                  </>
                 ) : (
-                  <Wand2 className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                  <>
+                    <Wand2 className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                    AI 다듬기
+                  </>
                 )}
-                AI 다듬기
               </Button>
             </div>
           </div>
@@ -637,59 +643,99 @@ const InstantAIAnalysis = () => {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-4"
             >
-              {/* 분석 중 프로그레스 UI */}
-              <div className="bg-gradient-to-br from-purple-900/60 to-indigo-900/60 rounded-2xl p-6 border border-purple-500/30">
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <Loader2 className="w-6 h-6 text-purple-300 animate-spin" />
-                  <span className="text-lg font-bold text-white">AI가 종합 분석 중...</span>
+              {/* GPT 스타일 Thinking UI */}
+              <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl p-5 border border-white/10">
+                {/* 메인 Thinking 헤더 */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="relative">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                      className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center"
+                    >
+                      <Sparkles className="w-5 h-5 text-white" />
+                    </motion.div>
+                    <motion.div
+                      animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="absolute inset-0 rounded-xl border-2 border-violet-400"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-base font-semibold text-white">AI가 분석 중입니다</span>
+                      <span className="text-sm font-mono text-violet-400">{remainingTime}초</span>
+                    </div>
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={Math.floor(analysisProgress / 25)}
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        className="text-xs text-slate-400"
+                      >
+                        {analysisProgress < 25 ? '고민 유형 파악 중...' :
+                         analysisProgress < 50 ? '심층 원인 분석 중...' :
+                         analysisProgress < 75 ? '맞춤 솔루션 생성 중...' :
+                         '9가지 리포트 생성 중...'}
+                      </motion.span>
+                    </AnimatePresence>
+                  </div>
+                  {/* Animated Dots */}
+                  <div className="flex gap-1 ml-auto">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        className="w-2 h-2 rounded-full bg-violet-500"
+                        animate={{
+                          y: [0, -6, 0],
+                          opacity: [0.4, 1, 0.4],
+                        }}
+                        transition={{
+                          duration: 0.8,
+                          repeat: Infinity,
+                          delay: i * 0.15,
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
                 
                 {/* 프로그레스 바 */}
-                <div className="relative w-full h-3 bg-slate-700/50 rounded-full overflow-hidden mb-3">
+                <div className="relative w-full h-1.5 bg-slate-700/50 rounded-full overflow-hidden mb-4">
                   <motion.div 
-                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full"
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-violet-500 to-purple-500 rounded-full"
                     style={{ width: `${analysisProgress}%` }}
-                    transition={{ duration: 0.1 }}
+                    transition={{ duration: 0.3 }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 animate-pulse" />
                 </div>
                 
-                {/* 남은 시간 표시 */}
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2 text-purple-200">
-                    <Clock className="w-4 h-4" />
-                    <span>예상 남은 시간</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-white">{remainingTime}</span>
-                    <span className="text-purple-300">초</span>
-                  </div>
-                </div>
-                
-                {/* 분석 단계 표시 */}
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2 text-xs">
-                    <div className={`w-2 h-2 rounded-full ${analysisProgress >= 20 ? 'bg-green-400' : 'bg-slate-500'}`} />
-                    <span className={analysisProgress >= 20 ? 'text-green-300' : 'text-slate-400'}>고민 유형 분석</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs">
-                    <div className={`w-2 h-2 rounded-full ${analysisProgress >= 45 ? 'bg-green-400' : 'bg-slate-500'}`} />
-                    <span className={analysisProgress >= 45 ? 'text-green-300' : 'text-slate-400'}>심층 원인 분석</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs">
-                    <div className={`w-2 h-2 rounded-full ${analysisProgress >= 70 ? 'bg-green-400' : 'bg-slate-500'}`} />
-                    <span className={analysisProgress >= 70 ? 'text-green-300' : 'text-slate-400'}>맞춤 솔루션 생성</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs">
-                    <div className={`w-2 h-2 rounded-full ${analysisProgress >= 90 ? 'bg-green-400' : 'bg-slate-500'}`} />
-                    <span className={analysisProgress >= 90 ? 'text-green-300' : 'text-slate-400'}>9가지 리포트 생성</span>
-                  </div>
+                {/* 분석 단계 - 가로 스텝 */}
+                <div className="flex justify-between text-xs">
+                  {[
+                    { label: '유형 분석', threshold: 20 },
+                    { label: '원인 분석', threshold: 45 },
+                    { label: '솔루션', threshold: 70 },
+                    { label: '리포트', threshold: 90 },
+                  ].map((step, i) => (
+                    <div key={i} className="flex flex-col items-center gap-1">
+                      <motion.div 
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium
+                          ${analysisProgress >= step.threshold 
+                            ? 'bg-violet-500 text-white' 
+                            : 'bg-slate-700 text-slate-400'}`}
+                        animate={analysisProgress >= step.threshold ? { scale: [1, 1.1, 1] } : {}}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {analysisProgress >= step.threshold ? '✓' : i + 1}
+                      </motion.div>
+                      <span className={analysisProgress >= step.threshold ? 'text-violet-300' : 'text-slate-500'}>
+                        {step.label}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
-              
-              <p className="text-center text-xs text-white/50">
-                잠시만 기다려주세요. 곧 분석이 완료됩니다!
-              </p>
             </motion.div>
           ) : (
             <>

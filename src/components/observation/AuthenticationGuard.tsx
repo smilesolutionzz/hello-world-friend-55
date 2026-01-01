@@ -10,12 +10,18 @@ interface AuthenticationGuardProps {
   children: React.ReactNode;
   fallbackMessage?: string;
   redirectPath?: string;
+  /** 게스트 모드 허용 - true이면 비로그인도 콘텐츠 표시 */
+  allowGuest?: boolean;
+  /** 게스트 모드일 때 표시할 배너 메시지 */
+  guestBannerMessage?: string;
 }
 
 export const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({ 
   children, 
   fallbackMessage = "이 기능을 사용하려면 로그인이 필요합니다.",
-  redirectPath = "/auth"
+  redirectPath = "/auth",
+  allowGuest = false,
+  guestBannerMessage = "로그인하면 결과를 저장할 수 있습니다"
 }) => {
   const [authState, setAuthState] = useState<'loading' | 'authenticated' | 'unauthenticated'>('loading');
   const navigate = useNavigate();
@@ -85,6 +91,32 @@ export const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
           </div>
         </CardContent>
       </Card>
+    );
+  }
+
+  // 게스트 모드 허용 시 - 배너와 함께 콘텐츠 표시
+  if (authState === 'unauthenticated' && allowGuest) {
+    return (
+      <div className="relative">
+        {/* 게스트 모드 상단 배너 */}
+        <div className="sticky top-0 z-50 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 text-center shadow-md">
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <span className="text-sm font-medium">
+              🎁 {guestBannerMessage}
+            </span>
+            <Button 
+              size="sm" 
+              variant="secondary" 
+              onClick={handleLogin}
+              className="bg-white/20 hover:bg-white/30 text-white border-white/30 h-7 px-3"
+            >
+              <LogIn className="h-3 w-3 mr-1" />
+              무료 가입
+            </Button>
+          </div>
+        </div>
+        {children}
+      </div>
     );
   }
 

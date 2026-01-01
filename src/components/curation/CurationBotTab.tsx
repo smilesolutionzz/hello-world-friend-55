@@ -253,6 +253,12 @@ export const CurationBotTab = ({ concerns, assessments }: CurationBotTabProps) =
       window.open(KAKAO_CHANNEL_URL, '_blank');
     } else if (recommendation.link) {
       navigate(recommendation.link);
+    } else {
+      // link가 없는 경우 기본 동작
+      toast({
+        title: "안내",
+        description: "해당 기능은 준비 중입니다.",
+      });
     }
   };
 

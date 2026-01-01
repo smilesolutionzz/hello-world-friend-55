@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
 import {
   Sparkles,
@@ -25,10 +24,7 @@ import {
   Zap,
   Copy,
   Share2,
-  FileDown,
-  Lock,
-  UserPlus,
-  LogIn
+  FileDown
 } from 'lucide-react';
 
 interface PerplexityDeepReportProps {
@@ -79,24 +75,8 @@ const PerplexityDeepReport: React.FC<PerplexityDeepReportProps> = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const [reportData, setReportData] = useState<any>(null);
   const [progress, setProgress] = useState(0);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
-  // 로그인 상태 확인
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-    };
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
   const generateDeepReport = async () => {
     if (!userInput.recentConcerns && assessments.length === 0) {
       toast({
@@ -270,21 +250,7 @@ const PerplexityDeepReport: React.FC<PerplexityDeepReportProps> = ({
     }
   };
 
-  const handleSignup = () => {
-    localStorage.setItem('redirectAfterAuth', '/report-generator');
-    navigate('/auth?mode=signup');
-  };
-
-  const handleLogin = () => {
-    localStorage.setItem('redirectAfterAuth', '/report-generator');
-    navigate('/auth');
-  };
-
   if (reportData) {
-    const sections = Object.entries(reportData.sections || {});
-    const totalSections = sections.length;
-    const visibleSections = isAuthenticated ? totalSections : Math.ceil(totalSections / 2); // 비로그인: 절반만 표시
-
     return (
       <div className="space-y-6">
         {/* 리포트 헤더 */}
@@ -305,190 +271,113 @@ const PerplexityDeepReport: React.FC<PerplexityDeepReportProps> = ({
                 </div>
               </div>
               
-              {/* 다운로드/공유 버튼들 - 로그인 사용자만 */}
-              {isAuthenticated && (
-                <div className="flex flex-wrap gap-2">
-                  <Button 
-                    onClick={downloadPDF}
-                    className="bg-cyan-600 hover:bg-cyan-700"
-                    size="sm"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    PDF
-                  </Button>
-                  <Button 
-                    onClick={downloadTXT}
-                    variant="outline"
-                    className="border-cyan-400/50 text-cyan-300 hover:bg-cyan-600/20"
-                    size="sm"
-                  >
-                    <FileDown className="w-4 h-4 mr-2" />
-                    TXT
-                  </Button>
-                  <Button 
-                    onClick={copyToClipboard}
-                    variant="outline"
-                    className="border-cyan-400/50 text-cyan-300 hover:bg-cyan-600/20"
-                    size="sm"
-                  >
-                    <Copy className="w-4 h-4 mr-2" />
-                    복사
-                  </Button>
-                  <Button 
-                    onClick={shareReport}
-                    variant="outline"
-                    className="border-cyan-400/50 text-cyan-300 hover:bg-cyan-600/20"
-                    size="sm"
-                  >
-                    <Share2 className="w-4 h-4 mr-2" />
-                    공유
-                  </Button>
-                </div>
-              )}
+              {/* 다운로드/공유 버튼들 */}
+              <div className="flex flex-wrap gap-2">
+                <Button 
+                  onClick={downloadPDF}
+                  className="bg-cyan-600 hover:bg-cyan-700"
+                  size="sm"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  PDF
+                </Button>
+                <Button 
+                  onClick={downloadTXT}
+                  variant="outline"
+                  className="border-cyan-400/50 text-cyan-300 hover:bg-cyan-600/20"
+                  size="sm"
+                >
+                  <FileDown className="w-4 h-4 mr-2" />
+                  TXT
+                </Button>
+                <Button 
+                  onClick={copyToClipboard}
+                  variant="outline"
+                  className="border-cyan-400/50 text-cyan-300 hover:bg-cyan-600/20"
+                  size="sm"
+                >
+                  <Copy className="w-4 h-4 mr-2" />
+                  복사
+                </Button>
+                <Button 
+                  onClick={shareReport}
+                  variant="outline"
+                  className="border-cyan-400/50 text-cyan-300 hover:bg-cyan-600/20"
+                  size="sm"
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
+                  공유
+                </Button>
+              </div>
             </div>
           </CardHeader>
         </Card>
 
         {/* 리포트 내용 */}
-        <div className="relative">
-          <div id="aihpro-report-content" className="space-y-4 bg-white text-gray-900 p-8 rounded-xl">
-            <div className="text-center border-b pb-6 mb-6">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                종합 발달 심리 분석 리포트
-              </h1>
-              <p className="text-gray-600">
-                대상: {userInput.name || '미입력'} | 생성일: {new Date().toLocaleDateString('ko-KR')}
-              </p>
-              <Badge className="mt-2 bg-cyan-100 text-cyan-800">
-                AIHPRO AI 기반 심층 분석
-              </Badge>
-            </div>
-
-            {/* 각 섹션 렌더링 */}
-            {sections.map(([title, content], idx) => (
-              <div key={idx} className="mb-6 pb-6 border-b border-gray-200 last:border-0">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-cyan-100 text-cyan-600">
-                    {sectionIcons[title] || <CheckCircle2 className="w-5 h-5" />}
-                  </span>
-                  {idx + 1}. {title}
-                </h2>
-                <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed pl-10">
-                  {cleanMarkdownText(String(content)).split('\n').map((paragraph, pIdx) => (
-                    paragraph.trim() && (
-                      <p key={pIdx} className="mb-3 text-gray-700">
-                        {paragraph}
-                      </p>
-                    )
-                  ))}
-                </div>
-              </div>
-            ))}
-
-            {/* 인용 출처 - 로그인 사용자만 */}
-            {isAuthenticated && reportData.citations?.length > 0 && (
-              <div className="mt-8 pt-6 border-t">
-                <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <span className="text-2xl">📚</span> 참고 출처
-                </h3>
-                <ul className="space-y-2 pl-2">
-                  {reportData.citations.map((citation: string, idx: number) => (
-                    <li key={idx} className="text-sm text-blue-600 hover:underline">
-                      <a href={citation} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                        <ExternalLink className="w-3 h-3 flex-shrink-0" />
-                        <span className="break-all">{citation}</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* 면책 조항 */}
-            <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-              <p className="text-xs text-gray-500">
-                ※ 본 리포트는 참고용이며 의학적 진단이 아닙니다. 정확한 진단과 치료를 위해서는 전문의와 상담하시기 바랍니다.
-              </p>
-              <p className="text-xs text-gray-400 mt-2">
-                © {new Date().getFullYear()} AIHPRO.COM. All rights reserved.
-              </p>
-            </div>
+        <div id="aihpro-report-content" className="space-y-4 bg-white text-gray-900 p-8 rounded-xl">
+          <div className="text-center border-b pb-6 mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              종합 발달 심리 분석 리포트
+            </h1>
+            <p className="text-gray-600">
+              대상: {userInput.name || '미입력'} | 생성일: {new Date().toLocaleDateString('ko-KR')}
+            </p>
+            <Badge className="mt-2 bg-cyan-100 text-cyan-800">
+              AIHPRO AI 기반 심층 분석
+            </Badge>
           </div>
 
-          {/* 비로그인 사용자용 블러 오버레이 */}
-          {!isAuthenticated && (
-            <>
-              {/* 블러 오버레이 - 하단 55% 부분 */}
-              <div className="absolute bottom-0 left-0 right-0 h-[55%] pointer-events-none rounded-b-xl overflow-hidden">
-                {/* 그라데이션 페이드 */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white" />
-                
-                {/* 블러 효과 */}
-                <div className="absolute inset-0 backdrop-blur-md" />
-              </div>
-              
-              {/* 가입 유도 CTA */}
-              <div className="absolute bottom-0 left-0 right-0 flex items-end justify-center pb-8 pointer-events-auto">
-                <div className="bg-gradient-to-br from-purple-900/95 via-indigo-900/95 to-blue-900/95 p-6 md:p-8 rounded-2xl shadow-2xl shadow-purple-500/30 border-2 border-purple-400/40 max-w-lg mx-4 backdrop-blur-xl">
-                  <div className="text-center space-y-4">
-                    <div className="inline-flex items-center justify-center p-3 bg-purple-500/20 rounded-full">
-                      <Lock className="w-7 h-7 text-purple-300" />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h3 className="text-xl md:text-2xl font-bold text-white">
-                        나머지 {totalSections - visibleSections}개 섹션을 확인하세요
-                      </h3>
-                      <p className="text-purple-200 text-sm leading-relaxed">
-                        무료 회원가입 후 전체 분석 결과를 저장하고<br />
-                        언제든지 다시 확인할 수 있습니다
-                      </p>
-                    </div>
-
-                    <div className="flex items-center justify-center gap-3 py-2">
-                      <div className="flex items-center gap-2 text-xs text-emerald-300">
-                        <Sparkles className="w-4 h-4" />
-                        <span>무료 가입</span>
-                      </div>
-                      <div className="w-1 h-1 bg-purple-400 rounded-full" />
-                      <div className="flex items-center gap-2 text-xs text-emerald-300">
-                        <span>결과 저장</span>
-                      </div>
-                      <div className="w-1 h-1 bg-purple-400 rounded-full" />
-                      <div className="flex items-center gap-2 text-xs text-emerald-300">
-                        <span>PDF 다운로드</span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <Button
-                        onClick={handleSignup}
-                        size="lg"
-                        className="flex-1 h-11 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold shadow-lg shadow-purple-500/30"
-                      >
-                        <UserPlus className="w-5 h-5 mr-2" />
-                        무료 회원가입
-                      </Button>
-                      <Button
-                        onClick={handleLogin}
-                        variant="outline"
-                        size="lg"
-                        className="flex-1 h-11 border-purple-400/50 text-purple-200 hover:bg-purple-900/50"
-                      >
-                        <LogIn className="w-5 h-5 mr-2" />
-                        로그인
-                      </Button>
-                    </div>
-
-                    <p className="text-xs text-purple-300/70">
-                      이미 계정이 있으신가요? 로그인하면 이 결과가 자동 저장됩니다
+          {/* 각 섹션 렌더링 */}
+          {Object.entries(reportData.sections || {}).map(([title, content], idx) => (
+            <div key={idx} className="mb-6 pb-6 border-b border-gray-200 last:border-0">
+              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-cyan-100 text-cyan-600">
+                  {sectionIcons[title] || <CheckCircle2 className="w-5 h-5" />}
+                </span>
+                {idx + 1}. {title}
+              </h2>
+              <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed pl-10">
+                {cleanMarkdownText(String(content)).split('\n').map((paragraph, pIdx) => (
+                  paragraph.trim() && (
+                    <p key={pIdx} className="mb-3 text-gray-700">
+                      {paragraph}
                     </p>
-                  </div>
-                </div>
+                  )
+                ))}
               </div>
-            </>
+            </div>
+          ))}
+
+          {/* 인용 출처 */}
+          {reportData.citations?.length > 0 && (
+            <div className="mt-8 pt-6 border-t">
+              <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="text-2xl">📚</span> 참고 출처
+              </h3>
+              <ul className="space-y-2 pl-2">
+                {reportData.citations.map((citation: string, idx: number) => (
+                  <li key={idx} className="text-sm text-blue-600 hover:underline">
+                    <a href={citation} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                      <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                      <span className="break-all">{citation}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
+
+          {/* 면책 조항 */}
+          <div className="mt-8 pt-6 border-t border-gray-200 text-center">
+            <p className="text-xs text-gray-500">
+              ※ 본 리포트는 참고용이며 의학적 진단이 아닙니다. 정확한 진단과 치료를 위해서는 전문의와 상담하시기 바랍니다.
+            </p>
+            <p className="text-xs text-gray-400 mt-2">
+              © {new Date().getFullYear()} AIHPRO.COM. All rights reserved.
+            </p>
+          </div>
         </div>
+
         {/* 새 리포트 생성 버튼 */}
         <div className="text-center">
           <Button 

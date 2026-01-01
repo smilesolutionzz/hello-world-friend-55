@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { BetaBanner } from "@/components/BetaBanner";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { useEventTracking } from "@/hooks/useEventTracking";
+import { useGuestSession } from "@/hooks/useGuestSession";
 import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
 import ChildAssessmentSimplified from "@/components/assessment/ChildAssessmentSimplified";
@@ -69,6 +70,7 @@ import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import SignupPromptModal from "@/components/guest/SignupPromptModal";
 import {
   Collapsible,
   CollapsibleContent,
@@ -81,6 +83,11 @@ const Assessment = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const { trackTestStart, trackTestComplete, trackPageView } = useEventTracking();
+  const { isGuest, saveGuestResult, guestResults } = useGuestSession();
+  
+  // 가입 유도 모달 상태
+  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
+  const [lastCompletedResult, setLastCompletedResult] = useState<{ testTitle: string; score?: number; level?: string } | null>(null);
   
   // URL 파라미터에서 테스트 타입 확인
   const urlTestType = searchParams.get('type');
@@ -113,6 +120,22 @@ const Assessment = () => {
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
   const [currentAssessmentResults, setCurrentAssessmentResults] = useState<any>(null);
   const [expandedSimpleTest, setExpandedSimpleTest] = useState<string | null>(null);
+  
+  // 게스트 결과 저장 및 가입 유도 헬퍼
+  const handleGuestResultComplete = (testType: string, testTitle: string, results: any, ageGroup?: string) => {
+    if (isGuest) {
+      saveGuestResult(testType, testTitle, results, ageGroup);
+      setLastCompletedResult({
+        testTitle,
+        score: results.total,
+        level: results.severity || results.level
+      });
+      // 결과 표시 후 2초 뒤에 가입 유도 모달
+      setTimeout(() => {
+        setShowSignupPrompt(true);
+      }, 2000);
+    }
+  };
 
   // URL 파라미터 및 location state에 따른 초기 설정
   useEffect(() => {
@@ -261,17 +284,8 @@ const Assessment = () => {
   };
 
   const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | 'parent-child-play') => {
-    // 로그인 확인
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({
-        title: "로그인이 필요합니다",
-        description: "테스트를 진행하려면 먼저 로그인해주세요.",
-        variant: "destructive",
-      });
-      navigate('/auth');
-      return;
-    }
+    // 게스트 모드 허용 - 로그인 없이도 검사 진행 가능
+    console.log('🎯 Test type selected:', type, isGuest ? '(게스트 모드)' : '(로그인됨)');
 
     setTestType(type);
     if (type === 'dream') {

@@ -23,6 +23,7 @@ import ErrorBoundary from '@/components/ui/error-boundary';
 import FeedAnalysisSection from '@/components/landing/FeedAnalysisSection';
 import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
 import MainPromoSection from '@/components/promotion/MainPromoSection';
+import ColumnHookBanner from '@/components/landing/ColumnHookBanner';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -178,7 +179,15 @@ const Index = () => {
               <TestimonialSection />
             </LazyLoad>
             
+            {/* 📰 칼럼 후킹 배너 */}
+            <LazyLoad rootMargin="200px">
+              <ColumnHookBanner />
+            </LazyLoad>
+            
             {/* 6️⃣ 파트너 & 신뢰 */}
+            <LazyLoad rootMargin="200px">
+              <PartnerTrustSection />
+            </LazyLoad>
             <LazyLoad rootMargin="200px">
               <PartnerTrustSection />
             </LazyLoad>

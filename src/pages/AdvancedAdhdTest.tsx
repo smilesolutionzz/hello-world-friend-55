@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import AdvancedAdhdForm from "@/components/assessment/AdvancedAdhdForm";
 import AdvancedAdhdResult from "@/components/assessment/AdvancedAdhdResult";
 import { supabase } from "@/integrations/supabase/client";
+import { useGuestSession } from "@/hooks/useGuestSession";
+import SignupPromptModal from "@/components/guest/SignupPromptModal";
 
 const AdvancedAdhdTest = () => {
   const navigate = useNavigate();
   const [results, setResults] = useState<any>(null);
+  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
+  const { isGuest, saveGuestResult, guestResults } = useGuestSession();
 
-  // 컴포넌트 마운트 시 저장된 결과 확인
   useEffect(() => {
     const savedResults = sessionStorage.getItem('adhdTestResults');
     if (savedResults) {
@@ -21,17 +24,20 @@ const AdvancedAdhdTest = () => {
   }, []);
 
   const handleComplete = async (testResults: any) => {
-    // 세션 스토리지에 결과 저장
     sessionStorage.setItem('adhdTestResults', JSON.stringify(testResults));
     setResults(testResults);
 
-    // 데이터베이스에 결과 저장
+    if (isGuest) {
+      saveGuestResult('adhd', 'ADHD 검사', testResults);
+      setShowSignupPrompt(true);
+      return;
+    }
+
     try {
       const { data } = await supabase.auth.getUser();
       const currentUser = data?.user;
       
       if (currentUser) {
-        // ADHD 검사 결과 저장
         await supabase
           .from('test_results')
           .insert({
@@ -39,7 +45,6 @@ const AdvancedAdhdTest = () => {
             test_type_id: 'adhd',
             scores: testResults as any
           });
-
         console.log('✅ ADHD 검사 결과 저장 완료');
       }
     } catch (error) {
@@ -48,7 +53,6 @@ const AdvancedAdhdTest = () => {
   };
 
   const handleBack = () => {
-    // 결과 화면에서는 폼으로, 폼에서는 assessment 페이지로
     if (results) {
       sessionStorage.removeItem('adhdTestResults');
       setResults(null);
@@ -58,13 +62,22 @@ const AdvancedAdhdTest = () => {
   };
 
   const handleResetTest = () => {
-    // 검사 다시 시작
     sessionStorage.removeItem('adhdTestResults');
     setResults(null);
   };
 
   if (results) {
-    return <AdvancedAdhdResult results={results} onBack={handleBack} onRestart={handleResetTest} />;
+    return (
+      <>
+        <AdvancedAdhdResult results={results} onBack={handleBack} onRestart={handleResetTest} />
+        <SignupPromptModal 
+          open={showSignupPrompt} 
+          onClose={() => setShowSignupPrompt(false)}
+          pendingResults={guestResults}
+          currentResult={{ testTitle: 'ADHD 검사' }}
+        />
+      </>
+    );
   }
 
   return <AdvancedAdhdForm onComplete={handleComplete} onBack={handleBack} />

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StressTestForm from '@/components/assessment/StressTestForm';
 import StressTestResult from '@/components/assessment/StressTestResult';
+import { useGuestSession } from '@/hooks/useGuestSession';
+import SignupPromptModal from '@/components/guest/SignupPromptModal';
 
 const STORAGE_KEY = 'stressTestResult';
 
@@ -9,6 +11,8 @@ const StressTest = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState<any>(null);
   const [showForm, setShowForm] = useState(true);
+  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
+  const { isGuest, saveGuestResult, guestResults } = useGuestSession();
 
   useEffect(() => {
     const savedResult = sessionStorage.getItem(STORAGE_KEY);
@@ -27,6 +31,10 @@ const StressTest = () => {
     setResult(testResult);
     setShowForm(false);
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(testResult));
+    if (isGuest) {
+      saveGuestResult('stress', '스트레스 검사', testResult);
+      setShowSignupPrompt(true);
+    }
   };
 
   const handleBack = () => {
@@ -46,7 +54,17 @@ const StressTest = () => {
   };
 
   if (result && !showForm) {
-    return <StressTestResult result={result} onRestart={handleRestart} onBack={handleBack} />;
+    return (
+      <>
+        <StressTestResult result={result} onRestart={handleRestart} onBack={handleBack} />
+        <SignupPromptModal 
+          open={showSignupPrompt} 
+          onClose={() => setShowSignupPrompt(false)}
+          pendingResults={guestResults}
+          currentResult={{ testTitle: '스트레스 검사' }}
+        />
+      </>
+    );
   }
 
   return <StressTestForm onComplete={handleComplete} onBack={handleBack} />;

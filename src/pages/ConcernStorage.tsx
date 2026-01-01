@@ -6,8 +6,8 @@ import { MilestonesBadges } from '@/components/storage/MilestonesBadges';
 import { ReminderBanner } from '@/components/storage/ReminderBanner';
 import { AIInsightSummary } from '@/components/storage/AIInsightSummary';
 import { MonthlyReport } from '@/components/storage/MonthlyReport';
-import { CurationBot } from '@/components/curation/CurationBot';
-import { Heart, ClipboardCheck, FolderHeart, LayoutDashboard } from 'lucide-react';
+import { CurationBotTab } from '@/components/curation/CurationBotTab';
+import { Heart, ClipboardCheck, FolderHeart, LayoutDashboard, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,7 +30,7 @@ interface AssessmentData {
 }
 
 const ConcernStorage = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'concerns' | 'assessments'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'concerns' | 'assessments' | 'curation'>('overview');
   const [concerns, setConcerns] = useState<ConcernData[]>([]);
   const [assessments, setAssessments] = useState<AssessmentData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,6 +114,7 @@ const ConcernStorage = () => {
     { id: 'overview', label: '대시보드', icon: LayoutDashboard },
     { id: 'concerns', label: '고민', icon: Heart, count: concerns.length },
     { id: 'assessments', label: '검사', icon: ClipboardCheck, count: assessments.length },
+    { id: 'curation', label: 'AI 추천', icon: Bot },
   ];
 
   if (loading) {
@@ -312,7 +313,7 @@ const ConcernStorage = () => {
               >
                 <ConcernStorageList />
               </motion.div>
-            ) : (
+            ) : activeTab === 'assessments' ? (
               <motion.div
                 key="assessments"
                 initial={{ opacity: 0, y: 20 }}
@@ -322,15 +323,22 @@ const ConcernStorage = () => {
               >
                 <AssessmentHistory />
               </motion.div>
+            ) : (
+              <motion.div
+                key="curation"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <CurationBotTab 
+                  concerns={concerns}
+                  assessments={assessments}
+                />
+              </motion.div>
             )}
           </AnimatePresence>
         </main>
-        
-        {/* AI 큐레이션 봇 */}
-        <CurationBot 
-          concerns={concerns}
-          assessments={assessments}
-        />
       </div>
     </div>
   );

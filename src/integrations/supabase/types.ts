@@ -2597,6 +2597,60 @@ export type Database = {
         }
         Relationships: []
       }
+      disability_activity_logs: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          id: string
+          logs_data: Json
+          month: string | null
+          provider_name: string | null
+          service_number: string | null
+          service_price: number | null
+          service_type: string
+          therapist_name: string | null
+          therapist_phone: string | null
+          total_sessions: number
+          updated_at: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          id?: string
+          logs_data: Json
+          month?: string | null
+          provider_name?: string | null
+          service_number?: string | null
+          service_price?: number | null
+          service_type: string
+          therapist_name?: string | null
+          therapist_phone?: string | null
+          total_sessions: number
+          updated_at?: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          id?: string
+          logs_data?: Json
+          month?: string | null
+          provider_name?: string | null
+          service_number?: string | null
+          service_price?: number | null
+          service_type?: string
+          therapist_name?: string | null
+          therapist_phone?: string | null
+          total_sessions?: number
+          updated_at?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
       dream_records: {
         Row: {
           created_at: string

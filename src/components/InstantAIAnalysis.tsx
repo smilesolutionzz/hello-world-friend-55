@@ -250,7 +250,14 @@ const InstantAIAnalysis = () => {
         body: { prompt: inputText }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('expand-prompt error:', error);
+        throw new Error(error.message || 'AI 다듬기 중 오류가 발생했습니다.');
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
 
       if (data?.expandedPrompt) {
         setInputText(data.expandedPrompt);
@@ -258,6 +265,8 @@ const InstantAIAnalysis = () => {
           title: "✨ 프롬프트 확장 완료",
           description: "입력 내용이 더 구체적으로 확장되었습니다.",
         });
+      } else {
+        throw new Error('확장된 프롬프트를 받지 못했습니다.');
       }
     } catch (error: any) {
       console.error('프롬프트 확장 오류:', error);

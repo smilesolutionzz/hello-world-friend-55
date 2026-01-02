@@ -82,6 +82,7 @@ const ReportGenerator = () => {
   const [familyEmail, setFamilyEmail] = useState('');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   const REPORT_TYPES = {
     detailed: { name: '상세 리포트', tokens: 76, price: '15,000원', description: '9개 섹션 AI 심층 분석 리포트 (즉시 생성)' },
@@ -98,14 +99,13 @@ const ReportGenerator = () => {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
-        toast({
-          title: "로그인 필요",
-          description: "종합 리포트를 생성하려면 로그인이 필요합니다.",
-          variant: "destructive"
-        });
-        navigate('/auth');
+        // 비로그인 상태에서도 페이지는 볼 수 있음
+        setIsLoggedIn(false);
+        setIsLoadingData(false);
         return;
       }
+      
+      setIsLoggedIn(true);
 
       // 1. 검사 기록 가져오기 (user_id와 profile_id 모두 확인)
       const { data: assessments, error: assessError } = await supabase
@@ -541,6 +541,57 @@ const ReportGenerator = () => {
             <strong className="text-purple-300">9가지 전문 섹션</strong>으로 구성된 프리미엄 종합 리포트를 자동 생성합니다
           </p>
         </div>
+
+        {/* 비로그인 사용자 가입 유도 배너 */}
+        {isLoggedIn === false && (
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-cyan-600 to-blue-600 p-[2px]">
+              <div className="relative bg-slate-900/95 rounded-2xl p-6 md:p-8">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-blue-500/10 rounded-2xl" />
+                
+                <div className="relative flex flex-col md:flex-row items-center gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                      <Gift className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1 text-center md:text-left space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-white">
+                      🎉 회원가입하면 <span className="text-cyan-300">무료로</span> 심층분석 리포트 생성!
+                    </h3>
+                    <p className="text-slate-300 text-sm md:text-base">
+                      지금 바로 가입하고 <strong className="text-emerald-300">AI 전문가급 심층분석</strong>을 무료로 받아보세요.<br className="hidden md:block" />
+                      검사 결과, 관찰일지, 상담 기록을 종합한 <strong className="text-cyan-300">9가지 섹션의 프리미엄 리포트</strong>가 제공됩니다.
+                    </p>
+                    <div className="flex flex-wrap justify-center md:justify-start gap-2 pt-2">
+                      <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-400/30">
+                        <CheckCircle2 className="w-3 h-3 mr-1" /> PDF 다운로드
+                      </Badge>
+                      <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-400/30">
+                        <CheckCircle2 className="w-3 h-3 mr-1" /> 카카오톡 공유
+                      </Badge>
+                      <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30">
+                        <CheckCircle2 className="w-3 h-3 mr-1" /> 무제한 재생성
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="flex-shrink-0">
+                    <Button
+                      onClick={() => navigate('/auth')}
+                      size="lg"
+                      className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold px-8 py-6 text-lg rounded-xl shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all"
+                    >
+                      무료 가입하기
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {!reportData ? (
           <div className="max-w-5xl mx-auto space-y-8">

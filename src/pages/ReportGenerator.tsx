@@ -513,7 +513,7 @@ const ReportGenerator = () => {
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* 뒤로가기 버튼 */}
         <Button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/')}
           variant="outline"
           className="mb-6 border-purple-400/30 text-purple-200 hover:bg-purple-500/10"
         >

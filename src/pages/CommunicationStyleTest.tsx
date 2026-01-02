@@ -34,11 +34,16 @@ const CommunicationStyleTest = () => {
   };
 
   const handleBack = () => {
-    if (result) {
-      setResult(null);
-      sessionStorage.removeItem(STORAGE_KEY);
-    } else {
-      navigate('/assessment');
+    try {
+      if (result) {
+        setResult(null);
+        sessionStorage.removeItem(STORAGE_KEY);
+      } else {
+        navigate('/assessment', { replace: true });
+      }
+    } catch (error) {
+      console.error('Navigation error:', error);
+      navigate('/', { replace: true });
     }
   };
 

@@ -536,9 +536,9 @@ const ReportGenerator = () => {
             </span>
           </h1>
 
-          <p className="text-purple-100/90 text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
-            플랫폼에 저장된 <strong className="text-pink-300">모든 검사·관찰·상담 데이터</strong>를 통합 분석하여<br />
-            <strong className="text-purple-300">9가지 전문 섹션</strong>으로 구성된 프리미엄 종합 리포트를 자동 생성합니다
+          <p className="text-purple-100/90 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed text-center">
+            <span className="block">플랫폼에 저장된 모든 <strong className="text-pink-300">검사·관찰·상담 데이터</strong>를 통합 분석하여</span>
+            <span className="block"><strong className="text-purple-300">9가지 전문 섹션</strong>으로 구성된 프리미엄 종합 리포트를 자동 생성합니다</span>
           </p>
         </div>
 

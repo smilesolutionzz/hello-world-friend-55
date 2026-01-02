@@ -32,7 +32,7 @@ const MobileOptimizedLayout: React.FC<MobileOptimizedLayoutProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               className="p-2"
             >
               <ArrowLeft className="w-5 h-5" />

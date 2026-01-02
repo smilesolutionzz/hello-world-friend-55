@@ -140,7 +140,7 @@ const LifetimePayment = () => {
         {/* 뒤로가기 */}
         <Button 
           variant="ghost" 
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/')}
           className="mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

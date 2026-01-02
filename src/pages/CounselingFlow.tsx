@@ -32,7 +32,7 @@ const CounselingFlow = () => {
   const renderIntro = () => (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
       <div className="container mx-auto max-w-4xl">
-        <Button variant="outline" onClick={() => navigate(-1)} className="mb-6 flex items-center gap-2">
+        <Button variant="outline" onClick={() => navigate('/')} className="mb-6 flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" />
           뒤로가기
         </Button>

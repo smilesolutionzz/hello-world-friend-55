@@ -155,7 +155,7 @@ export const SubscriptionGuard = ({
               </Button>
               <Button
                 variant="outline"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate('/')}
                 className="flex-1 h-12 text-base"
               >
                 돌아가기

@@ -519,7 +519,7 @@ const AIAssistant = () => {
           <div className="mb-4 md:mb-8 text-center">
             <Button 
               variant="ghost" 
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               className="fixed left-2 top-16 md:absolute md:left-4 md:top-20 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-white/20 hover-scale z-50"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />

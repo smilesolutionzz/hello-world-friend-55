@@ -14,7 +14,7 @@ const LifePurposeTest = () => {
   return (
     <LifePurposeTestForm 
       onComplete={(res) => setResults(res)} 
-      onBack={() => navigate(-1)} 
+      onBack={() => navigate('/assessment')} 
     />
   );
 };

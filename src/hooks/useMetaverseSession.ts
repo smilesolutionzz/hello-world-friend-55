@@ -64,7 +64,7 @@ export function useMetaverseSession() {
       title: "퇴장",
       description: "메타버스 상담실을 나갑니다",
     });
-    navigate(-1);
+    navigate('/');
   };
 
   return {

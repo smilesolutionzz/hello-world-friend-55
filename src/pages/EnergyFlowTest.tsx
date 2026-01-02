@@ -40,7 +40,7 @@ const EnergyFlowTest = () => {
       <div className="pt-16">
         <EnergyFlowTestForm 
           onComplete={handleComplete} 
-          onBack={() => navigate(-1)} 
+          onBack={() => navigate('/assessment')} 
         />
       </div>
     </>

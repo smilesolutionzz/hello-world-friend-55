@@ -549,42 +549,27 @@ const ReportGenerator = () => {
               <div className="relative bg-slate-900/95 rounded-2xl p-6 md:p-8">
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-blue-500/10 rounded-2xl" />
                 
-                <div className="relative flex flex-col md:flex-row items-center gap-6">
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-500/30">
-                      <Gift className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                <div className="relative flex flex-col sm:flex-row items-center gap-4 md:gap-6">
+                  <div className="flex-shrink-0 hidden sm:block">
+                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                      <Gift className="w-6 h-6 md:w-8 md:h-8 text-white" />
                     </div>
                   </div>
                   
-                  <div className="flex-1 text-center md:text-left space-y-2">
-                    <h3 className="text-xl md:text-2xl font-bold text-white">
-                      🎉 회원가입하면 <span className="text-cyan-300">무료로</span> 심층분석 리포트 생성!
+                  <div className="flex-1 text-center sm:text-left">
+                    <h3 className="text-base md:text-xl font-bold text-white whitespace-nowrap">
+                      🎉 회원가입하면 <span className="text-cyan-300">무료</span> 심층분석 리포트!
                     </h3>
-                    <p className="text-slate-300 text-sm md:text-base">
-                      지금 바로 가입하고 <strong className="text-emerald-300">AI 전문가급 심층분석</strong>을 무료로 받아보세요.<br className="hidden md:block" />
-                      검사 결과, 관찰일지, 상담 기록을 종합한 <strong className="text-cyan-300">9가지 섹션의 프리미엄 리포트</strong>가 제공됩니다.
-                    </p>
-                    <div className="flex flex-wrap justify-center md:justify-start gap-2 pt-2">
-                      <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-400/30">
-                        <CheckCircle2 className="w-3 h-3 mr-1" /> PDF 다운로드
-                      </Badge>
-                      <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-400/30">
-                        <CheckCircle2 className="w-3 h-3 mr-1" /> 카카오톡 공유
-                      </Badge>
-                      <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30">
-                        <CheckCircle2 className="w-3 h-3 mr-1" /> 무제한 재생성
-                      </Badge>
-                    </div>
                   </div>
                   
                   <div className="flex-shrink-0">
                     <Button
                       onClick={() => navigate('/auth')}
-                      size="lg"
-                      className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold px-8 py-6 text-lg rounded-xl shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all"
+                      size="sm"
+                      className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold px-4 md:px-6 py-2 md:py-3 text-sm md:text-base rounded-lg shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all whitespace-nowrap"
                     >
-                      무료 가입하기
-                      <ArrowRight className="w-5 h-5 ml-2" />
+                      무료 가입
+                      <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   </div>
                 </div>

@@ -103,7 +103,7 @@ const ReportGenerator = () => {
           description: "종합 리포트를 생성하려면 로그인이 필요합니다.",
           variant: "destructive"
         });
-        navigate('/login');
+        navigate('/auth');
         return;
       }
 

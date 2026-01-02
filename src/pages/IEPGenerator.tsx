@@ -55,7 +55,7 @@ const IEPGeneratorPage = () => {
         <div className="flex items-center gap-4 mb-8">
           <Button 
             variant="ghost" 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />

@@ -38,7 +38,7 @@ const NotFound = () => {
               <Home className="w-4 h-4 mr-2" />
               홈으로 돌아가기
             </Button>
-            <Button variant="outline" onClick={() => navigate(-1)} className="w-full">
+            <Button variant="outline" onClick={() => navigate('/')} className="w-full">
               <ArrowLeft className="w-4 h-4 mr-2" />
               이전 페이지로
             </Button>

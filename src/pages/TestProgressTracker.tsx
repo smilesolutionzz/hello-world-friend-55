@@ -202,7 +202,7 @@ const TestProgressTracker = () => {
               나의 검사 결과 변화 추이와 개선도를 확인하세요
             </p>
           </div>
-          <Button variant="ghost" onClick={() => navigate(-1)}>
+          <Button variant="ghost" onClick={() => navigate('/assessment')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             뒤로
           </Button>

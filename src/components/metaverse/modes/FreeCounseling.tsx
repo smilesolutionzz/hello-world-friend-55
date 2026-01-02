@@ -33,7 +33,7 @@ export const FreeCounseling = () => {
         
         {/* 뒤로가기 버튼 */}
         <Button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/')}
           variant="ghost"
           className="absolute top-4 left-4 text-white hover:bg-white/10 z-50"
         >

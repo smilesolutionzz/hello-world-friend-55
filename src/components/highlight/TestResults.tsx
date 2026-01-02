@@ -181,7 +181,7 @@ export const TestResults = () => {
           <Brain className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">결과를 찾을 수 없습니다</h2>
           <p className="text-muted-foreground mb-6">해당 검사 결과가 존재하지 않거나 접근 권한이 없습니다.</p>
-          <Button onClick={() => navigate(-1)} className="rounded-xl">
+          <Button onClick={() => navigate('/assessment')} className="rounded-xl">
             <ArrowLeft className="w-4 h-4 mr-2" />
             돌아가기
           </Button>
@@ -200,7 +200,7 @@ export const TestResults = () => {
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/assessment')}
             className="rounded-xl"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />

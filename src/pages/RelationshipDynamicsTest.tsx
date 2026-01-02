@@ -36,7 +36,7 @@ const RelationshipDynamicsTest = () => {
   return (
     <RelationshipDynamicsForm 
       onComplete={handleComplete} 
-      onBack={() => navigate(-1)} 
+      onBack={() => navigate('/assessment')} 
     />
   );
 };

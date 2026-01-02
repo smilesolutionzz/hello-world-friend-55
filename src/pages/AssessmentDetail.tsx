@@ -109,7 +109,7 @@ export default function AssessmentDetail() {
           description: "삭제되었거나 접근 권한이 없습니다.",
           variant: "destructive",
         });
-        navigate(-1);
+        navigate('/assessment');
         return;
       }
       
@@ -134,7 +134,7 @@ export default function AssessmentDetail() {
         description: error.message,
         variant: "destructive",
       });
-      navigate(-1);
+      navigate('/assessment');
     } finally {
       setLoading(false);
     }
@@ -255,7 +255,7 @@ export default function AssessmentDetail() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">검사 결과를 찾을 수 없습니다</h2>
-          <Button onClick={() => navigate(-1)}>
+          <Button onClick={() => navigate('/assessment')}>
             뒤로가기
           </Button>
         </div>
@@ -299,7 +299,7 @@ export default function AssessmentDetail() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 sm:mb-8">
           <Button 
             variant="ghost" 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/assessment')}
             className="flex items-center gap-2 w-fit"
             size="sm"
           >

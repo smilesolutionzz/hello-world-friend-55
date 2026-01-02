@@ -50,7 +50,7 @@ const ComingSoonWrapper: React.FC<ComingSoonWrapperProps> = ({
           <div className="space-y-3">
             <Button 
               variant="outline" 
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               className="w-full"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />

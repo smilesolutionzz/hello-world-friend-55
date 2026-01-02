@@ -100,7 +100,7 @@ const Settings = () => {
         description: "계정 삭제가 요청되었습니다. 관리자가 확인 후 처리합니다.",
       });
       
-      navigate('/login');
+      navigate('/auth');
     } catch (error) {
       console.error('계정 삭제 오류:', error);
       toast({

@@ -116,7 +116,7 @@ export const InstantChatDialog: React.FC<InstantChatDialogProps> = ({ open, onCl
 
   const handleGoToLogin = () => {
     onClose();
-    navigate('/login');
+    navigate('/auth');
   };
 
   const handleEndSession = async () => {

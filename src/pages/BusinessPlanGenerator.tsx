@@ -4,11 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { FileDown, FileText, Building2, User, Target, Wallet, TrendingUp, Users, Shield, Lightbulb, Award, BarChart3, PieChart, Calendar, Rocket, Globe, Heart, Brain, Sparkles, ArrowLeft } from 'lucide-react';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType, convertInchesToTwip, Footer, PageNumber, Header } from 'docx';
+import { FileDown, FileText, Building2, User, Target, Wallet, TrendingUp, Users, Shield, Lightbulb, Award, BarChart3, PieChart, Calendar, Rocket, Globe, Heart, Brain, Sparkles, ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType, convertInchesToTwip, Footer, PageNumber, Header, ImageRun } from 'docx';
 import { saveAs } from 'file-saver';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { narratives } from '@/components/business-plan/BusinessPlanNarratives';
+import { BusinessPlanCharts } from '@/components/business-plan/BusinessPlanCharts';
 
 interface FormData {
   companyName: string;
@@ -34,10 +36,63 @@ const BusinessPlanGenerator = () => {
     phone: ''
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [chartImages, setChartImages] = useState<{ [key: string]: string }>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Base64 이미지를 ArrayBuffer로 변환
+  const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
+    // Remove data:image/...;base64, prefix if present
+    const base64Data = base64.includes(',') ? base64.split(',')[1] : base64;
+    const binaryString = atob(base64Data);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  };
+
+  // 서술형 문단 생성 헬퍼
+  const createNarrativeParagraphs = (text: string): Paragraph[] => {
+    return text.trim().split('\n\n').filter(p => p.trim()).map(paragraph => {
+      const trimmed = paragraph.trim();
+      
+      // 제목 형식 (【...】)
+      if (trimmed.startsWith('【') && trimmed.includes('】')) {
+        const [title, ...rest] = trimmed.split('】');
+        return new Paragraph({
+          children: [
+            new TextRun({ text: title.replace('【', '') + '】', bold: true, size: 24, color: "2b6cb0" }),
+            new TextRun({ text: rest.join('】'), size: 22 })
+          ],
+          spacing: { before: 200, after: 150 }
+        });
+      }
+      
+      // 이모지로 시작하는 섹션
+      if (/^[📈💳🏢💼💻📜🏢⚠️👶🏥👨‍👩‍👧‍👦💼🇰🇷🧠📚📊]/.test(trimmed)) {
+        const lines = trimmed.split('\n');
+        const firstLine = lines[0];
+        const restLines = lines.slice(1).join('\n');
+        
+        return new Paragraph({
+          children: [
+            new TextRun({ text: firstLine, bold: true, size: 24 }),
+            restLines ? new TextRun({ text: '\n' + restLines, size: 22 }) : new TextRun({ text: '' })
+          ],
+          spacing: { before: 150, after: 100 }
+        });
+      }
+      
+      // 일반 문단
+      return new Paragraph({
+        children: [new TextRun({ text: trimmed, size: 22 })],
+        spacing: { after: 120 }
+      });
+    });
   };
 
   // 표 생성 헬퍼 함수
@@ -373,7 +428,13 @@ const BusinessPlanGenerator = () => {
             // ========== 2. 문제 정의 ==========
             new Paragraph({ text: "2. 문제 정의 및 솔루션", heading: HeadingLevel.HEADING_1 }),
 
-            new Paragraph({ text: "2.1 해결하고자 하는 문제", heading: HeadingLevel.HEADING_2 }),
+            // 서술형 콘텐츠: 창업 동기
+            new Paragraph({ text: "2.1 창업 동기", heading: HeadingLevel.HEADING_2 }),
+            ...createNarrativeParagraphs(narratives.motivation),
+
+            new Paragraph({ text: "", spacing: { after: 200 } }),
+
+            new Paragraph({ text: "2.2 해결하고자 하는 문제", heading: HeadingLevel.HEADING_2 }),
             
             createTable(
               ["문제", "현황", "영향", "심각도"],
@@ -388,7 +449,7 @@ const BusinessPlanGenerator = () => {
 
             new Paragraph({ text: "", spacing: { after: 200 } }),
 
-            new Paragraph({ text: "2.2 문제의 심각성 - 통계로 보는 현실", heading: HeadingLevel.HEADING_2 }),
+            new Paragraph({ text: "2.3 문제의 심각성 - 통계로 보는 현실", heading: HeadingLevel.HEADING_2 }),
             
             createTable(
               ["항목", "통계", "출처"],
@@ -404,12 +465,12 @@ const BusinessPlanGenerator = () => {
 
             new Paragraph({ text: "", spacing: { after: 200 } }),
 
-            new Paragraph({ text: "2.3 솔루션: AI HighlightPRO", heading: HeadingLevel.HEADING_2 }),
+            new Paragraph({ text: "2.4 솔루션의 혁신성", heading: HeadingLevel.HEADING_2 }),
+            ...createNarrativeParagraphs(narratives.solutionInnovation),
 
-            new Paragraph({
-              children: [new TextRun({ text: "AI HighlightPRO는 4가지 핵심 솔루션으로 문제를 해결합니다:", bold: true, size: 24 })],
-              spacing: { after: 150 }
-            }),
+            new Paragraph({ text: "", spacing: { after: 200 } }),
+
+            new Paragraph({ text: "2.5 핵심 솔루션 요약", heading: HeadingLevel.HEADING_2 }),
             
             createTable(
               ["솔루션", "기능", "효과"],
@@ -601,7 +662,13 @@ const BusinessPlanGenerator = () => {
             // ========== 6. 시장 분석 ==========
             new Paragraph({ text: "6. 시장 분석", heading: HeadingLevel.HEADING_1 }),
 
-            new Paragraph({ text: "6.1 시장 규모 (TAM-SAM-SOM)", heading: HeadingLevel.HEADING_2 }),
+            // 서술형: 시장 기회
+            new Paragraph({ text: "6.1 시장 기회 분석", heading: HeadingLevel.HEADING_2 }),
+            ...createNarrativeParagraphs(narratives.marketOpportunity),
+
+            new Paragraph({ text: "", spacing: { after: 200 } }),
+
+            new Paragraph({ text: "6.2 시장 규모 (TAM-SAM-SOM)", heading: HeadingLevel.HEADING_2 }),
 
             createTable(
               ["구분", "정의", "규모", "성장률"],
@@ -614,7 +681,7 @@ const BusinessPlanGenerator = () => {
 
             new Paragraph({ text: "", spacing: { after: 200 } }),
 
-            new Paragraph({ text: "6.2 목표 시장 세분화", heading: HeadingLevel.HEADING_2 }),
+            new Paragraph({ text: "6.3 목표 시장 세분화", heading: HeadingLevel.HEADING_2 }),
 
             createTable(
               ["세그먼트", "규모", "특성", "접근 전략"],
@@ -629,7 +696,7 @@ const BusinessPlanGenerator = () => {
 
             new Paragraph({ text: "", spacing: { after: 200 } }),
 
-            new Paragraph({ text: "6.3 시장 트렌드 및 기회", heading: HeadingLevel.HEADING_2 }),
+            new Paragraph({ text: "6.4 시장 트렌드 및 기회", heading: HeadingLevel.HEADING_2 }),
 
             createTable(
               ["트렌드", "내용", "우리의 기회"],
@@ -644,7 +711,7 @@ const BusinessPlanGenerator = () => {
 
             new Paragraph({ text: "", spacing: { after: 200 } }),
 
-            new Paragraph({ text: "6.4 정부 정책 정합성 (2026)", heading: HeadingLevel.HEADING_2 }),
+            new Paragraph({ text: "6.5 정부 정책 정합성 (2026)", heading: HeadingLevel.HEADING_2 }),
             
             createHighlightBox(
               "2026 정부 청소년 위기대응 정책과의 연계",
@@ -656,7 +723,13 @@ const BusinessPlanGenerator = () => {
             // ========== 7. 비즈니스 모델 ==========
             new Paragraph({ text: "7. 비즈니스 모델", heading: HeadingLevel.HEADING_1 }),
 
-            new Paragraph({ text: "7.1 수익 모델 구조", heading: HeadingLevel.HEADING_2 }),
+            // 서술형: 비즈니스 모델
+            new Paragraph({ text: "7.1 비즈니스 모델 개요", heading: HeadingLevel.HEADING_2 }),
+            ...createNarrativeParagraphs(narratives.businessModel),
+
+            new Paragraph({ text: "", spacing: { after: 200 } }),
+
+            new Paragraph({ text: "7.2 수익 모델 구조", heading: HeadingLevel.HEADING_2 }),
 
             createTable(
               ["수익원", "내용", "단가", "목표 비중"],
@@ -704,7 +777,13 @@ const BusinessPlanGenerator = () => {
             // ========== 8. 경쟁력 분석 ==========
             new Paragraph({ text: "8. 경쟁력 분석", heading: HeadingLevel.HEADING_1 }),
 
-            new Paragraph({ text: "8.1 경쟁사 비교", heading: HeadingLevel.HEADING_2 }),
+            // 서술형: 경쟁 우위
+            new Paragraph({ text: "8.1 경쟁 우위 분석", heading: HeadingLevel.HEADING_2 }),
+            ...createNarrativeParagraphs(narratives.competitiveAdvantage),
+
+            new Paragraph({ text: "", spacing: { after: 200 } }),
+
+            new Paragraph({ text: "8.2 경쟁사 비교표", heading: HeadingLevel.HEADING_2 }),
 
             createTable(
               ["항목", "AI HighlightPRO", "마보", "마인드카페", "트로스트"],
@@ -721,7 +800,7 @@ const BusinessPlanGenerator = () => {
 
             new Paragraph({ text: "", spacing: { after: 200 } }),
 
-            new Paragraph({ text: "8.2 경쟁 우위 (MOAT)", heading: HeadingLevel.HEADING_2 }),
+            new Paragraph({ text: "8.3 경쟁 우위 (MOAT)", heading: HeadingLevel.HEADING_2 }),
 
             createTable(
               ["우위 요소", "내용", "모방 난이도", "지속 기간"],
@@ -736,7 +815,7 @@ const BusinessPlanGenerator = () => {
 
             new Paragraph({ text: "", spacing: { after: 200 } }),
 
-            new Paragraph({ text: "8.3 SWOT 분석", heading: HeadingLevel.HEADING_2 }),
+            new Paragraph({ text: "8.4 SWOT 분석", heading: HeadingLevel.HEADING_2 }),
 
             createTable(
               ["", "긍정적", "부정적"],
@@ -751,7 +830,13 @@ const BusinessPlanGenerator = () => {
             // ========== 9. 마케팅 전략 ==========
             new Paragraph({ text: "9. 마케팅 전략", heading: HeadingLevel.HEADING_1 }),
 
-            new Paragraph({ text: "9.1 단계별 마케팅 전략", heading: HeadingLevel.HEADING_2 }),
+            // 서술형: 성장 전략
+            new Paragraph({ text: "9.1 성장 전략 개요", heading: HeadingLevel.HEADING_2 }),
+            ...createNarrativeParagraphs(narratives.growthStrategy),
+
+            new Paragraph({ text: "", spacing: { after: 200 } }),
+
+            new Paragraph({ text: "9.2 단계별 마케팅 전략", heading: HeadingLevel.HEADING_2 }),
 
             createTable(
               ["단계", "기간", "목표", "핵심 활동", "KPI"],
@@ -835,6 +920,12 @@ const BusinessPlanGenerator = () => {
                 ["투자", "IR, 재무 자문", "투자 유치 지원"]
               ]
             ),
+
+            new Paragraph({ text: "", spacing: { after: 200 } }),
+
+            // 서술형: 팀 역량
+            new Paragraph({ text: "10.4 팀 역량 소개", heading: HeadingLevel.HEADING_2 }),
+            ...createNarrativeParagraphs(narratives.teamCapability),
 
             new Paragraph({ text: "", pageBreakBefore: true }),
 
@@ -942,7 +1033,13 @@ const BusinessPlanGenerator = () => {
             // ========== 13. 리스크 관리 ==========
             new Paragraph({ text: "13. 리스크 관리", heading: HeadingLevel.HEADING_1 }),
 
-            new Paragraph({ text: "13.1 리스크 매트릭스", heading: HeadingLevel.HEADING_2 }),
+            // 서술형: 리스크 관리
+            new Paragraph({ text: "13.1 리스크 관리 개요", heading: HeadingLevel.HEADING_2 }),
+            ...createNarrativeParagraphs(narratives.riskManagement),
+
+            new Paragraph({ text: "", spacing: { after: 200 } }),
+
+            new Paragraph({ text: "13.2 리스크 매트릭스", heading: HeadingLevel.HEADING_2 }),
 
             createTable(
               ["리스크", "발생 확률", "영향도", "대응 전략", "담당"],
@@ -958,7 +1055,7 @@ const BusinessPlanGenerator = () => {
 
             new Paragraph({ text: "", spacing: { after: 200 } }),
 
-            new Paragraph({ text: "13.2 의료기기법 리스크 상세", heading: HeadingLevel.HEADING_2 }),
+            new Paragraph({ text: "13.3 의료기기법 리스크 상세", heading: HeadingLevel.HEADING_2 }),
 
             createHighlightBox(
               "의료기기 규제 대응 전략",
@@ -1249,6 +1346,9 @@ const BusinessPlanGenerator = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Chart Generation */}
+        <BusinessPlanCharts onChartsGenerated={setChartImages} />
 
         {/* Document Preview */}
         <Card>

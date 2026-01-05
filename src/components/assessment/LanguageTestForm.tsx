@@ -88,37 +88,45 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
     
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      handleNext();
-    }
+    // 마지막 문항이면 바로 결과 처리, 아니면 다음 문항으로 이동
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        // 마지막 문항 - 현재 답변 포함하여 처리
+        completeTest(newAnswers);
+      }
+    }, 300);
+  };
+
+  const completeTest = (finalAnswers: string[]) => {
+    // 문자열 답변을 숫자로 변환
+    const numericAnswers = finalAnswers.map(a => {
+      const parsed = parseInt(a);
+      return isNaN(parsed) ? 0 : parsed;
+    });
+    
+    const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
+    const average = Math.round((total / numericAnswers.length) * 10) / 10;
+    const ageGroupLabel = ageGroup === 'infant' ? '영유아' : '아동청소년';
+    const detailedAgeGroup = getDetailedAgeGroup(age);
+    
+    onComplete({
+      answers: numericAnswers,
+      total,
+      average,
+      ageGroup: ageGroupLabel,
+      age,
+      detailedAgeGroup,
+      ageInMonths: age
+    });
   };
 
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 문자열 답변을 숫자로 변환
-      const numericAnswers = answers.map(a => {
-        const parsed = parseInt(a);
-        return isNaN(parsed) ? 0 : parsed;
-      });
-      
-      const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
-      const average = Math.round((total / numericAnswers.length) * 10) / 10;
-      const ageGroupLabel = ageGroup === 'infant' ? '영유아' : '아동청소년';
-      const detailedAgeGroup = getDetailedAgeGroup(age);
-      
-      onComplete({
-        answers: numericAnswers,
-        total,
-        average,
-        ageGroup: ageGroupLabel,
-        age,
-        detailedAgeGroup,
-        ageInMonths: age
-      });
+      completeTest(answers);
     }
   };
 
@@ -184,20 +192,20 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
             className="space-y-4"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="1" id="option1" />
-              <Label htmlFor="option1" className="text-base cursor-pointer">
+              <RadioGroupItem value="1" id={`lang-q${currentQuestion}-opt1`} />
+              <Label htmlFor={`lang-q${currentQuestion}-opt1`} className="text-base cursor-pointer">
                 전혀 아니다 (1점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="2" id="option2" />
-              <Label htmlFor="option2" className="text-base cursor-pointer">
+              <RadioGroupItem value="2" id={`lang-q${currentQuestion}-opt2`} />
+              <Label htmlFor={`lang-q${currentQuestion}-opt2`} className="text-base cursor-pointer">
                 보통이다 (2점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="3" id="option3" />
-              <Label htmlFor="option3" className="text-base cursor-pointer">
+              <RadioGroupItem value="3" id={`lang-q${currentQuestion}-opt3`} />
+              <Label htmlFor={`lang-q${currentQuestion}-opt3`} className="text-base cursor-pointer">
                 매우 그렇다 (3점)
               </Label>
             </div>

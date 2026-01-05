@@ -303,20 +303,20 @@ const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: Depressi
             className="space-y-4"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="1" id="option1" />
-              <Label htmlFor="option1" className="text-base cursor-pointer">
+              <RadioGroupItem value="1" id={`depression-q${currentQuestion}-opt1`} />
+              <Label htmlFor={`depression-q${currentQuestion}-opt1`} className="text-base cursor-pointer">
                 그렇지 않다 (1점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="2" id="option2" />
-              <Label htmlFor="option2" className="text-base cursor-pointer">
+              <RadioGroupItem value="2" id={`depression-q${currentQuestion}-opt2`} />
+              <Label htmlFor={`depression-q${currentQuestion}-opt2`} className="text-base cursor-pointer">
                 보통이다 (2점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="3" id="option3" />
-              <Label htmlFor="option3" className="text-base cursor-pointer">
+              <RadioGroupItem value="3" id={`depression-q${currentQuestion}-opt3`} />
+              <Label htmlFor={`depression-q${currentQuestion}-opt3`} className="text-base cursor-pointer">
                 그렇다 (3점)
               </Label>
             </div>

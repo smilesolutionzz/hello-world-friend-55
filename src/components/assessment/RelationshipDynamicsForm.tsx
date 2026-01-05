@@ -252,8 +252,8 @@ export default function RelationshipDynamicsForm({ onComplete, onBack }: Relatio
                       key={index} 
                       className="flex items-center space-x-2 p-3 rounded-lg hover:bg-pink-50 transition-colors cursor-pointer border border-transparent hover:border-pink-200"
                     >
-                      <RadioGroupItem value={option.value} id={`option-${index}`} />
-                      <Label htmlFor={`option-${index}`} className="cursor-pointer flex-1">
+                      <RadioGroupItem value={option.value} id={`reldyn-q${currentQuestion}-opt${index}`} />
+                      <Label htmlFor={`reldyn-q${currentQuestion}-opt${index}`} className="cursor-pointer flex-1">
                         {option.label}
                       </Label>
                     </div>

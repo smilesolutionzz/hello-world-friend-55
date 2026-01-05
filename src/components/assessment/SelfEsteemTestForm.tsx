@@ -227,8 +227,8 @@ export default function SelfEsteemTestForm({ onComplete, onBack }: SelfEsteemTes
               >
                 {options.map((option, index) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={`option-${index}`} />
-                    <Label htmlFor={`option-${index}`} className="cursor-pointer">
+                    <RadioGroupItem value={option.value} id={`selfesteem-q${currentQuestion}-opt${index}`} />
+                    <Label htmlFor={`selfesteem-q${currentQuestion}-opt${index}`} className="cursor-pointer">
                       {option.label}
                     </Label>
                   </div>

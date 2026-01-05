@@ -286,8 +286,8 @@ export default function EnergyFlowTestForm({ onComplete, onBack }: EnergyFlowTes
                     key={index} 
                     className="flex items-center space-x-2 p-3 rounded-lg hover:bg-amber-50 transition-colors cursor-pointer border border-transparent hover:border-amber-200"
                   >
-                    <RadioGroupItem value={option.value} id={`option-${index}`} />
-                    <Label htmlFor={`option-${index}`} className="cursor-pointer flex-1">
+                    <RadioGroupItem value={option.value} id={`energy-q${currentQuestion}-opt${index}`} />
+                    <Label htmlFor={`energy-q${currentQuestion}-opt${index}`} className="cursor-pointer flex-1">
                       {option.label}
                     </Label>
                   </div>

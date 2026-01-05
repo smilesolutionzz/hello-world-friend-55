@@ -260,8 +260,8 @@ export default function LifePurposeTestForm({ onComplete, onBack }: LifePurposeT
                       key={index} 
                       className="flex items-center space-x-2 p-3 rounded-lg hover:bg-indigo-50 transition-colors cursor-pointer border border-transparent hover:border-indigo-200"
                     >
-                      <RadioGroupItem value={option.value} id={`option-${index}`} />
-                      <Label htmlFor={`option-${index}`} className="cursor-pointer flex-1">
+                      <RadioGroupItem value={option.value} id={`lifepurpose-q${currentQuestion}-opt${index}`} />
+                      <Label htmlFor={`lifepurpose-q${currentQuestion}-opt${index}`} className="cursor-pointer flex-1">
                         {option.label}
                       </Label>
                     </div>

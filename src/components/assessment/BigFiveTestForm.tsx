@@ -54,18 +54,27 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleAnswer = (questionId: string, value: string) => {
-    setAnswers(prev => ({
-      ...prev,
+    const newAnswers = {
+      ...answers,
       [questionId]: value
-    }));
-    handleNext();
+    };
+    setAnswers(newAnswers);
+    
+    // 마지막 문항이면 새 답변 세트로 바로 분석, 아니면 다음 문항으로 이동
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(prev => prev + 1);
+      } else {
+        analyzeResultsWithAnswers(newAnswers);
+      }
+    }, 300);
   };
 
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
-      analyzeResults();
+      analyzeResultsWithAnswers(answers);
     }
   };
 
@@ -75,7 +84,7 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
     }
   };
 
-  const analyzeResults = () => {
+  const analyzeResultsWithAnswers = (finalAnswers: Record<string, string>) => {
     setIsAnalyzing(true);
     
     setTimeout(() => {
@@ -89,7 +98,7 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
       
       // 각 요인별 점수 계산
       questions.forEach(question => {
-        const answer = parseInt(answers[question.id] || "0");
+        const answer = parseInt(finalAnswers[question.id] || "0");
         const score = question.reverse ? 6 - answer : answer;
         scores[question.factor as keyof typeof scores] += score;
       });
@@ -100,7 +109,7 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
       });
       
       const answerValues = Object.fromEntries(
-        Object.entries(answers).map(([key, value]) => [key, parseInt(value)])
+        Object.entries(finalAnswers).map(([key, value]) => [key, parseInt(value)])
       );
       
       const total = Object.values(scores).reduce((sum, score) => sum + score, 0);
@@ -178,8 +187,8 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
                   { value: "5", label: "매우 그렇다" }
                 ].map((option, index) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={`option-${index}`} />
-                    <Label htmlFor={`option-${index}`} className="cursor-pointer">
+                    <RadioGroupItem value={option.value} id={`bigfive-q${currentQuestion}-opt${index}`} />
+                    <Label htmlFor={`bigfive-q${currentQuestion}-opt${index}`} className="cursor-pointer">
                       {option.label}
                     </Label>
                   </div>

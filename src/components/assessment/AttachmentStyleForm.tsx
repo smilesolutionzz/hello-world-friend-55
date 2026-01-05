@@ -108,20 +108,27 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
   const { toast } = useToast();
 
   const handleAnswer = (questionId: string, value: string) => {
-    setAnswers(prev => ({
-      ...prev,
+    const newAnswers = {
+      ...answers,
       [questionId]: value
-    }));
+    };
+    setAnswers(newAnswers);
     
-    // 즉시 다음 문항으로 이동
-    handleNext();
+    // 마지막 문항이면 새 답변 세트로 바로 분석, 아니면 다음 문항으로 이동
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(prev => prev + 1);
+      } else {
+        analyzeResultsWithAnswers(newAnswers);
+      }
+    }, 300);
   };
 
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
-      analyzeResults();
+      analyzeResultsWithAnswers(answers);
     }
   };
 
@@ -131,7 +138,7 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
     }
   };
 
-  const analyzeResults = async () => {
+  const analyzeResultsWithAnswers = async (finalAnswers: Record<string, string>) => {
     // 토큰 확인
     const requiredTokens = TOKEN_COSTS.RELATIONSHIP_TYPE;
     if (!checkTokenAvailability(requiredTokens)) {
@@ -159,7 +166,7 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
       let avoidanceCount = 0;
       
       questions.forEach(question => {
-        const answer = parseInt(answers[question.id] || "0");
+        const answer = parseInt(finalAnswers[question.id] || "0");
         const score = question.reverse ? 8 - answer : answer;
         
         if (question.dimension === "anxiety") {
@@ -203,7 +210,7 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
             anxietyScore,
             avoidanceScore,
             style,
-            answers
+            answers: finalAnswers
           }
         }
       );
@@ -322,8 +329,8 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
                   { value: "7", label: "매우 그렇다" }
                 ].map((option, index) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={`option-${index}`} />
-                    <Label htmlFor={`option-${index}`} className="cursor-pointer">
+                    <RadioGroupItem value={option.value} id={`attach-q${currentQuestion}-opt${index}`} />
+                    <Label htmlFor={`attach-q${currentQuestion}-opt${index}`} className="cursor-pointer">
                       {option.label}
                     </Label>
                   </div>

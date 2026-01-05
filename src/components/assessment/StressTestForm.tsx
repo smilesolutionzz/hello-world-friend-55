@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -172,11 +172,11 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
 
   // 백업 데이터가 있으면 복구 대화상자 표시
-  useState(() => {
+  useEffect(() => {
     if (hasBackup) {
       setShowRestoreDialog(true);
     }
-  });
+  }, [hasBackup]);
 
   const handleRestoreBackup = () => {
     const backup = restoreBackup();
@@ -336,8 +336,8 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
               >
                 {currentQ.options.map((option, index) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={`option-${index}`} />
-                    <Label htmlFor={`option-${index}`} className="cursor-pointer">
+                    <RadioGroupItem value={option.value} id={`stress-q${currentQuestion}-opt${index}`} />
+                    <Label htmlFor={`stress-q${currentQuestion}-opt${index}`} className="cursor-pointer">
                       {option.label}
                     </Label>
                   </div>

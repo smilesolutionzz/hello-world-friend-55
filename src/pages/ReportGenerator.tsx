@@ -11,6 +11,7 @@ import { useTokens } from '@/hooks/useTokens';
 import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 import html2pdf from 'html2pdf.js';
 import PerplexityDeepReport from '@/components/report/PerplexityDeepReport';
+import ScratchCard from '@/components/gamification/ScratchCard';
 import {
   FileText,
   Download,
@@ -83,6 +84,7 @@ const ReportGenerator = () => {
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [showScratchCard, setShowScratchCard] = useState(false);
 
   const REPORT_TYPES = {
     detailed: { name: '상세 리포트', tokens: 76, price: '15,000원', description: '9개 섹션 AI 심층 분석 리포트 (즉시 생성)' },
@@ -376,6 +378,11 @@ const ReportGenerator = () => {
           title: `🎉 ${REPORT_TYPES[selectedReportType].name} 생성 완료!`,
           description: `${requiredTokens}토큰이 차감되었습니다. 세계 최고 수준의 분석 리포트가 생성되었습니다.`,
         });
+
+        // 리포트 생성 완료 후 스크래치 카드 표시
+        setTimeout(() => {
+          setShowScratchCard(true);
+        }, 1500);
       } else {
         throw new Error('리포트 데이터가 없습니다.');
       }
@@ -1649,6 +1656,12 @@ const ReportGenerator = () => {
           </div>
         )}
       </div>
+
+      {/* 스크래치 카드 모달 */}
+      <ScratchCard 
+        isOpen={showScratchCard} 
+        onClose={() => setShowScratchCard(false)} 
+      />
     </div>
   );
 };

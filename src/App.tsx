@@ -172,6 +172,7 @@ import AppStoreGuide from "./pages/AppStoreGuide";
 
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
+import { InstallPromptBanner } from "./components/pwa/InstallPromptBanner";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -200,6 +201,7 @@ const App = () => {
               <NetworkStatus />
               <SessionManager />
               <UpdatePrompt />
+              <InstallPromptBanner />
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />

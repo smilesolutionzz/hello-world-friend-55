@@ -169,6 +169,7 @@ import ResetPassword from "./pages/ResetPassword";
 import B2BAdvertising from "./pages/B2BAdvertising";
 import B2BLanding from "./pages/B2BLanding";
 import AppStoreGuide from "./pages/AppStoreGuide";
+import BusinessPlanGenerator from "./pages/BusinessPlanGenerator";
 
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
@@ -368,6 +369,7 @@ const App = () => {
           <Route path="/b2b-advertising" element={<B2BAdvertising />} />
           <Route path="/b2b" element={<B2BLanding />} />
           <Route path="/app-store-guide" element={<AppStoreGuide />} />
+          <Route path="/business-plan" element={<BusinessPlanGenerator />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

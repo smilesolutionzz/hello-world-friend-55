@@ -573,6 +573,44 @@ export type Database = {
           },
         ]
       }
+      b2b_feature_unlocks: {
+        Row: {
+          created_at: string | null
+          feature_key: string
+          id: string
+          institution_id: string | null
+          is_active: boolean | null
+          months_required: number
+          unlock_date: string
+        }
+        Insert: {
+          created_at?: string | null
+          feature_key: string
+          id?: string
+          institution_id?: string | null
+          is_active?: boolean | null
+          months_required: number
+          unlock_date: string
+        }
+        Update: {
+          created_at?: string | null
+          feature_key?: string
+          id?: string
+          institution_id?: string | null
+          is_active?: boolean | null
+          months_required?: number
+          unlock_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_feature_unlocks_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       b2b_inquiries: {
         Row: {
           contact_person: string
@@ -624,8 +662,11 @@ export type Database = {
       b2b_partner_institutions: {
         Row: {
           address: string | null
+          churn_risk_score: number | null
           cover_image_url: string | null
           created_at: string
+          current_residents: number | null
+          data_accumulated_months: number | null
           description: string | null
           email: string | null
           id: string
@@ -636,15 +677,21 @@ export type Database = {
           logo_url: string | null
           operating_hours: Json | null
           phone: string | null
+          resident_capacity: number | null
           specializations: string[] | null
+          subscription_started_at: string | null
+          total_observations: number | null
           updated_at: string
           user_id: string | null
           website_url: string | null
         }
         Insert: {
           address?: string | null
+          churn_risk_score?: number | null
           cover_image_url?: string | null
           created_at?: string
+          current_residents?: number | null
+          data_accumulated_months?: number | null
           description?: string | null
           email?: string | null
           id?: string
@@ -655,15 +702,21 @@ export type Database = {
           logo_url?: string | null
           operating_hours?: Json | null
           phone?: string | null
+          resident_capacity?: number | null
           specializations?: string[] | null
+          subscription_started_at?: string | null
+          total_observations?: number | null
           updated_at?: string
           user_id?: string | null
           website_url?: string | null
         }
         Update: {
           address?: string | null
+          churn_risk_score?: number | null
           cover_image_url?: string | null
           created_at?: string
+          current_residents?: number | null
+          data_accumulated_months?: number | null
           description?: string | null
           email?: string | null
           id?: string
@@ -674,10 +727,108 @@ export type Database = {
           logo_url?: string | null
           operating_hours?: Json | null
           phone?: string | null
+          resident_capacity?: number | null
           specializations?: string[] | null
+          subscription_started_at?: string | null
+          total_observations?: number | null
           updated_at?: string
           user_id?: string | null
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      b2b_retention_rewards: {
+        Row: {
+          applied_at: string | null
+          created_at: string | null
+          discount_rate: number | null
+          id: string
+          institution_id: string | null
+          months_subscribed: number
+          reward_description: string | null
+          reward_type: string
+        }
+        Insert: {
+          applied_at?: string | null
+          created_at?: string | null
+          discount_rate?: number | null
+          id?: string
+          institution_id?: string | null
+          months_subscribed: number
+          reward_description?: string | null
+          reward_type: string
+        }
+        Update: {
+          applied_at?: string | null
+          created_at?: string | null
+          discount_rate?: number | null
+          id?: string
+          institution_id?: string | null
+          months_subscribed?: number
+          reward_description?: string | null
+          reward_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_retention_rewards_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      b2b_subscription_plans: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          export_options: string[] | null
+          features: Json | null
+          gov_subsidy_rate: number | null
+          id: string
+          is_active: boolean | null
+          locked_features: Json | null
+          max_capacity: number | null
+          min_capacity: number | null
+          plan_key: string
+          plan_name: string
+          price_monthly: number
+          price_yearly: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          export_options?: string[] | null
+          features?: Json | null
+          gov_subsidy_rate?: number | null
+          id?: string
+          is_active?: boolean | null
+          locked_features?: Json | null
+          max_capacity?: number | null
+          min_capacity?: number | null
+          plan_key: string
+          plan_name: string
+          price_monthly: number
+          price_yearly?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          export_options?: string[] | null
+          features?: Json | null
+          gov_subsidy_rate?: number | null
+          id?: string
+          is_active?: boolean | null
+          locked_features?: Json | null
+          max_capacity?: number | null
+          min_capacity?: number | null
+          plan_key?: string
+          plan_name?: string
+          price_monthly?: number
+          price_yearly?: number | null
         }
         Relationships: []
       }
@@ -1401,6 +1552,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      churn_risk_analysis: {
+        Row: {
+          analysis_date: string
+          created_at: string | null
+          data_growth_score: number | null
+          feature_usage_score: number | null
+          id: string
+          institution_id: string | null
+          login_frequency_score: number | null
+          overall_risk_score: number | null
+          recommended_actions: Json | null
+          risk_level: string | null
+          support_ticket_score: number | null
+        }
+        Insert: {
+          analysis_date: string
+          created_at?: string | null
+          data_growth_score?: number | null
+          feature_usage_score?: number | null
+          id?: string
+          institution_id?: string | null
+          login_frequency_score?: number | null
+          overall_risk_score?: number | null
+          recommended_actions?: Json | null
+          risk_level?: string | null
+          support_ticket_score?: number | null
+        }
+        Update: {
+          analysis_date?: string
+          created_at?: string | null
+          data_growth_score?: number | null
+          feature_usage_score?: number | null
+          id?: string
+          institution_id?: string | null
+          login_frequency_score?: number | null
+          overall_risk_score?: number | null
+          recommended_actions?: Json | null
+          risk_level?: string | null
+          support_ticket_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "churn_risk_analysis_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       community_comments: {
         Row: {
@@ -4800,6 +5001,50 @@ export type Database = {
           week_number?: number
         }
         Relationships: []
+      }
+      institution_data_metrics: {
+        Row: {
+          calculated_data_value: number | null
+          created_at: string | null
+          health_score_avg: number | null
+          id: string
+          improvement_rate: number | null
+          institution_id: string | null
+          metric_date: string
+          observations_count: number | null
+          residents_active: number | null
+        }
+        Insert: {
+          calculated_data_value?: number | null
+          created_at?: string | null
+          health_score_avg?: number | null
+          id?: string
+          improvement_rate?: number | null
+          institution_id?: string | null
+          metric_date: string
+          observations_count?: number | null
+          residents_active?: number | null
+        }
+        Update: {
+          calculated_data_value?: number | null
+          created_at?: string | null
+          health_score_avg?: number | null
+          id?: string
+          improvement_rate?: number | null
+          institution_id?: string | null
+          metric_date?: string
+          observations_count?: number | null
+          residents_active?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_data_metrics_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       institution_experts: {
         Row: {
@@ -8282,6 +8527,54 @@ export type Database = {
           updated_at?: string
           voice_cloning?: boolean | null
           yearly_price?: number | null
+        }
+        Relationships: []
+      }
+      subscription_requests: {
+        Row: {
+          admin_notes: string | null
+          contact_email: string | null
+          contact_name: string
+          contact_phone: string
+          created_at: string | null
+          id: string
+          institution_name: string
+          institution_type: string
+          message: string | null
+          requested_plan: string
+          resident_count: number | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          contact_email?: string | null
+          contact_name: string
+          contact_phone: string
+          created_at?: string | null
+          id?: string
+          institution_name: string
+          institution_type: string
+          message?: string | null
+          requested_plan: string
+          resident_count?: number | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          contact_email?: string | null
+          contact_name?: string
+          contact_phone?: string
+          created_at?: string | null
+          id?: string
+          institution_name?: string
+          institution_type?: string
+          message?: string | null
+          requested_plan?: string
+          resident_count?: number | null
+          status?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }

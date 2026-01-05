@@ -553,8 +553,8 @@ const InstantAIAnalysis = () => {
               { emoji: '😢', text: '아이가 친구들과 잘 어울리지 못해요' },
               { emoji: '📚', text: '집중력이 부족하고 산만해요' },
               { emoji: '😤', text: '아이가 자주 짜증을 내고 화를 내요' },
-              { emoji: '🌙', text: '수면 습관이 불규칙해요' },
-              { emoji: '🍽️', text: '편식이 심하고 식사를 거부해요' },
+              { emoji: '💑', text: '배우자와 대화가 잘 안 통해요' },
+              { emoji: '💭', text: '요즘 우울하고 무기력해요' },
             ].map((tag, index) => (
               <button
                 key={index}

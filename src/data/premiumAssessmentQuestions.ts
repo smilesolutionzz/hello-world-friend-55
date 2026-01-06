@@ -1680,12 +1680,34 @@ export const premiumAssessmentInfo = {
     category: "신경발달",
     targetAge: "18개월-성인"
   },
+  // 🆕 사회적 행동 발달 자가체크 (부모 관찰 기반)
+  socialBehaviorCheck: {
+    title: "AIH 사회적 행동 발달 자가체크",
+    subtitle: "SBDS-AIH (Social Behavior Development Self-check)",
+    description: "일상에서 관찰되는 아이의 사회적 행동 패턴을 체크하는 부모용 자가점검 도구입니다",
+    duration: "약 10-15분",
+    questions_count: 40,
+    premium_features: [
+      "5가지 발달 영역별 상세 분석",
+      "강점 중심 리포트 제공",
+      "일상 활동 가이드 추천",
+      "관찰 포인트 체크리스트",
+      "전문 상담 필요 여부 안내"
+    ],
+    disclaimer: "본 자가체크는 진단 도구가 아닙니다. 부모님의 일상 관찰을 바탕으로 아이의 발달 특성을 이해하는 참고 자료로만 활용하세요.",
+    rank: 1,
+    badge: "🆕 부모관찰",
+    priority: 2,
+    highlight: true,
+    category: "발달체크",
+    targetAge: "24개월-12세"
+  },
   // ✨ NEW 프리미엄 ADHD 검사
   premiumAdhd: {
     ...premiumAdhdAssessmentInfo,
-    rank: 1,
+    rank: 2,
     badge: "✨ NEW",
-    priority: 2,
+    priority: 3,
     highlight: true
   },
   // 🔥 TOP 인기 테스트들 (상단 배치)

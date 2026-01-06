@@ -28,6 +28,8 @@ import { InsuranceAnalysisResult } from "@/components/assessment/InsuranceAnalys
 import { DrawingAnalyzer } from "@/components/ai-analysis/DrawingAnalyzer";
 import MotorDevelopmentForm from "@/components/assessment/MotorDevelopmentForm";
 import MotorDevelopmentResult from "@/components/assessment/MotorDevelopmentResult";
+import SocialBehaviorCheckForm from "@/components/assessment/SocialBehaviorCheckForm";
+import SocialBehaviorCheckResult from "@/components/assessment/SocialBehaviorCheckResult";
 import {
   Collapsible,
   CollapsibleContent,
@@ -262,6 +264,16 @@ const PremiumAssessment = () => {
       );
     }
 
+    if (selectedAssessment === 'socialBehaviorCheck') {
+      return (
+        <SocialBehaviorCheckResult
+          results={assessmentResults}
+          answers={assessmentAnswers}
+          onBack={handleBack}
+        />
+      );
+    }
+
     return (
       <PremiumAssessmentResult
         assessmentType={selectedAssessment}
@@ -346,6 +358,20 @@ const PremiumAssessment = () => {
       );
     }
 
+    if (selectedAssessment === 'socialBehaviorCheck') {
+      return (
+        <div>
+          <UnifiedNavigation />
+          <div className="pt-4">
+            <SocialBehaviorCheckForm
+              onComplete={handleAssessmentComplete}
+              onBack={handleBack}
+            />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <PremiumAssessmentForm
         assessmentType={selectedAssessment}
@@ -366,6 +392,7 @@ const PremiumAssessment = () => {
       activeColor: "text-purple-600",
       tests: [
         { key: 'autismSpectrumScreening', icon: Brain, badge: '🧠 AI 91%', badgeColor: 'bg-purple-500' },
+        { key: 'socialBehaviorCheck', icon: Users, badge: '🆕 부모관찰', badgeColor: 'bg-teal-500' },
         { key: 'premiumAdhd', icon: Brain, badge: '✨ NEW', badgeColor: 'bg-pink-500' },
         { key: 'languageDevelopment', icon: Baby, badge: '🔥 인기', badgeColor: 'bg-red-500' },
         { key: 'motorDevelopment', icon: Users, badge: '🤸 NEW', badgeColor: 'bg-green-500' },

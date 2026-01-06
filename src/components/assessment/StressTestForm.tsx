@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { AutoSaveManager, useBackupRecovery } from "@/components/mvp/AutoSaveManager";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -166,7 +166,6 @@ interface StressTestFormProps {
 export default function StressTestForm({ onComplete, onBack }: StressTestFormProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { toast } = useToast();
   const { hasBackup, restoreBackup, discardBackup } = useBackupRecovery('stress-test-form');
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
@@ -228,54 +227,32 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
   };
 
   const analyzeResultsWithAnswers = (finalAnswers: Record<string, string>) => {
-    setIsAnalyzing(true);
+    // 즉시 결과 계산 - 로딩 없이 바로 전달
+    const answerValues = Object.values(finalAnswers).map(Number);
+    const total = answerValues.reduce((sum, value) => sum + value, 0);
+    const average = total / answerValues.length;
     
-    setTimeout(() => {
-      const answerValues = Object.values(finalAnswers).map(Number);
-      const total = answerValues.reduce((sum, value) => sum + value, 0);
-      const average = total / answerValues.length;
-      
-      let severity: string;
-      if (total <= 16) {
-        severity = "건강한 마음상태";
-      } else if (total <= 32) {
-        severity = "주의 필요";
-      } else {
-        severity = "관리 필요";
-      }
-      
-      onComplete({
-        answers: answerValues,
-        total,
-        average,
-        severity
-      });
-      
-      setIsAnalyzing(false);
-    }, 2000);
+    let severity: string;
+    if (total <= 16) {
+      severity = "건강한 마음상태";
+    } else if (total <= 32) {
+      severity = "주의 필요";
+    } else {
+      severity = "관리 필요";
+    }
+    
+    onComplete({
+      answers: answerValues,
+      total,
+      average,
+      severity
+    });
   };
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const currentQ = questions[currentQuestion];
   const isAnswered = answers[currentQ.id] !== undefined;
 
-  if (isAnalyzing) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4">
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center space-y-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <div className="text-center">
-                <h3 className="font-semibold text-lg">스트레스 수준 분석 중...</h3>
-                <p className="text-muted-foreground">잠시만 기다려주세요</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <>

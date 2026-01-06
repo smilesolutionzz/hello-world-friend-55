@@ -29,9 +29,44 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  const [analysis, setAnalysis] = useState<string>('');
-  const [isAnalyzing, setIsAnalyzing] = useState(true);
-  const [riskLevel, setRiskLevel] = useState<'low' | 'medium' | 'high'>('low');
+  // 즉시 기본 분석 제공 - AI 분석은 백그라운드에서 로드
+  const calculateRiskLevel = (): 'low' | 'medium' | 'high' => {
+    if (result.total > 32) return 'high';
+    if (result.total > 16) return 'medium';
+    return 'low';
+  };
+
+  const generateDetailedFallbackAnalysis = (): string => {
+    const risk = calculateRiskLevel();
+    const avgScore = result.average.toFixed(1);
+    
+    let riskDescription = '';
+    let immediateActions = '';
+    let longTermStrategies = '';
+    let professionalHelp = '';
+    
+    if (risk === 'high') {
+      riskDescription = `현재 총점 ${result.total}점(평균 ${avgScore}점)으로 **높은 수준의 스트레스** 상태입니다.`;
+      immediateActions = `**즉시 실행:** 하루 10분 명상, 충분한 수면(7-8시간), 스트레스 요인 정리`;
+      professionalHelp = `⚠️ **전문가 상담이 강력히 권장됩니다.**`;
+    } else if (risk === 'medium') {
+      riskDescription = `현재 총점 ${result.total}점(평균 ${avgScore}점)으로 **중간 수준의 스트레스** 상태입니다.`;
+      immediateActions = `**권장사항:** 규칙적 운동(주 3회), 취미 활동, 스트레스 해소법 찾기`;
+      professionalHelp = `스트레스가 지속되면 전문가 상담을 고려하세요.`;
+    } else {
+      riskDescription = `현재 총점 ${result.total}점(평균 ${avgScore}점)으로 **건강한 수준**입니다.`;
+      immediateActions = `**유지 권장:** 현재 생활 패턴 유지, 정기적 자기 점검`;
+      professionalHelp = `현재 상태를 잘 유지하세요!`;
+    }
+    
+    longTermStrategies = `**장기 전략:** 규칙적 생활, 사회적 관계 유지, 긍정적 사고 훈련`;
+
+    return `**1. 스트레스 상태 평가**\n\n${riskDescription}\n\n**2. ${immediateActions}**\n\n**3. ${longTermStrategies}**\n\n**4. ${professionalHelp}**`;
+  };
+
+  const [analysis, setAnalysis] = useState<string>(generateDetailedFallbackAnalysis());
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [riskLevel, setRiskLevel] = useState<'low' | 'medium' | 'high'>(calculateRiskLevel());
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
   // 자동 저장 - AI 분석 포함
@@ -42,11 +77,10 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
     severity: result.severity
   });
 
+  // 백그라운드에서 AI 분석 로드 (선택적 - 사용자 경험 개선)
   useEffect(() => {
-    const analyzeStressResults = async () => {
+    const fetchAIAnalysis = async () => {
       try {
-        setIsAnalyzing(true);
-        
         const { data, error } = await supabase.functions.invoke('stress-analyzer', {
           body: {
             answers: result.answers,
@@ -56,106 +90,19 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
           }
         });
 
-        if (error) {
-          console.error('Stress analyzer error:', error);
-          // 에러 발생 시에도 상세한 기본 분석 제공
-          setAnalysis(generateDetailedFallbackAnalysis());
-          setRiskLevel(calculateRiskLevel());
-        } else {
-          setAnalysis(data.analysis || data.fallbackAnalysis || generateDetailedFallbackAnalysis());
-          setRiskLevel(data.riskLevel || calculateRiskLevel());
+        if (!error && data?.analysis) {
+          setAnalysis(data.analysis);
+          if (data.riskLevel) setRiskLevel(data.riskLevel);
         }
       } catch (error) {
-        console.error('Analysis error:', error);
-        // 예외 발생 시에도 상세한 기본 분석 제공
-        setAnalysis(generateDetailedFallbackAnalysis());
-        setRiskLevel(calculateRiskLevel());
-      } finally {
-        setIsAnalyzing(false);
+        console.error('Background AI analysis error:', error);
+        // 실패해도 이미 기본 분석이 표시되어 있으므로 무시
       }
     };
 
-    const calculateRiskLevel = (): 'low' | 'medium' | 'high' => {
-      if (result.total > 32) return 'high';
-      if (result.total > 16) return 'medium';
-      return 'low';
-    };
-
-    const generateDetailedFallbackAnalysis = (): string => {
-      const riskLevel = calculateRiskLevel();
-      const avgScore = result.average.toFixed(1);
-      
-      let riskDescription = '';
-      let immediateActions = '';
-      let longTermStrategies = '';
-      let professionalHelp = '';
-      
-      if (riskLevel === 'high') {
-        riskDescription = `현재 총점 ${result.total}점(평균 ${avgScore}점)으로 **높은 수준의 스트레스** 상태입니다. 일상생활에 상당한 영향을 미치고 있을 가능성이 높습니다.`;
-        immediateActions = `
-**즉시 실행 권장사항:**
-1. 오늘부터 하루 10분 이상 깊은 호흡 명상을 실천하세요
-2. 충분한 수면(7-8시간)을 최우선으로 확보하세요
-3. 스트레스 요인을 기록하고 우선순위를 정리하세요`;
-        professionalHelp = `\n**⚠️ 전문가 상담이 강력히 권장됩니다.** 지속적인 고민이 있으시다면 정신건강 전문가와의 상담을 고려해주세요.`;
-      } else if (riskLevel === 'medium') {
-        riskDescription = `현재 총점 ${result.total}점(평균 ${avgScore}점)으로 **중간 수준의 스트레스** 상태입니다. 적절한 관리가 필요한 시점입니다.`;
-        immediateActions = `
-**즉시 실행 권장사항:**
-1. 규칙적인 운동(주 3회, 30분 이상)을 시작하세요
-2. 취미 활동이나 휴식 시간을 의식적으로 확보하세요
-3. 스트레스 해소를 위한 나만의 방법을 찾아보세요`;
-        professionalHelp = `\n**전문가 도움:** 스트레스가 지속되거나 악화된다면 전문가와 상담하는 것이 도움이 될 수 있습니다.`;
-      } else {
-        riskDescription = `현재 총점 ${result.total}점(평균 ${avgScore}점)으로 **건강한 수준**입니다. 현재의 좋은 상태를 유지하는 것이 중요합니다.`;
-        immediateActions = `
-**유지 권장사항:**
-1. 현재의 생활 패턴을 잘 유지하세요
-2. 예방 차원에서 정기적인 자기 점검을 하세요
-3. 스트레스 관리 기술을 지속적으로 연습하세요`;
-        professionalHelp = `\n**예방:** 현재 상태가 좋지만, 정기적인 자가 점검으로 건강한 정신 상태를 유지하세요.`;
-      }
-      
-      longTermStrategies = `
-**장기적 스트레스 관리 전략:**
-1. 규칙적인 생활 리듬 확립 (수면, 식사, 운동)
-2. 사회적 지지망 구축 및 유지 (가족, 친구와의 관계)
-3. 긍정적 사고 훈련 및 감사 일기 작성
-4. 정기적인 자기 돌봄 시간 확보`;
-
-      return `**1. 현재 스트레스 상태 종합 평가**
-
-${riskDescription}
-
-**개별 응답 분석:**
-- 최고점: ${Math.max(...result.answers)}점 (특정 영역에서 높은 스트레스)
-- 최저점: ${Math.min(...result.answers)}점
-- 응답 편차: ${(Math.max(...result.answers) - Math.min(...result.answers))}점
-
-**2. 스트레스 영역별 분석**
-
-각 문항에서 나타난 스트레스 패턴을 통해 정서적, 신체적, 인지적, 사회적 영역에서 스트레스가 복합적으로 작용하고 있음을 확인할 수 있습니다.
-
-${immediateActions}
-
-${longTermStrategies}
-
-**5. 생활습관 개선 권장사항:**
-- **수면:** 규칙적인 수면 시간 유지, 취침 전 스크린 타임 줄이기
-- **운동:** 유산소 운동과 스트레칭을 병행하여 신체적 긴장 완화
-- **식습관:** 균형 잡힌 영양 섭취, 카페인/알코올 섭취 조절
-- **휴식:** 업무와 개인 시간의 명확한 분리, 정기적인 취미 활동
-
-${professionalHelp}
-
-**6. 📋 요약 및 제언**
-
-**핵심 스트레스 상태 요약:** ${result.severity} 상태로, 전반적인 스트레스 수준은 ${riskLevel === 'high' ? '높은 편' : riskLevel === 'medium' ? '중간' : '낮은 편'}입니다. ${riskLevel === 'high' ? '적극적인 관리가 필요합니다.' : riskLevel === 'medium' ? '예방적 관리를 시작하세요.' : '현재 상태를 잘 유지하세요.'}
-
-**희망적 전망:** 스트레스는 적절한 관리와 노력으로 충분히 개선될 수 있습니다. 작은 변화부터 시작하여 꾸준히 실천하면 긍정적인 결과를 경험하실 수 있습니다. 💪`;
-    };
-
-    analyzeStressResults();
+    // 3초 후 백그라운드에서 AI 분석 시도 (사용자는 이미 결과를 보고 있음)
+    const timeoutId = setTimeout(fetchAIAnalysis, 3000);
+    return () => clearTimeout(timeoutId);
   }, [result]);
 
   const handleShare = async () => {

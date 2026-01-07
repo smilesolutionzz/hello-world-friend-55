@@ -939,6 +939,65 @@ const Assessment = () => {
             </div>
           </section>
 
+          {/* ========== 인지력 테스트 섹션 ========== */}
+          <section className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
+              <h2 className="text-lg font-bold text-foreground">인지력 테스트</h2>
+              <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
+            </div>
+
+            <div className="space-y-2">
+              {[
+                { key: 'pattern-iq', icon: '🧩', title: '패턴 인지력 테스트', duration: '약 5분', questions: '12문항', badge: 'NEW', description: '도형 패턴을 분석하여 논리력, 공간지각력, 처리속도를 측정합니다.', features: ['논리적 추론력 측정', '패턴 인식 능력 평가', '공간 지각력 분석', '6가지 인지 유형 분류'], onClick: () => navigate('/assessment/pattern-iq-test') },
+              ].map((test) => {
+                const isExpanded = expandedSimpleTest === test.key;
+                return (
+                  <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
+                    <CollapsibleTrigger asChild>
+                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-all">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <span className="text-xl">{test.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-blue-600 truncate">{test.title}</h3>
+                                {test.badge && (
+                                  <Badge className="bg-blue-500 text-white text-[9px] md:text-[10px] px-1 md:px-1.5 py-0 flex-shrink-0">{test.badge}</Badge>
+                                )}
+                              </div>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
+                            </div>
+                          </div>
+                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+                        </div>
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                        <p className="text-sm text-muted-foreground">{test.description}</p>
+                        <div className="space-y-1.5">
+                          {test.features.map((feature, idx) => (
+                            <div key={idx} className="flex items-center gap-2 text-sm">
+                              <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <Button 
+                          onClick={test.onClick}
+                          className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                        >
+                          검사 시작하기
+                        </Button>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
+            </div>
+          </section>
+
           {/* ========== 재미용 검사 (축소/회색) ========== */}
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-4">

@@ -138,6 +138,7 @@ import ADHDScreening from "./pages/ADHDScreening";
 import EnergyFlowTest from "./pages/EnergyFlowTest";
 import RelationshipDynamicsTest from "./pages/RelationshipDynamicsTest";
 import LifePurposeTest from "./pages/LifePurposeTest";
+import PatternIQTest from "./pages/PatternIQTest";
 import InstagramAnalysis from "./pages/InstagramAnalysis";
 import InstagramFeedAnalysis from "./pages/InstagramFeedAnalysis";
 
@@ -252,6 +253,7 @@ const App = () => {
            <Route path="/assessment/energy-flow" element={<EnergyFlowTest />} />
            <Route path="/assessment/relationship-dynamics" element={<RelationshipDynamicsTest />} />
             <Route path="/assessment/life-purpose" element={<LifePurposeTest />} />
+            <Route path="/assessment/pattern-iq-test" element={<PatternIQTest />} />
             <Route path="/assessment/instagram-analysis" element={<InstagramAnalysis />} />
             <Route path="/assessment/feed-analysis" element={<InstagramFeedAnalysis />} />
           

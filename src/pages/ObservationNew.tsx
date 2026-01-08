@@ -21,9 +21,11 @@ import {
   MessageCircle,
   ChevronRight,
   Send,
-  FileBarChart
+  FileBarChart,
+  Video
 } from 'lucide-react';
 import VoiceObservationRecorder from '@/components/observation/VoiceObservationRecorder';
+import VideoObservationAnalyzer from '@/components/observation/VideoObservationAnalyzer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Progress } from '@/components/ui/progress';
 
@@ -46,7 +48,7 @@ const ObservationNew = () => {
   
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [activeMode, setActiveMode] = useState<'voice' | 'text'>('voice');
+  const [activeMode, setActiveMode] = useState<'voice' | 'text' | 'video'>('voice');
   const [structuredData, setStructuredData] = useState<any>(null);
   
   // Q&A 플로우 상태
@@ -351,7 +353,7 @@ const ObservationNew = () => {
                   }`}
                 >
                   <Mic className="w-5 h-5" />
-                  음성으로 기록
+                  음성
                 </button>
                 <button
                   onClick={() => setActiveMode('text')}
@@ -362,7 +364,18 @@ const ObservationNew = () => {
                   }`}
                 >
                   <FileText className="w-5 h-5" />
-                  직접 작성
+                  작성
+                </button>
+                <button
+                  onClick={() => setActiveMode('video')}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
+                    activeMode === 'video'
+                      ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-md'
+                      : 'text-amber-700 hover:bg-amber-50'
+                  }`}
+                >
+                  <Video className="w-5 h-5" />
+                  영상
                 </button>
               </div>
 
@@ -400,6 +413,16 @@ const ObservationNew = () => {
                         </motion.div>
                       ))}
                     </div>
+                  </motion.div>
+                ) : activeMode === 'video' ? (
+                  <motion.div
+                    key="video"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="space-y-5"
+                  >
+                    <VideoObservationAnalyzer />
                   </motion.div>
                 ) : (
                   <motion.div

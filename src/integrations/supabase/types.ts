@@ -245,6 +245,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_observation_results: {
+        Row: {
+          age_group: string | null
+          analysis_result: Json
+          analysis_type: string
+          created_at: string
+          id: string
+          input_context: string | null
+          input_type: string
+          risk_level: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age_group?: string | null
+          analysis_result: Json
+          analysis_type: string
+          created_at?: string
+          id?: string
+          input_context?: string | null
+          input_type: string
+          risk_level?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age_group?: string | null
+          analysis_result?: Json
+          analysis_type?: string
+          created_at?: string
+          id?: string
+          input_context?: string | null
+          input_type?: string
+          risk_level?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       assessment_enhanced_analysis: {
         Row: {
           assessment_type: string

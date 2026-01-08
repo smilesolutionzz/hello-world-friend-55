@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +22,9 @@ import {
   Sparkles,
   FileVideo,
   X,
-  Play
+  Play,
+  MessageCircle,
+  UserCheck
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -89,6 +92,7 @@ const ageGroups = [
 
 export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoObservationAnalyzerProps) {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   
@@ -790,6 +794,37 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
                     </div>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+
+            {/* CTA Section */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
+              <CardContent className="p-6">
+                <div className="text-center space-y-4">
+                  <h3 className="text-lg font-bold text-foreground">
+                    🎯 더 정확한 분석이 필요하신가요?
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    AI 상담사 또는 전문가와 함께 심층 상담을 받아보세요
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button
+                      onClick={() => navigate('/ai-counselor')}
+                      className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      AI 상담사와 대화하기
+                    </Button>
+                    <Button
+                      onClick={() => navigate('/expert-hiring')}
+                      variant="outline"
+                      className="border-primary text-primary hover:bg-primary/10"
+                    >
+                      <UserCheck className="w-4 h-4 mr-2" />
+                      전문가 상담 신청
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 

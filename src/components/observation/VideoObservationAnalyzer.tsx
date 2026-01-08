@@ -87,6 +87,7 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [selectedAnalysisType, setSelectedAnalysisType] = useState<string>('child_behavior');
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>('3-6');
+  const [observationContext, setObservationContext] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [analysisStep, setAnalysisStep] = useState('');
@@ -175,6 +176,7 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
           videoUrl: videoBase64.substring(0, 500), // 실제로는 Storage URL 사용
           analysisType: analysisTypeMap[selectedAnalysisType] || 'comprehensive',
           ageGroup: selectedAgeGroup,
+          observationContext: observationContext.trim() || undefined,
           symptoms: []
         }
       });
@@ -374,6 +376,27 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
               </button>
             ))}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* 관찰 컨텍스트 입력 */}
+      <Card className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border-2 border-amber-200 dark:border-amber-700">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg text-amber-900 dark:text-amber-100 flex items-center gap-2" style={{ fontFamily: "'Gowun Batang', serif" }}>
+            <Eye className="w-5 h-5 text-amber-500" />
+            관찰 내용 (선택)
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <textarea
+            value={observationContext}
+            onChange={(e) => setObservationContext(e.target.value)}
+            placeholder="영상에서 특별히 관찰하고 싶은 부분이나 걱정되는 행동을 입력해주세요.&#10;예: 아이가 또래와 눈을 잘 못 맞추는 것 같아요, 말할 때 더듬는 것 같아요..."
+            className="w-full h-24 p-4 rounded-xl border-2 border-amber-200 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200 placeholder:text-amber-500/60 focus:outline-none focus:border-amber-400 resize-none"
+          />
+          <p className="text-xs text-amber-600/70 dark:text-amber-400/70 mt-2">
+            구체적인 관찰 포인트를 입력하면 더 정확한 분석이 가능합니다
+          </p>
         </CardContent>
       </Card>
 

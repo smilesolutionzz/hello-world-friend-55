@@ -93,7 +93,7 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
   const [analysisStep, setAnalysisStep] = useState('');
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (!file.type.startsWith('video/')) {
@@ -105,19 +105,40 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
         return;
       }
       
-      if (file.size > 100 * 1024 * 1024) { // 100MB limit
+      if (file.size > 50 * 1024 * 1024) { // 50MB limit
         toast({
           title: "파일 크기 초과",
-          description: "100MB 이하의 파일만 업로드 가능합니다.",
+          description: "50MB 이하의 파일만 업로드 가능합니다.",
           variant: "destructive",
         });
         return;
       }
       
-      setSelectedFile(file);
+      // 영상 길이 체크 (30초 제한)
       const url = URL.createObjectURL(file);
-      setVideoPreviewUrl(url);
-      setAnalysisResult(null);
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      
+      video.onloadedmetadata = () => {
+        URL.revokeObjectURL(video.src);
+        const duration = video.duration;
+        
+        if (duration > 30) {
+          toast({
+            title: "영상 길이 초과",
+            description: `정확한 분석을 위해 30초 이내 영상만 가능합니다. (현재: ${Math.round(duration)}초)`,
+            variant: "destructive",
+          });
+          if (fileInputRef.current) fileInputRef.current.value = '';
+          return;
+        }
+        
+        setSelectedFile(file);
+        setVideoPreviewUrl(URL.createObjectURL(file));
+        setAnalysisResult(null);
+      };
+      
+      video.src = url;
     }
   };
 
@@ -429,7 +450,10 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
                 클릭하여 영상 업로드
               </p>
               <p className="text-sm text-amber-600/70 dark:text-amber-400/70">
-                MP4, MOV, AVI (최대 100MB)
+                MP4, MOV, AVI (최대 30초, 50MB)
+              </p>
+              <p className="text-xs text-amber-500/60 dark:text-amber-500/50 mt-1">
+                💡 짧고 집중된 영상일수록 분석 정확도가 높습니다
               </p>
             </div>
           ) : (

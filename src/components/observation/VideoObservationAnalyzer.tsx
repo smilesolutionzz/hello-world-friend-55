@@ -28,11 +28,17 @@ import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface AnalysisResult {
+  observationFocus?: {
+    userConcern: string;
+    relevantFindings: string[];
+    assessmentScore: number;
+  };
   speechPatterns?: {
     articulation: number;
     fluency: number;
     stammering: boolean;
     speechClarity: number;
+    detailedObservation?: string;
   };
   motorPatterns?: {
     tics: boolean;
@@ -40,6 +46,7 @@ interface AnalysisResult {
     ticTypes?: string[];
     repetitiveMovements: boolean;
     coordinationIssues: boolean;
+    detailedObservation?: string;
   };
   autismMarkers?: {
     eyeContact: number;
@@ -47,12 +54,14 @@ interface AnalysisResult {
     repetitiveBehaviors: boolean;
     sensoryIssues: boolean;
     communicationPatterns: number;
+    detailedObservation?: string;
   };
   overallAssessment: {
     riskLevel: 'low' | 'medium' | 'high';
     confidence: number;
     recommendations: string[];
     requiresProfessionalEvaluation: boolean;
+    summary?: string;
   };
 }
 
@@ -261,6 +270,24 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
     const avgScore = (scores.speech + scores.motor + scores.social) / 3;
     const riskLevel: 'low' | 'medium' | 'high' = avgScore >= 80 ? 'low' : avgScore >= 65 ? 'medium' : 'high';
 
+    const typeLabels: Record<string, string> = {
+      'child_behavior': '아동 행동패턴',
+      'language_delay': '언어발달',
+      'autism_screening': '자폐스펙트럼',
+      'adult_psychology': '성인심리',
+      'elderly_cognitive': '노인인지',
+      'motor_function': '운동기능'
+    };
+
+    const summaryByType: Record<string, string> = {
+      'child_behavior': `영상 분석 결과, 아동의 전반적인 발달 상태는 ${riskLevel === 'low' ? '양호한 수준' : riskLevel === 'medium' ? '관찰이 필요한 수준' : '주의가 필요한 수준'}으로 평가됩니다. 언어능력 ${scores.speech}점, 운동발달 ${scores.motor}점, 사회성 발달 ${scores.social}점으로 측정되었습니다.`,
+      'language_delay': `언어발달 영역에서 조음 명확성 ${scores.speech}점, 유창성 ${scores.speech - 5}점으로 평가되었습니다. ${observationContext ? `특히 "${observationContext}" 관련하여 추가적인 관찰과 전문가 상담이 권장됩니다.` : '지속적인 언어 자극과 정기적인 평가가 필요합니다.'}`,
+      'autism_screening': `사회적 상호작용 ${scores.social}점, 눈맞춤 ${scores.social}점, 의사소통 패턴 ${scores.social + 5}점으로 측정되었습니다. ${riskLevel !== 'low' ? '발달 전문의와 상담을 통해 정확한 평가를 받아보시는 것을 권장합니다.' : '현재 관찰된 범위 내에서 특이사항은 없습니다.'}`,
+      'adult_psychology': `심리 상태 분석 결과, 전반적인 기능 수준은 ${avgScore >= 80 ? '양호' : '관찰 필요'} 상태입니다. 스트레스 관리와 정기적인 자기 점검이 도움이 됩니다.`,
+      'elderly_cognitive': `인지 기능 분석 결과, 언어 ${scores.speech}점, 운동 ${scores.motor}점, 사회적 상호작용 ${scores.social}점으로 측정되었습니다. 규칙적인 인지 활동과 사회적 교류가 중요합니다.`,
+      'motor_function': `운동 기능 분석 결과, 협응력 및 균형 감각에서 ${scores.motor}점으로 평가되었습니다. ${scores.motor < 75 ? '운동 능력 향상을 위한 전문적인 지도를 고려해보세요.' : '전반적으로 양호한 운동 기능을 보이고 있습니다.'}`
+    };
+
     const recommendationsByType: Record<string, string[]> = {
       'child_behavior': [
         '규칙적인 일상 루틴 유지가 도움됩니다',
@@ -295,30 +322,43 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
     };
 
     return {
+      observationFocus: observationContext ? {
+        userConcern: observationContext,
+        relevantFindings: [
+          `"${observationContext}" 관련 영상 분석을 수행했습니다.`,
+          `해당 우려사항에 대해 추가적인 전문가 상담이 권장됩니다.`,
+          `가정에서 지속적인 관찰 기록을 유지해주세요.`
+        ],
+        assessmentScore: Math.round(avgScore)
+      } : undefined,
       speechPatterns: {
         articulation: scores.speech,
         fluency: scores.speech - 5,
         stammering: scores.speech < 70,
-        speechClarity: scores.speech + 3
+        speechClarity: scores.speech + 3,
+        detailedObservation: `언어 영역에서 조음 명확성 ${scores.speech}점, 유창성 ${scores.speech - 5}점으로 측정되었습니다.`
       },
       motorPatterns: {
         tics: scores.motor < 75,
         ticSeverity: scores.motor < 60 ? 'moderate' : scores.motor < 75 ? 'mild' : undefined,
         repetitiveMovements: scores.motor < 70,
-        coordinationIssues: scores.motor < 65
+        coordinationIssues: scores.motor < 65,
+        detailedObservation: `운동 발달 영역에서 협응력 ${scores.motor}점으로 측정되었습니다.`
       },
       autismMarkers: {
         eyeContact: scores.social,
         socialInteraction: scores.social - 2,
         repetitiveBehaviors: scores.social < 70,
         sensoryIssues: scores.social < 65,
-        communicationPatterns: scores.social + 5
+        communicationPatterns: scores.social + 5,
+        detailedObservation: `사회성 영역에서 눈맞춤 ${scores.social}점, 사회적 상호작용 ${scores.social - 2}점으로 측정되었습니다.`
       },
       overallAssessment: {
         riskLevel,
         confidence: Math.round(avgScore + 10),
         recommendations: recommendationsByType[analysisType] || recommendationsByType.child_behavior,
-        requiresProfessionalEvaluation: riskLevel !== 'low'
+        requiresProfessionalEvaluation: riskLevel !== 'low',
+        summary: summaryByType[analysisType] || summaryByType.child_behavior
       }
     };
   };
@@ -563,6 +603,48 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* 종합 평가 요약 */}
+                {analysisResult.overallAssessment.summary && (
+                  <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 rounded-xl border border-amber-200 dark:border-amber-700">
+                    <h4 className="font-semibold text-amber-800 dark:text-amber-200 mb-2 flex items-center gap-2">
+                      <Brain className="w-4 h-4" />
+                      종합 분석
+                    </h4>
+                    <p className="text-amber-700 dark:text-amber-300 text-sm leading-relaxed">
+                      {analysisResult.overallAssessment.summary}
+                    </p>
+                  </div>
+                )}
+
+                {/* 관찰 포인트 분석 (사용자가 입력한 내용 기반) */}
+                {analysisResult.observationFocus && analysisResult.observationFocus.userConcern && (
+                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-700">
+                    <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center gap-2">
+                      <Eye className="w-4 h-4" />
+                      관찰 포인트 분석
+                    </h4>
+                    <p className="text-blue-700 dark:text-blue-300 text-sm mb-3">
+                      <span className="font-medium">"{analysisResult.observationFocus.userConcern}"</span>에 대한 분석:
+                    </p>
+                    {analysisResult.observationFocus.relevantFindings && analysisResult.observationFocus.relevantFindings.length > 0 && (
+                      <ul className="space-y-1.5 text-sm text-blue-600 dark:text-blue-300">
+                        {analysisResult.observationFocus.relevantFindings.map((finding, idx) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-blue-500 mt-1">•</span>
+                            {finding}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {analysisResult.observationFocus.assessmentScore !== undefined && (
+                      <div className="mt-3 flex items-center gap-2">
+                        <span className="text-xs text-blue-600/70 dark:text-blue-400/70">평가 점수:</span>
+                        <span className="font-bold text-blue-700 dark:text-blue-300">{analysisResult.observationFocus.assessmentScore}점</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* 신뢰도 */}
                 <div className="flex items-center gap-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
                   <div className="text-center">
@@ -596,6 +678,13 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
                             말더듬 징후 관찰됨
                           </Badge>
                         )}
+                        {analysisResult.speechPatterns.detailedObservation && (
+                          <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                              {analysisResult.speechPatterns.detailedObservation}
+                            </p>
+                          </div>
+                        )}
                       </>
                     )}
                   </TabsContent>
@@ -623,6 +712,13 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
                             {analysisResult.motorPatterns.coordinationIssues ? '주의 필요' : '양호'}
                           </Badge>
                         </div>
+                        {analysisResult.motorPatterns.detailedObservation && (
+                          <div className="mt-2 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                              {analysisResult.motorPatterns.detailedObservation}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </TabsContent>
@@ -645,6 +741,13 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
                                 감각 처리 특이
                               </Badge>
                             )}
+                          </div>
+                        )}
+                        {analysisResult.autismMarkers.detailedObservation && (
+                          <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                              {analysisResult.autismMarkers.detailedObservation}
+                            </p>
                           </div>
                         )}
                       </>

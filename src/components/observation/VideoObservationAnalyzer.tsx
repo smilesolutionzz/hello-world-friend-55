@@ -24,11 +24,13 @@ import {
   X,
   Play,
   MessageCircle,
-  UserCheck
+  UserCheck,
+  Save
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAIObservationResults } from "@/hooks/useAIObservationResults";
 
 interface AnalysisResult {
   observationFocus?: {
@@ -93,6 +95,7 @@ const ageGroups = [
 export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoObservationAnalyzerProps) {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { saveResult } = useAIObservationResults();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   
@@ -105,6 +108,8 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [analysisStep, setAnalysisStep] = useState('');
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -256,7 +261,27 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
       });
     } finally {
       setIsAnalyzing(false);
+      setIsSaved(false);
     }
+  };
+
+  const handleSaveResult = async () => {
+    if (!analysisResult) return;
+    
+    setIsSaving(true);
+    const saved = await saveResult({
+      analysisType: selectedAnalysisType,
+      inputType: 'video',
+      inputContext: observationContext || undefined,
+      ageGroup: selectedAgeGroup,
+      analysisResult: analysisResult,
+      riskLevel: analysisResult.overallAssessment?.riskLevel,
+    });
+    
+    if (saved) {
+      setIsSaved(true);
+    }
+    setIsSaving(false);
   };
 
   // 즉시 결과를 제공하기 위한 폴백 분석 생성
@@ -797,16 +822,34 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
               </CardContent>
             </Card>
 
-            {/* CTA Section */}
+            {/* Save & CTA Section */}
             <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
               <CardContent className="p-6">
                 <div className="text-center space-y-4">
-                  <h3 className="text-lg font-bold text-foreground">
-                    🎯 더 정확한 분석이 필요하신가요?
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    AI 상담사 또는 전문가와 함께 심층 상담을 받아보세요
-                  </p>
+                  {/* Save Button */}
+                  <Button
+                    onClick={handleSaveResult}
+                    disabled={isSaved || isSaving}
+                    className={`w-full ${isSaved ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600'}`}
+                  >
+                    {isSaving ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : isSaved ? (
+                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                    ) : (
+                      <Save className="w-4 h-4 mr-2" />
+                    )}
+                    {isSaved ? '저장 완료!' : isSaving ? '저장 중...' : '분석 결과 저장하기'}
+                  </Button>
+
+                  <div className="border-t pt-4 mt-4">
+                    <h3 className="text-lg font-bold text-foreground">
+                      🎯 더 정확한 분석이 필요하신가요?
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      AI 상담사 또는 전문가와 함께 심층 상담을 받아보세요
+                    </p>
+                  </div>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Button
                       onClick={() => navigate('/ai-counselor')}

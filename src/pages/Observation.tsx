@@ -17,20 +17,24 @@ import {
   Loader2,
   Star,
   Zap,
-  Video
+  Video,
+  BarChart3
 } from "lucide-react";
 import ObservationSessionForm from "@/components/observation/ObservationSessionForm";
 import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
 import ObservationResults from "@/components/observation/ObservationResults";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import VideoObservationAnalyzer from "@/components/observation/VideoObservationAnalyzer";
+import AIObservationResultsList from "@/components/observation/AIObservationResultsList";
 import { isBetaTestPeriod } from '@/utils/betaTest';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import { useAIObservationResults } from "@/hooks/useAIObservationResults";
 
-type TabType = "new" | "video" | "history" | "form" | "results";
+type TabType = "new" | "video" | "history" | "ai-results" | "form" | "results";
 
 const Observation = () => {
   const { toast } = useToast();
+  const { results: aiResults } = useAIObservationResults();
   const [templates, setTemplates] = useState<any[]>([]);
   const [sessions, setSessions] = useState<any[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
@@ -330,6 +334,21 @@ const Observation = () => {
                 <Badge className="bg-purple-500/20 text-purple-600 dark:text-purple-400 text-[10px] px-1.5 py-0">NEW</Badge>
               </button>
               <button
+                onClick={() => setActiveTab("ai-results")}
+                className={`px-4 md:px-6 py-3 rounded-2xl font-medium transition-all flex items-center gap-2 ${
+                  currentTab === "ai-results"
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+                    : 'bg-white/80 dark:bg-slate-800/80 text-emerald-700 dark:text-emerald-300 hover:bg-white dark:hover:bg-slate-700 border-2 border-emerald-200 dark:border-emerald-700'
+                }`}
+                style={{ fontFamily: "'Gowun Batang', serif" }}
+              >
+                <BarChart3 className="w-4 h-4" />
+                AI분석
+                {aiResults.length > 0 && (
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs">{aiResults.length}</span>
+                )}
+              </button>
+              <button
                 onClick={() => setActiveTab("history")}
                 className={`px-4 md:px-6 py-3 rounded-2xl font-medium transition-all flex items-center gap-2 ${
                   currentTab === "history"
@@ -339,12 +358,17 @@ const Observation = () => {
                 style={{ fontFamily: "'Gowun Batang', serif" }}
               >
                 <FileText className="w-4 h-4" />
-                내 기록
+                텍스트
                 {sessions.length > 0 && (
                   <span className="px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200 text-xs">{sessions.length}</span>
                 )}
               </button>
             </div>
+
+            {/* AI Results Tab */}
+            {activeTab === "ai-results" && (
+              <AIObservationResultsList />
+            )}
 
             {/* New Observation - 일기장 카드 스타일 */}
             {activeTab === "new" && (

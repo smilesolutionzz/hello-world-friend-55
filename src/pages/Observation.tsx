@@ -16,14 +16,18 @@ import {
   CheckCircle2,
   Loader2,
   Star,
-  Zap
+  Zap,
+  Video
 } from "lucide-react";
 import ObservationSessionForm from "@/components/observation/ObservationSessionForm";
 import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
 import ObservationResults from "@/components/observation/ObservationResults";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
+import VideoObservationAnalyzer from "@/components/observation/VideoObservationAnalyzer";
 import { isBetaTestPeriod } from '@/utils/betaTest';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+
+type TabType = "new" | "video" | "history" | "form" | "results";
 
 const Observation = () => {
   const { toast } = useToast();
@@ -31,7 +35,7 @@ const Observation = () => {
   const [sessions, setSessions] = useState<any[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
   const [selectedSession, setSelectedSession] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<"new" | "history" | "form" | "results">("new");
+  const [activeTab, setActiveTab] = useState<TabType>("new");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -186,6 +190,46 @@ const Observation = () => {
     );
   }
 
+  // Video Analysis View
+  if (activeTab === "video") {
+    return (
+      <AuthenticationGuard fallbackMessage="AI 영상 분석을 사용하려면 로그인이 필요합니다.">
+        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+          <UnifiedNavigation />
+          <div className="h-20" />
+          <div className="container mx-auto max-w-3xl px-4 py-8">
+            <button 
+              onClick={() => setActiveTab("new")}
+              className="flex items-center gap-2 text-amber-700 dark:text-amber-300 hover:text-amber-900 dark:hover:text-amber-100 mb-6 transition-colors"
+            >
+              <ArrowRight className="w-4 h-4 rotate-180" />
+              <span style={{ fontFamily: "'Gowun Batang', serif" }}>뒤로가기</span>
+            </button>
+            
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-500/30 text-purple-700 dark:text-purple-400 text-sm font-medium mb-4">
+                <Sparkles className="w-4 h-4" />
+                AI 고급 분석
+              </div>
+              <h1 className="text-2xl font-bold text-amber-900 dark:text-amber-100 mb-2" style={{ fontFamily: "'Gowun Batang', serif" }}>
+                🎬 AI 영상 관찰 분석
+              </h1>
+              <p className="text-amber-600/70 dark:text-amber-400/70">
+                영상을 업로드하면 AI가 행동, 언어, 사회성 등을 분석합니다
+              </p>
+            </div>
+            
+            <VideoObservationAnalyzer 
+              onAnalysisComplete={(result) => {
+                console.log('Video analysis complete:', result);
+              }}
+            />
+          </div>
+        </div>
+      </AuthenticationGuard>
+    );
+  }
+
   return (
     <AuthenticationGuard fallbackMessage="AI 관찰일지를 사용하려면 로그인이 필요합니다.">
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden">
@@ -256,10 +300,10 @@ const Observation = () => {
         {/* Tab Navigation - 일기장 스타일 */}
         <section className="px-4 pb-12 relative z-10">
           <div className="container mx-auto max-w-3xl">
-            <div className="flex justify-center gap-3 mb-8">
+            <div className="flex justify-center gap-2 md:gap-3 mb-8 flex-wrap">
               <button
                 onClick={() => setActiveTab("new")}
-                className={`px-6 py-3 rounded-2xl font-medium transition-all flex items-center gap-2 ${
+                className={`px-4 md:px-6 py-3 rounded-2xl font-medium transition-all flex items-center gap-2 ${
                   activeTab === "new"
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30'
                     : 'bg-white/80 dark:bg-slate-800/80 text-amber-700 dark:text-amber-300 hover:bg-white dark:hover:bg-slate-700 border-2 border-amber-200 dark:border-amber-700'
@@ -270,8 +314,21 @@ const Observation = () => {
                 새 관찰
               </button>
               <button
+                onClick={() => setActiveTab("video")}
+                className={`px-4 md:px-6 py-3 rounded-2xl font-medium transition-all flex items-center gap-2 ${
+                  activeTab === "video"
+                    ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/30'
+                    : 'bg-white/80 dark:bg-slate-800/80 text-purple-700 dark:text-purple-300 hover:bg-white dark:hover:bg-slate-700 border-2 border-purple-200 dark:border-purple-700'
+                }`}
+                style={{ fontFamily: "'Gowun Batang', serif" }}
+              >
+                <Video className="w-4 h-4" />
+                영상분석
+                <Badge className="bg-purple-500/20 text-purple-600 dark:text-purple-400 text-[10px] px-1.5 py-0">NEW</Badge>
+              </button>
+              <button
                 onClick={() => setActiveTab("history")}
-                className={`px-6 py-3 rounded-2xl font-medium transition-all flex items-center gap-2 ${
+                className={`px-4 md:px-6 py-3 rounded-2xl font-medium transition-all flex items-center gap-2 ${
                   activeTab === "history"
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30'
                     : 'bg-white/80 dark:bg-slate-800/80 text-amber-700 dark:text-amber-300 hover:bg-white dark:hover:bg-slate-700 border-2 border-amber-200 dark:border-amber-700'

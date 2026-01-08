@@ -150,14 +150,14 @@ const Index = () => {
             {/* 1️⃣ Hero Section - AI 분석 입력창 포함 */}
             <HeroSection />
             
-            {/* 🆕 피드 스크린샷 무의식 분석 섹션 */}
-            <LazyLoad rootMargin="200px">
-              <FeedAnalysisSection />
-            </LazyLoad>
-            
             {/* 🎬 AI 영상 관찰 분석 섹션 */}
             <LazyLoad rootMargin="200px">
               <VideoObservationShowcase />
+            </LazyLoad>
+            
+            {/* 🆕 피드 스크린샷 무의식 분석 섹션 */}
+            <LazyLoad rootMargin="200px">
+              <FeedAnalysisSection />
             </LazyLoad>
             
             {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}

@@ -37,6 +37,9 @@ const Observation = () => {
   const [selectedSession, setSelectedSession] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<TabType>("new");
   const [loading, setLoading] = useState(true);
+  
+  // Store current tab for button styling (prevents TypeScript narrowing issues)
+  const currentTab: TabType = activeTab;
 
   useEffect(() => {
     loadData();
@@ -304,7 +307,7 @@ const Observation = () => {
               <button
                 onClick={() => setActiveTab("new")}
                 className={`px-4 md:px-6 py-3 rounded-2xl font-medium transition-all flex items-center gap-2 ${
-                  activeTab === "new"
+                  currentTab === "new"
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30'
                     : 'bg-white/80 dark:bg-slate-800/80 text-amber-700 dark:text-amber-300 hover:bg-white dark:hover:bg-slate-700 border-2 border-amber-200 dark:border-amber-700'
                 }`}
@@ -316,7 +319,7 @@ const Observation = () => {
               <button
                 onClick={() => setActiveTab("video")}
                 className={`px-4 md:px-6 py-3 rounded-2xl font-medium transition-all flex items-center gap-2 ${
-                  activeTab === "video"
+                  currentTab === "video"
                     ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/30'
                     : 'bg-white/80 dark:bg-slate-800/80 text-purple-700 dark:text-purple-300 hover:bg-white dark:hover:bg-slate-700 border-2 border-purple-200 dark:border-purple-700'
                 }`}
@@ -329,7 +332,7 @@ const Observation = () => {
               <button
                 onClick={() => setActiveTab("history")}
                 className={`px-4 md:px-6 py-3 rounded-2xl font-medium transition-all flex items-center gap-2 ${
-                  activeTab === "history"
+                  currentTab === "history"
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30'
                     : 'bg-white/80 dark:bg-slate-800/80 text-amber-700 dark:text-amber-300 hover:bg-white dark:hover:bg-slate-700 border-2 border-amber-200 dark:border-amber-700'
                 }`}

@@ -246,8 +246,9 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
         setAnalysisResult(fallbackResult);
         onAnalysisComplete?.(fallbackResult);
       } else if (data?.analysis) {
-        setAnalysisResult(data.analysis);
-        onAnalysisComplete?.(data.analysis);
+        const normalized = coerceAnalysisResult(data.analysis, selectedAnalysisType, selectedAgeGroup);
+        setAnalysisResult(normalized);
+        onAnalysisComplete?.(normalized);
       } else {
         // 데이터 없으면 폴백
         const fallbackResult = generateFallbackResult(selectedAnalysisType, selectedAgeGroup);
@@ -404,6 +405,48 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
         requiresProfessionalEvaluation: riskLevel !== 'low',
         summary: summaryByType[analysisType] || summaryByType.child_behavior
       }
+    };
+  };
+
+  const coerceAnalysisResult = (
+    raw: unknown,
+    analysisType: string,
+    ageGroup: string
+  ): AnalysisResult => {
+    const fallback = generateFallbackResult(analysisType, ageGroup);
+    if (!raw || typeof raw !== "object") return fallback;
+
+    const obj = raw as any;
+    const overallRaw =
+      obj.overallAssessment && typeof obj.overallAssessment === "object"
+        ? obj.overallAssessment
+        : {};
+
+    const recommendations = Array.isArray(overallRaw.recommendations)
+      ? overallRaw.recommendations.filter((r: unknown) => typeof r === "string")
+      : fallback.overallAssessment.recommendations;
+
+    const riskLevel =
+      overallRaw.riskLevel === "low" ||
+      overallRaw.riskLevel === "medium" ||
+      overallRaw.riskLevel === "high"
+        ? overallRaw.riskLevel
+        : fallback.overallAssessment.riskLevel;
+
+    const confidence = typeof overallRaw.confidence === "number"
+      ? Math.max(0, Math.min(100, Math.round(overallRaw.confidence)))
+      : fallback.overallAssessment.confidence;
+
+    return {
+      ...fallback,
+      ...obj,
+      overallAssessment: {
+        ...fallback.overallAssessment,
+        ...overallRaw,
+        riskLevel,
+        confidence,
+        recommendations,
+      },
     };
   };
 

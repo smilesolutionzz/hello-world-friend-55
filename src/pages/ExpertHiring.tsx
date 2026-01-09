@@ -236,7 +236,7 @@ const ExpertHiring = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <Helmet>
         <title>전문가 상담 예약 | AIHPRO</title>
         <meta name="description" content="검증된 발달, 심리, 언어치료 전문가와 1:1 상담을 예약하세요" />
@@ -338,7 +338,7 @@ const ExpertHiring = () => {
       </section>
 
       {/* 전문가 목록 */}
-      <section className="py-8 px-4">
+      <section className="py-8 px-4 bg-gradient-to-b from-white to-slate-50">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold">
@@ -568,21 +568,27 @@ const BookingDialog = ({
                 <Button
                   variant="outline"
                   className={cn(
-                    "w-full justify-start text-left",
-                    !bookingDate && "text-muted-foreground"
+                    "w-full justify-start text-left font-medium",
+                    !bookingDate ? "text-muted-foreground" : "text-slate-700"
                   )}
                 >
-                  <Calendar className="w-4 h-4 mr-2" />
+                  <Calendar className="w-4 h-4 mr-2 text-blue-500" />
                   {bookingDate ? format(bookingDate, 'PPP', { locale: ko }) : "날짜 선택"}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0 bg-white border shadow-lg" align="start">
                 <CalendarComponent
                   mode="single"
                   selected={bookingDate}
                   onSelect={setBookingDate}
                   disabled={(date) => date < new Date()}
                   locale={ko}
+                  className="p-3 pointer-events-auto"
+                  classNames={{
+                    day_selected: "bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-700",
+                    day_today: "bg-blue-100 text-blue-700",
+                    day: "text-slate-700 hover:bg-slate-100"
+                  }}
                 />
               </PopoverContent>
             </Popover>

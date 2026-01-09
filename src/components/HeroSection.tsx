@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { ArrowRight, Sparkles, Gift, Mic } from "lucide-react";
+import { ArrowRight, Sparkles, Gift, MessageCircle } from "lucide-react";
 import heroBg from "@/assets/hero-family-bg.jpg";
 import InstantAIAnalysis from "./InstantAIAnalysis";
 import { AnimatedBackground } from "@/components/3d/AnimatedBackground";
 import { motion } from "framer-motion";
 import logo from "@/assets/logo-large.png";
+import { sharePage, isKakaoInitialized } from "@/lib/kakaoShare";
+import { toast } from "sonner";
+import { trackEvent } from "@/components/common/Analytics";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -20,6 +23,18 @@ const HeroSection = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleKakaoShare = () => {
+    trackEvent('hero_kakao_share');
+    const success = sharePage({
+      title: '🧠 AI 심리검사 해봤어? 완전 신기해!',
+      description: '3분 만에 전문가급 심리 분석 받아봐. 무료야!',
+      buttonText: '나도 해보기 🎁',
+    });
+    if (!success) {
+      toast.success('카카오톡에 붙여넣기 하세요! 💬');
+    }
+  };
 
   return (
     <section ref={sectionRef} className="relative min-h-screen overflow-hidden">
@@ -139,6 +154,15 @@ const HeroSection = () => {
           >
             <Gift className="w-4 h-4 mr-2" />
             전문가 상담
+          </Button>
+
+          <Button
+            onClick={handleKakaoShare}
+            variant="outline"
+            className="w-full sm:w-auto px-6 py-5 bg-[#FEE500]/10 hover:bg-[#FEE500]/20 backdrop-blur-sm border border-[#FEE500]/40 text-[#FEE500] font-medium rounded-xl transition-all duration-300"
+          >
+            <MessageCircle className="w-4 h-4 mr-2" />
+            친구에게 공유
           </Button>
         </motion.div>
 

@@ -122,8 +122,8 @@ export const VideoObservationShowcase = () => {
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                   <Icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-sm mb-1">{category.title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">{category.description}</p>
+                <h3 className="font-bold text-white text-sm mb-1 whitespace-nowrap">{category.title}</h3>
+                <p className="text-xs text-slate-400 leading-tight whitespace-nowrap">{category.description}</p>
               </Card>
             );
           })}

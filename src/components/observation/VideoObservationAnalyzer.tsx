@@ -184,18 +184,24 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
       setAnalysisStep('영상 업로드 중...');
       setAnalysisProgress(10);
 
-      // Convert to base64 for analysis (in real implementation, upload to storage)
+      // Convert to base64 for analysis
       const reader = new FileReader();
-      const videoBase64 = await new Promise<string>((resolve, reject) => {
+      const videoDataUrl = await new Promise<string>((resolve, reject) => {
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = reject;
         reader.readAsDataURL(selectedFile);
       });
 
+      // Extract base64 data and mime type from data URL
+      // Format: data:video/mp4;base64,XXXXX...
+      const [header, base64Data] = videoDataUrl.split(',');
+      const mimeTypeMatch = header.match(/data:([^;]+);/);
+      const videoMimeType = mimeTypeMatch ? mimeTypeMatch[1] : 'video/mp4';
+
       // Step 2: 프레임 추출
       setAnalysisStep('영상 프레임 분석 중...');
       setAnalysisProgress(30);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Step 3: AI 분석
       setAnalysisStep('AI 행동 패턴 분석 중...');
@@ -210,9 +216,16 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
         'motor_function': 'movement'
       };
 
+      console.log('Sending video for analysis:', {
+        mimeType: videoMimeType,
+        base64Length: base64Data.length,
+        analysisType: analysisTypeMap[selectedAnalysisType] || 'comprehensive'
+      });
+
       const { data, error } = await supabase.functions.invoke('video-behavior-analysis', {
         body: {
-          videoUrl: videoBase64.substring(0, 500), // 실제로는 Storage URL 사용
+          videoBase64: base64Data,
+          videoMimeType: videoMimeType,
           analysisType: analysisTypeMap[selectedAnalysisType] || 'comprehensive',
           ageGroup: selectedAgeGroup,
           observationContext: observationContext.trim() || undefined,

@@ -7,7 +7,9 @@ const corsHeaders = {
 };
 
 interface BehaviorAnalysisRequest {
-  videoUrl: string;
+  videoUrl?: string;
+  videoBase64?: string; // Base64 encoded video data
+  videoMimeType?: string; // e.g., "video/mp4", "video/webm"
   analysisType: 'speech' | 'movement' | 'comprehensive';
   ageGroup: string;
   symptoms?: string[];
@@ -133,18 +135,22 @@ serve(async (req) => {
     }
 
     const body: BehaviorAnalysisRequest = await req.json();
-    const { videoUrl, analysisType, ageGroup, symptoms, observationContext } = body;
+    const { videoUrl, videoBase64, videoMimeType, analysisType, ageGroup, symptoms, observationContext } = body;
 
     if (!analysisType || !ageGroup) {
       throw new Error('Missing required parameters: analysisType, ageGroup');
     }
+
+    const hasVideo = !!(videoBase64 || videoUrl);
 
     console.log('Starting video behavior analysis:', {
       analysisType,
       ageGroup,
       symptoms,
       observationContext: observationContext || '(없음)',
-      hasVideo: !!videoUrl
+      hasVideo,
+      hasVideoBase64: !!videoBase64,
+      videoMimeType: videoMimeType || '(없음)'
     });
 
     const startTime = Date.now();
@@ -152,13 +158,30 @@ serve(async (req) => {
     // 분석 프롬프트 생성 (관찰내용 포함)
     const analysisPrompt = generateAnalysisPrompt(analysisType, ageGroup, symptoms, observationContext);
 
-    // 사용자 메시지 구성
-    let userMessage = analysisPrompt;
+    // 메시지 컨텐츠 구성 - 비디오가 있으면 멀티모달로 전송
+    let messageContent: any;
     
-    if (videoUrl) {
-      userMessage += `\n\n## 영상 정보\n영상이 업로드되었습니다. 영상 내용을 기반으로 위 항목들을 분석해주세요.`;
+    if (videoBase64) {
+      // Base64 비디오를 Gemini에 직접 전달
+      const mimeType = videoMimeType || 'video/mp4';
+      messageContent = [
+        {
+          type: 'text',
+          text: analysisPrompt + (observationContext ? `\n\n특히 사용자가 관심을 가지는 "${observationContext}" 부분에 초점을 맞춰 분석해주세요.` : '')
+        },
+        {
+          type: 'image_url',
+          image_url: {
+            url: `data:${mimeType};base64,${videoBase64}`
+          }
+        }
+      ];
+      console.log('Sending video to Gemini with mime type:', mimeType);
+    } else {
+      // 비디오 없이 텍스트만 전송
+      messageContent = analysisPrompt + '\n\n## 주의사항\n영상이 제공되지 않았으므로 일반적인 가이드라인을 제공합니다.';
       if (observationContext) {
-        userMessage += `\n\n특히 사용자가 관심을 가지는 "${observationContext}" 부분에 초점을 맞춰 분석해주세요.`;
+        messageContent += `\n\n사용자 관찰 내용: "${observationContext}"`;
       }
     }
 
@@ -178,7 +201,7 @@ serve(async (req) => {
           },
           {
             role: 'user',
-            content: userMessage
+            content: messageContent
           }
         ],
         max_tokens: 4000

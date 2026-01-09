@@ -14,6 +14,7 @@ import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 import Analytics from "@/components/common/Analytics";
 import { FeedbackButton } from "@/components/feedback/FeedbackButton";
 import { ConversionTracker } from "@/components/analytics/ConversionTracker";
+import { FloatingShareButton } from "@/components/share/FloatingShareButton";
 import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
 import ConcernStorage from "./pages/ConcernStorage";
@@ -204,6 +205,7 @@ const App = () => {
               <SessionManager />
               <UpdatePrompt />
               <InstallPromptBanner />
+              <FloatingShareButton />
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />

@@ -235,6 +235,16 @@
     <!-- End Google Tag Manager (noscript) -->
     
     <div id="root"></div>
+    
+    <!-- Kakao SDK -->
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" integrity="sha384-DKYJZ8NLiK8MN4/C5P2dtSmLQ4KwPaoqAfyA/DfmEc1VDxu4yyC7wy6K1Ber1t5t" crossorigin="anonymous"></script>
+    <script>
+      // Kakao SDK 초기화 (JavaScript 키 - 공개 가능)
+      if (window.Kakao && !window.Kakao.isInitialized()) {
+        window.Kakao.init('f8b9b7e4a3c2d1e0f9a8b7c6d5e4f3a2'); // TODO: 실제 카카오 JavaScript 키로 교체
+      }
+    </script>
+    
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

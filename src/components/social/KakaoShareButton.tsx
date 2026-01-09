@@ -1,20 +1,20 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Share2 } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { shareToKakao, isKakaoInitialized, KakaoShareOptions } from '@/lib/kakaoShare';
+import { trackEvent } from '@/components/common/Analytics';
 
 interface KakaoShareButtonProps {
   title: string;
   description: string;
   imageUrl?: string;
   url?: string;
+  buttonText?: string;
+  referralCode?: string;
   className?: string;
-}
-
-declare global {
-  interface Window {
-    Kakao: any;
-  }
+  size?: 'sm' | 'default' | 'lg';
+  variant?: 'default' | 'outline' | 'ghost';
 }
 
 export const KakaoShareButton: React.FC<KakaoShareButtonProps> = ({
@@ -22,61 +22,37 @@ export const KakaoShareButton: React.FC<KakaoShareButtonProps> = ({
   description,
   imageUrl,
   url = window.location.href,
-  className = ''
+  buttonText = '카카오톡 공유',
+  referralCode,
+  className = '',
+  size = 'sm',
+  variant = 'default',
 }) => {
   const handleKakaoShare = () => {
-    try {
-      // 카카오톡 공유 기능 (현재는 일반 공유로 대체)
-      if (navigator.share) {
-        navigator.share({
-          title: title,
-          text: description,
-          url: url,
-        });
-      } else {
-        // 클립보드에 복사
-        navigator.clipboard.writeText(url);
-        toast.success('링크가 클립보드에 복사되었습니다!');
-      }
-      
-      // 카카오 SDK 로드 시 구현:
-      // if (window.Kakao && window.Kakao.Link) {
-      //   window.Kakao.Link.sendDefault({
-      //     objectType: 'feed',
-      //     content: {
-      //       title: title,
-      //       description: description,
-      //       imageUrl: imageUrl || 'https://aihpro.com/default-share.png',
-      //       link: {
-      //         mobileWebUrl: url,
-      //         webUrl: url,
-      //       },
-      //     },
-      //     buttons: [
-      //       {
-      //         title: '자세히 보기',
-      //         link: {
-      //           mobileWebUrl: url,
-      //           webUrl: url,
-      //         },
-      //       },
-      //     ],
-      //   });
-      // }
-    } catch (error) {
-      console.error('Share error:', error);
-      toast.error('공유 중 오류가 발생했습니다.');
+    trackEvent('kakao_share_click', { title, url });
+    
+    const success = shareToKakao({
+      title,
+      description,
+      imageUrl,
+      url,
+      referralCode,
+    });
+
+    if (!success) {
+      toast.success('카카오톡에 붙여넣기 하세요! 💬');
     }
   };
 
   return (
     <Button
       onClick={handleKakaoShare}
-      className={`bg-yellow-400 hover:bg-yellow-300 text-black ${className}`}
-      size="sm"
+      className={`bg-[#FEE500] hover:bg-[#FDD835] text-[#3C1E1E] ${className}`}
+      size={size}
+      variant={variant}
     >
-      <Share2 className="h-4 w-4 mr-2" />
-      카카오톡 공유
+      <MessageCircle className="h-4 w-4 mr-2" />
+      {buttonText}
     </Button>
   );
 };

@@ -4,6 +4,8 @@ import { Card } from '@/components/ui/card';
 import { Share2, Download, Copy, MessageCircle, Sparkles, Instagram, Twitter } from 'lucide-react';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
+import { shareTestResult, isKakaoInitialized } from '@/lib/kakaoShare';
+import { trackEvent } from '@/components/common/Analytics';
 
 interface ViralShareCardProps {
   testName: string;
@@ -14,6 +16,7 @@ interface ViralShareCardProps {
   gradientFrom?: string;
   gradientTo?: string;
   shareUrl?: string;
+  referralCode?: string;
   children?: React.ReactNode;
 }
 
@@ -26,6 +29,7 @@ export const ViralShareCard: React.FC<ViralShareCardProps> = ({
   gradientFrom = 'from-primary',
   gradientTo = 'to-accent',
   shareUrl = window.location.href,
+  referralCode,
   children
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -110,11 +114,18 @@ export const ViralShareCard: React.FC<ViralShareCardProps> = ({
   };
 
   const handleKakaoShare = () => {
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      const kakaoUrl = `kakaotalk://send?text=${encodeURIComponent(viralMessage)}`;
-      window.location.href = kakaoUrl;
-      setTimeout(() => handleCopyLink(), 1000);
-    } else {
+    trackEvent('viral_kakao_share', { testName, resultTitle });
+    
+    const success = shareTestResult({
+      testName,
+      resultTitle,
+      resultSummary,
+      emoji,
+      score,
+      referralCode,
+    });
+
+    if (!success) {
       handleCopyLink();
       toast.success("카카오톡에 붙여넣기 하세요! 💬");
     }

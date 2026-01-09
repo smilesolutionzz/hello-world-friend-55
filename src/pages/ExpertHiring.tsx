@@ -79,7 +79,8 @@ const ExpertHiring = () => {
     { id: 'ABA', label: 'ABA치료', icon: '🎯' },
     { id: '특수체육', label: '특수체육', icon: '🏃' },
     { id: '미술치료', label: '미술치료', icon: '🎨' },
-    { id: '감각통합', label: '감각통합', icon: '🧠' }
+    { id: '감각통합', label: '감각통합', icon: '🧠' },
+    { id: '전문기관', label: '전문기관', icon: '🏢', isLink: true }
   ];
 
   const timeSlots = [
@@ -325,10 +326,17 @@ const ExpertHiring = () => {
                 <Button
                   key={cat.id}
                   variant={selectedCategory === cat.id ? 'default' : 'outline'}
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() => {
+                    if ((cat as any).isLink) {
+                      navigate('/partner-benefits');
+                    } else {
+                      setSelectedCategory(cat.id);
+                    }
+                  }}
                   className={cn(
                     "whitespace-nowrap",
-                    selectedCategory === cat.id && "bg-slate-900"
+                    selectedCategory === cat.id && "bg-slate-900",
+                    (cat as any).isLink && "border-blue-300 text-blue-600 hover:bg-blue-50"
                   )}
                 >
                   <span className="mr-1">{cat.icon}</span>

@@ -68,15 +68,18 @@ const ExpertHiring = () => {
   const [bookingTopic, setBookingTopic] = useState('');
   const [bookingLoading, setBookingLoading] = useState(false);
   
+  // 토큰은 모달 열렸을 때만 체크 (깜빡임 방지)
   const { balance, consumeTokens, checkTokenAvailability } = useTokens();
 
   const categories = [
     { id: 'all', label: '전체', icon: '👥' },
     { id: '언어치료', label: '언어치료', icon: '🗣️' },
     { id: '심리상담', label: '심리상담', icon: '💭' },
-    { id: '발달치료', label: '발달치료', icon: '🧒' },
+    { id: '발달재활', label: '발달재활', icon: '🧒' },
     { id: 'ABA', label: 'ABA치료', icon: '🎯' },
-    { id: '특수체육', label: '특수체육', icon: '🏃' }
+    { id: '특수체육', label: '특수체육', icon: '🏃' },
+    { id: '미술치료', label: '미술치료', icon: '🎨' },
+    { id: '감각통합', label: '감각통합', icon: '🧠' }
   ];
 
   const timeSlots = [
@@ -413,19 +416,19 @@ const ExpertHiring = () => {
 // 전문가 카드 컴포넌트
 const ExpertCard = ({ expert, onBook }: { expert: Expert; onBook: () => void }) => {
   return (
-    <Card className="hover:shadow-lg transition-all group cursor-pointer border-gray-200">
+    <Card className="hover:shadow-xl transition-all duration-300 group cursor-pointer border-0 bg-gradient-to-br from-white to-slate-50 shadow-md hover:scale-[1.02]">
       <CardContent className="p-5">
         <div className="flex gap-4">
           {/* 프로필 이미지 */}
           <div className="relative">
-            <Avatar className="w-16 h-16 ring-2 ring-gray-100">
+            <Avatar className="w-16 h-16 ring-2 ring-blue-100 shadow-md">
               <AvatarImage src={expert.image} />
-              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold">
+              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold text-lg">
                 {expert.name[0]}
               </AvatarFallback>
             </Avatar>
             {expert.isOnline && (
-              <span className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full" />
+              <span className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
             )}
           </div>
 
@@ -460,21 +463,21 @@ const ExpertCard = ({ expert, onBook }: { expert: Expert; onBook: () => void }) 
             </div>
 
             {/* 전문 분야 */}
-            <div className="flex flex-wrap gap-1 mb-3">
+            <div className="flex flex-wrap gap-1.5 mb-3">
               {expert.specialty.slice(0, 3).map((spec, idx) => (
-                <Badge key={idx} variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                <Badge key={idx} variant="secondary" className="text-xs bg-blue-50 text-blue-700 border border-blue-100">
                   {spec}
                 </Badge>
               ))}
             </div>
 
             {/* 가격 및 예약 */}
-            <div className="flex items-center justify-between pt-2 border-t">
+            <div className="flex items-center justify-between pt-3 border-t border-slate-100">
               <div>
-                <span className="text-lg font-bold text-blue-600">
+                <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   {expert.hourlyPrice.toLocaleString()}
                 </span>
-                <span className="text-sm text-gray-500"> 토큰/시간</span>
+                <span className="text-sm text-slate-500"> 토큰/시간</span>
               </div>
               <Button 
                 size="sm" 
@@ -482,7 +485,7 @@ const ExpertCard = ({ expert, onBook }: { expert: Expert; onBook: () => void }) 
                   e.stopPropagation();
                   onBook();
                 }}
-                className="bg-slate-900 hover:bg-slate-800"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md"
               >
                 <Calendar className="w-4 h-4 mr-1" />
                 예약

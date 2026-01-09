@@ -25,8 +25,8 @@ const SocialShareButtons: React.FC<SocialShareButtonsProps> = ({
   };
 
   const handleKakaoShare = () => {
-    if (window.Kakao) {
-      window.Kakao.Share.sendDefault({
+    if ((window as any).Kakao) {
+      (window as any).Kakao.Share.sendDefault({
         objectType: 'feed',
         content: {
           title: shareData.title,

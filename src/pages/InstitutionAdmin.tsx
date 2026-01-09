@@ -43,6 +43,7 @@ import { TherapyScheduler } from '@/components/therapy/TherapyScheduler';
 import TherapistManagement from '@/components/institution/TherapistManagement';
 import ConsultationRequestManager from '@/components/institution/ConsultationRequestManager';
 import { AutomatedInstitutionDashboard } from '@/components/institution/AutomatedInstitutionDashboard';
+import { InstitutionValueDashboard } from '@/components/institution/InstitutionValueDashboard';
 import VoucherReportGenerator from '@/components/institution/VoucherReportGenerator';
 import { OrganizationChart } from '@/components/organization/OrganizationChart';
 import { TestInsights } from '@/components/organization/TestInsights';
@@ -100,7 +101,7 @@ export default function InstitutionAdmin() {
   const [selectedTestId, setSelectedTestId] = useState<string | null>(null);
   
   const [stats, setStats] = useState<InstitutionStats | null>(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('value');
   const [memberTests, setMemberTests] = useState<MemberTest[]>([]);
 
   const [institutionForm, setInstitutionForm] = useState({
@@ -639,10 +640,16 @@ export default function InstitutionAdmin() {
             <div className="overflow-x-auto -mx-6 px-6">
               <TabsList className="bg-transparent border-b border-slate-800 rounded-none h-auto p-0 w-full justify-start flex-wrap gap-2">
                 <TabsTrigger 
+                  value="value" 
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-3 text-xs sm:text-sm h-10"
+                >
+                  💰 ROI 분석
+                </TabsTrigger>
+                <TabsTrigger 
                   value="overview" 
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-3 text-xs sm:text-sm h-10"
                 >
-                  개요
+                  통계 개요
                 </TabsTrigger>
                 <TabsTrigger 
                   value="members" 
@@ -692,7 +699,15 @@ export default function InstitutionAdmin() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          {/* Overview Tab */}
+          {/* Value Dashboard Tab - ROI 분석 */}
+          <TabsContent value="value" className="space-y-6 mt-0">
+            <InstitutionValueDashboard 
+              institutionId={institutionInfo?.id} 
+              institutionType="developmental"
+            />
+          </TabsContent>
+
+          {/* Overview Tab - 기존 통계 */}
           <TabsContent value="overview" className="space-y-6 mt-0">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">

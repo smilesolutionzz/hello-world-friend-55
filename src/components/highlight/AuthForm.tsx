@@ -395,77 +395,95 @@ export const AuthForm = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4 safe-area-pb">
-        <div className="w-full max-w-md mx-auto">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/10 p-4 safe-area-pb relative overflow-hidden">
+        {/* Floating Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-10 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        </div>
+
+        <div className="w-full max-w-md mx-auto relative z-10">
+          {/* 로고 헤더 */}
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow shadow-lg shadow-primary/25 mb-4">
+              <span className="text-2xl font-black text-white">AI</span>
+            </div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
+              AIHPRO
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">AI 심리발달 검사 플랫폼</p>
+          </div>
+
           <Tabs defaultValue="signin" className="w-full">
-            {/* 탭 네비게이션 - 카드 외부 상단 */}
-            <TabsList className="grid w-full grid-cols-2 rounded-b-none h-12 bg-transparent p-0 border-0 gap-0">
+            {/* 탭 네비게이션 */}
+            <TabsList className="grid w-full grid-cols-2 h-14 bg-card/80 backdrop-blur-sm p-1.5 rounded-2xl shadow-lg border border-border/50 mb-4">
               <TabsTrigger 
                 value="signin" 
-                className="rounded-t-xl rounded-b-none border-0 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground h-full text-base font-medium transition-all data-[state=active]:shadow-none"
+                className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary-glow data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=inactive]:text-muted-foreground h-full text-base font-medium transition-all duration-300"
               >
-                회원 로그인
+                로그인
               </TabsTrigger>
               <TabsTrigger 
                 value="signup"
-                className="rounded-t-xl rounded-b-none border-0 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground h-full text-base font-medium transition-all data-[state=active]:shadow-none"
+                className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary-glow data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=inactive]:text-muted-foreground h-full text-base font-medium transition-all duration-300"
               >
                 회원가입
               </TabsTrigger>
             </TabsList>
             
-            <Card className="rounded-t-none border-t-0 shadow-xl">
+            <Card className="border-border/50 shadow-2xl bg-card/95 backdrop-blur-sm rounded-2xl overflow-hidden">
               <CardContent className="pt-8 pb-6 px-6">
-                {/* 로고 */}
-                <div className="flex justify-center mb-8">
-                  <div className="text-center">
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                      AIHPRO
-                    </h1>
-                    <p className="text-xs text-muted-foreground mt-1">AI 심리발달 검사 플랫폼</p>
-                  </div>
-                </div>
-
                 {/* 로그인 탭 */}
-                <TabsContent value="signin" className="mt-0 space-y-4">
+                <TabsContent value="signin" className="mt-0 space-y-5">
                   <form onSubmit={handleSignIn} className="space-y-4">
                     {error && (
-                      <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+                      <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-xl border border-destructive/20 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
                         {error}
                       </div>
                     )}
                     
-                    <Input
-                      ref={emailRef}
-                      id="email"
-                      type="email"
-                      placeholder="이메일을 입력해주세요"
-                      value={signInData.email}
-                      onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
-                      onFocus={(e) => scrollToInput(e.currentTarget)}
-                      className="h-12 rounded-lg border-border bg-background"
-                      required
-                      autoComplete="email"
-                    />
-                    <Input
-                      ref={passwordRef}
-                      id="password"
-                      type="password"
-                      placeholder="비밀번호를 입력해주세요"
-                      value={signInData.password}
-                      onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
-                      onFocus={(e) => scrollToInput(e.currentTarget)}
-                      className="h-12 rounded-lg border-border bg-background"
-                      required
-                      autoComplete="current-password"
-                    />
+                    {/* 이메일 입력 */}
+                    <div className="relative group">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      <Input
+                        ref={emailRef}
+                        id="email"
+                        type="email"
+                        placeholder="이메일"
+                        value={signInData.email}
+                        onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
+                        onFocus={(e) => scrollToInput(e.currentTarget)}
+                        className="h-14 pl-12 rounded-xl border-border/50 bg-background/50 focus:bg-background focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
+                        required
+                        autoComplete="email"
+                      />
+                    </div>
+
+                    {/* 비밀번호 입력 */}
+                    <div className="relative group">
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      <Input
+                        ref={passwordRef}
+                        id="password"
+                        type="password"
+                        placeholder="비밀번호"
+                        value={signInData.password}
+                        onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
+                        onFocus={(e) => scrollToInput(e.currentTarget)}
+                        className="h-14 pl-12 rounded-xl border-border/50 bg-background/50 focus:bg-background focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
+                        required
+                        autoComplete="current-password"
+                      />
+                    </div>
                     
                     <Button 
                       type="submit" 
-                      className="w-full h-12 rounded-lg text-base font-medium"
+                      className="w-full h-14 rounded-xl text-base font-semibold bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30"
                       disabled={loading}
                     >
-                      {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
                       로그인
                     </Button>
                   </form>
@@ -473,19 +491,22 @@ export const AuthForm = () => {
                   {/* 구분선 */}
                   <div className="relative my-6">
                     <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t border-border" />
+                      <span className="w-full border-t border-border/50" />
+                    </div>
+                    <div className="relative flex justify-center text-xs">
+                      <span className="bg-card px-3 text-muted-foreground">또는</span>
                     </div>
                   </div>
 
                   {/* 소셜 로그인 */}
                   <SocialLoginButtons isLoading={loading} setIsLoading={setLoading} />
                   
-                  {/* 비밀번호 찾기 & 회원가입 링크 */}
+                  {/* 비밀번호 찾기 링크 */}
                   <div className="text-center pt-2">
                     <Button 
                       type="button" 
-                      variant="link" 
-                      className="text-sm text-muted-foreground hover:text-primary underline"
+                      variant="ghost" 
+                      className="text-sm text-muted-foreground hover:text-primary hover:bg-primary/5"
                       onClick={() => setShowForgotPassword(true)}
                     >
                       비밀번호를 잊으셨나요?
@@ -497,105 +518,139 @@ export const AuthForm = () => {
                 <TabsContent value="signup" className="mt-0 space-y-4">
                   <form onSubmit={handleSignUp} className="space-y-3">
                     {error && (
-                      <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+                      <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-xl border border-destructive/20 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
                         {error}
                       </div>
                     )}
                     
-                    <Input
-                      id="display-name"
-                      type="text"
-                      placeholder="이름을 입력해주세요"
-                      value={signUpData.name}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, name: e.target.value }))}
-                      onFocus={(e) => scrollToInput(e.currentTarget)}
-                      className="h-12 rounded-lg border-border bg-background"
-                      required
-                      autoComplete="name"
-                    />
-                    
-                    <div className="space-y-1">
+                    {/* 이름 입력 */}
+                    <div className="relative group">
+                      <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                       <Input
-                        id="signup-phone"
-                        type="tel"
-                        placeholder="전화번호를 입력해주세요"
-                        value={signUpData.phone}
-                        onChange={(e) => {
-                          setSignUpData(prev => ({ ...prev, phone: e.target.value }));
-                          if (phoneError) setPhoneError('');
-                        }}
-                        onBlur={(e) => checkPhoneAvailability(e.target.value)}
+                        id="display-name"
+                        type="text"
+                        placeholder="이름"
+                        value={signUpData.name}
+                        onChange={(e) => setSignUpData(prev => ({ ...prev, name: e.target.value }))}
                         onFocus={(e) => scrollToInput(e.currentTarget)}
-                        className={`h-12 rounded-lg border-border bg-background ${phoneError ? 'border-destructive' : ''}`}
+                        className="h-13 pl-12 rounded-xl border-border/50 bg-background/50 focus:bg-background focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
                         required
-                        autoComplete="tel"
+                        autoComplete="name"
                       />
+                    </div>
+                    
+                    {/* 전화번호 입력 */}
+                    <div className="space-y-1">
+                      <div className="relative group">
+                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <Input
+                          id="signup-phone"
+                          type="tel"
+                          placeholder="전화번호"
+                          value={signUpData.phone}
+                          onChange={(e) => {
+                            setSignUpData(prev => ({ ...prev, phone: e.target.value }));
+                            if (phoneError) setPhoneError('');
+                          }}
+                          onBlur={(e) => checkPhoneAvailability(e.target.value)}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
+                          className={`h-13 pl-12 rounded-xl border-border/50 bg-background/50 focus:bg-background focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all ${phoneError ? 'border-destructive focus:border-destructive' : ''}`}
+                          required
+                          autoComplete="tel"
+                        />
+                      </div>
                       {phoneError && (
-                        <p className="text-xs text-destructive px-1">{phoneError}</p>
+                        <p className="text-xs text-destructive px-1 flex items-center gap-1">
+                          <span className="w-1 h-1 rounded-full bg-destructive" />
+                          {phoneError}
+                        </p>
                       )}
                     </div>
                     
+                    {/* 이메일 입력 */}
                     <div className="space-y-1">
-                      <Input
-                        ref={signupEmailRef}
-                        id="signup-email"
-                        type="email"
-                        placeholder="이메일을 입력해주세요"
-                        value={signUpData.email}
-                        onChange={(e) => {
-                          setSignUpData(prev => ({ ...prev, email: e.target.value }));
-                          if (emailError) setEmailError('');
-                        }}
-                        onBlur={(e) => checkEmailAvailability(e.target.value)}
-                        onFocus={(e) => scrollToInput(e.currentTarget)}
-                        className={`h-12 rounded-lg border-border bg-background ${emailError ? 'border-destructive' : ''}`}
-                        required
-                        autoComplete="email"
-                      />
+                      <div className="relative group">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <Input
+                          ref={signupEmailRef}
+                          id="signup-email"
+                          type="email"
+                          placeholder="이메일"
+                          value={signUpData.email}
+                          onChange={(e) => {
+                            setSignUpData(prev => ({ ...prev, email: e.target.value }));
+                            if (emailError) setEmailError('');
+                          }}
+                          onBlur={(e) => checkEmailAvailability(e.target.value)}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
+                          className={`h-13 pl-12 rounded-xl border-border/50 bg-background/50 focus:bg-background focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all ${emailError ? 'border-destructive focus:border-destructive' : ''}`}
+                          required
+                          autoComplete="email"
+                        />
+                      </div>
                       {emailError && (
-                        <p className="text-xs text-destructive px-1">{emailError}</p>
+                        <p className="text-xs text-destructive px-1 flex items-center gap-1">
+                          <span className="w-1 h-1 rounded-full bg-destructive" />
+                          {emailError}
+                        </p>
                       )}
                     </div>
                     
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      placeholder="비밀번호 (6자 이상)"
-                      value={signUpData.password}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
-                      onFocus={(e) => scrollToInput(e.currentTarget)}
-                      className="h-12 rounded-lg border-border bg-background"
-                      required
-                      autoComplete="new-password"
-                    />
-                    
-                    <div className="space-y-1">
+                    {/* 비밀번호 입력 */}
+                    <div className="relative group">
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                       <Input
-                        id="confirm-password"
+                        id="signup-password"
                         type="password"
-                        placeholder="비밀번호 확인"
-                        value={signUpData.confirmPassword}
-                        onChange={(e) => setSignUpData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                        placeholder="비밀번호 (6자 이상)"
+                        value={signUpData.password}
+                        onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
                         onFocus={(e) => scrollToInput(e.currentTarget)}
-                        className="h-12 rounded-lg border-border bg-background"
+                        className="h-13 pl-12 rounded-xl border-border/50 bg-background/50 focus:bg-background focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
                         required
                         autoComplete="new-password"
                       />
+                    </div>
+                    
+                    {/* 비밀번호 확인 */}
+                    <div className="space-y-1">
+                      <div className="relative group">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <Input
+                          id="confirm-password"
+                          type="password"
+                          placeholder="비밀번호 확인"
+                          value={signUpData.confirmPassword}
+                          onChange={(e) => setSignUpData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
+                          className="h-13 pl-12 rounded-xl border-border/50 bg-background/50 focus:bg-background focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
+                          required
+                          autoComplete="new-password"
+                        />
+                      </div>
                       {signUpData.confirmPassword && signUpData.password !== signUpData.confirmPassword && (
-                        <p className="text-xs text-destructive px-1">비밀번호가 일치하지 않습니다.</p>
+                        <p className="text-xs text-destructive px-1 flex items-center gap-1">
+                          <span className="w-1 h-1 rounded-full bg-destructive" />
+                          비밀번호가 일치하지 않습니다.
+                        </p>
                       )}
                     </div>
                     
+                    {/* 추천인 코드 */}
                     <div className="space-y-1">
-                      <Input
-                        id="referral-code"
-                        type="text"
-                        placeholder="추천인 코드 (선택)"
-                        value={signUpData.referralCode}
-                        onChange={(e) => setSignUpData(prev => ({ ...prev, referralCode: e.target.value.toUpperCase() }))}
-                        className="h-12 rounded-lg border-border bg-background uppercase"
-                        maxLength={6}
-                      />
+                      <div className="relative group">
+                        <Gift className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <Input
+                          id="referral-code"
+                          type="text"
+                          placeholder="추천인 코드 (선택)"
+                          value={signUpData.referralCode}
+                          onChange={(e) => setSignUpData(prev => ({ ...prev, referralCode: e.target.value.toUpperCase() }))}
+                          className="h-13 pl-12 rounded-xl border-border/50 bg-background/50 focus:bg-background focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all uppercase"
+                          maxLength={6}
+                        />
+                      </div>
                       {signUpData.referralCode && (
                         <p className="text-xs text-primary px-1 flex items-center gap-1">
                           <Gift className="w-3 h-3" />
@@ -606,18 +661,21 @@ export const AuthForm = () => {
                     
                     <Button 
                       type="submit" 
-                      className="w-full h-12 rounded-lg text-base font-medium mt-2"
+                      className="w-full h-14 rounded-xl text-base font-semibold bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 mt-2"
                       disabled={loading || !!phoneError || checkingPhone}
                     >
-                      {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      회원가입
+                      {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                      가입하기
                     </Button>
                   </form>
 
                   {/* 구분선 */}
-                  <div className="relative my-4">
+                  <div className="relative my-5">
                     <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t border-border" />
+                      <span className="w-full border-t border-border/50" />
+                    </div>
+                    <div className="relative flex justify-center text-xs">
+                      <span className="bg-card px-3 text-muted-foreground">또는</span>
                     </div>
                   </div>
 
@@ -629,13 +687,13 @@ export const AuthForm = () => {
           </Tabs>
 
           {/* 무료 체험 안내 */}
-          <div className="text-center mt-4">
+          <div className="text-center mt-6">
             <Button 
-              variant="link" 
+              variant="ghost" 
               onClick={() => navigate('/free-trial')}
-              className="text-sm text-muted-foreground hover:text-primary"
+              className="text-sm text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-xl"
             >
-              회원가입 없이 무료 체험 →
+              회원가입 없이 무료 체험하기 →
             </Button>
           </div>
         </div>

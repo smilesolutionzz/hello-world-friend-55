@@ -152,10 +152,10 @@ const ExpertHiring = () => {
         }));
       }
 
-      // Mock 데이터 추가
-      const mockConverted = mockExpertsData.slice(0, 8).map(e => ({
+      // Mock 데이터 추가 (전체)
+      const mockConverted = mockExpertsData.map(e => ({
         id: e.id,
-        name: e.name.replace(' 치료사', '').replace(' 박사', ''),
+        name: e.name.replace(' 치료사', '').replace(' 박사', '').replace(' 교수', ''),
         specialty: e.categories || [],
         credentials: [e.credential],
         rating: e.rating,

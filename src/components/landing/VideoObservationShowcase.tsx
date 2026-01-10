@@ -90,16 +90,15 @@ export const VideoObservationShowcase = () => {
             NEW 🔥 AI 영상 관찰 분석
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white whitespace-nowrap">
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
               30초 영상
             </span>
             으로 전문가급 분석
           </h2>
           
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-            아이의 놀이 영상, 일상 모습을 업로드하면
-            <br className="hidden md:block" />
+          <p className="text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            <span className="block">아이의 놀이 영상, 일상 모습을 업로드하면</span>
             <span className="text-purple-400 font-semibold">AI가 발달 상태를 심층 분석</span>해드립니다
           </p>
         </motion.div>

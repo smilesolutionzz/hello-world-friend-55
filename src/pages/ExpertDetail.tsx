@@ -31,6 +31,7 @@ import { getExpertImage } from '@/components/expert/ExpertImages';
 import { mockExperts as mockExpertsData } from '@/data/mockExperts';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import Footer from "@/components/ui/footer";
+import { ExpertBookingModal } from "@/components/booking/ExpertBookingModal";
 
 interface ExpertDetail {
   id: string;
@@ -123,6 +124,7 @@ const ExpertDetailPage = () => {
   const navigate = useNavigate();
   const [expert, setExpert] = useState<ExpertDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
 
   useEffect(() => {
     loadExpert();
@@ -196,7 +198,7 @@ const ExpertDetailPage = () => {
   };
 
   const handleBooking = () => {
-    navigate(`/expert-hiring?book=${id}`);
+    setBookingModalOpen(true);
   };
 
   const handleKakaoConsult = () => {
@@ -479,6 +481,21 @@ const ExpertDetailPage = () => {
         </section>
 
         <Footer />
+
+        {/* 예약 모달 */}
+        {expert && (
+          <ExpertBookingModal
+            open={bookingModalOpen}
+            onOpenChange={setBookingModalOpen}
+            expert={{
+              id: expert.id,
+              name: expert.name,
+              specialty: expert.specialty,
+              hourlyPrice: expert.hourlyPrice,
+              image: expert.image
+            }}
+          />
+        )}
       </div>
     </>
   );

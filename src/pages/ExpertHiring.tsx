@@ -71,6 +71,8 @@ const ExpertHiring = () => {
   // 토큰은 모달 열렸을 때만 체크 (깜빡임 방지)
   const { balance, consumeTokens, checkTokenAvailability } = useTokens();
 
+  const [activeTab, setActiveTab] = useState<'experts' | 'institutions'>('experts');
+
   const categories = [
     { id: 'all', label: '전체', icon: '👥' },
     { id: '언어치료', label: '언어치료', icon: '🗣️' },
@@ -79,8 +81,17 @@ const ExpertHiring = () => {
     { id: 'ABA', label: 'ABA치료', icon: '🎯' },
     { id: '특수체육', label: '특수체육', icon: '🏃' },
     { id: '미술치료', label: '미술치료', icon: '🎨' },
-    { id: '감각통합', label: '감각통합', icon: '🧠' },
-    { id: '전문기관', label: '전문기관', icon: '🏢', isLink: true }
+    { id: '감각통합', label: '감각통합', icon: '🧠' }
+  ];
+
+  // 협력 기관 데이터
+  const partnerInstitutions = [
+    { id: 'inst_1', name: '서울발달센터', type: '발달재활센터', location: '서울 강남구', specialties: ['언어치료', '심리상담', 'ABA'], isVerified: true, rating: 4.9 },
+    { id: 'inst_2', name: '행복아이심리센터', type: '심리상담센터', location: '서울 서초구', specialties: ['심리상담', '놀이치료'], isVerified: true, rating: 4.8 },
+    { id: 'inst_3', name: '스마트키즈치료센터', type: '종합치료센터', location: '경기 성남시', specialties: ['언어치료', '감각통합', '미술치료'], isVerified: true, rating: 4.7 },
+    { id: 'inst_4', name: '푸른나무발달센터', type: '발달재활센터', location: '서울 송파구', specialties: ['발달재활', 'ABA', '특수체육'], isVerified: true, rating: 4.9 },
+    { id: 'inst_5', name: '마음소리언어센터', type: '언어치료센터', location: '인천 연수구', specialties: ['언어치료', '청각재활'], isVerified: true, rating: 4.6 },
+    { id: 'inst_6', name: '함께성장심리센터', type: '심리상담센터', location: '서울 마포구', specialties: ['심리상담', '가족치료'], isVerified: false, rating: 4.5 },
   ];
 
   const timeSlots = [
@@ -291,7 +302,7 @@ const ExpertHiring = () => {
           <div className="flex justify-center gap-8 mt-8 text-sm text-gray-400">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              <span>40+ 검증된 전문가</span>
+              <span>50+ 검증된 전문가</span>
             </div>
             <div className="flex items-center gap-2">
               <Star className="w-4 h-4 text-yellow-500" />
@@ -305,98 +316,206 @@ const ExpertHiring = () => {
         </div>
       </section>
 
-      {/* 검색 및 필터 */}
-      <section className="py-8 px-4 bg-white border-b sticky top-0 z-10">
+      {/* 탭 및 검색 */}
+      <section className="py-6 px-4 bg-white border-b sticky top-0 z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* 검색 */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <Input
-                placeholder="전문가 이름 또는 전문 분야 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-12"
-              />
-            </div>
-            
-            {/* 카테고리 */}
-            <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
-              {categories.map((cat) => (
-                <Button
-                  key={cat.id}
-                  variant={selectedCategory === cat.id ? 'default' : 'outline'}
-                  onClick={() => {
-                    if ((cat as any).isLink) {
-                      navigate('/partner-benefits');
-                    } else {
-                      setSelectedCategory(cat.id);
-                    }
-                  }}
-                  className={cn(
-                    "whitespace-nowrap",
-                    selectedCategory === cat.id && "bg-slate-900",
-                    (cat as any).isLink && "border-blue-300 text-blue-600 hover:bg-blue-50"
-                  )}
-                >
-                  <span className="mr-1">{cat.icon}</span>
-                  {cat.label}
-                </Button>
-              ))}
-            </div>
+          {/* 메인 탭 */}
+          <div className="flex gap-2 mb-4">
+            <Button
+              variant={activeTab === 'experts' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('experts')}
+              className={cn(
+                "flex-1 md:flex-none",
+                activeTab === 'experts' && "bg-slate-900"
+              )}
+            >
+              <Users className="w-4 h-4 mr-2" />
+              전문가 (50명)
+            </Button>
+            <Button
+              variant={activeTab === 'institutions' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('institutions')}
+              className={cn(
+                "flex-1 md:flex-none",
+                activeTab === 'institutions' && "bg-blue-600"
+              )}
+            >
+              <span className="mr-2">🏢</span>
+              협력기관 ({partnerInstitutions.length}곳)
+            </Button>
           </div>
+
+          {activeTab === 'experts' && (
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* 검색 */}
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  placeholder="전문가 이름 또는 전문 분야 검색..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-12"
+                />
+              </div>
+              
+              {/* 카테고리 */}
+              <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+                {categories.map((cat) => (
+                  <Button
+                    key={cat.id}
+                    variant={selectedCategory === cat.id ? 'default' : 'outline'}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={cn(
+                      "whitespace-nowrap",
+                      selectedCategory === cat.id && "bg-slate-900"
+                    )}
+                  >
+                    <span className="mr-1">{cat.icon}</span>
+                    {cat.label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
       {/* 전문가 목록 */}
-      <section className="py-8 px-4 bg-gradient-to-b from-white to-slate-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold">
-              {selectedCategory === 'all' ? '전체 전문가' : `${selectedCategory} 전문가`}
-              <span className="text-gray-500 font-normal ml-2">({filteredExperts.length}명)</span>
-            </h2>
-          </div>
+      {activeTab === 'experts' && (
+        <section className="py-8 px-4 bg-gradient-to-b from-white to-slate-50">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold">
+                {selectedCategory === 'all' ? '전체 전문가' : `${selectedCategory} 전문가`}
+                <span className="text-gray-500 font-normal ml-2">({filteredExperts.length}명)</span>
+              </h2>
+            </div>
 
-          {loading ? (
+            {loading ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[...Array(6)].map((_, i) => (
+                  <Card key={i} className="animate-pulse">
+                    <CardContent className="p-6">
+                      <div className="flex gap-4">
+                        <div className="w-16 h-16 bg-gray-200 rounded-full" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-gray-200 rounded w-24" />
+                          <div className="h-3 bg-gray-200 rounded w-32" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredExperts.map((expert) => (
+                  <ExpertCard
+                    key={expert.id}
+                    expert={expert}
+                    onBook={() => handleBooking(expert)}
+                  />
+                ))}
+              </div>
+            )}
+
+            {!loading && filteredExperts.length === 0 && (
+              <div className="text-center py-16">
+                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">검색 결과가 없습니다</h3>
+                <p className="text-gray-500">다른 검색어를 시도해보세요</p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* 협력기관 목록 */}
+      {activeTab === 'institutions' && (
+        <section className="py-8 px-4 bg-gradient-to-b from-white to-slate-50">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold">
+                협력기관 안내
+                <span className="text-gray-500 font-normal ml-2">({partnerInstitutions.length}곳)</span>
+              </h2>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/partner-benefits')}
+                className="text-blue-600 border-blue-300 hover:bg-blue-50"
+              >
+                기관 등록 신청
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[...Array(6)].map((_, i) => (
-                <Card key={i} className="animate-pulse">
-                  <CardContent className="p-6">
-                    <div className="flex gap-4">
-                      <div className="w-16 h-16 bg-gray-200 rounded-full" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-gray-200 rounded w-24" />
-                        <div className="h-3 bg-gray-200 rounded w-32" />
+              {partnerInstitutions.map((inst) => (
+                <Card 
+                  key={inst.id}
+                  className="hover:shadow-xl transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-white to-blue-50 shadow-md hover:scale-[1.02]"
+                  onClick={() => navigate('/partner-benefits')}
+                >
+                  <CardContent className="p-5">
+                    <div className="flex items-start gap-4">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-md">
+                        🏢
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-bold text-gray-900 truncate">{inst.name}</h3>
+                          {inst.isVerified && (
+                            <Badge className="bg-green-100 text-green-700 text-xs">
+                              <CheckCircle className="w-3 h-3 mr-0.5" />
+                              인증
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500 mb-2">{inst.type}</p>
+                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                          <MapPin className="w-3 h-3" />
+                          <span>{inst.location}</span>
+                          <span>·</span>
+                          <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                          <span>{inst.rating}</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {inst.specialties.slice(0, 3).map((spec, idx) => (
+                            <Badge key={idx} variant="secondary" className="text-xs bg-blue-100 text-blue-700">
+                              {spec}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredExperts.map((expert) => (
-                <ExpertCard
-                  key={expert.id}
-                  expert={expert}
-                  onBook={() => handleBooking(expert)}
-                />
-              ))}
-            </div>
-          )}
 
-          {!loading && filteredExperts.length === 0 && (
-            <div className="text-center py-16">
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">검색 결과가 없습니다</h3>
-              <p className="text-gray-500">다른 검색어를 시도해보세요</p>
-            </div>
-          )}
-        </div>
-      </section>
+            {/* 기관 등록 안내 배너 */}
+            <Card className="mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 border-0 text-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div>
+                    <h3 className="font-bold text-lg mb-1">우리 기관도 등록하고 싶으신가요?</h3>
+                    <p className="text-white/80 text-sm">무료로 기관 정보를 등록하고 더 많은 고객을 만나보세요</p>
+                  </div>
+                  <Button 
+                    onClick={() => navigate('/partner-benefits')}
+                    className="bg-white text-blue-600 hover:bg-blue-50"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    무료 등록하기
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      )}
 
       {/* 예약 모달 */}
       <BookingDialog

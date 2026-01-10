@@ -84,14 +84,36 @@ const ExpertHiring = () => {
     { id: '감각통합', label: '감각통합', icon: '🧠' }
   ];
 
-  // 협력 기관 데이터
+  // 실제 협력기관 데이터 (메인페이지 PartnerTrustSection과 동일)
   const partnerInstitutions = [
-    { id: 'inst_1', name: '서울발달센터', type: '발달재활센터', location: '서울 강남구', specialties: ['언어치료', '심리상담', 'ABA'], isVerified: true, rating: 4.9 },
-    { id: 'inst_2', name: '행복아이심리센터', type: '심리상담센터', location: '서울 서초구', specialties: ['심리상담', '놀이치료'], isVerified: true, rating: 4.8 },
-    { id: 'inst_3', name: '스마트키즈치료센터', type: '종합치료센터', location: '경기 성남시', specialties: ['언어치료', '감각통합', '미술치료'], isVerified: true, rating: 4.7 },
-    { id: 'inst_4', name: '푸른나무발달센터', type: '발달재활센터', location: '서울 송파구', specialties: ['발달재활', 'ABA', '특수체육'], isVerified: true, rating: 4.9 },
-    { id: 'inst_5', name: '마음소리언어센터', type: '언어치료센터', location: '인천 연수구', specialties: ['언어치료', '청각재활'], isVerified: true, rating: 4.6 },
-    { id: 'inst_6', name: '함께성장심리센터', type: '심리상담센터', location: '서울 마포구', specialties: ['심리상담', '가족치료'], isVerified: false, rating: 4.5 },
+    // 발달센터
+    { id: 'inst_1', name: '디딤돌언어사회성연구소', type: '발달센터', location: '서울', specialties: ['언어치료', '사회성발달'], isVerified: true },
+    { id: 'inst_2', name: 'APA발달센터', type: '발달센터', location: '서울', specialties: ['ABA', '발달재활'], isVerified: true },
+    { id: 'inst_3', name: '디앤알운동발달센터', type: '발달센터', location: '경기', specialties: ['운동발달', '감각통합'], isVerified: true },
+    { id: 'inst_4', name: '한점미소발달센터', type: '발달센터', location: '서울', specialties: ['발달재활', '놀이치료'], isVerified: true },
+    { id: 'inst_5', name: '우아함발달센터 안산점', type: '발달센터', location: '경기 안산', specialties: ['발달재활', 'ABA'], isVerified: true },
+    { id: 'inst_6', name: '메이플 ABA 목동센터', type: 'ABA센터', location: '서울 목동', specialties: ['ABA', '행동치료'], isVerified: true },
+    { id: 'inst_7', name: '엘림아동발달센터', type: '발달센터', location: '서울', specialties: ['언어치료', '인지치료'], isVerified: true },
+    { id: 'inst_8', name: '해웃음 심리발달센터', type: '심리발달센터', location: '경기', specialties: ['심리상담', '발달재활'], isVerified: true },
+    { id: 'inst_9', name: '핌발달센터', type: '발달센터', location: '서울', specialties: ['발달재활', '감각통합'], isVerified: true },
+    { id: 'inst_10', name: '정관언어발달센터', type: '언어발달센터', location: '부산', specialties: ['언어치료', '조음치료'], isVerified: true },
+    { id: 'inst_11', name: '해오름 아동발달센터', type: '발달센터', location: '인천', specialties: ['발달재활', '놀이치료'], isVerified: true },
+    { id: 'inst_12', name: '넘나들발달센터', type: '발달센터', location: '대전', specialties: ['발달재활', '사회성발달'], isVerified: true },
+    // 심리상담센터
+    { id: 'inst_13', name: '마음숲심리상담센터', type: '심리상담센터', location: '서울', specialties: ['심리상담', '가족치료'], isVerified: true },
+    { id: 'inst_14', name: '행복한마음심리센터', type: '심리상담센터', location: '경기', specialties: ['심리상담', '놀이치료'], isVerified: true },
+    { id: 'inst_15', name: '열린마음상담센터', type: '심리상담센터', location: '서울', specialties: ['심리상담', '미술치료'], isVerified: true },
+    { id: 'inst_16', name: '새봄심리상담소', type: '심리상담센터', location: '부산', specialties: ['심리상담', '청소년상담'], isVerified: true },
+    // 치료센터
+    { id: 'inst_17', name: '언어발달치료센터', type: '치료센터', location: '서울', specialties: ['언어치료', '발달재활'], isVerified: true },
+    { id: 'inst_18', name: '감각통합치료센터', type: '치료센터', location: '경기', specialties: ['감각통합', '운동발달'], isVerified: true },
+    { id: 'inst_19', name: '놀이치료연구소', type: '치료센터', location: '서울', specialties: ['놀이치료', '심리상담'], isVerified: true },
+    { id: 'inst_20', name: '미술치료센터', type: '치료센터', location: '서울', specialties: ['미술치료', '표현예술치료'], isVerified: true },
+    // 의원 및 병원
+    { id: 'inst_21', name: '삼성웰니스의원', type: '의원', location: '서울 강남', specialties: ['발달검사', '의료상담'], isVerified: true },
+    { id: 'inst_22', name: '서울아동발달클리닉', type: '클리닉', location: '서울', specialties: ['발달평가', '치료연계'], isVerified: true },
+    { id: 'inst_23', name: '행복한소아청소년과', type: '소아과', location: '경기', specialties: ['소아발달', '건강검진'], isVerified: true },
+    { id: 'inst_24', name: '마음편한정신건강의학과', type: '정신건강의학과', location: '서울', specialties: ['ADHD', '정서장애'], isVerified: true },
   ];
 
   const timeSlots = [
@@ -460,29 +482,37 @@ const ExpertHiring = () => {
                 >
                   <CardContent className="p-5">
                     <div className="flex items-start gap-4">
-                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-md">
-                        🏢
+                      <div className={cn(
+                        "w-14 h-14 rounded-xl flex items-center justify-center text-white text-2xl shadow-md",
+                        inst.type === '의원' || inst.type === '클리닉' || inst.type === '소아과' || inst.type === '정신건강의학과'
+                          ? "bg-gradient-to-br from-green-500 to-emerald-600"
+                          : inst.type === '심리상담센터'
+                          ? "bg-gradient-to-br from-purple-500 to-indigo-600"
+                          : inst.type === 'ABA센터'
+                          ? "bg-gradient-to-br from-orange-500 to-red-600"
+                          : "bg-gradient-to-br from-blue-500 to-indigo-600"
+                      )}>
+                        {inst.type === '의원' || inst.type === '클리닉' || inst.type === '소아과' || inst.type === '정신건강의학과' ? '🏥' : 
+                         inst.type === '심리상담센터' ? '💜' : 
+                         inst.type === 'ABA센터' ? '🎯' : '🏢'}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-gray-900 truncate">{inst.name}</h3>
+                          <h3 className="font-bold text-gray-900 truncate text-sm">{inst.name}</h3>
                           {inst.isVerified && (
-                            <Badge className="bg-green-100 text-green-700 text-xs">
+                            <Badge className="bg-green-100 text-green-700 text-xs flex-shrink-0">
                               <CheckCircle className="w-3 h-3 mr-0.5" />
                               인증
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-gray-500 mb-2">{inst.type}</p>
-                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                        <p className="text-xs text-gray-500 mb-2">{inst.type}</p>
+                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
                           <MapPin className="w-3 h-3" />
                           <span>{inst.location}</span>
-                          <span>·</span>
-                          <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                          <span>{inst.rating}</span>
                         </div>
                         <div className="flex flex-wrap gap-1">
-                          {inst.specialties.slice(0, 3).map((spec, idx) => (
+                          {inst.specialties.map((spec, idx) => (
                             <Badge key={idx} variant="secondary" className="text-xs bg-blue-100 text-blue-700">
                               {spec}
                             </Badge>

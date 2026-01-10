@@ -423,8 +423,17 @@ const ExpertHiring = () => {
 
 // 전문가 카드 컴포넌트
 const ExpertCard = ({ expert, onBook }: { expert: Expert; onBook: () => void }) => {
+  const navigate = useNavigate();
+  
+  const handleCardClick = () => {
+    navigate(`/expert-detail/${expert.id}`);
+  };
+
   return (
-    <Card className="hover:shadow-xl transition-all duration-300 group cursor-pointer border-0 bg-gradient-to-br from-white to-slate-50 shadow-md hover:scale-[1.02]">
+    <Card 
+      onClick={handleCardClick}
+      className="hover:shadow-xl transition-all duration-300 group cursor-pointer border-0 bg-gradient-to-br from-white to-slate-50 shadow-md hover:scale-[1.02]"
+    >
       <CardContent className="p-5">
         <div className="flex gap-4">
           {/* 프로필 이미지 */}

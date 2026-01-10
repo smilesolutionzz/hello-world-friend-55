@@ -194,9 +194,6 @@ const Index = () => {
             <LazyLoad rootMargin="200px">
               <PartnerTrustSection />
             </LazyLoad>
-            <LazyLoad rootMargin="200px">
-              <PartnerTrustSection />
-            </LazyLoad>
             
             {/* 🔥 프로모션 배너 - 서비스 가치 확인 후 유도 */}
             <LazyLoad rootMargin="200px">

@@ -54,8 +54,101 @@ interface ExpertDetail {
   successCases?: number;
 }
 
-// 치료 철학 데이터 (이름 기반)
-const philosophyData: Record<string, {
+// 전문분야별 치료 철학 데이터
+const specialtyPhilosophyMap: Record<string, {
+  philosophy: string;
+  approach: string[];
+  education: string[];
+}> = {
+  '언어치료': {
+    philosophy: "언어는 마음의 다리입니다. 말 한마디가 세상과 연결되는 순간, 아이의 눈빛이 달라집니다.",
+    approach: ['놀이중심 언어치료', '자연스러운 환경 중심 접근', '가족참여 치료'],
+    education: ['언어병리학 석사 이상', '언어재활사 1급 자격']
+  },
+  '놀이치료': {
+    philosophy: "놀이는 아이의 언어입니다. 놀이 속에서 아이는 자신의 세계를 표현하고, 스스로 치유합니다.",
+    approach: ['놀이치료', '모래놀이치료', '미술치료'],
+    education: ['아동상담 석사 이상', '놀이치료사 자격']
+  },
+  '심리상담': {
+    philosophy: "마음의 상처는 보이지 않지만, 함께 걸어가면 반드시 치유됩니다.",
+    approach: ['인지행동치료', '정서중심치료', '트라우마 치료'],
+    education: ['임상심리학 석사 이상', '상담심리사 1급']
+  },
+  '감각통합': {
+    philosophy: "감각의 조화가 발달의 기초입니다. 균형 잡힌 성장의 토대를 만들어갑니다.",
+    approach: ['감각통합치료', '작업치료', '일상생활훈련'],
+    education: ['작업치료학 석사 이상', '감각통합전문가 자격']
+  },
+  '발달치료': {
+    philosophy: "모든 아이는 자신만의 발달 시계를 가지고 있습니다. 그 시간을 존중하며 함께 성장합니다.",
+    approach: ['발달재활', '조기중재', '통합치료'],
+    education: ['특수교육학 석사 이상', '발달재활사 자격']
+  },
+  'ABA치료': {
+    philosophy: "작은 성공의 축적이 큰 변화를 만듭니다. 과학적 접근으로 확실한 성장을 이끕니다.",
+    approach: ['ABA 기반 행동치료', '사회성 그룹 프로그램', '부모교육 병행'],
+    education: ['심리학 석사 이상', 'BCBA 국제 행동분석가 자격']
+  },
+  '인지치료': {
+    philosophy: "생각이 바뀌면 행동이 바뀌고, 행동이 바뀌면 삶이 바뀝니다.",
+    approach: ['인지행동치료', '정서조절 훈련', '사회기술 훈련'],
+    education: ['임상심리학 석사 이상', '인지행동치료 전문가 자격']
+  },
+  '가족상담': {
+    philosophy: "부모님의 마음을 치유하는 것이 아이 치료의 첫 번째 단계입니다.",
+    approach: ['가족치료', '부모-아동 상호작용 치료', '감정코칭'],
+    education: ['아동가족학 박사', '가족치료 전문가 자격']
+  },
+  '미술치료': {
+    philosophy: "색과 선으로 마음을 표현할 때, 아이는 진정한 자신을 만납니다.",
+    approach: ['미술치료', '표현예술치료', '집단미술치료'],
+    education: ['미술치료학 석사 이상', '미술치료사 자격']
+  },
+  '음악치료': {
+    philosophy: "리듬과 멜로디 속에서 마음이 열리고, 소통의 문이 열립니다.",
+    approach: ['음악치료', '리듬기반 치료', '그룹 음악활동'],
+    education: ['음악치료학 석사 이상', '음악치료사 자격']
+  },
+  '작업치료': {
+    philosophy: "일상의 작은 동작 하나하나가 독립적인 삶을 향한 큰 걸음입니다.",
+    approach: ['작업치료', '일상생활훈련', '소근육 발달 훈련'],
+    education: ['작업치료학 석사 이상', '작업치료사 면허']
+  },
+  '부모교육': {
+    philosophy: "아이를 가장 잘 아는 것은 부모입니다. 부모의 성장이 아이의 성장입니다.",
+    approach: ['부모교육', '양육코칭', '가정연계 프로그램'],
+    education: ['아동발달학 석사 이상', '부모교육 전문가 자격']
+  },
+  'ADHD': {
+    philosophy: "집중력은 훈련됩니다. 아이의 에너지를 긍정적인 방향으로 이끌어갑니다.",
+    approach: ['주의력 훈련', '행동수정', '학습코칭'],
+    education: ['임상심리학 석사 이상', 'ADHD 전문 상담사 자격']
+  },
+  '자폐': {
+    philosophy: "다름은 틀림이 아닙니다. 아이만의 독특한 세계를 이해하고 소통합니다.",
+    approach: ['사회성 훈련', 'ABA 치료', '구조화된 환경 제공'],
+    education: ['자폐스펙트럼 전문가 과정', '행동분석가 자격']
+  },
+  '사회성': {
+    philosophy: "함께하는 즐거움을 알면, 세상이 더 넓어집니다.",
+    approach: ['사회기술훈련', '또래관계 프로그램', '그룹치료'],
+    education: ['사회복지학 석사 이상', '사회성발달 전문가 자격']
+  },
+  '정서': {
+    philosophy: "감정을 이해하면 자신을 사랑하게 됩니다. 감정의 언어를 가르칩니다.",
+    approach: ['정서조절훈련', '감정코칭', '마음챙김'],
+    education: ['상담심리학 석사 이상', '정서발달 전문가 자격']
+  },
+  '학습': {
+    philosophy: "배움의 즐거움을 알면, 스스로 공부하는 아이가 됩니다.",
+    approach: ['학습치료', '읽기/쓰기 지도', '학습전략 코칭'],
+    education: ['특수교육학 석사 이상', '학습치료사 자격']
+  }
+};
+
+// 이름 기반 개인화 데이터 (기존 유지)
+const personalPhilosophyData: Record<string, {
   philosophy: string;
   approach: string[];
   education: string[];
@@ -111,12 +204,38 @@ const philosophyData: Record<string, {
   }
 };
 
-// 기본 치료 철학 (데이터가 없는 경우)
-const defaultPhilosophy = {
-  philosophy: "한 사람 한 사람의 고유한 가치를 존중하며, 함께 성장하는 여정을 걸어갑니다.",
-  approach: ['개인 맞춤형 치료', '근거기반 접근', '가족 중심 치료'],
-  education: ['석사 이상 전문 학위', '관련 분야 전문가 자격'],
-  successCases: 100
+// 전문분야 기반 철학 생성 함수
+const getPhilosophyBySpecialty = (name: string, specialties: string[]): {
+  philosophy: string;
+  approach: string[];
+  education: string[];
+  successCases: number;
+} => {
+  // 1. 먼저 이름 기반 개인화 데이터 확인
+  if (personalPhilosophyData[name]) {
+    return personalPhilosophyData[name];
+  }
+
+  // 2. 전문분야 기반으로 매칭
+  for (const specialty of specialties) {
+    // 전문분야 키워드 매칭
+    for (const [key, data] of Object.entries(specialtyPhilosophyMap)) {
+      if (specialty.includes(key) || key.includes(specialty)) {
+        return {
+          ...data,
+          successCases: Math.floor(Math.random() * 100) + 100
+        };
+      }
+    }
+  }
+
+  // 3. 기본값 반환
+  return {
+    philosophy: "한 사람 한 사람의 고유한 가치를 존중하며, 함께 성장하는 여정을 걸어갑니다.",
+    approach: ['개인 맞춤형 치료', '근거기반 접근', '가족 중심 치료'],
+    education: ['석사 이상 전문 학위', '관련 분야 전문가 자격'],
+    successCases: Math.floor(Math.random() * 50) + 100
+  };
 };
 
 const ExpertDetailPage = () => {
@@ -141,7 +260,8 @@ const ExpertDetailPage = () => {
 
       if (dbExpert) {
         const name = dbExpert.full_name;
-        const extraData = philosophyData[name] || defaultPhilosophy;
+        const specialties = dbExpert.specializations || [];
+        const extraData = getPhilosophyBySpecialty(name, specialties);
         
         setExpert({
           id: dbExpert.id,
@@ -166,8 +286,9 @@ const ExpertDetailPage = () => {
         // Mock 데이터에서 찾기
         const mockExpert = mockExpertsData.find(e => e.id === id);
         if (mockExpert) {
-          const name = mockExpert.name.replace(' 치료사', '').replace(' 박사', '');
-          const extraData = philosophyData[name] || defaultPhilosophy;
+          const name = mockExpert.name.replace(' 치료사', '').replace(' 박사', '').replace(' 교수', '');
+          const specialties = mockExpert.categories || [];
+          const extraData = getPhilosophyBySpecialty(name, specialties);
           
           setExpert({
             id: mockExpert.id,

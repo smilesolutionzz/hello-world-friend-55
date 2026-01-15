@@ -11168,6 +11168,10 @@ export type Database = {
         Args: { check_email: string }
         Returns: boolean
       }
+      check_nickname_availability: {
+        Args: { nickname: string }
+        Returns: boolean
+      }
       check_phone_availability: {
         Args: { phone_number: string }
         Returns: boolean

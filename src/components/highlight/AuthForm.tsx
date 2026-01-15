@@ -23,6 +23,8 @@ export const AuthForm = () => {
   const [checkingPhone, setCheckingPhone] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [checkingEmail, setCheckingEmail] = useState(false);
+  const [nicknameError, setNicknameError] = useState('');
+  const [checkingNickname, setCheckingNickname] = useState(false);
   
   // 로그인 폼 데이터
   const [signInData, setSignInData] = useState({
@@ -32,7 +34,7 @@ export const AuthForm = () => {
 
   // 회원가입 폼 데이터 (간소화)
   const [signUpData, setSignUpData] = useState({
-    name: '',
+    nickname: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -159,6 +161,37 @@ export const AuthForm = () => {
     }
   };
 
+  // 닉네임 중복 체크 (실시간) - RPC 함수 사용
+  const checkNicknameAvailability = async (nickname: string) => {
+    if (!nickname.trim() || nickname.trim().length < 2) {
+      setNicknameError('');
+      return;
+    }
+
+    setCheckingNickname(true);
+    
+    try {
+      const { data: isAvailable, error } = await supabase
+        .rpc('check_nickname_availability', { nickname: nickname.trim() });
+
+      if (error) {
+        console.error('Nickname check error:', error);
+        setNicknameError('');
+        return;
+      }
+
+      if (isAvailable === false) {
+        setNicknameError('이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.');
+      } else {
+        setNicknameError('');
+      }
+    } catch (err) {
+      console.error('Nickname check error:', err);
+    } finally {
+      setCheckingNickname(false);
+    }
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -177,9 +210,21 @@ export const AuthForm = () => {
       return;
     }
 
+    if (nicknameError) {
+      setError(nicknameError);
+      setLoading(false);
+      return;
+    }
+
     // 기본 유효성 검사
-    if (!signUpData.name.trim()) {
-      setError('이름을 입력해주세요.');
+    if (!signUpData.nickname.trim()) {
+      setError('닉네임을 입력해주세요.');
+      setLoading(false);
+      return;
+    }
+
+    if (signUpData.nickname.trim().length < 2) {
+      setError('닉네임은 2자 이상이어야 합니다.');
       setLoading(false);
       return;
     }
@@ -250,7 +295,7 @@ export const AuthForm = () => {
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            display_name: signUpData.name.trim(),
+            display_name: signUpData.nickname.trim(),
             phone: cleanPhone,  // 하이픈 제거된 전화번호 사용
             referral_code: signUpData.referralCode.trim()
           }
@@ -524,20 +569,32 @@ export const AuthForm = () => {
                       </div>
                     )}
                     
-                    {/* 이름 입력 */}
-                    <div className="relative group">
-                      <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                      <Input
-                        id="display-name"
-                        type="text"
-                        placeholder="이름"
-                        value={signUpData.name}
-                        onChange={(e) => setSignUpData(prev => ({ ...prev, name: e.target.value }))}
-                        onFocus={(e) => scrollToInput(e.currentTarget)}
-                        className="h-13 pl-12 rounded-xl border-border/50 bg-background/50 focus:bg-background focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
-                        required
-                        autoComplete="name"
-                      />
+                    {/* 닉네임 입력 */}
+                    <div className="space-y-1">
+                      <div className="relative group">
+                        <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <Input
+                          id="display-name"
+                          type="text"
+                          placeholder="닉네임 (2자 이상)"
+                          value={signUpData.nickname}
+                          onChange={(e) => {
+                            setSignUpData(prev => ({ ...prev, nickname: e.target.value }));
+                            if (nicknameError) setNicknameError('');
+                          }}
+                          onBlur={(e) => checkNicknameAvailability(e.target.value)}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
+                          className={`h-13 pl-12 rounded-xl border-border/50 bg-background/50 focus:bg-background focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all ${nicknameError ? 'border-destructive' : ''}`}
+                          required
+                          autoComplete="nickname"
+                        />
+                        {checkingNickname && (
+                          <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-muted-foreground" />
+                        )}
+                      </div>
+                      {nicknameError && (
+                        <p className="text-xs text-destructive pl-4">{nicknameError}</p>
+                      )}
                     </div>
                     
                     {/* 전화번호 입력 */}

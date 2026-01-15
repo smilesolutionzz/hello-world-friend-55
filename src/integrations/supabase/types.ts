@@ -167,6 +167,57 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_analysis_feedback: {
+        Row: {
+          ai_output: string
+          analysis_type: string
+          created_at: string
+          expert_revised: string | null
+          feedback_type: string | null
+          id: string
+          input_data: Json
+          is_expert_validated: boolean | null
+          is_training_ready: boolean | null
+          rating: number
+          session_id: string | null
+          training_exported_at: string | null
+          user_comment: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ai_output: string
+          analysis_type: string
+          created_at?: string
+          expert_revised?: string | null
+          feedback_type?: string | null
+          id?: string
+          input_data: Json
+          is_expert_validated?: boolean | null
+          is_training_ready?: boolean | null
+          rating: number
+          session_id?: string | null
+          training_exported_at?: string | null
+          user_comment?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ai_output?: string
+          analysis_type?: string
+          created_at?: string
+          expert_revised?: string | null
+          feedback_type?: string | null
+          id?: string
+          input_data?: Json
+          is_expert_validated?: boolean | null
+          is_training_ready?: boolean | null
+          rating?: number
+          session_id?: string | null
+          training_exported_at?: string | null
+          user_comment?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_coaching_sessions: {
         Row: {
           action_items: string[] | null

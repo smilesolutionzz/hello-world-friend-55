@@ -44,10 +44,13 @@ export const SignupPromptModal: React.FC<SignupPromptModalProps> = ({
   };
 
   const benefits = [
-    { icon: Shield, text: '검사 결과 영구 저장' },
-    { icon: Sparkles, text: 'AI 맞춤 분석 리포트' },
-    { icon: Crown, text: '무제한 검사 기록 관리' },
+    { icon: Shield, text: '검사 결과 영구 저장 (삭제 방지)' },
+    { icon: Sparkles, text: '전문가급 AI 상세 분석 리포트' },
+    { icon: Crown, text: '무제한 검사 기록 & 추적 관리' },
   ];
+
+  // 가입 유도 강화를 위한 긴급성 요소
+  const urgencyText = '오늘 가입 시 프리미엄 분석 무료 제공!';
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -59,11 +62,16 @@ export const SignupPromptModal: React.FC<SignupPromptModalProps> = ({
             </div>
           </div>
           <DialogTitle className="text-xl font-bold">
-            검사 결과를 저장하시겠어요?
+            🎉 검사 완료! 결과를 저장하세요
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            무료 가입으로 결과를 안전하게 보관하세요
+            30초 무료 가입으로 상세 분석을 확인하세요
           </DialogDescription>
+          {/* 긴급성 배지 */}
+          <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-xs font-medium text-amber-600 dark:text-amber-400">
+            <Sparkles className="h-3 w-3" />
+            {urgencyText}
+          </div>
         </DialogHeader>
 
         <div className="space-y-4 py-4">

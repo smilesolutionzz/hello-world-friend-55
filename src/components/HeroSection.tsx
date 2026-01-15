@@ -166,7 +166,7 @@ const HeroSection = () => {
           </Button>
         </motion.div>
 
-        {/* Trust Indicators */}
+        {/* Trust Indicators - 강화된 소셜 프루프 */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -181,10 +181,32 @@ const HeroSection = () => {
             <span>✓ 24시간 이용 가능</span>
           </div>
           
-          <div className="mt-3 flex items-center justify-center gap-4 text-xs md:text-sm">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-3 md:gap-4 text-xs md:text-sm">
             <span className="text-white/70">⭐ 4.8/5.0 (4,248명)</span>
-            <span className="text-amber-400/80">🔥 오늘 320명 검사 중</span>
+            <motion.span 
+              animate={{ opacity: [0.8, 1, 0.8] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-amber-400 font-semibold"
+            >
+              🔥 지금 47명 검사 중
+            </motion.span>
           </div>
+          
+          {/* 긴급성 배너 */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 rounded-full"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+            </span>
+            <span className="text-xs text-white/90 font-medium">
+              오늘만 무료 분석 제공 중
+            </span>
+          </motion.div>
         </motion.div>
       </div>
     </section>

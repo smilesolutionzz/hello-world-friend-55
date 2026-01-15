@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Share2, RotateCcw, AlertTriangle, CheckCircle, Info, Heart, FileDown, Loader2, BarChart3, Download, ArrowLeft, MessageCircle, Copy, Instagram, Sparkles } from 'lucide-react';
+import { Brain, Share2, RotateCcw, AlertTriangle, CheckCircle, Info, Heart, FileDown, Loader2, BarChart3, Download, ArrowLeft, MessageCircle, Copy, Instagram, Sparkles, Lock, UserPlus, Star, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
@@ -28,6 +28,16 @@ interface StressTestResultProps {
 const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  
+  // 로그인 상태 확인
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
+    };
+    checkAuth();
+  }, []);
   
   // 즉시 기본 분석 제공 - AI 분석은 백그라운드에서 로드
   const calculateRiskLevel = (): 'low' | 'medium' | 'high' => {
@@ -487,11 +497,83 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
           </p>
         </div>
         
-        {/* 맞춤 추천 및 B2B 제안 */}
-        <PersonalizedProductRecommendation 
-          testType="stress"
-          testResult={result}
-        />
+        {/* 비로그인 사용자: 가입 유도 오버레이로 하단 가림 */}
+        {isLoggedIn === false ? (
+          <div className="relative mt-6">
+            {/* 흐릿한 배경으로 실제 콘텐츠 힌트 */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
+              <div className="blur-sm opacity-30">
+                <div className="bg-gradient-to-br from-primary/10 to-primary-glow/10 p-6 rounded-2xl">
+                  <div className="h-24 bg-muted/50 rounded-lg mb-4"></div>
+                  <div className="h-32 bg-muted/50 rounded-lg mb-4"></div>
+                  <div className="h-20 bg-muted/50 rounded-lg"></div>
+                </div>
+              </div>
+            </div>
+            
+            {/* 가입 유도 카드 */}
+            <Card className="relative z-10 border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-background to-primary-glow/5 shadow-xl">
+              <CardContent className="p-6 md:p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-lg">
+                  <Lock className="w-8 h-8 text-white" />
+                </div>
+                
+                <h3 className="text-xl md:text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                  전체 결과를 확인하세요
+                </h3>
+                
+                <p className="text-muted-foreground mb-6 text-sm md:text-base">
+                  무료 회원가입으로 맞춤 전문가 추천과<br />
+                  더 상세한 분석 결과를 받아보세요
+                </p>
+                
+                {/* 혜택 리스트 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                  <div className="flex items-center gap-2 p-3 bg-background/80 rounded-lg border">
+                    <Star className="w-5 h-5 text-yellow-500 flex-shrink-0" />
+                    <span className="text-sm font-medium">맞춤 전문가 추천</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-background/80 rounded-lg border">
+                    <Shield className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-sm font-medium">결과 영구 저장</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-background/80 rounded-lg border">
+                    <Brain className="w-5 h-5 text-purple-500 flex-shrink-0" />
+                    <span className="text-sm font-medium">심층 AI 분석</span>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button 
+                    size="lg"
+                    className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 shadow-lg"
+                    onClick={() => navigate('/auth?mode=signup')}
+                  >
+                    <UserPlus className="w-5 h-5 mr-2" />
+                    무료 회원가입
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg"
+                    onClick={() => navigate('/auth')}
+                  >
+                    로그인
+                  </Button>
+                </div>
+                
+                <p className="text-xs text-muted-foreground mt-4">
+                  🔒 개인정보는 안전하게 보호됩니다
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          /* 로그인 사용자: 맞춤 추천 및 B2B 제안 */
+          <PersonalizedProductRecommendation 
+            testType="stress"
+            testResult={result}
+          />
+        )}
       </div>
     </div>
   );

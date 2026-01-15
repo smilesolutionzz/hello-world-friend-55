@@ -59,32 +59,37 @@ const CTABannerSection = () => {
             </span>
           </div>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons - 회원가입 강조 */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
             <Button 
               size="lg"
-              onClick={() => navigate('/observation-diary')}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white text-lg font-bold px-10 py-7 rounded-xl shadow-lg shadow-blue-500/25"
+              onClick={() => navigate('/auth?mode=signup')}
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-lg font-bold px-10 py-7 rounded-xl shadow-lg shadow-amber-500/25"
             >
               <Sparkles className="w-5 h-5 mr-2" />
-              무료로 시작하기
+              무료 회원가입
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             
             <Button 
               size="lg"
-              onClick={() => navigate('/expert-hiring')}
+              onClick={() => navigate('/premium-assessment')}
               variant="outline"
               className="bg-white/5 border-white/10 text-white text-lg font-medium px-8 py-7 rounded-xl hover:bg-white/10"
             >
-              전문가 상담
+              먼저 검사해보기
             </Button>
           </div>
 
-          {/* Trust */}
-          <p className="text-white/40 text-xs pt-4">
-            ✓ 회원가입 없이 즉시 시작 · ✓ 신용카드 불필요 · ✓ 언제든 무료
-          </p>
+          {/* Trust - 가입 혜택 강조 */}
+          <div className="pt-4 space-y-2">
+            <p className="text-white/40 text-xs">
+              ✓ 30초 가입 · ✓ 신용카드 불필요 · ✓ 영구 무료
+            </p>
+            <p className="text-amber-400/80 text-sm font-medium">
+              🎁 지금 가입하면 프리미엄 분석 1회 무료!
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>

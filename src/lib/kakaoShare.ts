@@ -29,11 +29,15 @@ export const isKakaoInitialized = (): boolean => {
  * 카카오톡 피드 공유
  */
 export const shareToKakao = (options: KakaoShareOptions): boolean => {
+  // 현재 경로를 aihpro.com 도메인으로 변환
+  const currentPath = window.location.pathname + window.location.search;
+  const defaultUrl = `${BASE_URL}${currentPath}`;
+  
   const {
     title,
     description,
     imageUrl = DEFAULT_IMAGE,
-    url = window.location.href,
+    url = defaultUrl,
     buttonText = '나도 해보기',
     referralCode,
   } = options;

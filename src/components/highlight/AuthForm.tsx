@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, Lock, User as UserIcon, Gift, Phone } from 'lucide-react';
+import { Loader2, Mail, Lock, User as UserIcon, Gift, Phone, ArrowLeft } from 'lucide-react';
 import type { User, Session } from '@supabase/supabase-js';
 import { OnboardingOverlay } from '@/components/ui/onboarding-overlay';
 import { SocialLoginButtons } from '@/components/social/SocialLoginButtons';
@@ -449,6 +449,19 @@ export const AuthForm = () => {
         </div>
 
         <div className="w-full max-w-md mx-auto relative z-10">
+          {/* 뒤로가기 버튼 */}
+          <div className="mb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/')}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              홈으로
+            </Button>
+          </div>
+
           {/* 로고 헤더 */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow shadow-lg shadow-primary/25 mb-4">

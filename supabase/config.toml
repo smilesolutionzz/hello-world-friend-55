@@ -376,3 +376,9 @@ verify_jwt = true
 
 [functions.send-share-email]
 verify_jwt = true
+
+[functions.generate-institution-report]
+verify_jwt = true
+
+[functions.generate-voucher-report]
+verify_jwt = true

@@ -9,22 +9,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useInstitutionReport } from '@/hooks/useInstitutionReport';
+import ReportPreviewModal from './reports/ReportPreviewModal';
 import { 
   FileText,
   Download,
   Calendar,
-  User,
   Clock,
   CheckCircle,
-  AlertTriangle,
   Zap,
-  Filter,
-  Search,
-  Plus,
   Eye,
-  Copy
+  Copy,
+  Printer,
+  FileDown
 } from 'lucide-react';
 
 interface VoucherType {
@@ -124,7 +122,9 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState<GeneratedReport | null>(null);
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const { toast } = useToast();
+  const { downloadReportAsPDF } = useInstitutionReport();
 
   const [reportForm, setReportForm] = useState({
     voucher_type: '',
@@ -366,7 +366,7 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
 
   const copyReportContent = async (report: GeneratedReport) => {
     try {
-      const content = generateReportText(report);
+      const content = report.content || generateReportText(report);
       await navigator.clipboard.writeText(content);
       toast({
         title: "복사 완료",
@@ -379,6 +379,27 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
         variant: "destructive",
       });
     }
+  };
+
+  const handlePDFDownload = async (report: GeneratedReport) => {
+    const htmlContent = report.content || `<div style="padding: 20px; font-family: 'Noto Sans KR', sans-serif;">
+      <h1 style="color: #1e40af; border-bottom: 2px solid #1e40af; padding-bottom: 10px;">${report.voucher_type} 치료일지</h1>
+      <div style="margin: 20px 0;">
+        <p><strong>기간:</strong> ${report.period_start} ~ ${report.period_end}</p>
+        <p><strong>세션 수:</strong> ${report.total_sessions}회</p>
+        <p><strong>생성일:</strong> ${report.generated_at}</p>
+      </div>
+      <div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 20px;">
+        <h3>세션 기록</h3>
+        <pre style="white-space: pre-wrap;">${generateReportText(report)}</pre>
+      </div>
+    </div>`;
+
+    await downloadReportAsPDF(htmlContent, {
+      filename: `${report.voucher_type}_일지_${report.period_start}_${report.period_end}`,
+      title: `${report.voucher_type} 치료일지`,
+      reportType: 'voucher'
+    });
   };
 
   const generateReportText = (report: GeneratedReport) => {
@@ -645,52 +666,26 @@ ${report.ai_response?.metadata?.sections?.map((section: string) => `• ${sectio
                     </div>
 
                     <div className="flex gap-2 self-start md:self-center">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setSelectedReport(report)}
-                            className="bg-white hover:bg-gray-50"
-                          >
-                            <Eye className="w-4 h-4 mr-2" />
-                            상세보기
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                          <DialogHeader>
-                            <DialogTitle>{report.voucher_type} 보고서</DialogTitle>
-                            <DialogDescription>
-                              {report.period_start} ~ {report.period_end}
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4">
-                            <div className="flex gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => copyReportContent(report)}
-                              >
-                                <Copy className="w-4 h-4 mr-2" />
-                                복사
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => downloadReport(report.id)}
-                              >
-                                <Download className="w-4 h-4 mr-2" />
-                                텍스트 다운로드
-                              </Button>
-                            </div>
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                              <pre className="whitespace-pre-wrap text-sm">
-                                {generateReportText(report)}
-                              </pre>
-                            </div>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedReport(report);
+                          setPreviewModalOpen(true);
+                        }}
+                        className="bg-white hover:bg-gray-50"
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        상세보기
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePDFDownload(report)}
+                      >
+                        <FileDown className="w-4 h-4 mr-2" />
+                        PDF
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -759,6 +754,29 @@ ${report.ai_response?.metadata?.sections?.map((section: string) => `• ${sectio
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* 리포트 미리보기 모달 */}
+      {selectedReport && (
+        <ReportPreviewModal
+          isOpen={previewModalOpen}
+          onClose={() => {
+            setPreviewModalOpen(false);
+            setSelectedReport(null);
+          }}
+          htmlContent={selectedReport.content || `<div style="padding: 20px;">
+            <h2>${selectedReport.voucher_type} 치료일지</h2>
+            <p>기간: ${selectedReport.period_start} ~ ${selectedReport.period_end}</p>
+            <pre style="white-space: pre-wrap; background: #f5f5f5; padding: 16px; border-radius: 8px;">${generateReportText(selectedReport)}</pre>
+          </div>`}
+          title={`${selectedReport.voucher_type} 보고서`}
+          filename={`${selectedReport.voucher_type}_일지_${selectedReport.period_start}`}
+          metadata={{
+            voucherType: selectedReport.voucher_type,
+            reportType: 'voucher',
+            generatedAt: selectedReport.generated_at
+          }}
+        />
+      )}
     </div>
   );
 }

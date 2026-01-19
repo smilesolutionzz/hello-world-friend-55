@@ -359,8 +359,11 @@ const App = () => {
           <Route path="/marketing-ai-assistant" element={<MarketingAIAssistant />} />
           <Route path="/install" element={<InstallGuide />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/terms" element={<TermsOfService />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
+          <Route path="/refund" element={<RefundPolicy />} />
           <Route path="/education-feed" element={<EducationFeed />} />
           <Route path="/referral" element={<Referral />} />
           <Route path="/profile" element={<Profile />} />

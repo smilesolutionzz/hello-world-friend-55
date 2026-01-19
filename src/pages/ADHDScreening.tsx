@@ -187,7 +187,7 @@ export default function ADHDScreening() {
         title="주의력 자가점검 - AIHPRO | 아동 집중력 체크"
         description="주의력, 활동성, 자기조절 능력을 체계적으로 평가하는 자가점검 도구입니다. 전문가 상담 전 참고용으로 활용하세요."
         keywords="주의력검사,집중력체크,아동발달,자가점검,아동심리,AIHPRO"
-        canonicalUrl="https://aihpro.com/adhd-screening"
+        canonicalUrl="https://aihpro.app/adhd-screening"
       />
       <LoginRequiredOverlay>
         <div className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50">

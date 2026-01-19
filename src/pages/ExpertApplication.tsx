@@ -29,7 +29,7 @@ const ExpertApplicationPage = () => {
         <title>전문가 신청 - AIHumanPro | 전문가 모집</title>
         <meta name="description" content="AIHumanPro 전문가로 지원하세요. 심리상담, 발달평가, 언어치료 등 전문 분야에서 활동하며 수익을 창출하세요." />
         <meta name="keywords" content="전문가 신청, 전문가 모집, 심리상담사 모집, 발달전문가 채용" />
-        <link rel="canonical" href="https://aihpro.com/expert-application" />
+        <link rel="canonical" href="https://aihpro.app/expert-application" />
         
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}

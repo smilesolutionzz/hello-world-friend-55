@@ -13,8 +13,8 @@ export interface KakaoShareOptions {
   testType?: string;
 }
 
-const DEFAULT_IMAGE = 'https://aihpro.com/og-image.png';
-const BASE_URL = 'https://aihpro.com';
+const DEFAULT_IMAGE = 'https://aihpro.app/og-image.png';
+const BASE_URL = 'https://aihpro.app';
 
 /**
  * 카카오 SDK 초기화 여부 확인
@@ -29,7 +29,7 @@ export const isKakaoInitialized = (): boolean => {
  * 카카오톡 피드 공유
  */
 export const shareToKakao = (options: KakaoShareOptions): boolean => {
-  // 현재 경로를 aihpro.com 도메인으로 변환
+  // 현재 경로를 aihpro.app 도메인으로 변환
   const currentPath = window.location.pathname + window.location.search;
   const defaultUrl = `${BASE_URL}${currentPath}`;
   

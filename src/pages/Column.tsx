@@ -1180,18 +1180,18 @@ const Column = () => {
         keywords="이수석,이수석칼럼,정신건강전문가,AI심리상담,발달심리,ADHD,우울증,스트레스,심리분석,전문가상담,AIHumanPro,AIHPRO"
         ogType="article"
         author="이수석"
-        canonicalUrl="https://aihpro.com/column"
+        canonicalUrl="https://aihpro.app/column"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "Blog",
           "name": "이수석칼럼",
           "description": "이수석 대표의 정신건강, AI심리상담, 발달심리 전문 칼럼",
-          "url": "https://aihpro.com/column",
+          "url": "https://aihpro.app/column",
           "author": {
             "@type": "Person",
             "name": "이수석",
             "jobTitle": "AIHumanPro 대표",
-            "url": "https://aihpro.com/column"
+            "url": "https://aihpro.app/column"
           },
           "publisher": {
             "@type": "Organization",

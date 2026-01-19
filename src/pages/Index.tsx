@@ -137,7 +137,7 @@ const Index = () => {
         title="AIHPRO | AI 기반 통합 케어 플랫폼 - 전생애 통합 건강관리 서비스"
         description="3분 만에 완성하는 AI 심리검사. ADHD, 우울증, 스트레스 검사부터 전문가 상담까지. 검증된 전문가와 함께하는 전생애 통합 케어 서비스."
         keywords="AIHPRO,AI심리검사,ADHD검사,우울증테스트,스트레스검사,심리상담,발달평가,온라인상담,정신건강,아동발달,심리분석"
-        canonicalUrl="https://aihpro.com"
+        canonicalUrl="https://aihpro.app"
         structuredData={structuredData}
       />
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>

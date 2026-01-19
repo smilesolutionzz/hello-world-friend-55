@@ -146,7 +146,7 @@ const PrivacyPolicy = () => {
                       <p>회사는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한 이용자의 불만처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.</p>
                       <ul className="list-disc pl-6 space-y-1">
                         <li><strong>개인정보 보호책임자:</strong> 이수석</li>
-                        <li><strong>연락처:</strong> privacy@aihpro.com, 1234-5678</li>
+                        <li><strong>연락처:</strong> privacy@aihpro.app, 1234-5678</li>
                       </ul>
                       <p>이용자는 회사의 서비스를 이용하면서 발생한 모든 개인정보 보호 관련 문의, 불만처리, 피해구제 등에 관한 사항을 개인정보 보호책임자에게 문의할 수 있습니다. 회사는 이용자의 문의에 대해 지체 없이 답변 및 처리할 것입니다.</p>
                     </div>

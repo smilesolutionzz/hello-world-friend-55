@@ -119,7 +119,7 @@ const ResultEmailShare: React.FC<ResultEmailShareProps> = ({
         content: {
           title: title,
           description: content.summary?.substring(0, 100) || '검사 결과를 확인해보세요!',
-          imageUrl: 'https://aihpro.com/og-image.png',
+          imageUrl: 'https://aihpro.app/og-image.png',
           link: {
             mobileWebUrl: shareUrl || window.location.href,
             webUrl: shareUrl || window.location.href,

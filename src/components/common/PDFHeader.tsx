@@ -22,7 +22,7 @@ export const PDFHeader: React.FC<PDFHeaderProps> = ({ testName }) => {
         <div className="text-right">
           <div className="flex items-center gap-2 justify-end mb-1">
             <Globe className="w-5 h-5 text-primary" />
-            <span className="text-lg font-bold text-primary">aihpro.com</span>
+            <span className="text-lg font-bold text-primary">aihpro.app</span>
           </div>
           <p className="text-xs text-muted-foreground">AI 심리 분석 전문 플랫폼</p>
         </div>

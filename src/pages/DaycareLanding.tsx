@@ -126,7 +126,7 @@ const DaycareLanding = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              onClick={() => navigate('/pmf-onboarding')}
+              onClick={() => navigate('/assessment')}
               className="text-lg px-8"
             >
               무료 체험 신청
@@ -250,7 +250,7 @@ const DaycareLanding = () => {
               <Button 
                 className="w-full"
                 size="lg"
-                onClick={() => navigate('/pmf-onboarding')}
+                onClick={() => navigate('/assessment')}
               >
                 무료 체험 신청하기
               </Button>
@@ -270,7 +270,7 @@ const DaycareLanding = () => {
           </p>
           <Button 
             size="lg"
-            onClick={() => navigate('/pmf-onboarding')}
+            onClick={() => navigate('/assessment')}
             className="text-lg px-12"
           >
             30일 무료 체험

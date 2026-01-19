@@ -149,7 +149,7 @@ import IEPView from "./pages/IEPView";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdvancedAdhdTest from "./pages/AdvancedAdhdTest";
 import InstitutionAdmin from "./pages/InstitutionAdmin";
-import PMFOnboarding from "./pages/PMFOnboarding";
+
 import PMFDashboard from "./pages/PMFDashboard";
 import KPIDashboard from "./pages/KPIDashboard";
 import PlatformManual from "./pages/PlatformManual";
@@ -218,7 +218,6 @@ const App = () => {
           <Route path="/development-center" element={<DevelopmentCenterLanding />} />
           <Route path="/daycare" element={<DaycareLanding />} />
           
-          <Route path="/pmf-onboarding" element={<PMFOnboarding />} />
           <Route path="/pmf-dashboard" element={<PMFDashboard />} />
           <Route path="/design-showcase" element={<EnhancedDesignShowcase />} />
           <Route path="/auth" element={<HighlightAuth />} />

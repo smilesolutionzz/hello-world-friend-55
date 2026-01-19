@@ -178,137 +178,21 @@ ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
     const analysisResult = parseAIResponse(aiResponse, inputText);
     logStep("Analysis parsed", analysisResult);
 
-    // Generate multiple report images with Gemini AI
+    // Generate photorealistic report images with Nano Banana model
     const reportImages: string[] = [];
     
     if (lovableApiKey) {
       try {
-        logStep("Starting multiple report images generation");
+        logStep("Starting photorealistic report images generation (2 images)");
         
-        // 3가지 다른 테마의 고품질 이미지 생성
-        const imagePrompts = [
-          {
-            name: 'cover',
-            prompt: `Create a premium, ultra-detailed professional psychological analysis report cover image in modern Korean healthcare design style.
-
-PRIMARY THEME: ${analysisResult.type} - ${concernLabel}
-EMOTIONAL TONE: ${analysisResult.severity === '높음' ? 'Warm, deeply caring, supportive and comforting' : analysisResult.severity === '중간' ? 'Balanced, hopeful, gentle and reassuring' : 'Positive, encouraging, bright and uplifting'}
-
-VISUAL STYLE:
-- Ultra-modern Korean healthcare aesthetic
-- Sophisticated minimalist design with depth
-- Premium professional quality with warmth
-- Clean, elegant, approachable
-- Maximum detail and clarity
-
-COLOR PALETTE:
-- Primary: Sophisticated ${analysisResult.severity === '높음' ? 'coral (#FF6B6B), warm peach (#FFD93D), soft rose gold' : analysisResult.severity === '중간' ? 'teal (#06BCC1), mint (#00D9FF), seafoam green' : 'sky blue (#5E8FFF), lavender (#B794F6), light periwinkle'}
-- Accents: Subtle metallic highlights, smooth gradients
-- Background: Clean white with subtle textured overlay
-
-DESIGN ELEMENTS:
-- Elegant Korean-inspired geometric patterns
-- Sophisticated gradient overlays with depth
-- Abstract symbolic representation of ${concernLabel}
-- Visual metaphor for healing journey and growth
-- Premium typography space (text-free)
-- Professional report aesthetic
-
-QUALITY REQUIREMENTS:
-- 4K ultra high resolution
-- Perfect composition and balance
-- Sharp, crisp details throughout
-- Professional print-ready quality
-- Evokes immediate trust, hope, and competence`
-          },
-          {
-            name: 'emotion',
-            prompt: `Design a premium emotional wellness illustration representing ${concernLabel} in sophisticated therapeutic art style.
-
-CONTEXT: ${inputText.substring(0, 150)}
-
-ARTISTIC STYLE:
-- Premium digital watercolor with crisp details
-- Korean emotional design aesthetic elevated
-- Therapeutic art meets contemporary illustration
-- Ultra-detailed, museum-quality finish
-
-EMOTIONAL MOOD:
-- Deeply empathetic and understanding
-- Healing-focused with professional warmth
-- Gentle strength and resilience
-- Hope and transformation
-
-VISUAL COMPOSITION:
-- Abstract yet meaningful representation of emotions
-- Journey from struggle to healing depicted visually
-- Supportive, nurturing atmosphere
-- Layered symbolic elements with depth
-- Sophisticated use of negative space
-
-COLOR SCHEME:
-- Rich ${analysisResult.severity === '높음' ? 'warm sunset palette: coral, gold, warm amber, soft pink' : analysisResult.severity === '중간' ? 'ocean breeze palette: teal, turquoise, seafoam, soft blue' : 'spring garden palette: lavender, mint, soft yellow, light pink'}
-- Harmonious gradients with depth
-- Subtle texture overlays
-- Professional color harmony
-
-QUALITY & DETAIL:
-- Ultra high resolution 4K
-- Every element sharply defined
-- Professional psychological report standard
-- Print-ready premium quality
-- Captures subtle emotional nuances`
-          },
-          {
-            name: 'growth',
-            prompt: `Create a premium personal growth and development visualization for ${targetLabel} with sophisticated infographic-inspired design.
-
-THEME: ${concernLabel} - Clear path to improvement and wellness
-
-DESIGN APPROACH:
-- Modern Korean infographic aesthetic
-- Inspirational yet deeply professional
-- Data visualization meets emotional design
-- Ultra-detailed, premium finish
-
-VISUAL CONCEPT:
-- Clear growth trajectory with symbolic elements
-- Upward movement and positive transformation
-- Progress milestones elegantly visualized
-- Before/after journey subtly implied
-- Empowering visual narrative
-
-COLOR DYNAMICS:
-- Premium gradient: ${analysisResult.severity === '높음' ? 'Deep coral (#FF5E5E) flowing to bright gold (#FFD700)' : analysisResult.severity === '중간' ? 'Rich teal (#00B8B8) transitioning to emerald (#00D084)' : 'Soft lavender (#B794F6) evolving to bright yellow (#FFE66D)'}
-- Smooth, sophisticated color transitions
-- Metallic accent highlights
-- Clean, modern palette
-
-DESIGN ELEMENTS:
-- Abstract geometric shapes suggesting progress
-- Korean minimalist aesthetic with precision
-- Hopeful, forward-moving composition
-- Symbolic imagery of growth and change
-- Professional chart/graph inspired elements
-- Clean, text-free design
-
-PREMIUM QUALITY:
-- Ultra high resolution 4K
-- Crisp, sharp vector-quality details
-- Professional report cover standard
-- Print-ready premium finish
-- Inspirational yet scientifically credible`
-          }
-        ];
-        
-        // 실사 이미지 2장을 위한 Nano Banana 프롬프트 추가
+        // 실사 이미지 2장을 위한 Nano Banana 프롬프트
         const realisticImagePrompts = [
           {
             name: 'realistic_scene_1',
             prompt: `Create a photorealistic, emotionally touching image depicting the following real-life concern:
 
 CONTEXT: "${inputText.substring(0, 200)}"
-THEME: ${concernLabel} related to ${targetLabel}
+THEME: ${analysisResult.type} related to ${targetLabels[target] || '대상자'}
 
 REQUIREMENTS:
 - Ultra-realistic photography style, like a professional family/lifestyle photograph
@@ -329,12 +213,12 @@ Ultra high resolution, 4K quality.`
             prompt: `Create a photorealistic image showing a positive, hopeful moment related to overcoming this concern:
 
 CONTEXT: "${inputText.substring(0, 200)}"
-THEME: Healing and progress for ${concernLabel}
+THEME: Healing and progress for ${analysisResult.type}
 
 REQUIREMENTS:
 - Ultra-realistic photography style, professional quality
 - Show a moment of connection, understanding, or breakthrough
-- ${targetLabel.includes('아동') || targetLabel.includes('청소년') ? 'Parent-child bonding or supportive moment' : 'Personal growth or supportive relationship'}
+- ${target === 'child' || target === 'teen' ? 'Parent-child bonding or supportive moment' : 'Personal growth or supportive relationship'}
 - Natural, authentic emotional expression
 - Soft, warm lighting suggesting hope
 - Korean setting/people if contextually appropriate
@@ -346,38 +230,6 @@ DO NOT include any text, watermarks, or logos.
 Ultra high resolution, 4K quality, emotionally impactful.`
           }
         ];
-        
-        // 병렬로 고품질 이미지 생성 (최신 Gemini 3 Pro Image 모델 사용)
-        const imagePromises = imagePrompts.map(async ({ prompt }) => {
-          try {
-            logStep("Generating high-quality image with Gemini 3 Pro Image", { promptLength: prompt.length });
-            const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${lovableApiKey}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-            model: 'google/gemini-3-pro-image-preview',
-                messages: [{ 
-                  role: 'user', 
-                  content: prompt
-                }],
-                modalities: ['image', 'text']
-              })
-            });
-
-            if (imageResponse.ok) {
-              const imageData = await imageResponse.json();
-              const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-              return imageUrl || null;
-            }
-            return null;
-          } catch (err) {
-            logStep("Individual image generation error", { error: String(err) });
-            return null;
-          }
-        });
         
         // Nano Banana 모델로 실사 이미지 2장 생성 (병렬)
         const realisticImagePromises = realisticImagePrompts.map(async ({ name, prompt }) => {
@@ -413,18 +265,11 @@ Ultra high resolution, 4K quality, emotionally impactful.`
           }
         });
         
-        // 모든 이미지 병렬 생성
-        const [generatedImages, realisticImages] = await Promise.all([
-          Promise.all(imagePromises),
-          Promise.all(realisticImagePromises)
-        ]);
-        
-        reportImages.push(...generatedImages.filter(img => img !== null));
+        // 실사 이미지 2장 생성
+        const realisticImages = await Promise.all(realisticImagePromises);
         reportImages.push(...realisticImages.filter(img => img !== null));
-        logStep("All report images generated", { 
-          illustrationCount: generatedImages.filter(img => img !== null).length,
-          realisticCount: realisticImages.filter(img => img !== null).length,
-          totalCount: reportImages.length 
+        logStep("All photorealistic report images generated", { 
+          realisticCount: reportImages.length 
         });
         
       } catch (imageError) {

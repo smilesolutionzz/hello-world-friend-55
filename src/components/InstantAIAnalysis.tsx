@@ -489,7 +489,7 @@ const InstantAIAnalysis = () => {
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
                     <p className="text-white/80 text-xs">
-                      {index < 3 ? '감정 일러스트' : '실사 이미지'} {(index % 3) + 1}
+                      실사 이미지 {index + 1}
                     </p>
                   </div>
                 </div>

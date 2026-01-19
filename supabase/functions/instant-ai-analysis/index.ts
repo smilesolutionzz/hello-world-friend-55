@@ -301,6 +301,52 @@ PREMIUM QUALITY:
           }
         ];
         
+        // 실사 이미지 2장을 위한 Nano Banana 프롬프트 추가
+        const realisticImagePrompts = [
+          {
+            name: 'realistic_scene_1',
+            prompt: `Create a photorealistic, emotionally touching image depicting the following real-life concern:
+
+CONTEXT: "${inputText.substring(0, 200)}"
+THEME: ${concernLabel} related to ${targetLabel}
+
+REQUIREMENTS:
+- Ultra-realistic photography style, like a professional family/lifestyle photograph
+- Natural lighting, authentic emotions
+- Korean family setting if applicable
+- Show the emotional weight of the situation realistically
+- Capture genuine human connection and vulnerability
+- Professional DSLR quality, shallow depth of field
+- Warm, empathetic atmosphere despite the difficulty
+- ${analysisResult.severity === '높음' ? 'Show visible signs of struggle but also resilience' : analysisResult.severity === '중간' ? 'Balanced emotional portrayal' : 'Hopeful, tender moment'}
+
+STYLE: Documentary photography, lifestyle photography, editorial quality
+DO NOT include any text, watermarks, or logos.
+Ultra high resolution, 4K quality.`
+          },
+          {
+            name: 'realistic_scene_2',
+            prompt: `Create a photorealistic image showing a positive, hopeful moment related to overcoming this concern:
+
+CONTEXT: "${inputText.substring(0, 200)}"
+THEME: Healing and progress for ${concernLabel}
+
+REQUIREMENTS:
+- Ultra-realistic photography style, professional quality
+- Show a moment of connection, understanding, or breakthrough
+- ${targetLabel.includes('아동') || targetLabel.includes('청소년') ? 'Parent-child bonding or supportive moment' : 'Personal growth or supportive relationship'}
+- Natural, authentic emotional expression
+- Soft, warm lighting suggesting hope
+- Korean setting/people if contextually appropriate
+- Professional lifestyle photography aesthetic
+- Captures the essence of healing and moving forward
+
+STYLE: Portrait photography, family photography, therapeutic imagery
+DO NOT include any text, watermarks, or logos.
+Ultra high resolution, 4K quality, emotionally impactful.`
+          }
+        ];
+        
         // 병렬로 고품질 이미지 생성 (최신 Gemini 3 Pro Image 모델 사용)
         const imagePromises = imagePrompts.map(async ({ prompt }) => {
           try {
@@ -333,9 +379,53 @@ PREMIUM QUALITY:
           }
         });
         
-        const generatedImages = await Promise.all(imagePromises);
+        // Nano Banana 모델로 실사 이미지 2장 생성 (병렬)
+        const realisticImagePromises = realisticImagePrompts.map(async ({ name, prompt }) => {
+          try {
+            logStep(`Generating realistic image with Nano Banana: ${name}`, { promptLength: prompt.length });
+            const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${lovableApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'google/gemini-2.5-flash-image-preview',
+                messages: [{ 
+                  role: 'user', 
+                  content: prompt
+                }],
+                modalities: ['image', 'text']
+              })
+            });
+
+            if (imageResponse.ok) {
+              const imageData = await imageResponse.json();
+              const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+              logStep(`Realistic image generated: ${name}`, { hasImage: !!imageUrl });
+              return imageUrl || null;
+            }
+            logStep(`Realistic image generation failed: ${name}`, { status: imageResponse.status });
+            return null;
+          } catch (err) {
+            logStep(`Realistic image error: ${name}`, { error: String(err) });
+            return null;
+          }
+        });
+        
+        // 모든 이미지 병렬 생성
+        const [generatedImages, realisticImages] = await Promise.all([
+          Promise.all(imagePromises),
+          Promise.all(realisticImagePromises)
+        ]);
+        
         reportImages.push(...generatedImages.filter(img => img !== null));
-        logStep("Report images generated", { count: reportImages.length });
+        reportImages.push(...realisticImages.filter(img => img !== null));
+        logStep("All report images generated", { 
+          illustrationCount: generatedImages.filter(img => img !== null).length,
+          realisticCount: realisticImages.filter(img => img !== null).length,
+          totalCount: reportImages.length 
+        });
         
       } catch (imageError) {
         logStep("Error in batch image generation", { error: String(imageError) });

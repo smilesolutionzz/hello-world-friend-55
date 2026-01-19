@@ -11,6 +11,7 @@ import { Loader2, Mail, Lock, User as UserIcon, Gift, Phone, ArrowLeft } from 'l
 import type { User, Session } from '@supabase/supabase-js';
 import { OnboardingOverlay } from '@/components/ui/onboarding-overlay';
 import { SocialLoginButtons } from '@/components/social/SocialLoginButtons';
+import logo from '@/assets/logo.png';
 
 export const AuthForm = () => {
   const [loading, setLoading] = useState(false);
@@ -464,9 +465,11 @@ export const AuthForm = () => {
 
           {/* 로고 헤더 */}
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow shadow-lg shadow-primary/25 mb-4">
-              <span className="text-2xl font-black text-white">AI</span>
-            </div>
+            <img 
+              src={logo} 
+              alt="AIHPRO" 
+              className="w-20 h-20 mx-auto mb-4 object-contain"
+            />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
               AIHPRO
             </h1>

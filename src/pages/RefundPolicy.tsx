@@ -199,7 +199,7 @@ const RefundPolicy = () => {
 
           <div className="mt-6 text-center text-sm text-muted-foreground">
             <p>환불 관련 문의사항이 있으시면 고객센터로 연락주세요.</p>
-            <p className="mt-2">이메일: refund@aihpro.com | 전화: 1234-5678 (평일 09:00-18:00)</p>
+            <p className="mt-2">이메일: refund@aihpro.app | 전화: 1234-5678 (평일 09:00-18:00)</p>
           </div>
         </div>
       </div>

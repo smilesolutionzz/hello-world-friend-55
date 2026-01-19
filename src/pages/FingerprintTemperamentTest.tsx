@@ -181,7 +181,7 @@ export default function FingerprintTemperamentTest() {
         title="지문 인지기질검사 - AIHPRO | 나의 두뇌 유형 분석"
         description="지문 스캔으로 알아보는 나의 인지기질 유형. 알파, 베타, 감마, 델타, 오메가, 시그마 6가지 두뇌 패턴 중 나의 유형을 분석해보세요."
         keywords="지문검사,인지기질검사,두뇌유형,성격검사,심리테스트,AI분석,AIHPRO"
-        canonicalUrl="https://aihpro.com/fingerprint-temperament"
+        canonicalUrl="https://aihpro.app/fingerprint-temperament"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "WebApplication",

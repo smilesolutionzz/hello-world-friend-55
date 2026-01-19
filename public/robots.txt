@@ -37,4 +37,4 @@ User-agent: Claude-Web
 Allow: /
 
 # 사이트맵 위치
-Sitemap: https://aihpro.com/sitemap.xml
+Sitemap: https://aihpro.app/sitemap.xml

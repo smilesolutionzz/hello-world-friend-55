@@ -147,8 +147,8 @@ export const ReferralSystem = () => {
 
   const getReferralLink = () => {
     if (!profile || !profile.referral_code) return '';
-    // 커스텀 도메인 사용 (aihpro.com)
-    const baseUrl = 'https://aihpro.com';
+    // 커스텀 도메인 사용 (aihpro.app)
+    const baseUrl = 'https://aihpro.app';
     return `${baseUrl}/auth?ref=${profile.referral_code}`;
   };
 

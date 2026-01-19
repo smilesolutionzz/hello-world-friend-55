@@ -21,7 +21,7 @@ const Expert = () => {
         <title>전문가 목록 - AIHumanPro | 검증된 전문가 상담</title>
         <meta name="description" content="검증된 전문가들이 제공하는 심리상담, 발달평가, 언어치료 서비스. 경력과 전문성을 갖춘 전문가와 함께하세요." />
         <meta name="keywords" content="전문가 상담, 심리상담사, 발달전문가, 언어치료사, 온라인 상담" />
-        <link rel="canonical" href="https://aihpro.com/expert" />
+        <link rel="canonical" href="https://aihpro.app/expert" />
         
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}

@@ -68,7 +68,7 @@ export default function GrowthDevelopmentReport() {
         title="성장발달 리포트 - AIHPRO | 아동 발달 종합 분석"
         description="아이의 정서, 인지, 사회성 발달을 종합적으로 분석하고 월간/분기별 성장 추이를 확인하세요."
         keywords="성장발달,아동발달,발달검사,정서분석,인지발달,성장리포트,AIHPRO"
-        canonicalUrl="https://aihpro.com/growth-report"
+        canonicalUrl="https://aihpro.app/growth-report"
       />
       <LoginRequiredOverlay>
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">

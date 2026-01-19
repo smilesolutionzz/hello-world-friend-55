@@ -180,7 +180,7 @@ export default function DrawingDiaryHTP() {
         title="그림 마음일기 - AIHPRO | 아동 감정 분석"
         description="집, 나무, 사람 그림을 통해 아동의 정서상태와 심리를 AI가 분석합니다. 그림으로 자녀의 마음을 이해하세요."
         keywords="그림일기,마음일기,아동심리,정서분석,심리테스트,AI분석,AIHPRO"
-        canonicalUrl="https://aihpro.com/drawing-diary-htp"
+        canonicalUrl="https://aihpro.app/drawing-diary-htp"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "WebApplication",

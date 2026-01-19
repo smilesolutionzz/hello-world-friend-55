@@ -46,7 +46,7 @@ serve(async (req) => {
     }
 
     const checkoutMode = mode || "subscription";
-    const origin = req.headers.get("origin") || "https://aihpro.com";
+    const origin = req.headers.get("origin") || "https://aihpro.app";
 
     // Create checkout session
     const session = await stripe.checkout.sessions.create({

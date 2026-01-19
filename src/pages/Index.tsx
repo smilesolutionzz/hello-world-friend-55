@@ -25,7 +25,7 @@ import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
 import MainPromoSection from '@/components/promotion/MainPromoSection';
 import ColumnHookBanner from '@/components/landing/ColumnHookBanner';
 import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
-import ExitIntentPopup from '@/components/conversion/ExitIntentPopup';
+
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -216,9 +216,6 @@ const Index = () => {
             isOpen={showOnboarding} 
             onClose={handleOnboardingClose} 
           />
-          
-          {/* 이탈 방지 팝업 */}
-          <ExitIntentPopup />
         </div>
       </ErrorBoundary>
     </>

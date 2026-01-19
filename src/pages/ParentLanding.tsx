@@ -119,7 +119,7 @@ const ParentLanding = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              onClick={() => navigate('/pmf-onboarding')}
+              onClick={() => navigate('/assessment')}
               className="text-lg px-8"
             >
               14일 무료 체험 시작
@@ -230,7 +230,7 @@ const ParentLanding = () => {
                   <Button 
                     className="w-full"
                     variant={plan.popular ? 'default' : 'outline'}
-                    onClick={() => navigate('/pmf-onboarding')}
+                    onClick={() => navigate('/assessment')}
                   >
                     {plan.cta}
                   </Button>
@@ -252,7 +252,7 @@ const ParentLanding = () => {
           </p>
           <Button 
             size="lg"
-            onClick={() => navigate('/pmf-onboarding')}
+            onClick={() => navigate('/assessment')}
             className="text-lg px-12"
           >
             무료로 시작하기

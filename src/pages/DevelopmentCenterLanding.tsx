@@ -127,7 +127,7 @@ const DevelopmentCenterLanding = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              onClick={() => navigate('/pmf-onboarding')}
+              onClick={() => navigate('/assessment')}
               className="text-lg px-8"
             >
               무료 시연 신청
@@ -248,7 +248,7 @@ const DevelopmentCenterLanding = () => {
               <Button 
                 className="w-full"
                 size="lg"
-                onClick={() => navigate('/pmf-onboarding')}
+                onClick={() => navigate('/assessment')}
               >
                 무료 시연 신청하기
               </Button>
@@ -268,7 +268,7 @@ const DevelopmentCenterLanding = () => {
           </p>
           <Button 
             size="lg"
-            onClick={() => navigate('/pmf-onboarding')}
+            onClick={() => navigate('/assessment')}
             className="text-lg px-12"
           >
             무료 시연 신청

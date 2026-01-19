@@ -105,7 +105,7 @@ const ValueComparisonSection = () => {
           {/* CTA */}
           <div className="mt-8 text-center">
             <Button 
-              onClick={() => navigate('/pmf-onboarding')}
+              onClick={() => navigate('/assessment')}
               className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-bold px-8 py-6 rounded-xl shadow-lg shadow-emerald-500/25"
             >
               <Sparkles className="w-5 h-5 mr-2" />

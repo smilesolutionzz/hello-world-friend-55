@@ -283,7 +283,7 @@ const InstantAIAnalysis = () => {
 
   const handleStartFullAnalysis = () => {
     localStorage.setItem('instant_analysis_input', inputText);
-    navigate('/pmf-onboarding');
+    navigate('/assessment');
   };
 
   if (showResult && analysisResult) {

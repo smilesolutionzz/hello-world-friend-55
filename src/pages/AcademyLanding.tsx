@@ -121,7 +121,7 @@ const AcademyLanding = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              onClick={() => navigate('/pmf-onboarding')}
+              onClick={() => navigate('/assessment')}
               className="text-lg px-8"
             >
               무료 상담 신청
@@ -244,7 +244,7 @@ const AcademyLanding = () => {
               <Button 
                 className="w-full"
                 size="lg"
-                onClick={() => navigate('/pmf-onboarding')}
+                onClick={() => navigate('/assessment')}
               >
                 무료 상담 신청하기
               </Button>
@@ -264,7 +264,7 @@ const AcademyLanding = () => {
           </p>
           <Button 
             size="lg"
-            onClick={() => navigate('/pmf-onboarding')}
+            onClick={() => navigate('/assessment')}
             className="text-lg px-12"
           >
             무료 상담 신청

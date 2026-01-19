@@ -222,7 +222,8 @@ const InstantAIAnalysis = () => {
           analysis_type: analysis.type || '기타',
           analysis_severity: analysis.severity || '낮음',
           analysis_advice: analysis.detailedAdvice || '',
-          full_analysis: analysis
+          full_analysis: analysis,
+          report_images: reportImages || []
         });
       }
     } catch (error) {
@@ -464,6 +465,35 @@ const InstantAIAnalysis = () => {
                   ))}
                 </ul>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* AI 생성 분석 이미지 갤러리 */}
+        {reportImages && reportImages.length > 0 && (
+          <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/10 p-5">
+            <h4 className="font-bold mb-4 text-white flex items-center gap-2">
+              <span className="text-lg">🖼️</span>
+              AI 분석 리포트 이미지
+            </h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {reportImages.map((imageUrl, index) => (
+                <div key={index} className="relative group rounded-xl overflow-hidden border border-white/10 bg-slate-800/50 hover:border-amber-500/50 transition-all">
+                  <img 
+                    src={imageUrl} 
+                    alt={`분석 리포트 ${index + 1}`} 
+                    className="w-full h-auto object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = '/placeholder.svg';
+                    }}
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                    <p className="text-white/80 text-xs">
+                      {index < 3 ? '감정 일러스트' : '실사 이미지'} {(index % 3) + 1}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

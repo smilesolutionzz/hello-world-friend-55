@@ -11143,6 +11143,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      assign_institution_admin: {
+        Args: { institution_id: string; target_user_id: string }
+        Returns: boolean
+      }
       calculate_daily_reward_points: {
         Args: { p_entry_date: string; p_user_id: string }
         Returns: number
@@ -11361,6 +11365,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_user_institution_id: { Args: { _user_id: string }; Returns: string }
       get_user_token_usage: {
         Args: { p_user_id?: string }
         Returns: {
@@ -11383,6 +11388,7 @@ export type Database = {
         Returns: undefined
       }
       is_facility_admin: { Args: { facility_uuid: string }; Returns: boolean }
+      is_institution_admin: { Args: { _user_id: string }; Returns: boolean }
       is_session_participant: {
         Args: { session_uuid: string }
         Returns: boolean

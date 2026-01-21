@@ -139,7 +139,7 @@ const SubscriptionValueSection = () => {
               </div>
 
               <Button 
-                onClick={() => navigate('/token-purchase?type=subscription&id=premium_pass')}
+                onClick={() => navigate('/token-subscription')}
                 variant="outline"
                 className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground font-bold py-5"
                 size="lg"
@@ -199,7 +199,7 @@ const SubscriptionValueSection = () => {
                 </div>
 
                 <Button 
-                  onClick={() => navigate('/token-purchase?type=subscription&id=premium_pass')}
+                  onClick={() => navigate('/token-subscription')}
                   className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-6"
                   size="lg"
                 >

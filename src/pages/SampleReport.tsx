@@ -63,7 +63,7 @@ const SampleReport = () => {
                   샘플의 일부만 미리보기로 제공됩니다. 전체 리포트를 확인하려면 프리미엄 구독이 필요합니다.
                 </p>
                 <Button 
-                  onClick={() => navigate('/token-purchase?type=subscription&id=premium_pass')}
+                  onClick={() => navigate('/token-subscription')}
                   className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
                 >
                   <Crown className="w-4 h-4 mr-2" />

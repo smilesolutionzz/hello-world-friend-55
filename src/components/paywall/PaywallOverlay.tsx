@@ -47,7 +47,7 @@ export const PaywallOverlay = ({
   };
 
   const handleSubscribe = () => {
-    navigate('/token-purchase?type=subscription&id=premium_pass');
+    navigate('/token-subscription');
   };
 
   return (

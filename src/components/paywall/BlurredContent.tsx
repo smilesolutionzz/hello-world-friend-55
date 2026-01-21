@@ -75,7 +75,7 @@ export const BlurredContent = ({
               <Button 
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/token-purchase?type=subscription&id=premium_pass')}
+                onClick={() => navigate('/token-subscription')}
                 className="w-full text-yellow-700"
               >
                 <Crown className="w-4 h-4 mr-2" />

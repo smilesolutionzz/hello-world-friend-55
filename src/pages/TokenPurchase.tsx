@@ -534,10 +534,10 @@ const TokenPurchase = () => {
                   <div className="flex items-center justify-center gap-2 mb-4">
                     <Wallet className="w-8 h-8 text-primary" />
                     <span className="text-3xl font-bold text-foreground">
-                      {'displayAmount' in urlProduct ? `${(urlProduct as any).displayAmount.toLocaleString()}원` : `${'tokens' in urlProduct ? (urlProduct as any).tokens : 0} 캐시`}
+                      {'displayAmount' in urlProduct ? `${(urlProduct as any).displayAmount.toLocaleString()}원 충전` : `${urlProduct.price.toLocaleString()}원`}
                     </span>
-                    {'bonus' in urlProduct && urlProduct.bonus > 0 && (
-                      <Badge className="bg-amber-500 text-white">+{urlProduct.bonus * 100}원 보너스</Badge>
+                    {'displayAmount' in urlProduct && (urlProduct as any).displayAmount > urlProduct.price && (
+                      <Badge className="bg-amber-500 text-white">+{((urlProduct as any).displayAmount - urlProduct.price).toLocaleString()}원 보너스</Badge>
                     )}
                   </div>
                   <p className="text-4xl font-black text-primary mb-2">

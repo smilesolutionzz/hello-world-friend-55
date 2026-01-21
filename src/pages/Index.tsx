@@ -25,6 +25,7 @@ import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
 import MainPromoSection from '@/components/promotion/MainPromoSection';
 import ColumnHookBanner from '@/components/landing/ColumnHookBanner';
 import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
+import MindDiaryHook from '@/components/landing/MindDiaryHook';
 
 
 const structuredData = {
@@ -150,6 +151,11 @@ const Index = () => {
             <main id="main-content" className="w-full">
             {/* 1️⃣ Hero Section - AI 분석 입력창 포함 */}
             <HeroSection />
+            
+            {/* 🔥 마음일기 - 유니콘 킥 (청소년 바이럴 + 부모 수익화) */}
+            <LazyLoad rootMargin="200px">
+              <MindDiaryHook />
+            </LazyLoad>
             
             {/* 🎬 AI 영상 관찰 분석 섹션 */}
             <LazyLoad rootMargin="200px">

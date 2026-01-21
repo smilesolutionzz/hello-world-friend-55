@@ -1,9 +1,9 @@
-// PMF 검증 기간 - 100일 무료 운영
-export const BETA_TEST_END_DATE = new Date('2026-02-17T23:59:59+09:00');
+// 베타 테스트 기간 종료 - 이제 유료 서비스
+export const BETA_TEST_END_DATE = new Date('2025-01-01T00:00:00+09:00');
 
 export const isBetaTestPeriod = (): boolean => {
-  const now = new Date();
-  return now < BETA_TEST_END_DATE; // 2026년 2월 17일까지 무료 (약 100일)
+  // 베타 테스트 기간 종료됨 - 항상 false 반환
+  return false;
 };
 
 export const getBetaTestMessage = (): string => {

@@ -22,12 +22,14 @@ import {
   Send,
   MessageCircle,
   ArrowLeft,
-  CheckCircle
+  CheckCircle,
+  Zap
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { UrgentExpertConnect } from "@/components/crisis/UrgentExpertConnect";
 
 // 이모지 선택
 const MOOD_OPTIONS = [
@@ -78,6 +80,8 @@ const MindDiary = () => {
   const [totalEntries, setTotalEntries] = useState(0);
   const [loading, setLoading] = useState(false);
   const [showCrisisAlert, setShowCrisisAlert] = useState(false);
+  const [showUrgentConnect, setShowUrgentConnect] = useState(false);
+  const [crisisAlertId, setCrisisAlertId] = useState<string | null>(null);
   const [friendCount, setFriendCount] = useState(0);
   const [user, setUser] = useState<any>(null);
 
@@ -146,12 +150,31 @@ const MindDiary = () => {
   };
 
   // Step 1: 기분 선택
-  const handleMoodSelect = (mood: typeof MOOD_OPTIONS[0]) => {
+  const handleMoodSelect = async (mood: typeof MOOD_OPTIONS[0]) => {
     setSelectedMood(mood);
     
     // 위기 감지
     if (mood.value <= 1) {
       setShowCrisisAlert(true);
+      
+      // 위기 알림 생성 (로그인된 경우)
+      if (user) {
+        try {
+          const { data, error } = await supabase.rpc('create_crisis_alert', {
+            p_user_id: user.id,
+            p_alert_type: 'mood_crisis',
+            p_severity_level: mood.value === 0 ? 'critical' : 'high',
+            p_trigger_source: 'mind_diary',
+            p_trigger_data: { mood_value: mood.value, mood_label: mood.label }
+          });
+          
+          if (data && !error) {
+            setCrisisAlertId(data);
+          }
+        } catch (err) {
+          console.error('Crisis alert creation failed:', err);
+        }
+      }
     }
     
     // AI 반응 생성
@@ -496,6 +519,19 @@ const MindDiary = () => {
                       
                       {/* 상담 연결 옵션들 */}
                       <div className="space-y-2 mb-3">
+                        {/* 긴급 전문가 연결 - 핵심 CTA */}
+                        <Button 
+                          size="sm"
+                          onClick={() => {
+                            setShowCrisisAlert(false);
+                            setShowUrgentConnect(true);
+                          }}
+                          className="w-full bg-white text-red-600 hover:bg-white/90 font-bold"
+                        >
+                          <Zap className="w-4 h-4 mr-2" />
+                          지금 바로 전문가 연결하기
+                        </Button>
+                        
                         {/* AI 상담사 연결 */}
                         <Button 
                           size="sm"
@@ -558,6 +594,15 @@ const MindDiary = () => {
             </Button>
           </motion.div>
         )}
+
+        {/* 긴급 전문가 연결 모달 */}
+        <UrgentExpertConnect
+          isOpen={showUrgentConnect}
+          onClose={() => setShowUrgentConnect(false)}
+          userId={user?.id}
+          crisisAlertId={crisisAlertId || undefined}
+          severityLevel={selectedMood?.value === 0 ? 'critical' : selectedMood?.value === 1 ? 'high' : 'medium'}
+        />
       </div>
     </div>
   );

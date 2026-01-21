@@ -98,11 +98,11 @@ const TokenSubscription = () => {
               </div>
               <span className="text-xs font-medium bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">인기</span>
             </div>
-            <h3 className="text-lg font-bold mb-1">AI 분석</h3>
-            <p className="text-sm text-white/80 mb-4">심리검사 · 꿈해석 · 사주</p>
+            <h3 className="text-lg font-bold mb-1">AI 심층분석</h3>
+            <p className="text-sm text-white/80 mb-4">발달검사 · 언어진단 · ADHD</p>
             <div className="pt-3 border-t border-white/20">
-              <div className="text-2xl font-black">₩5,000~</div>
-              <p className="text-xs text-white/70">분석 1회 약 400원</p>
+              <div className="text-2xl font-black">₩3,000~</div>
+              <p className="text-xs text-white/70">전문가급 심층 리포트</p>
             </div>
           </div>
         </div>

@@ -509,7 +509,7 @@ const MindDiary = () => {
                         {/* 카카오톡 실제 상담사 연결 */}
                         <Button 
                           size="sm"
-                          onClick={() => window.open('https://pf.kakao.com/_Mxnxjxjxj/chat', '_blank')}
+                          onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')}
                           className="w-full bg-[#FEE500] hover:bg-[#FEE500]/90 text-[#3C1E1E]"
                         >
                           <MessageSquare className="w-4 h-4 mr-2" />

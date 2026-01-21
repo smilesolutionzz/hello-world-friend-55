@@ -720,7 +720,20 @@ export default function InstitutionAdmin() {
         {/* 콘텐츠 영역 */}
         <div className="p-6">
           {activeMenu === 'dashboard' && renderDashboard()}
+          {activeMenu === 'risk-monitor' && (
+            <StudentRiskMonitor 
+              adminId={institution.user_id!} 
+              institutionType={institution.institution_type} 
+            />
+          )}
           {activeMenu === 'members' && <MemberManagement adminId={institution.user_id!} />}
+          {activeMenu === 'roadmap' && (
+            <DevelopmentRoadmapGenerator 
+              institutionType={institution.institution_type}
+              members={[]} 
+            />
+          )}
+          {activeMenu === 'connections' && <ParentConnectionTracker adminId={institution.user_id!} />}
           {activeMenu === 'inquiries' && renderInquiries()}
           {activeMenu === 'reports' && renderReports()}
           {activeMenu === 'settings' && renderSettings()}

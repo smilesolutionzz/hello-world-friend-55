@@ -350,12 +350,43 @@ const TokenPurchase = () => {
 
       const orderId = `${urlProduct.type}_${urlProduct.id}_${Date.now()}`;
       
+      // 캐시 상품인 경우 토큰 수량 계산 (보너스 포함)
+      let tokenAmount = 0;
+      if (urlProduct.type === 'cash' && 'tokens' in urlProduct) {
+        tokenAmount = urlProduct.tokens; // 이미 보너스 포함된 총 토큰 수
+      }
+      
+      // 결제 내역 미리 저장 (결제 성공 시 토큰 지급을 위해)
+      if (tokenAmount > 0) {
+        const { error: insertError } = await supabase
+          .from('payment_history')
+          .insert({
+            user_id: sessionData.session.user.id,
+            toss_order_id: orderId,
+            amount: urlProduct.price,
+            subscription_type: 'token',
+            status: 'pending',
+            token_amount: tokenAmount
+          });
+        
+        if (insertError) {
+          console.error('결제 내역 저장 오류:', insertError);
+          throw new Error('결제 준비 중 오류가 발생했습니다.');
+        }
+      }
+      
       const tossPayments = await loadTossPayments(tossClientKey);
+      
+      // 상품명에 실제 원화 표시
+      let orderName = urlProduct.name;
+      if (urlProduct.type === 'cash' && 'displayAmount' in urlProduct) {
+        orderName = `캐시 ${urlProduct.displayAmount.toLocaleString()}원 충전`;
+      }
       
       await tossPayments.requestPayment('카드', {
         amount: urlProduct.price,
         orderId,
-        orderName: urlProduct.name,
+        orderName,
         customerEmail: sessionData.session.user.email || '',
         customerName: sessionData.session.user.user_metadata?.full_name || '고객',
         successUrl: `${window.location.origin}/token-payment-success?type=${urlProduct.type}`,
@@ -494,22 +525,29 @@ const TokenPurchase = () => {
               <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-border">
                 <div className="px-6 py-6 bg-gradient-to-r from-blue-500 to-cyan-500 text-center">
                   <Badge className="mb-3 bg-white/20 text-white border-0">캐시 충전</Badge>
-                  <h1 className="text-2xl font-bold text-white">{urlProduct.name}</h1>
+                  <h1 className="text-2xl font-bold text-white">
+                    {'displayAmount' in urlProduct ? `${urlProduct.displayAmount.toLocaleString()}원 충전` : urlProduct.name}
+                  </h1>
                 </div>
 
                 <div className="px-6 py-8 text-center">
                   <div className="flex items-center justify-center gap-2 mb-4">
                     <Wallet className="w-8 h-8 text-primary" />
                     <span className="text-3xl font-bold text-foreground">
-                      {'tokens' in urlProduct && urlProduct.tokens} 캐시
+                      {'displayAmount' in urlProduct ? `${(urlProduct as any).displayAmount.toLocaleString()}원` : `${'tokens' in urlProduct ? (urlProduct as any).tokens : 0} 캐시`}
                     </span>
                     {'bonus' in urlProduct && urlProduct.bonus > 0 && (
-                      <Badge className="bg-amber-500 text-white">+{urlProduct.bonus} 보너스</Badge>
+                      <Badge className="bg-amber-500 text-white">+{urlProduct.bonus * 100}원 보너스</Badge>
                     )}
                   </div>
-                  <p className="text-4xl font-black text-primary mb-6">
+                  <p className="text-4xl font-black text-primary mb-2">
                     ₩{urlProduct.price.toLocaleString()}
                   </p>
+                  {'displayAmount' in urlProduct && urlProduct.displayAmount > urlProduct.price && (
+                    <p className="text-sm text-emerald-600 font-medium mb-6">
+                      {(urlProduct.displayAmount - urlProduct.price).toLocaleString()}원 추가 혜택!
+                    </p>
+                  )}
 
                   <Button
                     onClick={requestUrlProductPayment}

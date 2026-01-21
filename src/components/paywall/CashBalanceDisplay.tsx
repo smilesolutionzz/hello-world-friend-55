@@ -95,7 +95,7 @@ export const CashBalanceDisplay = ({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => navigate('/token-purchase?type=subscription&id=premium_pass')}
+                onClick={() => navigate('/token-subscription')}
                 className="border-yellow-400 text-yellow-700 hover:bg-yellow-50"
               >
                 <Crown className="w-4 h-4 mr-1" />

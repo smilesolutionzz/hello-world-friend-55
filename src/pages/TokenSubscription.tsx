@@ -53,105 +53,158 @@ const TokenSubscription = () => {
   // 메인 선택 화면
   const renderMainSelect = () => (
     <div className="animate-fade-in">
-      {/* Hero Section */}
-      <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 border border-violet-200 dark:border-violet-800 mb-6">
-          <Sparkles className="w-4 h-4 text-violet-500" />
-          <span className="text-sm font-medium text-violet-600 dark:text-violet-400">AI Highlight 프리미엄</span>
+      {/* 현재 보유 캐시 - 상단에 고정 */}
+      <div className="flex justify-center mb-8">
+        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl px-6 py-3 shadow-md">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
+            <Coins className="w-5 h-5 text-white" />
+          </div>
+          <div className="text-left">
+            <div className="text-xs text-amber-600 dark:text-amber-400">현재 보유 캐시</div>
+            <div className="text-xl font-black text-amber-700 dark:text-amber-300">{((tokenBalance?.current_tokens || 0) * 100).toLocaleString()}원</div>
+          </div>
+          <Button 
+            size="sm"
+            className="ml-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-lg"
+            onClick={() => setStep('ai-analysis')}
+          >
+            충전하기
+          </Button>
         </div>
-        <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-slate-900 via-violet-800 to-slate-900 dark:from-white dark:via-violet-300 dark:to-white bg-clip-text text-transparent">
-          무엇을 하고 싶으세요?
+      </div>
+
+      {/* Hero Section */}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl md:text-4xl font-black mb-2 text-slate-900 dark:text-white">
+          지금 바로 시작하세요
         </h1>
-        <p className="text-lg text-muted-foreground max-w-md mx-auto">
-          원하는 서비스를 선택하면 바로 안내해드려요
+        <p className="text-base text-muted-foreground">
+          원하는 서비스를 탭하면 바로 결제로 연결됩니다
         </p>
       </div>
 
-      {/* Service Cards */}
-      <div className="grid gap-5 max-w-2xl mx-auto">
-        {/* AI 분석 */}
+      {/* Quick Action Cards - 3열 그리드 */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8">
+        {/* AI 분석 - 가장 저렴 */}
         <div 
-          className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-50 to-blue-100 dark:from-sky-950/50 dark:to-blue-900/30 p-1 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/20"
+          className="group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-lg hover:shadow-xl"
           onClick={() => setStep('ai-analysis')}
         >
-          <div className="relative rounded-[22px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-6 flex items-center gap-5">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
-              <div className="relative p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
-                <Brain className="w-8 h-8 text-white" />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-500" />
+          <div className="relative p-5 text-white">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 rounded-xl bg-white/20 backdrop-blur-sm">
+                <Brain className="w-6 h-6" />
               </div>
+              <span className="text-xs font-medium bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">인기</span>
             </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold mb-1 text-slate-900 dark:text-white">AI 분석 받고 싶어요</h3>
-              <p className="text-slate-500 dark:text-slate-400">심리검사, 사주, 꿈해석 등</p>
-            </div>
-            <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/50 group-hover:bg-blue-500 transition-colors">
-              <ArrowRight className="w-5 h-5 text-blue-600 group-hover:text-white transition-colors" />
+            <h3 className="text-lg font-bold mb-1">AI 분석</h3>
+            <p className="text-sm text-white/80 mb-4">심리검사 · 꿈해석 · 사주</p>
+            <div className="pt-3 border-t border-white/20">
+              <div className="text-2xl font-black">₩5,000~</div>
+              <p className="text-xs text-white/70">분석 1회 약 400원</p>
             </div>
           </div>
         </div>
 
         {/* 전문가 상담 */}
         <div 
-          className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-950/50 dark:to-teal-900/30 p-1 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20"
+          className="group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-lg hover:shadow-xl"
           onClick={() => setStep('consultation')}
         >
-          <div className="relative rounded-[22px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-6 flex items-center gap-5">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
-              <div className="relative p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-lg">
-                <Users className="w-8 h-8 text-white" />
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500" />
+          <div className="relative p-5 text-white">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 rounded-xl bg-white/20 backdrop-blur-sm">
+                <Users className="w-6 h-6" />
               </div>
+              <span className="text-xs font-medium bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">프로</span>
             </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold mb-1 text-slate-900 dark:text-white">전문가 상담 받고 싶어요</h3>
-              <p className="text-slate-500 dark:text-slate-400">1:1 화상/전화 상담</p>
-            </div>
-            <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/50 group-hover:bg-emerald-500 transition-colors">
-              <ArrowRight className="w-5 h-5 text-emerald-600 group-hover:text-white transition-colors" />
+            <h3 className="text-lg font-bold mb-1">전문가 상담</h3>
+            <p className="text-sm text-white/80 mb-4">1:1 화상 · 전화 상담</p>
+            <div className="pt-3 border-t border-white/20">
+              <div className="text-2xl font-black">₩35,000~</div>
+              <p className="text-xs text-white/70">30분부터 예약 가능</p>
             </div>
           </div>
         </div>
 
-        {/* 무제한 이용 */}
+        {/* 프리미엄 패스 - 강조 */}
         <div 
-          className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-100 via-purple-100 to-fuchsia-100 dark:from-violet-950/50 dark:via-purple-900/30 dark:to-fuchsia-900/30 p-1 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/30"
+          className="group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-lg hover:shadow-2xl ring-2 ring-violet-400/50"
           onClick={() => setStep('unlimited')}
         >
-          <div className="absolute top-3 right-3 z-10">
-            <Badge className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white border-0 shadow-lg">
-              <Zap className="w-3 h-3 mr-1" />
-              추천
-            </Badge>
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500" />
+          <div className="absolute top-0 right-0 left-0 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-center">
+            <span className="text-xs font-bold text-amber-900 flex items-center justify-center gap-1">
+              <Zap className="w-3 h-3" />
+              지금 70% 할인중
+            </span>
           </div>
-          <div className="relative rounded-[22px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-6 flex items-center gap-5">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-violet-400 via-purple-400 to-fuchsia-400 rounded-2xl blur-xl opacity-60 group-hover:opacity-90 transition-opacity" />
-              <div className="relative p-4 rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 shadow-lg">
-                <Crown className="w-8 h-8 text-white" />
+          <div className="relative p-5 pt-9 text-white">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 rounded-xl bg-white/20 backdrop-blur-sm">
+                <Crown className="w-6 h-6" />
               </div>
+              <Badge className="bg-white/20 backdrop-blur-sm text-white border-0 text-xs">BEST</Badge>
             </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold mb-1 text-slate-900 dark:text-white">무제한으로 쓰고 싶어요</h3>
-              <p className="text-slate-500 dark:text-slate-400">프리미엄 패스 구매</p>
-            </div>
-            <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900/50 group-hover:bg-gradient-to-r group-hover:from-violet-500 group-hover:to-fuchsia-500 transition-all">
-              <ArrowRight className="w-5 h-5 text-purple-600 group-hover:text-white transition-colors" />
+            <h3 className="text-lg font-bold mb-1">프리미엄 패스</h3>
+            <p className="text-sm text-white/80 mb-4">모든 기능 무제한</p>
+            <div className="pt-3 border-t border-white/20">
+              <div className="flex items-baseline gap-2">
+                <div className="text-2xl font-black">₩29,900</div>
+                <span className="text-sm line-through text-white/50">₩49,900</span>
+              </div>
+              <p className="text-xs text-white/70">30일 무제한 이용</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 현재 보유 캐시 */}
-      <div className="text-center mt-10">
-        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl px-6 py-3">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
-            <Coins className="w-5 h-5 text-white" />
-          </div>
-          <div className="text-left">
-            <div className="text-xs text-amber-600 dark:text-amber-400">현재 보유</div>
-            <div className="text-lg font-bold text-amber-700 dark:text-amber-300">{((tokenBalance?.current_tokens || 0) * 100).toLocaleString()}원</div>
-          </div>
+      {/* 빠른 결제 버튼들 */}
+      <div className="max-w-2xl mx-auto space-y-3">
+        <Button 
+          className="w-full h-14 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-lg font-bold shadow-xl shadow-purple-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          onClick={() => handlePurchase('pass', 'pass_30', 29900)}
+          disabled={loading}
+        >
+          <Crown className="w-5 h-5 mr-2" />
+          프리미엄 30일 바로 결제
+          <ArrowRight className="w-5 h-5 ml-2" />
+        </Button>
+        
+        <div className="flex gap-3">
+          <Button 
+            className="flex-1 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold shadow-lg shadow-blue-500/20"
+            onClick={() => handlePurchase('cash', 'cash_5000', 5000)}
+            disabled={loading}
+          >
+            캐시 ₩5,000 충전
+          </Button>
+          <Button 
+            className="flex-1 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold shadow-lg shadow-blue-500/20"
+            onClick={() => handlePurchase('cash', 'cash_10000', 10000)}
+            disabled={loading}
+          >
+            <Gift className="w-4 h-4 mr-1" />
+            캐시 ₩10,000 +보너스
+          </Button>
+        </div>
+      </div>
+
+      {/* 신뢰 배지 */}
+      <div className="flex flex-wrap justify-center gap-4 mt-8 text-sm text-muted-foreground">
+        <div className="flex items-center gap-1.5">
+          <Check className="w-4 h-4 text-emerald-500" />
+          <span>즉시 이용 가능</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Check className="w-4 h-4 text-emerald-500" />
+          <span>환불 보장</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Check className="w-4 h-4 text-emerald-500" />
+          <span>안전한 결제</span>
         </div>
       </div>
     </div>

@@ -175,6 +175,11 @@ import AppStoreGuide from "./pages/AppStoreGuide";
 import BusinessPlanGenerator from "./pages/BusinessPlanGenerator";
 import PartnerBenefits from "./pages/PartnerBenefits";
 
+// Mind Diary - Unicorn Framework MVP
+import MindDiary from "./pages/MindDiary";
+import ParentDashboard from "./pages/ParentDashboard";
+import ParentConnect from "./pages/ParentConnect";
+
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
 import { InstallPromptBanner } from "./components/pwa/InstallPromptBanner";
@@ -381,6 +386,11 @@ const App = () => {
           <Route path="/partner-benefits" element={<PartnerBenefits />} />
           <Route path="/app-store-guide" element={<AppStoreGuide />} />
           <Route path="/business-plan" element={<BusinessPlanGenerator />} />
+          
+          {/* Mind Diary - Unicorn Framework MVP */}
+          <Route path="/mind-diary" element={<MindDiary />} />
+          <Route path="/parent-dashboard" element={<ParentDashboard />} />
+          <Route path="/parent-connect" element={<ParentConnect />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

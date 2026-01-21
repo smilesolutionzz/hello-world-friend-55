@@ -174,6 +174,7 @@ import B2BLanding from "./pages/B2BLanding";
 import AppStoreGuide from "./pages/AppStoreGuide";
 import BusinessPlanGenerator from "./pages/BusinessPlanGenerator";
 import PartnerBenefits from "./pages/PartnerBenefits";
+import IRDeck from "./pages/IRDeck";
 
 // Mind Diary - Unicorn Framework MVP
 import MindDiary from "./pages/MindDiary";
@@ -373,6 +374,7 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/daily-tip" element={<DailyParentingTip />} />
+          <Route path="/ir-deck" element={<IRDeck />} />
           
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />

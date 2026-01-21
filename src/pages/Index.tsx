@@ -26,6 +26,7 @@ import MainPromoSection from '@/components/promotion/MainPromoSection';
 import ColumnHookBanner from '@/components/landing/ColumnHookBanner';
 import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
 import MindDiaryHook from '@/components/landing/MindDiaryHook';
+import SubscriptionValueSection from '@/components/landing/SubscriptionValueSection';
 
 
 
@@ -181,6 +182,11 @@ const Index = () => {
             {/* 4️⃣ 전문가급 리포트 미리보기 */}
             <LazyLoad rootMargin="200px">
               <ReportPreviewSection />
+            </LazyLoad>
+            
+            {/* 💎 구독 가치 제안 - 왜 프리미엄이 필요한가 */}
+            <LazyLoad rootMargin="200px">
+              <SubscriptionValueSection />
             </LazyLoad>
             
             {/* 5️⃣ 감성 후킹 - 엄마들의 실제 사연 */}

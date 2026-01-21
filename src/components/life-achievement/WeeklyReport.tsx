@@ -4,8 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { FileText, TrendingUp, Target, Sparkles, Download, Loader2, Calendar } from "lucide-react";
+import { FileText, TrendingUp, Target, Sparkles, Download, Loader2, Calendar, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useSubscription } from "@/hooks/useSubscription";
+import { CashBalanceDisplay } from "@/components/paywall/CashBalanceDisplay";
+import { BlurredContent } from "@/components/paywall/BlurredContent";
 
 interface Report {
   id: string;
@@ -26,6 +29,8 @@ export const WeeklyReport = () => {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const { toast } = useToast();
+  const { isPremiumUser, isLifetimeUser } = useSubscription();
+  const isPremium = isPremiumUser() || isLifetimeUser();
 
   useEffect(() => {
     loadReports();
@@ -93,11 +98,20 @@ export const WeeklyReport = () => {
 
   return (
     <div className="space-y-6">
+      {/* 캐시 잔액 표시 */}
+      <CashBalanceDisplay />
+      
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <FileText className="h-6 w-6 text-primary" />
             성장 리포트
+            {!isPremium && (
+              <Badge variant="secondary" className="ml-2">
+                <Lock className="w-3 h-3 mr-1" />
+                프리미엄
+              </Badge>
+            )}
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
             AI가 분석한 당신의 진행 상황
@@ -107,7 +121,7 @@ export const WeeklyReport = () => {
         <div className="flex gap-2">
           <Button 
             onClick={() => generateReport('weekly')}
-            disabled={generating}
+            disabled={generating || !isPremium}
           >
             {generating ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -191,16 +205,22 @@ export const WeeklyReport = () => {
                   </div>
                 )}
 
-                {/* AI 인사이트 */}
-                <div className="bg-gradient-to-br from-primary/5 to-purple-500/5 p-6 rounded-lg border border-primary/20">
-                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-primary" />
-                    AI 분석
-                  </h3>
-                  <p className="text-sm whitespace-pre-line leading-relaxed">
-                    {report.ai_insights}
-                  </p>
-                </div>
+                {/* AI 인사이트 - 프리미엄 전용 */}
+                <BlurredContent
+                  title="AI 분석 인사이트"
+                  description="프리미엄 구독자만 AI 분석 인사이트를 볼 수 있습니다."
+                  requiredCash={5000}
+                >
+                  <div className="bg-gradient-to-br from-primary/5 to-purple-500/5 p-6 rounded-lg border border-primary/20">
+                    <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      AI 분석
+                    </h3>
+                    <p className="text-sm whitespace-pre-line leading-relaxed">
+                      {report.ai_insights}
+                    </p>
+                  </div>
+                </BlurredContent>
               </CardContent>
             </Card>
           ))}

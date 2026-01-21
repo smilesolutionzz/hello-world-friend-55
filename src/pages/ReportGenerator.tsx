@@ -8,10 +8,13 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useTokens } from '@/hooks/useTokens';
+import { useSubscription } from '@/hooks/useSubscription';
 import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 import html2pdf from 'html2pdf.js';
 import PerplexityDeepReport from '@/components/report/PerplexityDeepReport';
 import ScratchCard from '@/components/gamification/ScratchCard';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
 import {
   FileText,
   Download,

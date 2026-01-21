@@ -3,12 +3,15 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Brain, FileText, Users, Download, Calendar, AlertTriangle } from 'lucide-react';
+import { Brain, FileText, Users, Download, Calendar, AlertTriangle, Lock, Crown } from 'lucide-react';
 import { AIAnalysisEngine } from '@/components/ai-analysis/AIAnalysisEngine';
 import { ObservationLog } from '@/components/observation/ObservationLog';
 import { ReportGenerator } from '@/components/reports/ReportGenerator';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useSubscription } from '@/hooks/useSubscription';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
 
 interface Profile {
   id: string;
@@ -35,6 +38,8 @@ export const AIHighlightDashboard: React.FC<AIHighlightDashboardProps> = ({ prof
   const [activeTab, setActiveTab] = useState('overview');
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const { toast } = useToast();
+  const { isPremiumUser, isLifetimeUser } = useSubscription();
+  const isPremium = isPremiumUser() || isLifetimeUser();
 
   useEffect(() => {
     loadDashboardData();
@@ -165,10 +170,21 @@ export const AIHighlightDashboard: React.FC<AIHighlightDashboardProps> = ({ prof
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      {/* 캐시 잔액 표시 */}
+      <CashBalanceDisplay />
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">AI Highlight 대시보드</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            AI Highlight 대시보드
+            {isPremium && (
+              <Badge className="bg-gradient-to-r from-amber-500 to-orange-500">
+                <Crown className="w-3 h-3 mr-1" />
+                Premium
+              </Badge>
+            )}
+          </h1>
           <p className="text-muted-foreground mt-1">
             {data.profile.display_name}님의 종합 발달 분석 시스템
           </p>
@@ -293,28 +309,40 @@ export const AIHighlightDashboard: React.FC<AIHighlightDashboardProps> = ({ prof
         </TabsContent>
 
         <TabsContent value="analysis">
-          <AIAnalysisEngine
-            data={{
-              observationLogs: data.observationLogs,
-              testResults: data.testResults,
-              externalData: data.externalData,
-              profileId: data.profile.id
-            }}
-            onAnalysisComplete={handleAnalysisComplete}
-          />
+          <BlurredContent
+            title="AI 종합 분석"
+            description="AI가 모든 데이터를 종합 분석합니다. 프리미엄 기능입니다."
+            requiredCash={15000}
+          >
+            <AIAnalysisEngine
+              data={{
+                observationLogs: data.observationLogs,
+                testResults: data.testResults,
+                externalData: data.externalData,
+                profileId: data.profile.id
+              }}
+              onAnalysisComplete={handleAnalysisComplete}
+            />
+          </BlurredContent>
         </TabsContent>
 
         <TabsContent value="reports">
-          <ReportGenerator
-            data={{
-              aiAnalysis: analysisResult,
-              profileId: data.profile.id,
-              childName: data.profile.display_name,
-              birthDate: data.profile.created_at,
-              reportType: 'ai_only'
-            }}
-            onReportGenerated={handleReportGenerated}
-          />
+          <BlurredContent
+            title="전문 리포트 생성"
+            description="AI 분석 기반 전문 리포트를 생성합니다. 프리미엄 기능입니다."
+            requiredCash={50000}
+          >
+            <ReportGenerator
+              data={{
+                aiAnalysis: analysisResult,
+                profileId: data.profile.id,
+                childName: data.profile.display_name,
+                birthDate: data.profile.created_at,
+                reportType: 'ai_only'
+              }}
+              onReportGenerated={handleReportGenerated}
+            />
+          </BlurredContent>
         </TabsContent>
       </Tabs>
     </div>

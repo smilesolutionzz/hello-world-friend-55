@@ -1,78 +1,113 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Sparkles, Building2, Users, Globe, Clock, CreditCard, MessageCircle, Video, Phone } from "lucide-react";
+import { Check, Sparkles, Building2, Users, Zap, Crown, Gift, Shield, Brain, TrendingUp, Bell, FileText, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SEOHead from "@/components/common/SEOHead";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 const Pricing = () => {
   const navigate = useNavigate();
 
-  const plans = [
+  // 무료 기능 목록
+  const freeFeatures = [
+    { icon: FileText, label: "관찰일지 무제한 작성", description: "매일 아이의 행동과 발달을 기록하세요" },
+    { icon: Brain, label: "기본 AI 분석", description: "월 3회 AI 분석 리포트 제공" },
+    { icon: TrendingUp, label: "발달 추적 타임라인", description: "성장 기록을 한눈에 확인" },
+    { icon: Bell, label: "주간 발달 알림", description: "주요 변화 알림 수신" },
+  ];
+
+  // 프리미엄 플랜
+  const premiumPlans = [
     {
-      name: "부모 플랜",
-      icon: Users,
-      description: "우리 아이를 위한 개인 맞춤 케어",
+      id: "premium_basic",
+      name: "프리미엄",
+      icon: Sparkles,
+      description: "AI 분석을 무제한으로",
       price: "9,900",
       period: "월",
+      highlight: false,
+      badge: null,
       features: [
-        "관찰일지 무제한 작성",
-        "AI 분석 리포트 월 5회",
-        "발달 영역별 상세 분석",
-        "성장 추적 타임라인",
-        "전문가 상담 1회 (월) - 30분",
-        "맞춤 육아 가이드"
+        "무료 기능 모두 포함",
+        "AI 분석 리포트 무제한",
+        "발달 영역별 심층 분석",
+        "맞춤 육아 가이드",
+        "월간 발달 종합 리포트",
       ],
-      cta: "시작하기",
-      popular: false,
-      accountType: "parent"
+      notIncluded: [
+        "전문가 상담",
+        "위기 감지 알림",
+      ],
+      cta: "프리미엄 시작",
     },
     {
-      name: "교사 플랜",
-      icon: Sparkles,
-      description: "학급 전체를 효율적으로 관리",
-      price: "29,900",
+      id: "premium_plus",
+      name: "프리미엄 플러스",
+      icon: Crown,
+      description: "전문가 연결까지 완벽하게",
+      price: "19,900",
+      period: "월",
+      highlight: true,
+      badge: "인기",
+      features: [
+        "프리미엄 기능 모두 포함",
+        "전문가 상담 월 1회 (30분)",
+        "위기 감지 시 긴급 알림",
+        "우선 전문가 매칭",
+        "발달 검사 해석 상담",
+        "전문가 메모 열람",
+      ],
+      notIncluded: [],
+      cta: "가장 인기있는 플랜",
+    },
+  ];
+
+  // B2B 플랜
+  const b2bPlans = [
+    {
+      id: "institution_basic",
+      name: "학교/학원 기본",
+      icon: Building2,
+      description: "원아 30명까지 관리",
+      price: "49,000",
       period: "월",
       features: [
-        "학생 30명까지 관리",
-        "관찰일지 무제한 작성",
-        "AI 분석 리포트 무제한",
-        "학부모 공유 기능",
-        "맞춤형 리포팅 템플릿",
-        "전문가 상담 3회 (월) - 각 30분",
-        "우선 고객 지원",
-        "교육 자료 라이브러리"
+        "원아/학생 30명 관리",
+        "교사/관리자 계정 3개",
+        "학부모 발달 알림 발송",
+        "위험도 알림 대시보드",
+        "월간 학급 발달 리포트",
       ],
-      cta: "무료 체험 시작",
-      popular: true,
-      accountType: "teacher"
     },
     {
-      name: "기관 플랜",
-      icon: Building2,
-      description: "기관 전체의 디지털 전환",
+      id: "institution_pro",
+      name: "기관 프로",
+      icon: Shield,
+      description: "전체 기관 디지털 전환",
       price: "맞춤 견적",
       period: "",
       features: [
-        "무제한 학생 관리",
-        "다중 교사 계정",
-        "관찰일지 무제한 작성",
-        "AI 분석 리포트 무제한",
-        "기관 전용 대시보드",
-        "데이터 분석 및 인사이트",
-        "API 연동 지원",
+        "무제한 원아/학생 관리",
+        "무제한 교사 계정",
+        "학부모 연결 현황 대시보드",
+        "자동 발달 리포트 생성",
+        "전문가 연결 수수료 할인",
         "전담 계정 매니저",
-        "맞춤형 온보딩 교육",
-        "24/7 우선 지원"
+        "API 연동 지원",
       ],
-      cta: "상담 신청",
-      popular: false,
-      accountType: "institution"
-    }
+    },
   ];
 
-  const handlePlanSelect = (accountType: string) => {
-    if (accountType === "institution") {
+  // 전문가 연결 수수료 정보
+  const expertFees = [
+    { type: "일반 상담", fee: "상담료의 20%", description: "플랫폼 중개 수수료" },
+    { type: "긴급 연결", fee: "+5,000원", description: "24시간 내 매칭 보장" },
+    { type: "심층 상담", fee: "상담료의 15%", description: "60분 이상 심층 상담" },
+  ];
+
+  const handlePlanSelect = (planId: string) => {
+    if (planId.includes("institution")) {
       navigate("/contact");
     } else {
       navigate("/auth");
@@ -82,259 +117,355 @@ const Pricing = () => {
   return (
     <>
       <SEOHead
-        title="가격 안내 - AIHUMANPRO"
-        description="AIHUMANPRO의 부모, 교사, 기관별 맞춤 플랜을 확인하세요. 합리적인 가격으로 AI 기반 발달 관리를 시작하세요."
-        keywords="가격, 플랜, 구독, 부모 플랜, 교사 플랜, 기관 플랜, AIHUMANPRO 가격"
+        title="가격 안내 - 무료로 시작하세요 | AIHUMANPRO"
+        description="기본 기능은 무료! AI 심층분석과 전문가 연결이 필요할 때만 프리미엄을 선택하세요."
+        keywords="무료, 프리미엄, 구독, AI 분석, 전문가 상담, 발달 관리"
       />
       
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-secondary/30">
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-16 md:py-24">
-          <div className="text-center mb-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-16"
+          >
+            <Badge className="mb-4 bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30">
+              <Gift className="w-3 h-3 mr-1" />
+              기본 기능 무료
+            </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-              모두를 위한 플랜
+              부담 없이 시작하세요
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              부모님, 교사님, 기관까지 - 각자의 필요에 맞는 최적의 솔루션을 제공합니다
+              관찰일지 작성과 기본 AI 분석은 <strong className="text-foreground">완전 무료</strong>입니다.<br />
+              더 깊은 분석과 전문가 연결이 필요할 때만 업그레이드하세요.
             </p>
-          </div>
+          </motion.div>
 
-          {/* 해외 사용자 배너 */}
-          <div className="max-w-4xl mx-auto mb-12">
-            <Card className="bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 border-blue-500/30">
-              <CardContent className="py-6">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center">
-                      <Globe className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg flex items-center gap-2">
-                        해외 거주 한국인을 위한 서비스
-                        <Badge variant="secondary" className="bg-green-500/20 text-green-700 dark:text-green-300">해외결제 OK</Badge>
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        Visa, Mastercard 등 해외카드 결제 가능 • 한국 전문가와 화상상담 연결
-                      </p>
-                    </div>
-                  </div>
-                  <Button 
-                    onClick={() => window.open('https://pf.kakao.com/_CYGdn', '_blank')}
-                    className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white whitespace-nowrap"
-                  >
-                    해외 상담 신청
-                  </Button>
+          {/* 무료 기능 섹션 */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="max-w-4xl mx-auto mb-16"
+          >
+            <Card className="border-2 border-green-500/30 bg-gradient-to-br from-green-500/5 to-emerald-500/5">
+              <CardHeader className="text-center pb-4">
+                <div className="w-16 h-16 mx-auto mb-4 bg-green-500/20 rounded-full flex items-center justify-center">
+                  <Gift className="w-8 h-8 text-green-600" />
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* 상담 정보 요약 */}
-          <div className="max-w-4xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="bg-muted/50">
-              <CardContent className="py-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-primary" />
+                <CardTitle className="text-2xl flex items-center justify-center gap-2">
+                  무료 플랜
+                  <Badge variant="secondary" className="bg-green-500/20 text-green-700">Forever Free</Badge>
+                </CardTitle>
+                <CardDescription className="text-base">
+                  신용카드 없이 바로 시작하세요
+                </CardDescription>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold text-green-600">₩0</span>
+                  <span className="text-muted-foreground ml-2">영원히</span>
                 </div>
-                <div>
-                  <p className="font-semibold text-sm">상담 시간</p>
-                  <p className="text-xs text-muted-foreground">1회당 30분 또는 60분</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-muted/50">
-              <CardContent className="py-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Video className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="font-semibold text-sm">상담 방식</p>
-                  <p className="text-xs text-muted-foreground">화상/전화/채팅 선택 가능</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-muted/50">
-              <CardContent className="py-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <CreditCard className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="font-semibold text-sm">캐시 사용량</p>
-                  <p className="text-xs text-muted-foreground">30분 상담 = 20,000원</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Pricing Cards */}
-          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {plans.map((plan, index) => {
-              const Icon = plan.icon;
-              return (
-                <Card 
-                  key={index}
-                  className={`relative transition-all duration-300 hover:shadow-xl ${
-                    plan.popular 
-                      ? "border-primary shadow-lg scale-105 md:scale-110" 
-                      : "hover:scale-105"
-                  }`}
-                >
-                  {plan.popular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
-                      인기
-                    </div>
-                  )}
-                  
-                  <CardHeader className="text-center pb-8">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Icon className="w-8 h-8 text-primary" />
-                    </div>
-                    <CardTitle className="text-2xl mb-2">{plan.name}</CardTitle>
-                    <CardDescription className="text-base">
-                      {plan.description}
-                    </CardDescription>
-                    <div className="mt-6">
-                      <div className="flex items-baseline justify-center gap-2">
-                        {plan.price !== "맞춤 견적" && (
-                          <span className="text-4xl font-bold">{plan.price}</span>
-                        )}
-                        {plan.price === "맞춤 견적" && (
-                          <span className="text-3xl font-bold">{plan.price}</span>
-                        )}
-                        {plan.period && (
-                          <span className="text-muted-foreground">원 / {plan.period}</span>
-                        )}
+              </CardHeader>
+              <CardContent>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {freeFeatures.map((feature, idx) => {
+                    const Icon = feature.icon;
+                    return (
+                      <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                        <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
+                          <Icon className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">{feature.label}</p>
+                          <p className="text-xs text-muted-foreground">{feature.description}</p>
+                        </div>
                       </div>
-                    </div>
-                  </CardHeader>
+                    );
+                  })}
+                </div>
+              </CardContent>
+              <CardFooter className="justify-center">
+                <Button 
+                  size="lg" 
+                  className="bg-green-600 hover:bg-green-700"
+                  onClick={() => navigate("/auth")}
+                >
+                  무료로 시작하기
+                </Button>
+              </CardFooter>
+            </Card>
+          </motion.div>
 
-                  <CardContent>
-                    <ul className="space-y-3">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-foreground/90">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-
-                  <CardFooter>
-                    <Button
-                      className="w-full"
-                      variant={plan.popular ? "default" : "outline"}
-                      size="lg"
-                      onClick={() => handlePlanSelect(plan.accountType)}
+          {/* 프리미엄 플랜 섹션 */}
+          <div className="mb-16">
+            <h2 className="text-2xl font-bold text-center mb-2">프리미엄 플랜</h2>
+            <p className="text-muted-foreground text-center mb-8">더 깊은 분석과 전문가 연결이 필요할 때</p>
+            
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {premiumPlans.map((plan, index) => {
+                const Icon = plan.icon;
+                return (
+                  <motion.div
+                    key={plan.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 + index * 0.1 }}
+                  >
+                    <Card 
+                      className={`relative h-full transition-all duration-300 hover:shadow-xl ${
+                        plan.highlight 
+                          ? "border-primary shadow-lg ring-2 ring-primary/20" 
+                          : "hover:border-primary/50"
+                      }`}
                     >
-                      {plan.cta}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              );
-            })}
-          </div>
+                      {plan.badge && (
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
+                          {plan.badge}
+                        </div>
+                      )}
+                      
+                      <CardHeader className="text-center pb-4">
+                        <div className={`w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center ${
+                          plan.highlight ? 'bg-primary/20' : 'bg-muted'
+                        }`}>
+                          <Icon className={`w-7 h-7 ${plan.highlight ? 'text-primary' : 'text-muted-foreground'}`} />
+                        </div>
+                        <CardTitle className="text-xl">{plan.name}</CardTitle>
+                        <CardDescription>{plan.description}</CardDescription>
+                        <div className="mt-4">
+                          <span className="text-3xl font-bold">{plan.price}</span>
+                          <span className="text-muted-foreground">원 / {plan.period}</span>
+                        </div>
+                      </CardHeader>
 
-          {/* FAQ Section */}
-          <div className="mt-24 max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">자주 묻는 질문</h2>
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">플랜은 언제든 변경할 수 있나요?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    네, 언제든지 플랜을 업그레이드하거나 다운그레이드할 수 있습니다. 
-                    변경 시 남은 기간에 대한 요금은 일할 계산되어 조정됩니다.
-                  </p>
-                </CardContent>
-              </Card>
+                      <CardContent className="space-y-4">
+                        <ul className="space-y-2">
+                          {plan.features.map((feature, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                              <span className="text-sm">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        
+                        {plan.notIncluded.length > 0 && (
+                          <div className="pt-2 border-t">
+                            <p className="text-xs text-muted-foreground mb-2">미포함:</p>
+                            <ul className="space-y-1">
+                              {plan.notIncluded.map((item, idx) => (
+                                <li key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <X className="w-3 h-3" />
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </CardContent>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">무료 체험 기간이 있나요?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    모든 플랜에서 14일 무료 체험을 제공합니다. 체험 기간 동안 전체 기능을 
-                    사용해보시고 결정하실 수 있습니다. 카드 등록이 필요하며, 체험 종료 전 
-                    취소하시면 요금이 청구되지 않습니다.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">기관 플랜 견적은 어떻게 받나요?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    기관 플랜은 규모와 필요에 따라 맞춤 견적을 제공해드립니다. 
-                    '상담 신청' 버튼을 클릭하여 문의 양식을 작성해주시면, 
-                    전담 매니저가 24시간 내에 연락드립니다.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    결제 방법은 무엇이 있나요?
-                    <Badge variant="secondary" className="bg-green-500/20 text-green-700 dark:text-green-300">해외결제 지원</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    국내: 신용카드, 체크카드, 계좌이체를 지원합니다.<br />
-                    <strong className="text-foreground">해외: Visa, Mastercard, American Express 등 해외카드 결제가 가능합니다.</strong><br />
-                    기관 플랜의 경우 세금계산서 발행이 가능합니다.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">전문가 상담은 어떻게 진행되나요?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    <strong>상담 시간:</strong> 기본 30분, 연장 시 60분 선택 가능<br />
-                    <strong>상담 방식:</strong> 화상상담(Zoom), 전화상담, 채팅상담 중 선택<br />
-                    <strong>캐시 사용:</strong> 30분 상담 = 20,000원, 60분 상담 = 36,000원<br />
-                    <strong>해외 거주자:</strong> 시차를 고려한 예약 가능, 한국 전문가와 화상 연결
-                  </p>
-                </CardContent>
-              </Card>
+                      <CardFooter>
+                        <Button
+                          className="w-full"
+                          variant={plan.highlight ? "default" : "outline"}
+                          size="lg"
+                          onClick={() => handlePlanSelect(plan.id)}
+                        >
+                          {plan.cta}
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
 
-          {/* CTA Section */}
-          <div className="mt-24 text-center">
+          {/* 전문가 연결 수수료 */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="max-w-4xl mx-auto mb-16"
+          >
+            <Card className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-purple-500/30">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-purple-500" />
+                  전문가 연결 수수료
+                </CardTitle>
+                <CardDescription>
+                  구독과 별개로 전문가 상담 시 적용되는 플랫폼 수수료입니다
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid sm:grid-cols-3 gap-4">
+                  {expertFees.map((fee, idx) => (
+                    <div key={idx} className="p-4 rounded-lg bg-background/50 text-center">
+                      <p className="font-semibold text-lg text-purple-600">{fee.fee}</p>
+                      <p className="font-medium text-sm mt-1">{fee.type}</p>
+                      <p className="text-xs text-muted-foreground">{fee.description}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground text-center mt-4">
+                  * 프리미엄 플러스 구독 시 전문가 연결 수수료 10% 할인
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* B2B 섹션 */}
+          <div className="mb-16">
+            <div className="text-center mb-8">
+              <Badge variant="outline" className="mb-2">학교 · 학원 · 어린이집</Badge>
+              <h2 className="text-2xl font-bold">기관용 플랜</h2>
+              <p className="text-muted-foreground">원아/학생 발달 관리와 학부모 연결을 한번에</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {b2bPlans.map((plan, index) => {
+                const Icon = plan.icon;
+                return (
+                  <motion.div
+                    key={plan.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                  >
+                    <Card className="h-full hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Icon className="w-6 h-6 text-primary" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-lg">{plan.name}</CardTitle>
+                            <CardDescription>{plan.description}</CardDescription>
+                          </div>
+                        </div>
+                        <div className="mt-4">
+                          <span className="text-2xl font-bold">{plan.price}</span>
+                          {plan.period && <span className="text-muted-foreground">원 / {plan.period}</span>}
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2">
+                          {plan.features.map((feature, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                              <span className="text-sm">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                      <CardFooter>
+                        <Button
+                          className="w-full"
+                          variant="outline"
+                          onClick={() => handlePlanSelect(plan.id)}
+                        >
+                          {plan.price === "맞춤 견적" ? "상담 신청" : "시작하기"}
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 비교 테이블 */}
+          <div className="max-w-4xl mx-auto mb-16">
+            <h2 className="text-2xl font-bold text-center mb-8">플랜 비교</h2>
+            <Card>
+              <CardContent className="p-0 overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left p-4 font-medium">기능</th>
+                      <th className="text-center p-4 font-medium text-green-600">무료</th>
+                      <th className="text-center p-4 font-medium">프리미엄</th>
+                      <th className="text-center p-4 font-medium bg-primary/5">프리미엄+</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b">
+                      <td className="p-4">관찰일지 작성</td>
+                      <td className="text-center p-4"><Check className="w-4 h-4 text-green-600 mx-auto" /></td>
+                      <td className="text-center p-4"><Check className="w-4 h-4 text-primary mx-auto" /></td>
+                      <td className="text-center p-4 bg-primary/5"><Check className="w-4 h-4 text-primary mx-auto" /></td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="p-4">AI 분석 리포트</td>
+                      <td className="text-center p-4 text-muted-foreground">월 3회</td>
+                      <td className="text-center p-4">무제한</td>
+                      <td className="text-center p-4 bg-primary/5">무제한</td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="p-4">발달 영역 심층분석</td>
+                      <td className="text-center p-4"><X className="w-4 h-4 text-muted-foreground mx-auto" /></td>
+                      <td className="text-center p-4"><Check className="w-4 h-4 text-primary mx-auto" /></td>
+                      <td className="text-center p-4 bg-primary/5"><Check className="w-4 h-4 text-primary mx-auto" /></td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="p-4">전문가 상담</td>
+                      <td className="text-center p-4 text-muted-foreground">별도 결제</td>
+                      <td className="text-center p-4 text-muted-foreground">별도 결제</td>
+                      <td className="text-center p-4 bg-primary/5">월 1회 포함</td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="p-4">위기 감지 알림</td>
+                      <td className="text-center p-4"><X className="w-4 h-4 text-muted-foreground mx-auto" /></td>
+                      <td className="text-center p-4"><X className="w-4 h-4 text-muted-foreground mx-auto" /></td>
+                      <td className="text-center p-4 bg-primary/5"><Check className="w-4 h-4 text-primary mx-auto" /></td>
+                    </tr>
+                    <tr>
+                      <td className="p-4">전문가 수수료 할인</td>
+                      <td className="text-center p-4"><X className="w-4 h-4 text-muted-foreground mx-auto" /></td>
+                      <td className="text-center p-4"><X className="w-4 h-4 text-muted-foreground mx-auto" /></td>
+                      <td className="text-center p-4 bg-primary/5">10% 할인</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* CTA */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="text-center"
+          >
             <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20">
               <CardContent className="py-12">
-                <h2 className="text-3xl font-bold mb-4">아직 고민 중이신가요?</h2>
+                <h2 className="text-3xl font-bold mb-4">지금 바로 시작하세요</h2>
                 <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-                  전문 상담사와 1:1 상담을 통해 우리 아이, 우리 학급, 우리 기관에 
-                  가장 적합한 플랜을 찾아보세요.
+                  신용카드 없이 무료로 시작하고,<br />
+                  필요할 때만 업그레이드하세요.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button 
                     size="lg"
-                    onClick={() => navigate("/expert")}
+                    className="bg-green-600 hover:bg-green-700"
+                    onClick={() => navigate("/auth")}
                   >
-                    상담 신청하기
+                    <Gift className="w-4 h-4 mr-2" />
+                    무료로 시작하기
                   </Button>
                   <Button 
                     size="lg" 
                     variant="outline"
-                    onClick={() => navigate("/")}
+                    onClick={() => navigate("/expert")}
                   >
-                    서비스 더 알아보기
+                    전문가 상담 먼저 받기
                   </Button>
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
         </section>
       </div>
     </>

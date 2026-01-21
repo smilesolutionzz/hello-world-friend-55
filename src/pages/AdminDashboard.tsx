@@ -50,6 +50,7 @@ import { UserDataViewer } from '@/components/admin/UserDataViewer';
 import { EnhancedUserDataViewer } from '@/components/admin/EnhancedUserDataViewer';
 import { ExpertManagement } from '@/components/admin/ExpertManagement';
 import { InstitutionManagement } from '@/components/admin/InstitutionManagement';
+import { InstitutionAdminAssignment } from '@/components/admin/InstitutionAdminAssignment';
 import AdminTokenAdd from '@/components/AdminTokenAdd';
 import { SystemMonitoring } from '@/components/admin/SystemMonitoring';
 import { AutomatedModeration } from '@/components/admin/AutomatedModeration';
@@ -1028,9 +1029,12 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="users">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <ExpertManagement />
-              <InstitutionManagement />
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <ExpertManagement />
+                <InstitutionManagement />
+              </div>
+              <InstitutionAdminAssignment />
             </div>
           </TabsContent>
 

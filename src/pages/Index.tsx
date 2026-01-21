@@ -26,7 +26,7 @@ import MainPromoSection from '@/components/promotion/MainPromoSection';
 import ColumnHookBanner from '@/components/landing/ColumnHookBanner';
 import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
 import MindDiaryHook from '@/components/landing/MindDiaryHook';
-import BusinessModelSection from '@/components/landing/BusinessModelSection';
+
 
 
 const structuredData = {
@@ -203,10 +203,6 @@ const Index = () => {
               <PartnerTrustSection />
             </LazyLoad>
             
-            {/* 💰 비즈니스 모델 - 캐시 시스템 & B2B */}
-            <LazyLoad rootMargin="200px">
-              <BusinessModelSection />
-            </LazyLoad>
             
             {/* 🔥 프로모션 배너 - 서비스 가치 확인 후 유도 */}
             <LazyLoad rootMargin="200px">

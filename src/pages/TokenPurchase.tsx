@@ -20,7 +20,7 @@ interface TokenPackage {
 const passProducts = {
   pass_30: { id: 'pass_30', name: '프리미엄 패스 30일', duration: '30일', price: 29900, originalPrice: 49900, discount: 40 },
   pass_365: { id: 'pass_365', name: '프리미엄 패스 1년', duration: '1년', price: 199000, originalPrice: 598800, discount: 67 },
-  pass_lifetime: { id: 'pass_lifetime', name: '프리미엄 패스 평생', duration: '평생', price: 299000, originalPrice: 999000, discount: 70 },
+  pass_lifetime: { id: 'pass_lifetime', name: '평생이용권', duration: '평생', price: 99000, originalPrice: 299000, discount: 67 },
 };
 
 // 캐시 충전 상품 정보 (1 token = 100원)

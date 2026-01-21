@@ -565,18 +565,18 @@ const TokenSubscription = () => {
           </div>
         </div>
 
-        {/* 평생 */}
+        {/* 평생이용권 - 특가 */}
         <div className="group relative rounded-3xl bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/50 dark:via-orange-900/30 dark:to-yellow-900/30 border-2 border-amber-400 dark:border-amber-600 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20">
           <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg px-4 py-1">
-            🏆 BEST
+            🔥 한정 특가
           </Badge>
           <div className="text-center">
-            <div className="text-lg font-medium text-slate-500 dark:text-slate-400 mb-2">평생</div>
+            <div className="text-lg font-medium text-slate-500 dark:text-slate-400 mb-2">평생이용권</div>
             <div className="text-4xl font-black bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-1">
-              ₩299,000
+              ₩99,000
             </div>
-            <div className="text-sm text-slate-400 line-through mb-3">₩999,000</div>
-            <Badge className="bg-gradient-to-r from-rose-500 to-pink-500 text-white border-0 mb-6">70% 할인</Badge>
+            <div className="text-sm text-slate-400 line-through mb-3">₩299,000</div>
+            <Badge className="bg-gradient-to-r from-rose-500 to-pink-500 text-white border-0 mb-6">67% 할인</Badge>
             <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400 text-left mb-8">
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
@@ -597,7 +597,7 @@ const TokenSubscription = () => {
             </div>
             <Button 
               className="w-full h-12 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-lg shadow-amber-500/25"
-              onClick={() => handlePurchase('pass', 'pass_lifetime', 299000)}
+              onClick={() => handlePurchase('pass', 'pass_lifetime', 99000)}
               disabled={loading}
             >
               평생 이용하기

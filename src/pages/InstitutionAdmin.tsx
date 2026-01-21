@@ -32,11 +32,15 @@ import {
   MoreVertical,
   UserCheck,
   Calendar,
-  ClipboardList
+  ClipboardList,
+  AlertCircle
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import MemberManagement from '@/components/institution/MemberManagement';
+import StudentRiskMonitor from '@/components/institution/StudentRiskMonitor';
+import DevelopmentRoadmapGenerator from '@/components/institution/DevelopmentRoadmapGenerator';
+import ParentConnectionTracker from '@/components/institution/ParentConnectionTracker';
 
 interface Institution {
   id: string;
@@ -70,11 +74,31 @@ const MENU_ITEMS = [
     description: '기본 통계 및 현황'
   },
   { 
+    id: 'risk-monitor', 
+    label: '위험도 모니터링', 
+    icon: AlertCircle,
+    description: '학생별 위기 알림',
+    badge: 'NEW'
+  },
+  { 
     id: 'members', 
     label: '학생 관리', 
     icon: Users,
     description: '학생 등록 및 연동',
     badge: 'HOT'
+  },
+  { 
+    id: 'roadmap', 
+    label: '발달 로드맵', 
+    icon: TrendingUp,
+    description: '맞춤 개입 계획 생성',
+    badge: 'AI'
+  },
+  { 
+    id: 'connections', 
+    label: '학부모 연결', 
+    icon: Phone,
+    description: '전문가 매칭 현황'
   },
   { 
     id: 'inquiries', 

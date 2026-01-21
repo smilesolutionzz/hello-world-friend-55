@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Coins, CreditCard, Building2, Smartphone, Receipt, Loader2, Check, Gift, Sparkles } from 'lucide-react';
+import { Coins, CreditCard, Building2, Smartphone, Receipt, Loader2, Check, Gift, Sparkles, Crown, Zap, Wallet, ArrowRight } from 'lucide-react';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -388,174 +388,187 @@ const TokenPurchase = () => {
         {/* URL 파라미터로 전달된 상품 결제 */}
         {urlProduct ? (
           <div className="space-y-6">
-            {/* 상품 카드 */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800">
-              <div className={`px-6 py-8 text-center ${
-                urlProduct.type === 'pass' 
-                  ? 'bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500'
-                  : urlProduct.type === 'consult'
-                  ? 'bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500'
-                  : 'bg-gradient-to-br from-blue-500 via-cyan-500 to-sky-500'
-              }`}>
-                <Badge className="mb-4 bg-white/20 text-white border-white/30">
-                  {urlProduct.type === 'pass' ? '프리미엄 패스' : urlProduct.type === 'consult' ? '전문가 상담' : '캐시 충전'}
-                </Badge>
-                <h1 className="text-2xl font-bold text-white mb-2">{urlProduct.name}</h1>
-                {'duration' in urlProduct && (
-                  <p className="text-white/80">{urlProduct.duration}</p>
-                )}
-              </div>
-              
-              <div className="px-6 py-8 text-center border-b border-slate-100 dark:border-slate-800">
-                {'originalPrice' in urlProduct && (
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <span className="text-lg text-slate-400 line-through">
-                      ₩{urlProduct.originalPrice.toLocaleString()}
-                    </span>
-                    <Badge variant="destructive" className="text-xs">
-                      {urlProduct.discount}% OFF
-                    </Badge>
+            {/* 프리미엄 패스 상품 카드 - 무료 체험 통합 */}
+            {urlProduct.type === 'pass' && (
+              <div className="bg-gradient-to-br from-primary/10 via-purple-500/10 to-amber-500/10 rounded-3xl shadow-xl overflow-hidden border-2 border-primary">
+                {/* 상단 배지 */}
+                <div className="px-6 py-4 bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Crown className="w-6 h-6 text-white" />
+                    <span className="font-bold text-white text-lg">프리미엄 패스</span>
                   </div>
-                )}
-                <span className="text-4xl font-black text-slate-900 dark:text-white">
-                  ₩{urlProduct.price.toLocaleString()}
-                </span>
-              </div>
-              
-              {'tokens' in urlProduct && (
-                <div className="px-6 py-6 text-center">
-                  <div className="flex items-center justify-center gap-2 text-lg">
-                    <Coins className="w-5 h-5 text-blue-500" />
-                    <span className="font-semibold text-slate-900 dark:text-white">
-                      {urlProduct.tokens} 캐시
-                    </span>
-                    {'bonus' in urlProduct && urlProduct.bonus > 0 && (
-                      <span className="text-orange-500 font-semibold">
-                        + {urlProduct.bonus} 보너스
-                      </span>
-                    )}
-                  </div>
+                  <Badge className="bg-white/20 text-white border-0">
+                    <Zap className="w-3 h-3 mr-1" />
+                    인기
+                  </Badge>
                 </div>
-              )}
 
-              {urlProduct.type === 'pass' && (
-                <div className="px-6 py-6 border-t border-slate-100 dark:border-slate-800">
-                  <h3 className="text-sm font-semibold text-slate-500 mb-4">포함된 혜택</h3>
-                  <div className="space-y-3">
-                    {['모든 AI 분석 무제한', '모든 심리검사 무제한', '상세 리포트 무제한', '프리미엄 기능 이용'].map((benefit, idx) => (
+                {/* 기능 목록 */}
+                <div className="px-6 py-6 bg-card">
+                  <p className="text-sm text-muted-foreground mb-4">모든 기능 무제한</p>
+                  <div className="space-y-3 mb-6">
+                    {[
+                      { name: '기본 심리검사', new: false },
+                      { name: '간단 결과 요약', new: false },
+                      { name: 'AI 심층 분석', new: true },
+                      { name: '전문가 맞춤 추천', new: true },
+                      { name: 'PDF 리포트 다운로드', new: true },
+                      { name: '무제한 검사', new: true },
+                    ].map((feature, idx) => (
                       <div key={idx} className="flex items-center gap-3">
-                        <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                          <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
-                        </div>
-                        <span className="text-slate-700 dark:text-slate-300">{benefit}</span>
+                        <Check className={`w-5 h-5 ${feature.new ? 'text-amber-500' : 'text-green-500'}`} />
+                        <span className="text-foreground font-medium">{feature.name}</span>
+                        {feature.new && (
+                          <Badge className="bg-amber-500 text-white text-xs border-0">NEW</Badge>
+                        )}
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
-            </div>
 
-            {/* 무료 체험 카드 (프리미엄 패스 + 신규 사용자) */}
-            {urlProduct.type === 'pass' && isFreeTrialEligible && (
-              <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/50 dark:via-orange-950/50 dark:to-yellow-950/50 rounded-3xl shadow-xl overflow-hidden border-2 border-amber-400 dark:border-amber-600">
-                <div className="px-6 py-6 text-center">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400 mb-4">
-                    <Gift className="w-5 h-5 text-amber-600" />
-                    <span className="font-bold text-amber-700 dark:text-amber-400">신규 가입자 특별 혜택</span>
-                  </div>
-                  
-                  <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
-                    🎉 1개월 무료 체험
-                  </h2>
-                  <p className="text-slate-600 dark:text-slate-400 mb-6">
-                    첫 결제 ₩0원! 프리미엄 패스의 모든 기능을 1개월간 무료로 체험해보세요
-                  </p>
-                  
-                  <div className="flex flex-col gap-3">
-                    <Button
-                      onClick={startFreeTrial}
-                      disabled={freeTrialLoading}
-                      className="w-full h-14 rounded-xl text-lg font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-                    >
-                      {freeTrialLoading ? (
-                        <><Loader2 className="w-5 h-5 animate-spin mr-2" />처리 중...</>
-                      ) : (
-                        <><Sparkles className="w-5 h-5 mr-2" />무료 체험 시작하기</>
+                  {/* 가격 및 할인 */}
+                  <div className="p-4 bg-background rounded-xl mb-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        {'originalPrice' in urlProduct && (
+                          <p className="text-sm text-muted-foreground line-through">월 {urlProduct.originalPrice.toLocaleString()}원</p>
+                        )}
+                        <p className="text-2xl font-bold text-primary">월 {urlProduct.price.toLocaleString()}원</p>
+                      </div>
+                      {'discount' in urlProduct && (
+                        <Badge className="bg-destructive text-destructive-foreground">{urlProduct.discount}% 할인</Badge>
                       )}
-                    </Button>
-                    
-                    <Button
-                      variant="ghost"
-                      onClick={() => setIsFreeTrialEligible(false)}
-                      className="text-slate-500 hover:text-slate-700"
-                    >
-                      바로 결제하기 (무료 체험 건너뛰기)
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 결제 버튼 카드 */}
-            {(urlProduct.type !== 'pass' || !isFreeTrialEligible) && (
-              <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800">
-                {urlProduct.type === 'pass' && checkingFreeTrial && (
-                  <div className="px-6 py-4 bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-800">
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
-                      <span className="text-sm text-amber-700 dark:text-amber-400">무료 체험 자격 확인 중...</span>
                     </div>
                   </div>
-                )}
-                
-                <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800">
-                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">결제 수단 선택</h2>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    카드, 가상계좌, 계좌이체, 휴대폰 결제
-                  </p>
-                </div>
-                
-                <div className="p-6">
-                  <div className="grid grid-cols-4 gap-3 mb-6">
-                    {paymentMethods.map((method, idx) => (
-                      <div key={idx} className="flex flex-col items-center p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                        <method.icon className="w-6 h-6 text-slate-600 dark:text-slate-400 mb-1" />
-                        <span className="text-xs font-medium text-slate-600 dark:text-slate-400 text-center leading-tight">
-                          {method.label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
 
-                  <div className="flex gap-3">
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate('/token-subscription')}
-                      className="flex-1 h-14 rounded-xl text-base font-medium"
-                    >
-                      이전
-                    </Button>
-                    <Button
-                      onClick={requestUrlProductPayment}
-                      disabled={paymentLoading || !tossClientKey}
-                      className={`flex-1 h-14 rounded-xl text-base font-bold text-white ${
-                        urlProduct.type === 'pass' 
-                          ? 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700' 
-                          : urlProduct.type === 'consult'
-                          ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700'
-                          : 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700'
-                      }`}
-                    >
-                      {paymentLoading ? (
-                        <><Loader2 className="w-5 h-5 animate-spin mr-2" />결제 중...</>
-                      ) : (
-                        `₩${urlProduct.price.toLocaleString()} 결제하기`
-                      )}
-                    </Button>
-                  </div>
+                  {/* 무료 체험 또는 바로 결제 */}
+                  {isFreeTrialEligible && !checkingFreeTrial ? (
+                    <div className="space-y-3">
+                      <Button
+                        onClick={startFreeTrial}
+                        disabled={freeTrialLoading}
+                        className="w-full h-14 rounded-xl text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                      >
+                        {freeTrialLoading ? (
+                          <><Loader2 className="w-5 h-5 animate-spin mr-2" />처리 중...</>
+                        ) : (
+                          <><Gift className="w-5 h-5 mr-2" />1개월 무료 체험 시작</>
+                        )}
+                      </Button>
+                      <p className="text-center text-sm text-muted-foreground">
+                        💳 카드 등록 불필요 • 자동 결제 없음
+                      </p>
+                      <Button
+                        variant="ghost"
+                        onClick={() => setIsFreeTrialEligible(false)}
+                        className="w-full text-muted-foreground hover:text-foreground"
+                      >
+                        바로 결제하기 (무료 체험 건너뛰기) →
+                      </Button>
+                    </div>
+                  ) : checkingFreeTrial ? (
+                    <div className="flex items-center justify-center gap-2 py-4">
+                      <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                      <span className="text-muted-foreground">무료 체험 자격 확인 중...</span>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <Button
+                        onClick={requestUrlProductPayment}
+                        disabled={paymentLoading || !tossClientKey}
+                        className="w-full h-14 rounded-xl text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                      >
+                        {paymentLoading ? (
+                          <><Loader2 className="w-5 h-5 animate-spin mr-2" />결제 중...</>
+                        ) : (
+                          <><Crown className="w-5 h-5 mr-2" />프리미엄 시작하기<ArrowRight className="w-5 h-5 ml-2" /></>
+                        )}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
+
+            {/* 캐시 충전 상품 카드 */}
+            {urlProduct.type === 'cash' && (
+              <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-border">
+                <div className="px-6 py-6 bg-gradient-to-r from-blue-500 to-cyan-500 text-center">
+                  <Badge className="mb-3 bg-white/20 text-white border-0">캐시 충전</Badge>
+                  <h1 className="text-2xl font-bold text-white">{urlProduct.name}</h1>
+                </div>
+
+                <div className="px-6 py-8 text-center">
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <Wallet className="w-8 h-8 text-primary" />
+                    <span className="text-3xl font-bold text-foreground">
+                      {'tokens' in urlProduct && urlProduct.tokens} 캐시
+                    </span>
+                    {'bonus' in urlProduct && urlProduct.bonus > 0 && (
+                      <Badge className="bg-amber-500 text-white">+{urlProduct.bonus} 보너스</Badge>
+                    )}
+                  </div>
+                  <p className="text-4xl font-black text-primary mb-6">
+                    ₩{urlProduct.price.toLocaleString()}
+                  </p>
+
+                  <Button
+                    onClick={requestUrlProductPayment}
+                    disabled={paymentLoading || !tossClientKey}
+                    className="w-full h-14 rounded-xl text-lg font-bold bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white"
+                  >
+                    {paymentLoading ? (
+                      <><Loader2 className="w-5 h-5 animate-spin mr-2" />결제 중...</>
+                    ) : (
+                      <>결제하기</>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* 전문가 상담 상품 카드 */}
+            {urlProduct.type === 'consult' && (
+              <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-border">
+                <div className="px-6 py-6 bg-gradient-to-r from-emerald-500 to-green-500 text-center">
+                  <Badge className="mb-3 bg-white/20 text-white border-0">전문가 상담</Badge>
+                  <h1 className="text-2xl font-bold text-white">{urlProduct.name}</h1>
+                  {'duration' in urlProduct && (
+                    <p className="text-white/80 mt-1">{urlProduct.duration}</p>
+                  )}
+                </div>
+
+                <div className="px-6 py-8 text-center">
+                  <p className="text-4xl font-black text-primary mb-6">
+                    ₩{urlProduct.price.toLocaleString()}
+                  </p>
+
+                  <Button
+                    onClick={requestUrlProductPayment}
+                    disabled={paymentLoading || !tossClientKey}
+                    className="w-full h-14 rounded-xl text-lg font-bold bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
+                  >
+                    {paymentLoading ? (
+                      <><Loader2 className="w-5 h-5 animate-spin mr-2" />결제 중...</>
+                    ) : (
+                      <>결제하기</>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* 결제 수단 안내 */}
+            <div className="bg-muted/50 rounded-2xl p-4">
+              <p className="text-sm font-medium text-foreground mb-3">결제 수단</p>
+              <div className="grid grid-cols-4 gap-2">
+                {paymentMethods.map((method, idx) => (
+                  <div key={idx} className="flex flex-col items-center p-2 rounded-lg bg-background">
+                    <method.icon className="w-5 h-5 text-muted-foreground mb-1" />
+                    <span className="text-xs text-muted-foreground text-center">{method.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         ) : loading ? (
           <div className="flex flex-col items-center justify-center py-20">
@@ -565,8 +578,8 @@ const TokenPurchase = () => {
         ) : !selectedPack ? (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">토큰팩 선택</h1>
-              <p className="text-slate-500">원하는 토큰팩을 선택해주세요</p>
+              <h1 className="text-2xl font-bold text-foreground mb-2">캐시 충전</h1>
+              <p className="text-muted-foreground">원하는 캐시팩을 선택해주세요</p>
             </div>
             
             <div className="space-y-4">
@@ -574,19 +587,19 @@ const TokenPurchase = () => {
                 <div 
                   key={pack.id} 
                   onClick={() => setSelectedPack(pack)}
-                  className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-5 cursor-pointer hover:border-primary/50 hover:shadow-xl transition-all active:scale-[0.98]"
+                  className="bg-card rounded-2xl shadow-lg border border-border p-5 cursor-pointer hover:border-primary/50 hover:shadow-xl transition-all active:scale-[0.98]"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                        <Coins className="w-7 h-7 text-white" />
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center">
+                        <Wallet className="w-7 h-7 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-lg text-slate-900 dark:text-white">{pack.name}</h3>
-                        <p className="text-slate-500 text-sm">
-                          {pack.tokens.toLocaleString()} 토큰
+                        <h3 className="font-bold text-lg text-foreground">{pack.name}</h3>
+                        <p className="text-muted-foreground text-sm">
+                          {pack.tokens.toLocaleString()} 캐시
                           {pack.bonus_tokens > 0 && (
-                            <span className="text-orange-500 font-semibold ml-1">
+                            <span className="text-amber-500 font-semibold ml-1">
                               +{pack.bonus_tokens} 보너스
                             </span>
                           )}
@@ -594,11 +607,11 @@ const TokenPurchase = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-bold text-slate-900 dark:text-white">
+                      <p className="text-xl font-bold text-foreground">
                         ₩{pack.price.toLocaleString()}
                       </p>
-                      <p className="text-xs text-slate-400">
-                        토큰당 ₩{Math.round(pack.price / (pack.tokens + pack.bonus_tokens))}
+                      <p className="text-xs text-muted-foreground">
+                        캐시당 ₩{Math.round(pack.price / (pack.tokens + pack.bonus_tokens))}
                       </p>
                     </div>
                   </div>
@@ -609,14 +622,14 @@ const TokenPurchase = () => {
         ) : (
           <div className="space-y-6">
             {/* 선택한 상품 */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-              <div className="px-6 py-8 text-center bg-gradient-to-br from-blue-500 via-cyan-500 to-sky-500">
+            <div className="bg-card rounded-3xl shadow-xl border border-border overflow-hidden">
+              <div className="px-6 py-8 text-center bg-gradient-to-br from-primary via-purple-500 to-blue-500">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4">
-                  <Coins className="w-8 h-8 text-white" />
+                  <Wallet className="w-8 h-8 text-white" />
                 </div>
                 <h1 className="text-2xl font-bold text-white mb-2">{selectedPack.name}</h1>
                 <p className="text-white/80">
-                  {selectedPack.tokens.toLocaleString()} 토큰
+                  {selectedPack.tokens.toLocaleString()} 캐시
                   {selectedPack.bonus_tokens > 0 && (
                     <span className="ml-2">+ {selectedPack.bonus_tokens} 보너스</span>
                   )}
@@ -624,17 +637,17 @@ const TokenPurchase = () => {
               </div>
               
               <div className="px-6 py-6 text-center">
-                <span className="text-4xl font-bold text-slate-900 dark:text-white">
+                <span className="text-4xl font-bold text-foreground">
                   ₩{selectedPack.price.toLocaleString()}
                 </span>
               </div>
             </div>
 
             {/* 결제 수단 */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-              <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800">
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">결제 수단 선택</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <div className="bg-card rounded-3xl shadow-xl border border-border overflow-hidden">
+              <div className="px-6 py-5 border-b border-border">
+                <h2 className="text-lg font-bold text-foreground">결제 수단 선택</h2>
+                <p className="text-sm text-muted-foreground mt-1">
                   카드, 가상계좌, 계좌이체, 휴대폰 결제
                 </p>
               </div>
@@ -642,9 +655,9 @@ const TokenPurchase = () => {
               <div className="p-6">
                 <div className="grid grid-cols-4 gap-3 mb-6">
                   {paymentMethods.map((method, idx) => (
-                    <div key={idx} className="flex flex-col items-center p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                      <method.icon className="w-6 h-6 text-slate-600 dark:text-slate-400 mb-1" />
-                      <span className="text-xs font-medium text-slate-600 dark:text-slate-400 text-center leading-tight">
+                    <div key={idx} className="flex flex-col items-center p-3 rounded-xl bg-muted/50">
+                      <method.icon className="w-6 h-6 text-muted-foreground mb-1" />
+                      <span className="text-xs font-medium text-muted-foreground text-center leading-tight">
                         {method.label}
                       </span>
                     </div>
@@ -662,7 +675,7 @@ const TokenPurchase = () => {
                   <Button
                     onClick={() => requestPayment(selectedPack)}
                     disabled={paymentLoading || !tossClientKey}
-                    className="flex-1 h-14 rounded-xl text-base font-bold text-white bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
+                    className="flex-1 h-14 rounded-xl text-base font-bold text-white bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700"
                   >
                     {paymentLoading ? (
                       <><Loader2 className="w-5 h-5 animate-spin mr-2" />결제 중...</>

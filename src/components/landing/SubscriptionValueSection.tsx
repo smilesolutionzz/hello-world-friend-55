@@ -100,38 +100,53 @@ const SubscriptionValueSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <Card className="p-6 border-border/50 bg-muted/30 h-full">
+            <Card className="p-6 border-2 border-border bg-card h-full shadow-lg">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-muted rounded-full">
                   <Lock className="w-6 h-6 text-muted-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-muted-foreground">무료 이용</h3>
+                  <h3 className="text-xl font-bold text-foreground">무료 이용</h3>
                   <p className="text-sm text-muted-foreground">기본 기능만 제공</p>
                 </div>
               </div>
 
-              <div className="space-y-3 mb-6">
+              <div className="space-y-4 mb-6">
                 {freeFeatures.map((feature, index) => (
                   <div key={index} className="flex items-center gap-3">
                     {feature.available ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
                     ) : (
-                      <Lock className="w-5 h-5 text-muted-foreground/50 flex-shrink-0" />
+                      <Lock className="w-5 h-5 text-destructive flex-shrink-0" />
                     )}
-                    <span className={feature.available ? 'text-foreground' : 'text-muted-foreground/50 line-through'}>
+                    <span className={feature.available ? 'text-foreground font-medium' : 'text-muted-foreground line-through'}>
                       {feature.name}
                     </span>
+                    {!feature.available && (
+                      <Badge variant="outline" className="ml-auto text-xs border-destructive/50 text-destructive">
+                        잠금
+                      </Badge>
+                    )}
                   </div>
                 ))}
               </div>
 
-              <div className="p-4 bg-muted rounded-lg text-center">
-                <p className="text-sm text-muted-foreground">
-                  검사는 할 수 있지만...<br />
-                  <span className="font-medium text-foreground">정작 중요한 분석은 볼 수 없어요 😢</span>
+              <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-lg text-center mb-4">
+                <p className="text-sm text-foreground font-medium">
+                  ⚠️ 검사는 할 수 있지만...<br />
+                  <span className="text-destructive font-bold">정작 중요한 AI 분석은 볼 수 없어요</span>
                 </p>
               </div>
+
+              <Button 
+                onClick={() => navigate('/token-purchase?type=subscription&id=premium_pass')}
+                variant="outline"
+                className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground font-bold py-5"
+                size="lg"
+              >
+                <Unlock className="w-5 h-5 mr-2" />
+                지금 프리미엄으로 업그레이드
+              </Button>
             </Card>
           </motion.div>
 

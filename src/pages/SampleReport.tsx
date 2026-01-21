@@ -2,12 +2,21 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import Footer from "@/components/ui/footer";
 import SEOHead from "@/components/common/SEOHead";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Sparkles, User, Baby, HeartPulse } from "lucide-react";
+import { Sparkles, User, Baby, HeartPulse, Lock, Crown } from "lucide-react";
 import { AdultReportContent } from "@/components/sample-reports/AdultReportContent";
 import { ChildReportContent } from "@/components/sample-reports/ChildReportContent";
 import { SeniorReportContent } from "@/components/sample-reports/SeniorReportContent";
+import { useSubscription } from "@/hooks/useSubscription";
+import { CashBalanceDisplay } from "@/components/paywall/CashBalanceDisplay";
+import { BlurredContent } from "@/components/paywall/BlurredContent";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const SampleReport = () => {
+  const { isPremiumUser, isLifetimeUser } = useSubscription();
+  const isPremium = isPremiumUser() || isLifetimeUser();
+  const navigate = useNavigate();
+  
   return (
     <>
       <SEOHead
@@ -20,11 +29,22 @@ const SampleReport = () => {
         <UnifiedNavigation />
 
         <main className="container mx-auto px-4 py-12 max-w-5xl">
+          {/* 캐시 잔액 표시 */}
+          <div className="mb-6">
+            <CashBalanceDisplay />
+          </div>
+          
           {/* Header */}
           <div className="text-center mb-12 space-y-4">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold text-primary">초개인화 AI 리포트 예시</span>
+              {isPremium && (
+                <span className="ml-2 px-2 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs rounded-full flex items-center gap-1">
+                  <Crown className="w-3 h-3" />
+                  Premium
+                </span>
+              )}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent">
               종합 분석 리포트 샘플
@@ -32,6 +52,25 @@ const SampleReport = () => {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               성인 심리, 아동 발달, 노인 건강 평가의 실제 리포트 예시를 확인해보세요
             </p>
+            
+            {!isPremium && (
+              <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl">
+                <div className="flex items-center justify-center gap-2 text-amber-800 mb-2">
+                  <Lock className="w-5 h-5" />
+                  <span className="font-semibold">전체 리포트는 프리미엄 전용입니다</span>
+                </div>
+                <p className="text-sm text-amber-700 mb-3">
+                  샘플의 일부만 미리보기로 제공됩니다. 전체 리포트를 확인하려면 프리미엄 구독이 필요합니다.
+                </p>
+                <Button 
+                  onClick={() => navigate('/token-purchase?type=subscription&id=premium_pass')}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                >
+                  <Crown className="w-4 h-4 mr-2" />
+                  프리미엄 구독하기
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Accordion for Report Types */}
@@ -50,7 +89,13 @@ const SampleReport = () => {
                 </div>
               </AccordionTrigger>
               <AccordionContent className="pt-6">
-                <ChildReportContent />
+                <BlurredContent
+                  title="아동 발달 평가 리포트"
+                  description="전체 아동 발달 평가 리포트를 확인하려면 프리미엄 구독이 필요합니다."
+                  requiredCash={15000}
+                >
+                  <ChildReportContent />
+                </BlurredContent>
               </AccordionContent>
             </AccordionItem>
 
@@ -68,7 +113,13 @@ const SampleReport = () => {
                 </div>
               </AccordionTrigger>
               <AccordionContent className="pt-6">
-                <AdultReportContent />
+                <BlurredContent
+                  title="성인 종합 심리 리포트"
+                  description="전체 성인 심리 리포트를 확인하려면 프리미엄 구독이 필요합니다."
+                  requiredCash={15000}
+                >
+                  <AdultReportContent />
+                </BlurredContent>
               </AccordionContent>
             </AccordionItem>
 
@@ -86,7 +137,13 @@ const SampleReport = () => {
                 </div>
               </AccordionTrigger>
               <AccordionContent className="pt-6">
-                <SeniorReportContent />
+                <BlurredContent
+                  title="노인 건강 종합 리포트"
+                  description="전체 노인 건강 리포트를 확인하려면 프리미엄 구독이 필요합니다."
+                  requiredCash={15000}
+                >
+                  <SeniorReportContent />
+                </BlurredContent>
               </AccordionContent>
             </AccordionItem>
           </Accordion>

@@ -27,6 +27,7 @@ import ColumnHookBanner from '@/components/landing/ColumnHookBanner';
 import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
 import MindDiaryHook from '@/components/landing/MindDiaryHook';
 import SubscriptionValueSection from '@/components/landing/SubscriptionValueSection';
+import ARRForecastSection from '@/components/landing/ARRForecastSection';
 
 
 
@@ -187,6 +188,11 @@ const Index = () => {
             {/* 💎 구독 가치 제안 - 왜 프리미엄이 필요한가 */}
             <LazyLoad rootMargin="200px">
               <SubscriptionValueSection />
+            </LazyLoad>
+            
+            {/* 📊 실제 트래픽 기반 ARR 예측 */}
+            <LazyLoad rootMargin="200px">
+              <ARRForecastSection />
             </LazyLoad>
             
             {/* 5️⃣ 감성 후킹 - 엄마들의 실제 사연 */}

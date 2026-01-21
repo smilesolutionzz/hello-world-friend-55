@@ -101,7 +101,7 @@ const TokenSubscription = () => {
             <h3 className="text-lg font-bold mb-1">AI 심층분석</h3>
             <p className="text-sm text-white/80 mb-4">발달검사 · 언어진단 · ADHD</p>
             <div className="pt-3 border-t border-white/20">
-              <div className="text-2xl font-black">₩3,000~</div>
+              <div className="text-2xl font-black">₩5,000~</div>
               <p className="text-xs text-white/70">전문가급 심층 리포트</p>
             </div>
           </div>

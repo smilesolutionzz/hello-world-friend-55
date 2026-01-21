@@ -1,9 +1,9 @@
-// 베타 테스트 기간 체크 유틸리티
-export const BETA_END_DATE = new Date('2025-10-30T23:59:59+09:00'); // 2025년 10월 30일 23:59:59 KST
+// 베타 테스트 기간 종료 - 유료 서비스 전환
+export const BETA_END_DATE = new Date('2025-01-01T00:00:00+09:00');
 
 export const isBetaPeriod = (): boolean => {
-  const now = new Date();
-  return now < BETA_END_DATE;
+  // 베타 테스트 기간 종료됨 - 항상 false 반환
+  return false;
 };
 
 export const getBetaDaysRemaining = (): number => {

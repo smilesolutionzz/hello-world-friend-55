@@ -3,13 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Share2, Crown, Lock, ArrowRight, Star, ImageIcon, Loader2, FileDown, AlertTriangle } from 'lucide-react';
+import { Brain, Share2, Crown, Lock, ArrowRight, Star, ImageIcon, Loader2, FileDown, AlertTriangle, Wallet, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useRedFlagDetection } from '@/hooks/useRedFlagDetection';
 import RedFlagAlertDialog from './RedFlagAlertDialog';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface FreeTrialResultProps {
   result: {
@@ -33,6 +36,8 @@ interface FreeTrialResultProps {
 const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isPremiumUser, isLifetimeUser } = useSubscription();
+  const isPremium = isPremiumUser() || isLifetimeUser();
   
   const [generatedImage, setGeneratedImage] = useState<string>("");
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
@@ -168,6 +173,11 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
       />
 
       <div id="free-trial-result" className="container mx-auto px-4 max-w-4xl">
+        {/* 상단 캐시 잔액 표시 */}
+        <div className="mb-6">
+          <CashBalanceDisplay />
+        </div>
+
         {/* 레드플래그 배너 (항상 표시) */}
         {hasRedFlags && (
           <div 

@@ -1,16 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, AlertTriangle, Heart, ArrowLeft, ExternalLink, FileDown } from "lucide-react";
+import { CheckCircle, AlertTriangle, Heart, ArrowLeft, ExternalLink, FileDown, Lock, Crown, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useState } from 'react';
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { PremiumAnalysisOffer } from "@/components/premium/PremiumAnalysisOffer";
-// import { generatePDFReport } from '@/utils/pdfGenerator';
+import { CashBalanceDisplay } from "@/components/paywall/CashBalanceDisplay";
+import { BlurredContent } from "@/components/paywall/BlurredContent";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from '@/integrations/supabase/client';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
-
 interface InfantAssessmentResultProps {
   results: {
     answers: Record<string, number>;
@@ -28,6 +29,8 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const today = new Date().toLocaleDateString('ko-KR');
   const [userId, setUserId] = useState<string | undefined>();
+  const { isPremiumUser, isLifetimeUser } = useSubscription();
+  const isPremium = isPremiumUser() || isLifetimeUser();
 
   // 자동 저장 - 분석 포함
   const evalLevel = average >= 2.5 ? '우수' : average >= 2.0 ? '양호' : average >= 1.5 ? '보통' : '관찰 필요';
@@ -95,6 +98,9 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
 
   return (
     <div id="infant-assessment-result" className="space-y-8">
+      {/* 상단 캐시 잔액 표시 */}
+      <CashBalanceDisplay />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
@@ -161,46 +167,71 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
         </div>
       </Card>
 
-      {/* 전문가 해석 결과 */}
-      <Card className="p-8">
-        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 결과 요약</h3>
-        
-        <div className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <p className="text-lg font-medium mb-2">• 발달점수: {total}점 / {Object.keys(categoryScores).length * 3}점</p>
-              <p className="text-lg font-medium">• 발달수준: {evaluation.level}</p>
-            </div>
-            <div>
-              <p className="text-lg font-medium mb-2">• 영역당 평균점수: {(total / Object.keys(categoryScores).length).toFixed(1)}점 / 3.0점</p>
-              <p className="text-lg font-medium">• 연령대: {ageGroup}</p>
-            </div>
+      {/* 전문가 해석 결과 - 비구독자는 블러 처리 */}
+      <BlurredContent
+        title="AI 심층 분석 리포트"
+        description="전문가급 상세 해석을 확인하세요"
+        requiredCash={5000}
+      >
+        <Card className="p-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-foreground">✨ AI 심층 분석 결과</h3>
+            {isPremium && (
+              <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
+                <Crown className="w-3 h-3 mr-1" />
+                프리미엄
+              </Badge>
+            )}
           </div>
           
-          <div className="bg-muted/30 rounded-lg p-6">
-            <p className="text-lg leading-relaxed">
-              <strong>해석:</strong> {evaluation.level === "우수" 
-                ? `${ageGroup} 연령 기준으로 전반적인 발달이 우수한 수준입니다. 현재의 양육 환경과 자극이 아이의 발달에 매우 긍정적으로 작용하고 있습니다. 아이의 강점 영역을 지속적으로 지원하며, 다양한 경험과 학습 기회를 제공해주시기 바랍니다. 균형 잡힌 발달을 위해 상대적으로 낮은 영역에도 관심을 기울여 주세요. 정기적인 발달 관찰을 통해 지속적인 성장을 지원하시기를 권장드립니다.`
-                : evaluation.level === "양호"
-                ? `${ageGroup} 연령에 적합한 발달 수준을 보이고 있습니다. 대부분의 발달 영역에서 연령에 맞는 성취를 보여주고 있어 건강한 성장을 하고 있다고 볼 수 있습니다. 현재의 양육 방식을 유지하면서, 아이의 관심사와 강점을 찾아 더욱 풍부한 경험을 제공해주시기 바랍니다. 일상생활에서 자연스러운 상호작용과 놀이를 통해 지속적인 발달을 지원해주세요.`
-                : evaluation.level === "보통"
-                ? `${ageGroup} 연령 기준으로 평균적인 발달 수준입니다. 일부 영역에서는 또래보다 빠른 발달을 보이고, 일부 영역에서는 시간이 더 필요할 수 있습니다. 이는 매우 자연스러운 현상으로, 아이마다 발달 속도와 패턴이 다를 수 있습니다. 아이의 개별적인 특성을 인정하고, 강점을 살리면서 부족한 부분은 자연스럽게 지원해주시기 바랍니다. 충분한 시간과 인내심을 갖고 아이의 발달을 지켜봐 주세요.`
-                : `일부 발달 영역에서 또래보다 느린 발달을 보이고 있어 추가적인 관심과 지원이 필요할 수 있습니다. 이는 조기에 발견하여 적절한 지원을 제공할 수 있는 좋은 기회입니다. 소아과 전문의나 발달 전문가와 상담하여 정확한 평가를 받아보시기를 권장드립니다. 아이의 개별적 특성을 고려한 맞춤형 발달 지원 계획을 수립하고, 가정에서도 꾸준한 관심과 격려를 통해 아이의 발달을 도와주세요.`}
-            </p>
+          <div className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <p className="text-lg font-medium mb-2">• 발달점수: {total}점 / {Object.keys(categoryScores).length * 3}점</p>
+                <p className="text-lg font-medium">• 발달수준: {evaluation.level}</p>
+              </div>
+              <div>
+                <p className="text-lg font-medium mb-2">• 영역당 평균점수: {(total / Object.keys(categoryScores).length).toFixed(1)}점 / 3.0점</p>
+                <p className="text-lg font-medium">• 연령대: {ageGroup}</p>
+              </div>
+            </div>
+            
+            <div className="bg-muted/30 rounded-lg p-6">
+              <p className="text-lg leading-relaxed">
+                <strong>해석:</strong> {evaluation.level === "우수" 
+                  ? `${ageGroup} 연령 기준으로 전반적인 발달이 우수한 수준입니다. 현재의 양육 환경과 자극이 아이의 발달에 매우 긍정적으로 작용하고 있습니다. 아이의 강점 영역을 지속적으로 지원하며, 다양한 경험과 학습 기회를 제공해주시기 바랍니다.`
+                  : evaluation.level === "양호"
+                  ? `${ageGroup} 연령에 적합한 발달 수준을 보이고 있습니다. 대부분의 발달 영역에서 연령에 맞는 성취를 보여주고 있어 건강한 성장을 하고 있다고 볼 수 있습니다.`
+                  : evaluation.level === "보통"
+                  ? `${ageGroup} 연령 기준으로 평균적인 발달 수준입니다. 일부 영역에서는 또래보다 빠른 발달을 보이고, 일부 영역에서는 시간이 더 필요할 수 있습니다.`
+                  : `일부 발달 영역에서 또래보다 느린 발달을 보이고 있어 추가적인 관심과 지원이 필요할 수 있습니다. 소아과 전문의나 발달 전문가와 상담을 권장합니다.`}
+              </p>
+            </div>
+            
+            {/* 심층 분석 내용 - 프리미엄 전용 */}
+            <div className="space-y-4 border-t pt-6">
+              <h4 className="font-bold text-lg flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                영역별 심층 분석
+              </h4>
+              {Object.entries(categoryScores).map(([category, score]) => (
+                <div key={category} className="p-4 bg-gradient-to-r from-primary/5 to-purple-500/5 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium">{getCategoryName(category)}</span>
+                    <Badge variant="outline">{score.toFixed(1)}점</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {score >= 2.5 ? '우수한 발달 수준입니다. 지속적인 자극과 격려를 통해 강점을 더욱 발전시켜주세요.' :
+                     score >= 2.0 ? '양호한 발달 수준입니다. 현재 양육 방식을 유지하면서 다양한 경험을 제공해주세요.' :
+                     score >= 1.5 ? '평균 수준입니다. 해당 영역에 조금 더 관심을 기울이면 빠른 발전을 기대할 수 있습니다.' :
+                     '추가 지원이 필요할 수 있습니다. 전문가 상담을 통해 맞춤형 지원 방안을 모색해보세요.'}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-          
-          <div className="text-center pt-4">
-            <a 
-              href="https://drive.google.com/file/d/17WD3mhW2T4TdkfxTzLpfH5bzFARxz_Vh/view?usp=drive_link"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary font-medium hover:underline"
-            >
-              👉 구독 후 더 정밀한 분석 리포트(PDF) 다운받기 (예시)
-            </a>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      </BlurredContent>
 
       {/* Action Buttons */}
       <div className="grid md:grid-cols-3 gap-4">

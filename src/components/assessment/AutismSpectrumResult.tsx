@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Download, Save, Brain, Users, Repeat, Volume2, MessageCircle, Target, AlertTriangle, CheckCircle, Info, Phone, Bell, ExternalLink, Siren } from "lucide-react";
+import { ArrowLeft, Download, Save, Brain, Users, Repeat, Volume2, MessageCircle, Target, AlertTriangle, CheckCircle, Info, Phone, Bell, ExternalLink, Siren, Crown, Wallet, Lock, Sparkles } from "lucide-react";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useNavigate } from "react-router-dom";
 import RedFlagAlertDialog from "./RedFlagAlertDialog";
 import { useToast } from "@/hooks/use-toast";
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface AutismSpectrumResultProps {
   results: any;

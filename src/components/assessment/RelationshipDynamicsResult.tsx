@@ -3,13 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Users, Heart, Shield, MessageCircle, Scale, HandHeart, Star, TrendingUp, Download, Printer, Loader2, Brain, Lightbulb, Target, Sparkles, ChevronRight } from "lucide-react";
+import { ArrowLeft, Users, Heart, Shield, MessageCircle, Scale, HandHeart, Star, TrendingUp, Download, Printer, Loader2, Brain, Lightbulb, Target, Sparkles, ChevronRight, Crown, Wallet, Lock } from "lucide-react";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTestActions } from "@/hooks/useTestActions";
 import { useWordDownload } from "@/hooks/useWordDownload";
 import { Link } from "react-router-dom";
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface RelationshipDynamicsResultProps {
   results: {

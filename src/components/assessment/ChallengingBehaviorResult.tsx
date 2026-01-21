@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, TrendingDown, CheckCircle, ArrowLeft, Download, MessageCircle, ExternalLink, Brain, Loader2 } from "lucide-react";
+import { AlertTriangle, TrendingDown, CheckCircle, ArrowLeft, Download, MessageCircle, ExternalLink, Brain, Loader2, Crown, Wallet, Lock, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
@@ -11,6 +11,9 @@ import { useToast } from '@/hooks/use-toast';
 import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 import { supabase } from '@/integrations/supabase/client';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface ChallengingBehaviorResultProps {
   results: {

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Home, RefreshCw, Download, Sparkles, Share2, Camera, FileText } from 'lucide-react';
+import { ArrowLeft, Home, RefreshCw, Download, Sparkles, Share2, Camera, FileText, Crown, Wallet, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { categoryInfo } from '@/data/motorDevelopmentQuestions';
@@ -15,6 +15,9 @@ import ModernAnalysisLoading from './ModernAnalysisLoading';
 import { supabase } from '@/integrations/supabase/client';
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { useToast } from '@/hooks/use-toast';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface MotorDevelopmentResultProps {
   results: {

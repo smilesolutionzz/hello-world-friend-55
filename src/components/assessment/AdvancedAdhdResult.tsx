@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { adhdTypes } from "@/data/advancedAdhdTypes";
-import { Home, Download, ImageIcon, Loader2, RefreshCw } from "lucide-react";
+import { Home, Download, ImageIcon, Loader2, RefreshCw, Crown, Wallet, Lock, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from "@/hooks/use-toast";
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface AdvancedAdhdResultProps {
   results: {

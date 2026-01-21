@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { RefreshCw, Download, Share2, Heart, Target, FileText, Crown, Loader2, AlertTriangle, CheckCircle, AlertCircle } from "lucide-react";
+import { RefreshCw, Download, Share2, Heart, Target, FileText, Crown, Loader2, AlertTriangle, CheckCircle, AlertCircle, Wallet, Lock, Sparkles } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
 import { useTestActions } from "@/hooks/useTestActions";
 import { useTokens } from "@/hooks/useTokens";
@@ -13,6 +13,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface SelfEsteemTestResultProps {
   result: {

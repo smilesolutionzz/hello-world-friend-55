@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Crown, Download, Brain, TrendingUp, FileText, Sparkles, Calendar, Target, MessageSquare, BarChart3 } from "lucide-react";
+import { ArrowLeft, Crown, Download, Brain, TrendingUp, FileText, Sparkles, Calendar, Target, MessageSquare, BarChart3, Wallet, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -12,6 +12,9 @@ import EarlyScreeningSection from "@/components/assessment/EarlyScreeningSection
 import { EnhancedChart } from "@/components/ui/enhanced-chart";
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface PremiumAssessmentResultProps {
   assessmentType: string;

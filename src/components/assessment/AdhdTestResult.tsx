@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ExternalLink, MessageCircle, Users, Brain, Sparkles, Crown, Target, Download, ImageIcon, Loader2, Share2, Copy, Instagram } from "lucide-react";
+import { ArrowLeft, ExternalLink, MessageCircle, Users, Brain, Sparkles, Crown, Target, Download, ImageIcon, Loader2, Share2, Copy, Instagram, Wallet, Lock } from "lucide-react";
 import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
@@ -24,6 +24,9 @@ import { PDFHeader } from '@/components/common/PDFHeader';
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import AnalysisLoadingOverlay from '@/components/analysis/AnalysisLoadingOverlay';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface AdhdTestResultProps {
   results: {

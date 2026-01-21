@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Heart, TrendingUp, AlertCircle, CheckCircle, Loader2, MessageCircle, Users, HandHeart, Target, Smile, Crown, Shield, Download } from "lucide-react";
+import { ArrowLeft, Heart, TrendingUp, AlertCircle, CheckCircle, Loader2, MessageCircle, Users, HandHeart, Target, Smile, Crown, Shield, Download, Wallet, Lock, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, LineChart, Line, AreaChart, Area } from 'recharts';
@@ -11,6 +11,9 @@ import { useNavigate } from 'react-router-dom';
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface SocialDevelopmentTestResultProps {
   results: {

@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Target, TrendingUp, AlertCircle, CheckCircle, Loader2, Eye, Ear, Hand, Brain, Activity, Zap } from "lucide-react";
+import { ArrowLeft, Target, TrendingUp, AlertCircle, CheckCircle, Loader2, Eye, Ear, Hand, Brain, Activity, Zap, Crown, Wallet, Lock, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, Area, AreaChart, Cell } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface SensoryIntegrationTestResultProps {
   results: {

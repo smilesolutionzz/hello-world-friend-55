@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, Download, FileText, Crown, Baby, TrendingUp, 
   Copy, Loader2, BookOpen, MessageCircle, Brain, Sparkles,
-  CheckCircle2, AlertTriangle, Info, Share2, Mail
+  CheckCircle2, AlertTriangle, Info, Share2, Mail, Wallet, Lock
 } from "lucide-react";
 import { languageDevelopmentScoring } from "@/data/languageDevelopmentQuestions";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
@@ -16,6 +16,9 @@ import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 import { motion } from "framer-motion";
 import ResultEmailShare from '@/components/share/ResultEmailShare';
 import PremiumAnalysisLoading from '@/components/analysis/PremiumAnalysisLoading';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface LanguageDevelopmentResultProps {
   results: Record<string, number>;

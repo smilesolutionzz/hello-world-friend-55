@@ -1938,18 +1938,23 @@ export type Database = {
       consultation_bookings: {
         Row: {
           booking_date: string
+          booking_type: string | null
           cancellation_reason: string | null
           cancelled_at: string | null
+          commission_type: string | null
           confirmed_at: string | null
           created_at: string | null
+          crisis_alert_id: string | null
           duration_minutes: number
           end_time: string
+          expert_earning: number | null
           expert_id: string
           id: string
           is_quick_consultation: boolean | null
           meeting_link: string | null
           meeting_platform: string | null
           notes: string | null
+          platform_fee: number | null
           start_time: string
           status: string
           tokens_paid: number
@@ -1958,18 +1963,23 @@ export type Database = {
         }
         Insert: {
           booking_date: string
+          booking_type?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
+          commission_type?: string | null
           confirmed_at?: string | null
           created_at?: string | null
+          crisis_alert_id?: string | null
           duration_minutes?: number
           end_time: string
+          expert_earning?: number | null
           expert_id: string
           id?: string
           is_quick_consultation?: boolean | null
           meeting_link?: string | null
           meeting_platform?: string | null
           notes?: string | null
+          platform_fee?: number | null
           start_time: string
           status?: string
           tokens_paid: number
@@ -1978,18 +1988,23 @@ export type Database = {
         }
         Update: {
           booking_date?: string
+          booking_type?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
+          commission_type?: string | null
           confirmed_at?: string | null
           created_at?: string | null
+          crisis_alert_id?: string | null
           duration_minutes?: number
           end_time?: string
+          expert_earning?: number | null
           expert_id?: string
           id?: string
           is_quick_consultation?: boolean | null
           meeting_link?: string | null
           meeting_platform?: string | null
           notes?: string | null
+          platform_fee?: number | null
           start_time?: string
           status?: string
           tokens_paid?: number
@@ -1997,6 +2012,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "consultation_bookings_crisis_alert_id_fkey"
+            columns: ["crisis_alert_id"]
+            isOneToOne: false
+            referencedRelation: "crisis_alerts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "consultation_bookings_expert_id_fkey"
             columns: ["expert_id"]
@@ -2363,6 +2385,75 @@ export type Database = {
             columns: ["corporate_client_id"]
             isOneToOne: false
             referencedRelation: "corporate_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crisis_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          expert_connected: boolean | null
+          expert_id: string | null
+          guardian_notified: boolean | null
+          id: string
+          institution_notified: boolean | null
+          is_resolved: boolean | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity_level: string
+          trigger_data: Json | null
+          trigger_source: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          alert_type?: string
+          created_at?: string | null
+          expert_connected?: boolean | null
+          expert_id?: string | null
+          guardian_notified?: boolean | null
+          id?: string
+          institution_notified?: boolean | null
+          is_resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity_level?: string
+          trigger_data?: Json | null
+          trigger_source?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          expert_connected?: boolean | null
+          expert_id?: string | null
+          guardian_notified?: boolean | null
+          id?: string
+          institution_notified?: boolean | null
+          is_resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity_level?: string
+          trigger_data?: Json | null
+          trigger_source?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crisis_alerts_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
+          },
+          {
+            foreignKeyName: "crisis_alerts_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "experts"
             referencedColumns: ["id"]
           },
         ]
@@ -9456,6 +9547,73 @@ export type Database = {
         }
         Relationships: []
       }
+      urgent_expert_requests: {
+        Row: {
+          created_at: string | null
+          crisis_alert_id: string | null
+          id: string
+          matched_at: string | null
+          matched_expert_id: string | null
+          preferred_method: string | null
+          request_type: string
+          specialization_needed: string[] | null
+          status: string | null
+          updated_at: string | null
+          urgency_fee: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          crisis_alert_id?: string | null
+          id?: string
+          matched_at?: string | null
+          matched_expert_id?: string | null
+          preferred_method?: string | null
+          request_type?: string
+          specialization_needed?: string[] | null
+          status?: string | null
+          updated_at?: string | null
+          urgency_fee?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          crisis_alert_id?: string | null
+          id?: string
+          matched_at?: string | null
+          matched_expert_id?: string | null
+          preferred_method?: string | null
+          request_type?: string
+          specialization_needed?: string[] | null
+          status?: string | null
+          updated_at?: string | null
+          urgency_fee?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "urgent_expert_requests_crisis_alert_id_fkey"
+            columns: ["crisis_alert_id"]
+            isOneToOne: false
+            referencedRelation: "crisis_alerts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "urgent_expert_requests_matched_expert_id_fkey"
+            columns: ["matched_expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
+          },
+          {
+            foreignKeyName: "urgent_expert_requests_matched_expert_id_fkey"
+            columns: ["matched_expert_id"]
+            isOneToOne: false
+            referencedRelation: "experts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       usage_tracking: {
         Row: {
           count: number | null
@@ -11147,6 +11305,14 @@ export type Database = {
         Args: { institution_id: string; target_user_id: string }
         Returns: boolean
       }
+      calculate_consultation_fees: {
+        Args: { p_amount: number; p_booking_type?: string }
+        Returns: {
+          commission_rate: number
+          expert_earning: number
+          platform_fee: number
+        }[]
+      }
       calculate_daily_reward_points: {
         Args: { p_entry_date: string; p_user_id: string }
         Returns: number
@@ -11194,6 +11360,16 @@ export type Database = {
           p_user_id: string
         }
         Returns: Json
+      }
+      create_crisis_alert: {
+        Args: {
+          p_alert_type: string
+          p_severity_level: string
+          p_trigger_data?: Json
+          p_trigger_source: string
+          p_user_id: string
+        }
+        Returns: string
       }
       generate_invitation_code: { Args: never; Returns: string }
       generate_referral_code: { Args: never; Returns: string }

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   Flame, 
   Gift, 
@@ -15,14 +16,18 @@ import {
   ChevronRight,
   Sparkles,
   TrendingUp,
-  Lock
+  Shuffle,
+  Send,
+  MessageCircle,
+  ArrowLeft,
+  CheckCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { motion, AnimatePresence } from "framer-motion";
 
-// 10초 이모지 입력 - 습관 형성 핵심
+// 이모지 선택
 const MOOD_OPTIONS = [
   { emoji: "😊", label: "행복해", value: 5, color: "from-green-400 to-emerald-500" },
   { emoji: "😐", label: "그냥그래", value: 3, color: "from-yellow-400 to-amber-500" },
@@ -31,13 +36,44 @@ const MOOD_OPTIONS = [
   { emoji: "😢", label: "힘들어", value: 0, color: "from-purple-400 to-pink-500" },
 ];
 
+// 오늘의 질문 - 청소년 친화적 킥
+const DAILY_QUESTIONS = [
+  { q: "오늘 가장 웃긴 일은 뭐였어?", emoji: "😂" },
+  { q: "지금 듣고 싶은 노래 있어?", emoji: "🎵" },
+  { q: "오늘 누구랑 얘기했어?", emoji: "💬" },
+  { q: "요즘 빠진 거 있어?", emoji: "🎮" },
+  { q: "오늘 맛있게 먹은 거 있어?", emoji: "🍜" },
+  { q: "지금 하고 싶은 거 있어?", emoji: "✨" },
+  { q: "오늘 짜증났던 일 있어?", emoji: "😤" },
+  { q: "요즘 기대되는 일 있어?", emoji: "🎉" },
+  { q: "친구한테 하고 싶은 말 있어?", emoji: "💭" },
+  { q: "오늘 나에게 한마디?", emoji: "💪" },
+  { q: "요즘 보는 유튜브/틱톡 있어?", emoji: "📱" },
+  { q: "오늘 학교/집에서 뭐했어?", emoji: "🏠" },
+];
+
+// AI 반응 메시지
+const AI_RESPONSES: Record<number, string[]> = {
+  5: ["와 좋은 하루였구나! 🎉", "행복한 게 느껴져!", "오늘 진짜 좋았나봐 😊"],
+  3: ["그럴 수 있지~", "평범한 하루도 소중해!", "내일은 더 좋은 일 있을 거야 ✨"],
+  2: ["힘들었구나... 괜찮아?", "우울할 때도 있는 거야", "내가 들어줄게 💙"],
+  1: ["불안할 수 있어, 괜찮아", "심호흡 한번 해볼까?", "네 마음 이해해 🤗"],
+  0: ["많이 힘들었구나...", "혼자 감당하지 마", "언제든 얘기해도 돼 💙"],
+};
+
 const MindDiary = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [selectedMood, setSelectedMood] = useState<number | null>(null);
+  
+  // 단계: mood → question → done
+  const [step, setStep] = useState<'mood' | 'question' | 'done'>('mood');
+  const [selectedMood, setSelectedMood] = useState<typeof MOOD_OPTIONS[0] | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState(DAILY_QUESTIONS[0]);
+  const [diaryText, setDiaryText] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  
   const [streak, setStreak] = useState(0);
   const [totalEntries, setTotalEntries] = useState(0);
-  const [todayComplete, setTodayComplete] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showCrisisAlert, setShowCrisisAlert] = useState(false);
   const [friendCount, setFriendCount] = useState(0);
@@ -46,7 +82,13 @@ const MindDiary = () => {
   useEffect(() => {
     checkAuth();
     loadStats();
+    shuffleQuestion();
   }, []);
+
+  const shuffleQuestion = () => {
+    const randomIndex = Math.floor(Math.random() * DAILY_QUESTIONS.length);
+    setCurrentQuestion(DAILY_QUESTIONS[randomIndex]);
+  };
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -57,7 +99,6 @@ const MindDiary = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // 오늘 체크인 확인
     const today = new Date().toISOString().split('T')[0];
     const { data: todayData } = await supabase
       .from('daily_checkins' as any)
@@ -67,11 +108,11 @@ const MindDiary = () => {
       .maybeSingle();
 
     if (todayData) {
-      setTodayComplete(true);
-      setSelectedMood((todayData as any).mood_score);
+      setStep('done');
+      const moodValue = (todayData as any).mood_score;
+      setSelectedMood(MOOD_OPTIONS.find(m => m.value === moodValue) || null);
     }
 
-    // 연속 기록 계산
     const { data: allData } = await supabase
       .from('daily_checkins' as any)
       .select('checkin_date')
@@ -80,14 +121,12 @@ const MindDiary = () => {
 
     if (allData) {
       setTotalEntries(allData.length);
-      
       let currentStreak = 0;
       const now = new Date();
       for (let i = 0; i < allData.length; i++) {
         const expected = new Date(now);
         expected.setDate(now.getDate() - i);
         const checkinDate = new Date((allData[i] as any).checkin_date);
-        
         if (checkinDate.toDateString() === expected.toDateString()) {
           currentStreak++;
         } else {
@@ -97,37 +136,47 @@ const MindDiary = () => {
       setStreak(currentStreak);
     }
 
-    // 친구 초대 수 (추천인 수)
     const { data: referrals } = await supabase
       .from('referral_rewards' as any)
       .select('id')
       .eq('referrer_id', user.id);
-    
-    if (referrals) {
-      setFriendCount(referrals.length);
-    }
+    if (referrals) setFriendCount(referrals.length);
   };
 
-  const handleMoodSelect = async (mood: typeof MOOD_OPTIONS[0]) => {
-    if (todayComplete) return;
+  // Step 1: 기분 선택
+  const handleMoodSelect = (mood: typeof MOOD_OPTIONS[0]) => {
+    setSelectedMood(mood);
     
-    setSelectedMood(mood.value);
-    setLoading(true);
-
-    // 위기 감지 (힘들어 선택 시)
+    // 위기 감지
     if (mood.value <= 1) {
       setShowCrisisAlert(true);
     }
+    
+    // AI 반응 생성
+    const responses = AI_RESPONSES[mood.value] || AI_RESPONSES[3];
+    setAiResponse(responses[Math.floor(Math.random() * responses.length)]);
+    
+    // 다음 단계로
+    setTimeout(() => {
+      setStep('question');
+    }, 500);
+  };
 
+  // Step 2: 일기 제출
+  const handleSubmitDiary = async () => {
+    if (!selectedMood) return;
+    
+    setLoading(true);
+    
     const { data: { user } } = await supabase.auth.getUser();
+    
     if (!user) {
-      // 비회원도 체험 가능 - 하지만 저장 안됨
       toast({
         title: "마음 기록 완료! 💙",
         description: "회원가입하면 기록이 저장되고 친구 초대 보상도 받아요!",
       });
+      setStep('done');
       setLoading(false);
-      setTodayComplete(true);
       return;
     }
 
@@ -138,19 +187,20 @@ const MindDiary = () => {
       .upsert({
         user_id: user.id,
         checkin_date: today,
-        mood_score: mood.value,
+        mood_score: selectedMood.value,
         energy_level: 3,
-        stress_level: mood.value <= 2 ? 4 : 2,
+        stress_level: selectedMood.value <= 2 ? 4 : 2,
+        notes: diaryText || null,
       });
 
     if (!error) {
-      setTodayComplete(true);
       setStreak(prev => prev + 1);
       setTotalEntries(prev => prev + 1);
+      setStep('done');
       
       toast({
         title: `${streak + 1}일 연속 기록! 🔥`,
-        description: streak >= 6 ? "7일 달성하면 프리미엄 3일 무료!" : "계속해서 기록해보세요!",
+        description: streak >= 6 ? "7일 달성하면 프리미엄 3일 무료!" : "오늘도 잘했어!",
       });
     }
     
@@ -158,11 +208,11 @@ const MindDiary = () => {
   };
 
   const handleShareInvite = async () => {
-    const shareUrl = `${window.location.origin}?ref=${user?.id?.slice(0, 8) || 'guest'}`;
+    const shareUrl = `${window.location.origin}/mind-diary?ref=${user?.id?.slice(0, 8) || 'guest'}`;
     
     if (navigator.share) {
       await navigator.share({
-        title: '마음일기 - 하루 10초 마음 체크',
+        title: '마음일기 - 하루 1분 마음 체크',
         text: '친구야, 같이 마음 기록하자! 🫶',
         url: shareUrl,
       });
@@ -175,113 +225,290 @@ const MindDiary = () => {
     }
   };
 
-  const handleCrisisHelp = () => {
-    window.open('tel:1388', '_self');
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
       <UnifiedNavigation />
       
       <div className="container mx-auto px-4 pt-6 pb-24 max-w-md">
-        {/* 헤더 - 스트릭 강조 */}
+        {/* 헤더 */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="text-center mb-6"
         >
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-lg px-4 py-2 border-0">
-              <Flame className="w-5 h-5 mr-2" />
-              {streak}일 연속
-            </Badge>
-          </div>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            오늘 기분 어때? 💭
+          <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-base px-4 py-1.5 border-0 mb-3">
+            <Flame className="w-4 h-4 mr-1.5" />
+            {streak}일 연속
+          </Badge>
+          <h1 className="text-2xl font-bold text-white">
+            {step === 'mood' && "오늘 기분 어때? 💭"}
+            {step === 'question' && `${currentQuestion.emoji} 한줄 일기`}
+            {step === 'done' && "오늘 기록 완료! ✨"}
           </h1>
-          <p className="text-slate-400 text-sm">
-            10초면 충분해요
-          </p>
         </motion.div>
 
-        {/* 메인 - 이모지 선택 (Product Hook) */}
-        <Card className="bg-slate-800/50 border-slate-700 mb-6 overflow-hidden">
-          <CardContent className="p-6">
-            {todayComplete ? (
-              <motion.div 
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="text-center py-8"
-              >
-                <div className="text-6xl mb-4">
-                  {MOOD_OPTIONS.find(m => m.value === selectedMood)?.emoji || "✅"}
-                </div>
-                <p className="text-xl font-bold text-white mb-2">오늘 기록 완료!</p>
-                <p className="text-slate-400 text-sm">내일 다시 와서 기록해줘 🫶</p>
-                
-                <div className="mt-6 p-4 bg-slate-700/50 rounded-xl">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-400">7일 연속 달성까지</span>
-                    <span className="text-primary font-bold">{Math.max(0, 7 - streak)}일 남음</span>
-                  </div>
-                  <Progress value={(streak / 7) * 100} className="mt-2 h-2" />
-                  <p className="text-xs text-slate-500 mt-2">
-                    🎁 7일 달성 시 프리미엄 3일 무료!
-                  </p>
-                </div>
-              </motion.div>
-            ) : (
-              <div className="grid grid-cols-5 gap-3">
-                {MOOD_OPTIONS.map((mood, index) => (
-                  <motion.button
-                    key={mood.value}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    onClick={() => handleMoodSelect(mood)}
-                    disabled={loading}
-                    className={`
-                      flex flex-col items-center p-3 rounded-2xl transition-all
-                      ${selectedMood === mood.value 
-                        ? `bg-gradient-to-br ${mood.color} scale-110 shadow-lg` 
-                        : 'bg-slate-700/50 hover:bg-slate-600/50 active:scale-95'}
-                    `}
-                  >
-                    <span className="text-3xl mb-1">{mood.emoji}</span>
-                    <span className="text-xs text-slate-300 whitespace-nowrap">{mood.label}</span>
-                  </motion.button>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* 진행 상태 */}
+        <div className="flex items-center justify-center gap-2 mb-6">
+          {['mood', 'question', 'done'].map((s, i) => (
+            <div 
+              key={s} 
+              className={`h-1.5 rounded-full transition-all ${
+                step === s ? 'w-8 bg-primary' : 
+                ['mood', 'question', 'done'].indexOf(step) > i ? 'w-4 bg-primary/50' : 'w-4 bg-slate-700'
+              }`} 
+            />
+          ))}
+        </div>
 
-        {/* 위기 감지 알림 */}
+        <AnimatePresence mode="wait">
+          {/* Step 1: 기분 선택 */}
+          {step === 'mood' && (
+            <motion.div
+              key="mood"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+            >
+              <Card className="bg-slate-800/50 border-slate-700 mb-6">
+                <CardContent className="p-6">
+                  <p className="text-center text-slate-400 text-sm mb-4">탭해서 선택해줘</p>
+                  <div className="grid grid-cols-5 gap-2">
+                    {MOOD_OPTIONS.map((mood, index) => (
+                      <motion.button
+                        key={mood.value}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        onClick={() => handleMoodSelect(mood)}
+                        className={`
+                          flex flex-col items-center p-3 rounded-2xl transition-all
+                          ${selectedMood?.value === mood.value 
+                            ? `bg-gradient-to-br ${mood.color} scale-105` 
+                            : 'bg-slate-700/50 hover:bg-slate-600/50 active:scale-95'}
+                        `}
+                      >
+                        <span className="text-3xl mb-1">{mood.emoji}</span>
+                        <span className="text-[10px] text-slate-300">{mood.label}</span>
+                      </motion.button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {/* Step 2: 오늘의 질문 + 일기 쓰기 */}
+          {step === 'question' && (
+            <motion.div
+              key="question"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+            >
+              {/* AI 반응 */}
+              <Card className="bg-gradient-to-br from-primary/20 to-purple-500/20 border-primary/30 mb-4">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 bg-primary/30 rounded-full flex items-center justify-center shrink-0">
+                      <MessageCircle className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-white font-medium">{aiResponse}</p>
+                      <p className="text-slate-400 text-sm mt-1">
+                        {selectedMood?.emoji} {selectedMood?.label}를 선택했구나
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 오늘의 질문 */}
+              <Card className="bg-slate-800/50 border-slate-700 mb-4">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-slate-400 text-sm">오늘의 질문</p>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={shuffleQuestion}
+                      className="text-slate-400 hover:text-white h-8 px-2"
+                    >
+                      <Shuffle className="w-4 h-4 mr-1" />
+                      다른 질문
+                    </Button>
+                  </div>
+                  <p className="text-white text-lg font-medium mb-4">
+                    {currentQuestion.emoji} {currentQuestion.q}
+                  </p>
+                  <Textarea
+                    placeholder="자유롭게 적어봐! (선택)"
+                    value={diaryText}
+                    onChange={(e) => setDiaryText(e.target.value)}
+                    className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 min-h-[100px] resize-none"
+                  />
+                </CardContent>
+              </Card>
+
+              {/* 버튼 */}
+              <div className="flex gap-3">
+                <Button
+                  variant="ghost"
+                  onClick={() => setStep('mood')}
+                  className="text-slate-400"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-1" />
+                  뒤로
+                </Button>
+                <Button
+                  onClick={handleSubmitDiary}
+                  disabled={loading}
+                  className="flex-1 h-12 bg-gradient-to-r from-primary to-purple-500"
+                >
+                  {loading ? "저장 중..." : (
+                    <>
+                      <Send className="w-4 h-4 mr-2" />
+                      {diaryText ? "기록 완료!" : "건너뛰고 완료"}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 3: 완료 */}
+          {step === 'done' && (
+            <motion.div
+              key="done"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <Card className="bg-slate-800/50 border-slate-700 mb-6">
+                <CardContent className="p-8 text-center">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", delay: 0.2 }}
+                    className="text-7xl mb-4"
+                  >
+                    {selectedMood?.emoji || "✨"}
+                  </motion.div>
+                  <h2 className="text-xl font-bold text-white mb-2">
+                    오늘도 기록 완료! 🎉
+                  </h2>
+                  <p className="text-slate-400 text-sm mb-6">내일 다시 와서 기록해줘 🫶</p>
+                  
+                  {/* 7일 챌린지 진행률 */}
+                  <div className="p-4 bg-slate-700/50 rounded-xl mb-4">
+                    <div className="flex items-center justify-between text-sm mb-2">
+                      <span className="text-slate-400">7일 연속 챌린지</span>
+                      <span className="text-primary font-bold">{streak}/7일</span>
+                    </div>
+                    <Progress value={(streak / 7) * 100} className="h-3" />
+                    {streak >= 7 ? (
+                      <p className="text-green-400 text-xs mt-2 flex items-center justify-center gap-1">
+                        <CheckCircle className="w-3 h-3" />
+                        프리미엄 3일 무료 달성!
+                      </p>
+                    ) : (
+                      <p className="text-slate-500 text-xs mt-2">
+                        🎁 {7 - streak}일 더 기록하면 프리미엄 3일 무료!
+                      </p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 친구 초대 */}
+              <Card className="bg-gradient-to-br from-primary/20 to-purple-500/20 border-primary/30 mb-4">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-primary/30 rounded-full flex items-center justify-center">
+                        <Gift className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">친구 초대하기</p>
+                        <p className="text-slate-400 text-xs">
+                          {friendCount > 0 ? `${friendCount}명 초대 완료!` : '초대하면 둘 다 보상!'}
+                        </p>
+                      </div>
+                    </div>
+                    <Button 
+                      size="sm"
+                      onClick={handleShareInvite}
+                      className="bg-primary/20 hover:bg-primary/30 text-primary"
+                    >
+                      <Share2 className="w-4 h-4 mr-1" />
+                      초대
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 통계 */}
+              <div className="grid grid-cols-3 gap-3">
+                <Card className="bg-slate-800/50 border-slate-700">
+                  <CardContent className="p-3 text-center">
+                    <Flame className="w-5 h-5 text-orange-400 mx-auto mb-1" />
+                    <p className="text-lg font-bold text-white">{streak}</p>
+                    <p className="text-xs text-slate-400">연속</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-slate-800/50 border-slate-700">
+                  <CardContent className="p-3 text-center">
+                    <TrendingUp className="w-5 h-5 text-green-400 mx-auto mb-1" />
+                    <p className="text-lg font-bold text-white">{totalEntries}</p>
+                    <p className="text-xs text-slate-400">총 기록</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-slate-800/50 border-slate-700">
+                  <CardContent className="p-3 text-center">
+                    <Users className="w-5 h-5 text-blue-400 mx-auto mb-1" />
+                    <p className="text-lg font-bold text-white">{friendCount}</p>
+                    <p className="text-xs text-slate-400">친구</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 위기 알림 */}
         <AnimatePresence>
           {showCrisisAlert && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 50 }}
+              className="fixed bottom-20 left-4 right-4 z-50"
             >
-              <Card className="bg-gradient-to-r from-red-500/20 to-orange-500/20 border-red-500/50 mb-6">
+              <Card className="bg-gradient-to-r from-red-500/90 to-orange-500/90 border-0 shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <AlertTriangle className="w-6 h-6 text-red-400 shrink-0 mt-0.5" />
+                    <AlertTriangle className="w-6 h-6 text-white shrink-0" />
                     <div className="flex-1">
-                      <p className="text-white font-medium mb-2">
-                        힘든 시간을 보내고 있구나 💙
+                      <p className="text-white font-medium mb-1">힘든 시간을 보내고 있구나 💙</p>
+                      <p className="text-white/80 text-sm mb-3">
+                        혼자 감당하지 않아도 돼. 전문 상담사가 24시간 기다리고 있어.
                       </p>
-                      <p className="text-slate-300 text-sm mb-3">
-                        혼자 감당하지 않아도 돼. 24시간 전문 상담사가 기다리고 있어.
-                      </p>
-                      <Button 
-                        onClick={handleCrisisHelp}
-                        className="w-full bg-red-500 hover:bg-red-600 text-white"
-                      >
-                        <Phone className="w-4 h-4 mr-2" />
-                        1388 청소년전화 연결
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm"
+                          onClick={() => window.open('tel:1388', '_self')}
+                          className="bg-white text-red-600 hover:bg-white/90"
+                        >
+                          <Phone className="w-4 h-4 mr-1" />
+                          1388 전화
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => setShowCrisisAlert(false)}
+                          className="text-white/80 hover:text-white hover:bg-white/10"
+                        >
+                          닫기
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -290,93 +517,8 @@ const MindDiary = () => {
           )}
         </AnimatePresence>
 
-        {/* 친구 초대 (Distribution Hook) */}
-        <Card className="bg-gradient-to-br from-primary/20 to-purple-500/20 border-primary/30 mb-6">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-primary/30 rounded-full flex items-center justify-center">
-                  <Gift className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-white font-medium">친구 초대하기</p>
-                  <p className="text-slate-400 text-xs">
-                    {friendCount > 0 ? `${friendCount}명 초대 완료!` : '초대하면 둘 다 보상!'}
-                  </p>
-                </div>
-              </div>
-              <Button 
-                variant="secondary" 
-                size="sm"
-                onClick={handleShareInvite}
-                className="bg-primary/20 hover:bg-primary/30 text-primary"
-              >
-                <Share2 className="w-4 h-4 mr-1" />
-                초대
-              </Button>
-            </div>
-            
-            {friendCount >= 3 && (
-              <div className="mt-3 p-2 bg-green-500/20 rounded-lg flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-green-400" />
-                <span className="text-green-300 text-xs">프리미엄 7일 무료 혜택 달성!</span>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* 통계 요약 */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardContent className="p-3 text-center">
-              <Flame className="w-5 h-5 text-orange-400 mx-auto mb-1" />
-              <p className="text-lg font-bold text-white">{streak}</p>
-              <p className="text-xs text-slate-400">연속</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardContent className="p-3 text-center">
-              <TrendingUp className="w-5 h-5 text-green-400 mx-auto mb-1" />
-              <p className="text-lg font-bold text-white">{totalEntries}</p>
-              <p className="text-xs text-slate-400">총 기록</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-slate-800/50 border-slate-700">
-            <CardContent className="p-3 text-center">
-              <Users className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-              <p className="text-lg font-bold text-white">{friendCount}</p>
-              <p className="text-xs text-slate-400">친구</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* 부모 연결 (Moat - 수익화) */}
-        <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/30">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-amber-500/30 rounded-full flex items-center justify-center">
-                  <Crown className="w-5 h-5 text-amber-400" />
-                </div>
-                <div>
-                  <p className="text-white font-medium text-sm">부모님 연결하기</p>
-                  <p className="text-slate-400 text-xs">주간 리포트 받기</p>
-                </div>
-              </div>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/parent-connect')}
-                className="text-amber-400 hover:text-amber-300"
-              >
-                연결 <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* 비회원 가입 유도 */}
-        {!user && (
+        {!user && step === 'done' && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

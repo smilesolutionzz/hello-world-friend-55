@@ -12,6 +12,8 @@ import {
   Share2, 
   Crown, 
   AlertTriangle,
+  Bot,
+  MessageSquare,
   Phone,
   ChevronRight,
   Sparkles,
@@ -485,17 +487,41 @@ const MindDiary = () => {
               <Card className="bg-gradient-to-r from-red-500/90 to-orange-500/90 border-0 shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <AlertTriangle className="w-6 h-6 text-white shrink-0" />
+                    <AlertTriangle className="w-6 h-6 text-white shrink-0 animate-pulse" />
                     <div className="flex-1">
                       <p className="text-white font-medium mb-1">힘든 시간을 보내고 있구나 💙</p>
                       <p className="text-white/80 text-sm mb-3">
-                        혼자 감당하지 않아도 돼. 전문 상담사가 24시간 기다리고 있어.
+                        혼자 감당하지 않아도 돼. 지금 바로 상담받을 수 있어!
                       </p>
+                      
+                      {/* 상담 연결 옵션들 */}
+                      <div className="space-y-2 mb-3">
+                        {/* AI 상담사 연결 */}
+                        <Button 
+                          size="sm"
+                          onClick={() => navigate('/ai-counselor')}
+                          className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30"
+                        >
+                          <Bot className="w-4 h-4 mr-2" />
+                          AI 상담사와 대화하기
+                        </Button>
+                        
+                        {/* 카카오톡 실제 상담사 연결 */}
+                        <Button 
+                          size="sm"
+                          onClick={() => window.open('https://pf.kakao.com/_Mxnxjxjxj/chat', '_blank')}
+                          className="w-full bg-[#FEE500] hover:bg-[#FEE500]/90 text-[#3C1E1E]"
+                        >
+                          <MessageSquare className="w-4 h-4 mr-2" />
+                          카톡으로 전문상담사 연결
+                        </Button>
+                      </div>
+                      
                       <div className="flex gap-2">
                         <Button 
                           size="sm"
                           onClick={() => window.open('tel:1388', '_self')}
-                          className="bg-white text-red-600 hover:bg-white/90"
+                          className="flex-1 bg-white text-red-600 hover:bg-white/90"
                         >
                           <Phone className="w-4 h-4 mr-1" />
                           1388 전화

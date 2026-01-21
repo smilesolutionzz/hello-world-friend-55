@@ -11426,7 +11426,7 @@ export type Database = {
     }
     Enums: {
       account_type: "parent" | "teacher" | "therapist" | "admin"
-      app_role: "admin" | "expert" | "user"
+      app_role: "admin" | "expert" | "user" | "institution_admin"
       consultation_session_status: "waiting" | "active" | "ended"
       facility_role: "owner" | "admin" | "staff" | "viewer"
       message_type: "text" | "image" | "file"
@@ -11565,7 +11565,7 @@ export const Constants = {
   public: {
     Enums: {
       account_type: ["parent", "teacher", "therapist", "admin"],
-      app_role: ["admin", "expert", "user"],
+      app_role: ["admin", "expert", "user", "institution_admin"],
       consultation_session_status: ["waiting", "active", "ended"],
       facility_role: ["owner", "admin", "staff", "viewer"],
       message_type: ["text", "image", "file"],

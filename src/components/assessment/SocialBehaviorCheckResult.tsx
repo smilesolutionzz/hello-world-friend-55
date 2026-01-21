@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Users, MessageCircle, Gamepad2, Brain, Ear, Star, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Lightbulb, Heart, Share2, Download } from "lucide-react";
+import { ArrowLeft, Users, MessageCircle, Gamepad2, Brain, Ear, Star, AlertTriangle, CheckCircle, ChevronDown, ChevronUp, Lightbulb, Heart, Share2, Download, Crown, Wallet, Lock, Sparkles } from "lucide-react";
 import { useAutoSaveTestResult } from "@/hooks/useAutoSaveTestResult";
 import { motion, AnimatePresence } from "framer-motion";
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface SocialBehaviorCheckResultProps {
   results: any;

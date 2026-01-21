@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Download, MessageSquare, Users, Crown, Sparkles, Heart, Award, Target } from "lucide-react";
+import { ArrowLeft, Download, MessageSquare, Users, Crown, Sparkles, Heart, Award, Target, Wallet, Lock } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
@@ -11,6 +11,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface ParentingStyleResultProps {
   results: any;

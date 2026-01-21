@@ -2,10 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { RefreshCw, Download, Share2, Briefcase, Wrench, Microscope, Palette, Users, TrendingUp, FileText, FileDown } from "lucide-react";
+import { RefreshCw, Download, Share2, Briefcase, Wrench, Microscope, Palette, Users, TrendingUp, FileText, FileDown, Crown, Wallet, Lock, Sparkles } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface CareerInterestResultProps {
   result: {

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Save, Share2, Download } from "lucide-react";
+import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Save, Share2, Download, Crown, Wallet, Lock, Sparkles } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useShareText } from "@/utils/shareUtils";
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
@@ -10,6 +10,9 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useToast } from '@/hooks/use-toast';
 import { PDFHeader } from '@/components/common/PDFHeader';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface PanicTestResultProps {
   results: {

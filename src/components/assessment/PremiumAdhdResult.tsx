@@ -2,13 +2,16 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Download, MessageCircle, Bot, Brain, TrendingUp, AlertTriangle, Target, Users, FileText } from "lucide-react";
+import { ArrowLeft, Download, MessageCircle, Bot, Brain, TrendingUp, AlertTriangle, Target, Users, FileText, Crown, Wallet, Lock, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import ProductRecommendation from "@/components/ProductRecommendation";
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface PremiumAdhdResultProps {
   results: {

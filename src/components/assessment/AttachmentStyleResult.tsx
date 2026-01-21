@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Users, TrendingUp, Lightbulb, ArrowLeft, RefreshCw, ImageIcon, Loader2, FileDown } from 'lucide-react';
+import { Heart, Users, TrendingUp, Lightbulb, ArrowLeft, RefreshCw, ImageIcon, Loader2, FileDown, Crown, Wallet, Lock, Sparkles } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface AttachmentStyleResultProps {
   result: {

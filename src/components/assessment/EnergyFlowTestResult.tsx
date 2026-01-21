@@ -3,9 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Zap, Sun, Moon, Battery, Clock, Heart, AlertTriangle, RefreshCw, Sparkles, Brain, Target, Shield } from "lucide-react";
+import { ArrowLeft, Zap, Sun, Moon, Battery, Clock, Heart, AlertTriangle, RefreshCw, Sparkles, Brain, Target, Shield, Crown, Wallet, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface EnergyFlowTestResultProps {
   results: {

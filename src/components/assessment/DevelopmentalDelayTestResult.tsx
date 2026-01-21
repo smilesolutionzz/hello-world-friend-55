@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Brain, TrendingUp, AlertCircle, CheckCircle, Loader2, MessageCircle, Activity, Users, Lightbulb, Heart, Zap, Target } from "lucide-react";
+import { ArrowLeft, Brain, TrendingUp, AlertCircle, CheckCircle, Loader2, MessageCircle, Activity, Users, Lightbulb, Heart, Zap, Target, Crown, Wallet, Lock, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
@@ -12,6 +12,9 @@ import { useNavigate } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface DevelopmentalDelayTestResultProps {
   results: {

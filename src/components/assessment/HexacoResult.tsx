@@ -4,12 +4,15 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { 
   Crown, Brain, Heart, Sparkles, Home, Share2, TrendingUp,
-  Shield, Zap, Target, Users, Star, Lightbulb, ArrowLeft, Download 
+  Shield, Zap, Target, Users, Star, Lightbulb, ArrowLeft, Download, Wallet, Lock 
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useToast } from '@/hooks/use-toast';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
+import { BlurredContent } from '@/components/paywall/BlurredContent';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface HexacoResultProps {
   result: {

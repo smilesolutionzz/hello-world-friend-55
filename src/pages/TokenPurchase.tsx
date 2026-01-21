@@ -23,10 +23,10 @@ const passProducts = {
   pass_lifetime: { id: 'pass_lifetime', name: '프리미엄 패스 평생', duration: '평생', price: 299000, originalPrice: 999000, discount: 70 },
 };
 
-// 캐시 충전 상품 정보
+// 캐시 충전 상품 정보 (1 token = 100원)
 const cashProducts = {
-  cash_5000: { id: 'cash_5000', name: '캐시 50', tokens: 50, price: 5000, bonus: 0 },
-  cash_10000: { id: 'cash_10000', name: '캐시 110', tokens: 100, price: 10000, bonus: 10 },
+  cash_5000: { id: 'cash_5000', name: '5,000원 캐시', tokens: 50, price: 5000, bonus: 0, displayAmount: 5000 },
+  cash_10000: { id: 'cash_10000', name: '11,000원 캐시', tokens: 110, price: 10000, bonus: 10, displayAmount: 11000 },
 };
 
 // 상담 상품 정보

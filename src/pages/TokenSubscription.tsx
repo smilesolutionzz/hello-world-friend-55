@@ -9,6 +9,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
+import { useSubscription } from '@/hooks/useSubscription';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 
 type Step = 'select' | 'ai-analysis' | 'consultation' | 'unlimited';
@@ -17,8 +18,12 @@ const TokenSubscription = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { tokenBalance } = useTokens();
+  const { isPremiumUser, isLifetimeUser, getSubscriptionLabel } = useSubscription();
   const [step, setStep] = useState<Step>('select');
   const [loading, setLoading] = useState(false);
+
+  const isPremium = isPremiumUser() || isLifetimeUser();
+  const subscriptionLabel = getSubscriptionLabel();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('ko-KR').format(price);
@@ -53,24 +58,44 @@ const TokenSubscription = () => {
   // 메인 선택 화면
   const renderMainSelect = () => (
     <div className="animate-fade-in">
-      {/* 현재 보유 캐시 - 상단에 고정 */}
+      {/* 현재 보유 캐시 또는 프리미엄 상태 - 상단에 고정 */}
       <div className="flex justify-center mb-8">
-        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl px-6 py-3 shadow-md">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
-            <Coins className="w-5 h-5 text-white" />
+        {isPremium ? (
+          // 프리미엄 사용자용 UI
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-violet-100 to-purple-100 dark:from-violet-950/40 dark:to-purple-950/40 border border-violet-300 dark:border-violet-700 rounded-2xl px-6 py-3 shadow-lg">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
+              <Crown className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-left">
+              <div className="text-xs text-violet-600 dark:text-violet-400 font-medium">현재 이용중</div>
+              <div className="text-xl font-black text-violet-700 dark:text-violet-300 flex items-center gap-2">
+                {subscriptionLabel === '평생이용권' ? '평생이용권' : '프리미엄'}
+                <Sparkles className="w-4 h-4 text-amber-500" />
+              </div>
+            </div>
+            <Badge className="ml-2 bg-gradient-to-r from-violet-500 to-purple-500 text-white border-0 font-bold">
+              무제한 이용
+            </Badge>
           </div>
-          <div className="text-left">
-            <div className="text-xs text-amber-600 dark:text-amber-400">현재 보유 캐시</div>
-            <div className="text-xl font-black text-amber-700 dark:text-amber-300">{((tokenBalance?.current_tokens || 0) * 100).toLocaleString()}원</div>
+        ) : (
+          // 일반 사용자용 캐시 표시
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl px-6 py-3 shadow-md">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
+              <Coins className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-left">
+              <div className="text-xs text-amber-600 dark:text-amber-400">현재 보유 캐시</div>
+              <div className="text-xl font-black text-amber-700 dark:text-amber-300">{((tokenBalance?.current_tokens || 0) * 100).toLocaleString()}원</div>
+            </div>
+            <Button 
+              size="sm"
+              className="ml-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-lg"
+              onClick={() => setStep('ai-analysis')}
+            >
+              충전하기
+            </Button>
           </div>
-          <Button 
-            size="sm"
-            className="ml-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-lg"
-            onClick={() => setStep('ai-analysis')}
-          >
-            충전하기
-          </Button>
-        </div>
+        )}
       </div>
 
       {/* Hero Section */}

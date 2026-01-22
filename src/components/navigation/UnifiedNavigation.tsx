@@ -38,12 +38,6 @@ import { formatCash, tokenToCash } from '@/utils/tokenToCash';
 
 const navItems = [
   {
-    label: '마음일기',
-    path: '/mind-diary',
-    icon: Heart,
-    badge: 'HOT',
-  },
-  {
     label: '검사도구',
     icon: TrendingUp,
     children: [

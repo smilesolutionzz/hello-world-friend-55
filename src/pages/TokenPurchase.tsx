@@ -163,6 +163,7 @@ const TokenPurchase = () => {
     }
 
     setPaymentLoading(true);
+    console.log('🛒 결제 버튼 클릭:', { packId: pack.id, price: pack.price, tokens: pack.tokens });
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session) {
@@ -199,6 +200,7 @@ const TokenPurchase = () => {
       console.log('✅ 결제 정보 생성 완료 (unified-payment):', data.paymentData);
 
       // 토스페이먼츠 SDK 로드 및 결제 요청
+      console.log('🚀 토스 결제창 호출 시작:', data.paymentData.orderId);
       const tossPayments = await loadTossPayments(tossClientKey);
 
       await tossPayments.requestPayment('카드', {
@@ -234,6 +236,7 @@ const TokenPurchase = () => {
     }
 
     setPaymentLoading(true);
+    console.log('🛒 URL 상품 결제 버튼 클릭:', urlProduct);
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session) {
@@ -273,6 +276,7 @@ const TokenPurchase = () => {
         throw new Error(data?.error || error?.message || '결제 정보 생성에 실패했습니다.');
       }
 
+      console.log('🚀 토스 결제창 호출 시작 (URL 상품):', data.paymentData.orderId);
       const tossPayments = await loadTossPayments(tossClientKey);
 
       await tossPayments.requestPayment('카드', {

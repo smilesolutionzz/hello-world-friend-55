@@ -382,3 +382,7 @@ verify_jwt = true
 
 [functions.generate-voucher-report]
 verify_jwt = true
+
+# 통합 결제 시스템
+[functions.unified-payment]
+verify_jwt = false

@@ -56,6 +56,7 @@ import TokenSubscription from "./pages/TokenSubscription";
 import TokenPurchase from "./pages/TokenPurchase";
 import TokenHistory from "./pages/TokenHistory";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentComplete from "./pages/PaymentComplete";
 import PaymentFail from "./pages/PaymentFail";
 import TokenPaymentSuccess from "./pages/TokenPaymentSuccess";
 import TokenPaymentFail from "./pages/TokenPaymentFail";
@@ -353,7 +354,7 @@ const App = () => {
           <Route path="/institution-marketing" element={<InstitutionMarketingPresentation />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
-          <Route path="/payment-fail" element={<PaymentFail />} />
+          <Route path="/payment-complete" element={<PaymentComplete />} />
           <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />
           <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
           <Route path="/token-test" element={<TokenTest />} />

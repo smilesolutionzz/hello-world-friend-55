@@ -49,7 +49,7 @@ const navItems = [
     children: [
       { label: '간편테스트', path: '/assessment', desc: '빠르고 간편한 심리 체크' },
       { label: '심층테스트', path: '/premium-assessment', desc: '전문가 수준 종합 분석' },
-      { label: '무료 리포팅', path: '/report-generator', desc: '무료 분석 리포트 생성', icon: FileText, badge: 'FREE' },
+      { label: '맞춤 리포팅', path: '/report-generator', desc: 'AI 맞춤형 분석 리포트', icon: FileText },
     ]
   },
   {

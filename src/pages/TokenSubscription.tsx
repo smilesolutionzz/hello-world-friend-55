@@ -4,23 +4,21 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Brain, Users, Crown, ArrowRight, 
-  Check, Coins, Clock, ChevronLeft, Sparkles, MessageCircle, Zap, Plus
+  Check, Coins, Clock, ChevronLeft, Sparkles, MessageCircle, Zap, Plus, Loader2
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
 import { useSubscription } from '@/hooks/useSubscription';
+import { usePayment, ProductId } from '@/hooks/usePayment';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 
 type Step = 'select' | 'ai-analysis' | 'consultation' | 'unlimited';
 
 const TokenSubscription = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { tokenBalance } = useTokens();
   const { isPremiumUser, isLifetimeUser, getSubscriptionLabel } = useSubscription();
+  const { pay, loading, isReady } = usePayment();
   const [step, setStep] = useState<Step>('select');
-  const [loading, setLoading] = useState(false);
 
   const isPremium = isPremiumUser() || isLifetimeUser();
   const subscriptionLabel = getSubscriptionLabel();
@@ -29,30 +27,9 @@ const TokenSubscription = () => {
     return new Intl.NumberFormat('ko-KR').format(price);
   };
 
-  const handlePurchase = async (type: string, id: string, price: number) => {
-    setLoading(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({ 
-          title: "로그인 필요", 
-          description: "구매하려면 먼저 로그인해주세요." 
-        });
-        navigate('/auth');
-        return;
-      }
-
-      navigate(`/token-purchase?type=${type}&id=${id}&price=${price}`);
-    } catch (error: any) {
-      toast({ 
-        title: "오류", 
-        description: error.message || "오류가 발생했습니다.", 
-        variant: "destructive" 
-      });
-    } finally {
-      setLoading(false);
-    }
+  // 통합 결제 핸들러 - usePayment 훅 직접 사용
+  const handlePurchase = async (productId: ProductId) => {
+    await pay(productId);
   };
 
   // 메인 선택 화면
@@ -190,7 +167,7 @@ const TokenSubscription = () => {
       <div className="max-w-2xl mx-auto space-y-3">
         <Button 
           className="w-full h-14 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-lg font-bold shadow-xl shadow-purple-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
-          onClick={() => handlePurchase('pass', 'pass_30', 29900)}
+          onClick={() => handlePurchase('pass_30')}
           disabled={loading}
         >
           <Crown className="w-5 h-5 mr-2" />
@@ -201,14 +178,14 @@ const TokenSubscription = () => {
         <div className="flex gap-3">
           <Button 
             className="flex-1 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold shadow-lg shadow-blue-500/20"
-            onClick={() => handlePurchase('cash', 'cash_5000', 5000)}
+            onClick={() => handlePurchase('cash_5000')}
             disabled={loading}
           >
             캐시 ₩5,000 충전
           </Button>
           <Button 
             className="flex-1 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold shadow-lg shadow-blue-500/20"
-            onClick={() => handlePurchase('cash', 'cash_10000', 10000)}
+            onClick={() => handlePurchase('cash_10000')}
             disabled={loading}
           >
             <Plus className="w-4 h-4 mr-1" />
@@ -275,7 +252,7 @@ const TokenSubscription = () => {
             </div>
             <Button 
               className="w-full h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold shadow-lg shadow-blue-500/25"
-              onClick={() => handlePurchase('cash', 'cash_5000', 5000)}
+              onClick={() => handlePurchase('cash_5000')}
               disabled={loading}
             >
               충전하기
@@ -309,7 +286,7 @@ const TokenSubscription = () => {
             </div>
             <Button 
               className="w-full h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold shadow-lg shadow-blue-500/25"
-              onClick={() => handlePurchase('cash', 'cash_10000', 10000)}
+              onClick={() => handlePurchase('cash_10000')}
               disabled={loading}
             >
               충전하기
@@ -517,7 +494,7 @@ const TokenSubscription = () => {
             <Button 
               className="w-full h-12 rounded-2xl font-bold"
               variant="outline"
-              onClick={() => handlePurchase('pass', 'pass_30', 29900)}
+              onClick={() => handlePurchase('pass_30')}
               disabled={loading}
             >
               선택하기
@@ -557,7 +534,7 @@ const TokenSubscription = () => {
             </div>
             <Button 
               className="w-full h-12 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white font-bold shadow-lg shadow-purple-500/25"
-              onClick={() => handlePurchase('pass', 'pass_365', 199000)}
+              onClick={() => handlePurchase('pass_365')}
               disabled={loading}
             >
               선택하기
@@ -597,7 +574,7 @@ const TokenSubscription = () => {
             </div>
             <Button 
               className="w-full h-12 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-lg shadow-amber-500/25"
-              onClick={() => handlePurchase('pass', 'pass_lifetime', 99000)}
+              onClick={() => handlePurchase('pass_lifetime')}
               disabled={loading}
             >
               평생 이용하기

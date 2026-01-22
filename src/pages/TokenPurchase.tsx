@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Coins, CreditCard, Building2, Smartphone, Receipt, Loader2, Check, Gift, Sparkles, Crown, Zap, Wallet, ArrowRight } from 'lucide-react';
+import { Coins, CreditCard, Building2, Smartphone, Receipt, Loader2, Check, Sparkles, Crown, Zap, Wallet, ArrowRight } from 'lucide-react';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -44,11 +44,6 @@ const TokenPurchase = () => {
   const [loading, setLoading] = useState(true);
   const [tossClientKey, setTossClientKey] = useState<string | null>(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
-  
-  // 무료 체험 관련 상태
-  const [isFreeTrialEligible, setIsFreeTrialEligible] = useState<boolean | null>(null);
-  const [freeTrialLoading, setFreeTrialLoading] = useState(false);
-  const [checkingFreeTrial, setCheckingFreeTrial] = useState(false);
 
   // URL 파라미터에서 상품 정보 가져오기
   const purchaseType = searchParams.get('type');
@@ -123,49 +118,6 @@ const TokenPurchase = () => {
     fetchTokenPackages();
   }, [toast, searchParams, urlProduct]);
 
-  // 프리미엄 패스 무료 체험 자격 확인
-  useEffect(() => {
-    const checkFreeTrialEligibility = async () => {
-      if (!urlProduct || urlProduct.type !== 'pass') {
-        setIsFreeTrialEligible(false);
-        return;
-      }
-
-      setCheckingFreeTrial(true);
-      try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        if (!sessionData.session) {
-          setIsFreeTrialEligible(false);
-          return;
-        }
-
-        const { data: previousSubs } = await supabase
-          .from('user_subscriptions')
-          .select('id')
-          .eq('user_id', sessionData.session.user.id)
-          .in('subscription_type', ['premium', 'lifetime'])
-          .limit(1);
-
-        const { data: existingTrial } = await supabase
-          .from('user_free_trials')
-          .select('id')
-          .eq('user_id', sessionData.session.user.id)
-          .eq('plan_type', 'premium')
-          .limit(1);
-
-        const isEligible = (!previousSubs || previousSubs.length === 0) && (!existingTrial || existingTrial.length === 0);
-        setIsFreeTrialEligible(isEligible);
-      } catch (error) {
-        console.error('무료 체험 자격 확인 오류:', error);
-        setIsFreeTrialEligible(false);
-      } finally {
-        setCheckingFreeTrial(false);
-      }
-    };
-
-    checkFreeTrialEligibility();
-  }, [urlProduct]);
-
   // Toss Client Key 가져오기
   useEffect(() => {
     const fetchClientKey = async () => {
@@ -196,67 +148,6 @@ const TokenPurchase = () => {
 
     fetchClientKey();
   }, []);
-
-  // 무료 체험 시작 함수
-  const startFreeTrial = async () => {
-    if (!urlProduct || urlProduct.type !== 'pass') return;
-    
-    setFreeTrialLoading(true);
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) {
-        toast({
-          title: '로그인 필요',
-          description: '로그인 후 이용해주세요.',
-          variant: 'destructive'
-        });
-        navigate('/auth');
-        return;
-      }
-
-      const { data: plans } = await supabase
-        .from('subscription_plans')
-        .select('id')
-        .eq('type', 'premium')
-        .eq('is_active', true)
-        .limit(1);
-
-      if (!plans || plans.length === 0) {
-        throw new Error('구독 플랜을 찾을 수 없습니다.');
-      }
-
-      const { data, error } = await supabase.functions.invoke('create-toss-payment', {
-        headers: {
-          Authorization: `Bearer ${sessionData.session.access_token}`,
-        },
-        body: { 
-          planId: plans[0].id,
-          subscriptionType: 'monthly'
-        }
-      });
-
-      if (error) throw error;
-
-      if (data?.isFreeTrial) {
-        toast({
-          title: '🎉 무료 체험 시작!',
-          description: '1개월 무료 프리미엄 패스가 활성화되었습니다.',
-        });
-        navigate('/free-trial-success');
-      } else {
-        throw new Error('무료 체험 처리 중 오류가 발생했습니다.');
-      }
-    } catch (error: any) {
-      console.error('무료 체험 시작 오류:', error);
-      toast({
-        title: '오류',
-        description: error.message || '무료 체험 시작 중 오류가 발생했습니다.',
-        variant: 'destructive'
-      });
-    } finally {
-      setFreeTrialLoading(false);
-    }
-  };
 
   // 토스페이먼츠 결제 요청 (리다이렉트 방식)
   const requestPayment = async (pack: TokenPackage) => {
@@ -471,51 +362,20 @@ const TokenPurchase = () => {
                     </div>
                   </div>
 
-                  {/* 무료 체험 또는 바로 결제 */}
-                  {isFreeTrialEligible && !checkingFreeTrial ? (
-                    <div className="space-y-3">
-                      <Button
-                        onClick={startFreeTrial}
-                        disabled={freeTrialLoading}
-                        className="w-full h-14 rounded-xl text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-                      >
-                        {freeTrialLoading ? (
-                          <><Loader2 className="w-5 h-5 animate-spin mr-2" />처리 중...</>
-                        ) : (
-                          <><Gift className="w-5 h-5 mr-2" />1개월 무료 체험 시작</>
-                        )}
-                      </Button>
-                      <p className="text-center text-sm text-muted-foreground">
-                        💳 카드 등록 불필요 • 자동 결제 없음
-                      </p>
-                      <Button
-                        variant="ghost"
-                        onClick={() => setIsFreeTrialEligible(false)}
-                        className="w-full text-muted-foreground hover:text-foreground"
-                      >
-                        바로 결제하기 (무료 체험 건너뛰기) →
-                      </Button>
-                    </div>
-                  ) : checkingFreeTrial ? (
-                    <div className="flex items-center justify-center gap-2 py-4">
-                      <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                      <span className="text-muted-foreground">무료 체험 자격 확인 중...</span>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <Button
-                        onClick={requestUrlProductPayment}
-                        disabled={paymentLoading || !tossClientKey}
-                        className="w-full h-14 rounded-xl text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-                      >
-                        {paymentLoading ? (
-                          <><Loader2 className="w-5 h-5 animate-spin mr-2" />결제 중...</>
-                        ) : (
-                          <><Crown className="w-5 h-5 mr-2" />프리미엄 시작하기<ArrowRight className="w-5 h-5 ml-2" /></>
-                        )}
-                      </Button>
-                    </div>
-                  )}
+                  {/* 결제 버튼 */}
+                  <div className="space-y-3">
+                    <Button
+                      onClick={requestUrlProductPayment}
+                      disabled={paymentLoading || !tossClientKey}
+                      className="w-full h-14 rounded-xl text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                    >
+                      {paymentLoading ? (
+                        <><Loader2 className="w-5 h-5 animate-spin mr-2" />결제 중...</>
+                      ) : (
+                        <><Crown className="w-5 h-5 mr-2" />프리미엄 시작하기<ArrowRight className="w-5 h-5 ml-2" /></>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}

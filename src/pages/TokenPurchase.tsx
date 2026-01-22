@@ -127,18 +127,20 @@ const TokenPurchase = () => {
           return;
         }
 
-        const { data, error } = await supabase.functions.invoke('create-token-payment', {
+        // 통합 결제 시스템에서 clientKey 로드
+        const { data, error } = await supabase.functions.invoke('unified-payment', {
           headers: {
             Authorization: `Bearer ${sessionData.session.access_token}`,
           },
-          body: { 
-            packageId: 'temp',
-            paymentType: 'token'
-          }
+          body: { action: 'get-client-key' },
         });
 
-        if (!error && data?.clientKey) {
-          console.log('✅ Toss Client Key 로드 완료');
+        if (error) {
+          throw error;
+        }
+
+        if (data?.clientKey) {
+          console.log('✅ Toss Client Key 로드 완료 (unified-payment)');
           setTossClientKey(data.clientKey);
         }
       } catch (error) {
@@ -173,35 +175,40 @@ const TokenPurchase = () => {
         return;
       }
 
-      // Edge function 호출하여 결제 정보 생성
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-token-payment', {
+      // 통합 결제 시스템: 결제 정보 생성
+      const totalTokens = pack.tokens + (pack.bonus_tokens || 0);
+
+      const { data, error } = await supabase.functions.invoke('unified-payment', {
         headers: {
           Authorization: `Bearer ${sessionData.session.access_token}`,
         },
-        body: { 
-          packageId: pack.id,
-          paymentType: 'token'
-        }
+        body: {
+          action: 'create-payment',
+          productId: pack.id,
+          productType: 'cash',
+          productName: pack.name,
+          amount: pack.price,
+          tokens: totalTokens,
+        },
       });
 
-      if (paymentError || !paymentData?.paymentData) {
-        throw new Error(paymentError?.message || '결제 정보 생성에 실패했습니다.');
+      if (error || !data?.success || !data?.paymentData) {
+        throw new Error(data?.error || error?.message || '결제 정보 생성에 실패했습니다.');
       }
 
-      const { paymentData: tossPaymentData } = paymentData;
-      console.log('✅ 결제 정보 생성 완료:', tossPaymentData);
+      console.log('✅ 결제 정보 생성 완료 (unified-payment):', data.paymentData);
 
-      // 토스페이먼츠 SDK 로드 및 결제 요청 (리다이렉트 방식)
+      // 토스페이먼츠 SDK 로드 및 결제 요청
       const tossPayments = await loadTossPayments(tossClientKey);
-      
+
       await tossPayments.requestPayment('카드', {
-        amount: tossPaymentData.amount,
-        orderId: tossPaymentData.orderId,
-        orderName: tossPaymentData.orderName,
-        customerEmail: tossPaymentData.customerEmail,
-        customerName: tossPaymentData.customerName,
-        successUrl: `${window.location.origin}/token-payment-success`,
-        failUrl: `${window.location.origin}/token-payment-fail`,
+        amount: data.paymentData.amount,
+        orderId: data.paymentData.orderId,
+        orderName: data.paymentData.orderName,
+        customerEmail: data.paymentData.customerEmail,
+        customerName: data.paymentData.customerName,
+        successUrl: `${window.location.origin}/payment-complete?type=cash`,
+        failUrl: `${window.location.origin}/payment-complete?status=fail`,
       });
     } catch (err: any) {
       console.error('❌ 결제 요청 오류:', err);
@@ -239,49 +246,43 @@ const TokenPurchase = () => {
         return;
       }
 
-      const orderId = `${urlProduct.type}_${urlProduct.id}_${Date.now()}`;
-      
       // 캐시 상품인 경우 토큰 수량 계산 (보너스 포함)
       let tokenAmount = 0;
       if (urlProduct.type === 'cash' && 'tokens' in urlProduct) {
         tokenAmount = urlProduct.tokens; // 이미 보너스 포함된 총 토큰 수
       }
-      
-      // 결제 내역 미리 저장 (결제 성공 시 토큰 지급을 위해)
-      if (tokenAmount > 0) {
-        const { error: insertError } = await supabase
-          .from('payment_history')
-          .insert({
-            user_id: sessionData.session.user.id,
-            toss_order_id: orderId,
-            amount: urlProduct.price,
-            subscription_type: 'token',
-            status: 'pending',
-            token_amount: tokenAmount
-          });
-        
-        if (insertError) {
-          console.error('결제 내역 저장 오류:', insertError);
-          throw new Error('결제 준비 중 오류가 발생했습니다.');
-        }
+
+      // 통합 결제 시스템: 결제 정보 생성
+      const { data, error } = await supabase.functions.invoke('unified-payment', {
+        headers: {
+          Authorization: `Bearer ${sessionData.session.access_token}`,
+        },
+        body: {
+          action: 'create-payment',
+          productId: urlProduct.id,
+          productType: urlProduct.type,
+          productName: urlProduct.type === 'cash' && 'displayAmount' in urlProduct
+            ? `캐시 ${(urlProduct as any).displayAmount.toLocaleString()}원 충전`
+            : urlProduct.name,
+          amount: urlProduct.price,
+          tokens: tokenAmount,
+        },
+      });
+
+      if (error || !data?.success || !data?.paymentData) {
+        throw new Error(data?.error || error?.message || '결제 정보 생성에 실패했습니다.');
       }
-      
+
       const tossPayments = await loadTossPayments(tossClientKey);
-      
-      // 상품명에 실제 원화 표시
-      let orderName = urlProduct.name;
-      if (urlProduct.type === 'cash' && 'displayAmount' in urlProduct) {
-        orderName = `캐시 ${urlProduct.displayAmount.toLocaleString()}원 충전`;
-      }
-      
+
       await tossPayments.requestPayment('카드', {
-        amount: urlProduct.price,
-        orderId,
-        orderName,
-        customerEmail: sessionData.session.user.email || '',
-        customerName: sessionData.session.user.user_metadata?.full_name || '고객',
-        successUrl: `${window.location.origin}/token-payment-success?type=${urlProduct.type}`,
-        failUrl: `${window.location.origin}/token-payment-fail`,
+        amount: data.paymentData.amount,
+        orderId: data.paymentData.orderId,
+        orderName: data.paymentData.orderName,
+        customerEmail: data.paymentData.customerEmail,
+        customerName: data.paymentData.customerName,
+        successUrl: `${window.location.origin}/payment-complete?type=${urlProduct.type}`,
+        failUrl: `${window.location.origin}/payment-complete?status=fail`,
       });
     } catch (err: any) {
       console.error('❌ URL 상품 결제 요청 오류:', err);

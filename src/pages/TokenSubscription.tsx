@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Brain, Users, Crown, ArrowRight, 
-  Check, Coins, Clock, Gift, ChevronLeft, Sparkles, MessageCircle, Zap
+  Check, Coins, Clock, ChevronLeft, Sparkles, MessageCircle, Zap, Plus
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -211,7 +211,7 @@ const TokenSubscription = () => {
             onClick={() => handlePurchase('cash', 'cash_10000', 10000)}
             disabled={loading}
           >
-            <Gift className="w-4 h-4 mr-1" />
+            <Plus className="w-4 h-4 mr-1" />
             캐시 ₩10,000 +보너스
           </Button>
         </div>
@@ -294,7 +294,7 @@ const TokenSubscription = () => {
             </div>
             <div className="text-xl font-bold text-slate-700 dark:text-slate-300 mb-1">11,000원 충전</div>
             <div className="inline-flex items-center gap-1 text-emerald-600 text-sm font-medium mb-6">
-              <Gift className="w-4 h-4" />
+              <Plus className="w-4 h-4" />
               <span>+1,000원 보너스</span>
             </div>
             <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400 mb-8">

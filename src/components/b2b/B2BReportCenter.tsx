@@ -1,0 +1,393 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Send,
+  Eye,
+  Calendar,
+  FileText,
+  TrendingUp,
+  Search,
+  Filter,
+  MoreHorizontal,
+  CheckCircle,
+  Clock,
+  Edit,
+  Mail,
+  Download,
+  Trash2,
+  Users,
+  RefreshCw
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useToast } from '@/hooks/use-toast';
+import { useB2BCRM } from '@/hooks/useB2BCRM';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+interface Report {
+  id: string;
+  name: string;
+  student: string;
+  parentEmail: string;
+  type: '주간' | '월간' | '맞춤';
+  status: '발송 완료' | '초안' | '예약됨';
+  createdAt: string;
+  sentAt?: string;
+  openedAt?: string;
+}
+
+interface B2BReportCenterProps {
+  institutionName?: string;
+}
+
+export const B2BReportCenter: React.FC<B2BReportCenterProps> = ({ institutionName }) => {
+  const { toast } = useToast();
+  const { isLoading, sendReportEmail, sendBulkReports, generateAIReport } = useB2BCRM();
+  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedReports, setSelectedReports] = useState<string[]>([]);
+  const [previewReport, setPreviewReport] = useState<Report | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  
+  // Mock data - 실제로는 DB에서 가져옴
+  const [reports, setReports] = useState<Report[]>([
+    { id: '1', name: '1월 3주차 학습 리포트', student: '김민준', parentEmail: 'kim@example.com', type: '주간', status: '발송 완료', createdAt: '2025-01-20', sentAt: '2025-01-20', openedAt: '2025-01-20' },
+    { id: '2', name: '수학 취약점 분석 리포트', student: '최수아', parentEmail: 'choi@example.com', type: '맞춤', status: '초안', createdAt: '2025-01-21' },
+    { id: '3', name: '1월 3주차 학습 리포트', student: '정우진', parentEmail: 'jung@example.com', type: '주간', status: '예약됨', createdAt: '2025-01-19' },
+    { id: '4', name: '1월 3주차 학습 리포트', student: '한소희', parentEmail: 'han@example.com', type: '주간', status: '발송 완료', createdAt: '2025-01-19', sentAt: '2025-01-19' },
+    { id: '5', name: '정서발달 종합 리포트', student: '이준영', parentEmail: 'lee@example.com', type: '월간', status: '초안', createdAt: '2025-01-22' },
+  ]);
+
+  const stats = {
+    monthSent: reports.filter(r => r.status === '발송 완료').length,
+    openRate: 87,
+    pendingBookings: reports.filter(r => r.status === '예약됨').length,
+    drafts: reports.filter(r => r.status === '초안').length
+  };
+
+  const filteredReports = reports.filter(r => 
+    r.name.includes(searchTerm) || r.student.includes(searchTerm)
+  );
+
+  const toggleSelect = (id: string) => {
+    setSelectedReports(prev => 
+      prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]
+    );
+  };
+
+  const selectAll = () => {
+    if (selectedReports.length === filteredReports.length) {
+      setSelectedReports([]);
+    } else {
+      setSelectedReports(filteredReports.map(r => r.id));
+    }
+  };
+
+  const handleSendReport = async (report: Report) => {
+    const success = await sendReportEmail({
+      recipientEmail: report.parentEmail,
+      recipientName: `${report.student} 학부모님`,
+      studentName: report.student,
+      reportType: report.type,
+      reportContent: `${report.student} 학생의 ${report.type} 리포트입니다.`,
+      institutionName
+    });
+
+    if (success) {
+      setReports(prev => prev.map(r => 
+        r.id === report.id ? { ...r, status: '발송 완료' as const, sentAt: new Date().toISOString() } : r
+      ));
+    }
+  };
+
+  const handleBulkSend = async () => {
+    const reportsToSend = reports.filter(r => 
+      selectedReports.includes(r.id) && r.status !== '발송 완료'
+    );
+
+    if (reportsToSend.length === 0) {
+      toast({
+        title: '발송할 리포트가 없습니다',
+        description: '초안 또는 예약된 리포트를 선택해주세요.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    const result = await sendBulkReports(
+      reportsToSend.map(r => ({
+        recipientEmail: r.parentEmail,
+        recipientName: `${r.student} 학부모님`,
+        studentName: r.student,
+        reportContent: `${r.student} 학생의 ${r.type} 리포트입니다.`
+      })),
+      institutionName
+    );
+
+    if (result.success > 0) {
+      setReports(prev => prev.map(r => 
+        selectedReports.includes(r.id) ? { ...r, status: '발송 완료' as const, sentAt: new Date().toISOString() } : r
+      ));
+      setSelectedReports([]);
+    }
+  };
+
+  const handleGenerateAIReport = async () => {
+    setIsGenerating(true);
+    try {
+      await generateAIReport({
+        studentName: '새 학생',
+        assessmentData: { overall: 75, development: 80, emotion: 70 },
+        ageGroup: 'child'
+      });
+      
+      const newReport: Report = {
+        id: Date.now().toString(),
+        name: 'AI 생성 종합 리포트',
+        student: '새 학생',
+        parentEmail: '',
+        type: '맞춤',
+        status: '초안',
+        createdAt: new Date().toISOString()
+      };
+      setReports(prev => [newReport, ...prev]);
+    } catch (error) {
+      // Error handled in hook
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <Card className="bg-slate-900/80 border-slate-800 overflow-hidden backdrop-blur-xl">
+      <CardHeader className="border-b border-slate-800 pb-6">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <CardTitle className="text-2xl text-white">리포트 센터</CardTitle>
+            <p className="text-slate-400 text-sm mt-1">학부모에게 발송한 리포트를 관리하세요</p>
+          </div>
+          <div className="flex gap-3">
+            <Button 
+              variant="outline" 
+              className="border-slate-700 hover:bg-slate-800"
+              onClick={handleBulkSend}
+              disabled={selectedReports.length === 0 || isLoading}
+            >
+              <Send className="w-4 h-4 mr-2" />
+              일괄 발송 {selectedReports.length > 0 && `(${selectedReports.length})`}
+            </Button>
+            <Button 
+              className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600"
+              onClick={handleGenerateAIReport}
+              disabled={isGenerating}
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              {isGenerating ? '생성 중...' : '리포트 작성'}
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      
+      <CardContent className="p-6">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-slate-800/50 rounded-xl p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-violet-500/20 rounded-lg">
+                <Send className="w-5 h-5 text-violet-400" />
+              </div>
+              <span className="text-2xl font-bold text-white">{stats.monthSent}</span>
+            </div>
+            <p className="text-slate-400 text-sm">이번 달 발송</p>
+          </div>
+          <div className="bg-slate-800/50 rounded-xl p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-green-500/20 rounded-lg">
+                <Eye className="w-5 h-5 text-green-400" />
+              </div>
+              <span className="text-2xl font-bold text-white">{stats.openRate}%</span>
+            </div>
+            <p className="text-slate-400 text-sm">평균 열람률</p>
+          </div>
+          <div className="bg-slate-800/50 rounded-xl p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <Calendar className="w-5 h-5 text-blue-400" />
+              </div>
+              <span className="text-2xl font-bold text-white">{stats.pendingBookings}</span>
+            </div>
+            <p className="text-slate-400 text-sm">예약 대기</p>
+          </div>
+          <div className="bg-slate-800/50 rounded-xl p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-orange-500/20 rounded-lg">
+                <FileText className="w-5 h-5 text-orange-400" />
+              </div>
+              <span className="text-2xl font-bold text-white">{stats.drafts}</span>
+            </div>
+            <p className="text-slate-400 text-sm">초안 저장</p>
+          </div>
+        </div>
+
+        {/* Search & Filter */}
+        <div className="flex gap-3 mb-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <Input
+              placeholder="리포트 또는 학생 검색..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-slate-800 border-slate-700 text-white"
+            />
+          </div>
+          <Button variant="outline" className="border-slate-700 hover:bg-slate-800">
+            <Filter className="w-4 h-4 mr-2" />
+            필터
+          </Button>
+          <Button variant="outline" className="border-slate-700 hover:bg-slate-800">
+            <RefreshCw className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Reports Table */}
+        <div className="bg-slate-800/30 rounded-xl overflow-hidden">
+          <div className="grid grid-cols-12 gap-4 p-4 border-b border-slate-700/50 text-sm text-slate-400">
+            <div className="col-span-1">
+              <Checkbox 
+                checked={selectedReports.length === filteredReports.length && filteredReports.length > 0}
+                onCheckedChange={selectAll}
+              />
+            </div>
+            <span className="col-span-4">리포트</span>
+            <span className="col-span-2">유형</span>
+            <span className="col-span-2">상태</span>
+            <span className="col-span-2">열람</span>
+            <span className="col-span-1">액션</span>
+          </div>
+          
+          {filteredReports.map((report) => (
+            <motion.div 
+              key={report.id} 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="grid grid-cols-12 gap-4 p-4 border-b border-slate-800/50 last:border-0 hover:bg-slate-800/30 transition-colors items-center"
+            >
+              <div className="col-span-1">
+                <Checkbox 
+                  checked={selectedReports.includes(report.id)}
+                  onCheckedChange={() => toggleSelect(report.id)}
+                />
+              </div>
+              <div className="col-span-4">
+                <p className="font-medium text-white">{report.name}</p>
+                <p className="text-sm text-slate-500">{report.student}</p>
+              </div>
+              <div className="col-span-2">
+                <Badge variant="outline" className={`
+                  ${report.type === '주간' ? 'border-blue-500/50 text-blue-400' : ''}
+                  ${report.type === '맞춤' ? 'border-pink-500/50 text-pink-400' : ''}
+                  ${report.type === '월간' ? 'border-violet-500/50 text-violet-400' : ''}
+                `}>
+                  {report.type}
+                </Badge>
+              </div>
+              <div className="col-span-2">
+                <Badge className={`
+                  ${report.status === '발송 완료' ? 'bg-green-500/20 text-green-400 border-0' : ''}
+                  ${report.status === '초안' ? 'bg-slate-500/20 text-slate-400 border-0' : ''}
+                  ${report.status === '예약됨' ? 'bg-blue-500/20 text-blue-400 border-0' : ''}
+                `}>
+                  {report.status === '발송 완료' && <CheckCircle className="w-3 h-3 mr-1" />}
+                  {report.status === '예약됨' && <Clock className="w-3 h-3 mr-1" />}
+                  {report.status === '초안' && <Edit className="w-3 h-3 mr-1" />}
+                  {report.status}
+                </Badge>
+              </div>
+              <div className="col-span-2">
+                {report.openedAt ? (
+                  <span className="text-green-400 text-sm flex items-center gap-1">
+                    <Eye className="w-3 h-3" /> 열람됨
+                  </span>
+                ) : report.sentAt ? (
+                  <span className="text-slate-500 text-sm">미열람</span>
+                ) : (
+                  <span className="text-slate-600 text-sm">-</span>
+                )}
+              </div>
+              <div className="col-span-1">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <MoreHorizontal className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-slate-900 border-slate-700">
+                    {report.status !== '발송 완료' && (
+                      <DropdownMenuItem 
+                        onClick={() => handleSendReport(report)}
+                        className="text-white hover:bg-slate-800"
+                        disabled={isLoading}
+                      >
+                        <Mail className="w-4 h-4 mr-2" />
+                        발송하기
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem className="text-white hover:bg-slate-800">
+                      <Eye className="w-4 h-4 mr-2" />
+                      미리보기
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-white hover:bg-slate-800">
+                      <Download className="w-4 h-4 mr-2" />
+                      다운로드
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-red-400 hover:bg-slate-800">
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      삭제
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* AI Report Banner */}
+        <div className="mt-6 p-6 bg-gradient-to-r from-violet-500/10 to-pink-500/10 rounded-xl border border-violet-500/20">
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="p-3 bg-gradient-to-br from-violet-500 to-pink-500 rounded-xl">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-white">AI가 자동으로 리포트를 작성해드려요</h4>
+              <p className="text-sm text-slate-400">학생 데이터를 분석하여 맞춤형 리포트를 생성합니다</p>
+            </div>
+            <Button 
+              className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600"
+              onClick={handleGenerateAIReport}
+              disabled={isGenerating}
+            >
+              {isGenerating ? '생성 중...' : 'AI 리포트 생성'}
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default B2BReportCenter;

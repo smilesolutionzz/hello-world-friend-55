@@ -34,11 +34,14 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { B2BReportCenter } from '@/components/b2b/B2BReportCenter';
+import { B2BAIAgentPanel } from '@/components/b2b/B2BAIAgentPanel';
 
 const B2BAcademy = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeSection, setActiveSection] = useState<'landing' | 'demo'>('landing');
   const [formData, setFormData] = useState({
     institutionName: '',
     contactPerson: '',
@@ -224,7 +227,7 @@ const B2BAcademy = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <Button 
                 size="lg"
-                onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => setActiveSection('demo')}
                 className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-lg h-14 px-8 rounded-xl"
               >
                 무료 체험 시작
@@ -260,175 +263,246 @@ const B2BAcademy = () => {
         </div>
       </section>
 
-      {/* Demo Preview - Report Center */}
-      <section className="py-20 relative">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              리포트 센터 미리보기
-            </h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
-              학부모에게 발송한 리포트를 한눈에 관리하세요
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-5xl mx-auto"
-          >
-            <Card className="bg-slate-900/80 border-slate-800 overflow-hidden backdrop-blur-xl">
-              <CardHeader className="border-b border-slate-800 pb-6">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div>
-                    <CardTitle className="text-2xl text-white">리포트 센터</CardTitle>
-                    <p className="text-slate-400 text-sm mt-1">학부모에게 발송한 리포트를 관리하세요</p>
-                  </div>
-                  <div className="flex gap-3">
-                    <Button variant="outline" className="border-slate-700 hover:bg-slate-800">
-                      <Send className="w-4 h-4 mr-2" />
-                      일괄 발송
-                    </Button>
-                    <Button className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600">
-                      <FileText className="w-4 h-4 mr-2" />
-                      리포트 작성
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                  <div className="bg-slate-800/50 rounded-xl p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-violet-500/20 rounded-lg">
-                        <Send className="w-5 h-5 text-violet-400" />
-                      </div>
-                      <span className="text-2xl font-bold text-white">{reportStats.monthSent}</span>
-                    </div>
-                    <p className="text-slate-400 text-sm">이번 달 발송</p>
-                  </div>
-                  <div className="bg-slate-800/50 rounded-xl p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-green-500/20 rounded-lg">
-                        <Eye className="w-5 h-5 text-green-400" />
-                      </div>
-                      <span className="text-2xl font-bold text-white">{reportStats.openRate}%</span>
-                    </div>
-                    <p className="text-slate-400 text-sm">평균 열람률</p>
-                  </div>
-                  <div className="bg-slate-800/50 rounded-xl p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-blue-500/20 rounded-lg">
-                        <Calendar className="w-5 h-5 text-blue-400" />
-                      </div>
-                      <span className="text-2xl font-bold text-white">{reportStats.pendingBookings}</span>
-                    </div>
-                    <p className="text-slate-400 text-sm">예약 대기</p>
-                  </div>
-                  <div className="bg-slate-800/50 rounded-xl p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-orange-500/20 rounded-lg">
-                        <FileText className="w-5 h-5 text-orange-400" />
-                      </div>
-                      <span className="text-2xl font-bold text-white">{reportStats.drafts}</span>
-                    </div>
-                    <p className="text-slate-400 text-sm">초안 저장</p>
-                  </div>
-                </div>
-
-                {/* Reports Table */}
-                <div className="bg-slate-800/30 rounded-xl overflow-hidden">
-                  <div className="grid grid-cols-3 gap-4 p-4 border-b border-slate-700/50 text-sm text-slate-400">
-                    <span>리포트</span>
-                    <span>유형</span>
-                    <span>상태</span>
-                  </div>
-                  {recentReports.map((report, idx) => (
-                    <div key={idx} className="grid grid-cols-3 gap-4 p-4 border-b border-slate-800/50 last:border-0">
-                      <div>
-                        <p className="font-medium text-white">{report.name}</p>
-                        <p className="text-sm text-slate-500">{report.student}</p>
-                      </div>
-                      <div>
-                        <Badge variant="outline" className={`
-                          ${report.type === '주간' ? 'border-blue-500/50 text-blue-400' : ''}
-                          ${report.type === '맞춤' ? 'border-pink-500/50 text-pink-400' : ''}
-                          ${report.type === '월간' ? 'border-violet-500/50 text-violet-400' : ''}
-                        `}>
-                          {report.type}
-                        </Badge>
-                      </div>
-                      <div>
-                        <Badge className={`
-                          ${report.status === '발송 완료' ? 'bg-green-500/20 text-green-400 border-0' : ''}
-                          ${report.status === '초안' ? 'bg-slate-500/20 text-slate-400 border-0' : ''}
-                          ${report.status === '예약됨' ? 'bg-blue-500/20 text-blue-400 border-0' : ''}
-                        `}>
-                          {report.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* AI Report Banner */}
-                <div className="mt-6 p-6 bg-gradient-to-r from-violet-500/10 to-pink-500/10 rounded-xl border border-violet-500/20">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-gradient-to-br from-violet-500 to-pink-500 rounded-xl">
-                      <TrendingUp className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-white">AI가 자동으로 리포트를 작성해드려요</h4>
-                      <p className="text-sm text-slate-400">학생 데이터를 분석하여 맞춤형 리포트를 생성합니다</p>
-                    </div>
-                    <Button className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600">
-                      AI 리포트 생성
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* AI Agents Section */}
-      <section className="py-20 bg-slate-900/50">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <Badge className="mb-4 bg-blue-500/20 text-blue-300 border-blue-500/30">
-              <Zap className="w-4 h-4 mr-2" />
-              AI 에이전트
-            </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              AI가 자동으로 분석하고 리포팅합니다
-            </h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
-              3가지 AI 에이전트가 학생 심리검사부터 학부모 리포팅까지 자동화합니다
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {aiAgents.map((agent, idx) => (
-              <motion.div
-                key={agent.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
+      {/* Demo Mode - Functional Report Center & AI Agents */}
+      {activeSection === 'demo' && (
+        <section className="py-20 relative">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <Badge className="mb-2 bg-green-500/20 text-green-300 border-green-500/30">
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  체험 모드
+                </Badge>
+                <h2 className="text-2xl font-bold text-white">B2B 대시보드 체험</h2>
+                <p className="text-slate-400 text-sm">실제 기능을 체험해보세요</p>
+              </div>
+              <Button 
+                variant="outline" 
+                onClick={() => setActiveSection('landing')}
+                className="border-slate-700 hover:bg-slate-800"
               >
+                랜딩 페이지로
+              </Button>
+            </div>
+            
+            {/* Functional Report Center */}
+            <div className="max-w-5xl mx-auto mb-12">
+              <B2BReportCenter institutionName="체험 학원" />
+            </div>
+            
+            {/* AI Agent Section */}
+            <div className="max-w-5xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center mb-8"
+              >
+                <Badge className="mb-4 bg-blue-500/20 text-blue-300 border-blue-500/30">
+                  <Zap className="w-4 h-4 mr-2" />
+                  AI 에이전트 실행
+                </Badge>
+                <h2 className="text-2xl font-bold text-white mb-2">
+                  AI 에이전트를 직접 실행해보세요
+                </h2>
+                <p className="text-slate-400">
+                  학생 정보를 입력하면 AI가 분석 결과를 제공합니다
+                </p>
+              </motion.div>
+              <B2BAIAgentPanel />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Demo Preview - Report Center (Landing Mode) */}
+      {activeSection === 'landing' && (
+        <section className="py-20 relative">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                리포트 센터 미리보기
+              </h2>
+              <p className="text-slate-400 max-w-2xl mx-auto">
+                학부모에게 발송한 리포트를 한눈에 관리하세요
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="max-w-5xl mx-auto"
+            >
+              <Card className="bg-slate-900/80 border-slate-800 overflow-hidden backdrop-blur-xl">
+                <CardHeader className="border-b border-slate-800 pb-6">
+                  <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                      <CardTitle className="text-2xl text-white">리포트 센터</CardTitle>
+                      <p className="text-slate-400 text-sm mt-1">학부모에게 발송한 리포트를 관리하세요</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <Button 
+                        variant="outline" 
+                        className="border-slate-700 hover:bg-slate-800"
+                        onClick={() => setActiveSection('demo')}
+                      >
+                        <Send className="w-4 h-4 mr-2" />
+                        일괄 발송
+                      </Button>
+                      <Button 
+                        className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600"
+                        onClick={() => setActiveSection('demo')}
+                      >
+                        <FileText className="w-4 h-4 mr-2" />
+                        리포트 작성
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-6">
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <div className="bg-slate-800/50 rounded-xl p-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-violet-500/20 rounded-lg">
+                          <Send className="w-5 h-5 text-violet-400" />
+                        </div>
+                        <span className="text-2xl font-bold text-white">{reportStats.monthSent}</span>
+                      </div>
+                      <p className="text-slate-400 text-sm">이번 달 발송</p>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-xl p-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-green-500/20 rounded-lg">
+                          <Eye className="w-5 h-5 text-green-400" />
+                        </div>
+                        <span className="text-2xl font-bold text-white">{reportStats.openRate}%</span>
+                      </div>
+                      <p className="text-slate-400 text-sm">평균 열람률</p>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-xl p-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-blue-500/20 rounded-lg">
+                          <Calendar className="w-5 h-5 text-blue-400" />
+                        </div>
+                        <span className="text-2xl font-bold text-white">{reportStats.pendingBookings}</span>
+                      </div>
+                      <p className="text-slate-400 text-sm">예약 대기</p>
+                    </div>
+                    <div className="bg-slate-800/50 rounded-xl p-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-orange-500/20 rounded-lg">
+                          <FileText className="w-5 h-5 text-orange-400" />
+                        </div>
+                        <span className="text-2xl font-bold text-white">{reportStats.drafts}</span>
+                      </div>
+                      <p className="text-slate-400 text-sm">초안 저장</p>
+                    </div>
+                  </div>
+
+                  {/* Reports Table */}
+                  <div className="bg-slate-800/30 rounded-xl overflow-hidden">
+                    <div className="grid grid-cols-3 gap-4 p-4 border-b border-slate-700/50 text-sm text-slate-400">
+                      <span>리포트</span>
+                      <span>유형</span>
+                      <span>상태</span>
+                    </div>
+                    {recentReports.map((report, idx) => (
+                      <div key={idx} className="grid grid-cols-3 gap-4 p-4 border-b border-slate-800/50 last:border-0">
+                        <div>
+                          <p className="font-medium text-white">{report.name}</p>
+                          <p className="text-sm text-slate-500">{report.student}</p>
+                        </div>
+                        <div>
+                          <Badge variant="outline" className={`
+                            ${report.type === '주간' ? 'border-blue-500/50 text-blue-400' : ''}
+                            ${report.type === '맞춤' ? 'border-pink-500/50 text-pink-400' : ''}
+                            ${report.type === '월간' ? 'border-violet-500/50 text-violet-400' : ''}
+                          `}>
+                            {report.type}
+                          </Badge>
+                        </div>
+                        <div>
+                          <Badge className={`
+                            ${report.status === '발송 완료' ? 'bg-green-500/20 text-green-400 border-0' : ''}
+                            ${report.status === '초안' ? 'bg-slate-500/20 text-slate-400 border-0' : ''}
+                            ${report.status === '예약됨' ? 'bg-blue-500/20 text-blue-400 border-0' : ''}
+                          `}>
+                            {report.status}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* AI Report Banner */}
+                  <div className="mt-6 p-6 bg-gradient-to-r from-violet-500/10 to-pink-500/10 rounded-xl border border-violet-500/20">
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <div className="p-3 bg-gradient-to-br from-violet-500 to-pink-500 rounded-xl">
+                        <TrendingUp className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-white">AI가 자동으로 리포트를 작성해드려요</h4>
+                        <p className="text-sm text-slate-400">학생 데이터를 분석하여 맞춤형 리포트를 생성합니다</p>
+                      </div>
+                      <Button 
+                        className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600"
+                        onClick={() => setActiveSection('demo')}
+                      >
+                        AI 리포트 생성
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </section>
+      )}
+
+      {/* AI Agents Section (Landing Mode Only) */}
+      {activeSection === 'landing' && (
+        <section className="py-20 bg-slate-900/50">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <Badge className="mb-4 bg-blue-500/20 text-blue-300 border-blue-500/30">
+                <Zap className="w-4 h-4 mr-2" />
+                AI 에이전트
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                AI가 자동으로 분석하고 리포팅합니다
+              </h2>
+              <p className="text-slate-400 max-w-2xl mx-auto">
+                3가지 AI 에이전트가 학생 심리검사부터 학부모 리포팅까지 자동화합니다
+              </p>
+              <Button 
+                className="mt-6 bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600"
+                onClick={() => setActiveSection('demo')}
+              >
+                <Play className="w-4 h-4 mr-2" />
+                AI 에이전트 체험하기
+              </Button>
+            </motion.div>
+
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {aiAgents.map((agent, idx) => (
+                <motion.div
+                  key={agent.name}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                >
                 <Card className="bg-slate-900/80 border-slate-800 h-full hover:border-slate-700 transition-colors">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-4">
@@ -469,7 +543,10 @@ const B2BAcademy = () => {
                       ))}
                     </div>
                     
-                    <Button className={`w-full bg-gradient-to-r ${agent.gradient} hover:opacity-90`}>
+                    <Button 
+                      className={`w-full bg-gradient-to-r ${agent.gradient} hover:opacity-90`}
+                      onClick={() => setActiveSection('demo')}
+                    >
                       <Play className="w-4 h-4 mr-2" />
                       에이전트 실행
                     </Button>
@@ -488,6 +565,7 @@ const B2BAcademy = () => {
           </div>
         </div>
       </section>
+      )}
 
       {/* Benefits Section */}
       <section className="py-20">

@@ -106,6 +106,9 @@ import VoiceToText from "./pages/VoiceToText";
 import MeditationPage from "./pages/MeditationPage";
 import RealtimeMeditation from "./pages/RealtimeMeditation";
 import VoiceEmotionDiary from "./pages/VoiceEmotionDiary";
+import B2BConsulting from "./pages/B2BConsulting";
+import B2BProposal from "./pages/B2BProposal";
+import EAPService from "./pages/EAPService";
 
 // New Retention Features
 import WellnessHub from "./pages/WellnessHub";
@@ -387,6 +390,9 @@ const App = () => {
           <Route path="/b2b" element={<B2BLanding />} />
           <Route path="/b2b-benefits" element={<PartnerBenefits />} />
           <Route path="/partner-benefits" element={<PartnerBenefits />} />
+          <Route path="/b2b-consulting" element={<B2BConsulting />} />
+          <Route path="/b2b-proposal" element={<B2BProposal />} />
+          <Route path="/eap-service" element={<EAPService />} />
           <Route path="/app-store-guide" element={<AppStoreGuide />} />
           <Route path="/business-plan" element={<BusinessPlanGenerator />} />
           

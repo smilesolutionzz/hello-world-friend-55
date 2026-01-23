@@ -18,9 +18,13 @@ import {
   Calendar,
   TrendingUp,
   Users,
-  Shield
+  Shield,
+  Lock,
+  CreditCard
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { B2BPaymentModal } from '@/components/b2b/B2BPaymentModal';
+import { B2BProductCards } from '@/components/b2b/B2BProductCards';
 
 const B2BProposal = () => {
   const { toast } = useToast();
@@ -33,6 +37,8 @@ const B2BProposal = () => {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedProposal, setGeneratedProposal] = useState<string | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
 
   const proposalTemplates = [
     {
@@ -449,25 +455,99 @@ const B2BProposal = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-3">
-                  <Button onClick={handleDownload} className="bg-blue-600 hover:bg-blue-700">
+                
+                {/* Free HTML Download */}
+                <div className="flex flex-wrap gap-3 mb-4">
+                  <Button onClick={handleDownload} variant="outline">
                     <Download className="w-4 h-4 mr-2" />
-                    HTML 다운로드
+                    HTML 다운로드 (무료)
                   </Button>
                   <Button variant="outline" onClick={handlePrint}>
                     <Printer className="w-4 h-4 mr-2" />
-                    인쇄 / PDF 저장
-                  </Button>
-                  <Button variant="outline">
-                    <Mail className="w-4 h-4 mr-2" />
-                    이메일 발송
+                    인쇄하기
                   </Button>
                 </div>
+
+                {/* Premium PDF Paywall */}
+                <Card className={`border-2 ${hasPremiumAccess ? 'border-green-300 bg-green-50' : 'border-blue-300 bg-blue-50'}`}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {hasPremiumAccess ? (
+                          <CheckCircle2 className="w-6 h-6 text-green-600" />
+                        ) : (
+                          <Lock className="w-6 h-6 text-blue-600" />
+                        )}
+                        <div>
+                          <p className="font-semibold">프리미엄 PDF 제안서</p>
+                          <p className="text-xs text-muted-foreground">
+                            {hasPremiumAccess 
+                              ? '프리미엄 버전을 다운로드할 수 있습니다' 
+                              : '기관 로고 반영 + 프린트 최적화 + 전문 디자인'}
+                          </p>
+                        </div>
+                      </div>
+                      {hasPremiumAccess ? (
+                        <Button className="bg-green-600 hover:bg-green-700">
+                          <Download className="w-4 h-4 mr-2" />
+                          PDF 다운로드
+                        </Button>
+                      ) : (
+                        <Button 
+                          onClick={() => setShowPaymentModal(true)}
+                          className="bg-blue-600 hover:bg-blue-700"
+                        >
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          ₩30,000 결제
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               </CardContent>
             </Card>
           </motion.div>
         )}
+
+        {/* B2B Product Cards Section */}
+        <div className="mt-12">
+          <div className="text-center mb-8">
+            <Badge className="mb-4 bg-purple-100 text-purple-700 border-purple-200">
+              Premium Services
+            </Badge>
+            <h2 className="text-2xl font-bold mb-2">즉시 구매 가능한 B2B 서비스</h2>
+            <p className="text-muted-foreground">
+              파일럿 시작 전 필요한 자료를 바로 구매하세요
+            </p>
+          </div>
+          <B2BProductCards 
+            onPurchaseComplete={(productId) => {
+              if (productId === 'b2b_proposal_premium') {
+                setHasPremiumAccess(true);
+              }
+              toast({
+                title: "구매 완료",
+                description: "결제가 완료되었습니다. 감사합니다!"
+              });
+            }}
+          />
+        </div>
       </div>
+
+      {/* Payment Modal */}
+      <B2BPaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        productId="b2b_proposal_premium"
+        onSuccess={() => {
+          setHasPremiumAccess(true);
+          setShowPaymentModal(false);
+          toast({
+            title: "결제 완료",
+            description: "프리미엄 제안서를 다운로드할 수 있습니다."
+          });
+        }}
+      />
     </div>
   );
 };

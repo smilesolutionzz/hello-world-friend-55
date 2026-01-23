@@ -24,14 +24,19 @@ import {
   Mail,
   Calendar,
   Award,
-  Zap
+  Zap,
+  CreditCard,
+  Rocket
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { B2BProductCards } from '@/components/b2b/B2BProductCards';
+import { B2BPaymentModal } from '@/components/b2b/B2BPaymentModal';
 
 const B2BConsulting = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPilotPayment, setShowPilotPayment] = useState(false);
   const [formData, setFormData] = useState({
     company_name: '',
     industry: '',
@@ -432,6 +437,77 @@ const B2BConsulting = () => {
         </div>
       </section>
 
+      {/* Instant Purchase Section */}
+      <section className="container mx-auto px-4 py-16 bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl my-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-green-100 text-green-700 border-green-200">
+              <CreditCard className="w-3 h-3 mr-1" />
+              즉시 구매
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              지금 바로 시작하세요
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              상담 대기 없이 바로 구매 가능한 B2B 서비스
+            </p>
+          </div>
+          <B2BProductCards 
+            onPurchaseComplete={(productId) => {
+              toast({
+                title: "구매 완료!",
+                description: "결제가 완료되었습니다. 담당자가 곧 연락드립니다."
+              });
+            }}
+          />
+        </div>
+      </section>
+
+      {/* Fast Track CTA */}
+      <section className="container mx-auto px-4 py-12">
+        <Card className="bg-gradient-to-r from-blue-600 to-purple-700 text-white border-0">
+          <CardContent className="p-8 md:p-12">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center">
+                  <Rocket className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-1">파일럿 프로그램 즉시 시작</h3>
+                  <p className="text-white/80">
+                    예치금 결제 후 바로 3개월 무료 시범 운영을 시작하세요
+                  </p>
+                </div>
+              </div>
+              <Button 
+                size="lg" 
+                onClick={() => setShowPilotPayment(true)}
+                className="bg-white text-blue-700 hover:bg-white/90 text-lg px-8"
+              >
+                <CreditCard className="w-5 h-5 mr-2" />
+                ₩500,000 예치금 결제
+              </Button>
+            </div>
+            <div className="mt-6 pt-6 border-t border-white/20">
+              <div className="flex flex-wrap gap-4 text-sm text-white/80">
+                <span className="flex items-center gap-1">
+                  <CheckCircle2 className="w-4 h-4" />
+                  정식 계약 시 100% 차감
+                </span>
+                <span className="flex items-center gap-1">
+                  <CheckCircle2 className="w-4 h-4" />
+                  미계약 시 전액 환불
+                </span>
+                <span className="flex items-center gap-1">
+                  <CheckCircle2 className="w-4 h-4" />
+                  전담 CS 매니저 배정
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
       {/* Contact Info */}
       <section className="container mx-auto px-4 py-8 mb-16">
         <div className="max-w-4xl mx-auto text-center">
@@ -456,6 +532,20 @@ const B2BConsulting = () => {
       <footer className="container mx-auto px-4 py-8 text-center text-sm text-muted-foreground border-t">
         <p>© 2024 AIHPRO. AI 기반 아동발달 선별 및 전문가 매칭 플랫폼</p>
       </footer>
+
+      {/* Pilot Payment Modal */}
+      <B2BPaymentModal
+        isOpen={showPilotPayment}
+        onClose={() => setShowPilotPayment(false)}
+        productId="b2b_pilot_deposit"
+        onSuccess={() => {
+          setShowPilotPayment(false);
+          toast({
+            title: "파일럿 시작!",
+            description: "예치금 결제가 완료되었습니다. 담당자가 1영업일 내 연락드립니다."
+          });
+        }}
+      />
     </div>
   );
 };

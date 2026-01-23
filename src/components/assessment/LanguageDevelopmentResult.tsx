@@ -19,6 +19,7 @@ import PremiumAnalysisLoading from '@/components/analysis/PremiumAnalysisLoading
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import ReactMarkdown from 'react-markdown';
 
 interface LanguageDevelopmentResultProps {
   results: Record<string, number>;
@@ -542,10 +543,18 @@ ${aiAnalysis || generateFallbackInterpretation()}
                   </div>
                 </div>
               ) : (
-                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-5 md:p-6 border border-violet-100 dark:border-violet-800/30 shadow-inner">
-                  <p className="text-base md:text-lg leading-relaxed whitespace-pre-line text-slate-800 dark:text-slate-200">
+                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-5 md:p-6 border border-violet-100 dark:border-violet-800/30 shadow-inner prose prose-sm md:prose-base prose-violet dark:prose-invert max-w-none">
+                  <ReactMarkdown
+                    components={{
+                      p: ({node, ...props}) => <p className="mb-3 leading-relaxed text-slate-800 dark:text-slate-200" {...props} />,
+                      strong: ({node, ...props}) => <strong className="font-bold text-violet-700 dark:text-violet-400" {...props} />,
+                      ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-3 space-y-1" {...props} />,
+                      li: ({node, ...props}) => <li className="leading-relaxed text-slate-700 dark:text-slate-300" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="text-base md:text-lg font-semibold text-violet-800 dark:text-violet-300 mt-4 mb-2" {...props} />,
+                    }}
+                  >
                     {aiAnalysis || generateFallbackInterpretation()}
-                  </p>
+                  </ReactMarkdown>
                   <div className="mt-4 pt-4 border-t border-violet-100 dark:border-violet-800/30 flex items-center justify-between text-xs text-violet-500 dark:text-violet-400">
                     <span>📝 분석 글자 수: {(aiAnalysis || generateFallbackInterpretation()).length}자</span>
                     <span>🤖 Powered by Advanced AI</span>

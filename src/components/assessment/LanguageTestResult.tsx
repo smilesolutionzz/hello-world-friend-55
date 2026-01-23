@@ -8,7 +8,7 @@ import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
-
+import ReactMarkdown from 'react-markdown';
 interface LanguageTestResultProps {
   results: {
     answers: number[];
@@ -147,15 +147,15 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   };
 
   return (
-    <div id="language-test-result" className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
+    <div id="language-test-result" className="space-y-6 md:space-y-8">
+      {/* Header - 모바일 최적화 */}
+      <div className="flex items-center gap-3 md:justify-between">
+        <Button variant="outline" size="sm" onClick={onBack} className="flex items-center gap-1.5 shrink-0">
           <ArrowLeft className="w-4 h-4" />
-          뒤로가기
+          <span className="hidden sm:inline">뒤로가기</span>
         </Button>
-        <h1 className="text-2xl font-bold text-brand-gradient">검사 결과 리포트</h1>
-        <div></div>
+        <h1 className="text-lg md:text-2xl font-bold text-primary whitespace-nowrap">검사 결과 리포트</h1>
+        <div className="hidden md:block w-20"></div>
       </div>
 
       {/* Summary Card */}
@@ -230,12 +230,20 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
             </div>
           </div>
 
-          <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-            <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 상세 해석</h4>
-            <div className="prose prose-purple max-w-none">
-              <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
+          <div className="p-4 md:p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
+            <h4 className="text-lg md:text-xl font-semibold text-purple-800 dark:text-purple-300 mb-4">🔍 전문가 상세 해석</h4>
+            <div className="prose prose-sm md:prose-base prose-purple dark:prose-invert max-w-none">
+              <ReactMarkdown
+                components={{
+                  p: ({node, ...props}) => <p className="mb-3 leading-relaxed text-gray-800 dark:text-gray-200" {...props} />,
+                  strong: ({node, ...props}) => <strong className="font-bold text-purple-700 dark:text-purple-400" {...props} />,
+                  ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-3 space-y-1" {...props} />,
+                  li: ({node, ...props}) => <li className="leading-relaxed text-gray-700 dark:text-gray-300" {...props} />,
+                  h3: ({node, ...props}) => <h3 className="text-base md:text-lg font-semibold text-purple-800 dark:text-purple-300 mt-4 mb-2" {...props} />,
+                }}
+              >
                 {evaluation.detailedAnalysis}
-              </p>
+              </ReactMarkdown>
             </div>
           </div>
           

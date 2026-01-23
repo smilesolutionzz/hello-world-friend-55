@@ -67,11 +67,11 @@ export const MobileResultHeader = ({
           </div>
         </div>
         
-        <h1 className="text-lg font-bold text-foreground leading-tight">
+        <h1 className="text-base sm:text-lg font-bold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
+          <p className="text-xs text-muted-foreground mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{subtitle}</p>
         )}
       </div>
 
@@ -82,12 +82,12 @@ export const MobileResultHeader = ({
           뒤로가기
         </Button>
         
-        <div className="text-center flex-1">
-          <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+        <div className="text-center flex-1 min-w-0">
+          <h1 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent whitespace-nowrap">
             {title}
           </h1>
           {subtitle && (
-            <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+            <p className="text-sm text-muted-foreground mt-1 whitespace-nowrap">{subtitle}</p>
           )}
         </div>
         

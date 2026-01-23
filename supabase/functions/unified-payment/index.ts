@@ -15,6 +15,11 @@ const PRODUCTS: Record<string, any> = {
   cash_10000: { type: 'cash', name: '11,000원 캐시', price: 10000, tokens: 110 },
   consult_30: { type: 'consult', name: '전문가 상담 30분', price: 35000 },
   consult_60: { type: 'consult', name: '전문가 상담 60분', price: 65000 },
+  // B2B 상품
+  b2b_proposal_premium: { type: 'b2b', name: '프리미엄 제안서 PDF', price: 30000 },
+  b2b_sample_report: { type: 'b2b', name: '샘플 리포트 세트', price: 99000 },
+  b2b_consulting_1hr: { type: 'b2b', name: '1시간 컨설팅', price: 200000 },
+  b2b_pilot_deposit: { type: 'b2b_deposit', name: '파일럿 프로그램 예치금', price: 500000 },
 };
 
 serve(async (req) => {

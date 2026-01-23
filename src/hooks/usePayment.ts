@@ -68,6 +68,35 @@ export const PRODUCTS = {
     description: '전문 심리상담사 60분 상담',
     price: 65000 
   },
+  // B2B 소액 상품
+  b2b_proposal_premium: {
+    id: 'b2b_proposal_premium',
+    type: 'b2b',
+    name: '프리미엄 제안서 PDF',
+    description: '맞춤형 기관용 제안서 PDF 다운로드',
+    price: 30000
+  },
+  b2b_sample_report: {
+    id: 'b2b_sample_report',
+    type: 'b2b',
+    name: '샘플 리포트 세트',
+    description: '기관용 샘플 리포트 5종 세트',
+    price: 99000
+  },
+  b2b_consulting_1hr: {
+    id: 'b2b_consulting_1hr',
+    type: 'b2b',
+    name: '1시간 컨설팅',
+    description: 'B2B 솔루션 도입 전문 컨설팅',
+    price: 200000
+  },
+  b2b_pilot_deposit: {
+    id: 'b2b_pilot_deposit',
+    type: 'b2b_deposit',
+    name: '파일럿 프로그램 예치금',
+    description: '3개월 파일럿 시작 예치금 (정식 계약 시 차감)',
+    price: 500000
+  },
 } as const;
 
 export type ProductId = keyof typeof PRODUCTS;

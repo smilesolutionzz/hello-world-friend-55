@@ -64,6 +64,15 @@ const navItems = [
     ]
   },
   {
+    label: '기관/B2B',
+    icon: Users,
+    children: [
+      { label: '학원/센터용', path: '/b2b-academy', desc: '학생 심리검사 & 리포팅', badge: 'HOT' },
+      { label: '기업 EAP', path: '/eap-service', desc: '직원 정신건강 관리' },
+      { label: '기관 상담', path: '/b2b-consulting', desc: '도입 무료 상담' },
+    ]
+  },
+  {
     label: '칼럼',
     path: '/column',
     icon: Heart,

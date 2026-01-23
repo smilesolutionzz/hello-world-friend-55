@@ -175,6 +175,7 @@ import Settings from "./pages/Settings";
 import ResetPassword from "./pages/ResetPassword";
 import B2BAdvertising from "./pages/B2BAdvertising";
 import B2BLanding from "./pages/B2BLanding";
+import B2BAcademy from "./pages/B2BAcademy";
 import AppStoreGuide from "./pages/AppStoreGuide";
 import BusinessPlanGenerator from "./pages/BusinessPlanGenerator";
 import PartnerBenefits from "./pages/PartnerBenefits";
@@ -388,6 +389,7 @@ const App = () => {
           {/* B2B Advertising */}
           <Route path="/b2b-advertising" element={<B2BAdvertising />} />
           <Route path="/b2b" element={<B2BLanding />} />
+          <Route path="/b2b-academy" element={<B2BAcademy />} />
           <Route path="/b2b-benefits" element={<PartnerBenefits />} />
           <Route path="/partner-benefits" element={<PartnerBenefits />} />
           <Route path="/b2b-consulting" element={<B2BConsulting />} />

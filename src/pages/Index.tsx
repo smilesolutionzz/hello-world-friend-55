@@ -27,6 +27,7 @@ import ColumnHookBanner from '@/components/landing/ColumnHookBanner';
 import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
 import MindDiaryHook from '@/components/landing/MindDiaryHook';
 import SubscriptionValueSection from '@/components/landing/SubscriptionValueSection';
+import B2BShowcaseSection from '@/components/landing/B2BShowcaseSection';
 
 
 
@@ -203,6 +204,11 @@ const Index = () => {
             {/* 📰 칼럼 후킹 배너 */}
             <LazyLoad rootMargin="200px">
               <ColumnHookBanner />
+            </LazyLoad>
+            
+            {/* 🏢 B2B 기관용 솔루션 섹션 */}
+            <LazyLoad rootMargin="200px">
+              <B2BShowcaseSection />
             </LazyLoad>
             
             {/* 6️⃣ 파트너 & 신뢰 */}

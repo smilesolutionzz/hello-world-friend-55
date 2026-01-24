@@ -52,7 +52,14 @@ const navItems = [
     children: [
       { label: 'AI 상담', path: '/ai-assistant', desc: '24시간 AI 심리 상담', icon: MessageCircle },
       { label: 'AI 아지트', path: '/metaverse-voice', desc: '음성으로 AI와 대화', badge: 'NEW', icon: Mic, mobileNote: '(PC 권장)' },
+    ]
+  },
+  {
+    label: '관찰일지',
+    icon: FileText,
+    children: [
       { label: 'AI 관찰일지', path: '/observation', desc: '개인 관찰일지 AI 분석', icon: FileText },
+      { label: '마음일기', path: '/mind-diary', desc: '청소년 감정 기록', icon: Heart },
     ]
   },
   {
@@ -65,12 +72,8 @@ const navItems = [
   },
   {
     label: '기관/B2B',
+    path: '/b2b-academy',
     icon: Users,
-    children: [
-      { label: '학원/센터용', path: '/b2b-academy', desc: '학생 심리검사 & 리포팅', badge: 'HOT' },
-      { label: '기업 EAP', path: '/eap-service', desc: '직원 정신건강 관리' },
-      { label: '기관 상담', path: '/b2b-consulting', desc: '도입 무료 상담' },
-    ]
   },
   {
     label: '칼럼',

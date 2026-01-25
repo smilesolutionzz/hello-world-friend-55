@@ -165,7 +165,7 @@ export const B2BIntegratedDashboard: React.FC<B2BIntegratedDashboardProps> = ({
     }
   }, [generateAIReport, institutionName, toast]);
 
-  // 리포트 발송
+  // 리포트 발송 (데모 모드)
   const handleSendReport = useCallback(async () => {
     if (!selectedStudent || !generatedReportContent) return;
 
@@ -176,21 +176,18 @@ export const B2BIntegratedDashboard: React.FC<B2BIntegratedDashboardProps> = ({
         studentName: selectedStudent.name,
         reportType: '맞춤',
         reportContent: generatedReportContent,
-        institutionName
+        institutionName,
+        isDemoMode: true // 데모 모드 플래그
       });
 
       if (success) {
         setShowReportPreview(false);
         setGeneratedReportContent('');
-        toast({
-          title: '리포트 발송 완료',
-          description: `${selectedStudent.parentEmail}로 리포트가 발송되었습니다.`,
-        });
       }
     } catch (error) {
       // Error handled in hook
     }
-  }, [selectedStudent, generatedReportContent, sendReportEmail, institutionName, toast]);
+  }, [selectedStudent, generatedReportContent, sendReportEmail, institutionName]);
 
   const getRiskBadge = (level: string) => {
     switch (level) {

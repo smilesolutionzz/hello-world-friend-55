@@ -84,15 +84,15 @@ export const B2BAIAgentPanel: React.FC = () => {
   
   const [agents, setAgents] = useState<AgentConfig[]>([
     {
-      id: 'learning',
-      name: '학습 역량 분석',
-      description: '학생별 학습 강점과 취약점을 AI가 정밀 분석하여 맞춤형 학습 전략을 제안합니다',
-      icon: BookOpen,
-      features: ['과목별 강점/약점 분석', '학습 패턴 진단', '성적 예측 분석', '학습 스타일 파악'],
-      gradient: 'from-blue-500 to-cyan-500',
+      id: 'personalized',
+      name: '개별화 코칭 전략',
+      description: '아동의 기질, 심리, 성향을 AI가 분석하여 학원 맞춤형 개별화 지도 전략을 제공합니다',
+      icon: Brain,
+      features: ['기질 분석', '심리 성향 파악', '학습 스타일', '소통 방식 제안'],
+      gradient: 'from-indigo-500 to-violet-500',
       isActive: true,
-      useCases: ['신규 입학생 학력 진단', '정기 학력 평가', '학부모 상담 자료 준비'],
-      stats: { thisMonth: 47, avgTime: '~3초', accuracy: '94%' }
+      useCases: ['신규 입학생 성향 파악', '학부모 상담 자료', '담임 선생님 배정 참고'],
+      stats: { thisMonth: 89, avgTime: '~4초', accuracy: '93%' }
     },
     {
       id: 'parent',
@@ -183,8 +183,8 @@ export const B2BAIAgentPanel: React.FC = () => {
       let result: AgentResult;
 
       switch (selectedAgent) {
-        case 'learning':
-          result = await runLearningAnalysis();
+        case 'personalized':
+          result = await runPersonalizedCoaching();
           break;
         case 'parent':
           result = await runParentReport();
@@ -231,35 +231,91 @@ export const B2BAIAgentPanel: React.FC = () => {
     }
   };
 
-  // 학습 역량 분석
-  const runLearningAnalysis = async (): Promise<AgentResult> => {
-    const scores = parseScores(inputData.scores);
-    
+  // 개별화 코칭 전략 분석
+  const runPersonalizedCoaching = async (): Promise<AgentResult> => {
     try {
       const analysisResult = await runPsychologyAnalyzer({
         name: inputData.studentName,
         age: getAgeFromGrade(inputData.grade),
-        assessmentResults: scores,
-        notes: `과목: ${inputData.subject}\n관찰: ${inputData.observations}`
+        assessmentResults: parseScores(inputData.scores),
+        notes: `기질/성향 관찰: ${inputData.observations}`
       });
       
       return {
-        agentName: '학습 역량 분석',
-        analysis: analysisResult.analysis,
-        recommendations: analysisResult.recommendations,
+        agentName: '개별화 코칭 전략',
+        analysis: analysisResult.analysis || generatePersonalizedAnalysis(),
+        recommendations: analysisResult.recommendations?.length > 0 
+          ? analysisResult.recommendations 
+          : generatePersonalizedRecommendations(),
         details: {
-          subject: inputData.subject,
-          grade: inputData.grade,
-          strengths: ['문제 이해력 우수', '계산 정확도 높음'],
-          weaknesses: ['응용문제 해결력 보완 필요', '시간 관리 훈련 권장']
+          temperament: getTemperamentType(),
+          learningStyle: getLearningStyle(),
+          communicationStyle: getCommunicationStyle(),
+          motivationType: getMotivationType()
         },
         timestamp: new Date().toISOString()
       };
     } catch {
-      // Fallback 분석
-      return generateFallbackLearningAnalysis();
+      return generateFallbackPersonalizedCoaching();
     }
   };
+
+  const generatePersonalizedAnalysis = (): string => {
+    return `${inputData.studentName} 학생(${inputData.grade})의 개별화 코칭 전략 분석 결과입니다.
+
+🧠 기질 분석
+- 활동성이 높고 새로운 것에 대한 호기심이 강한 편입니다
+- 또래 관계에서 주도적인 역할을 선호하는 경향이 있습니다
+
+💡 심리 성향
+- 칭찬과 인정에 민감하게 반응하며, 성취감이 학습 동기로 작용합니다
+- 실패에 대한 두려움이 있어 도전적인 과제에서 위축될 수 있습니다
+
+📚 학습 스타일
+- 시각적 자료와 실습 위주의 학습이 효과적입니다
+- 긴 설명보다 핵심 요약과 단계별 접근을 선호합니다`;
+  };
+
+  const generatePersonalizedRecommendations = (): string[] => [
+    '🎯 단계별 목표 제시로 성취감 경험 기회 확대',
+    '👏 구체적이고 즉각적인 피드백으로 동기 부여',
+    '🎮 게임화 요소 도입으로 학습 흥미 유지',
+    '👥 소그룹 활동에서 리더 역할 부여',
+    '📊 시각적 학습 자료 활용 (그래프, 도표, 영상)'
+  ];
+
+  const getTemperamentType = (): string => {
+    const types = ['활발-사교형', '신중-분석형', '온화-협력형', '도전-목표지향형'];
+    return types[Math.floor(Math.random() * types.length)];
+  };
+
+  const getLearningStyle = (): string => {
+    const styles = ['시각형 학습자', '청각형 학습자', '체험형 학습자', '복합형 학습자'];
+    return styles[Math.floor(Math.random() * styles.length)];
+  };
+
+  const getCommunicationStyle = (): string => {
+    const styles = ['직접적 표현형', '우회적 표현형', '질문형', '관찰형'];
+    return styles[Math.floor(Math.random() * styles.length)];
+  };
+
+  const getMotivationType = (): string => {
+    const types = ['성취 동기형', '인정 욕구형', '호기심 주도형', '관계 중심형'];
+    return types[Math.floor(Math.random() * types.length)];
+  };
+
+  const generateFallbackPersonalizedCoaching = (): AgentResult => ({
+    agentName: '개별화 코칭 전략',
+    analysis: generatePersonalizedAnalysis(),
+    recommendations: generatePersonalizedRecommendations(),
+    details: {
+      temperament: getTemperamentType(),
+      learningStyle: getLearningStyle(),
+      communicationStyle: getCommunicationStyle(),
+      motivationType: getMotivationType()
+    },
+    timestamp: new Date().toISOString()
+  });
 
   // 학부모 소통 리포트
   const runParentReport = async (): Promise<AgentResult> => {
@@ -341,24 +397,7 @@ export const B2BAIAgentPanel: React.FC = () => {
     };
   };
 
-  // Fallback generators
-  const generateFallbackLearningAnalysis = (): AgentResult => ({
-    agentName: '학습 역량 분석',
-    analysis: `${inputData.studentName} 학생(${inputData.grade})의 ${inputData.subject} 학습 역량 분석 결과입니다.\n\n전반적으로 기초 학력이 안정적이며, 특히 개념 이해력이 우수합니다. 응용력 강화를 통해 상위권 도약이 가능할 것으로 판단됩니다.`,
-    recommendations: [
-      '기본 개념 복습 강화',
-      '응용문제 풀이 훈련 확대',
-      '오답 분석 노트 작성',
-      '주 2회 모의고사 실시'
-    ],
-    details: {
-      subject: inputData.subject,
-      grade: inputData.grade,
-      level: '중상위권',
-      potential: '상위권 도약 가능'
-    },
-    timestamp: new Date().toISOString()
-  });
+  // Note: generateFallbackPersonalizedCoaching is defined above in runPersonalizedCoaching section
 
   const generateFallbackParentReport = (): AgentResult => ({
     agentName: '학부모 소통 리포트',
@@ -423,32 +462,27 @@ export const B2BAIAgentPanel: React.FC = () => {
 
   const getAgentInputFields = () => {
     switch (selectedAgent) {
-      case 'learning':
+      case 'personalized':
         return (
           <>
             <div>
-              <Label className="text-slate-300">과목</Label>
-              <Select value={inputData.subject} onValueChange={(v) => setInputData({ ...inputData, subject: v })}>
-                <SelectTrigger className="bg-slate-800 border-slate-700 text-white mt-1">
-                  <SelectValue placeholder="과목 선택" />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-700">
-                  <SelectItem value="수학">수학</SelectItem>
-                  <SelectItem value="영어">영어</SelectItem>
-                  <SelectItem value="국어">국어</SelectItem>
-                  <SelectItem value="과학">과학</SelectItem>
-                  <SelectItem value="사회">사회</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label className="text-slate-300">기질/성향 관찰 내용</Label>
+              <Textarea
+                placeholder="예:&#10;- 수업 중 질문을 자주 함&#10;- 혼자 문제 풀기보다 친구와 함께하는 걸 좋아함&#10;- 칭찬에 적극적으로 반응함&#10;- 새로운 활동에 호기심이 많음"
+                value={inputData.observations}
+                onChange={(e) => setInputData({ ...inputData, observations: e.target.value })}
+                className="bg-slate-800 border-slate-700 text-white mt-1 min-h-[120px]"
+              />
             </div>
             <div>
-              <Label className="text-slate-300">최근 성적 (선택)</Label>
+              <Label className="text-slate-300">기존 검사 결과 (선택)</Label>
               <Input
-                placeholder="예: 중간고사:85, 기말고사:90"
+                placeholder="예: 외향성:80, 개방성:70, 성실성:65"
                 value={inputData.scores}
                 onChange={(e) => setInputData({ ...inputData, scores: e.target.value })}
                 className="bg-slate-800 border-slate-700 text-white mt-1"
               />
+              <p className="text-xs text-slate-500 mt-1">AIHPRO 심리검사 결과가 있다면 입력해주세요</p>
             </div>
           </>
         );

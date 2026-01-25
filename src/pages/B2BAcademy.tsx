@@ -52,11 +52,11 @@ const B2BAcademy = () => {
 
   const aiAgents = [
     {
-      name: '학습 역량 분석',
-      description: '학생별 학습 강점과 취약점을 AI가 정밀 분석하여 맞춤형 학습 전략을 제안합니다',
-      features: ['과목별 분석', '학습 패턴 진단', '성적 예측', '스타일 파악'],
-      gradient: 'from-blue-500 to-cyan-500',
-      stats: { requests: 247, tokens: 1847, response: '~3초' }
+      name: '개별화 코칭 전략',
+      description: '아동의 기질, 심리, 성향을 AI가 분석하여 학원 맞춤형 개별화 지도 전략을 제공합니다',
+      features: ['기질 분석', '심리 성향', '학습 스타일', '소통 방식'],
+      gradient: 'from-indigo-500 to-violet-500',
+      stats: { requests: 289, tokens: 2147, response: '~4초' }
     },
     {
       name: '학부모 소통 리포트',

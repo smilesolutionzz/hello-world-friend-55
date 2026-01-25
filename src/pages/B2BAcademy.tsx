@@ -237,7 +237,7 @@ const B2BAcademy = () => {
                 variant="outline" 
                 size="lg"
                 onClick={() => navigate('/assessment')}
-                className="border-slate-700 hover:bg-slate-800 text-lg h-14 px-8 rounded-xl"
+                className="border-slate-700 hover:bg-slate-800 text-lg h-14 px-8 rounded-xl text-white"
               >
                 <Play className="w-5 h-5 mr-2" />
                 검사 데모 보기

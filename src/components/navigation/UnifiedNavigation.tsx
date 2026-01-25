@@ -71,7 +71,7 @@ const navItems = [
     ]
   },
   {
-    label: '기관/B2B',
+    label: '학원/센터용',
     path: '/b2b-academy',
     icon: Users,
   },

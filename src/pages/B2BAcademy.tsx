@@ -23,19 +23,17 @@ import {
   Star,
   Clock,
   Shield,
-  Rocket
+  Rocket,
+  ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { B2BReportCenter } from '@/components/b2b/B2BReportCenter';
-import { B2BAIAgentPanel } from '@/components/b2b/B2BAIAgentPanel';
+import { B2BIntegratedDashboard } from '@/components/b2b/B2BIntegratedDashboard';
 
 const B2BAcademy = () => {
   const navigate = useNavigate();
@@ -51,21 +49,6 @@ const B2BAcademy = () => {
     studentCount: '',
     message: ''
   });
-
-  // Demo data for showcase
-  const reportStats = {
-    monthSent: 124,
-    openRate: 87,
-    pendingBookings: 12,
-    drafts: 5
-  };
-
-  const recentReports = [
-    { name: '1월 3주차 학습 리포트', student: '김민준', type: '주간', status: '발송 완료' },
-    { name: '수학 취약점 분석 리포트', student: '최수아', type: '맞춤', status: '초안' },
-    { name: '1월 3주차 학습 리포트', student: '정우진', type: '주간', status: '예약됨' },
-    { name: '1월 3주차 학습 리포트', student: '한소희', type: '주간', status: '발송 완료' },
-  ];
 
   const aiAgents = [
     {
@@ -193,6 +176,23 @@ const B2BAcademy = () => {
     }
   };
 
+  // Demo Mode - 통합 대시보드
+  if (activeSection === 'demo') {
+    return (
+      <div className="relative">
+        <Button
+          variant="outline"
+          onClick={() => setActiveSection('landing')}
+          className="fixed top-20 left-4 z-50 bg-slate-900/90 border-slate-700 hover:bg-slate-800"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          랜딩 페이지로
+        </Button>
+        <B2BIntegratedDashboard institutionName="체험 학원" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       {/* Hero Section */}
@@ -263,312 +263,87 @@ const B2BAcademy = () => {
         </div>
       </section>
 
-      {/* Demo Mode - Functional Report Center & AI Agents */}
-      {activeSection === 'demo' && (
-        <section className="py-20 relative">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <Badge className="mb-2 bg-green-500/20 text-green-300 border-green-500/30">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  체험 모드
-                </Badge>
-                <h2 className="text-2xl font-bold text-white">B2B 대시보드 체험</h2>
-                <p className="text-slate-400 text-sm">실제 기능을 체험해보세요</p>
-              </div>
-              <Button 
-                variant="outline" 
-                onClick={() => setActiveSection('landing')}
-                className="border-slate-700 hover:bg-slate-800"
-              >
-                랜딩 페이지로
-              </Button>
-            </div>
-            
-            {/* Functional Report Center */}
-            <div className="max-w-5xl mx-auto mb-12">
-              <B2BReportCenter institutionName="체험 학원" />
-            </div>
-            
-            {/* AI Agent Section */}
-            <div className="max-w-5xl mx-auto">
+      {/* AI Agents Section */}
+      <section className="py-20 relative">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <Badge className="mb-4 bg-blue-500/20 text-blue-300 border-blue-500/30">
+              <Zap className="w-4 h-4 mr-2" />
+              AI 에이전트 시스템
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              3가지 AI 에이전트가 자동으로 일합니다
+            </h2>
+            <p className="text-slate-400 max-w-2xl mx-auto">
+              학생 분석부터 학부모 리포팅, 위기 감지까지 모두 자동화
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {aiAgents.map((agent, idx) => (
               <motion.div
+                key={agent.name}
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center mb-8"
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
               >
-                <Badge className="mb-4 bg-blue-500/20 text-blue-300 border-blue-500/30">
-                  <Zap className="w-4 h-4 mr-2" />
-                  AI 에이전트 실행
-                </Badge>
-                <h2 className="text-2xl font-bold text-white mb-2">
-                  AI 에이전트를 직접 실행해보세요
-                </h2>
-                <p className="text-slate-400">
-                  학생 정보를 입력하면 AI가 분석 결과를 제공합니다
-                </p>
-              </motion.div>
-              <B2BAIAgentPanel />
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Demo Preview - Report Center (Landing Mode) */}
-      {activeSection === 'landing' && (
-        <section className="py-20 relative">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                리포트 센터 미리보기
-              </h2>
-              <p className="text-slate-400 max-w-2xl mx-auto">
-                학부모에게 발송한 리포트를 한눈에 관리하세요
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="max-w-5xl mx-auto"
-            >
-              <Card className="bg-slate-900/80 border-slate-800 overflow-hidden backdrop-blur-xl">
-                <CardHeader className="border-b border-slate-800 pb-6">
-                  <div className="flex items-center justify-between flex-wrap gap-4">
-                    <div>
-                      <CardTitle className="text-2xl text-white">리포트 센터</CardTitle>
-                      <p className="text-slate-400 text-sm mt-1">학부모에게 발송한 리포트를 관리하세요</p>
-                    </div>
-                    <div className="flex gap-3">
-                      <Button 
-                        variant="outline" 
-                        className="border-slate-700 hover:bg-slate-800"
-                        onClick={() => setActiveSection('demo')}
-                      >
-                        <Send className="w-4 h-4 mr-2" />
-                        일괄 발송
-                      </Button>
-                      <Button 
-                        className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600"
-                        onClick={() => setActiveSection('demo')}
-                      >
-                        <FileText className="w-4 h-4 mr-2" />
-                        리포트 작성
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-6">
-                  {/* Stats Grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    <div className="bg-slate-800/50 rounded-xl p-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-violet-500/20 rounded-lg">
-                          <Send className="w-5 h-5 text-violet-400" />
-                        </div>
-                        <span className="text-2xl font-bold text-white">{reportStats.monthSent}</span>
-                      </div>
-                      <p className="text-slate-400 text-sm">이번 달 발송</p>
-                    </div>
-                    <div className="bg-slate-800/50 rounded-xl p-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-green-500/20 rounded-lg">
-                          <Eye className="w-5 h-5 text-green-400" />
-                        </div>
-                        <span className="text-2xl font-bold text-white">{reportStats.openRate}%</span>
-                      </div>
-                      <p className="text-slate-400 text-sm">평균 열람률</p>
-                    </div>
-                    <div className="bg-slate-800/50 rounded-xl p-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-blue-500/20 rounded-lg">
-                          <Calendar className="w-5 h-5 text-blue-400" />
-                        </div>
-                        <span className="text-2xl font-bold text-white">{reportStats.pendingBookings}</span>
-                      </div>
-                      <p className="text-slate-400 text-sm">예약 대기</p>
-                    </div>
-                    <div className="bg-slate-800/50 rounded-xl p-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-orange-500/20 rounded-lg">
-                          <FileText className="w-5 h-5 text-orange-400" />
-                        </div>
-                        <span className="text-2xl font-bold text-white">{reportStats.drafts}</span>
-                      </div>
-                      <p className="text-slate-400 text-sm">초안 저장</p>
-                    </div>
-                  </div>
-
-                  {/* Reports Table */}
-                  <div className="bg-slate-800/30 rounded-xl overflow-hidden">
-                    <div className="grid grid-cols-3 gap-4 p-4 border-b border-slate-700/50 text-sm text-slate-400">
-                      <span>리포트</span>
-                      <span>유형</span>
-                      <span>상태</span>
-                    </div>
-                    {recentReports.map((report, idx) => (
-                      <div key={idx} className="grid grid-cols-3 gap-4 p-4 border-b border-slate-800/50 last:border-0">
-                        <div>
-                          <p className="font-medium text-white">{report.name}</p>
-                          <p className="text-sm text-slate-500">{report.student}</p>
-                        </div>
-                        <div>
-                          <Badge variant="outline" className={`
-                            ${report.type === '주간' ? 'border-blue-500/50 text-blue-400' : ''}
-                            ${report.type === '맞춤' ? 'border-pink-500/50 text-pink-400' : ''}
-                            ${report.type === '월간' ? 'border-violet-500/50 text-violet-400' : ''}
-                          `}>
-                            {report.type}
-                          </Badge>
-                        </div>
-                        <div>
-                          <Badge className={`
-                            ${report.status === '발송 완료' ? 'bg-green-500/20 text-green-400 border-0' : ''}
-                            ${report.status === '초안' ? 'bg-slate-500/20 text-slate-400 border-0' : ''}
-                            ${report.status === '예약됨' ? 'bg-blue-500/20 text-blue-400 border-0' : ''}
-                          `}>
-                            {report.status}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* AI Report Banner */}
-                  <div className="mt-6 p-6 bg-gradient-to-r from-violet-500/10 to-pink-500/10 rounded-xl border border-violet-500/20">
-                    <div className="flex items-center gap-4 flex-wrap">
-                      <div className="p-3 bg-gradient-to-br from-violet-500 to-pink-500 rounded-xl">
-                        <TrendingUp className="w-6 h-6 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-white">AI가 자동으로 리포트를 작성해드려요</h4>
-                        <p className="text-sm text-slate-400">학생 데이터를 분석하여 맞춤형 리포트를 생성합니다</p>
-                      </div>
-                      <Button 
-                        className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600"
-                        onClick={() => setActiveSection('demo')}
-                      >
-                        AI 리포트 생성
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-        </section>
-      )}
-
-      {/* AI Agents Section (Landing Mode Only) */}
-      {activeSection === 'landing' && (
-        <section className="py-20 bg-slate-900/50">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <Badge className="mb-4 bg-blue-500/20 text-blue-300 border-blue-500/30">
-                <Zap className="w-4 h-4 mr-2" />
-                AI 에이전트
-              </Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                AI가 자동으로 분석하고 리포팅합니다
-              </h2>
-              <p className="text-slate-400 max-w-2xl mx-auto">
-                3가지 AI 에이전트가 학생 심리검사부터 학부모 리포팅까지 자동화합니다
-              </p>
-              <Button 
-                className="mt-6 bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600"
-                onClick={() => setActiveSection('demo')}
-              >
-                <Play className="w-4 h-4 mr-2" />
-                AI 에이전트 체험하기
-              </Button>
-            </motion.div>
-
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {aiAgents.map((agent, idx) => (
-                <motion.div
-                  key={agent.name}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                >
-                <Card className="bg-slate-900/80 border-slate-800 h-full hover:border-slate-700 transition-colors">
+                <Card className="bg-slate-900/80 border-slate-800 h-full hover:border-slate-700 transition-all hover:scale-[1.02]">
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`p-3 rounded-xl bg-gradient-to-br ${agent.gradient}`}>
-                        <Brain className="w-6 h-6 text-white" />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge className="bg-green-500/20 text-green-400 border-0">활성</Badge>
-                        <Switch defaultChecked />
-                      </div>
+                    <div className={`p-3 rounded-xl bg-gradient-to-br ${agent.gradient} w-fit mb-4`}>
+                      <Brain className="w-6 h-6 text-white" />
                     </div>
+                    <h3 className="text-xl font-semibold text-white mb-2">{agent.name}</h3>
+                    <p className="text-slate-400 text-sm mb-4">{agent.description}</p>
                     
-                    <h3 className="text-lg font-semibold text-white mb-2">{agent.name}</h3>
-                    <p className="text-sm text-slate-400 mb-4">{agent.description}</p>
-                    
-                    {/* Stats */}
-                    <div className="grid grid-cols-3 gap-2 mb-4 text-center">
-                      <div>
-                        <p className="text-lg font-bold text-white">1/{agent.stats.requests}</p>
-                        <p className="text-xs text-slate-500">이번 달 요청</p>
-                      </div>
-                      <div>
-                        <p className="text-lg font-bold text-white">{agent.stats.tokens}</p>
-                        <p className="text-xs text-slate-500">토큰 사용</p>
-                      </div>
-                      <div>
-                        <p className="text-lg font-bold text-white">{agent.stats.response}</p>
-                        <p className="text-xs text-slate-500">평균 응답</p>
-                      </div>
-                    </div>
-                    
-                    {/* Features */}
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {agent.features.map((feature) => (
-                        <Badge key={feature} variant="outline" className="border-slate-700 text-slate-300 text-xs">
-                          {feature}
+                      {agent.features.map((f) => (
+                        <Badge key={f} variant="outline" className="border-slate-700 text-slate-300 text-xs">
+                          {f}
                         </Badge>
                       ))}
                     </div>
-                    
-                    <Button 
-                      className={`w-full bg-gradient-to-r ${agent.gradient} hover:opacity-90`}
-                      onClick={() => setActiveSection('demo')}
-                    >
-                      <Play className="w-4 h-4 mr-2" />
-                      에이전트 실행
-                    </Button>
-                    
-                    <div className="mt-3">
-                      <div className="flex justify-between text-xs text-slate-500 mb-1">
-                        <span>사용량</span>
-                        <span>0%</span>
+
+                    <div className="grid grid-cols-3 gap-2 text-center pt-4 border-t border-slate-800">
+                      <div>
+                        <p className="text-lg font-bold text-white">{agent.stats.requests}</p>
+                        <p className="text-xs text-slate-500">요청</p>
                       </div>
-                      <Progress value={0} className="h-1.5 bg-slate-800" />
+                      <div>
+                        <p className="text-lg font-bold text-white">{agent.stats.tokens}</p>
+                        <p className="text-xs text-slate-500">토큰</p>
+                      </div>
+                      <div>
+                        <p className="text-lg font-bold text-white">{agent.stats.response}</p>
+                        <p className="text-xs text-slate-500">응답</p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
           </div>
+
+          <div className="text-center mt-8">
+            <Button
+              onClick={() => setActiveSection('demo')}
+              size="lg"
+              className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600"
+            >
+              <Sparkles className="w-5 h-5 mr-2" />
+              에이전트 직접 체험하기
+            </Button>
+          </div>
         </div>
       </section>
-      )}
 
       {/* Benefits Section */}
-      <section className="py-20">
+      <section className="py-20 bg-gradient-to-b from-slate-950 to-slate-900">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -577,29 +352,29 @@ const B2BAcademy = () => {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              학원/센터가 선택하는 이유
+              왜 AIHPRO인가요?
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto">
-              심리검사 도입으로 학부모 신뢰도 상승, 상담 연계로 추가 수익 창출
+              학원/센터 운영에 필요한 모든 심리검사 도구를 제공합니다
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {benefits.map((benefit, idx) => (
               <motion.div
                 key={benefit.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
+                transition={{ delay: idx * 0.05 }}
               >
-                <Card className="bg-slate-900/50 border-slate-800 h-full hover:border-violet-500/50 transition-colors group">
+                <Card className="bg-slate-800/50 border-slate-700 h-full hover:border-violet-500/50 transition-colors">
                   <CardContent className="p-6">
-                    <div className="p-3 bg-violet-500/10 rounded-xl w-fit mb-4 group-hover:bg-violet-500/20 transition-colors">
+                    <div className="p-3 bg-violet-500/20 rounded-xl w-fit mb-4">
                       <benefit.icon className="w-6 h-6 text-violet-400" />
                     </div>
                     <h3 className="text-lg font-semibold text-white mb-2">{benefit.title}</h3>
-                    <p className="text-sm text-slate-400">{benefit.description}</p>
+                    <p className="text-slate-400 text-sm">{benefit.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -609,7 +384,7 @@ const B2BAcademy = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 bg-slate-900/50">
+      <section className="py-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -617,15 +392,11 @@ const B2BAcademy = () => {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <Badge className="mb-4 bg-green-500/20 text-green-300 border-green-500/30">
-              <Rocket className="w-4 h-4 mr-2" />
-              합리적인 가격
-            </Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              기관 규모에 맞는 요금제
+              합리적인 요금제
             </h2>
-            <p className="text-slate-400">
-              소규모 기관은 무료로 시작하세요
+            <p className="text-slate-400 max-w-2xl mx-auto">
+              기관 규모에 맞는 요금제를 선택하세요
             </p>
           </motion.div>
 
@@ -638,30 +409,24 @@ const B2BAcademy = () => {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
               >
-                <Card className={`relative h-full ${
+                <Card className={`h-full ${
                   plan.recommended 
-                    ? 'bg-gradient-to-b from-violet-500/10 to-slate-900 border-violet-500/50' 
+                    ? 'bg-gradient-to-b from-violet-500/20 to-pink-500/10 border-violet-500/50 scale-105' 
                     : 'bg-slate-900/80 border-slate-800'
                 }`}>
-                  {plan.recommended && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <Badge className="bg-gradient-to-r from-violet-500 to-pink-500 border-0 px-4 py-1">
-                        <Star className="w-4 h-4 mr-1" />
+                  <CardContent className="p-6">
+                    {plan.recommended && (
+                      <Badge className="mb-4 bg-gradient-to-r from-violet-500 to-pink-500 text-white border-0">
+                        <Star className="w-3 h-3 mr-1" />
                         추천
                       </Badge>
+                    )}
+                    <h3 className="text-xl font-semibold text-white mb-2">{plan.name}</h3>
+                    <p className="text-slate-400 text-sm mb-4">{plan.description}</p>
+                    <div className="mb-6">
+                      <span className="text-3xl font-bold text-white">{plan.price}</span>
+                      <span className="text-slate-400">{plan.period}</span>
                     </div>
-                  )}
-                  <CardContent className="p-6">
-                    <div className="text-center mb-6">
-                      <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
-                      <p className="text-sm text-slate-400 mb-4">{plan.description}</p>
-                      <div className="flex items-end justify-center gap-1">
-                        {plan.price !== '문의' && <span className="text-slate-400">₩</span>}
-                        <span className="text-4xl font-bold text-white">{plan.price}</span>
-                        <span className="text-slate-400">{plan.period}</span>
-                      </div>
-                    </div>
-                    
                     <ul className="space-y-3 mb-6">
                       {plan.features.map((feature) => (
                         <li key={feature} className="flex items-center gap-2 text-sm text-slate-300">
@@ -670,16 +435,15 @@ const B2BAcademy = () => {
                         </li>
                       ))}
                     </ul>
-                    
                     <Button 
                       className={`w-full ${
                         plan.recommended 
                           ? 'bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600' 
                           : 'bg-slate-800 hover:bg-slate-700'
                       }`}
-                      onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
+                      onClick={() => setActiveSection('demo')}
                     >
-                      {plan.price === '무료' ? '무료 시작' : plan.price === '문의' ? '상담 문의' : '시작하기'}
+                      {plan.price === '문의' ? '상담 신청' : '시작하기'}
                     </Button>
                   </CardContent>
                 </Card>
@@ -689,8 +453,8 @@ const B2BAcademy = () => {
         </div>
       </section>
 
-      {/* Contact Form Section */}
-      <section id="contact-form" className="py-20">
+      {/* Contact Form */}
+      <section className="py-20 bg-gradient-to-b from-slate-900 to-slate-950">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
             <motion.div
@@ -700,127 +464,98 @@ const B2BAcademy = () => {
               className="text-center mb-12"
             >
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                무료 체험 신청
+                도입 문의하기
               </h2>
               <p className="text-slate-400">
-                영업일 기준 1일 이내 담당자가 연락드립니다
+                무료 상담을 통해 기관에 맞는 솔루션을 제안받으세요
               </p>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <Card className="bg-slate-900/80 border-slate-800">
-                <CardContent className="p-6">
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm text-slate-400 block mb-2">기관명 *</label>
-                        <Input
-                          required
-                          placeholder="예: 밝은미래학원"
-                          value={formData.institutionName}
-                          onChange={(e) => setFormData({ ...formData, institutionName: e.target.value })}
-                          className="bg-slate-800 border-slate-700 text-white"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm text-slate-400 block mb-2">담당자명 *</label>
-                        <Input
-                          required
-                          placeholder="홍길동"
-                          value={formData.contactPerson}
-                          onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
-                          className="bg-slate-800 border-slate-700 text-white"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm text-slate-400 block mb-2">이메일 *</label>
-                        <Input
-                          type="email"
-                          required
-                          placeholder="email@example.com"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="bg-slate-800 border-slate-700 text-white"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm text-slate-400 block mb-2">연락처 *</label>
-                        <Input
-                          required
-                          placeholder="010-0000-0000"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          className="bg-slate-800 border-slate-700 text-white"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm text-slate-400 block mb-2">기관 유형</label>
-                        <select
-                          value={formData.institutionType}
-                          onChange={(e) => setFormData({ ...formData, institutionType: e.target.value })}
-                          className="w-full h-10 px-3 rounded-md bg-slate-800 border border-slate-700 text-white"
-                        >
-                          <option value="academy">학원</option>
-                          <option value="development_center">발달센터</option>
-                          <option value="daycare">어린이집/유치원</option>
-                          <option value="school">학교</option>
-                          <option value="counseling_center">상담센터</option>
-                          <option value="other">기타</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="text-sm text-slate-400 block mb-2">학생 수</label>
-                        <Input
-                          type="number"
-                          placeholder="예: 50"
-                          value={formData.studentCount}
-                          onChange={(e) => setFormData({ ...formData, studentCount: e.target.value })}
-                          className="bg-slate-800 border-slate-700 text-white"
-                        />
-                      </div>
-                    </div>
-
+            <Card className="bg-slate-900/80 border-slate-800">
+              <CardContent className="p-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm text-slate-400 block mb-2">문의 내용</label>
-                      <Textarea
-                        placeholder="궁금한 점이나 요청사항을 입력해주세요"
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="bg-slate-800 border-slate-700 text-white min-h-[100px]"
+                      <label className="text-sm text-slate-400 mb-1 block">기관명 *</label>
+                      <Input
+                        required
+                        placeholder="예: 해법수학학원"
+                        value={formData.institutionName}
+                        onChange={(e) => setFormData({ ...formData, institutionName: e.target.value })}
+                        className="bg-slate-800 border-slate-700 text-white"
                       />
                     </div>
+                    <div>
+                      <label className="text-sm text-slate-400 mb-1 block">담당자명 *</label>
+                      <Input
+                        required
+                        placeholder="홍길동"
+                        value={formData.contactPerson}
+                        onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
+                        className="bg-slate-800 border-slate-700 text-white"
+                      />
+                    </div>
+                  </div>
 
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 h-12"
-                    >
-                      {isSubmitting ? '접수 중...' : '무료 체험 신청하기'}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </motion.div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm text-slate-400 mb-1 block">이메일 *</label>
+                      <Input
+                        type="email"
+                        required
+                        placeholder="example@academy.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="bg-slate-800 border-slate-700 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-slate-400 mb-1 block">연락처 *</label>
+                      <Input
+                        required
+                        placeholder="010-1234-5678"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="bg-slate-800 border-slate-700 text-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-slate-400 mb-1 block">학생 수</label>
+                    <Input
+                      type="number"
+                      placeholder="50"
+                      value={formData.studentCount}
+                      onChange={(e) => setFormData({ ...formData, studentCount: e.target.value })}
+                      className="bg-slate-800 border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-slate-400 mb-1 block">문의 내용</label>
+                    <Textarea
+                      placeholder="궁금하신 점이나 요청사항을 적어주세요..."
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="bg-slate-800 border-slate-700 text-white min-h-[100px]"
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 h-12"
+                  >
+                    {isSubmitting ? '접수 중...' : '무료 상담 신청'}
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-12 border-t border-slate-800">
-        <div className="container mx-auto px-4 text-center text-slate-500 text-sm">
-          <p>© 2025 AIHPRO. 학원/센터를 위한 AI 심리검사 플랫폼</p>
-        </div>
-      </footer>
     </div>
   );
 };

@@ -176,7 +176,7 @@ export const useB2BCRM = () => {
     }
   };
 
-  // 리포트 이메일 발송
+  // 리포트 이메일 발송 (데모 모드 지원)
   const sendReportEmail = async (params: {
     recipientEmail: string;
     recipientName: string;
@@ -184,9 +184,26 @@ export const useB2BCRM = () => {
     reportType: string;
     reportContent: string;
     institutionName?: string;
+    isDemoMode?: boolean;
   }): Promise<boolean> => {
     setIsLoading(true);
     try {
+      // 데모 모드에서는 실제 이메일 발송 없이 시뮬레이션
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user || params.isDemoMode) {
+        // 데모 모드: 실제 발송 없이 성공 처리
+        await new Promise(resolve => setTimeout(resolve, 1500)); // 발송 시뮬레이션
+        
+        toast({
+          title: '📧 리포트 발송 완료 (데모)',
+          description: `${params.recipientEmail}로 리포트가 발송되었습니다.\n(데모 모드에서는 실제 이메일이 발송되지 않습니다)`,
+        });
+        
+        return true;
+      }
+
+      // 실제 로그인한 사용자인 경우에만 이메일 발송
       const { data, error } = await supabase.functions.invoke('send-share-email', {
         body: {
           email: params.recipientEmail,

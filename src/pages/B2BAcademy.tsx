@@ -52,25 +52,32 @@ const B2BAcademy = () => {
 
   const aiAgents = [
     {
-      name: 'AI 심리검사 분석가',
-      description: '학생별 심리 상태를 분석하여 맞춤형 리포트를 생성합니다',
-      features: ['발달검사', '정서분석', '학습태도', '사회성평가'],
-      gradient: 'from-violet-500 to-purple-600',
-      stats: { requests: 300, tokens: 1309, response: '~2초' }
+      name: '학습 역량 분석',
+      description: '학생별 학습 강점과 취약점을 AI가 정밀 분석하여 맞춤형 학습 전략을 제안합니다',
+      features: ['과목별 분석', '학습 패턴 진단', '성적 예측', '스타일 파악'],
+      gradient: 'from-blue-500 to-cyan-500',
+      stats: { requests: 247, tokens: 1847, response: '~3초' }
     },
     {
-      name: 'AI 학부모 리포터',
-      description: '학부모에게 자녀의 심리/학습 현황을 정기적으로 보고합니다',
-      features: ['주간 리포트', '성취도 알림', '상담 요약', '발달 제안'],
-      gradient: 'from-orange-400 to-pink-500',
-      stats: { requests: 200, tokens: 791, response: '~2초' }
+      name: '학부모 소통 리포트',
+      description: '학부모에게 발송할 맞춤형 리포트를 자동 생성하고 카카오톡/이메일로 발송합니다',
+      features: ['주간/월간 리포트', '성취도 알림', '학습 현황', '다음 달 계획'],
+      gradient: 'from-violet-500 to-purple-500',
+      stats: { requests: 456, tokens: 2891, response: '~5초' }
     },
     {
-      name: 'AI 위기 감지기',
-      description: '학생의 정서적 위험 신호를 조기에 탐지하고 알립니다',
-      features: ['위험 감지', '긴급 알림', '상담 연계', '추적 관리'],
-      gradient: 'from-red-400 to-rose-500',
-      stats: { requests: 50, tokens: 234, response: '~1초' }
+      name: '정서 위기 감지',
+      description: '학생의 정서적 변화와 위험 신호를 조기에 감지하여 즉시 알립니다',
+      features: ['정서 모니터링', '위기 조기 감지', '긴급 알림', '전문가 연계'],
+      gradient: 'from-rose-500 to-pink-500',
+      stats: { requests: 52, tokens: 312, response: '~2초' }
+    },
+    {
+      name: '맞춤 학습 코칭',
+      description: '개별 학생 맞춤형 학습 로드맵과 코칭 전략을 AI가 설계합니다',
+      features: ['학습 로드맵', '목표 달성 전략', '동기 부여', '습관 개선'],
+      gradient: 'from-amber-500 to-orange-500',
+      stats: { requests: 134, tokens: 982, response: '~4초' }
     },
   ];
 
@@ -277,14 +284,14 @@ const B2BAcademy = () => {
               AI 에이전트 시스템
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              3가지 AI 에이전트가 자동으로 일합니다
+              4가지 AI 에이전트가 학원 업무를 자동화합니다
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto">
-              학생 분석부터 학부모 리포팅, 위기 감지까지 모두 자동화
+              학습 분석부터 학부모 소통, 정서 케어, 맞춤 코칭까지 모두 AI로 자동화
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {aiAgents.map((agent, idx) => (
               <motion.div
                 key={agent.name}

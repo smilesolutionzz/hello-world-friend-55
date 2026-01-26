@@ -155,11 +155,6 @@ const Index = () => {
             {/* 1️⃣ Hero Section - AI 분석 입력창 포함 */}
             <HeroSection />
             
-            {/* 🔥 마음일기 - 유니콘 킥 (청소년 바이럴 + 부모 수익화) */}
-            <LazyLoad rootMargin="200px">
-              <MindDiaryHook />
-            </LazyLoad>
-            
             {/* 🎬 AI 영상 관찰 분석 섹션 */}
             <LazyLoad rootMargin="200px">
               <VideoObservationShowcase />
@@ -194,6 +189,11 @@ const Index = () => {
             {/* 5️⃣ 감성 후킹 - 엄마들의 실제 사연 */}
             <LazyLoad rootMargin="200px">
               <EmotionalHookSection />
+            </LazyLoad>
+            
+            {/* 💜 마음일기 - 가벼운 참여형 기능 */}
+            <LazyLoad rootMargin="200px">
+              <MindDiaryHook />
             </LazyLoad>
             
             {/* 6️⃣ 실제 후기 */}

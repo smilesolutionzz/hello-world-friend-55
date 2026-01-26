@@ -6991,6 +6991,7 @@ export type Database = {
           media_urls: Json | null
           observation_date: string
           profile_id: string | null
+          qa_history: Json | null
           recommended_tests: Json | null
           severity: string | null
           title: string
@@ -7012,6 +7013,7 @@ export type Database = {
           media_urls?: Json | null
           observation_date?: string
           profile_id?: string | null
+          qa_history?: Json | null
           recommended_tests?: Json | null
           severity?: string | null
           title: string
@@ -7033,6 +7035,7 @@ export type Database = {
           media_urls?: Json | null
           observation_date?: string
           profile_id?: string | null
+          qa_history?: Json | null
           recommended_tests?: Json | null
           severity?: string | null
           title?: string

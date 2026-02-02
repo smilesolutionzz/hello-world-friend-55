@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AIHPRO - AI 심리검사 발달평가 정신건강 상담 플랫폼</title>
+    <link>https://aihpro.app</link>
+    <description>AI 기반 심리검사, 아동 발달평가, ADHD 검사, 우울증 테스트를 제공합니다. 전문가 매칭과 상담까지 원스톱 정신건강 케어 서비스입니다.</description>
+    <language>ko-KR</language>
+    <lastBuildDate>Sun, 02 Feb 2026 00:00:00 +0900</lastBuildDate>
+    <atom:link href="https://aihpro.app/rss.xml" rel="self" type="application/rss+xml"/>
+    <image>
+      <url>https://aihpro.app/og-image.png</url>
+      <title>AIHPRO</title>
+      <link>https://aihpro.app</link>
+    </image>
+    
+    <item>
+      <title>AI 심리검사 서비스</title>
+      <link>https://aihpro.app/assessment</link>
+      <description>ADHD, 우울증, 스트레스 등 다양한 AI 기반 심리검사를 무료로 제공합니다.</description>
+      <pubDate>Sun, 02 Feb 2026 00:00:00 +0900</pubDate>
+      <guid>https://aihpro.app/assessment</guid>
+    </item>
+    
+    <item>
+      <title>전문가 상담</title>
+      <link>https://aihpro.app/expert</link>
+      <description>검증된 심리상담 전문가와 1:1 맞춤 상담을 받아보세요.</description>
+      <pubDate>Sun, 02 Feb 2026 00:00:00 +0900</pubDate>
+      <guid>https://aihpro.app/expert</guid>
+    </item>
+    
+    <item>
+      <title>아동 발달평가</title>
+      <link>https://aihpro.app/focus-package</link>
+      <description>AI 기반 아동 발달 선별검사 및 추적 서비스를 제공합니다.</description>
+      <pubDate>Sun, 02 Feb 2026 00:00:00 +0900</pubDate>
+      <guid>https://aihpro.app/focus-package</guid>
+    </item>
+    
+    <item>
+      <title>이수석 칼럼</title>
+      <link>https://aihpro.app/column</link>
+      <description>발달전문가 이수석의 심리·발달 전문 칼럼을 만나보세요.</description>
+      <pubDate>Sun, 02 Feb 2026 00:00:00 +0900</pubDate>
+      <guid>https://aihpro.app/column</guid>
+    </item>
+    
+    <item>
+      <title>지문 인지기질검사</title>
+      <link>https://aihpro.app/fingerprint-temperament</link>
+      <description>지문 스캔으로 알아보는 인지기질 유형 분석 서비스입니다.</description>
+      <pubDate>Sun, 02 Feb 2026 00:00:00 +0900</pubDate>
+      <guid>https://aihpro.app/fingerprint-temperament</guid>
+    </item>
+    
+  </channel>
+</rss>

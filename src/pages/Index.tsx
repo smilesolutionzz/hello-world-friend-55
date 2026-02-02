@@ -35,7 +35,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "AIHUMANPRO",
-  "url": "https://aihpro.com",
+  "url": "https://aihpro.app",
   "description": "AI와 전문가가 함께하는 통합 케어 서비스. ADHD, 우울증, 스트레스 검사부터 심리상담, 발달평가, 건강관리까지 전생애 케어를 제공합니다.",
   "applicationCategory": "HealthApplication",
   "operatingSystem": "Web",

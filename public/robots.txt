@@ -38,3 +38,6 @@ Allow: /
 
 # 사이트맵 위치
 Sitemap: https://aihpro.app/sitemap.xml
+
+# RSS 피드 위치
+RSS: https://aihpro.app/rss.xml

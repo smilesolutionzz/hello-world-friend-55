@@ -196,6 +196,8 @@ export function usePayment() {
       // 토스페이먼츠 결제 요청
       const tossPayments = await loadTossPayments(state.clientKey);
       
+      const baseFailUrl = `${window.location.origin}/payment-complete?status=fail&type=${product?.type || 'custom'}`;
+      
       await tossPayments.requestPayment('카드', {
         amount: data.paymentData.amount,
         orderId: data.paymentData.orderId,
@@ -203,7 +205,8 @@ export function usePayment() {
         customerEmail: data.paymentData.customerEmail,
         customerName: data.paymentData.customerName,
         successUrl: `${window.location.origin}/payment-complete?type=${product?.type || 'custom'}`,
-        failUrl: `${window.location.origin}/payment-complete?status=fail`,
+        // 토스페이먼츠는 실패시 자동으로 code, message 파라미터를 추가함
+        failUrl: baseFailUrl,
       });
 
       return true;

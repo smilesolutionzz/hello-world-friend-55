@@ -19,6 +19,8 @@ const PaymentComplete = () => {
   const amount = searchParams.get('amount');
   const status = searchParams.get('status');
   const productType = searchParams.get('type');
+  const errorCode = searchParams.get('code');
+  const errorMessage = searchParams.get('message');
 
   useEffect(() => {
     const confirmPayment = async () => {
@@ -190,10 +192,19 @@ const PaymentComplete = () => {
             <h2 className="text-2xl font-bold mb-2 text-foreground">
               결제 실패
             </h2>
-            <p className="text-muted-foreground mb-6">
-              결제 처리 중 문제가 발생했습니다.<br />
-              다시 시도해주세요.
+            <p className="text-muted-foreground mb-4">
+              {errorMessage ? decodeURIComponent(errorMessage) : '결제 처리 중 문제가 발생했습니다.'}
             </p>
+            {errorCode && (
+              <p className="text-xs text-muted-foreground/60 mb-6">
+                오류 코드: {errorCode}
+              </p>
+            )}
+            {!errorMessage && (
+              <p className="text-sm text-muted-foreground mb-6">
+                다시 시도해주세요.
+              </p>
+            )}
             <div className="space-y-3">
               <Button 
                 className="w-full" 

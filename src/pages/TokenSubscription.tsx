@@ -53,31 +53,7 @@ const TokenSubscription = () => {
       icon: Zap,
       gradient: 'from-blue-500 to-cyan-500',
       features: ['모든 AI 분석 무제한', '모든 심리검사 무제한', '상세 리포트 무제한'],
-      popular: false,
-    },
-    {
-      id: 'pass_365',
-      name: '1년 패스',
-      price: 199000,
-      originalPrice: 598800,
-      discount: 67,
-      duration: '365일',
-      icon: TrendingUp,
-      gradient: 'from-violet-500 to-purple-600',
-      features: ['모든 AI 분석 무제한', '모든 심리검사 무제한', '상세 리포트 무제한', '전문가 상담 30% 할인'],
       popular: true,
-    },
-    {
-      id: 'pass_lifetime',
-      name: '평생이용권',
-      price: 99000,
-      originalPrice: 299000,
-      discount: 67,
-      duration: '평생',
-      icon: Infinity,
-      gradient: 'from-amber-500 to-orange-500',
-      features: ['평생 모든 기능 무제한', '신규 기능 평생 무료', '전문가 상담 40% 할인', 'VIP 고객 지원'],
-      best: true,
     },
   ];
 
@@ -200,26 +176,18 @@ const TokenSubscription = () => {
               <Card 
                 key={product.id}
                 className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                  product.best 
-                    ? 'ring-2 ring-amber-400 shadow-lg shadow-amber-500/20' 
-                    : product.popular 
+                  product.popular 
                     ? 'ring-2 ring-violet-400 shadow-lg shadow-purple-500/20'
                     : ''
                 }`}
               >
-                {product.best && (
-                  <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-center py-1.5 text-sm font-bold flex items-center justify-center gap-1">
-                    <Award className="w-4 h-4" />
-                    BEST VALUE
-                  </div>
-                )}
-                {product.popular && !product.best && (
+                {product.popular && (
                   <Badge className="absolute top-3 right-3 bg-gradient-to-r from-violet-500 to-purple-500 text-white border-0">
                     인기
                   </Badge>
                 )}
                 
-                <CardContent className={`p-6 ${product.best ? 'pt-12' : 'pt-6'}`}>
+                <CardContent className="p-6 pt-6">
                   <div className="text-center mb-6">
                     <div className={`inline-flex p-3 rounded-2xl bg-gradient-to-br ${product.gradient} mb-4`}>
                       <product.icon className="w-8 h-8 text-white" />
@@ -251,9 +219,7 @@ const TokenSubscription = () => {
 
                   <Button
                     className={`w-full h-12 rounded-xl font-bold transition-all ${
-                      product.best
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg shadow-amber-500/30'
-                        : product.popular
+                      product.popular
                         ? 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-lg shadow-purple-500/30'
                         : 'bg-gradient-to-r from-slate-600 to-slate-800 hover:from-slate-700 hover:to-slate-900 text-white'
                     }`}

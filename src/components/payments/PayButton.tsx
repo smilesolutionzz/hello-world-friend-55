@@ -73,7 +73,7 @@ export const PayButton: React.FC<PayButtonProps> = ({
 };
 
 // 간편 패스 구매 버튼
-export const BuyPassButton: React.FC<Omit<PayButtonProps, 'productId'> & { passType?: 'pass_30' | 'pass_365' | 'pass_lifetime' }> = ({
+export const BuyPassButton: React.FC<Omit<PayButtonProps, 'productId'> & { passType?: 'pass_30' }> = ({
   passType = 'pass_30',
   ...props
 }) => (

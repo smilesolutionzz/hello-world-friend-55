@@ -16,24 +16,6 @@ export const PRODUCTS = {
     originalPrice: 49900, 
     discount: 40 
   },
-  pass_365: { 
-    id: 'pass_365', 
-    type: 'pass', 
-    name: '프리미엄 패스 1년', 
-    description: '1년 무제한 이용',
-    price: 199000, 
-    originalPrice: 598800, 
-    discount: 67 
-  },
-  pass_lifetime: { 
-    id: 'pass_lifetime', 
-    type: 'pass', 
-    name: '평생이용권', 
-    description: '평생 무제한 이용',
-    price: 99000, 
-    originalPrice: 299000, 
-    discount: 67 
-  },
   // 캐시 충전 (1 token = 100원)
   cash_5000: { 
     id: 'cash_5000', 
@@ -225,7 +207,7 @@ export function usePayment() {
   }, [state.clientKey, navigate, toast]);
 
   // 간편 결제 함수들
-  const payPass = useCallback((passId: 'pass_30' | 'pass_365' | 'pass_lifetime') => {
+  const payPass = useCallback((passId: 'pass_30') => {
     return pay(passId);
   }, [pay]);
 

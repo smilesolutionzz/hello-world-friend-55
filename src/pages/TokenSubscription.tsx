@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +7,7 @@ import {
   Brain, Users, Crown, ArrowRight, 
   Check, Coins, Clock, Gift, Sparkles, 
   MessageCircle, Zap, Shield, Star, Loader2,
-  TrendingUp, Award, X, Heart, Target, Rocket
+  TrendingUp, Award, X, Heart, Target, Rocket, Lock, UserPlus
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
@@ -15,6 +15,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { usePayment } from '@/hooks/usePayment';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { motion } from 'framer-motion';
+import { supabase } from '@/integrations/supabase/client';
 
 const TokenSubscription = () => {
   const navigate = useNavigate();
@@ -23,9 +24,25 @@ const TokenSubscription = () => {
   const { isPremiumUser, isLifetimeUser, getSubscriptionLabel } = useSubscription();
   const { pay, loading: paymentLoading, isReady } = usePayment();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   const isPremium = isPremiumUser() || isLifetimeUser();
   const subscriptionLabel = getSubscriptionLabel();
+
+  // 인증 상태 확인
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handlePayment = async (productId: string) => {
     setSelectedProduct(productId);
@@ -96,6 +113,56 @@ const TokenSubscription = () => {
       <UnifiedNavigation />
       
       <div className="container mx-auto px-4 pt-24 pb-16 max-w-5xl">
+        {/* 비로그인 상태 - 로그인 유도 배너 */}
+        {isAuthenticated === false && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <Card className="border-2 border-amber-400 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg">
+                      <Lock className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg">로그인 후 결제 가능합니다</h3>
+                      <p className="text-sm text-muted-foreground">
+                        가입 30초 · 모든 결제 내역과 이용권이 계정에 저장됩니다
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 w-full md:w-auto">
+                    <Button 
+                      onClick={() => {
+                        localStorage.setItem('auth_redirect_after', '/token-subscription');
+                        navigate('/auth?mode=signup');
+                      }}
+                      className="flex-1 md:flex-none bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                    >
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      무료 회원가입
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        localStorage.setItem('auth_redirect_after', '/token-subscription');
+                        navigate('/auth');
+                      }}
+                      className="flex-1 md:flex-none"
+                    >
+                      <Lock className="w-4 h-4 mr-2" />
+                      로그인
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         {/* 현재 상태 표시 */}
         {isPremium && (
           <motion.div 

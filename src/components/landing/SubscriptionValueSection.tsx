@@ -85,9 +85,8 @@ const SubscriptionValueSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             왜 <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">프리미엄</span>이 필요할까요?
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            검사만으로는 변화가 없습니다. <br className="md:hidden" />
-            <strong className="text-foreground">전문가급 분석과 맞춤 솔루션</strong>이 진정한 변화를 만듭니다.
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            검사만으로는 변화가 없습니다. <strong className="text-foreground">전문가급 분석과 맞춤 솔루션</strong>이 진정한 변화를 만듭니다.
           </p>
         </motion.div>
 

@@ -94,7 +94,7 @@ const Assessment = () => {
   const urlTest = searchParams.get('test');
   
   const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'emotional-development-test' | 'dream-interpretation' | 'saju-analysis' | 'past-life-job' | 'animal-face-match' | 'inner-animal' | 'grandma-relationship' | 'grandpa-marriage' | 'mz-nagging' | 'wisdom-advice' | 'otrovert' | 'life-achievement' | 'parent-child-play' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result' | 'challenging-behavior-test' | 'challenging-behavior-result' | 'adaptive-behavior-test' | 'adaptive-behavior-result'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | 'parent-child-play' | null>(null);
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | 'parent-child-play' | 'resilience' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
@@ -283,7 +283,7 @@ const Assessment = () => {
     }
   };
 
-  const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | 'parent-child-play') => {
+  const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | 'parent-child-play' | 'resilience') => {
     // 게스트 모드 허용 - 로그인 없이도 검사 진행 가능
     console.log('🎯 Test type selected:', type, isGuest ? '(게스트 모드)' : '(로그인됨)');
 
@@ -324,6 +324,8 @@ const Assessment = () => {
       setCurrentStep('adaptive-behavior-test');
     } else if (type === 'parent-child-play') {
       setCurrentStep('parent-child-play');
+    } else if (type === 'resilience') {
+      navigate('/assessment/resilience');
     } else {
       setCurrentStep('legal-notice');
     }
@@ -766,6 +768,7 @@ const Assessment = () => {
                 { key: 'panic', icon: '😰', title: '불안감 수준 확인', duration: '약 5분', questions: '21문항', description: '일상에서 느끼는 불안 증상과 그 정도를 체계적으로 측정합니다.', features: ['불안장애 선별 문항', '신체적/심리적 증상 분석', '위험도 수준 평가'] },
                 { key: 'depression', icon: '😔', title: '우울감 자가체크', duration: '약 5분', questions: '21문항', description: '우울감의 깊이와 일상 영향도를 정밀 측정합니다.', features: ['우울증 선별 기준', '인지/정서/행동 증상 분석', '전문가 상담 권고 기준'] },
                 { key: 'adhd', icon: '🎯', title: '주의집중력 자가체크', duration: '약 3분', questions: '18문항', description: 'ADHD 관련 증상의 유무와 정도를 빠르게 확인합니다.', features: ['주의력결핍 증상 체크', '과잉행동 증상 체크', '일상생활 영향도 평가'] },
+                { key: 'resilience', icon: '💪', title: '회복탄력성 검사', duration: '약 8분', questions: '38문항', badge: 'NEW', description: '직장인의 스트레스 회복력, 적응 유연성, 정서적 안정성을 분석합니다.', features: ['5개 영역 심층 분석', '스트레스 대처능력 평가', '조직 적응력 진단', 'AI 기반 맞춤 코칭'] },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (

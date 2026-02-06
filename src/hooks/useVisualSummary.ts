@@ -13,7 +13,8 @@ interface GenerateOptions {
 
 interface VisualSummaryResult {
   summary: VisualSummaryData;
-  infographicImage: string | null;
+  illustrationImage: string | null;
+  infographicImage?: string | null;
   backgroundImage?: string | null;
   generatedAt: string;
 }
@@ -42,15 +43,12 @@ export const useVisualSummary = () => {
       });
 
       if (fnError) throw fnError;
-
-      if (data?.error) {
-        throw new Error(data.error);
-      }
+      if (data?.error) throw new Error(data.error);
 
       console.log('[useVisualSummary] Summary generated:', data);
       setResult(data);
 
-      // Save to visual_notes table for dashboard viewing
+      // Save to visual_notes table
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user && data?.summary) {
@@ -59,7 +57,7 @@ export const useVisualSummary = () => {
             title: data.summary.title || '비주얼 노트',
             source_type: options.type,
             summary_data: data.summary,
-            background_image_url: data.infographicImage || data.backgroundImage || null,
+            background_image_url: data.illustrationImage || null,
           });
           console.log('[useVisualSummary] Saved to visual_notes');
         }
@@ -69,7 +67,7 @@ export const useVisualSummary = () => {
 
       toast({
         title: '비주얼 노트 생성 완료! 🎨',
-        description: '인포그래픽 이미지를 저장하거나 공유할 수 있어요.',
+        description: '이미지를 저장하거나 공유할 수 있어요.',
       });
 
       return data;
@@ -93,11 +91,5 @@ export const useVisualSummary = () => {
     setError(null);
   };
 
-  return {
-    generate,
-    isGenerating,
-    result,
-    error,
-    reset,
-  };
+  return { generate, isGenerating, result, error, reset };
 };

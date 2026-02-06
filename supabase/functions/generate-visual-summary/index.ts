@@ -66,8 +66,9 @@ serve(async (req) => {
               description: "실천 항목 2-3개"
             },
             moodColor: { type: "string", enum: ["violet", "blue", "green", "amber", "rose"], description: "전체 분위기 색상" },
+            illustrationPrompt: { type: "string", description: "상담 내용의 감정/주제를 반영한 영어 일러스트 프롬프트. 예: calm ocean with gentle waves, warm family gathering around table" }
           },
-          required: ["title", "subtitle", "centerTheme", "sections", "keyInsight", "actionItems", "moodColor"]
+          required: ["title", "subtitle", "centerTheme", "sections", "keyInsight", "actionItems", "moodColor", "illustrationPrompt"]
         }
       }
     }
@@ -128,28 +129,16 @@ serve(async (req) => {
       throw new Error('Failed to parse summary from AI response')
     }
 
-    console.log('[generate-visual-summary] Summary parsed, generating infographic image...')
+    console.log('[generate-visual-summary] Summary parsed, generating illustration...')
 
-    // Step 2: Generate infographic image using the summary
-    let infographicImage = null
+    // Step 2: Generate illustration-only image (NO TEXT) for background
+    let illustrationImage = null
     try {
-      // Build a detailed prompt for the infographic
-      const sectionsText = summary.sections.map((s: any, i: number) => {
-        const points = s.points.join(', ')
-        return `Section ${i+1}: "${s.title}" - ${points}`
-      }).join('\n')
-
-      const infographicPrompt = `Create a Korean-language hand-drawn style visual infographic note, white background, similar to meeting notes or visual facilitation. 
-The infographic should have:
-- Title at top: "${summary.title}"
-- Center theme in a prominent visual element: "${summary.centerTheme}"
-- ${summary.sections.length} topic sections arranged around the center with hand-drawn icons, speech bubbles, and arrows connecting them:
-${sectionsText}
-- Key insight highlighted: "${summary.keyInsight}"
-- Action items at bottom: ${summary.actionItems.join(', ')}
-
-Style: Hand-drawn sketch illustration style with blue and black ink on white paper, cute icons, arrows connecting concepts, speech bubbles, small doodles, similar to graphic recording or visual facilitation notes. Korean text throughout. Clean and professional but with hand-drawn charm. Include small relevant doodles and icons next to each section. No photographs, purely illustrated infographic.`
-
+      const illustPrompt = summary.illustrationPrompt || 'calm peaceful abstract shapes'
+      const bgPrompt = `Create a soft watercolor illustration with NO TEXT at all. The scene: ${illustPrompt}. 
+Style: gentle hand-drawn watercolor sketch, pastel colors, dreamy and warm atmosphere, cute doodle elements scattered around edges (hearts, stars, small flowers, butterflies). 
+IMPORTANT: Do NOT include ANY text, words, letters, or characters in the image. Pure illustration only. White/light background with illustrations around the borders and corners, leaving the center relatively empty for text overlay. Ultra high resolution.`
+      
       const imgResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -158,15 +147,15 @@ Style: Hand-drawn sketch illustration style with blue and black ink on white pap
         },
         body: JSON.stringify({
           model: 'google/gemini-2.5-flash-image',
-          messages: [{ role: 'user', content: infographicPrompt }],
+          messages: [{ role: 'user', content: bgPrompt }],
           modalities: ['image', 'text']
         })
       })
 
       if (imgResponse.ok) {
         const imgData = await imgResponse.json()
-        infographicImage = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url
-        console.log('[generate-visual-summary] Infographic image generated successfully')
+        illustrationImage = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url
+        console.log('[generate-visual-summary] Illustration image generated successfully')
       } else {
         console.error('[generate-visual-summary] Image generation failed:', imgResponse.status)
       }
@@ -178,7 +167,7 @@ Style: Hand-drawn sketch illustration style with blue and black ink on white pap
 
     return new Response(JSON.stringify({
       summary,
-      infographicImage,
+      illustrationImage,
       generatedAt: new Date().toISOString()
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

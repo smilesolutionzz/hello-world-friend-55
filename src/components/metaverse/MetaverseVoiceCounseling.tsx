@@ -1876,6 +1876,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                   messages={messages}
                   sessionStartTime={sessionStartTime}
                   onDownload={downloadConversation}
+                  onClose={() => setShowTimeline(false)}
                 />
               </div>
             )}

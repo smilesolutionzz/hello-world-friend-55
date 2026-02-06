@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { Download, Clock, User, Bot } from 'lucide-react';
+import { Download, Clock, User, Bot, X } from 'lucide-react';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -13,9 +13,10 @@ interface SessionTimelineProps {
   messages: Message[];
   sessionStartTime: Date;
   onDownload?: () => void;
+  onClose?: () => void;
 }
 
-export const SessionTimeline = ({ messages, sessionStartTime, onDownload }: SessionTimelineProps) => {
+export const SessionTimeline = ({ messages, sessionStartTime, onDownload, onClose }: SessionTimelineProps) => {
   const getElapsedTime = (timestamp: Date) => {
     const elapsed = timestamp.getTime() - sessionStartTime.getTime();
     const minutes = Math.floor(elapsed / 60000);
@@ -30,12 +31,19 @@ export const SessionTimeline = ({ messages, sessionStartTime, onDownload }: Sess
           <Clock className="w-5 h-5 text-primary" />
           상담 타임라인
         </h3>
-        {onDownload && (
-          <Button onClick={onDownload} size="sm" variant="outline">
-            <Download className="w-4 h-4 mr-2" />
-            다운로드
-          </Button>
-        )}
+        <div className="flex items-center gap-1">
+          {onDownload && (
+            <Button onClick={onDownload} size="sm" variant="outline">
+              <Download className="w-4 h-4 mr-2" />
+              다운로드
+            </Button>
+          )}
+          {onClose && (
+            <Button onClick={onClose} size="icon" variant="ghost" className="h-8 w-8">
+              <X className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
       </div>
 
       <ScrollArea className="h-[400px] pr-4">

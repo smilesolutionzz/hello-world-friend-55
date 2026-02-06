@@ -483,9 +483,30 @@ const ReportGenerator = () => {
                 );
               })}
 
+              {/* 전문가 검사 CTA */}
+              <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 space-y-3">
+                <div className="flex items-center gap-3 justify-center">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-emerald-800">실제 전문가에게 직접 검사받고 싶으신가요?</h3>
+                </div>
+                <p className="text-sm text-emerald-700 text-center max-w-lg mx-auto">
+                  공인 자격을 갖춘 임상심리전문가가 직접 전문 검사를 실시하고, 1:1 맞춤 리포트와 상담을 제공합니다.
+                </p>
+                <div className="text-center">
+                  <a href="https://smilesolution.kr" target="_blank" rel="noopener noreferrer">
+                    <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg">
+                      <Award className="w-5 h-5 mr-2" /> 전문가 맞춤 검사·리포트 신청하기
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </a>
+                </div>
+              </div>
+
               {/* 구독 CTA */}
               <div className="text-center py-6 space-y-4">
-                <p className="text-slate-600 font-semibold">이 수준의 리포트를 직접 받아보세요</p>
+                <p className="text-slate-600 font-semibold">AI 리포트를 직접 받아보세요</p>
                 <Button onClick={() => { setShowSampleReport(false); navigate('/token-subscription'); }}
                   size="lg" className="bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 text-white font-bold px-10 py-4 rounded-xl shadow-lg text-lg">
                   <Crown className="w-6 h-6 mr-2" /> 프리미엄 구독하고 내 리포트 받기
@@ -528,6 +549,34 @@ const ReportGenerator = () => {
               <Eye className="w-4 h-4 mr-2" /> 전체 샘플 미리보기
             </Button>
           </div>
+        </div>
+
+        {/* 전문가 대면 검사 CTA */}
+        <div className="max-w-5xl mx-auto mb-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+            className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 p-[2px]">
+            <div className="relative bg-slate-900/95 rounded-2xl p-6 md:p-8">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-teal-500/5 to-cyan-500/5 rounded-2xl" />
+              <div className="relative flex flex-col md:flex-row items-center gap-6">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/30 shrink-0">
+                  <Award className="w-8 h-8 text-white" />
+                </div>
+                <div className="flex-1 text-center md:text-left space-y-2">
+                  <h3 className="text-lg md:text-xl font-bold text-white">
+                    🏥 실제 전문가에게 전문 검사 실시 후 맞춤 리포트 받기
+                  </h3>
+                  <p className="text-emerald-200/80 text-sm">
+                    공인 임상심리전문가가 직접 대면/비대면 검사를 실시하고, 개인 맞춤형 심층 리포트와 전문 상담을 제공합니다.
+                  </p>
+                </div>
+                <a href="https://smilesolution.kr" target="_blank" rel="noopener noreferrer" className="shrink-0">
+                  <Button size="lg" className="bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg">
+                    전문가 검사 신청 <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
         {/* 프리미엄 사용자: 리포트 생성 인터페이스 */}

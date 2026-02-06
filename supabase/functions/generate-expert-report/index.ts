@@ -536,9 +536,16 @@ ${relatedResources}
       const aiData = JSON.parse(rawText);
 
       // 1) Tool calling (preferred)
-      const toolArgs = aiData?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
-      if (toolArgs && typeof toolArgs === 'string') {
-        reportData = JSON.parse(toolArgs);
+      const toolCall = aiData?.choices?.[0]?.message?.tool_calls?.[0];
+      const toolArgs = toolCall?.function?.arguments;
+      if (toolArgs) {
+        if (typeof toolArgs === 'string') {
+          reportData = JSON.parse(toolArgs);
+        } else if (typeof toolArgs === 'object') {
+          // Some models return arguments as already-parsed object
+          reportData = toolArgs;
+        }
+        console.log('Tool calling 파싱 성공, sections:', reportData?.sections?.length);
       } else {
         // 2) Fallback: message.content parsing (handles string or array-like content)
         const contentAny = aiData?.choices?.[0]?.message?.content;

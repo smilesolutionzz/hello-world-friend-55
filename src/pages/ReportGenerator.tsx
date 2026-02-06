@@ -100,6 +100,7 @@ const ReportGenerator = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isAnalyzingImages, setIsAnalyzingImages] = useState(false);
   const [imageAnalysisResults, setImageAnalysisResults] = useState<string>('');
+  const [reportMode, setReportMode] = useState<'with-data' | 'without-data'>('with-data');
   const [userInput, setUserInput] = useState({
     name: '', birthDate: '', gender: '', recentConcerns: '', developmentalNotes: ''
   });
@@ -201,10 +202,18 @@ const ReportGenerator = () => {
       navigate('/token-subscription');
       return;
     }
-    const totalData = userData?.totalDataCount || 0;
-    if (totalData < 3) {
-      toast({ title: "데이터 부족", description: `종합 리포트 생성에는 최소 3개의 데이터가 필요합니다. (현재: ${totalData}개)`, variant: "destructive" });
-      return;
+    // with-data 모드: 최소 3개 데이터 필요 / without-data 모드: 고민 또는 발달노트 필수
+    if (reportMode === 'with-data') {
+      const totalData = userData?.totalDataCount || 0;
+      if (totalData < 3) {
+        toast({ title: "데이터 부족", description: `종합 리포트 생성에는 최소 3개의 데이터가 필요합니다. (현재: ${totalData}개)`, variant: "destructive" });
+        return;
+      }
+    } else {
+      if (!userInput.recentConcerns && !userInput.developmentalNotes) {
+        toast({ title: "정보 부족", description: "고민·상태 기반 리포트를 생성하려면 '고민이나 걱정거리' 또는 '발달/심리적 특징' 중 하나 이상 입력해주세요.", variant: "destructive" });
+        return;
+      }
     }
     if (!userInput.name || !userInput.birthDate || !userInput.gender) {
       toast({ title: "필수 정보 누락", description: "이름, 생년월일, 성별은 필수 입력 항목입니다.", variant: "destructive" });
@@ -216,16 +225,22 @@ const ReportGenerator = () => {
 
     try {
       const progressInterval = setInterval(() => { setProgress(prev => Math.min(prev + 5, 90)); }, 1000);
-      toast({ title: "🔬 전문가급 분석 시작", description: "실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다..." });
+      toast({ title: "🔬 전문가급 분석 시작", description: reportMode === 'with-data' ? "실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다..." : "고민·상태 정보를 기반으로 맞춤 분석을 진행합니다..." });
 
-      const { data, error } = await supabase.functions.invoke('generate-expert-report', {
-        body: {
-          assessments: userData.assessments, observations: userData.observations,
-          observationSessions: userData.observationSessions, chatRooms: userData.chatRooms,
-          profile: userData.profile, externalTestImages: imageAnalysisResults,
-          userInput: { name: userInput.name, birthDate: userInput.birthDate, gender: userInput.gender, recentConcerns: userInput.recentConcerns, developmentalNotes: userInput.developmentalNotes }
-        }
-      });
+      const body: any = {
+        reportMode,
+        userInput: { name: userInput.name, birthDate: userInput.birthDate, gender: userInput.gender, recentConcerns: userInput.recentConcerns, developmentalNotes: userInput.developmentalNotes }
+      };
+      if (reportMode === 'with-data') {
+        body.assessments = userData.assessments;
+        body.observations = userData.observations;
+        body.observationSessions = userData.observationSessions;
+        body.chatRooms = userData.chatRooms;
+        body.profile = userData.profile;
+        body.externalTestImages = imageAnalysisResults;
+      }
+
+      const { data, error } = await supabase.functions.invoke('generate-expert-report', { body });
 
       clearInterval(progressInterval);
       setProgress(100);
@@ -554,6 +569,52 @@ const ReportGenerator = () => {
         {/* 프리미엄 사용자: 리포트 생성 인터페이스 */}
         {isPremium && !reportData && (
           <div className="max-w-5xl mx-auto space-y-8">
+            {/* 리포트 모드 선택 */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <motion.button
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                onClick={() => setReportMode('with-data')}
+                className={`relative p-6 rounded-2xl border-2 transition-all text-left ${
+                  reportMode === 'with-data'
+                    ? 'border-amber-400 bg-gradient-to-br from-amber-500/20 to-purple-500/20 shadow-lg shadow-amber-500/20'
+                    : 'border-slate-600/50 bg-slate-800/30 hover:border-slate-500'
+                }`}
+              >
+                {reportMode === 'with-data' && (
+                  <div className="absolute top-3 right-3"><CheckCircle2 className="w-6 h-6 text-amber-400" /></div>
+                )}
+                <Database className="w-8 h-8 text-amber-400 mb-3" />
+                <h3 className="text-lg font-bold text-white mb-1">📊 데이터 기반 종합 리포트</h3>
+                <p className="text-sm text-slate-300">기존 검사·관찰·상담 데이터를 포함하여 더 정밀하고 근거 있는 심층 분석 리포트를 생성합니다.</p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {['검사 기록', '관찰 기록', '상담 기록', '외부 이미지'].map(t => (
+                    <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30">{t}</span>
+                  ))}
+                </div>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                onClick={() => setReportMode('without-data')}
+                className={`relative p-6 rounded-2xl border-2 transition-all text-left ${
+                  reportMode === 'without-data'
+                    ? 'border-cyan-400 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 shadow-lg shadow-cyan-500/20'
+                    : 'border-slate-600/50 bg-slate-800/30 hover:border-slate-500'
+                }`}
+              >
+                {reportMode === 'without-data' && (
+                  <div className="absolute top-3 right-3"><CheckCircle2 className="w-6 h-6 text-cyan-400" /></div>
+                )}
+                <Heart className="w-8 h-8 text-cyan-400 mb-3" />
+                <h3 className="text-lg font-bold text-white mb-1">💬 고민·상태 기반 리포트</h3>
+                <p className="text-sm text-slate-300">기존 데이터 없이 현재 고민이나 발달·심리 상태 설명만으로 전문 분석 리포트를 생성합니다.</p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {['고민 상담', '현재 상태', '발달 특징'].map(t => (
+                    <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">{t}</span>
+                  ))}
+                </div>
+              </motion.button>
+            </div>
+
             {/* 사용자 입력 폼 */}
             <Card className="bg-gradient-to-br from-slate-900/90 to-indigo-900/90 border-2 border-amber-500/30 shadow-2xl shadow-amber-500/10">
               <CardHeader>
@@ -601,7 +662,8 @@ const ReportGenerator = () => {
               </CardContent>
             </Card>
 
-            {/* 데이터 현황 */}
+            {/* 데이터 현황 - with-data 모드만 */}
+            {reportMode === 'with-data' && (
             <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-xl text-purple-100">
@@ -625,8 +687,10 @@ const ReportGenerator = () => {
                 </div>
               </CardContent>
             </Card>
+            )}
 
-            {/* 외부 이미지 업로드 */}
+            {/* 외부 이미지 업로드 - with-data 모드만 */}
+            {reportMode === 'with-data' && (
             <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30">
               <CardContent className="pt-6">
                 <div className="flex items-start gap-3">
@@ -642,6 +706,7 @@ const ReportGenerator = () => {
                 </div>
               </CardContent>
             </Card>
+            )}
 
             {/* 생성 버튼 */}
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

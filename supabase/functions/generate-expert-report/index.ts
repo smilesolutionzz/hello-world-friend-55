@@ -162,10 +162,13 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    const { assessments, observations, observationSessions, chatRooms, profile, externalTestImages, userInput } = await req.json();
+    const { assessments, observations, observationSessions, chatRooms, profile, externalTestImages, userInput, reportMode } = await req.json();
+
+    const isWithData = reportMode !== 'without-data';
 
     console.log('전문가급 리포트 생성 요청:', {
       userId: user.id,
+      reportMode: reportMode || 'with-data',
       assessmentsCount: assessments?.length || 0,
       observationsCount: observations?.length || 0,
       userName: userInput?.name,
@@ -187,41 +190,41 @@ serve(async (req) => {
 
     const userAge = calculateAge(userInput?.birthDate);
 
-    // 데이터 정리 및 요약
-    const assessmentSummary = assessments?.map((a: any) => ({
+    // 데이터 정리 및 요약 (with-data 모드만)
+    const assessmentSummary = isWithData ? (assessments?.map((a: any) => ({
       type: a.assessment_type || a.age_group,
       date: new Date(a.created_at).toLocaleDateString('ko-KR'),
       results: a.results,
       analysis: a.analysis,
       riskLevel: a.risk_level,
       recommendations: a.recommendations
-    })) || [];
+    })) || []) : [];
 
-    const observationSummary = observations?.map((o: any) => ({
+    const observationSummary = isWithData ? (observations?.map((o: any) => ({
       title: o.title,
       description: o.description,
       date: new Date(o.created_at).toLocaleDateString('ko-KR'),
       behaviorType: o.behavior_type,
       severity: o.severity
-    })) || [];
+    })) || []) : [];
 
-    const sessionSummary = observationSessions?.map((s: any) => ({
+    const sessionSummary = isWithData ? (observationSessions?.map((s: any) => ({
       activity: s.activity_type,
       behaviors: s.observed_behaviors,
       notes: s.notes,
       date: new Date(s.created_at).toLocaleDateString('ko-KR')
-    })) || [];
+    })) || []) : [];
 
-    const chatMessages = chatRooms?.flatMap((room: any) => 
+    const chatMessages = isWithData ? (chatRooms?.flatMap((room: any) => 
       room.chat_messages?.map((msg: any) => ({
         role: msg.role,
         content: msg.content?.substring(0, 300),
         date: new Date(msg.created_at).toLocaleDateString('ko-KR')
       })) || []
-    ).slice(0, 30) || [];
+    ).slice(0, 30) || []) : [];
 
     // 병렬로 외부 검색 수행
-    const concerns = userInput?.recentConcerns || '';
+    const concerns = userInput?.recentConcerns || userInput?.developmentalNotes || '';
     const [researchInsights, relatedResources] = await Promise.all([
       searchLatestResearch(concerns, userAge, userInput?.gender || ''),
       crawlRelatedResources(concerns)
@@ -303,7 +306,7 @@ serve(async (req) => {
 - 장기적 발전 가능성
 - 격려와 응원 메시지`;
 
-    const userPrompt = `다음 데이터를 기반으로 세계 최고 수준의 전문가급 종합 리포트를 생성해주세요:
+    const userPrompt = `다음 ${isWithData ? '데이터를 기반으로' : '고민·상태 정보를 기반으로'} 세계 최고 수준의 전문가급 종합 리포트를 생성해주세요:
 
 ═══════════════════════════════════════
 📌 대상자 정보
@@ -312,6 +315,7 @@ serve(async (req) => {
 • 생년월일: ${userInput?.birthDate || '미제공'} (만 ${userAge}세)
 • 성별: ${userInput?.gender || '미제공'}
 
+${isWithData ? `
 ═══════════════════════════════════════
 📊 검사 기록 (총 ${assessmentSummary.length}건)
 ═══════════════════════════════════════
@@ -343,6 +347,13 @@ ${externalTestImages ? `
 ═══════════════════════════════════════
 ${externalTestImages}
 ` : ''}
+` : `
+═══════════════════════════════════════
+⚠️ 리포트 모드: 고민·상태 기반 (데이터 미포함)
+═══════════════════════════════════════
+기존 검사/관찰 데이터 없이 아래 고민·상태 정보만으로 전문 분석을 수행합니다.
+보호자가 제공한 고민과 관찰 소견을 최대한 활용하여 깊이 있는 분석을 제공하세요.
+`}
 
 ${userInput?.recentConcerns ? `
 ═══════════════════════════════════════

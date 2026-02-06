@@ -13,7 +13,8 @@ interface GenerateOptions {
 
 interface VisualSummaryResult {
   summary: VisualSummaryData;
-  backgroundImage: string | null;
+  infographicImage: string | null;
+  backgroundImage?: string | null;
   generatedAt: string;
 }
 
@@ -58,7 +59,7 @@ export const useVisualSummary = () => {
             title: data.summary.title || '비주얼 노트',
             source_type: options.type,
             summary_data: data.summary,
-            background_image_url: data.backgroundImage || null,
+            background_image_url: data.infographicImage || data.backgroundImage || null,
           });
           console.log('[useVisualSummary] Saved to visual_notes');
         }
@@ -68,7 +69,7 @@ export const useVisualSummary = () => {
 
       toast({
         title: '비주얼 노트 생성 완료! 🎨',
-        description: '이미지를 저장하거나 대시보드에서 다시 볼 수 있어요.',
+        description: '인포그래픽 이미지를 저장하거나 공유할 수 있어요.',
       });
 
       return data;

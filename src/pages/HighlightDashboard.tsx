@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import VisualSummaryCard from '@/components/visual-summary/VisualSummaryCard';
 import { TestSelector } from '@/components/highlight/TestSelector';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, LogOut, History, Crown, TrendingUp, Brain, Activity, MessageSquare, Settings, RotateCcw, GripVertical } from 'lucide-react';
+import { User, LogOut, History, Crown, TrendingUp, Brain, Activity, MessageSquare, Settings, RotateCcw, GripVertical, ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -111,6 +113,8 @@ function DashboardContent() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [recentTests, setRecentTests] = useState<RecentTest[]>([]);
   const [observations, setObservations] = useState<Observation[]>([]);
+  const [visualNotes, setVisualNotes] = useState<any[]>([]);
+  const [selectedNote, setSelectedNote] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [isCustomizing, setIsCustomizing] = useState(false);
   const navigate = useNavigate();
@@ -154,6 +158,7 @@ function DashboardContent() {
       await fetchProfile();
       await fetchRecentTests();
       await fetchObservations();
+      await fetchVisualNotes();
     } catch (error) {
       console.error('Data loading failed:', error);
     } finally {
@@ -286,6 +291,23 @@ function DashboardContent() {
       setObservations(transformedData);
     } catch (error: any) {
       console.error('Error fetching observations:', error);
+    }
+  };
+
+  const fetchVisualNotes = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('visual_notes' as any)
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+      if (error) throw error;
+      setVisualNotes(data || []);
+    } catch (error: any) {
+      console.error('Error fetching visual notes:', error);
     }
   };
 
@@ -707,6 +729,55 @@ function DashboardContent() {
                                 </CardContent>
                               </Card>
                             )}
+                            {widget.id === 'visual_notes' && (
+                              <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20">
+                                <CardHeader>
+                                  <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                                    <ImageIcon className="w-5 h-5 text-violet-400" />
+                                    비주얼 노트
+                                  </CardTitle>
+                                  <CardDescription className="text-purple-300/70">
+                                    AI 상담·분석에서 생성한 비주얼 노트
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                  {visualNotes.length > 0 ? (
+                                    <div className="space-y-3">
+                                      {visualNotes.slice(0, 5).map((note: any) => (
+                                        <div
+                                          key={note.id}
+                                          className="p-3 border border-violet-500/20 rounded-lg cursor-pointer hover:bg-violet-500/10 transition-all"
+                                          onClick={() => setSelectedNote(note)}
+                                        >
+                                          <div className="flex justify-between items-start">
+                                            <div className="flex-1 min-w-0">
+                                              <p className="font-medium text-sm text-white truncate">{note.title}</p>
+                                              <p className="text-xs text-purple-400/70">
+                                                {new Date(note.created_at).toLocaleDateString('ko-KR')} · {note.source_type === 'counseling' ? '상담' : '검사'}
+                                              </p>
+                                            </div>
+                                            <Badge variant="outline" className="text-xs border-violet-500/30 bg-violet-500/10 text-violet-300 shrink-0">
+                                              🎨
+                                            </Badge>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <div className="text-center py-8">
+                                      <ImageIcon className="w-12 h-12 mx-auto mb-4 text-violet-500/30" />
+                                      <p className="text-sm text-purple-400/60 mb-4">아직 비주얼 노트가 없습니다</p>
+                                      <Button
+                                        onClick={() => navigate('/metaverse-voice')}
+                                        className="bg-gradient-to-r from-violet-600 to-purple-600"
+                                      >
+                                        AI 상담에서 만들기
+                                      </Button>
+                                    </div>
+                                  )}
+                                </CardContent>
+                              </Card>
+                            )}
                           </SortableWidget>
                         ))}
                       </div>
@@ -718,6 +789,21 @@ function DashboardContent() {
           </main>
         </div>
       </div>
+      {/* 비주얼 노트 상세 보기 다이얼로그 */}
+      <Dialog open={!!selectedNote} onOpenChange={() => setSelectedNote(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">🎨 비주얼 노트</DialogTitle>
+          </DialogHeader>
+          {selectedNote?.summary_data && (
+            <VisualSummaryCard
+              data={selectedNote.summary_data}
+              backgroundImage={selectedNote.background_image_url}
+              onClose={() => setSelectedNote(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </SidebarProvider>
   );
 }

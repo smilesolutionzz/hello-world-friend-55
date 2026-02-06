@@ -23,22 +23,22 @@ serve(async (req) => {
       })
     }
 
-    // Build system prompt based on type
-    const systemPrompt = type === 'counseling'
-      ? `당신은 심리상담 세션 요약 전문가입니다. 상담 대화 내용을 분석하여 아래 JSON 구조로 요약해주세요.
+    // Step 1: Summarize the conversation into structured key points
+    const summarizePrompt = type === 'counseling'
+      ? `당신은 심리상담 세션 요약 전문가입니다. 상담 대화 내용을 분석하여 인포그래픽에 넣을 구조화된 요약을 만들어주세요.
 반드시 아래 JSON 형식만 반환하세요. 마크다운이나 설명 없이 순수 JSON만 반환하세요.`
-      : `당신은 심리검사 결과 분석 전문가입니다. 검사 결과를 분석하여 아래 JSON 구조로 시각적 요약을 만들어주세요.
+      : `당신은 심리검사 결과 분석 전문가입니다. 검사 결과를 분석하여 인포그래픽에 넣을 구조화된 요약을 만들어주세요.
 반드시 아래 JSON 형식만 반환하세요. 마크다운이나 설명 없이 순수 JSON만 반환하세요.`
 
     const toolDefinition = {
       type: "function",
       function: {
         name: "create_visual_summary",
-        description: "상담/검사 내용을 시각적 요약 구조로 변환",
+        description: "상담/검사 내용을 인포그래픽 요약 구조로 변환",
         parameters: {
           type: "object",
           properties: {
-            title: { type: "string", description: "요약 제목 (예: '오늘의 상담 요약', '성격유형 분석 결과')" },
+            title: { type: "string", description: "요약 제목 (예: '오늘의 상담 요약')" },
             subtitle: { type: "string", description: "부제목 (날짜 또는 검사명)" },
             centerTheme: { type: "string", description: "중심 테마 키워드 (1-3단어)" },
             sections: {
@@ -57,7 +57,7 @@ serve(async (req) => {
                 },
                 required: ["title", "icon", "points"]
               },
-              description: "4-6개 섹션"
+              description: "3-5개 섹션"
             },
             keyInsight: { type: "string", description: "핵심 인사이트 한 줄" },
             actionItems: {
@@ -66,9 +66,8 @@ serve(async (req) => {
               description: "실천 항목 2-3개"
             },
             moodColor: { type: "string", enum: ["violet", "blue", "green", "amber", "rose"], description: "전체 분위기 색상" },
-            backgroundPrompt: { type: "string", description: "배경 일러스트를 위한 영어 프롬프트 (감정/분위기를 반영한 추상적 일러스트)" }
           },
-          required: ["title", "subtitle", "centerTheme", "sections", "keyInsight", "actionItems", "moodColor", "backgroundPrompt"]
+          required: ["title", "subtitle", "centerTheme", "sections", "keyInsight", "actionItems", "moodColor"]
         }
       }
     }
@@ -88,7 +87,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'google/gemini-3-flash-preview',
         messages: [
-          { role: 'system', content: systemPrompt },
+          { role: 'system', content: summarizePrompt },
           { role: 'user', content: userPrompt }
         ],
         tools: [toolDefinition],
@@ -110,17 +109,15 @@ serve(async (req) => {
 
     const data = await response.json()
     
-    // Extract tool call arguments
     const toolCall = data.choices?.[0]?.message?.tool_calls?.[0]
     let summary
     
     if (toolCall?.function?.arguments) {
       summary = JSON.parse(toolCall.function.arguments)
     } else {
-      // Fallback: try parsing content directly
-      const content = data.choices?.[0]?.message?.content
-      if (content) {
-        const jsonMatch = content.match(/\{[\s\S]*\}/)
+      const msgContent = data.choices?.[0]?.message?.content
+      if (msgContent) {
+        const jsonMatch = msgContent.match(/\{[\s\S]*\}/)
         if (jsonMatch) {
           summary = JSON.parse(jsonMatch[0])
         }
@@ -131,11 +128,28 @@ serve(async (req) => {
       throw new Error('Failed to parse summary from AI response')
     }
 
-    // Now generate background illustration
-    let backgroundImage = null
+    console.log('[generate-visual-summary] Summary parsed, generating infographic image...')
+
+    // Step 2: Generate infographic image using the summary
+    let infographicImage = null
     try {
-      const bgPrompt = `Soft watercolor abstract illustration, ${summary.backgroundPrompt}, minimalist, pastel colors, no text, no words, dreamy atmosphere, suitable as background, ultra high resolution`
-      
+      // Build a detailed prompt for the infographic
+      const sectionsText = summary.sections.map((s: any, i: number) => {
+        const points = s.points.join(', ')
+        return `Section ${i+1}: "${s.title}" - ${points}`
+      }).join('\n')
+
+      const infographicPrompt = `Create a Korean-language hand-drawn style visual infographic note, white background, similar to meeting notes or visual facilitation. 
+The infographic should have:
+- Title at top: "${summary.title}"
+- Center theme in a prominent visual element: "${summary.centerTheme}"
+- ${summary.sections.length} topic sections arranged around the center with hand-drawn icons, speech bubbles, and arrows connecting them:
+${sectionsText}
+- Key insight highlighted: "${summary.keyInsight}"
+- Action items at bottom: ${summary.actionItems.join(', ')}
+
+Style: Hand-drawn sketch illustration style with blue and black ink on white paper, cute icons, arrows connecting concepts, speech bubbles, small doodles, similar to graphic recording or visual facilitation notes. Korean text throughout. Clean and professional but with hand-drawn charm. Include small relevant doodles and icons next to each section. No photographs, purely illustrated infographic.`
+
       const imgResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -144,25 +158,27 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           model: 'google/gemini-2.5-flash-image',
-          messages: [{ role: 'user', content: bgPrompt }],
+          messages: [{ role: 'user', content: infographicPrompt }],
           modalities: ['image', 'text']
         })
       })
 
       if (imgResponse.ok) {
         const imgData = await imgResponse.json()
-        backgroundImage = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url
-        console.log('[generate-visual-summary] Background image generated')
+        infographicImage = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url
+        console.log('[generate-visual-summary] Infographic image generated successfully')
+      } else {
+        console.error('[generate-visual-summary] Image generation failed:', imgResponse.status)
       }
     } catch (imgErr) {
-      console.error('[generate-visual-summary] Background image generation failed (non-critical):', imgErr)
+      console.error('[generate-visual-summary] Image generation error:', imgErr)
     }
 
-    console.log('[generate-visual-summary] Summary generated successfully')
+    console.log('[generate-visual-summary] Complete')
 
     return new Response(JSON.stringify({
       summary,
-      backgroundImage,
+      infographicImage,
       generatedAt: new Date().toISOString()
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

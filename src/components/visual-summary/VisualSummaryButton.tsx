@@ -77,6 +77,7 @@ const VisualSummaryButton = ({
           {result && !isGenerating && (
             <VisualSummaryCard
               data={result.summary}
+              infographicImage={result.infographicImage}
               backgroundImage={result.backgroundImage}
               onClose={handleClose}
             />

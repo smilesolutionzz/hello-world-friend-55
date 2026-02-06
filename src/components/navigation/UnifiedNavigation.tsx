@@ -70,11 +70,7 @@ const navItems = [
       { label: '이용권 구매', path: '/token-subscription', desc: '캐시/패스 구매' },
     ]
   },
-  {
-    label: '학원/센터용',
-    path: '/b2b-academy',
-    icon: Users,
-  },
+  // '학원/센터용' 메뉴는 숨김 처리 (라우트는 유지)
   {
     label: '칼럼',
     path: '/column',

@@ -8,7 +8,8 @@ export type WidgetType =
   | 'personality'
   | 'goals'
   | 'recent'
-  | 'recommendations';
+  | 'recommendations'
+  | 'visual_notes';
 
 export interface Widget {
   id: WidgetType;
@@ -25,7 +26,8 @@ const defaultWidgets: Widget[] = [
   { id: 'goals', title: '목표 추적', enabled: true, order: 4 },
   { id: 'personality', title: 'AI 성격 분석', enabled: true, order: 5 },
   { id: 'recent', title: '최근 검사', enabled: true, order: 6 },
-  { id: 'recommendations', title: '추천 기능', enabled: true, order: 7 }
+  { id: 'recommendations', title: '추천 기능', enabled: true, order: 7 },
+  { id: 'visual_notes', title: '비주얼 노트', enabled: true, order: 8 }
 ];
 
 export function useDashboardWidgets() {

@@ -10639,6 +10639,36 @@ export type Database = {
         }
         Relationships: []
       }
+      visual_notes: {
+        Row: {
+          background_image_url: string | null
+          created_at: string
+          id: string
+          source_type: string
+          summary_data: Json
+          title: string
+          user_id: string
+        }
+        Insert: {
+          background_image_url?: string | null
+          created_at?: string
+          id?: string
+          source_type?: string
+          summary_data: Json
+          title: string
+          user_id: string
+        }
+        Update: {
+          background_image_url?: string | null
+          created_at?: string
+          id?: string
+          source_type?: string
+          summary_data?: Json
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       voice_diary_entries: {
         Row: {
           audio_duration: number | null

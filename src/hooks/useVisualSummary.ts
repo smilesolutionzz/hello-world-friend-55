@@ -49,9 +49,26 @@ export const useVisualSummary = () => {
       console.log('[useVisualSummary] Summary generated:', data);
       setResult(data);
 
+      // Save to visual_notes table for dashboard viewing
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user && data?.summary) {
+          await supabase.from('visual_notes' as any).insert({
+            user_id: session.user.id,
+            title: data.summary.title || '비주얼 노트',
+            source_type: options.type,
+            summary_data: data.summary,
+            background_image_url: data.backgroundImage || null,
+          });
+          console.log('[useVisualSummary] Saved to visual_notes');
+        }
+      } catch (saveErr) {
+        console.warn('[useVisualSummary] Failed to save to DB:', saveErr);
+      }
+
       toast({
         title: '비주얼 노트 생성 완료! 🎨',
-        description: '이미지를 저장하거나 공유할 수 있어요.',
+        description: '이미지를 저장하거나 대시보드에서 다시 볼 수 있어요.',
       });
 
       return data;

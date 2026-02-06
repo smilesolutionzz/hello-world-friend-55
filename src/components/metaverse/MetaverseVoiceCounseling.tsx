@@ -1681,7 +1681,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                   </Button>
                   
                   {/* 대화 저장/공유 버튼 */}
-                  <div className="flex gap-1">
+                  <div className="flex flex-wrap gap-1">
                     <Button
                       variant="outline"
                       size="sm"
@@ -1711,15 +1711,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                     >
                       <Copy className="w-3 h-3" />
                       복사
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={shareToKakao}
-                      className="gap-1 h-7 px-2 text-xs"
-                    >
-                      <Share2 className="w-3 h-3" />
-                      카톡공유
                     </Button>
                     {messages.length >= 4 && (
                       <VisualSummaryButton

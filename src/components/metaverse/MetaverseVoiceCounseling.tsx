@@ -28,6 +28,7 @@ import { RecordingConsent } from './RecordingConsent';
 import { AvatarCustomization, type AvatarCustomization as AvatarCustomizationType } from './AvatarCustomization';
 import { SessionTimeline } from './SessionTimeline';
 import { EmotionTrendChart } from './EmotionTrendChart';
+import VisualSummaryButton from '@/components/visual-summary/VisualSummaryButton';
 import { Slider } from '@/components/ui/slider';
 import { VirtualJoystick } from './VirtualJoystick';
 import { GestureQuickMenu } from './GestureQuickMenu';
@@ -1720,6 +1721,16 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                       <Share2 className="w-3 h-3" />
                       카톡공유
                     </Button>
+                    {messages.length >= 4 && (
+                      <VisualSummaryButton
+                        type="counseling"
+                        content={getConversationText()}
+                        therapistType="AI 코끼리 상담사"
+                        size="sm"
+                        className="gap-1 h-7 px-2 text-xs"
+                        label="비주얼 노트"
+                      />
+                    )}
                   </div>
                 </div>
                 {showSubtitles && (

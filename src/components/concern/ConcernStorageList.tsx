@@ -28,6 +28,7 @@ import { useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import VisualSummaryButton from '@/components/visual-summary/VisualSummaryButton';
 
 interface ConcernData {
   id: string;
@@ -677,6 +678,23 @@ export const ConcernStorageList = () => {
                             </div>
                           </div>
                         )}
+
+                        {/* 비주얼 노트 버튼 */}
+                        <div className="pt-4">
+                          <VisualSummaryButton
+                            type="assessment"
+                            content={{
+                              concernText: concern.concern_text,
+                              analysisType: concern.analysis_type,
+                              severity: concern.analysis_severity,
+                              advice: concern.analysis_advice,
+                              fullAnalysis: concern.full_analysis,
+                            }}
+                            testType={concern.analysis_type || '고민 분석'}
+                            label="🎨 비주얼 노트 만들기"
+                            className="w-full"
+                          />
+                        </div>
 
                         {/* 추천 검사 */}
                         {((concern.full_analysis?.recommendedTests && concern.full_analysis.recommendedTests.length > 0) || 

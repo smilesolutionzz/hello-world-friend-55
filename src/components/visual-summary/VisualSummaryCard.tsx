@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Download, Share2, LayoutGrid, Image as ImageIcon } from 'lucide-react';
+import { Download, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import html2canvas from 'html2canvas';
@@ -21,75 +21,64 @@ export interface VisualSummaryData {
 
 interface VisualSummaryCardProps {
   data: VisualSummaryData;
+  illustrationImage?: string | null;
   infographicImage?: string | null;
   backgroundImage?: string | null;
   onClose?: () => void;
 }
 
-const colorThemes = {
+const moodPalettes: Record<string, { primary: string; secondary: string; accent: string; bg: string; sectionBg: string; border: string; centerBg: string; centerText: string; insightBg: string; insightText: string; actionAccent: string }> = {
   violet: {
-    bg: 'from-violet-50 to-purple-50',
-    accent: 'bg-violet-600',
-    accentLight: 'bg-violet-100 text-violet-800',
-    border: 'border-violet-200',
-    highlight: 'text-violet-700',
-    sectionBg: 'bg-white/80',
-    centerBg: 'bg-gradient-to-br from-violet-500 to-purple-600',
+    primary: '#6D28D9', secondary: '#8B5CF6', accent: '#A78BFA',
+    bg: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #f5f3ff 100%)',
+    sectionBg: 'rgba(255,255,255,0.85)', border: '#c4b5fd',
+    centerBg: 'linear-gradient(135deg, #7C3AED, #6D28D9)', centerText: '#fff',
+    insightBg: '#ede9fe', insightText: '#5B21B6',
+    actionAccent: '#7C3AED',
   },
   blue: {
-    bg: 'from-blue-50 to-cyan-50',
-    accent: 'bg-blue-600',
-    accentLight: 'bg-blue-100 text-blue-800',
-    border: 'border-blue-200',
-    highlight: 'text-blue-700',
-    sectionBg: 'bg-white/80',
-    centerBg: 'bg-gradient-to-br from-blue-500 to-cyan-600',
+    primary: '#2563EB', secondary: '#3B82F6', accent: '#60A5FA',
+    bg: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #eff6ff 100%)',
+    sectionBg: 'rgba(255,255,255,0.85)', border: '#93c5fd',
+    centerBg: 'linear-gradient(135deg, #3B82F6, #2563EB)', centerText: '#fff',
+    insightBg: '#dbeafe', insightText: '#1E40AF',
+    actionAccent: '#3B82F6',
   },
   green: {
-    bg: 'from-green-50 to-emerald-50',
-    accent: 'bg-green-600',
-    accentLight: 'bg-green-100 text-green-800',
-    border: 'border-green-200',
-    highlight: 'text-green-700',
-    sectionBg: 'bg-white/80',
-    centerBg: 'bg-gradient-to-br from-green-500 to-emerald-600',
+    primary: '#059669', secondary: '#10B981', accent: '#34D399',
+    bg: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #ecfdf5 100%)',
+    sectionBg: 'rgba(255,255,255,0.85)', border: '#6ee7b7',
+    centerBg: 'linear-gradient(135deg, #10B981, #059669)', centerText: '#fff',
+    insightBg: '#d1fae5', insightText: '#065F46',
+    actionAccent: '#10B981',
   },
   amber: {
-    bg: 'from-amber-50 to-yellow-50',
-    accent: 'bg-amber-600',
-    accentLight: 'bg-amber-100 text-amber-800',
-    border: 'border-amber-200',
-    highlight: 'text-amber-700',
-    sectionBg: 'bg-white/80',
-    centerBg: 'bg-gradient-to-br from-amber-500 to-yellow-600',
+    primary: '#D97706', secondary: '#F59E0B', accent: '#FBBF24',
+    bg: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fffbeb 100%)',
+    sectionBg: 'rgba(255,255,255,0.85)', border: '#fcd34d',
+    centerBg: 'linear-gradient(135deg, #F59E0B, #D97706)', centerText: '#fff',
+    insightBg: '#fef3c7', insightText: '#92400E',
+    actionAccent: '#F59E0B',
   },
   rose: {
-    bg: 'from-rose-50 to-pink-50',
-    accent: 'bg-rose-600',
-    accentLight: 'bg-rose-100 text-rose-800',
-    border: 'border-rose-200',
-    highlight: 'text-rose-700',
-    sectionBg: 'bg-white/80',
-    centerBg: 'bg-gradient-to-br from-rose-500 to-pink-600',
+    primary: '#E11D48', secondary: '#F43F5E', accent: '#FB7185',
+    bg: 'linear-gradient(135deg, #fff1f2 0%, #fce7f3 50%, #fff1f2 100%)',
+    sectionBg: 'rgba(255,255,255,0.85)', border: '#fda4af',
+    centerBg: 'linear-gradient(135deg, #F43F5E, #E11D48)', centerText: '#fff',
+    insightBg: '#fce7f3', insightText: '#9F1239',
+    actionAccent: '#F43F5E',
   },
 };
 
-const VisualSummaryCard = ({ data, infographicImage, backgroundImage, onClose }: VisualSummaryCardProps) => {
+const VisualSummaryCard = ({ data, illustrationImage, infographicImage, backgroundImage, onClose }: VisualSummaryCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const theme = colorThemes[data.moodColor] || colorThemes.violet;
-  const [viewMode, setViewMode] = useState<'infographic' | 'card'>(infographicImage ? 'infographic' : 'card');
+  const palette = moodPalettes[data.moodColor] || moodPalettes.violet;
 
-  const downloadInfographic = () => {
-    if (!infographicImage) return;
-    const link = document.createElement('a');
-    link.download = `visual-note-${Date.now()}.png`;
-    link.href = infographicImage;
-    link.click();
-    toast({ title: '이미지 저장 완료', description: '갤러리에서 확인하세요!' });
-  };
+  // Use illustration image (new hybrid), or fall back to infographic/background
+  const bgImage = illustrationImage || infographicImage || backgroundImage;
 
-  const downloadCard = async () => {
+  const downloadImage = async () => {
     if (!cardRef.current) return;
     try {
       const canvas = await html2canvas(cardRef.current, {
@@ -102,34 +91,34 @@ const VisualSummaryCard = ({ data, infographicImage, backgroundImage, onClose }:
       link.download = `visual-note-${Date.now()}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-      toast({ title: '이미지 저장 완료', description: '갤러리에서 확인하세요!' });
+      toast({ title: '이미지 저장 완료 ✅', description: '갤러리에서 확인하세요!' });
     } catch (err) {
       console.error('Download error:', err);
       toast({ title: '저장 실패', description: '다시 시도해주세요.', variant: 'destructive' });
     }
   };
 
-  const handleDownload = () => {
-    if (viewMode === 'infographic' && infographicImage) {
-      downloadInfographic();
-    } else {
-      downloadCard();
-    }
-  };
-
   const shareImage = async () => {
-    if (viewMode === 'infographic' && infographicImage) {
-      try {
-        const res = await fetch(infographicImage);
-        const blob = await res.blob();
+    if (!cardRef.current) return;
+    try {
+      const canvas = await html2canvas(cardRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
         const file = new File([blob], 'visual-note.png', { type: 'image/png' });
         if (navigator.share && navigator.canShare({ files: [file] })) {
           await navigator.share({ files: [file], title: data.title });
-          return;
+        } else {
+          downloadImage();
         }
-      } catch { /* fallback */ }
+      });
+    } catch {
+      downloadImage();
     }
-    handleDownload();
   };
 
   const topSections = data.sections.slice(0, Math.ceil(data.sections.length / 2));
@@ -138,154 +127,259 @@ const VisualSummaryCard = ({ data, infographicImage, backgroundImage, onClose }:
   return (
     <div className="space-y-4">
       {/* Action buttons */}
-      <div className="flex items-center justify-between">
-        <div className="flex gap-1">
-          {infographicImage && (
-            <>
-              <Button
-                variant={viewMode === 'infographic' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('infographic')}
-                className="gap-1.5 text-xs"
-              >
-                <ImageIcon className="w-3.5 h-3.5" />
-                인포그래픽
-              </Button>
-              <Button
-                variant={viewMode === 'card' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('card')}
-                className="gap-1.5 text-xs"
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-                카드뷰
-              </Button>
-            </>
-          )}
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleDownload} className="gap-2">
-            <Download className="w-4 h-4" />
-            저장
-          </Button>
-          <Button variant="outline" size="sm" onClick={shareImage} className="gap-2">
-            <Share2 className="w-4 h-4" />
-            공유
-          </Button>
-        </div>
+      <div className="flex justify-end gap-2">
+        <Button variant="outline" size="sm" onClick={downloadImage} className="gap-2">
+          <Download className="w-4 h-4" />
+          저장
+        </Button>
+        <Button variant="outline" size="sm" onClick={shareImage} className="gap-2">
+          <Share2 className="w-4 h-4" />
+          공유
+        </Button>
       </div>
 
-      {/* Infographic view */}
-      {viewMode === 'infographic' && infographicImage ? (
-        <div className="rounded-2xl overflow-hidden border border-border shadow-lg">
-          <img 
-            src={infographicImage} 
-            alt={data.title}
-            className="w-full h-auto"
-            crossOrigin="anonymous"
-          />
-          <div className="bg-muted/30 p-3 text-center">
-            <p className="text-[10px] text-muted-foreground">🐘 코끼리 AI · 마음건강 파트너</p>
+      {/* Hybrid infographic: illustration bg + HTML text overlay */}
+      <div
+        ref={cardRef}
+        style={{
+          background: palette.bg,
+          position: 'relative',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          padding: '32px',
+          minHeight: '700px',
+          fontFamily: '"Noto Sans KR", "Apple SD Gothic Neo", sans-serif',
+        }}
+      >
+        {/* Illustration background */}
+        {bgImage && (
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: 0.15,
+            zIndex: 0,
+          }}>
+            <img
+              src={bgImage}
+              alt=""
+              crossOrigin="anonymous"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
           </div>
-        </div>
-      ) : (
-        /* Card view (fallback / alternative) */
-        <div
-          ref={cardRef}
-          className={`relative bg-gradient-to-br ${theme.bg} rounded-2xl overflow-hidden`}
-          style={{ minHeight: '600px', padding: '32px' }}
-        >
-          {backgroundImage && (
-            <div className="absolute inset-0 opacity-10">
-              <img src={backgroundImage} alt="" className="w-full h-full object-cover" />
-            </div>
-          )}
+        )}
 
-          <div className="relative z-10">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">{data.title}</h2>
-              <p className="text-sm text-gray-500">{data.subtitle}</p>
-            </div>
+        {/* Decorative corner doodles */}
+        <div style={{ position: 'absolute', top: 8, left: 12, fontSize: '20px', opacity: 0.4, zIndex: 1 }}>✿</div>
+        <div style={{ position: 'absolute', top: 8, right: 12, fontSize: '20px', opacity: 0.4, zIndex: 1 }}>🦋</div>
+        <div style={{ position: 'absolute', bottom: 8, left: 12, fontSize: '20px', opacity: 0.4, zIndex: 1 }}>🌿</div>
+        <div style={{ position: 'absolute', bottom: 8, right: 12, fontSize: '20px', opacity: 0.4, zIndex: 1 }}>💫</div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-              {topSections.map((section, i) => (
-                <div key={i} className={`${theme.sectionBg} backdrop-blur-sm rounded-xl p-4 ${theme.border} border shadow-sm`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xl">{section.icon}</span>
-                    <h3 className="font-bold text-gray-800 text-sm">{section.title}</h3>
-                  </div>
-                  <ul className="space-y-1">
-                    {section.points.map((point, j) => (
-                      <li key={j} className="text-xs text-gray-600 flex items-start gap-1">
-                        <span className="mt-0.5 shrink-0">•</span>
-                        <span>{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {section.highlight && (
-                    <p className={`mt-2 text-xs font-bold ${theme.highlight} bg-white/50 rounded-lg px-2 py-1`}>
-                      💡 {section.highlight}
-                    </p>
-                  )}
+        {/* Content */}
+        <div style={{ position: 'relative', zIndex: 2 }}>
+          {/* Title */}
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: 800,
+              color: palette.primary,
+              marginBottom: '4px',
+              letterSpacing: '-0.5px',
+            }}>
+              {data.title}
+            </h2>
+            <p style={{ fontSize: '13px', color: '#9ca3af' }}>{data.subtitle}</p>
+          </div>
+
+          {/* Top sections */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: topSections.length > 1 ? '1fr 1fr' : '1fr',
+            gap: '12px',
+            marginBottom: '16px',
+          }}>
+            {topSections.map((section, i) => (
+              <div key={i} style={{
+                background: palette.sectionBg,
+                borderRadius: '12px',
+                padding: '16px',
+                border: `1.5px solid ${palette.border}`,
+                backdropFilter: 'blur(8px)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '20px' }}>{section.icon}</span>
+                  <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#1f2937' }}>{section.title}</h3>
+                </div>
+                <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+                  {section.points.map((point, j) => (
+                    <li key={j} style={{
+                      fontSize: '12px',
+                      color: '#4b5563',
+                      lineHeight: '1.6',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '6px',
+                    }}>
+                      <span style={{ color: palette.accent, flexShrink: 0, marginTop: '2px' }}>•</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                {section.highlight && (
+                  <p style={{
+                    marginTop: '8px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: palette.primary,
+                    background: 'rgba(255,255,255,0.6)',
+                    borderRadius: '8px',
+                    padding: '4px 8px',
+                  }}>
+                    💡 {section.highlight}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Center theme cloud */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+            <div style={{
+              background: palette.centerBg,
+              color: palette.centerText,
+              borderRadius: '9999px',
+              padding: '14px 32px',
+              boxShadow: `0 4px 20px ${palette.accent}50`,
+              position: 'relative',
+            }}>
+              <p style={{ fontSize: '18px', fontWeight: 800, textAlign: 'center', margin: 0 }}>
+                🎯 {data.centerTheme}
+              </p>
+            </div>
+          </div>
+
+          {/* Connecting arrows */}
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '-8px 0', opacity: 0.3 }}>
+            <span style={{ fontSize: '24px', color: palette.primary }}>⬇</span>
+          </div>
+
+          {/* Bottom sections */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: bottomSections.length > 1 ? '1fr 1fr' : '1fr',
+            gap: '12px',
+            marginBottom: '16px',
+            marginTop: '8px',
+          }}>
+            {bottomSections.map((section, i) => (
+              <div key={i} style={{
+                background: palette.sectionBg,
+                borderRadius: '12px',
+                padding: '16px',
+                border: `1.5px solid ${palette.border}`,
+                backdropFilter: 'blur(8px)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '20px' }}>{section.icon}</span>
+                  <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#1f2937' }}>{section.title}</h3>
+                </div>
+                <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+                  {section.points.map((point, j) => (
+                    <li key={j} style={{
+                      fontSize: '12px',
+                      color: '#4b5563',
+                      lineHeight: '1.6',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '6px',
+                    }}>
+                      <span style={{ color: palette.accent, flexShrink: 0, marginTop: '2px' }}>•</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                {section.highlight && (
+                  <p style={{
+                    marginTop: '8px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: palette.primary,
+                    background: 'rgba(255,255,255,0.6)',
+                    borderRadius: '8px',
+                    padding: '4px 8px',
+                  }}>
+                    💡 {section.highlight}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Key Insight */}
+          <div style={{
+            background: palette.insightBg,
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '12px',
+            textAlign: 'center',
+            border: `1px solid ${palette.border}`,
+          }}>
+            <p style={{ fontSize: '13px', fontWeight: 800, color: palette.insightText, margin: 0 }}>
+              ✨ 핵심 인사이트
+            </p>
+            <p style={{ fontSize: '13px', color: palette.insightText, marginTop: '6px', lineHeight: '1.5' }}>
+              {data.keyInsight}
+            </p>
+          </div>
+
+          {/* Action Items */}
+          <div style={{
+            background: 'rgba(255,255,255,0.7)',
+            borderRadius: '12px',
+            padding: '16px',
+            border: '1px solid #e5e7eb',
+            backdropFilter: 'blur(4px)',
+          }}>
+            <p style={{ fontSize: '13px', fontWeight: 800, color: '#1f2937', margin: '0 0 8px 0' }}>
+              📋 실천 항목
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {data.actionItems.map((item, i) => (
+                <div key={i} style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '8px',
+                  fontSize: '12px',
+                  color: '#374151',
+                }}>
+                  <span style={{
+                    background: palette.actionAccent,
+                    color: '#fff',
+                    borderRadius: '9999px',
+                    width: '20px',
+                    height: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    fontSize: '10px',
+                    fontWeight: 700,
+                  }}>
+                    {i + 1}
+                  </span>
+                  <span style={{ lineHeight: '1.5' }}>{item}</span>
                 </div>
               ))}
             </div>
+          </div>
 
-            <div className="flex justify-center mb-4">
-              <div className={`${theme.centerBg} text-white rounded-full px-6 py-3 shadow-lg`}>
-                <p className="text-lg font-bold text-center">🎯 {data.centerTheme}</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-              {bottomSections.map((section, i) => (
-                <div key={i} className={`${theme.sectionBg} backdrop-blur-sm rounded-xl p-4 ${theme.border} border shadow-sm`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xl">{section.icon}</span>
-                    <h3 className="font-bold text-gray-800 text-sm">{section.title}</h3>
-                  </div>
-                  <ul className="space-y-1">
-                    {section.points.map((point, j) => (
-                      <li key={j} className="text-xs text-gray-600 flex items-start gap-1">
-                        <span className="mt-0.5 shrink-0">•</span>
-                        <span>{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {section.highlight && (
-                    <p className={`mt-2 text-xs font-bold ${theme.highlight} bg-white/50 rounded-lg px-2 py-1`}>
-                      💡 {section.highlight}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <div className={`${theme.accentLight} rounded-xl p-4 mb-4 text-center`}>
-              <p className="font-bold text-sm">✨ 핵심 인사이트</p>
-              <p className="text-sm mt-1">{data.keyInsight}</p>
-            </div>
-
-            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-gray-200">
-              <p className="font-bold text-sm text-gray-800 mb-2">📋 실천 항목</p>
-              <div className="space-y-1">
-                {data.actionItems.map((item, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs text-gray-700">
-                    <span className={`${theme.accent} text-white rounded-full w-5 h-5 flex items-center justify-center shrink-0 text-[10px] font-bold`}>
-                      {i + 1}
-                    </span>
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="text-center mt-4">
-              <p className="text-[10px] text-gray-400">🐘 코끼리 AI · 마음건강 파트너</p>
-            </div>
+          {/* Footer */}
+          <div style={{ textAlign: 'center', marginTop: '16px' }}>
+            <p style={{ fontSize: '10px', color: '#9ca3af' }}>🐘 코끼리 AI · 마음건강 파트너</p>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

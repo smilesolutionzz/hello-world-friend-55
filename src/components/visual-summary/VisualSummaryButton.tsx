@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ImageIcon, Loader2 } from 'lucide-react';
@@ -38,7 +38,6 @@ const VisualSummaryButton = ({
 
   const handleClose = () => {
     setIsOpen(false);
-    // Don't reset - keep result for re-viewing
   };
 
   return (
@@ -68,17 +67,16 @@ const VisualSummaryButton = ({
           
           {isGenerating && (
             <div className="flex flex-col items-center justify-center py-12 gap-4">
-              <Loader2 className="w-10 h-10 animate-spin text-violet-500" />
+              <Loader2 className="w-10 h-10 animate-spin text-primary" />
               <p className="text-sm text-muted-foreground">AI가 비주얼 노트를 만들고 있어요...</p>
-              <p className="text-xs text-muted-foreground">배경 일러스트까지 약 10-20초 소요</p>
+              <p className="text-xs text-muted-foreground">일러스트 생성까지 약 10-20초 소요</p>
             </div>
           )}
 
           {result && !isGenerating && (
             <VisualSummaryCard
               data={result.summary}
-              infographicImage={result.infographicImage}
-              backgroundImage={result.backgroundImage}
+              illustrationImage={result.illustrationImage}
               onClose={handleClose}
             />
           )}

@@ -798,7 +798,7 @@ function DashboardContent() {
           {selectedNote?.summary_data && (
             <VisualSummaryCard
               data={selectedNote.summary_data}
-              infographicImage={selectedNote.background_image_url}
+              illustrationImage={selectedNote.background_image_url}
               onClose={() => setSelectedNote(null)}
             />
           )}

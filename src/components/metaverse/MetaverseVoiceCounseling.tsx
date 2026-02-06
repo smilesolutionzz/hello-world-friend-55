@@ -1099,7 +1099,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           enableMovement={false}
           character={mode === 'structured' && structuredConfig ? structuredConfig.character : undefined}
         >
-          <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
+            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4 pr-4 md:pr-[26rem] overflow-y-auto">
             <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-8 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20">
               <div className="text-center mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">

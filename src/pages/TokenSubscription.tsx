@@ -109,7 +109,7 @@ const TokenSubscription = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-violet-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-violet-950/20 text-foreground">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-violet-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-violet-950/20 text-slate-900 dark:text-slate-100">
       <UnifiedNavigation />
       
       <div className="container mx-auto px-4 pt-24 pb-16 max-w-5xl">
@@ -128,8 +128,8 @@ const TokenSubscription = () => {
                       <Lock className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-foreground">로그인 후 결제 가능합니다</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <h3 className="font-bold text-lg text-slate-900 dark:text-white">로그인 후 결제 가능합니다</h3>
+                      <p className="text-sm text-slate-700 dark:text-slate-300">
                         가입 30초 · 모든 결제 내역과 이용권이 계정에 저장됩니다
                       </p>
                     </div>
@@ -201,8 +201,8 @@ const TokenSubscription = () => {
           <h1 className="text-4xl md:text-5xl font-black mb-3 bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 bg-clip-text text-transparent leading-tight">
             프리미엄 멤버십
           </h1>
-          <p className="text-lg text-muted-foreground">
-            모든 AI 분석과 심리검사를 <span className="font-bold text-foreground">하루 1,000원</span>에 무제한
+          <p className="text-lg text-slate-700 dark:text-slate-300">
+            모든 AI 분석과 심리검사를 <span className="font-bold text-slate-900 dark:text-white">하루 1,000원</span>에 무제한
           </p>
         </motion.div>
 
@@ -232,14 +232,14 @@ const TokenSubscription = () => {
                       <Crown className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-black">30일 프리미엄</h2>
-                      <p className="text-sm text-muted-foreground">모든 기능 무제한</p>
+                     <h2 className="text-2xl font-black text-slate-900 dark:text-white">30일 프리미엄</h2>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">모든 기능 무제한</p>
                     </div>
                   </div>
 
                   <div className="mb-6">
                     <div className="flex items-baseline gap-2 justify-center md:justify-start">
-                      <span className="text-lg text-muted-foreground line-through">₩49,900</span>
+                      <span className="text-lg text-slate-500 dark:text-slate-400 line-through">₩49,900</span>
                       <Badge className="bg-rose-500 text-white border-0">40% OFF</Badge>
                     </div>
                     <div className="flex items-baseline gap-1 justify-center md:justify-start">
@@ -247,8 +247,8 @@ const TokenSubscription = () => {
                         ₩29,900
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      하루 <span className="font-bold text-violet-600">약 1,000원</span> · 30일간 무제한
+                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      하루 <span className="font-bold text-violet-600 dark:text-violet-400">약 1,000원</span> · 30일간 무제한
                     </p>
                   </div>
 
@@ -276,7 +276,7 @@ const TokenSubscription = () => {
                     )}
                   </Button>
 
-                  <p className="text-xs text-muted-foreground mt-3 flex items-center justify-center md:justify-start gap-1">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-3 flex items-center justify-center md:justify-start gap-1">
                     <Shield className="w-3 h-3" />
                     7일 이내 100% 환불 보장
                   </p>
@@ -310,7 +310,7 @@ const TokenSubscription = () => {
                       }`}>
                         <item.icon className={`w-4 h-4 ${item.highlight ? 'text-white' : 'text-violet-600 dark:text-violet-400'}`} />
                       </div>
-                      <span className={`font-medium text-foreground ${item.highlight ? 'text-violet-700 dark:text-violet-300' : ''}`}>
+                      <span className={`font-semibold ${item.highlight ? 'text-violet-800 dark:text-violet-200' : 'text-slate-800 dark:text-slate-200'}`}>
                         {item.text}
                       </span>
                       {item.highlight && (
@@ -331,21 +331,21 @@ const TokenSubscription = () => {
           transition={{ delay: 0.3 }}
           className="mb-12"
         >
-          <h3 className="text-xl font-bold text-center mb-6">
-            무료 vs 프리미엄 <span className="text-violet-600">비교</span>
+          <h3 className="text-xl font-bold text-center mb-6 text-slate-900 dark:text-white">
+            무료 vs 프리미엄 <span className="text-violet-600 dark:text-violet-400">비교</span>
           </h3>
           
           <Card className="overflow-hidden">
             <CardContent className="p-0">
-               <div className="grid grid-cols-3 text-center text-sm font-bold border-b bg-slate-50 dark:bg-slate-800/50">
-                <div className="p-4 text-foreground">기능</div>
-                <div className="p-4 text-foreground/70">무료</div>
+               <div className="grid grid-cols-3 text-center text-sm font-bold border-b bg-slate-100 dark:bg-slate-800">
+                <div className="p-4 text-slate-900 dark:text-white">기능</div>
+                <div className="p-4 text-slate-700 dark:text-slate-300">무료</div>
                 <div className="p-4 bg-gradient-to-r from-violet-500 to-purple-500 text-white">프리미엄</div>
               </div>
               
               {comparisonItems.map((item, idx) => (
                 <div key={idx} className="grid grid-cols-3 text-center text-sm border-b last:border-0">
-                  <div className="p-4 font-medium text-left text-foreground">{item.feature}</div>
+                  <div className="p-4 font-semibold text-left text-slate-800 dark:text-slate-200">{item.feature}</div>
                   <div className="p-4 flex items-center justify-center">
                     {typeof item.free === 'boolean' ? (
                       item.free ? (
@@ -354,14 +354,14 @@ const TokenSubscription = () => {
                         <X className="w-5 h-5 text-slate-300" />
                       )
                     ) : (
-                      <span className="text-foreground/60 text-xs">{item.free}</span>
+                      <span className="text-slate-600 dark:text-slate-400 text-xs font-medium">{item.free}</span>
                     )}
                   </div>
                   <div className="p-4 bg-violet-50/50 dark:bg-violet-950/20 flex items-center justify-center">
                     {typeof item.premium === 'boolean' ? (
                       <Check className="w-5 h-5 text-violet-500" />
                     ) : (
-                      <span className="font-medium text-violet-600 dark:text-violet-400 text-xs">{item.premium}</span>
+                      <span className="font-bold text-violet-700 dark:text-violet-300 text-xs">{item.premium}</span>
                     )}
                   </div>
                 </div>
@@ -377,8 +377,8 @@ const TokenSubscription = () => {
           transition={{ delay: 0.4 }}
           className="mb-12"
         >
-          <h3 className="text-xl font-bold text-center mb-2">다른 옵션</h3>
-          <p className="text-center text-muted-foreground text-sm mb-6">필요에 따라 선택하세요</p>
+          <h3 className="text-xl font-bold text-center mb-2 text-slate-900 dark:text-white">다른 옵션</h3>
+          <p className="text-center text-slate-600 dark:text-slate-400 text-sm mb-6">필요에 따라 선택하세요</p>
           
           <div className="grid md:grid-cols-2 gap-6">
             {/* 캐시 충전 카드 */}
@@ -389,8 +389,8 @@ const TokenSubscription = () => {
                     <Coins className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h4 className="font-bold">캐시 충전</h4>
-                    <p className="text-xs text-muted-foreground">건별 결제 선호시</p>
+                    <h4 className="font-bold text-slate-900 dark:text-white">캐시 충전</h4>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">건별 결제 선호시</p>
                   </div>
                 </div>
                 
@@ -404,12 +404,12 @@ const TokenSubscription = () => {
                     >
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-foreground">₩{product.price.toLocaleString()}</span>
+                          <span className="font-bold text-slate-900 dark:text-white">₩{product.price.toLocaleString()}</span>
                           {product.bonus > 0 && (
                             <Badge className="bg-emerald-500 text-white text-xs border-0">+10%</Badge>
                           )}
                         </div>
-                        <p className="text-xs text-muted-foreground">{product.features[0]}</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">{product.features[0]}</p>
                       </div>
                       <Button
                         size="sm"
@@ -424,8 +424,8 @@ const TokenSubscription = () => {
                   ))}
                 </div>
 
-                <p className="text-xs text-muted-foreground mt-4 text-center">
-                  현재 보유: <span className="font-bold text-foreground">{((tokenBalance?.current_tokens || 0) * 100).toLocaleString()}원</span>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-4 text-center">
+                  현재 보유: <span className="font-bold text-slate-900 dark:text-white">{((tokenBalance?.current_tokens || 0) * 100).toLocaleString()}원</span>
                 </p>
               </CardContent>
             </Card>
@@ -438,8 +438,8 @@ const TokenSubscription = () => {
                     <Users className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h4 className="font-bold">전문가 1:1 상담</h4>
-                    <p className="text-xs text-muted-foreground">검증된 심리 전문가</p>
+                    <h4 className="font-bold text-slate-900 dark:text-white">전문가 1:1 상담</h4>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">검증된 심리 전문가</p>
                   </div>
                 </div>
                 
@@ -453,13 +453,13 @@ const TokenSubscription = () => {
                     >
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-foreground">₩{product.price.toLocaleString()}</span>
+                          <span className="font-bold text-slate-900 dark:text-white">₩{product.price.toLocaleString()}</span>
                           <Badge variant="secondary" className="text-xs">{product.duration}</Badge>
                           {product.popular && (
                             <Badge className="bg-emerald-500 text-white text-xs border-0">추천</Badge>
                           )}
                         </div>
-                        <p className="text-xs text-muted-foreground">{product.features[0]}</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">{product.features[0]}</p>
                       </div>
                       <Button
                         size="sm"
@@ -477,7 +477,7 @@ const TokenSubscription = () => {
                 <Button 
                   variant="ghost"
                   size="sm"
-                  className="w-full mt-4 text-muted-foreground"
+                  className="w-full mt-4 text-slate-700 dark:text-slate-300"
                   onClick={() => navigate('/expert-hiring')}
                 >
                   전문가 프로필 보기
@@ -501,8 +501,8 @@ const TokenSubscription = () => {
                 <Shield className="w-5 h-5 text-white" />
               </div>
               <div>
-                <div className="font-bold text-sm text-foreground">환불 보장</div>
-                <div className="text-xs text-muted-foreground">7일 이내</div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">환불 보장</div>
+                <div className="text-xs text-slate-600 dark:text-slate-400">7일 이내</div>
               </div>
             </div>
             <div className="flex flex-col items-center gap-2">
@@ -510,8 +510,8 @@ const TokenSubscription = () => {
                 <Zap className="w-5 h-5 text-white" />
               </div>
               <div>
-                <div className="font-bold text-sm text-foreground">즉시 이용</div>
-                <div className="text-xs text-muted-foreground">결제 즉시</div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">즉시 이용</div>
+                <div className="text-xs text-slate-600 dark:text-slate-400">결제 즉시</div>
               </div>
             </div>
             <div className="flex flex-col items-center gap-2">
@@ -519,8 +519,8 @@ const TokenSubscription = () => {
                 <Star className="w-5 h-5 text-white" />
               </div>
               <div>
-                <div className="font-bold text-sm text-foreground">안전 결제</div>
-                <div className="text-xs text-muted-foreground">토스페이먼츠</div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">안전 결제</div>
+                <div className="text-xs text-slate-600 dark:text-slate-400">토스페이먼츠</div>
               </div>
             </div>
           </div>

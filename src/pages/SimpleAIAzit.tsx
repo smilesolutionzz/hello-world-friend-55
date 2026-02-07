@@ -13,70 +13,8 @@ interface Message {
   timestamp: Date;
 }
 
-class SimpleRealtimeChat {
-  private pc: RTCPeerConnection | null = null;
-  private dc: RTCDataChannel | null = null;
-  private audioEl: HTMLAudioElement;
-
-  constructor(private onMessage: (event: any) => void) {
-    this.audioEl = document.createElement("audio");
-    this.audioEl.autoplay = true;
-  }
-
-  async init() {
-    const { data, error } = await supabase.functions.invoke("get-realtime-token", {
-      body: { mode: 'free' }
-    });
-    if (error) throw error;
-    if (!data.client_secret?.value) throw new Error("토큰을 받지 못했습니다");
-
-    this.pc = new RTCPeerConnection();
-    this.pc.ontrack = e => {
-      this.audioEl.srcObject = e.streams[0];
-    };
-
-    const ms = await navigator.mediaDevices.getUserMedia({ audio: true });
-    this.pc.addTrack(ms.getTracks()[0]);
-
-    this.dc = this.pc.createDataChannel("oai-events");
-    this.dc.addEventListener("message", (e) => {
-      const event = JSON.parse(e.data);
-      this.onMessage(event);
-    });
-
-    const offer = await this.pc.createOffer();
-    await this.pc.setLocalDescription(offer);
-
-    const sdpResponse = await fetch(
-      `https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17`,
-      {
-        method: "POST",
-        body: offer.sdp,
-        headers: {
-          "Authorization": `Bearer ${data.client_secret.value}`,
-          "Content-Type": "application/sdp"
-        },
-      }
-    );
-
-    if (!sdpResponse.ok) throw new Error(`API 오류: ${sdpResponse.status}`);
-
-    await this.pc.setRemoteDescription({
-      type: "answer",
-      sdp: await sdpResponse.text(),
-    });
-  }
-
-  setMuted(muted: boolean) {
-    this.audioEl.muted = muted;
-  }
-
-  disconnect() {
-    this.dc?.close();
-    this.pc?.close();
-    this.audioEl.srcObject = null;
-  }
-}
+// SimpleRealtimeChat removed - now using RealtimeChat from utils
+import { RealtimeChat } from '@/utils/RealtimeAudio';
 
 export default function SimpleAIAzit() {
   const { toast } = useToast();
@@ -87,7 +25,7 @@ export default function SimpleAIAzit() {
   const [isMuted, setIsMuted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentTranscript, setCurrentTranscript] = useState('');
-  const chatRef = useRef<SimpleRealtimeChat | null>(null);
+  const chatRef = useRef<RealtimeChat | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -127,7 +65,16 @@ export default function SimpleAIAzit() {
       setIsLoading(true);
       await navigator.mediaDevices.getUserMedia({ audio: true });
       
-      chatRef.current = new SimpleRealtimeChat(handleMessage);
+      chatRef.current = new RealtimeChat(handleMessage, {
+        mode: 'free',
+        onDisconnect: () => {
+          setIsConnected(false);
+          toast({ title: "연결 끊김", description: "재연결에 실패했습니다.", variant: "destructive" });
+        },
+        onReconnecting: () => {
+          toast({ title: "재연결 중...", description: "잠시만 기다려주세요." });
+        },
+      });
       await chatRef.current.init();
       
       setIsConnected(true);
@@ -154,9 +101,7 @@ export default function SimpleAIAzit() {
   };
 
   const toggleMute = () => {
-    const newMuted = !isMuted;
-    setIsMuted(newMuted);
-    chatRef.current?.setMuted(newMuted);
+    setIsMuted(prev => !prev);
   };
 
   const getConversationText = () => {

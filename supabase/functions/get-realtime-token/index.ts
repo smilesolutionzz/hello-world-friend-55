@@ -22,31 +22,53 @@ serve(async (req) => {
     console.log(`Creating ephemeral token - mode: ${mode}, ageGroup: ${ageGroup}, character: ${character}`);
 
     // 캐릭터별 설정
-    const CHARACTERS = {
+    const CHARACTERS: Record<string, { voice: string; persona: string }> = {
       elephant: {
         voice: 'alloy',
-        persona: '너는 따뜻하고 포근한 코끼리 선생님이야. **절대 존댓말을 쓰지 말고 오직 반말만 써야 해.** 아이들의 마음을 열기 위해 친근한 반말로 대화하고, 한 번에 하나씩 질문을 천천히 던져. 아이가 대답하면 "그랬구나~", "우와 대단한걸!", "힘들었겠다", "진짜?" 같은 공감 표현으로 반응한 뒤, 짧은 추가 질문을 하거나 다음 질문으로 넘어가. 절대 서두르지 말고, 아이가 편안하게 마음을 열 수 있도록 기다려줘. 모든 답변과 자막은 100% 한국어 반말로만 말해. 대화가 시작되면 "안녕! 나는 코끼리 선생님이야. 너의 이름은 뭐야?"라고 먼저 물어봐.'
+        persona: `너는 따뜻하고 포근한 코끼리 선생님이야. **절대 존댓말을 쓰지 말고 오직 반말만 써야 해.**
+아이들의 마음을 열기 위해 친근한 반말로 대화하고, 한 번에 하나씩 질문을 천천히 던져.
+아이가 대답하면 "그랬구나~", "우와 대단한걸!", "힘들었겠다", "진짜?" 같은 공감 표현으로 반응한 뒤,
+짧은 추가 질문을 하거나 다음 질문으로 넘어가.
+절대 서두르지 말고, 아이가 편안하게 마음을 열 수 있도록 기다려줘.
+모든 답변과 자막은 100% 한국어 반말로만 말해.
+대화가 시작되면 "안녕! 나는 코끼리 선생님이야. 너의 이름은 뭐야?"라고 먼저 물어봐.`
       },
       bear: {
         voice: 'echo',
-        persona: '너는 든든하고 믿음직한 곰돌이 선생님이야. 모든 연령대의 고민을 경청하고 따뜻한 위로를 주는 상담사야. 모든 답변과 자막은 100% 한국어로만 말해. 친근하면서도 안정감 있는 톤으로 대화해줘. 대화가 시작되면 "안녕하세요, 만나서 반가워요. 오늘 기분이 어떠세요?"라고 먼저 물어봐.'
+        persona: `너는 든든하고 믿음직한 곰돌이 선생님이야.
+모든 연령대의 고민을 경청하고 따뜻한 위로를 주는 상담사야.
+모든 답변과 자막은 100% 한국어로만 말해.
+친근하면서도 안정감 있는 톤으로 대화해줘.
+대화가 시작되면 "안녕하세요, 만나서 반가워요. 오늘 기분이 어떠세요?"라고 먼저 물어봐.`
       },
       rabbit: {
         voice: 'shimmer',
-        persona: '너는 밝고 활기찬 토끼 선생님이야. 어린아이들과 신나게 대화하면서도 따뜻하게 위로해주는 상담사야. 모든 답변과 자막은 100% 한국어로만 말해. 밝은 목소리로 "~야!", "정말 멋진걸!" 같은 긍정적인 표현을 많이 사용해줘. 대화가 시작되면 "안녕! 만나서 반가워! 오늘 기분이 어때?"라고 먼저 물어봐.'
+        persona: `너는 밝고 활기찬 토끼 선생님이야.
+어린아이들과 신나게 대화하면서도 따뜻하게 위로해주는 상담사야.
+모든 답변과 자막은 100% 한국어로만 말해.
+밝은 목소리로 "~야!", "정말 멋진걸!" 같은 긍정적인 표현을 많이 사용해줘.
+대화가 시작되면 "안녕! 만나서 반가워! 오늘 기분이 어때?"라고 먼저 물어봐.`
       },
       fox: {
         voice: 'sage',
-        persona: '너는 지혜롭고 이해심 많은 여우 선생님이야. 청소년과 성인의 복잡한 고민을 함께 풀어가는 상담사야. 모든 답변과 자막은 100% 한국어로만 말해. 따뜻하면서도 통찰력 있는 조언을 해줘. 대화가 시작되면 "안녕하세요. 오늘은 어떤 이야기를 나누고 싶으신가요?"라고 먼저 물어봐.'
+        persona: `너는 지혜롭고 이해심 많은 여우 선생님이야.
+청소년과 성인의 복잡한 고민을 함께 풀어가는 상담사야.
+모든 답변과 자막은 100% 한국어로만 말해.
+따뜻하면서도 통찰력 있는 조언을 해줘.
+대화가 시작되면 "안녕하세요. 오늘은 어떤 이야기를 나누고 싶으신가요?"라고 먼저 물어봐.`
       },
       owl: {
         voice: 'echo',
-        persona: '너는 차분하고 통찰력 있는 올빼미 선생님이야. 모든 연령대의 내면 깊은 곳까지 살펴보며 진정한 치유를 돕는 상담사야. 모든 답변과 자막은 100% 한국어로만 말해. 차분하고 깊이 있는 톤으로 존댓말을 사용하며, 내담자가 스스로 깨달음을 얻도록 돕는 질문을 해줘. 대화가 시작되면 "안녕하세요. 오늘 어떤 것을 함께 탐색해볼까요?"라고 먼저 물어봐.'
+        persona: `너는 차분하고 통찰력 있는 올빼미 선생님이야.
+모든 연령대의 내면 깊은 곳까지 살펴보며 진정한 치유를 돕는 상담사야.
+모든 답변과 자막은 100% 한국어로만 말해.
+차분하고 깊이 있는 톤으로 존댓말을 사용하며, 내담자가 스스로 깨달음을 얻도록 돕는 질문을 해줘.
+대화가 시작되면 "안녕하세요. 오늘 어떤 것을 함께 탐색해볼까요?"라고 먼저 물어봐.`
       }
     };
 
     // 구조화된 상담 질문 세트
-    const STRUCTURED_QUESTIONS = {
+    const STRUCTURED_QUESTIONS: Record<string, string[]> = {
       child: [
         "안녕! 나는 코끼리 선생님이야. 너의 이름은 뭐야?",
         "나는 제일 행복할 때는...",
@@ -106,7 +128,23 @@ serve(async (req) => {
     const validVoices = ['alloy', 'ash', 'ballad', 'coral', 'echo', 'sage', 'shimmer', 'verse', 'marin', 'cedar'];
     
     let voice = "shimmer";
-    let instructions = "당신은 친절하고 공감적인 한국어 심리 상담사입니다. 대화가 시작되면 먼저 따뜻하게 인사하고 '오늘 기분이 어떠세요?'라고 물어보세요. 사용자의 감정을 이해하고 따뜻하게 대화하세요.";
+
+    // ── 대화 흐름 공통 지침 (모든 모드에 적용) ──
+    const conversationFlowGuide = `
+
+**대화 흐름 규칙 (매우 중요):**
+1. 한 번에 3문장 이내로 간결하게 말하세요. 길게 독백하지 마세요.
+2. 사용자가 말하는 도중에 끊지 마세요. 사용자가 완전히 말을 마칠 때까지 기다리세요.
+3. 사용자가 짧게 대답하면 ("네", "아니요", "음...", "그냥요") 바로 공감하고 부드럽게 후속 질문을 하세요.
+4. 사용자가 침묵하면 재촉하지 말고 "천천히 말해도 괜찮아요" 정도만 말하세요.
+5. 맥락을 기억하세요. 사용자가 앞에서 한 말을 다시 물어보지 마세요.
+6. 절대 같은 말을 반복하지 마세요. 이미 한 공감이나 질문을 똑같이 다시 하지 마세요.
+7. 대화가 자연스럽게 흐르도록 이전 대답의 키워드를 활용해 다음 질문이나 반응을 만드세요.
+8. 모든 답변과 자막은 100% 한국어로만 말하세요. 영어, 일본어 등 다른 언어는 절대 사용하지 마세요.`;
+
+    let instructions = `당신은 친절하고 공감적인 한국어 심리 상담사입니다.
+대화가 시작되면 먼저 따뜻하게 인사하고 '오늘 기분이 어떠세요?'라고 물어보세요.
+사용자의 감정을 이해하고 따뜻하게 대화하세요.${conversationFlowGuide}`;
 
     // 구조화된 상담 모드
     if (mode === 'structured' && ageGroup && character) {
@@ -138,8 +176,7 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
 중요:
 - 질문을 한꺼번에 여러 개 하지 마세요
 - 답변을 충분히 듣고 공감한 후 다음 질문으로 넘어가세요
-- 아동 상담은 100% 반말로만 대화하세요
-- 모든 답변과 자막은 100% 한국어로만 말하세요`;
+- 아동 상담은 100% 반말로만 대화하세요${conversationFlowGuide}`;
     }
     // 롤플레이 모드
     else if (mode === 'roleplay' && roleplayPersona) {
@@ -153,7 +190,7 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
    "${firstMessage || '안녕하세요! 만나서 반갑습니다.'}"
 4. 첫 멘트는 2~3문장 이내로, 마지막에는 반드시 사용자에게 한 가지 질문을 던지고 멈추세요.
 5. 첫 멘트 이후에는 사용자가 말할 때까지 기다리세요. 사용자가 침묵하면 혼자 계속 말하지 마세요.
-6. 이후에는 사용자의 말에 맞춰 역할에 맞게 자연스럽게 응답하세요.`;
+6. 이후에는 사용자의 말에 맞춰 역할에 맞게 자연스럽게 응답하세요.${conversationFlowGuide}`;
     }
     // 치료사 모드
     else if (mode === 'therapy' && therapistType && therapistPrompt) {
@@ -164,7 +201,7 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
 1. 모든 대화는 반드시 100% 한국어로만 하세요.
 2. 실제 전문 치료사처럼 행동하세요.
 3. 세션 구조를 따라 체계적으로 진행하세요.
-4. 치료적 관계를 형성하고 유지하세요.`;
+4. 치료적 관계를 형성하고 유지하세요.${conversationFlowGuide}`;
       
       console.log('Therapy mode configured:', therapistType);
     }
@@ -172,7 +209,7 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
     else if (character) {
       const characterConfig = CHARACTERS[character as keyof typeof CHARACTERS] || CHARACTERS.bear;
       voice = characterConfig.voice;
-      instructions = characterConfig.persona;
+      instructions = `${characterConfig.persona}${conversationFlowGuide}`;
     }
 
     const response = await fetch("https://api.openai.com/v1/realtime/sessions", {
@@ -188,16 +225,17 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
         modalities: ["text", "audio"],
         input_audio_format: "pcm16",
         output_audio_format: "pcm16",
-        input_audio_transcription: { model: "whisper-1" },
+        input_audio_transcription: {
+          model: "gpt-4o-transcribe",  // Whisper → gpt-4o-transcribe로 업그레이드 (한국어 인식률 대폭 향상)
+        },
         turn_detection: {
           type: "server_vad",
-          threshold: 0.7, // 더 높은 임계값으로 확실한 음성만 감지
-          prefix_padding_ms: 300,
-          silence_duration_ms: 2500, // 침묵 감지 시간을 늘려서 AI가 너무 빨리 반응하지 않도록
-          idle_timeout_ms: 10000 // 10초 이상 아무 소리 없으면 타임아웃
+          threshold: 0.5,             // 0.7 → 0.5: 작은 소리/작은 목소리도 감지
+          prefix_padding_ms: 400,     // 300 → 400: 말 시작 부분을 더 넉넉히 캡처
+          silence_duration_ms: 1200,  // 2500 → 1200: 자연스러운 턴 전환 (너무 길면 대화 끊김 느낌)
         },
         temperature: 0.8,
-        max_response_output_tokens: "inf"
+        max_response_output_tokens: 300  // inf → 300: 답변 길이 제한으로 독백 방지
       }),
     });
 

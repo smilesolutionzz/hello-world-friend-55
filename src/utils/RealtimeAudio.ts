@@ -16,7 +16,7 @@ export class AudioRecorder {
           channelCount: 1,
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true
+          autoGainControl: true,
         }
       });
       
@@ -74,6 +74,11 @@ export class RealtimeChat {
   private therapistType?: string;
   private therapistVoice?: string;
   private therapistPrompt?: string;
+  private reconnectAttempts: number = 0;
+  private maxReconnectAttempts: number = 3;
+  private onDisconnect?: () => void;
+  private onReconnecting?: () => void;
+  private initOptions?: any;
 
   constructor(
     private onMessage: (message: any) => void,
@@ -87,6 +92,8 @@ export class RealtimeChat {
       therapistType?: string;
       therapistVoice?: string;
       therapistPrompt?: string;
+      onDisconnect?: () => void;
+      onReconnecting?: () => void;
     }
   ) {
     this.audioEl = document.createElement("audio");
@@ -100,6 +107,9 @@ export class RealtimeChat {
     this.therapistType = options?.therapistType;
     this.therapistVoice = options?.therapistVoice;
     this.therapistPrompt = options?.therapistPrompt;
+    this.onDisconnect = options?.onDisconnect;
+    this.onReconnecting = options?.onReconnecting;
+    this.initOptions = options;
   }
 
   async init() {
@@ -124,21 +134,55 @@ export class RealtimeChat {
 
       const EPHEMERAL_KEY = data.client_secret.value;
       this.pc = new RTCPeerConnection();
+      
+      // 연결 상태 모니터링
+      this.pc.onconnectionstatechange = () => {
+        const state = this.pc?.connectionState;
+        console.log(`🔌 WebRTC connection state: ${state}`);
+        
+        if (state === 'disconnected' || state === 'failed') {
+          console.warn('⚠️ Connection lost, attempting reconnect...');
+          this.handleConnectionLost();
+        }
+      };
+
+      this.pc.oniceconnectionstatechange = () => {
+        const state = this.pc?.iceConnectionState;
+        console.log(`🧊 ICE connection state: ${state}`);
+        
+        if (state === 'disconnected') {
+          // ICE disconnected - 일시적일 수 있으므로 잠시 대기
+          setTimeout(() => {
+            if (this.pc?.iceConnectionState === 'disconnected') {
+              console.warn('⚠️ ICE still disconnected, handling...');
+              this.handleConnectionLost();
+            }
+          }, 3000);
+        }
+      };
+      
       this.pc.ontrack = e => this.audioEl.srcObject = e.streams[0];
 
-      const ms = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const ms = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        }
+      });
       this.pc.addTrack(ms.getTracks()[0]);
 
       this.dc = this.pc.createDataChannel("oai-events");
       this.dc.addEventListener("message", (e) => {
         const event = JSON.parse(e.data);
         
-        // session.created 이벤트 처리 (롤플레이 모드와 치료 모드일 때 AI가 먼저 인사)
+        // session.created 이벤트 처리
         if (event.type === 'session.created') {
           console.log("✅ Session created");
           this.sessionCreated = true;
+          this.reconnectAttempts = 0; // 성공적 연결 시 카운터 리셋
           
-          // 모든 모드에서 AI가 먼저 인사하도록 트리거
+          // AI가 먼저 인사하도록 트리거
           console.log(`🎭 Triggering AI first message for ${this.mode} mode...`);
           setTimeout(() => {
             if (this.dc?.readyState === 'open') {
@@ -146,12 +190,21 @@ export class RealtimeChat {
             }
           }, 500);
         }
+
+        // 에러 이벤트 로깅
+        if (event.type === 'error') {
+          console.error('❌ OpenAI Realtime error:', event.error);
+        }
         
         this.onMessage(event);
       });
 
       this.dc.onopen = () => {
         console.log("📡 Data channel opened");
+      };
+
+      this.dc.onclose = () => {
+        console.log("📡 Data channel closed");
       };
 
       const offer = await this.pc.createOffer();
@@ -180,6 +233,49 @@ export class RealtimeChat {
     }
   }
 
+  private async handleConnectionLost() {
+    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+      console.error('❌ Max reconnect attempts reached');
+      this.onDisconnect?.();
+      return;
+    }
+
+    this.reconnectAttempts++;
+    console.log(`🔄 Reconnect attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
+    this.onReconnecting?.();
+
+    // 기존 연결 정리
+    this.cleanupConnection();
+
+    // 잠시 대기 후 재연결
+    await new Promise(resolve => setTimeout(resolve, 1000 * this.reconnectAttempts));
+
+    try {
+      await this.init();
+      console.log('✅ Reconnected successfully');
+    } catch (error) {
+      console.error('❌ Reconnect failed:', error);
+      if (this.reconnectAttempts < this.maxReconnectAttempts) {
+        this.handleConnectionLost();
+      } else {
+        this.onDisconnect?.();
+      }
+    }
+  }
+
+  private cleanupConnection() {
+    try {
+      this.dc?.close();
+    } catch {}
+    try {
+      this.pc?.close();
+    } catch {}
+    this.audioEl.srcObject = null;
+    this.dc = null;
+    this.pc = null;
+    this.sessionCreated = false;
+  }
+
   async sendMessage(text: string) {
     if (!this.dc || this.dc.readyState !== 'open') {
       throw new Error('Data channel not ready');
@@ -199,8 +295,7 @@ export class RealtimeChat {
   }
 
   disconnect() {
-    this.dc?.close();
-    this.pc?.close();
-    this.audioEl.srcObject = null;
+    this.reconnectAttempts = this.maxReconnectAttempts; // 수동 종료 시 재연결 방지
+    this.cleanupConnection();
   }
 }

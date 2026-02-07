@@ -92,6 +92,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isReconnecting, setIsReconnecting] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [showSubtitles, setShowSubtitles] = useState(true);
   const [currentResponseId, setCurrentResponseId] = useState<string | null>(null);
@@ -715,7 +716,25 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
 
       console.log('Starting conversation with options:', chatOptions);
       
-      chatRef.current = new RealtimeChat(handleMessage, chatOptions);
+      chatRef.current = new RealtimeChat(handleMessage, {
+        ...chatOptions,
+        onDisconnect: () => {
+          setIsConnected(false);
+          setIsReconnecting(false);
+          toast({
+            title: "연결이 끊어졌습니다",
+            description: "재연결에 실패했습니다. 다시 시작해주세요.",
+            variant: "destructive",
+          });
+        },
+        onReconnecting: () => {
+          setIsReconnecting(true);
+          toast({
+            title: "재연결 중...",
+            description: "네트워크 연결을 복구하고 있습니다.",
+          });
+        },
+      });
       await chatRef.current.init();
       
       setIsConnected(true);

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useSubscription } from '@/hooks/useSubscription';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { motion } from "framer-motion";
 
@@ -31,7 +32,8 @@ const SUBSCRIPTION_PRICE = 9900; // 월 9,900원
 const ParentDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { isPremiumUser, isLifetimeUser } = useSubscription();
+  const isSubscribed = isPremiumUser() || isLifetimeUser();
   const [childData, setChildData] = useState<any>(null);
   const [weeklyReport, setWeeklyReport] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -56,7 +58,7 @@ const ParentDashboard = () => {
       .eq('status', 'active')
       .maybeSingle();
 
-    setIsSubscribed(!!subscription);
+    // subscription is now handled by useSubscription hook
 
     // 자녀 데이터 시뮬레이션 (실제로는 연결된 자녀 계정에서)
     // 데모용 Mock 데이터

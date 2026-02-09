@@ -100,7 +100,8 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestActions();
   const { balance } = useTokens();
   const { toast } = useToast();
-  const isSubscribed = false;
+  const { isPremiumUser, isLifetimeUser } = useSubscription();
+  const isSubscribed = isPremiumUser() || isLifetimeUser();
 
   // 발달 수준 정보
   const levelInfo = developmentLevels[result.level as keyof typeof developmentLevels] || developmentLevels["정상발달"];

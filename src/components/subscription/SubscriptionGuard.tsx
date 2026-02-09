@@ -1,10 +1,9 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Crown, Lock, Sparkles, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface SubscriptionGuardProps {
   children: ReactNode;
@@ -20,48 +19,7 @@ export const SubscriptionGuard = ({
   fallbackMessage 
 }: SubscriptionGuardProps) => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [hasAccess, setHasAccess] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    checkSubscription();
-  }, []);
-
-  const checkSubscription = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setHasAccess(false);
-        setLoading(false);
-        return;
-      }
-
-      // 프로필에서 구독 등급 확인
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('subscription_tier')
-        .eq('user_id', user.id)
-        .single();
-
-      const tier = profile?.subscription_tier || 'free';
-      
-      // premium 이상 또는 pro 등급 확인
-      const isPremium = tier === 'premium' || tier === 'pro';
-      const isPro = tier === 'pro';
-      
-      if (requiredTier === 'pro') {
-        setHasAccess(isPro);
-      } else {
-        setHasAccess(isPremium);
-      }
-    } catch (error) {
-      console.error('구독 확인 오류:', error);
-      setHasAccess(false);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { isPremiumUser, isLifetimeUser, loading } = useSubscription();
 
   if (loading) {
     return (
@@ -73,6 +31,8 @@ export const SubscriptionGuard = ({
       </div>
     );
   }
+
+  const hasAccess = isPremiumUser() || isLifetimeUser();
 
   if (!hasAccess) {
     return (
@@ -93,7 +53,6 @@ export const SubscriptionGuard = ({
           </CardHeader>
 
           <CardContent className="space-y-6 pb-8">
-            {/* 기능 설명 */}
             <div className="bg-muted/50 rounded-lg p-6 space-y-4">
               <div className="flex items-start gap-3">
                 <Sparkles className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
@@ -106,7 +65,6 @@ export const SubscriptionGuard = ({
               </div>
             </div>
 
-            {/* 프리미엄 혜택 */}
             <div className="space-y-3">
               <h4 className="font-semibold flex items-center gap-2">
                 <Crown className="w-5 h-5 text-primary" />
@@ -128,7 +86,6 @@ export const SubscriptionGuard = ({
               </div>
             </div>
 
-            {/* 가격 안내 */}
             <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 space-y-4">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-2">프리미엄 플랜</p>
@@ -138,13 +95,9 @@ export const SubscriptionGuard = ({
                   </span>
                   <span className="text-muted-foreground">/월</span>
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">
-                  첫 7일 무료 체험
-                </p>
               </div>
             </div>
 
-            {/* CTA 버튼 */}
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <Button
                 onClick={() => navigate('/token-subscription')}
@@ -163,7 +116,7 @@ export const SubscriptionGuard = ({
             </div>
 
             <p className="text-xs text-center text-muted-foreground">
-              언제든지 해지 가능 · 7일 무료 체험 후 자동 결제
+              언제든지 해지 가능
             </p>
           </CardContent>
         </Card>

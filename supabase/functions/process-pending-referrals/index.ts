@@ -8,7 +8,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -18,7 +17,7 @@ serve(async (req) => {
 
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '', // 서비스 롤 키 사용
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
 
     // 7일이 지난 pending_verification 상태의 추천 찾기
@@ -40,11 +39,7 @@ serve(async (req) => {
 
     if (!pendingReferrals || pendingReferrals.length === 0) {
       return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: 'No pending referrals to process',
-          processed: 0 
-        }),
+        JSON.stringify({ success: true, message: 'No pending referrals to process', processed: 0 }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -52,31 +47,54 @@ serve(async (req) => {
     let processedCount = 0;
     let errorCount = 0;
 
-    // 각 추천에 대해 토큰 지급 처리
     for (const referral of pendingReferrals) {
       try {
-        const referrerBonus = 3; // 추천인 보상
+        const referrerBonus = 3;
 
-        // 추천인에게 토큰 지급
-        const { error: tokenError } = await supabaseClient
+        // 현재 토큰 잔액 조회
+        const { data: tokenData, error: fetchTokenError } = await supabaseClient
           .from('user_tokens')
-          .update({
-            current_tokens: supabaseClient.rpc('increment', { x: referrerBonus }),
-            referral_bonus: supabaseClient.rpc('increment', { x: referrerBonus }),
-          })
-          .eq('user_id', referral.referrer_id);
+          .select('current_tokens, referral_bonus')
+          .eq('user_id', referral.referrer_id)
+          .maybeSingle();
 
-        if (tokenError) {
-          console.error(`Error updating tokens for referrer ${referral.referrer_id}:`, tokenError);
+        if (fetchTokenError) {
+          console.error(`Error fetching tokens for referrer ${referral.referrer_id}:`, fetchTokenError);
           errorCount++;
           continue;
         }
 
-        // 실제로는 increment를 직접 사용해야 함
-        await supabaseClient.rpc('increment_user_tokens', {
-          p_user_id: referral.referrer_id,
-          p_amount: referrerBonus
-        });
+        if (tokenData) {
+          // 기존 레코드 업데이트
+          const { error: tokenError } = await supabaseClient
+            .from('user_tokens')
+            .update({
+              current_tokens: (tokenData.current_tokens || 0) + referrerBonus,
+              referral_bonus: (tokenData.referral_bonus || 0) + referrerBonus,
+            })
+            .eq('user_id', referral.referrer_id);
+
+          if (tokenError) {
+            console.error(`Error updating tokens for referrer ${referral.referrer_id}:`, tokenError);
+            errorCount++;
+            continue;
+          }
+        } else {
+          // 새 레코드 생성
+          const { error: insertError } = await supabaseClient
+            .from('user_tokens')
+            .insert({
+              user_id: referral.referrer_id,
+              current_tokens: referrerBonus,
+              referral_bonus: referrerBonus,
+            });
+
+          if (insertError) {
+            console.error(`Error inserting tokens for referrer ${referral.referrer_id}:`, insertError);
+            errorCount++;
+            continue;
+          }
+        }
 
         // 추천 상태를 completed로 변경
         const { error: updateError } = await supabaseClient
@@ -105,7 +123,7 @@ serve(async (req) => {
             referral_code: referral.referral_code,
           });
 
-        console.log(`Successfully processed referral ${referral.id} - awarded ${referrerBonus} tokens to ${referral.referrer_id}`);
+        console.log(`✅ Processed referral ${referral.id} - awarded ${referrerBonus} tokens to ${referral.referrer_id}`);
         processedCount++;
 
       } catch (error) {
@@ -117,22 +135,14 @@ serve(async (req) => {
     console.log(`Completed processing: ${processedCount} successful, ${errorCount} errors`);
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: `Processed ${processedCount} referrals`,
-        processed: processedCount,
-        errors: errorCount
-      }),
+      JSON.stringify({ success: true, processed: processedCount, errors: errorCount }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
     console.error('Error in process-pending-referrals function:', error);
     return new Response(
-      JSON.stringify({ 
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error' 
-      }),
+      JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

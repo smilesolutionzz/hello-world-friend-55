@@ -64,19 +64,21 @@ export const useABTest = (experimentName: string) => {
         setVariant(selectedVariant);
 
         // Supabase에 이벤트 트래킹
-        const { data: { user } } = await supabase.auth.getUser();
-        const sessionId = sessionStorage.getItem('session_id') || crypto.randomUUID();
-        
-        await supabase.from('user_analytics_events').insert({
-          user_id: user?.id || null,
-          session_id: sessionId,
-          event_name: 'ab_test_assigned',
-          page_path: window.location.pathname,
-          event_properties: {
-            experiment_name: experimentName,
-            variant: selectedVariant
-          }
-        });
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const sessionId = sessionStorage.getItem('session_id') || crypto.randomUUID();
+          
+          await supabase.from('user_analytics_events').insert({
+            user_id: session.user.id,
+            session_id: sessionId,
+            event_name: 'ab_test_assigned',
+            page_path: window.location.pathname,
+            event_properties: {
+              experiment_name: experimentName,
+              variant: selectedVariant
+            }
+          });
+        }
 
         console.log(`✅ A/B Test: ${experimentName} = ${selectedVariant}`);
       } catch (error) {
@@ -93,11 +95,12 @@ export const useABTest = (experimentName: string) => {
     if (!variant) return;
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
       const sessionId = sessionStorage.getItem('session_id') || crypto.randomUUID();
 
       await supabase.from('user_analytics_events').insert({
-        user_id: user?.id || null,
+        user_id: session.user.id,
         session_id: sessionId,
         event_name: 'ab_test_conversion',
         page_path: window.location.pathname,

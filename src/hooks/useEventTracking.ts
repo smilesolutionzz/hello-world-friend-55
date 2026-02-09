@@ -32,12 +32,18 @@ export const useEventTracking = () => {
     properties?: EventProperties
   ) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      // 비로그인 사용자는 이벤트 추적 건너뛰기 (RLS 정책에 의해 차단됨)
+      if (!session?.user) {
+        return;
+      }
+
       const sessionId = sessionStorage.getItem('session_id') || crypto.randomUUID();
       sessionStorage.setItem('session_id', sessionId);
 
       await supabase.from('user_analytics_events').insert({
-        user_id: user?.id || null,
+        user_id: session.user.id,
         session_id: sessionId,
         event_name: eventName,
         page_path: location.pathname,

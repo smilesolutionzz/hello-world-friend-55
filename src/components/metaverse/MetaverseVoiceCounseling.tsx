@@ -781,101 +781,88 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const endConversation = async () => {
     console.log('Ending conversation...');
     
-    // 구조화된 상담이었다면 분석 수행
-    if (mode === 'structured' && structuredConfig && messages.length > 5) {
-      try {
-        // 대화에서 사용자 응답 추출
-        const userMessages = messages.filter(m => m.role === 'user');
-        
-        // SCT 질문과 매칭하여 응답 생성
-        const ageGroupMap: Record<AgeGroup, SCTAgeGroup> = {
-          'child': 'infant',
-          'teen': 'teen',
-          'adult': 'adult',
-          'parent': 'parent'
-        };
-        
-        const sctAgeGroup = ageGroupMap[structuredConfig.ageGroup];
-        const questions = SCT_QUESTIONS[sctAgeGroup];
-        
-        // 사용자 메시지를 SCT 응답으로 변환 (최대 질문 수만큼)
-        const responses = userMessages.slice(0, questions.length).map((msg, index) => ({
-          questionId: questions[index].id,
-          response: msg.content
-        }));
-        
-        if (responses.length > 0) {
-          const analysis = analyzeSCTResponses(sctAgeGroup, responses);
-          
-          if (analysis) {
-            setSctAnalysisResult(analysis);
-            setShowAnalysisResult(true);
-            
-            toast({
-              title: "분석 완료",
-              description: "상담 내용 분석이 완료되었습니다.",
-            });
+    try {
+      // 구조화된 상담이었다면 분석 수행
+      if (mode === 'structured' && structuredConfig && messages.length > 5) {
+        try {
+          const userMessages = messages.filter(m => m.role === 'user');
+          const ageGroupMap: Record<AgeGroup, SCTAgeGroup> = {
+            'child': 'infant',
+            'teen': 'teen',
+            'adult': 'adult',
+            'parent': 'parent'
+          };
+          const sctAgeGroup = ageGroupMap[structuredConfig.ageGroup];
+          const questions = SCT_QUESTIONS[sctAgeGroup];
+          const responses = userMessages.slice(0, questions.length).map((msg, index) => ({
+            questionId: questions[index].id,
+            response: msg.content
+          }));
+          if (responses.length > 0) {
+            const analysis = analyzeSCTResponses(sctAgeGroup, responses);
+            if (analysis) {
+              setSctAnalysisResult(analysis);
+              setShowAnalysisResult(true);
+            }
           }
+        } catch (error) {
+          console.error('Error analyzing conversation:', error);
         }
-      } catch (error) {
-        console.error('Error analyzing conversation:', error);
-        toast({
-          title: "분석 오류",
-          description: "상담 내용 분석 중 오류가 발생했습니다.",
-          variant: "destructive",
-        });
       }
-    }
-    
-    // 녹음 중지 및 저장
-    if (isRecording && sessionRecorderRef.current) {
-      const session = await sessionRecorderRef.current.stopRecording();
-      if (session) {
-        setIsRecording(false);
-        toast({
-          title: "세션 저장됨",
-          description: "상담 내용이 저장되었습니다. 다운로드할 수 있습니다.",
-        });
-        
-        // 자동 다운로드 옵션 제공
-        setTimeout(() => {
-          if (window.confirm('상담 세션을 다운로드하시겠습니까?')) {
-            sessionRecorderRef.current?.downloadSession(session.id);
+      
+      // 녹음 중지 및 저장
+      if (isRecording && sessionRecorderRef.current) {
+        try {
+          const session = await sessionRecorderRef.current.stopRecording();
+          if (session) {
+            setIsRecording(false);
           }
-        }, 1000);
+        } catch (error) {
+          console.error('Error stopping recording:', error);
+        }
       }
+      
+      // Therapy 모드: 세션 분석
+      if (mode === 'therapy' && currentSessionId && messages.length > 0) {
+        try {
+          await analyzeSession({
+            sessionId: currentSessionId,
+            therapistType: therapistType!,
+            conversationHistory: messages,
+            userConcern: therapyUserConcern || '',
+            moodBefore,
+            moodAfter
+          });
+        } catch (error) {
+          console.error('Error analyzing therapy session:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error during end conversation cleanup:', error);
     }
     
-    // Therapy 모드: 세션 분석
-    if (mode === 'therapy' && currentSessionId && messages.length > 0) {
-      await analyzeSession({
-        sessionId: currentSessionId,
-        therapistType: therapistType!,
-        conversationHistory: messages,
-        userConcern: therapyUserConcern || '',
-        moodBefore,
-        moodAfter
-      });
-      console.log('🏥 Therapy session analyzed');
+    // 연결 해제 (항상 실행)
+    try {
+      chatRef.current?.disconnect();
+      emotionDetectorRef.current?.disconnect();
+      const soundEffects = getSoundEffects();
+      soundEffects.stopFootsteps();
+      soundEffects.stopAmbient();
+    } catch (e) {
+      console.error('Error disconnecting:', e);
     }
-    
-    chatRef.current?.disconnect();
-    emotionDetectorRef.current?.disconnect();
-    
-    // 사운드 중지
-    const soundEffects = getSoundEffects();
-    soundEffects.stopFootsteps();
-    soundEffects.stopAmbient();
     
     setIsConnected(false);
     setIsSpeaking(false);
     setCurrentEmotion('neutral');
     
+    // 분석 결과가 없으면 메인 페이지로 이동
     if (!showAnalysisResult) {
       toast({
         title: "상담 종료",
         description: "대화가 종료되었습니다",
       });
+      navigate('/');
     }
   };
 

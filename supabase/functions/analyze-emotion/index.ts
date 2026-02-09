@@ -99,26 +99,55 @@ JSON 형식으로만 답변하세요:
     
     console.log('AI 응답:', content);
 
-    // JSON 파싱
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('AI 응답에서 JSON을 찾을 수 없습니다.');
+    // JSON 파싱 - 강화된 안전 처리
+    let emotionData = { emotion: 'neutral', intensity: 0.5, reason: '분석 완료' };
+    
+    try {
+      // 마크다운 코드블록 제거
+      let cleaned = content.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+      
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        let jsonStr = jsonMatch[0];
+        
+        // reason 필드 내 줄바꿈/특수문자 정리
+        // reason 값을 안전하게 추출하여 재조립
+        try {
+          emotionData = JSON.parse(jsonStr);
+        } catch {
+          // JSON 파싱 실패 시 각 필드를 regex로 개별 추출
+          const emotionMatch = jsonStr.match(/"emotion"\s*:\s*"([^"]+)"/);
+          const intensityMatch = jsonStr.match(/"intensity"\s*:\s*([\d.]+)/);
+          const reasonMatch = jsonStr.match(/"reason"\s*:\s*"([\s\S]*?)"\s*\}$/);
+          
+          if (emotionMatch) emotionData.emotion = emotionMatch[1];
+          if (intensityMatch) emotionData.intensity = parseFloat(intensityMatch[1]);
+          if (reasonMatch) emotionData.reason = reasonMatch[1].replace(/"/g, "'").replace(/\n/g, ' ');
+        }
+      }
+    } catch (parseErr) {
+      console.error('JSON 파싱 폴백:', parseErr);
     }
 
-    const emotionData = JSON.parse(jsonMatch[0]);
+    // 유효한 감정 값인지 검증
+    const validEmotions = ['neutral', 'happy', 'sad', 'angry', 'surprised', 'fearful', 'thinking'];
+    if (!validEmotions.includes(emotionData.emotion)) {
+      emotionData.emotion = 'neutral';
+    }
+    emotionData.intensity = Math.max(0, Math.min(1, emotionData.intensity || 0.5));
 
     return new Response(JSON.stringify(emotionData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('감정 분석 오류:', error);
+    // 오류 시에도 200으로 반환하여 UI 크래시 방지
     return new Response(JSON.stringify({ 
-      error: error.message,
       emotion: 'neutral',
       intensity: 0.5,
-      reason: '분석 실패'
+      reason: '분석 중 오류가 발생했습니다'
     }), {
-      status: 500,
+      status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }

@@ -9,6 +9,7 @@ import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { useEventTracking } from "@/hooks/useEventTracking";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { useTokens } from "@/hooks/useTokens";
+import { useSubscription } from '@/hooks/useSubscription';
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
 import PremiumAssessmentResult from "@/components/assessment/PremiumAssessmentResult";
@@ -59,7 +60,8 @@ const PremiumAssessment = () => {
   const [selectedAssessment, setSelectedAssessment] = useState<string>('');
   const [assessmentResults, setAssessmentResults] = useState<any>({});
   const [assessmentAnswers, setAssessmentAnswers] = useState<Record<string, string>>({});
-  const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
+  const { isPremiumUser, isLifetimeUser } = useSubscription();
+  const isSubscribed = isPremiumUser() || isLifetimeUser();
   const [currentTest, setCurrentTest] = useState<string | null>(null);
   const [insuranceResults, setInsuranceResults] = useState<any>(null);
   const [expandedTest, setExpandedTest] = useState<string | null>(null);

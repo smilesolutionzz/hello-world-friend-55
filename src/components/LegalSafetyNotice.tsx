@@ -29,7 +29,7 @@ const LegalSafetyNotice = ({ onAccept, testType }: LegalSafetyNoticeProps) => {
       case 'panic': return '불안감 수준 확인';
       case 'depression': return '우울감 자가체크';
       case 'adhd': return '주의집중력 자가체크';
-      default: return '마음상태 체크';
+      default: return '연령별 맞춤체크';
     }
   };
 

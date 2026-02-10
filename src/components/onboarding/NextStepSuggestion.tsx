@@ -147,17 +147,13 @@ export function NextStepSuggestion({ className }: NextStepSuggestionProps) {
     }
   };
 
+  const VALID_ROUTES = ['/assessment', '/observation', '/ai-counselor', '/expert-hiring', '/daily-checkin', '/wellness-hub', '/dashboard', '/metaverse-voice', '/token-subscription'];
+
   const handleAction = () => {
     if (suggestion?.route) {
-      navigate(suggestion.route);
+      const route = VALID_ROUTES.includes(suggestion.route) ? suggestion.route : '/assessment';
+      navigate(route);
       setIsVisible(false);
-      
-      if (suggestion.expectedBenefit) {
-        toast({
-          title: "좋은 선택이에요! 👍",
-          description: suggestion.expectedBenefit,
-        });
-      }
     }
   };
 

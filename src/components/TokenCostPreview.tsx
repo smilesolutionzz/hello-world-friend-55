@@ -22,7 +22,7 @@ const services: Service[] = [
   { key: 'DEPRESSION_TEST', name: '우울감 자가체크', description: '우울 수준 확인', category: 'basic' },
   { key: 'PANIC_TEST', name: '불안감 수준 확인', description: '불안 정도 측정', category: 'basic' },
   { key: 'LANGUAGE_TEST', name: '언어발달 자가체크', description: '언어 발달 상태 확인', category: 'basic' },
-  { key: 'PSYCHOLOGICAL_TEST', name: '마음상태 체크', description: '종합적인 심리상태 분석', category: 'premium', recommended: true },
+  { key: 'PSYCHOLOGICAL_TEST', name: '연령별 맞춤체크', description: '종합적인 심리상태 분석', category: 'premium', recommended: true },
   { key: 'DREAM_INTERPRETATION', name: '꿈 해석', description: 'AI 꿈 해석 서비스', category: 'premium' },
   { key: 'SAJU_ANALYSIS', name: '사주 분석', description: 'AI 사주 운세 분석', category: 'premium' },
   { key: 'AI_COACH', name: 'AI 코치', description: '개인맞춤 코칭', category: 'premium', recommended: true },

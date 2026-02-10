@@ -156,7 +156,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
               {testType === 'language' ? '영유아언어발달체크' : testType === 'panic' ? '불안감 수준 확인' : testType === 'depression' ? '우울감 자가체크' : testType === 'adhd' ? '주의집중력 자가체크' : '3분으로 시작하는'}
             </span>
             <span className="block text-brand-gradient">
-              {testType === 'language' ? '연령별 맞춤 확인' : testType === 'panic' ? '자가체크 (참고용)' : testType === 'depression' ? '참고용 체크' : testType === 'adhd' ? '연령별 체크 (참고용)' : '마음상태 체크'}
+              {testType === 'language' ? '연령별 맞춤 확인' : testType === 'panic' ? '자가체크 (참고용)' : testType === 'depression' ? '참고용 체크' : testType === 'adhd' ? '연령별 체크 (참고용)' : '연령별 맞춤체크'}
             </span>
           </h1>
           
@@ -169,7 +169,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
               ? '연령대를 선택하여 우울감 수준을 확인해보세요 (참고용)'
               : testType === 'adhd'
               ? '연령대를 선택하여 ADHD 증상을 체크해보세요 (참고용)'
-              : '연령에 맞는 마음상태 체크로 참고 분석을 받아보세요'
+              : '연령에 맞는 맞춤체크로 참고 분석을 받아보세요'
             }
           </p>
         </div>

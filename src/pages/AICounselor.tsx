@@ -117,18 +117,18 @@ const AICounselor = () => {
   };
 
   const handleEmergencyCall = () => {
-    // 응급상담센터 연결
-    window.open('tel:1577-0199');
+    // 응급상담센터 연결 - 전화 앱 호출
+    window.location.href = 'tel:1577-0199';
   };
 
   const connectToExpert = () => {
-    // 전문가 연결 페이지로 이동
-    navigate('/assessment');
+    // 전문가 상담 페이지로 이동
+    navigate('/expert-hiring');
   };
 
   const connectToAIHExpert = () => {
-    // AIH 전문가 상담 신청 페이지로 이동
-    window.open('/expert-hiring', '_blank');
+    // AI 실시간 음성 상담 페이지로 이동
+    navigate('/metaverse-voice');
   };
 
   const getRiskBadge = (level: 'low' | 'medium' | 'high') => {
@@ -171,7 +171,7 @@ const AICounselor = () => {
                     className="bg-orange-600 hover:bg-orange-700 text-white"
                     onClick={connectToAIHExpert}
                   >
-                    💬 AIH전문가연결
+                    🤖 AI실시간상담
                   </Button>
                   <Button 
                     size="sm" 
@@ -358,24 +358,24 @@ const AICounselor = () => {
         <div className="max-w-4xl mx-auto mt-8">
           <div className="grid md:grid-cols-4 gap-4">
             <div className="secret-help-card" onClick={connectToAIHExpert}>
-              <div className="secret-card-icon">💬</div>
-              <h3 className="text-white font-semibold mb-2">AIH 전문가</h3>
-              <p className="text-white/70 text-sm mb-3">전문가 상담 신청</p>
-              <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">실시간 상담</Badge>
+              <div className="secret-card-icon">🤖</div>
+              <h3 className="text-white font-semibold mb-2">AI 실시간 상담</h3>
+              <p className="text-white/70 text-sm mb-3">AI 음성 상담</p>
+              <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">AI 상담</Badge>
             </div>
             
-            <div className="secret-help-card" onClick={handleEmergencyCall}>
+            <div className="secret-help-card" onClick={() => window.location.href = 'tel:1577-0199'}>
               <div className="secret-card-icon">🚨</div>
               <h3 className="text-white font-semibold mb-2">응급상담</h3>
               <p className="text-white/70 text-sm mb-3">24시간 위기상담</p>
-              <Badge className="bg-red-500/20 text-red-300 border-red-500/30">생명의전화</Badge>
+              <Badge className="bg-red-500/20 text-red-300 border-red-500/30">1577-0199</Badge>
             </div>
             
             <div className="secret-help-card" onClick={connectToExpert}>
               <div className="secret-card-icon">💖</div>
               <h3 className="text-white font-semibold mb-2">전문가 상담</h3>
               <p className="text-white/70 text-sm mb-3">1:1 전문 심리상담</p>
-              <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">즉시 연결</Badge>
+              <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">전문가 목록</Badge>
             </div>
             
             <div className="secret-help-card">

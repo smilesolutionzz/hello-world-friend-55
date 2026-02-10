@@ -115,7 +115,7 @@ const getAgeGroupLabel = (ageGroup: 'child' | 'adolescent' | 'adult') => {
 };
 
 const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: DepressionTestFormProps) => {
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'child' | 'adolescent' | 'adult' | null>(ageGroup !== 'adult' ? ageGroup : null);
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'child' | 'adolescent' | 'adult' | null>(ageGroup || null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [hasStarted, setHasStarted] = useState(false);

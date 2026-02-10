@@ -457,10 +457,9 @@ ${relatedResources}
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages: [
-          { role: 'system', content: systemPrompt },
+          { role: 'system', content: systemPrompt + '\n\n중요: 반드시 순수 JSON만 반환하세요. ```json 블록이나 다른 텍스트 없이 { 로 시작하고 } 로 끝나는 순수 JSON 객체만 응답하세요.' },
           { role: 'user', content: userPrompt },
         ],
-        response_format: { type: 'json_object' },
         max_tokens: 8000,
       }),
     });
@@ -494,6 +493,7 @@ ${relatedResources}
 
     const rawText = await aiResponse.text();
     console.log('AI 응답 길이:', rawText?.length);
+    console.log('AI 응답 미리보기(500자):', rawText?.substring(0, 500));
 
     const placeholderReport = (reason: string) => ({
       sections: requiredSections.map((title) => ({

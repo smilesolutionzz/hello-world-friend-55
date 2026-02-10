@@ -3,14 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Crown, Download, Brain, TrendingUp, FileText, Sparkles, Calendar, Target, MessageSquare, BarChart3, Wallet, Lock } from "lucide-react";
+import { ArrowLeft, Crown, Download, Brain, TrendingUp, FileText, Sparkles, Calendar, Target, MessageSquare, BarChart3, Wallet, Lock, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import FeedbackModal from "@/components/FeedbackModal";
 import EarlyScreeningSection from "@/components/assessment/EarlyScreeningSection";
 import { EnhancedChart } from "@/components/ui/enhanced-chart";
-import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
@@ -36,9 +35,11 @@ const PremiumAssessmentResult = ({
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [tokenError, setTokenError] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
 
   useEffect(() => {
     generateAIAnalysis();
+    loadReviews();
   }, []);
 
   const generateAIAnalysis = async () => {
@@ -120,24 +121,97 @@ const PremiumAssessmentResult = ({
     }
   };
 
+  const loadReviews = async () => {
+    try {
+      const { data } = await supabase
+        .from('user_feedback')
+        .select('rating, message, emoji, created_at')
+        .eq('test_type', assessmentInfo.title)
+        .eq('is_public', true)
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (data) setReviews(data);
+    } catch (err) {
+      console.error('리뷰 로드 오류:', err);
+    }
+  };
+
   const handleDownloadPDF = async () => {
-    await downloadResultAsPDF(
-      'premium-result-content',
-      `${assessmentInfo.title}_분석결과`,
-      () => {
-        toast({
-          title: "PDF 다운로드 완료",
-          description: "프리미엄 분석 보고서가 성공적으로 다운로드되었습니다.",
-        });
-      },
-      (error) => {
-        toast({
-          title: "PDF 생성 오류",
-          description: error.message,
-          variant: "destructive"
-        });
-      }
-    );
+    setIsGeneratingPDF(true);
+    try {
+      const resultsTable = Object.entries(results)
+        .map(([key, value]) => {
+          const interpretation = getScoreInterpretation(value, key);
+          return `<tr><td style="padding:10px 8px;border-bottom:1px solid #e2e8f0;font-weight:bold;color:#374151;">${translateCategory(key)}</td><td style="padding:10px 8px;border-bottom:1px solid #e2e8f0;color:#3b82f6;font-weight:600;">${value.toFixed(1)} / 7.0 (${interpretation.level})</td></tr>`;
+        }).join('');
+
+      const convertMd = (text: string) => text
+        .replace(/\*\*([^\*]+)\*\*/g, '<strong style="color:#1e40af;">$1</strong>')
+        .replace(/^-\s+(.+)$/gm, '<div style="margin:5px 0;padding-left:20px;">• $1</div>')
+        .replace(/\n\n/g, '</p><p style="margin:10px 0;line-height:1.6;">')
+        .replace(/\n/g, '<br>');
+
+      const reportHtml = `
+        <div style="font-family:system-ui,-apple-system,sans-serif;padding:30px;max-width:800px;margin:0 auto;background:white;">
+          <div style="text-align:center;margin-bottom:30px;padding-bottom:20px;border-bottom:3px solid #7c3aed;">
+            <div style="font-size:28px;font-weight:bold;color:#7c3aed;">AIHPRO.COM</div>
+            <div style="font-size:13px;color:#6b7280;margin-top:8px;">AIH 프리미엄 심리검사</div>
+          </div>
+          <h1 style="margin:0 0 10px;color:#1e40af;text-align:center;font-size:22px;">${assessmentInfo.title} 분석 결과</h1>
+          <p style="color:#6b7280;margin:0 0 10px;text-align:center;font-size:14px;">${assessmentInfo.subtitle || ''}</p>
+          <p style="color:#6b7280;margin:0 0 30px;text-align:center;font-size:13px;">${new Date().toLocaleString('ko-KR')}</p>
+          <div style="background:#f5f3ff;padding:20px;border-radius:12px;margin-bottom:24px;text-align:center;">
+            <div style="font-size:14px;color:#6b7280;">평균 점수</div>
+            <div style="font-size:36px;font-weight:bold;color:#7c3aed;">${averageScore.toFixed(1)} / 7.0</div>
+          </div>
+          <div style="background:#f8fafc;padding:24px;border-radius:12px;margin-bottom:24px;">
+            <h3 style="color:#1e40af;margin-top:0;margin-bottom:16px;">영역별 점수</h3>
+            <table style="width:100%;border-collapse:collapse;">${resultsTable}</table>
+          </div>
+          ${aiAnalysis ? `<div style="background:white;padding:24px;border-radius:12px;border:2px solid #e2e8f0;margin-top:24px;">
+            <h3 style="color:#1e40af;margin-top:0;margin-bottom:16px;">AI 전문 분석</h3>
+            <div style="line-height:1.8;color:#374151;"><p style="margin:10px 0;line-height:1.6;">${convertMd(aiAnalysis)}</p></div>
+          </div>` : ''}
+          <div style="margin-top:40px;padding:20px;border-top:2px solid #e2e8f0;text-align:center;font-size:12px;color:#6b7280;">
+            <p style="margin:5px 0;">본 리포트는 참고용이며 의학적 진단이 아닙니다.</p>
+            <p style="margin-top:15px;color:#9ca3af;font-size:11px;">© AIHPRO.COM</p>
+          </div>
+        </div>`;
+
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.left = '-99999px';
+      container.style.top = '0';
+      container.style.width = '794px';
+      container.style.backgroundColor = '#ffffff';
+      container.innerHTML = reportHtml;
+      document.body.appendChild(container);
+
+      const html2pdf = (await import('html2pdf.js')).default;
+      await html2pdf().set({
+        margin: [15, 15, 15, 15],
+        filename: `${assessmentInfo.title}_분석결과_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 3, useCORS: true, logging: false, backgroundColor: '#ffffff', windowWidth: 794 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      }).from(container.firstElementChild as HTMLElement).save();
+
+      document.body.removeChild(container);
+
+      toast({
+        title: "PDF 다운로드 완료",
+        description: "프리미엄 분석 보고서가 성공적으로 다운로드되었습니다.",
+      });
+    } catch (error) {
+      console.error('PDF 생성 오류:', error);
+      toast({
+        title: "PDF 생성 오류",
+        description: "PDF 생성 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   const getCategoryDescription = (category: string): string => {
@@ -406,13 +480,6 @@ const PremiumAssessmentResult = ({
       <div className="relative z-10">
         <PDFHeader testName={assessmentInfo.title} />
       </div>
-      
-      {/* Premium Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-32 right-16 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-yellow-200/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
-      </div>
 
       <div className="relative z-10 container mx-auto px-6 pt-8 pb-16">
         {/* Header */}
@@ -635,15 +702,52 @@ const PremiumAssessmentResult = ({
         {/* Feedback Modal */}
         <FeedbackModal
           isOpen={showFeedbackModal}
-          onClose={() => setShowFeedbackModal(false)}
+          onClose={() => { setShowFeedbackModal(false); loadReviews(); }}
           testType={assessmentInfo.title}
           onFeedbackSubmitted={() => {
             toast({
               title: "후기 작성 완료",
               description: "소중한 후기가 다른 이용자들에게 도움이 될 것입니다!",
             });
+            loadReviews();
           }}
         />
+
+        {/* 이용자 후기 섹션 */}
+        {reviews.length > 0 && (
+          <div className="max-w-6xl mx-auto mt-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <MessageSquare className="w-5 h-5 text-primary" />
+                  이용자 후기
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {reviews.map((review, idx) => (
+                    <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+                      <span className="text-2xl shrink-0">{review.emoji || '😊'}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="flex">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star key={s} className={`w-3.5 h-3.5 ${s <= review.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'}`} />
+                            ))}
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(review.created_at).toLocaleDateString('ko-KR')}
+                          </span>
+                        </div>
+                        <p className="text-sm text-foreground">{review.message}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* IEP 생성 섹션 */}
         <div className="max-w-6xl mx-auto mt-8">

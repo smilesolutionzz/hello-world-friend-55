@@ -188,8 +188,76 @@ ${aiAnalysis || generateFallbackInterpretation()}
 `.trim();
   };
 
-  const handleDownloadTXT = () => {
+  const handleDownloadPDF = async () => {
     setIsDownloading(true);
+    try {
+      const html2pdf = (await import('html2pdf.js')).default;
+      const flatResults: Record<string, string> = {
+        '전체 점수': `${results.total}점 / 45점 (${results.total_percentage}%)`,
+        '수용언어': `${results.receptive}점 / 23점 (${results.receptive_percentage}%)`,
+        '표현언어': `${results.expressive}점 / 22점 (${results.expressive_percentage}%)`,
+        '수용언어 수준': receptiveInterpretation.description || '',
+        '표현언어 수준': expressiveInterpretation.description || '',
+      };
+      const resultsTable = Object.entries(flatResults)
+        .map(([key, value]) => `<tr><td style="padding:10px 8px;border-bottom:1px solid #e2e8f0;font-weight:bold;color:#374151;">${key}</td><td style="padding:10px 8px;border-bottom:1px solid #e2e8f0;color:#3b82f6;font-weight:600;">${value}</td></tr>`)
+        .join('');
+
+      const convertMd = (text: string) => text
+        .replace(/\*\*([^\*]+)\*\*/g, '<strong style="color:#1e40af;">$1</strong>')
+        .replace(/^-\s+(.+)$/gm, '<div style="margin:5px 0;padding-left:20px;">• $1</div>')
+        .replace(/\n\n/g, '</p><p style="margin:10px 0;line-height:1.6;">')
+        .replace(/\n/g, '<br>');
+
+      const reportHtml = `
+        <div style="font-family:system-ui,-apple-system,sans-serif;padding:30px;max-width:800px;margin:0 auto;background:white;">
+          <div style="text-align:center;margin-bottom:30px;padding-bottom:20px;border-bottom:3px solid #ec4899;">
+            <div style="font-size:28px;font-weight:bold;color:#ec4899;">AIHPRO.COM</div>
+            <div style="font-size:13px;color:#6b7280;margin-top:8px;">AIH 영유아 언어발달 검사</div>
+          </div>
+          <h1 style="margin:0 0 10px;color:#1e40af;text-align:center;font-size:22px;">영유아 언어발달 검사 결과</h1>
+          <p style="color:#6b7280;margin:0 0 30px;text-align:center;font-size:14px;">${new Date().toLocaleString('ko-KR')}</p>
+          <div style="background:#f8fafc;padding:24px;border-radius:12px;margin-bottom:24px;">
+            <h3 style="color:#1e40af;margin-top:0;margin-bottom:16px;">검사 결과 요약</h3>
+            <table style="width:100%;border-collapse:collapse;">${resultsTable}</table>
+          </div>
+          ${aiAnalysis ? `<div style="background:white;padding:24px;border-radius:12px;border:2px solid #e2e8f0;margin-top:24px;">
+            <h3 style="color:#1e40af;margin-top:0;margin-bottom:16px;">AI 전문가 분석</h3>
+            <div style="line-height:1.8;color:#374151;"><p style="margin:10px 0;line-height:1.6;">${convertMd(aiAnalysis)}</p></div>
+          </div>` : ''}
+          <div style="margin-top:40px;padding:20px;border-top:2px solid #e2e8f0;text-align:center;font-size:12px;color:#6b7280;">
+            <p style="margin:5px 0;">본 리포트는 참고용이며 의학적 진단이 아닙니다.</p>
+            <p style="margin-top:15px;color:#9ca3af;font-size:11px;">© AIHPRO.COM</p>
+          </div>
+        </div>`;
+
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.left = '-99999px';
+      container.style.top = '0';
+      container.style.width = '794px';
+      container.style.backgroundColor = '#ffffff';
+      container.innerHTML = reportHtml;
+      document.body.appendChild(container);
+
+      await html2pdf().set({
+        margin: [15, 15, 15, 15],
+        filename: `AIH_언어발달검사_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 3, useCORS: true, logging: false, backgroundColor: '#ffffff', windowWidth: 794 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      }).from(container.firstElementChild as HTMLElement).save();
+
+      document.body.removeChild(container);
+      toast({ title: "PDF 다운로드 완료", description: "검사 결과가 PDF로 저장되었습니다." });
+    } catch (error) {
+      toast({ title: "PDF 다운로드 실패", variant: "destructive" });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const handleDownloadTXT = () => {
     try {
       const text = generateReportText();
       const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
@@ -205,8 +273,6 @@ ${aiAnalysis || generateFallbackInterpretation()}
       toast({ title: "다운로드 완료", description: "검사 결과가 저장되었습니다." });
     } catch (error) {
       toast({ title: "다운로드 실패", variant: "destructive" });
-    } finally {
-      setIsDownloading(false);
     }
   };
 
@@ -272,12 +338,21 @@ ${aiAnalysis || generateFallbackInterpretation()}
               <Button 
                 variant="default" 
                 size="sm" 
-                onClick={handleDownloadTXT} 
+                onClick={handleDownloadPDF} 
                 disabled={isDownloading} 
                 className="h-9 px-2 md:px-3 bg-gradient-to-r from-primary to-primary/90"
               >
-                <FileText className={`w-4 h-4 md:mr-1.5 ${isDownloading ? 'animate-pulse' : ''}`} />
-                <span className="hidden md:inline">{isDownloading ? '저장 중...' : 'TXT'}</span>
+                <Download className={`w-4 h-4 md:mr-1.5 ${isDownloading ? 'animate-pulse' : ''}`} />
+                <span className="hidden md:inline">{isDownloading ? '저장 중...' : 'PDF'}</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleDownloadTXT} 
+                className="h-9 px-2 md:px-3 border-slate-200 dark:border-slate-700"
+              >
+                <FileText className="w-4 h-4 md:mr-1.5" />
+                <span className="hidden md:inline">TXT</span>
               </Button>
               <Button 
                 variant="outline" 

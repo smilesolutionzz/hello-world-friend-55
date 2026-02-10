@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -56,10 +56,34 @@ import { premiumAdhdQuestions } from "@/data/premiumAdhdQuestions";
 
 const PremiumAssessment = () => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState<'list' | 'assessment' | 'result'>('list');
-  const [selectedAssessment, setSelectedAssessment] = useState<string>('');
-  const [assessmentResults, setAssessmentResults] = useState<any>({});
-  const [assessmentAnswers, setAssessmentAnswers] = useState<Record<string, string>>({});
+  const [currentStep, setCurrentStep] = useState<'list' | 'assessment' | 'result'>(() => {
+    const saved = sessionStorage.getItem('premiumAssessmentState');
+    if (saved) {
+      try { return JSON.parse(saved).currentStep || 'list'; } catch { return 'list'; }
+    }
+    return 'list';
+  });
+  const [selectedAssessment, setSelectedAssessment] = useState<string>(() => {
+    const saved = sessionStorage.getItem('premiumAssessmentState');
+    if (saved) {
+      try { return JSON.parse(saved).selectedAssessment || ''; } catch { return ''; }
+    }
+    return '';
+  });
+  const [assessmentResults, setAssessmentResults] = useState<any>(() => {
+    const saved = sessionStorage.getItem('premiumAssessmentState');
+    if (saved) {
+      try { return JSON.parse(saved).assessmentResults || {}; } catch { return {}; }
+    }
+    return {};
+  });
+  const [assessmentAnswers, setAssessmentAnswers] = useState<Record<string, string>>(() => {
+    const saved = sessionStorage.getItem('premiumAssessmentState');
+    if (saved) {
+      try { return JSON.parse(saved).assessmentAnswers || {}; } catch { return {}; }
+    }
+    return {};
+  });
   const { isPremiumUser, isLifetimeUser } = useSubscription();
   const isSubscribed = isPremiumUser() || isLifetimeUser();
   const [currentTest, setCurrentTest] = useState<string | null>(null);
@@ -67,6 +91,17 @@ const PremiumAssessment = () => {
   const [expandedTest, setExpandedTest] = useState<string | null>(null);
   const { trackTestStart, trackTestComplete, trackPageView } = useEventTracking();
   const { consumeTokens, checkTokenAvailability } = useTokens();
+
+  // Persist result state to sessionStorage
+  useEffect(() => {
+    if (currentStep === 'result' && Object.keys(assessmentResults).length > 0) {
+      sessionStorage.setItem('premiumAssessmentState', JSON.stringify({
+        currentStep, selectedAssessment, assessmentResults, assessmentAnswers
+      }));
+    } else if (currentStep === 'list') {
+      sessionStorage.removeItem('premiumAssessmentState');
+    }
+  }, [currentStep, selectedAssessment, assessmentResults, assessmentAnswers]);
 
   const assessmentData = {
     autismSpectrumScreening: Object.values(autismSpectrumScreeningQuestions).flat(),

@@ -87,9 +87,28 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
   };
 
   const handleGeneratePDF = async () => {
+    // Flatten nested results for PDF generation
+    const flatResults: Record<string, any> = {
+      '종합 점수': `${results.scores?.overall?.toFixed(2) || 'N/A'} / 4.0`,
+      '위험도': results.scores?.riskLevel || '알 수 없음',
+    };
+    // Add category scores
+    if (results.scores?.categories) {
+      const labels: Record<string, string> = {
+        social_communication: '사회적 소통',
+        restricted_repetitive: '제한적 반복행동',
+        sensory_processing: '감각처리',
+        communication_language: '의사소통 언어',
+        adaptive_functioning: '적응기능'
+      };
+      Object.entries(results.scores.categories).forEach(([cat, score]) => {
+        flatResults[labels[cat] || cat] = (score as number).toFixed(2);
+      });
+    }
+
     await generatePDFReport({
-      testType: 'autism_spectrum_screening',
-      results: results,
+      testType: 'AIH 신경발달 조기선별검사',
+      results: flatResults,
       analysis: results.overallInterpretation,
       testInfo: {
         title: "AIH 신경발달 조기선별검사",

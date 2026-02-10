@@ -814,6 +814,42 @@ const ReportGenerator = () => {
                 );
               })}
 
+              {/* 🔬 최신 연구 기반 인사이트 (Perplexity 실시간 검색) */}
+              {reportData.researchInsightsContent && (
+                <div className="space-y-4 pt-8 border-t-2 border-indigo-200">
+                  <h2 className="text-2xl font-bold text-indigo-900 flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-indigo-100 text-indigo-600 shadow-sm">
+                      <Sparkles className="w-6 h-6" />
+                    </div>
+                    🔬 최신 연구·논문 기반 인사이트
+                  </h2>
+                  <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-6 rounded-xl border-2 border-indigo-200">
+                    <p className="text-xs text-indigo-500 mb-3 font-semibold">📡 Perplexity AI 실시간 웹 검색 결과 · 최신 1개월 이내 연구 반영</p>
+                    <div className="prose prose-slate max-w-none leading-relaxed prose-headings:font-bold prose-p:text-slate-700 prose-strong:text-slate-900 whitespace-pre-wrap text-sm text-slate-700">
+                      {reportData.researchInsightsContent}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 🏛️ 관련 기관 및 리소스 (Firecrawl 검색) */}
+              {reportData.relatedResourcesContent && (
+                <div className="space-y-4 pt-6">
+                  <h2 className="text-2xl font-bold text-teal-900 flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-teal-100 text-teal-600 shadow-sm">
+                      <BookOpen className="w-6 h-6" />
+                    </div>
+                    🏛️ 관련 기관 및 추천 리소스
+                  </h2>
+                  <div className="bg-gradient-to-br from-teal-50 to-emerald-50 p-6 rounded-xl border-2 border-teal-200">
+                    <p className="text-xs text-teal-500 mb-3 font-semibold">🔍 Firecrawl AI 웹 크롤링 결과 · 공공기관 및 전문 기관 정보</p>
+                    <div className="prose prose-slate max-w-none leading-relaxed text-sm text-slate-700 whitespace-pre-wrap">
+                      {reportData.relatedResourcesContent}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* 종합 요약 */}
               {reportData.summary && (
                 <div className="space-y-6 pt-12 border-t-4 border-slate-200">

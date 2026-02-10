@@ -126,18 +126,26 @@ ${results.weaknesses.length > 0
     fullMark: 100,
   }));
 
-  const handleSaveAsPDF = () => {
-    generatePDFReport({
+  const handleSaveAsPDF = async () => {
+    const flatResults: Record<string, string> = {
+      '종합점수': `${results.percentage}점`,
+      '발달수준': results.developmentLevel,
+      '대상 연령': `${Math.floor(results.ageInMonths / 12)}세 ${results.ageInMonths % 12}개월`,
+    };
+    Object.entries(results.categoryScores).forEach(([key, value]) => {
+      const info = categoryInfo[key as keyof typeof categoryInfo];
+      flatResults[info?.name || key] = `${value}%`;
+    });
+    if (results.strengths.length > 0) {
+      flatResults['강점'] = results.strengths.join(', ');
+    }
+    if (results.weaknesses.length > 0) {
+      flatResults['지원필요'] = results.weaknesses.join(', ');
+    }
+
+    await generatePDFReport({
       testType: 'AIH 아동 운동발달 자가체크',
-      results: {
-        종합점수: `${results.percentage}점`,
-        발달수준: results.developmentLevel,
-        이동운동: `${results.categoryScores.locomotor}%`,
-        물체조작: `${results.categoryScores.object_control}%`,
-        균형감각: `${results.categoryScores.balance}%`,
-        협응력: `${results.categoryScores.coordination}%`,
-        소근육: `${results.categoryScores.fine_motor || 0}%`,
-      },
+      results: flatResults,
       analysis: aiAnalysis,
     });
   };

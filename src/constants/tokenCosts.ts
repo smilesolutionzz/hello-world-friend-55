@@ -6,7 +6,7 @@
 export const TOKEN_COSTS = {
   // ========== 간편테스트 (5캐시 = 500원) ==========
   // 전문 심리검사 및 발달검사
-  PSYCHOLOGICAL_TEST: 5,     // 마음상태 체크
+  PSYCHOLOGICAL_TEST: 5,     // 연령별 맞춤체크
   FOCUS_CHECK: 5,           // AIH 집중력 자가점검
   DEPRESSION_TEST: 5,       // 우울감 자가체크  
   PANIC_TEST: 5,            // 불안감 수준 확인

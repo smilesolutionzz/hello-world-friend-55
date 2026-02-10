@@ -339,7 +339,7 @@ const Assessment = () => {
     setSelectedAgeGroup(ageGroup);
     setSelectedAge(age);
     
-    // "마음상태 체크"인 경우 검사 선택 단계로 이동
+    // "연령별 맞춤체크"인 경우 검사 선택 단계로 이동
     if (testType === 'psychological' || !testType) {
       setCurrentStep('test-selection');
     } else if (testType === 'language') {
@@ -695,23 +695,6 @@ const Assessment = () => {
         </div>
         
         <div className="relative z-10 container mx-auto px-4 md:px-6 pt-16 pb-16">
-          {/* 베타 기간 무료 안내 배너 */}
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-green-500/20">
-                <Sparkles className="w-4 h-4 text-green-500" />
-              </span>
-              <div className="text-left">
-                <p className="text-sm font-semibold text-green-600 dark:text-green-400">
-                  🎁 2026년 새해 선물
-                </p>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  소중한 골든타임을 위해<br className="sm:hidden" />
-                  <span className="hidden sm:inline"> </span>3개월간 모든 검사 무료
-                </p>
-              </div>
-            </div>
-          </div>
 
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
@@ -759,12 +742,11 @@ const Assessment = () => {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-primary rounded-full"></div>
               <h2 className="text-lg font-bold text-foreground">전문 심리검사</h2>
-              <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
             </div>
 
             <div className="space-y-2">
               {[
-                { key: 'psychological', icon: '🧠', title: '마음상태 체크', duration: '약 5-10분', questions: '연령별 맞춤', description: '연령대에 따라 맞춤형 심리상태를 종합적으로 점검합니다.', features: ['영유아/아동/성인 연령별 맞춤', '발달단계별 특화 문항', 'AI 기반 심리상태 분석'] },
+                { key: 'psychological', icon: '🧠', title: '연령별 맞춤체크', duration: '약 5-10분', questions: '연령별 맞춤', description: '연령대에 따라 맞춤형 심리상태를 종합적으로 점검합니다.', features: ['영유아/아동/성인 연령별 맞춤', '발달단계별 특화 문항', 'AI 기반 심리상태 분석'] },
                 { key: 'panic', icon: '😰', title: '불안감 수준 확인', duration: '약 5분', questions: '21문항', description: '일상에서 느끼는 불안 증상과 그 정도를 체계적으로 측정합니다.', features: ['불안장애 선별 문항', '신체적/심리적 증상 분석', '위험도 수준 평가'] },
                 { key: 'depression', icon: '😔', title: '우울감 자가체크', duration: '약 5분', questions: '21문항', description: '우울감의 깊이와 일상 영향도를 정밀 측정합니다.', features: ['우울증 선별 기준', '인지/정서/행동 증상 분석', '전문가 상담 권고 기준'] },
                 { key: 'adhd', icon: '🎯', title: '주의집중력 자가체크', duration: '약 3분', questions: '18문항', description: 'ADHD 관련 증상의 유무와 정도를 빠르게 확인합니다.', features: ['주의력결핍 증상 체크', '과잉행동 증상 체크', '일상생활 영향도 평가'] },
@@ -819,7 +801,6 @@ const Assessment = () => {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
               <h2 className="text-lg font-bold text-foreground">아동·청소년 발달검사</h2>
-              <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
             </div>
 
             <div className="space-y-2">
@@ -881,7 +862,6 @@ const Assessment = () => {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
               <h2 className="text-lg font-bold text-foreground">성격·진로 검사</h2>
-              <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
             </div>
 
             <div className="space-y-2">
@@ -947,7 +927,6 @@ const Assessment = () => {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
               <h2 className="text-lg font-bold text-foreground">인지력 테스트</h2>
-              <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded font-medium">베타 무료</span>
             </div>
 
             <div className="space-y-2">

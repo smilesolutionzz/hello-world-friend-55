@@ -78,10 +78,6 @@ const PremiumAssessmentForm = ({
         });
       } else {
         // 베타 기간 중 안내 메시지
-        toast({
-          title: "베타 테스트 기간",
-          description: "현재 베타 테스트 기간으로 무료로 이용하실 수 있습니다.",
-        });
       }
 
       // 카테고리별 점수 계산 (4점 척도 → 7점 척도 변환)

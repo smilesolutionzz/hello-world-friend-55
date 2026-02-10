@@ -39,7 +39,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
   ];
 
   const basicTests = [
-    { key: 'PSYCHOLOGICAL_TEST', name: '마음상태 체크', icon: Brain, category: '기본 심리검사' },
+    { key: 'PSYCHOLOGICAL_TEST', name: '연령별 맞춤체크', icon: Brain, category: '기본 심리검사' },
     { key: 'FOCUS_CHECK', name: 'AIH 집중력 자가점검', icon: Target, category: '기본 심리검사' },
     { key: 'DEPRESSION_TEST', name: '우울감 자가체크', icon: Heart, category: '기본 심리검사' },
     { key: 'PANIC_TEST', name: '불안감 수준 확인', icon: Zap, category: '기본 심리검사' },

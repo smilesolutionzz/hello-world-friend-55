@@ -433,8 +433,9 @@ ${relatedResources}
   "relatedResources": "${relatedResources ? 'true' : 'false'}"
 }`;
 
-    // Lovable AI 호출 (빠른 모델 사용 - 리소스 최적화)
-    console.log('Lovable AI 호출 시작 (google/gemini-2.5-flash)');
+    // Lovable AI 호출 (최고급 모델 사용)
+    const aiModel = 'google/gemini-3-flash-preview';
+    console.log(`Lovable AI 호출 시작 (${aiModel})`);
 
     const requiredSections = [
       "발달 종합 평가",
@@ -448,6 +449,14 @@ ${relatedResources}
       "종합 요약 및 제언",
     ] as const;
 
+    const jsonInstruction = `
+
+⚠️ 절대 중요 규칙:
+- 응답은 반드시 순수 JSON 객체여야 합니다.
+- \`\`\`json 이나 \`\`\` 같은 마크다운 코드 블록을 절대 사용하지 마세요.
+- 응답의 첫 번째 문자는 반드시 { 이고 마지막 문자는 반드시 } 여야 합니다.
+- 그 외 어떤 텍스트, 설명, 주석도 포함하지 마세요.`;
+
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -455,12 +464,12 @@ ${relatedResources}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: aiModel,
         messages: [
-          { role: 'system', content: systemPrompt + '\n\n중요: 반드시 순수 JSON만 반환하세요. ```json 블록이나 다른 텍스트 없이 { 로 시작하고 } 로 끝나는 순수 JSON 객체만 응답하세요.' },
+          { role: 'system', content: systemPrompt + jsonInstruction },
           { role: 'user', content: userPrompt },
         ],
-        max_tokens: 8000,
+        max_tokens: 16000,
       }),
     });
 
@@ -503,17 +512,37 @@ ${relatedResources}
       parseError: true,
     });
 
-    // Helper: fuzzy match section title
-    const normTitle = (t: string) => t.replace(/[\s\/·\-_]/g, '').toLowerCase();
-    const findBestTitle = (aiTitle: string): string | null => {
-      const norm = normTitle(aiTitle);
-      for (const req of requiredSections) {
-        if (normTitle(req) === norm) return req;
+    // Helper: robust JSON extraction from AI response
+    const extractJSON = (text: string): any => {
+      // 1) Strip markdown fences globally
+      let cleaned = text
+        .replace(/```json\s*/gi, '')
+        .replace(/```\s*/g, '')
+        .trim();
+
+      // 2) Try direct parse
+      try {
+        return JSON.parse(cleaned);
+      } catch {}
+
+      // 3) Extract from first { to last }
+      const firstBrace = cleaned.indexOf('{');
+      const lastBrace = cleaned.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace > firstBrace) {
+        const jsonStr = cleaned.substring(firstBrace, lastBrace + 1);
+        try {
+          return JSON.parse(jsonStr);
+        } catch {}
+
+        // 4) Try fixing common JSON issues (trailing commas)
+        const fixed = jsonStr
+          .replace(/,\s*}/g, '}')
+          .replace(/,\s*]/g, ']');
+        try {
+          return JSON.parse(fixed);
+        } catch {}
       }
-      // partial match
-      for (const req of requiredSections) {
-        if (norm.includes(normTitle(req)) || normTitle(req).includes(norm)) return req;
-      }
+
       return null;
     };
 
@@ -521,7 +550,7 @@ ${relatedResources}
     try {
       const aiData = JSON.parse(rawText);
       const contentAny = aiData?.choices?.[0]?.message?.content;
-      let messageContent =
+      const messageContent =
         typeof contentAny === 'string'
           ? contentAny.trim()
           : Array.isArray(contentAny)
@@ -529,9 +558,9 @@ ${relatedResources}
             : '';
 
       console.log('AI content 길이:', messageContent.length);
-      console.log('AI content 처음 300자:', messageContent.substring(0, 300));
 
       if (!messageContent || messageContent.length === 0) {
+        // Check tool_calls fallback
         const toolArgs = aiData?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
         if (toolArgs) {
           reportData = typeof toolArgs === 'string' ? JSON.parse(toolArgs) : toolArgs;
@@ -541,41 +570,12 @@ ${relatedResources}
           reportData = placeholderReport('AI content가 비어있음');
         }
       } else {
-        // Try parsing: direct, then strip markdown, then regex
-        let parsed = false;
-        // 1) Direct parse
-        try {
-          reportData = JSON.parse(messageContent);
-          parsed = true;
-          console.log('1차 JSON 파싱 성공');
-        } catch {}
-
-        // 2) Strip markdown code blocks
-        if (!parsed) {
-          const stripped = messageContent.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
-          try {
-            reportData = JSON.parse(stripped);
-            parsed = true;
-            console.log('마크다운 제거 후 파싱 성공');
-          } catch {}
-        }
-
-        // 3) Regex extract first { ... } block
-        if (!parsed) {
-          const startIdx = messageContent.indexOf('{');
-          const lastIdx = messageContent.lastIndexOf('}');
-          if (startIdx !== -1 && lastIdx > startIdx) {
-            const jsonStr = messageContent.substring(startIdx, lastIdx + 1);
-            try {
-              reportData = JSON.parse(jsonStr);
-              parsed = true;
-              console.log('JSON 블록 추출 파싱 성공');
-            } catch {}
-          }
-        }
-
-        if (!parsed) {
-          console.error('모든 JSON 파싱 실패, content 처음 500자:', messageContent.substring(0, 500));
+        // Extract JSON from content
+        reportData = extractJSON(messageContent);
+        if (reportData) {
+          console.log('JSON 파싱 성공, sections:', reportData.sections?.length);
+        } else {
+          console.error('JSON 파싱 실패, content 처음 500자:', messageContent.substring(0, 500));
           reportData = placeholderReport('JSON 파싱 실패');
         }
       }
@@ -589,7 +589,19 @@ ${relatedResources}
         reportData.sections = [];
       }
 
-      // Fuzzy title matching
+      // Fuzzy title matching helper
+      const normTitle = (t: string) => t.replace(/[\s\/·\-_]/g, '').toLowerCase();
+      const findBestTitle = (aiTitle: string): string | null => {
+        const norm = normTitle(aiTitle);
+        for (const req of requiredSections) {
+          if (normTitle(req) === norm) return req;
+        }
+        for (const req of requiredSections) {
+          if (norm.includes(normTitle(req)) || normTitle(req).includes(norm)) return req;
+        }
+        return null;
+      };
+
       const byTitle = new Map<string, string>();
       for (const s of reportData.sections) {
         if (!s?.title || !s?.content) continue;
@@ -631,7 +643,7 @@ ${relatedResources}
     // 메타데이터 추가
     reportData.metadata = {
       generatedAt: new Date().toISOString(),
-      model: 'google/gemini-2.5-flash',
+      model: aiModel,
       dataCount: {
         assessments: assessmentSummary.length,
         observations: observationSummary.length,

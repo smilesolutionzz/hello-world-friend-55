@@ -604,30 +604,102 @@ ${relatedResources}
       return null;
     };
 
+    // Helper: extract message content from various AI response formats
+    const extractMessageContent = (rawJson: any): string => {
+      const choice = rawJson?.choices?.[0];
+      if (!choice) return '';
+      
+      const msg = choice.message;
+      if (!msg) return '';
+      
+      // Standard string content
+      if (typeof msg.content === 'string' && msg.content.trim()) {
+        return msg.content.trim();
+      }
+      
+      // Array of parts (Gemini style)
+      if (Array.isArray(msg.content)) {
+        const text = msg.content
+          .map((p: any) => {
+            if (typeof p === 'string') return p;
+            if (p?.text) return p.text;
+            if (p?.type === 'text' && p?.text) return p.text;
+            return '';
+          })
+          .join('')
+          .trim();
+        if (text) return text;
+      }
+      
+      // Tool calls fallback
+      const toolArgs = msg.tool_calls?.[0]?.function?.arguments;
+      if (toolArgs) {
+        return typeof toolArgs === 'string' ? toolArgs : JSON.stringify(toolArgs);
+      }
+      
+      // Last resort: check if the raw response itself contains JSON with sections
+      const rawStr = JSON.stringify(rawJson);
+      const sectionsMatch = rawStr.match(/"sections"\s*:\s*\[/);
+      if (sectionsMatch) {
+        console.log('Raw response에서 sections 발견, 전체 응답에서 추출 시도');
+        return rawStr;
+      }
+      
+      return '';
+    };
+
     let reportData: any;
     try {
       const aiData = JSON.parse(rawText);
-      const contentAny = aiData?.choices?.[0]?.message?.content;
-      const messageContent =
-        typeof contentAny === 'string'
-          ? contentAny.trim()
-          : Array.isArray(contentAny)
-            ? contentAny.map((p: any) => (typeof p === 'string' ? p : p?.text ?? '')).join('').trim()
-            : '';
+      let messageContent = extractMessageContent(aiData);
 
       console.log('AI content 길이:', messageContent.length);
-      console.log('AI content 처음 300자:', messageContent.substring(0, 300));
+      if (messageContent.length > 0) {
+        console.log('AI content 처음 300자:', messageContent.substring(0, 300));
+      }
 
-      if (!messageContent || messageContent.length === 0) {
-        const toolArgs = aiData?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
-        if (toolArgs) {
-          reportData = typeof toolArgs === 'string' ? JSON.parse(toolArgs) : toolArgs;
-          console.log('Tool calling fallback 파싱 성공');
+      // 빈 content인 경우 재시도 (다른 모델 사용)
+      if (!messageContent || messageContent.length < 50) {
+        console.error('AI content 비어있음 또는 너무 짧음, finish_reason:', aiData?.choices?.[0]?.finish_reason);
+        console.log('전체 응답 구조:', JSON.stringify(aiData).substring(0, 500));
+        
+        // 재시도: 다른 모델로 한 번 더 시도
+        console.log('재시도: anthropic/claude-sonnet-4-20250514 모델로 재시도');
+        const retryResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'anthropic/claude-sonnet-4-20250514',
+            messages: [
+              { role: 'system', content: systemPrompt + jsonInstruction },
+              { role: 'user', content: userPrompt },
+            ],
+            max_tokens: 16000,
+          }),
+        });
+
+        if (retryResponse.ok) {
+          const retryRaw = await retryResponse.text();
+          console.log('재시도 응답 길이:', retryRaw.length);
+          const retryData = JSON.parse(retryRaw);
+          messageContent = extractMessageContent(retryData);
+          console.log('재시도 content 길이:', messageContent.length);
+          if (messageContent.length > 0) {
+            console.log('재시도 content 처음 300자:', messageContent.substring(0, 300));
+          }
         } else {
-          console.error('AI content 비어있음, finish_reason:', aiData?.choices?.[0]?.finish_reason);
-          reportData = placeholderReport('AI content가 비어있음');
+          console.error('재시도도 실패:', retryResponse.status);
         }
-      } else {
+        
+        if (!messageContent || messageContent.length < 50) {
+          reportData = placeholderReport('AI content가 비어있음 (재시도 포함)');
+        }
+      }
+      
+      if (!reportData) {
         reportData = extractJSON(messageContent);
         if (reportData) {
           console.log('JSON 파싱 성공, sections:', reportData.sections?.length);

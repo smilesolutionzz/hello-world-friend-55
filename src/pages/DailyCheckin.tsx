@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -10,6 +11,7 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 
 const DailyCheckin = () => {
+  const navigate = useNavigate();
   const [mood, setMood] = useState<number | null>(null);
   const [energy, setEnergy] = useState<number | null>(null);
   const [stress, setStress] = useState<number | null>(null);
@@ -28,22 +30,36 @@ const DailyCheckin = () => {
   }, []);
 
   const checkTodayCheckin = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate('/mind-diary');
+        return;
+      }
 
-    const today = new Date().toISOString().split('T')[0];
-    const { data } = await supabase
-      .from('daily_checkins' as any)
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('checkin_date', today)
-      .maybeSingle();
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await supabase
+        .from('daily_checkins' as any)
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('checkin_date', today)
+        .maybeSingle();
 
-    if (data) {
-      setCheckinComplete(true);
-      setMood((data as any).mood_score);
-      setEnergy((data as any).energy_level);
-      setStress((data as any).stress_level);
+      if (error) {
+        console.error('체크인 로드 오류:', error);
+        navigate('/mind-diary');
+        return;
+      }
+
+      if (data) {
+        setCheckinComplete(true);
+        setMood((data as any).mood_score);
+        setEnergy((data as any).energy_level);
+        setStress((data as any).stress_level);
+      }
+    } catch (err) {
+      console.error('체크인 오류:', err);
+      navigate('/mind-diary');
     }
   };
 
@@ -111,11 +127,9 @@ const DailyCheckin = () => {
       });
 
     if (error) {
-      toast({
-        title: "오류 발생",
-        description: "체크인 저장에 실패했습니다.",
-        variant: "destructive",
-      });
+      console.error('체크인 저장 오류:', error);
+      navigate('/mind-diary');
+      return;
     } else {
       // 연속 체크인 일수 다시 계산
       await loadStreak();

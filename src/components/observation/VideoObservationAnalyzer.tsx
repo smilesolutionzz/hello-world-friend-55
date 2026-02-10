@@ -74,6 +74,7 @@ interface AnalysisResult {
 
 interface VideoObservationAnalyzerProps {
   onAnalysisComplete?: (result: AnalysisResult) => void;
+  onSaved?: () => void;
 }
 
 const analysisTypes = [
@@ -94,7 +95,7 @@ const ageGroups = [
   { id: '65+', label: '65세 이상 (노인)' },
 ];
 
-export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoObservationAnalyzerProps) {
+export default function VideoObservationAnalyzer({ onAnalysisComplete, onSaved }: VideoObservationAnalyzerProps) {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { saveResult } = useAIObservationResults();
@@ -296,6 +297,7 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete }: VideoOb
     
     if (saved) {
       setIsSaved(true);
+      onSaved?.();
     }
     setIsSaving(false);
   };

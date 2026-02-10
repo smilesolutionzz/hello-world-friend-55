@@ -230,6 +230,7 @@ const Observation = () => {
               onAnalysisComplete={(result) => {
                 console.log('Video analysis complete:', result);
               }}
+              onSaved={() => setActiveTab("ai-results")}
             />
           </div>
         </div>

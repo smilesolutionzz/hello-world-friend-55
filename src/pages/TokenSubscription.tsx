@@ -7,7 +7,7 @@ import {
   Brain, Users, Crown, ArrowRight, 
   Check, Coins, Clock, Gift, Sparkles, 
   MessageCircle, Zap, Shield, Star, Loader2,
-  TrendingUp, Award, X, Heart, Target, Rocket, Lock, UserPlus
+  TrendingUp, Award, X, Heart, Target, Rocket, Lock, UserPlus, CheckCircle
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
@@ -89,24 +89,11 @@ const TokenSubscription = () => {
     },
   ];
 
-  // 상담 상품
-  const consultProducts = [
-    {
-      id: 'consult_30',
-      name: '30분 상담',
-      price: 35000,
-      duration: '30분',
-      features: ['1:1 화상/전화 상담', '전문가 맞춤 조언'],
-    },
-    {
-      id: 'consult_60',
-      name: '60분 상담',
-      price: 65000,
-      duration: '60분',
-      features: ['심층 분석 및 조언', '후속 질문 포함'],
-      popular: true,
-    },
-  ];
+  // 상담 상품 - 전문가 프로필 기반 가격 안내
+  const consultInfo = {
+    description: '전문가별 상담 요금이 상이합니다',
+    features: ['1:1 화상/전화 상담', '전문가 맞춤 조언', '전문가 프로필에서 요금 확인'],
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-violet-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-violet-950/20 text-slate-900 dark:text-slate-100">
@@ -444,34 +431,17 @@ const TokenSubscription = () => {
                 </div>
                 
                 <div className="space-y-3">
-                  {consultProducts.map((product) => (
-                    <div 
-                      key={product.id}
-                      className={`flex items-center justify-between p-3 rounded-xl border ${
-                        product.popular ? 'border-emerald-300 bg-emerald-50/50 dark:bg-emerald-950/20' : 'border-border'
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-900 dark:text-white">₩{product.price.toLocaleString()}</span>
-                          <Badge variant="secondary" className="text-xs">{product.duration}</Badge>
-                          {product.popular && (
-                            <Badge className="bg-emerald-500 text-white text-xs border-0">추천</Badge>
-                          )}
-                        </div>
-                        <p className="text-xs text-slate-600 dark:text-slate-400">{product.features[0]}</p>
-                      </div>
-                      <Button
-                        size="sm"
-                        variant={product.popular ? "default" : "outline"}
-                        className={product.popular ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0" : ""}
-                        onClick={() => handlePayment(product.id)}
-                        disabled={paymentLoading || !isReady}
-                      >
-                        {isLoading(product.id) ? <Loader2 className="w-4 h-4 animate-spin" /> : "예약"}
-                      </Button>
-                    </div>
-                  ))}
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    {consultInfo.description}
+                  </p>
+                  <ul className="space-y-1.5">
+                    {consultInfo.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                        <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
                 <Button 

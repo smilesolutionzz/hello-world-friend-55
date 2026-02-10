@@ -348,7 +348,7 @@ const ExpertHiring = () => {
               onClick={() => setActiveTab('experts')}
               className={cn(
                 "flex-1 md:flex-none",
-                activeTab === 'experts' && "bg-slate-900"
+                activeTab === 'experts' && "bg-primary text-primary-foreground"
               )}
             >
               <Users className="w-4 h-4 mr-2" />
@@ -359,7 +359,7 @@ const ExpertHiring = () => {
               onClick={() => setActiveTab('institutions')}
               className={cn(
                 "flex-1 md:flex-none",
-                activeTab === 'institutions' && "bg-blue-600"
+                activeTab === 'institutions' && "bg-blue-600 text-white"
               )}
             >
               <span className="mr-2">🏢</span>
@@ -389,7 +389,7 @@ const ExpertHiring = () => {
                     onClick={() => setSelectedCategory(cat.id)}
                     className={cn(
                       "whitespace-nowrap",
-                      selectedCategory === cat.id && "bg-slate-900"
+                      selectedCategory === cat.id && "bg-primary text-primary-foreground"
                     )}
                   >
                     <span className="mr-1">{cat.icon}</span>

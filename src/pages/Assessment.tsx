@@ -1470,6 +1470,7 @@ const Assessment = () => {
             <p className="text-muted-foreground">AHI-MOOD 자가체크 21문항 (참고용)</p>
           </div>
           <DepressionTestForm 
+            ageGroup={selectedAgeGroup === 'infant' ? 'child' : selectedAgeGroup === 'child' ? 'adolescent' : 'adult'}
             onComplete={handleDepressionTestComplete}
             onBack={handleBack}
           />

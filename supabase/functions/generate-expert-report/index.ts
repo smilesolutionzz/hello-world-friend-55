@@ -646,14 +646,41 @@ ${relatedResources}
       }
 
       // Fuzzy title matching helper
-      const normTitle = (t: string) => t.replace(/[\s\/·\-_]/g, '').toLowerCase();
+      const normTitle = (t: string) => t
+        .replace(/[\d️⃣⃣0-9①②③④⑤⑥⑦⑧⑨⓪❶❷❸❹❺❻❼❽❾#️⃣.\s\/·\-_:：,，()（）]/g, '')
+        .replace(/[^\p{L}]/gu, '')
+        .toLowerCase();
+
+      // Known aliases: system prompt titles → requiredSections titles
+      const titleAliases: Record<string, string> = {
+        '종합발달프로파일': '발달 종합 평가',
+        '심리정서심층분석': '심리 상태 분석',
+        '강점약점매트릭스': '강점/약점 분석',
+        '맞춤형개입프로그램': '맞춤 활동 제안',
+        '발달로드맵및예후': '발달 로드맵',
+        '발달로드맵예후': '발달 로드맵',
+        '종합요약및제언': '종합 요약 및 제언',
+        '종합요약제언': '종합 요약 및 제언',
+        '가족지원가이드': '가족 지원 가이드',
+        '전문가소견서': '전문가 소견서',
+        '또래비교분석': '또래 비교 분석',
+      };
+
       const findBestTitle = (aiTitle: string): string | null => {
         const norm = normTitle(aiTitle);
+        // 1) Exact match
         for (const req of requiredSections) {
           if (normTitle(req) === norm) return req;
         }
+        // 2) Alias match
+        if (titleAliases[norm]) return titleAliases[norm];
+        // 3) Substring match
         for (const req of requiredSections) {
           if (norm.includes(normTitle(req)) || normTitle(req).includes(norm)) return req;
+        }
+        // 4) Alias substring match
+        for (const [alias, target] of Object.entries(titleAliases)) {
+          if (norm.includes(alias) || alias.includes(norm)) return target;
         }
         return null;
       };

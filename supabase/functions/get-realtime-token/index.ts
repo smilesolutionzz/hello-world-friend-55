@@ -233,16 +233,17 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
         input_audio_format: "pcm16",
         output_audio_format: "pcm16",
         input_audio_transcription: {
-          model: "gpt-4o-transcribe",  // Whisper → gpt-4o-transcribe로 업그레이드 (한국어 인식률 대폭 향상)
+          model: "gpt-4o-transcribe",  // 한국어 인식률 대폭 향상
+          language: "ko",              // 한국어 고정 (다른 언어 인식 방지)
         },
         turn_detection: {
           type: "server_vad",
-          threshold: 0.5,             // 0.7 → 0.5: 작은 소리/작은 목소리도 감지
-          prefix_padding_ms: 400,     // 300 → 400: 말 시작 부분을 더 넉넉히 캡처
-          silence_duration_ms: 1200,  // 2500 → 1200: 자연스러운 턴 전환 (너무 길면 대화 끊김 느낌)
+          threshold: 0.5,
+          prefix_padding_ms: 400,
+          silence_duration_ms: 1200,
         },
         temperature: 0.8,
-        max_response_output_tokens: 300  // inf → 300: 답변 길이 제한으로 독백 방지
+        max_response_output_tokens: 800  // 300 → 800: 답변 끊김 방지 (3문장 규칙은 프롬프트로 제어)
       }),
     });
 

@@ -281,11 +281,42 @@ const ReportGenerator = () => {
   const downloadPDF = () => {
     const element = document.getElementById('report-content');
     if (!element) return;
+    
+    // PDF용 page-break 스타일 추가
+    const style = document.createElement('style');
+    style.id = 'pdf-page-break-style';
+    style.textContent = `
+      #report-content .pdf-section-break {
+        page-break-before: always !important;
+        break-before: page !important;
+      }
+      #report-content .pdf-no-break {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // 각 섹션에 page-break 클래스 추가
+    const sections = element.querySelectorAll('[data-report-section]');
+    sections.forEach((sec, idx) => {
+      if (idx > 0) sec.classList.add('pdf-section-break');
+      sec.classList.add('pdf-no-break');
+    });
+    
     html2pdf().set({
-      margin: 15, filename: `프리미엄분석_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-      jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
-    }).from(element).save();
+      margin: [15, 15, 15, 15],
+      filename: `프리미엄분석_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`,
+      image: { type: 'jpeg' as const, quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const },
+    } as any).from(element).save().then(() => {
+      // 스타일 및 클래스 정리
+      document.getElementById('pdf-page-break-style')?.remove();
+      sections.forEach((sec) => {
+        sec.classList.remove('pdf-section-break', 'pdf-no-break');
+      });
+    });
     toast({ title: "📥 PDF 다운로드 시작" });
   };
 
@@ -308,11 +339,25 @@ const ReportGenerator = () => {
     setIsSendingEmail(true);
     try {
       const summaryText = reportData.summary?.replace(/<[^>]*>/g, '') || '';
-      const sectionsText = reportData.sections?.map((s: any, i: number) => `[${i + 1}] ${s.title}\n${s.content.replace(/<[^>]*>/g, '')}`).join('\n\n') || '';
-      const { error } = await supabase.functions.invoke('send-concern-report', {
-        body: { email: familyEmail, concernText: `${userInput.name}님의 프리미엄 분석 리포트`,
-          analysis: { type: '프리미엄 종합 분석', severity: '정보', detailedAdvice: summaryText + '\n\n' + sectionsText.substring(0, 3000),
-            recommendations: reportData.sections?.slice(0, 3).map((s: any) => s.title) || [], nextSteps: ['전문가 상담 예약', '정기적인 관찰 일지 작성', '발달 로드맵 따르기'], confidence: 95 } }
+      const sections = reportData.sections?.map((s: any) => ({
+        title: s.title,
+        content: s.content?.replace(/<[^>]*>/g, '').substring(0, 800) || ''
+      })) || [];
+      const recommendations = reportData.sections?.slice(0, 5).map((s: any) => s.title) || [];
+      
+      const { error } = await supabase.functions.invoke('send-share-email', {
+        body: {
+          email: familyEmail,
+          type: 'report',
+          title: `${userInput.name}님의 프리미엄 종합 분석 리포트`,
+          recipientName: '',
+          senderName: userInput.name,
+          content: {
+            summary: summaryText,
+            sections,
+            recommendations,
+          }
+        }
       });
       if (error) throw error;
       toast({ title: "✅ 이메일 전송 완료", description: `${familyEmail}로 리포트가 전송되었습니다.` });
@@ -809,7 +854,7 @@ const ReportGenerator = () => {
                 const icons = [Brain, Heart, TrendingUp, Target, LineChart, Users, Shield, Activity, BarChart3];
                 const IconComponent = icons[index % icons.length];
                 return (
-                  <div key={index} className="space-y-4">
+                  <div key={index} className="space-y-4" data-report-section={index}>
                     <h3 className={`text-2xl font-bold flex items-center gap-3 ${colors.title}`}>
                       <div className={`p-3 rounded-xl ${colors.icon} shadow-sm`}><IconComponent className="w-6 h-6" /></div>
                       {index + 1}. {section.title}

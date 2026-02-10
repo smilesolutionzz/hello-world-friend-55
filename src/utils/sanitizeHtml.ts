@@ -9,11 +9,20 @@ export const sanitizeAIContent = (html: string): string => {
   let cleanedHtml = html
     // 깨진 문자(replacement character U+FFFD) 제거
     .replace(/\uFFFD/g, '')
-    // "숫자. �" 패턴 제거 (예: "2. �")
-    .replace(/^\d+\.\s*$/gm, '')
+    // "숫자. 제목" 다음에 "다음번호. ?" 패턴 제거 (예: "2. ?", "3. ?")
+    .replace(/^\s*\d+\.\s*\??\s*$/gm, '')
+    // 숫자만 있는 라인 제거 (예: 단독 "2", "3")
+    .replace(/^\s*\d+\s*$/gm, '')
+    // "숫자. " 뒤에 아무 내용 없는 패턴 제거
+    .replace(/^\s*\d+\.\s*$/gm, '')
+    // "?" 만 단독으로 있는 라인 제거
+    .replace(/^\s*\?\s*$/gm, '')
     // 빈 라인만 있는 문단 정리
     .replace(/<p>\s*<\/p>/gi, '')
     .replace(/<div>\s*<\/div>/gi, '')
+    // 빈 <p> 또는 <div> 안에 숫자?만 있는 경우 제거
+    .replace(/<p>\s*\d+\.?\s*\??\s*<\/p>/gi, '')
+    .replace(/<div>\s*\d+\.?\s*\??\s*<\/div>/gi, '')
     // 연속된 빈 라인 정리
     .replace(/\n{3,}/g, '\n\n')
     .trim();

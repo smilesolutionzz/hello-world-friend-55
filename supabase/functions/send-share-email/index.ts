@@ -316,8 +316,14 @@ const handler = async (req: Request): Promise<Response> => {
 
     const subjectPrefix = typeLabels[requestData.type] || '📊 분석 결과';
 
+    // Resend 무료 플랜에서는 onboarding@resend.dev만 사용 가능
+    // 실제 메일 발송을 위해서는 Resend에서 도메인 인증 필요
+    const fromAddress = "AIHPRO <onboarding@resend.dev>";
+    
+    console.log('이메일 발송 시도:', { from: fromAddress, to: requestData.email });
+    
     const emailResponse = await resend.emails.send({
-      from: "AIHPRO <onboarding@resend.dev>",
+      from: fromAddress,
       to: [requestData.email],
       subject: `${subjectPrefix} - ${requestData.title}`,
       html: htmlContent,

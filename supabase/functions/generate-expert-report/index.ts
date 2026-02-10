@@ -616,9 +616,9 @@ ${relatedResources}
             : '';
 
       console.log('AI content 길이:', messageContent.length);
+      console.log('AI content 처음 300자:', messageContent.substring(0, 300));
 
       if (!messageContent || messageContent.length === 0) {
-        // Check tool_calls fallback
         const toolArgs = aiData?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
         if (toolArgs) {
           reportData = typeof toolArgs === 'string' ? JSON.parse(toolArgs) : toolArgs;
@@ -628,17 +628,21 @@ ${relatedResources}
           reportData = placeholderReport('AI content가 비어있음');
         }
       } else {
-        // Extract JSON from content
         reportData = extractJSON(messageContent);
         if (reportData) {
           console.log('JSON 파싱 성공, sections:', reportData.sections?.length);
+          // Log each section title for debugging
+          if (Array.isArray(reportData.sections)) {
+            reportData.sections.forEach((s: any, i: number) => {
+              console.log(`  섹션[${i}] title: "${s?.title}", content길이: ${s?.content?.length || 0}`);
+            });
+          }
         } else {
           console.error('JSON 파싱 실패, content 처음 500자:', messageContent.substring(0, 500));
           reportData = placeholderReport('JSON 파싱 실패');
         }
       }
 
-      // 검증/보정: sections 항상 9개 & 제목 일치 보장
       if (!reportData || typeof reportData !== 'object') {
         reportData = placeholderReport('응답 구조가 올바르지 않음');
       }
@@ -647,74 +651,114 @@ ${relatedResources}
         reportData.sections = [];
       }
 
-      // Fuzzy title matching helper
+      // Fuzzy title matching helper - very aggressive normalization
       const normTitle = (t: string) => t
-        .replace(/[\d️⃣⃣0-9①②③④⑤⑥⑦⑧⑨⓪❶❷❸❹❺❻❼❽❾#️⃣.\s\/·\-_:：,，()（）]/g, '')
+        .replace(/[\d️⃣⃣0-9①②③④⑤⑥⑦⑧⑨⓪❶❷❸❹❺❻❼❽❾#️⃣.\s\/·\-_:：,，()（）「」【】《》<>⚠️📋📊🔬❤️💪🎯🗺️👥🏥👨‍👩‍👧📝✅☑️⭐🌟💡🧠🎯📈📉🏠🤝💬📖🔍✨]/g, '')
         .replace(/[^\p{L}]/gu, '')
         .toLowerCase();
 
-      // Known aliases: system prompt titles → requiredSections titles
-      const titleAliases: Record<string, string> = {
-        '종합발달프로파일': '발달 종합 평가',
-        '심리정서심층분석': '심리 상태 분석',
-        '강점약점매트릭스': '강점/약점 분석',
-        '맞춤형개입프로그램': '맞춤 활동 제안',
-        '발달로드맵및예후': '발달 로드맵',
-        '발달로드맵예후': '발달 로드맵',
-        '종합요약및제언': '종합 요약 및 제언',
-        '종합요약제언': '종합 요약 및 제언',
-        '가족지원가이드': '가족 지원 가이드',
-        '전문가소견서': '전문가 소견서',
-        '또래비교분석': '또래 비교 분석',
+      // Comprehensive alias map - covers all possible AI title variations
+      const titleAliases: Record<string, string[]> = {
+        '발달 종합 평가': ['종합발달프로파일', '발달종합평가', '종합발달평가', '발달프로파일', '발달평가', '종합평가', '인지발달분석', '발달수준평가'],
+        '심리 상태 분석': ['심리정서심층분석', '심리상태분석', '정서심층분석', '심리분석', '정서분석', '심리정서분석', '정서상태분석'],
+        '강점/약점 분석': ['강점약점매트릭스', '강점약점분석', '강점분석', '약점분석', '강약점분석', '강점약점', '강약점매트릭스'],
+        '맞춤 활동 제안': ['맞춤형개입프로그램', '맞춤활동제안', '개입프로그램', '맞춤활동', '활동제안', '개입전략', '맞춤형개입', '맞춤프로그램'],
+        '발달 로드맵': ['발달로드맵및예후', '발달로드맵예후', '발달로드맵', '로드맵예후', '발달예후', '로드맵'],
+        '또래 비교 분석': ['또래비교분석', '또래비교', '비교분석'],
+        '전문가 소견서': ['전문가소견서', '소견서', '전문가소견', '임상소견서', '전문소견'],
+        '가족 지원 가이드': ['가족지원가이드', '가족지원', '양육가이드', '부모가이드', '가정지원'],
+        '종합 요약 및 제언': ['종합요약및제언', '종합요약제언', '종합요약', '요약및제언', '요약제언', '총평'],
       };
 
       const findBestTitle = (aiTitle: string): string | null => {
+        if (!aiTitle) return null;
         const norm = normTitle(aiTitle);
-        // 1) Exact match
+        if (!norm) return null;
+        
+        // 1) Exact match against requiredSections
         for (const req of requiredSections) {
           if (normTitle(req) === norm) return req;
         }
-        // 2) Alias match
-        if (titleAliases[norm]) return titleAliases[norm];
-        // 3) Substring match
+        // 2) Alias exact match
+        for (const [target, aliases] of Object.entries(titleAliases)) {
+          for (const alias of aliases) {
+            if (norm === alias) return target;
+          }
+        }
+        // 3) Substring containment (both directions)
         for (const req of requiredSections) {
-          if (norm.includes(normTitle(req)) || normTitle(req).includes(norm)) return req;
+          const nReq = normTitle(req);
+          if (norm.includes(nReq) || nReq.includes(norm)) return req;
         }
-        // 4) Alias substring match
-        for (const [alias, target] of Object.entries(titleAliases)) {
-          if (norm.includes(alias) || alias.includes(norm)) return target;
+        // 4) Alias substring containment
+        for (const [target, aliases] of Object.entries(titleAliases)) {
+          for (const alias of aliases) {
+            if (norm.includes(alias) || alias.includes(norm)) return target;
+          }
         }
+        // 5) Check if the norm contains any key Korean words
+        const keywordMap: Record<string, string> = {
+          '발달': '발달 종합 평가',
+          '심리': '심리 상태 분석',
+          '정서': '심리 상태 분석',
+          '강점': '강점/약점 분석',
+          '약점': '강점/약점 분석',
+          '활동': '맞춤 활동 제안',
+          '개입': '맞춤 활동 제안',
+          '로드맵': '발달 로드맵',
+          '예후': '발달 로드맵',
+          '또래': '또래 비교 분석',
+          '소견': '전문가 소견서',
+          '가족': '가족 지원 가이드',
+          '양육': '가족 지원 가이드',
+          '요약': '종합 요약 및 제언',
+          '제언': '종합 요약 및 제언',
+        };
+        for (const [keyword, target] of Object.entries(keywordMap)) {
+          if (norm.includes(keyword)) return target;
+        }
+        
         return null;
       };
 
       const byTitle = new Map<string, string>();
       for (const s of reportData.sections) {
-        if (!s?.title || !s?.content) continue;
+        if (!s?.title || !s?.content) {
+          console.log('빈 섹션 스킵:', JSON.stringify(s).substring(0, 100));
+          continue;
+        }
         if (typeof s.title !== 'string' || typeof s.content !== 'string') continue;
         const matched = findBestTitle(s.title);
         if (matched) {
-          byTitle.set(matched, s.content);
+          // Don't overwrite if already matched (keep first match)
+          if (!byTitle.has(matched)) {
+            byTitle.set(matched, s.content);
+            console.log(`✅ 매칭: "${s.title}" → "${matched}"`);
+          }
         } else {
-          console.log('매칭 안된 섹션 제목:', s.title);
+          console.log(`❌ 매칭 실패: "${s.title}"`);
         }
       }
 
       console.log('매칭된 섹션 수:', byTitle.size, '/', requiredSections.length);
+      
+      // Fallback: if no titles matched but we have sections, map by index
       if (byTitle.size === 0 && reportData.sections?.length > 0) {
-        // If no titles matched, map by index order
-        console.log('제목 매칭 실패, 순서대로 매핑 시도');
+        console.log('제목 매칭 전부 실패, 순서대로 매핑');
         for (let i = 0; i < Math.min(reportData.sections.length, requiredSections.length); i++) {
           const s = reportData.sections[i];
-          if (s?.content && typeof s.content === 'string') {
+          if (s?.content && typeof s.content === 'string' && s.content.length > 10) {
             byTitle.set(requiredSections[i], s.content);
+            console.log(`  순서매핑[${i}]: "${requiredSections[i]}" ← content길이:${s.content.length}`);
           }
         }
         console.log('순서 매핑 후 섹션 수:', byTitle.size);
       }
 
+      // Final assembly
       reportData.sections = requiredSections.map((title) => ({
         title,
-        content: byTitle.get(title) ?? '<div>이 섹션의 데이터를 생성하는 중 오류가 발생했습니다.</div>',
+        content: byTitle.get(title) ?? `<div><p>이 섹션의 분석 데이터가 생성되지 않았습니다. 다시 시도해주세요.</p></div>`,
       }));
 
       const filledCount = requiredSections.filter(t => byTitle.has(t)).length;

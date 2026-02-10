@@ -460,45 +460,7 @@ ${relatedResources}
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },
         ],
-        // Structured output: tool calling (more reliable than asking for raw JSON)
-        tools: [
-          {
-            type: 'function',
-            function: {
-              name: 'generate_expert_report',
-              description: 'Generate the expert report payload with 9 required sections and an overall HTML summary.',
-              parameters: {
-                type: 'object',
-                properties: {
-                  summary: {
-                    type: 'string',
-                    description: 'Overall summary in HTML (at least ~300 Korean chars).',
-                  },
-                  sections: {
-                    type: 'array',
-                    minItems: 9,
-                    maxItems: 9,
-                    items: {
-                      type: 'object',
-                      properties: {
-                        title: { type: 'string', enum: [...requiredSections] },
-                        content: {
-                          type: 'string',
-                          description: 'Section content in HTML (roughly 400-600 Korean chars).',
-                        },
-                      },
-                      required: ['title', 'content'],
-                      additionalProperties: false,
-                    },
-                  },
-                },
-                required: ['summary', 'sections'],
-                additionalProperties: false,
-              },
-            },
-          },
-        ],
-        tool_choice: { type: 'function', function: { name: 'generate_expert_report' } },
+        response_format: { type: 'json_object' },
         max_tokens: 8000,
       }),
     });
@@ -546,59 +508,49 @@ ${relatedResources}
     try {
       const aiData = JSON.parse(rawText);
 
-      // 1) Tool calling (preferred)
-      const toolCall = aiData?.choices?.[0]?.message?.tool_calls?.[0];
-      const toolArgs = toolCall?.function?.arguments;
-      if (toolArgs) {
-        if (typeof toolArgs === 'string') {
-          reportData = JSON.parse(toolArgs);
-        } else if (typeof toolArgs === 'object') {
-          // Some models return arguments as already-parsed object
-          reportData = toolArgs;
-        }
-        console.log('Tool calling 파싱 성공, sections:', reportData?.sections?.length);
-      } else {
-        // 2) Fallback: message.content parsing (handles string or array-like content)
-        const contentAny = aiData?.choices?.[0]?.message?.content;
-        const messageContent =
-          typeof contentAny === 'string'
+      // Extract content from the response
+      const contentAny = aiData?.choices?.[0]?.message?.content;
+      const messageContent =
+        typeof contentAny === 'string'
+          ? contentAny
+          : Array.isArray(contentAny)
             ? contentAny
-            : Array.isArray(contentAny)
-              ? contentAny
-                  .map((p: any) => {
-                    if (typeof p === 'string') return p;
-                    return p?.text ?? '';
-                  })
-                  .join('')
-              : '';
+                .map((p: any) => {
+                  if (typeof p === 'string') return p;
+                  return p?.text ?? '';
+                })
+                .join('')
+            : '';
 
-        if (!messageContent || messageContent.trim().length === 0) {
-          console.error('AI content 미리보기(빈값):', String(messageContent));
-          reportData = placeholderReport('AI content가 비어있음');
+      if (!messageContent || messageContent.trim().length === 0) {
+        // Fallback: check tool_calls in case model used them
+        const toolArgs = aiData?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+        if (toolArgs) {
+          reportData = typeof toolArgs === 'string' ? JSON.parse(toolArgs) : toolArgs;
+          console.log('Tool calling fallback 파싱 성공');
         } else {
-          console.log('AI content 길이:', messageContent.length);
-          try {
-            reportData = JSON.parse(messageContent);
-          } catch (firstParseError) {
-            console.log('1차 파싱 실패, 정제 시도...');
-
-            // JSON 블록 추출 시도
-            const jsonMatch = messageContent.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-              try {
-                const cleanedJson = jsonMatch[0]
-                  .replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ')
-                  .replace(/\n/g, ' ')
-                  .replace(/\r/g, ' ')
-                  .replace(/\t/g, ' ');
-                reportData = JSON.parse(cleanedJson);
-              } catch {
-                reportData = placeholderReport('정제 후에도 JSON 파싱 실패');
-              }
-            } else {
-              console.error('AI content 미리보기(앞 1200자):', messageContent.substring(0, 1200));
-              reportData = placeholderReport('JSON 구조 없음');
+          console.error('AI content 비어있음, finish_reason:', aiData?.choices?.[0]?.finish_reason);
+          reportData = placeholderReport('AI content가 비어있음');
+        }
+      } else {
+        console.log('AI content 길이:', messageContent.length);
+        try {
+          // Try direct parse first
+          reportData = JSON.parse(messageContent);
+        } catch (firstParseError) {
+          console.log('1차 파싱 실패, JSON 블록 추출 시도...');
+          // Extract JSON block
+          const jsonMatch = messageContent.match(/```json\s*([\s\S]*?)```/) || 
+                           messageContent.match(/\{[\s\S]*\}/);
+          const jsonStr = jsonMatch?.[1] || jsonMatch?.[0] || '';
+          if (jsonStr) {
+            try {
+              reportData = JSON.parse(jsonStr.trim());
+            } catch {
+              reportData = placeholderReport('JSON 파싱 실패');
             }
+          } else {
+            reportData = placeholderReport('JSON 구조 없음');
           }
         }
       }

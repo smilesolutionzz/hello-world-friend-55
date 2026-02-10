@@ -252,13 +252,21 @@ const ReportGenerator = () => {
       }
 
       if (data?.success && data?.report) {
+        console.log('리포트 생성 성공:', {
+          sectionsCount: data.report.sections?.length,
+          sections: data.report.sections?.map((s: any) => ({ title: s.title, contentLength: s.content?.length || 0 })),
+          hasSummary: !!data.report.summary,
+          hasResearch: !!data.report.researchInsightsContent,
+          hasResources: !!data.report.relatedResourcesContent,
+        });
         setReportData({ ...data.report, generatedAt: new Date().toISOString(),
           dataSource: { assessments: userData.totalAssessments, observations: userData.totalObservations, observationSessions: userData.totalObservationSessions, chatMessages: userData.totalChatMessages, totalDataCount: userData.totalDataCount }
         });
         toast({ title: "🎉 프리미엄 리포트 생성 완료!", description: "세계 최고 수준의 분석 리포트가 생성되었습니다." });
         setTimeout(() => setShowScratchCard(true), 1500);
       } else {
-        throw new Error('리포트 데이터가 없습니다.');
+        console.error('리포트 응답 구조 오류:', JSON.stringify(data).substring(0, 500));
+        throw new Error(data?.error || '리포트 데이터가 없습니다.');
       }
     } catch (error: any) {
       const errorMessage = error?.message || '';

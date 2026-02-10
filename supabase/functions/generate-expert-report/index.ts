@@ -469,7 +469,7 @@ ${relatedResources}
           { role: 'system', content: systemPrompt + jsonInstruction },
           { role: 'user', content: userPrompt },
         ],
-        max_tokens: 16000,
+        max_tokens: 32000,
       }),
     });
 
@@ -512,7 +512,7 @@ ${relatedResources}
       parseError: true,
     });
 
-    // Helper: robust JSON extraction from AI response
+    // Helper: robust JSON extraction from AI response (handles truncated JSON)
     const extractJSON = (text: string): any => {
       // 1) Strip markdown fences globally
       let cleaned = text
@@ -541,6 +541,44 @@ ${relatedResources}
         try {
           return JSON.parse(fixed);
         } catch {}
+      }
+
+      // 5) Handle TRUNCATED JSON: close open brackets/braces
+      if (firstBrace !== -1) {
+        let truncated = cleaned.substring(firstBrace);
+        // Remove any trailing incomplete string value
+        truncated = truncated.replace(/,\s*\{[^}]*$/, '');
+        truncated = truncated.replace(/,\s*"[^"]*$/, '');
+        truncated = truncated.replace(/:\s*"[^"]*$/, ': ""');
+        
+        // Count open brackets and braces
+        let openBraces = 0, openBrackets = 0;
+        let inString = false, escape = false;
+        for (const ch of truncated) {
+          if (escape) { escape = false; continue; }
+          if (ch === '\\') { escape = true; continue; }
+          if (ch === '"') { inString = !inString; continue; }
+          if (inString) continue;
+          if (ch === '{') openBraces++;
+          if (ch === '}') openBraces--;
+          if (ch === '[') openBrackets++;
+          if (ch === ']') openBrackets--;
+        }
+        
+        // Close any unclosed strings, arrays, objects
+        if (inString) truncated += '"';
+        // Remove trailing comma before closing
+        truncated = truncated.replace(/,\s*$/, '');
+        for (let i = 0; i < openBrackets; i++) truncated += ']';
+        for (let i = 0; i < openBraces; i++) truncated += '}';
+        
+        try {
+          const result = JSON.parse(truncated);
+          console.log('잘린 JSON 복구 성공');
+          return result;
+        } catch (e) {
+          console.error('잘린 JSON 복구 실패:', (e as Error).message);
+        }
       }
 
       return null;

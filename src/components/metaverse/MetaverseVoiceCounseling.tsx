@@ -397,47 +397,56 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     const handleKeyPress = (e: KeyboardEvent) => {
       if (!isConnected || !gestureManagerRef.current) return;
       
+      const playGestureWithSound = (type: GestureType) => {
+        gestureManagerRef.current?.playGesture(type);
+        const gesture = GESTURES[type];
+        toast({ title: `${gesture.icon} ${gesture.name}` });
+        
+        // 제스처별 사운드 효과 재생
+        try {
+          const ctx = new AudioContext();
+          const oscillator = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          oscillator.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          
+          // 제스처별 다른 사운드
+          const soundMap: Record<string, { freq: number; type: OscillatorType; duration: number }> = {
+            wave: { freq: 523, type: 'sine', duration: 0.15 },
+            clap: { freq: 800, type: 'square', duration: 0.08 },
+            bow: { freq: 330, type: 'sine', duration: 0.3 },
+            dance: { freq: 660, type: 'triangle', duration: 0.2 },
+            laugh: { freq: 880, type: 'sine', duration: 0.12 },
+            cry: { freq: 220, type: 'sine', duration: 0.4 },
+            heart: { freq: 440, type: 'sine', duration: 0.25 },
+            thumbsup: { freq: 700, type: 'triangle', duration: 0.12 },
+            thinking: { freq: 350, type: 'sine', duration: 0.3 },
+            celebrate: { freq: 1047, type: 'triangle', duration: 0.15 },
+          };
+          const sound = soundMap[type] || { freq: 440, type: 'sine' as OscillatorType, duration: 0.2 };
+          oscillator.frequency.value = sound.freq;
+          oscillator.type = sound.type;
+          gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + sound.duration);
+          oscillator.start(ctx.currentTime);
+          oscillator.stop(ctx.currentTime + sound.duration + 0.05);
+          setTimeout(() => ctx.close(), (sound.duration + 0.1) * 1000);
+        } catch (err) {
+          // 사운드 실패해도 제스처는 동작
+        }
+      };
+
       switch(e.key) {
-        case '1':
-          gestureManagerRef.current.playGesture('wave');
-          toast({ title: `${GESTURES.wave.icon} ${GESTURES.wave.name}` });
-          break;
-        case '2':
-          gestureManagerRef.current.playGesture('clap');
-          toast({ title: `${GESTURES.clap.icon} ${GESTURES.clap.name}` });
-          break;
-        case '3':
-          gestureManagerRef.current.playGesture('bow');
-          toast({ title: `${GESTURES.bow.icon} ${GESTURES.bow.name}` });
-          break;
-        case '4':
-          gestureManagerRef.current.playGesture('dance');
-          toast({ title: `${GESTURES.dance.icon} ${GESTURES.dance.name}` });
-          break;
-        case '5':
-          gestureManagerRef.current.playGesture('laugh');
-          toast({ title: `${GESTURES.laugh.icon} ${GESTURES.laugh.name}` });
-          break;
-        case '6':
-          gestureManagerRef.current.playGesture('cry');
-          toast({ title: `${GESTURES.cry.icon} ${GESTURES.cry.name}` });
-          break;
-        case '7':
-          gestureManagerRef.current.playGesture('heart');
-          toast({ title: `${GESTURES.heart.icon} ${GESTURES.heart.name}` });
-          break;
-        case '8':
-          gestureManagerRef.current.playGesture('thumbsup');
-          toast({ title: `${GESTURES.thumbsup.icon} ${GESTURES.thumbsup.name}` });
-          break;
-        case '9':
-          gestureManagerRef.current.playGesture('thinking');
-          toast({ title: `${GESTURES.thinking.icon} ${GESTURES.thinking.name}` });
-          break;
-        case '0':
-          gestureManagerRef.current.playGesture('celebrate');
-          toast({ title: `${GESTURES.celebrate.icon} ${GESTURES.celebrate.name}` });
-          break;
+        case '1': playGestureWithSound('wave'); break;
+        case '2': playGestureWithSound('clap'); break;
+        case '3': playGestureWithSound('bow'); break;
+        case '4': playGestureWithSound('dance'); break;
+        case '5': playGestureWithSound('laugh'); break;
+        case '6': playGestureWithSound('cry'); break;
+        case '7': playGestureWithSound('heart'); break;
+        case '8': playGestureWithSound('thumbsup'); break;
+        case '9': playGestureWithSound('thinking'); break;
+        case '0': playGestureWithSound('celebrate'); break;
       }
     };
 

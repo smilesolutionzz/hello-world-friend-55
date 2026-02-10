@@ -493,7 +493,6 @@ ${relatedResources}
 
     const rawText = await aiResponse.text();
     console.log('AI 응답 길이:', rawText?.length);
-    console.log('AI 응답 미리보기(500자):', rawText?.substring(0, 500));
 
     const placeholderReport = (reason: string) => ({
       sections: requiredSections.map((title) => ({
@@ -504,26 +503,35 @@ ${relatedResources}
       parseError: true,
     });
 
+    // Helper: fuzzy match section title
+    const normTitle = (t: string) => t.replace(/[\s\/·\-_]/g, '').toLowerCase();
+    const findBestTitle = (aiTitle: string): string | null => {
+      const norm = normTitle(aiTitle);
+      for (const req of requiredSections) {
+        if (normTitle(req) === norm) return req;
+      }
+      // partial match
+      for (const req of requiredSections) {
+        if (norm.includes(normTitle(req)) || normTitle(req).includes(norm)) return req;
+      }
+      return null;
+    };
+
     let reportData: any;
     try {
       const aiData = JSON.parse(rawText);
-
-      // Extract content from the response
       const contentAny = aiData?.choices?.[0]?.message?.content;
-      const messageContent =
+      let messageContent =
         typeof contentAny === 'string'
-          ? contentAny
+          ? contentAny.trim()
           : Array.isArray(contentAny)
-            ? contentAny
-                .map((p: any) => {
-                  if (typeof p === 'string') return p;
-                  return p?.text ?? '';
-                })
-                .join('')
+            ? contentAny.map((p: any) => (typeof p === 'string' ? p : p?.text ?? '')).join('').trim()
             : '';
 
-      if (!messageContent || messageContent.trim().length === 0) {
-        // Fallback: check tool_calls in case model used them
+      console.log('AI content 길이:', messageContent.length);
+      console.log('AI content 처음 300자:', messageContent.substring(0, 300));
+
+      if (!messageContent || messageContent.length === 0) {
         const toolArgs = aiData?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
         if (toolArgs) {
           reportData = typeof toolArgs === 'string' ? JSON.parse(toolArgs) : toolArgs;
@@ -533,25 +541,42 @@ ${relatedResources}
           reportData = placeholderReport('AI content가 비어있음');
         }
       } else {
-        console.log('AI content 길이:', messageContent.length);
+        // Try parsing: direct, then strip markdown, then regex
+        let parsed = false;
+        // 1) Direct parse
         try {
-          // Try direct parse first
           reportData = JSON.parse(messageContent);
-        } catch (firstParseError) {
-          console.log('1차 파싱 실패, JSON 블록 추출 시도...');
-          // Extract JSON block
-          const jsonMatch = messageContent.match(/```json\s*([\s\S]*?)```/) || 
-                           messageContent.match(/\{[\s\S]*\}/);
-          const jsonStr = jsonMatch?.[1] || jsonMatch?.[0] || '';
-          if (jsonStr) {
+          parsed = true;
+          console.log('1차 JSON 파싱 성공');
+        } catch {}
+
+        // 2) Strip markdown code blocks
+        if (!parsed) {
+          const stripped = messageContent.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+          try {
+            reportData = JSON.parse(stripped);
+            parsed = true;
+            console.log('마크다운 제거 후 파싱 성공');
+          } catch {}
+        }
+
+        // 3) Regex extract first { ... } block
+        if (!parsed) {
+          const startIdx = messageContent.indexOf('{');
+          const lastIdx = messageContent.lastIndexOf('}');
+          if (startIdx !== -1 && lastIdx > startIdx) {
+            const jsonStr = messageContent.substring(startIdx, lastIdx + 1);
             try {
-              reportData = JSON.parse(jsonStr.trim());
-            } catch {
-              reportData = placeholderReport('JSON 파싱 실패');
-            }
-          } else {
-            reportData = placeholderReport('JSON 구조 없음');
+              reportData = JSON.parse(jsonStr);
+              parsed = true;
+              console.log('JSON 블록 추출 파싱 성공');
+            } catch {}
           }
+        }
+
+        if (!parsed) {
+          console.error('모든 JSON 파싱 실패, content 처음 500자:', messageContent.substring(0, 500));
+          reportData = placeholderReport('JSON 파싱 실패');
         }
       }
 
@@ -564,12 +589,30 @@ ${relatedResources}
         reportData.sections = [];
       }
 
-      // 중복/누락 정리: requiredSections 순서대로 재구성
+      // Fuzzy title matching
       const byTitle = new Map<string, string>();
       for (const s of reportData.sections) {
         if (!s?.title || !s?.content) continue;
         if (typeof s.title !== 'string' || typeof s.content !== 'string') continue;
-        byTitle.set(s.title, s.content);
+        const matched = findBestTitle(s.title);
+        if (matched) {
+          byTitle.set(matched, s.content);
+        } else {
+          console.log('매칭 안된 섹션 제목:', s.title);
+        }
+      }
+
+      console.log('매칭된 섹션 수:', byTitle.size, '/', requiredSections.length);
+      if (byTitle.size === 0 && reportData.sections?.length > 0) {
+        // If no titles matched, map by index order
+        console.log('제목 매칭 실패, 순서대로 매핑 시도');
+        for (let i = 0; i < Math.min(reportData.sections.length, requiredSections.length); i++) {
+          const s = reportData.sections[i];
+          if (s?.content && typeof s.content === 'string') {
+            byTitle.set(requiredSections[i], s.content);
+          }
+        }
+        console.log('순서 매핑 후 섹션 수:', byTitle.size);
       }
 
       reportData.sections = requiredSections.map((title) => ({
@@ -577,11 +620,8 @@ ${relatedResources}
         content: byTitle.get(title) ?? '<div>이 섹션의 데이터를 생성하는 중 오류가 발생했습니다.</div>',
       }));
 
-      if (typeof reportData.summary !== 'string' || reportData.summary.trim().length === 0) {
-        reportData.summary = '<div>요약 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</div>';
-      }
-
-      console.log('리포트 파싱 성공, 섹션 수:', reportData.sections.length);
+      const filledCount = requiredSections.filter(t => byTitle.has(t)).length;
+      console.log('리포트 파싱 성공, 채워진 섹션:', filledCount, '/', requiredSections.length);
     } catch (parseError) {
       console.error('AI 응답 파싱 최종 오류:', parseError);
       console.error('원본 응답 미리보기(앞 1200자):', rawText?.substring(0, 1200));

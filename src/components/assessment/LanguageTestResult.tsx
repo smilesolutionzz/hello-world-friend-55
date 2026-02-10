@@ -130,16 +130,51 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
 
   const evaluation = getEvaluation(total, age);
 
-  // 차트 데이터 - 영역별 발달률 표시
-  const maxScore = results.answers.length * 3; // 각 문항 최대 3점
-  const developmentRate = Math.round((total / maxScore) * 100);
+  // 차트 데이터 - 실제 답변 기반 영역별 발달률 계산
+  const answers = results.answers;
+  const totalQuestions = answers.length;
   
+  // 문항을 4개 영역으로 균등 분배 (수용언어, 표현언어, 언어이해, 어휘력)
+  const domainSize = Math.ceil(totalQuestions / 4);
+  const domainScores = {
+    receptive: answers.slice(0, domainSize),           // 수용언어: 1~5번
+    expressive: answers.slice(domainSize, domainSize * 2),  // 표현언어: 6~10번
+    comprehension: answers.slice(domainSize * 2, domainSize * 3), // 언어이해: 11~15번
+    vocabulary: answers.slice(domainSize * 3),          // 어휘력: 16~20번
+  };
+
+  const calcRate = (arr: number[]) => {
+    if (arr.length === 0) return 0;
+    const sum = arr.reduce((a, b) => a + b, 0);
+    return Math.round((sum / (arr.length * 3)) * 100);
+  };
+
+  const receptiveRate = calcRate(domainScores.receptive);
+  const expressiveRate = calcRate(domainScores.expressive);
+  const comprehensionRate = calcRate(domainScores.comprehension);
+  const vocabularyRate = calcRate(domainScores.vocabulary);
+  const overallRate = Math.round((total / (totalQuestions * 3)) * 100);
+
   const chartData = [
-    { name: '수용언어', value: Math.round(developmentRate * 0.95), fill: '#4f46e5' },
-    { name: '표현언어', value: Math.round(developmentRate * 1.02), fill: '#06b6d4' },
-    { name: '언어이해', value: Math.round(developmentRate * 0.98), fill: '#10b981' },
-    { name: '어휘력', value: Math.round(developmentRate * 1.0), fill: '#f59e0b' },
-    { name: '종합', value: developmentRate, fill: '#8b5cf6' },
+    { name: '수용언어', value: receptiveRate, fill: '#4f46e5' },
+    { name: '표현언어', value: expressiveRate, fill: '#06b6d4' },
+    { name: '언어이해', value: comprehensionRate, fill: '#10b981' },
+    { name: '어휘력', value: vocabularyRate, fill: '#f59e0b' },
+    { name: '종합', value: overallRate, fill: '#8b5cf6' },
+  ];
+
+  // 각 영역별 수준 판정
+  const getDomainLevel = (rate: number) => {
+    if (rate >= 80) return { label: '양호', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-950/30', border: 'border-green-200 dark:border-green-800' };
+    if (rate >= 50) return { label: '보통', color: 'text-yellow-600', bg: 'bg-yellow-50 dark:bg-yellow-950/30', border: 'border-yellow-200 dark:border-yellow-800' };
+    return { label: '주의', color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-950/30', border: 'border-red-200 dark:border-red-800' };
+  };
+
+  const domainDetails = [
+    { name: '수용언어', rate: receptiveRate, desc: '다른 사람의 말을 듣고 이해하는 능력이에요. 지시 따르기, 이름에 반응하기 등이 포함됩니다.', emoji: '👂' },
+    { name: '표현언어', rate: expressiveRate, desc: '자신의 생각과 감정을 말로 표현하는 능력이에요. 단어 사용, 문장 구성 등이 포함됩니다.', emoji: '🗣️' },
+    { name: '언어이해', rate: comprehensionRate, desc: '문장의 의미를 파악하고 상황을 이해하는 능력이에요. 복잡한 지시나 이야기 이해가 포함됩니다.', emoji: '💡' },
+    { name: '어휘력', rate: vocabularyRate, desc: '알고 있는 단어의 양과 적절하게 사용하는 능력이에요. 새로운 단어 습득력도 반영됩니다.', emoji: '📚' },
   ];
 
   const handleExpertConsult = () => {
@@ -282,8 +317,37 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           </ResponsiveContainer>
         </div>
         <p className="text-sm text-muted-foreground text-center mt-4">
-          * 발달률은 해당 연령 기준 언어발달 수준을 백분율로 나타낸 것입니다
+          * 발달률은 해당 연령 기준 언어발달 수준을 백분율로 나타낸 것입니다 (80% 이상: 양호 / 50~79%: 보통 / 50% 미만: 주의)
         </p>
+
+        {/* 영역별 상세 설명 */}
+        <div className="mt-8 space-y-3">
+          <h4 className="text-base font-semibold text-foreground mb-4">📋 영역별 상세 해석</h4>
+          {domainDetails.map((domain) => {
+            const level = getDomainLevel(domain.rate);
+            return (
+              <div key={domain.name} className={`p-4 rounded-lg border ${level.bg} ${level.border}`}>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-semibold text-foreground flex items-center gap-2">
+                    {domain.emoji} {domain.name}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-bold text-foreground">{domain.rate}%</span>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${level.color} ${level.bg}`}>
+                      {level.label}
+                    </span>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">{domain.desc}</p>
+                {domain.rate < 50 && (
+                  <p className="text-xs text-red-600 dark:text-red-400 mt-1.5 font-medium">
+                    ⚠️ 이 영역은 추가적인 자극과 전문가 상담이 도움될 수 있어요.
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </Card>
 
       <div className="grid md:grid-cols-2 gap-4">

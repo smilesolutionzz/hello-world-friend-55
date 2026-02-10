@@ -88,34 +88,37 @@ const VoiceObservationRecorder: React.FC<VoiceObservationRecorderProps> = ({
     try {
       const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
       
-      const reader = new FileReader();
-      reader.readAsDataURL(audioBlob);
-      
-      reader.onloadend = async () => {
-        const base64Audio = reader.result?.toString().split(',')[1];
-        
-        if (!base64Audio) {
-          throw new Error('Failed to convert audio');
-        }
+      const base64Audio = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const result = reader.result?.toString().split(',')[1];
+          if (!result) {
+            reject(new Error('Failed to convert audio'));
+          } else {
+            resolve(result);
+          }
+        };
+        reader.onerror = () => reject(new Error('Failed to read audio file'));
+        reader.readAsDataURL(audioBlob);
+      });
 
-        toast({
-          title: "AI 분석 중...",
-          description: "음성을 텍스트로 변환하고 있습니다",
-        });
+      toast({
+        title: "AI 분석 중...",
+        description: "음성을 텍스트로 변환하고 있습니다",
+      });
 
-        const { data, error } = await supabase.functions.invoke('voice-to-observation', {
-          body: { audioBase64: base64Audio }
-        });
+      const { data, error } = await supabase.functions.invoke('voice-to-observation', {
+        body: { audioBase64: base64Audio }
+      });
 
-        if (error) throw error;
+      if (error) throw error;
 
-        toast({
-          title: "변환 완료",
-          description: "AI가 관찰일지를 작성했습니다",
-        });
+      toast({
+        title: "변환 완료",
+        description: "AI가 관찰일지를 작성했습니다",
+      });
 
-        onObservationCreated(data);
-      };
+      onObservationCreated(data);
     } catch (error) {
       console.error('Error processing recording:', error);
       toast({

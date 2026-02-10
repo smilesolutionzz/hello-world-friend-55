@@ -36,16 +36,16 @@ const ColumnHookBanner = () => {
               <div className="flex-1 text-center md:text-left">
                 <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
                   <Sparkles className="w-4 h-4 text-yellow-400" />
-                  <span className="text-xs font-medium text-yellow-400 tracking-wider">2026년 1월 특별 칼럼</span>
+                  <span className="text-xs font-medium text-yellow-400 tracking-wider">2026년 2월 특별 칼럼</span>
                 </div>
                 
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
-                  "1만 명의 기적, 그리고 약속"
+                  "새 학기 앞둔 엄마, 아빠에게"
                 </h3>
                 
                 <p className="text-sm md:text-base text-slate-300 leading-relaxed">
-                  1만 가정이 용기를 내어 찾아주셨습니다. 
-                  <span className="text-rose-400 font-medium"> 왜 저희는 무료를 고집할까요?</span>
+                  3월이 다가옵니다. 아이도, 부모도 설렘보다 걱정이 앞서는 계절. 
+                  <span className="text-rose-400 font-medium"> 불안해도 괜찮습니다.</span>
                 </p>
               </div>
               

@@ -14,6 +14,7 @@ interface DevelopmentalDelayTestFormProps {
     average: number;
     ageGroup: string;
     severity: string;
+    selectedAgeRange?: string;
   }) => void;
   onBack: () => void;
 }
@@ -40,10 +41,19 @@ const questions = [
   "아이가 규칙적인 일과나 루틴을 따르는 데 어려움이 있나요?",
   "전반적으로 아이의 발달이 걱정스럽다고 느끼시나요?"
 ];
+const ageRanges = [
+  { label: "0~12개월", value: "0-12m" },
+  { label: "13~24개월", value: "13-24m" },
+  { label: "25~36개월", value: "25-36m" },
+  { label: "37~48개월", value: "37-48m" },
+  { label: "49~60개월", value: "49-60m" },
+  { label: "5~7세", value: "5-7y" },
+];
 
 const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTestFormProps) => {
+  const [selectedAgeRange, setSelectedAgeRange] = useState<string | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<string[]>(new Array(questions.length).fill("")); // 빈 문자열로 초기화
+  const [answers, setAnswers] = useState<string[]>(new Array(questions.length).fill(""));
   const { toast } = useToast();
 
   const handleAnswerChange = (value: string) => {
@@ -99,20 +109,51 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
       total,
       average,
       ageGroup: "아동",
-      severity
+      severity,
+      selectedAgeRange: selectedAgeRange || undefined
     });
   };
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
+  // 연령 선택 화면
+  if (!selectedAgeRange) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="mb-6">
+          <Button variant="ghost" onClick={onBack} className="mb-4">
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            뒤로가기
+          </Button>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">아이의 연령대를 선택해주세요</CardTitle>
+            <p className="text-sm text-muted-foreground">연령에 따라 발달 기준이 다르므로, 정확한 연령 선택이 중요합니다.</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-3">
+              {ageRanges.map((range) => (
+                <Button
+                  key={range.value}
+                  variant="outline"
+                  className="h-14 text-base"
+                  onClick={() => setSelectedAgeRange(range.value)}
+                >
+                  {range.label}
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
-        <Button
-          variant="ghost"
-          onClick={onBack}
-          className="mb-4"
-        >
+        <Button variant="ghost" onClick={() => setSelectedAgeRange(null)} className="mb-4">
           <ChevronLeft className="w-4 h-4 mr-2" />
           뒤로가기
         </Button>

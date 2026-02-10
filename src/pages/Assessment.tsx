@@ -629,6 +629,9 @@ const Assessment = () => {
       setTestType(null);
     } else if (currentStep === 'assessment') {
       setCurrentStep('age-select');
+    } else if (currentStep === 'test-type') {
+      // 메인 검사 목록에서 뒤로가기 -> 홈으로
+      navigate('/');
     } else {
       // 기본적으로 검사 선택 화면으로
       setCurrentStep('test-type');

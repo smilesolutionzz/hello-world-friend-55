@@ -483,65 +483,85 @@ export default function ResilienceTestResult({ results, onBack }: ResilienceTest
                   )}
 
                   <BlurredContent requiredCash={5000}>
-                    {aiAnalysis.workplaceAnalysis && (
-                      <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                        <h4 className="font-bold text-blue-700 mb-2 flex items-center gap-2">
-                          <Target className="w-5 h-5" />
-                          직장 생활 분석
-                        </h4>
-                        <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.workplaceAnalysis}</p>
-                      </div>
-                    )}
+                    <div className="grid gap-3">
+                      {aiAnalysis.workplaceAnalysis && (
+                        <details className="group">
+                          <summary className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500 cursor-pointer list-none">
+                            <Target className="w-4 h-4 text-blue-600" />
+                            <span className="font-bold text-blue-700 text-sm">직장 생활 분석</span>
+                            <ChevronRight className="w-4 h-4 ml-auto text-blue-400 group-open:rotate-90 transition-transform" />
+                          </summary>
+                          <div className="p-3 mt-1 bg-blue-50/50 rounded-lg">
+                            <p className="text-gray-700 whitespace-pre-line leading-relaxed text-sm">{aiAnalysis.workplaceAnalysis}</p>
+                          </div>
+                        </details>
+                      )}
 
-                    {aiAnalysis.strengthsAnalysis && (
-                      <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
-                        <h4 className="font-bold text-green-700 mb-2 flex items-center gap-2">
-                          <Sparkles className="w-5 h-5" />
-                          핵심 강점 분석
-                        </h4>
-                        <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.strengthsAnalysis}</p>
-                      </div>
-                    )}
+                      {aiAnalysis.strengthsAnalysis && (
+                        <details className="group">
+                          <summary className="flex items-center gap-2 p-3 bg-green-50 rounded-lg border-l-4 border-green-500 cursor-pointer list-none">
+                            <Sparkles className="w-4 h-4 text-green-600" />
+                            <span className="font-bold text-green-700 text-sm">핵심 강점 분석</span>
+                            <ChevronRight className="w-4 h-4 ml-auto text-green-400 group-open:rotate-90 transition-transform" />
+                          </summary>
+                          <div className="p-3 mt-1 bg-green-50/50 rounded-lg">
+                            <p className="text-gray-700 whitespace-pre-line leading-relaxed text-sm">{aiAnalysis.strengthsAnalysis}</p>
+                          </div>
+                        </details>
+                      )}
 
-                    {aiAnalysis.developmentAreas && (
-                      <div className="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
-                        <h4 className="font-bold text-amber-700 mb-2 flex items-center gap-2">
-                          <Lightbulb className="w-5 h-5" />
-                          발전 가능 영역
-                        </h4>
-                        <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.developmentAreas}</p>
-                      </div>
-                    )}
+                      {aiAnalysis.developmentAreas && (
+                        <details className="group">
+                          <summary className="flex items-center gap-2 p-3 bg-amber-50 rounded-lg border-l-4 border-amber-500 cursor-pointer list-none">
+                            <Lightbulb className="w-4 h-4 text-amber-600" />
+                            <span className="font-bold text-amber-700 text-sm">발전 가능 영역</span>
+                            <ChevronRight className="w-4 h-4 ml-auto text-amber-400 group-open:rotate-90 transition-transform" />
+                          </summary>
+                          <div className="p-3 mt-1 bg-amber-50/50 rounded-lg">
+                            <p className="text-gray-700 whitespace-pre-line leading-relaxed text-sm">{aiAnalysis.developmentAreas}</p>
+                          </div>
+                        </details>
+                      )}
 
-                    {aiAnalysis.practiceGuide && (
-                      <div className="p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
-                        <h4 className="font-bold text-indigo-700 mb-2 flex items-center gap-2">
-                          <BookOpen className="w-5 h-5" />
-                          일상 실천 가이드
-                        </h4>
-                        <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.practiceGuide}</p>
-                      </div>
-                    )}
+                      {aiAnalysis.practiceGuide && (
+                        <details className="group">
+                          <summary className="flex items-center gap-2 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500 cursor-pointer list-none">
+                            <BookOpen className="w-4 h-4 text-indigo-600" />
+                            <span className="font-bold text-indigo-700 text-sm">일상 실천 가이드</span>
+                            <ChevronRight className="w-4 h-4 ml-auto text-indigo-400 group-open:rotate-90 transition-transform" />
+                          </summary>
+                          <div className="p-3 mt-1 bg-indigo-50/50 rounded-lg">
+                            <p className="text-gray-700 whitespace-pre-line leading-relaxed text-sm">{aiAnalysis.practiceGuide}</p>
+                          </div>
+                        </details>
+                      )}
 
-                    {aiAnalysis.crisisResponse && (
-                      <div className="p-4 bg-rose-50 rounded-lg border-l-4 border-rose-500">
-                        <h4 className="font-bold text-rose-700 mb-2 flex items-center gap-2">
-                          <RefreshCw className="w-5 h-5" />
-                          위기 대응 전략
-                        </h4>
-                        <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.crisisResponse}</p>
-                      </div>
-                    )}
+                      {aiAnalysis.crisisResponse && (
+                        <details className="group">
+                          <summary className="flex items-center gap-2 p-3 bg-rose-50 rounded-lg border-l-4 border-rose-500 cursor-pointer list-none">
+                            <RefreshCw className="w-4 h-4 text-rose-600" />
+                            <span className="font-bold text-rose-700 text-sm">위기 대응 전략</span>
+                            <ChevronRight className="w-4 h-4 ml-auto text-rose-400 group-open:rotate-90 transition-transform" />
+                          </summary>
+                          <div className="p-3 mt-1 bg-rose-50/50 rounded-lg">
+                            <p className="text-gray-700 whitespace-pre-line leading-relaxed text-sm">{aiAnalysis.crisisResponse}</p>
+                          </div>
+                        </details>
+                      )}
 
-                    {aiAnalysis.expertOpinion && (
-                      <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border-l-4 border-purple-500">
-                        <h4 className="font-bold text-purple-700 mb-2 flex items-center gap-2">
-                          <Brain className="w-5 h-5" />
-                          전문가 종합 소견
-                        </h4>
-                        <p className="text-gray-700 whitespace-pre-line leading-relaxed">{aiAnalysis.expertOpinion}</p>
-                      </div>
-                    )}
+                      {aiAnalysis.expertOpinion && (
+                        <details className="group">
+                          <summary className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border-l-4 border-purple-500 cursor-pointer list-none">
+                            <Brain className="w-4 h-4 text-purple-600" />
+                            <span className="font-bold text-purple-700 text-sm">전문가 종합 소견</span>
+                            <ChevronRight className="w-4 h-4 ml-auto text-purple-400 group-open:rotate-90 transition-transform" />
+                          </summary>
+                          <div className="p-3 mt-1 bg-purple-50/50 rounded-lg">
+                            <p className="text-gray-700 whitespace-pre-line leading-relaxed text-sm">{aiAnalysis.expertOpinion}</p>
+                          </div>
+                        </details>
+                      )}
+                    </div>
                   </BlurredContent>
                 </div>
               ) : null}

@@ -250,6 +250,52 @@ const TokenSubscription = () => {
           </Card>
         </motion.section>
 
+        {/* 논문 기반 맞춤 큐레이션 */}
+        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mb-12">
+          <Card className="overflow-hidden border-2 border-violet-200 dark:border-violet-800 bg-gradient-to-br from-violet-50/80 via-white to-indigo-50/50 dark:from-violet-950/40 dark:via-slate-900 dark:to-indigo-950/30">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/20">
+                  <Brain className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-black text-lg text-foreground">전세계 논문 기반 맞춤 큐레이션</h4>
+                  <p className="text-sm text-muted-foreground">글로벌 연구와 진단도구를 실시간 참고합니다</p>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4 mb-5">
+                <div className="p-4 rounded-xl bg-white/70 dark:bg-slate-800/60 border border-violet-100 dark:border-violet-900">
+                  <div className="flex items-center gap-2 mb-2">
+                    <TrendingUp className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+                    <span className="font-bold text-sm text-foreground">데이터 축적 → 맞춤 리포트</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    검사·관찰·상담 데이터가 쌓일수록 Piaget, Vygotsky, Bowlby 등 15개+ 심리 이론과 글로벌 논문을 기반으로 더 정교한 맞춤형 큐레이션 리포트를 제공합니다.
+                  </p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/70 dark:bg-slate-800/60 border border-violet-100 dark:border-violet-900">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="w-4 h-4 text-amber-500" />
+                    <span className="font-bold text-sm text-foreground">고민거리 즉시 분석</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    과거 데이터 없이도 현재 고민이나 발달 상태만 입력하면 논문·진단도구 기반의 전문 리포트를 바로 생성합니다. 구독자 전용 기능입니다.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {['DSM-5 기반', 'K-CDI 참조', 'Bayley 발달척도', 'CBCL 행동평가', '학술 논문 실시간 반영'].map((tag, i) => (
+                  <Badge key={i} variant="outline" className="text-xs bg-violet-100/50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-700">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.section>
+
         {/* 전문가 상담 안내 */}
         <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-12">
           <Card className="overflow-hidden">

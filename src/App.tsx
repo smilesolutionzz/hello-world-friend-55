@@ -109,6 +109,7 @@ import VoiceEmotionDiary from "./pages/VoiceEmotionDiary";
 import B2BConsulting from "./pages/B2BConsulting";
 import B2BProposal from "./pages/B2BProposal";
 import EAPService from "./pages/EAPService";
+import CortisolScan from "./pages/CortisolScan";
 
 // New Retention Features
 import WellnessHub from "./pages/WellnessHub";
@@ -405,7 +406,10 @@ const App = () => {
           <Route path="/parent-dashboard" element={<ParentDashboard />} />
           <Route path="/parent-connect" element={<ParentConnect />} />
           
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+           {/* Physical AI - Internal Review */}
+           <Route path="/cortisol-scan" element={<CortisolScan />} />
+           
+           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
               </Routes>
               <FeedbackButton />

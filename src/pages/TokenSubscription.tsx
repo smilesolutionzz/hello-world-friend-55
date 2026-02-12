@@ -250,43 +250,9 @@ const TokenSubscription = () => {
           </Card>
         </motion.section>
 
-        {/* 맞춤형 리포트 분석 강조 */}
-        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mb-12">
-          <Card className="overflow-hidden border-2 border-amber-400/50 bg-gradient-to-br from-amber-50 via-orange-50/50 to-yellow-50/30 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-yellow-950/10">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-lg shadow-amber-500/20">
-                  <Award className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-lg text-foreground">맞춤형 AI 리포트 분석</h4>
-                  <p className="text-xs text-muted-foreground">구독자 전용 심층 리포트</p>
-                </div>
-                <Badge className="ml-auto bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-xs">구독 포함</Badge>
-              </div>
-              <p className="text-sm text-foreground mb-4">
-                단순 점수가 아닌, <span className="font-bold text-amber-600 dark:text-amber-400">아이 맞춤형 심층 분석과 구체적인 솔루션</span>을 PDF로 제공합니다.
-              </p>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { icon: Brain, text: '발달 영역별 세부 분석' },
-                  { icon: Target, text: '맞춤 교육 전략 제안' },
-                  { icon: TrendingUp, text: '성장 추이 시각화' },
-                  { icon: Sparkles, text: 'AI 기반 조기 감지' },
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 p-2.5 rounded-lg bg-white/60 dark:bg-slate-800/60">
-                    <item.icon className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-                    <span className="text-sm font-medium text-foreground">{item.text}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.section>
-
         {/* 전문가 상담 안내 */}
         <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-12">
-          <Card className="overflow-hidden border border-border">
+          <Card className="overflow-hidden">
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500">
@@ -294,10 +260,10 @@ const TokenSubscription = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-foreground">전문가 1:1 상담</h4>
-                  <p className="text-xs text-white/70 dark:text-white/70">검증된 심리 전문가</p>
+                  <p className="text-xs text-muted-foreground">검증된 심리 전문가</p>
                 </div>
               </div>
-              <p className="text-sm text-white dark:text-white mb-3">전문가별 상담 요금이 상이합니다</p>
+              <p className="text-sm text-muted-foreground mb-3">전문가별 상담 요금이 상이합니다</p>
               <ul className="space-y-1.5 mb-4">
                 {['1:1 화상/전화 상담', '전문가 맞춤 조언', '전문가 프로필에서 요금 확인'].map((f, i) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-foreground">
@@ -305,7 +271,7 @@ const TokenSubscription = () => {
                   </li>
                 ))}
               </ul>
-              <Button variant="outline" size="sm" className="w-full" onClick={() => navigate('/expert-hiring')}>
+              <Button variant="ghost" size="sm" className="w-full text-foreground" onClick={() => navigate('/expert-hiring')}>
                 전문가 프로필 보기 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </CardContent>

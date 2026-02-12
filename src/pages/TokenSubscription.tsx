@@ -259,19 +259,19 @@ const TokenSubscription = () => {
                   <Users className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 dark:text-white">전문가 1:1 상담</h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">검증된 심리 전문가</p>
+                  <h4 className="font-bold text-foreground">전문가 1:1 상담</h4>
+                  <p className="text-xs text-muted-foreground">검증된 심리 전문가</p>
                 </div>
               </div>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">전문가별 상담 요금이 상이합니다</p>
+              <p className="text-sm text-muted-foreground mb-3">전문가별 상담 요금이 상이합니다</p>
               <ul className="space-y-1.5 mb-4">
                 {['1:1 화상/전화 상담', '전문가 맞춤 조언', '전문가 프로필에서 요금 확인'].map((f, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
                     <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />{f}
                   </li>
                 ))}
               </ul>
-              <Button variant="ghost" size="sm" className="w-full text-slate-700 dark:text-slate-300" onClick={() => navigate('/expert-hiring')}>
+              <Button variant="ghost" size="sm" className="w-full text-foreground" onClick={() => navigate('/expert-hiring')}>
                 전문가 프로필 보기 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </CardContent>
@@ -291,8 +291,8 @@ const TokenSubscription = () => {
                   <item.icon className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <div className="font-bold text-sm text-slate-900 dark:text-white">{item.label}</div>
-                  <div className="text-xs text-slate-600 dark:text-slate-400">{item.sub}</div>
+                  <div className="font-bold text-sm text-foreground">{item.label}</div>
+                  <div className="text-xs text-muted-foreground">{item.sub}</div>
                 </div>
               </div>
             ))}

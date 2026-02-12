@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, ButtonProps } from '@/components/ui/button';
-import { Loader2, CreditCard, Crown, Coins, MessageCircle } from 'lucide-react';
-import { usePayment, ProductId, PRODUCTS } from '@/hooks/usePayment';
+import { Loader2, Crown } from 'lucide-react';
+import { usePayment } from '@/hooks/usePayment';
 
 interface PayButtonProps extends Omit<ButtonProps, 'onClick' | 'onError'> {
-  productId: ProductId;
+  productId?: string;
   onSuccess?: () => void;
   onPaymentError?: (error: string) => void;
   showPrice?: boolean;
@@ -23,10 +23,9 @@ export const PayButton: React.FC<PayButtonProps> = ({
   ...props
 }) => {
   const { pay, loading, isReady } = usePayment();
-  const product = PRODUCTS[productId];
 
   const handleClick = async () => {
-    const success = await pay(productId);
+    const success = await pay('subscription_monthly');
     if (success) {
       onSuccess?.();
     } else {
@@ -34,66 +33,21 @@ export const PayButton: React.FC<PayButtonProps> = ({
     }
   };
 
-  const getIcon = () => {
-    if (!showIcon) return null;
-    switch (product.type) {
-      case 'pass':
-        return <Crown className="w-4 h-4 mr-2" />;
-      case 'cash':
-        return <Coins className="w-4 h-4 mr-2" />;
-      case 'consult':
-        return <MessageCircle className="w-4 h-4 mr-2" />;
-      default:
-        return <CreditCard className="w-4 h-4 mr-2" />;
-    }
-  };
-
-  const getLabel = () => {
-    if (label) return label;
-    if (children) return children;
-    
-    const priceText = showPrice ? ` ₩${product.price.toLocaleString()}` : '';
-    return `${product.name}${priceText}`;
-  };
-
   return (
-    <Button
-      onClick={handleClick}
-      disabled={loading || !isReady}
-      {...props}
-    >
+    <Button onClick={handleClick} disabled={loading || !isReady} {...props}>
       {loading ? (
         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-      ) : (
-        getIcon()
-      )}
-      {getLabel()}
+      ) : showIcon ? (
+        <Crown className="w-4 h-4 mr-2" />
+      ) : null}
+      {children || label || (showPrice ? '월간 구독 ₩19,900' : '구독하기')}
     </Button>
   );
 };
 
-// 간편 패스 구매 버튼
-export const BuyPassButton: React.FC<Omit<PayButtonProps, 'productId'> & { passType?: 'pass_30' }> = ({
-  passType = 'pass_30',
-  ...props
-}) => (
-  <PayButton productId={passType} {...props} />
-);
-
-// 간편 캐시 충전 버튼
-export const BuyCashButton: React.FC<Omit<PayButtonProps, 'productId'> & { cashType?: 'cash_5000' | 'cash_10000' }> = ({
-  cashType = 'cash_5000',
-  ...props
-}) => (
-  <PayButton productId={cashType} {...props} />
-);
-
-// 간편 상담 예약 버튼
-export const BuyConsultButton: React.FC<Omit<PayButtonProps, 'productId'> & { consultType?: 'consult_30' | 'consult_60' }> = ({
-  consultType = 'consult_30',
-  ...props
-}) => (
-  <PayButton productId={consultType} {...props} />
-);
+// 하위 호환성
+export const BuyPassButton = PayButton;
+export const BuyCashButton = PayButton;
+export const BuyConsultButton = PayButton;
 
 export default PayButton;

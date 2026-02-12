@@ -2,15 +2,16 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Lock, Coins, Crown, AlertTriangle, Sparkles } from 'lucide-react';
-import { useTokens } from '@/hooks/useTokens';
+import { Lock, Crown, Sparkles, CheckCircle } from 'lucide-react';
+import { useSubscription } from '@/hooks/useSubscription';
+import { useFreeTrial } from '@/hooks/useFreeTrial';
 import { useNavigate } from 'react-router-dom';
-import TokenBalance from './TokenBalance';
+import { SUBSCRIPTION_PRICE } from '@/constants/tokenCosts';
 
 interface TokenGateProps {
   tokensRequired: number;
   featureName: string;
+  featureKey?: string;
   onProceed: () => void;
   children?: React.ReactNode;
   showAlternatives?: boolean;
@@ -18,15 +19,16 @@ interface TokenGateProps {
 }
 
 const TokenGate: React.FC<TokenGateProps> = ({ 
-  tokensRequired, 
   featureName, 
+  featureKey,
   onProceed, 
   children,
-  showAlternatives = true,
-  category = 'basic'
 }) => {
-  const { tokenBalance, checkTokenAvailability, loading } = useTokens();
+  const { isPremiumUser, isLifetimeUser, loading: subLoading } = useSubscription();
+  const { canUseFree, getRemainingTrials, loading: trialLoading } = useFreeTrial();
   const navigate = useNavigate();
+
+  const loading = subLoading || trialLoading;
 
   if (loading) {
     return (
@@ -41,11 +43,13 @@ const TokenGate: React.FC<TokenGateProps> = ({
     );
   }
 
-  const hasEnoughTokens = checkTokenAvailability(tokensRequired);
-  const currentTokens = tokenBalance?.current_tokens || 0;
+  const isPremium = isPremiumUser() || isLifetimeUser();
+  const key = featureKey || featureName;
+  const hasFreeTrial = canUseFree(key);
+  const remaining = getRemainingTrials(key);
 
-  // 캐시가 충분한 경우 - 기능 이용 가능
-  if (hasEnoughTokens) {
+  // 구독자 또는 무료 체험 가능 → 진행
+  if (isPremium || hasFreeTrial) {
     return (
       <Card className="w-full max-w-2xl mx-auto border-primary/20">
         <CardHeader className="text-center">
@@ -57,98 +61,74 @@ const TokenGate: React.FC<TokenGateProps> = ({
         <CardContent className="p-6 space-y-6">
           <div className="flex items-center justify-between bg-muted/50 rounded-lg p-4">
             <div className="flex items-center gap-3">
-              <Coins className="w-5 h-5 text-primary" />
+              {isPremium ? (
+                <Crown className="w-5 h-5 text-primary" />
+              ) : (
+                <Sparkles className="w-5 h-5 text-primary" />
+              )}
               <div>
-                <p className="font-medium">소요 캐시</p>
-                <p className="text-sm text-muted-foreground">
-                  {tokensRequired}개 (잔여: {currentTokens - tokensRequired}개)
+                <p className="font-medium">
+                  {isPremium ? '구독 중 · 무제한 이용' : `무료 체험`}
                 </p>
+                {!isPremium && remaining !== Infinity && (
+                  <p className="text-sm text-muted-foreground">
+                    남은 무료 횟수: {remaining}회
+                  </p>
+                )}
               </div>
             </div>
             <Badge variant="secondary">
-              사용 가능
+              {isPremium ? '구독자' : '무료 체험'}
             </Badge>
           </div>
 
           {children}
 
           <Button onClick={onProceed} className="w-full" size="lg">
-            <Coins className="w-4 h-4 mr-2" />
-            {tokensRequired}개 캐시로 시작하기
+            <CheckCircle className="w-4 h-4 mr-2" />
+            시작하기
           </Button>
-
-          <div className="text-center">
-            <TokenBalance compact showPurchaseButton={false} />
-          </div>
         </CardContent>
       </Card>
     );
   }
 
-  // 캐시가 부족한 경우 - 구독 유도
+  // 무료 체험 소진 → 구독 유도
   return (
-    <Card className="w-full max-w-2xl mx-auto border-destructive/20">
+    <Card className="w-full max-w-2xl mx-auto border-primary/20">
       <CardHeader className="text-center">
         <CardTitle className="flex items-center justify-center gap-2">
-          <Lock className="w-5 h-5 text-destructive" />
-          캐시가 부족합니다
+          <Lock className="w-5 h-5 text-primary" />
+          무료 체험이 끝났습니다
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
-        <Alert>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            <strong>{featureName}</strong>을 이용하려면 <strong>{tokensRequired}개</strong>의 캐시가 필요하지만, 
-            현재 <strong>{currentTokens}개</strong>만 보유하고 계십니다.
-          </AlertDescription>
-        </Alert>
+        <p className="text-center text-muted-foreground">
+          <strong>{featureName}</strong>의 무료 체험 횟수를 모두 사용하셨습니다.
+        </p>
 
         <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-lg p-6 text-center space-y-4">
           <Crown className="w-12 h-12 mx-auto text-primary" />
           <div>
-            <h3 className="text-lg font-semibold mb-2">캐시를 충전해보세요!</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              더 많은 AI 분석과 고급 기능을 무제한으로 이용하실 수 있습니다.
+            <h3 className="text-lg font-semibold mb-1">월간 구독으로 무제한 이용</h3>
+            <div className="flex items-baseline justify-center gap-1">
+              <span className="text-3xl font-black text-primary">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
+              <span className="text-muted-foreground">/월</span>
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">
+              모든 AI 분석 · 심리검사 · PDF 리포트 무제한
             </p>
-          </div>
-
-          <div className="grid gap-3 max-w-md mx-auto">
-            <div className="flex items-center justify-between text-sm bg-white/50 rounded p-3">
-              <span>Starter 플랜</span>
-              <Badge variant="outline">50개 캐시 - ₩9,900/월</Badge>
-            </div>
-            <div className="flex items-center justify-between text-sm bg-white/50 rounded p-3 border-2 border-primary/30">
-              <span>Pro 플랜 (추천)</span>
-              <Badge variant="default">150개 캐시 - ₩19,900/월</Badge>
-            </div>
-            <div className="flex items-center justify-between text-sm bg-white/50 rounded p-3">
-              <span>Premium 플랜</span>
-              <Badge variant="secondary">무제한 - ₩39,900/월</Badge>
-            </div>
           </div>
         </div>
 
         <div className="space-y-3">
-          <Button
-            onClick={() => navigate('/token-subscription')}
-            className="w-full"
-            size="lg"
-          >
+          <Button onClick={() => navigate('/token-subscription')} className="w-full" size="lg">
             <Crown className="w-4 h-4 mr-2" />
-            캐시 충전하러 가기
+            구독 시작하기
           </Button>
-          
-          <Button
-            variant="outline"
-            onClick={() => navigate('/dashboard')}
-            className="w-full"
-          >
+          <Button variant="outline" onClick={() => navigate('/dashboard')} className="w-full">
             대시보드로 돌아가기
           </Button>
-        </div>
-
-        <div className="text-center text-xs text-muted-foreground">
-          언제든지 취소 가능 • 안전한 결제 시스템
         </div>
       </CardContent>
     </Card>

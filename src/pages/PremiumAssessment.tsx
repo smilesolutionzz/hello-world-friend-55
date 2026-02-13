@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins, ChevronDown, Brain, Heart, Briefcase, DollarSign, UserCheck, AlertTriangle, Eye, Baby, Palette, Shield, ExternalLink } from "lucide-react";
+import { Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins, ChevronDown, Brain, Heart, Briefcase, DollarSign, UserCheck, AlertTriangle, Eye, Baby, Palette, Shield, ExternalLink, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
@@ -455,6 +455,7 @@ const PremiumAssessment = () => {
         { key: 'work_stress', icon: Briefcase },
         { key: 'financialPsychology', icon: DollarSign },
         { key: 'cognitive', icon: Brain },
+        { key: 'businessMetacognition', icon: Target, isSpecial: true, badge: '🧠 NEW', badgeColor: 'bg-slate-800' },
       ]
     },
     teen: {
@@ -529,6 +530,15 @@ const PremiumAssessment = () => {
       questions_count: 0,
       premium_features: ["보장 내역 자동 추출", "누락 보장 체크", "맞춤형 보완 제안"],
       onClick: () => setCurrentTest('insurance-analysis'),
+    },
+    businessMetacognition: {
+      title: "🧠 사업가 메타인지 레벨 테스트",
+      subtitle: "Business Metacognition Level Test",
+      description: "대표·원장·1인창업자를 위한 판단력 자가진단. 자기인식, 점검력, 조절력, 학습력 4개 지표로 당신의 메타인지 수준을 측정합니다",
+      duration: "약 3분",
+      questions_count: 20,
+      premium_features: ["4대 메타인지 지표 레이더 차트", "레벨별 맞춤 훈련법 제공", "매일 10분 메타 루틴 가이드"],
+      onClick: () => navigate('/assessment/business-metacognition'),
     },
   };
 

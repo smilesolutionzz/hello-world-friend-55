@@ -110,6 +110,7 @@ import B2BConsulting from "./pages/B2BConsulting";
 import B2BProposal from "./pages/B2BProposal";
 import EAPService from "./pages/EAPService";
 import CortisolScan from "./pages/CortisolScan";
+import BusinessMetacognitionTest from "./pages/BusinessMetacognitionTest";
 
 // New Retention Features
 import WellnessHub from "./pages/WellnessHub";
@@ -408,6 +409,7 @@ const App = () => {
           
            {/* Physical AI - Internal Review */}
            <Route path="/cortisol-scan" element={<CortisolScan />} />
+           <Route path="/assessment/business-metacognition" element={<BusinessMetacognitionTest />} />
            
            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

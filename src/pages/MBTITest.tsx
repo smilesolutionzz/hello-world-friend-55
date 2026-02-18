@@ -12,8 +12,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAutoSaveTestResult } from "@/hooks/useAutoSaveTestResult";
 import ModernAnalysisLoading from "@/components/assessment/ModernAnalysisLoading";
+import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
 
-const MBTITest = () => {
+const MBTITestInner = () => {
   const navigate = useNavigate();
   const [started, setStarted] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -218,7 +219,6 @@ const MBTITest = () => {
 
   const currentQ = questions[currentQuestion];
 
-  // 새로운 모던 디자인 적용
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
       {/* Background decorations */}
@@ -359,5 +359,11 @@ const MBTITest = () => {
     </div>
   );
 };
+
+const MBTITest = () => (
+  <SubscriptionGuard featureName="MBTI 검사">
+    <MBTITestInner />
+  </SubscriptionGuard>
+);
 
 export default MBTITest;

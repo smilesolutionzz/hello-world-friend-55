@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { useNavigate } from 'react-router-dom';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 
 // ─── 문항 데이터 ───
 const QUESTIONS = [
@@ -133,7 +134,7 @@ const getLevelInfo = (score: number): LevelInfo => {
 };
 
 // ─── 컴포넌트 ───
-const BusinessMetacognitionTest: React.FC = () => {
+const BusinessMetacognitionTestInner: React.FC = () => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<'intro' | 'test' | 'result'>('intro');
   const [currentQ, setCurrentQ] = useState(0);
@@ -510,5 +511,11 @@ const BusinessMetacognitionTest: React.FC = () => {
     </div>
   );
 };
+
+const BusinessMetacognitionTest: React.FC = () => (
+  <SubscriptionGuard featureName="사업가 메타인지 레벨 테스트">
+    <BusinessMetacognitionTestInner />
+  </SubscriptionGuard>
+);
 
 export default BusinessMetacognitionTest;

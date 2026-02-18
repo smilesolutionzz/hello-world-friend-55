@@ -4,10 +4,11 @@ import { DefenseMechanismResult } from '@/components/assessment/DefenseMechanism
 import { useNavigate } from 'react-router-dom';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 
 const STORAGE_KEY = 'defenseMechanismTestResult';
 
-const DefenseMechanismTestPage = () => {
+const DefenseMechanismTestInner = () => {
   const [result, setResult] = useState<any>(null);
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const navigate = useNavigate();
@@ -58,5 +59,11 @@ const DefenseMechanismTestPage = () => {
 
   return <DefenseMechanismTest onComplete={handleComplete} onBack={handleBack} />;
 };
+
+const DefenseMechanismTestPage = () => (
+  <SubscriptionGuard featureName="방어기제 검사">
+    <DefenseMechanismTestInner />
+  </SubscriptionGuard>
+);
 
 export default DefenseMechanismTestPage;

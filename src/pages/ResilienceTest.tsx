@@ -3,6 +3,7 @@ import ResilienceTestForm from "@/components/assessment/ResilienceTestForm";
 import ResilienceTestResult from "@/components/assessment/ResilienceTestResult";
 import { useNavigate } from "react-router-dom";
 import SEOHead from "@/components/common/SEOHead";
+import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -12,7 +13,7 @@ const structuredData = {
   "medicineSystem": "AI 기반 심리 분석"
 };
 
-const ResilienceTest = () => {
+const ResilienceTestInner = () => {
   const navigate = useNavigate();
   const [results, setResults] = useState<any>(null);
 
@@ -36,5 +37,11 @@ const ResilienceTest = () => {
     </>
   );
 };
+
+const ResilienceTest = () => (
+  <SubscriptionGuard featureName="회복탄력성 검사">
+    <ResilienceTestInner />
+  </SubscriptionGuard>
+);
 
 export default ResilienceTest;

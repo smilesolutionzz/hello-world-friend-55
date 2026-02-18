@@ -5,8 +5,9 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { useNavigate } from "react-router-dom";
 import { useGuestSession } from "@/hooks/useGuestSession";
 import SignupPromptModal from "@/components/guest/SignupPromptModal";
+import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
 
-const EnergyFlowTest = () => {
+const EnergyFlowTestInner = () => {
   const navigate = useNavigate();
   const [results, setResults] = useState<any>(null);
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
@@ -46,5 +47,11 @@ const EnergyFlowTest = () => {
     </>
   );
 };
+
+const EnergyFlowTest = () => (
+  <SubscriptionGuard featureName="에너지 흐름 검사">
+    <EnergyFlowTestInner />
+  </SubscriptionGuard>
+);
 
 export default EnergyFlowTest;

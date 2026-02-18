@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 import { Button } from '@/components/ui/button';
 import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, CheckCircle, Users, Zap, Shield, Activity, Smile, Phone, Moon, UtensilsCrossed } from 'lucide-react';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
@@ -24,7 +25,7 @@ import { EnhancedConstitutionResult } from '@/components/assessment/EnhancedCons
 type TestType = 'none' | 'quick' | 'premium' | 'diet' | 'autism' | 'adhd' | 'intellectual' | 'atopy' | 'stress' | 'women';
 type TestState = 'select' | 'testing' | 'result';
 
-const HanMedicineTest = () => {
+const HanMedicineTestInner = () => {
   const [currentTest, setCurrentTest] = useState<TestType>('none');
   const [testState, setTestState] = useState<TestState>('select');
   const [testResult, setTestResult] = useState<any>(null);
@@ -605,5 +606,11 @@ const HanMedicineTest = () => {
     </div>
   );
 };
+
+const HanMedicineTest = () => (
+  <SubscriptionGuard featureName="한방 체질분석">
+    <HanMedicineTestInner />
+  </SubscriptionGuard>
+);
 
 export default HanMedicineTest;

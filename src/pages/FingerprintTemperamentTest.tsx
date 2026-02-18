@@ -6,6 +6,7 @@ import { Fingerprint, Brain, Sparkles, RefreshCw, Share2, Home } from 'lucide-re
 import { useNavigate } from 'react-router-dom';
 import LoginRequiredOverlay from '@/components/auth/LoginRequiredOverlay';
 import SEOHead from '@/components/common/SEOHead';
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 
 interface TemperamentResult {
   type: string;
@@ -95,7 +96,7 @@ const temperamentResults: TemperamentResult[] = [
   }
 ];
 
-export default function FingerprintTemperamentTest() {
+function FingerprintTemperamentTestInner() {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<'intro' | 'scanning' | 'analyzing' | 'result'>('intro');
   const [scanProgress, setScanProgress] = useState(0);
@@ -490,5 +491,13 @@ export default function FingerprintTemperamentTest() {
       </div>
       </LoginRequiredOverlay>
     </>
+  );
+}
+
+export default function FingerprintTemperamentTest() {
+  return (
+    <SubscriptionGuard featureName="지문 인지기질검사">
+      <FingerprintTemperamentTestInner />
+    </SubscriptionGuard>
   );
 }

@@ -1,6 +1,7 @@
 import { RealtimeVoiceChatComponent } from '@/components/voice/RealtimeVoiceChat';
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 
-export default function VoiceCounselingPage() {
+function VoiceCounselingInner() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">
       <div className="container mx-auto px-4">
@@ -12,5 +13,13 @@ export default function VoiceCounselingPage() {
         <RealtimeVoiceChatComponent />
       </div>
     </div>
+  );
+}
+
+export default function VoiceCounselingPage() {
+  return (
+    <SubscriptionGuard featureName="AI 음성 상담">
+      <VoiceCounselingInner />
+    </SubscriptionGuard>
   );
 }

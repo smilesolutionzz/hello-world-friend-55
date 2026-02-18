@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Mic, MicOff, Phone, Loader2, ArrowLeft, Download, Copy, Volume2, VolumeX } from 'lucide-react';
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -16,7 +17,7 @@ interface Message {
 // SimpleRealtimeChat removed - now using RealtimeChat from utils
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 
-export default function SimpleAIAzit() {
+function SimpleAIAzitInner() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isConnected, setIsConnected] = useState(false);
@@ -236,5 +237,13 @@ export default function SimpleAIAzit() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SimpleAIAzit() {
+  return (
+    <SubscriptionGuard featureName="AI 아지트 상담">
+      <SimpleAIAzitInner />
+    </SubscriptionGuard>
   );
 }

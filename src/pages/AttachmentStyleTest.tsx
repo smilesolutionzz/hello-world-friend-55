@@ -4,10 +4,11 @@ import AttachmentStyleDeepResult from '@/components/assessment/AttachmentStyleDe
 import { useNavigate } from 'react-router-dom';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 
 const STORAGE_KEY = 'attachmentStyleTestResult';
 
-const AttachmentStyleTestPage = () => {
+const AttachmentStyleTestInner = () => {
   const [result, setResult] = useState<any>(null);
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const navigate = useNavigate();
@@ -58,5 +59,11 @@ const AttachmentStyleTestPage = () => {
 
   return <AttachmentStyleDeepTest onComplete={handleComplete} onBack={handleBack} />;
 };
+
+const AttachmentStyleTestPage = () => (
+  <SubscriptionGuard featureName="애착유형 검사">
+    <AttachmentStyleTestInner />
+  </SubscriptionGuard>
+);
 
 export default AttachmentStyleTestPage;

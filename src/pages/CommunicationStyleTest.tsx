@@ -4,10 +4,11 @@ import { RelationshipStyleResult } from '@/components/assessment/RelationshipSty
 import { useNavigate } from 'react-router-dom';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 
 const STORAGE_KEY = 'communicationStyleTestResult';
 
-const CommunicationStyleTest = () => {
+const CommunicationStyleTestInner = () => {
   const [result, setResult] = useState<any>(null);
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const navigate = useNavigate();
@@ -63,5 +64,11 @@ const CommunicationStyleTest = () => {
 
   return <CommunicationStyleForm onComplete={handleComplete} onBack={handleBack} />;
 };
+
+const CommunicationStyleTest = () => (
+  <SubscriptionGuard featureName="의사소통 유형 검사">
+    <CommunicationStyleTestInner />
+  </SubscriptionGuard>
+);
 
 export default CommunicationStyleTest;

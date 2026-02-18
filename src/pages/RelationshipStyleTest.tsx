@@ -4,10 +4,11 @@ import { RelationshipStyleResult } from '@/components/assessment/RelationshipSty
 import { useNavigate } from 'react-router-dom';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 
 const STORAGE_KEY = 'relationshipStyleTestResult';
 
-const RelationshipStyleTest = () => {
+const RelationshipStyleTestInner = () => {
   const [result, setResult] = useState<any>(null);
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const navigate = useNavigate();
@@ -58,5 +59,11 @@ const RelationshipStyleTest = () => {
 
   return <RelationshipStyleForm onComplete={handleComplete} onBack={handleBack} />;
 };
+
+const RelationshipStyleTest = () => (
+  <SubscriptionGuard featureName="관계유형 검사">
+    <RelationshipStyleTestInner />
+  </SubscriptionGuard>
+);
 
 export default RelationshipStyleTest;

@@ -4,10 +4,11 @@ import StressTestForm from '@/components/assessment/StressTestForm';
 import StressTestResult from '@/components/assessment/StressTestResult';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 
 const STORAGE_KEY = 'stressTestResult';
 
-const StressTest = () => {
+const StressTestInner = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState<any>(null);
   const [showForm, setShowForm] = useState(true);
@@ -69,5 +70,11 @@ const StressTest = () => {
 
   return <StressTestForm onComplete={handleComplete} onBack={handleBack} />;
 };
+
+const StressTest = () => (
+  <SubscriptionGuard featureName="스트레스 검사">
+    <StressTestInner />
+  </SubscriptionGuard>
+);
 
 export default StressTest;

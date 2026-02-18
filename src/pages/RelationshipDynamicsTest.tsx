@@ -4,8 +4,9 @@ import RelationshipDynamicsResult from "@/components/assessment/RelationshipDyna
 import { useNavigate } from "react-router-dom";
 import { useGuestSession } from "@/hooks/useGuestSession";
 import SignupPromptModal from "@/components/guest/SignupPromptModal";
+import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
 
-const RelationshipDynamicsTest = () => {
+const RelationshipDynamicsTestInner = () => {
   const navigate = useNavigate();
   const [results, setResults] = useState<any>(null);
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
@@ -40,5 +41,11 @@ const RelationshipDynamicsTest = () => {
     />
   );
 };
+
+const RelationshipDynamicsTest = () => (
+  <SubscriptionGuard featureName="관계 역동성 심층 분석">
+    <RelationshipDynamicsTestInner />
+  </SubscriptionGuard>
+);
 
 export default RelationshipDynamicsTest;

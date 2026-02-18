@@ -29,10 +29,11 @@ import AIObservationResultsList from "@/components/observation/AIObservationResu
 import { isBetaTestPeriod } from '@/utils/betaTest';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { useAIObservationResults } from "@/hooks/useAIObservationResults";
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
 
 type TabType = "new" | "video" | "history" | "ai-results" | "form" | "results";
 
-const Observation = () => {
+const ObservationInner = () => {
   const { toast } = useToast();
   const { results: aiResults } = useAIObservationResults();
   const [templates, setTemplates] = useState<any[]>([]);
@@ -531,5 +532,11 @@ const Observation = () => {
     </AuthenticationGuard>
   );
 };
+
+const Observation = () => (
+  <SubscriptionGuard featureName="AI 관찰일지">
+    <ObservationInner />
+  </SubscriptionGuard>
+);
 
 export default Observation;

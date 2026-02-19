@@ -484,8 +484,8 @@ const ReportGenerator = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> 성별 *</label>
                   <select value={userInput.gender} onChange={(e) => setUserInput({ ...userInput, gender: e.target.value })}
-                    className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm">
-                    <option value="">선택</option><option value="남성">남성</option><option value="여성">여성</option><option value="기타">기타</option>
+                    className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm [&>option]:bg-slate-800 [&>option]:text-white">
+                    <option value="" className="bg-slate-800 text-white">선택</option><option value="남성" className="bg-slate-800 text-white">남성</option><option value="여성" className="bg-slate-800 text-white">여성</option><option value="기타" className="bg-slate-800 text-white">기타</option>
                   </select>
                 </div>
               </div>

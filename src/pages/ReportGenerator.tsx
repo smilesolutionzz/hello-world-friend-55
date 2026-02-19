@@ -571,291 +571,132 @@ const ReportGenerator = () => {
           </div>
         )}
 
-        {/* ── 리포트 결과 (Premium Redesign) ── */}
+        {/* ── 리포트 결과 ── */}
         {reportData && (
-          <div className="max-w-5xl mx-auto space-y-8">
-            {/* 프리미엄 플로팅 액션 바 */}
-            <motion.div
-              initial={{ y: -30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              className="sticky top-3 z-30"
-            >
-              <div className="bg-slate-900/95 backdrop-blur-2xl rounded-2xl border border-white/10 p-3 md:p-4 shadow-2xl shadow-black/40">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shrink-0">
-                      <Crown className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="min-w-0 hidden sm:block">
-                      <p className="text-xs font-bold text-white truncate">{userInput.name}님의 리포트</p>
-                      <p className="text-[10px] text-white/40">{new Date().toLocaleDateString('ko-KR')}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 flex-wrap justify-end">
-                    <Button onClick={downloadPDF} size="sm" className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground gap-1.5 text-xs rounded-lg h-8 px-3 shadow-lg shadow-primary/20">
-                      <FileDown className="w-3.5 h-3.5" /> PDF
-                    </Button>
-                    <Button onClick={copyToClipboard} size="sm" variant="ghost" className="text-white/60 hover:text-white hover:bg-white/10 gap-1.5 text-xs h-8 px-2.5">
-                      <Copy className="w-3.5 h-3.5" />
-                    </Button>
-                    <Button onClick={shareReport} size="sm" variant="ghost" className="text-white/60 hover:text-white hover:bg-white/10 gap-1.5 text-xs h-8 px-2.5">
-                      <Share2 className="w-3.5 h-3.5" />
-                    </Button>
-                    <VisualSummaryButton type="assessment"
-                      content={{ sections: reportData.sections?.map((s: any) => ({ title: s.title, content: s.content?.replace(/<[^>]*>/g, '').substring(0, 200) })), summary: reportData.summary?.replace(/<[^>]*>/g, ''), userName: userInput.name }}
-                      testType="종합 분석 리포트" label="🎨"
-                      className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white border-0 text-xs h-8 px-2.5 rounded-lg"
-                    />
-                    <a href="https://open.kakao.com/o/sHLdK3Ch" target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" className="bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold gap-1 text-xs h-8 px-2.5 rounded-lg">
-                        <MessageSquare className="w-3.5 h-3.5" />
-                      </Button>
-                    </a>
-                  </div>
-                </div>
-                {/* 이메일 전송 - 접힌 상태 */}
-                <Collapsible>
-                  <CollapsibleTrigger className="w-full mt-2 pt-2 border-t border-white/5 flex items-center justify-center gap-1.5 text-[10px] text-white/30 hover:text-white/50 transition-colors">
-                    <Mail className="w-3 h-3" /> 이메일로 전송하기 <ChevronDown className="w-3 h-3" />
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <div className="flex items-center gap-2 mt-2 max-w-sm mx-auto">
-                      <input type="email" value={familyEmail} onChange={(e) => setFamilyEmail(e.target.value)}
-                        placeholder="이메일 주소 입력" className="flex-1 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs placeholder:text-white/30" />
-                      <Button onClick={sendFamilyEmail} disabled={isSendingEmail} size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8 rounded-lg">
-                        {isSendingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : '전송'}
-                      </Button>
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
+          <div className="max-w-5xl mx-auto space-y-6">
+            {/* 플로팅 액션 바 */}
+            <div className="sticky top-4 z-20 bg-slate-900/95 backdrop-blur-xl rounded-xl border border-white/10 p-3 shadow-2xl">
+              <div className="flex flex-wrap gap-2 justify-center">
+                <Button onClick={downloadPDF} size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 text-xs">
+                  <FileDown className="w-3.5 h-3.5" /> PDF
+                </Button>
+                <Button onClick={copyToClipboard} size="sm" variant="outline" className="border-white/20 text-white/70 hover:bg-white/5 gap-1.5 text-xs">
+                  <Copy className="w-3.5 h-3.5" /> 복사
+                </Button>
+                <Button onClick={shareReport} size="sm" variant="outline" className="border-white/20 text-white/70 hover:bg-white/5 gap-1.5 text-xs">
+                  <Share2 className="w-3.5 h-3.5" /> 공유
+                </Button>
+                <VisualSummaryButton type="assessment"
+                  content={{ sections: reportData.sections?.map((s: any) => ({ title: s.title, content: s.content?.replace(/<[^>]*>/g, '').substring(0, 200) })), summary: reportData.summary?.replace(/<[^>]*>/g, ''), userName: userInput.name }}
+                  testType="종합 분석 리포트" label="🎨 비주얼 노트"
+                  className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white border-0 text-xs h-8"
+                />
+                <a href="https://open.kakao.com/o/sHLdK3Ch" target="_blank" rel="noopener noreferrer">
+                  <Button size="sm" className="bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold gap-1.5 text-xs">
+                    <MessageSquare className="w-3.5 h-3.5" /> 카카오톡 검수
+                  </Button>
+                </a>
               </div>
-            </motion.div>
+              {/* 이메일 전송 */}
+              <div className="flex items-center gap-2 mt-3 max-w-sm mx-auto">
+                <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
+                <input type="email" value={familyEmail} onChange={(e) => setFamilyEmail(e.target.value)}
+                  placeholder="가족 이메일로 전송" className="flex-1 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs placeholder:text-white/30" />
+                <Button onClick={sendFamilyEmail} disabled={isSendingEmail} size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8">
+                  {isSendingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : '전송'}
+                </Button>
+              </div>
+            </div>
 
             {/* 리포트 본문 */}
-            <div id="report-content" className="bg-white rounded-3xl shadow-2xl shadow-black/10 overflow-hidden">
-
-              {/* ▸ 프리미엄 표지 */}
-              <div className="relative bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-8 md:p-14 text-center overflow-hidden">
-                {/* 배경 장식 */}
-                <div className="absolute inset-0 opacity-10">
-                  <div className="absolute top-0 left-0 w-96 h-96 bg-primary rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
-                  <div className="absolute bottom-0 right-0 w-80 h-80 bg-violet-500 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3" />
+            <div id="report-content" className="bg-white rounded-2xl p-6 md:p-12 shadow-2xl space-y-8">
+              {/* 표지 */}
+              <div className="text-center space-y-6 pb-8 border-b-4 border-slate-200">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 rounded-full">
+                  <Crown className="w-5 h-5 text-amber-600" />
+                  <span className="text-sm font-bold text-amber-700">PREMIUM PERSONAL REPORT</span>
                 </div>
-                <div className="relative z-10 space-y-6">
-                  <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }}>
-                    <div className="inline-flex items-center gap-2 px-5 py-2 bg-amber-500/20 rounded-full border border-amber-400/30 mb-4">
-                      <Crown className="w-4 h-4 text-amber-400" />
-                      <span className="text-xs font-bold text-amber-300 tracking-widest uppercase">Premium Personal Report</span>
+                <h1 className="text-3xl md:text-4xl font-black text-slate-900">AI 종합 분석 리포트</h1>
+                <div className="flex justify-center gap-4 flex-wrap text-sm text-slate-500">
+                  <span>대상: {userInput.name || '미입력'}</span>
+                  <span>생성일: {new Date().toLocaleDateString('ko-KR')}</span>
+                </div>
+                <div className="flex justify-center gap-3 flex-wrap">
+                  <Badge variant="outline">검사 {reportData.dataSource?.assessments || 0}건</Badge>
+                  <Badge variant="outline">관찰 {reportData.dataSource?.observations || 0}건</Badge>
+                  <Badge variant="outline">상담 {reportData.dataSource?.chatMessages || 0}건</Badge>
+                </div>
+              </div>
+
+              {/* 섹션들 */}
+              {reportData.sections?.map((section: any, index: number) => {
+                const colorIndex = index % sectionColors.length;
+                const colors = sectionColors[colorIndex];
+                const IconComponent = sectionIcons[index % sectionIcons.length];
+                return (
+                  <div key={index} className="space-y-4" data-report-section={index}>
+                    <h3 className={`text-2xl font-bold flex items-center gap-3 ${colors.title}`}>
+                      <div className={`p-3 rounded-xl ${colors.icon} shadow-sm`}><IconComponent className="w-6 h-6" /></div>
+                      {index + 1}. {section.title}
+                    </h3>
+                    <div className={`p-6 rounded-xl border-2 ${colors.bg} ${colors.border} shadow-sm`}>
+                      <div className="prose prose-slate max-w-none leading-relaxed prose-headings:font-bold prose-p:text-slate-700 prose-strong:text-slate-900"
+                        dangerouslySetInnerHTML={{ __html: sanitizeAIContent(section.content) }} />
                     </div>
-                  </motion.div>
-                  <h1 className="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight">
-                    AI 종합 분석 리포트
-                  </h1>
-                  <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto" />
-                  <div className="space-y-2">
-                    <p className="text-xl md:text-2xl font-bold text-white/90">{userInput.name || '미입력'}</p>
-                    <p className="text-sm text-white/40">{userInput.birthDate} · {userInput.gender}</p>
-                    <p className="text-xs text-white/30">생성일: {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                   </div>
+                );
+              })}
 
-                  {/* 데이터 소스 뱃지 */}
-                  <div className="flex justify-center gap-3 flex-wrap pt-2">
-                    {[
-                      { label: '검사', count: reportData.dataSource?.assessments || 0, icon: FileText, color: 'from-blue-400 to-cyan-400' },
-                      { label: '관찰', count: reportData.dataSource?.observations || 0, icon: Eye, color: 'from-emerald-400 to-green-400' },
-                      { label: '상담', count: reportData.dataSource?.chatMessages || 0, icon: MessageSquare, color: 'from-pink-400 to-rose-400' },
-                    ].map((item, idx) => (
-                      <motion.div key={idx} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 + idx * 0.1 }}
-                        className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/10 backdrop-blur-sm">
-                        <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${item.color} flex items-center justify-center`}>
-                          <item.icon className="w-3.5 h-3.5 text-white" />
-                        </div>
-                        <div className="text-left">
-                          <p className="text-lg font-black text-white leading-none">{item.count}</p>
-                          <p className="text-[10px] text-white/40">{item.label}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* 레이더 차트 */}
-                  {reportData.sections && reportData.sections.length >= 5 && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
-                      className="max-w-xs mx-auto pt-4">
-                      <ResponsiveContainer width="100%" height={220}>
-                        <RadarChart data={reportData.sections.slice(0, 5).map((s: any, i: number) => ({
-                          subject: ['인지', '정서', '사회', '운동', '언어'][i] || s.title.substring(0, 2),
-                          fullMark: 100,
-                          value: Math.min(95, 60 + (s.content?.length || 0) % 35),
-                        }))}>
-                          <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                          <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11 }} />
-                          <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                          <Radar name="분석" dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.25} strokeWidth={2} />
-                        </RadarChart>
-                      </ResponsiveContainer>
-                      <p className="text-[10px] text-white/30 text-center -mt-2">5대 영역 분석 프로파일</p>
-                    </motion.div>
-                  )}
-                </div>
-              </div>
-
-              {/* ▸ 목차 */}
-              <div className="bg-gradient-to-b from-slate-50 to-white px-6 md:px-12 py-8" data-report-section="toc">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center">
-                    <Layers className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-black text-slate-900">목차</h2>
-                    <p className="text-xs text-slate-400">Table of Contents</p>
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-2 gap-2">
-                  {reportData.sections?.map((section: any, index: number) => {
-                    const IconComponent = sectionIcons[index % sectionIcons.length];
-                    const colors = sectionColors[index % sectionColors.length];
-                    return (
-                      <div key={index} className={`flex items-center gap-3 p-3 rounded-xl ${colors.bg} border ${colors.border} transition-all hover:shadow-md cursor-default`}>
-                        <div className={`w-8 h-8 rounded-lg ${colors.icon} flex items-center justify-center shrink-0`}>
-                          <IconComponent className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className={`text-sm font-bold ${colors.title} truncate`}>
-                            <span className="text-xs opacity-60 mr-1">0{index + 1}</span>
-                            {section.title}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* ▸ 섹션 본문 */}
-              <div className="px-6 md:px-12 py-8 space-y-10">
-                {reportData.sections?.map((section: any, index: number) => {
-                  const colorIndex = index % sectionColors.length;
-                  const colors = sectionColors[colorIndex];
-                  const IconComponent = sectionIcons[index % sectionIcons.length];
-                  return (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-50px" }}
-                      transition={{ delay: 0.1 }}
-                      className="space-y-4"
-                      data-report-section={index}
-                    >
-                      {/* 섹션 헤더 */}
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${SAMPLE_REPORT_SECTIONS[index]?.color || 'from-primary to-primary/60'} flex items-center justify-center shadow-lg`}>
-                            <IconComponent className="w-6 h-6 text-white" />
-                          </div>
-                          <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-white shadow-sm flex items-center justify-center">
-                            <span className="text-[9px] font-black text-slate-600">{String(index + 1).padStart(2, '0')}</span>
-                          </div>
-                        </div>
-                        <div>
-                          <h3 className="text-xl md:text-2xl font-black text-slate-900">{section.title}</h3>
-                          {SAMPLE_REPORT_SECTIONS[index]?.theory && (
-                            <p className="text-[10px] text-primary/70 font-semibold mt-0.5">
-                              📖 {SAMPLE_REPORT_SECTIONS[index].theory}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* 섹션 본문 */}
-                      <div className={`relative p-6 md:p-8 rounded-2xl border-2 ${colors.bg} ${colors.border} shadow-sm`}>
-                        <div className={`absolute top-0 left-6 w-1 h-full ${colors.icon.split(' ')[0]} rounded-full opacity-30`} />
-                        <div className="pl-4 prose prose-slate max-w-none leading-[1.85] prose-headings:font-bold prose-headings:text-slate-900 prose-p:text-slate-700 prose-strong:text-slate-900 prose-li:text-slate-700 prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-2"
-                          dangerouslySetInnerHTML={{ __html: sanitizeAIContent(section.content) }} />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              {/* ▸ 최신 연구 기반 인사이트 */}
+              {/* 최신 연구 기반 인사이트 */}
               {reportData.researchInsightsContent && (
-                <div className="px-6 md:px-12 py-8 bg-gradient-to-b from-white to-indigo-50/50" data-report-section="research">
-                  <div className="flex items-center gap-4 mb-5">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg">
-                      <Globe className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl md:text-2xl font-black text-slate-900">최신 연구·논문 기반 인사이트</h2>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-600 font-semibold">Perplexity AI</span>
-                        <span className="text-[10px] text-slate-400">실시간 학술 데이터 반영</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white p-6 md:p-8 rounded-2xl border-2 border-indigo-100 shadow-sm">
-                    <div className="prose prose-slate max-w-none leading-[1.85] whitespace-pre-wrap text-sm text-slate-700">{reportData.researchInsightsContent}</div>
+                <div className="space-y-4 pt-8 border-t-2 border-indigo-200">
+                  <h2 className="text-2xl font-bold text-indigo-900 flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-indigo-100 text-indigo-600 shadow-sm"><Sparkles className="w-6 h-6" /></div>
+                    🔬 최신 연구·논문 기반 인사이트
+                  </h2>
+                  <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-6 rounded-xl border-2 border-indigo-200">
+                    <p className="text-xs text-indigo-500 mb-3 font-semibold">📡 Perplexity AI 실시간 웹 검색 · 최신 1개월 이내 연구 반영</p>
+                    <div className="prose prose-slate max-w-none leading-relaxed whitespace-pre-wrap text-sm text-slate-700">{reportData.researchInsightsContent}</div>
                   </div>
                 </div>
               )}
 
-              {/* ▸ 관련 기관 및 리소스 */}
+              {/* 관련 기관 및 리소스 */}
               {reportData.relatedResourcesContent && (
-                <div className="px-6 md:px-12 py-8 bg-gradient-to-b from-indigo-50/30 to-teal-50/30" data-report-section="resources">
-                  <div className="flex items-center gap-4 mb-5">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center shadow-lg">
-                      <BookOpen className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl md:text-2xl font-black text-slate-900">관련 기관 및 추천 리소스</h2>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-100 text-teal-600 font-semibold">Firecrawl AI</span>
-                        <span className="text-[10px] text-slate-400">공공기관 · 전문 기관 정보</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white p-6 md:p-8 rounded-2xl border-2 border-teal-100 shadow-sm">
-                    <div className="prose prose-slate max-w-none leading-[1.85] text-sm text-slate-700 whitespace-pre-wrap">{reportData.relatedResourcesContent}</div>
+                <div className="space-y-4 pt-6">
+                  <h2 className="text-2xl font-bold text-teal-900 flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-teal-100 text-teal-600 shadow-sm"><BookOpen className="w-6 h-6" /></div>
+                    🏛️ 관련 기관 및 추천 리소스
+                  </h2>
+                  <div className="bg-gradient-to-br from-teal-50 to-emerald-50 p-6 rounded-xl border-2 border-teal-200">
+                    <p className="text-xs text-teal-500 mb-3 font-semibold">🔍 Firecrawl AI 웹 크롤링 · 공공기관 및 전문 기관 정보</p>
+                    <div className="prose prose-slate max-w-none leading-relaxed text-sm text-slate-700 whitespace-pre-wrap">{reportData.relatedResourcesContent}</div>
                   </div>
                 </div>
               )}
 
-              {/* ▸ 종합 요약 */}
+              {/* 종합 요약 */}
               {reportData.summary && (
-                <div className="px-6 md:px-12 py-10 bg-gradient-to-b from-slate-50 to-white" data-report-section="summary">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg">
-                      <CheckCircle2 className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl md:text-2xl font-black text-slate-900">종합 요약 및 권장사항</h2>
-                      <p className="text-xs text-slate-400 mt-0.5">Executive Summary & Recommendations</p>
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-6 md:p-8 rounded-2xl border-2 border-emerald-200 shadow-sm">
-                    <div className="prose prose-lg max-w-none text-slate-700 leading-[1.85]"
+                <div className="space-y-6 pt-12 border-t-4 border-slate-200">
+                  <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                    <CheckCircle2 className="w-8 h-8 text-emerald-600" /> 종합 요약 및 권장사항
+                  </h2>
+                  <div className="bg-gradient-to-br from-slate-50 to-blue-50 p-8 rounded-xl border-2 border-slate-200">
+                    <div className="prose prose-lg max-w-none text-slate-700 leading-relaxed"
                       dangerouslySetInnerHTML={{ __html: sanitizeAIContent(reportData.summary) }} />
                   </div>
                 </div>
               )}
 
-              {/* ▸ 법적 고지 & 푸터 */}
-              <div className="bg-slate-50 px-6 md:px-12 py-10 space-y-5">
-                <div className="max-w-2xl mx-auto text-center space-y-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 rounded-xl border border-amber-200">
-                    <AlertCircle className="w-4 h-4 text-amber-500" />
-                    <p className="text-xs font-semibold text-amber-700">중요 안내사항</p>
-                  </div>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    본 리포트는 AI 기반 자동 분석 결과이며, 의학적 진단이나 전문가의 정확한 평가를 대체할 수 없습니다.
-                    정확한 진단 및 치료를 위해서는 반드시 공인 전문가와 상담하시기 바랍니다.
-                  </p>
+              {/* 법적 고지 */}
+              <div className="text-center pt-12 border-t-2 border-slate-200 space-y-4">
+                <div className="flex items-center justify-center gap-2 text-amber-600">
+                  <AlertCircle className="w-5 h-5" /><p className="text-sm font-semibold">중요 안내사항</p>
                 </div>
-                <div className="border-t border-slate-200 pt-5 text-center space-y-1">
-                  <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">Generated by 코끼리 AI</p>
-                  <p className="text-[10px] text-slate-300">© 2025 All Rights Reserved</p>
-                </div>
+                <p className="text-sm text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                  본 리포트는 AI 기반 자동 분석 결과이며, 의학적 진단이나 전문가의 정확한 평가를 대체할 수 없습니다.
+                </p>
+                <p className="text-xs text-slate-500 mt-4">Generated by 코끼리 AI | © 2025 All Rights Reserved</p>
               </div>
             </div>
           </div>

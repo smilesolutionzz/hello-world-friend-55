@@ -1,71 +1,101 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageCircle, X, Loader2, User, UserCheck } from 'lucide-react';
-import { useRealtimeChat } from '@/hooks/useRealtimeChat';
-import { MessageBubble } from './MessageBubble';
-import { ChatInput } from './ChatInput';
-import { TypingIndicator } from './TypingIndicator';
+import { MessageCircle, X, Loader2, Send, Bot, User, Sparkles } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import { AnimatePresence, motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 
 interface RealtimeChatWidgetProps {
   onClose: () => void;
 }
 
+interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
+
 export const RealtimeChatWidget: React.FC<RealtimeChatWidgetProps> = ({ onClose }) => {
-  const [sessionId, setSessionId] = React.useState<string | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      role: 'assistant',
+      content: '안녕하세요! 😊 저는 AIH 고민상담 AI입니다.\n\n어떤 고민이든 편하게 말씀해주세요. 감정, 관계, 육아, 직장 스트레스 등 무엇이든 함께 생각해보겠습니다.',
+      timestamp: new Date()
+    }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const {
-    messages,
-    session,
-    isLoading,
-    isSending,
-    remoteTyping,
-    currentUserId,
-    createSession,
-    sendMessage,
-    sendFileMessage,
-    handleTyping,
-    endSession
-  } = useRealtimeChat(sessionId || undefined);
-
-  // Scroll to bottom on new messages
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, remoteTyping]);
+  }, [messages, isLoading]);
 
-  const handleStartSession = async () => {
-    const newSession = await createSession();
-    if (newSession) {
-      setSessionId(newSession.id);
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
+
+    const userMsg: ChatMessage = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: input.trim(),
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMsg]);
+    const currentInput = input;
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const chatHistory = messages
+        .filter(m => m.id !== '1')
+        .slice(-10)
+        .map(m => ({ role: m.role, content: m.content }));
+
+      const { data, error } = await supabase.functions.invoke('platform-ai-consultant', {
+        body: {
+          message: currentInput,
+          chatHistory
+        }
+      });
+
+      if (error) throw error;
+
+      const assistantMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: data.response || '죄송합니다. 응답을 생성하지 못했습니다.',
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, assistantMsg]);
+    } catch (error) {
+      console.error('AI 상담 오류:', error);
+      const errorMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: '죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요. 🙏',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleEndSession = async () => {
-    await endSession();
-  };
-
-  const getStatusInfo = () => {
-    if (!session) return { text: '연결 대기중...', color: 'bg-yellow-500', icon: Loader2 };
-    
-    switch (session.status) {
-      case 'waiting':
-        return { text: '전문가 연결 대기중', color: 'bg-yellow-500', icon: User };
-      case 'active':
-        return { text: '상담 진행중', color: 'bg-green-500', icon: UserCheck };
-      case 'ended':
-        return { text: '상담 종료됨', color: 'bg-gray-500', icon: X };
-      default:
-        return { text: '알 수 없음', color: 'bg-gray-500', icon: User };
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
-
-  const statusInfo = getStatusInfo();
-  const StatusIcon = statusInfo.icon;
 
   return (
     <motion.div
@@ -73,140 +103,133 @@ export const RealtimeChatWidget: React.FC<RealtimeChatWidgetProps> = ({ onClose 
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ duration: 0.2 }}
+      className="fixed bottom-4 right-4 z-50"
     >
-      <Card className="fixed bottom-4 right-4 w-[380px] h-[600px] flex flex-col shadow-2xl z-50 bg-background overflow-hidden">
+      <Card className="w-[380px] h-[560px] flex flex-col shadow-2xl overflow-hidden border-0">
         {/* Header */}
-        <div className="p-4 border-b bg-primary text-primary-foreground flex items-center justify-between">
+        <div className="px-4 py-3 bg-primary text-primary-foreground flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <MessageCircle className="w-6 h-6" />
-              <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 ${statusInfo.color} rounded-full border-2 border-primary`} />
+              <div className="w-9 h-9 rounded-full bg-primary-foreground/20 flex items-center justify-center">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-primary" />
             </div>
             <div>
-              <h3 className="font-semibold">실시간 전문가 상담</h3>
-              <div className="flex items-center gap-1.5">
-                <StatusIcon className="w-3 h-3" />
-                <span className="text-xs opacity-90">{statusInfo.text}</span>
-              </div>
+              <h3 className="font-semibold text-sm">AI 고민상담</h3>
+              <span className="text-xs opacity-80">항상 곁에 있어요</span>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            {session?.status === 'active' && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={handleEndSession}
-                className="text-primary-foreground hover:bg-primary/80 text-xs"
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="text-primary-foreground hover:bg-primary-foreground/10 h-8 w-8"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Messages */}
+        <ScrollArea className="flex-1 bg-muted/30">
+          <div className="p-4 space-y-4">
+            <AnimatePresence>
+              {messages.map((msg) => (
+                <motion.div
+                  key={msg.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  {msg.role === 'assistant' && (
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
+                      <Bot className="w-4 h-4 text-primary" />
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[75%] rounded-2xl px-3.5 py-2.5 ${
+                      msg.role === 'user'
+                        ? 'bg-primary text-primary-foreground rounded-br-sm'
+                        : 'bg-background border rounded-bl-sm shadow-sm'
+                    }`}
+                  >
+                    {msg.role === 'assistant' ? (
+                      <div className="text-sm prose prose-sm max-w-none dark:prose-invert [&>p]:my-1 [&>ul]:my-1 [&>ol]:my-1">
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                    )}
+                    <p className={`text-[10px] mt-1 ${
+                      msg.role === 'user' ? 'text-primary-foreground/60 text-right' : 'text-muted-foreground'
+                    }`}>
+                      {msg.timestamp.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                  {msg.role === 'user' && (
+                    <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1">
+                      <User className="w-3.5 h-3.5 text-primary-foreground" />
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+
+            {/* Typing indicator */}
+            {isLoading && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex gap-2 items-start"
               >
-                종료
-              </Button>
+                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-4 h-4 text-primary" />
+                </div>
+                <div className="bg-background border rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
+                  <div className="flex items-center gap-1.5">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full"
+                        animate={{ y: [0, -4, 0] }}
+                        transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
+                      />
+                    ))}
+                    <span className="ml-1.5 text-xs text-muted-foreground">생각 중...</span>
+                  </div>
+                </div>
+              </motion.div>
             )}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={onClose}
-              className="text-primary-foreground hover:bg-primary/80"
+
+            <div ref={scrollRef} />
+          </div>
+        </ScrollArea>
+
+        {/* Input */}
+        <div className="p-3 border-t bg-background">
+          <div className="flex gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="고민을 편하게 말씀해주세요..."
+              disabled={isLoading}
+              className="flex-1 text-sm"
+            />
+            <Button
+              onClick={handleSend}
+              disabled={!input.trim() || isLoading}
+              size="icon"
+              className="shrink-0"
             >
-              <X className="w-5 h-5" />
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
             </Button>
           </div>
         </div>
-
-        {/* Content */}
-        {!sessionId ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-6 gap-4">
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
-              <MessageCircle className="w-10 h-10 text-primary" />
-            </div>
-            <div className="text-center">
-              <h4 className="font-semibold text-lg mb-2">
-                실시간 전문가 상담
-              </h4>
-              <p className="text-sm text-muted-foreground mb-1">
-                온라인 전문가와 바로 연결됩니다
-              </p>
-              <p className="text-xs text-muted-foreground">
-                텍스트, 이미지, 파일 전송 가능
-              </p>
-            </div>
-            <Button 
-              onClick={handleStartSession} 
-              disabled={isLoading} 
-              className="w-full max-w-[200px]"
-              size="lg"
-            >
-              {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              상담 시작하기
-            </Button>
-          </div>
-        ) : (
-          <>
-            {/* Expert Info (when connected) */}
-            {session?.status === 'active' && session.expert_id && (
-              <div className="px-4 py-2 bg-green-50 dark:bg-green-900/20 border-b flex items-center gap-2">
-                <UserCheck className="w-4 h-4 text-green-600" />
-                <span className="text-sm text-green-700 dark:text-green-400">
-                  전문 상담사가 연결되었습니다
-                </span>
-              </div>
-            )}
-
-            {/* Messages */}
-            <ScrollArea className="flex-1 px-4 py-2">
-              <div className="space-y-3">
-                {messages.length === 0 && (
-                  <div className="text-center text-sm text-muted-foreground py-8">
-                    {session?.status === 'waiting' 
-                      ? '전문가 연결을 기다리는 중입니다...'
-                      : '메시지를 보내서 상담을 시작하세요'
-                    }
-                  </div>
-                )}
-                
-                <AnimatePresence>
-                  {messages.map((message) => (
-                    <motion.div
-                      key={message.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                    >
-                      <MessageBubble
-                        content={message.content}
-                        isOwn={message.sender_id === currentUserId}
-                        timestamp={message.created_at}
-                        isRead={message.is_read}
-                        messageType={message.message_type}
-                        fileUrl={message.file_url}
-                      />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-
-                <TypingIndicator isVisible={remoteTyping} />
-                <div ref={scrollRef} />
-              </div>
-            </ScrollArea>
-
-            {/* Input */}
-            {session?.status === 'ended' ? (
-              <div className="p-4 border-t text-center">
-                <p className="text-sm text-muted-foreground mb-3">상담이 종료되었습니다</p>
-                <Button variant="outline" onClick={() => setSessionId(null)}>
-                  새 상담 시작
-                </Button>
-              </div>
-            ) : (
-              <ChatInput
-                onSendMessage={sendMessage}
-                onSendFile={sendFileMessage}
-                onTyping={handleTyping}
-                isSending={isSending}
-                disabled={false}
-              />
-            )}
-          </>
-        )}
       </Card>
     </motion.div>
   );

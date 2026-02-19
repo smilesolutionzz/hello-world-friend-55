@@ -86,6 +86,8 @@ export function useSubscription() {
     if (user) {
       fetchSubscription();
       fetchAvailablePlans();
+    } else {
+      setLoading(false);
     }
   }, [user?.id]);
 

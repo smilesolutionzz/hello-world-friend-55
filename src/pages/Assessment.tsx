@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "@/i18n/useTranslation";
 import { BetaBanner } from "@/components/BetaBanner";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { useEventTracking } from "@/hooks/useEventTracking";
@@ -84,6 +85,7 @@ const Assessment = () => {
   const [searchParams] = useSearchParams();
   const { trackTestStart, trackTestComplete, trackPageView } = useEventTracking();
   const { isGuest, saveGuestResult, guestResults } = useGuestSession();
+  const { t } = useTranslation();
   
   // 가입 유도 모달 상태
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
@@ -253,8 +255,8 @@ const Assessment = () => {
         console.error('Timeline 저장 실패:', error);
       } else {
         toast({
-          title: "검사 완료",
-          description: "검사 결과가 타임라인에 저장되었습니다.",
+          title: t.assessment.testComplete,
+          description: t.assessment.testSaved,
         });
       }
     } catch (error) {
@@ -263,23 +265,24 @@ const Assessment = () => {
   };
 
   const getTestTitle = (testType: string) => {
+    const titles = t.assessment.testTitles;
     switch (testType) {
-      case 'adhd': return '주의집중력 자가체크';
-      case 'depression': return '우울감 자가체크';
-      case 'panic': return '불안감 수준 확인';
-      case 'language': return '언어발달 자가체크';
-      case 'stress': return '마음압박지수 측정';
-      case 'bigfive': return '5차원 성격 분석';
-      case 'attachment': return '관계유형 진단';
-      case 'career': return '진로흥미 탐색';
-      case 'selfesteem': return '자아가치 측정';
-      case 'developmental-delay': return '발달지연 검사';
-      case 'sensory-integration': return '감각통합장애 검사';
-      case 'learning-disability': return '학습장애 검사';
-      case 'social-development': return '사회성 발달 검사';
-      case 'challenging-behavior': return '도전행동 평가';
-      case 'adaptive-behavior': return '적응행동 평가';
-      default: return '심리상태 체크';
+      case 'adhd': return titles.adhd;
+      case 'depression': return titles.depression;
+      case 'panic': return titles.panic;
+      case 'language': return titles.language;
+      case 'stress': return titles.stress;
+      case 'bigfive': return titles.bigfive;
+      case 'attachment': return titles.attachment;
+      case 'career': return titles.career;
+      case 'selfesteem': return titles.selfesteem;
+      case 'developmental-delay': return titles.developmentalDelay;
+      case 'sensory-integration': return titles.sensoryIntegration;
+      case 'learning-disability': return titles.learningDisability;
+      case 'social-development': return titles.socialDevelopment;
+      case 'challenging-behavior': return titles.challengingBehavior;
+      case 'adaptive-behavior': return titles.adaptiveBehavior;
+      default: return titles.default;
     }
   };
 
@@ -701,10 +704,10 @@ const Assessment = () => {
 
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
-              간편테스트
+              {t.assessment.pageTitle}
             </h1>
             <p className="text-muted-foreground">
-              부담 없이 시작하는 첫 걸음 · AI가 빠르게 분석해드려요
+              {t.assessment.pageSubtitle}
             </p>
           </div>
 
@@ -715,16 +718,16 @@ const Assessment = () => {
               <div className="relative">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-5 h-5 text-yellow-300" />
-                  <span className="text-xs font-bold text-white/90 bg-white/20 px-2 py-0.5 rounded-full">이달의 신규 업데이트</span>
+                  <span className="text-xs font-bold text-white/90 bg-white/20 px-2 py-0.5 rounded-full">{t.assessment.newUpdates}</span>
                 </div>
-                <h2 className="text-lg md:text-xl font-bold text-white mb-3">새로 추가된 검사</h2>
+                <h2 className="text-lg md:text-xl font-bold text-white mb-3">{t.assessment.newTests}</h2>
                 <div className="flex flex-wrap gap-2">
                   <button 
                     onClick={() => navigate('/assessment/attachment-style-test')}
                     className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-lg transition-all"
                   >
                     <span className="text-lg">💜</span>
-                    <span className="text-sm font-medium text-white">애착 유형 심층분석</span>
+                    <span className="text-sm font-medium text-white">{t.assessment.attachmentDeep}</span>
                     <Badge className="bg-yellow-400 text-yellow-900 text-[10px]">NEW</Badge>
                   </button>
                   <button 
@@ -732,7 +735,7 @@ const Assessment = () => {
                     className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-lg transition-all"
                   >
                     <span className="text-lg">🛡️</span>
-                    <span className="text-sm font-medium text-white">방어기제 분석</span>
+                    <span className="text-sm font-medium text-white">{t.assessment.defenseMechanism}</span>
                     <Badge className="bg-yellow-400 text-yellow-900 text-[10px]">NEW</Badge>
                   </button>
                 </div>
@@ -744,16 +747,16 @@ const Assessment = () => {
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-primary rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">전문 심리검사</h2>
+              <h2 className="text-lg font-bold text-foreground">{t.assessment.professionalTests}</h2>
             </div>
 
             <div className="space-y-2">
               {[
-                { key: 'psychological', icon: '🧠', title: '연령별 맞춤체크', duration: '약 5-10분', questions: '연령별 맞춤', description: '연령대에 따라 맞춤형 심리상태를 종합적으로 점검합니다.', features: ['영유아/아동/성인 연령별 맞춤', '발달단계별 특화 문항', 'AI 기반 심리상태 분석'] },
-                { key: 'panic', icon: '😰', title: '불안감 수준 확인', duration: '약 5분', questions: '21문항', description: '일상에서 느끼는 불안 증상과 그 정도를 체계적으로 측정합니다.', features: ['불안장애 선별 문항', '신체적/심리적 증상 분석', '위험도 수준 평가'] },
-                { key: 'depression', icon: '😔', title: '우울감 자가체크', duration: '약 5분', questions: '21문항', description: '우울감의 깊이와 일상 영향도를 정밀 측정합니다.', features: ['우울증 선별 기준', '인지/정서/행동 증상 분석', '전문가 상담 권고 기준'] },
-                { key: 'adhd', icon: '🎯', title: '주의집중력 자가체크', duration: '약 3분', questions: '18문항', description: 'ADHD 관련 증상의 유무와 정도를 빠르게 확인합니다.', features: ['주의력결핍 증상 체크', '과잉행동 증상 체크', '일상생활 영향도 평가'] },
-                { key: 'resilience', icon: '💪', title: '회복탄력성 검사', duration: '약 8분', questions: '38문항', badge: 'NEW', description: '직장인의 스트레스 회복력, 적응 유연성, 정서적 안정성을 분석합니다.', features: ['5개 영역 심층 분석', '스트레스 대처능력 평가', '조직 적응력 진단', 'AI 기반 맞춤 코칭'] },
+                { key: 'psychological', icon: '🧠', title: t.assessment.psychologicalTitle, duration: t.assessment.psychologicalDuration, questions: t.assessment.psychologicalQuestions, description: t.assessment.psychologicalDesc, features: t.assessment.psychologicalFeatures },
+                { key: 'panic', icon: '😰', title: t.assessment.panicTitle, duration: t.assessment.panicDuration, questions: t.assessment.panicQuestions, description: t.assessment.panicDesc, features: t.assessment.panicFeatures },
+                { key: 'depression', icon: '😔', title: t.assessment.depressionTitle, duration: t.assessment.depressionDuration, questions: t.assessment.depressionQuestions, description: t.assessment.depressionDesc, features: t.assessment.depressionFeatures },
+                { key: 'adhd', icon: '🎯', title: t.assessment.adhdTitle, duration: t.assessment.adhdDuration, questions: t.assessment.adhdQuestions, description: t.assessment.adhdDesc, features: t.assessment.adhdFeatures },
+                { key: 'resilience', icon: '💪', title: t.assessment.resilienceTitle, duration: t.assessment.resilienceDuration, questions: t.assessment.resilienceQuestions, badge: 'NEW', description: t.assessment.resilienceDesc, features: t.assessment.resilienceFeatures },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (
@@ -789,7 +792,7 @@ const Assessment = () => {
                           onClick={() => handleTestTypeSelect(test.key as any)}
                           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                         >
-                          검사 시작하기
+                          {t.assessment.startTest}
                         </Button>
                       </div>
                     </CollapsibleContent>

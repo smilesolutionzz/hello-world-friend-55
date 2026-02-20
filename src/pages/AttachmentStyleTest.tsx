@@ -61,7 +61,7 @@ const AttachmentStyleTestInner = () => {
 };
 
 const AttachmentStyleTestPage = () => (
-  <SubscriptionGuard featureName="애착유형 검사">
+  <SubscriptionGuard featureName="애착유형 검사" trialKey="RELATIONSHIP_TYPE">
     <AttachmentStyleTestInner />
   </SubscriptionGuard>
 );

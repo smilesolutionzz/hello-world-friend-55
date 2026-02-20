@@ -61,7 +61,7 @@ const DefenseMechanismTestInner = () => {
 };
 
 const DefenseMechanismTestPage = () => (
-  <SubscriptionGuard featureName="방어기제 검사">
+  <SubscriptionGuard featureName="방어기제 검사" trialKey="DEFENSE_MECHANISM">
     <DefenseMechanismTestInner />
   </SubscriptionGuard>
 );

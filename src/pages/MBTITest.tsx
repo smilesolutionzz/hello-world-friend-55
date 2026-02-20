@@ -361,7 +361,7 @@ const MBTITestInner = () => {
 };
 
 const MBTITest = () => (
-  <SubscriptionGuard featureName="MBTI 검사">
+  <SubscriptionGuard featureName="MBTI 검사" trialKey="FIVE_D_PERSONALITY">
     <MBTITestInner />
   </SubscriptionGuard>
 );

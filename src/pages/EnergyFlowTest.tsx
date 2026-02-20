@@ -49,7 +49,7 @@ const EnergyFlowTestInner = () => {
 };
 
 const EnergyFlowTest = () => (
-  <SubscriptionGuard featureName="에너지 흐름 검사">
+  <SubscriptionGuard featureName="에너지 흐름 검사" trialKey="PSYCHOLOGICAL_TEST">
     <EnergyFlowTestInner />
   </SubscriptionGuard>
 );

@@ -66,7 +66,7 @@ const CommunicationStyleTestInner = () => {
 };
 
 const CommunicationStyleTest = () => (
-  <SubscriptionGuard featureName="의사소통 유형 검사">
+  <SubscriptionGuard featureName="의사소통 유형 검사" trialKey="SOCIAL_DEVELOPMENT_TEST">
     <CommunicationStyleTestInner />
   </SubscriptionGuard>
 );

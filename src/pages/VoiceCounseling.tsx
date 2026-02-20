@@ -18,7 +18,7 @@ function VoiceCounselingInner() {
 
 export default function VoiceCounselingPage() {
   return (
-    <SubscriptionGuard featureName="AI 음성 상담">
+    <SubscriptionGuard featureName="AI 음성 상담" trialKey="AI_COUNSELOR_CHAT">
       <VoiceCounselingInner />
     </SubscriptionGuard>
   );

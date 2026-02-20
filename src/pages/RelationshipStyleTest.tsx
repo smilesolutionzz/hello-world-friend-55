@@ -61,7 +61,7 @@ const RelationshipStyleTestInner = () => {
 };
 
 const RelationshipStyleTest = () => (
-  <SubscriptionGuard featureName="관계유형 검사">
+  <SubscriptionGuard featureName="관계유형 검사" trialKey="RELATIONSHIP_TYPE">
     <RelationshipStyleTestInner />
   </SubscriptionGuard>
 );

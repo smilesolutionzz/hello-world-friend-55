@@ -534,7 +534,7 @@ const ObservationInner = () => {
 };
 
 const Observation = () => (
-  <SubscriptionGuard featureName="AI 관찰일지">
+  <SubscriptionGuard featureName="AI 관찰일지" trialKey="OBSERVATION_ANALYSIS">
     <ObservationInner />
   </SubscriptionGuard>
 );

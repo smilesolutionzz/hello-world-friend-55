@@ -242,7 +242,7 @@ function SimpleAIAzitInner() {
 
 export default function SimpleAIAzit() {
   return (
-    <SubscriptionGuard featureName="AI 아지트 상담">
+    <SubscriptionGuard featureName="AI 아지트 상담" trialKey="AI_COUNSELOR_CHAT">
       <SimpleAIAzitInner />
     </SubscriptionGuard>
   );

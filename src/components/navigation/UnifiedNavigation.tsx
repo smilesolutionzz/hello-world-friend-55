@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/i18n';
+import { useTranslation } from '@/i18n/useTranslation';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -25,7 +26,6 @@ import {
   Heart,
   Zap,
   UserCheck,
-  //Wallet removed - now showing subscription status
   LogOut,
   LogIn,
   Sparkles,
@@ -36,52 +36,11 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import logo from '@/assets/logo.png';
 
-const navItems = [
-  {
-    label: '검사도구',
-    icon: TrendingUp,
-    children: [
-      { label: '간편테스트', path: '/assessment', desc: '빠르고 간편한 심리 체크' },
-      { label: '심층테스트', path: '/premium-assessment', desc: '전문가 수준 종합 분석' },
-      { label: '개인 리포트', path: '/report-generator', desc: '프리미엄 종합 분석 리포트', icon: FileText, badge: 'PREMIUM' },
-    ]
-  },
-  {
-    label: 'AI 상담',
-    icon: Bot,
-    children: [
-      { label: 'AI 상담', path: '/ai-assistant', desc: '24시간 AI 심리 상담', icon: MessageCircle },
-      { label: 'AI 아지트', path: '/metaverse-voice', desc: '음성으로 AI와 대화', badge: 'NEW', icon: Mic, mobileNote: '(PC 권장)' },
-    ]
-  },
-  {
-    label: '관찰일지',
-    icon: FileText,
-    children: [
-      { label: 'AI 관찰일지', path: '/observation', desc: '개인 관찰일지 AI 분석', icon: FileText },
-      { label: '마음일기', path: '/mind-diary', desc: '청소년 감정 기록', icon: Heart },
-    ]
-  },
-  {
-    label: '전문가',
-    icon: UserCheck,
-    children: [
-      { label: '전문가 상담', path: '/expert-hiring', desc: '1:1 전문 상담사 매칭' },
-      { label: '이용권 구매', path: '/token-subscription', desc: '캐시/패스 구매' },
-    ]
-  },
-  // '학원/센터용' 메뉴는 숨김 처리 (라우트는 유지)
-  {
-    label: '칼럼',
-    path: '/column',
-    icon: Heart,
-  },
-];
-
 export const UnifiedNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { language, localePath } = useLanguage();
+  const { t } = useTranslation();
   const { user } = useAuthGuard();
   const { isPremiumUser, isLifetimeUser, getSubscriptionLabel } = useSubscription();
   const isPremium = isPremiumUser() || isLifetimeUser();
@@ -90,6 +49,47 @@ export const UnifiedNavigation = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const toggleLanguagePath = language === 'ko' ? '/en' : '/';
+
+  const navItems = [
+    {
+      label: t.nav.assessmentTools,
+      icon: TrendingUp,
+      children: [
+        { label: t.nav.simpleTest, path: '/assessment', desc: t.nav.simpleTestDesc },
+        { label: t.nav.deepTest, path: '/premium-assessment', desc: t.nav.deepTestDesc },
+        { label: t.nav.personalReport, path: '/report-generator', desc: t.nav.personalReportDesc, icon: FileText, badge: 'PREMIUM' },
+      ]
+    },
+    {
+      label: t.nav.aiCounseling,
+      icon: Bot,
+      children: [
+        { label: t.nav.aiCounseling, path: '/ai-assistant', desc: t.nav.aiCounselingDesc, icon: MessageCircle },
+        { label: t.nav.aiAgit, path: '/metaverse-voice', desc: t.nav.aiAgitDesc, badge: 'NEW', icon: Mic, mobileNote: t.nav.aiAgitMobile },
+      ]
+    },
+    {
+      label: t.nav.observationLog,
+      icon: FileText,
+      children: [
+        { label: t.nav.aiObservation, path: '/observation', desc: t.nav.aiObservationDesc, icon: FileText },
+        { label: t.nav.mindDiary, path: '/mind-diary', desc: t.nav.mindDiaryDesc, icon: Heart },
+      ]
+    },
+    {
+      label: t.nav.expert,
+      icon: UserCheck,
+      children: [
+        { label: t.nav.expertConsult, path: '/expert-hiring', desc: t.nav.expertConsultDesc },
+        { label: t.nav.purchasePass, path: '/token-subscription', desc: t.nav.purchasePassDesc },
+      ]
+    },
+    {
+      label: t.nav.column,
+      path: '/column',
+      icon: Heart,
+    },
+  ];
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -134,7 +134,7 @@ export const UnifiedNavigation = () => {
 
             {/* Center Navigation */}
             <div className="flex items-center gap-1">
-              {/* 홈 */}
+              {/* Home */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -145,7 +145,7 @@ export const UnifiedNavigation = () => {
                     : 'text-foreground/80 hover:text-foreground hover:bg-accent'
                 }`}
               >
-                홈
+                {t.nav.home}
               </Button>
 
               {/* Nav Items with Dropdowns */}
@@ -237,7 +237,7 @@ export const UnifiedNavigation = () => {
                 {language === 'ko' ? 'EN' : '한국어'}
               </Button>
 
-              {/* 구독 상태 */}
+              {/* Subscription Status */}
               <Button
                 variant="outline"
                 size="sm"
@@ -259,13 +259,13 @@ export const UnifiedNavigation = () => {
                   <>
                     <Crown className="w-4 h-4 text-muted-foreground" />
                     <span className="font-semibold text-muted-foreground">
-                      구독하기
+                      {t.nav.subscribe}
                     </span>
                   </>
                 )}
               </Button>
 
-              {/* 유저 메뉴 */}
+              {/* User Menu */}
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -283,7 +283,7 @@ export const UnifiedNavigation = () => {
                     className="w-56 p-2 rounded-2xl border border-border shadow-xl bg-background backdrop-blur-xl"
                   >
                     <div className="px-3 py-2 mb-1">
-                      <p className="text-xs text-foreground/60">로그인됨</p>
+                      <p className="text-xs text-foreground/60">{t.nav.loggedIn}</p>
                       <p className="text-sm font-semibold truncate text-foreground">{user.email}</p>
                     </div>
                     <button
@@ -291,14 +291,14 @@ export const UnifiedNavigation = () => {
                       className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-accent transition-colors text-left"
                     >
                       <Heart className="w-4 h-4 text-foreground/70" />
-                      <span className="text-sm font-medium text-foreground">내 기록</span>
+                      <span className="text-sm font-medium text-foreground">{t.nav.myRecords}</span>
                     </button>
                     <button
                       onClick={handleAuth}
                       className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-destructive/10 text-destructive transition-colors text-left"
                     >
                       <LogOut className="w-4 h-4" />
-                      <span className="text-sm">로그아웃</span>
+                      <span className="text-sm">{t.nav.logout}</span>
                     </button>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -308,7 +308,7 @@ export const UnifiedNavigation = () => {
                   onClick={handleAuth}
                   className="h-9 rounded-full px-5 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20"
                 >
-                  로그인
+                  {t.nav.login}
                 </Button>
               )}
             </div>
@@ -339,7 +339,7 @@ export const UnifiedNavigation = () => {
             >
               {language === 'ko' ? 'EN' : '한국어'}
             </Button>
-            {/* 구독 상태 */}
+            {/* Subscription Status */}
             <Button
               variant="ghost"
               size="sm"
@@ -357,7 +357,7 @@ export const UnifiedNavigation = () => {
                 <>
                   <Crown className="w-4 h-4 text-muted-foreground" />
                   <span className="font-semibold text-muted-foreground text-sm">
-                    구독하기
+                    {t.nav.subscribe}
                   </span>
                 </>
               )}
@@ -374,7 +374,7 @@ export const UnifiedNavigation = () => {
                 <div className="flex flex-col h-full">
                   {/* Header */}
                   <div className="flex items-center justify-between p-4 border-b">
-                    <span className="font-bold text-lg">메뉴</span>
+                    <span className="font-bold text-lg">{t.nav.menu}</span>
                     <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full">
                       <X className="h-5 w-5" />
                     </Button>
@@ -389,7 +389,7 @@ export const UnifiedNavigation = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold truncate text-foreground">{user.email}</p>
-                          <p className="text-xs text-foreground/60">로그인됨</p>
+                          <p className="text-xs text-foreground/60">{t.nav.loggedIn}</p>
                         </div>
                       </div>
                     </div>
@@ -397,7 +397,7 @@ export const UnifiedNavigation = () => {
 
                   {/* Navigation Items */}
                   <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                    {/* 홈 */}
+                    {/* Home */}
                     <button
                       onClick={() => handleNavigation('/')}
                       className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors ${
@@ -405,7 +405,7 @@ export const UnifiedNavigation = () => {
                       }`}
                     >
                       <Home className="w-5 h-5" />
-                      <span className="font-medium">홈</span>
+                      <span className="font-medium">{t.nav.home}</span>
                     </button>
 
                     {/* Nav Items */}
@@ -454,7 +454,7 @@ export const UnifiedNavigation = () => {
                       </div>
                     ))}
 
-                    {/* 내 기록 */}
+                    {/* My Records */}
                     {user && (
                       <button
                         onClick={() => handleNavigation('/concern-storage')}
@@ -463,7 +463,7 @@ export const UnifiedNavigation = () => {
                         }`}
                       >
                         <Heart className="w-5 h-5" />
-                        <span className="font-medium">내 기록</span>
+                        <span className="font-medium">{t.nav.myRecords}</span>
                       </button>
                     )}
                   </div>
@@ -478,12 +478,12 @@ export const UnifiedNavigation = () => {
                       {user ? (
                         <>
                           <LogOut className="w-4 h-4 mr-2" />
-                          로그아웃
+                          {t.nav.logout}
                         </>
                       ) : (
                         <>
                           <LogIn className="w-4 h-4 mr-2" />
-                          로그인
+                          {t.nav.login}
                         </>
                       )}
                     </Button>

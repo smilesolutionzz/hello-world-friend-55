@@ -12,7 +12,9 @@ import { cn } from '@/lib/utils';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { supabase } from '@/integrations/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '@/i18n/useTranslation';
 
+// Define interfaces for ConcernData and AssessmentData
 interface ConcernData {
   id: string;
   concern_text: string;
@@ -30,6 +32,7 @@ interface AssessmentData {
 }
 
 const ConcernStorage = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'overview' | 'concerns' | 'assessments' | 'curation'>('overview');
   const [concerns, setConcerns] = useState<ConcernData[]>([]);
   const [assessments, setAssessments] = useState<AssessmentData[]>([]);
@@ -101,7 +104,7 @@ const ConcernStorage = () => {
 
       setAssessments(combinedAssessments);
     } catch (error) {
-      console.error('데이터 로드 오류:', error);
+      console.error('Data load error:', error);
     } finally {
       setLoading(false);
     }
@@ -111,10 +114,10 @@ const ConcernStorage = () => {
   const lastAssessmentDate = assessments[0]?.completed_at || null;
 
   const tabs = [
-    { id: 'overview', label: '대시보드', icon: LayoutDashboard },
-    { id: 'concerns', label: '고민', icon: Heart, count: concerns.length },
-    { id: 'assessments', label: '검사', icon: ClipboardCheck, count: assessments.length },
-    { id: 'curation', label: 'AI 추천', icon: Bot },
+    { id: 'overview', label: t.concernStorage.tabOverview, icon: LayoutDashboard },
+    { id: 'concerns', label: t.concernStorage.tabConcerns, icon: Heart, count: concerns.length },
+    { id: 'assessments', label: t.concernStorage.tabAssessments, icon: ClipboardCheck, count: assessments.length },
+    { id: 'curation', label: t.concernStorage.tabCuration, icon: Bot },
   ];
 
   if (loading) {
@@ -132,7 +135,7 @@ const ConcernStorage = () => {
               <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
                 <FolderHeart className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
               </div>
-              <h1 className="font-bold text-lg md:text-xl">내 기록</h1>
+              <h1 className="font-bold text-lg md:text-xl">{t.concernStorage.pageTitle}</h1>
             </div>
           </header>
           
@@ -184,8 +187,8 @@ const ConcernStorage = () => {
                 <FolderHeart className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="font-bold text-lg md:text-xl text-foreground">내 기록</h1>
-                <p className="text-[10px] md:text-xs text-muted-foreground hidden sm:block">나의 성장 여정을 확인하세요</p>
+                <h1 className="font-bold text-lg md:text-xl text-foreground">{t.concernStorage.pageTitle}</h1>
+                <p className="text-[10px] md:text-xs text-muted-foreground hidden sm:block">{t.concernStorage.pageSubtitle}</p>
               </div>
             </motion.div>
           </div>
@@ -196,7 +199,7 @@ const ConcernStorage = () => {
           <div className="max-w-5xl mx-auto px-3 md:px-4">
             <nav className="flex gap-1.5 md:gap-2 py-2 md:py-3">
               {tabs.map((tab, index) => {
-                const isActive = activeTab === tab.id;
+                const isActiveTab = activeTab === tab.id;
                 const Icon = tab.icon;
                 
                 return (
@@ -208,7 +211,7 @@ const ConcernStorage = () => {
                     transition={{ delay: index * 0.1 }}
                     className={cn(
                       "relative flex-1 py-2.5 md:py-3 px-2 md:px-4 rounded-xl md:rounded-2xl font-medium text-xs md:text-sm transition-all duration-300",
-                      isActive
+                      isActiveTab
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                         : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
                     )}
@@ -216,13 +219,13 @@ const ConcernStorage = () => {
                     <div className="flex items-center justify-center gap-1 md:gap-2">
                       <Icon className={cn(
                         "w-3.5 h-3.5 md:w-4 md:h-4",
-                        isActive && tab.id === 'concerns' && "fill-current"
+                        isActiveTab && tab.id === 'concerns' && "fill-current"
                       )} />
                       <span>{tab.label}</span>
                       {tab.count !== undefined && (
                         <span className={cn(
                           "px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-semibold",
-                          isActive 
+                          isActiveTab 
                             ? "bg-primary-foreground/20 text-primary-foreground" 
                             : "bg-muted-foreground/20 text-muted-foreground"
                         )}>
@@ -249,92 +252,36 @@ const ConcernStorage = () => {
                 transition={{ duration: 0.3 }}
                 className="space-y-5 md:space-y-8"
               >
-                {/* Reminder Banner */}
                 <ReminderBanner 
                   lastConcernDate={lastConcernDate}
                   lastAssessmentDate={lastAssessmentDate}
                 />
-
-                {/* Milestones & Badges */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <MilestonesBadges 
-                    concernCount={concerns.length}
-                    assessmentCount={assessments.length}
-                  />
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                  <MilestonesBadges concernCount={concerns.length} assessmentCount={assessments.length} />
                 </motion.div>
-
-                {/* AI Insight & Monthly Report Grid */}
                 <div className="grid gap-5 md:gap-6 md:grid-cols-2">
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    <AIInsightSummary 
-                      concerns={concerns}
-                      assessments={assessments}
-                    />
+                  <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+                    <AIInsightSummary concerns={concerns} assessments={assessments} />
                   </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <MonthlyReport 
-                      concerns={concerns}
-                      assessments={assessments}
-                    />
+                  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+                    <MonthlyReport concerns={concerns} assessments={assessments} />
                   </motion.div>
                 </div>
-
-                {/* Growth Chart */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <GrowthChart 
-                    concerns={concerns}
-                    assessments={assessments}
-                  />
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+                  <GrowthChart concerns={concerns} assessments={assessments} />
                 </motion.div>
               </motion.div>
             ) : activeTab === 'concerns' ? (
-              <motion.div
-                key="concerns"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
+              <motion.div key="concerns" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
                 <ConcernStorageList />
               </motion.div>
             ) : activeTab === 'assessments' ? (
-              <motion.div
-                key="assessments"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
+              <motion.div key="assessments" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
                 <AssessmentHistory />
               </motion.div>
             ) : (
-              <motion.div
-                key="curation"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <CurationBotTab 
-                  concerns={concerns}
-                  assessments={assessments}
-                />
+              <motion.div key="curation" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+                <CurationBotTab concerns={concerns} assessments={assessments} />
               </motion.div>
             )}
           </AnimatePresence>

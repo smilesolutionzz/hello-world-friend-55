@@ -7,6 +7,7 @@ import { ThinkingLoader, ThinkingDots } from '@/components/ui/thinking-loader';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from '@/i18n/useTranslation';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -31,6 +32,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { EnhancedResultView } from '@/components/instant-analysis/EnhancedResultView';
 
 const InstantAIAnalysis = () => {
+  const { t } = useTranslation();
   const [inputText, setInputText] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isExpanding, setIsExpanding] = useState(false);
@@ -321,8 +323,8 @@ const InstantAIAnalysis = () => {
               <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-white" />
             </div>
             <div className="min-w-0">
-              <h2 className="text-sm md:text-base font-bold text-white truncate">내 고민 입력</h2>
-              <p className="text-[10px] md:text-xs text-white/50 truncate">분석 결과가 자동으로 저장됩니다</p>
+              <h2 className="text-sm md:text-base font-bold text-white truncate">{t.instantAI.header}</h2>
+              <p className="text-[10px] md:text-xs text-white/50 truncate">{t.instantAI.headerSub}</p>
             </div>
           </div>
         </div>
@@ -332,12 +334,12 @@ const InstantAIAnalysis = () => {
           {/* 예시 고민 태그들 */}
           <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3">
             {[
-              { emoji: '👶', text: '아이가 말을 늦게 시작해서 걱정돼요' },
-              { emoji: '😢', text: '아이가 친구들과 잘 어울리지 못해요' },
-              { emoji: '📚', text: '집중력이 부족하고 산만해요' },
-              { emoji: '😤', text: '아이가 자주 짜증을 내고 화를 내요' },
-              { emoji: '💑', text: '배우자와 대화가 잘 안 통해요' },
-              { emoji: '💭', text: '요즘 우울하고 무기력해요' },
+              { emoji: '👶', text: t.instantAI.tag1 },
+              { emoji: '😢', text: t.instantAI.tag2 },
+              { emoji: '📚', text: t.instantAI.tag3 },
+              { emoji: '😤', text: t.instantAI.tag4 },
+              { emoji: '💑', text: t.instantAI.tag5 },
+              { emoji: '💭', text: t.instantAI.tag6 },
             ].map((tag, index) => (
               <button
                 key={index}
@@ -354,7 +356,7 @@ const InstantAIAnalysis = () => {
             <Textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="지금 가장 걱정되는 한 문장을 적어주세요..."
+              placeholder={t.instantAI.placeholder}
               className="min-h-[120px] md:min-h-[140px] bg-slate-800/50 border-white/10 text-white placeholder:text-white/40 rounded-xl md:rounded-2xl resize-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 text-xs md:text-sm leading-relaxed p-3 md:p-4"
               maxLength={500}
             />
@@ -372,7 +374,7 @@ const InstantAIAnalysis = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1 md:gap-2">
               <span className="text-[10px] md:text-xs text-white/40">{inputText.length}/500</span>
-              <span className="text-[10px] md:text-xs text-white/30">(최소 10자)</span>
+              <span className="text-[10px] md:text-xs text-white/30">{t.instantAI.minChars}</span>
             </div>
 
             <div className="flex items-center gap-1 md:gap-2">
@@ -386,12 +388,12 @@ const InstantAIAnalysis = () => {
                 {isExpanding ? (
                   <>
                     <ThinkingDots className="text-amber-400" />
-                    <span className="ml-1">다듬는 중...</span>
+                    <span className="ml-1">{t.instantAI.refining}</span>
                   </>
                 ) : (
                   <>
                     <Wand2 className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                    AI 다듬기
+                    {t.instantAI.aiRefine}
                   </>
                 )}
               </Button>
@@ -405,15 +407,15 @@ const InstantAIAnalysis = () => {
                 <Lightbulb className="w-3 h-3 md:w-4 md:h-4 text-amber-400" />
               </div>
               <div className="space-y-1 md:space-y-1.5 min-w-0">
-                <p className="text-xs md:text-sm font-medium text-amber-200">고민 작성 팁</p>
+                <p className="text-xs md:text-sm font-medium text-amber-200">{t.instantAI.tipTitle}</p>
                 <ul className="text-[10px] md:text-xs text-white/60 space-y-0.5 md:space-y-1">
-                  <li>• "AI 다듬기"로 고민을 확장할 수 있어요</li>
-                  <li>• 최소 10자 이상 적어주세요</li>
-                  <li>• 예: "5살 아이 말 늦어요"</li>
+                  <li>{t.instantAI.tip1}</li>
+                  <li>{t.instantAI.tip2}</li>
+                  <li>{t.instantAI.tip3}</li>
                 </ul>
                 <div className="pt-1.5 md:pt-2 flex items-center gap-1 md:gap-1.5 text-[10px] md:text-xs text-amber-300/80">
                   <FileText className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" />
-                  <span className="truncate">9가지 전문 리포트 + AI 발달 예측 무료</span>
+                  <span className="truncate">{t.instantAI.tipFooter}</span>
                 </div>
               </div>
             </div>

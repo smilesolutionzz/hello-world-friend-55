@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Clock, Brain } from "lucide-react";
 import { patternIQQuestions, patternShapes, calculatePatternIQResult, PatternIQResult } from "@/data/patternIQTestQuestions";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface PatternIQTestFormProps {
   onComplete: (result: PatternIQResult) => void;
@@ -46,6 +47,7 @@ const PatternShape = ({ shape, size = 60 }: { shape: string; size?: number }) =>
 };
 
 const PatternIQTestForm = ({ onComplete, onBack }: PatternIQTestFormProps) => {
+  const { isEnglish } = useLanguage();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<{ questionId: number; answer: number; timeSpent: number; isCorrect: boolean }[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -75,14 +77,7 @@ const PatternIQTestForm = ({ onComplete, onBack }: PatternIQTestFormProps) => {
   }, [currentQuestion, isStarted]);
   
   const handleTimeOut = useCallback(() => {
-    const timeSpent = question.timeLimit;
-    const newAnswer = {
-      questionId: question.id,
-      answer: -1,
-      timeSpent,
-      isCorrect: false
-    };
-    
+    const newAnswer = { questionId: question.id, answer: -1, timeSpent: question.timeLimit, isCorrect: false };
     const newAnswers = [...answers, newAnswer];
     setAnswers(newAnswers);
     
@@ -92,8 +87,7 @@ const PatternIQTestForm = ({ onComplete, onBack }: PatternIQTestFormProps) => {
       setQuestionStartTime(Date.now());
       setSelectedAnswer(null);
     } else {
-      const result = calculatePatternIQResult(newAnswers);
-      onComplete(result);
+      onComplete(calculatePatternIQResult(newAnswers));
     }
   }, [currentQuestion, question, answers, onComplete]);
   
@@ -105,13 +99,11 @@ const PatternIQTestForm = ({ onComplete, onBack }: PatternIQTestFormProps) => {
     if (selectedAnswer === null) return;
     
     const timeSpent = Math.round((Date.now() - questionStartTime) / 1000);
-    const isCorrect = selectedAnswer === question.correctAnswer;
-    
-    const newAnswer = {
-      questionId: question.id,
-      answer: selectedAnswer,
-      timeSpent,
-      isCorrect
+    const newAnswer = { 
+      questionId: question.id, 
+      answer: selectedAnswer, 
+      timeSpent, 
+      isCorrect: selectedAnswer === question.correctAnswer 
     };
     
     const newAnswers = [...answers, newAnswer];
@@ -123,24 +115,17 @@ const PatternIQTestForm = ({ onComplete, onBack }: PatternIQTestFormProps) => {
       setQuestionStartTime(Date.now());
       setSelectedAnswer(null);
     } else {
-      const result = calculatePatternIQResult(newAnswers);
-      onComplete(result);
+      onComplete(calculatePatternIQResult(newAnswers));
     }
   };
   
-  const handleStart = () => {
-    setIsStarted(true);
-    setQuestionStartTime(Date.now());
-  };
-  
-  // 시작 화면
   if (!isStarted) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 p-4">
         <div className="max-w-lg mx-auto pt-8">
           <Button variant="ghost" onClick={onBack} className="mb-6">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            돌아가기
+            {isEnglish ? 'Go Back' : '돌아가기'}
           </Button>
           
           <motion.div
@@ -152,39 +137,41 @@ const PatternIQTestForm = ({ onComplete, onBack }: PatternIQTestFormProps) => {
               <Brain className="w-12 h-12 text-primary" />
             </div>
             
-            <h1 className="text-2xl font-bold mb-2">패턴 인지력 테스트</h1>
+            <h1 className="text-2xl font-bold mb-2">
+              {isEnglish ? 'Pattern IQ Test' : '패턴 인지력 테스트'}
+            </h1>
             <p className="text-muted-foreground mb-8">
-              12개의 패턴 문제를 통해 당신의 인지 능력을 측정합니다
+              {isEnglish ? 'Measure your cognitive ability through 12 pattern questions' : '12개의 패턴 문제를 통해 당신의 인지 능력을 측정합니다'}
             </p>
             
             <Card className="p-6 mb-6 text-left">
-              <h3 className="font-semibold mb-4">📋 테스트 안내</h3>
+              <h3 className="font-semibold mb-4">📋 {isEnglish ? 'Test Guide' : '테스트 안내'}</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• 총 12문제, 약 5-10분 소요</li>
-                <li>• 각 문제마다 제한 시간이 있습니다</li>
-                <li>• 빠르고 정확하게 풀수록 높은 점수</li>
-                <li>• 물음표(?) 위치에 들어갈 패턴을 선택하세요</li>
+                <li>• {isEnglish ? '12 questions, about 5-10 minutes' : '총 12문제, 약 5-10분 소요'}</li>
+                <li>• {isEnglish ? 'Each question has a time limit' : '각 문제마다 제한 시간이 있습니다'}</li>
+                <li>• {isEnglish ? 'Faster and more accurate = higher score' : '빠르고 정확하게 풀수록 높은 점수'}</li>
+                <li>• {isEnglish ? 'Select the pattern for the (?) position' : '물음표(?) 위치에 들어갈 패턴을 선택하세요'}</li>
               </ul>
             </Card>
             
             <Card className="p-6 mb-8 text-left bg-primary/5 border-primary/20">
-              <h3 className="font-semibold mb-3">🧩 측정 영역</h3>
+              <h3 className="font-semibold mb-3">🧩 {isEnglish ? 'Measurement Areas' : '측정 영역'}</h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-blue-500" />
-                  <span>논리적 추론</span>
+                  <span>{isEnglish ? 'Logical Reasoning' : '논리적 추론'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-500" />
-                  <span>패턴 인식</span>
+                  <span>{isEnglish ? 'Pattern Recognition' : '패턴 인식'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-purple-500" />
-                  <span>공간 지각</span>
+                  <span>{isEnglish ? 'Spatial Perception' : '공간 지각'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-orange-500" />
-                  <span>처리 속도</span>
+                  <span>{isEnglish ? 'Processing Speed' : '처리 속도'}</span>
                 </div>
               </div>
             </Card>
@@ -192,9 +179,9 @@ const PatternIQTestForm = ({ onComplete, onBack }: PatternIQTestFormProps) => {
             <Button 
               size="lg" 
               className="w-full"
-              onClick={handleStart}
+              onClick={() => { setIsStarted(true); setQuestionStartTime(Date.now()); }}
             >
-              테스트 시작하기
+              {isEnglish ? 'Start Test' : '테스트 시작하기'}
             </Button>
           </motion.div>
         </div>
@@ -238,10 +225,10 @@ const PatternIQTestForm = ({ onComplete, onBack }: PatternIQTestFormProps) => {
             <Card className="p-6 mb-6">
               <div className="text-center mb-4">
                 <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-                  {question.type === 'grid' && '그리드 패턴'}
-                  {question.type === 'sequence' && '수열 패턴'}
-                  {question.type === 'rotation' && '회전 패턴'}
-                  {question.type === 'analogy' && '유추 패턴'}
+                  {question.type === 'grid' && (isEnglish ? 'Grid Pattern' : '그리드 패턴')}
+                  {question.type === 'sequence' && (isEnglish ? 'Sequence Pattern' : '수열 패턴')}
+                  {question.type === 'rotation' && (isEnglish ? 'Rotation Pattern' : '회전 패턴')}
+                  {question.type === 'analogy' && (isEnglish ? 'Analogy Pattern' : '유추 패턴')}
                 </span>
               </div>
               
@@ -296,7 +283,7 @@ const PatternIQTestForm = ({ onComplete, onBack }: PatternIQTestFormProps) => {
             {/* 선택지 */}
             <div className="mb-6">
               <p className="text-center text-sm text-muted-foreground mb-4">
-                답변을 선택하세요:
+                {isEnglish ? 'Select your answer:' : '답변을 선택하세요:'}
               </p>
               <div className="grid grid-cols-2 gap-3">
                 {question.options.map((option, idx) => (
@@ -324,7 +311,7 @@ const PatternIQTestForm = ({ onComplete, onBack }: PatternIQTestFormProps) => {
               onClick={handleConfirm}
               disabled={selectedAnswer === null}
             >
-              {currentQuestion < patternIQQuestions.length - 1 ? '다음 문제' : '결과 보기'}
+              {currentQuestion < patternIQQuestions.length - 1 ? (isEnglish ? 'Next Question' : '다음 문제') : (isEnglish ? 'View Results' : '결과 보기')}
             </Button>
           </motion.div>
         </AnimatePresence>

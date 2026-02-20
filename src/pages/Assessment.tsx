@@ -806,18 +806,18 @@ const Assessment = () => {
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">아동·청소년 발달검사</h2>
+              <h2 className="text-lg font-bold text-foreground">{t.assessment.childDevelopment}</h2>
             </div>
 
             <div className="space-y-2">
               {[
-                { key: 'developmental-delay', icon: '👶', title: '발달지연 검사', duration: '약 5분', questions: '20문항', description: '전반적인 발달 영역(운동, 언어, 인지, 사회성)의 지연 여부를 선별합니다.', features: ['전반적 발달 영역 평가', '연령별 발달 기준 비교', '조기 개입 필요성 확인'] },
-                { key: 'language', icon: '🗣️', title: '영유아 언어발달', duration: '약 2분', questions: '10문항', description: '영유아의 언어 표현 및 이해 능력을 빠르게 점검합니다.', features: ['표현언어 발달 체크', '수용언어 발달 체크', '언어치료 필요성 평가'] },
-                { key: 'sensory-integration', icon: '🎨', title: '감각통합장애', duration: '약 5분', questions: '18문항', description: '시각, 청각, 촉각 등 감각 처리 능력의 이상 여부를 확인합니다.', features: ['감각 과민/둔감 체크', '일상생활 영향도 평가', '감각통합치료 필요성 확인'] },
-                { key: 'learning-disability', icon: '📚', title: '학습장애 검사', duration: '약 5분', questions: '20문항', description: '읽기, 쓰기, 수학 등 학습 영역의 어려움을 평가합니다.', features: ['학습 영역별 능력 평가', '학습 전략 분석', '학습 지원 필요성 확인'] },
-                { key: 'social-development', icon: '👥', title: '사회성 발달', duration: '약 5분', questions: '18문항', description: '또래 관계, 사회적 상호작용 능력을 평가합니다.', features: ['또래 관계 능력 평가', '사회적 상황 이해력', '사회성 발달 지원 방향'] },
-                { key: 'challenging-behavior', icon: '⚠️', title: '도전행동 평가', duration: '약 5분', questions: '15문항', description: '공격성, 자해, 파괴적 행동 등 문제행동을 평가합니다.', features: ['문제행동 유형 분석', '행동 발생 빈도 평가', '중재 전략 제안'] },
-                { key: 'adaptive-behavior', icon: '🏠', title: '적응행동 평가', duration: '약 5분', questions: '20문항', description: '일상생활 자립 능력과 독립성을 평가합니다.', features: ['자조 기술 평가', '가정생활 기술 평가', '지역사회 기술 평가'] },
+                { key: 'developmental-delay', icon: '👶', title: t.assessment.devDelayTitle, duration: t.assessment.devDelayDuration, questions: t.assessment.devDelayQuestions, description: t.assessment.devDelayDesc, features: t.assessment.devDelayFeatures },
+                { key: 'language', icon: '🗣️', title: t.assessment.infantLangTitle, duration: t.assessment.infantLangDuration, questions: t.assessment.infantLangQuestions, description: t.assessment.infantLangDesc, features: t.assessment.infantLangFeatures },
+                { key: 'sensory-integration', icon: '🎨', title: t.assessment.sensoryTitle, duration: t.assessment.sensoryDuration, questions: t.assessment.sensoryQuestions, description: t.assessment.sensoryDesc, features: t.assessment.sensoryFeatures },
+                { key: 'learning-disability', icon: '📚', title: t.assessment.learningTitle, duration: t.assessment.learningDuration, questions: t.assessment.learningQuestions, description: t.assessment.learningDesc, features: t.assessment.learningFeatures },
+                { key: 'social-development', icon: '👥', title: t.assessment.socialTitle, duration: t.assessment.socialDuration, questions: t.assessment.socialQuestions, description: t.assessment.socialDesc, features: t.assessment.socialFeatures },
+                { key: 'challenging-behavior', icon: '⚠️', title: t.assessment.challengingTitle, duration: t.assessment.challengingDuration, questions: t.assessment.challengingQuestions, description: t.assessment.challengingDesc, features: t.assessment.challengingFeatures },
+                { key: 'adaptive-behavior', icon: '🏠', title: t.assessment.adaptiveTitle, duration: t.assessment.adaptiveDuration, questions: t.assessment.adaptiveQuestions, description: t.assessment.adaptiveDesc, features: t.assessment.adaptiveFeatures },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (
@@ -853,7 +853,7 @@ const Assessment = () => {
                           onClick={() => handleTestTypeSelect(test.key as any)}
                           className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
                         >
-                          검사 시작하기
+                          {t.assessment.startTest}
                         </Button>
                       </div>
                     </CollapsibleContent>
@@ -867,19 +867,19 @@ const Assessment = () => {
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">성격·진로 검사</h2>
+              <h2 className="text-lg font-bold text-foreground">{t.assessment.personalitySection}</h2>
             </div>
 
             <div className="space-y-2">
               {[
-                { key: 'attachment-deep', icon: '💜', title: '애착 유형 심층분석', duration: '약 8분', questions: '30문항', badge: 'NEW', description: '성인 애착 유형을 심층 분석하여 관계 패턴을 이해합니다.', features: ['불안-회피 차원 분석', 'AI 기반 심층 해석', '관계 개선 가이드'], onClick: () => navigate('/assessment/attachment-style-test') },
-                { key: 'bigfive', icon: '🌟', title: '5차원 성격 분석', duration: '약 5분', questions: '25문항', badge: '인기', description: '개방성, 성실성, 외향성, 친화성, 신경성 5가지 성격 특성을 분석합니다.', features: ['Big Five 성격 모델 기반', '성격 강점/약점 분석', '대인관계 스타일 이해'], onClick: () => setCurrentStep('bigfive-test') },
-                { key: 'attachment', icon: '🤝', title: '관계유형 진단', duration: '약 4분', questions: '20문항', description: '대인 관계에서의 애착 스타일과 관계 패턴을 진단합니다.', features: ['안정/불안/회피 유형 분류', '관계 강점 발견', '건강한 관계 팁 제공'], onClick: () => setCurrentStep('attachment-test') },
-                { key: 'stress', icon: '🔥', title: '스트레스 지수', duration: '약 4분', questions: '12문항', description: '현재 스트레스 수준과 대처 능력을 측정합니다.', features: ['스트레스 수준 정량화', '스트레스 유형 분석', '맞춤형 해소법 제안'], onClick: () => setCurrentStep('stress-test') },
-                { key: 'career', icon: '🎯', title: '진로흥미 탐색', duration: '약 6분', questions: '30문항', description: '홀랜드 이론 기반으로 적합한 직업 분야를 탐색합니다.', features: ['6가지 직업 흥미 유형', '적성 분야 추천', '진로 방향 가이드'], onClick: () => setCurrentStep('career-test') },
-                { key: 'selfesteem', icon: '💎', title: '자아가치 측정', duration: '약 4분', questions: '15문항', description: '자존감 수준과 자기 가치감을 객관적으로 측정합니다.', features: ['자존감 수준 평가', '자기 인식 분석', '자존감 향상 방법'], onClick: () => setCurrentStep('selfesteem-test') },
-                { key: 'defense', icon: '🛡️', title: '방어기제 분석', duration: '약 5분', questions: '24문항', badge: 'NEW', description: '무의식적 심리 방어 메커니즘을 분석합니다.', features: ['주요 방어기제 유형 분석', '스트레스 대처 패턴 이해', '성숙한 방어기제 개발'], onClick: () => navigate('/assessment/defense-mechanism-test') },
-                { key: 'parent-child-play', icon: '👨‍👧', title: '부모아동 놀이성향', duration: '약 3분', questions: '8문항', description: '부모와 자녀 간의 놀이 상호작용 스타일을 분석합니다.', features: ['놀이 상호작용 패턴', '부모 놀이 참여도', '놀이 활동 추천'], onClick: () => handleTestTypeSelect('parent-child-play') },
+                { key: 'attachment-deep', icon: '💜', title: t.assessment.attachmentDeepTitle, duration: t.assessment.attachmentDeepDuration, questions: t.assessment.attachmentDeepQuestions, badge: 'NEW', description: t.assessment.attachmentDeepDesc, features: t.assessment.attachmentDeepFeatures, onClick: () => navigate('/assessment/attachment-style-test') },
+                { key: 'bigfive', icon: '🌟', title: t.assessment.bigfiveTitle, duration: t.assessment.bigfiveDuration, questions: t.assessment.bigfiveQuestions, badge: t.assessment.bigfiveBadge, description: t.assessment.bigfiveDesc, features: t.assessment.bigfiveFeatures, onClick: () => setCurrentStep('bigfive-test') },
+                { key: 'attachment', icon: '🤝', title: t.assessment.attachmentTitle, duration: t.assessment.attachmentDuration, questions: t.assessment.attachmentQuestions, description: t.assessment.attachmentDesc, features: t.assessment.attachmentFeatures, onClick: () => setCurrentStep('attachment-test') },
+                { key: 'stress', icon: '🔥', title: t.assessment.stressTitle, duration: t.assessment.stressDuration, questions: t.assessment.stressQuestions, description: t.assessment.stressDesc, features: t.assessment.stressFeatures, onClick: () => setCurrentStep('stress-test') },
+                { key: 'career', icon: '🎯', title: t.assessment.careerTitle, duration: t.assessment.careerDuration, questions: t.assessment.careerQuestions, description: t.assessment.careerDesc, features: t.assessment.careerFeatures, onClick: () => setCurrentStep('career-test') },
+                { key: 'selfesteem', icon: '💎', title: t.assessment.selfesteemTitle, duration: t.assessment.selfesteemDuration, questions: t.assessment.selfesteemQuestions, description: t.assessment.selfesteemDesc, features: t.assessment.selfesteemFeatures, onClick: () => setCurrentStep('selfesteem-test') },
+                { key: 'defense', icon: '🛡️', title: t.assessment.defenseTitle, duration: t.assessment.defenseDuration, questions: t.assessment.defenseQuestions, badge: 'NEW', description: t.assessment.defenseDesc, features: t.assessment.defenseFeatures, onClick: () => navigate('/assessment/defense-mechanism-test') },
+                { key: 'parent-child-play', icon: '👨‍👧', title: t.assessment.parentChildTitle, duration: t.assessment.parentChildDuration, questions: t.assessment.parentChildQuestions, description: t.assessment.parentChildDesc, features: t.assessment.parentChildFeatures, onClick: () => handleTestTypeSelect('parent-child-play') },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (
@@ -918,7 +918,7 @@ const Assessment = () => {
                           onClick={test.onClick}
                           className="w-full bg-purple-500 hover:bg-purple-600 text-white"
                         >
-                          검사 시작하기
+                          {t.assessment.startTest}
                         </Button>
                       </div>
                     </CollapsibleContent>
@@ -932,12 +932,12 @@ const Assessment = () => {
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">인지력 테스트</h2>
+              <h2 className="text-lg font-bold text-foreground">{t.assessment.cognitiveSection}</h2>
             </div>
 
             <div className="space-y-2">
               {[
-                { key: 'pattern-iq', icon: '🧩', title: '패턴 인지력 테스트', duration: '약 5분', questions: '12문항', badge: 'NEW', description: '도형 패턴을 분석하여 논리력, 공간지각력, 처리속도를 측정합니다.', features: ['논리적 추론력 측정', '패턴 인식 능력 평가', '공간 지각력 분석', '6가지 인지 유형 분류'], onClick: () => navigate('/assessment/pattern-iq-test') },
+                { key: 'pattern-iq', icon: '🧩', title: t.assessment.patternIQTitle, duration: t.assessment.patternIQDuration, questions: t.assessment.patternIQQuestions, badge: 'NEW', description: t.assessment.patternIQDesc, features: t.assessment.patternIQFeatures, onClick: () => navigate('/assessment/pattern-iq-test') },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (
@@ -976,7 +976,7 @@ const Assessment = () => {
                           onClick={test.onClick}
                           className="w-full bg-blue-500 hover:bg-blue-600 text-white"
                         >
-                          검사 시작하기
+                          {t.assessment.startTest}
                         </Button>
                       </div>
                     </CollapsibleContent>
@@ -990,8 +990,8 @@ const Assessment = () => {
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-muted-foreground/30 rounded-full"></div>
-              <h2 className="text-lg font-medium text-muted-foreground">재미용 AI 검사</h2>
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">무료</span>
+              <h2 className="text-lg font-medium text-muted-foreground">{t.assessment.funTests}</h2>
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">{t.assessment.funFree}</span>
             </div>
 
             <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
@@ -1000,7 +1000,7 @@ const Assessment = () => {
                 onClick={() => handleTestTypeSelect('dream')}
               >
                 <div className="text-xl mb-1">🌙</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">꿈 해몽</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.dreamInterpretation}</p>
               </button>
 
               <button 
@@ -1008,7 +1008,7 @@ const Assessment = () => {
                 onClick={() => handleTestTypeSelect('saju')}
               >
                 <div className="text-xl mb-1">🔮</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">사주풀이</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.sajuReading}</p>
               </button>
 
               <button 
@@ -1016,7 +1016,7 @@ const Assessment = () => {
                 onClick={() => setCurrentStep('past-life-job')}
               >
                 <div className="text-xl mb-1">👑</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">전생 직업</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.pastLifeJob}</p>
               </button>
 
               <button 
@@ -1024,7 +1024,7 @@ const Assessment = () => {
                 onClick={() => setCurrentStep('animal-face-match')}
               >
                 <div className="text-xl mb-1">🐾</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">닮은 동물</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.animalFace}</p>
               </button>
 
               <button 
@@ -1032,7 +1032,7 @@ const Assessment = () => {
                 onClick={() => setCurrentStep('inner-animal')}
               >
                 <div className="text-xl mb-1">💚</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">내면 동물</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.innerAnimal}</p>
               </button>
 
               <button 
@@ -1040,7 +1040,7 @@ const Assessment = () => {
                 onClick={() => setCurrentStep('grandma-relationship')}
               >
                 <div className="text-xl mb-1">👵</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">연애 진단</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.loveCheck}</p>
               </button>
 
               <button 
@@ -1048,7 +1048,7 @@ const Assessment = () => {
                 onClick={() => setCurrentStep('grandpa-marriage')}
               >
                 <div className="text-xl mb-1">👴</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">부부 진단</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.marriageCheck}</p>
               </button>
 
               <button 
@@ -1056,7 +1056,7 @@ const Assessment = () => {
                 onClick={() => setCurrentStep('mz-nagging')}
               >
                 <div className="text-xl mb-1">🍲</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">MZ 잔소리</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.mzNagging}</p>
               </button>
 
               <button 
@@ -1064,7 +1064,7 @@ const Assessment = () => {
                 onClick={() => navigate('/joseon-name-test')}
               >
                 <div className="text-xl mb-1">🏯</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">조선 이름</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.joseonName}</p>
               </button>
 
               <button 
@@ -1072,7 +1072,7 @@ const Assessment = () => {
                 onClick={() => navigate('/joseon-job-test')}
               >
                 <div className="text-xl mb-1">⚔️</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">조선 직업</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.joseonJob}</p>
               </button>
 
               <button 
@@ -1080,7 +1080,7 @@ const Assessment = () => {
                 onClick={() => navigate('/joseon-status-test')}
               >
                 <div className="text-xl mb-1">🎭</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">조선 신분</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.joseonStatus}</p>
               </button>
 
               <button 
@@ -1088,7 +1088,7 @@ const Assessment = () => {
                 onClick={() => setCurrentStep('wisdom-advice')}
               >
                 <div className="text-xl mb-1">🌟</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">인생 조언</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.lifeAdvice}</p>
               </button>
 
               <button 
@@ -1096,7 +1096,7 @@ const Assessment = () => {
                 onClick={() => setCurrentStep('otrovert')}
               >
                 <div className="text-xl mb-1">🎪</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">오트로버트</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.otrovert}</p>
               </button>
 
               <button 
@@ -1104,7 +1104,7 @@ const Assessment = () => {
                 onClick={() => setCurrentStep('life-achievement')}
               >
                 <div className="text-xl mb-1">🏆</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">인생 업적</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.lifeAchievement}</p>
               </button>
 
               <button 
@@ -1112,7 +1112,7 @@ const Assessment = () => {
                 onClick={() => navigate('/han-medicine-test')}
               >
                 <div className="text-xl mb-1">🌿</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">한의학 체질</p>
+                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.hanMedicine}</p>
               </button>
             </div>
           </section>
@@ -1215,86 +1215,86 @@ const Assessment = () => {
         return [
           {
             id: 'language',
-            title: '언어발달 체크',
-            description: '표현어휘와 의사소통 발달 확인',
+            title: t.assessment.testTitles.language,
+            description: t.assessment.infantLangDesc,
             icon: '🗣️',
-            items: ['20문항', '2분 소요', '발달단계 분석']
+            items: [t.assessment.infantLangQuestions, t.assessment.infantLangDuration, t.assessment.infantLangFeatures[0]]
           },
           {
             id: 'selfesteem',
-            title: '정서발달 체크',
-            description: '자존감 및 정서적 안정성 확인',
+            title: t.assessment.emotionalDevTitle,
+            description: t.assessment.emotionalArea1Desc,
             icon: '💝',
-            items: ['15문항', '3분 소요', '정서상태 분석']
+            items: [t.assessment.selfesteemQuestions, t.assessment.selfesteemDuration, t.assessment.selfesteemFeatures[0]]
           },
           {
             id: 'developmental-delay',
-            title: '발달지연 체크',
-            description: '전반적 발달 상태 선별',
+            title: t.assessment.devDelayTitle,
+            description: t.assessment.devDelayDesc,
             icon: '🧠',
-            items: ['전문 검사', '발달 기준', '조기 선별']
+            items: t.assessment.devDelayFeatures
           }
         ];
       } else if (selectedAgeGroup === 'child') {
         return [
           {
             id: 'adhd',
-            title: 'ADHD 검사',
-            description: 'ADHD 증상 자가체크',
+            title: t.assessment.testTitles.adhd,
+            description: t.assessment.adhdDesc,
             icon: '🎯',
-            items: ['18문항', '3분 소요', '영역별 분석']
+            items: [t.assessment.adhdQuestions, t.assessment.adhdDuration, t.assessment.adhdFeatures[0]]
           },
           {
             id: 'depression',
-            title: '우울 검사',
-            description: '우울감 수준 확인',
+            title: t.assessment.testTitles.depression,
+            description: t.assessment.depressionDesc,
             icon: '😔',
-            items: ['21문항', '3분 소요', '심리상태 분석']
+            items: [t.assessment.depressionQuestions, t.assessment.depressionDuration, t.assessment.depressionFeatures[0]]
           },
           {
             id: 'panic',
-            title: '불안 검사',
-            description: '불안 증상 수준 확인',
+            title: t.assessment.testTitles.panic,
+            description: t.assessment.panicDesc,
             icon: '😰',
-            items: ['21문항', '3분 소요', '불안도 측정']
+            items: [t.assessment.panicQuestions, t.assessment.panicDuration, t.assessment.panicFeatures[0]]
           },
           {
             id: 'social-development',
-            title: '사회성 발달 체크',
-            description: '사회적 상호작용 평가',
+            title: t.assessment.socialTitle,
+            description: t.assessment.socialDesc,
             icon: '👥',
-            items: ['전문 검사', '대인관계', '적응행동']
+            items: t.assessment.socialFeatures
           }
         ];
       } else {
         return [
           {
             id: 'depression',
-            title: '우울 검사',
-            description: '우울감 수준 자가체크',
+            title: t.assessment.testTitles.depression,
+            description: t.assessment.depressionDesc,
             icon: '😔',
-            items: ['21문항', '3분 소요', '심리상태 분석']
+            items: [t.assessment.depressionQuestions, t.assessment.depressionDuration, t.assessment.depressionFeatures[0]]
           },
           {
             id: 'panic',
-            title: '불안 검사',
-            description: '불안 증상 수준 확인',
+            title: t.assessment.testTitles.panic,
+            description: t.assessment.panicDesc,
             icon: '😰',
-            items: ['21문항', '3분 소요', '불안도 측정']
+            items: [t.assessment.panicQuestions, t.assessment.panicDuration, t.assessment.panicFeatures[0]]
           },
           {
             id: 'stress',
-            title: '스트레스 검사',
-            description: '일상 스트레스 수준 측정',
+            title: t.assessment.stressTitle,
+            description: t.assessment.stressDesc,
             icon: '😫',
-            items: ['12문항', '3분 소요', '스트레스 분석']
+            items: [t.assessment.stressQuestions, t.assessment.stressDuration, t.assessment.stressFeatures[0]]
           },
           {
             id: 'adhd',
-            title: 'ADHD 검사',
-            description: 'ADHD 증상 자가체크',
+            title: t.assessment.testTitles.adhd,
+            description: t.assessment.adhdDesc,
             icon: '🎯',
-            items: ['18문항', '3분 소요', '영역별 분석']
+            items: [t.assessment.adhdQuestions, t.assessment.adhdDuration, t.assessment.adhdFeatures[0]]
           }
         ];
       }
@@ -1312,18 +1312,18 @@ const Assessment = () => {
                 onClick={handleBack}
                 className="mb-6 text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2"
               >
-                ← 뒤로 가기
+                ← {t.common.back}
               </button>
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                <span className="block text-foreground mb-2">어떤 검사를 받고 싶으신가요?</span>
+                <span className="block text-foreground mb-2">{t.assessment.testSelectionTitle}</span>
                 <span className="block text-brand-gradient text-2xl">
-                  {selectedAgeGroup === 'infant' ? '영유아 (0-5세)' : 
-                   selectedAgeGroup === 'child' ? '아동·청소년 (6-18세)' : 
-                   '성인 (19-64세)'} 추천 검사
+                  {selectedAgeGroup === 'infant' ? t.assessment.infantAgeGroup : 
+                   selectedAgeGroup === 'child' ? t.assessment.childAgeGroup : 
+                   t.assessment.adultAgeGroup} — {t.assessment.recommendedTests}
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                연령대에 맞는 심리 검사를 선택해주세요 (참고용)
+                {t.assessment.testSelectionHint}
               </p>
             </div>
 
@@ -1369,7 +1369,7 @@ const Assessment = () => {
 
             <div className="mt-12 text-center">
               <p className="text-sm text-muted-foreground">
-                💡 여러 검사를 받으시면 더 정확한 분석이 가능합니다
+                 💡 {t.assessment.multiTestHint || 'Taking multiple tests enables more accurate analysis'}
               </p>
             </div>
           </div>
@@ -1407,31 +1407,31 @@ const Assessment = () => {
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-12">
             <div className="inline-block px-4 py-2 bg-primary/10 rounded-full mb-4">
-              <span className="text-sm font-semibold text-primary">💜 전문 선별 평가 시스템</span>
+              <span className="text-sm font-semibold text-primary">💜 {t.assessment.panicEvalTitle}</span>
             </div>
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">불안감 수준 확인 자가체크 (참고용)</h1>
-            <p className="text-muted-foreground mb-6">불안감 증상 자가체크 (참고용)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.panicTestTitle}</h1>
+            <p className="text-muted-foreground mb-6">{t.assessment.panicTestSubtitle}</p>
             
             <div className="bg-white dark:bg-card rounded-xl p-6 max-w-2xl mx-auto mb-8">
-              <h3 className="font-bold text-lg mb-4">불안 검사</h3>
+              <h3 className="font-bold text-lg mb-4">{t.assessment.panicEvalTitle}</h3>
               <div className="space-y-2 text-left">
-                <p className="text-sm text-muted-foreground font-semibold">평가 영역:</p>
+                <p className="text-sm text-muted-foreground font-semibold">{t.assessment.panicEvalAreas}</p>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span>불안 증상</span>
+                    <span>{t.assessment.panicArea1}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span>심리적 불안</span>
+                    <span>{t.assessment.panicArea2}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span>신체적 긴장</span>
+                    <span>{t.assessment.panicArea3}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span>회피 행동</span>
+                    <span>{t.assessment.panicArea4}</span>
                   </li>
                 </ul>
               </div>
@@ -1451,8 +1451,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">우울감 자가체크 (3분)</h1>
-            <p className="text-muted-foreground">AHI-MOOD 자가체크 21문항 (참고용)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.depressionTestTitle}</h1>
+            <p className="text-muted-foreground">{t.assessment.depressionTestSubtitle}</p>
           </div>
           <DepressionTestForm 
             ageGroup={selectedAgeGroup === 'infant' ? 'child' : selectedAgeGroup === 'child' ? 'adolescent' : 'adult'}
@@ -1545,8 +1545,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">주의집중력 자가체크 (3분)</h1>
-            <p className="text-muted-foreground">주의집중력 증상 체크 18문항 (참고용)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.adhdTestTitle}</h1>
+            <p className="text-muted-foreground">{t.assessment.adhdTestSubtitle}</p>
           </div>
           <AdhdTestForm 
             ageGroup={adhdAgeGroup}
@@ -1578,8 +1578,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">스트레스지수 측정 (AHI-STRESS)</h1>
-            <p className="text-muted-foreground">AHI 독창적 도구 12문항 (4분)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.stressTestTitle}</h1>
+            <p className="text-muted-foreground">{t.assessment.stressTestSubtitle}</p>
           </div>
           <StressTestForm 
             onComplete={handleStressTestComplete}
@@ -1611,8 +1611,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">빅파이브 성격검사</h1>
-            <p className="text-muted-foreground">5요인 성격 모델 44문항 (5분)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.bigfiveTestTitle}</h1>
+            <p className="text-muted-foreground">{t.assessment.bigfiveTestSubtitle}</p>
           </div>
           <BigFiveTestForm 
             onComplete={handleBigfiveTestComplete}
@@ -1641,8 +1641,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">애착 유형 검사</h1>
-            <p className="text-muted-foreground">관계 패턴 분석 36문항 (4분)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.attachmentTestTitle}</h1>
+            <p className="text-muted-foreground">{t.assessment.attachmentTestSubtitle}</p>
           </div>
           <AttachmentStyleForm 
             onComplete={handleAttachmentTestComplete}
@@ -1671,8 +1671,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">직업 흥미 검사</h1>
-            <p className="text-muted-foreground">Holland 진로 탐색 60문항 (7분)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.careerTestTitle}</h1>
+            <p className="text-muted-foreground">{t.assessment.careerTestSubtitle}</p>
           </div>
           <CareerInterestForm 
             onComplete={handleCareerTestComplete}
@@ -1688,8 +1688,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">자아가치 측정</h1>
-            <p className="text-muted-foreground">나의 자존감 수준 체크 15문항 (4분)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.selfesteemTestTitle}</h1>
+            <p className="text-muted-foreground">{t.assessment.selfesteemTestSubtitle}</p>
           </div>
           <SelfEsteemTestForm 
             onComplete={handleSelfesteemTestComplete}
@@ -1705,48 +1705,47 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">영유아 정서발달 체크</h1>
-            <p className="text-muted-foreground">정서 및 감정발달 확인 15문항 (참고용)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.emotionalDevTitle}</h1>
+            <p className="text-muted-foreground">{t.assessment.emotionalDevSubtitle}</p>
           </div>
           <div className="bg-white dark:bg-card rounded-2xl p-8 shadow-lg border">
             <div className="space-y-6">
               <div className="text-center">
                 <div className="inline-flex items-center gap-2 bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-900/30 dark:to-pink-900/30 px-4 py-2 rounded-full mb-4">
                   <span className="text-2xl">💖</span>
-                  <span className="font-semibold">정서발달 평가 영역</span>
+                  <span className="font-semibold">{t.assessment.emotionalDevSection}</span>
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-4 bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 rounded-xl border border-rose-200 dark:border-rose-800">
-                  <h3 className="font-semibold mb-2 flex items-center gap-2">
-                    <span>😊</span> 감정 인식 및 표현
-                  </h3>
-                  <p className="text-sm text-muted-foreground">기쁨, 슬픔, 화남 등 기본 감정의 인식과 표현 능력</p>
+                   <h3 className="font-semibold mb-2 flex items-center gap-2">
+                     <span>😊</span> {t.assessment.emotionalArea1Title}
+                   </h3>
+                   <p className="text-sm text-muted-foreground">{t.assessment.emotionalArea1Desc}</p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl border border-purple-200 dark:border-purple-800">
-                  <h3 className="font-semibold mb-2 flex items-center gap-2">
-                    <span>🤝</span> 애착 및 관계형성
-                  </h3>
-                  <p className="text-sm text-muted-foreground">주 양육자와의 애착, 타인과의 관계 형성 능력</p>
+                   <h3 className="font-semibold mb-2 flex items-center gap-2">
+                     <span>🤝</span> {t.assessment.emotionalArea2Title}
+                   </h3>
+                   <p className="text-sm text-muted-foreground">{t.assessment.emotionalArea2Desc}</p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <h3 className="font-semibold mb-2 flex items-center gap-2">
-                    <span>🎭</span> 감정 조절
-                  </h3>
-                  <p className="text-sm text-muted-foreground">부정적 감정의 조절 및 자기진정 능력</p>
+                   <h3 className="font-semibold mb-2 flex items-center gap-2">
+                     <span>🎭</span> {t.assessment.emotionalArea3Title}
+                   </h3>
+                   <p className="text-sm text-muted-foreground">{t.assessment.emotionalArea3Desc}</p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-800">
-                  <h3 className="font-semibold mb-2 flex items-center gap-2">
-                    <span>💝</span> 공감 능력
-                  </h3>
-                  <p className="text-sm text-muted-foreground">타인의 감정을 이해하고 반응하는 능력</p>
+                   <h3 className="font-semibold mb-2 flex items-center gap-2">
+                     <span>💝</span> {t.assessment.emotionalArea4Title}
+                   </h3>
+                   <p className="text-sm text-muted-foreground">{t.assessment.emotionalArea4Desc}</p>
                 </div>
               </div>
               <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
-                <p className="text-sm text-muted-foreground">
-                  <strong className="text-foreground">💡 안내:</strong> 이 검사는 영유아의 정서발달 상태를 참고용으로 확인하는 도구입니다. 
-                  전문적인 진단이 필요한 경우 전문가와 상담하시기 바랍니다.
-                </p>
+                 <p className="text-sm text-muted-foreground">
+                   <strong className="text-foreground">💡</strong> {t.assessment.emotionalDevNotice}
+                 </p>
               </div>
               <div className="flex gap-3">
                 <Button 
@@ -1754,7 +1753,7 @@ const Assessment = () => {
                   variant="outline"
                   className="flex-1"
                 >
-                  ← 뒤로가기
+                  ← {t.common.back}
                 </Button>
                 <Button 
                   onClick={() => {
@@ -1763,7 +1762,7 @@ const Assessment = () => {
                   }}
                   className="flex-1 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
                 >
-                  검사 시작하기 →
+                  {t.assessment.startTest} →
                 </Button>
               </div>
             </div>

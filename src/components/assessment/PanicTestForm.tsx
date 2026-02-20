@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -8,13 +8,14 @@ import { ArrowLeft, Brain } from "lucide-react";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { useTokens } from "@/hooks/useTokens";
 import TokenGate from "@/components/TokenGate";
+import { useLanguage } from "@/i18n";
 
 interface PanicTestFormProps {
   onComplete: (results: {answers: number[], total: number, average: number, severity: string}) => void;
   onBack: () => void;
 }
 
-const panicQuestions = [
+const panicQuestionsKo = [
   { text: "갑작스러운 심장 두근거림이나 심장이 빨리 뛰는 증상이 있습니까?", type: "severity" },
   { text: "땀이 나거나 몸이 떨리는 증상이 있습니까?", type: "severity" },
   { text: "숨이 막히거나 질식할 것 같은 느낌이 있습니까?", type: "severity" },
@@ -38,9 +39,35 @@ const panicQuestions = [
   { text: "증상이 나타날 때 현실감을 잃는 느낌이 있습니까?", type: "severity" }
 ];
 
+const panicQuestionsEn = [
+  { text: "Do you experience sudden heart pounding or rapid heartbeat?", type: "severity" },
+  { text: "Do you experience sweating or body trembling?", type: "severity" },
+  { text: "Do you feel shortness of breath or a choking sensation?", type: "severity" },
+  { text: "Do you experience chest tightness or pain?", type: "severity" },
+  { text: "Do you experience nausea or abdominal discomfort?", type: "severity" },
+  { text: "Do you feel dizzy, unsteady, or as if you might faint?", type: "severity" },
+  { text: "Do you experience hot or cold flashes?", type: "severity" },
+  { text: "Do you experience numbness or tingling in your hands and feet?", type: "severity" },
+  { text: "Do you feel detached from yourself or a sense of unreality?", type: "severity" },
+  { text: "Do you fear losing control or going crazy?", type: "severity" },
+  { text: "Do you fear dying?", type: "severity" },
+  { text: "Do these symptoms appear suddenly?", type: "severity" },
+  { text: "Does it take a few minutes for symptoms to peak?", type: "severity" },
+  { text: "Do these symptoms interfere with your daily life?", type: "frequency" },
+  { text: "Do you avoid certain places or situations?", type: "severity" },
+  { text: "Do you worry about these symptoms recurring?", type: "severity" },
+  { text: "Do these symptoms repeat more than a few times a month?", type: "frequency" },
+  { text: "Do you want to immediately leave when symptoms appear?", type: "severity" },
+  { text: "Do you worry about others noticing your symptoms?", type: "severity" },
+  { text: "Do you feel you need professional help for these symptoms?", type: "severity" },
+  { text: "Do you feel a loss of reality when symptoms appear?", type: "severity" }
+];
+
 const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
+  const { isEnglish } = useLanguage();
+  const panicQuestions = isEnglish ? panicQuestionsEn : panicQuestionsKo;
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<string[]>(new Array(21).fill("")); // 빈 문자열로 초기화
+  const [answers, setAnswers] = useState<string[]>(new Array(21).fill(""));
   const [hasStarted, setHasStarted] = useState(false);
   const { consumeTokens } = useTokens();
 
@@ -51,7 +78,6 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
     
-    // 마지막 문항이면 바로 결과 처리, 아니면 다음 문항으로 이동
     setTimeout(() => {
       if (currentQuestion < panicQuestions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
@@ -62,7 +88,6 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
   };
 
   const completeTest = (finalAnswers: string[]) => {
-    // 문자열 답변을 숫자로 변환
     const numericAnswers = finalAnswers.map(a => {
       const parsed = parseInt(a);
       return isNaN(parsed) ? 0 : parsed;
@@ -72,22 +97,12 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
     const average = Math.round((total / numericAnswers.length) * 10) / 10;
     
     let severity = "";
-    if (total <= 15) {
-      severity = "정상";
-    } else if (total <= 30) {
-      severity = "경미";
-    } else if (total <= 45) {
-      severity = "중등도";
-    } else {
-      severity = "심각";
-    }
+    if (total <= 15) severity = isEnglish ? "Normal" : "정상";
+    else if (total <= 30) severity = isEnglish ? "Mild" : "경미";
+    else if (total <= 45) severity = isEnglish ? "Moderate" : "중등도";
+    else severity = isEnglish ? "Severe" : "심각";
     
-    onComplete({
-      answers: numericAnswers,
-      total,
-      average,
-      severity
-    });
+    onComplete({ answers: numericAnswers, total, average, severity });
   };
 
   const handleNext = () => {
@@ -119,12 +134,22 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8 flex items-center justify-center">
         <TokenGate
           tokensRequired={TOKEN_COSTS.PANIC_TEST}
-          featureName="불안장애 자가체크 (21문항)"
+          featureName={isEnglish ? "Anxiety Self-Check (21 items)" : "불안장애 자가체크 (21문항)"}
           onProceed={handleStartTest}
         />
       </div>
     );
   }
+
+  const severityOptions = isEnglish
+    ? [{ value: "1", label: "Not at all (1)" }, { value: "2", label: "Moderate (2)" }, { value: "3", label: "Yes (3)" }]
+    : [{ value: "1", label: "그렇지 않다 (1점)" }, { value: "2", label: "보통이다 (2점)" }, { value: "3", label: "그렇다 (3점)" }];
+
+  const frequencyOptions = isEnglish
+    ? [{ value: "1", label: "Not at all (1)" }, { value: "2", label: "1-2 times/week (2)" }, { value: "3", label: "3+ times/week (3)" }]
+    : [{ value: "1", label: "전혀 없음 (1점)" }, { value: "2", label: "주 1-2회 (2점)" }, { value: "3", label: "주 3회 이상 (3점)" }];
+
+  const currentOptions = panicQuestions[currentQuestion].type === "frequency" ? frequencyOptions : severityOptions;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">
@@ -132,14 +157,14 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <Brain className="w-6 h-6 text-blue-500" />
-            <h1 className="text-2xl font-bold">불안 검사</h1>
+            <h1 className="text-2xl font-bold">{isEnglish ? "Anxiety Assessment" : "불안 검사"}</h1>
           </div>
           <p className="text-muted-foreground mb-4">
-            불안 증상과 수준을 파악하는 3분 자가진단
+            {isEnglish ? "A 3-minute self-assessment of anxiety symptoms" : "불안 증상과 수준을 파악하는 3분 자가진단"}
           </p>
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-muted-foreground">
-              <span>진행률</span>
+              <span>{isEnglish ? "Progress" : "진행률"}</span>
               <span>{currentQuestion + 1} / {panicQuestions.length}</span>
             </div>
             <Progress value={progress} className="h-2" />
@@ -148,87 +173,37 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
 
         <Card className="p-8">
           <div className="space-y-6">
-            {/* Back Button - 상단 우측 */}
             <div className="flex justify-end">
               <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4" />
-                뒤로가기
+                {isEnglish ? "Back" : "뒤로가기"}
               </Button>
             </div>
 
-            {/* Question */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-center">
-            {panicQuestions[currentQuestion].text}
-          </h2>
+            <div className="space-y-6">
+              <h2 className="text-xl font-semibold text-center">
+                {panicQuestions[currentQuestion].text}
+              </h2>
 
-          <RadioGroup 
-            value={currentAnswer} 
-            onValueChange={handleAnswer}
-            className="space-y-4"
-          >
-            {panicQuestions[currentQuestion].type === "frequency" ? (
-              <>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="1" id={`panic-q${currentQuestion}-opt1`} />
-                  <Label htmlFor={`panic-q${currentQuestion}-opt1`} className="text-base cursor-pointer">
-                    전혀 없음 (1점)
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="2" id={`panic-q${currentQuestion}-opt2`} />
-                  <Label htmlFor={`panic-q${currentQuestion}-opt2`} className="text-base cursor-pointer">
-                    주 1-2회 (2점)
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="3" id={`panic-q${currentQuestion}-opt3`} />
-                  <Label htmlFor={`panic-q${currentQuestion}-opt3`} className="text-base cursor-pointer">
-                    주 3회 이상 (3점)
-                  </Label>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="1" id={`panic-q${currentQuestion}-opt1`} />
-                  <Label htmlFor={`panic-q${currentQuestion}-opt1`} className="text-base cursor-pointer">
-                    그렇지 않다 (1점)
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="2" id={`panic-q${currentQuestion}-opt2`} />
-                  <Label htmlFor={`panic-q${currentQuestion}-opt2`} className="text-base cursor-pointer">
-                    보통이다 (2점)
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="3" id={`panic-q${currentQuestion}-opt3`} />
-                  <Label htmlFor={`panic-q${currentQuestion}-opt3`} className="text-base cursor-pointer">
-                    그렇다 (3점)
-                  </Label>
-                </div>
-              </>
-            )}
-          </RadioGroup>
-        </div>
+              <RadioGroup value={currentAnswer} onValueChange={handleAnswer} className="space-y-4">
+                {currentOptions.map((opt, i) => (
+                  <div key={i} className="flex items-center space-x-2">
+                    <RadioGroupItem value={opt.value} id={`panic-q${currentQuestion}-opt${i}`} />
+                    <Label htmlFor={`panic-q${currentQuestion}-opt${i}`} className="text-base cursor-pointer">
+                      {opt.label}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
 
-        {/* Navigation */}
-        <div className="flex justify-between pt-6">
-          <Button 
-            variant="outline" 
-            onClick={handlePrevious}
-            disabled={currentQuestion === 0}
-          >
-            이전
-          </Button>
-          <Button 
-            onClick={handleNext}
-            disabled={!canProceed}
-            className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
-          >
-            {currentQuestion === panicQuestions.length - 1 ? '결과 보기' : '다음'}
-          </Button>
+            <div className="flex justify-between pt-6">
+              <Button variant="outline" onClick={handlePrevious} disabled={currentQuestion === 0}>
+                {isEnglish ? "Previous" : "이전"}
+              </Button>
+              <Button onClick={handleNext} disabled={!canProceed} className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700">
+                {currentQuestion === panicQuestions.length - 1 ? (isEnglish ? 'View Results' : '결과 보기') : (isEnglish ? 'Next' : '다음')}
+              </Button>
             </div>
           </div>
         </Card>

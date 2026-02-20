@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Sparkles, Clock, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '@/i18n';
 
 interface PromotionBannerProps {
   variant?: 'hero' | 'subscription';
@@ -9,6 +10,7 @@ interface PromotionBannerProps {
 
 export const PromotionBanner = ({ variant = 'hero' }: PromotionBannerProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 0,
@@ -45,7 +47,7 @@ export const PromotionBanner = ({ variant = 'hero' }: PromotionBannerProps) => {
               <Gift className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <div className="text-xs sm:text-sm font-bold">🔥 오늘만 50% 할인</div>
+              <div className="text-xs sm:text-sm font-bold">{t.promotion.todayOnly}</div>
             </div>
           </div>
           
@@ -63,7 +65,7 @@ export const PromotionBanner = ({ variant = 'hero' }: PromotionBannerProps) => {
               size="sm"
               className="bg-white text-red-600 hover:bg-white/90 font-bold shadow-lg text-xs sm:text-sm px-3 sm:px-4"
             >
-              지금 받기
+              {t.promotion.getItNow}
             </Button>
           </div>
         </div>
@@ -78,18 +80,18 @@ export const PromotionBanner = ({ variant = 'hero' }: PromotionBannerProps) => {
       <div className="relative z-10 text-center space-y-4">
         <div className="flex items-center justify-center gap-2">
           <Sparkles className="w-8 h-8 animate-spin" />
-          <h3 className="text-3xl font-black">🎉 론칭 기념 특별 프로모션</h3>
+          <h3 className="text-3xl font-black">{t.promotion.launchSpecial}</h3>
           <Sparkles className="w-8 h-8 animate-spin" />
         </div>
         
         <div className="bg-white/20 backdrop-blur-md rounded-2xl p-6 inline-block">
-          <div className="text-5xl font-black mb-2">50% 할인</div>
-          <div className="text-xl font-bold">+ 보너스 토큰 50개 추가 증정</div>
+          <div className="text-5xl font-black mb-2">{t.promotion.discount50}</div>
+          <div className="text-xl font-bold">{t.promotion.bonusTokens}</div>
         </div>
         
         <div className="flex items-center justify-center gap-3 text-2xl font-bold">
           <Clock className="w-6 h-6 animate-pulse" />
-          <span>남은 시간:</span>
+          <span>{t.promotion.timeLeft}</span>
           <div className="bg-white/30 rounded-lg px-4 py-2 font-mono">
             {String(timeLeft.hours).padStart(2, '0')}:
             {String(timeLeft.minutes).padStart(2, '0')}:
@@ -98,7 +100,7 @@ export const PromotionBanner = ({ variant = 'hero' }: PromotionBannerProps) => {
         </div>
         
         <div className="text-sm opacity-90">
-          * 오늘 자정까지만 유효한 혜택입니다
+          {t.promotion.validToday}
         </div>
       </div>
     </div>

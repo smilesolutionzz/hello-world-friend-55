@@ -496,7 +496,7 @@ function FingerprintTemperamentTestInner() {
 
 export default function FingerprintTemperamentTest() {
   return (
-    <SubscriptionGuard featureName="지문 인지기질검사">
+    <SubscriptionGuard featureName="지문 인지기질검사" trialKey="PREMIUM_ASSESSMENT">
       <FingerprintTemperamentTestInner />
     </SubscriptionGuard>
   );

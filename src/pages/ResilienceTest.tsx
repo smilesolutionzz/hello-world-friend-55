@@ -39,7 +39,7 @@ const ResilienceTestInner = () => {
 };
 
 const ResilienceTest = () => (
-  <SubscriptionGuard featureName="회복탄력성 검사">
+  <SubscriptionGuard featureName="회복탄력성 검사" trialKey="PSYCHOLOGICAL_TEST">
     <ResilienceTestInner />
   </SubscriptionGuard>
 );

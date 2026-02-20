@@ -43,7 +43,7 @@ const RelationshipDynamicsTestInner = () => {
 };
 
 const RelationshipDynamicsTest = () => (
-  <SubscriptionGuard featureName="관계 역동성 심층 분석">
+  <SubscriptionGuard featureName="관계 역동성 심층 분석" trialKey="PREMIUM_ASSESSMENT">
     <RelationshipDynamicsTestInner />
   </SubscriptionGuard>
 );

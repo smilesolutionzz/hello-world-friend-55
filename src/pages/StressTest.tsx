@@ -72,7 +72,7 @@ const StressTestInner = () => {
 };
 
 const StressTest = () => (
-  <SubscriptionGuard featureName="스트레스 검사">
+  <SubscriptionGuard featureName="스트레스 검사" trialKey="STRESS_INDEX">
     <StressTestInner />
   </SubscriptionGuard>
 );

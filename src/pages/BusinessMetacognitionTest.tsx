@@ -513,7 +513,7 @@ const BusinessMetacognitionTestInner: React.FC = () => {
 };
 
 const BusinessMetacognitionTest: React.FC = () => (
-  <SubscriptionGuard featureName="사업가 메타인지 레벨 테스트">
+  <SubscriptionGuard featureName="사업가 메타인지 레벨 테스트" trialKey="PSYCHOLOGICAL_TEST">
     <BusinessMetacognitionTestInner />
   </SubscriptionGuard>
 );

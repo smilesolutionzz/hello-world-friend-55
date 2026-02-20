@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { LanguageProvider } from "@/i18n";
 
 import ErrorBoundary from "@/components/ui/error-boundary";
 import NetworkStatus from "@/components/common/NetworkStatus";
@@ -214,6 +215,7 @@ const App = () => {
             <Sonner />
             <BrowserRouter>
             <ErrorBoundary>
+              <LanguageProvider>
               <PerformanceMonitor enableConsoleLogging={process.env.NODE_ENV === 'development'} />
               <Analytics />
               <ConversionTracker />
@@ -225,6 +227,14 @@ const App = () => {
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
+          
+          {/* English Routes */}
+          <Route path="/en" element={<Index />} />
+          <Route path="/en/auth" element={<HighlightAuth />} />
+          <Route path="/en/dashboard" element={<DashboardRouter />} />
+          <Route path="/en/premium-assessment" element={<PremiumAssessment />} />
+          <Route path="/en/pricing" element={<Pricing />} />
+          <Route path="/en/assessment" element={<Assessment />} />
           
           {/* Target-specific Landing Pages */}
           <Route path="/parent" element={<ParentLanding />} />
@@ -414,7 +424,8 @@ const App = () => {
            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
               </Routes>
-              <FeedbackButton />
+               <FeedbackButton />
+              </LanguageProvider>
             </ErrorBoundary>
           </BrowserRouter>
           </TooltipProvider>

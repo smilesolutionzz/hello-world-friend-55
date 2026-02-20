@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/i18n';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -80,12 +81,15 @@ const navItems = [
 export const UnifiedNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { language, localePath } = useLanguage();
   const { user } = useAuthGuard();
   const { isPremiumUser, isLifetimeUser, getSubscriptionLabel } = useSubscription();
   const isPremium = isPremiumUser() || isLifetimeUser();
   const subscriptionLabel = getSubscriptionLabel();
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  const toggleLanguagePath = language === 'ko' ? '/en' : '/';
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -223,6 +227,16 @@ export const UnifiedNavigation = () => {
 
             {/* Right Side */}
             <div className="flex items-center gap-2">
+              {/* Language Toggle */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate(toggleLanguagePath)}
+                className="h-9 rounded-full px-3 text-xs font-bold text-foreground/70 hover:text-foreground"
+              >
+                {language === 'ko' ? 'EN' : '한국어'}
+              </Button>
+
               {/* 구독 상태 */}
               <Button
                 variant="outline"
@@ -316,6 +330,15 @@ export const UnifiedNavigation = () => {
 
           {/* Right Side */}
           <div className="flex items-center gap-2">
+            {/* Language Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate(toggleLanguagePath)}
+              className="h-8 rounded-full px-2.5 text-xs font-bold text-foreground/70"
+            >
+              {language === 'ko' ? 'EN' : '한국어'}
+            </Button>
             {/* 구독 상태 */}
             <Button
               variant="ghost"

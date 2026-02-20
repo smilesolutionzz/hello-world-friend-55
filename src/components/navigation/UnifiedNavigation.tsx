@@ -24,17 +24,16 @@ import {
   Heart,
   Zap,
   UserCheck,
-  Wallet,
+  //Wallet removed - now showing subscription status
   LogOut,
   LogIn,
   Sparkles,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
-import { useTokens } from '@/hooks/useTokens';
+import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import logo from '@/assets/logo.png';
-import { formatCash, tokenToCash } from '@/utils/tokenToCash';
 
 const navItems = [
   {
@@ -82,7 +81,9 @@ export const UnifiedNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthGuard();
-  const { tokenBalance } = useTokens();
+  const { isPremiumUser, isLifetimeUser, getSubscriptionLabel } = useSubscription();
+  const isPremium = isPremiumUser() || isLifetimeUser();
+  const subscriptionLabel = getSubscriptionLabel();
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
@@ -222,17 +223,32 @@ export const UnifiedNavigation = () => {
 
             {/* Right Side */}
             <div className="flex items-center gap-2">
-              {/* 캐시 잔액 */}
+              {/* 구독 상태 */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handleNavigation('/token-subscription')}
-                className="h-9 rounded-full border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/30 hover:bg-amber-100 dark:hover:bg-amber-900/50 gap-2"
+                className={`h-9 rounded-full gap-2 ${
+                  isPremium 
+                    ? 'border-yellow-400 dark:border-yellow-600 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 hover:from-yellow-100 hover:to-orange-100' 
+                    : 'border-muted-foreground/20 bg-muted/30 hover:bg-muted/50'
+                }`}
               >
-                <Wallet className="w-4 h-4 text-amber-600" />
-                <span className="font-semibold text-amber-700 dark:text-amber-400">
-                  {formatCash(tokenToCash(tokenBalance?.current_tokens || 0))}
-                </span>
+                {isPremium ? (
+                  <>
+                    <Crown className="w-4 h-4 text-yellow-500" />
+                    <span className="font-semibold text-yellow-700 dark:text-yellow-400">
+                      {subscriptionLabel}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Crown className="w-4 h-4 text-muted-foreground" />
+                    <span className="font-semibold text-muted-foreground">
+                      구독하기
+                    </span>
+                  </>
+                )}
               </Button>
 
               {/* 유저 메뉴 */}
@@ -300,17 +316,28 @@ export const UnifiedNavigation = () => {
 
           {/* Right Side */}
           <div className="flex items-center gap-2">
-            {/* 캐시 */}
+            {/* 구독 상태 */}
             <Button
               variant="ghost"
               size="sm"
               onClick={() => handleNavigation('/token-subscription')}
-              className="h-8 rounded-full px-3 gap-1.5"
+              className={`h-8 rounded-full px-3 gap-1.5 ${isPremium ? '' : ''}`}
             >
-              <Wallet className="w-4 h-4 text-amber-600" />
-              <span className="font-semibold text-amber-700 dark:text-amber-400 text-sm">
-                {formatCash(tokenToCash(tokenBalance?.current_tokens || 0))}
-              </span>
+              {isPremium ? (
+                <>
+                  <Crown className="w-4 h-4 text-yellow-500" />
+                  <span className="font-semibold text-yellow-700 dark:text-yellow-400 text-sm">
+                    {subscriptionLabel}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <Crown className="w-4 h-4 text-muted-foreground" />
+                  <span className="font-semibold text-muted-foreground text-sm">
+                    구독하기
+                  </span>
+                </>
+              )}
             </Button>
 
             {/* Menu Button */}

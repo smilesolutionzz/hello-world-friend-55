@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface SocialDevelopmentTestFormProps {
   onComplete: (results: {
@@ -18,7 +19,7 @@ interface SocialDevelopmentTestFormProps {
   onBack: () => void;
 }
 
-const questions = [
+const questionsKo = [
   "아이가 또래와 함께 놀이하는 것을 선호하나요?",
   "아이가 다른 사람의 감정을 이해하고 공감하나요?",
   "아이가 친구들과 갈등이 생겼을 때 적절히 해결하나요?",
@@ -41,10 +42,40 @@ const questions = [
   "아이가 사회적 단서(표정, 몸짓 등)를 잘 읽고 반응하나요?"
 ];
 
+const questionsEn = [
+  "Does your child prefer playing with peers?",
+  "Does your child understand and empathize with others' feelings?",
+  "Does your child resolve conflicts with friends appropriately?",
+  "Does your child express opinions to peers appropriately?",
+  "Does your child actively participate in group activities?",
+  "Does your child follow rules and keep promises?",
+  "Can your child share things with others?",
+  "Does your child have no difficulty making new friends?",
+  "Does your child show good manners when talking with adults?",
+  "Can your child ask for help appropriately when needed?",
+  "Does your child consider others' perspectives when acting?",
+  "Does your child do well in activities requiring cooperation?",
+  "Does your child behave appropriately in social situations?",
+  "Does your child express and regulate emotions appropriately?",
+  "Can your child take on leadership or follower roles?",
+  "Does your child respect others' rights and boundaries?",
+  "Can your child apologize or forgive?",
+  "Does your child adapt to various social situations?",
+  "Is your child popular or gets along well with peers?",
+  "Does your child read and respond to social cues (expressions, gestures) well?"
+];
+
+const optionsKo = ["전혀 그렇지 않다", "거의 그렇지 않다", "가끔 그렇다", "자주 그렇다", "매우 그렇다"];
+const optionsEn = ["Not at all", "Rarely", "Sometimes", "Often", "Very much"];
+
 const SocialDevelopmentTestForm = ({ onComplete, onBack }: SocialDevelopmentTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(-1));
+  const [answers, setAnswers] = useState<number[]>(new Array(questionsKo.length).fill(-1));
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
+
+  const questions = isEnglish ? questionsEn : questionsKo;
+  const options = isEnglish ? optionsEn : optionsKo;
 
   const handleAnswerChange = (value: string) => {
     const newAnswers = [...answers];
@@ -62,16 +93,16 @@ const SocialDevelopmentTestForm = ({ onComplete, onBack }: SocialDevelopmentTest
     const total = finalAnswers.reduce((sum, answer) => sum + answer, 0);
     const average = total / finalAnswers.length;
     
-    let severity = "우수";
-    if (total <= 20) severity = "관심필요";
-    else if (total <= 40) severity = "보통";
-    else if (total <= 60) severity = "양호";
+    let severity = isEnglish ? "Excellent" : "우수";
+    if (total <= 20) severity = isEnglish ? "Needs Attention" : "관심필요";
+    else if (total <= 40) severity = isEnglish ? "Average" : "보통";
+    else if (total <= 60) severity = isEnglish ? "Good" : "양호";
 
     onComplete({
       answers: finalAnswers,
       total,
       average,
-      ageGroup: "아동청소년",
+      ageGroup: isEnglish ? "Children/Adolescents" : "아동청소년",
       severity
     });
   };
@@ -87,19 +118,15 @@ const SocialDevelopmentTestForm = ({ onComplete, onBack }: SocialDevelopmentTest
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
-        <Button
-          variant="ghost"
-          onClick={onBack}
-          className="mb-4"
-        >
+        <Button variant="ghost" onClick={onBack} className="mb-4">
           <ChevronLeft className="w-4 h-4 mr-2" />
-          뒤로가기
+          {isEnglish ? "Back" : "뒤로가기"}
         </Button>
         
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>질문 {currentQuestion + 1} / {questions.length}</span>
-            <span>{Math.round(progress)}% 완료</span>
+            <span>{isEnglish ? "Question" : "질문"} {currentQuestion + 1} / {questions.length}</span>
+            <span>{Math.round(progress)}% {isEnglish ? "complete" : "완료"}</span>
           </div>
           <Progress value={progress} className="w-full" />
         </div>
@@ -107,9 +134,7 @@ const SocialDevelopmentTestForm = ({ onComplete, onBack }: SocialDevelopmentTest
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">
-            {questions[currentQuestion]}
-          </CardTitle>
+          <CardTitle className="text-lg">{questions[currentQuestion]}</CardTitle>
         </CardHeader>
         <CardContent>
           <RadioGroup
@@ -118,40 +143,21 @@ const SocialDevelopmentTestForm = ({ onComplete, onBack }: SocialDevelopmentTest
             onValueChange={handleAnswerChange}
             className="space-y-3"
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="0" id="option0" />
-              <Label htmlFor="option0" className="cursor-pointer">전혀 그렇지 않다</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="1" id="option1" />
-              <Label htmlFor="option1" className="cursor-pointer">거의 그렇지 않다</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="2" id="option2" />
-              <Label htmlFor="option2" className="cursor-pointer">가끔 그렇다</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="3" id="option3" />
-              <Label htmlFor="option3" className="cursor-pointer">자주 그렇다</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="4" id="option4" />
-              <Label htmlFor="option4" className="cursor-pointer">매우 그렇다</Label>
-            </div>
+            {options.map((label, i) => (
+              <div key={i} className="flex items-center space-x-2">
+                <RadioGroupItem value={i.toString()} id={`option${i}`} />
+                <Label htmlFor={`option${i}`} className="cursor-pointer">{label}</Label>
+              </div>
+            ))}
           </RadioGroup>
 
           <div className="flex justify-between mt-6">
-            <Button
-              variant="outline"
-              onClick={handlePrevious}
-              disabled={currentQuestion === 0}
-            >
+            <Button variant="outline" onClick={handlePrevious} disabled={currentQuestion === 0}>
               <ChevronLeft className="w-4 h-4 mr-2" />
-              이전
+              {isEnglish ? "Previous" : "이전"}
             </Button>
-            
             <div className="text-sm text-muted-foreground">
-              답변을 선택하면 자동으로 다음으로 넘어갑니다
+              {isEnglish ? "Select an answer to proceed" : "답변을 선택하면 자동으로 다음으로 넘어갑니다"}
             </div>
           </div>
         </CardContent>

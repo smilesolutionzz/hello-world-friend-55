@@ -2,12 +2,17 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Heart, ArrowRight, Sparkles } from 'lucide-react';
+import { useTranslation } from '@/i18n';
+import { useLanguage } from '@/i18n';
 
 const ColumnHookBanner = () => {
+  const { t } = useTranslation();
+  const { localePath } = useLanguage();
+
   return (
     <section className="py-12 px-4 bg-gradient-to-r from-rose-500/10 via-purple-500/10 to-blue-500/10">
       <div className="max-w-4xl mx-auto">
-        <Link to="/column">
+        <Link to={localePath('/column')}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -36,23 +41,23 @@ const ColumnHookBanner = () => {
               <div className="flex-1 text-center md:text-left">
                 <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
                   <Sparkles className="w-4 h-4 text-yellow-400" />
-                  <span className="text-xs font-medium text-yellow-400 tracking-wider">2026년 2월 특별 칼럼</span>
+                  <span className="text-xs font-medium text-yellow-400 tracking-wider">{t.columnHook.dateLabel}</span>
                 </div>
                 
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
-                  "새 학기 앞둔 엄마, 아빠에게"
+                  {t.columnHook.title}
                 </h3>
                 
                 <p className="text-sm md:text-base text-slate-300 leading-relaxed">
-                  3월이 다가옵니다. 아이도, 부모도 설렘보다 걱정이 앞서는 계절. 
-                  <span className="text-rose-400 font-medium"> 불안해도 괜찮습니다.</span>
+                  {t.columnHook.description}
+                  <span className="text-rose-400 font-medium">{t.columnHook.descriptionHighlight}</span>
                 </p>
               </div>
               
               {/* CTA */}
               <div className="flex-shrink-0">
                 <div className="flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
-                  <span className="text-sm font-medium">읽어보기</span>
+                  <span className="text-sm font-medium">{t.columnHook.readMore}</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>

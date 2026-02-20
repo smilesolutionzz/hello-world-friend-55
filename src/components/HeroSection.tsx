@@ -10,11 +10,13 @@ import logo from "@/assets/logo-large.png";
 import { sharePage, isKakaoInitialized } from "@/lib/kakaoShare";
 import { toast } from "sonner";
 import { trackEvent } from "@/components/common/Analytics";
+import { useTranslation } from "@/i18n";
 
 const HeroSection = () => {
   const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,12 +29,12 @@ const HeroSection = () => {
   const handleKakaoShare = () => {
     trackEvent('hero_kakao_share');
     const success = sharePage({
-      title: '🧠 AI 심리검사 해봤어? 완전 신기해!',
-      description: '3분 만에 전문가급 심리 분석 받아봐. 무료야!',
-      buttonText: '나도 해보기 🎁',
+      title: t.hero.kakaoShareTitle,
+      description: t.hero.kakaoShareDesc,
+      buttonText: t.hero.kakaoShareButton,
     });
     if (!success) {
-      toast.success('카카오톡에 붙여넣기 하세요! 💬');
+      toast.success(t.hero.kakaoShareToast);
     }
   };
 
@@ -58,28 +60,22 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/95 via-[#111827]/90 to-[#0A0E1A]/95" />
       </div>
 
-      {/* Animated Gradient Orbs - 더 부드럽게 */}
+      {/* Animated Gradient Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div 
-          animate={{ 
-            scale: [1, 1.15, 1],
-            opacity: [0.2, 0.35, 0.2]
-          }}
+          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.35, 0.2] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-10 -left-32 w-[400px] h-[400px] bg-gradient-to-r from-amber-500/30 to-orange-500/20 rounded-full blur-[120px]" 
         />
         <motion.div 
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.15, 0.3, 0.15]
-          }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.3, 0.15] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
           className="absolute bottom-32 -right-32 w-[500px] h-[500px] bg-gradient-to-l from-blue-500/25 to-cyan-500/20 rounded-full blur-[140px]" 
         />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 pt-20 md:pt-24 pb-16 min-h-screen flex flex-col">
-        {/* 로고 & 배지 */}
+        {/* Logo & Badge */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -96,11 +92,11 @@ const HeroSection = () => {
           
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/15 to-orange-500/15 backdrop-blur-md border border-amber-500/30 rounded-full">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-xs md:text-sm font-bold text-amber-200">혁신력 1위 AI 심리·발달 케어 플랫폼</span>
+            <span className="text-xs md:text-sm font-bold text-amber-200">{t.hero.innovationBadge}</span>
           </div>
         </motion.div>
 
-        {/* 메인 헤드라인 */}
+        {/* Main Headline */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,20 +104,20 @@ const HeroSection = () => {
           className="text-center mb-8"
         >
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-4">
-            <span className="block text-white/95 mb-1">심리 건강, ADHD, 발달 체크</span>
+            <span className="block text-white/95 mb-1">{t.hero.headlineTop}</span>
             <span className="block bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 bg-clip-text text-transparent">
-              3분이면 전문가급 분석 완료
+              {t.hero.headlineBottom}
             </span>
           </h1>
           
           <p className="text-white/70 text-xs md:text-base max-w-xl mx-auto">
-            고민을 적으면 AI가 즉시 분석해드려요.
+            {t.hero.description}
             <br className="hidden md:block" />
-            <span className="font-semibold text-white/85">9가지 전문 리포트 + AI 발달 예측을 무료로 제공합니다.</span>
+            <span className="font-semibold text-white/85">{t.hero.descriptionHighlight}</span>
           </p>
         </motion.div>
 
-        {/* AI 분석 입력창 - 메인 */}
+        {/* AI Analysis Input */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -131,7 +127,7 @@ const HeroSection = () => {
           <InstantAIAnalysis />
         </motion.div>
 
-        {/* 하단 CTA 버튼들 */}
+        {/* Bottom CTA Buttons */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -143,7 +139,7 @@ const HeroSection = () => {
             className="group w-full sm:w-auto px-8 py-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-2xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-300 hover:scale-[1.02]"
           >
             <Sparkles className="w-5 h-5 mr-2" />
-            3분 만에 무료 분석 시작
+            {t.hero.ctaFreeAnalysis}
             <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
 
@@ -153,7 +149,7 @@ const HeroSection = () => {
             className="w-full sm:w-auto px-6 py-5 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 font-medium rounded-xl transition-all duration-300"
           >
             <Gift className="w-4 h-4 mr-2" />
-            전문가 상담
+            {t.hero.ctaExpertConsult}
           </Button>
 
           <Button
@@ -162,11 +158,11 @@ const HeroSection = () => {
             className="w-full sm:w-auto px-6 py-5 bg-[#FEE500]/10 hover:bg-[#FEE500]/20 backdrop-blur-sm border border-[#FEE500]/40 text-[#FEE500] font-medium rounded-xl transition-all duration-300"
           >
             <MessageCircle className="w-4 h-4 mr-2" />
-            친구에게 공유
+            {t.hero.ctaShareFriend}
           </Button>
         </motion.div>
 
-        {/* Trust Indicators - 강화된 소셜 프루프 */}
+        {/* Trust Indicators */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -174,25 +170,25 @@ const HeroSection = () => {
           className="mt-6 text-center"
         >
           <div className="inline-flex flex-wrap items-center justify-center gap-2 md:gap-4 text-white/60 text-xs md:text-sm">
-            <span>✓ 회원가입 없이 즉시 시작</span>
+            <span>{t.hero.trustNoSignup}</span>
             <span className="hidden sm:inline">·</span>
-            <span>✓ 완전 무료</span>
+            <span>{t.hero.trustFree}</span>
             <span className="hidden sm:inline">·</span>
-            <span>✓ 24시간 이용 가능</span>
+            <span>{t.hero.trust24h}</span>
           </div>
           
           <div className="mt-3 flex flex-wrap items-center justify-center gap-3 md:gap-4 text-xs md:text-sm">
-            <span className="text-white/70">⭐ 4.8/5.0 (4,248명)</span>
+            <span className="text-white/70">{t.hero.ratingCount}</span>
             <motion.span 
               animate={{ opacity: [0.8, 1, 0.8] }}
               transition={{ duration: 2, repeat: Infinity }}
               className="text-amber-400 font-semibold"
             >
-              🔥 지금 47명 검사 중
+              {t.hero.liveUsers}
             </motion.span>
           </div>
           
-          {/* 긴급성 배너 */}
+          {/* Urgency Banner */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -204,7 +200,7 @@ const HeroSection = () => {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
             </span>
             <span className="text-xs text-white/90 font-medium">
-              오늘만 무료 분석 제공 중
+              {t.hero.urgencyBanner}
             </span>
           </motion.div>
         </motion.div>

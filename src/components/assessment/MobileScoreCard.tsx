@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface ScoreItem {
   label: string;
@@ -26,6 +27,7 @@ export const MobileScoreCard = ({
   scores,
   testDate
 }: MobileScoreCardProps) => {
+  const { isEnglish } = useLanguage();
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -40,7 +42,7 @@ export const MobileScoreCard = ({
               {Icon && <Icon className="w-5 h-5 md:w-6 md:h-6" />}
               <div>
                 <p className="text-xs md:text-sm font-medium opacity-80">
-                  {severityLabel || '검사 결과'}
+                  {severityLabel || (isEnglish ? 'Test Result' : '검사 결과')}
                 </p>
                 <p className="text-base md:text-lg font-bold">{severity}</p>
               </div>

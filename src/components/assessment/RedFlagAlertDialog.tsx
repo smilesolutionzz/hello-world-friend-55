@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -10,9 +9,10 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Phone, MessageCircle, ExternalLink } from 'lucide-react';
+import { AlertTriangle, Phone, MessageCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { RedFlagResult } from '@/utils/redFlagDetection';
+import { useLanguage } from '@/i18n';
 
 interface RedFlagAlertDialogProps {
   isOpen: boolean;
@@ -22,16 +22,11 @@ interface RedFlagAlertDialogProps {
 
 const RedFlagAlertDialog = ({ isOpen, onClose, redFlagResult }: RedFlagAlertDialogProps) => {
   const navigate = useNavigate();
+  const { isEnglish } = useLanguage();
   const isCritical = redFlagResult.overallSeverity === 'critical';
 
-  const handleConsultation = () => {
-    onClose();
-    navigate('/expert-hiring');
-  };
-
-  const handleEmergencyCall = () => {
-    window.location.href = 'tel:1577-0199';
-  };
+  const handleConsultation = () => { onClose(); navigate('/expert-hiring'); };
+  const handleEmergencyCall = () => { window.location.href = isEnglish ? 'tel:988' : 'tel:1577-0199'; };
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -39,76 +34,65 @@ const RedFlagAlertDialog = ({ isOpen, onClose, redFlagResult }: RedFlagAlertDial
         <AlertDialogHeader>
           <AlertDialogTitle className={`flex items-center gap-2 ${isCritical ? 'text-destructive' : 'text-orange-600'}`}>
             <AlertTriangle className={`w-6 h-6 ${isCritical ? 'animate-pulse' : ''}`} />
-            {isCritical ? '⚠️ 즉각적인 전문 상담이 필요합니다' : '⚠️ 전문가 상담을 권장합니다'}
+            {isCritical
+              ? (isEnglish ? '⚠️ Immediate professional help is needed' : '⚠️ 즉각적인 전문 상담이 필요합니다')
+              : (isEnglish ? '⚠️ Professional consultation recommended' : '⚠️ 전문가 상담을 권장합니다')}
           </AlertDialogTitle>
           <AlertDialogDescription asChild>
             <div className="space-y-4">
               <p className="text-foreground font-medium">
-                검사 결과에서 다음과 같은 중요한 신호가 감지되었습니다:
+                {isEnglish ? 'Important signals were detected in your results:' : '검사 결과에서 다음과 같은 중요한 신호가 감지되었습니다:'}
               </p>
-              
               <div className="space-y-2">
                 {redFlagResult.flags.map((flag, index) => (
-                  <div 
-                    key={index} 
-                    className={`p-3 rounded-lg ${
-                      flag.severity === 'critical' 
-                        ? 'bg-destructive/10 border border-destructive/30' 
-                        : 'bg-orange-50 border border-orange-200'
-                    }`}
-                  >
-                    <p className={`font-semibold text-sm ${
-                      flag.severity === 'critical' ? 'text-destructive' : 'text-orange-700'
-                    }`}>
-                      {flag.message}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {flag.description}
-                    </p>
+                  <div key={index} className={`p-3 rounded-lg ${flag.severity === 'critical' ? 'bg-destructive/10 border border-destructive/30' : 'bg-orange-50 border border-orange-200'}`}>
+                    <p className={`font-semibold text-sm ${flag.severity === 'critical' ? 'text-destructive' : 'text-orange-700'}`}>{flag.message}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{flag.description}</p>
                   </div>
                 ))}
               </div>
-
               {isCritical && (
                 <div className="bg-destructive/10 p-4 rounded-lg border border-destructive/30">
                   <p className="text-sm font-medium text-destructive mb-2">
-                    🚨 긴급 연락처
+                    {isEnglish ? '🚨 Emergency Contacts' : '🚨 긴급 연락처'}
                   </p>
                   <div className="space-y-1 text-sm">
-                    <p>• 정신건강 위기상담: <strong>1577-0199</strong> (24시간)</p>
-                    <p>• 자살예방 상담전화: <strong>1393</strong></p>
-                    <p>• 생명의전화: <strong>1588-9191</strong></p>
+                    {isEnglish ? (
+                      <>
+                        <p>• Suicide & Crisis Lifeline: <strong>988</strong> (24/7)</p>
+                        <p>• Crisis Text Line: Text <strong>HOME</strong> to <strong>741741</strong></p>
+                      </>
+                    ) : (
+                      <>
+                        <p>• 정신건강 위기상담: <strong>1577-0199</strong> (24시간)</p>
+                        <p>• 자살예방 상담전화: <strong>1393</strong></p>
+                        <p>• 생명의전화: <strong>1588-9191</strong></p>
+                      </>
+                    )}
                   </div>
                 </div>
               )}
-
               <p className="text-sm text-muted-foreground">
-                검사 결과만으로 진단을 내리기는 어렵습니다. 
-                정확한 평가를 위해 전문가와 상담하시기를 권장드립니다.
+                {isEnglish
+                  ? 'Test results alone cannot provide a diagnosis. We recommend consulting a professional for an accurate assessment.'
+                  : '검사 결과만으로 진단을 내리기는 어렵습니다. 정확한 평가를 위해 전문가와 상담하시기를 권장드립니다.'}
               </p>
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
           {isCritical && (
-            <Button 
-              onClick={handleEmergencyCall}
-              variant="destructive"
-              className="w-full"
-            >
+            <Button onClick={handleEmergencyCall} variant="destructive" className="w-full">
               <Phone className="w-4 h-4 mr-2" />
-              긴급 상담 전화 (1577-0199)
+              {isEnglish ? 'Emergency Call (988)' : '긴급 상담 전화 (1577-0199)'}
             </Button>
           )}
-          <Button 
-            onClick={handleConsultation}
-            className={`w-full ${isCritical ? 'bg-orange-600 hover:bg-orange-700' : 'bg-primary'}`}
-          >
+          <Button onClick={handleConsultation} className={`w-full ${isCritical ? 'bg-orange-600 hover:bg-orange-700' : 'bg-primary'}`}>
             <MessageCircle className="w-4 h-4 mr-2" />
-            전문가 상담 신청하기
+            {isEnglish ? 'Request Professional Consultation' : '전문가 상담 신청하기'}
           </Button>
           <AlertDialogCancel className="w-full mt-0">
-            나중에 하기
+            {isEnglish ? 'Later' : '나중에 하기'}
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>

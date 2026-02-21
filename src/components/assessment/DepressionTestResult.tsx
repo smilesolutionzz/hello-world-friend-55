@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from '@/i18n';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +43,7 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
   const [isLoading, setIsLoading] = useState(true);
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { shareAsText } = useShareText();
+  const { isEnglish } = useLanguage();
 
   // 자동 저장 - AI 분석 포함
   useAutoSaveTestResult({
@@ -77,11 +79,11 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
         if (data?.analysis) {
           setAiAnalysis(data.analysis);
         } else {
-          setAiAnalysis("AI 분석을 가져오는 중 오류가 발생했습니다. 기본 분석을 제공합니다.");
+          setAiAnalysis(isEnglish ? "An error occurred while loading AI analysis. Showing basic analysis." : "AI 분석을 가져오는 중 오류가 발생했습니다. 기본 분석을 제공합니다.");
         }
       } catch (error) {
         console.error('AI analysis error:', error);
-        setAiAnalysis("AI 분석을 가져오는 중 오류가 발생했습니다. 기본 분석을 제공합니다.");
+        setAiAnalysis(isEnglish ? "An error occurred while loading AI analysis. Showing basic analysis." : "AI 분석을 가져오는 중 오류가 발생했습니다. 기본 분석을 제공합니다.");
       } finally {
         setIsLoading(false);
       }
@@ -107,7 +109,7 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
 
   const handleShareText = () => {
     const formattedText = formatPsychTestResult('depression', results, aiAnalysis);
-    shareAsText(formattedText, '우울감 수준 검사 결과');
+    shareAsText(formattedText, isEnglish ? 'Depression Level Check Result' : '우울감 수준 검사 결과');
   };
 
   const getRecommendation = (severity: string) => {
@@ -115,32 +117,32 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
       case "정상":
         return {
           icon: <CheckCircle className="w-6 h-6 text-green-600" />,
-          title: "Normal Range (정상 범위)",
-          description: "현재 우울증상이 정상 범위에 있습니다. 건강한 정신상태를 유지하고 계십니다."
+          title: isEnglish ? "Normal Range" : "정상 범위",
+          description: isEnglish ? "Your depression symptoms are within normal range. You are maintaining a healthy mental state." : "현재 우울증상이 정상 범위에 있습니다. 건강한 정신상태를 유지하고 계십니다."
         };
       case "가벼운 우울":
         return {
           icon: <Heart className="w-6 h-6 text-yellow-600" />,
-          title: "Mild Depression (가벼운 우울증상)",
-          description: "가벼운 우울증상이 있습니다. 생활습관 개선과 스트레스 관리를 통해 증상 완화가 가능합니다."
+          title: isEnglish ? "Mild Depression" : "가벼운 우울증상",
+          description: isEnglish ? "You have mild depression symptoms. Lifestyle changes and stress management can help improve symptoms." : "가벼운 우울증상이 있습니다. 생활습관 개선과 스트레스 관리를 통해 증상 완화가 가능합니다."
         };
       case "중등도 우울":
         return {
           icon: <AlertTriangle className="w-6 h-6 text-orange-600" />,
-          title: "Moderate Depression (중등도 우울증상)",
-          description: "중등도 우울증상이 확인됩니다. 전문가와의 상담을 권장하며, 치료가 필요할 수 있습니다."
+          title: isEnglish ? "Moderate Depression" : "중등도 우울증상",
+          description: isEnglish ? "Moderate depression symptoms detected. Professional consultation is recommended, treatment may be needed." : "중등도 우울증상이 확인됩니다. 전문가와의 상담을 권장하며, 치료가 필요할 수 있습니다."
         };
       case "심한 우울":
         return {
           icon: <AlertTriangle className="w-6 h-6 text-red-600" />,
-          title: "Severe Depression (심한 우울증상)",
-          description: "즉시 전문가의 도움이 필요합니다. 통합건강의학과 전문의와 상담받으시기를 적극 권장드립니다."
+          title: isEnglish ? "Severe Depression" : "심한 우울증상",
+          description: isEnglish ? "Immediate professional help is needed. We strongly recommend consulting with a specialist." : "즉시 전문가의 도움이 필요합니다. 통합건강의학과 전문의와 상담받으시기를 적극 권장드립니다."
         };
       default:
         return {
           icon: <Heart className="w-6 h-6 text-gray-600" />,
-          title: "Assessment Complete (검사 완료)",
-          description: "검사가 완료되었습니다."
+          title: isEnglish ? "Assessment Complete" : "검사 완료",
+          description: isEnglish ? "Assessment completed." : "검사가 완료되었습니다."
         };
     }
   };
@@ -154,13 +156,13 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
       '우울감_체크_결과',
       () => {
         toast({
-          title: "PDF 다운로드 완료",
-          description: "우울감 체크 결과가 저장되었습니다.",
+          title: isEnglish ? "PDF Download Complete" : "PDF 다운로드 완료",
+          description: isEnglish ? "Depression check result saved." : "우울감 체크 결과가 저장되었습니다.",
         });
       },
       (error) => {
         toast({
-          title: "다운로드 실패",
+          title: isEnglish ? "Download Failed" : "다운로드 실패",
           description: error.message,
           variant: "destructive",
         });
@@ -171,7 +173,7 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
   return (
     <div id="depression-result-content" className="space-y-4 md:space-y-6 px-4 md:px-0">
       {/* PDF Header */}
-      <PDFHeader testName="우울감 체크 결과" />
+      <PDFHeader testName={isEnglish ? "Depression Check Result" : "우울감 체크 결과"} />
       
       {/* 모바일 최적화 헤더 */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-lg -mx-4 px-4 py-3 border-b border-border/50 md:relative md:mx-0 md:px-0 md:py-0 md:bg-transparent md:border-0">
@@ -180,26 +182,26 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
           <div className="flex items-center justify-between mb-2">
             <Button variant="ghost" size="sm" onClick={onBack} className="h-8 px-2 -ml-2">
               <ArrowLeft className="w-4 h-4 mr-1" />
-              <span className="text-xs">뒤로</span>
+              <span className="text-xs">{isEnglish ? 'Back' : '뒤로'}</span>
             </Button>
             <Button variant="ghost" size="sm" onClick={handlePDFDownload} className="h-8 px-2">
               <Download className="w-4 h-4" />
             </Button>
           </div>
-          <h1 className="text-lg font-bold text-foreground">우울감 체크 결과</h1>
-          <p className="text-xs text-muted-foreground">참고용 자가 진단</p>
+          <h1 className="text-lg font-bold text-foreground">{isEnglish ? 'Depression Check Result' : '우울감 체크 결과'}</h1>
+          <p className="text-xs text-muted-foreground">{isEnglish ? 'Self-assessment reference' : '참고용 자가 진단'}</p>
         </div>
         
         {/* 데스크톱 */}
         <div className="hidden md:flex items-center justify-between">
           <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
-            뒤로가기
+            {isEnglish ? 'Back' : '뒤로가기'}
           </Button>
-          <h1 className="text-2xl lg:text-3xl font-bold text-brand-gradient">우울감 체크 결과 (참고용)</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold text-brand-gradient">{isEnglish ? 'Depression Check Result (Reference)' : '우울감 체크 결과 (참고용)'}</h1>
           <Button variant="outline" onClick={handlePDFDownload} className="flex items-center gap-2">
             <Download className="w-4 h-4" />
-            PDF 다운로드
+            {isEnglish ? 'PDF Download' : 'PDF 다운로드'}
           </Button>
         </div>
       </div>
@@ -207,9 +209,9 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
       {/* 법적 안전 공지 - 모바일 최적화 */}
       <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 md:p-4">
         <p className="text-blue-800 dark:text-blue-200 text-xs md:text-sm">
-          <span className="font-semibold">📊 참고용 결과</span>
-          <span className="hidden md:inline"><br />⚠️ 이 결과는 참고용이며 전문적 평가가 절대 아닙니다. 지속적 어려움이 있으시면 반드시 전문가와 상담하세요.</span>
-          <span className="md:hidden"> · 전문 평가 아님</span>
+          <span className="font-semibold">📊 {isEnglish ? 'Reference Result' : '참고용 결과'}</span>
+          <span className="hidden md:inline"><br />⚠️ {isEnglish ? 'This result is for reference only and is not a professional evaluation. Please consult a professional if you experience persistent difficulties.' : '이 결과는 참고용이며 전문적 평가가 절대 아닙니다. 지속적 어려움이 있으시면 반드시 전문가와 상담하세요.'}</span>
+          <span className="md:hidden"> · {isEnglish ? 'Not a professional evaluation' : '전문 평가 아님'}</span>
         </p>
       </div>
 
@@ -221,7 +223,7 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
             <div className="flex items-center gap-2">
               {recommendation.icon}
               <div>
-                <p className="text-[10px] md:text-xs font-medium opacity-80">우울 수준</p>
+                <p className="text-[10px] md:text-xs font-medium opacity-80">{isEnglish ? 'Depression Level' : '우울 수준'}</p>
                 <p className="text-sm md:text-lg font-bold">{severity}</p>
               </div>
             </div>
@@ -235,19 +237,19 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
         <div className="p-3 md:p-6">
           <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4">
             <div className="text-center p-2 md:p-3 bg-muted/30 rounded-lg">
-              <p className="text-[10px] md:text-xs text-muted-foreground">총점</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground">{isEnglish ? 'Total' : '총점'}</p>
               <p className="text-lg md:text-2xl font-bold text-primary">{total}</p>
               <p className="text-[9px] md:text-xs text-muted-foreground">/ 42점</p>
             </div>
             <div className="text-center p-2 md:p-3 bg-muted/30 rounded-lg">
-              <p className="text-[10px] md:text-xs text-muted-foreground">평균</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground">{isEnglish ? 'Average' : '평균'}</p>
               <p className="text-lg md:text-2xl font-bold text-primary">{(total / 21).toFixed(1)}</p>
               <p className="text-[9px] md:text-xs text-muted-foreground">/ 2.0점</p>
             </div>
             <div className="text-center p-2 md:p-3 bg-muted/30 rounded-lg">
-              <p className="text-[10px] md:text-xs text-muted-foreground">백분율</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground">{isEnglish ? 'Percentile' : '백분율'}</p>
               <p className="text-lg md:text-2xl font-bold text-primary">{Math.round((total/42)*100)}%</p>
-              <p className="text-[9px] md:text-xs text-muted-foreground">만점 대비</p>
+              <p className="text-[9px] md:text-xs text-muted-foreground">{isEnglish ? 'of total' : '만점 대비'}</p>
             </div>
           </div>
 
@@ -268,23 +270,23 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
 
       {/* 점수 범위 안내 - 모바일 최적화 */}
       <Card className="p-3 md:p-6 no-break page-break">
-        <h3 className="text-sm md:text-xl font-semibold mb-3 md:mb-4">📊 점수 분류 기준</h3>
+        <h3 className="text-sm md:text-xl font-semibold mb-3 md:mb-4">📊 {isEnglish ? 'Score Classification' : '점수 분류 기준'}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
           <div className="p-2 md:p-4 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
-            <p className="font-semibold text-green-800 dark:text-green-300 text-xs md:text-base">정상</p>
-            <p className="text-[10px] md:text-sm text-green-600 dark:text-green-400">0-13점</p>
+            <p className="font-semibold text-green-800 dark:text-green-300 text-xs md:text-base">{isEnglish ? 'Normal' : '정상'}</p>
+            <p className="text-[10px] md:text-sm text-green-600 dark:text-green-400">0-13{isEnglish ? 'pts' : '점'}</p>
           </div>
           <div className="p-2 md:p-4 bg-yellow-50 dark:bg-yellow-950/30 rounded-lg border border-yellow-200 dark:border-yellow-800">
-            <p className="font-semibold text-yellow-800 dark:text-yellow-300 text-xs md:text-base">가벼운</p>
-            <p className="text-[10px] md:text-sm text-yellow-600 dark:text-yellow-400">14-19점</p>
+            <p className="font-semibold text-yellow-800 dark:text-yellow-300 text-xs md:text-base">{isEnglish ? 'Mild' : '가벼운'}</p>
+            <p className="text-[10px] md:text-sm text-yellow-600 dark:text-yellow-400">14-19{isEnglish ? 'pts' : '점'}</p>
           </div>
           <div className="p-2 md:p-4 bg-orange-50 dark:bg-orange-950/30 rounded-lg border border-orange-200 dark:border-orange-800">
-            <p className="font-semibold text-orange-800 dark:text-orange-300 text-xs md:text-base">중등도</p>
-            <p className="text-[10px] md:text-sm text-orange-600 dark:text-orange-400">20-28점</p>
+            <p className="font-semibold text-orange-800 dark:text-orange-300 text-xs md:text-base">{isEnglish ? 'Moderate' : '중등도'}</p>
+            <p className="text-[10px] md:text-sm text-orange-600 dark:text-orange-400">20-28{isEnglish ? 'pts' : '점'}</p>
           </div>
           <div className="p-2 md:p-4 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 dark:border-red-800">
-            <p className="font-semibold text-red-800 dark:text-red-300 text-xs md:text-base">심한</p>
-            <p className="text-[10px] md:text-sm text-red-600 dark:text-red-400">29-42점</p>
+            <p className="font-semibold text-red-800 dark:text-red-300 text-xs md:text-base">{isEnglish ? 'Severe' : '심한'}</p>
+            <p className="text-[10px] md:text-sm text-red-600 dark:text-red-400">29-42{isEnglish ? 'pts' : '점'}</p>
           </div>
         </div>
       </Card>

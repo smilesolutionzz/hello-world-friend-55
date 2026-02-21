@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface ResilienceTestResultProps {
   results: {
@@ -46,6 +47,7 @@ export default function ResilienceTestResult({ results, onBack }: ResilienceTest
   const { toast } = useToast();
   const { saveTestResult, isSaving } = useTestActions();
   const { generateWordDocument, printDocument } = useWordDownload();
+  const { isEnglish } = useLanguage();
 
   useEffect(() => {
     generateLocalAnalysis();
@@ -319,28 +321,28 @@ export default function ResilienceTestResult({ results, onBack }: ResilienceTest
   const categoryInfo: Record<string, { icon: React.ReactNode; name: string; description: string }> = {
     stress_recovery: { 
       icon: <RefreshCw className="w-5 h-5" />, 
-      name: '스트레스 회복력',
-      description: '스트레스 후 원래 상태로 돌아오는 능력'
+      name: isEnglish ? 'Stress Recovery' : '스트레스 회복력',
+      description: isEnglish ? 'Ability to bounce back after stress' : '스트레스 후 원래 상태로 돌아오는 능력'
     },
     adaptability: { 
       icon: <Zap className="w-5 h-5" />, 
-      name: '적응 유연성',
-      description: '변화와 불확실성에 대처하는 능력'
+      name: isEnglish ? 'Adaptive Flexibility' : '적응 유연성',
+      description: isEnglish ? 'Ability to cope with change and uncertainty' : '변화와 불확실성에 대처하는 능력'
     },
     emotional_stability: { 
       icon: <Heart className="w-5 h-5" />, 
-      name: '정서적 안정성',
-      description: '감정 조절 및 심리적 안정 유지 능력'
+      name: isEnglish ? 'Emotional Stability' : '정서적 안정성',
+      description: isEnglish ? 'Ability to regulate emotions and maintain psychological stability' : '감정 조절 및 심리적 안정 유지 능력'
     },
     social_support: { 
       icon: <Users className="w-5 h-5" />, 
-      name: '사회적 지지망',
-      description: '도움을 주고받을 수 있는 관계의 질'
+      name: isEnglish ? 'Social Support' : '사회적 지지망',
+      description: isEnglish ? 'Quality of relationships for giving and receiving help' : '도움을 주고받을 수 있는 관계의 질'
     },
     purpose_growth: { 
       icon: <Brain className="w-5 h-5" />, 
-      name: '목적의식 & 성장',
-      description: '삶의 의미와 성장 마인드셋'
+      name: isEnglish ? 'Purpose & Growth' : '목적의식 & 성장',
+      description: isEnglish ? 'Sense of meaning in life and growth mindset' : '삶의 의미와 성장 마인드셋'
     }
   };
 
@@ -376,7 +378,7 @@ export default function ResilienceTestResult({ results, onBack }: ResilienceTest
           <div className="mb-6">
             <Button variant="ghost" onClick={onBack} className="flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" />
-              돌아가기
+              {isEnglish ? "Back" : "돌아가기"}
             </Button>
           </div>
 
@@ -389,8 +391,8 @@ export default function ResilienceTestResult({ results, onBack }: ResilienceTest
                     <Shield className="w-8 h-8" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold">회복탄력성 검사 결과</h2>
-                    <p className="text-white/80">38문항 5개 영역 심층 분석 리포트</p>
+                    <h2 className="text-2xl font-bold">{isEnglish ? "Resilience Test Results" : "회복탄력성 검사 결과"}</h2>
+                    <p className="text-white/80">{isEnglish ? "38-item 5-domain in-depth analysis report" : "38문항 5개 영역 심층 분석 리포트"}</p>
                   </div>
                 </div>
                 <div className="text-4xl">{typeInfo.emoji}</div>

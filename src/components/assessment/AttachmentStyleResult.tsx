@@ -12,6 +12,7 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface AttachmentStyleResultProps {
   result: {
@@ -29,6 +30,7 @@ interface AttachmentStyleResultProps {
 const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, onRestart }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
@@ -117,6 +119,15 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
   };
 
   const getStyleDescription = (style: string) => {
+    if (isEnglish) {
+      switch(style) {
+        case "안정형": return "A type that forms healthy relationships";
+        case "불안형": return "A type that worries a lot about relationships";
+        case "회피형": return "A type that values independence";
+        case "혼란형": return "A type confused between intimacy and distance";
+        default: return "";
+      }
+    }
     switch(style) {
       case "안정형": return "건강한 관계를 형성하는 유형";
       case "불안형": return "관계에 대한 걱정이 많은 유형";
@@ -133,7 +144,7 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
         <div className="flex items-center justify-between flex-wrap gap-2">
           <Button variant="ghost" onClick={() => navigate('/assessment')} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
-            검사 목록
+            {isEnglish ? "Test List" : "검사 목록"}
           </Button>
           <div className="flex gap-2">
             <Button 
@@ -147,11 +158,11 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
               ) : (
                 <FileDown className="w-4 h-4" />
               )}
-              PDF 저장
+              {isEnglish ? "Save PDF" : "PDF 저장"}
             </Button>
             <Button variant="outline" onClick={onRestart} className="flex items-center gap-2">
               <RefreshCw className="w-4 h-4" />
-              다시 검사
+              {isEnglish ? "Retake" : "다시 검사"}
             </Button>
           </div>
         </div>
@@ -164,7 +175,7 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
                 {result.style}
               </Badge>
             </div>
-            <CardTitle className="text-3xl mb-2">애착 유형 검사 결과</CardTitle>
+            <CardTitle className="text-3xl mb-2">{isEnglish ? "Attachment Style Test Results" : "애착 유형 검사 결과"}</CardTitle>
             <p className="text-muted-foreground text-lg">
               {getStyleDescription(result.style)}
             </p>
@@ -175,15 +186,15 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
               <div className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 p-6 rounded-lg">
                 <div className="flex items-center gap-3 mb-3">
                   <Heart className="w-6 h-6 text-orange-600" />
-                  <h3 className="font-bold text-lg">불안 점수</h3>
+                   <h3 className="font-bold text-lg">{isEnglish ? "Anxiety Score" : "불안 점수"}</h3>
                 </div>
                 <div className="text-4xl font-bold text-orange-600 mb-2">
                   {result.anxietyScore.toFixed(1)} / 7
                 </div>
                 <p className="text-sm text-muted-foreground">
                   {result.anxietyScore < 4 
-                    ? "관계에서 안정감을 느끼는 편입니다" 
-                    : "관계에 대한 걱정이 있는 편입니다"}
+                    ? (isEnglish ? "You tend to feel secure in relationships" : "관계에서 안정감을 느끼는 편입니다")
+                    : (isEnglish ? "You tend to worry about relationships" : "관계에 대한 걱정이 있는 편입니다")}
                 </p>
               </div>
 
@@ -191,15 +202,15 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-6 rounded-lg">
                 <div className="flex items-center gap-3 mb-3">
                   <Users className="w-6 h-6 text-blue-600" />
-                  <h3 className="font-bold text-lg">회피 점수</h3>
+                   <h3 className="font-bold text-lg">{isEnglish ? "Avoidance Score" : "회피 점수"}</h3>
                 </div>
                 <div className="text-4xl font-bold text-blue-600 mb-2">
                   {result.avoidanceScore.toFixed(1)} / 7
                 </div>
                 <p className="text-sm text-muted-foreground">
                   {result.avoidanceScore < 4 
-                    ? "타인과 가까워지는 것을 편하게 느낍니다" 
-                    : "독립성을 중시하는 편입니다"}
+                    ? (isEnglish ? "You feel comfortable getting close to others" : "타인과 가까워지는 것을 편하게 느낍니다")
+                    : (isEnglish ? "You tend to value independence" : "독립성을 중시하는 편입니다")}
                 </p>
               </div>
             </div>
@@ -211,7 +222,7 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
           <CardHeader>
             <div className="flex items-center gap-2">
               <ImageIcon className="w-6 h-6 text-primary" />
-              <CardTitle>AI 일러스트</CardTitle>
+               <CardTitle>{isEnglish ? "AI Illustration" : "AI 일러스트"}</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -267,7 +278,7 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Lightbulb className="w-6 h-6 text-primary" />
-                <CardTitle>AI 전문가 분석</CardTitle>
+                 <CardTitle>{isEnglish ? "AI Expert Analysis" : "AI 전문가 분석"}</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
@@ -297,21 +308,23 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
             <div className="flex items-start gap-3 mb-4">
               <TrendingUp className="w-5 h-5 text-primary mt-0.5" />
               <div>
-                <h3 className="font-semibold mb-2">다음 단계</h3>
+                <h3 className="font-semibold mb-2">{isEnglish ? "Next Steps" : "다음 단계"}</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  이 결과를 바탕으로 더 깊이 있는 상담이나 다른 심리 검사를 진행해보세요.
+                  {isEnglish 
+                    ? "Based on these results, consider deeper counseling or other psychological assessments."
+                    : "이 결과를 바탕으로 더 깊이 있는 상담이나 다른 심리 검사를 진행해보세요."}
                 </p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
               <Button onClick={() => navigate('/assessment')} variant="outline">
-                다른 검사 해보기
+                {isEnglish ? "Try Other Tests" : "다른 검사 해보기"}
               </Button>
               <Button onClick={() => navigate('/token-history')} variant="outline">
-                토큰 이력 확인
+                {isEnglish ? "Token History" : "토큰 이력 확인"}
               </Button>
               <Button onClick={() => navigate('/')} variant="secondary">
-                홈으로
+                {isEnglish ? "Home" : "홈으로"}
               </Button>
             </div>
           </CardContent>

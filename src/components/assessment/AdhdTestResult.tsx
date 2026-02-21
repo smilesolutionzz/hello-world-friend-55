@@ -27,6 +27,7 @@ import AnalysisLoadingOverlay from '@/components/analysis/AnalysisLoadingOverlay
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface AdhdTestResultProps {
   results: {
@@ -51,6 +52,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
 
   // AI 분석 상태
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
@@ -180,26 +182,26 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const getOverallEvaluation = (severity: string) => {
     if (severity === "정상 범위") {
       return {
-        level: "Normal Range (정상 범위)",
-        description: "ADHD 증상이 일반적인 범위 내에 있습니다.",
+        level: isEnglish ? "Normal Range" : "정상 범위",
+        description: isEnglish ? "ADHD symptoms are within the normal range." : "ADHD 증상이 일반적인 범위 내에 있습니다.",
         color: "bg-green-100 text-green-800 border-green-200"
       };
     } else if (severity === "경계선 수준") {
       return {
-        level: "Borderline Level (경계선 수준)",
-        description: "일부 ADHD 증상이 나타날 수 있어 관찰이 필요합니다.",
+        level: isEnglish ? "Borderline Level" : "경계선 수준",
+        description: isEnglish ? "Some ADHD symptoms may appear and observation is needed." : "일부 ADHD 증상이 나타날 수 있어 관찰이 필요합니다.",
         color: "bg-yellow-100 text-yellow-800 border-yellow-200"
       };
     } else if (severity === "중등도 수준") {
       return {
-        level: "Moderate Level (중등도 수준)",
-        description: "ADHD 증상이 중등도 수준으로 전문가 상담을 권장합니다.",
+        level: isEnglish ? "Moderate Level" : "중등도 수준",
+        description: isEnglish ? "ADHD symptoms are at a moderate level. Professional consultation is recommended." : "ADHD 증상이 중등도 수준으로 전문가 상담을 권장합니다.",
         color: "bg-orange-100 text-orange-800 border-orange-200"
       };
     } else {
       return {
-        level: "Severe Level (심각한 수준)",
-        description: "ADHD 증상이 심각한 수준으로 즉시 전문가 도움이 필요합니다.",
+        level: isEnglish ? "Severe Level" : "심각한 수준",
+        description: isEnglish ? "ADHD symptoms are severe. Immediate professional help is needed." : "ADHD 증상이 심각한 수준으로 즉시 전문가 도움이 필요합니다.",
         color: "bg-red-100 text-red-800 border-red-200"
       };
     }
@@ -212,12 +214,12 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   // 기본 ADHD 검사는 2개 영역만 제공 (18문항, 각 문항 1-3점)
   const chartData = [
     {
-      name: "주의력 결핍",
+      name: isEnglish ? "Inattention" : "주의력 결핍",
       value: inattentionScore,
       fullMark: 27,
     },
     {
-      name: "과잉행동/충동성",
+      name: isEnglish ? "Hyperactivity/Impulsivity" : "과잉행동/충동성",
       value: hyperactivityScore,
       fullMark: 27,
     }
@@ -248,26 +250,28 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   return (
     <div id="adhd-result-content" className="space-y-8">
       {/* PDF Header */}
-      <PDFHeader testName="ADHD 자가체크 결과" />
+      <PDFHeader testName={isEnglish ? "ADHD Self-Check Results" : "ADHD 자가체크 결과"} />
       
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" />
-          뒤로가기
+          {isEnglish ? "Back" : "뒤로가기"}
         </Button>
-        <h1 className="text-3xl font-bold text-brand-gradient">주의집중력 자가체크 결과 (참고용)</h1>
+        <h1 className="text-3xl font-bold text-brand-gradient">{isEnglish ? "Attention Self-Check Results (Reference)" : "주의집중력 자가체크 결과 (참고용)"}</h1>
         <Button variant="outline" onClick={handlePDFDownload} className="flex items-center gap-2">
           <Download className="w-4 h-4" />
-          PDF 다운로드
+          {isEnglish ? "PDF Download" : "PDF 다운로드"}
         </Button>
       </div>
 
       {/* 법적 안전 공지 */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
         <p className="text-blue-800 text-sm">
-          <span className="font-semibold">📊 체크 결과 (참고용)</span><br />
-          ⚠️ 이 결과는 참고용이며 전문적 평가가 절대 아닙니다. 주의집중력 문제가 의심되면 반드시 전문기관에서 상담받으세요.
+          <span className="font-semibold">{isEnglish ? "📊 Check Results (Reference Only)" : "📊 체크 결과 (참고용)"}</span><br />
+          {isEnglish 
+            ? "⚠️ These results are for reference only and are NOT a professional evaluation. If attention issues are suspected, please consult a specialist."
+            : "⚠️ 이 결과는 참고용이며 전문적 평가가 절대 아닙니다. 주의집중력 문제가 의심되면 반드시 전문기관에서 상담받으세요."}
         </p>
       </div>
 

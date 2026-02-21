@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, Baby, Brain, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface BirthDateSelectorProps {
   testTitle: string;
@@ -26,6 +27,7 @@ const BirthDateSelector: React.FC<BirthDateSelectorProps> = ({
   const [month, setMonth] = useState<string>("");
   const [day, setDay] = useState<string>("");
   const [calculatedAge, setCalculatedAge] = useState<{ months: number; years: number; display: string } | null>(null);
+  const { isEnglish } = useLanguage();
 
   const currentYear = new Date().getFullYear();
   // 성인까지 포함 (100년 범위)
@@ -50,10 +52,18 @@ const BirthDateSelector: React.FC<BirthDateSelectorProps> = ({
     const remainingMonths = ageMonths % 12;
     
     let display = "";
-    if (years > 0) {
-      display = `${years}세 ${remainingMonths}개월`;
+    if (isEnglish) {
+      if (years > 0) {
+        display = `${years} yr${years > 1 ? 's' : ''} ${remainingMonths} mo`;
+      } else {
+        display = `${remainingMonths} months`;
+      }
     } else {
-      display = `${remainingMonths}개월`;
+      if (years > 0) {
+        display = `${years}세 ${remainingMonths}개월`;
+      } else {
+        display = `${remainingMonths}개월`;
+      }
     }
     
     return { months: ageMonths, years, display };
@@ -80,6 +90,18 @@ const BirthDateSelector: React.FC<BirthDateSelectorProps> = ({
   };
 
   const getAgeGroup = (ageMonths: number): string => {
+    if (isEnglish) {
+      if (ageMonths < 12) return "Infant";
+      if (ageMonths < 24) return "12-23 months";
+      if (ageMonths < 36) return "24-35 months";
+      if (ageMonths < 48) return "36-47 months";
+      if (ageMonths < 60) return "48-59 months";
+      if (ageMonths < 72) return "60-71 months";
+      if (ageMonths < 84) return "72-83 months";
+      if (ageMonths < 144) return "Child";
+      if (ageMonths < 228) return "Adolescent";
+      return "Adult";
+    }
     if (ageMonths < 12) return "영아";
     if (ageMonths < 24) return "12-23개월";
     if (ageMonths < 36) return "24-35개월";
@@ -115,7 +137,7 @@ const BirthDateSelector: React.FC<BirthDateSelectorProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <Button variant="ghost" onClick={onBack} className="flex items-center gap-2">
-            ← 뒤로가기
+            ← {isEnglish ? 'Go Back' : '뒤로가기'}
           </Button>
         </div>
 
@@ -143,26 +165,26 @@ const BirthDateSelector: React.FC<BirthDateSelectorProps> = ({
               {/* 생년월일 입력 안내 */}
               <div className="text-center space-y-2">
                 <div className="flex items-center justify-center gap-2 text-primary">
-                  <Calendar className="w-5 h-5" />
-                  <h3 className="text-lg font-semibold">생년월일을 입력해주세요</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  연령에 맞는 맞춤형 문항과 정확한 발달 수준 분석을 제공합니다
-                </p>
+                   <Calendar className="w-5 h-5" />
+                   <h3 className="text-lg font-semibold">{isEnglish ? 'Enter Date of Birth' : '생년월일을 입력해주세요'}</h3>
+                 </div>
+                 <p className="text-sm text-muted-foreground">
+                   {isEnglish ? 'We provide age-appropriate questions and accurate developmental analysis' : '연령에 맞는 맞춤형 문항과 정확한 발달 수준 분석을 제공합니다'}
+                 </p>
               </div>
 
               {/* 날짜 선택 */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="year" className="text-sm font-medium">년도</Label>
+                  <Label htmlFor="year" className="text-sm font-medium">{isEnglish ? 'Year' : '년도'}</Label>
                   <Select value={year} onValueChange={(v) => handleDateChange('year', v)}>
                     <SelectTrigger id="year" className="h-12">
-                      <SelectValue placeholder="년도" />
+                      <SelectValue placeholder={isEnglish ? "Year" : "년도"} />
                     </SelectTrigger>
                     <SelectContent>
                       {years.map((y) => (
                         <SelectItem key={y} value={y.toString()}>
-                          {y}년
+                          {isEnglish ? y : `${y}년`}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -170,15 +192,15 @@ const BirthDateSelector: React.FC<BirthDateSelectorProps> = ({
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="month" className="text-sm font-medium">월</Label>
+                  <Label htmlFor="month" className="text-sm font-medium">{isEnglish ? 'Month' : '월'}</Label>
                   <Select value={month} onValueChange={(v) => handleDateChange('month', v)}>
                     <SelectTrigger id="month" className="h-12">
-                      <SelectValue placeholder="월" />
+                      <SelectValue placeholder={isEnglish ? "Month" : "월"} />
                     </SelectTrigger>
                     <SelectContent>
                       {months.map((m) => (
                         <SelectItem key={m} value={m.toString()}>
-                          {m}월
+                          {isEnglish ? m : `${m}월`}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -186,15 +208,15 @@ const BirthDateSelector: React.FC<BirthDateSelectorProps> = ({
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="day" className="text-sm font-medium">일</Label>
+                  <Label htmlFor="day" className="text-sm font-medium">{isEnglish ? 'Day' : '일'}</Label>
                   <Select value={day} onValueChange={(v) => handleDateChange('day', v)}>
                     <SelectTrigger id="day" className="h-12">
-                      <SelectValue placeholder="일" />
+                      <SelectValue placeholder={isEnglish ? "Day" : "일"} />
                     </SelectTrigger>
                     <SelectContent>
                       {days.map((d) => (
                         <SelectItem key={d} value={d.toString()}>
-                          {d}일
+                          {isEnglish ? d : `${d}일`}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -207,16 +229,16 @@ const BirthDateSelector: React.FC<BirthDateSelectorProps> = ({
                 <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 text-center space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-300">
                   <div className="flex items-center justify-center gap-2">
                     <Baby className="w-6 h-6 text-primary" />
-                    <span className="text-lg font-semibold text-foreground">
-                      현재 연령: {calculatedAge.display}
+                     <span className="text-lg font-semibold text-foreground">
+                      {isEnglish ? `Current Age: ${calculatedAge.display}` : `현재 연령: ${calculatedAge.display}`}
                     </span>
                   </div>
                   <Badge variant="outline" className="text-sm px-4 py-1 bg-background">
-                    {getAgeGroup(calculatedAge.months)} 대상 맞춤 검사 진행
+                    {isEnglish ? `Customized for ${getAgeGroup(calculatedAge.months)}` : `${getAgeGroup(calculatedAge.months)} 대상 맞춤 검사 진행`}
                   </Badge>
                   <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
                     <Sparkles className="w-4 h-4 text-amber-500" />
-                    <span>{calculatedAge.months}개월 발달 수준에 맞춘 문항이 제공됩니다</span>
+                    <span>{isEnglish ? `Questions tailored for ${calculatedAge.months}-month developmental level` : `${calculatedAge.months}개월 발달 수준에 맞춘 문항이 제공됩니다`}</span>
                   </div>
                 </div>
               )}
@@ -227,13 +249,15 @@ const BirthDateSelector: React.FC<BirthDateSelectorProps> = ({
                 disabled={!isValid}
                 className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
               >
-                {isValid ? "검사 시작하기" : "생년월일을 입력해주세요"}
+                {isValid 
+                  ? (isEnglish ? "Start Assessment" : "검사 시작하기") 
+                  : (isEnglish ? "Please enter date of birth" : "생년월일을 입력해주세요")}
               </Button>
 
               {/* 안내 문구 */}
               <div className="text-center text-xs text-muted-foreground space-y-1">
-                <p>※ 입력하신 정보는 정확한 연령별 분석을 위해서만 사용됩니다</p>
-                <p>※ 본 검사는 전문적 진단을 대체하지 않습니다</p>
+                <p>※ {isEnglish ? 'Your information is used solely for age-specific analysis' : '입력하신 정보는 정확한 연령별 분석을 위해서만 사용됩니다'}</p>
+                <p>※ {isEnglish ? 'This assessment does not replace professional diagnosis' : '본 검사는 전문적 진단을 대체하지 않습니다'}</p>
               </div>
             </CardContent>
           </Card>

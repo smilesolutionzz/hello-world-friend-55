@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { autismSpectrumScreeningQuestions } from "@/data/premiumAssessmentQuestions";
 import ModernAnalysisLoading from "./ModernAnalysisLoading";
 import BirthDateSelector from "./BirthDateSelector";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface AutismSpectrumFormProps {
   onComplete: (results: any, answers: Record<string, string>) => void;
@@ -15,7 +16,6 @@ interface AutismSpectrumFormProps {
 }
 
 const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onBack }) => {
-  // 모든 useState 훅을 최상단에 선언 (React Hooks 규칙)
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [ageInMonths, setAgeInMonths] = useState<number>(0);
   const [ageGroup, setAgeGroup] = useState<string>("");
@@ -23,6 +23,7 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
 
   const handleBirthDateConfirm = (date: Date, months: number, group: string) => {
     setBirthDate(date);
@@ -30,7 +31,6 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
     setAgeGroup(group);
   };
 
-  // Flatten all questions
   const allQuestions = Object.values(autismSpectrumScreeningQuestions).flat();
   const totalQuestions = allQuestions.length;
   const progress = ((currentStep + 1) / totalQuestions) * 100;
@@ -44,7 +44,13 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
     adaptive_functioning: Target
   };
 
-  const categoryLabels = {
+  const categoryLabels = isEnglish ? {
+    social_communication: "Social Communication",
+    restricted_repetitive: "Restricted/Repetitive Behavior",
+    sensory_processing: "Sensory Processing",
+    communication_language: "Communication & Language",
+    adaptive_functioning: "Adaptive Functioning"
+  } : {
     social_communication: "사회적 소통",
     restricted_repetitive: "제한적 반복행동",
     sensory_processing: "감각처리",
@@ -52,13 +58,12 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
     adaptive_functioning: "적응기능"
   };
 
-  // 생년월일 미입력 시 생년월일 선택 화면 표시
   if (!birthDate) {
     return (
       <BirthDateSelector
-        testTitle="AIH 신경발달 조기선별검사"
+        testTitle={isEnglish ? "AIH Neurodevelopmental Early Screening" : "AIH 신경발달 조기선별검사"}
         testSubtitle="ASES-AIH (Autism Spectrum Early Screening)"
-        testDescription="자폐 스펙트럼의 조기 선별을 위한 과학적 근거 기반의 연령 맞춤형 검사입니다"
+        testDescription={isEnglish ? "A scientifically-grounded, age-tailored screening for early detection of autism spectrum" : "자폐 스펙트럼의 조기 선별을 위한 과학적 근거 기반의 연령 맞춤형 검사입니다"}
         onConfirm={handleBirthDateConfirm}
         onBack={onBack}
       />
@@ -68,7 +73,6 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
   const handleAnswer = (value: string) => {
     const newAnswers = { ...answers, [currentQuestion.id]: value };
     setAnswers(newAnswers);
-
     if (currentStep < totalQuestions - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -77,73 +81,41 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
   };
 
   const handlePrevious = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
 
   const handleSubmit = async (finalAnswers: Record<string, string>) => {
     setIsLoading(true);
     try {
-      // Calculate scores by category
       const categoryScores: Record<string, number[]> = {};
-      
       Object.entries(finalAnswers).forEach(([questionId, answer]) => {
         const question = allQuestions.find(q => q.id === questionId);
         if (question) {
-          if (!categoryScores[question.category]) {
-            categoryScores[question.category] = [];
-          }
-          
+          if (!categoryScores[question.category]) categoryScores[question.category] = [];
           let score = parseInt(answer);
           if (isNaN(score)) score = 0;
-          
-          // Apply reverse scoring if needed
-          if (question.reverse) {
-            score = 5 - score;
-          }
-          
-          // Apply weight
+          if (question.reverse) score = 5 - score;
           score = score * (question.weight || 1.0);
-          
           categoryScores[question.category].push(score);
         }
       });
 
-      // Calculate average scores
       const results: Record<string, number> = {};
       Object.entries(categoryScores).forEach(([category, scores]) => {
         const validScores = scores.filter(s => !isNaN(s));
-        results[category] = validScores.length > 0 
-          ? validScores.reduce((sum, score) => sum + score, 0) / validScores.length 
-          : 0;
+        results[category] = validScores.length > 0 ? validScores.reduce((sum, score) => sum + score, 0) / validScores.length : 0;
       });
 
-      // Call the analysis function with age info
       const { data, error } = await supabase.functions.invoke('autism-spectrum-analyzer', {
-        body: { 
-          results,
-          answers: finalAnswers,
-          ageGroup,
-          ageInMonths,
-          birthDate: birthDate.toISOString()
-        }
+        body: { results, answers: finalAnswers, ageGroup, ageInMonths, birthDate: birthDate.toISOString() }
       });
-
       if (error) throw error;
-
-      // Pass the complete data including scores
-      const completeResults = {
-        ...data.analysis,
-        scores: data.scores
-      };
-      
-      onComplete(completeResults, finalAnswers);
+      onComplete({ ...data.analysis, scores: data.scores }, finalAnswers);
     } catch (error) {
-      console.error('분석 처리 중 오류:', error);
+      console.error('Analysis error:', error);
       toast({
-        title: "분석 실패",
-        description: "결과 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        title: isEnglish ? "Analysis Failed" : "분석 실패",
+        description: isEnglish ? "An error occurred during analysis. Please try again later." : "결과 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
         variant: "destructive",
       });
     } finally {
@@ -152,14 +124,24 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
   };
 
   if (isLoading) {
-    const autismQuotes = [
+    const quotes = isEnglish ? [
+      { text: "Understanding a child's mind is the best education.", author: "Maria Montessori" },
+      { text: "Difference is not a defect, it is diversity.", author: "Temple Grandin" },
+      { text: "Every child grows at their own pace.", author: "Emily Perl Kingsley" },
+      { text: "Early detection and intervention change the future.", author: "Developmental Psychology" },
+    ] : [
       { text: "아이의 마음을 이해하는 것이 최고의 교육입니다.", author: "마리아 몬테소리" },
       { text: "다름은 결함이 아니라 다양성입니다.", author: "템플 그랜딘" },
       { text: "모든 아이는 자신만의 속도로 성장합니다.", author: "에밀리 펄 킹슬리" },
       { text: "조기 발견과 개입이 미래를 바꿉니다.", author: "발달심리학회" },
     ];
 
-    const autismInsights = [
+    const insights = isEnglish ? [
+      { category: "Development", text: "Early intervention is most effective for developmental recovery." },
+      { category: "Sensory", text: "Sensory processing characteristics vary from person to person." },
+      { category: "Communication", text: "Nonverbal communication is also an important form of expression." },
+      { category: "Support", text: "Proper environment fosters a child's potential." },
+    ] : [
       { category: "발달", text: "조기 개입은 발달 지연 회복에 가장 효과적입니다." },
       { category: "감각", text: "감각처리 특성은 개인마다 다르게 나타납니다." },
       { category: "소통", text: "비언어적 의사소통도 중요한 표현 방식입니다." },
@@ -168,12 +150,12 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
 
     return (
       <ModernAnalysisLoading
-        title="자폐 스펙트럼 분석 중"
-        description="전문적인 AI가 검사 결과를 심층 분석하고 있습니다..."
+        title={isEnglish ? "Analyzing Autism Spectrum" : "자폐 스펙트럼 분석 중"}
+        description={isEnglish ? "Our AI is conducting an in-depth analysis of your results..." : "전문적인 AI가 검사 결과를 심층 분석하고 있습니다..."}
         estimatedTime={25}
         icon={Brain}
-        quotes={autismQuotes}
-        insights={autismInsights}
+        quotes={quotes}
+        insights={insights}
       />
     );
   }
@@ -183,33 +165,28 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-blue-50/20 to-purple-50/20">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onBack} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
-            뒤로가기
+            {isEnglish ? 'Go Back' : '뒤로가기'}
           </Button>
           <div className="text-center">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              AIH 신경발달 조기선별검사
+              {isEnglish ? 'AIH Neurodevelopmental Early Screening' : 'AIH 신경발달 조기선별검사'}
             </h1>
             <p className="text-sm text-muted-foreground">ASES-AIH (Autism Spectrum Early Screening)</p>
           </div>
           <div className="w-20" />
         </div>
 
-        {/* Progress */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium">진행률</span>
-            <span className="text-sm text-muted-foreground">
-              {currentStep + 1} / {totalQuestions}
-            </span>
+            <span className="text-sm font-medium">{isEnglish ? 'Progress' : '진행률'}</span>
+            <span className="text-sm text-muted-foreground">{currentStep + 1} / {totalQuestions}</span>
           </div>
           <Progress value={progress} className="h-3" />
         </div>
 
-        {/* Question Card */}
         <div className="max-w-3xl mx-auto">
           <Card className="border-2 border-blue-200 shadow-lg">
             <CardHeader className="text-center pb-4">
@@ -219,98 +196,73 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
                 </div>
                 <div>
                   <CardTitle className="text-lg">
-                    {categoryLabels[currentQuestion.category as keyof typeof categoryLabels]} 영역
+                    {categoryLabels[currentQuestion.category as keyof typeof categoryLabels]} {isEnglish ? 'Area' : '영역'}
                   </CardTitle>
                   <CardDescription className="text-sm">
-                    문항 {currentStep + 1}
+                    {isEnglish ? `Question ${currentStep + 1}` : `문항 ${currentStep + 1}`}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
-            
             <CardContent className="space-y-6">
               <div className="text-center">
-                <h3 className="text-xl font-medium mb-2 leading-relaxed">
-                  {currentQuestion.text}
-                </h3>
+                <h3 className="text-xl font-medium mb-2 leading-relaxed">{currentQuestion.text}</h3>
                 <p className="text-sm text-muted-foreground">
-                  가장 가깝다고 생각되는 답변을 선택해주세요
+                  {isEnglish ? 'Select the answer that best describes your observation' : '가장 가깝다고 생각되는 답변을 선택해주세요'}
                 </p>
               </div>
-
               <div className="grid gap-3">
                 {currentQuestion.options.map((option) => (
                   <Button
                     key={option.value}
                     variant={answers[currentQuestion.id] === option.value.toString() ? "default" : "outline"}
                     className={`w-full p-4 h-auto text-left justify-start transition-all ${
-                      answers[currentQuestion.id] === option.value.toString()
-                        ? "bg-blue-600 hover:bg-blue-700 border-blue-600" 
-                        : "hover:bg-blue-50 border-gray-200"
+                      answers[currentQuestion.id] === option.value.toString() ? "bg-blue-600 hover:bg-blue-700 border-blue-600" : "hover:bg-blue-50 border-gray-200"
                     }`}
                     onClick={() => handleAnswer(option.value.toString())}
                   >
                     <div className="flex items-center w-full">
                       <div className={`w-4 h-4 rounded-full border-2 mr-3 flex-shrink-0 ${
-                        answers[currentQuestion.id] === option.value.toString()
-                          ? "bg-white border-white" 
-                          : "border-gray-400"
+                        answers[currentQuestion.id] === option.value.toString() ? "bg-white border-white" : "border-gray-400"
                       }`}>
-                        {answers[currentQuestion.id] === option.value.toString() && (
-                          <div className="w-2 h-2 bg-blue-600 rounded-full m-auto mt-0.5" />
-                        )}
+                        {answers[currentQuestion.id] === option.value.toString() && <div className="w-2 h-2 bg-blue-600 rounded-full m-auto mt-0.5" />}
                       </div>
                       <span className="flex-1 text-base">{option.label}</span>
                     </div>
                   </Button>
                 ))}
               </div>
-
-              {/* Navigation */}
               <div className="flex justify-between items-center pt-4">
-                <Button 
-                  variant="outline" 
-                  onClick={handlePrevious}
-                  disabled={currentStep === 0}
-                  className="flex items-center gap-2"
-                >
+                <Button variant="outline" onClick={handlePrevious} disabled={currentStep === 0} className="flex items-center gap-2">
                   <ArrowLeft className="w-4 h-4" />
-                  이전
+                  {isEnglish ? 'Previous' : '이전'}
                 </Button>
-                
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">
-                    {totalQuestions - currentStep - 1}개 문항 남음
+                    {isEnglish ? `${totalQuestions - currentStep - 1} questions remaining` : `${totalQuestions - currentStep - 1}개 문항 남음`}
                   </p>
                 </div>
-
                 {answers[currentQuestion.id] && currentStep < totalQuestions - 1 && (
-                  <Button 
-                    onClick={() => setCurrentStep(currentStep + 1)}
-                    className="flex items-center gap-2"
-                  >
-                    다음
+                  <Button onClick={() => setCurrentStep(currentStep + 1)} className="flex items-center gap-2">
+                    {isEnglish ? 'Next' : '다음'}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 )}
-                
-                {!answers[currentQuestion.id] && (
-                  <div className="w-16" />
-                )}
+                {!answers[currentQuestion.id] && <div className="w-16" />}
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Assessment Info */}
         <div className="max-w-3xl mx-auto mt-8">
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="pt-6">
               <div className="text-center space-y-2">
-                <h4 className="font-semibold text-blue-900">검사 안내</h4>
+                <h4 className="font-semibold text-blue-900">{isEnglish ? 'Assessment Notice' : '검사 안내'}</h4>
                 <p className="text-sm text-blue-800 leading-relaxed">
-                  본 검사는 자폐 스펙트럼의 조기 선별을 위한 과학적 근거 기반의 창작형 도구입니다. 
-                  진단이 아닌 선별 목적으로 사용되며, 정확한 평가를 위해서는 전문의와 상담하시기 바랍니다.
+                  {isEnglish
+                    ? 'This is a scientifically-grounded screening tool for early detection of autism spectrum. It is intended for screening purposes only, not diagnosis. Please consult a specialist for accurate assessment.'
+                    : '본 검사는 자폐 스펙트럼의 조기 선별을 위한 과학적 근거 기반의 창작형 도구입니다. 진단이 아닌 선별 목적으로 사용되며, 정확한 평가를 위해서는 전문의와 상담하시기 바랍니다.'}
                 </p>
               </div>
             </CardContent>

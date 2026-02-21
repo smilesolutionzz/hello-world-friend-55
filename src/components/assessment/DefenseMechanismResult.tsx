@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { useLanguage } from '@/i18n';
 
 interface DefenseMechanismResultProps {
   result: {
@@ -20,91 +21,48 @@ interface DefenseMechanismResultProps {
   onBack?: () => void;
 }
 
-const mechanismInfo: Record<string, { name: string; emoji: string; description: string; healthyTip: string }> = {
-  projection: {
-    name: '투사',
-    emoji: '🔄',
-    description: '자신의 감정이나 생각을 다른 사람에게 돌리는 경향',
-    healthyTip: '내 감정을 인정하고 소유하는 연습이 필요합니다',
-  },
-  denial: {
-    name: '부정',
-    emoji: '🙈',
-    description: '불편한 현실을 받아들이지 않으려는 경향',
-    healthyTip: '작은 것부터 천천히 현실을 직면하는 용기가 필요합니다',
-  },
-  rationalization: {
-    name: '합리화',
-    emoji: '🤔',
-    description: '불편한 행동이나 선택을 논리적으로 정당화하는 경향',
-    healthyTip: '진짜 감정과 논리적 설명을 구분하는 연습이 도움됩니다',
-  },
-  displacement: {
-    name: '전위',
-    emoji: '➡️',
-    description: '감정을 원래 대상이 아닌 다른 곳에 표출하는 경향',
-    healthyTip: '감정을 적절한 대상에게 건강하게 표현하는 방법을 배워보세요',
-  },
-  regression: {
-    name: '퇴행',
-    emoji: '👶',
-    description: '스트레스 상황에서 어린 시절 행동으로 돌아가는 경향',
-    healthyTip: '성숙한 대처 방식을 개발하고 자기 돌봄을 실천해보세요',
-  },
-  sublimation: {
-    name: '승화',
-    emoji: '✨',
-    description: '부정적 에너지를 긍정적이고 창조적인 활동으로 전환',
-    healthyTip: '가장 건강한 방어기제! 계속 발전시켜 나가세요',
-  },
-  repression: {
-    name: '억압',
-    emoji: '🔒',
-    description: '불편한 기억이나 감정을 무의식으로 밀어내는 경향',
-    healthyTip: '안전한 환경에서 억압된 감정을 천천히 풀어보세요',
-  },
-  reaction_formation: {
-    name: '반동형성',
-    emoji: '🔄',
-    description: '진짜 감정과 반대되는 행동을 보이는 경향',
-    healthyTip: '진짜 감정을 인정하고 진실되게 표현하는 연습이 필요합니다',
-  },
+const mechanismInfoKo: Record<string, { name: string; emoji: string; description: string; healthyTip: string }> = {
+  projection: { name: '투사', emoji: '🔄', description: '자신의 감정이나 생각을 다른 사람에게 돌리는 경향', healthyTip: '내 감정을 인정하고 소유하는 연습이 필요합니다' },
+  denial: { name: '부정', emoji: '🙈', description: '불편한 현실을 받아들이지 않으려는 경향', healthyTip: '작은 것부터 천천히 현실을 직면하는 용기가 필요합니다' },
+  rationalization: { name: '합리화', emoji: '🤔', description: '불편한 행동이나 선택을 논리적으로 정당화하는 경향', healthyTip: '진짜 감정과 논리적 설명을 구분하는 연습이 도움됩니다' },
+  displacement: { name: '전위', emoji: '➡️', description: '감정을 원래 대상이 아닌 다른 곳에 표출하는 경향', healthyTip: '감정을 적절한 대상에게 건강하게 표현하는 방법을 배워보세요' },
+  regression: { name: '퇴행', emoji: '👶', description: '스트레스 상황에서 어린 시절 행동으로 돌아가는 경향', healthyTip: '성숙한 대처 방식을 개발하고 자기 돌봄을 실천해보세요' },
+  sublimation: { name: '승화', emoji: '✨', description: '부정적 에너지를 긍정적이고 창조적인 활동으로 전환', healthyTip: '가장 건강한 방어기제! 계속 발전시켜 나가세요' },
+  repression: { name: '억압', emoji: '🔒', description: '불편한 기억이나 감정을 무의식으로 밀어내는 경향', healthyTip: '안전한 환경에서 억압된 감정을 천천히 풀어보세요' },
+  reaction_formation: { name: '반동형성', emoji: '🔄', description: '진짜 감정과 반대되는 행동을 보이는 경향', healthyTip: '진짜 감정을 인정하고 진실되게 표현하는 연습이 필요합니다' },
+};
+
+const mechanismInfoEn: Record<string, { name: string; emoji: string; description: string; healthyTip: string }> = {
+  projection: { name: 'Projection', emoji: '🔄', description: 'Tendency to attribute your own feelings or thoughts to others', healthyTip: 'Practice acknowledging and owning your emotions' },
+  denial: { name: 'Denial', emoji: '🙈', description: 'Tendency to refuse accepting uncomfortable realities', healthyTip: 'Build courage to face reality, starting with small steps' },
+  rationalization: { name: 'Rationalization', emoji: '🤔', description: 'Tendency to logically justify uncomfortable behaviors or choices', healthyTip: 'Practice distinguishing real emotions from logical explanations' },
+  displacement: { name: 'Displacement', emoji: '➡️', description: 'Tendency to express emotions toward unrelated targets', healthyTip: 'Learn healthy ways to express emotions to the right people' },
+  regression: { name: 'Regression', emoji: '👶', description: 'Tendency to revert to childlike behaviors under stress', healthyTip: 'Develop mature coping strategies and practice self-care' },
+  sublimation: { name: 'Sublimation', emoji: '✨', description: 'Channeling negative energy into positive, creative activities', healthyTip: 'The healthiest defense mechanism! Keep developing it' },
+  repression: { name: 'Repression', emoji: '🔒', description: 'Tendency to push uncomfortable memories or emotions into the unconscious', healthyTip: 'Gradually release repressed emotions in a safe environment' },
+  reaction_formation: { name: 'Reaction Formation', emoji: '🔄', description: 'Tendency to behave opposite to your true feelings', healthyTip: 'Practice acknowledging and authentically expressing your real feelings' },
 };
 
 export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ result, onBack }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
+  const mechanismInfo = isEnglish ? mechanismInfoEn : mechanismInfoKo;
 
-  // 자동 저장
   useAutoSaveTestResult({
-    testType: '방어기제 검사',
-    results: {
-      categoryScores: result.categoryScores,
-      primaryMechanisms: result.primaryMechanisms,
-      totalScore: result.totalScore,
-    },
+    testType: isEnglish ? 'Defense Mechanism Test' : '방어기제 검사',
+    results: { categoryScores: result.categoryScores, primaryMechanisms: result.primaryMechanisms, totalScore: result.totalScore },
     analysis: result.analysis,
-    severity: result.totalScore > 70 ? '높음' : result.totalScore > 40 ? '보통' : '양호',
+    severity: result.totalScore > 70 ? (isEnglish ? 'High' : '높음') : result.totalScore > 40 ? (isEnglish ? 'Moderate' : '보통') : (isEnglish ? 'Good' : '양호'),
     ageGroup: 'adult',
   });
 
   const handleDownloadPDF = async () => {
     await downloadResultAsPDF(
       'defense-result-content',
-      '방어기제_분석결과',
-      () => {
-        toast({
-          title: "PDF 다운로드 완료",
-          description: "방어기제 분석 결과가 저장되었습니다.",
-        });
-      },
-      (error) => {
-        toast({
-          title: "다운로드 실패",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
+      isEnglish ? 'Defense_Mechanism_Results' : '방어기제_분석결과',
+      () => { toast({ title: isEnglish ? "PDF Downloaded" : "PDF 다운로드 완료", description: isEnglish ? "Defense mechanism analysis saved." : "방어기제 분석 결과가 저장되었습니다." }); },
+      (error) => { toast({ title: isEnglish ? "Download Failed" : "다운로드 실패", description: error.message, variant: "destructive" }); }
     );
   };
 
@@ -125,173 +83,114 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 p-4">
       <div id="defense-result-content" className="max-w-4xl mx-auto py-8">
-        {/* PDF Header */}
-        <PDFHeader testName="방어기제 분석 결과" />
+        <PDFHeader testName={isEnglish ? "Defense Mechanism Analysis" : "방어기제 분석 결과"} />
         
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full mb-4">
             <Shield className="w-5 h-5" />
-            <span className="font-bold">분석 완료</span>
+            <span className="font-bold">{isEnglish ? 'Analysis Complete' : '분석 완료'}</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            당신의 방어기제 프로필
+            {isEnglish ? 'Your Defense Mechanism Profile' : '당신의 방어기제 프로필'}
           </h1>
           <p className="text-muted-foreground">
-            무의식적 심리 패턴을 이해하고 건강한 성장의 기회로 만들어보세요
+            {isEnglish ? 'Understand your unconscious psychological patterns and turn them into growth opportunities' : '무의식적 심리 패턴을 이해하고 건강한 성장의 기회로 만들어보세요'}
           </p>
         </div>
 
-        {/* Overall Score */}
         <Card className="p-8 mb-6 text-center border-2 border-purple-200 dark:border-purple-800">
-          <div className="mb-4">
-            <Brain className="w-16 h-16 mx-auto text-purple-600 dark:text-purple-400" />
-          </div>
-          <h2 className="text-2xl font-bold mb-2">종합 방어기제 지수</h2>
-          <div className="text-6xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            {result.totalScore}
-          </div>
+          <div className="mb-4"><Brain className="w-16 h-16 mx-auto text-purple-600 dark:text-purple-400" /></div>
+          <h2 className="text-2xl font-bold mb-2">{isEnglish ? 'Overall Defense Mechanism Index' : '종합 방어기제 지수'}</h2>
+          <div className="text-6xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">{result.totalScore}</div>
           <p className="text-muted-foreground">
-            {result.totalScore >= 70 ? '높은 방어기제 사용' : 
-             result.totalScore >= 50 ? '보통 수준의 방어기제' : 
-             '건강한 대처 방식'}
+            {result.totalScore >= 70 ? (isEnglish ? 'High defense mechanism usage' : '높은 방어기제 사용') : 
+             result.totalScore >= 50 ? (isEnglish ? 'Moderate defense mechanisms' : '보통 수준의 방어기제') : 
+             (isEnglish ? 'Healthy coping style' : '건강한 대처 방식')}
           </p>
         </Card>
 
-        {/* Primary Mechanisms */}
         <Card className="p-8 mb-6 border-2 border-purple-200 dark:border-purple-800">
           <div className="flex items-center gap-3 mb-6">
             <Sparkles className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-            <h2 className="text-2xl font-bold">주요 방어기제 TOP 3</h2>
+            <h2 className="text-2xl font-bold">{isEnglish ? 'Top 3 Defense Mechanisms' : '주요 방어기제 TOP 3'}</h2>
           </div>
-
           <div className="space-y-6">
             {result.primaryMechanisms.map(([mechanism, score], index) => {
               const info = mechanismInfo[mechanism];
               return (
                 <div key={mechanism} className="relative">
                   <div className="flex items-start gap-4 mb-3">
-                    <div className={`text-4xl ${index === 0 ? 'scale-110' : ''}`}>
-                      {info.emoji}
-                    </div>
+                    <div className={`text-4xl ${index === 0 ? 'scale-110' : ''}`}>{info.emoji}</div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-xl font-bold">
-                          {index + 1}위: {info.name}
-                        </h3>
-                        <span className={`text-2xl font-bold ${getScoreColor(score)}`}>
-                          {score}%
-                        </span>
+                        <h3 className="text-xl font-bold">#{index + 1}: {info.name}</h3>
+                        <span className={`text-2xl font-bold ${getScoreColor(score)}`}>{score}%</span>
                       </div>
                       <p className="text-muted-foreground mb-3">{info.description}</p>
                       <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
-                        <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                          💡 {info.healthyTip}
-                        </p>
+                        <p className="text-sm font-medium text-blue-900 dark:text-blue-100">💡 {info.healthyTip}</p>
                       </div>
                     </div>
                   </div>
-                  <Progress 
-                    value={score} 
-                    className={`h-2 ${getProgressColor(score)}`}
-                  />
+                  <Progress value={score} className={`h-2 ${getProgressColor(score)}`} />
                 </div>
               );
             })}
           </div>
         </Card>
 
-        {/* All Mechanisms Breakdown */}
         <Card className="p-8 mb-6 border-2 border-purple-200 dark:border-purple-800">
           <div className="flex items-center gap-3 mb-6">
             <TrendingUp className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-            <h2 className="text-2xl font-bold">전체 방어기제 분석</h2>
+            <h2 className="text-2xl font-bold">{isEnglish ? 'Full Analysis' : '전체 방어기제 분석'}</h2>
           </div>
-
           <div className="grid md:grid-cols-2 gap-4">
-            {Object.entries(result.categoryScores)
-              .sort(([, a], [, b]) => b - a)
-              .map(([mechanism, score]) => {
-                const info = mechanismInfo[mechanism];
-                return (
-                  <div key={mechanism} className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl">{info.emoji}</span>
-                        <span className="font-semibold">{info.name}</span>
-                      </div>
-                      <span className={`text-xl font-bold ${getScoreColor(score)}`}>
-                        {score}%
-                      </span>
+            {Object.entries(result.categoryScores).sort(([, a], [, b]) => b - a).map(([mechanism, score]) => {
+              const info = mechanismInfo[mechanism];
+              return (
+                <div key={mechanism} className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{info.emoji}</span>
+                      <span className="font-semibold">{info.name}</span>
                     </div>
-                    <Progress value={score} className="h-1.5" />
+                    <span className={`text-xl font-bold ${getScoreColor(score)}`}>{score}%</span>
                   </div>
-                );
-              })}
+                  <Progress value={score} className="h-1.5" />
+                </div>
+              );
+            })}
           </div>
         </Card>
 
-        {/* AI Analysis */}
         <Card className="p-8 mb-6 border-2 border-purple-200 dark:border-purple-800">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <Heart className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              <h2 className="text-2xl font-bold">AI 심층 분석</h2>
+              <h2 className="text-2xl font-bold">{isEnglish ? 'AI Deep Analysis' : 'AI 심층 분석'}</h2>
             </div>
-            <TextToSpeechButton 
-              text={result.analysis} 
-              className="ml-auto"
-            />
+            <TextToSpeechButton text={result.analysis} className="ml-auto" />
           </div>
-          
           <div className="prose dark:prose-invert max-w-none">
-            <div className="whitespace-pre-wrap text-foreground leading-relaxed">
-              {result.analysis}
-            </div>
+            <div className="whitespace-pre-wrap text-foreground leading-relaxed">{result.analysis}</div>
           </div>
         </Card>
 
-        {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button
-            onClick={handleDownloadPDF}
-            variant="outline"
-            className="gap-2"
-            size="lg"
-          >
-            <Download className="w-5 h-5" />
-            PDF 다운로드
+          <Button onClick={handleDownloadPDF} variant="outline" className="gap-2" size="lg">
+            <Download className="w-5 h-5" />{isEnglish ? 'Download PDF' : 'PDF 다운로드'}
           </Button>
-          
           {onBack ? (
-            <Button
-              onClick={onBack}
-              variant="outline"
-              className="gap-2"
-              size="lg"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              다시 테스트하기
+            <Button onClick={onBack} variant="outline" className="gap-2" size="lg">
+              <ArrowLeft className="w-5 h-5" />{isEnglish ? 'Retake Test' : '다시 테스트하기'}
             </Button>
           ) : (
-            <Button
-              onClick={() => navigate('/')}
-              variant="outline"
-              className="gap-2"
-              size="lg"
-            >
-              <Home className="w-5 h-5" />
-              홈으로
+            <Button onClick={() => navigate('/')} variant="outline" className="gap-2" size="lg">
+              <Home className="w-5 h-5" />{isEnglish ? 'Home' : '홈으로'}
             </Button>
           )}
-          
-          <Button
-            onClick={() => navigate('/assessment')}
-            className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-            size="lg"
-          >
-            <Brain className="w-5 h-5" />
-            다른 테스트 하기
+          <Button onClick={() => navigate('/assessment')} className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" size="lg">
+            <Brain className="w-5 h-5" />{isEnglish ? 'Try Another Test' : '다른 테스트 하기'}
           </Button>
         </div>
       </div>

@@ -10,6 +10,7 @@ import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface AdvancedAdhdResultProps {
   results: {
@@ -23,16 +24,15 @@ interface AdvancedAdhdResultProps {
 const AdvancedAdhdResult = ({ results, onBack, onRestart }: AdvancedAdhdResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
   const { typeScores } = results;
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
-  // 가장 높은 점수의 유형 찾기
   const dominantType = Object.entries(typeScores).reduce((a, b) => 
     typeScores[a[0]] > typeScores[b[0]] ? a : b
   )[0];
 
-  // 자동 저장
   useAutoSaveTestResult({
     testType: '고급 ADHD 유형 검사',
     results: {
@@ -46,7 +46,6 @@ const AdvancedAdhdResult = ({ results, onBack, onRestart }: AdvancedAdhdResultPr
 
   const dominantTypeData = adhdTypes[dominantType];
 
-  // 각 유형의 심각도 레벨 결정
   const getSeverityLevel = (score: number, type: string) => {
     const levels = adhdTypes[type].severityLevels;
     for (const [level, data] of Object.entries(levels)) {
@@ -54,7 +53,14 @@ const AdvancedAdhdResult = ({ results, onBack, onRestart }: AdvancedAdhdResultPr
         return { level, ...data };
       }
     }
-    return { level: "보통", percentage: 0, range: [0, 0] };
+    return { level: isEnglish ? "Moderate" : "보통", percentage: 0, range: [0, 0] };
+  };
+
+  const getSeverityLabelEn = (level: string) => {
+    const map: Record<string, string> = {
+      '매우낮음': 'Very Low', '낮음': 'Low', '보통': 'Moderate', '높음': 'High', '매우높음': 'Very High'
+    };
+    return map[level] || level;
   };
 
   const getColorByScore = (score: number) => {
@@ -86,15 +92,15 @@ ${dominantTypeData.description}
       if (data?.imageUrl) {
         setGeneratedImage(data.imageUrl);
         toast({
-          title: "이미지 생성 완료!",
-          description: "AI가 ADHD 유형 분석을 시각화했습니다.",
+          title: isEnglish ? "Image generated!" : "이미지 생성 완료!",
+          description: isEnglish ? "AI visualized your ADHD type analysis." : "AI가 ADHD 유형 분석을 시각화했습니다.",
         });
       }
     } catch (error) {
       console.error('이미지 생성 오류:', error);
       toast({
-        title: "이미지 생성 실패",
-        description: "잠시 후 다시 시도해주세요.",
+        title: isEnglish ? "Image generation failed" : "이미지 생성 실패",
+        description: isEnglish ? "Please try again later." : "잠시 후 다시 시도해주세요.",
         variant: "destructive",
       });
     } finally {
@@ -104,7 +110,32 @@ ${dominantTypeData.description}
 
   const handleDownload = async () => {
     try {
-      const content = `
+      const content = isEnglish ? `
+# 12-Type ADHD Analysis Results
+
+Test Date: ${new Date(results.timestamp).toLocaleString('en-US')}
+
+## Primary ADHD Type
+**${dominantTypeData.name}**
+${dominantTypeData.description}
+
+### Characteristics
+${dominantTypeData.characteristics.map((c, i) => `${i + 1}. ${c}`).join('\n')}
+
+### Recommended Treatment Approaches
+${dominantTypeData.treatmentApproach.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+
+## All Type Scores
+
+${Object.entries(typeScores).map(([typeId, score]) => {
+  const typeData = adhdTypes[typeId];
+  const severity = getSeverityLevel(score, typeId);
+  return `### ${typeData.name}\nScore: ${score}/54\nSeverity: ${severity.level}\n`;
+}).join('\n')}
+
+---
+This result is for reference only. Accurate diagnosis requires professional consultation.
+      ` : `
 # 12가지 ADHD 유형 분석 결과
 
 검사 일시: ${new Date(results.timestamp).toLocaleString('ko-KR')}
@@ -135,7 +166,7 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `ADHD_유형분석_${new Date().toLocaleDateString('ko-KR').replace(/\./g, '_')}.txt`;
+      a.download = `ADHD_Analysis_${new Date().toISOString().slice(0, 10)}.txt`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -145,44 +176,46 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
     }
   };
 
+  const severityMarkers = isEnglish 
+    ? ['Very Low', 'Low', 'Moderate', 'High', 'Very High']
+    : ['매우낮음', '낮음', '보통', '높음', '매우높음'];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
         <Card className="p-8 text-center">
-          <h1 className="text-2xl md:text-3xl font-bold mb-4">12가지 ADHD 유형 분석 결과</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-4">
+            {isEnglish ? '12-Type ADHD Analysis Results' : '12가지 ADHD 유형 분석 결과'}
+          </h1>
           <p className="text-sm md:text-base text-muted-foreground">
-            검사 완료: {new Date(results.timestamp).toLocaleString('ko-KR')}
+            {isEnglish ? 'Completed: ' : '검사 완료: '}
+            {new Date(results.timestamp).toLocaleString(isEnglish ? 'en-US' : 'ko-KR')}
           </p>
         </Card>
 
-        {/* AI 일러스트 생성 */}
         <Card className="p-6 md:p-8 border-2 border-primary/20">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <ImageIcon className="w-6 h-6 text-primary" />
-              <h2 className="text-xl font-bold">AI 일러스트</h2>
+              <h2 className="text-xl font-bold">{isEnglish ? 'AI Illustration' : 'AI 일러스트'}</h2>
             </div>
             <p className="text-sm text-muted-foreground">
-              AI가 당신의 ADHD 유형 분석을 시각적으로 표현한 일러스트를 생성합니다.
+              {isEnglish 
+                ? 'AI generates a visual illustration of your ADHD type analysis.' 
+                : 'AI가 당신의 ADHD 유형 분석을 시각적으로 표현한 일러스트를 생성합니다.'}
             </p>
             
             {!generatedImage && (
-              <Button 
-                onClick={handleGenerateImage}
-                disabled={isGeneratingImage}
-                className="w-full"
-                size="lg"
-              >
+              <Button onClick={handleGenerateImage} disabled={isGeneratingImage} className="w-full" size="lg">
                 {isGeneratingImage ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    이미지 생성 중...
+                    {isEnglish ? 'Generating...' : '이미지 생성 중...'}
                   </>
                 ) : (
                   <>
                     <ImageIcon className="w-4 h-4 mr-2" />
-                    일러스트 생성하기
+                    {isEnglish ? 'Generate Illustration' : '일러스트 생성하기'}
                   </>
                 )}
               </Button>
@@ -190,30 +223,22 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
 
             {generatedImage && (
               <div className="space-y-3">
-                <img 
-                  src={generatedImage} 
-                  alt="AI 생성 ADHD 유형 일러스트"
-                  className="w-full rounded-lg shadow-lg"
-                />
-                <Button 
-                  onClick={handleGenerateImage}
-                  disabled={isGeneratingImage}
-                  variant="outline"
-                  className="w-full"
-                >
+                <img src={generatedImage} alt="AI generated ADHD type illustration" className="w-full rounded-lg shadow-lg" />
+                <Button onClick={handleGenerateImage} disabled={isGeneratingImage} variant="outline" className="w-full">
                   <RefreshCw className="w-4 h-4 mr-2" />
-                  다시 생성하기
+                  {isEnglish ? 'Regenerate' : '다시 생성하기'}
                 </Button>
               </div>
             )}
           </div>
         </Card>
 
-        {/* Dominant Type Card */}
         <Card className="p-6 md:p-8">
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-xl md:text-2xl font-bold mb-2">주요 ADHD 유형</h2>
+              <h2 className="text-xl md:text-2xl font-bold mb-2">
+                {isEnglish ? 'Primary ADHD Type' : '주요 ADHD 유형'}
+              </h2>
               <div className={`inline-block px-4 py-2 md:px-6 md:py-3 rounded-full bg-gradient-to-r ${dominantTypeData.colorGradient} text-white text-base md:text-xl font-semibold`}>
                 {dominantTypeData.name}
               </div>
@@ -224,7 +249,7 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h3 className="font-semibold mb-3">주요 특징</h3>
+                <h3 className="font-semibold mb-3">{isEnglish ? 'Key Characteristics' : '주요 특징'}</h3>
                 <ul className="space-y-2">
                   {dominantTypeData.characteristics.map((char, index) => (
                     <li key={index} className="flex items-start gap-2">
@@ -236,7 +261,7 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
               </div>
 
               <div>
-                <h3 className="font-semibold mb-3">권장 치료 접근</h3>
+                <h3 className="font-semibold mb-3">{isEnglish ? 'Recommended Approaches' : '권장 치료 접근'}</h3>
                 <ul className="space-y-2">
                   {dominantTypeData.treatmentApproach.map((approach, index) => (
                     <li key={index} className="flex items-start gap-2">
@@ -250,9 +275,10 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
           </div>
         </Card>
 
-        {/* All Types Visualization */}
         <Card className="p-6 md:p-8">
-          <h2 className="text-xl md:text-2xl font-bold mb-6 text-center">전체 ADHD 유형 프로파일</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-center">
+            {isEnglish ? 'Full ADHD Type Profile' : '전체 ADHD 유형 프로파일'}
+          </h2>
           
           <div className="space-y-6">
             {Object.entries(typeScores)
@@ -268,7 +294,7 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
                       <div className="flex-1">
                         <div className="text-sm md:text-base font-medium">{typeData.name}</div>
                         <div className="text-xs md:text-sm text-muted-foreground">
-                          {score}/54 • {severity.level} ({severity.percentage}%)
+                          {score}/54 • {isEnglish ? getSeverityLabelEn(severity.level) : severity.level} ({severity.percentage}%)
                         </div>
                       </div>
                     </div>
@@ -284,13 +310,10 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
                       </div>
                     </div>
 
-                    {/* Severity markers */}
                     <div className="flex justify-between text-xs text-muted-foreground px-1">
-                      <span>매우낮음</span>
-                      <span>낮음</span>
-                      <span>보통</span>
-                      <span>높음</span>
-                      <span>매우높음</span>
+                      {severityMarkers.map((label) => (
+                        <span key={label}>{label}</span>
+                      ))}
                     </div>
                   </div>
                 );
@@ -298,54 +321,46 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
           </div>
         </Card>
 
-        {/* Important Notice */}
         <Card className="p-6 bg-amber-50 border-amber-200">
-          <h3 className="font-semibold mb-2 text-amber-900">중요 안내사항</h3>
+          <h3 className="font-semibold mb-2 text-amber-900">
+            {isEnglish ? 'Important Notice' : '중요 안내사항'}
+          </h3>
           <ul className="space-y-1 text-sm text-amber-800">
-            <li>• 본 검사는 선별 도구로, 정확한 진단은 전문가 상담이 필요합니다</li>
-            <li>• ADHD는 다양한 유형이 복합적으로 나타날 수 있습니다</li>
-            <li>• 증상이 심각하거나 일상생활에 지장이 있다면 전문가와 상담하세요</li>
-            <li>• 각 유형에 맞는 맞춤 치료가 가장 효과적입니다</li>
+            {isEnglish ? (
+              <>
+                <li>• This test is a screening tool; accurate diagnosis requires professional consultation</li>
+                <li>• ADHD can manifest as a combination of multiple types</li>
+                <li>• If symptoms are severe or interfere with daily life, consult a professional</li>
+                <li>• Customized treatment for each type is most effective</li>
+              </>
+            ) : (
+              <>
+                <li>• 본 검사는 선별 도구로, 정확한 진단은 전문가 상담이 필요합니다</li>
+                <li>• ADHD는 다양한 유형이 복합적으로 나타날 수 있습니다</li>
+                <li>• 증상이 심각하거나 일상생활에 지장이 있다면 전문가와 상담하세요</li>
+                <li>• 각 유형에 맞는 맞춤 치료가 가장 효과적입니다</li>
+              </>
+            )}
           </ul>
         </Card>
 
-        {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-3xl mx-auto">
           {onRestart && (
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={onRestart}
-              className="flex items-center gap-2 flex-1"
-            >
+            <Button size="lg" variant="outline" onClick={onRestart} className="flex items-center gap-2 flex-1">
               <RefreshCw className="w-4 h-4" />
-              다시 검사하기
+              {isEnglish ? 'Retake Test' : '다시 검사하기'}
             </Button>
           )}
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={handleDownload}
-            className="flex items-center gap-2 flex-1"
-          >
+          <Button size="lg" variant="outline" onClick={handleDownload} className="flex items-center gap-2 flex-1">
             <Download className="w-4 h-4" />
-            결과 다운로드
+            {isEnglish ? 'Download Results' : '결과 다운로드'}
           </Button>
-          <Button
-            size="lg"
-            onClick={() => navigate('/expert-counseling')}
-            className="flex-1"
-          >
-            전문 상담 연결
+          <Button size="lg" onClick={() => navigate('/expert-counseling')} className="flex-1">
+            {isEnglish ? 'Connect with Expert' : '전문 상담 연결'}
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={onBack || (() => navigate('/'))}
-            className="flex items-center gap-2 flex-1"
-          >
+          <Button size="lg" variant="outline" onClick={onBack || (() => navigate('/'))} className="flex items-center gap-2 flex-1">
             <Home className="w-4 h-4" />
-            {onBack ? '뒤로가기' : '홈으로'}
+            {onBack ? (isEnglish ? 'Back' : '뒤로가기') : (isEnglish ? 'Home' : '홈으로')}
           </Button>
         </div>
       </div>

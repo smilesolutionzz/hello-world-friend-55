@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Target, TrendingUp, AlertCircle, CheckCircle, Loader2, Eye, Ear, Hand, Brain, Activity, Zap, Crown, Wallet, Lock, Sparkles } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
@@ -27,6 +28,7 @@ interface SensoryIntegrationTestResultProps {
 
 const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryIntegrationTestResultProps) => {
   const navigate = useNavigate();
+  const { isEnglish, localePath } = useLanguage();
   const [analysis, setAnalysis] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [sensoryDomains, setSensoryDomains] = useState<any[]>([]);
@@ -55,17 +57,17 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
       const maxPossible = indices.length * 4; // 각 문항 최대 4점
       const percentage = (total / maxPossible) * 100;
       
-      let level = "정상";
-      let color = "#10B981"; // green
+      let level = isEnglish ? "Normal" : "정상";
+      let color = "#10B981";
       if (percentage >= 75) {
-        level = "심각";
-        color = "#EF4444"; // red
+        level = isEnglish ? "Severe" : "심각";
+        color = "#EF4444";
       } else if (percentage >= 50) {
-        level = "중등도";
-        color = "#F59E0B"; // orange
+        level = isEnglish ? "Moderate" : "중등도";
+        color = "#F59E0B";
       } else if (percentage >= 25) {
-        level = "경미";
-        color = "#EAB308"; // yellow
+        level = isEnglish ? "Mild" : "경미";
+        color = "#EAB308";
       }
 
       return {
@@ -83,16 +85,15 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
   };
 
   const getDomainName = (key: string) => {
-    const names = {
-      tactile: "촉각 처리",
-      vestibular: "전정감각/균형",
-      proprioceptive: "고유수용감각",
-      auditory: "청각 처리", 
-      visual: "시각 처리",
-      motorPlanning: "운동 계획",
-      regulation: "감각 조절"
+    const namesKo: Record<string, string> = {
+      tactile: "촉각 처리", vestibular: "전정감각/균형", proprioceptive: "고유수용감각",
+      auditory: "청각 처리", visual: "시각 처리", motorPlanning: "운동 계획", regulation: "감각 조절"
     };
-    return names[key as keyof typeof names];
+    const namesEn: Record<string, string> = {
+      tactile: "Tactile", vestibular: "Vestibular", proprioceptive: "Proprioceptive",
+      auditory: "Auditory", visual: "Visual", motorPlanning: "Motor Planning", regulation: "Sensory Regulation"
+    };
+    return (isEnglish ? namesEn : namesKo)[key] || key;
   };
 
   const getDomainIcon = (key: string) => {
@@ -143,11 +144,11 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
     } catch (error) {
       console.error('Error analyzing results:', error);
       toast({
-        title: "분석 오류",
-        description: "결과 분석 중 오류가 발생했습니다.",
+        title: isEnglish ? "Analysis Error" : "분석 오류",
+        description: isEnglish ? "An error occurred during analysis." : "결과 분석 중 오류가 발생했습니다.",
         variant: "destructive",
       });
-      setAnalysis("결과 분석을 위해 전문가 상담을 권장합니다.");
+      setAnalysis(isEnglish ? "We recommend consulting with a professional for result analysis." : "결과 분석을 위해 전문가 상담을 권장합니다.");
     } finally {
       setIsLoading(false);
     }
@@ -176,20 +177,20 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
   const handleSaveReport = async () => {
     try {
       await saveTestResult({
-        testType: '감각통합장애 검사',
+        testType: isEnglish ? 'Sensory Integration Test' : '감각통합장애 검사',
         results,
         analysis,
         ageGroup: results.ageGroup
       });
       
       toast({
-        title: "저장 완료",
-        description: "검사 결과가 저장되었습니다.",
+        title: isEnglish ? "Saved" : "저장 완료",
+        description: isEnglish ? "Test results have been saved." : "검사 결과가 저장되었습니다.",
       });
     } catch (error) {
       toast({
-        title: "저장 실패",
-        description: "결과 저장 중 오류가 발생했습니다.",
+        title: isEnglish ? "Save Failed" : "저장 실패",
+        description: isEnglish ? "An error occurred while saving." : "결과 저장 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }
@@ -225,8 +226,8 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
     });
     } catch (error) {
       toast({
-        title: "PDF 생성 실패",
-        description: "PDF 생성 중 오류가 발생했습니다.",
+        title: isEnglish ? "PDF Generation Failed" : "PDF 생성 실패",
+        description: isEnglish ? "An error occurred while generating the PDF." : "PDF 생성 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }
@@ -237,9 +238,9 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
       <div className="flex items-center gap-4 mb-6">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="w-4 h-4 mr-2" />
-          뒤로가기
+          {isEnglish ? 'Back' : '뒤로가기'}
         </Button>
-        <h1 className="text-2xl font-bold text-foreground">감각통합장애 검사 결과</h1>
+        <h1 className="text-2xl font-bold text-foreground">{isEnglish ? 'Sensory Integration Test Results' : '감각통합장애 검사 결과'}</h1>
       </div>
 
       {/* 상세 결과 요약 카드 */}
@@ -247,35 +248,35 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="w-6 h-6 text-purple-600" />
-            감각통합 전문 분석 결과
+            {isEnglish ? 'Sensory Integration Analysis Results' : '감각통합 전문 분석 결과'}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-lg">
               <div className="text-3xl font-bold text-purple-600">{results.total}</div>
-              <div className="text-sm text-muted-foreground">총점</div>
+              <div className="text-sm text-muted-foreground">{isEnglish ? 'Total Score' : '총점'}</div>
             </div>
             <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 rounded-lg">
               <div className="text-3xl font-bold text-green-600">{results.average.toFixed(1)}</div>
-              <div className="text-sm text-muted-foreground">평균점수</div>
+              <div className="text-sm text-muted-foreground">{isEnglish ? 'Average' : '평균점수'}</div>
             </div>
             <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg">
               <Badge className={`${getSeverityColor(results.severity)} text-white text-lg px-4 py-2`}>
                 {results.severity}
               </Badge>
-              <div className="text-sm text-muted-foreground mt-2">평가등급</div>
+              <div className="text-sm text-muted-foreground mt-2">{isEnglish ? 'Rating' : '평가등급'}</div>
             </div>
             <div className="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 rounded-lg">
               <div className="text-2xl font-semibold text-orange-600">{results.ageGroup}</div>
-              <div className="text-sm text-muted-foreground">연령대</div>
+              <div className="text-sm text-muted-foreground">{isEnglish ? 'Age Group' : '연령대'}</div>
             </div>
           </div>
           
           {/* 종합 위험도 표시 */}
           {detailedAnalysis && (
             <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950 dark:to-purple-950 p-6 rounded-xl border border-indigo-200 dark:border-indigo-800">
-              <h3 className="text-lg font-semibold mb-3 text-indigo-700 dark:text-indigo-300">종합 위험도 평가</h3>
+              <h3 className="text-lg font-semibold mb-3 text-indigo-700 dark:text-indigo-300">{isEnglish ? 'Overall Risk Assessment' : '종합 위험도 평가'}</h3>
               <div className="flex items-center gap-4">
                 <div className="flex-1">
                   <Progress value={detailedAnalysis.overallRisk} className="h-3" />
@@ -285,7 +286,7 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
                 </div>
               </div>
               <p className="text-sm text-muted-foreground mt-2">
-                전체 감각 영역의 평균 위험도를 나타냅니다
+                {isEnglish ? 'Represents the average risk level across all sensory domains' : '전체 감각 영역의 평균 위험도를 나타냅니다'}
               </p>
             </div>
           )}
@@ -297,14 +298,14 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="w-6 h-6 text-indigo-600" />
-            감각 영역별 상세 분석
+            {isEnglish ? 'Detailed Sensory Domain Analysis' : '감각 영역별 상세 분석'}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-8">
             {/* 레이더 차트 */}
             <div className="h-80">
-              <h4 className="text-center font-semibold mb-4 text-purple-700 dark:text-purple-300">감각 영역별 프로파일</h4>
+              <h4 className="text-center font-semibold mb-4 text-purple-700 dark:text-purple-300">{isEnglish ? 'Sensory Domain Profile' : '감각 영역별 프로파일'}</h4>
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={sensoryDomains}>
                   <PolarGrid />
@@ -319,21 +320,14 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
                     tick={{ fontSize: 10, fill: 'currentColor' }}
                     className="text-muted-foreground"
                   />
-                  <Radar 
-                    name="위험도 %" 
-                    dataKey="percentage" 
-                    stroke="#8B5CF6" 
-                    fill="#8B5CF6" 
-                    fillOpacity={0.3}
-                    strokeWidth={2}
-                  />
+                  <Radar name={isEnglish ? "Risk %" : "위험도 %"} dataKey="percentage" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.3} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
 
             {/* 영역별 막대 차트 */}
             <div className="h-80">
-              <h4 className="text-center font-semibold mb-4 text-purple-700 dark:text-purple-300">영역별 점수 분포</h4>
+              <h4 className="text-center font-semibold mb-4 text-purple-700 dark:text-purple-300">{isEnglish ? 'Score Distribution by Domain' : '영역별 점수 분포'}</h4>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={sensoryDomains} layout="horizontal">
                   <CartesianGrid strokeDasharray="3 3" />
@@ -345,7 +339,7 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
                     tick={{ fontSize: 10 }}
                   />
                   <Tooltip 
-                    formatter={(value, name) => [`${value}%`, '위험도']}
+                    formatter={(value) => [`${value}%`, isEnglish ? 'Risk' : '위험도']}
                     labelFormatter={(label) => `${label}`}
                   />
                   <Bar dataKey="percentage" radius={[0, 4, 4, 0]}>
@@ -373,7 +367,7 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">점수</span>
+                  <span className="text-sm text-muted-foreground">{isEnglish ? 'Score' : '점수'}</span>
                   <span className="font-semibold">{domain.score}/{domain.maxScore}</span>
                 </div>
                 <Progress value={domain.percentage} className="h-2" />
@@ -401,7 +395,7 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-red-700 dark:text-red-300">
                   <AlertCircle className="w-5 h-5" />
-                  주의 영역 ({detailedAnalysis.riskAreas.length}개)
+                  {isEnglish ? 'Areas of Concern' : '주의 영역'} ({detailedAnalysis.riskAreas.length}{isEnglish ? '' : '개'})
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -425,7 +419,7 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-300">
                   <CheckCircle className="w-5 h-5" />
-                  강점 영역 ({detailedAnalysis.strengthAreas.length}개)
+                  {isEnglish ? 'Strength Areas' : '강점 영역'} ({detailedAnalysis.strengthAreas.length}{isEnglish ? '' : '개'})
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -451,14 +445,14 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             {getSeverityIcon(results.severity)}
-            전문가 AI 분석
+            {isEnglish ? 'Expert AI Analysis' : '전문가 AI 분석'}
           </CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-6 h-6 animate-spin mr-2" />
-              <span>결과를 분석하고 있습니다...</span>
+              <span>{isEnglish ? 'Analyzing results...' : '결과를 분석하고 있습니다...'}</span>
             </div>
           ) : (
             <div className="prose prose-sm max-w-none">
@@ -480,30 +474,30 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
           {isSaving ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              저장 중...
+              {isEnglish ? 'Saving...' : '저장 중...'}
             </>
           ) : (
-            "결과 저장"
+            isEnglish ? "Save Results" : "결과 저장"
           )}
         </Button>
         
-        <Button 
-          onClick={handleGeneratePDF}
-          disabled={isGeneratingPDF}
-          variant="outline"
-        >
+        <Button onClick={handleGeneratePDF} disabled={isGeneratingPDF} variant="outline">
           {isGeneratingPDF ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              생성 중...
+              {isEnglish ? 'Generating...' : '생성 중...'}
             </>
           ) : (
-            "PDF 다운로드"
+            isEnglish ? "Download PDF" : "PDF 다운로드"
           )}
         </Button>
         
         <Button onClick={onRestart} variant="outline">
-          다시 검사하기
+          {isEnglish ? 'Retake Test' : '다시 검사하기'}
+        </Button>
+        
+        <Button onClick={() => navigate(localePath('/expert-hiring'))} className="bg-green-600 hover:bg-green-700">
+          {isEnglish ? 'Book Expert Consultation' : '전문가 상담 예약'}
         </Button>
         
         <Button 

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface MobileResultHeaderProps {
   title: string;
@@ -23,13 +24,15 @@ export const MobileResultHeader = ({
   gradientFrom = "from-primary/10",
   gradientTo = "to-primary/5"
 }: MobileResultHeaderProps) => {
+  const { isEnglish } = useLanguage();
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       className={`sticky top-0 z-10 bg-gradient-to-r ${gradientFrom} ${gradientTo} backdrop-blur-lg border-b border-border/50 -mx-4 px-4 py-3 mb-4 md:relative md:mx-0 md:px-0 md:py-0 md:bg-transparent md:border-0 md:mb-6`}
     >
-      {/* 모바일 레이아웃 */}
+      {/* Mobile layout */}
       <div className="md:hidden">
         <div className="flex items-center justify-between mb-2">
           <Button 
@@ -39,28 +42,17 @@ export const MobileResultHeader = ({
             className="h-8 px-2 -ml-2"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
-            <span className="text-xs">뒤로</span>
+            <span className="text-xs">{isEnglish ? 'Back' : '뒤로'}</span>
           </Button>
           
           <div className="flex items-center gap-1">
             {onShare && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onShare}
-                className="h-8 w-8 p-0"
-              >
+              <Button variant="ghost" size="sm" onClick={onShare} className="h-8 w-8 p-0">
                 <Share2 className="w-4 h-4" />
               </Button>
             )}
             {onDownload && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onDownload}
-                disabled={isDownloading}
-                className="h-8 w-8 p-0"
-              >
+              <Button variant="ghost" size="sm" onClick={onDownload} disabled={isDownloading} className="h-8 w-8 p-0">
                 <Download className={`w-4 h-4 ${isDownloading ? 'animate-pulse' : ''}`} />
               </Button>
             )}
@@ -75,11 +67,11 @@ export const MobileResultHeader = ({
         )}
       </div>
 
-      {/* 데스크톱 레이아웃 */}
+      {/* Desktop layout */}
       <div className="hidden md:flex items-center justify-between">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" />
-          뒤로가기
+          {isEnglish ? 'Back' : '뒤로가기'}
         </Button>
         
         <div className="text-center flex-1 min-w-0">
@@ -95,7 +87,7 @@ export const MobileResultHeader = ({
           {onShare && (
             <Button variant="outline" onClick={onShare} className="flex items-center gap-2">
               <Share2 className="w-4 h-4" />
-              공유
+              {isEnglish ? 'Share' : '공유'}
             </Button>
           )}
           {onDownload && (

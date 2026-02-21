@@ -94,66 +94,86 @@ serve(async (req) => {
 
     console.log(`Saju analysis token deducted: ${tokenCost}, Remaining: ${tokenData.current_tokens - tokenCost}`);
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
-    if (!openAIApiKey) {
-      console.error('OpenAI API key not found');
-      return new Response(JSON.stringify({ error: 'OpenAI API 키가 설정되지 않았습니다.' }), {
+    if (!LOVABLE_API_KEY) {
+      console.error('LOVABLE_API_KEY not found');
+      return new Response(JSON.stringify({ error: 'AI API 키가 설정되지 않았습니다.' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    console.log('Making OpenAI API call...');
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    console.log('Making Lovable AI Gateway call for saju analysis...');
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [
           {
             role: 'system',
-            content: `당신은 전문적인 사주명리학 상담사입니다. 
+            content: `당신은 30년 경력의 사주명리학 대가이자 만세력 전문가입니다. 현재 연도는 2026년(병오년)입니다.
 
-다음 지침을 따라 사주를 분석해주세요:
+반드시 다음 만세력 기반 분석 체계를 따르세요:
 
-1. **기본 정보 분석**
-   - 생년월일시를 바탕으로 천간지지 파악
-   - 오행(목화토금수)의 균형 분석
-   - 십신(정관, 편관, 정재, 편재 등)의 배치
+## 1. 사주팔자 도출 (만세력 기준 필수)
+- 생년월일시를 만세력으로 변환하여 **년주(年柱), 월주(月柱), 일주(日柱), 시주(時柱)** 4개의 기둥을 정확히 산출
+- 각 기둥의 **천간(天干)과 지지(地支)**를 명시
+- 일간(日干)을 기준으로 **일주론** 분석
+- 태어난 도시의 경도를 고려한 진태양시 보정 적용
 
-2. **성격과 기질 분석**
-   - 타고난 성향과 재능
-   - 강점과 약점 파악
-   - 대인관계의 특징
+## 2. 오행 분석 (정밀 분석)
+- 8글자에서 목(木), 화(火), 토(土), 금(金), 수(水)의 정확한 분포 수치 제시
+- **용신(用神)**과 **기신(忌神)** 명확히 판별
+- 오행의 상생(相生)·상극(相剋) 관계 분석
+- 지지 속 장간(藏干)까지 포함한 심층 오행 분석
 
-3. **운세 전망**
-   - 현재 운기의 흐름
-   - 향후 1년간의 전체적인 운세
-   - 연애/결혼, 직업/사업, 건강, 재물운 분야별 분석
+## 3. 십신(十神) 배치 분석
+- 일간 기준 8개 글자의 십신 관계 전부 분석
+- 정관(正官), 편관(偏官/칠살), 정재(正財), 편재(偏財), 정인(正印), 편인(偏印), 식신(食神), 상관(傷官), 비견(比肩), 겁재(劫財) 배치
+- 격국(格局) 판단: 내격(정격) vs 외격(특별격) 판별
 
-4. **조언과 개운법**
-   - 부족한 오행을 보완하는 방법
-   - 좋은 방향, 색깔, 숫자 등
-   - 일상에서 실천할 수 있는 조언
+## 4. 대운(大運) · 세운(歲運) 분석
+- 현재 2026년(병오년) 기준 **현재 대운** 분석
+- 대운의 시작 나이와 현재 대운 천간지지 명시
+- 2026년 세운과 사주 원국의 합(合)·충(沖)·형(刑)·파(破)·해(害) 관계 분석
+- 향후 1-2년간의 운의 흐름 예측
+
+## 5. 신살(神殺) 분석
+- 주요 길신(吉神): 천을귀인, 문창귀인, 학당귀인, 천덕귀인, 월덕귀인 등
+- 주요 흉살(凶殺): 도화살, 역마살, 화개살, 괴강살, 양인살 등
+- 각 신살이 삶에 미치는 구체적 영향
+
+## 6. 분야별 심층 분석
+- **성격/기질**: 일주론 기반 타고난 성향, 내면과 외면의 차이
+- **연애/결혼운**: 배우자궁(일지) 분석, 인연의 시기, 궁합 포인트
+- **직업/재물운**: 재성과 관성의 배치로 본 적성, 재물 획득 방식
+- **건강운**: 오행 불균형에서 오는 취약 장기, 건강 주의사항
+- **대인관계**: 비겁과 식상의 배치로 본 사회적 관계 패턴
+
+## 7. 실천적 개운법
+- 용신에 맞는 색상, 방위, 숫자, 직업군
+- 계절별 에너지 활용법
+- 부족한 오행 보완을 위한 구체적 생활 습관
 
 **답변 형식:**
-- 친근하고 희망적인 톤으로 작성
-- 구체적이고 실용적인 조언 제공
-- 4-5개 문단으로 구성 (약 400-500자)
-- 긍정적인 메시지로 마무리
+- 사주팔자 표를 먼저 제시 (년주/월주/일주/시주의 천간·지지)
+- 전문 용어를 사용하되 괄호 안에 쉬운 설명 병기
+- 800-1200자 분량의 깊이 있는 분석
+- 긍정적이되 현실적인 조언으로 마무리
 
-**주의사항:**
-- 지나치게 부정적이거나 불안을 조장하는 내용은 피하기
-- 의학적 진단이나 단정적인 예언은 하지 않기
-- 개인의 노력과 의지의 중요성을 강조`
+**절대 금지:**
+- "2023년", "2024년", "2025년" 등 과거 연도를 현재로 언급하는 것
+- 근거 없는 막연한 긍정론
+- 의학적 진단이나 단정적 예언`
           },
           {
             role: 'user',
-            content: `다음 정보로 사주를 분석해주세요:
+            content: `다음 정보로 만세력 기반 사주팔자를 정밀 분석해주세요:
 
 이름: ${name}
 성별: ${gender === 'male' ? '남성' : '여성'}
@@ -161,24 +181,38 @@ serve(async (req) => {
 태어난 시간: ${birthTime}
 태어난 곳: ${birthCity}
 
-위 정보를 바탕으로 종합적인 사주 분석을 해주세요.`
+현재 연도: 2026년 (병오년)
+
+위 정보를 바탕으로 만세력으로 사주팔자를 도출하고, 일주론·격국·대운·신살까지 포함한 종합적인 심층 사주 분석을 해주세요.`
           }
         ],
-        max_tokens: 1000,
+        max_tokens: 4000,
         temperature: 0.7,
       }),
     });
 
-    console.log('OpenAI response status:', response.status);
+    console.log('AI Gateway response status:', response.status);
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
-      throw new Error(`OpenAI API 요청 실패: ${response.status}`);
+      console.error('AI Gateway error:', response.status, errorText);
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.' }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ error: 'AI 서비스 크레딧이 부족합니다.' }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      throw new Error(`AI API 요청 실패: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('OpenAI response data:', data);
+    console.log('AI Gateway response received');
     
     const analysis = data.choices?.[0]?.message?.content;
     

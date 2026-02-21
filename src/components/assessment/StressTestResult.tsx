@@ -16,6 +16,7 @@ import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useLanguage } from '@/i18n';
 
 interface StressTestResultProps {
   result: {
@@ -31,6 +32,7 @@ interface StressTestResultProps {
 const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   
   // 로그인 상태 확인
@@ -58,6 +60,24 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
     let longTermStrategies = '';
     let professionalHelp = '';
     
+    if (isEnglish) {
+      if (risk === 'high') {
+        riskDescription = `Current score: ${result.total} (avg ${avgScore}) — **High stress level**.`;
+        immediateActions = `**Immediate actions:** 10-min daily meditation, adequate sleep (7-8 hrs), identify stressors`;
+        professionalHelp = `⚠️ **Professional consultation is strongly recommended.**`;
+      } else if (risk === 'medium') {
+        riskDescription = `Current score: ${result.total} (avg ${avgScore}) — **Moderate stress level**.`;
+        immediateActions = `**Recommendations:** Regular exercise (3x/week), hobbies, find stress relief methods`;
+        professionalHelp = `Consider professional help if stress persists.`;
+      } else {
+        riskDescription = `Current score: ${result.total} (avg ${avgScore}) — **Healthy level**.`;
+        immediateActions = `**Maintain:** Keep current lifestyle, regular self-check-ins`;
+        professionalHelp = `Keep up the good work!`;
+      }
+      longTermStrategies = `**Long-term:** Regular routine, social connections, positive thinking`;
+      return `**1. Stress Assessment**\n\n${riskDescription}\n\n**2. ${immediateActions}**\n\n**3. ${longTermStrategies}**\n\n**4. ${professionalHelp}**`;
+    }
+
     if (risk === 'high') {
       riskDescription = `현재 총점 ${result.total}점(평균 ${avgScore}점)으로 **높은 수준의 스트레스** 상태입니다.`;
       immediateActions = `**즉시 실행:** 하루 10분 명상, 충분한 수면(7-8시간), 스트레스 요인 정리`;
@@ -119,24 +139,26 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
   }, [result]);
 
   const handleShare = async () => {
-    const shareText = `스트레스 자가진단 결과\n총점: ${result.total}점\n상태: ${result.severity}\n\n나도 테스트해보기!`;
+    const shareText = isEnglish 
+      ? `Stress Self-Assessment Result\nScore: ${result.total}\nStatus: ${result.severity}\n\nTry it yourself!`
+      : `스트레스 자가진단 결과\n총점: ${result.total}점\n상태: ${result.severity}\n\n나도 테스트해보기!`;
     
     if (navigator.share) {
       try {
         await navigator.share({
-          title: '스트레스 자가진단 결과',
+          title: isEnglish ? 'Stress Self-Assessment Result' : '스트레스 자가진단 결과',
           text: shareText,
           url: `${window.location.origin}/assessment/stress-test`,
         });
       } catch (error) {
-        console.log('공유 취소됨');
+        console.log('Share cancelled');
       }
     } else {
       const shareUrl = `${window.location.origin}/assessment/stress-test`;
       navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
       toast({
-        title: "결과가 복사되었습니다",
-        description: "클립보드에 결과를 복사했습니다!",
+        title: isEnglish ? "Result copied" : "결과가 복사되었습니다",
+        description: isEnglish ? "Copied to clipboard!" : "클립보드에 결과를 복사했습니다!",
       });
     }
   };
@@ -149,13 +171,13 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
         '스트레스_검사_결과',
         () => {
           toast({
-            title: "PDF 다운로드 완료",
-            description: "스트레스 검사 결과가 저장되었습니다.",
+            title: isEnglish ? "PDF Download Complete" : "PDF 다운로드 완료",
+            description: isEnglish ? "Stress test result saved." : "스트레스 검사 결과가 저장되었습니다.",
           });
         },
         (error) => {
           toast({
-            title: "다운로드 실패",
+            title: isEnglish ? "Download Failed" : "다운로드 실패",
             description: error.message,
             variant: "destructive",
           });
@@ -169,30 +191,30 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
   const getStressLevel = () => {
     if (result.total <= 16) {
       return {
-        level: "낮음",
-        description: "현재 스트레스 수준이 건강한 범위에 있습니다.",
+        level: isEnglish ? "Low" : "낮음",
+        description: isEnglish ? "Your stress level is in a healthy range." : "현재 스트레스 수준이 건강한 범위에 있습니다.",
         color: "text-green-600",
         bgColor: "bg-green-50 border-green-200",
         icon: CheckCircle,
-        advice: "현재의 좋은 상태를 유지하기 위해 규칙적인 운동과 충분한 휴식을 취하세요."
+        advice: isEnglish ? "Maintain your good state with regular exercise and adequate rest." : "현재의 좋은 상태를 유지하기 위해 규칙적인 운동과 충분한 휴식을 취하세요."
       };
     } else if (result.total <= 32) {
       return {
-        level: "보통",
-        description: "스트레스가 조금 높은 상태입니다. 관리가 필요합니다.",
+        level: isEnglish ? "Moderate" : "보통",
+        description: isEnglish ? "Your stress is slightly elevated. Management is needed." : "스트레스가 조금 높은 상태입니다. 관리가 필요합니다.",
         color: "text-orange-600",
         bgColor: "bg-orange-50 border-orange-200",
         icon: AlertTriangle,
-        advice: "스트레스 관리 기법을 시작해보세요. 명상, 깊은 호흡, 가벼운 운동이 도움됩니다."
+        advice: isEnglish ? "Try stress management techniques: meditation, deep breathing, light exercise." : "스트레스 관리 기법을 시작해보세요. 명상, 깊은 호흡, 가벼운 운동이 도움됩니다."
       };
     } else {
       return {
-        level: "높음",
-        description: "스트레스가 높은 상태입니다. 적극적인 관리가 필요합니다.",
+        level: isEnglish ? "High" : "높음",
+        description: isEnglish ? "Your stress is high. Active management is required." : "스트레스가 높은 상태입니다. 적극적인 관리가 필요합니다.",
         color: "text-red-600",
         bgColor: "bg-red-50 border-red-200",
         icon: AlertTriangle,
-        advice: "전문가의 도움을 받는 것을 고려해보세요. 즉시 스트레스 관리를 시작하는 것이 중요합니다."
+        advice: isEnglish ? "Consider seeking professional help. It's important to start stress management immediately." : "전문가의 도움을 받는 것을 고려해보세요. 즉시 스트레스 관리를 시작하는 것이 중요합니다."
       };
     }
   };
@@ -202,12 +224,12 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
 
   // Create chart data
   const radarData = [
-    { domain: '정서적 안정성', score: Math.max(1, 5 - (result.answers[0] + result.answers[2]) / 2) },
-    { domain: '문제해결능력', score: Math.max(1, 5 - (result.answers[3] + result.answers[6]) / 2) },
-    { domain: '신체적 건강', score: Math.max(1, 5 - (result.answers[11] + result.answers[5]) / 2) },
-    { domain: '사회적 관계', score: Math.max(1, 5 - (result.answers[10] + result.answers[8]) / 2) },
-    { domain: '미래 전망', score: Math.max(1, 5 - (result.answers[7] + result.answers[4]) / 2) },
-    { domain: '스트레스 대처', score: Math.max(1, 5 - (result.answers[1] + result.answers[9]) / 2) }
+    { domain: isEnglish ? 'Emotional Stability' : '정서적 안정성', score: Math.max(1, 5 - (result.answers[0] + result.answers[2]) / 2) },
+    { domain: isEnglish ? 'Problem Solving' : '문제해결능력', score: Math.max(1, 5 - (result.answers[3] + result.answers[6]) / 2) },
+    { domain: isEnglish ? 'Physical Health' : '신체적 건강', score: Math.max(1, 5 - (result.answers[11] + result.answers[5]) / 2) },
+    { domain: isEnglish ? 'Social Relations' : '사회적 관계', score: Math.max(1, 5 - (result.answers[10] + result.answers[8]) / 2) },
+    { domain: isEnglish ? 'Future Outlook' : '미래 전망', score: Math.max(1, 5 - (result.answers[7] + result.answers[4]) / 2) },
+    { domain: isEnglish ? 'Coping Skills' : '스트레스 대처', score: Math.max(1, 5 - (result.answers[1] + result.answers[9]) / 2) }
   ];
 
   const lineData = result.answers.map((score, index) => ({
@@ -224,8 +246,8 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
             <div className="flex flex-col items-center space-y-4">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <div className="text-center">
-                <h3 className="font-semibold text-lg">AI 전문가 분석 중...</h3>
-                <p className="text-muted-foreground">상세한 스트레스 분석을 생성하고 있습니다</p>
+                <h3 className="font-semibold text-lg">{isEnglish ? 'AI Expert Analysis in Progress...' : 'AI 전문가 분석 중...'}</h3>
+                <p className="text-muted-foreground">{isEnglish ? 'Generating detailed stress analysis' : '상세한 스트레스 분석을 생성하고 있습니다'}</p>
               </div>
             </div>
           </CardContent>
@@ -237,7 +259,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
   return (
     <div id="stress-result-content" className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-4 md:py-8">
       <div className="container mx-auto px-3 md:px-4 max-w-6xl">
-        <PDFHeader testName="스트레스 전문가 분석 결과" />
+        <PDFHeader testName={isEnglish ? "Stress Expert Analysis Result" : "스트레스 전문가 분석 결과"} />
         
         {/* 모바일 최적화 헤더 */}
         <div className="mb-4 md:mb-8">
@@ -247,7 +269,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
               {onBack && (
                 <Button variant="ghost" size="sm" onClick={onBack} className="h-8 px-2 -ml-2">
                   <ArrowLeft className="w-4 h-4 mr-1" />
-                  <span className="text-xs">뒤로</span>
+                  <span className="text-xs">{isEnglish ? 'Back' : '뒤로'}</span>
                 </Button>
               )}
               <Button variant="ghost" size="sm" onClick={handlePDFDownload} disabled={isDownloadingPDF} className="h-8 px-2">
@@ -258,7 +280,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
               <div className="p-2 rounded-full bg-blue-500/10">
                 <Brain className="w-5 h-5 text-blue-500" />
               </div>
-              <h1 className="text-lg font-bold">스트레스 분석 결과</h1>
+              <h1 className="text-lg font-bold">{isEnglish ? 'Stress Analysis Result' : '스트레스 분석 결과'}</h1>
             </div>
           </div>
           
@@ -268,7 +290,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
               <div className="p-3 rounded-full bg-blue-500/10">
                 <Brain className="w-8 h-8 text-blue-500" />
               </div>
-              <h1 className="text-2xl lg:text-3xl font-bold">스트레스 전문가 분석 결과</h1>
+              <h1 className="text-2xl lg:text-3xl font-bold">{isEnglish ? 'Stress Expert Analysis Result' : '스트레스 전문가 분석 결과'}</h1>
             </div>
           </div>
         </div>
@@ -280,11 +302,11 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
               <div className="flex items-center justify-center gap-2 md:gap-3 mb-2">
                 <IconComponent className={`w-8 h-8 md:w-12 md:h-12 ${stressInfo.color}`} />
                 <CardTitle className={`text-lg md:text-2xl ${stressInfo.color}`}>
-                  스트레스: {stressInfo.level}
+                  {isEnglish ? 'Stress:' : '스트레스:'} {stressInfo.level}
                 </CardTitle>
               </div>
               <p className="text-muted-foreground text-sm md:text-lg">
-                총점 {result.total}점 / 평균 {result.average.toFixed(1)}점
+                {isEnglish ? `Score ${result.total} / Avg ${result.average.toFixed(1)}` : `총점 ${result.total}점 / 평균 ${result.average.toFixed(1)}점`}
               </p>
             </CardHeader>
             <CardContent className="p-3 md:p-6 pt-0">
@@ -299,7 +321,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
               
               <div className="space-y-1 md:space-y-2">
                 <div className="flex justify-between text-xs md:text-sm">
-                  <span>스트레스 수준</span>
+                  <span>{isEnglish ? 'Stress Level' : '스트레스 수준'}</span>
                   <span className={stressInfo.color}>{((result.total / 48) * 100).toFixed(0)}%</span>
                 </div>
                 <Progress value={(result.total / 48) * 100} className="h-1.5 md:h-2" />
@@ -311,7 +333,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
             <CardHeader className="p-3 md:p-6 pb-2">
               <CardTitle className="flex items-center gap-2 text-sm md:text-base">
                 <BarChart3 className="w-4 h-4 md:w-5 md:h-5" />
-                영역별 분석
+                {isEnglish ? 'Domain Analysis' : '영역별 분석'}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-2 md:p-6 pt-0">
@@ -321,7 +343,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
                   <PolarAngleAxis dataKey="domain" tick={{ fontSize: 9 }} />
                   <PolarRadiusAxis domain={[0, 5]} tick={false} />
                   <Radar
-                    name="점수"
+                    name={isEnglish ? "Score" : "점수"}
                     dataKey="score"
                     stroke="hsl(var(--primary))"
                     fill="hsl(var(--primary))"
@@ -332,7 +354,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
                 </RadarChart>
               </ResponsiveContainer>
               <p className="text-[10px] md:text-xs text-muted-foreground mt-1 text-center">
-                * 높을수록 스트레스 관리가 잘 됨
+                {isEnglish ? '* Higher = better stress management' : '* 높을수록 스트레스 관리가 잘 됨'}
               </p>
             </CardContent>
           </Card>
@@ -341,7 +363,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
         {/* 문항별 패턴 - 모바일에서 숨김 또는 축소 */}
         <Card className="mb-4 md:mb-6 hidden md:block">
           <CardHeader className="p-3 md:p-6 pb-2">
-            <CardTitle className="text-sm md:text-base">문항별 응답 패턴</CardTitle>
+            <CardTitle className="text-sm md:text-base">{isEnglish ? 'Response Pattern by Question' : '문항별 응답 패턴'}</CardTitle>
           </CardHeader>
           <CardContent className="p-2 md:p-6 pt-0">
             <ResponsiveContainer width="100%" height={150}>
@@ -360,7 +382,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
               </LineChart>
             </ResponsiveContainer>
             <p className="text-[10px] md:text-xs text-muted-foreground mt-1">
-              * 각 문항별 응답 점수 (0: 좋음, 4: 나쁨)
+              {isEnglish ? '* Score per question (0: Good, 4: Poor)' : '* 각 문항별 응답 점수 (0: 좋음, 4: 나쁨)'}
             </p>
           </CardContent>
         </Card>
@@ -369,7 +391,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
         <Card className="mb-4 md:mb-6">
           <CardHeader className="p-3 md:p-6 pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm md:text-base">AI 전문가 분석</CardTitle>
+              <CardTitle className="text-sm md:text-base">{isEnglish ? 'AI Expert Analysis' : 'AI 전문가 분석'}</CardTitle>
               {!isAnalyzing && analysis && (
                 <TextToSpeechButton text={analysis} />
               )}
@@ -379,7 +401,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
             {isAnalyzing ? (
               <div className="flex items-center justify-center py-4 md:py-8">
                 <Loader2 className="w-5 h-5 md:w-8 md:h-8 animate-spin text-primary" />
-                <span className="ml-2 text-xs md:text-sm text-muted-foreground">AI 분석 중...</span>
+                <span className="ml-2 text-xs md:text-sm text-muted-foreground">{isEnglish ? 'Analyzing...' : 'AI 분석 중...'}</span>
               </div>
             ) : (
               <div className="prose prose-sm max-w-none">
@@ -396,10 +418,10 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
           <div className="text-center mb-4">
             <h3 className="text-xl font-bold flex items-center justify-center gap-2">
               <Sparkles className="w-5 h-5 text-pink-500" />
-              친구들에게 공유하기
+              {isEnglish ? 'Share with Friends' : '친구들에게 공유하기'}
             </h3>
             <p className="text-sm text-muted-foreground mt-1">
-              "이거 어디서 했어?" 친구들이 물어볼 거예요! 🔥
+              {isEnglish ? '"Where did you take this?" Your friends will ask! 🔥' : '"이거 어디서 했어?" 친구들이 물어볼 거예요! 🔥'}
             </p>
           </div>
 
@@ -411,36 +433,38 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
               className="flex-col h-auto py-3 bg-gradient-to-br from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
             >
               <Download className="w-5 h-5 mb-1" />
-              <span className="text-[10px]">PDF 저장</span>
+              <span className="text-[10px]">{isEnglish ? 'Save PDF' : 'PDF 저장'}</span>
             </Button>
 
             {/* 카카오톡 */}
             <Button
               onClick={() => {
-                const message = `📊 스트레스 자가진단 결과\n\n총점: ${result.total}점\n상태: ${result.severity}\n\n🔗 나도 해보기: ${window.location.origin}/assessment/stress-test\n\n#스트레스테스트 #자가진단 #AIHPRO`;
+                const message = isEnglish 
+                  ? `📊 Stress Self-Assessment\n\nScore: ${result.total}\nStatus: ${result.severity}\n\n🔗 Try it: ${window.location.origin}/assessment/stress-test`
+                  : `📊 스트레스 자가진단 결과\n\n총점: ${result.total}점\n상태: ${result.severity}\n\n🔗 나도 해보기: ${window.location.origin}/assessment/stress-test\n\n#스트레스테스트 #자가진단 #AIHPRO`;
                 if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
                   window.location.href = `kakaotalk://send?text=${encodeURIComponent(message)}`;
                 } else {
                   navigator.clipboard.writeText(message);
-                  toast({ title: "카카오톡에 붙여넣기 하세요! 💬" });
+                  toast({ title: isEnglish ? "Copied! Paste in your messenger 💬" : "카카오톡에 붙여넣기 하세요! 💬" });
                 }
               }}
               className="flex-col h-auto py-3 bg-yellow-400 hover:bg-yellow-500 text-black"
             >
               <MessageCircle className="w-5 h-5 mb-1" />
-              <span className="text-[10px]">카카오톡</span>
+              <span className="text-[10px]">{isEnglish ? 'Message' : '카카오톡'}</span>
             </Button>
 
             {/* 인스타그램 */}
             <Button
               onClick={() => {
                 handlePDFDownload();
-                toast({ title: "PDF를 저장했어요!", description: "인스타 스토리에 업로드하세요 📸" });
+                toast({ title: isEnglish ? "PDF saved!" : "PDF를 저장했어요!", description: isEnglish ? "Upload to your Instagram story 📸" : "인스타 스토리에 업로드하세요 📸" });
               }}
               className="flex-col h-auto py-3 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 hover:opacity-90"
             >
               <Instagram className="w-5 h-5 mb-1" />
-              <span className="text-[10px]">인스타</span>
+              <span className="text-[10px]">{isEnglish ? 'Insta' : '인스타'}</span>
             </Button>
 
             {/* 공유하기 */}
@@ -450,23 +474,25 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
               className="flex-col h-auto py-3"
             >
               <Share2 className="w-5 h-5 mb-1" />
-              <span className="text-[10px]">더보기</span>
+              <span className="text-[10px]">{isEnglish ? 'More' : '더보기'}</span>
             </Button>
           </div>
 
           {/* 링크 복사 */}
           <Button
             onClick={() => {
-              const message = `📊 스트레스 자가진단: ${result.severity}\n\n테스트 해보기 👉 ${window.location.origin}/assessment/stress-test`;
+              const message = isEnglish 
+                ? `📊 Stress Assessment: ${result.severity}\n\nTry it 👉 ${window.location.origin}/assessment/stress-test`
+                : `📊 스트레스 자가진단: ${result.severity}\n\n테스트 해보기 👉 ${window.location.origin}/assessment/stress-test`;
               navigator.clipboard.writeText(message);
-              toast({ title: "복사 완료!", description: "친구에게 공유하세요 💌" });
+              toast({ title: isEnglish ? "Copied!" : "복사 완료!", description: isEnglish ? "Share with friends 💌" : "친구에게 공유하세요 💌" });
             }}
             variant="outline"
             className="w-full mb-3"
             size="sm"
           >
             <Copy className="w-4 h-4 mr-2" />
-            결과 링크 복사하기
+            {isEnglish ? 'Copy Result Link' : '결과 링크 복사하기'}
           </Button>
 
           <div className="flex gap-2">
@@ -478,7 +504,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
                 size="sm"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                뒤로
+                {isEnglish ? 'Back' : '뒤로'}
               </Button>
             )}
             <Button 
@@ -488,7 +514,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
               size="sm"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
-              다시하기
+              {isEnglish ? 'Retry' : '다시하기'}
             </Button>
           </div>
         </Card>
@@ -496,7 +522,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
         {/* 바이럴 유도 메시지 */}
         <div className="text-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
           <p className="text-sm">
-            💡 <strong>친구도 테스트하면</strong> 서로 결과 비교할 수 있어요!
+            💡 <strong>{isEnglish ? 'If your friends take the test too,' : '친구도 테스트하면'}</strong> {isEnglish ? 'you can compare results!' : '서로 결과 비교할 수 있어요!'}
           </p>
         </div>
         
@@ -522,27 +548,26 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
                 </div>
                 
                 <h3 className="text-xl md:text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                  전체 결과를 확인하세요
+                  {isEnglish ? 'Unlock Full Results' : '전체 결과를 확인하세요'}
                 </h3>
                 
                 <p className="text-muted-foreground mb-6 text-sm md:text-base">
-                  무료 회원가입으로 맞춤 전문가 추천과<br />
-                  더 상세한 분석 결과를 받아보세요
+                  {isEnglish ? 'Sign up free for personalized expert recommendations and detailed analysis.' : <>무료 회원가입으로 맞춤 전문가 추천과<br />더 상세한 분석 결과를 받아보세요</>}
                 </p>
                 
                 {/* 혜택 리스트 */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
                   <div className="flex items-center gap-2 p-3 bg-background/80 rounded-lg border">
                     <Star className="w-5 h-5 text-yellow-500 flex-shrink-0" />
-                    <span className="text-sm font-medium">맞춤 전문가 추천</span>
+                    <span className="text-sm font-medium">{isEnglish ? 'Expert Matching' : '맞춤 전문가 추천'}</span>
                   </div>
                   <div className="flex items-center gap-2 p-3 bg-background/80 rounded-lg border">
                     <Shield className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-sm font-medium">결과 영구 저장</span>
+                    <span className="text-sm font-medium">{isEnglish ? 'Save Results' : '결과 영구 저장'}</span>
                   </div>
                   <div className="flex items-center gap-2 p-3 bg-background/80 rounded-lg border">
                     <Brain className="w-5 h-5 text-purple-500 flex-shrink-0" />
-                    <span className="text-sm font-medium">심층 AI 분석</span>
+                    <span className="text-sm font-medium">{isEnglish ? 'Deep AI Analysis' : '심층 AI 분석'}</span>
                   </div>
                 </div>
                 
@@ -553,19 +578,19 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
                     onClick={() => navigate('/auth?mode=signup')}
                   >
                     <UserPlus className="w-5 h-5 mr-2" />
-                    무료 회원가입
+                    {isEnglish ? 'Free Sign Up' : '무료 회원가입'}
                   </Button>
                   <Button 
                     variant="outline" 
                     size="lg"
                     onClick={() => navigate('/auth')}
                   >
-                    로그인
+                    {isEnglish ? 'Log In' : '로그인'}
                   </Button>
                 </div>
                 
                 <p className="text-xs text-muted-foreground mt-4">
-                  🔒 개인정보는 안전하게 보호됩니다
+                  🔒 {isEnglish ? 'Your data is securely protected' : '개인정보는 안전하게 보호됩니다'}
                 </p>
               </CardContent>
             </Card>

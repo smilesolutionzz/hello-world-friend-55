@@ -7,6 +7,7 @@ import { Heart, Share2, Download, CheckCircle, Users, MessageCircle, ShieldCheck
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface RelationshipStyleResultProps {
   result: {
@@ -30,6 +31,7 @@ const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProp
   const { toast } = useToast();
   const IconComponent = result.result.icon;
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+  const { isEnglish } = useLanguage();
 
   // 자동 저장
   useAutoSaveTestResult({
@@ -268,10 +270,10 @@ const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProp
             <div className="p-3 rounded-full bg-pink-500/10">
               <IconComponent className="w-8 h-8 text-pink-500" />
             </div>
-            <h1 className="text-3xl font-bold">관계 스타일 진단 결과</h1>
+            <h1 className="text-3xl font-bold">{isEnglish ? "Relationship Style Results" : "관계 스타일 진단 결과"}</h1>
           </div>
           <p className="text-muted-foreground">
-            당신의 인간관계 패턴과 개선 방향을 확인해보세요
+            {isEnglish ? "Check your relationship patterns and areas for improvement" : "당신의 인간관계 패턴과 개선 방향을 확인해보세요"}
           </p>
         </div>
 

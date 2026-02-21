@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface LifePurposeTestResultProps {
   results: {
@@ -46,6 +47,7 @@ export default function LifePurposeTestResult({ results, onBack }: LifePurposeTe
   const { toast } = useToast();
   const { saveTestResult, isSaving } = useTestActions();
   const { generateWordDocument, printDocument } = useWordDownload();
+  const { isEnglish } = useLanguage();
 
   useEffect(() => {
     fetchAIAnalysis();
@@ -172,23 +174,23 @@ export default function LifePurposeTestResult({ results, onBack }: LifePurposeTe
   const categoryInfo: Record<string, { icon: React.ReactNode; name: string; description: string }> = {
     fulfillment: { 
       icon: <Heart className="w-5 h-5" />, 
-      name: '실존적 충만감',
-      description: '일상에서 의미와 만족을 느끼는 정도'
+      name: isEnglish ? 'Existential Fulfillment' : '실존적 충만감',
+      description: isEnglish ? 'Degree of meaning and satisfaction in daily life' : '일상에서 의미와 만족을 느끼는 정도'
     },
     values: { 
       icon: <Star className="w-5 h-5" />, 
-      name: '가치 명확성',
-      description: '핵심 가치관의 명료함과 일관성'
+      name: isEnglish ? 'Value Clarity' : '가치 명확성',
+      description: isEnglish ? 'Clarity and consistency of core values' : '핵심 가치관의 명료함과 일관성'
     },
     goals: { 
       icon: <Target className="w-5 h-5" />, 
-      name: '목표 일관성',
-      description: '목표 설정과 실행의 지속성'
+      name: isEnglish ? 'Goal Consistency' : '목표 일관성',
+      description: isEnglish ? 'Persistence in goal setting and execution' : '목표 설정과 실행의 지속성'
     },
     awareness: { 
       icon: <Compass className="w-5 h-5" />, 
-      name: '자기 인식',
-      description: '자신에 대한 이해와 성찰 능력'
+      name: isEnglish ? 'Self-Awareness' : '자기 인식',
+      description: isEnglish ? 'Self-understanding and reflective capacity' : '자신에 대한 이해와 성찰 능력'
     }
   };
 
@@ -224,7 +226,7 @@ export default function LifePurposeTestResult({ results, onBack }: LifePurposeTe
           <div className="mb-6">
             <Button variant="ghost" onClick={onBack} className="flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" />
-              돌아가기
+              {isEnglish ? "Back" : "돌아가기"}
             </Button>
           </div>
 
@@ -237,8 +239,8 @@ export default function LifePurposeTestResult({ results, onBack }: LifePurposeTe
                     <Mountain className="w-8 h-8" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold">삶의 의미 및 목적 탐색 결과</h2>
-                    <p className="text-white/80">40문항 4개 영역 심층 분석 리포트</p>
+                    <h2 className="text-2xl font-bold">{isEnglish ? "Life Purpose Exploration Results" : "삶의 의미 및 목적 탐색 결과"}</h2>
+                    <p className="text-white/80">{isEnglish ? "40-item 4-domain in-depth analysis report" : "40문항 4개 영역 심층 분석 리포트"}</p>
                   </div>
                 </div>
                 <div className="text-4xl">{typeInfo.emoji}</div>
@@ -249,8 +251,8 @@ export default function LifePurposeTestResult({ results, onBack }: LifePurposeTe
                 <Badge className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xl px-6 py-2 mb-4">
                   {purposeType}
                 </Badge>
-                <div className="text-5xl font-bold text-indigo-600 mb-2">{totalScore}점</div>
-                <p className="text-muted-foreground">삶의 의미 명확성 종합 점수</p>
+                <div className="text-5xl font-bold text-indigo-600 mb-2">{totalScore}{isEnglish ? "pts" : "점"}</div>
+                <p className="text-muted-foreground">{isEnglish ? "Overall Life Meaning Clarity Score" : "삶의 의미 명확성 종합 점수"}</p>
                 <Progress value={totalScore} className="w-full mt-4 h-3" />
               </div>
               <div className={`p-4 rounded-lg ${typeInfo.bgColor} mb-4`}>
@@ -259,7 +261,7 @@ export default function LifePurposeTestResult({ results, onBack }: LifePurposeTe
               </div>
               <div className="flex justify-center">
                 <Badge className={`text-sm px-4 py-2 ${getClarityBadgeColor()}`}>
-                  방향 명확성: {clarityLevel}
+                  {isEnglish ? "Direction Clarity" : "방향 명확성"}: {clarityLevel}
                 </Badge>
               </div>
             </CardContent>

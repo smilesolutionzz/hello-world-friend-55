@@ -9,6 +9,7 @@ import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface CareerInterestResultProps {
   result: {
@@ -78,6 +79,16 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
   const TopIcon = topConfig.icon;
   const { shareAsText } = useShareText();
   const { generatePDFReport, isGeneratingPDF } = useTestResultActions();
+  const { isEnglish } = useLanguage();
+
+  const typeConfigEn: Record<string, { name: string; description: string; careers: string[]; characteristics: string[] }> = {
+    technical: { name: "Practical (T)", description: "Prefers practical, systematic activities and working with machines or tools.", careers: ["Mechanical Engineer", "Electrician", "Architect", "IT Developer", "Auto Mechanic", "Chef"], characteristics: ["Practical", "Realistic", "Systematic", "Direct"] },
+    analytical: { name: "Analytical (A)", description: "Prefers scientific and analytical activities, enjoys solving complex problems.", careers: ["Scientist", "Doctor", "Researcher", "Pharmacist", "Professor", "Data Analyst"], characteristics: ["Analytical", "Logical", "Curious", "Independent"] },
+    creative: { name: "Creative (C)", description: "Prefers creative, free-form activities and enjoys artistic expression.", careers: ["Designer", "Musician", "Writer", "Actor", "Photographer", "Film Director"], characteristics: ["Creative", "Original", "Expressive", "Emotional"] },
+    social: { name: "Social (S)", description: "Prefers helping and teaching others, enjoys social interaction.", careers: ["Teacher", "Counselor", "Nurse", "Social Worker", "HR Manager", "Coach"], characteristics: ["Friendly", "Understanding", "Cooperative", "Responsible"] },
+    leadership: { name: "Leader (L)", description: "Prefers business and competitive activities, enjoys exercising leadership.", careers: ["CEO", "Sales Manager", "Lawyer", "Politician", "Marketing Expert", "Consultant"], characteristics: ["Ambitious", "Persuasive", "Dominant", "Confident"] },
+    organized: { name: "Organized (O)", description: "Prefers systematic and orderly activities, values accuracy and attention to detail.", careers: ["Accountant", "Banker", "Secretary", "Librarian", "Tax Advisor", "Quality Controller"], characteristics: ["Organized", "Precise", "Careful", "Stability-oriented"] },
+  };
 
   // 자동 저장 - 분석 포함
   useAutoSaveTestResult({
@@ -108,14 +119,14 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
           <CardHeader className="text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
               <TopIcon className="w-8 h-8 text-primary" />
-              <CardTitle className="text-2xl">AI 직업 성향 분석 결과</CardTitle>
+              <CardTitle className="text-2xl">{isEnglish ? "AI Career Aptitude Analysis Results" : "AI 직업 성향 분석 결과"}</CardTitle>
             </div>
             <div className="space-y-4">
               <Badge variant="default" className="text-lg px-4 py-2">
-                {topConfig.name}
+                {isEnglish ? (typeConfigEn[topType]?.name || topConfig.name) : topConfig.name}
               </Badge>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                {topConfig.description}
+                {isEnglish ? (typeConfigEn[topType]?.description || topConfig.description) : topConfig.description}
               </p>
             </div>
           </CardHeader>
@@ -126,7 +137,7 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Briefcase className="w-5 h-5" />
-              나의 상위 직업 성향 유형
+              {isEnglish ? "My Top Career Aptitude Types" : "나의 상위 직업 성향 유형"}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -145,8 +156,8 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
                           <Icon className="w-4 h-4" />
                         </div>
                         <div>
-                          <h3 className="font-semibold">{index + 1}순위: {config.name}</h3>
-                          <p className="text-sm text-muted-foreground">{config.description}</p>
+                          <h3 className="font-semibold">{index + 1}{isEnglish ? "st" : "순위"}: {isEnglish ? (typeConfigEn[type]?.name || config.name) : config.name}</h3>
+                          <p className="text-sm text-muted-foreground">{isEnglish ? (typeConfigEn[type]?.description || config.description) : config.description}</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -172,7 +183,7 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
         {/* 전체 유형 점수 */}
         <Card>
           <CardHeader>
-            <CardTitle>전체 성향 유형 점수</CardTitle>
+            <CardTitle>{isEnglish ? "All Aptitude Type Scores" : "전체 성향 유형 점수"}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-3">
@@ -188,7 +199,7 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-sm font-medium">{config.name}</span>
+                        <span className="text-sm font-medium">{isEnglish ? (typeConfigEn[type]?.name || config.name) : config.name}</span>
                         <span className="text-sm">{score.toFixed(1)}</span>
                       </div>
                       <Progress value={progressValue} className="h-2" />
@@ -203,7 +214,7 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
         {/* 추천 직업 */}
         <Card>
           <CardHeader>
-            <CardTitle>추천 직업 분야</CardTitle>
+            <CardTitle>{isEnglish ? "Recommended Career Fields" : "추천 직업 분야"}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">

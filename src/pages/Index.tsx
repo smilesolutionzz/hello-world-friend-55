@@ -182,10 +182,12 @@ const Index = () => {
               <ReportPreviewSection />
             </LazyLoad>
             
-            {/* 💎 구독 가치 제안 - 왜 프리미엄이 필요한가 */}
-            <LazyLoad rootMargin="200px">
-              <SubscriptionValueSection />
-            </LazyLoad>
+            {/* 💎 구독 가치 제안 - 왜 프리미엄이 필요한가 (PC only) */}
+            <div className="hidden md:block">
+              <LazyLoad rootMargin="200px">
+                <SubscriptionValueSection />
+              </LazyLoad>
+            </div>
             
             
             {/* 5️⃣ 감성 후킹 - 엄마들의 실제 사연 */}

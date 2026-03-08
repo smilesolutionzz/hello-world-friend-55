@@ -184,6 +184,7 @@ import AppStoreGuide from "./pages/AppStoreGuide";
 import BusinessPlanGenerator from "./pages/BusinessPlanGenerator";
 import PartnerBenefits from "./pages/PartnerBenefits";
 import IRDeck from "./pages/IRDeck";
+import PlatformOnePager from "./pages/PlatformOnePager";
 
 // Mind Diary - Unicorn Framework MVP
 import MindDiary from "./pages/MindDiary";

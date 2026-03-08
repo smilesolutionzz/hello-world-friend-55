@@ -26,7 +26,7 @@ const RefundPolicy = () => {
                 <RefreshCw className="w-8 h-8 text-primary" />
                 <CardTitle className="text-3xl font-bold">환불 정책</CardTitle>
               </div>
-              <p className="text-sm text-muted-foreground">최종 수정일: 2026년 3월 8일 | 시행일: 2026년 3월 15일</p>
+              <p className="text-sm text-muted-foreground">최종 수정일: 2025년 1월 4일</p>
             </CardHeader>
             
             <CardContent>
@@ -34,23 +34,22 @@ const RefundPolicy = () => {
               <Alert className="mb-6">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>핵심 요약:</strong> 구독 결제 후 14일 이내 미사용 시 전액 환불 가능합니다. 
-                  일부 사용한 경우 사용일수를 제외한 금액을 환불해드립니다. (전자상거래법 준수)
+                  <strong>핵심 요약:</strong> 서비스 미사용 시 7일 이내 전액 환불 가능합니다. 
+                  일부 사용한 경우 사용분을 제외한 금액을 환불해드립니다.
                 </AlertDescription>
               </Alert>
 
-              <ScrollArea className="h-[700px] pr-4">
+              <ScrollArea className="h-[600px] pr-4">
                 <div className="space-y-6">
                   <section>
                     <h2 className="text-xl font-semibold mb-3">1. 환불 기본 원칙</h2>
                     <div className="space-y-2 text-muted-foreground">
-                      <p>AIHumanPro는 「전자상거래 등에서의 소비자보호에 관한 법률」 및 「콘텐츠산업진흥법」에 따라 공정한 환불 정책을 운영합니다:</p>
+                      <p>AIHumanPro는 전자상거래법 및 콘텐츠산업진흥법에 따라 공정한 환불 정책을 운영합니다:</p>
                       <ul className="list-disc pl-6 space-y-1 mt-2">
-                        <li>청약철회 기간: 결제일로부터 <strong>14일</strong> (전자상거래법 제17조)</li>
-                        <li>서비스 미사용 시 14일 이내 전액 환불</li>
-                        <li>일부 사용 시 사용일수를 차감한 금액 환불</li>
+                        <li>서비스 미사용 시 구매일로부터 7일 이내 전액 환불</li>
+                        <li>일부 사용 시 사용분을 차감한 금액 환불</li>
                         <li>회사의 귀책사유로 인한 서비스 이용 불가 시 전액 환불</li>
-                        <li>환불 요청 후 영업일 기준 3~5일 이내 처리</li>
+                        <li>환불 요청 후 영업일 기준 3-5일 이내 처리</li>
                       </ul>
                     </div>
                   </section>
@@ -58,7 +57,7 @@ const RefundPolicy = () => {
                   <Separator />
 
                   <section>
-                    <h2 className="text-xl font-semibold mb-3">2. 월간 구독 환불 정책</h2>
+                    <h2 className="text-xl font-semibold mb-3">2. 토큰 환불 정책</h2>
                     <div className="space-y-4">
                       <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
                         <div className="flex items-start gap-2">
@@ -66,7 +65,7 @@ const RefundPolicy = () => {
                           <div>
                             <p className="font-semibold text-green-800 dark:text-green-200">전액 환불 가능한 경우</p>
                             <ul className="list-disc pl-4 mt-2 text-sm text-green-700 dark:text-green-300 space-y-1">
-                              <li>결제 후 14일 이내 서비스 미사용 상태에서 환불 요청</li>
+                              <li>토큰 구매 후 미사용 상태에서 7일 이내 환불 요청</li>
                               <li>시스템 오류로 인한 중복 결제</li>
                               <li>회사의 귀책사유로 서비스 이용 불가</li>
                             </ul>
@@ -80,10 +79,9 @@ const RefundPolicy = () => {
                           <div>
                             <p className="font-semibold text-yellow-800 dark:text-yellow-200">부분 환불 가능한 경우</p>
                             <ul className="list-disc pl-4 mt-2 text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                              <li>결제 후 14일 이내 서비스 일부 사용 후 환불 요청 시</li>
-                              <li>환불액 = 결제금액(₩19,900) - (사용일수 × 일할 금액)</li>
-                              <li>일할 금액 = ₩19,900 ÷ 30일 = ₩663/일</li>
-                              <li>예시: 5일 사용 → 환불액 = ₩19,900 - (5 × ₩663) = ₩16,585</li>
+                              <li>토큰 일부 사용 후 7일 이내 환불 요청 시</li>
+                              <li>환불액 = 결제금액 - (사용토큰 × 개당 단가)</li>
+                              <li>예시: 100토큰 구매 후 30토큰 사용 → 70토큰에 해당하는 금액 환불</li>
                             </ul>
                           </div>
                         </div>
@@ -95,9 +93,9 @@ const RefundPolicy = () => {
                           <div>
                             <p className="font-semibold text-red-800 dark:text-red-200">환불 불가능한 경우</p>
                             <ul className="list-disc pl-4 mt-2 text-sm text-red-700 dark:text-red-300 space-y-1">
-                              <li>결제 후 14일 경과 및 서비스 사용 이력이 있는 경우</li>
+                              <li>토큰 구매 후 7일 경과</li>
                               <li>불법적인 서비스 이용</li>
-                              <li>약관 위반으로 인한 서비스 중지</li>
+                              <li>본인 부주의로 인한 계정 정보 유출</li>
                             </ul>
                           </div>
                         </div>
@@ -108,13 +106,37 @@ const RefundPolicy = () => {
                   <Separator />
 
                   <section>
-                    <h2 className="text-xl font-semibold mb-3">3. 전문가 상담 환불 정책</h2>
+                    <h2 className="text-xl font-semibold mb-3">3. 구독 환불 정책</h2>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>AIHumanPro 구독 서비스는 다음의 환불 규정을 따릅니다:</p>
+                      <ul className="list-disc pl-6 space-y-1 mt-2">
+                        <li><strong>월간 구독:</strong> 결제 후 7일 이내 미사용 시 전액 환불 가능. 사용 시에는 사용일수에 해당하는 금액을 제외하고 환불.</li>
+                        <li><strong>연간 구독:</strong> 결제 후 7일 이내 미사용 시 전액 환불 가능. 사용 시에는 사용월수에 해당하는 금액 및 해지 수수료(총 금액의 10%)를 제외하고 환불.</li>
+                        <li>자동 결제 해지는 언제든지 가능하며, 해지 시 다음 결제일부터 과금되지 않습니다.</li>
+                      </ul>
+                    </div>
+                  </section>
+
+                  <Separator />
+
+                  <section>
+                    <h2 className="text-xl font-semibold mb-3">4. 심리 검사 환불 정책</h2>
+                    <div className="space-y-2 text-muted-foreground">
+                      <p>AI 심리 검사는 검사 시작 전에는 전액 환불이 가능합니다. 검사 시작 후에는 환불이 불가능합니다.</p>
+                      <p>결과 해석 오류 등 회사의 귀책사유가 있는 경우 전액 환불됩니다.</p>
+                    </div>
+                  </section>
+
+                  <Separator />
+
+                  <section>
+                    <h2 className="text-xl font-semibold mb-3">5. 전문가 상담 환불 정책</h2>
                     <div className="space-y-2 text-muted-foreground">
                       <p>전문가 상담은 상담 예약 취소 시점에 따라 환불 금액이 달라집니다:</p>
                       <ul className="list-disc pl-6 space-y-1 mt-2">
-                        <li><strong>상담 시작 24시간 전 취소:</strong> 전액 환불</li>
-                        <li><strong>상담 시작 12시간 전 취소:</strong> 50% 환불</li>
-                        <li><strong>상담 시작 12시간 이내 취소 또는 불참:</strong> 환불 불가</li>
+                        <li>상담 시작 24시간 전 취소: 전액 환불</li>
+                        <li>상담 시작 12시간 전 취소: 50% 환불</li>
+                        <li>상담 시작 12시간 이내 취소 또는 불참: 환불 불가</li>
                       </ul>
                       <p>전문가의 사정으로 상담이 불가능할 경우 전액 환불됩니다.</p>
                     </div>
@@ -123,59 +145,51 @@ const RefundPolicy = () => {
                   <Separator />
 
                   <section>
-                    <h2 className="text-xl font-semibold mb-3">4. 환불 절차</h2>
+                    <h2 className="text-xl font-semibold mb-3">6. 환불 절차</h2>
                     <div className="space-y-2 text-muted-foreground">
-                      <p>환불 요청은 다음 방법으로 접수할 수 있습니다:</p>
-                      <div className="bg-muted/50 p-4 rounded-lg mt-2 space-y-2">
-                        <p><strong>방법 1:</strong> 서비스 내 설정 &gt; 구독 관리 &gt; 환불 요청</p>
-                        <p><strong>방법 2:</strong> 이메일 접수 (refund@aihpro.app)</p>
-                        <p><strong>방법 3:</strong> 고객센터 전화 (1234-5678, 평일 09:00-18:00)</p>
-                      </div>
-                      <p className="mt-3">환불 요청 시 다음 정보를 제공해야 합니다:</p>
-                      <ul className="list-disc pl-6 space-y-1 mt-1">
-                        <li>가입 이메일 주소</li>
-                        <li>결제일 및 결제 금액</li>
-                        <li>환불 사유</li>
+                      <p>환불 요청은 고객센터를 통해 접수할 수 있습니다. 환불 접수 시 다음 정보를 제공해야 합니다:</p>
+                      <ul className="list-disc pl-6 space-y-1 mt-2">
+                        <li>환불 요청 사유</li>
+                        <li>결제 정보 (결제일시, 결제수단, 결제금액)</li>
+                        <li>환불받을 계좌 정보 (은행명, 계좌번호, 예금주)</li>
                       </ul>
-                      <p className="mt-2">환불은 원결제 수단(카드 취소)으로 처리되며, 영업일 기준 3~5일 소요됩니다.</p>
+                      <p>환불은 요청 접수 후 영업일 기준 3-5일 이내에 처리됩니다.</p>
                     </div>
                   </section>
 
                   <Separator />
 
                   <section>
-                    <h2 className="text-xl font-semibold mb-3">5. 청약철회 제한 사항</h2>
+                    <h2 className="text-xl font-semibold mb-3">7. 환불 제한 사항</h2>
                     <div className="space-y-2 text-muted-foreground">
-                      <p>「전자상거래법」 제17조 제2항에 따라, 다음의 경우 청약철회가 제한될 수 있습니다:</p>
+                      <p>다음의 경우에는 환불이 제한될 수 있습니다:</p>
                       <ul className="list-disc pl-6 space-y-1 mt-2">
-                        <li>이용자에게 책임 있는 사유로 서비스가 멸실·훼손된 경우</li>
-                        <li>디지털 콘텐츠의 경우, 이용을 시작한 경우 (단, 가분적 콘텐츠의 미이용 부분은 환불 가능)</li>
+                        <li>이용자의 귀책사유로 서비스 이용이 불가능하게 된 경우</li>
+                        <li>무료로 제공된 서비스 또는 이벤트 상품</li>
+                        <li>환불 요청 시 필요한 정보를 제공하지 않는 경우</li>
+                        <li>비정상적인 방법으로 서비스를 이용한 경우</li>
                       </ul>
-                      <p className="mt-2">회사는 청약철회 제한 사유에 해당하는 경우, 그 사실을 서비스 이용 전 명확히 고지합니다.</p>
                     </div>
                   </section>
 
                   <Separator />
 
                   <section>
-                    <h2 className="text-xl font-semibold mb-3">6. 분쟁 해결</h2>
+                    <h2 className="text-xl font-semibold mb-3">8. 분쟁 해결</h2>
                     <div className="space-y-2 text-muted-foreground">
-                      <p>환불 정책과 관련된 분쟁이 발생할 경우:</p>
-                      <ul className="list-disc pl-6 space-y-1 mt-2">
-                        <li>1차: 회사와 이용자 간 상호 협의</li>
-                        <li>2차: 한국소비자원 (www.kca.go.kr / 1372) 분쟁조정</li>
-                        <li>3차: 대한민국 법률에 따른 법적 절차</li>
-                      </ul>
+                      <p>환불 정책과 관련된 분쟁이 발생할 경우, 회사와 이용자는 상호 협의하여 원만하게 해결하도록 노력합니다.</p>
+                      <p>협의가 이루어지지 않을 경우, 대한민국 법률에 따라 해결합니다.</p>
                     </div>
                   </section>
                   
                   <Separator />
                   
                   <section>
-                    <h2 className="text-xl font-semibold mb-3">7. 정책 변경</h2>
+                    <h2 className="text-xl font-semibold mb-3">9. 정책 변경</h2>
                     <div className="space-y-2 text-muted-foreground">
-                      <p>본 환불 정책은 2026년 3월 15일부터 시행됩니다.</p>
-                      <p>환불 정책 변경 시 최소 7일 전에 서비스 내 공지사항을 통해 고지합니다.</p>
+                      <p>본 환불 정책은 2025년 1월 4일부터 시행됩니다.</p>
+                      <p>환불 정책의 내용이 변경될 경우, 변경 사항은 최소 7일 전에 웹사이트를 통해 공지됩니다.</p>
+                      <p>변경된 약관은 공지한 날로부터 효력이 발생합니다.</p>
                     </div>
                   </section>
                 </div>

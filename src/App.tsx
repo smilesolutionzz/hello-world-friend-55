@@ -86,6 +86,7 @@ import ShareView from "./pages/ShareView";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
+import ChildConsent from "./pages/ChildConsent";
 import GrowthCommunity from "./pages/GrowthCommunity";
 import TokenTest from "./pages/TokenTest";
 import StressPackage from "./pages/StressPackage";
@@ -389,6 +390,7 @@ const App = () => {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/refund" element={<RefundPolicy />} />
+          <Route path="/child-consent" element={<ChildConsent />} />
           <Route path="/education-feed" element={<EducationFeed />} />
           <Route path="/referral" element={<Referral />} />
           <Route path="/profile" element={<Profile />} />

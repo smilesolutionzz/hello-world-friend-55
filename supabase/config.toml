@@ -6,9 +6,7 @@ verify_jwt = false
 [functions.voice-emotion-diary]
 verify_jwt = false
 
-# 🔒 결제 보안 강화
-[functions.toss-payments-confirm]
-verify_jwt = true
+# toss-payments-confirm 제거됨 → unified-payment으로 통합
 
 [api]
 enabled = true

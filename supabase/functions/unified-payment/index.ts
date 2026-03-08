@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 // 상품 정의 (프론트엔드와 동기화)
@@ -15,12 +15,36 @@ const PRODUCTS: Record<string, any> = {
   cash_10000: { type: 'cash', name: '11,000원 캐시', price: 10000, tokens: 110 },
   consult_30: { type: 'consult', name: '전문가 상담 30분', price: 35000 },
   consult_60: { type: 'consult', name: '전문가 상담 60분', price: 65000 },
+  subscription_monthly: { type: 'subscription', name: '월간 구독', price: 19900 },
   // B2B 상품
   b2b_proposal_premium: { type: 'b2b', name: '프리미엄 제안서 PDF', price: 30000 },
   b2b_sample_report: { type: 'b2b', name: '샘플 리포트 세트', price: 99000 },
   b2b_consulting_1hr: { type: 'b2b', name: '1시간 컨설팅', price: 200000 },
   b2b_pilot_deposit: { type: 'b2b_deposit', name: '파일럿 프로그램 예치금', price: 500000 },
 };
+
+// 🔒 인증된 사용자 확인 헬퍼
+async function authenticateUser(req: Request, supabaseAdmin: any) {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader) return { user: null, error: "인증이 필요합니다." };
+
+  const token = authHeader.replace("Bearer ", "");
+  // 🔒 보안: service_role 클라이언트로 토큰 검증 (anon key 대신)
+  const { data: userData, error } = await supabaseAdmin.auth.getUser(token);
+
+  if (error || !userData.user) {
+    return { user: null, error: "사용자 인증 실패" };
+  }
+  return { user: userData.user, error: null };
+}
+
+// JSON 에러 응답 헬퍼
+function errorResponse(message: string, status = 400) {
+  return new Response(
+    JSON.stringify({ success: false, error: message }),
+    { status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+  );
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -31,11 +55,6 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     { auth: { persistSession: false } }
-  );
-
-  const supabaseAuth = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
   );
 
   try {
@@ -49,8 +68,12 @@ serve(async (req) => {
       throw new Error("토스페이먼츠 API 키가 설정되지 않았습니다.");
     }
 
-    // Action: Client Key 반환
+    // Action: Client Key 반환 (🔒 인증 필요)
     if (action === 'get-client-key') {
+      const { user, error: authErr } = await authenticateUser(req, supabaseAdmin);
+      if (!user) {
+        return errorResponse(authErr || "인증 필요", 401);
+      }
       return new Response(JSON.stringify({ 
         success: true, 
         clientKey: tossClientKey 
@@ -59,15 +82,11 @@ serve(async (req) => {
       });
     }
 
-    // 사용자 인증
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("인증이 필요합니다.");
-    
-    const token = authHeader.replace("Bearer ", "");
-    const { data: userData } = await supabaseAuth.auth.getUser(token);
-    const user = userData.user;
-    
-    if (!user) throw new Error("사용자 인증 실패");
+    // 🔒 모든 나머지 액션은 인증 필수
+    const { user, error: authErr } = await authenticateUser(req, supabaseAdmin);
+    if (!user) {
+      return errorResponse(authErr || "인증 필요", 401);
+    }
 
     // Action: 결제 생성
     if (action === 'create-payment') {
@@ -79,7 +98,15 @@ serve(async (req) => {
       const finalTokens = tokens || product?.tokens || 0;
       const finalType = productType || product?.type || 'custom';
 
-      if (!finalAmount) throw new Error("결제 금액이 필요합니다.");
+      if (!finalAmount || finalAmount <= 0) {
+        return errorResponse("유효하지 않은 결제 금액입니다.");
+      }
+
+      // 🔒 서버사이드 금액 검증: 알려진 상품이면 가격 일치 확인
+      if (product && amount && amount !== product.price) {
+        console.error('❌ Price tampering detected:', { expected: product.price, received: amount });
+        return errorResponse("결제 금액이 상품 가격과 일치하지 않습니다.");
+      }
 
       const orderId = `${finalType}_${productId}_${user.id.slice(0, 8)}_${Date.now()}`;
 
@@ -108,7 +135,7 @@ serve(async (req) => {
         customerName: user.user_metadata?.full_name || user.email?.split('@')[0] || '고객',
       };
 
-      console.log('✅ Payment created:', { orderId, amount: finalAmount, type: finalType });
+      console.log('✅ Payment created for user:', user.id, { orderId, amount: finalAmount, type: finalType });
 
       return new Response(JSON.stringify({ 
         success: true, 
@@ -123,7 +150,41 @@ serve(async (req) => {
     if (action === 'confirm-payment') {
       const { paymentKey, orderId, amount } = body;
 
-      console.log('Confirming payment:', { paymentKey, orderId, amount });
+      if (!paymentKey || !orderId || !amount) {
+        return errorResponse("필수 결제 정보가 누락되었습니다.");
+      }
+
+      console.log('Confirming payment for user:', user.id, { paymentKey, orderId, amount });
+
+      // 🔒 결제 내역 조회 및 소유자/금액 검증
+      const { data: payment, error: fetchError } = await supabaseAdmin
+        .from('payment_history')
+        .select('*')
+        .eq('toss_order_id', orderId)
+        .maybeSingle();
+
+      if (fetchError || !payment) {
+        console.error('Payment not found:', orderId);
+        return errorResponse("결제 내역을 찾을 수 없습니다.", 404);
+      }
+
+      // 🔒 주문 소유자 검증
+      if (payment.user_id !== user.id) {
+        console.error('❌ Unauthorized: Payment does not belong to user', { paymentUserId: payment.user_id, requestUserId: user.id });
+        return errorResponse("이 결제에 대한 권한이 없습니다.", 403);
+      }
+
+      // 🔒 서버사이드 금액 검증
+      if (payment.amount !== amount) {
+        console.error('❌ Amount mismatch:', { expected: payment.amount, received: amount });
+        return errorResponse("결제 금액이 일치하지 않습니다.");
+      }
+
+      // 🔒 중복 결제 방지
+      if (payment.status === 'completed') {
+        console.warn('⚠️ Payment already processed:', orderId);
+        return errorResponse("이미 처리된 결제입니다.");
+      }
 
       // 토스페이먼츠 결제 승인
       const encryptedSecretKey = btoa(tossSecretKey + ':');
@@ -140,19 +201,14 @@ serve(async (req) => {
 
       if (!tossResponse.ok) {
         console.error('Toss API error:', tossResult);
+        
+        // 결제 실패 상태 업데이트
+        await supabaseAdmin
+          .from('payment_history')
+          .update({ status: 'failed' })
+          .eq('id', payment.id);
+
         throw new Error(tossResult.message || '결제 승인에 실패했습니다.');
-      }
-
-      // 결제 내역 조회 및 업데이트
-      const { data: payment, error: fetchError } = await supabaseAdmin
-        .from('payment_history')
-        .select('*')
-        .eq('toss_order_id', orderId)
-        .maybeSingle();
-
-      if (fetchError || !payment) {
-        console.error('Payment not found:', orderId);
-        throw new Error('결제 내역을 찾을 수 없습니다.');
       }
 
       // 결제 완료 처리
@@ -200,8 +256,8 @@ serve(async (req) => {
 
         console.log(`✅ Added ${payment.token_amount} tokens to user ${payment.user_id}`);
 
-      } else if (productType === 'pass') {
-        // 프리미엄 패스 처리
+      } else if (productType === 'pass' || productType === 'subscription') {
+        // 프리미엄 패스 / 구독 처리
         const isLifetime = orderId.includes('pass_lifetime');
         const isYearly = orderId.includes('pass_365');
 
@@ -252,7 +308,7 @@ serve(async (req) => {
       });
     }
 
-    throw new Error('알 수 없는 액션입니다.');
+    return errorResponse('알 수 없는 액션입니다.');
 
   } catch (error: unknown) {
     console.error('Unified payment error:', error);

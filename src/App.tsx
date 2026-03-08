@@ -395,6 +395,7 @@ const App = () => {
           <Route path="/settings" element={<Settings />} />
           <Route path="/daily-tip" element={<DailyParentingTip />} />
           <Route path="/ir-deck" element={<IRDeck />} />
+          <Route path="/platform-summary" element={<PlatformOnePager />} />
           
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />

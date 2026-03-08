@@ -33,6 +33,12 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // 🔒 Rate Limiting (결제 API: 분당 10회)
+  const { allowed, retryAfter } = rateLimit(req, 10);
+  if (!allowed) {
+    return rateLimitResponse(corsHeaders, retryAfter);
+  }
+
   // 🔒 서비스 역할 클라이언트만 사용 (anon key 사용 금지)
   const supabaseAdmin = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",

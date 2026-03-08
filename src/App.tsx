@@ -86,6 +86,7 @@ import ShareView from "./pages/ShareView";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
+import ChildConsent from "./pages/ChildConsent";
 import GrowthCommunity from "./pages/GrowthCommunity";
 import TokenTest from "./pages/TokenTest";
 import StressPackage from "./pages/StressPackage";

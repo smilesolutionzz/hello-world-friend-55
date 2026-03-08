@@ -386,7 +386,3 @@ verify_jwt = true
 # 통합 결제 시스템
 [functions.unified-payment]
 verify_jwt = false
-
-# 구독 만료 처리 cron
-[functions.subscription-cron]
-verify_jwt = false

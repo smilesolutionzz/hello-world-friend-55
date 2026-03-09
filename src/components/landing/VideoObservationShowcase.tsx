@@ -23,10 +23,24 @@ export const VideoObservationShowcase = () => {
   const features = [t.videoObservation.feat1, t.videoObservation.feat2, t.videoObservation.feat3, t.videoObservation.feat4, t.videoObservation.feat5, t.videoObservation.feat6];
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 relative overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+    <section className="py-20 px-4 relative overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0 -z-10">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover"
+          poster="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=1920&q=80"
+        >
+          <source 
+            src="https://videos.pexels.com/video-files/3209828/3209828-uhd_2560_1440_25fps.mp4" 
+            type="video/mp4" 
+          />
+        </video>
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-purple-900/70 to-slate-900/85" />
       </div>
       <div className="container mx-auto max-w-7xl relative z-10">
         <motion.div className="text-center mb-16" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>

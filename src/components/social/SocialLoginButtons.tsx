@@ -12,38 +12,38 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   isLoading = false,
   setIsLoading
 }) => {
+  // 커스텀 도메인 여부 확인
+  const isCustomDomain = !window.location.hostname.includes('lovable.app') && 
+                          !window.location.hostname.includes('lovableproject.com');
+
   const handleGoogleLogin = async () => {
     try {
       setIsLoading?.(true);
-      
-      console.log('🔵 구글 로그인 시도 시작');
-      console.log('📍 현재 위치:', window.location.href);
-      
-      // redirectTo는 인증 후 돌아올 URL
       const redirectTo = `${window.location.origin}/`;
-      console.log('🔄 redirectTo:', redirectTo);
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectTo,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          }
-        }
-      });
 
-      if (error) {
-        console.error('❌ 구글 로그인 에러:', error);
-        console.error('에러 상세:', JSON.stringify(error, null, 2));
-        toast.error(`구글 로그인 중 오류가 발생했습니다: ${error.message}`);
+      if (isCustomDomain) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+            queryParams: { access_type: 'offline', prompt: 'consent' },
+          }
+        });
+        if (error) throw error;
+        if (data?.url) window.location.href = data.url;
       } else {
-        console.log('✅ 구글 로그인 요청 성공:', data);
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo,
+            queryParams: { access_type: 'offline', prompt: 'consent' },
+          }
+        });
+        if (error) throw error;
       }
     } catch (error: any) {
-      console.error('💥 구글 로그인 예외:', error);
-      console.error('예외 상세:', error?.message);
+      console.error('Google login error:', error);
       toast.error(`구글 로그인 중 오류가 발생했습니다: ${error?.message || '알 수 없는 오류'}`);
     } finally {
       setIsLoading?.(false);
@@ -53,23 +53,26 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   const handleKakaoLogin = async () => {
     try {
       setIsLoading?.(true);
-      
-      // 현재 URL이 auth 페이지인지 확인
-      const isAuthPage = window.location.pathname.includes('/auth') || 
-                        window.location.pathname.includes('/highlight-auth');
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'kakao',
-        options: {
-          redirectTo: isAuthPage ? `${window.location.origin}/` : window.location.href,
-        }
-      });
+      const redirectTo = `${window.location.origin}/`;
 
-      if (error) {
-        console.error('Kakao login error:', error);
-        toast.error('카카오 로그인 중 오류가 발생했습니다.');
+      if (isCustomDomain) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'kakao',
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+          }
+        });
+        if (error) throw error;
+        if (data?.url) window.location.href = data.url;
+      } else {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'kakao',
+          options: { redirectTo },
+        });
+        if (error) throw error;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Kakao login error:', error);
       toast.error('카카오 로그인 중 오류가 발생했습니다.');
     } finally {

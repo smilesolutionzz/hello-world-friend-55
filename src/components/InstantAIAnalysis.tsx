@@ -335,11 +335,14 @@ const InstantAIAnalysis = () => {
           <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3">
             {[
               { emoji: '👶', text: t.instantAI.tag1 },
-              { emoji: '😢', text: t.instantAI.tag2 },
+              { emoji: '👀', text: t.instantAI.tag2 },
               { emoji: '📚', text: t.instantAI.tag3 },
               { emoji: '😤', text: t.instantAI.tag4 },
-              { emoji: '💑', text: t.instantAI.tag5 },
-              { emoji: '💭', text: t.instantAI.tag6 },
+              { emoji: '😰', text: t.instantAI.tag5 },
+              { emoji: '🔥', text: t.instantAI.tag6 },
+              { emoji: '💔', text: t.instantAI.tag7 },
+              { emoji: '💼', text: t.instantAI.tag8 },
+              { emoji: '🐢', text: t.instantAI.tag9 },
             ].map((tag, index) => (
               <button
                 key={index}

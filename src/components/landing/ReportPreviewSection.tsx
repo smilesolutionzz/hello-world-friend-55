@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Brain, Target, Heart, Lightbulb, Users, TrendingUp, Shield, BookOpen, ArrowRight, Sparkles, CheckCircle2, Download, Share2, Mail, X, Eye, ChevronDown, ChevronUp, GraduationCap, MapPin, Map, AlertTriangle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { FileText, Brain, Target, Heart, Lightbulb, Users, TrendingUp, BookOpen, ArrowRight, Sparkles, CheckCircle2, Download, Share2, Mail, Eye, GraduationCap, MapPin, Map, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTranslation } from '@/i18n/useTranslation';
+import ReportPreviewDialog from './ReportPreviewDialog';
 
 const ReportPreviewSection = () => {
   const navigate = useNavigate();
@@ -208,65 +207,7 @@ const ReportPreviewSection = () => {
         </motion.div>
       </div>
 
-      {/* Full Report Preview Dialog */}
-      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden bg-gradient-to-b from-slate-50 to-white">
-          <div className="sticky top-0 z-10 bg-gradient-to-r from-amber-500 to-orange-500 p-4 md:p-6">
-            <div className="flex items-center justify-between">
-              <div className="text-white">
-                <div className="flex items-center gap-2 mb-1">
-                  <FileText className="w-5 h-5" />
-                  <span className="text-xs opacity-80">Sample · {t.reportPreview.reportId}</span>
-                </div>
-                <h2 className="text-lg md:text-xl font-bold">{t.reportPreview.reportTitle}</h2>
-              </div>
-              <Button variant="ghost" size="icon" onClick={() => setIsPreviewOpen(false)} className="text-white hover:bg-white/20">
-                <X className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-
-          <ScrollArea className="h-[calc(90vh-120px)]">
-            <div className="p-4 md:p-6 space-y-3">
-              {reportSections.map((section, index) => {
-                const colors = colorClasses[section.color] || colorClasses.amber;
-                const isExpanded = expandedSection === index;
-                return (
-                  <motion.div key={index} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} className={`rounded-xl border ${colors.border} overflow-hidden`}>
-                    <button onClick={() => setExpandedSection(isExpanded ? null : index)} className={`w-full flex items-center justify-between p-4 ${colors.bg} hover:brightness-95 transition-all`}>
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${colors.icon}`}><section.icon className="w-5 h-5" /></div>
-                        <span className="font-semibold text-slate-800 text-left">{section.title}</span>
-                      </div>
-                      {isExpanded ? <ChevronUp className="w-5 h-5 text-slate-500" /> : <ChevronDown className="w-5 h-5 text-slate-500" />}
-                    </button>
-                    <AnimatePresence>
-                      {isExpanded && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
-                          <div className="p-4 bg-white border-t border-slate-100">
-                            <p className="text-sm text-slate-600">{section.preview}</p>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                );
-              })}
-
-              <div className="sticky bottom-0 bg-white pt-4 pb-2 border-t border-slate-100">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button onClick={() => { setIsPreviewOpen(false); navigate('/report-generator'); }} className="flex-1 py-5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold">
-                    {t.reportPreview.ctaButton}
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-                  <Button variant="outline" onClick={() => setIsPreviewOpen(false)} className="py-5">{t.common.close}</Button>
-                </div>
-                <p className="text-center text-xs text-slate-400 mt-3">{t.reportPreview.sampleNote}</p>
-              </div>
-            </div>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
+      <ReportPreviewDialog isOpen={isPreviewOpen} onOpenChange={setIsPreviewOpen} />
     </section>
   );
 };

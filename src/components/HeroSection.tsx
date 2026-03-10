@@ -64,7 +64,7 @@ const HeroSection = () => {
         />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 pt-20 md:pt-24 pb-16 min-h-screen flex flex-col">
+      <div className="relative z-10 container mx-auto px-3 md:px-4 pt-16 md:pt-24 pb-12 md:pb-16 min-h-screen flex flex-col">
         {/* Logo & Badge */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}

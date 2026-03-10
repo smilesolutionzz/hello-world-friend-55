@@ -42,7 +42,7 @@ const TestimonialSection = () => {
         </motion.div>
 
         <div className="max-w-2xl mx-auto" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-          <motion.div key={currentIndex} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-slate-800/50 backdrop-blur-sm border border-white/5 rounded-2xl p-6 md:p-8">
+          <motion.div key={currentIndex} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-slate-800/50 backdrop-blur-sm border border-white/5 rounded-2xl p-4 md:p-8">
             <Quote className="w-8 h-8 text-purple-400/50 mb-4" />
             <div className="flex gap-1 mb-4">
               {[...Array(current.rating)].map((_, i) => (<Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />))}

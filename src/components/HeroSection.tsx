@@ -32,14 +32,6 @@ const HeroSection = () => {
 
   return (
     <section ref={sectionRef} className="relative min-h-screen overflow-hidden">
-      {/* 3D Animated Background */}
-      <div className="absolute inset-0 z-0 opacity-20">
-        <AnimatedBackground 
-          particleColor="#8FB9FF" 
-          shapeColors={["#5E8FFF", "#8FB9FF", "#B4C7FF"]}
-          particleCount={600}
-        />
-      </div>
 
       {/* Video Background */}
       <div className="absolute inset-0 z-0">

@@ -26,6 +26,7 @@ const FeedAnalysisSection = () => {
           muted
           loop
           playsInline
+          preload="none"
           className="w-full h-full object-cover"
         >
           <source 

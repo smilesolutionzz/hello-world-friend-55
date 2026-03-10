@@ -4,7 +4,6 @@ import { useRef } from "react";
 import { ArrowRight, Sparkles, Gift, MessageCircle } from "lucide-react";
 import heroBg from "@/assets/hero-family-bg.jpg";
 import InstantAIAnalysis from "./InstantAIAnalysis";
-import { AnimatedBackground } from "@/components/3d/AnimatedBackground";
 import { motion } from "framer-motion";
 import logo from "@/assets/logo-large.png";
 import { sharePage, isKakaoInitialized } from "@/lib/kakaoShare";
@@ -32,14 +31,6 @@ const HeroSection = () => {
 
   return (
     <section ref={sectionRef} className="relative min-h-screen overflow-hidden">
-      {/* 3D Animated Background */}
-      <div className="absolute inset-0 z-0 opacity-20">
-        <AnimatedBackground 
-          particleColor="#8FB9FF" 
-          shapeColors={["#5E8FFF", "#8FB9FF", "#B4C7FF"]}
-          particleCount={600}
-        />
-      </div>
 
       {/* Video Background */}
       <div className="absolute inset-0 z-0">

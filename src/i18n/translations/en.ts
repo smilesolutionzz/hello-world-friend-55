@@ -68,6 +68,14 @@ const en = {
     tag4: "My child gets frustrated and angry often",
     tag5: "Having communication issues with spouse",
     tag6: "Feeling depressed and unmotivated lately",
+    analyzeButton: 'Analyze for Free',
+    analyzeSubtext: 'Free, 30 seconds',
+    toastEmptyTitle: 'Input required',
+    toastEmptyDesc: 'Please briefly describe your concern',
+    toastShortTitle: 'Please write a bit more',
+    toastShortDesc: 'Minimum 10 characters required',
+    toastExpandTitle: 'Check input',
+    toastExpandDesc: 'Minimum 10 characters required.',
   },
 
   // Hero Section

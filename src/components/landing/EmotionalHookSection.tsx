@@ -34,7 +34,7 @@ const EmotionalHookSection = () => {
     <section className="relative py-16 md:py-24 overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 -z-10">
-        <video autoPlay muted loop playsInline className="w-full h-full object-cover">
+        <video autoPlay muted loop playsInline preload="none" className="w-full h-full object-cover">
           <source src="https://videos.pexels.com/video-files/4057411/4057411-uhd_2560_1440_25fps.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-rose-950/85 to-slate-900/90" />

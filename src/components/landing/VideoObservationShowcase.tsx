@@ -31,6 +31,7 @@ export const VideoObservationShowcase = () => {
           muted
           loop
           playsInline
+          preload="none"
           className="w-full h-full object-cover"
           poster="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=1920&q=80"
         >

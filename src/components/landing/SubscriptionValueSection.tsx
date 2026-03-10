@@ -1,190 +1,199 @@
-import React from 'react';
-import { Card } from '@/components/ui/card';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Crown, Lock, Brain, FileText, Users, Sparkles, CheckCircle2, ArrowRight,
-  Zap, TrendingUp, Shield, Infinity, Calendar
+  Crown, Brain, FileText, Users, Sparkles, CheckCircle2, ArrowRight,
+  Zap, TrendingUp, Shield, Clock, Star
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useTranslation } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 const SubscriptionValueSection = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const { localePath } = useLanguage();
 
-  const freeFeatures = [
-    { name: t.subscription.feat1, available: true },
-    { name: t.subscription.feat2, available: true },
-    { name: t.subscription.feat3, available: false },
-    { name: t.subscription.feat4, available: false },
-    { name: t.subscription.feat5, available: false },
-    { name: t.subscription.feat6, available: false },
-  ];
+  // Countdown timer - resets daily
+  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
-  const premiumFeatures = [
-    { name: t.subscription.feat1, available: true },
-    { name: t.subscription.feat2, available: true },
-    { name: t.subscription.feat3, available: true, highlight: true },
-    { name: t.subscription.feat4, available: true, highlight: true },
-    { name: t.subscription.feat5, available: true, highlight: true },
-    { name: t.subscription.feat6, available: true, highlight: true },
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const endOfDay = new Date(now);
+      endOfDay.setHours(23, 59, 59, 999);
+      const diff = endOfDay.getTime() - now.getTime();
+      return {
+        hours: Math.floor(diff / (1000 * 60 * 60)),
+        minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((diff % (1000 * 60)) / 1000),
+      };
+    };
+    setTimeLeft(calculateTimeLeft());
+    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const benefits = [
+    '모든 AI 심리검사 무제한 이용',
+    '전문가급 심층 분석 리포트',
+    '전문가 상담 우선 예약',
+    '광고 없는 쾌적한 환경',
   ];
 
   const valueProps = [
-    { icon: Brain, title: t.subscription.value1Title, description: t.subscription.value1Desc, savings: t.subscription.value1Savings },
-    { icon: FileText, title: t.subscription.value2Title, description: t.subscription.value2Desc, savings: t.subscription.value2Savings },
-    { icon: Users, title: t.subscription.value3Title, description: t.subscription.value3Desc, savings: t.subscription.value3Savings },
-    { icon: Infinity, title: t.subscription.value4Title, description: t.subscription.value4Desc, savings: t.subscription.value4Savings }
+    { icon: Brain, title: 'AI 심층 분석', desc: '9가지 전문 영역 리포트', save: '병원비 50만원+ 절약' },
+    { icon: FileText, title: '무제한 리포트', desc: '횟수 제한 없이 자유롭게', save: '건당 3만원 상당' },
+    { icon: Users, title: '전문가 연결', desc: '우선 예약 & 할인 혜택', save: '상담비 30% 할인' },
+    { icon: Sparkles, title: '맞춤 솔루션', desc: 'AI 기반 개인화 가이드', save: '월 100만원 가치' },
   ];
 
+  const pad = (n: number) => String(n).padStart(2, '0');
+
   return (
-    <section className="py-20 px-4 bg-gradient-to-b from-slate-100/80 via-violet-50/50 to-slate-100/80 dark:from-slate-900 dark:via-violet-950/30 dark:to-slate-900">
-      <div className="container mx-auto max-w-5xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-          <Badge className="mb-4 bg-gradient-to-r from-violet-500 to-purple-500 text-white border-0 px-4 py-1">
-            <Crown className="w-3 h-3 mr-1" />
-            {t.subscription.badge}
+    <section className="py-20 px-4 bg-gradient-to-b from-slate-900 via-[#0f0a1e] to-slate-900">
+      <div className="container mx-auto max-w-4xl">
+        {/* Top Badge */}
+        <motion.div initial={{ opacity: 0, y: -10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
+          <Badge className="bg-violet-500/20 text-violet-300 border border-violet-500/40 px-5 py-1.5 text-sm">
+            <Crown className="w-3.5 h-3.5 mr-1.5" />
+            오늘만 특별 할인 진행 중
           </Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            {t.subscription.heading} <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{t.subscription.headingHighlight}</span>{t.subscription.headingEnd}
-          </h2>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            {t.subscription.subheading} <strong className="text-foreground">{t.subscription.subheadingBold}</strong>{t.subscription.subheadingEnd}
-          </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-14">
-          {/* Free Plan */}
-          <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-            <Card className="p-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur border border-slate-200 dark:border-slate-700 h-full shadow-xl">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-slate-100 dark:bg-slate-700 rounded-xl">
-                  <Lock className="w-6 h-6 text-slate-400" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-foreground">{t.subscription.freeTitle}</h3>
-                  <p className="text-sm text-muted-foreground">{t.subscription.freeSub}</p>
-                </div>
-              </div>
-              <div className="space-y-3 mb-6">
-                {freeFeatures.map((feature, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      {feature.available ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" />
-                      ) : (
-                        <Lock className="w-5 h-5 text-slate-300 dark:text-slate-600 flex-shrink-0" />
-                      )}
-                      <span className={feature.available ? 'text-foreground' : 'text-muted-foreground line-through'}>{feature.name}</span>
-                    </div>
-                    {!feature.available && (
-                      <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 bg-amber-50 dark:bg-amber-950/30">{t.subscription.locked}</Badge>
-                    )}
-                  </div>
-                ))}
-              </div>
-              <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl text-center mb-4">
-                <p className="text-sm">
-                  <span className="text-amber-600">⚠️</span> {t.subscription.freeWarning}<br />
-                  <span className="text-amber-600 font-bold">{t.subscription.freeWarningBold}</span>
-                </p>
-              </div>
-              <Button onClick={() => navigate(localePath('/token-subscription'))} variant="outline" className="w-full border-slate-300 dark:border-slate-600 font-medium py-5" size="lg">
-                <Lock className="w-4 h-4 mr-2" />
-                {t.subscription.upgradeButton}
-              </Button>
-            </Card>
-          </motion.div>
+        {/* Main Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="relative rounded-2xl border border-violet-500/30 bg-gradient-to-br from-slate-800/90 via-violet-950/40 to-slate-800/90 backdrop-blur-xl p-8 md:p-10 shadow-2xl shadow-violet-500/10"
+        >
+          {/* Glow effect */}
+          <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-violet-500/20 via-purple-500/10 to-violet-500/20 blur-sm -z-10" />
 
-          {/* Premium Plan */}
-          <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-            <Card className="p-6 bg-gradient-to-br from-violet-50 via-white to-purple-50 dark:from-violet-950/50 dark:via-slate-800 dark:to-purple-950/50 border-2 border-violet-300 dark:border-violet-700 h-full relative overflow-hidden shadow-xl shadow-violet-500/10">
-              <div className="absolute top-4 right-4">
-                <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white border-0 shadow-lg">
-                  <Zap className="w-3 h-3 mr-1" />
-                  {t.subscription.popular}
-                </Badge>
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            {/* Left - Info */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Crown className="w-5 h-5 text-violet-400" />
+                <span className="text-violet-400 font-semibold text-sm tracking-wide">프리미엄 패스</span>
               </div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg shadow-violet-500/30">
-                  <Crown className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold">{t.subscription.premiumTitle}</h3>
-                  <p className="text-sm text-muted-foreground">{t.subscription.premiumSub}</p>
-                </div>
-              </div>
-              <div className="space-y-3 mb-6">
-                {premiumFeatures.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${feature.highlight ? 'text-violet-500' : 'text-emerald-500'}`} />
-                    <span className="text-foreground">{feature.name}</span>
-                    {feature.highlight && <Badge className="ml-auto text-xs bg-emerald-500 text-white border-0">NEW</Badge>}
-                  </div>
+              <h2 className="text-3xl md:text-4xl font-black text-white mb-2">
+                지금 바로 <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">시작하세요</span>
+              </h2>
+              <p className="text-slate-400 text-sm mb-6">
+                전문가급 AI 분석으로 아이의 발달을 체계적으로 관리하세요
+              </p>
+
+              <div className="space-y-3 mb-8">
+                {benefits.map((benefit, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="flex items-center gap-3"
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                    <span className="text-slate-200 text-sm">{benefit}</span>
+                  </motion.div>
                 ))}
               </div>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-white/80 dark:bg-slate-800/80 rounded-xl border border-violet-200 dark:border-violet-800">
-                  <div>
-                    <p className="text-sm text-muted-foreground line-through">{t.subscription.priceOriginal}</p>
-                    <p className="text-2xl font-black bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{t.subscription.priceNow}</p>
-                  </div>
-                  <Badge className="bg-rose-500 text-white border-0 font-bold">{t.subscription.discount}</Badge>
-                </div>
-                <Button onClick={() => navigate(localePath('/token-subscription'))} className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white font-bold py-6 shadow-lg shadow-violet-500/30" size="lg">
-                  <Crown className="w-5 h-5 mr-2" />
-                  {t.subscription.premiumButton}
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
+
+              {/* Price */}
+              <div className="flex items-end gap-3 mb-2">
+                <span className="text-4xl font-black text-white">₩19,900</span>
+                <span className="text-slate-400 text-sm pb-1">/월</span>
               </div>
-            </Card>
-          </motion.div>
-        </div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-slate-500 line-through text-sm">₩39,900</span>
+                <Badge className="bg-rose-500/90 text-white border-0 text-xs font-bold">50% OFF</Badge>
+              </div>
+              <p className="text-xs text-slate-500">런칭 특별가 · 언제든 해지 가능</p>
+            </div>
+
+            {/* Right - Timer + CTA */}
+            <div className="flex flex-col items-center gap-6">
+              {/* Countdown */}
+              <div className="w-full bg-slate-800/80 border border-slate-700/50 rounded-xl p-6 text-center">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Clock className="w-4 h-4 text-violet-400" />
+                  <span className="text-violet-300 font-semibold text-sm">특별 할인 마감까지</span>
+                </div>
+                <div className="flex justify-center gap-3">
+                  {[
+                    { val: pad(timeLeft.hours), label: '시간' },
+                    { val: pad(timeLeft.minutes), label: '분' },
+                    { val: pad(timeLeft.seconds), label: '초' },
+                  ].map((item, i) => (
+                    <div key={i} className="flex flex-col items-center">
+                      <div className="bg-slate-900 border border-slate-600/50 rounded-lg w-16 h-16 flex items-center justify-center mb-1">
+                        <span className="text-2xl font-black text-white tabular-nums">{item.val}</span>
+                      </div>
+                      <span className="text-xs text-slate-500">{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTA */}
+              <Button
+                onClick={() => navigate(localePath('/token-subscription'))}
+                className="w-full bg-gradient-to-r from-violet-500 via-purple-500 to-violet-600 hover:from-violet-600 hover:via-purple-600 hover:to-violet-700 text-white font-bold py-7 text-base shadow-xl shadow-violet-500/30 rounded-xl"
+                size="lg"
+              >
+                <Zap className="w-5 h-5 mr-2" />
+                프리미엄 구독 시작하기
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+
+              <div className="flex items-center gap-4 text-xs text-slate-500">
+                <span className="flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> 언제든 해지 가능
+                </span>
+                <span className="flex items-center gap-1">
+                  <Shield className="w-3 h-3" /> 안전한 결제
+                </span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Value Props */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12">
-          <h3 className="text-2xl font-bold text-center mb-8">
-            {t.subscription.valueHeading} <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{t.subscription.valueHighlight}</span>
-          </h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {valueProps.map((prop, index) => (
-              <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }}>
-                <Card className="p-5 h-full bg-white/80 dark:bg-slate-800/80 backdrop-blur hover:shadow-lg transition-all border-slate-200 dark:border-slate-700 hover:border-violet-300 dark:hover:border-violet-700">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-violet-100 dark:bg-violet-900/50 rounded-lg">
-                      <prop.icon className="w-5 h-5 text-violet-600 dark:text-violet-400" />
-                    </div>
-                    <h4 className="font-bold text-sm">{prop.title}</h4>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-3">{prop.description}</p>
-                  <Badge variant="secondary" className="text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-0">
-                    <TrendingUp className="w-3 h-3 mr-1" />
-                    {prop.savings}
-                  </Badge>
-                </Card>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="mt-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {valueProps.map((prop, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * i }}
+                className="bg-slate-800/60 border border-slate-700/40 rounded-xl p-4 hover:border-violet-500/40 transition-all"
+              >
+                <div className="p-2 bg-violet-500/10 rounded-lg w-fit mb-3">
+                  <prop.icon className="w-4 h-4 text-violet-400" />
+                </div>
+                <h4 className="font-bold text-white text-sm mb-1">{prop.title}</h4>
+                <p className="text-xs text-slate-400 mb-2">{prop.desc}</p>
+                <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> {prop.save}
+                </span>
               </motion.div>
             ))}
           </div>
         </motion.div>
 
-        {/* Trust Badges */}
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="flex flex-wrap justify-center items-center gap-6 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-emerald-500" />
-            <span>{t.subscription.trustPayment}</span>
+        {/* Social Proof */}
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="mt-8 text-center">
+          <div className="flex items-center justify-center gap-1 mb-2">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+            ))}
           </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-violet-500" />
-            <span>{t.subscription.trustRefund}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-500" />
-            <span>{t.subscription.trustCancel}</span>
-          </div>
+          <p className="text-slate-400 text-sm">
+            이미 <strong className="text-violet-300">3,247명</strong>의 부모님이 프리미엄을 선택했습니다
+          </p>
         </motion.div>
       </div>
     </section>

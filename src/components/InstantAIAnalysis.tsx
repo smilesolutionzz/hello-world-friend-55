@@ -530,11 +530,11 @@ const InstantAIAnalysis = () => {
                 className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 md:py-6 rounded-xl md:rounded-2xl shadow-lg shadow-amber-500/25 transition-all duration-300 disabled:opacity-50 text-sm md:text-base"
               >
                 <Sparkles className="w-4 h-4 md:w-5 md:h-5 mr-1.5 md:mr-2" />
-                무료로 분석하기
+                {t.instantAI.analyzeButton}
               </Button>
 
               <p className="text-center text-[10px] md:text-xs text-white/40">
-                무료, 30초 완료
+                {t.instantAI.analyzeSubtext}
               </p>
             </>
           )}

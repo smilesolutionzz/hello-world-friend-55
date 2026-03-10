@@ -68,6 +68,14 @@ const ko = {
     tag4: '아이가 자주 짜증을 내고 화를 내요',
     tag5: '배우자와 대화가 잘 안 통해요',
     tag6: '요즘 우울하고 무기력해요',
+    analyzeButton: '무료로 분석하기',
+    analyzeSubtext: '무료, 30초 완료',
+    toastEmptyTitle: '입력이 필요해요',
+    toastEmptyDesc: '고민이나 걱정거리를 간단히 적어주세요',
+    toastShortTitle: '조금만 더 적어주세요',
+    toastShortDesc: '최소 10자 이상 입력해주세요',
+    toastExpandTitle: '입력 확인',
+    toastExpandDesc: '최소 10자 이상 입력해주세요.',
   },
 
   // Hero Section

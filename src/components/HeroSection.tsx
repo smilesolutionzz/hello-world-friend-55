@@ -14,7 +14,7 @@ import { useTranslation } from "@/i18n";
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const [scrollY, setScrollY] = useState(0);
+  
   const sectionRef = useRef<HTMLElement>(null);
   const { t } = useTranslation();
 

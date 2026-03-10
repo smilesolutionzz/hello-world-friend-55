@@ -14,6 +14,9 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   isLoading = false,
   setIsLoading
 }) => {
+  // 네이티브 앱(Capacitor) 여부 확인
+  const isNative = Capacitor.isNativePlatform();
+  
   // 커스텀 도메인 여부 확인
   const isCustomDomain = !window.location.hostname.includes('lovable.app') && 
                           !window.location.hostname.includes('lovableproject.com');
@@ -23,7 +26,21 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
       setIsLoading?.(true);
       const redirectTo = `${window.location.origin}/`;
 
-      if (isCustomDomain) {
+      // 네이티브 앱에서는 시스템 브라우저로 열어야 함 (WebView에서 Google OAuth 차단됨)
+      if (isNative) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+            queryParams: { access_type: 'offline', prompt: 'consent' },
+          }
+        });
+        if (error) throw error;
+        if (data?.url) {
+          await Browser.open({ url: data.url, windowName: '_system' });
+        }
+      } else if (isCustomDomain) {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {

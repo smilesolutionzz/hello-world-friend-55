@@ -108,6 +108,11 @@ const HeroSection = () => {
               {t.hero.headlineBottom}
             </span>
           </h1>
+
+          {/* 부모 심리 서브 후킹 */}
+          <p className="text-white/50 text-sm md:text-base mb-3 font-medium">
+            {t.hero.parentHook}
+          </p>
           
           <p className="text-white/70 text-xs md:text-base max-w-xl mx-auto">
             {t.hero.description}

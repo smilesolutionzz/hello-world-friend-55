@@ -30,7 +30,7 @@ const ValueComparisonSection = () => {
     <section className="relative py-20 md:py-28 overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 -z-10">
-        <video autoPlay muted loop playsInline className="w-full h-full object-cover">
+        <video autoPlay muted loop playsInline preload="none" className="w-full h-full object-cover">
           <source src="https://videos.pexels.com/video-files/7579953/7579953-uhd_2560_1440_24fps.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/92 via-slate-900/88 to-slate-800/92" />

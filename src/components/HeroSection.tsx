@@ -93,7 +93,7 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-center mb-8"
         >
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-4">
+          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-3 md:mb-4">
             <span className="block text-white/95 mb-1">{t.hero.headlineTop}</span>
             <span className="block bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 bg-clip-text text-transparent">
               {t.hero.headlineBottom}
@@ -101,11 +101,11 @@ const HeroSection = () => {
           </h1>
 
           {/* 부모 심리 서브 후킹 */}
-          <p className="text-white/50 text-sm md:text-base mb-3 font-medium">
+          <p className="text-white/50 text-xs md:text-base mb-2 md:mb-3 font-medium px-2">
             {t.hero.parentHook}
           </p>
           
-          <p className="text-white/70 text-xs md:text-base max-w-xl mx-auto">
+          <p className="text-white/70 text-[11px] md:text-base max-w-xl mx-auto px-2">
             {t.hero.description}
             <br className="hidden md:block" />
             <span className="font-semibold text-white/85">{t.hero.descriptionHighlight}</span>

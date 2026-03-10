@@ -241,8 +241,8 @@ const InstantAIAnalysis = () => {
   const handleExpandPrompt = async () => {
     if (!inputText.trim() || inputText.length < 10) {
       toast({
-        title: "입력 확인",
-        description: "최소 10자 이상 입력해주세요.",
+        title: t.instantAI.toastExpandTitle,
+        description: t.instantAI.toastExpandDesc,
         variant: "destructive"
       });
       return;

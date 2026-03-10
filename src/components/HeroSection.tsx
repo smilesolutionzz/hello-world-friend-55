@@ -49,15 +49,22 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* Background Image with Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-100 z-0"
-        style={{ 
-          backgroundImage: `url(${heroBg})`,
-          transform: `translateY(${scrollY * 0.3}px)`
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/95 via-[#111827]/90 to-[#0A0E1A]/95" />
+      {/* Video Background */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover"
+          poster={heroBg}
+        >
+          <source 
+            src="https://videos.pexels.com/video-files/3195440/3195440-uhd_2560_1440_25fps.mp4" 
+            type="video/mp4" 
+          />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/93 via-[#111827]/88 to-[#0A0E1A]/93" />
       </div>
 
       {/* Animated Gradient Orbs */}

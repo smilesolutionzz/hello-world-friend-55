@@ -18,10 +18,22 @@ const FeedAnalysisSection = () => {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-slate-950 via-violet-950/20 to-slate-950 relative overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/10 rounded-full blur-[100px]" />
+    <section className="py-16 md:py-24 relative overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0 -z-10">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source 
+            src="https://videos.pexels.com/video-files/5537790/5537790-uhd_2560_1440_30fps.mp4" 
+            type="video/mp4" 
+          />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-violet-950/85 to-slate-950/90" />
       </div>
       <div className="container mx-auto px-4 max-w-4xl relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">

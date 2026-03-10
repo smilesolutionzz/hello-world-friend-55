@@ -332,25 +332,26 @@ const InstantAIAnalysis = () => {
         {/* 입력 영역 */}
         <div className="p-3 md:p-5 space-y-3 md:space-y-4">
           {/* 예시 고민 태그들 */}
-          <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3">
+          <div className="flex flex-wrap gap-1 md:gap-2 mb-3">
             {[
-              { emoji: '👶', text: t.instantAI.tag1 },
-              { emoji: '👀', text: t.instantAI.tag2 },
-              { emoji: '📚', text: t.instantAI.tag3 },
-              { emoji: '😤', text: t.instantAI.tag4 },
-              { emoji: '😰', text: t.instantAI.tag5 },
-              { emoji: '🔥', text: t.instantAI.tag6 },
-              { emoji: '💔', text: t.instantAI.tag7 },
-              { emoji: '💼', text: t.instantAI.tag8 },
-              { emoji: '🐢', text: t.instantAI.tag9 },
+              { emoji: '👶', text: t.instantAI.tag1, short: t.instantAI.tag1Short || '말이 늦어요' },
+              { emoji: '👀', text: t.instantAI.tag2, short: t.instantAI.tag2Short || 'ADHD 의심' },
+              { emoji: '📚', text: t.instantAI.tag3, short: t.instantAI.tag3Short || '학습 부진' },
+              { emoji: '😤', text: t.instantAI.tag4, short: t.instantAI.tag4Short || '감정 폭발' },
+              { emoji: '😰', text: t.instantAI.tag5, short: t.instantAI.tag5Short || '자폐 걱정' },
+              { emoji: '🔥', text: t.instantAI.tag6, short: t.instantAI.tag6Short || '육아 번아웃' },
+              { emoji: '💔', text: t.instantAI.tag7, short: t.instantAI.tag7Short || '부부 갈등' },
+              { emoji: '💼', text: t.instantAI.tag8, short: t.instantAI.tag8Short || '직장 스트레스' },
+              { emoji: '🐢', text: t.instantAI.tag9, short: t.instantAI.tag9Short || '발달 느림' },
             ].map((tag, index) => (
               <button
                 key={index}
                 onClick={() => setInputText(tag.text)}
-                className="inline-flex items-center gap-1 px-2 md:px-3 py-1 md:py-1.5 bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 rounded-full text-[10px] md:text-xs text-white/70 hover:text-amber-200 transition-all duration-200"
+                className="inline-flex items-center gap-0.5 md:gap-1 px-1.5 md:px-3 py-0.5 md:py-1.5 bg-white/5 hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 rounded-full text-[9px] md:text-xs text-white/70 hover:text-amber-200 transition-all duration-200"
               >
-                <span>{tag.emoji}</span>
-                <span className="truncate max-w-[80px] md:max-w-none">{tag.text.slice(0, 12)}...</span>
+                <span className="text-[10px] md:text-sm">{tag.emoji}</span>
+                <span className="md:hidden">{tag.short}</span>
+                <span className="hidden md:inline">{tag.text.length > 15 ? tag.text.slice(0, 15) + '...' : tag.text}</span>
               </button>
             ))}
           </div>

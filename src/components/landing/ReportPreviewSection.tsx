@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Brain, Target, Heart, Lightbulb, Users, TrendingUp, Shield, BookOpen, ArrowRight, Sparkles, CheckCircle2, Download, Share2, Mail, X, Eye, ChevronDown, ChevronUp, GraduationCap, MapPin, Map, AlertTriangle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { FileText, Brain, Target, Heart, Lightbulb, Users, TrendingUp, BookOpen, ArrowRight, Sparkles, CheckCircle2, Download, Share2, Mail, Eye, GraduationCap, MapPin, Map, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTranslation } from '@/i18n/useTranslation';
+import ReportPreviewDialog from './ReportPreviewDialog';
 
 const ReportPreviewSection = () => {
   const navigate = useNavigate();

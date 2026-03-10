@@ -167,8 +167,8 @@ const InstantAIAnalysis = () => {
   const handleAnalyze = async () => {
     if (!inputText.trim()) {
       toast({
-        title: "입력이 필요해요",
-        description: "고민이나 걱정거리를 간단히 적어주세요",
+        title: t.instantAI.toastEmptyTitle,
+        description: t.instantAI.toastEmptyDesc,
         variant: "destructive"
       });
       return;
@@ -176,8 +176,8 @@ const InstantAIAnalysis = () => {
 
     if (inputText.trim().length < 10) {
       toast({
-        title: "조금만 더 적어주세요",
-        description: "최소 10자 이상 입력해주세요",
+        title: t.instantAI.toastShortTitle,
+        description: t.instantAI.toastShortDesc,
         variant: "destructive"
       });
       return;

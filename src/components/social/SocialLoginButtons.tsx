@@ -53,23 +53,26 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   const handleKakaoLogin = async () => {
     try {
       setIsLoading?.(true);
-      
-      // 현재 URL이 auth 페이지인지 확인
-      const isAuthPage = window.location.pathname.includes('/auth') || 
-                        window.location.pathname.includes('/highlight-auth');
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'kakao',
-        options: {
-          redirectTo: isAuthPage ? `${window.location.origin}/` : window.location.href,
-        }
-      });
+      const redirectTo = `${window.location.origin}/`;
 
-      if (error) {
-        console.error('Kakao login error:', error);
-        toast.error('카카오 로그인 중 오류가 발생했습니다.');
+      if (isCustomDomain) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'kakao',
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+          }
+        });
+        if (error) throw error;
+        if (data?.url) window.location.href = data.url;
+      } else {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'kakao',
+          options: { redirectTo },
+        });
+        if (error) throw error;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Kakao login error:', error);
       toast.error('카카오 로그인 중 오류가 발생했습니다.');
     } finally {

@@ -301,7 +301,7 @@ const ReportGenerator = () => {
                     <Crown className="w-5 h-5 mr-2" /> 프리미엄 구독하기
                   </Button>
                 )}
-                <Button onClick={() => setShowSampleReport(true)} variant="outline" className="border-white/20 text-white/70 hover:bg-white/5 px-8 py-3 rounded-xl">
+                <Button onClick={() => setShowSampleReport(true)} variant="outline" className="border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 px-8 py-3 rounded-xl">
                   <Eye className="w-5 h-5 mr-2" /> 샘플 미리보기
                 </Button>
               </div>

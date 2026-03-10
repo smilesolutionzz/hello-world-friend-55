@@ -6,7 +6,6 @@ import heroBg from "@/assets/hero-family-bg.jpg";
 import InstantAIAnalysis from "./InstantAIAnalysis";
 import { motion } from "framer-motion";
 import logo from "@/assets/logo-large.png";
-import logo from "@/assets/logo-large.png";
 import { sharePage, isKakaoInitialized } from "@/lib/kakaoShare";
 import { toast } from "sonner";
 import { trackEvent } from "@/components/common/Analytics";

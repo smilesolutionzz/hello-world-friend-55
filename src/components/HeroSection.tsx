@@ -18,14 +18,6 @@ const HeroSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { t } = useTranslation();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const handleKakaoShare = () => {
     trackEvent('hero_kakao_share');
     const success = sharePage({

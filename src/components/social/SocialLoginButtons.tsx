@@ -74,7 +74,19 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
       setIsLoading?.(true);
       const redirectTo = `${window.location.origin}/`;
 
-      if (isCustomDomain) {
+      if (isNative) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'kakao',
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+          }
+        });
+        if (error) throw error;
+        if (data?.url) {
+          await Browser.open({ url: data.url, windowName: '_system' });
+        }
+      } else if (isCustomDomain) {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'kakao',
           options: {

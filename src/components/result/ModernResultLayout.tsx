@@ -71,7 +71,7 @@ export const ModernResultLayout: React.FC<ModernResultLayoutProps> = ({
                   className="h-9 px-2 md:px-3 bg-gradient-to-r from-primary to-primary/90"
                 >
                   <FileText className={`w-4 h-4 md:mr-1.5 ${isDownloading ? 'animate-pulse' : ''}`} />
-                  <span className="hidden md:inline">{isDownloading ? '저장 중...' : '저장'}</span>
+                  <span className="hidden md:inline">{isDownloading ? (isEnglish ? 'Saving...' : '저장 중...') : (isEnglish ? 'Save' : '저장')}</span>
                 </Button>
               )}
               {onShare && (

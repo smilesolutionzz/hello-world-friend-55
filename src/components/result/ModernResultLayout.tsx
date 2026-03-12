@@ -47,7 +47,7 @@ export const ModernResultLayout: React.FC<ModernResultLayoutProps> = ({
               className="h-9 px-2 md:px-4 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <ArrowLeft className="w-4 h-4 mr-1 md:mr-2" />
-              <span className="text-sm font-medium">뒤로</span>
+              <span className="text-sm font-medium">{isEnglish ? 'Back' : '뒤로'}</span>
             </Button>
             
             <div className="flex items-center gap-1.5 md:gap-2">

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from '@/i18n/useTranslation';
+import { useLanguage } from '@/i18n/LanguageContext';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -33,6 +34,7 @@ import { EnhancedResultView } from '@/components/instant-analysis/EnhancedResult
 
 const InstantAIAnalysis = () => {
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [inputText, setInputText] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isExpanding, setIsExpanding] = useState(false);
@@ -92,66 +94,71 @@ const InstantAIAnalysis = () => {
   const mockAnalysis = (text: string) => {
     const highSeverityKeywords = [
       '죽고싶', '자살', '자해', '극심', '심각', '위급', '위험', '견딜 수 없',
-      '못 견디', '한계', '폭력', '학대'
+      '못 견디', '한계', '폭력', '학대',
+      'suicide', 'self-harm', 'kill myself', 'can\'t take it', 'abuse', 'violence'
     ];
     
     const mediumSeverityKeywords = [
       '우울', '불안', '공황', '스트레스', '화', '분노', '걱정', '고민',
       '힘들', '지쳐', '아프', '외로', '슬프', '무기력', '짜증', '피곤',
-      '싸움', '갈등', '문제', '어려움'
+      '싸움', '갈등', '문제', '어려움',
+      'depressed', 'anxious', 'panic', 'stress', 'angry', 'worried', 'lonely', 'tired', 'conflict'
     ];
 
     const typeKeywords = {
-      '우울감': ['우울', '무기력', '의욕 없', '슬프', '외로'],
-      '불안감': ['불안', '걱정', '초조', '공황', '두려', '무서'],
-      '발달지연': ['말 안', '걷지 못', '발달', '늦', '또래보다', '개월', '언어', '운동'],
-      '육아스트레스': ['아이', '육아', '엄마', '아빠', '키우', '양육'],
-      '학업스트레스': ['공부', '시험', '성적', '학교', '학원', '입시'],
-      '대인관계': ['친구', '관계', '따돌림', '왕따', '외톨이', '사회성'],
-      '수면문제': ['잠', '수면', '못 자', '불면'],
-      '분노조절': ['화', '분노', '짜증', '폭발', '참을 수 없'],
+      [isEnglish ? 'Depression' : '우울감']: ['우울', '무기력', '의욕 없', '슬프', '외로', 'depressed', 'hopeless', 'sad'],
+      [isEnglish ? 'Anxiety' : '불안감']: ['불안', '걱정', '초조', '공황', '두려', '무서', 'anxious', 'panic', 'fear'],
+      [isEnglish ? 'Developmental Delay' : '발달지연']: ['말 안', '걷지 못', '발달', '늦', '또래보다', '개월', '언어', '운동', 'speech', 'delay', 'milestone'],
+      [isEnglish ? 'Parenting Stress' : '육아스트레스']: ['아이', '육아', '엄마', '아빠', '키우', '양육', 'parenting', 'child', 'burnout'],
+      [isEnglish ? 'Academic Stress' : '학업스트레스']: ['공부', '시험', '성적', '학교', '학원', '입시', 'school', 'exam', 'grades'],
+      [isEnglish ? 'Relationships' : '대인관계']: ['친구', '관계', '따돌림', '왕따', '외톨이', '사회성', 'friend', 'bully', 'social'],
+      [isEnglish ? 'Sleep Issues' : '수면문제']: ['잠', '수면', '못 자', '불면', 'sleep', 'insomnia'],
+      [isEnglish ? 'Anger Management' : '분노조절']: ['화', '분노', '짜증', '폭발', '참을 수 없', 'anger', 'rage', 'temper'],
     };
 
-    let severity = '낮음';
+    let severity = isEnglish ? 'Low' : '낮음';
     let color = 'bg-green-500';
     
     for (const keyword of highSeverityKeywords) {
-      if (text.includes(keyword)) {
-        severity = '높음';
+      if (text.toLowerCase().includes(keyword)) {
+        severity = isEnglish ? 'High' : '높음';
         color = 'bg-red-500';
         break;
       }
     }
     
-    if (severity === '낮음') {
+    if (severity === (isEnglish ? 'Low' : '낮음')) {
       for (const keyword of mediumSeverityKeywords) {
-        if (text.includes(keyword)) {
-          severity = '중간';
+        if (text.toLowerCase().includes(keyword)) {
+          severity = isEnglish ? 'Medium' : '중간';
           color = 'bg-orange-500';
           break;
         }
       }
     }
 
-    const detailedAdvice = severity === '높음' 
-      ? `현재 겪고 계신 어려움이 상당히 힘드실 것 같습니다. 이런 상황에서는 혼자 해결하려 하기보다 전문가의 도움을 받는 것이 중요합니다.`
-      : severity === '중간'
-      ? `지금 느끼시는 어려움에 대해 충분히 공감합니다. 이러한 상황은 누구에게나 찾아올 수 있으며, 도움을 구하는 것은 용기 있는 행동입니다.`
-      : `공유해주신 내용을 보니 현재 관리 가능한 수준의 고민으로 보입니다. 이런 고민을 인식하고 해결하려는 노력 자체가 큰 발전입니다.`;
+    const isHigh = severity === (isEnglish ? 'High' : '높음');
+    const isMedium = severity === (isEnglish ? 'Medium' : '중간');
 
-    let detectedType = '일반 상담';
+    const detailedAdvice = isHigh
+      ? (isEnglish ? 'The difficulties you are experiencing seem quite overwhelming. In situations like this, it is important to seek professional help rather than trying to resolve things alone.' : '현재 겪고 계신 어려움이 상당히 힘드실 것 같습니다. 이런 상황에서는 혼자 해결하려 하기보다 전문가의 도움을 받는 것이 중요합니다.')
+      : isMedium
+      ? (isEnglish ? 'I understand the difficulties you are feeling. These situations can happen to anyone, and seeking help is a courageous act.' : '지금 느끼시는 어려움에 대해 충분히 공감합니다. 이러한 상황은 누구에게나 찾아올 수 있으며, 도움을 구하는 것은 용기 있는 행동입니다.')
+      : (isEnglish ? 'Based on what you have shared, your concern appears to be at a manageable level. The effort to recognize and address it is a great step forward.' : '공유해주신 내용을 보니 현재 관리 가능한 수준의 고민으로 보입니다. 이런 고민을 인식하고 해결하려는 노력 자체가 큰 발전입니다.');
+
+    let detectedType = isEnglish ? 'General Counseling' : '일반 상담';
     for (const [type, keywords] of Object.entries(typeKeywords)) {
-      if (keywords.some(keyword => text.includes(keyword))) {
+      if (keywords.some(keyword => text.toLowerCase().includes(keyword))) {
         detectedType = type;
         break;
       }
     }
 
-    const recommendations = severity === '높음' 
-      ? ['즉시 전문가 상담 권장', '가까운 정신건강복지센터 방문', '24시간 위기상담 서비스 이용']
-      : severity === '중간'
-      ? ['전문가 상담을 통한 맞춤 솔루션', '체계적인 관찰일지 작성', '단계별 개선 가이드 제공']
-      : ['예방적 상담 및 관찰', '정기적인 자가 체크', '건강한 생활 습관 유지'];
+    const recommendations = isHigh
+      ? (isEnglish ? ['Immediate professional consultation recommended', 'Visit nearest mental health center', 'Use 24/7 crisis hotline (988)'] : ['즉시 전문가 상담 권장', '가까운 정신건강복지센터 방문', '24시간 위기상담 서비스 이용'])
+      : isMedium
+      ? (isEnglish ? ['Personalized solutions through expert consultation', 'Keep a structured observation journal', 'Step-by-step improvement guide'] : ['전문가 상담을 통한 맞춤 솔루션', '체계적인 관찰일지 작성', '단계별 개선 가이드 제공'])
+      : (isEnglish ? ['Preventive consultation and observation', 'Regular self-checks', 'Maintain healthy lifestyle habits'] : ['예방적 상담 및 관찰', '정기적인 자가 체크', '건강한 생활 습관 유지']);
 
     return {
       type: detectedType,
@@ -160,7 +167,9 @@ const InstantAIAnalysis = () => {
       detailedAdvice,
       recommendations,
       confidence: Math.floor(Math.random() * 15) + 80,
-      nextSteps: ['3분 온보딩으로 정확한 분석 받기', '전문가 매칭 및 상담 예약', '맞춤형 솔루션 추천 받기']
+      nextSteps: isEnglish
+        ? ['Get precise analysis with 3-min onboarding', 'Expert matching & consultation', 'Personalized solution recommendations']
+        : ['3분 온보딩으로 정확한 분석 받기', '전문가 매칭 및 상담 예약', '맞춤형 솔루션 추천 받기']
     };
   };
 
@@ -267,17 +276,17 @@ const InstantAIAnalysis = () => {
       if (data?.expandedPrompt) {
         setInputText(data.expandedPrompt);
         toast({
-          title: "✨ 프롬프트 확장 완료",
-          description: "입력 내용이 더 구체적으로 확장되었습니다.",
+          title: isEnglish ? "✨ Prompt expanded" : "✨ 프롬프트 확장 완료",
+          description: isEnglish ? "Your input has been expanded with more detail." : "입력 내용이 더 구체적으로 확장되었습니다.",
         });
       } else {
-        throw new Error('확장된 프롬프트를 받지 못했습니다.');
+        throw new Error(isEnglish ? 'Failed to expand prompt.' : '확장된 프롬프트를 받지 못했습니다.');
       }
     } catch (error: any) {
-      console.error('프롬프트 확장 오류:', error);
+      console.error('Prompt expansion error:', error);
       toast({
-        title: "확장 실패",
-        description: error?.message || "AI 다듬기 중 오류가 발생했습니다. 다시 시도해주세요.",
+        title: isEnglish ? "Expansion failed" : "확장 실패",
+        description: error?.message || (isEnglish ? "AI refinement failed. Please try again." : "AI 다듬기 중 오류가 발생했습니다. 다시 시도해주세요."),
         variant: "destructive"
       });
     } finally {
@@ -452,8 +461,8 @@ const InstantAIAnalysis = () => {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-base font-semibold text-white">AI가 분석 중입니다</span>
-                      <span className="text-sm font-mono text-violet-400">{remainingTime}초</span>
+                      <span className="text-base font-semibold text-white">{isEnglish ? 'AI is analyzing' : 'AI가 분석 중입니다'}</span>
+                      <span className="text-sm font-mono text-violet-400">{remainingTime}{isEnglish ? 's' : '초'}</span>
                     </div>
                     <AnimatePresence mode="wait">
                       <motion.span
@@ -463,10 +472,15 @@ const InstantAIAnalysis = () => {
                         exit={{ opacity: 0, y: -5 }}
                         className="text-xs text-slate-400"
                       >
-                        {analysisProgress < 25 ? '고민 유형 파악 중...' :
-                         analysisProgress < 50 ? '심층 원인 분석 중...' :
-                         analysisProgress < 75 ? '맞춤 솔루션 생성 중...' :
-                         '9가지 리포트 생성 중...'}
+                        {isEnglish
+                          ? (analysisProgress < 25 ? 'Identifying concern type...' :
+                             analysisProgress < 50 ? 'Analyzing root causes...' :
+                             analysisProgress < 75 ? 'Generating solutions...' :
+                             'Creating 9 reports...')
+                          : (analysisProgress < 25 ? '고민 유형 파악 중...' :
+                             analysisProgress < 50 ? '심층 원인 분석 중...' :
+                             analysisProgress < 75 ? '맞춤 솔루션 생성 중...' :
+                             '9가지 리포트 생성 중...')}
                       </motion.span>
                     </AnimatePresence>
                   </div>
@@ -501,12 +515,17 @@ const InstantAIAnalysis = () => {
                 
                 {/* 분석 단계 - 가로 스텝 */}
                 <div className="flex justify-between text-xs">
-                  {[
+                  {(isEnglish ? [
+                    { label: 'Type', threshold: 20 },
+                    { label: 'Causes', threshold: 45 },
+                    { label: 'Solutions', threshold: 70 },
+                    { label: 'Reports', threshold: 90 },
+                  ] : [
                     { label: '유형 분석', threshold: 20 },
                     { label: '원인 분석', threshold: 45 },
                     { label: '솔루션', threshold: 70 },
                     { label: '리포트', threshold: 90 },
-                  ].map((step, i) => (
+                  ]).map((step, i) => (
                     <div key={i} className="flex flex-col items-center gap-1">
                       <motion.div 
                         className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium

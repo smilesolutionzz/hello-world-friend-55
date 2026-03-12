@@ -30,6 +30,7 @@ const PremiumAssessmentResult = ({
 }: PremiumAssessmentResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnglish, localePath } = useLanguage();
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);

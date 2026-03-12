@@ -12,6 +12,7 @@ interface VoiceRecorderProps {
 
 export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onTranscription }) => {
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -42,15 +43,19 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onTranscription })
       setIsRecording(true);
 
       toast({
-        title: "녹음 시작",
-        description: "음성을 녹음하고 있습니다. 다시 버튼을 눌러 종료하세요.",
+        title: isEnglish ? 'Recording started' : '녹음 시작',
+        description: isEnglish
+          ? 'Recording your voice. Press again to stop.'
+          : '음성을 녹음하고 있습니다. 다시 버튼을 눌러 종료하세요.',
       });
     } catch (error) {
       console.error('Error starting recording:', error);
       toast({
-        title: "녹음 실패",
-        description: "마이크 접근 권한을 확인해주세요.",
-        variant: "destructive",
+        title: isEnglish ? 'Recording failed' : '녹음 실패',
+        description: isEnglish
+          ? 'Please check microphone permission.'
+          : '마이크 접근 권한을 확인해주세요.',
+        variant: 'destructive',
       });
     }
   };
@@ -77,7 +82,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onTranscription })
         console.log('Sending audio to transcription service...');
 
         const { data, error } = await supabase.functions.invoke('voice-to-text', {
-          body: { audio: base64Data }
+          body: { audio: base64Data, language: isEnglish ? 'en' : 'ko' }
         });
 
         if (error) {
@@ -87,19 +92,23 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onTranscription })
         if (data?.text) {
           onTranscription(data.text);
           toast({
-            title: "변환 완료",
-            description: "음성이 텍스트로 변환되었습니다.",
+            title: isEnglish ? 'Transcription complete' : '변환 완료',
+            description: isEnglish
+              ? 'Your voice has been converted to text.'
+              : '음성이 텍스트로 변환되었습니다.',
           });
         } else {
-          throw new Error('No transcription result');
+          throw new Error(isEnglish ? 'No transcription result' : '변환 결과가 없습니다');
         }
       };
     } catch (error) {
       console.error('Error processing audio:', error);
       toast({
-        title: "변환 실패",
-        description: error instanceof Error ? error.message : '음성을 텍스트로 변환할 수 없습니다.',
-        variant: "destructive",
+        title: isEnglish ? 'Transcription failed' : '변환 실패',
+        description: error instanceof Error
+          ? error.message
+          : (isEnglish ? 'Failed to convert voice to text.' : '음성을 텍스트로 변환할 수 없습니다.'),
+        variant: 'destructive',
       });
     } finally {
       setIsProcessing(false);
@@ -111,12 +120,13 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onTranscription })
       <CardContent className="pt-6">
         <div className="flex flex-col items-center gap-4">
           <div className="text-center">
-            <h3 className="text-lg font-semibold mb-2">음성 녹음</h3>
+            <h3 className="text-lg font-semibold mb-2">{isEnglish ? 'Voice Recording' : '음성 녹음'}</h3>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              {isRecording ? '녹음 중...' : (
+              {isRecording ? (isEnglish ? 'Recording...' : '녹음 중...') : (
                 <>
-                  버튼을 눌러<br className="block sm:hidden" />
-                  녹음을 시작하세요
+                  {isEnglish ? 'Press the button to' : '버튼을 눌러'}
+                  <br className="block sm:hidden" />
+                  {isEnglish ? 'start recording' : '녹음을 시작하세요'}
                 </>
               )}
             </p>
@@ -126,7 +136,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onTranscription })
             onClick={isRecording ? stopRecording : startRecording}
             disabled={isProcessing}
             size="lg"
-            variant={isRecording ? "destructive" : "default"}
+            variant={isRecording ? 'destructive' : 'default'}
             className="w-32 h-32 rounded-full"
           >
             {isProcessing ? (
@@ -140,7 +150,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onTranscription })
 
           {isProcessing && (
             <p className="text-sm text-muted-foreground">
-              텍스트로 변환 중...
+              {isEnglish ? 'Converting to text...' : '텍스트로 변환 중...'}
             </p>
           )}
         </div>

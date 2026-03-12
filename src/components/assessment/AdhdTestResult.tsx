@@ -86,11 +86,11 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const requestAIAnalysis = async () => {
     if (!user) {
       toast({
-        title: "로그인 필요",
-        description: "AI 전문 분석을 받으려면 로그인이 필요합니다.",
+        title: isEnglish ? "Login Required" : "로그인 필요",
+        description: isEnglish ? "Login is required for AI expert analysis." : "AI 전문 분석을 받으려면 로그인이 필요합니다.",
         variant: "destructive"
       });
-      navigate('/auth');
+      navigate(localePath('/auth'));
       return;
     }
 

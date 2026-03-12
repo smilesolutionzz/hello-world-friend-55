@@ -105,9 +105,9 @@ const HeroSection = () => {
             {t.hero.parentHook}
           </p>
           
-          <p className="text-white/70 text-[11px] md:text-base max-w-xl mx-auto px-2">
+          <p className="text-white/70 text-sm md:text-base max-w-xl mx-auto px-2 leading-relaxed">
             {t.hero.description}
-            <br className="hidden md:block" />
+            <br />
             <span className="font-semibold text-white/85">{t.hero.descriptionHighlight}</span>
           </p>
         </motion.div>

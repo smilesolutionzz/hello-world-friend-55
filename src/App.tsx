@@ -229,13 +229,86 @@ const App = () => {
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
           
-          {/* English Routes */}
+          {/* English Routes - mirror all main routes */}
           <Route path="/en" element={<Index />} />
           <Route path="/en/auth" element={<HighlightAuth />} />
           <Route path="/en/dashboard" element={<DashboardRouter />} />
           <Route path="/en/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/en/pricing" element={<Pricing />} />
           <Route path="/en/assessment" element={<Assessment />} />
+          <Route path="/en/observation" element={<ObservationNew />} />
+          <Route path="/en/mind-diary" element={<MindDiary />} />
+          <Route path="/en/ai-assistant" element={<AIAssistant />} />
+          <Route path="/en/metaverse-voice" element={<MetaverseVoice />} />
+          <Route path="/en/expert-hiring" element={<ExpertHiring />} />
+          <Route path="/en/token-subscription" element={<TokenSubscription />} />
+          <Route path="/en/column" element={<Column />} />
+          <Route path="/en/concern-storage" element={<ConcernStorage />} />
+          <Route path="/en/report-generator" element={<ReportGenerator />} />
+          <Route path="/en/profile" element={<Profile />} />
+          <Route path="/en/settings" element={<Settings />} />
+          <Route path="/en/wellness-lifestyle" element={<WellnessLifestyle />} />
+          <Route path="/en/free-trial" element={<FreeTrialAssessment />} />
+          <Route path="/en/free-trial-result" element={<FreeTrialResult />} />
+          <Route path="/en/expert-detail/:id" element={<ExpertDetail />} />
+          <Route path="/en/expert-contract/:expertId" element={<ExpertContract />} />
+          <Route path="/en/expert-contract-success" element={<ExpertContractSuccess />} />
+          <Route path="/en/payment" element={<Payment />} />
+          <Route path="/en/payment-success" element={<PaymentSuccess />} />
+          <Route path="/en/payment-fail" element={<PaymentFail />} />
+          <Route path="/en/token-payment-success" element={<TokenPaymentSuccess />} />
+          <Route path="/en/token-payment-fail" element={<TokenPaymentFail />} />
+          <Route path="/en/observation-list" element={<ObservationList />} />
+          <Route path="/en/observation/:id" element={<ObservationDetail />} />
+          <Route path="/en/assessment/mental-health-quick-test" element={<BasicMentalHealthTest />} />
+          <Route path="/en/assessment/stress-test" element={<Assessment />} />
+          <Route path="/en/assessment/past-life-job-test" element={<PastLifeJobTestFree />} />
+          <Route path="/en/assessment/relationship-style-test" element={<RelationshipStyleTest />} />
+          <Route path="/en/assessment/communication-style-test" element={<CommunicationStyleTest />} />
+          <Route path="/en/assessment/defense-mechanism-test" element={<DefenseMechanismTest />} />
+          <Route path="/en/assessment/attachment-style-test" element={<AttachmentStyleTest />} />
+          <Route path="/en/assessment/mbti-test" element={<MBTITest />} />
+          <Route path="/en/assessment/energy-flow" element={<EnergyFlowTest />} />
+          <Route path="/en/assessment/relationship-dynamics" element={<RelationshipDynamicsTest />} />
+          <Route path="/en/assessment/life-purpose" element={<LifePurposeTest />} />
+          <Route path="/en/assessment/pattern-iq-test" element={<PatternIQTest />} />
+          <Route path="/en/assessment/resilience" element={<ResilienceTest />} />
+          <Route path="/en/assessment/instagram-analysis" element={<InstagramAnalysis />} />
+          <Route path="/en/assessment/feed-analysis" element={<InstagramFeedAnalysis />} />
+          <Route path="/en/assessment/business-metacognition" element={<BusinessMetacognitionTest />} />
+          <Route path="/en/assessment/:id" element={<AssessmentDetail />} />
+          <Route path="/en/fun-tests" element={<FunTests />} />
+          <Route path="/en/fun-test-result" element={<FunTestResult />} />
+          <Route path="/en/stress-package" element={<StressPackage />} />
+          <Route path="/en/depression-package" element={<DepressionPackage />} />
+          <Route path="/en/anxiety-package" element={<AnxietyPackage />} />
+          <Route path="/en/focus-package" element={<FocusPackage />} />
+          <Route path="/en/child-package" element={<ChildPackage />} />
+          <Route path="/en/relationship-package" element={<RelationshipPackage />} />
+          <Route path="/en/comprehensive-package" element={<ComprehensivePackage />} />
+          <Route path="/en/career-package" element={<CareerPackage />} />
+          <Route path="/en/han-medicine-test" element={<HanMedicineTest />} />
+          <Route path="/en/advanced-adhd-test" element={<AdvancedAdhdTest />} />
+          <Route path="/en/comprehensive-reporting" element={<ComprehensiveReporting />} />
+          <Route path="/en/sample-report" element={<SampleReport />} />
+          <Route path="/en/counseling" element={<CounselingFlow />} />
+          <Route path="/en/voice-counseling" element={<VoiceCounseling />} />
+          <Route path="/en/meditation" element={<MeditationPage />} />
+          <Route path="/en/voice-emotion-diary" element={<VoiceEmotionDiary />} />
+          <Route path="/en/wellness-hub" element={<WellnessHub />} />
+          <Route path="/en/daily-checkin" element={<DailyCheckin />} />
+          <Route path="/en/growth-tracker" element={<GrowthTracker />} />
+          <Route path="/en/community" element={<Community />} />
+          <Route path="/en/referral" element={<Referral />} />
+          <Route path="/en/terms-of-service" element={<TermsOfService />} />
+          <Route path="/en/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/en/refund-policy" element={<RefundPolicy />} />
+          <Route path="/en/b2b" element={<B2BLanding />} />
+          <Route path="/en/parent-dashboard" element={<ParentDashboard />} />
+          <Route path="/en/iep-generator" element={<IEPGenerator />} />
+          <Route path="/en/share/:shareId" element={<ShareView />} />
+          <Route path="/en/assessment-history" element={<AssessmentHistory />} />
+          <Route path="/en/reset-password" element={<ResetPassword />} />
           
           {/* Target-specific Landing Pages */}
           <Route path="/parent" element={<ParentLanding />} />

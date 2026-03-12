@@ -92,7 +92,7 @@ export const UnifiedNavigation = () => {
   ];
 
   const handleNavigation = (path: string) => {
-    navigate(path);
+    navigate(localePath(path));
     setIsOpen(false);
     setOpenDropdown(null);
   };
@@ -100,16 +100,17 @@ export const UnifiedNavigation = () => {
   const handleAuth = async () => {
     if (user) {
       await supabase.auth.signOut();
-      navigate('/');
+      navigate(localePath('/'));
     } else {
-      navigate('/auth');
+      navigate(localePath('/auth'));
     }
     setIsOpen(false);
   };
 
   const isActive = (path: string) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
+    const currentPath = location.pathname.replace(/^\/en/, '') || '/';
+    if (path === '/') return currentPath === '/';
+    return currentPath.startsWith(path);
   };
 
   return (
@@ -121,7 +122,7 @@ export const UnifiedNavigation = () => {
             {/* Logo */}
             <div 
               className="flex items-center gap-3 cursor-pointer group"
-              onClick={() => navigate('/')}
+              onClick={() => navigate(localePath('/'))}
             >
               <div className="relative">
                 <img src={logo} alt="AIHPRO" className="h-9 w-9 rounded-xl" />
@@ -139,7 +140,7 @@ export const UnifiedNavigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleNavigation('/')}
-                className={`h-10 px-4 rounded-full font-medium transition-all ${
+                className={`h-10 px-4 rounded-full font-medium transition-all ${  
                   isActive('/') && location.pathname === '/'
                     ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
                     : 'text-foreground/80 hover:text-foreground hover:bg-accent'
@@ -322,7 +323,7 @@ export const UnifiedNavigation = () => {
           {/* Logo */}
           <div 
             className="flex items-center gap-2 cursor-pointer"
-            onClick={() => navigate('/')}
+            onClick={() => navigate(localePath('/'))}
           >
             <img src={logo} alt="AIHPRO" className="h-8 w-8 rounded-lg" />
             <span className="text-lg font-bold">AIHPRO</span>

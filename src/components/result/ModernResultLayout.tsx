@@ -59,7 +59,7 @@ export const ModernResultLayout: React.FC<ModernResultLayoutProps> = ({
                   className="h-9 px-2 md:px-3 border-slate-200 dark:border-slate-700"
                 >
                   <Copy className="w-4 h-4 md:mr-1.5" />
-                  <span className="hidden md:inline">복사</span>
+                  <span className="hidden md:inline">{isEnglish ? 'Copy' : '복사'}</span>
                 </Button>
               )}
               {onDownload && (

@@ -36,6 +36,16 @@ interface DepressionTestResultProps {
   onRestart?: () => void;
 }
 
+// Helper to normalize severity for comparison (handles both EN and KO)
+const normalizeSeverity = (severity: string): 'normal' | 'mild' | 'moderate' | 'severe' => {
+  const s = severity.toLowerCase();
+  if (s === '정상' || s === 'normal') return 'normal';
+  if (s === '가벼운 우울' || s === 'mild depression') return 'mild';
+  if (s === '중등도 우울' || s === 'moderate depression') return 'moderate';
+  if (s === '심한 우울' || s === 'severe depression') return 'severe';
+  return 'normal';
+};
+
 const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResultProps) => {
   const navigate = useNavigate();
   const { total, average, severity, answers } = results;
@@ -45,9 +55,11 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
   const { shareAsText } = useShareText();
   const { isEnglish } = useLanguage();
 
+  const sev = normalizeSeverity(severity);
+
   // 자동 저장 - AI 분석 포함
   useAutoSaveTestResult({
-    testType: '우울증 검사',
+    testType: isEnglish ? 'Depression Test' : '우울증 검사',
     results: { total, average, answers },
     analysis: aiAnalysis,
     severity,
@@ -56,7 +68,7 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
   
   const chartData = [
     {
-      name: '총점',
+      name: isEnglish ? 'Total' : '총점',
       value: total,
       fullMark: 42,
     }
@@ -66,16 +78,9 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
     const getAIAnalysis = async () => {
       try {
         const { data, error } = await supabase.functions.invoke('depression-analyzer', {
-          body: {
-            results,
-            answers: results.answers
-          }
+          body: { results, answers: results.answers }
         });
-
-        if (error) {
-          throw error;
-        }
-        
+        if (error) throw error;
         if (data?.analysis) {
           setAiAnalysis(data.analysis);
         } else {
@@ -88,51 +93,50 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
         setIsLoading(false);
       }
     };
-
     getAIAnalysis();
   }, [results]);
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case "정상":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "가벼운 우울":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "중등도 우울":
-        return "bg-orange-100 text-orange-800 border-orange-200";
-      case "심한 우울":
-        return "bg-red-100 text-red-800 border-red-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+  const getSeverityColor = (sev: string) => {
+    const n = normalizeSeverity(sev);
+    switch (n) {
+      case 'normal': return "bg-green-100 text-green-800 border-green-200";
+      case 'mild': return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case 'moderate': return "bg-orange-100 text-orange-800 border-orange-200";
+      case 'severe': return "bg-red-100 text-red-800 border-red-200";
+      default: return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
+
+  const severityLabel = isEnglish
+    ? { normal: 'Normal', mild: 'Mild Depression', moderate: 'Moderate Depression', severe: 'Severe Depression' }[sev]
+    : { normal: '정상', mild: '가벼운 우울', moderate: '중등도 우울', severe: '심한 우울' }[sev];
 
   const handleShareText = () => {
     const formattedText = formatPsychTestResult('depression', results, aiAnalysis);
     shareAsText(formattedText, isEnglish ? 'Depression Level Check Result' : '우울감 수준 검사 결과');
   };
 
-  const getRecommendation = (severity: string) => {
-    switch (severity) {
-      case "정상":
+  const getRecommendation = () => {
+    switch (sev) {
+      case 'normal':
         return {
           icon: <CheckCircle className="w-6 h-6 text-green-600" />,
           title: isEnglish ? "Normal Range" : "정상 범위",
           description: isEnglish ? "Your depression symptoms are within normal range. You are maintaining a healthy mental state." : "현재 우울증상이 정상 범위에 있습니다. 건강한 정신상태를 유지하고 계십니다."
         };
-      case "가벼운 우울":
+      case 'mild':
         return {
           icon: <Heart className="w-6 h-6 text-yellow-600" />,
           title: isEnglish ? "Mild Depression" : "가벼운 우울증상",
           description: isEnglish ? "You have mild depression symptoms. Lifestyle changes and stress management can help improve symptoms." : "가벼운 우울증상이 있습니다. 생활습관 개선과 스트레스 관리를 통해 증상 완화가 가능합니다."
         };
-      case "중등도 우울":
+      case 'moderate':
         return {
           icon: <AlertTriangle className="w-6 h-6 text-orange-600" />,
           title: isEnglish ? "Moderate Depression" : "중등도 우울증상",
           description: isEnglish ? "Moderate depression symptoms detected. Professional consultation is recommended, treatment may be needed." : "중등도 우울증상이 확인됩니다. 전문가와의 상담을 권장하며, 치료가 필요할 수 있습니다."
         };
-      case "심한 우울":
+      case 'severe':
         return {
           icon: <AlertTriangle className="w-6 h-6 text-red-600" />,
           title: isEnglish ? "Severe Depression" : "심한 우울증상",
@@ -147,13 +151,13 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
     }
   };
 
-  const recommendation = getRecommendation(severity);
+  const recommendation = getRecommendation();
   const { toast } = useToast();
 
   const handlePDFDownload = async () => {
     await downloadResultAsPDF(
       'depression-result-content',
-      '우울감_체크_결과',
+      isEnglish ? 'Depression_Check_Result' : '우울감_체크_결과',
       () => {
         toast({
           title: isEnglish ? "PDF Download Complete" : "PDF 다운로드 완료",
@@ -170,14 +174,14 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
     );
   };
 
+  const localePath = (path: string) => isEnglish ? `/en${path}` : path;
+
   return (
     <div id="depression-result-content" className="space-y-4 md:space-y-6 px-4 md:px-0">
-      {/* PDF Header */}
       <PDFHeader testName={isEnglish ? "Depression Check Result" : "우울감 체크 결과"} />
       
-      {/* 모바일 최적화 헤더 */}
+      {/* Header */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-lg -mx-4 px-4 py-3 border-b border-border/50 md:relative md:mx-0 md:px-0 md:py-0 md:bg-transparent md:border-0">
-        {/* 모바일 */}
         <div className="md:hidden">
           <div className="flex items-center justify-between mb-2">
             <Button variant="ghost" size="sm" onClick={onBack} className="h-8 px-2 -ml-2">
@@ -192,7 +196,6 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
           <p className="text-xs text-muted-foreground">{isEnglish ? 'Self-assessment reference' : '참고용 자가 진단'}</p>
         </div>
         
-        {/* 데스크톱 */}
         <div className="hidden md:flex items-center justify-between">
           <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
@@ -206,7 +209,7 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
         </div>
       </div>
 
-      {/* 법적 안전 공지 - 모바일 최적화 */}
+      {/* Legal notice */}
       <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 md:p-4">
         <p className="text-blue-800 dark:text-blue-200 text-xs md:text-sm">
           <span className="font-semibold">📊 {isEnglish ? 'Reference Result' : '참고용 결과'}</span>
@@ -215,36 +218,34 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
         </p>
       </div>
 
-      {/* 결과 요약 카드 - 모바일 최적화 */}
+      {/* Result summary */}
       <Card className="overflow-hidden">
-        {/* 심각도 헤더 */}
         <div className={`p-3 md:p-4 ${getSeverityColor(severity)}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {recommendation.icon}
               <div>
                 <p className="text-[10px] md:text-xs font-medium opacity-80">{isEnglish ? 'Depression Level' : '우울 수준'}</p>
-                <p className="text-sm md:text-lg font-bold">{severity}</p>
+                <p className="text-sm md:text-lg font-bold">{severityLabel}</p>
               </div>
             </div>
             <Badge variant="secondary" className="text-[10px] md:text-xs">
-              {new Date().toLocaleDateString('ko-KR')}
+              {new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}
             </Badge>
           </div>
         </div>
 
-        {/* 점수 그리드 */}
         <div className="p-3 md:p-6">
           <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4">
             <div className="text-center p-2 md:p-3 bg-muted/30 rounded-lg">
               <p className="text-[10px] md:text-xs text-muted-foreground">{isEnglish ? 'Total' : '총점'}</p>
               <p className="text-lg md:text-2xl font-bold text-primary">{total}</p>
-              <p className="text-[9px] md:text-xs text-muted-foreground">/ 42점</p>
+              <p className="text-[9px] md:text-xs text-muted-foreground">/ 42{isEnglish ? 'pts' : '점'}</p>
             </div>
             <div className="text-center p-2 md:p-3 bg-muted/30 rounded-lg">
               <p className="text-[10px] md:text-xs text-muted-foreground">{isEnglish ? 'Average' : '평균'}</p>
               <p className="text-lg md:text-2xl font-bold text-primary">{(total / 21).toFixed(1)}</p>
-              <p className="text-[9px] md:text-xs text-muted-foreground">/ 2.0점</p>
+              <p className="text-[9px] md:text-xs text-muted-foreground">/ 2.0{isEnglish ? 'pts' : '점'}</p>
             </div>
             <div className="text-center p-2 md:p-3 bg-muted/30 rounded-lg">
               <p className="text-[10px] md:text-xs text-muted-foreground">{isEnglish ? 'Percentile' : '백분율'}</p>
@@ -253,7 +254,6 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
             </div>
           </div>
 
-          {/* 차트 - 모바일에서는 숨김 */}
           <div className="hidden md:block h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
@@ -268,7 +268,7 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
         </div>
       </Card>
 
-      {/* 점수 범위 안내 - 모바일 최적화 */}
+      {/* Score classification */}
       <Card className="p-3 md:p-6 no-break page-break">
         <h3 className="text-sm md:text-xl font-semibold mb-3 md:mb-4">📊 {isEnglish ? 'Score Classification' : '점수 분류 기준'}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
@@ -291,98 +291,131 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
         </div>
       </Card>
 
-      {/* 전문가 해석 결과 - 모바일 최적화 */}
+      {/* Detailed analysis */}
       <Card className="p-3 md:p-6 no-break page-break overflow-hidden">
-        <h3 className="text-sm md:text-xl font-bold text-foreground mb-3 md:mb-6">✨ 상세 분석 결과</h3>
+        <h3 className="text-sm md:text-xl font-bold text-foreground mb-3 md:mb-6">✨ {isEnglish ? 'Detailed Analysis' : '상세 분석 결과'}</h3>
         
         <div className="space-y-4 md:space-y-6">
-          {/* 점수 요약 그리드 - 데스크톱에서만 표시 */}
+          {/* Desktop score grid */}
           <div className="hidden md:grid md:grid-cols-3 gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
             <div className="text-center">
-              <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">우울감 점수</p>
-              <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{total}점 / 42점</p>
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">만점 대비 {Math.round((total/42)*100)}%</p>
+              <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">{isEnglish ? 'Depression Score' : '우울감 점수'}</p>
+              <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{total}{isEnglish ? 'pts' : '점'} / 42{isEnglish ? 'pts' : '점'}</p>
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">{isEnglish ? `${Math.round((total/42)*100)}% of max` : `만점 대비 ${Math.round((total/42)*100)}%`}</p>
             </div>
             <div className="text-center">
-              <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">심각도</p>
+              <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">{isEnglish ? 'Severity' : '심각도'}</p>
               <p className={`text-xl font-bold ${getSeverityColor(severity).includes('green') ? 'text-green-700 dark:text-green-400' : 
                 getSeverityColor(severity).includes('yellow') ? 'text-yellow-700 dark:text-yellow-400' :
                 getSeverityColor(severity).includes('orange') ? 'text-orange-700 dark:text-orange-400' : 'text-red-700 dark:text-red-400'}`}>
-                {severity}
+                {severityLabel}
               </p>
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">범위: {
-                severity === "정상" ? "0-13점" :
-                severity === "가벼운 우울" ? "14-19점" :
-                severity === "중등도 우울" ? "20-28점" : "29-42점"
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">{isEnglish ? 'Range' : '범위'}: {
+                sev === 'normal' ? `0-13${isEnglish ? 'pts' : '점'}` :
+                sev === 'mild' ? `14-19${isEnglish ? 'pts' : '점'}` :
+                sev === 'moderate' ? `20-28${isEnglish ? 'pts' : '점'}` : `29-42${isEnglish ? 'pts' : '점'}`
               }</p>
             </div>
             <div className="text-center">
-              <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">검사일</p>
-              <p className="text-xl font-bold text-blue-900 dark:text-blue-100">{new Date().toLocaleDateString('ko-KR')}</p>
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">참고용 결과</p>
+              <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">{isEnglish ? 'Test Date' : '검사일'}</p>
+              <p className="text-xl font-bold text-blue-900 dark:text-blue-100">{new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</p>
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">{isEnglish ? 'Reference result' : '참고용 결과'}</p>
             </div>
           </div>
           
-          {/* 전문가 해석 - 모바일 최적화 */}
+          {/* Expert interpretation */}
           <div className="p-3 md:p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
-            <h4 className="text-sm md:text-lg font-semibold text-purple-800 dark:text-purple-300 mb-2 md:mb-4">🔍 전문가 상세 해석</h4>
+            <h4 className="text-sm md:text-lg font-semibold text-purple-800 dark:text-purple-300 mb-2 md:mb-4">🔍 {isEnglish ? 'Expert Detailed Interpretation' : '전문가 상세 해석'}</h4>
             <div className="prose prose-sm max-w-none">
               {isLoading ? (
                 <div className="flex items-center gap-2 py-4">
                   <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                  <span className="text-xs md:text-sm text-muted-foreground">분석 생성 중...</span>
+                  <span className="text-xs md:text-sm text-muted-foreground">{isEnglish ? 'Generating analysis...' : '분석 생성 중...'}</span>
                 </div>
               ) : (
                 <div className="text-xs md:text-sm leading-relaxed text-gray-800 dark:text-gray-200 space-y-3">
                   <p className="font-medium">
-                    현재 점수 <span className="text-primary font-bold">{total}점</span>은{' '}
-                    {severity === "정상" && "우울 증상이 정상 범위에 있는 건강한 상태입니다."}
-                    {severity === "가벼운 우울" && "가벼운 우울 증상이 있는 수준입니다."}
-                    {severity === "중등도 우울" && "중등도 우울 증상을 나타냅니다."}
-                    {severity === "심한 우울" && "심각한 우울 증상을 나타냅니다."}
+                    {isEnglish ? (
+                      <>Your score of <span className="text-primary font-bold">{total}pts</span> {
+                        sev === 'normal' ? 'indicates your depression symptoms are within a healthy, normal range.' :
+                        sev === 'mild' ? 'suggests mild depression symptoms.' :
+                        sev === 'moderate' ? 'indicates moderate depression symptoms.' :
+                        'indicates severe depression symptoms.'
+                      }</>
+                    ) : (
+                      <>현재 점수 <span className="text-primary font-bold">{total}점</span>은{' '}
+                      {sev === 'normal' && "우울 증상이 정상 범위에 있는 건강한 상태입니다."}
+                      {sev === 'mild' && "가벼운 우울 증상이 있는 수준입니다."}
+                      {sev === 'moderate' && "중등도 우울 증상을 나타냅니다."}
+                      {sev === 'severe' && "심각한 우울 증상을 나타냅니다."}</>
+                    )}
                   </p>
                   
                   <div className="bg-white/50 dark:bg-black/20 rounded-lg p-2 md:p-3">
                     <p className="font-semibold text-purple-700 dark:text-purple-300 mb-2 text-xs md:text-sm">
-                      💡 권장 관리 방법
+                      💡 {isEnglish ? 'Recommended Management' : '권장 관리 방법'}
                     </p>
                     <ul className="space-y-1 text-[11px] md:text-xs">
-                      {severity === "정상" && (
+                      {sev === 'normal' && (isEnglish ? (
+                        <>
+                          <li>• Maintain a regular lifestyle pattern</li>
+                          <li>• Exercise at least 3 times per week</li>
+                          <li>• Keep a gratitude journal</li>
+                        </>
+                      ) : (
                         <>
                           <li>• 규칙적인 생활 패턴 유지</li>
                           <li>• 주 3회 이상 운동</li>
                           <li>• 감사 일기 작성</li>
                         </>
-                      )}
-                      {severity === "가벼운 우울" && (
+                      ))}
+                      {sev === 'mild' && (isEnglish ? (
+                        <>
+                          <li>• Track your mood daily</li>
+                          <li>• Ensure adequate sleep (7-8 hours)</li>
+                          <li>• Talk with someone you trust</li>
+                        </>
+                      ) : (
                         <>
                           <li>• 매일 기분 상태 기록</li>
                           <li>• 충분한 수면 확보 (7-8시간)</li>
                           <li>• 신뢰할 수 있는 사람과 대화</li>
                         </>
-                      )}
-                      {severity === "중등도 우울" && (
+                      ))}
+                      {sev === 'moderate' && (isEnglish ? (
+                        <>
+                          <li>• Professional consultation recommended</li>
+                          <li>• Consider cognitive behavioral therapy</li>
+                          <li>• Maintain a regular daily routine</li>
+                        </>
+                      ) : (
                         <>
                           <li>• 전문가 상담 권장</li>
                           <li>• 인지행동치료 고려</li>
                           <li>• 규칙적인 일과 유지</li>
                         </>
-                      )}
-                      {severity === "심한 우울" && (
+                      ))}
+                      {sev === 'severe' && (isEnglish ? (
+                        <>
+                          <li>• Seek professional help immediately</li>
+                          <li>• Inform your family of the situation</li>
+                          <li>• Keep crisis hotline numbers available</li>
+                        </>
+                      ) : (
                         <>
                           <li>• 즉시 전문가 상담 필요</li>
                           <li>• 가족에게 상황 알리기</li>
                           <li>• 위기상담 전화 확보</li>
                         </>
-                      )}
+                      ))}
                     </ul>
                   </div>
                   
                   <p className="text-[10px] md:text-xs text-muted-foreground border-t border-purple-200 dark:border-purple-700 pt-2 mt-2">
-                    ⏰ 재평가 권장: {
-                      severity === "정상" ? "3-6개월 후" :
-                      severity === "가벼운 우울" ? "1-3개월 후" :
-                      severity === "중등도 우울" ? "4-8주 후" : "1-2주 후"
+                    ⏰ {isEnglish ? 'Recommended re-assessment' : '재평가 권장'}: {
+                      sev === 'normal' ? (isEnglish ? 'in 3-6 months' : '3-6개월 후') :
+                      sev === 'mild' ? (isEnglish ? 'in 1-3 months' : '1-3개월 후') :
+                      sev === 'moderate' ? (isEnglish ? 'in 4-8 weeks' : '4-8주 후') : (isEnglish ? 'in 1-2 weeks' : '1-2주 후')
                     }
                   </p>
                 </div>
@@ -397,13 +430,13 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
               rel="noopener noreferrer"
               className="text-primary font-medium hover:underline text-xs md:text-sm"
             >
-              👉 더 정밀한 분석 리포트 받기
+              👉 {isEnglish ? 'Get a more detailed analysis report' : '더 정밀한 분석 리포트 받기'}
             </a>
           </div>
         </div>
       </Card>
 
-      {/* Recommendation Card - 모바일 최적화 */}
+      {/* Recommendation Card */}
       <Card className="p-3 md:p-6 no-break">
         <div className="flex items-start gap-3">
           <div className="shrink-0">{recommendation.icon}</div>
@@ -416,28 +449,28 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
         </div>
       </Card>
 
-      {/* Action Buttons - 모바일 최적화 */}
+      {/* Action Buttons */}
       <div className="space-y-3">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
           <Button 
             className="btn-brand h-12 md:h-16 text-xs md:text-sm"
-            onClick={() => window.open('/expert-hiring', '_self')}
+            onClick={() => window.open(localePath('/expert-hiring'), '_self')}
           >
             <ExternalLink className="w-4 h-4 mr-1 md:mr-2 shrink-0" />
             <div className="text-left truncate">
-              <div className="font-semibold">전문가 상담</div>
-              <div className="text-[10px] md:text-sm opacity-90 hidden md:block">우울감 전문가</div>
+              <div className="font-semibold">{isEnglish ? 'Expert Consult' : '전문가 상담'}</div>
+              <div className="text-[10px] md:text-sm opacity-90 hidden md:block">{isEnglish ? 'Depression specialist' : '우울감 전문가'}</div>
             </div>
           </Button>
 
           <Button 
             className="bg-blue-600 hover:bg-blue-700 text-white h-12 md:h-16 text-xs md:text-sm"
-            onClick={() => navigate('/ai-counselor', { state: { assessmentResults: { ...results, testType: 'depression' } } })}
+            onClick={() => navigate(localePath('/ai-counselor'), { state: { assessmentResults: { ...results, testType: 'depression' } } })}
           >
             <Brain className="w-4 h-4 mr-1 md:mr-2 shrink-0" />
             <div className="text-left truncate">
-              <div className="font-semibold">AI 상담</div>
-              <div className="text-[10px] md:text-sm opacity-90 hidden md:block">빠른 상담</div>
+              <div className="font-semibold">{isEnglish ? 'AI Counseling' : 'AI 상담'}</div>
+              <div className="text-[10px] md:text-sm opacity-90 hidden md:block">{isEnglish ? 'Quick session' : '빠른 상담'}</div>
             </div>
           </Button>
 
@@ -445,26 +478,17 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
             variant="outline" 
             className="h-12 md:h-16 text-xs md:text-sm"
             onClick={() => generatePDFReport({
-              testType: '우울증 검사',
-              results: {
-                total: results.total,
-                average: results.average,
-                severity,
-                answers: results.answers
-              },
-              analysis: `우울증 검사 결과 분석: ${recommendation.description}`,
-              testInfo: {
-                ageGroup: 'adult',
-                generatedAt: new Date().toISOString(),
-                version: '1.0'
-              }
+              testType: isEnglish ? 'Depression Test' : '우울증 검사',
+              results: { total: results.total, average: results.average, severity, answers: results.answers },
+              analysis: `${isEnglish ? 'Depression test analysis' : '우울증 검사 결과 분석'}: ${recommendation.description}`,
+              testInfo: { ageGroup: 'adult', generatedAt: new Date().toISOString(), version: '1.0' }
             })}
             disabled={isGeneratingPDF}
           >
             <Download className="w-4 h-4 mr-1 md:mr-2 shrink-0" />
             <div className="text-left truncate">
-              <div className="font-semibold">{isGeneratingPDF ? '생성 중...' : 'PDF'}</div>
-              <div className="text-[10px] md:text-sm text-muted-foreground hidden md:block">리포트 저장</div>
+              <div className="font-semibold">{isGeneratingPDF ? (isEnglish ? 'Generating...' : '생성 중...') : 'PDF'}</div>
+              <div className="text-[10px] md:text-sm text-muted-foreground hidden md:block">{isEnglish ? 'Save report' : '리포트 저장'}</div>
             </div>
           </Button>
 
@@ -472,38 +496,29 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
             variant="outline" 
             className="h-12 md:h-16 text-xs md:text-sm"
             onClick={() => saveTestResult({
-              testType: '우울증 검사',
-              results: {
-                total: results.total,
-                average: results.average,
-                severity,
-                answers: results.answers
-              },
-              analysis: `우울증 검사 결과 분석: ${recommendation.description}`,
+              testType: isEnglish ? 'Depression Test' : '우울증 검사',
+              results: { total: results.total, average: results.average, severity, answers: results.answers },
+              analysis: `${isEnglish ? 'Depression test analysis' : '우울증 검사 결과 분석'}: ${recommendation.description}`,
               ageGroup: 'adult',
-              testInfo: {
-                generatedAt: new Date().toISOString(),
-                version: '1.0'
-              }
+              testInfo: { generatedAt: new Date().toISOString(), version: '1.0' }
             })}
             disabled={isSaving}
           >
             <Heart className="w-4 h-4 mr-1 md:mr-2 shrink-0" />
             <div className="text-left truncate">
-              <div className="font-semibold">{isSaving ? '저장 중...' : '저장'}</div>
-              <div className="text-[10px] md:text-sm text-muted-foreground hidden md:block">기록 보관</div>
+              <div className="font-semibold">{isSaving ? (isEnglish ? 'Saving...' : '저장 중...') : (isEnglish ? 'Save' : '저장')}</div>
+              <div className="text-[10px] md:text-sm text-muted-foreground hidden md:block">{isEnglish ? 'Keep record' : '기록 보관'}</div>
             </div>
           </Button>
         </div>
         
-        {/* 텍스트 공유 버튼 */}
         <Button onClick={handleShareText} variant="secondary" size="sm" className="w-full text-xs md:text-sm h-9 md:h-10">
           <Copy className="w-3 h-3 md:w-4 md:h-4 mr-2" />
-          📋 텍스트로 복사하기
+          📋 {isEnglish ? 'Copy as text' : '텍스트로 복사하기'}
         </Button>
       </div>
 
-      {/* 맞춤 전문가 추천 */}
+      {/* Expert match */}
       <ExpertMatchRecommendation
         testType="depression"
         severity={severity}
@@ -511,94 +526,90 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
         scores={{ total: results.total, average: results.average }}
       />
 
-      {/* 다음 단계 제안 */}
       <NextStepSuggestion className="mb-6" />
 
-      {/* 상품 추천 */}
-      <ProductRecommendation 
-        category="depression" 
-        severity={severity}
-      />
+      <ProductRecommendation category="depression" severity={severity} />
 
-      {/* Additional Information */}
+      {/* Additional info */}
       <Card className="p-6 bg-blue-50 border-blue-200">
-        <h4 className="font-semibold text-blue-900 mb-2">참고사항</h4>
+        <h4 className="font-semibold text-blue-900 mb-2">{isEnglish ? 'Important Notice' : '참고사항'}</h4>
         <p className="text-blue-800 text-sm leading-relaxed">
-          이 체크는 우울증상 자가관찰을 위한 참고도구로, 전문적 평가를 대체할 수 없습니다. 
-          정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.
+          {isEnglish 
+            ? 'This check is a reference tool for self-observation of depressive symptoms and cannot replace professional evaluation. Please consult a specialist for accurate diagnosis and treatment.'
+            : '이 체크는 우울증상 자가관찰을 위한 참고도구로, 전문적 평가를 대체할 수 없습니다. 정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.'}
         </p>
       </Card>
 
-      {/* 음성 기능 */}
+      {/* Voice feature */}
       <VoiceFeature 
-        title="우울증 검사 결과 음성 안내"
-        text={`우울증 자가진단 결과를 알려드리겠습니다. 총점 ${total}점으로 ${severity} 수준입니다. 정확한 진단을 위해 전문의와 상담받으시기 바랍니다.`}
+        title={isEnglish ? "Depression Test Result Voice Guide" : "우울증 검사 결과 음성 안내"}
+        text={isEnglish 
+          ? `Your depression self-check result: Total score ${total} points, ${severityLabel} level. Please consult a specialist for accurate diagnosis.`
+          : `우울증 자가진단 결과를 알려드리겠습니다. 총점 ${total}점으로 ${severityLabel} 수준입니다. 정확한 진단을 위해 전문의와 상담받으시기 바랍니다.`}
         type="result"
       />
 
-      {/* 바이럴 공유 섹션 */}
+      {/* Sharing section */}
       <Card className="p-6 bg-gradient-to-r from-pink-50 to-purple-50 border-pink-200">
         <div className="text-center mb-4">
           <h3 className="text-xl font-bold flex items-center justify-center gap-2">
             <Sparkles className="w-5 h-5 text-pink-500" />
-            친구들에게 공유하기
+            {isEnglish ? 'Share with Friends' : '친구들에게 공유하기'}
           </h3>
           <p className="text-sm text-muted-foreground mt-1">
-            "이거 어디서 했어?" 친구들이 물어볼 거예요! 🔥
+            {isEnglish ? '"Where did you take this?" Your friends will ask! 🔥' : '"이거 어디서 했어?" 친구들이 물어볼 거예요! 🔥'}
           </p>
         </div>
 
         <div className="grid grid-cols-4 gap-2 mb-4">
-          {/* PDF 저장 */}
           <Button
             onClick={handlePDFDownload}
             className="flex-col h-auto py-3 bg-gradient-to-br from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
           >
             <Download className="w-5 h-5 mb-1" />
-            <span className="text-[10px]">PDF 저장</span>
+            <span className="text-[10px]">{isEnglish ? 'Save PDF' : 'PDF 저장'}</span>
           </Button>
 
-          {/* 카카오톡 */}
           <Button
             onClick={() => {
-              const message = `💚 우울감 체크 결과\n\n총점: ${total}점\n상태: ${severity}\n\n🔗 나도 해보기: ${window.location.origin}/assessment\n\n#우울증테스트 #자가진단 #AIHPRO`;
+              const message = isEnglish 
+                ? `💚 Depression Check Result\n\nTotal: ${total}pts\nStatus: ${severityLabel}\n\n🔗 Try it: ${window.location.origin}/en/assessment\n\n#DepressionTest #SelfCheck #AIHPRO`
+                : `💚 우울감 체크 결과\n\n총점: ${total}점\n상태: ${severityLabel}\n\n🔗 나도 해보기: ${window.location.origin}/assessment\n\n#우울증테스트 #자가진단 #AIHPRO`;
               if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
                 window.location.href = `kakaotalk://send?text=${encodeURIComponent(message)}`;
               } else {
                 navigator.clipboard.writeText(message);
-                toast({ title: "카카오톡에 붙여넣기 하세요! 💬" });
+                toast({ title: isEnglish ? "Copied! Paste to share 💬" : "카카오톡에 붙여넣기 하세요! 💬" });
               }
             }}
             className="flex-col h-auto py-3 bg-yellow-400 hover:bg-yellow-500 text-black"
           >
             <MessageCircle className="w-5 h-5 mb-1" />
-            <span className="text-[10px]">카카오톡</span>
+            <span className="text-[10px]">{isEnglish ? 'Share' : '카카오톡'}</span>
           </Button>
 
-          {/* 인스타그램 */}
           <Button
             onClick={() => {
               handlePDFDownload();
-              toast({ title: "PDF를 저장했어요!", description: "인스타 스토리에 업로드하세요 📸" });
+              toast({ title: isEnglish ? "PDF saved!" : "PDF를 저장했어요!", description: isEnglish ? "Upload to your Instagram Story 📸" : "인스타 스토리에 업로드하세요 📸" });
             }}
             className="flex-col h-auto py-3 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 hover:opacity-90"
           >
             <Instagram className="w-5 h-5 mb-1" />
-            <span className="text-[10px]">인스타</span>
+            <span className="text-[10px]">{isEnglish ? 'Instagram' : '인스타'}</span>
           </Button>
 
-          {/* 공유하기 */}
           <Button
             onClick={async () => {
               if (navigator.share) {
                 try {
                   await navigator.share({
-                    title: `우울감 체크 결과: ${severity}`,
-                    text: `총점 ${total}점으로 ${severity} 수준입니다.\n\n나도 테스트해보기!`,
-                    url: `${window.location.origin}/assessment`,
+                    title: isEnglish ? `Depression Check: ${severityLabel}` : `우울감 체크 결과: ${severityLabel}`,
+                    text: isEnglish ? `Score ${total}pts, ${severityLabel} level.\n\nTry the test!` : `총점 ${total}점으로 ${severityLabel} 수준입니다.\n\n나도 테스트해보기!`,
+                    url: `${window.location.origin}${localePath('/assessment')}`,
                   });
                 } catch (error) {
-                  console.log('공유 취소됨');
+                  console.log('Share cancelled');
                 }
               } else {
                 handleShareText();
@@ -608,37 +619,26 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
             className="flex-col h-auto py-3"
           >
             <Share2 className="w-5 h-5 mb-1" />
-            <span className="text-[10px]">더보기</span>
+            <span className="text-[10px]">{isEnglish ? 'More' : '더보기'}</span>
           </Button>
         </div>
 
-        {/* 링크 복사 */}
-        <Button
-          onClick={handleShareText}
-          variant="outline"
-          className="w-full"
-          size="sm"
-        >
+        <Button onClick={handleShareText} variant="outline" className="w-full" size="sm">
           <Copy className="w-4 h-4 mr-2" />
-          결과 링크 복사하기
+          {isEnglish ? 'Copy result link' : '결과 링크 복사하기'}
         </Button>
       </Card>
 
-      {/* 바이럴 유도 메시지 */}
+      {/* Viral prompt */}
       <div className="text-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
         <p className="text-sm">
-          💡 <strong>친구도 테스트하면</strong> 서로 결과 비교할 수 있어요!
+          💡 <strong>{isEnglish ? 'Share with a friend' : '친구도 테스트하면'}</strong> {isEnglish ? 'and compare your results!' : '서로 결과 비교할 수 있어요!'}
         </p>
       </div>
 
-      {/* 전문가 상담 권유 */}
       <ExpertConsultationNotice />
       
-      {/* 맞춤 추천 및 B2B 제안 */}
-      <PersonalizedProductRecommendation 
-        testType="depression"
-        testResult={results}
-      />
+      <PersonalizedProductRecommendation testType="depression" testResult={results} />
     </div>
   );
 };

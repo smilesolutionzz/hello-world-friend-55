@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { VoiceInputButton } from "@/components/ui/VoiceInputButton";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface InstantReport {
   report: string;

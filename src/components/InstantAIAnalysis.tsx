@@ -261,7 +261,7 @@ const InstantAIAnalysis = () => {
     
     try {
       const { data, error } = await supabase.functions.invoke('expand-prompt', {
-        body: { prompt: inputText }
+        body: { prompt: inputText, language: isEnglish ? 'en' : 'ko' }
       });
 
       if (error) {

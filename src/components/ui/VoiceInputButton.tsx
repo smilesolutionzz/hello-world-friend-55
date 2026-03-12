@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Mic, MicOff, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface VoiceInputButtonProps {
   onTranscription: (text: string) => void;

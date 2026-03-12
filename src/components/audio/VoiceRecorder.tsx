@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Mic, Square, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface VoiceRecorderProps {
   onTranscription: (text: string) => void;

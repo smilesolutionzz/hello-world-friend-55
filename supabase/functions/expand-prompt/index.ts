@@ -14,33 +14,52 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt } = await req.json();
+    const body = await req.json();
+    const prompt = body?.prompt;
+    const language = body?.language === 'en' ? 'en' : 'ko';
+    const isEnglish = language === 'en';
 
     if (!prompt || prompt.trim().length < 10) {
       return new Response(
-        JSON.stringify({ error: '최소 10자 이상 입력해주세요.' }),
+        JSON.stringify({ error: isEnglish ? 'Please enter at least 10 characters.' : '최소 10자 이상 입력해주세요.' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    console.log('프롬프트 확장 요청:', prompt);
 
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          {
-            role: 'system',
-            content: `당신은 사용자가 입력한 짧은 고민을 더 구체적이고 명확한 내용으로 확장하는 전문가입니다.
+    const systemPrompt = isEnglish
+      ? `You are an expert at expanding short user concerns into clearer, more specific statements.
+
+**Core rules:**
+- Never use empathy, consolation, or encouragement (e.g., "I understand how you feel").
+- Write only factual concern content in first-person voice.
+- Expand context, symptoms, and worries with concrete detail.
+
+**Include these elements:**
+1. Specific situation/symptoms
+2. Age/stage/time period
+3. Frequency or intensity
+4. Comparison point or concern trigger
+
+**Good examples:**
+Input: "My child is late to speak"
+Output: "My 21-month-old can only say 'mom' and 'dad' and does not use other words yet. Children of similar age around us are already combining words, but my child mostly babbles without vocabulary growth. I am worried this could indicate a language delay."
+
+Input: "I feel depressed"
+Output: "For the past three months, I have felt depressed almost every day. It is hard to get out of bed in the morning, and I no longer enjoy activities or meeting friends. My concentration has dropped at work, and I become irritable over small things. I also struggle to sleep at night, and daily functioning feels difficult."
+
+**Forbidden:**
+- Any emotional validation or empathy language
+- Any suggestions/advice beyond factual expansion
+
+**Output format:**
+- 2-4 natural English sentences
+- First-person factual statements only
+- No additional personal details` 
+      : `당신은 사용자가 입력한 짧은 고민을 더 구체적이고 명확한 내용으로 확장하는 전문가입니다.
 
 **핵심 원칙:**
 - 위로나 공감 표현 절대 금지 (예: "걱정하시는 마음을 이해합니다", "충분히 이해됩니다" 등)
@@ -60,9 +79,6 @@ serve(async (req) => {
 입력: "우울해요"
 출력: "최근 3개월간 매일 우울감을 느낍니다. 아침에 일어나기 힘들고, 평소 좋아하던 운동이나 친구 만남에도 전혀 흥미가 없습니다. 집중력이 떨어져 업무 처리가 어렵고, 사소한 일에도 쉽게 짜증이 납니다. 밤에는 잠도 잘 안 와서 일상생활이 힘듭니다."
 
-입력: "학교 가기 싫어해요"
-출력: "초등 2학년 아이가 2주 전부터 매일 아침 배 아프다며 학교 가기를 거부합니다. 억지로 보내면 울면서 가고, 집에 오면 학교 이야기를 전혀 하지 않습니다. 친구 관계나 학업 문제가 있는 건 아닌지, 학교 적응에 어려움이 있는 건 아닌지 걱정됩니다."
-
 **절대 금지 표현:**
 - "~하시는 마음을 이해합니다"
 - "충분히 ~하실 수 있습니다"
@@ -74,7 +90,20 @@ serve(async (req) => {
 - 100-200자
 - 1인칭 사실 진술만
 - 자연스러운 한국어
-- 개인정보 추가 금지`
+- 개인정보 추가 금지`;
+
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt
           },
           {
             role: 'user',
@@ -85,15 +114,17 @@ serve(async (req) => {
     });
 
     const data = await response.json();
-    
+
     if (!response.ok) {
-      console.error('AI Gateway 오류:', data);
-      throw new Error(data.error?.message || 'AI Gateway 호출 실패');
+      console.error('AI Gateway error:', data);
+      throw new Error(data.error?.message || (isEnglish ? 'Failed to call AI Gateway' : 'AI Gateway 호출 실패'));
     }
 
-    const expandedPrompt = data.choices[0].message.content.trim();
+    const expandedPrompt = data.choices?.[0]?.message?.content?.trim();
 
-    console.log('확장된 프롬프트:', expandedPrompt);
+    if (!expandedPrompt) {
+      throw new Error(isEnglish ? 'No expanded prompt returned.' : '확장된 프롬프트를 받지 못했습니다.');
+    }
 
     return new Response(
       JSON.stringify({ expandedPrompt }),
@@ -101,9 +132,9 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('프롬프트 확장 오류:', error);
+    console.error('Prompt expansion error:', error);
     return new Response(
-      JSON.stringify({ error: error.message || '프롬프트 확장 중 오류가 발생했습니다.' }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Prompt expansion failed.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

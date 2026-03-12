@@ -139,13 +139,15 @@ const SubscriptionValueSection = () => {
               <div className="w-full bg-slate-800/80 border border-slate-700/50 rounded-xl p-6 text-center">
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <Clock className="w-4 h-4 text-violet-400" />
-                  <span className="text-violet-300 font-semibold text-sm">특별 할인 마감까지</span>
+                  <span className="text-violet-300 font-semibold text-sm">
+                    {isEnglish ? 'Special offer ends in' : '특별 할인 마감까지'}
+                  </span>
                 </div>
                 <div className="flex justify-center gap-3">
                   {[
-                    { val: pad(timeLeft.hours), label: '시간' },
-                    { val: pad(timeLeft.minutes), label: '분' },
-                    { val: pad(timeLeft.seconds), label: '초' },
+                    { val: pad(timeLeft.hours), label: isEnglish ? 'Hours' : '시간' },
+                    { val: pad(timeLeft.minutes), label: isEnglish ? 'Min' : '분' },
+                    { val: pad(timeLeft.seconds), label: isEnglish ? 'Sec' : '초' },
                   ].map((item, i) => (
                     <div key={i} className="flex flex-col items-center">
                       <div className="bg-slate-900 border border-slate-600/50 rounded-lg w-16 h-16 flex items-center justify-center mb-1">

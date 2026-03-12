@@ -413,7 +413,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
           onClick={() => {
             localStorage.setItem('instant_analysis_result', JSON.stringify(analysisResult));
             localStorage.setItem('instant_analysis_input', inputText);
-            navigate('/report-generator');
+            navigate(isEnglish ? '/en/report-generator' : '/report-generator');
           }}
           className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-4 rounded-xl"
         >
@@ -437,7 +437,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
         </div>
         <div className="flex gap-3">
           <Button
-            onClick={() => { localStorage.setItem('instant_analysis_input', inputText); navigate('/assessment'); }}
+            onClick={() => { localStorage.setItem('instant_analysis_input', inputText); navigate(isEnglish ? '/en/assessment' : '/assessment'); }}
             className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-5 rounded-xl"
           >
             <Sparkles className="w-4 h-4 mr-2" />

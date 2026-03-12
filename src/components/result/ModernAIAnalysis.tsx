@@ -52,10 +52,10 @@ export const ModernAIAnalysis: React.FC<ModernAIAnalysisProps> = ({
               </div>
               <div className="text-center">
                 <p className="text-sm font-medium text-violet-700 dark:text-violet-300">
-                  AI가 분석 중입니다...
+                  {isEnglish ? 'AI is analyzing...' : 'AI가 분석 중입니다...'}
                 </p>
                 <p className="text-xs text-violet-500 dark:text-violet-400 mt-1">
-                  잠시만 기다려주세요
+                  {isEnglish ? 'Please wait a moment' : '잠시만 기다려주세요'}
                 </p>
               </div>
             </div>

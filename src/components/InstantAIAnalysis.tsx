@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from '@/i18n/useTranslation';
+import { useLanguage } from '@/i18n/LanguageContext';
 import { 
   Sparkles, 
   ArrowRight, 

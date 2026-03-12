@@ -130,8 +130,8 @@ const ChatInterface = () => {
     } catch (error: any) {
       console.error('프롬프트 확장 오류:', error);
       toast({
-        title: "확장 실패",
-        description: "프롬프트 확장 중 오류가 발생했습니다.",
+        title: isEnglish ? "Expansion failed" : "확장 실패",
+        description: isEnglish ? "An error occurred while refining your prompt." : "프롬프트 확장 중 오류가 발생했습니다.",
         variant: "destructive"
       });
     } finally {

@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Heart, Brain, Users, Briefcase, ArrowLeft, ArrowRight } from "lucide-react";
 import { adultAssessmentQuestions } from "@/data/assessmentQuestions";
 import { AssessmentQuestion } from "@/types/assessment";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface AdultAssessmentProps {
   age: number;
@@ -13,7 +14,8 @@ interface AdultAssessmentProps {
 }
 
 const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
-  // 모든 질문을 평면화
+  const { isEnglish } = useLanguage();
+
   const allQuestions: AssessmentQuestion[] = [
     ...adultAssessmentQuestions.emotionalWellnessCheck,
     ...adultAssessmentQuestions.mindPeaceCheck,
@@ -26,50 +28,37 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
   const [showClinicalInfo, setShowClinicalInfo] = useState(false);
 
   const currentQuestion = allQuestions[currentQuestionIndex];
-  
-  // 질문이 없는 경우 처리
-  if (!currentQuestion) {
-    return <div>Loading...</div>;
-  }
+  if (!currentQuestion) return <div>Loading...</div>;
   
   const progress = ((currentQuestionIndex + 1) / allQuestions.length) * 100;
   const isLastQuestion = currentQuestionIndex === allQuestions.length - 1;
 
   const handleAnswer = (score: number) => {
-    const newAnswers = {
-      ...answers,
-      [currentQuestion.id]: score
-    };
+    const newAnswers = { ...answers, [currentQuestion.id]: score };
     setAnswers(newAnswers);
-
-    if (isLastQuestion) {
-      onComplete(newAnswers);
-    } else {
-      setCurrentQuestionIndex(prev => prev + 1);
-      setShowClinicalInfo(false);
-    }
+    if (isLastQuestion) onComplete(newAnswers);
+    else { setCurrentQuestionIndex(prev => prev + 1); setShowClinicalInfo(false); }
   };
 
   const handlePrevious = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(prev => prev - 1);
-      setShowClinicalInfo(false);
-    }
+    if (currentQuestionIndex > 0) { setCurrentQuestionIndex(prev => prev - 1); setShowClinicalInfo(false); }
   };
 
   const getCategoryIcon = (questionId: string) => {
-    if (questionId.startsWith('emo_') || questionId.startsWith('peace_')) {
-      return Heart;
-    } else if (questionId.startsWith('char_')) {
-      return Brain;
-    } else if (questionId.startsWith('work_')) {
-      return Briefcase;
-    } else {
-      return Users;
-    }
+    if (questionId.startsWith('emo_') || questionId.startsWith('peace_')) return Heart;
+    if (questionId.startsWith('char_')) return Brain;
+    if (questionId.startsWith('work_')) return Briefcase;
+    return Users;
   };
 
   const getCategoryName = (questionId: string) => {
+    if (isEnglish) {
+      if (questionId.startsWith('emo_')) return "Emotional Wellness";
+      if (questionId.startsWith('peace_')) return "Mental Peace";
+      if (questionId.startsWith('char_')) return "Personal Traits";
+      if (questionId.startsWith('work_')) return "Workplace Adaptation";
+      return "Assessment";
+    }
     if (questionId.startsWith('emo_')) return "감정건강 체크";
     if (questionId.startsWith('peace_')) return "마음평안 평가";
     if (questionId.startsWith('char_')) return "개인특성 분석";
@@ -86,17 +75,24 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
   };
 
   const getAnswerOptions = () => {
-    // 감정건강/마음평안 척도 기반 응답 옵션
     if (currentQuestion.id.startsWith('emo_') || currentQuestion.id.startsWith('peace_')) {
-      return [
+      return isEnglish ? [
+        { score: 0, label: "Not at all", description: "No symptoms at all", color: "text-green-700 bg-green-50 border-green-200" },
+        { score: 1, label: "Mild", description: "Occasionally felt mild symptoms", color: "text-yellow-700 bg-yellow-50 border-yellow-200" },
+        { score: 2, label: "Moderate", description: "Often felt moderate symptoms", color: "text-orange-700 bg-orange-50 border-orange-200" },
+        { score: 3, label: "Severe", description: "Felt severe symptoms almost daily", color: "text-red-700 bg-red-50 border-red-200" }
+      ] : [
         { score: 0, label: "전혀 없음", description: "해당 증상이 전혀 없었습니다", color: "text-green-700 bg-green-50 border-green-200" },
         { score: 1, label: "경미함", description: "가끔 경미하게 느꼈습니다", color: "text-yellow-700 bg-yellow-50 border-yellow-200" },
         { score: 2, label: "보통", description: "종종 보통 정도로 느꼈습니다", color: "text-orange-700 bg-orange-50 border-orange-200" },
         { score: 3, label: "심함", description: "거의 매일 심하게 느꼈습니다", color: "text-red-700 bg-red-50 border-red-200" }
       ];
     } else {
-      // 성격/직장 적응도 - 일반적인 리커트 척도
-      return [
+      return isEnglish ? [
+        { score: 2, label: "Strongly agree", description: "Completely agree", color: "text-green-700 bg-green-50 border-green-200" },
+        { score: 1, label: "Agree", description: "Somewhat agree", color: "text-blue-700 bg-blue-50 border-blue-200" },
+        { score: 0, label: "Disagree", description: "Do not agree", color: "text-orange-700 bg-orange-50 border-orange-200" }
+      ] : [
         { score: 2, label: "매우 그렇다", description: "완전히 동의합니다", color: "text-green-700 bg-green-50 border-green-200" },
         { score: 1, label: "그렇다", description: "어느 정도 동의합니다", color: "text-blue-700 bg-blue-50 border-blue-200" },
         { score: 0, label: "그렇지 않다", description: "동의하지 않습니다", color: "text-orange-700 bg-orange-50 border-orange-200" }
@@ -106,83 +102,62 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
 
   return (
     <div className="bg-gradient-to-br from-background via-primary/10 to-primary-glow/20 relative overflow-hidden py-8 min-h-[calc(100vh-64px)]">
-      {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />
         <div className="absolute bottom-32 right-16 w-96 h-96 bg-primary-glow/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
       </div>
 
       <div className="relative z-10 container mx-auto px-6 pt-8 pb-16">
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <Button 
-            variant="ghost" 
-            onClick={onBack}
-            className="flex items-center gap-2"
-          >
+          <Button variant="ghost" onClick={onBack} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
-            뒤로가기
+            {isEnglish ? 'Back' : '뒤로가기'}
           </Button>
-          
           <div className="text-center">
             <div className="text-lg font-semibold text-brand-gradient">
-              성인 임상심리평가 ({age}세)
+              {isEnglish ? `Adult Clinical Assessment (Age ${age})` : `성인 임상심리평가 (${age}세)`}
             </div>
             <div className="text-sm text-muted-foreground">
               {currentQuestionIndex + 1} / {allQuestions.length}
             </div>
           </div>
-          
-          <div className="w-20" /> {/* Spacer */}
+          <div className="w-20" />
         </div>
 
-        {/* Progress Bar */}
         <div className="max-w-4xl mx-auto mb-8">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-muted-foreground">진행률</span>
+            <span className="text-sm text-muted-foreground">{isEnglish ? 'Progress' : '진행률'}</span>
             <span className="text-sm font-semibold text-primary">{Math.round(progress)}%</span>
           </div>
           <Progress value={progress} className="h-3" />
         </div>
 
-        {/* Question Card */}
         <div className="max-w-4xl mx-auto">
           <Card className="overflow-hidden hover-glow">
             <div className="p-8 space-y-6">
-              {/* Category Badge */}
               <div className="flex items-center gap-3">
-                {React.createElement(getCategoryIcon(currentQuestion.id), {
-                  className: "w-6 h-6 text-primary"
-                })}
+                {React.createElement(getCategoryIcon(currentQuestion.id), { className: "w-6 h-6 text-primary" })}
                 <div className={`px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r ${getCategoryColor(currentQuestion.id)}`}>
                   {getCategoryName(currentQuestion.id)}
                 </div>
                 <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                  전문 임상척도
+                  {isEnglish ? 'Clinical Scale' : '전문 임상척도'}
                 </div>
               </div>
 
-              {/* Question */}
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-foreground leading-relaxed">
-                  {currentQuestion.text}
-                </h2>
-                
-                {/* Clinical Significance Toggle */}
+                <h2 className="text-2xl font-bold text-foreground leading-relaxed">{currentQuestion.text}</h2>
                 {currentQuestion.clinicalSignificance && (
                   <div className="space-y-3">
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowClinicalInfo(!showClinicalInfo)}
-                      className="text-sm"
-                    >
-                      {showClinicalInfo ? '임상정보 숨기기' : '임상정보 보기'}
+                    <Button variant="outline" onClick={() => setShowClinicalInfo(!showClinicalInfo)} className="text-sm">
+                      {showClinicalInfo 
+                        ? (isEnglish ? 'Hide Clinical Info' : '임상정보 숨기기') 
+                        : (isEnglish ? 'View Clinical Info' : '임상정보 보기')}
                     </Button>
-                    
                     {showClinicalInfo && (
                       <div className="bg-primary/10 p-4 rounded-xl border-l-4 border-primary">
                         <p className="text-sm">
-                          <strong>임상적 의미:</strong> {currentQuestion.clinicalSignificance}
+                          <strong>{isEnglish ? 'Clinical Significance:' : '임상적 의미:'}</strong> {currentQuestion.clinicalSignificance}
                         </p>
                       </div>
                     )}
@@ -190,26 +165,22 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
                 )}
               </div>
 
-              {/* Instructions */}
               <div className="bg-calm-blue/20 p-4 rounded-xl">
                 <p className="text-sm text-foreground">
-                  <strong>지난 2주간의 경험</strong>을 바탕으로 가장 적합한 답변을 선택해주세요. 
-                  정확한 진단을 위해 솔직하게 응답해주시기 바랍니다.
+                  {isEnglish 
+                    ? <><strong>Based on the past 2 weeks</strong>, please select the most appropriate answer. Please respond honestly for accurate assessment.</>
+                    : <><strong>지난 2주간의 경험</strong>을 바탕으로 가장 적합한 답변을 선택해주세요. 정확한 진단을 위해 솔직하게 응답해주시기 바랍니다.</>}
                 </p>
               </div>
 
-              {/* Answer Options */}
               <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-foreground">응답을 선택해주세요:</h3>
-                
+                <h3 className="text-lg font-semibold text-foreground">
+                  {isEnglish ? 'Select your response:' : '응답을 선택해주세요:'}
+                </h3>
                 <div className="grid gap-3">
                   {getAnswerOptions().map((option, index) => (
-                    <Button
-                      key={index}
-                      variant="outline"
-                      onClick={() => handleAnswer(option.score)}
-                      className={`p-6 h-auto text-left justify-start hover:scale-[1.02] transition-all group ${option.color}`}
-                    >
+                    <Button key={index} variant="outline" onClick={() => handleAnswer(option.score)}
+                      className={`p-6 h-auto text-left justify-start hover:scale-[1.02] transition-all group ${option.color}`}>
                       <div className="flex items-start gap-3 w-full">
                         <div className="w-6 h-6 border-2 border-current rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                           <div className="w-3 h-3 bg-current rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -224,35 +195,29 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
                 </div>
               </div>
 
-              {/* Assessment Type Info */}
               <div className="bg-warm-lavender/20 p-4 rounded-xl">
                 <div className="text-sm space-y-1">
-                  <p><strong>평가 도구:</strong> 
-                    {currentQuestion.id.startsWith('emo_') && " AIH 감정건강 자가체크"}
-                    {currentQuestion.id.startsWith('peace_') && " AIH 마음평안 체크"}
-                    {currentQuestion.id.startsWith('char_') && " AIH 개인특성 분석"}
-                    {currentQuestion.id.startsWith('work_') && " AIH 직장적응 척도"}
+                  <p><strong>{isEnglish ? 'Assessment Tool:' : '평가 도구:'}</strong>
+                    {currentQuestion.id.startsWith('emo_') && (isEnglish ? " AIH Emotional Wellness Self-Check" : " AIH 감정건강 자가체크")}
+                    {currentQuestion.id.startsWith('peace_') && (isEnglish ? " AIH Mental Peace Check" : " AIH 마음평안 체크")}
+                    {currentQuestion.id.startsWith('char_') && (isEnglish ? " AIH Personal Traits Analysis" : " AIH 개인특성 분석")}
+                    {currentQuestion.id.startsWith('work_') && (isEnglish ? " AIH Workplace Adaptation Scale" : " AIH 직장적응 척도")}
                   </p>
                   <p className="text-muted-foreground">
-                    AIH에서 개발한 창작형 평가도구로 신뢰성 있는 분석을 제공합니다.
+                    {isEnglish 
+                      ? 'An original assessment tool developed by AIH providing reliable analysis.'
+                      : 'AIH에서 개발한 창작형 평가도구로 신뢰성 있는 분석을 제공합니다.'}
                   </p>
                 </div>
               </div>
 
-              {/* Navigation */}
               <div className="flex justify-between pt-4">
-                <Button
-                  variant="ghost"
-                  onClick={handlePrevious}
-                  disabled={currentQuestionIndex === 0}
-                  className="flex items-center gap-2"
-                >
+                <Button variant="ghost" onClick={handlePrevious} disabled={currentQuestionIndex === 0} className="flex items-center gap-2">
                   <ArrowLeft className="w-4 h-4" />
-                  이전 질문
+                  {isEnglish ? 'Previous' : '이전 질문'}
                 </Button>
-                
                 <div className="text-sm text-muted-foreground">
-                  예상 소요시간: 3분
+                  {isEnglish ? 'Est. time: 3 min' : '예상 소요시간: 3분'}
                 </div>
               </div>
             </div>

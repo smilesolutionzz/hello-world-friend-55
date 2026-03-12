@@ -14,6 +14,7 @@ import { PDFHeader } from '@/components/common/PDFHeader';
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface PremiumAssessmentResultProps {
   assessmentType: string;

@@ -617,11 +617,11 @@ const PremiumAssessmentResult = ({
                 <div className="mb-4 p-4 rounded-lg border border-yellow-200 bg-yellow-50">
                   <p className="text-sm text-yellow-800 mb-3">⚠️ {tokenError}</p>
                   <div className="flex flex-wrap gap-2">
-                    <Button size="sm" onClick={() => navigate('/token-subscription')} className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
-                      토큰 충전하기
+                    <Button size="sm" onClick={() => navigate(localePath('/token-subscription'))} className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+                      {isEnglish ? 'Top Up Tokens' : '토큰 충전하기'}
                     </Button>
                     <Button size="sm" variant="outline" onClick={generateAIAnalysis} disabled={isAnalyzing}>
-                      다시 시도
+                      {isEnglish ? 'Retry' : '다시 시도'}
                     </Button>
                   </div>
                 </div>

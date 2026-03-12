@@ -575,7 +575,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
                   <Button 
                     size="lg"
                     className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 shadow-lg"
-                    onClick={() => navigate('/auth?mode=signup')}
+                    onClick={() => navigate(localePath('/auth?mode=signup'))}
                   >
                     <UserPlus className="w-5 h-5 mr-2" />
                     {isEnglish ? 'Free Sign Up' : '무료 회원가입'}

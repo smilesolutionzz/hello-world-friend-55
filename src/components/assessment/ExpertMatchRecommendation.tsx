@@ -84,6 +84,7 @@ export const ExpertMatchRecommendation = ({
   scores 
 }: ExpertMatchRecommendationProps) => {
   const navigate = useNavigate();
+  const { isEnglish, localePath } = useLanguage();
   const [experts, setExperts] = useState<Expert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'counseling'>('all');

@@ -46,7 +46,7 @@ const mechanismInfoEn: Record<string, { name: string; emoji: string; description
 export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ result, onBack }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isEnglish } = useLanguage();
+  const { isEnglish, localePath } = useLanguage();
   const mechanismInfo = isEnglish ? mechanismInfoEn : mechanismInfoKo;
 
   useAutoSaveTestResult({

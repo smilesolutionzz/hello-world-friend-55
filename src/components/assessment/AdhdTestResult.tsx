@@ -620,7 +620,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold">증상 영역별 점수</h3>
+            <h3 className="text-xl font-semibold">{isEnglish ? 'Symptom Area Scores' : '증상 영역별 점수'}</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>

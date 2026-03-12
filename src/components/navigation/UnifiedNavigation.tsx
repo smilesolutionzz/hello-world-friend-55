@@ -322,7 +322,7 @@ export const UnifiedNavigation = () => {
           {/* Logo */}
           <div 
             className="flex items-center gap-2 cursor-pointer"
-            onClick={() => navigate('/')}
+            onClick={() => navigate(localePath('/'))}
           >
             <img src={logo} alt="AIHPRO" className="h-8 w-8 rounded-lg" />
             <span className="text-lg font-bold">AIHPRO</span>

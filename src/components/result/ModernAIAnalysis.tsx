@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, Loader2, Brain } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface ModernAIAnalysisProps {
   analysis: string;

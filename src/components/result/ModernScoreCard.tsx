@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { LucideIcon } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface ModernScoreCardProps {
   title: string;

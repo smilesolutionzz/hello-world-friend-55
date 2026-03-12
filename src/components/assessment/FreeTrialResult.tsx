@@ -37,7 +37,7 @@ interface FreeTrialResultProps {
 const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isEnglish } = useLanguage();
+  const { isEnglish, localePath } = useLanguage();
   const { isPremiumUser, isLifetimeUser } = useSubscription();
   const isPremium = isPremiumUser() || isLifetimeUser();
   

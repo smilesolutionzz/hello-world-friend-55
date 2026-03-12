@@ -735,34 +735,34 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
       <div className="grid md:grid-cols-5 gap-4">
         <Button 
           className="btn-brand h-20"
-          onClick={() => navigate('/expert-hiring')}
+          onClick={() => navigate(localePath('/expert-hiring'))}
         >
           <ExternalLink className="w-5 h-5 mr-2 flex-shrink-0" />
           <div className="text-left">
-            <div className="font-semibold text-base">ADHD전문가연결</div>
-            <div className="text-xs opacity-90">맞춤 추천 상담</div>
+            <div className="font-semibold text-base">{isEnglish ? 'ADHD Expert' : 'ADHD전문가연결'}</div>
+            <div className="text-xs opacity-90">{isEnglish ? 'Matched counseling' : '맞춤 추천 상담'}</div>
           </div>
         </Button>
 
         <Button 
           className="btn-brand h-20"
-          onClick={() => navigate('/counseling', { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
+          onClick={() => navigate(localePath('/counseling'), { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
         >
           <MessageCircle className="w-5 h-5 mr-2 flex-shrink-0" />
           <div className="text-left">
-            <div className="font-semibold text-base">단계별 상담 시작</div>
-            <div className="text-xs opacity-90">AI → 전문가</div>
+            <div className="font-semibold text-base">{isEnglish ? 'Step Counseling' : '단계별 상담 시작'}</div>
+            <div className="text-xs opacity-90">{isEnglish ? 'AI → Expert' : 'AI → 전문가'}</div>
           </div>
         </Button>
 
         <Button 
           className="bg-blue-600 hover:bg-blue-700 text-white h-20"
-          onClick={() => navigate('/ai-counselor', { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
+          onClick={() => navigate(localePath('/ai-counselor'), { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
         >
           <Brain className="w-5 h-5 mr-2 flex-shrink-0" />
           <div className="text-left">
-            <div className="font-semibold text-base">AI 상담만</div>
-            <div className="text-xs opacity-90">빠른 상담</div>
+            <div className="font-semibold text-base">{isEnglish ? 'AI Counseling' : 'AI 상담만'}</div>
+            <div className="text-xs opacity-90">{isEnglish ? 'Quick session' : '빠른 상담'}</div>
           </div>
         </Button>
 

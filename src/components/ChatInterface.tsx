@@ -365,12 +365,12 @@ const ChatInterface = () => {
               {isExpanding ? (
                 <>
                   <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
-                  <span>다듬는 중...</span>
+                  <span>{isEnglish ? 'Refining...' : '다듬는 중...'}</span>
                 </>
               ) : (
                 <>
                   <Wand2 className="w-3.5 h-3.5" />
-                  <span>AI다듬기</span>
+                  <span>{isEnglish ? 'AI Refine' : 'AI다듬기'}</span>
                 </>
               )}
             </Button>

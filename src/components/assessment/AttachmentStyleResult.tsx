@@ -30,7 +30,7 @@ interface AttachmentStyleResultProps {
 const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, onRestart }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isEnglish } = useLanguage();
+  const { isEnglish, localePath } = useLanguage();
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 

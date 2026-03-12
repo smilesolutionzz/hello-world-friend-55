@@ -104,8 +104,8 @@ const ChatInterface = () => {
   const handleExpandPrompt = async () => {
     if (!message.trim() || message.length < 10) {
       toast({
-        title: "입력 확인",
-        description: "최소 10자 이상 입력해주세요.",
+        title: isEnglish ? "Check input" : "입력 확인",
+        description: isEnglish ? "Please enter at least 10 characters." : "최소 10자 이상 입력해주세요.",
         variant: "destructive"
       });
       return;

@@ -62,7 +62,7 @@ export const ModernAIAnalysis: React.FC<ModernAIAnalysisProps> = ({
           ) : (
             <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-violet-100 dark:border-violet-800/30">
               <p className="text-sm md:text-base leading-relaxed whitespace-pre-line text-slate-700 dark:text-slate-200">
-                {analysis || fallbackText || '분석 결과가 없습니다.'}
+                {analysis || fallbackText || (isEnglish ? 'No analysis results available.' : '분석 결과가 없습니다.')}
               </p>
             </div>
           )}

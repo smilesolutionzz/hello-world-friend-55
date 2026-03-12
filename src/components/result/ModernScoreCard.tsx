@@ -104,7 +104,7 @@ export const ModernScoreCard: React.FC<ModernScoreCardProps> = ({
                   {score}
                 </span>
                 <span className="text-sm text-slate-500 dark:text-slate-400">
-                  / {maxScore}점
+                  / {maxScore}{isEnglish ? 'pt' : '점'}
                 </span>
               </div>
               

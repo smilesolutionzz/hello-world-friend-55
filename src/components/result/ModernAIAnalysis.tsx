@@ -33,7 +33,7 @@ export const ModernAIAnalysis: React.FC<ModernAIAnalysisProps> = ({
               <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             <div>
-              <span className="text-slate-900 dark:text-white font-semibold">AI 전문가 분석</span>
+              <span className="text-slate-900 dark:text-white font-semibold">{isEnglish ? 'AI Expert Analysis' : 'AI 전문가 분석'}</span>
               <p className="text-xs text-violet-600 dark:text-violet-400 font-normal mt-0.5">
                 Powered by Advanced AI
               </p>

@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from '@/i18n/useTranslation';
+import { useLanguage } from '@/i18n/LanguageContext';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 
 interface Props {
@@ -18,17 +18,107 @@ interface Props {
   onOpenChange: (open: boolean) => void;
 }
 
-const radarData = [
-  { area: '인지', score: 78, fullMark: 100 },
-  { area: '언어', score: 52, fullMark: 100 },
-  { area: '운동', score: 85, fullMark: 100 },
-  { area: '사회성', score: 71, fullMark: 100 },
-  { area: '정서', score: 66, fullMark: 100 },
+const getRadarData = (isEnglish: boolean) => [
+  { area: isEnglish ? 'Cognitive' : '인지', score: 78, fullMark: 100 },
+  { area: isEnglish ? 'Language' : '언어', score: 52, fullMark: 100 },
+  { area: isEnglish ? 'Motor' : '운동', score: 85, fullMark: 100 },
+  { area: isEnglish ? 'Social' : '사회성', score: 71, fullMark: 100 },
+  { area: isEnglish ? 'Emotional' : '정서', score: 66, fullMark: 100 },
 ];
 
 const riskScore = 62;
 
-const sectionData = [
+const getSectionData = (isEnglish: boolean) => isEnglish ? [
+  {
+    icon: Brain, title: 'Core Developmental Analysis', color: 'amber',
+    content: [
+      '**Language Development**: Approximately 6-month delay compared to peers. Receptive language (Bayley-III language domain percentile 38%) is relatively better than expressive language (MLU 2.1).',
+      '**Cognitive Development**: Top 15% performance in visual problem-solving tasks, with excellent pattern recognition abilities (K-CDI-2 cognitive domain percentile 82%).',
+      '**Motor Development**: Gross motor development is age-appropriate, but slight delays observed in fine motor skills (pencil grip, scissors use).',
+    ],
+    references: ['Bayley-III (2025)', 'K-CDI-2', 'Piaget Cognitive Development Theory'],
+  },
+  {
+    icon: Target, title: 'Strengths & Potential', color: 'emerald',
+    content: [
+      '**Visual Learning Ability**: Classified in top 15% spatial intelligence based on Gardner\'s Multiple Intelligences theory. Superior performance in block building and puzzle activities.',
+      '**Creative Problem-Solving**: Prefers unconventional approaches, tends to offer original solutions for open-ended tasks.',
+      '**Artistic Sensitivity**: Concentration time during art/music activities averages 12 minutes, approximately 70% higher than peer average (7 minutes).',
+    ],
+    references: ['Gardner Multiple Intelligences (2023)', 'Torrance Creativity Test Standards'],
+  },
+  {
+    icon: Heart, title: 'Emotional Characteristics', color: 'rose',
+    content: [
+      '**Emotion Regulation**: Gottman Emotion Coaching model application shows tendency for aggressive emotional expression in frustrating situations (CBCL Aggression T-score 62). Appropriate emotional expression possible in stable environments.',
+      '**Attachment Type**: Secure attachment tendency observed through Bowlby\'s Attachment Theory-based observation. Separation anxiety with primary caregiver is age-appropriate.',
+      '**Self-Awareness**: Good initiative development in Erikson\'s "Initiative vs Guilt" stage.',
+    ],
+    references: ['Gottman Emotion Coaching Model', 'Bowlby Attachment Theory', 'CBCL 6/18'],
+  },
+  {
+    icon: Lightbulb, title: 'Tailored Intervention Strategies', color: 'blue',
+    content: [
+      '**Primary**: TEACCH-based visual schedule — to improve routine predictability and reduce transition stress.',
+      '**Secondary**: Ayres Sensory Integration (SI) activities 15 min/day — focusing on tactile and proprioceptive stimulation.',
+      '**Tertiary**: Vygotsky ZPD model-based peer small group activities weekly — to promote language stimulation and social interaction.',
+      '**Supplementary**: Consider introducing PECS Phase 1 — to compensate for expressive language delay.',
+    ],
+    references: ['TEACCH (UNC, 2024)', 'Ayres SI Theory', 'Vygotsky Zone of Proximal Development'],
+  },
+  {
+    icon: Users, title: 'Home Practice Guide', color: 'violet',
+    content: [
+      '**Morning Routine**: Visual card sequence (PECS-based) → Create 3-step visual cards for dressing, washing, eating.',
+      '**Playtime**: 20 minutes of Floor Time daily — interaction-focused based on Greenspan DIR/Floortime model.',
+      '**Evening Routine**: Write an emotion diary together — use 4 emotion cards (happy/sad/angry/scared), practice naming emotions once daily.',
+      '**Sleep Environment**: Minimize sensory stimulation 30 minutes before bedtime, maintain consistent sleep routine (white noise can be used).',
+    ],
+    references: ['Greenspan DIR/Floortime Model', 'PECS Phase I-II'],
+  },
+  {
+    icon: TrendingUp, title: 'Development Forecast & Progress', color: 'orange',
+    content: [
+      '**3-month outlook**: Visual schedule adaptation complete, 30% reduction in crying during routine transitions expected.',
+      '**6-month outlook**: With concurrent speech therapy, 20% increase in expressive vocabulary expected (currently ~80 words → 96 words), increased two-word combinations.',
+      '**12-month outlook**: Improved frequency and quality of peer interactions expected, social development indicators likely to enter normal range.',
+      '⚠️ *Predictions are based on consistent application of recommended interventions; individual differences may apply.*',
+    ],
+    references: ['Vygotsky ZPD Model', 'Longitudinal Development Meta-analysis (2025)'],
+  },
+  {
+    icon: GraduationCap, title: 'Academic References', color: 'cyan',
+    content: [
+      'Key diagnostic tools and theoretical foundations used in this analysis:',
+      '• **DSM-5-TR** (APA, 2022) — Neurodevelopmental disorder diagnostic criteria',
+      '• **Bayley-III** — Comprehensive infant development assessment (cognitive, language, motor)',
+      '• **K-CDI-2** — Korean Child Development Inventory standardized data',
+      '• **CBCL 6/18** — Child Behavior Checklist (Achenbach System)',
+      '• **Piaget Cognitive Development**, **Vygotsky Sociocultural Theory**, **Bowlby Attachment Theory**, **Erikson Psychosocial Development Stages**',
+    ],
+    references: [],
+  },
+  {
+    icon: MapPin, title: 'Related Centers & Experts', color: 'indigo',
+    content: [
+      '📍 **Speech Therapy Centers** (3 matched) — sorted by distance, insurance coverage indicated',
+      '📍 **Sensory Integration Therapy** (2 matched) — facilities with occupational therapists prioritized',
+      '📍 **Developmental Psychology Experts** — 3 AIHPRO-verified expert profiles available (instant booking)',
+      '💡 *We recommend checking eligibility for developmental rehabilitation vouchers with your local services office.*',
+    ],
+    references: ['AIHPRO Expert DB', 'Healthcare Review & Assessment Service Data'],
+  },
+  {
+    icon: Map, title: 'Long-term Development Roadmap', color: 'amber',
+    content: [
+      '🎯 **Phase 1 (1-3 months)**: Visual environment structuring + sensory integration activities → Set mid-checkpoint',
+      '🎯 **Phase 2 (4-6 months)**: Full speech therapy + peer small group participation → K-CDI-2 re-assessment recommended',
+      '🎯 **Phase 3 (7-12 months)**: Comprehensive re-assessment + intervention strategy adjustment → Bayley-III follow-up test',
+      '📅 *Re-assessment schedules are auto-generated with notification-based timely monitoring.*',
+    ],
+    references: ['Individualized Family Service Plan (IFSP) Model'],
+  },
+] : [
   {
     icon: Brain, title: '핵심 발달 분석', color: 'amber',
     content: [
@@ -133,8 +223,12 @@ const colorClasses: Record<string, { bg: string; icon: string; border: string; a
 
 const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [expandedSection, setExpandedSection] = useState<number | null>(0);
+
+  const radarData = getRadarData(isEnglish);
+  const sectionData = getSectionData(isEnglish);
+  const localePath = (path: string) => isEnglish ? `/en${path}` : path;
 
   const getRiskColor = (score: number) => {
     if (score <= 30) return 'text-emerald-500';
@@ -142,16 +236,10 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
     return 'text-orange-500';
   };
 
-  const getRiskGradient = (score: number) => {
-    if (score <= 30) return 'from-emerald-400 to-emerald-500';
-    if (score <= 60) return 'from-amber-400 to-amber-500';
-    return 'from-orange-400 to-red-500';
-  };
-
   const getRiskLabel = (score: number) => {
-    if (score <= 30) return '정상 범위';
-    if (score <= 60) return '관찰 필요';
-    return '주의 관찰 필요';
+    if (score <= 30) return isEnglish ? 'Normal Range' : '정상 범위';
+    if (score <= 60) return isEnglish ? 'Observation Needed' : '관찰 필요';
+    return isEnglish ? 'Attention Required' : '주의 관찰 필요';
   };
 
   return (
@@ -165,8 +253,12 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                 <div className="px-2 py-0.5 bg-amber-500/20 border border-amber-500/30 rounded text-[10px] font-bold text-amber-400 uppercase tracking-wider">Sample Report</div>
                 <span className="text-[10px] text-white/30 font-mono">RPT-2026-0312-A7K9</span>
               </div>
-              <h2 className="text-lg md:text-xl font-bold text-white">전문가급 발달 분석 리포트</h2>
-              <p className="text-white/50 text-xs mt-1">2026년 3월 12일 생성 · Gemini 3 Flash + Perplexity 기반</p>
+              <h2 className="text-lg md:text-xl font-bold text-white">
+                {isEnglish ? 'Expert-Level Developmental Analysis Report' : '전문가급 발달 분석 리포트'}
+              </h2>
+              <p className="text-white/50 text-xs mt-1">
+                {isEnglish ? 'Generated Mar 12, 2026 · Gemini 3 Flash + Perplexity powered' : '2026년 3월 12일 생성 · Gemini 3 Flash + Perplexity 기반'}
+              </p>
             </div>
             <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="text-white/60 hover:text-white hover:bg-white/10 -mt-1">
               <X className="w-5 h-5" />
@@ -183,7 +275,9 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
               <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
                 <div className="flex items-center gap-2 mb-3">
                   <BarChart3 className="w-4 h-4 text-slate-600" />
-                  <h3 className="font-bold text-slate-800 text-sm">5대 발달 영역 분석</h3>
+                  <h3 className="font-bold text-slate-800 text-sm">
+                    {isEnglish ? '5 Developmental Domains' : '5대 발달 영역 분석'}
+                  </h3>
                 </div>
                 <div className="h-52">
                   <ResponsiveContainer width="100%" height="100%">
@@ -191,7 +285,7 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                       <PolarGrid stroke="#e2e8f0" />
                       <PolarAngleAxis dataKey="area" tick={{ fill: '#475569', fontSize: 12, fontWeight: 600 }} />
                       <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                      <Radar name="점수" dataKey="score" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.25} strokeWidth={2} />
+                      <Radar name={isEnglish ? 'Score' : '점수'} dataKey="score" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.25} strokeWidth={2} />
                     </RadarChart>
                   </ResponsiveContainer>
                 </div>
@@ -209,7 +303,9 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                 <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
                   <div className="flex items-center gap-2 mb-3">
                     <Activity className="w-4 h-4 text-slate-600" />
-                    <h3 className="font-bold text-slate-800 text-sm">위험도 측정</h3>
+                    <h3 className="font-bold text-slate-800 text-sm">
+                      {isEnglish ? 'Risk Assessment' : '위험도 측정'}
+                    </h3>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="relative w-20 h-20">
@@ -240,7 +336,11 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                         <AlertTriangle className={`w-4 h-4 ${getRiskColor(riskScore)}`} />
                         <span className={`font-bold text-sm ${getRiskColor(riskScore)}`}>{getRiskLabel(riskScore)}</span>
                       </div>
-                      <p className="text-xs text-slate-500 leading-relaxed">언어 영역 집중 개입 필요.<br />조기 개입 시 정상 범위 진입 가능성 높음.</p>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        {isEnglish 
+                          ? <>Language domain focused intervention needed.<br />High likelihood of entering normal range with early intervention.</>
+                          : <>언어 영역 집중 개입 필요.<br />조기 개입 시 정상 범위 진입 가능성 높음.</>}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -249,12 +349,12 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                   <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 text-center">
                     <Shield className="w-5 h-5 text-emerald-500 mx-auto mb-1" />
                     <p className="text-lg font-bold text-slate-800">94.2%</p>
-                    <p className="text-[10px] text-slate-400">AI 신뢰도</p>
+                    <p className="text-[10px] text-slate-400">{isEnglish ? 'AI Confidence' : 'AI 신뢰도'}</p>
                   </div>
                   <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 text-center">
                     <Star className="w-5 h-5 text-amber-500 mx-auto mb-1" />
                     <p className="text-lg font-bold text-slate-800">15+</p>
-                    <p className="text-[10px] text-slate-400">학술 이론 기반</p>
+                    <p className="text-[10px] text-slate-400">{isEnglish ? 'Academic Theories' : '학술 이론 기반'}</p>
                   </div>
                 </div>
               </div>
@@ -264,20 +364,26 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
             <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-5 border border-amber-200/60">
               <div className="flex items-center gap-2 mb-4">
                 <FileText className="w-5 h-5 text-amber-600" />
-                <h3 className="font-bold text-slate-800">📋 종합 요약</h3>
+                <h3 className="font-bold text-slate-800">📋 {isEnglish ? 'Summary' : '종합 요약'}</h3>
               </div>
               <div className="space-y-3 text-sm text-slate-700">
                 <div className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
-                  <p><strong>주요 관찰:</strong> 또래 대비 언어 발달 지연 (약 6개월), 사회성 발달 정상 범위, 감각처리 민감성 관찰. Bayley-III 언어 영역 백분위 38%.</p>
+                  <p><strong>{isEnglish ? 'Key Observations:' : '주요 관찰:'}</strong> {isEnglish 
+                    ? 'Language development delay compared to peers (~6 months), social development within normal range, sensory processing sensitivity observed. Bayley-III language domain percentile 38%.'
+                    : '또래 대비 언어 발달 지연 (약 6개월), 사회성 발달 정상 범위, 감각처리 민감성 관찰. Bayley-III 언어 영역 백분위 38%.'}</p>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
-                  <p><strong>강점 영역:</strong> 시각적 학습 능력 상위 15% (K-CDI-2 기준), 창의적 문제해결, 미술·음악 활동 집중력 우수 (평균 대비 +70%).</p>
+                  <p><strong>{isEnglish ? 'Strengths:' : '강점 영역:'}</strong> {isEnglish
+                    ? 'Visual learning ability top 15% (K-CDI-2 standard), creative problem-solving, excellent concentration in art/music activities (avg +70%).'
+                    : '시각적 학습 능력 상위 15% (K-CDI-2 기준), 창의적 문제해결, 미술·음악 활동 집중력 우수 (평균 대비 +70%).'}</p>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0" />
-                  <p><strong>권장 개입:</strong> 언어치료 주 2회, 감각통합 활동 일 15분, 시각적 스케줄 활용, 또래 소그룹 활동 주 1회. 발달재활 바우처 활용 권장.</p>
+                  <p><strong>{isEnglish ? 'Recommended Interventions:' : '권장 개입:'}</strong> {isEnglish
+                    ? 'Speech therapy 2x/week, sensory integration activities 15 min/day, visual schedule usage, peer small group activities 1x/week. Developmental rehabilitation voucher recommended.'
+                    : '언어치료 주 2회, 감각통합 활동 일 15분, 시각적 스케줄 활용, 또래 소그룹 활동 주 1회. 발달재활 바우처 활용 권장.'}</p>
                 </div>
               </div>
             </div>
@@ -286,7 +392,7 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <BookOpen className="w-5 h-5 text-slate-600" />
-                <h3 className="font-bold text-slate-800">📊 상세 분석 (9개 섹션)</h3>
+                <h3 className="font-bold text-slate-800">📊 {isEnglish ? 'Detailed Analysis (9 Sections)' : '상세 분석 (9개 섹션)'}</h3>
               </div>
               <div className="space-y-3">
                 {sectionData.map((section, index) => {
@@ -316,7 +422,9 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] text-slate-400 hidden sm:inline">{section.content.length}개 항목</span>
+                          <span className="text-[10px] text-slate-400 hidden sm:inline">
+                            {section.content.length} {isEnglish ? 'items' : '개 항목'}
+                          </span>
                           {isExpanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                         </div>
                       </button>
@@ -342,7 +450,9 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                                 <div className="mt-3 pt-3 border-t border-slate-100">
                                   <div className="flex items-center gap-1.5 mb-1.5">
                                     <GraduationCap className="w-3 h-3 text-slate-400" />
-                                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">학술적 근거</span>
+                                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                                      {isEnglish ? 'Academic References' : '학술적 근거'}
+                                    </span>
                                   </div>
                                   <div className="flex flex-wrap gap-1.5">
                                     {section.references.map((ref, ri) => (
@@ -364,18 +474,20 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
             {/* Watermark Notice */}
             <div className="text-center py-3">
               <p className="text-xs text-slate-300 italic">— SAMPLE REPORT · AIHPRO —</p>
-              <p className="text-[10px] text-slate-400 mt-1">* 실제 리포트는 입력된 데이터 기반으로 개인화되어 생성됩니다</p>
+              <p className="text-[10px] text-slate-400 mt-1">
+                {isEnglish ? '* Actual reports are personalized based on your input data' : '* 실제 리포트는 입력된 데이터 기반으로 개인화되어 생성됩니다'}
+              </p>
             </div>
 
             {/* Sticky CTA */}
             <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm pt-4 pb-3 border-t border-slate-200 -mx-5 md:-mx-8 px-5 md:px-8">
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button
-                  onClick={() => { onOpenChange(false); navigate('/report-generator'); }}
+                  onClick={() => { onOpenChange(false); navigate(localePath('/report-generator')); }}
                   className="flex-1 py-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-base rounded-xl shadow-lg shadow-amber-500/25"
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
-                  지금 바로 내 리포트 받기
+                  {isEnglish ? 'Get My Report Now' : '지금 바로 내 리포트 받기'}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <Button
@@ -383,10 +495,12 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                   onClick={() => onOpenChange(false)}
                   className="py-6 rounded-xl"
                 >
-                  닫기
+                  {isEnglish ? 'Close' : '닫기'}
                 </Button>
               </div>
-              <p className="text-center text-xs text-slate-400 mt-2">3분이면 완성 · 무료 체험 가능</p>
+              <p className="text-center text-xs text-slate-400 mt-2">
+                {isEnglish ? '3 minutes to complete · Free trial available' : '3분이면 완성 · 무료 체험 가능'}
+              </p>
             </div>
           </div>
         </ScrollArea>

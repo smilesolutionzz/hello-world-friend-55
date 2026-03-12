@@ -67,7 +67,7 @@ const InstantAIAnalysis = () => {
   const callAIAnalysis = async (text: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('instant-ai-analysis', {
-        body: { inputText: text }
+        body: { inputText: text, language: isEnglish ? 'en' : 'ko' }
       });
 
       if (error) {

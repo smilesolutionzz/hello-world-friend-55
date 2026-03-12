@@ -48,7 +48,7 @@ const B2BShowcaseSection: React.FC = () => {
         <div className="grid md:grid-cols-4 gap-4 mb-12">
           {solutions.map((solution, index) => (
             <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 + index * 0.1 }}>
-              <Card className="bg-white/5 border-white/10 backdrop-blur h-full hover:bg-white/10 transition-colors">
+              <Card glassMorphism={false} className="!bg-white/5 border-white/10 backdrop-blur h-full hover:!bg-white/10 transition-colors">
                 <CardContent className="p-5 text-center">
                   <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                     <solution.icon className="w-6 h-6 text-white" />

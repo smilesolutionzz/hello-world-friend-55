@@ -50,7 +50,7 @@ const EmotionalHookSection = () => {
             {t.emotionalHook.heading1}<br />
             <span className="text-rose-400">{t.emotionalHook.heading2}</span>
           </h2>
-          <p className="text-white/60 text-sm md:text-base max-w-xl mx-auto">
+          <p className="text-white/60 text-xs md:text-base max-w-xl mx-auto leading-relaxed">
             {t.emotionalHook.subtext} <span className="text-white font-semibold">{t.emotionalHook.subtextBold}</span>{t.emotionalHook.subtextEnd}
           </p>
         </motion.div>

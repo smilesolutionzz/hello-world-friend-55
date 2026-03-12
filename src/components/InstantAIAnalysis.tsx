@@ -276,17 +276,17 @@ const InstantAIAnalysis = () => {
       if (data?.expandedPrompt) {
         setInputText(data.expandedPrompt);
         toast({
-          title: "✨ 프롬프트 확장 완료",
-          description: "입력 내용이 더 구체적으로 확장되었습니다.",
+          title: isEnglish ? "✨ Prompt expanded" : "✨ 프롬프트 확장 완료",
+          description: isEnglish ? "Your input has been expanded with more detail." : "입력 내용이 더 구체적으로 확장되었습니다.",
         });
       } else {
-        throw new Error('확장된 프롬프트를 받지 못했습니다.');
+        throw new Error(isEnglish ? 'Failed to expand prompt.' : '확장된 프롬프트를 받지 못했습니다.');
       }
     } catch (error: any) {
-      console.error('프롬프트 확장 오류:', error);
+      console.error('Prompt expansion error:', error);
       toast({
-        title: "확장 실패",
-        description: error?.message || "AI 다듬기 중 오류가 발생했습니다. 다시 시도해주세요.",
+        title: isEnglish ? "Expansion failed" : "확장 실패",
+        description: error?.message || (isEnglish ? "AI refinement failed. Please try again." : "AI 다듬기 중 오류가 발생했습니다. 다시 시도해주세요."),
         variant: "destructive"
       });
     } finally {

@@ -100,9 +100,9 @@ export const UnifiedNavigation = () => {
   const handleAuth = async () => {
     if (user) {
       await supabase.auth.signOut();
-      navigate('/');
+      navigate(localePath('/'));
     } else {
-      navigate('/auth');
+      navigate(localePath('/auth'));
     }
     setIsOpen(false);
   };

@@ -108,8 +108,9 @@ export const UnifiedNavigation = () => {
   };
 
   const isActive = (path: string) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
+    const currentPath = location.pathname.replace(/^\/en/, '') || '/';
+    if (path === '/') return currentPath === '/';
+    return currentPath.startsWith(path);
   };
 
   return (

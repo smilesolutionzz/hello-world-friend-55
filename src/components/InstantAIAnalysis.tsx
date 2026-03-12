@@ -461,8 +461,8 @@ const InstantAIAnalysis = () => {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-base font-semibold text-white">AI가 분석 중입니다</span>
-                      <span className="text-sm font-mono text-violet-400">{remainingTime}초</span>
+                      <span className="text-base font-semibold text-white">{isEnglish ? 'AI is analyzing' : 'AI가 분석 중입니다'}</span>
+                      <span className="text-sm font-mono text-violet-400">{remainingTime}{isEnglish ? 's' : '초'}</span>
                     </div>
                     <AnimatePresence mode="wait">
                       <motion.span
@@ -472,10 +472,15 @@ const InstantAIAnalysis = () => {
                         exit={{ opacity: 0, y: -5 }}
                         className="text-xs text-slate-400"
                       >
-                        {analysisProgress < 25 ? '고민 유형 파악 중...' :
-                         analysisProgress < 50 ? '심층 원인 분석 중...' :
-                         analysisProgress < 75 ? '맞춤 솔루션 생성 중...' :
-                         '9가지 리포트 생성 중...'}
+                        {isEnglish
+                          ? (analysisProgress < 25 ? 'Identifying concern type...' :
+                             analysisProgress < 50 ? 'Analyzing root causes...' :
+                             analysisProgress < 75 ? 'Generating solutions...' :
+                             'Creating 9 reports...')
+                          : (analysisProgress < 25 ? '고민 유형 파악 중...' :
+                             analysisProgress < 50 ? '심층 원인 분석 중...' :
+                             analysisProgress < 75 ? '맞춤 솔루션 생성 중...' :
+                             '9가지 리포트 생성 중...')}
                       </motion.span>
                     </AnimatePresence>
                   </div>

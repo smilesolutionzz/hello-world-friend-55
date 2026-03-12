@@ -86,13 +86,21 @@ const SubscriptionValueSection = () => {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Crown className="w-5 h-5 text-violet-400" />
-                <span className="text-violet-400 font-semibold text-sm tracking-wide">프리미엄 패스</span>
+                <span className="text-violet-400 font-semibold text-sm tracking-wide">
+                  {isEnglish ? 'Premium Pass' : '프리미엄 패스'}
+                </span>
               </div>
               <h2 className="text-3xl md:text-4xl font-black text-white mb-2">
-                지금 바로 <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">시작하세요</span>
+                {isEnglish ? (
+                  <>Start <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">Now</span></>
+                ) : (
+                  <>지금 바로 <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">시작하세요</span></>
+                )}
               </h2>
               <p className="text-slate-400 text-sm mb-6">
-                전문가급 AI 분석으로 아이의 발달을 체계적으로 관리하세요
+                {isEnglish 
+                  ? 'Systematically manage your child\'s development with expert-level AI analysis'
+                  : '전문가급 AI 분석으로 아이의 발달을 체계적으로 관리하세요'}
               </p>
 
               <div className="space-y-3 mb-8">

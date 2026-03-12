@@ -613,8 +613,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium">검사일</span>
-                <span className="text-lg">{new Date().toLocaleDateString('ko-KR')}</span>
+                <span className="text-lg font-medium">{isEnglish ? 'Test Date' : '검사일'}</span>
+                <span className="text-lg">{new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</span>
               </div>
             </div>
           </div>

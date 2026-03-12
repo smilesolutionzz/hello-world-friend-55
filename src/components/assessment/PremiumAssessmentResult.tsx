@@ -785,11 +785,11 @@ const PremiumAssessmentResult = ({
         <div className="max-w-6xl mx-auto mt-8">
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-6 text-center">
-              <h4 className="font-semibold text-blue-900 mb-2">전문 심리검사 결과 안내</h4>
+              <h4 className="font-semibold text-blue-900 mb-2">{isEnglish ? 'Professional Assessment Notice' : '전문 심리검사 결과 안내'}</h4>
               <p className="text-blue-800 text-sm leading-relaxed">
-                본 검사 결과는 AI 기반 심층 분석을 통해 제공되는 참고 자료입니다. 
-                정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다.
-                검사 결과는 개인의 현재 상태를 반영하며, 시간이 지남에 따라 변화할 수 있습니다.
+                {isEnglish 
+                  ? 'These results are reference materials provided through AI-based in-depth analysis. For accurate diagnosis or treatment, please consult a professional. Results reflect your current state and may change over time.'
+                  : '본 검사 결과는 AI 기반 심층 분석을 통해 제공되는 참고 자료입니다. 정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다. 검사 결과는 개인의 현재 상태를 반영하며, 시간이 지남에 따라 변화할 수 있습니다.'}
               </p>
             </CardContent>
           </Card>

@@ -11,7 +11,7 @@ import { useLanguage } from '@/i18n/LanguageContext';
 
 const SubscriptionValueSection = () => {
   const navigate = useNavigate();
-  const { localePath } = useLanguage();
+  const { localePath, isEnglish } = useLanguage();
 
   // Countdown timer - resets daily
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
@@ -33,14 +33,24 @@ const SubscriptionValueSection = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const benefits = [
+  const benefits = isEnglish ? [
+    'Unlimited AI psychological assessments',
+    'Expert-level deep analysis reports',
+    'Priority expert consultation booking',
+    'Ad-free experience',
+  ] : [
     '모든 AI 심리검사 무제한 이용',
     '전문가급 심층 분석 리포트',
     '전문가 상담 우선 예약',
     '광고 없는 쾌적한 환경',
   ];
 
-  const valueProps = [
+  const valueProps = isEnglish ? [
+    { icon: Brain, title: 'AI Deep Analysis', desc: '9 professional domain reports', save: 'Save $500+ in clinic fees' },
+    { icon: FileText, title: 'Unlimited Reports', desc: 'No usage limits', save: 'Worth $30 each' },
+    { icon: Users, title: 'Expert Access', desc: 'Priority booking & discounts', save: '30% off consultations' },
+    { icon: Sparkles, title: 'Custom Solutions', desc: 'AI-powered personalized guides', save: 'Worth $1,000/mo' },
+  ] : [
     { icon: Brain, title: 'AI 심층 분석', desc: '9가지 전문 영역 리포트', save: '병원비 50만원+ 절약' },
     { icon: FileText, title: '무제한 리포트', desc: '횟수 제한 없이 자유롭게', save: '건당 3만원 상당' },
     { icon: Users, title: '전문가 연결', desc: '우선 예약 & 할인 혜택', save: '상담비 30% 할인' },

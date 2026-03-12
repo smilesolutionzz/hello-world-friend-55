@@ -672,30 +672,27 @@ const PremiumAssessmentResult = ({
               className="flex items-center gap-2 border-green-200 text-green-700 hover:bg-green-50"
             >
               <MessageSquare className="w-5 h-5" />
-              후기 남기기
+              {isEnglish ? 'Leave Review' : '후기 남기기'}
             </Button>
 
             <Button
-              onClick={() => {
-                console.log('다른 검사 하기 button clicked');
-                onBack();
-              }}
+              onClick={() => { onBack(); }}
               variant="outline"
               size="lg"
               className="flex items-center gap-2"
             >
               <Target className="w-5 h-5" />
-              다른 검사 하기
+              {isEnglish ? 'Other Tests' : '다른 검사 하기'}
             </Button>
 
             <Button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate(localePath('/dashboard'))}
               variant="outline"
               size="lg"
               className="flex items-center gap-2"
             >
               <FileText className="w-5 h-5" />
-              검사 기록 보기
+              {isEnglish ? 'Test History' : '검사 기록 보기'}
             </Button>
           </div>
         </div>

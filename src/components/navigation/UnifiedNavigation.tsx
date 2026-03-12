@@ -92,7 +92,7 @@ export const UnifiedNavigation = () => {
   ];
 
   const handleNavigation = (path: string) => {
-    navigate(path);
+    navigate(localePath(path));
     setIsOpen(false);
     setOpenDropdown(null);
   };

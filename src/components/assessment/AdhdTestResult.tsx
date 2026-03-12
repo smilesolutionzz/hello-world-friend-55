@@ -292,19 +292,20 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
             <CardContent className="p-4">
               <div className="flex items-center gap-3 mb-3">
                 <Target className="w-5 h-5 text-red-600" />
-                <span className="font-semibold text-red-800">토큰 부족</span>
+                <span className="font-semibold text-red-800">{isEnglish ? 'Insufficient Tokens' : '토큰 부족'}</span>
               </div>
               <p className="text-red-700 text-sm mb-4">
-                AI 전문 분석을 위해서는 {tokenError.required}토큰이 필요하지만, 
-                현재 {tokenError.available}토큰만 보유하고 있습니다.
+                {isEnglish 
+                  ? `AI expert analysis requires ${tokenError.required} tokens, but you only have ${tokenError.available} tokens.`
+                  : `AI 전문 분석을 위해서는 ${tokenError.required}토큰이 필요하지만, 현재 ${tokenError.available}토큰만 보유하고 있습니다.`}
               </p>
               <div className="flex gap-2">
                 <Button 
                   size="sm" 
-                  onClick={() => navigate('/token-subscription')}
+                  onClick={() => navigate(localePath('/token-subscription'))}
                   className="bg-red-600 hover:bg-red-700"
                 >
-                  토큰 충전하기
+                  {isEnglish ? 'Top Up Tokens' : '토큰 충전하기'}
                 </Button>
                 <Button 
                   size="sm" 

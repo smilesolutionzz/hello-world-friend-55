@@ -25,9 +25,10 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 // ── 샘플 리포트 섹션 데이터 ──
-const SAMPLE_REPORT_SECTIONS = [
+const SAMPLE_REPORT_SECTIONS_KO = [
   { title: '종합 발달 프로파일', icon: Brain, color: 'from-blue-500 to-cyan-500', theory: 'Piaget 인지발달이론 · Vygotsky 근접발달영역(ZPD)', preview: '대상자의 인지, 언어, 사회정서, 운동 영역을 Piaget의 인지발달 단계와 Vygotsky의 ZPD 이론에 기반하여 종합 분석합니다.' },
   { title: '심리·정서 심층 분석', icon: Heart, color: 'from-pink-500 to-rose-500', theory: 'Beck 인지치료이론 · Bowlby 애착이론 · DSM-5 기준', preview: 'Beck의 인지 삼제 모델과 Bowlby의 애착이론을 적용하여 불안, 우울, 자존감, 스트레스 반응 패턴을 다층적으로 분석합니다.' },
   { title: '강점·약점 매트릭스', icon: TrendingUp, color: 'from-green-500 to-emerald-500', theory: 'Gardner 다중지능이론 · Seligman 긍정심리학', preview: 'Gardner의 8가지 다중지능 이론과 Seligman의 VIA 성격 강점 분류를 기반으로 핵심 강점 영역과 지원 필요 영역을 시각화합니다.' },
@@ -37,6 +38,18 @@ const SAMPLE_REPORT_SECTIONS = [
   { title: '전문가 소견서', icon: Shield, color: 'from-teal-500 to-cyan-500', theory: 'ICD-11 · DSM-5-TR · 한국 임상심리학회 기준', preview: 'ICD-11 및 DSM-5-TR 진단 체계를 참조하고 APA 가이드라인에 따라 임상 수준의 전문가 소견서를 생성합니다.' },
   { title: '가족 지원 가이드', icon: Activity, color: 'from-fuchsia-500 to-pink-500', theory: 'Baumrind 양육유형이론 · Gottman 정서코칭 · PCIT', preview: 'Baumrind의 양육유형 모델과 Gottman의 정서코칭 5단계, PCIT 프로토콜에 기반한 양육 전략을 제공합니다.' },
   { title: '종합 요약 및 제언', icon: BarChart3, color: 'from-violet-500 to-purple-500', theory: 'ICF 국제기능분류 · WHO 통합 케어 프레임워크', preview: 'WHO의 ICF 프레임워크에 따라 전체 분석을 통합 정리합니다. 500개 이상의 최신 연구논문을 교차 검증합니다.' }
+];
+
+const SAMPLE_REPORT_SECTIONS_EN = [
+  { title: 'Comprehensive Development Profile', icon: Brain, color: 'from-blue-500 to-cyan-500', theory: "Piaget's Cognitive Development · Vygotsky's ZPD", preview: "Comprehensive analysis of cognitive, language, social-emotional, and motor domains based on Piaget's developmental stages and Vygotsky's Zone of Proximal Development." },
+  { title: 'Psychological & Emotional Deep Analysis', icon: Heart, color: 'from-pink-500 to-rose-500', theory: "Beck's Cognitive Theory · Bowlby's Attachment · DSM-5", preview: "Multi-layered analysis of anxiety, depression, self-esteem, and stress response patterns using Beck's cognitive triad and Bowlby's attachment theory." },
+  { title: 'Strengths & Weaknesses Matrix', icon: TrendingUp, color: 'from-green-500 to-emerald-500', theory: "Gardner's Multiple Intelligences · Seligman's Positive Psychology", preview: "Visualization of key strengths and areas needing support based on Gardner's 8 intelligences and Seligman's VIA character strengths." },
+  { title: 'Tailored Intervention Program', icon: Target, color: 'from-purple-500 to-violet-500', theory: 'ABA · CBT · Floortime DIR Model', preview: 'Evidence-based intervention strategies designed according to Gold Standard practices including ABA, CBT, and DIR/Floortime.' },
+  { title: 'Development Roadmap & Prognosis', icon: LineChart, color: 'from-orange-500 to-amber-500', theory: "Bronfenbrenner's Ecological Systems · Erikson's Psychosocial Stages", preview: "Developmental trajectory prediction integrating Bronfenbrenner's ecological model and Erikson's 8-stage psychosocial development theory." },
+  { title: 'Peer Comparison Analysis', icon: Users, color: 'from-indigo-500 to-blue-500', theory: 'WHO Global Standards · CDC Milestone Tracker', preview: 'Percentile calculations for each domain based on WHO multinational growth standards and CDC developmental milestones.' },
+  { title: 'Expert Clinical Opinion', icon: Shield, color: 'from-teal-500 to-cyan-500', theory: 'ICD-11 · DSM-5-TR · APA Guidelines', preview: 'Clinical-level expert opinion generated referencing ICD-11 and DSM-5-TR diagnostic systems following APA guidelines.' },
+  { title: 'Family Support Guide', icon: Activity, color: 'from-fuchsia-500 to-pink-500', theory: "Baumrind's Parenting Styles · Gottman's Emotion Coaching · PCIT", preview: "Parenting strategies based on Baumrind's parenting model, Gottman's 5-step emotion coaching, and PCIT protocol." },
+  { title: 'Summary & Recommendations', icon: BarChart3, color: 'from-violet-500 to-purple-500', theory: "ICF Classification · WHO Integrated Care Framework", preview: "Integrated summary following WHO's ICF framework. Cross-verified with 500+ latest research papers." }
 ];
 
 // ── 애니메이션 카운터 ──
@@ -103,13 +116,18 @@ const ReportGenerator = () => {
   const [showScratchCard, setShowScratchCard] = useState(false);
   const [showSampleReport, setShowSampleReport] = useState(false);
   const [activeReportSection, setActiveReportSection] = useState(0);
+  const { isEnglish, localePath } = useLanguage();
 
   const isPremium = isPremiumUser();
   const currentStep = !isPremium ? 0 : reportMode ? (userInput.name ? (reportData ? 3 : 2) : 1) : 0;
 
+  const SAMPLE_REPORT_SECTIONS = isEnglish ? SAMPLE_REPORT_SECTIONS_EN : SAMPLE_REPORT_SECTIONS_KO;
+
+  // i18n helper
+  const t = (ko: string, en: string) => isEnglish ? en : ko;
+
   useEffect(() => { loadUserData(); }, []);
 
-  // ── 기존 비즈니스 로직 (변경 없음) ──
   const loadUserData = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -124,14 +142,17 @@ const ReportGenerator = () => {
       ]);
       const totalDataCount = (assessments?.length || 0) + (observations?.length || 0) + (observationSessions?.length || 0) + (chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0);
       setUserData({ assessments: assessments || [], observations: observations || [], observationSessions: observationSessions || [], chatRooms: chatRooms || [], profile: profile || {}, totalAssessments: assessments?.length || 0, totalObservations: observations?.length || 0, totalObservationSessions: observationSessions?.length || 0, totalChatMessages: chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0, totalDataCount });
-    } catch (error) { console.error('데이터 로드 오류:', error); toast({ title: "데이터 로드 실패", description: "사용자 데이터를 불러오는 중 오류가 발생했습니다.", variant: "destructive" }); } finally { setIsLoadingData(false); }
+    } catch (error) {
+      console.error('데이터 로드 오류:', error);
+      toast({ title: t("데이터 로드 실패", "Failed to Load Data"), description: t("사용자 데이터를 불러오는 중 오류가 발생했습니다.", "An error occurred while loading user data."), variant: "destructive" });
+    } finally { setIsLoadingData(false); }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     setIsAnalyzingImages(true);
-    toast({ title: "📸 이미지 분석 중", description: "AI가 외부 검사 이미지를 분석합니다..." });
+    toast({ title: t("📸 이미지 분석 중", "📸 Analyzing Images"), description: t("AI가 외부 검사 이미지를 분석합니다...", "AI is analyzing external test images...") });
     try {
       const images: string[] = [];
       for (const file of Array.from(files)) { const reader = new FileReader(); const dataUrl = await new Promise<string>((resolve) => { reader.onload = () => resolve(reader.result as string); reader.readAsDataURL(file); }); images.push(dataUrl); }
@@ -139,32 +160,48 @@ const ReportGenerator = () => {
       const { data, error } = await supabase.functions.invoke('analyze-test-images', { body: { images } });
       if (error) throw error;
       setImageAnalysisResults(data?.analysis || '');
-      toast({ title: "✅ 이미지 분석 완료", description: `${images.length}개 이미지가 분석되었습니다.` });
-    } catch (err) { toast({ title: "분석 실패", description: "이미지 분석에 실패했습니다.", variant: "destructive" }); } finally { setIsAnalyzingImages(false); }
+      toast({ title: t("✅ 이미지 분석 완료", "✅ Image Analysis Complete"), description: t(`${images.length}개 이미지가 분석되었습니다.`, `${images.length} image(s) analyzed.`) });
+    } catch (err) { toast({ title: t("분석 실패", "Analysis Failed"), description: t("이미지 분석에 실패했습니다.", "Failed to analyze images."), variant: "destructive" }); } finally { setIsAnalyzingImages(false); }
   };
 
   const generateReport = async () => {
-    if (!isPremium) { navigate('/token-subscription'); return; }
-    if (reportMode === 'with-data') { const totalData = userData?.totalDataCount || 0; if (totalData < 3) { toast({ title: "데이터 부족", description: `종합 리포트 생성에는 최소 3개의 데이터가 필요합니다. (현재: ${totalData}개)`, variant: "destructive" }); return; } }
-    else { if (!userInput.recentConcerns && !userInput.developmentalNotes) { toast({ title: "정보 부족", description: "고민·상태 기반 리포트를 생성하려면 '고민이나 걱정거리' 또는 '발달/심리적 특징' 중 하나 이상 입력해주세요.", variant: "destructive" }); return; } }
-    if (!userInput.name || !userInput.birthDate || !userInput.gender) { toast({ title: "필수 정보 누락", description: "이름, 생년월일, 성별은 필수 입력 항목입니다.", variant: "destructive" }); return; }
+    if (!isPremium) { navigate(localePath('/token-subscription')); return; }
+    if (reportMode === 'with-data') {
+      const totalData = userData?.totalDataCount || 0;
+      if (totalData < 3) {
+        toast({ title: t("데이터 부족", "Insufficient Data"), description: t(`종합 리포트 생성에는 최소 3개의 데이터가 필요합니다. (현재: ${totalData}개)`, `At least 3 data points are required. (Current: ${totalData})`), variant: "destructive" });
+        return;
+      }
+    } else {
+      if (!userInput.recentConcerns && !userInput.developmentalNotes) {
+        toast({ title: t("정보 부족", "Insufficient Information"), description: t("고민·상태 기반 리포트를 생성하려면 '고민이나 걱정거리' 또는 '발달/심리적 특징' 중 하나 이상 입력해주세요.", "Please enter at least one of 'Concerns' or 'Developmental Notes' to generate a report."), variant: "destructive" });
+        return;
+      }
+    }
+    if (!userInput.name || !userInput.birthDate || !userInput.gender) {
+      toast({ title: t("필수 정보 누락", "Required Fields Missing"), description: t("이름, 생년월일, 성별은 필수 입력 항목입니다.", "Name, date of birth, and gender are required."), variant: "destructive" });
+      return;
+    }
     setIsGenerating(true); setProgress(0);
     try {
       const progressInterval = setInterval(() => { setProgress(prev => Math.min(prev + 5, 90)); }, 1000);
-      toast({ title: "🔬 전문가급 분석 시작", description: reportMode === 'with-data' ? "실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다..." : "고민·상태 정보를 기반으로 맞춤 분석을 진행합니다..." });
-      const body: any = { reportMode, userInput: { name: userInput.name, birthDate: userInput.birthDate, gender: userInput.gender, recentConcerns: userInput.recentConcerns, developmentalNotes: userInput.developmentalNotes } };
+      toast({ title: t("🔬 전문가급 분석 시작", "🔬 Expert-Level Analysis Started"), description: reportMode === 'with-data' ? t("실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다...", "Performing real-time web search + latest research-based deep analysis...") : t("고민·상태 정보를 기반으로 맞춤 분석을 진행합니다...", "Performing personalized analysis based on your concerns...") });
+      const body: any = { reportMode, userInput: { name: userInput.name, birthDate: userInput.birthDate, gender: userInput.gender, recentConcerns: userInput.recentConcerns, developmentalNotes: userInput.developmentalNotes }, language: isEnglish ? 'en' : 'ko' };
       if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.chatRooms = userData.chatRooms; body.profile = userData.profile; body.externalTestImages = imageAnalysisResults; }
       const { data, error } = await supabase.functions.invoke('generate-expert-report', { body });
       clearInterval(progressInterval); setProgress(100);
       if (error) throw error;
-      if (data?.error === 'LOVABLE_AI_CREDITS_INSUFFICIENT') { toast({ title: "💳 AI 크레딧 부족", description: data.message, variant: "destructive" }); return; }
+      if (data?.error === 'LOVABLE_AI_CREDITS_INSUFFICIENT') { toast({ title: t("💳 AI 크레딧 부족", "💳 Insufficient AI Credits"), description: data.message, variant: "destructive" }); return; }
       if (data?.success && data?.report) {
         setReportData({ ...data.report, generatedAt: new Date().toISOString(), dataSource: { assessments: userData?.totalAssessments || 0, observations: userData?.totalObservations || 0, observationSessions: userData?.totalObservationSessions || 0, chatMessages: userData?.totalChatMessages || 0, totalDataCount: userData?.totalDataCount || 0 } });
-        toast({ title: "🎉 프리미엄 리포트 생성 완료!", description: "세계 최고 수준의 분석 리포트가 생성되었습니다." });
+        toast({ title: t("🎉 프리미엄 리포트 생성 완료!", "🎉 Premium Report Generated!"), description: t("세계 최고 수준의 분석 리포트가 생성되었습니다.", "Your world-class analysis report has been generated.") });
         setTimeout(() => setShowScratchCard(true), 1500);
-      } else { throw new Error(data?.error || '리포트 데이터가 없습니다.'); }
-    } catch (error: any) { const errorMessage = error?.message || ''; const isPaymentError = errorMessage.includes('402') || errorMessage.includes('크레딧'); toast({ title: isPaymentError ? "💳 AI 크레딧 부족" : "생성 실패", description: isPaymentError ? "AI 크레딧이 부족합니다." : "리포트 생성 중 오류가 발생했습니다.", variant: "destructive" }); }
-    finally { setIsGenerating(false); setProgress(0); }
+      } else { throw new Error(data?.error || t('리포트 데이터가 없습니다.', 'No report data found.')); }
+    } catch (error: any) {
+      const errorMessage = error?.message || '';
+      const isPaymentError = errorMessage.includes('402') || errorMessage.includes('크레딧');
+      toast({ title: isPaymentError ? t("💳 AI 크레딧 부족", "💳 Insufficient AI Credits") : t("생성 실패", "Generation Failed"), description: isPaymentError ? t("AI 크레딧이 부족합니다.", "Insufficient AI credits.") : t("리포트 생성 중 오류가 발생했습니다.", "An error occurred while generating the report."), variant: "destructive" });
+    } finally { setIsGenerating(false); setProgress(0); }
   };
 
   const downloadPDF = () => {
@@ -175,30 +212,30 @@ const ReportGenerator = () => {
     document.head.appendChild(style);
     const sections = element.querySelectorAll('[data-report-section]');
     sections.forEach((sec, idx) => { if (idx > 0) sec.classList.add('pdf-section-break'); sec.classList.add('pdf-no-break'); });
-    html2pdf().set({ margin: [15, 15, 15, 15], filename: `프리미엄분석_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg' as const, quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const } } as any).from(element).save().then(() => { document.getElementById('pdf-page-break-style')?.remove(); sections.forEach((sec) => { sec.classList.remove('pdf-section-break', 'pdf-no-break'); }); });
-    toast({ title: "📥 PDF 다운로드 시작" });
+    html2pdf().set({ margin: [15, 15, 15, 15], filename: `${isEnglish ? 'PremiumAnalysis' : '프리미엄분석'}_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg' as const, quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const } } as any).from(element).save().then(() => { document.getElementById('pdf-page-break-style')?.remove(); sections.forEach((sec) => { sec.classList.remove('pdf-section-break', 'pdf-no-break'); }); });
+    toast({ title: t("📥 PDF 다운로드 시작", "📥 PDF Download Started") });
   };
 
   const copyToClipboard = async () => {
     if (!reportData) return;
-    let text = `프리미엄 종합 분석 리포트\n대상: ${userInput.name}\n\n`;
+    let text = t(`프리미엄 종합 분석 리포트\n대상: ${userInput.name}\n\n`, `Premium Comprehensive Analysis Report\nSubject: ${userInput.name}\n\n`);
     reportData.sections?.forEach((s: any, i: number) => { text += `${i + 1}. ${s.title}\n${s.content.replace(/<[^>]*>/g, '')}\n\n`; });
-    await navigator.clipboard.writeText(text); toast({ title: "📋 클립보드에 복사됨" });
+    await navigator.clipboard.writeText(text); toast({ title: t("📋 클립보드에 복사됨", "📋 Copied to Clipboard") });
   };
 
-  const shareReport = async () => { if (navigator.share) { await navigator.share({ title: '프리미엄 종합 분석 리포트', text: `${userInput.name}님의 프리미엄 분석 리포트`, url: window.location.href }); } else { copyToClipboard(); } };
+  const shareReport = async () => { if (navigator.share) { await navigator.share({ title: t('프리미엄 종합 분석 리포트', 'Premium Analysis Report'), text: t(`${userInput.name}님의 프리미엄 분석 리포트`, `Premium Analysis Report for ${userInput.name}`), url: window.location.href }); } else { copyToClipboard(); } };
 
   const sendFamilyEmail = async () => {
-    if (!familyEmail || !reportData) { toast({ title: "이메일 주소를 입력해주세요", variant: "destructive" }); return; }
+    if (!familyEmail || !reportData) { toast({ title: t("이메일 주소를 입력해주세요", "Please enter an email address"), variant: "destructive" }); return; }
     setIsSendingEmail(true);
     try {
       const summaryText = reportData.summary?.replace(/<[^>]*>/g, '') || '';
       const sections = reportData.sections?.map((s: any) => ({ title: s.title, content: s.content?.replace(/<[^>]*>/g, '').substring(0, 800) || '' })) || [];
       const recommendations = reportData.sections?.slice(0, 5).map((s: any) => s.title) || [];
-      const { error } = await supabase.functions.invoke('send-share-email', { body: { email: familyEmail, type: 'report', title: `${userInput.name}님의 프리미엄 종합 분석 리포트`, recipientName: '', senderName: userInput.name, content: { summary: summaryText, sections, recommendations } } });
+      const { error } = await supabase.functions.invoke('send-share-email', { body: { email: familyEmail, type: 'report', title: t(`${userInput.name}님의 프리미엄 종합 분석 리포트`, `Premium Analysis Report for ${userInput.name}`), recipientName: '', senderName: userInput.name, content: { summary: summaryText, sections, recommendations } } });
       if (error) throw error;
-      toast({ title: "✅ 이메일 전송 완료", description: `${familyEmail}로 리포트가 전송되었습니다.` }); setFamilyEmail('');
-    } catch (e: any) { toast({ title: "이메일 전송 실패", description: e?.message || "잠시 후 다시 시도해주세요.", variant: "destructive" }); } finally { setIsSendingEmail(false); }
+      toast({ title: t("✅ 이메일 전송 완료", "✅ Email Sent"), description: t(`${familyEmail}로 리포트가 전송되었습니다.`, `Report sent to ${familyEmail}.`) }); setFamilyEmail('');
+    } catch (e: any) { toast({ title: t("이메일 전송 실패", "Email Send Failed"), description: e?.message || t("잠시 후 다시 시도해주세요.", "Please try again later."), variant: "destructive" }); } finally { setIsSendingEmail(false); }
   };
 
   // ── 로딩 ──
@@ -209,7 +246,7 @@ const ReportGenerator = () => {
           <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mx-auto">
             <FlaskConical className="w-8 h-8 text-primary-foreground" />
           </motion.div>
-          <p className="text-muted-foreground text-lg font-semibold">데이터를 불러오는 중...</p>
+          <p className="text-muted-foreground text-lg font-semibold">{t('데이터를 불러오는 중...', 'Loading data...')}</p>
         </motion.div>
       </div>
     );
@@ -232,8 +269,8 @@ const ReportGenerator = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* ── 네비게이션 ── */}
-        <Button onClick={() => navigate('/')} variant="ghost" className="mb-6 text-muted-foreground hover:text-foreground gap-2">
-          <ArrowLeft className="w-4 h-4" /> 뒤로가기
+        <Button onClick={() => navigate(localePath('/'))} variant="ghost" className="mb-6 text-muted-foreground hover:text-foreground gap-2">
+          <ArrowLeft className="w-4 h-4" /> {t('뒤로가기', 'Back')}
         </Button>
 
         {/* ── 히어로 헤더 ── */}
@@ -243,14 +280,19 @@ const ReportGenerator = () => {
             <span className="text-sm font-bold text-primary">Premium Personal Report</span>
           </div>
           <h1 className="text-3xl md:text-5xl font-black leading-tight text-white">
-            나만의 AI 종합 리포트
+            {t('나만의 AI 종합 리포트', 'My AI Comprehensive Report')}
           </h1>
           <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-            전 세계 <strong className="text-white">500+ 논문 · 15개 심리이론</strong> 기반<br className="hidden md:block" />
-            9가지 전문 섹션으로 통합 분석하는 <strong className="text-white">박사급 임상 수준</strong> 리포트
+            {isEnglish ? (
+              <>Based on <strong className="text-white">500+ papers · 15 psychological theories</strong><br className="hidden md:block" />
+              A <strong className="text-white">doctoral-level clinical</strong> report with 9 professional sections</>
+            ) : (
+              <>전 세계 <strong className="text-white">500+ 논문 · 15개 심리이론</strong> 기반<br className="hidden md:block" />
+              9가지 전문 섹션으로 통합 분석하는 <strong className="text-white">박사급 임상 수준</strong> 리포트</>
+            )}
           </p>
 
-          {/* 학술 뱃지 - 가로 스크롤 */}
+          {/* 학술 뱃지 */}
           <div className="flex flex-wrap justify-center gap-1.5 max-w-xl mx-auto">
             {['DSM-5-TR', 'ICD-11', 'WHO', 'APA', 'Cochrane', 'JAMA', 'Lancet'].map((tag) => (
               <span key={tag} className="px-2.5 py-1 text-[10px] font-medium rounded-full bg-white/5 text-white/50 border border-white/10">
@@ -264,11 +306,11 @@ const ReportGenerator = () => {
             <div>
               {isPremium ? (
                 <Badge className="bg-primary/20 text-primary border-primary/30 px-4 py-1.5 text-xs">
-                  <Crown className="w-3.5 h-3.5 mr-1.5" /> 프리미엄 · 무제한 생성
+                  <Crown className="w-3.5 h-3.5 mr-1.5" /> {t('프리미엄 · 무제한 생성', 'Premium · Unlimited Generation')}
                 </Badge>
               ) : (
                 <Badge variant="outline" className="border-white/20 text-white/60 px-4 py-1.5 text-xs">
-                  <Lock className="w-3.5 h-3.5 mr-1.5" /> 프리미엄 구독 필요
+                  <Lock className="w-3.5 h-3.5 mr-1.5" /> {t('프리미엄 구독 필요', 'Premium Subscription Required')}
                 </Badge>
               )}
             </div>
@@ -277,7 +319,7 @@ const ReportGenerator = () => {
 
         {/* ── 스텝 인디케이터 ── */}
         {isPremium && !reportData && (
-          <StepIndicator currentStep={currentStep} steps={['모드 선택', '정보 입력', '리포트 생성']} />
+          <StepIndicator currentStep={currentStep} steps={isEnglish ? ['Select Mode', 'Enter Info', 'Generate Report'] : ['모드 선택', '정보 입력', '리포트 생성']} />
         )}
 
         {/* ── 비로그인/비구독자: 구독 유도 ── */}
@@ -287,22 +329,23 @@ const ReportGenerator = () => {
               <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mx-auto">
                 <Crown className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-white">프리미엄 구독자 전용</h3>
+              <h3 className="text-xl font-bold text-white">{t('프리미엄 구독자 전용', 'Premium Subscribers Only')}</h3>
               <p className="text-muted-foreground text-sm max-w-md mx-auto">
-                프리미엄 패스를 구독하면 AI 종합 리포트, 심층 분석, PDF 다운로드 등 모든 기능을 무제한으로 이용할 수 있습니다.
+                {t('프리미엄 패스를 구독하면 AI 종합 리포트, 심층 분석, PDF 다운로드 등 모든 기능을 무제한으로 이용할 수 있습니다.',
+                   'Subscribe to Premium Pass for unlimited access to AI reports, deep analysis, PDF downloads, and all features.')}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 {isLoggedIn === false ? (
-                  <Button onClick={() => { localStorage.setItem('auth_redirect_after', '/report-generator'); navigate('/auth'); }} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-3 rounded-xl">
-                    회원가입 / 로그인 <ArrowRight className="w-4 h-4 ml-2" />
+                  <Button onClick={() => { localStorage.setItem('auth_redirect_after', localePath('/report-generator')); navigate(localePath('/auth')); }} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-3 rounded-xl">
+                    {t('회원가입 / 로그인', 'Sign Up / Log In')} <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 ) : (
-                  <Button onClick={() => navigate('/token-subscription')} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-3 rounded-xl">
-                    <Crown className="w-5 h-5 mr-2" /> 프리미엄 구독하기
+                  <Button onClick={() => navigate(localePath('/token-subscription'))} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-3 rounded-xl">
+                    <Crown className="w-5 h-5 mr-2" /> {t('프리미엄 구독하기', 'Subscribe to Premium')}
                   </Button>
                 )}
                 <Button onClick={() => setShowSampleReport(true)} variant="outline" className="border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 px-8 py-3 rounded-xl">
-                  <Eye className="w-5 h-5 mr-2" /> 샘플 미리보기
+                  <Eye className="w-5 h-5 mr-2" /> {t('샘플 미리보기', 'Sample Preview')}
                 </Button>
               </div>
             </div>
@@ -314,7 +357,7 @@ const ReportGenerator = () => {
           <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white border-0">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                <Crown className="w-7 h-7 text-amber-500" /> 프리미엄 리포트 샘플
+                <Crown className="w-7 h-7 text-amber-500" /> {t('프리미엄 리포트 샘플', 'Premium Report Sample')}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-6 mt-4">
@@ -322,12 +365,12 @@ const ReportGenerator = () => {
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-purple-500 flex items-center justify-center mx-auto">
                   <FileText className="w-10 h-10" />
                 </div>
-                <h2 className="text-2xl font-black">AI 종합 발달·심리 분석 리포트</h2>
-                <p className="text-purple-200">대상: 홍길동 (7세) · 생성일: 2025년 2월 6일</p>
+                <h2 className="text-2xl font-black">{t('AI 종합 발달·심리 분석 리포트', 'AI Comprehensive Development & Psychology Report')}</h2>
+                <p className="text-purple-200">{t('대상: 홍길동 (7세) · 생성일: 2025년 2월 6일', 'Subject: John Doe (Age 7) · Generated: Feb 6, 2025')}</p>
                 <div className="flex justify-center gap-3 flex-wrap">
-                  <Badge className="bg-blue-500/20 text-blue-200 border border-blue-400/30">검사 12건</Badge>
-                  <Badge className="bg-green-500/20 text-green-200 border border-green-400/30">관찰 8건</Badge>
-                  <Badge className="bg-pink-500/20 text-pink-200 border border-pink-400/30">상담 5건</Badge>
+                  <Badge className="bg-blue-500/20 text-blue-200 border border-blue-400/30">{t('검사 12건', '12 Assessments')}</Badge>
+                  <Badge className="bg-green-500/20 text-green-200 border border-green-400/30">{t('관찰 8건', '8 Observations')}</Badge>
+                  <Badge className="bg-pink-500/20 text-pink-200 border border-pink-400/30">{t('상담 5건', '5 Consultations')}</Badge>
                 </div>
               </div>
               {SAMPLE_REPORT_SECTIONS.map((section, idx) => {
@@ -346,7 +389,7 @@ const ReportGenerator = () => {
                     </div>
                     {idx >= 4 && (
                       <div className="absolute inset-0 bg-white/60 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                        <div className="text-center space-y-2"><Lock className="w-6 h-6 text-purple-400 mx-auto" /><p className="text-sm font-semibold text-purple-600">프리미엄 구독 시 전체 공개</p></div>
+                        <div className="text-center space-y-2"><Lock className="w-6 h-6 text-purple-400 mx-auto" /><p className="text-sm font-semibold text-purple-600">{t('프리미엄 구독 시 전체 공개', 'Full access with Premium')}</p></div>
                       </div>
                     )}
                   </motion.div>
@@ -355,20 +398,20 @@ const ReportGenerator = () => {
               <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 space-y-3">
                 <div className="flex items-center gap-3 justify-center">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center"><Shield className="w-5 h-5 text-white" /></div>
-                  <h3 className="text-lg font-bold text-emerald-800">실제 전문가에게 직접 검사받고 싶으신가요?</h3>
+                  <h3 className="text-lg font-bold text-emerald-800">{t('실제 전문가에게 직접 검사받고 싶으신가요?', 'Want a professional assessment from a real expert?')}</h3>
                 </div>
-                <p className="text-sm text-emerald-700 text-center max-w-lg mx-auto">공인 자격을 갖춘 임상심리전문가가 직접 전문 검사를 실시합니다.</p>
+                <p className="text-sm text-emerald-700 text-center max-w-lg mx-auto">{t('공인 자격을 갖춘 임상심리전문가가 직접 전문 검사를 실시합니다.', 'Licensed clinical psychologists conduct professional assessments.')}</p>
                 <div className="text-center">
                   <a href="https://smilesolution.kr" target="_blank" rel="noopener noreferrer">
                     <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-8 py-3 rounded-xl">
-                      <Award className="w-5 h-5 mr-2" /> 전문가 맞춤 검사 신청
+                      <Award className="w-5 h-5 mr-2" /> {t('전문가 맞춤 검사 신청', 'Request Expert Assessment')}
                     </Button>
                   </a>
                 </div>
               </div>
               <div className="text-center py-6">
-                <Button onClick={() => { setShowSampleReport(false); navigate('/token-subscription'); }} size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-10 py-4 rounded-xl text-lg">
-                  <Crown className="w-6 h-6 mr-2" /> 프리미엄 구독하고 내 리포트 받기
+                <Button onClick={() => { setShowSampleReport(false); navigate(localePath('/token-subscription')); }} size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-10 py-4 rounded-xl text-lg">
+                  <Crown className="w-6 h-6 mr-2" /> {t('프리미엄 구독하고 내 리포트 받기', 'Subscribe & Get My Report')}
                 </Button>
               </div>
             </div>
@@ -379,9 +422,9 @@ const ReportGenerator = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="max-w-5xl mx-auto mb-10">
           <div className="text-center mb-6">
             <h2 className="text-lg md:text-xl font-bold text-white flex items-center justify-center gap-2">
-              <Microscope className="w-5 h-5 text-primary" /> 9가지 전문 분석 섹션
+              <Microscope className="w-5 h-5 text-primary" /> {t('9가지 전문 분석 섹션', '9 Professional Analysis Sections')}
             </h2>
-            <p className="text-muted-foreground text-xs mt-1">각 카드를 클릭하여 상세 내용을 확인하세요</p>
+            <p className="text-muted-foreground text-xs mt-1">{t('각 카드를 클릭하여 상세 내용을 확인하세요', 'Click each card to view details')}</p>
           </div>
 
           {/* 인터랙티브 그리드 */}
@@ -442,8 +485,8 @@ const ReportGenerator = () => {
             {/* 모드 선택 */}
             <div className="grid md:grid-cols-2 gap-3">
               {[
-                { mode: 'with-data' as const, icon: Database, title: '데이터 기반 종합 리포트', desc: '기존 검사·관찰·상담 데이터를 포함한 심층 분석', tags: ['검사 기록', '관찰 기록', '상담 기록'], color: 'primary' },
-                { mode: 'without-data' as const, icon: Heart, title: '고민·상태 기반 리포트', desc: '현재 고민이나 발달·심리 상태 설명만으로 분석', tags: ['고민 상담', '현재 상태', '발달 특징'], color: 'cyan' },
+                { mode: 'with-data' as const, icon: Database, title: t('데이터 기반 종합 리포트', 'Data-Based Comprehensive Report'), desc: t('기존 검사·관찰·상담 데이터를 포함한 심층 분석', 'Deep analysis including existing assessment, observation, and consultation data'), tags: isEnglish ? ['Assessments', 'Observations', 'Consultations'] : ['검사 기록', '관찰 기록', '상담 기록'], color: 'primary' },
+                { mode: 'without-data' as const, icon: Heart, title: t('고민·상태 기반 리포트', 'Concern-Based Report'), desc: t('현재 고민이나 발달·심리 상태 설명만으로 분석', 'Analysis based solely on current concerns or developmental status'), tags: isEnglish ? ['Concerns', 'Current State', 'Development'] : ['고민 상담', '현재 상태', '발달 특징'], color: 'cyan' },
               ].map((opt) => (
                 <motion.button key={opt.mode} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   onClick={() => setReportMode(opt.mode)}
@@ -458,7 +501,7 @@ const ReportGenerator = () => {
                   <h3 className="text-base font-bold text-white mb-1">{opt.title}</h3>
                   <p className="text-xs text-muted-foreground mb-3">{opt.desc}</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {opt.tags.map(t => <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">{t}</span>)}
+                    {opt.tags.map(tg => <span key={tg} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">{tg}</span>)}
                   </div>
                 </motion.button>
               ))}
@@ -468,37 +511,40 @@ const ReportGenerator = () => {
             <div className="bg-white/5 rounded-xl border border-white/10 p-5 md:p-6 space-y-5">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles className="w-5 h-5 text-primary" />
-                <h3 className="text-lg font-bold text-white">대상자 정보 입력</h3>
+                <h3 className="text-lg font-bold text-white">{t('대상자 정보 입력', 'Subject Information')}</h3>
               </div>
               <div className="grid md:grid-cols-3 gap-3">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> 이름 *</label>
+                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {t('이름 *', 'Name *')}</label>
                   <input type="text" value={userInput.name} onChange={(e) => setUserInput({ ...userInput, name: e.target.value })}
-                    placeholder="예: 홍길동" className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary text-sm" maxLength={50} />
+                    placeholder={t('예: 홍길동', 'e.g. John Doe')} className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary text-sm" maxLength={50} />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> 생년월일 *</label>
+                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {t('생년월일 *', 'Date of Birth *')}</label>
                   <input type="date" value={userInput.birthDate} onChange={(e) => setUserInput({ ...userInput, birthDate: e.target.value })}
                     className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> 성별 *</label>
+                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {t('성별 *', 'Gender *')}</label>
                   <select value={userInput.gender} onChange={(e) => setUserInput({ ...userInput, gender: e.target.value })}
                     className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm [&>option]:bg-slate-800 [&>option]:text-white">
-                    <option value="" className="bg-slate-800 text-white">선택</option><option value="남성" className="bg-slate-800 text-white">남성</option><option value="여성" className="bg-slate-800 text-white">여성</option><option value="기타" className="bg-slate-800 text-white">기타</option>
+                    <option value="" className="bg-slate-800 text-white">{t('선택', 'Select')}</option>
+                    <option value={isEnglish ? 'Male' : '남성'} className="bg-slate-800 text-white">{t('남성', 'Male')}</option>
+                    <option value={isEnglish ? 'Female' : '여성'} className="bg-slate-800 text-white">{t('여성', 'Female')}</option>
+                    <option value={isEnglish ? 'Other' : '기타'} className="bg-slate-800 text-white">{t('기타', 'Other')}</option>
                   </select>
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Heart className="w-3.5 h-3.5" /> 최근 고민이나 걱정거리</label>
+                <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Heart className="w-3.5 h-3.5" /> {t('고민이나 걱정거리', 'Concerns or Worries')} {reportMode === 'without-data' && <span className="text-primary">*</span>}</label>
                 <textarea value={userInput.recentConcerns} onChange={(e) => setUserInput({ ...userInput, recentConcerns: e.target.value })}
-                  placeholder="예: 아이가 또래 친구들과 잘 어울리지 못하는 것 같아 걱정됩니다..."
+                  placeholder={t('예: 아이가 또래 관계에서 어려움을 겪고 있어요...', 'e.g. My child is having difficulties with peer relationships...')}
                   className="w-full min-h-[90px] p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm" maxLength={1000} />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Brain className="w-3.5 h-3.5" /> 관찰한 발달/심리적 특징이나 변화</label>
+                <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Brain className="w-3.5 h-3.5" /> {t('발달/심리적 특징이나 메모', 'Developmental/Psychological Notes')} {reportMode === 'without-data' && <span className="text-primary">*</span>}</label>
                 <textarea value={userInput.developmentalNotes} onChange={(e) => setUserInput({ ...userInput, developmentalNotes: e.target.value })}
-                  placeholder="예: 최근 3개월간 언어 표현이 늘었지만, 감정 조절에 어려움을 보입니다..."
+                  placeholder={t('예: 최근 3개월간 언어 표현이 늘었지만, 감정 조절에 어려움을 보입니다...', 'e.g. Language expression has improved over the past 3 months, but emotional regulation remains challenging...')}
                   className="w-full min-h-[90px] p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm" maxLength={1000} />
               </div>
             </div>
@@ -507,14 +553,14 @@ const ReportGenerator = () => {
             {reportMode === 'with-data' && (
               <div className="bg-white/5 rounded-xl border border-white/10 p-5">
                 <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                  <Database className="w-4 h-4 text-primary" /> 수집된 데이터 현황
+                  <Database className="w-4 h-4 text-primary" /> {t('수집된 데이터 현황', 'Collected Data Overview')}
                 </h4>
                 <div className="grid grid-cols-4 gap-3">
                   {[
-                    { icon: FileText, label: '검사', count: userData?.totalAssessments || 0, color: 'text-blue-400' },
-                    { icon: Eye, label: '관찰', count: userData?.totalObservations || 0, color: 'text-green-400' },
-                    { icon: BookOpen, label: '세션', count: userData?.totalObservationSessions || 0, color: 'text-purple-400' },
-                    { icon: MessageSquare, label: '상담', count: userData?.totalChatMessages || 0, color: 'text-pink-400' },
+                    { icon: FileText, label: t('검사', 'Tests'), count: userData?.totalAssessments || 0, color: 'text-blue-400' },
+                    { icon: Eye, label: t('관찰', 'Obs.'), count: userData?.totalObservations || 0, color: 'text-green-400' },
+                    { icon: BookOpen, label: t('세션', 'Sessions'), count: userData?.totalObservationSessions || 0, color: 'text-purple-400' },
+                    { icon: MessageSquare, label: t('상담', 'Chats'), count: userData?.totalChatMessages || 0, color: 'text-pink-400' },
                   ].map((item, idx) => (
                     <div key={idx} className="bg-white/5 p-3 rounded-lg border border-white/5 text-center">
                       <item.icon className={`w-5 h-5 ${item.color} mx-auto mb-1`} />
@@ -532,12 +578,12 @@ const ReportGenerator = () => {
                 <div className="flex items-start gap-3">
                   <Upload className="w-5 h-5 text-primary mt-0.5" />
                   <div className="flex-1">
-                    <h4 className="font-semibold text-white text-sm mb-1">외부 기관 검사 결과 추가 (선택)</h4>
-                    <p className="text-xs text-muted-foreground mb-3">다른 기관에서 받은 검사 결과 이미지를 업로드하면 AI가 자동 반영</p>
+                    <h4 className="font-semibold text-white text-sm mb-1">{t('외부 기관 검사 결과 추가 (선택)', 'Add External Test Results (Optional)')}</h4>
+                    <p className="text-xs text-muted-foreground mb-3">{t('다른 기관에서 받은 검사 결과 이미지를 업로드하면 AI가 자동 반영', 'Upload test result images from other institutions for AI integration')}</p>
                     <input type="file" multiple accept="image/*" onChange={handleImageUpload} disabled={isAnalyzingImages}
                       className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer" />
-                    {isAnalyzingImages && <div className="mt-3 flex items-center gap-2 text-primary"><Loader2 className="w-4 h-4 animate-spin" /><span className="text-sm">분석 중...</span></div>}
-                    {uploadedImages.length > 0 && !isAnalyzingImages && <div className="mt-3 flex items-center gap-2 text-emerald-400"><CheckCircle2 className="w-4 h-4" /><span className="text-sm">{uploadedImages.length}개 분석 완료</span></div>}
+                    {isAnalyzingImages && <div className="mt-3 flex items-center gap-2 text-primary"><Loader2 className="w-4 h-4 animate-spin" /><span className="text-sm">{t('분석 중...', 'Analyzing...')}</span></div>}
+                    {uploadedImages.length > 0 && !isAnalyzingImages && <div className="mt-3 flex items-center gap-2 text-emerald-400"><CheckCircle2 className="w-4 h-4" /><span className="text-sm">{t(`${uploadedImages.length}개 분석 완료`, `${uploadedImages.length} analyzed`)}</span></div>}
                   </div>
                 </div>
               </div>
@@ -548,9 +594,9 @@ const ReportGenerator = () => {
               <Button onClick={generateReport} disabled={isGenerating} size="lg"
                 className="w-full h-16 text-lg font-black bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-2xl shadow-primary/20 border-0">
                 {isGenerating ? (
-                  <><Loader2 className="w-6 h-6 animate-spin mr-3" /> AI 분석 중... ({progress}%)</>
+                  <><Loader2 className="w-6 h-6 animate-spin mr-3" /> {t('AI 분석 중...', 'AI Analyzing...')} ({progress}%)</>
                 ) : (
-                  <><Crown className="w-6 h-6 mr-3" /> 프리미엄 리포트 생성하기</>
+                  <><Crown className="w-6 h-6 mr-3" /> {t('프리미엄 리포트 생성하기', 'Generate Premium Report')}</>
                 )}
               </Button>
             </motion.div>
@@ -562,7 +608,7 @@ const ReportGenerator = () => {
                   <motion.div className="h-full bg-primary rounded-full" animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
                 </div>
                 <div className="flex justify-between text-[10px] text-muted-foreground">
-                  {['데이터 수집', '심리이론 매칭', '논문 검색', '리포트 작성'].map((label, i) => (
+                  {(isEnglish ? ['Data Collection', 'Theory Matching', 'Research Search', 'Report Writing'] : ['데이터 수집', '심리이론 매칭', '논문 검색', '리포트 작성']).map((label, i) => (
                     <span key={i} className={progress > (i + 1) * 22 ? 'text-primary font-semibold' : ''}>{label}</span>
                   ))}
                 </div>
@@ -581,19 +627,19 @@ const ReportGenerator = () => {
                   <FileDown className="w-3.5 h-3.5" /> PDF
                 </Button>
                 <Button onClick={copyToClipboard} size="sm" variant="outline" className="border-white/20 text-white/70 hover:bg-white/5 gap-1.5 text-xs">
-                  <Copy className="w-3.5 h-3.5" /> 복사
+                  <Copy className="w-3.5 h-3.5" /> {t('복사', 'Copy')}
                 </Button>
                 <Button onClick={shareReport} size="sm" variant="outline" className="border-white/20 text-white/70 hover:bg-white/5 gap-1.5 text-xs">
-                  <Share2 className="w-3.5 h-3.5" /> 공유
+                  <Share2 className="w-3.5 h-3.5" /> {t('공유', 'Share')}
                 </Button>
                 <VisualSummaryButton type="assessment"
                   content={{ sections: reportData.sections?.map((s: any) => ({ title: s.title, content: s.content?.replace(/<[^>]*>/g, '').substring(0, 200) })), summary: reportData.summary?.replace(/<[^>]*>/g, ''), userName: userInput.name }}
-                  testType="종합 분석 리포트" label="🎨 비주얼 노트"
+                  testType={t('종합 분석 리포트', 'Comprehensive Analysis Report')} label={t('🎨 비주얼 노트', '🎨 Visual Note')}
                   className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white border-0 text-xs h-8"
                 />
                 <a href="https://open.kakao.com/o/sHLdK3Ch" target="_blank" rel="noopener noreferrer">
                   <Button size="sm" className="bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold gap-1.5 text-xs">
-                    <MessageSquare className="w-3.5 h-3.5" /> 카카오톡 검수
+                    <MessageSquare className="w-3.5 h-3.5" /> {t('카카오톡 검수', 'KakaoTalk Review')}
                   </Button>
                 </a>
               </div>
@@ -601,9 +647,9 @@ const ReportGenerator = () => {
               <div className="flex items-center gap-2 mt-3 max-w-sm mx-auto">
                 <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
                 <input type="email" value={familyEmail} onChange={(e) => setFamilyEmail(e.target.value)}
-                  placeholder="가족 이메일로 전송" className="flex-1 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs placeholder:text-white/30" />
+                  placeholder={t('가족 이메일로 전송', 'Send to family email')} className="flex-1 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs placeholder:text-white/30" />
                 <Button onClick={sendFamilyEmail} disabled={isSendingEmail} size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8">
-                  {isSendingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : '전송'}
+                  {isSendingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t('전송', 'Send')}
                 </Button>
               </div>
             </div>
@@ -616,15 +662,15 @@ const ReportGenerator = () => {
                   <Crown className="w-5 h-5 text-amber-600" />
                   <span className="text-sm font-bold text-amber-700">PREMIUM PERSONAL REPORT</span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-black text-slate-900">AI 종합 분석 리포트</h1>
+                <h1 className="text-3xl md:text-4xl font-black text-slate-900">{t('AI 종합 분석 리포트', 'AI Comprehensive Analysis Report')}</h1>
                 <div className="flex justify-center gap-4 flex-wrap text-sm text-slate-500">
-                  <span>대상: {userInput.name || '미입력'}</span>
-                  <span>생성일: {new Date().toLocaleDateString('ko-KR')}</span>
+                  <span>{t('대상', 'Subject')}: {userInput.name || t('미입력', 'N/A')}</span>
+                  <span>{t('생성일', 'Generated')}: {new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</span>
                 </div>
                 <div className="flex justify-center gap-3 flex-wrap">
-                  <Badge variant="outline">검사 {reportData.dataSource?.assessments || 0}건</Badge>
-                  <Badge variant="outline">관찰 {reportData.dataSource?.observations || 0}건</Badge>
-                  <Badge variant="outline">상담 {reportData.dataSource?.chatMessages || 0}건</Badge>
+                  <Badge variant="outline">{t('검사', 'Tests')} {reportData.dataSource?.assessments || 0}{t('건', '')}</Badge>
+                  <Badge variant="outline">{t('관찰', 'Obs.')} {reportData.dataSource?.observations || 0}{t('건', '')}</Badge>
+                  <Badge variant="outline">{t('상담', 'Chats')} {reportData.dataSource?.chatMessages || 0}{t('건', '')}</Badge>
                 </div>
               </div>
 
@@ -652,10 +698,10 @@ const ReportGenerator = () => {
                 <div className="space-y-4 pt-8 border-t-2 border-indigo-200">
                   <h2 className="text-2xl font-bold text-indigo-900 flex items-center gap-3">
                     <div className="p-3 rounded-xl bg-indigo-100 text-indigo-600 shadow-sm"><Sparkles className="w-6 h-6" /></div>
-                    🔬 최신 연구·논문 기반 인사이트
+                    {t('🔬 최신 연구·논문 기반 인사이트', '🔬 Latest Research & Paper-Based Insights')}
                   </h2>
                   <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-6 rounded-xl border-2 border-indigo-200">
-                    <p className="text-xs text-indigo-500 mb-3 font-semibold">📡 Perplexity AI 실시간 웹 검색 · 최신 1개월 이내 연구 반영</p>
+                    <p className="text-xs text-indigo-500 mb-3 font-semibold">{t('📡 Perplexity AI 실시간 웹 검색 · 최신 1개월 이내 연구 반영', '📡 Perplexity AI real-time web search · Latest research within 1 month')}</p>
                     <div className="prose prose-slate max-w-none leading-relaxed whitespace-pre-wrap text-sm text-slate-700">{reportData.researchInsightsContent}</div>
                   </div>
                 </div>
@@ -666,10 +712,10 @@ const ReportGenerator = () => {
                 <div className="space-y-4 pt-6">
                   <h2 className="text-2xl font-bold text-teal-900 flex items-center gap-3">
                     <div className="p-3 rounded-xl bg-teal-100 text-teal-600 shadow-sm"><BookOpen className="w-6 h-6" /></div>
-                    🏛️ 관련 기관 및 추천 리소스
+                    {t('🏛️ 관련 기관 및 추천 리소스', '🏛️ Related Institutions & Recommended Resources')}
                   </h2>
                   <div className="bg-gradient-to-br from-teal-50 to-emerald-50 p-6 rounded-xl border-2 border-teal-200">
-                    <p className="text-xs text-teal-500 mb-3 font-semibold">🔍 Firecrawl AI 웹 크롤링 · 공공기관 및 전문 기관 정보</p>
+                    <p className="text-xs text-teal-500 mb-3 font-semibold">{t('🔍 Firecrawl AI 웹 크롤링 · 공공기관 및 전문 기관 정보', '🔍 Firecrawl AI web crawling · Public & professional institution info')}</p>
                     <div className="prose prose-slate max-w-none leading-relaxed text-sm text-slate-700 whitespace-pre-wrap">{reportData.relatedResourcesContent}</div>
                   </div>
                 </div>
@@ -679,7 +725,7 @@ const ReportGenerator = () => {
               {reportData.summary && (
                 <div className="space-y-6 pt-12 border-t-4 border-slate-200">
                   <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-600" /> 종합 요약 및 권장사항
+                    <CheckCircle2 className="w-8 h-8 text-emerald-600" /> {t('종합 요약 및 권장사항', 'Summary & Recommendations')}
                   </h2>
                   <div className="bg-gradient-to-br from-slate-50 to-blue-50 p-8 rounded-xl border-2 border-slate-200">
                     <div className="prose prose-lg max-w-none text-slate-700 leading-relaxed"
@@ -691,12 +737,13 @@ const ReportGenerator = () => {
               {/* 법적 고지 */}
               <div className="text-center pt-12 border-t-2 border-slate-200 space-y-4">
                 <div className="flex items-center justify-center gap-2 text-amber-600">
-                  <AlertCircle className="w-5 h-5" /><p className="text-sm font-semibold">중요 안내사항</p>
+                  <AlertCircle className="w-5 h-5" /><p className="text-sm font-semibold">{t('중요 안내사항', 'Important Notice')}</p>
                 </div>
                 <p className="text-sm text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                  본 리포트는 AI 기반 자동 분석 결과이며, 의학적 진단이나 전문가의 정확한 평가를 대체할 수 없습니다.
+                  {t('본 리포트는 AI 기반 자동 분석 결과이며, 의학적 진단이나 전문가의 정확한 평가를 대체할 수 없습니다.',
+                     'This report is an AI-based automated analysis and cannot replace medical diagnosis or professional evaluation.')}
                 </p>
-                <p className="text-xs text-slate-500 mt-4">Generated by 코끼리 AI | © 2025 All Rights Reserved</p>
+                <p className="text-xs text-slate-500 mt-4">{t('Generated by 코끼리 AI | © 2025 All Rights Reserved', 'Generated by HiLight AI | © 2025 All Rights Reserved')}</p>
               </div>
             </div>
           </div>
@@ -711,12 +758,12 @@ const ReportGenerator = () => {
                 <Award className="w-7 h-7 text-white" />
               </div>
               <div className="flex-1 text-center md:text-left space-y-1">
-                <h3 className="text-base font-bold text-white">실제 전문가에게 전문 검사 받기</h3>
-                <p className="text-xs text-muted-foreground">공인 임상심리전문가가 직접 대면/비대면 검사를 실시합니다.</p>
+                <h3 className="text-base font-bold text-white">{t('실제 전문가에게 전문 검사 받기', 'Get a Professional Assessment from a Real Expert')}</h3>
+                <p className="text-xs text-muted-foreground">{t('공인 임상심리전문가가 직접 대면/비대면 검사를 실시합니다.', 'Licensed clinical psychologists conduct in-person/remote assessments.')}</p>
               </div>
               <a href="https://smilesolution.kr" target="_blank" rel="noopener noreferrer" className="shrink-0">
                 <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-6 rounded-xl">
-                  전문가 검사 신청 <ArrowRight className="w-4 h-4 ml-1" />
+                  {t('전문가 검사 신청', 'Request Expert Assessment')} <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
               </a>
             </div>

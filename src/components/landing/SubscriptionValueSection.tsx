@@ -215,7 +215,9 @@ const SubscriptionValueSection = () => {
             ))}
           </div>
           <p className="text-slate-400 text-sm">
-            이미 <strong className="text-violet-300">3,247명</strong>의 부모님이 프리미엄을 선택했습니다
+            {isEnglish 
+              ? <>Already <strong className="text-violet-300">3,247</strong> parents chose Premium</>
+              : <>이미 <strong className="text-violet-300">3,247명</strong>의 부모님이 프리미엄을 선택했습니다</>}
           </p>
         </motion.div>
       </div>

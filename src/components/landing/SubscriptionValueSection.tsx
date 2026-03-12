@@ -166,16 +166,16 @@ const SubscriptionValueSection = () => {
                 size="lg"
               >
                 <Zap className="w-5 h-5 mr-2" />
-                프리미엄 구독 시작하기
+                {isEnglish ? 'Start Premium Subscription' : '프리미엄 구독 시작하기'}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
 
               <div className="flex items-center gap-4 text-xs text-slate-500">
                 <span className="flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" /> 언제든 해지 가능
+                  <CheckCircle2 className="w-3 h-3" /> {isEnglish ? 'Cancel anytime' : '언제든 해지 가능'}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Shield className="w-3 h-3" /> 안전한 결제
+                  <Shield className="w-3 h-3" /> {isEnglish ? 'Secure payment' : '안전한 결제'}
                 </span>
               </div>
             </div>

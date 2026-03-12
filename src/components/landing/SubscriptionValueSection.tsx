@@ -11,7 +11,7 @@ import { useLanguage } from '@/i18n/LanguageContext';
 
 const SubscriptionValueSection = () => {
   const navigate = useNavigate();
-  const { localePath } = useLanguage();
+  const { localePath, isEnglish } = useLanguage();
 
   // Countdown timer - resets daily
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
@@ -33,14 +33,24 @@ const SubscriptionValueSection = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const benefits = [
+  const benefits = isEnglish ? [
+    'Unlimited AI psychological assessments',
+    'Expert-level deep analysis reports',
+    'Priority expert consultation booking',
+    'Ad-free experience',
+  ] : [
     '모든 AI 심리검사 무제한 이용',
     '전문가급 심층 분석 리포트',
     '전문가 상담 우선 예약',
     '광고 없는 쾌적한 환경',
   ];
 
-  const valueProps = [
+  const valueProps = isEnglish ? [
+    { icon: Brain, title: 'AI Deep Analysis', desc: '9 professional domain reports', save: 'Save $500+ in clinic fees' },
+    { icon: FileText, title: 'Unlimited Reports', desc: 'No usage limits', save: 'Worth $30 each' },
+    { icon: Users, title: 'Expert Access', desc: 'Priority booking & discounts', save: '30% off consultations' },
+    { icon: Sparkles, title: 'Custom Solutions', desc: 'AI-powered personalized guides', save: 'Worth $1,000/mo' },
+  ] : [
     { icon: Brain, title: 'AI 심층 분석', desc: '9가지 전문 영역 리포트', save: '병원비 50만원+ 절약' },
     { icon: FileText, title: '무제한 리포트', desc: '횟수 제한 없이 자유롭게', save: '건당 3만원 상당' },
     { icon: Users, title: '전문가 연결', desc: '우선 예약 & 할인 혜택', save: '상담비 30% 할인' },
@@ -56,6 +66,7 @@ const SubscriptionValueSection = () => {
         <motion.div initial={{ opacity: 0, y: -10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
           <Badge className="bg-violet-500/20 text-violet-300 border border-violet-500/40 px-5 py-1.5 text-sm">
             <Crown className="w-3.5 h-3.5 mr-1.5" />
+            {isEnglish ? 'Special Discount Today Only' : '오늘만 특별 할인 진행 중'}
             오늘만 특별 할인 진행 중
           </Badge>
         </motion.div>
@@ -75,13 +86,21 @@ const SubscriptionValueSection = () => {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Crown className="w-5 h-5 text-violet-400" />
-                <span className="text-violet-400 font-semibold text-sm tracking-wide">프리미엄 패스</span>
+                <span className="text-violet-400 font-semibold text-sm tracking-wide">
+                  {isEnglish ? 'Premium Pass' : '프리미엄 패스'}
+                </span>
               </div>
               <h2 className="text-3xl md:text-4xl font-black text-white mb-2">
-                지금 바로 <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">시작하세요</span>
+                {isEnglish ? (
+                  <>Start <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">Now</span></>
+                ) : (
+                  <>지금 바로 <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">시작하세요</span></>
+                )}
               </h2>
               <p className="text-slate-400 text-sm mb-6">
-                전문가급 AI 분석으로 아이의 발달을 체계적으로 관리하세요
+                {isEnglish 
+                  ? 'Systematically manage your child\'s development with expert-level AI analysis'
+                  : '전문가급 AI 분석으로 아이의 발달을 체계적으로 관리하세요'}
               </p>
 
               <div className="space-y-3 mb-8">
@@ -102,14 +121,16 @@ const SubscriptionValueSection = () => {
 
               {/* Price */}
               <div className="flex items-end gap-3 mb-2">
-                <span className="text-4xl font-black text-white">₩19,900</span>
-                <span className="text-slate-400 text-sm pb-1">/월</span>
+                <span className="text-4xl font-black text-white">{isEnglish ? '$14.99' : '₩19,900'}</span>
+                <span className="text-slate-400 text-sm pb-1">{isEnglish ? '/mo' : '/월'}</span>
               </div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-slate-500 line-through text-sm">₩39,900</span>
+                <span className="text-slate-500 line-through text-sm">{isEnglish ? '$29.99' : '₩39,900'}</span>
                 <Badge className="bg-rose-500/90 text-white border-0 text-xs font-bold">50% OFF</Badge>
               </div>
-              <p className="text-xs text-slate-500">런칭 특별가 · 언제든 해지 가능</p>
+              <p className="text-xs text-slate-500">
+                {isEnglish ? 'Launch special · Cancel anytime' : '런칭 특별가 · 언제든 해지 가능'}
+              </p>
             </div>
 
             {/* Right - Timer + CTA */}
@@ -118,13 +139,15 @@ const SubscriptionValueSection = () => {
               <div className="w-full bg-slate-800/80 border border-slate-700/50 rounded-xl p-6 text-center">
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <Clock className="w-4 h-4 text-violet-400" />
-                  <span className="text-violet-300 font-semibold text-sm">특별 할인 마감까지</span>
+                  <span className="text-violet-300 font-semibold text-sm">
+                    {isEnglish ? 'Special offer ends in' : '특별 할인 마감까지'}
+                  </span>
                 </div>
                 <div className="flex justify-center gap-3">
                   {[
-                    { val: pad(timeLeft.hours), label: '시간' },
-                    { val: pad(timeLeft.minutes), label: '분' },
-                    { val: pad(timeLeft.seconds), label: '초' },
+                    { val: pad(timeLeft.hours), label: isEnglish ? 'Hours' : '시간' },
+                    { val: pad(timeLeft.minutes), label: isEnglish ? 'Min' : '분' },
+                    { val: pad(timeLeft.seconds), label: isEnglish ? 'Sec' : '초' },
                   ].map((item, i) => (
                     <div key={i} className="flex flex-col items-center">
                       <div className="bg-slate-900 border border-slate-600/50 rounded-lg w-16 h-16 flex items-center justify-center mb-1">
@@ -143,16 +166,16 @@ const SubscriptionValueSection = () => {
                 size="lg"
               >
                 <Zap className="w-5 h-5 mr-2" />
-                프리미엄 구독 시작하기
+                {isEnglish ? 'Start Premium Subscription' : '프리미엄 구독 시작하기'}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
 
               <div className="flex items-center gap-4 text-xs text-slate-500">
                 <span className="flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" /> 언제든 해지 가능
+                  <CheckCircle2 className="w-3 h-3" /> {isEnglish ? 'Cancel anytime' : '언제든 해지 가능'}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Shield className="w-3 h-3" /> 안전한 결제
+                  <Shield className="w-3 h-3" /> {isEnglish ? 'Secure payment' : '안전한 결제'}
                 </span>
               </div>
             </div>
@@ -192,7 +215,9 @@ const SubscriptionValueSection = () => {
             ))}
           </div>
           <p className="text-slate-400 text-sm">
-            이미 <strong className="text-violet-300">3,247명</strong>의 부모님이 프리미엄을 선택했습니다
+            {isEnglish 
+              ? <>Already <strong className="text-violet-300">3,247</strong> parents chose Premium</>
+              : <>이미 <strong className="text-violet-300">3,247명</strong>의 부모님이 프리미엄을 선택했습니다</>}
           </p>
         </motion.div>
       </div>

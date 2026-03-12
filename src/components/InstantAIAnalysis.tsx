@@ -34,6 +34,7 @@ import { EnhancedResultView } from '@/components/instant-analysis/EnhancedResult
 
 const InstantAIAnalysis = () => {
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [inputText, setInputText] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isExpanding, setIsExpanding] = useState(false);

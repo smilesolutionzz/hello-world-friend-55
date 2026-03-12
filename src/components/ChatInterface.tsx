@@ -123,8 +123,8 @@ const ChatInterface = () => {
       if (data?.expandedPrompt) {
         setMessage(data.expandedPrompt);
         toast({
-          title: "✨ 프롬프트 확장 완료",
-          description: "입력 내용이 더 구체적으로 확장되었습니다.",
+          title: isEnglish ? "✨ Prompt expanded" : "✨ 프롬프트 확장 완료",
+          description: isEnglish ? "Your input has been expanded with more detail." : "입력 내용이 더 구체적으로 확장되었습니다.",
         });
       }
     } catch (error: any) {

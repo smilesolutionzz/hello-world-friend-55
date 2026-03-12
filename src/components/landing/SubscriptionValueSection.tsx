@@ -66,6 +66,7 @@ const SubscriptionValueSection = () => {
         <motion.div initial={{ opacity: 0, y: -10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
           <Badge className="bg-violet-500/20 text-violet-300 border border-violet-500/40 px-5 py-1.5 text-sm">
             <Crown className="w-3.5 h-3.5 mr-1.5" />
+            {isEnglish ? 'Special Discount Today Only' : '오늘만 특별 할인 진행 중'}
             오늘만 특별 할인 진행 중
           </Badge>
         </motion.div>

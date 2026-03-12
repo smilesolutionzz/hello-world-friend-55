@@ -29,6 +29,7 @@ export const ModernResultLayout: React.FC<ModernResultLayoutProps> = ({
   isDownloading = false,
   className = '',
 }) => {
+  const { isEnglish } = useLanguage();
   return (
     <div className={`min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 ${className}`}>
       <div className="container mx-auto px-4 py-4 md:py-8 max-w-4xl">

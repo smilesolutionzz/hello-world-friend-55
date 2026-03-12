@@ -515,12 +515,17 @@ const InstantAIAnalysis = () => {
                 
                 {/* 분석 단계 - 가로 스텝 */}
                 <div className="flex justify-between text-xs">
-                  {[
+                  {(isEnglish ? [
+                    { label: 'Type', threshold: 20 },
+                    { label: 'Causes', threshold: 45 },
+                    { label: 'Solutions', threshold: 70 },
+                    { label: 'Reports', threshold: 90 },
+                  ] : [
                     { label: '유형 분석', threshold: 20 },
                     { label: '원인 분석', threshold: 45 },
                     { label: '솔루션', threshold: 70 },
                     { label: '리포트', threshold: 90 },
-                  ].map((step, i) => (
+                  ]).map((step, i) => (
                     <div key={i} className="flex flex-col items-center gap-1">
                       <motion.div 
                         className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium

@@ -787,8 +787,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           disabled={isGeneratingPDF}
         >
           <div className="text-left">
-            <div className="font-semibold text-base">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
-            <div className="text-xs text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
+            <div className="font-semibold text-base">{isGeneratingPDF ? (isEnglish ? 'Generating...' : 'PDF 생성 중...') : (isEnglish ? 'PDF Report' : 'PDF 리포트')}</div>
+            <div className="text-xs text-muted-foreground">{isGeneratingPDF ? (isEnglish ? 'Please wait' : '잠시만 기다려주세요') : (isEnglish ? 'Save as PDF' : '결과를 PDF로 저장')}</div>
           </div>
         </Button>
 

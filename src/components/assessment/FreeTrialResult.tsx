@@ -120,7 +120,7 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
     }
   };
 
-  const handleUpgrade = () => { navigate('/auth'); };
+  const handleUpgrade = () => { navigate(localePath('/auth')); };
 
   const handleGenerateImage = async () => {
     setIsGeneratingImage(true);

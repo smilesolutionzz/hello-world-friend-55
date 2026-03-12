@@ -509,7 +509,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
             )}
             <Button 
               variant="ghost" 
-              onClick={onRestart || (() => navigate('/assessment'))}
+              onClick={onRestart || (() => navigate(localePath('/assessment')))}
               className="flex-1"
               size="sm"
             >

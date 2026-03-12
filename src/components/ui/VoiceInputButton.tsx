@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Mic, MicOff, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface VoiceInputButtonProps {
   onTranscription: (text: string) => void;
@@ -22,6 +23,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
 
   const checkMicrophonePermission = async () => {
     try {
@@ -33,22 +35,25 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   };
 
   const startRecording = async () => {
-    // 권한 상태 확인
     const permissionState = await checkMicrophonePermission();
     
     if (permissionState === 'denied') {
       toast({
-        title: "마이크 접근 권한 필요",
-        description: "브라우저 설정에서 마이크 권한을 허용해주세요. 주소창 왼쪽의 자물쇠 아이콘을 클릭하여 설정할 수 있습니다.",
-        variant: "destructive",
+        title: isEnglish ? 'Microphone permission required' : '마이크 접근 권한 필요',
+        description: isEnglish
+          ? 'Please allow microphone access in browser settings (lock icon next to address bar).'
+          : '브라우저 설정에서 마이크 권한을 허용해주세요. 주소창 왼쪽의 자물쇠 아이콘을 클릭하여 설정할 수 있습니다.',
+        variant: 'destructive',
       });
       return;
     }
 
     if (permissionState === 'prompt') {
       toast({
-        title: "마이크 접근 권한 요청",
-        description: "음성 분석을 위해 마이크 접근을 허용해주세요.",
+        title: isEnglish ? 'Requesting microphone permission' : '마이크 접근 권한 요청',
+        description: isEnglish
+          ? 'Please allow microphone access for voice input.'
+          : '음성 분석을 위해 마이크 접근을 허용해주세요.',
       });
     }
 
@@ -85,19 +90,25 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       setIsRecording(true);
       
       toast({
-        title: "녹음 시작",
-        description: "말씀하세요. 다시 버튼을 눌러 녹음을 종료합니다.",
+        title: isEnglish ? 'Recording started' : '녹음 시작',
+        description: isEnglish
+          ? 'Please speak. Press again to stop recording.'
+          : '말씀하세요. 다시 버튼을 눌러 녹음을 종료합니다.',
       });
     } catch (error) {
       console.error('Recording error:', error);
       const errorMessage = error instanceof Error && error.name === 'NotAllowedError' 
-        ? "마이크 접근이 거부되었습니다. 브라우저 설정에서 마이크 권한을 허용해주세요."
-        : "마이크에 접근할 수 없습니다. 다른 앱에서 마이크를 사용 중인지 확인해주세요.";
+        ? (isEnglish
+          ? 'Microphone access was denied. Please allow microphone permission in browser settings.'
+          : '마이크 접근이 거부되었습니다. 브라우저 설정에서 마이크 권한을 허용해주세요.')
+        : (isEnglish
+          ? 'Unable to access microphone. Check if another app is using it.'
+          : '마이크에 접근할 수 없습니다. 다른 앱에서 마이크를 사용 중인지 확인해주세요.');
         
       toast({
-        title: "녹음 오류",
+        title: isEnglish ? 'Recording error' : '녹음 오류',
         description: errorMessage,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   };
@@ -114,7 +125,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     
     try {
       if (chunksRef.current.length === 0) {
-        throw new Error('녹음된 데이터가 없습니다');
+        throw new Error(isEnglish ? 'No recorded audio data' : '녹음된 데이터가 없습니다');
       }
 
       const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
@@ -134,7 +145,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
       // Send to Supabase edge function
       const { data, error } = await supabase.functions.invoke('voice-to-text', {
-        body: { audio: base64Audio }
+        body: { audio: base64Audio, language: isEnglish ? 'en' : 'ko' }
       });
 
       if (error) {
@@ -144,18 +155,20 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       if (data?.text) {
         onTranscription(data.text);
         toast({
-          title: "음성 인식 완료",
-          description: "텍스트가 입력되었습니다.",
+          title: isEnglish ? 'Transcription complete' : '음성 인식 완료',
+          description: isEnglish ? 'Text has been inserted.' : '텍스트가 입력되었습니다.',
         });
       } else {
-        throw new Error('음성을 인식할 수 없습니다');
+        throw new Error(isEnglish ? 'Could not transcribe audio' : '음성을 인식할 수 없습니다');
       }
     } catch (error) {
       console.error('Processing error:', error);
       toast({
-        title: "음성 처리 오류",
-        description: error instanceof Error ? error.message : '음성 처리 중 오류가 발생했습니다',
-        variant: "destructive",
+        title: isEnglish ? 'Voice processing error' : '음성 처리 오류',
+        description: error instanceof Error
+          ? error.message
+          : (isEnglish ? 'An error occurred while processing voice.' : '음성 처리 중 오류가 발생했습니다'),
+        variant: 'destructive',
       });
     } finally {
       setIsProcessing(false);
@@ -173,7 +186,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   return (
     <Button
       type="button"
-      variant={isRecording ? "destructive" : "outline"}
+      variant={isRecording ? 'destructive' : 'outline'}
       size="sm"
       onClick={handleClick}
       disabled={disabled || isProcessing}
@@ -186,7 +199,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       ) : (
         <Mic className="w-4 h-4" />
       )}
-      {isProcessing ? '처리 중...' : isRecording ? '녹음 중지' : '음성 입력'}
+      {isProcessing
+        ? (isEnglish ? 'Processing...' : '처리 중...')
+        : isRecording
+        ? (isEnglish ? 'Stop' : '녹음 중지')
+        : (isEnglish ? 'Voice Input' : '음성 입력')}
     </Button>
   );
 };

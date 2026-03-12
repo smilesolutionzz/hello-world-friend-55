@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { VoiceInputButton } from "@/components/ui/VoiceInputButton";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface InstantReport {
   report: string;
@@ -26,6 +27,7 @@ const ChatInterface = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { isEnglish } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,8 +104,8 @@ const ChatInterface = () => {
   const handleExpandPrompt = async () => {
     if (!message.trim() || message.length < 10) {
       toast({
-        title: "입력 확인",
-        description: "최소 10자 이상 입력해주세요.",
+        title: isEnglish ? "Check input" : "입력 확인",
+        description: isEnglish ? "Please enter at least 10 characters." : "최소 10자 이상 입력해주세요.",
         variant: "destructive"
       });
       return;
@@ -113,7 +115,7 @@ const ChatInterface = () => {
     
     try {
       const { data, error } = await supabase.functions.invoke('expand-prompt', {
-        body: { prompt: message }
+        body: { prompt: message, language: isEnglish ? 'en' : 'ko' }
       });
 
       if (error) throw error;
@@ -121,15 +123,15 @@ const ChatInterface = () => {
       if (data?.expandedPrompt) {
         setMessage(data.expandedPrompt);
         toast({
-          title: "✨ 프롬프트 확장 완료",
-          description: "입력 내용이 더 구체적으로 확장되었습니다.",
+          title: isEnglish ? "✨ Prompt expanded" : "✨ 프롬프트 확장 완료",
+          description: isEnglish ? "Your input has been expanded with more detail." : "입력 내용이 더 구체적으로 확장되었습니다.",
         });
       }
     } catch (error: any) {
       console.error('프롬프트 확장 오류:', error);
       toast({
-        title: "확장 실패",
-        description: "프롬프트 확장 중 오류가 발생했습니다.",
+        title: isEnglish ? "Expansion failed" : "확장 실패",
+        description: isEnglish ? "An error occurred while refining your prompt." : "프롬프트 확장 중 오류가 발생했습니다.",
         variant: "destructive"
       });
     } finally {
@@ -363,12 +365,12 @@ const ChatInterface = () => {
               {isExpanding ? (
                 <>
                   <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
-                  <span>다듬는 중...</span>
+                  <span>{isEnglish ? 'Refining...' : '다듬는 중...'}</span>
                 </>
               ) : (
                 <>
                   <Wand2 className="w-3.5 h-3.5" />
-                  <span>AI다듬기</span>
+                  <span>{isEnglish ? 'AI Refine' : 'AI다듬기'}</span>
                 </>
               )}
             </Button>

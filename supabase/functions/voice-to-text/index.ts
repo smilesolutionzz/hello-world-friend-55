@@ -42,7 +42,8 @@ serve(async (req) => {
   }
 
   try {
-    const { audio } = await req.json();
+    const { audio, language } = await req.json();
+    const targetLanguage = language === 'en' ? 'en' : 'ko';
     
     if (!audio) {
       throw new Error('No audio data provided');
@@ -60,7 +61,7 @@ serve(async (req) => {
     const blob = new Blob([binaryAudio], { type: 'audio/webm' });
     formData.append('file', blob, 'audio.webm');
     formData.append('model', 'whisper-1');
-    formData.append('language', 'ko'); // Korean language
+    formData.append('language', targetLanguage);
 
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) {

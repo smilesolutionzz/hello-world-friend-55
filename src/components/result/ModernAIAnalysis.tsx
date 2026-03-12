@@ -17,6 +17,7 @@ export const ModernAIAnalysis: React.FC<ModernAIAnalysisProps> = ({
   fallbackText = '',
   delay = 0,
 }) => {
+  const { isEnglish } = useLanguage();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

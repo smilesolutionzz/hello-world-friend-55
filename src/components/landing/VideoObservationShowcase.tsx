@@ -51,8 +51,8 @@ export const VideoObservationShowcase = () => {
           <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white whitespace-nowrap">
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">{t.videoObservation.heading1}</span>{t.videoObservation.heading2}
           </h2>
-          <p className="text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            <span className="block">{t.videoObservation.desc1}</span>
+          <p className="text-sm md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            {t.videoObservation.desc1}<br />
             <span className="text-purple-400 font-semibold">{t.videoObservation.desc2}</span>
           </p>
         </motion.div>

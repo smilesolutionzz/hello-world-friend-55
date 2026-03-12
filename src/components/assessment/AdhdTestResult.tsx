@@ -550,20 +550,20 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
                 {/* 분석 결과 액션 버튼 */}
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Button 
-                    onClick={() => navigate('/experts')}
+                    onClick={() => navigate(localePath('/experts'))}
                     variant="outline" 
                     size="sm"
                   >
                     <Users className="w-4 h-4 mr-2" />
-                    전문가 상담
+                    {isEnglish ? 'Expert Consultation' : '전문가 상담'}
                   </Button>
                   <Button 
-                    onClick={() => navigate('/premium-assessment')}
+                    onClick={() => navigate(localePath('/premium-assessment'))}
                     variant="outline"
                     size="sm"
                   >
                     <Target className="w-4 h-4 mr-2" />
-                    다른 검사 하기
+                    {isEnglish ? 'Other Tests' : '다른 검사 하기'}
                   </Button>
                 </div>
               </CardContent>

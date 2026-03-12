@@ -115,7 +115,7 @@ const ChatInterface = () => {
     
     try {
       const { data, error } = await supabase.functions.invoke('expand-prompt', {
-        body: { prompt: message }
+        body: { prompt: message, language: isEnglish ? 'en' : 'ko' }
       });
 
       if (error) throw error;

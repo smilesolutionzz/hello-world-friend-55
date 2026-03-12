@@ -142,7 +142,7 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
       <div id="attachment-style-result" className="max-w-4xl mx-auto space-y-6">
         {/* 헤더 */}
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <Button variant="ghost" onClick={() => navigate('/assessment')} className="flex items-center gap-2">
+          <Button variant="ghost" onClick={() => navigate(localePath('/assessment'))} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             {isEnglish ? "Test List" : "검사 목록"}
           </Button>

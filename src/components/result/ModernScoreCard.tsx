@@ -68,6 +68,7 @@ export const ModernScoreCard: React.FC<ModernScoreCardProps> = ({
   delay = 0,
   compact = false,
 }) => {
+  const { isEnglish } = useLanguage();
   const styles = levelStyles[level];
   const displayPercentage = percentage ?? Math.round((score / maxScore) * 100);
 

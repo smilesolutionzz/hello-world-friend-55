@@ -583,7 +583,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
                   <Button 
                     variant="outline" 
                     size="lg"
-                    onClick={() => navigate('/auth')}
+                    onClick={() => navigate(localePath('/auth'))}
                   >
                     {isEnglish ? 'Log In' : '로그인'}
                   </Button>

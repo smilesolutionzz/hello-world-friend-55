@@ -317,13 +317,13 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Button onClick={() => navigate('/assessment')} variant="outline">
+              <Button onClick={() => navigate(localePath('/assessment'))} variant="outline">
                 {isEnglish ? "Try Other Tests" : "다른 검사 해보기"}
               </Button>
-              <Button onClick={() => navigate('/token-history')} variant="outline">
+              <Button onClick={() => navigate(localePath('/token-history'))} variant="outline">
                 {isEnglish ? "Token History" : "토큰 이력 확인"}
               </Button>
-              <Button onClick={() => navigate('/')} variant="secondary">
+              <Button onClick={() => navigate(localePath('/'))} variant="secondary">
                 {isEnglish ? "Home" : "홈으로"}
               </Button>
             </div>

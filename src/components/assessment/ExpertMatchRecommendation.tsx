@@ -265,11 +265,11 @@ export const ExpertMatchRecommendation = ({
       <div className="text-center">
         <Button 
           variant="outline" 
-          onClick={() => navigate('/experts')}
+          onClick={() => navigate(localePath('/experts'))}
           className="mt-4"
         >
           <Building2 className="w-4 h-4 mr-2" />
-          더 많은 전문가 보기
+          {isEnglish ? 'View More Experts' : '더 많은 전문가 보기'}
         </Button>
       </div>
     </div>

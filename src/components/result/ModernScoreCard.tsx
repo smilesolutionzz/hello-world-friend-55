@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { LucideIcon } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface ModernScoreCardProps {
   title: string;
@@ -67,6 +68,7 @@ export const ModernScoreCard: React.FC<ModernScoreCardProps> = ({
   delay = 0,
   compact = false,
 }) => {
+  const { isEnglish } = useLanguage();
   const styles = levelStyles[level];
   const displayPercentage = percentage ?? Math.round((score / maxScore) * 100);
 
@@ -102,7 +104,7 @@ export const ModernScoreCard: React.FC<ModernScoreCardProps> = ({
                   {score}
                 </span>
                 <span className="text-sm text-slate-500 dark:text-slate-400">
-                  / {maxScore}점
+                  / {maxScore}{isEnglish ? 'pt' : '점'}
                 </span>
               </div>
               

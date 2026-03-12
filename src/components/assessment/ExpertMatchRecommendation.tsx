@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Heart, Star, ExternalLink, Sparkles, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface Expert {
   id: string;
@@ -83,6 +84,7 @@ export const ExpertMatchRecommendation = ({
   scores 
 }: ExpertMatchRecommendationProps) => {
   const navigate = useNavigate();
+  const { isEnglish, localePath } = useLanguage();
   const [experts, setExperts] = useState<Expert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'counseling'>('all');
@@ -265,11 +267,11 @@ export const ExpertMatchRecommendation = ({
       <div className="text-center">
         <Button 
           variant="outline" 
-          onClick={() => navigate('/experts')}
+          onClick={() => navigate(localePath('/experts'))}
           className="mt-4"
         >
           <Building2 className="w-4 h-4 mr-2" />
-          더 많은 전문가 보기
+          {isEnglish ? 'View More Experts' : '더 많은 전문가 보기'}
         </Button>
       </div>
     </div>

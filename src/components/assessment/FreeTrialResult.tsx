@@ -37,7 +37,7 @@ interface FreeTrialResultProps {
 const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isEnglish } = useLanguage();
+  const { isEnglish, localePath } = useLanguage();
   const { isPremiumUser, isLifetimeUser } = useSubscription();
   const isPremium = isPremiumUser() || isLifetimeUser();
   
@@ -120,7 +120,7 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
     }
   };
 
-  const handleUpgrade = () => { navigate('/auth'); };
+  const handleUpgrade = () => { navigate(localePath('/auth')); };
 
   const handleGenerateImage = async () => {
     setIsGeneratingImage(true);
@@ -361,10 +361,10 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
           </Card>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="outline" onClick={() => navigate('/free-trial')} className="flex-1 max-w-xs">
+            <Button variant="outline" onClick={() => navigate(localePath('/free-trial'))} className="flex-1 max-w-xs">
               {isEnglish ? 'Try Other Free Tests' : '다른 무료 테스트 해보기'}
             </Button>
-            <Button variant="outline" onClick={() => navigate('/')} className="flex-1 max-w-xs">
+            <Button variant="outline" onClick={() => navigate(localePath('/'))} className="flex-1 max-w-xs">
               {isEnglish ? 'Back to Home' : '홈으로 돌아가기'}
             </Button>
           </div>

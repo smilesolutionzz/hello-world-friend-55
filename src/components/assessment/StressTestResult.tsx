@@ -32,7 +32,7 @@ interface StressTestResultProps {
 const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isEnglish } = useLanguage();
+  const { isEnglish, localePath } = useLanguage();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   
   // 로그인 상태 확인
@@ -509,7 +509,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
             )}
             <Button 
               variant="ghost" 
-              onClick={onRestart || (() => navigate('/assessment'))}
+              onClick={onRestart || (() => navigate(localePath('/assessment')))}
               className="flex-1"
               size="sm"
             >
@@ -575,7 +575,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
                   <Button 
                     size="lg"
                     className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 shadow-lg"
-                    onClick={() => navigate('/auth?mode=signup')}
+                    onClick={() => navigate(localePath('/auth?mode=signup'))}
                   >
                     <UserPlus className="w-5 h-5 mr-2" />
                     {isEnglish ? 'Free Sign Up' : '무료 회원가입'}
@@ -583,7 +583,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
                   <Button 
                     variant="outline" 
                     size="lg"
-                    onClick={() => navigate('/auth')}
+                    onClick={() => navigate(localePath('/auth'))}
                   >
                     {isEnglish ? 'Log In' : '로그인'}
                   </Button>

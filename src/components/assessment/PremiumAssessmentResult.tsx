@@ -14,6 +14,7 @@ import { PDFHeader } from '@/components/common/PDFHeader';
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface PremiumAssessmentResultProps {
   assessmentType: string;
@@ -30,6 +31,7 @@ const PremiumAssessmentResult = ({
 }: PremiumAssessmentResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnglish, localePath } = useLanguage();
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
@@ -616,11 +618,11 @@ const PremiumAssessmentResult = ({
                 <div className="mb-4 p-4 rounded-lg border border-yellow-200 bg-yellow-50">
                   <p className="text-sm text-yellow-800 mb-3">⚠️ {tokenError}</p>
                   <div className="flex flex-wrap gap-2">
-                    <Button size="sm" onClick={() => navigate('/token-subscription')} className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
-                      토큰 충전하기
+                    <Button size="sm" onClick={() => navigate(localePath('/token-subscription'))} className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+                      {isEnglish ? 'Top Up Tokens' : '토큰 충전하기'}
                     </Button>
                     <Button size="sm" variant="outline" onClick={generateAIAnalysis} disabled={isAnalyzing}>
-                      다시 시도
+                      {isEnglish ? 'Retry' : '다시 시도'}
                     </Button>
                   </div>
                 </div>
@@ -671,30 +673,27 @@ const PremiumAssessmentResult = ({
               className="flex items-center gap-2 border-green-200 text-green-700 hover:bg-green-50"
             >
               <MessageSquare className="w-5 h-5" />
-              후기 남기기
+              {isEnglish ? 'Leave Review' : '후기 남기기'}
             </Button>
 
             <Button
-              onClick={() => {
-                console.log('다른 검사 하기 button clicked');
-                onBack();
-              }}
+              onClick={() => { onBack(); }}
               variant="outline"
               size="lg"
               className="flex items-center gap-2"
             >
               <Target className="w-5 h-5" />
-              다른 검사 하기
+              {isEnglish ? 'Other Tests' : '다른 검사 하기'}
             </Button>
 
             <Button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate(localePath('/dashboard'))}
               variant="outline"
               size="lg"
               className="flex items-center gap-2"
             >
               <FileText className="w-5 h-5" />
-              검사 기록 보기
+              {isEnglish ? 'Test History' : '검사 기록 보기'}
             </Button>
           </div>
         </div>
@@ -758,12 +757,14 @@ const PremiumAssessmentResult = ({
                   <FileText className="w-6 h-6 text-purple-600" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-purple-900 mb-2">맞춤형 개별교육계획(IEP) 생성</h4>
+                  <h4 className="font-semibold text-purple-900 mb-2">{isEnglish ? 'Custom IEP Generation' : '맞춤형 개별교육계획(IEP) 생성'}</h4>
                   <p className="text-purple-800 text-sm mb-4">
-                    {assessmentInfo.title} 결과를 바탕으로 AI가 개별화된 교육 및 발달 지원 계획을 자동으로 생성해드립니다.
+                    {isEnglish 
+                      ? `Based on ${assessmentInfo.title} results, AI will automatically generate a personalized education and development support plan.`
+                      : `${assessmentInfo.title} 결과를 바탕으로 AI가 개별화된 교육 및 발달 지원 계획을 자동으로 생성해드립니다.`}
                   </p>
                   <Button
-                    onClick={() => navigate('/iep-generator', { 
+                    onClick={() => navigate(localePath('/iep-generator'), { 
                       state: { 
                         assessmentResults: {
                           [assessmentInfo.title]: { results, aiAnalysis }
@@ -773,7 +774,7 @@ const PremiumAssessmentResult = ({
                     className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                   >
                     <FileText className="w-4 h-4 mr-2" />
-                    맞춤형 IEP 생성하기
+                    {isEnglish ? 'Generate Custom IEP' : '맞춤형 IEP 생성하기'}
                   </Button>
                 </div>
               </div>
@@ -785,11 +786,11 @@ const PremiumAssessmentResult = ({
         <div className="max-w-6xl mx-auto mt-8">
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-6 text-center">
-              <h4 className="font-semibold text-blue-900 mb-2">전문 심리검사 결과 안내</h4>
+              <h4 className="font-semibold text-blue-900 mb-2">{isEnglish ? 'Professional Assessment Notice' : '전문 심리검사 결과 안내'}</h4>
               <p className="text-blue-800 text-sm leading-relaxed">
-                본 검사 결과는 AI 기반 심층 분석을 통해 제공되는 참고 자료입니다. 
-                정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다.
-                검사 결과는 개인의 현재 상태를 반영하며, 시간이 지남에 따라 변화할 수 있습니다.
+                {isEnglish 
+                  ? 'These results are reference materials provided through AI-based in-depth analysis. For accurate diagnosis or treatment, please consult a professional. Results reflect your current state and may change over time.'
+                  : '본 검사 결과는 AI 기반 심층 분석을 통해 제공되는 참고 자료입니다. 정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다. 검사 결과는 개인의 현재 상태를 반영하며, 시간이 지남에 따라 변화할 수 있습니다.'}
               </p>
             </CardContent>
           </Card>

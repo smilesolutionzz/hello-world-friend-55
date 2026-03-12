@@ -46,7 +46,7 @@ const mechanismInfoEn: Record<string, { name: string; emoji: string; description
 export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ result, onBack }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isEnglish } = useLanguage();
+  const { isEnglish, localePath } = useLanguage();
   const mechanismInfo = isEnglish ? mechanismInfoEn : mechanismInfoKo;
 
   useAutoSaveTestResult({
@@ -185,11 +185,11 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
               <ArrowLeft className="w-5 h-5" />{isEnglish ? 'Retake Test' : '다시 테스트하기'}
             </Button>
           ) : (
-            <Button onClick={() => navigate('/')} variant="outline" className="gap-2" size="lg">
+            <Button onClick={() => navigate(localePath('/'))} variant="outline" className="gap-2" size="lg">
               <Home className="w-5 h-5" />{isEnglish ? 'Home' : '홈으로'}
             </Button>
           )}
-          <Button onClick={() => navigate('/assessment')} className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" size="lg">
+          <Button onClick={() => navigate(localePath('/assessment'))} className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" size="lg">
             <Brain className="w-5 h-5" />{isEnglish ? 'Try Another Test' : '다른 테스트 하기'}
           </Button>
         </div>

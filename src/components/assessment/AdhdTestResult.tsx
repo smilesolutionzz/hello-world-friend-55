@@ -52,7 +52,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { toast } = useToast();
-  const { isEnglish } = useLanguage();
+  const { isEnglish, localePath } = useLanguage();
 
   // AI 분석 상태
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
@@ -86,11 +86,11 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const requestAIAnalysis = async () => {
     if (!user) {
       toast({
-        title: "로그인 필요",
-        description: "AI 전문 분석을 받으려면 로그인이 필요합니다.",
+        title: isEnglish ? "Login Required" : "로그인 필요",
+        description: isEnglish ? "Login is required for AI expert analysis." : "AI 전문 분석을 받으려면 로그인이 필요합니다.",
         variant: "destructive"
       });
-      navigate('/auth');
+      navigate(localePath('/auth'));
       return;
     }
 
@@ -292,19 +292,20 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
             <CardContent className="p-4">
               <div className="flex items-center gap-3 mb-3">
                 <Target className="w-5 h-5 text-red-600" />
-                <span className="font-semibold text-red-800">토큰 부족</span>
+                <span className="font-semibold text-red-800">{isEnglish ? 'Insufficient Tokens' : '토큰 부족'}</span>
               </div>
               <p className="text-red-700 text-sm mb-4">
-                AI 전문 분석을 위해서는 {tokenError.required}토큰이 필요하지만, 
-                현재 {tokenError.available}토큰만 보유하고 있습니다.
+                {isEnglish 
+                  ? `AI expert analysis requires ${tokenError.required} tokens, but you only have ${tokenError.available} tokens.`
+                  : `AI 전문 분석을 위해서는 ${tokenError.required}토큰이 필요하지만, 현재 ${tokenError.available}토큰만 보유하고 있습니다.`}
               </p>
               <div className="flex gap-2">
                 <Button 
                   size="sm" 
-                  onClick={() => navigate('/token-subscription')}
+                  onClick={() => navigate(localePath('/token-subscription'))}
                   className="bg-red-600 hover:bg-red-700"
                 >
-                  토큰 충전하기
+                  {isEnglish ? 'Top Up Tokens' : '토큰 충전하기'}
                 </Button>
                 <Button 
                   size="sm" 
@@ -549,20 +550,20 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
                 {/* 분석 결과 액션 버튼 */}
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Button 
-                    onClick={() => navigate('/experts')}
+                    onClick={() => navigate(localePath('/experts'))}
                     variant="outline" 
                     size="sm"
                   >
                     <Users className="w-4 h-4 mr-2" />
-                    전문가 상담
+                    {isEnglish ? 'Expert Consultation' : '전문가 상담'}
                   </Button>
                   <Button 
-                    onClick={() => navigate('/premium-assessment')}
+                    onClick={() => navigate(localePath('/premium-assessment'))}
                     variant="outline"
                     size="sm"
                   >
                     <Target className="w-4 h-4 mr-2" />
-                    다른 검사 하기
+                    {isEnglish ? 'Other Tests' : '다른 검사 하기'}
                   </Button>
                 </div>
               </CardContent>
@@ -612,14 +613,14 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium">검사일</span>
-                <span className="text-lg">{new Date().toLocaleDateString('ko-KR')}</span>
+                <span className="text-lg font-medium">{isEnglish ? 'Test Date' : '검사일'}</span>
+                <span className="text-lg">{new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</span>
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold">증상 영역별 점수</h3>
+            <h3 className="text-xl font-semibold">{isEnglish ? 'Symptom Area Scores' : '증상 영역별 점수'}</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
@@ -637,7 +638,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
 
       {/* 전문가 해석 결과 - 대폭 확장 */}
       <Card className="p-8">
-        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 상세 분석 결과</h3>
+        <h3 className="text-2xl font-bold text-foreground mb-6">✨ {isEnglish ? 'Detailed Analysis' : '상세 분석 결과'}</h3>
         
         <div className="space-y-8">
           <div className="grid md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
@@ -734,34 +735,34 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
       <div className="grid md:grid-cols-5 gap-4">
         <Button 
           className="btn-brand h-20"
-          onClick={() => navigate('/expert-hiring')}
+          onClick={() => navigate(localePath('/expert-hiring'))}
         >
           <ExternalLink className="w-5 h-5 mr-2 flex-shrink-0" />
           <div className="text-left">
-            <div className="font-semibold text-base">ADHD전문가연결</div>
-            <div className="text-xs opacity-90">맞춤 추천 상담</div>
+            <div className="font-semibold text-base">{isEnglish ? 'ADHD Expert' : 'ADHD전문가연결'}</div>
+            <div className="text-xs opacity-90">{isEnglish ? 'Matched counseling' : '맞춤 추천 상담'}</div>
           </div>
         </Button>
 
         <Button 
           className="btn-brand h-20"
-          onClick={() => navigate('/counseling', { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
+          onClick={() => navigate(localePath('/counseling'), { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
         >
           <MessageCircle className="w-5 h-5 mr-2 flex-shrink-0" />
           <div className="text-left">
-            <div className="font-semibold text-base">단계별 상담 시작</div>
-            <div className="text-xs opacity-90">AI → 전문가</div>
+            <div className="font-semibold text-base">{isEnglish ? 'Step Counseling' : '단계별 상담 시작'}</div>
+            <div className="text-xs opacity-90">{isEnglish ? 'AI → Expert' : 'AI → 전문가'}</div>
           </div>
         </Button>
 
         <Button 
           className="bg-blue-600 hover:bg-blue-700 text-white h-20"
-          onClick={() => navigate('/ai-counselor', { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
+          onClick={() => navigate(localePath('/ai-counselor'), { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
         >
           <Brain className="w-5 h-5 mr-2 flex-shrink-0" />
           <div className="text-left">
-            <div className="font-semibold text-base">AI 상담만</div>
-            <div className="text-xs opacity-90">빠른 상담</div>
+            <div className="font-semibold text-base">{isEnglish ? 'AI Counseling' : 'AI 상담만'}</div>
+            <div className="text-xs opacity-90">{isEnglish ? 'Quick session' : '빠른 상담'}</div>
           </div>
         </Button>
 
@@ -786,8 +787,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           disabled={isGeneratingPDF}
         >
           <div className="text-left">
-            <div className="font-semibold text-base">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
-            <div className="text-xs text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
+            <div className="font-semibold text-base">{isGeneratingPDF ? (isEnglish ? 'Generating...' : 'PDF 생성 중...') : (isEnglish ? 'PDF Report' : 'PDF 리포트')}</div>
+            <div className="text-xs text-muted-foreground">{isGeneratingPDF ? (isEnglish ? 'Please wait' : '잠시만 기다려주세요') : (isEnglish ? 'Save as PDF' : '결과를 PDF로 저장')}</div>
           </div>
         </Button>
 

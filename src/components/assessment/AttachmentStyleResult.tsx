@@ -30,7 +30,7 @@ interface AttachmentStyleResultProps {
 const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, onRestart }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isEnglish } = useLanguage();
+  const { isEnglish, localePath } = useLanguage();
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
@@ -142,7 +142,7 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
       <div id="attachment-style-result" className="max-w-4xl mx-auto space-y-6">
         {/* 헤더 */}
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <Button variant="ghost" onClick={() => navigate('/assessment')} className="flex items-center gap-2">
+          <Button variant="ghost" onClick={() => navigate(localePath('/assessment'))} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             {isEnglish ? "Test List" : "검사 목록"}
           </Button>
@@ -317,13 +317,13 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Button onClick={() => navigate('/assessment')} variant="outline">
+              <Button onClick={() => navigate(localePath('/assessment'))} variant="outline">
                 {isEnglish ? "Try Other Tests" : "다른 검사 해보기"}
               </Button>
-              <Button onClick={() => navigate('/token-history')} variant="outline">
+              <Button onClick={() => navigate(localePath('/token-history'))} variant="outline">
                 {isEnglish ? "Token History" : "토큰 이력 확인"}
               </Button>
-              <Button onClick={() => navigate('/')} variant="secondary">
+              <Button onClick={() => navigate(localePath('/'))} variant="secondary">
                 {isEnglish ? "Home" : "홈으로"}
               </Button>
             </div>

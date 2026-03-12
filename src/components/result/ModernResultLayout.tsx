@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Download, Copy, Share2, FileText, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface ModernResultLayoutProps {
   children: React.ReactNode;
@@ -28,6 +29,7 @@ export const ModernResultLayout: React.FC<ModernResultLayoutProps> = ({
   isDownloading = false,
   className = '',
 }) => {
+  const { isEnglish } = useLanguage();
   return (
     <div className={`min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 ${className}`}>
       <div className="container mx-auto px-4 py-4 md:py-8 max-w-4xl">
@@ -45,7 +47,7 @@ export const ModernResultLayout: React.FC<ModernResultLayoutProps> = ({
               className="h-9 px-2 md:px-4 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <ArrowLeft className="w-4 h-4 mr-1 md:mr-2" />
-              <span className="text-sm font-medium">뒤로</span>
+              <span className="text-sm font-medium">{isEnglish ? 'Back' : '뒤로'}</span>
             </Button>
             
             <div className="flex items-center gap-1.5 md:gap-2">
@@ -57,7 +59,7 @@ export const ModernResultLayout: React.FC<ModernResultLayoutProps> = ({
                   className="h-9 px-2 md:px-3 border-slate-200 dark:border-slate-700"
                 >
                   <Copy className="w-4 h-4 md:mr-1.5" />
-                  <span className="hidden md:inline">복사</span>
+                  <span className="hidden md:inline">{isEnglish ? 'Copy' : '복사'}</span>
                 </Button>
               )}
               {onDownload && (
@@ -69,7 +71,7 @@ export const ModernResultLayout: React.FC<ModernResultLayoutProps> = ({
                   className="h-9 px-2 md:px-3 bg-gradient-to-r from-primary to-primary/90"
                 >
                   <FileText className={`w-4 h-4 md:mr-1.5 ${isDownloading ? 'animate-pulse' : ''}`} />
-                  <span className="hidden md:inline">{isDownloading ? '저장 중...' : '저장'}</span>
+                  <span className="hidden md:inline">{isDownloading ? (isEnglish ? 'Saving...' : '저장 중...') : (isEnglish ? 'Save' : '저장')}</span>
                 </Button>
               )}
               {onShare && (
@@ -80,7 +82,7 @@ export const ModernResultLayout: React.FC<ModernResultLayoutProps> = ({
                   className="h-9 px-2 md:px-3 border-slate-200 dark:border-slate-700"
                 >
                   <Share2 className="w-4 h-4 md:mr-1.5" />
-                  <span className="hidden md:inline">공유</span>
+                  <span className="hidden md:inline">{isEnglish ? 'Share' : '공유'}</span>
                 </Button>
               )}
             </div>

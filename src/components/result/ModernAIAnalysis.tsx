@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, Loader2, Brain } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface ModernAIAnalysisProps {
   analysis: string;
@@ -16,6 +17,7 @@ export const ModernAIAnalysis: React.FC<ModernAIAnalysisProps> = ({
   fallbackText = '',
   delay = 0,
 }) => {
+  const { isEnglish } = useLanguage();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -31,7 +33,7 @@ export const ModernAIAnalysis: React.FC<ModernAIAnalysisProps> = ({
               <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             <div>
-              <span className="text-slate-900 dark:text-white font-semibold">AI 전문가 분석</span>
+              <span className="text-slate-900 dark:text-white font-semibold">{isEnglish ? 'AI Expert Analysis' : 'AI 전문가 분석'}</span>
               <p className="text-xs text-violet-600 dark:text-violet-400 font-normal mt-0.5">
                 Powered by Advanced AI
               </p>
@@ -50,17 +52,17 @@ export const ModernAIAnalysis: React.FC<ModernAIAnalysisProps> = ({
               </div>
               <div className="text-center">
                 <p className="text-sm font-medium text-violet-700 dark:text-violet-300">
-                  AI가 분석 중입니다...
+                  {isEnglish ? 'AI is analyzing...' : 'AI가 분석 중입니다...'}
                 </p>
                 <p className="text-xs text-violet-500 dark:text-violet-400 mt-1">
-                  잠시만 기다려주세요
+                  {isEnglish ? 'Please wait a moment' : '잠시만 기다려주세요'}
                 </p>
               </div>
             </div>
           ) : (
             <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-violet-100 dark:border-violet-800/30">
               <p className="text-sm md:text-base leading-relaxed whitespace-pre-line text-slate-700 dark:text-slate-200">
-                {analysis || fallbackText || '분석 결과가 없습니다.'}
+                {analysis || fallbackText || (isEnglish ? 'No analysis results available.' : '분석 결과가 없습니다.')}
               </p>
             </div>
           )}

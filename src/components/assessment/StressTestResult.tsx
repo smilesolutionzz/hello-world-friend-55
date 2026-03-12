@@ -32,7 +32,7 @@ interface StressTestResultProps {
 const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isEnglish } = useLanguage();
+  const { isEnglish, localePath } = useLanguage();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   
   // 로그인 상태 확인

@@ -121,14 +121,16 @@ const SubscriptionValueSection = () => {
 
               {/* Price */}
               <div className="flex items-end gap-3 mb-2">
-                <span className="text-4xl font-black text-white">₩19,900</span>
-                <span className="text-slate-400 text-sm pb-1">/월</span>
+                <span className="text-4xl font-black text-white">{isEnglish ? '$14.99' : '₩19,900'}</span>
+                <span className="text-slate-400 text-sm pb-1">{isEnglish ? '/mo' : '/월'}</span>
               </div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-slate-500 line-through text-sm">₩39,900</span>
+                <span className="text-slate-500 line-through text-sm">{isEnglish ? '$29.99' : '₩39,900'}</span>
                 <Badge className="bg-rose-500/90 text-white border-0 text-xs font-bold">50% OFF</Badge>
               </div>
-              <p className="text-xs text-slate-500">런칭 특별가 · 언제든 해지 가능</p>
+              <p className="text-xs text-slate-500">
+                {isEnglish ? 'Launch special · Cancel anytime' : '런칭 특별가 · 언제든 해지 가능'}
+              </p>
             </div>
 
             {/* Right - Timer + CTA */}

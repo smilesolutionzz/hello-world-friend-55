@@ -638,7 +638,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
 
       {/* 전문가 해석 결과 - 대폭 확장 */}
       <Card className="p-8">
-        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 상세 분석 결과</h3>
+        <h3 className="text-2xl font-bold text-foreground mb-6">✨ {isEnglish ? 'Detailed Analysis' : '상세 분석 결과'}</h3>
         
         <div className="space-y-8">
           <div className="grid md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">

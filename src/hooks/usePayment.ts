@@ -3,18 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { SUBSCRIPTION_PRICE } from '@/constants/tokenCosts';
+import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
 
-// 상품 정의 - 구독 단일화
+// 상품 정의 - 단건 + 구독 하이브리드
 export const PRODUCTS = {
+  single_report: {
+    id: 'single_report',
+    type: 'single',
+    name: '심층 분석 리포트',
+    description: '전문가급 AI 분석 1회',
+    price: SINGLE_REPORT_PRICE,
+    originalPrice: 9900,
+    discount: 60,
+  },
   subscription_monthly: { 
     id: 'subscription_monthly', 
     type: 'subscription', 
     name: '월간 구독', 
     description: '30일 무제한 이용',
     price: SUBSCRIPTION_PRICE,
-    originalPrice: 29900, 
-    discount: 33 
+    originalPrice: 19900, 
+    discount: 50 
   },
   // 하위 호환성
   pass_30: { 
@@ -23,8 +32,8 @@ export const PRODUCTS = {
     name: '월간 구독', 
     description: '30일 무제한 이용',
     price: SUBSCRIPTION_PRICE, 
-    originalPrice: 29900, 
-    discount: 33 
+    originalPrice: 19900, 
+    discount: 50 
   },
 } as const;
 

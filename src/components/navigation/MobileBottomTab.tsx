@@ -31,15 +31,7 @@ const MobileBottomTab: React.FC = () => {
         navigate('/');
         break;
       case 'assessment':
-        // 홈이면 구독 섹션으로 스크롤, 아니면 검사 페이지로
-        if (location.pathname === '/' || location.pathname === '/en') {
-          const el = document.getElementById('subscription-section');
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth' });
-            return;
-          }
-        }
-        navigate('/assessment');
+        navigate('/premium-assessment');
         break;
       case 'premium':
         navigate('/token-subscription');

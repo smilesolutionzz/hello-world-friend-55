@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// 상품 정의 (프론트엔드와 동기화) - SaaS 모델
+// 상품 정의 (프론트엔드와 동기화) - SaaS 모델 v2
 const PRODUCTS: Record<string, any> = {
   single_report: { type: 'single', name: '심층 분석 리포트 1회', price: 3900 },
   subscription_monthly: { type: 'subscription', name: '월간 구독', price: 9900 },

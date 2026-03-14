@@ -84,6 +84,9 @@ export const TOKEN_COST_DESCRIPTIONS = {
 } as const;
 
 // 구독 요금
-export const SUBSCRIPTION_PRICE = 19900;
-export const SUBSCRIPTION_ORIGINAL_PRICE = 29900;
-export const SUBSCRIPTION_DISCOUNT_PERCENT = 33;
+export const SUBSCRIPTION_PRICE = 9900;
+export const SUBSCRIPTION_ORIGINAL_PRICE = 19900;
+export const SUBSCRIPTION_DISCOUNT_PERCENT = 50;
+
+// 단건 결제 (심층 리포트 1회)
+export const SINGLE_REPORT_PRICE = 3900;

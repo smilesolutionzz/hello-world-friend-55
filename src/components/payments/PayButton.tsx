@@ -25,7 +25,7 @@ export const PayButton: React.FC<PayButtonProps> = ({
   const { pay, loading, isReady } = usePayment();
 
   const handleClick = async () => {
-    const success = await pay('subscription_monthly');
+    const success = await pay(productId || 'subscription_monthly');
     if (success) {
       onSuccess?.();
     } else {
@@ -40,7 +40,7 @@ export const PayButton: React.FC<PayButtonProps> = ({
       ) : showIcon ? (
         <Crown className="w-4 h-4 mr-2" />
       ) : null}
-      {children || label || (showPrice ? '월간 구독 ₩19,900' : '구독하기')}
+      {children || label || (showPrice ? '월간 구독 ₩9,900' : '구독하기')}
     </Button>
   );
 };

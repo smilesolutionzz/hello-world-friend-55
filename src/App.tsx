@@ -126,6 +126,7 @@ import CareerPackage from "./pages/CareerPackage";
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
 import { InstallPromptBanner } from "./components/pwa/InstallPromptBanner";
+import { MobileBottomTab } from "./components/navigation/MobileBottomTab";
 
 const queryClient = new QueryClient({
   defaultOptions: {

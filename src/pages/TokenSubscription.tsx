@@ -17,6 +17,7 @@ import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
+import { MobilePaymentFlow } from '@/components/payments/MobilePaymentFlow';
 
 const TokenSubscription = () => {
   const navigate = useNavigate();

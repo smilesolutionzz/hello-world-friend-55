@@ -28,8 +28,7 @@ import ColumnHookBanner from '@/components/landing/ColumnHookBanner';
 import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
 import MindDiaryHook from '@/components/landing/MindDiaryHook';
 import SubscriptionValueSection from '@/components/landing/SubscriptionValueSection';
-
-
+import StickyConversionBar from '@/components/conversion/StickyConversionBar';
 
 
 const structuredData = {
@@ -227,6 +226,7 @@ const Index = () => {
           </main>
           
           <BackToTop />
+          <StickyConversionBar />
           
           <WelcomeOnboarding 
             isOpen={showOnboarding} 

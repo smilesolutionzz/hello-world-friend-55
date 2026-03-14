@@ -37,7 +37,7 @@ const MobileBottomTab: React.FC = () => {
         navigate('/token-subscription');
         break;
       case 'reports':
-        navigate('/assessment-history');
+        navigate('/report-generator');
         break;
       case 'profile':
         navigate('/profile');

@@ -160,12 +160,17 @@ const Index = () => {
               <EmotionalHookSection />
             </LazyLoad>
             
-            {/* 4️⃣ 파트너 신뢰 - 50+ 제휴기관 */}
+            {/* 4️⃣ 전문가급 리포트 미리보기 */}
+            <LazyLoad rootMargin="200px">
+              <ReportPreviewSection />
+            </LazyLoad>
+            
+            {/* 5️⃣ 파트너 신뢰 - 50+ 제휴기관 */}
             <LazyLoad rootMargin="200px">
               <PartnerTrustSection />
             </LazyLoad>
             
-            {/* 5️⃣ 구독/결제 - 전환 유도 */}
+            {/* 6️⃣ 구독/결제 - 전환 유도 */}
             <LazyLoad rootMargin="200px">
               <SubscriptionValueSection />
             </LazyLoad>

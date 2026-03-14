@@ -109,8 +109,7 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
       shareTestResult({
         testName: data.testName,
         resultTitle: `${data.testName} 분석 완료`,
-        resultDescription: `평균 ${avg.toFixed(1)}/${max} · ${palette.label}`,
-        ctaText: '나도 검사하기',
+        resultSummary: `평균 ${avg.toFixed(1)}/${max} · ${palette.label}`,
       });
     } else {
       toast({ title: '카카오 공유 준비 중', description: '잠시 후 다시 시도해주세요.' });

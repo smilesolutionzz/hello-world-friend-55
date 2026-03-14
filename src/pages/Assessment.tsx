@@ -706,52 +706,153 @@ const Assessment = () => {
             </p>
           </div>
 
-          {/* ========== 이번 달 신규 검사 배너 ========== */}
+          {/* ========== 🟢 무료 기본검사 ========== */}
           <section className="mb-8">
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 p-4 md:p-6">
-              <div className="absolute inset-0 opacity-20" style={{backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "20px 20px"}}></div>
-              <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="w-5 h-5 text-yellow-300" />
-                  <span className="text-xs font-bold text-white/90 bg-white/20 px-2 py-0.5 rounded-full">{t.assessment.newUpdates}</span>
-                </div>
-                <h2 className="text-lg md:text-xl font-bold text-white mb-3">{t.assessment.newTests}</h2>
-                <div className="flex flex-wrap gap-2">
-                  <button 
-                    onClick={() => navigate('/assessment/attachment-style-test')}
-                    className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-lg transition-all"
-                  >
-                    <span className="text-lg">💜</span>
-                    <span className="text-sm font-medium text-white">{t.assessment.attachmentDeep}</span>
-                    <Badge className="bg-yellow-400 text-yellow-900 text-[10px]">NEW</Badge>
-                  </button>
-                  <button 
-                    onClick={() => navigate('/assessment/defense-mechanism-test')}
-                    className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-lg transition-all"
-                  >
-                    <span className="text-lg">🛡️</span>
-                    <span className="text-sm font-medium text-white">{t.assessment.defenseMechanism}</span>
-                    <Badge className="bg-yellow-400 text-yellow-900 text-[10px]">NEW</Badge>
-                  </button>
-                </div>
-              </div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+              <h2 className="text-lg font-bold text-foreground">무료 기본검사</h2>
+              <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] border-0">무료</Badge>
             </div>
-          </section>
-
-          {/* ========== 전문 심리검사 ========== */}
-          <section className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1.5 h-6 bg-primary rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">{t.assessment.professionalTests}</h2>
-            </div>
+            <p className="text-xs text-muted-foreground mb-4 ml-5">로그인만 하면 누구나 무료로 이용할 수 있는 기본 선별검사</p>
 
             <div className="space-y-2">
               {[
-                { key: 'psychological', icon: '🧠', title: t.assessment.psychologicalTitle, duration: t.assessment.psychologicalDuration, questions: t.assessment.psychologicalQuestions, description: t.assessment.psychologicalDesc, features: t.assessment.psychologicalFeatures },
-                { key: 'panic', icon: '😰', title: t.assessment.panicTitle, duration: t.assessment.panicDuration, questions: t.assessment.panicQuestions, description: t.assessment.panicDesc, features: t.assessment.panicFeatures },
                 { key: 'depression', icon: '😔', title: t.assessment.depressionTitle, duration: t.assessment.depressionDuration, questions: t.assessment.depressionQuestions, description: t.assessment.depressionDesc, features: t.assessment.depressionFeatures },
+                { key: 'panic', icon: '😰', title: t.assessment.panicTitle, duration: t.assessment.panicDuration, questions: t.assessment.panicQuestions, description: t.assessment.panicDesc, features: t.assessment.panicFeatures },
+                { key: 'stress', icon: '🔥', title: t.assessment.stressTitle || '스트레스 검사', duration: t.assessment.stressDuration || '3분', questions: t.assessment.stressQuestions || '10문항', description: t.assessment.stressDesc || '현재 스트레스 수준을 확인합니다.', features: t.assessment.stressFeatures || ['스트레스 수준 측정', 'AI 분석 리포트'] },
+                { key: 'selfesteem', icon: '💎', title: t.assessment.selfesteemTitle, duration: t.assessment.selfesteemDuration, questions: t.assessment.selfesteemQuestions, description: t.assessment.selfesteemDesc, features: t.assessment.selfesteemFeatures },
                 { key: 'adhd', icon: '🎯', title: t.assessment.adhdTitle, duration: t.assessment.adhdDuration, questions: t.assessment.adhdQuestions, description: t.assessment.adhdDesc, features: t.assessment.adhdFeatures },
+              ].map((test) => {
+                const isExpanded = expandedSimpleTest === test.key;
+                return (
+                  <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
+                    <CollapsibleTrigger asChild>
+                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-emerald-400/50 hover:bg-emerald-500/5 transition-all">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <span className="text-xl">{test.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 truncate">{test.title}</h3>
+                                <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] px-1 py-0 border-0 flex-shrink-0">무료</Badge>
+                              </div>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
+                            </div>
+                          </div>
+                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+                        </div>
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                        <p className="text-sm text-muted-foreground">{test.description}</p>
+                        <div className="space-y-1.5">
+                          {(test.features || []).map((feature: string, idx: number) => (
+                            <div key={idx} className="flex items-center gap-2 text-sm">
+                              <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <Button 
+                          onClick={() => handleTestTypeSelect(test.key as any)}
+                          className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
+                        >
+                          무료로 시작하기
+                        </Button>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* ========== 👑 프리미엄 전문검사 ========== */}
+          <section className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-1.5 h-6 bg-primary rounded-full"></div>
+              <h2 className="text-lg font-bold text-foreground">프리미엄 전문검사</h2>
+              <Badge className="bg-primary/20 text-primary text-[10px] border-0">
+                <Crown className="w-3 h-3 mr-0.5" />
+                구독/이용권
+              </Badge>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4 ml-5">심층 AI 분석이 포함된 전문 심리검사 · 첫 1회 무료 체험</p>
+
+            {/* 성격·심리 심층 */}
+            <div className="space-y-2 mb-4">
+              <h3 className="text-sm font-semibold text-muted-foreground ml-1 flex items-center gap-2">
+                <Brain className="w-4 h-4" /> 성격·심리 심층
+              </h3>
+              {[
+                { key: 'psychological', icon: '🧠', title: t.assessment.psychologicalTitle, duration: t.assessment.psychologicalDuration, questions: t.assessment.psychologicalQuestions, description: t.assessment.psychologicalDesc, features: t.assessment.psychologicalFeatures },
                 { key: 'resilience', icon: '💪', title: t.assessment.resilienceTitle, duration: t.assessment.resilienceDuration, questions: t.assessment.resilienceQuestions, badge: 'NEW', description: t.assessment.resilienceDesc, features: t.assessment.resilienceFeatures },
+                { key: 'attachment-deep', icon: '💜', title: t.assessment.attachmentDeepTitle, duration: t.assessment.attachmentDeepDuration, questions: t.assessment.attachmentDeepQuestions, badge: 'NEW', description: t.assessment.attachmentDeepDesc, features: t.assessment.attachmentDeepFeatures, onClick: () => navigate('/assessment/attachment-style-test') },
+                { key: 'bigfive', icon: '🌟', title: t.assessment.bigfiveTitle, duration: t.assessment.bigfiveDuration, questions: t.assessment.bigfiveQuestions, description: t.assessment.bigfiveDesc, features: t.assessment.bigfiveFeatures, onClick: () => setCurrentStep('bigfive-test') },
+                { key: 'defense', icon: '🛡️', title: t.assessment.defenseTitle, duration: t.assessment.defenseDuration, questions: t.assessment.defenseQuestions, badge: 'NEW', description: t.assessment.defenseDesc, features: t.assessment.defenseFeatures, onClick: () => navigate('/assessment/defense-mechanism-test') },
+                { key: 'career', icon: '🎯', title: t.assessment.careerTitle, duration: t.assessment.careerDuration, questions: t.assessment.careerQuestions, description: t.assessment.careerDesc, features: t.assessment.careerFeatures, onClick: () => setCurrentStep('career-test') },
+              ].map((test) => {
+                const isExpanded = expandedSimpleTest === test.key;
+                return (
+                  <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
+                    <CollapsibleTrigger asChild>
+                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <span className="text-xl">{test.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-primary truncate">{test.title}</h3>
+                                {test.badge && (
+                                  <Badge className="bg-primary text-primary-foreground text-[9px] px-1 py-0 flex-shrink-0">{test.badge}</Badge>
+                                )}
+                              </div>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
+                            </div>
+                          </div>
+                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+                        </div>
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                        <p className="text-sm text-muted-foreground">{test.description}</p>
+                        <div className="space-y-1.5">
+                          {(test.features || []).map((feature: string, idx: number) => (
+                            <div key={idx} className="flex items-center gap-2 text-sm">
+                              <CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <Button 
+                          onClick={test.onClick || (() => handleTestTypeSelect(test.key as any))}
+                          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                        >
+                          {t.assessment.startTest}
+                        </Button>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
+            </div>
+
+            {/* 발달·아동 전문 */}
+            <div className="space-y-2 mb-4">
+              <h3 className="text-sm font-semibold text-muted-foreground ml-1 flex items-center gap-2">
+                <Heart className="w-4 h-4" /> 발달·아동 전문
+              </h3>
+              {[
+                { key: 'developmental-delay', icon: '👶', title: t.assessment.devDelayTitle, duration: t.assessment.devDelayDuration, questions: t.assessment.devDelayQuestions, description: t.assessment.devDelayDesc, features: t.assessment.devDelayFeatures },
+                { key: 'language', icon: '🗣️', title: t.assessment.infantLangTitle, duration: t.assessment.infantLangDuration, questions: t.assessment.infantLangQuestions, description: t.assessment.infantLangDesc, features: t.assessment.infantLangFeatures },
+                { key: 'sensory-integration', icon: '🎨', title: t.assessment.sensoryTitle, duration: t.assessment.sensoryDuration, questions: t.assessment.sensoryQuestions, description: t.assessment.sensoryDesc, features: t.assessment.sensoryFeatures },
+                { key: 'learning-disability', icon: '📚', title: t.assessment.learningTitle, duration: t.assessment.learningDuration, questions: t.assessment.learningQuestions, description: t.assessment.learningDesc, features: t.assessment.learningFeatures },
+                { key: 'social-development', icon: '👥', title: t.assessment.socialTitle, duration: t.assessment.socialDuration, questions: t.assessment.socialQuestions, description: t.assessment.socialDesc, features: t.assessment.socialFeatures },
+                { key: 'challenging-behavior', icon: '⚠️', title: t.assessment.challengingTitle, duration: t.assessment.challengingDuration, questions: t.assessment.challengingQuestions, description: t.assessment.challengingDesc, features: t.assessment.challengingFeatures },
+                { key: 'adaptive-behavior', icon: '🏠', title: t.assessment.adaptiveTitle, duration: t.assessment.adaptiveDuration, questions: t.assessment.adaptiveQuestions, description: t.assessment.adaptiveDesc, features: t.assessment.adaptiveFeatures },
+                { key: 'parent-child-play', icon: '👨‍👧', title: t.assessment.parentChildTitle, duration: t.assessment.parentChildDuration, questions: t.assessment.parentChildQuestions, description: t.assessment.parentChildDesc, features: t.assessment.parentChildFeatures, onClick: () => handleTestTypeSelect('parent-child-play') },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (
@@ -776,15 +877,70 @@ const Assessment = () => {
                       <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
                         <p className="text-sm text-muted-foreground">{test.description}</p>
                         <div className="space-y-1.5">
-                          {test.features.map((feature, idx) => (
+                          {(test.features || []).map((feature: string, idx: number) => (
                             <div key={idx} className="flex items-center gap-2 text-sm">
-                              <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                              <CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0" />
                               <span className="text-muted-foreground">{feature}</span>
                             </div>
                           ))}
                         </div>
                         <Button 
-                          onClick={() => handleTestTypeSelect(test.key as any)}
+                          onClick={test.onClick || (() => handleTestTypeSelect(test.key as any))}
+                          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                        >
+                          {t.assessment.startTest}
+                        </Button>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
+            </div>
+
+            {/* 인지·기타 전문 */}
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-muted-foreground ml-1 flex items-center gap-2">
+                <Zap className="w-4 h-4" /> 특화 검사
+              </h3>
+              {[
+                { key: 'pattern-iq', icon: '🧩', title: t.assessment.patternIQTitle, duration: t.assessment.patternIQDuration, questions: t.assessment.patternIQQuestions, badge: 'NEW', description: t.assessment.patternIQDesc, features: t.assessment.patternIQFeatures, onClick: () => navigate('/assessment/pattern-iq-test') },
+                { key: 'han-medicine', icon: '🌿', title: t.assessment.hanMedicine || '한방 체질분석', duration: '5분', questions: '30문항', description: '사상체질 기반 맞춤 건강 분석', features: ['사상체질 판별', '체질별 건강 솔루션', 'AI 맞춤 분석'], onClick: () => navigate('/han-medicine-test') },
+              ].map((test) => {
+                const isExpanded = expandedSimpleTest === test.key;
+                return (
+                  <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
+                    <CollapsibleTrigger asChild>
+                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <span className="text-xl">{test.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-primary truncate">{test.title}</h3>
+                                {test.badge && (
+                                  <Badge className="bg-primary text-primary-foreground text-[9px] px-1 py-0 flex-shrink-0">{test.badge}</Badge>
+                                )}
+                              </div>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
+                            </div>
+                          </div>
+                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+                        </div>
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                        <p className="text-sm text-muted-foreground">{test.description}</p>
+                        <div className="space-y-1.5">
+                          {(test.features || []).map((feature: string, idx: number) => (
+                            <div key={idx} className="flex items-center gap-2 text-sm">
+                              <CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <Button 
+                          onClick={test.onClick}
                           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                         >
                           {t.assessment.startTest}
@@ -797,321 +953,48 @@ const Assessment = () => {
             </div>
           </section>
 
-          {/* ========== 발달검사 섹션 ========== */}
-          <section className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">{t.assessment.childDevelopment}</h2>
-            </div>
-
-            <div className="space-y-2">
-              {[
-                { key: 'developmental-delay', icon: '👶', title: t.assessment.devDelayTitle, duration: t.assessment.devDelayDuration, questions: t.assessment.devDelayQuestions, description: t.assessment.devDelayDesc, features: t.assessment.devDelayFeatures },
-                { key: 'language', icon: '🗣️', title: t.assessment.infantLangTitle, duration: t.assessment.infantLangDuration, questions: t.assessment.infantLangQuestions, description: t.assessment.infantLangDesc, features: t.assessment.infantLangFeatures },
-                { key: 'sensory-integration', icon: '🎨', title: t.assessment.sensoryTitle, duration: t.assessment.sensoryDuration, questions: t.assessment.sensoryQuestions, description: t.assessment.sensoryDesc, features: t.assessment.sensoryFeatures },
-                { key: 'learning-disability', icon: '📚', title: t.assessment.learningTitle, duration: t.assessment.learningDuration, questions: t.assessment.learningQuestions, description: t.assessment.learningDesc, features: t.assessment.learningFeatures },
-                { key: 'social-development', icon: '👥', title: t.assessment.socialTitle, duration: t.assessment.socialDuration, questions: t.assessment.socialQuestions, description: t.assessment.socialDesc, features: t.assessment.socialFeatures },
-                { key: 'challenging-behavior', icon: '⚠️', title: t.assessment.challengingTitle, duration: t.assessment.challengingDuration, questions: t.assessment.challengingQuestions, description: t.assessment.challengingDesc, features: t.assessment.challengingFeatures },
-                { key: 'adaptive-behavior', icon: '🏠', title: t.assessment.adaptiveTitle, duration: t.assessment.adaptiveDuration, questions: t.assessment.adaptiveQuestions, description: t.assessment.adaptiveDesc, features: t.assessment.adaptiveFeatures },
-              ].map((test) => {
-                const isExpanded = expandedSimpleTest === test.key;
-                return (
-                  <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
-                    <CollapsibleTrigger asChild>
-                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <span className="text-xl">{test.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
-                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-emerald-600 truncate">{test.title}</h3>
-                              </div>
-                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
-                            </div>
-                          </div>
-                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
-                        </div>
-                      </button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
-                        <p className="text-sm text-muted-foreground">{test.description}</p>
-                        <div className="space-y-1.5">
-                          {test.features.map((feature, idx) => (
-                            <div key={idx} className="flex items-center gap-2 text-sm">
-                              <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-                              <span className="text-muted-foreground">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                        <Button 
-                          onClick={() => handleTestTypeSelect(test.key as any)}
-                          className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
-                        >
-                          {t.assessment.startTest}
-                        </Button>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* ========== 성격·진로 검사 섹션 ========== */}
-          <section className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1.5 h-6 bg-purple-500 rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">{t.assessment.personalitySection}</h2>
-            </div>
-
-            <div className="space-y-2">
-              {[
-                { key: 'attachment-deep', icon: '💜', title: t.assessment.attachmentDeepTitle, duration: t.assessment.attachmentDeepDuration, questions: t.assessment.attachmentDeepQuestions, badge: 'NEW', description: t.assessment.attachmentDeepDesc, features: t.assessment.attachmentDeepFeatures, onClick: () => navigate('/assessment/attachment-style-test') },
-                { key: 'bigfive', icon: '🌟', title: t.assessment.bigfiveTitle, duration: t.assessment.bigfiveDuration, questions: t.assessment.bigfiveQuestions, badge: t.assessment.bigfiveBadge, description: t.assessment.bigfiveDesc, features: t.assessment.bigfiveFeatures, onClick: () => setCurrentStep('bigfive-test') },
-                { key: 'attachment', icon: '🤝', title: t.assessment.attachmentTitle, duration: t.assessment.attachmentDuration, questions: t.assessment.attachmentQuestions, description: t.assessment.attachmentDesc, features: t.assessment.attachmentFeatures, onClick: () => setCurrentStep('attachment-test') },
-                { key: 'stress', icon: '🔥', title: t.assessment.stressTitle, duration: t.assessment.stressDuration, questions: t.assessment.stressQuestions, description: t.assessment.stressDesc, features: t.assessment.stressFeatures, onClick: () => setCurrentStep('stress-test') },
-                { key: 'career', icon: '🎯', title: t.assessment.careerTitle, duration: t.assessment.careerDuration, questions: t.assessment.careerQuestions, description: t.assessment.careerDesc, features: t.assessment.careerFeatures, onClick: () => setCurrentStep('career-test') },
-                { key: 'selfesteem', icon: '💎', title: t.assessment.selfesteemTitle, duration: t.assessment.selfesteemDuration, questions: t.assessment.selfesteemQuestions, description: t.assessment.selfesteemDesc, features: t.assessment.selfesteemFeatures, onClick: () => setCurrentStep('selfesteem-test') },
-                { key: 'defense', icon: '🛡️', title: t.assessment.defenseTitle, duration: t.assessment.defenseDuration, questions: t.assessment.defenseQuestions, badge: 'NEW', description: t.assessment.defenseDesc, features: t.assessment.defenseFeatures, onClick: () => navigate('/assessment/defense-mechanism-test') },
-                { key: 'parent-child-play', icon: '👨‍👧', title: t.assessment.parentChildTitle, duration: t.assessment.parentChildDuration, questions: t.assessment.parentChildQuestions, description: t.assessment.parentChildDesc, features: t.assessment.parentChildFeatures, onClick: () => handleTestTypeSelect('parent-child-play') },
-              ].map((test) => {
-                const isExpanded = expandedSimpleTest === test.key;
-                return (
-                  <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
-                    <CollapsibleTrigger asChild>
-                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 transition-all">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <span className="text-xl">{test.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
-                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-purple-600 truncate">{test.title}</h3>
-                                {test.badge && (
-                                  <Badge className={`${test.badge === 'NEW' ? 'bg-purple-500' : 'bg-orange-500'} text-white text-[9px] md:text-[10px] px-1 md:px-1.5 py-0 flex-shrink-0`}>{test.badge}</Badge>
-                                )}
-                              </div>
-                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
-                            </div>
-                          </div>
-                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
-                        </div>
-                      </button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
-                        <p className="text-sm text-muted-foreground">{test.description}</p>
-                        <div className="space-y-1.5">
-                          {test.features.map((feature, idx) => (
-                            <div key={idx} className="flex items-center gap-2 text-sm">
-                              <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-                              <span className="text-muted-foreground">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                        <Button 
-                          onClick={test.onClick}
-                          className="w-full bg-purple-500 hover:bg-purple-600 text-white"
-                        >
-                          {t.assessment.startTest}
-                        </Button>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* ========== 인지력 테스트 섹션 ========== */}
-          <section className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">{t.assessment.cognitiveSection}</h2>
-            </div>
-
-            <div className="space-y-2">
-              {[
-                { key: 'pattern-iq', icon: '🧩', title: t.assessment.patternIQTitle, duration: t.assessment.patternIQDuration, questions: t.assessment.patternIQQuestions, badge: 'NEW', description: t.assessment.patternIQDesc, features: t.assessment.patternIQFeatures, onClick: () => navigate('/assessment/pattern-iq-test') },
-              ].map((test) => {
-                const isExpanded = expandedSimpleTest === test.key;
-                return (
-                  <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
-                    <CollapsibleTrigger asChild>
-                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-all">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <span className="text-xl">{test.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
-                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-blue-600 truncate">{test.title}</h3>
-                                {test.badge && (
-                                  <Badge className="bg-blue-500 text-white text-[9px] md:text-[10px] px-1 md:px-1.5 py-0 flex-shrink-0">{test.badge}</Badge>
-                                )}
-                              </div>
-                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
-                            </div>
-                          </div>
-                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
-                        </div>
-                      </button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
-                        <p className="text-sm text-muted-foreground">{test.description}</p>
-                        <div className="space-y-1.5">
-                          {test.features.map((feature, idx) => (
-                            <div key={idx} className="flex items-center gap-2 text-sm">
-                              <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-                              <span className="text-muted-foreground">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                        <Button 
-                          onClick={test.onClick}
-                          className="w-full bg-blue-500 hover:bg-blue-600 text-white"
-                        >
-                          {t.assessment.startTest}
-                        </Button>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* ========== 재미용 검사 (축소/회색) ========== */}
+          {/* ========== 🎮 재미 검사 (바이럴 4개) ========== */}
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1.5 h-6 bg-muted-foreground/30 rounded-full"></div>
-              <h2 className="text-lg font-medium text-muted-foreground">{t.assessment.funTests}</h2>
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">{t.assessment.funFree}</span>
+              <h2 className="text-lg font-medium text-muted-foreground">재미로 해보기</h2>
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">무료</span>
             </div>
 
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
+                className="group text-center p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
                 onClick={() => handleTestTypeSelect('dream')}
               >
-                <div className="text-xl mb-1">🌙</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.dreamInterpretation}</p>
+                <div className="text-2xl mb-1">🌙</div>
+                <p className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{t.assessment.dreamInterpretation}</p>
               </button>
 
               <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
+                className="group text-center p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
                 onClick={() => handleTestTypeSelect('saju')}
               >
-                <div className="text-xl mb-1">🔮</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.sajuReading}</p>
+                <div className="text-2xl mb-1">🔮</div>
+                <p className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{t.assessment.sajuReading}</p>
               </button>
 
               <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => setCurrentStep('past-life-job')}
-              >
-                <div className="text-xl mb-1">👑</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.pastLifeJob}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
+                className="group text-center p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
                 onClick={() => setCurrentStep('animal-face-match')}
               >
-                <div className="text-xl mb-1">🐾</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.animalFace}</p>
+                <div className="text-2xl mb-1">🐾</div>
+                <p className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{t.assessment.animalFace}</p>
               </button>
 
               <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => setCurrentStep('inner-animal')}
+                className="group text-center p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
+                onClick={() => setCurrentStep('past-life-job')}
               >
-                <div className="text-xl mb-1">💚</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.innerAnimal}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => setCurrentStep('grandma-relationship')}
-              >
-                <div className="text-xl mb-1">👵</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.loveCheck}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => setCurrentStep('grandpa-marriage')}
-              >
-                <div className="text-xl mb-1">👴</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.marriageCheck}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => setCurrentStep('mz-nagging')}
-              >
-                <div className="text-xl mb-1">🍲</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.mzNagging}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => navigate('/joseon-name-test')}
-              >
-                <div className="text-xl mb-1">🏯</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.joseonName}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => navigate('/joseon-job-test')}
-              >
-                <div className="text-xl mb-1">⚔️</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.joseonJob}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => navigate('/joseon-status-test')}
-              >
-                <div className="text-xl mb-1">🎭</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.joseonStatus}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => setCurrentStep('wisdom-advice')}
-              >
-                <div className="text-xl mb-1">🌟</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.lifeAdvice}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => setCurrentStep('otrovert')}
-              >
-                <div className="text-xl mb-1">🎪</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.otrovert}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => setCurrentStep('life-achievement')}
-              >
-                <div className="text-xl mb-1">🏆</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.lifeAchievement}</p>
-              </button>
-
-              <button 
-                className="group text-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => navigate('/han-medicine-test')}
-              >
-                <div className="text-xl mb-1">🌿</div>
-                <p className="text-xs text-muted-foreground group-hover:text-foreground">{t.assessment.hanMedicine}</p>
+                <div className="text-2xl mb-1">👑</div>
+                <p className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{t.assessment.pastLifeJob}</p>
               </button>
             </div>
           </section>
-
         </div>
         </div>
       </div>

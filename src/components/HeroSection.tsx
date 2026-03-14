@@ -43,8 +43,8 @@ const HeroSection = () => {
           poster={heroBg}
         >
           <source 
-            src="https://videos.pexels.com/video-files/3252130/3252130-uhd_2560_1440_25fps.mp4" 
-            type="video/mp4" 
+            src="https://videos.pexels.com/video-files/4009601/4009601-uhd_2560_1440_30fps.mp4" 
+            type="video/mp4"
           />
         </video>
         <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/93 via-[#111827]/88 to-[#0A0E1A]/93" />

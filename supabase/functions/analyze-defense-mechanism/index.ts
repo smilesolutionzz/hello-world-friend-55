@@ -141,13 +141,13 @@ DSM-5 방어기능척도(DMRS) 관점에서의 전체적 적응 수준을 평가
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },
         ],
-        temperature: 0.8,
-        max_tokens: 3000,
+        temperature: 0.7,
+        max_tokens: 5000,
       }),
     });
 

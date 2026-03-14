@@ -17,6 +17,7 @@ import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
+import { MobilePaymentFlow } from '@/components/payments/MobilePaymentFlow';
 
 const TokenSubscription = () => {
   const navigate = useNavigate();
@@ -56,7 +57,14 @@ const TokenSubscription = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-violet-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-violet-950/20 text-foreground">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 text-foreground">
+      {/* 모바일에서는 MobilePaymentFlow 사용 */}
+      <div className="md:hidden">
+        <MobilePaymentFlow initialStep="plan" />
+      </div>
+
+      {/* 데스크탑에서는 기존 레이아웃 */}
+      <div className="hidden md:block">
       <UnifiedNavigation />
       
       <div className="container mx-auto px-4 pt-24 pb-16 max-w-5xl">
@@ -407,6 +415,7 @@ const TokenSubscription = () => {
             ))}
           </div>
         </motion.section>
+      </div>
       </div>
     </div>
   );

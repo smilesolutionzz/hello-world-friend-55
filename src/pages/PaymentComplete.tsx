@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, XCircle, Loader2, Home, Sparkles, Coins } from 'lucide-react';
+import { CheckCircle2, XCircle, Loader2, Home, Crown, Zap, FileText } from 'lucide-react';
 
 const PaymentComplete = () => {
   const navigate = useNavigate();
@@ -24,7 +24,6 @@ const PaymentComplete = () => {
 
   useEffect(() => {
     const confirmPayment = async () => {
-      // 실패 상태로 리다이렉트된 경우
       if (status === 'fail') {
         setLoading(false);
         setSuccess(false);
@@ -40,23 +39,14 @@ const PaymentComplete = () => {
       try {
         const { data: session } = await supabase.auth.getSession();
         if (!session.session) {
-          toast({
-            title: '로그인 필요',
-            description: '로그인 후 다시 시도해주세요.',
-            variant: 'destructive'
-          });
+          toast({ title: '로그인 필요', description: '로그인 후 다시 시도해주세요.', variant: 'destructive' });
           navigate('/auth');
           return;
         }
 
         const { data, error } = await supabase.functions.invoke('unified-payment', {
           headers: { Authorization: `Bearer ${session.session.access_token}` },
-          body: {
-            action: 'confirm-payment',
-            paymentKey,
-            orderId,
-            amount: parseInt(amount),
-          }
+          body: { action: 'confirm-payment', paymentKey, orderId, amount: parseInt(amount) }
         });
 
         if (error || !data?.success) {
@@ -65,20 +55,11 @@ const PaymentComplete = () => {
 
         setSuccess(true);
         setPaymentInfo(data);
-        
-        toast({
-          title: '🎉 결제 완료!',
-          description: getSuccessMessage(data.productType),
-        });
-
+        toast({ title: '🎉 결제 완료!', description: getSuccessMessage(data.productType) });
       } catch (err: any) {
         console.error('Payment confirmation error:', err);
         setSuccess(false);
-        toast({
-          title: '결제 확인 실패',
-          description: err.message || '결제 확인 중 오류가 발생했습니다.',
-          variant: 'destructive'
-        });
+        toast({ title: '결제 확인 실패', description: err.message, variant: 'destructive' });
       } finally {
         setLoading(false);
       }
@@ -89,27 +70,15 @@ const PaymentComplete = () => {
 
   const getSuccessMessage = (type: string) => {
     switch (type) {
-      case 'pass':
-        return '프리미엄 패스가 활성화되었습니다.';
-      case 'cash':
-        return '캐시가 충전되었습니다.';
-      case 'consult':
-        return '상담 예약이 완료되었습니다.';
-      default:
-        return '결제가 완료되었습니다.';
+      case 'subscription': return '프리미엄 구독이 활성화되었습니다! 모든 기능을 무제한으로 이용하세요.';
+      case 'single': return '리포트 이용권 1회가 추가되었습니다.';
+      case 'pass': return '프리미엄 패스가 활성화되었습니다.';
+      case 'cash': return '캐시가 충전되었습니다.';
+      default: return '결제가 완료되었습니다.';
     }
   };
 
-  const getSuccessIcon = () => {
-    switch (productType) {
-      case 'pass':
-        return <Sparkles className="w-16 h-16 text-amber-500" />;
-      case 'cash':
-        return <Coins className="w-16 h-16 text-emerald-500" />;
-      default:
-        return <CheckCircle2 className="w-16 h-16 text-emerald-500" />;
-    }
-  };
+  const resolvedType = paymentInfo?.productType || productType;
 
   if (loading) {
     return (
@@ -129,15 +98,21 @@ const PaymentComplete = () => {
         {success ? (
           <>
             <div className="mb-6 flex justify-center">
-              {getSuccessIcon()}
+              {resolvedType === 'subscription' ? (
+                <Crown className="w-16 h-16 text-primary" />
+              ) : resolvedType === 'single' ? (
+                <FileText className="w-16 h-16 text-amber-500" />
+              ) : (
+                <CheckCircle2 className="w-16 h-16 text-emerald-500" />
+              )}
             </div>
             <h2 className="text-2xl font-bold mb-2 text-foreground">
-              결제 완료!
+              {resolvedType === 'subscription' ? '🎉 구독 시작!' : resolvedType === 'single' ? '이용권 구매 완료!' : '결제 완료!'}
             </h2>
             <p className="text-muted-foreground mb-6">
-              {getSuccessMessage(paymentInfo?.productType || productType)}
+              {getSuccessMessage(resolvedType)}
             </p>
-            
+
             {paymentInfo?.paymentResult && (
               <div className="bg-muted/50 rounded-lg p-4 mb-6 text-left text-sm">
                 <div className="flex justify-between mb-2">
@@ -156,29 +131,19 @@ const PaymentComplete = () => {
             )}
 
             <div className="space-y-3">
-              {productType === 'pass' && (
-                <Button 
-                  className="w-full" 
-                  onClick={() => navigate('/dashboard')}
-                >
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  대시보드로 이동
+              {resolvedType === 'subscription' && (
+                <Button className="w-full" onClick={() => navigate('/assessment')}>
+                  <Crown className="w-4 h-4 mr-2" />
+                  검사 시작하기
                 </Button>
               )}
-              {productType === 'cash' && (
-                <Button 
-                  className="w-full" 
-                  onClick={() => navigate('/token-subscription')}
-                >
-                  <Coins className="w-4 h-4 mr-2" />
-                  서비스 이용하기
+              {resolvedType === 'single' && (
+                <Button className="w-full" onClick={() => navigate('/assessment')}>
+                  <FileText className="w-4 h-4 mr-2" />
+                  이용권으로 검사하기
                 </Button>
               )}
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => navigate('/')}
-              >
+              <Button variant="outline" className="w-full" onClick={() => navigate('/')}>
                 <Home className="w-4 h-4 mr-2" />
                 홈으로
               </Button>
@@ -189,36 +154,15 @@ const PaymentComplete = () => {
             <div className="mb-6 flex justify-center">
               <XCircle className="w-16 h-16 text-destructive" />
             </div>
-            <h2 className="text-2xl font-bold mb-2 text-foreground">
-              결제 실패
-            </h2>
+            <h2 className="text-2xl font-bold mb-2 text-foreground">결제 실패</h2>
             <p className="text-muted-foreground mb-4">
               {errorMessage ? decodeURIComponent(errorMessage) : '결제 처리 중 문제가 발생했습니다.'}
             </p>
-            {errorCode && (
-              <p className="text-xs text-muted-foreground/60 mb-6">
-                오류 코드: {errorCode}
-              </p>
-            )}
-            {!errorMessage && (
-              <p className="text-sm text-muted-foreground mb-6">
-                다시 시도해주세요.
-              </p>
-            )}
+            {errorCode && <p className="text-xs text-muted-foreground/60 mb-6">오류 코드: {errorCode}</p>}
             <div className="space-y-3">
-              <Button 
-                className="w-full" 
-                onClick={() => navigate('/token-subscription')}
-              >
-                다시 시도
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => navigate('/')}
-              >
-                <Home className="w-4 h-4 mr-2" />
-                홈으로
+              <Button className="w-full" onClick={() => navigate('/token-subscription')}>다시 시도</Button>
+              <Button variant="outline" className="w-full" onClick={() => navigate('/')}>
+                <Home className="w-4 h-4 mr-2" />홈으로
               </Button>
             </div>
           </>

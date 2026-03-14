@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Crown, Lock, Sparkles, CheckCircle, Gift, Zap, ArrowRight } from 'lucide-react';
+import { Crown, Lock, Sparkles, CheckCircle, Gift, Zap, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useFreeTrial } from '@/hooks/useFreeTrial';
@@ -50,7 +50,7 @@ export const SubscriptionGuard = ({
     }
   }, [isTrialAllowed, trialKey, recordUsage]);
 
-  // 🔒 크레딧 실제 소진 — 크레딧으로 접근 시 1회 차감
+  // 크레딧 실제 소진
   useEffect(() => {
     if (hasCreditAccess && !hasCreditConsumed.current && !creditConsuming) {
       hasCreditConsumed.current = true;
@@ -81,7 +81,7 @@ export const SubscriptionGuard = ({
   // 프리미엄 구독자
   if (hasAccess) return <>{children}</>;
 
-  // 리포트 크레딧 보유자 (이미 1회 차감 완료)
+  // 리포트 크레딧 보유자
   if (hasCreditAccess) {
     return (
       <div>
@@ -93,12 +93,7 @@ export const SubscriptionGuard = ({
                 리포트 이용권 · 남은 횟수: <Badge variant="secondary" className="ml-1">{Math.max(0, reportCredits - 1)}회</Badge>
               </span>
             </div>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => navigate('/token-subscription')}
-              className="text-xs h-7"
-            >
+            <Button size="sm" variant="outline" onClick={() => navigate('/token-subscription')} className="text-xs h-7">
               <Crown className="w-3 h-3 mr-1" />
               구독하면 무제한
             </Button>
@@ -109,7 +104,7 @@ export const SubscriptionGuard = ({
     );
   }
 
-  // 무료체험 잔여 횟수
+  // 무료체험 잔여
   if (isTrialAllowed) {
     return (
       <div>
@@ -121,12 +116,7 @@ export const SubscriptionGuard = ({
                 무료체험 중 · 남은 횟수: <Badge variant="secondary" className="ml-1">{remaining === Infinity ? '무제한' : `${remaining}회`}</Badge>
               </span>
             </div>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => navigate('/token-subscription')}
-              className="text-xs h-7"
-            >
+            <Button size="sm" variant="outline" onClick={() => navigate('/token-subscription')} className="text-xs h-7">
               <Crown className="w-3 h-3 mr-1" />
               프리미엄으로 무제한 이용
             </Button>
@@ -137,7 +127,7 @@ export const SubscriptionGuard = ({
     );
   }
 
-  // 잠금 화면 — 단건 + 구독 듀얼 CTA
+  // 잠금 화면 — 기능 설명 + 듀얼 CTA
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-background overflow-hidden">
@@ -147,18 +137,38 @@ export const SubscriptionGuard = ({
           </div>
           <div>
             <CardTitle className="text-2xl md:text-3xl mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              {trialExhausted ? '무료체험이 종료되었습니다' : '프리미엄 전용 기능'}
+              {trialExhausted ? '무료체험이 종료되었습니다' : `${featureName}`}
             </CardTitle>
             <p className="text-muted-foreground">
               {trialExhausted 
-                ? `${featureName}의 무료체험 횟수를 모두 사용했습니다`
-                : fallbackMessage || `${featureName}은(는) 프리미엄 기능입니다`
+                ? `${featureName}의 무료체험 횟수를 모두 사용했습니다.`
+                : fallbackMessage || `${featureName}은(는) 프리미엄 기능입니다.`
               }
             </p>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-5 pb-8">
+          {/* 이용 안내 - 뭘 얻는지 명확히 */}
+          <div className="bg-muted/50 rounded-xl p-5 space-y-3">
+            <h4 className="font-bold text-base flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" />
+              {featureName} 이용 시 제공되는 것
+            </h4>
+            <div className="grid gap-2">
+              {[
+                'AI 기반 전문 심층 분석 리포트',
+                '개인 맞춤 솔루션 및 행동 가이드',
+                '결과 기반 추천 검사 및 전문가 연결',
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* 듀얼 프라이싱 */}
           <div className="grid sm:grid-cols-2 gap-4">
             {/* 단건 리포트 */}
@@ -168,7 +178,7 @@ export const SubscriptionGuard = ({
                 <span className="font-bold">1회 이용권</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                이 검사/분석만 한 번 이용하고 싶다면
+                <strong>{featureName}</strong> 심층 리포트 1회 열람
               </p>
               <div className="flex items-baseline gap-2">
                 <span className="text-sm text-muted-foreground line-through">₩9,900</span>
@@ -180,7 +190,7 @@ export const SubscriptionGuard = ({
                 className="w-full border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
               >
                 <Zap className="w-4 h-4 mr-2" />
-                1회 구매하기
+                이 검사 1회 이용하기
               </Button>
             </div>
 
@@ -192,7 +202,7 @@ export const SubscriptionGuard = ({
                 <span className="font-bold">월간 구독</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                모든 검사·분석 무제한, 매일 커피값
+                모든 검사 · 분석 · 리포트 <strong>무제한</strong>
               </p>
               <div className="flex items-baseline gap-2">
                 <span className="text-sm text-muted-foreground line-through">₩19,900</span>
@@ -209,11 +219,11 @@ export const SubscriptionGuard = ({
             </div>
           </div>
 
-          {/* 혜택 리스트 */}
-          <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+          {/* 구독 혜택 */}
+          <div className="bg-muted/30 rounded-lg p-4 space-y-2">
             <h4 className="font-semibold text-sm flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-primary" />
-              구독하면 모두 무제한
+              구독하면 이 모든 것이 무제한
             </h4>
             <div className="grid grid-cols-2 gap-1.5">
               {[
@@ -230,11 +240,7 @@ export const SubscriptionGuard = ({
             </div>
           </div>
 
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/')}
-            className="w-full text-muted-foreground"
-          >
+          <Button variant="ghost" onClick={() => navigate('/')} className="w-full text-muted-foreground">
             돌아가기
           </Button>
         </CardContent>
@@ -244,8 +250,8 @@ export const SubscriptionGuard = ({
         open={paymentOpen} 
         onOpenChange={setPaymentOpen} 
         mode="single"
-        title="이용권 구매"
-        description={`${featureName} 1회 이용권을 구매합니다.`}
+        title={`${featureName} 이용권 구매`}
+        description={`${featureName} 심층 분석 리포트 1회를 열람할 수 있습니다.`}
       />
     </div>
   );

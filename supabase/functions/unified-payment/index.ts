@@ -6,21 +6,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// 상품 정의 (프론트엔드와 동기화)
+// 상품 정의 (프론트엔드와 동기화) - SaaS 모델
 const PRODUCTS: Record<string, any> = {
-  pass_30: { type: 'pass', name: '프리미엄 패스 30일', price: 29900, duration: 30 },
-  pass_365: { type: 'pass', name: '프리미엄 패스 1년', price: 199000, duration: 365 },
-  pass_lifetime: { type: 'pass', name: '평생이용권', price: 99000, duration: -1 },
-  cash_5000: { type: 'cash', name: '5,000원 캐시', price: 5000, tokens: 50 },
-  cash_10000: { type: 'cash', name: '11,000원 캐시', price: 10000, tokens: 110 },
-  consult_30: { type: 'consult', name: '전문가 상담 30분', price: 35000 },
-  consult_60: { type: 'consult', name: '전문가 상담 60분', price: 65000 },
-  subscription_monthly: { type: 'subscription', name: '월간 구독', price: 19900 },
-  // B2B 상품
-  b2b_proposal_premium: { type: 'b2b', name: '프리미엄 제안서 PDF', price: 30000 },
-  b2b_sample_report: { type: 'b2b', name: '샘플 리포트 세트', price: 99000 },
-  b2b_consulting_1hr: { type: 'b2b', name: '1시간 컨설팅', price: 200000 },
-  b2b_pilot_deposit: { type: 'b2b_deposit', name: '파일럿 프로그램 예치금', price: 500000 },
+  single_report: { type: 'single', name: '심층 분석 리포트 1회', price: 3900 },
+  subscription_monthly: { type: 'subscription', name: '월간 구독', price: 9900 },
+  // 하위 호환성
+  pass_30: { type: 'subscription', name: '월간 구독', price: 9900 },
 };
 
 // 🔒 인증된 사용자 확인 헬퍼

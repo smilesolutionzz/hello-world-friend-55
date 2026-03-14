@@ -699,7 +699,29 @@ const PremiumAssessmentResult = ({
           </div>
         </div>
 
-        {/* Feedback Modal */}
+        {/* 비주얼 결과 카드 */}
+        {!isAnalyzing && (
+          <div className="max-w-6xl mx-auto mt-8">
+            <VisualResultInfographic
+              data={{
+                testName: assessmentInfo.title,
+                subtitle: assessmentInfo.subtitle,
+                date: new Date().toLocaleDateString('ko-KR'),
+                scores: results,
+                maxScore: 7,
+                categoryTranslations: Object.fromEntries(
+                  Object.keys(results).map(k => [k.toLowerCase(), translateCategory(k)])
+                ),
+                aiSummary: aiAnalysis,
+                actionItems: aiAnalysis
+                  ? aiAnalysis.match(/[-•]\s*(.{15,60})/g)?.slice(0, 3).map(s => s.replace(/^[-•]\s*/, ''))
+                  : undefined,
+              }}
+            />
+          </div>
+        )}
+
+
         <FeedbackModal
           isOpen={showFeedbackModal}
           onClose={() => { setShowFeedbackModal(false); loadReviews(); }}

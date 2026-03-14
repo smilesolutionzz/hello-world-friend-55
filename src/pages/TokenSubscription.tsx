@@ -416,6 +416,7 @@ const TokenSubscription = () => {
           </div>
         </motion.section>
       </div>
+      </div>
     </div>
   );
 };

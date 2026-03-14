@@ -4,10 +4,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Mail, Phone, Calendar, Building2, Crown, Edit2, Save, X } from "lucide-react";
+import { User, Mail, Phone, Calendar, Building2, Crown, Edit2, Save, X, FileText, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useAccessControl } from "@/hooks/useAccessControl";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileData {
   display_name: string | null;
@@ -21,6 +23,8 @@ interface ProfileData {
 
 const Profile = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { reportCredits, isSubscriber, loading: accessLoading } = useAccessControl();
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -198,6 +202,38 @@ const Profile = () => {
               <h3 className="text-xl font-semibold">{profileData.display_name || '이름 없음'}</h3>
               <p className="text-muted-foreground text-sm">{profileData.email || '이메일 없음'}</p>
             </div>
+          </div>
+
+          {/* 내 이용권 현황 */}
+          <div className="grid grid-cols-2 gap-3">
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="p-4 text-center">
+                <Crown className={`w-6 h-6 mx-auto mb-1 ${isSubscriber ? 'text-primary' : 'text-muted-foreground'}`} />
+                <p className="text-xs text-muted-foreground mb-1">구독 상태</p>
+                {isSubscriber ? (
+                  <span className="text-sm font-bold text-primary">프리미엄 이용중</span>
+                ) : (
+                  <span className="text-sm font-bold text-muted-foreground">미구독</span>
+                )}
+              </CardContent>
+            </Card>
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="p-4 text-center">
+                <FileText className="w-6 h-6 mx-auto mb-1 text-primary" />
+                <p className="text-xs text-muted-foreground mb-1">리포트 이용권</p>
+                <span className="text-sm font-bold text-primary">{reportCredits}장 보유</span>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* 바로가기 */}
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigate('/assessment-history')} className="justify-start">
+              <FileText className="w-4 h-4 mr-2" /> 내 리포트 보기
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/token-subscription')} className="justify-start">
+              <Zap className="w-4 h-4 mr-2" /> {isSubscriber ? '구독 관리' : '이용권 구매'}
+            </Button>
           </div>
 
           {/* 기본 정보 */}

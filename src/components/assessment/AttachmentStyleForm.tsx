@@ -144,29 +144,7 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
   const isAnswered = answers[currentQ.id] !== undefined;
 
   if (isAnalyzing) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4">
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center space-y-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <div className="text-center space-y-3">
-                <h3 className="font-semibold text-lg">{isEnglish ? "Analyzing attachment style..." : "애착 유형 분석 중..."}</h3>
-                <p className="text-muted-foreground">{isEnglish ? "Analyzing your relationship patterns" : "관계 패턴을 분석하고 있습니다"}</p>
-                <div className="bg-gray-200 rounded-full h-2 w-full max-w-xs mx-auto">
-                  <div className="bg-primary h-2 rounded-full transition-all duration-300" style={{ width: `${analysisProgress}%` }}></div>
-                </div>
-                {timeLeft > 0 && (
-                  <p className="text-sm font-medium text-primary">
-                    {timeLeft > 60 ? `~${Math.ceil(timeLeft / 60)} min remaining` : `~${timeLeft}s remaining`}
-                  </p>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <AnalysisLoadingScreen testName={isEnglish ? "Attachment Style" : "애착 유형"} estimatedSeconds={30} />;
   }
 
   return (

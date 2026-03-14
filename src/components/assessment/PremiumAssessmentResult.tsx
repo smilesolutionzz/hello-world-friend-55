@@ -629,12 +629,8 @@ const PremiumAssessmentResult = ({
                 </div>
               )}
               {isAnalyzing ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                    <p className="text-lg font-medium">AI가 심층 분석 중입니다...</p>
-                    <p className="text-sm text-muted-foreground">조기 위험요소 체크 포함</p>
-                  </div>
+                <div className="py-4">
+                  <AnalysisLoadingScreen testName={assessmentInfo.title} estimatedSeconds={25} />
                 </div>
               ) : (
                 <div className="prose max-w-none">

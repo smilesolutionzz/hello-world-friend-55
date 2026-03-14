@@ -239,21 +239,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
   }));
 
   if (isAnalyzing) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4">
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center space-y-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <div className="text-center">
-                <h3 className="font-semibold text-lg">{isEnglish ? 'AI Expert Analysis in Progress...' : 'AI 전문가 분석 중...'}</h3>
-                <p className="text-muted-foreground">{isEnglish ? 'Generating detailed stress analysis' : '상세한 스트레스 분석을 생성하고 있습니다'}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <AnalysisLoadingScreen testName={isEnglish ? "Stress Analysis" : "스트레스 분석"} estimatedSeconds={20} />;
   }
 
   return (

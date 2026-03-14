@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Crown, Download, Brain, TrendingUp, FileText, Sparkles, Calendar, Target, MessageSquare, BarChart3, Wallet, Lock, Star, ImageIcon } from "lucide-react";
 import VisualResultInfographic from './VisualResultInfographic';
+import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";

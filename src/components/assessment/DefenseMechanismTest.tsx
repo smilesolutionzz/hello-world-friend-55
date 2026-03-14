@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Shield, Brain, Heart, Sparkles, ArrowLeft, ArrowRight } from 'lucide-react';
+import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';

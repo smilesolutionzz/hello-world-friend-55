@@ -5,6 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 import { useTokens } from "@/hooks/useTokens";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { useToast } from "@/hooks/use-toast";

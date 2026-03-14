@@ -226,6 +226,7 @@ const Index = () => {
           </main>
           
           <BackToTop />
+          <StickyConversionBar />
           
           <WelcomeOnboarding 
             isOpen={showOnboarding} 

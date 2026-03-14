@@ -5,19 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { 
   User, 
   Mail, 
   Lock, 
-  Phone, 
-  Calendar,
   Heart,
   Shield,
-  Users,
-  UserCog,
-  Building,
-  Stethoscope
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +28,8 @@ const Auth = () => {
   const [success, setSuccess] = useState<string>("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   // Login form
   const [loginData, setLoginData] = useState({
@@ -40,21 +37,15 @@ const Auth = () => {
     password: ""
   });
   
-  // User type selection
-  const [userType, setUserType] = useState<'individual' | 'expert' | 'institution' | ''>('');
-  
-  // Signup form
+  // Signup form - 최소 정보만 수집
   const [signupData, setSignupData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
     displayName: "",
-    phone: "",
-    birthDate: ""
   });
 
   useEffect(() => {
-    // Check if user is already logged in
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -64,25 +55,14 @@ const Auth = () => {
     
     checkUser();
     
-    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        // Process referral reward if there's a stored referral code
         const referralCode = localStorage.getItem('referralCode');
         if (referralCode) {
           await processReferralReward(referralCode);
           localStorage.removeItem('referralCode');
         }
-        
-        // Navigate based on user type or default to dashboard
-        const userType = session.user.user_metadata?.user_type;
-        if (userType === 'expert') {
-          navigate('/expert-onboarding');
-        } else if (userType === 'institution') {
-          navigate('/institution-onboarding');
-        } else {
-          navigate('/needs-assessment');
-        }
+        navigate('/needs-assessment');
       }
     });
     
@@ -101,10 +81,11 @@ const Auth = () => {
       });
       
       if (error) {
-        setError(error.message);
-      } else {
-        // Auth state change listener will handle navigation and referral processing
-        // navigate('/dashboard'); // Removed to let the auth listener handle it
+        if (error.message.includes('Invalid login')) {
+          setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+        } else {
+          setError(error.message);
+        }
       }
     } catch (err) {
       setError("로그인 중 오류가 발생했습니다.");
@@ -118,27 +99,39 @@ const Auth = () => {
     setLoading(true);
     setError("");
     setSuccess("");
+
+    // 닉네임 검증
+    const trimmedName = signupData.displayName.trim();
+    if (trimmedName.length < 2) {
+      setError("닉네임은 최소 2자 이상이어야 합니다.");
+      setLoading(false);
+      return;
+    }
+    if (trimmedName.length > 20) {
+      setError("닉네임은 20자 이하로 입력해주세요.");
+      setLoading(false);
+      return;
+    }
     
-    // Validation
+    // 비밀번호 일치 확인
     if (signupData.password !== signupData.confirmPassword) {
       setError("비밀번호가 일치하지 않습니다.");
       setLoading(false);
       return;
     }
     
-    // Enhanced password validation
+    // 비밀번호 길이
     if (signupData.password.length < 8) {
       setError("비밀번호는 최소 8자 이상이어야 합니다.");
       setLoading(false);
       return;
     }
 
-    // Check for password complexity
+    // 비밀번호 복잡성
     const hasUpperCase = /[A-Z]/.test(signupData.password);
     const hasLowerCase = /[a-z]/.test(signupData.password);
     const hasNumber = /[0-9]/.test(signupData.password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(signupData.password);
-
     const complexityCount = [hasUpperCase, hasLowerCase, hasNumber, hasSpecialChar].filter(Boolean).length;
 
     if (complexityCount < 3) {
@@ -147,7 +140,7 @@ const Auth = () => {
       return;
     }
 
-    // Validate email format
+    // 이메일 형식
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(signupData.email)) {
       setError("올바른 이메일 형식이 아닙니다.");
@@ -155,32 +148,22 @@ const Auth = () => {
       return;
     }
 
-    // 전화번호 중복 체크 (선택사항이므로 입력된 경우에만)
-    if (signupData.phone) {
-      try {
-        const { data: existingProfile } = await supabase
-          .from('profiles')
-          .select('user_id')
-          .eq('phone', signupData.phone)
-          .single();
-        
-        if (existingProfile) {
-          setError("이미 사용 중인 전화번호입니다.");
-          setLoading(false);
-          return;
-        }
-      } catch (error) {
-        // PGRST116 에러는 데이터가 없다는 뜻이므로 정상
-        if (error.code !== 'PGRST116') {
-          console.error('전화번호 중복 체크 오류:', error);
-        }
+    // 닉네임 중복 체크
+    try {
+      const { data: nickAvailable } = await supabase.rpc('check_nickname_availability', {
+        nickname: trimmedName
+      });
+      if (nickAvailable === false) {
+        setError("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.");
+        setLoading(false);
+        return;
       }
+    } catch (err) {
+      // RPC 오류 시 넘어감
     }
     
     try {
       const redirectUrl = `${window.location.origin}/dashboard`;
-      
-      // 추천 코드가 있는지 확인
       const referralCode = localStorage.getItem('referralCode');
       
       const { error } = await supabase.auth.signUp({
@@ -189,24 +172,16 @@ const Auth = () => {
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            display_name: signupData.displayName,
-            phone: signupData.phone,
-            birth_date: signupData.birthDate,
-            user_type: userType,
+            display_name: trimmedName,
             referral_code: referralCode || undefined
           }
         }
       });
       
       if (error) {
-        if (error.message.includes('Phone number already exists')) {
-          setError("이미 사용 중인 전화번호입니다.");
-        } else {
-          setError(error.message);
-        }
+        setError(error.message);
       } else {
-        setSuccess("회원가입이 완료되었습니다! 15토큰과 함께 시작하세요.");
-        // Auth state change listener will handle referral processing after email confirmation
+        setSuccess("회원가입이 완료되었습니다! 이메일을 확인해주세요.");
       }
     } catch (err) {
       setError("회원가입 중 오류가 발생했습니다.");
@@ -236,7 +211,7 @@ const Auth = () => {
       if (error) {
         setError(error.message);
       } else {
-        setSuccess("비밀번호 재설정 링크가 이메일로 전송되었습니다. 이메일을 확인해주세요.");
+        setSuccess("비밀번호 재설정 링크가 이메일로 전송되었습니다.");
         toast({
           title: "이메일 전송 완료",
           description: "비밀번호 재설정 링크가 발송되었습니다.",
@@ -249,275 +224,220 @@ const Auth = () => {
     setLoading(false);
   };
 
+  // 비밀번호 강도 표시
+  const getPasswordStrength = (password: string) => {
+    if (!password) return { level: 0, label: "", color: "" };
+    const checks = [
+      /[A-Z]/.test(password),
+      /[a-z]/.test(password),
+      /[0-9]/.test(password),
+      /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      password.length >= 8,
+      password.length >= 12,
+    ].filter(Boolean).length;
+
+    if (checks <= 2) return { level: 1, label: "약함", color: "bg-destructive" };
+    if (checks <= 4) return { level: 2, label: "보통", color: "bg-amber-500" };
+    return { level: 3, label: "강함", color: "bg-green-500" };
+  };
+
+  const passwordStrength = getPasswordStrength(signupData.password);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/10 to-soft-mint/20 flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-5">
+      <div className="w-full max-w-sm">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center mx-auto mb-4">
-            <Heart className="w-8 h-8 text-white" />
+          <div className="w-14 h-14 bg-gradient-to-br from-primary to-primary-glow rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+            <Heart className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">AIHPRO</h1>
-          <p className="text-muted-foreground">데이터로 읽는 마음, AIHUMANPRO</p>
+          <h1 className="text-xl font-bold text-foreground">AIHPRO</h1>
+          <p className="text-sm text-muted-foreground mt-1">데이터로 읽는 마음</p>
         </div>
 
-        <Card className="p-6">
+        <Card className="p-5 shadow-lg border-border/50">
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-2 mb-4">
               <TabsTrigger value="login">로그인</TabsTrigger>
               <TabsTrigger value="signup">회원가입</TabsTrigger>
             </TabsList>
             
+            {/* 로그인 */}
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="login-email">이메일</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="login-email" className="text-sm">이메일</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="login-email"
                       type="email"
                       placeholder="이메일을 입력하세요"
                       value={loginData.email}
                       onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                      className="pl-10"
+                      className="pl-10 h-11"
                       required
                     />
                   </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="login-password">비밀번호</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="login-password" className="text-sm">비밀번호</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="login-password"
                       type="password"
                       placeholder="비밀번호를 입력하세요"
                       value={loginData.password}
                       onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-                      className="pl-10"
+                      className="pl-10 h-11"
                       required
                     />
                   </div>
                 </div>
                 
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full h-11" disabled={loading}>
                   {loading ? "로그인 중..." : "로그인"}
-                </Button>
-                
-                <div className="flex flex-col items-center gap-2 mt-4">
-                  <Button 
-                    type="button" 
-                    variant="link" 
-                    className="text-sm text-muted-foreground hover:text-primary"
-                    onClick={() => setShowForgotPassword(true)}
-                  >
-                    비밀번호를 잊으셨나요?
-                  </Button>
-                  <div className="text-sm text-muted-foreground">
-                    계정이 없으신가요?{' '}
-                    <Button 
-                      type="button" 
-                      variant="link" 
-                      className="p-0 h-auto text-primary font-semibold hover:underline"
-                      onClick={() => {
-                        const signupTab = document.querySelector('[data-state="inactive"][value="signup"]') as HTMLButtonElement;
-                        signupTab?.click();
-                      }}
-                    >
-                      회원가입
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            </TabsContent>
-            
-            <TabsContent value="signup">
-              {!userType ? (
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold mb-2">서비스 이용 목적을 선택해주세요</h3>
-                    <p className="text-sm text-muted-foreground">선택에 따라 맞춤형 경험을 제공해드립니다</p>
-                  </div>
-                  
-                  <RadioGroup value={userType} onValueChange={(value) => setUserType(value as any)}>
-                    <div className="grid grid-cols-1 gap-4">
-                      <div className="flex items-center space-x-2 p-4 rounded-lg border border-border hover:bg-muted/50 cursor-pointer">
-                        <RadioGroupItem value="individual" id="individual" />
-                        <Label htmlFor="individual" className="flex-1 cursor-pointer">
-                          <div className="flex items-start gap-3">
-                            <User className="w-5 h-5 text-primary mt-1" />
-                            <div>
-                              <div className="font-medium">개인 사용자</div>
-                              <div className="text-sm text-muted-foreground">나와 가족을 위한 심리검사</div>
-                            </div>
-                          </div>
-                        </Label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2 p-4 rounded-lg border border-border hover:bg-muted/50 cursor-pointer">
-                        <RadioGroupItem value="expert" id="expert" />
-                        <Label htmlFor="expert" className="flex-1 cursor-pointer">
-                          <div className="flex items-start gap-3">
-                            <Stethoscope className="w-5 h-5 text-primary mt-1" />
-                            <div>
-                              <div className="font-medium">전문가</div>
-                              <div className="text-sm text-muted-foreground">심리상담사, 의료진, 교육 전문가</div>
-                            </div>
-                          </div>
-                        </Label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2 p-4 rounded-lg border border-border hover:bg-muted/50 cursor-pointer">
-                        <RadioGroupItem value="institution" id="institution" />
-                        <Label htmlFor="institution" className="flex-1 cursor-pointer">
-                          <div className="flex items-start gap-3">
-                            <Building className="w-5 h-5 text-primary mt-1" />
-                            <div>
-                              <div className="font-medium">기관 관계자</div>
-                              <div className="text-sm text-muted-foreground">학교, 병원, 상담센터 등</div>
-                            </div>
-                          </div>
-                        </Label>
-                      </div>
-                    </div>
-                  </RadioGroup>
-                  
-                  <Button 
-                    onClick={() => userType && setUserType(userType)} 
-                    className="w-full"
-                    disabled={!userType}
-                  >
-                    다음 단계로
-                  </Button>
-                </div>
-              ) : (
-                <form onSubmit={handleSignup} className="space-y-4">
-                  <div className="space-y-2">
-                  <Label htmlFor="signup-name">이름</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      placeholder="이름을 입력하세요"
-                      value={signupData.displayName}
-                      onChange={(e) => setSignupData(prev => ({ ...prev, displayName: e.target.value }))}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">이메일</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="이메일을 입력하세요"
-                      value={signupData.email}
-                      onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="signup-phone">전화번호 (선택)</Label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="signup-phone"
-                      type="tel"
-                      placeholder="전화번호를 입력하세요"
-                      value={signupData.phone}
-                      onChange={(e) => setSignupData(prev => ({ ...prev, phone: e.target.value }))}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="signup-birth">생년월일 (선택)</Label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="signup-birth"
-                      type="date"
-                      value={signupData.birthDate}
-                      onChange={(e) => setSignupData(prev => ({ ...prev, birthDate: e.target.value }))}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">비밀번호</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      placeholder="비밀번호 (최소 8자, 대소문자+숫자+특수문자 중 3가지)"
-                      value={signupData.password}
-                      onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
-                      className="pl-10"
-                      required
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      대문자, 소문자, 숫자, 특수문자 중 최소 3가지 포함
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="signup-confirm">비밀번호 확인</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="signup-confirm"
-                      type="password"
-                      placeholder="비밀번호를 다시 입력하세요"
-                      value={signupData.confirmPassword}
-                      onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "가입 중..." : "회원가입"}
                 </Button>
                 
                 <div className="text-center">
                   <Button 
                     type="button" 
-                    variant="ghost" 
-                    onClick={() => setUserType('')}
-                    className="text-sm"
+                    variant="link" 
+                    className="text-xs text-muted-foreground"
+                    onClick={() => setShowForgotPassword(true)}
                   >
-                    ← 사용자 유형 다시 선택
+                    비밀번호를 잊으셨나요?
                   </Button>
                 </div>
               </form>
-              )}
+            </TabsContent>
+            
+            {/* 회원가입 - 최소 정보만 */}
+            <TabsContent value="signup">
+              <form onSubmit={handleSignup} className="space-y-4">
+                {/* 닉네임 */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="signup-name" className="text-sm">닉네임</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="signup-name"
+                      type="text"
+                      placeholder="2~20자 닉네임"
+                      value={signupData.displayName}
+                      onChange={(e) => setSignupData(prev => ({ ...prev, displayName: e.target.value }))}
+                      className="pl-10 h-11"
+                      maxLength={20}
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* 이메일 */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="signup-email" className="text-sm">이메일</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      placeholder="이메일 주소"
+                      value={signupData.email}
+                      onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
+                      className="pl-10 h-11"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                {/* 비밀번호 */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="signup-password" className="text-sm">비밀번호</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="signup-password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="8자 이상 (대소문자+숫자+특수문자 중 3가지)"
+                      value={signupData.password}
+                      onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
+                      className="pl-10 pr-10 h-11"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {signupData.password && (
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <div className="flex-1 flex gap-1">
+                        {[1, 2, 3].map(i => (
+                          <div key={i} className={`h-1 flex-1 rounded-full ${i <= passwordStrength.level ? passwordStrength.color : 'bg-muted'}`} />
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-muted-foreground">{passwordStrength.label}</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* 비밀번호 확인 */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="signup-confirm" className="text-sm">비밀번호 확인</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="signup-confirm"
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="비밀번호를 다시 입력"
+                      value={signupData.confirmPassword}
+                      onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      className="pl-10 pr-10 h-11"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {signupData.confirmPassword && signupData.password !== signupData.confirmPassword && (
+                    <p className="text-[11px] text-destructive">비밀번호가 일치하지 않습니다</p>
+                  )}
+                </div>
+                
+                {/* 개인정보 최소 수집 안내 */}
+                <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-xl">
+                  <Shield className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    개인정보 보호를 위해 <span className="font-semibold text-foreground">닉네임과 이메일만</span> 수집합니다. 
+                    전화번호, 생년월일 등 민감정보는 요청하지 않습니다.
+                  </p>
+                </div>
+
+                <Button type="submit" className="w-full h-11" disabled={loading}>
+                  {loading ? "가입 중..." : "회원가입"}
+                </Button>
+              </form>
             </TabsContent>
           </Tabs>
           
           {error && (
             <Alert className="mt-4 border-destructive/50 text-destructive">
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription className="text-sm">{error}</AlertDescription>
             </Alert>
           )}
           
           {success && (
             <Alert className="mt-4 border-green-500/50 text-green-700">
-              <AlertDescription>{success}</AlertDescription>
+              <AlertDescription className="text-sm">{success}</AlertDescription>
             </Alert>
           )}
         </Card>
@@ -525,9 +445,9 @@ const Auth = () => {
         {/* Forgot Password Dialog */}
         {showForgotPassword && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-md p-6 bg-white dark:bg-card">
+            <Card className="w-full max-w-sm p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-foreground">비밀번호 찾기</h3>
+                <h3 className="text-base font-semibold text-foreground">비밀번호 찾기</h3>
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -542,36 +462,33 @@ const Auth = () => {
                 </Button>
               </div>
               
-              <p className="text-sm text-gray-600 dark:text-muted-foreground mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.
               </p>
               
               <form onSubmit={handleForgotPassword} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="forgot-email">이메일</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="forgot-email"
-                      type="email"
-                      placeholder="이메일을 입력하세요"
-                      value={forgotEmail}
-                      onChange={(e) => setForgotEmail(e.target.value)}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="forgot-email"
+                    type="email"
+                    placeholder="이메일을 입력하세요"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    className="pl-10 h-11"
+                    required
+                  />
                 </div>
                 
                 {error && (
                   <Alert className="border-destructive/50 text-destructive">
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription className="text-sm">{error}</AlertDescription>
                   </Alert>
                 )}
                 
                 {success && (
                   <Alert className="border-green-500/50 text-green-700">
-                    <AlertDescription>{success}</AlertDescription>
+                    <AlertDescription className="text-sm">{success}</AlertDescription>
                   </Alert>
                 )}
                 
@@ -579,7 +496,7 @@ const Auth = () => {
                   <Button 
                     type="button" 
                     variant="outline" 
-                    className="flex-1"
+                    className="flex-1 h-11"
                     onClick={() => {
                       setShowForgotPassword(false);
                       setForgotEmail("");
@@ -589,7 +506,7 @@ const Auth = () => {
                   >
                     취소
                   </Button>
-                  <Button type="submit" className="flex-1" disabled={loading}>
+                  <Button type="submit" className="flex-1 h-11" disabled={loading}>
                     {loading ? "전송 중..." : "재설정 링크 전송"}
                   </Button>
                 </div>
@@ -598,20 +515,11 @@ const Auth = () => {
           </div>
         )}
         
-        {/* Features */}
-        <div className="mt-8 grid grid-cols-1 gap-4 text-center">
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <Shield className="w-4 h-4" />
-            <span>개인정보 보호</span>
-          </div>
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <Users className="w-4 h-4" />
-            <span>가족 통합 관리</span>
-          </div>
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <Heart className="w-4 h-4" />
-            <span>24시간 AI 상담</span>
-          </div>
+        {/* 홈으로 */}
+        <div className="mt-6 text-center">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-muted-foreground">
+            ← 홈으로
+          </Button>
         </div>
       </div>
     </div>

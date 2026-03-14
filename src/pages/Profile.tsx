@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   User, Crown, FileText, ChevronRight, LogOut, Settings,
-  CreditCard, HelpCircle, Shield, Bell, Pencil, Check, X
+  CreditCard, HelpCircle, Shield, Bell, Pencil, Check, X,
+  Brain, MessageSquare, ClipboardList, Infinity
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -37,6 +37,11 @@ const Profile = () => {
     subscription_tier: null,
   });
   const [tempName, setTempName] = useState("");
+  const [activityCounts, setActivityCounts] = useState({
+    reports: 0,
+    concerns: 0,
+    assessments: 0,
+  });
 
   useEffect(() => {
     fetchProfile();
@@ -47,17 +52,36 @@ const Profile = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
 
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('display_name, email, phone, birth_date, account_type, subscription_tier')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      // Fetch profile, reports, concerns, assessments in parallel
+      const [profileRes, reportsRes, concernsRes, assessmentsRes] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('display_name, email, phone, birth_date, account_type, subscription_tier')
+          .eq('user_id', user.id)
+          .maybeSingle(),
+        supabase
+          .from('assessment_enhanced_analysis')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id),
+        supabase
+          .from('concern_storage')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id),
+        supabase
+          .from('assessments')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id),
+      ]);
 
-      if (error) throw error;
-      if (profile) {
-        setProfileData(profile);
-        setTempName(profile.display_name || "");
+      if (profileRes.data) {
+        setProfileData(profileRes.data);
+        setTempName(profileRes.data.display_name || "");
       }
+      setActivityCounts({
+        reports: reportsRes.count || 0,
+        concerns: concernsRes.count || 0,
+        assessments: assessmentsRes.count || 0,
+      });
     } catch (error) {
       console.error('프로필 조회 오류:', error);
     } finally {
@@ -105,10 +129,40 @@ const Profile = () => {
 
   const menuSections = [
     {
-      title: "내 활동",
+      title: "내 결과 다시보기",
       items: [
-        { icon: FileText, label: "내 리포트", desc: reportCredits > 0 ? `${reportCredits}건 보유` : "검사 결과 확인", path: "/assessment-history", badge: reportCredits > 0 ? reportCredits : null },
-        { icon: CreditCard, label: isSubscriber ? "구독 관리" : "이용권 구매", desc: isSubscriber ? "프리미엄 이용중" : "검사 이용권 충전", path: "/token-subscription" },
+        {
+          icon: FileText,
+          label: "생성한 리포트",
+          desc: activityCounts.reports > 0 ? `${activityCounts.reports}건의 리포트` : "아직 생성한 리포트가 없어요",
+          path: "/assessment-history",
+          badge: activityCounts.reports > 0 ? activityCounts.reports : null,
+        },
+        {
+          icon: MessageSquare,
+          label: "고민 저장소",
+          desc: activityCounts.concerns > 0 ? `${activityCounts.concerns}건 저장됨` : "기록한 고민이 없어요",
+          path: "/concern-storage",
+          badge: activityCounts.concerns > 0 ? activityCounts.concerns : null,
+        },
+        {
+          icon: ClipboardList,
+          label: "검사 결과",
+          desc: activityCounts.assessments > 0 ? `${activityCounts.assessments}건의 검사 이력` : "아직 검사를 하지 않았어요",
+          path: "/assessment-history",
+          badge: activityCounts.assessments > 0 ? activityCounts.assessments : null,
+        },
+      ]
+    },
+    {
+      title: "이용권·구독",
+      items: [
+        {
+          icon: CreditCard,
+          label: isSubscriber ? "구독 관리" : "이용권 구매",
+          desc: isSubscriber ? "프리미엄 이용중" : "검사 이용권 충전",
+          path: "/token-subscription",
+        },
       ]
     },
     {
@@ -164,13 +218,13 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Subscription Status Card */}
+      {/* Usage Status Card */}
       <div className="px-5 -mt-1">
         <div
           onClick={() => navigate('/token-subscription')}
           className={`flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-all ${
             isSubscriber
-              ? 'bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60'
+              ? 'bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60 dark:from-amber-950/30 dark:to-orange-950/30 dark:border-amber-800/40'
               : 'bg-muted/50 border border-border'
           }`}
         >
@@ -183,7 +237,7 @@ const Profile = () => {
               <Crown className={`w-5 h-5 ${isSubscriber ? 'text-white' : 'text-muted-foreground'}`} />
             </div>
             <div>
-              <p className={`text-sm font-bold ${isSubscriber ? 'text-amber-800' : 'text-foreground'}`}>
+              <p className={`text-sm font-bold ${isSubscriber ? 'text-amber-800 dark:text-amber-300' : 'text-foreground'}`}>
                 {isSubscriber ? '프리미엄 구독중' : '무료 회원'}
               </p>
               <p className="text-xs text-muted-foreground">
@@ -195,23 +249,36 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <div className="px-5 mt-4 grid grid-cols-2 gap-3">
+      {/* Quick Stats - 3 columns */}
+      <div className="px-5 mt-4 grid grid-cols-3 gap-2.5">
+        <div className="bg-card border border-border rounded-2xl p-3 text-center">
+          <div className="flex items-center justify-center gap-1 mb-1">
+            {isSubscriber ? (
+              <Infinity className="w-5 h-5 text-primary" />
+            ) : (
+              <Brain className="w-5 h-5 text-primary" />
+            )}
+          </div>
+          <p className="text-lg font-bold text-foreground">
+            {isSubscriber ? '무제한' : `${reportCredits}건`}
+          </p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">이용 가능</p>
+        </div>
         <div
           onClick={() => navigate('/assessment-history')}
-          className="bg-card border border-border rounded-2xl p-4 text-center cursor-pointer hover:border-primary/30 transition-colors"
+          className="bg-card border border-border rounded-2xl p-3 text-center cursor-pointer hover:border-primary/30 transition-colors"
         >
-          <FileText className="w-6 h-6 mx-auto mb-2 text-primary" />
-          <p className="text-2xl font-bold text-foreground">{reportCredits}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">리포트 이용권</p>
+          <ClipboardList className="w-5 h-5 mx-auto mb-1 text-primary" />
+          <p className="text-lg font-bold text-foreground">{activityCounts.assessments}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">검사 완료</p>
         </div>
         <div
           onClick={() => navigate('/concern-storage')}
-          className="bg-card border border-border rounded-2xl p-4 text-center cursor-pointer hover:border-primary/30 transition-colors"
+          className="bg-card border border-border rounded-2xl p-3 text-center cursor-pointer hover:border-primary/30 transition-colors"
         >
-          <Shield className="w-6 h-6 mx-auto mb-2 text-primary" />
-          <p className="text-2xl font-bold text-foreground">—</p>
-          <p className="text-xs text-muted-foreground mt-0.5">고민 저장소</p>
+          <MessageSquare className="w-5 h-5 mx-auto mb-1 text-primary" />
+          <p className="text-lg font-bold text-foreground">{activityCounts.concerns}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">고민 기록</p>
         </div>
       </div>
 

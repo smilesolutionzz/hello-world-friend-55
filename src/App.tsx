@@ -158,6 +158,8 @@ const App = () => {
               <Routes>
           {/* ===== Core SaaS Routes ===== */}
           <Route path="/" element={<Index />} />
+          <Route path="/en" element={<Index />} />
+          <Route path="/en/*" element={<Index />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardRouter />} />

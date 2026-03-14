@@ -39,28 +39,31 @@ const HeroSection = () => {
           muted
           loop
           playsInline
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover scale-105"
           poster={heroBg}
         >
           <source 
-            src="https://videos.pexels.com/video-files/5622209/5622209-uhd_2560_1440_25fps.mp4" 
+            src="https://videos.pexels.com/video-files/3209828/3209828-uhd_2560_1440_25fps.mp4" 
             type="video/mp4"
           />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/93 via-[#111827]/88 to-[#0A0E1A]/93" />
+        {/* Multi-layer cinematic overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/70 to-slate-950/90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-amber-500/8" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent" />
       </div>
 
-      {/* Animated Gradient Orbs */}
+      {/* Subtle Ambient Glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div 
-          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.35, 0.2] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-10 -left-32 w-[400px] h-[400px] bg-gradient-to-r from-amber-500/30 to-orange-500/20 rounded-full blur-[120px]" 
+          animate={{ scale: [1, 1.1, 1], opacity: [0.12, 0.22, 0.12] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-20 -left-20 w-[300px] h-[300px] bg-amber-500/20 rounded-full blur-[100px]" 
         />
         <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.3, 0.15] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-32 -right-32 w-[500px] h-[500px] bg-gradient-to-l from-blue-500/25 to-cyan-500/20 rounded-full blur-[140px]" 
+          animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.18, 0.08] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+          className="absolute bottom-20 -right-20 w-[350px] h-[350px] bg-blue-500/15 rounded-full blur-[120px]" 
         />
       </div>
 

@@ -239,11 +239,7 @@ export default function RelationshipDynamicsResult({ results, onBack }: Relation
             </CardHeader>
             <CardContent className="pt-6">
               {isLoadingAnalysis ? (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <Loader2 className="w-12 h-12 animate-spin text-indigo-500 mb-4" />
-                  <p className="text-muted-foreground">{isEnglish ? 'AI is analyzing...' : 'AI가 심층 분석 중입니다...'}</p>
-                  <p className="text-sm text-muted-foreground">{isEnglish ? 'Please wait' : '잠시만 기다려주세요'}</p>
-                </div>
+                <AnalysisLoadingScreen testName={isEnglish ? "Relationship Dynamics" : "관계 역동성"} estimatedSeconds={30} />
               ) : analysisError ? (
                 <div className="text-center py-8">
                   <p className="text-red-500 mb-4">{analysisError}</p>

@@ -16,9 +16,9 @@ const MobileBottomTab: React.FC = () => {
   const getActiveTab = () => {
     const path = location.pathname;
     if (path === '/' || path === '/en') return 'home';
-    if (path.startsWith('/assessment') || path.startsWith('/premium-assessment')) return 'assessment';
+    if (path.startsWith('/premium-assessment') || path === '/assessment') return 'assessment';
     if (path.startsWith('/token-subscription') || path.startsWith('/pricing') || path.startsWith('/payment')) return 'premium';
-    if (path.startsWith('/assessment-history') || path.startsWith('/assessment-detail')) return 'reports';
+    if (path.startsWith('/assessment-history') || path.startsWith('/assessment-detail') || path.startsWith('/concern-storage')) return 'reports';
     if (path.startsWith('/profile') || path.startsWith('/settings') || path.startsWith('/dashboard')) return 'profile';
     return '';
   };

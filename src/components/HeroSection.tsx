@@ -43,7 +43,7 @@ const HeroSection = () => {
           poster={heroBg}
         >
           <source 
-            src="https://videos.pexels.com/video-files/4009601/4009601-uhd_2560_1440_30fps.mp4" 
+            src="https://videos.pexels.com/video-files/5622209/5622209-uhd_2560_1440_25fps.mp4" 
             type="video/mp4"
           />
         </video>

@@ -118,7 +118,8 @@ export function usePayment() {
       }
 
       const tossPayments = await loadTossPayments(state.clientKey);
-      const baseFailUrl = `${window.location.origin}/payment-complete?status=fail&type=subscription`;
+      const paymentType = product?.type || 'subscription';
+      const baseFailUrl = `${window.location.origin}/payment-complete?status=fail&type=${paymentType}`;
       
       await tossPayments.requestPayment('카드', {
         amount: data.paymentData.amount,
@@ -126,7 +127,7 @@ export function usePayment() {
         orderName: data.paymentData.orderName,
         customerEmail: data.paymentData.customerEmail,
         customerName: data.paymentData.customerName,
-        successUrl: `${window.location.origin}/payment-complete?type=subscription`,
+        successUrl: `${window.location.origin}/payment-complete?type=${paymentType}`,
         failUrl: baseFailUrl,
       });
 

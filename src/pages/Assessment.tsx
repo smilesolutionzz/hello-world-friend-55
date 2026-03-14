@@ -1039,33 +1039,7 @@ const Assessment = () => {
     return <AnimalFaceTest onComplete={handleFunTestComplete} onBack={handleBack} />;
   }
 
-  if (currentStep === 'inner-animal') {
-    return <InnerAnimalTest onComplete={handleFunTestComplete} onBack={handleBack} />;
-  }
-
-  if (currentStep === 'grandma-relationship') {
-    return <GrandmaRelationshipTest onComplete={handleFunTestComplete} onBack={handleBack} />;
-  }
-
-  if (currentStep === 'grandpa-marriage') {
-    return <GrandpaMarriageDiagnosis onComplete={handleFunTestComplete} onBack={handleBack} />;
-  }
-
-  if (currentStep === 'mz-nagging') {
-    return <MZNaggingTest onComplete={handleFunTestComplete} onBack={handleBack} />;
-  }
-
-  if (currentStep === 'wisdom-advice') {
-    return <WisdomAdviceTest onComplete={handleFunTestComplete} onBack={handleBack} />;
-  }
-
-  if (currentStep === 'otrovert') {
-    return <OtrovertTest onComplete={handleFunTestComplete} onBack={handleBack} />;
-  }
-
-  if (currentStep === 'life-achievement') {
-    return <LifeAchievementTest onComplete={handleFunTestComplete} onBack={handleBack} />;
-  }
+  // 삭제된 재미 검사 step handlers: inner-animal, grandma-relationship, grandpa-marriage, mz-nagging, wisdom-advice, otrovert, life-achievement
 
   if (currentStep === 'parent-child-play') {
     return <ParentChildPlayTest onComplete={handleFunTestComplete} onBack={handleBack} />;

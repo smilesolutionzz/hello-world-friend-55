@@ -170,7 +170,7 @@ export const SubscriptionGuard = ({
           </div>
 
           {/* 듀얼 프라이싱 */}
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* 단건 리포트 */}
             <div className="border border-amber-500/30 rounded-xl p-5 bg-amber-500/5 space-y-3">
               <div className="flex items-center gap-2">

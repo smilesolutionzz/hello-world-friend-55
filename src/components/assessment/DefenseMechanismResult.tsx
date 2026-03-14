@@ -10,6 +10,7 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n';
+import VisualResultInfographic from './VisualResultInfographic';
 
 interface DefenseMechanismResultProps {
   result: {
@@ -176,7 +177,29 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
           </div>
         </Card>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        {/* 비주얼 결과 카드 */}
+        <div className="mt-8">
+          <VisualResultInfographic
+            data={{
+              testName: isEnglish ? 'Defense Mechanism Analysis' : '방어기제 분석',
+              subtitle: isEnglish ? 'Unconscious Psychological Patterns' : '무의식적 심리 패턴 분석',
+              date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
+              scores: Object.fromEntries(
+                Object.entries(result.categoryScores).map(([k, v]) => [k, v / 10]) // Convert % to 0-10 scale
+              ),
+              maxScore: 10,
+              categoryTranslations: Object.fromEntries(
+                Object.entries(mechanismInfo).map(([k, v]) => [k, v.name])
+              ),
+              aiSummary: result.analysis,
+              actionItems: result.analysis
+                ? result.analysis.match(/\d+\.\s*(.{15,60})/g)?.slice(0, 3).map(s => s.replace(/^\d+\.\s*/, ''))
+                : undefined,
+            }}
+          />
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
           <Button onClick={handleDownloadPDF} variant="outline" className="gap-2" size="lg">
             <Download className="w-5 h-5" />{isEnglish ? 'Download PDF' : 'PDF 다운로드'}
           </Button>

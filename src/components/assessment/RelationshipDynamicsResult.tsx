@@ -14,6 +14,8 @@ import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useLanguage } from '@/i18n/LanguageContext';
+import VisualResultInfographic from './VisualResultInfographic';
+import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 
 interface RelationshipDynamicsResultProps {
   results: {
@@ -237,11 +239,7 @@ export default function RelationshipDynamicsResult({ results, onBack }: Relation
             </CardHeader>
             <CardContent className="pt-6">
               {isLoadingAnalysis ? (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <Loader2 className="w-12 h-12 animate-spin text-indigo-500 mb-4" />
-                  <p className="text-muted-foreground">{isEnglish ? 'AI is analyzing...' : 'AI가 심층 분석 중입니다...'}</p>
-                  <p className="text-sm text-muted-foreground">{isEnglish ? 'Please wait' : '잠시만 기다려주세요'}</p>
-                </div>
+                <AnalysisLoadingScreen testName={isEnglish ? "Relationship Dynamics" : "관계 역동성"} estimatedSeconds={30} />
               ) : analysisError ? (
                 <div className="text-center py-8">
                   <p className="text-red-500 mb-4">{analysisError}</p>
@@ -290,6 +288,31 @@ export default function RelationshipDynamicsResult({ results, onBack }: Relation
               </div>
             </CardContent>
           </Card>
+
+          {/* 비주얼 결과 카드 */}
+          {!isLoadingAnalysis && (
+            <div className="mb-6">
+              <VisualResultInfographic
+                data={{
+                  testName: isEnglish ? 'Relationship Dynamics' : '관계 역동성 심층 분석',
+                  subtitle: relationshipType,
+                  date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
+                  scores: Object.fromEntries(
+                    Object.entries(categoryScores).map(([k, v]) => [k, v / 10]) // Convert 0-100 to 0-10
+                  ),
+                  maxScore: 10,
+                  categoryTranslations: Object.fromEntries(
+                    Object.entries(categoryInfo).map(([k, v]) => [k, v.name])
+                  ),
+                  aiSummary: aiAnalysis?.fullAnalysis,
+                  riskLevel: totalScore >= 75 ? 'low' : totalScore >= 50 ? 'moderate' : 'high',
+                  actionItems: aiAnalysis?.practiceGuide
+                    ? aiAnalysis.practiceGuide.split('\n').filter(l => l.trim().length > 10).slice(0, 3).map(l => l.replace(/^\d+[.)]\s*/, ''))
+                    : undefined,
+                }}
+              />
+            </div>
+          )}
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <Button onClick={handleSaveResult} disabled={isSaving} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">

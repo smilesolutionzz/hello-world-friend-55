@@ -282,6 +282,7 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
               </Routes>
                <FeedbackButton />
+               <MobileBottomTab />
               </LanguageProvider>
             </ErrorBoundary>
           </BrowserRouter>

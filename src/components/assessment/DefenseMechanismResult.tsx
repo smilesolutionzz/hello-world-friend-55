@@ -10,6 +10,7 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n';
+import VisualResultInfographic from './VisualResultInfographic';
 
 interface DefenseMechanismResultProps {
   result: {

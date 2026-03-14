@@ -540,6 +540,23 @@ const ReportGenerator = () => {
                 <textarea value={userInput.recentConcerns} onChange={(e) => setUserInput({ ...userInput, recentConcerns: e.target.value })}
                   placeholder={t('예: 아이가 또래 관계에서 어려움을 겪고 있어요...', 'e.g. My child is having difficulties with peer relationships...')}
                   className="w-full min-h-[90px] p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm" maxLength={1000} />
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
+                  {[
+                    { label: t('아이가 또래 관계에서 어려움을 겪고 있어요', 'My child struggles with peer relationships') },
+                    { label: t('직장 스트레스로 번아웃이 심해요', 'I\'m experiencing severe burnout from work stress') },
+                    { label: t('불면증과 만성 불안이 계속돼요', 'I have persistent insomnia and chronic anxiety') },
+                    { label: t('부모 역할에 자신이 없고 죄책감이 들어요', 'I lack confidence as a parent and feel guilty') },
+                  ].map((example) => (
+                    <button
+                      key={example.label}
+                      type="button"
+                      onClick={() => setUserInput({ ...userInput, recentConcerns: example.label })}
+                      className="text-[11px] px-2.5 py-1 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-primary/50 hover:bg-primary/10 transition-all"
+                    >
+                      {example.label}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Brain className="w-3.5 h-3.5" /> {t('발달/심리적 특징이나 메모', 'Developmental/Psychological Notes')} {reportMode === 'without-data' && <span className="text-primary">*</span>}</label>

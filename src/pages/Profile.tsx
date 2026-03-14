@@ -23,6 +23,8 @@ interface ProfileData {
 
 const Profile = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { reportCredits, isSubscriber, loading: accessLoading } = useAccessControl();
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);

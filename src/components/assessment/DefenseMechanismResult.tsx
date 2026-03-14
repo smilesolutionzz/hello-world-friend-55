@@ -1,15 +1,10 @@
 import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Brain, Heart, Sparkles, Home, TrendingUp, Download, ArrowLeft } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
-import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
-import { PDFHeader } from '@/components/common/PDFHeader';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n';
+import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 
 interface DefenseMechanismResultProps {
@@ -30,18 +25,18 @@ const mechanismInfoKo: Record<string, { name: string; emoji: string; description
   regression: { name: '퇴행', emoji: '👶', description: '스트레스 상황에서 어린 시절 행동으로 돌아가는 경향', healthyTip: '성숙한 대처 방식을 개발하고 자기 돌봄을 실천해보세요' },
   sublimation: { name: '승화', emoji: '✨', description: '부정적 에너지를 긍정적이고 창조적인 활동으로 전환', healthyTip: '가장 건강한 방어기제! 계속 발전시켜 나가세요' },
   repression: { name: '억압', emoji: '🔒', description: '불편한 기억이나 감정을 무의식으로 밀어내는 경향', healthyTip: '안전한 환경에서 억압된 감정을 천천히 풀어보세요' },
-  reaction_formation: { name: '반동형성', emoji: '🔄', description: '진짜 감정과 반대되는 행동을 보이는 경향', healthyTip: '진짜 감정을 인정하고 진실되게 표현하는 연습이 필요합니다' },
+  reaction_formation: { name: '반동형성', emoji: '🔁', description: '진짜 감정과 반대되는 행동을 보이는 경향', healthyTip: '진짜 감정을 인정하고 진실되게 표현하는 연습이 필요합니다' },
 };
 
 const mechanismInfoEn: Record<string, { name: string; emoji: string; description: string; healthyTip: string }> = {
-  projection: { name: 'Projection', emoji: '🔄', description: 'Tendency to attribute your own feelings or thoughts to others', healthyTip: 'Practice acknowledging and owning your emotions' },
-  denial: { name: 'Denial', emoji: '🙈', description: 'Tendency to refuse accepting uncomfortable realities', healthyTip: 'Build courage to face reality, starting with small steps' },
-  rationalization: { name: 'Rationalization', emoji: '🤔', description: 'Tendency to logically justify uncomfortable behaviors or choices', healthyTip: 'Practice distinguishing real emotions from logical explanations' },
-  displacement: { name: 'Displacement', emoji: '➡️', description: 'Tendency to express emotions toward unrelated targets', healthyTip: 'Learn healthy ways to express emotions to the right people' },
-  regression: { name: 'Regression', emoji: '👶', description: 'Tendency to revert to childlike behaviors under stress', healthyTip: 'Develop mature coping strategies and practice self-care' },
-  sublimation: { name: 'Sublimation', emoji: '✨', description: 'Channeling negative energy into positive, creative activities', healthyTip: 'The healthiest defense mechanism! Keep developing it' },
-  repression: { name: 'Repression', emoji: '🔒', description: 'Tendency to push uncomfortable memories or emotions into the unconscious', healthyTip: 'Gradually release repressed emotions in a safe environment' },
-  reaction_formation: { name: 'Reaction Formation', emoji: '🔄', description: 'Tendency to behave opposite to your true feelings', healthyTip: 'Practice acknowledging and authentically expressing your real feelings' },
+  projection: { name: 'Projection', emoji: '🔄', description: 'Tendency to attribute your own feelings to others', healthyTip: 'Practice acknowledging and owning your emotions' },
+  denial: { name: 'Denial', emoji: '🙈', description: 'Tendency to refuse accepting uncomfortable realities', healthyTip: 'Build courage to face reality, starting small' },
+  rationalization: { name: 'Rationalization', emoji: '🤔', description: 'Tendency to logically justify uncomfortable behaviors', healthyTip: 'Distinguish real emotions from logical explanations' },
+  displacement: { name: 'Displacement', emoji: '➡️', description: 'Expressing emotions toward unrelated targets', healthyTip: 'Learn healthy ways to express emotions directly' },
+  regression: { name: 'Regression', emoji: '👶', description: 'Reverting to childlike behaviors under stress', healthyTip: 'Develop mature coping strategies' },
+  sublimation: { name: 'Sublimation', emoji: '✨', description: 'Channeling negative energy into positive activities', healthyTip: 'The healthiest defense mechanism!' },
+  repression: { name: 'Repression', emoji: '🔒', description: 'Pushing uncomfortable memories into the unconscious', healthyTip: 'Gradually release repressed emotions safely' },
+  reaction_formation: { name: 'Reaction Formation', emoji: '🔁', description: 'Behaving opposite to your true feelings', healthyTip: 'Practice authentic emotional expression' },
 };
 
 export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ result, onBack }) => {
@@ -58,165 +53,145 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
     ageGroup: 'adult',
   });
 
-  const handleDownloadPDF = async () => {
+  const handleDownload = async () => {
     await downloadResultAsPDF(
-      'defense-result-content',
+      'clinical-report-content',
       isEnglish ? 'Defense_Mechanism_Results' : '방어기제_분석결과',
-      () => { toast({ title: isEnglish ? "PDF Downloaded" : "PDF 다운로드 완료", description: isEnglish ? "Defense mechanism analysis saved." : "방어기제 분석 결과가 저장되었습니다." }); },
-      (error) => { toast({ title: isEnglish ? "Download Failed" : "다운로드 실패", description: error.message, variant: "destructive" }); }
+      () => toast({ title: 'PDF 다운로드 완료' }),
+      (error) => toast({ title: '다운로드 실패', description: error.message, variant: 'destructive' })
     );
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-red-600 dark:text-red-400';
-    if (score >= 60) return 'text-orange-600 dark:text-orange-400';
-    if (score >= 40) return 'text-yellow-600 dark:text-yellow-400';
-    return 'text-green-600 dark:text-green-400';
-  };
-
-  const getProgressColor = (score: number) => {
-    if (score >= 80) return 'bg-red-500';
+  const getColor = (score: number) => {
+    if (score >= 80) return 'bg-destructive';
     if (score >= 60) return 'bg-orange-500';
     if (score >= 40) return 'bg-yellow-500';
     return 'bg-green-500';
   };
 
+  const getLevel = (score: number) => {
+    if (score >= 80) return isEnglish ? 'Very High' : '매우 높음';
+    if (score >= 60) return isEnglish ? 'High' : '높음';
+    if (score >= 40) return isEnglish ? 'Moderate' : '보통';
+    return isEnglish ? 'Low' : '낮음';
+  };
+
+  // Build domain scores
+  const domains: DomainScore[] = Object.entries(result.categoryScores)
+    .sort(([, a], [, b]) => b - a)
+    .map(([key, score]) => ({
+      key,
+      label: mechanismInfo[key]?.name || key,
+      score,
+      maxScore: 100,
+      level: getLevel(score),
+      color: getColor(score),
+      description: mechanismInfo[key]?.description,
+    }));
+
+  // Parse AI analysis into sections
+  const parseAnalysisSections = (text: string): ReportSection[] => {
+    if (!text) return [];
+    const sectionPatterns = [
+      { regex: /##\s*🧠\s*(.+?)\n([\s\S]*?)(?=##\s*|$)/g, icon: '🧠' },
+      { regex: /##\s*🔬\s*(.+?)\n([\s\S]*?)(?=##\s*|$)/g, icon: '🔬' },
+      { regex: /##\s*💎\s*(.+?)\n([\s\S]*?)(?=##\s*|$)/g, icon: '💎' },
+      { regex: /##\s*📊\s*(.+?)\n([\s\S]*?)(?=##\s*|$)/g, icon: '📊' },
+      { regex: /##\s*🌱\s*(.+?)\n([\s\S]*?)(?=##\s*|$)/g, icon: '🌱' },
+      { regex: /##\s*💪\s*(.+?)\n([\s\S]*?)(?=##\s*|$)/g, icon: '💪' },
+      { regex: /##\s*🎯\s*(.+?)\n([\s\S]*?)(?=##\s*|$)/g, icon: '🎯' },
+    ];
+
+    const sections: ReportSection[] = [];
+    const allSectionRegex = /##\s*([^\n]+)\n([\s\S]*?)(?=##\s*|$)/g;
+    let match;
+    let idx = 0;
+    while ((match = allSectionRegex.exec(text)) !== null) {
+      const title = match[1].replace(/^[^\w가-힣]*/, '').trim();
+      const content = match[2].replace(/\*\*/g, '').trim();
+      if (content.length > 10) {
+        const emojiMatch = match[1].match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})/u);
+        sections.push({
+          id: `section-${idx}`,
+          icon: emojiMatch ? emojiMatch[0] : '📋',
+          title,
+          content,
+          defaultOpen: idx === 0,
+        });
+        idx++;
+      }
+    }
+    return sections;
+  };
+
+  const aiSections = parseAnalysisSections(result.analysis);
+  const severityText = result.totalScore >= 70 ? (isEnglish ? 'High Usage' : '높은 사용') : result.totalScore >= 40 ? (isEnglish ? 'Moderate' : '보통') : (isEnglish ? 'Healthy' : '건강');
+  const severityColor = result.totalScore >= 70 ? 'text-destructive border-destructive/30' : result.totalScore >= 40 ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 p-4">
-      <div id="defense-result-content" className="max-w-4xl mx-auto py-8">
-        <PDFHeader testName={isEnglish ? "Defense Mechanism Analysis" : "방어기제 분석 결과"} />
-        
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full mb-4">
-            <Shield className="w-5 h-5" />
-            <span className="font-bold">{isEnglish ? 'Analysis Complete' : '분석 완료'}</span>
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            {isEnglish ? 'Your Defense Mechanism Profile' : '당신의 방어기제 프로필'}
-          </h1>
-          <p className="text-muted-foreground">
-            {isEnglish ? 'Understand your unconscious psychological patterns and turn them into growth opportunities' : '무의식적 심리 패턴을 이해하고 건강한 성장의 기회로 만들어보세요'}
-          </p>
-        </div>
-
-        <Card className="p-8 mb-6 text-center border-2 border-purple-200 dark:border-purple-800">
-          <div className="mb-4"><Brain className="w-16 h-16 mx-auto text-purple-600 dark:text-purple-400" /></div>
-          <h2 className="text-2xl font-bold mb-2">{isEnglish ? 'Overall Defense Mechanism Index' : '종합 방어기제 지수'}</h2>
-          <div className="text-6xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">{result.totalScore}</div>
-          <p className="text-muted-foreground">
-            {result.totalScore >= 70 ? (isEnglish ? 'High defense mechanism usage' : '높은 방어기제 사용') : 
-             result.totalScore >= 50 ? (isEnglish ? 'Moderate defense mechanisms' : '보통 수준의 방어기제') : 
-             (isEnglish ? 'Healthy coping style' : '건강한 대처 방식')}
-          </p>
-        </Card>
-
-        <Card className="p-8 mb-6 border-2 border-purple-200 dark:border-purple-800">
-          <div className="flex items-center gap-3 mb-6">
-            <Sparkles className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-            <h2 className="text-2xl font-bold">{isEnglish ? 'Top 3 Defense Mechanisms' : '주요 방어기제 TOP 3'}</h2>
-          </div>
-          <div className="space-y-6">
-            {result.primaryMechanisms.map(([mechanism, score], index) => {
-              const info = mechanismInfo[mechanism];
-              return (
-                <div key={mechanism} className="relative">
-                  <div className="flex items-start gap-4 mb-3">
-                    <div className={`text-4xl ${index === 0 ? 'scale-110' : ''}`}>{info.emoji}</div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-xl font-bold">#{index + 1}: {info.name}</h3>
-                        <span className={`text-2xl font-bold ${getScoreColor(score)}`}>{score}%</span>
-                      </div>
-                      <p className="text-muted-foreground mb-3">{info.description}</p>
-                      <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
-                        <p className="text-sm font-medium text-blue-900 dark:text-blue-100">💡 {info.healthyTip}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <Progress value={score} className={`h-2 ${getProgressColor(score)}`} />
+    <ClinicalReportLayout
+      testName={isEnglish ? 'Defense Mechanism Analysis' : '방어기제 분석 결과'}
+      subtitle={isEnglish ? 'Unconscious Psychological Pattern Analysis' : '무의식적 심리 방어 패턴 전문 분석'}
+      onBack={onBack || (() => navigate(localePath('/assessment')))}
+      onDownload={handleDownload}
+      totalScore={result.totalScore}
+      totalLabel={isEnglish ? 'Defense Index' : '방어기제 지수'}
+      scoreSeverity={severityText}
+      severityColor={severityColor}
+      domains={domains}
+      aiAnalysis={result.analysis}
+      aiSections={aiSections.length > 0 ? aiSections : undefined}
+    >
+      {/* Top 3 mechanisms - compact cards */}
+      <div className="rounded-2xl border border-border/40 bg-card p-4 mb-4">
+        <h2 className="text-sm font-bold text-foreground mb-3">🏆 {isEnglish ? 'Top 3 Defense Mechanisms' : '주요 방어기제 TOP 3'}</h2>
+        <div className="space-y-3">
+          {result.primaryMechanisms.map(([mechanism, score], index) => {
+            const info = mechanismInfo[mechanism];
+            if (!info) return null;
+            return (
+              <div key={mechanism} className="rounded-xl border border-border/30 p-3 bg-muted/10">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span className="text-xl">{info.emoji}</span>
+                  <span className="text-sm font-bold text-foreground flex-1">
+                    #{index + 1} {info.name}
+                  </span>
+                  <span className="text-sm font-bold text-primary">{score}%</span>
                 </div>
-              );
-            })}
-          </div>
-        </Card>
-
-        <Card className="p-8 mb-6 border-2 border-purple-200 dark:border-purple-800">
-          <div className="flex items-center gap-3 mb-6">
-            <TrendingUp className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-            <h2 className="text-2xl font-bold">{isEnglish ? 'Full Analysis' : '전체 방어기제 분석'}</h2>
-          </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            {Object.entries(result.categoryScores).sort(([, a], [, b]) => b - a).map(([mechanism, score]) => {
-              const info = mechanismInfo[mechanism];
-              return (
-                <div key={mechanism} className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl">{info.emoji}</span>
-                      <span className="font-semibold">{info.name}</span>
-                    </div>
-                    <span className={`text-xl font-bold ${getScoreColor(score)}`}>{score}%</span>
+                <p className="text-xs text-muted-foreground mb-2 pl-8">{info.description}</p>
+                <div className="pl-8">
+                  <div className="h-1.5 rounded-full bg-muted/50 overflow-hidden">
+                    <div className={`h-full rounded-full ${getColor(score)}`} style={{ width: `${score}%` }} />
                   </div>
-                  <Progress value={score} className="h-1.5" />
                 </div>
-              );
-            })}
-          </div>
-        </Card>
-
-        <Card className="p-8 mb-6 border-2 border-purple-200 dark:border-purple-800">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <Heart className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              <h2 className="text-2xl font-bold">{isEnglish ? 'AI Deep Analysis' : 'AI 심층 분석'}</h2>
-            </div>
-            <TextToSpeechButton text={result.analysis} className="ml-auto" />
-          </div>
-          <div className="prose dark:prose-invert max-w-none">
-            <div className="whitespace-pre-wrap text-foreground leading-relaxed">{result.analysis}</div>
-          </div>
-        </Card>
-
-        {/* 비주얼 결과 카드 */}
-        <div className="mt-8">
-          <VisualResultInfographic
-            data={{
-              testName: isEnglish ? 'Defense Mechanism Analysis' : '방어기제 분석',
-              subtitle: isEnglish ? 'Unconscious Psychological Patterns' : '무의식적 심리 패턴 분석',
-              date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
-              scores: Object.fromEntries(
-                Object.entries(result.categoryScores).map(([k, v]) => [k, v / 10]) // Convert % to 0-10 scale
-              ),
-              maxScore: 10,
-              categoryTranslations: Object.fromEntries(
-                Object.entries(mechanismInfo).map(([k, v]) => [k, v.name])
-              ),
-              aiSummary: result.analysis,
-              actionItems: result.analysis
-                ? result.analysis.match(/\d+\.\s*(.{15,60})/g)?.slice(0, 3).map(s => s.replace(/^\d+\.\s*/, ''))
-                : undefined,
-            }}
-          />
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-          <Button onClick={handleDownloadPDF} variant="outline" className="gap-2" size="lg">
-            <Download className="w-5 h-5" />{isEnglish ? 'Download PDF' : 'PDF 다운로드'}
-          </Button>
-          {onBack ? (
-            <Button onClick={onBack} variant="outline" className="gap-2" size="lg">
-              <ArrowLeft className="w-5 h-5" />{isEnglish ? 'Retake Test' : '다시 테스트하기'}
-            </Button>
-          ) : (
-            <Button onClick={() => navigate(localePath('/'))} variant="outline" className="gap-2" size="lg">
-              <Home className="w-5 h-5" />{isEnglish ? 'Home' : '홈으로'}
-            </Button>
-          )}
-          <Button onClick={() => navigate(localePath('/assessment'))} className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" size="lg">
-            <Brain className="w-5 h-5" />{isEnglish ? 'Try Another Test' : '다른 테스트 하기'}
-          </Button>
+                <p className="text-[11px] text-primary/80 mt-2 pl-8 font-medium">💡 {info.healthyTip}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
-    </div>
+
+      {/* Visual Result Card */}
+      <div className="mb-4">
+        <VisualResultInfographic
+          data={{
+            testName: isEnglish ? 'Defense Mechanism' : '방어기제 분석',
+            subtitle: isEnglish ? 'Psychological Pattern Analysis' : '심리 방어 패턴',
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
+            scores: Object.fromEntries(
+              Object.entries(result.categoryScores).map(([k, v]) => [k, v / 10])
+            ),
+            maxScore: 10,
+            categoryTranslations: Object.fromEntries(
+              Object.entries(mechanismInfo).map(([k, v]) => [k, v.name])
+            ),
+            aiSummary: result.analysis,
+            actionItems: result.analysis
+              ? result.analysis.match(/\d+\.\s*(.{15,60})/g)?.slice(0, 3).map(s => s.replace(/^\d+\.\s*/, ''))
+              : undefined,
+          }}
+        />
+      </div>
+    </ClinicalReportLayout>
   );
 };

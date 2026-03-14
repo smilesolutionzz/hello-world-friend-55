@@ -4,10 +4,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Mail, Phone, Calendar, Building2, Crown, Edit2, Save, X } from "lucide-react";
+import { User, Mail, Phone, Calendar, Building2, Crown, Edit2, Save, X, FileText, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useAccessControl } from "@/hooks/useAccessControl";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileData {
   display_name: string | null;

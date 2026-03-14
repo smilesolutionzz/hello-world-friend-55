@@ -51,7 +51,7 @@ const SubscriptionValueSection = () => {
   const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-b from-slate-900 via-[#0f0a1e] to-slate-900">
+    <section id="subscription-section" className="py-20 px-4 bg-gradient-to-b from-slate-900 via-[#0f0a1e] to-slate-900">
       <div className="container mx-auto max-w-5xl">
         {/* Top Badge */}
         <motion.div initial={{ opacity: 0, y: -10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">

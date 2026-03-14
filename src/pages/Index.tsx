@@ -22,6 +22,7 @@ import ErrorBoundary from '@/components/ui/error-boundary';
 import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
 import SubscriptionValueSection from '@/components/landing/SubscriptionValueSection';
 import StickyConversionBar from '@/components/conversion/StickyConversionBar';
+import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
 
 
 const structuredData = {

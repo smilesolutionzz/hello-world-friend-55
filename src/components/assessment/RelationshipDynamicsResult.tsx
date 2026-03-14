@@ -289,6 +289,31 @@ export default function RelationshipDynamicsResult({ results, onBack }: Relation
             </CardContent>
           </Card>
 
+          {/* 비주얼 결과 카드 */}
+          {!isLoadingAnalysis && (
+            <div className="mb-6">
+              <VisualResultInfographic
+                data={{
+                  testName: isEnglish ? 'Relationship Dynamics' : '관계 역동성 심층 분석',
+                  subtitle: relationshipType,
+                  date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
+                  scores: Object.fromEntries(
+                    Object.entries(categoryScores).map(([k, v]) => [k, v / 10]) // Convert 0-100 to 0-10
+                  ),
+                  maxScore: 10,
+                  categoryTranslations: Object.fromEntries(
+                    Object.entries(categoryInfo).map(([k, v]) => [k, v.name])
+                  ),
+                  aiSummary: aiAnalysis?.fullAnalysis,
+                  riskLevel: totalScore >= 75 ? 'low' : totalScore >= 50 ? 'moderate' : 'high',
+                  actionItems: aiAnalysis?.practiceGuide
+                    ? aiAnalysis.practiceGuide.split('\n').filter(l => l.trim().length > 10).slice(0, 3).map(l => l.replace(/^\d+[.)]\s*/, ''))
+                    : undefined,
+                }}
+              />
+            </div>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <Button onClick={handleSaveResult} disabled={isSaving} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
               {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}

@@ -1,16 +1,18 @@
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Crown, Lock, Sparkles, CheckCircle, Gift } from 'lucide-react';
+import { Crown, Lock, Sparkles, CheckCircle, Gift, Zap, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useFreeTrial } from '@/hooks/useFreeTrial';
+import { useAccessControl } from '@/hooks/useAccessControl';
 import { Badge } from '@/components/ui/badge';
+import { PaymentModal } from '@/components/payments/PaymentModal';
+import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
 
 interface SubscriptionGuardProps {
   children: ReactNode;
   featureName: string;
-  /** FREE_TRIAL_LIMITS 키와 매핑. 지정 시 무료체험 횟수가 남아있으면 접근 허용 */
   trialKey?: string;
   requiredTier?: 'premium' | 'pro';
   fallbackMessage?: string;
@@ -26,14 +28,17 @@ export const SubscriptionGuard = ({
   const navigate = useNavigate();
   const { isPremiumUser, isLifetimeUser, loading } = useSubscription();
   const { canUseFree, getRemainingTrials, recordUsage, loading: trialLoading } = useFreeTrial();
+  const { reportCredits, canAccessPremium, loading: accessLoading } = useAccessControl();
   const hasRecorded = useRef(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
 
   const hasAccess = isPremiumUser() || isLifetimeUser();
-  const isTrialAllowed = !hasAccess && trialKey ? canUseFree(trialKey) : false;
-  const trialExhausted = !hasAccess && trialKey ? !canUseFree(trialKey) : false;
+  // 리포트 크레딧이 있으면 접근 허용
+  const hasCreditAccess = !hasAccess && reportCredits > 0;
+  const isTrialAllowed = !hasAccess && !hasCreditAccess && trialKey ? canUseFree(trialKey) : false;
+  const trialExhausted = !hasAccess && !hasCreditAccess && trialKey ? !canUseFree(trialKey) : false;
   const remaining = trialKey ? getRemainingTrials(trialKey) : 0;
 
-  // 무료체험 통과 시 사용량 자동 기록
   useEffect(() => {
     if (isTrialAllowed && !hasRecorded.current) {
       hasRecorded.current = true;
@@ -41,23 +46,49 @@ export const SubscriptionGuard = ({
     }
   }, [isTrialAllowed, trialKey, recordUsage]);
 
-  if (loading || trialLoading) {
+  if (loading || trialLoading || accessLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="animate-pulse text-center">
           <Crown className="w-12 h-12 text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">구독 상태 확인 중...</p>
+          <p className="text-muted-foreground">확인 중...</p>
         </div>
       </div>
     );
   }
 
-  // 프리미엄 구독자는 바로 통과
-  if (hasAccess) {
-    return <>{children}</>;
+  // 프리미엄 구독자
+  if (hasAccess) return <>{children}</>;
+
+  // 리포트 크레딧 보유자
+  if (hasCreditAccess) {
+    return (
+      <div>
+        <div className="container mx-auto px-4 pt-4 max-w-4xl">
+          <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg p-3 mb-4 flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <Zap className="w-5 h-5 text-amber-500 flex-shrink-0" />
+              <span className="text-sm font-medium">
+                리포트 이용권 · 남은 횟수: <Badge variant="secondary" className="ml-1">{reportCredits}회</Badge>
+              </span>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => navigate('/token-subscription')}
+              className="text-xs h-7"
+            >
+              <Crown className="w-3 h-3 mr-1" />
+              구독하면 무제한
+            </Button>
+          </div>
+        </div>
+        {children}
+      </div>
+    );
   }
 
-  // 무료체험 잔여 횟수가 있으면 통과 + 안내 배너
+  // 무료체험 잔여 횟수
   if (isTrialAllowed) {
     return (
       <div>
@@ -85,95 +116,116 @@ export const SubscriptionGuard = ({
     );
   }
 
-  // 무료체험 소진 or 체험 미지원 → 구독 유도
+  // 잠금 화면 — 단건 + 구독 듀얼 CTA
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-background">
-        <CardHeader className="text-center space-y-4 pb-8">
+      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-background overflow-hidden">
+        <CardHeader className="text-center space-y-4 pb-6">
           <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
             <Lock className="w-10 h-10 text-primary-foreground" />
           </div>
           <div>
-            <CardTitle className="text-3xl mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <CardTitle className="text-2xl md:text-3xl mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               {trialExhausted ? '무료체험이 종료되었습니다' : '프리미엄 전용 기능'}
             </CardTitle>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-muted-foreground">
               {trialExhausted 
-                ? `${featureName}의 무료체험 횟수를 모두 사용하셨습니다. 프리미엄 구독으로 무제한 이용하세요!`
-                : fallbackMessage || `${featureName}은(는) 구독자 전용 프리미엄 기능입니다`
+                ? `${featureName}의 무료체험 횟수를 모두 사용했습니다`
+                : fallbackMessage || `${featureName}은(는) 프리미엄 기능입니다`
               }
             </p>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-6 pb-8">
-          <div className="bg-muted/50 rounded-lg p-6 space-y-4">
-            <div className="flex items-start gap-3">
-              <Sparkles className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold mb-2">{featureName} 기능</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  전문적인 AI 분석과 개별화된 계획 수립을 통해 최적의 발달 및 교육 지원을 제공합니다.
-                </p>
+        <CardContent className="space-y-5 pb-8">
+          {/* 듀얼 프라이싱 */}
+          <div className="grid sm:grid-cols-2 gap-4">
+            {/* 단건 리포트 */}
+            <div className="border border-amber-500/30 rounded-xl p-5 bg-amber-500/5 space-y-3">
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-amber-500" />
+                <span className="font-bold">리포트 1회</span>
               </div>
+              <p className="text-sm text-muted-foreground">
+                지금 이 분석만 한 번 이용하고 싶다면
+              </p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm text-muted-foreground line-through">₩9,900</span>
+                <span className="text-2xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
+              </div>
+              <Button
+                onClick={() => setPaymentOpen(true)}
+                variant="outline"
+                className="w-full border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+              >
+                <Zap className="w-4 h-4 mr-2" />
+                1회 구매하기
+              </Button>
+            </div>
+
+            {/* 월간 구독 */}
+            <div className="border-2 border-primary rounded-xl p-5 bg-primary/5 space-y-3 relative">
+              <Badge className="absolute -top-2.5 right-3 bg-primary text-primary-foreground text-xs">추천</Badge>
+              <div className="flex items-center gap-2">
+                <Crown className="w-5 h-5 text-primary" />
+                <span className="font-bold">월간 구독</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                모든 검사·분석 무제한, 매일 커피값
+              </p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm text-muted-foreground line-through">₩19,900</span>
+                <span className="text-2xl font-black text-foreground">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
+                <span className="text-xs text-muted-foreground">/월</span>
+              </div>
+              <Button
+                onClick={() => navigate('/token-subscription')}
+                className="w-full bg-primary hover:bg-primary/90"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                구독 시작하기
+              </Button>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <h4 className="font-semibold flex items-center gap-2">
-              <Crown className="w-5 h-5 text-primary" />
-              프리미엄 구독 혜택
+          {/* 혜택 리스트 */}
+          <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+            <h4 className="font-semibold text-sm flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-primary" />
+              구독하면 모두 무제한
             </h4>
-            <div className="grid gap-2">
+            <div className="grid grid-cols-2 gap-1.5">
               {[
-                'IEP 생성기 - AI 기반 개별교육계획 자동 작성',
-                '무제한 프리미엄 테스트 이용',
-                '전문가 우선 매칭 및 할인',
-                '상세 분석 리포트 및 PDF 다운로드',
-                '맞춤형 발달 추적 및 인사이트'
-              ].map((benefit, index) => (
-                <div key={index} className="flex items-start gap-2 text-sm">
-                  <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-muted-foreground">{benefit}</span>
+                'AI 심층 분석 무제한',
+                '20종+ 심리검사',
+                'PDF 리포트 다운로드',
+                '맞춤 솔루션 & 가이드',
+              ].map((b, i) => (
+                <div key={i} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <CheckCircle className="w-3 h-3 text-primary flex-shrink-0" />
+                  <span>{b}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 space-y-4">
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-2">프리미엄 플랜</p>
-              <div className="flex items-baseline justify-center gap-2">
-                <span className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                  ₩19,900
-                </span>
-                <span className="text-muted-foreground">/월</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <Button
-              onClick={() => navigate('/token-subscription')}
-              className="flex-1 h-12 text-base bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-            >
-              <Crown className="w-5 h-5 mr-2" />
-              프리미엄 구독 시작하기
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate('/')}
-              className="flex-1 h-12 text-base"
-            >
-              돌아가기
-            </Button>
-          </div>
-
-          <p className="text-xs text-center text-muted-foreground">
-            언제든지 해지 가능
-          </p>
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/')}
+            className="w-full text-muted-foreground"
+          >
+            돌아가기
+          </Button>
         </CardContent>
       </Card>
+
+      <PaymentModal 
+        open={paymentOpen} 
+        onOpenChange={setPaymentOpen} 
+        mode="single"
+        title="심층 분석 리포트 구매"
+        description={`${featureName} 리포트 1회를 구매합니다.`}
+      />
     </div>
   );
 };

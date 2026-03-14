@@ -215,8 +215,48 @@ serve(async (req) => {
       // 상품 유형별 처리
       const productType = payment.subscription_type;
 
-      if (productType === 'cash' && payment.token_amount) {
-        // 캐시(토큰) 충전
+      if (productType === 'single') {
+        // 단건 리포트 구매 - 사용권 기록
+        await supabaseAdmin
+          .from('user_report_credits')
+          .insert({
+            user_id: payment.user_id,
+            credits: 1,
+            source: 'single_purchase',
+            payment_id: payment.id,
+          });
+
+        console.log(`✅ Added 1 report credit for user ${payment.user_id}`);
+
+      } else if (productType === 'subscription' || productType === 'pass') {
+        // 구독 처리
+        const startDate = new Date();
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 30);
+
+        // 기존 구독 취소
+        await supabaseAdmin
+          .from('user_subscriptions')
+          .update({ status: 'cancelled' })
+          .eq('user_id', payment.user_id)
+          .eq('status', 'active');
+
+        // 새 구독 생성
+        await supabaseAdmin
+          .from('user_subscriptions')
+          .insert({
+            user_id: payment.user_id,
+            subscription_type: 'premium',
+            payment_method: 'toss',
+            current_period_start: startDate.toISOString().split('T')[0],
+            current_period_end: endDate.toISOString().split('T')[0],
+            status: 'active',
+          });
+
+        console.log(`✅ Created premium subscription for user ${payment.user_id}`);
+
+      } else if (productType === 'cash' && payment.token_amount) {
+        // 캐시(토큰) 충전 (레거시 호환)
         const { data: tokenBalance } = await supabaseAdmin
           .from('user_tokens')
           .select('*')
@@ -246,47 +286,6 @@ serve(async (req) => {
         }
 
         console.log(`✅ Added ${payment.token_amount} tokens to user ${payment.user_id}`);
-
-      } else if (productType === 'pass' || productType === 'subscription') {
-        // 프리미엄 패스 / 구독 처리
-        const isLifetime = orderId.includes('pass_lifetime');
-        const isYearly = orderId.includes('pass_365');
-
-        const startDate = new Date();
-        let endDate: Date | null = null;
-        let subscriptionType = 'premium';
-
-        if (isLifetime) {
-          subscriptionType = 'lifetime';
-          endDate = new Date('2099-12-31');
-        } else if (isYearly) {
-          endDate = new Date(startDate);
-          endDate.setFullYear(endDate.getFullYear() + 1);
-        } else {
-          endDate = new Date(startDate);
-          endDate.setDate(endDate.getDate() + 30);
-        }
-
-        // 기존 구독 취소
-        await supabaseAdmin
-          .from('user_subscriptions')
-          .update({ status: 'cancelled' })
-          .eq('user_id', payment.user_id)
-          .eq('status', 'active');
-
-        // 새 구독 생성
-        await supabaseAdmin
-          .from('user_subscriptions')
-          .insert({
-            user_id: payment.user_id,
-            subscription_type: subscriptionType,
-            payment_method: 'toss',
-            current_period_start: startDate.toISOString().split('T')[0],
-            current_period_end: endDate.toISOString().split('T')[0],
-            status: 'active',
-          });
-
-        console.log(`✅ Created ${subscriptionType} subscription for user ${payment.user_id}`);
       }
 
       return new Response(JSON.stringify({ 

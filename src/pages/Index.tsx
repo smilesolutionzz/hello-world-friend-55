@@ -189,7 +189,6 @@ const Index = () => {
               </LazyLoad>
             </div>
             
-            
             {/* 5️⃣ 감성 후킹 - 엄마들의 실제 사연 */}
             <LazyLoad rootMargin="200px">
               <EmotionalHookSection />
@@ -210,16 +209,10 @@ const Index = () => {
               <ColumnHookBanner />
             </LazyLoad>
             
-            {/* 🏢 B2B 기관용 솔루션 섹션 */}
-            <LazyLoad rootMargin="200px">
-              <B2BShowcaseSection />
-            </LazyLoad>
-            
             {/* 6️⃣ 파트너 & 신뢰 */}
             <LazyLoad rootMargin="200px">
               <PartnerTrustSection />
             </LazyLoad>
-            
             
             {/* 🔥 프로모션 배너 - 서비스 가치 확인 후 유도 */}
             <LazyLoad rootMargin="200px">

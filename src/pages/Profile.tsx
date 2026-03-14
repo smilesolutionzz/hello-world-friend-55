@@ -204,6 +204,38 @@ const Profile = () => {
             </div>
           </div>
 
+          {/* 내 이용권 현황 */}
+          <div className="grid grid-cols-2 gap-3">
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="p-4 text-center">
+                <Crown className={`w-6 h-6 mx-auto mb-1 ${isSubscriber ? 'text-primary' : 'text-muted-foreground'}`} />
+                <p className="text-xs text-muted-foreground mb-1">구독 상태</p>
+                {isSubscriber ? (
+                  <span className="text-sm font-bold text-primary">프리미엄 이용중</span>
+                ) : (
+                  <span className="text-sm font-bold text-muted-foreground">미구독</span>
+                )}
+              </CardContent>
+            </Card>
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="p-4 text-center">
+                <FileText className="w-6 h-6 mx-auto mb-1 text-primary" />
+                <p className="text-xs text-muted-foreground mb-1">리포트 이용권</p>
+                <span className="text-sm font-bold text-primary">{reportCredits}장 보유</span>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* 바로가기 */}
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigate('/assessment-history')} className="justify-start">
+              <FileText className="w-4 h-4 mr-2" /> 내 리포트 보기
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/token-subscription')} className="justify-start">
+              <Zap className="w-4 h-4 mr-2" /> {isSubscriber ? '구독 관리' : '이용권 구매'}
+            </Button>
+          </div>
+
           {/* 기본 정보 */}
           <div className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">

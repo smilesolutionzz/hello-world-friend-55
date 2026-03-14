@@ -1,0 +1,100 @@
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+
+/**
+ * 사용자의 리포트 크레딧 및 구독 상태를 확인하는 훅
+ * 결제 플로우에서 접근 권한 판단에 사용
+ */
+export function useAccessControl() {
+  const [isSubscriber, setIsSubscriber] = useState(false);
+  const [reportCredits, setReportCredits] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const refresh = useCallback(async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setIsSubscriber(false);
+        setReportCredits(0);
+        setUserId(null);
+        return;
+      }
+      setUserId(user.id);
+
+      // 구독 상태 확인
+      const { data: subs } = await supabase
+        .from('user_subscriptions')
+        .select('id, current_period_end')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .gte('current_period_end', new Date().toISOString().split('T')[0])
+        .limit(1);
+
+      setIsSubscriber(!!subs && subs.length > 0);
+
+      // 리포트 크레딧 확인
+      const { data: credits } = await supabase
+        .from('user_report_credits')
+        .select('credits, used_credits')
+        .eq('user_id', user.id);
+
+      const available = (credits || []).reduce(
+        (sum, c) => sum + (c.credits - c.used_credits),
+        0
+      );
+      setReportCredits(Math.max(0, available));
+    } catch (err) {
+      console.error('Access control check failed:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  /** 사용자가 프리미엄 기능에 접근 가능한지 */
+  const canAccessPremium = isSubscriber || reportCredits > 0;
+
+  /** 리포트 크레딧 1회 사용 */
+  const useReportCredit = useCallback(async (): Promise<boolean> => {
+    if (isSubscriber) return true; // 구독자는 무제한
+    if (!userId || reportCredits <= 0) return false;
+
+    // 가장 오래된 미사용 크레딧 찾기
+    const { data: credits } = await supabase
+      .from('user_report_credits')
+      .select('id, credits, used_credits')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: true });
+
+    const available = (credits || []).find(c => c.used_credits < c.credits);
+    if (!available) return false;
+
+    const { error } = await supabase
+      .from('user_report_credits')
+      .update({ 
+        used_credits: available.used_credits + 1,
+        used_at: new Date().toISOString()
+      })
+      .eq('id', available.id);
+
+    if (!error) {
+      setReportCredits(prev => Math.max(0, prev - 1));
+      return true;
+    }
+    return false;
+  }, [userId, reportCredits, isSubscriber]);
+
+  return {
+    isSubscriber,
+    reportCredits,
+    canAccessPremium,
+    loading,
+    userId,
+    refresh,
+    useReportCredit,
+  };
+}

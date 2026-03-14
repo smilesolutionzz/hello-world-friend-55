@@ -47,12 +47,7 @@ import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";
 import PastLifeJobTest from "@/components/assessment/PastLifeJobTest";
 import AnimalFaceTest from "@/components/assessment/AnimalFaceTest";
-import InnerAnimalTest from "@/components/assessment/InnerAnimalTest";
-import GrandmaRelationshipTest from "@/components/assessment/GrandmaRelationshipTest";
-import GrandpaMarriageDiagnosis from "@/components/assessment/GrandpaMarriageDiagnosis";
-import MZNaggingTest from "@/components/assessment/MZNaggingTest";
-import WisdomAdviceTest from "@/components/assessment/WisdomAdviceTest";
-import OtrovertTest from "@/components/assessment/OtrovertTest";
+// 삭제된 재미 검사: InnerAnimalTest, GrandmaRelationshipTest, GrandpaMarriageDiagnosis, MZNaggingTest, WisdomAdviceTest, OtrovertTest
 import LifeAchievementTest from "@/components/assessment/LifeAchievementTest";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
 import RealTimeChat from "@/components/counseling/RealTimeChat";

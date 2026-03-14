@@ -1,47 +1,46 @@
-// 구독 기반 접근 제어
-// 19,900원/월 구독 시 모든 기능 무제한
-// 비구독자는 기능별 1-2회 무료 체험 후 구독 유도
+// SaaS 과금 구조
+// 구독자: ₩9,900/월 → 모든 기능 무제한
+// 비구독자: 기본 검사 무료, 전문 검사/리포트는 크레딧 필요
 
-// 기능별 무료 체험 횟수 (비구독자 기준)
+// === 기능별 무료 체험 횟수 (비구독자 기준) ===
 export const FREE_TRIAL_LIMITS: Record<string, number> = {
-  // 심리검사 - 2회 무료 체험
-  PSYCHOLOGICAL_TEST: 2,
-  FOCUS_CHECK: 2,
-  DEPRESSION_TEST: 2,
-  PANIC_TEST: 2,
-  LANGUAGE_TEST: 2,
-  HAN_MEDICINE_TEST: 2,
-  DEVELOPMENTAL_DELAY_TEST: 2,
-  SENSORY_INTEGRATION_TEST: 2,
-  LEARNING_DISABILITY_TEST: 2,
-  SOCIAL_DEVELOPMENT_TEST: 2,
-  FIVE_D_PERSONALITY: 2,
-  RELATIONSHIP_TYPE: 2,
-  STRESS_INDEX: 2,
-  CAREER_INTEREST: 2,
-  SELF_WORTH: 2,
-  DEFENSE_MECHANISM: 2,
-
-  // 심층 분석 - 1회 무료 체험
-  PREMIUM_ASSESSMENT: 1,
-  OBSERVATION_ANALYSIS: 1,
-  PROFESSIONAL_REPORT: 1,
-  COMPREHENSIVE_REPORT: 1,
-  AI_COACH: 1,
-  EXPERT_MATCHING: 1,
-
-  // 엔터테인먼트 - 2회 무료 체험
-  PAST_LIFE_JOB: 2,
-  ANIMAL_FACE_MATCH: 2,
-  INNER_ANIMAL: 2,
-  CONTENT_RECOMMENDATION: 2,
-  AI_COUNSELOR_CHAT: 2,
-
-  // 항상 무료
-  DREAM_INTERPRETATION: -1,  // -1 = 무제한
+  // ──── 항상 무료 (훅 역할, 유입 유도) ────
+  DREAM_INTERPRETATION: -1,
   SAJU_ANALYSIS: -1,
+  PAST_LIFE_JOB: -1,
+  ANIMAL_FACE_MATCH: -1,
+  INNER_ANIMAL: -1,
   IEP_GENERATION: -1,
   CRISIS_DETECTION: -1,
+
+  // ──── 기본 검사: 2회 무료 (체험 후 유료 전환) ────
+  PSYCHOLOGICAL_TEST: 2,
+  DEPRESSION_TEST: 2,
+  PANIC_TEST: 2,
+  STRESS_INDEX: 2,
+  SELF_WORTH: 2,
+  FOCUS_CHECK: 2,
+
+  // ──── 전문 검사: 1회 무료 체험 후 크레딧 필요 ────
+  FIVE_D_PERSONALITY: 1,
+  RELATIONSHIP_TYPE: 1,
+  DEFENSE_MECHANISM: 1,
+  CAREER_INTEREST: 1,
+  LANGUAGE_TEST: 1,
+  HAN_MEDICINE_TEST: 1,
+  DEVELOPMENTAL_DELAY_TEST: 1,
+  SENSORY_INTEGRATION_TEST: 1,
+  LEARNING_DISABILITY_TEST: 1,
+  SOCIAL_DEVELOPMENT_TEST: 1,
+
+  // ──── 프리미엄 (심층 분석): 무료 체험 없음 → 바로 크레딧/구독 ────
+  PREMIUM_ASSESSMENT: 0,
+  OBSERVATION_ANALYSIS: 1,
+  PROFESSIONAL_REPORT: 0,
+  COMPREHENSIVE_REPORT: 0,
+  AI_COACH: 1,
+  EXPERT_MATCHING: 1,
+  AI_COUNSELOR_CHAT: 2,
 };
 
 // 하위 호환성을 위한 TOKEN_COSTS (모두 0으로 설정 - 구독 기반으로 전환)

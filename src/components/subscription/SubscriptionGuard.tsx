@@ -9,6 +9,7 @@ import { useAccessControl } from '@/hooks/useAccessControl';
 import { Badge } from '@/components/ui/badge';
 import { PaymentModal } from '@/components/payments/PaymentModal';
 import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
+import { useToast } from '@/hooks/use-toast';
 
 interface SubscriptionGuardProps {
   children: ReactNode;
@@ -26,19 +27,22 @@ export const SubscriptionGuard = ({
   fallbackMessage 
 }: SubscriptionGuardProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { isPremiumUser, isLifetimeUser, loading } = useSubscription();
   const { canUseFree, getRemainingTrials, recordUsage, loading: trialLoading } = useFreeTrial();
-  const { reportCredits, canAccessPremium, loading: accessLoading } = useAccessControl();
+  const { reportCredits, canAccessPremium, loading: accessLoading, useReportCredit } = useAccessControl();
   const hasRecorded = useRef(false);
+  const hasCreditConsumed = useRef(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
+  const [creditConsuming, setCreditConsuming] = useState(false);
 
   const hasAccess = isPremiumUser() || isLifetimeUser();
-  // 리포트 크레딧이 있으면 접근 허용
   const hasCreditAccess = !hasAccess && reportCredits > 0;
   const isTrialAllowed = !hasAccess && !hasCreditAccess && trialKey ? canUseFree(trialKey) : false;
   const trialExhausted = !hasAccess && !hasCreditAccess && trialKey ? !canUseFree(trialKey) : false;
   const remaining = trialKey ? getRemainingTrials(trialKey) : 0;
 
+  // 무료 체험 사용 기록
   useEffect(() => {
     if (isTrialAllowed && !hasRecorded.current) {
       hasRecorded.current = true;
@@ -46,7 +50,24 @@ export const SubscriptionGuard = ({
     }
   }, [isTrialAllowed, trialKey, recordUsage]);
 
-  if (loading || trialLoading || accessLoading) {
+  // 🔒 크레딧 실제 소진 — 크레딧으로 접근 시 1회 차감
+  useEffect(() => {
+    if (hasCreditAccess && !hasCreditConsumed.current && !creditConsuming) {
+      hasCreditConsumed.current = true;
+      setCreditConsuming(true);
+      useReportCredit().then((ok) => {
+        setCreditConsuming(false);
+        if (ok) {
+          toast({
+            title: '리포트 크레딧 1회 사용',
+            description: `남은 크레딧: ${Math.max(0, reportCredits - 1)}회`,
+          });
+        }
+      });
+    }
+  }, [hasCreditAccess, useReportCredit, reportCredits, creditConsuming, toast]);
+
+  if (loading || trialLoading || accessLoading || creditConsuming) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="animate-pulse text-center">
@@ -60,7 +81,7 @@ export const SubscriptionGuard = ({
   // 프리미엄 구독자
   if (hasAccess) return <>{children}</>;
 
-  // 리포트 크레딧 보유자
+  // 리포트 크레딧 보유자 (이미 1회 차감 완료)
   if (hasCreditAccess) {
     return (
       <div>
@@ -69,7 +90,7 @@ export const SubscriptionGuard = ({
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-amber-500 flex-shrink-0" />
               <span className="text-sm font-medium">
-                리포트 이용권 · 남은 횟수: <Badge variant="secondary" className="ml-1">{reportCredits}회</Badge>
+                리포트 이용권 · 남은 횟수: <Badge variant="secondary" className="ml-1">{Math.max(0, reportCredits - 1)}회</Badge>
               </span>
             </div>
             <Button
@@ -144,10 +165,10 @@ export const SubscriptionGuard = ({
             <div className="border border-amber-500/30 rounded-xl p-5 bg-amber-500/5 space-y-3">
               <div className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-amber-500" />
-                <span className="font-bold">리포트 1회</span>
+                <span className="font-bold">1회 이용권</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                지금 이 분석만 한 번 이용하고 싶다면
+                이 검사/분석만 한 번 이용하고 싶다면
               </p>
               <div className="flex items-baseline gap-2">
                 <span className="text-sm text-muted-foreground line-through">₩9,900</span>
@@ -223,8 +244,8 @@ export const SubscriptionGuard = ({
         open={paymentOpen} 
         onOpenChange={setPaymentOpen} 
         mode="single"
-        title="심층 분석 리포트 구매"
-        description={`${featureName} 리포트 1회를 구매합니다.`}
+        title="이용권 구매"
+        description={`${featureName} 1회 이용권을 구매합니다.`}
       />
     </div>
   );

@@ -28,7 +28,7 @@ import ColumnHookBanner from '@/components/landing/ColumnHookBanner';
 import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
 import MindDiaryHook from '@/components/landing/MindDiaryHook';
 import SubscriptionValueSection from '@/components/landing/SubscriptionValueSection';
-import B2BShowcaseSection from '@/components/landing/B2BShowcaseSection';
+
 
 
 

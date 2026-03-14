@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Crown, Download, Brain, TrendingUp, FileText, Sparkles, Calendar, Target, MessageSquare, BarChart3, Wallet, Lock, Star, ImageIcon } from "lucide-react";
 import VisualResultInfographic from './VisualResultInfographic';
+import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -629,12 +630,8 @@ const PremiumAssessmentResult = ({
                 </div>
               )}
               {isAnalyzing ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                    <p className="text-lg font-medium">AI가 심층 분석 중입니다...</p>
-                    <p className="text-sm text-muted-foreground">조기 위험요소 체크 포함</p>
-                  </div>
+                <div className="py-4">
+                  <AnalysisLoadingScreen testName={assessmentInfo.title} estimatedSeconds={25} />
                 </div>
               ) : (
                 <div className="prose max-w-none">

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Shield, Brain, Heart, Sparkles, ArrowLeft, ArrowRight } from 'lucide-react';
+import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -182,31 +183,7 @@ export const DefenseMechanismTest: React.FC<DefenseMechanismTestProps> = ({ onCo
   };
 
   if (isAnalyzing) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl p-12 text-center">
-          <div className="mb-8">
-            <div className="relative inline-block">
-              <div className="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full animate-pulse mx-auto mb-6 flex items-center justify-center">
-                <Brain className="w-12 h-12 text-white" />
-              </div>
-              <Sparkles className="w-8 h-8 text-yellow-400 absolute -top-2 -right-2 animate-bounce" />
-            </div>
-          </div>
-          <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            AI가 당신의 방어기제를 분석하고 있습니다
-          </h3>
-          <p className="text-muted-foreground mb-8">
-            심층 심리 패턴을 분석하여 맞춤형 인사이트를 제공합니다...
-          </p>
-          <div className="flex justify-center gap-2">
-            <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-            <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-          </div>
-        </Card>
-      </div>
-    );
+    return <AnalysisLoadingScreen testName="방어기제" estimatedSeconds={25} />;
   }
 
   const question = questions[currentQuestion];

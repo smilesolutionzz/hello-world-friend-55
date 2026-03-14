@@ -18,7 +18,7 @@ const MobileBottomTab: React.FC = () => {
     if (path === '/' || path === '/en') return 'home';
     if (path.startsWith('/premium-assessment') || path === '/assessment') return 'assessment';
     if (path.startsWith('/token-subscription') || path.startsWith('/pricing') || path.startsWith('/payment')) return 'premium';
-    if (path.startsWith('/assessment-history') || path.startsWith('/assessment-detail') || path.startsWith('/concern-storage')) return 'reports';
+    if (path.startsWith('/report-generator') || path.startsWith('/assessment-history') || path.startsWith('/assessment-detail') || path.startsWith('/concern-storage')) return 'reports';
     if (path.startsWith('/profile') || path.startsWith('/settings') || path.startsWith('/dashboard')) return 'profile';
     return '';
   };

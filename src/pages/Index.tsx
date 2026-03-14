@@ -153,75 +153,40 @@ const Index = () => {
           <UnifiedNavigation />
           
             <main id="main-content" className="w-full">
-            {/* 1️⃣ Hero Section - AI 분석 입력창 포함 */}
+            {/* 1️⃣ Hero - 메인 후킹 */}
             <HeroSection />
             
-            {/* 🎬 AI 영상 관찰 분석 섹션 */}
+            {/* 2️⃣ 영상 관찰 - WOW 팩터 */}
             <LazyLoad rootMargin="200px">
               <VideoObservationShowcase />
             </LazyLoad>
             
-            {/* 🆕 피드 스크린샷 무의식 분석 섹션 */}
-            <LazyLoad rootMargin="200px">
-              <FeedAnalysisSection />
-            </LazyLoad>
-            
-            {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
-            <LazyLoad rootMargin="200px">
-              <ValueComparisonSection />
-            </LazyLoad>
-            
-            {/* 3️⃣ 3단계 핵심 서비스 */}
-            <LazyLoad rootMargin="200px">
-              <SimplifiedCoreServices />
-            </LazyLoad>
-            
-            {/* 4️⃣ 전문가급 리포트 미리보기 */}
-            <LazyLoad rootMargin="200px">
-              <ReportPreviewSection />
-            </LazyLoad>
-            
-            {/* 💎 구독 가치 제안 - 단건+구독 듀얼 프라이싱 */}
-            <LazyLoad rootMargin="200px">
-              <SubscriptionValueSection />
-            </LazyLoad>
-            
-            {/* 5️⃣ 감성 후킹 - 엄마들의 실제 사연 */}
+            {/* 3️⃣ 감성 후킹 - 부모 공감 */}
             <LazyLoad rootMargin="200px">
               <EmotionalHookSection />
             </LazyLoad>
             
-            {/* 💜 마음일기 - 가벼운 참여형 기능 */}
-            <LazyLoad rootMargin="200px">
-              <MindDiaryHook />
-            </LazyLoad>
-            
-            {/* 6️⃣ 실제 후기 */}
-            <LazyLoad rootMargin="200px">
-              <TestimonialSection />
-            </LazyLoad>
-            
-            {/* 📰 칼럼 후킹 배너 */}
-            <LazyLoad rootMargin="200px">
-              <ColumnHookBanner />
-            </LazyLoad>
-            
-            {/* 6️⃣ 파트너 & 신뢰 */}
+            {/* 4️⃣ 파트너 신뢰 - 50+ 제휴기관 */}
             <LazyLoad rootMargin="200px">
               <PartnerTrustSection />
             </LazyLoad>
             
-            {/* 🔥 프로모션 배너 - 서비스 가치 확인 후 유도 */}
+            {/* 5️⃣ 구독/결제 - 전환 유도 */}
             <LazyLoad rootMargin="200px">
-              <MainPromoSection />
+              <SubscriptionValueSection />
             </LazyLoad>
             
-            {/* 7️⃣ CTA 배너 */}
+            {/* 6️⃣ 실제 후기 - 사회적 증거 */}
+            <LazyLoad rootMargin="200px">
+              <TestimonialSection />
+            </LazyLoad>
+            
+            {/* 7️⃣ 최종 CTA */}
             <LazyLoad rootMargin="200px">
               <CTABannerSection />
             </LazyLoad>
             
-            {/* 8️⃣ Footer */}
+            {/* Footer */}
             <Footer />
           </main>
           

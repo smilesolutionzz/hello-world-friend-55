@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard, MessageCircle, Menu, X } from 'lucide-react';
+import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard, MessageCircle, Menu, X, Infinity } from 'lucide-react';
 import logo from '@/assets/logo.png';
+import { useAccessControl } from '@/hooks/useAccessControl';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   NavigationMenu,

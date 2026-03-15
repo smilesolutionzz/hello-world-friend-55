@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard, MessageCircle, Menu, X } from 'lucide-react';
+import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard, MessageCircle, Menu, X, Infinity } from 'lucide-react';
 import logo from '@/assets/logo.png';
+import { useAccessControl } from '@/hooks/useAccessControl';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   NavigationMenu,
@@ -26,6 +27,7 @@ export const HighlightNavigation = () => {
   const location = useLocation();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { reportCredits, isSubscriber } = useAccessControl();
 
   const serviceItems = [
     { 
@@ -218,8 +220,24 @@ export const HighlightNavigation = () => {
             </Button>
           </div>
 
-          {/* 모바일 햄버거 메뉴 */}
-          <div className="lg:hidden">
+          {/* 모바일: 이용 가능 건수 + 햄버거 메뉴 */}
+          <div className="lg:hidden flex items-center gap-2">
+            <button
+              onClick={() => navigate('/token-subscription')}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary"
+            >
+              {isSubscriber ? (
+                <>
+                  <Infinity className="w-3.5 h-3.5" />
+                  <span>무제한</span>
+                </>
+              ) : (
+                <>
+                  <Brain className="w-3.5 h-3.5" />
+                  <span>{reportCredits}건</span>
+                </>
+              )}
+            </button>
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">

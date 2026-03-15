@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   User, Crown, FileText, ChevronRight, LogOut, Settings,
   CreditCard, HelpCircle, Shield, Bell, Pencil, Check, X,
-  Brain, MessageSquare, ClipboardList, Infinity
+  Brain, MessageSquare, ClipboardList, Infinity, Lock, UserPlus, Sparkles, CheckCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -43,8 +44,30 @@ const Profile = () => {
     assessments: 0,
   });
 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
   useEffect(() => {
-    fetchProfile();
+    const checkAuthAndFetch = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setIsAuthenticated(true);
+        fetchProfile();
+      } else {
+        setIsAuthenticated(false);
+        setLoading(false);
+      }
+    };
+    checkAuthAndFetch();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        setIsAuthenticated(true);
+        fetchProfile();
+      } else if (event === 'SIGNED_OUT') {
+        setIsAuthenticated(false);
+      }
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchProfile = async () => {
@@ -123,6 +146,65 @@ const Profile = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  // 비로그인 상태 - 로그인 유도 화면
+  if (isAuthenticated === false) {
+    return (
+      <div className="min-h-screen bg-background pb-20 flex flex-col items-center justify-center px-6">
+        <div className="max-w-sm w-full text-center space-y-6">
+          <div className="p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl w-fit mx-auto">
+            <Lock className="h-10 w-10 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground mb-2">로그인이 필요합니다</h2>
+            <p className="text-sm text-muted-foreground">
+              가입하면 검사 결과 저장, 리포트 열람 등<br />모든 기능을 이용할 수 있어요
+            </p>
+          </div>
+          <div className="space-y-2.5 pt-2">
+            {[
+              '전문가급 상세 분석 리포트',
+              '검사 결과 영구 저장',
+              '맞춤 추천 & 추적 관리'
+            ].map((benefit, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-sm justify-start">
+                <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                <span className="text-foreground/80">{benefit}</span>
+              </div>
+            ))}
+          </div>
+          <div className="space-y-2 pt-2">
+            <Button
+              onClick={() => {
+                localStorage.setItem('auth_redirect_after', '/profile');
+                navigate('/auth?mode=signup');
+              }}
+              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 font-semibold py-5"
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              무료 회원가입
+              <Sparkles className="h-4 w-4 ml-2" />
+            </Button>
+            <Button
+              onClick={() => {
+                localStorage.setItem('auth_redirect_after', '/profile');
+                navigate('/auth');
+              }}
+              variant="outline"
+              className="w-full py-5"
+            >
+              <Lock className="h-4 w-4 mr-2" />
+              로그인하기
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            <Shield className="h-3 w-3 inline mr-1" />
+            가입 30초 · 완전 무료
+          </p>
+        </div>
       </div>
     );
   }

@@ -27,6 +27,7 @@ export const HighlightNavigation = () => {
   const location = useLocation();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { reportCredits, isSubscriber } = useAccessControl();
 
   const serviceItems = [
     { 

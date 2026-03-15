@@ -220,8 +220,24 @@ export const HighlightNavigation = () => {
             </Button>
           </div>
 
-          {/* 모바일 햄버거 메뉴 */}
-          <div className="lg:hidden">
+          {/* 모바일: 이용 가능 건수 + 햄버거 메뉴 */}
+          <div className="lg:hidden flex items-center gap-2">
+            <button
+              onClick={() => navigate('/token-subscription')}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary"
+            >
+              {isSubscriber ? (
+                <>
+                  <Infinity className="w-3.5 h-3.5" />
+                  <span>무제한</span>
+                </>
+              ) : (
+                <>
+                  <Brain className="w-3.5 h-3.5" />
+                  <span>{reportCredits}건</span>
+                </>
+              )}
+            </button>
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">

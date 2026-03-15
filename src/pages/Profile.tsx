@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   User, Crown, FileText, ChevronRight, LogOut, Settings,
   CreditCard, HelpCircle, Shield, Bell, Pencil, Check, X,
-  Brain, MessageSquare, ClipboardList, Infinity
+  Brain, MessageSquare, ClipboardList, Infinity, Lock, UserPlus, Sparkles, CheckCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";

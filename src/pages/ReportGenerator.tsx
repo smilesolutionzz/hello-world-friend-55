@@ -11,6 +11,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 import html2pdf from 'html2pdf.js';
 import ScratchCard from '@/components/gamification/ScratchCard';
+import ReportCurationSection from '@/components/report/ReportCurationSection';
 import VisualSummaryButton from '@/components/visual-summary/VisualSummaryButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import {

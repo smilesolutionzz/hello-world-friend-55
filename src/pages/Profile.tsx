@@ -44,8 +44,30 @@ const Profile = () => {
     assessments: 0,
   });
 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
   useEffect(() => {
-    fetchProfile();
+    const checkAuthAndFetch = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setIsAuthenticated(true);
+        fetchProfile();
+      } else {
+        setIsAuthenticated(false);
+        setLoading(false);
+      }
+    };
+    checkAuthAndFetch();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        setIsAuthenticated(true);
+        fetchProfile();
+      } else if (event === 'SIGNED_OUT') {
+        setIsAuthenticated(false);
+      }
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchProfile = async () => {

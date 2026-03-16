@@ -148,38 +148,34 @@ const TokenSubscription = () => {
           </p>
         </motion.div>
 
-        {/* 듀얼 프라이싱 카드 */}
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
+        {/* 트리플 프라이싱 카드 */}
+        <div className="grid md:grid-cols-3 gap-5 mb-12">
           {/* 단건 리포트 */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="h-full border border-amber-400/30 bg-gradient-to-br from-amber-50/50 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/10">
-              <CardContent className="p-8 flex flex-col h-full">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <Card className="h-full border border-border bg-card">
+              <CardContent className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
-                    <Zap className="w-6 h-6 text-white" />
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
+                    <Zap className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-black">리포트 1회</h2>
-                    <p className="text-xs text-muted-foreground">부담 없이 한 번 써보기</p>
+                    <h2 className="text-lg font-black">리포트 1회</h2>
+                    <p className="text-xs text-muted-foreground">한 번 써보기</p>
                   </div>
                 </div>
 
-                <p className="text-sm text-muted-foreground mb-6">
-                  커피 한 잔 값으로 전문가급 AI 심층 분석 리포트를 받아보세요
-                </p>
-
-                <div className="mb-6">
+                <div className="mb-5">
                   <div className="flex items-baseline gap-2">
                     <span className="text-sm text-muted-foreground line-through">₩9,900</span>
                     <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30">60% 할인</Badge>
                   </div>
                   <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-4xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
+                    <span className="text-3xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
                     <span className="text-muted-foreground text-sm">/회</span>
                   </div>
                 </div>
 
-                <div className="space-y-2.5 mb-6 flex-1">
+                <div className="space-y-2 mb-5 flex-1">
                   {['AI 심층 분석 리포트 1회', 'PDF 다운로드 포함', '맞춤 솔루션 제공', '구독 없이 바로 이용'].map((f, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
                       <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
@@ -191,90 +187,145 @@ const TokenSubscription = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full h-14 rounded-2xl font-bold text-lg border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+                  className="w-full h-12 rounded-2xl font-bold border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
                   onClick={handlePaySingle}
                   disabled={paymentLoading || !isReady}
                 >
                   {paymentLoading ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Zap className="w-5 h-5 mr-2" />}
-                  1회 구매 — ₩{SINGLE_REPORT_PRICE.toLocaleString()}
+                  1회 구매
                 </Button>
               </CardContent>
             </Card>
           </motion.div>
 
           {/* 월간 구독 */}
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
-            <Card className="h-full relative overflow-hidden border-2 border-violet-400 shadow-2xl shadow-violet-500/20 bg-gradient-to-br from-white via-violet-50/50 to-purple-50/50 dark:from-slate-900 dark:via-violet-950/30 dark:to-purple-950/30">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-violet-400/20 to-purple-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-              <Badge className="absolute top-4 right-4 bg-gradient-to-r from-violet-600 to-purple-600 text-white border-0 text-sm px-3 py-1 shadow-lg">
-                <Rocket className="w-3 h-3 mr-1" />BEST
-              </Badge>
-
-              <CardContent className="relative p-8 flex flex-col h-full">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+            <Card className="h-full border border-border bg-card">
+              <CardContent className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-500/30">
-                    <Crown className="w-6 h-6 text-white" />
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
+                    <Crown className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-black">월간 구독</h2>
+                    <h2 className="text-lg font-black">월간 구독</h2>
                     <p className="text-xs text-muted-foreground">모든 기능 무제한</p>
                   </div>
                 </div>
 
-                <p className="text-sm text-muted-foreground mb-6">
-                  하루 약 330원으로 모든 AI 분석, 심리검사, 리포트를 무제한 이용
-                </p>
-
-                <div className="mb-6">
+                <div className="mb-5">
                   <div className="flex items-baseline gap-2">
                     <span className="text-sm text-muted-foreground line-through">₩{SUBSCRIPTION_ORIGINAL_PRICE.toLocaleString()}</span>
-                    <Badge className="bg-rose-500 text-white border-0">{SUBSCRIPTION_DISCOUNT_PERCENT}% OFF</Badge>
+                    <Badge className="bg-destructive text-destructive-foreground border-0">{SUBSCRIPTION_DISCOUNT_PERCENT}% OFF</Badge>
                   </div>
                   <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-4xl font-black bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                      ₩{SUBSCRIPTION_PRICE.toLocaleString()}
-                    </span>
+                    <span className="text-3xl font-black text-foreground">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
                     <span className="text-muted-foreground text-sm">/월</span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    3번만 써도 단건보다 이득!
-                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">하루 약 330원</p>
                 </div>
 
-                <div className="space-y-2.5 mb-6 flex-1">
+                <div className="space-y-2 mb-5 flex-1">
                   {[
-                    { text: '모든 AI 심층 분석 무제한', highlight: true },
-                    { text: '20종+ 심리검사 무제한' },
-                    { text: '상세 PDF 리포트 무제한' },
-                    { text: '맞춤형 솔루션 & 가이드' },
-                    { text: '발달 트렌드 추적' },
-                    { text: '우선 고객 지원' },
-                  ].map((item, i) => (
-                    <div key={i} className={`flex items-center gap-2 text-sm ${item.highlight ? 'font-semibold' : ''}`}>
-                      <Check className={`w-4 h-4 flex-shrink-0 ${item.highlight ? 'text-violet-500' : 'text-emerald-500'}`} />
-                      <span className="text-foreground">{item.text}</span>
-                      {item.highlight && <Badge className="ml-auto bg-violet-500 text-white text-[10px] border-0 px-1.5">핵심</Badge>}
+                    'AI 심층 분석 무제한',
+                    '20종+ 심리검사 무제한',
+                    'PDF 리포트 무제한',
+                    '맞춤 솔루션 & 가이드',
+                    '발달 트렌드 추적',
+                  ].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm">
+                      <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span className="text-foreground">{f}</span>
                     </div>
                   ))}
                 </div>
 
                 <Button
                   size="lg"
-                  className="w-full h-14 rounded-2xl font-bold text-lg bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-xl shadow-violet-500/30 transition-all hover:scale-[1.02]"
+                  className="w-full h-12 rounded-2xl font-bold bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
                   onClick={handlePaySubscription}
                   disabled={paymentLoading || !isReady || isPremium}
                 >
                   {paymentLoading ? (
                     <><Loader2 className="w-5 h-5 mr-2 animate-spin" />결제 중...</>
                   ) : isPremium ? (
-                    <><Check className="w-5 h-5 mr-2" />이미 이용 중</>
+                    <><Check className="w-5 h-5 mr-2" />이용 중</>
                   ) : (
-                    <><Crown className="w-5 h-5 mr-2" />구독 시작하기</>
+                    <><Crown className="w-5 h-5 mr-2" />월간 구독</>
                   )}
                 </Button>
+                <p className="text-xs text-muted-foreground mt-2 text-center flex items-center justify-center gap-1">
+                  <Shield className="w-3 h-3" />7일 환불 보장 · 언제든 해지
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-                <p className="text-xs text-muted-foreground mt-3 text-center flex items-center justify-center gap-1">
-                  <Shield className="w-3 h-3" />7일 이내 100% 환불 보장 · 언제든 해지
+          {/* 연간 구독 - BEST */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <Card className="h-full relative overflow-hidden border-2 border-primary shadow-2xl shadow-primary/20 bg-gradient-to-br from-card via-primary/5 to-primary/10">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+              <Badge className="absolute top-4 right-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-0 text-sm px-3 py-1 shadow-lg">
+                <Rocket className="w-3 h-3 mr-1" />BEST
+              </Badge>
+
+              <CardContent className="relative p-6 flex flex-col h-full">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/30">
+                    <Award className="w-5 h-5 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-black">연간 구독</h2>
+                    <p className="text-xs text-muted-foreground">월간 대비 17% 절약</p>
+                  </div>
+                </div>
+
+                <div className="mb-5">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-sm text-muted-foreground line-through">₩{SUBSCRIPTION_YEARLY_ORIGINAL_PRICE.toLocaleString()}</span>
+                    <Badge className="bg-destructive text-destructive-foreground border-0">{SUBSCRIPTION_YEARLY_DISCOUNT_PERCENT}% OFF</Badge>
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-1">
+                    <span className="text-3xl font-black bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                      ₩{SUBSCRIPTION_YEARLY_PRICE.toLocaleString()}
+                    </span>
+                    <span className="text-muted-foreground text-sm">/년</span>
+                  </div>
+                  <p className="text-xs text-primary font-semibold mt-1">
+                    월 ₩{SUBSCRIPTION_YEARLY_MONTHLY_PRICE.toLocaleString()}원 꼴
+                  </p>
+                </div>
+
+                <div className="space-y-2 mb-5 flex-1">
+                  {[
+                    { text: '월간 구독의 모든 혜택 포함', highlight: true },
+                    { text: '연 ₩19,800 절약' },
+                    { text: '우선 고객 지원' },
+                    { text: '신규 기능 우선 이용' },
+                    { text: '전문가 상담 할인' },
+                  ].map((item, i) => (
+                    <div key={i} className={`flex items-center gap-2 text-sm ${typeof item === 'object' && item.highlight ? 'font-semibold' : ''}`}>
+                      <Check className={`w-4 h-4 flex-shrink-0 ${typeof item === 'object' && item.highlight ? 'text-primary' : 'text-emerald-500'}`} />
+                      <span className="text-foreground">{typeof item === 'object' ? item.text : item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Button
+                  size="lg"
+                  className="w-full h-12 rounded-2xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:scale-[1.02]"
+                  onClick={handlePayYearly}
+                  disabled={paymentLoading || !isReady || isPremium}
+                >
+                  {paymentLoading ? (
+                    <><Loader2 className="w-5 h-5 mr-2 animate-spin" />결제 중...</>
+                  ) : isPremium ? (
+                    <><Check className="w-5 h-5 mr-2" />이용 중</>
+                  ) : (
+                    <><Award className="w-5 h-5 mr-2" />연간 구독 시작</>
+                  )}
+                </Button>
+                <p className="text-xs text-muted-foreground mt-2 text-center flex items-center justify-center gap-1">
+                  <Shield className="w-3 h-3" />7일 환불 보장 · 언제든 해지
                 </p>
               </CardContent>
             </Card>
@@ -282,11 +333,11 @@ const TokenSubscription = () => {
         </div>
 
         {/* 가격 비교 계산 */}
-        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mb-12">
-          <Card className="overflow-hidden bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/20 border-violet-200/50 dark:border-violet-800/30">
+        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mb-12">
+          <Card className="overflow-hidden bg-muted/30 border-border">
             <CardContent className="p-6">
               <h3 className="font-bold text-center mb-4">💡 어떤 플랜이 나에게 맞을까?</h3>
-              <div className="grid grid-cols-3 gap-4 text-center text-sm">
+              <div className="grid grid-cols-4 gap-3 text-center text-sm">
                 <div className="p-3 rounded-xl bg-background/60">
                   <div className="font-bold text-lg text-foreground">1회</div>
                   <div className="text-muted-foreground text-xs mb-1">단건 결제</div>
@@ -297,11 +348,16 @@ const TokenSubscription = () => {
                   <div className="text-muted-foreground text-xs mb-1">단건 × 3</div>
                   <div className="font-bold text-foreground">₩11,700</div>
                 </div>
-                <div className="p-3 rounded-xl bg-violet-100 dark:bg-violet-900/40 border border-violet-300 dark:border-violet-700">
-                  <div className="font-bold text-lg text-violet-700 dark:text-violet-300">무제한</div>
+                <div className="p-3 rounded-xl bg-background/60">
+                  <div className="font-bold text-lg text-foreground">무제한</div>
                   <div className="text-muted-foreground text-xs mb-1">월간 구독</div>
-                  <div className="font-bold text-violet-600 dark:text-violet-400">₩9,900</div>
-                  <Badge className="mt-1 bg-violet-500 text-white text-[10px] border-0">이득!</Badge>
+                  <div className="font-bold text-violet-600 dark:text-violet-400">₩9,900/월</div>
+                </div>
+                <div className="p-3 rounded-xl bg-primary/10 border border-primary/30">
+                  <div className="font-bold text-lg text-primary">무제한</div>
+                  <div className="text-muted-foreground text-xs mb-1">연간 구독</div>
+                  <div className="font-bold text-primary">₩8,250/월</div>
+                  <Badge className="mt-1 bg-primary text-primary-foreground text-[10px] border-0">최저가!</Badge>
                 </div>
               </div>
             </CardContent>

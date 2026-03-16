@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { cleanMarkdown } from '@/utils/cleanMarkdown';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Save, AlertTriangle, CheckCircle2, AlertCircle, ImageIcon, Loader2, RefreshCw } from "lucide-react";

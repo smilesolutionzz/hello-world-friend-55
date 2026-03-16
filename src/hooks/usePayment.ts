@@ -13,8 +13,8 @@ export const PRODUCTS = {
     name: '심리검사 1회',
     description: '심리검사 1회 이용',
     price: SINGLE_TEST_PRICE,
-    originalPrice: 3900,
-    discount: 75,
+    originalPrice: 4900,
+    discount: 61,
   },
   single_report: {
     id: 'single_report',

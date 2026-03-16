@@ -414,7 +414,7 @@ const ObservationDetailView = ({ session, onBack }: ObservationDetailViewProps) 
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {(await import('@/utils/cleanMarkdown')).cleanMarkdown(aiReport.fullText).split('\n\n').filter(Boolean).map((p: string, i: number) => (
+                  {cleanMarkdown(aiReport.fullText).split('\n\n').filter(Boolean).map((p: string, i: number) => (
                     <p key={i} className="text-sm leading-[1.8] text-foreground/85">{p.trim()}</p>
                   ))}
                 </div>

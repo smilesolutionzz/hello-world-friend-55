@@ -83,8 +83,8 @@ export const TOKEN_COST_DESCRIPTIONS = {
 } as const;
 
 // 구독 요금 - 월간
-export const SUBSCRIPTION_PRICE = 9900;
-export const SUBSCRIPTION_ORIGINAL_PRICE = 19900;
+export const SUBSCRIPTION_PRICE = 14900;
+export const SUBSCRIPTION_ORIGINAL_PRICE = 29900;
 export const SUBSCRIPTION_DISCOUNT_PERCENT = 50;
 
 // 구독 요금 - 연간

@@ -93,33 +93,59 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
           {/* 구독 옵션 */}
           {(mode === 'subscription' || mode === 'both') && (
-            <div className="p-4 border-2 border-primary rounded-xl space-y-3 relative">
-              <Badge className="absolute -top-3 left-4 bg-primary text-primary-foreground">추천</Badge>
-              <div className="flex items-center gap-2 pt-1">
-                <Crown className="w-5 h-5 text-primary" />
-                <span className="font-semibold">월간 구독</span>
+            <div className="space-y-3">
+              {/* 월간 */}
+              <div className="p-4 border border-border rounded-xl space-y-3">
+                <div className="flex items-center gap-2">
+                  <Crown className="w-5 h-5 text-primary" />
+                  <span className="font-semibold">월간 구독</span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm text-muted-foreground line-through">₩{SUBSCRIPTION_ORIGINAL_PRICE.toLocaleString()}</span>
+                  <span className="text-2xl font-bold text-primary">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
+                  <span className="text-xs text-muted-foreground">/월</span>
+                </div>
+                <Button 
+                  className="w-full h-11" 
+                  variant="outline"
+                  onClick={handlePaySubscription} 
+                  disabled={loading || !isReady}
+                >
+                  {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Crown className="w-4 h-4 mr-2" />}
+                  월간 구독하기
+                </Button>
               </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-sm text-muted-foreground line-through">₩{SUBSCRIPTION_ORIGINAL_PRICE.toLocaleString()}</span>
-                <span className="text-2xl font-bold text-primary">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
-                <Badge className="bg-destructive text-destructive-foreground text-xs">{SUBSCRIPTION_DISCOUNT_PERCENT}% 할인</Badge>
+
+              {/* 연간 */}
+              <div className="p-4 border-2 border-primary rounded-xl space-y-3 relative">
+                <Badge className="absolute -top-3 left-4 bg-primary text-primary-foreground">추천 · 17% 절약</Badge>
+                <div className="flex items-center gap-2 pt-1">
+                  <Crown className="w-5 h-5 text-primary" />
+                  <span className="font-semibold">연간 구독</span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm text-muted-foreground line-through">₩{SUBSCRIPTION_YEARLY_ORIGINAL_PRICE.toLocaleString()}</span>
+                  <span className="text-2xl font-bold text-primary">₩{SUBSCRIPTION_YEARLY_PRICE.toLocaleString()}</span>
+                  <span className="text-xs text-muted-foreground">/년</span>
+                </div>
+                <p className="text-xs text-primary font-medium">월 ₩{SUBSCRIPTION_YEARLY_MONTHLY_PRICE.toLocaleString()} 꼴</p>
+                <div className="space-y-1.5">
+                  {subscriptionFeatures.map((f, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm">
+                      <Check className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                      <span>{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <Button 
+                  className="w-full h-11" 
+                  onClick={handlePayYearly} 
+                  disabled={loading || !isReady}
+                >
+                  {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Crown className="w-4 h-4 mr-2" />}
+                  연간 구독하기
+                </Button>
               </div>
-              <div className="space-y-1.5">
-                {subscriptionFeatures.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm">
-                    <Check className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                    <span>{f}</span>
-                  </div>
-                ))}
-              </div>
-              <Button 
-                className="w-full h-11" 
-                onClick={handlePaySubscription} 
-                disabled={loading || !isReady}
-              >
-                {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Crown className="w-4 h-4 mr-2" />}
-                구독하기
-              </Button>
             </div>
           )}
 

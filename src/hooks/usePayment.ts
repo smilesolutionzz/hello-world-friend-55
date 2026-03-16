@@ -7,6 +7,15 @@ import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE, SUBSCRIPTION_YEARLY_PRICE, SIN
 
 // 상품 정의 - 단건 + 월간 + 연간
 export const PRODUCTS = {
+  single_test: {
+    id: 'single_test',
+    type: 'single',
+    name: '심리검사 1회',
+    description: '심리검사 1회 이용',
+    price: SINGLE_TEST_PRICE,
+    originalPrice: 3900,
+    discount: 75,
+  },
   single_report: {
     id: 'single_report',
     type: 'single',

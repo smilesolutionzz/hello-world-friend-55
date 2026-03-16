@@ -408,12 +408,14 @@ const ObservationDetailView = ({ session, onBack }: ObservationDetailViewProps) 
           {aiReport.fullText && (
             <Card>
               <CardHeader>
-                <CardTitle>전문가 AI 분석 전문</CardTitle>
-                <CardDescription>임상심리사·정신과의사 수준의 종합 분석</CardDescription>
+                <CardTitle>전문가 분석 전문</CardTitle>
+                <CardDescription>임상심리사 수준의 종합 분석</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="prose max-w-none text-sm leading-relaxed whitespace-pre-wrap">
-                  {aiReport.fullText}
+                <div className="space-y-3">
+                  {(await import('@/utils/cleanMarkdown')).cleanMarkdown(aiReport.fullText).split('\n\n').filter(Boolean).map((p: string, i: number) => (
+                    <p key={i} className="text-sm leading-[1.8] text-foreground/85">{p.trim()}</p>
+                  ))}
                 </div>
               </CardContent>
             </Card>

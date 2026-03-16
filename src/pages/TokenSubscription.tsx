@@ -214,7 +214,7 @@ const TokenSubscription = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs text-muted-foreground line-through">₩3,900</span>
+                      <span className="text-xs text-muted-foreground line-through">₩4,900</span>
                       <span className="text-2xl font-black text-foreground">₩{SINGLE_TEST_PRICE.toLocaleString()}</span>
                     </div>
                     <Button

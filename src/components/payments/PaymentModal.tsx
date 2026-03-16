@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { usePayment } from '@/hooks/usePayment';
 import { Crown, Check, Loader2, Zap } from 'lucide-react';
-import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE, SUBSCRIPTION_YEARLY_PRICE, SUBSCRIPTION_YEARLY_ORIGINAL_PRICE, SUBSCRIPTION_YEARLY_DISCOUNT_PERCENT, SUBSCRIPTION_YEARLY_MONTHLY_PRICE } from '@/constants/tokenCosts';
+import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SINGLE_REPORT_PRICE, SINGLE_TEST_PRICE, SUBSCRIPTION_YEARLY_PRICE, SUBSCRIPTION_YEARLY_ORIGINAL_PRICE, SUBSCRIPTION_YEARLY_MONTHLY_PRICE } from '@/constants/tokenCosts';
 
 interface PaymentModalProps {
   open: boolean;
@@ -13,8 +13,9 @@ interface PaymentModalProps {
   title?: string;
   description?: string;
   onSuccess?: () => void;
-  /** 단건 결제 모드 (기본: 구독+단건 선택) */
   mode?: 'single' | 'subscription' | 'both';
+  /** 단건 결제 시 크레딧 유형 */
+  creditType?: 'test' | 'report';
 }
 
 export const PaymentModal: React.FC<PaymentModalProps> = ({
@@ -24,11 +25,19 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   description,
   onSuccess,
   mode = 'both',
+  creditType = 'report',
 }) => {
   const { pay, loading, isReady } = usePayment();
 
+  const isTest = creditType === 'test';
+  const singlePrice = isTest ? SINGLE_TEST_PRICE : SINGLE_REPORT_PRICE;
+  const singleOriginalPrice = isTest ? 3900 : 9900;
+  const singleDiscount = isTest ? 75 : 60;
+  const singleLabel = isTest ? '심리검사 1회' : '심층 분석 리포트 1회';
+  const singleProductId = isTest ? 'single_test' : 'single_report';
+
   const handlePaySingle = async () => {
-    const success = await pay('single_report');
+    const success = await pay(singleProductId);
     if (success) {
       onOpenChange(false);
       onSuccess?.();
@@ -72,12 +81,12 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <div className="p-4 border border-border rounded-xl space-y-3">
               <div className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-amber-500" />
-                <span className="font-semibold">심층 분석 리포트 1회</span>
+                <span className="font-semibold">{singleLabel}</span>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-sm text-muted-foreground line-through">₩9,900</span>
-                <span className="text-2xl font-bold text-primary">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
-                <Badge variant="secondary" className="text-xs">60% 할인</Badge>
+                <span className="text-sm text-muted-foreground line-through">₩{singleOriginalPrice.toLocaleString()}</span>
+                <span className="text-2xl font-bold text-primary">₩{singlePrice.toLocaleString()}</span>
+                <Badge variant="secondary" className="text-xs">{singleDiscount}% 할인</Badge>
               </div>
               <Button 
                 className="w-full" 
@@ -86,7 +95,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 disabled={loading || !isReady}
               >
                 {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                리포트 1회 구매
+                {isTest ? '검사 1회 구매' : '리포트 1회 구매'}
               </Button>
             </div>
           )}

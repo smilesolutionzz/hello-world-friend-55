@@ -217,8 +217,21 @@ serve(async (req) => {
       // 상품 유형별 처리
       const productType = payment.subscription_type;
 
-      if (productType === 'single') {
-        // 단건 리포트 구매 - 사용권 기록
+      if (productType === 'single_test') {
+        // 단건 검사 구매 - 검사 크레딧 기록
+        await supabaseAdmin
+          .from('user_test_credits')
+          .insert({
+            user_id: payment.user_id,
+            credits: 1,
+            source: 'single_purchase',
+            payment_id: payment.id,
+          });
+
+        console.log(`✅ Added 1 test credit for user ${payment.user_id}`);
+
+      } else if (productType === 'single_report' || productType === 'single') {
+        // 단건 리포트 구매 - 리포트 크레딧 기록
         await supabaseAdmin
           .from('user_report_credits')
           .insert({

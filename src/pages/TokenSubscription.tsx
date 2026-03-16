@@ -375,24 +375,29 @@ const TokenSubscription = () => {
           <Card className="overflow-hidden bg-muted/30 border-border">
             <CardContent className="p-6">
               <h3 className="font-bold text-center mb-4">💡 어떤 플랜이 나에게 맞을까?</h3>
-              <div className="grid grid-cols-4 gap-3 text-center text-sm">
+              <div className="grid grid-cols-5 gap-2 text-center text-sm">
                 <div className="p-3 rounded-xl bg-background/60">
-                  <div className="font-bold text-lg text-foreground">1회</div>
-                  <div className="text-muted-foreground text-xs mb-1">단건 결제</div>
+                  <div className="font-bold text-foreground">검사 1회</div>
+                  <div className="text-muted-foreground text-xs mb-1">단건</div>
+                  <div className="font-bold text-emerald-600 dark:text-emerald-400">₩990</div>
+                </div>
+                <div className="p-3 rounded-xl bg-background/60">
+                  <div className="font-bold text-foreground">리포트 1회</div>
+                  <div className="text-muted-foreground text-xs mb-1">단건</div>
                   <div className="font-bold text-amber-600 dark:text-amber-400">₩3,900</div>
                 </div>
                 <div className="p-3 rounded-xl bg-background/60">
-                  <div className="font-bold text-lg text-foreground">3회</div>
-                  <div className="text-muted-foreground text-xs mb-1">단건 × 3</div>
-                  <div className="font-bold text-foreground">₩11,700</div>
+                  <div className="font-bold text-foreground">검사+리포트</div>
+                  <div className="text-muted-foreground text-xs mb-1">각 1회</div>
+                  <div className="font-bold text-foreground">₩4,890</div>
                 </div>
                 <div className="p-3 rounded-xl bg-background/60">
-                  <div className="font-bold text-lg text-foreground">무제한</div>
+                  <div className="font-bold text-foreground">무제한</div>
                   <div className="text-muted-foreground text-xs mb-1">월간 구독</div>
                   <div className="font-bold text-violet-600 dark:text-violet-400">₩9,900/월</div>
                 </div>
                 <div className="p-3 rounded-xl bg-primary/10 border border-primary/30">
-                  <div className="font-bold text-lg text-primary">무제한</div>
+                  <div className="font-bold text-primary">무제한</div>
                   <div className="text-muted-foreground text-xs mb-1">연간 구독</div>
                   <div className="font-bold text-primary">₩8,250/월</div>
                   <Badge className="mt-1 bg-primary text-primary-foreground text-[10px] border-0">최저가!</Badge>

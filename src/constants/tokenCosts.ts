@@ -82,10 +82,16 @@ export const TOKEN_COST_DESCRIPTIONS = {
   0: "구독 시 무제한",
 } as const;
 
-// 구독 요금
+// 구독 요금 - 월간
 export const SUBSCRIPTION_PRICE = 9900;
 export const SUBSCRIPTION_ORIGINAL_PRICE = 19900;
 export const SUBSCRIPTION_DISCOUNT_PERCENT = 50;
+
+// 구독 요금 - 연간
+export const SUBSCRIPTION_YEARLY_PRICE = 99000;
+export const SUBSCRIPTION_YEARLY_ORIGINAL_PRICE = 238800; // 19900 * 12
+export const SUBSCRIPTION_YEARLY_DISCOUNT_PERCENT = 58;
+export const SUBSCRIPTION_YEARLY_MONTHLY_PRICE = 8250; // 99000 / 12
 
 // 단건 결제 (심층 리포트 1회)
 export const SINGLE_REPORT_PRICE = 3900;

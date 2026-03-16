@@ -11618,6 +11618,14 @@ export type Database = {
           user_id: string
         }[]
       }
+      grant_premium_access: {
+        Args: {
+          duration_days?: number
+          reason?: string
+          target_user_id: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -11651,6 +11659,10 @@ export type Database = {
       }
       process_verified_referral_rewards: { Args: never; Returns: number }
       refresh_admin_analytics: { Args: never; Returns: undefined }
+      revoke_premium_access: {
+        Args: { target_user_id: string }
+        Returns: boolean
+      }
       secure_cleanup_old_payment_data: { Args: never; Returns: undefined }
       track_feature_usage: {
         Args: { p_feature_type: string; p_user_id: string }

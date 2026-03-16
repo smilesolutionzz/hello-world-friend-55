@@ -64,6 +64,13 @@ const TokenSubscription = () => {
     }
   };
 
+  const handlePayTest = async () => {
+    const success = await pay('single_test');
+    if (success) {
+      toast({ title: "결제 완료", description: "검사 이용권이 추가되었습니다!" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 text-foreground">
       {/* 모바일에서는 MobilePaymentFlow 사용 */}

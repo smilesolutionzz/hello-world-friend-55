@@ -16,7 +16,7 @@ import { useAccessControl } from '@/hooks/useAccessControl';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
-import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE, SUBSCRIPTION_YEARLY_PRICE, SUBSCRIPTION_YEARLY_ORIGINAL_PRICE, SUBSCRIPTION_YEARLY_DISCOUNT_PERCENT, SUBSCRIPTION_YEARLY_MONTHLY_PRICE } from '@/constants/tokenCosts';
+import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE, SINGLE_TEST_PRICE, SUBSCRIPTION_YEARLY_PRICE, SUBSCRIPTION_YEARLY_ORIGINAL_PRICE, SUBSCRIPTION_YEARLY_DISCOUNT_PERCENT, SUBSCRIPTION_YEARLY_MONTHLY_PRICE } from '@/constants/tokenCosts';
 import { MobilePaymentFlow } from '@/components/payments/MobilePaymentFlow';
 
 const TokenSubscription = () => {
@@ -61,6 +61,13 @@ const TokenSubscription = () => {
     const success = await pay('single_report');
     if (success) {
       toast({ title: "결제 완료", description: "리포트 이용권이 추가되었습니다!" });
+    }
+  };
+
+  const handlePayTest = async () => {
+    const success = await pay('single_test');
+    if (success) {
+      toast({ title: "결제 완료", description: "검사 이용권이 추가되었습니다!" });
     }
   };
 
@@ -178,7 +185,7 @@ const TokenSubscription = () => {
 
         {/* 듀얼 프라이싱 카드 */}
         <div className="grid md:grid-cols-2 gap-6 mb-12">
-          {/* 단건 리포트 */}
+          {/* 단건 이용권 */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
             <Card className="h-full border border-border bg-card">
               <CardContent className="p-8 flex flex-col h-full">
@@ -187,45 +194,77 @@ const TokenSubscription = () => {
                     <Zap className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-black">리포트 1회</h2>
-                    <p className="text-xs text-muted-foreground">부담 없이 한 번 써보기</p>
+                    <h2 className="text-xl font-black">단건 이용권</h2>
+                    <p className="text-xs text-muted-foreground">필요할 때만 한 번씩</p>
                   </div>
                 </div>
 
                 <p className="text-sm text-muted-foreground mb-6">
-                  커피 한 잔 값으로 전문가급 AI 심층 분석 리포트를 받아보세요
+                  구독 없이 원하는 기능만 골라서 이용하세요
                 </p>
 
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-sm text-muted-foreground line-through">₩9,900</span>
-                    <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30">60% 할인</Badge>
+                {/* 검사 1회 */}
+                <div className="border border-border rounded-xl p-4 mb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Target className="w-4 h-4 text-emerald-500" />
+                      <span className="font-bold text-sm">심리검사 1회</span>
+                    </div>
+                    <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs">75% 할인</Badge>
                   </div>
-                  <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-4xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
-                    <span className="text-muted-foreground text-sm">/회</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs text-muted-foreground line-through">₩3,900</span>
+                      <span className="text-2xl font-black text-foreground">₩{SINGLE_TEST_PRICE.toLocaleString()}</span>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-emerald-500/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
+                      onClick={handlePayTest}
+                      disabled={paymentLoading || !isReady}
+                    >
+                      {paymentLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : '구매'}
+                    </Button>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-1.5">검사 실시 + 기본 결과 확인</p>
                 </div>
 
-                <div className="space-y-2.5 mb-6 flex-1">
-                  {['AI 심층 분석 리포트 1회', 'PDF 다운로드 포함', '맞춤 솔루션 제공', '구독 없이 바로 이용'].map((f, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm">
+                {/* 리포트 1회 */}
+                <div className="border border-border rounded-xl p-4 mb-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-500" />
+                      <span className="font-bold text-sm">심층 분석 리포트 1회</span>
+                    </div>
+                    <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30 text-xs">60% 할인</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs text-muted-foreground line-through">₩9,900</span>
+                      <span className="text-2xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+                      onClick={handlePaySingle}
+                      disabled={paymentLoading || !isReady}
+                    >
+                      {paymentLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : '구매'}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1.5">AI 심층 분석 + PDF 리포트 + 맞춤 솔루션</p>
+                </div>
+
+                <div className="mt-auto space-y-2">
+                  {['구독 없이 바로 이용', '결제 즉시 사용 가능'].map((f, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                      <span className="text-foreground">{f}</span>
+                      <span>{f}</span>
                     </div>
                   ))}
                 </div>
-
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full h-14 rounded-2xl font-bold text-lg border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
-                  onClick={handlePaySingle}
-                  disabled={paymentLoading || !isReady}
-                >
-                  {paymentLoading ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Zap className="w-5 h-5 mr-2" />}
-                  1회 구매 — ₩{SINGLE_REPORT_PRICE.toLocaleString()}
-                </Button>
               </CardContent>
             </Card>
           </motion.div>
@@ -336,24 +375,29 @@ const TokenSubscription = () => {
           <Card className="overflow-hidden bg-muted/30 border-border">
             <CardContent className="p-6">
               <h3 className="font-bold text-center mb-4">💡 어떤 플랜이 나에게 맞을까?</h3>
-              <div className="grid grid-cols-4 gap-3 text-center text-sm">
+              <div className="grid grid-cols-5 gap-2 text-center text-sm">
                 <div className="p-3 rounded-xl bg-background/60">
-                  <div className="font-bold text-lg text-foreground">1회</div>
-                  <div className="text-muted-foreground text-xs mb-1">단건 결제</div>
+                  <div className="font-bold text-foreground">검사 1회</div>
+                  <div className="text-muted-foreground text-xs mb-1">단건</div>
+                  <div className="font-bold text-emerald-600 dark:text-emerald-400">₩990</div>
+                </div>
+                <div className="p-3 rounded-xl bg-background/60">
+                  <div className="font-bold text-foreground">리포트 1회</div>
+                  <div className="text-muted-foreground text-xs mb-1">단건</div>
                   <div className="font-bold text-amber-600 dark:text-amber-400">₩3,900</div>
                 </div>
                 <div className="p-3 rounded-xl bg-background/60">
-                  <div className="font-bold text-lg text-foreground">3회</div>
-                  <div className="text-muted-foreground text-xs mb-1">단건 × 3</div>
-                  <div className="font-bold text-foreground">₩11,700</div>
+                  <div className="font-bold text-foreground">검사+리포트</div>
+                  <div className="text-muted-foreground text-xs mb-1">각 1회</div>
+                  <div className="font-bold text-foreground">₩4,890</div>
                 </div>
                 <div className="p-3 rounded-xl bg-background/60">
-                  <div className="font-bold text-lg text-foreground">무제한</div>
+                  <div className="font-bold text-foreground">무제한</div>
                   <div className="text-muted-foreground text-xs mb-1">월간 구독</div>
                   <div className="font-bold text-violet-600 dark:text-violet-400">₩9,900/월</div>
                 </div>
                 <div className="p-3 rounded-xl bg-primary/10 border border-primary/30">
-                  <div className="font-bold text-lg text-primary">무제한</div>
+                  <div className="font-bold text-primary">무제한</div>
                   <div className="text-muted-foreground text-xs mb-1">연간 구독</div>
                   <div className="font-bold text-primary">₩8,250/월</div>
                   <Badge className="mt-1 bg-primary text-primary-foreground text-[10px] border-0">최저가!</Badge>

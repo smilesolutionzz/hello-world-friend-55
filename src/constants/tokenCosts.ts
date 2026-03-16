@@ -95,3 +95,6 @@ export const SUBSCRIPTION_YEARLY_MONTHLY_PRICE = 8250; // 99000 / 12
 
 // 단건 결제 (심층 리포트 1회)
 export const SINGLE_REPORT_PRICE = 3900;
+
+// 단건 결제 (검사 1회)
+export const SINGLE_TEST_PRICE = 990;

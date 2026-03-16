@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE, SUBSCRIPTION_YEARLY_PRICE } from '@/constants/tokenCosts';
+import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE, SUBSCRIPTION_YEARLY_PRICE, SINGLE_TEST_PRICE } from '@/constants/tokenCosts';
 
 // 상품 정의 - 단건 + 월간 + 연간
 export const PRODUCTS = {

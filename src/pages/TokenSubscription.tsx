@@ -49,6 +49,13 @@ const TokenSubscription = () => {
     }
   };
 
+  const handlePayYearly = async () => {
+    const success = await pay('subscription_yearly');
+    if (success) {
+      toast({ title: "결제 완료", description: "연간 구독 감사합니다!" });
+    }
+  };
+
   const handlePaySingle = async () => {
     const success = await pay('single_report');
     if (success) {

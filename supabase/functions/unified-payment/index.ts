@@ -10,10 +10,10 @@ const corsHeaders = {
 const PRODUCTS: Record<string, any> = {
   single_test: { type: 'single_test', name: '심리검사 1회', price: 1900 },
   single_report: { type: 'single_report', name: '심층 분석 리포트 1회', price: 5900 },
-  subscription_monthly: { type: 'subscription', name: '월간 구독', price: 9900 },
-  subscription_yearly: { type: 'subscription', name: '연간 구독', price: 99000 },
+  subscription_monthly: { type: 'subscription', name: '월간 구독', price: 14900 },
+  subscription_yearly: { type: 'subscription', name: '연간 구독', price: 149000 },
   // 하위 호환성
-  pass_30: { type: 'subscription', name: '월간 구독', price: 9900 },
+  pass_30: { type: 'subscription', name: '월간 구독', price: 14900 },
 };
 
 // 🔒 인증된 사용자 확인 헬퍼

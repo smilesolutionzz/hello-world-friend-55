@@ -31,7 +31,7 @@ export const PRODUCTS = {
     name: '월간 구독', 
     description: '30일 무제한 이용',
     price: SUBSCRIPTION_PRICE,
-    originalPrice: 19900, 
+    originalPrice: 29900, 
     discount: 50 
   },
   subscription_yearly: {
@@ -40,7 +40,7 @@ export const PRODUCTS = {
     name: '연간 구독',
     description: '365일 무제한 이용',
     price: SUBSCRIPTION_YEARLY_PRICE,
-    originalPrice: 238800,
+    originalPrice: 358800,
     discount: 58,
   },
   // 하위 호환성
@@ -50,7 +50,7 @@ export const PRODUCTS = {
     name: '월간 구독', 
     description: '30일 무제한 이용',
     price: SUBSCRIPTION_PRICE, 
-    originalPrice: 19900, 
+    originalPrice: 29900, 
     discount: 50 
   },
 } as const;

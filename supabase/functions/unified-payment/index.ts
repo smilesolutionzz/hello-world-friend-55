@@ -8,8 +8,10 @@ const corsHeaders = {
 
 // 상품 정의 (프론트엔드와 동기화) - SaaS 모델 v2
 const PRODUCTS: Record<string, any> = {
-  single_report: { type: 'single', name: '심층 분석 리포트 1회', price: 3900 },
+  single_test: { type: 'single_test', name: '심리검사 1회', price: 990 },
+  single_report: { type: 'single_report', name: '심층 분석 리포트 1회', price: 3900 },
   subscription_monthly: { type: 'subscription', name: '월간 구독', price: 9900 },
+  subscription_yearly: { type: 'subscription', name: '연간 구독', price: 99000 },
   // 하위 호환성
   pass_30: { type: 'subscription', name: '월간 구독', price: 9900 },
 };
@@ -215,8 +217,21 @@ serve(async (req) => {
       // 상품 유형별 처리
       const productType = payment.subscription_type;
 
-      if (productType === 'single') {
-        // 단건 리포트 구매 - 사용권 기록
+      if (productType === 'single_test') {
+        // 단건 검사 구매 - 검사 크레딧 기록
+        await supabaseAdmin
+          .from('user_test_credits')
+          .insert({
+            user_id: payment.user_id,
+            credits: 1,
+            source: 'single_purchase',
+            payment_id: payment.id,
+          });
+
+        console.log(`✅ Added 1 test credit for user ${payment.user_id}`);
+
+      } else if (productType === 'single_report' || productType === 'single') {
+        // 단건 리포트 구매 - 리포트 크레딧 기록
         await supabaseAdmin
           .from('user_report_credits')
           .insert({
@@ -229,10 +244,11 @@ serve(async (req) => {
         console.log(`✅ Added 1 report credit for user ${payment.user_id}`);
 
       } else if (productType === 'subscription' || productType === 'pass') {
-        // 구독 처리
+        // 구독 처리 - 월간(30일) 또는 연간(365일)
         const startDate = new Date();
         const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 30);
+        const isYearly = payment.toss_order_id?.includes('subscription_yearly');
+        endDate.setDate(endDate.getDate() + (isYearly ? 365 : 30));
 
         // 기존 구독 취소
         await supabaseAdmin

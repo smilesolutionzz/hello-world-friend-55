@@ -10532,6 +10532,39 @@ export type Database = {
           },
         ]
       }
+      user_test_credits: {
+        Row: {
+          created_at: string
+          credits: number
+          id: string
+          payment_id: string | null
+          source: string
+          used_at: string | null
+          used_credits: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits?: number
+          id?: string
+          payment_id?: string | null
+          source?: string
+          used_at?: string | null
+          used_credits?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          id?: string
+          payment_id?: string | null
+          source?: string
+          used_at?: string | null
+          used_credits?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_tokens: {
         Row: {
           created_at: string

@@ -8,7 +8,7 @@ import { useFreeTrial } from '@/hooks/useFreeTrial';
 import { useAccessControl } from '@/hooks/useAccessControl';
 import { Badge } from '@/components/ui/badge';
 import { PaymentModal } from '@/components/payments/PaymentModal';
-import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE, SUBSCRIPTION_YEARLY_PRICE, SUBSCRIPTION_YEARLY_MONTHLY_PRICE } from '@/constants/tokenCosts';
+import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE, SINGLE_TEST_PRICE, SUBSCRIPTION_YEARLY_PRICE, SUBSCRIPTION_YEARLY_MONTHLY_PRICE } from '@/constants/tokenCosts';
 import { useToast } from '@/hooks/use-toast';
 
 interface SubscriptionGuardProps {
@@ -17,6 +17,8 @@ interface SubscriptionGuardProps {
   trialKey?: string;
   requiredTier?: 'premium' | 'pro';
   fallbackMessage?: string;
+  /** 크레딧 유형: test(검사 990원) 또는 report(리포트 3900원) */
+  creditType?: 'test' | 'report';
 }
 
 export const SubscriptionGuard = ({ 
@@ -24,23 +26,33 @@ export const SubscriptionGuard = ({
   featureName,
   trialKey,
   requiredTier = 'premium',
-  fallbackMessage 
+  fallbackMessage,
+  creditType = 'report',
 }: SubscriptionGuardProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isPremiumUser, isLifetimeUser, loading } = useSubscription();
   const { canUseFree, getRemainingTrials, recordUsage, loading: trialLoading } = useFreeTrial();
-  const { reportCredits, canAccessPremium, loading: accessLoading, useReportCredit } = useAccessControl();
+  const { reportCredits, testCredits, canAccessPremium, canAccessTest, loading: accessLoading, useReportCredit, useTestCredit } = useAccessControl();
   const hasRecorded = useRef(false);
   const hasCreditConsumed = useRef(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [creditConsuming, setCreditConsuming] = useState(false);
 
   const hasAccess = isPremiumUser() || isLifetimeUser();
-  const hasCreditAccess = !hasAccess && reportCredits > 0;
+  
+  // 크레딧 타입에 따라 다른 크레딧 확인
+  const currentCredits = creditType === 'test' ? testCredits : reportCredits;
+  const hasCreditAccess = !hasAccess && currentCredits > 0;
   const isTrialAllowed = !hasAccess && !hasCreditAccess && trialKey ? canUseFree(trialKey) : false;
   const trialExhausted = !hasAccess && !hasCreditAccess && trialKey ? !canUseFree(trialKey) : false;
   const remaining = trialKey ? getRemainingTrials(trialKey) : 0;
+
+  const creditLabel = creditType === 'test' ? '검사' : '리포트';
+  const creditPrice = creditType === 'test' ? SINGLE_TEST_PRICE : SINGLE_REPORT_PRICE;
+  const creditOriginalPrice = creditType === 'test' ? 3900 : 9900;
+  const creditDiscount = creditType === 'test' ? 75 : 60;
+  const creditProductId = creditType === 'test' ? 'single_test' : 'single_report';
 
   // 무료 체험 사용 기록
   useEffect(() => {
@@ -55,17 +67,20 @@ export const SubscriptionGuard = ({
     if (hasCreditAccess && !hasCreditConsumed.current && !creditConsuming) {
       hasCreditConsumed.current = true;
       setCreditConsuming(true);
-      useReportCredit().then((ok) => {
+      
+      const consumeCredit = creditType === 'test' ? useTestCredit : useReportCredit;
+      
+      consumeCredit().then((ok) => {
         setCreditConsuming(false);
         if (ok) {
           toast({
-            title: '리포트 크레딧 1회 사용',
-            description: `남은 크레딧: ${Math.max(0, reportCredits - 1)}회`,
+            title: `${creditLabel} 크레딧 1회 사용`,
+            description: `남은 ${creditLabel} 크레딧: ${Math.max(0, currentCredits - 1)}회`,
           });
         }
       });
     }
-  }, [hasCreditAccess, useReportCredit, reportCredits, creditConsuming, toast]);
+  }, [hasCreditAccess, useReportCredit, useTestCredit, currentCredits, creditConsuming, toast, creditType, creditLabel]);
 
   if (loading || trialLoading || accessLoading || creditConsuming) {
     return (
@@ -81,7 +96,7 @@ export const SubscriptionGuard = ({
   // 프리미엄 구독자
   if (hasAccess) return <>{children}</>;
 
-  // 리포트 크레딧 보유자
+  // 크레딧 보유자
   if (hasCreditAccess) {
     return (
       <div>
@@ -90,7 +105,7 @@ export const SubscriptionGuard = ({
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-amber-500 flex-shrink-0" />
               <span className="text-sm font-medium">
-                리포트 이용권 · 남은 횟수: <Badge variant="secondary" className="ml-1">{Math.max(0, reportCredits - 1)}회</Badge>
+                {creditLabel} 이용권 · 남은 횟수: <Badge variant="secondary" className="ml-1">{Math.max(0, currentCredits - 1)}회</Badge>
               </span>
             </div>
             <Button size="sm" variant="outline" onClick={() => navigate('/token-subscription')} className="text-xs h-7">
@@ -149,18 +164,22 @@ export const SubscriptionGuard = ({
         </CardHeader>
 
         <CardContent className="space-y-5 pb-8">
-          {/* 이용 안내 - 뭘 얻는지 명확히 */}
+          {/* 이용 안내 */}
           <div className="bg-muted/50 rounded-xl p-5 space-y-3">
             <h4 className="font-bold text-base flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" />
               {featureName} 이용 시 제공되는 것
             </h4>
             <div className="grid gap-2">
-              {[
+              {(creditType === 'test' ? [
+                'AI 기반 정밀 심리검사 분석',
+                '점수 및 유형별 상세 해석',
+                '맞춤 개선 방안 및 행동 가이드',
+              ] : [
                 'AI 기반 전문 심층 분석 리포트',
                 '개인 맞춤 솔루션 및 행동 가이드',
                 '결과 기반 추천 검사 및 전문가 연결',
-              ].map((item, i) => (
+              ]).map((item, i) => (
                 <div key={i} className="flex items-center gap-2 text-sm">
                   <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{item}</span>
@@ -171,18 +190,19 @@ export const SubscriptionGuard = ({
 
           {/* 듀얼 프라이싱 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* 단건 리포트 */}
+            {/* 단건 */}
             <div className="border border-amber-500/30 rounded-xl p-5 bg-amber-500/5 space-y-3">
               <div className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-amber-500" />
-                <span className="font-bold">1회 이용권</span>
+                <span className="font-bold">{creditLabel} 1회 이용권</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                <strong>{featureName}</strong> 심층 리포트 1회 열람
+                <strong>{featureName}</strong> {creditLabel} 1회 이용
               </p>
               <div className="flex items-baseline gap-2">
-                <span className="text-sm text-muted-foreground line-through">₩9,900</span>
-                <span className="text-2xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
+                <span className="text-sm text-muted-foreground line-through">₩{creditOriginalPrice.toLocaleString()}</span>
+                <span className="text-2xl font-black text-foreground">₩{creditPrice.toLocaleString()}</span>
+                <Badge variant="secondary" className="text-xs">{creditDiscount}% 할인</Badge>
               </div>
               <Button
                 onClick={() => setPaymentOpen(true)}
@@ -190,7 +210,7 @@ export const SubscriptionGuard = ({
                 className="w-full border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
               >
                 <Zap className="w-4 h-4 mr-2" />
-                이 검사 1회 이용하기
+                {creditLabel} 1회 이용하기
               </Button>
             </div>
 
@@ -250,8 +270,9 @@ export const SubscriptionGuard = ({
         open={paymentOpen} 
         onOpenChange={setPaymentOpen} 
         mode="single"
-        title={`${featureName} 이용권 구매`}
-        description={`${featureName} 심층 분석 리포트 1회를 열람할 수 있습니다.`}
+        creditType={creditType}
+        title={`${featureName} ${creditLabel} 이용권 구매`}
+        description={`${featureName} ${creditLabel} 1회를 이용할 수 있습니다.`}
       />
     </div>
   );

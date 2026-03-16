@@ -17,7 +17,7 @@ interface SubscriptionGuardProps {
   trialKey?: string;
   requiredTier?: 'premium' | 'pro';
   fallbackMessage?: string;
-  /** 크레딧 유형: test(검사 990원) 또는 report(리포트 3900원) */
+  /** 크레딧 유형: test(검사 1,900원) 또는 report(리포트 5,900원) */
   creditType?: 'test' | 'report';
 }
 

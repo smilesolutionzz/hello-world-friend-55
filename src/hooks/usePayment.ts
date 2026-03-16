@@ -22,7 +22,7 @@ export const PRODUCTS = {
     name: '심층 분석 리포트',
     description: '전문가급 AI 분석 1회',
     price: SINGLE_REPORT_PRICE,
-    originalPrice: 9900,
+    originalPrice: 14900,
     discount: 60,
   },
   subscription_monthly: { 

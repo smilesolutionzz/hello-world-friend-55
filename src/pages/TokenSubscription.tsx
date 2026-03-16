@@ -379,17 +379,17 @@ const TokenSubscription = () => {
                 <div className="p-3 rounded-xl bg-background/60">
                   <div className="font-bold text-foreground">검사 1회</div>
                   <div className="text-muted-foreground text-xs mb-1">단건</div>
-                  <div className="font-bold text-emerald-600 dark:text-emerald-400">₩990</div>
+                  <div className="font-bold text-emerald-600 dark:text-emerald-400">₩1,900</div>
                 </div>
                 <div className="p-3 rounded-xl bg-background/60">
                   <div className="font-bold text-foreground">리포트 1회</div>
                   <div className="text-muted-foreground text-xs mb-1">단건</div>
-                  <div className="font-bold text-amber-600 dark:text-amber-400">₩3,900</div>
+                  <div className="font-bold text-amber-600 dark:text-amber-400">₩5,900</div>
                 </div>
                 <div className="p-3 rounded-xl bg-background/60">
                   <div className="font-bold text-foreground">검사+리포트</div>
                   <div className="text-muted-foreground text-xs mb-1">각 1회</div>
-                  <div className="font-bold text-foreground">₩4,890</div>
+                  <div className="font-bold text-foreground">₩7,800</div>
                 </div>
                 <div className="p-3 rounded-xl bg-background/60">
                   <div className="font-bold text-foreground">무제한</div>

@@ -244,10 +244,11 @@ serve(async (req) => {
         console.log(`✅ Added 1 report credit for user ${payment.user_id}`);
 
       } else if (productType === 'subscription' || productType === 'pass') {
-        // 구독 처리
+        // 구독 처리 - 월간(30일) 또는 연간(365일)
         const startDate = new Date();
         const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 30);
+        const isYearly = payment.toss_order_id?.includes('subscription_yearly');
+        endDate.setDate(endDate.getDate() + (isYearly ? 365 : 30));
 
         // 기존 구독 취소
         await supabaseAdmin

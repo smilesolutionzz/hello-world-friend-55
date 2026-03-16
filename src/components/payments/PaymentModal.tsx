@@ -43,6 +43,14 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     }
   };
 
+  const handlePayYearly = async () => {
+    const success = await pay('subscription_yearly');
+    if (success) {
+      onOpenChange(false);
+      onSuccess?.();
+    }
+  };
+
   const subscriptionFeatures = [
     '모든 AI 분석 무제한 이용',
     '프리미엄 리포트 무제한 다운로드',

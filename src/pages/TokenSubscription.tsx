@@ -210,11 +210,11 @@ const TokenSubscription = () => {
                       <Target className="w-4 h-4 text-emerald-500" />
                       <span className="font-bold text-sm">심리검사 1회</span>
                     </div>
-                    <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs">75% 할인</Badge>
+                    <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs">61% 할인</Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs text-muted-foreground line-through">₩3,900</span>
+                      <span className="text-xs text-muted-foreground line-through">₩4,900</span>
                       <span className="text-2xl font-black text-foreground">₩{SINGLE_TEST_PRICE.toLocaleString()}</span>
                     </div>
                     <Button
@@ -241,7 +241,7 @@ const TokenSubscription = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs text-muted-foreground line-through">₩9,900</span>
+                      <span className="text-xs text-muted-foreground line-through">₩14,900</span>
                       <span className="text-2xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
                     </div>
                     <Button
@@ -379,17 +379,17 @@ const TokenSubscription = () => {
                 <div className="p-3 rounded-xl bg-background/60">
                   <div className="font-bold text-foreground">검사 1회</div>
                   <div className="text-muted-foreground text-xs mb-1">단건</div>
-                  <div className="font-bold text-emerald-600 dark:text-emerald-400">₩990</div>
+                  <div className="font-bold text-emerald-600 dark:text-emerald-400">₩1,900</div>
                 </div>
                 <div className="p-3 rounded-xl bg-background/60">
                   <div className="font-bold text-foreground">리포트 1회</div>
                   <div className="text-muted-foreground text-xs mb-1">단건</div>
-                  <div className="font-bold text-amber-600 dark:text-amber-400">₩3,900</div>
+                  <div className="font-bold text-amber-600 dark:text-amber-400">₩5,900</div>
                 </div>
                 <div className="p-3 rounded-xl bg-background/60">
                   <div className="font-bold text-foreground">검사+리포트</div>
                   <div className="text-muted-foreground text-xs mb-1">각 1회</div>
-                  <div className="font-bold text-foreground">₩4,890</div>
+                  <div className="font-bold text-foreground">₩7,800</div>
                 </div>
                 <div className="p-3 rounded-xl bg-background/60">
                   <div className="font-bold text-foreground">무제한</div>

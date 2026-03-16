@@ -84,7 +84,7 @@ const SubscriptionValueSection = () => {
             </p>
 
             <div className="flex items-end gap-2 mb-1">
-              <span className="text-sm text-slate-500 line-through">₩9,900</span>
+              <span className="text-sm text-slate-500 line-through">₩14,900</span>
               <span className="text-3xl font-black text-white">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
             </div>
             <Badge className="mb-6 bg-amber-500/20 text-amber-300 border-amber-500/30">60% {isEnglish ? 'OFF' : '할인'}</Badge>
@@ -96,7 +96,7 @@ const SubscriptionValueSection = () => {
               size="lg"
             >
               <Zap className="w-5 h-5 mr-2" />
-              {isEnglish ? 'Get Single Report' : '리포트 1회 구매 — ₩3,900'}
+              {isEnglish ? 'Get Single Report' : '리포트 1회 구매 — ₩5,900'}
             </Button>
             <p className="text-xs text-slate-500 mt-3 text-center">
               {isEnglish ? 'No subscription needed' : '구독 없이 바로 이용'}

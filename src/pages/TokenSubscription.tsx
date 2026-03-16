@@ -26,6 +26,7 @@ const TokenSubscription = () => {
   const { pay, loading: paymentLoading, isReady } = usePayment();
   const { reportCredits } = useAccessControl();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
 
   const isPremium = isPremiumUser() || isLifetimeUser();
   const subscriptionLabel = getSubscriptionLabel();

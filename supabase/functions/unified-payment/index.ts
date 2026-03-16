@@ -13,7 +13,7 @@ const PRODUCTS: Record<string, any> = {
   subscription_monthly: { type: 'subscription', name: '월간 구독', price: 14900 },
   subscription_yearly: { type: 'subscription', name: '연간 구독', price: 149000 },
   // 하위 호환성
-  pass_30: { type: 'subscription', name: '월간 구독', price: 9900 },
+  pass_30: { type: 'subscription', name: '월간 구독', price: 14900 },
 };
 
 // 🔒 인증된 사용자 확인 헬퍼

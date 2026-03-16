@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { cleanMarkdown } from '@/utils/cleanMarkdown';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Save, AlertTriangle, CheckCircle2, AlertCircle, ImageIcon, Loader2, RefreshCw } from "lucide-react";
@@ -188,10 +189,12 @@ export const InsuranceAnalysisResult = ({ results, onBack }: InsuranceAnalysisRe
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>🤖 {isEnglish ? 'AI Expert Analysis' : 'AI 전문가 상세 분석'}</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{isEnglish ? 'Expert Detailed Analysis' : '전문가 상세 분석'}</CardTitle></CardHeader>
         <CardContent>
-          <div className="prose prose-sm max-w-none">
-            <p className="whitespace-pre-line text-muted-foreground">{results.aiAnalysis}</p>
+          <div className="space-y-3">
+            {cleanMarkdown(results.aiAnalysis || '').split('\n\n').filter(Boolean).map((p, i) => (
+              <p key={i} className="text-sm leading-[1.8] text-muted-foreground">{p.trim()}</p>
+            ))}
           </div>
         </CardContent>
       </Card>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { cleanMarkdown } from '@/utils/cleanMarkdown';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -304,9 +305,13 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
             </div>
           )}
           
-          <div className="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h3 className="text-xl font-bold mb-3">AI 전문가 분석</h3>
-            <p className="whitespace-pre-wrap leading-relaxed">{analysis || '전문가 상담을 통해 정확한 평가를 받으시기 바랍니다.'}</p>
+          <div className="mb-8 p-6 bg-muted/50 rounded-lg">
+            <h3 className="text-xl font-bold mb-3">전문가 분석</h3>
+            <div className="space-y-3">
+              {cleanMarkdown(analysis || '전문가 상담을 통해 정확한 평가를 받으시기 바랍니다.').split('\n\n').filter(Boolean).map((p, i) => (
+                <p key={i} className="leading-[1.8] text-foreground/85">{p.trim()}</p>
+              ))}
+            </div>
           </div>
           
           <div className="mt-8 p-4 bg-blue-50 rounded text-center text-sm text-gray-600">

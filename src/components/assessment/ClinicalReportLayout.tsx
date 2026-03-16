@@ -4,6 +4,7 @@ import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Download, Share2, Brain, ChevronDown, ChevronUp } from 'lucide-react';
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { PDFHeader } from '@/components/common/PDFHeader';
+import { cleanMarkdown } from '@/utils/cleanMarkdown';
 
 /* ─── Types ─── */
 export interface DomainScore {
@@ -56,6 +57,9 @@ interface ClinicalReportLayoutProps {
 /* ─── Collapsible Section ─── */
 const CollapsibleSection = ({ section }: { section: ReportSection }) => {
   const [open, setOpen] = useState(section.defaultOpen ?? false);
+  const cleaned = cleanMarkdown(section.content);
+  const paragraphs = cleaned.split('\n\n').map(p => p.trim()).filter(Boolean);
+
   return (
     <div className="border border-border/40 rounded-xl overflow-hidden">
       <button
@@ -69,8 +73,12 @@ const CollapsibleSection = ({ section }: { section: ReportSection }) => {
         {open ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
       </button>
       {open && (
-        <div className="p-3.5 pt-2">
-          <p className="text-[13px] leading-relaxed text-foreground/85 whitespace-pre-wrap">{section.content}</p>
+        <div className="p-3.5 pt-2 space-y-2.5">
+          {paragraphs.map((p, idx) => (
+            <p key={idx} className="text-[13px] leading-[1.8] text-foreground/85">
+              {p}
+            </p>
+          ))}
         </div>
       )}
     </div>
@@ -120,6 +128,11 @@ const ClinicalReportLayout = ({
   children,
   pdfId = 'clinical-report-content',
 }: ClinicalReportLayoutProps) => {
+  const cleanedAnalysis = aiAnalysis ? cleanMarkdown(aiAnalysis) : '';
+  const analysisParagraphs = cleanedAnalysis
+    ? cleanedAnalysis.split('\n\n').map(p => p.trim()).filter(Boolean)
+    : [];
+
   return (
     <div className="min-h-screen bg-background">
       {/* ── Sticky Header ── */}
@@ -191,15 +204,15 @@ const ClinicalReportLayout = ({
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
               <Brain className="w-4 h-4 text-primary" />
-              AI 전문가 분석 리포트
+              전문가 분석 리포트
             </h2>
-            {aiAnalysis && <TextToSpeechButton text={aiAnalysis} />}
+            {aiAnalysis && <TextToSpeechButton text={cleanedAnalysis} />}
           </div>
 
           {isAnalyzing ? (
             <div className="flex flex-col items-center py-8 gap-3">
               <div className="w-10 h-10 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-              <p className="text-xs text-muted-foreground">AI가 심층 분석 중...</p>
+              <p className="text-xs text-muted-foreground">심층 분석 중...</p>
             </div>
           ) : aiSections && aiSections.length > 0 ? (
             <div className="space-y-2">
@@ -207,9 +220,13 @@ const ClinicalReportLayout = ({
                 <CollapsibleSection key={s.id} section={s} />
               ))}
             </div>
-          ) : aiAnalysis ? (
-            <div className="text-[13px] leading-relaxed text-foreground/85 whitespace-pre-wrap max-h-[400px] overflow-y-auto">
-              {aiAnalysis}
+          ) : analysisParagraphs.length > 0 ? (
+            <div className="max-h-[400px] overflow-y-auto space-y-3">
+              {analysisParagraphs.map((p, idx) => (
+                <p key={idx} className="text-[13px] leading-[1.8] text-foreground/85">
+                  {p}
+                </p>
+              ))}
             </div>
           ) : (
             <p className="text-xs text-muted-foreground text-center py-4">분석 결과를 불러올 수 없습니다.</p>
@@ -222,7 +239,7 @@ const ClinicalReportLayout = ({
         {/* ── Disclaimer ── */}
         <div className="mt-6 px-1">
           <p className="text-[10px] text-muted-foreground/60 text-center leading-relaxed">
-            본 검사 결과는 AI 기반 참고 자료이며 의학적 진단이 아닙니다.<br />
+            본 검사 결과는 참고 자료이며 의학적 진단이 아닙니다.<br />
             정확한 진단은 전문가와 상담하시기 바랍니다.
           </p>
           <p className="text-[9px] text-muted-foreground/40 text-center mt-1">© AIHPRO.COM</p>

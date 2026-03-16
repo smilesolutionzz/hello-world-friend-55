@@ -210,7 +210,7 @@ const TokenSubscription = () => {
                       <Target className="w-4 h-4 text-emerald-500" />
                       <span className="font-bold text-sm">심리검사 1회</span>
                     </div>
-                    <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs">75% 할인</Badge>
+                    <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs">61% 할인</Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-baseline gap-2">

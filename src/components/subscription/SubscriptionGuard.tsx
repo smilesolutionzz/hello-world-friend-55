@@ -8,7 +8,7 @@ import { useFreeTrial } from '@/hooks/useFreeTrial';
 import { useAccessControl } from '@/hooks/useAccessControl';
 import { Badge } from '@/components/ui/badge';
 import { PaymentModal } from '@/components/payments/PaymentModal';
-import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
+import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE, SUBSCRIPTION_YEARLY_PRICE, SUBSCRIPTION_YEARLY_MONTHLY_PRICE } from '@/constants/tokenCosts';
 import { useToast } from '@/hooks/use-toast';
 
 interface SubscriptionGuardProps {

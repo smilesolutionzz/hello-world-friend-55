@@ -75,6 +75,7 @@ import ExpertHiring from "./pages/ExpertHiring";
 import ExpertDetail from "./pages/ExpertDetail";
 import InstitutionDetailPage from "./pages/InstitutionDetailPage";
 import InstitutionApplication from "./pages/InstitutionApplication";
+import ExpertApplication from "./pages/ExpertApplication";
 import ExpertContract from "./pages/ExpertContract";
 import ExpertContractSuccess from "./pages/ExpertContractSuccess";
 

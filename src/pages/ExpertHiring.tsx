@@ -84,36 +84,40 @@ const ExpertHiring = () => {
     { id: '감각통합', label: '감각통합', icon: '🧠' }
   ];
 
-  // 실제 협력기관 데이터 (메인페이지 PartnerTrustSection과 동일)
+  // 실제 협력기관 데이터 (이미지 명단 기반)
   const partnerInstitutions = [
-    // 발달센터
-    { id: 'inst_1', name: '디딤돌언어사회성연구소', type: '발달센터', location: '서울', specialties: ['언어치료', '사회성발달'], isVerified: true },
-    { id: 'inst_2', name: 'APA발달센터', type: '발달센터', location: '서울', specialties: ['ABA', '발달재활'], isVerified: true },
-    { id: 'inst_3', name: '디앤알운동발달센터', type: '발달센터', location: '경기', specialties: ['운동발달', '감각통합'], isVerified: true },
-    { id: 'inst_4', name: '한점미소발달센터', type: '발달센터', location: '서울', specialties: ['발달재활', '놀이치료'], isVerified: true },
+    { id: 'inst_1', name: 'APA발달센터', type: '발달센터', location: '본점', specialties: ['ABA', '발달재활'], isVerified: true },
+    { id: 'inst_2', name: 'APA주관활동서비스센터', type: '발달센터', location: '본점', specialties: ['주관활동', '발달재활'], isVerified: true },
+    { id: 'inst_3', name: '한점미소발달센터 남양주점', type: '발달센터', location: '경기 남양주', specialties: ['발달재활', '놀이치료'], isVerified: true },
+    { id: 'inst_4', name: '한점미소발달센터 부천점', type: '발달센터', location: '경기 부천', specialties: ['발달재활', '놀이치료'], isVerified: true },
     { id: 'inst_5', name: '우아함발달센터 안산점', type: '발달센터', location: '경기 안산', specialties: ['발달재활', 'ABA'], isVerified: true },
-    { id: 'inst_6', name: '메이플 ABA 목동센터', type: 'ABA센터', location: '서울 목동', specialties: ['ABA', '행동치료'], isVerified: true },
-    { id: 'inst_7', name: '엘림아동발달센터', type: '발달센터', location: '서울', specialties: ['언어치료', '인지치료'], isVerified: true },
-    { id: 'inst_8', name: '해웃음 심리발달센터', type: '심리발달센터', location: '경기', specialties: ['심리상담', '발달재활'], isVerified: true },
-    { id: 'inst_9', name: '핌발달센터', type: '발달센터', location: '서울', specialties: ['발달재활', '감각통합'], isVerified: true },
-    { id: 'inst_10', name: '정관언어발달센터', type: '언어발달센터', location: '부산', specialties: ['언어치료', '조음치료'], isVerified: true },
-    { id: 'inst_11', name: '해오름 아동발달센터', type: '발달센터', location: '인천', specialties: ['발달재활', '놀이치료'], isVerified: true },
-    { id: 'inst_12', name: '넘나들발달센터', type: '발달센터', location: '대전', specialties: ['발달재활', '사회성발달'], isVerified: true },
-    // 심리상담센터
-    { id: 'inst_13', name: '마음숲심리상담센터', type: '심리상담센터', location: '서울', specialties: ['심리상담', '가족치료'], isVerified: true },
-    { id: 'inst_14', name: '행복한마음심리센터', type: '심리상담센터', location: '경기', specialties: ['심리상담', '놀이치료'], isVerified: true },
-    { id: 'inst_15', name: '열린마음상담센터', type: '심리상담센터', location: '서울', specialties: ['심리상담', '미술치료'], isVerified: true },
-    { id: 'inst_16', name: '새봄심리상담소', type: '심리상담센터', location: '부산', specialties: ['심리상담', '청소년상담'], isVerified: true },
-    // 치료센터
-    { id: 'inst_17', name: '언어발달치료센터', type: '치료센터', location: '서울', specialties: ['언어치료', '발달재활'], isVerified: true },
-    { id: 'inst_18', name: '감각통합치료센터', type: '치료센터', location: '경기', specialties: ['감각통합', '운동발달'], isVerified: true },
-    { id: 'inst_19', name: '놀이치료연구소', type: '치료센터', location: '서울', specialties: ['놀이치료', '심리상담'], isVerified: true },
-    { id: 'inst_20', name: '미술치료센터', type: '치료센터', location: '서울', specialties: ['미술치료', '표현예술치료'], isVerified: true },
-    // 의원 및 병원
-    { id: 'inst_21', name: '삼성웰니스의원', type: '의원', location: '서울 강남', specialties: ['발달검사', '의료상담'], isVerified: true },
-    { id: 'inst_22', name: '서울아동발달클리닉', type: '클리닉', location: '서울', specialties: ['발달평가', '치료연계'], isVerified: true },
-    { id: 'inst_23', name: '행복한소아청소년과', type: '소아과', location: '경기', specialties: ['소아발달', '건강검진'], isVerified: true },
-    { id: 'inst_24', name: '마음편한정신건강의학과', type: '정신건강의학과', location: '서울', specialties: ['ADHD', '정서장애'], isVerified: true },
+    { id: 'inst_6', name: '우아함발달센터 화성세솔점', type: '발달센터', location: '경기 화성', specialties: ['발달재활', 'ABA'], isVerified: true },
+    { id: 'inst_7', name: '메이플 ABA 목동센터', type: 'ABA센터', location: '서울 목동', specialties: ['ABA', '행동치료'], isVerified: true },
+    { id: 'inst_8', name: '엘림아동발달센터', type: '발달센터', location: '대구', specialties: ['언어치료', '인지치료'], isVerified: true },
+    { id: 'inst_9', name: '해웃음 심리발달센터', type: '심리발달센터', location: '서울 강서구', specialties: ['심리상담', '발달재활'], isVerified: true },
+    { id: 'inst_10', name: '핌발달센터 남양주점', type: '발달센터', location: '경기 남양주', specialties: ['발달재활', '감각통합'], isVerified: true },
+    { id: 'inst_11', name: '정관언어발달센터', type: '언어발달센터', location: '부산 기장', specialties: ['언어치료', '조음치료'], isVerified: true },
+    { id: 'inst_12', name: '해오름 아동발달센터', type: '발달센터', location: '부산 기장', specialties: ['발달재활', '놀이치료'], isVerified: true },
+    { id: 'inst_13', name: '넘나들 언어인지학습연구소', type: '연구소', location: '경기 양주', specialties: ['언어치료', '인지학습'], isVerified: true },
+    { id: 'inst_14', name: '별하언어심리상담센터', type: '심리상담센터', location: '서울 구로', specialties: ['언어치료', '심리상담'], isVerified: true },
+    { id: 'inst_15', name: '정아동발달센터', type: '발달센터', location: '미입력', specialties: ['발달재활'], isVerified: true },
+    { id: 'inst_16', name: '소리엘언어발달센터', type: '언어발달센터', location: '부산 동래', specialties: ['언어치료', '발달재활'], isVerified: true },
+    { id: 'inst_17', name: '나아가다발달상담센터', type: '발달상담센터', location: '부산 연제구', specialties: ['발달상담', '심리상담'], isVerified: true },
+    { id: 'inst_18', name: '우리aba사회성발달센터', type: '발달센터', location: '경기 의왕', specialties: ['ABA', '사회성발달'], isVerified: true },
+    { id: 'inst_19', name: '한걸음발달 연구소', type: '연구소', location: '대구 달서구', specialties: ['발달재활', '연구'], isVerified: true },
+    { id: 'inst_20', name: '참소리언어심리연구소', type: '연구소', location: '경기 화성', specialties: ['언어치료', '심리상담'], isVerified: true },
+    { id: 'inst_21', name: '산본아동발달센터', type: '발달센터', location: '경기 군포', specialties: ['발달재활', '아동발달'], isVerified: true },
+    { id: 'inst_22', name: '도란도란 심리상담센터', type: '심리상담센터', location: '전국', specialties: ['심리상담', '가족치료'], isVerified: true },
+    { id: 'inst_23', name: '다다언어심리발달센터', type: '발달센터', location: '울산', specialties: ['언어치료', '심리발달'], isVerified: true },
+    { id: 'inst_24', name: '풍무아동청소년아동발달센터', type: '발달센터', location: '경기', specialties: ['아동발달', '청소년발달'], isVerified: true },
+    { id: 'inst_25', name: '창원튼튼병원 부설 아동발달센터', type: '병원부설', location: '창원', specialties: ['아동발달', '의료상담'], isVerified: true },
+    { id: 'inst_26', name: '톡톡말톡톡 언어인지학습센터', type: '학습센터', location: '경기 고양', specialties: ['언어치료', '인지학습'], isVerified: true },
+    { id: 'inst_27', name: '인애 한의원 강남점', type: '한의원', location: '서울 강남', specialties: ['한방치료', '아동건강'], isVerified: true },
+    { id: 'inst_28', name: '가까이 한의원 강남점', type: '한의원', location: '서울 강남', specialties: ['한방치료', '아동건강'], isVerified: true },
+    { id: 'inst_29', name: '굿모닝언어심리발달센터', type: '발달센터', location: '울산', specialties: ['언어치료', '심리발달'], isVerified: true },
+    { id: 'inst_30', name: '디딤돌언어사회성연구소', type: '연구소', location: '부산', specialties: ['언어치료', '사회성발달'], isVerified: true },
+    { id: 'inst_31', name: '그리미미술 옥포점', type: '미술치료센터', location: '경남 옥포', specialties: ['미술치료', '표현예술'], isVerified: true },
+    { id: 'inst_32', name: '인애 한의원 안산점', type: '한의원', location: '경기 안산', specialties: ['한방치료', '아동건강'], isVerified: true },
   ];
 
   const timeSlots = [
@@ -338,7 +342,7 @@ const ExpertHiring = () => {
               )}
             >
               <span className="mr-2">🏢</span>
-              협력기관 (50곳)
+              협력기관 ({partnerInstitutions.length}곳)
             </Button>
           </div>
 
@@ -436,7 +440,7 @@ const ExpertHiring = () => {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold">
                 협력기관 안내
-                <span className="text-gray-500 font-normal ml-2">(50곳)</span>
+                <span className="text-gray-500 font-normal ml-2">({partnerInstitutions.length}곳)</span>
               </h2>
               <Button 
                 variant="outline" 

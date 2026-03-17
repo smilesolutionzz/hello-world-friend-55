@@ -1,0 +1,3 @@
+INSERT INTO public.experts (full_name, professional_title, specializations, certifications, years_experience, bio, hourly_rate, is_verified, is_available, languages, consultation_methods) VALUES
+('하석호', '특수교사', ARRAY['아동발달', '특수체육', '특수교육'], ARRAY['특수교사 자격증'], 8, '아동발달과 특수체육 전문 특수교사입니다. 개별화된 체육 프로그램을 통해 아동의 신체·인지 발달을 지원합니다.', 50000, true, true, ARRAY['한국어'], ARRAY['대면', '방문']),
+('박태성', '바우처전문컨설턴트', ARRAY['바우처컨설팅', '발달재활서비스', '복지서비스'], ARRAY['사회복지사', '바우처전문가'], 10, '바우처 전문 컨설턴트로서 발달재활서비스 및 각종 복지 바우처 관련 전문 컨설팅을 제공합니다.', 50000, true, true, ARRAY['한국어'], ARRAY['대면', '화상', '전화']);

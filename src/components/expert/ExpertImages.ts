@@ -31,6 +31,8 @@ import male11 from '@/assets/experts/expert-male-11.jpg';
 import male12 from '@/assets/experts/expert-male-12.jpg';
 import male13 from '@/assets/experts/expert-male-13.jpg';
 import male14 from '@/assets/experts/expert-male-14.jpg';
+import male15 from '@/assets/experts/expert-male-15.jpg';
+import male16 from '@/assets/experts/expert-male-16.jpg';
 
 export const expertImages: Record<string, string> = {
   // 여성 전문가 (Female experts)
@@ -68,6 +70,8 @@ export const expertImages: Record<string, string> = {
   '박민수': male12,
   '장서원': male13,
   '전우준': male14,
+  '하석호': male15,
+  '박태성': male16,
 };
 
 export const getExpertImage = (name: string): string | null => {

@@ -135,7 +135,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
 
   if (!hasStarted) {
     return (
-      <TokenGate tokensRequired={TOKEN_COSTS.FOCUS_CHECK} featureName={isEnglish ? "AIH Focus Self-Check" : "AIH 집중력 자가점검"} onProceed={handleStartTest}>
+      <TokenGate tokensRequired={TOKEN_COSTS.FOCUS_CHECK} featureName={isEnglish ? "AIH Focus Self-Check" : "AIH 집중력 자가점검"} featureKey="FOCUS_CHECK" onProceed={handleStartTest}>
         <div className="space-y-4 text-center">
           <div className="text-lg font-semibold">{isEnglish ? "AIH Focus Self-Check Features" : "AIH 집중력 자가점검 특징"}</div>
           <ul className="space-y-2 text-sm text-muted-foreground max-w-md mx-auto">

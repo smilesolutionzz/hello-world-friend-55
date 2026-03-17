@@ -188,6 +188,7 @@ const PremiumAdhdForm = ({ ageGroup: initialAgeGroup, onComplete, onBack }: Prem
       <TokenGate
         tokensRequired={TOKEN_COSTS.PREMIUM_ASSESSMENT}
         featureName={isEnglish ? "AIH Premium ADHD Assessment" : "AIH 프리미엄 ADHD 정밀검사"}
+        featureKey="PREMIUM_ASSESSMENT"
         onProceed={handleStartTest}
       >
         <div className="space-y-6 text-center">

@@ -55,17 +55,18 @@ export const UnifiedNavigation = () => {
       label: t.nav.assessmentTools,
       icon: TrendingUp,
       children: [
-        { label: t.nav.simpleTest, path: '/assessment', desc: t.nav.simpleTestDesc },
         { label: t.nav.deepTest, path: '/premium-assessment', desc: t.nav.deepTestDesc },
+        { label: t.nav.simpleTest, path: '/assessment', desc: t.nav.simpleTestDesc },
         { label: t.nav.personalReport, path: '/report-generator', desc: t.nav.personalReportDesc, icon: FileText, badge: 'PREMIUM' },
       ]
     },
     {
-      label: t.nav.aiCounseling,
+      label: t.nav.customCounseling,
       icon: Bot,
       children: [
-        { label: t.nav.aiCounseling, path: '/ai-assistant', desc: t.nav.aiCounselingDesc, icon: MessageCircle },
+        { label: t.nav.expertConsult, path: '/expert-hiring', desc: t.nav.expertConsultDesc, icon: UserCheck },
         { label: t.nav.aiAgit, path: '/metaverse-voice', desc: t.nav.aiAgitDesc, badge: 'NEW', icon: Mic, mobileNote: t.nav.aiAgitMobile },
+        { label: t.nav.aiCounseling, path: '/ai-assistant', desc: t.nav.aiCounselingDesc, icon: MessageCircle },
       ]
     },
     {
@@ -77,17 +78,12 @@ export const UnifiedNavigation = () => {
       ]
     },
     {
-      label: t.nav.expert,
-      icon: UserCheck,
+      label: t.nav.subscription,
+      icon: Crown,
       children: [
-        { label: t.nav.expertConsult, path: '/expert-hiring', desc: t.nav.expertConsultDesc },
         { label: t.nav.purchasePass, path: '/token-subscription', desc: t.nav.purchasePassDesc },
+        { label: t.nav.column, path: '/column', desc: t.nav.columnDesc, icon: Heart },
       ]
-    },
-    {
-      label: t.nav.column,
-      path: '/column',
-      icon: Heart,
     },
   ];
 

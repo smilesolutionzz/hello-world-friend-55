@@ -75,6 +75,7 @@ import ExpertHiring from "./pages/ExpertHiring";
 import ExpertDetail from "./pages/ExpertDetail";
 import InstitutionDetailPage from "./pages/InstitutionDetailPage";
 import InstitutionApplication from "./pages/InstitutionApplication";
+import ExpertApplication from "./pages/ExpertApplication";
 import ExpertContract from "./pages/ExpertContract";
 import ExpertContractSuccess from "./pages/ExpertContractSuccess";
 
@@ -233,6 +234,7 @@ const App = () => {
           <Route path="/institution-detail/:id" element={<InstitutionDetailPage />} />
           <Route path="/partner-benefits" element={<InstitutionDetailPage />} />
           <Route path="/institution-application" element={<InstitutionApplication />} />
+          <Route path="/expert-application" element={<ExpertApplication />} />
           <Route path="/expert-contract/:expertId" element={<ExpertContract />} />
           <Route path="/expert-contract-success" element={<ExpertContractSuccess />} />
 

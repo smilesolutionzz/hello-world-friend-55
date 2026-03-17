@@ -326,16 +326,10 @@ export const ExpertList: React.FC<ExpertListProps> = ({
 
                   {/* 가격 */}
                   <div className="text-center p-3 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg">
-                    {expert.hourly_rate === 0 ? (
-                      <div className="text-xl font-bold text-green-600">무료</div>
-                    ) : (
-                      <>
-                        <div className="text-2xl font-bold text-primary">
-                          {expert.hourly_rate.toLocaleString()}원
-                        </div>
-                        <div className="text-xs text-muted-foreground">회당</div>
-                      </>
-                    )}
+                    <div className="text-2xl font-bold text-primary">
+                      49,000원
+                    </div>
+                    <div className="text-xs text-muted-foreground">40분 상담</div>
                   </div>
 
                   {/* 상담 버튼 */}

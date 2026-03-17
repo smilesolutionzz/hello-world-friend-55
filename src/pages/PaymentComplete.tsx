@@ -191,6 +191,12 @@ const PaymentComplete = () => {
                   이용권으로 검사하기
                 </Button>
               )}
+              {resolvedType === 'consultation' && (
+                <Button className="w-full" onClick={() => navigate('/booking-management')}>
+                  <CalendarCheck className="w-4 h-4 mr-2" />
+                  예약 내역 확인
+                </Button>
+              )}
               <Button variant="outline" className="w-full" onClick={() => navigate('/')}>
                 <Home className="w-4 h-4 mr-2" />
                 홈으로

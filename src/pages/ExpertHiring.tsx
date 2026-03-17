@@ -35,7 +35,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
-// mockExperts removed - using only DB data
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { useTokens } from '@/hooks/useTokens';
 
 interface Expert {

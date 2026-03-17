@@ -1,30 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, Share2, Heart, AlertCircle, TrendingUp, Loader2, BarChart3 } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
-import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
-import { PDFHeader } from '@/components/common/PDFHeader';
 import { supabase } from '@/integrations/supabase/client';
-import { 
-  RadarChart, 
-  PolarGrid, 
-  PolarAngleAxis, 
-  PolarRadiusAxis, 
-  Radar, 
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  Cell
-} from 'recharts';
+import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
+import VisualResultInfographic from './VisualResultInfographic';
+import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 
 interface AttachmentStyleDeepResultProps {
   result: {
@@ -48,388 +29,110 @@ interface AttachmentStyleDeepResultProps {
   onBack: () => void;
 }
 
-const styleColors = {
-  secure: {
-    bg: 'bg-green-50',
-    border: 'border-green-200',
-    text: 'text-green-700',
-    progress: 'bg-green-500',
-  },
-  anxious: {
-    bg: 'bg-yellow-50',
-    border: 'border-yellow-200',
-    text: 'text-yellow-700',
-    progress: 'bg-yellow-500',
-  },
-  avoidant: {
-    bg: 'bg-blue-50',
-    border: 'border-blue-200',
-    text: 'text-blue-700',
-    progress: 'bg-blue-500',
-  },
-  fearful: {
-    bg: 'bg-purple-50',
-    border: 'border-purple-200',
-    text: 'text-purple-700',
-    progress: 'bg-purple-500',
-  },
-};
-
 const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ result, onBack }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [aiAnalysis, setAiAnalysis] = useState<string>('');
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchAIAnalysis();
+    const fetchAnalysis = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('attachment-analysis', {
+          body: { result }
+        });
+        if (error) throw error;
+        setAiAnalysis(data.analysis || '');
+      } catch {
+        setAiAnalysis('AI 분석을 불러오는 중 오류가 발생했습니다. 전문가 상담을 권장합니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAnalysis();
   }, []);
 
-  const fetchAIAnalysis = async () => {
-    setIsAnalyzing(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('attachment-analysis', {
-        body: { result }
-      });
+  const getColor = (pct: number) =>
+    pct >= 75 ? 'bg-destructive' : pct >= 50 ? 'bg-orange-500' : pct >= 25 ? 'bg-yellow-500' : 'bg-green-500';
+  const getLevel = (pct: number) =>
+    pct >= 75 ? '높음' : pct >= 50 ? '중간' : pct >= 25 ? '낮음' : '안정';
 
-      if (error) throw error;
-      
-      setAiAnalysis(data.analysis || '');
-    } catch (error) {
-      console.error('AI 분석 오류:', error);
-      toast({
-        title: "분석 오류",
-        description: "AI 분석 중 오류가 발생했습니다.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsAnalyzing(false);
-    }
+  const domains: DomainScore[] = result.averageScores.map(({ category, average }) => {
+    const styleInfo = result.allStyles[category];
+    const pct = Math.round((average / 5) * 100);
+    return {
+      key: category,
+      label: `${styleInfo?.emoji || ''} ${styleInfo?.name || category}`,
+      score: Number(average.toFixed(1)),
+      maxScore: 5,
+      level: getLevel(pct),
+      color: getColor(pct),
+    };
+  });
+
+  const severityColor = result.dominantStyle === 'secure'
+    ? 'text-green-600 border-green-300'
+    : result.dominantStyle === 'anxious'
+    ? 'text-yellow-600 border-yellow-300'
+    : result.dominantStyle === 'avoidant'
+    ? 'text-primary border-primary/30'
+    : 'text-destructive border-destructive/30';
+
+  const parseAISections = (text: string): ReportSection[] => {
+    if (!text) return [];
+    const paras = text.split('\n\n').filter(p => p.trim().length > 20);
+    const icons = ['🧠', '💕', '🎯', '⚠️', '💡', '📋', '✨'];
+    const titles = ['종합 분석', '애착 패턴 해석', '관계 강점', '성장 영역', '발달 지원', '실천 가이드', '전문가 소견'];
+    return paras.slice(0, 7).map((p, idx) => ({
+      id: `s-${idx}`, icon: icons[idx] || '📋', title: titles[idx] || `분석 ${idx + 1}`,
+      content: p, defaultOpen: idx === 0,
+    }));
   };
 
-  // 차트 데이터 준비
-  const radarData = result.averageScores.map(({ category, average }) => ({
-    category: result.allStyles[category].name,
-    score: average,
-    fullMark: 5
-  }));
+  const aiSections = parseAISections(aiAnalysis);
 
-  const barData = result.averageScores.map(({ category, average }) => ({
-    name: result.allStyles[category].name,
-    점수: average,
-    emoji: result.allStyles[category].emoji
-  }));
-
-  const COLORS = {
-    secure: '#10b981',
-    anxious: '#f59e0b',
-    avoidant: '#3b82f6',
-    fearful: '#a855f7'
-  };
-
-  const handleDownloadPDF = async () => {
-    await downloadResultAsPDF(
-      'attachment-result-content',
-      `애착유형분석_${new Date().toLocaleDateString()}.pdf`
+  const handleDownload = async () => {
+    await downloadResultAsPDF('clinical-report-content', '애착유형_심층분석_결과',
+      () => toast({ title: 'PDF 다운로드 완료' }),
+      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
     );
-    toast({
-      title: "PDF 다운로드 완료",
-      description: "검사 결과가 저장되었습니다.",
-    });
   };
 
-  const handleShare = () => {
-    toast({
-      title: "공유 기능",
-      description: "결과 공유 기능이 곧 제공됩니다.",
-    });
-  };
-
-  const colors = styleColors[result.dominantStyle as keyof typeof styleColors];
+  if (isLoading) return <AnalysisLoadingScreen testName="애착 유형 심층 분석" />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 p-4">
-      <div className="max-w-4xl mx-auto pt-8 pb-12 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" onClick={onBack} className="gap-2">
-            <ArrowLeft className="w-4 h-4" />
-            뒤로
-          </Button>
-          <div className="flex gap-2">
-            <TextToSpeechButton text={`애착 유형 분석 결과입니다. 당신의 주요 애착 유형은 ${result.styleInfo.name}입니다.`} />
-            <Button variant="outline" onClick={handleDownloadPDF} className="gap-2">
-              <Download className="w-4 h-4" />
-              PDF 다운로드
-            </Button>
-            <Button variant="outline" onClick={handleShare} className="gap-2">
-              <Share2 className="w-4 h-4" />
-              공유
-            </Button>
-          </div>
-        </div>
-
-        <div id="attachment-result-content" className="space-y-6">
-          <PDFHeader testName="애착 유형 심층 분석" />
-
-          {/* Main Result Card */}
-          <Card className={`shadow-xl border-2 ${colors.border}`}>
-            <CardHeader className={`${colors.bg}`}>
-              <div className="text-center space-y-4">
-                <div className="text-6xl">{result.styleInfo.emoji}</div>
-                <CardTitle className="text-3xl">
-                  당신의 주요 애착 유형
-                </CardTitle>
-                <div className={`text-4xl font-bold ${colors.text}`}>
-                  {result.styleInfo.name}
-                </div>
-                <CardDescription className="text-lg">
-                  {result.styleInfo.description}
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-muted rounded-lg">
-                  <p className="text-sm text-muted-foreground">총점</p>
-                  <p className="text-3xl font-bold">{result.totalScore.toFixed(0)}</p>
-                </div>
-                <div className="text-center p-4 bg-muted rounded-lg">
-                  <p className="text-sm text-muted-foreground">평균 점수</p>
-                  <p className="text-3xl font-bold">{result.averageScore.toFixed(1)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* AI 심층 분석 */}
-          <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50/50 to-pink-50/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-800">
-                <BarChart3 className="w-6 h-6" />
-                AI 심층 분석
-              </CardTitle>
-              <CardDescription>
-                OpenAI가 당신의 애착 유형을 전문적으로 분석합니다
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isAnalyzing ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
-                  <span className="ml-3 text-lg text-purple-600">AI가 분석 중입니다...</span>
-                </div>
-              ) : (
-                <div className="prose prose-sm max-w-none">
-                  <div className="whitespace-pre-wrap text-gray-700 leading-relaxed bg-white p-6 rounded-lg">
-                    {aiAnalysis || 'AI 분석을 불러오는 중...'}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* 레이더 차트 */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
-                애착 유형 분포도
-              </CardTitle>
-              <CardDescription>
-                각 애착 유형의 경향성을 시각적으로 확인하세요
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
-                <RadarChart data={radarData}>
-                  <PolarGrid stroke="#e5e7eb" />
-                  <PolarAngleAxis 
-                    dataKey="category" 
-                    tick={{ fill: '#6b7280', fontSize: 14 }}
-                  />
-                  <PolarRadiusAxis 
-                    angle={90} 
-                    domain={[0, 5]} 
-                    tick={{ fill: '#6b7280' }}
-                  />
-                  <Radar
-                    name="점수"
-                    dataKey="score"
-                    stroke="#8b5cf6"
-                    fill="#8b5cf6"
-                    fillOpacity={0.6}
-                  />
-                  <Tooltip />
-                </RadarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* 막대 그래프 */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
-                애착 유형별 점수
-              </CardTitle>
-              <CardDescription>
-                각 애착 유형의 경향성을 확인해보세요
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis 
-                    dataKey="name" 
-                    tick={{ fill: '#6b7280', fontSize: 12 }}
-                  />
-                  <YAxis 
-                    domain={[0, 5]} 
-                    tick={{ fill: '#6b7280' }}
-                  />
-                  <Tooltip />
-                  <Bar dataKey="점수" radius={[8, 8, 0, 0]}>
-                    {barData.map((entry, index) => {
-                      const category = result.averageScores[index].category;
-                      return (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={COLORS[category as keyof typeof COLORS]} 
-                        />
-                      );
-                    })}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-              
-              <div className="mt-6 space-y-3">
-                {result.averageScores.map(({ category, average }) => {
-                  const styleInfo = result.allStyles[category];
-                  const percentage = (average / 5) * 100;
-                  const styleColor = styleColors[category as keyof typeof styleColors];
-                  
-                  return (
-                    <div key={category} className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">{styleInfo.emoji}</span>
-                          <span className="font-semibold">{styleInfo.name}</span>
-                        </div>
-                        <span className={`font-bold ${styleColor.text}`}>
-                          {average.toFixed(1)}/5.0
-                        </span>
-                      </div>
-                      <Progress value={percentage} className="h-3" />
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Strengths */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Heart className="w-5 h-5 text-green-600" />
-                강점
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {result.styleInfo.strengths.map((strength, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className="text-green-600 mt-1">✓</span>
-                    <span>{strength}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Challenges */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-orange-600" />
-                성장 영역
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {result.styleInfo.challenges.map((challenge, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className="text-orange-600 mt-1">•</span>
-                    <span>{challenge}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Tips */}
-          <Card className="bg-gradient-to-br from-pink-50 to-purple-50">
-            <CardHeader>
-              <CardTitle>💡 맞춤 조언</CardTitle>
-              <CardDescription>
-                더 건강한 관계를 위한 실천 방법
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {result.styleInfo.tips.map((tip, index) => (
-                  <li key={index} className="flex items-start gap-3 p-3 bg-white rounded-lg">
-                    <span className="text-purple-600 font-bold">{index + 1}</span>
-                    <span>{tip}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Additional Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle>🌱 애착 유형 이해하기</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-muted-foreground">
-                애착 유형은 어린 시절의 양육 경험을 통해 형성되지만, 고정된 것이 아닙니다. 
-                자기 인식과 노력을 통해 더 안정적인 애착 패턴으로 변화할 수 있습니다.
-              </p>
-              <div className="bg-blue-50 p-4 rounded-lg space-y-2">
-                <p className="font-semibold text-blue-900">💙 알아두세요</p>
-                <ul className="text-sm text-blue-800 space-y-1 ml-4">
-                  <li>• 애착 유형은 상황과 관계에 따라 다르게 나타날 수 있습니다</li>
-                  <li>• 건강한 관계 경험을 통해 긍정적으로 변화할 수 있습니다</li>
-                  <li>• 자신의 패턴을 인식하는 것이 변화의 첫걸음입니다</li>
-                  <li>• 필요시 전문가의 도움을 받는 것을 권장합니다</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button 
-              className="flex-1" 
-              onClick={() => navigate('/assessment')}
-            >
-              다른 검사 하기
-            </Button>
-            <Button 
-              variant="outline" 
-              className="flex-1"
-              onClick={() => navigate('/ai-counselor')}
-            >
-              AI 상담 받기
-            </Button>
-          </div>
-        </div>
+    <ClinicalReportLayout
+      testName="애착 유형 심층 분석 결과"
+      subtitle={`${result.styleInfo.emoji} 주요 유형: ${result.styleInfo.name}`}
+      onBack={onBack}
+      onDownload={handleDownload}
+      totalScore={result.averageScore.toFixed(1)}
+      totalLabel="평균 점수"
+      scoreUnit="/ 5.0"
+      scoreSeverity={result.styleInfo.name}
+      severityColor={severityColor}
+      domains={domains}
+      aiAnalysis={aiAnalysis}
+      aiSections={aiSections.length > 0 ? aiSections : undefined}
+    >
+      <div className="mb-4">
+        <VisualResultInfographic
+          data={{
+            testName: '애착 유형 심층 분석',
+            subtitle: '4가지 애착 유형 분포',
+            date: new Date().toLocaleDateString('ko-KR'),
+            scores: Object.fromEntries(
+              result.averageScores.map(({ category, average }) => [category, (average / 5) * 7])
+            ),
+            maxScore: 7,
+            categoryTranslations: Object.fromEntries(
+              result.averageScores.map(({ category }) => [category, result.allStyles[category]?.name || category])
+            ),
+            riskLevel: result.dominantStyle === 'secure' ? 'low' : result.dominantStyle === 'anxious' ? 'moderate' : 'high',
+          }}
+        />
       </div>
-    </div>
+    </ClinicalReportLayout>
   );
 };
 

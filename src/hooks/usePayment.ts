@@ -14,7 +14,7 @@ export const PRODUCTS = {
     description: '심리검사 1회 이용',
     price: SINGLE_TEST_PRICE,
     originalPrice: 4900,
-    discount: 61,
+    discount: 80,
   },
   single_report: {
     id: 'single_report',
@@ -22,8 +22,8 @@ export const PRODUCTS = {
     name: '심층 분석 리포트',
     description: '전문가급 AI 분석 1회',
     price: SINGLE_REPORT_PRICE,
-    originalPrice: 14900,
-    discount: 60,
+    originalPrice: 9900,
+    discount: 61,
   },
   subscription_monthly: { 
     id: 'subscription_monthly', 
@@ -31,7 +31,7 @@ export const PRODUCTS = {
     name: '월간 구독', 
     description: '30일 무제한 이용',
     price: SUBSCRIPTION_PRICE,
-    originalPrice: 29900, 
+    originalPrice: 19900, 
     discount: 50 
   },
   subscription_yearly: {
@@ -40,7 +40,7 @@ export const PRODUCTS = {
     name: '연간 구독',
     description: '365일 무제한 이용',
     price: SUBSCRIPTION_YEARLY_PRICE,
-    originalPrice: 358800,
+    originalPrice: 237600,
     discount: 58,
   },
   // 하위 호환성
@@ -50,7 +50,7 @@ export const PRODUCTS = {
     name: '월간 구독', 
     description: '30일 무제한 이용',
     price: SUBSCRIPTION_PRICE, 
-    originalPrice: 29900, 
+    originalPrice: 19900, 
     discount: 50 
   },
 } as const;

@@ -327,7 +327,7 @@ const ExpertHiring = () => {
               )}
             >
               <Users className="w-4 h-4 mr-2" />
-              전문가 (50명)
+              전문가 ({experts.length}명)
             </Button>
             <Button
               variant={activeTab === 'institutions' ? 'default' : 'outline'}

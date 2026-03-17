@@ -28,7 +28,8 @@ import {
   Users,
   Phone,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Building2
 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";

@@ -466,10 +466,10 @@ const ExpertHiring = () => {
               </h2>
               <Button 
                 variant="outline" 
-                onClick={() => navigate('/partner-benefits')}
+                onClick={() => navigate('/institution-application')}
                 className="text-blue-600 border-blue-300 hover:bg-blue-50"
               >
-                기관 등록 신청
+                협력기관 신청하기
                 <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </div>

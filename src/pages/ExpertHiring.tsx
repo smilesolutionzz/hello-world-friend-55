@@ -28,7 +28,8 @@ import {
   Users,
   Phone,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Building2
 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -317,10 +318,14 @@ const ExpertHiring = () => {
           </Card>
 
           {/* 신뢰 지표 */}
-          <div className="flex justify-center gap-8 mt-8 text-sm text-gray-400">
+          <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-gray-400">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4" />
               <span>30+ 검증된 전문가</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-blue-400" />
+              <span>50+ AIHPRO 검증 제휴기관</span>
             </div>
             <div className="flex items-center gap-2">
               <Star className="w-4 h-4 text-yellow-500" />
@@ -474,7 +479,7 @@ const ExpertHiring = () => {
                 <Card 
                   key={inst.id}
                   className="hover:shadow-xl transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-white to-blue-50 shadow-md hover:scale-[1.02]"
-                  onClick={() => (inst as any).website ? window.open((inst as any).website, '_blank') : navigate('/partner-benefits')}
+                  onClick={() => (inst as any).website ? window.open((inst as any).website, '_blank') : navigate(`/institution-detail/${inst.id}`)}
                 >
                   <CardContent className="p-5">
                     <div className="flex items-start gap-4">

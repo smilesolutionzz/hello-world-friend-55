@@ -73,6 +73,7 @@ import ObservationDetail from "./pages/ObservationDetail";
 // Expert Finding (info only)
 import ExpertHiring from "./pages/ExpertHiring";
 import ExpertDetail from "./pages/ExpertDetail";
+import InstitutionDetailPage from "./pages/InstitutionDetailPage";
 import ExpertContract from "./pages/ExpertContract";
 import ExpertContractSuccess from "./pages/ExpertContractSuccess";
 
@@ -228,6 +229,8 @@ const App = () => {
           {/* Expert Finding (info + contract) */}
           <Route path="/expert-hiring" element={<ExpertHiring />} />
           <Route path="/expert-detail/:id" element={<ExpertDetail />} />
+          <Route path="/institution-detail/:id" element={<InstitutionDetailPage />} />
+          <Route path="/partner-benefits" element={<InstitutionDetailPage />} />
           <Route path="/expert-contract/:expertId" element={<ExpertContract />} />
           <Route path="/expert-contract-success" element={<ExpertContractSuccess />} />
 

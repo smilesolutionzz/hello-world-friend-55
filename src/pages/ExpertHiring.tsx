@@ -173,9 +173,20 @@ const ExpertHiring = () => {
           description: expert.bio || '',
           location: '온라인',
           isOnline: true,
-          responseTime: '평균 2시간 이내'
+          responseTime: '평균 2시간 이내',
+          isTop: TOP_EXPERTS.includes(expert.full_name)
         }));
       }
+
+      // TOP 전문가를 먼저 정렬
+      allExperts.sort((a, b) => {
+        if (a.isTop && !b.isTop) return -1;
+        if (!a.isTop && b.isTop) return 1;
+        if (a.isTop && b.isTop) {
+          return TOP_EXPERTS.indexOf(a.name) - TOP_EXPERTS.indexOf(b.name);
+        }
+        return 0;
+      });
 
       setExperts(allExperts);
     } catch (error) {

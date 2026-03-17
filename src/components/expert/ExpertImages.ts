@@ -55,6 +55,7 @@ export const expertImages: Record<string, string> = {
   '김민주': female16,
   '한보경': female17,
   '손예영': female18,
+  '윤은민': female19,
   
   // 남성 전문가 (Male experts)
   '정민호': male01,

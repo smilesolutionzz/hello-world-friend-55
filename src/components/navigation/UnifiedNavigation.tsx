@@ -209,9 +209,9 @@ export const UnifiedNavigation = () => {
                     key={item.label}
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleNavigation(item.path!)}
+                    onClick={() => handleNavigation((item as any).path)}
                     className={`h-10 px-4 rounded-full font-medium transition-all ${
-                      isActive(item.path!)
+                      isActive((item as any).path)
                         ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
                         : 'text-foreground/80 hover:text-foreground hover:bg-accent'
                     }`}

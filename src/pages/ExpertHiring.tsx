@@ -527,19 +527,19 @@ const ExpertHiring = () => {
             </div>
 
             {/* 기관 등록 안내 배너 */}
-            <Card className="mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 border-0 text-white">
+            <Card className="mt-8 bg-gradient-to-r from-blue-100 to-indigo-100 border border-blue-200 shadow-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div>
-                    <h3 className="font-bold text-lg mb-1">우리 기관도 등록하고 싶으신가요?</h3>
-                    <p className="text-white/80 text-sm">무료로 기관 정보를 등록하고 더 많은 고객을 만나보세요</p>
+                    <h3 className="font-bold text-lg mb-1 text-blue-900">우리 기관도 등록하고 싶으신가요?</h3>
+                    <p className="text-blue-700/80 text-sm">무료로 기관 정보를 등록하고 더 많은 고객을 만나보세요</p>
                   </div>
                   <Button 
-                    onClick={() => navigate('/partner-benefits')}
-                    className="bg-white text-blue-600 hover:bg-blue-50"
+                    onClick={() => navigate('/institution-application')}
+                    className="bg-white text-blue-700 hover:bg-blue-50 border border-blue-300 shadow-sm"
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
-                    무료 등록하기
+                    협력기관 신청하기
                   </Button>
                 </div>
               </CardContent>

@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { UnifiedNavigation } from "@/components/UnifiedNavigation";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import {
   ArrowLeft,
   MapPin,

@@ -119,18 +119,18 @@ const ExpertHiring = () => {
     { id: 'inst_31', name: '그리미미술 옥포점', type: '미술치료센터', location: '경남 옥포', specialties: ['미술치료', '표현예술'], isVerified: true },
     { id: 'inst_32', name: '인애 한의원 안산점', type: '한의원', location: '경기 안산', specialties: ['한방치료', '아동건강'], isVerified: true },
     // 하울회 시설
-    { id: 'inst_33', name: '부천주간 활동서비스', type: '주간활동서비스', location: '부천', specialties: ['주간활동', '장애인서비스'], isVerified: true },
-    { id: 'inst_34', name: '시흥주간 활동서비스', type: '주간활동서비스', location: '시흥', specialties: ['주간활동', '장애인서비스'], isVerified: true },
-    { id: 'inst_35', name: '남양주주간 활동서비스', type: '주간활동서비스', location: '남양주', specialties: ['주간활동', '장애인서비스'], isVerified: true },
-    { id: 'inst_36', name: '용인주간 활동서비스', type: '주간활동서비스', location: '용인', specialties: ['주간활동', '장애인서비스'], isVerified: true },
-    { id: 'inst_37', name: '부천주간 보호시설', type: '주간보호시설', location: '부천', specialties: ['주간보호', '장애인보호'], isVerified: true },
-    { id: 'inst_38', name: '구로주간 보호시설', type: '주간보호시설', location: '서울 구로', specialties: ['주간보호', '장애인보호'], isVerified: true },
-    { id: 'inst_39', name: '하남주간 보호시설', type: '주간보호시설', location: '하남', specialties: ['주간보호', '장애인보호'], isVerified: true },
-    { id: 'inst_40', name: '양천주간 보호시설', type: '주간보호시설', location: '서울 양천', specialties: ['주간보호', '장애인보호'], isVerified: true },
-    { id: 'inst_41', name: '평택주간 방과후 서비스센터', type: '방과후서비스', location: '평택', specialties: ['방과후활동', '주간서비스'], isVerified: true },
-    { id: 'inst_42', name: '진접주간 사회문화 연구소', type: '연구소', location: '남양주 진접', specialties: ['사회문화', '연구'], isVerified: true },
-    { id: 'inst_43', name: '강릉주간 특수체육', type: '특수체육', location: '강릉', specialties: ['특수체육', '운동발달'], isVerified: true },
-    { id: 'inst_44', name: '남양주화도점 주간보호시설', type: '주간보호시설', location: '남양주 화도', specialties: ['주간보호', '장애인보호'], isVerified: true },
+    { id: 'inst_33', name: '부천주간 활동서비스', type: '주간활동서비스', location: '부천', specialties: ['주간활동', '장애인서비스'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_34', name: '시흥주간 활동서비스', type: '주간활동서비스', location: '시흥', specialties: ['주간활동', '장애인서비스'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_35', name: '남양주주간 활동서비스', type: '주간활동서비스', location: '남양주', specialties: ['주간활동', '장애인서비스'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_36', name: '용인주간 활동서비스', type: '주간활동서비스', location: '용인', specialties: ['주간활동', '장애인서비스'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_37', name: '부천주간 보호시설', type: '주간보호시설', location: '부천', specialties: ['주간보호', '장애인보호'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_38', name: '구로주간 보호시설', type: '주간보호시설', location: '서울 구로', specialties: ['주간보호', '장애인보호'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_39', name: '하남주간 보호시설', type: '주간보호시설', location: '하남', specialties: ['주간보호', '장애인보호'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_40', name: '양천주간 보호시설', type: '주간보호시설', location: '서울 양천', specialties: ['주간보호', '장애인보호'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_41', name: '평택주간 방과후 서비스센터', type: '방과후서비스', location: '평택', specialties: ['방과후활동', '주간서비스'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_42', name: '진접주간 사회문화 연구소', type: '연구소', location: '남양주 진접', specialties: ['사회문화', '연구'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_43', name: '강릉주간 특수체육', type: '특수체육', location: '강릉', specialties: ['특수체육', '운동발달'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
+    { id: 'inst_44', name: '남양주화도점 주간보호시설', type: '주간보호시설', location: '남양주 화도', specialties: ['주간보호', '장애인보호'], isVerified: true, website: 'https://www.xn--3o5bl1yp0a.com/' },
     // 함께하는우리
     { id: 'inst_45', name: '함께하는우리 발달장애 주간활동', type: '주간활동서비스', location: '전국', specialties: ['발달장애', '주간활동'], isVerified: true },
     { id: 'inst_46', name: '함께하는우리 방과후활동서비스기관', type: '방과후서비스', location: '전국', specialties: ['방과후활동', '발달장애'], isVerified: true },
@@ -474,7 +474,7 @@ const ExpertHiring = () => {
                 <Card 
                   key={inst.id}
                   className="hover:shadow-xl transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-white to-blue-50 shadow-md hover:scale-[1.02]"
-                  onClick={() => navigate('/partner-benefits')}
+                  onClick={() => (inst as any).website ? window.open((inst as any).website, '_blank') : navigate('/partner-benefits')}
                 >
                   <CardContent className="p-5">
                     <div className="flex items-start gap-4">

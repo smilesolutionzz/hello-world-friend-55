@@ -34,7 +34,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
-import { mockExperts as mockExpertsData } from '@/data/mockExperts';
+// mockExperts removed - using only DB data
 import { useTokens } from '@/hooks/useTokens';
 
 interface Expert {
@@ -151,31 +151,6 @@ const ExpertHiring = () => {
           responseTime: '평균 2시간 이내'
         }));
       }
-
-      // Mock 데이터 추가 (전체)
-      const mockConverted = mockExpertsData.map(e => ({
-        id: e.id,
-        name: e.name.replace(' 치료사', '').replace(' 박사', '').replace(' 교수', ''),
-        specialty: e.categories || [],
-        credentials: [e.credential],
-        rating: e.rating,
-        reviews: Math.floor(Math.random() * 100) + 20,
-        experience: '경력 다년',
-        hourlyPrice: e.price_per_50 || 30000,
-        image: e.photo_url || '',
-        description: e.intro || '',
-        location: e.region || '온라인',
-        isOnline: e.online || false,
-        responseTime: '평균 2시간 이내'
-      }));
-
-      // 중복 제거
-      const uniqueNames = new Set(allExperts.map(e => e.name));
-      mockConverted.forEach(e => {
-        if (!uniqueNames.has(e.name)) {
-          allExperts.push(e);
-        }
-      });
 
       setExperts(allExperts);
     } catch (error) {

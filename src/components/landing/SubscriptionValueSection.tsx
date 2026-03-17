@@ -84,10 +84,10 @@ const SubscriptionValueSection = () => {
             </p>
 
             <div className="flex items-end gap-2 mb-1">
-              <span className="text-sm text-slate-500 line-through">₩14,900</span>
+              <span className="text-sm text-slate-500 line-through">₩9,900</span>
               <span className="text-3xl font-black text-white">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
             </div>
-            <Badge className="mb-6 bg-amber-500/20 text-amber-300 border-amber-500/30">60% {isEnglish ? 'OFF' : '할인'}</Badge>
+            <Badge className="mb-6 bg-amber-500/20 text-amber-300 border-amber-500/30">61% {isEnglish ? 'OFF' : '할인'}</Badge>
 
             <Button
               onClick={() => setPaymentOpen(true)}

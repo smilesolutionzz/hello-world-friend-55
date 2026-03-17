@@ -76,7 +76,7 @@ const PatternIQTestResult = ({ result, onBack, onRestart }: PatternIQTestResultP
             testName: '패턴 인지력',
             subtitle: '4개 인지 영역',
             date: new Date().toLocaleDateString('ko-KR'),
-            scores: Object.fromEntries(Object.entries(result.categoryScores).map(([k, v]) => [k, (v.correct / v.total) * 7])),
+            scores: Object.fromEntries(Object.entries(result.categoryScores).map(([k, v]) => [k, Math.min(7, (v / maxPerCategory) * 7)])),
             maxScore: 7,
             categoryTranslations: categoryNames,
             riskLevel: 'low',

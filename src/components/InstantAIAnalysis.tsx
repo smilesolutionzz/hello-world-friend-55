@@ -234,6 +234,16 @@ const InstantAIAnalysis = () => {
       setIsAnalyzing(false);
       setShowResult(true);
 
+      // sessionStorage에 결과 저장 (페이지 이동 후 복원용)
+      try {
+        sessionStorage.setItem('instantAI_result', JSON.stringify({
+          inputText,
+          analysisResult: analysis,
+          reportImages: reportImages || [],
+          tableOfContents,
+        }));
+      } catch (e) { /* storage full 무시 */ }
+
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         await supabase.from('concern_storage').insert({

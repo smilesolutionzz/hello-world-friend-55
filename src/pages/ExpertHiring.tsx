@@ -451,6 +451,25 @@ const ExpertHiring = () => {
                 <p className="text-gray-500">다른 검색어를 시도해보세요</p>
               </div>
             )}
+
+            {/* 전문가 신청 배너 */}
+            <Card className="mt-8 bg-gradient-to-r from-emerald-100 to-teal-100 border border-emerald-200 shadow-sm">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div>
+                    <h3 className="font-bold text-lg mb-1 text-emerald-900">전문가로 활동하고 싶으신가요?</h3>
+                    <p className="text-emerald-700/80 text-sm">AIHPRO와 함께 전문가로 활동하며 수익을 창출하세요</p>
+                  </div>
+                  <Button 
+                    onClick={() => navigate('/expert-application')}
+                    className="bg-white text-emerald-700 hover:bg-emerald-50 border border-emerald-300 shadow-sm"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    전문가 신청하기
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
       )}
@@ -466,10 +485,10 @@ const ExpertHiring = () => {
               </h2>
               <Button 
                 variant="outline" 
-                onClick={() => navigate('/partner-benefits')}
+                onClick={() => navigate('/institution-application')}
                 className="text-blue-600 border-blue-300 hover:bg-blue-50"
               >
-                기관 등록 신청
+                협력기관 신청하기
                 <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </div>
@@ -527,19 +546,19 @@ const ExpertHiring = () => {
             </div>
 
             {/* 기관 등록 안내 배너 */}
-            <Card className="mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 border-0 text-white">
+            <Card className="mt-8 bg-gradient-to-r from-blue-100 to-indigo-100 border border-blue-200 shadow-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div>
-                    <h3 className="font-bold text-lg mb-1">우리 기관도 등록하고 싶으신가요?</h3>
-                    <p className="text-white/80 text-sm">무료로 기관 정보를 등록하고 더 많은 고객을 만나보세요</p>
+                    <h3 className="font-bold text-lg mb-1 text-blue-900">우리 기관도 등록하고 싶으신가요?</h3>
+                    <p className="text-blue-700/80 text-sm">무료로 기관 정보를 등록하고 더 많은 고객을 만나보세요</p>
                   </div>
                   <Button 
-                    onClick={() => navigate('/partner-benefits')}
-                    className="bg-white text-blue-600 hover:bg-blue-50"
+                    onClick={() => navigate('/institution-application')}
+                    className="bg-white text-blue-700 hover:bg-blue-50 border border-blue-300 shadow-sm"
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
-                    무료 등록하기
+                    협력기관 신청하기
                   </Button>
                 </div>
               </CardContent>

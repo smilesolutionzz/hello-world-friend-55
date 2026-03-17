@@ -52,7 +52,10 @@ interface Expert {
   location: string;
   isOnline: boolean;
   responseTime: string;
+  isTop: boolean;
 }
+
+const TOP_EXPERTS = ['이수석', '이하연', '이기훈', '이상록', '김선길', '백경열', '장서원', '장호탁', '김지수', '주아인', '윤은민'];
 
 const ExpertHiring = () => {
   const navigate = useNavigate();
@@ -170,9 +173,20 @@ const ExpertHiring = () => {
           description: expert.bio || '',
           location: '온라인',
           isOnline: true,
-          responseTime: '평균 2시간 이내'
+          responseTime: '평균 2시간 이내',
+          isTop: TOP_EXPERTS.includes(expert.full_name)
         }));
       }
+
+      // TOP 전문가를 먼저 정렬
+      allExperts.sort((a, b) => {
+        if (a.isTop && !b.isTop) return -1;
+        if (!a.isTop && b.isTop) return 1;
+        if (a.isTop && b.isTop) {
+          return TOP_EXPERTS.indexOf(a.name) - TOP_EXPERTS.indexOf(b.name);
+        }
+        return 0;
+      });
 
       setExperts(allExperts);
     } catch (error) {
@@ -622,8 +636,8 @@ const ExpertCard = ({ expert, onBook }: { expert: Expert; onBook: () => void }) 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="font-bold text-gray-900 truncate">{expert.name}</h3>
-              {expert.rating >= 4.8 && (
-                <Badge className="bg-amber-100 text-amber-700 text-xs">
+              {expert.isTop && (
+                <Badge className="bg-gradient-to-r from-amber-400 to-orange-400 text-white text-xs font-bold shadow-sm border-0">
                   <Award className="w-3 h-3 mr-0.5" />
                   TOP
                 </Badge>

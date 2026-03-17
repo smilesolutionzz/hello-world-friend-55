@@ -285,7 +285,7 @@ const ExpertHiring = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-      <Helmet>
+      <UnifiedNavigation />
         <title>전문가 상담 예약 | AIHPRO</title>
         <meta name="description" content="검증된 발달, 심리, 언어치료 전문가와 1:1 상담을 예약하세요" />
       </Helmet>

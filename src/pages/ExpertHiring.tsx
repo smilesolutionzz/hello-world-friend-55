@@ -342,7 +342,7 @@ const ExpertHiring = () => {
               )}
             >
               <span className="mr-2">🏢</span>
-              협력기관 (50곳)
+              협력기관 ({partnerInstitutions.length}곳)
             </Button>
           </div>
 

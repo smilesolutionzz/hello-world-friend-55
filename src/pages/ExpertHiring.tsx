@@ -134,6 +134,7 @@ const ExpertHiring = () => {
     // 함께하는우리
     { id: 'inst_45', name: '함께하는우리 발달장애 주간활동', type: '주간활동서비스', location: '전국', specialties: ['발달장애', '주간활동'], isVerified: true },
     { id: 'inst_46', name: '함께하는우리 방과후활동서비스기관', type: '방과후서비스', location: '전국', specialties: ['방과후활동', '발달장애'], isVerified: true },
+    { id: 'inst_47', name: '한국스포츠과학연구소 장애인주간활동,방과후활동센터 하남점', type: '주간활동서비스', location: '하남', specialties: ['장애인주간활동', '방과후활동', '스포츠과학'], isVerified: true },
   ];
 
   const timeSlots = [

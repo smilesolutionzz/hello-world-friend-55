@@ -439,9 +439,9 @@ export const UnifiedNavigation = () => {
                           </div>
                         ) : (
                           <button
-                            onClick={() => handleNavigation(item.path!)}
+                            onClick={() => handleNavigation((item as any).path)}
                             className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors ${
-                              isActive(item.path!) ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
+                              isActive((item as any).path) ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
                             }`}
                           >
                             <item.icon className="w-5 h-5" />

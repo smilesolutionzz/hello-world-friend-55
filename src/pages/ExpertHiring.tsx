@@ -474,7 +474,7 @@ const ExpertHiring = () => {
                 <Card 
                   key={inst.id}
                   className="hover:shadow-xl transition-all duration-300 cursor-pointer border-0 bg-gradient-to-br from-white to-blue-50 shadow-md hover:scale-[1.02]"
-                  onClick={() => navigate('/partner-benefits')}
+                  onClick={() => (inst as any).website ? window.open((inst as any).website, '_blank') : navigate('/partner-benefits')}
                 >
                   <CardContent className="p-5">
                     <div className="flex items-start gap-4">

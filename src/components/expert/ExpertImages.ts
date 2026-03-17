@@ -1,92 +1,75 @@
-import expertJangHotak from '@/assets/expert-jang-hotak.jpg';
-import expertKimSungil from '@/assets/expert-kim-sungil.jpg';
-import expertOhSeeun from '@/assets/expert-oh-seeun.jpg';
-import expertHeoSunhan from '@/assets/expert-heo-sunhan.jpg';
-import expertSongSeongmok from '@/assets/expert-song-seongmok.jpg';
-import expertYeSuyeo from '@/assets/expert-ye-suyeo.jpg';
-import expertBaekGyeongyeol from '@/assets/expert-baek-gyeongyeol.jpg';
-import expertLeeHayeon from '@/assets/expert-lee-hayeon.jpg';
-import expertYeWonmuk from '@/assets/expert-ye-wonmuk.jpg';
-import expertLeeSuseok from '@/assets/expert-lee-suseok-male.jpg';
-import expertHeoSeungryong from '@/assets/expert-heo-seungryong-male.jpg';
-import expertSongSeongmokNew from '@/assets/expert-song-seongmok-male.jpg';
-import expertLeeSangrok from '@/assets/expert-lee-sangrok.jpg';
-import expertMoonGiwung from '@/assets/expert-moon-giwung.jpg';
-import expertKimJiyeon from '@/assets/expert-kim-jiyeon.jpg';
-import expertParkMinsu from '@/assets/expert-park-minsu.jpg';
-import expertKimMiyoung from '@/assets/expert-kim-miyoung.jpg';
-import expertParkSanghoon from '@/assets/expert-park-sanghoon.jpg';
-import expertLeeJungah from '@/assets/expert-lee-jungah.jpg';
-import expertKangEunmi from '@/assets/expert-kang-eunmi.jpg';
-import expertKimJisoo from '@/assets/expert-kim-jisoo.jpg';
-import expertParkMinjun from '@/assets/expert-park-minjun.jpg';
-import expertLeeSeoyeon from '@/assets/expert-lee-seoyeon.jpg';
-import expertChoiDongwook from '@/assets/expert-choi-dongwook.jpg';
-import expertJangYujin from '@/assets/expert-jang-yujin.jpg';
-import expertHanSoyoung from '@/assets/expert-han-soyoung.jpg';
-import expertOhTaehyun from '@/assets/expert-oh-taehyun.jpg';
-import expertLimGayoung from '@/assets/expert-lim-gayoung.jpg';
-import expertLeeGihoon from '@/assets/expert-lee-gihoon-male.jpg';
-import expertJoDaeryong from '@/assets/expert-jo-daeryong.jpg';
-import expertKimJaemin from '@/assets/expert-kim-jaemin.jpg';
-import expertYangHuijin from '@/assets/expert-yang-huijin.jpg';
-import expertLeeHyojin from '@/assets/expert-lee-hyojin.jpg';
-import expertJeonWoojun from '@/assets/expert-jeon-woojun.jpg';
-import expertKimSoohyun from '@/assets/expert-kim-soohyun.jpg';
-import expertJungMinho from '@/assets/expert-jung-minho.jpg';
-import expertYoonSeoyeon from '@/assets/expert-yoon-seoyeon.jpg';
-import expertLeeSeongwoo from '@/assets/expert-lee-seongwoo.jpg';
-import expertJoMoonju from '@/assets/experts/jo-moonju.jpg';
-import expertHeoSeungyeon from '@/assets/experts/heo-seungyeon.jpg';
-import expertParkJuhyun from '@/assets/experts/park-juhyun.jpg';
-import expertYoonEunmin from '@/assets/experts/yoon-eunmin-profile.jpg';
+// AI-generated professional portrait images for all experts
+import female01 from '@/assets/experts/expert-female-01.jpg';
+import female02 from '@/assets/experts/expert-female-02.jpg';
+import female03 from '@/assets/experts/expert-female-03.jpg';
+import female04 from '@/assets/experts/expert-female-04.jpg';
+import female05 from '@/assets/experts/expert-female-05.jpg';
+import female06 from '@/assets/experts/expert-female-06.jpg';
+import female07 from '@/assets/experts/expert-female-07.jpg';
+import female08 from '@/assets/experts/expert-female-08.jpg';
+import female09 from '@/assets/experts/expert-female-09.jpg';
+import female10 from '@/assets/experts/expert-female-10.jpg';
+import female11 from '@/assets/experts/expert-female-11.jpg';
+import female12 from '@/assets/experts/expert-female-12.jpg';
+import female13 from '@/assets/experts/expert-female-13.jpg';
+import female14 from '@/assets/experts/expert-female-14.jpg';
+import female15 from '@/assets/experts/expert-female-15.jpg';
+import female16 from '@/assets/experts/expert-female-16.jpg';
+import female17 from '@/assets/experts/expert-female-17.jpg';
+import female18 from '@/assets/experts/expert-female-18.jpg';
+import male01 from '@/assets/experts/expert-male-01.jpg';
+import male02 from '@/assets/experts/expert-male-02.jpg';
+import male03 from '@/assets/experts/expert-male-03.jpg';
+import male04 from '@/assets/experts/expert-male-04.jpg';
+import male05 from '@/assets/experts/expert-male-05.jpg';
+import male06 from '@/assets/experts/expert-male-06.jpg';
+import male07 from '@/assets/experts/expert-male-07.jpg';
+import male08 from '@/assets/experts/expert-male-08.jpg';
+import male09 from '@/assets/experts/expert-male-09.jpg';
+import male10 from '@/assets/experts/expert-male-10.jpg';
+import male11 from '@/assets/experts/expert-male-11.jpg';
+import male12 from '@/assets/experts/expert-male-12.jpg';
+import male13 from '@/assets/experts/expert-male-13.jpg';
+import male14 from '@/assets/experts/expert-male-14.jpg';
 
 export const expertImages: Record<string, string> = {
-  '문기웅': expertMoonGiwung,
-  '이수석': expertLeeSuseok,
-  '허승룡': expertHeoSeungryong,
-  '송성목': expertSongSeongmokNew,
-  '이상록': expertLeeSangrok,
-  '장호탁': expertJangHotak,
-  '김선길': expertKimSungil,
-  '오세은': expertOhSeeun,
-  '허순한': expertHeoSunhan,
-  '예수여': expertYeSuyeo,
-  '백경열': expertBaekGyeongyeol,
-  '이하연': expertLeeHayeon,
-  '예원묵': expertYeWonmuk,
-  '김지연': expertKimJiyeon,
-  '박민수': expertParkMinsu,
-  '김미영': expertKimMiyoung,
-  '박상훈': expertParkSanghoon,
-  '이정아': expertLeeJungah,
-  '강은미': expertKangEunmi,
-  '김지수': expertKimJisoo,
-  '박민준': expertParkMinjun,
-  '이서연': expertLeeSeoyeon,
-  '최동욱': expertChoiDongwook,
-  '장유진': expertJangYujin,
-  '한소영': expertHanSoyoung,
-  '오태현': expertOhTaehyun,
-  '임가영': expertLimGayoung,
-  '이기훈': expertLeeGihoon,
-  '조대룡': expertJoDaeryong,
-  '김재민': expertKimJaemin,
-  '양희진': expertYangHuijin,
-  '이효진': expertLeeHyojin,
-  '전우준': expertJeonWoojun,
-  '김수현': expertKimSoohyun,
-  '정민호': expertJungMinho,
-  '윤서연': expertYoonSeoyeon,
-  '이성우': expertLeeSeongwoo,
-  '조문주': expertJoMoonju,
-  '허승연': expertHeoSeungyeon,
-  '박주현': expertParkJuhyun,
-  '윤은민': expertYoonEunmin,
-  '장서원': expertYangHuijin, // 임시로 양희진 이미지 사용
+  // 여성 전문가 (Female experts)
+  '강은미': female01,
+  '윤서연': female02,
+  '김미영': female03,
+  '이정아': female04,
+  '오세은': female05,
+  '이하연': female06,
+  '김지연': female07,
+  '양희진': female08,
+  '김지수': female09,
+  '조문주': female10,
+  '박주현': female11,
+  '허승연': female12,
+  '이효진': female13,
+  '김수현': female14,
+  '주아인': female15,
+  '김민주': female16,
+  '한보경': female17,
+  '손예영': female18,
+  
+  // 남성 전문가 (Male experts)
+  '정민호': male01,
+  '박상훈': male02,
+  '장호탁': male03,
+  '김선길': male04,
+  '백경열': male05,
+  '이수석': male06,
+  '허승룡': male07,
+  '송성목': male08,
+  '이상록': male09,
+  '문기웅': male10,
+  '이기훈': male11,
+  '박민수': male12,
+  '장서원': male13,
+  '전우준': male14,
 };
 
 export const getExpertImage = (name: string): string | null => {
-  console.log('Getting image for:', name, expertImages[name]);
   return expertImages[name] || null;
 };

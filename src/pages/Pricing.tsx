@@ -5,125 +5,93 @@ import { useNavigate } from "react-router-dom";
 import SEOHead from "@/components/common/SEOHead";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { useTranslation } from '@/i18n';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { localePath } = useLanguage();
+  const p = t.pricingPage;
 
-  // 무료 기능 목록
   const freeFeatures = [
-    { icon: FileText, label: "관찰일지 무제한 작성", description: "매일 아이의 행동과 발달을 기록하세요" },
-    { icon: Brain, label: "기본 AI 분석", description: "월 3회 AI 분석 리포트 제공" },
-    { icon: TrendingUp, label: "발달 추적 타임라인", description: "성장 기록을 한눈에 확인" },
-    { icon: Bell, label: "주간 발달 알림", description: "주요 변화 알림 수신" },
+    { icon: FileText, label: p.freeFeature1, description: p.freeFeature1Desc },
+    { icon: Brain, label: p.freeFeature2, description: p.freeFeature2Desc },
+    { icon: TrendingUp, label: p.freeFeature3, description: p.freeFeature3Desc },
+    { icon: Bell, label: p.freeFeature4, description: p.freeFeature4Desc },
   ];
 
-  // 프리미엄 플랜
   const premiumPlans = [
     {
       id: "premium_basic",
-      name: "프리미엄",
+      name: p.premiumBasicName,
       icon: Sparkles,
-      description: "AI 분석을 무제한으로",
-      price: "9,900",
-      period: "월",
+      description: p.premiumBasicDesc,
+      price: p.premiumBasicPrice,
       highlight: false,
-      badge: null,
-      features: [
-        "무료 기능 모두 포함",
-        "AI 분석 리포트 무제한",
-        "발달 영역별 심층 분석",
-        "맞춤 육아 가이드",
-        "월간 발달 종합 리포트",
-      ],
-      notIncluded: [
-        "전문가 상담",
-        "위기 감지 알림",
-      ],
-      cta: "프리미엄 시작",
+      badge: null as string | null,
+      features: p.premiumBasicFeatures,
+      notIncluded: p.premiumBasicNotIncluded,
+      cta: p.premiumBasicCta,
     },
     {
       id: "premium_plus",
-      name: "프리미엄 플러스",
+      name: p.premiumPlusName,
       icon: Crown,
-      description: "전문가 연결까지 완벽하게",
-      price: "19,900",
-      period: "월",
+      description: p.premiumPlusDesc,
+      price: p.premiumPlusPrice,
       highlight: true,
-      badge: "인기",
-      features: [
-        "프리미엄 기능 모두 포함",
-        "전문가 상담 월 1회 (30분)",
-        "위기 감지 시 긴급 알림",
-        "우선 전문가 매칭",
-        "발달 검사 해석 상담",
-        "전문가 메모 열람",
-      ],
-      notIncluded: [],
-      cta: "가장 인기있는 플랜",
+      badge: p.premiumPlusBadge,
+      features: p.premiumPlusFeatures,
+      notIncluded: [] as readonly string[],
+      cta: p.premiumPlusCta,
     },
   ];
 
-  // B2B 플랜
+  const expertFees = [
+    { type: p.expertFee1Type, fee: p.expertFee1Amount, description: p.expertFee1Desc },
+    { type: p.expertFee2Type, fee: p.expertFee2Amount, description: p.expertFee2Desc },
+    { type: p.expertFee3Type, fee: p.expertFee3Amount, description: p.expertFee3Desc },
+  ];
+
   const b2bPlans = [
     {
       id: "institution_basic",
-      name: "학교/학원 기본",
+      name: p.b2bBasicName,
       icon: Building2,
-      description: "원아 30명까지 관리",
-      price: "49,000",
-      period: "월",
-      features: [
-        "원아/학생 30명 관리",
-        "교사/관리자 계정 3개",
-        "학부모 발달 알림 발송",
-        "위험도 알림 대시보드",
-        "월간 학급 발달 리포트",
-      ],
+      description: p.b2bBasicDesc,
+      price: p.b2bBasicPrice,
+      period: p.wonPerMonth.includes('month') ? 'mo' : '월',
+      features: p.b2bBasicFeatures,
     },
     {
       id: "institution_pro",
-      name: "기관 프로",
+      name: p.b2bProName,
       icon: Shield,
-      description: "전체 기관 디지털 전환",
-      price: "맞춤 견적",
+      description: p.b2bProDesc,
+      price: p.b2bProPrice,
       period: "",
-      features: [
-        "무제한 원아/학생 관리",
-        "무제한 교사 계정",
-        "학부모 연결 현황 대시보드",
-        "자동 발달 리포트 생성",
-        "전문가 연결 수수료 할인",
-        "전담 계정 매니저",
-        "API 연동 지원",
-      ],
+      features: p.b2bProFeatures,
     },
-  ];
-
-  // 전문가 연결 수수료 정보
-  const expertFees = [
-    { type: "일반 상담", fee: "상담료의 20%", description: "플랫폼 중개 수수료" },
-    { type: "긴급 연결", fee: "+5,000원", description: "24시간 내 매칭 보장" },
-    { type: "심층 상담", fee: "상담료의 15%", description: "60분 이상 심층 상담" },
   ];
 
   const handlePlanSelect = (planId: string) => {
     if (planId.includes("institution")) {
-      navigate("/contact");
+      navigate(localePath("/contact"));
     } else {
-      navigate("/auth");
+      navigate(localePath("/auth"));
     }
   };
 
   return (
     <>
       <SEOHead
-        title="가격 안내 - 무료로 시작하세요 | AIHUMANPRO"
-        description="기본 기능은 무료! AI 심층분석과 전문가 연결이 필요할 때만 프리미엄을 선택하세요."
-        keywords="무료, 프리미엄, 구독, AI 분석, 전문가 상담, 발달 관리"
+        title={p.seoTitle}
+        description={p.seoDesc}
+        keywords="free, premium, subscription, AI analysis, expert consultation"
       />
       
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-secondary/30">
-        {/* Hero Section */}
         <section className="container mx-auto px-4 py-16 md:py-24">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -132,18 +100,18 @@ const Pricing = () => {
           >
             <Badge className="mb-4 bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30">
               <Gift className="w-3 h-3 mr-1" />
-              기본 기능 무료
+              {p.badge}
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-              부담 없이 시작하세요
+              {p.headline}
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              관찰일지 작성과 기본 AI 분석은 <strong className="text-foreground">완전 무료</strong>입니다.<br />
-              더 깊은 분석과 전문가 연결이 필요할 때만 업그레이드하세요.
+              {p.subtitle1} <strong className="text-foreground">{p.subtitleBold}</strong>{p.subtitle2}<br />
+              {p.subtitle3}
             </p>
           </motion.div>
 
-          {/* 무료 기능 섹션 */}
+          {/* Free Plan */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -156,15 +124,15 @@ const Pricing = () => {
                   <Gift className="w-8 h-8 text-green-600" />
                 </div>
                 <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                  무료 플랜
-                  <Badge variant="secondary" className="bg-green-500/20 text-green-700">Forever Free</Badge>
+                  {p.freePlanTitle}
+                  <Badge variant="secondary" className="bg-green-500/20 text-green-700">{p.freePlanForever}</Badge>
                 </CardTitle>
                 <CardDescription className="text-base">
-                  신용카드 없이 바로 시작하세요
+                  {p.freePlanNoCard}
                 </CardDescription>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold text-green-600">₩0</span>
-                  <span className="text-muted-foreground ml-2">영원히</span>
+                  <span className="text-4xl font-bold text-green-600">{p.freePlanPrice}</span>
+                  <span className="text-muted-foreground ml-2">{p.freePlanPriceLabel}</span>
                 </div>
               </CardHeader>
               <CardContent>
@@ -189,18 +157,18 @@ const Pricing = () => {
                 <Button 
                   size="lg" 
                   className="bg-green-600 hover:bg-green-700"
-                  onClick={() => navigate("/auth")}
+                  onClick={() => navigate(localePath("/auth"))}
                 >
-                  무료로 시작하기
+                  {p.startFreeBtn}
                 </Button>
               </CardFooter>
             </Card>
           </motion.div>
 
-          {/* 프리미엄 플랜 섹션 */}
+          {/* Premium Plans */}
           <div className="mb-16">
-            <h2 className="text-2xl font-bold text-center mb-2">프리미엄 플랜</h2>
-            <p className="text-muted-foreground text-center mb-8">더 깊은 분석과 전문가 연결이 필요할 때</p>
+            <h2 className="text-2xl font-bold text-center mb-2">{p.premiumSectionTitle}</h2>
+            <p className="text-muted-foreground text-center mb-8">{p.premiumSectionSubtitle}</p>
             
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {premiumPlans.map((plan, index) => {
@@ -235,7 +203,7 @@ const Pricing = () => {
                         <CardDescription>{plan.description}</CardDescription>
                         <div className="mt-4">
                           <span className="text-3xl font-bold">{plan.price}</span>
-                          <span className="text-muted-foreground">원 / {plan.period}</span>
+                          <span className="text-muted-foreground"> {p.wonPerMonth}</span>
                         </div>
                       </CardHeader>
 
@@ -251,7 +219,7 @@ const Pricing = () => {
                         
                         {plan.notIncluded.length > 0 && (
                           <div className="pt-2 border-t">
-                            <p className="text-xs text-muted-foreground mb-2">미포함:</p>
+                            <p className="text-xs text-muted-foreground mb-2">{t.tokenSubscription.notIncluded}:</p>
                             <ul className="space-y-1">
                               {plan.notIncluded.map((item, idx) => (
                                 <li key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -281,7 +249,7 @@ const Pricing = () => {
             </div>
           </div>
 
-          {/* 전문가 연결 수수료 */}
+          {/* Expert Fees */}
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -292,11 +260,9 @@ const Pricing = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Zap className="w-5 h-5 text-purple-500" />
-                  전문가 연결 수수료
+                  {p.expertFeeSectionTitle}
                 </CardTitle>
-                <CardDescription>
-                  구독과 별개로 전문가 상담 시 적용되는 플랫폼 수수료입니다
-                </CardDescription>
+                <CardDescription>{p.expertFeeSectionDesc}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid sm:grid-cols-3 gap-4">
@@ -309,18 +275,18 @@ const Pricing = () => {
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground text-center mt-4">
-                  * 프리미엄 플러스 구독 시 전문가 연결 수수료 10% 할인
+                  {p.expertFeeNote}
                 </p>
               </CardContent>
             </Card>
           </motion.div>
 
-          {/* B2B 섹션 */}
+          {/* B2B */}
           <div className="mb-16">
             <div className="text-center mb-8">
-              <Badge variant="outline" className="mb-2">학교 · 학원 · 어린이집</Badge>
-              <h2 className="text-2xl font-bold">기관용 플랜</h2>
-              <p className="text-muted-foreground">원아/학생 발달 관리와 학부모 연결을 한번에</p>
+              <Badge variant="outline" className="mb-2">{p.b2bBadge}</Badge>
+              <h2 className="text-2xl font-bold">{p.b2bTitle}</h2>
+              <p className="text-muted-foreground">{p.b2bSubtitle}</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -346,7 +312,7 @@ const Pricing = () => {
                         </div>
                         <div className="mt-4">
                           <span className="text-2xl font-bold">{plan.price}</span>
-                          {plan.period && <span className="text-muted-foreground">원 / {plan.period}</span>}
+                          {plan.period && <span className="text-muted-foreground"> {p.wonPerMonth}</span>}
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -365,7 +331,7 @@ const Pricing = () => {
                           variant="outline"
                           onClick={() => handlePlanSelect(plan.id)}
                         >
-                          {plan.price === "맞춤 견적" ? "상담 신청" : "시작하기"}
+                          {plan.id === "institution_pro" ? p.requestConsultation : t.common.startNow}
                         </Button>
                       </CardFooter>
                     </Card>
@@ -375,56 +341,56 @@ const Pricing = () => {
             </div>
           </div>
 
-          {/* 비교 테이블 */}
+          {/* Comparison Table */}
           <div className="max-w-4xl mx-auto mb-16">
-            <h2 className="text-2xl font-bold text-center mb-8">플랜 비교</h2>
+            <h2 className="text-2xl font-bold text-center mb-8">{p.comparisonTitle}</h2>
             <Card>
               <CardContent className="p-0 overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left p-4 font-medium">기능</th>
-                      <th className="text-center p-4 font-medium text-green-600">무료</th>
-                      <th className="text-center p-4 font-medium">프리미엄</th>
-                      <th className="text-center p-4 font-medium bg-primary/5">프리미엄+</th>
+                      <th className="text-left p-4 font-medium">{p.compFeature}</th>
+                      <th className="text-center p-4 font-medium text-green-600">{p.compFree}</th>
+                      <th className="text-center p-4 font-medium">{p.compPremium}</th>
+                      <th className="text-center p-4 font-medium bg-primary/5">{p.compPremiumPlus}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr className="border-b">
-                      <td className="p-4">관찰일지 작성</td>
+                      <td className="p-4">{p.compObservation}</td>
                       <td className="text-center p-4"><Check className="w-4 h-4 text-green-600 mx-auto" /></td>
                       <td className="text-center p-4"><Check className="w-4 h-4 text-primary mx-auto" /></td>
                       <td className="text-center p-4 bg-primary/5"><Check className="w-4 h-4 text-primary mx-auto" /></td>
                     </tr>
                     <tr className="border-b">
-                      <td className="p-4">AI 분석 리포트</td>
-                      <td className="text-center p-4 text-muted-foreground">월 3회</td>
-                      <td className="text-center p-4">무제한</td>
-                      <td className="text-center p-4 bg-primary/5">무제한</td>
+                      <td className="p-4">{p.compAIReport}</td>
+                      <td className="text-center p-4 text-muted-foreground">{p.compAIReportFree}</td>
+                      <td className="text-center p-4">{p.compUnlimited}</td>
+                      <td className="text-center p-4 bg-primary/5">{p.compUnlimited}</td>
                     </tr>
                     <tr className="border-b">
-                      <td className="p-4">발달 영역 심층분석</td>
+                      <td className="p-4">{p.compDevAnalysis}</td>
                       <td className="text-center p-4"><X className="w-4 h-4 text-muted-foreground mx-auto" /></td>
                       <td className="text-center p-4"><Check className="w-4 h-4 text-primary mx-auto" /></td>
                       <td className="text-center p-4 bg-primary/5"><Check className="w-4 h-4 text-primary mx-auto" /></td>
                     </tr>
                     <tr className="border-b">
-                      <td className="p-4">전문가 상담</td>
-                      <td className="text-center p-4 text-muted-foreground">별도 결제</td>
-                      <td className="text-center p-4 text-muted-foreground">별도 결제</td>
-                      <td className="text-center p-4 bg-primary/5">월 1회 포함</td>
+                      <td className="p-4">{p.compExpert}</td>
+                      <td className="text-center p-4 text-muted-foreground">{p.compExpertFree}</td>
+                      <td className="text-center p-4 text-muted-foreground">{p.compExpertPremium}</td>
+                      <td className="text-center p-4 bg-primary/5">{p.compExpertPlus}</td>
                     </tr>
                     <tr className="border-b">
-                      <td className="p-4">위기 감지 알림</td>
+                      <td className="p-4">{p.compCrisis}</td>
                       <td className="text-center p-4"><X className="w-4 h-4 text-muted-foreground mx-auto" /></td>
                       <td className="text-center p-4"><X className="w-4 h-4 text-muted-foreground mx-auto" /></td>
                       <td className="text-center p-4 bg-primary/5"><Check className="w-4 h-4 text-primary mx-auto" /></td>
                     </tr>
                     <tr>
-                      <td className="p-4">전문가 수수료 할인</td>
+                      <td className="p-4">{p.compExpertDiscount}</td>
                       <td className="text-center p-4"><X className="w-4 h-4 text-muted-foreground mx-auto" /></td>
                       <td className="text-center p-4"><X className="w-4 h-4 text-muted-foreground mx-auto" /></td>
-                      <td className="text-center p-4 bg-primary/5">10% 할인</td>
+                      <td className="text-center p-4 bg-primary/5">{p.compExpertDiscountPlus}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -441,26 +407,25 @@ const Pricing = () => {
           >
             <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20">
               <CardContent className="py-12">
-                <h2 className="text-3xl font-bold mb-4">지금 바로 시작하세요</h2>
+                <h2 className="text-3xl font-bold mb-4">{p.ctaTitle}</h2>
                 <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-                  신용카드 없이 무료로 시작하고,<br />
-                  필요할 때만 업그레이드하세요.
+                  {p.ctaSubtitle1}<br />
+                  {p.ctaSubtitle2}
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <Button 
-                    size="lg"
+                    size="lg" 
                     className="bg-green-600 hover:bg-green-700"
-                    onClick={() => navigate("/auth")}
+                    onClick={() => navigate(localePath("/auth"))}
                   >
-                    <Gift className="w-4 h-4 mr-2" />
-                    무료로 시작하기
+                    {p.ctaFreeBtn}
                   </Button>
                   <Button 
                     size="lg" 
                     variant="outline"
-                    onClick={() => navigate("/expert")}
+                    onClick={() => navigate(localePath("/token-subscription"))}
                   >
-                    전문가 상담 먼저 받기
+                    {p.ctaPremiumBtn}
                   </Button>
                 </div>
               </CardContent>

@@ -35,7 +35,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
-// mockExperts removed - using only DB data
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { useTokens } from '@/hooks/useTokens';
 
 interface Expert {
@@ -285,6 +285,7 @@ const ExpertHiring = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      <UnifiedNavigation />
       <Helmet>
         <title>전문가 상담 예약 | AIHPRO</title>
         <meta name="description" content="검증된 발달, 심리, 언어치료 전문가와 1:1 상담을 예약하세요" />

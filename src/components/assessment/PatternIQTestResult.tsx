@@ -24,8 +24,9 @@ const PatternIQTestResult = ({ result, onBack, onRestart }: PatternIQTestResultP
   const getColor = (pct: number) => pct >= 75 ? 'bg-green-500' : pct >= 50 ? 'bg-primary' : pct >= 25 ? 'bg-yellow-500' : 'bg-orange-500';
   const getLevel = (pct: number) => pct >= 75 ? '우수' : pct >= 50 ? '양호' : pct >= 25 ? '보통' : '낮음';
 
+  const maxPerCategory = 35; // difficulty*10 + timeBonus max ~35
   const domains: DomainScore[] = Object.entries(result.categoryScores).map(([key, score]) => {
-    const pct = Math.round((score.correct / score.total) * 100);
+    const pct = Math.min(100, Math.round((score / maxPerCategory) * 100));
     return {
       key,
       label: categoryNames[key] || key,
@@ -49,9 +50,9 @@ const PatternIQTestResult = ({ result, onBack, onRestart }: PatternIQTestResultP
     else { navigator.clipboard.writeText(text); toast({ title: '복사 완료' }); }
   };
 
-  const analysisText = `인지 유형: ${result.cognitiveType}\n${result.typeDescription}\n\n상위 ${100 - result.percentile}% · 총점 ${result.totalScore}\n평균 응답 시간: ${result.averageTime.toFixed(1)}초\n\n` +
+  const analysisText = `인지 유형: ${result.cognitiveType}\n${result.typeDescription}\n\n상위 ${100 - result.percentile}% · 총점 ${result.totalScore}\n\n` +
     Object.entries(result.categoryScores).map(([k, v]) =>
-      `${categoryNames[k] || k}: ${v.correct}/${v.total} (${Math.round((v.correct / v.total) * 100)}%)`
+      `${categoryNames[k] || k}: ${Math.min(100, Math.round((v / maxPerCategory) * 100))}%`
     ).join('\n');
 
   return (

@@ -1,0 +1,2 @@
+INSERT INTO public.experts (full_name, professional_title, specializations, certifications, years_experience, bio, hourly_rate, is_verified, is_available, languages, consultation_methods) VALUES
+('윤은민', '언어치료 박사', ARRAY['언어치료', '인지검사', '언어발달'], ARRAY['언어재활사 1급', '박사학위(언어치료)'], 12, '언어치료 박사로서 언어발달 및 인지검사 전문가입니다. 체계적인 평가와 맞춤형 치료를 제공합니다.', 55000, true, true, ARRAY['한국어'], ARRAY['대면', '화상']);

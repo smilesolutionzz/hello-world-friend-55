@@ -115,6 +115,7 @@ const ParentingStyleForm = ({ onComplete, onBack }: ParentingStyleFormProps) => 
       <TokenGate
         tokensRequired={10}
         featureName={isEnglish ? "Premium Parenting Style Assessment" : "프리미엄 부모양육태도 검사"}
+        featureKey="FIVE_D_PERSONALITY"
         onProceed={handleStartTest}
         children={
           <div className="space-y-4 mt-6">

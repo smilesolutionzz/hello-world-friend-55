@@ -77,7 +77,7 @@ const AdvancedAdhdForm = ({ onComplete, onBack }: AdvancedAdhdFormProps) => {
 
   if (!hasStarted) {
     return (
-      <TokenGate tokensRequired={TOKEN_COSTS.FOCUS_CHECK} featureName={isEnglish ? "AIH Advanced ADHD Type Analysis" : "AIH 고급 ADHD 유형 분석"} onProceed={handleStartTest}>
+      <TokenGate tokensRequired={TOKEN_COSTS.FOCUS_CHECK} featureName={isEnglish ? "AIH Advanced ADHD Type Analysis" : "AIH 고급 ADHD 유형 분석"} featureKey="FOCUS_CHECK" onProceed={handleStartTest}>
         <div className="space-y-4 text-center">
           <div className="text-lg font-semibold">{isEnglish ? "Features of 12 ADHD Type Analysis" : "12가지 ADHD 유형 분석의 특징"}</div>
           <ul className="space-y-2 text-sm text-muted-foreground max-w-md mx-auto">

@@ -297,7 +297,7 @@ const InfantLanguageTestForm = ({ onComplete, onBack }: InfantLanguageTestFormPr
   if (!hasStarted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gentle-peach/30 via-background to-calm-blue/20 p-6 flex items-center justify-center">
-        <TokenGate tokensRequired={TOKEN_COSTS.LANGUAGE_TEST} featureName={isEnglish ? `Infant Language Test (${ageInMonths}mo, 10 items)` : `영유아 언어발달 검사 (${ageInMonths}개월 맞춤 10문항)`} onProceed={handleStartTest} />
+        <TokenGate tokensRequired={TOKEN_COSTS.LANGUAGE_TEST} featureName={isEnglish ? `Infant Language Test (${ageInMonths}mo, 10 items)` : `영유아 언어발달 검사 (${ageInMonths}개월 맞춤 10문항)`} featureKey="LANGUAGE_TEST" onProceed={handleStartTest} />
       </div>
     );
   }

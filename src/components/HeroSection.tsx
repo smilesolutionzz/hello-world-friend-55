@@ -167,9 +167,9 @@ const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-6 text-center"
+          className="mt-6 text-center px-4"
         >
-          <div className="inline-flex flex-wrap items-center justify-center gap-2 md:gap-4 text-white/60 text-xs md:text-sm">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-4 text-white/60 text-xs md:text-sm">
             <span>{t.hero.trustNoSignup}</span>
             <span className="hidden sm:inline">·</span>
             <span>{t.hero.trustFree}</span>
@@ -177,7 +177,7 @@ const HeroSection = () => {
             <span>{t.hero.trust24h}</span>
           </div>
           
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-3 md:gap-4 text-xs md:text-sm">
+          <div className="mt-3 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-4 text-xs md:text-sm">
             <span className="text-white/70">{t.hero.ratingCount}</span>
             <motion.span 
               animate={{ opacity: [0.8, 1, 0.8] }}

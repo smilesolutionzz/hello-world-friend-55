@@ -108,6 +108,7 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
         <TokenGate
           tokensRequired={TOKEN_COSTS.LANGUAGE_TEST}
           featureName={isEnglish ? `Language Development Check (${ageGroup === 'infant' ? 'Infant' : 'Child'} 20 items)` : `언어발달 자가체크 (${ageGroup === 'infant' ? '영유아' : '아동청소년'} 20문항)`}
+          featureKey="LANGUAGE_TEST"
           onProceed={handleStartTest}
         />
       </div>

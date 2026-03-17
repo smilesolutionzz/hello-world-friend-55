@@ -135,6 +135,7 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
         <TokenGate
           tokensRequired={TOKEN_COSTS.PANIC_TEST}
           featureName={isEnglish ? "Anxiety Self-Check (21 items)" : "불안장애 자가체크 (21문항)"}
+          featureKey="PANIC_TEST"
           onProceed={handleStartTest}
         />
       </div>

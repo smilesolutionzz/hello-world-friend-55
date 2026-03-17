@@ -387,7 +387,7 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                           기관장
                         </Badge>
                       )}
-                      {expert.hourly_rate === 0 && (
+                      {false && (
                         <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 text-sm">
                           무료 봉사
                         </Badge>

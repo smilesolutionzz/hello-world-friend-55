@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar, Clock, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Calendar, Clock, User, CreditCard } from 'lucide-react';
 import { format, addDays, startOfWeek } from 'date-fns';
 import { ko } from 'date-fns/locale';
+
+const CONSULTATION_PRICE = 49000;
+const CONSULTATION_DURATION = 40;
 
 interface Expert {
   id: string;
@@ -23,23 +26,15 @@ interface TimeSlot {
   reason?: string;
 }
 
-const DURATION_OPTIONS = [
-  { value: 30, label: '30분' },
-  { value: 60, label: '1시간' },
-  { value: 90, label: '1시간 30분' },
-  { value: 120, label: '2시간' },
-];
-
 export const BookingCalendar = ({ expertId }: { expertId: string }) => {
   const [expert, setExpert] = useState<Expert | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>('');
-  const [duration, setDuration] = useState<number>(60);
   const [notes, setNotes] = useState<string>('');
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [loading, setLoading] = useState(false);
-  const [userTokens, setUserTokens] = useState<number>(0);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const weekDays = Array.from({ length: 7 }, (_, i) => 
     addDays(startOfWeek(selectedDate, { locale: ko }), i)
@@ -47,7 +42,6 @@ export const BookingCalendar = ({ expertId }: { expertId: string }) => {
 
   useEffect(() => {
     loadExpert();
-    loadUserTokens();
   }, [expertId]);
 
   useEffect(() => {
@@ -76,30 +70,11 @@ export const BookingCalendar = ({ expertId }: { expertId: string }) => {
     }
   };
 
-  const loadUserTokens = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from('user_tokens')
-        .select('current_tokens')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error) throw error;
-      setUserTokens(data?.current_tokens || 0);
-    } catch (error) {
-      console.error('토큰 정보 로딩 실패:', error);
-    }
-  };
-
   const loadAvailableTimeSlots = async () => {
     try {
       const dayOfWeek = selectedDate.getDay();
       const dateStr = format(selectedDate, 'yyyy-MM-dd');
 
-      // Get expert's schedule for this day
       const { data: schedules, error: schedError } = await supabase
         .from('expert_schedules')
         .select('start_time, end_time')
@@ -109,32 +84,25 @@ export const BookingCalendar = ({ expertId }: { expertId: string }) => {
 
       if (schedError) throw schedError;
 
-      // Check if expert is on time off
-      const { data: timeOff, error: timeOffError } = await supabase
+      const { data: timeOff } = await supabase
         .from('expert_time_off')
         .select('id')
         .eq('expert_id', expertId)
         .lte('start_date', dateStr)
         .gte('end_date', dateStr);
 
-      if (timeOffError) throw timeOffError;
-
       if (timeOff && timeOff.length > 0) {
         setTimeSlots([]);
         return;
       }
 
-      // Get existing bookings
-      const { data: bookings, error: bookingError } = await supabase
+      const { data: bookings } = await supabase
         .from('consultation_bookings')
         .select('start_time, end_time')
         .eq('expert_id', expertId)
         .eq('booking_date', dateStr)
         .in('status', ['pending', 'confirmed']);
 
-      if (bookingError) throw bookingError;
-
-      // Generate time slots
       const slots: TimeSlot[] = [];
       
       if (!schedules || schedules.length === 0) {
@@ -150,9 +118,7 @@ export const BookingCalendar = ({ expertId }: { expertId: string }) => {
           const timeStr = `${String(hour).padStart(2, '0')}:00:00`;
           
           const isBooked = bookings?.some(booking => {
-            const bookingStart = booking.start_time;
-            const bookingEnd = booking.end_time;
-            return timeStr >= bookingStart && timeStr < bookingEnd;
+            return timeStr >= booking.start_time && timeStr < booking.end_time;
           });
 
           slots.push({
@@ -166,87 +132,85 @@ export const BookingCalendar = ({ expertId }: { expertId: string }) => {
       setTimeSlots(slots);
     } catch (error) {
       console.error('시간대 로딩 실패:', error);
-      toast({
-        title: '시간대 로딩 실패',
-        description: '다시 시도해주세요.',
-        variant: 'destructive'
-      });
     }
-  };
-
-  const calculateTokenCost = () => {
-    if (!expert) return 0;
-    return Math.ceil((expert.hourly_rate / 60) * duration);
   };
 
   const handleBooking = async () => {
     if (!selectedTime) {
-      toast({
-        title: '시간 선택 필요',
-        description: '예약 시간을 선택해주세요.',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    const tokenCost = calculateTokenCost();
-    if (userTokens < tokenCost) {
-      toast({
-        title: '토큰 부족',
-        description: `${tokenCost}토큰이 필요하지만 ${userTokens}토큰만 보유하고 있습니다.`,
-        variant: 'destructive'
-      });
+      toast({ title: '시간 선택 필요', description: '예약 시간을 선택해주세요.', variant: 'destructive' });
       return;
     }
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-consultation-booking', {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) {
+        toast({ title: '로그인 필요', description: '로그인 후 이용해주세요.', variant: 'destructive' });
+        navigate('/auth');
+        return;
+      }
+
+      // Create payment
+      const { data: paymentData, error: paymentError } = await supabase.functions.invoke('unified-payment', {
+        headers: { Authorization: `Bearer ${session.session.access_token}` },
         body: {
-          expertId,
-          bookingDate: format(selectedDate, 'yyyy-MM-dd'),
-          startTime: selectedTime,
-          durationMinutes: duration,
-          notes: notes || undefined
+          action: 'create-payment',
+          productId: `consultation_${expertId}`,
+          productType: 'single',
+          productName: `${expert?.full_name} 전문가 상담 (${CONSULTATION_DURATION}분)`,
+          amount: CONSULTATION_PRICE,
+          tokens: 0,
+          metadata: {
+            expertId,
+            expertName: expert?.full_name,
+            bookingDate: format(selectedDate, 'yyyy-MM-dd'),
+            startTime: selectedTime,
+            durationMinutes: CONSULTATION_DURATION,
+            notes: notes || '',
+          }
         }
       });
 
-      if (error) throw error;
-
-      if (!data.success) {
-        throw new Error(data.error || '예약 실패');
+      if (paymentError || !paymentData?.success) {
+        throw new Error(paymentData?.error || '결제 준비 실패');
       }
 
-      toast({
-        title: '예약 완료',
-        description: `${format(selectedDate, 'M월 d일 (E)', { locale: ko })} ${selectedTime.substring(0, 5)} 예약이 완료되었습니다.`
+      const { loadTossPayments } = await import('@tosspayments/payment-sdk');
+      
+      const { data: keyData } = await supabase.functions.invoke('unified-payment', {
+        headers: { Authorization: `Bearer ${session.session.access_token}` },
+        body: { action: 'get-client-key' }
       });
 
-      // Send confirmation notification
-      try {
-        await supabase.functions.invoke('send-booking-notification', {
-          body: {
-            bookingId: data.booking.id,
-            notificationType: 'confirmation'
-          }
-        });
-      } catch (notifError) {
-        console.error('알림 전송 실패:', notifError);
-        // Don't throw - booking is already created
-      }
+      if (!keyData?.clientKey) throw new Error('결제 키 로드 실패');
 
-      // Reset form and reload data
-      setSelectedTime('');
-      setNotes('');
-      loadUserTokens();
-      loadAvailableTimeSlots();
+      const tossPayments = await loadTossPayments(keyData.clientKey);
+
+      sessionStorage.setItem('pendingBooking', JSON.stringify({
+        expertId,
+        expertName: expert?.full_name,
+        bookingDate: format(selectedDate, 'yyyy-MM-dd'),
+        startTime: selectedTime,
+        durationMinutes: CONSULTATION_DURATION,
+        notes: notes || '',
+        amount: CONSULTATION_PRICE,
+      }));
+
+      await tossPayments.requestPayment('카드', {
+        amount: paymentData.paymentData.amount,
+        orderId: paymentData.paymentData.orderId,
+        orderName: paymentData.paymentData.orderName,
+        customerEmail: paymentData.paymentData.customerEmail,
+        customerName: paymentData.paymentData.customerName,
+        successUrl: `${window.location.origin}/payment-complete?type=consultation`,
+        failUrl: `${window.location.origin}/payment-complete?status=fail&type=consultation`,
+      });
+
     } catch (error: any) {
-      console.error('예약 실패:', error);
-      toast({
-        title: '예약 실패',
-        description: error.message || '다시 시도해주세요.',
-        variant: 'destructive'
-      });
+      console.error('예약 결제 실패:', error);
+      if (!error.message?.includes('사용자가 결제를 취소')) {
+        toast({ title: '결제 실패', description: error.message || '다시 시도해주세요.', variant: 'destructive' });
+      }
     } finally {
       setLoading(false);
     }
@@ -255,8 +219,6 @@ export const BookingCalendar = ({ expertId }: { expertId: string }) => {
   if (!expert) {
     return <div className="text-center py-8">로딩 중...</div>;
   }
-
-  const tokenCost = calculateTokenCost();
 
   return (
     <Card>
@@ -270,8 +232,8 @@ export const BookingCalendar = ({ expertId }: { expertId: string }) => {
             <User className="w-4 h-4" />
             {expert.full_name} | {expert.professional_title}
           </div>
-          <div className="mt-1 text-sm">
-            시간당 {expert.hourly_rate}토큰 | 보유: {userTokens}토큰
+          <div className="mt-1 text-sm font-medium">
+            {CONSULTATION_PRICE.toLocaleString()}원 / {CONSULTATION_DURATION}분
           </div>
         </CardDescription>
       </CardHeader>
@@ -324,23 +286,6 @@ export const BookingCalendar = ({ expertId }: { expertId: string }) => {
           )}
         </div>
 
-        {/* 상담 시간 선택 */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium">상담 시간</label>
-          <Select value={String(duration)} onValueChange={(v) => setDuration(Number(v))}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {DURATION_OPTIONS.map(option => (
-                <SelectItem key={option.value} value={String(option.value)}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
         {/* 메모 */}
         <div className="space-y-2">
           <label className="text-sm font-medium">상담 내용 (선택)</label>
@@ -355,21 +300,20 @@ export const BookingCalendar = ({ expertId }: { expertId: string }) => {
         {/* 예약 정보 및 버튼 */}
         <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
           <div className="flex justify-between text-sm">
-            <span>예상 비용:</span>
-            <span className="font-semibold">{tokenCost}토큰</span>
+            <span>상담 비용:</span>
+            <span className="font-semibold text-lg">{CONSULTATION_PRICE.toLocaleString()}원</span>
           </div>
-          <div className="flex justify-between text-sm">
-            <span>예약 후 잔액:</span>
-            <span className={userTokens - tokenCost < 0 ? 'text-red-600' : 'text-green-600'}>
-              {userTokens - tokenCost}토큰
-            </span>
+          <div className="flex justify-between text-sm text-muted-foreground">
+            <span>상담 시간:</span>
+            <span>{CONSULTATION_DURATION}분</span>
           </div>
           <Button
             onClick={handleBooking}
-            disabled={!selectedTime || loading || userTokens < tokenCost}
+            disabled={!selectedTime || loading}
             className="w-full"
           >
-            {loading ? '예약 중...' : '예약하기'}
+            <CreditCard className="w-4 h-4 mr-2" />
+            {loading ? '처리 중...' : `${CONSULTATION_PRICE.toLocaleString()}원 카드 결제`}
           </Button>
         </div>
       </CardContent>

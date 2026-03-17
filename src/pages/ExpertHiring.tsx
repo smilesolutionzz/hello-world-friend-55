@@ -440,7 +440,7 @@ const ExpertHiring = () => {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold">
                 협력기관 안내
-                <span className="text-gray-500 font-normal ml-2">(50곳)</span>
+                <span className="text-gray-500 font-normal ml-2">({partnerInstitutions.length}곳)</span>
               </h2>
               <Button 
                 variant="outline" 

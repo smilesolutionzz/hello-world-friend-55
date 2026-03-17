@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CommunicationStyleForm } from '@/components/assessment/CommunicationStyleForm';
-import { RelationshipStyleResult } from '@/components/assessment/RelationshipStyleResult';
+import RelationshipStyleResult from '@/components/assessment/RelationshipStyleResult';
 import { useNavigate } from 'react-router-dom';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';

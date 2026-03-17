@@ -451,6 +451,25 @@ const ExpertHiring = () => {
                 <p className="text-gray-500">다른 검색어를 시도해보세요</p>
               </div>
             )}
+
+            {/* 전문가 신청 배너 */}
+            <Card className="mt-8 bg-gradient-to-r from-emerald-100 to-teal-100 border border-emerald-200 shadow-sm">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div>
+                    <h3 className="font-bold text-lg mb-1 text-emerald-900">전문가로 활동하고 싶으신가요?</h3>
+                    <p className="text-emerald-700/80 text-sm">AIHPRO와 함께 전문가로 활동하며 수익을 창출하세요</p>
+                  </div>
+                  <Button 
+                    onClick={() => navigate('/expert-application')}
+                    className="bg-white text-emerald-700 hover:bg-emerald-50 border border-emerald-300 shadow-sm"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    전문가 신청하기
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
       )}

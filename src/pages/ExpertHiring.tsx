@@ -52,7 +52,10 @@ interface Expert {
   location: string;
   isOnline: boolean;
   responseTime: string;
+  isTop: boolean;
 }
+
+const TOP_EXPERTS = ['이수석', '이하연', '이기훈', '이상록', '김선길', '백경열', '장서원', '장호탁', '김지수', '주아인', '윤은민'];
 
 const ExpertHiring = () => {
   const navigate = useNavigate();

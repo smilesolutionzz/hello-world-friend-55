@@ -636,8 +636,8 @@ const ExpertCard = ({ expert, onBook }: { expert: Expert; onBook: () => void }) 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="font-bold text-gray-900 truncate">{expert.name}</h3>
-              {expert.rating >= 4.8 && (
-                <Badge className="bg-amber-100 text-amber-700 text-xs">
+              {expert.isTop && (
+                <Badge className="bg-gradient-to-r from-amber-400 to-orange-400 text-white text-xs font-bold shadow-sm border-0">
                   <Award className="w-3 h-3 mr-0.5" />
                   TOP
                 </Badge>

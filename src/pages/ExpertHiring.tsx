@@ -320,7 +320,7 @@ const ExpertHiring = () => {
           <div className="flex justify-center gap-8 mt-8 text-sm text-gray-400">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              <span>50+ 검증된 전문가</span>
+              <span>30+ 검증된 전문가</span>
             </div>
             <div className="flex items-center gap-2">
               <Star className="w-4 h-4 text-yellow-500" />

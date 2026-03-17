@@ -1,19 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Download, MessageSquare, Users, Crown, Sparkles, Heart, Award, Target, Wallet, Lock } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
-import { supabase } from "@/integrations/supabase/client";
-import { useTestResultActions } from "@/hooks/useTestResultActions";
-import ProductRecommendation from "../ProductRecommendation";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
-import { RelatedTestRecommendations } from './RelatedTestRecommendations';
+import { useState, useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
-import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
-import { BlurredContent } from '@/components/paywall/BlurredContent';
-import { useSubscription } from '@/hooks/useSubscription';
+import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
+import VisualResultInfographic from './VisualResultInfographic';
+import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 
 interface ParentingStyleResultProps {
   results: any;
@@ -22,428 +14,117 @@ interface ParentingStyleResultProps {
   onStartRealTimeChat?: () => void;
 }
 
-const ParentingStyleResult = ({ 
-  results, 
-  onBack, 
-  onStartAIChat, 
-  onStartRealTimeChat 
-}: ParentingStyleResultProps) => {
-  const [analysis, setAnalysis] = useState<string>("");
-  const { toast } = useToast();
-  const [isAnalyzing, setIsAnalyzing] = useState(true);
-  const { generatePDFReport, saveTestResult } = useTestResultActions();
+const categoryNames: Record<string, string> = {
+  warmth_acceptance: '온정수용',
+  behavioral_control: '행동통제',
+  psychological_control: '심리통제',
+  autonomy_support: '자율성지지',
+  communication_support: '의사소통지지',
+};
 
-  // 자동 저장
+const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) => {
+  const { toast } = useToast();
+  const [analysis, setAnalysis] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(true);
+
   useAutoSaveTestResult({
     testType: '양육 스타일 검사',
-    results: {
-      scores: results.scores,
-      dominantStyle: results.dominantStyle,
-      childAge: results.childAge,
-    },
+    results: { scores: results.scores, dominantStyle: results.dominantStyle, childAge: results.childAge },
     severity: '보통',
     ageGroup: 'adult',
   });
 
   useEffect(() => {
-    generateAnalysis();
-    saveResults();
+    const run = async () => {
+      try {
+        setIsAnalyzing(true);
+        const { data, error } = await supabase.functions.invoke('parenting-style-analyzer', {
+          body: { results: results.scores, assessmentType: 'parentingStyle', childAge: results.childAge, childGender: results.childGender },
+        });
+        if (error) throw error;
+        setAnalysis(data?.analysis || getDefault());
+      } catch {
+        setAnalysis(getDefault());
+      } finally {
+        setIsAnalyzing(false);
+      }
+    };
+    run();
   }, []);
 
-  const generateAnalysis = async () => {
-    try {
-      setIsAnalyzing(true);
-      
-      // 결과 데이터 구조 검증
-      console.log('[ParentingStyle] AI 분석 요청 데이터:', {
-        results: results.scores,
-        assessmentType: 'parentingStyle',
-        childAge: results.childAge,
-        childGender: results.childGender,
-        scoresKeys: Object.keys(results.scores),
-        scoresValues: Object.values(results.scores)
-      });
-      
-      const { data, error } = await supabase.functions.invoke('parenting-style-analyzer', {
-        body: {
-          results: results.scores, // scores 객체 전달
-          assessmentType: 'parentingStyle',
-          childAge: results.childAge,
-          childGender: results.childGender
-        }
-      });
-
-      if (error) {
-        console.error('분석 생성 오류:', error);
-        setAnalysis(getDefaultParentingAnalysis());
-        toast({
-          title: "분석 오류",
-          description: "AI 분석 중 오류가 발생했습니다. 기본 분석을 표시합니다.",
-          variant: "destructive"
-        });
-      } else if (data?.analysis) {
-        setAnalysis(data.analysis);
-      } else {
-        setAnalysis(getDefaultParentingAnalysis());
-      }
-    } catch (error) {
-      console.error('분석 요청 오류:', error);
-      setAnalysis(getDefaultParentingAnalysis());
-      toast({
-        title: "분석 오류",
-        description: "AI 분석 중 오류가 발생했습니다. 기본 분석을 표시합니다.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsAnalyzing(false);
-    }
+  const getDefault = () => {
+    const primary = Object.entries(results.scores).sort(([, a], [, b]) => (b as number) - (a as number))[0][0];
+    return `양육 스타일 분석 결과입니다.\n\n주된 양육 스타일: ${categoryNames[primary] || primary}\n\n각 양육 스타일의 균형을 맞추는 것이 중요합니다.`;
   };
 
-  const getDefaultParentingAnalysis = () => {
-    const primaryStyle = Object.entries(results.scores)
-      .sort(([, a], [, b]) => (b as number) - (a as number))[0][0];
-    
-    return `양육 스타일 분석 결과입니다.\n\n주된 양육 스타일: ${primaryStyle}\n\n각 양육 스타일의 균형을 맞추는 것이 중요합니다. 자녀의 개성과 상황에 따라 유연하게 대응하시기 바랍니다.`;
-  };
+  const getColor = (s: number) => s >= 3.5 ? 'bg-green-500' : s >= 2.5 ? 'bg-yellow-500' : 'bg-orange-500';
+  const getLevel = (s: number) => s >= 3.5 ? '높음' : s >= 2.5 ? '보통' : '낮음';
 
-  const saveResults = async () => {
-    await saveTestResult({
-      testType: 'parenting_style',
-      results: results.scores,
-      analysis: '부모양육태도 검사 완료',
-      testInfo: {
-        childAge: results.childAge,
-        childGender: results.childGender,
-        totalQuestions: results.totalQuestions
-      }
+  const domains: DomainScore[] = Object.entries(results.scores).map(([key, score]) => ({
+    key,
+    label: categoryNames[key] || key,
+    score: parseFloat(Number(score).toFixed(1)),
+    maxScore: 4,
+    level: getLevel(Number(score)),
+    color: getColor(Number(score)),
+  }));
+
+  const scores = Object.values(results.scores as Record<string, number>).map(Number).filter(n => !isNaN(n));
+  const avg = scores.length > 0 ? scores.reduce((s, v) => s + v, 0) / scores.length : 0;
+
+  const parseAISections = (text: string): ReportSection[] => {
+    if (!text) return [];
+    const paragraphs = text.split('\n\n').filter(p => p.trim().length > 20);
+    const icons = ['💜', '📊', '💡', '🎯', '🌱', '💪', '📋'];
+    return paragraphs.slice(0, 7).map((p, idx) => {
+      const firstLine = p.split('\n')[0].replace(/[#*]/g, '').trim();
+      const rest = p.split('\n').slice(1).join('\n').trim() || p;
+      return { id: `s-${idx}`, icon: icons[idx] || '📋', title: firstLine.length > 5 && firstLine.length < 50 ? firstLine : `분석 ${idx + 1}`, content: rest, defaultOpen: idx === 0 };
     });
   };
 
-  const handlePDFGeneration = async () => {
-    try {
-      await generatePDFReport({
-        testType: '부모양육태도 검사',
-        results: results.scores,
-        analysis,
-        testInfo: {
-          childAge: results.childAge,
-          childGender: results.childGender,
-          averageScore: averageScore.toFixed(1),
-          testDate: new Date().toLocaleDateString('ko-KR')
-        }
-      });
-      
-      toast({
-        title: "PDF 다운로드 완료",
-        description: "검사 결과가 PDF로 저장되었습니다.",
-      });
-    } catch (error) {
-      console.error('PDF 생성 오류:', error);
-      toast({
-        title: "PDF 생성 오류",
-        description: "PDF 생성 중 문제가 발생했습니다.",
-        variant: "destructive"
-      });
-    }
+  const aiSections = parseAISections(analysis);
+
+  const handleDownload = async () => {
+    await downloadResultAsPDF('clinical-report-content', '양육스타일_검사_결과',
+      () => toast({ title: 'PDF 다운로드 완료' }),
+      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+    );
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 3.5) return "text-green-600";
-    if (score >= 2.5) return "text-yellow-600";
-    return "text-red-600";
-  };
-
-  const getScoreLevel = (score: number) => {
-    if (score >= 3.5) return "높음";
-    if (score >= 2.5) return "보통";
-    return "낮음";
-  };
-
-  const chartData = Object.entries(results.scores).map(([category, score]) => {
-    const numScore = Number(score);
-    return {
-      name: category === 'warmth_acceptance' ? '온정수용' :
-            category === 'behavioral_control' ? '행동통제' :
-            category === 'psychological_control' ? '심리통제' :
-            category === 'autonomy_support' ? '자율성지지' :
-            category === 'communication_support' ? '의사소통지지' : category,
-      score: isNaN(numScore) ? 0 : numScore,
-      fullMark: 4
-    };
-  });
-
-  const radarData = chartData;
-
-  const scores = Object.values(results.scores as Record<string, number>).map(s => {
-    const num = Number(s);
-    return isNaN(num) ? 0 : num;
-  });
-  const averageScore = scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0;
+  if (isAnalyzing) {
+    return <AnalysisLoadingScreen testName="양육 스타일 검사" />;
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden">
-      {/* Premium Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-32 right-16 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+    <ClinicalReportLayout
+      testName="부모양육태도 검사 결과"
+      subtitle="과학적 양육태도 심층분석"
+      onBack={onBack}
+      onDownload={handleDownload}
+      totalScore={avg.toFixed(1)}
+      totalLabel="평균 점수"
+      scoreUnit="/ 4.0"
+      scoreSeverity={getLevel(avg)}
+      severityColor={avg >= 3.5 ? 'text-green-600 border-green-300' : avg >= 2.5 ? 'text-yellow-600 border-yellow-300' : 'text-orange-600 border-orange-300'}
+      domains={domains}
+      aiAnalysis={analysis}
+      aiSections={aiSections.length > 0 ? aiSections : undefined}
+    >
+      <div className="mb-4">
+        <VisualResultInfographic
+          data={{
+            testName: '양육 스타일',
+            subtitle: '5개 영역 분석',
+            date: new Date().toLocaleDateString('ko-KR'),
+            scores: Object.fromEntries(Object.entries(results.scores).map(([k, v]) => [k, (Number(v) / 4) * 7])),
+            maxScore: 7,
+            categoryTranslations: categoryNames,
+            riskLevel: 'low',
+          }}
+        />
       </div>
-
-      <div className="relative z-10 container mx-auto px-6 pt-8 pb-16">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <Button 
-            variant="ghost" 
-            onClick={onBack}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            뒤로가기
-          </Button>
-          
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Crown className="w-6 h-6 text-yellow-500" />
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                부모양육태도 검사 결과
-              </h1>
-            </div>
-            <p className="text-muted-foreground">과학적 양육태도 심층분석</p>
-          </div>
-          
-          <div className="w-20" />
-        </div>
-
-        {/* 법적 안전 공지 */}
-        <div className="max-w-6xl mx-auto mb-8">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800 text-sm">
-              <span className="font-semibold">📊 검사 결과 (참고용)</span><br />
-              ⚠️ 이 결과는 참고용이며 의학적 진단이 절대 아닙니다. 지속적 어려움이 있으시면 반드시 전문의와 상담하세요.
-            </p>
-          </div>
-        </div>
-
-        {/* Results Summary */}
-        <div className="max-w-6xl mx-auto mb-8">
-          <Card className="border-2 border-purple-200 shadow-xl">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50">
-              <CardTitle className="flex items-center gap-3">
-                <Heart className="w-6 h-6 text-red-500" />
-                양육태도 종합 결과
-                <div className="ml-auto flex items-center gap-2">
-                  <Award className="w-5 h-5 text-yellow-500" />
-                  <span className="text-lg font-bold">평균 {averageScore.toFixed(1)}점</span>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="grid md:grid-cols-2 gap-8">
-                {/* Bar Chart */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <Target className="w-5 h-5 text-blue-500" />
-                    영역별 점수
-                  </h3>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis 
-                        dataKey="name" 
-                        tick={{ fontSize: 12 }}
-                        angle={-45}
-                        textAnchor="end"
-                        height={80}
-                      />
-                      <YAxis domain={[0, 4]} />
-                      <Tooltip 
-                        formatter={(value: any) => [`${value}점`, '점수']}
-                        labelStyle={{ color: '#333' }}
-                      />
-                      <Bar dataKey="score" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                {/* Radar Chart */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-purple-500" />
-                    양육태도 패턴
-                  </h3>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <RadarChart data={radarData}>
-                      <PolarGrid />
-                      <PolarAngleAxis dataKey="name" tick={{ fontSize: 12 }} />
-                      <PolarRadiusAxis angle={90} domain={[0, 4]} tick={false} />
-                      <Radar
-                        name="점수"
-                        dataKey="score"
-                        stroke="#8b5cf6"
-                        fill="#8b5cf6"
-                        fillOpacity={0.3}
-                        strokeWidth={2}
-                      />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Detailed Scores */}
-        <div className="max-w-6xl mx-auto mb-8">
-          <Card className="border-2 border-purple-200">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-blue-500" />
-                영역별 상세 분석
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Object.entries(results.scores).map(([category, score]) => {
-                  const categoryInfo = {
-                    warmth_acceptance: { name: '온정수용', icon: Heart, description: '아이에 대한 따뜻함과 수용' },
-                    behavioral_control: { name: '행동통제', icon: Target, description: '일관된 규칙과 기준 제시' },
-                    psychological_control: { name: '심리통제', icon: Users, description: '아이의 감정과 생각 통제' },
-                    autonomy_support: { name: '자율성지지', icon: Award, description: '독립성과 자기결정권 지원' },
-                    communication_support: { name: '의사소통지지', icon: MessageSquare, description: '개방적이고 지지적인 소통' }
-                  };
-
-                  const info = categoryInfo[category as keyof typeof categoryInfo] || { name: category, icon: Target, description: '' };
-                  const Icon = info.icon;
-
-                  return (
-                    <div key={category} className="p-4 border rounded-lg bg-white/50">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Icon className="w-5 h-5 text-purple-600" />
-                        <h4 className="font-semibold">{info.name}</h4>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-3">{info.description}</p>
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-sm">점수</span>
-                          <span className={`font-bold ${getScoreColor(Number(score))}`}>
-                            {Number(score).toFixed(1)}점
-                          </span>
-                        </div>
-                        <Progress value={(Number(score) / 4) * 100} className="h-2" />
-                        <div className="text-center">
-                          <span className={`text-sm font-medium px-2 py-1 rounded-full ${
-                            Number(score) >= 3.5 ? 'bg-green-100 text-green-800' :
-                            Number(score) >= 2.5 ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
-                            {getScoreLevel(Number(score))}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* AI Analysis */}
-        <div className="max-w-6xl mx-auto mb-8">
-          <Card className="border-2 border-purple-200">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50">
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="w-6 h-6 text-purple-600" />
-                AI 전문가 분석
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              {isAnalyzing ? (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-purple-600">
-                    <Sparkles className="w-5 h-5 animate-spin" />
-                    <span>AI가 양육태도를 심층 분석하고 있습니다...</span>
-                  </div>
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-4/5" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
-              ) : (
-                <div className="prose prose-purple max-w-none">
-                  <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                    {analysis}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="max-w-6xl mx-auto mb-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button
-              onClick={handlePDFGeneration}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              PDF 다운로드
-            </Button>
-            
-            {onStartRealTimeChat && (
-              <Button
-                onClick={onStartRealTimeChat}
-                variant="outline"
-                className="border-purple-300 hover:bg-purple-50"
-              >
-                <Users className="w-4 h-4 mr-2" />
-                전문가 상담
-              </Button>
-            )}
-
-            {onStartAIChat && (
-              <Button
-                onClick={onStartAIChat}
-                variant="outline"
-                className="border-blue-300 hover:bg-blue-50"
-              >
-                <MessageSquare className="w-4 h-4 mr-2" />
-                AI 상담
-              </Button>
-            )}
-
-            <Button
-              onClick={() => {
-                console.log('다른 검사 하기 button clicked');
-                onBack();
-              }}
-              variant="outline"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              다른 검사 하기
-            </Button>
-          </div>
-        </div>
-
-        <ProductRecommendation category="parenting" />
-        
-        {/* 연관 검사 추천 */}
-        <div className="max-w-6xl mx-auto mt-6">
-          <RelatedTestRecommendations currentTestType="parenting-style" />
-        </div>
-
-        {/* Professional Notice */}
-        <div className="max-w-6xl mx-auto mt-8">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-            <h4 className="font-semibold text-blue-900 mb-2">전문 양육태도 검사 안내</h4>
-            <p className="text-blue-800 text-sm leading-relaxed">
-              본 검사는 부모교육학 이론에 근거한 양육태도 분석 도구입니다. 
-              결과는 참고용이며, 심화 부모교육이나 가족상담이 필요한 경우 전문가와 상담하시기 바랍니다.
-              자녀의 건강한 성장을 위한 양육 여정을 응원합니다.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    </ClinicalReportLayout>
   );
 };
 

@@ -234,6 +234,7 @@ const App = () => {
           <Route path="/institution-detail/:id" element={<InstitutionDetailPage />} />
           <Route path="/partner-benefits" element={<InstitutionDetailPage />} />
           <Route path="/institution-application" element={<InstitutionApplication />} />
+          <Route path="/expert-application" element={<ExpertApplication />} />
           <Route path="/expert-contract/:expertId" element={<ExpertContract />} />
           <Route path="/expert-contract-success" element={<ExpertContractSuccess />} />
 

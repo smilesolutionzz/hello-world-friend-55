@@ -34,7 +34,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
-import { mockExperts as mockExpertsData } from '@/data/mockExperts';
+// mockExperts removed - using only DB data
 import { useTokens } from '@/hooks/useTokens';
 
 interface Expert {

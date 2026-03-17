@@ -60,7 +60,7 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="https://youchancemvp.com?ref=highlight" 
+                  href="https://rtplanai.com?ref=highlight" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-slate-300 hover:text-blue-400 transition-colors group"

@@ -26,12 +26,12 @@ const CompanyServicesSection = () => {
       buttonColor: 'bg-blue-500 hover:bg-blue-600'
     },
     {
-      name: 'AIHealthgrow',
-      description: 'AI권리금산정 자동화마케팅',
+      name: 'RTPLAN AI',
+      description: '우리 아이에게 맞는 입시·학습 루트를 한 번에',
       icon: Sparkles,
       iconBg: 'bg-slate-800',
       iconColor: 'text-pink-500',
-      url: 'https://youchancemvp.com',
+      url: 'https://rtplanai.com',
       buttonText: '서비스 바로가기 →',
       buttonColor: 'bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600'
     }

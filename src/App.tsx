@@ -73,6 +73,7 @@ import ObservationDetail from "./pages/ObservationDetail";
 // Expert Finding (info only)
 import ExpertHiring from "./pages/ExpertHiring";
 import ExpertDetail from "./pages/ExpertDetail";
+import InstitutionDetailPage from "./pages/InstitutionDetailPage";
 import ExpertContract from "./pages/ExpertContract";
 import ExpertContractSuccess from "./pages/ExpertContractSuccess";
 

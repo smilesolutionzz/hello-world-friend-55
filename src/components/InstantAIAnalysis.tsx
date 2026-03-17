@@ -35,13 +35,21 @@ import { EnhancedResultView } from '@/components/instant-analysis/EnhancedResult
 const InstantAIAnalysis = () => {
   const { t } = useTranslation();
   const { isEnglish } = useLanguage();
-  const [inputText, setInputText] = useState('');
+  // sessionStorage에서 이전 결과 복원
+  const savedState = (() => {
+    try {
+      const saved = sessionStorage.getItem('instantAI_result');
+      return saved ? JSON.parse(saved) : null;
+    } catch { return null; }
+  })();
+
+  const [inputText, setInputText] = useState(savedState?.inputText || '');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isExpanding, setIsExpanding] = useState(false);
-  const [showResult, setShowResult] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<any>(null);
-  const [reportImages, setReportImages] = useState<string[]>([]);
-  const [tableOfContents, setTableOfContents] = useState<Array<{index: number, title: string}> | null>(null);
+  const [showResult, setShowResult] = useState(!!savedState?.analysisResult);
+  const [analysisResult, setAnalysisResult] = useState<any>(savedState?.analysisResult || null);
+  const [reportImages, setReportImages] = useState<string[]>(savedState?.reportImages || []);
+  const [tableOfContents, setTableOfContents] = useState<Array<{index: number, title: string}> | null>(savedState?.tableOfContents || null);
   const [user, setUser] = useState<any>(null);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isAdviceExpanded, setIsAdviceExpanded] = useState(false);

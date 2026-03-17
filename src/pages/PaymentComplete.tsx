@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, XCircle, Loader2, Home, Crown, Zap, FileText } from 'lucide-react';
+import { CheckCircle2, XCircle, Loader2, Home, Crown, Zap, FileText, CalendarCheck } from 'lucide-react';
 
 const PaymentComplete = () => {
   const navigate = useNavigate();
@@ -55,7 +55,13 @@ const PaymentComplete = () => {
 
         setSuccess(true);
         setPaymentInfo(data);
-        toast({ title: '🎉 결제 완료!', description: getSuccessMessage(data.productType) });
+        
+        // Handle consultation booking creation after successful payment
+        if (productType === 'consultation') {
+          await createConsultationBooking(session.session.access_token);
+        }
+        
+        toast({ title: '🎉 결제 완료!', description: getSuccessMessage(productType === 'consultation' ? 'consultation' : data.productType) });
       } catch (err: any) {
         console.error('Payment confirmation error:', err);
         setSuccess(false);
@@ -68,10 +74,52 @@ const PaymentComplete = () => {
     confirmPayment();
   }, [paymentKey, orderId, amount, status, navigate, toast]);
 
+  const createConsultationBooking = async (accessToken: string) => {
+    try {
+      const pendingBookingStr = sessionStorage.getItem('pendingBooking');
+      if (!pendingBookingStr) return;
+      
+      const pendingBooking = JSON.parse(pendingBookingStr);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const startTime = pendingBooking.startTime;
+      const [hours, minutes] = startTime.split(':').map(Number);
+      const totalMinutes = hours * 60 + (minutes || 0) + pendingBooking.durationMinutes;
+      const endHour = Math.floor(totalMinutes / 60) % 24;
+      const endMinute = totalMinutes % 60;
+      const endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}:00`;
+
+      const { error: bookingError } = await supabase
+        .from('consultation_bookings')
+        .insert({
+          user_id: user.id,
+          expert_id: pendingBooking.expertId,
+          booking_date: pendingBooking.bookingDate,
+          start_time: startTime,
+          end_time: endTime,
+          duration_minutes: pendingBooking.durationMinutes,
+          tokens_paid: 0,
+          notes: pendingBooking.notes || null,
+          status: 'confirmed',
+          meeting_platform: 'video'
+        });
+
+      if (bookingError) {
+        console.error('Booking creation error:', bookingError);
+      }
+
+      sessionStorage.removeItem('pendingBooking');
+    } catch (err) {
+      console.error('Failed to create consultation booking:', err);
+    }
+  };
+
   const getSuccessMessage = (type: string) => {
     switch (type) {
       case 'subscription': return '프리미엄 구독이 활성화되었습니다! 모든 기능을 무제한으로 이용하세요.';
       case 'single': return '리포트 이용권 1회가 추가되었습니다.';
+      case 'consultation': return '상담 예약이 확정되었습니다! 전문가가 확인 후 연락드립니다.';
       case 'pass': return '프리미엄 패스가 활성화되었습니다.';
       case 'cash': return '캐시가 충전되었습니다.';
       default: return '결제가 완료되었습니다.';
@@ -107,7 +155,7 @@ const PaymentComplete = () => {
               )}
             </div>
             <h2 className="text-2xl font-bold mb-2 text-foreground">
-              {resolvedType === 'subscription' ? '🎉 구독 시작!' : resolvedType === 'single' ? '이용권 구매 완료!' : '결제 완료!'}
+              {resolvedType === 'subscription' ? '🎉 구독 시작!' : resolvedType === 'consultation' ? '상담 예약 완료!' : resolvedType === 'single' ? '이용권 구매 완료!' : '결제 완료!'}
             </h2>
             <p className="text-muted-foreground mb-6">
               {getSuccessMessage(resolvedType)}
@@ -141,6 +189,12 @@ const PaymentComplete = () => {
                 <Button className="w-full" onClick={() => navigate('/assessment')}>
                   <FileText className="w-4 h-4 mr-2" />
                   이용권으로 검사하기
+                </Button>
+              )}
+              {resolvedType === 'consultation' && (
+                <Button className="w-full" onClick={() => navigate('/booking-management')}>
+                  <CalendarCheck className="w-4 h-4 mr-2" />
+                  예약 내역 확인
                 </Button>
               )}
               <Button variant="outline" className="w-full" onClick={() => navigate('/')}>

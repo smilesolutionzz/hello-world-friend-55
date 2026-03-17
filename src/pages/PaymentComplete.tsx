@@ -55,7 +55,13 @@ const PaymentComplete = () => {
 
         setSuccess(true);
         setPaymentInfo(data);
-        toast({ title: '🎉 결제 완료!', description: getSuccessMessage(data.productType) });
+        
+        // Handle consultation booking creation after successful payment
+        if (productType === 'consultation') {
+          await createConsultationBooking(session.session.access_token);
+        }
+        
+        toast({ title: '🎉 결제 완료!', description: getSuccessMessage(productType === 'consultation' ? 'consultation' : data.productType) });
       } catch (err: any) {
         console.error('Payment confirmation error:', err);
         setSuccess(false);

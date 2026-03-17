@@ -17,6 +17,7 @@ import female15 from '@/assets/experts/expert-female-15.jpg';
 import female16 from '@/assets/experts/expert-female-16.jpg';
 import female17 from '@/assets/experts/expert-female-17.jpg';
 import female18 from '@/assets/experts/expert-female-18.jpg';
+import female19 from '@/assets/experts/expert-female-19.jpg';
 import male01 from '@/assets/experts/expert-male-01.jpg';
 import male02 from '@/assets/experts/expert-male-02.jpg';
 import male03 from '@/assets/experts/expert-male-03.jpg';
@@ -54,6 +55,7 @@ export const expertImages: Record<string, string> = {
   '김민주': female16,
   '한보경': female17,
   '손예영': female18,
+  '윤은민': female19,
   
   // 남성 전문가 (Male experts)
   '정민호': male01,

@@ -131,8 +131,9 @@ const ClinicalReportLayout = ({
   pdfId = 'clinical-report-content',
 }: ClinicalReportLayoutProps) => {
   const cleanedAnalysis = aiAnalysis ? cleanMarkdown(aiAnalysis) : '';
-  const analysisParagraphs = cleanedAnalysis
-    ? cleanedAnalysis.split('\n\n').map(p => p.trim()).filter(Boolean)
+  const { text: footnotedAnalysis, footnotes: analysisFootnotes } = extractFootnotes(cleanedAnalysis);
+  const analysisParagraphs = footnotedAnalysis
+    ? footnotedAnalysis.split('\n\n').map(p => p.trim()).filter(Boolean)
     : [];
 
   return (

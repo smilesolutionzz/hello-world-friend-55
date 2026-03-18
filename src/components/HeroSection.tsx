@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ArrowRight, Sparkles, Gift, MessageCircle } from "lucide-react";
 import heroBg from "@/assets/hero-family-bg.jpg";
 import InstantAIAnalysis from "./InstantAIAnalysis";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/logo-large.png";
 import { sharePage, isKakaoInitialized } from "@/lib/kakaoShare";
 import { toast } from "sonner";
@@ -13,9 +13,18 @@ import { useTranslation } from "@/i18n";
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  
   const sectionRef = useRef<HTMLElement>(null);
   const { t } = useTranslation();
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const phrases = t.hero.parentHookPhrases || [];
+
+  useEffect(() => {
+    if (phrases.length <= 1) return;
+    const timer = setInterval(() => {
+      setPhraseIndex((prev) => (prev + 1) % phrases.length);
+    }, 2800);
+    return () => clearInterval(timer);
+  }, [phrases.length]);
 
   const handleKakaoShare = () => {
     trackEvent('hero_kakao_share');
@@ -103,8 +112,22 @@ const HeroSection = () => {
             </span>
           </h1>
 
-          {/* 부모 심리 서브 후킹 */}
-          <p className="text-white/50 text-xs md:text-base mb-2 md:mb-3 font-medium px-2">
+          {/* 부모 심리 서브 후킹 - 로테이팅 */}
+          <div className="h-8 md:h-10 mb-2 md:mb-3 flex items-center justify-center overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={phraseIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="text-amber-300/90 text-sm md:text-base font-semibold px-2 italic"
+              >
+                {phrases[phraseIndex]}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+          <p className="text-white/50 text-xs md:text-sm mb-1">
             {t.hero.parentHook}
           </p>
           

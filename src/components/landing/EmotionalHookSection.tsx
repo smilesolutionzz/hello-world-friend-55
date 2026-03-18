@@ -32,12 +32,9 @@ const EmotionalHookSection = () => {
 
   return (
     <section className="relative py-16 md:py-24 overflow-hidden">
-      {/* Video Background */}
+      {/* Static Background (피드백: 배경 영상이 읽기 방해) */}
       <div className="absolute inset-0 -z-10">
-        <video autoPlay muted loop playsInline preload="none" className="w-full h-full object-cover">
-          <source src="https://videos.pexels.com/video-files/4057411/4057411-uhd_2560_1440_25fps.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-rose-950/85 to-slate-900/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-rose-950/40 to-slate-900" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">

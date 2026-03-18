@@ -58,7 +58,8 @@ interface ClinicalReportLayoutProps {
 const CollapsibleSection = ({ section }: { section: ReportSection }) => {
   const [open, setOpen] = useState(section.defaultOpen ?? false);
   const cleaned = cleanMarkdown(section.content);
-  const paragraphs = cleaned.split('\n\n').map(p => p.trim()).filter(Boolean);
+  const { text: footnoted, footnotes } = extractFootnotes(cleaned);
+  const paragraphs = footnoted.split('\n\n').map(p => p.trim()).filter(Boolean);
 
   return (
     <div className="border border-border/40 rounded-xl overflow-hidden">
@@ -79,6 +80,7 @@ const CollapsibleSection = ({ section }: { section: ReportSection }) => {
               {p}
             </p>
           ))}
+          <FootnoteList footnotes={footnotes} />
         </div>
       )}
     </div>

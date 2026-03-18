@@ -23,6 +23,7 @@ import { VideoObservationShowcase } from '@/components/landing/VideoObservationS
 import SubscriptionValueSection from '@/components/landing/SubscriptionValueSection';
 import StickyConversionBar from '@/components/conversion/StickyConversionBar';
 import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
+import { SocialProofToast } from '@/components/landing/SocialProofToast';
 
 
 const structuredData = {

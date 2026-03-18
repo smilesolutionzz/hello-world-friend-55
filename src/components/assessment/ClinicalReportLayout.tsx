@@ -4,7 +4,7 @@ import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Download, Share2, Brain, ChevronDown, ChevronUp } from 'lucide-react';
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { PDFHeader } from '@/components/common/PDFHeader';
-import { cleanMarkdown } from '@/utils/cleanMarkdown';
+import { cleanMarkdown, extractFootnotes } from '@/utils/cleanMarkdown';
 
 /* ─── Types ─── */
 export interface DomainScore {

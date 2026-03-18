@@ -639,34 +639,35 @@ const ReportGenerator = () => {
         {reportData && (
           <div className="max-w-5xl mx-auto space-y-6">
             {/* 플로팅 액션 바 */}
-            <div className="sticky top-4 z-20 bg-slate-900/95 backdrop-blur-xl rounded-xl border border-white/10 p-3 shadow-2xl">
-              <div className="flex flex-wrap gap-2 justify-center">
-                <Button onClick={downloadPDF} size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 text-xs">
+            <div className="sticky top-4 z-20 bg-slate-900/95 backdrop-blur-xl rounded-xl border border-white/10 p-4 shadow-2xl space-y-3">
+              {/* 상단: 주요 액션 버튼들 */}
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <Button onClick={downloadPDF} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5 text-xs font-semibold h-9">
                   <FileDown className="w-3.5 h-3.5" /> PDF
                 </Button>
-                <Button onClick={copyToClipboard} size="sm" variant="outline" className="border-white/20 text-white/70 hover:bg-white/5 gap-1.5 text-xs">
+                <Button onClick={copyToClipboard} size="sm" className="bg-slate-700 hover:bg-slate-600 text-white gap-1.5 text-xs font-semibold h-9">
                   <Copy className="w-3.5 h-3.5" /> {t('복사', 'Copy')}
                 </Button>
-                <Button onClick={shareReport} size="sm" variant="outline" className="border-white/20 text-white/70 hover:bg-white/5 gap-1.5 text-xs">
+                <Button onClick={shareReport} size="sm" className="bg-slate-700 hover:bg-slate-600 text-white gap-1.5 text-xs font-semibold h-9">
                   <Share2 className="w-3.5 h-3.5" /> {t('공유', 'Share')}
                 </Button>
                 <VisualSummaryButton type="assessment"
                   content={{ sections: reportData.sections?.map((s: any) => ({ title: s.title, content: s.content?.replace(/<[^>]*>/g, '').substring(0, 200) })), summary: reportData.summary?.replace(/<[^>]*>/g, ''), userName: userInput.name }}
                   testType={t('종합 분석 리포트', 'Comprehensive Analysis Report')} label={t('🎨 비주얼 노트', '🎨 Visual Note')}
-                  className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white border-0 text-xs h-8"
+                  className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white border-0 text-xs font-semibold h-9"
                 />
-                <a href="https://open.kakao.com/o/sHLdK3Ch" target="_blank" rel="noopener noreferrer">
-                  <Button size="sm" className="bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold gap-1.5 text-xs">
+                <a href="https://open.kakao.com/o/sHLdK3Ch" target="_blank" rel="noopener noreferrer" className="w-full">
+                  <Button size="sm" className="w-full bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold gap-1.5 text-xs h-9">
                     <MessageSquare className="w-3.5 h-3.5" /> {t('카카오톡 검수', 'KakaoTalk Review')}
                   </Button>
                 </a>
               </div>
-              {/* 이메일 전송 */}
-              <div className="flex items-center gap-2 mt-3 max-w-sm mx-auto">
-                <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
+              {/* 하단: 이메일 전송 */}
+              <div className="flex items-center gap-2 max-w-md mx-auto">
+                <Mail className="w-4 h-4 text-white/40 shrink-0" />
                 <input type="email" value={familyEmail} onChange={(e) => setFamilyEmail(e.target.value)}
-                  placeholder={t('가족 이메일로 전송', 'Send to family email')} className="flex-1 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs placeholder:text-white/30" />
-                <Button onClick={sendFamilyEmail} disabled={isSendingEmail} size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8">
+                  placeholder={t('가족 이메일로 전송', 'Send to family email')} className="flex-1 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs placeholder:text-white/30 focus:border-primary/50 focus:outline-none" />
+                <Button onClick={sendFamilyEmail} disabled={isSendingEmail} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-8 px-4">
                   {isSendingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t('전송', 'Send')}
                 </Button>
               </div>

@@ -79,19 +79,47 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
     color: getColor(d.score),
   }));
 
-  const parseAISections = (text: string): ReportSection[] => {
-    if (!text) return [];
-    const cleaned = cleanMarkdown(text);
-    const paragraphs = cleaned.split('\n\n').filter(p => p.trim().length > 20);
-    const icons = ['🧠', '📊', '💡', '🎯', '🌱', '💪', '📋'];
-    return paragraphs.slice(0, 7).map((p, idx) => {
-      const firstLine = p.split('\n')[0].trim();
-      const rest = p.split('\n').slice(1).join('\n').trim() || p;
-      return { id: `s-${idx}`, icon: icons[idx] || '📋', title: firstLine.length > 5 && firstLine.length < 50 ? firstLine : `분석 ${idx + 1}`, content: rest, defaultOpen: idx === 0 };
-    });
+  const buildDomainSections = (): ReportSection[] => {
+    const domainIcons: Record<string, string> = {
+      language: '🗣️', motor: '🏃', cognitive: '🧠', social: '👥',
+      adaptive: '🔧', attention: '🎯', emotional: '💕',
+    };
+
+    const getInsight = (name: string, score: number): string => {
+      if (score >= 75) return `${name} 영역에서 심각한 수준의 지연이 관찰됩니다. 전문가의 즉각적인 개입과 체계적인 치료 프로그램이 필요합니다. 조기에 집중적인 치료를 시작할수록 개선 효과가 크므로, 가능한 빨리 전문 기관에서 정밀 평가를 받으시길 권장합니다.`;
+      if (score >= 50) return `${name} 영역에서 중등도의 지연이 나타납니다. 일상생활에서 어려움을 겪을 수 있는 수준으로, 전문가 상담을 통해 맞춤형 개입 계획을 세우는 것이 좋습니다. 가정에서의 지속적인 연습과 전문 치료를 병행하면 의미 있는 개선을 기대할 수 있습니다.`;
+      if (score >= 25) return `${name} 영역에서 경미한 지연이 관찰됩니다. 또래 대비 약간의 차이가 있으나, 가정에서의 적절한 자극과 활동을 통해 충분히 따라잡을 수 있는 수준입니다. 정기적인 모니터링을 권장합니다.`;
+      return `${name} 영역은 정상 범위에 해당합니다. 현재 발달 수준이 양호하며, 지속적인 관심과 적절한 자극을 통해 건강한 발달을 유지해 주세요.`;
+    };
+
+    // AI 분석이 있으면 그것을 도메인별로 매핑 시도
+    if (analysis && analysis.length > 50) {
+      const cleaned = cleanMarkdown(analysis);
+      const paragraphs = cleaned.split('\n\n').filter(p => p.trim().length > 20);
+
+      // AI 텍스트가 도메인 수 이상이면 매핑
+      if (paragraphs.length >= domainData.length) {
+        return domainData.map((d, idx) => ({
+          id: `s-${idx}`,
+          icon: domainIcons[d.key] || '📋',
+          title: `${d.name} (${d.score}% · ${getLevel(d.score)})`,
+          content: paragraphs[idx] || getInsight(d.name, d.score),
+          defaultOpen: idx === 0,
+        }));
+      }
+    }
+
+    // 폴백: 도메인 점수 기반 자동 생성
+    return domainData.map((d, idx) => ({
+      id: `s-${idx}`,
+      icon: domainIcons[d.key] || '📋',
+      title: `${d.name} (${d.score}% · ${getLevel(d.score)})`,
+      content: getInsight(d.name, d.score),
+      defaultOpen: idx === 0,
+    }));
   };
 
-  const aiSections = parseAISections(analysis);
+  const aiSections = buildDomainSections();
   const overallDelay = Math.round(domainData.reduce((s, d) => s + d.score, 0) / domainData.length);
 
   const handleDownload = async () => {

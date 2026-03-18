@@ -247,6 +247,7 @@ const ClinicalReportLayout = ({
                   {p}
                 </p>
               ))}
+              <FootnoteList footnotes={analysisFootnotes} />
             </div>
           ) : (
             <p className="text-xs text-muted-foreground text-center py-4">분석 결과를 불러올 수 없습니다.</p>

@@ -144,7 +144,10 @@ export const RealtimeVoiceChatComponent: React.FC = () => {
   };
 
   useEffect(() => {
+    const handleBeforeUnload = () => chatRef.current?.disconnect();
+    window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
       chatRef.current?.disconnect();
     };
   }, []);

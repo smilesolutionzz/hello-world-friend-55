@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/i18n/useTranslation";
 import { BetaBanner } from "@/components/BetaBanner";

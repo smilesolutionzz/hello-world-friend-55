@@ -87,6 +87,23 @@ const CollapsibleSection = ({ section }: { section: ReportSection }) => {
   );
 };
 
+/* ─── Footnote List ─── */
+const FootnoteList = ({ footnotes }: { footnotes: string[] }) => {
+  if (!footnotes || footnotes.length === 0) return null;
+  return (
+    <div className="mt-4 pt-3 border-t border-border/30">
+      <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">📎 참고 문헌 및 이론</p>
+      <div className="space-y-0.5">
+        {footnotes.map((fn, idx) => (
+          <p key={idx} className="text-[10px] leading-relaxed text-muted-foreground/70">
+            [{idx + 1}] {fn}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 /* ─── Score Bar ─── */
 const ScoreBar = ({ domain }: { domain: DomainScore }) => {
   const pct = Math.round((domain.score / domain.maxScore) * 100);

@@ -4,7 +4,7 @@ import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Download, Share2, Brain, ChevronDown, ChevronUp } from 'lucide-react';
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { PDFHeader } from '@/components/common/PDFHeader';
-import { cleanMarkdown } from '@/utils/cleanMarkdown';
+import { cleanMarkdown, extractFootnotes } from '@/utils/cleanMarkdown';
 
 /* ─── Types ─── */
 export interface DomainScore {
@@ -58,7 +58,8 @@ interface ClinicalReportLayoutProps {
 const CollapsibleSection = ({ section }: { section: ReportSection }) => {
   const [open, setOpen] = useState(section.defaultOpen ?? false);
   const cleaned = cleanMarkdown(section.content);
-  const paragraphs = cleaned.split('\n\n').map(p => p.trim()).filter(Boolean);
+  const { text: footnoted, footnotes } = extractFootnotes(cleaned);
+  const paragraphs = footnoted.split('\n\n').map(p => p.trim()).filter(Boolean);
 
   return (
     <div className="border border-border/40 rounded-xl overflow-hidden">
@@ -79,8 +80,26 @@ const CollapsibleSection = ({ section }: { section: ReportSection }) => {
               {p}
             </p>
           ))}
+          <FootnoteList footnotes={footnotes} />
         </div>
       )}
+    </div>
+  );
+};
+
+/* ─── Footnote List ─── */
+const FootnoteList = ({ footnotes }: { footnotes: string[] }) => {
+  if (!footnotes || footnotes.length === 0) return null;
+  return (
+    <div className="mt-4 pt-3 border-t border-border/30">
+      <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">📎 참고 문헌 및 이론</p>
+      <div className="space-y-0.5">
+        {footnotes.map((fn, idx) => (
+          <p key={idx} className="text-[10px] leading-relaxed text-muted-foreground/70">
+            [{idx + 1}] {fn}
+          </p>
+        ))}
+      </div>
     </div>
   );
 };
@@ -129,8 +148,9 @@ const ClinicalReportLayout = ({
   pdfId = 'clinical-report-content',
 }: ClinicalReportLayoutProps) => {
   const cleanedAnalysis = aiAnalysis ? cleanMarkdown(aiAnalysis) : '';
-  const analysisParagraphs = cleanedAnalysis
-    ? cleanedAnalysis.split('\n\n').map(p => p.trim()).filter(Boolean)
+  const { text: footnotedAnalysis, footnotes: analysisFootnotes } = extractFootnotes(cleanedAnalysis);
+  const analysisParagraphs = footnotedAnalysis
+    ? footnotedAnalysis.split('\n\n').map(p => p.trim()).filter(Boolean)
     : [];
 
   return (
@@ -227,6 +247,7 @@ const ClinicalReportLayout = ({
                   {p}
                 </p>
               ))}
+              <FootnoteList footnotes={analysisFootnotes} />
             </div>
           ) : (
             <p className="text-xs text-muted-foreground text-center py-4">분석 결과를 불러올 수 없습니다.</p>

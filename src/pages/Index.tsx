@@ -192,6 +192,7 @@ const Index = () => {
           
           <BackToTop />
           <StickyConversionBar />
+          <SocialProofToast />
           
           <WelcomeOnboarding 
             isOpen={showOnboarding} 

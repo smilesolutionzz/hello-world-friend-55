@@ -268,9 +268,19 @@ export class RealtimeChat {
       this.dc?.close();
     } catch {}
     try {
+      // 모든 미디어 트랙 중지 (마이크 + 오디오)
+      this.pc?.getSenders().forEach(sender => {
+        try { sender.track?.stop(); } catch {}
+      });
+      this.pc?.getReceivers().forEach(receiver => {
+        try { receiver.track?.stop(); } catch {}
+      });
       this.pc?.close();
     } catch {}
+    // 오디오 재생 완전 중지
+    this.audioEl.pause();
     this.audioEl.srcObject = null;
+    this.audioEl.src = '';
     this.dc = null;
     this.pc = null;
     this.sessionCreated = false;

@@ -120,7 +120,10 @@ export const VoiceCounselingTab = () => {
   };
 
   useEffect(() => {
+    const handleBeforeUnload = () => chatRef.current?.disconnect();
+    window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
       chatRef.current?.disconnect();
     };
   }, []);

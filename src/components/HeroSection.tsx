@@ -112,8 +112,22 @@ const HeroSection = () => {
             </span>
           </h1>
 
-          {/* 부모 심리 서브 후킹 */}
-          <p className="text-white/50 text-xs md:text-base mb-2 md:mb-3 font-medium px-2">
+          {/* 부모 심리 서브 후킹 - 로테이팅 */}
+          <div className="h-8 md:h-10 mb-2 md:mb-3 flex items-center justify-center overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={phraseIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="text-amber-300/90 text-sm md:text-base font-semibold px-2 italic"
+              >
+                {phrases[phraseIndex]}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+          <p className="text-white/50 text-xs md:text-sm mb-1">
             {t.hero.parentHook}
           </p>
           

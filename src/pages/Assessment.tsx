@@ -953,48 +953,6 @@ const Assessment = () => {
             </div>
           </section>
 
-          {/* ========== 🎮 재미 검사 (바이럴 4개) ========== */}
-          <section className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1.5 h-6 bg-muted-foreground/30 rounded-full"></div>
-              <h2 className="text-lg font-medium text-muted-foreground">재미로 해보기</h2>
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">무료</span>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              <button 
-                className="group text-center p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => handleTestTypeSelect('dream')}
-              >
-                <div className="text-2xl mb-1">🌙</div>
-                <p className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{t.assessment.dreamInterpretation}</p>
-              </button>
-
-              <button 
-                className="group text-center p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => handleTestTypeSelect('saju')}
-              >
-                <div className="text-2xl mb-1">🔮</div>
-                <p className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{t.assessment.sajuReading}</p>
-              </button>
-
-              <button 
-                className="group text-center p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => setCurrentStep('animal-face-match')}
-              >
-                <div className="text-2xl mb-1">🐾</div>
-                <p className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{t.assessment.animalFace}</p>
-              </button>
-
-              <button 
-                className="group text-center p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all"
-                onClick={() => setCurrentStep('past-life-job')}
-              >
-                <div className="text-2xl mb-1">👑</div>
-                <p className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{t.assessment.pastLifeJob}</p>
-              </button>
-            </div>
-          </section>
         </div>
         </div>
       </div>

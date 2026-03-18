@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ArrowRight, Sparkles, Gift, MessageCircle } from "lucide-react";
 import heroBg from "@/assets/hero-family-bg.jpg";
 import InstantAIAnalysis from "./InstantAIAnalysis";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/logo-large.png";
 import { sharePage, isKakaoInitialized } from "@/lib/kakaoShare";
 import { toast } from "sonner";
@@ -13,9 +13,18 @@ import { useTranslation } from "@/i18n";
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  
   const sectionRef = useRef<HTMLElement>(null);
   const { t } = useTranslation();
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const phrases = t.hero.parentHookPhrases || [];
+
+  useEffect(() => {
+    if (phrases.length <= 1) return;
+    const timer = setInterval(() => {
+      setPhraseIndex((prev) => (prev + 1) % phrases.length);
+    }, 2800);
+    return () => clearInterval(timer);
+  }, [phrases.length]);
 
   const handleKakaoShare = () => {
     trackEvent('hero_kakao_share');

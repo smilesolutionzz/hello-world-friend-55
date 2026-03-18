@@ -41,21 +41,14 @@ const HeroSection = () => {
   return (
     <section ref={sectionRef} className="relative min-h-screen overflow-hidden">
 
-      {/* Video Background */}
+      {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
+        <img
+          src={heroBg}
+          alt="행복한 가족"
           className="w-full h-full object-cover scale-105"
-          poster={heroBg}
-        >
-          <source 
-            src="https://videos.pexels.com/video-files/3209828/3209828-uhd_2560_1440_25fps.mp4" 
-            type="video/mp4"
-          />
-        </video>
+          loading="eager"
+        />
         {/* Multi-layer cinematic overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/70 to-slate-950/90" />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-amber-500/8" />

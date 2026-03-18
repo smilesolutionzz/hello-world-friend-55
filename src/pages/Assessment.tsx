@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/i18n/useTranslation";
 import { BetaBanner } from "@/components/BetaBanner";
@@ -90,7 +90,35 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'emotional-development-test' | 'dream-interpretation' | 'saju-analysis' | 'past-life-job' | 'animal-face-match' | 'inner-animal' | 'grandma-relationship' | 'grandpa-marriage' | 'mz-nagging' | 'wisdom-advice' | 'otrovert' | 'life-achievement' | 'parent-child-play' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result' | 'challenging-behavior-test' | 'challenging-behavior-result' | 'adaptive-behavior-test' | 'adaptive-behavior-result'>('test-type');
+  const isPopstateRef = useRef(false);
+  const [currentStep, setCurrentStepRaw] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'emotional-development-test' | 'dream-interpretation' | 'saju-analysis' | 'past-life-job' | 'animal-face-match' | 'inner-animal' | 'grandma-relationship' | 'grandpa-marriage' | 'mz-nagging' | 'wisdom-advice' | 'otrovert' | 'life-achievement' | 'parent-child-play' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result' | 'challenging-behavior-test' | 'challenging-behavior-result' | 'adaptive-behavior-test' | 'adaptive-behavior-result'>('test-type');
+  
+  // setCurrentStep wrapper: 브라우저 히스토리에 상태 push
+  const setCurrentStep = useCallback((step: typeof currentStep) => {
+    if (!isPopstateRef.current) {
+      window.history.pushState({ assessmentStep: step }, '', window.location.pathname + window.location.search);
+    }
+    setCurrentStepRaw(step);
+  }, []);
+
+  // 브라우저 뒤로가기 버튼 감지
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state?.assessmentStep) {
+        isPopstateRef.current = true;
+        setCurrentStepRaw(e.state.assessmentStep);
+        isPopstateRef.current = false;
+      } else {
+        // state가 없으면 assessment 밖으로 나가는 것이므로 브라우저 기본 동작
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    // 현재 상태를 히스토리에 replace (초기 상태 기록)
+    window.history.replaceState({ assessmentStep: currentStep }, '', window.location.pathname + window.location.search);
+
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | 'parent-child-play' | 'resilience' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
@@ -628,8 +656,8 @@ const Assessment = () => {
     } else if (currentStep === 'assessment') {
       setCurrentStep('age-select');
     } else if (currentStep === 'test-type') {
-      // 메인 검사 목록에서 뒤로가기 -> 홈으로
-      navigate('/');
+      // 메인 검사 목록에서 뒤로가기 -> 이전 페이지로
+      navigate(-1);
     } else {
       // 기본적으로 검사 선택 화면으로
       setCurrentStep('test-type');

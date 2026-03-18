@@ -63,7 +63,7 @@ export const SocialProofToast = () => {
               <CheckCircle className="w-4.5 h-4.5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">
+              <p className="text-sm font-medium text-foreground leading-snug">
                 {message.name}님이 {message.action}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">

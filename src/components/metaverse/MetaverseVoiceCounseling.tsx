@@ -1072,7 +1072,16 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   };
 
   useEffect(() => {
+    // 페이지 이탈 시 음성 연결 종료
+    const handleBeforeUnload = () => {
+      chatRef.current?.disconnect();
+      emotionDetectorRef.current?.disconnect();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
       chatRef.current?.disconnect();
       emotionDetectorRef.current?.disconnect();
       // 정리 시 사운드와 음악도 중지

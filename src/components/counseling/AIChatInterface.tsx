@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User, AlertTriangle, ExternalLink, Phone, ArrowLeft } from "lucide-react";
+import { Send, Bot, User, AlertTriangle, ExternalLink, Phone, ArrowLeft, Mic } from "lucide-react";
+import { VoiceInputButton } from "@/components/ui/VoiceInputButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 

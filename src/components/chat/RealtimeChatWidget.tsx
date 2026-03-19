@@ -148,14 +148,14 @@ export const RealtimeChatWidget: React.FC<RealtimeChatWidgetProps> = ({ onClose 
                     </div>
                   )}
                   <div
-                    className={`max-w-[75%] rounded-2xl px-3.5 py-2.5 ${
+                    className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 ${
                       msg.role === 'user'
                         ? 'bg-primary text-primary-foreground rounded-br-sm'
                         : 'bg-background border rounded-bl-sm shadow-sm'
                     }`}
                   >
                     {msg.role === 'assistant' ? (
-                      <div className="text-sm prose prose-sm max-w-none dark:prose-invert [&>p]:my-1 [&>ul]:my-1 [&>ol]:my-1">
+                      <div className="text-sm prose prose-sm max-w-none dark:prose-invert [&>p]:my-1 [&>ul]:my-1 [&>ol]:my-1 break-words overflow-hidden">
                         <ReactMarkdown>{msg.content}</ReactMarkdown>
                       </div>
                     ) : (

@@ -116,9 +116,9 @@ const PartnerTrustSection = () => {
         @keyframes marquee-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes marquee-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
         .marquee-track { display: flex; gap: 1rem; min-width: max-content; }
-        .marquee-left { animation: marquee-left 40s linear infinite; }
-        .marquee-right { animation: marquee-right 45s linear infinite; }
-        .marquee-left-slow { animation: marquee-left 50s linear infinite; }
+        .marquee-left { animation: marquee-left 80s linear infinite; }
+        .marquee-right { animation: marquee-right 90s linear infinite; }
+        .marquee-left-slow { animation: marquee-left 100s linear infinite; }
         .marquee-track:hover { animation-play-state: paused; }
       `}</style>
     </section>

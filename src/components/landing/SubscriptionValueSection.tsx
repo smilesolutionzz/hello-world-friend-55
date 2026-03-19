@@ -121,18 +121,19 @@ const SubscriptionValueSection = () => {
               </span>
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">
-              {isEnglish ? 'Unlimited Access' : '무제한 이용'}
+              {isEnglish ? 'Unlimited Access' : '전체 이용 구독'}
             </h3>
             <p className="text-slate-400 text-sm mb-6">
-              {isEnglish ? 'Everything unlimited for 30 days' : '30일간 모든 기능 무제한'}
+              {isEnglish ? 'Everything unlimited for 30 days' : '30일간 모든 검사와 리포트를 자유롭게 이용하세요'}
             </p>
 
             <div className="flex items-end gap-2 mb-1">
-              <span className="text-sm text-slate-500 line-through">₩{SUBSCRIPTION_ORIGINAL_PRICE.toLocaleString()}</span>
               <span className="text-3xl font-black text-white">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
               <span className="text-slate-400 text-sm pb-1">/{isEnglish ? 'mo' : '월'}</span>
             </div>
-            <Badge className="mb-6 bg-destructive/90 text-destructive-foreground border-0">50% {isEnglish ? 'OFF' : '할인'}</Badge>
+            <p className="text-xs text-emerald-400 mb-6">
+              {isEnglish ? 'Use 3+ times? Subscription is the smarter choice.' : '리포트 2회 이상이면 구독이 합리적입니다'}
+            </p>
 
             <div className="space-y-2.5 mb-6">
               {subscriptionBenefits.map((b, i) => (

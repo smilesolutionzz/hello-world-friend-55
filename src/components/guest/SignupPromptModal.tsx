@@ -62,10 +62,10 @@ export const SignupPromptModal: React.FC<SignupPromptModalProps> = ({
             </div>
           </div>
           <DialogTitle className="text-xl font-bold">
-            🎉 검사 완료! 결과를 저장하세요
+            검사 완료! 나만의 데이터를 만들어보세요
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            30초 무료 가입으로 상세 분석을 확인하세요
+            개인 계정이 있어야 검사 결과가 축적되고, 더 정확한 맞춤 분석이 가능합니다
           </DialogDescription>
           {/* 긴급성 배지 */}
           <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-xs font-medium text-amber-600 dark:text-amber-400">

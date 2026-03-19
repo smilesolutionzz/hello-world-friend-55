@@ -830,7 +830,9 @@ const Assessment = () => {
                       <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <span className="text-xl">{test.icon}</span>
+                            <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${test.gradient} flex items-center justify-center flex-shrink-0`}>
+                              <div className={`w-2.5 h-2.5 rounded-full ${test.dotColor}`}></div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
                                 <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-primary truncate">{test.title}</h3>

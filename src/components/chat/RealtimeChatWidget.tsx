@@ -3,7 +3,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageCircle, X, Loader2, Send, Bot, User, Sparkles } from 'lucide-react';
+import { MessageCircle, X, Loader2, Send, Bot, User, Sparkles, Mic } from 'lucide-react';
+import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
 import { supabase } from '@/integrations/supabase/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -147,14 +148,14 @@ export const RealtimeChatWidget: React.FC<RealtimeChatWidgetProps> = ({ onClose 
                     </div>
                   )}
                   <div
-                    className={`max-w-[75%] rounded-2xl px-3.5 py-2.5 ${
+                    className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 ${
                       msg.role === 'user'
                         ? 'bg-primary text-primary-foreground rounded-br-sm'
                         : 'bg-background border rounded-bl-sm shadow-sm'
                     }`}
                   >
                     {msg.role === 'assistant' ? (
-                      <div className="text-sm prose prose-sm max-w-none dark:prose-invert [&>p]:my-1 [&>ul]:my-1 [&>ol]:my-1">
+                      <div className="text-sm prose prose-sm max-w-none dark:prose-invert [&>p]:my-1 [&>ul]:my-1 [&>ol]:my-1 break-words overflow-hidden">
                         <ReactMarkdown>{msg.content}</ReactMarkdown>
                       </div>
                     ) : (
@@ -207,15 +208,24 @@ export const RealtimeChatWidget: React.FC<RealtimeChatWidgetProps> = ({ onClose 
 
         {/* Input */}
         <div className="p-3 border-t bg-background">
-          <div className="flex gap-2">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="고민을 편하게 말씀해주세요..."
-              disabled={isLoading}
-              className="flex-1 text-sm"
-            />
+          <div className="flex gap-2 items-end">
+            <div className="flex-1 relative">
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="고민을 편하게 말씀해주세요..."
+                disabled={isLoading}
+                className="text-sm pr-10"
+              />
+              <div className="absolute bottom-1.5 right-1.5">
+                <VoiceInputButton
+                  onTranscription={(text) => setInput(prev => prev ? `${prev} ${text}` : text)}
+                  className="h-7 w-7"
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
             <Button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}

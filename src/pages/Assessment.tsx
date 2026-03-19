@@ -745,23 +745,25 @@ const Assessment = () => {
 
             <div className="space-y-2">
               {[
-                { key: 'depression', icon: '😔', title: t.assessment.depressionTitle, duration: t.assessment.depressionDuration, questions: t.assessment.depressionQuestions, description: t.assessment.depressionDesc, features: t.assessment.depressionFeatures },
-                { key: 'panic', icon: '😰', title: t.assessment.panicTitle, duration: t.assessment.panicDuration, questions: t.assessment.panicQuestions, description: t.assessment.panicDesc, features: t.assessment.panicFeatures },
-                { key: 'stress', icon: '🔥', title: t.assessment.stressTitle || '스트레스 검사', duration: t.assessment.stressDuration || '3분', questions: t.assessment.stressQuestions || '10문항', description: t.assessment.stressDesc || '현재 스트레스 수준을 확인합니다.', features: t.assessment.stressFeatures || ['스트레스 수준 측정', 'AI 분석 리포트'] },
-                { key: 'selfesteem', icon: '💎', title: t.assessment.selfesteemTitle, duration: t.assessment.selfesteemDuration, questions: t.assessment.selfesteemQuestions, description: t.assessment.selfesteemDesc, features: t.assessment.selfesteemFeatures },
-                { key: 'adhd', icon: '🎯', title: t.assessment.adhdTitle, duration: t.assessment.adhdDuration, questions: t.assessment.adhdQuestions, description: t.assessment.adhdDesc, features: t.assessment.adhdFeatures },
+                { key: 'depression', title: t.assessment.depressionTitle, duration: t.assessment.depressionDuration, questions: t.assessment.depressionQuestions, description: t.assessment.depressionDesc, features: t.assessment.depressionFeatures, gradient: 'from-blue-600/20 to-indigo-600/20', borderHover: 'hover:border-blue-400/50 hover:bg-blue-500/5', textHover: 'group-hover:text-blue-600 dark:group-hover:text-blue-400', dotColor: 'bg-blue-500' },
+                { key: 'panic', title: t.assessment.panicTitle, duration: t.assessment.panicDuration, questions: t.assessment.panicQuestions, description: t.assessment.panicDesc, features: t.assessment.panicFeatures, gradient: 'from-rose-600/20 to-pink-600/20', borderHover: 'hover:border-rose-400/50 hover:bg-rose-500/5', textHover: 'group-hover:text-rose-600 dark:group-hover:text-rose-400', dotColor: 'bg-rose-500' },
+                { key: 'stress', title: t.assessment.stressTitle || '스트레스 검사', duration: t.assessment.stressDuration || '3분', questions: t.assessment.stressQuestions || '10문항', description: t.assessment.stressDesc || '현재 스트레스 수준을 확인합니다.', features: t.assessment.stressFeatures || ['스트레스 수준 측정', 'AI 분석 리포트'], gradient: 'from-amber-600/20 to-orange-600/20', borderHover: 'hover:border-amber-400/50 hover:bg-amber-500/5', textHover: 'group-hover:text-amber-600 dark:group-hover:text-amber-400', dotColor: 'bg-amber-500' },
+                { key: 'selfesteem', title: t.assessment.selfesteemTitle, duration: t.assessment.selfesteemDuration, questions: t.assessment.selfesteemQuestions, description: t.assessment.selfesteemDesc, features: t.assessment.selfesteemFeatures, gradient: 'from-violet-600/20 to-purple-600/20', borderHover: 'hover:border-violet-400/50 hover:bg-violet-500/5', textHover: 'group-hover:text-violet-600 dark:group-hover:text-violet-400', dotColor: 'bg-violet-500' },
+                { key: 'adhd', title: t.assessment.adhdTitle, duration: t.assessment.adhdDuration, questions: t.assessment.adhdQuestions, description: t.assessment.adhdDesc, features: t.assessment.adhdFeatures, gradient: 'from-teal-600/20 to-emerald-600/20', borderHover: 'hover:border-teal-400/50 hover:bg-teal-500/5', textHover: 'group-hover:text-teal-600 dark:group-hover:text-teal-400', dotColor: 'bg-teal-500' },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (
                   <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
                     <CollapsibleTrigger asChild>
-                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-emerald-400/50 hover:bg-emerald-500/5 transition-all">
+                      <button className={`w-full group text-left p-3 md:p-4 rounded-xl border border-border ${test.borderHover} transition-all`}>
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <span className="text-xl">{test.icon}</span>
+                            <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${test.gradient} flex items-center justify-center flex-shrink-0`}>
+                              <div className={`w-2.5 h-2.5 rounded-full ${test.dotColor}`}></div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
-                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 truncate">{test.title}</h3>
+                                <h3 className={`font-semibold text-sm md:text-base text-foreground ${test.textHover} truncate`}>{test.title}</h3>
                                 <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] px-1 py-0 border-0 flex-shrink-0">무료</Badge>
                               </div>
                               <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
@@ -814,12 +816,12 @@ const Assessment = () => {
                 <Brain className="w-4 h-4" /> 성격·심리 심층
               </h3>
               {[
-                { key: 'psychological', icon: '🧠', title: t.assessment.psychologicalTitle, duration: t.assessment.psychologicalDuration, questions: t.assessment.psychologicalQuestions, description: t.assessment.psychologicalDesc, features: t.assessment.psychologicalFeatures },
-                { key: 'resilience', icon: '💪', title: t.assessment.resilienceTitle, duration: t.assessment.resilienceDuration, questions: t.assessment.resilienceQuestions, badge: 'NEW', description: t.assessment.resilienceDesc, features: t.assessment.resilienceFeatures },
-                { key: 'attachment-deep', icon: '💜', title: t.assessment.attachmentDeepTitle, duration: t.assessment.attachmentDeepDuration, questions: t.assessment.attachmentDeepQuestions, badge: 'NEW', description: t.assessment.attachmentDeepDesc, features: t.assessment.attachmentDeepFeatures, onClick: () => navigate('/assessment/attachment-style-test') },
-                { key: 'bigfive', icon: '🌟', title: t.assessment.bigfiveTitle, duration: t.assessment.bigfiveDuration, questions: t.assessment.bigfiveQuestions, description: t.assessment.bigfiveDesc, features: t.assessment.bigfiveFeatures, onClick: () => setCurrentStep('bigfive-test') },
-                { key: 'defense', icon: '🛡️', title: t.assessment.defenseTitle, duration: t.assessment.defenseDuration, questions: t.assessment.defenseQuestions, badge: 'NEW', description: t.assessment.defenseDesc, features: t.assessment.defenseFeatures, onClick: () => navigate('/assessment/defense-mechanism-test') },
-                { key: 'career', icon: '🎯', title: t.assessment.careerTitle, duration: t.assessment.careerDuration, questions: t.assessment.careerQuestions, description: t.assessment.careerDesc, features: t.assessment.careerFeatures, onClick: () => setCurrentStep('career-test') },
+                { key: 'psychological', title: t.assessment.psychologicalTitle, duration: t.assessment.psychologicalDuration, questions: t.assessment.psychologicalQuestions, description: t.assessment.psychologicalDesc, features: t.assessment.psychologicalFeatures, gradient: 'from-indigo-600/20 to-blue-600/20', dotColor: 'bg-indigo-500' },
+                { key: 'resilience', title: t.assessment.resilienceTitle, duration: t.assessment.resilienceDuration, questions: t.assessment.resilienceQuestions, badge: 'NEW', description: t.assessment.resilienceDesc, features: t.assessment.resilienceFeatures, gradient: 'from-emerald-600/20 to-green-600/20', dotColor: 'bg-emerald-500' },
+                { key: 'attachment-deep', title: t.assessment.attachmentDeepTitle, duration: t.assessment.attachmentDeepDuration, questions: t.assessment.attachmentDeepQuestions, badge: 'NEW', description: t.assessment.attachmentDeepDesc, features: t.assessment.attachmentDeepFeatures, onClick: () => navigate('/assessment/attachment-style-test'), gradient: 'from-pink-600/20 to-rose-600/20', dotColor: 'bg-pink-500' },
+                { key: 'bigfive', title: t.assessment.bigfiveTitle, duration: t.assessment.bigfiveDuration, questions: t.assessment.bigfiveQuestions, description: t.assessment.bigfiveDesc, features: t.assessment.bigfiveFeatures, onClick: () => setCurrentStep('bigfive-test'), gradient: 'from-cyan-600/20 to-sky-600/20', dotColor: 'bg-cyan-500' },
+                { key: 'defense', title: t.assessment.defenseTitle, duration: t.assessment.defenseDuration, questions: t.assessment.defenseQuestions, badge: 'NEW', description: t.assessment.defenseDesc, features: t.assessment.defenseFeatures, onClick: () => navigate('/assessment/defense-mechanism-test'), gradient: 'from-slate-600/20 to-gray-600/20', dotColor: 'bg-slate-500' },
+                { key: 'career', title: t.assessment.careerTitle, duration: t.assessment.careerDuration, questions: t.assessment.careerQuestions, description: t.assessment.careerDesc, features: t.assessment.careerFeatures, onClick: () => setCurrentStep('career-test'), gradient: 'from-amber-600/20 to-yellow-600/20', dotColor: 'bg-amber-500' },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (
@@ -828,7 +830,9 @@ const Assessment = () => {
                       <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <span className="text-xl">{test.icon}</span>
+                            <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${test.gradient} flex items-center justify-center flex-shrink-0`}>
+                              <div className={`w-2.5 h-2.5 rounded-full ${test.dotColor}`}></div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
                                 <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-primary truncate">{test.title}</h3>
@@ -873,14 +877,14 @@ const Assessment = () => {
                 <Heart className="w-4 h-4" /> 발달·아동 전문
               </h3>
               {[
-                { key: 'developmental-delay', icon: '👶', title: t.assessment.devDelayTitle, duration: t.assessment.devDelayDuration, questions: t.assessment.devDelayQuestions, description: t.assessment.devDelayDesc, features: t.assessment.devDelayFeatures },
-                { key: 'language', icon: '🗣️', title: t.assessment.infantLangTitle, duration: t.assessment.infantLangDuration, questions: t.assessment.infantLangQuestions, description: t.assessment.infantLangDesc, features: t.assessment.infantLangFeatures },
-                { key: 'sensory-integration', icon: '🎨', title: t.assessment.sensoryTitle, duration: t.assessment.sensoryDuration, questions: t.assessment.sensoryQuestions, description: t.assessment.sensoryDesc, features: t.assessment.sensoryFeatures },
-                { key: 'learning-disability', icon: '📚', title: t.assessment.learningTitle, duration: t.assessment.learningDuration, questions: t.assessment.learningQuestions, description: t.assessment.learningDesc, features: t.assessment.learningFeatures },
-                { key: 'social-development', icon: '👥', title: t.assessment.socialTitle, duration: t.assessment.socialDuration, questions: t.assessment.socialQuestions, description: t.assessment.socialDesc, features: t.assessment.socialFeatures },
-                { key: 'challenging-behavior', icon: '⚠️', title: t.assessment.challengingTitle, duration: t.assessment.challengingDuration, questions: t.assessment.challengingQuestions, description: t.assessment.challengingDesc, features: t.assessment.challengingFeatures },
-                { key: 'adaptive-behavior', icon: '🏠', title: t.assessment.adaptiveTitle, duration: t.assessment.adaptiveDuration, questions: t.assessment.adaptiveQuestions, description: t.assessment.adaptiveDesc, features: t.assessment.adaptiveFeatures },
-                { key: 'parent-child-play', icon: '👨‍👧', title: t.assessment.parentChildTitle, duration: t.assessment.parentChildDuration, questions: t.assessment.parentChildQuestions, description: t.assessment.parentChildDesc, features: t.assessment.parentChildFeatures, onClick: () => handleTestTypeSelect('parent-child-play') },
+                { key: 'developmental-delay', title: t.assessment.devDelayTitle, duration: t.assessment.devDelayDuration, questions: t.assessment.devDelayQuestions, description: t.assessment.devDelayDesc, features: t.assessment.devDelayFeatures, gradient: 'from-pink-500/20 to-rose-500/20', dotColor: 'bg-pink-500' },
+                { key: 'language', title: t.assessment.infantLangTitle, duration: t.assessment.infantLangDuration, questions: t.assessment.infantLangQuestions, description: t.assessment.infantLangDesc, features: t.assessment.infantLangFeatures, gradient: 'from-sky-500/20 to-blue-500/20', dotColor: 'bg-sky-500' },
+                { key: 'sensory-integration', title: t.assessment.sensoryTitle, duration: t.assessment.sensoryDuration, questions: t.assessment.sensoryQuestions, description: t.assessment.sensoryDesc, features: t.assessment.sensoryFeatures, gradient: 'from-fuchsia-500/20 to-purple-500/20', dotColor: 'bg-fuchsia-500' },
+                { key: 'learning-disability', title: t.assessment.learningTitle, duration: t.assessment.learningDuration, questions: t.assessment.learningQuestions, description: t.assessment.learningDesc, features: t.assessment.learningFeatures, gradient: 'from-orange-500/20 to-amber-500/20', dotColor: 'bg-orange-500' },
+                { key: 'social-development', title: t.assessment.socialTitle, duration: t.assessment.socialDuration, questions: t.assessment.socialQuestions, description: t.assessment.socialDesc, features: t.assessment.socialFeatures, gradient: 'from-teal-500/20 to-green-500/20', dotColor: 'bg-teal-500' },
+                { key: 'challenging-behavior', title: t.assessment.challengingTitle, duration: t.assessment.challengingDuration, questions: t.assessment.challengingQuestions, description: t.assessment.challengingDesc, features: t.assessment.challengingFeatures, gradient: 'from-red-500/20 to-rose-500/20', dotColor: 'bg-red-500' },
+                { key: 'adaptive-behavior', title: t.assessment.adaptiveTitle, duration: t.assessment.adaptiveDuration, questions: t.assessment.adaptiveQuestions, description: t.assessment.adaptiveDesc, features: t.assessment.adaptiveFeatures, gradient: 'from-lime-500/20 to-green-500/20', dotColor: 'bg-lime-500' },
+                { key: 'parent-child-play', title: t.assessment.parentChildTitle, duration: t.assessment.parentChildDuration, questions: t.assessment.parentChildQuestions, description: t.assessment.parentChildDesc, features: t.assessment.parentChildFeatures, onClick: () => handleTestTypeSelect('parent-child-play'), gradient: 'from-violet-500/20 to-indigo-500/20', dotColor: 'bg-violet-500' },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (
@@ -889,7 +893,9 @@ const Assessment = () => {
                       <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <span className="text-xl">{test.icon}</span>
+                            <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${test.gradient} flex items-center justify-center flex-shrink-0`}>
+                              <div className={`w-2.5 h-2.5 rounded-full ${test.dotColor}`}></div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
                                 <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-primary truncate">{test.title}</h3>
@@ -931,8 +937,8 @@ const Assessment = () => {
                 <Zap className="w-4 h-4" /> 특화 검사
               </h3>
               {[
-                { key: 'pattern-iq', icon: '🧩', title: t.assessment.patternIQTitle, duration: t.assessment.patternIQDuration, questions: t.assessment.patternIQQuestions, badge: 'NEW', description: t.assessment.patternIQDesc, features: t.assessment.patternIQFeatures, onClick: () => navigate('/assessment/pattern-iq-test') },
-                { key: 'han-medicine', icon: '🌿', title: t.assessment.hanMedicine || '한방 체질분석', duration: '5분', questions: '30문항', description: '사상체질 기반 맞춤 건강 분석', features: ['사상체질 판별', '체질별 건강 솔루션', 'AI 맞춤 분석'], onClick: () => navigate('/han-medicine-test') },
+                { key: 'pattern-iq', title: t.assessment.patternIQTitle, duration: t.assessment.patternIQDuration, questions: t.assessment.patternIQQuestions, badge: 'NEW', description: t.assessment.patternIQDesc, features: t.assessment.patternIQFeatures, onClick: () => navigate('/assessment/pattern-iq-test'), gradient: 'from-blue-500/20 to-indigo-500/20', dotColor: 'bg-blue-500' },
+                { key: 'han-medicine', title: t.assessment.hanMedicine || '한방 체질분석', duration: '5분', questions: '30문항', description: '사상체질 기반 맞춤 건강 분석', features: ['사상체질 판별', '체질별 건강 솔루션', 'AI 맞춤 분석'], onClick: () => navigate('/han-medicine-test'), gradient: 'from-green-500/20 to-emerald-500/20', dotColor: 'bg-green-600' },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (
@@ -941,7 +947,9 @@ const Assessment = () => {
                       <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-all">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <span className="text-xl">{test.icon}</span>
+                            <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${test.gradient} flex items-center justify-center flex-shrink-0`}>
+                              <div className={`w-2.5 h-2.5 rounded-full ${test.dotColor}`}></div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
                                 <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-primary truncate">{test.title}</h3>

@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User, AlertTriangle, ExternalLink, Phone, ArrowLeft } from "lucide-react";
+import { Send, Bot, User, AlertTriangle, ExternalLink, Phone, ArrowLeft, Mic } from "lucide-react";
+import { VoiceInputButton } from "@/components/ui/VoiceInputButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -332,15 +333,24 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
 
             {/* Input Area */}
             <div className="border-t p-4">
-              <div className="flex gap-2">
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="무엇이든 편하게 이야기해주세요..."
-                  disabled={isLoading}
-                  className="flex-1"
-                />
+              <div className="flex gap-2 items-end">
+                <div className="flex-1 relative">
+                  <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="무엇이든 편하게 이야기해주세요..."
+                    disabled={isLoading}
+                    className="pr-10"
+                  />
+                  <div className="absolute bottom-1.5 right-1.5">
+                    <VoiceInputButton
+                      onTranscription={(text) => setInput(prev => prev ? `${prev} ${text}` : text)}
+                      className="h-7 w-7"
+                      disabled={isLoading}
+                    />
+                  </div>
+                </div>
                 <Button 
                   onClick={sendMessage} 
                   disabled={!input.trim() || isLoading}

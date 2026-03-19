@@ -44,13 +44,13 @@ export const SignupPromptModal: React.FC<SignupPromptModalProps> = ({
   };
 
   const benefits = [
-    { icon: Shield, text: '검사 결과 영구 저장 (삭제 방지)' },
-    { icon: Sparkles, text: '전문가급 AI 상세 분석 리포트' },
-    { icon: Crown, text: '무제한 검사 기록 & 추적 관리' },
+    { icon: Shield, text: '개인 맞춤형 분석을 위해 나만의 데이터가 축적됩니다' },
+    { icon: Sparkles, text: '검사 기록과 리포트가 영구 보관되어 변화를 추적할 수 있어요' },
+    { icon: Crown, text: '가족이라도 각자 계정이 있어야 정확한 개인 분석이 가능합니다' },
   ];
 
   // 가입 유도 강화를 위한 긴급성 요소
-  const urgencyText = '오늘 가입 시 프리미엄 분석 무료 제공!';
+  const urgencyText = '지금 가입하면 프리미엄 분석 무료 제공!';
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -62,10 +62,10 @@ export const SignupPromptModal: React.FC<SignupPromptModalProps> = ({
             </div>
           </div>
           <DialogTitle className="text-xl font-bold">
-            🎉 검사 완료! 결과를 저장하세요
+            검사 완료! 나만의 데이터를 만들어보세요
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            30초 무료 가입으로 상세 분석을 확인하세요
+            개인 계정이 있어야 검사 결과가 축적되고, 더 정확한 맞춤 분석이 가능합니다
           </DialogDescription>
           {/* 긴급성 배지 */}
           <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-xs font-medium text-amber-600 dark:text-amber-400">

@@ -20,6 +20,7 @@ import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import ErrorBoundary from '@/components/ui/error-boundary';
 import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
+import ExpertTeamSection from '@/components/landing/ExpertTeamSection';
 import SubscriptionValueSection from '@/components/landing/SubscriptionValueSection';
 import StickyConversionBar from '@/components/conversion/StickyConversionBar';
 import ReportPreviewSection from '@/components/landing/ReportPreviewSection';

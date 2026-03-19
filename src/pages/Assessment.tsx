@@ -755,13 +755,15 @@ const Assessment = () => {
                 return (
                   <Collapsible key={test.key} open={isExpanded} onOpenChange={() => setExpandedSimpleTest(isExpanded ? null : test.key)}>
                     <CollapsibleTrigger asChild>
-                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-emerald-400/50 hover:bg-emerald-500/5 transition-all">
+                      <button className={`w-full group text-left p-3 md:p-4 rounded-xl border border-border ${test.borderHover} transition-all`}>
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <span className="text-xl">{test.icon}</span>
+                            <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${test.gradient} flex items-center justify-center flex-shrink-0`}>
+                              <div className={`w-2.5 h-2.5 rounded-full ${test.dotColor}`}></div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
-                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 truncate">{test.title}</h3>
+                                <h3 className={`font-semibold text-sm md:text-base text-foreground ${test.textHover} truncate`}>{test.title}</h3>
                                 <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] px-1 py-0 border-0 flex-shrink-0">무료</Badge>
                               </div>
                               <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>

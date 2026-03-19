@@ -73,21 +73,20 @@ const SubscriptionValueSection = () => {
             <div className="flex items-center gap-2 mb-4">
               <Zap className="w-5 h-5 text-amber-400" />
               <span className="text-amber-400 font-semibold text-sm">
-                {isEnglish ? 'Single Report' : '단건 리포트'}
+                {isEnglish ? 'Single Report' : '단건 심층 리포트'}
               </span>
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">
-              {isEnglish ? 'Try Once' : '한 번 써보기'}
+              {isEnglish ? 'Expert-Level Analysis' : '전문가급 심층 분석'}
             </h3>
             <p className="text-slate-400 text-sm mb-6">
-              {isEnglish ? 'Get one expert-level AI analysis report' : '전문가급 AI 분석 리포트 1회 이용'}
+              {isEnglish ? 'Get one expert-level AI analysis report' : '궁금한 검사 하나를 전문가 수준으로 분석받아보세요'}
             </p>
 
-            <div className="flex items-end gap-2 mb-1">
-              <span className="text-sm text-slate-500 line-through">₩9,900</span>
+            <div className="flex items-end gap-2 mb-6">
               <span className="text-3xl font-black text-white">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
+              <span className="text-slate-400 text-sm pb-1">/{isEnglish ? 'report' : '1회'}</span>
             </div>
-            <Badge className="mb-6 bg-amber-500/20 text-amber-300 border-amber-500/30">61% {isEnglish ? 'OFF' : '할인'}</Badge>
 
             <Button
               onClick={() => setPaymentOpen(true)}
@@ -96,7 +95,7 @@ const SubscriptionValueSection = () => {
               size="lg"
             >
               <Zap className="w-5 h-5 mr-2" />
-              {isEnglish ? 'Get Single Report' : '리포트 1회 구매 — ₩5,900'}
+              {isEnglish ? 'Get Single Report' : '심층 리포트 받기'}
             </Button>
             <p className="text-xs text-slate-500 mt-3 text-center">
               {isEnglish ? 'No subscription needed' : '구독 없이 바로 이용'}

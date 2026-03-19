@@ -208,15 +208,24 @@ export const RealtimeChatWidget: React.FC<RealtimeChatWidgetProps> = ({ onClose 
 
         {/* Input */}
         <div className="p-3 border-t bg-background">
-          <div className="flex gap-2">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="고민을 편하게 말씀해주세요..."
-              disabled={isLoading}
-              className="flex-1 text-sm"
-            />
+          <div className="flex gap-2 items-end">
+            <div className="flex-1 relative">
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="고민을 편하게 말씀해주세요..."
+                disabled={isLoading}
+                className="text-sm pr-10"
+              />
+              <div className="absolute bottom-1.5 right-1.5">
+                <VoiceInputButton
+                  onTranscription={(text) => setInput(prev => prev ? `${prev} ${text}` : text)}
+                  className="h-7 w-7"
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
             <Button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}

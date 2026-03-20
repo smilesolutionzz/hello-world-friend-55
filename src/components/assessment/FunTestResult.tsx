@@ -14,7 +14,6 @@ import LifeAchievementResult from "./LifeAchievementResult";
 import ParentChildPlayResult from "./ParentChildPlayResult";
 import { PersonalizedProductRecommendation } from "@/components/product/PersonalizedProductRecommendation";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from '@/i18n/useTranslation';
 
 export default function FunTestResult() {

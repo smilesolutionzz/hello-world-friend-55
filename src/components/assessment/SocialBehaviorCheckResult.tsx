@@ -83,7 +83,7 @@ const SocialBehaviorCheckResult: React.FC<SocialBehaviorCheckResultProps> = ({ r
           data={{
             testName: '사회적 행동 발달',
             subtitle: '5영역 분석',
-            date: new Date().toLocaleDateString('ko-KR'),
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: results.scores ? Object.fromEntries(Object.entries(results.scores).map(([k, v]) => [k, ((v as number) / 100) * 7])) : {},
             maxScore: 7,
             categoryTranslations: Object.fromEntries(Object.entries(categoryInfo).map(([k, v]) => [k, v.label])),

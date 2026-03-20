@@ -55,9 +55,9 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
 
   const getLevel = (score: number) => {
     if (score >= 3.5) return '고도';
-    if (score >= 2.5) return '중등도';
+    if (score >= 2.5) return isEnglish ? 'Moderate' : '중등도';
     if (score >= 2.0) return '경계선';
-    return '정상';
+    return isEnglish ? 'Normal' : '정상';
   };
 
   const domains: DomainScore[] = results.scores?.categories
@@ -143,7 +143,7 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
             data={{
               testName: '신경발달 선별검사',
               subtitle: '5개 영역 종합 분석',
-              date: new Date().toLocaleDateString('ko-KR'),
+              date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
               scores: results.scores?.categories
                 ? Object.fromEntries(Object.entries(results.scores.categories).map(([k, v]) => [k, (v as number) / 4 * 7]))
                 : {},

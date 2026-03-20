@@ -121,7 +121,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
               
               <div class="footer">
                 <p>※ 이 결과는 재미를 위한 것입니다. 진짜 부부싸움은 대화로 해결하세요!</p>
-                <p>생성일: ${new Date().toLocaleDateString('ko-KR')}</p>
+                <p>생성일: ${new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</p>
               </div>
             </div>
           </body>

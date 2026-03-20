@@ -60,7 +60,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
     severity,
   });
 
-  const severityColor = severity === '심각' ? 'text-destructive border-destructive/30' : severity === '중등도' ? 'text-orange-600 border-orange-300' : severity === '경미' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  const severityColor = severity === isEnglish ? 'Severe' : '심각' ? 'text-destructive border-destructive/30' : severity === isEnglish ? 'Moderate' : '중등도' ? 'text-orange-600 border-orange-300' : severity === '경미' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
 
   // Simple domain-like breakdown by question groups
   const domains: DomainScore[] = [
@@ -69,7 +69,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
     { key: 'behavioral', label: isEnglish ? 'Behavioral Symptoms' : '행동 증상', score: results.answers.slice(14, 21).reduce((s, v) => s + v, 0), maxScore: 21, level: '', color: '' },
   ].map(d => {
     const pct = (d.score / d.maxScore) * 100;
-    return { ...d, level: pct >= 70 ? (isEnglish ? 'Severe' : '심각') : pct >= 40 ? (isEnglish ? 'Moderate' : '보통') : (isEnglish ? 'Normal' : '정상'), color: pct >= 70 ? 'bg-destructive' : pct >= 40 ? 'bg-orange-500' : 'bg-green-500' };
+    return { ...d, level: pct >= 70 ? (isEnglish ? 'Severe' : isEnglish ? 'Severe' : '심각') : pct >= 40 ? (isEnglish ? 'Moderate' : '보통') : (isEnglish ? 'Normal' : isEnglish ? 'Normal' : '정상'), color: pct >= 70 ? 'bg-destructive' : pct >= 40 ? 'bg-orange-500' : 'bg-green-500' };
   });
 
   const handleDownload = async () => {

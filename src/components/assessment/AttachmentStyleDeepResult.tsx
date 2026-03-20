@@ -123,7 +123,7 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
           data={{
             testName: '애착 유형 심층 분석',
             subtitle: '4가지 애착 유형 분포',
-            date: new Date().toLocaleDateString('ko-KR'),
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(
               result.averageScores.map(({ category, average }) => [category, (average / 5) * 7])
             ),

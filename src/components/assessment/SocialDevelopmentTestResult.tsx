@@ -111,7 +111,7 @@ const SocialDevelopmentTestResult = ({ results, onBack }: SocialDevelopmentTestR
           data={{
             testName: '사회성 발달',
             subtitle: '7영역 분석',
-            date: new Date().toLocaleDateString('ko-KR'),
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(domainScores.map(d => [d.key, (d.score / 100) * 7])),
             maxScore: 7,
             categoryTranslations: Object.fromEntries(domainScores.map(d => [d.key, d.label])),

@@ -121,7 +121,7 @@ export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTest
           data={{
             testName: '에너지 흐름',
             subtitle: '4개 영역 분석',
-            date: new Date().toLocaleDateString('ko-KR'),
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(infoScores).map(([k, v]) => [k, (v / 100) * 7])),
             maxScore: 7,
             categoryTranslations: domainLabels,

@@ -102,7 +102,7 @@ export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaR
               
               <div class="footer">
                 <p>※ 이 결과는 재미를 위한 것으로 실제 연애 조언이 아닙니다.</p>
-                <p>생성일: ${new Date().toLocaleDateString('ko-KR')}</p>
+                <p>생성일: ${new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</p>
               </div>
             </div>
           </body>

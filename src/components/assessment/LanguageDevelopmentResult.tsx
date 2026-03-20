@@ -105,7 +105,7 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
           data={{
             testName: '언어발달',
             subtitle: '수용·표현 분석',
-            date: new Date().toLocaleDateString('ko-KR'),
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: { receptive: ((results.receptive_percentage || 0) / 100) * 7, expressive: ((results.expressive_percentage || 0) / 100) * 7 },
             maxScore: 7,
             categoryTranslations: { receptive: '수용언어', expressive: '표현언어' },

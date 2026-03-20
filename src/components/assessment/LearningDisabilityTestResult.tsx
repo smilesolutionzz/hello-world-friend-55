@@ -68,8 +68,8 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
   }, []);
 
   const getColor = (pct: number) => pct >= 75 ? 'bg-destructive' : pct >= 50 ? 'bg-orange-500' : pct >= 25 ? 'bg-yellow-500' : 'bg-green-500';
-  const getLevel = (pct: number) => pct >= 75 ? '심각' : pct >= 50 ? '중등도' : pct >= 25 ? '경미' : '정상';
-  const severityColor = results.severity === '정상' ? 'text-green-600 border-green-300' : results.severity === '경미' ? 'text-yellow-600 border-yellow-300' : results.severity === '중등도' ? 'text-orange-600 border-orange-300' : 'text-destructive border-destructive/30';
+  const getLevel = (pct: number) => pct >= 75 ? isEnglish ? 'Severe' : '심각' : pct >= 50 ? isEnglish ? 'Moderate' : '중등도' : pct >= 25 ? '경미' : isEnglish ? 'Normal' : '정상';
+  const severityColor = results.severity === isEnglish ? 'Normal' : '정상' ? 'text-green-600 border-green-300' : results.severity === '경미' ? 'text-yellow-600 border-yellow-300' : results.severity === isEnglish ? 'Moderate' : '중등도' ? 'text-orange-600 border-orange-300' : 'text-destructive border-destructive/30';
 
   const domains: DomainScore[] = domainData.map(d => ({
     key: d.key, label: d.name, score: d.score, maxScore: 100, level: getLevel(d.score), color: getColor(d.score),
@@ -118,11 +118,11 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
           data={{
             testName: '학습장애 검사',
             subtitle: '7개 학습 영역 분석',
-            date: new Date().toLocaleDateString('ko-KR'),
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(domainData.map(d => [d.key, (d.score / 100) * 7])),
             maxScore: 7,
             categoryTranslations: Object.fromEntries(domainData.map(d => [d.key, d.name])),
-            riskLevel: results.severity === '정상' ? 'low' : results.severity === '경미' ? 'low' : 'high',
+            riskLevel: results.severity === isEnglish ? 'Normal' : '정상' ? 'low' : results.severity === '경미' ? 'low' : 'high',
           }}
         />
       </div>

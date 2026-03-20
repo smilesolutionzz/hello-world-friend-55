@@ -105,7 +105,7 @@ export default function MZNaggingResult({ result, onRetake }: MZNaggingResultPro
               
               <div class="footer">
                 <p>※ 이모의 잔소리는 모두 사랑에서 나온 걱정입니다 💝</p>
-                <p>생성일: ${new Date().toLocaleDateString('ko-KR')}</p>
+                <p>생성일: ${new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</p>
               </div>
             </div>
           </body>

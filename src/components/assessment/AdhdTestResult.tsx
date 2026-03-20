@@ -86,10 +86,10 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
 
   const getLevel = (score: number, max: number) => {
     const pct = (score / max) * 100;
-    if (pct >= 75) return isEnglish ? 'Severe' : '심각';
+    if (pct >= 75) return isEnglish ? 'Severe' : isEnglish ? 'Severe' : '심각';
     if (pct >= 50) return isEnglish ? 'Moderate' : '보통';
     if (pct >= 25) return isEnglish ? 'Mild' : '경미';
-    return isEnglish ? 'Normal' : '정상';
+    return isEnglish ? 'Normal' : isEnglish ? 'Normal' : '정상';
   };
 
   const domains: DomainScore[] = [
@@ -151,7 +151,7 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
       await navigator.share({ title: 'ADHD 자가체크 결과', text, url: window.location.href }).catch(() => {});
     } else {
       navigator.clipboard.writeText(text);
-      toast({ title: '결과가 복사되었습니다' });
+      toast({ title: isEnglish ? 'Results copied' : '결과가 복사되었습니다' });
     }
   };
 

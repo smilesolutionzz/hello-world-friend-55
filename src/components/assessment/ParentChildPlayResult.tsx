@@ -136,7 +136,7 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
           data={{
             testName: '부모아동 놀이성향',
             subtitle: '발달 영역 분석',
-            date: new Date().toLocaleDateString('ko-KR'),
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(devScores).map(([k, v]) => [k, v / 100 * 7])),
             maxScore: 7,
             categoryTranslations: devLabels,

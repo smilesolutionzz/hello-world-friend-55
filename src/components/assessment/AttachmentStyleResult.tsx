@@ -87,7 +87,7 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
   const handleShare = async () => {
     const text = `${isEnglish ? 'Attachment Style' : '애착 유형'}: ${styleName}\n${isEnglish ? 'Anxiety' : '불안'}: ${result.anxietyScore.toFixed(1)}/7\n${isEnglish ? 'Avoidance' : '회피'}: ${result.avoidanceScore.toFixed(1)}/7`;
     if (navigator.share) await navigator.share({ title: isEnglish ? 'Attachment Style' : '애착 유형 검사', text }).catch(() => {});
-    else { navigator.clipboard.writeText(text); toast({ title: isEnglish ? 'Copied' : '복사 완료' }); }
+    else { navigator.clipboard.writeText(text); toast({ title: t.resultLayout.copied }); }
   };
 
   return (

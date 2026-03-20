@@ -31,6 +31,7 @@ export default function LifeAchievementResult({ result, onRestart }: LifeAchieve
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const navigate = useNavigate();
   const { shareAsText } = useShareText();
   const { saveResult, isSaving } = useLifeAchievementActions();
@@ -93,7 +94,7 @@ export default function LifeAchievementResult({ result, onRestart }: LifeAchieve
         '취미 활동으로 삶의 균형 찾기'
       ]);
       toast({
-        title: '분석 오류',
+        title: isEnglish ? 'Analysis Error' : '분석 오류',
         description: '분석 중 오류가 발생했습니다. 기본 결과를 표시합니다.',
         variant: 'destructive'
       });

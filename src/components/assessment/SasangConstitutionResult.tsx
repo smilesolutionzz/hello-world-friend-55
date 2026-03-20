@@ -124,6 +124,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const navigate = useNavigate();
   const { shareAsText } = useShareText();
 
@@ -179,7 +180,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
         <CardContent className="text-center py-8">
           <AlertCircle className="h-8 w-8 mx-auto mb-4 text-destructive" />
           <p>체질 분석 결과를 불러올 수 없습니다.</p>
-          <Button onClick={onRestart} className="mt-4">다시 검사하기</Button>
+          <Button onClick={onRestart} className="mt-4">{isEnglish ? "Retake Test" : "다시 검사하기"}</Button>
         </CardContent>
       </Card>
     );

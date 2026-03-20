@@ -1717,6 +1717,15 @@ const ko = {
     actionGuide: '📋 실천 가이드',
     aiPlatform: 'AI 심리분석 플랫폼',
     analysisComplete: '분석 완료',
+    retakeTest: '다시 검사하기',
+    noResult: '분석 결과를 불러올 수 없습니다.',
+    copied: '복사 완료',
+    analysisError: '분석 오류',
+    analysisErrorDesc: 'AI 분석 중 오류가 발생했습니다.',
+    savedAsPdf: '검사 결과가 PDF로 저장되었습니다.',
+    pdfDownload: 'PDF 다운로드',
+    shareFeature: '공유 기능',
+    shareDesc: '결과를 공유할 수 있습니다.',
   },
 } as const;
 

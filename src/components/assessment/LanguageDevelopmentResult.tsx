@@ -18,6 +18,7 @@ interface LanguageDevelopmentResultProps {
 const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelopmentResultProps) => {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [aiAnalysis, setAiAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
 
@@ -38,7 +39,7 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
         if (error) throw error;
         setAiAnalysis(data.analysis || '');
       } catch {
-        setAiAnalysis('언어발달 분석 결과를 불러올 수 없습니다.');
+        setAiAnalysis(isEnglish ? 'Unable to load language development analysis.' : '언어발달 분석 결과를 불러올 수 없습니다.');
       } finally {
         setIsAnalyzing(false);
       }

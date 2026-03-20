@@ -48,7 +48,7 @@ const PatternIQTestResult = ({ result, onBack, onRestart }: PatternIQTestResultP
       ? `Pattern IQ Test\nType: ${result.cognitiveType} (Top ${100 - result.percentile}%)\nScore: ${result.totalScore}`
       : `패턴 인지력 테스트 결과\n인지 유형: ${result.cognitiveType} (상위 ${100 - result.percentile}%)\n총점: ${result.totalScore}`;
     if (navigator.share) await navigator.share({ title: isEnglish ? 'Pattern IQ Result' : '패턴 인지력 결과', text }).catch(() => {});
-    else { navigator.clipboard.writeText(text); toast({ title: isEnglish ? 'Copied' : '복사 완료' }); }
+    else { navigator.clipboard.writeText(text); toast({ title: t.resultLayout.copied }); }
   };
 
   const analysisText = `${isEnglish ? 'Cognitive Type' : '인지 유형'}: ${result.cognitiveType}\n${result.typeDescription}\n\n${isEnglish ? 'Top' : '상위'} ${100 - result.percentile}% · ${isEnglish ? 'Total' : '총점'} ${result.totalScore}\n\n` +

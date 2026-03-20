@@ -32,6 +32,7 @@ interface HanMedicineResultProps {
 export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, onRestart }) => {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [isGeneratingAnalysis, setIsGeneratingAnalysis] = useState(false);
   const [enhancedAnalysis, setEnhancedAnalysis] = useState<string | null>(null);
   const [clinicInfo, setClinicInfo] = useState<any>(null);
@@ -71,18 +72,18 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
         setEnhancedAnalysis(parsedAnalysis);
         setClinicInfo(data.clinicInfo);
         toast({
-          title: "AI 분석 완료",
-          description: "30년 경력 한의사 수준의 전문 분석이 완료되었습니다.",
+          title: isEnglish ? "AI Analysis Complete" : "AI 분석 완료",
+          description: isEnglish ? "Expert-level analysis is ready." : "30년 경력 한의사 수준의 전문 분석이 완료되었습니다.",
         });
       } else {
         throw new Error('Invalid analysis data');
       }
     } catch (error) {
-      console.error('분석 생성 중 오류:', error);
-      setAnalysisError("AI 분석 서비스 일시 중단. 기본 분석을 제공합니다.");
+      console.error('Analysis error:', error);
+      setAnalysisError(isEnglish ? "AI analysis temporarily unavailable. Showing basic analysis." : "AI 분석 서비스 일시 중단. 기본 분석을 제공합니다.");
       toast({
-        title: "기본 분석 제공",
-        description: "현재 AI 분석 서비스에 일시적 문제가 있어 기본 분석을 제공합니다.",
+        title: isEnglish ? "Basic Analysis Provided" : "기본 분석 제공",
+        description: isEnglish ? "AI analysis is temporarily unavailable." : "현재 AI 분석 서비스에 일시적 문제가 있어 기본 분석을 제공합니다.",
         variant: "default"
       });
     } finally {
@@ -93,10 +94,10 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
   const generateBasicAnalysis = () => {
     const testNames = {
       adhd: 'ADHD',
-      autism: '자폐 스펙트럼',
-      atopy: '아토피',
-      intellectual: '인지능력',
-      stress: '스트레스'
+      autism: isEnglish ? 'Autism Spectrum' : '자폐 스펙트럼',
+      atopy: isEnglish ? 'Atopy' : '아토피',
+      intellectual: isEnglish ? 'Cognitive' : '인지능력',
+      stress: isEnglish ? 'Stress' : '스트레스'
     };
 
     const testName = testNames[result.type as keyof typeof testNames] || '한방';
@@ -724,7 +725,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
             <span className="text-lg">✨</span>
             <span className="font-medium text-foreground">
-              전문 한의원 검증 완료 AI 분석
+              {isEnglish ? "AI Analysis Verified by Licensed Practitioners" : "전문 한의원 검증 완료 AI 분석"}
             </span>
           </div>
         </div>

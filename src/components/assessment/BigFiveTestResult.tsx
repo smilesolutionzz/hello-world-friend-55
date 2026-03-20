@@ -82,7 +82,7 @@ export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResu
       .join('\n');
     const full = `${isEnglish ? 'Big Five Results' : '빅파이브 성격검사 결과'}\n\n${text}`;
     if (navigator.share) await navigator.share({ title: isEnglish ? 'Big Five' : '빅파이브', text: full }).catch(() => {});
-    else { navigator.clipboard.writeText(full); toast({ title: isEnglish ? 'Copied' : '복사 완료' }); }
+    else { navigator.clipboard.writeText(full); toast({ title: t.resultLayout.copied }); }
   };
 
   return (

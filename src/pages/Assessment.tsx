@@ -1215,7 +1215,7 @@ const Assessment = () => {
 
             <div className="mt-12 text-center">
               <p className="text-sm text-muted-foreground">
-                 💡 {t.assessment.multiTestHint || 'Taking multiple tests enables more accurate analysis'}
+                 💡 {t.assessment.multiTestHint}
               </p>
             </div>
           </div>

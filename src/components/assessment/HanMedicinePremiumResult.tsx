@@ -168,7 +168,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold mb-3">체질 특성</h4>
+                  <h4 className="font-semibold mb-3">{isEnglish ? "Body Type Traits" : "체질 특성"}</h4>
                   <div className="space-y-2">
                     {analysis.constitution_details?.characteristics?.map((item: string, index: number) => (
                       <div key={index} className="flex items-start">
@@ -179,7 +179,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-3">성격적 특징</h4>
+                  <h4 className="font-semibold mb-3">{isEnglish ? "Personality Traits" : "성격적 특징"}</h4>
                   <div className="space-y-2">
                     {analysis.constitution_details?.personality?.map((item: string, index: number) => (
                       <div key={index} className="flex items-start">
@@ -200,18 +200,18 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
             {analysis.organ_analysis && Object.entries(analysis.organ_analysis).map(([organ, data]: [string, any]) => (
               <Card key={organ}>
                 <CardHeader>
-                  <CardTitle className="text-lg capitalize">{organ} (장부)</CardTitle>
+                  <CardTitle className="text-lg capitalize">{organ}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground mb-1">상태</p>
+                      <p className="text-sm font-medium text-muted-foreground mb-1">{isEnglish ? "Status" : "상태"}</p>
                       <Badge variant={data.status === 'good' ? 'default' : 'secondary'}>
                         {data.status_text}
                       </Badge>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground mb-2">관련 증상</p>
+                      <p className="text-sm font-medium text-muted-foreground mb-2">{isEnglish ? "Related Symptoms" : "관련 증상"}</p>
                       <div className="space-y-1">
                         {data.symptoms?.map((symptom: string, index: number) => (
                           <div key={index} className="text-sm flex items-start">
@@ -222,7 +222,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                       </div>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground mb-2">관리법</p>
+                      <p className="text-sm font-medium text-muted-foreground mb-2">{isEnglish ? "Care Method" : "관리법"}</p>
                       <p className="text-sm text-muted-foreground">{data.care_method}</p>
                     </div>
                   </div>
@@ -319,7 +319,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <p className="font-medium text-sm mb-2">권장 운동</p>
+                    <p className="font-medium text-sm mb-2">{isEnglish ? "Recommended Exercise" : "권장 운동"}</p>
                     <div className="space-y-1">
                       {analysis.lifestyle_recommendations?.exercise?.recommended?.map((exercise: string, index: number) => (
                         <div key={index} className="text-sm flex items-start">
@@ -330,7 +330,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                     </div>
                   </div>
                   <div>
-                    <p className="font-medium text-sm mb-2">주의사항</p>
+                    <p className="font-medium text-sm mb-2">{isEnglish ? "Precautions" : "주의사항"}</p>
                     <p className="text-sm text-muted-foreground">{analysis.lifestyle_recommendations?.exercise?.precautions}</p>
                   </div>
                 </div>
@@ -410,9 +410,9 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>한약 주문하기</DialogTitle>
+                              <DialogTitle>{isEnglish ? "Order Herbal Medicine" : "한약 주문하기"}</DialogTitle>
                               <DialogDescription>
-                                {prescription.name} 처방을 가까이한의원에서 조제 받으실 수 있습니다.
+                                {prescription.name} {isEnglish ? "prescription is available at our partner clinic." : "처방을 가까이한의원에서 조제 받으실 수 있습니다."}
                               </DialogDescription>
                             </DialogHeader>
                             <div className="space-y-4">
@@ -451,7 +451,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                     <p className="text-sm text-muted-foreground mb-3">{prescription.description}</p>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <p className="font-medium text-sm mb-2">주요 약재</p>
+                        <p className="font-medium text-sm mb-2">{isEnglish ? "Key Ingredients" : "주요 약재"}</p>
                         <div className="flex flex-wrap gap-1">
                           {prescription.herbs?.map((herb: string, idx: number) => (
                             <Badge key={idx} variant="outline" className="text-xs">
@@ -526,9 +526,9 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                     <div className="space-y-2">
                       <p className="text-sm font-medium">{isEnglish ? 'Specialties' : '전문 분야'}</p>
                       <div className="flex flex-wrap gap-1">
-                        <Badge variant="secondary">사상체질</Badge>
-                        <Badge variant="secondary">소화기</Badge>
-                        <Badge variant="secondary">불면증</Badge>
+                        <Badge variant="secondary">{isEnglish ? "Sasang Type" : "사상체질"}</Badge>
+                        <Badge variant="secondary">{isEnglish ? "Digestive" : "소화기"}</Badge>
+                        <Badge variant="secondary">{isEnglish ? "Insomnia" : "불면증"}</Badge>
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -548,7 +548,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                       맞춤한방 전화상담받기
                     </Button>
                     <p className="text-xs text-muted-foreground text-center">
-                      진료비: 30,000원 (초진) / 20,000원 (재진)
+                      {isEnglish ? "Fee: ₩30,000 (first) / ₩20,000 (follow-up)" : "진료비: 30,000원 (초진) / 20,000원 (재진)"}
                     </p>
                   </CardContent>
                 </Card>
@@ -572,9 +572,9 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                     <div className="space-y-2">
                       <p className="text-sm font-medium">{isEnglish ? 'Specialties' : '전문 분야'}</p>
                       <div className="flex flex-wrap gap-1">
-                        <Badge variant="secondary">체질개선</Badge>
-                        <Badge variant="secondary">스트레스</Badge>
-                        <Badge variant="secondary">피부질환</Badge>
+                        <Badge variant="secondary">{isEnglish ? "Body Type" : "체질개선"}</Badge>
+                        <Badge variant="secondary">{isEnglish ? "Stress" : "스트레스"}</Badge>
+                        <Badge variant="secondary">{isEnglish ? "Skin" : "피부질환"}</Badge>
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -594,7 +594,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                       맞춤한방 전화상담받기
                     </Button>
                     <p className="text-xs text-muted-foreground text-center">
-                      진료비: 35,000원 (초진) / 25,000원 (재진)
+                      {isEnglish ? "Fee: ₩35,000 (first) / ₩25,000 (follow-up)" : "진료비: 35,000원 (초진) / 25,000원 (재진)"}
                     </p>
                   </CardContent>
                 </Card>

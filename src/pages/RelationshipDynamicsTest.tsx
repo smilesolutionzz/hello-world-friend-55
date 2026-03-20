@@ -5,17 +5,19 @@ import { useNavigate } from "react-router-dom";
 import { useGuestSession } from "@/hooks/useGuestSession";
 import SignupPromptModal from "@/components/guest/SignupPromptModal";
 import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
+import { useTranslation } from "@/i18n";
 
 const RelationshipDynamicsTestInner = () => {
   const navigate = useNavigate();
   const [results, setResults] = useState<any>(null);
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const { isGuest, saveGuestResult, guestResults } = useGuestSession();
+  const { t } = useTranslation();
 
   const handleComplete = (res: any) => {
     setResults(res);
     if (isGuest) {
-      saveGuestResult('relationship_dynamics', '관계역학 검사', res);
+      saveGuestResult('relationship_dynamics', t.testPages.relationshipDynamics, res);
       setShowSignupPrompt(true);
     }
   };
@@ -28,7 +30,7 @@ const RelationshipDynamicsTestInner = () => {
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}
-          currentResult={{ testTitle: '관계역학 검사' }}
+          currentResult={{ testTitle: t.testPages.relationshipDynamics }}
         />
       </>
     );
@@ -42,10 +44,13 @@ const RelationshipDynamicsTestInner = () => {
   );
 };
 
-const RelationshipDynamicsTest = () => (
-  <SubscriptionGuard featureName="관계 역동성 심층 분석" trialKey="PREMIUM_ASSESSMENT">
-    <RelationshipDynamicsTestInner />
-  </SubscriptionGuard>
-);
+const RelationshipDynamicsTest = () => {
+  const { t } = useTranslation();
+  return (
+    <SubscriptionGuard featureName={t.testPages.relationshipDynamics} trialKey="PREMIUM_ASSESSMENT">
+      <RelationshipDynamicsTestInner />
+    </SubscriptionGuard>
+  );
+};
 
 export default RelationshipDynamicsTest;

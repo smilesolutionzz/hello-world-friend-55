@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { useTranslation } from '@/i18n';
 
 const STORAGE_KEY = 'relationshipStyleTestResult';
 
@@ -13,6 +14,7 @@ const RelationshipStyleTestInner = () => {
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const navigate = useNavigate();
   const { isGuest, saveGuestResult, guestResults } = useGuestSession();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const savedResult = sessionStorage.getItem(STORAGE_KEY);
@@ -29,7 +31,7 @@ const RelationshipStyleTestInner = () => {
     setResult(testResult);
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(testResult));
     if (isGuest) {
-      saveGuestResult('relationship_style', '관계유형 검사', testResult);
+      saveGuestResult('relationship_style', t.testPages.relationshipStyle, testResult);
       setShowSignupPrompt(true);
     }
   };
@@ -51,7 +53,7 @@ const RelationshipStyleTestInner = () => {
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}
-          currentResult={{ testTitle: '관계유형 검사' }}
+          currentResult={{ testTitle: t.testPages.relationshipStyle }}
         />
       </>
     );
@@ -60,10 +62,13 @@ const RelationshipStyleTestInner = () => {
   return <RelationshipStyleForm onComplete={handleComplete} onBack={handleBack} />;
 };
 
-const RelationshipStyleTest = () => (
-  <SubscriptionGuard featureName="관계유형 검사" trialKey="RELATIONSHIP_TYPE">
-    <RelationshipStyleTestInner />
-  </SubscriptionGuard>
-);
+const RelationshipStyleTest = () => {
+  const { t } = useTranslation();
+  return (
+    <SubscriptionGuard featureName={t.testPages.relationshipStyle} trialKey="RELATIONSHIP_TYPE">
+      <RelationshipStyleTestInner />
+    </SubscriptionGuard>
+  );
+};
 
 export default RelationshipStyleTest;

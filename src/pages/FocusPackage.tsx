@@ -1,21 +1,25 @@
 import { FocusPackage } from '@/components/assessment/FocusPackage';
 import SEOHead from '@/components/common/SEOHead';
-
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "MedicalTest",
-  "name": "집중력 검사 패키지",
-  "description": "ADHD 검사, 주의집중력 자가체크, 5차원 성격 분석을 포함한 종합 집중력 검사",
-  "medicineSystem": "AI 기반 심리 분석"
-};
+import { useTranslation } from '@/i18n';
 
 export default function FocusPackagePage() {
+  const { t } = useTranslation();
+  const fp = t.focusPackage;
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "MedicalTest",
+    "name": fp.structuredName,
+    "description": fp.structuredDesc,
+    "medicineSystem": "AI"
+  };
+
   return (
     <>
       <SEOHead 
-        title="집중력 검사 패키지 - AIHumanPro | ADHD 및 주의력 집중 분석"
-        description="AI 기반 ADHD 검사, 주의집중력 자가체크, 5차원 성격 분석으로 집중력 향상 전략을 제공합니다. 3분만에 확인하는 우리 아이 집중력."
-        keywords="ADHD검사,주의력검사,집중력검사,성격분석,스트레스검사,집중력향상"
+        title={fp.seoTitle}
+        description={fp.seoDesc}
+        keywords="ADHD,attention,focus,personality,stress"
         canonicalUrl="https://aihpro.app/focus-package"
         structuredData={structuredData}
       />

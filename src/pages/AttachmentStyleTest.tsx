@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { useTranslation } from '@/i18n';
 
 const STORAGE_KEY = 'attachmentStyleTestResult';
 
@@ -13,6 +14,7 @@ const AttachmentStyleTestInner = () => {
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const navigate = useNavigate();
   const { isGuest, saveGuestResult, guestResults } = useGuestSession();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const savedResult = sessionStorage.getItem(STORAGE_KEY);
@@ -29,7 +31,7 @@ const AttachmentStyleTestInner = () => {
     setResult(testResult);
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(testResult));
     if (isGuest) {
-      saveGuestResult('attachment_style', '애착유형 검사', testResult);
+      saveGuestResult('attachment_style', t.testPages.attachmentStyle, testResult);
       setShowSignupPrompt(true);
     }
   };
@@ -51,7 +53,7 @@ const AttachmentStyleTestInner = () => {
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}
-          currentResult={{ testTitle: '애착유형 검사' }}
+          currentResult={{ testTitle: t.testPages.attachmentStyle }}
         />
       </>
     );
@@ -60,10 +62,13 @@ const AttachmentStyleTestInner = () => {
   return <AttachmentStyleDeepTest onComplete={handleComplete} onBack={handleBack} />;
 };
 
-const AttachmentStyleTestPage = () => (
-  <SubscriptionGuard featureName="애착유형 검사" trialKey="RELATIONSHIP_TYPE">
-    <AttachmentStyleTestInner />
-  </SubscriptionGuard>
-);
+const AttachmentStyleTestPage = () => {
+  const { t } = useTranslation();
+  return (
+    <SubscriptionGuard featureName={t.testPages.attachmentStyle} trialKey="RELATIONSHIP_TYPE">
+      <AttachmentStyleTestInner />
+    </SubscriptionGuard>
+  );
+};
 
 export default AttachmentStyleTestPage;

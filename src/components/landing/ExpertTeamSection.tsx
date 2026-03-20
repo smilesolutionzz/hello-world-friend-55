@@ -67,15 +67,17 @@ const ExpertTeamSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className={`rounded-2xl border border-white/10 bg-gradient-to-br ${expert.gradient} backdrop-blur-sm p-6`}
+              className={`rounded-2xl border border-white/10 bg-gradient-to-br ${expert.gradient} backdrop-blur-sm p-6 flex flex-col`}
             >
               <div className={`w-12 h-12 rounded-xl bg-slate-800/80 flex items-center justify-center mb-4`}>
                 <GraduationCap className={`w-6 h-6 ${expert.iconColor}`} />
               </div>
-              <h3 className="text-lg font-bold text-white mb-1">{expert.name}</h3>
-              <p className="text-sm text-slate-300 font-medium mb-1">{expert.role}</p>
-              <Badge className="bg-white/10 text-white/80 border-0 text-xs mb-3">{expert.credential}</Badge>
-              <p className="text-sm text-slate-400 leading-relaxed">{expert.description}</p>
+              <h3 className="text-lg font-bold text-white">{expert.name}</h3>
+              <p className="text-sm text-slate-300 font-medium mt-1">{expert.role}</p>
+              <div className="mt-2 mb-3">
+                <Badge className="bg-white/10 text-white/80 border-0 text-xs">{expert.credential}</Badge>
+              </div>
+              <p className="text-sm text-slate-400 leading-relaxed mt-auto">{expert.description}</p>
             </motion.div>
           ))}
         </div>

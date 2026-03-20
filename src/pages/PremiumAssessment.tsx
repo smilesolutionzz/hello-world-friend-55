@@ -62,6 +62,22 @@ const PremiumAssessment = () => {
   const isEnglish = language === 'en';
   const p = t.premiumPage;
 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    checkAuth();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setIsAuthenticated(!!session);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   const [currentStep, setCurrentStep] = useState<'list' | 'assessment' | 'result'>(() => {
     const saved = sessionStorage.getItem('premiumAssessmentState');
     if (saved) {

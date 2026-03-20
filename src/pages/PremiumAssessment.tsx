@@ -523,10 +523,7 @@ const PremiumAssessment = () => {
 
             <div className="bg-muted/50 rounded-lg p-3 text-center">
               <p className="text-xs text-muted-foreground">
-                {isEnglish
-                  ? <>Log in with your account to ensure <strong className="text-foreground">{p.loginModalFooterBold}</strong> is accurately saved and analyzed</>
-                  : <>각자의 아이디로 로그인해야 <strong className="text-foreground">{p.loginModalFooterBold}</strong>가 정확하게 저장·분석됩니다</>
-                }
+                {p.loginModalFooter} <strong className="text-foreground">{p.loginModalFooterBold}</strong>
               </p>
             </div>
 

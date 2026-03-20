@@ -320,7 +320,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           </ResponsiveContainer>
         </div>
         <p className="text-sm text-muted-foreground text-center mt-4">
-          isEnglish ? '* Development rate shows language level as percentage for age (80%+: Good / 50-79%: Average / <50%: Caution)' : '* 발달률은 해당 연령 기준 언어발달 수준을 백분율로 나타낸 것입니다 (80% 이상: 양호 / 50~79%: 보통 / 50% 미만: 주의)'
+          {isEnglish ? '* Development rate shows language level as percentage for age (80%+: Good / 50-79%: Average / under 50%: Caution)' : '* 발달률은 해당 연령 기준 언어발달 수준을 백분율로 나타낸 것입니다 (80% 이상: 양호 / 50~79%: 보통 / 50% 미만: 주의)'}
         </p>
 
         {/* 영역별 상세 설명 */}

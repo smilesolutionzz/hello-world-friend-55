@@ -26,9 +26,9 @@ interface LanguageTestResultProps {
 
 const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const { total, average, ageGroup, age } = results;
-  const today = new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR');
   const navigate = useNavigate();
   const { isEnglish } = useLanguage();
+  const today = new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR');
   const { generatePDFReport, saveResultAsImage, saveTestResult, isGeneratingPDF, isGeneratingImage, isSaving } = useTestResultActions();
 
   // 자동 저장 - 분석 포함

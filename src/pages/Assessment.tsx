@@ -1749,28 +1749,28 @@ const Assessment = () => {
           />
         )}
         
-        {/* 법적 고지사항 */}
+        {/* Legal Disclaimer */}
         <div className="container mx-auto max-w-6xl px-4 py-8 mt-12">
           <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6">
             <h3 className="font-bold text-lg text-yellow-900 mb-4 flex items-center gap-2">
-              <span>⚠️</span> 법적 고지사항
+              <span>⚠️</span> {t.assessment.legalTitle}
             </h3>
             <div className="space-y-3 text-sm text-yellow-900">
               <p className="flex items-start gap-2">
                 <span className="mt-1">•</span>
-                <span>본 서비스는 의료행위가 아니며, 질병의 진단, 치료, 예방을 목적으로 하지 않습니다.</span>
+                <span>{t.assessment.legal1}</span>
               </p>
               <p className="flex items-start gap-2">
                 <span className="mt-1">•</span>
-                <span>제공되는 모든 정보는 참고용이며, 전문적인 의학적 조언을 대체할 수 없습니다.</span>
+                <span>{t.assessment.legal2}</span>
               </p>
               <p className="flex items-start gap-2">
                 <span className="mt-1">•</span>
-                <span>의료 관련 의사결정은 반드시 의료기관 및 전문의와 상담 후 진행하시기 바랍니다.</span>
+                <span>{t.assessment.legal3}</span>
               </p>
               <p className="flex items-start gap-2">
                 <span className="mt-1">•</span>
-                <span>본 서비스 이용으로 인한 어떠한 결과에 대해서도 법적 책임을 지지 않습니다.</span>
+                <span>{t.assessment.legal4}</span>
               </p>
             </div>
           </div>

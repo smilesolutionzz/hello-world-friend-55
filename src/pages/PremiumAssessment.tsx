@@ -169,19 +169,30 @@ const PremiumAssessment = () => {
     parentingStyle: Object.values(parentingStyleAssessmentQuestions).flat()
   };
 
+  const requireAuth = (action: () => void) => {
+    if (isAuthenticated) {
+      action();
+    } else {
+      setPendingAction(() => action);
+      setShowLoginPrompt(true);
+    }
+  };
+
   const handleStartAssessment = async (assessmentKey: string) => {
-    const hasTokens = await checkTokenAvailability(TOKEN_COSTS.PREMIUM_ASSESSMENT);
-    if (!hasTokens) {
-      navigate('/token-subscription');
-      return;
-    }
-    const consumed = await consumeTokens(TOKEN_COSTS.PREMIUM_ASSESSMENT);
-    if (!consumed) {
-      navigate('/token-subscription');
-      return;
-    }
-    setSelectedAssessment(assessmentKey);
-    setCurrentStep('assessment');
+    requireAuth(async () => {
+      const hasTokens = await checkTokenAvailability(TOKEN_COSTS.PREMIUM_ASSESSMENT);
+      if (!hasTokens) {
+        navigate('/token-subscription');
+        return;
+      }
+      const consumed = await consumeTokens(TOKEN_COSTS.PREMIUM_ASSESSMENT);
+      if (!consumed) {
+        navigate('/token-subscription');
+        return;
+      }
+      setSelectedAssessment(assessmentKey);
+      setCurrentStep('assessment');
+    });
   };
 
   const handleAssessmentComplete = (results: any, answers?: Record<string, string>) => {

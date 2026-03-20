@@ -50,6 +50,7 @@ const InstagramAnalysisResult = ({ result, username, onRestart }: InstagramAnaly
     growth: false,
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  const { isEnglish } = useLanguage();
   const { generateWordDocument, printDocument } = useWordDownload();
 
   const toggleSection = (section: string) => {

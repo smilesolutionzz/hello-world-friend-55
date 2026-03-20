@@ -1669,7 +1669,6 @@ const en = {
     structuredName: 'Resilience Test',
     structuredDesc: '38-question resilience test analyzing stress recovery, flexibility, emotional stability, social support, and purpose.',
   },
-},
 
   // Shared result layout
   resultLayout: {

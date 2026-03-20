@@ -1684,7 +1684,6 @@ const ko = {
     structuredName: '회복탄력성 검사',
     structuredDesc: '직장인을 위한 38문항 회복탄력성 검사. 스트레스 회복력, 적응 유연성, 정서적 안정성, 사회적 지지망, 목적의식을 분석합니다.',
   },
-},
 
   // Shared result layout
   resultLayout: {

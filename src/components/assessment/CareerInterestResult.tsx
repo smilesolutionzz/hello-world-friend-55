@@ -2,6 +2,7 @@ import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 
@@ -28,9 +29,10 @@ const typeConfig: Record<string, { name: string; nameEn: string }> = {
 export default function CareerInterestResult({ result, onRestart }: CareerInterestResultProps) {
   const { toast } = useToast();
   const { isEnglish } = useLanguage();
+  const { t } = useTranslation();
 
   useAutoSaveTestResult({
-    testType: '직업 성향 검사',
+    testType: isEnglish ? 'Career Interest Test' : '직업 성향 검사',
     results: { total: result.total, average: result.average, scores: result.scores, topTypes: result.topTypes },
     severity: isEnglish ? 'Normal' : '보통',
     ageGroup: 'adult',
@@ -45,23 +47,20 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
     .map(([key, score]) => ({
       key,
       label: isEnglish ? (typeConfig[key]?.nameEn || key) : (typeConfig[key]?.name || key),
-      score,
-      maxScore,
-      level: getLevel(score),
-      color: getColor(score),
+      score, maxScore, level: getLevel(score), color: getColor(score),
     }));
 
   const topTypeName = isEnglish ? (typeConfig[result.topTypes[0]]?.nameEn || result.topTypes[0]) : (typeConfig[result.topTypes[0]]?.name || result.topTypes[0]);
 
   const analysisText = `${isEnglish ? 'Top Career Type' : '최적 직업 유형'}: ${topTypeName}\n\n` +
     Object.entries(result.scores).sort(([, a], [, b]) => b - a).map(([k, v]) =>
-      `${isEnglish ? (typeConfig[k]?.nameEn || k) : (typeConfig[k]?.name || k)}: ${v}점`
+      `${isEnglish ? (typeConfig[k]?.nameEn || k) : (typeConfig[k]?.name || k)}: ${v}${isEnglish ? 'pts' : '점'}`
     ).join('\n');
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'Career_Interest_Result' : '직업성향_검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

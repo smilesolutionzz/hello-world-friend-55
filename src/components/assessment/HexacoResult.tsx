@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 
@@ -25,10 +26,11 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isEnglish } = useLanguage();
+  const { t } = useTranslation();
   const dimInfo = getDimensionInfo(isEnglish);
 
   useAutoSaveTestResult({
-    testType: 'HEXACO 성격검사',
+    testType: isEnglish ? 'HEXACO Personality Test' : 'HEXACO 성격검사',
     results: { categoryScores: result.categoryScores, totalScore: result.totalScore },
     analysis: result.analysis,
     severity: isEnglish ? 'Normal' : '보통',
@@ -39,20 +41,15 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
   const getColor = (s: number) => s >= 4 ? 'bg-green-500' : s >= 3 ? 'bg-yellow-500' : 'bg-orange-500';
 
   const domains: DomainScore[] = Object.entries(result.categoryScores).map(([key, score]) => ({
-    key,
-    label: dimInfo[key]?.name || key,
-    score: parseFloat(score.toFixed(1)),
-    maxScore: 5,
-    level: getLevel(score),
-    color: getColor(score),
+    key, label: dimInfo[key]?.name || key, score: parseFloat(score.toFixed(1)), maxScore: 5, level: getLevel(score), color: getColor(score),
   }));
 
   const avg = Object.values(result.categoryScores).reduce((s, v) => s + v, 0) / Object.keys(result.categoryScores).length;
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'HEXACO_Result' : 'HEXACO_성격_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

@@ -6,7 +6,6 @@ import './index.css'
 console.log('🚀 main.tsx: Starting application...');
 
 const rootElement = document.getElementById("root");
-console.log('📍 main.tsx: Root element found:', rootElement);
 
 if (rootElement) {
   console.log('✅ main.tsx: Creating React root and rendering App...');

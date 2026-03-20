@@ -149,7 +149,7 @@ export const WomensHealthResult: React.FC<WomensHealthResultProps> = ({ result, 
       console.error('AI 분석 생성 오류:', error);
       toast({
         title: "AI 분석 오류",
-        description: "AI 분석을 생성하는 중 오류가 발생했습니다.",
+        description: isEnglish ? "Error generating AI analysis." : "AI 분석을 생성하는 중 오류가 발생했습니다.",
         variant: "destructive"
       });
     } finally {

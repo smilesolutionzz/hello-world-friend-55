@@ -502,17 +502,17 @@ const PremiumAssessment = () => {
               <Save className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-sm font-bold leading-tight">검사 결과를 저장하려면 로그인이 필요해요</h3>
-              <p className="text-xs text-white/80 mt-0.5">개인별 데이터 저장 후 리포팅되는 시스템입니다</p>
+               <h3 className="text-sm font-bold leading-tight">{p.loginModalTitle}</h3>
+              <p className="text-xs text-white/80 mt-0.5">{p.loginModalSubtitle}</p>
             </div>
           </div>
           
           <div className="p-6 space-y-4">
             <div className="space-y-2.5">
               {[
-                { icon: Save, text: '내 검사 결과가 계정에 영구 저장됩니다' },
-                { icon: Lock, text: '개인 맞춤 분석 리포트를 받을 수 있어요' },
-                { icon: UserPlus, text: '시간에 따른 변화 추적이 가능합니다' },
+                { icon: Save, text: p.loginModalBenefit1 },
+                { icon: Lock, text: p.loginModalBenefit2 },
+                { icon: UserPlus, text: p.loginModalBenefit3 },
               ].map((item, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 text-sm">
                   <item.icon className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />
@@ -523,7 +523,10 @@ const PremiumAssessment = () => {
 
             <div className="bg-muted/50 rounded-lg p-3 text-center">
               <p className="text-xs text-muted-foreground">
-                각자의 아이디로 로그인해야 <strong className="text-foreground">나만의 데이터</strong>가 정확하게 저장·분석됩니다
+                {isEnglish
+                  ? <>Log in with your account to ensure <strong className="text-foreground">{p.loginModalFooterBold}</strong> is accurately saved and analyzed</>
+                  : <>각자의 아이디로 로그인해야 <strong className="text-foreground">{p.loginModalFooterBold}</strong>가 정확하게 저장·분석됩니다</>
+                }
               </p>
             </div>
 
@@ -536,7 +539,7 @@ const PremiumAssessment = () => {
                 className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 text-white py-5"
               >
                 <UserPlus className="w-4 h-4 mr-2" />
-                무료 회원가입 (30초)
+                {p.loginModalSignup}
               </Button>
               <Button 
                 onClick={() => {
@@ -547,7 +550,7 @@ const PremiumAssessment = () => {
                 className="w-full py-5"
               >
                 <Lock className="w-4 h-4 mr-2" />
-                이미 계정이 있어요 · 로그인
+                {p.loginModalLogin}
               </Button>
             </div>
           </div>

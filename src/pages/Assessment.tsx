@@ -934,11 +934,11 @@ const Assessment = () => {
             {/* 인지·기타 전문 */}
             <div className="space-y-2">
               <h3 className="text-sm font-semibold text-muted-foreground ml-1 flex items-center gap-2">
-                <Zap className="w-4 h-4" /> 특화 검사
+                <Zap className="w-4 h-4" /> {t.assessment.specializedSection}
               </h3>
               {[
                 { key: 'pattern-iq', title: t.assessment.patternIQTitle, duration: t.assessment.patternIQDuration, questions: t.assessment.patternIQQuestions, badge: 'NEW', description: t.assessment.patternIQDesc, features: t.assessment.patternIQFeatures, onClick: () => navigate('/assessment/pattern-iq-test'), gradient: 'from-blue-500/20 to-indigo-500/20', dotColor: 'bg-blue-500' },
-                { key: 'han-medicine', title: t.assessment.hanMedicine || '한방 체질분석', duration: '5분', questions: '30문항', description: '사상체질 기반 맞춤 건강 분석', features: ['사상체질 판별', '체질별 건강 솔루션', 'AI 맞춤 분석'], onClick: () => navigate('/han-medicine-test'), gradient: 'from-green-500/20 to-emerald-500/20', dotColor: 'bg-green-600' },
+                { key: 'han-medicine', title: t.assessment.hanMedicineTitle, duration: t.assessment.hanMedicineDuration, questions: t.assessment.hanMedicineQuestions, description: t.assessment.hanMedicineDesc, features: t.assessment.hanMedicineFeatures, onClick: () => navigate('/han-medicine-test'), gradient: 'from-green-500/20 to-emerald-500/20', dotColor: 'bg-green-600' },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (

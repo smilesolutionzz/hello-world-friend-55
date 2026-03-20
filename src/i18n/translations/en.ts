@@ -1702,6 +1702,16 @@ const en = {
     actionGuide: '📋 Action Guide',
     aiPlatform: 'AI Psychology Platform',
     analysisComplete: 'Analysis Complete',
+    analyzing: 'Analyzing in depth...',
+    retakeTest: 'Retake Test',
+    noResult: 'Unable to load analysis results.',
+    copied: 'Copied',
+    analysisError: 'Analysis Error',
+    analysisErrorDesc: 'An error occurred during analysis.',
+    savedAsPdf: 'Results saved as PDF.',
+    pdfDownload: 'PDF Download',
+    shareFeature: 'Share',
+    shareDesc: 'You can share the results.',
   },
 } as const;
 

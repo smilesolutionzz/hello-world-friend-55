@@ -22,6 +22,7 @@ interface MZNaggingResultProps {
 export default function MZNaggingResult({ result, onRetake }: MZNaggingResultProps) {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
 
   const handleShare = () => {
     const shareText = `🍲 국밥집 이모의 MZ잔소리 결과 🍲

@@ -27,6 +27,7 @@ const categoryNames: Record<string, string> = {
 const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) => {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [analysis, setAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
 

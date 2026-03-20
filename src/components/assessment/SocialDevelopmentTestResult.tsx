@@ -35,6 +35,7 @@ const SocialDevelopmentTestResult = ({ results, onBack }: SocialDevelopmentTestR
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
 
   const domainScores = Object.entries(domainDefs).map(([key, { indices, ko }]) => {
     const score = indices.map(i => results.answers[i] || 0).reduce((s, v) => s + v, 0);

@@ -36,6 +36,7 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [analysis, setAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 

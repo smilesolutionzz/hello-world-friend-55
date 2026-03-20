@@ -25,6 +25,7 @@ export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTest
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const { totalScore, energyType, peakTime, recoveryStyle, burnoutRisk, answers } = results;
   const maxScore = 32;
   const percentage = Math.round((totalScore / maxScore) * 100);

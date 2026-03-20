@@ -22,6 +22,7 @@ interface GrandmaRelationshipResultProps {
 export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaRelationshipResultProps) {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
 
   const handleShare = () => {
     const shareText = `👵 욕쟁이 할머니의 연애 진단 결과 👵

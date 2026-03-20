@@ -50,6 +50,7 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
 
   const devScores: Record<string, number> = {
     cognitive: result.cognitiveScore || 0,

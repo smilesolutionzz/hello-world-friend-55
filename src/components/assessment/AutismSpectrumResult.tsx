@@ -27,6 +27,7 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [showCrisisAlert, setShowCrisisAlert] = useState(false);
 
   const isHighRisk = results.scores?.riskLevel === '높음' || results.crisisIndicators?.needsImmediateAttention;

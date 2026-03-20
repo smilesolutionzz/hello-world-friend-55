@@ -24,6 +24,7 @@ const categoryInfo: Record<string, { label: string; emoji: string }> = {
 const SocialBehaviorCheckResult: React.FC<SocialBehaviorCheckResultProps> = ({ results, answers, onBack }) => {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
 
   useAutoSaveTestResult({ testType: "사회적 행동 발달 자가체크", results });
 

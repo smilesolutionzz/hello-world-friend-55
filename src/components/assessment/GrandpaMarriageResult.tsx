@@ -26,6 +26,7 @@ interface GrandpaMarriageResultProps {
 export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarriageResultProps) {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
 
   const handleShare = () => {
     const shareText = `👴 욕쟁이 할아버지의 부부금술진단 결과 👴

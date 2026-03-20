@@ -35,6 +35,7 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [aiAnalysis, setAiAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 

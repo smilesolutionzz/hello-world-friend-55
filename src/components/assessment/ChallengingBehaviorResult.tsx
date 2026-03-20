@@ -22,6 +22,7 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [expertInterpretation, setExpertInterpretation] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 

@@ -129,6 +129,7 @@ export const WomensHealthResult: React.FC<WomensHealthResultProps> = ({ result, 
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(false);
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   
   const constitution = constitutionData[result.constitution as keyof typeof constitutionData];
   const womensHealth = womensHealthInfo[result.constitution as keyof typeof womensHealthInfo];

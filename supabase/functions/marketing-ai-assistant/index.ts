@@ -62,7 +62,7 @@ ${JSON.stringify(institutionData, null, 2)}
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "google/gemini-3-flash-preview",
           messages: [
             { role: "user", content: reportPrompt }
           ],
@@ -109,7 +109,7 @@ ${institutionData ? `현재 분석 중인 기관 정보:\n${JSON.stringify(insti
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
           ...messages,

@@ -292,7 +292,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               rel="noopener noreferrer"
               className="text-primary font-medium hover:underline"
             >
-              isEnglish ? '👉 Subscribe for detailed analysis report (PDF) (example)' : '👉 구독 후 더 정밀한 분석 리포트(PDF) 다운받기 (예시)'
+              {isEnglish ? '👉 Subscribe for detailed analysis report (PDF) (example)' : '👉 구독 후 더 정밀한 분석 리포트(PDF) 다운받기 (예시)'}
             </a>
           </div>
         </div>
@@ -344,7 +344,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
                 <p className="text-sm text-muted-foreground">{domain.desc}</p>
                 {domain.rate < 50 && (
                   <p className="text-xs text-red-600 dark:text-red-400 mt-1.5 font-medium">
-                    isEnglish ? '⚠️ This area may benefit from additional stimulation and expert consultation.' : '⚠️ 이 영역은 추가적인 자극과 전문가 상담이 도움될 수 있어요.'
+                    {isEnglish ? '⚠️ This area may benefit from additional stimulation and expert consultation.' : '⚠️ 이 영역은 추가적인 자극과 전문가 상담이 도움될 수 있어요.'}
                   </p>
                 )}
               </div>

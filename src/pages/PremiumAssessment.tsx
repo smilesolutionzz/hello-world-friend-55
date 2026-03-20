@@ -497,12 +497,14 @@ const PremiumAssessment = () => {
       {/* Login Prompt Modal */}
       <Dialog open={showLoginPrompt} onOpenChange={setShowLoginPrompt}>
         <DialogContent className="max-w-sm mx-auto p-0 overflow-hidden border-0">
-          <div className="bg-gradient-to-br from-purple-600 to-indigo-700 p-6 text-white text-center">
-            <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Save className="w-7 h-7 text-white" />
+          <div className="bg-gradient-to-br from-purple-600 to-indigo-700 px-6 py-5 text-white flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Save className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-lg font-bold mb-1">검사 결과를 저장하려면 로그인이 필요해요</h3>
-            <p className="text-sm text-white/80">개인별 데이터 저장 후 리포팅되는 시스템입니다</p>
+            <div>
+              <h3 className="text-base font-bold leading-tight">검사 결과를 저장하려면 로그인이 필요해요</h3>
+              <p className="text-xs text-white/80 mt-0.5">개인별 데이터 저장 후 리포팅되는 시스템입니다</p>
+            </div>
           </div>
           
           <div className="p-6 space-y-4">

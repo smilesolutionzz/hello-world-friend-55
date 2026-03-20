@@ -502,7 +502,7 @@ const PremiumAssessment = () => {
               <Save className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-base font-bold leading-tight">검사 결과를 저장하려면 로그인이 필요해요</h3>
+              <h3 className="text-sm font-bold leading-tight">검사 결과를 저장하려면 로그인이 필요해요</h3>
               <p className="text-xs text-white/80 mt-0.5">개인별 데이터 저장 후 리포팅되는 시스템입니다</p>
             </div>
           </div>

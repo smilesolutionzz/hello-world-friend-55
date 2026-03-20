@@ -23,7 +23,7 @@ const ExpertTeamSection = () => {
     {
       name: '김기정',
       role: '자문위원',
-      credential: '여성가족부 협회장',
+      credential: '여성가족부 산하 꿈이있는세상 협회장',
       description: '정부 정책 자문 및 기관 파트너십 총괄',
       gradient: 'from-emerald-500/20 to-teal-500/20',
       iconColor: 'text-emerald-400',

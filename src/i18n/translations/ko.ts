@@ -1041,6 +1041,16 @@ const ko = {
     infoParentingTitle: '프리미엄 부모양육태도 검사',
     infoParentingDesc: '온정수용, 행동통제, 심리통제, 자율성지지, 의사소통지지 5개 영역으로 양육태도를 정밀 분석합니다',
     infoParentingFeatures: ['5영역 양육태도 정밀분석', '자녀발달 영향도 평가', '양육 강점과 개선점 도출', '개별 양육 가이드 제공'],
+    // Login modal
+    loginModalTitle: '검사 결과를 저장하려면 로그인이 필요해요',
+    loginModalSubtitle: '개인별 데이터 저장 후 리포팅되는 시스템입니다',
+    loginModalBenefit1: '내 검사 결과가 계정에 영구 저장됩니다',
+    loginModalBenefit2: '개인 맞춤 분석 리포트를 받을 수 있어요',
+    loginModalBenefit3: '시간에 따른 변화 추적이 가능합니다',
+    loginModalFooter: '각자의 아이디로 로그인해야 {bold}가 정확하게 저장·분석됩니다',
+    loginModalFooterBold: '나만의 데이터',
+    loginModalSignup: '무료 회원가입 (30초)',
+    loginModalLogin: '이미 계정이 있어요 · 로그인',
   },
 
   // Free Trial Assessment page

@@ -1027,6 +1027,16 @@ const en = {
     infoParentingTitle: 'Premium Parenting Style Assessment',
     infoParentingDesc: 'Precisely analyzes parenting attitudes across 5 areas: warmth-acceptance, behavioral control, psychological control, autonomy support, communication support',
     infoParentingFeatures: ['5-area parenting attitude analysis', 'Child development impact assessment', 'Parenting strengths & improvements', 'Individual parenting guide'],
+    // Login modal
+    loginModalTitle: 'Login required to save test results',
+    loginModalSubtitle: 'Our system saves and reports individual data',
+    loginModalBenefit1: 'Your test results are permanently saved to your account',
+    loginModalBenefit2: 'Get personalized analysis reports',
+    loginModalBenefit3: 'Track your progress over time',
+    loginModalFooter: 'Log in with your account to ensure your data is accurately saved and analyzed',
+    loginModalFooterBold: 'your own data',
+    loginModalSignup: 'Free Sign Up (30 sec)',
+    loginModalLogin: 'Already have an account · Log In',
   },
 
   // Free Trial Assessment page

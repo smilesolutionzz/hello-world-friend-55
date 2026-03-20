@@ -31,6 +31,7 @@ export default function LifeAchievementResult({ result, onRestart }: LifeAchieve
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const navigate = useNavigate();
   const { shareAsText } = useShareText();
   const { saveResult, isSaving } = useLifeAchievementActions();

@@ -18,6 +18,7 @@ interface LanguageDevelopmentResultProps {
 const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelopmentResultProps) => {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [aiAnalysis, setAiAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
 

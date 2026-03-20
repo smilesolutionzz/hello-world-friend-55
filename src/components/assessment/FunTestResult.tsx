@@ -20,7 +20,7 @@ export default function FunTestResult() {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t: trans } = useTranslation();
   const { shareAsText } = useShareText();
   const { isEnglish } = useLanguage();
   const { result, testType } = location.state || {};

@@ -270,37 +270,37 @@ const PremiumAssessment = () => {
       title: p.otrovertTitle, subtitle: p.otrovertSubtitle, description: p.otrovertDesc,
       duration: p.otrovertDuration, questions_count: 20,
       premium_features: [...p.otrovertFeatures],
-      onClick: () => setCurrentTest('otrovert'),
+      onClick: () => requireAuth(() => setCurrentTest('otrovert')),
     },
     mbti: {
       title: p.mbtiTitle, subtitle: p.mbtiSubtitle, description: p.mbtiDesc,
       duration: p.mbtiDuration, questions_count: 25,
       premium_features: [...p.mbtiFeatures],
-      onClick: () => navigate('/assessment/mbti-test'),
+      onClick: () => requireAuth(() => navigate('/assessment/mbti-test')),
     },
     hexaco: {
       title: p.hexacoTitle, subtitle: p.hexacoSubtitle, description: p.hexacoDesc,
       duration: p.hexacoDuration, questions_count: 48,
       premium_features: [...p.hexacoFeatures],
-      onClick: () => setCurrentTest('hexaco'),
+      onClick: () => requireAuth(() => setCurrentTest('hexaco')),
     },
     drawing: {
       title: p.drawingTitle, subtitle: p.drawingSubtitle, description: p.drawingDesc,
       duration: p.drawingDuration, questions_count: 0,
       premium_features: [...p.drawingFeatures],
-      onClick: () => setCurrentTest('drawing-analysis'),
+      onClick: () => requireAuth(() => setCurrentTest('drawing-analysis')),
     },
     insurance: {
       title: p.insuranceTitle, subtitle: p.insuranceSubtitle, description: p.insuranceDesc,
       duration: p.insuranceDuration, questions_count: 0,
       premium_features: [...p.insuranceFeatures],
-      onClick: () => setCurrentTest('insurance-analysis'),
+      onClick: () => requireAuth(() => setCurrentTest('insurance-analysis')),
     },
     businessMetacognition: {
       title: p.bizMetaTitle, subtitle: p.bizMetaSubtitle, description: p.bizMetaDesc,
       duration: p.bizMetaDuration, questions_count: 20,
       premium_features: [...p.bizMetaFeatures],
-      onClick: () => navigate('/assessment/business-metacognition'),
+      onClick: () => requireAuth(() => navigate('/assessment/business-metacognition')),
     },
   };
 

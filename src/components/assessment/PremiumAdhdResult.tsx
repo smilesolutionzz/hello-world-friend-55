@@ -38,6 +38,7 @@ interface PremiumAdhdResultProps {
 
 const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }: PremiumAdhdResultProps) => {
   const navigate = useNavigate();
+  const { isEnglish } = useLanguage();
   const [analysis, setAnalysis] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();

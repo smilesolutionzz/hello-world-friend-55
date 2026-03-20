@@ -24,7 +24,7 @@ interface DepressionTestResultProps {
 
 const normalizeSeverity = (severity: string): 'normal' | 'mild' | 'moderate' | 'severe' => {
   const s = severity.toLowerCase();
-  if (s === (isEnglish ? 'Normal' : '정상') || s === 'normal') return 'normal';
+  if (s === '정상' || s === 'Normal' || s === 'normal') return 'normal';
   if (s === '가벼운 우울' || s === 'mild depression') return 'mild';
   if (s === '중등도 우울' || s === 'moderate depression') return 'moderate';
   if (s === '심한 우울' || s === 'severe depression') return 'severe';
@@ -82,7 +82,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
   };
   const getLevel = (score: number) => {
     const pct = (score / maxDomain) * 100;
-    if (pct >= 70) return isEnglish ? 'Severe' : isEnglish ? 'Severe' : '심각';
+    if (pct >= 70) return isEnglish ? 'Severe' : '심각';
     if (pct >= 50) return isEnglish ? 'Moderate' : '보통';
     if (pct >= 30) return isEnglish ? 'Mild' : '경미';
     return isEnglish ? 'Normal' : isEnglish ? 'Normal' : '정상';

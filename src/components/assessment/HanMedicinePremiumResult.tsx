@@ -56,10 +56,10 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
       
       setAnalysis(response.data);
     } catch (error) {
-      console.error('분석 생성 중 오류:', error);
+      console.error('Analysis error:', error);
       toast({
-        title: "분석 오류",
-        description: "AI 분석 중 오류가 발생했습니다.",
+        title: isEnglish ? "Analysis Error" : "분석 오류",
+        description: isEnglish ? "An error occurred during analysis." : "AI 분석 중 오류가 발생했습니다.",
         variant: "destructive"
       });
     } finally {
@@ -73,9 +73,9 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Crown className="h-12 w-12 text-amber-500 mb-4" />
           <Loader2 className="h-8 w-8 animate-spin mb-4" />
-          <p className="text-lg font-medium">한의학 전문 분석 결과를 생성하고 있습니다...</p>
+          <p className="text-lg font-medium">{isEnglish ? 'Generating traditional medicine analysis...' : '한의학 전문 분석 결과를 생성하고 있습니다...'}</p>
           <p className="text-sm text-muted-foreground mt-2 text-center">
-            종합적인 체질 분석과 맞춤 처방을 준비 중입니다.
+            {isEnglish ? 'Preparing comprehensive body type analysis and personalized prescriptions.' : '종합적인 체질 분석과 맞춤 처방을 준비 중입니다.'}
           </p>
         </CardContent>
       </Card>
@@ -87,7 +87,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
       <Card className="w-full max-w-4xl mx-auto">
         <CardContent className="text-center py-8">
           <AlertTriangle className="h-8 w-8 mx-auto mb-4 text-destructive" />
-          <p>분석 결과를 불러올 수 없습니다.</p>
+          <p>{isEnglish ? 'Unable to load analysis results.' : '분석 결과를 불러올 수 없습니다.'}</p>
           <Button onClick={onRestart} className="mt-4">{isEnglish ? "Retake Test" : "다시 검사하기"}</Button>
         </CardContent>
       </Card>
@@ -105,9 +105,9 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
               프리미엄 한의학 분석
             </Badge>
           </div>
-          <CardTitle className="text-2xl">종합 체질 분석 결과</CardTitle>
+          <CardTitle className="text-2xl">{isEnglish ? 'Comprehensive Body Type Results' : '종합 체질 분석 결과'}</CardTitle>
           <CardDescription className="text-lg">
-            AI 한의학 전문가가 당신만의 맞춤 처방을 제공합니다
+            {isEnglish ? 'AI traditional medicine expert provides personalized prescriptions' : 'AI 한의학 전문가가 당신만의 맞춤 처방을 제공합니다'}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -115,13 +115,13 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
       {/* 탭 구성 */}
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-7">
-          <TabsTrigger value="overview">종합</TabsTrigger>
-          <TabsTrigger value="constitution">체질</TabsTrigger>
-          <TabsTrigger value="organs">오장육부</TabsTrigger>
-          <TabsTrigger value="diet">식이요법</TabsTrigger>
-          <TabsTrigger value="lifestyle">생활요법</TabsTrigger>
-          <TabsTrigger value="treatment">처방</TabsTrigger>
-          <TabsTrigger value="consultation">진료예약</TabsTrigger>
+          <TabsTrigger value="overview">{isEnglish ? "Overview" : "종합"}</TabsTrigger>
+          <TabsTrigger value="constitution">{isEnglish ? "Type" : "체질"}</TabsTrigger>
+          <TabsTrigger value="organs">{isEnglish ? "Organs" : "오장육부"}</TabsTrigger>
+          <TabsTrigger value="diet">{isEnglish ? "Diet" : "식이요법"}</TabsTrigger>
+          <TabsTrigger value="lifestyle">{isEnglish ? "Lifestyle" : "생활요법"}</TabsTrigger>
+          <TabsTrigger value="treatment">{isEnglish ? "Rx" : "처방"}</TabsTrigger>
+          <TabsTrigger value="consultation">{isEnglish ? "Book" : "진료예약"}</TabsTrigger>
         </TabsList>
 
         {/* 종합 분석 */}
@@ -135,7 +135,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
             </CardHeader>
             <CardContent>
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 p-6 rounded-lg">
-                <p className="text-lg font-medium mb-4">주요 체질: {analysis.constitution}</p>
+                <p className="text-lg font-medium mb-4">{isEnglish ? 'Primary Type: ' : '주요 체질: '}{analysis.constitution}</p>
                 <p className="leading-relaxed whitespace-pre-line">{analysis.overview}</p>
               </div>
             </CardContent>
@@ -162,7 +162,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Heart className="h-5 w-5 mr-2 text-red-500" />
-                AI 체질 성향 분석
+                {isEnglish ? "AI Body Type Analysis" : "AI 체질 성향 분석"}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -499,10 +499,10 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Calendar className="h-5 w-5 mr-2 text-blue-500" />
-                가까이한의원 맞춤상담
+                {isEnglish ? 'Personalized Consultation' : '가까이한의원 맞춤상담'}
               </CardTitle>
               <CardDescription>
-                체질 분석 결과를 바탕으로 전문 한의사와 상담하고 정확한 처방을 받아보세요
+                {isEnglish ? 'Consult with a specialist based on your body type results' : '체질 분석 결과를 바탕으로 전문 한의사와 상담하고 정확한 처방을 받아보세요'}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -510,8 +510,8 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                 <Card className="border-2 border-primary/20">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <h3 className="font-semibold">가까이한의원</h3>
-                      <Badge className="bg-green-100 text-green-800">온라인 진료 가능</Badge>
+                      <h3 className="font-semibold">{isEnglish ? 'Partner Clinic' : '가까이한의원'}</h3>
+                      <Badge className="bg-green-100 text-green-800">{isEnglish ? 'Online Available' : '온라인 진료 가능'}</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       <MapPin className="h-4 w-4 inline mr-1" />
@@ -524,7 +524,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                       02-1234-5678
                     </div>
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">전문 분야</p>
+                      <p className="text-sm font-medium">{isEnglish ? 'Specialties' : '전문 분야'}</p>
                       <div className="flex flex-wrap gap-1">
                         <Badge variant="secondary">사상체질</Badge>
                         <Badge variant="secondary">소화기</Badge>
@@ -532,7 +532,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">예약 가능 시간</p>
+                      <p className="text-sm font-medium">{isEnglish ? 'Available Times' : '예약 가능 시간'}</p>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div className="bg-secondary/50 p-2 rounded">오늘 14:00</div>
                         <div className="bg-secondary/50 p-2 rounded">오늘 16:30</div>
@@ -556,8 +556,8 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                 <Card className="border-2 border-primary/20">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <h3 className="font-semibold">가까이한의원 분점</h3>
-                      <Badge className="bg-green-100 text-green-800">온라인 진료 가능</Badge>
+                      <h3 className="font-semibold">{isEnglish ? 'Partner Clinic Branch' : '가까이한의원 분점'}</h3>
+                      <Badge className="bg-green-100 text-green-800">{isEnglish ? 'Online Available' : '온라인 진료 가능'}</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       <MapPin className="h-4 w-4 inline mr-1" />
@@ -570,7 +570,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                       051-9876-5432
                     </div>
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">전문 분야</p>
+                      <p className="text-sm font-medium">{isEnglish ? 'Specialties' : '전문 분야'}</p>
                       <div className="flex flex-wrap gap-1">
                         <Badge variant="secondary">체질개선</Badge>
                         <Badge variant="secondary">스트레스</Badge>
@@ -578,7 +578,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">예약 가능 시간</p>
+                      <p className="text-sm font-medium">{isEnglish ? 'Available Times' : '예약 가능 시간'}</p>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div className="bg-secondary/50 p-2 rounded">오늘 13:30</div>
                         <div className="bg-secondary/50 p-2 rounded">오늘 17:00</div>
@@ -603,19 +603,19 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
               <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
                 <CardContent className="pt-6">
                   <div className="text-center space-y-4">
-                    <h3 className="font-semibold text-lg">💫 특별 혜택</h3>
+                    <h3 className="font-semibold text-lg">{isEnglish ? '💫 Special Benefits' : '💫 특별 혜택'}</h3>
                     <div className="grid md:grid-cols-3 gap-4 text-sm">
                       <div className="space-y-1">
-                        <p className="font-medium">🎁 첫 진료 할인</p>
-                        <p className="text-muted-foreground">AIH 사용자 20% 할인</p>
+                        <p className="font-medium">{isEnglish ? '🎁 First Visit Discount' : '🎁 첫 진료 할인'}</p>
+                        <p className="text-muted-foreground">{isEnglish ? '20% off for AIH users' : 'AIH 사용자 20% 할인'}</p>
                       </div>
                       <div className="space-y-1">
-                        <p className="font-medium">🚚 한약 무료배송</p>
-                        <p className="text-muted-foreground">전국 어디든 무료배송</p>
+                        <p className="font-medium">{isEnglish ? '🚚 Free Delivery' : '🚚 한약 무료배송'}</p>
+                        <p className="text-muted-foreground">{isEnglish ? 'Free nationwide shipping' : '전국 어디든 무료배송'}</p>
                       </div>
                       <div className="space-y-1">
-                        <p className="font-medium">📱 24시간 상담</p>
-                        <p className="text-muted-foreground">카카오톡 무료 상담</p>
+                        <p className="font-medium">{isEnglish ? '📱 24h Consultation' : '📱 24시간 상담'}</p>
+                        <p className="text-muted-foreground">{isEnglish ? 'Free KakaoTalk consultation' : '카카오톡 무료 상담'}</p>
                       </div>
                     </div>
                   </div>

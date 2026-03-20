@@ -788,7 +788,7 @@ const Assessment = () => {
                           onClick={() => handleTestTypeSelect(test.key as any)}
                           className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
                         >
-                          무료로 시작하기
+                          {t.assessment.freeStartBtn}
                         </Button>
                       </div>
                     </CollapsibleContent>

@@ -27,6 +27,7 @@ const categoryNames: Record<string, string> = {
 const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) => {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [analysis, setAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
 
@@ -119,7 +120,7 @@ const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) =>
           data={{
             testName: '양육 스타일',
             subtitle: '5개 영역 분석',
-            date: new Date().toLocaleDateString('ko-KR'),
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(results.scores).map(([k, v]) => [k, (Number(v) / 4) * 7])),
             maxScore: 7,
             categoryTranslations: categoryNames,

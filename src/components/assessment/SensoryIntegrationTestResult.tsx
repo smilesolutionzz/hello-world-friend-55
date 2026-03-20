@@ -63,13 +63,13 @@ const SensoryIntegrationTestResult = ({ results, onBack }: SensoryIntegrationTes
 
   // Higher % = more concern (inverted scale)
   const getColor = (pct: number) => pct >= 75 ? 'bg-destructive' : pct >= 50 ? 'bg-orange-500' : pct >= 25 ? 'bg-yellow-500' : 'bg-green-500';
-  const getLevel = (pct: number) => pct >= 75 ? (isEnglish ? 'Severe' : '심각') : pct >= 50 ? (isEnglish ? 'Moderate' : '중등도') : pct >= 25 ? (isEnglish ? 'Mild' : '경미') : (isEnglish ? 'Normal' : '정상');
+  const getLevel = (pct: number) => pct >= 75 ? (isEnglish ? 'Severe' : isEnglish ? 'Severe' : '심각') : pct >= 50 ? (isEnglish ? 'Moderate' : isEnglish ? 'Moderate' : '중등도') : pct >= 25 ? (isEnglish ? 'Mild' : '경미') : (isEnglish ? 'Normal' : isEnglish ? 'Normal' : '정상');
 
   const domains: DomainScore[] = domainScores.map(d => ({
     key: d.key, label: d.label, score: d.pct, maxScore: 100, level: getLevel(d.pct), color: getColor(d.pct),
   }));
 
-  const severityColor = results.severity === '심각' ? 'text-destructive border-destructive/30' : results.severity === '중등도' ? 'text-orange-600 border-orange-300' : results.severity === '경미' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  const severityColor = results.severity === (isEnglish ? 'Severe' : '심각') ? 'text-destructive border-destructive/30' : results.severity === (isEnglish ? 'Moderate' : '중등도') ? 'text-orange-600 border-orange-300' : results.severity === '경미' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
 
   const parseAISections = (text: string): ReportSection[] => {
     if (!text) return [];

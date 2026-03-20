@@ -38,6 +38,7 @@ interface PremiumAdhdResultProps {
 
 const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }: PremiumAdhdResultProps) => {
   const navigate = useNavigate();
+  const { isEnglish } = useLanguage();
   const [analysis, setAnalysis] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
@@ -199,7 +200,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className={`p-4 rounded-lg ${severity.bg}`}>
               <div className="text-2xl font-bold mb-1">{results.totalScore}점</div>
-              <div className="text-sm text-muted-foreground">총점</div>
+              <div className="text-sm text-muted-foreground">{isEnglish ? 'Total' : '총점'}</div>
             </div>
             
             <div className={`p-4 rounded-lg ${severity.bg}`}>

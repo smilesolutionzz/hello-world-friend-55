@@ -71,7 +71,7 @@ const InstagramAnalysisResult = ({ result, username, onRestart }: InstagramAnaly
     try {
       const data = {
         title: `인스타그램 무의식 분석 - @${username}`,
-        date: new Date().toLocaleDateString('ko-KR'),
+        date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
         sections: [
           {
             title: `무의식 유형: ${result.unconsciousType.name}`,

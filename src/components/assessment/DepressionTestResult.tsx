@@ -24,7 +24,7 @@ interface DepressionTestResultProps {
 
 const normalizeSeverity = (severity: string): 'normal' | 'mild' | 'moderate' | 'severe' => {
   const s = severity.toLowerCase();
-  if (s === '정상' || s === 'normal') return 'normal';
+  if (s === '정상' || s === 'Normal' || s === 'normal') return 'normal';
   if (s === '가벼운 우울' || s === 'mild depression') return 'mild';
   if (s === '중등도 우울' || s === 'moderate depression') return 'moderate';
   if (s === '심한 우울' || s === 'severe depression') return 'severe';
@@ -85,7 +85,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
     if (pct >= 70) return isEnglish ? 'Severe' : '심각';
     if (pct >= 50) return isEnglish ? 'Moderate' : '보통';
     if (pct >= 30) return isEnglish ? 'Mild' : '경미';
-    return isEnglish ? 'Normal' : '정상';
+    return isEnglish ? 'Normal' : isEnglish ? 'Normal' : '정상';
   };
 
   const domains: DomainScore[] = [
@@ -114,7 +114,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
   const aiSections = parseAnalysisSections(aiAnalysis);
   const severityLabels: Record<string, string> = isEnglish
     ? { normal: 'Normal', mild: 'Mild', moderate: 'Moderate', severe: 'Severe' }
-    : { normal: '정상', mild: '가벼운 우울', moderate: '중등도 우울', severe: '심한 우울' };
+    : { normal: isEnglish ? 'Normal' : '정상', mild: '가벼운 우울', moderate: '중등도 우울', severe: '심한 우울' };
   const severityLabel = severityLabels[sev] || severity;
   const severityColor = sev === 'severe' ? 'text-destructive border-destructive/30'
     : sev === 'moderate' ? 'text-orange-600 border-orange-300'

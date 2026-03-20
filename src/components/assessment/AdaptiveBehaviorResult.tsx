@@ -43,7 +43,7 @@ const AdaptiveBehaviorResult = ({ results }: AdaptiveBehaviorResultProps) => {
         if (error) throw error;
         setExpertInterpretation(data.analysis || '');
       } catch {
-        setExpertInterpretation('전문가 분석을 불러올 수 없습니다.');
+        setExpertInterpretation(isEnglish ? 'Unable to load expert analysis.' : '전문가 분석을 불러올 수 없습니다.');
       } finally {
         setIsLoading(false);
       }

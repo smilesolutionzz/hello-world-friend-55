@@ -22,6 +22,7 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [expertInterpretation, setExpertInterpretation] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -50,14 +51,14 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
   }, []);
 
   const getColor = (pct: number) => pct >= 70 ? 'bg-destructive' : pct >= 40 ? 'bg-orange-500' : pct >= 20 ? 'bg-yellow-500' : 'bg-green-500';
-  const getLevel = (pct: number) => pct >= 70 ? '심각' : pct >= 40 ? '중등도' : pct >= 20 ? '경도' : '정상';
+  const getLevel = (pct: number) => pct >= 70 ? isEnglish ? 'Severe' : '심각' : pct >= 40 ? isEnglish ? 'Moderate' : '중등도' : pct >= 20 ? isEnglish ? 'Mild' : '경도' : isEnglish ? 'Normal' : '정상';
 
   const domains: DomainScore[] = Object.entries(categoryScores).map(([key, { score, max }]) => {
     const pct = Math.round((score / max) * 100);
     return { key, label: key, score, maxScore: max, level: getLevel(pct), color: getColor(pct) };
   });
 
-  const severityColor = results.severity === '심각' ? 'text-destructive border-destructive/30' : results.severity === '중등도' ? 'text-orange-600 border-orange-300' : results.severity === '경도' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  const severityColor = results.severity === (isEnglish ? 'Severe' : '심각') ? 'text-destructive border-destructive/30' : results.severity === (isEnglish ? 'Moderate' : '중등도') ? 'text-orange-600 border-orange-300' : results.severity === (isEnglish ? 'Mild' : '경도') ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
 
   const parseAISections = (text: string): ReportSection[] => {
     if (!text) return [];
@@ -107,7 +108,7 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
           data={{
             testName: '도전행동 평가',
             subtitle: '6개 행동 영역 분석',
-            date: new Date().toLocaleDateString('ko-KR'),
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(categoryScores).map(([k, { score, max }]) => [k, (score / max) * 7])),
             maxScore: 7,
             categoryTranslations: Object.fromEntries(Object.entries(categoryScores).map(([k]) => [k, k])),

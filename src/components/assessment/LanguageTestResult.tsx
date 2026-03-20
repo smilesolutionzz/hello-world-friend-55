@@ -26,15 +26,16 @@ interface LanguageTestResultProps {
 
 const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const { total, average, ageGroup, age } = results;
-  const today = new Date().toLocaleDateString('ko-KR');
+  const today = new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR');
   const navigate = useNavigate();
+  const { isEnglish } = useLanguage();
   const { generatePDFReport, saveResultAsImage, saveTestResult, isGeneratingPDF, isGeneratingImage, isSaving } = useTestResultActions();
 
   // 자동 저장 - 분석 포함
   useAutoSaveTestResult({
-    testType: '언어발달 검사',
+    testType: isEnglish ? 'Language Development Test' : '언어발달 검사',
     results: { total, average, answers: results.answers },
-    analysis: `언어발달 검사 결과 - 총점: ${total}점, 평균: ${average.toFixed(1)}점`,
+    analysis: isEnglish ? `Language Test - Total: ${total}pts, Avg: ${average.toFixed(1)}pts` : `언어발달 검사 결과 - 총점: ${total}점, 평균: ${average.toFixed(1)}점`,
     ageGroup,
   });
 
@@ -158,25 +159,25 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const overallRate = Math.round((total / (totalQuestions * 3)) * 100);
 
   const chartData = [
-    { name: '수용언어', value: receptiveRate, fill: '#4f46e5' },
-    { name: '표현언어', value: expressiveRate, fill: '#06b6d4' },
-    { name: '언어이해', value: comprehensionRate, fill: '#10b981' },
-    { name: '어휘력', value: vocabularyRate, fill: '#f59e0b' },
-    { name: '종합', value: overallRate, fill: '#8b5cf6' },
+    { name: isEnglish ? 'Receptive' : '수용언어', value: receptiveRate, fill: '#4f46e5' },
+    { name: isEnglish ? 'Expressive' : '표현언어', value: expressiveRate, fill: '#06b6d4' },
+    { name: isEnglish ? 'Comprehension' : '언어이해', value: comprehensionRate, fill: '#10b981' },
+    { name: isEnglish ? 'Vocabulary' : '어휘력', value: vocabularyRate, fill: '#f59e0b' },
+    { name: isEnglish ? 'Overall' : '종합', value: overallRate, fill: '#8b5cf6' },
   ];
 
   // 각 영역별 수준 판정
   const getDomainLevel = (rate: number) => {
-    if (rate >= 80) return { label: '양호', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-950/30', border: 'border-green-200 dark:border-green-800' };
-    if (rate >= 50) return { label: '보통', color: 'text-yellow-600', bg: 'bg-yellow-50 dark:bg-yellow-950/30', border: 'border-yellow-200 dark:border-yellow-800' };
-    return { label: '주의', color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-950/30', border: 'border-red-200 dark:border-red-800' };
+    if (rate >= 80) return { label: isEnglish ? 'Good' : '양호', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-950/30', border: 'border-green-200 dark:border-green-800' };
+    if (rate >= 50) return { label: isEnglish ? 'Average' : '보통', color: 'text-yellow-600', bg: 'bg-yellow-50 dark:bg-yellow-950/30', border: 'border-yellow-200 dark:border-yellow-800' };
+    return { label: isEnglish ? 'Caution' : '주의', color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-950/30', border: 'border-red-200 dark:border-red-800' };
   };
 
   const domainDetails = [
-    { name: '수용언어', rate: receptiveRate, desc: '다른 사람의 말을 듣고 이해하는 능력이에요. 지시 따르기, 이름에 반응하기 등이 포함됩니다.', emoji: '👂' },
-    { name: '표현언어', rate: expressiveRate, desc: '자신의 생각과 감정을 말로 표현하는 능력이에요. 단어 사용, 문장 구성 등이 포함됩니다.', emoji: '🗣️' },
-    { name: '언어이해', rate: comprehensionRate, desc: '문장의 의미를 파악하고 상황을 이해하는 능력이에요. 복잡한 지시나 이야기 이해가 포함됩니다.', emoji: '💡' },
-    { name: '어휘력', rate: vocabularyRate, desc: '알고 있는 단어의 양과 적절하게 사용하는 능력이에요. 새로운 단어 습득력도 반영됩니다.', emoji: '📚' },
+    { name: isEnglish ? 'Receptive' : '수용언어', rate: receptiveRate, desc: '다른 사람의 말을 듣고 이해하는 능력이에요. 지시 따르기, 이름에 반응하기 등이 포함됩니다.', emoji: '👂' },
+    { name: isEnglish ? 'Expressive' : '표현언어', rate: expressiveRate, desc: '자신의 생각과 감정을 말로 표현하는 능력이에요. 단어 사용, 문장 구성 등이 포함됩니다.', emoji: '🗣️' },
+    { name: isEnglish ? 'Comprehension' : '언어이해', rate: comprehensionRate, desc: '문장의 의미를 파악하고 상황을 이해하는 능력이에요. 복잡한 지시나 이야기 이해가 포함됩니다.', emoji: '💡' },
+    { name: isEnglish ? 'Vocabulary' : '어휘력', rate: vocabularyRate, desc: '알고 있는 단어의 양과 적절하게 사용하는 능력이에요. 새로운 단어 습득력도 반영됩니다.', emoji: '📚' },
   ];
 
   const handleExpertConsult = () => {
@@ -189,38 +190,38 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
       <div className="flex items-center gap-3 md:justify-between">
         <Button variant="outline" size="sm" onClick={onBack} className="flex items-center gap-1.5 shrink-0">
           <ArrowLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">뒤로가기</span>
+          <span className="hidden sm:inline">{isEnglish ? 'Back' : '뒤로가기'}</span>
         </Button>
-        <h1 className="text-lg md:text-2xl font-bold text-primary whitespace-nowrap">검사 결과 리포트</h1>
+        <h1 className="text-lg md:text-2xl font-bold text-primary whitespace-nowrap">{isEnglish ? 'Test Report' : '검사 결과 리포트'}</h1>
         <div className="hidden md:block w-20"></div>
       </div>
 
       {/* Summary Card */}
       <Card className="p-8">
         <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold text-brand-gradient">언어발달 검사 결과</h2>
+          <h2 className="text-3xl font-bold text-brand-gradient">{isEnglish ? 'Language Development Results' : '언어발달 검사 결과'}</h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">총점</p>
+              <p className="text-sm text-muted-foreground">{isEnglish ? 'Total' : '총점'}</p>
               <p className="text-2xl font-bold">{total}점</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">연령</p>
+              <p className="text-sm text-muted-foreground">{isEnglish ? 'Age' : '연령'}</p>
               <p className="text-2xl font-bold">{age}개월</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">평가 결과</p>
+              <p className="text-sm text-muted-foreground">{isEnglish ? 'Result' : '평가 결과'}</p>
               <p className="text-2xl font-bold">{evaluation.level}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">검사일</p>
+              <p className="text-sm text-muted-foreground">{isEnglish ? 'Date' : '검사일'}</p>
               <p className="text-2xl font-bold">{today}</p>
             </div>
           </div>
 
           <div className="mt-8 p-6 bg-muted/50 rounded-lg">
-            <p className="text-lg font-semibold mb-2">종합 평가</p>
+            <p className="text-lg font-semibold mb-2">{isEnglish ? 'Overall Assessment' : '종합 평가'}</p>
             <p className={`text-xl font-bold ${evaluation.color}`}>{evaluation.level}</p>
             <p className="text-muted-foreground mt-2">{evaluation.description}</p>
           </div>
@@ -228,22 +229,22 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
       </Card>
 
       <Card className="p-8">
-        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 상세 분석 결과</h3>
+        <h3 className="text-2xl font-bold text-foreground mb-6">{isEnglish ? '✨ Detailed Analysis' : '✨ 상세 분석 결과'}</h3>
         
         <div className="space-y-8">
           <div className="grid md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
             <div className="text-center">
-              <p className="text-lg font-semibold text-blue-800">언어발달 점수</p>
+              <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Language Score' : '언어발달 점수'}</p>
               <p className="text-3xl font-bold text-blue-900">{total}점 / 60점</p>
               <p className="text-sm text-blue-600 mt-1">만점 대비 {Math.round((total/60)*100)}%</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-semibold text-blue-800">평가 결과</p>
+              <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Result' : '평가 결과'}</p>
               <p className={`text-2xl font-bold ${evaluation.color}`}>{evaluation.level}</p>
               <p className="text-sm text-blue-600 mt-1">점수 범위: {evaluation.range}</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-semibold text-blue-800">현재 개월수</p>
+              <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Current Age' : '현재 개월수'}</p>
               <p className="text-2xl font-bold text-blue-900">{age}개월</p>
               <p className="text-sm text-blue-600 mt-1">연령대: {ageGroup}</p>
             </div>
@@ -253,16 +254,16 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
             <h4 className="text-lg font-semibold text-gray-800 mb-4">📊 언어발달 점수 분류 기준</h4>
             <div className="grid md:grid-cols-3 gap-4">
               <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-                <p className="font-semibold text-red-800">주의 필요 (0-24점)</p>
-                <p className="text-sm text-red-600 mt-1">즉시 전문가 상담 권장</p>
+                <p className="font-semibold text-red-800">{isEnglish ? 'Attention Needed (0-24)' : '주의 필요 (0-24점)'}</p>
+                <p className="text-sm text-red-600 mt-1">{isEnglish ? 'Immediate consultation recommended' : '즉시 전문가 상담 권장'}</p>
               </div>
               <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                <p className="font-semibold text-yellow-800">경계선 (25-36점)</p>
-                <p className="text-sm text-yellow-600 mt-1">추가 관찰 및 자극 필요</p>
+                <p className="font-semibold text-yellow-800">{isEnglish ? 'Borderline (25-36)' : '경계선 (25-36점)'}</p>
+                <p className="text-sm text-yellow-600 mt-1">{isEnglish ? 'Further observation needed' : '추가 관찰 및 자극 필요'}</p>
               </div>
               <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                <p className="font-semibold text-green-800">양호 (37-60점)</p>
-                <p className="text-sm text-green-600 mt-1">정상 발달 범위</p>
+                <p className="font-semibold text-green-800">{isEnglish ? 'Good (37-60)' : '양호 (37-60점)'}</p>
+                <p className="text-sm text-green-600 mt-1">{isEnglish ? 'Normal development range' : '정상 발달 범위'}</p>
               </div>
             </div>
           </div>
@@ -291,14 +292,14 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               rel="noopener noreferrer"
               className="text-primary font-medium hover:underline"
             >
-              👉 구독 후 더 정밀한 분석 리포트(PDF) 다운받기 (예시)
+              {isEnglish ? '👉 Subscribe for detailed analysis report (PDF) (example)' : '👉 구독 후 더 정밀한 분석 리포트(PDF) 다운받기 (예시)'}
             </a>
           </div>
         </div>
       </Card>
 
       <Card className="p-8">
-        <h3 className="text-xl font-semibold mb-6 text-center text-foreground">영역별 발달률 (%)</h3>
+        <h3 className="text-xl font-semibold mb-6 text-center text-foreground">{isEnglish ? 'Development Rate by Domain (%)' : '영역별 발달률 (%)'}</h3>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} layout="vertical" margin={{ left: 20, right: 30 }}>
@@ -312,14 +313,14 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
                   borderRadius: '8px',
                   color: 'hsl(var(--foreground))'
                 }}
-                formatter={(value: number) => [`${value}%`, '발달률']}
+                formatter={(value: number) => [`${value}%`, isEnglish ? 'Dev. Rate' : '발달률']}
               />
               <Bar dataKey="value" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
         <p className="text-sm text-muted-foreground text-center mt-4">
-          * 발달률은 해당 연령 기준 언어발달 수준을 백분율로 나타낸 것입니다 (80% 이상: 양호 / 50~79%: 보통 / 50% 미만: 주의)
+          {isEnglish ? '* Development rate shows language level as percentage for age (80%+: Good / 50-79%: Average / under 50%: Caution)' : '* 발달률은 해당 연령 기준 언어발달 수준을 백분율로 나타낸 것입니다 (80% 이상: 양호 / 50~79%: 보통 / 50% 미만: 주의)'}
         </p>
 
         {/* 영역별 상세 설명 */}
@@ -343,7 +344,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
                 <p className="text-sm text-muted-foreground">{domain.desc}</p>
                 {domain.rate < 50 && (
                   <p className="text-xs text-red-600 dark:text-red-400 mt-1.5 font-medium">
-                    ⚠️ 이 영역은 추가적인 자극과 전문가 상담이 도움될 수 있어요.
+                    {isEnglish ? '⚠️ This area may benefit from additional stimulation and expert consultation.' : '⚠️ 이 영역은 추가적인 자극과 전문가 상담이 도움될 수 있어요.'}
                   </p>
                 )}
               </div>
@@ -354,7 +355,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
 
       <div className="grid md:grid-cols-2 gap-4">
         <Card className="p-6">
-          <h3 className="font-semibold mb-4">전문가 상담</h3>
+          <h3 className="font-semibold mb-4">{isEnglish ? 'Expert Consultation' : '전문가 상담'}</h3>
           <p className="text-sm text-muted-foreground mb-4">
             더 자세한 분석과 상담이 필요하시다면 전문가와 연결해드립니다.
           </p>
@@ -368,7 +369,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         </Card>
 
         <Card className="p-6">
-          <h3 className="font-semibold mb-4 text-foreground">결과 저장 및 공유</h3>
+          <h3 className="font-semibold mb-4 text-foreground">{isEnglish ? 'Save & Share' : '결과 저장 및 공유'}</h3>
           <p className="text-sm text-muted-foreground mb-4">
             검사 결과를 이미지로 저장하세요.
           </p>
@@ -376,24 +377,24 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
             <Button 
               variant="default"
               className="w-full btn-brand flex items-center gap-2"
-              onClick={() => saveResultAsImage('language-test-result', '언어발달검사')}
+              onClick={() => saveResultAsImage('language-test-result', isEnglish ? 'LanguageTest' : '언어발달검사')}
               disabled={isGeneratingImage}
             >
               <Image className="w-4 h-4" />
-              {isGeneratingImage ? '이미지 생성 중...' : '📷 결과 이미지로 저장'}
+              {isGeneratingImage ? isEnglish ? 'Generating...' : '이미지 생성 중...' : isEnglish ? '📷 Save as Image' : '📷 결과 이미지로 저장'}
             </Button>
             <Button 
               variant="outline" 
               className="w-full flex items-center gap-2"
               onClick={() => generatePDFReport({
-                testType: '언어발달 검사',
+                testType: isEnglish ? 'Language Development Test' : '언어발달 검사',
                 results: {
                   total,
                   average,
                   ageGroup,
                   answers: results.answers
                 },
-                analysis: '언어발달 검사 결과 분석',
+                analysis: isEnglish ? 'Language development test analysis' : '언어발달 검사 결과 분석',
                 testInfo: {
                   generatedAt: new Date().toISOString(),
                   version: '1.0'
@@ -402,21 +403,21 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               disabled={isGeneratingPDF}
             >
               <Download className="w-4 h-4" />
-              {isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}
+              {isGeneratingPDF ? isEnglish ? 'Generating PDF...' : 'PDF 생성 중...' : 'PDF 리포트'}
             </Button>
             <Button 
               variant="outline" 
               className="w-full flex items-center gap-2"
               onClick={() => saveTestResult({
-                testType: '언어발달 검사',
+                testType: isEnglish ? 'Language Development Test' : '언어발달 검사',
                 results: {
                   total,
                   average,
                   ageGroup,
                   answers: results.answers
                 },
-                analysis: '언어발달 검사 결과 분석',
-                ageGroup: '영유아',
+                analysis: isEnglish ? 'Language development test analysis' : '언어발달 검사 결과 분석',
+                ageGroup: isEnglish ? 'infant' : '영유아',
                 testInfo: {
                   generatedAt: new Date().toISOString(),
                   version: '1.0'
@@ -425,7 +426,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               disabled={isSaving}
             >
               <Mail className="w-4 h-4" />
-              {isSaving ? '저장 중...' : '결과 저장'}
+              {isSaving ? isEnglish ? 'Saving...' : '저장 중...' : isEnglish ? 'Save Result' : '결과 저장'}
             </Button>
           </div>
         </Card>

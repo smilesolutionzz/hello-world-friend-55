@@ -31,6 +31,7 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const [aiAnalysis, setAiAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -138,7 +139,7 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
           data={{
             testName: '운동발달',
             subtitle: '영역별 분석',
-            date: new Date().toLocaleDateString('ko-KR'),
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(results.categoryScores).map(([k, v]) => [k, (v / 100) * 7])),
             maxScore: 7,
             categoryTranslations: Object.fromEntries(Object.entries(results.categoryScores).map(([k]) => [k, categoryInfo[k as keyof typeof categoryInfo]?.name || k])),

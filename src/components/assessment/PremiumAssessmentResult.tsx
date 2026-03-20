@@ -53,7 +53,7 @@ const PremiumAssessmentResult = ({
       } else {
         setAiAnalysis('분석을 생성하는 중 오류가 발생했습니다.');
       }
-      toast({ title: '분석 오류', description: msg, variant: 'destructive' });
+      toast({ title: t.resultLayout.analysisError, description: msg, variant: 'destructive' });
     } finally {
       setIsAnalyzing(false);
     }

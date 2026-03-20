@@ -88,7 +88,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
         <CardContent className="text-center py-8">
           <AlertTriangle className="h-8 w-8 mx-auto mb-4 text-destructive" />
           <p>분석 결과를 불러올 수 없습니다.</p>
-          <Button onClick={onRestart} className="mt-4">다시 검사하기</Button>
+          <Button onClick={onRestart} className="mt-4">{isEnglish ? "Retake Test" : "다시 검사하기"}</Button>
         </CardContent>
       </Card>
     );

@@ -14,14 +14,13 @@ import LifeAchievementResult from "./LifeAchievementResult";
 import ParentChildPlayResult from "./ParentChildPlayResult";
 import { PersonalizedProductRecommendation } from "@/components/product/PersonalizedProductRecommendation";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from '@/i18n/useTranslation';
 
 export default function FunTestResult() {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t: trans } = useTranslation();
   const { shareAsText } = useShareText();
   const { isEnglish } = useLanguage();
   const { result, testType } = location.state || {};

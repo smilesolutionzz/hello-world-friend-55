@@ -6,7 +6,6 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
-import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from '@/i18n/useTranslation';
 
 interface SensoryIntegrationTestResultProps {

@@ -55,8 +55,8 @@ export const UnifiedNavigation = () => {
       label: t.nav.assessmentTools,
       icon: TrendingUp,
       children: [
-        { label: t.nav.deepTest, path: '/premium-assessment', desc: t.nav.deepTestDesc },
         { label: t.nav.simpleTest, path: '/assessment', desc: t.nav.simpleTestDesc },
+        { label: t.nav.deepTest, path: '/premium-assessment', desc: t.nav.deepTestDesc },
         { label: t.nav.personalReport, path: '/report-generator', desc: t.nav.personalReportDesc, icon: FileText, badge: 'PREMIUM' },
       ]
     },

@@ -5,6 +5,8 @@ import { ArrowLeft, Download, Share2, Brain, ChevronDown, ChevronUp } from 'luci
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { PDFHeader } from '@/components/common/PDFHeader';
 import { cleanMarkdown, extractFootnotes } from '@/utils/cleanMarkdown';
+import { useTranslation } from '@/i18n/useTranslation';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 /* ─── Types ─── */
 export interface DomainScore {
@@ -13,13 +15,13 @@ export interface DomainScore {
   score: number;
   maxScore: number;
   level: string;
-  color: string; // tailwind bg class e.g. 'bg-green-500'
+  color: string;
   description?: string;
 }
 
 export interface ReportSection {
   id: string;
-  icon: string; // emoji
+  icon: string;
   title: string;
   content: string;
   defaultOpen?: boolean;
@@ -31,32 +33,23 @@ interface ClinicalReportLayoutProps {
   onBack: () => void;
   onDownload?: () => void;
   onShare?: () => void;
-
-  /* Score summary */
   totalScore: number | string;
   totalLabel: string;
   scoreUnit?: string;
   scoreSeverity: string;
-  severityColor?: string; // e.g. 'text-green-600'
-
-  /* Domain scores */
+  severityColor?: string;
   domains: DomainScore[];
-
-  /* AI analysis */
   aiAnalysis?: string;
   aiSections?: ReportSection[];
   isAnalyzing?: boolean;
-
-  /* Extra content below analysis */
   children?: React.ReactNode;
-
-  /* PDF id */
   pdfId?: string;
 }
 
 /* ─── Collapsible Section ─── */
 const CollapsibleSection = ({ section }: { section: ReportSection }) => {
   const [open, setOpen] = useState(section.defaultOpen ?? false);
+  const { t } = useTranslation();
   const cleaned = cleanMarkdown(section.content);
   const { text: footnoted, footnotes } = extractFootnotes(cleaned);
   const paragraphs = footnoted.split('\n\n').map(p => p.trim()).filter(Boolean);
@@ -89,10 +82,11 @@ const CollapsibleSection = ({ section }: { section: ReportSection }) => {
 
 /* ─── Footnote List ─── */
 const FootnoteList = ({ footnotes }: { footnotes: string[] }) => {
+  const { t } = useTranslation();
   if (!footnotes || footnotes.length === 0) return null;
   return (
     <div className="mt-4 pt-3 border-t border-border/30">
-      <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">📎 참고 문헌 및 이론</p>
+      <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">{t.resultLayout.references}</p>
       <div className="space-y-0.5">
         {footnotes.map((fn, idx) => (
           <p key={idx} className="text-[10px] leading-relaxed text-muted-foreground/70">
@@ -130,23 +124,14 @@ const ScoreBar = ({ domain }: { domain: DomainScore }) => {
 
 /* ─── Main Layout ─── */
 const ClinicalReportLayout = ({
-  testName,
-  subtitle,
-  onBack,
-  onDownload,
-  onShare,
-  totalScore,
-  totalLabel,
-  scoreUnit,
-  scoreSeverity,
+  testName, subtitle, onBack, onDownload, onShare,
+  totalScore, totalLabel, scoreUnit, scoreSeverity,
   severityColor = 'text-primary',
-  domains,
-  aiAnalysis,
-  aiSections,
-  isAnalyzing,
-  children,
-  pdfId = 'clinical-report-content',
+  domains, aiAnalysis, aiSections, isAnalyzing,
+  children, pdfId = 'clinical-report-content',
 }: ClinicalReportLayoutProps) => {
+  const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const cleanedAnalysis = aiAnalysis ? cleanMarkdown(aiAnalysis) : '';
   const { text: footnotedAnalysis, footnotes: analysisFootnotes } = extractFootnotes(cleanedAnalysis);
   const analysisParagraphs = footnotedAnalysis
@@ -160,7 +145,7 @@ const ClinicalReportLayout = ({
         <div className="flex items-center justify-between px-4 h-12">
           <Button variant="ghost" size="sm" onClick={onBack} className="h-8 px-2 -ml-2 text-xs gap-1">
             <ArrowLeft className="w-4 h-4" />
-            뒤로
+            {t.resultLayout.back}
           </Button>
           <div className="flex items-center gap-1.5">
             {onDownload && (
@@ -185,7 +170,7 @@ const ClinicalReportLayout = ({
           <h1 className="text-lg font-bold text-foreground leading-tight">{testName}</h1>
           {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
           <p className="text-[10px] text-muted-foreground mt-1">
-            {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+            {new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
 
@@ -209,7 +194,7 @@ const ClinicalReportLayout = ({
         {domains.length > 0 && (
           <div className="rounded-2xl border border-border/40 bg-card p-4 mb-4">
             <h2 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-              📊 영역별 분석
+              {t.resultLayout.domainAnalysis}
             </h2>
             <div>
               {domains.map((d) => (
@@ -224,7 +209,7 @@ const ClinicalReportLayout = ({
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
               <Brain className="w-4 h-4 text-primary" />
-              전문가 분석 리포트
+              {t.resultLayout.expertReport}
             </h2>
             {aiAnalysis && <TextToSpeechButton text={cleanedAnalysis} />}
           </div>
@@ -232,7 +217,7 @@ const ClinicalReportLayout = ({
           {isAnalyzing ? (
             <div className="flex flex-col items-center py-8 gap-3">
               <div className="w-10 h-10 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-              <p className="text-xs text-muted-foreground">심층 분석 중...</p>
+              <p className="text-xs text-muted-foreground">{t.resultLayout.analyzing}</p>
             </div>
           ) : aiSections && aiSections.length > 0 ? (
             <div className="space-y-2">
@@ -250,7 +235,7 @@ const ClinicalReportLayout = ({
               <FootnoteList footnotes={analysisFootnotes} />
             </div>
           ) : (
-            <p className="text-xs text-muted-foreground text-center py-4">분석 결과를 불러올 수 없습니다.</p>
+            <p className="text-xs text-muted-foreground text-center py-4">{t.resultLayout.noAnalysis}</p>
           )}
         </div>
 
@@ -260,8 +245,8 @@ const ClinicalReportLayout = ({
         {/* ── Disclaimer ── */}
         <div className="mt-6 px-1">
           <p className="text-[10px] text-muted-foreground/60 text-center leading-relaxed">
-            본 검사 결과는 참고 자료이며 의학적 진단이 아닙니다.<br />
-            정확한 진단은 전문가와 상담하시기 바랍니다.
+            {t.resultLayout.disclaimer1}<br />
+            {t.resultLayout.disclaimer2}
           </p>
           <p className="text-[9px] text-muted-foreground/40 text-center mt-1">© AIHPRO.COM</p>
         </div>

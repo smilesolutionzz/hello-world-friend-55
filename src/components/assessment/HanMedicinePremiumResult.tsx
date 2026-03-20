@@ -26,6 +26,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
 
   useEffect(() => {
     generateAnalysis();

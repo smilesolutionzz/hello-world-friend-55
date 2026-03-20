@@ -738,10 +738,10 @@ const Assessment = () => {
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">무료 기본검사</h2>
-              <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] border-0">무료</Badge>
+              <h2 className="text-lg font-bold text-foreground">{t.assessment.freeBasicSection}</h2>
+              <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] border-0">{t.assessment.freeBadge}</Badge>
             </div>
-            <p className="text-xs text-muted-foreground mb-4 ml-5">로그인만 하면 누구나 무료로 이용할 수 있는 기본 선별검사</p>
+            <p className="text-xs text-muted-foreground mb-4 ml-5">{t.assessment.freeBasicDesc}</p>
 
             <div className="space-y-2">
               {[
@@ -764,7 +764,7 @@ const Assessment = () => {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
                                 <h3 className={`font-semibold text-sm md:text-base text-foreground ${test.textHover} truncate`}>{test.title}</h3>
-                                <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] px-1 py-0 border-0 flex-shrink-0">무료</Badge>
+                                <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] px-1 py-0 border-0 flex-shrink-0">{t.assessment.freeBadge}</Badge>
                               </div>
                               <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
                             </div>
@@ -788,7 +788,7 @@ const Assessment = () => {
                           onClick={() => handleTestTypeSelect(test.key as any)}
                           className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
                         >
-                          무료로 시작하기
+                          {t.assessment.freeStartBtn}
                         </Button>
                       </div>
                     </CollapsibleContent>
@@ -802,18 +802,18 @@ const Assessment = () => {
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-1.5 h-6 bg-primary rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">프리미엄 전문검사</h2>
+              <h2 className="text-lg font-bold text-foreground">{t.assessment.premiumSection}</h2>
               <Badge className="bg-primary/20 text-primary text-[10px] border-0">
                 <Crown className="w-3 h-3 mr-0.5" />
-                구독/이용권
+                {t.assessment.premiumBadge}
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground mb-4 ml-5">심층 AI 분석이 포함된 전문 심리검사 · 첫 1회 무료 체험</p>
+            <p className="text-xs text-muted-foreground mb-4 ml-5">{t.assessment.premiumSectionDesc}</p>
 
             {/* 성격·심리 심층 */}
             <div className="space-y-2 mb-4">
               <h3 className="text-sm font-semibold text-muted-foreground ml-1 flex items-center gap-2">
-                <Brain className="w-4 h-4" /> 성격·심리 심층
+                <Brain className="w-4 h-4" /> {t.assessment.personalityPsychSection}
               </h3>
               {[
                 { key: 'psychological', title: t.assessment.psychologicalTitle, duration: t.assessment.psychologicalDuration, questions: t.assessment.psychologicalQuestions, description: t.assessment.psychologicalDesc, features: t.assessment.psychologicalFeatures, gradient: 'from-indigo-600/20 to-blue-600/20', dotColor: 'bg-indigo-500' },
@@ -874,7 +874,7 @@ const Assessment = () => {
             {/* 발달·아동 전문 */}
             <div className="space-y-2 mb-4">
               <h3 className="text-sm font-semibold text-muted-foreground ml-1 flex items-center gap-2">
-                <Heart className="w-4 h-4" /> 발달·아동 전문
+                <Heart className="w-4 h-4" /> {t.assessment.childDevSection}
               </h3>
               {[
                 { key: 'developmental-delay', title: t.assessment.devDelayTitle, duration: t.assessment.devDelayDuration, questions: t.assessment.devDelayQuestions, description: t.assessment.devDelayDesc, features: t.assessment.devDelayFeatures, gradient: 'from-pink-500/20 to-rose-500/20', dotColor: 'bg-pink-500' },
@@ -934,11 +934,11 @@ const Assessment = () => {
             {/* 인지·기타 전문 */}
             <div className="space-y-2">
               <h3 className="text-sm font-semibold text-muted-foreground ml-1 flex items-center gap-2">
-                <Zap className="w-4 h-4" /> 특화 검사
+                <Zap className="w-4 h-4" /> {t.assessment.specializedSection}
               </h3>
               {[
                 { key: 'pattern-iq', title: t.assessment.patternIQTitle, duration: t.assessment.patternIQDuration, questions: t.assessment.patternIQQuestions, badge: 'NEW', description: t.assessment.patternIQDesc, features: t.assessment.patternIQFeatures, onClick: () => navigate('/assessment/pattern-iq-test'), gradient: 'from-blue-500/20 to-indigo-500/20', dotColor: 'bg-blue-500' },
-                { key: 'han-medicine', title: t.assessment.hanMedicine || '한방 체질분석', duration: '5분', questions: '30문항', description: '사상체질 기반 맞춤 건강 분석', features: ['사상체질 판별', '체질별 건강 솔루션', 'AI 맞춤 분석'], onClick: () => navigate('/han-medicine-test'), gradient: 'from-green-500/20 to-emerald-500/20', dotColor: 'bg-green-600' },
+                { key: 'han-medicine', title: t.assessment.hanMedicineTitle, duration: t.assessment.hanMedicineDuration, questions: t.assessment.hanMedicineQuestions, description: t.assessment.hanMedicineDesc, features: t.assessment.hanMedicineFeatures, onClick: () => navigate('/han-medicine-test'), gradient: 'from-green-500/20 to-emerald-500/20', dotColor: 'bg-green-600' },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (

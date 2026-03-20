@@ -926,6 +926,22 @@ const ko = {
     screeningSystem: '💜 전문 선별 평가 시스템',
     testComplete: '검사 완료',
     testSaved: '검사 결과가 타임라인에 저장되었습니다.',
+    // Section headers
+    freeBasicSection: '무료 기본검사',
+    freeBadge: '무료',
+    freeBasicDesc: '로그인만 하면 누구나 무료로 이용할 수 있는 기본 선별검사',
+    freeStartBtn: '무료로 시작하기',
+    premiumSection: '프리미엄 전문검사',
+    premiumBadge: '구독/이용권',
+    premiumSectionDesc: '심층 AI 분석이 포함된 전문 심리검사 · 첫 1회 무료 체험',
+    personalityPsychSection: '성격·심리 심층',
+    childDevSection: '발달·아동 전문',
+    specializedSection: '특화 검사',
+    hanMedicineTitle: '한의학 체질',
+    hanMedicineDuration: '5분',
+    hanMedicineQuestions: '30문항',
+    hanMedicineDesc: '사상체질 기반 맞춤 건강 분석',
+    hanMedicineFeatures: ['사상체질 판별', '체질별 건강 솔루션', 'AI 맞춤 분석'],
   },
 
   // Premium Assessment (Deep Tests) page
@@ -1025,6 +1041,16 @@ const ko = {
     infoParentingTitle: '프리미엄 부모양육태도 검사',
     infoParentingDesc: '온정수용, 행동통제, 심리통제, 자율성지지, 의사소통지지 5개 영역으로 양육태도를 정밀 분석합니다',
     infoParentingFeatures: ['5영역 양육태도 정밀분석', '자녀발달 영향도 평가', '양육 강점과 개선점 도출', '개별 양육 가이드 제공'],
+    // Login modal
+    loginModalTitle: '검사 결과를 저장하려면 로그인이 필요해요',
+    loginModalSubtitle: '개인별 데이터 저장 후 리포팅되는 시스템입니다',
+    loginModalBenefit1: '내 검사 결과가 계정에 영구 저장됩니다',
+    loginModalBenefit2: '개인 맞춤 분석 리포트를 받을 수 있어요',
+    loginModalBenefit3: '시간에 따른 변화 추적이 가능합니다',
+    loginModalFooter: '각자의 아이디로 로그인해야 {bold}가 정확하게 저장·분석됩니다',
+    loginModalFooterBold: '나만의 데이터',
+    loginModalSignup: '무료 회원가입 (30초)',
+    loginModalLogin: '이미 계정이 있어요 · 로그인',
   },
 
   // Free Trial Assessment page

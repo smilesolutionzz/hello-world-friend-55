@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 
@@ -36,6 +37,7 @@ const typeNamesEn: Record<string, string> = {
 const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish } = useLanguage();
 
   useAutoSaveTestResult({
@@ -66,8 +68,8 @@ const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProp
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'RelationshipStyle_Results' : '관계스타일_검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

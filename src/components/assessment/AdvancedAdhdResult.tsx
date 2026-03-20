@@ -4,6 +4,7 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { adhdTypes } from '@/data/advancedAdhdTypes';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 
@@ -19,6 +20,7 @@ interface AdvancedAdhdResultProps {
 const AdvancedAdhdResult = ({ results, onBack, onRestart }: AdvancedAdhdResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish } = useLanguage();
   const { typeScores } = results;
 
@@ -61,8 +63,8 @@ const AdvancedAdhdResult = ({ results, onBack, onRestart }: AdvancedAdhdResultPr
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'Advanced_ADHD_Result' : '고급ADHD_유형_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

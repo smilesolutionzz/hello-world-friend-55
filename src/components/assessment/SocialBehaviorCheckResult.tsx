@@ -4,6 +4,8 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useToast } from '@/hooks/use-toast';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface SocialBehaviorCheckResultProps {
   results: any;
@@ -21,6 +23,7 @@ const categoryInfo: Record<string, { label: string; emoji: string }> = {
 
 const SocialBehaviorCheckResult: React.FC<SocialBehaviorCheckResultProps> = ({ results, answers, onBack }) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   useAutoSaveTestResult({ testType: "사회적 행동 발달 자가체크", results });
 
@@ -55,8 +58,8 @@ const SocialBehaviorCheckResult: React.FC<SocialBehaviorCheckResultProps> = ({ r
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', '사회적행동_발달_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

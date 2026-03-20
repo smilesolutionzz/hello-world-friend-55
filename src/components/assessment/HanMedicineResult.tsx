@@ -21,6 +21,8 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import html2pdf from "html2pdf.js";
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface HanMedicineResultProps {
   result: any;
@@ -29,6 +31,7 @@ interface HanMedicineResultProps {
 
 export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, onRestart }) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [isGeneratingAnalysis, setIsGeneratingAnalysis] = useState(false);
   const [enhancedAnalysis, setEnhancedAnalysis] = useState<string | null>(null);
   const [clinicInfo, setClinicInfo] = useState<any>(null);

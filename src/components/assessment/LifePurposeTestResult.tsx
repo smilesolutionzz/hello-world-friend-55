@@ -3,6 +3,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
@@ -29,6 +30,7 @@ const categoryInfo: Record<string, { ko: string; en: string }> = {
 export default function LifePurposeTestResult({ results, onBack }: LifePurposeTestResultProps) {
   const { categoryScores, totalScore, purposeType, clarityLevel } = results;
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish } = useLanguage();
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
@@ -87,8 +89,8 @@ export default function LifePurposeTestResult({ results, onBack }: LifePurposeTe
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'LifePurpose_Result' : '삶의의미_검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

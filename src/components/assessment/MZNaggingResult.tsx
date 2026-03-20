@@ -5,6 +5,8 @@ import { Progress } from '@/components/ui/progress';
 import { MessageCircle, Share2, FileDown, RotateCcw, Heart, Coffee } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface MZNaggingResultProps {
   result: {
@@ -19,6 +21,7 @@ interface MZNaggingResultProps {
 
 export default function MZNaggingResult({ result, onRetake }: MZNaggingResultProps) {
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleShare = () => {
     const shareText = `🍲 국밥집 이모의 MZ잔소리 결과 🍲

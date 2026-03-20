@@ -9,6 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useShareText, formatMedicalTestResult } from '@/utils/shareUtils';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 const constitutionInfo = {
   soyang: {
@@ -121,6 +123,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
   const [analysis, setAnalysis] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { shareAsText } = useShareText();
 

@@ -8,6 +8,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useShareText } from '@/utils/shareUtils';
 import { useLifeAchievementActions } from '@/hooks/useLifeAchievementActions';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface LifeAchievementResultProps {
   result: {
@@ -28,6 +30,7 @@ export default function LifeAchievementResult({ result, onRestart }: LifeAchieve
   const [achievementImage, setAchievementImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { shareAsText } = useShareText();
   const { saveResult, isSaving } = useLifeAchievementActions();

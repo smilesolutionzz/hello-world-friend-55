@@ -6,6 +6,8 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface EnergyFlowTestResultProps {
   results: {
@@ -22,6 +24,7 @@ interface EnergyFlowTestResultProps {
 export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTestResultProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { totalScore, energyType, peakTime, recoveryStyle, burnoutRisk, answers } = results;
   const maxScore = 32;
   const percentage = Math.round((totalScore / maxScore) * 100);
@@ -90,8 +93,8 @@ export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTest
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', '에너지흐름_검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

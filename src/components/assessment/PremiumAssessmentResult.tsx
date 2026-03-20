@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import FeedbackModal from "@/components/FeedbackModal";
 import EarlyScreeningSection from "@/components/assessment/EarlyScreeningSection";
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface PremiumAssessmentResultProps {
   assessmentType: string;
@@ -26,6 +27,7 @@ const PremiumAssessmentResult = ({
 }: PremiumAssessmentResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish, localePath } = useLanguage();
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(true);

@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2, Crown, Heart, Utensils, Dumbbell, Leaf, Pill, Clock, AlertTriangle, MapPin, Phone, Calendar, ShoppingCart } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface HanMedicinePremiumResultProps {
   result: any;
@@ -23,6 +25,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
   const [analysis, setAnalysis] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   useEffect(() => {
     generateAnalysis();

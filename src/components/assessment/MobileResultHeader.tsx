@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface MobileResultHeaderProps {
   title: string;
@@ -25,6 +27,7 @@ export const MobileResultHeader = ({
   gradientTo = "to-primary/5"
 }: MobileResultHeaderProps) => {
   const { isEnglish } = useLanguage();
+  const { t } = useTranslation();
 
   return (
     <motion.div 

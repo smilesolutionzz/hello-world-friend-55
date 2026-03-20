@@ -5,6 +5,8 @@ import { Progress } from '@/components/ui/progress';
 import { MessageCircle, Share2, FileDown, RotateCcw, Heart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface GrandmaRelationshipResultProps {
   result: {
@@ -19,6 +21,7 @@ interface GrandmaRelationshipResultProps {
 
 export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaRelationshipResultProps) {
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleShare = () => {
     const shareText = `👵 욕쟁이 할머니의 연애 진단 결과 👵

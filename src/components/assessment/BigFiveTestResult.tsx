@@ -3,6 +3,7 @@ import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 
@@ -35,6 +36,7 @@ const factorConfigEn: Record<string, { name: string; high: string; low: string }
 export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResultProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish, localePath } = useLanguage();
   const factorConfig = isEnglish ? factorConfigEn : factorConfigKo;
 
@@ -69,8 +71,8 @@ export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResu
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'BigFive_Result' : '빅파이브_성격분석_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

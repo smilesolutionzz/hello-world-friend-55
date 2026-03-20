@@ -1717,7 +1717,6 @@ const ko = {
     actionGuide: '📋 실천 가이드',
     aiPlatform: 'AI 심리분석 플랫폼',
     analysisComplete: '분석 완료',
-    analyzing: '심층 분석 중...',
     retakeTest: '다시 검사하기',
     noResult: '분석 결과를 불러올 수 없습니다.',
     copied: '복사 완료',

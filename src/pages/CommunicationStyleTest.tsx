@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { useTranslation } from '@/i18n';
 
 const STORAGE_KEY = 'communicationStyleTestResult';
 
@@ -13,6 +14,7 @@ const CommunicationStyleTestInner = () => {
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const navigate = useNavigate();
   const { isGuest, saveGuestResult, guestResults } = useGuestSession();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const savedResult = sessionStorage.getItem(STORAGE_KEY);
@@ -29,7 +31,7 @@ const CommunicationStyleTestInner = () => {
     setResult(testResult);
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(testResult));
     if (isGuest) {
-      saveGuestResult('communication_style', '의사소통 유형 검사', testResult);
+      saveGuestResult('communication_style', t.testPages.communicationStyle, testResult);
       setShowSignupPrompt(true);
     }
   };
@@ -56,7 +58,7 @@ const CommunicationStyleTestInner = () => {
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}
-          currentResult={{ testTitle: '의사소통 유형 검사' }}
+          currentResult={{ testTitle: t.testPages.communicationStyle }}
         />
       </>
     );
@@ -65,10 +67,13 @@ const CommunicationStyleTestInner = () => {
   return <CommunicationStyleForm onComplete={handleComplete} onBack={handleBack} />;
 };
 
-const CommunicationStyleTest = () => (
-  <SubscriptionGuard featureName="의사소통 유형 검사" trialKey="SOCIAL_DEVELOPMENT_TEST">
-    <CommunicationStyleTestInner />
-  </SubscriptionGuard>
-);
+const CommunicationStyleTest = () => {
+  const { t } = useTranslation();
+  return (
+    <SubscriptionGuard featureName={t.testPages.communicationStyle} trialKey="SOCIAL_DEVELOPMENT_TEST">
+      <CommunicationStyleTestInner />
+    </SubscriptionGuard>
+  );
+};
 
 export default CommunicationStyleTest;

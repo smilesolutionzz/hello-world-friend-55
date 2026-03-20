@@ -802,13 +802,13 @@ const Assessment = () => {
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-1.5 h-6 bg-primary rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">프리미엄 전문검사</h2>
+              <h2 className="text-lg font-bold text-foreground">{t.assessment.premiumSection}</h2>
               <Badge className="bg-primary/20 text-primary text-[10px] border-0">
                 <Crown className="w-3 h-3 mr-0.5" />
-                구독/이용권
+                {t.assessment.premiumBadge}
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground mb-4 ml-5">심층 AI 분석이 포함된 전문 심리검사 · 첫 1회 무료 체험</p>
+            <p className="text-xs text-muted-foreground mb-4 ml-5">{t.assessment.premiumSectionDesc}</p>
 
             {/* 성격·심리 심층 */}
             <div className="space-y-2 mb-4">

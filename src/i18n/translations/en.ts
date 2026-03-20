@@ -914,6 +914,22 @@ const en = {
     screeningSystem: '💜 Professional Screening System',
     testComplete: 'Test Complete',
     testSaved: 'Test results have been saved to your timeline.',
+    // Section headers
+    freeBasicSection: 'Free Basic Tests',
+    freeBadge: 'Free',
+    freeBasicDesc: 'Basic screening tests available for free — just log in',
+    freeStartBtn: 'Start for Free',
+    premiumSection: 'Premium Professional Tests',
+    premiumBadge: 'Subscription/Pass',
+    premiumSectionDesc: 'Professional psychological tests with AI deep analysis · First test free',
+    personalityPsychSection: 'Personality & Psychology',
+    childDevSection: 'Child & Development',
+    specializedSection: 'Specialized Tests',
+    hanMedicineTitle: 'Traditional Body Type',
+    hanMedicineDuration: '5 min',
+    hanMedicineQuestions: '30 items',
+    hanMedicineDesc: 'Personalized health analysis based on traditional body constitution',
+    hanMedicineFeatures: ['Body type identification', 'Health solutions by type', 'AI custom analysis'],
   },
 
   // Premium Assessment (Deep Tests) page

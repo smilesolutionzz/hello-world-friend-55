@@ -926,6 +926,22 @@ const ko = {
     screeningSystem: '💜 전문 선별 평가 시스템',
     testComplete: '검사 완료',
     testSaved: '검사 결과가 타임라인에 저장되었습니다.',
+    // Section headers
+    freeBasicSection: '무료 기본검사',
+    freeBadge: '무료',
+    freeBasicDesc: '로그인만 하면 누구나 무료로 이용할 수 있는 기본 선별검사',
+    freeStartBtn: '무료로 시작하기',
+    premiumSection: '프리미엄 전문검사',
+    premiumBadge: '구독/이용권',
+    premiumSectionDesc: '심층 AI 분석이 포함된 전문 심리검사 · 첫 1회 무료 체험',
+    personalityPsychSection: '성격·심리 심층',
+    childDevSection: '발달·아동 전문',
+    specializedSection: '특화 검사',
+    hanMedicineTitle: '한의학 체질',
+    hanMedicineDuration: '5분',
+    hanMedicineQuestions: '30문항',
+    hanMedicineDesc: '사상체질 기반 맞춤 건강 분석',
+    hanMedicineFeatures: ['사상체질 판별', '체질별 건강 솔루션', 'AI 맞춤 분석'],
   },
 
   // Premium Assessment (Deep Tests) page

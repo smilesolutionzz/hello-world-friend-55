@@ -57,7 +57,7 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
     return { key, label: key, score, maxScore: max, level: getLevel(pct), color: getColor(pct) };
   });
 
-  const severityColor = results.severity === isEnglish ? 'Severe' : '심각' ? 'text-destructive border-destructive/30' : results.severity === isEnglish ? 'Moderate' : '중등도' ? 'text-orange-600 border-orange-300' : results.severity === isEnglish ? 'Mild' : '경도' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  const severityColor = results.severity === (isEnglish ? 'Severe' : '심각') ? 'text-destructive border-destructive/30' : results.severity === (isEnglish ? 'Moderate' : '중등도') ? 'text-orange-600 border-orange-300' : results.severity === (isEnglish ? 'Mild' : '경도') ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
 
   const parseAISections = (text: string): ReportSection[] => {
     if (!text) return [];

@@ -69,7 +69,7 @@ const SensoryIntegrationTestResult = ({ results, onBack }: SensoryIntegrationTes
     key: d.key, label: d.label, score: d.pct, maxScore: 100, level: getLevel(d.pct), color: getColor(d.pct),
   }));
 
-  const severityColor = results.severity === isEnglish ? 'Severe' : '심각' ? 'text-destructive border-destructive/30' : results.severity === isEnglish ? 'Moderate' : '중등도' ? 'text-orange-600 border-orange-300' : results.severity === '경미' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  const severityColor = results.severity === (isEnglish ? 'Severe' : '심각') ? 'text-destructive border-destructive/30' : results.severity === (isEnglish ? 'Moderate' : '중등도') ? 'text-orange-600 border-orange-300' : results.severity === '경미' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
 
   const parseAISections = (text: string): ReportSection[] => {
     if (!text) return [];

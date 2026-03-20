@@ -60,7 +60,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
     severity,
   });
 
-  const severityColor = severity === isEnglish ? 'Severe' : '심각' ? 'text-destructive border-destructive/30' : severity === isEnglish ? 'Moderate' : '중등도' ? 'text-orange-600 border-orange-300' : severity === '경미' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  const severityColor = severity === (isEnglish ? 'Severe' : '심각') ? 'text-destructive border-destructive/30' : severity === (isEnglish ? 'Moderate' : '중등도') ? 'text-orange-600 border-orange-300' : severity === '경미' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
 
   // Simple domain-like breakdown by question groups
   const domains: DomainScore[] = [

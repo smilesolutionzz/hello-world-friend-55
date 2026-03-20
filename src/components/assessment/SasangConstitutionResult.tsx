@@ -124,6 +124,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
   const navigate = useNavigate();
   const { shareAsText } = useShareText();
 

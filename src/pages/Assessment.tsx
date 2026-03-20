@@ -874,7 +874,7 @@ const Assessment = () => {
             {/* 발달·아동 전문 */}
             <div className="space-y-2 mb-4">
               <h3 className="text-sm font-semibold text-muted-foreground ml-1 flex items-center gap-2">
-                <Heart className="w-4 h-4" /> 발달·아동 전문
+                <Heart className="w-4 h-4" /> {t.assessment.childDevSection}
               </h3>
               {[
                 { key: 'developmental-delay', title: t.assessment.devDelayTitle, duration: t.assessment.devDelayDuration, questions: t.assessment.devDelayQuestions, description: t.assessment.devDelayDesc, features: t.assessment.devDelayFeatures, gradient: 'from-pink-500/20 to-rose-500/20', dotColor: 'bg-pink-500' },

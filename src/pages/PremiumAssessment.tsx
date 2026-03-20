@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins, ChevronDown, Brain, Heart, Briefcase, DollarSign, UserCheck, AlertTriangle, Eye, Baby, Palette, Shield, ExternalLink, Target } from "lucide-react";
+import { Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins, ChevronDown, Brain, Heart, Briefcase, DollarSign, UserCheck, AlertTriangle, Eye, Baby, Palette, Shield, ExternalLink, Target, Lock, UserPlus, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
+import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { useEventTracking } from "@/hooks/useEventTracking";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
@@ -60,6 +61,22 @@ const PremiumAssessment = () => {
   const { t, language } = useTranslation();
   const isEnglish = language === 'en';
   const p = t.premiumPage;
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    checkAuth();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setIsAuthenticated(!!session);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const [currentStep, setCurrentStep] = useState<'list' | 'assessment' | 'result'>(() => {
     const saved = sessionStorage.getItem('premiumAssessmentState');
@@ -152,19 +169,30 @@ const PremiumAssessment = () => {
     parentingStyle: Object.values(parentingStyleAssessmentQuestions).flat()
   };
 
+  const requireAuth = (action: () => void) => {
+    if (isAuthenticated) {
+      action();
+    } else {
+      setPendingAction(() => action);
+      setShowLoginPrompt(true);
+    }
+  };
+
   const handleStartAssessment = async (assessmentKey: string) => {
-    const hasTokens = await checkTokenAvailability(TOKEN_COSTS.PREMIUM_ASSESSMENT);
-    if (!hasTokens) {
-      navigate('/token-subscription');
-      return;
-    }
-    const consumed = await consumeTokens(TOKEN_COSTS.PREMIUM_ASSESSMENT);
-    if (!consumed) {
-      navigate('/token-subscription');
-      return;
-    }
-    setSelectedAssessment(assessmentKey);
-    setCurrentStep('assessment');
+    requireAuth(async () => {
+      const hasTokens = await checkTokenAvailability(TOKEN_COSTS.PREMIUM_ASSESSMENT);
+      if (!hasTokens) {
+        navigate('/token-subscription');
+        return;
+      }
+      const consumed = await consumeTokens(TOKEN_COSTS.PREMIUM_ASSESSMENT);
+      if (!consumed) {
+        navigate('/token-subscription');
+        return;
+      }
+      setSelectedAssessment(assessmentKey);
+      setCurrentStep('assessment');
+    });
   };
 
   const handleAssessmentComplete = (results: any, answers?: Record<string, string>) => {
@@ -242,37 +270,37 @@ const PremiumAssessment = () => {
       title: p.otrovertTitle, subtitle: p.otrovertSubtitle, description: p.otrovertDesc,
       duration: p.otrovertDuration, questions_count: 20,
       premium_features: [...p.otrovertFeatures],
-      onClick: () => setCurrentTest('otrovert'),
+      onClick: () => requireAuth(() => setCurrentTest('otrovert')),
     },
     mbti: {
       title: p.mbtiTitle, subtitle: p.mbtiSubtitle, description: p.mbtiDesc,
       duration: p.mbtiDuration, questions_count: 25,
       premium_features: [...p.mbtiFeatures],
-      onClick: () => navigate('/assessment/mbti-test'),
+      onClick: () => requireAuth(() => navigate('/assessment/mbti-test')),
     },
     hexaco: {
       title: p.hexacoTitle, subtitle: p.hexacoSubtitle, description: p.hexacoDesc,
       duration: p.hexacoDuration, questions_count: 48,
       premium_features: [...p.hexacoFeatures],
-      onClick: () => setCurrentTest('hexaco'),
+      onClick: () => requireAuth(() => setCurrentTest('hexaco')),
     },
     drawing: {
       title: p.drawingTitle, subtitle: p.drawingSubtitle, description: p.drawingDesc,
       duration: p.drawingDuration, questions_count: 0,
       premium_features: [...p.drawingFeatures],
-      onClick: () => setCurrentTest('drawing-analysis'),
+      onClick: () => requireAuth(() => setCurrentTest('drawing-analysis')),
     },
     insurance: {
       title: p.insuranceTitle, subtitle: p.insuranceSubtitle, description: p.insuranceDesc,
       duration: p.insuranceDuration, questions_count: 0,
       premium_features: [...p.insuranceFeatures],
-      onClick: () => setCurrentTest('insurance-analysis'),
+      onClick: () => requireAuth(() => setCurrentTest('insurance-analysis')),
     },
     businessMetacognition: {
       title: p.bizMetaTitle, subtitle: p.bizMetaSubtitle, description: p.bizMetaDesc,
       duration: p.bizMetaDuration, questions_count: 20,
       premium_features: [...p.bizMetaFeatures],
-      onClick: () => navigate('/assessment/business-metacognition'),
+      onClick: () => requireAuth(() => navigate('/assessment/business-metacognition')),
     },
   };
 
@@ -346,128 +374,184 @@ const PremiumAssessment = () => {
   );
 
   return (
-    <AuthenticationGuard fallbackMessage={p.authFallback} redirectPath="/auth">
-      <div>
-        <UnifiedNavigation />
-        <div className="min-h-screen bg-background pt-4">
-          <div className="container mx-auto px-4 py-6 max-w-4xl">
-            
-            {/* Header */}
-            <div className="mb-6 text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Crown className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
-                <h1 className="text-xl md:text-2xl font-bold text-foreground">{p.pageTitle}</h1>
+    <div>
+      <UnifiedNavigation />
+      <div className="min-h-screen bg-background pt-4">
+        <div className="container mx-auto px-4 py-6 max-w-4xl">
+          
+          {/* Header */}
+          <div className="mb-6 text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Crown className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
+              <h1 className="text-xl md:text-2xl font-bold text-foreground">{p.pageTitle}</h1>
+            </div>
+            <p className="text-muted-foreground text-xs md:text-sm mb-2">{p.pageSubtitle}</p>
+            <Badge className="bg-purple-500/90 text-white text-xs md:text-sm px-2 md:px-3 py-0.5 md:py-1">
+              <Coins className="w-3 h-3 mr-1" />
+              {p.price}
+            </Badge>
+          </div>
+
+          {/* Expert Banner */}
+          <a 
+            href="https://smilesolution.kr" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block mb-6 p-3 md:p-4 bg-gradient-to-r from-slate-800 to-slate-700 dark:from-slate-700 dark:to-slate-600 rounded-xl border border-slate-600 hover:from-slate-700 hover:to-slate-600 transition-all group shadow-md"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex-1">
+                <p className="text-xs md:text-sm text-white leading-relaxed">
+                  <span className="font-semibold">{p.expertBanner}</span>{p.expertBannerDesc}<br className="md:hidden" />
+                  <span className="underline underline-offset-2">{p.expertBannerLink}</span>{p.expertBannerSuffix}
+                </p>
               </div>
-              <p className="text-muted-foreground text-xs md:text-sm mb-2">{p.pageSubtitle}</p>
-              <Badge className="bg-purple-500/90 text-white text-xs md:text-sm px-2 md:px-3 py-0.5 md:py-1">
-                <Coins className="w-3 h-3 mr-1" />
-                {p.price}
-              </Badge>
+              <ExternalLink className="w-4 h-4 text-white flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
+            </div>
+          </a>
+
+          {/* Neurodevelopmental */}
+          {renderTestSection(p.sectionNeuro, p.sectionNeuroBadge, 'purple', ['autismSpectrumScreening', 'premiumAdhd', 'languageDevelopment', 'motorDevelopment'])}
+
+          {/* Personality */}
+          {renderTestSection(p.sectionPersonality, null, 'blue', ['personality_type', 'temperament', 'love_personality'])}
+
+          {/* Work & Finance */}
+          {renderTestSection(p.sectionWorkFinance, null, 'orange', ['work_stress', 'financialPsychology', 'cognitive'])}
+
+          {/* Teen */}
+          {renderTestSection(p.sectionTeen, null, 'emerald', ['teenMentalCompass', 'teenGrowthCapacity', 'socialDevelopmentScreening'])}
+
+          {/* Special AI Tests */}
+          <section className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1.5 h-6 bg-slate-500 rounded-full"></div>
+              <h2 className="text-lg font-bold text-foreground">{p.sectionSpecial}</h2>
+              <span className="text-xs text-slate-600 bg-slate-100 dark:bg-slate-900/30 px-2 py-0.5 rounded font-medium">{p.sectionSpecialBadge}</span>
             </div>
 
-            {/* Expert Banner */}
-            <a 
-              href="https://smilesolution.kr" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="block mb-6 p-3 md:p-4 bg-gradient-to-r from-slate-800 to-slate-700 dark:from-slate-700 dark:to-slate-600 rounded-xl border border-slate-600 hover:from-slate-700 hover:to-slate-600 transition-all group shadow-md"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex-1">
-                  <p className="text-xs md:text-sm text-white leading-relaxed">
-                    <span className="font-semibold">{p.expertBanner}</span>{p.expertBannerDesc}<br className="md:hidden" />
-                    <span className="underline underline-offset-2">{p.expertBannerLink}</span>{p.expertBannerSuffix}
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-white flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
-              </div>
-            </a>
-
-            {/* Neurodevelopmental */}
-            {renderTestSection(p.sectionNeuro, p.sectionNeuroBadge, 'purple', ['autismSpectrumScreening', 'premiumAdhd', 'languageDevelopment', 'motorDevelopment'])}
-
-            {/* Personality */}
-            {renderTestSection(p.sectionPersonality, null, 'blue', ['personality_type', 'temperament', 'love_personality'])}
-
-            {/* Work & Finance */}
-            {renderTestSection(p.sectionWorkFinance, null, 'orange', ['work_stress', 'financialPsychology', 'cognitive'])}
-
-            {/* Teen */}
-            {renderTestSection(p.sectionTeen, null, 'emerald', ['teenMentalCompass', 'teenGrowthCapacity', 'socialDevelopmentScreening'])}
-
-            {/* Special AI Tests */}
-            <section className="mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-1.5 h-6 bg-slate-500 rounded-full"></div>
-                <h2 className="text-lg font-bold text-foreground">{p.sectionSpecial}</h2>
-                <span className="text-xs text-slate-600 bg-slate-100 dark:bg-slate-900/30 px-2 py-0.5 rounded font-medium">{p.sectionSpecialBadge}</span>
-              </div>
-
-              <div className="space-y-2">
-                {Object.entries(specialTestInfo).map(([key, info]) => {
-                  const isExpanded = expandedTest === `special_${key}`;
-                  return (
-                    <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : `special_${key}`)}>
-                      <CollapsibleTrigger asChild>
-                        <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-950/20 transition-all">
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
-                                <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-slate-600 truncate">{info.title}</h3>
-                              </div>
-                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{info.duration}{info.questions_count > 0 ? ` · ${info.questions_count}${p.items}` : ''}</p>
+            <div className="space-y-2">
+              {Object.entries(specialTestInfo).map(([key, info]) => {
+                const isExpanded = expandedTest === `special_${key}`;
+                return (
+                  <Collapsible key={key} open={isExpanded} onOpenChange={() => setExpandedTest(isExpanded ? null : `special_${key}`)}>
+                    <CollapsibleTrigger asChild>
+                      <button className="w-full group text-left p-3 md:p-4 rounded-xl border border-border hover:border-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-950/20 transition-all">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5 md:gap-2 mb-0.5">
+                              <h3 className="font-semibold text-sm md:text-base text-foreground group-hover:text-slate-600 truncate">{info.title}</h3>
                             </div>
-                            <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+                            <p className="text-[11px] md:text-xs text-muted-foreground truncate">{info.duration}{info.questions_count > 0 ? ` · ${info.questions_count}${p.items}` : ''}</p>
                           </div>
-                        </button>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
-                          <p className="text-sm text-muted-foreground">{info.description}</p>
-                          <div className="space-y-1.5">
-                            {info.premium_features.map((feature: string, idx: number) => (
-                              <div key={idx} className="flex items-center gap-2 text-sm">
-                                <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-                                <span className="text-muted-foreground">{feature}</span>
-                              </div>
-                            ))}
-                          </div>
-                          <Button 
-                            onClick={info.onClick}
-                            className="w-full bg-slate-600 hover:bg-slate-700 text-white"
-                          >
-                            {p.startTest}
-                          </Button>
+                          <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
                         </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  );
-                })}
-              </div>
-            </section>
-
-            {/* Subscribe CTA */}
-            {!isSubscribed && (
-              <div className="mt-8 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800 text-center">
-                <Crown className="w-10 h-10 text-yellow-500 mx-auto mb-3" />
-                <h3 className="text-lg font-bold text-foreground mb-2">{p.subscribeCta}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{p.subscribeDesc}</p>
-                <Button 
-                  onClick={() => navigate('/token-subscription')}
-                  className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white"
-                >
-                  {p.subscribeBtn}
-                </Button>
-              </div>
-            )}
-
-            <div className="mt-8">
-              <MedicalDisclaimer variant="full" />
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="mx-2 p-4 bg-muted/30 rounded-b-xl border-x border-b border-border space-y-4">
+                        <p className="text-sm text-muted-foreground">{info.description}</p>
+                        <div className="space-y-1.5">
+                          {info.premium_features.map((feature: string, idx: number) => (
+                            <div key={idx} className="flex items-center gap-2 text-sm">
+                              <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <Button 
+                          onClick={info.onClick}
+                          className="w-full bg-slate-600 hover:bg-slate-700 text-white"
+                        >
+                          {p.startTest}
+                        </Button>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
             </div>
+          </section>
+
+          {/* Subscribe CTA */}
+          {!isSubscribed && (
+            <div className="mt-8 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800 text-center">
+              <Crown className="w-10 h-10 text-yellow-500 mx-auto mb-3" />
+              <h3 className="text-lg font-bold text-foreground mb-2">{p.subscribeCta}</h3>
+              <p className="text-sm text-muted-foreground mb-4">{p.subscribeDesc}</p>
+              <Button 
+                onClick={() => navigate('/token-subscription')}
+                className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white"
+              >
+                {p.subscribeBtn}
+              </Button>
+            </div>
+          )}
+
+          <div className="mt-8">
+            <MedicalDisclaimer variant="full" />
           </div>
         </div>
       </div>
-    </AuthenticationGuard>
+
+      {/* Login Prompt Modal */}
+      <Dialog open={showLoginPrompt} onOpenChange={setShowLoginPrompt}>
+        <DialogContent className="max-w-sm mx-auto p-0 overflow-hidden border-0">
+          <div className="bg-gradient-to-br from-purple-600 to-indigo-700 p-6 text-white text-center">
+            <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Save className="w-7 h-7 text-white" />
+            </div>
+            <h3 className="text-lg font-bold mb-1">검사 결과를 저장하려면 로그인이 필요해요</h3>
+            <p className="text-sm text-white/80">개인별 데이터 저장 후 리포팅되는 시스템입니다</p>
+          </div>
+          
+          <div className="p-6 space-y-4">
+            <div className="space-y-2.5">
+              {[
+                { icon: Save, text: '내 검사 결과가 계정에 영구 저장됩니다' },
+                { icon: Lock, text: '개인 맞춤 분석 리포트를 받을 수 있어요' },
+                { icon: UserPlus, text: '시간에 따른 변화 추적이 가능합니다' },
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-start gap-2.5 text-sm">
+                  <item.icon className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-foreground">{item.text}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-muted/50 rounded-lg p-3 text-center">
+              <p className="text-xs text-muted-foreground">
+                각자의 아이디로 로그인해야 <strong className="text-foreground">나만의 데이터</strong>가 정확하게 저장·분석됩니다
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Button 
+                onClick={() => {
+                  localStorage.setItem('auth_redirect_after', window.location.pathname);
+                  navigate('/auth?mode=signup');
+                }}
+                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 text-white py-5"
+              >
+                <UserPlus className="w-4 h-4 mr-2" />
+                무료 회원가입 (30초)
+              </Button>
+              <Button 
+                onClick={() => {
+                  localStorage.setItem('auth_redirect_after', window.location.pathname);
+                  navigate('/auth');
+                }}
+                variant="outline"
+                className="w-full py-5"
+              >
+                <Lock className="w-4 h-4 mr-2" />
+                이미 계정이 있어요 · 로그인
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 

@@ -220,7 +220,7 @@ ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: inputText }
@@ -312,7 +312,7 @@ Ultra high resolution, 4K quality, emotionally impactful.`
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                model: 'google/gemini-2.5-flash-image-preview',
+                model: 'google/gemini-3.1-flash-image-preview',
                 messages: [{ role: 'user', content: prompt }],
                 modalities: ['image', 'text']
               })

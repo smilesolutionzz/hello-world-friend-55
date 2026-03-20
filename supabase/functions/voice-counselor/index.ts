@@ -61,7 +61,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        // model: 'google/gemini-2.5-flash', // default model per workspace
+        // model: 'google/gemini-3-flash-preview', // default model per workspace
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userText }

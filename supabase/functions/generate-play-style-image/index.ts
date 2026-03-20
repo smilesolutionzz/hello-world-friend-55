@@ -38,7 +38,7 @@ The scene should capture the essence of ${playStyle} parenting style with both p
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
+        model: "google/gemini-3.1-flash-image-preview",
         messages: [
           {
             role: "user",

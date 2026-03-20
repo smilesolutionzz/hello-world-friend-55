@@ -6,6 +6,8 @@ import { languageDevelopmentScoring } from '@/data/languageDevelopmentQuestions'
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface LanguageDevelopmentResultProps {
   results: Record<string, number>;
@@ -15,6 +17,7 @@ interface LanguageDevelopmentResultProps {
 
 const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelopmentResultProps) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [aiAnalysis, setAiAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
 
@@ -75,8 +78,8 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', '언어발달_검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

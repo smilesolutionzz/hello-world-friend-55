@@ -12,6 +12,8 @@ import ProductRecommendation from "@/components/ProductRecommendation";
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface PremiumAdhdResultProps {
   results: {

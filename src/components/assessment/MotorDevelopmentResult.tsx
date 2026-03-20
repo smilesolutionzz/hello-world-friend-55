@@ -7,6 +7,8 @@ import { categoryInfo } from '@/data/motorDevelopmentQuestions';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface MotorDevelopmentResultProps {
   results: {
@@ -28,6 +30,7 @@ interface MotorDevelopmentResultProps {
 const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results, answers, onBack }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [aiAnalysis, setAiAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -85,8 +88,8 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', 'AIH_운동발달_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

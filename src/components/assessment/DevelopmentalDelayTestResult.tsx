@@ -7,6 +7,8 @@ import { cleanMarkdown } from '@/utils/cleanMarkdown';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface DevelopmentalDelayTestResultProps {
   results: {
@@ -33,6 +35,7 @@ const domainConfig: Record<string, { indices: number[]; name: string }> = {
 const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: DevelopmentalDelayTestResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [analysis, setAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -124,8 +127,8 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', 'AIH_발달지연_검사결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

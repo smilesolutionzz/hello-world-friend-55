@@ -4,6 +4,8 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import ClinicalReportLayout, { DomainScore } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface AdultAssessmentResultProps {
   results: {
@@ -40,6 +42,7 @@ const AdultAssessmentResult = ({ results, onBack }: AdultAssessmentResultProps) 
   const { total, average, ageGroup, categoryScores } = results;
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const avg = total / Object.keys(categoryScores).length;
   const evalLevel = avg <= 0.5 ? '양호' : avg <= 1.0 ? '경미한 증상' : avg <= 2.0 ? '중등도 증상' : '심각한 증상';
@@ -67,8 +70,8 @@ const AdultAssessmentResult = ({ results, onBack }: AdultAssessmentResultProps) 
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', '성인_심리검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
@@ -33,6 +34,7 @@ const normalizeSeverity = (severity: string): 'normal' | 'mild' | 'moderate' | '
 const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish } = useLanguage();
   const { total, average, severity, answers } = results;
   const sev = normalizeSeverity(severity);
@@ -121,8 +123,8 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'Depression_Result' : '우울감_체크_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

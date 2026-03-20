@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { generatePDF } from "@/utils/pdfGenerator";
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface Coverage {
   category: string; name: string; amount: string; insured: string;
@@ -26,6 +27,7 @@ interface InsuranceAnalysisResultProps {
 
 export const InsuranceAnalysisResult = ({ results, onBack }: InsuranceAnalysisResultProps) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish } = useLanguage();
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);

@@ -6,6 +6,8 @@ import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface ParentingStyleResultProps {
   results: any;
@@ -24,6 +26,7 @@ const categoryNames: Record<string, string> = {
 
 const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [analysis, setAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
 
@@ -87,8 +90,8 @@ const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) =>
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', '양육스타일_검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

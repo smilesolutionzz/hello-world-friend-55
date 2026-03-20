@@ -23,6 +23,8 @@ import {
   MapPin
 } from 'lucide-react';
 import logo from '@/assets/gakkai-logo.png';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface DietAnalysisResultProps {
   result: any;
@@ -32,6 +34,7 @@ interface DietAnalysisResultProps {
 const DietAnalysisResult: React.FC<DietAnalysisResultProps> = ({ result, onRestart }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { shareAsText } = useShareText();
 
   const handleDietPlan = () => {

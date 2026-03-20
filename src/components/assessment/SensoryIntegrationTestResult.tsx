@@ -6,6 +6,8 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface SensoryIntegrationTestResultProps {
   results: {
@@ -32,6 +34,7 @@ const domainDefs: Record<string, { indices: number[]; ko: string; en: string }> 
 const SensoryIntegrationTestResult = ({ results, onBack }: SensoryIntegrationTestResultProps) => {
   const { isEnglish } = useLanguage();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [analysis, setAnalysis] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -86,8 +89,8 @@ const SensoryIntegrationTestResult = ({ results, onBack }: SensoryIntegrationTes
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'SensoryIntegration_Results' : '감각통합_검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

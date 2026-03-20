@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
@@ -30,6 +31,7 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish, localePath } = useLanguage();
 
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
@@ -138,8 +140,8 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
     await downloadResultAsPDF(
       'clinical-report-content',
       'ADHD_자가체크_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

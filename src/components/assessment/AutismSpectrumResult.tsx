@@ -6,6 +6,8 @@ import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import RedFlagAlertDialog from './RedFlagAlertDialog';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface AutismSpectrumResultProps {
   results: any;
@@ -24,6 +26,7 @@ const categoryLabels: Record<string, string> = {
 const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, answers, onBack }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [showCrisisAlert, setShowCrisisAlert] = useState(false);
 
   const isHighRisk = results.scores?.riskLevel === '높음' || results.crisisIndicators?.needsImmediateAttention;
@@ -99,8 +102,8 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', '자폐스펙트럼_선별검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

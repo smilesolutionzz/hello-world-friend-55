@@ -8,6 +8,7 @@ import SocialShareButtons from '@/components/social/SocialShareButtons';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/i18n';
+import { useTranslation } from '@/i18n/useTranslation';
 import { ExpertAnalysisSection } from './ExpertAnalysisSection';
 import { PremiumTestCTA } from './PremiumTestCTA';
 import { ExpertMatchRecommendation } from './ExpertMatchRecommendation';
@@ -81,6 +82,7 @@ export const MentalHealthQuickResult: React.FC<MentalHealthQuickResultProps> = (
   const [expertAnalysis, setExpertAnalysis] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const localePath = (path: string) => isEnglish ? `/en${path}` : path;
 

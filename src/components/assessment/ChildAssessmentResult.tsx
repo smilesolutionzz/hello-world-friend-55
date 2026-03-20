@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { useTranslation } from '@/i18n/useTranslation';
+import { useLanguage } from '@/i18n/LanguageContext';
 import ClinicalReportLayout, { DomainScore } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 
@@ -20,21 +22,27 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
   const { total, average, ageGroup, gameScores } = results;
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
+  const { isEnglish } = useLanguage();
 
   const avgScore = total / Object.keys(gameScores).length;
-  const evalLevel = avgScore >= 80 ? '우수' : avgScore >= 60 ? '양호' : avgScore >= 40 ? '보통' : '관찰 필요';
+  const evalLevel = avgScore >= 80
+    ? (isEnglish ? 'Excellent' : '우수')
+    : avgScore >= 60 ? (isEnglish ? 'Good' : '양호')
+    : avgScore >= 40 ? (isEnglish ? 'Average' : '보통')
+    : (isEnglish ? 'Needs Observation' : '관찰 필요');
 
   useAutoSaveTestResult({
-    testType: '아동 심리검사',
+    testType: isEnglish ? 'Child Psychology Test' : '아동 심리검사',
     results: { total, average, gameScores },
-    analysis: `인지능력 수준: ${evalLevel}, 평균 점수: ${avgScore.toFixed(1)}점`,
+    analysis: `${isEnglish ? 'Cognitive Level' : '인지능력 수준'}: ${evalLevel}, ${isEnglish ? 'Average Score' : '평균 점수'}: ${avgScore.toFixed(1)}`,
     ageGroup
   });
 
   const getColor = (pct: number) =>
     pct >= 80 ? 'bg-green-500' : pct >= 60 ? 'bg-yellow-500' : pct >= 40 ? 'bg-orange-500' : 'bg-destructive';
   const getLevel = (pct: number) =>
-    pct >= 80 ? '우수' : pct >= 60 ? '양호' : pct >= 40 ? '보통' : '관찰필요';
+    pct >= 80 ? (isEnglish ? 'Excellent' : '우수') : pct >= 60 ? (isEnglish ? 'Good' : '양호') : pct >= 40 ? (isEnglish ? 'Average' : '보통') : (isEnglish ? 'Observe' : '관찰필요');
 
   const domains: DomainScore[] = Object.entries(gameScores).map(([name, score]) => ({
     key: name,
@@ -45,26 +53,26 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
     color: getColor(score),
   }));
 
-  const severityColor = evalLevel === '우수' ? 'text-green-600 border-green-300'
-    : evalLevel === '양호' ? 'text-primary border-primary/30'
-    : evalLevel === '보통' ? 'text-yellow-600 border-yellow-300'
+  const severityColor = evalLevel === (isEnglish ? 'Excellent' : '우수') ? 'text-green-600 border-green-300'
+    : evalLevel === (isEnglish ? 'Good' : '양호') ? 'text-primary border-primary/30'
+    : evalLevel === (isEnglish ? 'Average' : '보통') ? 'text-yellow-600 border-yellow-300'
     : 'text-orange-600 border-orange-300';
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', `아동심리검사_${new Date().toISOString().split('T')[0]}`,
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? `Child_Psychology_${new Date().toISOString().split('T')[0]}` : `아동심리검사_${new Date().toISOString().split('T')[0]}`,
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 
   return (
     <ClinicalReportLayout
-      testName="아동청소년 성향 파악 결과"
-      subtitle={`연령대: ${ageGroup}`}
+      testName={isEnglish ? 'Child Development Assessment Results' : '아동청소년 성향 파악 결과'}
+      subtitle={`${isEnglish ? 'Age Group' : '연령대'}: ${ageGroup}`}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={total}
-      totalLabel="총점"
+      totalLabel={isEnglish ? 'Total Score' : '총점'}
       scoreUnit={`/ ${Object.keys(gameScores).length * 100}`}
       scoreSeverity={evalLevel}
       severityColor={severityColor}
@@ -73,9 +81,9 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '아동청소년 성향 파악',
-            subtitle: '5영역 인지능력 분석',
-            date: new Date().toLocaleDateString('ko-KR'),
+            testName: isEnglish ? 'Child Development' : '아동청소년 성향 파악',
+            subtitle: isEnglish ? '5-Domain Cognitive Analysis' : '5영역 인지능력 분석',
+            date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(
               Object.entries(gameScores).map(([k, v]) => [k, (v / 100) * 7])
             ),

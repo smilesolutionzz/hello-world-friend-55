@@ -9,6 +9,8 @@ import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
 import ReactMarkdown from 'react-markdown';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 interface LanguageTestResultProps {
   results: {
     answers: number[];

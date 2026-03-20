@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
@@ -31,6 +32,7 @@ export default function ResilienceTestResult({ results, onBack }: ResilienceTest
   const [aiAnalysis, setAiAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish } = useLanguage();
 
   useEffect(() => {
@@ -79,8 +81,8 @@ export default function ResilienceTestResult({ results, onBack }: ResilienceTest
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'Resilience_Results' : '회복탄력성_검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

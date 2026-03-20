@@ -7,6 +7,7 @@ import { useTestActions } from "@/hooks/useTestActions";
 import { useWordDownload } from "@/hooks/useWordDownload";
 import { Link } from "react-router-dom";
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
@@ -49,6 +50,7 @@ export default function RelationshipDynamicsResult({ results, onBack }: Relation
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(true);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { saveTestResult, isSaving } = useTestActions();
   const { generateWordDocument } = useWordDownload();
   const { isEnglish } = useLanguage();

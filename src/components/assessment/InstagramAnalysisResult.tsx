@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useWordDownload } from "@/hooks/useWordDownload";
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface AnalysisResult {
   unconsciousType: {

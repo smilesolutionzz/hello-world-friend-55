@@ -14,6 +14,7 @@ import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface FreeTrialResultProps {
   result: {
@@ -37,6 +38,7 @@ interface FreeTrialResultProps {
 const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish, localePath } = useLanguage();
   const { isPremiumUser, isLifetimeUser } = useSubscription();
   const isPremium = isPremiumUser() || isLifetimeUser();

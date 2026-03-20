@@ -7,6 +7,8 @@ import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalRepo
 import VisualResultInfographic from './VisualResultInfographic';
 import PlayActivityRecommendations from './PlayActivityRecommendations';
 import GrowthReport from './GrowthReport';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface ParentChildPlayResultProps {
   result: {
@@ -47,6 +49,7 @@ const ageGroupLabels: Record<string, string> = {
 const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const devScores: Record<string, number> = {
     cognitive: result.cognitiveScore || 0,
@@ -101,8 +104,8 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', '부모아동_놀이평가_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

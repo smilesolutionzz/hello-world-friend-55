@@ -6,6 +6,8 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface ChallengingBehaviorResultProps {
   results: {
@@ -19,6 +21,7 @@ interface ChallengingBehaviorResultProps {
 const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [expertInterpretation, setExpertInterpretation] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -77,8 +80,8 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', '도전행동_평가_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

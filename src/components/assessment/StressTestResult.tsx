@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
@@ -23,6 +24,7 @@ interface StressTestResultProps {
 const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish, localePath } = useLanguage();
 
   const [analysis, setAnalysis] = useState<string>('');
@@ -122,8 +124,8 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', '스트레스_검사_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

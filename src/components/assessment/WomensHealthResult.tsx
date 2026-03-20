@@ -9,6 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import VoiceFeature from '@/components/voice/VoiceFeature';
 import SocialShareButtons from '@/components/social/SocialShareButtons';
+import { useLanguage } from '@/i18n/LanguageContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface WomensHealthResultProps {
   result: any;
@@ -126,6 +128,7 @@ export const WomensHealthResult: React.FC<WomensHealthResultProps> = ({ result, 
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   const constitution = constitutionData[result.constitution as keyof typeof constitutionData];
   const womensHealth = womensHealthInfo[result.constitution as keyof typeof womensHealthInfo];

@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 
@@ -42,6 +43,7 @@ const mechanismInfoEn: Record<string, { name: string; emoji: string; description
 export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ result, onBack }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish, localePath } = useLanguage();
   const mechanismInfo = isEnglish ? mechanismInfoEn : mechanismInfoKo;
 
@@ -57,8 +59,8 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
     await downloadResultAsPDF(
       'clinical-report-content',
       isEnglish ? 'Defense_Mechanism_Results' : '방어기제_분석결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (error) => toast({ title: '다운로드 실패', description: error.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (error) => toast({ title: t.resultLayout.pdfFailed, description: error.message, variant: 'destructive' })
     );
   };
 

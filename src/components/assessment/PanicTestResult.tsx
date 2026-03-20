@@ -2,6 +2,7 @@ import { useToast } from "@/hooks/use-toast";
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { useLanguage } from '@/i18n';
+import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 
@@ -27,6 +28,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
   const { total, average } = results;
   const severity = getSeverityLevel(total);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { isEnglish } = useLanguage();
 
   const severityLabelMap: Record<string, string> = { "정상": "Normal", "경미": "Mild", "중등도": "Moderate", "심각": "Severe" };
@@ -72,8 +74,8 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'Anxiety_Results' : '불안감_체크_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

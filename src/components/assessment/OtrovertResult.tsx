@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useLanguage } from '@/i18n';
+import { useTranslation } from '@/i18n/useTranslation';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
@@ -21,6 +22,7 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
   const [graphData, setGraphData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isEnglish } = useLanguage();
 
@@ -73,8 +75,8 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'Otrovert_Result' : '오트로버트_성격_결과',
-      () => toast({ title: 'PDF 다운로드 완료' }),
-      (e) => toast({ title: '다운로드 실패', description: e.message, variant: 'destructive' })
+      () => toast({ title: t.resultLayout.pdfComplete }),
+      (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 

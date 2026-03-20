@@ -738,10 +738,10 @@ const Assessment = () => {
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
-              <h2 className="text-lg font-bold text-foreground">무료 기본검사</h2>
-              <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] border-0">무료</Badge>
+              <h2 className="text-lg font-bold text-foreground">{t.assessment.freeBasicSection}</h2>
+              <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-[10px] border-0">{t.assessment.freeBadge}</Badge>
             </div>
-            <p className="text-xs text-muted-foreground mb-4 ml-5">로그인만 하면 누구나 무료로 이용할 수 있는 기본 선별검사</p>
+            <p className="text-xs text-muted-foreground mb-4 ml-5">{t.assessment.freeBasicDesc}</p>
 
             <div className="space-y-2">
               {[

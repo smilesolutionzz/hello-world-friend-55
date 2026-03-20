@@ -813,7 +813,7 @@ const Assessment = () => {
             {/* 성격·심리 심층 */}
             <div className="space-y-2 mb-4">
               <h3 className="text-sm font-semibold text-muted-foreground ml-1 flex items-center gap-2">
-                <Brain className="w-4 h-4" /> 성격·심리 심층
+                <Brain className="w-4 h-4" /> {t.assessment.personalityPsychSection}
               </h3>
               {[
                 { key: 'psychological', title: t.assessment.psychologicalTitle, duration: t.assessment.psychologicalDuration, questions: t.assessment.psychologicalQuestions, description: t.assessment.psychologicalDesc, features: t.assessment.psychologicalFeatures, gradient: 'from-indigo-600/20 to-blue-600/20', dotColor: 'bg-indigo-500' },

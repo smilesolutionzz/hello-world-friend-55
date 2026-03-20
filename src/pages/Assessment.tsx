@@ -747,7 +747,7 @@ const Assessment = () => {
               {[
                 { key: 'depression', title: t.assessment.depressionTitle, duration: t.assessment.depressionDuration, questions: t.assessment.depressionQuestions, description: t.assessment.depressionDesc, features: t.assessment.depressionFeatures, gradient: 'from-blue-600/20 to-indigo-600/20', borderHover: 'hover:border-blue-400/50 hover:bg-blue-500/5', textHover: 'group-hover:text-blue-600 dark:group-hover:text-blue-400', dotColor: 'bg-blue-500' },
                 { key: 'panic', title: t.assessment.panicTitle, duration: t.assessment.panicDuration, questions: t.assessment.panicQuestions, description: t.assessment.panicDesc, features: t.assessment.panicFeatures, gradient: 'from-rose-600/20 to-pink-600/20', borderHover: 'hover:border-rose-400/50 hover:bg-rose-500/5', textHover: 'group-hover:text-rose-600 dark:group-hover:text-rose-400', dotColor: 'bg-rose-500' },
-                { key: 'stress', title: t.assessment.stressTitle || '스트레스 검사', duration: t.assessment.stressDuration || '3분', questions: t.assessment.stressQuestions || '10문항', description: t.assessment.stressDesc || '현재 스트레스 수준을 확인합니다.', features: t.assessment.stressFeatures || ['스트레스 수준 측정', 'AI 분석 리포트'], gradient: 'from-amber-600/20 to-orange-600/20', borderHover: 'hover:border-amber-400/50 hover:bg-amber-500/5', textHover: 'group-hover:text-amber-600 dark:group-hover:text-amber-400', dotColor: 'bg-amber-500' },
+                { key: 'stress', title: t.assessment.stressTitle, duration: t.assessment.stressDuration, questions: t.assessment.stressQuestions, description: t.assessment.stressDesc, features: t.assessment.stressFeatures, gradient: 'from-amber-600/20 to-orange-600/20', borderHover: 'hover:border-amber-400/50 hover:bg-amber-500/5', textHover: 'group-hover:text-amber-600 dark:group-hover:text-amber-400', dotColor: 'bg-amber-500' },
                 { key: 'selfesteem', title: t.assessment.selfesteemTitle, duration: t.assessment.selfesteemDuration, questions: t.assessment.selfesteemQuestions, description: t.assessment.selfesteemDesc, features: t.assessment.selfesteemFeatures, gradient: 'from-violet-600/20 to-purple-600/20', borderHover: 'hover:border-violet-400/50 hover:bg-violet-500/5', textHover: 'group-hover:text-violet-600 dark:group-hover:text-violet-400', dotColor: 'bg-violet-500' },
                 { key: 'adhd', title: t.assessment.adhdTitle, duration: t.assessment.adhdDuration, questions: t.assessment.adhdQuestions, description: t.assessment.adhdDesc, features: t.assessment.adhdFeatures, gradient: 'from-teal-600/20 to-emerald-600/20', borderHover: 'hover:border-teal-400/50 hover:bg-teal-500/5', textHover: 'group-hover:text-teal-600 dark:group-hover:text-teal-400', dotColor: 'bg-teal-500' },
               ].map((test) => {
@@ -1215,7 +1215,7 @@ const Assessment = () => {
 
             <div className="mt-12 text-center">
               <p className="text-sm text-muted-foreground">
-                 💡 {t.assessment.multiTestHint || 'Taking multiple tests enables more accurate analysis'}
+                 💡 {t.assessment.multiTestHint}
               </p>
             </div>
           </div>
@@ -1749,28 +1749,28 @@ const Assessment = () => {
           />
         )}
         
-        {/* 법적 고지사항 */}
+        {/* Legal Disclaimer */}
         <div className="container mx-auto max-w-6xl px-4 py-8 mt-12">
           <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6">
             <h3 className="font-bold text-lg text-yellow-900 mb-4 flex items-center gap-2">
-              <span>⚠️</span> 법적 고지사항
+              <span>⚠️</span> {t.assessment.legalTitle}
             </h3>
             <div className="space-y-3 text-sm text-yellow-900">
               <p className="flex items-start gap-2">
                 <span className="mt-1">•</span>
-                <span>본 서비스는 의료행위가 아니며, 질병의 진단, 치료, 예방을 목적으로 하지 않습니다.</span>
+                <span>{t.assessment.legal1}</span>
               </p>
               <p className="flex items-start gap-2">
                 <span className="mt-1">•</span>
-                <span>제공되는 모든 정보는 참고용이며, 전문적인 의학적 조언을 대체할 수 없습니다.</span>
+                <span>{t.assessment.legal2}</span>
               </p>
               <p className="flex items-start gap-2">
                 <span className="mt-1">•</span>
-                <span>의료 관련 의사결정은 반드시 의료기관 및 전문의와 상담 후 진행하시기 바랍니다.</span>
+                <span>{t.assessment.legal3}</span>
               </p>
               <p className="flex items-start gap-2">
                 <span className="mt-1">•</span>
-                <span>본 서비스 이용으로 인한 어떠한 결과에 대해서도 법적 책임을 지지 않습니다.</span>
+                <span>{t.assessment.legal4}</span>
               </p>
             </div>
           </div>

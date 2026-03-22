@@ -98,7 +98,7 @@ export class RealtimeChat {
   ) {
     this.audioEl = document.createElement("audio");
     this.audioEl.autoplay = true;
-    this.audioEl.playsInline = true;
+    (this.audioEl as any).playsInline = true;
     this.audioEl.style.display = 'none';
     document.body.appendChild(this.audioEl);
     this.mode = options?.mode || 'free';

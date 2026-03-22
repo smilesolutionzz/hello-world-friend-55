@@ -287,6 +287,10 @@ export class RealtimeChat {
     this.audioEl.pause();
     this.audioEl.srcObject = null;
     this.audioEl.src = '';
+    // DOM에서 제거
+    if (this.audioEl.parentNode) {
+      this.audioEl.parentNode.removeChild(this.audioEl);
+    }
     this.dc = null;
     this.pc = null;
     this.sessionCreated = false;

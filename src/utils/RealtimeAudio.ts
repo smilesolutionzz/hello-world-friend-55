@@ -98,6 +98,9 @@ export class RealtimeChat {
   ) {
     this.audioEl = document.createElement("audio");
     this.audioEl.autoplay = true;
+    (this.audioEl as any).playsInline = true;
+    this.audioEl.style.display = 'none';
+    document.body.appendChild(this.audioEl);
     this.mode = options?.mode || 'free';
     this.ageGroup = options?.ageGroup || 'adult';
     this.character = options?.character || 'bear';
@@ -161,7 +164,10 @@ export class RealtimeChat {
         }
       };
       
-      this.pc.ontrack = e => this.audioEl.srcObject = e.streams[0];
+      this.pc.ontrack = e => {
+        this.audioEl.srcObject = e.streams[0];
+        this.audioEl.play().catch(err => console.warn('Audio autoplay blocked:', err));
+      };
 
       const ms = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -281,6 +287,10 @@ export class RealtimeChat {
     this.audioEl.pause();
     this.audioEl.srcObject = null;
     this.audioEl.src = '';
+    // DOM에서 제거
+    if (this.audioEl.parentNode) {
+      this.audioEl.parentNode.removeChild(this.audioEl);
+    }
     this.dc = null;
     this.pc = null;
     this.sessionCreated = false;

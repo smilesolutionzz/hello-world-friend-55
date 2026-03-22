@@ -164,7 +164,10 @@ export class RealtimeChat {
         }
       };
       
-      this.pc.ontrack = e => this.audioEl.srcObject = e.streams[0];
+      this.pc.ontrack = e => {
+        this.audioEl.srcObject = e.streams[0];
+        this.audioEl.play().catch(err => console.warn('Audio autoplay blocked:', err));
+      };
 
       const ms = await navigator.mediaDevices.getUserMedia({
         audio: {

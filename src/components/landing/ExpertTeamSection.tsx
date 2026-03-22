@@ -6,9 +6,9 @@ const ExpertTeamSection = () => {
   const experts = [
     {
       name: '이수석',
-      role: 'CPO / 제품 총괄',
-      credential: '아동발달 전문가',
-      description: '현장 기반 발달검사 설계 및 AI 분석 시스템 구축',
+      role: 'CEO / 대표',
+      credential: '발달재활 석사 · 14년 현장 전문가',
+      description: '발달검사 설계, AI 분석 시스템 구축, 사업 전략 및 제품 총괄',
       gradient: 'from-violet-500/20 to-purple-500/20',
       iconColor: 'text-violet-400',
     },

@@ -850,28 +850,21 @@ const BookingDialog = ({
           </div>
 
           {/* 비용 */}
-          <Card className={cn(
-            "border",
-            hasEnoughTokens ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
-          )}>
+          <Card className="border bg-blue-50 border-blue-200">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-yellow-500" />
+                  <Zap className="w-5 h-5 text-blue-500" />
                   <span className="font-medium">상담 비용</span>
                 </div>
                 <div className="text-right">
-                  <div className="text-xl font-bold">{cost.toLocaleString()} 토큰</div>
-                  <div className="text-xs text-gray-500">
-                    잔액: {balance.toLocaleString()} 토큰
-                  </div>
+                  <div className="text-xl font-bold text-blue-700">₩{cost.toLocaleString()}</div>
+                  <div className="text-xs text-gray-500">40분 / 1회</div>
                 </div>
               </div>
-              {!hasEnoughTokens && (
-                <p className="text-sm text-red-600 mt-2">
-                  토큰이 부족합니다. 충전 후 이용해주세요.
-                </p>
-              )}
+              <p className="text-xs text-blue-600 mt-2">
+                예약 접수 후 전문가 확인 → 카카오톡으로 결제 안내
+              </p>
             </CardContent>
           </Card>
 
@@ -879,11 +872,15 @@ const BookingDialog = ({
           <div className="text-xs text-gray-500 space-y-1">
             <p className="flex items-center gap-1">
               <CheckCircle className="w-3 h-3 text-green-500" />
-              전문가 확인 후 24시간 내 연락
+              예약 접수 → 전문가 확인 → 카카오톡 안내
             </p>
             <p className="flex items-center gap-1">
               <CheckCircle className="w-3 h-3 text-green-500" />
-              화상 또는 전화로 상담 진행
+              화상 또는 전화로 상담 진행 (40분)
+            </p>
+            <p className="flex items-center gap-1">
+              <CheckCircle className="w-3 h-3 text-green-500" />
+              상담 불만족 시 100% 환불 보장
             </p>
           </div>
 

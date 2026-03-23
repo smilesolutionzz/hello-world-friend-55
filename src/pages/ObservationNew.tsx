@@ -652,7 +652,7 @@ const ObservationNew = () => {
                   </motion.div>
                   <div>
                     <p className="text-lg font-semibold text-amber-900 mb-2">
-                      AI가 분석 리포트를 작성하고 있어요
+                      전문가 분석 리포트를 작성하고 있어요
                     </p>
                     <p className="text-sm text-amber-600">
                       관찰 내용과 답변을 종합하여 전문가 수준의 분석을 제공합니다

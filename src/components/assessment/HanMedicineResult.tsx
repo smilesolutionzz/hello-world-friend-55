@@ -133,6 +133,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
       const element = document.createElement('div');
       element.innerHTML = `
         <div style="font-family: 'Noto Sans KR', sans-serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; line-height: 1.6; color: #333;">
+          ${getPdfBrandingHeaderHtml()}
           <div style="text-align: center; margin-bottom: 40px; border-bottom: 3px solid #059669; padding-bottom: 20px;">
             <h1 style="font-size: 28px; margin: 0 0 10px 0; color: #059669; font-weight: bold;">한의학 체질검사 결과 보고서</h1>
             <h2 style="font-size: 20px; margin: 0 0 10px 0; color: #047857;">${getTestTypeName(result.type)}</h2>

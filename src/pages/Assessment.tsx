@@ -1679,44 +1679,68 @@ const Assessment = () => {
 
   // 발달 검사 결과 렌더링
   if (currentStep === 'developmental-delay-result' && developmentalDelayResults) {
-    return <DevelopmentalDelayTestResult 
-      results={developmentalDelayResults} 
-      onBack={handleBack} 
-      onRestart={() => setCurrentStep('developmental-delay-test')} 
-    />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="발달지연 검사" creditType="test" trialKey="DEVELOPMENTAL_DELAY_TEST">
+        <DevelopmentalDelayTestResult 
+          results={developmentalDelayResults} 
+          onBack={handleBack} 
+          onRestart={() => setCurrentStep('developmental-delay-test')} 
+        />
+      </SubscriptionGuard>
+    );
   }
 
   if (currentStep === 'sensory-integration-result' && sensoryIntegrationResults) {
-    return <SensoryIntegrationTestResult 
-      results={sensoryIntegrationResults} 
-      onBack={handleBack} 
-      onRestart={() => setCurrentStep('sensory-integration-test')} 
-    />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="감각통합 검사" creditType="test" trialKey="SENSORY_INTEGRATION_TEST">
+        <SensoryIntegrationTestResult 
+          results={sensoryIntegrationResults} 
+          onBack={handleBack} 
+          onRestart={() => setCurrentStep('sensory-integration-test')} 
+        />
+      </SubscriptionGuard>
+    );
   }
 
   if (currentStep === 'learning-disability-result' && learningDisabilityResults) {
-    return <LearningDisabilityTestResult 
-      results={learningDisabilityResults} 
-      onBack={handleBack} 
-      onRestart={() => setCurrentStep('learning-disability-test')} 
-    />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="학습장애 검사" creditType="test" trialKey="LEARNING_DISABILITY_TEST">
+        <LearningDisabilityTestResult 
+          results={learningDisabilityResults} 
+          onBack={handleBack} 
+          onRestart={() => setCurrentStep('learning-disability-test')} 
+        />
+      </SubscriptionGuard>
+    );
   }
 
   if (currentStep === 'social-development-result' && socialDevelopmentResults) {
-    return <SocialDevelopmentTestResult 
-      results={socialDevelopmentResults} 
-      onBack={handleBack} 
-      onRestart={() => setCurrentStep('social-development-test')} 
-    />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="사회성 발달 검사" creditType="test" trialKey="SOCIAL_DEVELOPMENT_TEST">
+        <SocialDevelopmentTestResult 
+          results={socialDevelopmentResults} 
+          onBack={handleBack} 
+          onRestart={() => setCurrentStep('social-development-test')} 
+        />
+      </SubscriptionGuard>
+    );
   }
 
   // 도전행동 및 적응행동 결과 렌더링
   if (currentStep === 'challenging-behavior-result' && challengingBehaviorResults) {
-    return <ChallengingBehaviorResult results={challengingBehaviorResults} />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="문제행동 검사" creditType="test" trialKey="CHALLENGING_BEHAVIOR_TEST">
+        <ChallengingBehaviorResult results={challengingBehaviorResults} />
+      </SubscriptionGuard>
+    );
   }
 
   if (currentStep === 'adaptive-behavior-result' && adaptiveBehaviorResults) {
-    return <AdaptiveBehaviorResult results={adaptiveBehaviorResults} />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="적응행동 검사" creditType="test" trialKey="ADAPTIVE_BEHAVIOR_TEST">
+        <AdaptiveBehaviorResult results={adaptiveBehaviorResults} />
+      </SubscriptionGuard>
+    );
   }
 
 

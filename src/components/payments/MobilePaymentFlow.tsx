@@ -58,6 +58,15 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
     }
   };
 
+  const handlePayTest = async () => {
+    if (!isAuthenticated) {
+      localStorage.setItem('auth_redirect_after', '/token-subscription');
+      navigate('/auth?mode=signup');
+      return;
+    }
+    await pay('single_test');
+  };
+
   const handlePaySingle = async () => {
     if (!isAuthenticated) {
       localStorage.setItem('auth_redirect_after', '/token-subscription');

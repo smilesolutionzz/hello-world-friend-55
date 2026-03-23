@@ -732,6 +732,11 @@ const Assessment = () => {
             <p className="text-muted-foreground">
               {t.assessment.pageSubtitle}
             </p>
+            <div className="mt-3 inline-flex items-center gap-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 px-4 py-2 rounded-full">
+              <span className="text-amber-600 dark:text-amber-400 text-sm font-medium">
+                📋 영유아 검사는 36개월 이상부터 권장 · 성인 검사는 만 19세 이상
+              </span>
+            </div>
           </div>
 
           {/* ========== 🟢 무료 기본검사 ========== */}

@@ -1386,7 +1386,6 @@ const Assessment = () => {
   }
 
   if (currentStep === 'adhd-test') {
-    const adhdAgeGroup = selectedAgeGroup === 'infant' ? 'child' : selectedAgeGroup === 'adult' ? 'adult' : 'child';
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
@@ -1395,7 +1394,6 @@ const Assessment = () => {
             <p className="text-muted-foreground">{t.assessment.adhdTestSubtitle}</p>
           </div>
           <AdhdTestForm 
-            ageGroup={adhdAgeGroup}
             onComplete={handleAdhdTestComplete}
             onBack={handleBack}
           />

@@ -178,33 +178,32 @@ ${ageGroup} 발달 단계에서의 특성
 
 전문적이면서 이해하기 쉽게 작성하세요.`;
 
-    // OpenAI API 호출
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Gemini API 호출
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           {
             role: 'system',
-            content: '당신은 ADHD 전문 정신과 의사로서, 과학적 근거에 바탕한 정확하고 상세한 임상 분석을 제공합니다. DSM-5 기준과 최신 ADHD 연구를 바탕으로 전문적인 평가를 수행합니다. 반드시 3000자 이상의 상세한 분석을 제공하세요.'
+            content: '당신은 ADHD 전문 정신과 의사로서, 과학적 근거에 바탕한 정확하고 상세한 임상 분석을 제공합니다. DSM-5 기준과 최신 ADHD 연구를 바탕으로 전문적인 평가를 수행합니다. 반드시 3000자 이상의 상세한 분석을 제공하세요. 각 섹션별로 구체적인 근거와 함께 깊이 있는 해석을 제공하세요.'
           },
           {
             role: 'user',
             content: analysisPrompt
           }
         ],
-        max_tokens: 4096
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('[PREMIUM-ADHD-ANALYZER] OpenAI API 오류:', errorData);
-      throw new Error(`OpenAI API 오류: ${response.status}`);
+      console.error('[PREMIUM-ADHD-ANALYZER] AI API 오류:', errorData);
+      throw new Error(`AI API 오류: ${response.status}`);
     }
 
     const data = await response.json();

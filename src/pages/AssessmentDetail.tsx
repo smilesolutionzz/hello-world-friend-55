@@ -400,7 +400,7 @@ export default function AssessmentDetail() {
                   <Brain className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">AI 심층 분석 보고서</h2>
+                  <h2 className="text-xl font-bold">심층 분석 보고서</h2>
                   <p className="text-sm text-muted-foreground">전문가 수준의 해석 및 권장사항</p>
                 </div>
               </CardTitle>

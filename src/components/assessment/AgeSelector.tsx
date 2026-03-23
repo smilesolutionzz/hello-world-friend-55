@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Baby, GraduationCap, Briefcase, Heart, ArrowLeft, Home } from "lucide-react";
+import { Baby, GraduationCap, User, Heart, ArrowLeft, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
@@ -52,22 +52,22 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
       return adhdContent[groupKey];
     }
     
-    // 우울검사 내용
-    const depressionContent = {
+    // 기본 심리건강 체크 내용
+    const defaultContent = {
       infant: {
-        description: '우울검사',
+        description: '심리건강 체크',
         features: ['정서 상태', '행동 변화', '수면/식욕 패턴', '사회적 위축']
       },
       child: {
-        description: '우울검사',
-        features: ['우울 기분', '흥미/즐거움 상실', '자기비하', '신체 증상']
+        description: '심리건강 체크',
+        features: ['정서 상태', '흥미/즐거움', '자기인식', '신체 증상']
       },
       adult: {
-        description: '우울검사',
-        features: ['우울 정서', '인지 증상', '신체화 증상', '사회적 기능']
+        description: '심리건강 체크',
+        features: ['정서 상태', '인지 증상', '신체화 증상', '사회적 기능']
       }
     };
-    return depressionContent[groupKey];
+    return defaultContent[groupKey];
   };
 
   const ageGroups = [
@@ -92,7 +92,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
       title: '성인',
       subtitle: '19-64세',
       ...getAgeGroupContent('adult'),
-      icon: Briefcase,
+      icon: User,
       color: 'from-primary to-primary-glow'
     }
   ];
@@ -153,10 +153,10 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
           
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             <span className="block text-foreground mb-2">
-              {testType === 'language' ? '영유아언어발달체크' : testType === 'panic' ? '불안감 수준 확인' : testType === 'depression' ? '우울감 자가체크' : testType === 'adhd' ? '주의집중력 자가체크' : '3분으로 시작하는'}
+              {testType === 'language' ? '영유아언어발달체크' : testType === 'panic' ? '불안감 수준 확인' : testType === 'depression' ? '심리건강 자가체크' : testType === 'adhd' ? '주의집중력 자가체크' : '3분으로 시작하는'}
             </span>
             <span className="block text-brand-gradient">
-              {testType === 'language' ? '연령별 맞춤 확인' : testType === 'panic' ? '자가체크 (참고용)' : testType === 'depression' ? '참고용 체크' : testType === 'adhd' ? '연령별 체크 (참고용)' : '연령별 맞춤체크'}
+              {testType === 'language' ? '연령별 맞춤 확인' : testType === 'panic' ? '자가체크 (참고용)' : testType === 'depression' ? '연령별 맞춤체크' : testType === 'adhd' ? '연령별 체크 (참고용)' : '연령별 맞춤체크'}
             </span>
           </h1>
           
@@ -166,7 +166,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
               : testType === 'panic'
               ? '연령대를 선택하여 불안감 수준을 체크해보세요 (참고용)'
               : testType === 'depression'
-              ? '연령대를 선택하여 우울감 수준을 확인해보세요 (참고용)'
+              ? '연령대를 선택하여 심리건강 수준을 확인해보세요 (참고용)'
               : testType === 'adhd'
               ? '연령대를 선택하여 ADHD 증상을 체크해보세요 (참고용)'
               : '연령에 맞는 맞춤체크로 참고 분석을 받아보세요'

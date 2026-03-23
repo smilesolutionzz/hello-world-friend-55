@@ -38,7 +38,7 @@ const LegalSafetyNotice = ({ onAccept, testType }: LegalSafetyNoticeProps) => {
     switch(testType) {
       case 'language': return '언어발달 자가체크';
       case 'panic': return '불안감 수준 확인';
-      case 'depression': return '우울감 자가체크';
+      case 'depression': return '심리건강 자가체크';
       case 'adhd': return '주의집중력 자가체크';
       default: return '연령별 맞춤체크';
     }

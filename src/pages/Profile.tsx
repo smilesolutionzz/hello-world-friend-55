@@ -404,7 +404,7 @@ const Profile = () => {
       </div>
 
       {/* Logout */}
-      <div className="px-5 mt-6 mb-8">
+      <div className="px-5 mt-6 pb-32">
         <button
           onClick={handleLogout}
           className="w-full flex items-center justify-center gap-2 py-3 text-sm text-muted-foreground hover:text-destructive transition-colors"

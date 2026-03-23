@@ -1,4 +1,5 @@
 import html2pdf from 'html2pdf.js';
+import { getPdfBrandingHeaderHtml } from './pdfBrandingHeader';
 
 export interface InstitutionPDFOptions {
   filename: string;

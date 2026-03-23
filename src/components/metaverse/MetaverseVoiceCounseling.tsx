@@ -1911,7 +1911,11 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
               💬 마이크 권한을 허용하고 대화를 시작하세요.<br />
               AI가 자동으로 음성을 인식하고 응답합니다.
             </p>
-            <p className="text-foreground/70 text-sm text-center mt-3">
+            <p className="text-foreground/70 text-sm text-center mt-2">
+              🎧 <strong>이어폰 또는 헤드셋 착용을 권장합니다</strong><br />
+              음성 인식 정확도가 크게 향상됩니다.
+            </p>
+            <p className="text-foreground/70 text-sm text-center mt-1">
               ✨ 비밀 보장 • 편하게 스트레스 풀어내세요
             </p>
           </div>

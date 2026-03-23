@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,22 +7,37 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from '@/i18n';
 
 const TestimonialSection = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const [direction, setDirection] = useState(1);
   const touchStartX = useRef<number | null>(null);
   const { t } = useTranslation();
 
   const testimonials = t.testimonials.items.map(item => ({ ...item, rating: 5 }));
+  const cardsPerPage = 3;
+  const totalPages = Math.ceil(testimonials.length / cardsPerPage);
+
+  const getPageItems = (page: number) => {
+    const start = page * cardsPerPage;
+    return testimonials.slice(start, start + cardsPerPage);
+  };
 
   const handlePrev = useCallback(() => {
     setDirection(-1);
-    setCurrentIndex(prev => prev === 0 ? testimonials.length - 1 : prev - 1);
-  }, [testimonials.length]);
+    setCurrentPage(prev => prev === 0 ? totalPages - 1 : prev - 1);
+  }, [totalPages]);
 
   const handleNext = useCallback(() => {
     setDirection(1);
-    setCurrentIndex(prev => prev === testimonials.length - 1 ? 0 : prev + 1);
-  }, [testimonials.length]);
+    setCurrentPage(prev => prev === totalPages - 1 ? 0 : prev + 1);
+  }, [totalPages]);
+
+  // Auto-slide every 6 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      handleNext();
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [handleNext]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -30,19 +45,18 @@ const TestimonialSection = () => {
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
-    const endX = e.changedTouches[0].clientX;
-    const distance = touchStartX.current - endX;
+    const distance = touchStartX.current - e.changedTouches[0].clientX;
     if (distance > 50) handleNext();
     else if (distance < -50) handlePrev();
     touchStartX.current = null;
   };
 
-  const current = testimonials[currentIndex];
+  const currentItems = getPageItems(currentPage);
 
   const variants = {
-    enter: (d: number) => ({ x: d > 0 ? 200 : -200, opacity: 0 }),
+    enter: (d: number) => ({ x: d > 0 ? 300 : -300, opacity: 0 }),
     center: { x: 0, opacity: 1 },
-    exit: (d: number) => ({ x: d > 0 ? -200 : 200, opacity: 0 }),
+    exit: (d: number) => ({ x: d > 0 ? -300 : 300, opacity: 0 }),
   };
 
   return (
@@ -59,47 +73,68 @@ const TestimonialSection = () => {
           <h2 className="text-2xl md:text-4xl font-bold text-white">{t.testimonials.heading}</h2>
         </motion.div>
 
-        <div className="max-w-2xl mx-auto" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-          <div className="relative min-h-[320px]">
+        <div className="max-w-6xl mx-auto" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+          <div className="relative min-h-[380px] md:min-h-[320px]">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
-                key={currentIndex}
+                key={currentPage}
                 custom={direction}
                 variants={variants}
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className="bg-slate-800/50 backdrop-blur-sm border border-white/5 rounded-2xl p-4 md:p-8"
+                transition={{ duration: 0.4, ease: 'easeInOut' }}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4"
               >
-                <Quote className="w-8 h-8 text-purple-400/50 mb-4" />
-                <div className="flex gap-1 mb-4">
-                  {[...Array(current.rating)].map((_, i) => (<Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />))}
-                </div>
-                <h3 className="text-lg font-bold text-white mb-3">{current.title}</h3>
-                <p className="text-white/70 text-sm md:text-base leading-relaxed mb-5">{current.content}</p>
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {current.tags.map((tag, i) => (<Badge key={i} variant="secondary" className="bg-purple-500/10 text-purple-300 border-purple-500/20 text-xs">{tag}</Badge>))}
-                </div>
-                <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-                  <Avatar className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500">
-                    <AvatarFallback className="text-white text-sm font-bold">{current.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium text-white">{current.name}</p>
-                    <p className="text-xs text-white/50">{current.role}</p>
+                {currentItems.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-slate-800/50 backdrop-blur-sm border border-white/5 rounded-2xl p-5 md:p-6 flex flex-col"
+                  >
+                    <Quote className="w-6 h-6 text-purple-400/50 mb-3" />
+                    <div className="flex gap-1 mb-3">
+                      {[...Array(item.rating)].map((_, i) => (
+                        <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <h3 className="text-sm md:text-base font-bold text-white mb-2 line-clamp-2">{item.title}</h3>
+                    <p className="text-white/70 text-xs md:text-sm leading-relaxed mb-4 flex-1 line-clamp-4">{item.content}</p>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {item.tags.map((tag, i) => (
+                        <Badge key={i} variant="secondary" className="bg-purple-500/10 text-purple-300 border-purple-500/20 text-[10px] px-2 py-0.5">{tag}</Badge>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2 pt-3 border-t border-white/5">
+                      <Avatar className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500">
+                        <AvatarFallback className="text-white text-xs font-bold">{item.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-xs font-medium text-white">{item.name}</p>
+                        <p className="text-[10px] text-white/50">{item.role}</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
               </motion.div>
             </AnimatePresence>
           </div>
 
           <div className="flex items-center justify-center gap-4 mt-6">
-            <Button variant="ghost" size="icon" onClick={handlePrev} className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-white"><ChevronLeft className="w-5 h-5" /></Button>
+            <Button variant="ghost" size="icon" onClick={handlePrev} className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-white">
+              <ChevronLeft className="w-5 h-5" />
+            </Button>
             <div className="flex gap-2">
-              {testimonials.map((_, i) => (<button key={i} onClick={() => { setDirection(i > currentIndex ? 1 : -1); setCurrentIndex(i); }} className={`w-2 h-2 rounded-full transition-all ${i === currentIndex ? 'bg-purple-400 w-6' : 'bg-white/20'}`} />))}
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setDirection(i > currentPage ? 1 : -1); setCurrentPage(i); }}
+                  className={`w-2 h-2 rounded-full transition-all ${i === currentPage ? 'bg-purple-400 w-6' : 'bg-white/20'}`}
+                />
+              ))}
             </div>
-            <Button variant="ghost" size="icon" onClick={handleNext} className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-white"><ChevronRight className="w-5 h-5" /></Button>
+            <Button variant="ghost" size="icon" onClick={handleNext} className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-white">
+              <ChevronRight className="w-5 h-5" />
+            </Button>
           </div>
         </div>
       </div>

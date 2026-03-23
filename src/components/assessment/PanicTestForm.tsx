@@ -217,13 +217,17 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
             <p className="text-muted-foreground">{isEnglish ? "Questions are tailored to your age" : "연령에 맞는 검사 문항이 제공됩니다"}</p>
           </div>
           <div className="grid gap-4">
-            {(['child', 'adult'] as const).map(g => (
+            {(['toddler', 'child', 'adult'] as const).map(g => (
               <Button key={g} variant="outline" className="h-auto p-6 flex flex-col items-start text-left hover:bg-primary/5 hover:border-primary" onClick={() => handleAgeGroupSelect(g)}>
                 <span className="text-lg font-semibold">{getAgeGroupLabel(g, isEnglish)}</span>
                 <span className="text-sm text-muted-foreground">
                   {isEnglish
-                    ? g === 'child' ? 'Elementary school anxiety screening (15 items)' : 'Adult anxiety/panic screening (21 items)'
-                    : g === 'child' ? '초등학생 대상 불안 선별 검사 (15문항)' : '성인 대상 불안/공황 선별 검사 (21문항)'}
+                    ? g === 'toddler' ? 'Parent-report preschool anxiety screening (12 items)' 
+                      : g === 'child' ? 'Elementary school anxiety screening (15 items)' 
+                      : 'Adult anxiety/panic screening (21 items)'
+                    : g === 'toddler' ? '부모 보고형 유아 불안 선별 검사 (12문항)' 
+                      : g === 'child' ? '초등학생 대상 불안 선별 검사 (15문항)' 
+                      : '성인 대상 불안/공황 선별 검사 (21문항)'}
                 </span>
               </Button>
             ))}

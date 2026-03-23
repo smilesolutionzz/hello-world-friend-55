@@ -44,8 +44,8 @@ const PartnerTrustSection = () => {
           <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
             <span className="text-primary">{t.partnerTrust.headingCount}</span>{t.partnerTrust.headingEnd}
           </h2>
-          <p className="text-white/60 text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
-            {t.partnerTrust.description1}<br className="md:hidden" />
+          <p className="text-white/60 text-[13px] md:text-lg max-w-2xl mx-auto leading-relaxed">
+            {t.partnerTrust.description1}<br />
             {t.partnerTrust.description2}
           </p>
           <div className="flex justify-center gap-8 md:gap-16 mt-8">

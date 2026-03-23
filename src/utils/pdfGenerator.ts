@@ -1,4 +1,5 @@
 import html2pdf from 'html2pdf.js';
+import { injectPdfBrandingHeader, removePdfBrandingHeader } from './pdfBrandingHeader';
 
 interface PDFOptions {
   filename?: string;
@@ -14,6 +15,9 @@ export const generatePDF = async (elementId: string, options: PDFOptions = {}) =
     throw new Error('Element not found');
   }
 
+  // 브랜딩 헤더 삽입
+  injectPdfBrandingHeader(element);
+
   const defaultOptions = {
     margin: [10, 10, 10, 10] as [number, number, number, number],
     filename: options.filename || 'test-result.pdf',
@@ -26,7 +30,9 @@ export const generatePDF = async (elementId: string, options: PDFOptions = {}) =
 
   try {
     await html2pdf().set(pdfOptions).from(element).save();
+    removePdfBrandingHeader(element);
   } catch (error) {
+    removePdfBrandingHeader(element);
     console.error('PDF 생성 중 오류:', error);
     throw new Error('PDF 생성에 실패했습니다.');
   }

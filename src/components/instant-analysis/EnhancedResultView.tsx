@@ -139,7 +139,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
 
   // i18n labels
   const L = {
-    analysisComplete: isEnglish ? 'AI Deep Analysis Complete' : 'AI 심층 분석 완료',
+    analysisComplete: isEnglish ? 'Expert Deep Analysis Complete' : '전문가 심층 분석 완료',
     confidence: isEnglish ? 'Confidence' : '신뢰도',
     crossValidation: isEnglish ? 'Multi-model cross validation' : '다중 모델 교차 검증',
     overallScore: isEnglish ? 'Overall Score' : '종합 점수',

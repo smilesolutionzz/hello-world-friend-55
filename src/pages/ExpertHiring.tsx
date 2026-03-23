@@ -749,7 +749,6 @@ const BookingDialog = ({
   setBookingTopic,
   timeSlots,
   loading,
-  balance,
   onSubmit
 }: BookingDialogProps) => {
   if (!expert) return null;

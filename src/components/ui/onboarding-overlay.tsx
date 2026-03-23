@@ -31,7 +31,7 @@ const onboardingSteps = [
   {
     id: 3,
     title: "지금 바로 체험해보세요",
-    description: "무료 기본검사로 모든 기능을 체험할 수 있습니다.",
+    description: "무료 토큰 10개로 모든 기능을 체험할 수 있습니다.",
     icon: BarChart3,
     color: "bg-purple-500",
     actions: ["테스트 시작하기", "AI 분석 받기"]

@@ -134,12 +134,7 @@ export default function SelfEsteemTestForm({ onComplete, onBack }: SelfEsteemTes
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">
-              {isEnglish ? "Self-Worth Assessment" : "자아가치 측정"}
-              <span className="ml-2 text-sm font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                {isEnglish ? "For Children" : "아동용 · 보호자 응답"}
-              </span>
-            </CardTitle>
+            <CardTitle className="text-xl">{isEnglish ? "Self-Worth Assessment" : "자아가치 측정"}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>

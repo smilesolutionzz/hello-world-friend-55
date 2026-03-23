@@ -50,7 +50,7 @@ const FreeTrialGate: React.FC<FreeTrialGateProps> = ({
             </li>
             <li className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-yellow-500" />
-              <span>회원가입 시 무료 검사 체험 제공</span>
+              <span>회원가입 시 10개 토큰 무료 지급</span>
             </li>
           </ul>
         </div>
@@ -76,7 +76,7 @@ const FreeTrialGate: React.FC<FreeTrialGateProps> = ({
               onClick={() => navigate('/auth')}
               className="flex-1"
             >
-              회원가입 (무료 체험)
+              회원가입 (10토큰 무료)
             </Button>
             <Button
               variant="outline"
@@ -92,7 +92,7 @@ const FreeTrialGate: React.FC<FreeTrialGateProps> = ({
         <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-lg p-4 text-center">
           <p className="font-medium text-primary mb-1">💡 더 많은 기능이 필요하다면?</p>
           <p className="text-sm text-muted-foreground">
-            회원가입하시면 <span className="font-bold text-primary">기본 검사 무료</span> + 프리미엄 구독으로 무제한 이용
+            회원가입하시면 <span className="font-bold text-primary">10개 토큰 무료</span> + 매일 3개 토큰 지급
           </p>
         </div>
       </CardContent>

@@ -65,7 +65,7 @@ const AttachmentStyleTestInner = () => {
 const AttachmentStyleTestPage = () => {
   const { t } = useTranslation();
   return (
-    <SubscriptionGuard featureName={t.testPages.attachmentStyle} trialKey="RELATIONSHIP_TYPE">
+    <SubscriptionGuard consumeAt="result" featureName={t.testPages.attachmentStyle} trialKey="RELATIONSHIP_TYPE">
       <AttachmentStyleTestInner />
     </SubscriptionGuard>
   );

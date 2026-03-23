@@ -423,7 +423,7 @@ const BusinessMetacognitionTestInner: React.FC = () => {
 const BusinessMetacognitionTest: React.FC = () => {
   const { t } = useTranslation();
   return (
-    <SubscriptionGuard featureName={t.testPages.businessMetacognition} trialKey="PSYCHOLOGICAL_TEST">
+    <SubscriptionGuard consumeAt="result" featureName={t.testPages.businessMetacognition} trialKey="PSYCHOLOGICAL_TEST">
       <BusinessMetacognitionTestInner />
     </SubscriptionGuard>
   );

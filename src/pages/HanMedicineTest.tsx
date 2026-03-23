@@ -608,7 +608,7 @@ const HanMedicineTestInner = () => {
 };
 
 const HanMedicineTest = () => (
-  <SubscriptionGuard featureName="한방 체질분석" trialKey="HAN_MEDICINE_TEST">
+  <SubscriptionGuard consumeAt="result" featureName="한방 체질분석" trialKey="HAN_MEDICINE_TEST">
     <HanMedicineTestInner />
   </SubscriptionGuard>
 );

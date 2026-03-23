@@ -70,7 +70,7 @@ const CommunicationStyleTestInner = () => {
 const CommunicationStyleTest = () => {
   const { t } = useTranslation();
   return (
-    <SubscriptionGuard featureName={t.testPages.communicationStyle} trialKey="SOCIAL_DEVELOPMENT_TEST">
+    <SubscriptionGuard consumeAt="result" featureName={t.testPages.communicationStyle} trialKey="SOCIAL_DEVELOPMENT_TEST">
       <CommunicationStyleTestInner />
     </SubscriptionGuard>
   );

@@ -65,7 +65,7 @@ const RelationshipStyleTestInner = () => {
 const RelationshipStyleTest = () => {
   const { t } = useTranslation();
   return (
-    <SubscriptionGuard featureName={t.testPages.relationshipStyle} trialKey="RELATIONSHIP_TYPE">
+    <SubscriptionGuard consumeAt="result" featureName={t.testPages.relationshipStyle} trialKey="RELATIONSHIP_TYPE">
       <RelationshipStyleTestInner />
     </SubscriptionGuard>
   );

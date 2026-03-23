@@ -17,7 +17,7 @@ serve(async (req) => {
     
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY')!;
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');!;
     
     const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -64,14 +64,14 @@ ${behaviors.slice(0, 5).map(b => `- ${b.event_type}: ${new Date(b.created_at).to
   "keyMessage": "핵심 메시지 1문장"
 }`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { 
             role: 'system', 

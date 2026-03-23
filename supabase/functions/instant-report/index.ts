@@ -2,7 +2,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.55.0';
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL');
 const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
@@ -116,14 +116,14 @@ serve(async (req) => {
 분석 내용만 깔끔하게 1000자 이상으로 제공해주세요.`;
 
     // Call OpenAI API for main analysis
-    const mainResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    const mainResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -158,14 +158,14 @@ JSON 형식으로만 응답:
 추천 치료 예시: "인지행동치료(CBT)", "가족상담", "놀이치료", "약물치료", "미술치료", "음악치료" 등
 추천 컨텐츠 예시: "육아 스트레스 관리법", "ADHD 이해하기", "아동발달 체크리스트", "청소년 정서 관리" 등`;
 
-    const riskResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    const riskResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: '위험도 평가 전문가입니다.' },
           { role: 'user', content: riskAssessmentPrompt }

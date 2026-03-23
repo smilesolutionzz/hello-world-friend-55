@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY')
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
@@ -229,10 +229,10 @@ ${!currentPerformance.academic && !currentPerformance.social && !currentPerforma
 4. 평가 결과에서 드러난 강점을 활용하고 지원 필요 영역을 구체적으로 다루세요
 5. JSON 형식만 응답하고 추가 설명은 포함하지 마세요`
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

@@ -2,7 +2,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
 // 베타 테스트 기간 체크 (2025년 10월 30일까지 모든 기능 무료)
 const BETA_END_DATE = new Date('2025-10-30T23:59:59Z');
@@ -413,14 +413,14 @@ ${Object.entries(actualResults).map(([domain, score]) => `- ${domain}: ${score}�
 
     const promptConfig = getExpertPrompt(actualAssessmentType);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o', // 프리미엄 분석용 고품질 모델
+        model: 'google/gemini-3-flash-preview', // 프리미엄 분석용 고품질 모델
         messages: [
           {
             role: 'system',

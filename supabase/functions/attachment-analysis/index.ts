@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -46,14 +46,14 @@ ${result.averageScores.map((s: any) => `- ${s.category}: ${s.average.toFixed(1)}
 
 전문적이면서도 따뜻하고 희망적인 톤으로 작성해주세요.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: '당신은 애착 이론 전문가이자 따뜻한 심리 상담사입니다. 사용자의 애착 유형 결과를 깊이 있고 구체적으로 분석하여 성장을 돕는 조언을 제공합니다.' },
           { role: 'user', content: prompt }

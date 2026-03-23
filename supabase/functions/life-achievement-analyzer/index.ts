@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -48,14 +48,14 @@ ${results.map(r => `${r.category}: ${r.score}%`).join('\n')}
 
 친근하고 따뜻한 톤으로 작성해주세요. 숫자나 특수문자로 시작하지 말고 자연스럽게 작성해주세요.`;
 
-    const analysisResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    const analysisResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           {
             role: 'system',
@@ -104,7 +104,7 @@ ${results.map(r => `${r.category}: ${r.score}%`).join('\n')}
     const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

@@ -142,7 +142,7 @@ serve(async (req) => {
       throw new Error('No audio data provided')
     }
 
-    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+    const openaiApiKey = Deno.env.get('LOVABLE_API_KEY');
     if (!openaiApiKey) {
       throw new Error('OpenAI API key not configured');
     }
@@ -194,14 +194,14 @@ serve(async (req) => {
     console.log('Starting comprehensive emotion analysis...');
     const analysisPrompt = createEmotionAnalysisPrompt(transcription, voiceCharacteristics);
     
-    const emotionResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    const emotionResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${openaiApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           {
             role: 'system',

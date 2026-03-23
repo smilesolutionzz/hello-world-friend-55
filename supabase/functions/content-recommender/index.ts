@@ -43,7 +43,7 @@ serve(async (req) => {
   try {
     logStep('Function started');
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const perplexityApiKey = Deno.env.get('PERPLEXITY_API_KEY');
     
     if (!openAIApiKey) {
@@ -105,14 +105,14 @@ ${requestBody.analysisResult ? `- AI 분석 결과: ${requestBody.analysisResult
 4. 관찰 내용과 직접 연관된 실용적인 추천을 하세요
 `;
 
-      const gptResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      const gptResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${openAIApiKey}`,
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'google/gemini-3-flash-preview',
           messages: [
             {
               role: 'system',

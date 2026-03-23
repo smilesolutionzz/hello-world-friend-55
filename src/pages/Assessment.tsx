@@ -1411,16 +1411,18 @@ const Assessment = () => {
 
   if (currentStep === 'adhd-result' && adhdResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <AdhdTestResult 
-            results={adhdResults}
-            onBack={handleBack}
-            onStartAIChat={handleStartAIChat}
-            onStartRealTimeChat={handleStartRealTimeChat}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="ADHD 검사" creditType="test" trialKey="ADHD_TEST">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <AdhdTestResult 
+              results={adhdResults}
+              onBack={handleBack}
+              onStartAIChat={handleStartAIChat}
+              onStartRealTimeChat={handleStartRealTimeChat}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 

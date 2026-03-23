@@ -21,6 +21,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import html2pdf from "html2pdf.js";
+import { getPdfBrandingHeaderHtml } from '@/utils/pdfBrandingHeader';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from '@/i18n/useTranslation';
 

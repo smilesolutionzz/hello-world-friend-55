@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +16,24 @@ const VoiceFeature: React.FC<VoiceFeatureProps> = ({ text, title, type = 'result
   const { toast } = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUrlRef = useRef<string | null>(null);
+
+  // 컴포넌트 언마운트 시 오디오 정리
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+        audioRef.current = null;
+      }
+      if (audioUrlRef.current) {
+        URL.revokeObjectURL(audioUrlRef.current);
+        audioUrlRef.current = null;
+      }
+      speechSynthesis.cancel();
+    };
+  }, []);
 
   const handleTextToSpeech = async () => {
     if (!text) return;
@@ -23,18 +41,16 @@ const VoiceFeature: React.FC<VoiceFeatureProps> = ({ text, title, type = 'result
     setIsPlaying(true);
     
     try {
-      // ElevenLabs API를 통한 고품질 TTS
       const { data, error } = await supabase.functions.invoke('elevenlabs-tts', {
         body: { 
           text: text,
-          voice: 'Aria', // 따뜻한 여성 목소리
+          voice: 'Aria',
           model: 'eleven_multilingual_v2'
         }
       });
 
       if (error) throw error;
 
-      // Base64 오디오를 Blob으로 변환
       const binaryString = atob(data.audioContent);
       const bytes = new Uint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
@@ -43,15 +59,34 @@ const VoiceFeature: React.FC<VoiceFeatureProps> = ({ text, title, type = 'result
       const audioBlob = new Blob([bytes], { type: 'audio/mpeg' });
       const audioUrl = URL.createObjectURL(audioBlob);
 
-      // HTML5 Audio로 재생
+      // 이전 오디오 정리
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+      }
+      if (audioUrlRef.current) {
+        URL.revokeObjectURL(audioUrlRef.current);
+      }
+
       const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+      audioUrlRef.current = audioUrl;
+
       audio.onended = () => {
         setIsPlaying(false);
-        URL.revokeObjectURL(audioUrl);
+        if (audioUrlRef.current) {
+          URL.revokeObjectURL(audioUrlRef.current);
+          audioUrlRef.current = null;
+        }
+        audioRef.current = null;
       };
       audio.onerror = () => {
         setIsPlaying(false);
-        URL.revokeObjectURL(audioUrl);
+        if (audioUrlRef.current) {
+          URL.revokeObjectURL(audioUrlRef.current);
+          audioUrlRef.current = null;
+        }
+        audioRef.current = null;
         toast({
           title: "음성 재생 오류",
           description: "음성 재생 중 오류가 발생했습니다.",
@@ -70,7 +105,6 @@ const VoiceFeature: React.FC<VoiceFeatureProps> = ({ text, title, type = 'result
       setIsPlaying(false);
       console.error('ElevenLabs TTS Error:', error);
       
-      // 폴백: 브라우저 기본 TTS 사용
       try {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'ko-KR';
@@ -94,6 +128,15 @@ const VoiceFeature: React.FC<VoiceFeatureProps> = ({ text, title, type = 'result
   };
 
   const stopSpeech = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+      audioRef.current = null;
+    }
+    if (audioUrlRef.current) {
+      URL.revokeObjectURL(audioUrlRef.current);
+      audioUrlRef.current = null;
+    }
     speechSynthesis.cancel();
     setIsPlaying(false);
   };

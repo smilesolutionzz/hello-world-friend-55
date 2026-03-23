@@ -216,6 +216,13 @@ export const useTestResultActions = () => {
       container.style.backgroundColor = '#ffffff';
       container.style.padding = '0';
       container.style.margin = '0';
+      // Edge function HTML에도 브랜딩 헤더 삽입
+      if (reportHtml && !reportHtml.includes('aihpro-pdf-header')) {
+        const { getPdfBrandingHeaderHtml } = await import('@/utils/pdfBrandingHeader');
+        const headerHtml = getPdfBrandingHeaderHtml();
+        // 첫 번째 div 내부 최상단에 삽입
+        reportHtml = reportHtml.replace(/(<div[^>]*>)/, `$1${headerHtml}`);
+      }
       container.innerHTML = reportHtml;
       document.body.appendChild(container);
 

@@ -159,7 +159,7 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
   const currentStepIndex = STEPS_ORDER.indexOf(step);
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] bg-background pb-20">
+    <div className="min-h-[calc(100vh-3.5rem)] bg-background pb-20 overflow-x-hidden max-w-full">
       {/* Step indicator */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border px-4 py-3">
         <div className="flex items-center gap-3 max-w-lg mx-auto">

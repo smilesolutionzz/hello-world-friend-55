@@ -79,7 +79,7 @@ export const AIReportShowcaseSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-sm md:text-lg text-slate-400 max-w-2xl mx-auto whitespace-nowrap"
+            className="text-[11px] md:text-lg text-slate-400 max-w-2xl mx-auto whitespace-nowrap"
           >
             최신 연구 기반 AI가 생성하는 전문가 수준의 맞춤형 분석
             <br className="hidden md:block" />

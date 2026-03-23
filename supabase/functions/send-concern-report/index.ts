@@ -177,8 +177,8 @@ const handler = async (req: Request): Promise<Response> => {
         </head>
         <body>
           <div class="header">
-            <h1 style="margin: 0;">🧠 AI 고민 분석 리포트</h1>
-            <p style="margin: 10px 0 0 0; opacity: 0.9;">심리 건강 전문 AI 분석 결과입니다</p>
+            <h1 style="margin: 0;">🧠 전문가 고민 분석 리포트</h1>
+            <p style="margin: 10px 0 0 0; opacity: 0.9;">심리 건강 전문 분석 결과입니다</p>
           </div>
           
           <div class="content">

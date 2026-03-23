@@ -11,7 +11,7 @@ import { usePayment } from '@/hooks/usePayment';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAccessControl } from '@/hooks/useAccessControl';
 import { supabase } from '@/integrations/supabase/client';
-import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
+import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE, SINGLE_TEST_PRICE } from '@/constants/tokenCosts';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type Step = 'select' | 'plan' | 'confirm';

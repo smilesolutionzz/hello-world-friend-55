@@ -143,7 +143,6 @@ const queryClient = new QueryClient({
 
 const App = () => {
   return (
-    <React.StrictMode>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
             <TooltipProvider>
@@ -392,7 +391,6 @@ const App = () => {
           </TooltipProvider>
         </QueryClientProvider>
       </HelmetProvider>
-    </React.StrictMode>
   );
 };
 

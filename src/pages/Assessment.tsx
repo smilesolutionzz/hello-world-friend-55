@@ -1720,6 +1720,19 @@ const Assessment = () => {
     );
   }
 
+  if (currentStep === 'selfesteem-result' && selfesteemResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <SelfEsteemTestResult 
+            result={selfesteemResults}
+            onRestart={() => setCurrentStep('selfesteem-test')}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <UnifiedNavigation />

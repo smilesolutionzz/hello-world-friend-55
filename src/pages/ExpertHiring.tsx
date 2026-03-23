@@ -753,8 +753,7 @@ const BookingDialog = ({
 }: BookingDialogProps) => {
   if (!expert) return null;
 
-  const cost = expert.hourlyPrice || 30000;
-  const hasEnoughTokens = balance >= cost;
+  const cost = CONSULT_PRICE;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

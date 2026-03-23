@@ -224,25 +224,17 @@ const ExpertHiring = () => {
         return;
       }
 
-      const cost = selectedExpert.hourlyPrice || 30000;
-      
-      if (!checkTokenAvailability(cost)) {
-        toast.error(`토큰이 부족합니다. (필요: ${cost.toLocaleString()} 토큰)`);
-        navigate('/token-subscription');
-        return;
-      }
-
       const bookingData = {
         user_id: user.id,
         expert_id: selectedExpert.id,
         booking_date: format(bookingDate, 'yyyy-MM-dd'),
         start_time: bookingTime,
-        end_time: calculateEndTime(bookingTime, 60),
-        duration_minutes: 60,
+        end_time: calculateEndTime(bookingTime, 40),
+        duration_minutes: 40,
         status: 'pending',
         is_quick_consultation: false,
         notes: bookingTopic,
-        tokens_paid: cost
+        tokens_paid: CONSULT_PRICE
       };
 
       const { error } = await supabase
@@ -251,12 +243,9 @@ const ExpertHiring = () => {
 
       if (error) throw error;
 
-      await consumeTokens(cost);
-
-      toast.success('예약이 완료되었습니다! 전문가가 확인 후 연락드립니다.');
       setBookingOpen(false);
+      setBookingSuccess(true);
       resetBookingForm();
-      navigate('/booking-management');
     } catch (error) {
       console.error('Booking error:', error);
       toast.error('예약 중 오류가 발생했습니다');

@@ -1334,18 +1334,20 @@ const Assessment = () => {
 
   if (currentStep === 'panic-result' && panicResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <PanicTestResult 
-            results={panicResults}
-            onBack={() => setCurrentStep('panic-test')}
-            onRestart={() => {
-              setPanicResults(null);
-              setCurrentStep('panic-test');
-            }}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="불안감 검사" creditType="test" trialKey="PANIC_TEST">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <PanicTestResult 
+              results={panicResults}
+              onBack={() => setCurrentStep('panic-test')}
+              onRestart={() => {
+                setPanicResults(null);
+                setCurrentStep('panic-test');
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 

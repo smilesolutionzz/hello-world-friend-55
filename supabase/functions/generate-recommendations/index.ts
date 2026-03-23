@@ -45,7 +45,7 @@ serve(async (req) => {
   try {
     logStep('Function started');
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
     }
@@ -86,14 +86,14 @@ ${requestBody.analysisText}
 
     logStep('Calling OpenAI API for recommendations');
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           {
             role: 'system',

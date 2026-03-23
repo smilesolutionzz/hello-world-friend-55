@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -38,14 +38,14 @@ ${Object.entries(answers).map(([key, answer]: [string, any]) => `- ${key}: ${ans
 
 각 항목을 명확하고 공감가는 언어로 작성해주세요.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: '당신은 성격 심리학과 MBTI, 빅5 성격 이론을 깊이 이해하는 전문가입니다. 오트로버트는 외향성과 내향성 사이의 스펙트럼을 측정하는 새로운 개념입니다.' },
           { role: 'user', content: prompt }

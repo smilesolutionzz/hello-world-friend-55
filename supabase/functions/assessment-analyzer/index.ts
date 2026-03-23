@@ -92,7 +92,7 @@ serve(async (req) => {
 
     console.log(`Token deducted: ${tokenCost}, Remaining: ${tokenData.current_tokens - tokenCost}`);
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not found');
     }
@@ -212,14 +212,14 @@ ${Object.entries(results).map(([key, value]) => `${key}: ${value}점`).join('\n'
 
     const analysisPrompt = getAnalysisPrompt(ageGroup, age, results);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o', // 검사 분석용 고품질 모델
+        model: 'google/gemini-3-flash-preview', // 검사 분석용 고품질 모델
         messages: [
           { role: 'system', content: '당신은 임상심리학 전문가입니다. 정확하고 전문적인 심리검사 분석을 제공합니다.' },
           { role: 'user', content: analysisPrompt }

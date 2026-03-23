@@ -45,7 +45,7 @@ const getAgeGroupLabel = (ageGroup: 'toddler' | 'child' | 'adolescent' | 'adult'
 
 const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: DepressionTestFormProps) => {
   const { isEnglish } = useLanguage();
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'child' | 'adolescent' | 'adult' | null>(ageGroup || null);
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'toddler' | 'child' | 'adolescent' | 'adult' | null>(ageGroup || null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [hasStarted, setHasStarted] = useState(false);
@@ -54,7 +54,7 @@ const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: Depressi
   const questions = selectedAgeGroup ? getQuestions(selectedAgeGroup, isEnglish) : [];
   const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
-  const handleAgeGroupSelect = (group: 'child' | 'adolescent' | 'adult') => {
+  const handleAgeGroupSelect = (group: 'toddler' | 'child' | 'adolescent' | 'adult') => {
     setSelectedAgeGroup(group);
     setAnswers(new Array(getQuestions(group, isEnglish).length).fill(""));
   };

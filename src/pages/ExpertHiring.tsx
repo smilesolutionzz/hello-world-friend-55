@@ -73,9 +73,7 @@ const ExpertHiring = () => {
   const [bookingTime, setBookingTime] = useState('10:00');
   const [bookingTopic, setBookingTopic] = useState('');
   const [bookingLoading, setBookingLoading] = useState(false);
-  
-  // 토큰은 모달 열렸을 때만 체크 (깜빡임 방지)
-  const { balance, consumeTokens, checkTokenAvailability } = useTokens();
+  const [bookingSuccess, setBookingSuccess] = useState(false);
 
   const [activeTab, setActiveTab] = useState<'experts' | 'institutions'>('experts');
 

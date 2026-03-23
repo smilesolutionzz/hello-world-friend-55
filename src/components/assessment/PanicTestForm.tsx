@@ -147,7 +147,7 @@ const getAgeGroupLabel = (ageGroup: 'toddler' | 'child' | 'adult', isEn: boolean
 
 const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => {
   const { isEnglish } = useLanguage();
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'child' | 'adult' | null>(ageGroup || null);
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'toddler' | 'child' | 'adult' | null>(ageGroup || null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [hasStarted, setHasStarted] = useState(false);
@@ -156,7 +156,7 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
   const questions = selectedAgeGroup ? getQuestions(selectedAgeGroup, isEnglish) : [];
   const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
-  const handleAgeGroupSelect = (group: 'child' | 'adult') => {
+  const handleAgeGroupSelect = (group: 'toddler' | 'child' | 'adult') => {
     setSelectedAgeGroup(group);
     setAnswers(new Array(getQuestions(group, isEnglish).length).fill(""));
   };

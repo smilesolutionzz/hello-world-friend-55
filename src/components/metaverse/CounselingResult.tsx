@@ -178,7 +178,7 @@ export const CounselingResult = ({ result, onRestart, onExit }: CounselingResult
         </div>
 
         <p className="text-xs text-center text-muted-foreground">
-          * 이 결과는 AI 기반 분석이며, 전문 진단을 대체하지 않습니다.
+          * 본 결과는 전문가 지식 기반으로 작성되었으며, 전문 진단을 대체하지 않습니다.
         </p>
       </Card>
     </motion.div>

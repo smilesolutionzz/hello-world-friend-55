@@ -319,7 +319,7 @@ const ImprovedOnboarding = () => {
         {!isLastStep && (
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              ✨ 무료 체험 5회 + AI 전문가 분석 + 맞춤형 솔루션 제공
+              ✨ 무료 체험 5회 + 전문가 분석 + 맞춤형 솔루션 제공
             </p>
           </div>
         )}

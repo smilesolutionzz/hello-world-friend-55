@@ -314,6 +314,7 @@ export const downloadInstitutionPDF = async (
         }
       </style>
       <div class="pdf-container">
+        ${getPdfBrandingHeaderHtml()}
         ${options.watermark ? `<div class="watermark">${options.watermark}</div>` : ''}
         ${htmlContent}
       </div>

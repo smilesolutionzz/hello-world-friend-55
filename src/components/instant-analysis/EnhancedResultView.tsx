@@ -148,7 +148,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
     overallRisk: isEnglish ? 'Overall Risk Level' : '전체 위험도',
     expertIntervention: isEnglish ? 'Expert Intervention Needed' : '전문가 개입 필요도',
     deepCause: isEnglish ? 'Deep Root Cause Analysis' : '심층 원인 분석',
-    aiMultiLayer: isEnglish ? 'AI Multi-layer' : 'AI 다층 분석',
+    aiMultiLayer: isEnglish ? 'Multi-layer Analysis' : '다층 분석',
     symptomPattern: isEnglish ? 'Symptom Pattern Analysis' : '증상 패턴 분석',
     protectiveFactors: isEnglish ? 'Protective Factors' : '보호요인',
     riskFactors: isEnglish ? 'Risk Factors' : '위험요인',

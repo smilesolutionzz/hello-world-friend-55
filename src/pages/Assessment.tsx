@@ -124,7 +124,7 @@ const Assessment = () => {
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
   const [languageResults, setLanguageResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, age: number} | null>(null);
-  const [panicResults, setPanicResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
+  const [panicResults, setPanicResults] = useState<{answers: number[], total: number, average: number, severity: string, ageGroup?: string} | null>(null);
   const [depressionResults, setDepressionResults] = useState<{answers: number[], total: number, average: number, severity: string, ageGroup?: string} | null>(null);
   const [adhdResults, setAdhdResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
   const [stressResults, setStressResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
@@ -416,7 +416,7 @@ const Assessment = () => {
     setCurrentStep('language-result');
   };
 
-  const handlePanicTestComplete = async (results: {answers: number[], total: number, average: number, severity: string}) => {
+  const handlePanicTestComplete = async (results: {answers: number[], total: number, average: number, severity: string, ageGroup: string}) => {
     console.log('Panic Test Results:', results);
     setPanicResults(results);
     
@@ -425,7 +425,7 @@ const Assessment = () => {
     
     setCurrentAssessmentResults({
       testType: 'panic',
-      ageGroup: '성인',
+      ageGroup: results.ageGroup,
       total: results.total,
       average: results.average,
       severity: results.severity

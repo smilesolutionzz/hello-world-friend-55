@@ -380,6 +380,8 @@ const App = () => {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/refund" element={<RefundPolicy />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/en/about" element={<About />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

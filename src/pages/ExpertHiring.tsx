@@ -36,7 +36,9 @@ import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
-import { useTokens } from '@/hooks/useTokens';
+import { CONSULTATION_PRICE } from '@/constants/tokenCosts';
+
+const CONSULT_PRICE = 49000; // ₩49,000 per 40min session
 
 interface Expert {
   id: string;

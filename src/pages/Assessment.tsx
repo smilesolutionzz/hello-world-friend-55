@@ -124,7 +124,7 @@ const Assessment = () => {
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
   const [languageResults, setLanguageResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, age: number} | null>(null);
-  const [panicResults, setPanicResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
+  const [panicResults, setPanicResults] = useState<{answers: number[], total: number, average: number, severity: string, ageGroup?: string} | null>(null);
   const [depressionResults, setDepressionResults] = useState<{answers: number[], total: number, average: number, severity: string, ageGroup?: string} | null>(null);
   const [adhdResults, setAdhdResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
   const [stressResults, setStressResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);

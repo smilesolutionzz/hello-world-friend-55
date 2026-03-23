@@ -241,7 +241,7 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
                   variant="outline"
                   className="w-full h-12 text-base font-semibold rounded-xl"
                   onClick={handlePayTest}
-                  disabled={loading || !isReady}
+                  disabled={isAuthenticated ? (loading || !isReady) : false}
                 >
                   {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                   검사 1회 구매

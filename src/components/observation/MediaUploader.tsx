@@ -148,11 +148,13 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({ onMediaChange, existingMe
 
     if (error) throw error;
 
-    const { data: urlData } = supabase.storage
+    const { data: signedUrlData, error: signedError } = await supabase.storage
       .from('observation-media')
-      .getPublicUrl(data.path);
+      .createSignedUrl(data.path, 3600);
 
-    return urlData.publicUrl;
+    if (signedError) throw signedError;
+
+    return signedUrlData.signedUrl;
   };
 
   const uploadAllFiles = async () => {

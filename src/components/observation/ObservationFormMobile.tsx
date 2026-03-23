@@ -189,11 +189,13 @@ const ObservationForm: React.FC<ObservationFormProps> = ({
 
           if (error) throw error;
 
-          const { data: urlData } = supabase.storage
+          const { data: signedUrlData, error: signedError } = await supabase.storage
             .from('observation-media')
-            .getPublicUrl(data.path);
+            .createSignedUrl(data.path, 3600);
 
-          return { url: urlData.publicUrl, type: mediaFile.type };
+          if (signedError) throw signedError;
+
+          return { url: signedUrlData.signedUrl, type: mediaFile.type };
         } catch (error) {
           console.error('Upload failed for file:', mediaFile.id, error);
           throw error;

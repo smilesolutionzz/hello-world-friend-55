@@ -166,7 +166,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
               : testType === 'panic'
               ? '연령대를 선택하여 불안감 수준을 체크해보세요 (참고용)'
               : testType === 'depression'
-              ? '연령대를 선택하여 우울감 수준을 확인해보세요 (참고용)'
+              ? '연령대를 선택하여 심리건강 수준을 확인해보세요 (참고용)'
               : testType === 'adhd'
               ? '연령대를 선택하여 ADHD 증상을 체크해보세요 (참고용)'
               : '연령에 맞는 맞춤체크로 참고 분석을 받아보세요'

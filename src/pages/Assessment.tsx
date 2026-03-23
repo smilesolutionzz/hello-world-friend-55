@@ -1480,14 +1480,16 @@ const Assessment = () => {
 
   if (currentStep === 'bigfive-result' && bigfiveResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <BigFiveTestResult 
-            result={bigfiveResults}
-            onRestart={() => setCurrentStep('bigfive-test')}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="Big5 성격검사" creditType="test" trialKey="FIVE_D_PERSONALITY">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <BigFiveTestResult 
+              result={bigfiveResults}
+              onRestart={() => setCurrentStep('bigfive-test')}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 

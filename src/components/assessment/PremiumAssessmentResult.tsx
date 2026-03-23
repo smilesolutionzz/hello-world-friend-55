@@ -72,8 +72,10 @@ const PremiumAssessmentResult = ({
   const handleDownloadPDF = async () => {
     try {
       const html2pdf = (await import('html2pdf.js')).default;
+      const { injectPdfBrandingHeader, removePdfBrandingHeader } = await import('@/utils/pdfBrandingHeader');
       const el = document.getElementById('clinical-report-content');
       if (!el) return;
+      injectPdfBrandingHeader(el);
       await html2pdf().set({
         margin: [15, 15, 15, 15],
         filename: `${assessmentInfo.title}_분석결과_${new Date().toISOString().split('T')[0]}.pdf`,
@@ -81,6 +83,7 @@ const PremiumAssessmentResult = ({
         html2canvas: { scale: 3, useCORS: true, logging: false, backgroundColor: '#ffffff' },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       }).from(el).save();
+      removePdfBrandingHeader(el);
       toast({ title: "PDF 다운로드 완료" });
     } catch (error) {
       toast({ title: "PDF 생성 오류", variant: "destructive" });

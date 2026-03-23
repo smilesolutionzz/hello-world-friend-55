@@ -698,9 +698,9 @@ const ExpertCard = ({ expert, onBook }: { expert: Expert; onBook: () => void }) 
             <div className="flex items-center justify-between pt-3 border-t border-slate-100">
               <div>
                 <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  {expert.hourlyPrice.toLocaleString()}
+                  ₩{CONSULT_PRICE.toLocaleString()}
                 </span>
-                <span className="text-sm text-slate-500"> 토큰/시간</span>
+                <span className="text-sm text-slate-500"> /40분</span>
               </div>
               <Button 
                 size="sm" 

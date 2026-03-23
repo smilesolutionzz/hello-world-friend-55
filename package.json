@@ -69,7 +69,7 @@
     "file-saver": "^2.0.5",
     "framer-motion": "^12.23.22",
     "html2canvas": "^1.4.1",
-    "html2pdf.js": "^0.12.1",
+    "html2pdf.js": "0.14.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
     "moment": "^2.30.1",

@@ -1648,24 +1648,22 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             )}
           </div>
 
-          {/* 구조화된 상담 캐릭터 정보 */}
+          {/* 구조화된 상담 캐릭터 정보 - 컴팩트하게 표시 */}
           {!isUICollapsed && mode === 'structured' && structuredConfig && (
-            <div className="w-full max-w-2xl mb-6">
-              <Card className="bg-primary/10 backdrop-blur-sm border border-primary/20 p-6 text-center">
-                <div className="text-4xl mb-3">
-                  {structuredConfig.character === 'elephant' && '🐘'}
-                  {structuredConfig.character === 'bear' && '🐻'}
-                  {structuredConfig.character === 'rabbit' && '🐰'}
-                  {structuredConfig.character === 'fox' && '🦊'}
-                  {structuredConfig.character === 'owl' && '🦉'}
-                </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">
-                  {CHARACTERS[structuredConfig.character].name}
-                </h3>
-                <p className="text-foreground/70">
-                  {CHARACTERS[structuredConfig.character].personality}
-                </p>
-              </Card>
+            <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-lg px-4 py-2 mb-2">
+              <span className="text-2xl">
+                {structuredConfig.character === 'elephant' && '🐘'}
+                {structuredConfig.character === 'bear' && '🐻'}
+                {structuredConfig.character === 'rabbit' && '🐰'}
+                {structuredConfig.character === 'fox' && '🦊'}
+                {structuredConfig.character === 'owl' && '🦉'}
+              </span>
+              <span className="text-sm font-bold text-foreground">
+                {CHARACTERS[structuredConfig.character].name}
+              </span>
+              <span className="text-xs text-foreground/60">
+                {CHARACTERS[structuredConfig.character].personality}
+              </span>
             </div>
           )}
 

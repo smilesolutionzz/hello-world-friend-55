@@ -11,7 +11,7 @@ import { usePayment } from '@/hooks/usePayment';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAccessControl } from '@/hooks/useAccessControl';
 import { supabase } from '@/integrations/supabase/client';
-import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
+import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE, SINGLE_TEST_PRICE } from '@/constants/tokenCosts';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type Step = 'select' | 'plan' | 'confirm';
@@ -56,6 +56,15 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
     } else {
       setStep('plan');
     }
+  };
+
+  const handlePayTest = async () => {
+    if (!isAuthenticated) {
+      localStorage.setItem('auth_redirect_after', '/token-subscription');
+      navigate('/auth?mode=signup');
+      return;
+    }
+    await pay('single_test');
   };
 
   const handlePaySingle = async () => {
@@ -178,7 +187,34 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
                 <p className="text-sm text-muted-foreground mt-1">심층 분석 결과를 확인하려면 플랜이 필요해요</p>
               </div>
 
-              {/* 단건 구매 */}
+              {/* 검사 1회 구매 */}
+              <Card className="p-4 border border-border rounded-2xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Brain className="w-5 h-5 text-blue-500" />
+                    <span className="font-bold text-foreground">검사 1회</span>
+                  </div>
+                  <Badge variant="secondary" className="text-xs">가벼운 시작</Badge>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-extrabold text-foreground">₩{SINGLE_TEST_PRICE.toLocaleString()}</span>
+                  <span className="text-sm text-muted-foreground">/ 1회</span>
+                </div>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />심리검사 1회 이용</li>
+                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />기본 결과 확인</li>
+                </ul>
+                <Button
+                  variant="outline"
+                  className="w-full h-12 text-base font-semibold rounded-xl"
+                  onClick={handlePayTest}
+                  disabled={loading || !isReady}
+                >
+                  {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                  검사 1회 구매
+                </Button>
+              </Card>
+
               <Card className="p-4 border border-border rounded-2xl space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">

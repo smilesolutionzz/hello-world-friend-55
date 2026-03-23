@@ -117,13 +117,19 @@ const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: Depressi
             <p className="text-muted-foreground">{isEnglish ? "Questions are tailored to your age" : "연령에 맞는 검사 문항이 제공됩니다"}</p>
           </div>
           <div className="grid gap-4">
-            {(['child', 'adolescent', 'adult'] as const).map(g => (
+            {(['toddler', 'child', 'adolescent', 'adult'] as const).map(g => (
               <Button key={g} variant="outline" className="h-auto p-6 flex flex-col items-start text-left hover:bg-primary/5 hover:border-primary" onClick={() => handleAgeGroupSelect(g)}>
                 <span className="text-lg font-semibold">{getAgeGroupLabel(g, isEnglish)}</span>
                 <span className="text-sm text-muted-foreground">
                   {isEnglish
-                    ? g === 'child' ? 'Elementary school items' : g === 'adolescent' ? 'Middle/high school items' : 'Adult items'
-                    : g === 'child' ? '초등학생 대상 문항' : g === 'adolescent' ? '중고등학생 대상 문항' : '성인 대상 문항'}
+                    ? g === 'toddler' ? 'Parent-report preschool depression screening (12 items)' 
+                      : g === 'child' ? 'Elementary school items (21 items)' 
+                      : g === 'adolescent' ? 'Middle/high school items (21 items)' 
+                      : 'Adult items (21 items)'
+                    : g === 'toddler' ? '부모 보고형 유아 우울 선별 검사 (12문항)' 
+                      : g === 'child' ? '초등학생 대상 문항 (21문항)' 
+                      : g === 'adolescent' ? '중고등학생 대상 문항 (21문항)' 
+                      : '성인 대상 문항 (21문항)'}
                 </span>
               </Button>
             ))}

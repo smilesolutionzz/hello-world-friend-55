@@ -76,7 +76,7 @@ const FreeTrialGate: React.FC<FreeTrialGateProps> = ({
               onClick={() => navigate('/auth')}
               className="flex-1"
             >
-              회원가입 (10토큰 무료)
+              회원가입 (무료 체험)
             </Button>
             <Button
               variant="outline"

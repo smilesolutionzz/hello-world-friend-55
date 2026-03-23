@@ -1,8 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -16,8 +14,9 @@ serve(async (req) => {
   try {
     const { results, answers } = await req.json();
     
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is not configured');
     }
 
     const analysisPrompt = `
@@ -105,30 +104,38 @@ serve(async (req) => {
 이 분석은 참고용 의견이며 의학적 진단이 아닙니다. 지속적인 우울감이나 자살 사고가 있을 경우 즉시 전문기관에서 정확한 진단과 치료를 받으시기 바랍니다.
 `;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { 
             role: 'system', 
-            content: '당신은 임상심리학 박사이자 우울감 전문가입니다. 내담자에게 도움이 되는 참고용 분석을 제공합니다.'
+            content: '당신은 임상심리학 박사이자 우울감 전문가입니다. 내담자에게 도움이 되는 참고용 분석을 제공합니다. 각 섹션을 최소 200자 이상으로 풍부하게 작성하세요.'
           },
           { role: 'user', content: analysisPrompt }
         ],
-        max_tokens: 4500,
-        temperature: 0.7
       }),
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('OpenAI API Error:', errorData);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: 'Rate limit exceeded' }), {
+          status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ error: 'Payment required' }), {
+          status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      const errorText = await response.text();
+      console.error('AI gateway error:', response.status, errorText);
+      throw new Error(`AI gateway error: ${response.status}`);
     }
 
     const data = await response.json();

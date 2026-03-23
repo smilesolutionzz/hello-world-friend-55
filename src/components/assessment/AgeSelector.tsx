@@ -74,7 +74,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
     {
       key: 'infant' as const,
       title: '영유아',
-      subtitle: '0-5세',
+      subtitle: '12개월-5세',
       ...getAgeGroupContent('infant'),
       icon: Baby,
       color: 'from-gentle-peach to-warm-lavender'

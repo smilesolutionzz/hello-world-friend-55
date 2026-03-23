@@ -1512,14 +1512,16 @@ const Assessment = () => {
 
   if (currentStep === 'attachment-result' && attachmentResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <AttachmentStyleResult 
-            result={attachmentResults}
-            onRestart={() => setCurrentStep('attachment-test')}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="애착유형 검사" creditType="test" trialKey="RELATIONSHIP_TYPE">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <AttachmentStyleResult 
+              result={attachmentResults}
+              onRestart={() => setCurrentStep('attachment-test')}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 

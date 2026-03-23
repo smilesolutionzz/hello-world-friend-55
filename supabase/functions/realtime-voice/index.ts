@@ -20,6 +20,26 @@ serve(async (req) => {
     return new Response("Expected WebSocket connection", { status: 400 });
   }
 
+  // Auth check via query parameter token
+  const url = new URL(req.url);
+  const authToken = url.searchParams.get("token");
+  if (!authToken) {
+    return new Response("Unauthorized: token required", { status: 401 });
+  }
+
+  try {
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
+      global: { headers: { Authorization: `Bearer ${authToken}` } }
+    });
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(authToken);
+    if (claimsError || !claimsData?.claims) {
+      return new Response("Unauthorized: invalid token", { status: 401 });
+    }
+  } catch {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   try {
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) {

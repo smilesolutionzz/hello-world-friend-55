@@ -1237,14 +1237,16 @@ const Assessment = () => {
 
   if (currentStep === 'language-result' && languageResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <LanguageTestResult 
-            results={languageResults}
-            onBack={handleBack}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="언어발달 검사" creditType="test" trialKey="LANGUAGE_TEST">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <LanguageTestResult 
+              results={languageResults}
+              onBack={handleBack}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 

@@ -11,10 +11,41 @@ import TokenGate from "@/components/TokenGate";
 import { useLanguage } from "@/i18n";
 
 interface PanicTestFormProps {
-  ageGroup?: 'child' | 'adult';
+  ageGroup?: 'toddler' | 'child' | 'adult';
   onComplete: (results: {answers: number[], total: number, average: number, severity: string, ageGroup: string}) => void;
   onBack: () => void;
 }
+
+// 유아용 (3-6세) 부모 보고형 불안 검사 문항
+const toddlerQKo = [
+  "아이가 부모와 떨어질 때 심하게 울거나 매달립니다",
+  "낯선 사람을 보면 극도로 불안해하거나 숨습니다",
+  "새로운 장소에 가면 가지 않으려고 합니다",
+  "밤에 혼자 자는 것을 매우 무서워합니다",
+  "특정 동물이나 사물에 대해 과도한 공포를 보입니다",
+  "큰 소리나 갑작스러운 변화에 과민하게 반응합니다",
+  "어린이집/유치원에 가기를 거부합니다",
+  "또래 아이들과 어울리기를 꺼립니다",
+  "복통, 두통 등 신체 증상을 자주 호소합니다",
+  "잠들기 어려워하거나 악몽을 자주 꿉니다",
+  "익숙한 일상이 바뀌면 심하게 불안해합니다",
+  "부모가 보이지 않으면 극심한 불안을 보입니다",
+];
+
+const toddlerQEn = [
+  "My child cries excessively or clings when separated from parents",
+  "My child becomes extremely anxious or hides when seeing strangers",
+  "My child refuses to go to new places",
+  "My child is very afraid of sleeping alone at night",
+  "My child shows excessive fear of specific animals or objects",
+  "My child overreacts to loud noises or sudden changes",
+  "My child refuses to go to daycare/kindergarten",
+  "My child is reluctant to play with peers",
+  "My child frequently complains of stomachaches, headaches, etc.",
+  "My child has difficulty falling asleep or frequently has nightmares",
+  "My child becomes very anxious when familiar routines change",
+  "My child shows extreme anxiety when parents are out of sight",
+];
 
 // 아동용 (7-12세) 불안 검사 문항
 const childQKo = [
@@ -102,19 +133,21 @@ const adultQEn = [
   "Do you feel a loss of reality when symptoms appear?",
 ];
 
-const getQuestions = (ageGroup: 'child' | 'adult', isEn: boolean) => {
+const getQuestions = (ageGroup: 'toddler' | 'child' | 'adult', isEn: boolean) => {
+  if (ageGroup === 'toddler') return isEn ? toddlerQEn : toddlerQKo;
   if (ageGroup === 'child') return isEn ? childQEn : childQKo;
   return isEn ? adultQEn : adultQKo;
 };
 
-const getAgeGroupLabel = (ageGroup: 'child' | 'adult', isEn: boolean) => {
+const getAgeGroupLabel = (ageGroup: 'toddler' | 'child' | 'adult', isEn: boolean) => {
+  if (ageGroup === 'toddler') return isEn ? 'Toddler (3-6)' : '유아 (3-6세)';
   if (ageGroup === 'child') return isEn ? 'Child (7-12)' : '아동 (7-12세)';
   return isEn ? 'Adult (19+)' : '성인 (19세 이상)';
 };
 
 const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => {
   const { isEnglish } = useLanguage();
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'child' | 'adult' | null>(ageGroup || null);
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'toddler' | 'child' | 'adult' | null>(ageGroup || null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [hasStarted, setHasStarted] = useState(false);
@@ -123,7 +156,7 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
   const questions = selectedAgeGroup ? getQuestions(selectedAgeGroup, isEnglish) : [];
   const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
-  const handleAgeGroupSelect = (group: 'child' | 'adult') => {
+  const handleAgeGroupSelect = (group: 'toddler' | 'child' | 'adult') => {
     setSelectedAgeGroup(group);
     setAnswers(new Array(getQuestions(group, isEnglish).length).fill(""));
   };
@@ -184,13 +217,17 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
             <p className="text-muted-foreground">{isEnglish ? "Questions are tailored to your age" : "연령에 맞는 검사 문항이 제공됩니다"}</p>
           </div>
           <div className="grid gap-4">
-            {(['child', 'adult'] as const).map(g => (
+            {(['toddler', 'child', 'adult'] as const).map(g => (
               <Button key={g} variant="outline" className="h-auto p-6 flex flex-col items-start text-left hover:bg-primary/5 hover:border-primary" onClick={() => handleAgeGroupSelect(g)}>
                 <span className="text-lg font-semibold">{getAgeGroupLabel(g, isEnglish)}</span>
                 <span className="text-sm text-muted-foreground">
                   {isEnglish
-                    ? g === 'child' ? 'Elementary school anxiety screening (15 items)' : 'Adult anxiety/panic screening (21 items)'
-                    : g === 'child' ? '초등학생 대상 불안 선별 검사 (15문항)' : '성인 대상 불안/공황 선별 검사 (21문항)'}
+                    ? g === 'toddler' ? 'Parent-report preschool anxiety screening (12 items)' 
+                      : g === 'child' ? 'Elementary school anxiety screening (15 items)' 
+                      : 'Adult anxiety/panic screening (21 items)'
+                    : g === 'toddler' ? '부모 보고형 유아 불안 선별 검사 (12문항)' 
+                      : g === 'child' ? '초등학생 대상 불안 선별 검사 (15문항)' 
+                      : '성인 대상 불안/공황 선별 검사 (21문항)'}
                 </span>
               </Button>
             ))}

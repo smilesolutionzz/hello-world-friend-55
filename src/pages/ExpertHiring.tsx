@@ -891,7 +891,7 @@ const BookingDialog = ({
             </Button>
             <Button
               onClick={onSubmit}
-              disabled={loading || !bookingDate || !bookingTime || !bookingTopic.trim() || !hasEnoughTokens}
+              disabled={loading || !bookingDate || !bookingTime || !bookingTopic.trim()}
               className="flex-1 bg-blue-600 hover:bg-blue-700"
             >
               {loading ? (

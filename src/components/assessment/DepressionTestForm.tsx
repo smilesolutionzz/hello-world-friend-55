@@ -11,10 +11,14 @@ import TokenGate from "@/components/TokenGate";
 import { useLanguage } from "@/i18n";
 
 interface DepressionTestFormProps {
-  ageGroup?: 'child' | 'adolescent' | 'adult';
+  ageGroup?: 'toddler' | 'child' | 'adolescent' | 'adult';
   onComplete: (results: {answers: number[], total: number, average: number, severity: string, ageGroup: string}) => void;
   onBack: () => void;
 }
+
+// 유아용 (3-6세) 부모 보고형 우울 검사 문항
+const toddlerQKo = ["아이가 평소보다 자주 울거나 짜증을 냅니다","아이가 좋아하던 놀이에 흥미를 잃었습니다","아이가 식사를 잘 하지 않거나 과식합니다","아이가 잠들기 어려워하거나 자주 깹니다","아이가 에너지가 없고 활동량이 줄었습니다","아이가 또래 아이들과 놀기를 거부합니다","아이가 이유 없이 무기력해 보입니다","아이가 분리불안이 심해졌습니다","아이가 자신감이 없어 보이고 위축됩니다","아이가 신체 증상(복통, 두통 등)을 자주 호소합니다","아이가 표정이 어둡거나 웃지 않습니다","아이가 쉽게 좌절하고 포기합니다"];
+const toddlerQEn = ["My child cries or gets irritable more often than usual","My child has lost interest in favorite activities","My child eats poorly or overeats","My child has difficulty sleeping or wakes often","My child has less energy and reduced activity","My child refuses to play with peers","My child seems listless for no reason","My child's separation anxiety has worsened","My child seems lacking in confidence and withdrawn","My child frequently complains of physical symptoms","My child's expression is dark or doesn't smile","My child gets frustrated and gives up easily"];
 
 const childQKo = ["나는 슬프지 않다","나는 앞으로 좋은 일이 생길 거라고 생각한다","나는 실패한 것 같은 느낌이 들지 않는다","나는 예전처럼 놀이나 활동이 재미있다","나는 내가 나쁜 아이라고 생각하지 않는다","나는 혼날 것 같은 느낌이 들지 않는다","나는 나 자신이 싫지 않다","나는 나쁜 일이 일어나면 내 탓이라고 생각하지 않는다","나는 평소보다 더 울지 않는다","나는 평소보다 더 걱정하지 않는다","나는 친구들과 노는 것이 좋다","나는 결정을 잘 내릴 수 있다","나는 내 외모가 괜찮다고 생각한다","나는 숙제나 공부를 할 수 있다","나는 잠을 잘 잔다","나는 평소처럼 힘이 있다","나는 밥을 잘 먹는다","나는 아프지 않다","나는 외롭지 않다","나는 학교 가는 것이 싫지 않다","나는 가족들과 지내는 것이 좋다"];
 const childQEn = ["I am not sad","I think good things will happen","I don't feel like a failure","Activities are still fun like before","I don't think I'm a bad kid","I don't feel like I'll get in trouble","I don't dislike myself","I don't blame myself when bad things happen","I don't cry more than usual","I don't worry more than usual","I enjoy playing with friends","I can make decisions well","I think I look okay","I can do my homework and studies","I sleep well","I have energy like usual","I eat well","I'm not in pain","I'm not lonely","I don't dislike going to school","I enjoy being with family"];
@@ -25,13 +29,15 @@ const adolQEn = ["I am not sad","I am not discouraged about the future","I don't
 const adultQKo = ["나는 슬프지 않다","나는 앞날에 대해 낙담하거나 실망하지 않는다","나는 실패자라는 느낌이 들지 않는다","나는 예전과 똑같이 일상생활에서 만족과 기쁨을 느낀다","나는 특별히 죄책감을 느끼지 않는다","나는 벌을 받고 있다는 느낌이 들지 않는다","나는 나 자신에 대해 실망하거나 혐오감을 느끼지 않는다","나는 일상적인 일들에 대해 평소보다 나 자신을 더 탓하지 않는다","나는 자해에 대한 생각이 없다","나는 평소보다 더 울지 않는다","나는 평소보다 더 초조하거나 불안하지 않다","나는 다른 사람들에 대한 관심을 잃지 않았다","나는 평소만큼 쉽게 결정을 내린다","나는 내가 예전보다 더 못생겨 보인다고 걱정하지 않는다","나는 예전처럼 일을 할 수 있다","나는 평소처럼 잠을 잘 잔다","나는 평소보다 더 피곤하지 않다","나는 평소와 다름없이 식욕이 좋다","나는 최근에 체중이 별로 줄지 않았다","나는 평소보다 내 건강을 더 염려하지 않는다","나는 일상 활동에 대한 흥미가 평소와 다르지 않다"];
 const adultQEn = ["I am not sad","I am not discouraged about the future","I don't feel like a failure","I feel satisfied with daily life just like before","I don't feel particularly guilty","I don't feel like I'm being punished","I'm not disappointed or disgusted with myself","I don't blame myself more than usual","I have no thoughts of self-harm","I don't cry more than usual","I'm not more restless or anxious than usual","I haven't lost interest in other people","I make decisions as easily as before","I'm not worried about looking worse than before","I can work as well as before","I sleep as well as usual","I'm not more tired than usual","My appetite is normal","I haven't lost much weight recently","I don't worry about my health more than usual","My interest in daily activities is unchanged"];
 
-const getQuestions = (ageGroup: 'child' | 'adolescent' | 'adult', isEn: boolean) => {
+const getQuestions = (ageGroup: 'toddler' | 'child' | 'adolescent' | 'adult', isEn: boolean) => {
+  if (ageGroup === 'toddler') return isEn ? toddlerQEn : toddlerQKo;
   if (ageGroup === 'child') return isEn ? childQEn : childQKo;
   if (ageGroup === 'adolescent') return isEn ? adolQEn : adolQKo;
   return isEn ? adultQEn : adultQKo;
 };
 
-const getAgeGroupLabel = (ageGroup: 'child' | 'adolescent' | 'adult', isEn: boolean) => {
+const getAgeGroupLabel = (ageGroup: 'toddler' | 'child' | 'adolescent' | 'adult', isEn: boolean) => {
+  if (ageGroup === 'toddler') return isEn ? 'Toddler (3-6)' : '유아 (3-6세)';
   if (ageGroup === 'child') return isEn ? 'Child (7-12)' : '아동 (7-12세)';
   if (ageGroup === 'adolescent') return isEn ? 'Adolescent (13-18)' : '청소년 (13-18세)';
   return isEn ? 'Adult (19+)' : '성인 (19세 이상)';

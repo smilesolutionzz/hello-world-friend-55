@@ -734,7 +734,6 @@ interface BookingDialogProps {
   setBookingTopic: (topic: string) => void;
   timeSlots: string[];
   loading: boolean;
-  balance: number;
   onSubmit: () => void;
 }
 

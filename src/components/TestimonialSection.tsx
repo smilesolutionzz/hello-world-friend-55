@@ -119,7 +119,19 @@ const TestimonialSection = () => {
             </AnimatePresence>
           </div>
 
-          <div className="flex items-center justify-center gap-4 mt-6">
+          {/* 스와이프 힌트 애니메이션 */}
+          <motion.div
+            className="flex items-center justify-center gap-2 mt-4 text-white/40 text-xs"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.3, 0.7, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <ChevronLeft className="w-3 h-3" />
+            <span>밀어서 더 많은 후기 보기</span>
+            <ChevronRight className="w-3 h-3" />
+          </motion.div>
+
+          <div className="flex items-center justify-center gap-4 mt-3">
             <Button variant="ghost" size="icon" onClick={handlePrev} className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-white">
               <ChevronLeft className="w-5 h-5" />
             </Button>
@@ -128,7 +140,7 @@ const TestimonialSection = () => {
                 <button
                   key={i}
                   onClick={() => { setDirection(i > currentPage ? 1 : -1); setCurrentPage(i); }}
-                  className={`w-2 h-2 rounded-full transition-all ${i === currentPage ? 'bg-purple-400 w-6' : 'bg-white/20'}`}
+                  className={`h-2 rounded-full transition-all duration-300 ${i === currentPage ? 'bg-purple-400 w-6' : 'bg-white/20 w-2 hover:bg-white/40'}`}
                 />
               ))}
             </div>
@@ -136,6 +148,11 @@ const TestimonialSection = () => {
               <ChevronRight className="w-5 h-5" />
             </Button>
           </div>
+
+          {/* 총 리뷰 수 표시 */}
+          <p className="text-center text-white/30 text-xs mt-3">
+            {currentPage + 1} / {totalPages} 페이지 · 총 {testimonials.length}개의 실제 후기
+          </p>
         </div>
       </div>
     </section>

@@ -116,6 +116,7 @@ import ShareView from "./pages/ShareView";
 import Referral from "./pages/Referral";
 import InstallGuide from "./pages/InstallGuide";
 import WellnessLifestyle from "./pages/WellnessLifestyle";
+import About from "./pages/About";
 
 // Packages (SEO landing pages)
 import StressPackage from "./pages/StressPackage";

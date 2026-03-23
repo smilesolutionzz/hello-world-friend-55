@@ -586,9 +586,43 @@ const ExpertHiring = () => {
         setBookingTopic={setBookingTopic}
         timeSlots={timeSlots}
         loading={bookingLoading}
-        balance={balance?.current_tokens || 0}
         onSubmit={submitBooking}
       />
+
+      {/* 예약 완료 → 카카오톡 안내 다이얼로그 */}
+      <Dialog open={bookingSuccess} onOpenChange={setBookingSuccess}>
+        <DialogContent className="max-w-sm text-center">
+          <div className="py-4 space-y-4">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="text-xl font-bold">예약이 접수되었습니다!</h3>
+            <p className="text-sm text-muted-foreground">
+              전문가가 예약을 확인한 후<br />
+              <strong>24시간 이내</strong>에 상담 일정을 안내드립니다.
+            </p>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 space-y-2">
+              <p className="text-sm font-medium text-yellow-800">💬 카카오톡으로 빠르게 연락받으세요</p>
+              <p className="text-xs text-yellow-700">아래 버튼을 눌러 카카오톡 채널을 추가하시면<br />상담 일정 확인 및 변경이 더 편리합니다.</p>
+              <Button
+                onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')}
+                className="w-full bg-[#FEE500] hover:bg-[#FDD835] text-[#3C1E1E] font-semibold"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                카카오톡 채널 추가하기
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setBookingSuccess(false)} className="flex-1">
+                닫기
+              </Button>
+              <Button onClick={() => { setBookingSuccess(false); navigate('/booking-management'); }} className="flex-1">
+                예약 내역 보기
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

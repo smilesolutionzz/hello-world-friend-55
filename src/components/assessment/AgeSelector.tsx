@@ -156,7 +156,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
               {testType === 'language' ? '영유아언어발달체크' : testType === 'panic' ? '불안감 수준 확인' : testType === 'depression' ? '심리건강 자가체크' : testType === 'adhd' ? '주의집중력 자가체크' : '3분으로 시작하는'}
             </span>
             <span className="block text-brand-gradient">
-              {testType === 'language' ? '연령별 맞춤 확인' : testType === 'panic' ? '자가체크 (참고용)' : testType === 'depression' ? '참고용 체크' : testType === 'adhd' ? '연령별 체크 (참고용)' : '연령별 맞춤체크'}
+              {testType === 'language' ? '연령별 맞춤 확인' : testType === 'panic' ? '자가체크 (참고용)' : testType === 'depression' ? '연령별 맞춤체크' : testType === 'adhd' ? '연령별 체크 (참고용)' : '연령별 맞춤체크'}
             </span>
           </h1>
           

@@ -1445,17 +1445,19 @@ const Assessment = () => {
 
   if (currentStep === 'stress-result' && stressResults) {
     return (
-      <div>
-        <UnifiedNavigation />
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
-          <div className="container mx-auto max-w-4xl">
-            <StressTestResult 
-              result={stressResults}
-              onRestart={() => setCurrentStep('stress-test')}
-            />
+      <SubscriptionGuard consumeAt="result" featureName="스트레스 검사" creditType="test" trialKey="STRESS_INDEX">
+        <div>
+          <UnifiedNavigation />
+          <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
+            <div className="container mx-auto max-w-4xl">
+              <StressTestResult 
+                result={stressResults}
+                onRestart={() => setCurrentStep('stress-test')}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 

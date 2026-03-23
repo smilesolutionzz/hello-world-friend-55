@@ -52,22 +52,22 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
       return adhdContent[groupKey];
     }
     
-    // 우울검사 내용
-    const depressionContent = {
+    // 기본 심리건강 체크 내용
+    const defaultContent = {
       infant: {
-        description: '우울검사',
+        description: '심리건강 체크',
         features: ['정서 상태', '행동 변화', '수면/식욕 패턴', '사회적 위축']
       },
       child: {
-        description: '우울검사',
-        features: ['우울 기분', '흥미/즐거움 상실', '자기비하', '신체 증상']
+        description: '심리건강 체크',
+        features: ['정서 상태', '흥미/즐거움', '자기인식', '신체 증상']
       },
       adult: {
-        description: '우울검사',
-        features: ['우울 정서', '인지 증상', '신체화 증상', '사회적 기능']
+        description: '심리건강 체크',
+        features: ['정서 상태', '인지 증상', '신체화 증상', '사회적 기능']
       }
     };
-    return depressionContent[groupKey];
+    return defaultContent[groupKey];
   };
 
   const ageGroups = [

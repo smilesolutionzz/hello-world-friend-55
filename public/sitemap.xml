@@ -363,4 +363,20 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+
+  <!-- About 페이지 (AI 크롤러 핵심) -->
+  <url>
+    <loc>https://aihpro.app/about</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- LLMs.txt -->
+  <url>
+    <loc>https://aihpro.app/llms.txt</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

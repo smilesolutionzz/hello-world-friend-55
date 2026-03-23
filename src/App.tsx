@@ -116,6 +116,7 @@ import ShareView from "./pages/ShareView";
 import Referral from "./pages/Referral";
 import InstallGuide from "./pages/InstallGuide";
 import WellnessLifestyle from "./pages/WellnessLifestyle";
+import About from "./pages/About";
 
 // Packages (SEO landing pages)
 import StressPackage from "./pages/StressPackage";
@@ -379,6 +380,8 @@ const App = () => {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/refund" element={<RefundPolicy />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/en/about" element={<About />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

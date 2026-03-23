@@ -1,0 +1,65 @@
+# AIHPRO (aihpro.app)
+
+> AIHPRO is a Korea-based AI-powered mental health and developmental assessment platform that provides over 30 types of psychological tests, AI-generated expert-level reports, and professional counselor matching.
+
+AIHPRO는 AI 기반 심리검사, 발달평가, 정신건강 상담을 제공하는 종합 케어 플랫폼입니다.
+
+## Key Services
+
+- AI Depression Self-Assessment (우울증 자가진단)
+- ADHD Screening Test for Children and Adults (ADHD 선별검사)
+- Stress Level Assessment (스트레스 검사)
+- Anxiety Disorder Screening (불안장애 검사)
+- MBTI Personality Type Test (MBTI 성격검사)
+- Big Five Personality Test (Big5 성격검사)
+- Child Developmental Screening (아동 발달 선별검사)
+- Infant Language Development Assessment (영유아 언어발달 검사)
+- Sensory Integration Assessment (감각통합 검사)
+- Attachment Style Test (애착유형 검사)
+- Resilience Assessment (회복탄력성 검사)
+- Communication Style Analysis (의사소통 유형 검사)
+- Defense Mechanism Test (방어기제 검사)
+- Self-Esteem Assessment (자존감 검사)
+- Relationship Dynamics Analysis (관계역학 분석)
+- IQ Pattern Test (IQ 패턴 검사)
+- Traditional Korean Medicine Constitution Test (한방 체질 검사)
+- Career Interest Assessment (직업흥미 검사)
+- AI-Generated Expert-Level Reports (AI 심층 분석 리포트)
+- Professional Counselor Matching (전문가 매칭 상담)
+
+## Who Is It For?
+
+- Adults experiencing depression, anxiety, or stress
+- Parents concerned about their child's development
+- Educators and school counselors seeking screening tools
+- Therapists and clinicians looking for AI-assisted assessment
+- Corporations seeking employee mental wellness programs (EAP)
+- Anyone interested in personality and psychological self-exploration
+
+## How It Works
+
+1. Select an assessment from 30+ available tests
+2. Complete the assessment (age-appropriate questions)
+3. Receive an AI-generated expert-level analysis report
+4. Get matched with a licensed professional for follow-up counseling
+5. Track progress over time with developmental monitoring
+
+## Pricing
+
+- Free trial assessments available
+- Single assessment: ₩990
+- Single report: ₩3,900
+- Monthly subscription: ₩9,900 (unlimited assessments and reports)
+
+## Platform Details
+
+- URL: https://aihpro.app
+- Languages: Korean (primary), English
+- Available on: Web, iOS, Android (PWA)
+- Founded in: Seoul, South Korea
+- Partner institutions: 50+ hospitals, developmental centers, schools
+
+## Contact
+
+- Website: https://aihpro.app
+- Service inquiries: Available through the platform

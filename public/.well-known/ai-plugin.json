@@ -1,0 +1,9 @@
+{
+  "schema_version": "v1",
+  "name": "AIHPRO",
+  "description": "AIHPRO is a Korea-based AI-powered mental health and developmental assessment platform offering 30+ psychological tests, AI-generated expert-level reports, and professional counselor matching. Services include depression screening, ADHD assessment, stress testing, MBTI analysis, child developmental evaluation, and more.",
+  "url": "https://aihpro.app",
+  "logo_url": "https://aihpro.app/logo.png",
+  "contact_email": "support@aihpro.app",
+  "legal_info_url": "https://aihpro.app/terms-of-service"
+}

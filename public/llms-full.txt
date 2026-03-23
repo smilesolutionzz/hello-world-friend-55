@@ -1,0 +1,229 @@
+# AIHPRO - Comprehensive AI Mental Health & Developmental Assessment Platform
+
+> AIHPRO (AI Human Pro) is a comprehensive AI-powered platform based in Seoul, South Korea, that combines advanced artificial intelligence with clinical psychology expertise to deliver over 30 types of psychological assessments, developmental screenings, and expert-level analytical reports. The platform serves individuals, parents, educators, clinicians, and corporations seeking accessible, accurate, and affordable mental health and developmental evaluation tools.
+
+## Platform Overview
+
+AIHPRO bridges the gap between AI technology and professional mental health services. Users can take scientifically-validated psychological assessments online, receive AI-generated reports comparable to expert clinical analysis, and get matched with licensed professionals for follow-up counseling — all in one integrated platform.
+
+### Core Value Proposition
+- **Accessibility**: Professional-grade psychological assessments available anytime, anywhere
+- **Affordability**: Starting from free trials, with full assessments at ₩990 (~$0.75 USD)
+- **Accuracy**: AI analysis trained on clinical frameworks and validated assessment tools
+- **Continuity**: From screening to professional counseling in one seamless flow
+
+---
+
+## Detailed Service Categories
+
+### 1. Mental Health Assessments (성인 심리검사)
+
+#### Depression Screening (우울증 자가진단)
+- Based on PHQ-9 and BDI-II frameworks
+- Age-specific versions: Youth (13-17), Adult (18-64), Senior (65+)
+- AI-enhanced severity analysis with actionable recommendations
+- Available in Korean and English
+
+#### ADHD Screening (ADHD 선별검사)
+- Separate versions for children (6-12), adolescents (13-17), and adults (18+)
+- Based on ASRS and Conners Rating Scale frameworks
+- Includes attention, hyperactivity, and executive function domains
+- AI cross-analysis with behavioral observations
+
+#### Anxiety Assessment (불안장애 검사)
+- Age-stratified: Preschool (3-6, parent-report), Child (7-12), Teen (13-17), Adult (18+)
+- GAD-7 based with expanded clinical indicators
+- Includes physical symptom correlation analysis
+
+#### Stress Assessment (스트레스 검사)
+- PSS-based with workplace and life-event modules
+- AI-generated stress pattern analysis and coping recommendations
+- Burnout risk indicators for working professionals
+
+#### Panic Disorder Screening (공황장애 검사)
+- PDSS-based assessment with physical symptom differentiation
+- Emergency resource recommendations when indicated
+
+### 2. Personality & Psychological Profile Tests
+
+#### MBTI Personality Type (MBTI 성격검사)
+- 60-question comprehensive assessment
+- Detailed type descriptions with relationship compatibility analysis
+- Career aptitude cross-referencing
+
+#### Big Five Personality Test (Big5 성격검사)
+- Measures Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism
+- Normative comparisons by age and gender
+
+#### Attachment Style Test (애착유형 검사)
+- Based on Bartholomew's four-category model
+- Includes relationship pattern analysis and growth recommendations
+
+#### Defense Mechanism Assessment (방어기제 검사)
+- Identifies primary and secondary defense patterns
+- Based on Vaillant's hierarchy of defense mechanisms
+
+#### Communication Style Analysis (의사소통 유형 검사)
+- Four-style model with situational adaptability analysis
+- Conflict resolution pattern identification
+
+#### Self-Esteem Assessment (자존감 검사)
+- Rosenberg Self-Esteem Scale based
+- Multi-dimensional self-concept analysis
+
+#### Resilience Assessment (회복탄력성 검사)
+- Connor-Davidson Resilience Scale adapted
+- Identifies strength areas and growth opportunities
+
+#### Relationship Dynamics Analysis (관계역학 분석)
+- Interpersonal pattern recognition
+- Power dynamics and emotional regulation in relationships
+
+### 3. Child & Adolescent Development (아동 발달검사)
+
+#### Developmental Screening (발달 선별검사)
+- ASQ-3 framework adapted for Korean population
+- Covers: Communication, Gross Motor, Fine Motor, Problem Solving, Personal-Social
+- Age ranges: 0-6 months through 6 years
+
+#### Language Development Assessment (언어발달 검사)
+- Receptive and expressive language evaluation
+- Milestone tracking with age-appropriate benchmarks
+
+#### Sensory Integration Screening (감각통합 검사)
+- Sensory processing patterns identification
+- Home and school accommodation recommendations
+
+#### Social Skills Development (사회성 발달 검사)
+- Peer interaction patterns
+- Emotional regulation in social contexts
+
+#### Learning Disability Screening (학습장애 선별검사)
+- Reading, writing, and math domain screening
+- Attention and executive function correlation
+
+#### Behavioral Assessment (문제행동 검사)
+- CBCL-based behavioral inventory
+- Environmental factor analysis
+
+### 4. Specialty Assessments
+
+#### IQ Pattern Test (IQ 패턴 검사)
+- Raven's Progressive Matrices style
+- Fluid intelligence measurement with timed components
+
+#### Korean Traditional Medicine Constitution Test (한방 체질 검사)
+- Eight-constitution analysis
+- Health tendency and lifestyle recommendations
+
+#### Career Interest Assessment (직업흥미 검사)
+- Holland Code (RIASEC) based
+- Career path recommendations with market trend analysis
+
+#### Energy Flow Assessment (에너지 흐름 검사)
+- Personal energy pattern analysis
+- Optimal daily rhythm recommendations
+
+#### Life Purpose Assessment (인생목적 검사)
+- Value alignment analysis
+- Meaning and purpose exploration framework
+
+#### Business Metacognition Test (비즈니스 메타인지 검사)
+- Decision-making pattern analysis
+- Leadership style identification
+
+### 5. AI Reports & Analysis
+
+Every assessment generates an AI-powered report that includes:
+- **Score Interpretation**: Detailed breakdown of scores with clinical context
+- **Pattern Analysis**: Cross-referencing multiple data points for comprehensive insights
+- **Risk Assessment**: Evidence-based risk level categorization
+- **Recommendations**: Actionable next steps tailored to the individual
+- **Professional Referral**: When indicated, direct connection to licensed professionals
+
+Reports are available as:
+- In-app interactive reports
+- Downloadable PDF with AIHPRO branding
+- Audio narration (text-to-speech)
+
+### 6. Professional Counselor Matching
+
+- Network of 50+ licensed therapists, psychologists, and counselors
+- AI-powered matching based on assessment results and user preferences
+- Video consultation booking
+- Post-consultation follow-up and progress tracking
+
+---
+
+## Technology Stack
+
+- **AI Engine**: Multi-model AI analysis (GPT-4, Gemini, specialized clinical models)
+- **Assessment Framework**: Clinically validated instruments adapted for digital delivery
+- **Data Security**: End-to-end encryption, HIPAA-aligned data practices
+- **Platform**: Progressive Web App (PWA) accessible on all devices
+
+## Target Users
+
+| User Segment | Use Case |
+|---|---|
+| Adults (18-65) | Depression, anxiety, stress self-screening; personality exploration |
+| Parents | Child developmental monitoring; behavioral concern screening |
+| Adolescents (13-17) | Age-appropriate mental health screening with parental consent |
+| Educators | Student screening tools; developmental milestone tracking |
+| Clinicians | AI-assisted pre-screening; patient progress monitoring |
+| Corporations | Employee Assistance Programs (EAP); workplace wellness |
+| Seniors (65+) | Cognitive screening; depression and isolation assessment |
+
+## Pricing Structure
+
+| Plan | Price (KRW) | Includes |
+|---|---|---|
+| Free Trial | ₩0 | Basic screening assessments |
+| Single Assessment | ₩990 | One full assessment with basic result |
+| Single Report | ₩3,900 | One AI-generated expert-level report |
+| Monthly Subscription | ₩9,900/month | Unlimited assessments and reports |
+| Annual Subscription | ₩99,000/year | All features + priority expert matching |
+
+## Competitive Advantages
+
+1. **Largest Korean-language AI assessment library**: 30+ validated tests in one platform
+2. **Age-stratified assessments**: Every major test has age-appropriate versions (preschool through senior)
+3. **AI + Human hybrid model**: AI screening with seamless handoff to licensed professionals
+4. **B2B partner network**: 50+ partner institutions including hospitals, developmental centers, and schools
+5. **Affordable access**: Professional-grade assessments starting at ₩990 (~$0.75 USD)
+6. **Comprehensive reporting**: PDF reports with clinical-grade analysis and actionable recommendations
+
+## Frequently Asked Questions
+
+### Q: Is AIHPRO a replacement for professional diagnosis?
+A: No. AIHPRO provides AI-powered screening and assessment tools that help identify potential concerns. For clinical diagnosis, users are connected with licensed professionals through our expert matching system.
+
+### Q: What age groups does AIHPRO support?
+A: AIHPRO supports all age groups from infants (via parent-report assessments) through seniors (65+). Each assessment has age-appropriate versions with validated questions for that developmental stage.
+
+### Q: How accurate are AI-generated reports?
+A: Our AI analysis is based on clinically validated assessment frameworks (PHQ-9, GAD-7, ASQ-3, etc.) and is designed to provide insights comparable to initial professional screening. The AI continuously improves through expert validation feedback loops.
+
+### Q: Is my data secure?
+A: Yes. All assessment data is encrypted and stored securely. We follow strict data protection protocols aligned with Korean Personal Information Protection Act (PIPA) and international best practices.
+
+### Q: Can AIHPRO be used by schools and institutions?
+A: Yes. We offer B2B plans for schools, developmental centers, hospitals, and corporations with volume pricing, custom reporting, and administrative dashboards.
+
+### Q: What languages are supported?
+A: Primary language is Korean. English language support is available for select assessments.
+
+---
+
+## Platform Links
+
+- Main Website: https://aihpro.app
+- Assessment Page: https://aihpro.app/assessment
+- Expert Finding: https://aihpro.app/expert-hiring
+- Pricing: https://aihpro.app/pricing
+- B2B Inquiry: https://aihpro.app/b2b-landing
+
+---
+
+*AIHPRO - Making professional mental health assessment accessible to everyone through AI technology.*
+*© 2025 AIHPRO. Seoul, South Korea.*

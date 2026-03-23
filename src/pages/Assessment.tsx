@@ -416,7 +416,7 @@ const Assessment = () => {
     setCurrentStep('language-result');
   };
 
-  const handlePanicTestComplete = async (results: {answers: number[], total: number, average: number, severity: string}) => {
+  const handlePanicTestComplete = async (results: {answers: number[], total: number, average: number, severity: string, ageGroup: string}) => {
     console.log('Panic Test Results:', results);
     setPanicResults(results);
     
@@ -425,7 +425,7 @@ const Assessment = () => {
     
     setCurrentAssessmentResults({
       testType: 'panic',
-      ageGroup: '성인',
+      ageGroup: results.ageGroup,
       total: results.total,
       average: results.average,
       severity: results.severity

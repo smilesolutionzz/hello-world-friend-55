@@ -35,7 +35,7 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
   const navigate = useNavigate();
   const { pay, loading, isReady } = usePayment();
   const { isPremiumUser, isLifetimeUser } = useSubscription();
-  const { reportCredits } = useAccessControl();
+  const { reportCredits, testCredits } = useAccessControl();
   const [step, setStep] = useState<Step>(initialStep);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -185,6 +185,39 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
               <div className="text-center mb-5">
                 <h2 className="text-xl font-bold text-foreground">이용 방법을 선택하세요</h2>
                 <p className="text-sm text-muted-foreground mt-1">심층 분석 결과를 확인하려면 플랜이 필요해요</p>
+              </div>
+
+              {/* 내 이용 현황 */}
+              <div className="p-4 rounded-2xl bg-muted/50 border border-border mb-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-semibold text-foreground">내 이용 현황</span>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center p-2 rounded-xl bg-background">
+                    <div className="text-lg font-bold text-foreground">
+                      {isPremium ? '∞' : testCredits}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground">검사 이용권</div>
+                  </div>
+                  <div className="text-center p-2 rounded-xl bg-background">
+                    <div className="text-lg font-bold text-foreground">
+                      {isPremium ? '∞' : reportCredits}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground">리포트 이용권</div>
+                  </div>
+                  <div className="text-center p-2 rounded-xl bg-background">
+                    <div className={`text-lg font-bold ${isPremium ? 'text-primary' : 'text-muted-foreground'}`}>
+                      {isPremium ? '활성' : '미구독'}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground">구독 상태</div>
+                  </div>
+                </div>
+                {!isAuthenticated && (
+                  <p className="text-[11px] text-muted-foreground mt-2 text-center">
+                    로그인하면 보유 이용권을 확인할 수 있어요
+                  </p>
+                )}
               </div>
 
               {/* 검사 1회 구매 */}

@@ -391,7 +391,6 @@ const App = () => {
           </TooltipProvider>
         </QueryClientProvider>
       </HelmetProvider>
-    </React.StrictMode>
   );
 };
 

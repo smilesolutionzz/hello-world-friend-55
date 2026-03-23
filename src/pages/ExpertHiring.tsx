@@ -36,7 +36,8 @@ import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
-import { useTokens } from '@/hooks/useTokens';
+
+const CONSULT_PRICE = 49000; // ₩49,000 per 40min session
 
 interface Expert {
   id: string;
@@ -71,9 +72,7 @@ const ExpertHiring = () => {
   const [bookingTime, setBookingTime] = useState('10:00');
   const [bookingTopic, setBookingTopic] = useState('');
   const [bookingLoading, setBookingLoading] = useState(false);
-  
-  // 토큰은 모달 열렸을 때만 체크 (깜빡임 방지)
-  const { balance, consumeTokens, checkTokenAvailability } = useTokens();
+  const [bookingSuccess, setBookingSuccess] = useState(false);
 
   const [activeTab, setActiveTab] = useState<'experts' | 'institutions'>('experts');
 
@@ -225,25 +224,17 @@ const ExpertHiring = () => {
         return;
       }
 
-      const cost = selectedExpert.hourlyPrice || 30000;
-      
-      if (!checkTokenAvailability(cost)) {
-        toast.error(`토큰이 부족합니다. (필요: ${cost.toLocaleString()} 토큰)`);
-        navigate('/token-subscription');
-        return;
-      }
-
       const bookingData = {
         user_id: user.id,
         expert_id: selectedExpert.id,
         booking_date: format(bookingDate, 'yyyy-MM-dd'),
         start_time: bookingTime,
-        end_time: calculateEndTime(bookingTime, 60),
-        duration_minutes: 60,
+        end_time: calculateEndTime(bookingTime, 40),
+        duration_minutes: 40,
         status: 'pending',
         is_quick_consultation: false,
         notes: bookingTopic,
-        tokens_paid: cost
+        tokens_paid: CONSULT_PRICE
       };
 
       const { error } = await supabase
@@ -252,12 +243,9 @@ const ExpertHiring = () => {
 
       if (error) throw error;
 
-      await consumeTokens(cost);
-
-      toast.success('예약이 완료되었습니다! 전문가가 확인 후 연락드립니다.');
       setBookingOpen(false);
+      setBookingSuccess(true);
       resetBookingForm();
-      navigate('/booking-management');
     } catch (error) {
       console.error('Booking error:', error);
       toast.error('예약 중 오류가 발생했습니다');
@@ -598,9 +586,43 @@ const ExpertHiring = () => {
         setBookingTopic={setBookingTopic}
         timeSlots={timeSlots}
         loading={bookingLoading}
-        balance={balance?.current_tokens || 0}
         onSubmit={submitBooking}
       />
+
+      {/* 예약 완료 → 카카오톡 안내 다이얼로그 */}
+      <Dialog open={bookingSuccess} onOpenChange={setBookingSuccess}>
+        <DialogContent className="max-w-sm text-center">
+          <div className="py-4 space-y-4">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="text-xl font-bold">예약이 접수되었습니다!</h3>
+            <p className="text-sm text-muted-foreground">
+              전문가가 예약을 확인한 후<br />
+              <strong>24시간 이내</strong>에 상담 일정을 안내드립니다.
+            </p>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 space-y-2">
+              <p className="text-sm font-medium text-yellow-800">💬 카카오톡으로 빠르게 연락받으세요</p>
+              <p className="text-xs text-yellow-700">아래 버튼을 눌러 카카오톡 채널을 추가하시면<br />상담 일정 확인 및 변경이 더 편리합니다.</p>
+              <Button
+                onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')}
+                className="w-full bg-[#FEE500] hover:bg-[#FDD835] text-[#3C1E1E] font-semibold"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                카카오톡 채널 추가하기
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setBookingSuccess(false)} className="flex-1">
+                닫기
+              </Button>
+              <Button onClick={() => { setBookingSuccess(false); navigate('/booking-management'); }} className="flex-1">
+                예약 내역 보기
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -676,9 +698,9 @@ const ExpertCard = ({ expert, onBook }: { expert: Expert; onBook: () => void }) 
             <div className="flex items-center justify-between pt-3 border-t border-slate-100">
               <div>
                 <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  {expert.hourlyPrice.toLocaleString()}
+                  ₩{CONSULT_PRICE.toLocaleString()}
                 </span>
-                <span className="text-sm text-slate-500"> 토큰/시간</span>
+                <span className="text-sm text-slate-500"> /40분</span>
               </div>
               <Button 
                 size="sm" 
@@ -712,7 +734,6 @@ interface BookingDialogProps {
   setBookingTopic: (topic: string) => void;
   timeSlots: string[];
   loading: boolean;
-  balance: number;
   onSubmit: () => void;
 }
 
@@ -728,13 +749,11 @@ const BookingDialog = ({
   setBookingTopic,
   timeSlots,
   loading,
-  balance,
   onSubmit
 }: BookingDialogProps) => {
   if (!expert) return null;
 
-  const cost = expert.hourlyPrice || 30000;
-  const hasEnoughTokens = balance >= cost;
+  const cost = CONSULT_PRICE;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -831,28 +850,21 @@ const BookingDialog = ({
           </div>
 
           {/* 비용 */}
-          <Card className={cn(
-            "border",
-            hasEnoughTokens ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
-          )}>
+          <Card className="border bg-blue-50 border-blue-200">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-yellow-500" />
+                  <Zap className="w-5 h-5 text-blue-500" />
                   <span className="font-medium">상담 비용</span>
                 </div>
                 <div className="text-right">
-                  <div className="text-xl font-bold">{cost.toLocaleString()} 토큰</div>
-                  <div className="text-xs text-gray-500">
-                    잔액: {balance.toLocaleString()} 토큰
-                  </div>
+                  <div className="text-xl font-bold text-blue-700">₩{cost.toLocaleString()}</div>
+                  <div className="text-xs text-gray-500">40분 / 1회</div>
                 </div>
               </div>
-              {!hasEnoughTokens && (
-                <p className="text-sm text-red-600 mt-2">
-                  토큰이 부족합니다. 충전 후 이용해주세요.
-                </p>
-              )}
+              <p className="text-xs text-blue-600 mt-2">
+                예약 접수 후 전문가 확인 → 카카오톡으로 결제 안내
+              </p>
             </CardContent>
           </Card>
 
@@ -860,11 +872,15 @@ const BookingDialog = ({
           <div className="text-xs text-gray-500 space-y-1">
             <p className="flex items-center gap-1">
               <CheckCircle className="w-3 h-3 text-green-500" />
-              전문가 확인 후 24시간 내 연락
+              예약 접수 → 전문가 확인 → 카카오톡 안내
             </p>
             <p className="flex items-center gap-1">
               <CheckCircle className="w-3 h-3 text-green-500" />
-              화상 또는 전화로 상담 진행
+              화상 또는 전화로 상담 진행 (40분)
+            </p>
+            <p className="flex items-center gap-1">
+              <CheckCircle className="w-3 h-3 text-green-500" />
+              상담 불만족 시 100% 환불 보장
             </p>
           </div>
 
@@ -875,7 +891,7 @@ const BookingDialog = ({
             </Button>
             <Button
               onClick={onSubmit}
-              disabled={loading || !bookingDate || !bookingTime || !bookingTopic.trim() || !hasEnoughTokens}
+              disabled={loading || !bookingDate || !bookingTime || !bookingTopic.trim()}
               className="flex-1 bg-blue-600 hover:bg-blue-700"
             >
               {loading ? (

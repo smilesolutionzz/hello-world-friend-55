@@ -162,10 +162,10 @@ const Index = () => {
               <VideoObservationShowcase />
             </LazyLoad>
             
-            {/* 4️⃣ 전문가 팀 소개 - 신뢰도 강화 */}
-            <LazyLoad rootMargin="200px">
+            {/* 4️⃣ 전문가 팀 소개 - 임시 숨김 */}
+            {/* <LazyLoad rootMargin="200px">
               <ExpertTeamSection />
-            </LazyLoad>
+            </LazyLoad> */}
 
             {/* 5️⃣ 감성 후킹 - 공감 스토리 */}
             <LazyLoad rootMargin="200px">

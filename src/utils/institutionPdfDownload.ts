@@ -1,4 +1,5 @@
 import html2pdf from 'html2pdf.js';
+import { getPdfBrandingHeaderHtml } from './pdfBrandingHeader';
 
 export interface InstitutionPDFOptions {
   filename: string;
@@ -313,6 +314,7 @@ export const downloadInstitutionPDF = async (
         }
       </style>
       <div class="pdf-container">
+        ${getPdfBrandingHeaderHtml()}
         ${options.watermark ? `<div class="watermark">${options.watermark}</div>` : ''}
         ${htmlContent}
       </div>
@@ -388,6 +390,10 @@ export const downloadElementAsPDF = async (
       }
     `;
     document.head.appendChild(style);
+
+    // 브랜딩 헤더 삽입
+    const { injectPdfBrandingHeader, removePdfBrandingHeader } = await import('./pdfBrandingHeader');
+    injectPdfBrandingHeader(element);
     
     const pdfOptions = {
       margin: [10, 10, 10, 10] as [number, number, number, number],
@@ -412,6 +418,7 @@ export const downloadElementAsPDF = async (
     };
     
     await html2pdf().set(pdfOptions).from(element).save();
+    removePdfBrandingHeader(element);
     
     // 스타일 제거
     const injectedStyle = document.getElementById('pdf-print-styles');

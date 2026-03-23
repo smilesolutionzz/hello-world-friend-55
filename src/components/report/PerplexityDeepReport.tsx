@@ -140,19 +140,25 @@ const PerplexityDeepReport: React.FC<PerplexityDeepReportProps> = ({
     const element = document.getElementById('aihpro-report-content');
     if (!element) return;
 
-    const opt = {
-      margin: 15,
-      filename: `AIHPRO_심층분석_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-      jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
-    };
+    import('@/utils/pdfBrandingHeader').then(({ injectPdfBrandingHeader, removePdfBrandingHeader }) => {
+      injectPdfBrandingHeader(element);
 
-    html2pdf().set(opt).from(element).save();
+      const opt = {
+        margin: 15,
+        filename: `AIHPRO_심층분석_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+        jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
+      };
 
-    toast({
-      title: "📥 PDF 다운로드",
-      description: "리포트가 PDF로 다운로드됩니다.",
+      html2pdf().set(opt).from(element).save().then(() => {
+        removePdfBrandingHeader(element);
+      });
+
+      toast({
+        title: "📥 PDF 다운로드",
+        description: "리포트가 PDF로 다운로드됩니다.",
+      });
     });
   };
 

@@ -171,8 +171,10 @@ export const useTestResultActions = () => {
         
         const formattedAnalysis = convertMarkdownToHTML(testData.analysis || '');
         
+        const { getPdfBrandingHeaderHtml } = await import('@/utils/pdfBrandingHeader');
         reportHtml = `
           <div id="pdf-content" style="font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; padding: 30px; max-width: 800px; margin: 0 auto; background: white;">
+            ${getPdfBrandingHeaderHtml()}
             <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #3b82f6;">
               <div style="font-size: 28px; font-weight: bold; color: #3b82f6; letter-spacing: 2px;">AIHPRO.COM</div>
               <div style="font-size: 13px; color: #6b7280; margin-top: 8px;">AIH 기반 심리검사 전문 플랫폼</div>
@@ -214,6 +216,13 @@ export const useTestResultActions = () => {
       container.style.backgroundColor = '#ffffff';
       container.style.padding = '0';
       container.style.margin = '0';
+      // Edge function HTML에도 브랜딩 헤더 삽입
+      if (reportHtml && !reportHtml.includes('aihpro-pdf-header')) {
+        const { getPdfBrandingHeaderHtml } = await import('@/utils/pdfBrandingHeader');
+        const headerHtml = getPdfBrandingHeaderHtml();
+        // 첫 번째 div 내부 최상단에 삽입
+        reportHtml = reportHtml.replace(/(<div[^>]*>)/, `$1${headerHtml}`);
+      }
       container.innerHTML = reportHtml;
       document.body.appendChild(container);
 

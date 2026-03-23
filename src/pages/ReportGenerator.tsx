@@ -208,12 +208,15 @@ const ReportGenerator = () => {
   const downloadPDF = () => {
     const element = document.getElementById('report-content');
     if (!element) return;
-    const style = document.createElement('style'); style.id = 'pdf-page-break-style';
-    style.textContent = `#report-content .pdf-section-break { page-break-before: always !important; break-before: page !important; } #report-content .pdf-no-break { page-break-inside: avoid !important; break-inside: avoid !important; }`;
-    document.head.appendChild(style);
-    const sections = element.querySelectorAll('[data-report-section]');
-    sections.forEach((sec, idx) => { if (idx > 0) sec.classList.add('pdf-section-break'); sec.classList.add('pdf-no-break'); });
-    html2pdf().set({ margin: [15, 15, 15, 15], filename: `${isEnglish ? 'PremiumAnalysis' : '프리미엄분석'}_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg' as const, quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const } } as any).from(element).save().then(() => { document.getElementById('pdf-page-break-style')?.remove(); sections.forEach((sec) => { sec.classList.remove('pdf-section-break', 'pdf-no-break'); }); });
+    import('@/utils/pdfBrandingHeader').then(({ injectPdfBrandingHeader, removePdfBrandingHeader }) => {
+      injectPdfBrandingHeader(element);
+      const style = document.createElement('style'); style.id = 'pdf-page-break-style';
+      style.textContent = `#report-content .pdf-section-break { page-break-before: always !important; break-before: page !important; } #report-content .pdf-no-break { page-break-inside: avoid !important; break-inside: avoid !important; }`;
+      document.head.appendChild(style);
+      const sections = element.querySelectorAll('[data-report-section]');
+      sections.forEach((sec, idx) => { if (idx > 0) sec.classList.add('pdf-section-break'); sec.classList.add('pdf-no-break'); });
+      html2pdf().set({ margin: [15, 15, 15, 15], filename: `${isEnglish ? 'PremiumAnalysis' : '프리미엄분석'}_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg' as const, quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const } } as any).from(element).save().then(() => { document.getElementById('pdf-page-break-style')?.remove(); sections.forEach((sec) => { sec.classList.remove('pdf-section-break', 'pdf-no-break'); }); removePdfBrandingHeader(element); });
+    });
     toast({ title: t("📥 PDF 다운로드 시작", "📥 PDF Download Started") });
   };
 

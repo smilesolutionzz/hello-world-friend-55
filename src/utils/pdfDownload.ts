@@ -1,4 +1,5 @@
 import html2pdf from 'html2pdf.js';
+import { injectPdfBrandingHeader, removePdfBrandingHeader } from './pdfBrandingHeader';
 
 export const downloadResultAsPDF = async (
   elementId: string,
@@ -12,7 +13,9 @@ export const downloadResultAsPDF = async (
       throw new Error('결과 컨텐츠를 찾을 수 없습니다.');
     }
 
-    // PDF에서 페이지 브레이크를 위한 CSS 추가
+    // 브랜딩 헤더 삽입
+    injectPdfBrandingHeader(element);
+
     const style = document.createElement('style');
     style.textContent = `
       @media print {
@@ -52,14 +55,17 @@ export const downloadResultAsPDF = async (
 
     await html2pdf().set(opt).from(element).save();
     
-    // 추가한 스타일 제거
     document.head.removeChild(style);
+    removePdfBrandingHeader(element);
     
     if (onSuccess) {
       onSuccess();
     }
   } catch (error) {
     console.error('PDF 생성 오류:', error);
+    // 에러 시에도 헤더 제거
+    const element = document.getElementById(elementId);
+    if (element) removePdfBrandingHeader(element);
     if (onError && error instanceof Error) {
       onError(error);
     }

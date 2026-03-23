@@ -936,7 +936,7 @@ const en = {
   premiumPage: {
     pageTitle: 'In-Depth Tests',
     pageSubtitle: 'Beyond surface results — discover your true self',
-    price: '₩3,000',
+    price: '₩990',
     authFallback: 'Please log in to access premium psychological tests.',
     expertBanner: 'Expert Interpretation',
     expertBannerDesc: ' available at AIHPRO official tests',

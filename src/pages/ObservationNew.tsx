@@ -682,7 +682,7 @@ const ObservationNew = () => {
                         <Sparkles className="w-7 h-7 text-white" />
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-emerald-900">AI 전문가 분석 리포트</h2>
+                        <h2 className="text-xl font-bold text-emerald-900">전문가 종합 분석 리포트</h2>
                         <p className="text-sm text-emerald-600">관찰 내용과 답변을 종합 분석했어요</p>
                       </div>
                     </div>
@@ -691,6 +691,9 @@ const ObservationNew = () => {
                       <div className="prose prose-sm max-w-none">
                         <p className="text-emerald-800 leading-relaxed whitespace-pre-wrap">
                           {detailedReport}
+                        </p>
+                        <p className="text-[11px] text-emerald-600/50 mt-4 text-right">
+                          본 분석은 전문가 지식 기반 AI 엔진으로 작성되었으며, 전문 진단을 대체하지 않습니다.
                         </p>
                       </div>
                     )}

@@ -507,9 +507,10 @@ export default function AssessmentDetail() {
             <CardContent className="p-6 text-center">
               <h4 className="font-semibold text-blue-900 mb-2">전문 심리검사 결과 안내</h4>
               <p className="text-blue-800 text-sm leading-relaxed">
-                본 검사 결과는 AI 기반 심층 분석을 통해 제공되는 참고 자료입니다. 
+                본 검사 결과는 전문가 지식 기반으로 작성된 참고 자료입니다. 
                 정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다.
               </p>
+              <p className="text-blue-600/60 text-[11px] mt-2">전문가 지식 기반 AI 엔진 분석</p>
             </CardContent>
           </Card>
         </div>

@@ -59,7 +59,7 @@ export const AdultReportContent = () => {
             1. 종합 요약
           </CardTitle>
           <CardDescription>
-            30일간 수집된 데이터를 기반으로 AI가 분석한 종합 심리 상태입니다.
+            30일간 수집된 데이터를 기반으로 분석한 종합 심리 상태입니다.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

@@ -166,7 +166,7 @@ const VoiceDiary = () => {
   return (
     <PageContainer 
       title="🎙️ 음성 일기장" 
-      description="AI가 분석한 당신의 음성 감정 기록을 확인해보세요" 
+      description="당신의 음성 감정 기록을 확인해보세요" 
       maxWidth="lg"
     >
       <div className="space-y-6">

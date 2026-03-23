@@ -43,7 +43,7 @@ const ResilienceTestInner = () => {
 const ResilienceTest = () => {
   const { t } = useTranslation();
   return (
-    <SubscriptionGuard featureName={t.testPages.resilience} trialKey="PSYCHOLOGICAL_TEST">
+    <SubscriptionGuard consumeAt="result" featureName={t.testPages.resilience} trialKey="PSYCHOLOGICAL_TEST">
       <ResilienceTestInner />
     </SubscriptionGuard>
   );

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Crown, Lock, Sparkles, CheckCircle, Gift, Zap, FileText } from 'lucide-react';
@@ -17,8 +17,14 @@ interface SubscriptionGuardProps {
   trialKey?: string;
   requiredTier?: 'premium' | 'pro';
   fallbackMessage?: string;
-  /** 크레딧 유형: test(검사 1,900원) 또는 report(리포트 5,900원) */
+  /** 크레딧 유형: test(검사) 또는 report(리포트) */
   creditType?: 'test' | 'report';
+  /** 
+   * 크레딧 소진 시점:
+   * - 'enter': 컴포넌트 진입 시 즉시 소진 (기존 방식)
+   * - 'result': 결과 확인 시 소진 — children을 자유롭게 보여주다가 결과 확인 시 잠금/차감
+   */
+  consumeAt?: 'enter' | 'result';
 }
 
 export const SubscriptionGuard = ({ 
@@ -28,6 +34,7 @@ export const SubscriptionGuard = ({
   requiredTier = 'premium',
   fallbackMessage,
   creditType = 'report',
+  consumeAt = 'enter',
 }: SubscriptionGuardProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -38,6 +45,7 @@ export const SubscriptionGuard = ({
   const hasCreditConsumed = useRef(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [creditConsuming, setCreditConsuming] = useState(false);
+  const [resultUnlocked, setResultUnlocked] = useState(false);
 
   const hasAccess = isPremiumUser() || isLifetimeUser();
   
@@ -54,17 +62,17 @@ export const SubscriptionGuard = ({
   const creditDiscount = creditType === 'test' ? 75 : 60;
   const creditProductId = creditType === 'test' ? 'single_test' : 'single_report';
 
-  // 무료 체험 사용 기록
+  // 무료 체험 사용 기록 (enter 모드에서만)
   useEffect(() => {
-    if (isTrialAllowed && !hasRecorded.current) {
+    if (consumeAt === 'enter' && isTrialAllowed && !hasRecorded.current) {
       hasRecorded.current = true;
       recordUsage(trialKey!);
     }
-  }, [isTrialAllowed, trialKey, recordUsage]);
+  }, [consumeAt, isTrialAllowed, trialKey, recordUsage]);
 
-  // 크레딧 실제 소진
+  // 크레딧 실제 소진 (enter 모드에서만 자동 소진)
   useEffect(() => {
-    if (hasCreditAccess && !hasCreditConsumed.current && !creditConsuming) {
+    if (consumeAt === 'enter' && hasCreditAccess && !hasCreditConsumed.current && !creditConsuming) {
       hasCreditConsumed.current = true;
       setCreditConsuming(true);
       
@@ -80,7 +88,39 @@ export const SubscriptionGuard = ({
         }
       });
     }
-  }, [hasCreditAccess, useReportCredit, useTestCredit, currentCredits, creditConsuming, toast, creditType, creditLabel]);
+  }, [consumeAt, hasCreditAccess, useReportCredit, useTestCredit, currentCredits, creditConsuming, toast, creditType, creditLabel]);
+
+  // result 모드에서 결과 확인 버튼 클릭 시 크레딧 소진
+  const handleUnlockResult = useCallback(async () => {
+    if (hasAccess) {
+      setResultUnlocked(true);
+      return;
+    }
+
+    if (hasCreditAccess) {
+      setCreditConsuming(true);
+      const consumeCredit = creditType === 'test' ? useTestCredit : useReportCredit;
+      const ok = await consumeCredit();
+      setCreditConsuming(false);
+      if (ok) {
+        setResultUnlocked(true);
+        toast({
+          title: `${creditLabel} 크레딧 1회 사용`,
+          description: `남은 ${creditLabel} 크레딧: ${Math.max(0, currentCredits - 1)}회`,
+        });
+      }
+      return;
+    }
+
+    if (isTrialAllowed) {
+      recordUsage(trialKey!);
+      setResultUnlocked(true);
+      return;
+    }
+
+    // 크레딧도 무료체험도 없으면 결제 유도
+    setPaymentOpen(true);
+  }, [hasAccess, hasCreditAccess, isTrialAllowed, creditType, useTestCredit, useReportCredit, toast, creditLabel, currentCredits, recordUsage, trialKey]);
 
   if (loading || trialLoading || accessLoading || creditConsuming) {
     return (
@@ -92,6 +132,97 @@ export const SubscriptionGuard = ({
       </div>
     );
   }
+
+  // ===== result 모드 =====
+  if (consumeAt === 'result') {
+    // 프리미엄 구독자 또는 이미 잠금해제됨
+    if (hasAccess || resultUnlocked) return <>{children}</>;
+
+    // 결과 잠금 오버레이
+    return (
+      <div className="relative">
+        {/* 블러 처리된 결과 미리보기 */}
+        <div className="filter blur-md pointer-events-none select-none opacity-60 max-h-[500px] overflow-hidden">
+          {children}
+        </div>
+        
+        {/* 결과 잠금 오버레이 */}
+        <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
+          <Card className="w-full max-w-md mx-4 border-2 border-primary/20 shadow-xl">
+            <CardContent className="p-6 space-y-4 text-center">
+              <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                <Lock className="w-8 h-8 text-primary-foreground" />
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-1">검사 결과 확인</h3>
+                <p className="text-sm text-muted-foreground">
+                  {hasCreditAccess
+                    ? `${creditLabel} 이용권 1회를 사용하여 결과를 확인하세요`
+                    : isTrialAllowed
+                    ? `무료체험으로 결과를 확인하세요 (남은 횟수: ${remaining === Infinity ? '무제한' : `${remaining}회`})`
+                    : '결과를 확인하려면 이용권이 필요해요'
+                  }
+                </p>
+              </div>
+
+              {(hasCreditAccess || isTrialAllowed) ? (
+                <Button
+                  onClick={handleUnlockResult}
+                  className="w-full h-12 text-base font-semibold"
+                  disabled={creditConsuming}
+                >
+                  {creditConsuming ? '처리 중...' : hasCreditAccess 
+                    ? `${creditLabel} 이용권 사용하기 (남은 ${Math.max(0, currentCredits)}회)`
+                    : '무료체험으로 결과 보기'
+                  }
+                </Button>
+              ) : (
+                <div className="space-y-3">
+                  {/* 단건 구매 */}
+                  <div className="border border-border rounded-xl p-4 space-y-2">
+                    <div className="flex items-baseline justify-center gap-2">
+                      <span className="text-sm text-muted-foreground line-through">₩{creditOriginalPrice.toLocaleString()}</span>
+                      <span className="text-xl font-black text-foreground">₩{creditPrice.toLocaleString()}</span>
+                      <Badge variant="secondary" className="text-xs">{creditDiscount}% 할인</Badge>
+                    </div>
+                    <Button
+                      onClick={() => setPaymentOpen(true)}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      <Zap className="w-4 h-4 mr-2" />
+                      {creditLabel} 1회 이용권 구매
+                    </Button>
+                  </div>
+
+                  {/* 구독 */}
+                  <Button
+                    onClick={() => navigate('/token-subscription')}
+                    className="w-full bg-primary hover:bg-primary/90"
+                  >
+                    <Crown className="w-4 h-4 mr-2" />
+                    구독하면 무제한 · ₩{SUBSCRIPTION_PRICE.toLocaleString()}/월
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        <PaymentModal 
+          open={paymentOpen} 
+          onOpenChange={setPaymentOpen} 
+          mode="single"
+          creditType={creditType}
+          title={`${featureName} ${creditLabel} 이용권 구매`}
+          description={`${featureName} ${creditLabel} 1회를 이용할 수 있습니다.`}
+        />
+      </div>
+    );
+  }
+
+  // ===== enter 모드 (기존 동작) =====
 
   // 프리미엄 구독자
   if (hasAccess) return <>{children}</>;

@@ -263,7 +263,7 @@ function FingerprintTemperamentTestInner() {
 export default function FingerprintTemperamentTest() {
   const { t } = useTranslation();
   return (
-    <SubscriptionGuard featureName={t.testPages.fingerprintTemperament} trialKey="PREMIUM_ASSESSMENT">
+    <SubscriptionGuard consumeAt="result" featureName={t.testPages.fingerprintTemperament} trialKey="PREMIUM_ASSESSMENT">
       <FingerprintTemperamentTestInner />
     </SubscriptionGuard>
   );

@@ -21,7 +21,7 @@ const LifePurposeTestInner = () => {
 };
 
 const LifePurposeTest = () => (
-  <SubscriptionGuard featureName="삶의 의미 및 목적 탐색 검사" trialKey="PREMIUM_ASSESSMENT">
+  <SubscriptionGuard consumeAt="result" featureName="삶의 의미 및 목적 탐색 검사" trialKey="PREMIUM_ASSESSMENT">
     <LifePurposeTestInner />
   </SubscriptionGuard>
 );

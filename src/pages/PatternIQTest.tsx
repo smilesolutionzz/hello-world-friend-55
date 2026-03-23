@@ -57,7 +57,7 @@ const PatternIQTestInner = () => {
 };
 
 const PatternIQTest = () => (
-  <SubscriptionGuard featureName="패턴 인지력 테스트" trialKey="FOCUS_CHECK">
+  <SubscriptionGuard consumeAt="result" featureName="패턴 인지력 테스트" trialKey="FOCUS_CHECK">
     <PatternIQTestInner />
   </SubscriptionGuard>
 );

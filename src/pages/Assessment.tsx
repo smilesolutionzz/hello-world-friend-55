@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/i18n/useTranslation";
 import { BetaBanner } from "@/components/BetaBanner";
@@ -1236,14 +1237,16 @@ const Assessment = () => {
 
   if (currentStep === 'language-result' && languageResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <LanguageTestResult 
-            results={languageResults}
-            onBack={handleBack}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="언어발달 검사" creditType="test" trialKey="LANGUAGE_TEST">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <LanguageTestResult 
+              results={languageResults}
+              onBack={handleBack}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 
@@ -1312,35 +1315,39 @@ const Assessment = () => {
 
   if (currentStep === 'depression-result' && depressionResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <DepressionTestResult 
-            results={depressionResults}
-            onBack={() => setCurrentStep('depression-test')}
-            onRestart={() => {
-              setDepressionResults(null);
-              setCurrentStep('depression-test');
-            }}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="우울감 검사" creditType="test" trialKey="DEPRESSION_TEST">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <DepressionTestResult 
+              results={depressionResults}
+              onBack={() => setCurrentStep('depression-test')}
+              onRestart={() => {
+                setDepressionResults(null);
+                setCurrentStep('depression-test');
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 
   if (currentStep === 'panic-result' && panicResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <PanicTestResult 
-            results={panicResults}
-            onBack={() => setCurrentStep('panic-test')}
-            onRestart={() => {
-              setPanicResults(null);
-              setCurrentStep('panic-test');
-            }}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="불안감 검사" creditType="test" trialKey="PANIC_TEST">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <PanicTestResult 
+              results={panicResults}
+              onBack={() => setCurrentStep('panic-test')}
+              onRestart={() => {
+                setPanicResults(null);
+                setCurrentStep('panic-test');
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 
@@ -1404,16 +1411,18 @@ const Assessment = () => {
 
   if (currentStep === 'adhd-result' && adhdResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <AdhdTestResult 
-            results={adhdResults}
-            onBack={handleBack}
-            onStartAIChat={handleStartAIChat}
-            onStartRealTimeChat={handleStartRealTimeChat}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="ADHD 검사" creditType="test" trialKey="ADHD_TEST">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <AdhdTestResult 
+              results={adhdResults}
+              onBack={handleBack}
+              onStartAIChat={handleStartAIChat}
+              onStartRealTimeChat={handleStartRealTimeChat}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 
@@ -1436,17 +1445,19 @@ const Assessment = () => {
 
   if (currentStep === 'stress-result' && stressResults) {
     return (
-      <div>
-        <UnifiedNavigation />
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
-          <div className="container mx-auto max-w-4xl">
-            <StressTestResult 
-              result={stressResults}
-              onRestart={() => setCurrentStep('stress-test')}
-            />
+      <SubscriptionGuard consumeAt="result" featureName="스트레스 검사" creditType="test" trialKey="STRESS_INDEX">
+        <div>
+          <UnifiedNavigation />
+          <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
+            <div className="container mx-auto max-w-4xl">
+              <StressTestResult 
+                result={stressResults}
+                onRestart={() => setCurrentStep('stress-test')}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 
@@ -1469,14 +1480,16 @@ const Assessment = () => {
 
   if (currentStep === 'bigfive-result' && bigfiveResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <BigFiveTestResult 
-            result={bigfiveResults}
-            onRestart={() => setCurrentStep('bigfive-test')}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="Big5 성격검사" creditType="test" trialKey="FIVE_D_PERSONALITY">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <BigFiveTestResult 
+              result={bigfiveResults}
+              onRestart={() => setCurrentStep('bigfive-test')}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 
@@ -1499,14 +1512,16 @@ const Assessment = () => {
 
   if (currentStep === 'attachment-result' && attachmentResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <AttachmentStyleResult 
-            result={attachmentResults}
-            onRestart={() => setCurrentStep('attachment-test')}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="애착유형 검사" creditType="test" trialKey="RELATIONSHIP_TYPE">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <AttachmentStyleResult 
+              result={attachmentResults}
+              onRestart={() => setCurrentStep('attachment-test')}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 
@@ -1664,57 +1679,83 @@ const Assessment = () => {
 
   // 발달 검사 결과 렌더링
   if (currentStep === 'developmental-delay-result' && developmentalDelayResults) {
-    return <DevelopmentalDelayTestResult 
-      results={developmentalDelayResults} 
-      onBack={handleBack} 
-      onRestart={() => setCurrentStep('developmental-delay-test')} 
-    />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="발달지연 검사" creditType="test" trialKey="DEVELOPMENTAL_DELAY_TEST">
+        <DevelopmentalDelayTestResult 
+          results={developmentalDelayResults} 
+          onBack={handleBack} 
+          onRestart={() => setCurrentStep('developmental-delay-test')} 
+        />
+      </SubscriptionGuard>
+    );
   }
 
   if (currentStep === 'sensory-integration-result' && sensoryIntegrationResults) {
-    return <SensoryIntegrationTestResult 
-      results={sensoryIntegrationResults} 
-      onBack={handleBack} 
-      onRestart={() => setCurrentStep('sensory-integration-test')} 
-    />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="감각통합 검사" creditType="test" trialKey="SENSORY_INTEGRATION_TEST">
+        <SensoryIntegrationTestResult 
+          results={sensoryIntegrationResults} 
+          onBack={handleBack} 
+          onRestart={() => setCurrentStep('sensory-integration-test')} 
+        />
+      </SubscriptionGuard>
+    );
   }
 
   if (currentStep === 'learning-disability-result' && learningDisabilityResults) {
-    return <LearningDisabilityTestResult 
-      results={learningDisabilityResults} 
-      onBack={handleBack} 
-      onRestart={() => setCurrentStep('learning-disability-test')} 
-    />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="학습장애 검사" creditType="test" trialKey="LEARNING_DISABILITY_TEST">
+        <LearningDisabilityTestResult 
+          results={learningDisabilityResults} 
+          onBack={handleBack} 
+          onRestart={() => setCurrentStep('learning-disability-test')} 
+        />
+      </SubscriptionGuard>
+    );
   }
 
   if (currentStep === 'social-development-result' && socialDevelopmentResults) {
-    return <SocialDevelopmentTestResult 
-      results={socialDevelopmentResults} 
-      onBack={handleBack} 
-      onRestart={() => setCurrentStep('social-development-test')} 
-    />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="사회성 발달 검사" creditType="test" trialKey="SOCIAL_DEVELOPMENT_TEST">
+        <SocialDevelopmentTestResult 
+          results={socialDevelopmentResults} 
+          onBack={handleBack} 
+          onRestart={() => setCurrentStep('social-development-test')} 
+        />
+      </SubscriptionGuard>
+    );
   }
 
   // 도전행동 및 적응행동 결과 렌더링
   if (currentStep === 'challenging-behavior-result' && challengingBehaviorResults) {
-    return <ChallengingBehaviorResult results={challengingBehaviorResults} />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="문제행동 검사" creditType="test" trialKey="CHALLENGING_BEHAVIOR_TEST">
+        <ChallengingBehaviorResult results={challengingBehaviorResults} />
+      </SubscriptionGuard>
+    );
   }
 
   if (currentStep === 'adaptive-behavior-result' && adaptiveBehaviorResults) {
-    return <AdaptiveBehaviorResult results={adaptiveBehaviorResults} />;
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="적응행동 검사" creditType="test" trialKey="ADAPTIVE_BEHAVIOR_TEST">
+        <AdaptiveBehaviorResult results={adaptiveBehaviorResults} />
+      </SubscriptionGuard>
+    );
   }
 
 
   if (currentStep === 'career-result' && careerResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <CareerInterestResult 
-            result={careerResults}
-            onRestart={() => setCurrentStep('career-test')}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="직업흥미 검사" creditType="test" trialKey="CAREER_TEST">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <CareerInterestResult 
+              result={careerResults}
+              onRestart={() => setCurrentStep('career-test')}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 

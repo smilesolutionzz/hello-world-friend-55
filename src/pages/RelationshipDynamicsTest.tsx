@@ -47,7 +47,7 @@ const RelationshipDynamicsTestInner = () => {
 const RelationshipDynamicsTest = () => {
   const { t } = useTranslation();
   return (
-    <SubscriptionGuard featureName={t.testPages.relationshipDynamics} trialKey="PREMIUM_ASSESSMENT">
+    <SubscriptionGuard consumeAt="result" featureName={t.testPages.relationshipDynamics} trialKey="PREMIUM_ASSESSMENT">
       <RelationshipDynamicsTestInner />
     </SubscriptionGuard>
   );

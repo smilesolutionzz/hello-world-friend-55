@@ -1315,18 +1315,20 @@ const Assessment = () => {
 
   if (currentStep === 'depression-result' && depressionResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <DepressionTestResult 
-            results={depressionResults}
-            onBack={() => setCurrentStep('depression-test')}
-            onRestart={() => {
-              setDepressionResults(null);
-              setCurrentStep('depression-test');
-            }}
-          />
+      <SubscriptionGuard consumeAt="result" featureName="우울감 검사" creditType="test" trialKey="DEPRESSION_TEST">
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <DepressionTestResult 
+              results={depressionResults}
+              onBack={() => setCurrentStep('depression-test')}
+              onRestart={() => {
+                setDepressionResults(null);
+                setCurrentStep('depression-test');
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </SubscriptionGuard>
     );
   }
 

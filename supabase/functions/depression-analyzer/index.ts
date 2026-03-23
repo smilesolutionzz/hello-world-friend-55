@@ -104,23 +104,21 @@ serve(async (req) => {
 이 분석은 참고용 의견이며 의학적 진단이 아닙니다. 지속적인 우울감이나 자살 사고가 있을 경우 즉시 전문기관에서 정확한 진단과 치료를 받으시기 바랍니다.
 `;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { 
             role: 'system', 
-            content: '당신은 임상심리학 박사이자 우울감 전문가입니다. 내담자에게 도움이 되는 참고용 분석을 제공합니다.'
+            content: '당신은 임상심리학 박사이자 우울감 전문가입니다. 내담자에게 도움이 되는 참고용 분석을 제공합니다. 각 섹션을 최소 200자 이상으로 풍부하게 작성하세요.'
           },
           { role: 'user', content: analysisPrompt }
         ],
-        max_tokens: 4500,
-        temperature: 0.7
       }),
     });
 

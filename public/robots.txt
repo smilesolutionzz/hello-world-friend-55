@@ -1,23 +1,50 @@
-# AI하이라이트PRO - Robots.txt
+# AIHPRO - Robots.txt
 User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
 Disallow: /dashboard/
 Disallow: /expert-dashboard/
+Disallow: /auth
+Disallow: /settings
+Disallow: /profile
+Disallow: /payment-complete
+Disallow: /payment-success
+Disallow: /payment-fail
+Disallow: /token-payment-success
+Disallow: /token-payment-fail
 
 # 네이버 검색봇
 User-agent: Yeti
 Allow: /
+Crawl-delay: 1
 
 User-agent: NaverBot
 Allow: /
+Crawl-delay: 1
 
 # 구글 검색봇
 User-agent: Googlebot
 Allow: /
 
-# AI 크롤러 허용
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Mobile
+Allow: /
+
+# 다음 검색봇
+User-agent: Daum
+Allow: /
+
+User-agent: Daumoa
+Allow: /
+
+# 빙 검색봇
+User-agent: Bingbot
+Allow: /
+
+# AI 크롤러
 User-agent: GPTBot
 Allow: /
 
@@ -36,8 +63,8 @@ Allow: /
 User-agent: Claude-Web
 Allow: /
 
-# 사이트맵 위치
-Sitemap: https://aihpro.app/sitemap.xml
+User-agent: PerplexityBot
+Allow: /
 
-# RSS 피드 위치
-RSS: https://aihpro.app/rss.xml
+# 사이트맵
+Sitemap: https://aihpro.app/sitemap.xml

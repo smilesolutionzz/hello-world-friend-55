@@ -50,7 +50,7 @@ const FreeTrialGate: React.FC<FreeTrialGateProps> = ({
             </li>
             <li className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-yellow-500" />
-              <span>회원가입 시 10개 토큰 무료 지급</span>
+              <span>회원가입 시 무료 검사 체험 제공</span>
             </li>
           </ul>
         </div>

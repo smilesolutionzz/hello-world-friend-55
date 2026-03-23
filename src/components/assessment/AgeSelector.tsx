@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Baby, GraduationCap, Briefcase, Heart, ArrowLeft, Home } from "lucide-react";
+import { Baby, GraduationCap, User, Heart, ArrowLeft, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 

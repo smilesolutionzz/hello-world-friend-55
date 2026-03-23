@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Brain, Baby } from "lucide-react";
 import { childFocusQuestions, adultFocusQuestions } from "@/data/assessmentQuestions";
 import TokenGate from "@/components/TokenGate";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
@@ -60,25 +60,33 @@ const adultQEn = [
 ];
 
 interface AdhdTestFormProps {
-  ageGroup: 'child' | 'adult';
+  ageGroup?: 'child' | 'adult';
   onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string, severity: string}) => void;
   onBack: () => void;
 }
 
 const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   const { isEnglish } = useLanguage();
-  const questionsKo = ageGroup === 'child' ? childFocusQuestions : adultFocusQuestions;
-  const questionsEnArr = ageGroup === 'child' ? childQEn : adultQEn;
-  const questions = isEnglish ? questionsEnArr : questionsKo;
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'child' | 'adult' | null>(ageGroup || null);
+  const questionsKo = selectedAgeGroup === 'child' ? childFocusQuestions : adultFocusQuestions;
+  const questionsEnArr = selectedAgeGroup === 'child' ? childQEn : adultQEn;
+  const questions = selectedAgeGroup ? (isEnglish ? questionsEnArr : questionsKo) : [];
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<string[]>(new Array(questions.length).fill(""));
+  const [answers, setAnswers] = useState<string[]>([]);
   const [hasStarted, setHasStarted] = useState(false);
   const { consumeTokens } = useTokens();
   const { toast } = useToast();
-  const { hasBackup, restoreBackup, discardBackup } = useBackupRecovery(`adhd-test-form-${ageGroup}`);
+  const { hasBackup, restoreBackup, discardBackup } = useBackupRecovery(`adhd-test-form-${selectedAgeGroup || 'none'}`);
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
 
   useEffect(() => { if (hasBackup && hasStarted) setShowRestoreDialog(true); }, [hasBackup, hasStarted]);
+
+  const handleAgeGroupSelect = (group: 'child' | 'adult') => {
+    setSelectedAgeGroup(group);
+    const qs = group === 'child' ? (isEnglish ? childQEn : childFocusQuestions) : (isEnglish ? adultQEn : adultFocusQuestions);
+    setAnswers(new Array(qs.length).fill(""));
+    setCurrentQuestion(0);
+  };
 
   const handleRestoreBackup = () => {
     const backup = restoreBackup();
@@ -91,7 +99,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   };
 
   const handleDiscardBackup = () => { discardBackup(); setShowRestoreDialog(false); };
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   const handleAnswer = (value: string) => {
     const newAnswers = [...answers];
@@ -118,7 +126,10 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     else if (total <= 45) severity = isEnglish ? "Moderate" : "중등도 수준";
     else severity = isEnglish ? "Severe" : "심각한 수준";
     
-    onComplete({ answers: numericAnswers, total, average, ageGroup: ageGroup === 'child' ? (isEnglish ? 'Child/Adolescent' : '아동청소년') : (isEnglish ? 'Adult' : '성인'), severity });
+    const ageLabel = selectedAgeGroup === 'child' 
+      ? (isEnglish ? 'Child/Adolescent (7-12)' : '아동청소년 (7-12세)') 
+      : (isEnglish ? 'Adult (19+)' : '성인 (19세 이상)');
+    onComplete({ answers: numericAnswers, total, average, ageGroup: ageLabel, severity });
   };
 
   const handleStartTest = async () => {
@@ -127,11 +138,65 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   };
 
   const handlePrevious = () => { if (currentQuestion > 0) setCurrentQuestion(currentQuestion - 1); };
-  const currentAnswer = answers[currentQuestion];
+  const currentAnswer = answers[currentQuestion] || "";
 
   const answerOptions = isEnglish
     ? [{ v: "1", l: "Not true (1)" }, { v: "2", l: "Somewhat (2)" }, { v: "3", l: "True (3)" }]
     : [{ v: "1", l: "그렇지 않다 (1점)" }, { v: "2", l: "보통이다 (2점)" }, { v: "3", l: "그렇다 (3점)" }];
+
+  // 연령대 선택 화면
+  if (!selectedAgeGroup) {
+    return (
+      <Card className="max-w-2xl mx-auto p-8">
+        <div className="space-y-6">
+          <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            {isEnglish ? "Back" : "뒤로가기"}
+          </Button>
+          
+          <div className="text-center space-y-3">
+            <Brain className="w-12 h-12 mx-auto text-primary" />
+            <h2 className="text-2xl font-bold">{isEnglish ? "Select Age Group" : "연령대를 선택해주세요"}</h2>
+            <p className="text-muted-foreground">{isEnglish ? "Questions and analysis are tailored to each age group" : "연령대에 맞는 맞춤형 문항과 분석이 제공됩니다"}</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card 
+              className="p-6 cursor-pointer hover:border-primary transition-all hover:shadow-lg"
+              onClick={() => handleAgeGroupSelect('child')}
+            >
+              <div className="text-center space-y-3">
+                <Baby className="w-10 h-10 mx-auto text-blue-500" />
+                <h3 className="text-lg font-semibold">{isEnglish ? "Child / Adolescent" : "아동·청소년"}</h3>
+                <p className="text-sm text-muted-foreground">{isEnglish ? "Ages 7-12" : "7세 ~ 12세"}</p>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• {isEnglish ? "18 child-tailored items" : "아동 맞춤 18문항"}</li>
+                  <li>• {isEnglish ? "Parent observation checklist" : "보호자 관찰 체크리스트"}</li>
+                  <li>• {isEnglish ? "Age-appropriate analysis" : "발달 단계별 맞춤 분석"}</li>
+                </ul>
+              </div>
+            </Card>
+
+            <Card 
+              className="p-6 cursor-pointer hover:border-primary transition-all hover:shadow-lg"
+              onClick={() => handleAgeGroupSelect('adult')}
+            >
+              <div className="text-center space-y-3">
+                <Brain className="w-10 h-10 mx-auto text-purple-500" />
+                <h3 className="text-lg font-semibold">{isEnglish ? "Adult" : "성인"}</h3>
+                <p className="text-sm text-muted-foreground">{isEnglish ? "Ages 19+" : "19세 이상"}</p>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• {isEnglish ? "18 adult self-check items" : "성인 자가점검 18문항"}</li>
+                  <li>• {isEnglish ? "Workplace focus analysis" : "직장/업무 집중력 분석"}</li>
+                  <li>• {isEnglish ? "Personalized strategies" : "맞춤형 개선 전략 제공"}</li>
+                </ul>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </Card>
+    );
+  }
 
   if (!hasStarted) {
     return (
@@ -139,11 +204,14 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
         <div className="space-y-4 text-center">
           <div className="text-lg font-semibold">{isEnglish ? "AIH Focus Self-Check Features" : "AIH 집중력 자가점검 특징"}</div>
           <ul className="space-y-2 text-sm text-muted-foreground max-w-md mx-auto">
-            <li>• {ageGroup === 'child' ? (isEnglish ? 'Child/Adolescent tailored items' : '아동청소년 맞춤 문항') : (isEnglish ? 'Adult tailored items' : '성인 맞춤 문항')}</li>
+            <li>• {selectedAgeGroup === 'child' ? (isEnglish ? 'Child/Adolescent tailored items (7-12)' : '아동청소년 맞춤 문항 (7-12세)') : (isEnglish ? 'Adult tailored items (19+)' : '성인 맞춤 문항 (19세 이상)')}</li>
             <li>• {isEnglish ? `${questions.length} items, ~3 min` : `총 ${questions.length}문항, 약 3분 소요`}</li>
             <li>• {isEnglish ? 'Personal focus pattern analysis' : '개인 집중력 패턴 분석'}</li>
             <li>• {isEnglish ? 'Customized improvement suggestions' : '맞춤형 개선 방향 제안'}</li>
           </ul>
+          <Button variant="outline" size="sm" onClick={() => { setSelectedAgeGroup(null); setAnswers([]); }}>
+            {isEnglish ? "Change age group" : "연령대 다시 선택"}
+          </Button>
           <div className="mt-6 pt-6 border-t">
             <p className="text-sm font-medium mb-2">{isEnglish ? "Want a more detailed ADHD type analysis?" : "더 정확한 ADHD 유형 분석을 원하신다면?"}</p>
             <Button variant="outline" onClick={() => window.location.href = '/advanced-adhd-test'} className="mt-2">
@@ -157,7 +225,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
 
   return (
     <>
-      {hasStarted && <AutoSaveManager data={{ answers, currentQuestion }} formId={`adhd-test-form-${ageGroup}`} interval={30000} showIndicator={true} />}
+      {hasStarted && <AutoSaveManager data={{ answers, currentQuestion }} formId={`adhd-test-form-${selectedAgeGroup}`} interval={30000} showIndicator={true} />}
 
       <AlertDialog open={showRestoreDialog} onOpenChange={setShowRestoreDialog}>
         <AlertDialogContent>

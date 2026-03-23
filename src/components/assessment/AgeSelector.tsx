@@ -92,7 +92,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
       title: '성인',
       subtitle: '19-64세',
       ...getAgeGroupContent('adult'),
-      icon: Briefcase,
+      icon: User,
       color: 'from-primary to-primary-glow'
     }
   ];

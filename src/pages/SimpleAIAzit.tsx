@@ -232,6 +232,7 @@ function SimpleAIAzitInner() {
         {/* Tips */}
         {!isConnected && (
           <p className="text-center text-purple-300 text-sm mt-4">
+            🎧 이어폰 또는 헤드셋 착용 시 음성 인식 정확도가 크게 향상됩니다<br />
             💡 PC에서 Chrome 브라우저 사용을 권장합니다
           </p>
         )}

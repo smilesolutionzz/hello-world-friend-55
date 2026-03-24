@@ -40,7 +40,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
 할아버지의 해결책:
 "${result.solution}"
 
-🔗 우리 부부도 진단받아보기: ${window.location.origin}/fun-tests`;
+🔗 우리 부부도 분석받아보기: ${window.location.origin}/fun-tests`;
 
     navigator.clipboard.writeText(shareText).then(() => {
       toast({

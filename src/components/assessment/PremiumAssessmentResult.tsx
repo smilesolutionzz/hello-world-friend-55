@@ -128,6 +128,7 @@ const PremiumAssessmentResult = ({
       achievement_motivation: '성취동기', interpersonal_skills: '대인관계', self_confidence: '자신감',
       emotional_intelligence: '감정지능', anxiety: '불안', depression: '우울', resilience: '회복력',
       self_esteem: '자존감', financial_anxiety: '재정 불안', spending_habits: '소비 습관',
+      spending_patterns: '소비 패턴', money_mindset: '돈 마인드셋', financial_goals: '재정 목표',
       investment_attitude: '투자 성향', money_values: '금전 가치관', passionate_romantic: '열정적 로맨티스트',
       stable_companion: '안정적 동반자', independent_individualist: '독립적 개인주의자', realistic_planner: '계획적 현실주의자',
     };

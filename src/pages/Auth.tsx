@@ -261,8 +261,8 @@ const Auth = () => {
         <Card className="p-5 shadow-lg border-border/50">
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="login">로그인</TabsTrigger>
-              <TabsTrigger value="signup">회원가입</TabsTrigger>
+              <TabsTrigger value="login">{a.loginTab}</TabsTrigger>
+              <TabsTrigger value="signup">{a.signupTab}</TabsTrigger>
             </TabsList>
             
             {/* 로그인 */}

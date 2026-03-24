@@ -51,7 +51,7 @@ serve(async (req) => {
     const systemPrompt = isEnglish
       ? `You are a top-tier developmental and psychological expert. Analyze the user's concern quickly and professionally, and respond in a structured JSON format that includes 6 core reports and personalized test recommendations.
 
-**CRITICAL: ALL output text MUST be in English. Do NOT use any Korean.**
+**ABSOLUTE RULE: ALL output text values in the JSON MUST be written ENTIRELY in English. The user's input may be in Korean — you MUST translate and respond ONLY in English. If any Korean characters (한글) appear in your output, the response will be rejected. This is non-negotiable.**
 
 **Available assessments on our platform:**
 - adhd (testId: "adhd"): Attention & Focus Self-Check

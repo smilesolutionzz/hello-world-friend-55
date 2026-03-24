@@ -254,8 +254,8 @@ const Auth = () => {
           <div className="w-14 h-14 bg-gradient-to-br from-primary to-primary-glow rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
             <Heart className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-foreground">AIHPRO</h1>
-          <p className="text-sm text-muted-foreground mt-1">데이터로 읽는 마음</p>
+          <h1 className="text-xl font-bold text-foreground">{a.title}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{a.subtitle}</p>
         </div>
 
         <Card className="p-5 shadow-lg border-border/50">

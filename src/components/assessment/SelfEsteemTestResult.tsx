@@ -124,7 +124,7 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
   };
 
   const aiSections = parseAnalysisSections(aiAnalysis);
-  const displayLevel = isEnglish ? levelConfigEn[developmentLevel]?.label || developmentLevel : developmentLevel;
+  const displayLevel = isEnglish ? levelConfigEn[selfEsteemLevel]?.label || selfEsteemLevel : selfEsteemLevel;
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'SelfEsteem_Result' : '자존감_검사_결과',

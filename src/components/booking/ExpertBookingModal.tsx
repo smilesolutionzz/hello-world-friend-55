@@ -116,7 +116,7 @@ export const ExpertBookingModal = ({ open, onOpenChange, expert }: ExpertBooking
         headers: { Authorization: `Bearer ${session.session.access_token}` },
         body: {
           action: 'create-payment',
-          productId: `consultation_${expert.id}`,
+          productId: `consult_${expert.id.slice(0, 8)}`,
           productType: 'single',
           productName: `${expert.name} 전문가 상담 (${CONSULTATION_DURATION}분)`,
           amount: CONSULTATION_PRICE,

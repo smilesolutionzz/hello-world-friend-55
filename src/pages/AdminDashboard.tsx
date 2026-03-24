@@ -1015,6 +1015,10 @@ export default function AdminDashboard() {
               <TrendingUp className="h-4 w-4" />
               경쟁사
             </TabsTrigger>
+            <TabsTrigger value="bookings" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              예약관리
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="notifications">

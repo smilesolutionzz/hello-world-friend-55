@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-console.log('OpenAI API Key configured:', !!openAIApiKey);
+console.log('LOVABLE_API_KEY configured:', !!LOVABLE_API_KEY);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -31,9 +31,9 @@ serve(async (req) => {
       );
     }
 
-    if (!openAIApiKey) {
+    if (!LOVABLE_API_KEY) {
       return new Response(
-        JSON.stringify({ error: 'OpenAI API key not configured' }),
+        JSON.stringify({ error: 'LOVABLE_API_KEY not configured' }),
         { 
           status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 

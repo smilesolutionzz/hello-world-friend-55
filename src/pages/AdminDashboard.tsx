@@ -83,6 +83,11 @@ export default function AdminDashboard() {
     }
   }, [isAdmin]);
 
+  if (!adminLoading && !isAdmin) {
+    navigate('/');
+    return null;
+  }
+
   if (adminLoading || loading) {
     return (
       <div className="min-h-screen bg-white p-6">

@@ -195,8 +195,27 @@ export const HighlightNavigation = () => {
             </div>
           </div>
 
-          {/* 데스크탑 우측 버튼 */}
-          <div className="hidden lg:flex items-center gap-2">
+          {/* 데스크탑 우측: 이용 현황 + 버튼 */}
+          <div className="hidden lg:flex items-center gap-3">
+            <button
+              onClick={() => navigate('/token-subscription')}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors"
+            >
+              {isSubscriber ? (
+                <>
+                  <Infinity className="w-3.5 h-3.5" />
+                  <span>월구독 이용중</span>
+                </>
+              ) : (
+                <>
+                  <FlaskConical className="w-3.5 h-3.5" />
+                  <span>검사 {testCredits}건</span>
+                  <span className="text-muted-foreground">|</span>
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>리포트 {reportCredits}건</span>
+                </>
+              )}
+            </button>
             <Button
               onClick={() => setIsChatOpen(true)}
               variant="ghost"

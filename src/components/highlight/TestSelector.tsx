@@ -67,7 +67,7 @@ export const TestSelector = () => {
         {
           id: 'developmental-delay-test',
           name: '발달지연 검사',
-          description: '전반적 발달지연 선별진단',
+          description: '전반적 발달지연 선별 평가',
           typebot_url: '',
           duration_minutes: 3
         },

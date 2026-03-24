@@ -85,6 +85,9 @@ export function useTokens() {
   }, [user?.id]);
 
   const consumeTokens = useCallback(async (amount: number) => {
+    // 무료 기능 (0 캐시)은 로그인 여부와 상관없이 통과
+    if (amount === 0) return true;
+    
     if (!user || !tokenBalance) return false;
     
     // 베타테스트 기간 중에는 캐시 소비하지 않음

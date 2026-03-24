@@ -84,7 +84,7 @@ const EmotionalHookSection = () => {
 
         <div className="flex justify-center gap-2 mb-6 overflow-x-auto pb-2">
           {emotionalStories.map((story, index) => (
-            <button key={index} onClick={() => setActiveStory(index)} className={`flex-shrink-0 px-3 py-2 rounded-full text-sm transition-all ${activeStory === index ? 'bg-rose-500 text-white' : 'bg-slate-800/50 text-white/60 hover:bg-slate-700/50'}`}>
+            <button key={index} onClick={() => handleStoryClick(index)} className={`flex-shrink-0 px-3 py-2 rounded-full text-sm transition-all ${activeStory === index ? 'bg-rose-500 text-white' : 'bg-slate-800/50 text-white/60 hover:bg-slate-700/50'}`}>
               <span className="mr-1">{story.emoji}</span>
               <span className="hidden sm:inline">{story.situation.slice(0, 10)}...</span>
             </button>

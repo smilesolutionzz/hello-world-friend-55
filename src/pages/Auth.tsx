@@ -239,9 +239,9 @@ const Auth = () => {
       password.length >= 12,
     ].filter(Boolean).length;
 
-    if (checks <= 2) return { level: 1, label: "약함", color: "bg-destructive" };
-    if (checks <= 4) return { level: 2, label: "보통", color: "bg-amber-500" };
-    return { level: 3, label: "강함", color: "bg-green-500" };
+    if (checks <= 2) return { level: 1, label: a.weak, color: "bg-destructive" };
+    if (checks <= 4) return { level: 2, label: a.medium, color: "bg-amber-500" };
+    return { level: 3, label: a.strong, color: "bg-green-500" };
   };
 
   const passwordStrength = getPasswordStrength(signupData.password);

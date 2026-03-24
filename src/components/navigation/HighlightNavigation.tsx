@@ -243,7 +243,7 @@ export const HighlightNavigation = () => {
           <div className="lg:hidden flex items-center gap-2">
             <button
               onClick={() => navigate('/token-subscription')}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary"
             >
               {isSubscriber ? (
                 <>
@@ -252,8 +252,11 @@ export const HighlightNavigation = () => {
                 </>
               ) : (
                 <>
-                  <Brain className="w-3.5 h-3.5" />
-                  <span>{reportCredits}건</span>
+                  <FlaskConical className="w-3 h-3" />
+                  <span>{testCredits}</span>
+                  <span className="text-muted-foreground/60">·</span>
+                  <FileText className="w-3 h-3" />
+                  <span>{reportCredits}</span>
                 </>
               )}
             </button>

@@ -60,15 +60,15 @@ const TokenGate: React.FC<TokenGateProps> = ({
         </CardHeader>
         <CardContent className="p-6 space-y-6">
           <div className="flex items-center justify-between bg-muted/50 rounded-lg p-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               {isPremium ? (
-                <Crown className="w-5 h-5 text-primary" />
+                <Crown className="w-5 h-5 text-primary flex-shrink-0" />
               ) : (
-                <Sparkles className="w-5 h-5 text-primary" />
+                <Sparkles className="w-5 h-5 text-primary flex-shrink-0" />
               )}
-              <div>
-                <p className="font-medium">
-                  {isPremium ? '구독 중 · 무제한 이용' : `무료 체험`}
+              <div className="min-w-0">
+                <p className="font-medium whitespace-nowrap">
+                  {isPremium ? '구독중 · 무제한' : `무료 체험`}
                 </p>
                 {!isPremium && remaining !== Infinity && (
                   <p className="text-sm text-muted-foreground">
@@ -77,8 +77,8 @@ const TokenGate: React.FC<TokenGateProps> = ({
                 )}
               </div>
             </div>
-            <Badge variant="secondary">
-              {isPremium ? '구독자' : '무료 체험'}
+            <Badge variant="secondary" className="whitespace-nowrap flex-shrink-0 ml-2">
+              {isPremium ? '프리미엄' : '무료 체험'}
             </Badge>
           </div>
 

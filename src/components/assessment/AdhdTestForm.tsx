@@ -117,8 +117,10 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
       toast({ title: isEnglish ? "Please answer all questions" : "답변 확인 필요", description: isEnglish ? "Please answer all items." : "모든 문항에 답변해주세요.", variant: "destructive" });
       return;
     }
-    const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
-    const average = Math.round((total / numericAnswers.length) * 10) / 10;
+    // Questions are positively worded (higher = better focus), so reverse for deficit scoring
+    const reversedAnswers = numericAnswers.map(a => 4 - a); // 3→1, 2→2, 1→3
+    const total = reversedAnswers.reduce((sum, answer) => sum + answer, 0);
+    const average = Math.round((total / reversedAnswers.length) * 10) / 10;
     
     let severity = "";
     if (total <= 27) severity = isEnglish ? "Normal Range" : "정상 범위";
@@ -129,7 +131,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     const ageLabel = selectedAgeGroup === 'child' 
       ? (isEnglish ? 'Child/Adolescent (7-12)' : '아동청소년 (7-12세)') 
       : (isEnglish ? 'Adult (19+)' : '성인 (19세 이상)');
-    onComplete({ answers: numericAnswers, total, average, ageGroup: ageLabel, severity });
+    onComplete({ answers: reversedAnswers, total, average, ageGroup: ageLabel, severity });
   };
 
   const handleStartTest = async () => {

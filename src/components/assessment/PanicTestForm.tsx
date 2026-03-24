@@ -214,7 +214,7 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
         <div className="space-y-6">
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-2">{isEnglish ? "Select your age group" : "연령대를 선택해주세요"}</h2>
-            <p className="text-muted-foreground">{isEnglish ? "Questions are tailored to your age" : "연령에 맞는 검사 문항이 제공됩니다"}</p>
+            <p className="text-muted-foreground text-sm px-4">{isEnglish ? "Questions are tailored to your age" : "연령에 맞는 검사 문항이 제공됩니다"}</p>
           </div>
           <div className="grid gap-4">
             {(['toddler', 'child', 'adult'] as const).map(g => (

@@ -108,7 +108,7 @@ export default function SelfEsteemTestForm({ onComplete, onBack }: SelfEsteemTes
             <div className="flex flex-col items-center space-y-4">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <div className="text-center">
-                <h3 className="font-semibold text-lg">{isEnglish ? "Analyzing self-worth..." : "자아가치 수준 분석 중..."}</h3>
+                <h3 className="font-semibold text-lg">{isEnglish ? "Analyzing child's self-worth..." : "자녀 자아가치 수준 분석 중..."}</h3>
                 <p className="text-muted-foreground">{isEnglish ? "Please wait a moment" : "잠시만 기다려주세요"}</p>
               </div>
             </div>
@@ -134,7 +134,7 @@ export default function SelfEsteemTestForm({ onComplete, onBack }: SelfEsteemTes
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">{isEnglish ? "Self-Worth Assessment" : "자아가치 측정"}</CardTitle>
+            <CardTitle className="text-xl">{isEnglish ? "Child Self-Worth Assessment (Parent Report)" : "자녀 자아가치 검사 (부모용)"}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>

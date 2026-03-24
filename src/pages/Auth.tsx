@@ -146,7 +146,7 @@ const Auth = () => {
     // 이메일 형식
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(signupData.email)) {
-      setError("올바른 이메일 형식이 아닙니다.");
+      setError(a.errors.invalidEmail);
       setLoading(false);
       return;
     }

@@ -53,8 +53,8 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
   const [aiAnalysis, setAiAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  const developmentLevel = getDevelopmentLevel(result.total);
-  const config = levelConfigKo[developmentLevel] || levelConfigKo['정상발달'];
+  const selfEsteemLevel = getSelfEsteemLevel(result.average);
+  const config = levelConfigKo[selfEsteemLevel] || levelConfigKo['보통'];
 
   useAutoSaveTestResult({
     testType: isEnglish ? 'Self-Esteem Test' : '자존감 검사',

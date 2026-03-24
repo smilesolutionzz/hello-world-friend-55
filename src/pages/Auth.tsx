@@ -221,7 +221,7 @@ const Auth = () => {
         });
       }
     } catch (err) {
-      setError("비밀번호 재설정 요청 중 오류가 발생했습니다.");
+      setError(a.errors.resetError);
     }
 
     setLoading(false);

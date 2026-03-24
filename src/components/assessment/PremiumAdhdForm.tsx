@@ -198,8 +198,8 @@ const PremiumAdhdForm = ({ ageGroup: initialAgeGroup, onComplete, onBack }: Prem
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
             <div className="p-4 bg-primary/5 rounded-lg">
               <Brain className="w-8 h-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-2">{isEnglish ? 'AHI-FOCUS Precision Diagnosis' : 'AHI-FOCUS 기반 정밀진단'}</h3>
-              <p className="text-sm text-muted-foreground">{isEnglish ? 'Systematic assessment based on AIH diagnostic criteria' : 'AIH 독창적 진단 기준에 따른 체계적 평가'}</p>
+              <h3 className="font-semibold mb-2">{isEnglish ? 'AHI-FOCUS Precision Analysis' : 'AHI-FOCUS 기반 정밀 분석'}</h3>
+              <p className="text-sm text-muted-foreground">{isEnglish ? 'Systematic assessment based on AIH criteria' : 'AIH 독창적 기준에 따른 체계적 평가'}</p>
             </div>
             <div className="p-4 bg-accent/5 rounded-lg">
               <Target className="w-8 h-8 mx-auto mb-2 text-accent" />

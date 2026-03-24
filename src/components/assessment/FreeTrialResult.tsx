@@ -96,7 +96,7 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
     if (result.testType === 'anxiety_quick_check') return '불안감 3분 체크';
     if (result.testType === 'personality_love') return '연애 성격 분석';
     if (result.testType === 'past_life_job_free') return '전생 직업 테스트';
-    if (result.testType === 'communication_style') return '소통 스타일 진단';
+    if (result.testType === 'communication_style') return '소통 스타일 분석';
     return result.testType || '3분 무료 테스트';
   };
 

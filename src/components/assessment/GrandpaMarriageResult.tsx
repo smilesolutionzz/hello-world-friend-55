@@ -310,7 +310,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
             <Card className="border-2 border-gray-200 shadow-lg">
               <CardContent className="p-4">
                 <p className="text-xs text-gray-600 leading-relaxed">
-                  ※ 이 진단은 재미를 위한 것으로, 실제 부부 상담이나 갈등 해결을 대체할 수 없습니다. 
+                  ※ 이 분석은 재미를 위한 것으로, 실제 부부 상담이나 갈등 해결을 대체할 수 없습니다. 
                   진지한 부부 갈등이 있으시면 전문 상담사와 상의하세요.
                 </p>
               </CardContent>

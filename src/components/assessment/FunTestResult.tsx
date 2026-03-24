@@ -72,7 +72,7 @@ export default function FunTestResult() {
       case 'joseon_status':
         return `내 조선시대 신분은 ${result?.status}! 👑`;
       case 'grandma_relationship':
-        return isEnglish ? `Grandma diagnosed our relationship! 👵` : `할머니가 우리 연애를 진단했다! 👵`;
+        return isEnglish ? `Grandma analyzed our relationship! 👵` : `할머니가 우리 연애를 분석했다! 👵`;
       case 'wisdom_advice':
         return `${result?.title} 🌟`;
       default:

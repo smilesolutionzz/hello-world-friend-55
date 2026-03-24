@@ -450,7 +450,7 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
                 <Heart className="h-12 w-12 text-blue-600 mx-auto mb-4" />
                 <h4 className="text-xl font-semibold mb-2">전문 한의사 상담 권장</h4>
                 <p className="text-muted-foreground mb-4">
-                  {analysis.clinic_recommendation || "더 정확한 체질 진단과 맞춤 처방을 위해 전문 한의사와 상담하시기 바랍니다."}
+                  {analysis.clinic_recommendation || "더 정확한 체질 분석과 맞춤 처방을 위해 전문 한의사와 상담하시기 바랍니다."}
                 </p>
                 <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
                   <Phone className="h-5 w-5 mr-2" />

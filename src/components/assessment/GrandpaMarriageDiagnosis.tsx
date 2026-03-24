@@ -335,7 +335,7 @@ export default function GrandpaMarriageDiagnosis({ onComplete, onBack }: Grandpa
       onComplete(selectedAnalysis, 'grandpa_marriage');
 
       toast({
-        title: "할아버지 진단 완료!",
+        title: "할아버지 분석 완료!",
         description: "할아버지의 독설을 확인해보세요!"
       });
 

@@ -45,8 +45,8 @@ export const AnxietyPackage = () => {
   ];
 
   const benefits = isEnglish 
-    ? ['Accurate diagnosis by anxiety type', 'Panic attack coping strategies', 'Instant stabilization techniques', '24/7 crisis intervention support']
-    : ['불안 유형별 정확한 진단', '공황발작 대처 방법', '즉시 안정화 기법 제공', '24시간 위기개입 지원'];
+    ? ['Accurate analysis by anxiety type', 'Panic attack coping strategies', 'Instant stabilization techniques', '24/7 crisis intervention support']
+    : ['불안 유형별 정밀 분석', '공황발작 대처 방법', '즉시 안정화 기법 제공', '24시간 위기개입 지원'];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">

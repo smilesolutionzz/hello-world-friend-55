@@ -139,13 +139,13 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
 
   return (
     <ClinicalReportLayout
-      testName={isEnglish ? 'Emotional Development Checklist' : '영유아 발달 체크리스트 결과'}
-      subtitle={isEnglish ? 'Emotional development assessment' : '정서발달 종합 평가'}
+      testName={isEnglish ? 'Child Self-Worth Assessment Results' : '자녀 자아가치 검사 결과'}
+      subtitle={isEnglish ? 'Self-esteem & self-worth analysis (Parent Report)' : '자존감 · 자아가치 종합 분석 (부모 보고형)'}
       onBack={onRestart}
       onDownload={handleDownload}
       totalScore={result.total}
       totalLabel={isEnglish ? 'Total Score' : '총점'}
-      scoreUnit="/ 75"
+      scoreUnit={`/ ${result.answers.length * 5}`}
       scoreSeverity={displayLevel}
       severityColor={config.color}
       domains={domains}

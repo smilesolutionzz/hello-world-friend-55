@@ -46,14 +46,14 @@ export const TestSelector = () => {
         {
           id: 'depression-test',
           name: '우울증 검사',
-          description: '우울증 선별 진단 평가',
+          description: '우울증 선별 종합 평가',
           typebot_url: '',
           duration_minutes: 3
         },
         {
           id: 'anxiety-test',
           name: '불안장애 검사',
-          description: '불안장애 종합 평가 진단',
+          description: '불안장애 종합 심층 평가',
           typebot_url: '',
           duration_minutes: 3
         },
@@ -67,7 +67,7 @@ export const TestSelector = () => {
         {
           id: 'developmental-delay-test',
           name: '발달지연 검사',
-          description: '전반적 발달지연 선별진단',
+          description: '전반적 발달지연 선별 평가',
           typebot_url: '',
           duration_minutes: 3
         },
@@ -227,7 +227,7 @@ export const TestSelector = () => {
             3분 심리 검사
           </h1>
           <p className="text-muted-foreground">
-            간단하고 빠른 자가진단으로 나를 더 잘 이해해보세요
+            간단하고 빠른 자가체크로 나를 더 잘 이해해보세요
           </p>
         </div>
 

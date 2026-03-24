@@ -467,8 +467,8 @@ export const MentalHealthQuickResult: React.FC<MentalHealthQuickResultProps> = (
 
       <PremiumTestCTA 
         currentTestType="mental-health-quick"
-        title={isEnglish ? "Need a more accurate mental health diagnosis?" : "더 정확한 정신건강 진단이 필요하신가요?"}
-        description={isEnglish ? "Get 30+ in-depth questions and specialist-level detailed analysis with our premium mental health test." : "프리미엄 정신건강 전문 검사로 30개 이상의 심층 질문과 전문의 수준의 상세 분석을 받아보세요."}
+        title={isEnglish ? "Need a more accurate mental health analysis?" : "더 정확한 정신건강 분석이 필요하신가요?"}
+        description={isEnglish ? "Get 30+ in-depth questions and specialist-level detailed analysis with our premium mental health test." : "프리미엄 정신건강 전문 검사로 30개 이상의 심층 질문과 전문가 수준의 상세 분석을 받아보세요."}
       />
 
       {(result.level === 'fair' || result.level === 'poor') && (

@@ -17,7 +17,7 @@ export const DepressionPackage = () => {
       tokens: TOKEN_COSTS.PSYCHOLOGICAL_TEST,
       status: '전문검사',
       statusColor: 'bg-red-500',
-      description: 'AHI-MOOD 기준 정확한 진단',
+      description: 'AHI-MOOD 기준 정밀 분석',
       path: '/assessment?test=depression'
     },
     {
@@ -43,7 +43,7 @@ export const DepressionPackage = () => {
   ];
 
   const benefits = [
-    'AHI-MOOD 기준 정확한 진단',
+    'AHI-MOOD 기준 정밀 분석',
     '우울 정도 단계별 분석',
     '맞춤형 치료 계획 수립',
     '전문가 직접 상담 연결'

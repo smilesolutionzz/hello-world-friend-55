@@ -328,7 +328,7 @@ ${result.dietPlan.herbs.join(', ')}
                 <div className="space-y-2">
                   <p className="text-sm text-purple-700">더 정확한 체질 분석을 위한</p>
                   <Button size="sm" variant="outline" className="w-full border-purple-300 text-purple-700 hover:bg-purple-50">
-                    가까이한의원 프리미엄 진단
+                    가까이한의원 프리미엄 분석
                   </Button>
                 </div>
               </CardContent>

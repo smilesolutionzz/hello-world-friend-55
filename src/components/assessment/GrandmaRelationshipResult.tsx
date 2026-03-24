@@ -25,7 +25,7 @@ export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaR
   const { isEnglish } = useLanguage();
 
   const handleShare = () => {
-    const shareText = `👵 욕쟁이 할머니의 연애 진단 결과 👵
+    const shareText = `👵 욕쟁이 할머니의 연애 분석 결과 👵
 
 🏷️ 관계 유형: ${result.relationship_type}
 📊 궁합 점수: ${result.compatibility_score}/100점
@@ -58,7 +58,7 @@ export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaR
       printWindow.document.write(`
         <html>
           <head>
-            <title>욕쟁이 할머니의 연애 진단 결과</title>
+            <title>욕쟁이 할머니의 연애 분석 결과</title>
             <style>
               body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background: linear-gradient(135deg, #fef2f2, #fefbf3); }
               .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
@@ -77,7 +77,7 @@ export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaR
           <body>
             <div class="container">
               <div class="header">
-                <h1 class="title">👵 욕쟁이 할머니의 연애 진단</h1>
+                <h1 class="title">👵 욕쟁이 할머니의 연애 분석</h1>
                 <p class="subtitle">관계 유형: ${result.relationship_type}</p>
               </div>
               
@@ -141,7 +141,7 @@ export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaR
           <div className="flex items-center justify-center gap-3 mb-4">
             <MessageCircle className="w-12 h-12 text-red-600" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-              욕쟁이 할머니의 진단 결과
+              욕쟁이 할머니의 분석 결과
             </h1>
             <MessageCircle className="w-12 h-12 text-orange-600" />
           </div>

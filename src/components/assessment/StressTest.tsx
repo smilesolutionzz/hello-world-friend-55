@@ -98,7 +98,7 @@ export const StressTest: React.FC<StressTestProps> = ({ onComplete, onBack }) =>
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Activity className="h-8 w-8 text-teal-500 mr-3" />
-              <CardTitle className="text-2xl text-teal-800">{isEnglish ? 'Stress Assessment' : '스트레스 한방 진단'}</CardTitle>
+              <CardTitle className="text-2xl text-teal-800">{isEnglish ? 'Stress Assessment' : '스트레스 한방 체크'}</CardTitle>
             </div>
             <CardDescription className="text-lg">
               {isEnglish ? 'Analyze your stress and mental health from a holistic perspective' : '스트레스와 정신건강 상태를 한의학적 관점에서 분석합니다'}

@@ -35,7 +35,7 @@ export const ViralShareCard: React.FC<ViralShareCardProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const viralMessage = `${emoji} ${testName} 결과\n\n${resultTitle}\n${resultSummary}\n\n🔗 나도 해보기: ${shareUrl}\n\n#심리테스트 #AIHPRO #자가진단`;
+  const viralMessage = `${emoji} ${testName} 결과\n\n${resultTitle}\n${resultSummary}\n\n🔗 나도 해보기: ${shareUrl}\n\n#심리테스트 #AIHPRO #자가분석`;
 
   const handleDownloadImage = async () => {
     if (!cardRef.current) return;

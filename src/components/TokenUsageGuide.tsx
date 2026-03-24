@@ -47,7 +47,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
 
   const expertTests = [
     { key: 'FIVE_D_PERSONALITY', name: '5D 성격 분석', icon: Brain, category: 'AIH 전문가 창작' },
-    { key: 'RELATIONSHIP_TYPE', name: '관계유형 진단', icon: Heart, category: 'AIH 전문가 창작' },
+    { key: 'RELATIONSHIP_TYPE', name: '관계유형 분석', icon: Heart, category: 'AIH 전문가 창작' },
     { key: 'STRESS_INDEX', name: '스트레스 지수 측정', icon: Zap, category: 'AIH 전문가 창작' },
     { key: 'AI_COACH', name: 'AI 코치 세션', icon: Target, category: 'AIH 전문가 창작' },
   ];

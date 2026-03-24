@@ -159,9 +159,9 @@ const ImprovedOnboarding = () => {
     const state = answers[2];
     
     const recommendations = {
-      stress: ['스트레스 자가진단', 'ADHD 체크', '직장 적응도 테스트'],
+      stress: ['스트레스 자가체크', 'ADHD 체크', '직장 적응도 테스트'],
       relationship: ['성격 5요인 분석', '대인관계 테스트', '소통 유형 분석'],
-      emotion: ['우울증 자가진단', '불안 척도 검사', '감정조절 능력 테스트'],
+      emotion: ['우울증 자가체크', '불안 척도 검사', '감정조절 능력 테스트'],
       growth: ['성격 5요인 분석', '강점 발견 테스트', '목표설정 검사']
     };
 

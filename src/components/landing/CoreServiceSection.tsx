@@ -13,7 +13,7 @@ const CoreServiceSection = () => {
   const services = [
     {
       icon: Brain,
-      title: "AI 자가진단",
+      title: "AI 자가체크",
       description: "3분 만에 정확한 상태 분석",
       details: "딥러닝 AI가 여러분의 응답을 실시간 분석하여 정확한 심리 상태를 파악합니다. 검증된 알고리즘으로 ADHD, 우울증, 스트레스 등 다양한 영역을 종합적으로 평가합니다.",
       path: "/assessment",

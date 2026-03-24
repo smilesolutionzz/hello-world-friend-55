@@ -337,11 +337,11 @@ export default function GrandmaRelationshipTest({ onComplete, onBack }: GrandmaR
             <div className="flex items-center justify-center gap-2 mb-4">
               <MessageCircle className="w-8 h-8 text-red-600 animate-bounce" />
               <CardTitle className="text-2xl bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                욕쟁이 할머니의 연애 진단
+                욕쟁이 할머니의 연애 분석
               </CardTitle>
             </div>
             <p className="text-muted-foreground">
-              👵 할머니가 직설적으로 당신들 관계를 진단해드립니다 (각오하세요!)
+              👵 할머니가 직설적으로 당신들 관계를 분석해드립니다 (각오하세요!)
             </p>
             
             <div className="mt-4">

@@ -19,7 +19,7 @@ import {
 import { motion } from "framer-motion";
 
 const reportSections = [
-  { icon: Brain, title: "종합 진단 요약", color: "text-purple-500", bg: "bg-purple-500/10" },
+  { icon: Brain, title: "종합 분석 요약", color: "text-purple-500", bg: "bg-purple-500/10" },
   { icon: Activity, title: "심층 분석 결과", color: "text-blue-500", bg: "bg-blue-500/10" },
   { icon: BookOpen, title: "최신 논문 기반 인사이트", color: "text-emerald-500", bg: "bg-emerald-500/10" },
   { icon: Target, title: "맞춤형 개입 전략", color: "text-orange-500", bg: "bg-orange-500/10" },
@@ -142,7 +142,7 @@ export const AIReportShowcaseSection = () => {
                     <div className="p-1.5 rounded-lg bg-purple-500/10">
                       <Brain className="w-4 h-4 text-purple-500" />
                     </div>
-                    <h4 className="font-bold text-slate-900 text-sm">1. 종합 진단 요약</h4>
+                    <h4 className="font-bold text-slate-900 text-sm">1. 종합 분석 요약</h4>
                     <Badge variant="outline" className="text-[10px] ml-auto border-slate-200 text-slate-400">Executive Summary</Badge>
                   </div>
                   <div className="pl-8 space-y-2">

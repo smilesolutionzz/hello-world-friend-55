@@ -63,7 +63,7 @@ export const AutismTest: React.FC<AutismTestProps> = ({ onComplete, onBack }) =>
         severity = isEnglish ? 'High' : '높음';
         recommendations = isEnglish
           ? ['Comprehensive evaluation and treatment plan at a specialist clinic', 'Herbal medicine for emotional regulation and focus', 'Digestive function improvement and nutritional balance', 'Parent consultation and home management education']
-          : ['전문 한의원에서 정밀 진단과 치료 계획 수립', '감정 조절과 집중력 향상을 위한 한약 처방', '소화기능 개선과 영양 균형 맞춤 치료', '부모 상담과 가정 내 관리법 교육'];
+          : ['전문 한의원에서 정밀 평가와 치료 계획 수립', '감정 조절과 집중력 향상을 위한 한약 처방', '소화기능 개선과 영양 균형 맞춤 치료', '부모 상담과 가정 내 관리법 교육'];
       } else if (percentage >= 60) {
         severity = isEnglish ? 'Moderate' : '중간';
         recommendations = isEnglish
@@ -98,7 +98,7 @@ export const AutismTest: React.FC<AutismTestProps> = ({ onComplete, onBack }) =>
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Users className="h-8 w-8 text-blue-500 mr-3" />
-              <CardTitle className="text-2xl text-blue-800">{isEnglish ? 'Autism Spectrum Assessment' : '자폐 스펙트럼 한방 진단'}</CardTitle>
+              <CardTitle className="text-2xl text-blue-800">{isEnglish ? 'Autism Spectrum Assessment' : '자폐 스펙트럼 한방 체크'}</CardTitle>
             </div>
             <CardDescription className="text-lg">
               {isEnglish ? 'Analyze autism spectrum symptoms from a holistic perspective' : '아동의 자폐 스펙트럼 증상을 한의학적 관점에서 분석합니다'}

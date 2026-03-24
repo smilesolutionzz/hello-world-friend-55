@@ -56,11 +56,11 @@ export function PremiumTestCTA({
 
     switch (currentTestType) {
       case 'mental-health-quick':
-        return { testName: '정신건강 전문 검사', testRoute: '/assessment', benefits: ['30개 이상의 심층 질문으로 정확한 진단', '전문의 수준의 상세 분석 리포트', '맞춤형 치료 및 관리 계획 제공', '월별 추적 관리 및 개선도 분석'] };
+        return { testName: '정신건강 전문 검사', testRoute: '/assessment', benefits: ['30개 이상의 심층 질문으로 정확한 분석', '전문의 수준의 상세 분석 리포트', '맞춤형 관리 계획 제공', '월별 추적 관리 및 개선도 분석'] };
       case 'otrovert':
         return { testName: 'MBTI + 성격 종합 검사', testRoute: '/assessment', benefits: ['16가지 성격 유형 정밀 분석', '직업 적합도 및 진로 상담', '대인관계 패턴 심층 분석', '자기계발 로드맵 제공'] };
       case 'communication-style':
-        return { testName: '관계 심리 전문 검사', testRoute: '/assessment', benefits: ['애착 유형 및 소통 패턴 분석', '파트너십 호환성 진단', '갈등 해결 전략 제공', '관계 개선 실천 프로그램'] };
+        return { testName: '관계 심리 전문 검사', testRoute: '/assessment', benefits: ['애착 유형 및 소통 패턴 분석', '파트너십 호환성 평가', '갈등 해결 전략 제공', '관계 개선 실천 프로그램'] };
       default:
         return { testName: '전문 심리 검사', testRoute: '/assessment', benefits: ['전문가 수준의 정밀 분석', '개인 맞춤형 상담 리포트', '실천 가능한 솔루션 제공', '지속적인 관리 및 추적'] };
     }

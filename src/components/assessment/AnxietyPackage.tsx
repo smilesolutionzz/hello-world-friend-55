@@ -19,7 +19,7 @@ export const AnxietyPackage = () => {
       tokens: TOKEN_COSTS.PSYCHOLOGICAL_TEST,
       status: isEnglish ? 'Required' : '필수검사',
       statusColor: 'bg-orange-500',
-      description: isEnglish ? 'Accurate diagnosis by anxiety type' : '불안 유형별 정확한 진단',
+      description: isEnglish ? 'Accurate analysis by anxiety type' : '불안 유형별 정밀 분석',
       path: '/assessment?test=panic'
     },
     {
@@ -45,8 +45,8 @@ export const AnxietyPackage = () => {
   ];
 
   const benefits = isEnglish 
-    ? ['Accurate diagnosis by anxiety type', 'Panic attack coping strategies', 'Instant stabilization techniques', '24/7 crisis intervention support']
-    : ['불안 유형별 정확한 진단', '공황발작 대처 방법', '즉시 안정화 기법 제공', '24시간 위기개입 지원'];
+    ? ['Accurate analysis by anxiety type', 'Panic attack coping strategies', 'Instant stabilization techniques', '24/7 crisis intervention support']
+    : ['불안 유형별 정밀 분석', '공황발작 대처 방법', '즉시 안정화 기법 제공', '24시간 위기개입 지원'];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
@@ -141,7 +141,7 @@ export const AnxietyPackage = () => {
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <p><strong>{isEnglish ? 'If anxiety is severe:' : '불안이 심하다면:'}</strong></p>
                   <p>• {isEnglish ? 'Start with anxiety disorder test' : '불안장애 검사로 시작'}</p>
-                  <p>• {isEnglish ? 'Get in-depth comprehensive analysis' : '종합분석으로 심화진단'}</p>
+                  <p>• {isEnglish ? 'Get in-depth comprehensive analysis' : '종합분석으로 심화 평가'}</p>
                   <p>• {isEnglish ? 'Use AI support in emergencies' : '응급시 즉시 AI 지원'}</p>
                 </div>
               </CardContent>

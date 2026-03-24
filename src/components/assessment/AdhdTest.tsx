@@ -98,7 +98,7 @@ export const AdhdTest: React.FC<AdhdTestProps> = ({ onComplete, onBack }) => {
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Zap className="h-8 w-8 text-orange-500 mr-3" />
-              <CardTitle className="text-2xl text-orange-800">{isEnglish ? 'ADHD Assessment' : 'ADHD 한방 진단'}</CardTitle>
+              <CardTitle className="text-2xl text-orange-800">{isEnglish ? 'ADHD Assessment' : 'ADHD 한방 체크'}</CardTitle>
             </div>
             <CardDescription className="text-lg">
               {isEnglish ? 'Analyze ADHD symptoms from a holistic perspective' : '주의력결핍 과다활동 증상을 한의학적 관점에서 분석합니다'}

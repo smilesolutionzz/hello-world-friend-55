@@ -210,7 +210,7 @@ export const IntellectualDisabilityTest: React.FC<IntellectualDisabilityTestProp
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Brain className="h-8 w-8 text-purple-500 mr-3" />
-              <CardTitle className="text-2xl text-purple-800">인지능력 한방 진단</CardTitle>
+              <CardTitle className="text-2xl text-purple-800">인지능력 한방 체크</CardTitle>
             </div>
             <CardDescription className="text-lg">
               인지능력과 발달 상태를 한의학적 관점에서 분석합니다

@@ -459,7 +459,7 @@ const TokenSubscription = () => {
                 </div>
                 <div>
                   <h4 className="font-black text-lg">전세계 논문 기반 맞춤 큐레이션</h4>
-                  <p className="text-sm text-muted-foreground">글로벌 연구와 진단도구를 실시간 참고합니다</p>
+                  <p className="text-sm text-muted-foreground">글로벌 연구와 평가도구를 실시간 참고합니다</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">

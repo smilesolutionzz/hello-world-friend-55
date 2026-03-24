@@ -92,7 +92,7 @@ const CommunicationStyleForm = ({ onComplete, onBack }: CommunicationStyleFormPr
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <MessageCircle className="w-6 h-6 text-blue-500" />
-            <h1 className="text-2xl font-bold">{isEnglish ? 'Communication Style Assessment' : '소통 스타일 진단'}</h1>
+            <h1 className="text-2xl font-bold">{isEnglish ? 'Communication Style Assessment' : '소통 스타일 분석'}</h1>
           </div>
           <p className="text-muted-foreground mb-4">{isEnglish ? 'Discover your communication patterns and style' : '나의 의사소통 방식과 패턴을 파악해보세요'}</p>
           <div className="space-y-2">

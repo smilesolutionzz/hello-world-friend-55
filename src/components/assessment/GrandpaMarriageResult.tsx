@@ -29,9 +29,9 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
   const { isEnglish } = useLanguage();
 
   const handleShare = () => {
-    const shareText = `👴 욕쟁이 할아버지의 부부금술진단 결과 👴
+    const shareText = `👴 욕쟁이 할아버지의 부부금술 분석 결과 👴
 
-🏷️ 진단 결과: ${result.verdict}
+🏷️ 분석 결과: ${result.verdict}
 📊 잘못 비율: 남편 ${result.blame_percentage.husband}% vs 아내 ${result.blame_percentage.wife}%
 
 할아버지의 일침:
@@ -40,7 +40,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
 할아버지의 해결책:
 "${result.solution}"
 
-🔗 우리 부부도 진단받아보기: ${window.location.origin}/fun-tests`;
+🔗 우리 부부도 분석받아보기: ${window.location.origin}/fun-tests`;
 
     navigator.clipboard.writeText(shareText).then(() => {
       toast({
@@ -62,7 +62,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
       printWindow.document.write(`
         <html>
           <head>
-            <title>욕쟁이 할아버지의 부부금술진단 결과</title>
+            <title>욕쟁이 할아버지의 부부금술 분석 결과</title>
             <style>
               body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background: linear-gradient(135deg, #eff6ff, #f0f9ff); }
               .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
@@ -84,7 +84,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
           <body>
             <div class="container">
               <div class="header">
-                <h1 class="title">👴 욕쟁이 할아버지의 부부금술진단</h1>
+                <h1 class="title">👴 욕쟁이 할아버지의 부부금술 분석</h1>
                 <p class="subtitle">누가 잘못했나 판정 결과</p>
               </div>
               
@@ -282,7 +282,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
                   className="w-full border-orange-200 text-orange-700 hover:bg-orange-50"
                 >
                   <RotateCcw className="w-4 h-4 mr-2" />
-                  다시 진단받기
+                  다시 분석받기
                 </Button>
               </CardContent>
             </Card>
@@ -310,7 +310,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
             <Card className="border-2 border-gray-200 shadow-lg">
               <CardContent className="p-4">
                 <p className="text-xs text-gray-600 leading-relaxed">
-                  ※ 이 진단은 재미를 위한 것으로, 실제 부부 상담이나 갈등 해결을 대체할 수 없습니다. 
+                  ※ 이 분석은 재미를 위한 것으로, 실제 부부 상담이나 갈등 해결을 대체할 수 없습니다. 
                   진지한 부부 갈등이 있으시면 전문 상담사와 상의하세요.
                 </p>
               </CardContent>

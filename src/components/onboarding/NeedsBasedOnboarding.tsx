@@ -109,7 +109,7 @@ export default function NeedsBasedOnboarding() {
     },
     {
       id: 'adhd-test',
-      title: 'ADHD 자가진단',
+      title: 'ADHD 자가체크',
       description: '주의력결핍 과잉행동장애 검사',
       tokenCost: '300원',
       duration: '12분',

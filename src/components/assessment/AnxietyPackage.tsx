@@ -19,7 +19,7 @@ export const AnxietyPackage = () => {
       tokens: TOKEN_COSTS.PSYCHOLOGICAL_TEST,
       status: isEnglish ? 'Required' : '필수검사',
       statusColor: 'bg-orange-500',
-      description: isEnglish ? 'Accurate diagnosis by anxiety type' : '불안 유형별 정확한 진단',
+      description: isEnglish ? 'Accurate analysis by anxiety type' : '불안 유형별 정밀 분석',
       path: '/assessment?test=panic'
     },
     {

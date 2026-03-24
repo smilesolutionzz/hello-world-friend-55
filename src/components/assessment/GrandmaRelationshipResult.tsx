@@ -25,7 +25,7 @@ export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaR
   const { isEnglish } = useLanguage();
 
   const handleShare = () => {
-    const shareText = `👵 욕쟁이 할머니의 연애 진단 결과 👵
+    const shareText = `👵 욕쟁이 할머니의 연애 분석 결과 👵
 
 🏷️ 관계 유형: ${result.relationship_type}
 📊 궁합 점수: ${result.compatibility_score}/100점

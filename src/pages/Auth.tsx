@@ -157,7 +157,7 @@ const Auth = () => {
         nickname: trimmedName
       });
       if (nickAvailable === false) {
-        setError("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.");
+        setError(a.errors.nickTaken);
         setLoading(false);
         return;
       }

@@ -118,7 +118,7 @@ const Auth = () => {
     
     // 비밀번호 일치 확인
     if (signupData.password !== signupData.confirmPassword) {
-      setError("비밀번호가 일치하지 않습니다.");
+      setError(a.errors.passwordMismatch);
       setLoading(false);
       return;
     }

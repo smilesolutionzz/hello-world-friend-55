@@ -474,7 +474,7 @@ const Auth = () => {
                   <Input
                     id="forgot-email"
                     type="email"
-                    placeholder="이메일을 입력하세요"
+                    placeholder={a.emailPlaceholder}
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
                     className="pl-10 h-11"

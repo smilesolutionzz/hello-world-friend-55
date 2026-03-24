@@ -465,7 +465,7 @@ const Auth = () => {
               </div>
               
               <p className="text-sm text-muted-foreground mb-4">
-                가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.
+                {a.forgotPasswordDesc}
               </p>
               
               <form onSubmit={handleForgotPassword} className="space-y-4">

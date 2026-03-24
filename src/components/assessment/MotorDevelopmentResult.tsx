@@ -88,22 +88,22 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
   const ageMonths = results.ageInMonths % 12;
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', 'AIH_운동발달_결과',
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? 'AIH_MotorDev_Results' : 'AIH_운동발달_결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 
-  if (isLoading) return <AnalysisLoadingScreen testName="운동발달 분석" />;
+  if (isLoading) return <AnalysisLoadingScreen testName={isEnglish ? "Motor Development Analysis" : "운동발달 분석"} />;
 
   return (
     <ClinicalReportLayout
-      testName="운동발달 검사 결과"
-      subtitle={`${ageYears}세 ${ageMonths}개월 아동 기준`}
+      testName={isEnglish ? "Motor Development Test Results" : "운동발달 검사 결과"}
+      subtitle={isEnglish ? `Based on ${ageYears}yr ${ageMonths}mo child` : `${ageYears}세 ${ageMonths}개월 아동 기준`}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={`${results.percentage}%`}
-      totalLabel="종합 발달 수준"
+      totalLabel={isEnglish ? "Overall Development Level" : "종합 발달 수준"}
       scoreSeverity={results.developmentLevel}
       severityColor={levelColor}
       domains={domains}
@@ -114,21 +114,21 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
       {(results.strengths.length > 0 || results.weaknesses.length > 0) && (
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="rounded-2xl border border-green-200 bg-green-50/50 p-3">
-            <h3 className="text-xs font-bold text-green-700 mb-2">💪 강점 영역</h3>
+            <h3 className="text-xs font-bold text-green-700 mb-2">{isEnglish ? '💪 Strengths' : '💪 강점 영역'}</h3>
             <div className="space-y-1">
               {results.strengths.map((s, i) => (
                 <p key={i} className="text-[11px] text-green-800">• {s}</p>
               ))}
-              {results.strengths.length === 0 && <p className="text-[11px] text-green-700">균형 잡힌 발달</p>}
+              {results.strengths.length === 0 && <p className="text-[11px] text-green-700">{isEnglish ? 'Balanced development' : '균형 잡힌 발달'}</p>}
             </div>
           </div>
           <div className="rounded-2xl border border-amber-200 bg-amber-50/50 p-3">
-            <h3 className="text-xs font-bold text-amber-700 mb-2">🎯 지원 필요</h3>
+            <h3 className="text-xs font-bold text-amber-700 mb-2">{isEnglish ? '🎯 Needs Support' : '🎯 지원 필요'}</h3>
             <div className="space-y-1">
               {results.weaknesses.map((w, i) => (
                 <p key={i} className="text-[11px] text-amber-800">• {w}</p>
               ))}
-              {results.weaknesses.length === 0 && <p className="text-[11px] text-amber-700">우려 영역 없음</p>}
+              {results.weaknesses.length === 0 && <p className="text-[11px] text-amber-700">{isEnglish ? 'No concerns' : '우려 영역 없음'}</p>}
             </div>
           </div>
         </div>
@@ -137,8 +137,8 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '운동발달',
-            subtitle: '영역별 분석',
+            testName: isEnglish ? 'Motor Development' : '운동발달',
+            subtitle: isEnglish ? 'Domain Analysis' : '영역별 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(results.categoryScores).map(([k, v]) => [k, (v / 100) * 7])),
             maxScore: 7,

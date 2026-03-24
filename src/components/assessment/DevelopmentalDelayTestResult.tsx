@@ -127,24 +127,24 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
   const overallDelay = Math.round(domainData.reduce((s, d) => s + d.score, 0) / domainData.length);
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', 'AIH_발달지연_검사결과',
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? 'AIH_DevDelay_Results' : 'AIH_발달지연_검사결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 
   if (isLoading) {
-    return <AnalysisLoadingScreen testName="발달지연 검사" />;
+    return <AnalysisLoadingScreen testName={isEnglish ? "Developmental Delay Test" : "발달지연 검사"} />;
   }
 
   return (
     <ClinicalReportLayout
-      testName="AIH 발달지연 검사 결과"
-      subtitle={`연령대: ${results.ageGroup}`}
+      testName={isEnglish ? "AIH Developmental Delay Test Results" : "AIH 발달지연 검사 결과"}
+      subtitle={`${isEnglish ? 'Age Group' : '연령대'}: ${results.ageGroup}`}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={`${overallDelay}%`}
-      totalLabel="종합 발달 지연도"
+      totalLabel={isEnglish ? 'Overall Delay Level' : '종합 발달 지연도'}
       scoreSeverity={results.severity}
       severityColor={severityColor}
       domains={domains}
@@ -155,8 +155,8 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '발달지연 검사',
-            subtitle: '7개 발달 영역 분석',
+            testName: isEnglish ? 'Developmental Delay' : '발달지연 검사',
+            subtitle: isEnglish ? '7 Developmental Domain Analysis' : '7개 발달 영역 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(domainData.map(d => [d.key, (d.score / 100) * 7])),
             maxScore: 7,

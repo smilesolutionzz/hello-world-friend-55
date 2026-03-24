@@ -7,6 +7,7 @@ import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface Question {
   id: number;
@@ -64,6 +65,7 @@ interface DefenseMechanismTestProps {
 export const DefenseMechanismTest: React.FC<DefenseMechanismTestProps> = ({ onComplete, onBack }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const { isEnglish } = useLanguage();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const navigate = useNavigate();
 
@@ -183,7 +185,7 @@ export const DefenseMechanismTest: React.FC<DefenseMechanismTestProps> = ({ onCo
   };
 
   if (isAnalyzing) {
-    return <AnalysisLoadingScreen testName="방어기제" estimatedSeconds={25} />;
+    return <AnalysisLoadingScreen testName={isEnglish ? "Defense Mechanism" : "방어기제"} estimatedSeconds={25} />;
   }
 
   const question = questions[currentQuestion];

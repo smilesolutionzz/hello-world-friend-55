@@ -90,12 +90,12 @@ const SocialDevelopmentTestResult = ({ results, onBack }: SocialDevelopmentTestR
     );
   };
 
-  if (isLoading) return <AnalysisLoadingScreen testName="사회성 발달 분석" />;
+  if (isLoading) return <AnalysisLoadingScreen testName={isEnglish ? "Social Development Analysis" : "사회성 발달 분석"} />;
 
   return (
     <ClinicalReportLayout
       testName="사회성 발달 검사 결과"
-      subtitle={`연령대: ${results.ageGroup}`}
+      subtitle={`${isEnglish ? 'Age Group' : '연령대'}: ${results.ageGroup}`}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={results.total}

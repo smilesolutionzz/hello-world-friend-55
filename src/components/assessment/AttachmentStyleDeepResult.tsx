@@ -102,11 +102,11 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
     );
   };
 
-  if (isLoading) return <AnalysisLoadingScreen testName="애착 유형 심층 분석" />;
+  if (isLoading) return <AnalysisLoadingScreen testName={isEnglish ? "Deep Attachment Analysis" : "애착 유형 심층 분석"} />;
 
   return (
     <ClinicalReportLayout
-      testName="애착 유형 심층 분석 결과"
+      testName={isEnglish ? "Deep Attachment Style Analysis Results" : "애착 유형 심층 분석 결과"}
       subtitle={`${result.styleInfo.emoji} 주요 유형: ${result.styleInfo.name}`}
       onBack={onBack}
       onDownload={handleDownload}
@@ -122,7 +122,7 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '애착 유형 심층 분석',
+            testName: isEnglish ? 'Deep Attachment Analysis' : '애착 유형 심층 분석',
             subtitle: '4가지 애착 유형 분포',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(

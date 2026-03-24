@@ -168,22 +168,22 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
   const severityColor = totalInfo.level === '우수' ? 'text-green-600 border-green-300' : totalInfo.level === '양호' ? 'text-primary border-primary/30' : totalInfo.level === '보통' ? 'text-yellow-600 border-yellow-300' : 'text-destructive border-destructive/30';
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', '언어발달_검사_결과',
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? 'LanguageDev_Results' : '언어발달_검사_결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 
-  if (isAnalyzing) return <AnalysisLoadingScreen testName="언어발달 검사" />;
+  if (isAnalyzing) return <AnalysisLoadingScreen testName={isEnglish ? "Language Development Test" : "언어발달 검사"} />;
 
   return (
     <ClinicalReportLayout
-      testName="언어발달 검사 결과"
-      subtitle="수용언어 · 표현언어 분석"
+      testName={isEnglish ? "Language Development Test Results" : "언어발달 검사 결과"}
+      subtitle={isEnglish ? "Receptive · Expressive Language Analysis" : "수용언어 · 표현언어 분석"}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={getNumericResult('total')}
-      totalLabel="종합 점수"
+      totalLabel={isEnglish ? "Total Score" : "종합 점수"}
       scoreSeverity={totalInfo.level}
       severityColor={severityColor}
       domains={domains}
@@ -194,15 +194,15 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '언어발달',
-            subtitle: '수용·표현 분석',
+            testName: isEnglish ? 'Language Development' : '언어발달',
+            subtitle: isEnglish ? 'Receptive · Expressive Analysis' : '수용·표현 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: { receptive: (getNumericResult('receptive_percentage') / 100) * 7, expressive: (getNumericResult('expressive_percentage') / 100) * 7 },
             maxScore: 7,
-            categoryTranslations: { receptive: '수용언어', expressive: '표현언어' },
+            categoryTranslations: { receptive: isEnglish ? 'Receptive' : '수용언어', expressive: isEnglish ? 'Expressive' : '표현언어' },
             aiSummary: aiAnalysis,
             actionItems: aiSections.slice(0, 3).map((section) => section.title),
-            riskLevel: totalInfo.level === '우수' || totalInfo.level === '양호' ? 'low' : totalInfo.level === '보통' ? 'moderate' : 'high',
+            riskLevel: totalInfo.level === (isEnglish ? 'Excellent' : '우수') || totalInfo.level === (isEnglish ? 'Good' : '양호') ? 'low' : totalInfo.level === (isEnglish ? 'Average' : '보통') ? 'moderate' : 'high',
           }}
         />
       </div>

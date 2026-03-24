@@ -131,7 +131,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     const ageLabel = selectedAgeGroup === 'child' 
       ? (isEnglish ? 'Child/Adolescent (7-12)' : '아동청소년 (7-12세)') 
       : (isEnglish ? 'Adult (19+)' : '성인 (19세 이상)');
-    onComplete({ answers: numericAnswers, total, average, ageGroup: ageLabel, severity });
+    onComplete({ answers: reversedAnswers, total, average, ageGroup: ageLabel, severity });
   };
 
   const handleStartTest = async () => {

@@ -77,7 +77,7 @@ export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaR
           <body>
             <div class="container">
               <div class="header">
-                <h1 class="title">👵 욕쟁이 할머니의 연애 진단</h1>
+                <h1 class="title">👵 욕쟁이 할머니의 연애 분석</h1>
                 <p class="subtitle">관계 유형: ${result.relationship_type}</p>
               </div>
               

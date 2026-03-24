@@ -970,7 +970,7 @@ export default function AdminDashboard() {
 
         {/* Enhanced Management Tabs */}
         <Tabs defaultValue="notifications" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 md:grid-cols-11">
+          <TabsList className="grid w-full grid-cols-6 md:grid-cols-12">
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
               알림

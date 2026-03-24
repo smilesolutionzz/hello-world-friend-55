@@ -132,8 +132,8 @@ const FunTests = () => {
           />
 
           <AIFeatureCard
-            title="욕쟁이 할머니의 연애 진단"
-            description="할머니가 직설적으로 당신들의 연애를 진단해드립니다. 솔직한 조언을 들을 각오 되셨나요?"
+            title="욕쟁이 할머니의 연애 분석"
+            description="할머니가 직설적으로 당신들의 연애를 분석해드립니다. 솔직한 조언을 들을 각오 되셨나요?"
             icon={MessageCircle}
             aiLevel="premium"
             rank={3}

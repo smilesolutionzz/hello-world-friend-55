@@ -6,11 +6,12 @@ import { languageDevelopmentScoring } from '@/data/languageDevelopmentQuestions'
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
+import { cleanMarkdown } from '@/utils/cleanMarkdown';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from '@/i18n/useTranslation';
 
 interface LanguageDevelopmentResultProps {
-  results: Record<string, number>;
+  results: Record<string, any>;
   answers: Record<string, string>;
   onBack: () => void;
 }
@@ -21,6 +22,21 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
   const { isEnglish } = useLanguage();
   const [aiAnalysis, setAiAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
+
+  const getNumericResult = (key: string) => {
+    const value = results?.[key];
+    const parsed = typeof value === 'number' ? value : Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+
+  const ageInMonths = getNumericResult('ageInMonths') || undefined;
+  const resolvedAgeGroup = typeof results?.ageGroup === 'string' && results.ageGroup.trim().length > 0
+    ? results.ageGroup
+    : '영유아';
+
+  const receptiveMax = Object.keys(answers || {}).filter((id) => id.startsWith('rec_')).length;
+  const expressiveMax = Object.keys(answers || {}).filter((id) => id.startsWith('exp_')).length;
+  const totalMax = receptiveMax + expressiveMax;
 
   const getLevel = (score: number, category: 'receptive' | 'expressive' | 'total') => {
     const scoring = languageDevelopmentScoring[category];
@@ -34,7 +50,17 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
     const run = async () => {
       try {
         const { data, error } = await supabase.functions.invoke('language-development-analyzer', {
-          body: { results, answers, ageGroup: '영유아' },
+          body: {
+            results,
+            answers,
+            ageGroup: resolvedAgeGroup,
+            age: ageInMonths,
+            scoreMeta: {
+              receptiveMax,
+              expressiveMax,
+              totalMax,
+            },
+          },
         });
         if (error) throw error;
         setAiAnalysis(data.analysis || '');
@@ -47,30 +73,94 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
     run();
   }, []);
 
-  const totalInfo = getLevel(results.total, 'total');
-  const receptiveInfo = getLevel(results.receptive, 'receptive');
-  const expressiveInfo = getLevel(results.expressive, 'expressive');
-
-  const domainEntries: Record<string, { score: number; max: number; label: string; info: ReturnType<typeof getLevel> }> = {
-    receptive: { score: results.receptive || 0, max: 100, label: '수용언어', info: receptiveInfo },
-    expressive: { score: results.expressive || 0, max: 100, label: '표현언어', info: expressiveInfo },
-    receptive_pct: { score: results.receptive_percentage || 0, max: 100, label: '수용언어 %', info: receptiveInfo },
-    expressive_pct: { score: results.expressive_percentage || 0, max: 100, label: '표현언어 %', info: expressiveInfo },
-  };
+  const totalInfo = getLevel(getNumericResult('total'), 'total');
+  const receptiveInfo = getLevel(getNumericResult('receptive'), 'receptive');
+  const expressiveInfo = getLevel(getNumericResult('expressive'), 'expressive');
 
   const domains: DomainScore[] = [
-    { key: 'receptive', label: '수용언어', score: results.receptive_percentage || 0, maxScore: 100, level: receptiveInfo.level, color: receptiveInfo.color },
-    { key: 'expressive', label: '표현언어', score: results.expressive_percentage || 0, maxScore: 100, level: expressiveInfo.level, color: expressiveInfo.color },
+    { key: 'receptive', label: '수용언어', score: getNumericResult('receptive_percentage'), maxScore: 100, level: receptiveInfo.level, color: receptiveInfo.color },
+    { key: 'expressive', label: '표현언어', score: getNumericResult('expressive_percentage'), maxScore: 100, level: expressiveInfo.level, color: expressiveInfo.color },
   ];
 
   const parseAISections = (text: string): ReportSection[] => {
     if (!text) return [];
-    const paragraphs = text.split('\n\n').filter(p => p.trim().length > 20);
-    const icons = ['👂', '🗣️', '📊', '💡', '🌱', '📋'];
-    return paragraphs.slice(0, 6).map((p, idx) => {
-      const firstLine = p.split('\n')[0].replace(/[#*]/g, '').trim();
-      const rest = p.split('\n').slice(1).join('\n').trim() || p;
-      return { id: `s-${idx}`, icon: icons[idx] || '📋', title: firstLine.length > 5 && firstLine.length < 50 ? firstLine : `분석 ${idx + 1}`, content: rest, defaultOpen: idx === 0 };
+    const icons = ['🧠', '👂', '🗣️', '📊', '🌱', '💡', '📋'];
+    const defaultTitles = [
+      '전문가 종합 해석',
+      '수용언어 영역 정밀 분석',
+      '표현언어 영역 정밀 분석',
+      '문항별 응답 패턴 분석',
+      '발달 맥락 및 예후',
+      '가정 내 언어자극 전략',
+      '전문가 권고 및 후속 계획',
+    ];
+
+    const normalizeTitle = (raw: string) =>
+      raw
+        .replace(/[#*]/g, '')
+        .replace(/^\d+\s*[.)]\s*/, '')
+        .replace(/^[^\w가-힣]+/, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const isInvalidTitle = (title: string) =>
+      !title ||
+      title.length < 4 ||
+      title.length > 52 ||
+      /안녕하세요|프리미엄 유료 검사|전문가 분석 리포트/i.test(title);
+
+    const sectionsFromHeaders: ReportSection[] = [];
+    const headerRegex = /(?:^|\n)#{1,3}\s*([^\n]+)\n([\s\S]*?)(?=\n#{1,3}\s|$)/g;
+    let match: RegExpExecArray | null;
+
+    while ((match = headerRegex.exec(text)) !== null) {
+      const normalizedTitle = normalizeTitle(match[1]);
+      if (isInvalidTitle(normalizedTitle)) continue;
+
+      let content = cleanMarkdown(match[2]).trim();
+      if (content.startsWith(normalizedTitle)) {
+        content = content.slice(normalizedTitle.length).trim();
+      }
+      if (content.length < 40) continue;
+
+      const idx = sectionsFromHeaders.length;
+      sectionsFromHeaders.push({
+        id: `s-${idx}`,
+        icon: icons[idx] || '📋',
+        title: normalizedTitle,
+        content,
+        defaultOpen: idx === 0,
+      });
+    }
+
+    if (sectionsFromHeaders.length > 0) {
+      return sectionsFromHeaders.slice(0, 7);
+    }
+
+    const cleaned = cleanMarkdown(text)
+      .replace(/^안녕하세요[^\n]*\n?/m, '')
+      .replace(/^아래는[^\n]*\n?/m, '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+
+    const paragraphs = cleaned
+      .split('\n\n')
+      .map((p) => p.trim())
+      .filter((p) => p.length > 35);
+
+    return paragraphs.slice(0, 7).map((paragraph, idx) => {
+      const lines = paragraph.split('\n').map((line) => line.trim()).filter(Boolean);
+      const candidateTitle = normalizeTitle(lines[0] || '');
+      const hasStructuredTitle = !isInvalidTitle(candidateTitle);
+      const content = hasStructuredTitle ? lines.slice(1).join('\n').trim() || paragraph : paragraph;
+
+      return {
+        id: `s-${idx}`,
+        icon: icons[idx] || '📋',
+        title: hasStructuredTitle ? candidateTitle : defaultTitles[idx] || `분석 ${idx + 1}`,
+        content,
+        defaultOpen: idx === 0,
+      };
     });
   };
 
@@ -92,13 +182,14 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
       subtitle="수용언어 · 표현언어 분석"
       onBack={onBack}
       onDownload={handleDownload}
-      totalScore={results.total || 0}
+      totalScore={getNumericResult('total')}
       totalLabel="종합 점수"
       scoreSeverity={totalInfo.level}
       severityColor={severityColor}
       domains={domains}
       aiAnalysis={aiAnalysis}
       aiSections={aiSections.length > 0 ? aiSections : undefined}
+      childrenBeforeAnalysis
     >
       <div className="mb-4">
         <VisualResultInfographic
@@ -106,9 +197,11 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
             testName: '언어발달',
             subtitle: '수용·표현 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
-            scores: { receptive: ((results.receptive_percentage || 0) / 100) * 7, expressive: ((results.expressive_percentage || 0) / 100) * 7 },
+            scores: { receptive: (getNumericResult('receptive_percentage') / 100) * 7, expressive: (getNumericResult('expressive_percentage') / 100) * 7 },
             maxScore: 7,
             categoryTranslations: { receptive: '수용언어', expressive: '표현언어' },
+            aiSummary: aiAnalysis,
+            actionItems: aiSections.slice(0, 3).map((section) => section.title),
             riskLevel: totalInfo.level === '우수' || totalInfo.level === '양호' ? 'low' : totalInfo.level === '보통' ? 'moderate' : 'high',
           }}
         />

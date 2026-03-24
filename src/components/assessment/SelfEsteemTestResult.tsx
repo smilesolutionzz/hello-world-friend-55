@@ -134,7 +134,7 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
   };
 
   if (isLoading) {
-    return <AnalysisLoadingScreen testName={isEnglish ? 'Emotional Analysis' : '정서발달 분석'} estimatedSeconds={20} />;
+    return <AnalysisLoadingScreen testName={isEnglish ? 'Self-Worth Analysis' : '자아가치 분석'} estimatedSeconds={20} />;
   }
 
   return (

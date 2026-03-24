@@ -92,7 +92,7 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
   const overallDelay = Math.round(domainData.reduce((s, d) => s + d.score, 0) / domainData.length);
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', 'AIH_학습장애_검사결과',
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? 'AIH_LearningDisability_Results' : 'AIH_학습장애_검사결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
@@ -102,12 +102,12 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
 
   return (
     <ClinicalReportLayout
-      testName="AIH 학습장애 검사 결과"
+      testName={isEnglish ? "AIH Learning Disability Test Results" : "AIH 학습장애 검사 결과"}
       subtitle={`${isEnglish ? 'Age Group' : '연령대'}: ${results.ageGroup}`}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={`${overallDelay}%`}
-      totalLabel="종합 학습 곤란도"
+      totalLabel={isEnglish ? "Overall Learning Difficulty" : "종합 학습 곤란도"}
       scoreSeverity={results.severity}
       severityColor={severityColor}
       domains={domains}
@@ -118,12 +118,12 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
         <VisualResultInfographic
           data={{
             testName: isEnglish ? 'Learning Disability' : '학습장애 검사',
-            subtitle: '7개 학습 영역 분석',
+            subtitle: isEnglish ? '7 Learning Domain Analysis' : '7개 학습 영역 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(domainData.map(d => [d.key, (d.score / 100) * 7])),
             maxScore: 7,
             categoryTranslations: Object.fromEntries(domainData.map(d => [d.key, d.name])),
-            riskLevel: results.severity === (isEnglish ? 'Normal' : '정상') ? 'low' : results.severity === '경미' ? 'low' : 'high',
+            riskLevel: results.severity === (isEnglish ? 'Normal' : '정상') ? 'low' : results.severity === (isEnglish ? 'Mild' : '경미') ? 'low' : 'high',
           }}
         />
       </div>

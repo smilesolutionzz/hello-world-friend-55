@@ -98,7 +98,7 @@ export const AutismTest: React.FC<AutismTestProps> = ({ onComplete, onBack }) =>
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Users className="h-8 w-8 text-blue-500 mr-3" />
-              <CardTitle className="text-2xl text-blue-800">{isEnglish ? 'Autism Spectrum Assessment' : '자폐 스펙트럼 한방 진단'}</CardTitle>
+              <CardTitle className="text-2xl text-blue-800">{isEnglish ? 'Autism Spectrum Assessment' : '자폐 스펙트럼 한방 체크'}</CardTitle>
             </div>
             <CardDescription className="text-lg">
               {isEnglish ? 'Analyze autism spectrum symptoms from a holistic perspective' : '아동의 자폐 스펙트럼 증상을 한의학적 관점에서 분석합니다'}

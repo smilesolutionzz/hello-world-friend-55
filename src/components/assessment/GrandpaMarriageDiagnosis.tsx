@@ -342,7 +342,7 @@ export default function GrandpaMarriageDiagnosis({ onComplete, onBack }: Grandpa
     } catch (error) {
       console.error('Grandpa marriage diagnosis error:', error);
       toast({
-        title: "진단 실패",
+        title: "분석 실패",
         description: "할아버지가 화나셨습니다. 다시 시도해주세요.",
         variant: "destructive"
       });

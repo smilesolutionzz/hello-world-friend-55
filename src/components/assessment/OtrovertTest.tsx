@@ -431,7 +431,7 @@ export default function OtrovertTest({ onComplete, onBack }: OtrovertTestProps) 
             </div>
             <div className="flex items-center gap-3">
               <Users className="w-8 h-8" />
-              <CardTitle className="text-2xl">오트로버트 성격 진단</CardTitle>
+              <CardTitle className="text-2xl">오트로버트 성격 분석</CardTitle>
             </div>
             <p className="text-indigo-100 mt-2">
               외향과 내향 사이, 당신의 진짜 성격은?

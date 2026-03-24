@@ -49,7 +49,7 @@ const steps = [
     icon: Users,
     title: '전문가 상담',
     description: '실제 전문가와 1:1 상담을 연결하세요',
-    route: '/experts',
+    route: '/expert-hiring',
     iconBg: 'bg-rose-500',
   },
 ];

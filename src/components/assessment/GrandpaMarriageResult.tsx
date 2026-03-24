@@ -84,7 +84,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
           <body>
             <div class="container">
               <div class="header">
-                <h1 class="title">👴 욕쟁이 할아버지의 부부금술진단</h1>
+                <h1 class="title">👴 욕쟁이 할아버지의 부부금술 분석</h1>
                 <p class="subtitle">누가 잘못했나 판정 결과</p>
               </div>
               

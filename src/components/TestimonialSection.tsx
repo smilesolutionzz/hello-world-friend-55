@@ -35,7 +35,7 @@ const TestimonialSection = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       handleNext();
-    }, 6000);
+    }, 10000);
     return () => clearInterval(timer);
   }, [handleNext]);
 

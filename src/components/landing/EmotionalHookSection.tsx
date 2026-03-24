@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, MessageCircle, Play, Star, AlertTriangle, Clock, CheckCircle2, ArrowRight, Sparkles, Shield, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ const EmotionalHookSection = () => {
   const navigate = useNavigate();
   const [activeStory, setActiveStory] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
+  const [userInteracted, setUserInteracted] = useState(false);
   const { t } = useTranslation();
   const { localePath } = useLanguage();
 
@@ -28,7 +29,26 @@ const EmotionalHookSection = () => {
     { icon: CheckCircle2, value: t.emotionalHook.stat3Value, label: t.emotionalHook.stat3Label, color: "text-green-400" },
   ];
 
+  const storyCount = emotionalStories.length;
   const currentStory = emotionalStories[activeStory];
+
+  // 자동 슬라이드: 8초마다 다음 스토리로 이동
+  useEffect(() => {
+    if (userInteracted) {
+      // 사용자가 클릭 후 10초 뒤 다시 자동 슬라이드 재개
+      const resume = setTimeout(() => setUserInteracted(false), 10000);
+      return () => clearTimeout(resume);
+    }
+    const timer = setInterval(() => {
+      setActiveStory(prev => (prev + 1) % storyCount);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, [userInteracted, storyCount]);
+
+  const handleStoryClick = useCallback((index: number) => {
+    setActiveStory(index);
+    setUserInteracted(true);
+  }, []);
 
   return (
     <section className="relative py-16 md:py-24 overflow-hidden">
@@ -64,7 +84,7 @@ const EmotionalHookSection = () => {
 
         <div className="flex justify-center gap-2 mb-6 overflow-x-auto pb-2">
           {emotionalStories.map((story, index) => (
-            <button key={index} onClick={() => setActiveStory(index)} className={`flex-shrink-0 px-3 py-2 rounded-full text-sm transition-all ${activeStory === index ? 'bg-rose-500 text-white' : 'bg-slate-800/50 text-white/60 hover:bg-slate-700/50'}`}>
+            <button key={index} onClick={() => handleStoryClick(index)} className={`flex-shrink-0 px-3 py-2 rounded-full text-sm transition-all ${activeStory === index ? 'bg-rose-500 text-white' : 'bg-slate-800/50 text-white/60 hover:bg-slate-700/50'}`}>
               <span className="mr-1">{story.emoji}</span>
               <span className="hidden sm:inline">{story.situation.slice(0, 10)}...</span>
             </button>

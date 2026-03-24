@@ -53,8 +53,8 @@ serve(async (req) => {
     console.log('[ASSESSMENT-ANALYZER] 크레딧 확인은 프론트엔드에서 처리됨');
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not found');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not found');
     }
 
     console.log('Processing assessment analysis:', { ageGroup, age, resultsCount: Object.keys(results).length });

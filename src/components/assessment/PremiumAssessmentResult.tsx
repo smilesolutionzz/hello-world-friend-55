@@ -91,25 +91,35 @@ const PremiumAssessmentResult = ({
   };
 
   // ── Score interpretation ──
+  // 연애/성격 유형 분석 검사인지 체크 (높을수록 해당 유형 성향이 강한 것)
+  const isTypeAnalysis = ['love_personality', 'personality_type', 'temperament'].includes(assessmentType);
+
   const getScoreInterpretation = (score: number, category: string) => {
     const cl = category.toLowerCase();
     // Burnout: higher = worse for some, lower = worse for others
     if (['emotional_exhaustion', 'depersonalization', 'work_overload', 'interpersonal_conflict', 'role_ambiguity'].includes(cl)) {
-      if (score >= 5.0) return { level: '높음', color: 'bg-destructive' };
-      if (score >= 3.5) return { level: '보통', color: 'bg-yellow-500' };
-      return { level: '낮음', color: 'bg-green-500' };
+      if (score >= 5.0) return { level: isEnglish ? 'High' : '높음', color: 'bg-destructive' };
+      if (score >= 3.5) return { level: isEnglish ? 'Moderate' : '보통', color: 'bg-yellow-500' };
+      return { level: isEnglish ? 'Low' : '낮음', color: 'bg-green-500' };
     }
     if (['personal_accomplishment', 'work_life_balance', 'job_satisfaction', 'career_development', 'organizational_support'].includes(cl)) {
-      if (score >= 5.0) return { level: '우수', color: 'bg-green-500' };
-      if (score >= 3.5) return { level: '보통', color: 'bg-yellow-500' };
-      return { level: '낮음', color: 'bg-destructive' };
+      if (score >= 5.0) return { level: isEnglish ? 'Excellent' : '우수', color: 'bg-green-500' };
+      if (score >= 3.5) return { level: isEnglish ? 'Moderate' : '보통', color: 'bg-yellow-500' };
+      return { level: isEnglish ? 'Low' : '낮음', color: 'bg-destructive' };
     }
-    // Default 7-point
-    if (score >= 5.5) return { level: '매우 높음', color: 'bg-destructive' };
-    if (score >= 4.5) return { level: '높음', color: 'bg-orange-500' };
-    if (score >= 3.5) return { level: '보통', color: 'bg-yellow-500' };
-    if (score >= 2.5) return { level: '다소 낮음', color: 'bg-green-500' };
-    return { level: '낮음', color: 'bg-primary' };
+    // 유형 분석 검사: 높을수록 해당 유형 성향이 강함 (긍정적)
+    if (isTypeAnalysis) {
+      if (score >= 5.5) return { level: isEnglish ? 'Dominant' : '우세', color: 'bg-primary' };
+      if (score >= 4.5) return { level: isEnglish ? 'Strong' : '높음', color: 'bg-blue-500' };
+      if (score >= 3.5) return { level: isEnglish ? 'Moderate' : '보통', color: 'bg-yellow-500' };
+      return { level: isEnglish ? 'Low' : '낮음', color: 'bg-muted' };
+    }
+    // Default 7-point (위험도 척도)
+    if (score >= 5.5) return { level: isEnglish ? 'Very High' : '매우 높음', color: 'bg-destructive' };
+    if (score >= 4.5) return { level: isEnglish ? 'High' : '높음', color: 'bg-orange-500' };
+    if (score >= 3.5) return { level: isEnglish ? 'Moderate' : '보통', color: 'bg-yellow-500' };
+    if (score >= 2.5) return { level: isEnglish ? 'Somewhat Low' : '다소 낮음', color: 'bg-green-500' };
+    return { level: isEnglish ? 'Low' : '낮음', color: 'bg-primary' };
   };
 
   const translateCategory = (category: string) => {
@@ -186,8 +196,18 @@ const PremiumAssessmentResult = ({
     return <AnalysisLoadingScreen testName={assessmentInfo.title} estimatedSeconds={25} />;
   }
 
-  const overallLevel = averageScore >= 5 ? '매우 높음' : averageScore >= 4 ? '높음' : averageScore >= 3 ? '보통' : '낮음';
-  const severityColor = averageScore >= 5 ? 'text-destructive border-destructive/30' : averageScore >= 4 ? 'text-orange-600 border-orange-300' : averageScore >= 3 ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  // 유형 분석 검사: 최고 점수 유형을 메인 결과로 표시
+  const topDomain = domains[0]; // already sorted desc
+  let overallLevel: string;
+  let severityColor: string;
+
+  if (isTypeAnalysis && topDomain) {
+    overallLevel = topDomain.label; // e.g. "안정적 동반자"
+    severityColor = 'text-primary border-primary/30';
+  } else {
+    overallLevel = averageScore >= 5 ? (isEnglish ? 'Very High' : '매우 높음') : averageScore >= 4 ? (isEnglish ? 'High' : '높음') : averageScore >= 3 ? (isEnglish ? 'Moderate' : '보통') : (isEnglish ? 'Low' : '낮음');
+    severityColor = averageScore >= 5 ? 'text-destructive border-destructive/30' : averageScore >= 4 ? 'text-orange-600 border-orange-300' : averageScore >= 3 ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  }
 
   return (
     <>
@@ -196,8 +216,8 @@ const PremiumAssessmentResult = ({
         subtitle={assessmentInfo.subtitle}
         onBack={onBack}
         onDownload={handleDownloadPDF}
-        totalScore={averageScore.toFixed(1)}
-        totalLabel="평균 점수"
+        totalScore={isTypeAnalysis ? topDomain?.score?.toFixed(1) || averageScore.toFixed(1) : averageScore.toFixed(1)}
+        totalLabel={isTypeAnalysis ? (isEnglish ? 'Top Score' : '종합 평가') : (isEnglish ? 'Average Score' : '평균 점수')}
         scoreUnit="/ 7.0"
         scoreSeverity={overallLevel}
         severityColor={severityColor}

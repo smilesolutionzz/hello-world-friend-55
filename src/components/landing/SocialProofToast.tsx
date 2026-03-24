@@ -1,47 +1,42 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { CheckCircle, X } from 'lucide-react';
+import { TrendingUp, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '@/i18n';
 
-const NAMES = [
-  '김서연', '이준호', '박지민', '최영수', '정하은', '강민재', '조수빈', '윤도현',
-  '장예린', '임태우', '한소희', '오진우', '서유진', '신동혁', '권나영', '황재윤',
-  '안미소', '송현우', '류지아', '전성민', '홍세은', '고태영', '문채원', '양승호',
+const MESSAGES_KO = [
+  '오늘 심리검사 완료 수가 150건을 넘었습니다',
+  '이번 주 AI 분석 리포트가 800건 이상 생성되었습니다',
+  '지금 42명이 검사를 진행 중입니다',
+  '전문가 상담 만족도 4.8/5.0 달성 중',
+  '이번 달 신규 회원이 200명을 돌파했습니다',
+  '누적 검사 완료 건수 50,000건 돌파',
 ];
 
-const ACTIONS = [
-  '심층 심리검사를 완료하셨습니다',
-  '개인화 AI 리포트를 생성하셨습니다',
-  '월 정기구독을 구독하셨습니다',
-  '종합 발달검사를 완료하셨습니다',
-  'AI 맞춤 분석을 받으셨습니다',
-  '전문가 상담을 예약하셨습니다',
+const MESSAGES_EN = [
+  'Over 150 assessments completed today',
+  'More than 800 AI reports generated this week',
+  '42 users are taking assessments right now',
+  'Expert consultation satisfaction: 4.8/5.0',
+  'Over 200 new members joined this month',
+  'Cumulative assessments surpassed 50,000',
 ];
-
-const TIME_LABELS = ['방금 전', '1분 전', '2분 전', '3분 전', '5분 전', '10분 전'];
-
-function getRandomItem<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
 
 export const SocialProofToast = () => {
   const [visible, setVisible] = useState(false);
-  const [message, setMessage] = useState({ name: '', action: '', time: '' });
+  const [message, setMessage] = useState('');
+  const { isEnglish } = useLanguage();
+
+  const messages = isEnglish ? MESSAGES_EN : MESSAGES_KO;
 
   const showNotification = useCallback(() => {
-    setMessage({
-      name: getRandomItem(NAMES),
-      action: getRandomItem(ACTIONS),
-      time: getRandomItem(TIME_LABELS),
-    });
+    setMessage(messages[Math.floor(Math.random() * messages.length)]);
     setVisible(true);
-    setTimeout(() => setVisible(false), 5000);
-  }, []);
+    setTimeout(() => setVisible(false), 4000);
+  }, [messages]);
 
   useEffect(() => {
-    // Show first one after 10 seconds
-    const initial = setTimeout(showNotification, 10000);
-    // Then every 3 minutes
-    const interval = setInterval(showNotification, 180000);
+    const initial = setTimeout(showNotification, 15000);
+    const interval = setInterval(showNotification, 240000);
     return () => {
       clearTimeout(initial);
       clearInterval(interval);
@@ -52,22 +47,19 @@ export const SocialProofToast = () => {
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: 60, x: 0 }}
-          animate={{ opacity: 1, y: 0, x: 0 }}
+          initial={{ opacity: 0, y: 60 }}
+          animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 60 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           className="fixed bottom-6 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-sm z-50"
         >
           <div className="relative flex items-center gap-3 px-4 py-3.5 rounded-xl border border-primary/20 bg-card/95 backdrop-blur-xl shadow-2xl shadow-primary/10">
             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
-              <CheckCircle className="w-4.5 h-4.5 text-primary" />
+              <TrendingUp className="w-4 h-4 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground leading-snug">
-                {message.name}님이 {message.action}
-              </p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {message.time}
+                {message}
               </p>
             </div>
             <button

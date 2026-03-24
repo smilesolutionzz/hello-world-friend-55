@@ -6,6 +6,7 @@ import { BetaBanner } from "@/components/BetaBanner";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { useEventTracking } from "@/hooks/useEventTracking";
 import { useGuestSession } from "@/hooks/useGuestSession";
+import { useAccessControl } from "@/hooks/useAccessControl";
 import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
 import ChildAssessmentSimplified from "@/components/assessment/ChildAssessmentSimplified";

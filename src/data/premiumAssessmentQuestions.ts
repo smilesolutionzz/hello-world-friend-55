@@ -1558,7 +1558,7 @@ export const lovePersonalityAssessmentQuestions = {
     },
     {
       id: "love_pr03",
-      text: "사랑할 때 모든 것을 쏟아부치는 편입니다",
+      text: "사랑할 때 모든 것을 쏟아붓는 편입니다",
       category: "passionate_romantic"
     },
     {

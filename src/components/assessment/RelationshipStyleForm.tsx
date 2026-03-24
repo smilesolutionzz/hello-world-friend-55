@@ -172,7 +172,7 @@ const RelationshipStyleForm = ({ onComplete, onBack }: RelationshipStyleFormProp
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <Heart className="w-6 h-6 text-pink-500" />
-            <h1 className="text-2xl font-bold">{isEnglish ? 'Relationship Style Assessment' : '관계 스타일 진단'}</h1>
+            <h1 className="text-2xl font-bold">{isEnglish ? 'Relationship Style Assessment' : '관계 스타일 분석'}</h1>
           </div>
           <p className="text-muted-foreground mb-4">{isEnglish ? 'Discover your relationship patterns and communication style' : '나의 인간관계 패턴과 소통 방식을 파악해보세요'}</p>
           <div className="space-y-2">

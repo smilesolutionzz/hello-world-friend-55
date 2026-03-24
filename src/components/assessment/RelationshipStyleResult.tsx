@@ -75,7 +75,7 @@ const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProp
 
   return (
     <ClinicalReportLayout
-      testName={isEnglish ? 'Relationship Style Results' : '관계 스타일 진단 결과'}
+      testName={isEnglish ? 'Relationship Style Results' : '관계 스타일 분석 결과'}
       subtitle={result.result.title}
       onBack={onBack || (() => navigate('/assessment'))}
       onDownload={handleDownload}

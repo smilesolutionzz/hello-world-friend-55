@@ -141,7 +141,7 @@ export const AnxietyPackage = () => {
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <p><strong>{isEnglish ? 'If anxiety is severe:' : '불안이 심하다면:'}</strong></p>
                   <p>• {isEnglish ? 'Start with anxiety disorder test' : '불안장애 검사로 시작'}</p>
-                  <p>• {isEnglish ? 'Get in-depth comprehensive analysis' : '종합분석으로 심화진단'}</p>
+                  <p>• {isEnglish ? 'Get in-depth comprehensive analysis' : '종합분석으로 심화 평가'}</p>
                   <p>• {isEnglish ? 'Use AI support in emergencies' : '응급시 즉시 AI 지원'}</p>
                 </div>
               </CardContent>

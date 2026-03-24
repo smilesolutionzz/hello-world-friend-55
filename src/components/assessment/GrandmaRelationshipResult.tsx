@@ -141,7 +141,7 @@ export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaR
           <div className="flex items-center justify-center gap-3 mb-4">
             <MessageCircle className="w-12 h-12 text-red-600" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-              욕쟁이 할머니의 진단 결과
+              욕쟁이 할머니의 분석 결과
             </h1>
             <MessageCircle className="w-12 h-12 text-orange-600" />
           </div>

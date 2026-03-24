@@ -187,7 +187,7 @@ const PaymentComplete = () => {
                   검사 시작하기
                 </Button>
               )}
-              {resolvedType === 'single' && (
+              {(resolvedType === 'single' || resolvedType === 'single_test' || resolvedType === 'single_report') && (
                 <Button className="w-full" onClick={() => navigate('/assessment')}>
                   <FileText className="w-4 h-4 mr-2" />
                   이용권으로 검사하기

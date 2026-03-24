@@ -301,7 +301,7 @@ const Auth = () => {
                 </div>
                 
                 <Button type="submit" className="w-full h-11" disabled={loading}>
-                  {loading ? "로그인 중..." : "로그인"}
+                  {loading ? a.loggingIn : a.loginButton}
                 </Button>
                 
                 <div className="text-center">

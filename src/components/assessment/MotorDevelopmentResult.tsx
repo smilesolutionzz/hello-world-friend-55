@@ -88,7 +88,7 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
   const ageMonths = results.ageInMonths % 12;
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', 'AIH_운동발달_결과',
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? 'AIH_MotorDev_Results' : 'AIH_운동발달_결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
@@ -98,12 +98,12 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
 
   return (
     <ClinicalReportLayout
-      testName="운동발달 검사 결과"
-      subtitle={`${ageYears}세 ${ageMonths}개월 아동 기준`}
+      testName={isEnglish ? "Motor Development Test Results" : "운동발달 검사 결과"}
+      subtitle={isEnglish ? `Based on ${ageYears}yr ${ageMonths}mo child` : `${ageYears}세 ${ageMonths}개월 아동 기준`}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={`${results.percentage}%`}
-      totalLabel="종합 발달 수준"
+      totalLabel={isEnglish ? "Overall Development Level" : "종합 발달 수준"}
       scoreSeverity={results.developmentLevel}
       severityColor={levelColor}
       domains={domains}

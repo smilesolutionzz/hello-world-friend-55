@@ -128,7 +128,7 @@ export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTest
             scores: Object.fromEntries(Object.entries(infoScores).map(([k, v]) => [k, (v / 100) * 7])),
             maxScore: 7,
             categoryTranslations: domainLabels,
-            riskLevel: burnoutRisk === '낮음' ? 'low' : burnoutRisk === '보통' ? 'low' : burnoutRisk === '주의' ? 'moderate' : 'high',
+            riskLevel: ['낮음', 'Low'].includes(burnoutRisk) ? 'low' : ['보통', 'Normal'].includes(burnoutRisk) ? 'low' : ['주의', 'Caution'].includes(burnoutRisk) ? 'moderate' : 'high',
           }}
         />
       </div>

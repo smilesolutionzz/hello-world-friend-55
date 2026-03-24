@@ -91,25 +91,35 @@ const PremiumAssessmentResult = ({
   };
 
   // ── Score interpretation ──
+  // 연애/성격 유형 분석 검사인지 체크 (높을수록 해당 유형 성향이 강한 것)
+  const isTypeAnalysis = ['love_personality', 'personality_type', 'temperament'].includes(assessmentType);
+
   const getScoreInterpretation = (score: number, category: string) => {
     const cl = category.toLowerCase();
     // Burnout: higher = worse for some, lower = worse for others
     if (['emotional_exhaustion', 'depersonalization', 'work_overload', 'interpersonal_conflict', 'role_ambiguity'].includes(cl)) {
-      if (score >= 5.0) return { level: '높음', color: 'bg-destructive' };
-      if (score >= 3.5) return { level: '보통', color: 'bg-yellow-500' };
-      return { level: '낮음', color: 'bg-green-500' };
+      if (score >= 5.0) return { level: isEnglish ? 'High' : '높음', color: 'bg-destructive' };
+      if (score >= 3.5) return { level: isEnglish ? 'Moderate' : '보통', color: 'bg-yellow-500' };
+      return { level: isEnglish ? 'Low' : '낮음', color: 'bg-green-500' };
     }
     if (['personal_accomplishment', 'work_life_balance', 'job_satisfaction', 'career_development', 'organizational_support'].includes(cl)) {
-      if (score >= 5.0) return { level: '우수', color: 'bg-green-500' };
-      if (score >= 3.5) return { level: '보통', color: 'bg-yellow-500' };
-      return { level: '낮음', color: 'bg-destructive' };
+      if (score >= 5.0) return { level: isEnglish ? 'Excellent' : '우수', color: 'bg-green-500' };
+      if (score >= 3.5) return { level: isEnglish ? 'Moderate' : '보통', color: 'bg-yellow-500' };
+      return { level: isEnglish ? 'Low' : '낮음', color: 'bg-destructive' };
     }
-    // Default 7-point
-    if (score >= 5.5) return { level: '매우 높음', color: 'bg-destructive' };
-    if (score >= 4.5) return { level: '높음', color: 'bg-orange-500' };
-    if (score >= 3.5) return { level: '보통', color: 'bg-yellow-500' };
-    if (score >= 2.5) return { level: '다소 낮음', color: 'bg-green-500' };
-    return { level: '낮음', color: 'bg-primary' };
+    // 유형 분석 검사: 높을수록 해당 유형 성향이 강함 (긍정적)
+    if (isTypeAnalysis) {
+      if (score >= 5.5) return { level: isEnglish ? 'Dominant' : '우세', color: 'bg-primary' };
+      if (score >= 4.5) return { level: isEnglish ? 'Strong' : '높음', color: 'bg-blue-500' };
+      if (score >= 3.5) return { level: isEnglish ? 'Moderate' : '보통', color: 'bg-yellow-500' };
+      return { level: isEnglish ? 'Low' : '낮음', color: 'bg-muted' };
+    }
+    // Default 7-point (위험도 척도)
+    if (score >= 5.5) return { level: isEnglish ? 'Very High' : '매우 높음', color: 'bg-destructive' };
+    if (score >= 4.5) return { level: isEnglish ? 'High' : '높음', color: 'bg-orange-500' };
+    if (score >= 3.5) return { level: isEnglish ? 'Moderate' : '보통', color: 'bg-yellow-500' };
+    if (score >= 2.5) return { level: isEnglish ? 'Somewhat Low' : '다소 낮음', color: 'bg-green-500' };
+    return { level: isEnglish ? 'Low' : '낮음', color: 'bg-primary' };
   };
 
   const translateCategory = (category: string) => {

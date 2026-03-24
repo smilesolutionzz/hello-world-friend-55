@@ -196,8 +196,18 @@ const PremiumAssessmentResult = ({
     return <AnalysisLoadingScreen testName={assessmentInfo.title} estimatedSeconds={25} />;
   }
 
-  const overallLevel = averageScore >= 5 ? '매우 높음' : averageScore >= 4 ? '높음' : averageScore >= 3 ? '보통' : '낮음';
-  const severityColor = averageScore >= 5 ? 'text-destructive border-destructive/30' : averageScore >= 4 ? 'text-orange-600 border-orange-300' : averageScore >= 3 ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  // 유형 분석 검사: 최고 점수 유형을 메인 결과로 표시
+  const topDomain = domains[0]; // already sorted desc
+  let overallLevel: string;
+  let severityColor: string;
+
+  if (isTypeAnalysis && topDomain) {
+    overallLevel = topDomain.label; // e.g. "안정적 동반자"
+    severityColor = 'text-primary border-primary/30';
+  } else {
+    overallLevel = averageScore >= 5 ? (isEnglish ? 'Very High' : '매우 높음') : averageScore >= 4 ? (isEnglish ? 'High' : '높음') : averageScore >= 3 ? (isEnglish ? 'Moderate' : '보통') : (isEnglish ? 'Low' : '낮음');
+    severityColor = averageScore >= 5 ? 'text-destructive border-destructive/30' : averageScore >= 4 ? 'text-orange-600 border-orange-300' : averageScore >= 3 ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  }
 
   return (
     <>

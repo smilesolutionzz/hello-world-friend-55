@@ -56,6 +56,7 @@ import { SystemMonitoring } from '@/components/admin/SystemMonitoring';
 import { AutomatedModeration } from '@/components/admin/AutomatedModeration';
 import { FinancialAutomation } from '@/components/admin/FinancialAutomation';
 import { CompetitorMonitoring } from '@/components/admin/CompetitorMonitoring';
+import { AdminBookingManagement } from '@/components/admin/AdminBookingManagement';
 
 interface AdminAnalytics {
   total_users: number;

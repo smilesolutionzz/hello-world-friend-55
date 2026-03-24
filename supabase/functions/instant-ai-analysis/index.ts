@@ -377,12 +377,37 @@ Ultra high resolution, 4K quality, emotionally impactful.`
   }
 });
 
+function containsKorean(text: string): boolean {
+  return /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(text);
+}
+
+function sanitizeForEnglish(obj: any): any {
+  if (typeof obj === 'string') {
+    // If a string contains Korean, return a generic English fallback
+    if (containsKorean(obj)) {
+      return '[Analysis content - please re-run in English mode]';
+    }
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(item => sanitizeForEnglish(item));
+  }
+  if (obj && typeof obj === 'object') {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      sanitized[key] = sanitizeForEnglish(value);
+    }
+    return sanitized;
+  }
+  return obj;
+}
+
 function parseAIResponse(response: string, originalText: string, isEnglish: boolean) {
   try {
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
-      return {
+      const result = {
         type: parsed.type || (isEnglish ? 'General Counseling' : '일반 상담'),
         severity: parsed.severity || (isEnglish ? 'Medium' : '중간'),
         color: parsed.color || 'bg-orange-500',
@@ -400,6 +425,19 @@ function parseAIResponse(response: string, originalText: string, isEnglish: bool
         comprehensiveReports: parsed.comprehensiveReports || null,
         aiResponse: response
       };
+      
+      // If English mode, sanitize any Korean that leaked through
+      if (isEnglish) {
+        const sanitized = sanitizeForEnglish(result);
+        // If the AI returned Korean content extensively, use fallback instead
+        if (containsKorean(JSON.stringify(result))) {
+          logStep("Korean detected in English mode response, using fallback");
+          return getFallbackAnalysis(originalText, isEnglish);
+        }
+        return sanitized;
+      }
+      
+      return result;
     }
   } catch (e) {
     logStep("JSON parsing failed, using fallback", { error: String(e) });

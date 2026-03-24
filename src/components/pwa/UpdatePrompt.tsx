@@ -1,11 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { RefreshCw, X } from 'lucide-react';
+import { useEffect } from 'react';
 
 export const UpdatePrompt = () => {
-  const [showUpdate, setShowUpdate] = useState(false);
-  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
-
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then((reg) => {
@@ -14,8 +9,8 @@ export const UpdatePrompt = () => {
           if (newWorker) {
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                setWaitingWorker(newWorker);
-                setShowUpdate(true);
+                // 자동 업데이트: 즉시 SKIP_WAITING
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
               }
             });
           }
@@ -37,35 +32,5 @@ export const UpdatePrompt = () => {
     }
   }, []);
 
-  const handleUpdate = () => {
-    if (waitingWorker) {
-      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-    }
-  };
-
-  const handleDismiss = () => {
-    setShowUpdate(false);
-  };
-
-  if (!showUpdate) return null;
-
-  return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] animate-slide-down">
-      <div className="flex items-center gap-3 bg-primary text-primary-foreground px-4 py-3 rounded-xl shadow-2xl backdrop-blur-sm">
-        <RefreshCw className="w-4 h-4 animate-spin" />
-        <span className="text-sm font-medium whitespace-nowrap">새 버전이 있습니다</span>
-        <Button
-          size="sm"
-          variant="secondary"
-          onClick={handleUpdate}
-          className="h-7 px-3 text-xs font-semibold"
-        >
-          업데이트
-        </Button>
-        <button onClick={handleDismiss} className="text-primary-foreground/70 hover:text-primary-foreground">
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
-  );
+  return null;
 };

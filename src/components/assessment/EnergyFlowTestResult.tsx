@@ -84,9 +84,11 @@ export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTest
     if (!text) return [];
     const paragraphs = text.split('\n\n').filter(p => p.trim().length > 20);
     const icons = ['🧠', '⚡', '🕐', '💚', '🛡️', '🎯'];
-    const titles = ['종합 해석', '에너지 유형 분석', '시간대별 관리 전략', '회복력 강화', '번아웃 예방', '주간 에너지 플랜'];
+    const titles = isEnglish
+      ? ['Overall Interpretation', 'Energy Type Analysis', 'Time-based Management', 'Resilience Building', 'Burnout Prevention', 'Weekly Energy Plan']
+      : ['종합 해석', '에너지 유형 분석', '시간대별 관리 전략', '회복력 강화', '번아웃 예방', '주간 에너지 플랜'];
     return paragraphs.slice(0, 6).map((p, idx) => ({
-      id: `s-${idx}`, icon: icons[idx] || '📋', title: titles[idx] || `분석 ${idx + 1}`, content: p, defaultOpen: idx === 0,
+      id: `s-${idx}`, icon: icons[idx] || '📋', title: titles[idx] || (isEnglish ? `Analysis ${idx + 1}` : `분석 ${idx + 1}`), content: p, defaultOpen: idx === 0,
     }));
   };
 

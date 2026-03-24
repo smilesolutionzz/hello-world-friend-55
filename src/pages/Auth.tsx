@@ -24,6 +24,8 @@ const Auth = () => {
   const navigate = useNavigate();
   const { processReferralReward } = useReferrals();
   const { toast } = useToast();
+  const { t } = useTranslation();
+  const a = t.auth;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");

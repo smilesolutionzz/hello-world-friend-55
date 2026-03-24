@@ -315,7 +315,7 @@ export const AuthForm = () => {
         const bonusMessage = signUpData.referralCode ? "추천 보너스 2토큰 포함!" : "";
         toast({
           title: "회원가입 완료", 
-          description: `환영합니다! 15토큰이 지급되었습니다. ${bonusMessage}`,
+          description: `환영합니다! 검사 이용권 2개가 지급되었습니다. ${bonusMessage}`,
         });
         // 신규 가입자에게만 온보딩 표시 (한 번만)
         const userOnboardingKey = `hasSeenOnboarding_${data.user?.id}`;

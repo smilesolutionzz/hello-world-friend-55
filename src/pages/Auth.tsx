@@ -184,10 +184,10 @@ const Auth = () => {
       if (error) {
         setError(error.message);
       } else {
-        setSuccess("회원가입이 완료되었습니다! 이메일을 확인해주세요.");
+        setSuccess(a.success.signupComplete);
       }
     } catch (err) {
-      setError("회원가입 중 오류가 발생했습니다.");
+      setError(a.errors.signupError);
     }
     
     setLoading(false);

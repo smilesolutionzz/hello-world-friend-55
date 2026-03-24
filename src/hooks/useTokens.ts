@@ -102,8 +102,7 @@ export function useTokens() {
       return true;
     }
 
-    // 무료 기능 (0 캐시)은 그냥 통과
-    if (amount === 0) return true;
+    // (amount === 0 already handled above)
     
     const newBalance = tokenBalance.current_tokens - amount;
     if (newBalance < 0) return false;

@@ -214,10 +214,10 @@ const Auth = () => {
       if (error) {
         setError(error.message);
       } else {
-        setSuccess("비밀번호 재설정 링크가 이메일로 전송되었습니다.");
+        setSuccess(a.success.resetSent);
         toast({
-          title: "이메일 전송 완료",
-          description: "비밀번호 재설정 링크가 발송되었습니다.",
+          title: a.emailSent,
+          description: a.emailSentDesc,
         });
       }
     } catch (err) {

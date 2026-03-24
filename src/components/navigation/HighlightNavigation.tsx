@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard, MessageCircle, Menu, X, Infinity } from 'lucide-react';
+import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard, MessageCircle, Menu, X, Infinity, FlaskConical } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import { useAccessControl } from '@/hooks/useAccessControl';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -27,7 +27,7 @@ export const HighlightNavigation = () => {
   const location = useLocation();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { reportCredits, isSubscriber } = useAccessControl();
+  const { reportCredits, testCredits, isSubscriber } = useAccessControl();
 
   const serviceItems = [
     { 
@@ -195,8 +195,27 @@ export const HighlightNavigation = () => {
             </div>
           </div>
 
-          {/* 데스크탑 우측 버튼 */}
-          <div className="hidden lg:flex items-center gap-2">
+          {/* 데스크탑 우측: 이용 현황 + 버튼 */}
+          <div className="hidden lg:flex items-center gap-3">
+            <button
+              onClick={() => navigate('/token-subscription')}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors"
+            >
+              {isSubscriber ? (
+                <>
+                  <Infinity className="w-3.5 h-3.5" />
+                  <span>월구독 이용중</span>
+                </>
+              ) : (
+                <>
+                  <FlaskConical className="w-3.5 h-3.5" />
+                  <span>검사 {testCredits}건</span>
+                  <span className="text-muted-foreground">|</span>
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>리포트 {reportCredits}건</span>
+                </>
+              )}
+            </button>
             <Button
               onClick={() => setIsChatOpen(true)}
               variant="ghost"
@@ -224,7 +243,7 @@ export const HighlightNavigation = () => {
           <div className="lg:hidden flex items-center gap-2">
             <button
               onClick={() => navigate('/token-subscription')}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary"
             >
               {isSubscriber ? (
                 <>
@@ -233,8 +252,11 @@ export const HighlightNavigation = () => {
                 </>
               ) : (
                 <>
-                  <Brain className="w-3.5 h-3.5" />
-                  <span>{reportCredits}건</span>
+                  <FlaskConical className="w-3 h-3" />
+                  <span>{testCredits}</span>
+                  <span className="text-muted-foreground/60">·</span>
+                  <FileText className="w-3 h-3" />
+                  <span>{reportCredits}</span>
                 </>
               )}
             </button>

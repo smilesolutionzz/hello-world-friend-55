@@ -18,11 +18,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useReferrals } from '@/hooks/useReferrals';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from '@/i18n';
 
 const Auth = () => {
   const navigate = useNavigate();
   const { processReferralReward } = useReferrals();
   const { toast } = useToast();
+  const { t } = useTranslation();
+  const a = t.auth;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -82,13 +85,13 @@ const Auth = () => {
       
       if (error) {
         if (error.message.includes('Invalid login')) {
-          setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+          setError(a.errors.invalidLogin);
         } else {
           setError(error.message);
         }
       }
     } catch (err) {
-      setError("로그인 중 오류가 발생했습니다.");
+      setError(a.errors.loginError);
     }
     
     setLoading(false);
@@ -103,26 +106,26 @@ const Auth = () => {
     // 닉네임 검증
     const trimmedName = signupData.displayName.trim();
     if (trimmedName.length < 2) {
-      setError("닉네임은 최소 2자 이상이어야 합니다.");
+      setError(a.errors.nickMin);
       setLoading(false);
       return;
     }
     if (trimmedName.length > 20) {
-      setError("닉네임은 20자 이하로 입력해주세요.");
+      setError(a.errors.nickMax);
       setLoading(false);
       return;
     }
     
     // 비밀번호 일치 확인
     if (signupData.password !== signupData.confirmPassword) {
-      setError("비밀번호가 일치하지 않습니다.");
+      setError(a.errors.passwordMismatch);
       setLoading(false);
       return;
     }
     
     // 비밀번호 길이
     if (signupData.password.length < 8) {
-      setError("비밀번호는 최소 8자 이상이어야 합니다.");
+      setError(a.errors.passwordMin);
       setLoading(false);
       return;
     }
@@ -135,7 +138,7 @@ const Auth = () => {
     const complexityCount = [hasUpperCase, hasLowerCase, hasNumber, hasSpecialChar].filter(Boolean).length;
 
     if (complexityCount < 3) {
-      setError("비밀번호는 대문자, 소문자, 숫자, 특수문자 중 최소 3가지를 포함해야 합니다.");
+      setError(a.errors.passwordComplexity);
       setLoading(false);
       return;
     }
@@ -143,7 +146,7 @@ const Auth = () => {
     // 이메일 형식
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(signupData.email)) {
-      setError("올바른 이메일 형식이 아닙니다.");
+      setError(a.errors.invalidEmail);
       setLoading(false);
       return;
     }
@@ -154,7 +157,7 @@ const Auth = () => {
         nickname: trimmedName
       });
       if (nickAvailable === false) {
-        setError("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.");
+        setError(a.errors.nickTaken);
         setLoading(false);
         return;
       }
@@ -181,10 +184,10 @@ const Auth = () => {
       if (error) {
         setError(error.message);
       } else {
-        setSuccess("회원가입이 완료되었습니다! 이메일을 확인해주세요.");
+        setSuccess(a.success.signupComplete);
       }
     } catch (err) {
-      setError("회원가입 중 오류가 발생했습니다.");
+      setError(a.errors.signupError);
     }
     
     setLoading(false);
@@ -198,7 +201,7 @@ const Auth = () => {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(forgotEmail)) {
-      setError("올바른 이메일 형식이 아닙니다.");
+      setError(a.errors.invalidEmail);
       setLoading(false);
       return;
     }
@@ -211,14 +214,14 @@ const Auth = () => {
       if (error) {
         setError(error.message);
       } else {
-        setSuccess("비밀번호 재설정 링크가 이메일로 전송되었습니다.");
+        setSuccess(a.success.resetSent);
         toast({
-          title: "이메일 전송 완료",
-          description: "비밀번호 재설정 링크가 발송되었습니다.",
+          title: a.emailSent,
+          description: a.emailSentDesc,
         });
       }
     } catch (err) {
-      setError("비밀번호 재설정 요청 중 오류가 발생했습니다.");
+      setError(a.errors.resetError);
     }
 
     setLoading(false);
@@ -236,9 +239,9 @@ const Auth = () => {
       password.length >= 12,
     ].filter(Boolean).length;
 
-    if (checks <= 2) return { level: 1, label: "약함", color: "bg-destructive" };
-    if (checks <= 4) return { level: 2, label: "보통", color: "bg-amber-500" };
-    return { level: 3, label: "강함", color: "bg-green-500" };
+    if (checks <= 2) return { level: 1, label: a.weak, color: "bg-destructive" };
+    if (checks <= 4) return { level: 2, label: a.medium, color: "bg-amber-500" };
+    return { level: 3, label: a.strong, color: "bg-green-500" };
   };
 
   const passwordStrength = getPasswordStrength(signupData.password);
@@ -251,28 +254,28 @@ const Auth = () => {
           <div className="w-14 h-14 bg-gradient-to-br from-primary to-primary-glow rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
             <Heart className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-foreground">AIHPRO</h1>
-          <p className="text-sm text-muted-foreground mt-1">데이터로 읽는 마음</p>
+          <h1 className="text-xl font-bold text-foreground">{a.title}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{a.subtitle}</p>
         </div>
 
         <Card className="p-5 shadow-lg border-border/50">
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="login">로그인</TabsTrigger>
-              <TabsTrigger value="signup">회원가입</TabsTrigger>
+              <TabsTrigger value="login">{a.loginTab}</TabsTrigger>
+              <TabsTrigger value="signup">{a.signupTab}</TabsTrigger>
             </TabsList>
             
             {/* 로그인 */}
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="login-email" className="text-sm">이메일</Label>
+                  <Label htmlFor="login-email" className="text-sm">{a.email}</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="login-email"
                       type="email"
-                      placeholder="이메일을 입력하세요"
+                      placeholder={a.emailPlaceholder}
                       value={loginData.email}
                       onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                       className="pl-10 h-11"
@@ -282,13 +285,13 @@ const Auth = () => {
                 </div>
                 
                 <div className="space-y-1.5">
-                  <Label htmlFor="login-password" className="text-sm">비밀번호</Label>
+                  <Label htmlFor="login-password" className="text-sm">{a.password}</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="login-password"
                       type="password"
-                      placeholder="비밀번호를 입력하세요"
+                      placeholder={a.passwordPlaceholder}
                       value={loginData.password}
                       onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                       className="pl-10 h-11"
@@ -298,7 +301,7 @@ const Auth = () => {
                 </div>
                 
                 <Button type="submit" className="w-full h-11" disabled={loading}>
-                  {loading ? "로그인 중..." : "로그인"}
+                  {loading ? a.loggingIn : a.loginButton}
                 </Button>
                 
                 <div className="text-center">
@@ -308,7 +311,7 @@ const Auth = () => {
                     className="text-xs text-muted-foreground"
                     onClick={() => setShowForgotPassword(true)}
                   >
-                    비밀번호를 잊으셨나요?
+                    {a.forgotPassword}
                   </Button>
                 </div>
               </form>
@@ -319,13 +322,13 @@ const Auth = () => {
               <form onSubmit={handleSignup} className="space-y-4">
                 {/* 닉네임 */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="signup-name" className="text-sm">닉네임</Label>
+                  <Label htmlFor="signup-name" className="text-sm">{a.nickname}</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="signup-name"
                       type="text"
-                      placeholder="2~20자 닉네임"
+                      placeholder={a.nicknamePlaceholder}
                       value={signupData.displayName}
                       onChange={(e) => setSignupData(prev => ({ ...prev, displayName: e.target.value }))}
                       className="pl-10 h-11"
@@ -343,7 +346,7 @@ const Auth = () => {
                     <Input
                       id="signup-email"
                       type="email"
-                      placeholder="이메일 주소"
+                      placeholder={a.emailPlaceholder}
                       value={signupData.email}
                       onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
                       className="pl-10 h-11"
@@ -354,13 +357,13 @@ const Auth = () => {
                 
                 {/* 비밀번호 */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="signup-password" className="text-sm">비밀번호</Label>
+                  <Label htmlFor="signup-password" className="text-sm">{a.password}</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="signup-password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="8자 이상 (대소문자+숫자+특수문자 중 3가지)"
+                      placeholder={a.passwordSignupPlaceholder}
                       value={signupData.password}
                       onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
                       className="pl-10 pr-10 h-11"
@@ -388,13 +391,13 @@ const Auth = () => {
                 
                 {/* 비밀번호 확인 */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="signup-confirm" className="text-sm">비밀번호 확인</Label>
+                  <Label htmlFor="signup-confirm" className="text-sm">{a.confirmPassword}</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="signup-confirm"
                       type={showConfirmPassword ? "text" : "password"}
-                      placeholder="비밀번호를 다시 입력"
+                      placeholder={a.confirmPasswordPlaceholder}
                       value={signupData.confirmPassword}
                       onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       className="pl-10 pr-10 h-11"
@@ -409,21 +412,20 @@ const Auth = () => {
                     </button>
                   </div>
                   {signupData.confirmPassword && signupData.password !== signupData.confirmPassword && (
-                    <p className="text-[11px] text-destructive">비밀번호가 일치하지 않습니다</p>
+                    <p className="text-[11px] text-destructive">{a.passwordMismatch}</p>
                   )}
                 </div>
                 
                 {/* 개인정보 최소 수집 안내 */}
                 <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-xl">
                   <Shield className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
-                    개인정보 보호를 위해 <span className="font-semibold text-foreground">닉네임과 이메일만</span> 수집합니다. 
-                    전화번호, 생년월일 등 민감정보는 요청하지 않습니다.
+                   <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    {a.privacyNotice} <span className="font-semibold text-foreground">{a.privacyMinimal}</span> {a.privacyRest}
                   </p>
                 </div>
 
                 <Button type="submit" className="w-full h-11" disabled={loading}>
-                  {loading ? "가입 중..." : "회원가입"}
+                  {loading ? a.signingUp : a.signupButton}
                 </Button>
               </form>
             </TabsContent>
@@ -447,7 +449,7 @@ const Auth = () => {
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <Card className="w-full max-w-sm p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-base font-semibold text-foreground">비밀번호 찾기</h3>
+                <h3 className="text-base font-semibold text-foreground">{a.forgotPasswordTitle}</h3>
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -463,7 +465,7 @@ const Auth = () => {
               </div>
               
               <p className="text-sm text-muted-foreground mb-4">
-                가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.
+                {a.forgotPasswordDesc}
               </p>
               
               <form onSubmit={handleForgotPassword} className="space-y-4">
@@ -472,7 +474,7 @@ const Auth = () => {
                   <Input
                     id="forgot-email"
                     type="email"
-                    placeholder="이메일을 입력하세요"
+                    placeholder={a.emailPlaceholder}
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
                     className="pl-10 h-11"
@@ -504,10 +506,10 @@ const Auth = () => {
                       setSuccess("");
                     }}
                   >
-                    취소
+                  {a.cancel}
                   </Button>
                   <Button type="submit" className="flex-1 h-11" disabled={loading}>
-                    {loading ? "전송 중..." : "재설정 링크 전송"}
+                    {loading ? a.sending : a.sendResetLink}
                   </Button>
                 </div>
               </form>
@@ -518,7 +520,7 @@ const Auth = () => {
         {/* 홈으로 */}
         <div className="mt-6 text-center">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-muted-foreground">
-            ← 홈으로
+            {a.goHome}
           </Button>
         </div>
       </div>

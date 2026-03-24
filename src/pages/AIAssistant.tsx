@@ -667,7 +667,7 @@ const AIAssistant = () => {
                     AI 모드 선택
                   </CardTitle>
                   <CardDescription className="text-white/80 text-sm">
-                    필요에 맞는 AIH 에이전트 모드를 선택하세요
+                    필요에 맞는 AI 상담 모드를 선택하세요
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3 md:space-y-4 p-3 md:p-6 pt-0">

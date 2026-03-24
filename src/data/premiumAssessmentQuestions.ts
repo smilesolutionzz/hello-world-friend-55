@@ -1558,7 +1558,7 @@ export const lovePersonalityAssessmentQuestions = {
     },
     {
       id: "love_pr03",
-      text: "사랑할 때 모든 것을 쏟아부치는 편입니다",
+      text: "사랑할 때 모든 것을 쏟아붓는 편입니다",
       category: "passionate_romantic"
     },
     {
@@ -1612,7 +1612,7 @@ export const lovePersonalityAssessmentQuestions = {
     },
     {
       id: "love_ii03",
-      text: "연인보다는 친구 같은 편안한 관계가 좋습니다",
+      text: "편안하고 자연스러운 관계를 선호합니다",
       category: "independent_individualist"
     },
     {
@@ -1649,7 +1649,7 @@ export const lovePersonalityAssessmentQuestions = {
     },
     {
       id: "love_rp05",
-      text: "충동적인 연애보다는 신중하게 접근하는 편입니다",
+      text: "즉흥적인 연애보다는 신중하게 접근하는 편입니다",
       category: "realistic_planner"
     }
   ]

@@ -35,13 +35,18 @@ const PremiumAssessmentForm = ({
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   const handleAnswerChange = (value: string) => {
-    setAnswers(prev => ({
-      ...prev,
+    const newAnswers = {
+      ...answers,
       [currentQuestion.id]: parseInt(value)
-    }));
+    };
+    setAnswers(newAnswers);
     
-    // 즉시 다음 문항으로 이동 (딜레이 제거)
-    handleNext();
+    // 약간의 딜레이 후 다음 문항으로 이동 (렌더링 안정화)
+    setTimeout(() => {
+      if (!isLastQuestion) {
+        setCurrentQuestionIndex(prev => prev + 1);
+      }
+    }, 300);
   };
 
   const handleNext = async () => {

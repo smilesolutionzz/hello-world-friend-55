@@ -16,6 +16,7 @@ import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
+import { FloatingOnboardingGuide } from '@/components/onboarding/FloatingOnboardingGuide';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import ErrorBoundary from '@/components/ui/error-boundary';
@@ -199,6 +200,7 @@ const Index = () => {
           <BackToTop />
           <StickyConversionBar />
           <SocialProofToast />
+          <FloatingOnboardingGuide />
           
           <WelcomeOnboarding 
             isOpen={showOnboarding} 

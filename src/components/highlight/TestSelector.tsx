@@ -46,7 +46,7 @@ export const TestSelector = () => {
         {
           id: 'depression-test',
           name: '우울증 검사',
-          description: '우울증 선별 진단 평가',
+          description: '우울증 선별 종합 평가',
           typebot_url: '',
           duration_minutes: 3
         },

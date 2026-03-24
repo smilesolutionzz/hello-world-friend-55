@@ -106,12 +106,12 @@ const Auth = () => {
     // 닉네임 검증
     const trimmedName = signupData.displayName.trim();
     if (trimmedName.length < 2) {
-      setError("닉네임은 최소 2자 이상이어야 합니다.");
+      setError(a.errors.nickMin);
       setLoading(false);
       return;
     }
     if (trimmedName.length > 20) {
-      setError("닉네임은 20자 이하로 입력해주세요.");
+      setError(a.errors.nickMax);
       setLoading(false);
       return;
     }

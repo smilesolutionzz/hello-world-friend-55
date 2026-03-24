@@ -1612,7 +1612,7 @@ export const lovePersonalityAssessmentQuestions = {
     },
     {
       id: "love_ii03",
-      text: "연인보다는 친구 같은 편안한 관계가 좋습니다",
+      text: "편안하고 자연스러운 관계를 선호합니다",
       category: "independent_individualist"
     },
     {

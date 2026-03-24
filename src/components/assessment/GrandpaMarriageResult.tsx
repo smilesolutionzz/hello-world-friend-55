@@ -62,7 +62,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
       printWindow.document.write(`
         <html>
           <head>
-            <title>욕쟁이 할아버지의 부부금술진단 결과</title>
+            <title>욕쟁이 할아버지의 부부금술 분석 결과</title>
             <style>
               body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background: linear-gradient(135deg, #eff6ff, #f0f9ff); }
               .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }

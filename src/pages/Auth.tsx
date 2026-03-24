@@ -311,7 +311,7 @@ const Auth = () => {
                     className="text-xs text-muted-foreground"
                     onClick={() => setShowForgotPassword(true)}
                   >
-                    비밀번호를 잊으셨나요?
+                    {a.forgotPassword}
                   </Button>
                 </div>
               </form>

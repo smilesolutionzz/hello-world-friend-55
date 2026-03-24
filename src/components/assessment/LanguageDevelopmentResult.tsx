@@ -202,7 +202,7 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
             categoryTranslations: { receptive: isEnglish ? 'Receptive' : '수용언어', expressive: isEnglish ? 'Expressive' : '표현언어' },
             aiSummary: aiAnalysis,
             actionItems: aiSections.slice(0, 3).map((section) => section.title),
-            riskLevel: totalInfo.level === '우수' || totalInfo.level === '양호' ? 'low' : totalInfo.level === '보통' ? 'moderate' : 'high',
+            riskLevel: totalInfo.level === (isEnglish ? 'Excellent' : '우수') || totalInfo.level === (isEnglish ? 'Good' : '양호') ? 'low' : totalInfo.level === (isEnglish ? 'Average' : '보통') ? 'moderate' : 'high',
           }}
         />
       </div>

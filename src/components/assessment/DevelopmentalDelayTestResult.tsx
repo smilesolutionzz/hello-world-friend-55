@@ -139,7 +139,7 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
 
   return (
     <ClinicalReportLayout
-      testName="AIH 발달지연 검사 결과"
+      testName={isEnglish ? "AIH Developmental Delay Test Results" : "AIH 발달지연 검사 결과"}
       subtitle={`${isEnglish ? 'Age Group' : '연령대'}: ${results.ageGroup}`}
       onBack={onBack}
       onDownload={handleDownload}

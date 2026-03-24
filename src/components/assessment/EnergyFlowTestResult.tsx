@@ -108,7 +108,7 @@ export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTest
   return (
     <ClinicalReportLayout
       testName={isEnglish ? "Daily Energy Flow Test Results" : "일상 에너지 흐름 검사 결과"}
-      subtitle={`${isEnglish ? 'Energy Type' : '에너지 유형'}: ${energyType} · 최적 시간: ${peakTime}`}
+      subtitle={`${isEnglish ? 'Energy Type' : '에너지 유형'}: ${energyType} · ${isEnglish ? 'Peak Time' : '최적 시간'}: ${peakTime}`}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={`${percentage}%`}

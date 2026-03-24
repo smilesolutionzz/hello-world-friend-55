@@ -1029,7 +1029,7 @@ export default function AdminDashboard() {
             <AdminBookingManagement />
           </TabsContent>
 
-
+          <TabsContent value="expert-applications">
             <ExpertApplicationManagement />
           </TabsContent>
 

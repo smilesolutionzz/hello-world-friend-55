@@ -56,6 +56,7 @@ import { SystemMonitoring } from '@/components/admin/SystemMonitoring';
 import { AutomatedModeration } from '@/components/admin/AutomatedModeration';
 import { FinancialAutomation } from '@/components/admin/FinancialAutomation';
 import { CompetitorMonitoring } from '@/components/admin/CompetitorMonitoring';
+import { AdminBookingManagement } from '@/components/admin/AdminBookingManagement';
 
 interface AdminAnalytics {
   total_users: number;
@@ -969,7 +970,7 @@ export default function AdminDashboard() {
 
         {/* Enhanced Management Tabs */}
         <Tabs defaultValue="notifications" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 md:grid-cols-11">
+          <TabsList className="grid w-full grid-cols-6 md:grid-cols-12">
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
               알림
@@ -1014,10 +1015,18 @@ export default function AdminDashboard() {
               <TrendingUp className="h-4 w-4" />
               경쟁사
             </TabsTrigger>
+            <TabsTrigger value="bookings" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              예약관리
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="notifications">
             <AdminNotifications />
+          </TabsContent>
+
+          <TabsContent value="bookings">
+            <AdminBookingManagement />
           </TabsContent>
 
           <TabsContent value="expert-applications">

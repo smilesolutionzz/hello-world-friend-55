@@ -138,7 +138,7 @@ const Auth = () => {
     const complexityCount = [hasUpperCase, hasLowerCase, hasNumber, hasSpecialChar].filter(Boolean).length;
 
     if (complexityCount < 3) {
-      setError("비밀번호는 대문자, 소문자, 숫자, 특수문자 중 최소 3가지를 포함해야 합니다.");
+      setError(a.errors.passwordComplexity);
       setLoading(false);
       return;
     }

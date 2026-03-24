@@ -201,7 +201,7 @@ const Auth = () => {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(forgotEmail)) {
-      setError("올바른 이메일 형식이 아닙니다.");
+      setError(a.errors.invalidEmail);
       setLoading(false);
       return;
     }

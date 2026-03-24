@@ -48,11 +48,6 @@ export default function AdminDashboard() {
   const [analytics, setAnalytics] = useState<AdminAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
 
-  if (!adminLoading && !isAdmin) {
-    navigate('/');
-    return null;
-  }
-
   const fetchAnalytics = async () => {
     try {
       const { data, error } = await supabase

@@ -227,7 +227,7 @@ export const TestSelector = () => {
             3분 심리 검사
           </h1>
           <p className="text-muted-foreground">
-            간단하고 빠른 자가진단으로 나를 더 잘 이해해보세요
+            간단하고 빠른 자가체크로 나를 더 잘 이해해보세요
           </p>
         </div>
 

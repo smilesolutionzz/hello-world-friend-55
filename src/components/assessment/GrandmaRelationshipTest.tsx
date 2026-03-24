@@ -341,7 +341,7 @@ export default function GrandmaRelationshipTest({ onComplete, onBack }: GrandmaR
               </CardTitle>
             </div>
             <p className="text-muted-foreground">
-              👵 할머니가 직설적으로 당신들 관계를 진단해드립니다 (각오하세요!)
+              👵 할머니가 직설적으로 당신들 관계를 분석해드립니다 (각오하세요!)
             </p>
             
             <div className="mt-4">

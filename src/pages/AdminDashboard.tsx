@@ -1025,7 +1025,11 @@ export default function AdminDashboard() {
             <AdminNotifications />
           </TabsContent>
 
-          <TabsContent value="expert-applications">
+          <TabsContent value="bookings">
+            <AdminBookingManagement />
+          </TabsContent>
+
+
             <ExpertApplicationManagement />
           </TabsContent>
 

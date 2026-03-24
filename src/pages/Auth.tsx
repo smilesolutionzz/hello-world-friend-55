@@ -346,7 +346,7 @@ const Auth = () => {
                     <Input
                       id="signup-email"
                       type="email"
-                      placeholder="이메일 주소"
+                      placeholder={a.emailPlaceholder}
                       value={signupData.email}
                       onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
                       className="pl-10 h-11"

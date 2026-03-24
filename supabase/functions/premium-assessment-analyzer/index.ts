@@ -4,14 +4,8 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
-// 베타 테스트 기간 체크 (2025년 10월 30일까지 모든 기능 무료)
-const BETA_END_DATE = new Date('2025-10-30T23:59:59Z');
-const isBetaPeriod = () => {
-  const now = new Date();
-  const isInBeta = now < BETA_END_DATE;
-  console.log('[BETA-CHECK]', { now: now.toISOString(), betaEnd: BETA_END_DATE.toISOString(), isInBeta });
-  return isInBeta;
-};
+// 크레딧 소진은 프론트엔드(useAccessControl)에서 처리
+// Edge function은 분석만 수행
 
 // Initialize Supabase client
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;

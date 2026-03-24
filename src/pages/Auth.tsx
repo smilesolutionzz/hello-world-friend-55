@@ -520,7 +520,7 @@ const Auth = () => {
         {/* 홈으로 */}
         <div className="mt-6 text-center">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-muted-foreground">
-            ← 홈으로
+            {a.goHome}
           </Button>
         </div>
       </div>

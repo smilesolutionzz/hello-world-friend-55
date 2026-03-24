@@ -65,6 +65,7 @@ interface DefenseMechanismTestProps {
 export const DefenseMechanismTest: React.FC<DefenseMechanismTestProps> = ({ onComplete, onBack }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const { isEnglish } = useLanguage();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const navigate = useNavigate();
 

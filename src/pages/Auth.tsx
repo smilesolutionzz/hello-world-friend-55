@@ -425,7 +425,7 @@ const Auth = () => {
                 </div>
 
                 <Button type="submit" className="w-full h-11" disabled={loading}>
-                  {loading ? "가입 중..." : "회원가입"}
+                  {loading ? a.signingUp : a.signupButton}
                 </Button>
               </form>
             </TabsContent>

@@ -412,7 +412,7 @@ const Auth = () => {
                     </button>
                   </div>
                   {signupData.confirmPassword && signupData.password !== signupData.confirmPassword && (
-                    <p className="text-[11px] text-destructive">비밀번호가 일치하지 않습니다</p>
+                    <p className="text-[11px] text-destructive">{a.passwordMismatch}</p>
                   )}
                 </div>
                 

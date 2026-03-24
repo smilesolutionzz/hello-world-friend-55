@@ -24,6 +24,7 @@ interface PanicTestResultProps {
 const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
   const { total, average, answers } = results;
   const severity = results.severity;
+  const ageGroup = results.ageGroup || 'adult';
   const { toast } = useToast();
   const { t } = useTranslation();
   const { isEnglish } = useLanguage();
@@ -31,14 +32,17 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
   const [analysis, setAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
 
-  const isChild = answers.length === 15;
+  // ageGroup 기반으로 판별 (answers.length 대신)
+  const isToddler = ageGroup === 'toddler';
+  const isChild = ageGroup === 'child';
+  const isAdult = ageGroup === 'adult';
   const maxScore = answers.length * 3;
 
   useEffect(() => {
     const fetchAI = async () => {
       try {
         const { data, error } = await supabase.functions.invoke('panic-analyzer', {
-          body: { answers, totalScore: total, average, severity, ageGroup: results.ageGroup, maxScore }
+          body: { answers, totalScore: total, average, severity, ageGroup, maxScore }
         });
         if (!error && data?.analysis) {
           setAnalysis(data.analysis);
@@ -55,15 +59,23 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
   }, [results]);
 
   const generateFallback = () => {
+    const pct = (total / maxScore) * 100;
+
+    if (isToddler) {
+      if (isEnglish) {
+        return `**1. Toddler (3-6) Anxiety Assessment Overview**\nYour child scored ${total} out of ${maxScore} points (${pct.toFixed(0)}%), indicating a ${severity} level of anxiety. This parent-report screening assesses anxiety indicators in preschool-age children.\n\n**2. Domain Analysis**\n- Separation Anxiety: ${answers.slice(0, 4).reduce((s, v) => s + v, 0)}/${4*3} points — Distress when separated from caregivers\n- Social/Environmental Anxiety: ${answers.slice(4, 8).reduce((s, v) => s + v, 0)}/${4*3} points — Fear of strangers, new places\n- Somatic/Sleep Anxiety: ${answers.slice(8, 12).reduce((s, v) => s + v, 0)}/${4*3} points — Physical symptoms, sleep difficulties\n\n**3. Developmental Context**\nIn the 3-6 age range, some degree of separation anxiety and stranger anxiety is developmentally normal. However, when these fears significantly interfere with daily activities, social development, or cause persistent distress, further evaluation is warranted.\n\n**4. Parent/Caregiver Guide**\n- Maintain consistent, predictable daily routines\n- Use transitional objects (favorite toy/blanket) during separations\n- Practice brief separations gradually\n- Validate emotions: "I understand you feel scared"\n- Avoid forcing exposure to feared situations\n- Use play-based approaches to process anxiety\n\n**5. Professional Recommendations**\nIf anxiety symptoms persist beyond 4 weeks or worsen, consult a child development specialist. Play therapy is particularly effective for this age group. Early intervention leads to the best outcomes.\n\n**6. 📋 Summary**\nYour child's anxiety level is at ${severity}. Focus on creating a secure, nurturing environment. With appropriate support, most preschool-age anxiety responds well to intervention.`;
+      }
+      return `**1. 유아(3-6세) 불안 상태 종합 평가**\n부모 보고형 검사 총점 ${total}점(${maxScore}점 만점, ${pct.toFixed(0)}%)으로 '${severity}' 수준의 불안이 확인되었습니다. 이 검사는 유아기 자녀의 불안 지표를 부모의 관찰을 통해 평가합니다.\n\n**2. 영역별 불안 분석**\n- 분리 불안: ${answers.slice(0, 4).reduce((s, v) => s + v, 0)}/${4*3}점 — 부모와 떨어질 때의 고통, 매달림\n- 사회/환경 불안: ${answers.slice(4, 8).reduce((s, v) => s + v, 0)}/${4*3}점 — 낯선 사람, 새로운 환경에 대한 공포\n- 신체/수면 불안: ${answers.slice(8, 12).reduce((s, v) => s + v, 0)}/${4*3}점 — 신체 증상 호소, 수면 어려움\n\n**3. 발달적 관점 해석**\n3-6세 시기에 일정 수준의 분리불안과 낯가림은 발달적으로 정상입니다. 그러나 이러한 공포가 일상 활동, 사회성 발달에 지속적으로 방해가 되거나 심한 고통을 유발한다면 추가 평가가 필요합니다.\n\n**4. 부모/보호자 양육 가이드**\n- 일관되고 예측 가능한 일과를 유지해주세요\n- 분리 시 전환 대상(좋아하는 인형/담요)을 활용하세요\n- 짧은 분리부터 점진적으로 연습하세요\n- 감정을 인정해주세요: "무서운 마음이 드는구나"\n- 무서워하는 상황에 억지로 노출시키지 마세요\n- 놀이를 통해 불안을 처리할 수 있도록 도와주세요\n\n**5. 전문가 권고사항**\n불안 증상이 4주 이상 지속되거나 악화된다면 아동발달 전문가 상담을 권장합니다. 이 연령대에는 놀이치료가 특히 효과적입니다. 조기 개입이 가장 좋은 결과를 가져옵니다.\n\n**6. 📋 요약 및 제언**\n자녀의 불안 수준은 '${severity}' 단계입니다. 안전하고 따뜻한 양육 환경 조성에 집중해주세요. 적절한 지원을 받으면 대부분의 유아기 불안은 개선됩니다.`;
+    }
+
     if (isChild) {
-      const pct = (total / maxScore) * 100;
       if (isEnglish) {
         return `**1. Child Anxiety Assessment Overview**\nYour child scored ${total} out of ${maxScore} points (${pct.toFixed(0)}%), indicating a ${severity} level of anxiety.\n\n**2. Domain Analysis**\n- School/Social Anxiety: ${answers.slice(0, 5).reduce((s, v) => s + v, 0)}/15 points\n- Separation/Fear Anxiety: ${answers.slice(5, 10).reduce((s, v) => s + v, 0)}/15 points\n- Somatic/General Anxiety: ${answers.slice(10, 15).reduce((s, v) => s + v, 0)}/15 points\n\n**3. Developmental Context**\nSome degree of anxiety is normal in childhood development. However, when anxiety significantly interferes with daily activities, school performance, or social relationships, professional evaluation is recommended.\n\n**4. Parent/Caregiver Guide**\n- Create a safe, predictable routine at home\n- Validate your child's feelings without dismissing them\n- Practice relaxation techniques together (deep breathing, progressive muscle relaxation)\n- Encourage gradual exposure to anxiety-provoking situations\n- Maintain open communication about emotions\n\n**5. Professional Recommendations**\nIf anxiety symptoms persist for more than 2 weeks or significantly impact daily functioning, consider consulting a child psychologist or psychiatrist. Play therapy and cognitive-behavioral therapy (CBT) are effective approaches for childhood anxiety.\n\n**6. 📋 Summary**\nYour child's anxiety level is at ${severity}. Focus on providing emotional support and a structured environment. With proper guidance, most childhood anxiety can be effectively managed.`;
       }
       return `**1. 아동 불안 상태 종합 평가**\n검사 총점 ${total}점(${maxScore}점 만점, ${pct.toFixed(0)}%)으로 '${severity}' 수준의 불안이 확인되었습니다. 이 점수는 아이가 일상에서 경험하는 불안의 정도를 반영합니다.\n\n**2. 영역별 불안 분석**\n- 학교/사회적 불안: ${answers.slice(0, 5).reduce((s, v) => s + v, 0)}/15점 — 학교 생활과 또래 관계에서의 불안\n- 분리/공포 불안: ${answers.slice(5, 10).reduce((s, v) => s + v, 0)}/15점 — 부모와의 분리, 새로운 환경에 대한 공포\n- 신체/일반 불안: ${answers.slice(10, 15).reduce((s, v) => s + v, 0)}/15점 — 신체 증상 동반 불안, 일반적 걱정\n\n**3. 발달적 관점 해석**\n아동기의 일정 수준의 불안은 정상 발달 과정의 일부입니다. 그러나 불안이 학교생활, 또래 관계, 가정생활에 지속적으로 지장을 준다면 전문가 평가가 필요합니다.\n\n**4. 부모/보호자 가이드**\n- 안정적이고 예측 가능한 일상 루틴을 유지해주세요\n- 아이의 감정을 무시하지 말고 공감해주세요\n- 함께 이완 기법(깊은 호흡, 근이완법)을 연습하세요\n- 불안을 유발하는 상황에 점진적으로 노출시키세요\n- 감정에 대한 열린 대화를 유지하세요\n\n**5. 전문가 권고사항**\n불안 증상이 2주 이상 지속되거나 일상 기능에 큰 영향을 미친다면 아동 심리전문가 상담을 권장합니다. 놀이치료, 인지행동치료(CBT)가 아동 불안에 효과적입니다.\n\n**6. 📋 요약 및 제언**\n아이의 불안 수준은 '${severity}' 단계입니다. 정서적 지지와 안정적인 환경 제공에 집중해주세요. 적절한 도움을 받으면 대부분의 아동기 불안은 효과적으로 관리될 수 있습니다.`;
     }
 
-    const pct = (total / maxScore) * 100;
+    // 성인
     if (isEnglish) {
       return `**1. Anxiety/Panic Assessment Overview**\nYou scored ${total} out of ${maxScore} points (${pct.toFixed(0)}%), indicating a ${severity} level of anxiety.\n\n**2. Domain Analysis**\n- Physical Symptoms: ${answers.slice(0, 7).reduce((s, v) => s + v, 0)}/21 points — heart pounding, breathing difficulty, dizziness\n- Cognitive Symptoms: ${answers.slice(7, 14).reduce((s, v) => s + v, 0)}/21 points — derealization, loss of control fear\n- Behavioral Symptoms: ${answers.slice(14, 21).reduce((s, v) => s + v, 0)}/21 points — avoidance, daily life interference\n\n**3. Anxiety Pattern Analysis**\nYour response pattern suggests ${pct >= 75 ? 'significant anxiety that may indicate a panic disorder' : pct >= 50 ? 'moderate anxiety requiring active management' : pct >= 25 ? 'mild anxiety within manageable range' : 'minimal anxiety symptoms'}.\n\n**4. Management Strategies**\n- Practice diaphragmatic breathing (4-7-8 technique)\n- Use grounding techniques (5-4-3-2-1 sensory method)\n- Limit caffeine and alcohol intake\n- Maintain regular exercise (30 min, 3-5 times/week)\n- Practice progressive muscle relaxation before bed\n\n**5. Professional Recommendations**\n${pct >= 50 ? 'Professional evaluation is strongly recommended. CBT and, if needed, medication (SSRIs) are evidence-based treatments.' : 'Continue self-monitoring. If symptoms worsen or persist, consider professional consultation.'}\n\n**6. 📋 Summary**\nYour anxiety level is at ${severity}. ${pct >= 50 ? 'Active professional intervention is recommended.' : 'Continue self-care practices and monitor symptoms.'} With appropriate treatment, anxiety disorders have very high recovery rates.`;
     }
@@ -72,14 +84,23 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
 
   useAutoSaveTestResult({
     testType: isEnglish ? 'Anxiety Test' : '불안감 검사',
-    results: { total, average, answers, ageGroup: results.ageGroup },
+    results: { total, average, answers, ageGroup },
     analysis,
     severity,
   });
 
   const severityColor = severity.includes('심각') || severity.includes('Severe') ? 'text-destructive border-destructive/30' : severity.includes('중등도') || severity.includes('Moderate') ? 'text-orange-600 border-orange-300' : severity.includes('경미') || severity.includes('Mild') ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
 
-  const domains: DomainScore[] = isChild
+  const domains: DomainScore[] = isToddler
+    ? [
+        { key: 'separation', label: isEnglish ? 'Separation Anxiety' : '분리 불안', score: answers.slice(0, 4).reduce((s, v) => s + v, 0), maxScore: 12, level: '', color: '' },
+        { key: 'social', label: isEnglish ? 'Social/Environmental Anxiety' : '사회/환경 불안', score: answers.slice(4, 8).reduce((s, v) => s + v, 0), maxScore: 12, level: '', color: '' },
+        { key: 'somatic', label: isEnglish ? 'Somatic/Sleep Anxiety' : '신체/수면 불안', score: answers.slice(8, 12).reduce((s, v) => s + v, 0), maxScore: 12, level: '', color: '' },
+      ].map(d => {
+        const pct = (d.score / d.maxScore) * 100;
+        return { ...d, level: pct >= 70 ? (isEnglish ? 'Severe' : '심각') : pct >= 40 ? (isEnglish ? 'Moderate' : '보통') : (isEnglish ? 'Normal' : '정상'), color: pct >= 70 ? 'bg-destructive' : pct >= 40 ? 'bg-orange-500' : 'bg-green-500' };
+      })
+    : isChild
     ? [
         { key: 'school', label: isEnglish ? 'School/Social Anxiety' : '학교/사회적 불안', score: answers.slice(0, 5).reduce((s, v) => s + v, 0), maxScore: 15, level: '', color: '' },
         { key: 'separation', label: isEnglish ? 'Separation/Fear Anxiety' : '분리/공포 불안', score: answers.slice(5, 10).reduce((s, v) => s + v, 0), maxScore: 15, level: '', color: '' },
@@ -135,17 +156,33 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
     );
   };
 
-  const testNameLabel = isChild
+  const testNameLabel = isToddler
+    ? (isEnglish ? 'Toddler (3-6) Anxiety Check Results' : '유아(3-6세) 불안 체크 결과')
+    : isChild
     ? (isEnglish ? 'Child Anxiety Check Results' : '아동 불안 체크 결과')
     : (isEnglish ? 'Adult Anxiety Check Results' : '성인 불안 체크 결과');
 
-  const subtitleLabel = isChild
+  const subtitleLabel = isToddler
+    ? (isEnglish ? 'Parent-Report Preschool Anxiety Screening (12 items)' : '부모 보고형 유아 불안 선별 검사 (12문항)')
+    : isChild
     ? (isEnglish ? 'Child Anxiety Screening (15 items)' : '아동 불안 선별 검사 (15문항)')
     : (isEnglish ? 'Adult Anxiety/Panic Screening (21 items)' : '성인 불안/공황 선별 검사 (21문항)');
 
+  const loadingLabel = isToddler
+    ? (isEnglish ? 'Toddler Anxiety Analysis' : '유아 불안 분석')
+    : isChild
+    ? (isEnglish ? 'Child Anxiety Analysis' : '아동 불안 분석')
+    : (isEnglish ? 'Anxiety Analysis' : '불안 분석');
+
   if (isAnalyzing) {
-    return <AnalysisLoadingScreen testName={isChild ? (isEnglish ? 'Child Anxiety Analysis' : '아동 불안 분석') : (isEnglish ? 'Anxiety Analysis' : '불안 분석')} estimatedSeconds={20} />;
+    return <AnalysisLoadingScreen testName={loadingLabel} estimatedSeconds={20} />;
   }
+
+  const infoLabel = isToddler
+    ? (isEnglish ? 'Toddler Anxiety' : '유아 불안')
+    : isChild
+    ? (isEnglish ? 'Child Anxiety' : '아동 불안')
+    : (isEnglish ? 'Adult Anxiety' : '성인 불안');
 
   return (
     <ClinicalReportLayout
@@ -165,7 +202,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: isChild ? (isEnglish ? 'Child Anxiety' : '아동 불안') : (isEnglish ? 'Adult Anxiety' : '성인 불안'),
+            testName: infoLabel,
             subtitle: isEnglish ? `${domains.length}-domain analysis` : `${domains.length}영역 분석`,
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(domains.map(d => [d.key, (d.score / d.maxScore) * 7])),

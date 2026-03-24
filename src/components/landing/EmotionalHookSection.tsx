@@ -29,7 +29,26 @@ const EmotionalHookSection = () => {
     { icon: CheckCircle2, value: t.emotionalHook.stat3Value, label: t.emotionalHook.stat3Label, color: "text-green-400" },
   ];
 
+  const storyCount = emotionalStories.length;
   const currentStory = emotionalStories[activeStory];
+
+  // 자동 슬라이드: 8초마다 다음 스토리로 이동
+  useEffect(() => {
+    if (userInteracted) {
+      // 사용자가 클릭 후 10초 뒤 다시 자동 슬라이드 재개
+      const resume = setTimeout(() => setUserInteracted(false), 10000);
+      return () => clearTimeout(resume);
+    }
+    const timer = setInterval(() => {
+      setActiveStory(prev => (prev + 1) % storyCount);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, [userInteracted, storyCount]);
+
+  const handleStoryClick = useCallback((index: number) => {
+    setActiveStory(index);
+    setUserInteracted(true);
+  }, []);
 
   return (
     <section className="relative py-16 md:py-24 overflow-hidden">

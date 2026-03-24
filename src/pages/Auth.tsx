@@ -391,7 +391,7 @@ const Auth = () => {
                 
                 {/* 비밀번호 확인 */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="signup-confirm" className="text-sm">비밀번호 확인</Label>
+                  <Label htmlFor="signup-confirm" className="text-sm">{a.confirmPassword}</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input

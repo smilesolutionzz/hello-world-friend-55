@@ -150,7 +150,7 @@ const PaymentComplete = () => {
             <div className="mb-6 flex justify-center">
               {resolvedType === 'subscription' ? (
                 <Crown className="w-16 h-16 text-primary" />
-              ) : resolvedType === 'single' ? (
+              ) : resolvedType === 'single' || resolvedType === 'single_test' || resolvedType === 'single_report' ? (
                 <FileText className="w-16 h-16 text-amber-500" />
               ) : (
                 <CheckCircle2 className="w-16 h-16 text-emerald-500" />

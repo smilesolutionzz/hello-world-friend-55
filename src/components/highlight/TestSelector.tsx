@@ -53,7 +53,7 @@ export const TestSelector = () => {
         {
           id: 'anxiety-test',
           name: '불안장애 검사',
-          description: '불안장애 종합 평가 진단',
+          description: '불안장애 종합 심층 평가',
           typebot_url: '',
           duration_minutes: 3
         },

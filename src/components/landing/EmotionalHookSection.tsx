@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, MessageCircle, Play, Star, AlertTriangle, Clock, CheckCircle2, ArrowRight, Sparkles, Shield, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';

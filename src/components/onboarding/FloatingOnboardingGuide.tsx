@@ -40,7 +40,7 @@ const steps = [
     icon: FileBarChart,
     title: '리포트',
     description: 'AI가 분석한 맞춤형 리포트를 확인하세요',
-    route: '/dashboard',
+    route: '/report-generator',
     iconBg: 'bg-amber-500',
   },
   {

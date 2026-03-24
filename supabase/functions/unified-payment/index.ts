@@ -89,7 +89,8 @@ serve(async (req) => {
       const finalAmount = amount || product?.price;
       const finalName = productName || product?.name || '결제';
       const finalTokens = tokens || product?.tokens || 0;
-      const finalType = productType || product?.type || 'custom';
+      // 서버측 상품 타입 우선 사용 (프론트엔드 변조 방지)
+      const finalType = product?.type || productType || 'custom';
 
       if (!finalAmount || finalAmount <= 0) {
         return errorResponse("유효하지 않은 결제 금액입니다.");

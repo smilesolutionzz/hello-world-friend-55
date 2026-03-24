@@ -119,6 +119,8 @@ const PaymentComplete = () => {
     switch (type) {
       case 'subscription': return '프리미엄 구독이 활성화되었습니다! 모든 기능을 무제한으로 이용하세요.';
       case 'single': return '리포트 이용권 1회가 추가되었습니다.';
+      case 'single_test': return '검사 이용권 1회가 추가되었습니다. 바로 검사를 시작해보세요!';
+      case 'single_report': return '리포트 이용권 1회가 추가되었습니다.';
       case 'consultation': return '상담 예약이 확정되었습니다! 전문가가 확인 후 연락드립니다.';
       case 'pass': return '프리미엄 패스가 활성화되었습니다.';
       case 'cash': return '캐시가 충전되었습니다.';
@@ -148,14 +150,14 @@ const PaymentComplete = () => {
             <div className="mb-6 flex justify-center">
               {resolvedType === 'subscription' ? (
                 <Crown className="w-16 h-16 text-primary" />
-              ) : resolvedType === 'single' ? (
+              ) : resolvedType === 'single' || resolvedType === 'single_test' || resolvedType === 'single_report' ? (
                 <FileText className="w-16 h-16 text-amber-500" />
               ) : (
                 <CheckCircle2 className="w-16 h-16 text-emerald-500" />
               )}
             </div>
             <h2 className="text-2xl font-bold mb-2 text-foreground">
-              {resolvedType === 'subscription' ? '🎉 구독 시작!' : resolvedType === 'consultation' ? '상담 예약 완료!' : resolvedType === 'single' ? '이용권 구매 완료!' : '결제 완료!'}
+              {resolvedType === 'subscription' ? '🎉 구독 시작!' : resolvedType === 'consultation' ? '상담 예약 완료!' : (resolvedType === 'single' || resolvedType === 'single_test' || resolvedType === 'single_report') ? '이용권 구매 완료!' : '결제 완료!'}
             </h2>
             <p className="text-muted-foreground mb-6">
               {getSuccessMessage(resolvedType)}
@@ -185,7 +187,7 @@ const PaymentComplete = () => {
                   검사 시작하기
                 </Button>
               )}
-              {resolvedType === 'single' && (
+              {(resolvedType === 'single' || resolvedType === 'single_test' || resolvedType === 'single_report') && (
                 <Button className="w-full" onClick={() => navigate('/assessment')}>
                   <FileText className="w-4 h-4 mr-2" />
                   이용권으로 검사하기

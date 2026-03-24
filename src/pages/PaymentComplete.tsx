@@ -157,7 +157,7 @@ const PaymentComplete = () => {
               )}
             </div>
             <h2 className="text-2xl font-bold mb-2 text-foreground">
-              {resolvedType === 'subscription' ? '🎉 구독 시작!' : resolvedType === 'consultation' ? '상담 예약 완료!' : resolvedType === 'single' ? '이용권 구매 완료!' : '결제 완료!'}
+              {resolvedType === 'subscription' ? '🎉 구독 시작!' : resolvedType === 'consultation' ? '상담 예약 완료!' : (resolvedType === 'single' || resolvedType === 'single_test' || resolvedType === 'single_report') ? '이용권 구매 완료!' : '결제 완료!'}
             </h2>
             <p className="text-muted-foreground mb-6">
               {getSuccessMessage(resolvedType)}

@@ -82,6 +82,7 @@ const Assessment = () => {
   const [searchParams] = useSearchParams();
   const { trackTestStart, trackTestComplete, trackPageView } = useEventTracking();
   const { isGuest, saveGuestResult, guestResults } = useGuestSession();
+  const { t } = useTranslation();
   const { isSubscriber, testCredits, reportCredits } = useAccessControl();
   
   // 가입 유도 모달 상태

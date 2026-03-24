@@ -211,7 +211,7 @@ export const FloatingOnboardingGuide: React.FC = () => {
             </div>
           </motion.div>
         ) : (
-          /* Collapsed pill button */
+          /* Collapsed small pill */
           <motion.button
             key="collapsed"
             initial={{ opacity: 0, scale: 0.8 }}
@@ -219,11 +219,11 @@ export const FloatingOnboardingGuide: React.FC = () => {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ type: 'spring', damping: 20, stiffness: 300 }}
             onClick={toggleExpand}
-            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/80 text-primary-foreground rounded-full shadow-md hover:shadow-lg hover:bg-primary hover:scale-105 active:scale-95 transition-all duration-200 backdrop-blur-sm"
           >
-            <Sparkles className="w-4 h-4" />
-            <span className="text-sm font-semibold whitespace-nowrap">
-              시작 가이드 {progress}%
+            <Sparkles className="w-3 h-3" />
+            <span className="text-[11px] font-medium whitespace-nowrap">
+              가이드 {progress}%
             </span>
           </motion.button>
         )}

@@ -114,21 +114,21 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
       {(results.strengths.length > 0 || results.weaknesses.length > 0) && (
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="rounded-2xl border border-green-200 bg-green-50/50 p-3">
-            <h3 className="text-xs font-bold text-green-700 mb-2">💪 강점 영역</h3>
+            <h3 className="text-xs font-bold text-green-700 mb-2">{isEnglish ? '💪 Strengths' : '💪 강점 영역'}</h3>
             <div className="space-y-1">
               {results.strengths.map((s, i) => (
                 <p key={i} className="text-[11px] text-green-800">• {s}</p>
               ))}
-              {results.strengths.length === 0 && <p className="text-[11px] text-green-700">균형 잡힌 발달</p>}
+              {results.strengths.length === 0 && <p className="text-[11px] text-green-700">{isEnglish ? 'Balanced development' : '균형 잡힌 발달'}</p>}
             </div>
           </div>
           <div className="rounded-2xl border border-amber-200 bg-amber-50/50 p-3">
-            <h3 className="text-xs font-bold text-amber-700 mb-2">🎯 지원 필요</h3>
+            <h3 className="text-xs font-bold text-amber-700 mb-2">{isEnglish ? '🎯 Needs Support' : '🎯 지원 필요'}</h3>
             <div className="space-y-1">
               {results.weaknesses.map((w, i) => (
                 <p key={i} className="text-[11px] text-amber-800">• {w}</p>
               ))}
-              {results.weaknesses.length === 0 && <p className="text-[11px] text-amber-700">우려 영역 없음</p>}
+              {results.weaknesses.length === 0 && <p className="text-[11px] text-amber-700">{isEnglish ? 'No concerns' : '우려 영역 없음'}</p>}
             </div>
           </div>
         </div>

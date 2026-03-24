@@ -168,7 +168,7 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
   const severityColor = totalInfo.level === '우수' ? 'text-green-600 border-green-300' : totalInfo.level === '양호' ? 'text-primary border-primary/30' : totalInfo.level === '보통' ? 'text-yellow-600 border-yellow-300' : 'text-destructive border-destructive/30';
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', '언어발달_검사_결과',
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? 'LanguageDev_Results' : '언어발달_검사_결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );

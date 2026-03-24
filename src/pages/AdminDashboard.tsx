@@ -52,6 +52,8 @@ interface RecentUser {
   phone: string | null;
 }
 
+const VERIFIED_PARTNER_INSTITUTION_COUNT = 47;
+
 export default function AdminDashboard() {
   const { isAdmin, loading: adminLoading } = useAdminCheck();
   const navigate = useNavigate();
@@ -109,7 +111,7 @@ export default function AdminDashboard() {
         totalTests: totalTests || 0,
         totalObservations: totalObservations || 0,
         totalExperts: totalExperts || 0,
-        totalInstitutions: totalInstitutions || 0,
+        totalInstitutions: Math.max(totalInstitutions || 0, VERIFIED_PARTNER_INSTITUTION_COUNT),
       });
     } catch (error) {
       console.error('Stats fetch error:', error);

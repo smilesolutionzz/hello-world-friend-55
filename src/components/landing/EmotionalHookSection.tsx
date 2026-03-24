@@ -11,6 +11,7 @@ const EmotionalHookSection = () => {
   const navigate = useNavigate();
   const [activeStory, setActiveStory] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
+  const [userInteracted, setUserInteracted] = useState(false);
   const { t } = useTranslation();
   const { localePath } = useLanguage();
 

@@ -43,6 +43,7 @@ interface ClinicalReportLayoutProps {
   aiSections?: ReportSection[];
   isAnalyzing?: boolean;
   children?: React.ReactNode;
+  childrenBeforeAnalysis?: boolean;
   pdfId?: string;
 }
 
@@ -128,7 +129,7 @@ const ClinicalReportLayout = ({
   totalScore, totalLabel, scoreUnit, scoreSeverity,
   severityColor = 'text-primary',
   domains, aiAnalysis, aiSections, isAnalyzing,
-  children, pdfId = 'clinical-report-content',
+  children, childrenBeforeAnalysis = false, pdfId = 'clinical-report-content',
 }: ClinicalReportLayoutProps) => {
   const { t } = useTranslation();
   const { isEnglish } = useLanguage();
@@ -204,6 +205,8 @@ const ClinicalReportLayout = ({
           </div>
         )}
 
+        {childrenBeforeAnalysis && children}
+
         {/* ── AI Analysis ── */}
         <div className="rounded-2xl border border-border/40 bg-card p-4 mb-4">
           <div className="flex items-center justify-between mb-3">
@@ -240,7 +243,7 @@ const ClinicalReportLayout = ({
         </div>
 
         {/* ── Extra Content ── */}
-        {children}
+        {!childrenBeforeAnalysis && children}
 
         {/* ── Disclaimer ── */}
         <div className="mt-6 px-1">

@@ -200,6 +200,7 @@ const Index = () => {
           <BackToTop />
           <StickyConversionBar />
           <SocialProofToast />
+          <FloatingOnboardingGuide />
           
           <WelcomeOnboarding 
             isOpen={showOnboarding} 

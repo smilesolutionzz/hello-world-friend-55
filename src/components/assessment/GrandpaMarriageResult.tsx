@@ -29,7 +29,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
   const { isEnglish } = useLanguage();
 
   const handleShare = () => {
-    const shareText = `👴 욕쟁이 할아버지의 부부금술진단 결과 👴
+    const shareText = `👴 욕쟁이 할아버지의 부부금술 분석 결과 👴
 
 🏷️ 진단 결과: ${result.verdict}
 📊 잘못 비율: 남편 ${result.blame_percentage.husband}% vs 아내 ${result.blame_percentage.wife}%

@@ -363,7 +363,7 @@ const Auth = () => {
                     <Input
                       id="signup-password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="8자 이상 (대소문자+숫자+특수문자 중 3가지)"
+                      placeholder={a.passwordSignupPlaceholder}
                       value={signupData.password}
                       onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
                       className="pl-10 pr-10 h-11"

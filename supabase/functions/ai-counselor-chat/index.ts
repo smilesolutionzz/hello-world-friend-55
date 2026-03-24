@@ -33,8 +33,8 @@ serve(async (req) => {
     console.log('AI Counselor Chat Request:', { message, assessmentResults });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured');
     }
 
     // Create assessment-specific system prompt

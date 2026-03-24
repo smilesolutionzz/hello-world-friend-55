@@ -66,8 +66,15 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
   useEffect(() => {
     const fetchAnalysis = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('analyze-emotional-development', {
-          body: { total: result.total, average: result.average, level: developmentLevel, answers: result.answers }
+        const { data, error } = await supabase.functions.invoke('instant-ai-analysis', {
+          body: { 
+            testId: 'selfesteem', 
+            answers: result.answers, 
+            total: result.total, 
+            average: result.average, 
+            level: selfEsteemLevel,
+            testTitle: isEnglish ? 'Child Self-Worth Assessment' : '자녀 자아가치 검사'
+          }
         });
         if (error) throw error;
         setAiAnalysis(data?.analysis || '');

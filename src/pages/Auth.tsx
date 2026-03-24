@@ -85,7 +85,7 @@ const Auth = () => {
       
       if (error) {
         if (error.message.includes('Invalid login')) {
-          setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+          setError(a.errors.invalidLogin);
         } else {
           setError(error.message);
         }

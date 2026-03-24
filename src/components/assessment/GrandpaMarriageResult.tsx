@@ -282,7 +282,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
                   className="w-full border-orange-200 text-orange-700 hover:bg-orange-50"
                 >
                   <RotateCcw className="w-4 h-4 mr-2" />
-                  다시 진단받기
+                  다시 분석받기
                 </Button>
               </CardContent>
             </Card>

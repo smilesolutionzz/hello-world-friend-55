@@ -419,9 +419,8 @@ const Auth = () => {
                 {/* 개인정보 최소 수집 안내 */}
                 <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-xl">
                   <Shield className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
-                    개인정보 보호를 위해 <span className="font-semibold text-foreground">닉네임과 이메일만</span> 수집합니다. 
-                    전화번호, 생년월일 등 민감정보는 요청하지 않습니다.
+                   <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    {a.privacyNotice} <span className="font-semibold text-foreground">{a.privacyMinimal}</span> {a.privacyRest}
                   </p>
                 </div>
 

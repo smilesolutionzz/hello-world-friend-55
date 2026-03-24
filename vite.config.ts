@@ -50,8 +50,8 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         cleanupOutdatedCaches: true,
-        skipWaiting: true,
         clientsClaim: true,
+        navigateFallbackDenylist: [/^\/~oauth/],
         maximumFileSizeToCacheInBytes: 30 * 1024 * 1024 // 30MB
       }
     })

@@ -128,8 +128,19 @@ const PremiumAssessmentResult = ({
       achievement_motivation: '성취동기', interpersonal_skills: '대인관계', self_confidence: '자신감',
       emotional_intelligence: '감정지능', anxiety: '불안', depression: '우울', resilience: '회복력',
       self_esteem: '자존감', financial_anxiety: '재정 불안', spending_habits: '소비 습관',
+      spending_patterns: '소비 패턴', money_mindset: '금전 마인드셋', financial_goals: '재정 목표',
+      financial_planning: '재정 계획', money_attitude: '금전 태도', saving_behavior: '저축 행동',
       investment_attitude: '투자 성향', money_values: '금전 가치관', passionate_romantic: '열정적 로맨티스트',
       stable_companion: '안정적 동반자', independent_individualist: '독립적 개인주의자', realistic_planner: '계획적 현실주의자',
+      communication: '의사소통', empathy: '공감능력', conflict_resolution: '갈등해결',
+      boundary_setting: '경계설정', active_listening: '적극적 경청', assertiveness: '자기주장',
+      emotional_awareness: '감정인식', social_awareness: '사회적 인식', relationship_management: '관계관리',
+      self_management: '자기관리', motivation: '동기부여', optimism: '낙관성',
+      life_satisfaction: '삶의 만족도', meaning: '의미', purpose: '목적의식',
+      growth: '성장', connection: '유대감', autonomy: '자율성',
+      vitality: '활력', creativity: '창의성', focus: '집중력',
+      memory: '기억력', processing_speed: '처리속도', problem_solving: '문제해결',
+      verbal_ability: '언어능력', spatial_ability: '공간능력', logical_reasoning: '논리추론',
     };
     return t[category.toLowerCase()] || category.replace(/_/g, ' ');
   };

@@ -195,11 +195,11 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
         <VisualResultInfographic
           data={{
             testName: isEnglish ? 'Language Development' : '언어발달',
-            subtitle: '수용·표현 분석',
+            subtitle: isEnglish ? 'Receptive · Expressive Analysis' : '수용·표현 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: { receptive: (getNumericResult('receptive_percentage') / 100) * 7, expressive: (getNumericResult('expressive_percentage') / 100) * 7 },
             maxScore: 7,
-            categoryTranslations: { receptive: '수용언어', expressive: '표현언어' },
+            categoryTranslations: { receptive: isEnglish ? 'Receptive' : '수용언어', expressive: isEnglish ? 'Expressive' : '표현언어' },
             aiSummary: aiAnalysis,
             actionItems: aiSections.slice(0, 3).map((section) => section.title),
             riskLevel: totalInfo.level === '우수' || totalInfo.level === '양호' ? 'low' : totalInfo.level === '보통' ? 'moderate' : 'high',

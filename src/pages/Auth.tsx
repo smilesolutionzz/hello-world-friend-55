@@ -322,13 +322,13 @@ const Auth = () => {
               <form onSubmit={handleSignup} className="space-y-4">
                 {/* 닉네임 */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="signup-name" className="text-sm">닉네임</Label>
+                  <Label htmlFor="signup-name" className="text-sm">{a.nickname}</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="signup-name"
                       type="text"
-                      placeholder="2~20자 닉네임"
+                      placeholder={a.nicknamePlaceholder}
                       value={signupData.displayName}
                       onChange={(e) => setSignupData(prev => ({ ...prev, displayName: e.target.value }))}
                       className="pl-10 h-11"

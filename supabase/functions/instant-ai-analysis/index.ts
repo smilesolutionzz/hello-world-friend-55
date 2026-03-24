@@ -51,7 +51,7 @@ serve(async (req) => {
     const systemPrompt = isEnglish
       ? `You are a top-tier developmental and psychological expert. Analyze the user's concern quickly and professionally, and respond in a structured JSON format that includes 6 core reports and personalized test recommendations.
 
-**CRITICAL: ALL output text MUST be in English. Do NOT use any Korean.**
+**ABSOLUTE RULE: ALL output text values in the JSON MUST be written ENTIRELY in English. The user's input may be in Korean — you MUST translate and respond ONLY in English. If any Korean characters (한글) appear in your output, the response will be rejected. This is non-negotiable.**
 
 **Available assessments on our platform:**
 - adhd (testId: "adhd"): Attention & Focus Self-Check
@@ -129,9 +129,10 @@ ${targetLabel ? `**Analysis target:** ${targetLabel}` : ''}
 
 **Requirements:**
 - recommendedTests: exactly 3 recommendations
-- All 6 reports must be written IN ENGLISH
+- All 6 reports must be written IN ENGLISH — zero Korean characters allowed
 - Return pure JSON only
-- ALL text content MUST be in English`
+- ALL text content MUST be in English. Translate any Korean concepts to English.
+- FINAL CHECK: Ensure absolutely NO Korean characters (가-힣, ㄱ-ㅎ, ㅏ-ㅣ) exist in your output.`
       : `당신은 대한민국 최고의 발달/심리 전문가입니다. 사용자의 고민을 신속하고 전문적으로 분석하여 6가지 핵심 리포트와 맞춤형 테스트 추천을 포함한 JSON 형식으로 응답해주세요.
 
 **우리 플랫폼 보유 검사 목록:**
@@ -376,12 +377,37 @@ Ultra high resolution, 4K quality, emotionally impactful.`
   }
 });
 
+function containsKorean(text: string): boolean {
+  return /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(text);
+}
+
+function sanitizeForEnglish(obj: any): any {
+  if (typeof obj === 'string') {
+    // If a string contains Korean, return a generic English fallback
+    if (containsKorean(obj)) {
+      return '[Analysis content - please re-run in English mode]';
+    }
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(item => sanitizeForEnglish(item));
+  }
+  if (obj && typeof obj === 'object') {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      sanitized[key] = sanitizeForEnglish(value);
+    }
+    return sanitized;
+  }
+  return obj;
+}
+
 function parseAIResponse(response: string, originalText: string, isEnglish: boolean) {
   try {
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
-      return {
+      const result = {
         type: parsed.type || (isEnglish ? 'General Counseling' : '일반 상담'),
         severity: parsed.severity || (isEnglish ? 'Medium' : '중간'),
         color: parsed.color || 'bg-orange-500',
@@ -399,6 +425,19 @@ function parseAIResponse(response: string, originalText: string, isEnglish: bool
         comprehensiveReports: parsed.comprehensiveReports || null,
         aiResponse: response
       };
+      
+      // If English mode, sanitize any Korean that leaked through
+      if (isEnglish) {
+        const sanitized = sanitizeForEnglish(result);
+        // If the AI returned Korean content extensively, use fallback instead
+        if (containsKorean(JSON.stringify(result))) {
+          logStep("Korean detected in English mode response, using fallback");
+          return getFallbackAnalysis(originalText, isEnglish);
+        }
+        return sanitized;
+      }
+      
+      return result;
     }
   } catch (e) {
     logStep("JSON parsing failed, using fallback", { error: String(e) });

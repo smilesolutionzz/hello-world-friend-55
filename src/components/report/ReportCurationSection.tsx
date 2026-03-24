@@ -48,7 +48,7 @@ const CURATED_TESTS_KO: CuratedTest[] = [
   },
   {
     name: '관계 역동성 심층 분석',
-    description: '대인관계 패턴과 애착 유형 진단',
+    description: '대인관계 패턴과 애착 유형 분석',
     icon: <Users className="w-5 h-5" />,
     path: '/assessment/relationship-dynamics',
     tag: 'premium',

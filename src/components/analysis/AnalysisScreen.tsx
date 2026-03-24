@@ -348,7 +348,7 @@ ${percentage < 60 ? '우울/불안 전문가와의 즉시 상담을 권장합니
                 <div className="text-muted-foreground">
                   {ageGroup === 'infant' ? 'AIH 발달관찰 체크리스트' : 
                     ageGroup === 'child' ? 'AIH 집중력 자가점검' : 
-                    'AIH 심리상태 자가진단'}
+                    'AIH 심리상태 자가체크'}
                 </div>
               </div>
               <div>

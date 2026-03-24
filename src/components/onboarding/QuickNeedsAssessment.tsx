@@ -178,7 +178,7 @@ export default function QuickNeedsAssessment() {
       tests: [
         {
           id: 'adhd-test',
-          name: 'ADHD 자가진단',
+          name: 'ADHD 자가체크',
           tokenCost: '3토큰',
           duration: '12분',
           route: '/assessment?type=adhd',

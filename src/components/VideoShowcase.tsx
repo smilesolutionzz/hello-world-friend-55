@@ -146,7 +146,7 @@ const VideoShowcase = () => {
               <h3 className="font-semibold">전문가 추천</h3>
             </div>
             <p className="text-muted-foreground text-sm mb-4">
-              "데이터 기반 분석으로 더 정확한 진단이 가능해졌습니다"
+              "데이터 기반 분석으로 더 정확한 평가가 가능해졌습니다"
             </p>
             <div className="text-xs text-muted-foreground">박○○ 통합건강의학과 전문의</div>
           </div>

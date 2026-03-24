@@ -5,7 +5,7 @@ const HowItWorksSection = () => {
     {
       number: "01",
       icon: ClipboardCheck,
-      title: "자가진단",
+      title: "자가체크",
       description: "간단한 질문에 답하며 현재 상태를 파악합니다"
     },
     {

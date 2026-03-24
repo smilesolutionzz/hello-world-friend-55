@@ -18,7 +18,7 @@ export const PRODUCTS = {
   },
   single_report: {
     id: 'single_report',
-    type: 'single',
+    type: 'single_report',
     name: '심층 분석 리포트',
     description: '전문가급 AI 분석 1회',
     price: SINGLE_REPORT_PRICE,

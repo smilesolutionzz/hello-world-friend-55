@@ -94,8 +94,8 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
     { key: 'socialesteem', label: isEnglish ? 'Social Esteem' : '사회적 자존감', score: result.average * 1.05 },
   ];
 
-  const getColor = (s: number) => s >= 2.5 ? 'bg-green-500' : s >= 2 ? 'bg-yellow-500' : s >= 1.5 ? 'bg-orange-500' : 'bg-destructive';
-  const getLevel = (s: number) => s >= 2.5 ? (isEnglish ? 'Good' : '양호') : s >= 2 ? (isEnglish ? 'Fair' : '보통') : (isEnglish ? 'Concern' : '관심필요');
+  const getColor = (s: number) => s >= 4 ? 'bg-green-500' : s >= 3 ? 'bg-blue-500' : s >= 2 ? 'bg-yellow-500' : 'bg-orange-500';
+  const getLevel = (s: number) => s >= 4 ? (isEnglish ? 'High' : '높음') : s >= 3 ? (isEnglish ? 'Good' : '양호') : s >= 2 ? (isEnglish ? 'Average' : '보통') : (isEnglish ? 'Low' : '낮음');
 
   const domains: DomainScore[] = areaScoresRaw.map(a => ({
     key: a.key,

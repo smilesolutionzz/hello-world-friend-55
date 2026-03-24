@@ -9,7 +9,7 @@ import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE, SUBSCRIPTION_YEARLY_PRICE, SIN
 export const PRODUCTS = {
   single_test: {
     id: 'single_test',
-    type: 'single',
+    type: 'single_test',
     name: '심리검사 1회',
     description: '심리검사 1회 이용',
     price: SINGLE_TEST_PRICE,

@@ -88,10 +88,10 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
   }, [result]);
 
   const areaScoresRaw = [
-    { key: 'emotion', label: isEnglish ? 'Emotion Recognition' : '감정인식', score: result.average },
-    { key: 'attachment', label: isEnglish ? 'Attachment' : '애착관계', score: result.average * 0.95 },
-    { key: 'regulation', label: isEnglish ? 'Regulation' : '감정조절', score: result.average * 0.9 },
-    { key: 'empathy', label: isEnglish ? 'Empathy' : '공감능력', score: result.average * 1.05 },
+    { key: 'selfworth', label: isEnglish ? 'Self-Worth' : '자기가치감', score: result.average },
+    { key: 'confidence', label: isEnglish ? 'Confidence' : '자신감', score: result.average * 0.95 },
+    { key: 'selfacceptance', label: isEnglish ? 'Self-Acceptance' : '자기수용', score: result.average * 0.9 },
+    { key: 'socialesteem', label: isEnglish ? 'Social Esteem' : '사회적 자존감', score: result.average * 1.05 },
   ];
 
   const getColor = (s: number) => s >= 2.5 ? 'bg-green-500' : s >= 2 ? 'bg-yellow-500' : s >= 1.5 ? 'bg-orange-500' : 'bg-destructive';

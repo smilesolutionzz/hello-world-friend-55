@@ -40,7 +40,7 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
   }, [results]);
 
   useAutoSaveTestResult({
-    testType: '자폐스펙트럼 선별검사',
+    testType: isEnglish ? 'Autism Spectrum Screening' : '자폐스펙트럼 선별검사',
     results: { categoryScores: results.categoryScores, totalScore: results.totalScore, riskLevel: results.riskLevel },
     analysis: results.overallInterpretation,
     severity: results.riskLevel === 'high' ? '높음' : results.riskLevel === 'moderate' ? '보통' : '양호',
@@ -142,7 +142,7 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
         <div className="mb-4">
           <VisualResultInfographic
             data={{
-              testName: '신경발달 선별검사',
+              testName: isEnglish ? 'Neurodevelopmental Screening' : '신경발달 선별검사',
               subtitle: '5개 영역 종합 분석',
               date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
               scores: results.scores?.categories

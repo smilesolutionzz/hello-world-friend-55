@@ -31,7 +31,7 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
   const [isAnalyzing, setIsAnalyzing] = useState(true);
 
   useAutoSaveTestResult({
-    testType: '스트레스 검사',
+    testType: isEnglish ? 'Stress Test' : '스트레스 검사',
     results: { total: result.total, average: result.average, answers: result.answers },
     analysis,
     severity: result.severity,

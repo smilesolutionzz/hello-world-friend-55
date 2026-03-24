@@ -32,7 +32,7 @@ const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) =>
   const [isAnalyzing, setIsAnalyzing] = useState(true);
 
   useAutoSaveTestResult({
-    testType: '양육 스타일 검사',
+    testType: isEnglish ? 'Parenting Style Test' : '양육 스타일 검사',
     results: { scores: results.scores, dominantStyle: results.dominantStyle, childAge: results.childAge },
     severity: '보통',
     ageGroup: 'adult',
@@ -97,7 +97,7 @@ const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) =>
   };
 
   if (isAnalyzing) {
-    return <AnalysisLoadingScreen testName="양육 스타일 검사" />;
+    return <AnalysisLoadingScreen testName={isEnglish ? "Parenting Style Test" : "양육 스타일 검사"} />;
   }
 
   return (

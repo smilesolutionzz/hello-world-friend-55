@@ -31,7 +31,7 @@ const AdvancedAdhdResult = ({ results, onBack, onRestart }: AdvancedAdhdResultPr
   const dominantTypeData = adhdTypes[dominantType];
 
   useAutoSaveTestResult({
-    testType: '고급 ADHD 유형 검사',
+    testType: isEnglish ? 'Advanced ADHD Type Test' : '고급 ADHD 유형 검사',
     results: { typeScores, dominantType, timestamp: results.timestamp },
     severity: typeScores[dominantType] > 30 ? '높음' : typeScores[dominantType] > 15 ? '보통' : '양호',
     ageGroup: 'adult',

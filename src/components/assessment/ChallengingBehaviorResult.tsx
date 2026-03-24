@@ -86,11 +86,11 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
     );
   };
 
-  if (isLoading) return <AnalysisLoadingScreen testName="도전행동 평가" />;
+  if (isLoading) return <AnalysisLoadingScreen testName={isEnglish ? "Challenging Behavior Assessment" : "도전행동 평가"} />;
 
   return (
     <ClinicalReportLayout
-      testName="도전행동 평가 결과"
+      testName={isEnglish ? "Challenging Behavior Assessment Results" : "도전행동 평가 결과"}
       subtitle="행동 영역별 심층 분석"
       onBack={() => navigate('/dashboard')}
       onDownload={handleDownload}
@@ -106,7 +106,7 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '도전행동 평가',
+            testName: isEnglish ? 'Challenging Behavior' : '도전행동 평가',
             subtitle: '6개 행동 영역 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(categoryScores).map(([k, { score, max }]) => [k, (score / max) * 7])),

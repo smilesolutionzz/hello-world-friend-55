@@ -57,7 +57,7 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
   const config = levelConfigKo[developmentLevel] || levelConfigKo['정상발달'];
 
   useAutoSaveTestResult({
-    testType: '자존감 검사',
+    testType: isEnglish ? 'Self-Esteem Test' : '자존감 검사',
     results: { total: result.total, average: result.average, level: result.level },
     analysis: aiAnalysis,
     severity: result.level,

@@ -98,12 +98,12 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
     );
   };
 
-  if (isLoading) return <AnalysisLoadingScreen testName="학습장애 검사" />;
+  if (isLoading) return <AnalysisLoadingScreen testName={isEnglish ? "Learning Disability Test" : "학습장애 검사"} />;
 
   return (
     <ClinicalReportLayout
       testName="AIH 학습장애 검사 결과"
-      subtitle={`연령대: ${results.ageGroup}`}
+      subtitle={`${isEnglish ? 'Age Group' : '연령대'}: ${results.ageGroup}`}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={`${overallDelay}%`}
@@ -117,7 +117,7 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '학습장애 검사',
+            testName: isEnglish ? 'Learning Disability' : '학습장애 검사',
             subtitle: '7개 학습 영역 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(domainData.map(d => [d.key, (d.score / 100) * 7])),

@@ -174,11 +174,11 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
     );
   };
 
-  if (isAnalyzing) return <AnalysisLoadingScreen testName="언어발달 검사" />;
+  if (isAnalyzing) return <AnalysisLoadingScreen testName={isEnglish ? "Language Development Test" : "언어발달 검사"} />;
 
   return (
     <ClinicalReportLayout
-      testName="언어발달 검사 결과"
+      testName={isEnglish ? "Language Development Test Results" : "언어발달 검사 결과"}
       subtitle="수용언어 · 표현언어 분석"
       onBack={onBack}
       onDownload={handleDownload}
@@ -194,7 +194,7 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '언어발달',
+            testName: isEnglish ? 'Language Development' : '언어발달',
             subtitle: '수용·표현 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: { receptive: (getNumericResult('receptive_percentage') / 100) * 7, expressive: (getNumericResult('expressive_percentage') / 100) * 7 },

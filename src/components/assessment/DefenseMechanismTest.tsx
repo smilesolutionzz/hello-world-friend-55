@@ -183,7 +183,7 @@ export const DefenseMechanismTest: React.FC<DefenseMechanismTestProps> = ({ onCo
   };
 
   if (isAnalyzing) {
-    return <AnalysisLoadingScreen testName="방어기제" estimatedSeconds={25} />;
+    return <AnalysisLoadingScreen testName={isEnglish ? "Defense Mechanism" : "방어기제"} estimatedSeconds={25} />;
   }
 
   const question = questions[currentQuestion];

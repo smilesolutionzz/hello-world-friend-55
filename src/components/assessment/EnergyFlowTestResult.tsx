@@ -93,24 +93,24 @@ export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTest
   const aiSections = parseAISections(aiAnalysis);
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', '에너지흐름_검사_결과',
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? 'EnergyFlow_Results' : '에너지흐름_검사_결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 
   if (isLoading) {
-    return <AnalysisLoadingScreen testName="에너지 흐름 검사" />;
+    return <AnalysisLoadingScreen testName={isEnglish ? "Energy Flow Test" : "에너지 흐름 검사"} />;
   }
 
   return (
     <ClinicalReportLayout
-      testName="일상 에너지 흐름 검사 결과"
-      subtitle={`에너지 유형: ${energyType} · 최적 시간: ${peakTime}`}
+      testName={isEnglish ? "Daily Energy Flow Test Results" : "일상 에너지 흐름 검사 결과"}
+      subtitle={`${isEnglish ? 'Energy Type' : '에너지 유형'}: ${energyType} · 최적 시간: ${peakTime}`}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={`${percentage}%`}
-      totalLabel="에너지 건강도"
+      totalLabel={isEnglish ? 'Energy Health' : '에너지 건강도'}
       scoreSeverity={energyType}
       severityColor={severityColor}
       domains={domains}
@@ -120,8 +120,8 @@ export default function EnergyFlowTestResult({ results, onBack }: EnergyFlowTest
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '에너지 흐름',
-            subtitle: '4개 영역 분석',
+            testName: isEnglish ? 'Energy Flow' : '에너지 흐름',
+            subtitle: isEnglish ? '4-Domain Analysis' : '4개 영역 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(infoScores).map(([k, v]) => [k, (v / 100) * 7])),
             maxScore: 7,

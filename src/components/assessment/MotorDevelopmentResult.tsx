@@ -94,7 +94,7 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
     );
   };
 
-  if (isLoading) return <AnalysisLoadingScreen testName="운동발달 분석" />;
+  if (isLoading) return <AnalysisLoadingScreen testName={isEnglish ? "Motor Development Analysis" : "운동발달 분석"} />;
 
   return (
     <ClinicalReportLayout
@@ -137,8 +137,8 @@ const MotorDevelopmentResult: React.FC<MotorDevelopmentResultProps> = ({ results
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '운동발달',
-            subtitle: '영역별 분석',
+            testName: isEnglish ? 'Motor Development' : '운동발달',
+            subtitle: isEnglish ? 'Domain Analysis' : '영역별 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(results.categoryScores).map(([k, v]) => [k, (v / 100) * 7])),
             maxScore: 7,

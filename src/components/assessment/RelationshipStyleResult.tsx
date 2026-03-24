@@ -41,7 +41,7 @@ const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProp
   const { isEnglish } = useLanguage();
 
   useAutoSaveTestResult({
-    testType: '관계 스타일 검사',
+    testType: isEnglish ? 'Relationship Style Test' : '관계 스타일 검사',
     results: { type: result.type, scores: result.scores, title: result.result.title },
     severity: result.type === 'secure' || result.type === 'assertive' ? '양호' : '보통',
     ageGroup: 'adult',

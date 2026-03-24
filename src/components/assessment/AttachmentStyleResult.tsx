@@ -28,7 +28,7 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
   const { isEnglish, localePath } = useLanguage();
 
   useAutoSaveTestResult({
-    testType: '애착 유형 검사',
+    testType: isEnglish ? 'Attachment Style Test' : '애착 유형 검사',
     results: {
       total: result.total,
       average: result.average,

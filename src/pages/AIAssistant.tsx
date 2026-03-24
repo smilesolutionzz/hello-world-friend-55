@@ -526,20 +526,20 @@ const AIAssistant = () => {
               뒤로
             </Button>
             
-            <div className="relative">
-              <h1 className="text-3xl md:text-5xl font-bold mb-3 md:mb-6 animate-fade-in">
-                <TypingAnimation
-                  className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg"
-                  phrases={["AIH 에이전트 🚀"]}
-                />
+            <div className="relative inline-block">
+              <h1 className="text-4xl md:text-6xl font-extrabold mb-3 md:mb-5 animate-fade-in tracking-tight">
+                <span className="bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(168,85,247,0.4)]">
+                  AI 채팅상담
+                </span>
+                <span className="ml-2 inline-block animate-bounce" style={{ animationDuration: '2s' }}>💬</span>
               </h1>
-              <div className="absolute -top-2 -left-2 w-12 h-12 md:w-20 md:h-20 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
-              <div className="absolute -top-2 -right-2 w-10 h-10 md:w-16 md:h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-30 animate-pulse" style={{animationDelay: '1s'}}></div>
+              <div className="absolute -top-4 -left-6 w-16 h-16 md:w-24 md:h-24 bg-gradient-to-r from-purple-500/40 to-cyan-400/40 rounded-full blur-2xl animate-pulse"></div>
+              <div className="absolute -bottom-2 -right-6 w-12 h-12 md:w-20 md:h-20 bg-gradient-to-r from-pink-400/40 to-purple-500/40 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1s'}}></div>
             </div>
             
-            <p className="text-base md:text-xl text-white/90 max-w-3xl mx-auto animate-fade-in font-medium px-4" style={{animationDelay: '0.3s'}}>
-              🧠 <strong>딥러닝 기반 전문 AI 엔진</strong>으로 각 분야별 수십만 건의 전문 데이터를 학습하여<br/>
-              ✨ <strong>개인 맞춤형 고도화 상담</strong>을 제공하는 차세대 AIH 에이전트입니다 ✨
+            <p className="text-sm md:text-lg text-white/80 max-w-2xl mx-auto animate-fade-in font-medium px-4 leading-relaxed" style={{animationDelay: '0.3s'}}>
+              🧠 딥러닝 기반 전문 AI 엔진으로 각 분야별 수십만 건의 전문 데이터를 학습하여<br className="hidden md:block"/>
+              ✨ 개인 맞춤형 고도화 상담을 제공합니다 ✨
             </p>
           </div>
 

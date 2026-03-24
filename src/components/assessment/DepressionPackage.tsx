@@ -17,7 +17,7 @@ export const DepressionPackage = () => {
       tokens: TOKEN_COSTS.PSYCHOLOGICAL_TEST,
       status: '전문검사',
       statusColor: 'bg-red-500',
-      description: 'AHI-MOOD 기준 정확한 진단',
+      description: 'AHI-MOOD 기준 정밀 분석',
       path: '/assessment?test=depression'
     },
     {

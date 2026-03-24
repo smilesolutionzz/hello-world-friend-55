@@ -155,13 +155,13 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: isEnglish ? 'Emotional Development' : '정서발달 체크',
+            testName: isEnglish ? 'Child Self-Worth' : '자녀 자아가치',
             subtitle: isEnglish ? '4-domain analysis' : '4개 영역 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
-            scores: Object.fromEntries(areaScoresRaw.map(a => [a.key, a.score / 3 * 7])),
+            scores: Object.fromEntries(areaScoresRaw.map(a => [a.key, a.score / 5 * 7])),
             maxScore: 7,
             categoryTranslations: Object.fromEntries(areaScoresRaw.map(a => [a.key, a.label])),
-            riskLevel: result.total >= 45 ? 'low' : result.total >= 30 ? 'moderate' : 'high',
+            riskLevel: result.average >= 3.5 ? 'low' : result.average >= 2.5 ? 'moderate' : 'high',
           }}
         />
       </div>

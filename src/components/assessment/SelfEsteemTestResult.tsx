@@ -20,28 +20,28 @@ interface SelfEsteemTestResultProps {
   onRestart: () => void;
 }
 
-function getDevelopmentLevel(total: number): string {
-  if (total >= 60) return '정상발달';
-  if (total >= 45) return '경계선';
-  if (total >= 30) return '경도 지연';
-  if (total >= 15) return '중등도 지연';
-  return '중도 지연';
+function getSelfEsteemLevel(average: number): string {
+  if (average >= 4.5) return '매우 높음';
+  if (average >= 3.5) return '높음';
+  if (average >= 2.5) return '보통';
+  if (average >= 1.5) return '낮음';
+  return '매우 낮음';
 }
 
 const levelConfigKo: Record<string, { label: string; color: string }> = {
-  '정상발달': { label: '정상발달', color: 'text-green-600 border-green-300' },
-  '경계선': { label: '경계선', color: 'text-blue-600 border-blue-300' },
-  '경도 지연': { label: '경도 지연', color: 'text-yellow-600 border-yellow-300' },
-  '중등도 지연': { label: '중등도 지연', color: 'text-orange-600 border-orange-300' },
-  '중도 지연': { label: '중도 지연', color: 'text-destructive border-destructive/30' },
+  '매우 높음': { label: '매우 높음', color: 'text-green-600 border-green-300' },
+  '높음': { label: '높음', color: 'text-blue-600 border-blue-300' },
+  '보통': { label: '보통', color: 'text-yellow-600 border-yellow-300' },
+  '낮음': { label: '낮음', color: 'text-orange-600 border-orange-300' },
+  '매우 낮음': { label: '매우 낮음', color: 'text-destructive border-destructive/30' },
 };
 
 const levelConfigEn: Record<string, { label: string }> = {
-  '정상발달': { label: 'Normal' },
-  '경계선': { label: 'Borderline' },
-  '경도 지연': { label: 'Mild Delay' },
-  '중등도 지연': { label: 'Moderate Delay' },
-  '중도 지연': { label: 'Severe Delay' },
+  '매우 높음': { label: 'Very High' },
+  '높음': { label: 'High' },
+  '보통': { label: 'Average' },
+  '낮음': { label: 'Low' },
+  '매우 낮음': { label: 'Very Low' },
 };
 
 export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTestResultProps) {

@@ -6,6 +6,7 @@ import { BetaBanner } from "@/components/BetaBanner";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { useEventTracking } from "@/hooks/useEventTracking";
 import { useGuestSession } from "@/hooks/useGuestSession";
+import { useAccessControl } from "@/hooks/useAccessControl";
 import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
 import ChildAssessmentSimplified from "@/components/assessment/ChildAssessmentSimplified";
@@ -82,6 +83,7 @@ const Assessment = () => {
   const { trackTestStart, trackTestComplete, trackPageView } = useEventTracking();
   const { isGuest, saveGuestResult, guestResults } = useGuestSession();
   const { t } = useTranslation();
+  const { isSubscriber, testCredits, reportCredits } = useAccessControl();
   
   // 가입 유도 모달 상태
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
@@ -735,7 +737,27 @@ const Assessment = () => {
             </p>
           </div>
 
-          {/* ========== 🟢 무료 기본검사 ========== */}
+          {/* 보유 이용권 현황 */}
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <button
+              onClick={() => navigate('/token-subscription')}
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-semibold text-primary hover:bg-primary/20 transition-colors"
+            >
+              {isSubscriber ? (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                  <span>월구독 이용중 · 검사 & 리포트 무제한</span>
+                </>
+              ) : (
+                <>
+                  <span>🧪 검사 {testCredits}건</span>
+                  <span className="text-muted-foreground">|</span>
+                  <span>📄 리포트 {reportCredits}건</span>
+                </>
+              )}
+            </button>
+          </div>
+
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>

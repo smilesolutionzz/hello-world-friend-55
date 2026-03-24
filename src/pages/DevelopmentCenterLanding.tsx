@@ -22,7 +22,7 @@ const DevelopmentCenterLanding = () => {
     {
       icon: Activity,
       title: '전문적 발달 평가',
-      description: 'AI 기반 발달 평가로 정확한 진단과 체계적인 기록 관리',
+      description: 'AI 기반 발달 평가로 정확한 분석과 체계적인 기록 관리',
       color: 'text-blue-500'
     },
     {

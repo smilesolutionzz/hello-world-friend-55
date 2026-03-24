@@ -24,7 +24,7 @@ const InstagramAnalysisSection = () => {
 
   const features = [
     { icon: Eye, text: "피드 패턴 분석", color: "text-pink-400" },
-    { icon: Brain, text: "무의식 유형 진단", color: "text-purple-400" },
+    { icon: Brain, text: "무의식 유형 분석", color: "text-purple-400" },
     { icon: Heart, text: "숨겨진 욕망 해석", color: "text-rose-400" },
     { icon: Users, text: "관계 심리 분석", color: "text-blue-400" },
   ];

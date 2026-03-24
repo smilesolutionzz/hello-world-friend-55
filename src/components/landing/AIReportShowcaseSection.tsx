@@ -142,7 +142,7 @@ export const AIReportShowcaseSection = () => {
                     <div className="p-1.5 rounded-lg bg-purple-500/10">
                       <Brain className="w-4 h-4 text-purple-500" />
                     </div>
-                    <h4 className="font-bold text-slate-900 text-sm">1. 종합 진단 요약</h4>
+                    <h4 className="font-bold text-slate-900 text-sm">1. 종합 분석 요약</h4>
                     <Badge variant="outline" className="text-[10px] ml-auto border-slate-200 text-slate-400">Executive Summary</Badge>
                   </div>
                   <div className="pl-8 space-y-2">

@@ -147,7 +147,7 @@ const AppStoreGuide = () => {
     appId: 'app.lovable.c642909236134c6ea94522140ac09444',
     appName: 'hilightpro',
     displayName: 'AI하이라이트PRO',
-    description: '3분만에 완성하는 AI 심리분석 및 발달진단',
+    description: '3분만에 완성하는 AI 심리분석 및 발달평가',
     category: '건강 및 피트니스 / 의료'
   };
 

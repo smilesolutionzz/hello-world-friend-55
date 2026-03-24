@@ -129,9 +129,10 @@ ${targetLabel ? `**Analysis target:** ${targetLabel}` : ''}
 
 **Requirements:**
 - recommendedTests: exactly 3 recommendations
-- All 6 reports must be written IN ENGLISH
+- All 6 reports must be written IN ENGLISH — zero Korean characters allowed
 - Return pure JSON only
-- ALL text content MUST be in English`
+- ALL text content MUST be in English. Translate any Korean concepts to English.
+- FINAL CHECK: Ensure absolutely NO Korean characters (가-힣, ㄱ-ㅎ, ㅏ-ㅣ) exist in your output.`
       : `당신은 대한민국 최고의 발달/심리 전문가입니다. 사용자의 고민을 신속하고 전문적으로 분석하여 6가지 핵심 리포트와 맞춤형 테스트 추천을 포함한 JSON 형식으로 응답해주세요.
 
 **우리 플랫폼 보유 검사 목록:**

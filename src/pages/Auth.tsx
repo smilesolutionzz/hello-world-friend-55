@@ -506,10 +506,10 @@ const Auth = () => {
                       setSuccess("");
                     }}
                   >
-                    취소
+                  {a.cancel}
                   </Button>
                   <Button type="submit" className="flex-1 h-11" disabled={loading}>
-                    {loading ? "전송 중..." : "재설정 링크 전송"}
+                    {loading ? a.sending : a.sendResetLink}
                   </Button>
                 </div>
               </form>

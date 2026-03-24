@@ -1649,7 +1649,7 @@ export const lovePersonalityAssessmentQuestions = {
     },
     {
       id: "love_rp05",
-      text: "충동적인 연애보다는 신중하게 접근하는 편입니다",
+      text: "즉흥적인 연애보다는 신중하게 접근하는 편입니다",
       category: "realistic_planner"
     }
   ]

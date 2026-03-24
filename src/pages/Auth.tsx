@@ -397,7 +397,7 @@ const Auth = () => {
                     <Input
                       id="signup-confirm"
                       type={showConfirmPassword ? "text" : "password"}
-                      placeholder="비밀번호를 다시 입력"
+                      placeholder={a.confirmPasswordPlaceholder}
                       value={signupData.confirmPassword}
                       onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       className="pl-10 pr-10 h-11"

@@ -537,9 +537,9 @@ const AIAssistant = () => {
               <div className="absolute -bottom-2 -right-6 w-12 h-12 md:w-20 md:h-20 bg-gradient-to-r from-pink-400/40 to-purple-500/40 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1s'}}></div>
             </div>
             
-            <p className="text-sm md:text-lg text-white/80 max-w-2xl mx-auto animate-fade-in font-medium px-4 leading-relaxed" style={{animationDelay: '0.3s'}}>
-              🧠 딥러닝 기반 전문 AI 엔진으로 각 분야별 수십만 건의 전문 데이터를 학습하여<br className="hidden md:block"/>
-              ✨ 개인 맞춤형 고도화 상담을 제공합니다 ✨
+            <p className="text-sm md:text-lg text-white/80 max-w-2xl mx-auto animate-fade-in font-medium px-4 leading-relaxed text-center" style={{animationDelay: '0.3s'}}>
+              <span className="block">🧠 딥러닝 기반 전문 AI 엔진으로 각 분야별 전문 데이터를 학습</span>
+              <span className="block">✨ 개인 맞춤형 고도화 상담을 제공합니다 ✨</span>
             </p>
           </div>
 

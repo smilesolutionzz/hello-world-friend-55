@@ -176,8 +176,8 @@ export const FocusPackage = () => {
                 </div>
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <p><strong>집중력 문제가 있다면:</strong></p>
-                  <p>• ADHD 자가진단으로 시작</p>
-                  <p>• 종합평가로 정밀진단</p>
+                  <p>• ADHD 자가체크로 시작</p>
+                  <p>• 종합평가로 정밀 분석</p>
                   <p>• 행동일지로 지속관리</p>
                 </div>
               </CardContent>

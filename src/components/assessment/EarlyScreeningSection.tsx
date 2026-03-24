@@ -340,7 +340,7 @@ const EarlyScreeningSection = ({ assessmentType, results, isAnalyzing }: EarlySc
               개인맞춤 예방 가이드
             </h4>
             <div className="text-sm text-purple-700 space-y-1">
-              <p>• 정기적인 자가진단을 통해 변화를 모니터링하세요</p>
+              <p>• 정기적인 자가체크를 통해 변화를 모니터링하세요</p>
               <p>• 스트레스 관리와 충분한 휴식을 취하세요</p>
               <p>• 위험요소가 높은 영역은 전문가 상담을 고려하세요</p>
               <p>• 건강한 생활습관 유지로 예방 효과를 높이세요</p>

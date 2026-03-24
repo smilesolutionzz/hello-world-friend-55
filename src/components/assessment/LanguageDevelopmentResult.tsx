@@ -179,7 +179,7 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
   return (
     <ClinicalReportLayout
       testName={isEnglish ? "Language Development Test Results" : "언어발달 검사 결과"}
-      subtitle="수용언어 · 표현언어 분석"
+      subtitle={isEnglish ? "Receptive · Expressive Language Analysis" : "수용언어 · 표현언어 분석"}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={getNumericResult('total')}

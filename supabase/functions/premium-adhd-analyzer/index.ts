@@ -49,43 +49,8 @@ serve(async (req) => {
       scores
     });
 
-    // 토큰 확인 및 차감
-    if (userId) {
-      const { data: userTokens } = await supabase
-        .from('user_tokens')
-        .select('current_tokens, total_used')
-        .eq('user_id', userId)
-        .single();
-
-      if (!userTokens || userTokens.current_tokens < 8) {
-        console.log('[PREMIUM-ADHD-ANALYZER] 토큰 부족:', userTokens?.current_tokens || 0);
-        return new Response(JSON.stringify({ 
-          error: 'insufficient_tokens',
-          required: 8,
-          available: userTokens?.current_tokens || 0,
-          message: '토큰이 부족합니다. ADHD 전문 분석에는 8토큰이 필요합니다.'
-        }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
-      }
-
-      // 토큰 차감
-      const { error: tokenError } = await supabase
-        .from('user_tokens')
-        .update({ 
-          current_tokens: userTokens.current_tokens - 8,
-          total_used: userTokens.total_used + 8
-        })
-        .eq('user_id', userId);
-
-      if (tokenError) {
-        console.error('[PREMIUM-ADHD-ANALYZER] 토큰 차감 실패:', tokenError);
-        throw new Error('토큰 차감에 실패했습니다.');
-      }
-
-      console.log(`ADHD 전문 분석 - 토큰 차감: 8, 잔액: ${userTokens.current_tokens - 8}`);
-    }
+    // 크레딧 소진은 프론트엔드에서 처리 완료
+    console.log('[PREMIUM-ADHD-ANALYZER] 크레딧 확인은 프론트엔드에서 처리됨');
 
     // 프리미엄 ADHD 검사 영역별 점수 (실제 점수 사용)
     const domainScores = scores ? [

@@ -49,52 +49,12 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    // 토큰 차감 처리 (AIH 전문가 창작 검사는 5토큰)
-    const tokenCost = 5;
-    
-    // 현재 토큰 잔액 확인
-    const { data: tokenData, error: tokenError } = await supabaseServiceClient
-      .from('user_tokens')
-      .select('current_tokens, total_used')
-      .eq('user_id', user.id)
-      .single();
-
-    if (tokenError || !tokenData) {
-      return new Response(JSON.stringify({ 
-        error: '토큰 정보를 확인할 수 없습니다.' 
-      }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    if (tokenData.current_tokens < tokenCost) {
-      return new Response(JSON.stringify({ 
-        error: `분석을 위해 ${tokenCost}개의 토큰이 필요합니다. 현재 토큰: ${tokenData.current_tokens}개` 
-      }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // 토큰 차감
-    const { error: updateError } = await supabaseServiceClient
-      .from('user_tokens')
-      .update({ 
-        current_tokens: tokenData.current_tokens - tokenCost,
-        total_used: tokenData.total_used + tokenCost 
-      })
-      .eq('user_id', user.id);
-
-    if (updateError) {
-      throw new Error('토큰 차감 중 오류가 발생했습니다.');
-    }
-
-    console.log(`Token deducted: ${tokenCost}, Remaining: ${tokenData.current_tokens - tokenCost}`);
+    // 크레딧 소진은 프론트엔드에서 처리 완료
+    console.log('[ASSESSMENT-ANALYZER] 크레딧 확인은 프론트엔드에서 처리됨');
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not found');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not found');
     }
 
     console.log('Processing assessment analysis:', { ageGroup, age, resultsCount: Object.keys(results).length });

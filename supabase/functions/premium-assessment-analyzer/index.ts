@@ -4,14 +4,8 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
-// 베타 테스트 기간 체크 (2025년 10월 30일까지 모든 기능 무료)
-const BETA_END_DATE = new Date('2025-10-30T23:59:59Z');
-const isBetaPeriod = () => {
-  const now = new Date();
-  const isInBeta = now < BETA_END_DATE;
-  console.log('[BETA-CHECK]', { now: now.toISOString(), betaEnd: BETA_END_DATE.toISOString(), isInBeta });
-  return isInBeta;
-};
+// 크레딧 소진은 프론트엔드(useAccessControl)에서 처리
+// Edge function은 분석만 수행
 
 // Initialize Supabase client
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -84,53 +78,8 @@ serve(async (req) => {
       });
     }
 
-    // 베타 기간 중에는 토큰 차감 생략
-    if (!isBetaPeriod()) {
-      // 토큰 차감 처리 (프리미엄 검사는 8토큰)
-      const tokenCost = 8;
-      
-      // 현재 토큰 잔액 확인
-      const { data: tokenData, error: tokenError } = await supabaseServiceClient
-        .from('user_tokens')
-        .select('current_tokens, total_used')
-        .eq('user_id', user.id)
-        .single();
-
-      if (tokenError || !tokenData) {
-        return new Response(JSON.stringify({ 
-          error: '토큰 정보를 확인할 수 없습니다.' 
-        }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-
-      if (tokenData.current_tokens < tokenCost) {
-        return new Response(JSON.stringify({ 
-          error: `분석을 위해 ${tokenCost}개의 토큰이 필요합니다. 현재 토큰: ${tokenData.current_tokens}개` 
-        }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-
-      // 토큰 차감
-      const { error: updateError } = await supabaseServiceClient
-        .from('user_tokens')
-        .update({ 
-          current_tokens: tokenData.current_tokens - tokenCost,
-          total_used: tokenData.total_used + tokenCost 
-        })
-        .eq('user_id', user.id);
-
-      if (updateError) {
-        throw new Error('토큰 차감 중 오류가 발생했습니다.');
-      }
-
-      console.log(`프리미엄 검사 분석 - 토큰 차감: ${tokenCost}, 잔액: ${tokenData.current_tokens - tokenCost}`);
-    } else {
-      console.log('[PREMIUM-ASSESSMENT-ANALYZER] 베타 기간 - 토큰 차감 생략');
-    }
+    // 크레딧 소진은 프론트엔드에서 처리 완료 - edge function은 분석만 수행
+    console.log('[PREMIUM-ASSESSMENT-ANALYZER] 크레딧 확인은 프론트엔드에서 처리됨');
 
     console.log('[PREMIUM-ASSESSMENT-ANALYZER] 프리미엄 분석 시작:', { 
       actualAssessmentType, 

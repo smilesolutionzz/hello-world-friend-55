@@ -296,7 +296,7 @@ const ExpertContract = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="w-5 h-5" />
-                  계약 기간 선택
+                  {isEnglish ? 'Contract Period' : '계약 기간 선택'}
                 </CardTitle>
               </CardHeader>
               <CardContent>

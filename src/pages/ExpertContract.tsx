@@ -233,7 +233,7 @@ const ExpertContract = () => {
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                       <span className="text-sm">{expert.rating}</span>
                       <span className="text-sm text-muted-foreground">
-                        ({expert.reviews}개 후기)
+                        ({expert.reviews}{isEnglish ? ' reviews' : '개 후기'})
                       </span>
                     </div>
                   </div>

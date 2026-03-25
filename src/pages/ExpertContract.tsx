@@ -100,7 +100,7 @@ const ExpertContract = () => {
             credentials: dbExpert.certifications || [],
             rating: dbExpert.average_rating || 4.5,
             reviews: dbExpert.total_sessions || 0,
-            experience: `${dbExpert.years_experience || 0}년`,
+            experience: `${dbExpert.years_experience || 0}${isEnglish ? ' yrs' : '년'}`,
             hourlyPrice: dbExpert.hourly_rate || 25000,
             image: dbExpert.profile_image_url || '/api/placeholder/150/150',
             description: dbExpert.bio || '',

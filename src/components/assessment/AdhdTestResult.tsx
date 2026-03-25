@@ -143,16 +143,18 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
   const handleDownload = async () => {
     await downloadResultAsPDF(
       'clinical-report-content',
-      'ADHD_자가체크_결과',
+      isEnglish ? 'ADHD_Self_Check_Results' : 'ADHD_자가체크_결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 
   const handleShare = async () => {
-    const text = `ADHD 자가체크 결과\n총점: ${safeTotal}점\n상태: ${severity}`;
+    const text = isEnglish 
+      ? `ADHD Self-Check Results\nTotal: ${safeTotal} pts\nLevel: ${displaySeverity}`
+      : `ADHD 자가체크 결과\n총점: ${safeTotal}점\n상태: ${severity}`;
     if (navigator.share) {
-      await navigator.share({ title: 'ADHD 자가체크 결과', text, url: window.location.href }).catch(() => {});
+      await navigator.share({ title: isEnglish ? 'ADHD Self-Check Results' : 'ADHD 자가체크 결과', text, url: window.location.href }).catch(() => {});
     } else {
       navigator.clipboard.writeText(text);
       toast({ title: isEnglish ? 'Results copied' : '결과가 복사되었습니다' });

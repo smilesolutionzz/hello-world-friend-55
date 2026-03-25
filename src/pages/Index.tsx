@@ -31,9 +31,9 @@ import { SocialProofToast } from '@/components/landing/SocialProofToast';
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "AIHPRO - 우리 아이 발달검사",
+  "name": "AIHPRO - 우리 아이와 나, 심리·발달검사",
   "url": "https://aihpro.app",
-  "description": "우리 아이 발달이 늦는 것 같다면? 3분 무료 AI 발달검사로 ADHD, 언어발달 지연, 사회성 부족을 전문가 수준으로 분석해드립니다. 20-30대 엄마를 위한 아동 발달검사 플랫폼.",
+  "description": "우리 아이와 나, 괜찮은 걸까? 3분 무료 AI 심리·발달검사로 ADHD, 언어발달 지연, 육아 번아웃, 우울을 전문가 수준으로 분석합니다.",
   "applicationCategory": "HealthApplication",
   "operatingSystem": "Web",
   "offers": {

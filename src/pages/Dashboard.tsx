@@ -415,7 +415,7 @@ const DashboardNew = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground">{improvementRate.toFixed(1)}%</div>
-                  <p className="text-xs text-muted-foreground mt-1">최초 대비 개선</p>
+                  <p className="text-xs text-muted-foreground mt-1">{isEnglish ? 'vs first test' : '최초 대비 개선'}</p>
                 </CardContent>
               </Card>
 

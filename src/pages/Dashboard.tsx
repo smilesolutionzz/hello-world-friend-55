@@ -141,8 +141,8 @@ const DashboardNew = () => {
         allObservations.push({
           id: assessment.id,
           user_id: user.id,
-          age_group: assessment.age_group || '미분류',
-          tags: ['검사', assessment.age_group || '미분류'],
+          age_group: assessment.age_group || (isEnglish ? 'Uncategorized' : '미분류'),
+          tags: [isEnglish ? 'Test' : '검사', assessment.age_group || (isEnglish ? 'Uncategorized' : '미분류')],
           score_overall: totalScore,
           created_at: assessment.created_at,
           profile: { ...profileData, role: 'user' } as any,

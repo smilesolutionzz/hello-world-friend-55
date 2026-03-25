@@ -574,7 +574,7 @@ const DashboardNew = () => {
             {/* Assessment Results Table */}
             <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-lg font-medium text-foreground">최근 검사 결과</CardTitle>
+                <CardTitle className="text-lg font-medium text-foreground">{isEnglish ? 'Recent Test Results' : '최근 검사 결과'}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">

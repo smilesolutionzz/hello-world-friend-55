@@ -245,13 +245,35 @@ const PremiumAssessmentResult = ({
   const topDomain = domains[0]; // already sorted desc
   let overallLevel: string;
   let severityColor: string;
+  let totalLabel: string;
 
   if (isTypeAnalysis && topDomain) {
     overallLevel = topDomain.label; // e.g. "안정적 동반자"
     severityColor = 'text-primary border-primary/30';
+    totalLabel = isEnglish ? 'Top Score' : '종합 평가';
+  } else if (isDementiaRisk) {
+    // 치매 위험도: 점수가 높을수록 위험, 명확한 위험도 등급 표시
+    if (averageScore >= 5.5) {
+      overallLevel = isEnglish ? '⚠️ High Risk' : '⚠️ 높은 위험';
+      severityColor = 'text-destructive border-destructive/30';
+    } else if (averageScore >= 4.5) {
+      overallLevel = isEnglish ? '⚠️ Moderate-High Risk' : '⚠️ 중등도-높은 위험';
+      severityColor = 'text-orange-600 border-orange-300';
+    } else if (averageScore >= 3.5) {
+      overallLevel = isEnglish ? '⚡ Moderate Risk' : '⚡ 중등도 위험';
+      severityColor = 'text-yellow-600 border-yellow-300';
+    } else if (averageScore >= 2.5) {
+      overallLevel = isEnglish ? '✅ Low Risk' : '✅ 낮은 위험';
+      severityColor = 'text-green-600 border-green-300';
+    } else {
+      overallLevel = isEnglish ? '✅ Very Low Risk' : '✅ 매우 낮은 위험';
+      severityColor = 'text-primary border-primary/30';
+    }
+    totalLabel = isEnglish ? 'Dementia Risk Score' : '치매 위험도 점수';
   } else {
     overallLevel = averageScore >= 5 ? (isEnglish ? 'Very High' : '매우 높음') : averageScore >= 4 ? (isEnglish ? 'High' : '높음') : averageScore >= 3 ? (isEnglish ? 'Moderate' : '보통') : (isEnglish ? 'Low' : '낮음');
     severityColor = averageScore >= 5 ? 'text-destructive border-destructive/30' : averageScore >= 4 ? 'text-orange-600 border-orange-300' : averageScore >= 3 ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+    totalLabel = isEnglish ? 'Average Score' : '평균 점수';
   }
 
   return (
@@ -262,7 +284,7 @@ const PremiumAssessmentResult = ({
         onBack={onBack}
         onDownload={handleDownloadPDF}
         totalScore={isTypeAnalysis ? topDomain?.score?.toFixed(1) || averageScore.toFixed(1) : averageScore.toFixed(1)}
-        totalLabel={isTypeAnalysis ? (isEnglish ? 'Top Score' : '종합 평가') : (isEnglish ? 'Average Score' : '평균 점수')}
+        totalLabel={totalLabel}
         scoreUnit="/ 7.0"
         scoreSeverity={overallLevel}
         severityColor={severityColor}

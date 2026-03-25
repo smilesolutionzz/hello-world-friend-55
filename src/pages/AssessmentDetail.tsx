@@ -36,6 +36,7 @@ export default function AssessmentDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
   const [assessment, setAssessment] = useState<AssessmentDetail | null>(null);
   const [enhancedAnalysis, setEnhancedAnalysis] = useState<EnhancedAnalysis | null>(null);
   const [loading, setLoading] = useState(true);

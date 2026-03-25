@@ -377,25 +377,26 @@ const B2BProposal = () => {
               },
             ].map((plan, i) => (
               <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-                <Card className={`h-full relative ${plan.badge === '가성비 최고' ? 'border-indigo-400 shadow-xl shadow-indigo-100' : 'border-slate-200'}`}>
+                <Card className={`h-full relative overflow-visible rounded-2xl ${plan.badge === '가성비 최고' ? 'border-2 border-indigo-400 shadow-2xl shadow-indigo-200/50 bg-gradient-to-b from-indigo-50/50 to-white' : 'border border-slate-200 shadow-lg hover:shadow-xl transition-shadow'}`}>
                   {plan.badge && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <Badge className={plan.badge === '가성비 최고' ? 'bg-indigo-500 text-white' : 'bg-amber-500 text-white'}>
-                        <Star className="w-3 h-3 mr-1" />{plan.badge}
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                      <Badge className={`text-sm px-4 py-1.5 shadow-md ${plan.badge === '가성비 최고' ? 'bg-indigo-500 text-white shadow-indigo-300' : 'bg-amber-500 text-white shadow-amber-300'}`}>
+                        <Star className="w-3.5 h-3.5 mr-1.5" />{plan.badge}
                       </Badge>
                     </div>
                   )}
-                  <CardContent className="p-6 pt-8">
-                    <div className="text-center mb-6">
-                      <h3 className="text-lg font-bold text-slate-900 mb-1">{plan.name}</h3>
-                      <p className="text-xs text-indigo-500 font-medium mb-3">{plan.highlight}</p>
+                  <CardContent className="p-7 pt-10">
+                    <div className="text-center mb-7">
+                      <h3 className="text-xl font-bold text-slate-900 mb-1">{plan.name}</h3>
+                      <p className="text-xs text-indigo-500 font-medium mb-4">{plan.highlight}</p>
                       <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-4xl font-bold text-slate-900">₩{plan.price}</span>
-                        <span className="text-slate-500">만/{plan.period}</span>
+                        <span className="text-5xl font-extrabold text-slate-900">₩{plan.price}</span>
+                        <span className="text-slate-500 text-base">만/{plan.period}</span>
                       </div>
-                      <p className="text-xs text-slate-400 mt-1">VAT 별도</p>
+                      <p className="text-xs text-slate-400 mt-1.5">VAT 별도</p>
                     </div>
-                    <ul className="space-y-3 mb-8">
+                    <div className="h-px bg-slate-100 mb-6" />
+                    <ul className="space-y-3.5 mb-8">
                       {plan.features.map((f, j) => (
                         <li key={j} className="flex items-start gap-2.5 text-sm text-slate-600">
                           <CheckCircle2 className="w-4 h-4 text-indigo-500 mt-0.5 shrink-0" />
@@ -404,7 +405,7 @@ const B2BProposal = () => {
                       ))}
                     </ul>
                     <Button 
-                      className={`w-full rounded-xl h-12 ${plan.badge === '가성비 최고' ? 'bg-indigo-500 hover:bg-indigo-600' : ''}`}
+                      className={`w-full rounded-xl h-13 text-base font-semibold ${plan.badge === '가성비 최고' ? 'bg-indigo-500 hover:bg-indigo-600 shadow-lg shadow-indigo-200' : ''}`}
                       variant={plan.badge === '가성비 최고' ? 'default' : 'outline'}
                       onClick={() => {
                         setFormData(prev => ({ ...prev, message: `${plan.name} 광고 상품 (${plan.price}만원/월) 문의` }));

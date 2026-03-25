@@ -127,7 +127,7 @@ const B2BProposal = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-slate-500 text-slate-200 hover:bg-slate-700/50 text-lg px-8 h-14 rounded-xl"
+                className="bg-white/15 backdrop-blur-sm border-2 border-white/40 text-white hover:bg-white/25 text-lg px-8 h-14 rounded-xl shadow-lg"
                 onClick={() => document.getElementById('how')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 어떻게 노출되나요?

@@ -373,7 +373,7 @@ const DashboardNew = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground">{filteredObservations.length}</div>
-                  <p className="text-xs text-muted-foreground mt-1">전체 누적 검사</p>
+                  <p className="text-xs text-muted-foreground mt-1">{isEnglish ? 'All-time total' : '전체 누적 검사'}</p>
                 </CardContent>
               </Card>
 

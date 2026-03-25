@@ -143,11 +143,11 @@ export default function AssessmentDetail() {
   };
 
   const getScoreInterpretation = (score: number) => {
-    if (score >= 6) return { level: "높음", color: "bg-red-500", description: "매우 강한 특성" };
-    if (score >= 5) return { level: "중상", color: "bg-orange-500", description: "강한 특성" };
-    if (score >= 4) return { level: "보통", color: "bg-yellow-500", description: "일반적 특성" };
-    if (score >= 3) return { level: "중하", color: "bg-green-500", description: "약한 특성" };
-    return { level: "낮음", color: "bg-blue-500", description: "매우 약한 특성" };
+    if (score >= 6) return { level: isEnglish ? "High" : "높음", color: "bg-red-500", description: isEnglish ? "Very strong trait" : "매우 강한 특성" };
+    if (score >= 5) return { level: isEnglish ? "Above Avg" : "중상", color: "bg-orange-500", description: isEnglish ? "Strong trait" : "강한 특성" };
+    if (score >= 4) return { level: isEnglish ? "Average" : "보통", color: "bg-yellow-500", description: isEnglish ? "Typical trait" : "일반적 특성" };
+    if (score >= 3) return { level: isEnglish ? "Below Avg" : "중하", color: "bg-green-500", description: isEnglish ? "Mild trait" : "약한 특성" };
+    return { level: isEnglish ? "Low" : "낮음", color: "bg-blue-500", description: isEnglish ? "Very mild trait" : "매우 약한 특성" };
   };
 
   const translateCategory = (category: string) => {

@@ -315,7 +315,7 @@ const ExpertContract = () => {
                         <h3 className="font-semibold">{option.label}</h3>
                         {option.discount > 0 && (
                           <Badge className="mt-1 bg-green-500">
-                            {option.discount}% 할인
+                            {option.discount}% {isEnglish ? 'off' : '할인'}
                           </Badge>
                         )}
                       </div>

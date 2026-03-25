@@ -9,6 +9,7 @@ import { ArrowLeft, Brain, TrendingUp, Calendar, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateTestResultPDF } from '@/utils/pdfGenerator';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface AssessmentDetail {
   id: string;

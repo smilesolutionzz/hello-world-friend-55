@@ -78,12 +78,12 @@ const B2BProposal = () => {
               </Badge>
             </motion.div>
             <motion.h1 variants={fadeUp} custom={1} className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              어르신 케어의 새로운 기준,<br />
-              <span className="text-emerald-400">AI가 함께합니다</span>
+              일지 쓰느라 야근하시죠?<br />
+              <span className="text-emerald-400">AI가 3분 만에 써드립니다</span>
             </motion.h1>
             <motion.p variants={fadeUp} custom={2} className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-4">
-              인지건강 모니터링 · 보호자 리포트 자동 발송 · AI 회고록<br />
-              <span className="text-emerald-300 font-medium">기관 운영 효율과 보호자 만족도를 동시에 높이세요</span>
+              사례관리 기록 · 프로그램 운영일지 · 바우처 서류 · 보호자 리포트<br />
+              <span className="text-emerald-300 font-medium">메모 3줄이면 AI가 공식 양식에 맞는 완성 문서를 생성합니다</span>
             </motion.p>
             <motion.p variants={fadeUp} custom={3} className="text-sm text-slate-400 mb-10">
               주간보호센터 · 노인복지시설 · 지역아동센터 · 발달클리닉
@@ -124,10 +124,10 @@ const B2BProposal = () => {
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
-              { icon: FileText, title: '서류 업무 과부하', desc: '바우처 서류, 일지 작성에 매일 2시간 이상 소모' },
-              { icon: Users, title: '보호자 소통 부담', desc: '변화를 설명하기 어렵고, 민원이 반복됨' },
-              { icon: Activity, title: '변화 추적 어려움', desc: '이용자 상태 변화를 객관적으로 증빙할 수 없음' },
-              { icon: TrendingUp, title: '재등록률 정체', desc: '차별화된 프로그램 없이 경쟁 심화' },
+              { icon: FileText, title: '사례관리 기록 지옥', desc: '이용자마다 사례관리 기록지 작성에 매번 30분 이상' },
+              { icon: Clock, title: '프로그램 일지 야근', desc: '프로그램 운영일지 쓰느라 퇴근 후 1~2시간 추가 근무' },
+              { icon: Users, title: '바우처 서류 부담', desc: '정부 양식에 맞춘 바우처 제공기록지 작성이 복잡' },
+              { icon: Activity, title: '보호자 리포트 요청', desc: '보호자가 변화 리포트를 요구하지만 만들 시간이 없음' },
             ].map((item, i) => (
               <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
                 <Card className="h-full border-slate-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300 bg-white">
@@ -145,32 +145,79 @@ const B2BProposal = () => {
         </div>
       </section>
 
-      {/* Solution */}
+      {/* Document Automation Demo */}
       <section id="solution" className="py-16 md:py-24">
         <div className="container mx-auto px-4 max-w-5xl">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-14">
             <motion.div variants={fadeUp} custom={0}>
-              <Badge className="mb-4 bg-emerald-50 text-emerald-700 border-emerald-200">통합 솔루션</Badge>
+              <Badge className="mb-4 bg-emerald-50 text-emerald-700 border-emerald-200">핵심 기능</Badge>
             </motion.div>
             <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
-              AIHPRO + Memory Legacy 번들
+              메모 3줄 → 완성 문서 3분
             </motion.h2>
             <motion.p variants={fadeUp} custom={2} className="text-slate-500 max-w-xl mx-auto">
-              인지 케어와 회고록을 하나로. 시장에 없는 유일한 번들 솔루션
+              직원이 간단히 메모만 입력하면, AI가 행정 양식에 맞는 공식 문서를 자동 생성합니다
             </motion.p>
           </motion.div>
 
+          {/* Before/After */}
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            <motion.div variants={fadeUp} custom={0} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+              <Card className="h-full border-red-200 bg-red-50/50">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                      <Clock className="w-4 h-4 text-red-500" />
+                    </div>
+                    <h3 className="font-bold text-red-700">Before: 기존 방식</h3>
+                  </div>
+                  <div className="space-y-3 text-sm text-slate-600">
+                    <div className="flex items-start gap-2"><span className="text-red-400 shrink-0">✗</span> 사례관리 기록지 수기 작성 — 30분/건</div>
+                    <div className="flex items-start gap-2"><span className="text-red-400 shrink-0">✗</span> 프로그램 운영일지 — 매일 퇴근 후 1시간</div>
+                    <div className="flex items-start gap-2"><span className="text-red-400 shrink-0">✗</span> 바우처 제공기록지 — 양식 찾고 작성 30분</div>
+                    <div className="flex items-start gap-2"><span className="text-red-400 shrink-0">✗</span> 보호자 리포트 — 요청 시 반나절 소요</div>
+                    <div className="mt-4 p-3 bg-red-100 rounded-lg text-red-700 font-medium text-center">
+                      일 평균 서류 작업: 2~3시간
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+              <Card className="h-full border-emerald-300 bg-emerald-50/50 shadow-lg shadow-emerald-100">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <h3 className="font-bold text-emerald-700">After: AIHPRO 도입 후</h3>
+                  </div>
+                  <div className="space-y-3 text-sm text-slate-600">
+                    <div className="flex items-start gap-2"><span className="text-emerald-500 shrink-0">✓</span> 메모 3줄 입력 → AI 사례관리 기록 — <strong>3분</strong></div>
+                    <div className="flex items-start gap-2"><span className="text-emerald-500 shrink-0">✓</span> 활동 선택 → AI 프로그램 일지 — <strong>3분</strong></div>
+                    <div className="flex items-start gap-2"><span className="text-emerald-500 shrink-0">✓</span> 자동 양식 적용 바우처 서류 — <strong>1분</strong></div>
+                    <div className="flex items-start gap-2"><span className="text-emerald-500 shrink-0">✓</span> 보호자 리포트 자동 생성/발송 — <strong>자동</strong></div>
+                    <div className="mt-4 p-3 bg-emerald-100 rounded-lg text-emerald-700 font-medium text-center">
+                      일 평균 서류 작업: 15~20분 (80% 절감)
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+
+          {/* AI Document Types */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {[
               { 
-                icon: Brain, color: 'blue', 
-                title: '인지건강 모니터링', 
-                features: ['30종+ AI 심리·인지 검사', '이용자별 변화 추이 대시보드', '위험 신호 자동 알림', '치매 조기 선별 지원'] 
+                icon: FileText, color: 'blue', 
+                title: 'AI 서류 자동화', 
+                features: ['사례관리 기록지 자동 생성', '프로그램 운영일지 자동 생성', '바우처 제공기록지 (6종)', '세션/상담 기록지', 'PDF·워드 다운로드'] 
               },
               { 
-                icon: BarChart3, color: 'emerald', 
-                title: '운영 자동화', 
-                features: ['보호자 리포트 자동 발송', '정부 바우처 서류 자동 생성', '다중 이용자 일괄 관리', '직원용 관리 대시보드'] 
+                icon: Brain, color: 'emerald', 
+                title: 'AI 인지건강 모니터링', 
+                features: ['30종+ 인지·정서 검사', '이용자별 변화 추이 대시보드', '위험 신호 자동 알림', '보호자 리포트 자동 발송'] 
               },
               { 
                 icon: BookOpen, color: 'amber', 
@@ -185,8 +232,13 @@ const B2BProposal = () => {
               };
               return (
                 <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-                  <Card className="h-full border-slate-200 hover:shadow-xl transition-all duration-300">
-                    <CardContent className="p-6">
+                  <Card className={`h-full border-slate-200 hover:shadow-xl transition-all duration-300 ${i === 0 ? 'ring-2 ring-emerald-300' : ''}`}>
+                    {i === 0 && (
+                      <div className="absolute -top-3 left-4">
+                        <Badge className="bg-emerald-500 text-white"><Star className="w-3 h-3 mr-1" />핵심</Badge>
+                      </div>
+                    )}
+                    <CardContent className="p-6 pt-8">
                       <div className={`w-12 h-12 rounded-xl ${colorMap[item.color]} flex items-center justify-center mb-4`}>
                         <item.icon className="w-6 h-6" />
                       </div>
@@ -211,10 +263,10 @@ const B2BProposal = () => {
             <h3 className="text-xl font-bold text-slate-900 mb-6 text-center">기관이 얻는 가치</h3>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { metric: '행정시간 80% 절감', desc: '바우처 서류·리포트 자동화', icon: Clock },
-                { metric: '보호자 만족도 ↑', desc: '월간 리포트 + 회고록 감동', icon: Heart },
-                { metric: '재등록률 상승', desc: '차별화된 프로그램으로 경쟁력', icon: TrendingUp },
-                { metric: '객관적 변화 증빙', desc: '지원금 신청·감사 대비', icon: Shield },
+                { metric: '서류 시간 80% 절감', desc: '일 2시간 → 20분', icon: Clock },
+                { metric: '야근 제로', desc: '일지 작성 퇴근 전 완료', icon: Heart },
+                { metric: '감사 대비 완벽', desc: '공식 양식 100% 충족', icon: Shield },
+                { metric: '보호자 신뢰 UP', desc: '전문적 리포트 자동 발송', icon: TrendingUp },
               ].map((item, i) => (
                 <div key={i} className="text-center">
                   <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center mx-auto mb-3">
@@ -234,7 +286,7 @@ const B2BProposal = () => {
         <div className="container mx-auto px-4 max-w-5xl">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-14">
             <motion.h2 variants={fadeUp} custom={0} className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
-              기관 규모에 맞는 합리적인 요금
+              서류 자동화, 이 가격에 가능합니다
             </motion.h2>
             <motion.p variants={fadeUp} custom={1} className="text-slate-500">
               파일럿 3개월 무료 → 데이터 확인 후 결정
@@ -248,7 +300,7 @@ const B2BProposal = () => {
                 price: '9.9',
                 users: '이용자 30명',
                 badge: null,
-                features: ['AI 인지·정서 검사 무제한', '이용자별 변화 추이', '직원 관리 대시보드', '월간 보호자 리포트'],
+                features: ['AI 서류 자동화 (일지·기록지)', 'AI 인지·정서 검사 무제한', '이용자별 변화 추이', '직원 관리 대시보드', '월간 보호자 리포트'],
                 cta: '파일럿 신청',
               },
               {
@@ -256,7 +308,7 @@ const B2BProposal = () => {
                 price: '19.9',
                 users: '이용자 80명',
                 badge: '추천',
-                features: ['기본 플랜 전체 포함', '보호자 리포트 자동 발송', '정부 바우처 서류 자동화', 'AI 회고록 월 10건', '위험 신호 알림'],
+                features: ['기본 플랜 전체 포함', '사례관리 보고서 자동 생성', '보호자 리포트 자동 발송', '정부 바우처 서류 자동화', 'AI 회고록 월 10건', '위험 신호 알림'],
                 cta: '파일럿 신청',
               },
               {
@@ -480,11 +532,11 @@ const B2BProposal = () => {
       <section className="bg-slate-900 text-white py-16">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
-            "보호자가 감동하면, 기관이 성장합니다"
+            "서류는 AI에게, 시간은 이용자에게"
           </h2>
           <p className="text-slate-400 mb-8">
-            인지 케어 + AI 회고록. 어르신과 가족 모두를 위한<br />
-            시장에 없는 유일한 통합 솔루션
+            사례관리 · 프로그램 일지 · 바우처 서류 · 보호자 리포트<br />
+            모든 행정 서류를 AI가 자동으로 작성합니다
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm text-slate-400">
             <span className="flex items-center gap-2">

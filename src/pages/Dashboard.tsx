@@ -623,8 +623,8 @@ const DashboardNew = () => {
                                   size="sm"
                                   onClick={() => {
                                     toast({ 
-                                      title: "검사 결과 보기", 
-                                      description: "검사 결과 상세 페이지로 이동합니다." 
+                                      title: isEnglish ? "View Results" : "검사 결과 보기", 
+                                      description: isEnglish ? "Navigating to detailed results." : "검사 결과 상세 페이지로 이동합니다." 
                                     });
                                     navigate(`/assessment-detail/${obs.id}`);
                                   }}

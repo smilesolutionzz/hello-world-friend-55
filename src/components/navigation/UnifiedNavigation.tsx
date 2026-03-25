@@ -29,6 +29,7 @@ import {
   LogOut,
   LogIn,
   Sparkles,
+  Building2,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';

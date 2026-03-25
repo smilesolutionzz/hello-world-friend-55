@@ -93,6 +93,7 @@ const PremiumAssessmentResult = ({
   // ── Score interpretation ──
   // 연애/성격 유형 분석 검사인지 체크 (높을수록 해당 유형 성향이 강한 것)
   const isTypeAnalysis = ['love_personality', 'personality_type', 'temperament'].includes(assessmentType);
+  const isDementiaRisk = assessmentType === 'dementiaRisk';
 
   const getScoreInterpretation = (score: number, category: string) => {
     const cl = category.toLowerCase();

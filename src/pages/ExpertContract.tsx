@@ -467,7 +467,7 @@ const ExpertContract = () => {
                   
                   {getCurrentContract()?.discount && getCurrentContract()!.discount > 0 && (
                     <div className="text-sm text-green-600 text-center">
-                      🎉 {getCurrentContract()?.months}개월 계약으로 {getCurrentContract()?.discount}% 할인 적용!
+                      🎉 {isEnglish ? `${getCurrentContract()?.discount}% discount for ${getCurrentContract()?.months}-month contract!` : `${getCurrentContract()?.months}개월 계약으로 ${getCurrentContract()?.discount}% 할인 적용!`}
                     </div>
                   )}
                 </div>

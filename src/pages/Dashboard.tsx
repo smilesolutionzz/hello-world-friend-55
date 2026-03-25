@@ -367,7 +367,7 @@ const DashboardNew = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    총 검사
+                    {isEnglish ? 'Total Tests' : '총 검사'}
                   </CardTitle>
                   <Users className="h-4 w-4 text-amber-500" />
                 </CardHeader>

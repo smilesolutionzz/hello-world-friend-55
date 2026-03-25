@@ -439,7 +439,7 @@ const DashboardNew = () => {
               {/* 월별 검사 추이 - 최근 3개월 */}
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-foreground">월별 검사 추이 (최근 3개월)</CardTitle>
+                  <CardTitle className="text-lg font-medium text-foreground">{isEnglish ? 'Monthly Test Trends (Last 3 Months)' : '월별 검사 추이 (최근 3개월)'}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>

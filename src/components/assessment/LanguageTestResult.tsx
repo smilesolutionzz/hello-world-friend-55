@@ -357,14 +357,14 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         <Card className="p-6">
           <h3 className="font-semibold mb-4">{isEnglish ? 'Expert Consultation' : '전문가 상담'}</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            더 자세한 분석과 상담이 필요하시다면 전문가와 연결해드립니다.
+            {isEnglish ? 'Connect with a professional for detailed analysis and consultation.' : '더 자세한 분석과 상담이 필요하시다면 전문가와 연결해드립니다.'}
           </p>
           <Button 
             onClick={handleExpertConsult}
             className="w-full btn-brand flex items-center gap-2"
           >
             <ExternalLink className="w-4 h-4" />
-            전문가 상담 연결
+            {isEnglish ? 'Connect with Expert' : '전문가 상담 연결'}
           </Button>
         </Card>
 

@@ -395,7 +395,7 @@ const DashboardNew = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    평균 점수
+                    {isEnglish ? 'Avg Score' : '평균 점수'}
                   </CardTitle>
                   <Activity className="h-4 w-4 text-amber-400" />
                 </CardHeader>

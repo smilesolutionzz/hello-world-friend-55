@@ -175,7 +175,7 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
       totalScore={safeTotal}
       totalLabel={isEnglish ? 'Total Score' : '총점'}
       scoreUnit={isEnglish ? 'pts' : '점'}
-      scoreSeverity={severityText}
+      scoreSeverity={displaySeverity}
       severityColor={severityColor}
       domains={domains}
       aiAnalysis={aiAnalysis}

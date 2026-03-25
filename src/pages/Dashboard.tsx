@@ -36,6 +36,7 @@ import { useToast } from "@/hooks/use-toast";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface Profile {
   id: string;

@@ -466,7 +466,7 @@ const DashboardNew = () => {
 
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-foreground">영역별 평균 점수</CardTitle>
+                  <CardTitle className="text-lg font-medium text-foreground">{isEnglish ? 'Average Scores by Domain' : '영역별 평균 점수'}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {distributionData.length > 0 ? (

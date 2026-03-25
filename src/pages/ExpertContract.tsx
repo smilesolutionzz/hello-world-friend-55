@@ -447,8 +447,8 @@ const ExpertContract = () => {
                   
                   <div className="bg-primary/10 p-3 rounded-lg">
                     <div className="flex justify-between text-sm mb-1">
-                      <span>월 상담 횟수</span>
-                      <span className="font-semibold">{sessionsPerWeek * 4}회</span>
+                      <span>{isEnglish ? 'Monthly sessions' : '월 상담 횟수'}</span>
+                      <span className="font-semibold">{sessionsPerWeek * 4}{isEnglish ? ' sessions' : '회'}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>월 평균 회당 비용</span>

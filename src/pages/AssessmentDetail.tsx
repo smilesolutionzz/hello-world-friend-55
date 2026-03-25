@@ -151,78 +151,34 @@ export default function AssessmentDetail() {
   };
 
   const translateCategory = (category: string) => {
-    const translations: Record<string, string> = {
-      // TCI 요인
-      'novelty_seeking': '자극추구',
-      'harm_avoidance': '위험회피', 
-      'reward_dependence': '사회적 민감성',
-      'persistence': '인내력',
-      'self_directedness': '자율성',
-      'cooperativeness': '협조성',
-      'self_transcendence': '자기초월',
-      
-      // Big Five 요인
-      'extraversion': '외향성',
-      'agreeableness': '친화성',
-      'conscientiousness': '성실성',
-      'neuroticism': '신경성',
-      'openness': '개방성',
-      
-      // 연애성격분석테스트 요인
-      'passionate_romantic': '열정적 로맨티스트 (매우 열정적)',
-      'stable_companion': '안정적 동반자 (안정 특성)',
-      'independent_individualist': '독립적 개인주의자 (독립 특성)',
-      'realistic_planner': '계획적 현실주의자 (현실 특성)',
-      
-      // ADHD 관련 요인
-      'attention': '주의집중',
-      'hyperactivity': '과잉행동',
-      'impulsivity': '충동성',
-      'inattention': '부주의',
-      'executive_function': '실행기능',
-      'working_memory': '작업기억',
-      
-      // 청소년 마음바로미터 요인
-      'emotional_problems': '정서적 문제',
-      'behavioral_problems': '행동적 문제',
-      'social_adaptation': '사회적 적응',
-      'identity_development': '정체성 발달',
-      
-      // 청소년 성장역량 요인
-      'internalizing_problems': '내재화 문제',
-      'externalizing_problems': '외현화 문제',
-      'attention_problems': '주의력 문제',
-      'social_competence': '사회적 역량',
-      
-      // 사회성 발달 선별검사 요인
-      'social_interaction': '사회적 상호작용',
-      'communication': '의사소통',
-      'behavioral_patterns': '행동 패턴',
-      'sensory_responses': '감각 반응',
-      
-      // 부모양육태도 요인
-      'warmth_acceptance': '온정수용',
-      'behavioral_control': '행동통제',
-      'psychological_control': '심리통제',
-      'autonomy_support': '자율성지지',
-      'communication_support': '의사소통지지',
-      
-      // 기타 심리학적 영역
-      'social_energy': '사회적 에너지',
-      'decision_making': '의사결정',
-      'emotional_regulation': '감정조절',
-      'adaptability': '적응성',
-      'stress_tolerance': '스트레스 내성',
-      'anxiety': '불안',
-      'depression': '우울',
-      'self_esteem': '자존감',
-      'resilience': '회복력',
-      'communication_skills': '의사소통',
-      'problem_solving': '문제해결',
-      'focus': '집중력',
-      'memory': '기억력'
+    const translationsKo: Record<string, string> = {
+      'novelty_seeking': '자극추구', 'harm_avoidance': '위험회피', 'reward_dependence': '사회적 민감성',
+      'persistence': '인내력', 'self_directedness': '자율성', 'cooperativeness': '협조성', 'self_transcendence': '자기초월',
+      'extraversion': '외향성', 'agreeableness': '친화성', 'conscientiousness': '성실성', 'neuroticism': '신경성', 'openness': '개방성',
+      'passionate_romantic': '열정적 로맨티스트', 'stable_companion': '안정적 동반자', 'independent_individualist': '독립적 개인주의자', 'realistic_planner': '계획적 현실주의자',
+      'attention': '주의집중', 'hyperactivity': '과잉행동', 'impulsivity': '충동성', 'inattention': '부주의', 'executive_function': '실행기능', 'working_memory': '작업기억',
+      'emotional_problems': '정서적 문제', 'behavioral_problems': '행동적 문제', 'social_adaptation': '사회적 적응', 'identity_development': '정체성 발달',
+      'internalizing_problems': '내재화 문제', 'externalizing_problems': '외현화 문제', 'attention_problems': '주의력 문제', 'social_competence': '사회적 역량',
+      'social_interaction': '사회적 상호작용', 'communication': '의사소통', 'behavioral_patterns': '행동 패턴', 'sensory_responses': '감각 반응',
+      'warmth_acceptance': '온정수용', 'behavioral_control': '행동통제', 'psychological_control': '심리통제', 'autonomy_support': '자율성지지', 'communication_support': '의사소통지지',
+      'social_energy': '사회적 에너지', 'decision_making': '의사결정', 'emotional_regulation': '감정조절', 'adaptability': '적응성', 'stress_tolerance': '스트레스 내성',
+      'anxiety': '불안', 'depression': '우울', 'self_esteem': '자존감', 'resilience': '회복력', 'communication_skills': '의사소통', 'problem_solving': '문제해결', 'focus': '집중력', 'memory': '기억력',
     };
-    return translations[category.toLowerCase()] || category.replace(/_/g, ' ');
+    const translationsEn: Record<string, string> = {
+      'novelty_seeking': 'Novelty Seeking', 'harm_avoidance': 'Harm Avoidance', 'reward_dependence': 'Reward Dependence',
+      'persistence': 'Persistence', 'self_directedness': 'Self-Directedness', 'cooperativeness': 'Cooperativeness', 'self_transcendence': 'Self-Transcendence',
+      'extraversion': 'Extraversion', 'agreeableness': 'Agreeableness', 'conscientiousness': 'Conscientiousness', 'neuroticism': 'Neuroticism', 'openness': 'Openness',
+      'passionate_romantic': 'Passionate Romantic', 'stable_companion': 'Stable Companion', 'independent_individualist': 'Independent Individualist', 'realistic_planner': 'Realistic Planner',
+      'attention': 'Attention', 'hyperactivity': 'Hyperactivity', 'impulsivity': 'Impulsivity', 'inattention': 'Inattention', 'executive_function': 'Executive Function', 'working_memory': 'Working Memory',
+      'emotional_problems': 'Emotional Problems', 'behavioral_problems': 'Behavioral Problems', 'social_adaptation': 'Social Adaptation', 'identity_development': 'Identity Development',
+      'internalizing_problems': 'Internalizing', 'externalizing_problems': 'Externalizing', 'attention_problems': 'Attention Problems', 'social_competence': 'Social Competence',
+      'social_interaction': 'Social Interaction', 'communication': 'Communication', 'behavioral_patterns': 'Behavioral Patterns', 'sensory_responses': 'Sensory Responses',
+      'warmth_acceptance': 'Warmth & Acceptance', 'behavioral_control': 'Behavioral Control', 'psychological_control': 'Psychological Control', 'autonomy_support': 'Autonomy Support', 'communication_support': 'Communication Support',
+      'social_energy': 'Social Energy', 'decision_making': 'Decision Making', 'emotional_regulation': 'Emotional Regulation', 'adaptability': 'Adaptability', 'stress_tolerance': 'Stress Tolerance',
+      'anxiety': 'Anxiety', 'depression': 'Depression', 'self_esteem': 'Self-Esteem', 'resilience': 'Resilience', 'communication_skills': 'Communication', 'problem_solving': 'Problem Solving', 'focus': 'Focus', 'memory': 'Memory',
+    };
+    const map = isEnglish ? translationsEn : translationsKo;
+    return map[category.toLowerCase()] || category.replace(/_/g, ' ');
   };
 
   const handleDownloadPDF = async () => {

@@ -374,7 +374,7 @@ export default function AssessmentDetail() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {scoreInterpretation.normalized !== undefined && (
                       <div className="bg-blue-50 dark:bg-blue-950/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
-                        <div className="text-sm text-muted-foreground mb-1">표준화 점수</div>
+                        <div className="text-sm text-muted-foreground mb-1">{isEnglish ? 'Standardized Score' : '표준화 점수'}</div>
                         <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">{scoreInterpretation.normalized}</div>
                       </div>
                     )}

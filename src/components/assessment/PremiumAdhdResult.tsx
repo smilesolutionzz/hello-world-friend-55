@@ -195,28 +195,28 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Brain className="w-8 h-8 text-primary" />
-            <h2 className="text-2xl font-bold">종합 검사 결과</h2>
+            <h2 className="text-2xl font-bold">{isEnglish ? 'Overall Results' : '종합 검사 결과'}</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className={`p-4 rounded-lg ${severity.bg}`}>
-              <div className="text-2xl font-bold mb-1">{results.totalScore}점</div>
+              <div className="text-2xl font-bold mb-1">{results.totalScore}{isEnglish ? ' pts' : '점'}</div>
               <div className="text-sm text-muted-foreground">{isEnglish ? 'Total' : '총점'}</div>
             </div>
             
             <div className={`p-4 rounded-lg ${severity.bg}`}>
               <div className={`text-lg font-semibold mb-1 ${severity.color}`}>{results.severityLevel}</div>
-              <div className="text-sm text-muted-foreground">심각도</div>
+              <div className="text-sm text-muted-foreground">{isEnglish ? 'Severity' : '심각도'}</div>
             </div>
             
             <div className="p-4 rounded-lg bg-blue-50">
               <div className="text-lg font-semibold mb-1 text-blue-600">{results.adhdSubtype}</div>
-              <div className="text-sm text-muted-foreground">ADHD 유형</div>
+              <div className="text-sm text-muted-foreground">{isEnglish ? 'ADHD Type' : 'ADHD 유형'}</div>
             </div>
             
             <div className="p-4 rounded-lg bg-purple-50">
               <div className="text-lg font-semibold mb-1 text-purple-600">{results.ageGroup}</div>
-              <div className="text-sm text-muted-foreground">연령군</div>
+              <div className="text-sm text-muted-foreground">{isEnglish ? 'Age Group' : '연령군'}</div>
             </div>
           </div>
         </div>

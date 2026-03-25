@@ -329,7 +329,7 @@ const B2BProposal = () => {
             </motion.p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8 overflow-visible pt-6">
             {[
               {
                 name: '베이직',

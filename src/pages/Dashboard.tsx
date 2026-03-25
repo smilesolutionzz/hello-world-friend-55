@@ -637,8 +637,8 @@ const DashboardNew = () => {
                                   size="sm"
                                   onClick={() => {
                                     toast({ 
-                                      title: "다운로드 준비 중", 
-                                      description: "검사 결과를 PDF로 다운로드합니다." 
+                                      title: isEnglish ? "Preparing Download" : "다운로드 준비 중", 
+                                      description: isEnglish ? "Downloading results as PDF." : "검사 결과를 PDF로 다운로드합니다." 
                                     });
                                   }}
                                   className="h-8 w-8 p-0"

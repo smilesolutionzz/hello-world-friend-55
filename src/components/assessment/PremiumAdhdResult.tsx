@@ -253,7 +253,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
               <PolarAngleAxis dataKey="subject" />
               <PolarRadiusAxis angle={90} domain={[0, 100]} />
               <Radar
-                name="점수"
+                name={isEnglish ? "Score" : "점수"}
                 dataKey="score"
                 stroke="#8884d8"
                 fill="#8884d8"

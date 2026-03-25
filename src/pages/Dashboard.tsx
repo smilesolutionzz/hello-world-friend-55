@@ -605,7 +605,7 @@ const DashboardNew = () => {
                         return (
                           <tr key={obs.id} className="border-b border-border hover:bg-muted/50 transition-colors">
                             <td className="py-3 px-4 text-sm text-foreground">
-                              {format(new Date(obs.created_at), 'yyyy. MM. dd', { locale: ko })}
+                              {format(new Date(obs.created_at), isEnglish ? 'MMM dd, yyyy' : 'yyyy. MM. dd', isEnglish ? undefined : { locale: ko })}
                             </td>
                             <td className="py-3 px-4 text-sm text-muted-foreground">{obs.age_group}</td>
                             <td className="py-3 px-4 text-sm text-foreground">

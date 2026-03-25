@@ -228,7 +228,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <TrendingUp className="w-5 h-5" />
-            영역별 점수 분석
+            {isEnglish ? 'Domain Score Analysis' : '영역별 점수 분석'}
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barChartData}>

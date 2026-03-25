@@ -418,7 +418,8 @@ ${scoreLines}
 ## 💝 보호자를 위한 안내
 - 가족이 할 수 있는 지지 방법
 - 인지기능 변화 관찰 포인트
-- 격려와 희망 메시지`
+- 격려와 희망 메시지`;
+          })()
         };
       } else if (type.toLowerCase().includes('work') || type.toLowerCase().includes('stress') || type.toLowerCase().includes('burnout') || type.toLowerCase().includes('번아웃')) {
         return {

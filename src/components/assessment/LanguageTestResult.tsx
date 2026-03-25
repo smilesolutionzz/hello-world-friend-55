@@ -241,7 +241,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Result' : '평가 결과'}</p>
               <p className={`text-2xl font-bold ${evaluation.color}`}>{evaluation.level}</p>
-              <p className="text-sm text-blue-600 mt-1">점수 범위: {evaluation.range}</p>
+              <p className="text-sm text-blue-600 mt-1">{isEnglish ? 'Range' : '점수 범위'}: {evaluation.range}</p>
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Current Age' : '현재 개월수'}</p>

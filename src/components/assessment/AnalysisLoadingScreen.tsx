@@ -136,7 +136,7 @@ const AnalysisLoadingScreen = ({
 
       {/* Disclaimer */}
       <p className="text-xs text-muted-foreground/60 mt-6 text-center max-w-sm">
-        💡 검사 결과는 참고용이며, 전문가 상담과 함께 활용하시면 더 좋습니다.
+        💡 {isEnglish ? 'Results are for reference only. We recommend consulting with a professional.' : '검사 결과는 참고용이며, 전문가 상담과 함께 활용하시면 더 좋습니다.'}
       </p>
     </div>
   );

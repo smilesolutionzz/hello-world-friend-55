@@ -89,11 +89,11 @@ const AnalysisLoadingScreen = ({
           {/* Time + Countdown */}
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground flex items-center gap-1.5">
-              <span className="text-xs">⏱</span> 예상 남은 시간
+              <span className="text-xs">⏱</span> {isEnglish ? 'Est. time remaining' : '예상 남은 시간'}
             </span>
             <div className="flex items-baseline gap-0.5">
               <span className="text-2xl font-bold text-foreground">{timeLeft}</span>
-              <span className="text-sm text-muted-foreground">초</span>
+              <span className="text-sm text-muted-foreground">{isEnglish ? 'sec' : '초'}</span>
             </div>
           </div>
         </div>

@@ -86,10 +86,10 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
 
   const getLevel = (score: number, max: number) => {
     const pct = (score / max) * 100;
-    if (pct >= 75) return isEnglish ? 'Severe' : isEnglish ? 'Severe' : '심각';
+    if (pct >= 75) return isEnglish ? 'Severe' : '심각';
     if (pct >= 50) return isEnglish ? 'Moderate' : '보통';
     if (pct >= 25) return isEnglish ? 'Mild' : '경미';
-    return isEnglish ? 'Normal' : isEnglish ? 'Normal' : '정상';
+    return isEnglish ? 'Normal' : '정상';
   };
 
   const domains: DomainScore[] = [

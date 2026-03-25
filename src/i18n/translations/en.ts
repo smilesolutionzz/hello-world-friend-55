@@ -97,10 +97,10 @@ const en = {
     badge: '🧒 AI Child Development Assessment',
     innovationBadge: 'Trusted by 200K+ moms — AI Development Platform',
     title: 'Don\'t Wait Until It\'s Too Late',
-    titleHighlight: 'Is Your Child Really Okay?',
-    headlineTop: '"Is my child falling behind?"',
+    titleHighlight: 'Are my child and I really okay?',
+    headlineTop: '"Are my child and I really okay?"',
     headlineBottom: 'Find out in just 3 minutes',
-    parentHook: 'It\'s normal to worry — you\'re a good mom',
+    parentHook: 'Your child\'s growth and your mental health both matter',
     parentHookPhrases: [
       '"My child is the only one who can\'t talk at daycare"',
       '"They seem slower than other kids and I\'m anxious"',

@@ -138,7 +138,7 @@ const Index = () => {
       <SEOHead 
         title={t.seo.title}
         description={t.seo.description}
-        keywords="아이발달검사,ADHD자가진단,말늦은아이,언어발달지연,영유아발달체크리스트,아동ADHD테스트,발달지연증상,아이행동문제,발달검사무료,소아발달검사,아이사회성,유아발달평가,발달센터,AIHPRO"
+        keywords="아이발달검사,ADHD자가진단,말늦은아이,언어발달지연,영유아발달체크리스트,아동ADHD테스트,육아번아웃,엄마우울증,산후우울증검사,청소년심리검사,사춘기우울증,아이행동문제,발달검사무료,심리검사무료,AIHPRO"
         canonicalUrl="https://aihpro.app"
         structuredData={structuredData}
       />

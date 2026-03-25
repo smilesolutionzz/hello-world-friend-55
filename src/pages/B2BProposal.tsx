@@ -532,11 +532,11 @@ const B2BProposal = () => {
       <section className="bg-slate-900 text-white py-16">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
-            "보호자가 감동하면, 기관이 성장합니다"
+            "서류는 AI에게, 시간은 이용자에게"
           </h2>
           <p className="text-slate-400 mb-8">
-            인지 케어 + AI 회고록. 어르신과 가족 모두를 위한<br />
-            시장에 없는 유일한 통합 솔루션
+            사례관리 · 프로그램 일지 · 바우처 서류 · 보호자 리포트<br />
+            모든 행정 서류를 AI가 자동으로 작성합니다
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm text-slate-400">
             <span className="flex items-center gap-2">

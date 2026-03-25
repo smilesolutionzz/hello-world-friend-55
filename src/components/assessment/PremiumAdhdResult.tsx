@@ -307,8 +307,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
               <Bot className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-purple-900">🧠 AI 전문가 심층 분석</h3>
-              <p className="text-sm text-purple-600">ADHD 전문 정신과 전문의 수준의 임상 분석 리포트</p>
+              <h3 className="text-xl font-bold text-purple-900">{isEnglish ? '🧠 AI Expert Analysis' : '🧠 AI 전문가 심층 분석'}</h3>
+              <p className="text-sm text-purple-600">{isEnglish ? 'Clinical-grade ADHD analysis report' : 'ADHD 전문 정신과 전문의 수준의 임상 분석 리포트'}</p>
             </div>
           </div>
           

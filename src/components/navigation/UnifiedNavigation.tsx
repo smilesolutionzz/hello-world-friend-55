@@ -29,6 +29,7 @@ import {
   LogOut,
   LogIn,
   Sparkles,
+  Building2,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -84,6 +85,11 @@ export const UnifiedNavigation = () => {
         { label: t.nav.purchasePass, path: '/token-subscription', desc: t.nav.purchasePassDesc },
         { label: t.nav.column, path: '/column', desc: t.nav.columnDesc, icon: Heart },
       ]
+    },
+    {
+      label: '기관 제휴',
+      icon: Building2,
+      path: '/b2b-proposal',
     },
   ];
 

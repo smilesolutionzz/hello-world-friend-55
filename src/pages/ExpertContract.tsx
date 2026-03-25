@@ -441,7 +441,7 @@ const ExpertContract = () => {
                   <Separator />
                   
                   <div className="flex justify-between font-semibold text-lg">
-                    <span>월 결제 금액</span>
+                    <span>{isEnglish ? 'Monthly Payment' : '월 결제 금액'}</span>
                     <span className="text-primary">₩{getMonthlyPrice().toLocaleString()}</span>
                   </div>
                   

@@ -351,7 +351,7 @@ const ExpertContract = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="start-date">계약 시작일</Label>
+                    <Label htmlFor="start-date">{isEnglish ? 'Start Date' : '계약 시작일'}</Label>
                     <Input
                       id="start-date"
                       type="date"

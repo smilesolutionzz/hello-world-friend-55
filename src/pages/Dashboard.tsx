@@ -290,7 +290,7 @@ const DashboardNew = () => {
       
       // 점수가 없으면 종합 점수라도 표시
       if (Object.keys(dataPoint).length === 2 && obs.score_overall > 0) {
-        dataPoint['종합'] = obs.score_overall;
+        dataPoint[isEnglish ? 'Overall' : '종합'] = obs.score_overall;
       }
       
       return dataPoint;

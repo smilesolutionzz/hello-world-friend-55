@@ -280,9 +280,9 @@ const PremiumAssessmentResult = ({
               <FileText className="w-4 h-4 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="text-xs font-bold text-foreground mb-1">맞춤형 IEP 생성</h4>
+              <h4 className="text-xs font-bold text-foreground mb-1">{isEnglish ? 'Custom IEP Generation' : '맞춤형 IEP 생성'}</h4>
               <p className="text-[11px] text-muted-foreground mb-2 leading-relaxed">
-                검사 결과 기반 AI 개별교육계획 자동 생성
+                {isEnglish ? 'AI-powered individualized education plan based on results' : '검사 결과 기반 AI 개별교육계획 자동 생성'}
               </p>
               <Button
                 size="sm"
@@ -291,7 +291,7 @@ const PremiumAssessmentResult = ({
                   state: { assessmentResults: { [assessmentInfo.title]: { results, aiAnalysis } } }
                 })}
               >
-                IEP 생성하기
+                {isEnglish ? 'Generate IEP' : 'IEP 생성하기'}
               </Button>
             </div>
           </div>

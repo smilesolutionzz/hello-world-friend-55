@@ -192,7 +192,7 @@ const DashboardNew = () => {
         year,
         monthNum: adjustedMonth,
         monthKey: `${year}-${String(adjustedMonth).padStart(2, '0')}`,
-        monthLabel: `${adjustedMonth}월`
+        monthLabel: isEnglish ? `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][adjustedMonth-1]}` : `${adjustedMonth}월`
       });
     }
     

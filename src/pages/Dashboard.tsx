@@ -429,7 +429,7 @@ const DashboardNew = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground">0.0</div>
-                  <p className="text-xs text-muted-foreground mt-1">종합 활동 지수</p>
+                  <p className="text-xs text-muted-foreground mt-1">{isEnglish ? 'Activity index' : '종합 활동 지수'}</p>
                 </CardContent>
               </Card>
             </div>

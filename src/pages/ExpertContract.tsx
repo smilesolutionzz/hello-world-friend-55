@@ -407,7 +407,7 @@ const ExpertContract = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="w-5 h-5" />
-                  비용 계산
+                  {isEnglish ? 'Cost Breakdown' : '비용 계산'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">

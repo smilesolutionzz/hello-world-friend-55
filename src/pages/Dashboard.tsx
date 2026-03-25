@@ -675,8 +675,8 @@ const DashboardNew = () => {
                       <FileText className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-foreground mb-1">새로운 검사</h3>
-                      <p className="text-sm text-muted-foreground">AI 발달·심리 검사</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">{isEnglish ? 'New Test' : '새로운 검사'}</h3>
+                      <p className="text-sm text-muted-foreground">{isEnglish ? 'AI Psych Assessment' : 'AI 발달·심리 검사'}</p>
                     </div>
                   </div>
                 </CardContent>

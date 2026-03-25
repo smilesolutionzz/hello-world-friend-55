@@ -348,8 +348,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         >
           <Users className="w-6 h-6" />
           <div className="text-center">
-            <div className="font-semibold">ADHD전문가연결</div>
-            <div className="text-xs text-muted-foreground">온라인 상담</div>
+            <div className="font-semibold">{isEnglish ? 'ADHD Expert' : 'ADHD전문가연결'}</div>
+            <div className="text-xs text-muted-foreground">{isEnglish ? 'Online Consultation' : '온라인 상담'}</div>
           </div>
         </Button>
 
@@ -360,8 +360,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         >
           <MessageCircle className="w-6 h-6" />
           <div className="text-center">
-            <div className="font-semibold">실시간 상담</div>
-            <div className="text-xs text-muted-foreground">즉시 연결</div>
+            <div className="font-semibold">{isEnglish ? 'Live Counseling' : '실시간 상담'}</div>
+            <div className="text-xs text-muted-foreground">{isEnglish ? 'Connect Now' : '즉시 연결'}</div>
           </div>
         </Button>
 

@@ -653,7 +653,7 @@ const DashboardNew = () => {
                       {filteredObservations.length === 0 && (
                         <tr>
                           <td colSpan={5} className="py-8 text-center text-muted-foreground">
-                            아직 검사 기록이 없습니다.
+                            {isEnglish ? 'No test records yet.' : '아직 검사 기록이 없습니다.'}
                           </td>
                         </tr>
                       )}

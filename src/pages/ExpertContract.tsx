@@ -218,7 +218,7 @@ const ExpertContract = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="w-5 h-5" />
-                  선택된 전문가
+                  {isEnglish ? 'Selected Expert' : '선택된 전문가'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">

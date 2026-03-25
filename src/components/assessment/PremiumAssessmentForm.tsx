@@ -30,9 +30,20 @@ const PremiumAssessmentForm = ({
   const { consumeTokens, checkTokenAvailability } = useTokens();
   const { toast } = useToast();
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
-  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const currentQuestion = questions?.[currentQuestionIndex];
+  const progress = questions?.length ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0;
+  const isLastQuestion = currentQuestionIndex === (questions?.length || 1) - 1;
+
+  if (!currentQuestion || !questions?.length) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <p className="text-muted-foreground">검사 문항을 불러오는 중 오류가 발생했습니다.</p>
+          <Button onClick={onBack} variant="outline">돌아가기</Button>
+        </div>
+      </div>
+    );
+  }
 
   const handleAnswerChange = (value: string) => {
     const newAnswers = {

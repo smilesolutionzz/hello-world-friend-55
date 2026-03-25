@@ -386,7 +386,7 @@ export default function AssessmentDetail() {
                     )}
                     {scoreInterpretation.normativeLevel && (
                       <div className="bg-green-50 dark:bg-green-950/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
-                        <div className="text-sm text-muted-foreground mb-1">규준 수준</div>
+                        <div className="text-sm text-muted-foreground mb-1">{isEnglish ? 'Normative Level' : '규준 수준'}</div>
                         <div className="text-2xl font-bold text-green-700 dark:text-green-400">{scoreInterpretation.normativeLevel}</div>
                       </div>
                     )}

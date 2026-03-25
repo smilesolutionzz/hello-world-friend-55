@@ -392,7 +392,7 @@ export default function AssessmentDetail() {
                     )}
                     {scoreInterpretation.tScore !== undefined && (
                       <div className="bg-orange-50 dark:bg-orange-950/20 rounded-xl p-4 border border-orange-200 dark:border-orange-800">
-                        <div className="text-sm text-muted-foreground mb-1">T 점수</div>
+                        <div className="text-sm text-muted-foreground mb-1">{isEnglish ? 'T-Score' : 'T 점수'}</div>
                         <div className="text-2xl font-bold text-orange-700 dark:text-orange-400">{scoreInterpretation.tScore}</div>
                       </div>
                     )}

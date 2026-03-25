@@ -437,16 +437,16 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               <UserCheck className="w-8 h-8 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-foreground mb-1">언어 전문가 상담 받기</h4>
+              <h4 className="font-semibold text-foreground mb-1">{isEnglish ? 'Get Language Expert Consultation' : '언어 전문가 상담 받기'}</h4>
               <p className="text-sm text-muted-foreground mb-3">
-                언어발달 검사 결과를 바탕으로 전문가 상담을 받아보세요.
+                {isEnglish ? 'Get expert consultation based on your language development test results.' : '언어발달 검사 결과를 바탕으로 전문가 상담을 받아보세요.'}
               </p>
               <Button 
                 onClick={() => navigate('/expert-hiring')}
                 className="gap-2"
               >
                 <ExternalLink className="w-4 h-4" />
-                언어치료사 연결
+                {isEnglish ? 'Connect with Speech Therapist' : '언어치료사 연결'}
               </Button>
             </div>
           </div>

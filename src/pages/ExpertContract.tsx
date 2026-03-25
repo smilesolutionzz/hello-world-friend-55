@@ -413,8 +413,8 @@ const ExpertContract = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span>기본 서비스 ({sessionsPerWeek}회/주)</span>
-                    <span>₩{(sessionsPerWeek * expert.hourlyPrice * 4).toLocaleString()}/월</span>
+                    <span>{isEnglish ? `Base Service (${sessionsPerWeek}x/week)` : `기본 서비스 (${sessionsPerWeek}회/주)`}</span>
+                    <span>₩{(sessionsPerWeek * expert.hourlyPrice * 4).toLocaleString()}/{isEnglish ? 'mo' : '월'}</span>
                   </div>
                   
                   <div className="flex justify-between text-sm text-muted-foreground">

@@ -301,7 +301,7 @@ export default function AssessmentDetail() {
                 <div>
                   <h3 className="font-semibold mb-3 flex items-center gap-2">
                     <TrendingUp className="w-5 h-5 text-purple-600" />
-                    영역별 상세 점수
+                    {isEnglish ? 'Domain Scores' : '영역별 상세 점수'}
                   </h3>
                   <div className="space-y-3">
                     {resultEntries.map(([category, score]) => {

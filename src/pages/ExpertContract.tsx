@@ -257,7 +257,7 @@ const ExpertContract = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold">자격증</h4>
+                  <h4 className="font-semibold">{isEnglish ? 'Credentials' : '자격증'}</h4>
                   <ul className="text-sm space-y-1">
                     {expert.credentials.map((cred: string, index: number) => (
                       <li key={index} className="flex items-center gap-2">

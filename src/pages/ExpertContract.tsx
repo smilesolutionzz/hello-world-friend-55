@@ -380,7 +380,7 @@ const ExpertContract = () => {
                             {service.label}
                           </Label>
                           <div className="text-sm text-muted-foreground">
-                            월 +₩{service.price.toLocaleString()}
+                            {isEnglish ? `+₩${service.price.toLocaleString()}/mo` : `월 +₩${service.price.toLocaleString()}`}
                           </div>
                         </div>
                       </div>

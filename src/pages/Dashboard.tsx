@@ -351,7 +351,7 @@ const DashboardNew = () => {
                 value="assessments" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-muted-foreground data-[state=active]:text-foreground"
               >
-                검사 이력 ({filteredObservations.length})
+                {isEnglish ? `History (${filteredObservations.length})` : `검사 이력 (${filteredObservations.length})`}
               </TabsTrigger>
             </TabsList>
         </div>

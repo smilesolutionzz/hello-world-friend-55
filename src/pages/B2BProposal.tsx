@@ -136,35 +136,42 @@ const B2BProposal = () => {
             </motion.div>
 
             {/* 유입 키워드 클라우드 */}
-            <motion.div variants={fadeUp} custom={5} className="mt-12">
-              <p className="text-xs text-slate-500 mb-4 tracking-wide uppercase">🔍 이 키워드로 유저가 우리 플랫폼에 유입됩니다</p>
-              <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
-                {[
-                  'ADHD 자가진단', '우울증 테스트', '불안장애 검사', '자존감 테스트',
-                  '아이 발달검사', '스트레스 측정', '공황장애 자가진단', 'PTSD 검사',
-                  '번아웃 테스트', '성격유형 검사', '조울증 테스트', '강박증 자가진단',
-                  '치매 조기검사', '인지능력 테스트', '아동 ADHD 체크', '산후우울증 검사',
-                  '사회불안 테스트', '분노조절 검사', '수면장애 테스트', '학습장애 검사',
-                  '언어발달 체크', '감정조절 테스트', '직장 스트레스 진단', '연인관계 검사',
-                  '자폐스펙트럼 선별', '노인 인지기능', '청소년 심리검사', '가족관계 진단',
-                ].map((kw, i) => (
-                  <span 
-                    key={i} 
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                      i < 6 
-                        ? 'bg-indigo-500/30 text-indigo-200 border border-indigo-400/40 text-sm' 
-                        : i < 14 
-                          ? 'bg-slate-700/60 text-slate-300 border border-slate-600/40' 
-                          : 'bg-slate-800/40 text-slate-400 border border-slate-700/30'
+            <motion.div variants={fadeUp} custom={5} className="mt-14">
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <Search className="w-4 h-4 text-indigo-400" />
+                <p className="text-sm text-slate-400 tracking-wide font-medium">실시간 유입 검색 키워드</p>
+              </div>
+              <div className="flex flex-wrap justify-center gap-2.5 max-w-4xl mx-auto">
+                {ROTATING_KEYWORDS.map((kw, i) => (
+                  <motion.span
+                    key={kw}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.03, duration: 0.4 }}
+                    className={`px-4 py-2 rounded-full font-medium cursor-default transition-all duration-300 hover:scale-110 ${
+                      kwIndex === i
+                        ? 'bg-amber-500/30 text-amber-200 border-2 border-amber-400/60 shadow-lg shadow-amber-500/20 text-sm scale-110'
+                        : i < 8
+                          ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-sm'
+                          : i < 18
+                            ? 'bg-slate-700/50 text-slate-300 border border-slate-600/30 text-xs'
+                            : 'bg-slate-800/30 text-slate-500 border border-slate-700/20 text-xs'
                     }`}
                   >
                     {kw}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
-              <p className="text-xs text-slate-500 mt-4">
-                💡 이 검색어를 친 유저가 검사 후 <span className="text-amber-400 font-semibold">"내 근처 전문기관"</span>에서 귀 센터를 발견합니다
-              </p>
+              <motion.div 
+                variants={fadeUp} custom={6}
+                className="mt-8 mx-auto max-w-2xl bg-gradient-to-r from-indigo-900/50 via-violet-900/50 to-indigo-900/50 border border-indigo-500/20 rounded-2xl p-5"
+              >
+                <p className="text-lg md:text-xl font-bold text-white leading-relaxed">
+                  💡 이 검색어를 친 유저가 검사 후<br />
+                  <span className="text-2xl md:text-3xl text-amber-400 font-extrabold">"내 근처 전문기관"</span>
+                  <span className="text-lg md:text-xl">에서<br />귀 센터를 발견합니다</span>
+                </p>
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>

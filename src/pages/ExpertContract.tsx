@@ -451,9 +451,9 @@ const ExpertContract = () => {
                       <span className="font-semibold">{sessionsPerWeek * 4}{isEnglish ? ' sessions' : '회'}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span>월 평균 회당 비용</span>
+                      <span>{isEnglish ? 'Avg. per session' : '월 평균 회당 비용'}</span>
                       <span className="font-semibold text-primary">
-                        ₩{Math.round(getMonthlyPrice() / (sessionsPerWeek * 4)).toLocaleString()}/회
+                        ₩{Math.round(getMonthlyPrice() / (sessionsPerWeek * 4)).toLocaleString()}/{isEnglish ? 'session' : '회'}
                       </span>
                     </div>
                   </div>

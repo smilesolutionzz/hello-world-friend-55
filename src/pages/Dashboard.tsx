@@ -423,7 +423,7 @@ const DashboardNew = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    활동 점수
+                    {isEnglish ? 'Activity' : '활동 점수'}
                   </CardTitle>
                   <BarChart3 className="h-4 w-4 text-green-500" />
                 </CardHeader>

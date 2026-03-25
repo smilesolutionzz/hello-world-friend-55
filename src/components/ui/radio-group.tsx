@@ -7,15 +7,27 @@ import { cn } from "@/lib/utils"
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
->(({ className, ...props }, ref) => {
+>(({ className, onValueChange, value, ...props }, ref) => {
+  const handleItemClick = React.useCallback((itemValue: string) => {
+    if (itemValue === value && onValueChange) {
+      onValueChange(itemValue);
+    }
+  }, [value, onValueChange]);
+
   return (
-    <RadioGroupPrimitive.Root
-      className={cn("grid gap-2", className)}
-      {...props}
-      ref={ref}
-    />
+    <RadioGroupContext.Provider value={{ onItemClick: handleItemClick }}>
+      <RadioGroupPrimitive.Root
+        className={cn("grid gap-2", className)}
+        value={value}
+        onValueChange={onValueChange}
+        {...props}
+        ref={ref}
+      />
+    </RadioGroupContext.Provider>
   )
 })
+
+const RadioGroupContext = React.createContext<{ onItemClick?: (value: string) => void }>({});
 RadioGroup.displayName = RadioGroupPrimitive.Root.displayName
 
 const RadioGroupItem = React.forwardRef<

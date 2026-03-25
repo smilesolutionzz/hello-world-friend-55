@@ -287,8 +287,8 @@ export default function AssessmentDetail() {
             <CardHeader className="bg-gradient-to-r from-purple-500 to-blue-600 text-white p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <CardTitle className="text-lg sm:text-2xl">프리미엄 심리검사</CardTitle>
-                  <p className="text-purple-100 mt-1 text-sm sm:text-base">AI 기반 심층 분석 결과</p>
+                  <CardTitle className="text-lg sm:text-2xl">{isEnglish ? 'Premium Assessment' : '프리미엄 심리검사'}</CardTitle>
+                  <p className="text-purple-100 mt-1 text-sm sm:text-base">{isEnglish ? 'AI-Powered Deep Analysis' : 'AI 기반 심층 분석 결과'}</p>
                 </div>
                 <div className="text-left sm:text-right">
                   <div className="text-2xl sm:text-3xl font-bold">{results.predicted_score?.toFixed(1) || averageScore.toFixed(1)}</div>

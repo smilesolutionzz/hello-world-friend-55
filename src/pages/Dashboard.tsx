@@ -248,14 +248,14 @@ const DashboardNew = () => {
 
     // 평균 계산 및 색상 할당
     const colors: { [key: string]: string } = {
-      '정서': '#0ea5e9',
-      '행동': '#10b981',
-      '인지': '#f59e0b',
-      '사회성': '#8b5cf6',
-      '신체': '#ef4444',
-      '언어': '#06b6d4',
-      '감각': '#ec4899',
-      '자조': '#84cc16'
+      '정서': '#0ea5e9', 'Emotion': '#0ea5e9',
+      '행동': '#10b981', 'Behavior': '#10b981',
+      '인지': '#f59e0b', 'Cognition': '#f59e0b',
+      '사회성': '#8b5cf6', 'Social': '#8b5cf6',
+      '신체': '#ef4444', 'Physical': '#ef4444',
+      '언어': '#06b6d4', 'Language': '#06b6d4',
+      '감각': '#ec4899', 'Sensory': '#ec4899',
+      '자조': '#84cc16', 'Self-care': '#84cc16'
     };
 
     const defaultColors = ['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#ec4899', '#84cc16'];

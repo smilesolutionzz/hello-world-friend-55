@@ -126,9 +126,9 @@ const ExpertContract = () => {
   }, [expertId]);
 
   const contractOptions = [
-    { value: 'monthly', label: '1개월', months: 1, discount: 0 },
-    { value: 'quarterly', label: '3개월', months: 3, discount: 5 },
-    { value: 'semi_annual', label: '6개월', months: 6, discount: 10 }
+    { value: 'monthly', label: isEnglish ? '1 Month' : '1개월', months: 1, discount: 0 },
+    { value: 'quarterly', label: isEnglish ? '3 Months' : '3개월', months: 3, discount: 5 },
+    { value: 'semi_annual', label: isEnglish ? '6 Months' : '6개월', months: 6, discount: 10 }
   ];
 
   const additionalServiceOptions = [

@@ -107,7 +107,7 @@ const B2BProposal = () => {
               <span className="text-indigo-400">내 센터를 바로 찾게 하세요</span>
             </motion.h1>
             <motion.p variants={fadeUp} custom={2} className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-4">
-              매달 수천 명이 AIHPRO에서 심리검사를 합니다<br />
+              매달 수백 명이 AIHPRO에서 심리검사를 합니다<br />
               <span className="text-indigo-300 font-medium">검사 끝나는 순간, "근처 전문기관"으로 귀 센터가 뜹니다</span>
             </motion.p>
             <motion.div variants={fadeUp} custom={3} className="flex flex-wrap justify-center gap-2.5 text-sm text-slate-400 mb-10">

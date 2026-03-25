@@ -41,6 +41,14 @@ const B2BProposal = () => {
     message: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const [kwIndex, setKwIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setKwIndex(prev => (prev + 1) % ROTATING_KEYWORDS.length);
+    }, 2000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleSubmit = async () => {
     if (!formData.institution_name || !formData.contact_name || !formData.contact_phone) {

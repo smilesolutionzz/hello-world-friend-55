@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 // Mock expert data (실제로는 props나 API에서 가져와야 함)
 const mockExperts = [

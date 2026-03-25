@@ -957,6 +957,8 @@ const en = {
     sectionPersonality: 'Personality & Temperament',
     sectionWorkFinance: 'Work & Finance',
     sectionTeen: 'Youth Self-Check',
+    sectionSenior: 'Senior Cognitive Care',
+    sectionSeniorBadge: '🧓 NEW',
     sectionSpecial: 'Special AI Tests',
     sectionSpecialBadge: 'Popular',
     startTest: 'Start Test',

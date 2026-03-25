@@ -110,8 +110,8 @@ const B2BProposal = () => {
               매달 수천 명이 AIHPRO에서 심리검사를 합니다<br />
               <span className="text-indigo-300 font-medium">검사 끝나는 순간, "근처 전문기관"으로 귀 센터가 뜹니다</span>
             </motion.p>
-            <motion.div variants={fadeUp} custom={3} className="flex flex-wrap justify-center gap-3 text-sm text-slate-400 mb-10">
-              {['상담센터', '병원', '발달센터', '치료실', '한의원', '복지시설'].map(t => (
+            <motion.div variants={fadeUp} custom={3} className="flex flex-wrap justify-center gap-2.5 text-sm text-slate-400 mb-10">
+              {['상담센터', '병원', '발달센터', '치료실', '한의원', '복지시설', '노인주간활동센터', '장애인주간활동센터', '방과후센터', '요양시설'].map(t => (
                 <span key={t} className="px-3 py-1 rounded-full border border-slate-700 bg-slate-800/50">{t}</span>
               ))}
             </motion.div>

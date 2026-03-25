@@ -180,10 +180,11 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         <div className="flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
           <div className="text-sm">
-            <p className="font-medium text-yellow-800 mb-1">중요 안내사항</p>
+            <p className="font-medium text-yellow-800 mb-1">{isEnglish ? 'Important Notice' : '중요 안내사항'}</p>
             <p className="text-yellow-700">
-              본 체크 결과는 자가 관찰 도구로서 참고 목적으로만 사용되며, 정식 전문평가를 대체할 수 없습니다. 
-              정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.
+              {isEnglish 
+                ? 'These results are a self-observation tool for reference only and cannot replace professional evaluation. Please consult a specialist for accurate diagnosis and treatment.'
+                : '본 체크 결과는 자가 관찰 도구로서 참고 목적으로만 사용되며, 정식 전문평가를 대체할 수 없습니다. 정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.'}
             </p>
           </div>
         </div>

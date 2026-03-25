@@ -183,18 +183,18 @@ export default function AssessmentDetail() {
 
   const handleDownloadPDF = async () => {
     try {
-      const testDate = new Date(assessment?.created_at || Date.now()).toLocaleDateString('ko-KR');
+      const testDate = new Date(assessment?.created_at || Date.now()).toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR');
       
-      await generateTestResultPDF('프리미엄 심리검사', '사용자', testDate, 'pdf-content');
+      await generateTestResultPDF(isEnglish ? 'Premium Assessment' : '프리미엄 심리검사', isEnglish ? 'User' : '사용자', testDate, 'pdf-content');
       
       toast({
-        title: "PDF 다운로드 완료",
-        description: "검사 결과가 PDF로 저장되었습니다.",
+        title: isEnglish ? "PDF Downloaded" : "PDF 다운로드 완료",
+        description: isEnglish ? "Results saved as PDF." : "검사 결과가 PDF로 저장되었습니다.",
       });
     } catch (error) {
       toast({
-        title: "PDF 다운로드 실패", 
-        description: "PDF 생성 중 오류가 발생했습니다.",
+        title: isEnglish ? "PDF Download Failed" : "PDF 다운로드 실패", 
+        description: isEnglish ? "An error occurred." : "PDF 생성 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }

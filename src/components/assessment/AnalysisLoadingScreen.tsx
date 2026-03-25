@@ -69,9 +69,11 @@ const AnalysisLoadingScreen = ({
 
         {/* Title */}
         <div className="text-center space-y-1.5">
-          <h2 className="text-xl font-bold text-foreground">{testName} 분석 중</h2>
+          <h2 className="text-xl font-bold text-foreground">
+            {isEnglish ? `Analyzing ${testName}` : `${testName} 분석 중`}
+          </h2>
           <p className="text-sm text-muted-foreground">
-            전문적인 AI가 검사 결과를 심층 분석하고 있습니다...
+            {isEnglish ? 'Our AI is performing an in-depth analysis of your results...' : '전문적인 AI가 검사 결과를 심층 분석하고 있습니다...'}
           </p>
         </div>
 

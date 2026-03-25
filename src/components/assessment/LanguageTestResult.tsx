@@ -269,7 +269,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           </div>
 
           <div className="p-4 md:p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
-            <h4 className="text-lg md:text-xl font-semibold text-purple-800 dark:text-purple-300 mb-4">🔍 전문가 상세 해석</h4>
+            <h4 className="text-lg md:text-xl font-semibold text-purple-800 dark:text-purple-300 mb-4">{isEnglish ? '🔍 Expert Detailed Interpretation' : '🔍 전문가 상세 해석'}</h4>
             <div className="prose prose-sm md:prose-base prose-purple dark:prose-invert max-w-none">
               <ReactMarkdown
                 components={{

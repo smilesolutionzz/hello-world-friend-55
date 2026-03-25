@@ -31,9 +31,9 @@ import { SocialProofToast } from '@/components/landing/SocialProofToast';
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "AIHUMANPRO",
+  "name": "AIHPRO - 우리 아이 발달검사",
   "url": "https://aihpro.app",
-  "description": "AI와 전문가가 함께하는 통합 케어 서비스. ADHD, 우울증, 스트레스 검사부터 심리상담, 발달평가, 건강관리까지 전생애 케어를 제공합니다.",
+  "description": "우리 아이 발달이 늦는 것 같다면? 3분 무료 AI 발달검사로 ADHD, 언어발달 지연, 사회성 부족을 전문가 수준으로 분석해드립니다. 20-30대 엄마를 위한 아동 발달검사 플랫폼.",
   "applicationCategory": "HealthApplication",
   "operatingSystem": "Web",
   "offers": {
@@ -44,7 +44,7 @@ const structuredData = {
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.8",
-    "ratingCount": "1247"
+    "ratingCount": "4248"
   }
 };
 
@@ -138,7 +138,7 @@ const Index = () => {
       <SEOHead 
         title={t.seo.title}
         description={t.seo.description}
-        keywords="AIHPRO,AI심리검사,ADHD검사,우울증테스트,스트레스검사,심리상담,발달평가,온라인상담,정신건강,아동발달,심리분석"
+        keywords="아이발달검사,ADHD자가진단,말늦은아이,언어발달지연,영유아발달체크리스트,아동ADHD테스트,발달지연증상,아이행동문제,발달검사무료,소아발달검사,아이사회성,유아발달평가,발달센터,AIHPRO"
         canonicalUrl="https://aihpro.app"
         structuredData={structuredData}
       />

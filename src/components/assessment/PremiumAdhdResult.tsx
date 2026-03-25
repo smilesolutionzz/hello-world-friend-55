@@ -266,15 +266,15 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
 
       {/* 세부 영역별 분석 */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">세부 영역별 분석</h3>
+        <h3 className="text-lg font-semibold mb-4">{isEnglish ? 'Detailed Domain Analysis' : '세부 영역별 분석'}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {scoreChartData.map((item, index) => {
             const percentage = (item.score / item.fullMark) * 100;
             const getScoreLevel = (percent: number) => {
-              if (percent <= 25) return { level: "낮음", color: "text-green-600", bg: "bg-green-500" };
-              if (percent <= 50) return { level: "보통", color: "text-yellow-600", bg: "bg-yellow-500" };
-              if (percent <= 75) return { level: "높음", color: "text-orange-600", bg: "bg-orange-500" };
-              return { level: "매우 높음", color: "text-red-600", bg: "bg-red-500" };
+              if (percent <= 25) return { level: isEnglish ? "Low" : "낮음", color: "text-green-600", bg: "bg-green-500" };
+              if (percent <= 50) return { level: isEnglish ? "Moderate" : "보통", color: "text-yellow-600", bg: "bg-yellow-500" };
+              if (percent <= 75) return { level: isEnglish ? "High" : "높음", color: "text-orange-600", bg: "bg-orange-500" };
+              return { level: isEnglish ? "Very High" : "매우 높음", color: "text-red-600", bg: "bg-red-500" };
             };
             
             const scoreLevel = getScoreLevel(percentage);

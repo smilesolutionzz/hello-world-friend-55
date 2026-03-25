@@ -325,7 +325,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
 
         {/* 영역별 상세 설명 */}
         <div className="mt-8 space-y-3">
-          <h4 className="text-base font-semibold text-foreground mb-4">📋 영역별 상세 해석</h4>
+          <h4 className="text-base font-semibold text-foreground mb-4">{isEnglish ? '📋 Detailed Domain Analysis' : '📋 영역별 상세 해석'}</h4>
           {domainDetails.map((domain) => {
             const level = getDomainLevel(domain.rate);
             return (

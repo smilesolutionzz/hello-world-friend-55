@@ -147,7 +147,7 @@ const PremiumAssessment = () => {
       teenGrowthCapacity: { title: p.infoTeenGrowthTitle, description: p.infoTeenGrowthDesc, premium_features: [...p.infoTeenGrowthFeatures] },
       socialDevelopmentScreening: { title: p.infoSocialDevTitle, description: p.infoSocialDevDesc, premium_features: [...p.infoSocialDevFeatures] },
       parentingStyle: { title: p.infoParentingTitle, description: p.infoParentingDesc, premium_features: [...p.infoParentingFeatures] },
-      dementiaRisk: { title: p.infoDementiaTitle || 'Dementia Risk Assessment', description: p.infoDementiaDesc || '', premium_features: [...(p.infoDementiaFeatures || [])] },
+      dementiaRisk: { title: (p as any).infoDementiaTitle || 'Dementia Risk Assessment', description: (p as any).infoDementiaDesc || '', premium_features: [...((p as any).infoDementiaFeatures || [])] },
     };
 
     const override = overrides[key];

@@ -235,8 +235,8 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           <div className="grid md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Language Score' : '언어발달 점수'}</p>
-              <p className="text-3xl font-bold text-blue-900">{total}점 / 60점</p>
-              <p className="text-sm text-blue-600 mt-1">만점 대비 {Math.round((total/60)*100)}%</p>
+              <p className="text-3xl font-bold text-blue-900">{total}{isEnglish ? 'pts' : '점'} / 60{isEnglish ? 'pts' : '점'}</p>
+              <p className="text-sm text-blue-600 mt-1">{isEnglish ? `${Math.round((total/60)*100)}% of max` : `만점 대비 ${Math.round((total/60)*100)}%`}</p>
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Result' : '평가 결과'}</p>

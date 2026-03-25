@@ -61,6 +61,7 @@ interface Observation {
 const DashboardNew = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);

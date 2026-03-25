@@ -251,7 +251,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           </div>
           
           <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">📊 언어발달 점수 분류 기준</h4>
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">{isEnglish ? '📊 Score Classification' : '📊 언어발달 점수 분류 기준'}</h4>
             <div className="grid md:grid-cols-3 gap-4">
               <div className="p-4 bg-red-50 rounded-lg border border-red-200">
                 <p className="font-semibold text-red-800">{isEnglish ? 'Attention Needed (0-24)' : '주의 필요 (0-24점)'}</p>

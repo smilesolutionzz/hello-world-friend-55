@@ -249,9 +249,9 @@ const ExpertContract = () => {
                   </div>
                   
                   <div className="text-sm text-muted-foreground">
-                    <div>경력: {expert.experience}</div>
+                    <div>{isEnglish ? 'Experience' : '경력'}: {expert.experience}</div>
                     <div className="text-lg font-semibold text-primary mt-2">
-                      ₩{expert.hourlyPrice.toLocaleString()}/시간
+                      ₩{expert.hourlyPrice.toLocaleString()}/{isEnglish ? 'hr' : '시간'}
                     </div>
                   </div>
                 </div>

@@ -481,12 +481,12 @@ const ExpertContract = () => {
                     {isLoading ? (
                       <div className="flex items-center gap-2">
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        계약 생성 중...
+                        {isEnglish ? 'Processing...' : '계약 생성 중...'}
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
                         <Zap className="w-5 h-5" />
-                        무통장입금으로 결제하기
+                        {isEnglish ? 'Proceed with Payment' : '무통장입금으로 결제하기'}
                       </div>
                     )}
                   </Button>

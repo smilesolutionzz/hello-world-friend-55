@@ -381,7 +381,7 @@ const DashboardNew = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    이번 달
+                    {isEnglish ? 'This Month' : '이번 달'}
                   </CardTitle>
                   <Target className="h-4 w-4 text-orange-500" />
                 </CardHeader>

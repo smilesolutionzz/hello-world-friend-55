@@ -302,7 +302,7 @@ const PremiumAssessmentResult = ({
         isOpen={showFeedbackModal}
         onClose={() => setShowFeedbackModal(false)}
         testType={assessmentInfo.title}
-        onFeedbackSubmitted={() => toast({ title: "후기 작성 완료" })}
+        onFeedbackSubmitted={() => toast({ title: isEnglish ? "Review submitted" : "후기 작성 완료" })}
       />
     </>
   );

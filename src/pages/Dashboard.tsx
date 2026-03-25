@@ -516,7 +516,7 @@ const DashboardNew = () => {
             {categoryTimelineData.length > 0 && (
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-foreground">영역별 점수 추이 (최근 10회)</CardTitle>
+                  <CardTitle className="text-lg font-medium text-foreground">{isEnglish ? 'Score Trends by Domain (Last 10)' : '영역별 점수 추이 (최근 10회)'}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={350}>

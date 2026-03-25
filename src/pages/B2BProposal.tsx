@@ -286,7 +286,7 @@ const B2BProposal = () => {
         <div className="container mx-auto px-4 max-w-5xl">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-14">
             <motion.h2 variants={fadeUp} custom={0} className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
-              기관 규모에 맞는 합리적인 요금
+              서류 자동화, 이 가격에 가능합니다
             </motion.h2>
             <motion.p variants={fadeUp} custom={1} className="text-slate-500">
               파일럿 3개월 무료 → 데이터 확인 후 결정

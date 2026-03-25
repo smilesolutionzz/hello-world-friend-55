@@ -244,10 +244,10 @@ export default function AssessmentDetail() {
   const averageScore = resultEntries.length > 0 ? totalScore / resultEntries.length : 0;
 
   // Use enhanced analysis data if available
-  const displayAnalysis = enhancedAnalysis?.enhanced_analysis || assessment.analysis || "분석 데이터가 없습니다.";
+  const displayAnalysis = enhancedAnalysis?.enhanced_analysis || assessment.analysis || (isEnglish ? "No analysis data available." : "분석 데이터가 없습니다.");
   const scoreInterpretation = enhancedAnalysis?.score_interpretation || {};
   const recommendations = enhancedAnalysis?.recommendations || [];
-  const riskLevel = enhancedAnalysis?.risk_level || '정보 없음';
+  const riskLevel = enhancedAnalysis?.risk_level || (isEnglish ? 'N/A' : '정보 없음');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/30 to-blue-50/30">

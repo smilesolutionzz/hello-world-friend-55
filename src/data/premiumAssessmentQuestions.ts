@@ -1850,6 +1850,10 @@ export const premiumAssessmentInfo = {
     badge: "🤸 NEW",
     priority: 1,
     highlight: true
+  },
+  // 🧓 치매 위험도 정밀진단검사
+  dementiaRisk: {
+    ...dementiaRiskPremiumInfoImported,
   }
 };
 

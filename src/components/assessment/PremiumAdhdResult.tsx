@@ -400,22 +400,24 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
             <FileText className="w-6 h-6 text-purple-600" />
           </div>
           <div className="flex-1">
-            <h4 className="font-semibold text-purple-900 mb-2">맞춤형 개별교육계획(IEP) 생성</h4>
+            <h4 className="font-semibold text-purple-900 mb-2">{isEnglish ? 'Custom IEP Generation' : '맞춤형 개별교육계획(IEP) 생성'}</h4>
             <p className="text-purple-800 text-sm mb-4">
-              프리미엄 ADHD 검사 결과를 바탕으로 AI가 개별화된 교육 및 치료 계획을 자동으로 생성해드립니다.
+              {isEnglish 
+                ? 'AI automatically generates an individualized education and treatment plan based on your premium ADHD assessment results.'
+                : '프리미엄 ADHD 검사 결과를 바탕으로 AI가 개별화된 교육 및 치료 계획을 자동으로 생성해드립니다.'}
             </p>
             <Button
               onClick={() => navigate('/iep-generator', { 
                 state: { 
                   assessmentResults: {
-                    '프리미엄 ADHD 검사': results
+                    [isEnglish ? 'Premium ADHD Assessment' : '프리미엄 ADHD 검사']: results
                   } 
                 }
               })}
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
             >
               <FileText className="w-4 h-4 mr-2" />
-              맞춤형 IEP 생성하기
+              {isEnglish ? 'Generate Custom IEP' : '맞춤형 IEP 생성하기'}
             </Button>
           </div>
         </div>

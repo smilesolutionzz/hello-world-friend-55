@@ -431,12 +431,12 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
       {/* 참고 정보 */}
       <Card className="p-6 bg-blue-50 border-blue-200">
         <div className="text-center space-y-3">
-          <h3 className="font-semibold text-blue-800">다음 단계 안내</h3>
+          <h3 className="font-semibold text-blue-800">{isEnglish ? 'Next Steps' : '다음 단계 안내'}</h3>
           <div className="text-sm text-blue-700 space-y-2">
-            <p>• 본 검사는 자가 평가 도구로서 참고용입니다</p>
-            <p>• 정확한 진단을 위해서는 전문의 상담이 필요합니다</p>
-            <p>• ADHD는 적절한 치료와 관리로 충분히 개선 가능합니다</p>
-            <p>• 가족과 주변의 이해와 지원이 중요합니다</p>
+            <p>• {isEnglish ? 'This is a self-assessment tool for reference only' : '본 검사는 자가 평가 도구로서 참고용입니다'}</p>
+            <p>• {isEnglish ? 'Accurate diagnosis requires professional consultation' : '정확한 진단을 위해서는 전문의 상담이 필요합니다'}</p>
+            <p>• {isEnglish ? 'ADHD can be significantly improved with proper treatment' : 'ADHD는 적절한 치료와 관리로 충분히 개선 가능합니다'}</p>
+            <p>• {isEnglish ? 'Understanding and support from family is important' : '가족과 주변의 이해와 지원이 중요합니다'}</p>
           </div>
         </div>
       </Card>

@@ -380,7 +380,7 @@ export default function AssessmentDetail() {
                     )}
                     {scoreInterpretation.percentile !== undefined && (
                       <div className="bg-purple-50 dark:bg-purple-950/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
-                        <div className="text-sm text-muted-foreground mb-1">백분위</div>
+                        <div className="text-sm text-muted-foreground mb-1">{isEnglish ? 'Percentile' : '백분위'}</div>
                         <div className="text-2xl font-bold text-purple-700 dark:text-purple-400">{scoreInterpretation.percentile}%</div>
                       </div>
                     )}

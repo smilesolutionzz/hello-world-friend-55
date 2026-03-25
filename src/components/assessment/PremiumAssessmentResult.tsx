@@ -136,7 +136,7 @@ const PremiumAssessmentResult = ({
       organizational_support: '조직지원',
       // ADHD
       attention: '주의집중', hyperactivity: '과잉행동', impulsivity: '충동성',
-      inattention: '부주의', executive_function: '실행기능', working_memory: '작업기억',
+      inattention: '부주의', working_memory: '작업기억',
       executive_dysfunction: '실행기능 결핍',
       // 자폐스펙트럼
       social_communication: '사회적 의사소통', repetitive_behaviors: '반복행동', sensory_processing: '감각처리',

@@ -328,7 +328,7 @@ export default function AssessmentDetail() {
                     
                     {resultEntries.length === 0 && (
                       <div className="text-center py-8 text-muted-foreground">
-                        <p>표시할 점수 데이터가 없습니다.</p>
+                        <p>{isEnglish ? 'No score data to display.' : '표시할 점수 데이터가 없습니다.'}</p>
                       </div>
                     )}
                   </div>

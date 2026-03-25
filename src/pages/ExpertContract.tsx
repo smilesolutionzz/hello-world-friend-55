@@ -390,10 +390,10 @@ const ExpertContract = () => {
 
                 {/* 특별 요청사항 */}
                 <div className="space-y-2">
-                  <Label htmlFor="notes">특별 요청사항 (선택사항)</Label>
+                  <Label htmlFor="notes">{isEnglish ? 'Special Requests (Optional)' : '특별 요청사항 (선택사항)'}</Label>
                   <Textarea
                     id="notes"
-                    placeholder="전문가에게 전달하고 싶은 특별한 요청사항이나 참고사항을 입력해주세요..."
+                    placeholder={isEnglish ? 'Enter any special requests or notes for the expert...' : '전문가에게 전달하고 싶은 특별한 요청사항이나 참고사항을 입력해주세요...'}
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     rows={3}

@@ -420,7 +420,7 @@ ${Object.entries(actualResults).map(([domain, score]) => {
         };
       } else if (type.toLowerCase().includes('work') || type.toLowerCase().includes('stress') || type.toLowerCase().includes('burnout') || type.toLowerCase().includes('번아웃')) {
         return {
-          system: \`당신은 직장인 멘탈 케어 전문 상담가로, 번아웃과 스트레스 검사 결과를 일하는 사람들이 공감하고 실천할 수 있도록 설명하는 역할입니다.
+          system: `당신은 직장인 멘탈 케어 전문 상담가로, 번아웃과 스트레스 검사 결과를 일하는 사람들이 공감하고 실천할 수 있도록 설명하는 역할입니다.
 
 **작성 원칙:**
 1. **공감 우선**: "힘드셨죠", "당연한 반응이에요" 같은 공감의 언어
@@ -430,12 +430,12 @@ ${Object.entries(actualResults).map(([domain, score]) => {
 5. **맥락 이해**: 한국 직장 문화를 이해하는 조언
 
 **분석 깊이:** 2500-3500자
-**어조:** 이해심 많은 선배 동료의 진심어린 조언\`,
+**어조:** 이해심 많은 선배 동료의 진심어린 조언`,
           
-          user: \`안녕하세요. 직장 생활, 많이 힘드셨죠? \${assessmentInfo?.title || '직장 스트레스 검사'} 결과를 함께 봐요.
+          user: `안녕하세요. 직장 생활, 많이 힘드셨죠? ${assessmentInfo?.title || '직장 스트레스 검사'} 결과를 함께 봐요.
 
 **번아웃 상태:**
-\${Object.entries(actualResults).map(([domain, score]) => \`- \${domain}: \${score}점\`).join('\\n')}
+${Object.entries(actualResults).map(([domain, score]) => `- ${domain}: ${score}점`).join('\n')}
 
 이 결과를 바탕으로 위로와 실질적인 도움이 되도록 설명해주세요:
 
@@ -471,7 +471,7 @@ ${Object.entries(actualResults).map(([domain, score]) => {
 
 7. **힘내세요** 💪
    - 진심어린 응원과 격려
-   - 작은 변화가 쌓이면 큰 회복이 됨을 강조\`
+   - 작은 변화가 쌓이면 큰 회복이 됨을 강조`
         };
       } else {
         return prompts.default;

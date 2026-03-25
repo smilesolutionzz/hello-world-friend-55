@@ -331,7 +331,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-purple-100 flex items-center justify-between text-xs text-purple-500">
-                <span>📝 분석 글자 수: {analysis?.length || 0}자</span>
+                <span>{isEnglish ? `📝 Characters: ${analysis?.length || 0}` : `📝 분석 글자 수: ${analysis?.length || 0}자`}</span>
                 <span>🤖 Powered by Advanced AI</span>
               </div>
             </div>

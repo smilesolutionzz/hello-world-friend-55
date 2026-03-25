@@ -292,7 +292,7 @@ export default function AssessmentDetail() {
                 </div>
                 <div className="text-left sm:text-right">
                   <div className="text-2xl sm:text-3xl font-bold">{results.predicted_score?.toFixed(1) || averageScore.toFixed(1)}</div>
-                  <div className="text-xs sm:text-sm text-purple-100">AI 예측 점수</div>
+                  <div className="text-xs sm:text-sm text-purple-100">{isEnglish ? 'AI Predicted Score' : 'AI 예측 점수'}</div>
                 </div>
               </div>
             </CardHeader>

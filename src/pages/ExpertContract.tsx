@@ -104,8 +104,8 @@ const ExpertContract = () => {
             hourlyPrice: dbExpert.hourly_rate || 25000,
             image: dbExpert.profile_image_url || '/api/placeholder/150/150',
             description: dbExpert.bio || '',
-            languages: dbExpert.languages || ['한국어'],
-            consultationTypes: dbExpert.consultation_methods || ['화상상담']
+            languages: dbExpert.languages || [isEnglish ? 'Korean' : '한국어'],
+            consultationTypes: dbExpert.consultation_methods || [isEnglish ? 'Video' : '화상상담']
           });
         } else {
           // Mock 데이터 fallback

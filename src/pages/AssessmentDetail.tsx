@@ -427,7 +427,7 @@ export default function AssessmentDetail() {
               <div className="border-t pt-6">
                 <h3 className="font-semibold text-base sm:text-lg mb-4 flex items-center gap-2">
                   <span className="text-xl sm:text-2xl">🤖</span>
-                  상세 분석
+                  {isEnglish ? 'Detailed Analysis' : '상세 분석'}
                 </h3>
                 <div className="prose max-w-none">
                   <div className="whitespace-pre-wrap text-foreground leading-relaxed bg-card rounded-xl p-4 sm:p-6 border border-border shadow-sm text-sm sm:text-base">

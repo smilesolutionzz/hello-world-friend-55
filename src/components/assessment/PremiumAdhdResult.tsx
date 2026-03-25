@@ -169,9 +169,9 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
       <div className="flex items-center justify-between mb-6">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" />
-          뒤로가기
+          {isEnglish ? 'Back' : '뒤로가기'}
         </Button>
-        <h1 className="text-2xl font-bold">AIH 프리미엄 ADHD 정밀검사 결과</h1>
+        <h1 className="text-2xl font-bold">{isEnglish ? 'AIH Premium ADHD Assessment Results' : 'AIH 프리미엄 ADHD 정밀검사 결과'}</h1>
         <div className="w-24" />
       </div>
 

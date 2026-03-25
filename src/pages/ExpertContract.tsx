@@ -364,7 +364,7 @@ const ExpertContract = () => {
 
                 {/* 추가 서비스 */}
                 <div className="space-y-4">
-                  <h3 className="font-semibold">추가 서비스 (선택사항)</h3>
+                  <h3 className="font-semibold">{isEnglish ? 'Add-on Services (Optional)' : '추가 서비스 (선택사항)'}</h3>
                   <div className="grid gap-3">
                     {additionalServiceOptions.map((service) => (
                       <div key={service.id} className="flex items-center space-x-3 p-3 border rounded-lg">

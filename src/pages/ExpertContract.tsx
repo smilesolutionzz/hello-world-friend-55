@@ -64,6 +64,8 @@ const mockExperts = [
 const ExpertContract = () => {
   const { expertId } = useParams();
   const navigate = useNavigate();
+  const { isEnglish } = useLanguage();
+  const navigate = useNavigate();
   
   const [expert, setExpert] = useState<any>(null);
   const [contractType, setContractType] = useState('monthly');

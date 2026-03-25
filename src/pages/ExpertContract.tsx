@@ -336,16 +336,16 @@ const ExpertContract = () => {
               <CardContent className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="sessions">주당 상담 횟수</Label>
+                    <Label htmlFor="sessions">{isEnglish ? 'Sessions per Week' : '주당 상담 횟수'}</Label>
                     <Select value={sessionsPerWeek.toString()} onValueChange={(value) => setSessionsPerWeek(parseInt(value))}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="1">주 1회</SelectItem>
-                        <SelectItem value="2">주 2회 (권장)</SelectItem>
-                        <SelectItem value="3">주 3회</SelectItem>
-                        <SelectItem value="4">주 4회</SelectItem>
+                        <SelectItem value="1">{isEnglish ? '1x/week' : '주 1회'}</SelectItem>
+                        <SelectItem value="2">{isEnglish ? '2x/week (recommended)' : '주 2회 (권장)'}</SelectItem>
+                        <SelectItem value="3">{isEnglish ? '3x/week' : '주 3회'}</SelectItem>
+                        <SelectItem value="4">{isEnglish ? '4x/week' : '주 4회'}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

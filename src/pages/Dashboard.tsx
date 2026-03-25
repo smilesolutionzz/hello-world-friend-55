@@ -276,7 +276,7 @@ const DashboardNew = () => {
     
     return recentTests.map((obs, idx) => {
       const dataPoint: any = {
-        name: `${idx + 1}회`,
+        name: `#${idx + 1}`,
         date: format(new Date(obs.created_at), 'MM/dd')
       };
       

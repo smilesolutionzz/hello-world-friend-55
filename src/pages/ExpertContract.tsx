@@ -431,7 +431,7 @@ const ExpertContract = () => {
                         return service ? (
                           <div key={serviceId} className="flex justify-between text-sm">
                             <span>{service.label}</span>
-                            <span>₩{service.price.toLocaleString()}/월</span>
+                            <span>₩{service.price.toLocaleString()}/{isEnglish ? 'mo' : '월'}</span>
                           </div>
                         ) : null;
                       })}

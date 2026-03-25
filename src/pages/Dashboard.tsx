@@ -504,7 +504,7 @@ const DashboardNew = () => {
                         <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
                           <BarChart3 className="w-8 h-8 text-slate-600" />
                         </div>
-                        <p className="text-sm text-slate-500">영역별 점수 데이터가 없습니다</p>
+                        <p className="text-sm text-slate-500">{isEnglish ? 'No domain score data available' : '영역별 점수 데이터가 없습니다'}</p>
                       </div>
                     </div>
                   )}

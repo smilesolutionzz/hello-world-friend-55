@@ -345,7 +345,7 @@ const DashboardNew = () => {
                 value="overview" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-muted-foreground data-[state=active]:text-foreground"
               >
-                개요
+                {isEnglish ? 'Overview' : '개요'}
               </TabsTrigger>
               <TabsTrigger 
                 value="assessments" 

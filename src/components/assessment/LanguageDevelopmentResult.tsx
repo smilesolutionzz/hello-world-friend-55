@@ -32,43 +32,38 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
   const ageInMonths = getNumericResult('ageInMonths') || undefined;
   const resolvedAgeGroup = typeof results?.ageGroup === 'string' && results.ageGroup.trim().length > 0
     ? results.ageGroup
-    : '영유아';
+    : isEnglish ? 'Infant' : '영유아';
 
   const receptiveMax = Object.keys(answers || {}).filter((id) => id.startsWith('rec_')).length;
   const expressiveMax = Object.keys(answers || {}).filter((id) => id.startsWith('exp_')).length;
   const totalMax = receptiveMax + expressiveMax;
 
+  const getLevelLabel = (level: string) => {
+    const map: Record<string, string> = isEnglish
+      ? { '우수': 'Excellent', '양호': 'Good', '보통': 'Average', '관찰필요': 'Needs Attention' }
+      : {};
+    return map[level] || level;
+  };
+
   const getLevel = (score: number, category: 'receptive' | 'expressive' | 'total') => {
     const scoring = languageDevelopmentScoring[category];
-    if (score >= scoring.excellent.min) return { level: '우수', color: 'bg-green-500' };
-    if (score >= scoring.good.min) return { level: '양호', color: 'bg-primary' };
-    if (score >= scoring.average.min) return { level: '보통', color: 'bg-yellow-500' };
-    return { level: '관찰필요', color: 'bg-destructive' };
+    if (score >= scoring.excellent.min) return { level: isEnglish ? 'Excellent' : '우수', color: 'bg-green-500' };
+    if (score >= scoring.good.min) return { level: isEnglish ? 'Good' : '양호', color: 'bg-primary' };
+    if (score >= scoring.average.min) return { level: isEnglish ? 'Average' : '보통', color: 'bg-yellow-500' };
+    return { level: isEnglish ? 'Needs Attention' : '관찰필요', color: 'bg-destructive' };
   };
 
   useEffect(() => {
     const run = async () => {
       try {
         const { data, error } = await supabase.functions.invoke('language-development-analyzer', {
-          body: {
-            results,
-            answers,
-            ageGroup: resolvedAgeGroup,
-            age: ageInMonths,
-            scoreMeta: {
-              receptiveMax,
-              expressiveMax,
-              totalMax,
-            },
-          },
+          body: { results, answers, ageGroup: resolvedAgeGroup, age: ageInMonths, language: isEnglish ? 'en' : 'ko', scoreMeta: { receptiveMax, expressiveMax, totalMax } },
         });
         if (error) throw error;
         setAiAnalysis(data.analysis || '');
       } catch {
         setAiAnalysis(isEnglish ? 'Unable to load language development analysis.' : '언어발달 분석 결과를 불러올 수 없습니다.');
-      } finally {
-        setIsAnalyzing(false);
-      }
+      } finally { setIsAnalyzing(false); }
     };
     run();
   }, []);
@@ -78,36 +73,22 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
   const expressiveInfo = getLevel(getNumericResult('expressive'), 'expressive');
 
   const domains: DomainScore[] = [
-    { key: 'receptive', label: '수용언어', score: getNumericResult('receptive_percentage'), maxScore: 100, level: receptiveInfo.level, color: receptiveInfo.color },
-    { key: 'expressive', label: '표현언어', score: getNumericResult('expressive_percentage'), maxScore: 100, level: expressiveInfo.level, color: expressiveInfo.color },
+    { key: 'receptive', label: isEnglish ? 'Receptive' : '수용언어', score: getNumericResult('receptive_percentage'), maxScore: 100, level: receptiveInfo.level, color: receptiveInfo.color },
+    { key: 'expressive', label: isEnglish ? 'Expressive' : '표현언어', score: getNumericResult('expressive_percentage'), maxScore: 100, level: expressiveInfo.level, color: expressiveInfo.color },
   ];
 
   const parseAISections = (text: string): ReportSection[] => {
     if (!text) return [];
     const icons = ['🧠', '👂', '🗣️', '📊', '🌱', '💡', '📋'];
-    const defaultTitles = [
-      '전문가 종합 해석',
-      '수용언어 영역 정밀 분석',
-      '표현언어 영역 정밀 분석',
-      '문항별 응답 패턴 분석',
-      '발달 맥락 및 예후',
-      '가정 내 언어자극 전략',
-      '전문가 권고 및 후속 계획',
-    ];
+    const defaultTitles = isEnglish
+      ? ['Expert Summary', 'Receptive Language Analysis', 'Expressive Language Analysis', 'Response Pattern Analysis', 'Developmental Context & Prognosis', 'Home Language Stimulation', 'Expert Recommendations']
+      : ['전문가 종합 해석', '수용언어 영역 정밀 분석', '표현언어 영역 정밀 분석', '문항별 응답 패턴 분석', '발달 맥락 및 예후', '가정 내 언어자극 전략', '전문가 권고 및 후속 계획'];
 
     const normalizeTitle = (raw: string) =>
-      raw
-        .replace(/[#*]/g, '')
-        .replace(/^\d+\s*[.)]\s*/, '')
-        .replace(/^[^\w가-힣]+/, '')
-        .replace(/\s+/g, ' ')
-        .trim();
+      raw.replace(/[#*]/g, '').replace(/^\d+\s*[.)]\s*/, '').replace(/^[^\w가-힣]+/, '').replace(/\s+/g, ' ').trim();
 
     const isInvalidTitle = (title: string) =>
-      !title ||
-      title.length < 4 ||
-      title.length > 52 ||
-      /안녕하세요|프리미엄 유료 검사|전문가 분석 리포트/i.test(title);
+      !title || title.length < 4 || title.length > 52 || /안녕하세요|프리미엄 유료 검사|전문가 분석 리포트/i.test(title);
 
     const sectionsFromHeaders: ReportSection[] = [];
     const headerRegex = /(?:^|\n)#{1,3}\s*([^\n]+)\n([\s\S]*?)(?=\n#{1,3}\s|$)/g;
@@ -116,48 +97,27 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
     while ((match = headerRegex.exec(text)) !== null) {
       const normalizedTitle = normalizeTitle(match[1]);
       if (isInvalidTitle(normalizedTitle)) continue;
-
       let content = cleanMarkdown(match[2]).trim();
-      if (content.startsWith(normalizedTitle)) {
-        content = content.slice(normalizedTitle.length).trim();
-      }
+      if (content.startsWith(normalizedTitle)) content = content.slice(normalizedTitle.length).trim();
       if (content.length < 40) continue;
-
       const idx = sectionsFromHeaders.length;
-      sectionsFromHeaders.push({
-        id: `s-${idx}`,
-        icon: icons[idx] || '📋',
-        title: normalizedTitle,
-        content,
-        defaultOpen: idx === 0,
-      });
+      sectionsFromHeaders.push({ id: `s-${idx}`, icon: icons[idx] || '📋', title: normalizedTitle, content, defaultOpen: idx === 0 });
     }
 
-    if (sectionsFromHeaders.length > 0) {
-      return sectionsFromHeaders.slice(0, 7);
-    }
+    if (sectionsFromHeaders.length > 0) return sectionsFromHeaders.slice(0, 7);
 
-    const cleaned = cleanMarkdown(text)
-      .replace(/^안녕하세요[^\n]*\n?/m, '')
-      .replace(/^아래는[^\n]*\n?/m, '')
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
-
-    const paragraphs = cleaned
-      .split('\n\n')
-      .map((p) => p.trim())
-      .filter((p) => p.length > 35);
+    const cleaned = cleanMarkdown(text).replace(/^안녕하세요[^\n]*\n?/m, '').replace(/^아래는[^\n]*\n?/m, '').replace(/\n{3,}/g, '\n\n').trim();
+    const paragraphs = cleaned.split('\n\n').map((p) => p.trim()).filter((p) => p.length > 35);
 
     return paragraphs.slice(0, 7).map((paragraph, idx) => {
       const lines = paragraph.split('\n').map((line) => line.trim()).filter(Boolean);
       const candidateTitle = normalizeTitle(lines[0] || '');
       const hasStructuredTitle = !isInvalidTitle(candidateTitle);
       const content = hasStructuredTitle ? lines.slice(1).join('\n').trim() || paragraph : paragraph;
-
       return {
         id: `s-${idx}`,
         icon: icons[idx] || '📋',
-        title: hasStructuredTitle ? candidateTitle : defaultTitles[idx] || `분석 ${idx + 1}`,
+        title: hasStructuredTitle ? candidateTitle : defaultTitles[idx] || (isEnglish ? `Analysis ${idx + 1}` : `분석 ${idx + 1}`),
         content,
         defaultOpen: idx === 0,
       };
@@ -165,7 +125,10 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
   };
 
   const aiSections = parseAISections(aiAnalysis);
-  const severityColor = totalInfo.level === '우수' ? 'text-green-600 border-green-300' : totalInfo.level === '양호' ? 'text-primary border-primary/30' : totalInfo.level === '보통' ? 'text-yellow-600 border-yellow-300' : 'text-destructive border-destructive/30';
+  const severityColor = totalInfo.level === (isEnglish ? 'Excellent' : '우수') ? 'text-green-600 border-green-300'
+    : totalInfo.level === (isEnglish ? 'Good' : '양호') ? 'text-primary border-primary/30'
+    : totalInfo.level === (isEnglish ? 'Average' : '보통') ? 'text-yellow-600 border-yellow-300'
+    : 'text-destructive border-destructive/30';
 
   const handleDownload = async () => {
     await downloadResultAsPDF('clinical-report-content', isEnglish ? 'LanguageDev_Results' : '언어발달_검사_결과',
@@ -202,7 +165,7 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
             categoryTranslations: { receptive: isEnglish ? 'Receptive' : '수용언어', expressive: isEnglish ? 'Expressive' : '표현언어' },
             aiSummary: aiAnalysis,
             actionItems: aiSections.slice(0, 3).map((section) => section.title),
-            riskLevel: totalInfo.level === (isEnglish ? 'Excellent' : '우수') || totalInfo.level === (isEnglish ? 'Good' : '양호') ? 'low' : totalInfo.level === (isEnglish ? 'Average' : '보통') ? 'moderate' : 'high',
+            riskLevel: (totalInfo.level === 'Excellent' || totalInfo.level === '우수' || totalInfo.level === 'Good' || totalInfo.level === '양호') ? 'low' : (totalInfo.level === 'Average' || totalInfo.level === '보통') ? 'moderate' : 'high',
           }}
         />
       </div>

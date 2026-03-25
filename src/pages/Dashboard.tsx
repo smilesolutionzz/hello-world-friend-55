@@ -553,7 +553,7 @@ const DashboardNew = () => {
                       {distributionData.length === 0 && (
                         <Line 
                           type="monotone" 
-                          dataKey="종합" 
+                          dataKey={isEnglish ? "Overall" : "종합"} 
                           stroke="#fbbf24"
                           strokeWidth={2}
                           dot={{ fill: '#fbbf24', r: 4 }}

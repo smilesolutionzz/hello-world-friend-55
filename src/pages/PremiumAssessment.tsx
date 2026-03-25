@@ -54,6 +54,7 @@ import {
 } from "@/data/premiumAssessmentQuestions";
 import { allLanguageDevelopmentQuestions } from "@/data/languageDevelopmentQuestions";
 import { premiumAdhdQuestions } from "@/data/premiumAdhdQuestions";
+import { dementiaRiskPremiumQuestions } from "@/data/dementiaRiskQuestions";
 import { useTranslation } from "@/i18n/useTranslation";
 
 const PremiumAssessment = () => {

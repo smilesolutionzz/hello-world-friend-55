@@ -330,7 +330,7 @@ const ExpertContract = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="w-5 h-5" />
-                  서비스 설정
+                  {isEnglish ? 'Service Settings' : '서비스 설정'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">

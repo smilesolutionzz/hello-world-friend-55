@@ -262,7 +262,7 @@ export default function AssessmentDetail() {
             size="sm"
           >
             <ArrowLeft className="w-4 h-4" />
-            뒤로가기
+            {isEnglish ? 'Back' : '뒤로가기'}
           </Button>
           
           <div className="flex-1 text-center">

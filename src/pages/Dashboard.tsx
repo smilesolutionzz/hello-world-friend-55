@@ -400,8 +400,8 @@ const DashboardNew = () => {
                   <Activity className="h-4 w-4 text-amber-400" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-foreground">{averageScore}점</div>
-                  <p className="text-xs text-muted-foreground mt-1">전체 평균</p>
+                  <div className="text-3xl font-bold text-foreground">{averageScore}{isEnglish ? 'pts' : '점'}</div>
+                  <p className="text-xs text-muted-foreground mt-1">{isEnglish ? 'Overall average' : '전체 평균'}</p>
                 </CardContent>
               </Card>
 

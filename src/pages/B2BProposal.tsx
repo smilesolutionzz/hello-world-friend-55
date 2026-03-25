@@ -78,12 +78,12 @@ const B2BProposal = () => {
               </Badge>
             </motion.div>
             <motion.h1 variants={fadeUp} custom={1} className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              어르신 케어의 새로운 기준,<br />
-              <span className="text-emerald-400">AI가 함께합니다</span>
+              일지 쓰느라 야근하시죠?<br />
+              <span className="text-emerald-400">AI가 3분 만에 써드립니다</span>
             </motion.h1>
             <motion.p variants={fadeUp} custom={2} className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-4">
-              인지건강 모니터링 · 보호자 리포트 자동 발송 · AI 회고록<br />
-              <span className="text-emerald-300 font-medium">기관 운영 효율과 보호자 만족도를 동시에 높이세요</span>
+              사례관리 기록 · 프로그램 운영일지 · 바우처 서류 · 보호자 리포트<br />
+              <span className="text-emerald-300 font-medium">메모 3줄이면 AI가 공식 양식에 맞는 완성 문서를 생성합니다</span>
             </motion.p>
             <motion.p variants={fadeUp} custom={3} className="text-sm text-slate-400 mb-10">
               주간보호센터 · 노인복지시설 · 지역아동센터 · 발달클리닉

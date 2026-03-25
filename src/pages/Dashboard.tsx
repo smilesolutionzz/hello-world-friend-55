@@ -709,8 +709,8 @@ const DashboardNew = () => {
                       <Heart className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-foreground mb-1">고민 저장소</h3>
-                      <p className="text-sm text-muted-foreground">AI 분석 결과 확인</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">{isEnglish ? 'Concern Storage' : '고민 저장소'}</h3>
+                      <p className="text-sm text-muted-foreground">{isEnglish ? 'View AI Analysis' : 'AI 분석 결과 확인'}</p>
                     </div>
                   </div>
                 </CardContent>

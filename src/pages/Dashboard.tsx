@@ -458,7 +458,7 @@ const DashboardNew = () => {
                         itemStyle={{ color: '#fff' }}
                       />
                       <Legend wrapperStyle={{ color: '#fff' }} />
-                      <Bar dataKey="count" fill="#fbbf24" name="검사 횟수" radius={[8, 8, 0, 0]} />
+                      <Bar dataKey="count" fill="#fbbf24" name={isEnglish ? "Tests" : "검사 횟수"} radius={[8, 8, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>

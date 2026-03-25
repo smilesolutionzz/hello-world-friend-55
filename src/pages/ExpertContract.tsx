@@ -269,18 +269,18 @@ const ExpertContract = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold">상담 방식</h4>
+                  <h4 className="font-semibold">{isEnglish ? 'Consultation Type' : '상담 방식'}</h4>
                   <div className="flex gap-2">
-                    {expert.consultationTypes.includes('화상상담') && (
+                    {(expert.consultationTypes.includes('화상상담') || expert.consultationTypes.includes('Video')) && (
                       <Badge variant="outline" className="gap-1">
                         <Video className="w-3 h-3" />
-                        화상
+                        {isEnglish ? 'Video' : '화상'}
                       </Badge>
                     )}
-                    {expert.consultationTypes.includes('방문상담') && (
+                    {(expert.consultationTypes.includes('방문상담') || expert.consultationTypes.includes('In-person')) && (
                       <Badge variant="outline" className="gap-1">
                         <MessageCircle className="w-3 h-3" />
-                        방문
+                        {isEnglish ? 'In-person' : '방문'}
                       </Badge>
                     )}
                   </div>

@@ -336,12 +336,12 @@ export default function AssessmentDetail() {
                 <div>
                   <h3 className="font-semibold mb-3 flex items-center gap-2">
                     <Calendar className="w-5 h-5 text-purple-600" />
-                    검사 정보
+                    {isEnglish ? 'Test Info' : '검사 정보'}
                   </h3>
                   <div className="space-y-2 text-sm">
-                    <p><span className="font-medium">검사일:</span> {new Date(assessment.created_at).toLocaleDateString('ko-KR')}</p>
-                    <p><span className="font-medium">검사 유형:</span> 프리미엄 전문 검사</p>
-                    <p><span className="font-medium">상태:</span> 완료</p>
+                    <p><span className="font-medium">{isEnglish ? 'Date:' : '검사일:'}</span> {new Date(assessment.created_at).toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</p>
+                    <p><span className="font-medium">{isEnglish ? 'Type:' : '검사 유형:'}</span> {isEnglish ? 'Premium Professional' : '프리미엄 전문 검사'}</p>
+                    <p><span className="font-medium">{isEnglish ? 'Status:' : '상태:'}</span> {isEnglish ? 'Completed' : '완료'}</p>
                   </div>
                 </div>
               </div>

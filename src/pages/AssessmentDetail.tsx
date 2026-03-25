@@ -267,10 +267,10 @@ export default function AssessmentDetail() {
           
           <div className="flex-1 text-center">
             <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              검사 상세 결과
+              {isEnglish ? 'Detailed Results' : '검사 상세 결과'}
             </h1>
              <p className="text-sm sm:text-lg text-muted-foreground">
-              프리미엄 심리검사 • 전문가 심층 분석
+              {isEnglish ? 'Premium Assessment • Expert Analysis' : '프리미엄 심리검사 • 전문가 심층 분석'}
             </p>
           </div>
           

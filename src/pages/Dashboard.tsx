@@ -609,7 +609,7 @@ const DashboardNew = () => {
                             </td>
                             <td className="py-3 px-4 text-sm text-muted-foreground">{obs.age_group}</td>
                             <td className="py-3 px-4 text-sm text-foreground">
-                              {hasScore ? `${obs.score_overall}점` : '-'}
+                              {hasScore ? `${obs.score_overall}${isEnglish ? 'pts' : '점'}` : '-'}
                             </td>
                             <td className="py-3 px-4">
                               <Badge className={statusColor}>

@@ -179,7 +179,7 @@ const ExpertContract = () => {
   const handleCreateContract = () => {
     // 카카오톡 오픈채팅으로 바로 연결
     window.open('https://open.kakao.com/o/sq57G6Th', '_blank');
-    toast.success('카카오톡 상담창으로 이동합니다. 전문가와 계약 상담을 진행해주세요.');
+    toast.success(isEnglish ? 'Redirecting to consultation chat.' : '카카오톡 상담창으로 이동합니다. 전문가와 계약 상담을 진행해주세요.');
   };
 
   if (!expert) {

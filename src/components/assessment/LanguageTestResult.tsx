@@ -245,8 +245,8 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Current Age' : '현재 개월수'}</p>
-              <p className="text-2xl font-bold text-blue-900">{age}개월</p>
-              <p className="text-sm text-blue-600 mt-1">연령대: {ageGroup}</p>
+              <p className="text-2xl font-bold text-blue-900">{age}{isEnglish ? ' months' : '개월'}</p>
+              <p className="text-sm text-blue-600 mt-1">{isEnglish ? 'Age Group' : '연령대'}: {ageGroup}</p>
             </div>
           </div>
           

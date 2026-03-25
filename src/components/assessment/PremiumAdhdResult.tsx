@@ -372,8 +372,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         >
           <Bot className="w-6 h-6" />
           <div className="text-center">
-            <div className="font-semibold">AI 상담사</div>
-            <div className="text-xs text-muted-foreground">24시간 이용</div>
+            <div className="font-semibold">{isEnglish ? 'AI Counselor' : 'AI 상담사'}</div>
+            <div className="text-xs text-muted-foreground">{isEnglish ? '24/7 Available' : '24시간 이용'}</div>
           </div>
         </Button>
 
@@ -386,9 +386,9 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
           <FileText className="w-6 h-6" />
           <div className="text-center">
             <div className="font-semibold">
-              {isGeneratingPDF ? "생성 중..." : "상세 리포트"}
+              {isGeneratingPDF ? (isEnglish ? "Generating..." : "생성 중...") : (isEnglish ? "Full Report" : "상세 리포트")}
             </div>
-            <div className="text-xs text-muted-foreground">PDF 다운로드</div>
+            <div className="text-xs text-muted-foreground">{isEnglish ? 'PDF Download' : 'PDF 다운로드'}</div>
           </div>
         </Button>
       </div>

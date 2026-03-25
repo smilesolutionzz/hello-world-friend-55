@@ -104,6 +104,38 @@ const B2BProposal = () => {
                 <ChevronDown className="ml-2 w-5 h-5" />
               </Button>
             </motion.div>
+
+            {/* 유입 키워드 클라우드 */}
+            <motion.div variants={fadeUp} custom={5} className="mt-12">
+              <p className="text-xs text-slate-500 mb-4 tracking-wide uppercase">🔍 이 키워드로 유저가 우리 플랫폼에 유입됩니다</p>
+              <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
+                {[
+                  'ADHD 자가진단', '우울증 테스트', '불안장애 검사', '자존감 테스트',
+                  '아이 발달검사', '스트레스 측정', '공황장애 자가진단', 'PTSD 검사',
+                  '번아웃 테스트', '성격유형 검사', '조울증 테스트', '강박증 자가진단',
+                  '치매 조기검사', '인지능력 테스트', '아동 ADHD 체크', '산후우울증 검사',
+                  '사회불안 테스트', '분노조절 검사', '수면장애 테스트', '학습장애 검사',
+                  '언어발달 체크', '감정조절 테스트', '직장 스트레스 진단', '연인관계 검사',
+                  '자폐스펙트럼 선별', '노인 인지기능', '청소년 심리검사', '가족관계 진단',
+                ].map((kw, i) => (
+                  <span 
+                    key={i} 
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                      i < 6 
+                        ? 'bg-indigo-500/30 text-indigo-200 border border-indigo-400/40 text-sm' 
+                        : i < 14 
+                          ? 'bg-slate-700/60 text-slate-300 border border-slate-600/40' 
+                          : 'bg-slate-800/40 text-slate-400 border border-slate-700/30'
+                    }`}
+                  >
+                    {kw}
+                  </span>
+                ))}
+              </div>
+              <p className="text-xs text-slate-500 mt-4">
+                💡 이 검색어를 친 유저가 검사 후 <span className="text-amber-400 font-semibold">"내 근처 전문기관"</span>에서 귀 센터를 발견합니다
+              </p>
+            </motion.div>
           </motion.div>
         </div>
       </section>

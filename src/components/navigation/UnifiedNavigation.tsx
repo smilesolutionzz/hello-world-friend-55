@@ -86,6 +86,11 @@ export const UnifiedNavigation = () => {
         { label: t.nav.column, path: '/column', desc: t.nav.columnDesc, icon: Heart },
       ]
     },
+    {
+      label: '기관 제휴',
+      icon: Building2,
+      path: '/b2b-proposal',
+    },
   ];
 
   const handleNavigation = (path: string) => {

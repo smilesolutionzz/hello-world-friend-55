@@ -425,7 +425,7 @@ const ExpertContract = () => {
                   {additionalServices.length > 0 && (
                     <>
                       <Separator />
-                      <div className="text-sm font-medium mb-2">추가 서비스</div>
+                      <div className="text-sm font-medium mb-2">{isEnglish ? 'Add-on Services' : '추가 서비스'}</div>
                       {additionalServices.map((serviceId) => {
                         const service = additionalServiceOptions.find(s => s.id === serviceId);
                         return service ? (

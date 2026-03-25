@@ -726,8 +726,8 @@ const DashboardNew = () => {
                       <UserCheck className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-foreground mb-1">전문가 상담</h3>
-                      <p className="text-sm text-muted-foreground">1:1 전문가 상담</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">{isEnglish ? 'Expert Consult' : '전문가 상담'}</h3>
+                      <p className="text-sm text-muted-foreground">{isEnglish ? '1:1 Expert Session' : '1:1 전문가 상담'}</p>
                     </div>
                   </div>
                 </CardContent>

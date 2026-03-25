@@ -418,8 +418,8 @@ const ExpertContract = () => {
                   </div>
                   
                   <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>→ 회당 비용</span>
-                    <span>₩{expert.hourlyPrice.toLocaleString()}/회</span>
+                    <span>{isEnglish ? '→ Per session' : '→ 회당 비용'}</span>
+                    <span>₩{expert.hourlyPrice.toLocaleString()}/{isEnglish ? 'session' : '회'}</span>
                   </div>
                   
                   {additionalServices.length > 0 && (

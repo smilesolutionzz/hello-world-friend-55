@@ -421,6 +421,9 @@ const PremiumAssessment = () => {
           {/* Work & Finance */}
           {renderTestSection(p.sectionWorkFinance, null, 'orange', ['work_stress', 'financialPsychology', 'cognitive'])}
 
+          {/* Senior Care */}
+          {renderTestSection(p.sectionSenior || '시니어 인지 케어', p.sectionSeniorBadge || '🧓 NEW', 'rose', ['dementiaRisk'])}
+
           {/* Teen */}
           {renderTestSection(p.sectionTeen, null, 'emerald', ['teenMentalCompass', 'teenGrowthCapacity', 'socialDevelopmentScreening'])}
 

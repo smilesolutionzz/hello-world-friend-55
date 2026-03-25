@@ -966,6 +966,8 @@ const ko = {
     sectionPersonality: '성격·기질 자가체크',
     sectionWorkFinance: '직장·금전 자가체크',
     sectionTeen: '청소년 자가체크',
+    sectionSenior: '시니어 인지 케어',
+    sectionSeniorBadge: '🧓 NEW',
     sectionSpecial: '특수 AI 자가체크',
     sectionSpecialBadge: '인기',
     startTest: '검사 시작하기',

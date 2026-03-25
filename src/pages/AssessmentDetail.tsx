@@ -9,6 +9,7 @@ import { ArrowLeft, Brain, TrendingUp, Calendar, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateTestResultPDF } from '@/utils/pdfGenerator';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface AssessmentDetail {
   id: string;
@@ -35,6 +36,7 @@ export default function AssessmentDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
   const [assessment, setAssessment] = useState<AssessmentDetail | null>(null);
   const [enhancedAnalysis, setEnhancedAnalysis] = useState<EnhancedAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
@@ -141,102 +143,58 @@ export default function AssessmentDetail() {
   };
 
   const getScoreInterpretation = (score: number) => {
-    if (score >= 6) return { level: "높음", color: "bg-red-500", description: "매우 강한 특성" };
-    if (score >= 5) return { level: "중상", color: "bg-orange-500", description: "강한 특성" };
-    if (score >= 4) return { level: "보통", color: "bg-yellow-500", description: "일반적 특성" };
-    if (score >= 3) return { level: "중하", color: "bg-green-500", description: "약한 특성" };
-    return { level: "낮음", color: "bg-blue-500", description: "매우 약한 특성" };
+    if (score >= 6) return { level: isEnglish ? "High" : "높음", color: "bg-red-500", description: isEnglish ? "Very strong trait" : "매우 강한 특성" };
+    if (score >= 5) return { level: isEnglish ? "Above Avg" : "중상", color: "bg-orange-500", description: isEnglish ? "Strong trait" : "강한 특성" };
+    if (score >= 4) return { level: isEnglish ? "Average" : "보통", color: "bg-yellow-500", description: isEnglish ? "Typical trait" : "일반적 특성" };
+    if (score >= 3) return { level: isEnglish ? "Below Avg" : "중하", color: "bg-green-500", description: isEnglish ? "Mild trait" : "약한 특성" };
+    return { level: isEnglish ? "Low" : "낮음", color: "bg-blue-500", description: isEnglish ? "Very mild trait" : "매우 약한 특성" };
   };
 
   const translateCategory = (category: string) => {
-    const translations: Record<string, string> = {
-      // TCI 요인
-      'novelty_seeking': '자극추구',
-      'harm_avoidance': '위험회피', 
-      'reward_dependence': '사회적 민감성',
-      'persistence': '인내력',
-      'self_directedness': '자율성',
-      'cooperativeness': '협조성',
-      'self_transcendence': '자기초월',
-      
-      // Big Five 요인
-      'extraversion': '외향성',
-      'agreeableness': '친화성',
-      'conscientiousness': '성실성',
-      'neuroticism': '신경성',
-      'openness': '개방성',
-      
-      // 연애성격분석테스트 요인
-      'passionate_romantic': '열정적 로맨티스트 (매우 열정적)',
-      'stable_companion': '안정적 동반자 (안정 특성)',
-      'independent_individualist': '독립적 개인주의자 (독립 특성)',
-      'realistic_planner': '계획적 현실주의자 (현실 특성)',
-      
-      // ADHD 관련 요인
-      'attention': '주의집중',
-      'hyperactivity': '과잉행동',
-      'impulsivity': '충동성',
-      'inattention': '부주의',
-      'executive_function': '실행기능',
-      'working_memory': '작업기억',
-      
-      // 청소년 마음바로미터 요인
-      'emotional_problems': '정서적 문제',
-      'behavioral_problems': '행동적 문제',
-      'social_adaptation': '사회적 적응',
-      'identity_development': '정체성 발달',
-      
-      // 청소년 성장역량 요인
-      'internalizing_problems': '내재화 문제',
-      'externalizing_problems': '외현화 문제',
-      'attention_problems': '주의력 문제',
-      'social_competence': '사회적 역량',
-      
-      // 사회성 발달 선별검사 요인
-      'social_interaction': '사회적 상호작용',
-      'communication': '의사소통',
-      'behavioral_patterns': '행동 패턴',
-      'sensory_responses': '감각 반응',
-      
-      // 부모양육태도 요인
-      'warmth_acceptance': '온정수용',
-      'behavioral_control': '행동통제',
-      'psychological_control': '심리통제',
-      'autonomy_support': '자율성지지',
-      'communication_support': '의사소통지지',
-      
-      // 기타 심리학적 영역
-      'social_energy': '사회적 에너지',
-      'decision_making': '의사결정',
-      'emotional_regulation': '감정조절',
-      'adaptability': '적응성',
-      'stress_tolerance': '스트레스 내성',
-      'anxiety': '불안',
-      'depression': '우울',
-      'self_esteem': '자존감',
-      'resilience': '회복력',
-      'communication_skills': '의사소통',
-      'problem_solving': '문제해결',
-      'focus': '집중력',
-      'memory': '기억력'
+    const translationsKo: Record<string, string> = {
+      'novelty_seeking': '자극추구', 'harm_avoidance': '위험회피', 'reward_dependence': '사회적 민감성',
+      'persistence': '인내력', 'self_directedness': '자율성', 'cooperativeness': '협조성', 'self_transcendence': '자기초월',
+      'extraversion': '외향성', 'agreeableness': '친화성', 'conscientiousness': '성실성', 'neuroticism': '신경성', 'openness': '개방성',
+      'passionate_romantic': '열정적 로맨티스트', 'stable_companion': '안정적 동반자', 'independent_individualist': '독립적 개인주의자', 'realistic_planner': '계획적 현실주의자',
+      'attention': '주의집중', 'hyperactivity': '과잉행동', 'impulsivity': '충동성', 'inattention': '부주의', 'executive_function': '실행기능', 'working_memory': '작업기억',
+      'emotional_problems': '정서적 문제', 'behavioral_problems': '행동적 문제', 'social_adaptation': '사회적 적응', 'identity_development': '정체성 발달',
+      'internalizing_problems': '내재화 문제', 'externalizing_problems': '외현화 문제', 'attention_problems': '주의력 문제', 'social_competence': '사회적 역량',
+      'social_interaction': '사회적 상호작용', 'communication': '의사소통', 'behavioral_patterns': '행동 패턴', 'sensory_responses': '감각 반응',
+      'warmth_acceptance': '온정수용', 'behavioral_control': '행동통제', 'psychological_control': '심리통제', 'autonomy_support': '자율성지지', 'communication_support': '의사소통지지',
+      'social_energy': '사회적 에너지', 'decision_making': '의사결정', 'emotional_regulation': '감정조절', 'adaptability': '적응성', 'stress_tolerance': '스트레스 내성',
+      'anxiety': '불안', 'depression': '우울', 'self_esteem': '자존감', 'resilience': '회복력', 'communication_skills': '의사소통', 'problem_solving': '문제해결', 'focus': '집중력', 'memory': '기억력',
     };
-    return translations[category.toLowerCase()] || category.replace(/_/g, ' ');
+    const translationsEn: Record<string, string> = {
+      'novelty_seeking': 'Novelty Seeking', 'harm_avoidance': 'Harm Avoidance', 'reward_dependence': 'Reward Dependence',
+      'persistence': 'Persistence', 'self_directedness': 'Self-Directedness', 'cooperativeness': 'Cooperativeness', 'self_transcendence': 'Self-Transcendence',
+      'extraversion': 'Extraversion', 'agreeableness': 'Agreeableness', 'conscientiousness': 'Conscientiousness', 'neuroticism': 'Neuroticism', 'openness': 'Openness',
+      'passionate_romantic': 'Passionate Romantic', 'stable_companion': 'Stable Companion', 'independent_individualist': 'Independent Individualist', 'realistic_planner': 'Realistic Planner',
+      'attention': 'Attention', 'hyperactivity': 'Hyperactivity', 'impulsivity': 'Impulsivity', 'inattention': 'Inattention', 'executive_function': 'Executive Function', 'working_memory': 'Working Memory',
+      'emotional_problems': 'Emotional Problems', 'behavioral_problems': 'Behavioral Problems', 'social_adaptation': 'Social Adaptation', 'identity_development': 'Identity Development',
+      'internalizing_problems': 'Internalizing', 'externalizing_problems': 'Externalizing', 'attention_problems': 'Attention Problems', 'social_competence': 'Social Competence',
+      'social_interaction': 'Social Interaction', 'communication': 'Communication', 'behavioral_patterns': 'Behavioral Patterns', 'sensory_responses': 'Sensory Responses',
+      'warmth_acceptance': 'Warmth & Acceptance', 'behavioral_control': 'Behavioral Control', 'psychological_control': 'Psychological Control', 'autonomy_support': 'Autonomy Support', 'communication_support': 'Communication Support',
+      'social_energy': 'Social Energy', 'decision_making': 'Decision Making', 'emotional_regulation': 'Emotional Regulation', 'adaptability': 'Adaptability', 'stress_tolerance': 'Stress Tolerance',
+      'anxiety': 'Anxiety', 'depression': 'Depression', 'self_esteem': 'Self-Esteem', 'resilience': 'Resilience', 'communication_skills': 'Communication', 'problem_solving': 'Problem Solving', 'focus': 'Focus', 'memory': 'Memory',
+    };
+    const map = isEnglish ? translationsEn : translationsKo;
+    return map[category.toLowerCase()] || category.replace(/_/g, ' ');
   };
 
   const handleDownloadPDF = async () => {
     try {
-      const testDate = new Date(assessment?.created_at || Date.now()).toLocaleDateString('ko-KR');
+      const testDate = new Date(assessment?.created_at || Date.now()).toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR');
       
-      await generateTestResultPDF('프리미엄 심리검사', '사용자', testDate, 'pdf-content');
+      await generateTestResultPDF(isEnglish ? 'Premium Assessment' : '프리미엄 심리검사', isEnglish ? 'User' : '사용자', testDate, 'pdf-content');
       
       toast({
-        title: "PDF 다운로드 완료",
-        description: "검사 결과가 PDF로 저장되었습니다.",
+        title: isEnglish ? "PDF Downloaded" : "PDF 다운로드 완료",
+        description: isEnglish ? "Results saved as PDF." : "검사 결과가 PDF로 저장되었습니다.",
       });
     } catch (error) {
       toast({
-        title: "PDF 다운로드 실패", 
-        description: "PDF 생성 중 오류가 발생했습니다.",
+        title: isEnglish ? "PDF Download Failed" : "PDF 다운로드 실패", 
+        description: isEnglish ? "An error occurred." : "PDF 생성 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }
@@ -254,9 +212,9 @@ export default function AssessmentDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">검사 결과를 찾을 수 없습니다</h2>
+          <h2 className="text-2xl font-bold mb-4">{isEnglish ? 'Results not found' : '검사 결과를 찾을 수 없습니다'}</h2>
           <Button onClick={() => navigate('/assessment')}>
-            뒤로가기
+            {isEnglish ? 'Go Back' : '뒤로가기'}
           </Button>
         </div>
       </div>
@@ -286,10 +244,10 @@ export default function AssessmentDetail() {
   const averageScore = resultEntries.length > 0 ? totalScore / resultEntries.length : 0;
 
   // Use enhanced analysis data if available
-  const displayAnalysis = enhancedAnalysis?.enhanced_analysis || assessment.analysis || "분석 데이터가 없습니다.";
+  const displayAnalysis = enhancedAnalysis?.enhanced_analysis || assessment.analysis || (isEnglish ? "No analysis data available." : "분석 데이터가 없습니다.");
   const scoreInterpretation = enhancedAnalysis?.score_interpretation || {};
   const recommendations = enhancedAnalysis?.recommendations || [];
-  const riskLevel = enhancedAnalysis?.risk_level || '정보 없음';
+  const riskLevel = enhancedAnalysis?.risk_level || (isEnglish ? 'N/A' : '정보 없음');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/30 to-blue-50/30">
@@ -304,15 +262,15 @@ export default function AssessmentDetail() {
             size="sm"
           >
             <ArrowLeft className="w-4 h-4" />
-            뒤로가기
+            {isEnglish ? 'Back' : '뒤로가기'}
           </Button>
           
           <div className="flex-1 text-center">
             <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              검사 상세 결과
+              {isEnglish ? 'Detailed Results' : '검사 상세 결과'}
             </h1>
              <p className="text-sm sm:text-lg text-muted-foreground">
-              프리미엄 심리검사 • 전문가 심층 분석
+              {isEnglish ? 'Premium Assessment • Expert Analysis' : '프리미엄 심리검사 • 전문가 심층 분석'}
             </p>
           </div>
           
@@ -329,12 +287,12 @@ export default function AssessmentDetail() {
             <CardHeader className="bg-gradient-to-r from-purple-500 to-blue-600 text-white p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <CardTitle className="text-lg sm:text-2xl">프리미엄 심리검사</CardTitle>
-                  <p className="text-purple-100 mt-1 text-sm sm:text-base">AI 기반 심층 분석 결과</p>
+                  <CardTitle className="text-lg sm:text-2xl">{isEnglish ? 'Premium Assessment' : '프리미엄 심리검사'}</CardTitle>
+                  <p className="text-purple-100 mt-1 text-sm sm:text-base">{isEnglish ? 'AI-Powered Deep Analysis' : 'AI 기반 심층 분석 결과'}</p>
                 </div>
                 <div className="text-left sm:text-right">
                   <div className="text-2xl sm:text-3xl font-bold">{results.predicted_score?.toFixed(1) || averageScore.toFixed(1)}</div>
-                  <div className="text-xs sm:text-sm text-purple-100">AI 예측 점수</div>
+                  <div className="text-xs sm:text-sm text-purple-100">{isEnglish ? 'AI Predicted Score' : 'AI 예측 점수'}</div>
                 </div>
               </div>
             </CardHeader>
@@ -343,7 +301,7 @@ export default function AssessmentDetail() {
                 <div>
                   <h3 className="font-semibold mb-3 flex items-center gap-2">
                     <TrendingUp className="w-5 h-5 text-purple-600" />
-                    영역별 상세 점수
+                    {isEnglish ? 'Domain Scores' : '영역별 상세 점수'}
                   </h3>
                   <div className="space-y-3">
                     {resultEntries.map(([category, score]) => {
@@ -370,7 +328,7 @@ export default function AssessmentDetail() {
                     
                     {resultEntries.length === 0 && (
                       <div className="text-center py-8 text-muted-foreground">
-                        <p>표시할 점수 데이터가 없습니다.</p>
+                        <p>{isEnglish ? 'No score data to display.' : '표시할 점수 데이터가 없습니다.'}</p>
                       </div>
                     )}
                   </div>
@@ -378,12 +336,12 @@ export default function AssessmentDetail() {
                 <div>
                   <h3 className="font-semibold mb-3 flex items-center gap-2">
                     <Calendar className="w-5 h-5 text-purple-600" />
-                    검사 정보
+                    {isEnglish ? 'Test Info' : '검사 정보'}
                   </h3>
                   <div className="space-y-2 text-sm">
-                    <p><span className="font-medium">검사일:</span> {new Date(assessment.created_at).toLocaleDateString('ko-KR')}</p>
-                    <p><span className="font-medium">검사 유형:</span> 프리미엄 전문 검사</p>
-                    <p><span className="font-medium">상태:</span> 완료</p>
+                    <p><span className="font-medium">{isEnglish ? 'Date:' : '검사일:'}</span> {new Date(assessment.created_at).toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</p>
+                    <p><span className="font-medium">{isEnglish ? 'Type:' : '검사 유형:'}</span> {isEnglish ? 'Premium Professional' : '프리미엄 전문 검사'}</p>
+                    <p><span className="font-medium">{isEnglish ? 'Status:' : '상태:'}</span> {isEnglish ? 'Completed' : '완료'}</p>
                   </div>
                 </div>
               </div>
@@ -400,8 +358,8 @@ export default function AssessmentDetail() {
                   <Brain className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">심층 분석 보고서</h2>
-                  <p className="text-sm text-muted-foreground">전문가 수준의 해석 및 권장사항</p>
+                  <h2 className="text-xl font-bold">{isEnglish ? 'In-Depth Analysis Report' : '심층 분석 보고서'}</h2>
+                  <p className="text-sm text-muted-foreground">{isEnglish ? 'Expert-level interpretation & recommendations' : '전문가 수준의 해석 및 권장사항'}</p>
                 </div>
               </CardTitle>
             </CardHeader>
@@ -411,30 +369,30 @@ export default function AssessmentDetail() {
                 <div>
                   <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
                     <span className="text-2xl">📊</span>
-                    점수 해석
+                    {isEnglish ? 'Score Interpretation' : '점수 해석'}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {scoreInterpretation.normalized !== undefined && (
                       <div className="bg-blue-50 dark:bg-blue-950/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
-                        <div className="text-sm text-muted-foreground mb-1">표준화 점수</div>
+                        <div className="text-sm text-muted-foreground mb-1">{isEnglish ? 'Standardized Score' : '표준화 점수'}</div>
                         <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">{scoreInterpretation.normalized}</div>
                       </div>
                     )}
                     {scoreInterpretation.percentile !== undefined && (
                       <div className="bg-purple-50 dark:bg-purple-950/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
-                        <div className="text-sm text-muted-foreground mb-1">백분위</div>
+                        <div className="text-sm text-muted-foreground mb-1">{isEnglish ? 'Percentile' : '백분위'}</div>
                         <div className="text-2xl font-bold text-purple-700 dark:text-purple-400">{scoreInterpretation.percentile}%</div>
                       </div>
                     )}
                     {scoreInterpretation.normativeLevel && (
                       <div className="bg-green-50 dark:bg-green-950/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
-                        <div className="text-sm text-muted-foreground mb-1">규준 수준</div>
+                        <div className="text-sm text-muted-foreground mb-1">{isEnglish ? 'Normative Level' : '규준 수준'}</div>
                         <div className="text-2xl font-bold text-green-700 dark:text-green-400">{scoreInterpretation.normativeLevel}</div>
                       </div>
                     )}
                     {scoreInterpretation.tScore !== undefined && (
                       <div className="bg-orange-50 dark:bg-orange-950/20 rounded-xl p-4 border border-orange-200 dark:border-orange-800">
-                        <div className="text-sm text-muted-foreground mb-1">T 점수</div>
+                        <div className="text-sm text-muted-foreground mb-1">{isEnglish ? 'T-Score' : 'T 점수'}</div>
                         <div className="text-2xl font-bold text-orange-700 dark:text-orange-400">{scoreInterpretation.tScore}</div>
                       </div>
                     )}
@@ -443,11 +401,11 @@ export default function AssessmentDetail() {
               )}
 
               {/* 위험도 */}
-              {riskLevel && riskLevel !== '정보 없음' && (
+              {riskLevel && riskLevel !== '정보 없음' && riskLevel !== 'N/A' && (
                 <div className="border-t pt-6">
                   <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
                     <span className="text-2xl">⚠️</span>
-                    위험도 평가
+                    {isEnglish ? 'Risk Assessment' : '위험도 평가'}
                   </h3>
                   <div className={`rounded-xl p-4 border-2 ${
                     riskLevel === 'high' ? 'bg-red-50 border-red-300 dark:bg-red-950/20' :
@@ -459,7 +417,7 @@ export default function AssessmentDetail() {
                       riskLevel === 'medium' ? 'bg-orange-500' :
                       'bg-green-500'
                     } text-white text-lg px-4 py-1`}>
-                      {riskLevel === 'high' ? '높음' : riskLevel === 'medium' ? '중간' : '낮음'}
+                      {riskLevel === 'high' ? (isEnglish ? 'High' : '높음') : riskLevel === 'medium' ? (isEnglish ? 'Medium' : '중간') : (isEnglish ? 'Low' : '낮음')}
                     </Badge>
                   </div>
                 </div>
@@ -469,7 +427,7 @@ export default function AssessmentDetail() {
               <div className="border-t pt-6">
                 <h3 className="font-semibold text-base sm:text-lg mb-4 flex items-center gap-2">
                   <span className="text-xl sm:text-2xl">🤖</span>
-                  상세 분석
+                  {isEnglish ? 'Detailed Analysis' : '상세 분석'}
                 </h3>
                 <div className="prose max-w-none">
                   <div className="whitespace-pre-wrap text-foreground leading-relaxed bg-card rounded-xl p-4 sm:p-6 border border-border shadow-sm text-sm sm:text-base">
@@ -483,7 +441,7 @@ export default function AssessmentDetail() {
                 <div className="border-t pt-6">
                   <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
                     <span className="text-2xl">💡</span>
-                    전문가 권장사항
+                    {isEnglish ? 'Expert Recommendations' : '전문가 권장사항'}
                   </h3>
                   <div className="space-y-3">
                     {recommendations.map((rec: string, idx: number) => (
@@ -505,12 +463,11 @@ export default function AssessmentDetail() {
         <div className="max-w-6xl mx-auto">
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-6 text-center">
-              <h4 className="font-semibold text-blue-900 mb-2">전문 심리검사 결과 안내</h4>
+              <h4 className="font-semibold text-blue-900 mb-2">{isEnglish ? 'Professional Assessment Notice' : '전문 심리검사 결과 안내'}</h4>
               <p className="text-blue-800 text-sm leading-relaxed">
-                본 검사 결과는 전문가 지식 기반으로 작성된 참고 자료입니다. 
-                정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다.
+                {isEnglish ? 'These results are reference materials based on expert knowledge. For accurate diagnosis or treatment, please consult a professional.' : '본 검사 결과는 전문가 지식 기반으로 작성된 참고 자료입니다. 정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다.'}
               </p>
-              <p className="text-blue-600/60 text-[11px] mt-2">전문가 지식 기반 AI 엔진 분석</p>
+              <p className="text-blue-600/60 text-[11px] mt-2">{isEnglish ? 'AI Engine Analysis Based on Expert Knowledge' : '전문가 지식 기반 AI 엔진 분석'}</p>
             </CardContent>
           </Card>
         </div>

@@ -36,6 +36,7 @@ import { useToast } from "@/hooks/use-toast";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface Profile {
   id: string;
@@ -61,6 +62,7 @@ interface Observation {
 const DashboardNew = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnglish } = useLanguage();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -140,8 +142,8 @@ const DashboardNew = () => {
         allObservations.push({
           id: assessment.id,
           user_id: user.id,
-          age_group: assessment.age_group || '미분류',
-          tags: ['검사', assessment.age_group || '미분류'],
+          age_group: assessment.age_group || (isEnglish ? 'Uncategorized' : '미분류'),
+          tags: [isEnglish ? 'Test' : '검사', assessment.age_group || (isEnglish ? 'Uncategorized' : '미분류')],
           score_overall: totalScore,
           created_at: assessment.created_at,
           profile: { ...profileData, role: 'user' } as any,
@@ -191,7 +193,7 @@ const DashboardNew = () => {
         year,
         monthNum: adjustedMonth,
         monthKey: `${year}-${String(adjustedMonth).padStart(2, '0')}`,
-        monthLabel: `${adjustedMonth}월`
+        monthLabel: isEnglish ? `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][adjustedMonth-1]}` : `${adjustedMonth}월`
       });
     }
     
@@ -247,14 +249,14 @@ const DashboardNew = () => {
 
     // 평균 계산 및 색상 할당
     const colors: { [key: string]: string } = {
-      '정서': '#0ea5e9',
-      '행동': '#10b981',
-      '인지': '#f59e0b',
-      '사회성': '#8b5cf6',
-      '신체': '#ef4444',
-      '언어': '#06b6d4',
-      '감각': '#ec4899',
-      '자조': '#84cc16'
+      '정서': '#0ea5e9', 'Emotion': '#0ea5e9',
+      '행동': '#10b981', 'Behavior': '#10b981',
+      '인지': '#f59e0b', 'Cognition': '#f59e0b',
+      '사회성': '#8b5cf6', 'Social': '#8b5cf6',
+      '신체': '#ef4444', 'Physical': '#ef4444',
+      '언어': '#06b6d4', 'Language': '#06b6d4',
+      '감각': '#ec4899', 'Sensory': '#ec4899',
+      '자조': '#84cc16', 'Self-care': '#84cc16'
     };
 
     const defaultColors = ['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#ec4899', '#84cc16'];
@@ -275,7 +277,7 @@ const DashboardNew = () => {
     
     return recentTests.map((obs, idx) => {
       const dataPoint: any = {
-        name: `${idx + 1}회`,
+        name: `#${idx + 1}`,
         date: format(new Date(obs.created_at), 'MM/dd')
       };
       
@@ -289,7 +291,7 @@ const DashboardNew = () => {
       
       // 점수가 없으면 종합 점수라도 표시
       if (Object.keys(dataPoint).length === 2 && obs.score_overall > 0) {
-        dataPoint['종합'] = obs.score_overall;
+        dataPoint[isEnglish ? 'Overall' : '종합'] = obs.score_overall;
       }
       
       return dataPoint;
@@ -318,10 +320,10 @@ const DashboardNew = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-foreground">
-                개인 대시보드
+                {isEnglish ? 'Personal Dashboard' : '개인 대시보드'}
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
-                {profile?.display_name}님의 검사 데이터
+                {isEnglish ? `${profile?.display_name}'s test data` : `${profile?.display_name}님의 검사 데이터`}
               </p>
             </div>
             
@@ -332,7 +334,7 @@ const DashboardNew = () => {
                 size="sm"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                새로고침
+                {isEnglish ? 'Refresh' : '새로고침'}
               </Button>
             </div>
           </div>
@@ -344,13 +346,13 @@ const DashboardNew = () => {
                 value="overview" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-muted-foreground data-[state=active]:text-foreground"
               >
-                개요
+                {isEnglish ? 'Overview' : '개요'}
               </TabsTrigger>
               <TabsTrigger 
                 value="assessments" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-muted-foreground data-[state=active]:text-foreground"
               >
-                검사 이력 ({filteredObservations.length})
+                {isEnglish ? `History (${filteredObservations.length})` : `검사 이력 (${filteredObservations.length})`}
               </TabsTrigger>
             </TabsList>
         </div>
@@ -366,13 +368,13 @@ const DashboardNew = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    총 검사
+                    {isEnglish ? 'Total Tests' : '총 검사'}
                   </CardTitle>
                   <Users className="h-4 w-4 text-amber-500" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground">{filteredObservations.length}</div>
-                  <p className="text-xs text-muted-foreground mt-1">전체 누적 검사</p>
+                  <p className="text-xs text-muted-foreground mt-1">{isEnglish ? 'All-time total' : '전체 누적 검사'}</p>
                 </CardContent>
               </Card>
 
@@ -380,13 +382,13 @@ const DashboardNew = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    이번 달
+                    {isEnglish ? 'This Month' : '이번 달'}
                   </CardTitle>
                   <Target className="h-4 w-4 text-orange-500" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground">{recent30DaysObservations}</div>
-                  <p className="text-xs text-muted-foreground mt-1">최근 30일 검사</p>
+                  <p className="text-xs text-muted-foreground mt-1">{isEnglish ? 'Last 30 days' : '최근 30일 검사'}</p>
                 </CardContent>
               </Card>
 
@@ -394,13 +396,13 @@ const DashboardNew = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    평균 점수
+                    {isEnglish ? 'Avg Score' : '평균 점수'}
                   </CardTitle>
                   <Activity className="h-4 w-4 text-amber-400" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-foreground">{averageScore}점</div>
-                  <p className="text-xs text-muted-foreground mt-1">전체 평균</p>
+                  <div className="text-3xl font-bold text-foreground">{averageScore}{isEnglish ? 'pts' : '점'}</div>
+                  <p className="text-xs text-muted-foreground mt-1">{isEnglish ? 'Overall average' : '전체 평균'}</p>
                 </CardContent>
               </Card>
 
@@ -408,13 +410,13 @@ const DashboardNew = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    개선율
+                    {isEnglish ? 'Improvement' : '개선율'}
                   </CardTitle>
                   <TrendingUp className="h-4 w-4 text-blue-500" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground">{improvementRate.toFixed(1)}%</div>
-                  <p className="text-xs text-muted-foreground mt-1">최초 대비 개선</p>
+                  <p className="text-xs text-muted-foreground mt-1">{isEnglish ? 'vs first test' : '최초 대비 개선'}</p>
                 </CardContent>
               </Card>
 
@@ -422,13 +424,13 @@ const DashboardNew = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    활동 점수
+                    {isEnglish ? 'Activity' : '활동 점수'}
                   </CardTitle>
                   <BarChart3 className="h-4 w-4 text-green-500" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground">0.0</div>
-                  <p className="text-xs text-muted-foreground mt-1">종합 활동 지수</p>
+                  <p className="text-xs text-muted-foreground mt-1">{isEnglish ? 'Activity index' : '종합 활동 지수'}</p>
                 </CardContent>
               </Card>
             </div>
@@ -438,7 +440,7 @@ const DashboardNew = () => {
               {/* 월별 검사 추이 - 최근 3개월 */}
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-foreground">월별 검사 추이 (최근 3개월)</CardTitle>
+                  <CardTitle className="text-lg font-medium text-foreground">{isEnglish ? 'Monthly Test Trends (Last 3 Months)' : '월별 검사 추이 (최근 3개월)'}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -457,7 +459,7 @@ const DashboardNew = () => {
                         itemStyle={{ color: '#fff' }}
                       />
                       <Legend wrapperStyle={{ color: '#fff' }} />
-                      <Bar dataKey="count" fill="#fbbf24" name="검사 횟수" radius={[8, 8, 0, 0]} />
+                      <Bar dataKey="count" fill="#fbbf24" name={isEnglish ? "Tests" : "검사 횟수"} radius={[8, 8, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -465,7 +467,7 @@ const DashboardNew = () => {
 
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-foreground">영역별 평균 점수</CardTitle>
+                  <CardTitle className="text-lg font-medium text-foreground">{isEnglish ? 'Average Scores by Domain' : '영역별 평균 점수'}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {distributionData.length > 0 ? (
@@ -476,7 +478,7 @@ const DashboardNew = () => {
                           cx="50%"
                           cy="50%"
                           labelLine={false}
-                          label={({ name, value }) => `${name}\n${value}점`}
+                          label={({ name, value }) => `${name}\n${value}${isEnglish ? 'pts' : '점'}`}
                           outerRadius={100}
                           fill="#8884d8"
                           dataKey="value"
@@ -503,7 +505,7 @@ const DashboardNew = () => {
                         <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
                           <BarChart3 className="w-8 h-8 text-slate-600" />
                         </div>
-                        <p className="text-sm text-slate-500">영역별 점수 데이터가 없습니다</p>
+                        <p className="text-sm text-slate-500">{isEnglish ? 'No domain score data available' : '영역별 점수 데이터가 없습니다'}</p>
                       </div>
                     </div>
                   )}
@@ -515,7 +517,7 @@ const DashboardNew = () => {
             {categoryTimelineData.length > 0 && (
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-foreground">영역별 점수 추이 (최근 10회)</CardTitle>
+                  <CardTitle className="text-lg font-medium text-foreground">{isEnglish ? 'Score Trends by Domain (Last 10)' : '영역별 점수 추이 (최근 10회)'}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={350}>
@@ -552,7 +554,7 @@ const DashboardNew = () => {
                       {distributionData.length === 0 && (
                         <Line 
                           type="monotone" 
-                          dataKey="종합" 
+                          dataKey={isEnglish ? "Overall" : "종합"} 
                           stroke="#fbbf24"
                           strokeWidth={2}
                           dot={{ fill: '#fbbf24', r: 4 }}
@@ -573,26 +575,26 @@ const DashboardNew = () => {
             {/* Assessment Results Table */}
             <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-lg font-medium text-foreground">최근 검사 결과</CardTitle>
+                <CardTitle className="text-lg font-medium text-foreground">{isEnglish ? 'Recent Test Results' : '최근 검사 결과'}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-border">
-                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">검사일</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">연령대</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">종합 점수</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">상태</th>
-                        <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">작업</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{isEnglish ? 'Date' : '검사일'}</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{isEnglish ? 'Age Group' : '연령대'}</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{isEnglish ? 'Score' : '종합 점수'}</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{isEnglish ? 'Status' : '상태'}</th>
+                        <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">{isEnglish ? 'Actions' : '작업'}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredObservations.slice(0, 10).map((obs) => {
                         const hasScore = obs.score_overall > 0;
                         const statusText = hasScore 
-                          ? (obs.score_overall >= 80 ? '우수' : obs.score_overall >= 60 ? '양호' : '관심필요')
-                          : '분석완료';
+                          ? (obs.score_overall >= 80 ? (isEnglish ? 'Excellent' : '우수') : obs.score_overall >= 60 ? (isEnglish ? 'Good' : '양호') : (isEnglish ? 'Needs Attention' : '관심필요'))
+                          : (isEnglish ? 'Analyzed' : '분석완료');
                         const statusColor = hasScore
                           ? (obs.score_overall >= 80 
                               ? 'bg-green-900/30 text-green-400 border-green-800'
@@ -604,11 +606,11 @@ const DashboardNew = () => {
                         return (
                           <tr key={obs.id} className="border-b border-border hover:bg-muted/50 transition-colors">
                             <td className="py-3 px-4 text-sm text-foreground">
-                              {format(new Date(obs.created_at), 'yyyy. MM. dd', { locale: ko })}
+                              {format(new Date(obs.created_at), isEnglish ? 'MMM dd, yyyy' : 'yyyy. MM. dd', isEnglish ? undefined : { locale: ko })}
                             </td>
                             <td className="py-3 px-4 text-sm text-muted-foreground">{obs.age_group}</td>
                             <td className="py-3 px-4 text-sm text-foreground">
-                              {hasScore ? `${obs.score_overall}점` : '-'}
+                              {hasScore ? `${obs.score_overall}${isEnglish ? 'pts' : '점'}` : '-'}
                             </td>
                             <td className="py-3 px-4">
                               <Badge className={statusColor}>
@@ -622,8 +624,8 @@ const DashboardNew = () => {
                                   size="sm"
                                   onClick={() => {
                                     toast({ 
-                                      title: "검사 결과 보기", 
-                                      description: "검사 결과 상세 페이지로 이동합니다." 
+                                      title: isEnglish ? "View Results" : "검사 결과 보기", 
+                                      description: isEnglish ? "Navigating to detailed results." : "검사 결과 상세 페이지로 이동합니다." 
                                     });
                                     navigate(`/assessment-detail/${obs.id}`);
                                   }}
@@ -636,8 +638,8 @@ const DashboardNew = () => {
                                   size="sm"
                                   onClick={() => {
                                     toast({ 
-                                      title: "다운로드 준비 중", 
-                                      description: "검사 결과를 PDF로 다운로드합니다." 
+                                      title: isEnglish ? "Preparing Download" : "다운로드 준비 중", 
+                                      description: isEnglish ? "Downloading results as PDF." : "검사 결과를 PDF로 다운로드합니다." 
                                     });
                                   }}
                                   className="h-8 w-8 p-0"
@@ -652,7 +654,7 @@ const DashboardNew = () => {
                       {filteredObservations.length === 0 && (
                         <tr>
                           <td colSpan={5} className="py-8 text-center text-muted-foreground">
-                            아직 검사 기록이 없습니다.
+                            {isEnglish ? 'No test records yet.' : '아직 검사 기록이 없습니다.'}
                           </td>
                         </tr>
                       )}
@@ -674,8 +676,8 @@ const DashboardNew = () => {
                       <FileText className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-foreground mb-1">새로운 검사</h3>
-                      <p className="text-sm text-muted-foreground">AI 발달·심리 검사</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">{isEnglish ? 'New Test' : '새로운 검사'}</h3>
+                      <p className="text-sm text-muted-foreground">{isEnglish ? 'AI Psych Assessment' : 'AI 발달·심리 검사'}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -691,8 +693,8 @@ const DashboardNew = () => {
                       <Brain className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-foreground mb-1">맞춤형 IEP</h3>
-                      <p className="text-sm text-muted-foreground">개별교육계획 생성</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">{isEnglish ? 'Custom IEP' : '맞춤형 IEP'}</h3>
+                      <p className="text-sm text-muted-foreground">{isEnglish ? 'Generate IEP Plan' : '개별교육계획 생성'}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -708,8 +710,8 @@ const DashboardNew = () => {
                       <Heart className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-foreground mb-1">고민 저장소</h3>
-                      <p className="text-sm text-muted-foreground">AI 분석 결과 확인</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">{isEnglish ? 'Concern Storage' : '고민 저장소'}</h3>
+                      <p className="text-sm text-muted-foreground">{isEnglish ? 'View AI Analysis' : 'AI 분석 결과 확인'}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -725,8 +727,8 @@ const DashboardNew = () => {
                       <UserCheck className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-foreground mb-1">전문가 상담</h3>
-                      <p className="text-sm text-muted-foreground">1:1 전문가 상담</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">{isEnglish ? 'Expert Consult' : '전문가 상담'}</h3>
+                      <p className="text-sm text-muted-foreground">{isEnglish ? '1:1 Expert Session' : '1:1 전문가 상담'}</p>
                     </div>
                   </div>
                 </CardContent>

@@ -290,7 +290,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
                 <div className="space-y-2">
                   <Progress value={percentage} className="h-2" />
                   <div className="text-sm text-muted-foreground">
-                    {item.score}/{item.fullMark}점 ({Math.round(percentage)}%)
+                    {item.score}/{item.fullMark}{isEnglish ? ' pts' : '점'} ({Math.round(percentage)}%)
                   </div>
                 </div>
               </div>

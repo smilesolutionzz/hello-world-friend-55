@@ -320,8 +320,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
                 </div>
                 <div className="absolute inset-0 rounded-full border-4 border-purple-300 border-t-transparent animate-spin" />
               </div>
-              <p className="mt-4 font-medium text-purple-700">AI가 심층 분석 중입니다...</p>
-              <p className="text-sm text-purple-500">3000자 이상의 상세한 분석을 생성하고 있습니다</p>
+              <p className="mt-4 font-medium text-purple-700">{isEnglish ? 'AI is analyzing...' : 'AI가 심층 분석 중입니다...'}</p>
+              <p className="text-sm text-purple-500">{isEnglish ? 'Generating detailed analysis' : '3000자 이상의 상세한 분석을 생성하고 있습니다'}</p>
             </div>
           ) : (
             <div className="bg-white/80 rounded-xl p-5 border border-purple-100 shadow-inner">

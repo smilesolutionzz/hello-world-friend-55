@@ -85,7 +85,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
     if (pct >= 70) return isEnglish ? 'Severe' : '심각';
     if (pct >= 50) return isEnglish ? 'Moderate' : '보통';
     if (pct >= 30) return isEnglish ? 'Mild' : '경미';
-    return isEnglish ? 'Normal' : isEnglish ? 'Normal' : '정상';
+    return isEnglish ? 'Normal' : '정상';
   };
 
   const domains: DomainScore[] = [

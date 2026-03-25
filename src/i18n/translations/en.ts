@@ -234,8 +234,8 @@ const en = {
 
   // SEO
   seo: {
-    title: 'AIHPRO | AI-Powered Integrated Care Platform - Lifelong Health Management',
-    description: 'Complete your AI psychological assessment in 3 minutes. From ADHD, depression, and stress tests to expert counseling. Lifelong integrated care with verified professionals.',
+    title: 'AIHPRO | Free 3-Min Child Development Test — ADHD, Speech Delay, Autism AI Assessment',
+    description: 'Worried your child is falling behind? Get a free 3-minute AI development assessment for ADHD, speech delay, and social skills — expert-level analysis without the 6-month hospital wait.',
   },
 
   // Core Services (SimplifiedCoreServices)

@@ -401,11 +401,11 @@ export default function AssessmentDetail() {
               )}
 
               {/* 위험도 */}
-              {riskLevel && riskLevel !== '정보 없음' && (
+              {riskLevel && riskLevel !== '정보 없음' && riskLevel !== 'N/A' && (
                 <div className="border-t pt-6">
                   <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
                     <span className="text-2xl">⚠️</span>
-                    위험도 평가
+                    {isEnglish ? 'Risk Assessment' : '위험도 평가'}
                   </h3>
                   <div className={`rounded-xl p-4 border-2 ${
                     riskLevel === 'high' ? 'bg-red-50 border-red-300 dark:bg-red-950/20' :
@@ -417,7 +417,7 @@ export default function AssessmentDetail() {
                       riskLevel === 'medium' ? 'bg-orange-500' :
                       'bg-green-500'
                     } text-white text-lg px-4 py-1`}>
-                      {riskLevel === 'high' ? '높음' : riskLevel === 'medium' ? '중간' : '낮음'}
+                      {riskLevel === 'high' ? (isEnglish ? 'High' : '높음') : riskLevel === 'medium' ? (isEnglish ? 'Medium' : '중간') : (isEnglish ? 'Low' : '낮음')}
                     </Badge>
                   </div>
                 </div>

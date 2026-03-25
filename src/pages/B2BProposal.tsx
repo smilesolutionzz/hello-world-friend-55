@@ -92,7 +92,18 @@ const B2BProposal = () => {
               </Badge>
             </motion.div>
             <motion.h1 variants={fadeUp} custom={1} className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              "ADHD 검사" 검색한 유저가<br />
+              "<AnimatePresence mode="wait">
+                <motion.span
+                  key={kwIndex}
+                  initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -20, filter: 'blur(8px)' }}
+                  transition={{ duration: 0.5 }}
+                  className="inline-block text-amber-400"
+                >
+                  {ROTATING_KEYWORDS[kwIndex]}
+                </motion.span>
+              </AnimatePresence>" 검색한 유저가<br />
               <span className="text-indigo-400">내 센터를 바로 찾게 하세요</span>
             </motion.h1>
             <motion.p variants={fadeUp} custom={2} className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-4">

@@ -208,7 +208,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
             </div>
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">{isEnglish ? 'Age' : '연령'}</p>
-              <p className="text-2xl font-bold">{age}개월</p>
+              <p className="text-2xl font-bold">{age}{isEnglish ? ' months' : '개월'}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">{isEnglish ? 'Result' : '평가 결과'}</p>

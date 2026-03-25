@@ -174,10 +174,10 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   };
 
   const domainDetails = [
-    { name: isEnglish ? 'Receptive' : '수용언어', rate: receptiveRate, desc: '다른 사람의 말을 듣고 이해하는 능력이에요. 지시 따르기, 이름에 반응하기 등이 포함됩니다.', emoji: '👂' },
-    { name: isEnglish ? 'Expressive' : '표현언어', rate: expressiveRate, desc: '자신의 생각과 감정을 말로 표현하는 능력이에요. 단어 사용, 문장 구성 등이 포함됩니다.', emoji: '🗣️' },
-    { name: isEnglish ? 'Comprehension' : '언어이해', rate: comprehensionRate, desc: '문장의 의미를 파악하고 상황을 이해하는 능력이에요. 복잡한 지시나 이야기 이해가 포함됩니다.', emoji: '💡' },
-    { name: isEnglish ? 'Vocabulary' : '어휘력', rate: vocabularyRate, desc: '알고 있는 단어의 양과 적절하게 사용하는 능력이에요. 새로운 단어 습득력도 반영됩니다.', emoji: '📚' },
+    { name: isEnglish ? 'Receptive' : '수용언어', rate: receptiveRate, desc: isEnglish ? 'Ability to listen and understand others. Includes following instructions and responding to name.' : '다른 사람의 말을 듣고 이해하는 능력이에요. 지시 따르기, 이름에 반응하기 등이 포함됩니다.', emoji: '👂' },
+    { name: isEnglish ? 'Expressive' : '표현언어', rate: expressiveRate, desc: isEnglish ? 'Ability to express thoughts and feelings verbally. Includes word usage and sentence formation.' : '자신의 생각과 감정을 말로 표현하는 능력이에요. 단어 사용, 문장 구성 등이 포함됩니다.', emoji: '🗣️' },
+    { name: isEnglish ? 'Comprehension' : '언어이해', rate: comprehensionRate, desc: isEnglish ? 'Ability to understand sentence meaning and context. Includes complex instructions and story comprehension.' : '문장의 의미를 파악하고 상황을 이해하는 능력이에요. 복잡한 지시나 이야기 이해가 포함됩니다.', emoji: '💡' },
+    { name: isEnglish ? 'Vocabulary' : '어휘력', rate: vocabularyRate, desc: isEnglish ? 'Vocabulary size and appropriate word usage. Also reflects new word acquisition ability.' : '알고 있는 단어의 양과 적절하게 사용하는 능력이에요. 새로운 단어 습득력도 반영됩니다.', emoji: '📚' },
   ];
 
   const handleExpertConsult = () => {

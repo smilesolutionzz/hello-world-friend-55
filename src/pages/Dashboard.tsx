@@ -333,7 +333,7 @@ const DashboardNew = () => {
                 size="sm"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                새로고침
+                {isEnglish ? 'Refresh' : '새로고침'}
               </Button>
             </div>
           </div>

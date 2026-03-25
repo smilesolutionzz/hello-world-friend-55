@@ -186,9 +186,9 @@ const ExpertContract = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">전문가를 찾을 수 없습니다</h2>
+          <h2 className="text-2xl font-bold mb-2">{isEnglish ? 'Expert not found' : '전문가를 찾을 수 없습니다'}</h2>
           <Button onClick={() => navigate('/expert-hiring')}>
-            전문가 목록으로 돌아가기
+            {isEnglish ? 'Back to Expert List' : '전문가 목록으로 돌아가기'}
           </Button>
         </div>
       </div>

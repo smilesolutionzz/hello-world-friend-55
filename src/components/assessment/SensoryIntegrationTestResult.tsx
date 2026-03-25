@@ -61,15 +61,16 @@ const SensoryIntegrationTestResult = ({ results, onBack }: SensoryIntegrationTes
     fetch();
   }, []);
 
-  // Higher % = more concern (inverted scale)
   const getColor = (pct: number) => pct >= 75 ? 'bg-destructive' : pct >= 50 ? 'bg-orange-500' : pct >= 25 ? 'bg-yellow-500' : 'bg-green-500';
-  const getLevel = (pct: number) => pct >= 75 ? (isEnglish ? 'Severe' : isEnglish ? 'Severe' : '심각') : pct >= 50 ? (isEnglish ? 'Moderate' : isEnglish ? 'Moderate' : '중등도') : pct >= 25 ? (isEnglish ? 'Mild' : '경미') : (isEnglish ? 'Normal' : isEnglish ? 'Normal' : '정상');
+  const getLevel = (pct: number) => pct >= 75 ? (isEnglish ? 'Severe' : '심각') : pct >= 50 ? (isEnglish ? 'Moderate' : '중등도') : pct >= 25 ? (isEnglish ? 'Mild' : '경미') : (isEnglish ? 'Normal' : '정상');
 
   const domains: DomainScore[] = domainScores.map(d => ({
     key: d.key, label: d.label, score: d.pct, maxScore: 100, level: getLevel(d.pct), color: getColor(d.pct),
   }));
 
-  const severityColor = results.severity === (isEnglish ? 'Severe' : '심각') ? 'text-destructive border-destructive/30' : results.severity === (isEnglish ? 'Moderate' : '중등도') ? 'text-orange-600 border-orange-300' : results.severity === '경미' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
+  const severityMap: Record<string, string> = { '심각': 'Severe', '중등도': 'Moderate', '경미': 'Mild', '정상': 'Normal' };
+  const displaySeverity = isEnglish ? (severityMap[results.severity] || results.severity) : results.severity;
+  const severityColor = results.severity === '심각' || results.severity === 'Severe' ? 'text-destructive border-destructive/30' : results.severity === '중등도' || results.severity === 'Moderate' ? 'text-orange-600 border-orange-300' : results.severity === '경미' || results.severity === 'Mild' ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
 
   const parseAISections = (text: string): ReportSection[] => {
     if (!text) return [];
@@ -79,7 +80,7 @@ const SensoryIntegrationTestResult = ({ results, onBack }: SensoryIntegrationTes
       ? ['Overview', 'Domain Analysis', 'Risk Areas', 'Strengths', 'Recommendations', 'Practice Guide', 'Expert Opinion']
       : ['종합 분석', '영역별 해석', '위험 영역', '강점 영역', '발달 지원', '실천 가이드', '전문가 소견'];
     return paras.slice(0, 7).map((p, idx) => ({
-      id: `s-${idx}`, icon: icons[idx] || '📋', title: titles[idx] || `분석 ${idx + 1}`,
+      id: `s-${idx}`, icon: icons[idx] || '📋', title: titles[idx] || (isEnglish ? `Analysis ${idx + 1}` : `분석 ${idx + 1}`),
       content: p, defaultOpen: idx === 0,
     }));
   };
@@ -104,7 +105,7 @@ const SensoryIntegrationTestResult = ({ results, onBack }: SensoryIntegrationTes
       totalScore={results.total}
       totalLabel={isEnglish ? 'Total Score' : '총점'}
       scoreUnit={`/ ${results.answers.length * 4}`}
-      scoreSeverity={results.severity}
+      scoreSeverity={displaySeverity}
       severityColor={severityColor}
       domains={domains}
       aiAnalysis={analysis}

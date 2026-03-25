@@ -67,7 +67,7 @@ export default function LifePurposeTestResult({ results, onBack }: LifePurposeTe
     color: getColor(score),
   }));
 
-  const severityColor = clarityLevel === '매우 높음' ? 'text-green-600 border-green-300' : clarityLevel === '높음' ? 'text-primary border-primary/30' : clarityLevel === '보통' ? 'text-yellow-600 border-yellow-300' : 'text-orange-600 border-orange-300';
+  const severityColor = (clarityLevel === '매우 높음' || clarityLevel === 'Very High') ? 'text-green-600 border-green-300' : (clarityLevel === '높음' || clarityLevel === 'High') ? 'text-primary border-primary/30' : (clarityLevel === '보통' || clarityLevel === 'Average') ? 'text-yellow-600 border-yellow-300' : 'text-orange-600 border-orange-300';
 
   const parseAISections = (text: string): ReportSection[] => {
     if (!text) return [];

@@ -174,10 +174,10 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   };
 
   const domainDetails = [
-    { name: isEnglish ? 'Receptive' : '수용언어', rate: receptiveRate, desc: '다른 사람의 말을 듣고 이해하는 능력이에요. 지시 따르기, 이름에 반응하기 등이 포함됩니다.', emoji: '👂' },
-    { name: isEnglish ? 'Expressive' : '표현언어', rate: expressiveRate, desc: '자신의 생각과 감정을 말로 표현하는 능력이에요. 단어 사용, 문장 구성 등이 포함됩니다.', emoji: '🗣️' },
-    { name: isEnglish ? 'Comprehension' : '언어이해', rate: comprehensionRate, desc: '문장의 의미를 파악하고 상황을 이해하는 능력이에요. 복잡한 지시나 이야기 이해가 포함됩니다.', emoji: '💡' },
-    { name: isEnglish ? 'Vocabulary' : '어휘력', rate: vocabularyRate, desc: '알고 있는 단어의 양과 적절하게 사용하는 능력이에요. 새로운 단어 습득력도 반영됩니다.', emoji: '📚' },
+    { name: isEnglish ? 'Receptive' : '수용언어', rate: receptiveRate, desc: isEnglish ? 'Ability to listen and understand others. Includes following instructions and responding to name.' : '다른 사람의 말을 듣고 이해하는 능력이에요. 지시 따르기, 이름에 반응하기 등이 포함됩니다.', emoji: '👂' },
+    { name: isEnglish ? 'Expressive' : '표현언어', rate: expressiveRate, desc: isEnglish ? 'Ability to express thoughts and feelings verbally. Includes word usage and sentence formation.' : '자신의 생각과 감정을 말로 표현하는 능력이에요. 단어 사용, 문장 구성 등이 포함됩니다.', emoji: '🗣️' },
+    { name: isEnglish ? 'Comprehension' : '언어이해', rate: comprehensionRate, desc: isEnglish ? 'Ability to understand sentence meaning and context. Includes complex instructions and story comprehension.' : '문장의 의미를 파악하고 상황을 이해하는 능력이에요. 복잡한 지시나 이야기 이해가 포함됩니다.', emoji: '💡' },
+    { name: isEnglish ? 'Vocabulary' : '어휘력', rate: vocabularyRate, desc: isEnglish ? 'Vocabulary size and appropriate word usage. Also reflects new word acquisition ability.' : '알고 있는 단어의 양과 적절하게 사용하는 능력이에요. 새로운 단어 습득력도 반영됩니다.', emoji: '📚' },
   ];
 
   const handleExpertConsult = () => {
@@ -204,11 +204,11 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">{isEnglish ? 'Total' : '총점'}</p>
-              <p className="text-2xl font-bold">{total}점</p>
+              <p className="text-2xl font-bold">{total}{isEnglish ? 'pts' : '점'}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">{isEnglish ? 'Age' : '연령'}</p>
-              <p className="text-2xl font-bold">{age}개월</p>
+              <p className="text-2xl font-bold">{age}{isEnglish ? ' months' : '개월'}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">{isEnglish ? 'Result' : '평가 결과'}</p>
@@ -235,23 +235,23 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           <div className="grid md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Language Score' : '언어발달 점수'}</p>
-              <p className="text-3xl font-bold text-blue-900">{total}점 / 60점</p>
-              <p className="text-sm text-blue-600 mt-1">만점 대비 {Math.round((total/60)*100)}%</p>
+              <p className="text-3xl font-bold text-blue-900">{total}{isEnglish ? 'pts' : '점'} / 60{isEnglish ? 'pts' : '점'}</p>
+              <p className="text-sm text-blue-600 mt-1">{isEnglish ? `${Math.round((total/60)*100)}% of max` : `만점 대비 ${Math.round((total/60)*100)}%`}</p>
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Result' : '평가 결과'}</p>
               <p className={`text-2xl font-bold ${evaluation.color}`}>{evaluation.level}</p>
-              <p className="text-sm text-blue-600 mt-1">점수 범위: {evaluation.range}</p>
+              <p className="text-sm text-blue-600 mt-1">{isEnglish ? 'Range' : '점수 범위'}: {evaluation.range}</p>
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">{isEnglish ? 'Current Age' : '현재 개월수'}</p>
-              <p className="text-2xl font-bold text-blue-900">{age}개월</p>
-              <p className="text-sm text-blue-600 mt-1">연령대: {ageGroup}</p>
+              <p className="text-2xl font-bold text-blue-900">{age}{isEnglish ? ' months' : '개월'}</p>
+              <p className="text-sm text-blue-600 mt-1">{isEnglish ? 'Age Group' : '연령대'}: {ageGroup}</p>
             </div>
           </div>
           
           <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">📊 언어발달 점수 분류 기준</h4>
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">{isEnglish ? '📊 Score Classification' : '📊 언어발달 점수 분류 기준'}</h4>
             <div className="grid md:grid-cols-3 gap-4">
               <div className="p-4 bg-red-50 rounded-lg border border-red-200">
                 <p className="font-semibold text-red-800">{isEnglish ? 'Attention Needed (0-24)' : '주의 필요 (0-24점)'}</p>
@@ -269,7 +269,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           </div>
 
           <div className="p-4 md:p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg border border-purple-200 dark:border-purple-800">
-            <h4 className="text-lg md:text-xl font-semibold text-purple-800 dark:text-purple-300 mb-4">🔍 전문가 상세 해석</h4>
+            <h4 className="text-lg md:text-xl font-semibold text-purple-800 dark:text-purple-300 mb-4">{isEnglish ? '🔍 Expert Detailed Interpretation' : '🔍 전문가 상세 해석'}</h4>
             <div className="prose prose-sm md:prose-base prose-purple dark:prose-invert max-w-none">
               <ReactMarkdown
                 components={{
@@ -325,7 +325,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
 
         {/* 영역별 상세 설명 */}
         <div className="mt-8 space-y-3">
-          <h4 className="text-base font-semibold text-foreground mb-4">📋 영역별 상세 해석</h4>
+          <h4 className="text-base font-semibold text-foreground mb-4">{isEnglish ? '📋 Detailed Domain Analysis' : '📋 영역별 상세 해석'}</h4>
           {domainDetails.map((domain) => {
             const level = getDomainLevel(domain.rate);
             return (
@@ -357,21 +357,21 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         <Card className="p-6">
           <h3 className="font-semibold mb-4">{isEnglish ? 'Expert Consultation' : '전문가 상담'}</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            더 자세한 분석과 상담이 필요하시다면 전문가와 연결해드립니다.
+            {isEnglish ? 'Connect with a professional for detailed analysis and consultation.' : '더 자세한 분석과 상담이 필요하시다면 전문가와 연결해드립니다.'}
           </p>
           <Button 
             onClick={handleExpertConsult}
             className="w-full btn-brand flex items-center gap-2"
           >
             <ExternalLink className="w-4 h-4" />
-            전문가 상담 연결
+            {isEnglish ? 'Connect with Expert' : '전문가 상담 연결'}
           </Button>
         </Card>
 
         <Card className="p-6">
           <h3 className="font-semibold mb-4 text-foreground">{isEnglish ? 'Save & Share' : '결과 저장 및 공유'}</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            검사 결과를 이미지로 저장하세요.
+            {isEnglish ? 'Save your test results as an image.' : '검사 결과를 이미지로 저장하세요.'}
           </p>
           <div className="space-y-2">
             <Button 
@@ -437,16 +437,16 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               <UserCheck className="w-8 h-8 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-foreground mb-1">언어 전문가 상담 받기</h4>
+              <h4 className="font-semibold text-foreground mb-1">{isEnglish ? 'Get Language Expert Consultation' : '언어 전문가 상담 받기'}</h4>
               <p className="text-sm text-muted-foreground mb-3">
-                언어발달 검사 결과를 바탕으로 전문가 상담을 받아보세요.
+                {isEnglish ? 'Get expert consultation based on your language development test results.' : '언어발달 검사 결과를 바탕으로 전문가 상담을 받아보세요.'}
               </p>
               <Button 
                 onClick={() => navigate('/expert-hiring')}
                 className="gap-2"
               >
                 <ExternalLink className="w-4 h-4" />
-                언어치료사 연결
+                {isEnglish ? 'Connect with Speech Therapist' : '언어치료사 연결'}
               </Button>
             </div>
           </div>

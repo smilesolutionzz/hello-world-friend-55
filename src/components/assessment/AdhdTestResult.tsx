@@ -199,7 +199,7 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
               hyperactivity: isEnglish ? 'Hyperactivity' : '과잉행동',
             },
             aiSummary: aiAnalysis,
-            riskLevel: severity === '심각한 수준' || severity === '중등도 수준' ? 'high' : severity === '경계선 수준' ? 'moderate' : 'low',
+            riskLevel: severity === '심각한 수준' || severity === 'Severe' || severity === '중등도 수준' || severity === 'Moderate' ? 'high' : severity === '경계선 수준' || severity === 'Borderline' ? 'moderate' : 'low',
           }}
         />
       </div>

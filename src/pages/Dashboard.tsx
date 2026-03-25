@@ -692,8 +692,8 @@ const DashboardNew = () => {
                       <Brain className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-foreground mb-1">맞춤형 IEP</h3>
-                      <p className="text-sm text-muted-foreground">개별교육계획 생성</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">{isEnglish ? 'Custom IEP' : '맞춤형 IEP'}</h3>
+                      <p className="text-sm text-muted-foreground">{isEnglish ? 'Generate IEP Plan' : '개별교육계획 생성'}</p>
                     </div>
                   </div>
                 </CardContent>

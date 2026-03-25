@@ -212,9 +212,9 @@ export default function AssessmentDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">검사 결과를 찾을 수 없습니다</h2>
+          <h2 className="text-2xl font-bold mb-4">{isEnglish ? 'Results not found' : '검사 결과를 찾을 수 없습니다'}</h2>
           <Button onClick={() => navigate('/assessment')}>
-            뒤로가기
+            {isEnglish ? 'Go Back' : '뒤로가기'}
           </Button>
         </div>
       </div>

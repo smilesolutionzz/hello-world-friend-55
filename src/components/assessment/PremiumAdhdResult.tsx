@@ -141,26 +141,26 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
 
   // 차트 데이터 준비
   const scoreChartData = [
-    { name: '부주의', score: results.scores.inattention, fullMark: 200 },
-    { name: '과잉행동', score: results.scores.hyperactivity, fullMark: 200 },
-    { name: '충동성', score: results.scores.impulsivity, fullMark: 200 },
-    { name: '실행기능', score: results.scores.executiveDysfunction, fullMark: 200 },
-    { name: '동반증상', score: results.scores.comorbidity, fullMark: 100 },
-    { name: '기능수준', score: results.scores.functionalImpairment, fullMark: 100 }
+    { name: isEnglish ? 'Inattention' : '부주의', score: results.scores.inattention, fullMark: 200 },
+    { name: isEnglish ? 'Hyperactivity' : '과잉행동', score: results.scores.hyperactivity, fullMark: 200 },
+    { name: isEnglish ? 'Impulsivity' : '충동성', score: results.scores.impulsivity, fullMark: 200 },
+    { name: isEnglish ? 'Executive Function' : '실행기능', score: results.scores.executiveDysfunction, fullMark: 200 },
+    { name: isEnglish ? 'Comorbidity' : '동반증상', score: results.scores.comorbidity, fullMark: 100 },
+    { name: isEnglish ? 'Functioning' : '기능수준', score: results.scores.functionalImpairment, fullMark: 100 }
   ];
 
   const radarChartData = [
-    { subject: '부주의', score: (results.scores.inattention / 200) * 100, fullMark: 100 },
-    { subject: '과잉행동', score: (results.scores.hyperactivity / 200) * 100, fullMark: 100 },
-    { subject: '충동성', score: (results.scores.impulsivity / 200) * 100, fullMark: 100 },
-    { subject: '실행기능', score: (results.scores.executiveDysfunction / 200) * 100, fullMark: 100 }
+    { subject: isEnglish ? 'Inattention' : '부주의', score: (results.scores.inattention / 200) * 100, fullMark: 100 },
+    { subject: isEnglish ? 'Hyperactivity' : '과잉행동', score: (results.scores.hyperactivity / 200) * 100, fullMark: 100 },
+    { subject: isEnglish ? 'Impulsivity' : '충동성', score: (results.scores.impulsivity / 200) * 100, fullMark: 100 },
+    { subject: isEnglish ? 'Executive Function' : '실행기능', score: (results.scores.executiveDysfunction / 200) * 100, fullMark: 100 }
   ];
 
   const barChartData = [
-    { category: '부주의', score: results.scores.inattention },
-    { category: '과잉행동', score: results.scores.hyperactivity },
-    { category: '충동성', score: results.scores.impulsivity },
-    { category: '실행기능', score: results.scores.executiveDysfunction }
+    { category: isEnglish ? 'Inattention' : '부주의', score: results.scores.inattention },
+    { category: isEnglish ? 'Hyperactivity' : '과잉행동', score: results.scores.hyperactivity },
+    { category: isEnglish ? 'Impulsivity' : '충동성', score: results.scores.impulsivity },
+    { category: isEnglish ? 'Executive Function' : '실행기능', score: results.scores.executiveDysfunction }
   ];
 
   return (

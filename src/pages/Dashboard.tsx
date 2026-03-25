@@ -581,11 +581,11 @@ const DashboardNew = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-border">
-                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">검사일</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">연령대</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">종합 점수</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">상태</th>
-                        <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">작업</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{isEnglish ? 'Date' : '검사일'}</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{isEnglish ? 'Age Group' : '연령대'}</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{isEnglish ? 'Score' : '종합 점수'}</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{isEnglish ? 'Status' : '상태'}</th>
+                        <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">{isEnglish ? 'Actions' : '작업'}</th>
                       </tr>
                     </thead>
                     <tbody>

@@ -124,10 +124,10 @@ const B2BProposal = () => {
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
-              { icon: FileText, title: '서류 업무 과부하', desc: '바우처 서류, 일지 작성에 매일 2시간 이상 소모' },
-              { icon: Users, title: '보호자 소통 부담', desc: '변화를 설명하기 어렵고, 민원이 반복됨' },
-              { icon: Activity, title: '변화 추적 어려움', desc: '이용자 상태 변화를 객관적으로 증빙할 수 없음' },
-              { icon: TrendingUp, title: '재등록률 정체', desc: '차별화된 프로그램 없이 경쟁 심화' },
+              { icon: FileText, title: '사례관리 기록 지옥', desc: '이용자마다 사례관리 기록지 작성에 매번 30분 이상' },
+              { icon: Clock, title: '프로그램 일지 야근', desc: '프로그램 운영일지 쓰느라 퇴근 후 1~2시간 추가 근무' },
+              { icon: Users, title: '바우처 서류 부담', desc: '정부 양식에 맞춘 바우처 제공기록지 작성이 복잡' },
+              { icon: Activity, title: '보호자 리포트 요청', desc: '보호자가 변화 리포트를 요구하지만 만들 시간이 없음' },
             ].map((item, i) => (
               <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
                 <Card className="h-full border-slate-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300 bg-white">

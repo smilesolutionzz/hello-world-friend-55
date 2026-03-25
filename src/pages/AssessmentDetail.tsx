@@ -369,7 +369,7 @@ export default function AssessmentDetail() {
                 <div>
                   <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
                     <span className="text-2xl">📊</span>
-                    점수 해석
+                    {isEnglish ? 'Score Interpretation' : '점수 해석'}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {scoreInterpretation.normalized !== undefined && (

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Brain } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface AnalysisLoadingScreenProps {
   testName: string;
@@ -7,7 +8,7 @@ interface AnalysisLoadingScreenProps {
   tips?: { label: string; text: string }[];
 }
 
-const DEFAULT_TIPS = [
+const DEFAULT_TIPS_KO = [
   { label: '감각', text: '감각처리 특성은 개인마다 다르게 나타납니다.' },
   { label: '인지', text: '인지 패턴은 환경과 경험에 따라 달라질 수 있습니다.' },
   { label: '정서', text: '정서 조절 능력은 훈련을 통해 향상될 수 있습니다.' },
@@ -16,11 +17,27 @@ const DEFAULT_TIPS = [
   { label: '스트레스', text: '적절한 스트레스는 성장의 원동력이 됩니다.' },
 ];
 
-const STAGES = [
+const DEFAULT_TIPS_EN = [
+  { label: 'Sensory', text: 'Sensory processing characteristics vary from person to person.' },
+  { label: 'Cognitive', text: 'Cognitive patterns can change based on environment and experience.' },
+  { label: 'Emotional', text: 'Emotional regulation skills can be improved through practice.' },
+  { label: 'Relational', text: 'Interpersonal patterns are influenced by early attachment experiences.' },
+  { label: 'Behavioral', text: 'Behavioral change is most effective when starting with small habits.' },
+  { label: 'Stress', text: 'Healthy levels of stress can be a driving force for growth.' },
+];
+
+const STAGES_KO = [
   { label: '데이터 수집', pct: 0 },
   { label: '패턴 분석', pct: 25 },
   { label: 'AI 해석', pct: 55 },
   { label: '리포트 생성', pct: 85 },
+];
+
+const STAGES_EN = [
+  { label: 'Data Collection', pct: 0 },
+  { label: 'Pattern Analysis', pct: 25 },
+  { label: 'AI Interpretation', pct: 55 },
+  { label: 'Report Generation', pct: 85 },
 ];
 
 const AnalysisLoadingScreen = ({
@@ -28,9 +45,11 @@ const AnalysisLoadingScreen = ({
   estimatedSeconds = 20,
   tips,
 }: AnalysisLoadingScreenProps) => {
+  const { isEnglish } = useLanguage();
   const [elapsed, setElapsed] = useState(0);
   const [tipIdx, setTipIdx] = useState(0);
-  const activeTips = tips || DEFAULT_TIPS;
+  const activeTips = tips || (isEnglish ? DEFAULT_TIPS_EN : DEFAULT_TIPS_KO);
+  const STAGES = isEnglish ? STAGES_EN : STAGES_KO;
 
   useEffect(() => {
     const timer = setInterval(() => setElapsed(p => p + 1), 1000);
@@ -50,7 +69,7 @@ const AnalysisLoadingScreen = ({
       if (progress >= STAGES[i].pct) return i;
     }
     return 0;
-  }, [progress]);
+  }, [progress, STAGES]);
 
   const currentTip = activeTips[tipIdx];
 
@@ -67,9 +86,11 @@ const AnalysisLoadingScreen = ({
 
         {/* Title */}
         <div className="text-center space-y-1.5">
-          <h2 className="text-xl font-bold text-foreground">{testName} 분석 중</h2>
+          <h2 className="text-xl font-bold text-foreground">
+            {isEnglish ? `Analyzing ${testName}` : `${testName} 분석 중`}
+          </h2>
           <p className="text-sm text-muted-foreground">
-            전문적인 AI가 검사 결과를 심층 분석하고 있습니다...
+            {isEnglish ? 'Our AI is performing an in-depth analysis of your results...' : '전문적인 AI가 검사 결과를 심층 분석하고 있습니다...'}
           </p>
         </div>
 
@@ -85,11 +106,11 @@ const AnalysisLoadingScreen = ({
           {/* Time + Countdown */}
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground flex items-center gap-1.5">
-              <span className="text-xs">⏱</span> 예상 남은 시간
+              <span className="text-xs">⏱</span> {isEnglish ? 'Est. time remaining' : '예상 남은 시간'}
             </span>
             <div className="flex items-baseline gap-0.5">
               <span className="text-2xl font-bold text-foreground">{timeLeft}</span>
-              <span className="text-sm text-muted-foreground">초</span>
+              <span className="text-sm text-muted-foreground">{isEnglish ? 'sec' : '초'}</span>
             </div>
           </div>
         </div>
@@ -132,7 +153,7 @@ const AnalysisLoadingScreen = ({
 
       {/* Disclaimer */}
       <p className="text-xs text-muted-foreground/60 mt-6 text-center max-w-sm">
-        💡 검사 결과는 참고용이며, 전문가 상담과 함께 활용하시면 더 좋습니다.
+        💡 {isEnglish ? 'Results are for reference only. We recommend consulting with a professional.' : '검사 결과는 참고용이며, 전문가 상담과 함께 활용하시면 더 좋습니다.'}
       </p>
     </div>
   );

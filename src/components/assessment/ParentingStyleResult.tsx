@@ -102,12 +102,12 @@ const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) =>
 
   return (
     <ClinicalReportLayout
-      testName="부모양육태도 검사 결과"
-      subtitle="과학적 양육태도 심층분석"
+      testName={isEnglish ? "Parenting Style Assessment Results" : "부모양육태도 검사 결과"}
+      subtitle={isEnglish ? "Scientific Parenting Style Analysis" : "과학적 양육태도 심층분석"}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={avg.toFixed(1)}
-      totalLabel="평균 점수"
+      totalLabel={isEnglish ? "Average Score" : "평균 점수"}
       scoreUnit="/ 4.0"
       scoreSeverity={getLevel(avg)}
       severityColor={avg >= 3.5 ? 'text-green-600 border-green-300' : avg >= 2.5 ? 'text-yellow-600 border-yellow-300' : 'text-orange-600 border-orange-300'}

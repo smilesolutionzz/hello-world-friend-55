@@ -86,10 +86,10 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
 
   const getLevel = (score: number, max: number) => {
     const pct = (score / max) * 100;
-    if (pct >= 75) return isEnglish ? 'Severe' : isEnglish ? 'Severe' : '심각';
+    if (pct >= 75) return isEnglish ? 'Severe' : '심각';
     if (pct >= 50) return isEnglish ? 'Moderate' : '보통';
     if (pct >= 25) return isEnglish ? 'Mild' : '경미';
-    return isEnglish ? 'Normal' : isEnglish ? 'Normal' : '정상';
+    return isEnglish ? 'Normal' : '정상';
   };
 
   const domains: DomainScore[] = [
@@ -131,24 +131,30 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
 
   const aiSections = parseAnalysisSections(aiAnalysis);
   const severityText = severity || (isEnglish ? 'Checking' : '확인 중');
-  const severityColor = severity === '심각한 수준' ? 'text-destructive border-destructive/30'
-    : severity === '중등도 수준' ? 'text-orange-600 border-orange-300'
-    : severity === '경계선 수준' ? 'text-yellow-600 border-yellow-300'
+  const severityMap: Record<string, string> = isEnglish
+    ? { '심각한 수준': 'Severe', '중등도 수준': 'Moderate', '경계선 수준': 'Borderline', '정상 범위': 'Normal' }
+    : {};
+  const displaySeverity = (isEnglish && severityMap[severityText]) ? severityMap[severityText] : severityText;
+  const severityColor = severity === '심각한 수준' || severity === 'Severe' ? 'text-destructive border-destructive/30'
+    : severity === '중등도 수준' || severity === 'Moderate' ? 'text-orange-600 border-orange-300'
+    : severity === '경계선 수준' || severity === 'Borderline' ? 'text-yellow-600 border-yellow-300'
     : 'text-green-600 border-green-300';
 
   const handleDownload = async () => {
     await downloadResultAsPDF(
       'clinical-report-content',
-      'ADHD_자가체크_결과',
+      isEnglish ? 'ADHD_Self_Check_Results' : 'ADHD_자가체크_결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
   };
 
   const handleShare = async () => {
-    const text = `ADHD 자가체크 결과\n총점: ${safeTotal}점\n상태: ${severity}`;
+    const text = isEnglish 
+      ? `ADHD Self-Check Results\nTotal: ${safeTotal} pts\nLevel: ${displaySeverity}`
+      : `ADHD 자가체크 결과\n총점: ${safeTotal}점\n상태: ${severity}`;
     if (navigator.share) {
-      await navigator.share({ title: 'ADHD 자가체크 결과', text, url: window.location.href }).catch(() => {});
+      await navigator.share({ title: isEnglish ? 'ADHD Self-Check Results' : 'ADHD 자가체크 결과', text, url: window.location.href }).catch(() => {});
     } else {
       navigator.clipboard.writeText(text);
       toast({ title: isEnglish ? 'Results copied' : '결과가 복사되었습니다' });
@@ -169,7 +175,7 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
       totalScore={safeTotal}
       totalLabel={isEnglish ? 'Total Score' : '총점'}
       scoreUnit={isEnglish ? 'pts' : '점'}
-      scoreSeverity={severityText}
+      scoreSeverity={displaySeverity}
       severityColor={severityColor}
       domains={domains}
       aiAnalysis={aiAnalysis}
@@ -193,7 +199,7 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
               hyperactivity: isEnglish ? 'Hyperactivity' : '과잉행동',
             },
             aiSummary: aiAnalysis,
-            riskLevel: severity === '심각한 수준' || severity === '중등도 수준' ? 'high' : severity === '경계선 수준' ? 'moderate' : 'low',
+            riskLevel: severity === '심각한 수준' || severity === 'Severe' || severity === '중등도 수준' || severity === 'Moderate' ? 'high' : severity === '경계선 수준' || severity === 'Borderline' ? 'moderate' : 'low',
           }}
         />
       </div>

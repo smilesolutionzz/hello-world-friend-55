@@ -141,26 +141,26 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
 
   // 차트 데이터 준비
   const scoreChartData = [
-    { name: '부주의', score: results.scores.inattention, fullMark: 200 },
-    { name: '과잉행동', score: results.scores.hyperactivity, fullMark: 200 },
-    { name: '충동성', score: results.scores.impulsivity, fullMark: 200 },
-    { name: '실행기능', score: results.scores.executiveDysfunction, fullMark: 200 },
-    { name: '동반증상', score: results.scores.comorbidity, fullMark: 100 },
-    { name: '기능수준', score: results.scores.functionalImpairment, fullMark: 100 }
+    { name: isEnglish ? 'Inattention' : '부주의', score: results.scores.inattention, fullMark: 200 },
+    { name: isEnglish ? 'Hyperactivity' : '과잉행동', score: results.scores.hyperactivity, fullMark: 200 },
+    { name: isEnglish ? 'Impulsivity' : '충동성', score: results.scores.impulsivity, fullMark: 200 },
+    { name: isEnglish ? 'Executive Function' : '실행기능', score: results.scores.executiveDysfunction, fullMark: 200 },
+    { name: isEnglish ? 'Comorbidity' : '동반증상', score: results.scores.comorbidity, fullMark: 100 },
+    { name: isEnglish ? 'Functioning' : '기능수준', score: results.scores.functionalImpairment, fullMark: 100 }
   ];
 
   const radarChartData = [
-    { subject: '부주의', score: (results.scores.inattention / 200) * 100, fullMark: 100 },
-    { subject: '과잉행동', score: (results.scores.hyperactivity / 200) * 100, fullMark: 100 },
-    { subject: '충동성', score: (results.scores.impulsivity / 200) * 100, fullMark: 100 },
-    { subject: '실행기능', score: (results.scores.executiveDysfunction / 200) * 100, fullMark: 100 }
+    { subject: isEnglish ? 'Inattention' : '부주의', score: (results.scores.inattention / 200) * 100, fullMark: 100 },
+    { subject: isEnglish ? 'Hyperactivity' : '과잉행동', score: (results.scores.hyperactivity / 200) * 100, fullMark: 100 },
+    { subject: isEnglish ? 'Impulsivity' : '충동성', score: (results.scores.impulsivity / 200) * 100, fullMark: 100 },
+    { subject: isEnglish ? 'Executive Function' : '실행기능', score: (results.scores.executiveDysfunction / 200) * 100, fullMark: 100 }
   ];
 
   const barChartData = [
-    { category: '부주의', score: results.scores.inattention },
-    { category: '과잉행동', score: results.scores.hyperactivity },
-    { category: '충동성', score: results.scores.impulsivity },
-    { category: '실행기능', score: results.scores.executiveDysfunction }
+    { category: isEnglish ? 'Inattention' : '부주의', score: results.scores.inattention },
+    { category: isEnglish ? 'Hyperactivity' : '과잉행동', score: results.scores.hyperactivity },
+    { category: isEnglish ? 'Impulsivity' : '충동성', score: results.scores.impulsivity },
+    { category: isEnglish ? 'Executive Function' : '실행기능', score: results.scores.executiveDysfunction }
   ];
 
   return (
@@ -169,9 +169,9 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
       <div className="flex items-center justify-between mb-6">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" />
-          뒤로가기
+          {isEnglish ? 'Back' : '뒤로가기'}
         </Button>
-        <h1 className="text-2xl font-bold">AIH 프리미엄 ADHD 정밀검사 결과</h1>
+        <h1 className="text-2xl font-bold">{isEnglish ? 'AIH Premium ADHD Assessment Results' : 'AIH 프리미엄 ADHD 정밀검사 결과'}</h1>
         <div className="w-24" />
       </div>
 
@@ -180,10 +180,11 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         <div className="flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
           <div className="text-sm">
-            <p className="font-medium text-yellow-800 mb-1">중요 안내사항</p>
+            <p className="font-medium text-yellow-800 mb-1">{isEnglish ? 'Important Notice' : '중요 안내사항'}</p>
             <p className="text-yellow-700">
-              본 체크 결과는 자가 관찰 도구로서 참고 목적으로만 사용되며, 정식 전문평가를 대체할 수 없습니다. 
-              정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.
+              {isEnglish 
+                ? 'These results are a self-observation tool for reference only and cannot replace professional evaluation. Please consult a specialist for accurate diagnosis and treatment.'
+                : '본 체크 결과는 자가 관찰 도구로서 참고 목적으로만 사용되며, 정식 전문평가를 대체할 수 없습니다. 정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.'}
             </p>
           </div>
         </div>
@@ -194,28 +195,28 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Brain className="w-8 h-8 text-primary" />
-            <h2 className="text-2xl font-bold">종합 검사 결과</h2>
+            <h2 className="text-2xl font-bold">{isEnglish ? 'Overall Results' : '종합 검사 결과'}</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className={`p-4 rounded-lg ${severity.bg}`}>
-              <div className="text-2xl font-bold mb-1">{results.totalScore}점</div>
+              <div className="text-2xl font-bold mb-1">{results.totalScore}{isEnglish ? ' pts' : '점'}</div>
               <div className="text-sm text-muted-foreground">{isEnglish ? 'Total' : '총점'}</div>
             </div>
             
             <div className={`p-4 rounded-lg ${severity.bg}`}>
               <div className={`text-lg font-semibold mb-1 ${severity.color}`}>{results.severityLevel}</div>
-              <div className="text-sm text-muted-foreground">심각도</div>
+              <div className="text-sm text-muted-foreground">{isEnglish ? 'Severity' : '심각도'}</div>
             </div>
             
             <div className="p-4 rounded-lg bg-blue-50">
               <div className="text-lg font-semibold mb-1 text-blue-600">{results.adhdSubtype}</div>
-              <div className="text-sm text-muted-foreground">ADHD 유형</div>
+              <div className="text-sm text-muted-foreground">{isEnglish ? 'ADHD Type' : 'ADHD 유형'}</div>
             </div>
             
             <div className="p-4 rounded-lg bg-purple-50">
               <div className="text-lg font-semibold mb-1 text-purple-600">{results.ageGroup}</div>
-              <div className="text-sm text-muted-foreground">연령군</div>
+              <div className="text-sm text-muted-foreground">{isEnglish ? 'Age Group' : '연령군'}</div>
             </div>
           </div>
         </div>
@@ -227,7 +228,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <TrendingUp className="w-5 h-5" />
-            영역별 점수 분석
+            {isEnglish ? 'Domain Score Analysis' : '영역별 점수 분석'}
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barChartData}>
@@ -244,7 +245,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Target className="w-5 h-5" />
-            ADHD 증상 패턴
+            {isEnglish ? 'ADHD Symptom Pattern' : 'ADHD 증상 패턴'}
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <RadarChart data={radarChartData}>
@@ -252,7 +253,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
               <PolarAngleAxis dataKey="subject" />
               <PolarRadiusAxis angle={90} domain={[0, 100]} />
               <Radar
-                name="점수"
+                name={isEnglish ? "Score" : "점수"}
                 dataKey="score"
                 stroke="#8884d8"
                 fill="#8884d8"
@@ -265,15 +266,15 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
 
       {/* 세부 영역별 분석 */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">세부 영역별 분석</h3>
+        <h3 className="text-lg font-semibold mb-4">{isEnglish ? 'Detailed Domain Analysis' : '세부 영역별 분석'}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {scoreChartData.map((item, index) => {
             const percentage = (item.score / item.fullMark) * 100;
             const getScoreLevel = (percent: number) => {
-              if (percent <= 25) return { level: "낮음", color: "text-green-600", bg: "bg-green-500" };
-              if (percent <= 50) return { level: "보통", color: "text-yellow-600", bg: "bg-yellow-500" };
-              if (percent <= 75) return { level: "높음", color: "text-orange-600", bg: "bg-orange-500" };
-              return { level: "매우 높음", color: "text-red-600", bg: "bg-red-500" };
+              if (percent <= 25) return { level: isEnglish ? "Low" : "낮음", color: "text-green-600", bg: "bg-green-500" };
+              if (percent <= 50) return { level: isEnglish ? "Moderate" : "보통", color: "text-yellow-600", bg: "bg-yellow-500" };
+              if (percent <= 75) return { level: isEnglish ? "High" : "높음", color: "text-orange-600", bg: "bg-orange-500" };
+              return { level: isEnglish ? "Very High" : "매우 높음", color: "text-red-600", bg: "bg-red-500" };
             };
             
             const scoreLevel = getScoreLevel(percentage);
@@ -289,7 +290,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
                 <div className="space-y-2">
                   <Progress value={percentage} className="h-2" />
                   <div className="text-sm text-muted-foreground">
-                    {item.score}/{item.fullMark}점 ({Math.round(percentage)}%)
+                    {item.score}/{item.fullMark}{isEnglish ? ' pts' : '점'} ({Math.round(percentage)}%)
                   </div>
                 </div>
               </div>
@@ -306,8 +307,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
               <Bot className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-purple-900">🧠 AI 전문가 심층 분석</h3>
-              <p className="text-sm text-purple-600">ADHD 전문 정신과 전문의 수준의 임상 분석 리포트</p>
+              <h3 className="text-xl font-bold text-purple-900">{isEnglish ? '🧠 AI Expert Analysis' : '🧠 AI 전문가 심층 분석'}</h3>
+              <p className="text-sm text-purple-600">{isEnglish ? 'Clinical-grade ADHD analysis report' : 'ADHD 전문 정신과 전문의 수준의 임상 분석 리포트'}</p>
             </div>
           </div>
           
@@ -319,8 +320,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
                 </div>
                 <div className="absolute inset-0 rounded-full border-4 border-purple-300 border-t-transparent animate-spin" />
               </div>
-              <p className="mt-4 font-medium text-purple-700">AI가 심층 분석 중입니다...</p>
-              <p className="text-sm text-purple-500">3000자 이상의 상세한 분석을 생성하고 있습니다</p>
+              <p className="mt-4 font-medium text-purple-700">{isEnglish ? 'AI is analyzing...' : 'AI가 심층 분석 중입니다...'}</p>
+              <p className="text-sm text-purple-500">{isEnglish ? 'Generating detailed analysis' : '3000자 이상의 상세한 분석을 생성하고 있습니다'}</p>
             </div>
           ) : (
             <div className="bg-white/80 rounded-xl p-5 border border-purple-100 shadow-inner">
@@ -330,7 +331,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-purple-100 flex items-center justify-between text-xs text-purple-500">
-                <span>📝 분석 글자 수: {analysis?.length || 0}자</span>
+                <span>{isEnglish ? `📝 Characters: ${analysis?.length || 0}` : `📝 분석 글자 수: ${analysis?.length || 0}자`}</span>
                 <span>🤖 Powered by Advanced AI</span>
               </div>
             </div>
@@ -347,8 +348,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         >
           <Users className="w-6 h-6" />
           <div className="text-center">
-            <div className="font-semibold">ADHD전문가연결</div>
-            <div className="text-xs text-muted-foreground">온라인 상담</div>
+            <div className="font-semibold">{isEnglish ? 'ADHD Expert' : 'ADHD전문가연결'}</div>
+            <div className="text-xs text-muted-foreground">{isEnglish ? 'Online Consultation' : '온라인 상담'}</div>
           </div>
         </Button>
 
@@ -359,8 +360,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         >
           <MessageCircle className="w-6 h-6" />
           <div className="text-center">
-            <div className="font-semibold">실시간 상담</div>
-            <div className="text-xs text-muted-foreground">즉시 연결</div>
+            <div className="font-semibold">{isEnglish ? 'Live Counseling' : '실시간 상담'}</div>
+            <div className="text-xs text-muted-foreground">{isEnglish ? 'Connect Now' : '즉시 연결'}</div>
           </div>
         </Button>
 
@@ -371,8 +372,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         >
           <Bot className="w-6 h-6" />
           <div className="text-center">
-            <div className="font-semibold">AI 상담사</div>
-            <div className="text-xs text-muted-foreground">24시간 이용</div>
+            <div className="font-semibold">{isEnglish ? 'AI Counselor' : 'AI 상담사'}</div>
+            <div className="text-xs text-muted-foreground">{isEnglish ? '24/7 Available' : '24시간 이용'}</div>
           </div>
         </Button>
 
@@ -385,9 +386,9 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
           <FileText className="w-6 h-6" />
           <div className="text-center">
             <div className="font-semibold">
-              {isGeneratingPDF ? "생성 중..." : "상세 리포트"}
+              {isGeneratingPDF ? (isEnglish ? "Generating..." : "생성 중...") : (isEnglish ? "Full Report" : "상세 리포트")}
             </div>
-            <div className="text-xs text-muted-foreground">PDF 다운로드</div>
+            <div className="text-xs text-muted-foreground">{isEnglish ? 'PDF Download' : 'PDF 다운로드'}</div>
           </div>
         </Button>
       </div>
@@ -399,22 +400,24 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
             <FileText className="w-6 h-6 text-purple-600" />
           </div>
           <div className="flex-1">
-            <h4 className="font-semibold text-purple-900 mb-2">맞춤형 개별교육계획(IEP) 생성</h4>
+            <h4 className="font-semibold text-purple-900 mb-2">{isEnglish ? 'Custom IEP Generation' : '맞춤형 개별교육계획(IEP) 생성'}</h4>
             <p className="text-purple-800 text-sm mb-4">
-              프리미엄 ADHD 검사 결과를 바탕으로 AI가 개별화된 교육 및 치료 계획을 자동으로 생성해드립니다.
+              {isEnglish 
+                ? 'AI automatically generates an individualized education and treatment plan based on your premium ADHD assessment results.'
+                : '프리미엄 ADHD 검사 결과를 바탕으로 AI가 개별화된 교육 및 치료 계획을 자동으로 생성해드립니다.'}
             </p>
             <Button
               onClick={() => navigate('/iep-generator', { 
                 state: { 
                   assessmentResults: {
-                    '프리미엄 ADHD 검사': results
+                    [isEnglish ? 'Premium ADHD Assessment' : '프리미엄 ADHD 검사']: results
                   } 
                 }
               })}
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
             >
               <FileText className="w-4 h-4 mr-2" />
-              맞춤형 IEP 생성하기
+              {isEnglish ? 'Generate Custom IEP' : '맞춤형 IEP 생성하기'}
             </Button>
           </div>
         </div>
@@ -428,12 +431,12 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
       {/* 참고 정보 */}
       <Card className="p-6 bg-blue-50 border-blue-200">
         <div className="text-center space-y-3">
-          <h3 className="font-semibold text-blue-800">다음 단계 안내</h3>
+          <h3 className="font-semibold text-blue-800">{isEnglish ? 'Next Steps' : '다음 단계 안내'}</h3>
           <div className="text-sm text-blue-700 space-y-2">
-            <p>• 본 검사는 자가 평가 도구로서 참고용입니다</p>
-            <p>• 정확한 진단을 위해서는 전문의 상담이 필요합니다</p>
-            <p>• ADHD는 적절한 치료와 관리로 충분히 개선 가능합니다</p>
-            <p>• 가족과 주변의 이해와 지원이 중요합니다</p>
+            <p>• {isEnglish ? 'This is a self-assessment tool for reference only' : '본 검사는 자가 평가 도구로서 참고용입니다'}</p>
+            <p>• {isEnglish ? 'Accurate diagnosis requires professional consultation' : '정확한 진단을 위해서는 전문의 상담이 필요합니다'}</p>
+            <p>• {isEnglish ? 'ADHD can be significantly improved with proper treatment' : 'ADHD는 적절한 치료와 관리로 충분히 개선 가능합니다'}</p>
+            <p>• {isEnglish ? 'Understanding and support from family is important' : '가족과 주변의 이해와 지원이 중요합니다'}</p>
           </div>
         </div>
       </Card>

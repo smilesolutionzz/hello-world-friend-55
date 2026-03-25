@@ -247,8 +247,9 @@ const B2BProposal = () => {
             {[
               { step: '1', title: '유저가 심리검사 수행', desc: 'ADHD, 우울, 발달, 인지 등 30종+ 검사 — 이미 고민이 있는 고관여 유저', color: 'bg-indigo-500', emoji: '🧠' },
               { step: '2', title: '결과 페이지에서 기관 추천', desc: '"검사 결과 기반 추천 전문기관"으로 귀 센터가 자연스럽게 노출', color: 'bg-violet-500', emoji: '📊' },
-              { step: '3', title: '기관 프로필로 유입', desc: '전문 분야, 위치, 소개, 후기, 예약 링크 — 네이버 플레이스보다 전환율 높음', color: 'bg-rose-500', emoji: '🏥' },
-              { step: '4', title: '전화/예약으로 전환', desc: '검사 → 결과 → 예약까지 3분. 이미 필요를 느낀 유저가 바로 행동', color: 'bg-amber-500', emoji: '📞' },
+              { step: '3', title: '실시간 고객 DB 메일 전송', desc: '검사를 완료한 유저 정보가 실시간으로 귀 기관 담당자 이메일로 전송됩니다', color: 'bg-emerald-500', emoji: '📧' },
+              { step: '4', title: '기관 프로필로 유입', desc: '전문 분야, 위치, 소개, 후기, 예약 링크 — 네이버 플레이스보다 전환율 높음', color: 'bg-rose-500', emoji: '🏥' },
+              { step: '5', title: '전화/예약으로 전환', desc: '검사 → 결과 → 예약까지 3분. 이미 필요를 느낀 유저가 바로 행동', color: 'bg-amber-500', emoji: '📞' },
             ].map((item, i) => (
               <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}
                 className="flex items-start gap-5"

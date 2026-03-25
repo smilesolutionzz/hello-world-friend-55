@@ -319,10 +319,10 @@ const DashboardNew = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-foreground">
-                개인 대시보드
+                {isEnglish ? 'Personal Dashboard' : '개인 대시보드'}
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
-                {profile?.display_name}님의 검사 데이터
+                {isEnglish ? `${profile?.display_name}'s test data` : `${profile?.display_name}님의 검사 데이터`}
               </p>
             </div>
             

@@ -12,12 +12,23 @@ import {
   Building2, Phone, Mail, Target, Zap, Award,
   ChevronDown, MousePointerClick, Globe, Gift, Flame
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search } from 'lucide-react';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5 } })
 };
+
+const ROTATING_KEYWORDS = [
+  'ADHD 자가진단', '우울증 테스트', '불안장애 검사', '자존감 테스트',
+  '아이 발달검사', '스트레스 측정', '공황장애 자가진단', 'PTSD 검사',
+  '번아웃 테스트', '성격유형 검사', '조울증 테스트', '강박증 자가진단',
+  '치매 조기검사', '인지능력 테스트', '아동 ADHD 체크', '산후우울증 검사',
+  '사회불안 테스트', '분노조절 검사', '수면장애 테스트', '학습장애 검사',
+  '언어발달 체크', '감정조절 테스트', '직장 스트레스 진단', '연인관계 검사',
+  '자폐스펙트럼 선별', '노인 인지기능', '청소년 심리검사', '가족관계 진단',
+];
 
 const B2BProposal = () => {
   const { toast } = useToast();

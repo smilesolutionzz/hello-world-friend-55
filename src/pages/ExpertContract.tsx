@@ -204,10 +204,10 @@ const ExpertContract = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Crown className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl font-bold">전문가 고용 계약</h1>
+            <h1 className="text-4xl font-bold">{isEnglish ? 'Expert Contract' : '전문가 고용 계약'}</h1>
           </div>
           <p className="text-lg text-muted-foreground">
-            전문가와 장기 계약을 통해 지속적인 전문 서비스를 받아보세요
+            {isEnglish ? 'Get ongoing professional services through a long-term contract' : '전문가와 장기 계약을 통해 지속적인 전문 서비스를 받아보세요'}
           </p>
         </div>
 

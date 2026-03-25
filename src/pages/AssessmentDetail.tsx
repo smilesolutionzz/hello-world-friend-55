@@ -441,7 +441,7 @@ export default function AssessmentDetail() {
                 <div className="border-t pt-6">
                   <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
                     <span className="text-2xl">💡</span>
-                    전문가 권장사항
+                    {isEnglish ? 'Expert Recommendations' : '전문가 권장사항'}
                   </h3>
                   <div className="space-y-3">
                     {recommendations.map((rec: string, idx: number) => (

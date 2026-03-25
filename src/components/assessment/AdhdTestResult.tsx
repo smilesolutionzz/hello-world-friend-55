@@ -131,9 +131,13 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
 
   const aiSections = parseAnalysisSections(aiAnalysis);
   const severityText = severity || (isEnglish ? 'Checking' : '확인 중');
-  const severityColor = severity === '심각한 수준' ? 'text-destructive border-destructive/30'
-    : severity === '중등도 수준' ? 'text-orange-600 border-orange-300'
-    : severity === '경계선 수준' ? 'text-yellow-600 border-yellow-300'
+  const severityMap: Record<string, string> = isEnglish
+    ? { '심각한 수준': 'Severe', '중등도 수준': 'Moderate', '경계선 수준': 'Borderline', '정상 범위': 'Normal' }
+    : {};
+  const displaySeverity = (isEnglish && severityMap[severityText]) ? severityMap[severityText] : severityText;
+  const severityColor = severity === '심각한 수준' || severity === 'Severe' ? 'text-destructive border-destructive/30'
+    : severity === '중등도 수준' || severity === 'Moderate' ? 'text-orange-600 border-orange-300'
+    : severity === '경계선 수준' || severity === 'Borderline' ? 'text-yellow-600 border-yellow-300'
     : 'text-green-600 border-green-300';
 
   const handleDownload = async () => {

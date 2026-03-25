@@ -369,18 +369,20 @@ ${Object.entries(actualResults).map(([domain, score]) => {
 **분석 깊이:** 2500-3500자
 **어조:** 따뜻하고 존중하는 전문가의 조언`,
           
-          user: `${assessmentInfo?.title || '치매 위험도 자가진단검사'} 결과를 분석해주세요.
+          user: (() => {
+            const dementiaLabels: Record<string, string> = {
+              memory_deep: '기억력', executive_function: '실행기능', orientation_spatial: '시공간 지남력',
+              language_communication: '언어/의사소통', daily_living: '일상생활 수행', mood_personality: '정서/행동 변화',
+              memory: '기억력', orientation: '지남력', language: '언어능력',
+              daily_function: '일상생활 기능', mood_behavior: '정서/행동'
+            };
+            const scoreLines = Object.entries(actualResults).map(([domain, score]) =>
+              `- ${dementiaLabels[domain] || domain}: ${score}점`
+            ).join('\n');
+            return `${assessmentInfo?.title || '치매 위험도 자가진단검사'} 결과를 분석해주세요.
 
 **영역별 점수 (7점 만점):**
-${Object.entries(actualResults).map(([domain, score]) => {
-  const labels: Record<string, string> = {
-    memory_deep: '기억력', executive_function: '실행기능', orientation_spatial: '시공간 지남력',
-    language_communication: '언어/의사소통', daily_living: '일상생활 수행', mood_personality: '정서/행동 변화',
-    memory: '기억력', orientation: '지남력', language: '언어능력',
-    daily_function: '일상생활 기능', mood_behavior: '정서/행동'
-  };
-  return \`- \${labels[domain] || domain}: \${score}점\`;
-}).join('\\n')}
+${scoreLines}
 
 다음 구조로 분석해주세요:
 

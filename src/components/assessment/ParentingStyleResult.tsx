@@ -16,12 +16,20 @@ interface ParentingStyleResultProps {
   onStartRealTimeChat?: () => void;
 }
 
-const categoryNames: Record<string, string> = {
+const categoryNamesKo: Record<string, string> = {
   warmth_acceptance: '온정수용',
   behavioral_control: '행동통제',
   psychological_control: '심리통제',
   autonomy_support: '자율성지지',
   communication_support: '의사소통지지',
+};
+
+const categoryNamesEn: Record<string, string> = {
+  warmth_acceptance: 'Warmth & Acceptance',
+  behavioral_control: 'Behavioral Control',
+  psychological_control: 'Psychological Control',
+  autonomy_support: 'Autonomy Support',
+  communication_support: 'Communication Support',
 };
 
 const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) => {
@@ -31,10 +39,12 @@ const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) =>
   const [analysis, setAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
 
+  const categoryNames = isEnglish ? categoryNamesEn : categoryNamesKo;
+
   useAutoSaveTestResult({
     testType: isEnglish ? 'Parenting Style Test' : '양육 스타일 검사',
     results: { scores: results.scores, dominantStyle: results.dominantStyle, childAge: results.childAge },
-    severity: '보통',
+    severity: isEnglish ? 'Average' : '보통',
     ageGroup: 'adult',
   });
 
@@ -58,11 +68,14 @@ const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) =>
 
   const getDefault = () => {
     const primary = Object.entries(results.scores).sort(([, a], [, b]) => (b as number) - (a as number))[0][0];
-    return `양육 스타일 분석 결과입니다.\n\n주된 양육 스타일: ${categoryNames[primary] || primary}\n\n각 양육 스타일의 균형을 맞추는 것이 중요합니다.`;
+    const name = categoryNames[primary] || primary;
+    return isEnglish
+      ? `Parenting Style Analysis Results.\n\nDominant Style: ${name}\n\nBalancing different parenting styles is important.`
+      : `양육 스타일 분석 결과입니다.\n\n주된 양육 스타일: ${name}\n\n각 양육 스타일의 균형을 맞추는 것이 중요합니다.`;
   };
 
   const getColor = (s: number) => s >= 3.5 ? 'bg-green-500' : s >= 2.5 ? 'bg-yellow-500' : 'bg-orange-500';
-  const getLevel = (s: number) => s >= 3.5 ? '높음' : s >= 2.5 ? '보통' : '낮음';
+  const getLevel = (s: number) => s >= 3.5 ? (isEnglish ? 'High' : '높음') : s >= 2.5 ? (isEnglish ? 'Average' : '보통') : (isEnglish ? 'Low' : '낮음');
 
   const domains: DomainScore[] = Object.entries(results.scores).map(([key, score]) => ({
     key,
@@ -83,14 +96,14 @@ const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) =>
     return paragraphs.slice(0, 7).map((p, idx) => {
       const firstLine = p.split('\n')[0].replace(/[#*]/g, '').trim();
       const rest = p.split('\n').slice(1).join('\n').trim() || p;
-      return { id: `s-${idx}`, icon: icons[idx] || '📋', title: firstLine.length > 5 && firstLine.length < 50 ? firstLine : `분석 ${idx + 1}`, content: rest, defaultOpen: idx === 0 };
+      return { id: `s-${idx}`, icon: icons[idx] || '📋', title: firstLine.length > 5 && firstLine.length < 50 ? firstLine : (isEnglish ? `Analysis ${idx + 1}` : `분석 ${idx + 1}`), content: rest, defaultOpen: idx === 0 };
     });
   };
 
   const aiSections = parseAISections(analysis);
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', '양육스타일_검사_결과',
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? 'ParentingStyle_Results' : '양육스타일_검사_결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
@@ -118,8 +131,8 @@ const ParentingStyleResult = ({ results, onBack }: ParentingStyleResultProps) =>
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: '양육 스타일',
-            subtitle: '5개 영역 분석',
+            testName: isEnglish ? 'Parenting Style' : '양육 스타일',
+            subtitle: isEnglish ? '5 Domain Analysis' : '5개 영역 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(results.scores).map(([k, v]) => [k, (Number(v) / 4) * 7])),
             maxScore: 7,

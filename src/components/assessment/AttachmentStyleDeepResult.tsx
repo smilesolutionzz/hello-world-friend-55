@@ -48,7 +48,7 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
         if (error) throw error;
         setAiAnalysis(data.analysis || '');
       } catch {
-        setAiAnalysis('AI 분석을 불러오는 중 오류가 발생했습니다. 전문가 상담을 권장합니다.');
+        setAiAnalysis(isEnglish ? 'Error loading AI analysis. Professional consultation is recommended.' : 'AI 분석을 불러오는 중 오류가 발생했습니다. 전문가 상담을 권장합니다.');
       } finally {
         setIsLoading(false);
       }
@@ -59,7 +59,7 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
   const getColor = (pct: number) =>
     pct >= 75 ? 'bg-destructive' : pct >= 50 ? 'bg-orange-500' : pct >= 25 ? 'bg-yellow-500' : 'bg-green-500';
   const getLevel = (pct: number) =>
-    pct >= 75 ? '높음' : pct >= 50 ? '중간' : pct >= 25 ? '낮음' : '안정';
+    pct >= 75 ? (isEnglish ? 'High' : '높음') : pct >= 50 ? (isEnglish ? 'Medium' : '중간') : pct >= 25 ? (isEnglish ? 'Low' : '낮음') : (isEnglish ? 'Stable' : '안정');
 
   const domains: DomainScore[] = result.averageScores.map(({ category, average }) => {
     const styleInfo = result.allStyles[category];
@@ -86,9 +86,11 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
     if (!text) return [];
     const paras = text.split('\n\n').filter(p => p.trim().length > 20);
     const icons = ['🧠', '💕', '🎯', '⚠️', '💡', '📋', '✨'];
-    const titles = ['종합 분석', '애착 패턴 해석', '관계 강점', '성장 영역', '발달 지원', '실천 가이드', '전문가 소견'];
+    const titles = isEnglish
+      ? ['Overview', 'Attachment Pattern Analysis', 'Relationship Strengths', 'Growth Areas', 'Development Support', 'Practice Guide', 'Expert Opinion']
+      : ['종합 분석', '애착 패턴 해석', '관계 강점', '성장 영역', '발달 지원', '실천 가이드', '전문가 소견'];
     return paras.slice(0, 7).map((p, idx) => ({
-      id: `s-${idx}`, icon: icons[idx] || '📋', title: titles[idx] || `분석 ${idx + 1}`,
+      id: `s-${idx}`, icon: icons[idx] || '📋', title: titles[idx] || (isEnglish ? `Analysis ${idx + 1}` : `분석 ${idx + 1}`),
       content: p, defaultOpen: idx === 0,
     }));
   };
@@ -96,7 +98,7 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
   const aiSections = parseAISections(aiAnalysis);
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', '애착유형_심층분석_결과',
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? 'AttachmentStyle_DeepAnalysis' : '애착유형_심층분석_결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
@@ -107,11 +109,11 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
   return (
     <ClinicalReportLayout
       testName={isEnglish ? "Deep Attachment Style Analysis Results" : "애착 유형 심층 분석 결과"}
-      subtitle={`${result.styleInfo.emoji} 주요 유형: ${result.styleInfo.name}`}
+      subtitle={`${result.styleInfo.emoji} ${isEnglish ? 'Dominant Type' : '주요 유형'}: ${result.styleInfo.name}`}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={result.averageScore.toFixed(1)}
-      totalLabel="평균 점수"
+      totalLabel={isEnglish ? "Average Score" : "평균 점수"}
       scoreUnit="/ 5.0"
       scoreSeverity={result.styleInfo.name}
       severityColor={severityColor}
@@ -123,7 +125,7 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
         <VisualResultInfographic
           data={{
             testName: isEnglish ? 'Deep Attachment Analysis' : '애착 유형 심층 분석',
-            subtitle: '4가지 애착 유형 분포',
+            subtitle: isEnglish ? '4 Attachment Types' : '4가지 애착 유형 분포',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(
               result.averageScores.map(({ category, average }) => [category, (average / 5) * 7])

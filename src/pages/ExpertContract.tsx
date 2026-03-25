@@ -492,9 +492,9 @@ const ExpertContract = () => {
                   </Button>
                   
                   <p className="text-xs text-center text-muted-foreground mt-2">
-                    현재 MVP 기간으로 무통장입금만 지원됩니다.
+                    {isEnglish ? 'Currently in MVP phase — bank transfer only.' : '현재 MVP 기간으로 무통장입금만 지원됩니다.'}
                     <br />
-                    언제든지 계약을 취소할 수 있습니다.
+                    {isEnglish ? 'You can cancel your contract at any time.' : '언제든지 계약을 취소할 수 있습니다.'}
                   </p>
                 </div>
               </CardContent>

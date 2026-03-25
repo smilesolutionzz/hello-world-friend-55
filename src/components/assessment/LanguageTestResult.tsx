@@ -204,7 +204,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">{isEnglish ? 'Total' : '총점'}</p>
-              <p className="text-2xl font-bold">{total}점</p>
+              <p className="text-2xl font-bold">{total}{isEnglish ? 'pts' : '점'}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">{isEnglish ? 'Age' : '연령'}</p>

@@ -28,9 +28,11 @@ const AnalysisLoadingScreen = ({
   estimatedSeconds = 20,
   tips,
 }: AnalysisLoadingScreenProps) => {
+  const { isEnglish } = useLanguage();
   const [elapsed, setElapsed] = useState(0);
   const [tipIdx, setTipIdx] = useState(0);
-  const activeTips = tips || DEFAULT_TIPS;
+  const activeTips = tips || (isEnglish ? DEFAULT_TIPS_EN : DEFAULT_TIPS_KO);
+  const STAGES = isEnglish ? STAGES_EN : STAGES_KO;
 
   useEffect(() => {
     const timer = setInterval(() => setElapsed(p => p + 1), 1000);

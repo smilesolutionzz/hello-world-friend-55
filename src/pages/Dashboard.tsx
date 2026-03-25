@@ -592,8 +592,8 @@ const DashboardNew = () => {
                       {filteredObservations.slice(0, 10).map((obs) => {
                         const hasScore = obs.score_overall > 0;
                         const statusText = hasScore 
-                          ? (obs.score_overall >= 80 ? '우수' : obs.score_overall >= 60 ? '양호' : '관심필요')
-                          : '분석완료';
+                          ? (obs.score_overall >= 80 ? (isEnglish ? 'Excellent' : '우수') : obs.score_overall >= 60 ? (isEnglish ? 'Good' : '양호') : (isEnglish ? 'Needs Attention' : '관심필요'))
+                          : (isEnglish ? 'Analyzed' : '분석완료');
                         const statusColor = hasScore
                           ? (obs.score_overall >= 80 
                               ? 'bg-green-900/30 text-green-400 border-green-800'

@@ -1,553 +1,506 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { 
-  FileText,
-  Download,
-  Building2,
-  Brain,
-  BarChart3,
-  CheckCircle2,
-  ArrowRight,
-  Printer,
-  Mail,
-  Calendar,
-  TrendingUp,
-  Users,
-  Shield,
-  Lock,
-  CreditCard
+  Brain, BarChart3, CheckCircle2, ArrowRight, Heart, 
+  Users, Shield, FileText, BookOpen, Activity, Clock,
+  Building2, Phone, Mail, TrendingUp, Star, Sparkles,
+  ChevronDown
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { B2BPaymentModal } from '@/components/b2b/B2BPaymentModal';
-import { B2BProductCards } from '@/components/b2b/B2BProductCards';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5 } })
+};
 
 const B2BProposal = () => {
   const { toast } = useToast();
+  const [inquiryOpen, setInquiryOpen] = useState(false);
   const [formData, setFormData] = useState({
     institution_name: '',
-    institution_type: 'daycare',
     contact_name: '',
+    contact_phone: '',
     contact_email: '',
-    target_users: '50'
+    institution_type: '',
+    user_count: '',
+    message: ''
   });
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedProposal, setGeneratedProposal] = useState<string | null>(null);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const proposalTemplates = [
-    {
-      id: 'daycare',
-      title: '어린이집/유치원용 제안서',
-      description: 'AI 발달 선별 + 학부모 리포팅 솔루션',
-      features: ['발달 영역별 AI 분석', '자동 학부모 리포트', '바우처 일지 연동'],
-      pricing: '월 50만원~ (정원 기준)'
-    },
-    {
-      id: 'academy',
-      title: '학원용 제안서',
-      description: '학습 패턴 분석 + 맞춤 커리큘럼 제안',
-      features: ['학습 행동 분석', 'AI 커리큘럼 추천', '성과 대시보드'],
-      pricing: '월 30만원~ (학생 수 기준)'
-    },
-    {
-      id: 'development_center',
-      title: '발달센터용 제안서',
-      description: '전문 리포팅 + IEP 자동화 시스템',
-      features: ['6종 바우처 일지', 'IEP 자동 생성', '전문가 연계'],
-      pricing: '월 70만원~ (치료사 수 기준)'
-    },
-    {
-      id: 'enterprise',
-      title: '기업 EAP용 제안서',
-      description: '직원 정신건강 + 자녀 발달 통합 케어',
-      features: ['직원 스트레스 관리', '자녀 발달 검사', '가족 통합 리포트'],
-      pricing: '연간 계약 별도 협의'
-    }
-  ];
-
-  const generateProposalHTML = () => {
-    const selectedTemplate = proposalTemplates.find(t => t.id === formData.institution_type);
-    const currentDate = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-    
-    return `
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>AIHPRO 파일럿 프로그램 제안서 - ${formData.institution_name}</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; color: #1a1a2e; background: #fff; }
-    .container { max-width: 800px; margin: 0 auto; padding: 40px; }
-    .header { text-align: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 3px solid #3b82f6; }
-    .logo { font-size: 28px; font-weight: 700; color: #3b82f6; margin-bottom: 10px; }
-    .subtitle { color: #64748b; font-size: 14px; }
-    .proposal-title { font-size: 32px; font-weight: 700; color: #1e293b; margin: 30px 0 10px; }
-    .proposal-meta { color: #64748b; font-size: 14px; }
-    
-    .section { margin: 40px 0; }
-    .section-title { font-size: 20px; font-weight: 600; color: #1e293b; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; }
-    
-    .info-box { background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; }
-    .info-row { display: flex; margin: 8px 0; }
-    .info-label { font-weight: 500; width: 120px; color: #64748b; }
-    .info-value { color: #1e293b; }
-    
-    .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .feature-item { background: #eff6ff; border-radius: 8px; padding: 16px; }
-    .feature-icon { font-size: 24px; margin-bottom: 8px; }
-    .feature-title { font-weight: 600; color: #1e40af; margin-bottom: 4px; }
-    .feature-desc { font-size: 14px; color: #64748b; }
-    
-    .pricing-box { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border-radius: 16px; padding: 32px; text-align: center; margin: 30px 0; }
-    .pricing-title { font-size: 18px; opacity: 0.9; margin-bottom: 8px; }
-    .pricing-value { font-size: 36px; font-weight: 700; margin-bottom: 16px; }
-    .pricing-note { font-size: 14px; opacity: 0.8; }
-    
-    .timeline { background: #f8fafc; border-radius: 12px; padding: 24px; }
-    .timeline-item { display: flex; align-items: flex-start; margin: 16px 0; }
-    .timeline-step { width: 32px; height: 32px; background: #3b82f6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; margin-right: 16px; flex-shrink: 0; }
-    .timeline-content h4 { font-weight: 600; color: #1e293b; }
-    .timeline-content p { font-size: 14px; color: #64748b; }
-    
-    .benefits-list { list-style: none; }
-    .benefits-list li { padding: 12px 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; }
-    .benefits-list li:last-child { border-bottom: none; }
-    .check-icon { color: #22c55e; margin-right: 12px; font-size: 20px; }
-    
-    .cta-section { background: #1e293b; color: white; border-radius: 16px; padding: 40px; text-align: center; margin-top: 40px; }
-    .cta-title { font-size: 24px; font-weight: 600; margin-bottom: 16px; }
-    .cta-contact { margin-top: 20px; font-size: 14px; opacity: 0.8; }
-    
-    .footer { margin-top: 60px; padding-top: 30px; border-top: 1px solid #e2e8f0; text-align: center; color: #64748b; font-size: 12px; }
-    
-    @media print {
-      .container { padding: 20px; }
-      .cta-section { break-inside: avoid; }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="logo">AIHPRO</div>
-      <div class="subtitle">AI 기반 아동발달 선별 및 전문가 매칭 플랫폼</div>
-      <h1 class="proposal-title">${selectedTemplate?.title || '맞춤형 솔루션 제안서'}</h1>
-      <p class="proposal-meta">제안일: ${currentDate} | 유효기간: 30일</p>
-    </div>
-
-    <div class="section">
-      <h2 class="section-title">📋 제안 대상 기관</h2>
-      <div class="info-box">
-        <div class="info-row"><span class="info-label">기관명</span><span class="info-value">${formData.institution_name}</span></div>
-        <div class="info-row"><span class="info-label">담당자</span><span class="info-value">${formData.contact_name}</span></div>
-        <div class="info-row"><span class="info-label">이메일</span><span class="info-value">${formData.contact_email}</span></div>
-        <div class="info-row"><span class="info-label">대상 인원</span><span class="info-value">${formData.target_users}명</span></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2 class="section-title">🎯 제안 배경</h2>
-      <p style="margin-bottom: 16px;">
-        McKinsey Health Institute 보고서에 따르면, "Brain Capital" 투자는 2050년까지 <strong>6.2조 달러</strong>의 GDP 창출이 가능하며, 
-        특히 0-7세 조기 개입 프로그램은 <strong>연 7-13%의 투자 수익률</strong>을 기록하고 있습니다.
-      </p>
-      <p>
-        AIHPRO는 AI 기술을 활용하여 아동의 발달 상태를 객관적으로 분석하고, 
-        전문가 네트워크와의 연결을 통해 조기 발견 및 개입을 지원하는 플랫폼입니다.
-      </p>
-    </div>
-
-    <div class="section">
-      <h2 class="section-title">✨ 핵심 기능</h2>
-      <div class="feature-grid">
-        <div class="feature-item">
-          <div class="feature-icon">🧠</div>
-          <div class="feature-title">AI 발달 선별</div>
-          <div class="feature-desc">5개 발달 영역 자동 분석 및 조기 발견 지원</div>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon">📊</div>
-          <div class="feature-title">자동 리포팅</div>
-          <div class="feature-desc">학부모/기관용 맞춤 리포트 자동 생성</div>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon">👥</div>
-          <div class="feature-title">전문가 네트워크</div>
-          <div class="feature-desc">40+ 전문가와의 실시간 상담 연결</div>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon">📱</div>
-          <div class="feature-title">관리자 대시보드</div>
-          <div class="feature-desc">기관 전체 현황 모니터링 및 관리</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2 class="section-title">🎁 파일럿 프로그램 혜택</h2>
-      <ul class="benefits-list">
-        <li><span class="check-icon">✓</span> <strong>3개월 무료</strong> 시범 운영 제공</li>
-        <li><span class="check-icon">✓</span> 전담 CS 매니저 배정</li>
-        <li><span class="check-icon">✓</span> 맞춤형 온보딩 교육 (2회)</li>
-        <li><span class="check-icon">✓</span> ROI 측정 리포트 제공</li>
-        <li><span class="check-icon">✓</span> 정식 계약 시 <strong>20% 할인</strong> 적용</li>
-      </ul>
-    </div>
-
-    <div class="pricing-box">
-      <div class="pricing-title">파일럿 종료 후 예상 가격</div>
-      <div class="pricing-value">${selectedTemplate?.pricing || '별도 협의'}</div>
-      <div class="pricing-note">* 기관 규모 및 이용자 수에 따라 조정 가능</div>
-    </div>
-
-    <div class="section">
-      <h2 class="section-title">📅 도입 일정</h2>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-step">1</div>
-          <div class="timeline-content">
-            <h4>킥오프 미팅 (1주차)</h4>
-            <p>니즈 분석 및 맞춤 설정, 관리자 계정 발급</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-step">2</div>
-          <div class="timeline-content">
-            <h4>온보딩 교육 (2주차)</h4>
-            <p>담당자 교육 및 시스템 사용법 안내</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-step">3</div>
-          <div class="timeline-content">
-            <h4>파일럿 운영 (3-12주차)</h4>
-            <p>실제 서비스 운영 및 피드백 수렴</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-step">4</div>
-          <div class="timeline-content">
-            <h4>성과 분석 (13주차)</h4>
-            <p>ROI 측정 및 정식 계약 협의</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="cta-section">
-      <div class="cta-title">지금 바로 파일럿을 시작하세요</div>
-      <p>3개월 무료 체험으로 ROI를 먼저 확인하세요</p>
-      <div class="cta-contact">
-        📧 b2b@aihpro.kr | 📞 02-1234-5678 | 🌐 aihpro.kr/b2b-consulting
-      </div>
-    </div>
-
-    <div class="footer">
-      <p>© 2024 AIHPRO. AI 기반 아동발달 선별 및 전문가 매칭 플랫폼</p>
-      <p style="margin-top: 8px;">본 제안서는 기밀 문서이며, 무단 배포를 금합니다.</p>
-    </div>
-  </div>
-</body>
-</html>
-    `;
-  };
-
-  const handleGenerate = () => {
-    if (!formData.institution_name || !formData.contact_name || !formData.contact_email) {
-      toast({
-        title: "필수 정보를 입력해주세요",
-        variant: "destructive"
-      });
+  const handleSubmit = async () => {
+    if (!formData.institution_name || !formData.contact_name || !formData.contact_phone) {
+      toast({ title: '기관명, 담당자명, 연락처를 입력해주세요.', variant: 'destructive' });
       return;
     }
-
-    setIsGenerating(true);
-    setTimeout(() => {
-      setGeneratedProposal(generateProposalHTML());
-      setIsGenerating(false);
-      toast({
-        title: "제안서가 생성되었습니다",
-        description: "다운로드 또는 인쇄할 수 있습니다."
+    setSubmitting(true);
+    try {
+      const { error } = await supabase.from('b2b_inquiries').insert({
+        organization_name: formData.institution_name,
+        contact_person: formData.contact_name,
+        phone: formData.contact_phone,
+        email: formData.contact_email || 'N/A',
+        organization_type: formData.institution_type || '노인복지시설',
+        service_interest: 'b2b_care_bundle',
+        num_users: parseInt(formData.user_count) || 0,
+        message: formData.message || null,
       });
-    }, 1500);
-  };
-
-  const handleDownload = () => {
-    if (!generatedProposal) return;
-    
-    const blob = new Blob([generatedProposal], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `AIHPRO_제안서_${formData.institution_name}_${new Date().toISOString().split('T')[0]}.html`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  const handlePrint = () => {
-    if (!generatedProposal) return;
-    
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.write(generatedProposal);
-      printWindow.document.close();
-      printWindow.onload = () => {
-        printWindow.print();
-      };
+      if (error) throw error;
+      toast({ title: '도입 문의가 접수되었습니다!', description: '영업일 기준 1일 이내 연락드리겠습니다.' });
+      setFormData({ institution_name: '', contact_name: '', contact_phone: '', contact_email: '', institution_type: '', user_count: '', message: '' });
+      setInquiryOpen(false);
+    } catch (e: any) {
+      toast({ title: '오류가 발생했습니다', description: e.message, variant: 'destructive' });
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-background to-blue-50/30 py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <Badge className="mb-4 bg-blue-100 text-blue-700 border-blue-200">
-            <FileText className="w-3 h-3 mr-1" />
-            B2B Proposal Generator
-          </Badge>
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            기관 맞춤 제안서 자동 생성
-          </h1>
-          <p className="text-muted-foreground">
-            기관 정보를 입력하면 맞춤형 파일럿 프로그램 제안서가 자동으로 생성됩니다
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Building2 className="w-5 h-5" />
-                기관 정보 입력
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium mb-1 block">기관명 *</label>
-                <Input
-                  value={formData.institution_name}
-                  onChange={(e) => setFormData({...formData, institution_name: e.target.value})}
-                  placeholder="예: 행복한 어린이집"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-1 block">기관 유형 *</label>
-                <Select
-                  value={formData.institution_type}
-                  onValueChange={(value) => setFormData({...formData, institution_type: value})}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="daycare">어린이집/유치원</SelectItem>
-                    <SelectItem value="academy">학원</SelectItem>
-                    <SelectItem value="development_center">발달센터/치료기관</SelectItem>
-                    <SelectItem value="enterprise">기업 (EAP)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-1 block">담당자명 *</label>
-                <Input
-                  value={formData.contact_name}
-                  onChange={(e) => setFormData({...formData, contact_name: e.target.value})}
-                  placeholder="홍길동"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-1 block">이메일 *</label>
-                <Input
-                  type="email"
-                  value={formData.contact_email}
-                  onChange={(e) => setFormData({...formData, contact_email: e.target.value})}
-                  placeholder="email@institution.com"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-1 block">대상 인원 수</label>
-                <Input
-                  type="number"
-                  value={formData.target_users}
-                  onChange={(e) => setFormData({...formData, target_users: e.target.value})}
-                  placeholder="50"
-                />
-              </div>
-
+    <div className="min-h-screen bg-white">
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 text-white">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-400 rounded-full blur-[120px]" />
+          <div className="absolute bottom-10 right-20 w-96 h-96 bg-blue-400 rounded-full blur-[150px]" />
+        </div>
+        <div className="relative container mx-auto px-4 py-20 md:py-28 max-w-5xl">
+          <motion.div initial="hidden" animate="visible" className="text-center">
+            <motion.div variants={fadeUp} custom={0}>
+              <Badge className="mb-6 bg-emerald-500/20 text-emerald-300 border-emerald-500/30 text-sm px-4 py-1.5">
+                <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+                3개월 무료 파일럿 프로그램
+              </Badge>
+            </motion.div>
+            <motion.h1 variants={fadeUp} custom={1} className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+              어르신 케어의 새로운 기준,<br />
+              <span className="text-emerald-400">AI가 함께합니다</span>
+            </motion.h1>
+            <motion.p variants={fadeUp} custom={2} className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-4">
+              인지건강 모니터링 · 보호자 리포트 자동 발송 · AI 회고록<br />
+              <span className="text-emerald-300 font-medium">기관 운영 효율과 보호자 만족도를 동시에 높이세요</span>
+            </motion.p>
+            <motion.p variants={fadeUp} custom={3} className="text-sm text-slate-400 mb-10">
+              주간보호센터 · 노인복지시설 · 지역아동센터 · 발달클리닉
+            </motion.p>
+            <motion.div variants={fadeUp} custom={4} className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700" 
-                size="lg"
-                onClick={handleGenerate}
-                disabled={isGenerating}
+                size="lg" 
+                className="bg-emerald-500 hover:bg-emerald-600 text-white text-lg px-8 h-14 rounded-xl shadow-lg shadow-emerald-500/25"
+                onClick={() => {
+                  setInquiryOpen(true);
+                  document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
+                }}
               >
-                {isGenerating ? '생성 중...' : '제안서 생성하기'}
+                무료 파일럿 신청하기
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
-            </CardContent>
-          </Card>
-
-          {/* Templates Preview */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-lg mb-4">템플릿 미리보기</h3>
-            {proposalTemplates.map((template) => (
-              <Card 
-                key={template.id}
-                className={`cursor-pointer transition-all ${formData.institution_type === template.id ? 'border-blue-500 shadow-md' : 'hover:border-blue-200'}`}
-                onClick={() => setFormData({...formData, institution_type: template.id})}
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-slate-500 text-slate-200 hover:bg-slate-700/50 text-lg px-8 h-14 rounded-xl"
+                onClick={() => document.getElementById('solution')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${formData.institution_type === template.id ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-600'}`}>
-                      <FileText className="w-5 h-5" />
+                솔루션 자세히 보기
+                <ChevronDown className="ml-2 w-5 h-5" />
+              </Button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Pain Points */}
+      <section className="py-16 md:py-24 bg-slate-50">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-14">
+            <motion.h2 variants={fadeUp} custom={0} className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+              이런 고민, 하고 계시지 않나요?
+            </motion.h2>
+          </motion.div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { icon: FileText, title: '서류 업무 과부하', desc: '바우처 서류, 일지 작성에 매일 2시간 이상 소모' },
+              { icon: Users, title: '보호자 소통 부담', desc: '변화를 설명하기 어렵고, 민원이 반복됨' },
+              { icon: Activity, title: '변화 추적 어려움', desc: '이용자 상태 변화를 객관적으로 증빙할 수 없음' },
+              { icon: TrendingUp, title: '재등록률 정체', desc: '차별화된 프로그램 없이 경쟁 심화' },
+            ].map((item, i) => (
+              <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+                <Card className="h-full border-slate-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300 bg-white">
+                  <CardContent className="p-6 text-center">
+                    <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center mx-auto mb-4">
+                      <item.icon className="w-6 h-6 text-red-400" />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-sm">{template.title}</h4>
-                      <p className="text-xs text-muted-foreground mb-2">{template.description}</p>
-                      <div className="flex flex-wrap gap-1">
-                        {template.features.map((feature, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-xs">
-                            {feature}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    <h3 className="font-semibold text-slate-900 mb-2">{item.title}</h3>
+                    <p className="text-sm text-slate-500">{item.desc}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Generated Proposal Actions */}
-        {generatedProposal && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-8"
-          >
-            <Card className="border-green-200 bg-green-50">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <CheckCircle2 className="w-8 h-8 text-green-600" />
-                  <div>
-                    <h3 className="font-bold text-lg">제안서가 생성되었습니다!</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {formData.institution_name} 맞춤 제안서 ({formData.target_users}명 대상)
-                    </p>
-                  </div>
-                </div>
-                
-                {/* Free HTML Download */}
-                <div className="flex flex-wrap gap-3 mb-4">
-                  <Button onClick={handleDownload} variant="outline">
-                    <Download className="w-4 h-4 mr-2" />
-                    HTML 다운로드 (무료)
-                  </Button>
-                  <Button variant="outline" onClick={handlePrint}>
-                    <Printer className="w-4 h-4 mr-2" />
-                    인쇄하기
-                  </Button>
-                </div>
+      {/* Solution */}
+      <section id="solution" className="py-16 md:py-24">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-14">
+            <motion.div variants={fadeUp} custom={0}>
+              <Badge className="mb-4 bg-emerald-50 text-emerald-700 border-emerald-200">통합 솔루션</Badge>
+            </motion.div>
+            <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+              AIHPRO + Memory Legacy 번들
+            </motion.h2>
+            <motion.p variants={fadeUp} custom={2} className="text-slate-500 max-w-xl mx-auto">
+              인지 케어와 회고록을 하나로. 시장에 없는 유일한 번들 솔루션
+            </motion.p>
+          </motion.div>
 
-                {/* Premium PDF Paywall */}
-                <Card className={`border-2 ${hasPremiumAccess ? 'border-green-300 bg-green-50' : 'border-blue-300 bg-blue-50'}`}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        {hasPremiumAccess ? (
-                          <CheckCircle2 className="w-6 h-6 text-green-600" />
-                        ) : (
-                          <Lock className="w-6 h-6 text-blue-600" />
-                        )}
-                        <div>
-                          <p className="font-semibold">프리미엄 PDF 제안서</p>
-                          <p className="text-xs text-muted-foreground">
-                            {hasPremiumAccess 
-                              ? '프리미엄 버전을 다운로드할 수 있습니다' 
-                              : '기관 로고 반영 + 프린트 최적화 + 전문 디자인'}
-                          </p>
-                        </div>
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            {[
+              { 
+                icon: Brain, color: 'blue', 
+                title: '인지건강 모니터링', 
+                features: ['30종+ AI 심리·인지 검사', '이용자별 변화 추이 대시보드', '위험 신호 자동 알림', '치매 조기 선별 지원'] 
+              },
+              { 
+                icon: BarChart3, color: 'emerald', 
+                title: '운영 자동화', 
+                features: ['보호자 리포트 자동 발송', '정부 바우처 서류 자동 생성', '다중 이용자 일괄 관리', '직원용 관리 대시보드'] 
+              },
+              { 
+                icon: BookOpen, color: 'amber', 
+                title: 'AI 회고록 (Memory Legacy)', 
+                features: ['어르신 음성 회고록 제작', 'AI 자서전 자동 편집', '가족 공유 앨범', '명절 선물용 제본 서비스'] 
+              },
+            ].map((item, i) => {
+              const colorMap: Record<string, string> = {
+                blue: 'bg-blue-50 text-blue-600',
+                emerald: 'bg-emerald-50 text-emerald-600',
+                amber: 'bg-amber-50 text-amber-600',
+              };
+              return (
+                <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+                  <Card className="h-full border-slate-200 hover:shadow-xl transition-all duration-300">
+                    <CardContent className="p-6">
+                      <div className={`w-12 h-12 rounded-xl ${colorMap[item.color]} flex items-center justify-center mb-4`}>
+                        <item.icon className="w-6 h-6" />
                       </div>
-                      {hasPremiumAccess ? (
-                        <Button className="bg-green-600 hover:bg-green-700">
-                          <Download className="w-4 h-4 mr-2" />
-                          PDF 다운로드
-                        </Button>
-                      ) : (
-                        <Button 
-                          onClick={() => setShowPaymentModal(true)}
-                          className="bg-blue-600 hover:bg-blue-700"
-                        >
-                          <CreditCard className="w-4 h-4 mr-2" />
-                          ₩30,000 결제
-                        </Button>
-                      )}
+                      <h3 className="text-lg font-bold text-slate-900 mb-4">{item.title}</h3>
+                      <ul className="space-y-2.5">
+                        {item.features.map((f, j) => (
+                          <li key={j} className="flex items-start gap-2 text-sm text-slate-600">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Value Props */}
+          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-2xl p-8 md:p-12">
+            <h3 className="text-xl font-bold text-slate-900 mb-6 text-center">기관이 얻는 가치</h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { metric: '행정시간 80% 절감', desc: '바우처 서류·리포트 자동화', icon: Clock },
+                { metric: '보호자 만족도 ↑', desc: '월간 리포트 + 회고록 감동', icon: Heart },
+                { metric: '재등록률 상승', desc: '차별화된 프로그램으로 경쟁력', icon: TrendingUp },
+                { metric: '객관적 변화 증빙', desc: '지원금 신청·감사 대비', icon: Shield },
+              ].map((item, i) => (
+                <div key={i} className="text-center">
+                  <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center mx-auto mb-3">
+                    <item.icon className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div className="font-bold text-emerald-700 mb-1">{item.metric}</div>
+                  <div className="text-sm text-slate-500">{item.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="py-16 md:py-24 bg-slate-50">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-14">
+            <motion.h2 variants={fadeUp} custom={0} className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+              기관 규모에 맞는 합리적인 요금
+            </motion.h2>
+            <motion.p variants={fadeUp} custom={1} className="text-slate-500">
+              파일럿 3개월 무료 → 데이터 확인 후 결정
+            </motion.p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: '기본',
+                price: '9.9',
+                users: '이용자 30명',
+                badge: null,
+                features: ['AI 인지·정서 검사 무제한', '이용자별 변화 추이', '직원 관리 대시보드', '월간 보호자 리포트'],
+                cta: '파일럿 신청',
+              },
+              {
+                name: '프로',
+                price: '19.9',
+                users: '이용자 80명',
+                badge: '추천',
+                features: ['기본 플랜 전체 포함', '보호자 리포트 자동 발송', '정부 바우처 서류 자동화', 'AI 회고록 월 10건', '위험 신호 알림'],
+                cta: '파일럿 신청',
+              },
+              {
+                name: '프리미엄',
+                price: '29.9',
+                users: '이용자 무제한',
+                badge: '인기',
+                features: ['프로 플랜 전체 포함', 'AI 회고록 무제한', '가족 공유 앨범', '기관 브랜딩 커스텀', '전담 CS 매니저'],
+                cta: '파일럿 신청',
+              },
+            ].map((plan, i) => (
+              <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+                <Card className={`h-full relative ${plan.badge === '추천' ? 'border-emerald-400 shadow-xl shadow-emerald-100' : 'border-slate-200'}`}>
+                  {plan.badge && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <Badge className={plan.badge === '추천' ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-white'}>
+                        <Star className="w-3 h-3 mr-1" />{plan.badge}
+                      </Badge>
                     </div>
+                  )}
+                  <CardContent className="p-6 pt-8">
+                    <div className="text-center mb-6">
+                      <h3 className="text-lg font-bold text-slate-900 mb-1">{plan.name}</h3>
+                      <p className="text-sm text-slate-500 mb-4">{plan.users}</p>
+                      <div className="flex items-baseline justify-center gap-1">
+                        <span className="text-4xl font-bold text-slate-900">₩{plan.price}</span>
+                        <span className="text-slate-500">만/월</span>
+                      </div>
+                    </div>
+                    <ul className="space-y-3 mb-8">
+                      {plan.features.map((f, j) => (
+                        <li key={j} className="flex items-start gap-2.5 text-sm text-slate-600">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <Button 
+                      className={`w-full rounded-xl h-12 ${plan.badge === '추천' ? 'bg-emerald-500 hover:bg-emerald-600' : ''}`}
+                      variant={plan.badge === '추천' ? 'default' : 'outline'}
+                      onClick={() => {
+                        setInquiryOpen(true);
+                        setFormData(prev => ({ ...prev, message: `${plan.name} 플랜 (${plan.price}만원/월) 문의` }));
+                        document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                    >
+                      {plan.cta}
+                      <ArrowRight className="ml-2 w-4 h-4" />
+                    </Button>
                   </CardContent>
                 </Card>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
-        {/* B2B Product Cards Section */}
-        <div className="mt-12">
-          <div className="text-center mb-8">
-            <Badge className="mb-4 bg-purple-100 text-purple-700 border-purple-200">
-              Premium Services
-            </Badge>
-            <h2 className="text-2xl font-bold mb-2">즉시 구매 가능한 B2B 서비스</h2>
-            <p className="text-muted-foreground">
-              파일럿 시작 전 필요한 자료를 바로 구매하세요
-            </p>
+              </motion.div>
+            ))}
           </div>
-          <B2BProductCards 
-            onPurchaseComplete={(productId) => {
-              if (productId === 'b2b_proposal_premium') {
-                setHasPremiumAccess(true);
-              }
-              toast({
-                title: "구매 완료",
-                description: "결제가 완료되었습니다. 감사합니다!"
-              });
-            }}
-          />
-        </div>
-      </div>
 
-      {/* Payment Modal */}
-      <B2BPaymentModal
-        isOpen={showPaymentModal}
-        onClose={() => setShowPaymentModal(false)}
-        productId="b2b_proposal_premium"
-        onSuccess={() => {
-          setHasPremiumAccess(true);
-          setShowPaymentModal(false);
-          toast({
-            title: "결제 완료",
-            description: "프리미엄 제안서를 다운로드할 수 있습니다."
-          });
-        }}
-      />
+          <p className="text-center text-sm text-slate-400 mt-8">
+            * 파일럿 3개월 무료 체험 후, 데이터 기반으로 도입 여부를 결정하실 수 있습니다.
+          </p>
+        </div>
+      </section>
+
+      {/* Use Case Scenario */}
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <motion.h2 variants={fadeUp} custom={0} className="text-2xl md:text-3xl font-bold text-slate-900 mb-10 text-center">
+              도입 시나리오
+            </motion.h2>
+          </motion.div>
+          <div className="space-y-6">
+            {[
+              { step: '1', title: '킥오프 (1주차)', desc: '기관 니즈 분석, 관리자 계정 발급, 이용자 등록', color: 'bg-blue-500' },
+              { step: '2', title: '온보딩 (2주차)', desc: '직원 교육, 첫 검사 실행, 대시보드 세팅', color: 'bg-emerald-500' },
+              { step: '3', title: '운영 (3~12주차)', desc: '주간/월간 리포트 자동 발송, 회고록 제작 시작', color: 'bg-amber-500' },
+              { step: '4', title: '성과 분석 (13주차)', desc: '3개월 변화 추이 리포트 제공, 정식 계약 협의', color: 'bg-purple-500' },
+            ].map((item, i) => (
+              <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                className="flex items-start gap-5"
+              >
+                <div className={`w-10 h-10 rounded-full ${item.color} text-white flex items-center justify-center font-bold shrink-0 text-sm`}>
+                  {item.step}
+                </div>
+                <div className="flex-1 pb-6 border-b border-slate-100">
+                  <h3 className="font-semibold text-slate-900 mb-1">{item.title}</h3>
+                  <p className="text-sm text-slate-500">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="py-16 bg-slate-50">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-10">
+            <motion.h2 variants={fadeUp} custom={0} className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+              검증된 플랫폼
+            </motion.h2>
+          </motion.div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { value: '47개', label: '제휴 기관' },
+              { value: '30종+', label: 'AI 검사' },
+              { value: '39.6%', label: '검사 전환율' },
+              { value: '23,000', label: '유튜브 구독자' },
+            ].map((stat, i) => (
+              <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                className="text-center p-6 bg-white rounded-xl shadow-sm"
+              >
+                <div className="text-2xl md:text-3xl font-bold text-emerald-600 mb-1">{stat.value}</div>
+                <div className="text-sm text-slate-500">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Inquiry Form */}
+      <section id="inquiry" className="py-16 md:py-24">
+        <div className="container mx-auto px-4 max-w-2xl">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-10">
+            <motion.h2 variants={fadeUp} custom={0} className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+              무료 파일럿 신청
+            </motion.h2>
+            <motion.p variants={fadeUp} custom={1} className="text-slate-500">
+              3개월 무료로 직접 경험해보세요. 영업일 기준 1일 이내 연락드립니다.
+            </motion.p>
+          </motion.div>
+
+          <Card className="border-slate-200 shadow-lg">
+            <CardContent className="p-6 md:p-8 space-y-5">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-1.5 block">기관명 *</label>
+                  <Input 
+                    value={formData.institution_name}
+                    onChange={e => setFormData(p => ({ ...p, institution_name: e.target.value }))}
+                    placeholder="예: 행복 주간보호센터"
+                    className="h-11"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-1.5 block">기관 유형</label>
+                  <Input 
+                    value={formData.institution_type}
+                    onChange={e => setFormData(p => ({ ...p, institution_type: e.target.value }))}
+                    placeholder="예: 주간보호센터"
+                    className="h-11"
+                  />
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-1.5 block">담당자명 *</label>
+                  <Input 
+                    value={formData.contact_name}
+                    onChange={e => setFormData(p => ({ ...p, contact_name: e.target.value }))}
+                    placeholder="홍길동"
+                    className="h-11"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-1.5 block">연락처 *</label>
+                  <Input 
+                    value={formData.contact_phone}
+                    onChange={e => setFormData(p => ({ ...p, contact_phone: e.target.value }))}
+                    placeholder="010-1234-5678"
+                    className="h-11"
+                  />
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-1.5 block">이메일</label>
+                  <Input 
+                    type="email"
+                    value={formData.contact_email}
+                    onChange={e => setFormData(p => ({ ...p, contact_email: e.target.value }))}
+                    placeholder="email@center.com"
+                    className="h-11"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-1.5 block">이용자 수 (대략)</label>
+                  <Input 
+                    type="number"
+                    value={formData.user_count}
+                    onChange={e => setFormData(p => ({ ...p, user_count: e.target.value }))}
+                    placeholder="30"
+                    className="h-11"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-700 mb-1.5 block">문의 내용</label>
+                <Textarea 
+                  value={formData.message}
+                  onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
+                  placeholder="관심 있는 플랜이나 궁금한 점을 적어주세요"
+                  rows={3}
+                />
+              </div>
+              <Button 
+                className="w-full h-13 text-lg bg-emerald-500 hover:bg-emerald-600 rounded-xl shadow-lg shadow-emerald-200"
+                onClick={handleSubmit}
+                disabled={submitting}
+              >
+                {submitting ? '접수 중...' : '무료 파일럿 신청하기'}
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+              <p className="text-xs text-slate-400 text-center">
+                * 신청 후 영업일 기준 1일 이내 담당자가 연락드립니다. 파일럿 기간 중 추가 비용은 없습니다.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Footer CTA */}
+      <section className="bg-slate-900 text-white py-16">
+        <div className="container mx-auto px-4 max-w-3xl text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+            "보호자가 감동하면, 기관이 성장합니다"
+          </h2>
+          <p className="text-slate-400 mb-8">
+            인지 케어 + AI 회고록. 어르신과 가족 모두를 위한<br />
+            시장에 없는 유일한 통합 솔루션
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm text-slate-400">
+            <span className="flex items-center gap-2">
+              <Mail className="w-4 h-4" /> b2b@aihpro.app
+            </span>
+            <span className="hidden sm:block">·</span>
+            <span className="flex items-center gap-2">
+              <Phone className="w-4 h-4" /> 문의: 파일럿 신청 폼 이용
+            </span>
+            <span className="hidden sm:block">·</span>
+            <span className="flex items-center gap-2">
+              <Building2 className="w-4 h-4" /> aihpro.app
+            </span>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

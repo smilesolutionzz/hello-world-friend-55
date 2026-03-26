@@ -358,6 +358,8 @@ const Assessment = () => {
       setCurrentStep('parent-child-play');
     } else if (type === 'resilience') {
       navigate('/assessment/resilience');
+    } else if (type === 'epds') {
+      setCurrentStep('epds-test');
     } else {
       setCurrentStep('legal-notice');
     }

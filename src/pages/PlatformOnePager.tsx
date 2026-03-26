@@ -76,7 +76,7 @@ ${contentRef.current?.innerHTML || ''}
           AIHPRO — AI 기반 심리건강 SaaS 플랫폼
         </h1>
         <div style={{ fontSize: '9pt', color: '#6b7280', marginBottom: '14px', borderBottom: '2px solid #1e3a5f', paddingBottom: '6px' }}>
-          AI Human Pro | aihpro.app | 2026년 3월 기준 | 대표: 김병훈
+          AI Human Pro | aihpro.app | 2026년 3월 기준 | 대표: 이수석
         </div>
 
         {/* 1. Value Proposition */}
@@ -166,7 +166,7 @@ ${contentRef.current?.innerHTML || ''}
               6. 팀 & 핵심 역량
             </h2>
             <ul style={{ margin: '2px 0 6px 18px', padding: 0, fontSize: '9.5pt' }}>
-              <li><strong>김병훈 대표</strong> — AI 풀스택 개발 + 유튜브 23K 채널 운영</li>
+              <li><strong>이수석 대표</strong> — 발달재활 석사, 14년 현장 전문가 + 유튜브 23K 채널 운영</li>
               <li>아동발달 전문의 10명 + 임상심리사 30명 자문단</li>
               <li>B2B 파트너 기관 50곳 네트워크 확보</li>
               <li>RTPLANAI.COM 통합 AI 솔루션 IP 보유</li>
@@ -187,7 +187,7 @@ ${contentRef.current?.innerHTML || ''}
 
         {/* Footer */}
         <div style={{ fontSize: '8pt', color: '#9ca3af', textAlign: 'center', marginTop: '10px', borderTop: '1px solid #e5e7eb', paddingTop: '4px' }}>
-          본 자료는 투자 및 정책자금 검토용으로 작성되었습니다. | AIHPRO (AI Human Pro) | aihpro.app | contact: 김병훈 대표
+          본 자료는 투자 및 정책자금 검토용으로 작성되었습니다. | AIHPRO (AI Human Pro) | aihpro.app | contact: 이수석 대표
         </div>
       </div>
 

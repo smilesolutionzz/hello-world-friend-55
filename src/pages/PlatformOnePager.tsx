@@ -76,7 +76,7 @@ ${contentRef.current?.innerHTML || ''}
           AIHPRO — AI 기반 심리건강 SaaS 플랫폼
         </h1>
         <div style={{ fontSize: '9pt', color: '#6b7280', marginBottom: '14px', borderBottom: '2px solid #1e3a5f', paddingBottom: '6px' }}>
-          AI Human Pro | aihpro.app | 2026년 3월 기준 | 대표: 김병훈
+          AI Human Pro | aihpro.app | 2026년 3월 기준 | 대표: 이수석
         </div>
 
         {/* 1. Value Proposition */}

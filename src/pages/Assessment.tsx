@@ -44,6 +44,8 @@ import ChallengingBehaviorForm from "@/components/assessment/ChallengingBehavior
 import ChallengingBehaviorResult from "@/components/assessment/ChallengingBehaviorResult";
 import AdaptiveBehaviorForm from "@/components/assessment/AdaptiveBehaviorForm";
 import AdaptiveBehaviorResult from "@/components/assessment/AdaptiveBehaviorResult";
+import EpdsTestForm from "@/components/assessment/EpdsTestForm";
+import EpdsTestResult from "@/components/assessment/EpdsTestResult";
 import ParentChildPlayTest from "@/components/assessment/ParentChildPlayTest";
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";

@@ -1488,284 +1488,35 @@ const Assessment = () => {
     );
   }
 
-  if (currentStep === 'bigfive-test') {
+  if (currentStep === 'epds-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.bigfiveTestTitle}</h1>
-            <p className="text-muted-foreground">{t.assessment.bigfiveTestSubtitle}</p>
-          </div>
-          <BigFiveTestForm 
-            onComplete={handleBigfiveTestComplete}
-            onBack={handleBack}
-          />
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30">
+        <EpdsTestForm
+          onComplete={async (results) => {
+            setEpdsResults(results);
+            await saveTestToTimeline('epds', results);
+            setCurrentStep('epds-result');
+          }}
+          onBack={handleBack}
+        />
       </div>
     );
   }
 
-  if (currentStep === 'bigfive-result' && bigfiveResults) {
+  if (currentStep === 'epds-result' && epdsResults) {
     return (
-      <SubscriptionGuard consumeAt="result" featureName="Big5 성격검사" creditType="test" trialKey="FIVE_D_PERSONALITY">
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-          <div className="container mx-auto max-w-4xl">
-            <BigFiveTestResult 
-              result={bigfiveResults}
-              onRestart={() => setCurrentStep('bigfive-test')}
-            />
-          </div>
-        </div>
-      </SubscriptionGuard>
-    );
-  }
-
-  if (currentStep === 'attachment-test') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.attachmentTestTitle}</h1>
-            <p className="text-muted-foreground">{t.assessment.attachmentTestSubtitle}</p>
-          </div>
-          <AttachmentStyleForm 
-            onComplete={handleAttachmentTestComplete}
-            onBack={handleBack}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if (currentStep === 'attachment-result' && attachmentResults) {
-    return (
-      <SubscriptionGuard consumeAt="result" featureName="애착유형 검사" creditType="test" trialKey="RELATIONSHIP_TYPE">
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-          <div className="container mx-auto max-w-4xl">
-            <AttachmentStyleResult 
-              result={attachmentResults}
-              onRestart={() => setCurrentStep('attachment-test')}
-            />
-          </div>
-        </div>
-      </SubscriptionGuard>
-    );
-  }
-
-  if (currentStep === 'career-test') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.careerTestTitle}</h1>
-            <p className="text-muted-foreground">{t.assessment.careerTestSubtitle}</p>
-          </div>
-          <CareerInterestForm 
-            onComplete={handleCareerTestComplete}
-            onBack={handleBack}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if (currentStep === 'selfesteem-test') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.selfesteemTestTitle}</h1>
-            <p className="text-muted-foreground">{t.assessment.selfesteemTestSubtitle}</p>
-          </div>
-          <SelfEsteemTestForm 
-            onComplete={handleSelfesteemTestComplete}
-            onBack={handleBack}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if (currentStep === 'emotional-development-test') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.emotionalDevTitle}</h1>
-            <p className="text-muted-foreground">{t.assessment.emotionalDevSubtitle}</p>
-          </div>
-          <div className="bg-white dark:bg-card rounded-2xl p-8 shadow-lg border">
-            <div className="space-y-6">
-              <div className="text-center">
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-900/30 dark:to-pink-900/30 px-4 py-2 rounded-full mb-4">
-                  <span className="text-2xl">💖</span>
-                  <span className="font-semibold">{t.assessment.emotionalDevSection}</span>
-                </div>
-              </div>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="p-4 bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 rounded-xl border border-rose-200 dark:border-rose-800">
-                   <h3 className="font-semibold mb-2 flex items-center gap-2">
-                     <span>😊</span> {t.assessment.emotionalArea1Title}
-                   </h3>
-                   <p className="text-sm text-muted-foreground">{t.assessment.emotionalArea1Desc}</p>
-                </div>
-                <div className="p-4 bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl border border-purple-200 dark:border-purple-800">
-                   <h3 className="font-semibold mb-2 flex items-center gap-2">
-                     <span>🤝</span> {t.assessment.emotionalArea2Title}
-                   </h3>
-                   <p className="text-sm text-muted-foreground">{t.assessment.emotionalArea2Desc}</p>
-                </div>
-                <div className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                   <h3 className="font-semibold mb-2 flex items-center gap-2">
-                     <span>🎭</span> {t.assessment.emotionalArea3Title}
-                   </h3>
-                   <p className="text-sm text-muted-foreground">{t.assessment.emotionalArea3Desc}</p>
-                </div>
-                <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-800">
-                   <h3 className="font-semibold mb-2 flex items-center gap-2">
-                     <span>💝</span> {t.assessment.emotionalArea4Title}
-                   </h3>
-                   <p className="text-sm text-muted-foreground">{t.assessment.emotionalArea4Desc}</p>
-                </div>
-              </div>
-              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
-                 <p className="text-sm text-muted-foreground">
-                   <strong className="text-foreground">💡</strong> {t.assessment.emotionalDevNotice}
-                 </p>
-              </div>
-              <div className="flex gap-3">
-                <Button 
-                  onClick={handleBack}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  ← {t.common.back}
-                </Button>
-                <Button 
-                  onClick={() => {
-                    // 정서발달 검사 시작 - 자존감 검사 재사용
-                    setCurrentStep('selfesteem-test');
-                  }}
-                  className="flex-1 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
-                >
-                  {t.assessment.startTest} →
-                </Button>
-              </div>
+      <SubscriptionGuard consumeAt="result" featureName="육아 우울감 체크" creditType="test" trialKey="EPDS_INDEX">
+        <div>
+          <UnifiedNavigation />
+          <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
+            <div className="container mx-auto max-w-4xl">
+              <EpdsTestResult
+                result={epdsResults}
+                onRestart={() => setCurrentStep('epds-test')}
+              />
             </div>
           </div>
         </div>
-      </div>
-    );
-  }
-  
-  // 발달 검사 렌더링
-  if (currentStep === 'developmental-delay-test') {
-    return <DevelopmentalDelayTestForm onComplete={(results) => {
-      setDevelopmentalDelayResults(results);
-      setCurrentStep('developmental-delay-result');
-    }} onBack={handleBack} />;
-  }
-
-  if (currentStep === 'sensory-integration-test') {
-    return <SensoryIntegrationTestForm onComplete={(results) => {
-      setSensoryIntegrationResults(results);
-      setCurrentStep('sensory-integration-result');
-    }} onBack={handleBack} />;
-  }
-
-  if (currentStep === 'learning-disability-test') {
-    return <LearningDisabilityTestForm onComplete={(results) => {
-      setLearningDisabilityResults(results);
-      setCurrentStep('learning-disability-result');
-    }} onBack={handleBack} />;
-  }
-
-  if (currentStep === 'social-development-test') {
-    return <SocialDevelopmentTestForm onComplete={(results) => {
-      setSocialDevelopmentResults(results);
-      setCurrentStep('social-development-result');
-    }} onBack={handleBack} />;
-  }
-
-  // 도전행동 및 적응행동 검사 렌더링
-  if (currentStep === 'challenging-behavior-test') {
-    return <ChallengingBehaviorForm onComplete={(results) => {
-      setChallengingBehaviorResults(results);
-      saveTestToTimeline('challenging-behavior', results);
-      setCurrentStep('challenging-behavior-result');
-    }} onBack={handleBack} />;
-  }
-
-  if (currentStep === 'adaptive-behavior-test') {
-    return <AdaptiveBehaviorForm onComplete={(results) => {
-      setAdaptiveBehaviorResults(results);
-      saveTestToTimeline('adaptive-behavior', results);
-      setCurrentStep('adaptive-behavior-result');
-    }} onBack={handleBack} />;
-  }
-
-  // 발달 검사 결과 렌더링
-  if (currentStep === 'developmental-delay-result' && developmentalDelayResults) {
-    return (
-      <SubscriptionGuard consumeAt="result" featureName="발달지연 검사" creditType="test" trialKey="DEVELOPMENTAL_DELAY_TEST">
-        <DevelopmentalDelayTestResult 
-          results={developmentalDelayResults} 
-          onBack={handleBack} 
-          onRestart={() => setCurrentStep('developmental-delay-test')} 
-        />
-      </SubscriptionGuard>
-    );
-  }
-
-  if (currentStep === 'sensory-integration-result' && sensoryIntegrationResults) {
-    return (
-      <SubscriptionGuard consumeAt="result" featureName="감각통합 검사" creditType="test" trialKey="SENSORY_INTEGRATION_TEST">
-        <SensoryIntegrationTestResult 
-          results={sensoryIntegrationResults} 
-          onBack={handleBack} 
-          onRestart={() => setCurrentStep('sensory-integration-test')} 
-        />
-      </SubscriptionGuard>
-    );
-  }
-
-  if (currentStep === 'learning-disability-result' && learningDisabilityResults) {
-    return (
-      <SubscriptionGuard consumeAt="result" featureName="학습장애 검사" creditType="test" trialKey="LEARNING_DISABILITY_TEST">
-        <LearningDisabilityTestResult 
-          results={learningDisabilityResults} 
-          onBack={handleBack} 
-          onRestart={() => setCurrentStep('learning-disability-test')} 
-        />
-      </SubscriptionGuard>
-    );
-  }
-
-  if (currentStep === 'social-development-result' && socialDevelopmentResults) {
-    return (
-      <SubscriptionGuard consumeAt="result" featureName="사회성 발달 검사" creditType="test" trialKey="SOCIAL_DEVELOPMENT_TEST">
-        <SocialDevelopmentTestResult 
-          results={socialDevelopmentResults} 
-          onBack={handleBack} 
-          onRestart={() => setCurrentStep('social-development-test')} 
-        />
-      </SubscriptionGuard>
-    );
-  }
-
-  // 도전행동 및 적응행동 결과 렌더링
-  if (currentStep === 'challenging-behavior-result' && challengingBehaviorResults) {
-    return (
-      <SubscriptionGuard consumeAt="result" featureName="문제행동 검사" creditType="test" trialKey="CHALLENGING_BEHAVIOR_TEST">
-        <ChallengingBehaviorResult results={challengingBehaviorResults} />
-      </SubscriptionGuard>
-    );
-  }
-
-  if (currentStep === 'adaptive-behavior-result' && adaptiveBehaviorResults) {
-    return (
-      <SubscriptionGuard consumeAt="result" featureName="적응행동 검사" creditType="test" trialKey="ADAPTIVE_BEHAVIOR_TEST">
-        <AdaptiveBehaviorResult results={adaptiveBehaviorResults} />
       </SubscriptionGuard>
     );
   }

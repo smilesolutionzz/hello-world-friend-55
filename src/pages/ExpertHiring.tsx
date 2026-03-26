@@ -566,37 +566,6 @@ const ExpertHiring = () => {
                 </div>
               </CardContent>
             </Card>
-
-            {/* B2B 광고 제휴 CTA */}
-            <Card className="mt-4 bg-gradient-to-r from-amber-50 via-orange-50 to-rose-50 border border-amber-200 shadow-md overflow-hidden relative">
-              <div className="absolute top-0 right-0 bg-gradient-to-l from-amber-400 to-orange-400 text-white text-xs font-bold px-4 py-1 rounded-bl-lg">
-                광고 제휴
-              </div>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-xl shadow-lg flex-shrink-0">
-                      📢
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg mb-1 text-amber-900">매달 수천 명의 학부모가 검색합니다</h3>
-                      <p className="text-amber-700/80 text-sm">AIHPRO에서 기관을 홍보하고 실시간 고객 DB를 확보하세요</p>
-                      <div className="flex gap-2 mt-2">
-                        <Badge className="bg-amber-100 text-amber-700 text-xs">월 19만원~</Badge>
-                        <Badge className="bg-orange-100 text-orange-700 text-xs">검색 키워드 상위 노출</Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <Button 
-                    onClick={() => navigate('/b2b-proposal')}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg"
-                  >
-                    <Building2 className="w-4 h-4 mr-2" />
-                    광고 제휴 알아보기
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </section>
       )}

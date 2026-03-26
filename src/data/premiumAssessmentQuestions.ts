@@ -3,7 +3,6 @@
 
 // 프리미엄 ADHD 검사 정보 가져오기
 import { premiumAdhdAssessmentInfo } from "./premiumAdhdQuestions";
-import { dementiaRiskPremiumInfo as dementiaRiskPremiumInfoImported } from "./dementiaRiskQuestions";
 
 // 0. AIH 신경발달 조기선별검사 (Autism Spectrum Early Screening - AIH)
 export const autismSpectrumScreeningInfo = {
@@ -1851,10 +1850,6 @@ export const premiumAssessmentInfo = {
     badge: "🤸 NEW",
     priority: 1,
     highlight: true
-  },
-  // 🧓 치매 위험도 정밀진단검사
-  dementiaRisk: {
-    ...dementiaRiskPremiumInfoImported,
   }
 };
 

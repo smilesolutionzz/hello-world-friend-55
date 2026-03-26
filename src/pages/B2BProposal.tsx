@@ -107,7 +107,7 @@ const B2BProposal = () => {
               <span className="text-indigo-400">내 센터를 바로 찾게 하세요</span>
             </motion.h1>
             <motion.p variants={fadeUp} custom={2} className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-4">
-              매달 수백 명이 AIHPRO에서 심리검사를 합니다<br />
+              매달 수천 명이 AIHPRO에서 심리검사를 합니다<br />
               <span className="text-indigo-300 font-medium">검사 끝나는 순간, "근처 전문기관"으로 귀 센터가 뜹니다</span>
             </motion.p>
             <motion.div variants={fadeUp} custom={3} className="flex flex-wrap justify-center gap-2.5 text-sm text-slate-400 mb-10">
@@ -127,7 +127,7 @@ const B2BProposal = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="bg-white/15 backdrop-blur-sm border-2 border-white/40 text-white hover:bg-white/25 text-lg px-8 h-14 rounded-xl shadow-lg"
+                className="border-slate-500 text-slate-200 hover:bg-slate-700/50 text-lg px-8 h-14 rounded-xl"
                 onClick={() => document.getElementById('how')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 어떻게 노출되나요?
@@ -247,9 +247,8 @@ const B2BProposal = () => {
             {[
               { step: '1', title: '유저가 심리검사 수행', desc: 'ADHD, 우울, 발달, 인지 등 30종+ 검사 — 이미 고민이 있는 고관여 유저', color: 'bg-indigo-500', emoji: '🧠' },
               { step: '2', title: '결과 페이지에서 기관 추천', desc: '"검사 결과 기반 추천 전문기관"으로 귀 센터가 자연스럽게 노출', color: 'bg-violet-500', emoji: '📊' },
-              { step: '3', title: '실시간 고객 DB 메일 전송', desc: '검사를 완료한 유저 정보가 실시간으로 귀 기관 담당자 이메일로 전송됩니다', color: 'bg-emerald-500', emoji: '📧' },
-              { step: '4', title: '기관 프로필로 유입', desc: '전문 분야, 위치, 소개, 후기, 예약 링크 — 네이버 플레이스보다 전환율 높음', color: 'bg-rose-500', emoji: '🏥' },
-              { step: '5', title: '전화/예약으로 전환', desc: '검사 → 결과 → 예약까지 3분. 이미 필요를 느낀 유저가 바로 행동', color: 'bg-amber-500', emoji: '📞' },
+              { step: '3', title: '기관 프로필로 유입', desc: '전문 분야, 위치, 소개, 후기, 예약 링크 — 네이버 플레이스보다 전환율 높음', color: 'bg-rose-500', emoji: '🏥' },
+              { step: '4', title: '전화/예약으로 전환', desc: '검사 → 결과 → 예약까지 3분. 이미 필요를 느낀 유저가 바로 행동', color: 'bg-amber-500', emoji: '📞' },
             ].map((item, i) => (
               <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}
                 className="flex items-start gap-5"
@@ -316,33 +315,29 @@ const B2BProposal = () => {
         </div>
       </section>
 
-      {/* Ad Products */}
-      <section className="py-16 md:py-24 bg-gradient-to-b from-slate-50 to-white">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-16">
+      {/* Ad Products — 금액 다운 */}
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-14">
             <motion.div variants={fadeUp} custom={0}>
               <Badge className="mb-4 bg-indigo-50 text-indigo-700 border-indigo-200">광고 상품</Badge>
             </motion.div>
-            <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-bold text-slate-900 mb-3">
+            <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
               네이버 광고비의 1/5 가격으로 시작하세요
             </motion.h2>
-            <motion.p variants={fadeUp} custom={2} className="text-slate-500">
+            <motion.p variants={fadeUp} custom={2} className="text-slate-500 text-sm">
               첫 달 무료 체험 · 언제든 해지 가능 · 연간 결제 시 20% 할인
             </motion.p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6 items-start">
+          <div className="grid md:grid-cols-3 gap-8 overflow-visible pt-6">
             {[
               {
                 name: '베이직',
                 price: '9.9',
                 period: '월',
                 badge: null,
-                badgeColor: '',
                 highlight: '커피값으로 시작',
-                gradient: 'from-slate-50 to-white',
-                borderColor: 'border-slate-200',
-                accentColor: 'text-slate-600',
                 features: [
                   '검사 결과 페이지 하단 노출',
                   '기관 프로필 페이지 생성',
@@ -350,20 +345,13 @@ const B2BProposal = () => {
                   '기관 로고 + 한줄 소개',
                   '전화번호 / 예약링크 연결',
                 ],
-                btnStyle: 'outline' as const,
-                btnClass: 'border-slate-300 text-slate-700 hover:bg-slate-50',
-                btnText: '무료 체험 시작',
               },
               {
                 name: '스탠다드',
                 price: '29.9',
                 period: '월',
-                badge: '🔥 가성비 최고',
-                badgeColor: 'bg-indigo-600 text-white',
+                badge: '가성비 최고',
                 highlight: '네이버 광고비의 1/3',
-                gradient: 'from-indigo-50 via-white to-indigo-50/30',
-                borderColor: 'border-indigo-300 ring-2 ring-indigo-100',
-                accentColor: 'text-indigo-600',
                 features: [
                   '베이직 전체 포함',
                   '메인 홈 "추천 기관" 노출',
@@ -372,20 +360,13 @@ const B2BProposal = () => {
                   '클릭/전환 분석 대시보드',
                   '지역 기반 타겟팅',
                 ],
-                btnStyle: 'default' as const,
-                btnClass: 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-300/40',
-                btnText: '광고 문의하기',
               },
               {
                 name: '프리미엄',
                 price: '59.9',
                 period: '월',
-                badge: '⭐ 최대 효과',
-                badgeColor: 'bg-amber-500 text-white',
+                badge: '최대 효과',
                 highlight: '독점 노출 + 콘텐츠 마케팅',
-                gradient: 'from-amber-50/50 via-white to-amber-50/30',
-                borderColor: 'border-amber-200',
-                accentColor: 'text-amber-600',
                 features: [
                   '스탠다드 전체 포함',
                   '해당 검사 카테고리 독점 노출',
@@ -394,67 +375,57 @@ const B2BProposal = () => {
                   'SNS 공동 마케팅',
                   '전담 광고 매니저',
                 ],
-                btnStyle: 'outline' as const,
-                btnClass: 'border-amber-300 text-amber-700 hover:bg-amber-50',
-                btnText: '광고 문의하기',
               },
             ].map((plan, i) => (
-              <motion.div 
-                key={i} 
-                variants={fadeUp} 
-                custom={i} 
-                initial="hidden" 
-                whileInView="visible" 
-                viewport={{ once: true }}
-                className={`relative rounded-3xl bg-gradient-to-b ${plan.gradient} border ${plan.borderColor} p-8 ${i === 1 ? 'md:-mt-4 md:mb-0 shadow-2xl' : 'shadow-lg hover:shadow-xl transition-shadow'}`}
-              >
-                {plan.badge && (
-                  <div className={`absolute -top-4 left-1/2 -translate-x-1/2 ${plan.badgeColor} text-sm font-bold px-5 py-1.5 rounded-full shadow-md whitespace-nowrap`}>
-                    {plan.badge}
-                  </div>
-                )}
-
-                <div className="text-center mb-8 pt-2">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-1">{plan.name}</h3>
-                  <p className={`text-sm font-medium mb-5 ${plan.accentColor}`}>{plan.highlight}</p>
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-lg text-slate-500 font-medium">₩</span>
-                    <span className="text-6xl font-black text-slate-900 tracking-tight">{plan.price}</span>
-                    <span className="text-base text-slate-400 font-medium">만/{plan.period}</span>
-                  </div>
-                  <p className="text-xs text-slate-400 mt-2">VAT 별도</p>
-                </div>
-
-                <div className="h-px bg-slate-200/80 mb-7" />
-
-                <ul className="space-y-4 mb-9">
-                  {plan.features.map((f, j) => (
-                    <li key={j} className="flex items-start gap-3 text-sm text-slate-700">
-                      <CheckCircle2 className={`w-5 h-5 mt-0.5 shrink-0 ${i === 1 ? 'text-indigo-500' : i === 2 ? 'text-amber-500' : 'text-slate-400'}`} />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button 
-                  className={`w-full rounded-2xl h-14 text-base font-bold ${plan.btnClass}`}
-                  variant={plan.btnStyle}
-                  onClick={() => {
-                    setFormData(prev => ({ ...prev, message: `${plan.name} 광고 상품 (${plan.price}만원/월) 문의` }));
-                    document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                >
-                  {plan.btnText}
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
+              <motion.div key={i} variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+                <Card className={`h-full relative overflow-visible rounded-2xl ${plan.badge === '가성비 최고' ? 'border-2 border-indigo-400 shadow-2xl shadow-indigo-200/50 bg-gradient-to-b from-indigo-50/50 to-white' : 'border border-slate-200 shadow-lg hover:shadow-xl transition-shadow'}`}>
+                  {plan.badge && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                      <Badge className={`text-sm px-4 py-1.5 shadow-md ${plan.badge === '가성비 최고' ? 'bg-indigo-500 text-white shadow-indigo-300' : 'bg-amber-500 text-white shadow-amber-300'}`}>
+                        <Star className="w-3.5 h-3.5 mr-1.5" />{plan.badge}
+                      </Badge>
+                    </div>
+                  )}
+                  <CardContent className="p-7 pt-10">
+                    <div className="text-center mb-7">
+                      <h3 className="text-xl font-bold text-slate-900 mb-1">{plan.name}</h3>
+                      <p className="text-xs text-indigo-500 font-medium mb-4">{plan.highlight}</p>
+                      <div className="flex items-baseline justify-center gap-1">
+                        <span className="text-5xl font-extrabold text-slate-900">₩{plan.price}</span>
+                        <span className="text-slate-500 text-base">만/{plan.period}</span>
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1.5">VAT 별도</p>
+                    </div>
+                    <div className="h-px bg-slate-100 mb-6" />
+                    <ul className="space-y-3.5 mb-8">
+                      {plan.features.map((f, j) => (
+                        <li key={j} className="flex items-start gap-2.5 text-sm text-slate-600">
+                          <CheckCircle2 className="w-4 h-4 text-indigo-500 mt-0.5 shrink-0" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <Button 
+                      className={`w-full rounded-xl h-13 text-base font-semibold ${plan.badge === '가성비 최고' ? 'bg-indigo-500 hover:bg-indigo-600 shadow-lg shadow-indigo-200' : ''}`}
+                      variant={plan.badge === '가성비 최고' ? 'default' : 'outline'}
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, message: `${plan.name} 광고 상품 (${plan.price}만원/월) 문의` }));
+                        document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                    >
+                      {i === 0 ? '무료 체험 시작' : '광고 문의하기'}
+                      <ArrowRight className="ml-2 w-4 h-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
               </motion.div>
             ))}
           </div>
 
           <motion.div variants={fadeUp} custom={4} initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="mt-10 p-5 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl text-center"
+            className="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-xl text-center"
           >
-            <p className="text-sm text-amber-800 font-medium">
+            <p className="text-sm text-amber-800">
               <Gift className="w-4 h-4 inline mr-1.5 -mt-0.5" />
               <strong>오픈 특가:</strong> 선착순 20개 기관 첫 달 무료 + 베이직 3개월 ₩9.9만 (67% 할인)
             </p>

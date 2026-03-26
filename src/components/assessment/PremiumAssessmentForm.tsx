@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -29,60 +29,27 @@ const PremiumAssessmentForm = ({
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const { consumeTokens, checkTokenAvailability } = useTokens();
   const { toast } = useToast();
-  const autoAdvanceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const currentQuestion = questions?.[currentQuestionIndex];
-  const progress = questions?.length ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0;
-  const lastQuestionIndex = Math.max((questions?.length || 1) - 1, 0);
-  const isLastQuestion = currentQuestionIndex === lastQuestionIndex;
-
-  useEffect(() => {
-    return () => {
-      if (autoAdvanceTimeoutRef.current) {
-        clearTimeout(autoAdvanceTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const goToNextQuestion = () => {
-    setCurrentQuestionIndex((prev) => Math.min(prev + 1, lastQuestionIndex));
-  };
-
-  if (!currentQuestion || !questions?.length) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <p className="text-muted-foreground">검사 문항을 불러오는 중 오류가 발생했습니다.</p>
-          <Button onClick={onBack} variant="outline">돌아가기</Button>
-        </div>
-      </div>
-    );
-  }
+  const currentQuestion = questions[currentQuestionIndex];
+  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   const handleAnswerChange = (value: string) => {
     const newAnswers = {
       ...answers,
-      [currentQuestion.id]: parseInt(value, 10)
+      [currentQuestion.id]: parseInt(value)
     };
     setAnswers(newAnswers);
-
-    if (autoAdvanceTimeoutRef.current) {
-      clearTimeout(autoAdvanceTimeoutRef.current);
-    }
-
-    if (!isLastQuestion) {
-      autoAdvanceTimeoutRef.current = setTimeout(() => {
-        goToNextQuestion();
-      }, 300);
-    }
+    
+    // 약간의 딜레이 후 다음 문항으로 이동 (렌더링 안정화)
+    setTimeout(() => {
+      if (!isLastQuestion) {
+        setCurrentQuestionIndex(prev => prev + 1);
+      }
+    }, 300);
   };
 
   const handleNext = async () => {
-    if (autoAdvanceTimeoutRef.current) {
-      clearTimeout(autoAdvanceTimeoutRef.current);
-      autoAdvanceTimeoutRef.current = null;
-    }
-
     if (isLastQuestion) {
       // 베타 기간 동안 토큰 체크 및 소비 비활성화
       const BETA_END_DATE = new Date('2025-10-30T23:59:59+09:00');
@@ -151,18 +118,13 @@ const PremiumAssessmentForm = ({
 
       onComplete(categoryScores);
     } else {
-      goToNextQuestion();
+      setCurrentQuestionIndex(prev => prev + 1);
     }
   };
 
   const handlePrevious = () => {
-    if (autoAdvanceTimeoutRef.current) {
-      clearTimeout(autoAdvanceTimeoutRef.current);
-      autoAdvanceTimeoutRef.current = null;
-    }
-
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex((prev) => Math.max(prev - 1, 0));
+      setCurrentQuestionIndex(prev => prev - 1);
     }
   };
 

@@ -54,7 +54,6 @@ import {
 } from "@/data/premiumAssessmentQuestions";
 import { allLanguageDevelopmentQuestions } from "@/data/languageDevelopmentQuestions";
 import { premiumAdhdQuestions } from "@/data/premiumAdhdQuestions";
-import { dementiaRiskPremiumQuestions } from "@/data/dementiaRiskQuestions";
 import { useTranslation } from "@/i18n/useTranslation";
 
 const PremiumAssessment = () => {
@@ -147,7 +146,6 @@ const PremiumAssessment = () => {
       teenGrowthCapacity: { title: p.infoTeenGrowthTitle, description: p.infoTeenGrowthDesc, premium_features: [...p.infoTeenGrowthFeatures] },
       socialDevelopmentScreening: { title: p.infoSocialDevTitle, description: p.infoSocialDevDesc, premium_features: [...p.infoSocialDevFeatures] },
       parentingStyle: { title: p.infoParentingTitle, description: p.infoParentingDesc, premium_features: [...p.infoParentingFeatures] },
-      dementiaRisk: { title: (p as any).infoDementiaTitle || 'Dementia Risk Assessment', description: (p as any).infoDementiaDesc || '', premium_features: [...((p as any).infoDementiaFeatures || [])] },
     };
 
     const override = overrides[key];
@@ -168,8 +166,7 @@ const PremiumAssessment = () => {
     teenGrowthCapacity: Object.values(teenGrowthCapacityAssessmentQuestions).flat(),
     socialDevelopmentScreening: Object.values(socialDevelopmentScreeningQuestions).flat(),
     languageDevelopment: allLanguageDevelopmentQuestions,
-    parentingStyle: Object.values(parentingStyleAssessmentQuestions).flat(),
-    dementiaRisk: Object.values(dementiaRiskPremiumQuestions).flat(),
+    parentingStyle: Object.values(parentingStyleAssessmentQuestions).flat()
   };
 
   const requireAuth = (action: () => void) => {
@@ -421,9 +418,6 @@ const PremiumAssessment = () => {
 
           {/* Work & Finance */}
           {renderTestSection(p.sectionWorkFinance, null, 'orange', ['work_stress', 'financialPsychology', 'cognitive'])}
-
-          {/* Senior Care */}
-          {renderTestSection((p as any).sectionSenior || '시니어 인지 케어', (p as any).sectionSeniorBadge || '🧓 NEW', 'rose', ['dementiaRisk'])}
 
           {/* Teen */}
           {renderTestSection(p.sectionTeen, null, 'emerald', ['teenMentalCompass', 'teenGrowthCapacity', 'socialDevelopmentScreening'])}

@@ -93,7 +93,6 @@ const PremiumAssessmentResult = ({
   // ── Score interpretation ──
   // 연애/성격 유형 분석 검사인지 체크 (높을수록 해당 유형 성향이 강한 것)
   const isTypeAnalysis = ['love_personality', 'personality_type', 'temperament'].includes(assessmentType);
-  const isDementiaRisk = assessmentType === 'dementiaRisk';
 
   const getScoreInterpretation = (score: number, category: string) => {
     const cl = category.toLowerCase();
@@ -125,67 +124,23 @@ const PremiumAssessmentResult = ({
 
   const translateCategory = (category: string) => {
     const t: Record<string, string> = {
-      // 기질/성격
       novelty_seeking: '자극추구', harm_avoidance: '위험회피', reward_dependence: '사회적 민감성',
       persistence: '인내력', self_directedness: '자율성', cooperativeness: '협조성', self_transcendence: '자기초월',
       extraversion: '외향성', agreeableness: '친화성', conscientiousness: '성실성', neuroticism: '신경성', openness: '개방성',
-      // 직무스트레스
       emotional_exhaustion: '감정소진', depersonalization: '비인격화', personal_accomplishment: '성취감',
       work_life_balance: '일-삶 균형', job_satisfaction: '직무만족', work_overload: '업무과부하',
       interpersonal_conflict: '대인갈등', role_ambiguity: '역할모호성', career_development: '경력개발',
-      organizational_support: '조직지원',
-      // ADHD
-      attention: '주의집중', hyperactivity: '과잉행동', impulsivity: '충동성',
-      inattention: '부주의', working_memory: '작업기억',
-      executive_dysfunction: '실행기능 결핍',
-      // 자폐스펙트럼
+      organizational_support: '조직지원', attention: '주의집중', hyperactivity: '과잉행동', impulsivity: '충동성',
+      inattention: '부주의', executive_function: '실행기능', working_memory: '작업기억',
       social_communication: '사회적 의사소통', repetitive_behaviors: '반복행동', sensory_processing: '감각처리',
-      restricted_repetitive: '제한적 반복행동', communication_language: '의사소통/언어',
-      adaptive_functioning: '적응기능',
-      // 인지/감정
       social_energy: '사회적 에너지', decision_making: '의사결정', emotional_regulation: '감정조절',
       adaptability: '적응성', stress_tolerance: '스트레스 내성', cognitive_flexibility: '인지유연성',
       achievement_motivation: '성취동기', interpersonal_skills: '대인관계', self_confidence: '자신감',
       emotional_intelligence: '감정지능', anxiety: '불안', depression: '우울', resilience: '회복력',
-      self_esteem: '자존감',
-      // 금전심리
-      financial_anxiety: '재정 불안', spending_habits: '소비 습관',
+      self_esteem: '자존감', financial_anxiety: '재정 불안', spending_habits: '소비 습관',
       spending_patterns: '소비 패턴', money_mindset: '돈 마인드셋', financial_goals: '재정 목표',
-      investment_attitude: '투자 성향', money_values: '금전 가치관',
-      // 연애/성격 유형
-      passionate_romantic: '열정적 로맨티스트', stable_companion: '안정적 동반자',
-      independent_individualist: '독립적 개인주의자', realistic_planner: '계획적 현실주의자',
-      // 치매 위험도
-      memory_deep: '기억력', executive_function: '실행기능',
-      orientation_spatial: '시공간 지남력', language_communication: '언어/의사소통',
-      daily_living: '일상생활 수행', mood_personality: '정서/행동 변화',
-      // 치매 간편검사
-      memory: '기억력', orientation: '지남력', language: '언어능력',
-      daily_function: '일상생활 기능', mood_behavior: '정서/행동',
-      // 청소년
-      identity_development: '정체성 발달', self_identity: '자아 정체성',
-      emotional_problems: '정서 문제', behavioral_problems: '행동 문제',
-      peer_relationships: '또래 관계', peer_interaction: '또래 상호작용',
-      conduct_problems: '품행 문제', somatic_complaints: '신체화 증상',
-      internalizing_problems: '내면화 문제', externalizing_problems: '외면화 문제',
-      social_competence: '사회적 역량', social_adaptation: '사회적 적응',
-      // 양육
-      emotional_warmth: '정서적 온기', autonomy_support: '자율성 지원',
-      structure_routine: '구조/일관성', positive_reinforcement: '긍정적 강화',
-      emotional_support: '정서적 지지', responsive_care: '반응적 돌봄',
-      psychological_control: '심리적 통제', overprotection: '과보호',
-      // 사회성
-      social_interaction: '사회적 상호작용', emotional_understanding: '감정 이해',
-      conflict_resolution: '갈등 해결', leadership: '리더십',
-      empathy: '공감 능력', communication: '의사소통',
-      // 언어발달
-      verbal_expression: '언어적 표현', language_development: '언어 발달',
-      pragmatic_language: '화용언어', contextual_language: '맥락 언어',
-      // 인지검사 공통
-      selective_attention: '선택적 주의', sustained_attention: '지속적 주의',
-      divided_attention: '분할 주의', task_switching: '과제 전환',
-      problem_solving: '문제 해결', planning: '계획 수립',
-      organization: '조직화', time_management: '시간 관리',
+      investment_attitude: '투자 성향', money_values: '금전 가치관', passionate_romantic: '열정적 로맨티스트',
+      stable_companion: '안정적 동반자', independent_individualist: '독립적 개인주의자', realistic_planner: '계획적 현실주의자',
     };
     return t[category.toLowerCase()] || category.replace(/_/g, ' ');
   };
@@ -245,35 +200,13 @@ const PremiumAssessmentResult = ({
   const topDomain = domains[0]; // already sorted desc
   let overallLevel: string;
   let severityColor: string;
-  let totalLabel: string;
 
   if (isTypeAnalysis && topDomain) {
     overallLevel = topDomain.label; // e.g. "안정적 동반자"
     severityColor = 'text-primary border-primary/30';
-    totalLabel = isEnglish ? 'Top Score' : '종합 평가';
-  } else if (isDementiaRisk) {
-    // 치매 위험도: 점수가 높을수록 위험, 명확한 위험도 등급 표시
-    if (averageScore >= 5.5) {
-      overallLevel = isEnglish ? '⚠️ High Risk' : '⚠️ 높은 위험';
-      severityColor = 'text-destructive border-destructive/30';
-    } else if (averageScore >= 4.5) {
-      overallLevel = isEnglish ? '⚠️ Moderate-High Risk' : '⚠️ 중등도-높은 위험';
-      severityColor = 'text-orange-600 border-orange-300';
-    } else if (averageScore >= 3.5) {
-      overallLevel = isEnglish ? '⚡ Moderate Risk' : '⚡ 중등도 위험';
-      severityColor = 'text-yellow-600 border-yellow-300';
-    } else if (averageScore >= 2.5) {
-      overallLevel = isEnglish ? '✅ Low Risk' : '✅ 낮은 위험';
-      severityColor = 'text-green-600 border-green-300';
-    } else {
-      overallLevel = isEnglish ? '✅ Very Low Risk' : '✅ 매우 낮은 위험';
-      severityColor = 'text-primary border-primary/30';
-    }
-    totalLabel = isEnglish ? 'Dementia Risk Score' : '치매 위험도 점수';
   } else {
     overallLevel = averageScore >= 5 ? (isEnglish ? 'Very High' : '매우 높음') : averageScore >= 4 ? (isEnglish ? 'High' : '높음') : averageScore >= 3 ? (isEnglish ? 'Moderate' : '보통') : (isEnglish ? 'Low' : '낮음');
     severityColor = averageScore >= 5 ? 'text-destructive border-destructive/30' : averageScore >= 4 ? 'text-orange-600 border-orange-300' : averageScore >= 3 ? 'text-yellow-600 border-yellow-300' : 'text-green-600 border-green-300';
-    totalLabel = isEnglish ? 'Average Score' : '평균 점수';
   }
 
   return (
@@ -284,7 +217,7 @@ const PremiumAssessmentResult = ({
         onBack={onBack}
         onDownload={handleDownloadPDF}
         totalScore={isTypeAnalysis ? topDomain?.score?.toFixed(1) || averageScore.toFixed(1) : averageScore.toFixed(1)}
-        totalLabel={totalLabel}
+        totalLabel={isTypeAnalysis ? (isEnglish ? 'Top Score' : '종합 평가') : (isEnglish ? 'Average Score' : '평균 점수')}
         scoreUnit="/ 7.0"
         scoreSeverity={overallLevel}
         severityColor={severityColor}

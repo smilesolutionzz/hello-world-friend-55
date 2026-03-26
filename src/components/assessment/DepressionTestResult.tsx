@@ -71,7 +71,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
   const emotionalScore = answers.slice(0, 7).reduce((s, a) => s + a, 0);
   const cognitiveScore = answers.slice(7, 14).reduce((s, a) => s + a, 0);
   const physicalScore = answers.slice(14, 21).reduce((s, a) => s + a, 0);
-  const maxDomain = 21; // 7 questions * max 3 (reverse scored 0-3)
+  const maxDomain = 14; // 7 questions * max 2
 
   const getColor = (score: number) => {
     const pct = (score / maxDomain) * 100;

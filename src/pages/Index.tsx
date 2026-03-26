@@ -31,9 +31,9 @@ import { SocialProofToast } from '@/components/landing/SocialProofToast';
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "AIHPRO - 우리 아이와 나, 심리·발달검사",
+  "name": "AIHUMANPRO",
   "url": "https://aihpro.app",
-  "description": "우리 아이와 나, 괜찮은 걸까? 3분 무료 AI 심리·발달검사로 ADHD, 언어발달 지연, 육아 번아웃, 우울을 전문가 수준으로 분석합니다.",
+  "description": "AI와 전문가가 함께하는 통합 케어 서비스. ADHD, 우울증, 스트레스 검사부터 심리상담, 발달평가, 건강관리까지 전생애 케어를 제공합니다.",
   "applicationCategory": "HealthApplication",
   "operatingSystem": "Web",
   "offers": {
@@ -44,7 +44,7 @@ const structuredData = {
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.8",
-    "ratingCount": "4248"
+    "ratingCount": "1247"
   }
 };
 
@@ -138,7 +138,7 @@ const Index = () => {
       <SEOHead 
         title={t.seo.title}
         description={t.seo.description}
-        keywords="아이발달검사,ADHD자가진단,말늦은아이,언어발달지연,영유아발달체크리스트,아동ADHD테스트,육아번아웃,엄마우울증,산후우울증검사,청소년심리검사,사춘기우울증,아이행동문제,발달검사무료,심리검사무료,AIHPRO"
+        keywords="AIHPRO,AI심리검사,ADHD검사,우울증테스트,스트레스검사,심리상담,발달평가,온라인상담,정신건강,아동발달,심리분석"
         canonicalUrl="https://aihpro.app"
         structuredData={structuredData}
       />

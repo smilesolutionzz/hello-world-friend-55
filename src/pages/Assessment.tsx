@@ -146,6 +146,7 @@ const Assessment = () => {
   const [socialDevelopmentResults, setSocialDevelopmentResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
   const [challengingBehaviorResults, setChallengingBehaviorResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
   const [adaptiveBehaviorResults, setAdaptiveBehaviorResults] = useState<{answers: number[], total: number, average: number, level: string} | null>(null);
+  const [epdsResults, setEpdsResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
   const [currentAssessmentResults, setCurrentAssessmentResults] = useState<any>(null);

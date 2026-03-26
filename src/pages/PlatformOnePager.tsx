@@ -187,7 +187,7 @@ ${contentRef.current?.innerHTML || ''}
 
         {/* Footer */}
         <div style={{ fontSize: '8pt', color: '#9ca3af', textAlign: 'center', marginTop: '10px', borderTop: '1px solid #e5e7eb', paddingTop: '4px' }}>
-          본 자료는 투자 및 정책자금 검토용으로 작성되었습니다. | AIHPRO (AI Human Pro) | aihpro.app | contact: 김병훈 대표
+          본 자료는 투자 및 정책자금 검토용으로 작성되었습니다. | AIHPRO (AI Human Pro) | aihpro.app | contact: 이수석 대표
         </div>
       </div>
 

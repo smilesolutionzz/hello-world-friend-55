@@ -166,7 +166,7 @@ ${contentRef.current?.innerHTML || ''}
               6. 팀 & 핵심 역량
             </h2>
             <ul style={{ margin: '2px 0 6px 18px', padding: 0, fontSize: '9.5pt' }}>
-              <li><strong>김병훈 대표</strong> — AI 풀스택 개발 + 유튜브 23K 채널 운영</li>
+              <li><strong>이수석 대표</strong> — 발달재활 석사, 14년 현장 전문가 + 유튜브 23K 채널 운영</li>
               <li>아동발달 전문의 10명 + 임상심리사 30명 자문단</li>
               <li>B2B 파트너 기관 50곳 네트워크 확보</li>
               <li>RTPLANAI.COM 통합 AI 솔루션 IP 보유</li>

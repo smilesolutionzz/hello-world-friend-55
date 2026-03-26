@@ -778,6 +778,7 @@ const Assessment = () => {
                 { key: 'stress', title: t.assessment.stressTitle, duration: t.assessment.stressDuration, questions: t.assessment.stressQuestions, description: t.assessment.stressDesc, features: t.assessment.stressFeatures, gradient: 'from-amber-600/20 to-orange-600/20', borderHover: 'hover:border-amber-400/50 hover:bg-amber-500/5', textHover: 'group-hover:text-amber-600 dark:group-hover:text-amber-400', dotColor: 'bg-amber-500' },
                 
                 { key: 'adhd', title: t.assessment.adhdTitle, duration: t.assessment.adhdDuration, questions: t.assessment.adhdQuestions, description: t.assessment.adhdDesc, features: t.assessment.adhdFeatures, gradient: 'from-teal-600/20 to-emerald-600/20', borderHover: 'hover:border-teal-400/50 hover:bg-teal-500/5', textHover: 'group-hover:text-teal-600 dark:group-hover:text-teal-400', dotColor: 'bg-teal-500' },
+                { key: 'epds', title: '육아 우울감 체크 (EPDS)', duration: '약 3분', questions: '10문항', description: '출산 후 또는 육아 중 느끼는 우울감을 Edinburgh 산후우울증 척도로 체크합니다.', features: ['국제표준 EPDS 기반', '육아 우울·불안 선별', '자해 위험 자동 감지'], gradient: 'from-pink-600/20 to-rose-600/20', borderHover: 'hover:border-pink-400/50 hover:bg-pink-500/5', textHover: 'group-hover:text-pink-600 dark:group-hover:text-pink-400', dotColor: 'bg-pink-500', badge: 'NEW' },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (

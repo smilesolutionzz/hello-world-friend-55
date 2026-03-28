@@ -324,6 +324,16 @@ serve(async (req) => {
 - 긍정적 예후 및 잠재력 평가
 - 격려와 응원 메시지
 
+${externalTestImages ? `
+🔟 "외부 검사 결과 해석" (600자 이상)
+- 첨부된 외부 기관 검사 결과지에 대한 전문적 해석
+- 검사 종류, 주요 점수/수치의 임상적 의미 설명
+- 정상 범위 대비 현재 수치 평가
+- 다른 검사 결과와의 교차 분석 및 종합적 의미 해석
+- 추가로 필요한 검사나 후속 조치 권고
+- 관련 학술 논문 2-3개 인용
+` : ''}
+
 ⚠️⚠️⚠️ 매우 중요: sections 배열의 각 title 값은 반드시 위의 큰따옴표 안의 제목과 정확히 일치해야 합니다!`;
 
     const userPrompt = `다음 ${isWithData ? '데이터를 기반으로' : '고민·상태 정보를 기반으로'} 세계 최고 수준의 전문가급 종합 리포트를 생성해주세요:
@@ -373,6 +383,13 @@ ${externalTestImages}
 ═══════════════════════════════════════
 기존 검사/관찰 데이터 없이 아래 고민·상태 정보만으로 전문 분석을 수행합니다.
 보호자가 제공한 고민과 관찰 소견을 최대한 활용하여 깊이 있는 분석을 제공하세요.
+
+${externalTestImages ? `
+═══════════════════════════════════════
+🖼️ 외부 기관 검사 결과 (AI 분석)
+═══════════════════════════════════════
+${externalTestImages}
+` : ''}
 `}
 
 ${userInput?.recentConcerns ? `
@@ -446,7 +463,11 @@ ${relatedResources}
     {
       "title": "종합 요약 및 제언",
       "content": "<div>HTML 형식의 매우 상세한 내용 (최소 500자)...</div>"
-    }
+    }${externalTestImages ? `,
+    {
+      "title": "외부 검사 결과 해석",
+      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 600자)...</div>"
+    }` : ''}
   ],
   "summary": "<div>전체 분석의 핵심 요약 (300자 이상)</div>",
   "researchInsights": "${researchInsights ? 'true' : 'false'}",
@@ -457,7 +478,7 @@ ${relatedResources}
     const aiModel = 'google/gemini-3-flash-preview';
     console.log(`Lovable AI 호출 시작 (${aiModel})`);
 
-    const requiredSections = [
+    const requiredSections: string[] = [
       "발달 종합 평가",
       "심리 상태 분석",
       "강점/약점 분석",
@@ -467,7 +488,8 @@ ${relatedResources}
       "전문가 소견서",
       "가족 지원 가이드",
       "종합 요약 및 제언",
-    ] as const;
+      ...(externalTestImages ? ["외부 검사 결과 해석"] : []),
+    ];
 
     const jsonInstruction = `
 
@@ -740,6 +762,7 @@ ${relatedResources}
         '전문가 소견서': ['전문가소견서', '소견서', '전문가소견', '임상소견서', '전문소견'],
         '가족 지원 가이드': ['가족지원가이드', '가족지원', '양육가이드', '부모가이드', '가정지원'],
         '종합 요약 및 제언': ['종합요약및제언', '종합요약제언', '종합요약', '요약및제언', '요약제언', '총평'],
+        '외부 검사 결과 해석': ['외부검사결과해석', '외부검사해석', '외부검사분석', '검사결과해석', '외부기관검사', '첨부검사해석'],
       };
 
       const findBestTitle = (aiTitle: string): string | null => {

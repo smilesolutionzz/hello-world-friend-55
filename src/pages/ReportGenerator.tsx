@@ -261,7 +261,7 @@ const ReportGenerator = () => {
     );
   }
 
-  const sectionIcons = [Brain, Heart, TrendingUp, Target, LineChart, Users, Shield, Activity, BarChart3];
+  const sectionIcons = [Brain, Heart, TrendingUp, Target, LineChart, Users, Shield, Activity, BarChart3, FileText];
   const sectionColors = [
     { bg: 'bg-blue-50', border: 'border-blue-200', title: 'text-blue-800', icon: 'bg-blue-100 text-blue-600' },
     { bg: 'bg-rose-50', border: 'border-rose-200', title: 'text-rose-800', icon: 'bg-rose-100 text-rose-600' },
@@ -272,6 +272,7 @@ const ReportGenerator = () => {
     { bg: 'bg-teal-50', border: 'border-teal-200', title: 'text-teal-800', icon: 'bg-teal-100 text-teal-600' },
     { bg: 'bg-fuchsia-50', border: 'border-fuchsia-200', title: 'text-fuchsia-800', icon: 'bg-fuchsia-100 text-fuchsia-600' },
     { bg: 'bg-violet-50', border: 'border-violet-200', title: 'text-violet-800', icon: 'bg-violet-100 text-violet-600' },
+    { bg: 'bg-cyan-50', border: 'border-cyan-200', title: 'text-cyan-800', icon: 'bg-cyan-100 text-cyan-600' },
   ];
 
   return (

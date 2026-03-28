@@ -594,8 +594,8 @@ const ReportGenerator = () => {
               </div>
             )}
 
-            {/* 외부 이미지 업로드 */}
-            {reportMode === 'with-data' && (
+            {/* 외부 이미지 업로드 - 두 모드 모두 지원 */}
+            {(reportMode === 'with-data' || reportMode === 'without-data') && (
               <div className="bg-white/5 rounded-xl border border-white/10 p-5">
                 <div className="flex items-start gap-3">
                   <Upload className="w-5 h-5 text-primary mt-0.5" />

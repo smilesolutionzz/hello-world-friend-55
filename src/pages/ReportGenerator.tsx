@@ -149,20 +149,24 @@ const ReportGenerator = () => {
     } finally { setIsLoadingData(false); }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     setIsAnalyzingImages(true);
-    toast({ title: t("📸 이미지 분석 중", "📸 Analyzing Images"), description: t("AI가 외부 검사 이미지를 분석합니다...", "AI is analyzing external test images...") });
+    toast({ title: t("📎 파일 분석 중", "📎 Analyzing Files"), description: t("AI가 외부 검사 파일을 분석합니다...", "AI is analyzing external test files...") });
     try {
-      const images: string[] = [];
-      for (const file of Array.from(files)) { const reader = new FileReader(); const dataUrl = await new Promise<string>((resolve) => { reader.onload = () => resolve(reader.result as string); reader.readAsDataURL(file); }); images.push(dataUrl); }
-      setUploadedImages(images);
-      const { data, error } = await supabase.functions.invoke('analyze-test-images', { body: { images } });
+      const fileDataList: { data: string; name: string; type: string }[] = [];
+      for (const file of Array.from(files)) {
+        const reader = new FileReader();
+        const dataUrl = await new Promise<string>((resolve) => { reader.onload = () => resolve(reader.result as string); reader.readAsDataURL(file); });
+        fileDataList.push({ data: dataUrl, name: file.name, type: file.type });
+      }
+      setUploadedFiles(fileDataList.map(f => ({ name: f.name, type: f.type })));
+      const { data, error } = await supabase.functions.invoke('analyze-test-images', { body: { files: fileDataList } });
       if (error) throw error;
       setImageAnalysisResults(data?.analysis || '');
-      toast({ title: t("✅ 이미지 분석 완료", "✅ Image Analysis Complete"), description: t(`${images.length}개 이미지가 분석되었습니다.`, `${images.length} image(s) analyzed.`) });
-    } catch (err) { toast({ title: t("분석 실패", "Analysis Failed"), description: t("이미지 분석에 실패했습니다.", "Failed to analyze images."), variant: "destructive" }); } finally { setIsAnalyzingImages(false); }
+      toast({ title: t("✅ 파일 분석 완료", "✅ File Analysis Complete"), description: t(`${fileDataList.length}개 파일이 분석되었습니다.`, `${fileDataList.length} file(s) analyzed.`) });
+    } catch (err) { toast({ title: t("분석 실패", "Analysis Failed"), description: t("파일 분석에 실패했습니다.", "Failed to analyze files."), variant: "destructive" }); } finally { setIsAnalyzingImages(false); }
   };
 
   const generateReport = async () => {

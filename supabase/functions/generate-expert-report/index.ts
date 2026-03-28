@@ -463,7 +463,11 @@ ${relatedResources}
     {
       "title": "종합 요약 및 제언",
       "content": "<div>HTML 형식의 매우 상세한 내용 (최소 500자)...</div>"
-    }
+    }${externalTestImages ? `,
+    {
+      "title": "외부 검사 결과 해석",
+      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 600자)...</div>"
+    }` : ''}
   ],
   "summary": "<div>전체 분석의 핵심 요약 (300자 이상)</div>",
   "researchInsights": "${researchInsights ? 'true' : 'false'}",

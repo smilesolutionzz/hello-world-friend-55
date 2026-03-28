@@ -478,7 +478,7 @@ ${relatedResources}
     const aiModel = 'google/gemini-3-flash-preview';
     console.log(`Lovable AI 호출 시작 (${aiModel})`);
 
-    const requiredSections = [
+    const requiredSections: string[] = [
       "발달 종합 평가",
       "심리 상태 분석",
       "강점/약점 분석",
@@ -488,7 +488,8 @@ ${relatedResources}
       "전문가 소견서",
       "가족 지원 가이드",
       "종합 요약 및 제언",
-    ] as const;
+      ...(externalTestImages ? ["외부 검사 결과 해석"] : []),
+    ];
 
     const jsonInstruction = `
 

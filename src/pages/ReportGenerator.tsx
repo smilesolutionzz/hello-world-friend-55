@@ -100,7 +100,7 @@ const ReportGenerator = () => {
   const [reportData, setReportData] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
   const [progress, setProgress] = useState(0);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<{name: string; type: string}[]>([]);
   const [isAnalyzingImages, setIsAnalyzingImages] = useState(false);
   const [imageAnalysisResults, setImageAnalysisResults] = useState<string>('');
   const [reportMode, setReportMode] = useState<'with-data' | 'without-data'>('with-data');
@@ -149,20 +149,24 @@ const ReportGenerator = () => {
     } finally { setIsLoadingData(false); }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     setIsAnalyzingImages(true);
-    toast({ title: t("📸 이미지 분석 중", "📸 Analyzing Images"), description: t("AI가 외부 검사 이미지를 분석합니다...", "AI is analyzing external test images...") });
+    toast({ title: t("📎 파일 분석 중", "📎 Analyzing Files"), description: t("AI가 외부 검사 파일을 분석합니다...", "AI is analyzing external test files...") });
     try {
-      const images: string[] = [];
-      for (const file of Array.from(files)) { const reader = new FileReader(); const dataUrl = await new Promise<string>((resolve) => { reader.onload = () => resolve(reader.result as string); reader.readAsDataURL(file); }); images.push(dataUrl); }
-      setUploadedImages(images);
-      const { data, error } = await supabase.functions.invoke('analyze-test-images', { body: { images } });
+      const fileDataList: { data: string; name: string; type: string }[] = [];
+      for (const file of Array.from(files)) {
+        const reader = new FileReader();
+        const dataUrl = await new Promise<string>((resolve) => { reader.onload = () => resolve(reader.result as string); reader.readAsDataURL(file); });
+        fileDataList.push({ data: dataUrl, name: file.name, type: file.type });
+      }
+      setUploadedFiles(fileDataList.map(f => ({ name: f.name, type: f.type })));
+      const { data, error } = await supabase.functions.invoke('analyze-test-images', { body: { files: fileDataList } });
       if (error) throw error;
       setImageAnalysisResults(data?.analysis || '');
-      toast({ title: t("✅ 이미지 분석 완료", "✅ Image Analysis Complete"), description: t(`${images.length}개 이미지가 분석되었습니다.`, `${images.length} image(s) analyzed.`) });
-    } catch (err) { toast({ title: t("분석 실패", "Analysis Failed"), description: t("이미지 분석에 실패했습니다.", "Failed to analyze images."), variant: "destructive" }); } finally { setIsAnalyzingImages(false); }
+      toast({ title: t("✅ 파일 분석 완료", "✅ File Analysis Complete"), description: t(`${fileDataList.length}개 파일이 분석되었습니다.`, `${fileDataList.length} file(s) analyzed.`) });
+    } catch (err) { toast({ title: t("분석 실패", "Analysis Failed"), description: t("파일 분석에 실패했습니다.", "Failed to analyze files."), variant: "destructive" }); } finally { setIsAnalyzingImages(false); }
   };
 
   const generateReport = async () => {
@@ -594,18 +598,29 @@ const ReportGenerator = () => {
               </div>
             )}
 
-            {/* 외부 이미지 업로드 - 두 모드 모두 지원 */}
+            {/* 외부 파일 업로드 - 두 모드 모두 지원 */}
             {(reportMode === 'with-data' || reportMode === 'without-data') && (
               <div className="bg-white/5 rounded-xl border border-white/10 p-5">
                 <div className="flex items-start gap-3">
                   <Upload className="w-5 h-5 text-primary mt-0.5" />
                   <div className="flex-1">
                     <h4 className="font-semibold text-white text-sm mb-1">{t('외부 기관 검사 결과 추가 (선택)', 'Add External Test Results (Optional)')}</h4>
-                    <p className="text-xs text-muted-foreground mb-3">{t('다른 기관에서 받은 검사 결과 이미지를 업로드하면 AI가 자동 반영', 'Upload test result images from other institutions for AI integration')}</p>
-                    <input type="file" multiple accept="image/*" onChange={handleImageUpload} disabled={isAnalyzingImages}
+                    <p className="text-xs text-muted-foreground mb-3">{t('다른 기관에서 받은 검사 결과를 업로드하면 AI가 자동 반영 (이미지, PDF, Word, 한글 등)', 'Upload test results from other institutions for AI integration (images, PDF, Word, HWP, etc.)')}</p>
+                    <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.hwp,.hwpx,.xlsx,.xls,.txt,.rtf" onChange={handleFileUpload} disabled={isAnalyzingImages}
                       className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer" />
                     {isAnalyzingImages && <div className="mt-3 flex items-center gap-2 text-primary"><Loader2 className="w-4 h-4 animate-spin" /><span className="text-sm">{t('분석 중...', 'Analyzing...')}</span></div>}
-                    {uploadedImages.length > 0 && !isAnalyzingImages && <div className="mt-3 flex items-center gap-2 text-emerald-400"><CheckCircle2 className="w-4 h-4" /><span className="text-sm">{t(`${uploadedImages.length}개 분석 완료`, `${uploadedImages.length} analyzed`)}</span></div>}
+                    {uploadedFiles.length > 0 && !isAnalyzingImages && (
+                      <div className="mt-3 space-y-1">
+                        <div className="flex items-center gap-2 text-emerald-400"><CheckCircle2 className="w-4 h-4" /><span className="text-sm">{t(`${uploadedFiles.length}개 파일 분석 완료`, `${uploadedFiles.length} file(s) analyzed`)}</span></div>
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {uploadedFiles.map((f, i) => (
+                            <Badge key={i} variant="secondary" className="text-[10px] bg-white/10 border-white/20">
+                              {f.name.length > 20 ? f.name.slice(0, 17) + '...' : f.name}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

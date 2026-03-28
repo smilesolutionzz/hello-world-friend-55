@@ -100,7 +100,7 @@ const ReportGenerator = () => {
   const [reportData, setReportData] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
   const [progress, setProgress] = useState(0);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<{name: string; type: string}[]>([]);
   const [isAnalyzingImages, setIsAnalyzingImages] = useState(false);
   const [imageAnalysisResults, setImageAnalysisResults] = useState<string>('');
   const [reportMode, setReportMode] = useState<'with-data' | 'without-data'>('with-data');

@@ -115,7 +115,7 @@ const SEOHead = ({
       <meta property="naverblog" content="noblog" />
       
       {/* Google 검색 최적화 */}
-      <meta name="google-site-verification" content="your-google-verification-code" />
+      <meta name="google-site-verification" content="Avx-e1lnBthDzf9pbs54Jm-9LcpFPZAOykhZKVs6m8E" />
       
       {/* GEO - AI 크롤러 최적화 (ChatGPT, Gemini, Claude, Perplexity 등) */}
       <meta name="ai-content-declaration" content="human-created, ai-assisted" />

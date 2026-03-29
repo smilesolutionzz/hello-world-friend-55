@@ -50,9 +50,9 @@ const HeroSection = () => {
           loading="eager"
         />
         {/* Multi-layer cinematic overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/70 to-slate-950/90" />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-amber-500/8" />
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-900/40 to-slate-950/60" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/8 via-transparent to-amber-500/5" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900/70 to-transparent" />
       </div>
 
       {/* Subtle Ambient Glow */}

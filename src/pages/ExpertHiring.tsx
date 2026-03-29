@@ -272,14 +272,13 @@ const ExpertHiring = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <SEOHead
         title="전문가 상담 예약 - AIHPRO | 심리·발달·언어치료 전문가 매칭"
         description="검증된 심리상담사, 발달치료사, 언어치료사와 1:1 상담을 예약하세요. ADHD, 우울증, 아동발달 전문가 매칭 서비스."
         keywords="전문가상담,심리상담예약,발달치료전문가,언어치료사,ADHD전문가,아동심리상담,온라인상담예약"
         canonicalUrl="https://aihpro.app/expert-hiring"
       />
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <UnifiedNavigation />
 
       {/* 히어로 섹션 */}

@@ -14,7 +14,7 @@ interface SEOHeadProps {
 
 const SEOHead = ({
   title = "AIHPRO - AI 심리검사 발달평가 정신건강 상담 플랫폼",
-  description = "AI 기반 심리검사, 아동 발달평가, ADHD 검사, 우울증 테스트를 제공합니다. 전문가 매칭과 상담까지 원스톱 정신건강 케어 서비스입니다.",
+  description = "AI 심리검사·발달평가부터 전문가 상담까지. ADHD, 우울증, 스트레스 검사를 무료로 시작하세요.",
   keywords = "AIHPRO,AI심리검사,발달평가,ADHD검사,우울증테스트,스트레스검사,전문가상담,아동발달,정신건강",
   ogImage = "/lovable-uploads/ec886850-04ce-4489-b96e-d4ac8f73d95e.png",
   canonicalUrl,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Helmet } from 'react-helmet-async';
+import SEOHead from '@/components/common/SEOHead';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";

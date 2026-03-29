@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import SEOHead from "@/components/common/SEOHead";
 import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/i18n/useTranslation";

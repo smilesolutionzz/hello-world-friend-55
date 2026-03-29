@@ -1,4 +1,4 @@
-import { BookOpen, Rocket } from "lucide-react";
+import { BookOpen, Rocket, Brain, FileText, Users, Heart, Sparkles } from "lucide-react";
 import logo from '@/assets/logo.png';
 import { useTranslation } from '@/i18n';
 import { useLanguage } from '@/i18n';
@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <footer className="border-t border-border/50 bg-slate-900 text-white">
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
               <img src={logo} alt="AIHPRO" className="h-8 w-8" />
@@ -21,19 +21,41 @@ const Footer = () => {
             </p>
           </div>
           
+          {/* 서비스 링크 - SEO 내부 링크 */}
           <div>
             <h4 className="font-medium mb-4 text-white">{t.footer.services}</h4>
             <ul className="space-y-2 text-sm text-slate-300">
               <li><a href={localePath('/assessment')} className="hover:text-white transition-colors">{t.footer.assessment}</a></li>
+              <li><a href={localePath('/free-trial')} className="hover:text-white transition-colors">무료 심리검사</a></li>
               <li><a href={localePath('/ai-counselor')} className="hover:text-white transition-colors">{t.footer.aiCounseling}</a></li>
+              <li><a href={localePath('/report-generator')} className="hover:text-white transition-colors">전문가급 리포트</a></li>
               <li><a href={localePath('/expert-hiring')} className="hover:text-white transition-colors">{t.footer.expertConnect}</a></li>
+              <li><a href={localePath('/observation')} className="hover:text-white transition-colors">행동 관찰 분석</a></li>
+            </ul>
+          </div>
+
+          {/* 인기 검사 - 검색 유입 키워드 내부 링크 */}
+          <div>
+            <h4 className="font-medium mb-4 text-white">인기 검사</h4>
+            <ul className="space-y-2 text-sm text-slate-300">
+              <li><a href={localePath('/adhd-screening')} className="hover:text-white transition-colors">ADHD 자가진단</a></li>
+              <li><a href={localePath('/depression-package')} className="hover:text-white transition-colors">우울증 테스트</a></li>
+              <li><a href={localePath('/stress-package')} className="hover:text-white transition-colors">스트레스 검사</a></li>
+              <li><a href={localePath('/anxiety-package')} className="hover:text-white transition-colors">불안장애 검사</a></li>
+              <li><a href={localePath('/child-package')} className="hover:text-white transition-colors">아동 발달검사</a></li>
+              <li><a href={localePath('/assessment/mbti-test')} className="hover:text-white transition-colors">MBTI 성격유형</a></li>
+              <li><a href={localePath('/focus-package')} className="hover:text-white transition-colors">집중력 검사</a></li>
             </ul>
           </div>
           
+          {/* 고객지원 */}
           <div>
             <h4 className="font-medium mb-4 text-white">{t.footer.support}</h4>
             <ul className="space-y-2 text-sm text-slate-300">
-              <li><a href={localePath('/platform-manual')} className="hover:text-white transition-colors">{t.footer.manual}</a></li>
+              <li><a href={localePath('/about')} className="hover:text-white transition-colors">서비스 소개</a></li>
+              <li><a href={localePath('/column')} className="hover:text-white transition-colors">전문가 칼럼</a></li>
+              <li><a href={localePath('/sample-report')} className="hover:text-white transition-colors">리포트 예시</a></li>
+              <li><a href={localePath('/pricing')} className="hover:text-white transition-colors">요금제</a></li>
               <li><a href={localePath('/terms-of-service')} className="hover:text-white transition-colors">{t.footer.terms}</a></li>
               <li><a href={localePath('/privacy-policy')} className="hover:text-white transition-colors">{t.footer.privacy}</a></li>
               <li><a href={localePath('/refund-policy')} className="hover:text-white transition-colors">{t.footer.refund}</a></li>
@@ -41,6 +63,7 @@ const Footer = () => {
             </ul>
           </div>
 
+          {/* 자매 서비스 */}
           <div>
             <h4 className="font-medium mb-4 text-white">{t.footer.sisterServices}</h4>
             <ul className="space-y-3 text-sm">

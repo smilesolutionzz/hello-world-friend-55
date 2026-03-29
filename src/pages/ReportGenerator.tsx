@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEOHead from '@/components/common/SEOHead';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -277,6 +278,12 @@ const ReportGenerator = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      <SEOHead
+        title="AI 종합 리포트 - AIHPRO | 박사급 심리·발달 분석 리포트"
+        description="500+ 논문과 15개 심리이론 기반 AI 종합 리포트. 검사 결과, 상담 내용, 관찰 기록을 통합 분석한 박사급 임상 수준 보고서."
+        keywords="심리리포트,종합분석리포트,AI분석보고서,발달평가리포트,심리검사결과"
+        canonicalUrl="https://aihpro.app/report-generator"
+      />
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* ── 네비게이션 ── */}
         <Button onClick={() => navigate(localePath('/'))} variant="ghost" className="mb-6 text-muted-foreground hover:text-foreground gap-2">

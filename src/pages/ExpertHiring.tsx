@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Helmet } from 'react-helmet-async';
+import SEOHead from '@/components/common/SEOHead';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -273,11 +273,13 @@ const ExpertHiring = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      <SEOHead
+        title="전문가 상담 예약 - AIHPRO | 심리·발달·언어치료 전문가 매칭"
+        description="검증된 심리상담사, 발달치료사, 언어치료사와 1:1 상담을 예약하세요. ADHD, 우울증, 아동발달 전문가 매칭 서비스."
+        keywords="전문가상담,심리상담예약,발달치료전문가,언어치료사,ADHD전문가,아동심리상담,온라인상담예약"
+        canonicalUrl="https://aihpro.app/expert-hiring"
+      />
       <UnifiedNavigation />
-      <Helmet>
-        <title>전문가 상담 예약 | AIHPRO</title>
-        <meta name="description" content="검증된 발달, 심리, 언어치료 전문가와 1:1 상담을 예약하세요" />
-      </Helmet>
 
       {/* 히어로 섹션 */}
       <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-16 px-4">

@@ -2,380 +2,380 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   
-  <!-- 메인 -->
+  <!-- ===== 메인 (Priority 1.0) ===== -->
   <url>
     <loc>https://aihpro.app/</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://aihpro.app/og-image.png</image:loc>
-      <image:title>AIHPRO - AI 심리검사 발달평가 플랫폼</image:title>
+      <image:title>AIHPRO - AI 심리검사 발달평가 정신건강 통합 케어 플랫폼</image:title>
     </image:image>
   </url>
 
-  <!-- 심리검사 메인 -->
+  <!-- ===== 핵심 서비스 (Priority 0.95) ===== -->
   <url>
     <loc>https://aihpro.app/assessment</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
+  <url>
+    <loc>https://aihpro.app/free-trial</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/ai-assistant</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/report-generator</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/sample-report</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
 
-  <!-- 개별 심리검사 페이지 -->
+  <!-- ===== 개별 심리검사 (Priority 0.9) ===== -->
+  <url>
+    <loc>https://aihpro.app/adhd-screening</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/advanced-adhd-test</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
   <url>
     <loc>https://aihpro.app/assessment/stress-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aihpro.app/assessment/mbti-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/assessment/mental-health-quick-test</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aihpro.app/assessment/attachment-style-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://aihpro.app/assessment/defense-mechanism-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://aihpro.app/assessment/communication-style-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://aihpro.app/assessment/resilience-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/assessment/resilience</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://aihpro.app/assessment/life-purpose-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/assessment/life-purpose</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://aihpro.app/assessment/energy-flow-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/assessment/energy-flow</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aihpro.app/assessment/relationship-dynamics-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/assessment/relationship-dynamics</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://aihpro.app/assessment/relationship-style-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://aihpro.app/assessment/pattern-iq-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aihpro.app/assessment/business-metacognition-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/assessment/business-metacognition</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aihpro.app/assessment/han-medicine-test</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/han-medicine-test</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aihpro.app/fingerprint-temperament</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
-
-  <!-- 패키지 검사 -->
   <url>
-    <loc>https://aihpro.app/focus-package</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/drawing-diary-htp</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/assessment/personality-love-test</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/assessment/past-life-job-test</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/assessment/instagram-analysis</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/fun-tests</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ===== 패키지 검사 (SEO 랜딩) ===== -->
+  <url>
+    <loc>https://aihpro.app/focus-package</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aihpro.app/depression-package</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aihpro.app/anxiety-package</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aihpro.app/stress-package</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aihpro.app/child-package</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/family-package</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aihpro.app/relationship-package</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/career-package</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://aihpro.app/comprehensive-package</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- 전문가 -->
-  <url>
-    <loc>https://aihpro.app/expert</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/expert-list</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/expert-hiring</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://aihpro.app/expert-application</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/career-package</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.85</priority>
   </url>
 
-  <!-- AI 기능 -->
+  <!-- ===== AI 기능 ===== -->
   <url>
-    <loc>https://aihpro.app/highlight-ai</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/ai-counselor</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://aihpro.app/voice-counseling</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/metaverse-voice</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/personalized-ai-coaching</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aihpro.app/concern-storage</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
 
-  <!-- 컬럼/콘텐츠 -->
+  <!-- ===== 관찰·성장 ===== -->
   <url>
-    <loc>https://aihpro.app/column</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/observation</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/growth-report</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/mind-diary</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- ===== 전문가·기관 ===== -->
+  <url>
+    <loc>https://aihpro.app/expert-hiring</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://aihpro.app/community</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/education-feed</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- 부모/아동 관련 -->
-  <url>
-    <loc>https://aihpro.app/parent-dashboard</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/expert-application</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://aihpro.app/parent-landing</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/observation</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/growth-tracker</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-
-  <!-- 기관/B2B -->
-  <url>
-    <loc>https://aihpro.app/institutions</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/b2b-landing</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/daycare-landing</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/development-center-landing</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/corporate</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-
-  <!-- 구독/가격 -->
-  <url>
-    <loc>https://aihpro.app/pricing</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/token-subscription</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-
-  <!-- 웰니스/명상 -->
-  <url>
-    <loc>https://aihpro.app/wellness-hub</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/meditation</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/institution-application</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
-  <!-- 법적 페이지 -->
+  <!-- ===== 컬럼·콘텐츠 ===== -->
+  <url>
+    <loc>https://aihpro.app/column</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/about</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/wellness-lifestyle</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- ===== 구독·가격 ===== -->
+  <url>
+    <loc>https://aihpro.app/pricing</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/token-subscription</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- ===== 롱테일 SEO ===== -->
+  <url>
+    <loc>https://aihpro.app/enfj-infp-compatibility</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/comprehensive-reporting</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aihpro.app/iep-generator</loc>
+    <lastmod>2026-03-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ===== 법적 페이지 ===== -->
   <url>
     <loc>https://aihpro.app/privacy-policy</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://aihpro.app/terms-of-service</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://aihpro.app/refund-policy</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
 
-  <!-- 샘플/안내 -->
+  <!-- ===== 유틸리티 ===== -->
   <url>
-    <loc>https://aihpro.app/sample-report</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://aihpro.app/install-guide</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://aihpro.app/install</loc>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
-  <!-- ENFJ vs INFP 궁합 (롱테일) -->
-  <url>
-    <loc>https://aihpro.app/enfj-vs-infp-compatibility</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- About 페이지 (AI 크롤러 핵심) -->
-  <url>
-    <loc>https://aihpro.app/about</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- LLMs.txt -->
+  <!-- ===== LLMs.txt ===== -->
   <url>
     <loc>https://aihpro.app/llms.txt</loc>
-    <lastmod>2026-03-23</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

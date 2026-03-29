@@ -277,6 +277,13 @@ const ReportGenerator = () => {
   ];
 
   return (
+    <>
+    <SEOHead
+      title="AI 종합 리포트 - AIHPRO | 박사급 심리·발달 분석 리포트"
+      description="500+ 논문과 15개 심리이론 기반 AI 종합 리포트. 검사 결과, 상담 내용, 관찰 기록을 통합 분석한 박사급 임상 수준 보고서를 받아보세요."
+      keywords="심리리포트,종합분석리포트,AI분석보고서,발달평가리포트,심리검사결과,전문가리포트"
+      canonicalUrl="https://aihpro.app/report-generator"
+    />
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* ── 네비게이션 ── */}

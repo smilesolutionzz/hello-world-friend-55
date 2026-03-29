@@ -73,6 +73,13 @@ const FreeTrialAssessment = () => {
   }
 
   return (
+    <>
+    <SEOHead
+      title="무료 심리검사 체험 - AIHPRO | 3분 간편 자가진단"
+      description="무료로 시작하는 AI 심리검사. 3분이면 우울증, ADHD, 스트레스 수준을 간편하게 자가진단할 수 있습니다. 지금 바로 체험하세요."
+      keywords="무료심리검사,무료자가진단,무료우울증테스트,무료ADHD검사,간편심리검사,심리검사체험"
+      canonicalUrl="https://aihpro.app/free-trial"
+    />
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-100 to-pink-100 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-blue-400/40 to-purple-500/40 rounded-full blur-3xl animate-pulse"></div>

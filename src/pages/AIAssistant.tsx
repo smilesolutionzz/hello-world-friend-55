@@ -480,6 +480,13 @@ const AIAssistant = () => {
   const shapes = getAnimatedShapes(activeMode);
 
   return (
+    <>
+    <SEOHead
+      title="AI 심리상담 - AIHPRO | 24시간 무료 AI 상담사"
+      description="AI 심리상담사와 24시간 무료 대화하세요. 우울, 불안, 스트레스, 육아 고민, 대인관계 문제를 전문적으로 상담합니다."
+      keywords="AI심리상담,온라인심리상담,무료상담,우울상담,스트레스상담,육아고민상담,AI상담사"
+      canonicalUrl="https://aihpro.app/ai-counselor"
+    />
     <div className="min-h-screen relative overflow-hidden pb-safe transition-all duration-1000 ease-in-out">
       {/* Dynamic Background based on mode */}
       <div className={`fixed inset-0 transition-all duration-1000 ease-in-out ${getBackgroundByMode(activeMode)}`}>

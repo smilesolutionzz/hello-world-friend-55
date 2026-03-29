@@ -719,6 +719,13 @@ const Assessment = () => {
 
   if (currentStep === 'test-type') {
     return (
+      <>
+      <SEOHead
+        title="AI 심리검사 - AIHPRO | ADHD·우울증·스트레스 자가진단"
+        description="AI 기반 정밀 심리검사로 ADHD, 우울증, 불안장애, 스트레스를 정확하게 자가진단하세요. 영유아·아동·청소년·성인 맞춤 발달평가 제공."
+        keywords="심리검사,ADHD자가진단,우울증테스트,스트레스검사,불안장애검사,아동발달검사,성인심리검사,자가진단"
+        canonicalUrl="https://aihpro.app/assessment"
+      />
       <div>
         <UnifiedNavigation />
         <div className="min-h-screen bg-background pt-4">

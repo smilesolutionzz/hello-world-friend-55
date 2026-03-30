@@ -740,13 +740,13 @@ const LibraryRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =
     <group ref={groupRef}>
       {/* 나무 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#8B7355" />
       </mesh>
       
       {/* 벽 */}
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#F5DEB3" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#FAEBD7" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#F5DEB3" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#FAEBD7" /></mesh>
       
       {/* 책장 1 */}
       <group position={[-6, 0, -5]}>

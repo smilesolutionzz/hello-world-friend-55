@@ -277,6 +277,7 @@ const App = () => {
 
           {/* AI Azit - Killer Feature */}
           <Route path="/metaverse-voice" element={<MetaverseVoice />} />
+          <Route path="/game-counseling" element={<GameCounseling />} />
 
           {/* Assessment & Tests */}
           <Route path="/assessment" element={<Assessment />} />

@@ -27,7 +27,7 @@ serve(async (req) => {
 
     // Map voice name to voice ID
     const voiceMap: Record<string, string> = {
-      'Aria': 'EXAVITQu4vr4xnSDxMaL',     // Sarah - warm female
+      'Aria': 'EXAVITQu4vr4xnSDxMaL',
       'Sarah': 'EXAVITQu4vr4xnSDxMaL',
       'Laura': 'FGY2WhTYpPnrIDTdsKH5',
       'Alice': 'Xb7hH8MSUJpSbSDYk0k2',
@@ -36,9 +36,14 @@ serve(async (req) => {
       'Roger': 'CwhRBWXzGAHq8TQ4Fs17',
       'Brian': 'nPczCjzI2devNBz1zQrb',
       'Daniel': 'onwK4e9ZLuTAKqWW03F9',
+      'Matilda': 'XrExE9yKIg1WjnnlVkGX',     // Matilda - 따뜻하고 부드러운 여성
+      'kids_narrator': 'XrExE9yKIg1WjnnlVkGX', // 아이 친화적 내레이터 (Matilda)
     };
 
     const voiceId = voiceMap[voice] || voice;
+
+    // 아이 친화적 음성일 때 voice settings 조정
+    const isKidsVoice = voice === 'kids_narrator';
 
     console.log(`Generating TTS: voice=${voice}(${voiceId}), text length=${text.length}`);
 

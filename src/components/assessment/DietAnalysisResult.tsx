@@ -144,11 +144,11 @@ ${result.dietPlan.herbs.join(', ')}
                 <p className="text-muted-foreground mb-4">
                   {getConstitutionDescription(result.constitutionType)}
                 </p>
-                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                  <h4 className="font-semibold text-purple-800 mb-2">가까이한의원 맞춤 다이어트</h4>
-                  <p className="text-purple-700 text-sm">
+                <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
+                  <h4 className="font-semibold text-foreground mb-2">맞춤 다이어트</h4>
+                  <p className="text-muted-foreground text-sm">
                     {result.targetWeight}을 목표로 하는 {result.constitutionType} 맞춤 한방 다이어트 프로그램입니다.
-                    가까이한의원의 30년 임상 경험을 바탕으로 한 체질별 맞춤 처방을 제공합니다.
+                    전문 한의사의 체질별 맞춤 처방을 통해 더 효과적인 관리가 가능합니다.
                   </p>
                 </div>
               </CardContent>

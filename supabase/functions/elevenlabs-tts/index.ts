@@ -36,8 +36,10 @@ serve(async (req) => {
       'Roger': 'CwhRBWXzGAHq8TQ4Fs17',
       'Brian': 'nPczCjzI2devNBz1zQrb',
       'Daniel': 'onwK4e9ZLuTAKqWW03F9',
-      'Matilda': 'XrExE9yKIg1WjnnlVkGX',     // Matilda - 따뜻하고 부드러운 여성
-      'kids_narrator': 'XrExE9yKIg1WjnnlVkGX', // 아이 친화적 내레이터 (Matilda)
+      'Matilda': 'XrExE9yKIg1WjnnlVkGX',
+      'kids_narrator': 'CrYsT2cBJU6Z4BFcOi8u',  // 루맘 - 따뜻한 커스텀 보이스
+      'rumam': 'CrYsT2cBJU6Z4BFcOi8u',            // 루맘
+      'isusuk': 'q9iIr3Yu7vDR0yAqz0Gu',            // 이수석
     };
 
     const voiceId = voiceMap[voice] || voice;

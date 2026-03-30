@@ -150,12 +150,12 @@ const HanMedicineTestInner = () => {
     stat1: isEnglish ? 'User satisfaction' : '사용자 만족도',
     stat2: isEnglish ? 'Total checks completed' : '누적 체크 건수',
     stat3: isEnglish ? 'Partner clinics' : '협력 한의원',
-    partnerLabel: isEnglish ? 'Featured Partner' : '대표 제휴기관',
-    partnerName: isEnglish ? 'Gakaui Clinic – Telemedicine' : '가까이한의원 비대면진료',
-    partnerDesc: isEnglish ? 'Get a 1:1 personalized consultation with a traditional medicine specialist' : '천년 한의학 전통의 전문의와 1:1 맞춤 상담을 받아보세요',
-    contactBtn: isEnglish ? 'Contact: 010-6624-9990' : '상담 문의: 010-6624-9990',
+    partnerLabel: isEnglish ? 'Expert Consultation' : '전문가 상담',
+    partnerName: isEnglish ? 'Korean Medicine Expert Consultation' : '한의사 전문가 상담',
+    partnerDesc: isEnglish ? 'Get a 1:1 personalized consultation with a traditional medicine specialist' : '체질 분석 결과를 바탕으로 전문 한의사와 1:1 맞춤 상담을 받아보세요',
+    contactBtn: isEnglish ? 'View Experts' : '전문가 보기',
     bookBtn: isEnglish ? 'Book Expert Consultation →' : '전문가 상담 예약 →',
-    trustBadge: isEnglish ? 'clinics trust our AI herbal system' : '한의원에서 신뢰하는 AI 한방 시스템',
+    trustBadge: isEnglish ? 'experts trust our AI herbal system' : '전문가가 신뢰하는 AI 한방 시스템',
   };
 
   return (

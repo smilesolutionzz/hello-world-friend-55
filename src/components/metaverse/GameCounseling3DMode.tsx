@@ -102,6 +102,7 @@ export default function GameCounseling3DMode() {
   const makeChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
     setSelectedChoice(choice.id);
     stopTTS();
+    playSFX('choice_select');
     if (typewriterRef.current) clearInterval(typewriterRef.current);
 
     const record: ChoiceRecord = {

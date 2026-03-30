@@ -132,7 +132,8 @@ export class RealtimeChat {
           firstMessage: this.firstMessage,
           therapistType: this.therapistType,
           therapistVoice: this.therapistVoice,
-          therapistPrompt: this.therapistPrompt
+          therapistPrompt: this.therapistPrompt,
+          userName: this.userName
         }
       });
       if (error) throw error;

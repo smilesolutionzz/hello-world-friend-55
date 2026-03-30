@@ -1603,10 +1603,10 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             
             {!isUICollapsed && (
               <>
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 drop-shadow-lg">
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 drop-shadow-lg">
                   안녕하세요, {userName}님 👋
                 </h1>
-                <p className="text-lg text-foreground/90 drop-shadow-md mb-3">
+                <p className="text-sm text-foreground/90 drop-shadow-md mb-2">
                   {consultTopic ? `${consultTopic}에 대해 편하게 이야기 나눠봐요` : '편하게 이야기 나눠봐요'}
                 </p>
               </>

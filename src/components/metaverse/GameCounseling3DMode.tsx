@@ -88,7 +88,7 @@ export default function GameCounseling3DMode() {
     setGameState('exploring');
 
     if (ttsEnabled) {
-      speak(`${chapter.title}. 앞에 보이는 빛나는 곳으로 걸어가 보세요.`);
+      speak(`${chapter.title}. 화면을 터치해서 앞으로 걸어가 보세요.`);
     }
   }, [ttsEnabled, speak]);
 
@@ -128,7 +128,7 @@ export default function GameCounseling3DMode() {
         setGameState('exploring');
 
         if (ttsEnabled) {
-          setTimeout(() => speak('앞에 보이는 빛나는 곳으로 걸어가 보세요.'), 300);
+          setTimeout(() => speak('화면을 터치해서 앞으로 걸어가 보세요.'), 300);
         }
       }
     }, 800);

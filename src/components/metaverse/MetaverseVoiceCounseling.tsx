@@ -1670,8 +1670,8 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
 
           {/* Voice Chat Interface - 오른쪽 플로팅 패널 */}
           {!isUICollapsed && (
-          <div className="fixed right-4 top-20 bottom-4 w-80 md:w-96 z-40 flex flex-col pointer-events-none">
-            <Card className="bg-slate-900/90 backdrop-blur-xl border border-purple-500/30 p-4 flex-1 animate-scale-in shadow-xl shadow-purple-500/20 overflow-hidden flex flex-col">
+          <div className="fixed right-2 top-20 bottom-4 w-64 md:w-72 z-40 flex flex-col pointer-events-none">
+            <Card className="bg-slate-900/85 backdrop-blur-xl border border-purple-500/30 p-3 flex-1 animate-scale-in shadow-xl shadow-purple-500/20 overflow-hidden flex flex-col">
             <div className="pointer-events-auto flex flex-col h-full">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-purple-500/50'}`} />

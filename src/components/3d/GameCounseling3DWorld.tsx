@@ -654,7 +654,8 @@ export default function GameCounseling3DWorld({
   const [visitedPoints, setVisitedPoints] = useState<Set<number>>(new Set());
 
   const storyPointPositions = useMemo(() => {
-    return Array.from({ length: totalScenes }, (_, i) => new THREE.Vector3(0, 0, -i * 18));
+    // 첫 포인트는 앞쪽에, 간격은 10유닛으로 (기존 18에서 줄임)
+    return Array.from({ length: totalScenes }, (_, i) => new THREE.Vector3(0, 0, -8 - i * 10));
   }, [totalScenes]);
 
   const npcTypes: Array<'bunny' | 'bear' | 'owl' | 'fox'> = ['bunny', 'bear', 'owl', 'fox'];

@@ -45,7 +45,7 @@ serve(async (req) => {
     const voiceId = voiceMap[voice] || voice;
 
     // 아이 친화적 음성일 때 voice settings 조정
-    const isKidsVoice = voice === 'kids_narrator';
+    const isKidsVoice = voice === 'kids_narrator' || voice === 'rumam';
 
     console.log(`Generating TTS: voice=${voice}(${voiceId}), text length=${text.length}`);
 

@@ -22,6 +22,28 @@ import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 
+// Facility images
+import facilityDev from '@/assets/facilities/facility-development-center.jpg';
+import facilitySpeech from '@/assets/facilities/facility-speech-therapy.jpg';
+import facilityCounseling from '@/assets/facilities/facility-counseling.jpg';
+import facilityAba from '@/assets/facilities/facility-aba.jpg';
+import facilityOriental from '@/assets/facilities/facility-oriental.jpg';
+import facilitySports from '@/assets/facilities/facility-sports.jpg';
+import facilityArt from '@/assets/facilities/facility-art.jpg';
+import facilityDaycare from '@/assets/facilities/facility-daycare.jpg';
+
+const getFacilityImage = (type: string, specialties: string[]) => {
+  if (type.includes('한의원')) return facilityOriental;
+  if (type.includes('미술')) return facilityArt;
+  if (specialties.some(s => s.includes('ABA'))) return facilityAba;
+  if (type.includes('언어') || specialties.some(s => s.includes('언어'))) return facilitySpeech;
+  if (type.includes('심리') || specialties.some(s => s.includes('심리'))) return facilityCounseling;
+  if (type.includes('특수체육') || specialties.some(s => s.includes('특수체육') || s.includes('스포츠'))) return facilitySports;
+  if (type.includes('주간') || type.includes('보호')) return facilityDaycare;
+  return facilityDev;
+};
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
+
 const CONSULT_PRICE = 49000;
 
 interface Expert {

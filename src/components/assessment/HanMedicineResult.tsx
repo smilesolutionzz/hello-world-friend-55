@@ -578,14 +578,14 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
               </div>
             )}
             
-            {enhancedAnalysis && clinicInfo && (
-              <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-                <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
-                  📋 연계 전문 상담 가능
+            {enhancedAnalysis && (
+              <div className="mt-6 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                  <Star className="h-4 w-4 text-primary" />
+                  📋 전문가 상담 추천
                 </h4>
-                <p className="text-sm text-green-700">
-                  위 분석을 바탕으로 {clinicInfo.name}에서 더 정밀한 체크와 맞춤 관리를 받으실 수 있습니다.
+                <p className="text-sm text-muted-foreground">
+                  위 분석을 바탕으로 전문 한의사와 상담하여 더 정밀한 체크와 맞춤 관리를 받으실 수 있습니다.
                 </p>
               </div>
             )}

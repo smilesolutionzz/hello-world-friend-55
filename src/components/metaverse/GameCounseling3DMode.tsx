@@ -128,7 +128,7 @@ export default function GameCounseling3DMode() {
         setGameState('exploring');
 
         if (ttsEnabled) {
-          setTimeout(() => speak('다음 빛나는 곳을 터치해서 이동하세요!'), 300);
+          setTimeout(() => speak('앞에 보이는 빛나는 곳으로 걸어가 보세요.'), 300);
         }
       }
     }, 800);

@@ -29,7 +29,7 @@ import AIAssistant from "./pages/AIAssistant";
 import ConcernStorage from "./pages/ConcernStorage";
 import ReportGenerator from "./pages/ReportGenerator";
 import MetaverseVoice from "./pages/MetaverseVoice";
-import GameCounseling from "./pages/GameCounseling";
+import { Navigate } from "react-router-dom";
 
 // Assessment & Tests
 import Assessment from "./pages/Assessment";

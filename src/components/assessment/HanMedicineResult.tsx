@@ -320,8 +320,8 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
       try {
         await navigator.share({
           title: '한방 검사 결과',
-          text: `한방 검사 결과: ${result.percentage}% - 가까이한의원에서 전문 상담 받으세요!`,
-          url: 'https://naver.me/xk1XPBhl'
+          text: `한방 검사 결과: ${result.percentage}% - 전문 한의사 상담을 받아보세요!`,
+          url: 'https://hilightpro.lovable.app/expert'
         });
       } catch (error) {
         console.log('공유 취소됨');

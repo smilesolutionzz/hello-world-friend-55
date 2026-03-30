@@ -5,6 +5,8 @@ import * as THREE from 'three';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { StoryScene, StoryChoice } from '@/data/storyScenarios';
 
+const SCENE_SEQUENCE = ['forest_start', 'meet_bunny', 'river_crossing', 'dark_cave', 'treasure_room', 'final_choice', 'ending'] as const;
+
 // ============ 로블록스풍 블록 나무 ============
 
 function BlockyTree({ position, scale = 1 }: { position: [number, number, number]; scale?: number }) {
@@ -328,7 +330,7 @@ function StoryPointMarker({ position, active, visited }: {
     }
   });
 
-  if (visited) return null;
+  if (visited && !active) return null;
 
   return (
     <group position={position}>
@@ -475,6 +477,86 @@ function CaveStructure({ position }: { position: [number, number, number] }) {
   );
 }
 
+function RiverSetPiece({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]} receiveShadow>
+        <planeGeometry args={[18, 8]} />
+        <meshStandardMaterial color="#4aa3ff" emissive="#4aa3ff" emissiveIntensity={0.2} roughness={0.3} />
+      </mesh>
+      <mesh position={[0, 0.35, 0]} castShadow>
+        <boxGeometry args={[2.2, 0.2, 8]} />
+        <meshStandardMaterial color="#8a6b4d" roughness={0.85} />
+      </mesh>
+      {[-0.8, 0.8].map((x) => (
+        <group key={x} position={[x, 0, 0]}>
+          <mesh position={[0, 0.75, -3.4]} castShadow>
+            <boxGeometry args={[0.12, 1.5, 0.12]} />
+            <meshStandardMaterial color="#705438" roughness={0.9} />
+          </mesh>
+          <mesh position={[0, 0.75, 3.4]} castShadow>
+            <boxGeometry args={[0.12, 1.5, 0.12]} />
+            <meshStandardMaterial color="#705438" roughness={0.9} />
+          </mesh>
+        </group>
+      ))}
+      <pointLight position={[0, 1.5, 0]} intensity={1.8} color="#7cc3ff" distance={15} />
+    </group>
+  );
+}
+
+function TreasureSetPiece({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.35, 0]} castShadow>
+        <boxGeometry args={[2.2, 0.7, 1.4]} />
+        <meshStandardMaterial color="#7a4e2e" roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 0.85, 0.2]} castShadow>
+        <boxGeometry args={[2.2, 0.3, 1.2]} />
+        <meshStandardMaterial color="#9d6a40" roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 0.68, 0.72]}>
+        <boxGeometry args={[0.3, 0.25, 0.05]} />
+        <meshStandardMaterial color="#ffd54f" emissive="#ffd54f" emissiveIntensity={1.2} />
+      </mesh>
+      {Array.from({ length: 8 }).map((_, i) => (
+        <Float key={i} speed={1 + i * 0.05} floatIntensity={0.35}>
+          <mesh position={[(i % 4 - 1.5) * 0.5, 1.3 + (i % 2) * 0.25, -0.6 + Math.floor(i / 4) * 1.2]}>
+            <octahedronGeometry args={[0.12, 0]} />
+            <meshStandardMaterial color="#ffe082" emissive="#ffd54f" emissiveIntensity={2} />
+          </mesh>
+        </Float>
+      ))}
+      <pointLight position={[0, 1.8, 0]} intensity={3} color="#ffd54f" distance={20} />
+    </group>
+  );
+}
+
+function CrossroadSetPiece({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]} receiveShadow>
+        <planeGeometry args={[10, 10]} />
+        <meshStandardMaterial color="#d0bea4" roughness={0.95} />
+      </mesh>
+      <mesh position={[0, 0.6, -1.2]} castShadow>
+        <boxGeometry args={[0.18, 1.2, 0.18]} />
+        <meshStandardMaterial color="#6b4f33" roughness={0.9} />
+      </mesh>
+      <mesh position={[0.65, 1.1, -1.2]} rotation={[0, 0.25, 0]} castShadow>
+        <boxGeometry args={[1.3, 0.2, 0.15]} />
+        <meshStandardMaterial color="#a57545" roughness={0.85} />
+      </mesh>
+      <mesh position={[-0.65, 0.95, -1.2]} rotation={[0, -0.35, 0]} castShadow>
+        <boxGeometry args={[1.1, 0.2, 0.15]} />
+        <meshStandardMaterial color="#a57545" roughness={0.85} />
+      </mesh>
+      <pointLight position={[0, 2.2, -1.2]} intensity={1.2} color="#ffd36b" distance={10} />
+    </group>
+  );
+}
+
 // ============ 환경 효과 컨트롤러 ============
 
 function EnvironmentEffects({ envType, playerPos }: { envType: string; playerPos: THREE.Vector3 }) {
@@ -605,7 +687,12 @@ function MovablePlayer({ targetPos, storyPoints, currentStoryIndex, onArrive, on
 
     if (currentStoryIndex < storyPoints.length && !arrivedRef.current.has(currentStoryIndex)) {
       const sp = storyPoints[currentStoryIndex];
-      if (posRef.current.distanceTo(sp) < 3) {
+      const closeEnough = posRef.current.distanceTo(sp) < 3.5;
+      const laneReached = Math.abs(posRef.current.x - sp.x) < 8;
+      const forwardReached = posRef.current.z <= sp.z + 1.5;
+
+      if (closeEnough || (laneReached && forwardReached)) {
+        posRef.current.x = THREE.MathUtils.lerp(posRef.current.x, sp.x, 0.45);
         arrivedRef.current.add(currentStoryIndex);
         isMoving.current = false;
         moveTarget.current = null;
@@ -766,7 +853,12 @@ export default function GameCounseling3DWorld({
   const npcTypes: Array<'bunny' | 'bear' | 'owl' | 'fox'> = ['bunny', 'bear', 'owl', 'fox'];
 
   const handleClickPosition = useCallback((pos: THREE.Vector3) => {
-    setClickTarget(pos);
+    const clamped = new THREE.Vector3(
+      THREE.MathUtils.clamp(pos.x, -18, 18),
+      0,
+      THREE.MathUtils.clamp(pos.z, -140, 15)
+    );
+    setClickTarget(clamped);
   }, []);
 
   const handleArrive = useCallback((idx: number) => {
@@ -778,11 +870,30 @@ export default function GameCounseling3DWorld({
     setPlayerPos(pos.clone());
   }, []);
 
+  const currentTargetPos = sceneIndex < storyPointPositions.length ? storyPointPositions[sceneIndex] : null;
+
+  const distanceToTarget = useMemo(() => {
+    if (!currentTargetPos || gameState !== 'exploring') return null;
+    return Math.round(playerPos.distanceTo(currentTargetPos));
+  }, [currentTargetPos, gameState, playerPos]);
+
+  const focusCurrentTarget = useCallback(() => {
+    if (!currentTargetPos) return;
+    setClickTarget(currentTargetPos.clone());
+  }, [currentTargetPos]);
+
   return (
-    <div className="w-full h-[60vh] md:h-[65vh] rounded-xl overflow-hidden relative">
+    <div className="w-full h-[72vh] lg:h-[82vh] rounded-xl overflow-hidden relative">
       <Canvas shadows camera={{ fov: 55, near: 0.1, far: 500 }}>
-        <color attach="background" args={[envType === 'rain' ? '#556677' : envType === 'cave' ? '#221111' : '#87CEEB']} />
-        <fog attach="fog" args={[envType === 'rain' ? '#556677' : envType === 'cave' ? '#221111' : '#87CEEB', envType === 'rain' ? 20 : 50, envType === 'rain' ? 80 : 150]} />
+        <color attach="background" args={[envType === 'rain' ? '#556677' : envType === 'cave' ? '#221111' : envType === 'river' ? '#79c4ff' : '#87CEEB']} />
+        <fog attach="fog" args={[envType === 'rain' ? '#556677' : envType === 'cave' ? '#221111' : envType === 'river' ? '#79c4ff' : '#87CEEB', envType === 'rain' ? 20 : 50, envType === 'rain' ? 80 : 150]} />
+
+        {envType !== 'cave' ? (
+          <Sky distance={450000} sunPosition={[40, 30, 20]} inclination={0.49} azimuth={0.28} turbidity={8} rayleigh={2} />
+        ) : (
+          <Stars radius={90} depth={45} count={2000} factor={2} saturation={0} fade speed={0.5} />
+        )}
+        <Environment preset={envType === 'cave' ? 'night' : 'sunset'} />
 
         <ambientLight intensity={envType === 'rain' ? 0.3 : envType === 'cave' ? 0.2 : 0.6} color={envType === 'rain' ? '#667788' : '#ffffff'} />
         <directionalLight
@@ -804,11 +915,20 @@ export default function GameCounseling3DWorld({
         {/* 환경 효과 */}
         {envType === 'rain' && <RainEffect playerPos={playerPos} />}
 
-        {/* 동굴 구조물 (dark_cave 씬 위치에) */}
+        {/* 질문/씬별 환경 연출 */}
         {storyPointPositions.map((sp, i) => {
-          const sceneId = ['forest_start', 'meet_bunny', 'river_crossing', 'dark_cave', 'treasure_room', 'final_choice', 'ending'][i];
+          const sceneId = SCENE_SEQUENCE[i];
           if (sceneId === 'dark_cave') {
             return <CaveStructure key={`cave-${i}`} position={[0, 0, sp.z - 3]} />;
+          }
+          if (sceneId === 'river_crossing') {
+            return <RiverSetPiece key={`river-${i}`} position={[0, 0, sp.z - 1]} />;
+          }
+          if (sceneId === 'treasure_room') {
+            return <TreasureSetPiece key={`treasure-${i}`} position={[0, 0, sp.z - 2]} />;
+          }
+          if (sceneId === 'final_choice') {
+            return <CrossroadSetPiece key={`crossroad-${i}`} position={[0, 0, sp.z - 1.5]} />;
           }
           return null;
         })}
@@ -839,7 +959,7 @@ export default function GameCounseling3DWorld({
         {/* 방향 화살표 */}
         <DirectionArrow
           playerPos={playerPos}
-          targetPos={sceneIndex < storyPointPositions.length ? storyPointPositions[sceneIndex] : null}
+          targetPos={currentTargetPos}
           visible={gameState === 'exploring'}
         />
 
@@ -931,13 +1051,23 @@ export default function GameCounseling3DWorld({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-auto"
         >
           <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-amber-400/30">
             <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.2, repeat: Infinity }}>
               ✨
             </motion.span>
-            <span className="text-white text-xs font-medium">화면을 터치해서 앞으로 이동하세요.</span>
+            <span className="text-white text-xs font-medium">금색 빛기둥/화살표를 따라 이동하세요.</span>
+            {distanceToTarget !== null && (
+              <span className="text-[11px] text-amber-200/90">남은 거리 {distanceToTarget}m</span>
+            )}
+            <button
+              type="button"
+              onClick={focusCurrentTarget}
+              className="text-[11px] px-2 py-1 rounded-md bg-primary/40 text-primary-foreground hover:bg-primary/50"
+            >
+              빛기둥으로 이동
+            </button>
           </div>
         </motion.div>
       )}

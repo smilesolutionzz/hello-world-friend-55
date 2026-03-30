@@ -1,13 +1,14 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Play, RotateCcw, Eye, EyeOff, Sparkles, ArrowLeft } from 'lucide-react';
+import { Play, RotateCcw, Eye, EyeOff, Sparkles, ArrowLeft, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type StoryChoice, type PsychDimension } from '@/data/storyScenarios';
 import GameCounseling3DWorld from '@/components/3d/GameCounseling3DWorld';
+import { useGameTTS } from '@/hooks/useGameTTS';
 
-type GameState = 'intro' | 'walking' | 'choice' | 'result';
+type GameState = 'intro' | 'walking' | 'narrating' | 'choice' | 'result';
 
 interface ChoiceRecord {
   sceneId: string;
@@ -25,8 +26,66 @@ export default function GameCounseling3DMode() {
   const [showParentNotes, setShowParentNotes] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [isWalking, setIsWalking] = useState(false);
+  const [ttsEnabled, setTtsEnabled] = useState(true);
+  const [displayedText, setDisplayedText] = useState('');
+  const typewriterRef = useRef<NodeJS.Timeout | null>(null);
+
+  const { speak, stop: stopTTS, isSpeaking, isLoading: ttsLoading } = useGameTTS();
 
   const currentScene = currentChapter?.scenes[currentSceneIndex] || null;
+
+  // Typewriter effect for scene description
+  const typewrite = useCallback((text: string, onComplete?: () => void) => {
+    if (typewriterRef.current) clearInterval(typewriterRef.current);
+    setDisplayedText('');
+    let index = 0;
+    typewriterRef.current = setInterval(() => {
+      if (index < text.length) {
+        setDisplayedText(text.slice(0, index + 1));
+        index++;
+      } else {
+        if (typewriterRef.current) clearInterval(typewriterRef.current);
+        onComplete?.();
+      }
+    }, 40);
+  }, []);
+
+  // Auto-narrate when scene changes to narrating state
+  useEffect(() => {
+    if (gameState === 'narrating' && currentScene && ttsEnabled) {
+      const narrateText = currentScene.character
+        ? `${currentScene.character}를 만났어요! ${currentScene.description}`
+        : currentScene.description;
+
+      // Start typewriter and TTS simultaneously
+      typewrite(currentScene.description, () => {
+        // After typewriter completes, wait a beat then show choices
+        setTimeout(() => setGameState('choice'), 500);
+      });
+
+      speak(narrateText);
+    } else if (gameState === 'narrating' && currentScene && !ttsEnabled) {
+      typewrite(currentScene.description, () => {
+        setTimeout(() => setGameState('choice'), 500);
+      });
+    }
+
+    return () => {
+      if (typewriterRef.current) clearInterval(typewriterRef.current);
+    };
+  }, [gameState, currentScene, ttsEnabled]);
+
+  // Read choices aloud when they appear
+  useEffect(() => {
+    if (gameState === 'choice' && currentScene && ttsEnabled && !isSpeaking && !ttsLoading) {
+      const choiceTexts = currentScene.choices.map((c, i) => `${i + 1}번, ${c.text}`).join('. ');
+      const prompt = `어떻게 할까요? ${choiceTexts}`;
+      
+      // Small delay so the choice UI appears first
+      const timer = setTimeout(() => speak(prompt), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [gameState]);
 
   const startGame = useCallback((chapter: StoryChapter) => {
     setCurrentChapter(chapter);
@@ -35,15 +94,21 @@ export default function GameCounseling3DMode() {
     setIsWalking(true);
     setGameState('walking');
 
-    // 첫 포인트까지 걸어감
+    if (ttsEnabled) {
+      speak(`${chapter.title}! 모험을 시작합니다. 마법의 숲으로 출발!`);
+    }
+
     setTimeout(() => {
       setIsWalking(false);
-      setGameState('choice');
-    }, 2000);
-  }, []);
+      setGameState('narrating');
+    }, 2500);
+  }, [ttsEnabled, speak]);
 
   const makeChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
     setSelectedChoice(choice.id);
+    stopTTS();
+    if (typewriterRef.current) clearInterval(typewriterRef.current);
+
     const record: ChoiceRecord = {
       sceneId: scene.id,
       choiceId: choice.id,
@@ -51,6 +116,11 @@ export default function GameCounseling3DMode() {
       parentNote: choice.parentNote,
       timestamp: Date.now()
     };
+
+    // Narrate the choice feedback
+    if (ttsEnabled) {
+      speak(`${choice.emoji} ${choice.text}을 선택했어요!`);
+    }
 
     setTimeout(() => {
       setChoices(prev => [...prev, record]);
@@ -61,22 +131,28 @@ export default function GameCounseling3DMode() {
 
       if (nextScene?.isEnding) {
         setGameState('result');
+        if (ttsEnabled) {
+          setTimeout(() => speak('모험이 끝났어요! 결과를 확인해볼까요?'), 500);
+        }
       } else {
         const nextIndex = currentChapter.scenes.findIndex(s => s.id === choice.nextSceneId);
         const newIndex = nextIndex >= 0 ? nextIndex : currentSceneIndex + 1;
 
-        // 다음 포인트로 걸어감
         setGameState('walking');
         setIsWalking(true);
         setCurrentSceneIndex(newIndex);
 
+        if (ttsEnabled) {
+          setTimeout(() => speak('다음 장소로 이동합니다!'), 300);
+        }
+
         setTimeout(() => {
           setIsWalking(false);
-          setGameState('choice');
+          setGameState('narrating');
         }, 2500);
       }
-    }, 600);
-  }, [currentChapter, currentSceneIndex]);
+    }, 800);
+  }, [currentChapter, currentSceneIndex, ttsEnabled, speak, stopTTS]);
 
   const calculateResults = useCallback(() => {
     const scores: Record<PsychDimension, number> = {
@@ -114,6 +190,17 @@ export default function GameCounseling3DMode() {
           <p className="text-purple-200/80 text-sm max-w-sm mx-auto">
             직접 동화 속 세상으로 들어가서 모험을 떠나요!
           </p>
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <Button
+              variant={ttsEnabled ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setTtsEnabled(!ttsEnabled)}
+              className={ttsEnabled ? 'bg-emerald-600 hover:bg-emerald-700' : 'border-white/20 text-white/60'}
+            >
+              {ttsEnabled ? <Volume2 className="w-4 h-4 mr-1" /> : <VolumeX className="w-4 h-4 mr-1" />}
+              {ttsEnabled ? '🎙️ AI 내레이션 ON' : '내레이션 OFF'}
+            </Button>
+          </div>
         </div>
 
         <Card className="p-4 bg-emerald-500/10 border-emerald-500/20">
@@ -123,8 +210,8 @@ export default function GameCounseling3DMode() {
           </h3>
           <div className="space-y-2 text-xs text-purple-200/70">
             <div className="flex gap-2"><span className="text-emerald-400 font-bold">1.</span> 캐릭터가 마법의 숲을 자동으로 탐험해요</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">2.</span> 숲속 친구를 만나면 멈춰요</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">3.</span> 아이가 선택지를 골라요</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">2.</span> 숲속 친구를 만나면 🎙️ AI가 이야기를 들려줘요</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">3.</span> 질문을 음성으로 읽어주고 선택해요</div>
             <div className="flex gap-2"><span className="text-emerald-400 font-bold">4.</span> 선택에 따라 다음 장소로 이동해요</div>
           </div>
         </Card>
@@ -145,6 +232,9 @@ export default function GameCounseling3DMode() {
                     <div className="flex gap-2 mt-1">
                       <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">
                         🎮 3D 몰입형
+                      </span>
+                      <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">
+                        🎙️ AI 음성
                       </span>
                       <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">
                         {chapter.targetAge}
@@ -189,6 +279,18 @@ export default function GameCounseling3DMode() {
             "{character.title}"
           </h3>
           <p className="text-sm text-emerald-200/70 mt-2">{character.desc}</p>
+          {ttsEnabled && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mt-3 text-emerald-300"
+              onClick={() => speak(`우리 아이는 ${character.title}이에요! ${character.desc}`)}
+              disabled={isSpeaking || ttsLoading}
+            >
+              {isSpeaking ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Volume2 className="w-4 h-4 mr-1" />}
+              결과 듣기
+            </Button>
+          )}
         </Card>
 
         <Card className="p-5 bg-white/5 border-white/10">
@@ -216,7 +318,7 @@ export default function GameCounseling3DMode() {
           </div>
         </Card>
 
-        <Button onClick={() => setGameState('intro')} className="w-full bg-emerald-600 hover:bg-emerald-700">
+        <Button onClick={() => { stopTTS(); setGameState('intro'); }} className="w-full bg-emerald-600 hover:bg-emerald-700">
           <RotateCcw className="w-4 h-4 mr-2" /> 다시 모험하기
         </Button>
       </motion.div>
@@ -228,13 +330,46 @@ export default function GameCounseling3DMode() {
     <div className="space-y-3">
       {/* 상단 바 */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={() => setGameState('intro')} className="text-white/70">
+        <Button variant="ghost" size="sm" onClick={() => { stopTTS(); setGameState('intro'); }} className="text-white/70">
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <Progress value={progress} className="h-2 flex-1" />
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowParentNotes(!showParentNotes)}>
-          {showParentNotes ? <EyeOff className="h-4 w-4 text-amber-400" /> : <Eye className="h-4 w-4 text-white/50" />}
-        </Button>
+        
+        {/* TTS 상태 표시 */}
+        <div className="flex items-center gap-1">
+          {(isSpeaking || ttsLoading) && (
+            <div className="flex items-center gap-1 px-2 py-1 bg-emerald-500/20 rounded-full">
+              {ttsLoading ? (
+                <Loader2 className="w-3 h-3 text-emerald-400 animate-spin" />
+              ) : (
+                <div className="flex gap-0.5">
+                  {[1,2,3].map(i => (
+                    <motion.div
+                      key={i}
+                      className="w-1 bg-emerald-400 rounded-full"
+                      animate={{ height: ['4px', '12px', '4px'] }}
+                      transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.15 }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => {
+              if (isSpeaking) stopTTS();
+              setTtsEnabled(!ttsEnabled);
+            }}
+          >
+            {ttsEnabled ? <Volume2 className="h-4 w-4 text-emerald-400" /> : <VolumeX className="h-4 w-4 text-white/30" />}
+          </Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowParentNotes(!showParentNotes)}>
+            {showParentNotes ? <EyeOff className="h-4 w-4 text-amber-400" /> : <Eye className="h-4 w-4 text-white/50" />}
+          </Button>
+        </div>
       </div>
 
       {/* 3D 월드 */}
@@ -251,7 +386,7 @@ export default function GameCounseling3DMode() {
 
       {/* 스토리 텍스트 & 선택지 오버레이 */}
       <AnimatePresence mode="wait">
-        {gameState === 'choice' && currentScene && (
+        {(gameState === 'narrating' || gameState === 'choice') && currentScene && (
           <motion.div
             key={currentScene.id}
             initial={{ opacity: 0, y: 30 }}
@@ -259,64 +394,130 @@ export default function GameCounseling3DMode() {
             exit={{ opacity: 0, y: -20 }}
             className="space-y-3"
           >
-            {/* 장면 설명 */}
-            <Card className="p-4 bg-black/40 backdrop-blur-sm border-emerald-500/20">
+            {/* 장면 설명 - 타이핑 효과 */}
+            <Card className="p-4 bg-black/40 backdrop-blur-sm border-emerald-500/20 relative overflow-hidden">
+              {/* Speaking indicator */}
+              {isSpeaking && (
+                <motion.div
+                  className="absolute top-0 left-0 h-0.5 bg-gradient-to-r from-emerald-400 to-cyan-400"
+                  animate={{ width: ['0%', '100%'] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+              )}
               <div className="flex items-start gap-3">
                 <span className="text-3xl">{currentScene.illustration}</span>
-                <div>
-                  <h3 className="font-bold text-white text-base">{currentScene.title}</h3>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-bold text-white text-base">{currentScene.title}</h3>
+                    {isSpeaking && (
+                      <motion.div
+                        className="flex gap-0.5 items-end"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                      >
+                        {[1,2,3,4].map(i => (
+                          <motion.div
+                            key={i}
+                            className="w-0.5 bg-emerald-400 rounded-full"
+                            animate={{ height: ['3px', '10px', '3px'] }}
+                            transition={{ duration: 0.4, repeat: Infinity, delay: i * 0.1 }}
+                          />
+                        ))}
+                      </motion.div>
+                    )}
+                  </div>
                   {currentScene.character && (
                     <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">
-                      {currentScene.character}
+                      🎭 {currentScene.character}
                     </span>
                   )}
                   <p className="text-sm text-purple-100/80 mt-1 leading-relaxed whitespace-pre-line">
-                    {currentScene.description}
+                    {gameState === 'narrating' ? displayedText : currentScene.description}
+                    {gameState === 'narrating' && (
+                      <motion.span
+                        className="inline-block w-0.5 h-4 bg-emerald-400 ml-0.5 align-middle"
+                        animate={{ opacity: [1, 0] }}
+                        transition={{ duration: 0.5, repeat: Infinity }}
+                      />
+                    )}
                   </p>
                 </div>
               </div>
             </Card>
 
-            {/* 선택지 */}
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-emerald-300/70 px-1">어떻게 할까요?</p>
-              {currentScene.choices.map((choice, index) => (
-                <motion.div
-                  key={choice.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.15 }}
-                >
-                  <Card
-                    className={`p-3 cursor-pointer transition-all border bg-black/30 backdrop-blur-sm ${
-                      selectedChoice === choice.id
-                        ? 'border-emerald-500 bg-emerald-500/20 scale-[0.98]'
-                        : 'border-white/10 hover:border-emerald-500/40'
-                    }`}
-                    onClick={() => !selectedChoice && makeChoice(currentScene, choice)}
+            {/* 선택지 - choice 상태에서만 */}
+            {gameState === 'choice' && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-emerald-300/70 px-1">어떻게 할까요?</p>
+                {currentScene.choices.map((choice, index) => (
+                  <motion.div
+                    key={choice.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.15 }}
                   >
-                    <div className="flex items-start gap-3">
-                      <span className="text-2xl">{choice.emoji}</span>
-                      <div className="flex-1">
-                        <p className="font-medium text-sm text-white">{choice.text}</p>
-                        {showParentNotes && choice.parentNote && (
-                          <motion.p
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            className="text-xs text-amber-400 mt-1 italic"
-                          >
-                            👁️ {choice.parentNote}
-                          </motion.p>
-                        )}
+                    <Card
+                      className={`p-3 cursor-pointer transition-all border bg-black/30 backdrop-blur-sm ${
+                        selectedChoice === choice.id
+                          ? 'border-emerald-500 bg-emerald-500/20 scale-[0.98]'
+                          : 'border-white/10 hover:border-emerald-500/40'
+                      }`}
+                      onClick={() => !selectedChoice && makeChoice(currentScene, choice)}
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="text-2xl">{choice.emoji}</span>
+                        <div className="flex-1">
+                          <p className="font-medium text-sm text-white">{choice.text}</p>
+                          {showParentNotes && choice.parentNote && (
+                            <motion.p
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              className="text-xs text-amber-400 mt-1 italic"
+                            >
+                              👁️ {choice.parentNote}
+                            </motion.p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Walking narration overlay */}
+      {gameState === 'walking' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-3"
+        >
+          <div className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full">
+            <motion.span
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1, repeat: Infinity }}
+            >
+              🚶
+            </motion.span>
+            <span className="text-white/80 text-sm">다음 장소로 이동 중...</span>
+            {isSpeaking && (
+              <div className="flex gap-0.5 ml-1">
+                {[1,2,3].map(i => (
+                  <motion.div
+                    key={i}
+                    className="w-0.5 bg-emerald-400 rounded-full"
+                    animate={{ height: ['3px', '8px', '3px'] }}
+                    transition={{ duration: 0.4, repeat: Infinity, delay: i * 0.12 }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

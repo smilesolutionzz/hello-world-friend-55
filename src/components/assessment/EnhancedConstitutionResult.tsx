@@ -394,7 +394,7 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
                 <Button 
                   size="lg" 
                   className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                  onClick={() => navigate('/expert')}
+                  onClick={() => navigate('/expert-hiring')}
                 >
                   <ChevronRight className="h-5 w-5 mr-2" />
                   한의사 전문가 보기

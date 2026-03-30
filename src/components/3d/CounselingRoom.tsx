@@ -404,11 +404,11 @@ const BedroomRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =
   return (
     <group ref={groupRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#B8A99A" />
       </mesh>
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#E6D5C3" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#F5E6D3" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#E6D5C3" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#F5E6D3" /></mesh>
       
       {/* 침대 */}
       <group position={[-2, -1, -2]}>

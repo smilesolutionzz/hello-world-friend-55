@@ -186,8 +186,8 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
           </div>
           
           <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB;">
-            <p style="margin: 0; font-size: 12px; color: #9CA3AF;">가까이한의원 연계 | 전문 한의학 체질검사</p>
-            <p style="margin: 5px 0 0 0; font-size: 12px; color: #9CA3AF;">상담 문의: https://naver.me/xk1XPBhl</p>
+            <p style="margin: 0; font-size: 12px; color: #9CA3AF;">전문 한의학 체질검사 | AI 분석 리포트</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; color: #9CA3AF;">전문가 상담: hilightpro.lovable.app/expert</p>
           </div>
         </div>
       `;

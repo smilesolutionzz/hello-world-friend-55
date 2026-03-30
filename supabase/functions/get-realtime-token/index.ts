@@ -30,7 +30,7 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY is not set');
     }
 
-    const { mode, ageGroup, character, roleplayPersona, roleplayVoice, firstMessage, therapistType, therapistVoice, therapistPrompt } = await req.json().catch(() => ({}));
+    const { mode, ageGroup, character, roleplayPersona, roleplayVoice, firstMessage, therapistType, therapistVoice, therapistPrompt, userName } = await req.json().catch(() => ({}));
 
     console.log(`Creating ephemeral token - mode: ${mode}, ageGroup: ${ageGroup}, character: ${character}`);
 

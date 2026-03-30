@@ -55,7 +55,7 @@ const MetaverseVoicePage = () => {
         </Button>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="w-full mx-auto px-3 md:px-6 py-16 max-w-[1600px]">
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
             🎭 금쪽상담소
@@ -65,7 +65,7 @@ const MetaverseVoicePage = () => {
           </p>
         </div>
 
-        <Tabs value={activeTab || ''} onValueChange={setActiveTab} className="w-full max-w-4xl mx-auto">
+        <Tabs value={activeTab || ''} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid grid-cols-2 w-full mb-8 bg-black/40 p-1 max-w-md mx-auto">
             <TabsTrigger 
               value="game" 

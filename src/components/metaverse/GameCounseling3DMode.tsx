@@ -234,74 +234,18 @@ export default function GameCounseling3DMode() {
   // ============ 결과 화면 ============
   if (gameState === 'result') {
     const results = calculateResults();
-    const topDimensions = Object.entries(results).sort(([, a], [, b]) => b - a).slice(0, 4);
-    const top = topDimensions[0][0] as PsychDimension;
-    const characterTypes: Record<string, { title: string; emoji: string; desc: string }> = {
-      empathy: { title: '따뜻한 마음의 치유사', emoji: '💝', desc: '다른 사람의 마음을 잘 느끼고 돌봐주는 따뜻한 아이예요.' },
-      creativity: { title: '빛나는 상상력의 마법사', emoji: '✨', desc: '독창적인 방법으로 문제를 해결하는 창의적인 아이예요.' },
-      independence: { title: '용감한 모험가', emoji: '🦸', desc: '스스로 도전하고 해결하는 독립적인 아이예요.' },
-      sociality: { title: '인기만점 소통왕', emoji: '👑', desc: '사람들과 잘 어울리고 소통을 즐기는 사교적인 아이예요.' },
-      self_esteem: { title: '자신감 넘치는 리더', emoji: '⭐', desc: '자기 자신을 사랑하고 자신감이 넘치는 아이예요.' },
-      emotional_regulation: { title: '차분한 지혜의 현자', emoji: '🧘', desc: '감정을 잘 조절하고 인내심이 강한 아이예요.' },
-      anxiety: { title: '안정감 있는 평화주의자', emoji: '🕊️', desc: '편안하고 안정적인 성격의 아이예요.' },
-      aggression: { title: '에너지 넘치는 행동파', emoji: '⚡', desc: '활동적이고 에너지가 넘치는 역동적인 아이예요.' },
-    };
-    const character = characterTypes[top] || characterTypes.empathy;
-
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5 pb-20">
-        <Card className="p-6 bg-gradient-to-br from-emerald-900/40 to-cyan-900/40 text-center border-2 border-emerald-500/30">
-          <motion.div className="text-6xl mb-3" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: 2 }}>
-            {character.emoji}
-          </motion.div>
-          <h2 className="text-xl font-bold text-emerald-300">모험 완료! 우리 아이는...</h2>
-          <h3 className="text-2xl font-extrabold mt-1 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-            "{character.title}"
-          </h3>
-          <p className="text-sm text-emerald-200/70 mt-2">{character.desc}</p>
-          {ttsEnabled && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-3 text-emerald-300"
-              onClick={() => speak(`우리 아이는 ${character.title}이에요! ${character.desc}`)}
-              disabled={isSpeaking || ttsLoading}
-            >
-              {isSpeaking ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Volume2 className="w-4 h-4 mr-1" />}
-              결과 듣기
-            </Button>
-          )}
-        </Card>
-
-        <Card className="p-5 bg-white/5 border-white/10">
-          <h3 className="font-bold mb-4 text-white">📊 심리 특성 분석</h3>
-          <div className="space-y-3">
-            {Object.entries(dimensionMeta).map(([dim, meta]) => {
-              const score = results[dim as PsychDimension];
-              return (
-                <div key={dim} className="space-y-1">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-purple-200">{meta.icon} {meta.label}</span>
-                    <span className="text-xs text-purple-300/70">{score}%</span>
-                  </div>
-                  <div className="h-2.5 bg-white/10 rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${score}%` }}
-                      transition={{ duration: 0.8, delay: 0.2 }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
-
-        <Button onClick={() => { stopTTS(); setGameState('intro'); }} className="w-full bg-emerald-600 hover:bg-emerald-700">
-          <RotateCcw className="w-4 h-4 mr-2" /> 다시 모험하기
-        </Button>
-      </motion.div>
+      <GameResultReport
+        results={results}
+        choices={choices}
+        chapter={currentChapter!}
+        onRestart={() => { stopTTS(); setGameState('intro'); }}
+        ttsEnabled={ttsEnabled}
+        onSpeak={speak}
+        isSpeaking={isSpeaking}
+        ttsLoading={ttsLoading}
+        variant="3d"
+      />
     );
   }
 

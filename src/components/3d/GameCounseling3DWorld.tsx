@@ -651,7 +651,13 @@ export default function GameCounseling3DWorld({
 }: GameCounseling3DWorldProps) {
   const [clickTarget, setClickTarget] = useState<THREE.Vector3 | null>(null);
   const [playerPos, setPlayerPos] = useState(new THREE.Vector3(0, 0, 3));
+  const [visitedPoints, setVisitedPoints] = useState<Set<number>>(new Set());
   const [autoMoved, setAutoMoved] = useState(false);
+
+  const storyPointPositions = useMemo(() => {
+    // 첫 포인트는 앞쪽에, 간격은 10유닛으로 (기존 18에서 줄임)
+    return Array.from({ length: totalScenes }, (_, i) => new THREE.Vector3(0, 0, -8 - i * 10));
+  }, [totalScenes]);
 
   // 게임 시작 시 자동으로 첫 스토리포인트로 이동
   useEffect(() => {
@@ -668,9 +674,6 @@ export default function GameCounseling3DWorld({
   useEffect(() => {
     setAutoMoved(false);
   }, [sceneIndex]);
-    // 첫 포인트는 앞쪽에, 간격은 10유닛으로 (기존 18에서 줄임)
-    return Array.from({ length: totalScenes }, (_, i) => new THREE.Vector3(0, 0, -8 - i * 10));
-  }, [totalScenes]);
 
   const npcTypes: Array<'bunny' | 'bear' | 'owl' | 'fox'> = ['bunny', 'bear', 'owl', 'fox'];
 

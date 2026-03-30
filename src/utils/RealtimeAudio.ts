@@ -92,6 +92,7 @@ export class RealtimeChat {
       therapistType?: string;
       therapistVoice?: string;
       therapistPrompt?: string;
+      userName?: string;
       onDisconnect?: () => void;
       onReconnecting?: () => void;
     }

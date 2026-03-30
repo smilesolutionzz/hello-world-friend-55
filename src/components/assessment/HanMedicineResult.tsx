@@ -122,7 +122,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
 ⚕️ **전문 상담 권장**:
 더 정확한 체크와 맞춤 관리를 위해 전문 한의사와 상담받으시길 권합니다.
 
-🏥 전문가 상담: hilightpro.lovable.app/expert`;
+🏥 전문가 상담: hilightpro.lovable.app/expert-hiring`;
   };
 
   const goHome = () => {

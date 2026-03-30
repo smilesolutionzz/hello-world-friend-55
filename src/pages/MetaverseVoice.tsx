@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Mic, ArrowLeft, Home, Gamepad2, Sparkles } from 'lucide-react';
 import MetaverseVoiceCounseling from '@/components/metaverse/MetaverseVoiceCounseling';
 import { CounselingSetup } from '@/components/metaverse/CounselingSetup';
-import GameCounselingMode from '@/components/metaverse/GameCounselingMode';
 import GameCounseling3DMode from '@/components/metaverse/GameCounseling3DMode';
 import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 

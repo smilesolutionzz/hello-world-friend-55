@@ -832,7 +832,7 @@ export default function GameCounseling3DWorld({
             <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.2, repeat: Infinity }}>
               ✨
             </motion.span>
-            <span className="text-white text-sm font-medium">빛나는 곳을 터치해서 이동하세요!</span>
+            <span className="text-white text-sm font-medium">화면을 터치해서 앞으로 이동하세요.</span>
           </div>
         </motion.div>
       )}

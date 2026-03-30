@@ -528,6 +528,39 @@ const ExpertDetailPage = () => {
           </section>
         )}
 
+        {/* ─── 대상 타겟 ─── */}
+        <section className="max-w-3xl mx-auto px-4 pb-6">
+          <div className="bg-white rounded-3xl p-6 border border-border/30" style={{ boxShadow: '0 1px 3px hsl(var(--foreground)/0.03)' }}>
+            <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
+              <Target className="w-4 h-4 text-primary" /> 이런 분들께 추천합니다
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-2.5">
+              {getTargetBySpecialty(expert.specialty).map((target, idx) => (
+                <div key={idx} className="flex items-center gap-3 bg-primary/5 rounded-2xl px-4 py-3">
+                  <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Users className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  <span className="text-sm text-foreground font-medium">{target}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── 자주 묻는 질문 ─── */}
+        <section className="max-w-3xl mx-auto px-4 pb-6">
+          <div className="bg-white rounded-3xl p-6 border border-border/30" style={{ boxShadow: '0 1px 3px hsl(var(--foreground)/0.03)' }}>
+            <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
+              <HelpCircle className="w-4 h-4 text-primary" /> 자주 묻는 질문
+            </h3>
+            <div className="space-y-3">
+              {getFaqBySpecialty(expert.specialty).map((faq, idx) => (
+                <FaqItem key={idx} question={faq.question} answer={faq.answer} />
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ─── 가격 및 예약 CTA ─── */}
         <section className="max-w-3xl mx-auto px-4 pb-12">
           <div className="bg-foreground rounded-3xl p-8 text-center">

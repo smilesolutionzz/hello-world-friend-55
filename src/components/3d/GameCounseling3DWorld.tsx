@@ -733,6 +733,13 @@ export default function GameCounseling3DWorld({
           />
         ))}
 
+        {/* 방향 화살표 */}
+        <DirectionArrow
+          playerPos={playerPos}
+          targetPos={sceneIndex < storyPointPositions.length ? storyPointPositions[sceneIndex] : null}
+          visible={gameState === 'exploring'}
+        />
+
         <MovablePlayer
           targetPos={clickTarget}
           storyPoints={storyPointPositions}

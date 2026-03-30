@@ -1,231 +1,415 @@
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, Float, Text, Stars } from '@react-three/drei';
+import { Environment, Float, Stars, Sky } from '@react-three/drei';
 import * as THREE from 'three';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { StoryScene, StoryChoice } from '@/data/storyScenarios';
 
-// ============ 3D 월드 환경 요소들 ============
+// ============ 로블록스풍 블록 나무 ============
 
-function FairyTaleForest() {
-  return (
-    <group>
-      {/* 잔디 바닥 */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-        <planeGeometry args={[200, 200]} />
-        <meshStandardMaterial color="#3a7d44" />
-      </mesh>
-
-      {/* 길 (자갈길) */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[3, 200]} />
-        <meshStandardMaterial color="#c4a882" />
-      </mesh>
-
-      {/* 좌우 나무들 - 고정 위치 (seeded) */}
-      {useMemo(() => {
-        const trees: Array<{ x: number; z: number; scale: number }> = [];
-        for (let i = 0; i < 30; i++) {
-          const side = i % 2 === 0 ? -1 : 1;
-          const z = -i * 8 + 10;
-          const seed = Math.sin(i * 127.1) * 43758.5453;
-          const rand = seed - Math.floor(seed);
-          const x = side * (4 + rand * 3);
-          const scale = 0.8 + ((Math.sin(i * 311.7) * 43758.5453) % 1 + 1) % 1 * 0.6;
-          trees.push({ x, z, scale });
-        }
-        return trees;
-      }, []).map((t, i) => (
-        <CartoonTree key={`tree-${i}`} position={[t.x, 0, t.z]} scale={t.scale} />
-      ))}
-
-      {/* 꽃들 - 고정 위치 */}
-      {useMemo(() => {
-        const flowers: Array<{ x: number; z: number; colorIdx: number }> = [];
-        for (let i = 0; i < 40; i++) {
-          const side = i % 2 === 0 ? -1 : 1;
-          const z = -i * 5 + 15;
-          const seed = Math.sin(i * 253.3) * 43758.5453;
-          const rand = ((seed % 1) + 1) % 1;
-          const x = side * (2 + rand * 6);
-          flowers.push({ x, z, colorIdx: i % 5 });
-        }
-        return flowers;
-      }, []).map((f, i) => {
-        const colors = ['#ff6b9d', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6b6b'];
-        return (
-          <Float key={`flower-${i}`} speed={0.8} floatIntensity={0.15}>
-            <mesh position={[f.x, 0.3, f.z]} castShadow>
-              <sphereGeometry args={[0.15, 8, 8]} />
-              <meshStandardMaterial color={colors[f.colorIdx]} />
-            </mesh>
-            <mesh position={[f.x, 0.1, f.z]}>
-              <cylinderGeometry args={[0.03, 0.03, 0.3, 6]} />
-              <meshStandardMaterial color="#2d5a27" />
-            </mesh>
-          </Float>
-        );
-      })}
-
-      {/* 반딧불이 - 고정 위치, 느린 움직임 */}
-      {useMemo(() => {
-        const flies: Array<{ x: number; y: number; z: number; speed: number }> = [];
-        for (let i = 0; i < 20; i++) {
-          const s1 = Math.sin(i * 437.1) * 43758.5453;
-          const s2 = Math.sin(i * 191.7) * 43758.5453;
-          const s3 = Math.sin(i * 317.3) * 43758.5453;
-          flies.push({
-            x: (((s1 % 1) + 1) % 1 - 0.5) * 15,
-            y: 1 + ((s2 % 1) + 1) % 1 * 3,
-            z: -((s3 % 1) + 1) % 1 * 100,
-            speed: 0.5 + ((Math.sin(i * 571.9) * 43758.5453 % 1 + 1) % 1) * 0.8,
-          });
-        }
-        return flies;
-      }, []).map((f, i) => (
-        <Float key={`firefly-${i}`} speed={f.speed} floatIntensity={0.5}>
-          <mesh position={[f.x, f.y, f.z]}>
-            <sphereGeometry args={[0.05, 6, 6]} />
-            <meshStandardMaterial color="#ffff00" emissive="#ffff00" emissiveIntensity={2} />
-          </mesh>
-        </Float>
-      ))}
-
-      {/* 버섯들 - 고정 위치 */}
-      {useMemo(() => {
-        const mushrooms: Array<{ x: number; z: number }> = [];
-        for (let i = 0; i < 15; i++) {
-          const side = i % 2 === 0 ? -1 : 1;
-          const z = -i * 10 + 5;
-          const seed = Math.sin(i * 673.1) * 43758.5453;
-          const x = side * (3 + ((seed % 1) + 1) % 1 * 2);
-          mushrooms.push({ x, z });
-        }
-        return mushrooms;
-      }, []).map((m, i) => (
-        <CartoonMushroom key={`mush-${i}`} position={[m.x, 0, m.z]} />
-      ))}
-    </group>
-  );
-}
-
-function CartoonTree({ position, scale = 1 }: { position: [number, number, number]; scale?: number }) {
+function BlockyTree({ position, scale = 1 }: { position: [number, number, number]; scale?: number }) {
   const leafColor = useMemo(() => {
-    const colors = ['#2d7d46', '#3a9d5e', '#4fb970', '#1b5e2a'];
+    const colors = ['#2d8a4e', '#3db06a', '#45c96e', '#26753f'];
     const seed = Math.sin(position[0] * 127.1 + position[2] * 311.7) * 43758.5453;
     return colors[Math.floor(((seed % 1) + 1) % 1 * colors.length)];
   }, [position]);
 
   return (
     <group position={position} scale={scale}>
+      {/* 나무 기둥 (블록형) */}
       <mesh position={[0, 1.5, 0]} castShadow>
-        <cylinderGeometry args={[0.2, 0.35, 3, 8]} />
-        <meshStandardMaterial color="#8B5E3C" />
+        <boxGeometry args={[0.6, 3, 0.6]} />
+        <meshStandardMaterial color="#6B4226" roughness={0.9} />
       </mesh>
+      {/* 나뭇잎 블록 (큰 블록 조합) */}
       <mesh position={[0, 3.5, 0]} castShadow>
-        <sphereGeometry args={[1.5, 8, 8]} />
-        <meshStandardMaterial color={leafColor} />
+        <boxGeometry args={[2.5, 2, 2.5]} />
+        <meshStandardMaterial color={leafColor} roughness={0.8} />
       </mesh>
-      <mesh position={[0.7, 3, 0.5]} castShadow>
-        <sphereGeometry args={[0.8, 8, 8]} />
-        <meshStandardMaterial color={leafColor} />
+      <mesh position={[0, 4.8, 0]} castShadow>
+        <boxGeometry args={[1.8, 1.4, 1.8]} />
+        <meshStandardMaterial color={leafColor} roughness={0.8} />
       </mesh>
-      <mesh position={[-0.5, 3.2, -0.3]} castShadow>
-        <sphereGeometry args={[0.7, 8, 8]} />
-        <meshStandardMaterial color={leafColor} />
-      </mesh>
-    </group>
-  );
-}
-
-function CartoonMushroom({ position }: { position: [number, number, number] }) {
-  const colors = ['#ff6b6b', '#ffd93d', '#ff9ff3'];
-  const color = useMemo(() => {
-    const seed = Math.sin(position[0] * 253.3 + position[2] * 437.1) * 43758.5453;
-    return colors[Math.floor(((seed % 1) + 1) % 1 * colors.length)];
-  }, [position]);
-  return (
-    <group position={position}>
-      <mesh position={[0, 0.15, 0]}>
-        <cylinderGeometry args={[0.06, 0.08, 0.3, 6]} />
-        <meshStandardMaterial color="#f5e6d3" />
-      </mesh>
-      <mesh position={[0, 0.35, 0]}>
-        <sphereGeometry args={[0.2, 8, 8]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-      <mesh position={[0.1, 0.4, 0.1]}>
-        <sphereGeometry args={[0.04, 6, 6]} />
-        <meshStandardMaterial color="#ffffff" />
+      <mesh position={[0, 5.7, 0]} castShadow>
+        <boxGeometry args={[1, 0.8, 1]} />
+        <meshStandardMaterial color={leafColor} roughness={0.8} />
       </mesh>
     </group>
   );
 }
 
-// ============ 클릭 목표 표시 ============
+// ============ 로블록스풍 캐릭터 ============
 
-function ClickMarker({ position }: { position: THREE.Vector3 | null }) {
-  const ref = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (ref.current && position) {
-      ref.current.rotation.y = state.clock.elapsedTime * 3;
-      ref.current.scale.setScalar(0.8 + Math.sin(state.clock.elapsedTime * 4) * 0.2);
-    }
-  });
-
-  if (!position) return null;
+function RobloxCharacter({ position, type }: { position: [number, number, number]; type: 'bunny' | 'bear' | 'owl' | 'fox' }) {
+  const colors = {
+    bunny: { body: '#f0f0f0', head: '#f0f0f0', accent: '#ffb6c1', hat: '#ff69b4' },
+    bear: { body: '#8B5E3C', head: '#A0724F', accent: '#D2691E', hat: '#654321' },
+    owl: { body: '#7B68EE', head: '#9370DB', accent: '#FFD700', hat: '#4B0082' },
+    fox: { body: '#ff7733', head: '#ff8844', accent: '#ffffff', hat: '#cc4400' },
+  };
+  const c = colors[type];
 
   return (
-    <mesh ref={ref} position={[position.x, 0.1, position.z]} rotation={[-Math.PI / 2, 0, 0]}>
-      <ringGeometry args={[0.3, 0.5, 16]} />
-      <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={1.5} transparent opacity={0.8} />
-    </mesh>
+    <Float speed={1} floatIntensity={0.15}>
+      <group position={position}>
+        {/* 몸통 (블록) */}
+        <mesh position={[0, 0.7, 0]} castShadow>
+          <boxGeometry args={[0.7, 1, 0.5]} />
+          <meshStandardMaterial color={c.body} roughness={0.8} />
+        </mesh>
+        {/* 머리 (블록) */}
+        <mesh position={[0, 1.6, 0]} castShadow>
+          <boxGeometry args={[0.65, 0.65, 0.65]} />
+          <meshStandardMaterial color={c.head} roughness={0.7} />
+        </mesh>
+        {/* 눈 */}
+        <mesh position={[-0.15, 1.65, 0.33]}>
+          <boxGeometry args={[0.12, 0.12, 0.02]} />
+          <meshStandardMaterial color="#111111" />
+        </mesh>
+        <mesh position={[0.15, 1.65, 0.33]}>
+          <boxGeometry args={[0.12, 0.12, 0.02]} />
+          <meshStandardMaterial color="#111111" />
+        </mesh>
+        {/* 팔 */}
+        <mesh position={[-0.5, 0.7, 0]} castShadow>
+          <boxGeometry args={[0.25, 0.8, 0.25]} />
+          <meshStandardMaterial color={c.body} roughness={0.8} />
+        </mesh>
+        <mesh position={[0.5, 0.7, 0]} castShadow>
+          <boxGeometry args={[0.25, 0.8, 0.25]} />
+          <meshStandardMaterial color={c.body} roughness={0.8} />
+        </mesh>
+        {/* 다리 */}
+        <mesh position={[-0.2, 0, 0]} castShadow>
+          <boxGeometry args={[0.25, 0.5, 0.3]} />
+          <meshStandardMaterial color={c.accent} roughness={0.8} />
+        </mesh>
+        <mesh position={[0.2, 0, 0]} castShadow>
+          <boxGeometry args={[0.25, 0.5, 0.3]} />
+          <meshStandardMaterial color={c.accent} roughness={0.8} />
+        </mesh>
+        {/* 모자/귀 */}
+        {type === 'bunny' && (
+          <>
+            <mesh position={[-0.15, 2.2, 0]} castShadow>
+              <boxGeometry args={[0.12, 0.5, 0.1]} />
+              <meshStandardMaterial color={c.accent} />
+            </mesh>
+            <mesh position={[0.15, 2.2, 0]} castShadow>
+              <boxGeometry args={[0.12, 0.5, 0.1]} />
+              <meshStandardMaterial color={c.accent} />
+            </mesh>
+          </>
+        )}
+        {type === 'fox' && (
+          <>
+            <mesh position={[-0.2, 2.05, 0]} castShadow rotation={[0, 0, 0.2]}>
+              <coneGeometry args={[0.12, 0.3, 4]} />
+              <meshStandardMaterial color={c.body} />
+            </mesh>
+            <mesh position={[0.2, 2.05, 0]} castShadow rotation={[0, 0, -0.2]}>
+              <coneGeometry args={[0.12, 0.3, 4]} />
+              <meshStandardMaterial color={c.body} />
+            </mesh>
+          </>
+        )}
+        {/* 이름표 (빛나는 구슬) */}
+        <Float speed={3} floatIntensity={0.4}>
+          <mesh position={[0, 2.4, 0]}>
+            <sphereGeometry args={[0.1, 8, 8]} />
+            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={1.5} />
+          </mesh>
+        </Float>
+      </group>
+    </Float>
   );
 }
 
-// ============ 스토리 포인트 오브젝트 ============
+// ============ 로블록스풍 환경 ============
+
+function RobloxWorld() {
+  return (
+    <group>
+      {/* 잔디 바닥 (청크 느낌) */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
+        <planeGeometry args={[200, 200]} />
+        <meshStandardMaterial color="#4CAF50" roughness={1} />
+      </mesh>
+
+      {/* 길 (블록형 돌길) */}
+      {useMemo(() => {
+        const stones: Array<{ x: number; z: number; w: number; d: number }> = [];
+        for (let i = 0; i < 100; i++) {
+          const z = -i * 2;
+          const seed1 = Math.sin(i * 127.1) * 43758.5453;
+          const seed2 = Math.sin(i * 311.7) * 43758.5453;
+          const x = (((seed1 % 1) + 1) % 1 - 0.5) * 1.5;
+          const w = 0.8 + ((seed2 % 1) + 1) % 1 * 1.2;
+          stones.push({ x, z, w, d: 0.6 + ((Math.sin(i * 437.3) * 43758.5453 % 1 + 1) % 1) * 0.8 });
+        }
+        return stones;
+      }, []).map((s, i) => (
+        <mesh key={`stone-${i}`} rotation={[-Math.PI / 2, 0, 0]} position={[s.x, 0.01, s.z]} receiveShadow>
+          <planeGeometry args={[s.w, s.d]} />
+          <meshStandardMaterial color="#b8a88a" roughness={0.95} />
+        </mesh>
+      ))}
+
+      {/* 나무들 */}
+      {useMemo(() => {
+        const trees: Array<{ x: number; z: number; scale: number }> = [];
+        for (let i = 0; i < 40; i++) {
+          const side = i % 2 === 0 ? -1 : 1;
+          const z = -i * 7 + 15;
+          const seed = Math.sin(i * 127.1) * 43758.5453;
+          const rand = ((seed % 1) + 1) % 1;
+          const x = side * (5 + rand * 4);
+          const scale = 0.7 + ((Math.sin(i * 311.7) * 43758.5453 % 1 + 1) % 1) * 0.8;
+          trees.push({ x, z, scale });
+        }
+        return trees;
+      }, []).map((t, i) => (
+        <BlockyTree key={`tree-${i}`} position={[t.x, 0, t.z]} scale={t.scale} />
+      ))}
+
+      {/* 꽃들 (작은 블록 꽃) */}
+      {useMemo(() => {
+        const flowers: Array<{ x: number; z: number; colorIdx: number }> = [];
+        for (let i = 0; i < 50; i++) {
+          const side = i % 2 === 0 ? -1 : 1;
+          const z = -i * 4 + 20;
+          const seed = Math.sin(i * 253.3) * 43758.5453;
+          const rand = ((seed % 1) + 1) % 1;
+          const x = side * (2.5 + rand * 7);
+          flowers.push({ x, z, colorIdx: i % 5 });
+        }
+        return flowers;
+      }, []).map((f, i) => {
+        const colors = ['#ff4081', '#ffeb3b', '#e040fb', '#00e5ff', '#ff6e40'];
+        return (
+          <group key={`flower-${i}`} position={[f.x, 0, f.z]}>
+            <mesh position={[0, 0.15, 0]}>
+              <boxGeometry args={[0.08, 0.3, 0.08]} />
+              <meshStandardMaterial color="#388E3C" />
+            </mesh>
+            <mesh position={[0, 0.35, 0]}>
+              <boxGeometry args={[0.25, 0.15, 0.25]} />
+              <meshStandardMaterial color={colors[f.colorIdx]} emissive={colors[f.colorIdx]} emissiveIntensity={0.3} />
+            </mesh>
+          </group>
+        );
+      })}
+
+      {/* 버섯 (큰 블록 버섯) */}
+      {useMemo(() => {
+        const mushrooms: Array<{ x: number; z: number }> = [];
+        for (let i = 0; i < 20; i++) {
+          const side = i % 2 === 0 ? -1 : 1;
+          const z = -i * 10 + 5;
+          const seed = Math.sin(i * 673.1) * 43758.5453;
+          const x = side * (3.5 + ((seed % 1) + 1) % 1 * 3);
+          mushrooms.push({ x, z });
+        }
+        return mushrooms;
+      }, []).map((m, i) => {
+        const capColors = ['#ff1744', '#ff9100', '#aa00ff'];
+        const capColor = capColors[i % capColors.length];
+        return (
+          <group key={`mush-${i}`} position={[m.x, 0, m.z]}>
+            <mesh position={[0, 0.3, 0]}>
+              <boxGeometry args={[0.2, 0.6, 0.2]} />
+              <meshStandardMaterial color="#f5e6d3" roughness={0.9} />
+            </mesh>
+            <mesh position={[0, 0.7, 0]}>
+              <boxGeometry args={[0.6, 0.3, 0.6]} />
+              <meshStandardMaterial color={capColor} roughness={0.7} />
+            </mesh>
+            {/* 흰 점 */}
+            <mesh position={[0.15, 0.86, 0.15]}>
+              <boxGeometry args={[0.1, 0.02, 0.1]} />
+              <meshStandardMaterial color="#ffffff" />
+            </mesh>
+          </group>
+        );
+      })}
+
+      {/* 구름 (블록형) */}
+      {useMemo(() => {
+        const clouds: Array<{ x: number; y: number; z: number; scale: number }> = [];
+        for (let i = 0; i < 15; i++) {
+          const s1 = Math.sin(i * 437.1) * 43758.5453;
+          const s2 = Math.sin(i * 191.7) * 43758.5453;
+          clouds.push({
+            x: (((s1 % 1) + 1) % 1 - 0.5) * 40,
+            y: 15 + ((s2 % 1) + 1) % 1 * 10,
+            z: -i * 15 + 10,
+            scale: 1 + ((Math.sin(i * 571.9) * 43758.5453 % 1 + 1) % 1) * 2,
+          });
+        }
+        return clouds;
+      }, []).map((c, i) => (
+        <Float key={`cloud-${i}`} speed={0.3} floatIntensity={0.3}>
+          <group position={[c.x, c.y, c.z]} scale={c.scale}>
+            <mesh>
+              <boxGeometry args={[3, 0.8, 2]} />
+              <meshStandardMaterial color="#ffffff" roughness={1} transparent opacity={0.9} />
+            </mesh>
+            <mesh position={[1.5, 0.1, 0.3]}>
+              <boxGeometry args={[2, 0.6, 1.5]} />
+              <meshStandardMaterial color="#ffffff" roughness={1} transparent opacity={0.9} />
+            </mesh>
+            <mesh position={[-1, 0.2, -0.2]}>
+              <boxGeometry args={[1.5, 0.7, 1.8]} />
+              <meshStandardMaterial color="#ffffff" roughness={1} transparent opacity={0.9} />
+            </mesh>
+          </group>
+        </Float>
+      ))}
+
+      {/* 반딧불이 */}
+      {useMemo(() => {
+        const flies: Array<{ x: number; y: number; z: number; speed: number }> = [];
+        for (let i = 0; i < 25; i++) {
+          const s1 = Math.sin(i * 437.1) * 43758.5453;
+          const s2 = Math.sin(i * 191.7) * 43758.5453;
+          const s3 = Math.sin(i * 317.3) * 43758.5453;
+          flies.push({
+            x: (((s1 % 1) + 1) % 1 - 0.5) * 20,
+            y: 0.5 + ((s2 % 1) + 1) % 1 * 4,
+            z: -((s3 % 1) + 1) % 1 * 120,
+            speed: 0.3 + ((Math.sin(i * 571.9) * 43758.5453 % 1 + 1) % 1) * 0.5,
+          });
+        }
+        return flies;
+      }, []).map((f, i) => (
+        <Float key={`firefly-${i}`} speed={f.speed} floatIntensity={0.6}>
+          <mesh position={[f.x, f.y, f.z]}>
+            <sphereGeometry args={[0.06, 6, 6]} />
+            <meshStandardMaterial color="#ffff44" emissive="#ffff00" emissiveIntensity={3} />
+          </mesh>
+          <pointLight position={[f.x, f.y, f.z]} intensity={0.3} color="#ffff00" distance={3} />
+        </Float>
+      ))}
+    </group>
+  );
+}
+
+// ============ 빛나는 스토리포인트 (훨씬 크고 눈에 띄게) ============
 
 function StoryPointMarker({ position, active, visited }: {
   position: [number, number, number];
   active: boolean;
   visited: boolean;
 }) {
-  const ringRef = useRef<THREE.Mesh>(null);
+  const outerRef = useRef<THREE.Mesh>(null);
+  const innerRef = useRef<THREE.Mesh>(null);
+  const beamRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
-    if (ringRef.current && active) {
-      ringRef.current.rotation.y = state.clock.elapsedTime * 2;
+    const t = state.clock.elapsedTime;
+    if (outerRef.current && active) {
+      outerRef.current.rotation.y = t * 1.5;
+      outerRef.current.rotation.z = Math.sin(t * 0.5) * 0.2;
+    }
+    if (innerRef.current && active) {
+      innerRef.current.rotation.y = -t * 2;
+      const pulse = 1 + Math.sin(t * 3) * 0.2;
+      innerRef.current.scale.setScalar(pulse);
+    }
+    if (beamRef.current && active) {
+      beamRef.current.scale.y = 1 + Math.sin(t * 2) * 0.3;
     }
   });
+
+  if (visited) return null;
 
   return (
     <group position={position}>
       {active && (
         <>
-          <mesh ref={ringRef} position={[0, 0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-            <torusGeometry args={[1.5, 0.08, 8, 32]} />
-            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={1.5} />
+          {/* 빛기둥 */}
+          <mesh ref={beamRef} position={[0, 5, 0]}>
+            <cylinderGeometry args={[0.3, 1.5, 10, 8]} />
+            <meshStandardMaterial 
+              color="#ffd700" 
+              emissive="#ffd700" 
+              emissiveIntensity={0.5} 
+              transparent 
+              opacity={0.15} 
+            />
           </mesh>
-          <pointLight position={[0, 2, 0]} intensity={2} color="#ffd700" distance={8} />
+          {/* 외부 회전 링 */}
+          <mesh ref={outerRef} position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[2.5, 0.12, 8, 32]} />
+            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={2} />
+          </mesh>
+          {/* 내부 회전 링 */}
+          <mesh ref={innerRef} position={[0, 0.5, 0]} rotation={[-Math.PI / 4, 0, 0]}>
+            <torusGeometry args={[1.8, 0.08, 8, 24]} />
+            <meshStandardMaterial color="#ff8c00" emissive="#ff8c00" emissiveIntensity={2} />
+          </mesh>
+          {/* 중앙 빛나는 구 */}
+          <Float speed={2} floatIntensity={0.5}>
+            <mesh position={[0, 2, 0]}>
+              <dodecahedronGeometry args={[0.6, 0]} />
+              <meshStandardMaterial 
+                color="#ffd700" 
+                emissive="#ffaa00" 
+                emissiveIntensity={3} 
+                transparent 
+                opacity={0.9}
+              />
+            </mesh>
+          </Float>
+          {/* 포인트 조명 */}
+          <pointLight position={[0, 3, 0]} intensity={4} color="#ffd700" distance={15} />
+          <pointLight position={[0, 0.5, 0]} intensity={2} color="#ff8c00" distance={8} />
+          {/* 바닥 빛 */}
+          <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <circleGeometry args={[3, 32]} />
+            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={0.5} transparent opacity={0.2} />
+          </mesh>
         </>
       )}
-      <Float speed={3} floatIntensity={0.5}>
-        <mesh position={[0, 1.5, 0]}>
-          <sphereGeometry args={[0.4, 16, 16]} />
-          <meshStandardMaterial
-            color={visited ? '#555555' : active ? '#ffd700' : '#aaaaaa'}
-            emissive={active ? '#ffa500' : '#333333'}
-            emissiveIntensity={active ? 1 : 0.2}
-            transparent
-            opacity={visited ? 0.3 : active ? 1 : 0.6}
-          />
-        </mesh>
-      </Float>
+      {!active && (
+        <Float speed={1.5} floatIntensity={0.3}>
+          <mesh position={[0, 1.5, 0]}>
+            <dodecahedronGeometry args={[0.3, 0]} />
+            <meshStandardMaterial
+              color="#aaaaaa"
+              emissive="#555555"
+              emissiveIntensity={0.3}
+              transparent
+              opacity={0.5}
+            />
+          </mesh>
+        </Float>
+      )}
     </group>
   );
 }
 
-// ============ 플레이어 캐릭터 (직접 이동) ============
+// ============ 클릭 마커 ============
+
+function ClickMarker({ position }: { position: THREE.Vector3 | null }) {
+  const ref = useRef<THREE.Mesh>(null);
+  useFrame((state) => {
+    if (ref.current && position) {
+      ref.current.rotation.y = state.clock.elapsedTime * 3;
+      ref.current.scale.setScalar(0.8 + Math.sin(state.clock.elapsedTime * 4) * 0.2);
+    }
+  });
+  if (!position) return null;
+  return (
+    <mesh ref={ref} position={[position.x, 0.1, position.z]} rotation={[-Math.PI / 2, 0, 0]}>
+      <ringGeometry args={[0.3, 0.5, 16]} />
+      <meshStandardMaterial color="#00e5ff" emissive="#00e5ff" emissiveIntensity={2} transparent opacity={0.8} />
+    </mesh>
+  );
+}
+
+// ============ 로블록스풍 플레이어 캐릭터 ============
 
 interface MovablePlayerProps {
   targetPos: THREE.Vector3 | null;
@@ -241,6 +425,7 @@ function MovablePlayer({ targetPos, storyPoints, currentStoryIndex, onArrive, on
   const moveTarget = useRef<THREE.Vector3 | null>(null);
   const isMoving = useRef(false);
   const arrivedRef = useRef<Set<number>>(new Set());
+  const legAngle = useRef(0);
 
   useEffect(() => {
     if (targetPos) {
@@ -253,7 +438,6 @@ function MovablePlayer({ targetPos, storyPoints, currentStoryIndex, onArrive, on
   useFrame((_, delta) => {
     if (!ref.current) return;
 
-    // Move toward target
     if (isMoving.current && moveTarget.current) {
       const dir = new THREE.Vector3().subVectors(moveTarget.current, posRef.current);
       dir.y = 0;
@@ -261,29 +445,26 @@ function MovablePlayer({ targetPos, storyPoints, currentStoryIndex, onArrive, on
 
       if (dist > 0.2) {
         dir.normalize();
-        const speed = 3.5; // 안정적인 이동 속도
+        const speed = 4;
         const step = Math.min(speed * delta, dist);
         posRef.current.add(dir.multiplyScalar(step));
-
-        // Face movement direction
         const angle = Math.atan2(dir.x, dir.z);
         ref.current.rotation.y = THREE.MathUtils.lerp(ref.current.rotation.y, angle, 0.15);
+        legAngle.current += delta * 12;
       } else {
         isMoving.current = false;
         moveTarget.current = null;
+        legAngle.current = 0;
       }
     }
 
-    // Bob animation
-    const bob = isMoving.current ? Math.sin(Date.now() * 0.01) * 0.08 : Math.sin(Date.now() * 0.003) * 0.03;
+    const bob = isMoving.current ? Math.sin(Date.now() * 0.012) * 0.06 : 0;
     ref.current.position.set(posRef.current.x, bob, posRef.current.z);
     onPositionUpdate(posRef.current);
 
-    // Check proximity to current story point
     if (currentStoryIndex < storyPoints.length && !arrivedRef.current.has(currentStoryIndex)) {
       const sp = storyPoints[currentStoryIndex];
-      const d = posRef.current.distanceTo(sp);
-      if (d < 2.5) {
+      if (posRef.current.distanceTo(sp) < 3) {
         arrivedRef.current.add(currentStoryIndex);
         isMoving.current = false;
         moveTarget.current = null;
@@ -292,104 +473,83 @@ function MovablePlayer({ targetPos, storyPoints, currentStoryIndex, onArrive, on
     }
   });
 
+  const legSwing = isMoving.current ? Math.sin(legAngle.current) * 0.4 : 0;
+
   return (
     <group ref={ref}>
-      {/* 몸 */}
-      <mesh position={[0, 0.6, 0]} castShadow>
-        <capsuleGeometry args={[0.25, 0.4, 8, 16]} />
-        <meshStandardMaterial color="#5b8dee" />
+      {/* 몸통 */}
+      <mesh position={[0, 0.9, 0]} castShadow>
+        <boxGeometry args={[0.7, 1, 0.5]} />
+        <meshStandardMaterial color="#4FC3F7" roughness={0.7} />
       </mesh>
       {/* 머리 */}
-      <mesh position={[0, 1.2, 0]} castShadow>
-        <sphereGeometry args={[0.3, 16, 16]} />
-        <meshStandardMaterial color="#ffd5b4" />
+      <mesh position={[0, 1.8, 0]} castShadow>
+        <boxGeometry args={[0.65, 0.65, 0.65]} />
+        <meshStandardMaterial color="#FFD5B4" roughness={0.6} />
       </mesh>
       {/* 눈 */}
-      <mesh position={[-0.1, 1.25, 0.25]}>
-        <sphereGeometry args={[0.06, 8, 8]} />
-        <meshStandardMaterial color="#333333" />
+      <mesh position={[-0.15, 1.85, 0.33]}>
+        <boxGeometry args={[0.1, 0.1, 0.02]} />
+        <meshStandardMaterial color="#222" />
       </mesh>
-      <mesh position={[0.1, 1.25, 0.25]}>
-        <sphereGeometry args={[0.06, 8, 8]} />
-        <meshStandardMaterial color="#333333" />
+      <mesh position={[0.15, 1.85, 0.33]}>
+        <boxGeometry args={[0.1, 0.1, 0.02]} />
+        <meshStandardMaterial color="#222" />
       </mesh>
+      {/* 입 */}
+      <mesh position={[0, 1.7, 0.33]}>
+        <boxGeometry args={[0.15, 0.05, 0.02]} />
+        <meshStandardMaterial color="#e57373" />
+      </mesh>
+      {/* 팔 */}
+      <mesh position={[-0.55, 0.9, 0]} castShadow>
+        <boxGeometry args={[0.2, 0.8, 0.2]} />
+        <meshStandardMaterial color="#4FC3F7" roughness={0.7} />
+      </mesh>
+      <mesh position={[0.55, 0.9, 0]} castShadow>
+        <boxGeometry args={[0.2, 0.8, 0.2]} />
+        <meshStandardMaterial color="#4FC3F7" roughness={0.7} />
+      </mesh>
+      {/* 다리 (걸을 때 움직임) */}
+      <group position={[-0.2, 0.2, 0]} rotation={[legSwing, 0, 0]}>
+        <mesh castShadow>
+          <boxGeometry args={[0.25, 0.5, 0.3]} />
+          <meshStandardMaterial color="#1565C0" roughness={0.8} />
+        </mesh>
+      </group>
+      <group position={[0.2, 0.2, 0]} rotation={[-legSwing, 0, 0]}>
+        <mesh castShadow>
+          <boxGeometry args={[0.25, 0.5, 0.3]} />
+          <meshStandardMaterial color="#1565C0" roughness={0.8} />
+        </mesh>
+      </group>
       {/* 모자 */}
-      <mesh position={[0, 1.5, 0]} castShadow>
-        <coneGeometry args={[0.25, 0.4, 8]} />
-        <meshStandardMaterial color="#ff6b6b" />
+      <mesh position={[0, 2.2, 0]} castShadow>
+        <boxGeometry args={[0.7, 0.15, 0.7]} />
+        <meshStandardMaterial color="#FF5722" roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 2.4, 0]} castShadow>
+        <boxGeometry args={[0.5, 0.3, 0.5]} />
+        <meshStandardMaterial color="#FF5722" roughness={0.7} />
       </mesh>
     </group>
   );
 }
 
-// ============ NPC 캐릭터 ============
-
-function NPCCharacter({ position, type }: { position: [number, number, number]; type: 'bunny' | 'bear' | 'owl' | 'fox' }) {
-  const colors = {
-    bunny: { body: '#f5f5f5', accent: '#ffb6c1' },
-    bear: { body: '#8B5E3C', accent: '#D2691E' },
-    owl: { body: '#9370DB', accent: '#FFD700' },
-    fox: { body: '#ff8c42', accent: '#ffffff' }
-  };
-  const c = colors[type];
-
-  return (
-    <Float speed={1.5} floatIntensity={0.2}>
-      <group position={position}>
-        <mesh position={[0, 0.5, 0]} castShadow>
-          <capsuleGeometry args={[0.3, 0.3, 8, 16]} />
-          <meshStandardMaterial color={c.body} />
-        </mesh>
-        <mesh position={[0, 1.1, 0]} castShadow>
-          <sphereGeometry args={[0.35, 16, 16]} />
-          <meshStandardMaterial color={c.body} />
-        </mesh>
-        <mesh position={[-0.12, 1.15, 0.3]}>
-          <sphereGeometry args={[0.06, 8, 8]} />
-          <meshStandardMaterial color="#333" />
-        </mesh>
-        <mesh position={[0.12, 1.15, 0.3]}>
-          <sphereGeometry args={[0.06, 8, 8]} />
-          <meshStandardMaterial color="#333" />
-        </mesh>
-        {type === 'bunny' && (
-          <>
-            <mesh position={[-0.15, 1.6, 0]} castShadow>
-              <capsuleGeometry args={[0.06, 0.3, 6, 8]} />
-              <meshStandardMaterial color={c.accent} />
-            </mesh>
-            <mesh position={[0.15, 1.6, 0]} castShadow>
-              <capsuleGeometry args={[0.06, 0.3, 6, 8]} />
-              <meshStandardMaterial color={c.accent} />
-            </mesh>
-          </>
-        )}
-        <Float speed={3} floatIntensity={0.5}>
-          <mesh position={[0, 1.8, 0]}>
-            <sphereGeometry args={[0.08, 8, 8]} />
-            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={1} />
-          </mesh>
-        </Float>
-      </group>
-    </Float>
-  );
-}
-
-// ============ 카메라 추적 (플레이어 따라감) ============
+// ============ 카메라 추적 ============
 
 function FollowCamera({ playerPos }: { playerPos: THREE.Vector3 }) {
   const { camera } = useThree();
-  const offset = useMemo(() => new THREE.Vector3(0, 4, 6), []);
+  const offset = useMemo(() => new THREE.Vector3(0, 5, 8), []);
   const initialized = useRef(false);
 
   useFrame((_, delta) => {
     const target = playerPos.clone().add(offset);
-    // 첫 프레임은 즉시 이동, 이후 부드럽게 추적 (느리게)
     if (!initialized.current) {
       camera.position.copy(target);
       initialized.current = true;
     } else {
-      camera.position.lerp(target, delta * 1.5);
+      camera.position.lerp(target, delta * 2);
     }
     const lookAt = playerPos.clone();
     lookAt.y += 1;
@@ -402,32 +562,21 @@ function FollowCamera({ playerPos }: { playerPos: THREE.Vector3 }) {
 // ============ 바닥 클릭 감지 ============
 
 function ClickableGround({ onClickPosition }: { onClickPosition: (pos: THREE.Vector3) => void }) {
-  const { camera, raycaster } = useThree();
   const planeRef = useRef<THREE.Mesh>(null);
-
   const handleClick = useCallback((e: any) => {
     e.stopPropagation();
-    if (planeRef.current) {
-      const point = e.point as THREE.Vector3;
-      onClickPosition(new THREE.Vector3(point.x, 0, point.z));
-    }
+    onClickPosition(new THREE.Vector3(e.point.x, 0, e.point.z));
   }, [onClickPosition]);
 
   return (
-    <mesh
-      ref={planeRef}
-      rotation={[-Math.PI / 2, 0, 0]}
-      position={[0, 0.01, 0]}
-      onClick={handleClick}
-      visible={false}
-    >
+    <mesh ref={planeRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]} onClick={handleClick} visible={false}>
       <planeGeometry args={[200, 200]} />
       <meshBasicMaterial />
     </mesh>
   );
 }
 
-// ============ 메인 3D 월드 컴포넌트 ============
+// ============ 메인 컴포넌트 ============
 
 interface GameCounseling3DWorldProps {
   scene: StoryScene | null;
@@ -437,6 +586,10 @@ interface GameCounseling3DWorldProps {
   isWalking: boolean;
   showChoices: boolean;
   onArrive?: (storyIndex: number) => void;
+  narrationText?: string;
+  gameState?: string;
+  selectedChoice?: string | null;
+  isSpeaking?: boolean;
 }
 
 export default function GameCounseling3DWorld({
@@ -444,16 +597,19 @@ export default function GameCounseling3DWorld({
   sceneIndex,
   totalScenes,
   onChoice,
-  isWalking,
   showChoices,
-  onArrive
+  onArrive,
+  narrationText,
+  gameState,
+  selectedChoice,
+  isSpeaking,
 }: GameCounseling3DWorldProps) {
   const [clickTarget, setClickTarget] = useState<THREE.Vector3 | null>(null);
   const [playerPos, setPlayerPos] = useState(new THREE.Vector3(0, 0, 3));
   const [visitedPoints, setVisitedPoints] = useState<Set<number>>(new Set());
 
   const storyPointPositions = useMemo(() => {
-    return Array.from({ length: totalScenes }, (_, i) => new THREE.Vector3(0, 0, -i * 15));
+    return Array.from({ length: totalScenes }, (_, i) => new THREE.Vector3(0, 0, -i * 18));
   }, [totalScenes]);
 
   const npcTypes: Array<'bunny' | 'bear' | 'owl' | 'fox'> = ['bunny', 'bear', 'owl', 'fox'];
@@ -472,36 +628,34 @@ export default function GameCounseling3DWorld({
   }, []);
 
   return (
-    <div className="w-full h-[50vh] md:h-[55vh] rounded-xl overflow-hidden relative">
-      <Canvas shadows camera={{ fov: 60, near: 0.1, far: 500 }}>
-        <color attach="background" args={['#1a0533']} />
-        <fog attach="fog" args={['#1a0533', 30, 100]} />
-        <Stars radius={100} depth={50} count={3000} factor={4} saturation={0.5} fade speed={1} />
+    <div className="w-full h-[60vh] md:h-[65vh] rounded-xl overflow-hidden relative">
+      <Canvas shadows camera={{ fov: 55, near: 0.1, far: 500 }}>
+        <color attach="background" args={['#87CEEB']} />
+        <fog attach="fog" args={['#87CEEB', 50, 150]} />
 
-        <ambientLight intensity={0.4} color="#b8a9c9" />
+        <ambientLight intensity={0.6} color="#ffffff" />
         <directionalLight
-          position={[10, 15, 5]}
-          intensity={0.8}
-          color="#ffeedd"
+          position={[15, 20, 10]}
+          intensity={1.2}
+          color="#fff5e6"
           castShadow
-          shadow-mapSize-width={1024}
-          shadow-mapSize-height={1024}
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-camera-far={100}
+          shadow-camera-left={-30}
+          shadow-camera-right={30}
+          shadow-camera-top={30}
+          shadow-camera-bottom={-30}
         />
-        <pointLight position={[0, 5, playerPos.z]} intensity={1.5} color="#ffd700" distance={20} />
+        <hemisphereLight args={['#87CEEB', '#4CAF50', 0.4]} />
+        <pointLight position={[0, 8, playerPos.z]} intensity={1} color="#ffd700" distance={25} />
 
-        {/* 카메라가 플레이어를 추적 */}
         <FollowCamera playerPos={playerPos} />
-
-        {/* 바닥 클릭 감지 (투명 레이어) */}
         <ClickableGround onClickPosition={handleClickPosition} />
+        <RobloxWorld />
 
-        {/* 환경 */}
-        <FairyTaleForest />
-
-        {/* 클릭 위치 표시 */}
         <ClickMarker position={clickTarget} />
 
-        {/* 스토리 포인트 마커들 */}
         {storyPointPositions.map((sp, i) => (
           <StoryPointMarker
             key={`sp-${i}`}
@@ -511,16 +665,14 @@ export default function GameCounseling3DWorld({
           />
         ))}
 
-        {/* NPC들 */}
         {storyPointPositions.map((sp, i) => (
-          <NPCCharacter
+          <RobloxCharacter
             key={`npc-${i}`}
-            position={[i % 2 === 0 ? 2 : -2, 0, sp.z]}
+            position={[i % 2 === 0 ? 3 : -3, 0, sp.z]}
             type={npcTypes[i % npcTypes.length]}
           />
         ))}
 
-        {/* 직접 조작 플레이어 */}
         <MovablePlayer
           targetPos={clickTarget}
           storyPoints={storyPointPositions}
@@ -530,11 +682,92 @@ export default function GameCounseling3DWorld({
         />
       </Canvas>
 
-      {/* 안내 메시지 */}
-      {!isWalking && showChoices === false && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-full">
-          <p className="text-white text-sm animate-pulse">👆 화면을 터치해서 이동하세요!</p>
-        </div>
+      {/* === 3D 화면 위 오버레이 UI === */}
+      <AnimatePresence mode="wait">
+        {(gameState === 'narrating' || gameState === 'choice') && scene && (
+          <motion.div
+            key={scene.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute bottom-4 left-4 right-4 space-y-2 pointer-events-auto"
+          >
+            {/* 대화창 */}
+            <div className="bg-black/70 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-2xl">
+              {isSpeaking && (
+                <motion.div
+                  className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 rounded-t-2xl"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+              )}
+              <div className="flex items-start gap-3">
+                <span className="text-3xl flex-shrink-0">{scene.illustration}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-bold text-white text-sm">{scene.title}</h3>
+                    {scene.character && (
+                      <span className="text-[10px] bg-amber-500/30 text-amber-200 px-1.5 py-0.5 rounded-full">
+                        🎭 {scene.character}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-white/90 leading-relaxed">
+                    {narrationText || scene.description}
+                    {gameState === 'narrating' && (
+                      <motion.span
+                        className="inline-block w-0.5 h-4 bg-amber-400 ml-0.5 align-middle"
+                        animate={{ opacity: [1, 0] }}
+                        transition={{ duration: 0.5, repeat: Infinity }}
+                      />
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 선택지 (3D 화면 안에 표시) */}
+            {gameState === 'choice' && (
+              <div className="space-y-1.5">
+                {scene.choices.map((choice, index) => (
+                  <motion.button
+                    key={choice.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.12 }}
+                    onClick={() => !selectedChoice && onChoice(choice)}
+                    className={`w-full text-left p-3 rounded-xl transition-all border pointer-events-auto
+                      ${selectedChoice === choice.id
+                        ? 'bg-amber-500/40 border-amber-400 scale-[0.98]'
+                        : 'bg-black/60 backdrop-blur-md border-white/15 hover:border-amber-400/50 hover:bg-black/70'
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{choice.emoji}</span>
+                      <p className="font-medium text-sm text-white">{choice.text}</p>
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 탐험 안내 */}
+      {gameState === 'exploring' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="absolute bottom-6 left-1/2 -translate-x-1/2"
+        >
+          <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full border border-amber-400/30">
+            <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.2, repeat: Infinity }}>
+              ✨
+            </motion.span>
+            <span className="text-white text-sm font-medium">빛나는 곳을 터치해서 이동하세요!</span>
+          </div>
+        </motion.div>
       )}
     </div>
   );

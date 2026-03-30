@@ -2,18 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Mic, ArrowLeft, Home, Gamepad2, Sparkles } from 'lucide-react';
+import { Mic, ArrowLeft, Home, Gamepad2 } from 'lucide-react';
 import MetaverseVoiceCounseling from '@/components/metaverse/MetaverseVoiceCounseling';
 import { CounselingSetup } from '@/components/metaverse/CounselingSetup';
-import GameCounselingMode from '@/components/metaverse/GameCounselingMode';
 import GameCounseling3DMode from '@/components/metaverse/GameCounseling3DMode';
 import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 
 const MetaverseVoicePage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string | null>(null);
-  const [use3D, setUse3D] = useState(false);
-  
+
   const [structuredConfig, setStructuredConfig] = useState<{
     ageGroup: AgeGroup;
     character: CharacterType;
@@ -86,19 +84,7 @@ const MetaverseVoicePage = () => {
           </TabsList>
 
           <TabsContent value="game" className="mt-0">
-            {/* 3D/2D 전환 토글 */}
-            <div className="flex justify-end mb-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setUse3D(!use3D)}
-                className={`gap-2 text-xs ${use3D ? 'bg-emerald-600 text-white border-emerald-500 hover:bg-emerald-700' : 'bg-black/30 text-white/70 border-white/10'}`}
-              >
-                <Sparkles className="w-3 h-3" />
-                {use3D ? '3D 몰입형 ✨' : '2D 카드형'}
-              </Button>
-            </div>
-            {use3D ? <GameCounseling3DMode /> : <GameCounselingMode />}
+            <GameCounseling3DMode />
           </TabsContent>
 
           <TabsContent value="voice" className="mt-0">

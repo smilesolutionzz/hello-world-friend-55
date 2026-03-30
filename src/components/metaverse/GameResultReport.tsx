@@ -99,7 +99,9 @@ export default function GameResultReport({
   const [illustrationImage, setIllustrationImage] = useState<string | null>(null);
   const [isGeneratingNote, setIsGeneratingNote] = useState(false);
   const [showVisualNote, setShowVisualNote] = useState(false);
+  const [savedProgress, setSavedProgress] = useState(false);
   const { toast } = useToast();
+  const { saveProgress } = useProgressTracking();
 
   const topDimensions = Object.entries(results).sort(([, a], [, b]) => b - a).slice(0, 4);
   const bottomDimensions = Object.entries(results).sort(([, a], [, b]) => a - b).slice(0, 2);
@@ -113,9 +115,25 @@ export default function GameResultReport({
   const barGradient = variant === '3d' ? 'from-emerald-500 to-cyan-500' : 'from-purple-500 to-pink-500';
   const titleGradient = variant === '3d' ? 'from-emerald-400 to-cyan-400' : 'from-purple-400 to-pink-400';
 
-  // AI 상세 해석 생성
+  const dimensionLabels: Record<string, string> = {};
+  Object.entries(dimensionMeta).forEach(([key, meta]) => {
+    dimensionLabels[key] = meta.label;
+  });
+
+  // Save progress + AI analysis
   useEffect(() => {
     generateAIAnalysis();
+    // Save to progress tracking
+    if (!savedProgress) {
+      saveProgress({
+        source_type: 'game_counseling',
+        source_id: chapter.id,
+        source_label: chapter.title,
+        dimension_scores: results as Record<string, number>,
+        metadata: { choices: choices.length, characterType: top, variant }
+      });
+      setSavedProgress(true);
+    }
   }, []);
 
   const generateAIAnalysis = async () => {

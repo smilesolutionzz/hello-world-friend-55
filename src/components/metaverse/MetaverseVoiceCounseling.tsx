@@ -896,12 +896,12 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             .insert({
               user_id: user.id,
               source_type: 'voice_counseling',
-              source_id: selectedCharacter || 'default',
+              source_id: structuredConfig?.character || 'default',
               source_label: `음성 상담 (${userName || '사용자'})`,
               dimension_scores: dimensionScores,
               summary: `${userMsgCount}회 발화, ${aiMsgCount}회 응답. 주제: ${consultTopic || '자유 상담'}`,
               metadata: {
-                character: selectedCharacter,
+                character: structuredConfig?.character || 'default',
                 messageCount: messages.length,
                 topic: consultTopic,
                 duration: Math.round((Date.now() - (messages[0]?.timestamp.getTime() || Date.now())) / 1000),

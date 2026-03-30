@@ -401,7 +401,103 @@ function StoryPointMarker({ position, active, visited }: {
   );
 }
 
-// ============ 방향 화살표 (다음 스토리포인트를 가리킴) ============
+// ============ 비 효과 ============
+
+function RainEffect({ playerPos }: { playerPos: THREE.Vector3 }) {
+  const rainRef = useRef<THREE.Points>(null);
+  const rainPositions = useMemo(() => {
+    const positions = new Float32Array(1500 * 3);
+    for (let i = 0; i < 1500; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 40;
+      positions[i * 3 + 1] = Math.random() * 20;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 40;
+    }
+    return positions;
+  }, []);
+
+  useFrame(() => {
+    if (!rainRef.current) return;
+    const pos = rainRef.current.geometry.attributes.position;
+    for (let i = 0; i < 1500; i++) {
+      const y = (pos.array as Float32Array)[i * 3 + 1];
+      (pos.array as Float32Array)[i * 3 + 1] = y <= 0 ? 20 : y - 0.4;
+    }
+    pos.needsUpdate = true;
+    rainRef.current.position.x = playerPos.x;
+    rainRef.current.position.z = playerPos.z;
+  });
+
+  return (
+    <points ref={rainRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={1500} array={rainPositions} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial color="#aaccff" size={0.08} transparent opacity={0.6} />
+    </points>
+  );
+}
+
+// ============ 동굴 구조물 ============
+
+function CaveStructure({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      {/* 동굴 입구 아치 */}
+      <mesh position={[-2.5, 2.5, 0]}>
+        <boxGeometry args={[1, 5, 4]} />
+        <meshStandardMaterial color="#4a4a4a" roughness={1} />
+      </mesh>
+      <mesh position={[2.5, 2.5, 0]}>
+        <boxGeometry args={[1, 5, 4]} />
+        <meshStandardMaterial color="#4a4a4a" roughness={1} />
+      </mesh>
+      <mesh position={[0, 5.2, 0]}>
+        <boxGeometry args={[6, 1.5, 4]} />
+        <meshStandardMaterial color="#3a3a3a" roughness={1} />
+      </mesh>
+      {/* 동굴 안쪽 어둠 */}
+      <mesh position={[0, 2.5, -2]}>
+        <boxGeometry args={[5, 5, 1]} />
+        <meshStandardMaterial color="#111111" roughness={1} />
+      </mesh>
+      {/* 이끼 */}
+      <mesh position={[-2, 0.1, 1]}>
+        <boxGeometry args={[1, 0.1, 1]} />
+        <meshStandardMaterial color="#2d5a1e" roughness={1} />
+      </mesh>
+      <mesh position={[1.5, 0.1, 1.5]}>
+        <boxGeometry args={[0.8, 0.1, 0.8]} />
+        <meshStandardMaterial color="#3a6b2e" roughness={1} />
+      </mesh>
+      {/* 동굴 안 빛 */}
+      <pointLight position={[0, 2, -1]} intensity={1} color="#ff6600" distance={8} />
+    </group>
+  );
+}
+
+// ============ 환경 효과 컨트롤러 ============
+
+function EnvironmentEffects({ envType, playerPos }: { envType: string; playerPos: THREE.Vector3 }) {
+  return (
+    <>
+      {envType === 'rain' && (
+        <>
+          <RainEffect playerPos={playerPos} />
+          {/* 어두운 조명 */}
+          <ambientLight intensity={0.25} color="#667788" />
+          <fog attach="fog" args={['#556677', 20, 80]} />
+        </>
+      )}
+      {envType === 'cave' && (
+        <>
+          <ambientLight intensity={0.15} color="#443322" />
+          <fog attach="fog" args={['#221111', 15, 50]} />
+        </>
+      )}
+    </>
+  );
+}
+
 
 function DirectionArrow({ playerPos, targetPos, visible }: { playerPos: THREE.Vector3; targetPos: THREE.Vector3 | null; visible: boolean }) {
   const arrowRef = useRef<THREE.Group>(null);

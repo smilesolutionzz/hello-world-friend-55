@@ -21,28 +21,44 @@ function FairyTaleForest() {
         <meshStandardMaterial color="#c4a882" />
       </mesh>
 
-      {/* 좌우 나무들 */}
-      {Array.from({ length: 30 }).map((_, i) => {
-        const side = i % 2 === 0 ? -1 : 1;
-        const z = -i * 8 + 10;
-        const x = side * (4 + Math.random() * 3);
-        const scale = 0.8 + Math.random() * 0.6;
-        return <CartoonTree key={`tree-${i}`} position={[x, 0, z]} scale={scale} />;
-      })}
+      {/* 좌우 나무들 - 고정 위치 (seeded) */}
+      {useMemo(() => {
+        const trees: Array<{ x: number; z: number; scale: number }> = [];
+        for (let i = 0; i < 30; i++) {
+          const side = i % 2 === 0 ? -1 : 1;
+          const z = -i * 8 + 10;
+          const seed = Math.sin(i * 127.1) * 43758.5453;
+          const rand = seed - Math.floor(seed);
+          const x = side * (4 + rand * 3);
+          const scale = 0.8 + ((Math.sin(i * 311.7) * 43758.5453) % 1 + 1) % 1 * 0.6;
+          trees.push({ x, z, scale });
+        }
+        return trees;
+      }, []).map((t, i) => (
+        <CartoonTree key={`tree-${i}`} position={[t.x, 0, t.z]} scale={t.scale} />
+      ))}
 
-      {/* 꽃들 */}
-      {Array.from({ length: 40 }).map((_, i) => {
-        const side = i % 2 === 0 ? -1 : 1;
-        const z = -i * 5 + 15;
-        const x = side * (2 + Math.random() * 6);
+      {/* 꽃들 - 고정 위치 */}
+      {useMemo(() => {
+        const flowers: Array<{ x: number; z: number; colorIdx: number }> = [];
+        for (let i = 0; i < 40; i++) {
+          const side = i % 2 === 0 ? -1 : 1;
+          const z = -i * 5 + 15;
+          const seed = Math.sin(i * 253.3) * 43758.5453;
+          const rand = ((seed % 1) + 1) % 1;
+          const x = side * (2 + rand * 6);
+          flowers.push({ x, z, colorIdx: i % 5 });
+        }
+        return flowers;
+      }, []).map((f, i) => {
         const colors = ['#ff6b9d', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6b6b'];
         return (
-          <Float key={`flower-${i}`} speed={2} floatIntensity={0.3}>
-            <mesh position={[x, 0.3, z]} castShadow>
+          <Float key={`flower-${i}`} speed={0.8} floatIntensity={0.15}>
+            <mesh position={[f.x, 0.3, f.z]} castShadow>
               <sphereGeometry args={[0.15, 8, 8]} />
-              <meshStandardMaterial color={colors[i % colors.length]} />
+              <meshStandardMaterial color={colors[f.colorIdx]} />
             </mesh>
-            <mesh position={[x, 0.1, z]}>
+            <mesh position={[f.x, 0.1, f.z]}>
               <cylinderGeometry args={[0.03, 0.03, 0.3, 6]} />
               <meshStandardMaterial color="#2d5a27" />
             </mesh>
@@ -50,31 +66,44 @@ function FairyTaleForest() {
         );
       })}
 
-      {/* 반딧불이 */}
-      {Array.from({ length: 20 }).map((_, i) => (
-        <Float key={`firefly-${i}`} speed={1 + Math.random() * 2} floatIntensity={1}>
-          <mesh position={[
-            (Math.random() - 0.5) * 15,
-            1 + Math.random() * 3,
-            -Math.random() * 100
-          ]}>
+      {/* 반딧불이 - 고정 위치, 느린 움직임 */}
+      {useMemo(() => {
+        const flies: Array<{ x: number; y: number; z: number; speed: number }> = [];
+        for (let i = 0; i < 20; i++) {
+          const s1 = Math.sin(i * 437.1) * 43758.5453;
+          const s2 = Math.sin(i * 191.7) * 43758.5453;
+          const s3 = Math.sin(i * 317.3) * 43758.5453;
+          flies.push({
+            x: (((s1 % 1) + 1) % 1 - 0.5) * 15,
+            y: 1 + ((s2 % 1) + 1) % 1 * 3,
+            z: -((s3 % 1) + 1) % 1 * 100,
+            speed: 0.5 + ((Math.sin(i * 571.9) * 43758.5453 % 1 + 1) % 1) * 0.8,
+          });
+        }
+        return flies;
+      }, []).map((f, i) => (
+        <Float key={`firefly-${i}`} speed={f.speed} floatIntensity={0.5}>
+          <mesh position={[f.x, f.y, f.z]}>
             <sphereGeometry args={[0.05, 6, 6]} />
-            <meshStandardMaterial
-              color="#ffff00"
-              emissive="#ffff00"
-              emissiveIntensity={2}
-            />
+            <meshStandardMaterial color="#ffff00" emissive="#ffff00" emissiveIntensity={2} />
           </mesh>
         </Float>
       ))}
 
-      {/* 버섯들 */}
-      {Array.from({ length: 15 }).map((_, i) => {
-        const side = i % 2 === 0 ? -1 : 1;
-        const z = -i * 10 + 5;
-        const x = side * (3 + Math.random() * 2);
-        return <CartoonMushroom key={`mush-${i}`} position={[x, 0, z]} />;
-      })}
+      {/* 버섯들 - 고정 위치 */}
+      {useMemo(() => {
+        const mushrooms: Array<{ x: number; z: number }> = [];
+        for (let i = 0; i < 15; i++) {
+          const side = i % 2 === 0 ? -1 : 1;
+          const z = -i * 10 + 5;
+          const seed = Math.sin(i * 673.1) * 43758.5453;
+          const x = side * (3 + ((seed % 1) + 1) % 1 * 2);
+          mushrooms.push({ x, z });
+        }
+        return mushrooms;
+      }, []).map((m, i) => (
+        <CartoonMushroom key={`mush-${i}`} position={[m.x, 0, m.z]} />
+      ))}
     </group>
   );
 }

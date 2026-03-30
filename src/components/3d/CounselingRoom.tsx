@@ -1056,7 +1056,7 @@ const CounselingRoom = ({
             />
           ) : (
             <CounselorNPC 
-              position={[-4, -1.5, 2]} 
+              position={[-6, -1.5, 0]} 
               isSpeaking={isSpeaking}
               name="메타상담사"
               gesture={counselorGesture}

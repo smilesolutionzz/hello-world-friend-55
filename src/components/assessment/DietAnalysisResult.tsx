@@ -37,6 +37,7 @@ const DietAnalysisResult: React.FC<DietAnalysisResultProps> = ({ result, onResta
   const { toast } = useToast();
   const { t } = useTranslation();
   const { shareAsText } = useShareText();
+  const navigate = useNavigate();
 
   const handleDietPlan = () => {
     window.open('https://naver.me/xk1XPBhl', '_blank');

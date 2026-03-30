@@ -7,6 +7,7 @@ import { Play, RotateCcw, Eye, EyeOff, Sparkles, ArrowLeft, Volume2, VolumeX, Lo
 import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type StoryChoice, type PsychDimension } from '@/data/storyScenarios';
 import GameCounseling3DWorld from '@/components/3d/GameCounseling3DWorld';
 import { useGameTTS } from '@/hooks/useGameTTS';
+import GameResultReport from './GameResultReport';
 
 type GameState = 'intro' | 'exploring' | 'narrating' | 'choice' | 'result';
 

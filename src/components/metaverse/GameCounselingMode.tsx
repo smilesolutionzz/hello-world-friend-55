@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Play, RotateCcw, Eye, EyeOff } from 'lucide-react';
 import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type StoryChoice, type PsychDimension } from '@/data/storyScenarios';
+import GameResultReport from './GameResultReport';
 
 type GameState = 'intro' | 'playing' | 'result';
 

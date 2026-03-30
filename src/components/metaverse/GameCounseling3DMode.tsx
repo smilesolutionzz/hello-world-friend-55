@@ -32,6 +32,7 @@ export default function GameCounseling3DMode() {
   const typewriterRef = useRef<NodeJS.Timeout | null>(null);
 
   const { speak, stop: stopTTS, isSpeaking, isLoading: ttsLoading } = useGameTTS();
+  const { playSFX, playSceneSFX } = useGameSFX();
 
   const currentScene = currentChapter?.scenes[currentSceneIndex] || null;
 

@@ -9,6 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { shareToKakao, isKakaoInitialized } from '@/lib/kakaoShare';
 import VisualSummaryCard, { type VisualSummaryData } from '@/components/visual-summary/VisualSummaryCard';
+import ProgressComparison from '@/components/progress/ProgressComparison';
+import { useProgressTracking } from '@/hooks/useProgressTracking';
 
 interface ChoiceRecord {
   sceneId: string;

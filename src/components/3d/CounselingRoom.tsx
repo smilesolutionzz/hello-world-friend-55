@@ -981,7 +981,7 @@ const CounselingRoom = ({
     <>
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <Canvas>
-          <PerspectiveCamera makeDefault position={settings.cameraPos} fov={60} />
+          <PerspectiveCamera makeDefault position={settings.cameraPos} fov={65} />
           
           {/* 조명 설정 */}
           <ambientLight intensity={0.6} color={settings.ambientColor} />

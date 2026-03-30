@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { FileDown, Share2, RotateCcw, Loader2, Volume2, ChevronDown, ChevronUp } from 'lucide-react';
+import { FileDown, Share2, RotateCcw, Loader2, Volume2, ChevronDown, ChevronUp, Image, ArrowRight } from 'lucide-react';
 import { dimensionMeta, type PsychDimension, type StoryChapter } from '@/data/storyScenarios';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { shareToKakao, isKakaoInitialized } from '@/lib/kakaoShare';
+import VisualSummaryCard, { type VisualSummaryData } from '@/components/visual-summary/VisualSummaryCard';
 
 interface ChoiceRecord {
   sceneId: string;
@@ -92,6 +93,10 @@ export default function GameResultReport({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const [visualNoteData, setVisualNoteData] = useState<VisualSummaryData | null>(null);
+  const [illustrationImage, setIllustrationImage] = useState<string | null>(null);
+  const [isGeneratingNote, setIsGeneratingNote] = useState(false);
+  const [showVisualNote, setShowVisualNote] = useState(false);
   const { toast } = useToast();
 
   const topDimensions = Object.entries(results).sort(([, a], [, b]) => b - a).slice(0, 4);
@@ -127,7 +132,7 @@ export default function GameResultReport({
       const { data, error } = await supabase.functions.invoke('generate-visual-summary', {
         body: {
           type: 'counseling',
-          content: `## 금쪽상담소 게임 상담 결과 분석 요청
+          content: `## 금쪽상담소 게임 상담 결과 - Gemini 3.1 심층 분석 요청
 
 ### 스토리: ${chapter.title}
 ### 대상 연령: ${chapter.targetAge}
@@ -140,21 +145,25 @@ ${scoreDetails}
 
 ### 대표 캐릭터 유형: ${character.title} - ${character.desc}
 
-위 데이터를 바탕으로 아동 심리 전문가 관점에서 다음을 포함한 상세 분석 리포트를 작성해주세요:
-1. 종합 심리 프로파일 (아이의 전반적 심리 특성)
-2. 각 선택에 대한 심리학적 해석 (왜 이런 선택을 했는지)
-3. 강점 영역과 성장 가능 영역
-4. 구체적인 양육 가이드 (일상에서 실천 가능한 5가지 방법)
-5. 전문가 추천 활동 (놀이/학습/상호작용)
+위 데이터를 바탕으로 아동 심리 전문가 관점에서 다음을 포함한 **심층 분석 리포트**를 작성해주세요:
 
-한국어로 작성하고, 부모가 이해하기 쉽게 따뜻한 톤으로 작성해주세요. 최소 1500자 이상으로 상세하게 작성해주세요.`,
-          therapistType: 'child_psychologist'
+1. **종합 심리 프로파일** - 아이의 전반적 심리 특성을 발달심리학(Piaget, Erikson) 이론에 근거하여 해석
+2. **선택 패턴 심리학적 해석** - 각 선택이 반영하는 내면의 욕구와 심리적 동기 분석
+3. **강점 영역 심층 분석** - 강점이 미래에 어떤 역량으로 발전할 수 있는지 구체적으로 설명
+4. **성장 가능 영역** - 발달 단계에서 자연스러운 부분과 개입이 필요한 부분 구분
+5. **맞춤형 양육 전략** - 일상에서 즉시 실천 가능한 7가지 구체적 방법 (놀이, 대화법, 환경 조성 포함)
+6. **전문가 추천 활동** - 연령별 맞춤 놀이/학습/상호작용 프로그램 제안
+7. **발달 예측 및 추적 포인트** - 3개월, 6개월 후 관찰해야 할 발달 지표
+
+한국어로 작성하고, 부모가 이해하기 쉽되 전문적 깊이를 유지하세요. 최소 2500자 이상으로 상세하게 작성하세요.`,
+          therapistType: 'child_psychologist',
+          deepAnalysis: true
         }
       });
 
       if (data?.summary?.sections) {
         const analysisText = data.summary.sections
-          .map((s: any) => `### ${s.icon || ''} ${s.title}\n${s.content}`)
+          .map((s: any) => `### ${s.icon || ''} ${s.title}\n${s.content || s.points?.join('\n') || ''}`)
           .join('\n\n');
         setAiAnalysis(analysisText);
       } else if (data?.summary?.coreMessage) {
@@ -162,10 +171,57 @@ ${scoreDetails}
       }
     } catch (err) {
       console.error('[GameResultReport] AI analysis error:', err);
-      // Fallback to local detailed interpretation
       generateLocalAnalysis();
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  // 비주얼 노트 생성
+  const generateVisualNote = async () => {
+    setIsGeneratingNote(true);
+    try {
+      const scoreDetails = Object.entries(results)
+        .map(([dim, score]) => `${dimensionMeta[dim as PsychDimension]?.label || dim}: ${score}%`)
+        .join(', ');
+
+      const choiceDetails = choices.map((record, i) => {
+        const scene = chapter.scenes.find(s => s.id === record.sceneId);
+        const choice = scene?.choices.find(c => c.id === record.choiceId);
+        return `${i + 1}. ${scene?.title} → ${choice?.text}`;
+      }).join('\n');
+
+      const { data, error } = await supabase.functions.invoke('generate-visual-summary', {
+        body: {
+          type: 'counseling',
+          content: `금쪽상담소 게임 결과 비주얼 노트 생성:
+캐릭터 유형: ${character.title} (${character.emoji})
+설명: ${character.desc}
+스토리: ${chapter.title}
+심리 점수: ${scoreDetails}
+선택 기록: ${choiceDetails}
+
+이 데이터를 바탕으로 부모가 한눈에 이해할 수 있는 비주얼 요약 노트를 만들어주세요.
+- 제목은 "🎮 ${character.title}" 형태로
+- 아이의 심리 특성, 강점, 성장 포인트, 양육 팁을 포함
+- 따뜻하고 긍정적인 톤`,
+          therapistType: 'child_psychologist'
+        }
+      });
+
+      if (data?.summary) {
+        setVisualNoteData(data.summary as VisualSummaryData);
+        if (data.illustrationImage) {
+          setIllustrationImage(data.illustrationImage);
+        }
+        setShowVisualNote(true);
+        toast({ title: '비주얼 노트 생성 완료! ✨' });
+      }
+    } catch (err) {
+      console.error('[GameResultReport] Visual note error:', err);
+      toast({ title: '비주얼 노트 생성 실패', description: '다시 시도해주세요.', variant: 'destructive' });
+    } finally {
+      setIsGeneratingNote(false);
     }
   };
 
@@ -402,32 +458,56 @@ ${scoreDetails}
       </div>
       {/* PDF 영역 끝 */}
 
-      {/* 액션 버튼 */}
-      <div className="space-y-2 pt-2">
+      {/* 비주얼 노트 */}
+      {showVisualNote && visualNoteData ? (
+        <div className="mt-4">
+          <VisualSummaryCard
+            data={visualNoteData}
+            illustrationImage={illustrationImage}
+          />
+        </div>
+      ) : null}
+
+      {/* 액션 버튼 - 어두운 배경에서 잘 보이도록 스타일 수정 */}
+      <div className="space-y-2 pt-4">
+        {/* 비주얼 노트 생성 버튼 */}
+        <Button
+          onClick={generateVisualNote}
+          disabled={isGeneratingNote || isAnalyzing}
+          className="w-full gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold h-12 rounded-xl shadow-lg shadow-violet-500/20"
+        >
+          {isGeneratingNote ? <Loader2 className="w-5 h-5 animate-spin" /> : <Image className="w-5 h-5" />}
+          📋 비주얼 노트 생성하기
+        </Button>
+
         <div className="grid grid-cols-2 gap-2">
           <Button
             onClick={handleDownloadPDF}
             disabled={isDownloading || isAnalyzing}
-            variant="outline"
-            className="gap-2 border-white/20 text-white hover:bg-white/10"
+            className="gap-2 bg-slate-700 hover:bg-slate-600 text-white border-0 h-11 rounded-xl"
           >
             {isDownloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
             PDF 저장
           </Button>
           <Button
             onClick={handleShare}
-            variant="outline"
-            className="gap-2 border-yellow-500/30 text-yellow-300 hover:bg-yellow-500/10"
+            className="gap-2 bg-amber-600 hover:bg-amber-500 text-white border-0 h-11 rounded-xl"
           >
             <Share2 className="w-4 h-4" />
             공유하기
           </Button>
         </div>
 
-        <Button onClick={onRestart} variant="outline" className="w-full gap-2 border-white/20 text-white hover:bg-white/10">
+        <Button
+          onClick={onRestart}
+          className="w-full gap-2 bg-slate-800 hover:bg-slate-700 text-white border-0 h-11 rounded-xl"
+        >
           <RotateCcw className="h-4 w-4" /> 다시 모험하기
         </Button>
-        <Button onClick={() => window.location.href = '/premium-assessment'} className={`w-full gap-2 bg-gradient-to-r ${titleGradient} text-white`}>
+        <Button
+          onClick={() => window.location.href = '/premium-assessment'}
+          className={`w-full gap-2 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold h-12 rounded-xl shadow-lg`}
+        >
           🔬 전문 심리검사 받아보기
         </Button>
       </div>

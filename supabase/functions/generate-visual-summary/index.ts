@@ -14,7 +14,7 @@ serve(async (req) => {
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
     if (!lovableApiKey) throw new Error('LOVABLE_API_KEY is not configured')
 
-    const { type, content, therapistType, testType, userName } = await req.json()
+    const { type, content, therapistType, testType, userName, deepAnalysis } = await req.json()
 
     if (!content) {
       return new Response(JSON.stringify({ error: '내용이 필요합니다' }), {
@@ -86,13 +86,14 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3-flash-preview',
+        model: deepAnalysis ? 'google/gemini-3.1-flash-preview' : 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: summarizePrompt },
           { role: 'user', content: userPrompt }
         ],
         tools: [toolDefinition],
-        tool_choice: { type: "function", function: { name: "create_visual_summary" } }
+        tool_choice: { type: "function", function: { name: "create_visual_summary" } },
+        ...(deepAnalysis ? { reasoning: { effort: 'medium' } } : {})
       })
     })
 

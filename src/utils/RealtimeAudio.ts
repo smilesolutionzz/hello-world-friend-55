@@ -112,6 +112,7 @@ export class RealtimeChat {
     this.therapistType = options?.therapistType;
     this.therapistVoice = options?.therapistVoice;
     this.therapistPrompt = options?.therapistPrompt;
+    this.userName = options?.userName;
     this.onDisconnect = options?.onDisconnect;
     this.onReconnecting = options?.onReconnecting;
     this.initOptions = options;

@@ -1051,7 +1051,7 @@ const CounselingRoom = ({
           {character ? (
             <CounselingCharacter 
               character={character}
-              position={[-4, 0, 2]}
+              position={[-6, 0, 0]}
               scale={0.9}
             />
           ) : (

@@ -224,61 +224,21 @@ ${result.dietPlan.herbs.join(', ')}
 
           {/* 사이드바 - 액션 */}
           <div className="space-y-6">
-            {/* 가까이한의원 비대면 진료 */}
-            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200">
+            {/* 한의사 전문가 상담 */}
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20">
               <CardHeader>
-                <Badge className="w-fit mb-2 bg-green-600">대표 제휴기관</Badge>
-                <CardTitle className="text-lg text-green-900">가까이한의원 비대면진료</CardTitle>
+                <Badge className="w-fit mb-2 bg-primary">전문가 상담</Badge>
+                <CardTitle className="text-lg text-foreground">한의사 전문가 상담</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-sm text-green-700 mb-3">검사 결과 기반 맞춤 한약 처방</p>
-                <div className="flex items-center gap-2 text-xs text-green-600 mb-3">
-                  <Clock className="h-3 w-3" />
-                  <span>평일 09:00-18:00 | 토요일 09:00-15:00</span>
-                </div>
+                <p className="text-sm text-muted-foreground mb-3">검사 결과 기반 맞춤 한약 처방</p>
                 <Button 
-                  className="w-full bg-green-600 hover:bg-green-700"
-                  onClick={() => window.open('tel:010-6624-9990', '_self')}
+                  className="w-full bg-primary hover:bg-primary/90"
+                  onClick={() => navigate('/expert')}
                 >
-                  <Phone className="h-4 w-4 mr-2" />
-                  전화 상담: 010-6624-9990
+                  <Star className="h-4 w-4 mr-2" />
+                  한의사 전문가 보기
                 </Button>
-              </CardContent>
-            </Card>
-
-            {/* 가까이한의원 정보 */}
-            <Card className="bg-gradient-to-br from-purple-100 to-blue-100 border-purple-300 border-2">
-              <CardHeader>
-                <CardTitle className="text-lg text-purple-900 flex items-center justify-center">
-                  <img src={logo} alt="가까이한의원" className="h-12 mr-2" />
-                  가까이한의원
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="bg-white p-4 rounded-lg border border-purple-200">
-                    <h4 className="font-bold text-purple-800 mb-2">체질별 다이어트 전문</h4>
-                    <p className="text-sm text-purple-700 mb-3">30년 임상 경험 기반 맞춤 한방 처방</p>
-                    <div className="space-y-2 text-xs text-purple-600">
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-3 w-3" />
-                        <span>상담: 1234-5678</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-3 w-3" />
-                        <span>서울시 강남구 테헤란로</span>
-                      </div>
-                    </div>
-                  </div>
-                  <Button 
-                    size="sm" 
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                    onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}
-                  >
-                    <Phone className="h-4 w-4 mr-2" />
-                    지금 바로 상담받기
-                  </Button>
-                </div>
               </CardContent>
             </Card>
 

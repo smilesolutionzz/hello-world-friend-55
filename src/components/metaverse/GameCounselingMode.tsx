@@ -245,14 +245,7 @@ function PlayScreen({ scene, onChoice, showParentNotes, selectedChoice, chapterT
   );
 }
 
-function ResultScreen({ results, choices, chapter, onRestart }: {
-  results: Record<PsychDimension, number>;
-  choices: ChoiceRecord[];
-  chapter: StoryChapter;
-  onRestart: () => void;
-}) {
-  const topDimensions = Object.entries(results).sort(([, a], [, b]) => b - a).slice(0, 4);
-  const bottomDimensions = Object.entries(results).sort(([, a], [, b]) => a - b).slice(0, 2);
+// ResultScreen removed - now using GameResultReport component
 
   const getCharacterType = () => {
     const top = topDimensions[0][0] as PsychDimension;

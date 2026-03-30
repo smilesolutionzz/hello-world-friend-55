@@ -458,32 +458,56 @@ ${scoreDetails}
       </div>
       {/* PDF 영역 끝 */}
 
-      {/* 액션 버튼 */}
-      <div className="space-y-2 pt-2">
+      {/* 비주얼 노트 */}
+      {showVisualNote && visualNoteData ? (
+        <div className="mt-4">
+          <VisualSummaryCard
+            data={visualNoteData}
+            illustrationImage={illustrationImage}
+          />
+        </div>
+      ) : null}
+
+      {/* 액션 버튼 - 어두운 배경에서 잘 보이도록 스타일 수정 */}
+      <div className="space-y-2 pt-4">
+        {/* 비주얼 노트 생성 버튼 */}
+        <Button
+          onClick={generateVisualNote}
+          disabled={isGeneratingNote || isAnalyzing}
+          className="w-full gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold h-12 rounded-xl shadow-lg shadow-violet-500/20"
+        >
+          {isGeneratingNote ? <Loader2 className="w-5 h-5 animate-spin" /> : <Image className="w-5 h-5" />}
+          📋 비주얼 노트 생성하기
+        </Button>
+
         <div className="grid grid-cols-2 gap-2">
           <Button
             onClick={handleDownloadPDF}
             disabled={isDownloading || isAnalyzing}
-            variant="outline"
-            className="gap-2 border-white/20 text-white hover:bg-white/10"
+            className="gap-2 bg-slate-700 hover:bg-slate-600 text-white border-0 h-11 rounded-xl"
           >
             {isDownloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
             PDF 저장
           </Button>
           <Button
             onClick={handleShare}
-            variant="outline"
-            className="gap-2 border-yellow-500/30 text-yellow-300 hover:bg-yellow-500/10"
+            className="gap-2 bg-amber-600 hover:bg-amber-500 text-white border-0 h-11 rounded-xl"
           >
             <Share2 className="w-4 h-4" />
             공유하기
           </Button>
         </div>
 
-        <Button onClick={onRestart} variant="outline" className="w-full gap-2 border-white/20 text-white hover:bg-white/10">
+        <Button
+          onClick={onRestart}
+          className="w-full gap-2 bg-slate-800 hover:bg-slate-700 text-white border-0 h-11 rounded-xl"
+        >
           <RotateCcw className="h-4 w-4" /> 다시 모험하기
         </Button>
-        <Button onClick={() => window.location.href = '/premium-assessment'} className={`w-full gap-2 bg-gradient-to-r ${titleGradient} text-white`}>
+        <Button
+          onClick={() => window.location.href = '/premium-assessment'}
+          className={`w-full gap-2 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold h-12 rounded-xl shadow-lg`}
+        >
           🔬 전문 심리검사 받아보기
         </Button>
       </div>

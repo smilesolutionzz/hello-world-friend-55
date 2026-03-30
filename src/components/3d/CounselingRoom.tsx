@@ -957,21 +957,21 @@ const CounselingRoom = ({
   const getRoomSettings = () => {
     switch (roomType) {
       case 'office':
-        return { preset: 'city' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#E0E8F0' };
+        return { preset: 'city' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#E0E8F0' };
       case 'home':
-        return { preset: 'apartment' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#FFF5E6' };
+        return { preset: 'apartment' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#FFF5E6' };
       case 'bedroom':
-        return { preset: 'night' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#E6E6FA' };
+        return { preset: 'night' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#E6E6FA' };
       case 'school':
-        return { preset: 'dawn' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#F0F8FF' };
+        return { preset: 'dawn' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#F0F8FF' };
       case 'club':
-        return { preset: 'warehouse' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#FFF0F5' };
+        return { preset: 'warehouse' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#FFF0F5' };
       case 'living':
-        return { preset: 'sunset' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#FFF8DC' };
+        return { preset: 'sunset' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#FFF8DC' };
       case 'outdoor':
-        return { preset: 'park' as const, cameraPos: [0, 3, 10] as [number, number, number], ambientColor: '#E0FFE0' };
+        return { preset: 'park' as const, cameraPos: [0, 4, 14] as [number, number, number], ambientColor: '#E0FFE0' };
       default:
-        return { preset: 'sunset' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#F0F8FF' };
+        return { preset: 'sunset' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#F0F8FF' };
     }
   };
 

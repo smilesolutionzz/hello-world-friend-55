@@ -59,6 +59,9 @@ export default function GameCounseling3DMode() {
 
   useEffect(() => {
     if (gameState === 'narrating' && currentScene) {
+      // 씬 전환 효과음
+      playSceneSFX(currentScene.id);
+
       const narrateText = currentScene.character
         ? `${currentScene.character}를 만났어요! ${currentScene.description}`
         : currentScene.description;

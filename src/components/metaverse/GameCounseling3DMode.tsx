@@ -88,7 +88,7 @@ export default function GameCounseling3DMode() {
     setGameState('exploring');
 
     if (ttsEnabled) {
-      speak(`${chapter.title}! 빛나는 곳을 터치해서 모험을 시작하세요!`);
+      speak(`${chapter.title}. 앞에 보이는 빛나는 곳으로 걸어가 보세요.`);
     }
   }, [ttsEnabled, speak]);
 

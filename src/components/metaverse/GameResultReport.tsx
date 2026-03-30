@@ -93,6 +93,10 @@ export default function GameResultReport({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const [visualNoteData, setVisualNoteData] = useState<VisualSummaryData | null>(null);
+  const [illustrationImage, setIllustrationImage] = useState<string | null>(null);
+  const [isGeneratingNote, setIsGeneratingNote] = useState(false);
+  const [showVisualNote, setShowVisualNote] = useState(false);
   const { toast } = useToast();
 
   const topDimensions = Object.entries(results).sort(([, a], [, b]) => b - a).slice(0, 4);

@@ -32,7 +32,7 @@ serve(async (req) => {
 
     const { mode, ageGroup, character, roleplayPersona, roleplayVoice, firstMessage, therapistType, therapistVoice, therapistPrompt, userName } = await req.json().catch(() => ({}));
 
-    console.log(`Creating ephemeral token - mode: ${mode}, ageGroup: ${ageGroup}, character: ${character}`);
+    console.log(`Creating ephemeral token - mode: ${mode}, ageGroup: ${ageGroup}, character: ${character}, userName: ${userName}`);
 
     // 캐릭터별 설정
     const CHARACTERS: Record<string, { voice: string; persona: string }> = {

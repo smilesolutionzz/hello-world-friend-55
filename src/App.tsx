@@ -177,7 +177,8 @@ const App = () => {
           <Route path="/en/report-generator" element={<ReportGenerator />} />
           <Route path="/en/sample-report" element={<SampleReport />} />
           <Route path="/en/comprehensive-reporting" element={<ComprehensiveReporting />} />
-          <Route path="/en/metaverse-voice" element={<MetaverseVoice />} />
+           <Route path="/en/metaverse-voice" element={<MetaverseVoice />} />
+           <Route path="/en/game-counseling" element={<GameCounseling />} />
           <Route path="/en/assessment" element={<Assessment />} />
           <Route path="/en/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/en/free-trial" element={<FreeTrialAssessment />} />

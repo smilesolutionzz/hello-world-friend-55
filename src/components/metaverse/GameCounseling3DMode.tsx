@@ -135,6 +135,7 @@ export default function GameCounseling3DMode() {
         const newIndex = nextIndex >= 0 ? nextIndex : currentSceneIndex + 1;
         setCurrentSceneIndex(newIndex);
         setGameState('exploring');
+        playSFX('scene_transition');
 
         if (ttsEnabled) {
           setTimeout(() => speak('화면을 터치해서 앞으로 걸어가 보세요.'), 300);

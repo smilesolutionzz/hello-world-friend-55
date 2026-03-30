@@ -118,9 +118,9 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
 - 정기적인 전문 상담
 
 ⚕️ **전문 상담 권장**:
-더 정확한 체크와 맞춤 관리를 위해 가까이한의원에서 전문 한의사와 상담받으시길 권합니다.
+더 정확한 체크와 맞춤 관리를 위해 전문 한의사와 상담받으시길 권합니다.
 
-📞 상담 예약: 가까이한의원 1588-1234`;
+🏥 전문가 상담: hilightpro.lovable.app/expert`;
   };
 
   const goHome = () => {

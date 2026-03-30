@@ -276,7 +276,7 @@ ${result.dietPlan.herbs.join(', ')}
               <CardContent>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">더 정확한 체질 분석을 위한</p>
-                  <Button size="sm" variant="outline" className="w-full" onClick={() => navigate('/expert')}>
+                  <Button size="sm" variant="outline" className="w-full" onClick={() => navigate('/expert-hiring')}>
                     전문 한의사 정밀 분석
                   </Button>
                 </div>

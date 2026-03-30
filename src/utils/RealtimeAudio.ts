@@ -74,6 +74,7 @@ export class RealtimeChat {
   private therapistType?: string;
   private therapistVoice?: string;
   private therapistPrompt?: string;
+  private userName?: string;
   private reconnectAttempts: number = 0;
   private maxReconnectAttempts: number = 3;
   private onDisconnect?: () => void;

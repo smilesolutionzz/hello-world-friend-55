@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { 
   Star, Calendar, Clock, MessageCircle, Video, CheckCircle, MapPin, Shield, Award, 
   Users, Phone, ArrowLeft, Heart, BookOpen, Sparkles, Quote, GraduationCap, Briefcase, 
-  Edit3, Camera, Save, X, Wand2, Loader2
+  Edit3, Camera, Save, X, Wand2, Loader2, HelpCircle, Target, ChevronDown, ChevronUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
@@ -64,6 +64,67 @@ const specialtyPhilosophyMap: Record<string, { philosophy: string; approach: str
   '학습': { philosophy: "배움의 즐거움을 알면, 스스로 공부하는 아이가 됩니다.", approach: ['학습치료', '읽기/쓰기 지도', '학습전략 코칭'], education: ['특수교육학 석사 이상', '학습치료사 자격'] },
 };
 
+// 전문분야별 FAQ 데이터
+const specialtyFaqMap: Record<string, { question: string; answer: string }[]> = {
+  '언어치료': [
+    { question: '아이가 몇 살부터 언어치료를 받을 수 있나요?', answer: '만 18개월부터 가능하며, 조기 개입이 효과적입니다. 언어 발달이 또래보다 6개월 이상 느리다면 전문가 상담을 권장합니다.' },
+    { question: '언어치료 효과는 얼마나 걸려요?', answer: '개인차가 있지만 보통 3~6개월 정기 치료 시 눈에 띄는 변화를 보입니다. 가정 연계 연습이 병행되면 효과가 더 빠릅니다.' },
+    { question: '온라인 언어치료도 효과가 있나요?', answer: '네, 연구에 따르면 적절한 환경이 갖춰진 온라인 치료는 대면 치료와 유사한 효과를 보입니다.' },
+    { question: '부모가 집에서 할 수 있는 언어 자극 방법이 있나요?', answer: '일상 대화에서 아이의 말을 확장해주고, 그림책 읽기, 노래 부르기 등이 효과적입니다. 매 세션 후 가정 과제를 안내드립니다.' },
+  ],
+  '놀이치료': [
+    { question: '놀이치료는 그냥 노는 것과 뭐가 다른가요?', answer: '치료사가 구조화된 놀이 환경에서 아이의 심리적 표현을 관찰하고, 치료적 개입을 통해 정서 발달을 돕습니다.' },
+    { question: '놀이치료 중 부모도 참여하나요?', answer: '초기에는 아이와 치료사 단둘이 진행하며, 이후 부모-아동 상호작용 세션을 포함하여 가정에서도 치료적 놀이가 이어지도록 합니다.' },
+    { question: '어떤 아이에게 놀이치료가 적합한가요?', answer: '불안, 위축, 공격성, 분리불안, 또래 관계 어려움 등 다양한 정서·행동 문제를 보이는 아이에게 효과적입니다.' },
+    { question: '놀이치료 기간은 보통 얼마나 되나요?', answer: '일반적으로 주 1~2회, 6개월~1년 정도 진행하며, 아이의 상태에 따라 조정됩니다.' },
+  ],
+  '심리상담': [
+    { question: '심리상담과 정신과 치료는 다른 건가요?', answer: '심리상담은 대화와 심리치료 기법을 통한 비약물적 접근이며, 정신과는 약물 처방이 포함될 수 있습니다. 필요시 협진을 안내드립니다.' },
+    { question: '상담 내용이 외부에 공개되나요?', answer: '절대 아닙니다. 모든 상담 내용은 법적으로 보호되며, 내담자 동의 없이는 어떠한 정보도 공유하지 않습니다.' },
+    { question: '몇 회 상담을 받아야 효과가 있나요?', answer: '단기 상담은 8~12회, 심층 상담은 20회 이상 진행될 수 있습니다. 첫 상담에서 맞춤 계획을 함께 세워드립니다.' },
+    { question: '아이가 상담을 거부하면 어떻게 하나요?', answer: '자연스러운 반응입니다. 놀이나 미술 등 비언어적 접근을 활용하여 아이가 편안하게 참여할 수 있도록 유도합니다.' },
+  ],
+  '감각통합': [
+    { question: '감각통합 문제는 어떤 증상으로 나타나나요?', answer: '촉각 예민, 소리 민감, 움직임 회피, 자세 불안정 등 다양한 형태로 나타나며, 일상생활 적응에 영향을 줄 수 있습니다.' },
+    { question: '감각통합치료는 몇 세부터 가능한가요?', answer: '만 2세부터 가능하며, 감각 처리의 기초가 형성되는 영유아기에 시작하면 가장 효과적입니다.' },
+    { question: '가정에서 감각통합 활동을 할 수 있나요?', answer: '네, 트램폴린, 클레이 놀이, 촉감 놀이 등을 통해 가정에서도 감각 자극을 제공할 수 있습니다. 구체적인 홈프로그램을 안내드립니다.' },
+    { question: '감각통합치료와 작업치료의 차이는?', answer: '감각통합치료는 작업치료의 한 분야로, 감각 처리에 초점을 맞추고 있습니다. 필요에 따라 두 접근을 병행합니다.' },
+  ],
+  '발달치료': [
+    { question: '발달이 느린 것과 발달장애는 다른 건가요?', answer: '발달이 느린 것은 또래보다 속도가 느린 것이며, 반드시 장애를 의미하지 않습니다. 정확한 평가를 통해 맞춤 지원이 가능합니다.' },
+    { question: '발달 검사는 어디서 받을 수 있나요?', answer: '저희 센터에서 직접 발달 선별검사를 진행하며, 필요시 전문 병원 연계도 도와드립니다.' },
+    { question: '조기 개입이 왜 중요한가요?', answer: '뇌의 신경가소성이 가장 활발한 0~6세에 적절한 자극을 제공하면 발달 격차를 크게 줄일 수 있습니다.' },
+    { question: '발달치료는 보험 적용이 되나요?', answer: '바우처 사업(발달재활서비스)을 통해 정부 지원을 받을 수 있으며, 신청 절차를 안내드립니다.' },
+  ],
+  'ABA치료': [
+    { question: 'ABA치료는 로봇처럼 만드는 건 아닌가요?', answer: '현대 ABA는 자연스러운 환경에서 아이의 동기를 활용하여 긍정적 행동을 촉진하는 방식으로, 아이의 개성을 존중합니다.' },
+    { question: 'ABA치료는 얼마나 자주 받아야 하나요?', answer: '최적의 효과를 위해 주 10~20시간이 권장되지만, 가정 상황에 맞춰 주 2~3회 집중 세션도 가능합니다.' },
+    { question: 'ABA는 자폐 아이만 받는 건가요?', answer: '아닙니다. ADHD, 발달지연, 행동 문제 등 다양한 영역에서 활용되는 과학적 접근법입니다.' },
+    { question: '부모도 ABA 기법을 배울 수 있나요?', answer: '네, 부모교육은 ABA의 핵심 구성요소입니다. 가정에서 일관되게 적용할 수 있도록 교육과 코칭을 제공합니다.' },
+  ],
+};
+
+// 전문분야별 대상 타겟 데이터
+const specialtyTargetMap: Record<string, string[]> = {
+  '언어치료': ['말이 늦는 영유아 (18개월~)', '발음이 부정확한 아동', '말더듬(유창성 장애) 아동·청소년', '언어발달지연 아동'],
+  '놀이치료': ['정서적 어려움을 겪는 3~10세 아동', '또래관계에 어려움이 있는 아동', '분리불안이 심한 유아', '트라우마 경험 아동'],
+  '심리상담': ['불안·우울을 겪는 아동·청소년', '학교 부적응 청소년', '양육 스트레스를 겪는 부모', '가족 갈등을 경험하는 가정'],
+  '감각통합': ['촉각·청각 예민한 영유아', '움직임이 둔하거나 과도한 아동', '주의집중이 어려운 아동', '미세근육 발달이 느린 아동'],
+  '발달치료': ['또래보다 발달이 느린 영유아', '발달장애 조기 의심 아동', '전반적 발달지연 아동', '발달재활 바우처 대상 아동'],
+  'ABA치료': ['자폐스펙트럼장애(ASD) 아동', '반복적 문제행동을 보이는 아동', '사회성 발달이 필요한 아동', '일상생활 기술이 부족한 아동·청소년'],
+  '인지치료': ['학습에 어려움을 겪는 아동', '주의력 부족(ADHD) 아동', '정서조절이 어려운 청소년', '시험 불안을 겪는 학생'],
+  '가족상담': ['부부갈등을 겪는 가정', '양육 방식에 차이가 있는 부모', '형제갈등이 심한 가정', '이혼·재혼 과정의 가족'],
+  '미술치료': ['말로 표현이 어려운 3~8세 아동', '자존감이 낮은 아동·청소년', '정서적 트라우마 아동', '사회적 위축을 보이는 아동'],
+  '음악치료': ['의사소통이 어려운 중증 장애 아동', '정서적 안정이 필요한 영유아', '리듬감·운동능력 향상이 필요한 아동', '치매 예방이 필요한 어르신'],
+  '작업치료': ['소근육 발달이 느린 아동', '일상생활 자립이 어려운 아동', '글쓰기·가위질 등 학업 준비 아동', '신체 기능 회복이 필요한 환자'],
+  '부모교육': ['첫 아이를 키우는 초보 부모', '양육 스트레스가 심한 부모', '발달지연 자녀를 둔 부모', '긍정적 훈육을 배우고 싶은 부모'],
+  'ADHD': ['집중력이 부족한 학령기 아동', '과잉행동을 보이는 유아', '충동조절이 어려운 청소년', '성인 ADHD 의심자'],
+  '자폐': ['자폐스펙트럼장애(ASD) 진단 아동', '사회적 상호작용이 어려운 아동', '반복적 행동 패턴을 보이는 아동', '의사소통이 제한된 아동'],
+  '사회성': ['또래관계가 어려운 초등학생', '학교 적응이 힘든 아동', '친구 사귀기가 어려운 아동', '사회적 단서 읽기가 어려운 아동'],
+  '정서': ['감정 기복이 심한 아동', '불안·공포증이 있는 아동', '분노조절이 어려운 청소년', '자존감이 낮은 아동'],
+  '학습': ['읽기·쓰기 학습이 느린 아동', '학습장애(난독증 등) 아동', '학습 동기가 낮은 학생', '학교 성적 저하를 겪는 아동'],
+};
+
 const personalPhilosophyData: Record<string, { philosophy: string; approach: string[]; education: string[]; successCases: number }> = {
   '김민지': { philosophy: "아이의 속도에 맞춰 함께 걸어가는 것, 그것이 진정한 치료의 시작입니다.", approach: ['놀이중심 언어치료', '가족참여 치료', '자연스러운 환경 중심 접근'], education: ['이화여자대학교 언어병리학 석사', '미국 ASHA 인증 과정 수료'], successCases: 156 },
   '박서연': { philosophy: "모든 아이는 자신만의 빛을 가지고 있습니다. 저는 그 빛을 찾아주는 사람입니다.", approach: ['ABA 기반 행동치료', '사회성 그룹 프로그램', '부모교육 병행'], education: ['서울대학교 심리학 박사', 'BCBA 국제 행동분석가 자격'], successCases: 203 },
@@ -73,6 +134,27 @@ const personalPhilosophyData: Record<string, { philosophy: string; approach: str
   '강도윤': { philosophy: "감각의 조화가 발달의 기초입니다. 균형 잡힌 성장을 돕습니다.", approach: ['감각통합치료', '작업치료', '일상생활훈련'], education: ['연세대학교 작업치료학 석사', '감각통합전문가 1급'], successCases: 145 },
   '윤서윤': { philosophy: "언어는 마음의 다리입니다. 소통의 즐거움을 알려드립니다.", approach: ['언어발달치료', '조음치료', 'AAC 보완대체 의사소통'], education: ['한림대학교 언어병리학 박사', '대한언어재활사협회 1급'], successCases: 221 },
   '임채원': { philosophy: "아이의 무한한 가능성을 믿습니다. 함께라면 어떤 벽도 넘을 수 있습니다.", approach: ['발달재활', '조기중재', '통합치료'], education: ['부산대학교 특수교육학 석사', '발달재활서비스 제공자 자격'], successCases: 167 },
+};
+const getFaqBySpecialty = (specialties: string[]): { question: string; answer: string }[] => {
+  for (const specialty of specialties) {
+    for (const [key, faqs] of Object.entries(specialtyFaqMap)) {
+      if (specialty.includes(key) || key.includes(specialty)) return faqs;
+    }
+  }
+  return [
+    { question: '첫 상담은 어떻게 진행되나요?', answer: '첫 상담에서는 현재 상황을 파악하고 맞춤 치료 계획을 함께 세웁니다. 약 50~60분 소요됩니다.' },
+    { question: '상담 주기는 어떻게 되나요?', answer: '보통 주 1~2회를 권장하며, 상태에 따라 조정됩니다.' },
+    { question: '온라인 상담도 가능한가요?', answer: '네, 화상 상담을 통해 동일한 품질의 서비스를 제공합니다.' },
+  ];
+};
+
+const getTargetBySpecialty = (specialties: string[]): string[] => {
+  for (const specialty of specialties) {
+    for (const [key, targets] of Object.entries(specialtyTargetMap)) {
+      if (specialty.includes(key) || key.includes(specialty)) return targets;
+    }
+  }
+  return ['발달에 관심이 있는 부모', '정서적 어려움을 겪는 아동·청소년', '양육 스트레스를 겪는 보호자'];
 };
 
 const getPhilosophyBySpecialty = (name: string, specialties: string[]) => {
@@ -85,6 +167,24 @@ const getPhilosophyBySpecialty = (name: string, specialties: string[]) => {
     }
   }
   return { philosophy: "한 사람 한 사람의 고유한 가치를 존중하며, 함께 성장하는 여정을 걸어갑니다.", approach: ['개인 맞춤형 치료', '근거기반 접근', '가족 중심 치료'], education: ['석사 이상 전문 학위', '관련 분야 전문가 자격'], successCases: Math.floor(Math.random() * 50) + 100 };
+};
+
+// ─── FAQ 아코디언 아이템 ───
+const FaqItem = ({ question, answer }: { question: string; answer: string }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border border-border/30 rounded-2xl overflow-hidden">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/20 transition-colors">
+        <span className="text-sm font-semibold text-foreground pr-4">{question}</span>
+        {open ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" /> : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+      </button>
+      {open && (
+        <div className="px-5 pb-4 pt-0">
+          <p className="text-sm text-muted-foreground leading-relaxed">{answer}</p>
+        </div>
+      )}
+    </div>
+  );
 };
 
 // ─── 프로필 편집 모달 ───
@@ -445,6 +545,39 @@ const ExpertDetailPage = () => {
             </div>
           </section>
         )}
+
+        {/* ─── 대상 타겟 ─── */}
+        <section className="max-w-3xl mx-auto px-4 pb-6">
+          <div className="bg-white rounded-3xl p-6 border border-border/30" style={{ boxShadow: '0 1px 3px hsl(var(--foreground)/0.03)' }}>
+            <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
+              <Target className="w-4 h-4 text-primary" /> 이런 분들께 추천합니다
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-2.5">
+              {getTargetBySpecialty(expert.specialty).map((target, idx) => (
+                <div key={idx} className="flex items-center gap-3 bg-primary/5 rounded-2xl px-4 py-3">
+                  <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Users className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  <span className="text-sm text-foreground font-medium">{target}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── 자주 묻는 질문 ─── */}
+        <section className="max-w-3xl mx-auto px-4 pb-6">
+          <div className="bg-white rounded-3xl p-6 border border-border/30" style={{ boxShadow: '0 1px 3px hsl(var(--foreground)/0.03)' }}>
+            <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
+              <HelpCircle className="w-4 h-4 text-primary" /> 자주 묻는 질문
+            </h3>
+            <div className="space-y-3">
+              {getFaqBySpecialty(expert.specialty).map((faq, idx) => (
+                <FaqItem key={idx} question={faq.question} answer={faq.answer} />
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* ─── 가격 및 예약 CTA ─── */}
         <section className="max-w-3xl mx-auto px-4 pb-12">

@@ -395,7 +395,7 @@ const ExpertHiring = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {PARTNER_INSTITUTIONS.map(inst => (
+              {PARTNER_INSTITUTIONS.map((inst, index) => (
                 <div
                   key={inst.id}
                   onClick={() => (inst as any).website ? window.open((inst as any).website, '_blank') : navigate(`/institution-detail/${inst.id}`)}
@@ -408,7 +408,7 @@ const ExpertHiring = () => {
                   {/* Facility image */}
                   <div className="relative h-36 overflow-hidden">
                     <img 
-                      src={getFacilityImage(inst.type, inst.specialties)} 
+                      src={getFacilityImage(index)} 
                       alt={inst.name}
                       loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

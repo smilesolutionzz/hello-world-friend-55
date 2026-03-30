@@ -796,13 +796,13 @@ const GardenRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =>
     <group ref={groupRef}>
       {/* 잔디 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[30, 30]} />
+        <planeGeometry args={[60, 60]} />
         <meshLambertMaterial color="#98FB98" />
       </mesh>
       
       {/* 하늘 */}
-      <mesh position={[0, 8, -12]}>
-        <planeGeometry args={[30, 20]} />
+      <mesh position={[0, 8, -25]}>
+        <planeGeometry args={[60, 20]} />
         <meshLambertMaterial color="#B0E0E6" />
       </mesh>
       

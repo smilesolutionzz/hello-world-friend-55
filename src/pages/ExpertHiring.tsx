@@ -465,76 +465,96 @@ const ExpertHiring = () => {
   );
 };
 
-/* ─── Expert Card ─── */
+/* ─── Expert Card (Premium White) ─── */
 const ExpertCard = ({ expert, onBook, navigate }: { expert: Expert; onBook: () => void; navigate: ReturnType<typeof useNavigate> }) => {
   return (
-    <Card 
+    <div
       onClick={() => navigate(`/expert-detail/${expert.id}`)}
-      className={cn(
-        "group rounded-2xl border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 cursor-pointer",
-        expert.isTop 
-          ? "border-primary/25 bg-gradient-to-b from-primary/[0.03] to-background" 
-          : "border-border/60"
-      )}
+      className="group relative bg-white rounded-3xl cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_hsl(var(--primary)/0.15)]"
+      style={{
+        boxShadow: '0 1px 3px hsl(var(--foreground)/0.04), 0 4px 12px hsl(var(--foreground)/0.03)',
+        border: '1px solid hsl(var(--border)/0.5)',
+      }}
     >
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="relative shrink-0">
-            <Avatar className={cn("w-12 h-12 border-2", expert.isTop ? "border-primary/30" : "border-border")}>
-              <AvatarImage src={expert.image} className="object-cover" />
-              <AvatarFallback className="text-sm font-semibold bg-muted text-muted-foreground">
-                {expert.name[0]}
-              </AvatarFallback>
-            </Avatar>
-            {expert.isTop && (
-              <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-sm leading-none">
-                TOP
-              </span>
-            )}
+      {/* TOP badge ribbon */}
+      {expert.isTop && (
+        <div className="absolute -top-2.5 left-4 z-10">
+          <div className="px-3 py-1 text-[10px] font-black tracking-wider rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-amber-900 shadow-lg shadow-amber-200/50 uppercase">
+            ★ TOP
+          </div>
+        </div>
+      )}
+
+      <div className="p-5 pt-6">
+        {/* Profile section */}
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <div className="w-16 h-16 rounded-2xl overflow-hidden ring-2 ring-border/30 group-hover:ring-primary/30 transition-all shadow-sm">
+              <Avatar className="w-full h-full rounded-none">
+                <AvatarImage src={expert.image} className="object-cover w-full h-full" />
+                <AvatarFallback className="rounded-none text-lg font-bold bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
+                  {expert.name[0]}
+                </AvatarFallback>
+              </Avatar>
+            </div>
             {expert.isOnline && (
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-background rounded-full" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-400 border-[2.5px] border-white rounded-full shadow-sm" />
             )}
           </div>
 
           <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-foreground text-sm truncate">{expert.name}</h3>
-            <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-muted-foreground">
-              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-              <span className="font-medium text-foreground">{expert.rating}</span>
-              <span>·</span>
-              <span>{expert.experience}</span>
-              <span>·</span>
-              <span className="text-emerald-600 font-medium">온라인</span>
+            <h3 className="font-bold text-[15px] text-foreground truncate tracking-tight">{expert.name}</h3>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-amber-50">
+                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                <span className="text-[11px] font-bold text-amber-700">{expert.rating}</span>
+              </div>
+              <span className="text-[11px] text-muted-foreground">{expert.experience}</span>
+              <span className="inline-flex items-center gap-0.5 text-[11px] text-emerald-600 font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                온라인
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1 mt-2.5">
+        {/* Specialty tags */}
+        <div className="flex flex-wrap gap-1.5 mt-4">
           {expert.specialty.slice(0, 3).map((spec, idx) => (
-            <span key={idx} className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-muted text-muted-foreground">
+            <span
+              key={idx}
+              className="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-primary/[0.06] text-primary/80 border border-primary/10"
+            >
               {spec}
             </span>
           ))}
+          {expert.specialty.length > 3 && (
+            <span className="px-2 py-1 text-[11px] text-muted-foreground">+{expert.specialty.length - 3}</span>
+          )}
         </div>
 
+        {/* Divider */}
+        <div className="my-4 h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
+
         {/* Price + CTA */}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/40">
+        <div className="flex items-center justify-between">
           <div>
-            <span className="text-sm font-bold text-foreground">₩{CONSULT_PRICE.toLocaleString()}</span>
-            <span className="text-[11px] text-muted-foreground ml-1">/40분</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl font-extrabold tracking-tight text-foreground">₩{CONSULT_PRICE.toLocaleString()}</span>
+              <span className="text-[11px] text-muted-foreground font-medium">/40분</span>
+            </div>
           </div>
           <Button
             size="sm"
-            className="rounded-xl px-3.5 h-8 text-xs font-semibold shadow-sm"
+            className="rounded-2xl px-5 h-9 text-xs font-bold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all"
             onClick={(e) => { e.stopPropagation(); onBook(); }}
           >
-            <Calendar className="w-3 h-3 mr-1" />
-            예약
+            <Calendar className="w-3.5 h-3.5 mr-1.5" />
+            예약하기
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

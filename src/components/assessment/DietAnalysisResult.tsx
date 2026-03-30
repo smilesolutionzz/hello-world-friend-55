@@ -23,7 +23,7 @@ import {
   RefreshCw,
   MapPin
 } from 'lucide-react';
-import logo from '@/assets/gakkai-logo.png';
+
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from '@/i18n/useTranslation';
 

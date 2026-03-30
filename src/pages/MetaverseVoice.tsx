@@ -11,8 +11,7 @@ import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 const MetaverseVoicePage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string | null>(null);
-  const [use3D, setUse3D] = useState(false);
-  
+
   const [structuredConfig, setStructuredConfig] = useState<{
     ageGroup: AgeGroup;
     character: CharacterType;

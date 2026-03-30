@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +35,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
   const { toast } = useToast();
   const { t } = useTranslation();
   const { isEnglish } = useLanguage();
+  const navigate = useNavigate();
   const [isGeneratingAnalysis, setIsGeneratingAnalysis] = useState(false);
   const [enhancedAnalysis, setEnhancedAnalysis] = useState<string | null>(null);
   const [clinicInfo, setClinicInfo] = useState<any>(null);
@@ -118,9 +120,9 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
 - 정기적인 전문 상담
 
 ⚕️ **전문 상담 권장**:
-더 정확한 체크와 맞춤 관리를 위해 가까이한의원에서 전문 한의사와 상담받으시길 권합니다.
+더 정확한 체크와 맞춤 관리를 위해 전문 한의사와 상담받으시길 권합니다.
 
-📞 상담 예약: 가까이한의원 1588-1234`;
+🏥 전문가 상담: hilightpro.lovable.app/expert`;
   };
 
   const goHome = () => {
@@ -186,8 +188,8 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
           </div>
           
           <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB;">
-            <p style="margin: 0; font-size: 12px; color: #9CA3AF;">가까이한의원 연계 | 전문 한의학 체질검사</p>
-            <p style="margin: 5px 0 0 0; font-size: 12px; color: #9CA3AF;">상담 문의: https://naver.me/xk1XPBhl</p>
+            <p style="margin: 0; font-size: 12px; color: #9CA3AF;">전문 한의학 체질검사 | AI 분석 리포트</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; color: #9CA3AF;">전문가 상담: hilightpro.lovable.app/expert</p>
           </div>
         </div>
       `;
@@ -320,17 +322,17 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
       try {
         await navigator.share({
           title: '한방 검사 결과',
-          text: `한방 검사 결과: ${result.percentage}% - 가까이한의원에서 전문 상담 받으세요!`,
-          url: 'https://naver.me/xk1XPBhl'
+          text: `한방 검사 결과: ${result.percentage}% - 전문 한의사 상담을 받아보세요!`,
+          url: 'https://hilightpro.lovable.app/expert'
         });
       } catch (error) {
         console.log('공유 취소됨');
       }
     } else {
-      navigator.clipboard.writeText('https://naver.me/xk1XPBhl');
+      navigator.clipboard.writeText('https://hilightpro.lovable.app/expert');
       toast({
         title: "링크 복사됨",
-        description: "가까이한의원 상담 링크가 클립보드에 복사되었습니다.",
+        description: "전문가 상담 링크가 클립보드에 복사되었습니다.",
       });
     }
   };
@@ -578,14 +580,14 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
               </div>
             )}
             
-            {enhancedAnalysis && clinicInfo && (
-              <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-                <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
-                  📋 연계 전문 상담 가능
+            {enhancedAnalysis && (
+              <div className="mt-6 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                  <Star className="h-4 w-4 text-primary" />
+                  📋 전문가 상담 추천
                 </h4>
-                <p className="text-sm text-green-700">
-                  위 분석을 바탕으로 {clinicInfo.name}에서 더 정밀한 체크와 맞춤 관리를 받으실 수 있습니다.
+                <p className="text-sm text-muted-foreground">
+                  위 분석을 바탕으로 전문 한의사와 상담하여 더 정밀한 체크와 맞춤 관리를 받으실 수 있습니다.
                 </p>
               </div>
             )}
@@ -616,89 +618,30 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
 
         {/* 프리미엄 정밀 체질체크 CTA - 요청으로 제거 */}
 
-        {/* 가까이한의원 비대면 진료 CTA */}
-        <Card className="border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+        {/* 한의사 전문가 상담 CTA */}
+        <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
           <CardHeader>
-            <Badge className="w-fit mb-2 bg-green-600">대표 제휴기관</Badge>
-            <CardTitle className="flex items-center text-green-800">
-              <Phone className="h-5 w-5 mr-2" />
-              가까이한의원 비대면진료
+            <Badge className="w-fit mb-2 bg-primary">전문가 상담</Badge>
+            <CardTitle className="flex items-center text-foreground">
+              <Star className="h-5 w-5 mr-2 text-primary" />
+              한의사 전문가 상담
             </CardTitle>
             <CardDescription>
               검사 결과 기반 맞춤 한약 처방 및 전문 상담
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <h4 className="font-semibold text-green-800 flex items-center gap-2">
-                  <Pill className="h-4 w-4" />
-                  제공 서비스
-                </h4>
-                <ul className="text-sm space-y-2 bg-white/60 rounded-lg p-3">
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">•</span>
-                    개별 체질 분석
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">•</span>
-                    맞춤 한약 처방
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">•</span>
-                    지속적 관리 프로그램
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">•</span>
-                    생활습관 개선 지도
-                  </li>
-                </ul>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-green-800 flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  진료 시간
-                </h4>
-                <ul className="text-sm space-y-2 bg-white/60 rounded-lg p-3">
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">•</span>
-                    평일: 09:00-18:00
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">•</span>
-                    토요일: 09:00-15:00
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">•</span>
-                    일요일/공휴일: 휴진
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">•</span>
-                    비대면 진료 가능
-                  </li>
-                </ul>
-              </div>
-            </div>
-            
-            <Separator />
-            
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button 
-                onClick={() => window.open('tel:010-6624-9990', '_self')}
-                className="flex-1 h-12 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md"
-              >
-                <Phone className="h-4 w-4 mr-2" />
-                전화 상담: 010-6624-9990
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}
-                className="border-green-200 text-green-700 hover:bg-green-50"
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                온라인 예약
-              </Button>
-            </div>
+            <p className="text-sm text-muted-foreground">
+              AI 분석 결과를 바탕으로 검증된 한의사 전문가와 1:1 맞춤 상담을 받아보세요.
+              체질별 맞춤 처방과 생활 관리법을 안내받으실 수 있습니다.
+            </p>
+            <Button 
+              onClick={() => navigate('/expert')}
+              className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md"
+            >
+              <Star className="h-4 w-4 mr-2" />
+              한의사 전문가 보기
+            </Button>
           </CardContent>
         </Card>
 
@@ -727,7 +670,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
             <span className="text-lg">✨</span>
             <span className="font-medium text-foreground">
-              {isEnglish ? "AI Analysis Verified by Licensed Practitioners" : "전문 한의원 검증 완료 AI 분석"}
+              {isEnglish ? "AI Analysis Verified by Licensed Practitioners" : "전문 한의사 검증 AI 분석"}
             </span>
           </div>
         </div>

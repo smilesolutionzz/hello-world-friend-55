@@ -258,17 +258,17 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
         input_audio_format: "pcm16",
         output_audio_format: "pcm16",
         input_audio_transcription: {
-          model: "gpt-4o-transcribe",  // 한국어 인식률 대폭 향상
-          language: "ko",              // 한국어 고정 (다른 언어 인식 방지)
+          model: "whisper-1",              // whisper-1이 한국어 음성인식에 더 안정적
+          language: "ko",
         },
         turn_detection: {
           type: "server_vad",
-          threshold: 0.7,             // 0.5→0.7: 한국어 억양 변화를 "발화 끝"으로 오인하지 않도록 민감도 낮춤
-          prefix_padding_ms: 500,     // 400→500: 발화 시작 전 소리를 더 많이 캡처하여 첫 음절 누락 방지
-          silence_duration_ms: 2000,  // 1200→2000: 사용자가 생각하며 말할 시간 충분히 확보 (한국어 패턴)
+          threshold: 0.5,             // 0.7→0.5: 더 민감하게 음성 감지하여 인식률 향상
+          prefix_padding_ms: 600,     // 500→600: 발화 시작 전 소리를 더 많이 캡처
+          silence_duration_ms: 1800,  // 2000→1800: 적당한 대기 시간
         },
-        temperature: 0.6,             // 0.8→0.6: 더 일관되고 안정적인 응답 생성
-        max_response_output_tokens: 600  // 800→600: 짧고 집중된 응답 유도 (2-3문장 규칙 강화)
+        temperature: 0.6,
+        max_response_output_tokens: 600
       }),
     });
 

@@ -7,6 +7,7 @@ import { Play, RotateCcw, Eye, EyeOff, Sparkles, ArrowLeft, Volume2, VolumeX, Lo
 import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type StoryChoice, type PsychDimension } from '@/data/storyScenarios';
 import GameCounseling3DWorld from '@/components/3d/GameCounseling3DWorld';
 import { useGameTTS } from '@/hooks/useGameTTS';
+import { useGameSFX } from '@/hooks/useGameSFX';
 import GameResultReport from './GameResultReport';
 
 type GameState = 'intro' | 'exploring' | 'narrating' | 'choice' | 'result';
@@ -31,6 +32,7 @@ export default function GameCounseling3DMode() {
   const typewriterRef = useRef<NodeJS.Timeout | null>(null);
 
   const { speak, stop: stopTTS, isSpeaking, isLoading: ttsLoading } = useGameTTS();
+  const { playSFX, playSceneSFX } = useGameSFX();
 
   const currentScene = currentChapter?.scenes[currentSceneIndex] || null;
 
@@ -57,6 +59,9 @@ export default function GameCounseling3DMode() {
 
   useEffect(() => {
     if (gameState === 'narrating' && currentScene) {
+      // 씬 전환 효과음
+      playSceneSFX(currentScene.id);
+
       const narrateText = currentScene.character
         ? `${currentScene.character}를 만났어요! ${currentScene.description}`
         : currentScene.description;
@@ -87,15 +92,17 @@ export default function GameCounseling3DMode() {
     setCurrentSceneIndex(0);
     setChoices([]);
     setGameState('exploring');
+    playSFX('whoosh');
 
     if (ttsEnabled) {
       speak(`${chapter.title}. 화면을 터치해서 앞으로 걸어가 보세요.`);
     }
-  }, [ttsEnabled, speak]);
+  }, [ttsEnabled, speak, playSFX]);
 
   const makeChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
     setSelectedChoice(choice.id);
     stopTTS();
+    playSFX('choice_select');
     if (typewriterRef.current) clearInterval(typewriterRef.current);
 
     const record: ChoiceRecord = {
@@ -119,6 +126,7 @@ export default function GameCounseling3DMode() {
 
       if (nextScene?.isEnding) {
         setGameState('result');
+        playSFX('success');
         if (ttsEnabled) {
           setTimeout(() => speak('모험이 끝났어요! 결과를 확인해볼까요?'), 500);
         }
@@ -127,6 +135,7 @@ export default function GameCounseling3DMode() {
         const newIndex = nextIndex >= 0 ? nextIndex : currentSceneIndex + 1;
         setCurrentSceneIndex(newIndex);
         setGameState('exploring');
+        playSFX('scene_transition');
 
         if (ttsEnabled) {
           setTimeout(() => speak('화면을 터치해서 앞으로 걸어가 보세요.'), 300);

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,7 +23,7 @@ import {
   RefreshCw,
   MapPin
 } from 'lucide-react';
-import logo from '@/assets/gakkai-logo.png';
+
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from '@/i18n/useTranslation';
 
@@ -36,6 +37,7 @@ const DietAnalysisResult: React.FC<DietAnalysisResultProps> = ({ result, onResta
   const { toast } = useToast();
   const { t } = useTranslation();
   const { shareAsText } = useShareText();
+  const navigate = useNavigate();
 
   const handleDietPlan = () => {
     window.open('https://naver.me/xk1XPBhl', '_blank');
@@ -116,26 +118,13 @@ ${result.dietPlan.herbs.join(', ')}
       <div className="max-w-4xl mx-auto" id="diet-analysis-result">
         {/* 헤더 */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-6">
-            <img src={logo} alt="가까이한의원" className="h-24 object-contain" />
-          </div>
           <div className="flex items-center justify-center mb-4">
-            <CheckCircle className="h-8 w-8 text-purple-600 mr-2" />
-            <h1 className="text-3xl font-bold text-foreground">가까이한의원 체질분석 완료</h1>
+            <CheckCircle className="h-8 w-8 text-primary mr-2" />
+            <h1 className="text-3xl font-bold text-foreground">체질분석 완료</h1>
           </div>
-          <p className="text-lg font-semibold text-purple-700 mb-2">
+          <p className="text-lg font-semibold text-primary mb-2">
             맞춤형 한방 다이어트 프로그램
           </p>
-          <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-purple-600" />
-              <span className="font-medium">상담문의: 1234-5678</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-purple-600" />
-              <span>서울시 강남구 테헤란로</span>
-            </div>
-          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
@@ -155,11 +144,11 @@ ${result.dietPlan.herbs.join(', ')}
                 <p className="text-muted-foreground mb-4">
                   {getConstitutionDescription(result.constitutionType)}
                 </p>
-                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                  <h4 className="font-semibold text-purple-800 mb-2">가까이한의원 맞춤 다이어트</h4>
-                  <p className="text-purple-700 text-sm">
+                <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
+                  <h4 className="font-semibold text-foreground mb-2">맞춤 다이어트</h4>
+                  <p className="text-muted-foreground text-sm">
                     {result.targetWeight}을 목표로 하는 {result.constitutionType} 맞춤 한방 다이어트 프로그램입니다.
-                    가까이한의원의 30년 임상 경험을 바탕으로 한 체질별 맞춤 처방을 제공합니다.
+                    전문 한의사의 체질별 맞춤 처방을 통해 더 효과적인 관리가 가능합니다.
                   </p>
                 </div>
               </CardContent>
@@ -235,61 +224,21 @@ ${result.dietPlan.herbs.join(', ')}
 
           {/* 사이드바 - 액션 */}
           <div className="space-y-6">
-            {/* 가까이한의원 비대면 진료 */}
-            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200">
+            {/* 한의사 전문가 상담 */}
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20">
               <CardHeader>
-                <Badge className="w-fit mb-2 bg-green-600">대표 제휴기관</Badge>
-                <CardTitle className="text-lg text-green-900">가까이한의원 비대면진료</CardTitle>
+                <Badge className="w-fit mb-2 bg-primary">전문가 상담</Badge>
+                <CardTitle className="text-lg text-foreground">한의사 전문가 상담</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-sm text-green-700 mb-3">검사 결과 기반 맞춤 한약 처방</p>
-                <div className="flex items-center gap-2 text-xs text-green-600 mb-3">
-                  <Clock className="h-3 w-3" />
-                  <span>평일 09:00-18:00 | 토요일 09:00-15:00</span>
-                </div>
+                <p className="text-sm text-muted-foreground mb-3">검사 결과 기반 맞춤 한약 처방</p>
                 <Button 
-                  className="w-full bg-green-600 hover:bg-green-700"
-                  onClick={() => window.open('tel:010-6624-9990', '_self')}
+                  className="w-full bg-primary hover:bg-primary/90"
+                  onClick={() => navigate('/expert')}
                 >
-                  <Phone className="h-4 w-4 mr-2" />
-                  전화 상담: 010-6624-9990
+                  <Star className="h-4 w-4 mr-2" />
+                  한의사 전문가 보기
                 </Button>
-              </CardContent>
-            </Card>
-
-            {/* 가까이한의원 정보 */}
-            <Card className="bg-gradient-to-br from-purple-100 to-blue-100 border-purple-300 border-2">
-              <CardHeader>
-                <CardTitle className="text-lg text-purple-900 flex items-center justify-center">
-                  <img src={logo} alt="가까이한의원" className="h-12 mr-2" />
-                  가까이한의원
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="bg-white p-4 rounded-lg border border-purple-200">
-                    <h4 className="font-bold text-purple-800 mb-2">체질별 다이어트 전문</h4>
-                    <p className="text-sm text-purple-700 mb-3">30년 임상 경험 기반 맞춤 한방 처방</p>
-                    <div className="space-y-2 text-xs text-purple-600">
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-3 w-3" />
-                        <span>상담: 1234-5678</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-3 w-3" />
-                        <span>서울시 강남구 테헤란로</span>
-                      </div>
-                    </div>
-                  </div>
-                  <Button 
-                    size="sm" 
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                    onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}
-                  >
-                    <Phone className="h-4 w-4 mr-2" />
-                    지금 바로 상담받기
-                  </Button>
-                </div>
               </CardContent>
             </Card>
 
@@ -320,15 +269,15 @@ ${result.dietPlan.herbs.join(', ')}
             </Card>
 
             {/* 추가 검사 추천 */}
-            <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
               <CardHeader>
-                <CardTitle className="text-lg text-purple-800">정밀 검사</CardTitle>
+                <CardTitle className="text-lg text-foreground">정밀 검사</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <p className="text-sm text-purple-700">더 정확한 체질 분석을 위한</p>
-                  <Button size="sm" variant="outline" className="w-full border-purple-300 text-purple-700 hover:bg-purple-50">
-                    가까이한의원 프리미엄 분석
+                  <p className="text-sm text-muted-foreground">더 정확한 체질 분석을 위한</p>
+                  <Button size="sm" variant="outline" className="w-full" onClick={() => navigate('/expert')}>
+                    전문 한의사 정밀 분석
                   </Button>
                 </div>
               </CardContent>
@@ -337,26 +286,28 @@ ${result.dietPlan.herbs.join(', ')}
         </div>
 
         {/* 하단 안내 */}
-        <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border-2 border-purple-200">
-          <div className="flex items-center justify-center mb-4">
-            <img src={logo} alt="가까이한의원" className="h-16" />
-          </div>
-          <h3 className="font-bold text-center text-purple-900 mb-3 text-lg">
-            가까이한의원과 함께하는 건강한 다이어트
+        <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg border-2 border-primary/20">
+          <h3 className="font-bold text-center text-foreground mb-3 text-lg">
+            건강한 다이어트를 위한 전문가 상담
           </h3>
-          <p className="text-sm text-center text-purple-700 mb-4">
+          <p className="text-sm text-center text-muted-foreground mb-4">
             체질별 맞춤 한방 다이어트는 꾸준한 관리가 핵심입니다. 
-            가까이한의원의 전문 한의사 상담으로 더 빠르고 안전한 결과를 경험하세요.
+            전문 한의사 상담으로 더 빠르고 안전한 결과를 경험하세요.
           </p>
-          <div className="flex flex-col gap-2 items-center text-sm text-purple-600">
+          <div className="flex flex-col gap-2 items-center text-sm text-muted-foreground">
             <div className="flex items-center">
-              <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+              <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
               <span>검사 결과는 3개월간 유효 (정기 재검사 권장)</span>
             </div>
-            <div className="flex items-center gap-2 font-semibold text-purple-800">
-              <Phone className="h-4 w-4" />
-              <span>상담문의: 1234-5678</span>
-            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => navigate('/expert')}
+              className="mt-2"
+            >
+              <Star className="h-4 w-4 mr-2" />
+              한의사 전문가 상담
+            </Button>
           </div>
         </div>
       </div>

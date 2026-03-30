@@ -327,10 +327,10 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
         console.log('공유 취소됨');
       }
     } else {
-      navigator.clipboard.writeText('https://naver.me/xk1XPBhl');
+      navigator.clipboard.writeText('https://hilightpro.lovable.app/expert');
       toast({
         title: "링크 복사됨",
-        description: "가까이한의원 상담 링크가 클립보드에 복사되었습니다.",
+        description: "전문가 상담 링크가 클립보드에 복사되었습니다.",
       });
     }
   };

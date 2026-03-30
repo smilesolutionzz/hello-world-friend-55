@@ -85,8 +85,8 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
               생활 관리
             </TabsTrigger>
             <TabsTrigger value="clinics" className="flex items-center">
-              <MapPin className="h-4 w-4 mr-2" />
-              제휴 한의원
+              <Star className="h-4 w-4 mr-2" />
+              한의사 전문가
             </TabsTrigger>
           </TabsList>
 

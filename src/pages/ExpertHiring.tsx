@@ -42,7 +42,6 @@ const getFacilityImage = (type: string, specialties: string[]) => {
   if (type.includes('주간') || type.includes('보호')) return facilityDaycare;
   return facilityDev;
 };
-import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 
 const CONSULT_PRICE = 49000;
 

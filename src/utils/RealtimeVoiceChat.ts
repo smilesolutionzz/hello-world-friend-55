@@ -224,9 +224,9 @@ export class RealtimeVoiceChat {
                 },
                 turn_detection: {
                   type: 'server_vad',
-                  threshold: 0.5,
-                  prefix_padding_ms: 300,
-                  silence_duration_ms: 1000
+                  threshold: 0.7,
+                  prefix_padding_ms: 500,
+                  silence_duration_ms: 2000
                 },
                 temperature: 0.8,
                 max_response_output_tokens: 'inf'

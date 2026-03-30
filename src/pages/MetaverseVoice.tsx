@@ -86,7 +86,19 @@ const MetaverseVoicePage = () => {
           </TabsList>
 
           <TabsContent value="game" className="mt-0">
-            <GameCounselingMode />
+            {/* 3D/2D 전환 토글 */}
+            <div className="flex justify-end mb-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setUse3D(!use3D)}
+                className={`gap-2 text-xs ${use3D ? 'bg-emerald-600 text-white border-emerald-500 hover:bg-emerald-700' : 'bg-black/30 text-white/70 border-white/10'}`}
+              >
+                <Sparkles className="w-3 h-3" />
+                {use3D ? '3D 몰입형 ✨' : '2D 카드형'}
+              </Button>
+            </div>
+            {use3D ? <GameCounseling3DMode /> : <GameCounselingMode />}
           </TabsContent>
 
           <TabsContent value="voice" className="mt-0">

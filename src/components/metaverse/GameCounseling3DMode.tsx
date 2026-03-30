@@ -95,7 +95,7 @@ export default function GameCounseling3DMode() {
     playSFX('whoosh');
 
     if (ttsEnabled) {
-      speak(`${chapter.title}. 화면을 터치해서 앞으로 걸어가 보세요.`);
+      speak(`${chapter.title}. 금색 빛기둥과 화살표를 따라 이동해 보세요.`);
     }
   }, [ttsEnabled, speak, playSFX]);
 
@@ -138,7 +138,7 @@ export default function GameCounseling3DMode() {
         playSFX('scene_transition');
 
         if (ttsEnabled) {
-          setTimeout(() => speak('화면을 터치해서 앞으로 걸어가 보세요.'), 300);
+          setTimeout(() => speak('금색 빛기둥과 화살표를 따라 다음 장소로 이동해 보세요.'), 300);
         }
       }
     }, 800);
@@ -199,7 +199,7 @@ export default function GameCounseling3DMode() {
             이렇게 진행돼요
           </h3>
           <div className="space-y-2 text-xs text-purple-200/70">
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">1.</span> 빛나는 곳을 터치하면 캐릭터가 걸어가요.</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">1.</span> 금색 빛기둥이나 바닥을 터치하면 캐릭터가 걸어가요.</div>
             <div className="flex gap-2"><span className="text-emerald-400 font-bold">2.</span> NPC에게 다가가면 이야기가 시작돼요.</div>
             <div className="flex gap-2"><span className="text-emerald-400 font-bold">3.</span> 화면 안에서 바로 답을 선택하세요.</div>
             <div className="flex gap-2"><span className="text-emerald-400 font-bold">4.</span> 모험을 완료하면 심리 분석 결과를 받아요.</div>

@@ -246,9 +246,6 @@ function PlayScreen({ scene, onChoice, showParentNotes, selectedChoice, chapterT
 }
 
 // ResultScreen removed - now using GameResultReport component
-
-  const getCharacterType = () => {
-    const top = topDimensions[0][0] as PsychDimension;
     const types: Record<string, { title: string; emoji: string; desc: string }> = {
       empathy: { title: '따뜻한 마음의 치유사', emoji: '💝', desc: '다른 사람의 마음을 잘 느끼고 돌봐주는 따뜻한 아이예요' },
       creativity: { title: '빛나는 상상력의 마법사', emoji: '✨', desc: '독창적인 방법으로 문제를 해결하는 창의적인 아이예요' },

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Mic, ArrowLeft, Home, Gamepad2, Sparkles } from 'lucide-react';
+import { Mic, ArrowLeft, Home, Gamepad2 } from 'lucide-react';
 import MetaverseVoiceCounseling from '@/components/metaverse/MetaverseVoiceCounseling';
 import { CounselingSetup } from '@/components/metaverse/CounselingSetup';
 import GameCounseling3DMode from '@/components/metaverse/GameCounseling3DMode';

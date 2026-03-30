@@ -234,7 +234,7 @@ ${result.dietPlan.herbs.join(', ')}
                 <p className="text-sm text-muted-foreground mb-3">검사 결과 기반 맞춤 한약 처방</p>
                 <Button 
                   className="w-full bg-primary hover:bg-primary/90"
-                  onClick={() => navigate('/expert')}
+                  onClick={() => navigate('/expert-hiring')}
                 >
                   <Star className="h-4 w-4 mr-2" />
                   한의사 전문가 보기

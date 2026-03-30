@@ -5,7 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from 'react-helmet-async';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/i18n";
 
 import ErrorBoundary from "@/components/ui/error-boundary";
@@ -29,7 +29,7 @@ import AIAssistant from "./pages/AIAssistant";
 import ConcernStorage from "./pages/ConcernStorage";
 import ReportGenerator from "./pages/ReportGenerator";
 import MetaverseVoice from "./pages/MetaverseVoice";
-import GameCounseling from "./pages/GameCounseling";
+// GameCounseling integrated into MetaverseVoice
 
 // Assessment & Tests
 import Assessment from "./pages/Assessment";
@@ -178,7 +178,7 @@ const App = () => {
           <Route path="/en/sample-report" element={<SampleReport />} />
           <Route path="/en/comprehensive-reporting" element={<ComprehensiveReporting />} />
            <Route path="/en/metaverse-voice" element={<MetaverseVoice />} />
-           <Route path="/en/game-counseling" element={<GameCounseling />} />
+           <Route path="/en/game-counseling" element={<Navigate to="/en/metaverse-voice" replace />} />
           <Route path="/en/assessment" element={<Assessment />} />
           <Route path="/en/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/en/free-trial" element={<FreeTrialAssessment />} />
@@ -278,7 +278,7 @@ const App = () => {
 
           {/* AI Azit - Killer Feature */}
           <Route path="/metaverse-voice" element={<MetaverseVoice />} />
-          <Route path="/game-counseling" element={<GameCounseling />} />
+          <Route path="/game-counseling" element={<Navigate to="/metaverse-voice" replace />} />
 
           {/* Assessment & Tests */}
           <Route path="/assessment" element={<Assessment />} />

@@ -201,7 +201,7 @@ export const CurationBot = ({ concerns, assessments }: CurationBotProps) => {
     if (lowerMessage.includes('상담') || lowerMessage.includes('전문가') || lowerMessage.includes('도움')) {
       return {
         role: 'bot',
-        content: '전문 상담을 원하시는군요! 💜\n\n저희 서비스에서는 두 가지 방법으로 상담을 받으실 수 있어요:\n\n1️⃣ AI 아지트에서 AI 상담사와 대화하기\n2️⃣ 카카오톡으로 전문 상담사에게 문의하기\n\n어떤 방법이 좋으실까요?',
+        content: '전문 상담을 원하시는군요! 💜\n\n저희 서비스에서는 두 가지 방법으로 상담을 받으실 수 있어요:\n\n1️⃣ 금쪽상담소에서 AI 상담사와 대화하기\n2️⃣ 카카오톡으로 전문 상담사에게 문의하기\n\n어떤 방법이 좋으실까요?',
         showKakaoLink: true
       };
     }

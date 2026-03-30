@@ -269,15 +269,15 @@ ${result.dietPlan.herbs.join(', ')}
             </Card>
 
             {/* 추가 검사 추천 */}
-            <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
               <CardHeader>
-                <CardTitle className="text-lg text-purple-800">정밀 검사</CardTitle>
+                <CardTitle className="text-lg text-foreground">정밀 검사</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <p className="text-sm text-purple-700">더 정확한 체질 분석을 위한</p>
-                  <Button size="sm" variant="outline" className="w-full border-purple-300 text-purple-700 hover:bg-purple-50">
-                    가까이한의원 프리미엄 분석
+                  <p className="text-sm text-muted-foreground">더 정확한 체질 분석을 위한</p>
+                  <Button size="sm" variant="outline" className="w-full" onClick={() => navigate('/expert')}>
+                    전문 한의사 정밀 분석
                   </Button>
                 </div>
               </CardContent>

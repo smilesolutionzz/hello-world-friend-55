@@ -174,6 +174,8 @@ export class RealtimeVoiceChat {
   private audioQueue: AudioQueue | null = null;
   public audioContext: AudioContext | null = null;
   private isSessionStarted = false;
+  private isSessionConfigured = false;
+  private pendingResponseAfterTranscription = false;
 
   constructor(
     private onMessage: (message: any) => void,
@@ -183,7 +185,7 @@ export class RealtimeVoiceChat {
   async init() {
     try {
       console.log("Initializing Realtime Voice Chat...");
-      
+
       this.audioContext = new AudioContext({ sampleRate: 24000 });
       this.audioQueue = new AudioQueue(this.audioContext);
 
@@ -191,7 +193,7 @@ export class RealtimeVoiceChat {
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData?.session?.access_token || '';
       const wsUrl = `wss://hrcqxjetmzxoephgyjlb.functions.supabase.co/functions/v1/realtime-voice?token=${encodeURIComponent(accessToken)}`;
-      
+
       console.log("Connecting to:", wsUrl);
       this.ws = new WebSocket(wsUrl);
 
@@ -204,69 +206,85 @@ export class RealtimeVoiceChat {
           const data = JSON.parse(event.data);
           console.log("📨 Received:", data.type);
 
-          this.onMessage(data);
-
           if (data.type === 'session.created' && !this.isSessionStarted) {
             console.log("✅ Session created, sending configuration...");
             this.isSessionStarted = true;
-            
-            // Send session configuration
+
             this.ws?.send(JSON.stringify({
               type: 'session.update',
               session: {
                 modalities: ['text', 'audio'],
-                instructions: '당신은 친절하고 공감적인 한국어 심리 상담사입니다. 사용자의 감정을 이해하고 따뜻하게 대화하세요.',
+                instructions: '당신은 친절하고 공감적인 한국어 심리 상담사입니다. 사용자의 발화를 끝까지 경청한 뒤 2~3문장으로 간결하게 답하고, 입력이 불명확하면 추측하지 말고 다시 물어보세요.',
                 voice: 'shimmer',
                 input_audio_format: 'pcm16',
                 output_audio_format: 'pcm16',
                 input_audio_transcription: {
-                  model: 'whisper-1'
+                  model: 'gpt-4o-transcribe',
+                  language: 'ko'
                 },
-                turn_detection: {
-                  type: 'server_vad',
-                  threshold: 0.7,
-                  prefix_padding_ms: 500,
-                  silence_duration_ms: 2000
-                },
-                temperature: 0.8,
-                max_response_output_tokens: 'inf'
+                turn_detection: null,
+                temperature: 0.6,
+                max_response_output_tokens: 240
               }
             }));
 
-            // AI가 먼저 인사하고 질문하도록 메시지 전송
-            setTimeout(() => {
-              this.ws?.send(JSON.stringify({
-                type: 'conversation.item.create',
-                item: {
-                  type: 'message',
-                  role: 'user',
-                  content: [{
-                    type: 'input_text',
-                    text: '안녕하세요. 친근하게 인사하고 오늘 기분이 어떤지 물어봐주세요.'
-                  }]
-                }
-              }));
+            this.isSessionConfigured = true;
+            this.onSpeakingChange(false);
+            console.log("🎤 Session configured. Waiting for user input.");
+            return;
+          }
 
-              this.ws?.send(JSON.stringify({
-                type: 'response.create'
-              }));
-            }, 500);
-
-            // Start recording after session is configured
-            await this.startRecordingInternal();
-            console.log("🎤 Recording started, AI will greet you first!");
-          } else if (data.type === 'response.audio.delta') {
+          if (data.type === 'response.audio.delta' && data.delta) {
             const binaryString = atob(data.delta);
             const bytes = new Uint8Array(binaryString.length);
             for (let i = 0; i < binaryString.length; i++) {
               bytes[i] = binaryString.charCodeAt(i);
             }
             await this.audioQueue?.addToQueue(bytes);
-          } else if (data.type === 'response.audio.done') {
-            this.onSpeakingChange(false);
-          } else if (data.type === 'response.created') {
-            this.onSpeakingChange(true);
+            this.onMessage(data);
+            return;
           }
+
+          if (data.type === 'conversation.item.input_audio_transcription.completed') {
+            const transcript = typeof data.transcript === 'string' ? data.transcript.trim() : '';
+
+            if (!transcript || transcript.length < 2) {
+              if (this.pendingResponseAfterTranscription) {
+                this.pendingResponseAfterTranscription = false;
+                this.onSpeakingChange(false);
+                this.onMessage({
+                  type: 'input.transcript.ignored',
+                  reason: 'empty_or_too_short'
+                });
+              }
+              return;
+            }
+
+            this.onMessage({ ...data, transcript });
+
+            if (this.pendingResponseAfterTranscription && this.ws?.readyState === WebSocket.OPEN) {
+              this.pendingResponseAfterTranscription = false;
+              this.ws.send(JSON.stringify({ type: 'response.create' }));
+            }
+            return;
+          }
+
+          if (data.type === 'conversation.item.input_audio_transcription.failed') {
+            if (this.pendingResponseAfterTranscription) {
+              this.pendingResponseAfterTranscription = false;
+              this.onSpeakingChange(false);
+              this.onMessage({ type: 'input.transcript.ignored', reason: 'transcription_failed' });
+            }
+            return;
+          }
+
+          if (data.type === 'response.created') {
+            this.onSpeakingChange(true);
+          } else if (data.type === 'response.audio.done' || data.type === 'response.done') {
+            this.onSpeakingChange(false);
+          }
+
+          this.onMessage(data);
         } catch (error) {
           console.error("Error processing message:", error);
         }
@@ -280,7 +298,6 @@ export class RealtimeVoiceChat {
         console.log("🔌 WebSocket closed:", event.code, event.reason);
         this.cleanup();
       };
-
     } catch (error) {
       console.error("Error initializing chat:", error);
       throw error;
@@ -289,7 +306,22 @@ export class RealtimeVoiceChat {
 
   private async startRecordingInternal() {
     try {
+      if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+        throw new Error('WebSocket not connected');
+      }
+
+      if (!this.isSessionConfigured) {
+        throw new Error('Voice session is not ready yet');
+      }
+
+      if (this.recorder) {
+        return;
+      }
+
       console.log("Starting audio recording...");
+      this.pendingResponseAfterTranscription = false;
+      this.ws.send(JSON.stringify({ type: 'input_audio_buffer.clear' }));
+
       this.recorder = new AudioRecorder((audioData) => {
         if (this.ws?.readyState === WebSocket.OPEN) {
           const base64Audio = encodeAudioForAPI(audioData);
@@ -299,7 +331,9 @@ export class RealtimeVoiceChat {
           }));
         }
       });
+
       await this.recorder.start();
+      this.onSpeakingChange(false);
       console.log("Recording started");
     } catch (error) {
       console.error("Error starting recording:", error);
@@ -312,9 +346,20 @@ export class RealtimeVoiceChat {
   }
 
   public async stopRecordingAndSend() {
-    // With server VAD, audio is automatically sent
-    // This method is here for compatibility with existing components
-    console.log("stopRecordingAndSend called (using server VAD)");
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      throw new Error('WebSocket not connected');
+    }
+
+    if (!this.recorder) {
+      return;
+    }
+
+    this.recorder.stop();
+    this.recorder = null;
+
+    this.pendingResponseAfterTranscription = true;
+    this.ws.send(JSON.stringify({ type: 'input_audio_buffer.commit' }));
+    console.log("Recording stopped, waiting for finalized transcript...");
   }
 
   sendTextMessage(text: string) {
@@ -337,12 +382,19 @@ export class RealtimeVoiceChat {
 
   private cleanup() {
     this.recorder?.stop();
+    this.recorder = null;
+    this.pendingResponseAfterTranscription = false;
+    this.isSessionConfigured = false;
+    this.isSessionStarted = false;
+
     this.audioQueue?.clear();
     this.audioContext?.close();
+    this.audioContext = null;
   }
 
   disconnect() {
     this.cleanup();
     this.ws?.close();
+    this.ws = null;
   }
 }

@@ -31,7 +31,7 @@ export const RealtimeVoiceChatComponent: React.FC = () => {
 
   const handleMessage = (event: any) => {
     console.log('Message received:', event.type);
-    
+
     if (event.type === 'response.audio_transcript.delta' && event.delta) {
       setMessages(prev => {
         const last = prev[prev.length - 1];
@@ -46,12 +46,29 @@ export const RealtimeVoiceChatComponent: React.FC = () => {
           { role: 'assistant', content: event.delta, timestamp: new Date() }
         ];
       });
-    } else if (event.type === 'conversation.item.input_audio_transcription.completed') {
+      return;
+    }
+
+    if (event.type === 'conversation.item.input_audio_transcription.completed') {
+      const transcript = typeof event.transcript === 'string' ? event.transcript.trim() : '';
+      if (!transcript) return;
+
       setMessages(prev => [
         ...prev,
-        { role: 'user', content: event.transcript, timestamp: new Date() }
+        { role: 'user', content: transcript, timestamp: new Date() }
       ]);
-    } else if (event.type === 'assistant.text' && event.content) {
+      return;
+    }
+
+    if (event.type === 'input.transcript.ignored') {
+      toast({
+        title: '음성이 명확하지 않습니다',
+        description: '조금 더 또렷하게 다시 말씀해 주세요.',
+      });
+      return;
+    }
+
+    if (event.type === 'assistant.text' && event.content) {
       setMessages(prev => [
         ...prev,
         { role: 'assistant', content: event.content, timestamp: new Date() }

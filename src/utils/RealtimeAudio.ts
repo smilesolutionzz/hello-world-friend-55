@@ -74,6 +74,7 @@ export class RealtimeChat {
   private therapistType?: string;
   private therapistVoice?: string;
   private therapistPrompt?: string;
+  private userName?: string;
   private reconnectAttempts: number = 0;
   private maxReconnectAttempts: number = 3;
   private onDisconnect?: () => void;
@@ -92,6 +93,7 @@ export class RealtimeChat {
       therapistType?: string;
       therapistVoice?: string;
       therapistPrompt?: string;
+      userName?: string;
       onDisconnect?: () => void;
       onReconnecting?: () => void;
     }
@@ -110,6 +112,7 @@ export class RealtimeChat {
     this.therapistType = options?.therapistType;
     this.therapistVoice = options?.therapistVoice;
     this.therapistPrompt = options?.therapistPrompt;
+    this.userName = options?.userName;
     this.onDisconnect = options?.onDisconnect;
     this.onReconnecting = options?.onReconnecting;
     this.initOptions = options;
@@ -129,7 +132,8 @@ export class RealtimeChat {
           firstMessage: this.firstMessage,
           therapistType: this.therapistType,
           therapistVoice: this.therapistVoice,
-          therapistPrompt: this.therapistPrompt
+          therapistPrompt: this.therapistPrompt,
+          userName: this.userName
         }
       });
       if (error) throw error;

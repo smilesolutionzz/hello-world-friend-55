@@ -106,7 +106,7 @@ function SimpleAIAzitInner() {
   };
 
   const getConversationText = () => {
-    const header = `AI 아지트 상담 기록\n날짜: ${new Date().toLocaleString('ko-KR')}\n${'='.repeat(40)}\n\n`;
+    const header = `금쪽상담소 상담 기록\n날짜: ${new Date().toLocaleString('ko-KR')}\n${'='.repeat(40)}\n\n`;
     const conversation = messages.map(msg => 
       `[${msg.role === 'user' ? '나' : 'AI'}] ${msg.content}`
     ).join('\n\n');
@@ -138,7 +138,7 @@ function SimpleAIAzitInner() {
             <ArrowLeft className="w-5 h-5 mr-2" />
             뒤로
           </Button>
-          <h1 className="text-2xl font-bold text-white">🎭 AI 아지트</h1>
+          <h1 className="text-2xl font-bold text-white">🎭 금쪽상담소</h1>
           <div className="w-20" />
         </div>
 
@@ -243,7 +243,7 @@ function SimpleAIAzitInner() {
 
 export default function SimpleAIAzit() {
   return (
-    <SubscriptionGuard featureName="AI 아지트 상담" trialKey="AI_COUNSELOR_CHAT">
+    <SubscriptionGuard featureName="금쪽상담소 상담" trialKey="AI_COUNSELOR_CHAT">
       <SimpleAIAzitInner />
     </SubscriptionGuard>
   );

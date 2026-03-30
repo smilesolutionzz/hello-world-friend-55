@@ -30,11 +30,12 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY is not set');
     }
 
-    const { mode, ageGroup, character, roleplayPersona, roleplayVoice, firstMessage, therapistType, therapistVoice, therapistPrompt } = await req.json().catch(() => ({}));
+    const { mode, ageGroup, character, roleplayPersona, roleplayVoice, firstMessage, therapistType, therapistVoice, therapistPrompt, userName } = await req.json().catch(() => ({}));
 
-    console.log(`Creating ephemeral token - mode: ${mode}, ageGroup: ${ageGroup}, character: ${character}`);
+    console.log(`Creating ephemeral token - mode: ${mode}, ageGroup: ${ageGroup}, character: ${character}, userName: ${userName}`);
 
     // 캐릭터별 설정
+    const userNameStr = userName || '';
     const CHARACTERS: Record<string, { voice: string; persona: string }> = {
       elephant: {
         voice: 'alloy',
@@ -44,7 +45,7 @@ serve(async (req) => {
 짧은 추가 질문을 하거나 다음 질문으로 넘어가.
 절대 서두르지 말고, 아이가 편안하게 마음을 열 수 있도록 기다려줘.
 모든 답변과 자막은 100% 한국어 반말로만 말해.
-대화가 시작되면 "안녕! 나는 코끼리 선생님이야. 너의 이름은 뭐야?"라고 먼저 물어봐.`
+${userNameStr ? `사용자의 이름은 "${userNameStr}"이야. 대화가 시작되면 "안녕 ${userNameStr}! 나는 코끼리 선생님이야. 만나서 반가워!"라고 먼저 인사해.` : `대화가 시작되면 "안녕! 나는 코끼리 선생님이야. 너의 이름은 뭐야?"라고 먼저 물어봐.`}`
       },
       bear: {
         voice: 'echo',
@@ -52,7 +53,7 @@ serve(async (req) => {
 모든 연령대의 고민을 경청하고 따뜻한 위로를 주는 상담사야.
 모든 답변과 자막은 100% 한국어로만 말해.
 친근하면서도 안정감 있는 톤으로 대화해줘.
-대화가 시작되면 "안녕하세요, 만나서 반가워요. 오늘 기분이 어떠세요?"라고 먼저 물어봐.`
+${userNameStr ? `사용자의 이름은 "${userNameStr}"입니다. 대화가 시작되면 "${userNameStr}님, 안녕하세요! 만나서 반가워요. 오늘 기분이 어떠세요?"라고 먼저 인사하세요.` : `대화가 시작되면 "안녕하세요, 만나서 반가워요. 오늘 기분이 어떠세요?"라고 먼저 물어봐.`}`
       },
       rabbit: {
         voice: 'shimmer',
@@ -60,7 +61,7 @@ serve(async (req) => {
 어린아이들과 신나게 대화하면서도 따뜻하게 위로해주는 상담사야.
 모든 답변과 자막은 100% 한국어로만 말해.
 밝은 목소리로 "~야!", "정말 멋진걸!" 같은 긍정적인 표현을 많이 사용해줘.
-대화가 시작되면 "안녕! 만나서 반가워! 오늘 기분이 어때?"라고 먼저 물어봐.`
+${userNameStr ? `사용자의 이름은 "${userNameStr}"이야. 대화가 시작되면 "${userNameStr}! 안녕! 만나서 반가워! 오늘 기분이 어때?"라고 먼저 인사해.` : `대화가 시작되면 "안녕! 만나서 반가워! 오늘 기분이 어때?"라고 먼저 물어봐.`}`
       },
       fox: {
         voice: 'sage',
@@ -68,7 +69,7 @@ serve(async (req) => {
 청소년과 성인의 복잡한 고민을 함께 풀어가는 상담사야.
 모든 답변과 자막은 100% 한국어로만 말해.
 따뜻하면서도 통찰력 있는 조언을 해줘.
-대화가 시작되면 "안녕하세요. 오늘은 어떤 이야기를 나누고 싶으신가요?"라고 먼저 물어봐.`
+${userNameStr ? `사용자의 이름은 "${userNameStr}"입니다. 대화가 시작되면 "${userNameStr}님, 안녕하세요. 오늘은 어떤 이야기를 나누고 싶으신가요?"라고 먼저 인사하세요.` : `대화가 시작되면 "안녕하세요. 오늘은 어떤 이야기를 나누고 싶으신가요?"라고 먼저 물어봐.`}`
       },
       owl: {
         voice: 'echo',
@@ -76,7 +77,7 @@ serve(async (req) => {
 모든 연령대의 내면 깊은 곳까지 살펴보며 진정한 치유를 돕는 상담사야.
 모든 답변과 자막은 100% 한국어로만 말해.
 차분하고 깊이 있는 톤으로 존댓말을 사용하며, 내담자가 스스로 깨달음을 얻도록 돕는 질문을 해줘.
-대화가 시작되면 "안녕하세요. 오늘 어떤 것을 함께 탐색해볼까요?"라고 먼저 물어봐.`
+${userNameStr ? `사용자의 이름은 "${userNameStr}"입니다. 대화가 시작되면 "${userNameStr}님, 안녕하세요. 오늘 어떤 것을 함께 탐색해볼까요?"라고 먼저 인사하세요.` : `대화가 시작되면 "안녕하세요. 오늘 어떤 것을 함께 탐색해볼까요?"라고 먼저 물어봐.`}`
       }
     };
 
@@ -168,8 +169,11 @@ serve(async (req) => {
 15. **이름/고유명사**: 사용자가 이름을 말하면, 들은 그대로 반복 확인하세요. 확신이 없으면 되물어보세요.
 16. **불명확한 음성**: 추측하지 말고 "다시 한번 말씀해주시겠어요?"라고 되물어보세요.`;
 
+    const userNameGreeting = userName ? `사용자의 이름은 "${userName}"입니다. 대화가 시작되면 반드시 "${userName}"님이라고 이름을 불러주면서 따뜻하게 인사하세요.` : '';
+
     let instructions = `당신은 친절하고 공감적인 한국어 심리 상담사입니다.
-대화가 시작되면 먼저 따뜻하게 인사하고 '오늘 기분이 어떠세요?'라고 물어보세요.
+${userNameGreeting}
+${userName ? `대화가 시작되면 "${userName}님, 안녕하세요! 만나서 반가워요. 오늘 기분이 어떠세요?"라고 먼저 인사하세요.` : `대화가 시작되면 먼저 따뜻하게 인사하고 '오늘 기분이 어떠세요?'라고 물어보세요.`}
 사용자의 감정을 이해하고 따뜻하게 대화하세요.${conversationFlowGuide}`;
 
     // 구조화된 상담 모드

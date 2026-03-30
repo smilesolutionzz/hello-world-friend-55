@@ -49,13 +49,11 @@ export default function GameCounseling3DMode() {
     }, 40);
   }, []);
 
-  // 스토리 포인트에 도착했을 때 호출
   const handleArrive = useCallback((storyIndex: number) => {
     if (gameState !== 'exploring') return;
     setGameState('narrating');
   }, [gameState]);
 
-  // Narrate when scene enters narrating state
   useEffect(() => {
     if (gameState === 'narrating' && currentScene) {
       const narrateText = currentScene.character
@@ -74,7 +72,6 @@ export default function GameCounseling3DMode() {
     };
   }, [gameState, currentScene, ttsEnabled]);
 
-  // Read choices aloud
   useEffect(() => {
     if (gameState === 'choice' && currentScene && ttsEnabled && !isSpeaking && !ttsLoading) {
       const choiceTexts = currentScene.choices.map((c, i) => `${i + 1}번, ${c.text}`).join('. ');
@@ -171,7 +168,7 @@ export default function GameCounseling3DMode() {
             3D 마법의 숲 모험
           </h2>
           <p className="text-purple-200/80 text-sm max-w-sm mx-auto">
-            직접 터치해서 동화 속 세상을 탐험하세요!
+            터치해서 로블록스풍 동화 세계를 탐험하세요!
           </p>
           <div className="flex items-center justify-center gap-2 mt-2">
             <Button
@@ -192,10 +189,10 @@ export default function GameCounseling3DMode() {
             이렇게 진행돼요
           </h3>
           <div className="space-y-2 text-xs text-purple-200/70">
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">1.</span> 화면을 터치하면 캐릭터가 그곳으로 걸어가요.</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">2.</span> 빛나는 곳에 가면 숲속 친구를 만나요.</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">3.</span> AI가 이야기를 들려주고 질문해요.</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">4.</span> 답을 고르면 다음 모험이 열려요.</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">1.</span> 빛나는 곳을 터치하면 캐릭터가 걸어가요.</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">2.</span> NPC에게 다가가면 이야기가 시작돼요.</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">3.</span> 화면 안에서 바로 답을 선택하세요.</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">4.</span> 모험을 완료하면 심리 분석 결과를 받아요.</div>
           </div>
         </Card>
 
@@ -217,7 +214,7 @@ export default function GameCounseling3DMode() {
                         🎮 3D 탐험형
                       </span>
                       <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">
-                        🎙️ AI 음성
+                        🎙️ 루맘 AI 음성
                       </span>
                       <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">
                         {chapter.targetAge}
@@ -308,16 +305,15 @@ export default function GameCounseling3DMode() {
     );
   }
 
-  // ============ 플레이 중 (3D 월드 + 선택지 UI) ============
+  // ============ 플레이 중 (3D 월드 - 모든 UI가 화면 안에) ============
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* 상단 바 */}
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={() => { stopTTS(); setGameState('intro'); }} className="text-white/70">
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <Progress value={progress} className="h-2 flex-1" />
-
         <div className="flex items-center gap-1">
           {(isSpeaking || ttsLoading) && (
             <div className="flex items-center gap-1 px-2 py-1 bg-emerald-500/20 rounded-full">
@@ -354,7 +350,7 @@ export default function GameCounseling3DMode() {
         </div>
       </div>
 
-      {/* 3D 월드 */}
+      {/* 3D 월드 (선택지와 나레이션이 모두 화면 안에 오버레이) */}
       {currentChapter && (
         <GameCounseling3DWorld
           scene={currentScene}
@@ -364,122 +360,29 @@ export default function GameCounseling3DMode() {
           isWalking={false}
           showChoices={gameState === 'choice'}
           onArrive={handleArrive}
+          narrationText={gameState === 'narrating' ? displayedText : undefined}
+          gameState={gameState}
+          selectedChoice={selectedChoice}
+          isSpeaking={isSpeaking}
         />
       )}
 
-      {/* 스토리 텍스트 & 선택지 오버레이 */}
-      <AnimatePresence mode="wait">
-        {(gameState === 'narrating' || gameState === 'choice') && currentScene && (
-          <motion.div
-            key={currentScene.id}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="space-y-3"
-          >
-            {/* 장면 설명 */}
-            <Card className="p-4 bg-black/40 backdrop-blur-sm border-emerald-500/20 relative overflow-hidden">
-              {isSpeaking && (
-                <motion.div
-                  className="absolute top-0 left-0 h-0.5 bg-gradient-to-r from-emerald-400 to-cyan-400"
-                  animate={{ width: ['0%', '100%'] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                />
-              )}
-              <div className="flex items-start gap-3">
-                <span className="text-3xl">{currentScene.illustration}</span>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold text-white text-base">{currentScene.title}</h3>
-                    {isSpeaking && (
-                      <motion.div className="flex gap-0.5 items-end" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                        {[1,2,3,4].map(i => (
-                          <motion.div
-                            key={i}
-                            className="w-0.5 bg-emerald-400 rounded-full"
-                            animate={{ height: ['3px', '10px', '3px'] }}
-                            transition={{ duration: 0.4, repeat: Infinity, delay: i * 0.1 }}
-                          />
-                        ))}
-                      </motion.div>
-                    )}
-                  </div>
-                  {currentScene.character && (
-                    <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">
-                      🎭 {currentScene.character}
-                    </span>
-                  )}
-                  <p className="text-sm text-purple-100/80 mt-1 leading-relaxed whitespace-pre-line">
-                    {gameState === 'narrating' ? displayedText : currentScene.description}
-                    {gameState === 'narrating' && (
-                      <motion.span
-                        className="inline-block w-0.5 h-4 bg-emerald-400 ml-0.5 align-middle"
-                        animate={{ opacity: [1, 0] }}
-                        transition={{ duration: 0.5, repeat: Infinity }}
-                      />
-                    )}
-                  </p>
-                </div>
-              </div>
-            </Card>
-
-            {/* 선택지 */}
-            {gameState === 'choice' && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold text-emerald-300/70 px-1">어떻게 할까요?</p>
-                {currentScene.choices.map((choice, index) => (
-                  <motion.div
-                    key={choice.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.15 }}
-                  >
-                    <Card
-                      className={`p-3 cursor-pointer transition-all border bg-black/30 backdrop-blur-sm ${
-                        selectedChoice === choice.id
-                          ? 'border-emerald-500 bg-emerald-500/20 scale-[0.98]'
-                          : 'border-white/10 hover:border-emerald-500/40'
-                      }`}
-                      onClick={() => !selectedChoice && makeChoice(currentScene, choice)}
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className="text-2xl">{choice.emoji}</span>
-                        <div className="flex-1">
-                          <p className="font-medium text-sm text-white">{choice.text}</p>
-                          {showParentNotes && choice.parentNote && (
-                            <motion.p
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              className="text-xs text-amber-400 mt-1 italic"
-                            >
-                              👁️ {choice.parentNote}
-                            </motion.p>
-                          )}
-                        </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 탐험 중 안내 */}
-      {gameState === 'exploring' && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-3"
-        >
-          <div className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full">
-            <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
-              ✨
-            </motion.span>
-            <span className="text-white/80 text-sm">빛나는 곳을 터치해서 이동하세요!</span>
-          </div>
-        </motion.div>
+      {/* 부모 노트 (선택지 바깥에 표시) */}
+      {showParentNotes && gameState === 'choice' && currentScene && (
+        <div className="space-y-1">
+          {currentScene.choices.map((choice) => (
+            choice.parentNote && (
+              <motion.div
+                key={choice.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-xs text-amber-400/80 bg-amber-500/10 rounded-lg px-3 py-1.5 italic"
+              >
+                👁️ {choice.emoji} → {choice.parentNote}
+              </motion.div>
+            )
+          ))}
+        </div>
       )}
     </div>
   );

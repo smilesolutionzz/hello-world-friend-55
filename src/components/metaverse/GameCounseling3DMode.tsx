@@ -92,11 +92,12 @@ export default function GameCounseling3DMode() {
     setCurrentSceneIndex(0);
     setChoices([]);
     setGameState('exploring');
+    playSFX('whoosh');
 
     if (ttsEnabled) {
       speak(`${chapter.title}. 화면을 터치해서 앞으로 걸어가 보세요.`);
     }
-  }, [ttsEnabled, speak]);
+  }, [ttsEnabled, speak, playSFX]);
 
   const makeChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
     setSelectedChoice(choice.id);

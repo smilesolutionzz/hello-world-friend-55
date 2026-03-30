@@ -1494,7 +1494,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           setAvatarPosition(pos);
         }}
       >
-        <div className="relative z-10 flex flex-col items-center min-h-screen p-4 pt-16">
+        <div className="relative z-10 flex flex-col items-center min-h-screen p-4 pt-16 pr-[17rem] md:pr-[19rem]">
           {/* 이동 가이드 */}
           {enableMovement && !isMobile && <MovementGuide visible={showMovementGuide} />}
           

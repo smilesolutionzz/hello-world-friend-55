@@ -433,11 +433,11 @@ const SchoolRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =>
   return (
     <group ref={groupRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#F0E68C" />
       </mesh>
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#FFFFF0" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#FFF8DC" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#FFFFF0" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#FFF8DC" /></mesh>
       
       {/* 칠판 */}
       <group position={[0, 1, -7]}>

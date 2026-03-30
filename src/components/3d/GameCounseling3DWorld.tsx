@@ -781,14 +781,14 @@ export default function GameCounseling3DWorld({
   return (
     <div className="w-full h-[60vh] md:h-[65vh] rounded-xl overflow-hidden relative">
       <Canvas shadows camera={{ fov: 55, near: 0.1, far: 500 }}>
-        <color attach="background" args={['#87CEEB']} />
-        <fog attach="fog" args={['#87CEEB', 50, 150]} />
+        <color attach="background" args={[envType === 'rain' ? '#556677' : envType === 'cave' ? '#221111' : '#87CEEB']} />
+        <fog attach="fog" args={[envType === 'rain' ? '#556677' : envType === 'cave' ? '#221111' : '#87CEEB', envType === 'rain' ? 20 : 50, envType === 'rain' ? 80 : 150]} />
 
-        <ambientLight intensity={0.6} color="#ffffff" />
+        <ambientLight intensity={envType === 'rain' ? 0.3 : envType === 'cave' ? 0.2 : 0.6} color={envType === 'rain' ? '#667788' : '#ffffff'} />
         <directionalLight
           position={[15, 20, 10]}
-          intensity={1.2}
-          color="#fff5e6"
+          intensity={envType === 'rain' ? 0.4 : 1.2}
+          color={envType === 'rain' ? '#8899aa' : '#fff5e6'}
           castShadow
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
@@ -798,8 +798,20 @@ export default function GameCounseling3DWorld({
           shadow-camera-top={30}
           shadow-camera-bottom={-30}
         />
-        <hemisphereLight args={['#87CEEB', '#4CAF50', 0.4]} />
+        <hemisphereLight args={[envType === 'rain' ? '#445566' : '#87CEEB', '#4CAF50', envType === 'rain' ? 0.2 : 0.4]} />
         <pointLight position={[0, 8, playerPos.z]} intensity={1} color="#ffd700" distance={25} />
+
+        {/* 환경 효과 */}
+        {envType === 'rain' && <RainEffect playerPos={playerPos} />}
+
+        {/* 동굴 구조물 (dark_cave 씬 위치에) */}
+        {storyPointPositions.map((sp, i) => {
+          const sceneId = ['forest_start', 'meet_bunny', 'river_crossing', 'dark_cave', 'treasure_room', 'final_choice', 'ending'][i];
+          if (sceneId === 'dark_cave') {
+            return <CaveStructure key={`cave-${i}`} position={[0, 0, sp.z - 3]} />;
+          }
+          return null;
+        })}
 
         <FollowCamera playerPos={playerPos} />
         <ClickableGround onClickPosition={handleClickPosition} />
@@ -845,64 +857,66 @@ export default function GameCounseling3DWorld({
         {(gameState === 'narrating' || gameState === 'choice') && scene && (
           <motion.div
             key={scene.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute bottom-4 left-4 right-4 space-y-2 pointer-events-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 pointer-events-none"
           >
-            {/* 대화창 */}
-            <div className="bg-black/70 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-2xl">
-              {isSpeaking && (
-                <motion.div
-                  className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 rounded-t-2xl"
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                />
-              )}
-              <div className="flex items-start gap-3">
-                <span className="text-3xl flex-shrink-0">{scene.illustration}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold text-white text-sm">{scene.title}</h3>
-                    {scene.character && (
-                      <span className="text-[10px] bg-amber-500/30 text-amber-200 px-1.5 py-0.5 rounded-full">
-                        🎭 {scene.character}
-                      </span>
-                    )}
+            {/* 대화창 - 하단 왼쪽 (작게) */}
+            <div className="absolute bottom-3 left-3 max-w-[55%] pointer-events-auto">
+              <div className="bg-black/75 backdrop-blur-md rounded-xl p-3 border border-white/20 shadow-2xl">
+                {isSpeaking && (
+                  <motion.div
+                    className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 rounded-t-xl"
+                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                )}
+                <div className="flex items-start gap-2">
+                  <span className="text-xl flex-shrink-0">{scene.illustration}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <h3 className="font-bold text-white text-xs">{scene.title}</h3>
+                      {scene.character && (
+                        <span className="text-[9px] bg-amber-500/30 text-amber-200 px-1 py-0.5 rounded-full">
+                          🎭 {scene.character}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-white/90 leading-relaxed">
+                      {narrationText || scene.description}
+                      {gameState === 'narrating' && (
+                        <motion.span
+                          className="inline-block w-0.5 h-3 bg-amber-400 ml-0.5 align-middle"
+                          animate={{ opacity: [1, 0] }}
+                          transition={{ duration: 0.5, repeat: Infinity }}
+                        />
+                      )}
+                    </p>
                   </div>
-                  <p className="text-sm text-white/90 leading-relaxed">
-                    {narrationText || scene.description}
-                    {gameState === 'narrating' && (
-                      <motion.span
-                        className="inline-block w-0.5 h-4 bg-amber-400 ml-0.5 align-middle"
-                        animate={{ opacity: [1, 0] }}
-                        transition={{ duration: 0.5, repeat: Infinity }}
-                      />
-                    )}
-                  </p>
                 </div>
               </div>
             </div>
 
-            {/* 선택지 (3D 화면 안에 표시) */}
+            {/* 선택지 - 우측 세로 배치 (컴팩트) */}
             {gameState === 'choice' && (
-              <div className="space-y-1.5">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 w-[38%] max-w-[200px] space-y-1.5 pointer-events-auto">
                 {scene.choices.map((choice, index) => (
                   <motion.button
                     key={choice.id}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.12 }}
+                    transition={{ delay: index * 0.1 }}
                     onClick={() => !selectedChoice && onChoice(choice)}
-                    className={`w-full text-left p-3 rounded-xl transition-all border pointer-events-auto
+                    className={`w-full text-left px-2.5 py-2 rounded-lg transition-all border
                       ${selectedChoice === choice.id
-                        ? 'bg-amber-500/40 border-amber-400 scale-[0.98]'
-                        : 'bg-black/60 backdrop-blur-md border-white/15 hover:border-amber-400/50 hover:bg-black/70'
+                        ? 'bg-amber-500/50 border-amber-400 scale-[0.97]'
+                        : 'bg-black/65 backdrop-blur-md border-white/15 hover:border-amber-400/50 hover:bg-black/75'
                       }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{choice.emoji}</span>
-                      <p className="font-medium text-sm text-white">{choice.text}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg flex-shrink-0">{choice.emoji}</span>
+                      <p className="font-medium text-[11px] text-white leading-tight">{choice.text}</p>
                     </div>
                   </motion.button>
                 ))}
@@ -917,13 +931,13 @@ export default function GameCounseling3DWorld({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2"
         >
-          <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full border border-amber-400/30">
+          <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-amber-400/30">
             <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.2, repeat: Infinity }}>
               ✨
             </motion.span>
-            <span className="text-white text-sm font-medium">화면을 터치해서 앞으로 이동하세요.</span>
+            <span className="text-white text-xs font-medium">화면을 터치해서 앞으로 이동하세요.</span>
           </div>
         </motion.div>
       )}

@@ -169,6 +169,24 @@ const getPhilosophyBySpecialty = (name: string, specialties: string[]) => {
   return { philosophy: "한 사람 한 사람의 고유한 가치를 존중하며, 함께 성장하는 여정을 걸어갑니다.", approach: ['개인 맞춤형 치료', '근거기반 접근', '가족 중심 치료'], education: ['석사 이상 전문 학위', '관련 분야 전문가 자격'], successCases: Math.floor(Math.random() * 50) + 100 };
 };
 
+// ─── FAQ 아코디언 아이템 ───
+const FaqItem = ({ question, answer }: { question: string; answer: string }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border border-border/30 rounded-2xl overflow-hidden">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/20 transition-colors">
+        <span className="text-sm font-semibold text-foreground pr-4">{question}</span>
+        {open ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" /> : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+      </button>
+      {open && (
+        <div className="px-5 pb-4 pt-0">
+          <p className="text-sm text-muted-foreground leading-relaxed">{answer}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ─── 프로필 편집 모달 ───
 const ExpertEditModal = ({ open, onOpenChange, expert, onSave }: {
   open: boolean;

@@ -58,7 +58,13 @@ serve(async (req) => {
         body: JSON.stringify({
           text,
           model_id: model,
-          voice_settings: {
+          voice_settings: isKidsVoice ? {
+            stability: 0.7,          // 안정적이고 일관된 톤
+            similarity_boost: 0.8,    // 원래 음성 특성 유지
+            style: 0.3,              // 자연스럽고 과하지 않은 스타일
+            use_speaker_boost: true,
+            speed: 0.85,             // 아이가 이해하기 쉽게 느린 속도
+          } : {
             stability: 0.6,
             similarity_boost: 0.75,
             style: 0.4,

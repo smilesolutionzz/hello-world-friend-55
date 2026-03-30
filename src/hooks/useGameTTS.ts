@@ -52,7 +52,7 @@ export function useGameTTS(): UseGameTTSReturn {
 
     try {
       const { data, error } = await supabase.functions.invoke('elevenlabs-tts', {
-        body: { text, voice: 'Lily', model: 'eleven_multilingual_v2' }
+        body: { text, voice: 'kids_narrator', model: 'eleven_multilingual_v2' }
       });
 
       if (abortRef.current) return;

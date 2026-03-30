@@ -376,10 +376,17 @@ function NPCCharacter({ position, type }: { position: [number, number, number]; 
 function FollowCamera({ playerPos }: { playerPos: THREE.Vector3 }) {
   const { camera } = useThree();
   const offset = useMemo(() => new THREE.Vector3(0, 4, 6), []);
+  const initialized = useRef(false);
 
   useFrame((_, delta) => {
     const target = playerPos.clone().add(offset);
-    camera.position.lerp(target, delta * 3);
+    // 첫 프레임은 즉시 이동, 이후 부드럽게 추적 (느리게)
+    if (!initialized.current) {
+      camera.position.copy(target);
+      initialized.current = true;
+    } else {
+      camera.position.lerp(target, delta * 1.5);
+    }
     const lookAt = playerPos.clone();
     lookAt.y += 1;
     camera.lookAt(lookAt);

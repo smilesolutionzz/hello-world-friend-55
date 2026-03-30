@@ -35,6 +35,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
   const { toast } = useToast();
   const { t } = useTranslation();
   const { isEnglish } = useLanguage();
+  const navigate = useNavigate();
   const [isGeneratingAnalysis, setIsGeneratingAnalysis] = useState(false);
   const [enhancedAnalysis, setEnhancedAnalysis] = useState<string | null>(null);
   const [clinicInfo, setClinicInfo] = useState<any>(null);

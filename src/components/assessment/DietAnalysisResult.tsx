@@ -286,26 +286,28 @@ ${result.dietPlan.herbs.join(', ')}
         </div>
 
         {/* 하단 안내 */}
-        <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border-2 border-purple-200">
-          <div className="flex items-center justify-center mb-4">
-            <img src={logo} alt="가까이한의원" className="h-16" />
-          </div>
-          <h3 className="font-bold text-center text-purple-900 mb-3 text-lg">
-            가까이한의원과 함께하는 건강한 다이어트
+        <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg border-2 border-primary/20">
+          <h3 className="font-bold text-center text-foreground mb-3 text-lg">
+            건강한 다이어트를 위한 전문가 상담
           </h3>
-          <p className="text-sm text-center text-purple-700 mb-4">
+          <p className="text-sm text-center text-muted-foreground mb-4">
             체질별 맞춤 한방 다이어트는 꾸준한 관리가 핵심입니다. 
-            가까이한의원의 전문 한의사 상담으로 더 빠르고 안전한 결과를 경험하세요.
+            전문 한의사 상담으로 더 빠르고 안전한 결과를 경험하세요.
           </p>
-          <div className="flex flex-col gap-2 items-center text-sm text-purple-600">
+          <div className="flex flex-col gap-2 items-center text-sm text-muted-foreground">
             <div className="flex items-center">
-              <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+              <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
               <span>검사 결과는 3개월간 유효 (정기 재검사 권장)</span>
             </div>
-            <div className="flex items-center gap-2 font-semibold text-purple-800">
-              <Phone className="h-4 w-4" />
-              <span>상담문의: 1234-5678</span>
-            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => navigate('/expert')}
+              className="mt-2"
+            >
+              <Star className="h-4 w-4 mr-2" />
+              한의사 전문가 상담
+            </Button>
           </div>
         </div>
       </div>

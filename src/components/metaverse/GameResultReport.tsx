@@ -431,6 +431,16 @@ ${scoreDetails}
           </div>
         </Card>
 
+        {/* 변화 추적 비교 */}
+        <div className="mt-4">
+          <ProgressComparison
+            currentScores={results as Record<string, number>}
+            sourceType="game_counseling"
+            sourceId={chapter.id}
+            dimensionLabels={dimensionLabels}
+          />
+        </div>
+
         {/* AI 상세 분석 */}
         <Card className="p-5 bg-white/5 border-white/10 mt-4">
           <h3 className="font-bold mb-3 text-white">🧠 AI 전문가 심층 분석</h3>

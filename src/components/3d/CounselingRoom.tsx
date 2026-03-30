@@ -689,13 +689,13 @@ const ArtroomRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =
     <group ref={groupRef}>
       {/* 나무 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#DEB887" />
       </mesh>
       
       {/* 밝은 벽 */}
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#FFFAF0" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#F0F8FF" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#FFFAF0" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#F0F8FF" /></mesh>
       
       {/* 이젤 */}
       <group position={[-3, -0.5, 1]}>

@@ -86,13 +86,14 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3-flash-preview',
+        model: deepAnalysis ? 'google/gemini-3.1-flash-preview' : 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: summarizePrompt },
           { role: 'user', content: userPrompt }
         ],
         tools: [toolDefinition],
-        tool_choice: { type: "function", function: { name: "create_visual_summary" } }
+        tool_choice: { type: "function", function: { name: "create_visual_summary" } },
+        ...(deepAnalysis ? { reasoning: { effort: 'medium' } } : {})
       })
     })
 

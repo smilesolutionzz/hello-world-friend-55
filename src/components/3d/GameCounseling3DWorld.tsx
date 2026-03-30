@@ -111,8 +111,9 @@ function FairyTaleForest() {
 function CartoonTree({ position, scale = 1 }: { position: [number, number, number]; scale?: number }) {
   const leafColor = useMemo(() => {
     const colors = ['#2d7d46', '#3a9d5e', '#4fb970', '#1b5e2a'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  }, []);
+    const seed = Math.sin(position[0] * 127.1 + position[2] * 311.7) * 43758.5453;
+    return colors[Math.floor(((seed % 1) + 1) % 1 * colors.length)];
+  }, [position]);
 
   return (
     <group position={position} scale={scale}>

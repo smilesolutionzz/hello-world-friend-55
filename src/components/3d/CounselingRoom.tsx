@@ -583,13 +583,13 @@ const PlaygroundRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }
     <group ref={groupRef}>
       {/* 모래 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[30, 30]} />
+        <planeGeometry args={[60, 60]} />
         <meshLambertMaterial color="#F4D03F" />
       </mesh>
       
       {/* 하늘 배경 */}
-      <mesh position={[0, 8, -12]}>
-        <planeGeometry args={[30, 20]} />
+      <mesh position={[0, 8, -25]}>
+        <planeGeometry args={[60, 20]} />
         <meshLambertMaterial color="#87CEEB" />
       </mesh>
       

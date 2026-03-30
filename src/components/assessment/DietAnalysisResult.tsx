@@ -302,7 +302,7 @@ ${result.dietPlan.herbs.join(', ')}
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => navigate('/expert')}
+              onClick={() => navigate('/expert-hiring')}
               className="mt-2"
             >
               <Star className="h-4 w-4 mr-2" />

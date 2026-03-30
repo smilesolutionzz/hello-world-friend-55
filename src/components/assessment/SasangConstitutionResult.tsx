@@ -386,7 +386,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
               </div>
               <div className="flex flex-col gap-3 w-full md:w-auto">
                 <Button 
-                  onClick={() => navigate('/expert')}
+                  onClick={() => navigate('/expert-hiring')}
                   size="lg"
                   className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold py-6 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all w-full md:w-auto"
                 >

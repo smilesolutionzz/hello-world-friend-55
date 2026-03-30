@@ -121,12 +121,13 @@ export default function GameCounselingMode() {
           />
         )}
         {gameState === 'result' && (
-          <ResultScreen
+          <GameResultReport
             key="result"
             results={calculateResults()}
             choices={choices}
             chapter={currentChapter!}
             onRestart={() => setGameState('intro')}
+            variant="2d"
           />
         )}
       </AnimatePresence>

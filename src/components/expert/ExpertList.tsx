@@ -3,7 +3,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Star, MessageCircle, Video, Mic, Clock, Award } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Star, MessageCircle, Clock, Award, Search, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -35,13 +36,18 @@ interface ExpertListProps {
   consultationType?: string;
 }
 
+const SPECIALTY_FILTERS = [
+  '전체', '심리상담', '언어치료', '발달재활', 'ABA치료', '미술치료', '특수체육', '감각통합'
+];
+
 export const ExpertList: React.FC<ExpertListProps> = ({ 
   specialization, 
   consultationType 
 }) => {
   const [experts, setExperts] = useState<Expert[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('전체');
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -60,26 +66,18 @@ export const ExpertList: React.FC<ExpertListProps> = ({
       if (specialization) {
         query = query.contains('specializations', [specialization]);
       }
-
       if (consultationType) {
         query = query.contains('consultation_methods', [consultationType]);
       }
 
       const { data, error } = await query;
-
       if (error) throw error;
       
-      // Sort experts: first by profile image availability, then by featured_order
       const sortedExperts = (data || []).sort((a, b) => {
-        // Check if profile image exists and is not placeholder
         const hasImageA = a.profile_image_url && !a.profile_image_url.includes('placeholder');
         const hasImageB = b.profile_image_url && !b.profile_image_url.includes('placeholder');
-        
-        // Prioritize experts with images
         if (hasImageA && !hasImageB) return -1;
         if (!hasImageA && hasImageB) return 1;
-        
-        // If both have images or both don't, sort by featured_order
         const orderA = a.featured_order || 999;
         const orderB = b.featured_order || 999;
         return orderA - orderB;
@@ -98,423 +96,194 @@ export const ExpertList: React.FC<ExpertListProps> = ({
     }
   };
 
-  const requestConsultation = async (expert: Expert, type: string = 'text') => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "로그인 필요",
-          description: "상담을 신청하려면 로그인이 필요합니다.",
-          variant: "destructive",
-        });
-        navigate('/auth');
-        return;
-      }
-
-      // 즉시 상담 요청 생성
-      const { data: consultation, error: consultationError } = await supabase
-        .from('consultations')
-        .insert({
-          user_id: user.id,
-          expert_id: expert.id,
-          consultation_type: type,
-          price: expert.hourly_rate,
-          scheduled_at: new Date().toISOString(),
-          status: 'pending'
-        })
-        .select()
-        .single();
-
-      if (consultationError) throw consultationError;
-
-      // 채팅방 생성
-      const { data: chatRoom, error: roomError } = await supabase
-        .from('chat_rooms')
-        .insert({
-          user_id: user.id,
-          expert_id: expert.id,
-          status: 'active'
-        })
-        .select()
-        .single();
-
-      if (roomError) throw roomError;
-
-      // 상담에 채팅방 연결
-      const { error: updateError } = await supabase
-        .from('consultations')
-        .update({ chat_room_id: chatRoom.id })
-        .eq('id', consultation.id);
-
-      if (updateError) throw updateError;
-
-      toast({
-        title: "상담 신청 완료",
-        description: `${expert.full_name} 전문가에게 상담을 신청했습니다.`,
-      });
-
-      // 채팅방으로 이동
-      navigate(`/consultation/${chatRoom.id}`);
-
-    } catch (error) {
-      console.error('상담 신청 실패:', error);
-      toast({
-        title: "신청 실패",
-        description: "상담 신청 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const getConsultationIcon = (method: string) => {
-    switch (method) {
-      case 'video': return <Video className="w-4 h-4" />;
-      case 'voice': return <Mic className="w-4 h-4" />;
-      default: return <MessageCircle className="w-4 h-4" />;
-    }
-  };
-
-  const getConsultationLabel = (method: string) => {
-    switch (method) {
-      case 'video': return '화상 상담';
-      case 'voice': return '음성 상담';
-      default: return '텍스트 상담';
-    }
-  };
+  const filteredExperts = experts.filter(expert => {
+    const matchesSearch = searchQuery === '' || 
+      expert.full_name.includes(searchQuery) ||
+      expert.specializations.some(s => s.includes(searchQuery));
+    
+    const matchesFilter = activeFilter === '전체' || 
+      expert.specializations.some(s => s.includes(activeFilter));
+    
+    return matchesSearch && matchesFilter;
+  });
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <Card key={i} className="p-6 animate-pulse">
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 bg-gray-200 rounded-full" />
-              <div className="flex-1 space-y-2">
-                <div className="h-6 bg-gray-200 rounded w-1/3" />
-                <div className="h-4 bg-gray-200 rounded w-1/2" />
-                <div className="h-4 bg-gray-200 rounded w-2/3" />
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
-    );
-  }
-
-  if (experts.length === 0) {
-    return (
-      <Card className="p-8 text-center">
-        <div className="space-y-4">
-          <Award className="w-12 h-12 text-gray-400 mx-auto" />
-          <h3 className="text-lg font-semibold text-gray-600">
-            조건에 맞는 전문가를 찾을 수 없습니다
-          </h3>
-          <p className="text-gray-500">
-            다른 조건으로 검색해보시거나 잠시 후 다시 시도해주세요.
-          </p>
+      <div className="space-y-6">
+        <div className="h-10 bg-muted rounded-lg w-1/3 animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-56 bg-muted rounded-2xl animate-pulse" />
+          ))}
         </div>
-      </Card>
+      </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            믿을 수 있는 전문가
-          </h2>
-          <p className="text-muted-foreground mt-1">검증된 {experts.length}명의 전문가가 함께합니다</p>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-primary/10 rounded-xl">
+            <Users className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+              전문가
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              검증된 {experts.length}명의 전문가
+            </p>
+          </div>
+        </div>
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input 
+            placeholder="이름 또는 전문분야 검색" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 rounded-xl bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-primary/30"
+          />
         </div>
       </div>
 
-      {/* 상단 3명의 에이전트 (가로 배치) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {experts.slice(0, 3).map((expert) => (
-          <Card 
-            key={expert.id} 
-            className={`group overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 animate-fade-in ${
-              expert.is_featured 
-                ? 'bg-gradient-to-br from-blue-50 via-indigo-50/40 to-purple-50/30 border-blue-400 hover:border-blue-500 shadow-xl ring-4 ring-blue-200/40' 
-                : 'hover:border-primary/50'
+      {/* Filters */}
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        {SPECIALTY_FILTERS.map(filter => (
+          <button
+            key={filter}
+            onClick={() => setActiveFilter(filter)}
+            className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              activeFilter === filter
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'bg-muted/60 text-muted-foreground hover:bg-muted'
             }`}
           >
-            <div className="p-6">
-              {expert.is_featured && (
-                <div className="mb-4 -mt-4 -mx-6 px-6 py-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 border-b-2 border-blue-600">
-                  <div className="flex items-center gap-2 justify-center">
-                    <Award className="w-4 h-4 text-white animate-pulse" />
-                    <span className="text-xs font-bold text-white tracking-wide">메인 에이전트</span>
-                    <Award className="w-4 h-4 text-white animate-pulse" />
-                  </div>
-                </div>
-              )}
-              <div className="flex flex-col items-center text-center space-y-4">
-                {/* 프로필 이미지 */}
-                <div className="relative flex-shrink-0">
-                  <div className={`absolute inset-0 rounded-full blur-xl transition-all ${
-                    expert.is_featured 
-                      ? 'bg-gradient-to-br from-blue-500/40 to-indigo-500/20' 
-                      : 'bg-gradient-to-br from-primary/20 to-primary/5'
-                  }`} />
-                  <Avatar className={`w-24 h-24 border-4 shadow-xl relative ${
-                    expert.is_featured ? 'border-blue-400 ring-4 ring-blue-300/50' : 'border-background'
-                  }`}>
-                    <AvatarImage 
-                      src={getExpertImage(expert.full_name) || expert.profile_image_url || ''} 
-                      className="object-cover" 
-                    />
-                    <AvatarFallback className={`text-2xl font-bold ${
-                      expert.is_featured 
-                        ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white'
-                        : 'bg-gradient-to-br from-primary to-primary/60 text-white'
-                    }`}>
-                      {expert.full_name.slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  {expert.is_verified && (
-                    <div className={`absolute -bottom-2 -right-2 rounded-full p-2 shadow-lg ${
-                      expert.is_featured 
-                        ? 'bg-blue-600 text-white ring-2 ring-blue-400' 
-                        : 'bg-primary text-white'
-                    }`}>
-                      <Award className="w-4 h-4" />
-                    </div>
-                  )}
-                </div>
-
-                {/* 전문가 정보 */}
-                <div className="space-y-3 w-full">
-                  <div>
-                    <div className="flex items-center gap-2 justify-center flex-wrap">
-                      <h3 className={`text-xl font-bold ${
-                        expert.is_featured ? 'text-blue-900' : ''
-                      }`}>{expert.full_name}</h3>
-                      {expert.is_director && (
-                        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-2 py-0.5">
-                          <Award className="w-3 h-3 mr-1" />
-                          기관장
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">{expert.professional_title}</p>
-                  </div>
-
-                  <div className="flex items-center justify-center gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold">{expert.average_rating.toFixed(1)}</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Clock className="w-4 h-4" />
-                      <span>{expert.years_experience}년</span>
-                    </div>
-                  </div>
-
-                  {/* 전문 분야 */}
-                  <div className="flex flex-wrap gap-1 justify-center">
-                    {expert.specializations.slice(0, 2).map((spec, index) => (
-                      <Badge 
-                        key={index} 
-                        variant="secondary" 
-                        className="text-xs px-2 py-1"
-                      >
-                        {spec}
-                      </Badge>
-                    ))}
-                  </div>
-
-                  {/* 가격 */}
-                  <div className="text-center p-3 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg">
-                    <div className="text-2xl font-bold text-primary">
-                      49,000원
-                    </div>
-                    <div className="text-xs text-muted-foreground">40분 상담</div>
-                  </div>
-
-                  {/* 상담 버튼 */}
-                  <Button
-                    onClick={() => expert.kakao_link ? window.open(expert.kakao_link, '_blank') : requestConsultation(expert, 'text')}
-                    className="w-full"
-                    size="sm"
-                  >
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    상담 신청
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Card>
+            {filter}
+          </button>
         ))}
       </div>
 
-      {/* 나머지 에이전트들 (세로 배치) */}
-      <div className="grid gap-8">
-        {experts.slice(3).map((expert) => (
-          <Card 
-            key={expert.id} 
-            className="group overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/50 animate-fade-in"
-          >
-            <div className="p-8">
-              <div className="flex items-start gap-8">
-                {/* 프로필 이미지 */}
-                <div className="relative flex-shrink-0">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full blur-xl group-hover:blur-2xl transition-all" />
-                  <Avatar className="w-28 h-28 border-4 border-background shadow-xl relative">
-                    <AvatarImage 
-                      src={getExpertImage(expert.full_name) || expert.profile_image_url || ''} 
-                      className="object-cover" 
-                    />
-                    <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary to-primary/60 text-white">
-                      {expert.full_name.slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  {expert.is_verified && (
-                    <div className="absolute -bottom-2 -right-2 bg-primary text-white rounded-full p-2 shadow-lg">
-                      <Award className="w-5 h-5" />
-                    </div>
-                  )}
-                </div>
+      {/* Count */}
+      <p className="text-sm text-muted-foreground">
+        전체 전문가 ({filteredExperts.length}명)
+      </p>
 
-                {/* 전문가 정보 */}
-                <div className="flex-1 space-y-5">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2 flex-wrap">
-                      <h3 className="text-2xl font-bold">{expert.full_name} 에이전트</h3>
-                      {expert.is_director && (
-                        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-2 py-0.5">
-                          <Award className="w-3 h-3 mr-1" />
-                          기관장
-                        </Badge>
-                      )}
-                      {false && (
-                        <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 text-sm">
-                          무료 봉사
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-base text-muted-foreground mb-4">{expert.professional_title}</p>
-                    
-                    <div className="flex items-center gap-6 text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1">
-                          <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                          <span className="font-semibold text-lg">{expert.average_rating.toFixed(1)}</span>
-                        </div>
-                        <span className="text-muted-foreground">({expert.total_sessions}회 상담)</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="w-4 h-4" />
-                        <span className="font-medium">{expert.years_experience}년 경력</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 전문 분야 */}
-                  <div className="space-y-2">
-                    <p className="text-sm font-semibold text-muted-foreground">전문 분야</p>
-                    <div className="flex flex-wrap gap-2">
-                      {expert.specializations.map((spec, index) => (
-                        <Badge 
-                          key={index} 
-                          variant="secondary" 
-                          className="px-3 py-1 text-sm font-medium bg-primary/10 hover:bg-primary/20 transition-colors"
-                        >
-                          {spec}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* 소개 */}
-                  {expert.bio && (
-                    <div className="bg-muted/50 rounded-lg p-4">
-                      <p className="text-sm leading-relaxed">
-                        {expert.bio.length > 200 
-                          ? `${expert.bio.slice(0, 200)}...` 
-                          : expert.bio}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* 상담 방식 */}
-                  <div className="space-y-2">
-                    <p className="text-sm font-semibold text-muted-foreground">상담 방법</p>
-                    <div className="flex flex-wrap gap-3">
-                      {expert.consultation_methods.map((method) => (
-                        <Badge 
-                          key={method} 
-                          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/90 to-primary text-white hover:from-primary hover:to-primary/90 transition-all"
-                        >
-                          {getConsultationIcon(method)}
-                          <span className="font-medium">{getConsultationLabel(method)}</span>
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* 상담 신청 영역 */}
-                <div className="flex-shrink-0 w-48 space-y-4">
-                   <div className="text-center p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl">
-                    <div className="text-3xl font-bold text-primary">
-                      49,000원
-                    </div>
-                    <div className="text-sm text-muted-foreground">40분 상담</div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Button
-                      onClick={() => window.open('https://open.kakao.com/o/sq57G6Th', '_blank')}
-                      className="w-full group-hover:scale-105 transition-transform shadow-lg bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 font-bold"
-                      size="lg"
-                    >
-                      <MessageCircle className="w-4 h-4 mr-2" />
-                      즉시 상담하기
-                    </Button>
-                    
-                    {expert.consultation_methods.includes('text') && (
-                      <Button
-                        onClick={() => requestConsultation(expert, 'text')}
-                        className="w-full group-hover:scale-105 transition-transform shadow-lg"
-                        variant="outline"
-                        size="lg"
-                      >
-                        <MessageCircle className="w-4 h-4 mr-2" />
-                        텍스트 상담
-                      </Button>
-                    )}
-                    
-                    {expert.consultation_methods.includes('voice') && (
-                      <Button
-                        onClick={() => requestConsultation(expert, 'voice')}
-                        variant="outline"
-                        className="w-full hover:bg-primary/10"
-                        size="lg"
-                      >
-                        <Mic className="w-4 h-4 mr-2" />
-                        음성 상담
-                      </Button>
-                    )}
-
-                    {expert.consultation_methods.includes('video') && (
-                      <Button
-                        onClick={() => requestConsultation(expert, 'video')}
-                        variant="outline"
-                        className="w-full hover:bg-primary/10"
-                        size="lg"
-                      >
-                        <Video className="w-4 h-4 mr-2" />
-                        화상 상담
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+      {/* Expert Grid */}
+      {filteredExperts.length === 0 ? (
+        <Card className="p-12 text-center">
+          <Award className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+          <p className="text-muted-foreground">조건에 맞는 전문가가 없습니다</p>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredExperts.map((expert) => (
+            <ExpertCard 
+              key={expert.id} 
+              expert={expert} 
+              navigate={navigate}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
+
+/* ─── Expert Card ─── */
+function ExpertCard({ expert, navigate }: { expert: Expert; navigate: ReturnType<typeof useNavigate> }) {
+  const isFeatured = expert.is_featured;
+
+  return (
+    <Card className={`group relative overflow-hidden rounded-2xl border transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${
+      isFeatured 
+        ? 'border-primary/30 bg-gradient-to-b from-primary/[0.04] to-background' 
+        : 'border-border/60 bg-card'
+    }`}>
+      <div className="p-5">
+        {/* Top row: avatar + info */}
+        <div className="flex items-start gap-3.5">
+          <div className="relative shrink-0">
+            <Avatar className={`w-14 h-14 border-2 ${
+              isFeatured ? 'border-primary/40' : 'border-border'
+            }`}>
+              <AvatarImage 
+                src={getExpertImage(expert.full_name) || expert.profile_image_url || ''} 
+                className="object-cover" 
+              />
+              <AvatarFallback className="text-sm font-semibold bg-muted text-muted-foreground">
+                {expert.full_name.slice(0, 2)}
+              </AvatarFallback>
+            </Avatar>
+            {isFeatured && (
+              <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-[10px] font-bold rounded-md bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-sm">
+                TOP
+              </span>
+            )}
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <h3 className="font-bold text-foreground truncate">{expert.full_name}</h3>
+              {expert.is_director && (
+                <Badge className="bg-amber-500/10 text-amber-600 border-amber-200 text-[10px] px-1.5 py-0">
+                  기관장
+                </Badge>
+              )}
+            </div>
+            <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
+              <span className="flex items-center gap-0.5">
+                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                {expert.average_rating.toFixed(1)}
+              </span>
+              <span>·</span>
+              <span>{expert.years_experience}년</span>
+              <span>·</span>
+              <span className="text-emerald-600 font-medium">온라인</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Specialization tags */}
+        <div className="flex flex-wrap gap-1 mt-3">
+          {expert.specializations.slice(0, 3).map((spec, idx) => (
+            <span 
+              key={idx}
+              className="inline-block px-2 py-0.5 text-[11px] font-medium rounded-md bg-muted text-muted-foreground"
+            >
+              {spec}
+            </span>
+          ))}
+          {expert.specializations.length > 3 && (
+            <span className="inline-block px-2 py-0.5 text-[11px] text-muted-foreground">
+              +{expert.specializations.length - 3}
+            </span>
+          )}
+        </div>
+
+        {/* Price + CTA */}
+        <div className="flex items-center justify-between mt-4 pt-3.5 border-t border-border/50">
+          <div>
+            <span className="text-lg font-bold text-foreground">₩49,000</span>
+            <span className="text-xs text-muted-foreground ml-1">/40분</span>
+          </div>
+          <Button
+            size="sm"
+            className="rounded-xl px-4 h-9 text-sm font-semibold shadow-sm"
+            onClick={() => {
+              if (expert.kakao_link) {
+                window.open(expert.kakao_link, '_blank');
+              } else {
+                navigate(`/experts/${expert.id}`);
+              }
+            }}
+          >
+            <MessageCircle className="w-3.5 h-3.5 mr-1.5" />
+            상담
+          </Button>
+        </div>
+      </div>
+    </Card>
+  );
+}

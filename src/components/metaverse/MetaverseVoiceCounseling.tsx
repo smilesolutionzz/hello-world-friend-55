@@ -911,7 +911,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
 
   // 대화 내용 텍스트로 변환
   const getConversationText = () => {
-    const header = `AI 아지트 상담 기록\n날짜: ${new Date().toLocaleString('ko-KR')}\n이름: ${userName}\n${consultTopic ? `주제: ${consultTopic}\n` : ''}\n${'='.repeat(50)}\n\n`;
+    const header = `금쪽상담소 상담 기록\n날짜: ${new Date().toLocaleString('ko-KR')}\n이름: ${userName}\n${consultTopic ? `주제: ${consultTopic}\n` : ''}\n${'='.repeat(50)}\n\n`;
     
     const conversation = messages.map((msg) => {
       const time = msg.timestamp.toLocaleTimeString('ko-KR');

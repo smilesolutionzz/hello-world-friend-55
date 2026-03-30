@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { 
   Star, Calendar, Clock, MessageCircle, Video, CheckCircle, MapPin, Shield, Award, 
   Users, Phone, ArrowLeft, Heart, BookOpen, Sparkles, Quote, GraduationCap, Briefcase, 
-  Edit3, Camera, Save, X, Wand2, Loader2
+  Edit3, Camera, Save, X, Wand2, Loader2, HelpCircle, Target, ChevronDown, ChevronUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';

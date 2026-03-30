@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { FileDown, Share2, RotateCcw, Loader2, Volume2, ChevronDown, ChevronUp } from 'lucide-react';
+import { FileDown, Share2, RotateCcw, Loader2, Volume2, ChevronDown, ChevronUp, Image, ArrowRight } from 'lucide-react';
 import { dimensionMeta, type PsychDimension, type StoryChapter } from '@/data/storyScenarios';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { shareToKakao, isKakaoInitialized } from '@/lib/kakaoShare';
+import VisualSummaryCard, { type VisualSummaryData } from '@/components/visual-summary/VisualSummaryCard';
 
 interface ChoiceRecord {
   sceneId: string;

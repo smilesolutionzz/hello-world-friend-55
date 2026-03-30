@@ -139,7 +139,10 @@ function CartoonTree({ position, scale = 1 }: { position: [number, number, numbe
 
 function CartoonMushroom({ position }: { position: [number, number, number] }) {
   const colors = ['#ff6b6b', '#ffd93d', '#ff9ff3'];
-  const color = useMemo(() => colors[Math.floor(Math.random() * colors.length)], []);
+  const color = useMemo(() => {
+    const seed = Math.sin(position[0] * 253.3 + position[2] * 437.1) * 43758.5453;
+    return colors[Math.floor(((seed % 1) + 1) % 1 * colors.length)];
+  }, [position]);
   return (
     <group position={position}>
       <mesh position={[0, 0.15, 0]}>

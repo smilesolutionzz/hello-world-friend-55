@@ -1592,7 +1592,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             </div>
           )}
           {/* Header */}
-          <div className="text-center mb-8 animate-fade-in">
+          <div className="text-left mb-4 animate-fade-in max-w-md">
             {/* UI 접기/펼치기 버튼 */}
             <Button
               onClick={() => setIsUICollapsed(!isUICollapsed)}

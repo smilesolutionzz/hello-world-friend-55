@@ -85,8 +85,8 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
               생활 관리
             </TabsTrigger>
             <TabsTrigger value="clinics" className="flex items-center">
-              <MapPin className="h-4 w-4 mr-2" />
-              제휴 한의원
+              <Star className="h-4 w-4 mr-2" />
+              한의사 전문가
             </TabsTrigger>
           </TabsList>
 
@@ -370,92 +370,54 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
             </Card>
           </TabsContent>
 
-          {/* 제휴 한의원 탭 */}
+          {/* 한의사 전문가 탭 */}
           <TabsContent value="clinics" className="space-y-6">
             <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold mb-2">가까운 제휴 한의원</h3>
-              <p className="text-muted-foreground">체질에 맞는 전문 치료를 받아보세요</p>
+              <h3 className="text-2xl font-bold mb-2">한의사 전문가 상담</h3>
+              <p className="text-muted-foreground">체질 분석 결과를 바탕으로 전문 한의사와 1:1 맞춤 상담을 받아보세요</p>
             </div>
 
-            {result.partner_clinics?.map((clinic: any, index: number) => (
-              <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-16 h-16 bg-blue-100 rounded-lg flex-shrink-0 flex items-center justify-center">
-                      <MapPin className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h4 className="text-xl font-semibold">{clinic.name}</h4>
-                          <div className="flex items-center space-x-2 mt-1">
-                            <div className="flex items-center">
-                              <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                              <span className="text-sm ml-1">{clinic.rating}</span>
-                            </div>
-                            <span className="text-sm text-muted-foreground">•</span>
-                            <span className="text-sm text-muted-foreground">{clinic.distance}</span>
-                            {clinic.telemedicine && (
-                              <>
-                                <span className="text-sm text-muted-foreground">•</span>
-                                <Badge variant="secondary" className="bg-green-100 text-green-700">
-                                  비대면 진료
-                                </Badge>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {clinic.specialties?.map((specialty: string, idx: number) => (
-                          <Badge key={idx} variant="outline" className="text-xs">
-                            {specialty}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        {clinic.telemedicine && (
-                          <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                            <Heart className="h-4 w-4 mr-2" />
-                            비대면 상담 예약
-                          </Button>
-                        )}
-                        <Button variant="outline" size="sm">
-                          <Phone className="h-4 w-4 mr-2" />
-                          {clinic.phone}
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <MapPin className="h-4 w-4 mr-2" />
-                          길찾기
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )) || (
-              <Card>
-                <CardContent className="text-center py-8">
-                  <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">제휴 한의원 정보를 불러오는 중입니다...</p>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* 전문 상담 권장 */}
-            <Card className="border-2 border-blue-200 bg-blue-50">
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
               <CardContent className="p-6 text-center">
-                <Heart className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <h4 className="text-xl font-semibold mb-2">전문 한의사 상담 권장</h4>
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <Star className="h-8 w-8 text-primary" />
+                </div>
+                <h4 className="text-xl font-semibold mb-2">AI 체질 분석 + 전문가 상담</h4>
                 <p className="text-muted-foreground mb-4">
-                  {analysis.clinic_recommendation || "더 정확한 체질 분석과 맞춤 처방을 위해 전문 한의사와 상담하시기 바랍니다."}
+                  AI가 분석한 체질 결과를 전문 한의사가 직접 검토하고, 맞춤 처방과 생활 관리법을 안내해드립니다.
                 </p>
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-                  <Phone className="h-5 w-5 mr-2" />
-                  무료 전화 상담 신청
+                <div className="flex flex-wrap justify-center gap-2 mb-6">
+                  <Badge variant="outline" className="border-primary/30">체질 맞춤 처방</Badge>
+                  <Badge variant="outline" className="border-primary/30">1:1 비대면 상담</Badge>
+                  <Badge variant="outline" className="border-primary/30">생활습관 코칭</Badge>
+                </div>
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                  onClick={() => navigate('/expert')}
+                >
+                  <ChevronRight className="h-5 w-5 mr-2" />
+                  한의사 전문가 보기
                 </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <h4 className="font-semibold mb-4">이런 분께 추천드립니다</h4>
+                <div className="space-y-3">
+                  {[
+                    '체질에 맞는 정확한 한약 처방을 받고 싶은 분',
+                    '만성 피로, 소화불량 등 체질 관련 증상이 있는 분', 
+                    '식이요법과 생활습관을 전문가와 함께 관리하고 싶은 분',
+                    '한방 다이어트나 체질 개선에 관심 있는 분'
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex items-center">
+                      <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                      <span className="text-sm">{item}</span>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -463,55 +425,13 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
 
         {/* 액션 버튼 */}
         <div className="text-center mt-8 space-y-4">
-          {/* 가까이한의원 비대면 진료 CTA */}
-          <Card className="overflow-hidden border-2 mb-6" style={{ borderColor: "hsl(var(--herbal-primary))", background: "linear-gradient(135deg, hsl(var(--herbal-bg)), hsl(var(--herbal-bg-warm)))" }}>
-            <CardContent className="p-6">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex-1 text-center md:text-left">
-                  <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))" }}>
-                      <Phone className="h-5 w-5 text-white" />
-                    </div>
-                    <h3 className="text-xl font-bold" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
-                      가까이한의원 비대면 진료
-                    </h3>
-                  </div>
-                  <p className="text-base mb-2" style={{ color: "hsl(var(--herbal-secondary))" }}>
-                    체질 분석 결과를 바탕으로 전문 한의사와 1:1 맞춤 상담을 받아보세요
-                  </p>
-                  <div className="flex items-center justify-center md:justify-start gap-2 text-sm" style={{ color: "hsl(var(--herbal-text-dark))" }}>
-                    <Clock className="h-4 w-4" />
-                    <span>평일 09:00-18:00 | 토요일 09:00-15:00</span>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-3 w-full md:w-auto">
-                  <Button 
-                    onClick={() => window.open('tel:01066249990')}
-                    size="lg"
-                    className="text-white text-lg font-bold py-6 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all w-full md:w-auto"
-                    style={{ 
-                      background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))",
-                      fontFamily: "'Noto Serif KR', serif"
-                    }}
-                  >
-                    <Phone className="h-5 w-5 mr-2" />
-                    전화 상담 신청 (010-6624-9990)
-                  </Button>
-                  <p className="text-xs text-center" style={{ color: "hsl(var(--herbal-secondary))" }}>
-                    ✓ 체질 맞춤 처방 | ✓ 건강보험 적용 | ✓ 비대면 진료 가능
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Button onClick={onRestart} variant="outline" size="lg">
               다시 검사하기
             </Button>
-            <Button size="lg" className="bg-green-600 hover:bg-green-700">
-              <Heart className="h-5 w-5 mr-2" />
-              결과 저장하기
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => navigate('/expert')}>
+              <Star className="h-5 w-5 mr-2" />
+              한의사 전문가 상담
             </Button>
           </div>
         </div>

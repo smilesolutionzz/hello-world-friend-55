@@ -128,7 +128,7 @@ const HeroSection = () => {
             {t.hero.description}
           </p>
           <p className="text-white/85 text-sm md:text-base font-semibold max-w-xl mx-auto px-2 mt-1.5 leading-relaxed">
-            {t.hero.descriptionHighlight}<br className="md:hidden" />
+            {t.hero.descriptionHighlight}<br className="md:hidden" />{' '}
             {t.hero.descriptionHighlight2}
           </p>
         </motion.div>

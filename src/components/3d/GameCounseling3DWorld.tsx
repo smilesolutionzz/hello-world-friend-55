@@ -305,6 +305,7 @@ function StoryPointMarker({ position, active, visited }: {
   const outerRef = useRef<THREE.Mesh>(null);
   const innerRef = useRef<THREE.Mesh>(null);
   const beamRef = useRef<THREE.Mesh>(null);
+  const pulseRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
@@ -320,6 +321,11 @@ function StoryPointMarker({ position, active, visited }: {
     if (beamRef.current && active) {
       beamRef.current.scale.y = 1 + Math.sin(t * 2) * 0.3;
     }
+    if (pulseRef.current && active) {
+      const scale = 1 + Math.sin(t * 1.5) * 0.5;
+      pulseRef.current.scale.set(scale, 1, scale);
+      (pulseRef.current.material as THREE.MeshStandardMaterial).opacity = 0.3 - Math.sin(t * 1.5) * 0.15;
+    }
   });
 
   if (visited) return null;
@@ -328,47 +334,52 @@ function StoryPointMarker({ position, active, visited }: {
     <group position={position}>
       {active && (
         <>
-          {/* 빛기둥 */}
-          <mesh ref={beamRef} position={[0, 5, 0]}>
-            <cylinderGeometry args={[0.3, 1.5, 10, 8]} />
+          {/* 거대한 빛기둥 - 멀리서도 보이게 */}
+          <mesh ref={beamRef} position={[0, 10, 0]}>
+            <cylinderGeometry args={[0.5, 2.5, 20, 8]} />
             <meshStandardMaterial 
               color="#ffd700" 
               emissive="#ffd700" 
-              emissiveIntensity={0.5} 
+              emissiveIntensity={1} 
               transparent 
-              opacity={0.15} 
+              opacity={0.25} 
             />
           </mesh>
+          {/* 바닥 펄스 링 */}
+          <mesh ref={pulseRef} position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[2, 4, 32]} />
+            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={2} transparent opacity={0.3} />
+          </mesh>
           {/* 외부 회전 링 */}
-          <mesh ref={outerRef} position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-            <torusGeometry args={[2.5, 0.12, 8, 32]} />
-            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={2} />
+          <mesh ref={outerRef} position={[0, 1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[3, 0.15, 8, 32]} />
+            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={3} />
           </mesh>
           {/* 내부 회전 링 */}
-          <mesh ref={innerRef} position={[0, 0.5, 0]} rotation={[-Math.PI / 4, 0, 0]}>
-            <torusGeometry args={[1.8, 0.08, 8, 24]} />
-            <meshStandardMaterial color="#ff8c00" emissive="#ff8c00" emissiveIntensity={2} />
+          <mesh ref={innerRef} position={[0, 1, 0]} rotation={[-Math.PI / 4, 0, 0]}>
+            <torusGeometry args={[2.2, 0.1, 8, 24]} />
+            <meshStandardMaterial color="#ff8c00" emissive="#ff8c00" emissiveIntensity={3} />
           </mesh>
-          {/* 중앙 빛나는 구 */}
-          <Float speed={2} floatIntensity={0.5}>
-            <mesh position={[0, 2, 0]}>
-              <dodecahedronGeometry args={[0.6, 0]} />
+          {/* 중앙 빛나는 구 - 크게 */}
+          <Float speed={2} floatIntensity={0.8}>
+            <mesh position={[0, 3, 0]}>
+              <dodecahedronGeometry args={[1, 0]} />
               <meshStandardMaterial 
                 color="#ffd700" 
                 emissive="#ffaa00" 
-                emissiveIntensity={3} 
+                emissiveIntensity={4} 
                 transparent 
                 opacity={0.9}
               />
             </mesh>
           </Float>
-          {/* 포인트 조명 */}
-          <pointLight position={[0, 3, 0]} intensity={4} color="#ffd700" distance={15} />
-          <pointLight position={[0, 0.5, 0]} intensity={2} color="#ff8c00" distance={8} />
-          {/* 바닥 빛 */}
+          {/* 강력한 포인트 조명 */}
+          <pointLight position={[0, 5, 0]} intensity={8} color="#ffd700" distance={25} />
+          <pointLight position={[0, 1, 0]} intensity={4} color="#ff8c00" distance={15} />
+          {/* 바닥 빛 원 */}
           <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-            <circleGeometry args={[3, 32]} />
-            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={0.5} transparent opacity={0.2} />
+            <circleGeometry args={[5, 32]} />
+            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={0.8} transparent opacity={0.15} />
           </mesh>
         </>
       )}
@@ -386,6 +397,40 @@ function StoryPointMarker({ position, active, visited }: {
           </mesh>
         </Float>
       )}
+    </group>
+  );
+}
+
+// ============ 방향 화살표 (다음 스토리포인트를 가리킴) ============
+
+function DirectionArrow({ playerPos, targetPos, visible }: { playerPos: THREE.Vector3; targetPos: THREE.Vector3 | null; visible: boolean }) {
+  const arrowRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!arrowRef.current || !targetPos || !visible) return;
+    const dir = new THREE.Vector3().subVectors(targetPos, playerPos);
+    dir.y = 0;
+    const angle = Math.atan2(dir.x, dir.z);
+    arrowRef.current.rotation.y = angle;
+    arrowRef.current.position.set(playerPos.x, 0.3, playerPos.z);
+    // 부드러운 위아래 움직임
+    arrowRef.current.position.y = 0.3 + Math.sin(state.clock.elapsedTime * 3) * 0.15;
+  });
+
+  if (!visible || !targetPos) return null;
+
+  return (
+    <group ref={arrowRef}>
+      {/* 화살표 몸체 */}
+      <mesh position={[0, 0, -2]} rotation={[-Math.PI / 2, 0, 0]}>
+        <coneGeometry args={[0.5, 1.5, 4]} />
+        <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={2} transparent opacity={0.8} />
+      </mesh>
+      {/* 화살표 꼬리 */}
+      <mesh position={[0, 0, -0.8]} rotation={[-Math.PI / 2, 0, 0]}>
+        <boxGeometry args={[0.3, 1.5, 0.15]} />
+        <meshStandardMaterial color="#ffaa00" emissive="#ffaa00" emissiveIntensity={1.5} transparent opacity={0.6} />
+      </mesh>
     </group>
   );
 }
@@ -607,10 +652,28 @@ export default function GameCounseling3DWorld({
   const [clickTarget, setClickTarget] = useState<THREE.Vector3 | null>(null);
   const [playerPos, setPlayerPos] = useState(new THREE.Vector3(0, 0, 3));
   const [visitedPoints, setVisitedPoints] = useState<Set<number>>(new Set());
+  const [autoMoved, setAutoMoved] = useState(false);
 
   const storyPointPositions = useMemo(() => {
-    return Array.from({ length: totalScenes }, (_, i) => new THREE.Vector3(0, 0, -i * 18));
+    // 첫 포인트는 앞쪽에, 간격은 10유닛으로 (기존 18에서 줄임)
+    return Array.from({ length: totalScenes }, (_, i) => new THREE.Vector3(0, 0, -8 - i * 10));
   }, [totalScenes]);
+
+  // 게임 시작 시 자동으로 첫 스토리포인트로 이동
+  useEffect(() => {
+    if (gameState === 'exploring' && !autoMoved && storyPointPositions.length > 0) {
+      const timer = setTimeout(() => {
+        setClickTarget(storyPointPositions[sceneIndex].clone());
+        setAutoMoved(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [gameState, autoMoved, storyPointPositions, sceneIndex]);
+
+  // sceneIndex 변경 시 자동이동 리셋
+  useEffect(() => {
+    setAutoMoved(false);
+  }, [sceneIndex]);
 
   const npcTypes: Array<'bunny' | 'bear' | 'owl' | 'fox'> = ['bunny', 'bear', 'owl', 'fox'];
 
@@ -672,6 +735,13 @@ export default function GameCounseling3DWorld({
             type={npcTypes[i % npcTypes.length]}
           />
         ))}
+
+        {/* 방향 화살표 */}
+        <DirectionArrow
+          playerPos={playerPos}
+          targetPos={sceneIndex < storyPointPositions.length ? storyPointPositions[sceneIndex] : null}
+          visible={gameState === 'exploring'}
+        />
 
         <MovablePlayer
           targetPos={clickTarget}
@@ -765,7 +835,7 @@ export default function GameCounseling3DWorld({
             <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.2, repeat: Infinity }}>
               ✨
             </motion.span>
-            <span className="text-white text-sm font-medium">빛나는 곳을 터치해서 이동하세요!</span>
+            <span className="text-white text-sm font-medium">화면을 터치해서 앞으로 이동하세요.</span>
           </div>
         </motion.div>
       )}

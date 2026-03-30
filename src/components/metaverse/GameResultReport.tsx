@@ -9,6 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { shareToKakao, isKakaoInitialized } from '@/lib/kakaoShare';
 import VisualSummaryCard, { type VisualSummaryData } from '@/components/visual-summary/VisualSummaryCard';
+import ProgressComparison from '@/components/progress/ProgressComparison';
+import { useProgressTracking } from '@/hooks/useProgressTracking';
 
 interface ChoiceRecord {
   sceneId: string;
@@ -97,7 +99,9 @@ export default function GameResultReport({
   const [illustrationImage, setIllustrationImage] = useState<string | null>(null);
   const [isGeneratingNote, setIsGeneratingNote] = useState(false);
   const [showVisualNote, setShowVisualNote] = useState(false);
+  const [savedProgress, setSavedProgress] = useState(false);
   const { toast } = useToast();
+  const { saveProgress } = useProgressTracking();
 
   const topDimensions = Object.entries(results).sort(([, a], [, b]) => b - a).slice(0, 4);
   const bottomDimensions = Object.entries(results).sort(([, a], [, b]) => a - b).slice(0, 2);
@@ -111,9 +115,25 @@ export default function GameResultReport({
   const barGradient = variant === '3d' ? 'from-emerald-500 to-cyan-500' : 'from-purple-500 to-pink-500';
   const titleGradient = variant === '3d' ? 'from-emerald-400 to-cyan-400' : 'from-purple-400 to-pink-400';
 
-  // AI 상세 해석 생성
+  const dimensionLabels: Record<string, string> = {};
+  Object.entries(dimensionMeta).forEach(([key, meta]) => {
+    dimensionLabels[key] = meta.label;
+  });
+
+  // Save progress + AI analysis
   useEffect(() => {
     generateAIAnalysis();
+    // Save to progress tracking
+    if (!savedProgress) {
+      saveProgress({
+        source_type: 'game_counseling',
+        source_id: chapter.id,
+        source_label: chapter.title,
+        dimension_scores: results as Record<string, number>,
+        metadata: { choices: choices.length, characterType: top, variant }
+      });
+      setSavedProgress(true);
+    }
   }, []);
 
   const generateAIAnalysis = async () => {
@@ -410,6 +430,16 @@ ${scoreDetails}
             })}
           </div>
         </Card>
+
+        {/* 변화 추적 비교 */}
+        <div className="mt-4">
+          <ProgressComparison
+            currentScores={results as Record<string, number>}
+            sourceType="game_counseling"
+            sourceId={chapter.id}
+            dimensionLabels={dimensionLabels}
+          />
+        </div>
 
         {/* AI 상세 분석 */}
         <Card className="p-5 bg-white/5 border-white/10 mt-4">

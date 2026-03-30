@@ -866,6 +866,53 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     setIsSpeaking(false);
     setCurrentEmotion('neutral');
     
+    // 음성 상담 결과를 progress_tracking에 저장
+    if (messages.length > 2) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const userMsgCount = messages.filter(m => m.role === 'user').length;
+          const aiMsgCount = messages.filter(m => m.role === 'assistant').length;
+          
+          // 대화 내용에서 키워드 기반 간단한 감정 점수 추출
+          const allUserText = messages.filter(m => m.role === 'user').map(m => m.content).join(' ');
+          const emotionKeywords: Record<string, string[]> = {
+            anxiety: ['걱정', '불안', '무서', '겁', '두려'],
+            depression: ['우울', '슬프', '힘들', '지치', '외로'],
+            anger: ['화나', '짜증', '분노', '답답'],
+            positivity: ['좋아', '행복', '기뻐', '감사', '편안', '괜찮'],
+            stress: ['스트레스', '압박', '부담', '피곤'],
+          };
+          
+          const dimensionScores: Record<string, number> = {};
+          Object.entries(emotionKeywords).forEach(([key, words]) => {
+            const count = words.reduce((acc, w) => acc + (allUserText.match(new RegExp(w, 'g'))?.length || 0), 0);
+            dimensionScores[key] = Math.min(100, count * 20);
+          });
+          dimensionScores['engagement'] = Math.min(100, userMsgCount * 10);
+          
+          await supabase
+            .from('progress_tracking' as any)
+            .insert({
+              user_id: user.id,
+              source_type: 'voice_counseling',
+              source_id: structuredConfig?.character || 'default',
+              source_label: `음성 상담 (${userName || '사용자'})`,
+              dimension_scores: dimensionScores,
+              summary: `${userMsgCount}회 발화, ${aiMsgCount}회 응답. 주제: ${consultTopic || '자유 상담'}`,
+              metadata: {
+                character: structuredConfig?.character || 'default',
+                messageCount: messages.length,
+                topic: consultTopic,
+                duration: Math.round((Date.now() - (messages[0]?.timestamp.getTime() || Date.now())) / 1000),
+              }
+            });
+        }
+      } catch (err) {
+        console.error('Voice session save error:', err);
+      }
+    }
+    
     // 분석 결과가 없으면 메인 페이지로 이동
     if (!showAnalysisResult) {
       toast({

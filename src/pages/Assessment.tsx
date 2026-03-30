@@ -286,6 +286,32 @@ const Assessment = () => {
           description: t.assessment.testSaved,
         });
       }
+
+      // progress_tracking에도 저장 (변화 추적용)
+      try {
+        const domainScores: Record<string, number> = {};
+        if (results.domains && typeof results.domains === 'object') {
+          Object.entries(results.domains).forEach(([key, val]: [string, any]) => {
+            domainScores[key] = typeof val === 'number' ? val : (val?.score || val?.percentage || 0);
+          });
+        }
+        domainScores['total'] = results.total || 0;
+        if (results.average) domainScores['average'] = results.average;
+
+        await supabase
+          .from('progress_tracking' as any)
+          .insert({
+            user_id: user.id,
+            source_type: 'assessment',
+            source_id: testType,
+            source_label: getTestTitle(testType),
+            dimension_scores: domainScores,
+            summary: `점수: ${results.total}점, 수준: ${results.severity || '보통'}`,
+            metadata: { ageGroup: results.ageGroup, severity: results.severity }
+          });
+      } catch (progressErr) {
+        console.error('Progress tracking save error:', progressErr);
+      }
     } catch (error) {
       console.error('Timeline 저장 중 오류:', error);
     }

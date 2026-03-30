@@ -222,6 +222,7 @@ export class RealtimeVoiceChat {
                   model: 'gpt-4o-transcribe',
                   language: 'ko'
                 },
+                turn_detection: null,
                 temperature: 0.6,
                 max_response_output_tokens: 240
               }

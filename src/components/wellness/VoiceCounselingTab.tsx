@@ -40,8 +40,21 @@ export const VoiceCounselingTab = () => {
         }
         return [...prev, { role: 'assistant', content: event.delta, timestamp: new Date() }];
       });
-    } else if (event.type === 'conversation.item.input_audio_transcription.completed') {
-      setMessages(prev => [...prev, { role: 'user', content: event.transcript, timestamp: new Date() }]);
+      return;
+    }
+
+    if (event.type === 'conversation.item.input_audio_transcription.completed') {
+      const transcript = typeof event.transcript === 'string' ? event.transcript.trim() : '';
+      if (!transcript) return;
+      setMessages(prev => [...prev, { role: 'user', content: transcript, timestamp: new Date() }]);
+      return;
+    }
+
+    if (event.type === 'input.transcript.ignored') {
+      toast({
+        title: isEnglish ? 'Could not hear clearly' : '음성이 명확하지 않습니다',
+        description: isEnglish ? 'Please speak again a bit more clearly.' : '조금 더 또렷하게 다시 말씀해 주세요.',
+      });
     }
   };
 

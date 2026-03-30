@@ -106,7 +106,7 @@ function SimpleAIAzitInner() {
   };
 
   const getConversationText = () => {
-    const header = `AI 아지트 상담 기록\n날짜: ${new Date().toLocaleString('ko-KR')}\n${'='.repeat(40)}\n\n`;
+    const header = `금쪽상담소 상담 기록\n날짜: ${new Date().toLocaleString('ko-KR')}\n${'='.repeat(40)}\n\n`;
     const conversation = messages.map(msg => 
       `[${msg.role === 'user' ? '나' : 'AI'}] ${msg.content}`
     ).join('\n\n');

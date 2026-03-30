@@ -652,28 +652,20 @@ export default function GameCounseling3DWorld({
   const [clickTarget, setClickTarget] = useState<THREE.Vector3 | null>(null);
   const [playerPos, setPlayerPos] = useState(new THREE.Vector3(0, 0, 3));
   const [visitedPoints, setVisitedPoints] = useState<Set<number>>(new Set());
-  const [autoMoved, setAutoMoved] = useState(false);
 
   const storyPointPositions = useMemo(() => {
-    // 첫 포인트는 앞쪽에, 간격은 10유닛으로 (기존 18에서 줄임)
     return Array.from({ length: totalScenes }, (_, i) => new THREE.Vector3(0, 0, -8 - i * 10));
   }, [totalScenes]);
 
-  // 게임 시작 시 자동으로 첫 스토리포인트로 이동
-  useEffect(() => {
-    if (gameState === 'exploring' && !autoMoved && storyPointPositions.length > 0) {
-      const timer = setTimeout(() => {
-        setClickTarget(storyPointPositions[sceneIndex].clone());
-        setAutoMoved(true);
-      }, 800);
-      return () => clearTimeout(timer);
-    }
-  }, [gameState, autoMoved, storyPointPositions, sceneIndex]);
-
-  // sceneIndex 변경 시 자동이동 리셋
-  useEffect(() => {
-    setAutoMoved(false);
-  }, [sceneIndex]);
+  // 현재 씬의 환경 타입 결정
+  const envType = useMemo(() => {
+    if (!scene) return 'forest';
+    const id = scene.id;
+    if (id === 'dark_cave') return 'rain';
+    if (id === 'treasure_room') return 'cave';
+    if (id === 'river_crossing') return 'river';
+    return 'forest';
+  }, [scene]);
 
   const npcTypes: Array<'bunny' | 'bear' | 'owl' | 'fox'> = ['bunny', 'bear', 'owl', 'fox'];
 

@@ -118,26 +118,13 @@ ${result.dietPlan.herbs.join(', ')}
       <div className="max-w-4xl mx-auto" id="diet-analysis-result">
         {/* 헤더 */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-6">
-            <img src={logo} alt="가까이한의원" className="h-24 object-contain" />
-          </div>
           <div className="flex items-center justify-center mb-4">
-            <CheckCircle className="h-8 w-8 text-purple-600 mr-2" />
-            <h1 className="text-3xl font-bold text-foreground">가까이한의원 체질분석 완료</h1>
+            <CheckCircle className="h-8 w-8 text-primary mr-2" />
+            <h1 className="text-3xl font-bold text-foreground">체질분석 완료</h1>
           </div>
-          <p className="text-lg font-semibold text-purple-700 mb-2">
+          <p className="text-lg font-semibold text-primary mb-2">
             맞춤형 한방 다이어트 프로그램
           </p>
-          <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-purple-600" />
-              <span className="font-medium">상담문의: 1234-5678</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-purple-600" />
-              <span>서울시 강남구 테헤란로</span>
-            </div>
-          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">

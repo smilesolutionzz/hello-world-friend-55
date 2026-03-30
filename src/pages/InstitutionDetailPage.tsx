@@ -1,26 +1,40 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import Footer from "@/components/ui/footer";
 import {
-  ArrowLeft,
-  MapPin,
-  CheckCircle,
-  Star,
-  Phone,
-  MessageCircle,
-  Building2,
-  Clock,
-  Users,
-  Award,
-  Shield,
-  Sparkles,
+  ArrowLeft, MapPin, CheckCircle, Star, Phone, MessageCircle,
+  Building2, Clock, Users, Award, Shield, Sparkles,
 } from "lucide-react";
 
-// Institution data matching ExpertHiring.tsx
+// Facility images
+import facilityDev from '@/assets/facilities/facility-development-center.jpg';
+import facilitySpeech from '@/assets/facilities/facility-speech-therapy.jpg';
+import facilityCounseling from '@/assets/facilities/facility-counseling.jpg';
+import facilityAba from '@/assets/facilities/facility-aba.jpg';
+import facilityOriental from '@/assets/facilities/facility-oriental.jpg';
+import facilitySports from '@/assets/facilities/facility-sports.jpg';
+import facilityArt from '@/assets/facilities/facility-art.jpg';
+import facilityDaycare from '@/assets/facilities/facility-daycare.jpg';
+import facilityPlayTherapy from '@/assets/facilities/facility-play-therapy.jpg';
+import facilityPsychology from '@/assets/facilities/facility-psychology.jpg';
+import facilitySensory from '@/assets/facilities/facility-sensory.jpg';
+import facilityHospital from '@/assets/facilities/facility-hospital.jpg';
+import facilityLearning from '@/assets/facilities/facility-learning.jpg';
+import facilityDaycare2 from '@/assets/facilities/facility-daycare2.jpg';
+import facilityOriental2 from '@/assets/facilities/facility-oriental2.jpg';
+import facilitySports2 from '@/assets/facilities/facility-sports2.jpg';
+
+const ALL_FACILITY_IMAGES = [
+  facilityDev, facilitySpeech, facilityCounseling, facilityAba,
+  facilityOriental, facilitySports, facilityArt, facilityDaycare,
+  facilityPlayTherapy, facilityPsychology, facilitySensory, facilityHospital,
+  facilityLearning, facilityDaycare2, facilityOriental2, facilitySports2,
+];
+
 const allInstitutions = [
   { id: 'inst_1', name: 'APA발달센터', type: '발달센터', location: '본점', specialties: ['ABA', '발달재활'], description: 'ABA 기반의 체계적인 발달재활 서비스를 제공하는 전문 발달센터입니다.', phone: '010-9266-2710', hours: '평일 09:00 - 18:00' },
   { id: 'inst_2', name: 'APA주관활동서비스센터', type: '발달센터', location: '본점', specialties: ['주관활동', '발달재활'], description: '발달장애인을 위한 주관활동 서비스를 제공합니다.', phone: '010-9266-2710', hours: '평일 09:00 - 18:00' },
@@ -59,47 +73,30 @@ const allInstitutions = [
   { id: 'inst_47', name: '한국스포츠과학연구소 장애인주간활동,방과후활동센터 하남점', type: '주간활동서비스', location: '하남', specialties: ['장애인주간활동', '방과후활동', '스포츠과학'], description: '스포츠 과학 기반의 장애인 주간활동 및 방과후 서비스를 제공합니다.', hours: '평일 09:00 - 18:00' },
 ];
 
-const typeConfig: Record<string, { icon: string; gradient: string; color: string }> = {
-  '발달센터': { icon: '🏢', gradient: 'from-blue-500 to-indigo-600', color: 'blue' },
-  'ABA센터': { icon: '🎯', gradient: 'from-orange-500 to-red-600', color: 'orange' },
-  '심리발달센터': { icon: '💜', gradient: 'from-purple-500 to-indigo-600', color: 'purple' },
-  '심리상담센터': { icon: '💜', gradient: 'from-purple-500 to-indigo-600', color: 'purple' },
-  '언어발달센터': { icon: '🗣️', gradient: 'from-teal-500 to-cyan-600', color: 'teal' },
-  '연구소': { icon: '🔬', gradient: 'from-emerald-500 to-green-600', color: 'emerald' },
-  '병원부설': { icon: '🏥', gradient: 'from-green-500 to-emerald-600', color: 'green' },
-  '한의원': { icon: '🌿', gradient: 'from-amber-500 to-yellow-600', color: 'amber' },
-  '학습센터': { icon: '📚', gradient: 'from-sky-500 to-blue-600', color: 'sky' },
-  '미술치료센터': { icon: '🎨', gradient: 'from-pink-500 to-rose-600', color: 'pink' },
-  '발달상담센터': { icon: '💬', gradient: 'from-violet-500 to-purple-600', color: 'violet' },
-  '주간활동서비스': { icon: '☀️', gradient: 'from-yellow-500 to-orange-600', color: 'yellow' },
-  '주간보호시설': { icon: '🏠', gradient: 'from-orange-500 to-amber-600', color: 'orange' },
-  '방과후서비스': { icon: '📖', gradient: 'from-indigo-500 to-blue-600', color: 'indigo' },
-  '특수체육': { icon: '🏃', gradient: 'from-lime-500 to-green-600', color: 'lime' },
-};
+const getFacilityImageByIndex = (index: number) => ALL_FACILITY_IMAGES[index % ALL_FACILITY_IMAGES.length];
 
 const InstitutionDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const institution = allInstitutions.find((inst) => inst.id === id);
-  const config = institution ? typeConfig[institution.type] || { icon: '🏢', gradient: 'from-blue-500 to-indigo-600', color: 'blue' } : { icon: '🏢', gradient: 'from-blue-500 to-indigo-600', color: 'blue' };
+  const instIndex = allInstitutions.findIndex(i => i.id === id);
+  const institution = instIndex >= 0 ? allInstitutions[instIndex] : null;
+  const facilityImage = instIndex >= 0 ? getFacilityImageByIndex(instIndex) : '';
 
   if (!institution) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-white">
         <UnifiedNavigation />
         <div className="flex flex-col items-center justify-center py-32">
-          <Building2 className="w-16 h-16 text-muted mb-4" />
+          <Building2 className="w-16 h-16 text-muted-foreground/30 mb-4" />
           <p className="text-muted-foreground mb-4 text-lg">기관 정보를 찾을 수 없습니다</p>
-          <Button onClick={() => navigate('/expert-hiring')}>목록으로 돌아가기</Button>
+          <Button onClick={() => navigate('/expert-hiring')} className="rounded-2xl">목록으로 돌아가기</Button>
         </div>
       </div>
     );
   }
 
-  const handleKakaoConsult = () => {
-    window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank');
-  };
+  const handleKakaoConsult = () => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank');
 
   return (
     <>
@@ -108,204 +105,141 @@ const InstitutionDetailPage = () => {
         <meta name="description" content={`${institution.name} - ${institution.specialties.join(', ')} 전문 기관`} />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      <div className="min-h-screen bg-white">
         <UnifiedNavigation />
 
         {/* 뒤로가기 */}
-        <div className="max-w-4xl mx-auto px-4 pt-6">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/expert-hiring')}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            기관 목록
+        <div className="max-w-3xl mx-auto px-4 pt-6">
+          <Button variant="ghost" onClick={() => navigate('/expert-hiring')} className="text-muted-foreground hover:text-foreground rounded-xl">
+            <ArrowLeft className="w-4 h-4 mr-2" /> 기관 목록
           </Button>
         </div>
 
-        {/* 헤더 */}
-        <section className="max-w-4xl mx-auto px-4 py-8">
-          <Card className="overflow-hidden border-0 shadow-xl bg-white">
-            <div className={`h-36 bg-gradient-to-r ${config.gradient} relative`}>
-              <div className="absolute inset-0 bg-white/5" />
-              <div className="absolute bottom-4 right-6">
-                <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                  <Shield className="w-3 h-3 mr-1" />
-                  AIHPRO 검증 제휴기관
-                </Badge>
+        {/* ─── 시설 이미지 + 기관 정보 ─── */}
+        <section className="max-w-3xl mx-auto px-4 py-8">
+          <div className="bg-white rounded-3xl overflow-hidden" style={{ boxShadow: '0 1px 3px hsl(var(--foreground)/0.04), 0 8px 30px hsl(var(--foreground)/0.06)', border: '1px solid hsl(var(--border)/0.4)' }}>
+            {/* 시설 사진 */}
+            <div className="relative h-48 md:h-64 overflow-hidden">
+              <img src={facilityImage} alt={institution.name} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              <div className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-full shadow-sm">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                <span className="text-xs font-bold text-emerald-700">AIHPRO 인증기관</span>
+              </div>
+              <div className="absolute bottom-4 left-4 flex items-center gap-1.5 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full">
+                <MapPin className="w-3.5 h-3.5 text-white/80" />
+                <span className="text-xs font-medium text-white">{
+
+institution.location}</span>
               </div>
             </div>
 
-            <CardContent className="relative px-6 pb-8">
-              <div className="absolute -top-10 left-6">
-                <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center text-4xl shadow-xl ring-4 ring-white`}>
-                  {config.icon}
-                </div>
+            {/* 기관 정보 */}
+            <div className="p-6 md:p-8">
+              <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">{institution.name}</h1>
+              <p className="text-muted-foreground text-sm mt-1">{institution.type}</p>
+
+              <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-muted-foreground">
+                {institution.hours && (
+                  <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{institution.hours}</span>
+                )}
               </div>
 
-              <div className="pt-14">
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <h1 className="text-2xl font-bold text-foreground">{institution.name}</h1>
-                      <Badge className="bg-green-100 text-green-700 border-green-200">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        인증완료
-                      </Badge>
-                    </div>
-                    <p className="text-muted-foreground mb-3">{institution.type}</p>
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {institution.location}
-                      </span>
-                      {institution.hours && (
-                        <span className="flex items-center">
-                          <Clock className="w-4 h-4 mr-1" />
-                          {institution.hours}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 flex-shrink-0">
-                    {institution.phone && (
-                      <Button
-                        variant="outline"
-                        onClick={() => window.open(`tel:${institution.phone}`, '_self')}
-                        className="border-primary/30 text-primary hover:bg-primary/5"
-                      >
-                        <Phone className="w-4 h-4 mr-2" />
-                        전화 문의
-                      </Button>
-                    )}
-                    <Button
-                      onClick={handleKakaoConsult}
-                      className="bg-[#FEE500] text-[#3C1E1E] hover:bg-[#FDD835] shadow-lg"
-                    >
-                      <MessageCircle className="w-4 h-4 mr-2" />
-                      카카오 문의
-                    </Button>
-                  </div>
-                </div>
-
-                {/* 전문 분야 */}
-                <div className="flex flex-wrap gap-2 mt-5">
-                  {institution.specialties.map((spec, idx) => (
-                    <Badge key={idx} variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-3 py-1">
-                      {spec}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* 기관 소개 */}
-        <section className="max-w-4xl mx-auto px-4 pb-6">
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
-              <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary" />
-                기관 소개
-              </h2>
-              <p className="text-muted-foreground leading-relaxed text-base">
-                {institution.description}
-              </p>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* 제공 서비스 */}
-        <section className="max-w-4xl mx-auto px-4 pb-6">
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
-              <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <Award className="w-5 h-5 text-primary" />
-                제공 서비스
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-1.5 mt-4">
                 {institution.specialties.map((spec, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 border border-border/50">
-                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${config.gradient} flex items-center justify-center text-white text-lg`}>
-                      {config.icon}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-foreground">{spec}</p>
-                      <p className="text-sm text-muted-foreground">전문 서비스 제공</p>
-                    </div>
-                  </div>
+                  <Badge key={idx} variant="secondary" className="bg-primary/8 text-primary border-0 rounded-lg text-xs font-medium px-2.5 py-1">{spec}</Badge>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </section>
 
-        {/* 신뢰 지표 */}
-        <section className="max-w-4xl mx-auto px-4 pb-6">
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-primary/5 to-primary/10">
-            <CardContent className="p-6">
-              <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <Shield className="w-5 h-5 text-primary" />
-                AIHPRO 인증 기관
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-3">
-                  <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                  <p className="text-sm font-semibold text-foreground">자격 검증</p>
-                  <p className="text-xs text-muted-foreground">완료</p>
-                </div>
-                <div className="text-center p-3">
-                  <Shield className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-                  <p className="text-sm font-semibold text-foreground">기관 인증</p>
-                  <p className="text-xs text-muted-foreground">완료</p>
-                </div>
-                <div className="text-center p-3">
-                  <Star className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-                  <p className="text-sm font-semibold text-foreground">이용자 평가</p>
-                  <p className="text-xs text-muted-foreground">우수</p>
-                </div>
-                <div className="text-center p-3">
-                  <Users className="w-8 h-8 text-purple-500 mx-auto mb-2" />
-                  <p className="text-sm font-semibold text-foreground">전문인력</p>
-                  <p className="text-xs text-muted-foreground">보유</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* CTA */}
-        <section className="max-w-4xl mx-auto px-4 pb-12">
-          <Card className="border-0 shadow-xl bg-gradient-to-r from-foreground to-foreground/90 text-background">
-            <CardContent className="p-8 text-center">
-              <h3 className="text-xl font-bold mb-2">이 기관에 상담을 문의하시겠어요?</h3>
-              <p className="text-background/70 mb-6">카카오톡 또는 전화로 편하게 문의하세요</p>
-              <div className="flex justify-center gap-3">
+              {/* CTA */}
+              <div className="flex gap-2.5 mt-6">
                 {institution.phone && (
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => window.open(`tel:${institution.phone}`, '_self')}
-                    className="bg-transparent border-background/30 text-background hover:bg-background/10"
-                  >
-                    <Phone className="w-4 h-4 mr-2" />
-                    {institution.phone}
+                  <Button variant="outline" onClick={() => window.open(`tel:${institution.phone}`, '_self')} className="rounded-2xl border-border/50 h-10 px-5">
+                    <Phone className="w-4 h-4 mr-1.5" /> 전화 문의
                   </Button>
                 )}
-                <Button
-                  size="lg"
-                  onClick={handleKakaoConsult}
-                  className="bg-[#FEE500] text-[#3C1E1E] hover:bg-[#FDD835] shadow-lg"
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  카카오톡 문의하기
+                <Button onClick={handleKakaoConsult} className="rounded-2xl h-10 px-6 bg-[#FEE500] text-[#3C1E1E] hover:bg-[#FDD835] shadow-lg">
+                  <MessageCircle className="w-4 h-4 mr-1.5" /> 카카오 문의
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </section>
+
+        {/* ─── 기관 소개 ─── */}
+        <section className="max-w-3xl mx-auto px-4 pb-6">
+          <div className="bg-white rounded-3xl p-6 border border-border/30" style={{ boxShadow: '0 1px 3px hsl(var(--foreground)/0.03)' }}>
+            <h2 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2 uppercase tracking-wider">
+              <Sparkles className="w-4 h-4 text-primary" /> 기관 소개
+            </h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">{institution.description}</p>
+          </div>
+        </section>
+
+        {/* ─── 제공 서비스 ─── */}
+        <section className="max-w-3xl mx-auto px-4 pb-6">
+          <div className="bg-white rounded-3xl p-6 border border-border/30" style={{ boxShadow: '0 1px 3px hsl(var(--foreground)/0.03)' }}>
+            <h2 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
+              <Award className="w-4 h-4 text-primary" /> 제공 서비스
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {institution.specialties.map((spec, idx) => (
+                <div key={idx} className="flex items-center gap-3 p-3.5 rounded-2xl bg-muted/30 border border-border/20">
+                  <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground text-sm">{spec}</p>
+                    <p className="text-xs text-muted-foreground">전문 서비스 제공</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── 인증 지표 ─── */}
+        <section className="max-w-3xl mx-auto px-4 pb-6">
+          <div className="bg-muted/30 rounded-3xl p-6 border border-border/30">
+            <h2 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
+              <Shield className="w-4 h-4 text-primary" /> AIHPRO 인증 기관
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              {[
+                { icon: <CheckCircle className="w-6 h-6 text-emerald-500" />, title: '자격 검증', sub: '완료' },
+                { icon: <Shield className="w-6 h-6 text-primary" />, title: '기관 인증', sub: '완료' },
+                { icon: <Star className="w-6 h-6 text-amber-400" />, title: '이용자 평가', sub: '우수' },
+                { icon: <Users className="w-6 h-6 text-primary" />, title: '전문인력', sub: '보유' },
+              ].map((item, idx) => (
+                <div key={idx} className="p-3">
+                  <div className="flex justify-center mb-2">{item.icon}</div>
+                  <p className="text-xs font-semibold text-foreground">{item.title}</p>
+                  <p className="text-[10px] text-muted-foreground">{item.sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── CTA ─── */}
+        <section className="max-w-3xl mx-auto px-4 pb-12">
+          <div className="bg-foreground rounded-3xl p-8 text-center">
+            <h3 className="text-lg font-bold text-background mb-1">이 기관에 상담을 문의하시겠어요?</h3>
+            <p className="text-background/60 text-sm mb-5">카카오톡 또는 전화로 편하게 문의하세요</p>
+            <div className="flex justify-center gap-3">
+              {institution.phone && (
+                <Button variant="outline" size="lg" onClick={() => window.open(`tel:${institution.phone}`, '_self')} className="bg-transparent border-background/20 text-background hover:bg-background/10 rounded-2xl">
+                  <Phone className="w-4 h-4 mr-2" /> {institution.phone}
+                </Button>
+              )}
+              <Button size="lg" onClick={handleKakaoConsult} className="bg-[#FEE500] text-[#3C1E1E] hover:bg-[#FDD835] shadow-lg rounded-2xl">
+                <MessageCircle className="w-4 h-4 mr-2" /> 카카오톡 문의하기
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        <Footer />
       </div>
     </>
   );

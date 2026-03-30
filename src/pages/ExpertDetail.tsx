@@ -135,6 +135,27 @@ const personalPhilosophyData: Record<string, { philosophy: string; approach: str
   '윤서윤': { philosophy: "언어는 마음의 다리입니다. 소통의 즐거움을 알려드립니다.", approach: ['언어발달치료', '조음치료', 'AAC 보완대체 의사소통'], education: ['한림대학교 언어병리학 박사', '대한언어재활사협회 1급'], successCases: 221 },
   '임채원': { philosophy: "아이의 무한한 가능성을 믿습니다. 함께라면 어떤 벽도 넘을 수 있습니다.", approach: ['발달재활', '조기중재', '통합치료'], education: ['부산대학교 특수교육학 석사', '발달재활서비스 제공자 자격'], successCases: 167 },
 };
+const getFaqBySpecialty = (specialties: string[]): { question: string; answer: string }[] => {
+  for (const specialty of specialties) {
+    for (const [key, faqs] of Object.entries(specialtyFaqMap)) {
+      if (specialty.includes(key) || key.includes(specialty)) return faqs;
+    }
+  }
+  return [
+    { question: '첫 상담은 어떻게 진행되나요?', answer: '첫 상담에서는 현재 상황을 파악하고 맞춤 치료 계획을 함께 세웁니다. 약 50~60분 소요됩니다.' },
+    { question: '상담 주기는 어떻게 되나요?', answer: '보통 주 1~2회를 권장하며, 상태에 따라 조정됩니다.' },
+    { question: '온라인 상담도 가능한가요?', answer: '네, 화상 상담을 통해 동일한 품질의 서비스를 제공합니다.' },
+  ];
+};
+
+const getTargetBySpecialty = (specialties: string[]): string[] => {
+  for (const specialty of specialties) {
+    for (const [key, targets] of Object.entries(specialtyTargetMap)) {
+      if (specialty.includes(key) || key.includes(specialty)) return targets;
+    }
+  }
+  return ['발달에 관심이 있는 부모', '정서적 어려움을 겪는 아동·청소년', '양육 스트레스를 겪는 보호자'];
+};
 
 const getPhilosophyBySpecialty = (name: string, specialties: string[]) => {
   if (personalPhilosophyData[name]) return personalPhilosophyData[name];

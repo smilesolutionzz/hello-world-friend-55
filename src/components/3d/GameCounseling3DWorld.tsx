@@ -261,7 +261,7 @@ function MovablePlayer({ targetPos, storyPoints, currentStoryIndex, onArrive, on
 
       if (dist > 0.2) {
         dir.normalize();
-        const speed = 5;
+        const speed = 3.5; // 안정적인 이동 속도
         const step = Math.min(speed * delta, dist);
         posRef.current.add(dir.multiplyScalar(step));
 

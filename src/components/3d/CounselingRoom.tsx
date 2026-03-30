@@ -538,7 +538,7 @@ const OutdoorRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =
     <group ref={groupRef}>
       {/* 잔디 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[30, 30]} />
+        <planeGeometry args={[60, 60]} />
         <meshLambertMaterial color="#7CFC00" />
       </mesh>
       

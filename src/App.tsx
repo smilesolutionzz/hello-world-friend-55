@@ -29,6 +29,7 @@ import AIAssistant from "./pages/AIAssistant";
 import ConcernStorage from "./pages/ConcernStorage";
 import ReportGenerator from "./pages/ReportGenerator";
 import MetaverseVoice from "./pages/MetaverseVoice";
+import GameCounseling from "./pages/GameCounseling";
 
 // Assessment & Tests
 import Assessment from "./pages/Assessment";
@@ -176,7 +177,8 @@ const App = () => {
           <Route path="/en/report-generator" element={<ReportGenerator />} />
           <Route path="/en/sample-report" element={<SampleReport />} />
           <Route path="/en/comprehensive-reporting" element={<ComprehensiveReporting />} />
-          <Route path="/en/metaverse-voice" element={<MetaverseVoice />} />
+           <Route path="/en/metaverse-voice" element={<MetaverseVoice />} />
+           <Route path="/en/game-counseling" element={<GameCounseling />} />
           <Route path="/en/assessment" element={<Assessment />} />
           <Route path="/en/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/en/free-trial" element={<FreeTrialAssessment />} />
@@ -276,6 +278,7 @@ const App = () => {
 
           {/* AI Azit - Killer Feature */}
           <Route path="/metaverse-voice" element={<MetaverseVoice />} />
+          <Route path="/game-counseling" element={<GameCounseling />} />
 
           {/* Assessment & Tests */}
           <Route path="/assessment" element={<Assessment />} />

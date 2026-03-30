@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useMemo } from 'react';
+import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, Float, Text, Stars } from '@react-three/drei';
 import * as THREE from 'three';
@@ -80,20 +80,17 @@ function FairyTaleForest() {
 }
 
 function CartoonTree({ position, scale = 1 }: { position: [number, number, number]; scale?: number }) {
-  const treeRef = useRef<THREE.Group>(null);
   const leafColor = useMemo(() => {
     const colors = ['#2d7d46', '#3a9d5e', '#4fb970', '#1b5e2a'];
     return colors[Math.floor(Math.random() * colors.length)];
   }, []);
 
   return (
-    <group ref={treeRef} position={position} scale={scale}>
-      {/* 나무 줄기 */}
+    <group position={position} scale={scale}>
       <mesh position={[0, 1.5, 0]} castShadow>
         <cylinderGeometry args={[0.2, 0.35, 3, 8]} />
         <meshStandardMaterial color="#8B5E3C" />
       </mesh>
-      {/* 나뭇잎 (둥근 형태) */}
       <mesh position={[0, 3.5, 0]} castShadow>
         <sphereGeometry args={[1.5, 8, 8]} />
         <meshStandardMaterial color={leafColor} />
@@ -123,7 +120,6 @@ function CartoonMushroom({ position }: { position: [number, number, number] }) {
         <sphereGeometry args={[0.2, 8, 8]} />
         <meshStandardMaterial color={color} />
       </mesh>
-      {/* 점들 */}
       <mesh position={[0.1, 0.4, 0.1]}>
         <sphereGeometry args={[0.04, 6, 6]} />
         <meshStandardMaterial color="#ffffff" />
@@ -132,12 +128,34 @@ function CartoonMushroom({ position }: { position: [number, number, number] }) {
   );
 }
 
+// ============ 클릭 목표 표시 ============
+
+function ClickMarker({ position }: { position: THREE.Vector3 | null }) {
+  const ref = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    if (ref.current && position) {
+      ref.current.rotation.y = state.clock.elapsedTime * 3;
+      ref.current.scale.setScalar(0.8 + Math.sin(state.clock.elapsedTime * 4) * 0.2);
+    }
+  });
+
+  if (!position) return null;
+
+  return (
+    <mesh ref={ref} position={[position.x, 0.1, position.z]} rotation={[-Math.PI / 2, 0, 0]}>
+      <ringGeometry args={[0.3, 0.5, 16]} />
+      <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={1.5} transparent opacity={0.8} />
+    </mesh>
+  );
+}
+
 // ============ 스토리 포인트 오브젝트 ============
 
-function StoryPointMarker({ position, active, emoji }: {
+function StoryPointMarker({ position, active, visited }: {
   position: [number, number, number];
   active: boolean;
-  emoji: string;
+  visited: boolean;
 }) {
   const ringRef = useRef<THREE.Mesh>(null);
 
@@ -149,30 +167,24 @@ function StoryPointMarker({ position, active, emoji }: {
 
   return (
     <group position={position}>
-      {/* 빛나는 원형 마커 */}
       {active && (
         <>
           <mesh ref={ringRef} position={[0, 0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
             <torusGeometry args={[1.5, 0.08, 8, 32]} />
-            <meshStandardMaterial
-              color="#ffd700"
-              emissive="#ffd700"
-              emissiveIntensity={1.5}
-            />
+            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={1.5} />
           </mesh>
           <pointLight position={[0, 2, 0]} intensity={2} color="#ffd700" distance={8} />
         </>
       )}
-      {/* 중앙 플로팅 구체 */}
       <Float speed={3} floatIntensity={0.5}>
         <mesh position={[0, 1.5, 0]}>
           <sphereGeometry args={[0.4, 16, 16]} />
           <meshStandardMaterial
-            color={active ? '#ffd700' : '#888888'}
+            color={visited ? '#555555' : active ? '#ffd700' : '#aaaaaa'}
             emissive={active ? '#ffa500' : '#333333'}
             emissiveIntensity={active ? 1 : 0.2}
             transparent
-            opacity={active ? 1 : 0.4}
+            opacity={visited ? 0.3 : active ? 1 : 0.6}
           />
         </mesh>
       </Float>
@@ -180,18 +192,70 @@ function StoryPointMarker({ position, active, emoji }: {
   );
 }
 
-// ============ 캐릭터 (간단한 귀여운 캐릭터) ============
+// ============ 플레이어 캐릭터 (직접 이동) ============
 
-function PlayerCharacter({ position }: { position: THREE.Vector3 }) {
+interface MovablePlayerProps {
+  targetPos: THREE.Vector3 | null;
+  storyPoints: THREE.Vector3[];
+  currentStoryIndex: number;
+  onArrive: (storyIndex: number) => void;
+  onPositionUpdate: (pos: THREE.Vector3) => void;
+}
+
+function MovablePlayer({ targetPos, storyPoints, currentStoryIndex, onArrive, onPositionUpdate }: MovablePlayerProps) {
   const ref = useRef<THREE.Group>(null);
-  const bobOffset = useRef(0);
+  const posRef = useRef(new THREE.Vector3(0, 0, 3));
+  const moveTarget = useRef<THREE.Vector3 | null>(null);
+  const isMoving = useRef(false);
+  const arrivedRef = useRef<Set<number>>(new Set());
 
-  useFrame((state) => {
-    if (ref.current) {
-      bobOffset.current = Math.sin(state.clock.elapsedTime * 4) * 0.05;
-      ref.current.position.y = position.y + bobOffset.current;
-      ref.current.position.x = position.x;
-      ref.current.position.z = position.z;
+  useEffect(() => {
+    if (targetPos) {
+      moveTarget.current = targetPos.clone();
+      moveTarget.current.y = 0;
+      isMoving.current = true;
+    }
+  }, [targetPos]);
+
+  useFrame((_, delta) => {
+    if (!ref.current) return;
+
+    // Move toward target
+    if (isMoving.current && moveTarget.current) {
+      const dir = new THREE.Vector3().subVectors(moveTarget.current, posRef.current);
+      dir.y = 0;
+      const dist = dir.length();
+
+      if (dist > 0.2) {
+        dir.normalize();
+        const speed = 5;
+        const step = Math.min(speed * delta, dist);
+        posRef.current.add(dir.multiplyScalar(step));
+
+        // Face movement direction
+        const angle = Math.atan2(dir.x, dir.z);
+        ref.current.rotation.y = THREE.MathUtils.lerp(ref.current.rotation.y, angle, 0.15);
+      } else {
+        isMoving.current = false;
+        moveTarget.current = null;
+      }
+    }
+
+    // Bob animation
+    const bob = isMoving.current ? Math.sin(Date.now() * 0.01) * 0.08 : Math.sin(Date.now() * 0.003) * 0.03;
+    ref.current.position.set(posRef.current.x, bob, posRef.current.z);
+    onPositionUpdate(posRef.current);
+
+    // Check proximity to current story point
+    if (currentStoryIndex < storyPoints.length && !arrivedRef.current.has(currentStoryIndex)) {
+      const sp = storyPoints[currentStoryIndex];
+      const d = posRef.current.distanceTo(sp);
+      if (d < 2.5) {
+        arrivedRef.current.add(currentStoryIndex);
+        isMoving.current = false;
+        moveTarget.current = null;
+        onArrive(currentStoryIndex);
+      }
     }
   });
 
@@ -239,17 +303,14 @@ function NPCCharacter({ position, type }: { position: [number, number, number]; 
   return (
     <Float speed={1.5} floatIntensity={0.2}>
       <group position={position}>
-        {/* 몸 */}
         <mesh position={[0, 0.5, 0]} castShadow>
           <capsuleGeometry args={[0.3, 0.3, 8, 16]} />
           <meshStandardMaterial color={c.body} />
         </mesh>
-        {/* 머리 */}
         <mesh position={[0, 1.1, 0]} castShadow>
           <sphereGeometry args={[0.35, 16, 16]} />
           <meshStandardMaterial color={c.body} />
         </mesh>
-        {/* 눈 */}
         <mesh position={[-0.12, 1.15, 0.3]}>
           <sphereGeometry args={[0.06, 8, 8]} />
           <meshStandardMaterial color="#333" />
@@ -258,7 +319,6 @@ function NPCCharacter({ position, type }: { position: [number, number, number]; 
           <sphereGeometry args={[0.06, 8, 8]} />
           <meshStandardMaterial color="#333" />
         </mesh>
-        {/* 귀 */}
         {type === 'bunny' && (
           <>
             <mesh position={[-0.15, 1.6, 0]} castShadow>
@@ -271,7 +331,6 @@ function NPCCharacter({ position, type }: { position: [number, number, number]; 
             </mesh>
           </>
         )}
-        {/* 느낌표 (도움 요청) */}
         <Float speed={3} floatIntensity={0.5}>
           <mesh position={[0, 1.8, 0]}>
             <sphereGeometry args={[0.08, 8, 8]} />
@@ -283,34 +342,49 @@ function NPCCharacter({ position, type }: { position: [number, number, number]; 
   );
 }
 
-// ============ 자동 이동 카메라 시스템 ============
+// ============ 카메라 추적 (플레이어 따라감) ============
 
-interface CameraControllerProps {
-  targetZ: number;
-  isMoving: boolean;
-  speed?: number;
-}
-
-function CameraController({ targetZ, isMoving, speed = 4 }: CameraControllerProps) {
+function FollowCamera({ playerPos }: { playerPos: THREE.Vector3 }) {
   const { camera } = useThree();
-  const currentZ = useRef(5);
-
-  useEffect(() => {
-    camera.position.set(0, 2.5, 5);
-    camera.lookAt(0, 1, 0);
-  }, []);
+  const offset = useMemo(() => new THREE.Vector3(0, 4, 6), []);
 
   useFrame((_, delta) => {
-    if (isMoving) {
-      currentZ.current = THREE.MathUtils.lerp(currentZ.current, targetZ + 5, delta * speed * 0.3);
-    } else {
-      currentZ.current = THREE.MathUtils.lerp(currentZ.current, targetZ + 4, delta * 2);
-    }
-    camera.position.set(0, 2.5, currentZ.current);
-    camera.lookAt(0, 1, targetZ);
+    const target = playerPos.clone().add(offset);
+    camera.position.lerp(target, delta * 3);
+    const lookAt = playerPos.clone();
+    lookAt.y += 1;
+    camera.lookAt(lookAt);
   });
 
   return null;
+}
+
+// ============ 바닥 클릭 감지 ============
+
+function ClickableGround({ onClickPosition }: { onClickPosition: (pos: THREE.Vector3) => void }) {
+  const { camera, raycaster } = useThree();
+  const planeRef = useRef<THREE.Mesh>(null);
+
+  const handleClick = useCallback((e: any) => {
+    e.stopPropagation();
+    if (planeRef.current) {
+      const point = e.point as THREE.Vector3;
+      onClickPosition(new THREE.Vector3(point.x, 0, point.z));
+    }
+  }, [onClickPosition]);
+
+  return (
+    <mesh
+      ref={planeRef}
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, 0.01, 0]}
+      onClick={handleClick}
+      visible={false}
+    >
+      <planeGeometry args={[200, 200]} />
+      <meshBasicMaterial />
+    </mesh>
+  );
 }
 
 // ============ 메인 3D 월드 컴포넌트 ============
@@ -322,6 +396,7 @@ interface GameCounseling3DWorldProps {
   onChoice: (choice: StoryChoice) => void;
   isWalking: boolean;
   showChoices: boolean;
+  onArrive?: (storyIndex: number) => void;
 }
 
 export default function GameCounseling3DWorld({
@@ -330,26 +405,39 @@ export default function GameCounseling3DWorld({
   totalScenes,
   onChoice,
   isWalking,
-  showChoices
+  showChoices,
+  onArrive
 }: GameCounseling3DWorldProps) {
-  const storyPointZ = useMemo(() => {
-    return Array.from({ length: totalScenes }, (_, i) => -i * 15);
+  const [clickTarget, setClickTarget] = useState<THREE.Vector3 | null>(null);
+  const [playerPos, setPlayerPos] = useState(new THREE.Vector3(0, 0, 3));
+  const [visitedPoints, setVisitedPoints] = useState<Set<number>>(new Set());
+
+  const storyPointPositions = useMemo(() => {
+    return Array.from({ length: totalScenes }, (_, i) => new THREE.Vector3(0, 0, -i * 15));
   }, [totalScenes]);
 
-  const currentTargetZ = storyPointZ[sceneIndex] || 0;
-  const playerPos = useMemo(() => new THREE.Vector3(0, 0, currentTargetZ), [currentTargetZ]);
-
   const npcTypes: Array<'bunny' | 'bear' | 'owl' | 'fox'> = ['bunny', 'bear', 'owl', 'fox'];
+
+  const handleClickPosition = useCallback((pos: THREE.Vector3) => {
+    setClickTarget(pos);
+  }, []);
+
+  const handleArrive = useCallback((idx: number) => {
+    setVisitedPoints(prev => new Set(prev).add(idx));
+    onArrive?.(idx);
+  }, [onArrive]);
+
+  const handlePositionUpdate = useCallback((pos: THREE.Vector3) => {
+    setPlayerPos(pos.clone());
+  }, []);
 
   return (
     <div className="w-full h-[50vh] md:h-[55vh] rounded-xl overflow-hidden relative">
       <Canvas shadows camera={{ fov: 60, near: 0.1, far: 500 }}>
-        {/* 하늘 */}
         <color attach="background" args={['#1a0533']} />
         <fog attach="fog" args={['#1a0533', 30, 100]} />
         <Stars radius={100} depth={50} count={3000} factor={4} saturation={0.5} fade speed={1} />
 
-        {/* 조명 */}
         <ambientLight intensity={0.4} color="#b8a9c9" />
         <directionalLight
           position={[10, 15, 5]}
@@ -359,41 +447,53 @@ export default function GameCounseling3DWorld({
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
         />
-        <pointLight position={[0, 5, currentTargetZ]} intensity={1.5} color="#ffd700" distance={20} />
+        <pointLight position={[0, 5, playerPos.z]} intensity={1.5} color="#ffd700" distance={20} />
 
-        {/* 카메라 컨트롤 */}
-        <CameraController targetZ={currentTargetZ} isMoving={isWalking} />
+        {/* 카메라가 플레이어를 추적 */}
+        <FollowCamera playerPos={playerPos} />
+
+        {/* 바닥 클릭 감지 (투명 레이어) */}
+        <ClickableGround onClickPosition={handleClickPosition} />
 
         {/* 환경 */}
         <FairyTaleForest />
 
+        {/* 클릭 위치 표시 */}
+        <ClickMarker position={clickTarget} />
+
         {/* 스토리 포인트 마커들 */}
-        {storyPointZ.map((z, i) => (
+        {storyPointPositions.map((sp, i) => (
           <StoryPointMarker
             key={`sp-${i}`}
-            position={[0, 0, z]}
+            position={[sp.x, sp.y, sp.z]}
             active={i === sceneIndex}
-            emoji="⭐"
+            visited={visitedPoints.has(i)}
           />
         ))}
 
-        {/* NPC들 (각 스토리 포인트에) */}
-        {storyPointZ.map((z, i) => (
+        {/* NPC들 */}
+        {storyPointPositions.map((sp, i) => (
           <NPCCharacter
             key={`npc-${i}`}
-            position={[i % 2 === 0 ? 2 : -2, 0, z]}
+            position={[i % 2 === 0 ? 2 : -2, 0, sp.z]}
             type={npcTypes[i % npcTypes.length]}
           />
         ))}
 
-        {/* 플레이어 캐릭터 */}
-        <PlayerCharacter position={playerPos} />
+        {/* 직접 조작 플레이어 */}
+        <MovablePlayer
+          targetPos={clickTarget}
+          storyPoints={storyPointPositions}
+          currentStoryIndex={sceneIndex}
+          onArrive={handleArrive}
+          onPositionUpdate={handlePositionUpdate}
+        />
       </Canvas>
 
-      {/* 이동 중 표시 */}
-      {isWalking && (
+      {/* 안내 메시지 */}
+      {!isWalking && showChoices === false && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-full">
-          <p className="text-white text-sm animate-pulse">🚶 이동 중...</p>
+          <p className="text-white text-sm animate-pulse">👆 화면을 터치해서 이동하세요!</p>
         </div>
       )}
     </div>

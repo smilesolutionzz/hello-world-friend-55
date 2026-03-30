@@ -8,7 +8,7 @@ import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type St
 import GameCounseling3DWorld from '@/components/3d/GameCounseling3DWorld';
 import { useGameTTS } from '@/hooks/useGameTTS';
 
-type GameState = 'intro' | 'walking' | 'narrating' | 'choice' | 'result';
+type GameState = 'intro' | 'exploring' | 'narrating' | 'choice' | 'result';
 
 interface ChoiceRecord {
   sceneId: string;
@@ -25,7 +25,6 @@ export default function GameCounseling3DMode() {
   const [choices, setChoices] = useState<ChoiceRecord[]>([]);
   const [showParentNotes, setShowParentNotes] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
-  const [isWalking, setIsWalking] = useState(false);
   const [ttsEnabled, setTtsEnabled] = useState(true);
   const [displayedText, setDisplayedText] = useState('');
   const typewriterRef = useRef<NodeJS.Timeout | null>(null);
@@ -34,7 +33,7 @@ export default function GameCounseling3DMode() {
 
   const currentScene = currentChapter?.scenes[currentSceneIndex] || null;
 
-  // Typewriter effect for scene description
+  // Typewriter effect
   const typewrite = useCallback((text: string, onComplete?: () => void) => {
     if (typewriterRef.current) clearInterval(typewriterRef.current);
     setDisplayedText('');
@@ -50,24 +49,24 @@ export default function GameCounseling3DMode() {
     }, 40);
   }, []);
 
-  // Auto-narrate when scene changes to narrating state
+  // 스토리 포인트에 도착했을 때 호출
+  const handleArrive = useCallback((storyIndex: number) => {
+    if (gameState !== 'exploring') return;
+    setGameState('narrating');
+  }, [gameState]);
+
+  // Narrate when scene enters narrating state
   useEffect(() => {
-    if (gameState === 'narrating' && currentScene && ttsEnabled) {
+    if (gameState === 'narrating' && currentScene) {
       const narrateText = currentScene.character
         ? `${currentScene.character}를 만났어요! ${currentScene.description}`
         : currentScene.description;
 
-      // Start typewriter and TTS simultaneously
       typewrite(currentScene.description, () => {
-        // After typewriter completes, wait a beat then show choices
         setTimeout(() => setGameState('choice'), 500);
       });
 
-      speak(narrateText);
-    } else if (gameState === 'narrating' && currentScene && !ttsEnabled) {
-      typewrite(currentScene.description, () => {
-        setTimeout(() => setGameState('choice'), 500);
-      });
+      if (ttsEnabled) speak(narrateText);
     }
 
     return () => {
@@ -75,13 +74,11 @@ export default function GameCounseling3DMode() {
     };
   }, [gameState, currentScene, ttsEnabled]);
 
-  // Read choices aloud when they appear
+  // Read choices aloud
   useEffect(() => {
     if (gameState === 'choice' && currentScene && ttsEnabled && !isSpeaking && !ttsLoading) {
       const choiceTexts = currentScene.choices.map((c, i) => `${i + 1}번, ${c.text}`).join('. ');
       const prompt = `어떻게 할까요? ${choiceTexts}`;
-      
-      // Small delay so the choice UI appears first
       const timer = setTimeout(() => speak(prompt), 800);
       return () => clearTimeout(timer);
     }
@@ -91,17 +88,11 @@ export default function GameCounseling3DMode() {
     setCurrentChapter(chapter);
     setCurrentSceneIndex(0);
     setChoices([]);
-    setIsWalking(true);
-    setGameState('walking');
+    setGameState('exploring');
 
     if (ttsEnabled) {
-      speak(`${chapter.title}! 모험을 시작합니다. 마법의 숲으로 출발!`);
+      speak(`${chapter.title}! 빛나는 곳을 터치해서 모험을 시작하세요!`);
     }
-
-    setTimeout(() => {
-      setIsWalking(false);
-      setGameState('narrating');
-    }, 2500);
   }, [ttsEnabled, speak]);
 
   const makeChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
@@ -117,7 +108,6 @@ export default function GameCounseling3DMode() {
       timestamp: Date.now()
     };
 
-    // Narrate the choice feedback
     if (ttsEnabled) {
       speak(`${choice.emoji} ${choice.text}을 선택했어요!`);
     }
@@ -137,19 +127,12 @@ export default function GameCounseling3DMode() {
       } else {
         const nextIndex = currentChapter.scenes.findIndex(s => s.id === choice.nextSceneId);
         const newIndex = nextIndex >= 0 ? nextIndex : currentSceneIndex + 1;
-
-        setGameState('walking');
-        setIsWalking(true);
         setCurrentSceneIndex(newIndex);
+        setGameState('exploring');
 
         if (ttsEnabled) {
-          setTimeout(() => speak('다음 장소로 이동합니다!'), 300);
+          setTimeout(() => speak('다음 빛나는 곳을 터치해서 이동하세요!'), 300);
         }
-
-        setTimeout(() => {
-          setIsWalking(false);
-          setGameState('narrating');
-        }, 2500);
       }
     }, 800);
   }, [currentChapter, currentSceneIndex, ttsEnabled, speak, stopTTS]);
@@ -188,7 +171,7 @@ export default function GameCounseling3DMode() {
             3D 마법의 숲 모험
           </h2>
           <p className="text-purple-200/80 text-sm max-w-sm mx-auto">
-            직접 동화 속 세상으로 들어가서 모험을 떠나요!
+            직접 터치해서 동화 속 세상을 탐험하세요!
           </p>
           <div className="flex items-center justify-center gap-2 mt-2">
             <Button
@@ -209,15 +192,15 @@ export default function GameCounseling3DMode() {
             이렇게 진행돼요
           </h3>
           <div className="space-y-2 text-xs text-purple-200/70">
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">1.</span> 캐릭터가 마법의 숲을 자동으로 탐험해요</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">2.</span> 숲속 친구를 만나면 🎙️ AI가 이야기를 들려줘요</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">3.</span> 질문을 음성으로 읽어주고 선택해요</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">4.</span> 선택에 따라 다음 장소로 이동해요</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">1.</span> 화면을 터치하면 캐릭터가 그곳으로 걸어가요.</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">2.</span> 빛나는 곳에 가면 숲속 친구를 만나요.</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">3.</span> AI가 이야기를 들려주고 질문해요.</div>
+            <div className="flex gap-2"><span className="text-emerald-400 font-bold">4.</span> 답을 고르면 다음 모험이 열려요.</div>
           </div>
         </Card>
 
         <div className="space-y-3">
-          <h3 className="font-semibold text-white">📖 모험을 선택하세요</h3>
+          <h3 className="font-semibold text-white">📖 모험을 선택하세요.</h3>
           {allChapters.map((chapter) => (
             <motion.div key={chapter.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Card
@@ -231,7 +214,7 @@ export default function GameCounseling3DMode() {
                     <p className="text-sm text-purple-200/70">{chapter.subtitle}</p>
                     <div className="flex gap-2 mt-1">
                       <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">
-                        🎮 3D 몰입형
+                        🎮 3D 탐험형
                       </span>
                       <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">
                         🎙️ AI 음성
@@ -334,8 +317,7 @@ export default function GameCounseling3DMode() {
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <Progress value={progress} className="h-2 flex-1" />
-        
-        {/* TTS 상태 표시 */}
+
         <div className="flex items-center gap-1">
           {(isSpeaking || ttsLoading) && (
             <div className="flex items-center gap-1 px-2 py-1 bg-emerald-500/20 rounded-full">
@@ -379,8 +361,9 @@ export default function GameCounseling3DMode() {
           sceneIndex={currentSceneIndex}
           totalScenes={currentChapter.scenes.length}
           onChoice={(choice) => currentScene && makeChoice(currentScene, choice)}
-          isWalking={isWalking}
+          isWalking={false}
           showChoices={gameState === 'choice'}
+          onArrive={handleArrive}
         />
       )}
 
@@ -394,9 +377,8 @@ export default function GameCounseling3DMode() {
             exit={{ opacity: 0, y: -20 }}
             className="space-y-3"
           >
-            {/* 장면 설명 - 타이핑 효과 */}
+            {/* 장면 설명 */}
             <Card className="p-4 bg-black/40 backdrop-blur-sm border-emerald-500/20 relative overflow-hidden">
-              {/* Speaking indicator */}
               {isSpeaking && (
                 <motion.div
                   className="absolute top-0 left-0 h-0.5 bg-gradient-to-r from-emerald-400 to-cyan-400"
@@ -410,11 +392,7 @@ export default function GameCounseling3DMode() {
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-bold text-white text-base">{currentScene.title}</h3>
                     {isSpeaking && (
-                      <motion.div
-                        className="flex gap-0.5 items-end"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                      >
+                      <motion.div className="flex gap-0.5 items-end" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                         {[1,2,3,4].map(i => (
                           <motion.div
                             key={i}
@@ -445,7 +423,7 @@ export default function GameCounseling3DMode() {
               </div>
             </Card>
 
-            {/* 선택지 - choice 상태에서만 */}
+            {/* 선택지 */}
             {gameState === 'choice' && (
               <div className="space-y-2">
                 <p className="text-xs font-semibold text-emerald-300/70 px-1">어떻게 할까요?</p>
@@ -488,33 +466,18 @@ export default function GameCounseling3DMode() {
         )}
       </AnimatePresence>
 
-      {/* Walking narration overlay */}
-      {gameState === 'walking' && (
+      {/* 탐험 중 안내 */}
+      {gameState === 'exploring' && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="text-center py-3"
         >
           <div className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full">
-            <motion.span
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            >
-              🚶
+            <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
+              ✨
             </motion.span>
-            <span className="text-white/80 text-sm">다음 장소로 이동 중...</span>
-            {isSpeaking && (
-              <div className="flex gap-0.5 ml-1">
-                {[1,2,3].map(i => (
-                  <motion.div
-                    key={i}
-                    className="w-0.5 bg-emerald-400 rounded-full"
-                    animate={{ height: ['3px', '8px', '3px'] }}
-                    transition={{ duration: 0.4, repeat: Infinity, delay: i * 0.12 }}
-                  />
-                ))}
-              </div>
-            )}
+            <span className="text-white/80 text-sm">빛나는 곳을 터치해서 이동하세요!</span>
           </div>
         </motion.div>
       )}

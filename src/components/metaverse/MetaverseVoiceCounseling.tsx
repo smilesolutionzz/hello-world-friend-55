@@ -1494,7 +1494,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           setAvatarPosition(pos);
         }}
       >
-        <div className="relative z-10 flex flex-col items-center min-h-screen p-4 pt-16">
+        <div className="relative z-10 flex flex-col items-center min-h-screen p-4 pt-16 pr-[17rem] md:pr-[19rem]">
           {/* 이동 가이드 */}
           {enableMovement && !isMobile && <MovementGuide visible={showMovementGuide} />}
           
@@ -1592,7 +1592,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             </div>
           )}
           {/* Header */}
-          <div className="text-center mb-8 animate-fade-in">
+          <div className="text-left mb-4 animate-fade-in max-w-md">
             {/* UI 접기/펼치기 버튼 */}
             <Button
               onClick={() => setIsUICollapsed(!isUICollapsed)}
@@ -1603,10 +1603,10 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             
             {!isUICollapsed && (
               <>
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 drop-shadow-lg">
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 drop-shadow-lg">
                   안녕하세요, {userName}님 👋
                 </h1>
-                <p className="text-lg text-foreground/90 drop-shadow-md mb-3">
+                <p className="text-sm text-foreground/90 drop-shadow-md mb-2">
                   {consultTopic ? `${consultTopic}에 대해 편하게 이야기 나눠봐요` : '편하게 이야기 나눠봐요'}
                 </p>
               </>
@@ -1670,8 +1670,8 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
 
           {/* Voice Chat Interface - 오른쪽 플로팅 패널 */}
           {!isUICollapsed && (
-          <div className="fixed right-4 top-20 bottom-4 w-80 md:w-96 z-40 flex flex-col pointer-events-none">
-            <Card className="bg-slate-900/90 backdrop-blur-xl border border-purple-500/30 p-4 flex-1 animate-scale-in shadow-xl shadow-purple-500/20 overflow-hidden flex flex-col">
+          <div className="fixed right-2 top-20 bottom-4 w-64 md:w-72 z-40 flex flex-col pointer-events-none">
+            <Card className="bg-slate-900/85 backdrop-blur-xl border border-purple-500/30 p-3 flex-1 animate-scale-in shadow-xl shadow-purple-500/20 overflow-hidden flex flex-col">
             <div className="pointer-events-auto flex flex-col h-full">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-purple-500/50'}`} />

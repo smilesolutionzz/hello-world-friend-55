@@ -191,13 +191,13 @@ const ChildFriendlyRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group
     <group ref={groupRef}>
       {/* 밝은 파스텔 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#FFE4E1" />
       </mesh>
       
       {/* 하늘색 벽 */}
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#E0F4FF" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#E0F4FF" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#E0F4FF" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#E0F4FF" /></mesh>
       
       {/* 천장 (연한 노란색) */}
       <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 8, 0]}>
@@ -307,11 +307,11 @@ const CounselingRoomDefault = ({ groupRef }: { groupRef: React.RefObject<THREE.G
   return (
     <group ref={groupRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#CD853F" />
       </mesh>
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#F5F5DC" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#F5F5DC" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#F5F5DC" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#F5F5DC" /></mesh>
       
       <group position={[-2, -1, 2]}>
         <mesh position={[0, 0.5, 0]}><boxGeometry args={[3, 1, 1.5]} /><meshLambertMaterial color="#D2B48C" /></mesh>
@@ -331,11 +331,11 @@ const OfficeRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =>
   return (
     <group ref={groupRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#E8E8E8" />
       </mesh>
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#FFFFFF" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#F0F0F0" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#FFFFFF" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#F0F0F0" /></mesh>
       
       {/* 책상 */}
       <group position={[0, -0.8, 1]}>
@@ -368,11 +368,11 @@ const HomeRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) => {
   return (
     <group ref={groupRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#D4A574" />
       </mesh>
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#FFF8E7" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#FFFACD" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#FFF8E7" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#FFFACD" /></mesh>
       
       {/* 식탁 */}
       <group position={[0, -0.8, 1]}>
@@ -404,11 +404,11 @@ const BedroomRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =
   return (
     <group ref={groupRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#B8A99A" />
       </mesh>
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#E6D5C3" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#F5E6D3" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#E6D5C3" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#F5E6D3" /></mesh>
       
       {/* 침대 */}
       <group position={[-2, -1, -2]}>
@@ -433,11 +433,11 @@ const SchoolRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =>
   return (
     <group ref={groupRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#F0E68C" />
       </mesh>
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#FFFFF0" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#FFF8DC" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#FFFFF0" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#FFF8DC" /></mesh>
       
       {/* 칠판 */}
       <group position={[0, 1, -7]}>
@@ -468,11 +468,11 @@ const ClubRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) => {
   return (
     <group ref={groupRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#6B7280" />
       </mesh>
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#9CA3AF" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#A8B2C1" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#9CA3AF" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#A8B2C1" /></mesh>
       
       {/* 소파들 */}
       <group position={[-3, -1, 1]}>
@@ -502,11 +502,11 @@ const LivingRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =>
   return (
     <group ref={groupRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#C19A6B" />
       </mesh>
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#FAF0E6" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#FFF5EE" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#FAF0E6" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#FFF5EE" /></mesh>
       
       {/* TV */}
       <group position={[0, 0, -7]}>
@@ -538,7 +538,7 @@ const OutdoorRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =
     <group ref={groupRef}>
       {/* 잔디 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[30, 30]} />
+        <planeGeometry args={[60, 60]} />
         <meshLambertMaterial color="#7CFC00" />
       </mesh>
       
@@ -583,13 +583,13 @@ const PlaygroundRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }
     <group ref={groupRef}>
       {/* 모래 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[30, 30]} />
+        <planeGeometry args={[60, 60]} />
         <meshLambertMaterial color="#F4D03F" />
       </mesh>
       
       {/* 하늘 배경 */}
-      <mesh position={[0, 8, -12]}>
-        <planeGeometry args={[30, 20]} />
+      <mesh position={[0, 8, -25]}>
+        <planeGeometry args={[60, 20]} />
         <meshLambertMaterial color="#87CEEB" />
       </mesh>
       
@@ -639,13 +639,13 @@ const ToyroomRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =
     <group ref={groupRef}>
       {/* 부드러운 카펫 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#FFC0CB" />
       </mesh>
       
       {/* 파스텔 벽 */}
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#E0BBE4" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#FFDFD3" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#E0BBE4" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#FFDFD3" /></mesh>
       
       {/* 레고 블록들 */}
       <group position={[-3, -1.5, 2]}>
@@ -689,13 +689,13 @@ const ArtroomRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =
     <group ref={groupRef}>
       {/* 나무 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#DEB887" />
       </mesh>
       
       {/* 밝은 벽 */}
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#FFFAF0" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#F0F8FF" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#FFFAF0" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#F0F8FF" /></mesh>
       
       {/* 이젤 */}
       <group position={[-3, -0.5, 1]}>
@@ -740,13 +740,13 @@ const LibraryRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =
     <group ref={groupRef}>
       {/* 나무 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#8B7355" />
       </mesh>
       
       {/* 벽 */}
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#F5DEB3" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#FAEBD7" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#F5DEB3" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#FAEBD7" /></mesh>
       
       {/* 책장 1 */}
       <group position={[-6, 0, -5]}>
@@ -796,13 +796,13 @@ const GardenRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =>
     <group ref={groupRef}>
       {/* 잔디 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[30, 30]} />
+        <planeGeometry args={[60, 60]} />
         <meshLambertMaterial color="#98FB98" />
       </mesh>
       
       {/* 하늘 */}
-      <mesh position={[0, 8, -12]}>
-        <planeGeometry args={[30, 20]} />
+      <mesh position={[0, 8, -25]}>
+        <planeGeometry args={[60, 20]} />
         <meshLambertMaterial color="#B0E0E6" />
       </mesh>
       
@@ -957,21 +957,21 @@ const CounselingRoom = ({
   const getRoomSettings = () => {
     switch (roomType) {
       case 'office':
-        return { preset: 'city' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#E0E8F0' };
+        return { preset: 'city' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#E0E8F0' };
       case 'home':
-        return { preset: 'apartment' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#FFF5E6' };
+        return { preset: 'apartment' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#FFF5E6' };
       case 'bedroom':
-        return { preset: 'night' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#E6E6FA' };
+        return { preset: 'night' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#E6E6FA' };
       case 'school':
-        return { preset: 'dawn' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#F0F8FF' };
+        return { preset: 'dawn' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#F0F8FF' };
       case 'club':
-        return { preset: 'warehouse' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#FFF0F5' };
+        return { preset: 'warehouse' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#FFF0F5' };
       case 'living':
-        return { preset: 'sunset' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#FFF8DC' };
+        return { preset: 'sunset' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#FFF8DC' };
       case 'outdoor':
-        return { preset: 'park' as const, cameraPos: [0, 3, 10] as [number, number, number], ambientColor: '#E0FFE0' };
+        return { preset: 'park' as const, cameraPos: [0, 4, 14] as [number, number, number], ambientColor: '#E0FFE0' };
       default:
-        return { preset: 'sunset' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#F0F8FF' };
+        return { preset: 'sunset' as const, cameraPos: [0, 3, 12] as [number, number, number], ambientColor: '#F0F8FF' };
     }
   };
 
@@ -981,7 +981,7 @@ const CounselingRoom = ({
     <>
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <Canvas>
-          <PerspectiveCamera makeDefault position={settings.cameraPos} fov={60} />
+          <PerspectiveCamera makeDefault position={settings.cameraPos} fov={65} />
           
           {/* 조명 설정 */}
           <ambientLight intensity={0.6} color={settings.ambientColor} />
@@ -1051,12 +1051,12 @@ const CounselingRoom = ({
           {character ? (
             <CounselingCharacter 
               character={character}
-              position={[-4, 0, 2]}
+              position={[-6, 0, 0]}
               scale={0.9}
             />
           ) : (
             <CounselorNPC 
-              position={[-4, -1.5, 2]} 
+              position={[-6, -1.5, 0]} 
               isSpeaking={isSpeaking}
               name="메타상담사"
               gesture={counselorGesture}

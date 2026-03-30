@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, Heart, Utensils, Dumbbell, Leaf, AlertCircle, Copy, Target, FileText, Phone, Clock } from 'lucide-react';
+import { Loader2, Heart, Utensils, Dumbbell, Leaf, AlertCircle, Copy, Target, FileText, Phone, Clock, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';

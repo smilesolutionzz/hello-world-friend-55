@@ -668,7 +668,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
             <span className="text-lg">✨</span>
             <span className="font-medium text-foreground">
-              {isEnglish ? "AI Analysis Verified by Licensed Practitioners" : "전문 한의원 검증 완료 AI 분석"}
+              {isEnglish ? "AI Analysis Verified by Licensed Practitioners" : "전문 한의사 검증 AI 분석"}
             </span>
           </div>
         </div>

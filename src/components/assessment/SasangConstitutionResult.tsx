@@ -367,42 +367,34 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
 
       {/* 액션 버튼 */}
       <div className="flex flex-col gap-3">
-        {/* 가까이한의원 비대면 진료 CTA - 최우선 배치 */}
-        <Card className="overflow-hidden border-2" style={{ borderColor: "hsl(var(--herbal-primary))", background: "linear-gradient(135deg, hsl(var(--herbal-bg)), hsl(var(--herbal-bg-warm)))" }}>
+        {/* 한의사 전문가 상담 CTA */}
+        <Card className="overflow-hidden border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex-1 text-center md:text-left">
                 <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))" }}>
-                    <Phone className="h-5 w-5 text-white" />
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary/20">
+                    <Star className="h-5 w-5 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
-                    가까이한의원 비대면 진료
+                  <h3 className="text-xl font-bold text-foreground">
+                    한의사 전문가 상담
                   </h3>
                 </div>
-                <p className="text-base mb-2" style={{ color: "hsl(var(--herbal-secondary))" }}>
-                  체질 분석 결과를 바탕으로 전문 한의사와 1:1 맞춤 상담을 받아보세요
+                <p className="text-base mb-2 text-muted-foreground">
+                  체질 분석 결과를 바탕으로 검증된 한의사 전문가와 1:1 맞춤 상담을 받아보세요
                 </p>
-                <div className="flex items-center justify-center md:justify-start gap-2 text-sm" style={{ color: "hsl(var(--herbal-text-dark))" }}>
-                  <Clock className="h-4 w-4" />
-                  <span>평일 09:00-18:00 | 토요일 09:00-15:00</span>
-                </div>
               </div>
               <div className="flex flex-col gap-3 w-full md:w-auto">
                 <Button 
-                  onClick={() => window.open('tel:01066249990')}
+                  onClick={() => navigate('/expert')}
                   size="lg"
-                  className="text-white text-lg font-bold py-6 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all w-full md:w-auto"
-                  style={{ 
-                    background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))",
-                    fontFamily: "'Noto Serif KR', serif"
-                  }}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold py-6 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all w-full md:w-auto"
                 >
-                  <Phone className="h-5 w-5 mr-2" />
-                  전화 상담 신청 (010-6624-9990)
+                  <Star className="h-5 w-5 mr-2" />
+                  한의사 전문가 보기
                 </Button>
-                <p className="text-xs text-center" style={{ color: "hsl(var(--herbal-secondary))" }}>
-                  ✓ 체질 맞춤 처방 | ✓ 건강보험 적용 | ✓ 비대면 진료 가능
+                <p className="text-xs text-center text-muted-foreground">
+                  ✓ 체질 맞춤 처방 | ✓ 비대면 상담 | ✓ 검증된 전문가
                 </p>
               </div>
             </div>

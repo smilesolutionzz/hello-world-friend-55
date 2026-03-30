@@ -48,11 +48,19 @@ export function useGameTTS(): UseGameTTSReturn {
 
     if (!text.trim()) return;
 
+    // TTS용 텍스트 정제: 특수문자 제거 (물결표, 별표 등)
+    const cleanedText = text
+      .replace(/[~～♪♡★☆※◆◇▶▷●○■□△▽♥♠♣♦…]+/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+
+    if (!cleanedText) return;
+
     setIsLoading(true);
 
     try {
       const { data, error } = await supabase.functions.invoke('elevenlabs-tts', {
-        body: { text, voice: 'kids_narrator', model: 'eleven_multilingual_v2' }
+        body: { text: cleanedText, voice: 'rumam', model: 'eleven_multilingual_v2' }
       });
 
       if (abortRef.current) return;

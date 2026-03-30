@@ -14,7 +14,7 @@ serve(async (req) => {
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
     if (!lovableApiKey) throw new Error('LOVABLE_API_KEY is not configured')
 
-    const { type, content, therapistType, testType, userName } = await req.json()
+    const { type, content, therapistType, testType, userName, deepAnalysis } = await req.json()
 
     if (!content) {
       return new Response(JSON.stringify({ error: '내용이 필요합니다' }), {

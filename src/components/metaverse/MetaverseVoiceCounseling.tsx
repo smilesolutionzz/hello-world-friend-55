@@ -727,6 +727,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
       
       chatRef.current = new RealtimeChat(handleMessage, {
         ...chatOptions,
+        userName: userName.trim(),
         onDisconnect: () => {
           setIsConnected(false);
           setIsReconnecting(false);

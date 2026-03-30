@@ -191,13 +191,13 @@ const ChildFriendlyRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group
     <group ref={groupRef}>
       {/* 밝은 파스텔 바닥 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <planeGeometry args={[20, 20]} />
+        <planeGeometry args={[40, 40]} />
         <meshLambertMaterial color="#FFE4E1" />
       </mesh>
       
       {/* 하늘색 벽 */}
-      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#E0F4FF" /></mesh>
-      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#E0F4FF" /></mesh>
+      <mesh position={[0, 3, -18]}><planeGeometry args={[40, 10]} /><meshLambertMaterial color="#E0F4FF" /></mesh>
+      <mesh position={[-18, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[36, 10]} /><meshLambertMaterial color="#E0F4FF" /></mesh>
       
       {/* 천장 (연한 노란색) */}
       <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 8, 0]}>

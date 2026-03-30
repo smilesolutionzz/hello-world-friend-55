@@ -122,7 +122,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
 ⚕️ **전문 상담 권장**:
 더 정확한 체크와 맞춤 관리를 위해 전문 한의사와 상담받으시길 권합니다.
 
-🏥 전문가 상담: hilightpro.lovable.app/expert`;
+🏥 전문가 상담: hilightpro.lovable.app/expert-hiring`;
   };
 
   const goHome = () => {
@@ -636,7 +636,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
               체질별 맞춤 처방과 생활 관리법을 안내받으실 수 있습니다.
             </p>
             <Button 
-              onClick={() => navigate('/expert')}
+              onClick={() => navigate('/expert-hiring')}
               className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md"
             >
               <Star className="h-4 w-4 mr-2" />

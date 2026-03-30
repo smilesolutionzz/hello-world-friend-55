@@ -346,7 +346,7 @@ const HanMedicineTestInner = () => {
             <p className="text-white/90 mb-8 text-lg">{t.partnerDesc}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button 
-                onClick={() => window.location.href = '/expert'}
+                onClick={() => window.location.href = '/expert-hiring'}
                 className="px-8 py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                 style={{ background: "white", color: "hsl(var(--herbal-primary))", fontFamily: "'Noto Serif KR', serif" }}
               >
@@ -354,7 +354,7 @@ const HanMedicineTestInner = () => {
                 {t.contactBtn}
               </Button>
               <Button 
-                onClick={() => window.location.href = '/expert'}
+                onClick={() => window.location.href = '/expert-hiring'}
                 className="px-8 py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
                 style={{ background: "rgba(255, 255, 255, 0.2)", color: "white", border: "2px solid white", fontFamily: "'Noto Serif KR', serif" }}
               >

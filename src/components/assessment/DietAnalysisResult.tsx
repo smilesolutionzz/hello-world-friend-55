@@ -234,7 +234,7 @@ ${result.dietPlan.herbs.join(', ')}
                 <p className="text-sm text-muted-foreground mb-3">검사 결과 기반 맞춤 한약 처방</p>
                 <Button 
                   className="w-full bg-primary hover:bg-primary/90"
-                  onClick={() => navigate('/expert')}
+                  onClick={() => navigate('/expert-hiring')}
                 >
                   <Star className="h-4 w-4 mr-2" />
                   한의사 전문가 보기
@@ -276,7 +276,7 @@ ${result.dietPlan.herbs.join(', ')}
               <CardContent>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">더 정확한 체질 분석을 위한</p>
-                  <Button size="sm" variant="outline" className="w-full" onClick={() => navigate('/expert')}>
+                  <Button size="sm" variant="outline" className="w-full" onClick={() => navigate('/expert-hiring')}>
                     전문 한의사 정밀 분석
                   </Button>
                 </div>
@@ -302,7 +302,7 @@ ${result.dietPlan.herbs.join(', ')}
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => navigate('/expert')}
+              onClick={() => navigate('/expert-hiring')}
               className="mt-2"
             >
               <Star className="h-4 w-4 mr-2" />

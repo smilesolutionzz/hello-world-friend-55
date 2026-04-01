@@ -521,6 +521,160 @@ function VillageEnvironment({ sceneId }: { sceneId: string }) {
   );
 }
 
+// ============ 터치로 이동하는 플레이어 ============
+function MovablePlayer({ startPos, targetPos, onReachTarget }: {
+  startPos: [number, number, number];
+  targetPos: [number, number, number];
+  onReachTarget: () => void;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const posRef = useRef(new THREE.Vector3(...startPos));
+  const moveTarget = useRef<THREE.Vector3 | null>(null);
+  const arrived = useRef(false);
+  const { camera, raycaster, pointer } = useThree();
+
+  // 터치/클릭으로 바닥 위치 계산 후 이동 목표 설정
+  useEffect(() => {
+    const handlePointerDown = (e: PointerEvent | TouchEvent) => {
+      // UI 위의 터치는 무시
+      const target = e.target as HTMLElement;
+      if (target.closest('button') || target.closest('[role="button"]') || target.tagName === 'BUTTON') return;
+
+      // raycaster로 바닥 히트 계산
+      const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+      const intersection = new THREE.Vector3();
+      raycaster.setFromCamera(pointer, camera);
+      raycaster.ray.intersectPlane(groundPlane, intersection);
+      if (intersection) {
+        moveTarget.current = intersection.clone();
+        moveTarget.current.y = 0;
+      }
+    };
+
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+      canvas.addEventListener('pointerdown', handlePointerDown);
+      return () => canvas.removeEventListener('pointerdown', handlePointerDown);
+    }
+  }, [camera, raycaster, pointer]);
+
+  useFrame(() => {
+    if (!groupRef.current) return;
+
+    // 이동 목표를 향해 걷기
+    if (moveTarget.current) {
+      const dir = moveTarget.current.clone().sub(posRef.current);
+      dir.y = 0;
+      const dist = dir.length();
+      if (dist > 0.15) {
+        dir.normalize().multiplyScalar(0.08);
+        posRef.current.add(dir);
+        // 이동 방향 바라보기
+        const angle = Math.atan2(dir.x, dir.z);
+        groupRef.current.rotation.y = angle;
+      } else {
+        moveTarget.current = null;
+      }
+      groupRef.current.position.copy(posRef.current);
+    }
+
+    // 빛기둥 도착 감지
+    if (!arrived.current) {
+      const beamPos = new THREE.Vector3(...targetPos);
+      beamPos.y = 0;
+      const playerXZ = posRef.current.clone();
+      playerXZ.y = 0;
+      if (playerXZ.distanceTo(beamPos) < 1.5) {
+        arrived.current = true;
+        onReachTarget();
+      }
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={startPos}>
+      {/* 다리 */}
+      <mesh position={[-0.15, 0.35, 0]}>
+        <boxGeometry args={[0.22, 0.7, 0.22]} />
+        <meshStandardMaterial color="#4169E1" />
+      </mesh>
+      <mesh position={[0.15, 0.35, 0]}>
+        <boxGeometry args={[0.22, 0.7, 0.22]} />
+        <meshStandardMaterial color="#4169E1" />
+      </mesh>
+      <mesh position={[-0.15, 0.05, 0.05]}>
+        <boxGeometry args={[0.24, 0.12, 0.32]} />
+        <meshStandardMaterial color="#FF4500" />
+      </mesh>
+      <mesh position={[0.15, 0.05, 0.05]}>
+        <boxGeometry args={[0.24, 0.12, 0.32]} />
+        <meshStandardMaterial color="#FF4500" />
+      </mesh>
+      {/* 몸통 */}
+      <mesh position={[0, 1.1, 0]}>
+        <boxGeometry args={[0.7, 0.9, 0.45]} />
+        <meshStandardMaterial color="#FF6B6B" />
+      </mesh>
+      <mesh position={[-0.5, 1.1, 0]}>
+        <boxGeometry args={[0.2, 0.75, 0.2]} />
+        <meshStandardMaterial color="#FF6B6B" />
+      </mesh>
+      <mesh position={[0.5, 1.1, 0]}>
+        <boxGeometry args={[0.2, 0.75, 0.2]} />
+        <meshStandardMaterial color="#FF6B6B" />
+      </mesh>
+      {/* 머리 */}
+      <mesh position={[0, 1.85, 0]}>
+        <boxGeometry args={[0.65, 0.65, 0.6]} />
+        <meshStandardMaterial color="#FFE0BD" />
+      </mesh>
+      <mesh position={[0, 2.12, -0.02]}>
+        <boxGeometry args={[0.7, 0.4, 0.65]} />
+        <meshStandardMaterial color="#2C1608" />
+      </mesh>
+      <mesh position={[-0.15, 1.88, 0.31]}>
+        <boxGeometry args={[0.12, 0.12, 0.02]} />
+        <meshStandardMaterial color="#1a1a1a" />
+      </mesh>
+      <mesh position={[0.15, 1.88, 0.31]}>
+        <boxGeometry args={[0.12, 0.12, 0.02]} />
+        <meshStandardMaterial color="#1a1a1a" />
+      </mesh>
+      <mesh position={[0, 1.72, 0.31]}>
+        <boxGeometry args={[0.2, 0.05, 0.02]} />
+        <meshStandardMaterial color="#FF6B6B" />
+      </mesh>
+    </group>
+  );
+}
+
+// ============ 방향 화살표 (빛기둥 가이드) ============
+function DirectionArrow({ from, to }: { from: [number, number, number]; to: [number, number, number] }) {
+  const ref = useRef<THREE.Mesh>(null);
+  const dir = useMemo(() => {
+    const d = new THREE.Vector3(to[0] - from[0], 0, to[2] - from[2]).normalize();
+    return Math.atan2(d.x, d.z);
+  }, [from, to]);
+
+  useFrame((state) => {
+    if (ref.current) {
+      ref.current.position.y = 0.5 + Math.sin(state.clock.elapsedTime * 2) * 0.2;
+      const mat = ref.current.material as THREE.MeshBasicMaterial;
+      mat.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 3) * 0.3;
+    }
+  });
+
+  const midX = (from[0] + to[0]) / 2;
+  const midZ = (from[2] + to[2]) / 2;
+
+  return (
+    <mesh ref={ref} position={[midX, 0.5, midZ]} rotation={[-Math.PI / 2, 0, -dir]}>
+      <coneGeometry args={[0.4, 1, 4]} />
+      <meshBasicMaterial color="#FFD700" transparent opacity={0.6} />
+    </mesh>
+  );
+}
+
 // ============ 메인 3D 씬 ============
 function VillageScene({ sceneId, onArrive }: { sceneId: string; onArrive: () => void }) {
   const sceneTargets: Record<string, [number, number, number]> = {
@@ -535,18 +689,14 @@ function VillageScene({ sceneId, onArrive }: { sceneId: string; onArrive: () => 
     village_ending: [0, 0, 0],
   };
   const target = sceneTargets[sceneId] || [0, 0, 0];
-  const playerPos: [number, number, number] = [target[0] - 2, 0, target[2] + 3];
-
-  useEffect(() => {
-    const timer = setTimeout(onArrive, 2500);
-    return () => clearTimeout(timer);
-  }, [sceneId]);
+  const startPos: [number, number, number] = [target[0] - 3, 0, target[2] + 5];
 
   return (
     <>
       <VillageEnvironment sceneId={sceneId} />
-      <PlayerCharacter position={playerPos} />
+      <MovablePlayer startPos={startPos} targetPos={target} onReachTarget={onArrive} />
       <LightBeam position={target} active={true} />
+      <DirectionArrow from={startPos} to={target} />
       <CameraController target={target} sceneId={sceneId} />
     </>
   );

@@ -742,6 +742,19 @@ export default function VillageAdventure3DWorld({
         />
       </Canvas>
 
+      {/* 탐색 중 안내 */}
+      {gameState === 'exploring' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 border border-amber-400/30"
+        >
+          <p className="text-white text-xs text-center">
+            👆 화면을 터치해서 <span className="text-amber-400 font-bold">금색 빛기둥</span>으로 이동하세요
+          </p>
+        </motion.div>
+      )}
+
       {/* 내레이션 오버레이 */}
       <AnimatePresence>
         {(gameState === 'narrating' || gameState === 'choice') && currentScene && (

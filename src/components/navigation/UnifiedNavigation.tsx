@@ -121,7 +121,7 @@ export const UnifiedNavigation = () => {
               onClick={() => navigate(localePath('/'))}
             >
               <div className="relative">
-                <img src={logo} alt="AIHPRO" className="h-9 w-9 rounded-xl" />
+                <img src={logo} alt="AIHPRO" className="h-9 w-9 rounded-xl object-contain flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                 <div className="absolute inset-0 bg-primary/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">

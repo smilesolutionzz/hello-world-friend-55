@@ -98,9 +98,9 @@ const ko = {
     innovationBadge: '혁신력 1위 AI 심리·발달·건강 케어 플랫폼',
     title: '지금 확인하지 않으면 늦습니다',
     titleHighlight: '나는, 우리 가족은 괜찮을까요?',
-    headlineTop: '"요즘 나, 괜찮은 걸까?"',
-    headlineBottom: '3분 검사로 마음 건강을 확인하세요',
-    parentHook: '혼자 고민하지 마세요',
+    headlineTop: '"우리 아이, 나, 괜찮은 걸까?"',
+    headlineBottom: '3분이면 아이 발달과 부모 마음을 확인할 수 있어요.',
+    parentHook: '혼자 고민하지 마세요.',
     parentHookPhrases: [
       '"우리 아이 말이 늦는 것 같아..."',
       '"요즘 잠을 못 자겠어"',

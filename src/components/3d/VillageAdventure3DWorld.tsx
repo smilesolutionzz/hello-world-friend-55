@@ -304,75 +304,7 @@ function LightBeam({ position, active }: { position: [number, number, number]; a
   );
 }
 
-// ============ 플레이어 캐릭터 ============
-function PlayerCharacter({ position }: { position: [number, number, number] }) {
-  const ref = useRef<THREE.Group>(null);
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.scale.y = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.015;
-    }
-  });
-  return (
-    <group ref={ref} position={position}>
-      {/* 다리 */}
-      <mesh position={[-0.15, 0.35, 0]}>
-        <boxGeometry args={[0.22, 0.7, 0.22]} />
-        <meshStandardMaterial color="#4169E1" />
-      </mesh>
-      <mesh position={[0.15, 0.35, 0]}>
-        <boxGeometry args={[0.22, 0.7, 0.22]} />
-        <meshStandardMaterial color="#4169E1" />
-      </mesh>
-      {/* 신발 */}
-      <mesh position={[-0.15, 0.05, 0.05]}>
-        <boxGeometry args={[0.24, 0.12, 0.32]} />
-        <meshStandardMaterial color="#FF4500" />
-      </mesh>
-      <mesh position={[0.15, 0.05, 0.05]}>
-        <boxGeometry args={[0.24, 0.12, 0.32]} />
-        <meshStandardMaterial color="#FF4500" />
-      </mesh>
-      {/* 몸통 */}
-      <mesh position={[0, 1.1, 0]}>
-        <boxGeometry args={[0.7, 0.9, 0.45]} />
-        <meshStandardMaterial color="#FF6B6B" />
-      </mesh>
-      {/* 팔 */}
-      <mesh position={[-0.5, 1.1, 0]}>
-        <boxGeometry args={[0.2, 0.75, 0.2]} />
-        <meshStandardMaterial color="#FF6B6B" />
-      </mesh>
-      <mesh position={[0.5, 1.1, 0]}>
-        <boxGeometry args={[0.2, 0.75, 0.2]} />
-        <meshStandardMaterial color="#FF6B6B" />
-      </mesh>
-      {/* 머리 */}
-      <mesh position={[0, 1.85, 0]}>
-        <boxGeometry args={[0.65, 0.65, 0.6]} />
-        <meshStandardMaterial color="#FFE0BD" />
-      </mesh>
-      {/* 머리카락 */}
-      <mesh position={[0, 2.12, -0.02]}>
-        <boxGeometry args={[0.7, 0.4, 0.65]} />
-        <meshStandardMaterial color="#2C1608" />
-      </mesh>
-      {/* 눈 */}
-      <mesh position={[-0.15, 1.88, 0.31]}>
-        <boxGeometry args={[0.12, 0.12, 0.02]} />
-        <meshStandardMaterial color="#1a1a1a" />
-      </mesh>
-      <mesh position={[0.15, 1.88, 0.31]}>
-        <boxGeometry args={[0.12, 0.12, 0.02]} />
-        <meshStandardMaterial color="#1a1a1a" />
-      </mesh>
-      {/* 웃는 입 */}
-      <mesh position={[0, 1.72, 0.31]}>
-        <boxGeometry args={[0.2, 0.05, 0.02]} />
-        <meshStandardMaterial color="#FF6B6B" />
-      </mesh>
-    </group>
-  );
-}
+// PlayerCharacter removed - MovablePlayer includes its own mesh
 
 // ============ 카메라 컨트롤 ============
 function CameraController({ target, sceneId }: { target: [number, number, number]; sceneId: string }) {

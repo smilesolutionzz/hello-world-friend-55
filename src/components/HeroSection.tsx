@@ -2,7 +2,10 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import { ArrowRight, Sparkles, Gift, MessageCircle } from "lucide-react";
-import heroBg from "@/assets/hero-family-bg.jpg";
+import heroSlide1 from "@/assets/hero-slide-1.jpg";
+import heroSlide2 from "@/assets/hero-slide-2.jpg";
+import heroSlide3 from "@/assets/hero-slide-3.jpg";
+import heroSlide4 from "@/assets/hero-slide-4.jpg";
 import InstantAIAnalysis from "./InstantAIAnalysis";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/logo-large.png";
@@ -11,11 +14,19 @@ import { toast } from "sonner";
 import { trackEvent } from "@/components/common/Analytics";
 import { useTranslation } from "@/i18n";
 
+const heroSlides = [
+  { src: heroSlide1, alt: "엄마와 아이의 행복한 순간" },
+  { src: heroSlide2, alt: "가족의 야외 나들이" },
+  { src: heroSlide3, alt: "엄마와 아이의 따뜻한 대화" },
+  { src: heroSlide4, alt: "아이들의 즐거운 놀이" },
+];
+
 const HeroSection = () => {
   const navigate = useNavigate();
   const sectionRef = useRef<HTMLElement>(null);
   const { t } = useTranslation();
   const [phraseIndex, setPhraseIndex] = useState(0);
+  const [slideIndex, setSlideIndex] = useState(0);
   const phrases = t.hero.parentHookPhrases || [];
 
   useEffect(() => {
@@ -25,6 +36,14 @@ const HeroSection = () => {
     }, 2800);
     return () => clearInterval(timer);
   }, [phrases.length]);
+
+  // Background slideshow timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSlideIndex((prev) => (prev + 1) % heroSlides.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleKakaoShare = () => {
     trackEvent('hero_kakao_share');
@@ -41,14 +60,18 @@ const HeroSection = () => {
   return (
     <section ref={sectionRef} className="relative min-h-screen overflow-hidden">
 
-      {/* Background Image */}
+      {/* Background Slideshow */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={heroBg}
-          alt="행복한 가족"
-          className="w-full h-full object-cover scale-105"
-          loading="eager"
-        />
+        {heroSlides.map((slide, i) => (
+          <img
+            key={i}
+            src={slide.src}
+            alt={slide.alt}
+            className="absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-[2000ms] ease-in-out"
+            style={{ opacity: i === slideIndex ? 1 : 0 }}
+            loading={i === 0 ? "eager" : "lazy"}
+          />
+        ))}
         {/* Multi-layer cinematic overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-900/40 to-slate-950/60" />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/8 via-transparent to-amber-500/5" />

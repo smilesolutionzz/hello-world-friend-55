@@ -279,4 +279,6 @@ export const dimensionMeta: Record<PsychDimension, { label: string; icon: string
   independence: { label: '독립심', icon: '🚀', description: '스스로 문제를 해결하려는 의지', lowLabel: '의존적', highLabel: '매우 독립적' }
 };
 
-export const allChapters: StoryChapter[] = [chapter1];
+import { villageChapter } from './villageScenarios';
+
+export const allChapters: StoryChapter[] = [chapter1, villageChapter];

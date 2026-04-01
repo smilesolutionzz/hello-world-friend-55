@@ -267,12 +267,12 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
         },
         turn_detection: {
           type: "server_vad",
-          threshold: 0.5,             // 0.7→0.5: 더 민감하게 음성 감지하여 인식률 향상
-          prefix_padding_ms: 600,     // 500→600: 발화 시작 전 소리를 더 많이 캡처
-          silence_duration_ms: 1800,  // 2000→1800: 적당한 대기 시간
+          threshold: 0.6,             // 0.5→0.6: 주변 소음에 의한 오탐 방지
+          prefix_padding_ms: 500,     // 600→500: 발화 시작 전 소리 캡처
+          silence_duration_ms: 2500,  // 1800→2500: 한국어 생각 중 멈춤을 충분히 대기
         },
         temperature: 0.6,
-        max_response_output_tokens: 600
+        max_response_output_tokens: 800
       }),
     });
 

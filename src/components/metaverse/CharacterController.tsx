@@ -37,6 +37,11 @@ export const CharacterController = ({
     if (!enabled) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      // 텍스트 입력 중이면 이동 키 무시
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
       keysPressed.current.add(e.key.toLowerCase());
     };
 

@@ -103,7 +103,8 @@ const HeroSection = () => {
           <motion.img 
             src={logo} 
             alt="AIHumanPro" 
-            className="w-20 h-20 md:w-24 md:h-24 object-contain"
+            className="w-20 h-20 md:w-24 md:h-24 object-contain flex-shrink-0"
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           />

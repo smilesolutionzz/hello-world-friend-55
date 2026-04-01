@@ -321,7 +321,7 @@ export const UnifiedNavigation = () => {
             className="flex items-center gap-2 cursor-pointer"
             onClick={() => navigate(localePath('/'))}
           >
-            <img src={logo} alt="AIHPRO" className="h-8 w-8 rounded-lg" />
+            <img src={logo} alt="AIHPRO" className="h-8 w-8 rounded-lg object-contain flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             <span className="text-lg font-bold">AIHPRO</span>
           </div>
 

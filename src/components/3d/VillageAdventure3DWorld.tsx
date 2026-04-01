@@ -291,7 +291,8 @@ function LightBeam({ position, active }: { position: [number, number, number]; a
   const ref = useRef<THREE.Mesh>(null);
   useFrame((state) => {
     if (ref.current && active) {
-      ref.current.material.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 3) * 0.15;
+      const mat = ref.current.material as THREE.MeshBasicMaterial;
+      mat.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 3) * 0.15;
     }
   });
   if (!active) return null;

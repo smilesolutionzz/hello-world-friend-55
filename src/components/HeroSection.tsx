@@ -2,7 +2,10 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import { ArrowRight, Sparkles, Gift, MessageCircle } from "lucide-react";
-import heroBg from "@/assets/hero-family-bg.jpg";
+import heroSlide1 from "@/assets/hero-slide-1.jpg";
+import heroSlide2 from "@/assets/hero-slide-2.jpg";
+import heroSlide3 from "@/assets/hero-slide-3.jpg";
+import heroSlide4 from "@/assets/hero-slide-4.jpg";
 import InstantAIAnalysis from "./InstantAIAnalysis";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/logo-large.png";
@@ -10,6 +13,13 @@ import { sharePage, isKakaoInitialized } from "@/lib/kakaoShare";
 import { toast } from "sonner";
 import { trackEvent } from "@/components/common/Analytics";
 import { useTranslation } from "@/i18n";
+
+const heroSlides = [
+  { src: heroSlide1, alt: "엄마와 아이의 행복한 순간" },
+  { src: heroSlide2, alt: "가족의 야외 나들이" },
+  { src: heroSlide3, alt: "엄마와 아이의 따뜻한 대화" },
+  { src: heroSlide4, alt: "아이들의 즐거운 놀이" },
+];
 
 const HeroSection = () => {
   const navigate = useNavigate();

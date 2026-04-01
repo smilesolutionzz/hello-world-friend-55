@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Play, RotateCcw, Eye, EyeOff, Sparkles, ArrowLeft, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type StoryChoice, type PsychDimension } from '@/data/storyScenarios';
 import GameCounseling3DWorld from '@/components/3d/GameCounseling3DWorld';
+import VillageAdventure3DWorld from '@/components/3d/VillageAdventure3DWorld';
 import { useGameTTS } from '@/hooks/useGameTTS';
 import { useGameSFX } from '@/hooks/useGameSFX';
 import GameResultReport from './GameResultReport';

@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Play, RotateCcw, Eye, EyeOff, Sparkles, ArrowLeft, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type StoryChoice, type PsychDimension } from '@/data/storyScenarios';
 import GameCounseling3DWorld from '@/components/3d/GameCounseling3DWorld';
+import VillageAdventure3DWorld from '@/components/3d/VillageAdventure3DWorld';
 import { useGameTTS } from '@/hooks/useGameTTS';
 import { useGameSFX } from '@/hooks/useGameSFX';
 import GameResultReport from './GameResultReport';
@@ -208,34 +209,55 @@ export default function GameCounseling3DMode() {
 
         <div className="space-y-3">
           <h3 className="font-semibold text-white">📖 모험을 선택하세요.</h3>
-          {allChapters.map((chapter) => (
-            <motion.div key={chapter.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Card
-                className="p-5 cursor-pointer hover:shadow-lg transition-all border-2 border-white/10 hover:border-emerald-500/50 bg-white/5"
-                onClick={() => startGame(chapter)}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="text-4xl">{chapter.icon}</div>
-                  <div className="flex-1">
-                    <h4 className="font-bold text-lg text-white">{chapter.title}</h4>
-                    <p className="text-sm text-purple-200/70">{chapter.subtitle}</p>
-                    <div className="flex gap-2 mt-1">
-                      <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">
-                        🎮 3D 탐험형
-                      </span>
-                      <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">
-                        🎙️ 루맘 AI 음성
-                      </span>
-                      <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">
-                        {chapter.targetAge}
-                      </span>
+          {allChapters.map((chapter) => {
+            const isVillage = chapter.id === 'sunflower_village';
+            return (
+              <motion.div key={chapter.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Card
+                  className={`p-5 cursor-pointer hover:shadow-lg transition-all border-2 bg-white/5 ${
+                    isVillage 
+                      ? 'border-amber-500/30 hover:border-amber-500/60 ring-1 ring-amber-500/10' 
+                      : 'border-white/10 hover:border-emerald-500/50'
+                  }`}
+                  onClick={() => startGame(chapter)}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="text-4xl">{chapter.icon}</div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-bold text-lg text-white">{chapter.title}</h4>
+                        {isVillage && (
+                          <span className="text-[10px] bg-amber-500/30 text-amber-300 px-2 py-0.5 rounded-full font-bold animate-pulse">
+                            NEW
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-purple-200/70">{chapter.subtitle}</p>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${
+                          isVillage ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'
+                        }`}>
+                          🎮 3D 탐험형
+                        </span>
+                        <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">
+                          🎙️ AI 음성
+                        </span>
+                        <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">
+                          {chapter.targetAge}
+                        </span>
+                        {isVillage && (
+                          <span className="text-xs bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full">
+                            📊 종합 행동분석
+                          </span>
+                        )}
+                      </div>
                     </div>
+                    <Play className={`h-6 w-6 ${isVillage ? 'text-amber-400' : 'text-emerald-400'}`} />
                   </div>
-                  <Play className="h-6 w-6 text-emerald-400" />
-                </div>
-              </Card>
-            </motion.div>
-          ))}
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
       </motion.div>
     );
@@ -305,7 +327,20 @@ export default function GameCounseling3DMode() {
       </div>
 
       {/* 3D 월드 (선택지와 나레이션이 모두 화면 안에 오버레이) */}
-      {currentChapter && (
+      {currentChapter && currentChapter.id === 'sunflower_village' ? (
+        <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '400px' }}>
+          <VillageAdventure3DWorld
+            currentScene={currentScene}
+            gameState={gameState}
+            onArrive={handleArrive}
+            sceneIndex={currentSceneIndex}
+            onChoiceSelect={makeChoice}
+            displayedText={displayedText}
+            selectedChoice={selectedChoice}
+            showParentNotes={showParentNotes}
+          />
+        </div>
+      ) : currentChapter && (
         <GameCounseling3DWorld
           scene={currentScene}
           sceneIndex={currentSceneIndex}

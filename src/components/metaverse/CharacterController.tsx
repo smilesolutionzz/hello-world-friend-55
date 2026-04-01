@@ -112,18 +112,18 @@ export const CharacterController = ({
       velocity.add(forward.clone().multiplyScalar(-virtualInput.y * speed));
       velocity.add(right.clone().multiplyScalar(virtualInput.x * speed));
     } else {
-      // WASD 키 입력 처리 (데스크톱)
+      // WASD 키 입력 처리 (데스크톱) - clone()으로 원본 벡터 보존
       if (keys.has('w') || keys.has('arrowup')) {
-        velocity.add(forward.multiplyScalar(speed));
+        velocity.add(forward.clone().multiplyScalar(speed));
       }
       if (keys.has('s') || keys.has('arrowdown')) {
-        velocity.add(forward.multiplyScalar(-speed));
+        velocity.add(forward.clone().multiplyScalar(-speed));
       }
       if (keys.has('a') || keys.has('arrowleft')) {
-        velocity.add(right.multiplyScalar(-speed));
+        velocity.add(right.clone().multiplyScalar(-speed));
       }
       if (keys.has('d') || keys.has('arrowright')) {
-        velocity.add(right.multiplyScalar(speed));
+        velocity.add(right.clone().multiplyScalar(speed));
       }
     }
 

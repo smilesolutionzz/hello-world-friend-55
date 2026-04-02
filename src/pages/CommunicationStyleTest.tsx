@@ -53,9 +53,9 @@ const CommunicationStyleTestInner = () => {
 
   if (result) {
     return (
-      <>
+      <ResultPaywall>
         <RelationshipStyleResult result={result} onBack={handleBack} />
-        <SignupPromptModal 
+        <SignupPromptModal
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}

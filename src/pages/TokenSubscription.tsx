@@ -412,7 +412,7 @@ const TokenSubscription = () => {
           <h3 className="text-xl font-bold text-center mb-6">
             무료 체험 vs <span className="text-violet-600 dark:text-violet-400">구독</span>
           </h3>
-          <Card className="overflow-hidden">
+           <Card className="overflow-hidden bg-white dark:bg-card rounded-3xl shadow-lg border-border/50">
             <CardContent className="p-0">
               <div className="grid grid-cols-3 text-center text-sm font-bold border-b bg-slate-100 dark:bg-slate-800">
                 <div className="p-4">기능</div>

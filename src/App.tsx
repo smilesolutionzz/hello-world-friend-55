@@ -290,7 +290,7 @@ const App = () => {
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
               </Routes>
-               <FeedbackButton />
+               {/* <FeedbackButton /> */}
                <MobileBottomTab />
               </LanguageProvider>
             </ErrorBoundary>

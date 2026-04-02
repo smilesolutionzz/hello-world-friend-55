@@ -127,6 +127,7 @@ export default function GameCounseling3DMode() {
 
       if (nextScene?.isEnding) {
         setGameState('result');
+        stopBGM();
         playSFX('success');
         if (ttsEnabled) {
           setTimeout(() => speak('모험이 끝났어요! 결과를 확인해볼까요?'), 500);

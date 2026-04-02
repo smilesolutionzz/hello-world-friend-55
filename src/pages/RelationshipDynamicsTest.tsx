@@ -24,9 +24,9 @@ const RelationshipDynamicsTestInner = () => {
 
   if (results) {
     return (
-      <>
+      <ResultPaywall>
         <RelationshipDynamicsResult results={results} onBack={() => setResults(null)} />
-        <SignupPromptModal 
+        <SignupPromptModal
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}

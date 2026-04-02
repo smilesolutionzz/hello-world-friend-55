@@ -51,7 +51,7 @@ export const chapter1: StoryChapter = {
     {
       id: 'forest_start',
       title: '숲의 입구',
-      description: '어느 날, 우리 친구가 반짝이는 숲을 발견했어요.\n숲에서 작은 소리가 들려와요. "도와줘~"',
+      description: '어느 날, 우리 친구가 반짝이는 숲을 발견했어요.\n숲에서 작은 소리가 들려와요. 도와줘',
       illustration: '🌲✨🌳',
       bgColor: 'from-green-100 to-emerald-200',
       choices: [

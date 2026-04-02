@@ -414,7 +414,7 @@ const TokenSubscription = () => {
           </h3>
            <Card className="overflow-hidden bg-white dark:bg-card rounded-3xl shadow-lg border-border/50">
             <CardContent className="p-0">
-              <div className="grid grid-cols-3 text-center text-sm font-bold border-b bg-slate-100 dark:bg-slate-800">
+              <div className="grid grid-cols-3 text-center text-sm font-bold border-b bg-slate-50 dark:bg-slate-800">
                 <div className="p-4">기능</div>
                 <div className="p-4 text-muted-foreground">무료 체험</div>
                 <div className="p-4 bg-gradient-to-r from-violet-500 to-purple-500 text-white">구독</div>

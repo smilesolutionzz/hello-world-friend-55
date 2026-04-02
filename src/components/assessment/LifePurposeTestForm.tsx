@@ -159,6 +159,7 @@ export default function LifePurposeTestForm({ onComplete, onBack }: LifePurposeT
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const currentQ = questions[currentQuestion];
+  if (!currentQ) return null;
   const getCategoryInfo = (category: string) => {
     const infoKo: Record<string, { icon: React.ReactNode; name: string }> = {
       fulfillment: { icon: <Heart className="w-5 h-5" />, name: '실존적 충만감' },

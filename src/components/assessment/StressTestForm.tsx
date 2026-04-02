@@ -130,6 +130,7 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const currentQ = questions[currentQuestion];
+  if (!currentQ) return null;
 
   return (
     <>

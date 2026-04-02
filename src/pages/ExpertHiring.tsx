@@ -85,7 +85,7 @@ const CATEGORIES = [
 
 const PARTNER_INSTITUTIONS = [
   { id: 'inst_1', name: 'APA발달센터', type: '발달센터', location: '본점', specialties: ['ABA', '발달재활'], isVerified: true },
-  { id: 'inst_2', name: 'APA주관활동서비스센터', type: '발달센터', location: '본점', specialties: ['주관활동', '발달재활'], isVerified: true },
+  { id: 'inst_2', name: 'APA주간활동서비스센터', type: '발달센터', location: '본점', specialties: ['주간활동', '발달재활'], isVerified: true },
   { id: 'inst_3', name: '한점미소발달센터 남양주점', type: '발달센터', location: '경기 남양주', specialties: ['발달재활', '놀이치료'], isVerified: true },
   { id: 'inst_4', name: '한점미소발달센터 부천점', type: '발달센터', location: '경기 부천', specialties: ['발달재활', '놀이치료'], isVerified: true },
   { id: 'inst_5', name: '우아함발달센터 안산점', type: '발달센터', location: '경기 안산', specialties: ['발달재활', 'ABA'], isVerified: true },

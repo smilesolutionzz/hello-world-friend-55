@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import SEOHead from "@/components/common/SEOHead";
 import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
+import { ResultPaywall } from "@/components/subscription/ResultPaywall";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/i18n/useTranslation";
 import { BetaBanner } from "@/components/BetaBanner";

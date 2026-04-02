@@ -756,7 +756,7 @@ const ko = {
     challengingFeatures: ['문제행동 유형 분석', '행동 발생 빈도 평가', '중재 전략 제안'],
     adaptiveTitle: '적응행동 평가',
     adaptiveDuration: '약 5분',
-    adaptiveQuestions: '20문항',
+    adaptiveQuestions: '18문항',
     adaptiveDesc: '일상생활 자립 능력과 독립성을 평가합니다.',
     adaptiveFeatures: ['자조 기술 평가', '가정생활 기술 평가', '지역사회 기술 평가'],
     // Personality section

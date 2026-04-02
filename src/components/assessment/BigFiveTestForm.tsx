@@ -144,6 +144,7 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const currentQ = questions[currentQuestion];
+  if (!currentQ) return null;
 
   if (isAnalyzing) {
     return (

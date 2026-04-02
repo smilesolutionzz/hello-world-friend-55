@@ -165,6 +165,7 @@ const RelationshipStyleForm = ({ onComplete, onBack }: RelationshipStyleFormProp
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const currentQ = questions[currentQuestion];
+  if (!currentQ) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">

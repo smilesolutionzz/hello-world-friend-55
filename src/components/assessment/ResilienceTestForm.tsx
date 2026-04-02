@@ -160,6 +160,7 @@ export default function ResilienceTestForm({ onComplete, onBack }: ResilienceTes
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const currentQ = questions[currentQuestion];
+  if (!currentQ) return null;
 
   const getCategoryInfo = (category: string) => {
     const infoKo: Record<string, { icon: React.ReactNode; name: string; color: string }> = {

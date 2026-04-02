@@ -137,6 +137,7 @@ export default function RelationshipDynamicsForm({ onComplete, onBack }: Relatio
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const currentQ = questions[currentQuestion];
+  if (!currentQ) return null;
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'trust': return <Shield className="w-5 h-5" />;

@@ -99,6 +99,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   };
 
   const handleDiscardBackup = () => { discardBackup(); setShowRestoreDialog(false); };
+  if (currentQuestion >= questions.length) return null;
   const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   const handleAnswer = (value: string) => {

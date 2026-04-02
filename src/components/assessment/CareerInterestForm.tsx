@@ -111,6 +111,7 @@ export default function CareerInterestForm({ onComplete, onBack }: CareerInteres
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const currentQ = questions[currentQuestion];
+  if (!currentQ) return null;
   const isAnswered = answers[currentQ.id] !== undefined;
 
   if (isAnalyzing) {

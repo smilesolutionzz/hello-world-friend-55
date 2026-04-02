@@ -148,7 +148,6 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [hasStarted, setHasStarted] = useState(false);
-  const { consumeTokens } = useTokens();
 
   const questions = selectedAgeGroup ? getQuestions(selectedAgeGroup, isEnglish) : [];
   if (currentQuestion >= questions.length) return null;

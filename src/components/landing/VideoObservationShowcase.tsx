@@ -65,8 +65,8 @@ export const VideoObservationShowcase = () => {
             return (
               <Card key={index} className="group p-4 bg-slate-800/50 border-slate-700 hover:border-purple-500/50 transition-all duration-300 hover:scale-105">
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}><Icon className="w-6 h-6 text-white" /></div>
-                <h3 className="font-bold text-white text-sm mb-1 whitespace-nowrap">{category.title}</h3>
-                <p className="text-xs text-slate-400 leading-tight whitespace-nowrap">{category.description}</p>
+                <h3 className="font-bold text-white text-sm mb-1 md:whitespace-nowrap">{category.title}</h3>
+                <p className="text-xs text-slate-400 leading-tight">{category.description}</p>
               </Card>
             );
           })}

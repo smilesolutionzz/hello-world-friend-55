@@ -230,8 +230,8 @@ const App = () => {
           <Route path="/en/payment-success" element={<PaymentSuccess />} />
           <Route path="/en/payment-fail" element={<PaymentFail />} />
           <Route path="/en/payment-complete" element={<PaymentComplete />} />
-          <Route path="/en/token-payment-success" element={<TokenPaymentSuccess />} />
-          <Route path="/en/token-payment-fail" element={<TokenPaymentFail />} />
+          <Route path="/en/token-payment-success" element={<Navigate to="/payment-success" replace />} />
+          <Route path="/en/token-payment-fail" element={<Navigate to="/payment-fail" replace />} />
           <Route path="/en/stress-package" element={<StressPackage />} />
           <Route path="/en/depression-package" element={<DepressionPackage />} />
           <Route path="/en/anxiety-package" element={<AnxietyPackage />} />

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState, useCallback } from 'react';
+import { ReactNode, useEffect, useRef, useState, useCallback, createContext } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Crown, Lock, Sparkles, CheckCircle, Gift, Zap, FileText } from 'lucide-react';
@@ -8,8 +8,27 @@ import { useFreeTrial } from '@/hooks/useFreeTrial';
 import { useAccessControl } from '@/hooks/useAccessControl';
 import { Badge } from '@/components/ui/badge';
 import { PaymentModal } from '@/components/payments/PaymentModal';
-import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE, SINGLE_TEST_PRICE, SUBSCRIPTION_YEARLY_PRICE, SUBSCRIPTION_YEARLY_MONTHLY_PRICE } from '@/constants/tokenCosts';
+import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE, SINGLE_TEST_PRICE } from '@/constants/tokenCosts';
 import { useToast } from '@/hooks/use-toast';
+
+export interface SubscriptionGuardContextType {
+  resultUnlocked: boolean;
+  unlockResult: () => Promise<void>;
+  creditLabel: string;
+  creditPrice: number;
+  creditOriginalPrice: number;
+  creditDiscount: number;
+  hasCreditAccess: boolean;
+  isTrialAllowed: boolean;
+  remaining: number;
+  featureName: string;
+  paymentOpen: boolean;
+  setPaymentOpen: (v: boolean) => void;
+  creditType: 'test' | 'report';
+  loading: boolean;
+}
+
+export const SubscriptionGuardContext = createContext<SubscriptionGuardContextType | null>(null);
 
 interface SubscriptionGuardProps {
   children: ReactNode;
@@ -17,13 +36,7 @@ interface SubscriptionGuardProps {
   trialKey?: string;
   requiredTier?: 'premium' | 'pro';
   fallbackMessage?: string;
-  /** 크레딧 유형: test(검사) 또는 report(리포트) */
   creditType?: 'test' | 'report';
-  /** 
-   * 크레딧 소진 시점:
-   * - 'enter': 컴포넌트 진입 시 즉시 소진 (기존 방식)
-   * - 'result': 결과 확인 시 소진 — children을 자유롭게 보여주다가 결과 확인 시 잠금/차감
-   */
   consumeAt?: 'enter' | 'result';
 }
 
@@ -49,7 +62,6 @@ export const SubscriptionGuard = ({
 
   const hasAccess = isPremiumUser() || isLifetimeUser();
   
-  // 크레딧 타입에 따라 다른 크레딧 확인
   const currentCredits = creditType === 'test' ? testCredits : reportCredits;
   const hasCreditAccess = !hasAccess && currentCredits > 0;
   const isTrialAllowed = !hasAccess && !hasCreditAccess && trialKey ? canUseFree(trialKey) : false;
@@ -60,7 +72,6 @@ export const SubscriptionGuard = ({
   const creditPrice = creditType === 'test' ? SINGLE_TEST_PRICE : SINGLE_REPORT_PRICE;
   const creditOriginalPrice = creditType === 'test' ? 3900 : 9900;
   const creditDiscount = creditType === 'test' ? 75 : 60;
-  const creditProductId = creditType === 'test' ? 'single_test' : 'single_report';
 
   // 무료 체험 사용 기록 (enter 모드에서만)
   useEffect(() => {
@@ -118,11 +129,12 @@ export const SubscriptionGuard = ({
       return;
     }
 
-    // 크레딧도 무료체험도 없으면 결제 유도
     setPaymentOpen(true);
   }, [hasAccess, hasCreditAccess, isTrialAllowed, creditType, useTestCredit, useReportCredit, toast, creditLabel, currentCredits, recordUsage, trialKey]);
 
-  if (loading || trialLoading || accessLoading || creditConsuming) {
+  const isLoading = loading || trialLoading || accessLoading || creditConsuming;
+
+  if (isLoading && consumeAt === 'enter') {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="animate-pulse text-center">
@@ -135,35 +147,52 @@ export const SubscriptionGuard = ({
 
   // ===== result 모드 =====
   if (consumeAt === 'result') {
-    // 프리미엄 구독자 또는 이미 잠금해제됨
-    if (hasAccess || resultUnlocked) return <>{children}</>;
+    const effectiveUnlocked = hasAccess || resultUnlocked;
 
-    // 검사 진행 중에는 상단에 유료 안내 배너를 보여주고 검사는 자유롭게 진행
-    // children 내에서 결과 화면이 나올 때만 블러 잠금
-    const isResultScreen = typeof children === 'object' && children !== null;
-    
-    // 상단 유료 안내 배너 (검사 진행 중 항상 표시)
-    const PaidNoticeBanner = () => (
-      <div className="container mx-auto px-4 pt-3 max-w-4xl">
-        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg p-2.5 mb-3 flex items-center justify-center gap-2 text-center">
-          <Lock className="w-4 h-4 text-amber-500 flex-shrink-0" />
-          <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
-            {hasCreditAccess
-              ? `검사는 무료 · 결과 확인 시 ${creditLabel} 이용권 1회 사용`
-              : isTrialAllowed
-              ? `무료 체험 가능 (남은 ${remaining === Infinity ? '무제한' : `${remaining}회`})`
-              : `검사는 무료 · 결과 확인 시 이용권 필요 (₩${creditPrice.toLocaleString()})`
-            }
-          </span>
+    const contextValue: SubscriptionGuardContextType = {
+      resultUnlocked: effectiveUnlocked,
+      unlockResult: handleUnlockResult,
+      creditLabel,
+      creditPrice,
+      creditOriginalPrice,
+      creditDiscount,
+      hasCreditAccess,
+      isTrialAllowed,
+      remaining,
+      featureName,
+      paymentOpen,
+      setPaymentOpen,
+      creditType,
+      loading: isLoading,
+    };
+
+    // 상단 유료 안내 배너 (검사 진행 중 표시)
+    const PaidNoticeBanner = () => {
+      if (effectiveUnlocked) return null;
+      return (
+        <div className="container mx-auto px-4 pt-3 max-w-4xl">
+          <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg p-2.5 mb-3 flex items-center justify-center gap-2 text-center">
+            <Lock className="w-4 h-4 text-amber-500 flex-shrink-0" />
+            <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
+              {hasCreditAccess
+                ? `검사는 무료 · 결과 확인 시 ${creditLabel} 이용권 1회 사용`
+                : isTrialAllowed
+                ? `무료 체험 가능 (남은 ${remaining === Infinity ? '무제한' : `${remaining}회`})`
+                : `검사는 무료 · 결과 확인 시 이용권 필요 (₩${creditPrice.toLocaleString()})`
+              }
+            </span>
+          </div>
         </div>
-      </div>
-    );
+      );
+    };
 
     return (
-      <div>
-        <PaidNoticeBanner />
-        {children}
-      </div>
+      <SubscriptionGuardContext.Provider value={contextValue}>
+        <div>
+          <PaidNoticeBanner />
+          {children}
+        </div>
+      </SubscriptionGuardContext.Provider>
     );
   }
 
@@ -240,7 +269,6 @@ export const SubscriptionGuard = ({
         </CardHeader>
 
         <CardContent className="space-y-5 pb-8">
-          {/* 이용 안내 */}
           <div className="bg-muted/50 rounded-xl p-5 space-y-3">
             <h4 className="font-bold text-base flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" />
@@ -264,9 +292,7 @@ export const SubscriptionGuard = ({
             </div>
           </div>
 
-          {/* 듀얼 프라이싱 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* 단건 */}
             <div className="border border-amber-500/30 rounded-xl p-5 bg-amber-500/5 space-y-3">
               <div className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-amber-500" />
@@ -290,7 +316,6 @@ export const SubscriptionGuard = ({
               </Button>
             </div>
 
-            {/* 월간 구독 */}
             <div className="border-2 border-primary rounded-xl p-5 bg-primary/5 space-y-3 relative">
               <Badge className="absolute -top-2.5 right-3 bg-primary text-primary-foreground text-xs">추천</Badge>
               <div className="flex items-center gap-2">
@@ -315,7 +340,6 @@ export const SubscriptionGuard = ({
             </div>
           </div>
 
-          {/* 구독 혜택 */}
           <div className="bg-muted/30 rounded-lg p-4 space-y-2">
             <h4 className="font-semibold text-sm flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-primary" />

@@ -138,86 +138,31 @@ export const SubscriptionGuard = ({
     // 프리미엄 구독자 또는 이미 잠금해제됨
     if (hasAccess || resultUnlocked) return <>{children}</>;
 
-    // 결과 잠금 오버레이
+    // 검사 진행 중에는 상단에 유료 안내 배너를 보여주고 검사는 자유롭게 진행
+    // children 내에서 결과 화면이 나올 때만 블러 잠금
+    const isResultScreen = typeof children === 'object' && children !== null;
+    
+    // 상단 유료 안내 배너 (검사 진행 중 항상 표시)
+    const PaidNoticeBanner = () => (
+      <div className="container mx-auto px-4 pt-3 max-w-4xl">
+        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg p-2.5 mb-3 flex items-center justify-center gap-2 text-center">
+          <Lock className="w-4 h-4 text-amber-500 flex-shrink-0" />
+          <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
+            {hasCreditAccess
+              ? `검사는 무료 · 결과 확인 시 ${creditLabel} 이용권 1회 사용`
+              : isTrialAllowed
+              ? `무료 체험 가능 (남은 ${remaining === Infinity ? '무제한' : `${remaining}회`})`
+              : `검사는 무료 · 결과 확인 시 이용권 필요 (₩${creditPrice.toLocaleString()})`
+            }
+          </span>
+        </div>
+      </div>
+    );
+
     return (
-      <div className="relative">
-        {/* 블러 처리된 결과 미리보기 */}
-        <div className="filter blur-md pointer-events-none select-none opacity-60 max-h-[500px] overflow-hidden">
-          {children}
-        </div>
-        
-        {/* 결과 잠금 오버레이 */}
-        <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
-          <Card className="w-full max-w-md mx-4 border-2 border-primary/20 shadow-xl">
-            <CardContent className="p-6 space-y-4 text-center">
-              <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-                <Lock className="w-8 h-8 text-primary-foreground" />
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-bold text-foreground mb-1">검사 결과 확인</h3>
-                <p className="text-sm text-muted-foreground">
-                  {hasCreditAccess
-                    ? `${creditLabel} 이용권 1회를 사용하여 결과를 확인하세요`
-                    : isTrialAllowed
-                    ? `무료체험으로 결과를 확인하세요 (남은 횟수: ${remaining === Infinity ? '무제한' : `${remaining}회`})`
-                    : '결과를 확인하려면 이용권이 필요해요'
-                  }
-                </p>
-              </div>
-
-              {(hasCreditAccess || isTrialAllowed) ? (
-                <Button
-                  onClick={handleUnlockResult}
-                  className="w-full h-12 text-base font-semibold"
-                  disabled={creditConsuming}
-                >
-                  {creditConsuming ? '처리 중...' : hasCreditAccess 
-                    ? `${creditLabel} 이용권 사용하기 (남은 ${Math.max(0, currentCredits)}회)`
-                    : '무료체험으로 결과 보기'
-                  }
-                </Button>
-              ) : (
-                <div className="space-y-3">
-                  {/* 단건 구매 */}
-                  <div className="border border-border rounded-xl p-4 space-y-2">
-                    <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-sm text-muted-foreground line-through">₩{creditOriginalPrice.toLocaleString()}</span>
-                      <span className="text-xl font-black text-foreground">₩{creditPrice.toLocaleString()}</span>
-                      <Badge variant="secondary" className="text-xs">{creditDiscount}% 할인</Badge>
-                    </div>
-                    <Button
-                      onClick={() => setPaymentOpen(true)}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      <Zap className="w-4 h-4 mr-2" />
-                      {creditLabel} 1회 이용권 구매
-                    </Button>
-                  </div>
-
-                  {/* 구독 */}
-                  <Button
-                    onClick={() => navigate('/token-subscription')}
-                    className="w-full bg-primary hover:bg-primary/90"
-                  >
-                    <Crown className="w-4 h-4 mr-2" />
-                    구독하면 무제한 · ₩{SUBSCRIPTION_PRICE.toLocaleString()}/월
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        <PaymentModal 
-          open={paymentOpen} 
-          onOpenChange={setPaymentOpen} 
-          mode="single"
-          creditType={creditType}
-          title={`${featureName} ${creditLabel} 이용권 구매`}
-          description={`${featureName} ${creditLabel} 1회를 이용할 수 있습니다.`}
-        />
+      <div>
+        <PaidNoticeBanner />
+        {children}
       </div>
     );
   }

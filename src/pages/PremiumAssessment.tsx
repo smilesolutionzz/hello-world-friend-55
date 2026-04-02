@@ -274,7 +274,7 @@ const PremiumAssessment = () => {
     },
     mbti: {
       title: p.mbtiTitle, subtitle: p.mbtiSubtitle, description: p.mbtiDesc,
-      duration: p.mbtiDuration, questions_count: 25,
+      duration: p.mbtiDuration, questions_count: 30,
       premium_features: [...p.mbtiFeatures],
       onClick: () => requireAuth(() => navigate('/assessment/mbti-test')),
     },

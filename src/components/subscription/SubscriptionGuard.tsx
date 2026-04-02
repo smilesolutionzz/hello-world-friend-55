@@ -138,6 +138,33 @@ export const SubscriptionGuard = ({
     // 프리미엄 구독자 또는 이미 잠금해제됨
     if (hasAccess || resultUnlocked) return <>{children}</>;
 
+    // 검사 진행 중에는 상단에 유료 안내 배너를 보여주고 검사는 자유롭게 진행
+    // children 내에서 결과 화면이 나올 때만 블러 잠금
+    const isResultScreen = typeof children === 'object' && children !== null;
+    
+    // 상단 유료 안내 배너 (검사 진행 중 항상 표시)
+    const PaidNoticeBanner = () => (
+      <div className="container mx-auto px-4 pt-3 max-w-4xl">
+        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg p-2.5 mb-3 flex items-center justify-center gap-2 text-center">
+          <Lock className="w-4 h-4 text-amber-500 flex-shrink-0" />
+          <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
+            {hasCreditAccess
+              ? `검사는 무료 · 결과 확인 시 ${creditLabel} 이용권 1회 사용`
+              : isTrialAllowed
+              ? `무료 체험 가능 (남은 ${remaining === Infinity ? '무제한' : `${remaining}회`})`
+              : `검사는 무료 · 결과 확인 시 이용권 필요 (₩${creditPrice.toLocaleString()})`
+            }
+          </span>
+        </div>
+      </div>
+    );
+
+    return (
+      <div>
+        <PaidNoticeBanner />
+        {children}
+      </div>
+    );
     // 결과 잠금 오버레이
     return (
       <div className="relative">

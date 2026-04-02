@@ -24,9 +24,9 @@ const EnergyFlowTestInner = () => {
 
   if (results) {
     return (
-      <>
+      <ResultPaywall>
         <EnergyFlowTestResult results={results} onBack={() => setResults(null)} />
-        <SignupPromptModal 
+        <SignupPromptModal
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}

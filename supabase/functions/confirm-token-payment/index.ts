@@ -12,6 +12,28 @@ serve(async (req) => {
   }
 
   try {
+    // 1. 사용자 인증 확인
+    const authorizationHeader = req.headers.get('Authorization') || req.headers.get('authorization');
+    if (!authorizationHeader) {
+      return new Response(JSON.stringify({ error: '인증이 필요합니다.' }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const token = authorizationHeader.replace('Bearer ', '');
+    const supabaseAuth = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+    const { data: userData, error: authError } = await supabaseAuth.auth.getUser(token);
+    if (authError || !userData?.user) {
+      return new Response(JSON.stringify({ error: '인증이 필요합니다.' }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const authenticatedUserId = userData.user.id;
+
     const { paymentKey, orderId, amount } = await req.json();
     
     // Service Role 키를 사용한 클라이언트
@@ -23,38 +45,50 @@ serve(async (req) => {
 
     // 토스페이먼츠 결제 확인 API 호출
     const tossSecretKey = Deno.env.get("TOSS_PAYMENTS_SECRET_KEY");
-    const authHeader = `Basic ${btoa(tossSecretKey + ":")}`;
+    if (!tossSecretKey) {
+      console.error('TOSS_PAYMENTS_SECRET_KEY is not configured');
+      return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const tossAuthHeader = `Basic ${btoa(tossSecretKey + ":")}`;
     
     const confirmResponse = await fetch("https://api.tosspayments.com/v1/payments/confirm", {
       method: "POST",
       headers: {
-        "Authorization": authHeader,
+        "Authorization": tossAuthHeader,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        paymentKey,
-        orderId,
-        amount,
-      }),
+      body: JSON.stringify({ paymentKey, orderId, amount }),
     });
 
     const confirmData = await confirmResponse.json();
     
     if (!confirmResponse.ok) {
-      throw new Error(`토스페이먼츠 결제 확인 실패: ${confirmData.message}`);
+      console.error('TossPayments API error:', confirmData);
+      return new Response(JSON.stringify({ error: '결제 승인에 실패했습니다.' }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    console.log('토스페이먼츠 결제 확인 성공:', confirmData);
+    console.log('토스페이먼츠 결제 확인 성공');
 
-    // 결제 내역에서 해당 주문 찾기
+    // 결제 내역에서 해당 주문 찾기 - 사용자 소유권 확인
     const { data: paymentRecord, error: findError } = await supabaseAdmin
       .from('payment_history')
       .select('*')
       .eq('toss_order_id', orderId)
+      .eq('user_id', authenticatedUserId) // 소유권 확인
       .single();
 
     if (findError || !paymentRecord) {
-      throw new Error("결제 기록을 찾을 수 없습니다.");
+      console.error('Payment record not found or not owned by user:', findError);
+      return new Response(JSON.stringify({ error: '결제 기록을 찾을 수 없습니다.' }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     // 결제 상태 및 정보 업데이트
@@ -68,11 +102,16 @@ serve(async (req) => {
       })
       .eq('id', paymentRecord.id);
 
-    if (updateError) throw updateError;
+    if (updateError) {
+      console.error('Payment update error:', updateError);
+      return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // 사용자에게 토큰 지급
     if (paymentRecord.token_amount && paymentRecord.token_amount > 0) {
-      // 기존 토큰 잔액 조회
       const { data: currentTokens, error: tokenError } = await supabaseAdmin
         .from('user_tokens')
         .select('*')
@@ -80,11 +119,14 @@ serve(async (req) => {
         .single();
 
       if (tokenError && tokenError.code !== 'PGRST116') {
-        throw tokenError;
+        console.error('Token query error:', tokenError);
+        return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
 
       if (currentTokens) {
-        // 기존 토큰 잔액 업데이트 - total_purchased는 실제 구매한 토큰만 추가
         const { error: updateTokenError } = await supabaseAdmin
           .from('user_tokens')
           .update({
@@ -93,9 +135,14 @@ serve(async (req) => {
           })
           .eq('user_id', paymentRecord.user_id);
 
-        if (updateTokenError) throw updateTokenError;
+        if (updateTokenError) {
+          console.error('Token update error:', updateTokenError);
+          return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
       } else {
-        // 새로운 토큰 레코드 생성
         const { error: insertTokenError } = await supabaseAdmin
           .from('user_tokens')
           .insert({
@@ -107,10 +154,15 @@ serve(async (req) => {
             last_daily_bonus_date: new Date().toISOString().split('T')[0]
           });
 
-        if (insertTokenError) throw insertTokenError;
+        if (insertTokenError) {
+          console.error('Token insert error:', insertTokenError);
+          return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
       }
 
-      // 사용량 추적 기록
       await supabaseAdmin
         .from('usage_tracking')
         .insert({
@@ -121,7 +173,7 @@ serve(async (req) => {
         });
     }
 
-    console.log(`토큰 결제 완료: 사용자 ${paymentRecord.user_id}에게 ${paymentRecord.token_amount}토큰 지급`);
+    console.log(`토큰 결제 완료: 사용자에게 ${paymentRecord.token_amount}토큰 지급`);
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -133,8 +185,7 @@ serve(async (req) => {
 
   } catch (error: unknown) {
     console.error('Token payment confirmation error:', error);
-    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
-    return new Response(JSON.stringify({ error: message }), {
+    return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

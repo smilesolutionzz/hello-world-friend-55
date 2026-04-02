@@ -133,7 +133,7 @@ const TokenSubscription = () => {
         {/* 리포트 크레딧 보유 안내 */}
         {!isPremium && reportCredits > 0 && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <Card className="border border-amber-400/50 bg-amber-50/50 dark:bg-amber-950/20">
+            <Card className="border border-amber-200/50 dark:border-amber-400/50 bg-white dark:bg-card rounded-3xl shadow-sm">
               <CardContent className="p-4 flex items-center gap-3">
                 <Zap className="w-5 h-5 text-amber-500" />
                 <span className="text-sm font-medium">리포트 이용권 <Badge variant="secondary">{reportCredits}회</Badge> 보유 중</span>

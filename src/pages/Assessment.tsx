@@ -1467,20 +1467,17 @@ const Assessment = () => {
 
   if (currentStep === 'adhd-result' && adhdResults) {
     return (
-      <SubscriptionGuard consumeAt="result" featureName="ADHD 검사" creditType="test" trialKey="ADHD_TEST">
-        <ResultPaywall>
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-          <div className="container mx-auto max-w-4xl">
-            <AdhdTestResult 
-              results={adhdResults}
-              onBack={handleBack}
-              onStartAIChat={handleStartAIChat}
-              onStartRealTimeChat={handleStartRealTimeChat}
-            />
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <AdhdTestResult 
+            results={adhdResults}
+            onBack={handleBack}
+            onStartAIChat={handleStartAIChat}
+            onStartRealTimeChat={handleStartRealTimeChat}
+          />
+          <TrialUpsellBanner />
         </div>
-      </ResultPaywall>
-      </SubscriptionGuard>
+      </div>
     );
   }
 

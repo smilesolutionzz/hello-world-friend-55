@@ -7,6 +7,7 @@ import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { useNavigate } from 'react-router-dom';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { ResultPaywall } from '@/components/subscription/ResultPaywall';
 import { useTranslation } from '@/i18n';
 
 const getQuestions = (b: any) => [

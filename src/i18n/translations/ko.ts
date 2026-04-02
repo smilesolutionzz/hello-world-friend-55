@@ -784,7 +784,7 @@ const ko = {
     stressFeatures: ['스트레스 수준 정량화', '스트레스 유형 분석', '맞춤형 해소법 제안'],
     careerTitle: '진로흥미 탐색',
     careerDuration: '약 6분',
-    careerQuestions: '30문항',
+    careerQuestions: '24문항',
     careerDesc: '홀랜드 이론 기반으로 적합한 직업 분야를 탐색합니다.',
     careerFeatures: ['6가지 직업 흥미 유형', '적성 분야 추천', '진로 방향 가이드'],
     selfesteemTitle: '자아가치 측정',

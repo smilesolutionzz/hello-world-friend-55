@@ -771,7 +771,7 @@ const en = {
     bigfiveFeatures: ['Big Five model based', 'Strength/weakness analysis', 'Interpersonal style insight'],
     attachmentTitle: 'Relationship Type',
     attachmentDuration: '~4 min',
-    attachmentQuestions: '20 items',
+    attachmentQuestions: '12 items',
     attachmentDesc: 'Diagnoses attachment style and relationship patterns in interpersonal relationships.',
     attachmentFeatures: ['Secure/anxious/avoidant classification', 'Relationship strengths', 'Healthy relationship tips'],
     stressTitle: 'Stress Index',

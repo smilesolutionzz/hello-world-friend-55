@@ -187,7 +187,7 @@ const TokenSubscription = () => {
         <div className="grid md:grid-cols-2 gap-6 mb-12">
           {/* 단건 이용권 */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="h-full border border-border bg-card">
+            <Card className="h-full border border-border/50 bg-white dark:bg-card rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-8 flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">

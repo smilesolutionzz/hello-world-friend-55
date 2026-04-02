@@ -260,7 +260,6 @@ const Assessment = () => {
           type: 'TEST',
           title: getTestTitle(testType),
           summary: `${getTestTitle(testType)} 완료 - 점수: ${results.total}점, 수준: ${results.severity || results.ageGroup}`,
-          score_overall: results.total,
           tags: [testType, results.ageGroup || '성인'],
           files: [],
           actor: {
@@ -270,6 +269,7 @@ const Assessment = () => {
           },
           meta: {
             testType,
+            score_overall: results.total,
             results: {
               total: results.total,
               average: results.average,

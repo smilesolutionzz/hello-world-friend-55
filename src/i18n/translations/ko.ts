@@ -115,7 +115,7 @@ const ko = {
     ],
     subtitle: 'AI와 전문가가 함께하는 심리·발달·건강 통합 케어',
     description: '심리·발달·건강 고민을 적으면, AI가 즉시 분석해드립니다.',
-    descriptionHighlight: '50개 제휴기관이 신뢰하는 전문가급 케어,.',
+    descriptionHighlight: '50개 제휴기관이 신뢰하는 전문가급 케어.',
     descriptionHighlight2: '지금 무료로 시작하세요.',
     ctaPrimary: '무료로 시작하기',
     ctaFreeAnalysis: '지금 바로 무료 검사 시작',

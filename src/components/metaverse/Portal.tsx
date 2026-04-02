@@ -140,7 +140,7 @@ export const Portal = ({
           outlineWidth={0.03}
           outlineColor="#000000"
         >
-          걸어서 포탈로 들어가세요
+          금색 빛기둥을 클릭하여 이동하세요
         </Text>
       )}
 

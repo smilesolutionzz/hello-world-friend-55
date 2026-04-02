@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles, Baby, MessageCircle, ArrowRight, Heart, Brain, Shield } from 'lucide-react';
+import { Sparkles, Baby, MessageCircle, ArrowRight, Brain, Shield } from 'lucide-react';
 import { useTrialProfile } from '@/hooks/useTrialProfile';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -27,23 +24,21 @@ const CONCERN_KEYWORDS = [
 const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
   const { saveProfile } = useTrialProfile();
   const [step, setStep] = useState(0);
-  const [nickname, setNickname] = useState('');
   const [childAge, setChildAge] = useState('');
   const [selectedConcern, setSelectedConcern] = useState('');
 
   const handleSubmit = () => {
-    if (!nickname.trim() || !childAge || !selectedConcern) return;
+    if (!childAge || !selectedConcern) return;
     
     saveProfile({
-      nickname: nickname.trim(),
+      nickname: '',
       childAge: parseInt(childAge),
       concernKeyword: selectedConcern,
     });
     onComplete();
   };
 
-  const canProceedStep1 = true; // 닉네임은 선택사항
-  const canProceedStep2 = childAge !== '';
+  const canProceedStep1 = childAge !== '';
   const canSubmit = selectedConcern !== '';
 
   return (
@@ -65,7 +60,7 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
 
         {/* 진행바 */}
         <div className="flex gap-2 mb-6">
-          {[0, 1, 2].map((i) => (
+          {[0, 1].map((i) => (
             <div 
               key={i} 
               className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
@@ -78,45 +73,8 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
         <Card className="border-primary/10 shadow-xl">
           <CardContent className="p-6">
             <AnimatePresence mode="wait">
-              {/* Step 1: 닉네임 */}
+              {/* Step 1: 아이 나이 */}
               {step === 0 && (
-                <motion.div
-                  key="step-0"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-4"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Heart className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-semibold">닉네임 (선택)</h2>
-                      <p className="text-xs text-muted-foreground">입력하지 않아도 괜찮아요</p>
-                    </div>
-                  </div>
-                  <div>
-                    <Input
-                      placeholder="예: 서준이맘, 하늘아빠"
-                      value={nickname}
-                      onChange={(e) => setNickname(e.target.value)}
-                      className="h-12 text-base"
-                      maxLength={20}
-                      autoFocus
-                    />
-                  </div>
-                  <Button 
-                    onClick={() => setStep(1)} 
-                    className="w-full h-12"
-                  >
-                    {nickname.trim() ? '다음' : '건너뛰기'} <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </motion.div>
-              )}
-
-              {/* Step 2: 아이 나이 */}
-              {step === 1 && (
                 <motion.div
                   key="step-1"
                   initial={{ opacity: 0, x: 20 }}
@@ -146,23 +104,18 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
                       </Button>
                     ))}
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" onClick={() => setStep(0)} className="flex-1">
-                      이전
-                    </Button>
-                    <Button 
-                      onClick={() => setStep(2)} 
-                      disabled={!canProceedStep2} 
-                      className="flex-1 h-12"
-                    >
-                      다음 <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </div>
+                  <Button 
+                    onClick={() => setStep(1)} 
+                    disabled={!canProceedStep1} 
+                    className="w-full h-12"
+                  >
+                    다음 <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
                 </motion.div>
               )}
 
-              {/* Step 3: 고민 키워드 */}
-              {step === 2 && (
+              {/* Step 2: 고민 키워드 */}
+              {step === 1 && (
                 <motion.div
                   key="step-2"
                   initial={{ opacity: 0, x: 20 }}
@@ -194,7 +147,7 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
                     ))}
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" onClick={() => setStep(1)} className="flex-1">
+                    <Button variant="ghost" onClick={() => setStep(0)} className="flex-1">
                       이전
                     </Button>
                     <Button 

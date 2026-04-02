@@ -768,7 +768,7 @@ const ko = {
     attachmentDeepFeatures: ['불안-회피 차원 분석', 'AI 기반 심층 해석', '관계 개선 가이드'],
     bigfiveTitle: '5차원 성격 분석',
     bigfiveDuration: '약 5분',
-    bigfiveQuestions: '25문항',
+    bigfiveQuestions: '20문항',
     bigfiveBadge: '인기',
     bigfiveDesc: '개방성, 성실성, 외향성, 친화성, 신경성 5가지 성격 특성을 분석합니다.',
     bigfiveFeatures: ['Big Five 성격 모델 기반', '성격 강점/약점 분석', '대인관계 스타일 이해'],

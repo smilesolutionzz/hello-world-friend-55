@@ -86,8 +86,6 @@ import TokenSubscription from "./pages/TokenSubscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentComplete from "./pages/PaymentComplete";
 import PaymentFail from "./pages/PaymentFail";
-import TokenPaymentSuccess from "./pages/TokenPaymentSuccess";
-import TokenPaymentFail from "./pages/TokenPaymentFail";
 import Pricing from "./pages/Pricing";
 
 // Mind Diary

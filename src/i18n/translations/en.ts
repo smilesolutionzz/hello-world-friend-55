@@ -781,7 +781,7 @@ const en = {
     stressFeatures: ['Stress quantification', 'Stress type analysis', 'Custom relief suggestions'],
     careerTitle: 'Career Interest Explorer',
     careerDuration: '~6 min',
-    careerQuestions: '30 items',
+    careerQuestions: '24 items',
     careerDesc: 'Explores suitable career fields based on Holland theory.',
     careerFeatures: ['6 career interest types', 'Aptitude recommendations', 'Career direction guide'],
     selfesteemTitle: 'Self-Worth Assessment',

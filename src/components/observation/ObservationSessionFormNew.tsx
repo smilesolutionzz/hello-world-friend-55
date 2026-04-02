@@ -357,17 +357,6 @@ const ObservationSessionForm: React.FC<ObservationSessionFormProps> = ({ templat
     }
   };
 
-  if (showSubscriptionGate) {
-    return (
-      <div className="w-full max-w-4xl mx-auto">
-        <TokenGateWrapper 
-          onProceed={() => setShowSubscriptionGate(false)}
-          requiredTokens={5}
-          featureName="관찰일지 분석"
-        />
-      </div>
-    );
-  }
 
   if (!template) {
     return (

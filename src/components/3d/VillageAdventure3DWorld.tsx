@@ -325,6 +325,42 @@ function CameraController({ target, sceneId }: { target: [number, number, number
   return null;
 }
 
+// ============ 비 효과 ============
+function RainEffect() {
+  const rainRef = useRef<THREE.Points>(null);
+  const rainCount = 300;
+  const positions = useMemo(() => {
+    const pos = new Float32Array(rainCount * 3);
+    for (let i = 0; i < rainCount; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 40;
+      pos[i * 3 + 1] = Math.random() * 20;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 40;
+    }
+    return pos;
+  }, []);
+
+  useFrame(() => {
+    if (!rainRef.current) return;
+    const geo = rainRef.current.geometry;
+    const posAttr = geo.attributes.position;
+    for (let i = 0; i < rainCount; i++) {
+      let y = posAttr.getY(i) - 0.4;
+      if (y < 0) y = 20;
+      posAttr.setY(i, y);
+    }
+    posAttr.needsUpdate = true;
+  });
+
+  return (
+    <points ref={rainRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={rainCount} array={positions} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.08} color="#aaccff" transparent opacity={0.6} sizeAttenuation />
+    </points>
+  );
+}
+
 // ============ 마을 환경 ============
 function VillageEnvironment({ sceneId }: { sceneId: string }) {
   const isStorm = sceneId === 'storm_coming';

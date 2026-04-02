@@ -927,7 +927,7 @@ const en = {
     specializedSection: 'Specialized Tests',
     hanMedicineTitle: 'Traditional Body Type',
     hanMedicineDuration: '5 min',
-    hanMedicineQuestions: '30 items',
+    hanMedicineQuestions: '15 items',
     hanMedicineDesc: 'Personalized health analysis based on traditional body constitution.',
     hanMedicineFeatures: ['Body type identification', 'Health solutions by type', 'AI custom analysis'],
   },

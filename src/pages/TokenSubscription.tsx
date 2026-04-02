@@ -475,7 +475,7 @@ const TokenSubscription = () => {
 
         {/* 전문가 상담 안내 */}
         <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="mb-12">
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden bg-white dark:bg-card rounded-3xl shadow-lg border-border/50">
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500">

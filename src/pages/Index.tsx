@@ -69,6 +69,11 @@ const Index = () => {
       if (user && !localStorage.getItem('onboarding_completed')) {
         setShowOnboarding(true);
       }
+      
+      // 비로그인 + 트라이얼 프로필 없음 → 체험 온보딩 표시
+      if (!user && !hasTrialProfile && !localStorage.getItem('trial_onboarding_dismissed')) {
+        setShowTrialOnboarding(true);
+      }
     };
     
     checkUser();

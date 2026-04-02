@@ -188,6 +188,10 @@ ${scoreDetails}
         setAiAnalysis(analysisText);
       } else if (data?.summary?.coreMessage) {
         setAiAnalysis(data.summary.coreMessage);
+      } else {
+        // AI 응답이 예상 형식이 아닌 경우 로컬 분석으로 대체
+        console.warn('[GameResultReport] AI response format unexpected, using local analysis');
+        generateLocalAnalysis();
       }
     } catch (err) {
       console.error('[GameResultReport] AI analysis error:', err);

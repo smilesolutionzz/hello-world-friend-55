@@ -232,7 +232,7 @@ export default function GameCounseling3DMode() {
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-purple-200/70">{chapter.subtitle}</p>
+                      <p className="text-[11px] md:text-xs text-purple-200/70 whitespace-nowrap overflow-hidden text-ellipsis">{chapter.subtitle}</p>
                       <div className="flex flex-wrap gap-2 mt-1">
                         <span className={`text-xs px-2 py-0.5 rounded-full ${
                           isVillage ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'

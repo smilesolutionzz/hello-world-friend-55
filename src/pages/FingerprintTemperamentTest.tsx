@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import LoginRequiredOverlay from '@/components/auth/LoginRequiredOverlay';
 import SEOHead from '@/components/common/SEOHead';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { ResultPaywall } from '@/components/subscription/ResultPaywall';
 import { useTranslation } from '@/i18n';
 
 interface TemperamentResult {

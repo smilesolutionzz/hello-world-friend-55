@@ -57,7 +57,7 @@ const StressTestInner = () => {
 
   if (result && !showForm) {
     return (
-      <>
+      <ResultPaywall>
         <StressTestResult result={result} onRestart={handleRestart} onBack={handleBack} />
         <SignupPromptModal 
           open={showSignupPrompt} 
@@ -65,7 +65,7 @@ const StressTestInner = () => {
           pendingResults={guestResults}
           currentResult={{ testTitle: '스트레스 검사' }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

@@ -765,7 +765,7 @@ const en = {
     attachmentDeepFeatures: ['Anxiety-avoidance dimension', 'AI deep interpretation', 'Relationship improvement guide'],
     bigfiveTitle: 'Big Five Personality',
     bigfiveDuration: '~5 min',
-    bigfiveQuestions: '25 items',
+    bigfiveQuestions: '20 items',
     bigfiveBadge: 'Popular',
     bigfiveDesc: 'Analyzes 5 personality traits: openness, conscientiousness, extraversion, agreeableness, neuroticism.',
     bigfiveFeatures: ['Big Five model based', 'Strength/weakness analysis', 'Interpersonal style insight'],

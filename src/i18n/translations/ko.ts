@@ -736,7 +736,7 @@ const ko = {
     infantLangFeatures: ['표현언어 발달 체크', '수용언어 발달 체크', '언어치료 필요성 평가'],
     sensoryTitle: '감각통합장애',
     sensoryDuration: '약 5분',
-    sensoryQuestions: '18문항',
+    sensoryQuestions: '20문항',
     sensoryDesc: '시각, 청각, 촉각 등 감각 처리 능력의 이상 여부를 확인합니다.',
     sensoryFeatures: ['감각 과민/둔감 체크', '일상생활 영향도 평가', '감각통합치료 필요성 확인'],
     learningTitle: '학습장애 검사',

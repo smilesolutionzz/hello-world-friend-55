@@ -31,18 +31,17 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
   const [selectedConcern, setSelectedConcern] = useState('');
 
   const handleSubmit = () => {
-    if (!nickname.trim() || !childAge || !selectedConcern) return;
+    if (!childAge || !selectedConcern) return;
     
     saveProfile({
-      nickname: nickname.trim(),
+      nickname: '',
       childAge: parseInt(childAge),
       concernKeyword: selectedConcern,
     });
     onComplete();
   };
 
-  const canProceedStep1 = true; // 닉네임은 선택사항
-  const canProceedStep2 = childAge !== '';
+  const canProceedStep1 = childAge !== '';
   const canSubmit = selectedConcern !== '';
 
   return (

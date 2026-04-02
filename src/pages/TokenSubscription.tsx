@@ -451,7 +451,7 @@ const TokenSubscription = () => {
 
         {/* 논문 기반 섹션 */}
         <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-12">
-          <Card className="overflow-hidden border-2 border-violet-200 dark:border-violet-800 bg-gradient-to-br from-violet-50/80 via-background to-indigo-50/50 dark:from-violet-950/40 dark:via-slate-900 dark:to-indigo-950/30">
+          <Card className="overflow-hidden border border-violet-100 dark:border-violet-800 bg-white dark:bg-card rounded-3xl shadow-lg">
             <CardContent className="p-6 md:p-8">
               <div className="flex items-center gap-3 mb-5">
                 <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/20">

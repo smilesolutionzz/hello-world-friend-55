@@ -198,28 +198,8 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   }
 
   if (!hasStarted) {
-    return (
-      <TokenGate tokensRequired={TOKEN_COSTS.FOCUS_CHECK} featureName={isEnglish ? "AIH Focus Self-Check" : "AIH 집중력 자가점검"} featureKey="FOCUS_CHECK" onProceed={handleStartTest}>
-        <div className="space-y-4 text-center">
-          <div className="text-lg font-semibold">{isEnglish ? "AIH Focus Self-Check Features" : "AIH 집중력 자가점검 특징"}</div>
-          <ul className="space-y-2 text-sm text-muted-foreground max-w-md mx-auto">
-            <li>• {selectedAgeGroup === 'child' ? (isEnglish ? 'Child/Adolescent tailored items (7-12)' : '아동청소년 맞춤 문항 (7-12세)') : (isEnglish ? 'Adult tailored items (19+)' : '성인 맞춤 문항 (19세 이상)')}</li>
-            <li>• {isEnglish ? `${questions.length} items, ~3 min` : `총 ${questions.length}문항, 약 3분 소요`}</li>
-            <li>• {isEnglish ? 'Personal focus pattern analysis' : '개인 집중력 패턴 분석'}</li>
-            <li>• {isEnglish ? 'Customized improvement suggestions' : '맞춤형 개선 방향 제안'}</li>
-          </ul>
-          <Button variant="outline" size="sm" onClick={() => { setSelectedAgeGroup(null); setAnswers([]); }}>
-            {isEnglish ? "Change age group" : "연령대 다시 선택"}
-          </Button>
-          <div className="mt-6 pt-6 border-t">
-            <p className="text-sm font-medium mb-2">{isEnglish ? "Want a more detailed ADHD type analysis?" : "더 정확한 ADHD 유형 분석을 원하신다면?"}</p>
-            <Button variant="outline" onClick={() => window.location.href = '/advanced-adhd-test'} className="mt-2">
-              {isEnglish ? "View 12 ADHD Type Analysis" : "12가지 ADHD 유형 분석 보기"}
-            </Button>
-          </div>
-        </div>
-      </TokenGate>
-    );
+    setHasStarted(true);
+    return null;
   }
 
   return (

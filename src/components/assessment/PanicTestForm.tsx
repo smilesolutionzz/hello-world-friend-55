@@ -237,18 +237,10 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
     );
   }
 
-  // 토큰 게이트
+  // 체험검사 - 바로 시작
   if (!hasStarted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8 flex items-center justify-center">
-        <TokenGate
-          tokensRequired={TOKEN_COSTS.PANIC_TEST}
-          featureName={isEnglish ? `Anxiety Self-Check - ${getAgeGroupLabel(selectedAgeGroup, isEnglish)} (${questions.length} items)` : `불안 자가체크 - ${getAgeGroupLabel(selectedAgeGroup, isEnglish)} (${questions.length}문항)`}
-          featureKey="PANIC_TEST"
-          onProceed={handleStartTest}
-        />
-      </div>
-    );
+    setHasStarted(true);
+    return null;
   }
 
   const answerOptions = isEnglish

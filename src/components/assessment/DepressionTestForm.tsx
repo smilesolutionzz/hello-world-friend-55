@@ -141,16 +141,8 @@ const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: Depressi
   }
 
   if (!hasStarted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 flex items-center justify-center">
-        <TokenGate
-          tokensRequired={TOKEN_COSTS.DEPRESSION_TEST}
-          featureName={isEnglish ? `Depression Self-Check - ${getAgeGroupLabel(selectedAgeGroup, isEnglish)} (21 items)` : `우울증 자가체크 - ${getAgeGroupLabel(selectedAgeGroup, isEnglish)} (21문항)`}
-          featureKey="DEPRESSION_TEST"
-          onProceed={handleStartTest}
-        />
-      </div>
-    );
+    setHasStarted(true);
+    return null;
   }
 
   return (

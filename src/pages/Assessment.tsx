@@ -244,11 +244,7 @@ const Assessment = () => {
 
       if (!profile) return;
 
-      // 가족 ID 가져오기
-      // Mock family data
-      const familyMember = { family_id: 'mock-family-id' };
-      
-      const family_id = familyMember?.family_id || null;
+      const family_id = null;
 
       // 평가 결과를 assessments 테이블에 저장
       const { data: assessmentData, error: assessmentError } = await supabase

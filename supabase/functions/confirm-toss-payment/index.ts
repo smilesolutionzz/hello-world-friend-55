@@ -12,9 +12,31 @@ serve(async (req) => {
   }
 
   try {
+    // 1. 사용자 인증 확인
+    const authHeader = req.headers.get('Authorization') || req.headers.get('authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: '인증이 필요합니다.' }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const token = authHeader.replace('Bearer ', '');
+    const supabaseAuth = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+    const { data: userData, error: authError } = await supabaseAuth.auth.getUser(token);
+    if (authError || !userData?.user) {
+      return new Response(JSON.stringify({ error: '인증이 필요합니다.' }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const authenticatedUserId = userData.user.id;
+
     const { paymentKey, orderId, amount } = await req.json();
     
-    console.log('Payment confirmation request:', { paymentKey, orderId, amount });
+    console.log('Payment confirmation request:', { orderId, amount });
     
     // Supabase 클라이언트 생성 (서비스 롤)
     const supabaseService = createClient(
@@ -26,11 +48,13 @@ serve(async (req) => {
     // 토스페이먼츠 결제 승인 API 호출
     const secretKey = Deno.env.get('TOSS_SECRET_KEY');
     if (!secretKey) {
-      throw new Error('TOSS_SECRET_KEY is not configured');
+      console.error('TOSS_SECRET_KEY is not configured');
+      return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
     const encryptedSecretKey = btoa(secretKey + ':');
-
-    console.log('Calling TossPayments API with orderId:', orderId);
 
     const response = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
       method: 'POST',
@@ -38,27 +62,20 @@ serve(async (req) => {
         'Authorization': `Basic ${encryptedSecretKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        paymentKey,
-        orderId,
-        amount,
-      }),
+      body: JSON.stringify({ paymentKey, orderId, amount }),
     });
 
     const result = await response.json();
-    
-    console.log('TossPayments API response:', {
-      status: response.status,
-      ok: response.ok,
-      result: result
-    });
 
     if (!response.ok) {
       console.error('TossPayments API error:', result);
-      throw new Error(result.message || '결제 승인에 실패했습니다.');
+      return new Response(JSON.stringify({ error: '결제 승인에 실패했습니다.' }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    // 결제 내역 업데이트 시도 + 부족 시 복구 로직
+    // 결제 내역 업데이트 - 사용자 소유권 확인 포함
     let payment: any = null;
     const { data: updatedPayment, error: paymentUpdateError } = await supabaseService
       .from('payment_history')
@@ -67,36 +84,22 @@ serve(async (req) => {
         status: 'completed',
         payment_method: result.method
       })
-      .eq('toss_order_id', orderId)  // 'order_id' 대신 'toss_order_id' 사용
+      .eq('toss_order_id', orderId)
+      .eq('user_id', authenticatedUserId) // 소유권 확인
       .select('*, user_id')
       .maybeSingle();
 
     if (paymentUpdateError) {
       console.error('Payment update error:', paymentUpdateError);
-      throw paymentUpdateError;
+      return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     if (!updatedPayment) {
-      // 사전 생성된 주문이 없을 때(과거 경로) 복구 로직: 인증된 사용자 기반으로 결제내역 생성 후 처리
+      // 사전 생성된 주문이 없을 때 복구 로직
       try {
-        const authHeader = req.headers.get('Authorization') || req.headers.get('authorization');
-        if (!authHeader) {
-          throw new Error('Authorization 헤더가 없습니다.');
-        }
-        const token = authHeader.replace('Bearer ', '');
-        const supabaseAuth = createClient(
-          Deno.env.get('SUPABASE_URL') ?? '',
-          Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-        );
-        const { data: userData, error: authError } = await supabaseAuth.auth.getUser(token);
-        if (authError || !userData?.user) {
-          console.error('Auth fallback failed:', authError);
-          throw new Error('사용자 인증 실패로 결제내역 복구 불가');
-        }
-
-        const user = userData.user;
-
-        // 금액 또는 주문명으로 토큰 패키지 매칭
         let tokenPackage: any = null;
         const { data: pkgByPrice } = await supabaseService
           .from('token_packages')
@@ -123,7 +126,7 @@ serve(async (req) => {
         const { data: inserted, error: insertError } = await supabaseService
           .from('payment_history')
           .insert({
-            user_id: user.id,
+            user_id: authenticatedUserId,
             toss_order_id: orderId,
             amount: result.totalAmount,
             plan_id: null,
@@ -139,13 +142,19 @@ serve(async (req) => {
 
         if (insertError) {
           console.error('Fallback payment insert error:', insertError);
-          throw insertError;
+          return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
         }
 
         payment = inserted;
       } catch (fallbackErr) {
         console.error('Payment fallback creation failed:', fallbackErr);
-        throw new Error('결제 내역을 찾을 수 없습니다. (사전 생성된 주문 없음)');
+        return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
     } else {
       payment = updatedPayment;
@@ -153,10 +162,8 @@ serve(async (req) => {
 
     // 결제 유형 확인 (토큰 구매 vs 구독)
     if (payment.subscription_type === 'token' && payment.token_package_id) {
-      // 토큰 구매 처리
       console.log('Processing token purchase for user:', payment.user_id);
       
-      // 사용자의 현재 토큰 잔액 조회
       const { data: tokenBalance, error: balanceError } = await supabaseService
         .from('user_tokens')
         .select('*')
@@ -164,13 +171,16 @@ serve(async (req) => {
         .maybeSingle();
 
       if (balanceError) {
-        throw balanceError;
+        console.error('Token balance error:', balanceError);
+        return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
 
       const currentTokens = tokenBalance?.current_tokens || 0;
       const newTokenAmount = currentTokens + payment.token_amount;
 
-      // 토큰 잔액 업데이트 또는 생성
       if (tokenBalance) {
         const { error: updateError } = await supabaseService
           .from('user_tokens')
@@ -180,7 +190,13 @@ serve(async (req) => {
           })
           .eq('user_id', payment.user_id);
 
-        if (updateError) throw updateError;
+        if (updateError) {
+          console.error('Token update error:', updateError);
+          return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
       } else {
         const { error: insertError } = await supabaseService
           .from('user_tokens')
@@ -192,18 +208,23 @@ serve(async (req) => {
             updated_at: new Date().toISOString()
           });
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error('Token insert error:', insertError);
+          return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
       }
 
       console.log(`✅ Added ${payment.token_amount} tokens to user ${payment.user_id}`);
       
     } else {
-      // 구독 결제 처리 (기존 로직)
+      // 구독 결제 처리
       const planName = result.orderName.includes('프로') ? '프로' : 
                        result.orderName.includes('프리미엄') ? '프리미엄' : '무료';
       const subscriptionType = result.orderName.includes('연간') ? 'yearly' : 'monthly';
 
-      // 플랜 ID 조회
       const { data: plan, error: planError } = await supabaseService
         .from('subscription_plans')
         .select('*')
@@ -211,22 +232,23 @@ serve(async (req) => {
         .single();
 
       if (planError || !plan) {
-        throw new Error("구독 플랜을 찾을 수 없습니다.");
+        console.error('Plan not found:', planError);
+        return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
 
-      // 구독 생성 또는 업데이트
       const startDate = new Date();
       const endDate = new Date();
       endDate.setMonth(endDate.getMonth() + (subscriptionType === 'yearly' ? 12 : 1));
 
-      // 기존 구독 취소
       await supabaseService
         .from('user_subscriptions')
         .update({ status: 'cancelled' })
         .eq('user_id', payment.user_id)
         .eq('status', 'active');
 
-      // 새 구독 생성
       const { error: subError } = await supabaseService
         .from('user_subscriptions')
         .insert({
@@ -239,9 +261,14 @@ serve(async (req) => {
           status: 'active'
         });
 
-      if (subError) throw subError;
+      if (subError) {
+        console.error('Subscription error:', subError);
+        return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
 
-      // 결제 내역에 구독 ID 업데이트
       const { data: subscription } = await supabaseService
         .from('user_subscriptions')
         .select('id')
@@ -260,15 +287,13 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       success: true, 
       message: "결제가 완료되었습니다.",
-      paymentResult: result 
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
   } catch (error: unknown) {
     console.error('Payment confirmation error:', error);
-    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
-    return new Response(JSON.stringify({ error: message }), {
+    return new Response(JSON.stringify({ error: '결제 처리 중 오류가 발생했습니다.' }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

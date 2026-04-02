@@ -271,7 +271,7 @@ const TokenSubscription = () => {
 
           {/* 구독 카드 (월간/연간 토글) */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
-            <Card className="h-full relative overflow-hidden border-2 border-primary shadow-2xl shadow-primary/20 bg-gradient-to-br from-card via-primary/5 to-primary/10">
+            <Card className="h-full relative overflow-hidden border-2 border-primary/30 shadow-2xl shadow-primary/10 bg-white dark:bg-card rounded-3xl">
               <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
               <Badge className="absolute top-4 right-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-0 text-sm px-3 py-1 shadow-lg">
                 <Rocket className="w-3 h-3 mr-1" />{billingCycle === 'yearly' ? 'BEST' : '인기'}

@@ -151,9 +151,10 @@ const HeroSection = () => {
           <p className="text-white/70 text-[11px] md:text-base max-w-xl mx-auto px-2 leading-relaxed text-center">
             {t.hero.description}
           </p>
-          <p className="text-white/85 text-[11px] md:text-base font-semibold max-w-xl mx-auto px-2 mt-1.5 leading-relaxed text-center">
-            {t.hero.descriptionHighlight} {t.hero.descriptionHighlight2}
-          </p>
+          <div className="text-white/85 text-[11px] md:text-base font-semibold max-w-xl mx-auto px-2 mt-1.5 leading-relaxed text-center">
+            <p>{t.hero.descriptionHighlight}</p>
+            <p>{t.hero.descriptionHighlight2}</p>
+          </div>
         </motion.div>
 
         {/* AI Analysis Input */}

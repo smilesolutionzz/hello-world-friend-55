@@ -1294,6 +1294,7 @@ const Assessment = () => {
   if (currentStep === 'language-result' && languageResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="언어발달 검사" creditType="test" trialKey="LANGUAGE_TEST">
+        <ResultPaywall>
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
           <div className="container mx-auto max-w-4xl">
             <LanguageTestResult 
@@ -1302,6 +1303,7 @@ const Assessment = () => {
             />
           </div>
         </div>
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1372,6 +1374,7 @@ const Assessment = () => {
   if (currentStep === 'depression-result' && depressionResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="우울감 검사" creditType="test" trialKey="DEPRESSION_TEST">
+        <ResultPaywall>
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
           <div className="container mx-auto max-w-4xl">
             <DepressionTestResult 
@@ -1384,6 +1387,7 @@ const Assessment = () => {
             />
           </div>
         </div>
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1391,6 +1395,7 @@ const Assessment = () => {
   if (currentStep === 'panic-result' && panicResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="불안감 검사" creditType="test" trialKey="PANIC_TEST">
+        <ResultPaywall>
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
           <div className="container mx-auto max-w-4xl">
             <PanicTestResult 
@@ -1403,6 +1408,7 @@ const Assessment = () => {
             />
           </div>
         </div>
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1468,6 +1474,7 @@ const Assessment = () => {
   if (currentStep === 'adhd-result' && adhdResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="ADHD 검사" creditType="test" trialKey="ADHD_TEST">
+        <ResultPaywall>
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
           <div className="container mx-auto max-w-4xl">
             <AdhdTestResult 
@@ -1478,6 +1485,7 @@ const Assessment = () => {
             />
           </div>
         </div>
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1502,6 +1510,7 @@ const Assessment = () => {
   if (currentStep === 'stress-result' && stressResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="스트레스 검사" creditType="test" trialKey="STRESS_INDEX">
+        <ResultPaywall>
         <div>
           <UnifiedNavigation />
           <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
@@ -1513,6 +1522,7 @@ const Assessment = () => {
             </div>
           </div>
         </div>
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1537,6 +1547,7 @@ const Assessment = () => {
   if (currentStep === 'bigfive-result' && bigfiveResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="Big5 성격검사" creditType="test" trialKey="FIVE_D_PERSONALITY">
+        <ResultPaywall>
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
           <div className="container mx-auto max-w-4xl">
             <BigFiveTestResult 
@@ -1545,6 +1556,7 @@ const Assessment = () => {
             />
           </div>
         </div>
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1569,6 +1581,7 @@ const Assessment = () => {
   if (currentStep === 'attachment-result' && attachmentResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="애착유형 검사" creditType="test" trialKey="RELATIONSHIP_TYPE">
+        <ResultPaywall>
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
           <div className="container mx-auto max-w-4xl">
             <AttachmentStyleResult 
@@ -1577,6 +1590,7 @@ const Assessment = () => {
             />
           </div>
         </div>
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1737,11 +1751,13 @@ const Assessment = () => {
   if (currentStep === 'developmental-delay-result' && developmentalDelayResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="발달지연 검사" creditType="test" trialKey="DEVELOPMENTAL_DELAY_TEST">
+        <ResultPaywall>
         <DevelopmentalDelayTestResult 
           results={developmentalDelayResults} 
           onBack={handleBack} 
           onRestart={() => setCurrentStep('developmental-delay-test')} 
         />
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1749,11 +1765,13 @@ const Assessment = () => {
   if (currentStep === 'sensory-integration-result' && sensoryIntegrationResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="감각통합 검사" creditType="test" trialKey="SENSORY_INTEGRATION_TEST">
+        <ResultPaywall>
         <SensoryIntegrationTestResult 
           results={sensoryIntegrationResults} 
           onBack={handleBack} 
           onRestart={() => setCurrentStep('sensory-integration-test')} 
         />
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1761,11 +1779,13 @@ const Assessment = () => {
   if (currentStep === 'learning-disability-result' && learningDisabilityResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="학습장애 검사" creditType="test" trialKey="LEARNING_DISABILITY_TEST">
+        <ResultPaywall>
         <LearningDisabilityTestResult 
           results={learningDisabilityResults} 
           onBack={handleBack} 
           onRestart={() => setCurrentStep('learning-disability-test')} 
         />
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1773,11 +1793,13 @@ const Assessment = () => {
   if (currentStep === 'social-development-result' && socialDevelopmentResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="사회성 발달 검사" creditType="test" trialKey="SOCIAL_DEVELOPMENT_TEST">
+        <ResultPaywall>
         <SocialDevelopmentTestResult 
           results={socialDevelopmentResults} 
           onBack={handleBack} 
           onRestart={() => setCurrentStep('social-development-test')} 
         />
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1786,7 +1808,9 @@ const Assessment = () => {
   if (currentStep === 'challenging-behavior-result' && challengingBehaviorResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="문제행동 검사" creditType="test" trialKey="CHALLENGING_BEHAVIOR_TEST">
+        <ResultPaywall>
         <ChallengingBehaviorResult results={challengingBehaviorResults} />
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1794,7 +1818,9 @@ const Assessment = () => {
   if (currentStep === 'adaptive-behavior-result' && adaptiveBehaviorResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="적응행동 검사" creditType="test" trialKey="ADAPTIVE_BEHAVIOR_TEST">
+        <ResultPaywall>
         <AdaptiveBehaviorResult results={adaptiveBehaviorResults} />
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }
@@ -1803,6 +1829,7 @@ const Assessment = () => {
   if (currentStep === 'career-result' && careerResults) {
     return (
       <SubscriptionGuard consumeAt="result" featureName="직업흥미 검사" creditType="test" trialKey="CAREER_TEST">
+        <ResultPaywall>
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
           <div className="container mx-auto max-w-4xl">
             <CareerInterestResult 
@@ -1811,6 +1838,7 @@ const Assessment = () => {
             />
           </div>
         </div>
+      </ResultPaywall>
       </SubscriptionGuard>
     );
   }

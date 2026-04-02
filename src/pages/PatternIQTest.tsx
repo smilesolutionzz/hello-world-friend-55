@@ -30,7 +30,7 @@ const PatternIQTestInner = () => {
 
   if (result) {
     return (
-      <>
+      <ResultPaywall>
         <PatternIQTestResult 
           result={result} 
           onBack={() => navigate('/assessment')} 

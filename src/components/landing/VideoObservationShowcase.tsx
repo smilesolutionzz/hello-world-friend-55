@@ -48,10 +48,12 @@ export const VideoObservationShowcase = () => {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-full mb-6">
             <Video className="w-4 h-4" />{t.videoObservation.badge}
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white whitespace-nowrap">
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">{t.videoObservation.heading1}</span>{t.videoObservation.heading2}
+          <h2 className="text-2xl md:text-5xl font-bold mb-4 text-white text-center leading-tight">
+            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">{t.videoObservation.heading1}</span>
+            <br className="md:hidden" />
+            {t.videoObservation.heading2}
           </h2>
-          <p className="text-sm md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed px-2">
             {t.videoObservation.desc1}<br />
             <span className="text-purple-400 font-semibold">{t.videoObservation.desc2}</span>
           </p>
@@ -63,8 +65,8 @@ export const VideoObservationShowcase = () => {
             return (
               <Card key={index} className="group p-4 bg-slate-800/50 border-slate-700 hover:border-purple-500/50 transition-all duration-300 hover:scale-105">
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}><Icon className="w-6 h-6 text-white" /></div>
-                <h3 className="font-bold text-white text-sm mb-1 whitespace-nowrap">{category.title}</h3>
-                <p className="text-xs text-slate-400 leading-tight whitespace-nowrap">{category.description}</p>
+                <h3 className="font-bold text-white text-sm mb-1 md:whitespace-nowrap">{category.title}</h3>
+                <p className="text-xs text-slate-400 leading-tight">{category.description}</p>
               </Card>
             );
           })}
@@ -87,7 +89,7 @@ export const VideoObservationShowcase = () => {
         </motion.div>
 
         <motion.div className="text-center mt-8" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.6 }}>
-          <div className="inline-flex items-center gap-4 text-slate-400 text-sm">
+          <div className="inline-flex flex-wrap justify-center items-center gap-2 md:gap-4 text-slate-400 text-xs md:text-sm">
             <div className="flex items-center gap-1"><FileText className="w-4 h-4" /><span>{t.videoObservation.trustReport}</span></div>
             <span className="text-slate-600">•</span>
             <div className="flex items-center gap-1"><Brain className="w-4 h-4" /><span>{t.videoObservation.trustAI}</span></div>

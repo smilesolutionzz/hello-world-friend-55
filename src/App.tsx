@@ -335,13 +335,14 @@ const App = () => {
 
           {/* Payment & Pricing */}
           <Route path="/token-subscription" element={<TokenSubscription />} />
+          <Route path="/subscription" element={<TokenSubscription />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
           <Route path="/payment-complete" element={<PaymentComplete />} />
-          <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />
-          <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
+          <Route path="/token-payment-success" element={<Navigate to="/payment-success" replace />} />
+          <Route path="/token-payment-fail" element={<Navigate to="/payment-fail" replace />} />
 
           {/* SEO Package Landing Pages */}
           <Route path="/stress-package" element={<StressPackage />} />

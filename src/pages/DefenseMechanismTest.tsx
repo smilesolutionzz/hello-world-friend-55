@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { ResultPaywall } from '@/components/subscription/ResultPaywall';
 
 const STORAGE_KEY = 'defenseMechanismTestResult';
 
@@ -45,15 +46,15 @@ const DefenseMechanismTestInner = () => {
 
   if (result) {
     return (
-      <>
+      <ResultPaywall>
         <DefenseMechanismResult result={result} onBack={handleBack} />
-        <SignupPromptModal 
+        <SignupPromptModal
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}
           currentResult={{ testTitle: '방어기제 검사' }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

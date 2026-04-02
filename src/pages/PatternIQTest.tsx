@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useGuestSession } from "@/hooks/useGuestSession";
 import SignupPromptModal from "@/components/guest/SignupPromptModal";
 import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
+import { ResultPaywall } from "@/components/subscription/ResultPaywall";
 
 const PatternIQTestInner = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const PatternIQTestInner = () => {
 
   if (result) {
     return (
-      <>
+      <ResultPaywall>
         <PatternIQTestResult 
           result={result} 
           onBack={() => navigate('/assessment')} 
@@ -44,7 +45,7 @@ const PatternIQTestInner = () => {
             level: result.cognitiveType
           }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

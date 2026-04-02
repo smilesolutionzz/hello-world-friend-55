@@ -7,6 +7,7 @@ import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { useNavigate } from 'react-router-dom';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { ResultPaywall } from '@/components/subscription/ResultPaywall';
 import { useTranslation } from '@/i18n';
 
 const getQuestions = (b: any) => [
@@ -271,7 +272,7 @@ const BusinessMetacognitionTestInner: React.FC = () => {
   const weakLabel = CATEGORY_META_RESULT[weakest[0]].label;
 
   return (
-    <div>
+    <ResultPaywall><div>
       <UnifiedNavigation />
       <div className="min-h-screen bg-background pt-4">
         <div className="container mx-auto px-4 py-6 max-w-3xl">
@@ -416,7 +417,7 @@ const BusinessMetacognitionTestInner: React.FC = () => {
           <p className="text-[11px] text-muted-foreground text-center leading-relaxed mb-8 whitespace-pre-line">{b.disclaimer}</p>
         </div>
       </div>
-    </div>
+    </div></ResultPaywall>
   );
 };
 

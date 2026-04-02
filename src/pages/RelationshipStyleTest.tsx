@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { ResultPaywall } from '@/components/subscription/ResultPaywall';
 import { useTranslation } from '@/i18n';
 
 const STORAGE_KEY = 'relationshipStyleTestResult';
@@ -47,15 +48,15 @@ const RelationshipStyleTestInner = () => {
 
   if (result) {
     return (
-      <>
+      <ResultPaywall>
         <RelationshipStyleResult result={result} onBack={handleBack} />
-        <SignupPromptModal 
+        <SignupPromptModal
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}
           currentResult={{ testTitle: t.testPages.relationshipStyle }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

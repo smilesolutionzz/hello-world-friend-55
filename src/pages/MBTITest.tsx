@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useAutoSaveTestResult } from "@/hooks/useAutoSaveTestResult";
 import ModernAnalysisLoading from "@/components/assessment/ModernAnalysisLoading";
 import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
+import { ResultPaywall } from "@/components/subscription/ResultPaywall";
 
 const MBTITestInner = () => {
   const navigate = useNavigate();

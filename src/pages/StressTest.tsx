@@ -5,6 +5,7 @@ import StressTestResult from '@/components/assessment/StressTestResult';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { ResultPaywall } from '@/components/subscription/ResultPaywall';
 
 const STORAGE_KEY = 'stressTestResult';
 
@@ -56,7 +57,7 @@ const StressTestInner = () => {
 
   if (result && !showForm) {
     return (
-      <>
+      <ResultPaywall>
         <StressTestResult result={result} onRestart={handleRestart} onBack={handleBack} />
         <SignupPromptModal 
           open={showSignupPrompt} 
@@ -64,7 +65,7 @@ const StressTestInner = () => {
           pendingResults={guestResults}
           currentResult={{ testTitle: '스트레스 검사' }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useGuestSession } from "@/hooks/useGuestSession";
 import SignupPromptModal from "@/components/guest/SignupPromptModal";
 import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
+import { ResultPaywall } from "@/components/subscription/ResultPaywall";
 
 const EnergyFlowTestInner = () => {
   const navigate = useNavigate();
@@ -23,15 +24,15 @@ const EnergyFlowTestInner = () => {
 
   if (results) {
     return (
-      <>
+      <ResultPaywall>
         <EnergyFlowTestResult results={results} onBack={() => setResults(null)} />
-        <SignupPromptModal 
+        <SignupPromptModal
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}
           currentResult={{ testTitle: '에너지 흐름 검사' }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

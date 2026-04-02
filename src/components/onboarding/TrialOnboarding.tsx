@@ -42,7 +42,7 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
     onComplete();
   };
 
-  const canProceedStep1 = nickname.trim().length >= 1;
+  const canProceedStep1 = true; // 닉네임은 선택사항
   const canProceedStep2 = childAge !== '';
   const canSubmit = selectedConcern !== '';
 

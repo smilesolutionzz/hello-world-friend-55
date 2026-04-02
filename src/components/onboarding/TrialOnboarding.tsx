@@ -150,7 +150,7 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
                     ))}
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" onClick={() => setStep(1)} className="flex-1">
+                    <Button variant="ghost" onClick={() => setStep(0)} className="flex-1">
                       이전
                     </Button>
                     <Button 

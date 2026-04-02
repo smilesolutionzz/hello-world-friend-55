@@ -347,13 +347,9 @@ const App = () => {
           <Route path="/en/expert-application" element={<ExpertApplication />} />
           <Route path="/en/token-subscription" element={<TokenSubscription />} />
           <Route path="/en/pricing" element={<TokenSubscription />} />
-          <Route path="/en/payment" element={<PaymentPage />} />
+          <Route path="/en/payment" element={<Payment />} />
           <Route path="/en/payment-success" element={<PaymentSuccess />} />
           <Route path="/en/payment-fail" element={<PaymentFail />} />
-          <Route path="/en/community" element={<Community />} />
-          <Route path="/en/community/:postId" element={<CommunityPost />} />
-          <Route path="/en/needs-assessment" element={<NeedsAssessment />} />
-          <Route path="/en/brain-training" element={<BrainTraining />} />
           <Route path="/en/column" element={<Column />} />
           <Route path="/en/wellness-lifestyle" element={<WellnessLifestyle />} />
           <Route path="/en/referral" element={<Referral />} />

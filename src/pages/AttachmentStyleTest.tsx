@@ -48,9 +48,9 @@ const AttachmentStyleTestInner = () => {
 
   if (result) {
     return (
-      <>
+      <ResultPaywall>
         <AttachmentStyleDeepResult result={result} onBack={handleBack} />
-        <SignupPromptModal 
+        <SignupPromptModal
           open={showSignupPrompt} 
           onClose={() => setShowSignupPrompt(false)}
           pendingResults={guestResults}

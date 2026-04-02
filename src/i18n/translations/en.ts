@@ -734,7 +734,7 @@ const en = {
     infantLangFeatures: ['Expressive language check', 'Receptive language check', 'Speech therapy needs assessment'],
     sensoryTitle: 'Sensory Integration',
     sensoryDuration: '~5 min',
-    sensoryQuestions: '18 items',
+    sensoryQuestions: '20 items',
     sensoryDesc: 'Checks for sensory processing issues in vision, hearing, touch, etc.',
     sensoryFeatures: ['Hyper/hypo sensitivity check', 'Daily life impact', 'Therapy needs assessment'],
     learningTitle: 'Learning Disability Test',

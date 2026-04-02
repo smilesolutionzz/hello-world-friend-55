@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import HighlightDashboard from './HighlightDashboard';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { lazy, Suspense } from 'react';
+
+const HighlightDashboard = lazy(() => import('./HighlightDashboard'));
 
 type AccountType = 'parent' | 'teacher' | 'therapist' | 'admin';
 
@@ -32,7 +34,6 @@ const DashboardRouter = () => {
       if (profile?.account_type) {
         setAccountType(profile.account_type as AccountType);
       } else {
-        // 기본값은 부모 계정
         setAccountType('parent');
       }
     } catch (error) {
@@ -55,7 +56,11 @@ const DashboardRouter = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  return <HighlightDashboard />;
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><LoadingSpinner size="lg" /></div>}>
+      <HighlightDashboard />
+    </Suspense>
+  );
 };
 
 export default DashboardRouter;

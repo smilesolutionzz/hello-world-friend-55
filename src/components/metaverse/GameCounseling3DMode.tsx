@@ -272,7 +272,7 @@ export default function GameCounseling3DMode() {
         results={results}
         choices={choices}
         chapter={currentChapter!}
-        onRestart={() => { stopTTS(); setGameState('intro'); }}
+        onRestart={() => { stopTTS(); stopBGM(); setGameState('intro'); }}
         ttsEnabled={ttsEnabled}
         onSpeak={speak}
         isSpeaking={isSpeaking}

@@ -1,10 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Play, RotateCcw, Eye, EyeOff } from 'lucide-react';
+import { Play, RotateCcw, Eye, EyeOff, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type StoryChoice, type PsychDimension } from '@/data/storyScenarios';
+import { useGameTTS } from '@/hooks/useGameTTS';
 import GameResultReport from './GameResultReport';
 
 type GameState = 'intro' | 'playing' | 'result';
@@ -24,6 +25,9 @@ export default function GameCounselingMode() {
   const [choices, setChoices] = useState<ChoiceRecord[]>([]);
   const [showParentNotes, setShowParentNotes] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
+  const [ttsEnabled, setTtsEnabled] = useState(true);
+
+  const { speak, stop: stopTTS, isSpeaking, isLoading: ttsLoading } = useGameTTS();
 
   const currentScene = currentChapter?.scenes.find((_, i) => {
     if (choices.length === 0) return i === 0;
@@ -40,6 +44,14 @@ export default function GameCounselingMode() {
     return '';
   }
 
+  // 씬 변경 시 자동 내레이션
+  useEffect(() => {
+    if (gameState === 'playing' && currentScene && ttsEnabled) {
+      const narrateText = `${currentScene.title}. ${currentScene.description}`;
+      speak(narrateText);
+    }
+  }, [gameState, currentScene?.id, ttsEnabled]);
+
   const startGame = useCallback((chapter: StoryChapter) => {
     setCurrentChapter(chapter);
     setCurrentSceneIndex(0);
@@ -50,6 +62,11 @@ export default function GameCounselingMode() {
 
   const makeChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
     setSelectedChoice(choice.id);
+    
+    if (ttsEnabled) {
+      speak(`${choice.emoji} ${choice.text}을 선택했어요!`);
+    }
+
     const record: ChoiceRecord = {
       sceneId: scene.id,
       choiceId: choice.id,
@@ -65,12 +82,15 @@ export default function GameCounselingMode() {
       const nextScene = currentChapter.scenes.find(s => s.id === choice.nextSceneId);
       if (nextScene?.isEnding) {
         setGameState('result');
+        if (ttsEnabled) {
+          setTimeout(() => speak('모험이 끝났어요! 결과를 확인해볼까요?'), 500);
+        }
       } else {
         const nextIndex = currentChapter.scenes.findIndex(s => s.id === choice.nextSceneId);
         setCurrentSceneIndex(nextIndex >= 0 ? nextIndex : currentSceneIndex + 1);
       }
     }, 600);
-  }, [currentChapter, currentSceneIndex]);
+  }, [currentChapter, currentSceneIndex, ttsEnabled, speak]);
 
   const calculateResults = useCallback(() => {
     const scores: Record<PsychDimension, number> = {
@@ -99,9 +119,28 @@ export default function GameCounselingMode() {
       {gameState === 'playing' && (
         <div className="flex items-center justify-between">
           <Progress value={progress} className="h-2 flex-1 mr-3" />
-          <Button variant="ghost" size="icon" onClick={() => setShowParentNotes(!showParentNotes)}>
-            {showParentNotes ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => {
+                if (isSpeaking) stopTTS();
+                setTtsEnabled(!ttsEnabled);
+              }}
+            >
+              {ttsLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin text-purple-400" />
+              ) : ttsEnabled ? (
+                <Volume2 className="h-4 w-4 text-emerald-400" />
+              ) : (
+                <VolumeX className="h-4 w-4 text-white/30" />
+              )}
+            </Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowParentNotes(!showParentNotes)}>
+              {showParentNotes ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </Button>
+          </div>
         </div>
       )}
 
@@ -117,6 +156,8 @@ export default function GameCounselingMode() {
             showParentNotes={showParentNotes}
             selectedChoice={selectedChoice}
             chapterTitle={currentChapter.title}
+            isSpeaking={isSpeaking}
+            ttsLoading={ttsLoading}
           />
         )}
         {gameState === 'result' && (
@@ -125,7 +166,10 @@ export default function GameCounselingMode() {
             results={calculateResults()}
             choices={choices}
             chapter={currentChapter!}
-            onRestart={() => setGameState('intro')}
+            onRestart={() => { stopTTS(); setGameState('intro'); }}
+            ttsEnabled={ttsEnabled}
+            onSpeak={speak}
+            isSpeaking={isSpeaking}
             variant="2d"
           />
         )}
@@ -192,12 +236,14 @@ function IntroScreen({ chapters, onStart }: { chapters: StoryChapter[]; onStart:
   );
 }
 
-function PlayScreen({ scene, onChoice, showParentNotes, selectedChoice, chapterTitle }: {
+function PlayScreen({ scene, onChoice, showParentNotes, selectedChoice, chapterTitle, isSpeaking, ttsLoading }: {
   scene: StoryScene;
   onChoice: (scene: StoryScene, choice: StoryChoice) => void;
   showParentNotes: boolean;
   selectedChoice: string | null;
   chapterTitle: string;
+  isSpeaking: boolean;
+  ttsLoading: boolean;
 }) {
   return (
     <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} transition={{ duration: 0.3 }} className="space-y-5">
@@ -208,6 +254,13 @@ function PlayScreen({ scene, onChoice, showParentNotes, selectedChoice, chapterT
         <h2 className="text-xl font-bold text-gray-800">{scene.title}</h2>
         {scene.character && (
           <span className="text-xs bg-white/60 px-2 py-1 rounded-full mt-2 inline-block">등장인물: {scene.character}</span>
+        )}
+        {(isSpeaking || ttsLoading) && (
+          <div className="absolute top-2 right-2">
+            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }}>
+              {ttsLoading ? <Loader2 className="w-5 h-5 animate-spin text-emerald-600" /> : <Volume2 className="w-5 h-5 text-emerald-600" />}
+            </motion.div>
+          </div>
         )}
       </Card>
 

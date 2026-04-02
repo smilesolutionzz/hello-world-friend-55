@@ -744,7 +744,7 @@ const en = {
     learningFeatures: ['Subject-specific assessment', 'Learning strategy analysis', 'Support needs evaluation'],
     socialTitle: 'Social Development',
     socialDuration: '~5 min',
-    socialQuestions: '18 items',
+    socialQuestions: '20 items',
     socialDesc: 'Evaluates peer relationships and social interaction abilities.',
     socialFeatures: ['Peer relationship skills', 'Social situation comprehension', 'Social development support'],
     challengingTitle: 'Challenging Behavior',

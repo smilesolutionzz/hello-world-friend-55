@@ -151,7 +151,25 @@ const Assessment = () => {
   const [currentAssessmentResults, setCurrentAssessmentResults] = useState<any>(null);
   const [expandedSimpleTest, setExpandedSimpleTest] = useState<string | null>(null);
   
-  // 게스트 결과 저장 및 가입 유도 헬퍼
+  // 체험검사 결과 하단 업셀 배너
+  const TrialUpsellBanner = () => (
+    <div className="mt-6 bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 rounded-xl p-5 text-center space-y-3">
+      <p className="font-semibold text-foreground">💡 더 정밀한 심층 분석이 필요하신가요?</p>
+      <p className="text-sm text-muted-foreground">
+        가입하면 <span className="font-bold text-primary">심층 검사 이용권 2개</span>를 무료로 드려요
+      </p>
+      <div className="flex gap-2 justify-center flex-wrap">
+        <Button size="sm" onClick={() => navigate('/auth')} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+          가입하고 심층 분석 받기
+        </Button>
+        <Button size="sm" variant="outline" onClick={() => navigate('/token-subscription')}>
+          구독 플랜 보기
+        </Button>
+      </div>
+    </div>
+  );
+
+  
   const handleGuestResultComplete = (testType: string, testTitle: string, results: any, ageGroup?: string) => {
     if (isGuest) {
       saveGuestResult(testType, testTitle, results, ageGroup);
@@ -1373,43 +1391,37 @@ const Assessment = () => {
 
   if (currentStep === 'depression-result' && depressionResults) {
     return (
-      <SubscriptionGuard consumeAt="result" featureName="우울감 검사" creditType="test" trialKey="DEPRESSION_TEST">
-        <ResultPaywall>
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-          <div className="container mx-auto max-w-4xl">
-            <DepressionTestResult 
-              results={depressionResults}
-              onBack={() => setCurrentStep('depression-test')}
-              onRestart={() => {
-                setDepressionResults(null);
-                setCurrentStep('depression-test');
-              }}
-            />
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <DepressionTestResult 
+            results={depressionResults}
+            onBack={() => setCurrentStep('depression-test')}
+            onRestart={() => {
+              setDepressionResults(null);
+              setCurrentStep('depression-test');
+            }}
+          />
+          <TrialUpsellBanner />
         </div>
-      </ResultPaywall>
-      </SubscriptionGuard>
+      </div>
     );
   }
 
   if (currentStep === 'panic-result' && panicResults) {
     return (
-      <SubscriptionGuard consumeAt="result" featureName="불안감 검사" creditType="test" trialKey="PANIC_TEST">
-        <ResultPaywall>
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-          <div className="container mx-auto max-w-4xl">
-            <PanicTestResult 
-              results={panicResults}
-              onBack={() => setCurrentStep('panic-test')}
-              onRestart={() => {
-                setPanicResults(null);
-                setCurrentStep('panic-test');
-              }}
-            />
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <PanicTestResult 
+            results={panicResults}
+            onBack={() => setCurrentStep('panic-test')}
+            onRestart={() => {
+              setPanicResults(null);
+              setCurrentStep('panic-test');
+            }}
+          />
+          <TrialUpsellBanner />
         </div>
-      </ResultPaywall>
-      </SubscriptionGuard>
+      </div>
     );
   }
 
@@ -1473,20 +1485,17 @@ const Assessment = () => {
 
   if (currentStep === 'adhd-result' && adhdResults) {
     return (
-      <SubscriptionGuard consumeAt="result" featureName="ADHD 검사" creditType="test" trialKey="ADHD_TEST">
-        <ResultPaywall>
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-          <div className="container mx-auto max-w-4xl">
-            <AdhdTestResult 
-              results={adhdResults}
-              onBack={handleBack}
-              onStartAIChat={handleStartAIChat}
-              onStartRealTimeChat={handleStartRealTimeChat}
-            />
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <AdhdTestResult 
+            results={adhdResults}
+            onBack={handleBack}
+            onStartAIChat={handleStartAIChat}
+            onStartRealTimeChat={handleStartRealTimeChat}
+          />
+          <TrialUpsellBanner />
         </div>
-      </ResultPaywall>
-      </SubscriptionGuard>
+      </div>
     );
   }
 
@@ -1509,21 +1518,18 @@ const Assessment = () => {
 
   if (currentStep === 'stress-result' && stressResults) {
     return (
-      <SubscriptionGuard consumeAt="result" featureName="스트레스 검사" creditType="test" trialKey="STRESS_INDEX">
-        <ResultPaywall>
-        <div>
-          <UnifiedNavigation />
-          <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
-            <div className="container mx-auto max-w-4xl">
-              <StressTestResult 
-                result={stressResults}
-                onRestart={() => setCurrentStep('stress-test')}
-              />
-            </div>
+      <div>
+        <UnifiedNavigation />
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
+          <div className="container mx-auto max-w-4xl">
+            <StressTestResult 
+              result={stressResults}
+              onRestart={() => setCurrentStep('stress-test')}
+            />
+            <TrialUpsellBanner />
           </div>
         </div>
-      </ResultPaywall>
-      </SubscriptionGuard>
+      </div>
     );
   }
 

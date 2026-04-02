@@ -5,9 +5,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft } from "lucide-react";
-import { TOKEN_COSTS } from "@/constants/tokenCosts";
-import { useTokens } from "@/hooks/useTokens";
-import TokenGate from "@/components/TokenGate";
 import { useLanguage } from "@/i18n";
 
 interface DepressionTestFormProps {
@@ -49,7 +46,6 @@ const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: Depressi
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [hasStarted, setHasStarted] = useState(false);
-  const { consumeTokens } = useTokens();
 
   const questions = selectedAgeGroup ? getQuestions(selectedAgeGroup, isEnglish) : [];
   if (currentQuestion >= questions.length) return null;
@@ -100,9 +96,8 @@ const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: Depressi
   const currentAnswer = answers[currentQuestion] || "";
   const canProceed = currentAnswer !== "";
 
-  const handleStartTest = async () => {
-    const success = await consumeTokens(TOKEN_COSTS.DEPRESSION_TEST);
-    if (success) setHasStarted(true);
+  const handleStartTest = () => {
+    setHasStarted(true);
   };
 
   const answerOptions = isEnglish
@@ -145,16 +140,8 @@ const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: Depressi
   }
 
   if (!hasStarted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 flex items-center justify-center">
-        <TokenGate
-          tokensRequired={TOKEN_COSTS.DEPRESSION_TEST}
-          featureName={isEnglish ? `Depression Self-Check - ${getAgeGroupLabel(selectedAgeGroup, isEnglish)} (21 items)` : `우울증 자가체크 - ${getAgeGroupLabel(selectedAgeGroup, isEnglish)} (21문항)`}
-          featureKey="DEPRESSION_TEST"
-          onProceed={handleStartTest}
-        />
-      </div>
-    );
+    setHasStarted(true);
+    return null;
   }
 
   return (

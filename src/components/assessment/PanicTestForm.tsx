@@ -5,9 +5,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Brain } from "lucide-react";
-import { TOKEN_COSTS } from "@/constants/tokenCosts";
-import { useTokens } from "@/hooks/useTokens";
-import TokenGate from "@/components/TokenGate";
 import { useLanguage } from "@/i18n";
 
 interface PanicTestFormProps {
@@ -151,7 +148,6 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [hasStarted, setHasStarted] = useState(false);
-  const { consumeTokens } = useTokens();
 
   const questions = selectedAgeGroup ? getQuestions(selectedAgeGroup, isEnglish) : [];
   if (currentQuestion >= questions.length) return null;
@@ -203,9 +199,8 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
   const currentAnswer = answers[currentQuestion] || "";
   const canProceed = currentAnswer !== "";
 
-  const handleStartTest = async () => {
-    const success = await consumeTokens(TOKEN_COSTS.PANIC_TEST);
-    if (success) setHasStarted(true);
+  const handleStartTest = () => {
+    setHasStarted(true);
   };
 
   // 연령대 선택 화면
@@ -242,18 +237,10 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
     );
   }
 
-  // 토큰 게이트
+  // 체험검사 - 바로 시작
   if (!hasStarted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8 flex items-center justify-center">
-        <TokenGate
-          tokensRequired={TOKEN_COSTS.PANIC_TEST}
-          featureName={isEnglish ? `Anxiety Self-Check - ${getAgeGroupLabel(selectedAgeGroup, isEnglish)} (${questions.length} items)` : `불안 자가체크 - ${getAgeGroupLabel(selectedAgeGroup, isEnglish)} (${questions.length}문항)`}
-          featureKey="PANIC_TEST"
-          onProceed={handleStartTest}
-        />
-      </div>
-    );
+    setHasStarted(true);
+    return null;
   }
 
   const answerOptions = isEnglish

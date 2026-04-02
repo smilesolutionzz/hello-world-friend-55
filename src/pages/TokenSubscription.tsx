@@ -372,7 +372,7 @@ const TokenSubscription = () => {
 
         {/* 가격 비교 계산 */}
         <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mb-12">
-          <Card className="overflow-hidden bg-muted/30 border-border">
+          <Card className="overflow-hidden bg-white dark:bg-card border-border/50 rounded-3xl shadow-lg">
             <CardContent className="p-6">
               <h3 className="font-bold text-center mb-4">💡 어떤 플랜이 나에게 맞을까?</h3>
               <div className="grid grid-cols-5 gap-2 text-center text-sm">

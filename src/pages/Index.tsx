@@ -215,6 +215,15 @@ const Index = () => {
             isOpen={showOnboarding} 
             onClose={handleOnboardingClose} 
           />
+          
+          {showTrialOnboarding && (
+            <TrialOnboarding 
+              onComplete={() => {
+                setShowTrialOnboarding(false);
+                navigate('/assessment');
+              }} 
+            />
+          )}
         </div>
       </ErrorBoundary>
     </>

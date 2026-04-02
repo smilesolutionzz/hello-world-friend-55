@@ -10,7 +10,7 @@ import { ChevronLeft, ChevronRight, Save, Sparkles, Clock, AlertTriangle } from 
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import MediaUploader from './MediaUploader';
-import TokenGateWrapper from '@/components/TokenGateWrapper';
+
 import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
 
 interface ObservationSessionFormProps {

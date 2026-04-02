@@ -774,7 +774,7 @@ const ko = {
     bigfiveFeatures: ['Big Five 성격 모델 기반', '성격 강점/약점 분석', '대인관계 스타일 이해'],
     attachmentTitle: '관계유형 진단',
     attachmentDuration: '약 4분',
-    attachmentQuestions: '20문항',
+    attachmentQuestions: '12문항',
     attachmentDesc: '대인 관계에서의 애착 스타일과 관계 패턴을 진단합니다.',
     attachmentFeatures: ['안정/불안/회피 유형 분류', '관계 강점 발견', '건강한 관계 팁 제공'],
     stressTitle: '스트레스 지수',

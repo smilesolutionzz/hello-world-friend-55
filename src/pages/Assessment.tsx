@@ -823,7 +823,7 @@ const Assessment = () => {
                                 <h3 className={`font-semibold text-sm md:text-base text-foreground ${test.textHover} truncate`}>{test.title}</h3>
                                 <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] px-1 py-0 border-0 flex-shrink-0">{t.assessment.freeBadge}</Badge>
                               </div>
-                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.ageTarget} · {test.duration} · {test.questions}</p>
                             </div>
                           </div>
                           <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />

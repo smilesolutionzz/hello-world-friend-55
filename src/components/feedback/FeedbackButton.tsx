@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageSquarePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FeedbackModal } from './FeedbackModal';
-import { isBetaTestPeriod } from '@/utils/betaTest';
+
 
 const FEEDBACK_SUBMITTED_KEY = 'feedback_submitted';
 

@@ -272,7 +272,7 @@ const BusinessMetacognitionTestInner: React.FC = () => {
   const weakLabel = CATEGORY_META_RESULT[weakest[0]].label;
 
   return (
-    <div>
+    <ResultPaywall><div>
       <UnifiedNavigation />
       <div className="min-h-screen bg-background pt-4">
         <div className="container mx-auto px-4 py-6 max-w-3xl">

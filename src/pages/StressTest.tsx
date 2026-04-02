@@ -5,6 +5,7 @@ import StressTestResult from '@/components/assessment/StressTestResult';
 import { useGuestSession } from '@/hooks/useGuestSession';
 import SignupPromptModal from '@/components/guest/SignupPromptModal';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { ResultPaywall } from '@/components/subscription/ResultPaywall';
 
 const STORAGE_KEY = 'stressTestResult';
 

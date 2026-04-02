@@ -23,7 +23,7 @@ export const FeedbackButton = () => {
   };
 
   // 베타 테스트 기간이 아니거나 이미 피드백을 보낸 경우 숨김
-  if (!isBetaTestPeriod() || hasSubmitted) return null;
+  if (hasSubmitted) return null;
 
   return (
     <>

@@ -3,7 +3,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Zap, TrendingUp } from 'lucide-react';
-import { FREE_PLAN_FEATURES } from '@/utils/betaTest';
+const FREE_PLAN_FEATURES = { basicTests: 3, observations: 2 };
 
 interface FreePlanLimitsProps {
   currentUsage: {

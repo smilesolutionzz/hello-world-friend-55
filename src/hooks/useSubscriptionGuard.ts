@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSubscription } from './useSubscription';
-import { isBetaTestPeriod } from '@/utils/betaTest';
+
 
 interface SubscriptionGuardReturn {
   allowed: boolean;

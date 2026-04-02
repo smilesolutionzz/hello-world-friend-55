@@ -802,11 +802,11 @@ const Assessment = () => {
 
             <div className="space-y-2">
               {[
-                { key: 'depression', title: t.assessment.depressionTitle, duration: t.assessment.depressionDuration, questions: t.assessment.depressionQuestions, description: t.assessment.depressionDesc, features: t.assessment.depressionFeatures, gradient: 'from-blue-600/20 to-indigo-600/20', borderHover: 'hover:border-blue-400/50 hover:bg-blue-500/5', textHover: 'group-hover:text-blue-600 dark:group-hover:text-blue-400', dotColor: 'bg-blue-500' },
-                { key: 'panic', title: t.assessment.panicTitle, duration: t.assessment.panicDuration, questions: t.assessment.panicQuestions, description: t.assessment.panicDesc, features: t.assessment.panicFeatures, gradient: 'from-rose-600/20 to-pink-600/20', borderHover: 'hover:border-rose-400/50 hover:bg-rose-500/5', textHover: 'group-hover:text-rose-600 dark:group-hover:text-rose-400', dotColor: 'bg-rose-500' },
-                { key: 'stress', title: t.assessment.stressTitle, duration: t.assessment.stressDuration, questions: t.assessment.stressQuestions, description: t.assessment.stressDesc, features: t.assessment.stressFeatures, gradient: 'from-amber-600/20 to-orange-600/20', borderHover: 'hover:border-amber-400/50 hover:bg-amber-500/5', textHover: 'group-hover:text-amber-600 dark:group-hover:text-amber-400', dotColor: 'bg-amber-500' },
+              { key: 'depression', title: t.assessment.depressionTitle, duration: t.assessment.depressionDuration, questions: t.assessment.depressionQuestions, description: t.assessment.depressionDesc, features: t.assessment.depressionFeatures, ageTarget: '전연령 (유아~성인)', gradient: 'from-blue-600/20 to-indigo-600/20', borderHover: 'hover:border-blue-400/50 hover:bg-blue-500/5', textHover: 'group-hover:text-blue-600 dark:group-hover:text-blue-400', dotColor: 'bg-blue-500' },
+                { key: 'panic', title: t.assessment.panicTitle, duration: t.assessment.panicDuration, questions: t.assessment.panicQuestions, description: t.assessment.panicDesc, features: t.assessment.panicFeatures, ageTarget: '전연령 (유아~성인)', gradient: 'from-rose-600/20 to-pink-600/20', borderHover: 'hover:border-rose-400/50 hover:bg-rose-500/5', textHover: 'group-hover:text-rose-600 dark:group-hover:text-rose-400', dotColor: 'bg-rose-500' },
+                { key: 'stress', title: t.assessment.stressTitle, duration: t.assessment.stressDuration, questions: t.assessment.stressQuestions, description: t.assessment.stressDesc, features: t.assessment.stressFeatures, ageTarget: '성인용 (19세+)', gradient: 'from-amber-600/20 to-orange-600/20', borderHover: 'hover:border-amber-400/50 hover:bg-amber-500/5', textHover: 'group-hover:text-amber-600 dark:group-hover:text-amber-400', dotColor: 'bg-amber-500' },
                 
-                { key: 'adhd', title: t.assessment.adhdTitle, duration: t.assessment.adhdDuration, questions: t.assessment.adhdQuestions, description: t.assessment.adhdDesc, features: t.assessment.adhdFeatures, gradient: 'from-teal-600/20 to-emerald-600/20', borderHover: 'hover:border-teal-400/50 hover:bg-teal-500/5', textHover: 'group-hover:text-teal-600 dark:group-hover:text-teal-400', dotColor: 'bg-teal-500' },
+                { key: 'adhd', title: t.assessment.adhdTitle, duration: t.assessment.adhdDuration, questions: t.assessment.adhdQuestions, description: t.assessment.adhdDesc, features: t.assessment.adhdFeatures, ageTarget: '아동·성인 (7세+)', gradient: 'from-teal-600/20 to-emerald-600/20', borderHover: 'hover:border-teal-400/50 hover:bg-teal-500/5', textHover: 'group-hover:text-teal-600 dark:group-hover:text-teal-400', dotColor: 'bg-teal-500' },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (
@@ -823,7 +823,7 @@ const Assessment = () => {
                                 <h3 className={`font-semibold text-sm md:text-base text-foreground ${test.textHover} truncate`}>{test.title}</h3>
                                 <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] px-1 py-0 border-0 flex-shrink-0">{t.assessment.freeBadge}</Badge>
                               </div>
-                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.duration} · {test.questions}</p>
+                              <p className="text-[11px] md:text-xs text-muted-foreground truncate">{test.ageTarget} · {test.duration} · {test.questions}</p>
                             </div>
                           </div>
                           <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />

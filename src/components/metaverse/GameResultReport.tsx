@@ -92,6 +92,7 @@ export default function GameResultReport({
   ttsEnabled, onSpeak, isSpeaking, ttsLoading,
   variant = '3d',
 }: GameResultReportProps) {
+  const navigate = useNavigate();
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);

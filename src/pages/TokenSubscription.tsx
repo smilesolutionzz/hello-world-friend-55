@@ -72,7 +72,7 @@ const TokenSubscription = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 text-foreground overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-background text-foreground overflow-x-hidden">
       {/* 모바일에서는 MobilePaymentFlow 사용 */}
       <div className="md:hidden">
         <MobilePaymentFlow initialStep="plan" />

@@ -287,7 +287,7 @@ export default function GameCounseling3DMode() {
     <div className="space-y-2">
       {/* 상단 바 */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={() => { stopTTS(); setGameState('intro'); }} className="text-white/70">
+        <Button variant="ghost" size="sm" onClick={() => { stopTTS(); stopBGM(); setGameState('intro'); }} className="text-white/70">
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <Progress value={progress} className="h-2 flex-1" />

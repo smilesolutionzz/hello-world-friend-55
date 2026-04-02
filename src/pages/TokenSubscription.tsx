@@ -86,7 +86,7 @@ const TokenSubscription = () => {
         {/* 비로그인 상태 */}
         {isAuthenticated === false && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <Card className="border-2 border-amber-400 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 overflow-hidden">
+            <Card className="border border-amber-200 dark:border-amber-400 bg-white dark:bg-card rounded-3xl shadow-lg overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-4">

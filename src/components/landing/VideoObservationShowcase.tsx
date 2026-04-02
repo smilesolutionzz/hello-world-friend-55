@@ -48,10 +48,12 @@ export const VideoObservationShowcase = () => {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-full mb-6">
             <Video className="w-4 h-4" />{t.videoObservation.badge}
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white whitespace-nowrap">
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">{t.videoObservation.heading1}</span>{t.videoObservation.heading2}
+          <h2 className="text-2xl md:text-5xl font-bold mb-4 text-white text-center leading-tight">
+            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">{t.videoObservation.heading1}</span>
+            <br className="md:hidden" />
+            {t.videoObservation.heading2}
           </h2>
-          <p className="text-sm md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed px-2">
             {t.videoObservation.desc1}<br />
             <span className="text-purple-400 font-semibold">{t.videoObservation.desc2}</span>
           </p>

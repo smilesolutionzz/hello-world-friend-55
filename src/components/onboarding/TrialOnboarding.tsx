@@ -76,45 +76,8 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
         <Card className="border-primary/10 shadow-xl">
           <CardContent className="p-6">
             <AnimatePresence mode="wait">
-              {/* Step 1: 닉네임 */}
+              {/* Step 1: 아이 나이 */}
               {step === 0 && (
-                <motion.div
-                  key="step-0"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-4"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Heart className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-semibold">닉네임 (선택)</h2>
-                      <p className="text-xs text-muted-foreground">입력하지 않아도 괜찮아요</p>
-                    </div>
-                  </div>
-                  <div>
-                    <Input
-                      placeholder="예: 서준이맘, 하늘아빠"
-                      value={nickname}
-                      onChange={(e) => setNickname(e.target.value)}
-                      className="h-12 text-base"
-                      maxLength={20}
-                      autoFocus
-                    />
-                  </div>
-                  <Button 
-                    onClick={() => setStep(1)} 
-                    className="w-full h-12"
-                  >
-                    {nickname.trim() ? '다음' : '건너뛰기'} <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </motion.div>
-              )}
-
-              {/* Step 2: 아이 나이 */}
-              {step === 1 && (
                 <motion.div
                   key="step-1"
                   initial={{ opacity: 0, x: 20 }}

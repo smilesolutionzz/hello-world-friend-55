@@ -502,7 +502,7 @@ const TokenSubscription = () => {
         </motion.section>
 
         {/* 신뢰 배지 */}
-        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-800/50 dark:to-slate-900/50 rounded-2xl p-6">
+        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="bg-white dark:bg-card rounded-3xl p-6 shadow-lg border border-border/50">
           <div className="grid grid-cols-3 gap-4 text-center">
             {[
               { icon: Shield, label: '환불 보장', sub: '7일 이내', gradient: 'from-emerald-500 to-teal-500' },

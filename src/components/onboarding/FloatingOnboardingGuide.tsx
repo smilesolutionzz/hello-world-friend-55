@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { MessageSquare, ClipboardCheck, Brain, FileBarChart, Users, X, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react';
+import { ClipboardCheck, Brain, Gamepad2, FileBarChart, Users, X, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const STORAGE_KEY = 'floating_onboarding_step';
@@ -9,28 +9,28 @@ const STORAGE_KEY = 'floating_onboarding_step';
 const steps = [
   {
     id: 1,
-    emoji: '💬',
-    icon: MessageSquare,
-    title: 'AI 채팅상담',
-    description: 'AI 전문 상담사와 대화를 시작해보세요',
-    route: '/ai-assistant',
-    iconBg: 'bg-violet-500',
-  },
-  {
-    id: 2,
     emoji: '✅',
     icon: ClipboardCheck,
     title: '간편검사',
-    description: '3분 만에 현재 마음 상태를 확인하세요',
+    description: '3분이면 현재 마음 상태를 확인할 수 있어요',
     route: '/assessment',
     iconBg: 'bg-emerald-500',
+  },
+  {
+    id: 2,
+    emoji: '🎮',
+    icon: Gamepad2,
+    title: '금쪽상담소',
+    description: '게임·음성으로 아이 마음을 탐색해보세요',
+    route: '/metaverse-voice',
+    iconBg: 'bg-pink-500',
   },
   {
     id: 3,
     emoji: '🧠',
     icon: Brain,
     title: '심층검사',
-    description: '전문가 수준의 정밀 분석을 받아보세요',
+    description: '전문가 수준의 정밀 심리 분석을 받아보세요',
     route: '/premium-assessment',
     iconBg: 'bg-blue-500',
   },
@@ -38,8 +38,8 @@ const steps = [
     id: 4,
     emoji: '📊',
     icon: FileBarChart,
-    title: '리포트',
-    description: 'AI가 분석한 맞춤형 리포트를 확인하세요',
+    title: '맞춤 리포트',
+    description: 'AI가 분석한 개인 맞춤형 리포트를 확인하세요',
     route: '/report-generator',
     iconBg: 'bg-amber-500',
   },

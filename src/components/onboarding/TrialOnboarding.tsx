@@ -59,8 +59,8 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary">3분 무료 체험</span>
           </div>
-          <h1 className="text-2xl font-bold mb-1">간단 정보만 입력하고</h1>
-          <p className="text-muted-foreground text-sm">AI 발달·심리 분석을 바로 체험하세요</p>
+          <h1 className="text-2xl font-bold mb-1 text-foreground">간단 정보만 입력하고</h1>
+          <p className="text-foreground/80 text-sm font-medium">AI 발달·심리 분석을 바로 체험하세요</p>
         </div>
 
         {/* 진행바 */}

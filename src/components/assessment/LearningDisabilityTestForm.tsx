@@ -94,6 +94,7 @@ const LearningDisabilityTestForm = ({ onComplete, onBack }: LearningDisabilityTe
   };
 
   const handlePrevious = () => { if (currentQuestion > 0) setCurrentQuestion(currentQuestion - 1); };
+  if (currentQuestion >= questions.length) return null;
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   return (

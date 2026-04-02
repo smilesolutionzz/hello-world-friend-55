@@ -101,6 +101,7 @@ const SensoryIntegrationTestForm = ({ onComplete, onBack }: SensoryIntegrationTe
     onComplete({ answers: finalAnswers, total, average, ageGroup: isEnglish ? "Children" : "아동", severity });
   };
 
+  if (currentQuestion >= questions.length) return null;
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   return (

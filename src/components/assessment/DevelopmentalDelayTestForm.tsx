@@ -122,6 +122,7 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
     onComplete({ answers: numericAnswers, total, average, ageGroup: isEnglish ? "Children" : "아동", severity, selectedAgeRange: selectedAgeRange || undefined });
   };
 
+  if (currentQuestion >= questions.length) return null;
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   if (!selectedAgeRange) {

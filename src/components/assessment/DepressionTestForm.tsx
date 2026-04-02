@@ -52,6 +52,7 @@ const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: Depressi
   const { consumeTokens } = useTokens();
 
   const questions = selectedAgeGroup ? getQuestions(selectedAgeGroup, isEnglish) : [];
+  if (currentQuestion >= questions.length) return null;
   const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   const handleAgeGroupSelect = (group: 'toddler' | 'child' | 'adolescent' | 'adult') => {

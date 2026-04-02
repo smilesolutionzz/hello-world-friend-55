@@ -5,9 +5,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Brain } from "lucide-react";
-import { TOKEN_COSTS } from "@/constants/tokenCosts";
-import { useTokens } from "@/hooks/useTokens";
-import TokenGate from "@/components/TokenGate";
 import { useLanguage } from "@/i18n";
 
 interface PanicTestFormProps {

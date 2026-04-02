@@ -196,14 +196,12 @@ const Assessment = () => {
     // location.state에서 testType 확인 (3분 테스트에서 온 경우)
     const stateTestType = location.state?.testType;
     if (stateTestType) {
-      console.log('🔍 Test type from state:', stateTestType);
       handleTestTypeSelect(stateTestType);
     }
     
     // location.state에서 selectedTest 확인 (추천 검사에서 온 경우)
     const selectedTest = location.state?.selectedTest;
     if (selectedTest) {
-      console.log('🔍 Selected test from state:', selectedTest);
       // 테스트 ID를 적절한 단계로 매핑
       const testMapping: Record<string, string> = {
         'adaptive-behavior-test': 'adaptive-behavior-test',
@@ -224,7 +222,6 @@ const Assessment = () => {
     
     // URL 경로에 따른 자동 테스트 시작
     if (location.pathname === '/assessment/stress-test') {
-      console.log('🔍 Stress test path detected, starting stress test...');
       setTestType('stress');
       setCurrentStep('stress-test');
     }
@@ -356,7 +353,6 @@ const Assessment = () => {
 
   const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | 'parent-child-play' | 'resilience') => {
     // 게스트 모드 허용 - 로그인 없이도 검사 진행 가능
-    console.log('🎯 Test type selected:', type, isGuest ? '(게스트 모드)' : '(로그인됨)');
 
     setTestType(type);
     if (type === 'dream') {
@@ -435,7 +431,6 @@ const Assessment = () => {
   };
 
   const handleAssessmentComplete = (results: Record<string, number>) => {
-    console.log('🔄 Assessment Results:', results);
     setAssessmentResults(results);
     
     // 현재 결과 상태 저장 (뒤로가기 시 복원용)
@@ -452,7 +447,6 @@ const Assessment = () => {
   };
 
   const handleLanguageTestComplete = async (results: {answers: number[], total: number, average: number, ageGroup: string, age: number}) => {
-    console.log('Language Test Results:', results);
     setLanguageResults(results);
     
     // Timeline에 검사 결과 저장
@@ -462,7 +456,6 @@ const Assessment = () => {
   };
 
   const handlePanicTestComplete = async (results: {answers: number[], total: number, average: number, severity: string, ageGroup: string}) => {
-    console.log('Panic Test Results:', results);
     setPanicResults(results);
     
     // Timeline에 검사 결과 저장
@@ -479,7 +472,6 @@ const Assessment = () => {
   };
 
   const handleDepressionTestComplete = async (results: {answers: number[], total: number, average: number, severity: string, ageGroup?: string}) => {
-    console.log('Depression Test Results:', results);
     setDepressionResults(results);
     
     // Timeline에 검사 결과 저장
@@ -496,7 +488,6 @@ const Assessment = () => {
   };
 
   const handleAdhdTestComplete = async (results: {answers: number[], total: number, average: number, ageGroup: string, severity: string}) => {
-    console.log('ADHD Test Results:', results);
     setAdhdResults(results);
     
     // Timeline에 검사 결과 저장
@@ -513,7 +504,6 @@ const Assessment = () => {
   };
 
   const handleStressTestComplete = async (results: {answers: number[], total: number, average: number, severity: string}) => {
-    console.log('Stress Test Results:', results);
     setStressResults(results);
     
     await saveTestToTimeline('stress', results);
@@ -529,7 +519,6 @@ const Assessment = () => {
   };
 
   const handleBigfiveTestComplete = async (results: {answers: Record<string, number>, scores: Record<string, number>, total: number, average: number}) => {
-    console.log('BigFive Test Results:', results);
     setBigfiveResults(results);
     
     await saveTestToTimeline('bigfive', results);
@@ -538,7 +527,6 @@ const Assessment = () => {
   };
 
   const handleAttachmentTestComplete = async (results: {answers: Record<string, number>, anxietyScore: number, avoidanceScore: number, style: string, total: number, average: number}) => {
-    console.log('Attachment Test Results:', results);
     setAttachmentResults(results);
     
     await saveTestToTimeline('attachment', results);
@@ -547,7 +535,6 @@ const Assessment = () => {
   };
 
   const handleCareerTestComplete = async (results: {answers: Record<string, number>, scores: Record<string, number>, topTypes: string[], total: number, average: number}) => {
-    console.log('Career Test Results:', results);
     setCareerResults(results);
     
     await saveTestToTimeline('career', results);
@@ -556,7 +543,6 @@ const Assessment = () => {
   };
 
   const handleSelfesteemTestComplete = async (results: {answers: number[], total: number, average: number, level: string}) => {
-    console.log('Self-esteem Test Results:', results);
     setSelfesteemResults(results);
     
     await saveTestToTimeline('selfesteem', results);
@@ -641,7 +627,6 @@ const Assessment = () => {
   };
 
   const handleExpertSelect = (expert: ExpertProfile) => {
-    console.log('Selected Expert:', expert);
     setSelectedExpert(expert);
     setCurrentStep('consultation');
   };

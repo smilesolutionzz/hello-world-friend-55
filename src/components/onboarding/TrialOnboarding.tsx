@@ -42,7 +42,7 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
     onComplete();
   };
 
-  const canProceedStep1 = nickname.trim().length >= 1;
+  const canProceedStep1 = true; // 닉네임은 선택사항
   const canProceedStep2 = childAge !== '';
   const canSubmit = selectedConcern !== '';
 
@@ -92,8 +92,8 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
                       <Heart className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold">어떻게 불러드릴까요?</h2>
-                      <p className="text-xs text-muted-foreground">닉네임 또는 호칭을 입력해주세요</p>
+                      <h2 className="text-lg font-semibold">닉네임 (선택)</h2>
+                      <p className="text-xs text-muted-foreground">입력하지 않아도 괜찮아요</p>
                     </div>
                   </div>
                   <div>
@@ -108,10 +108,9 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
                   </div>
                   <Button 
                     onClick={() => setStep(1)} 
-                    disabled={!canProceedStep1} 
                     className="w-full h-12"
                   >
-                    다음 <ArrowRight className="w-4 h-4 ml-2" />
+                    {nickname.trim() ? '다음' : '건너뛰기'} <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </motion.div>
               )}

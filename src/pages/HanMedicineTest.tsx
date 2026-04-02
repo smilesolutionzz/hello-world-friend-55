@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { ResultPaywall } from '@/components/subscription/ResultPaywall';
 import { Button } from '@/components/ui/button';
 import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, CheckCircle, Users, Zap, Shield, Activity, Smile, Phone, Moon, UtensilsCrossed } from 'lucide-react';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';

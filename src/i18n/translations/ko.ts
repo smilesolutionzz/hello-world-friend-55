@@ -746,7 +746,7 @@ const ko = {
     learningFeatures: ['학습 영역별 능력 평가', '학습 전략 분석', '학습 지원 필요성 확인'],
     socialTitle: '사회성 발달',
     socialDuration: '약 5분',
-    socialQuestions: '18문항',
+    socialQuestions: '20문항',
     socialDesc: '또래 관계, 사회적 상호작용 능력을 평가합니다.',
     socialFeatures: ['또래 관계 능력 평가', '사회적 상황 이해력', '사회성 발달 지원 방향'],
     challengingTitle: '도전행동 평가',

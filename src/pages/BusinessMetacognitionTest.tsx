@@ -417,7 +417,7 @@ const BusinessMetacognitionTestInner: React.FC = () => {
           <p className="text-[11px] text-muted-foreground text-center leading-relaxed mb-8 whitespace-pre-line">{b.disclaimer}</p>
         </div>
       </div>
-    </div>
+    </div></ResultPaywall>
   );
 };
 

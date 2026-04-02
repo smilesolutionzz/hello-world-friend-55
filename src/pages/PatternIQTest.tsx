@@ -45,7 +45,7 @@ const PatternIQTestInner = () => {
             level: result.cognitiveType
           }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

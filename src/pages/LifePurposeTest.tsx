@@ -10,7 +10,7 @@ const LifePurposeTestInner = () => {
   const [results, setResults] = useState<any>(null);
 
   if (results) {
-    return <LifePurposeTestResult results={results} onBack={() => setResults(null)} />;
+    return <ResultPaywall><LifePurposeTestResult results={results} onBack={() => setResults(null)} /></ResultPaywall>;
   }
 
   return (

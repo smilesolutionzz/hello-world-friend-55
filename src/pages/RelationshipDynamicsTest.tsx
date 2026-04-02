@@ -32,12 +32,12 @@ const RelationshipDynamicsTestInner = () => {
           pendingResults={guestResults}
           currentResult={{ testTitle: t.testPages.relationshipDynamics }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 
   return (
-    <RelationshipDynamicsForm 
+    <RelationshipDynamicsForm
       onComplete={handleComplete} 
       onBack={() => navigate('/assessment')} 
     />

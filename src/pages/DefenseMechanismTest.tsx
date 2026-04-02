@@ -54,7 +54,7 @@ const DefenseMechanismTestInner = () => {
           pendingResults={guestResults}
           currentResult={{ testTitle: '방어기제 검사' }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

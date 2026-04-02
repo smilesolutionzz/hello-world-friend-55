@@ -32,7 +32,7 @@ const EnergyFlowTestInner = () => {
           pendingResults={guestResults}
           currentResult={{ testTitle: '에너지 흐름 검사' }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

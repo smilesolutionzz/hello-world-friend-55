@@ -20,7 +20,7 @@ const ResilienceTestInner = () => {
   };
 
   if (results) {
-    return <ResilienceTestResult results={results} onBack={() => setResults(null)} />;
+    return <ResultPaywall><ResilienceTestResult results={results} onBack={() => setResults(null)} /></ResultPaywall>;
   }
 
   return (

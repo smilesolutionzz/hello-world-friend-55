@@ -26,6 +26,8 @@ import SubscriptionValueSection from '@/components/landing/SubscriptionValueSect
 import StickyConversionBar from '@/components/conversion/StickyConversionBar';
 import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
 import { SocialProofToast } from '@/components/landing/SocialProofToast';
+import TrialOnboarding from '@/components/onboarding/TrialOnboarding';
+import { useTrialProfile } from '@/hooks/useTrialProfile';
 
 
 const structuredData = {
@@ -56,6 +58,8 @@ const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const { t } = useTranslation();
+  const { hasProfile: hasTrialProfile } = useTrialProfile();
+  const [showTrialOnboarding, setShowTrialOnboarding] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -64,6 +68,11 @@ const Index = () => {
       
       if (user && !localStorage.getItem('onboarding_completed')) {
         setShowOnboarding(true);
+      }
+      
+      // 비로그인 + 트라이얼 프로필 없음 → 체험 온보딩 표시
+      if (!user && !hasTrialProfile && !localStorage.getItem('trial_onboarding_dismissed')) {
+        setShowTrialOnboarding(true);
       }
     };
     
@@ -206,6 +215,15 @@ const Index = () => {
             isOpen={showOnboarding} 
             onClose={handleOnboardingClose} 
           />
+          
+          {showTrialOnboarding && (
+            <TrialOnboarding 
+              onComplete={() => {
+                setShowTrialOnboarding(false);
+                navigate('/assessment');
+              }} 
+            />
+          )}
         </div>
       </ErrorBoundary>
     </>

@@ -86,8 +86,6 @@ import TokenSubscription from "./pages/TokenSubscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentComplete from "./pages/PaymentComplete";
 import PaymentFail from "./pages/PaymentFail";
-import TokenPaymentSuccess from "./pages/TokenPaymentSuccess";
-import TokenPaymentFail from "./pages/TokenPaymentFail";
 import Pricing from "./pages/Pricing";
 
 // Mind Diary
@@ -232,8 +230,8 @@ const App = () => {
           <Route path="/en/payment-success" element={<PaymentSuccess />} />
           <Route path="/en/payment-fail" element={<PaymentFail />} />
           <Route path="/en/payment-complete" element={<PaymentComplete />} />
-          <Route path="/en/token-payment-success" element={<TokenPaymentSuccess />} />
-          <Route path="/en/token-payment-fail" element={<TokenPaymentFail />} />
+          <Route path="/en/token-payment-success" element={<Navigate to="/payment-success" replace />} />
+          <Route path="/en/token-payment-fail" element={<Navigate to="/payment-fail" replace />} />
           <Route path="/en/stress-package" element={<StressPackage />} />
           <Route path="/en/depression-package" element={<DepressionPackage />} />
           <Route path="/en/anxiety-package" element={<AnxietyPackage />} />
@@ -337,13 +335,14 @@ const App = () => {
 
           {/* Payment & Pricing */}
           <Route path="/token-subscription" element={<TokenSubscription />} />
+          <Route path="/subscription" element={<TokenSubscription />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
           <Route path="/payment-complete" element={<PaymentComplete />} />
-          <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />
-          <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
+          <Route path="/token-payment-success" element={<Navigate to="/payment-success" replace />} />
+          <Route path="/token-payment-fail" element={<Navigate to="/payment-fail" replace />} />
 
           {/* SEO Package Landing Pages */}
           <Route path="/stress-package" element={<StressPackage />} />

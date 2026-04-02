@@ -325,17 +325,72 @@ function CameraController({ target, sceneId }: { target: [number, number, number
   return null;
 }
 
+// ============ 비 효과 ============
+function RainEffect() {
+  const rainRef = useRef<THREE.Points>(null);
+  const rainCount = 300;
+  const positions = useMemo(() => {
+    const pos = new Float32Array(rainCount * 3);
+    for (let i = 0; i < rainCount; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 40;
+      pos[i * 3 + 1] = Math.random() * 20;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 40;
+    }
+    return pos;
+  }, []);
+
+  useFrame(() => {
+    if (!rainRef.current) return;
+    const geo = rainRef.current.geometry;
+    const posAttr = geo.attributes.position;
+    for (let i = 0; i < rainCount; i++) {
+      let y = posAttr.getY(i) - 0.4;
+      if (y < 0) y = 20;
+      posAttr.setY(i, y);
+    }
+    posAttr.needsUpdate = true;
+  });
+
+  return (
+    <points ref={rainRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={rainCount} array={positions} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.08} color="#aaccff" transparent opacity={0.6} sizeAttenuation />
+    </points>
+  );
+}
+
 // ============ 마을 환경 ============
 function VillageEnvironment({ sceneId }: { sceneId: string }) {
   const isStorm = sceneId === 'storm_coming';
   const isFestival = sceneId === 'village_festival' || sceneId === 'farewell';
+  const isPlayground = sceneId === 'playground_conflict';
+  const isBakery = sceneId === 'bakery_help';
+  const isCrying = sceneId === 'crying_child';
+  const isMarket = sceneId === 'market_delivery';
+  const isEnding = sceneId === 'village_ending';
+  
+  // 씬별 하늘 색상
+  const sunPos: [number, number, number] = isStorm ? [0, -1, 0] 
+    : isFestival ? [5, 2, 3] 
+    : isEnding ? [1, 1, 5] // 석양
+    : isCrying ? [8, 3, 5] // 따뜻한 오후
+    : [10, 5, 5];
+
+  // 씬별 조명 강도
+  const ambientIntensity = isStorm ? 0.3 : isCrying ? 0.5 : isEnding ? 0.4 : 0.6;
+  const directionalIntensity = isStorm ? 0.3 : isEnding ? 0.6 : 1.2;
+
+  // 잔디 색
+  const grassColor = isStorm ? '#3a5f3a' : isEnding ? '#6b9b4e' : isFestival ? '#5cb85c' : '#5cb85c';
   
   return (
     <>
       {/* 바닥 - 잔디 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[60, 60]} />
-        <meshStandardMaterial color={isStorm ? '#3a5f3a' : '#5cb85c'} roughness={0.9} />
+        <meshStandardMaterial color={grassColor} roughness={0.9} />
       </mesh>
       
       {/* 길 */}
@@ -375,7 +430,7 @@ function VillageEnvironment({ sceneId }: { sceneId: string }) {
         />
       ))}
 
-      {/* NPC 배치 - 씬에 따라 다르게 */}
+      {/* NPC 배치 */}
       <VillageNPC position={[6.5, 0, 5.5]} type="baker" />
       <VillageNPC position={[-7, 0, 7]} type="kid1" />
       <VillageNPC position={[-9, 0, 5.5]} type="kid2" />
@@ -406,12 +461,12 @@ function VillageEnvironment({ sceneId }: { sceneId: string }) {
           </mesh>
           <mesh position={[0, 3.5, 0]} castShadow>
             <sphereGeometry args={[1.8, 8, 8]} />
-            <meshStandardMaterial color={i % 2 === 0 ? '#2d8a4e' : '#3db06a'} roughness={0.8} />
+            <meshStandardMaterial color={isStorm ? '#1a4a2a' : i % 2 === 0 ? '#2d8a4e' : '#3db06a'} roughness={0.8} />
           </mesh>
         </group>
       ))}
 
-      {/* 축제 장식 */}
+      {/* 축제 장식 - 깃발 + 반짝이 조명 */}
       {isFestival && Array.from({ length: 8 }).map((_, i) => (
         <Float key={`flag-${i}`} speed={2} floatIntensity={0.3}>
           <mesh position={[Math.sin(i * 0.8) * 6, 4, Math.cos(i * 0.8) * 6]}>
@@ -420,6 +475,55 @@ function VillageEnvironment({ sceneId }: { sceneId: string }) {
           </mesh>
         </Float>
       ))}
+      {isFestival && Array.from({ length: 12 }).map((_, i) => (
+        <Float key={`party-light-${i}`} speed={1.5 + i * 0.1} floatIntensity={0.5}>
+          <pointLight 
+            position={[Math.sin(i * 0.5) * 8, 3 + Math.sin(i) * 1, Math.cos(i * 0.5) * 8]} 
+            intensity={0.3} 
+            color={['#FF6B6B', '#FFD93D', '#6BCB77', '#FF8FB1'][i % 4]} 
+            distance={5}
+          />
+        </Float>
+      ))}
+
+      {/* 폭풍 - 번개 효과 (깜빡이는 조명) */}
+      {isStorm && (
+        <>
+          <RainEffect />
+          <pointLight position={[5, 15, 5]} intensity={2} color="#FFFFFF" distance={30} />
+        </>
+      )}
+
+      {/* 놀이터 씬 - 먼지 파티클 느낌 (따뜻한 조명) */}
+      {isPlayground && (
+        <pointLight position={[-8, 4, 6]} intensity={0.6} color="#FFA500" distance={10} />
+      )}
+
+      {/* 빵집 씬 - 따뜻한 오렌지 조명 */}
+      {isBakery && (
+        <pointLight position={[6, 3, 4]} intensity={0.8} color="#FF8C00" distance={8} />
+      )}
+
+      {/* 울고 있는 아이 - 부드러운 블루 조명 */}
+      {isCrying && (
+        <pointLight position={[-3, 3, 2]} intensity={0.4} color="#87CEEB" distance={6} />
+      )}
+
+      {/* 시장 - 활기찬 조명 */}
+      {isMarket && (
+        <>
+          <pointLight position={[5, 3, -5]} intensity={0.5} color="#FFD700" distance={8} />
+          <pointLight position={[8, 3, -5]} intensity={0.4} color="#FF6347" distance={6} />
+        </>
+      )}
+
+      {/* 엔딩 - 석양 + 따뜻한 골든 조명 */}
+      {isEnding && (
+        <>
+          <pointLight position={[0, 5, 0]} intensity={1.2} color="#FFD700" distance={20} />
+          <pointLight position={[0, 3, 5]} intensity={0.6} color="#FF8C00" distance={15} />
+        </>
+      )}
 
       {/* 분수대 (광장 중앙) */}
       <mesh position={[0, 0.3, 0]}>
@@ -433,16 +537,16 @@ function VillageEnvironment({ sceneId }: { sceneId: string }) {
 
       {/* 하늘 */}
       <Sky 
-        sunPosition={isStorm ? [0, -1, 0] : isFestival ? [5, 2, 3] : [10, 5, 5]} 
-        turbidity={isStorm ? 20 : 2}
-        rayleigh={isStorm ? 0.5 : 1}
+        sunPosition={sunPos} 
+        turbidity={isStorm ? 20 : isEnding ? 8 : 2}
+        rayleigh={isStorm ? 0.5 : isEnding ? 2 : 1}
       />
 
       {/* 조명 */}
-      <ambientLight intensity={isStorm ? 0.3 : 0.6} />
+      <ambientLight intensity={ambientIntensity} />
       <directionalLight
         position={[10, 15, 10]}
-        intensity={isStorm ? 0.3 : 1.2}
+        intensity={directionalIntensity}
         castShadow
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}

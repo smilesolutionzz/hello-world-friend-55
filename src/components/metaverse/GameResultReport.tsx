@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { FileDown, Share2, RotateCcw, Loader2, Volume2, ChevronDown, ChevronUp, Image, ArrowRight } from 'lucide-react';
+import { FileDown, Share2, RotateCcw, Loader2, Volume2, ChevronDown, ChevronUp, Image, ArrowRight, ArrowLeft } from 'lucide-react';
 import { dimensionMeta, type PsychDimension, type StoryChapter } from '@/data/storyScenarios';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -91,6 +92,7 @@ export default function GameResultReport({
   ttsEnabled, onSpeak, isSpeaking, ttsLoading,
   variant = '3d',
 }: GameResultReportProps) {
+  const navigate = useNavigate();
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -188,6 +190,10 @@ ${scoreDetails}
         setAiAnalysis(analysisText);
       } else if (data?.summary?.coreMessage) {
         setAiAnalysis(data.summary.coreMessage);
+      } else {
+        // AI 응답이 예상 형식이 아닌 경우 로컬 분석으로 대체
+        console.warn('[GameResultReport] AI response format unexpected, using local analysis');
+        generateLocalAnalysis();
       }
     } catch (err) {
       console.error('[GameResultReport] AI analysis error:', err);
@@ -528,14 +534,22 @@ ${scoreDetails}
           </Button>
         </div>
 
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            onClick={() => navigate('/metaverse-voice')}
+            className="gap-2 bg-slate-800 hover:bg-slate-700 text-white border-0 h-11 rounded-xl"
+          >
+            <ArrowLeft className="h-4 w-4" /> 금쪽상담소
+          </Button>
+          <Button
+            onClick={onRestart}
+            className="gap-2 bg-slate-700 hover:bg-slate-600 text-white border-0 h-11 rounded-xl"
+          >
+            <RotateCcw className="h-4 w-4" /> 다시 모험하기
+          </Button>
+        </div>
         <Button
-          onClick={onRestart}
-          className="w-full gap-2 bg-slate-800 hover:bg-slate-700 text-white border-0 h-11 rounded-xl"
-        >
-          <RotateCcw className="h-4 w-4" /> 다시 모험하기
-        </Button>
-        <Button
-          onClick={() => window.location.href = '/premium-assessment'}
+          onClick={() => navigate('/premium-assessment')}
           className={`w-full gap-2 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold h-12 rounded-xl shadow-lg`}
         >
           🔬 전문 심리검사 받아보기

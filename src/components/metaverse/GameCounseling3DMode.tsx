@@ -33,7 +33,7 @@ export default function GameCounseling3DMode() {
   const typewriterRef = useRef<NodeJS.Timeout | null>(null);
 
   const { speak, stop: stopTTS, isSpeaking, isLoading: ttsLoading } = useGameTTS();
-  const { playSFX, playSceneSFX } = useGameSFX();
+  const { playSFX, playSceneSFX, startBGM, stopBGM } = useGameSFX();
 
   const currentScene = currentChapter?.scenes[currentSceneIndex] || null;
 
@@ -60,9 +60,9 @@ export default function GameCounseling3DMode() {
 
   useEffect(() => {
     if (gameState === 'narrating' && currentScene) {
-      // 씬 전환 효과음
+      // 씬 전환 효과음 + BGM
       playSceneSFX(currentScene.id);
-
+      startBGM(currentScene.id);
       const narrateText = currentScene.character
         ? `${currentScene.character}를 만났어요! ${currentScene.description}`
         : currentScene.description;
@@ -127,6 +127,7 @@ export default function GameCounseling3DMode() {
 
       if (nextScene?.isEnding) {
         setGameState('result');
+        stopBGM();
         playSFX('success');
         if (ttsEnabled) {
           setTimeout(() => speak('모험이 끝났어요! 결과를 확인해볼까요?'), 500);
@@ -271,7 +272,7 @@ export default function GameCounseling3DMode() {
         results={results}
         choices={choices}
         chapter={currentChapter!}
-        onRestart={() => { stopTTS(); setGameState('intro'); }}
+        onRestart={() => { stopTTS(); stopBGM(); setGameState('intro'); }}
         ttsEnabled={ttsEnabled}
         onSpeak={speak}
         isSpeaking={isSpeaking}
@@ -286,7 +287,7 @@ export default function GameCounseling3DMode() {
     <div className="space-y-2">
       {/* 상단 바 */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={() => { stopTTS(); setGameState('intro'); }} className="text-white/70">
+        <Button variant="ghost" size="sm" onClick={() => { stopTTS(); stopBGM(); setGameState('intro'); }} className="text-white/70">
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <Progress value={progress} className="h-2 flex-1" />

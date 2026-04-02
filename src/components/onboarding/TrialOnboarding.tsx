@@ -63,7 +63,7 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
 
         {/* 진행바 */}
         <div className="flex gap-2 mb-6">
-          {[0, 1, 2].map((i) => (
+          {[0, 1].map((i) => (
             <div 
               key={i} 
               className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${

@@ -5,9 +5,10 @@ interface TokenGateWrapperProps {
   onProceed: () => void;
   requiredTokens?: number;
   featureName?: string;
+  children?: React.ReactNode;
 }
 
-const TokenGateWrapper: React.FC<TokenGateWrapperProps> = ({ onProceed, children }) => {
+const TokenGateWrapper: React.FC<TokenGateWrapperProps> = ({ children }) => {
   return <>{children}</>;
 };
 

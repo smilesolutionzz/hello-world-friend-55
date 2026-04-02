@@ -107,23 +107,18 @@ const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
                       </Button>
                     ))}
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" onClick={() => setStep(0)} className="flex-1">
-                      이전
-                    </Button>
-                    <Button 
-                      onClick={() => setStep(2)} 
-                      disabled={!canProceedStep2} 
-                      className="flex-1 h-12"
-                    >
-                      다음 <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </div>
+                  <Button 
+                    onClick={() => setStep(1)} 
+                    disabled={!canProceedStep1} 
+                    className="w-full h-12"
+                  >
+                    다음 <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
                 </motion.div>
               )}
 
-              {/* Step 3: 고민 키워드 */}
-              {step === 2 && (
+              {/* Step 2: 고민 키워드 */}
+              {step === 1 && (
                 <motion.div
                   key="step-2"
                   initial={{ opacity: 0, x: 20 }}

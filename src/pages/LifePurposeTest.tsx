@@ -3,6 +3,7 @@ import LifePurposeTestForm from "@/components/assessment/LifePurposeTestForm";
 import LifePurposeTestResult from "@/components/assessment/LifePurposeTestResult";
 import { useNavigate } from "react-router-dom";
 import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
+import { ResultPaywall } from "@/components/subscription/ResultPaywall";
 
 const LifePurposeTestInner = () => {
   const navigate = useNavigate();

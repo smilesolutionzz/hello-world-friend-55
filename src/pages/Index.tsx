@@ -58,6 +58,8 @@ const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const { t } = useTranslation();
+  const { hasProfile: hasTrialProfile } = useTrialProfile();
+  const [showTrialOnboarding, setShowTrialOnboarding] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {

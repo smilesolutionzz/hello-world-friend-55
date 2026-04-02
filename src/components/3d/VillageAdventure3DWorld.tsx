@@ -454,69 +454,125 @@ function VillageEnvironment({ sceneId }: { sceneId: string }) {
 }
 
 // ============ 터치로 이동하는 플레이어 ============
-function MovablePlayer({ startPos, targetPos, onReachTarget }: {
+function MovablePlayer({ startPos, targetPos, onReachTarget, sceneKey }: {
   startPos: [number, number, number];
   targetPos: [number, number, number];
   onReachTarget: () => void;
+  sceneKey: string;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const posRef = useRef(new THREE.Vector3(...startPos));
   const moveTarget = useRef<THREE.Vector3 | null>(null);
   const arrived = useRef(false);
-  const { camera, raycaster, pointer } = useThree();
+  const isMoving = useRef(false);
+  const legPhase = useRef(0);
+  const leftLegRef = useRef<THREE.Mesh>(null);
+  const rightLegRef = useRef<THREE.Mesh>(null);
+  const leftArmRef = useRef<THREE.Mesh>(null);
+  const rightArmRef = useRef<THREE.Mesh>(null);
+  const { camera, gl } = useThree();
 
-  // 터치/클릭으로 바닥 위치 계산 후 이동 목표 설정
+  // 씬 바뀔 때 위치·도착 상태 리셋
   useEffect(() => {
-    const handlePointerDown = (e: PointerEvent | TouchEvent) => {
-      // UI 위의 터치는 무시
-      const target = e.target as HTMLElement;
-      if (target.closest('button') || target.closest('[role="button"]') || target.tagName === 'BUTTON') return;
+    posRef.current.set(...startPos);
+    moveTarget.current = null;
+    arrived.current = false;
+    isMoving.current = false;
+    if (groupRef.current) {
+      groupRef.current.position.set(...startPos);
+    }
+  }, [sceneKey, startPos[0], startPos[1], startPos[2]]);
 
-      // raycaster로 바닥 히트 계산
-      const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-      const intersection = new THREE.Vector3();
-      raycaster.setFromCamera(pointer, camera);
-      raycaster.ray.intersectPlane(groundPlane, intersection);
-      if (intersection) {
-        moveTarget.current = intersection.clone();
-        moveTarget.current.y = 0;
+  // 터치/클릭 → Raycast로 바닥 좌표 계산 → 이동 목표 설정
+  useEffect(() => {
+    const canvas = gl.domElement;
+    const raycaster = new THREE.Raycaster();
+    const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    const intersection = new THREE.Vector3();
+
+    const toNDC = (clientX: number, clientY: number) => {
+      const rect = canvas.getBoundingClientRect();
+      return new THREE.Vector2(
+        ((clientX - rect.left) / rect.width) * 2 - 1,
+        -((clientY - rect.top) / rect.height) * 2 + 1
+      );
+    };
+
+    const handleTouch = (e: TouchEvent) => {
+      // UI 버튼 위는 무시
+      const t = e.target as HTMLElement;
+      if (t.closest('button') || t.closest('[role="button"]') || t.tagName === 'BUTTON') return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      if (!touch) return;
+      const ndc = toNDC(touch.clientX, touch.clientY);
+      raycaster.setFromCamera(ndc, camera);
+      if (raycaster.ray.intersectPlane(groundPlane, intersection)) {
+        moveTarget.current = new THREE.Vector3(intersection.x, 0, intersection.z);
       }
     };
 
-    const canvas = document.querySelector('canvas');
-    if (canvas) {
-      canvas.addEventListener('pointerdown', handlePointerDown);
-      return () => canvas.removeEventListener('pointerdown', handlePointerDown);
-    }
-  }, [camera, raycaster, pointer]);
+    const handleClick = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      if (t.closest('button') || t.closest('[role="button"]') || t.tagName === 'BUTTON') return;
+      const ndc = toNDC(e.clientX, e.clientY);
+      raycaster.setFromCamera(ndc, camera);
+      if (raycaster.ray.intersectPlane(groundPlane, intersection)) {
+        moveTarget.current = new THREE.Vector3(intersection.x, 0, intersection.z);
+      }
+    };
 
-  useFrame(() => {
+    canvas.addEventListener('touchstart', handleTouch, { passive: false });
+    canvas.addEventListener('click', handleClick);
+    return () => {
+      canvas.removeEventListener('touchstart', handleTouch);
+      canvas.removeEventListener('click', handleClick);
+    };
+  }, [camera, gl]);
+
+  useFrame((state) => {
     if (!groupRef.current) return;
 
-    // 이동 목표를 향해 걷기
+    // 이동
     if (moveTarget.current) {
       const dir = moveTarget.current.clone().sub(posRef.current);
       dir.y = 0;
       const dist = dir.length();
-      if (dist > 0.15) {
-        dir.normalize().multiplyScalar(0.08);
+      if (dist > 0.2) {
+        isMoving.current = true;
+        dir.normalize().multiplyScalar(0.12); // 더 빠르게
         posRef.current.add(dir);
-        // 이동 방향 바라보기
-        const angle = Math.atan2(dir.x, dir.z);
-        groupRef.current.rotation.y = angle;
+        groupRef.current.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
         moveTarget.current = null;
+        isMoving.current = false;
       }
       groupRef.current.position.copy(posRef.current);
     }
 
+    // 걷기 애니메이션
+    if (isMoving.current) {
+      legPhase.current += 0.15;
+      const swing = Math.sin(legPhase.current * 6) * 0.5;
+      if (leftLegRef.current) leftLegRef.current.rotation.x = swing;
+      if (rightLegRef.current) rightLegRef.current.rotation.x = -swing;
+      if (leftArmRef.current) leftArmRef.current.rotation.x = -swing * 0.7;
+      if (rightArmRef.current) rightArmRef.current.rotation.x = swing * 0.7;
+      // 살짝 위아래 바운스
+      groupRef.current.position.y = Math.abs(Math.sin(legPhase.current * 6)) * 0.08;
+    } else {
+      if (leftLegRef.current) leftLegRef.current.rotation.x = 0;
+      if (rightLegRef.current) rightLegRef.current.rotation.x = 0;
+      if (leftArmRef.current) leftArmRef.current.rotation.x = 0;
+      if (rightArmRef.current) rightArmRef.current.rotation.x = 0;
+      groupRef.current.position.y = 0;
+    }
+
     // 빛기둥 도착 감지
     if (!arrived.current) {
-      const beamPos = new THREE.Vector3(...targetPos);
-      beamPos.y = 0;
-      const playerXZ = posRef.current.clone();
-      playerXZ.y = 0;
-      if (playerXZ.distanceTo(beamPos) < 1.5) {
+      const beamXZ = new THREE.Vector2(targetPos[0], targetPos[2]);
+      const playerXZ = new THREE.Vector2(posRef.current.x, posRef.current.z);
+      if (playerXZ.distanceTo(beamXZ) < 1.5) {
         arrived.current = true;
         onReachTarget();
       }
@@ -525,12 +581,12 @@ function MovablePlayer({ startPos, targetPos, onReachTarget }: {
 
   return (
     <group ref={groupRef} position={startPos}>
-      {/* 다리 */}
-      <mesh position={[-0.15, 0.35, 0]}>
+      {/* 다리 - 개별 ref로 걷기 애니메이션 */}
+      <mesh ref={leftLegRef} position={[-0.15, 0.35, 0]}>
         <boxGeometry args={[0.22, 0.7, 0.22]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
-      <mesh position={[0.15, 0.35, 0]}>
+      <mesh ref={rightLegRef} position={[0.15, 0.35, 0]}>
         <boxGeometry args={[0.22, 0.7, 0.22]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
@@ -547,11 +603,11 @@ function MovablePlayer({ startPos, targetPos, onReachTarget }: {
         <boxGeometry args={[0.7, 0.9, 0.45]} />
         <meshStandardMaterial color="#FF6B6B" />
       </mesh>
-      <mesh position={[-0.5, 1.1, 0]}>
+      <mesh ref={leftArmRef} position={[-0.5, 1.1, 0]}>
         <boxGeometry args={[0.2, 0.75, 0.2]} />
         <meshStandardMaterial color="#FF6B6B" />
       </mesh>
-      <mesh position={[0.5, 1.1, 0]}>
+      <mesh ref={rightArmRef} position={[0.5, 1.1, 0]}>
         <boxGeometry args={[0.2, 0.75, 0.2]} />
         <meshStandardMaterial color="#FF6B6B" />
       </mesh>
@@ -581,26 +637,26 @@ function MovablePlayer({ startPos, targetPos, onReachTarget }: {
 }
 
 // ============ 방향 화살표 (빛기둥 가이드) ============
-function DirectionArrow({ from, to }: { from: [number, number, number]; to: [number, number, number] }) {
+function DirectionArrow({ playerRef, to }: { playerRef: React.RefObject<THREE.Group>; to: [number, number, number] }) {
   const ref = useRef<THREE.Mesh>(null);
-  const dir = useMemo(() => {
-    const d = new THREE.Vector3(to[0] - from[0], 0, to[2] - from[2]).normalize();
-    return Math.atan2(d.x, d.z);
-  }, [from, to]);
 
   useFrame((state) => {
-    if (ref.current) {
-      ref.current.position.y = 0.5 + Math.sin(state.clock.elapsedTime * 2) * 0.2;
-      const mat = ref.current.material as THREE.MeshBasicMaterial;
-      mat.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 3) * 0.3;
-    }
+    if (!ref.current || !playerRef.current) return;
+    const px = playerRef.current.position.x;
+    const pz = playerRef.current.position.z;
+    // 플레이어와 목적지 중간에 표시
+    const midX = (px + to[0]) / 2;
+    const midZ = (pz + to[2]) / 2;
+    ref.current.position.set(midX, 0.5 + Math.sin(state.clock.elapsedTime * 2) * 0.2, midZ);
+    // 방향
+    const angle = Math.atan2(to[0] - px, to[2] - pz);
+    ref.current.rotation.set(-Math.PI / 2, 0, -angle);
+    const mat = ref.current.material as THREE.MeshBasicMaterial;
+    mat.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 3) * 0.3;
   });
 
-  const midX = (from[0] + to[0]) / 2;
-  const midZ = (from[2] + to[2]) / 2;
-
   return (
-    <mesh ref={ref} position={[midX, 0.5, midZ]} rotation={[-Math.PI / 2, 0, -dir]}>
+    <mesh ref={ref} position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
       <coneGeometry args={[0.4, 1, 4]} />
       <meshBasicMaterial color="#FFD700" transparent opacity={0.6} />
     </mesh>
@@ -621,14 +677,14 @@ function VillageScene({ sceneId, onArrive }: { sceneId: string; onArrive: () => 
     village_ending: [0, 0, 0],
   };
   const target = sceneTargets[sceneId] || [0, 0, 0];
-  const startPos: [number, number, number] = [target[0] - 3, 0, target[2] + 5];
+  // 시작 위치를 목적지에서 충분히 멀리 설정 (최소 6유닛)
+  const startPos: [number, number, number] = [target[0] - 4, 0, target[2] + 7];
 
   return (
     <>
       <VillageEnvironment sceneId={sceneId} />
-      <MovablePlayer startPos={startPos} targetPos={target} onReachTarget={onArrive} />
+      <MovablePlayer startPos={startPos} targetPos={target} onReachTarget={onArrive} sceneKey={sceneId} />
       <LightBeam position={target} active={true} />
-      <DirectionArrow from={startPos} to={target} />
       <CameraController target={target} sceneId={sceneId} />
     </>
   );

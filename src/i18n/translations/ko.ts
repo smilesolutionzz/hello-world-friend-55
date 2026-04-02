@@ -129,7 +129,7 @@ const ko = {
     trust24h: '✓ 24시간 이용 가능',
     ratingCount: '⭐ 4.8/5.0 (4,248명)',
     liveUsers: '🔥 지금 47명 검사 중',
-    urgencyBanner: '⚠️ 오늘 확인하지 않으면 골든타임을 놓칠 수 있습니다',
+    urgencyBanner: '⚠️ 골든타임을 놓치지 마세요',
     kakaoShareTitle: '🧠 우리 아이 발달 검사 해봤어? 결과가 충격이야',
     kakaoShareDesc: '3분이면 전문가급 발달 분석을 받을 수 있어. 무료야!',
     kakaoShareButton: '나도 해보기 🎁',

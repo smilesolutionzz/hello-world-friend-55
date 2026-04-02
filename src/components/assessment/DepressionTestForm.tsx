@@ -96,9 +96,8 @@ const DepressionTestForm = ({ ageGroup = 'adult', onComplete, onBack }: Depressi
   const currentAnswer = answers[currentQuestion] || "";
   const canProceed = currentAnswer !== "";
 
-  const handleStartTest = async () => {
-    const success = await consumeTokens(TOKEN_COSTS.DEPRESSION_TEST);
-    if (success) setHasStarted(true);
+  const handleStartTest = () => {
+    setHasStarted(true);
   };
 
   const answerOptions = isEnglish

@@ -71,7 +71,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [hasStarted, setHasStarted] = useState(false);
-  const { consumeTokens } = useTokens();
+  
   const { toast } = useToast();
   const { hasBackup, restoreBackup, discardBackup } = useBackupRecovery(`adhd-test-form-${selectedAgeGroup || 'none'}`);
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);

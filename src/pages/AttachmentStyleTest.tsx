@@ -56,7 +56,7 @@ const AttachmentStyleTestInner = () => {
           pendingResults={guestResults}
           currentResult={{ testTitle: t.testPages.attachmentStyle }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

@@ -61,7 +61,7 @@ const CommunicationStyleTestInner = () => {
           pendingResults={guestResults}
           currentResult={{ testTitle: t.testPages.communicationStyle }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

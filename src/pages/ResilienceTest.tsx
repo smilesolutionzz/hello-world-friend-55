@@ -3,7 +3,8 @@ import ResilienceTestForm from "@/components/assessment/ResilienceTestForm";
 import ResilienceTestResult from "@/components/assessment/ResilienceTestResult";
 import { useNavigate } from "react-router-dom";
 import SEOHead from "@/components/common/SEOHead";
-import { SubscriptionGuard } from "@/components/subscription/SubscriptionGuard";
+import { SubscriptionGuard } from '@/components/subscription/SubscriptionGuard';
+import { ResultPaywall } from '@/components/subscription/ResultPaywall';
 import { useTranslation } from "@/i18n";
 
 const ResilienceTestInner = () => {

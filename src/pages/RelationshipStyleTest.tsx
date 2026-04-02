@@ -56,7 +56,7 @@ const RelationshipStyleTestInner = () => {
           pendingResults={guestResults}
           currentResult={{ testTitle: t.testPages.relationshipStyle }}
         />
-      </>
+      </ResultPaywall>
     );
   }
 

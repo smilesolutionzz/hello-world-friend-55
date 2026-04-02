@@ -90,17 +90,21 @@ const HanMedicineTestInner = () => {
   }
 
   if (testState === 'result' && testResult) {
-    if (currentTest === 'quick') {
-      return (<div className="relative"><HerbalClinic3DBackground /><UnifiedNavigation /><EnhancedConstitutionResult result={testResult} onRestart={handleRestart} /></div>);
-    } else if (currentTest === 'premium') {
-      return (<div><UnifiedNavigation /><HanMedicinePremiumResult result={testResult} onRestart={handleRestart} /></div>);
-    } else if (currentTest === 'diet') {
-      return (<div><UnifiedNavigation /><DietAnalysisResult result={testResult} onRestart={handleRestart} /></div>);
-    } else if (currentTest === 'women') {
-      return (<div><UnifiedNavigation /><WomensHealthResult result={testResult} onRestart={handleRestart} /></div>);
-    } else if (['autism', 'adhd', 'intellectual', 'atopy', 'stress'].includes(currentTest)) {
-      return (<div><UnifiedNavigation /><HanMedicineResult result={testResult} onRestart={handleRestart} /></div>);
-    }
+    const resultContent = (() => {
+      if (currentTest === 'quick') {
+        return (<div className="relative"><HerbalClinic3DBackground /><UnifiedNavigation /><EnhancedConstitutionResult result={testResult} onRestart={handleRestart} /></div>);
+      } else if (currentTest === 'premium') {
+        return (<div><UnifiedNavigation /><HanMedicinePremiumResult result={testResult} onRestart={handleRestart} /></div>);
+      } else if (currentTest === 'diet') {
+        return (<div><UnifiedNavigation /><DietAnalysisResult result={testResult} onRestart={handleRestart} /></div>);
+      } else if (currentTest === 'women') {
+        return (<div><UnifiedNavigation /><WomensHealthResult result={testResult} onRestart={handleRestart} /></div>);
+      } else if (['autism', 'adhd', 'intellectual', 'atopy', 'stress'].includes(currentTest)) {
+        return (<div><UnifiedNavigation /><HanMedicineResult result={testResult} onRestart={handleRestart} /></div>);
+      }
+      return null;
+    })();
+    return <ResultPaywall>{resultContent}</ResultPaywall>;
   }
 
   const t = {

@@ -199,9 +199,8 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
   const currentAnswer = answers[currentQuestion] || "";
   const canProceed = currentAnswer !== "";
 
-  const handleStartTest = async () => {
-    const success = await consumeTokens(TOKEN_COSTS.PANIC_TEST);
-    if (success) setHasStarted(true);
+  const handleStartTest = () => {
+    setHasStarted(true);
   };
 
   // 연령대 선택 화면

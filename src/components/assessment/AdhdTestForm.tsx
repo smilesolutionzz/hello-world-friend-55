@@ -132,9 +132,8 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     onComplete({ answers: reversedAnswers, total, average, ageGroup: ageLabel, severity });
   };
 
-  const handleStartTest = async () => {
-    const success = await consumeTokens(TOKEN_COSTS.FOCUS_CHECK);
-    if (success) setHasStarted(true);
+  const handleStartTest = () => {
+    setHasStarted(true);
   };
 
   const handlePrevious = () => { if (currentQuestion > 0) setCurrentQuestion(currentQuestion - 1); };

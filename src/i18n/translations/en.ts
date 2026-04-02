@@ -754,7 +754,7 @@ const en = {
     challengingFeatures: ['Behavior type analysis', 'Frequency assessment', 'Intervention strategy suggestions'],
     adaptiveTitle: 'Adaptive Behavior',
     adaptiveDuration: '~5 min',
-    adaptiveQuestions: '20 items',
+    adaptiveQuestions: '18 items',
     adaptiveDesc: 'Evaluates daily living independence and self-sufficiency.',
     adaptiveFeatures: ['Self-help skills', 'Home living skills', 'Community skills'],
     personalitySection: 'Personality & Career',

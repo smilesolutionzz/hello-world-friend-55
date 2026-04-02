@@ -939,7 +939,7 @@ const ko = {
     specializedSection: '특화 검사',
     hanMedicineTitle: '한의학 체질',
     hanMedicineDuration: '5분',
-    hanMedicineQuestions: '30문항',
+    hanMedicineQuestions: '15문항',
     hanMedicineDesc: '사상체질 기반 맞춤 건강 분석.',
     hanMedicineFeatures: ['사상체질 판별', '체질별 건강 솔루션', 'AI 맞춤 분석'],
   },

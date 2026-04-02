@@ -89,7 +89,7 @@ export const VideoObservationShowcase = () => {
         </motion.div>
 
         <motion.div className="text-center mt-8" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.6 }}>
-          <div className="inline-flex items-center gap-4 text-slate-400 text-sm">
+          <div className="inline-flex flex-wrap justify-center items-center gap-2 md:gap-4 text-slate-400 text-xs md:text-sm">
             <div className="flex items-center gap-1"><FileText className="w-4 h-4" /><span>{t.videoObservation.trustReport}</span></div>
             <span className="text-slate-600">•</span>
             <div className="flex items-center gap-1"><Brain className="w-4 h-4" /><span>{t.videoObservation.trustAI}</span></div>

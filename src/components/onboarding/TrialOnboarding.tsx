@@ -27,7 +27,6 @@ const CONCERN_KEYWORDS = [
 const TrialOnboarding: React.FC<TrialOnboardingProps> = ({ onComplete }) => {
   const { saveProfile } = useTrialProfile();
   const [step, setStep] = useState(0);
-  const [nickname, setNickname] = useState('');
   const [childAge, setChildAge] = useState('');
   const [selectedConcern, setSelectedConcern] = useState('');
 

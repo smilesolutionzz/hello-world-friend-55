@@ -168,7 +168,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
     reportTOC: isEnglish ? 'Recommended Report Sections' : '추천 리포트 목차',
     sections: isEnglish ? 'sections' : '개 섹션',
     expertAdvice: isEnglish ? "AI Expert's Advice" : 'AI 전문가의 조언',
-    multiDimProfile: isEnglish ? 'Multi-dimensional Profile' : '다차원 발달 프로파일',
+    multiDimProfile: profileLabel,
     scoreDetail: isEnglish ? 'Score Details' : '점수 상세',
     customSolutions: isEnglish ? 'Personalized Solutions' : '맞춤 솔루션',
     growthRoadmap: isEnglish ? 'Step-by-step Growth Roadmap' : '단계별 성장 로드맵',

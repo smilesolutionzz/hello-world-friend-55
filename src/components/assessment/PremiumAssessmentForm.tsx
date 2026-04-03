@@ -217,9 +217,19 @@ const PremiumAssessmentForm = ({
                 className="space-y-3"
               >
                 {(currentQuestion.options || fourChoiceOptions).map((option) => (
-                  <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-purple-50/50 transition-colors">
-                    <RadioGroupItem value={option.value.toString()} id={option.value.toString()} />
-                    <Label htmlFor={option.value.toString()} className="flex-1 cursor-pointer font-medium">
+                  <div 
+                    key={option.value} 
+                    className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-purple-50/50 transition-colors cursor-pointer"
+                    onClick={() => {
+                      if (answers[currentQuestion.id] === option.value) {
+                        handleOptionClick(option.value);
+                      } else {
+                        handleAnswerChange(option.value.toString());
+                      }
+                    }}
+                  >
+                    <RadioGroupItem value={option.value.toString()} id={`q${currentQuestionIndex}_${option.value}`} />
+                    <Label htmlFor={`q${currentQuestionIndex}_${option.value}`} className="flex-1 cursor-pointer font-medium">
                       <div className="flex items-center justify-between">
                         <span>{option.label}</span>
                         <span className="text-sm text-purple-600 font-semibold">{option.value}점</span>

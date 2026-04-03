@@ -4,6 +4,9 @@
 // 프리미엄 ADHD 검사 정보 가져오기
 import { premiumAdhdAssessmentInfo } from "./premiumAdhdQuestions";
 
+// Export anxiety questions
+export { anxietyAssessmentQuestions } from "./premiumAssessmentQuestions";
+
 // 0. AIH 신경발달 조기선별검사 (Autism Spectrum Early Screening - AIH)
 export const autismSpectrumScreeningInfo = {
   title: "AIH 신경발달 조기선별검사",

@@ -335,12 +335,14 @@ const InstantAIAnalysis = () => {
         inputText={inputText}
         reportImages={reportImages}
         tableOfContents={tableOfContents}
+        youtubeVideos={youtubeVideos}
         onReset={() => {
           setShowResult(false);
           setInputText('');
           setAnalysisResult(null);
           setTableOfContents(null);
           setReportImages([]);
+          setYoutubeVideos([]);
         }}
       />
     );

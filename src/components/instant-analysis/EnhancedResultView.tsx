@@ -11,12 +11,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { YouTubeRecommendations } from './YouTubeRecommendations';
 
 interface EnhancedResultViewProps {
   analysisResult: any;
   inputText: string;
   reportImages: string[];
   tableOfContents: Array<{ index: number; title: string }> | null;
+  youtubeVideos?: any[];
   onReset: () => void;
 }
 

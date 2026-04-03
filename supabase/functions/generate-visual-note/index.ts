@@ -55,30 +55,33 @@ DESIGN REQUIREMENTS:
 - Single page, portrait orientation
 - Brand: "HiLight Pro" small watermark at bottom
 - NO placeholder text - use the actual data provided above`
-      : `1장짜리 프리미엄 메디컬 테크 스타일의 비주얼 노트 인포그래픽 이미지를 생성해주세요.
+      : `반드시 모든 텍스트를 한국어로 작성한 1장짜리 프리미엄 메디컬 테크 스타일의 비주얼 노트 인포그래픽 이미지를 생성해주세요.
+
+⚠️ 절대 규칙: 이미지 안의 모든 텍스트(제목, 라벨, 설명, 항목명 등)는 반드시 한국어로 작성하세요. 영어를 사용하지 마세요.
 
 분석 데이터:
 - 고민 유형: ${analysisResult.type || '일반'}
 - 심각도: ${analysisResult.severity || '중간'}
 - 종합 점수: ${reports.developmentAssessment?.overall || analysisResult.confidence || 75}/100
 - 인지: ${reports.developmentAssessment?.cognitive || 65}, 언어: ${reports.developmentAssessment?.language || 65}, 운동: ${reports.developmentAssessment?.motor || 65}, 사회성: ${reports.developmentAssessment?.social || 65}, 정서: ${reports.psychologicalAnalysis?.emotionalStability || 65}
-- 근본 원인: ${deepAnalysis.rootCauseAnalysis || 'N/A'}
-- 강점: ${reports.strengthsWeaknesses?.strengths?.join(', ') || 'N/A'}
-- 개선점: ${reports.strengthsWeaknesses?.weaknesses?.join(', ') || 'N/A'}
-- 핵심 추천: ${analysisResult.recommendations?.slice(0, 3).join(', ') || 'N/A'}
+- 근본 원인: ${deepAnalysis.rootCauseAnalysis || '해당없음'}
+- 강점: ${reports.strengthsWeaknesses?.strengths?.join(', ') || '해당없음'}
+- 개선점: ${reports.strengthsWeaknesses?.weaknesses?.join(', ') || '해당없음'}
+- 핵심 추천: ${analysisResult.recommendations?.slice(0, 3).join(', ') || '해당없음'}
 - 사용자 고민: ${inputText?.substring(0, 150) || ''}
 
 디자인 요구사항:
 - 전문 의료/임상 인포그래픽 스타일
 - 다크 네이비/슬레이트 배경에 선명한 액센트 컬러
-- 포함: 중앙 점수 게이지, 5개 영역 레이더 차트, 위험도 표시기
-- 섹션: 개요, 핵심 발견, 강점/약점, 실행 항목
+- 포함 요소: 중앙 점수 게이지, 5개 영역 레이더 차트, 위험도 표시기
+- 섹션 구성: 종합 개요, 핵심 발견, 강점/약점, 실행 항목
 - 아이콘과 시각적 계층 사용, 최소한의 텍스트
 - 색상 코딩: 초록(양호), 노랑(주의), 빨강(위험)
 - 의료 대시보드 리포트처럼 프리미엄하고 세련된 디자인
 - 1장, 세로 방향
-- 브랜드: 하단에 작게 "HiLight Pro" 워터마크
-- 플레이스홀더 텍스트 없이 위 실제 데이터 사용`;
+- 하단에 작게 "HiLight Pro" 워터마크
+- 플레이스홀더 텍스트 없이 위 실제 데이터 사용
+- 다시 한번 강조: 모든 텍스트는 한국어로 작성`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',

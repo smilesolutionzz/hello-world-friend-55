@@ -116,9 +116,17 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
   const reports = analysisResult.comprehensiveReports;
   const deepAnalysis = analysisResult.deepAnalysis;
 
-  const radarLabels = isEnglish
-    ? ['Cognitive', 'Language', 'Motor', 'Social', 'Emotional']
-    : ['인지', '언어', '운동', '사회성', '정서'];
+  // Classify concern type: emotional vs developmental
+  const developmentalKeywords = ['발달', '언어지연', '자폐', 'ADHD', '주의력', '운동발달', '감각', '또래', '개월', '걷지', '말 안', '말이 느', 'speech', 'delay', 'milestone', 'autism', 'motor', 'developmental'];
+  const isDevelopmental = developmentalKeywords.some(kw => inputText.toLowerCase().includes(kw.toLowerCase()));
+
+  const profileLabel = isEnglish
+    ? (isDevelopmental ? 'Multi-dimensional Developmental Profile' : 'Multi-dimensional Emotional Profile')
+    : (isDevelopmental ? '다차원 발달 프로파일' : '다차원 정서 프로파일');
+
+  const radarLabels = isDevelopmental
+    ? (isEnglish ? ['Cognitive', 'Language', 'Motor', 'Social', 'Emotional'] : ['인지', '언어', '운동', '사회성', '정서'])
+    : (isEnglish ? ['Emotional Stability', 'Stress Coping', 'Self-esteem', 'Relationships', 'Resilience'] : ['정서안정', '스트레스 대처', '자아존중감', '대인관계', '회복탄력성']);
 
   const radarData = reports?.developmentAssessment ? [
     { subject: radarLabels[0], value: reports.developmentAssessment.cognitive || 60, fullMark: 100 },
@@ -147,7 +155,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
     crossValidation: isEnglish ? 'Multi-model cross validation' : '다중 모델 교차 검증',
     overallScore: isEnglish ? 'Overall Score' : '종합 점수',
     outOf100: isEnglish ? 'Out of 100' : '100점 만점 기준',
-    devProfile: isEnglish ? 'Multi-dimensional Profile' : '다차원 발달 프로파일',
+    devProfile: profileLabel,
     overallRisk: isEnglish ? 'Overall Risk Level' : '전체 위험도',
     expertIntervention: isEnglish ? 'Expert Intervention Needed' : '전문가 개입 필요도',
     deepCause: isEnglish ? 'Deep Root Cause Analysis' : '심층 원인 분석',
@@ -160,7 +168,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
     reportTOC: isEnglish ? 'Recommended Report Sections' : '추천 리포트 목차',
     sections: isEnglish ? 'sections' : '개 섹션',
     expertAdvice: isEnglish ? "AI Expert's Advice" : 'AI 전문가의 조언',
-    multiDimProfile: isEnglish ? 'Multi-dimensional Profile' : '다차원 발달 프로파일',
+    multiDimProfile: profileLabel,
     scoreDetail: isEnglish ? 'Score Details' : '점수 상세',
     customSolutions: isEnglish ? 'Personalized Solutions' : '맞춤 솔루션',
     growthRoadmap: isEnglish ? 'Step-by-step Growth Roadmap' : '단계별 성장 로드맵',

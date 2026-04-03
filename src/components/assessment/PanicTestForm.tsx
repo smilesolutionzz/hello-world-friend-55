@@ -237,10 +237,52 @@ const PanicTestForm = ({ ageGroup, onComplete, onBack }: PanicTestFormProps) => 
     );
   }
 
-  // 체험검사 - 바로 시작
+  // 체험검사 - 검사 시작 CTA 화면
   if (!hasStarted) {
-    setHasStarted(true);
-    return null;
+    const ageLabel = getAgeGroupLabel(selectedAgeGroup!, isEnglish);
+    const questionCount = selectedAgeGroup === 'toddler' ? 12 : selectedAgeGroup === 'child' ? 15 : 21;
+    return (
+      <Card className="max-w-2xl mx-auto p-8">
+        <div className="space-y-8 text-center">
+          <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+            <Brain className="w-8 h-8 text-primary" />
+          </div>
+          <div className="space-y-3">
+            <h2 className="text-2xl font-bold text-foreground">
+              {isEnglish ? 'Anxiety Level Check' : '불안감 수준 확인'}
+            </h2>
+            <p className="text-muted-foreground">
+              {isEnglish 
+                ? `${ageLabel} · ${questionCount} questions · About 3-5 min`
+                : `${ageLabel} · ${questionCount}문항 · 약 3~5분 소요`}
+            </p>
+          </div>
+          <div className="bg-muted/50 rounded-xl p-5 text-left space-y-2">
+            <p className="text-sm font-medium text-foreground">
+              {isEnglish ? '📋 Before you start' : '📋 검사 안내'}
+            </p>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li>{isEnglish ? '• Answer honestly based on your recent feelings' : '• 최근 2주간의 상태를 기준으로 솔직하게 답해주세요'}</li>
+              <li>{isEnglish ? '• There are no right or wrong answers' : '• 정답은 없으며, 느끼는 그대로 선택하시면 됩니다'}</li>
+              <li>{isEnglish ? '• Results are for reference only' : '• 결과는 참고용이며 전문 진단을 대체하지 않습니다'}</li>
+            </ul>
+          </div>
+          <div className="space-y-3">
+            <Button 
+              onClick={handleStartTest} 
+              className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+              size="lg"
+            >
+              {isEnglish ? 'Start Assessment →' : '검사 시작하기 →'}
+            </Button>
+            <Button variant="ghost" onClick={() => setSelectedAgeGroup(null)} className="w-full">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {isEnglish ? 'Change age group' : '연령대 다시 선택'}
+            </Button>
+          </div>
+        </div>
+      </Card>
+    );
   }
 
   const answerOptions = isEnglish

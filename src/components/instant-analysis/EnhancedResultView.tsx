@@ -155,7 +155,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
     crossValidation: isEnglish ? 'Multi-model cross validation' : '다중 모델 교차 검증',
     overallScore: isEnglish ? 'Overall Score' : '종합 점수',
     outOf100: isEnglish ? 'Out of 100' : '100점 만점 기준',
-    devProfile: isEnglish ? 'Multi-dimensional Profile' : '다차원 발달 프로파일',
+    devProfile: profileLabel,
     overallRisk: isEnglish ? 'Overall Risk Level' : '전체 위험도',
     expertIntervention: isEnglish ? 'Expert Intervention Needed' : '전문가 개입 필요도',
     deepCause: isEnglish ? 'Deep Root Cause Analysis' : '심층 원인 분석',

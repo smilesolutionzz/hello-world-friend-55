@@ -419,7 +419,7 @@ const PremiumAssessment = () => {
           {renderTestSection(p.sectionPersonality, null, 'blue', ['personality_type', 'temperament', 'love_personality'])}
 
           {/* Work & Finance */}
-          {renderTestSection(p.sectionWorkFinance, null, 'orange', ['work_stress', 'financialPsychology', 'cognitive'])}
+          {renderTestSection(p.sectionWorkFinance, null, 'orange', ['work_stress', 'anxietyDisorder', 'financialPsychology', 'cognitive'])}
 
           {/* Teen */}
           {renderTestSection(p.sectionTeen, null, 'emerald', ['teenMentalCompass', 'teenGrowthCapacity', 'socialDevelopmentScreening'])}

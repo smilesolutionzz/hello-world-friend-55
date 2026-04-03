@@ -78,18 +78,18 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
 
   const getColor = (score: number, max: number) => {
     const pct = (score / max) * 100;
-    if (pct >= 75) return 'bg-destructive';
-    if (pct >= 50) return 'bg-orange-500';
-    if (pct >= 25) return 'bg-yellow-500';
+    if (pct >= 83) return 'bg-destructive';
+    if (pct >= 67) return 'bg-orange-500';
+    if (pct >= 50) return 'bg-yellow-500';
     return 'bg-green-500';
   };
 
   const getLevel = (score: number, max: number) => {
     const pct = (score / max) * 100;
-    if (pct >= 75) return isEnglish ? 'Severe' : '심각';
-    if (pct >= 50) return isEnglish ? 'Moderate' : '보통';
-    if (pct >= 25) return isEnglish ? 'Mild' : '경미';
-    return isEnglish ? 'Normal' : '정상';
+    if (pct >= 83) return isEnglish ? 'Severe' : '심각한 수준';
+    if (pct >= 67) return isEnglish ? 'Moderate' : '중등도 수준';
+    if (pct >= 50) return isEnglish ? 'Borderline' : '경계선 수준';
+    return isEnglish ? 'Normal' : '정상 범위';
   };
 
   const domains: DomainScore[] = [

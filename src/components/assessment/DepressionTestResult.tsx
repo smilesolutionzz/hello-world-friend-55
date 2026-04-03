@@ -82,9 +82,9 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
   };
   const getLevel = (score: number) => {
     const pct = (score / maxDomain) * 100;
-    if (pct >= 70) return isEnglish ? 'Severe' : '심각';
-    if (pct >= 50) return isEnglish ? 'Moderate' : '보통';
-    if (pct >= 30) return isEnglish ? 'Mild' : '경미';
+    if (pct >= 70) return isEnglish ? 'Severe Depression' : '심한 우울';
+    if (pct >= 50) return isEnglish ? 'Moderate Depression' : '중등도 우울';
+    if (pct >= 30) return isEnglish ? 'Mild Depression' : '가벼운 우울';
     return isEnglish ? 'Normal' : '정상';
   };
 

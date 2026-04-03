@@ -1850,6 +1850,22 @@ export const premiumAssessmentInfo = {
     badge: "🤸 NEW",
     priority: 1,
     highlight: true
+  },
+  // 🛡️ AIH 불안검사
+  anxietyDisorder: {
+    title: "AIH 불안검사",
+    subtitle: "ADA-AIH (Anxiety Disorder Assessment)",
+    description: "범불안, 공황증상, 사회불안, 신체증상, 대처회복력 5개 영역으로 불안 수준을 정밀 분석합니다",
+    duration: "약 8-10분",
+    questions_count: 20,
+    premium_features: ["5영역 불안 수준 정밀분석", "불안 유형별 맞춤 해석", "공황·사회불안 개별 평가", "대처 전략 및 회복력 진단", "전문기관 연계 가이드"],
+    disclaimer: "본 검사는 AIH에서 독자 개발한 창작형 선별도구입니다. 진단이 아닌 선별 목적으로 사용되며, 정확한 진단은 전문의와 상담하시기 바랍니다.",
+    rank: 5,
+    badge: "🛡️ 심층",
+    priority: 2,
+    highlight: true,
+    category: "정서·불안",
+    targetAge: "청소년-성인"
   }
 };
 

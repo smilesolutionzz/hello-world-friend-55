@@ -50,6 +50,7 @@ const InstantAIAnalysis = () => {
   const [analysisResult, setAnalysisResult] = useState<any>(savedState?.analysisResult || null);
   const [reportImages, setReportImages] = useState<string[]>(savedState?.reportImages || []);
   const [tableOfContents, setTableOfContents] = useState<Array<{index: number, title: string}> | null>(savedState?.tableOfContents || null);
+  const [youtubeVideos, setYoutubeVideos] = useState<any[]>(savedState?.youtubeVideos || []);
   const [user, setUser] = useState<any>(null);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isAdviceExpanded, setIsAdviceExpanded] = useState(false);

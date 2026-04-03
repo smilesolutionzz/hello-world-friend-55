@@ -167,7 +167,8 @@ const PremiumAssessment = () => {
     teenGrowthCapacity: Object.values(teenGrowthCapacityAssessmentQuestions).flat(),
     socialDevelopmentScreening: Object.values(socialDevelopmentScreeningQuestions).flat(),
     languageDevelopment: allLanguageDevelopmentQuestions,
-    parentingStyle: Object.values(parentingStyleAssessmentQuestions).flat()
+    parentingStyle: Object.values(parentingStyleAssessmentQuestions).flat(),
+    anxietyDisorder: Object.values(anxietyAssessmentQuestions).flat()
   };
 
   const requireAuth = (action: () => void) => {

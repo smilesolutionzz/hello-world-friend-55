@@ -78,9 +78,9 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
 
   const getColor = (score: number, max: number) => {
     const pct = (score / max) * 100;
-    if (pct >= 75) return 'bg-destructive';
-    if (pct >= 50) return 'bg-orange-500';
-    if (pct >= 25) return 'bg-yellow-500';
+    if (pct >= 83) return 'bg-destructive';
+    if (pct >= 67) return 'bg-orange-500';
+    if (pct >= 50) return 'bg-yellow-500';
     return 'bg-green-500';
   };
 

@@ -147,6 +147,7 @@ const PremiumAssessment = () => {
       teenGrowthCapacity: { title: p.infoTeenGrowthTitle, description: p.infoTeenGrowthDesc, premium_features: [...p.infoTeenGrowthFeatures] },
       socialDevelopmentScreening: { title: p.infoSocialDevTitle, description: p.infoSocialDevDesc, premium_features: [...p.infoSocialDevFeatures] },
       parentingStyle: { title: p.infoParentingTitle, description: p.infoParentingDesc, premium_features: [...p.infoParentingFeatures] },
+      anxietyDisorder: { title: 'AIH Anxiety Assessment', description: 'Comprehensive anxiety screening across 5 domains: generalized anxiety, panic, social anxiety, physical symptoms, and coping resilience', premium_features: ['5-domain anxiety analysis', 'Anxiety type-specific interpretation', 'Panic & social anxiety evaluation', 'Coping strategy assessment', 'Professional referral guide'] },
     };
 
     const override = overrides[key];

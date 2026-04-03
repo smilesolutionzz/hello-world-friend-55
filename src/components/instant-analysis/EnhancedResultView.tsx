@@ -173,8 +173,6 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
     growthDirection: isEnglish ? 'Growth Direction' : '성장 방향',
     expertOpinion: isEnglish ? 'Expert Opinion & Recommendations' : '전문가 소견 및 권고',
     urgency: isEnglish ? 'Urgency' : '긴급도',
-    reportImages: isEnglish ? 'Analysis Report Images' : '분석 리포트 이미지',
-    reportImage: isEnglish ? 'Report Image' : '실사 이미지',
     fullReport: isEnglish ? '9 Comprehensive Expert Reports' : '9가지 종합 전문 리포트',
     reportSub: isEnglish ? 'Perplexity + Firecrawl academic reports' : 'Perplexity + Firecrawl 기반 학술 리포트',
     wantMore: isEnglish ? 'Want a more accurate analysis?' : '더 정확한 분석을 원하신다면?',

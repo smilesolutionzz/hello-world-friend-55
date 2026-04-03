@@ -116,9 +116,17 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
   const reports = analysisResult.comprehensiveReports;
   const deepAnalysis = analysisResult.deepAnalysis;
 
-  const radarLabels = isEnglish
-    ? ['Cognitive', 'Language', 'Motor', 'Social', 'Emotional']
-    : ['인지', '언어', '운동', '사회성', '정서'];
+  // Classify concern type: emotional vs developmental
+  const developmentalKeywords = ['발달', '언어지연', '자폐', 'ADHD', '주의력', '운동발달', '감각', '또래', '개월', '걷지', '말 안', '말이 느', 'speech', 'delay', 'milestone', 'autism', 'motor', 'developmental'];
+  const isDevelopmental = developmentalKeywords.some(kw => inputText.toLowerCase().includes(kw.toLowerCase()));
+
+  const profileLabel = isEnglish
+    ? (isDevelopmental ? 'Multi-dimensional Developmental Profile' : 'Multi-dimensional Emotional Profile')
+    : (isDevelopmental ? '다차원 발달 프로파일' : '다차원 정서 프로파일');
+
+  const radarLabels = isDevelopmental
+    ? (isEnglish ? ['Cognitive', 'Language', 'Motor', 'Social', 'Emotional'] : ['인지', '언어', '운동', '사회성', '정서'])
+    : (isEnglish ? ['Emotional Stability', 'Stress Coping', 'Self-esteem', 'Relationships', 'Resilience'] : ['정서안정', '스트레스 대처', '자아존중감', '대인관계', '회복탄력성']);
 
   const radarData = reports?.developmentAssessment ? [
     { subject: radarLabels[0], value: reports.developmentAssessment.cognitive || 60, fullMark: 100 },

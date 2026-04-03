@@ -50,7 +50,8 @@ import {
   teenMentalCompassAssessmentQuestions,
   teenGrowthCapacityAssessmentQuestions,
   socialDevelopmentScreeningQuestions,
-  parentingStyleAssessmentQuestions
+  parentingStyleAssessmentQuestions,
+  anxietyAssessmentQuestions
 } from "@/data/premiumAssessmentQuestions";
 import { allLanguageDevelopmentQuestions } from "@/data/languageDevelopmentQuestions";
 import { premiumAdhdQuestions } from "@/data/premiumAdhdQuestions";
@@ -146,6 +147,7 @@ const PremiumAssessment = () => {
       teenGrowthCapacity: { title: p.infoTeenGrowthTitle, description: p.infoTeenGrowthDesc, premium_features: [...p.infoTeenGrowthFeatures] },
       socialDevelopmentScreening: { title: p.infoSocialDevTitle, description: p.infoSocialDevDesc, premium_features: [...p.infoSocialDevFeatures] },
       parentingStyle: { title: p.infoParentingTitle, description: p.infoParentingDesc, premium_features: [...p.infoParentingFeatures] },
+      anxietyDisorder: { title: 'AIH Anxiety Assessment', description: 'Comprehensive anxiety screening across 5 domains: generalized anxiety, panic, social anxiety, physical symptoms, and coping resilience', premium_features: ['5-domain anxiety analysis', 'Anxiety type-specific interpretation', 'Panic & social anxiety evaluation', 'Coping strategy assessment', 'Professional referral guide'] },
     };
 
     const override = overrides[key];
@@ -166,7 +168,8 @@ const PremiumAssessment = () => {
     teenGrowthCapacity: Object.values(teenGrowthCapacityAssessmentQuestions).flat(),
     socialDevelopmentScreening: Object.values(socialDevelopmentScreeningQuestions).flat(),
     languageDevelopment: allLanguageDevelopmentQuestions,
-    parentingStyle: Object.values(parentingStyleAssessmentQuestions).flat()
+    parentingStyle: Object.values(parentingStyleAssessmentQuestions).flat(),
+    anxietyDisorder: Object.values(anxietyAssessmentQuestions).flat()
   };
 
   const requireAuth = (action: () => void) => {
@@ -417,7 +420,7 @@ const PremiumAssessment = () => {
           {renderTestSection(p.sectionPersonality, null, 'blue', ['personality_type', 'temperament', 'love_personality'])}
 
           {/* Work & Finance */}
-          {renderTestSection(p.sectionWorkFinance, null, 'orange', ['work_stress', 'financialPsychology', 'cognitive'])}
+          {renderTestSection(p.sectionWorkFinance, null, 'orange', ['work_stress', 'anxietyDisorder', 'financialPsychology', 'cognitive'])}
 
           {/* Teen */}
           {renderTestSection(p.sectionTeen, null, 'emerald', ['teenMentalCompass', 'teenGrowthCapacity', 'socialDevelopmentScreening'])}

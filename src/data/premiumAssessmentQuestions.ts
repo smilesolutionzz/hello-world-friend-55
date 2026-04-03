@@ -1850,7 +1850,57 @@ export const premiumAssessmentInfo = {
     badge: "🤸 NEW",
     priority: 1,
     highlight: true
+  },
+  // 🛡️ AIH 불안검사
+  anxietyDisorder: {
+    title: "AIH 불안검사",
+    subtitle: "ADA-AIH (Anxiety Disorder Assessment)",
+    description: "범불안, 공황증상, 사회불안, 신체증상, 대처회복력 5개 영역으로 불안 수준을 정밀 분석합니다",
+    duration: "약 8-10분",
+    questions_count: 20,
+    premium_features: ["5영역 불안 수준 정밀분석", "불안 유형별 맞춤 해석", "공황·사회불안 개별 평가", "대처 전략 및 회복력 진단", "전문기관 연계 가이드"],
+    disclaimer: "본 검사는 AIH에서 독자 개발한 창작형 선별도구입니다. 진단이 아닌 선별 목적으로 사용되며, 정확한 진단은 전문의와 상담하시기 바랍니다.",
+    rank: 5,
+    badge: "🛡️ 심층",
+    priority: 2,
+    highlight: true,
+    category: "정서·불안",
+    targetAge: "청소년-성인"
   }
+};
+
+// 10. AIH 불안검사 (Anxiety Disorder Assessment - AIH)
+export const anxietyAssessmentQuestions = {
+  generalized_anxiety: [
+    { id: "anx_ga01", text: "사소한 일에도 지나치게 걱정이 됩니다", category: "generalized_anxiety", intensity: "high" },
+    { id: "anx_ga02", text: "걱정을 멈추거나 통제하기가 어렵습니다", category: "generalized_anxiety", intensity: "very_high" },
+    { id: "anx_ga03", text: "여러 가지 일에 대해 과도하게 불안해합니다", category: "generalized_anxiety", intensity: "high" },
+    { id: "anx_ga04", text: "안절부절 못하거나 긴장 상태가 지속됩니다", category: "generalized_anxiety", intensity: "moderate" },
+    { id: "anx_ga05", text: "최악의 상황을 자주 상상하게 됩니다", category: "generalized_anxiety", intensity: "high" },
+  ],
+  panic_symptoms: [
+    { id: "anx_ps01", text: "갑자기 심장이 빠르게 뛰거나 두근거림을 느낍니다", category: "panic_symptoms", intensity: "very_high" },
+    { id: "anx_ps02", text: "숨이 막히거나 호흡이 곤란한 느낌이 듭니다", category: "panic_symptoms", intensity: "very_high" },
+    { id: "anx_ps03", text: "이유 없이 갑자기 강한 공포감이 밀려옵니다", category: "panic_symptoms", intensity: "high" },
+    { id: "anx_ps04", text: "어지러움이나 현기증을 자주 경험합니다", category: "panic_symptoms", intensity: "moderate" },
+  ],
+  social_anxiety: [
+    { id: "anx_sa01", text: "다른 사람 앞에서 말하거나 행동하는 것이 두렵습니다", category: "social_anxiety", intensity: "high" },
+    { id: "anx_sa02", text: "다른 사람에게 부정적으로 평가받을까 걱정됩니다", category: "social_anxiety", intensity: "high" },
+    { id: "anx_sa03", text: "사회적 상황을 피하거나 회피하고 싶습니다", category: "social_anxiety", intensity: "moderate" },
+    { id: "anx_sa04", text: "낯선 사람과의 대화가 극도로 불안합니다", category: "social_anxiety", intensity: "moderate" },
+  ],
+  physical_symptoms: [
+    { id: "anx_ph01", text: "근육이 긴장되거나 몸이 뻣뻣해집니다", category: "physical_symptoms", intensity: "moderate" },
+    { id: "anx_ph02", text: "불안으로 인해 수면에 어려움이 있습니다", category: "physical_symptoms", intensity: "high" },
+    { id: "anx_ph03", text: "쉽게 피로하거나 탈진감을 느낍니다", category: "physical_symptoms", intensity: "moderate" },
+    { id: "anx_ph04", text: "집중력이 저하되거나 머리가 멍해집니다", category: "physical_symptoms", intensity: "moderate" },
+  ],
+  coping_resilience: [
+    { id: "anx_cr01", text: "불안한 상황에서 스스로를 진정시킬 수 있습니다", category: "coping_resilience", reverse: true, intensity: "positive" },
+    { id: "anx_cr02", text: "스트레스 해소를 위한 나만의 방법이 있습니다", category: "coping_resilience", reverse: true, intensity: "positive" },
+    { id: "anx_cr03", text: "불안할 때 주변 사람에게 도움을 요청할 수 있습니다", category: "coping_resilience", reverse: true, intensity: "positive" },
+  ],
 };
 
 // 9. 사회적 발달 선별검사 (Social Development Screening Assessment)

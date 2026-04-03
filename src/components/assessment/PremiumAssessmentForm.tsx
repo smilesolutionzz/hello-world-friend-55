@@ -35,9 +35,10 @@ const PremiumAssessmentForm = ({
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   const handleAnswerChange = (value: string) => {
+    const numValue = parseInt(value);
     const newAnswers = {
       ...answers,
-      [currentQuestion.id]: parseInt(value)
+      [currentQuestion.id]: numValue
     };
     setAnswers(newAnswers);
     
@@ -47,6 +48,18 @@ const PremiumAssessmentForm = ({
         setCurrentQuestionIndex(prev => prev + 1);
       }
     }, 300);
+  };
+
+  // 같은 답을 다시 클릭했을 때도 다음으로 넘어가도록 처리
+  const handleOptionClick = (optionValue: number) => {
+    if (answers[currentQuestion.id] === optionValue) {
+      // 이미 같은 값이 선택되어 있으면 onValueChange가 발생하지 않으므로 직접 다음으로 이동
+      setTimeout(() => {
+        if (!isLastQuestion) {
+          setCurrentQuestionIndex(prev => prev + 1);
+        }
+      }, 300);
+    }
   };
 
   const handleNext = async () => {
@@ -204,9 +217,19 @@ const PremiumAssessmentForm = ({
                 className="space-y-3"
               >
                 {(currentQuestion.options || fourChoiceOptions).map((option) => (
-                  <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-purple-50/50 transition-colors">
-                    <RadioGroupItem value={option.value.toString()} id={option.value.toString()} />
-                    <Label htmlFor={option.value.toString()} className="flex-1 cursor-pointer font-medium">
+                  <div 
+                    key={option.value} 
+                    className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-purple-50/50 transition-colors cursor-pointer"
+                    onClick={() => {
+                      if (answers[currentQuestion.id] === option.value) {
+                        handleOptionClick(option.value);
+                      } else {
+                        handleAnswerChange(option.value.toString());
+                      }
+                    }}
+                  >
+                    <RadioGroupItem value={option.value.toString()} id={`q${currentQuestionIndex}_${option.value}`} />
+                    <Label htmlFor={`q${currentQuestionIndex}_${option.value}`} className="flex-1 cursor-pointer font-medium">
                       <div className="flex items-center justify-between">
                         <span>{option.label}</span>
                         <span className="text-sm text-purple-600 font-semibold">{option.value}점</span>

@@ -12,6 +12,7 @@ import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Responsi
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { YouTubeRecommendations } from './YouTubeRecommendations';
+import { VisualNoteSection } from './VisualNoteSection';
 
 interface EnhancedResultViewProps {
   analysisResult: any;

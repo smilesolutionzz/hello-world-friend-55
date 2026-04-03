@@ -398,22 +398,8 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
         <YouTubeRecommendations videos={youtubeVideos} />
       )}
 
-      {/* 11. Report Images */}
-      {reportImages && reportImages.length > 0 && (
-        <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/10 p-4 md:p-5">
-          <h4 className="font-bold mb-3 text-white flex items-center gap-2 text-sm">🖼️ {L.reportImages}</h4>
-          <div className="grid grid-cols-2 gap-3">
-            {reportImages.map((imageUrl, index) => (
-              <div key={index} className="relative group rounded-xl overflow-hidden border border-white/10 bg-slate-800/50 hover:border-amber-500/50 transition-all">
-                <img src={imageUrl} alt={`${L.reportImage} ${index + 1}`} className="w-full h-auto object-cover" onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }} />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                  <p className="text-white/80 text-xs">{L.reportImage} {index + 1}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* 11. Visual Note (replaces report images) */}
+      <VisualNoteSection analysisResult={analysisResult} inputText={inputText} />
 
       {/* 12. Full Report CTA */}
       <div className="bg-gradient-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-xl rounded-2xl border border-indigo-500/20 p-5">

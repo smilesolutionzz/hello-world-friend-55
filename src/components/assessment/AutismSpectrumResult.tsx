@@ -43,7 +43,7 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
     testType: isEnglish ? 'Autism Spectrum Screening' : '자폐스펙트럼 선별검사',
     results: { categoryScores: results.categoryScores, totalScore: results.totalScore, riskLevel: results.riskLevel },
     analysis: results.overallInterpretation,
-    severity: results.riskLevel === 'high' ? '높음' : results.riskLevel === 'moderate' ? '보통' : '양호',
+    severity: results.riskLevel === 'high' ? '높음' : results.riskLevel === 'moderate' ? '중등도' : '양호',
     ageGroup: 'child',
   });
 

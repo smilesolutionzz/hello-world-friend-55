@@ -35,9 +35,10 @@ const PremiumAssessmentForm = ({
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   const handleAnswerChange = (value: string) => {
+    const numValue = parseInt(value);
     const newAnswers = {
       ...answers,
-      [currentQuestion.id]: parseInt(value)
+      [currentQuestion.id]: numValue
     };
     setAnswers(newAnswers);
     
@@ -47,6 +48,18 @@ const PremiumAssessmentForm = ({
         setCurrentQuestionIndex(prev => prev + 1);
       }
     }, 300);
+  };
+
+  // 같은 답을 다시 클릭했을 때도 다음으로 넘어가도록 처리
+  const handleOptionClick = (optionValue: number) => {
+    if (answers[currentQuestion.id] === optionValue) {
+      // 이미 같은 값이 선택되어 있으면 onValueChange가 발생하지 않으므로 직접 다음으로 이동
+      setTimeout(() => {
+        if (!isLastQuestion) {
+          setCurrentQuestionIndex(prev => prev + 1);
+        }
+      }, 300);
+    }
   };
 
   const handleNext = async () => {

@@ -50,7 +50,8 @@ import {
   teenMentalCompassAssessmentQuestions,
   teenGrowthCapacityAssessmentQuestions,
   socialDevelopmentScreeningQuestions,
-  parentingStyleAssessmentQuestions
+  parentingStyleAssessmentQuestions,
+  anxietyAssessmentQuestions
 } from "@/data/premiumAssessmentQuestions";
 import { allLanguageDevelopmentQuestions } from "@/data/languageDevelopmentQuestions";
 import { premiumAdhdQuestions } from "@/data/premiumAdhdQuestions";

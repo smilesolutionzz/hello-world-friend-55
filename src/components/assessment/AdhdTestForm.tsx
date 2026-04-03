@@ -4,11 +4,12 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Brain, Baby } from "lucide-react";
+import { ArrowLeft, Brain, Baby, Target, Zap, Clock, ChevronRight, CheckCircle } from "lucide-react";
 import { childFocusQuestions, adultFocusQuestions } from "@/data/assessmentQuestions";
 import { AutoSaveManager, useBackupRecovery } from "@/components/mvp/AutoSaveManager";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n";
+import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -83,6 +84,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     const qs = group === 'child' ? (isEnglish ? childQEn : childFocusQuestions) : (isEnglish ? adultQEn : adultFocusQuestions);
     setAnswers(new Array(qs.length).fill(""));
     setCurrentQuestion(0);
+    setHasStarted(true);
   };
 
   const handleRestoreBackup = () => {
@@ -96,7 +98,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   };
 
   const handleDiscardBackup = () => { discardBackup(); setShowRestoreDialog(false); };
-  if (currentQuestion >= questions.length) return null;
+
   const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   const handleAnswer = (value: string) => {
@@ -109,14 +111,22 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     }, 500);
   };
 
+  const handleOptionClick = (value: string) => {
+    if (answers[currentQuestion] === value) {
+      setTimeout(() => {
+        if (currentQuestion < questions.length - 1) setCurrentQuestion(currentQuestion + 1);
+        else completeTest(answers);
+      }, 300);
+    }
+  };
+
   const completeTest = (finalAnswers: string[]) => {
     const numericAnswers = finalAnswers.map(a => parseInt(a)).filter(a => !isNaN(a));
     if (numericAnswers.length !== questions.length) {
       toast({ title: isEnglish ? "Please answer all questions" : "답변 확인 필요", description: isEnglish ? "Please answer all items." : "모든 문항에 답변해주세요.", variant: "destructive" });
       return;
     }
-    // Questions are positively worded (higher = better focus), so reverse for deficit scoring
-    const reversedAnswers = numericAnswers.map(a => 4 - a); // 3→1, 2→2, 1→3
+    const reversedAnswers = numericAnswers.map(a => 4 - a);
     const total = reversedAnswers.reduce((sum, answer) => sum + answer, 0);
     const average = Math.round((total / reversedAnswers.length) * 10) / 10;
     
@@ -132,75 +142,140 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     onComplete({ answers: reversedAnswers, total, average, ageGroup: ageLabel, severity });
   };
 
-  const handleStartTest = () => {
-    setHasStarted(true);
-  };
-
   const handlePrevious = () => { if (currentQuestion > 0) setCurrentQuestion(currentQuestion - 1); };
   const currentAnswer = answers[currentQuestion] || "";
 
   const answerOptions = isEnglish
-    ? [{ v: "1", l: "Not true (1)" }, { v: "2", l: "Somewhat (2)" }, { v: "3", l: "True (3)" }]
-    : [{ v: "1", l: "그렇지 않다 (1점)" }, { v: "2", l: "보통이다 (2점)" }, { v: "3", l: "그렇다 (3점)" }];
+    ? [{ v: "1", l: "Not true", emoji: "😐" }, { v: "2", l: "Somewhat", emoji: "🤔" }, { v: "3", l: "True", emoji: "✅" }]
+    : [{ v: "1", l: "그렇지 않다", emoji: "😐" }, { v: "2", l: "보통이다", emoji: "🤔" }, { v: "3", l: "그렇다", emoji: "✅" }];
 
   // 연령대 선택 화면
   if (!selectedAgeGroup) {
     return (
-      <Card className="max-w-2xl mx-auto p-8">
-        <div className="space-y-6">
-          <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" />
-            {isEnglish ? "Back" : "뒤로가기"}
-          </Button>
-          
-          <div className="text-center space-y-3">
-            <Brain className="w-12 h-12 mx-auto text-primary" />
-            <h2 className="text-2xl font-bold">{isEnglish ? "Select Age Group" : "연령대를 선택해주세요"}</h2>
-            <p className="text-muted-foreground">{isEnglish ? "Questions and analysis are tailored to each age group" : "연령대에 맞는 맞춤형 문항과 분석이 제공됩니다"}</p>
+      <div className="max-w-2xl mx-auto space-y-6">
+        <Button variant="ghost" onClick={onBack} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="w-4 h-4" />
+          {isEnglish ? "Back" : "뒤로가기"}
+        </Button>
+        
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500/20 to-emerald-500/20 flex items-center justify-center mx-auto">
+            <Target className="w-8 h-8 text-teal-500" />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card 
-              className="p-6 cursor-pointer hover:border-primary transition-all hover:shadow-lg"
-              onClick={() => handleAgeGroupSelect('child')}
-            >
-              <div className="text-center space-y-3">
-                <Baby className="w-10 h-10 mx-auto text-blue-500" />
-                <h3 className="text-lg font-semibold">{isEnglish ? "Child / Adolescent" : "아동·청소년"}</h3>
-                <p className="text-sm text-muted-foreground">{isEnglish ? "Ages 7-12" : "7세 ~ 12세"}</p>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• {isEnglish ? "18 child-tailored items" : "아동 맞춤 18문항"}</li>
-                  <li>• {isEnglish ? "Parent observation checklist" : "보호자 관찰 체크리스트"}</li>
-                  <li>• {isEnglish ? "Age-appropriate analysis" : "발달 단계별 맞춤 분석"}</li>
-                </ul>
-              </div>
-            </Card>
-
-            <Card 
-              className="p-6 cursor-pointer hover:border-primary transition-all hover:shadow-lg"
-              onClick={() => handleAgeGroupSelect('adult')}
-            >
-              <div className="text-center space-y-3">
-                <Brain className="w-10 h-10 mx-auto text-purple-500" />
-                <h3 className="text-lg font-semibold">{isEnglish ? "Adult" : "성인"}</h3>
-                <p className="text-sm text-muted-foreground">{isEnglish ? "Ages 19+" : "19세 이상"}</p>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• {isEnglish ? "18 adult self-check items" : "성인 자가점검 18문항"}</li>
-                  <li>• {isEnglish ? "Workplace focus analysis" : "직장/업무 집중력 분석"}</li>
-                  <li>• {isEnglish ? "Personalized strategies" : "맞춤형 개선 전략 제공"}</li>
-                </ul>
-              </div>
-            </Card>
+          <div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              {isEnglish ? "Attention & Focus Check" : "주의집중력 자가체크"}
+            </h2>
+            <p className="text-muted-foreground">
+              {isEnglish ? "Select your age group for tailored questions" : "연령대에 맞는 맞춤 문항이 제공됩니다"}
+            </p>
           </div>
         </div>
-      </Card>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button 
+            className="group p-6 rounded-2xl border-2 border-border hover:border-sky-400/60 bg-card hover:bg-sky-500/5 transition-all text-left"
+            onClick={() => handleAgeGroupSelect('child')}
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-sky-500/10 flex items-center justify-center">
+                  <Baby className="w-6 h-6 text-sky-500" />
+                </div>
+                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-sky-500 transition-colors" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-1">
+                  {isEnglish ? "Child / Adolescent" : "아동·청소년"}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-3">{isEnglish ? "Ages 7-12" : "7세 ~ 12세"}</p>
+              </div>
+              <div className="space-y-2">
+                {(isEnglish 
+                  ? ["18 child-tailored items", "Parent observation format", "Developmental analysis"]
+                  : ["아동 맞춤 18문항", "보호자 관찰 체크리스트", "발달 단계별 맞춤 분석"]
+                ).map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <CheckCircle className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-2 pt-2">
+                <Badge className="bg-sky-500/10 text-sky-600 dark:text-sky-400 text-[10px] border-0">
+                  <Clock className="w-3 h-3 mr-1" />
+                  {isEnglish ? "~3 min" : "약 3분"}
+                </Badge>
+                <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] border-0">
+                  {isEnglish ? "Free" : "무료"}
+                </Badge>
+              </div>
+            </div>
+          </button>
+
+          <button 
+            className="group p-6 rounded-2xl border-2 border-border hover:border-purple-400/60 bg-card hover:bg-purple-500/5 transition-all text-left"
+            onClick={() => handleAgeGroupSelect('adult')}
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-purple-500" />
+                </div>
+                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-purple-500 transition-colors" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-1">
+                  {isEnglish ? "Adult" : "성인"}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-3">{isEnglish ? "Ages 19+" : "19세 이상"}</p>
+              </div>
+              <div className="space-y-2">
+                {(isEnglish
+                  ? ["18 adult self-check items", "Workplace focus analysis", "Personalized strategies"]
+                  : ["성인 자가점검 18문항", "직장/업무 집중력 분석", "맞춤형 개선 전략 제공"]
+                ).map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <CheckCircle className="w-3.5 h-3.5 text-purple-500 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-2 pt-2">
+                <Badge className="bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] border-0">
+                  <Clock className="w-3 h-3 mr-1" />
+                  {isEnglish ? "~3 min" : "약 3분"}
+                </Badge>
+                <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] border-0">
+                  {isEnglish ? "Free" : "무료"}
+                </Badge>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        {/* 검사 안내 */}
+        <div className="p-4 rounded-xl bg-muted/40 border border-border">
+          <div className="flex items-start gap-3">
+            <Zap className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-muted-foreground space-y-1">
+              <p className="font-medium text-foreground">
+                {isEnglish ? "About this assessment" : "이 검사에 대해"}
+              </p>
+              <p>
+                {isEnglish 
+                  ? "This screening tool evaluates attention, hyperactivity, and impulsivity patterns. Results are for reference only and not a clinical diagnosis."
+                  : "주의력, 과잉행동, 충동성 패턴을 평가하는 선별 도구입니다. 결과는 참고용이며 임상 진단이 아닙니다."}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
-  if (!hasStarted) {
-    setHasStarted(true);
-    return null;
-  }
+  // 검사 진행 화면
+  if (questions.length === 0 || currentQuestion >= questions.length) return null;
 
   return (
     <>
@@ -219,40 +294,82 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <Card className="max-w-4xl mx-auto p-8">
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              {isEnglish ? "Back" : "뒤로가기"}
-            </Button>
-            <span className="text-sm text-muted-foreground">{currentQuestion + 1} / {questions.length}</span>
+      <div className="max-w-2xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" size="sm" onClick={onBack} className="text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            {isEnglish ? "Back" : "뒤로"}
+          </Button>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              {selectedAgeGroup === 'child' 
+                ? (isEnglish ? 'Child' : '아동') 
+                : (isEnglish ? 'Adult' : '성인')}
+            </Badge>
+            <span className="text-sm font-medium text-muted-foreground">
+              {currentQuestion + 1} / {questions.length}
+            </span>
           </div>
+        </div>
 
-          <div className="space-y-2">
-            <Progress value={progress} className="w-full" />
-            <p className="text-center text-sm text-muted-foreground">{isEnglish ? `Progress: ${Math.round(progress)}%` : `진행률: ${Math.round(progress)}%`}</p>
-          </div>
+        {/* Progress */}
+        <div className="space-y-1.5">
+          <Progress value={progress} className="h-2" />
+          <p className="text-center text-xs text-muted-foreground">
+            {isEnglish ? `${Math.round(progress)}% complete` : `${Math.round(progress)}% 완료`}
+          </p>
+        </div>
 
+        {/* Question Card */}
+        <Card className="p-6 md:p-8 border-border/50">
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-center">{questions[currentQuestion]}</h2>
-            <RadioGroup value={currentAnswer} onValueChange={handleAnswer} className="space-y-4">
+            <div className="text-center">
+              <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
+                Q{currentQuestion + 1}
+              </span>
+              <h2 className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
+                {questions[currentQuestion]}
+              </h2>
+            </div>
+
+            <RadioGroup value={currentAnswer} onValueChange={handleAnswer} className="space-y-3">
               {answerOptions.map((opt, i) => (
-                <div key={i} className="flex items-center space-x-2">
-                  <RadioGroupItem value={opt.v} id={`option${i}`} />
-                  <Label htmlFor={`option${i}`} className="text-base cursor-pointer">{opt.l}</Label>
+                <div
+                  key={i}
+                  onClick={() => handleOptionClick(opt.v)}
+                  className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    currentAnswer === opt.v 
+                      ? 'border-primary bg-primary/5' 
+                      : 'border-border hover:border-primary/30 hover:bg-muted/30'
+                  }`}
+                >
+                  <RadioGroupItem value={opt.v} id={`q${currentQuestion}_opt${i}`} className="flex-shrink-0" />
+                  <Label htmlFor={`q${currentQuestion}_opt${i}`} className="flex-1 text-base cursor-pointer flex items-center gap-2">
+                    <span className="text-lg">{opt.emoji}</span>
+                    <span>{opt.l}</span>
+                  </Label>
+                  <span className="text-xs text-muted-foreground">{opt.v}{isEnglish ? 'pt' : '점'}</span>
                 </div>
               ))}
             </RadioGroup>
           </div>
+        </Card>
 
-          <div className="flex justify-start pt-6">
-            <Button variant="outline" onClick={handlePrevious} disabled={currentQuestion === 0}>
-              {isEnglish ? "Previous" : "이전"}
-            </Button>
-          </div>
+        {/* Navigation */}
+        <div className="flex justify-center">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={handlePrevious} 
+            disabled={currentQuestion === 0}
+            className="text-muted-foreground"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            {isEnglish ? "Previous" : "이전 문항"}
+          </Button>
         </div>
-      </Card>
+      </div>
     </>
   );
 };

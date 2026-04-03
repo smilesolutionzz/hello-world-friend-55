@@ -109,7 +109,7 @@ const ExpandableSection = ({ icon: Icon, title, badge, children, defaultOpen = f
   );
 };
 
-export const EnhancedResultView = ({ analysisResult, inputText, reportImages, tableOfContents, onReset }: EnhancedResultViewProps) => {
+export const EnhancedResultView = ({ analysisResult, inputText, reportImages, tableOfContents, youtubeVideos, onReset }: EnhancedResultViewProps) => {
   const navigate = useNavigate();
   const { isEnglish } = useLanguage();
   const reports = analysisResult.comprehensiveReports;

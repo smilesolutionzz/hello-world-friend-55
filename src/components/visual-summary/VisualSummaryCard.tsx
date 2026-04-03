@@ -378,7 +378,7 @@ const VisualSummaryCard = ({ data, illustrationImage, infographicImage, backgrou
           <div style={{ textAlign: 'center', marginTop: '16px' }}>
             <p style={{ fontSize: '10px', color: '#9ca3af' }}>AIHPRO · 마음건강 파트너</p>
           </div>
-          </div>
+        </div>
         </div>
       </div>
     </div>

@@ -235,6 +235,16 @@ const InstantAIAnalysis = () => {
       setIsAnalyzing(false);
       setShowResult(true);
 
+      // YouTube 추천 영상 검색 (비동기, 결과 표시 후 로드)
+      const ytQuery = `${analysis.type || ''} ${inputText.substring(0, 60)}`.trim();
+      supabase.functions.invoke('youtube-search', {
+        body: { query: ytQuery, language: isEnglish ? 'en' : 'ko', maxResults: 2 }
+      }).then(({ data }) => {
+        if (data?.videos?.length > 0) {
+          setYoutubeVideos(data.videos);
+        }
+      }).catch(err => console.error('YouTube search error:', err));
+
       // sessionStorage에 결과 저장 (페이지 이동 후 복원용)
       try {
         sessionStorage.setItem('instantAI_result', JSON.stringify({

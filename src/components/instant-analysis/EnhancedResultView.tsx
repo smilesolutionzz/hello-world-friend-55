@@ -11,12 +11,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { YouTubeRecommendations } from './YouTubeRecommendations';
 
 interface EnhancedResultViewProps {
   analysisResult: any;
   inputText: string;
   reportImages: string[];
   tableOfContents: Array<{ index: number; title: string }> | null;
+  youtubeVideos?: any[];
   onReset: () => void;
 }
 
@@ -107,7 +109,7 @@ const ExpandableSection = ({ icon: Icon, title, badge, children, defaultOpen = f
   );
 };
 
-export const EnhancedResultView = ({ analysisResult, inputText, reportImages, tableOfContents, onReset }: EnhancedResultViewProps) => {
+export const EnhancedResultView = ({ analysisResult, inputText, reportImages, tableOfContents, youtubeVideos, onReset }: EnhancedResultViewProps) => {
   const navigate = useNavigate();
   const { isEnglish } = useLanguage();
   const reports = analysisResult.comprehensiveReports;
@@ -388,6 +390,11 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
             </div>
           )}
         </ExpandableSection>
+      )}
+
+      {/* 10.5. YouTube Recommendations */}
+      {youtubeVideos && youtubeVideos.length > 0 && (
+        <YouTubeRecommendations videos={youtubeVideos} />
       )}
 
       {/* 11. Report Images */}

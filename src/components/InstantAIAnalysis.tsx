@@ -50,6 +50,7 @@ const InstantAIAnalysis = () => {
   const [analysisResult, setAnalysisResult] = useState<any>(savedState?.analysisResult || null);
   const [reportImages, setReportImages] = useState<string[]>(savedState?.reportImages || []);
   const [tableOfContents, setTableOfContents] = useState<Array<{index: number, title: string}> | null>(savedState?.tableOfContents || null);
+  const [youtubeVideos, setYoutubeVideos] = useState<any[]>(savedState?.youtubeVideos || []);
   const [user, setUser] = useState<any>(null);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isAdviceExpanded, setIsAdviceExpanded] = useState(false);
@@ -234,6 +235,16 @@ const InstantAIAnalysis = () => {
       setIsAnalyzing(false);
       setShowResult(true);
 
+      // YouTube 추천 영상 검색 (비동기, 결과 표시 후 로드)
+      const ytQuery = `${analysis.type || ''} ${inputText.substring(0, 60)}`.trim();
+      supabase.functions.invoke('youtube-search', {
+        body: { query: ytQuery, language: isEnglish ? 'en' : 'ko', maxResults: 2 }
+      }).then(({ data }) => {
+        if (data?.videos?.length > 0) {
+          setYoutubeVideos(data.videos);
+        }
+      }).catch(err => console.error('YouTube search error:', err));
+
       // sessionStorage에 결과 저장 (페이지 이동 후 복원용)
       try {
         sessionStorage.setItem('instantAI_result', JSON.stringify({
@@ -324,12 +335,14 @@ const InstantAIAnalysis = () => {
         inputText={inputText}
         reportImages={reportImages}
         tableOfContents={tableOfContents}
+        youtubeVideos={youtubeVideos}
         onReset={() => {
           setShowResult(false);
           setInputText('');
           setAnalysisResult(null);
           setTableOfContents(null);
           setReportImages([]);
+          setYoutubeVideos([]);
         }}
       />
     );

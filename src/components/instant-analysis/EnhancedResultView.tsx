@@ -392,6 +392,11 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
         </ExpandableSection>
       )}
 
+      {/* 10.5. YouTube Recommendations */}
+      {youtubeVideos && youtubeVideos.length > 0 && (
+        <YouTubeRecommendations videos={youtubeVideos} />
+      )}
+
       {/* 11. Report Images */}
       {reportImages && reportImages.length > 0 && (
         <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/10 p-4 md:p-5">

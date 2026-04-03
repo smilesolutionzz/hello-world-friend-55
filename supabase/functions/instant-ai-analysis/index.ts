@@ -260,46 +260,46 @@ ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
         
         const realisticImagePrompts = [
           {
-            name: 'before_scene',
-            prompt: `Create a photorealistic image depicting the CURRENT STRUGGLING STATE of this concern:
+            name: 'realistic_scene_1',
+            prompt: `Create a photorealistic, emotionally touching image depicting the following real-life concern:
 
 CONTEXT: "${inputText.substring(0, 200)}"
-THEME: ${analysisResult.type} - BEFORE improvement
+THEME: ${analysisResult.type} related to ${targetLabels[target] || 'subject'}
 
 REQUIREMENTS:
-- Ultra-realistic photography style, professional DSLR quality
-- Show the emotional difficulty and struggle realistically
-- ${target === 'child' || target === 'teen' ? 'A parent/child looking stressed, disconnected, or overwhelmed' : 'A person showing visible signs of emotional struggle'}
-- Muted, cool tones (blues, grays) suggesting heaviness
-- Natural indoor/outdoor Korean setting
-- Genuine human emotion - fatigue, worry, isolation
-- Documentary photography aesthetic
-- ${analysisResult.severity === (isEnglish ? 'High' : '높음') ? 'Visible distress, dark atmosphere' : 'Subtle sadness, contemplative mood'}
+- Ultra-realistic photography style, like a professional family/lifestyle photograph
+- Natural lighting, authentic emotions
+- Korean family setting if applicable
+- Show the emotional weight of the situation realistically
+- Capture genuine human connection and vulnerability
+- Professional DSLR quality, shallow depth of field
+- Warm, empathetic atmosphere despite the difficulty
+- ${analysisResult.severity === (isEnglish ? 'High' : '높음') ? 'Show visible signs of struggle but also resilience' : analysisResult.severity === (isEnglish ? 'Medium' : '중간') ? 'Balanced emotional portrayal' : 'Hopeful, tender moment'}
 
-STYLE: Before state - showing the problem authentically
+STYLE: Documentary photography, lifestyle photography, editorial quality
 DO NOT include any text, watermarks, or logos.
 Ultra high resolution, 4K quality.`
           },
           {
-            name: 'after_scene',
-            prompt: `Create a photorealistic image depicting the IMPROVED, HOPEFUL STATE after addressing this concern:
+            name: 'realistic_scene_2',
+            prompt: `Create a photorealistic image showing a positive, hopeful moment related to overcoming this concern:
 
 CONTEXT: "${inputText.substring(0, 200)}"
-THEME: ${analysisResult.type} - AFTER improvement and healing
+THEME: Healing and progress for ${analysisResult.type}
 
 REQUIREMENTS:
-- Ultra-realistic photography style, professional DSLR quality
-- Show warmth, connection, and genuine progress
-- ${target === 'child' || target === 'teen' ? 'Parent and child sharing a joyful, connected moment together' : 'A person looking relieved, confident, and at peace'}
-- Warm, golden tones (amber, soft yellows) suggesting hope and healing
-- Natural bright lighting, sun-kissed atmosphere
-- Korean setting with authentic emotional expression
-- Smiles, eye contact, physical closeness
-- The same type of scene as BEFORE but transformed positively
+- Ultra-realistic photography style, professional quality
+- Show a moment of connection, understanding, or breakthrough
+- ${target === 'child' || target === 'teen' ? 'Parent-child bonding or supportive moment' : 'Personal growth or supportive relationship'}
+- Natural, authentic emotional expression
+- Soft, warm lighting suggesting hope
+- Korean setting/people if contextually appropriate
+- Professional lifestyle photography aesthetic
+- Captures the essence of healing and moving forward
 
-STYLE: After state - showing healing and positive transformation
+STYLE: Portrait photography, family photography, therapeutic imagery
 DO NOT include any text, watermarks, or logos.
-Ultra high resolution, 4K quality, emotionally uplifting.`
+Ultra high resolution, 4K quality, emotionally impactful.`
           }
         ];
         

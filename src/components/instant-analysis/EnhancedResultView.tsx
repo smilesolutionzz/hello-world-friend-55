@@ -12,6 +12,7 @@ import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Responsi
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { YouTubeRecommendations } from './YouTubeRecommendations';
+import { VisualNoteSection } from './VisualNoteSection';
 
 interface EnhancedResultViewProps {
   analysisResult: any;
@@ -172,9 +173,6 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
     growthDirection: isEnglish ? 'Growth Direction' : '성장 방향',
     expertOpinion: isEnglish ? 'Expert Opinion & Recommendations' : '전문가 소견 및 권고',
     urgency: isEnglish ? 'Urgency' : '긴급도',
-    reportImages: isEnglish ? 'Before & After Visualization' : '변화 전후 시각화',
-    reportImageBefore: isEnglish ? 'Before' : '현재 상태',
-    reportImageAfter: isEnglish ? 'After' : '개선 후',
     fullReport: isEnglish ? '9 Comprehensive Expert Reports' : '9가지 종합 전문 리포트',
     reportSub: isEnglish ? 'Perplexity + Firecrawl academic reports' : 'Perplexity + Firecrawl 기반 학술 리포트',
     wantMore: isEnglish ? 'Want a more accurate analysis?' : '더 정확한 분석을 원하신다면?',
@@ -398,27 +396,8 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
         <YouTubeRecommendations videos={youtubeVideos} />
       )}
 
-      {/* 11. Report Images */}
-      {reportImages && reportImages.length > 0 && (
-        <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/10 p-4 md:p-5">
-          <h4 className="font-bold mb-3 text-white flex items-center gap-2 text-sm">🔄 {L.reportImages}</h4>
-          <div className="grid grid-cols-2 gap-3">
-            {reportImages.map((imageUrl, index) => (
-              <div key={index} className="relative group rounded-xl overflow-hidden border border-white/10 bg-slate-800/50 hover:border-amber-500/50 transition-all">
-                <img src={imageUrl} alt={index === 0 ? L.reportImageBefore : L.reportImageAfter} className="w-full h-auto object-cover" onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }} />
-                <div className="absolute top-2 left-2">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${index === 0 ? 'bg-red-500/80 text-white' : 'bg-emerald-500/80 text-white'}`}>
-                    {index === 0 ? 'BEFORE' : 'AFTER'}
-                  </span>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                  <p className="text-white/80 text-xs">{index === 0 ? L.reportImageBefore : L.reportImageAfter}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* 11. Visual Note (replaces report images) */}
+      <VisualNoteSection analysisResult={analysisResult} inputText={inputText} />
 
       {/* 12. Full Report CTA */}
       <div className="bg-gradient-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-xl rounded-2xl border border-indigo-500/20 p-5">

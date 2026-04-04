@@ -8,7 +8,7 @@ import { dimensionMeta, type PsychDimension, type StoryChapter } from '@/data/st
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
-import { shareToKakao, isKakaoInitialized } from '@/lib/kakaoShare';
+import html2canvas from 'html2canvas';
 import VisualSummaryCard, { type VisualSummaryData } from '@/components/visual-summary/VisualSummaryCard';
 import ProgressComparison from '@/components/progress/ProgressComparison';
 import { useProgressTracking } from '@/hooks/useProgressTracking';

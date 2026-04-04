@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { FileDown, Share2, RotateCcw, Loader2, Volume2, ChevronDown, ChevronUp, Image, ArrowRight, ArrowLeft } from 'lucide-react';
+import { FileDown, RotateCcw, Loader2, Volume2, ChevronDown, ChevronUp, Image, ArrowRight, ArrowLeft, Camera } from 'lucide-react';
 import { dimensionMeta, type PsychDimension, type StoryChapter } from '@/data/storyScenarios';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
-import { shareToKakao, isKakaoInitialized } from '@/lib/kakaoShare';
+import html2canvas from 'html2canvas';
 import VisualSummaryCard, { type VisualSummaryData } from '@/components/visual-summary/VisualSummaryCard';
 import ProgressComparison from '@/components/progress/ProgressComparison';
 import { useProgressTracking } from '@/hooks/useProgressTracking';
@@ -300,17 +300,24 @@ ${scoreDetails}
     }
   };
 
-  const handleShare = () => {
-    if (isKakaoInitialized()) {
-      shareToKakao({
-        title: `🎮 금쪽상담소: 우리 아이는 "${character.title}"`,
-        description: `${character.desc} 게임으로 알아보는 우리 아이 심리 특성!`,
-        buttonText: '나도 해보기',
-        url: 'https://aihpro.app/metaverse-voice',
+  const handleSaveImage = async () => {
+    const element = document.getElementById('game-result-report');
+    if (!element) return;
+    try {
+      const canvas = await html2canvas(element, { 
+        backgroundColor: '#1e293b', 
+        scale: 2,
+        useCORS: true,
+        logging: false,
       });
-    } else {
-      navigator.clipboard.writeText(`🎮 금쪽상담소 결과: 우리 아이는 "${character.title}" - ${character.desc}\n\nhttps://aihpro.app/metaverse-voice`);
-      toast({ title: '링크 복사 완료', description: '공유 링크가 클립보드에 복사되었습니다.' });
+      const link = document.createElement('a');
+      link.download = `금쪽상담소_${character.title}_${new Date().toISOString().slice(0, 10)}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      toast({ title: '이미지 저장 완료', description: '갤러리에서 확인해주세요.' });
+    } catch (err) {
+      console.error('Image save error:', err);
+      toast({ title: '이미지 저장 실패', variant: 'destructive' });
     }
   };
 
@@ -526,11 +533,11 @@ ${scoreDetails}
             PDF 저장
           </Button>
           <Button
-            onClick={handleShare}
+            onClick={handleSaveImage}
             className="gap-2 bg-amber-600 hover:bg-amber-500 text-white border-0 h-11 rounded-xl"
           >
-            <Share2 className="w-4 h-4" />
-            공유하기
+            <Camera className="w-4 h-4" />
+            이미지 저장
           </Button>
         </div>
 

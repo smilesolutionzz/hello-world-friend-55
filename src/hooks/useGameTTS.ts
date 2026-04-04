@@ -84,33 +84,82 @@ export function useGameTTS(): UseGameTTSReturn {
         setIsSpeaking(false);
         audioRef.current = null;
         // Fallback to browser TTS
-        fallbackSpeak(text);
+        fallbackSpeak(cleanedText);
       };
 
       setIsLoading(false);
       setIsSpeaking(true);
-      await audio.play();
+      
+      // Mobile browsers require user interaction for audio playback
+      // Use play() promise to catch autoplay restrictions
+      try {
+        await audio.play();
+      } catch (playErr) {
+        console.warn('Audio play blocked (autoplay policy), falling back to browser TTS:', playErr);
+        audioRef.current = null;
+        fallbackSpeak(cleanedText);
+      }
     } catch (err) {
       console.error('TTS error:', err);
       setIsLoading(false);
       if (!abortRef.current) {
-        fallbackSpeak(text);
+        fallbackSpeak(cleanedText);
       }
     }
   }, [stop]);
 
   const fallbackSpeak = useCallback((text: string) => {
     try {
+      if (typeof speechSynthesis === 'undefined') {
+        console.warn('SpeechSynthesis not available');
+        setIsSpeaking(false);
+        setIsLoading(false);
+        return;
+      }
       speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ko-KR';
-      utterance.rate = 0.9;
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
-      speechSynthesis.speak(utterance);
+      
+      const trySpeak = () => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 0.9;
+        
+        // Try to find a Korean voice
+        const voices = speechSynthesis.getVoices();
+        const koVoice = voices.find(v => v.lang.startsWith('ko'));
+        if (koVoice) utterance.voice = koVoice;
+        
+        utterance.onstart = () => { setIsSpeaking(true); setIsLoading(false); };
+        utterance.onend = () => setIsSpeaking(false);
+        utterance.onerror = () => { setIsSpeaking(false); setIsLoading(false); };
+        speechSynthesis.speak(utterance);
+      };
+
+      // On mobile, voices may load asynchronously
+      const voices = speechSynthesis.getVoices();
+      if (voices.length === 0) {
+        speechSynthesis.onvoiceschanged = () => {
+          speechSynthesis.onvoiceschanged = null;
+          trySpeak();
+        };
+        // Timeout fallback if voices never load
+        setTimeout(() => {
+          if (speechSynthesis.getVoices().length === 0) {
+            // Still try without specific voice
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ko-KR';
+            utterance.rate = 0.9;
+            utterance.onstart = () => { setIsSpeaking(true); setIsLoading(false); };
+            utterance.onend = () => setIsSpeaking(false);
+            utterance.onerror = () => { setIsSpeaking(false); setIsLoading(false); };
+            speechSynthesis.speak(utterance);
+          }
+        }, 500);
+      } else {
+        trySpeak();
+      }
     } catch {
       setIsSpeaking(false);
+      setIsLoading(false);
     }
   }, []);
 

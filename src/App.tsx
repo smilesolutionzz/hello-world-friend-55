@@ -276,6 +276,7 @@ const App = () => {
           {/* Utility */}
           <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/referral" element={<Referral />} />
+          <Route path="/rewards" element={<Rewards />} />
           <Route path="/install" element={<InstallGuide />} />
 
           {/* Legal */}

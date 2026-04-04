@@ -110,16 +110,56 @@ export function useGameTTS(): UseGameTTSReturn {
 
   const fallbackSpeak = useCallback((text: string) => {
     try {
+      if (typeof speechSynthesis === 'undefined') {
+        console.warn('SpeechSynthesis not available');
+        setIsSpeaking(false);
+        setIsLoading(false);
+        return;
+      }
       speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ko-KR';
-      utterance.rate = 0.9;
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
-      speechSynthesis.speak(utterance);
+      
+      const trySpeak = () => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 0.9;
+        
+        // Try to find a Korean voice
+        const voices = speechSynthesis.getVoices();
+        const koVoice = voices.find(v => v.lang.startsWith('ko'));
+        if (koVoice) utterance.voice = koVoice;
+        
+        utterance.onstart = () => { setIsSpeaking(true); setIsLoading(false); };
+        utterance.onend = () => setIsSpeaking(false);
+        utterance.onerror = () => { setIsSpeaking(false); setIsLoading(false); };
+        speechSynthesis.speak(utterance);
+      };
+
+      // On mobile, voices may load asynchronously
+      const voices = speechSynthesis.getVoices();
+      if (voices.length === 0) {
+        speechSynthesis.onvoiceschanged = () => {
+          speechSynthesis.onvoiceschanged = null;
+          trySpeak();
+        };
+        // Timeout fallback if voices never load
+        setTimeout(() => {
+          if (speechSynthesis.getVoices().length === 0) {
+            // Still try without specific voice
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ko-KR';
+            utterance.rate = 0.9;
+            utterance.onstart = () => { setIsSpeaking(true); setIsLoading(false); };
+            utterance.onend = () => setIsSpeaking(false);
+            utterance.onerror = () => { setIsSpeaking(false); setIsLoading(false); };
+            speechSynthesis.speak(utterance);
+          }
+        }, 500);
+      } else {
+        trySpeak();
+      }
     } catch {
       setIsSpeaking(false);
+      setIsLoading(false);
     }
   }, []);
 

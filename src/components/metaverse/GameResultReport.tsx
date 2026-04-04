@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { FileDown, Share2, RotateCcw, Loader2, Volume2, ChevronDown, ChevronUp, Image, ArrowRight, ArrowLeft } from 'lucide-react';
+import { FileDown, RotateCcw, Loader2, Volume2, ChevronDown, ChevronUp, Image, ArrowRight, ArrowLeft, Camera } from 'lucide-react';
 import { dimensionMeta, type PsychDimension, type StoryChapter } from '@/data/storyScenarios';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';

@@ -533,11 +533,11 @@ ${scoreDetails}
             PDF 저장
           </Button>
           <Button
-            onClick={handleShare}
+            onClick={handleSaveImage}
             className="gap-2 bg-amber-600 hover:bg-amber-500 text-white border-0 h-11 rounded-xl"
           >
-            <Share2 className="w-4 h-4" />
-            공유하기
+            <Camera className="w-4 h-4" />
+            이미지 저장
           </Button>
         </div>
 

@@ -300,17 +300,24 @@ ${scoreDetails}
     }
   };
 
-  const handleShare = () => {
-    if (isKakaoInitialized()) {
-      shareToKakao({
-        title: `🎮 금쪽상담소: 우리 아이는 "${character.title}"`,
-        description: `${character.desc} 게임으로 알아보는 우리 아이 심리 특성!`,
-        buttonText: '나도 해보기',
-        url: 'https://aihpro.app/metaverse-voice',
+  const handleSaveImage = async () => {
+    const element = document.getElementById('game-result-report');
+    if (!element) return;
+    try {
+      const canvas = await html2canvas(element, { 
+        backgroundColor: '#1e293b', 
+        scale: 2,
+        useCORS: true,
+        logging: false,
       });
-    } else {
-      navigator.clipboard.writeText(`🎮 금쪽상담소 결과: 우리 아이는 "${character.title}" - ${character.desc}\n\nhttps://aihpro.app/metaverse-voice`);
-      toast({ title: '링크 복사 완료', description: '공유 링크가 클립보드에 복사되었습니다.' });
+      const link = document.createElement('a');
+      link.download = `금쪽상담소_${character.title}_${new Date().toISOString().slice(0, 10)}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      toast({ title: '이미지 저장 완료', description: '갤러리에서 확인해주세요.' });
+    } catch (err) {
+      console.error('Image save error:', err);
+      toast({ title: '이미지 저장 실패', variant: 'destructive' });
     }
   };
 

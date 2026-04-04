@@ -84,17 +84,26 @@ export function useGameTTS(): UseGameTTSReturn {
         setIsSpeaking(false);
         audioRef.current = null;
         // Fallback to browser TTS
-        fallbackSpeak(text);
+        fallbackSpeak(cleanedText);
       };
 
       setIsLoading(false);
       setIsSpeaking(true);
-      await audio.play();
+      
+      // Mobile browsers require user interaction for audio playback
+      // Use play() promise to catch autoplay restrictions
+      try {
+        await audio.play();
+      } catch (playErr) {
+        console.warn('Audio play blocked (autoplay policy), falling back to browser TTS:', playErr);
+        audioRef.current = null;
+        fallbackSpeak(cleanedText);
+      }
     } catch (err) {
       console.error('TTS error:', err);
       setIsLoading(false);
       if (!abortRef.current) {
-        fallbackSpeak(text);
+        fallbackSpeak(cleanedText);
       }
     }
   }, [stop]);

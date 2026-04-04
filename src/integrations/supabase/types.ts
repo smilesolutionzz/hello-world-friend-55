@@ -8403,6 +8403,87 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_attendance: {
+        Row: {
+          check_date: string
+          created_at: string
+          id: string
+          points_earned: number
+          streak_days: number
+          user_id: string
+        }
+        Insert: {
+          check_date?: string
+          created_at?: string
+          id?: string
+          points_earned?: number
+          streak_days?: number
+          user_id: string
+        }
+        Update: {
+          check_date?: string
+          created_at?: string
+          id?: string
+          points_earned?: number
+          streak_days?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reward_history: {
+        Row: {
+          action_type: string
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          points: number
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          points: number
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          points?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reward_roulette_spins: {
+        Row: {
+          created_at: string
+          id: string
+          points_won: number
+          spin_date: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          points_won?: number
+          spin_date?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          points_won?: number
+          spin_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       reward_transactions: {
         Row: {
           created_at: string | null
@@ -10624,6 +10705,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_reward_points: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          total_earned: number
+          total_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          total_spent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          total_spent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_rewards: {
         Row: {
           created_at: string | null
@@ -11537,6 +11648,16 @@ export type Database = {
     }
     Functions: {
       add_daily_tokens: { Args: never; Returns: undefined }
+      add_reward_points: {
+        Args: {
+          p_action_type: string
+          p_description?: string
+          p_metadata?: Json
+          p_points: number
+          p_user_id: string
+        }
+        Returns: Json
+      }
       add_tokens: {
         Args: {
           p_amount: number
@@ -11642,6 +11763,7 @@ export type Database = {
         Args: { p_result_id: string; p_user_id: string }
         Returns: undefined
       }
+      check_attendance: { Args: { p_user_id: string }; Returns: Json }
       check_daily_referral_limit: {
         Args: { p_user_id: string }
         Returns: boolean
@@ -11910,6 +12032,7 @@ export type Database = {
         Returns: boolean
       }
       secure_cleanup_old_payment_data: { Args: never; Returns: undefined }
+      spin_roulette: { Args: { p_user_id: string }; Returns: Json }
       track_feature_usage: {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: undefined

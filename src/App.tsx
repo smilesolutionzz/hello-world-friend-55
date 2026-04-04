@@ -113,6 +113,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 // Utility
 import ShareView from "./pages/ShareView";
 import Referral from "./pages/Referral";
+import Rewards from "./pages/Rewards";
 import InstallGuide from "./pages/InstallGuide";
 import WellnessLifestyle from "./pages/WellnessLifestyle";
 import About from "./pages/About";
@@ -276,6 +277,7 @@ const App = () => {
           {/* Utility */}
           <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/referral" element={<Referral />} />
+          <Route path="/rewards" element={<Rewards />} />
           <Route path="/install" element={<InstallGuide />} />
 
           {/* Legal */}

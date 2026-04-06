@@ -114,7 +114,7 @@ const CURATED_TESTS_EN: CuratedTest[] = [
     color: 'from-blue-500 to-indigo-500',
   },
   {
-    name: 'Self-Esteem Scale (Rosenberg)',
+    name: 'Self-Esteem Assessment',
     description: 'Evaluate self-worth and self-esteem levels',
     icon: <Brain className="w-5 h-5" />,
     path: '/assessment/self-esteem',

@@ -463,7 +463,7 @@ const TokenSubscription = () => {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                {['DSM-5 기반', 'K-CDI 참조', 'Bayley 발달척도', 'CBCL 행동평가', '학술 논문 실시간 반영'].map((tag, i) => (
+                {['AI 행동분석', '발달규준 비교', '인지패턴 분석', '정서 프로파일링', '학술 연구 기반'].map((tag, i) => (
                   <Badge key={i} variant="outline" className="text-xs bg-violet-100/50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-700">
                     {tag}
                   </Badge>

@@ -200,8 +200,8 @@ const ReportGenerator = () => {
           <div className="space-y-3">
             {[
               { icon: Brain, title: '행동 패턴 심층 분석', desc: '15개 심리이론 기반 인지·정서·사회성 종합 프로파일', gradient: 'from-blue-500 to-cyan-500' },
-              { icon: AlertTriangle, title: '문제 가능성 진단', desc: 'DSM-5 기반 위험 신호 조기 감지 및 경고 시스템', gradient: 'from-red-500 to-orange-500' },
-              { icon: Target, title: '부모 맞춤 대응 전략', desc: 'ABA·CBT·Floortime 기반 가정 내 개입 프로그램', gradient: 'from-purple-500 to-violet-500' },
+              { icon: AlertTriangle, title: '문제 가능성 진단', desc: 'AI 기반 위험 신호 조기 감지 및 경고 시스템', gradient: 'from-red-500 to-orange-500' },
+              { icon: Target, title: '부모 맞춤 대응 전략', desc: '행동분석·인지행동·놀이치료 기반 가정 내 개입 프로그램', gradient: 'from-purple-500 to-violet-500' },
               { icon: Shield, title: '전문가 연결 가이드', desc: '아이의 상태에 맞는 전문가 유형 및 기관 추천', gradient: 'from-teal-500 to-emerald-500' },
             ].map((item, i) => (
               <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }}

@@ -33,7 +33,7 @@ const PremiumAnalysisLoading: React.FC<PremiumAnalysisLoadingProps> = ({
   initialSeconds = 50,
   onComplete,
   title = "전문 분석 중",
-  subtitle = "DSM-5 기준으로 정밀 분석하고 있습니다...",
+  subtitle = "AI 전문 분석 엔진으로 정밀 분석하고 있습니다...",
   steps = defaultSteps,
 }) => {
   const [timeLeft, setTimeLeft] = useState(initialSeconds);

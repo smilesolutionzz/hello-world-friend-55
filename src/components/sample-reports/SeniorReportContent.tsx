@@ -179,7 +179,7 @@ export const SeniorReportContent = () => {
               <div className="space-y-2">
                 <h4 className="font-semibold text-green-900 dark:text-green-100">종합 판정</h4>
                 <ul className="text-sm text-green-800 dark:text-green-200 space-y-1">
-                  <li>• <strong>MMSE-K 점수: 28/30점</strong> (정상 범위: 24점 이상)</li>
+                  <li>• <strong>인지기능 평가 점수: 28/30점</strong> (정상 범위: 24점 이상)</li>
                   <li>• 치매 가능성: 낮음 (지속적 관리 권장)</li>
                   <li>• 6개월 후 재검사 권장</li>
                 </ul>

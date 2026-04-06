@@ -311,7 +311,7 @@ const ReportGeneratorPro = () => {
 
           {/* 학술 뱃지 */}
           <div className="flex flex-wrap justify-center gap-1.5 max-w-xl mx-auto">
-            {['DSM-5-TR', 'ICD-11', 'WHO', 'APA', 'Cochrane', 'JAMA', 'Lancet'].map((tag) => (
+            {['AIHPRO', 'AI분석', '빅데이터', '발달규준', '행동분석', '인지패턴', '정서코칭'].map((tag) => (
               <span key={tag} className="px-2.5 py-1 text-[10px] font-medium rounded-full bg-white/5 text-white/50 border border-white/10">
                 {tag}
               </span>

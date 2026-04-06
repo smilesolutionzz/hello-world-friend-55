@@ -45,12 +45,12 @@ const concernsEn = [
 const recommendationMap: Record<string, { ko: Recommendation[]; en: Recommendation[] }> = {
   depressed: {
     ko: [
-      { testKey: 'depression', title: '우울감 검사 (BDI-II)', reason: '최근 2주간의 기분 상태를 전문 척도로 측정해요', badge: '무료', gradient: 'from-blue-500/10 to-indigo-500/10' },
+      { testKey: 'depression', title: '우울감 검사', reason: '최근 2주간의 기분 상태를 전문 분석으로 측정해요', badge: '무료', gradient: 'from-blue-500/10 to-indigo-500/10' },
       { testKey: 'selfesteem', title: '자아가치 검사', reason: '우울감의 근본 원인인 자존감 수준을 확인해요', badge: '프리미엄', gradient: 'from-purple-500/10 to-pink-500/10' },
       { testKey: 'ai-chat', title: 'AI 상담 챗봇', reason: '지금 바로 마음을 털어놓고 싶다면', badge: '즉시 가능', route: '/ai-assistant', gradient: 'from-emerald-500/10 to-teal-500/10' },
     ],
     en: [
-      { testKey: 'depression', title: 'Depression Test (BDI-II)', reason: 'Measure your mood over the past 2 weeks', badge: 'Free', gradient: 'from-blue-500/10 to-indigo-500/10' },
+      { testKey: 'depression', title: 'Depression Test', reason: 'Measure your mood over the past 2 weeks', badge: 'Free', gradient: 'from-blue-500/10 to-indigo-500/10' },
       { testKey: 'selfesteem', title: 'Self-Esteem Assessment', reason: 'Check your self-worth — a root cause of depression', badge: 'Premium', gradient: 'from-purple-500/10 to-pink-500/10' },
       { testKey: 'ai-chat', title: 'AI Counseling Chat', reason: 'Talk to AI right now if you need support', badge: 'Instant', route: '/ai-assistant', gradient: 'from-emerald-500/10 to-teal-500/10' },
     ],

@@ -47,12 +47,12 @@ const recommendationMap: Record<string, { ko: Recommendation[]; en: Recommendati
     ko: [
       { testKey: 'depression', title: '우울감 검사 (BDI-II)', reason: '최근 2주간의 기분 상태를 전문 척도로 측정해요', badge: '무료', gradient: 'from-blue-500/10 to-indigo-500/10' },
       { testKey: 'selfesteem', title: '자아가치 검사', reason: '우울감의 근본 원인인 자존감 수준을 확인해요', badge: '프리미엄', gradient: 'from-purple-500/10 to-pink-500/10' },
-      { testKey: 'ai-chat', title: 'AI 상담 챗봇', reason: '지금 바로 마음을 털어놓고 싶다면', badge: '즉시 가능', route: '/ai-counseling', gradient: 'from-emerald-500/10 to-teal-500/10' },
+      { testKey: 'ai-chat', title: 'AI 상담 챗봇', reason: '지금 바로 마음을 털어놓고 싶다면', badge: '즉시 가능', route: '/ai-assistant', gradient: 'from-emerald-500/10 to-teal-500/10' },
     ],
     en: [
       { testKey: 'depression', title: 'Depression Test (BDI-II)', reason: 'Measure your mood over the past 2 weeks', badge: 'Free', gradient: 'from-blue-500/10 to-indigo-500/10' },
       { testKey: 'selfesteem', title: 'Self-Esteem Assessment', reason: 'Check your self-worth — a root cause of depression', badge: 'Premium', gradient: 'from-purple-500/10 to-pink-500/10' },
-      { testKey: 'ai-chat', title: 'AI Counseling Chat', reason: 'Talk to AI right now if you need support', badge: 'Instant', route: '/ai-counseling', gradient: 'from-emerald-500/10 to-teal-500/10' },
+      { testKey: 'ai-chat', title: 'AI Counseling Chat', reason: 'Talk to AI right now if you need support', badge: 'Instant', route: '/ai-assistant', gradient: 'from-emerald-500/10 to-teal-500/10' },
     ],
   },
   anxious: {
@@ -83,12 +83,12 @@ const recommendationMap: Record<string, { ko: Recommendation[]; en: Recommendati
     ko: [
       { testKey: 'adhd', title: 'ADHD 선별 검사', reason: '주의력 결핍과 과잉행동 정도를 측정해요', badge: '무료', gradient: 'from-teal-500/10 to-emerald-500/10' },
       { testKey: 'learning-disability', title: '학습 장애 선별 검사', reason: 'ADHD와 함께 올 수 있는 학습 어려움을 확인해요', badge: '프리미엄', gradient: 'from-indigo-500/10 to-blue-500/10' },
-      { testKey: 'brain-training', title: '두뇌 훈련 게임', reason: '집중력을 재미있게 키워보세요', badge: '게임', route: '/brain-training', gradient: 'from-yellow-500/10 to-amber-500/10' },
+      { testKey: 'brain-training', title: '두뇌 훈련 게임', reason: '집중력을 재미있게 키워보세요', badge: '게임', route: '/metaverse-voice', gradient: 'from-yellow-500/10 to-amber-500/10' },
     ],
     en: [
       { testKey: 'adhd', title: 'ADHD Screening', reason: 'Measure attention deficit and hyperactivity', badge: 'Free', gradient: 'from-teal-500/10 to-emerald-500/10' },
       { testKey: 'learning-disability', title: 'Learning Disability Screening', reason: 'Check learning difficulties that may accompany ADHD', badge: 'Premium', gradient: 'from-indigo-500/10 to-blue-500/10' },
-      { testKey: 'brain-training', title: 'Brain Training Games', reason: 'Build focus through fun games', badge: 'Game', route: '/brain-training', gradient: 'from-yellow-500/10 to-amber-500/10' },
+      { testKey: 'brain-training', title: 'Brain Training Games', reason: 'Build focus through fun games', badge: 'Game', route: '/metaverse-voice', gradient: 'from-yellow-500/10 to-amber-500/10' },
     ],
   },
   stress: {
@@ -117,12 +117,12 @@ const recommendationMap: Record<string, { ko: Recommendation[]; en: Recommendati
   },
   cognitive: {
     ko: [
-      { testKey: 'brain-training', title: '두뇌 훈련 게임', reason: '기억력·집중력을 게임으로 테스트하고 훈련해요', badge: '게임', route: '/brain-training', gradient: 'from-yellow-500/10 to-amber-500/10' },
+      { testKey: 'brain-training', title: '두뇌 훈련 게임', reason: '기억력·집중력을 게임으로 테스트하고 훈련해요', badge: '게임', route: '/metaverse-voice', gradient: 'from-yellow-500/10 to-amber-500/10' },
       { testKey: 'stress', title: '스트레스 검사', reason: '스트레스가 인지기능 저하의 원인일 수 있어요', badge: '무료', gradient: 'from-amber-500/10 to-orange-500/10' },
       { testKey: 'depression', title: '우울감 검사', reason: '우울증도 기억력 저하를 유발할 수 있어요', badge: '무료', gradient: 'from-blue-500/10 to-indigo-500/10' },
     ],
     en: [
-      { testKey: 'brain-training', title: 'Brain Training Games', reason: 'Test and train memory & focus through games', badge: 'Game', route: '/brain-training', gradient: 'from-yellow-500/10 to-amber-500/10' },
+      { testKey: 'brain-training', title: 'Brain Training Games', reason: 'Test and train memory & focus through games', badge: 'Game', route: '/metaverse-voice', gradient: 'from-yellow-500/10 to-amber-500/10' },
       { testKey: 'stress', title: 'Stress Assessment', reason: 'Stress can cause cognitive decline', badge: 'Free', gradient: 'from-amber-500/10 to-orange-500/10' },
       { testKey: 'depression', title: 'Depression Test', reason: 'Depression can also cause memory issues', badge: 'Free', gradient: 'from-blue-500/10 to-indigo-500/10' },
     ],

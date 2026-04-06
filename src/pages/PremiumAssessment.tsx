@@ -56,6 +56,7 @@ import {
 import { allLanguageDevelopmentQuestions } from "@/data/languageDevelopmentQuestions";
 import { premiumAdhdQuestions } from "@/data/premiumAdhdQuestions";
 import { useTranslation } from "@/i18n/useTranslation";
+import { ConcernBasedRecommender } from "@/components/assessment/ConcernBasedRecommender";
 
 const PremiumAssessment = () => {
   const navigate = useNavigate();

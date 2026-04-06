@@ -201,8 +201,8 @@ export const ConcernBasedRecommender = ({ onSelectTest, onNavigate }: ConcernBas
 
   return (
     <div className="mb-8">
-      <div className="bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-4 md:p-5">
-        <div className="flex items-center gap-2 mb-3">
+      <div className="bg-white dark:bg-card rounded-3xl shadow-lg border border-border/40 p-5 md:p-6">
+        <div className="flex items-center gap-2 mb-4">
           <Sparkles className="h-4 w-4 text-primary" />
           <span className="text-sm font-semibold text-foreground">
             {isEnglish ? 'What concerns you?' : '어떤 고민이 있으신가요?'}
@@ -217,10 +217,10 @@ export const ConcernBasedRecommender = ({ onSelectTest, onNavigate }: ConcernBas
             <button
               key={c.key}
               onClick={() => handleSelect(c.key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
                 selectedConcern === c.key
-                  ? 'bg-primary text-primary-foreground shadow-sm scale-105'
-                  : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'bg-primary text-primary-foreground border-primary shadow-sm scale-105'
+                  : 'bg-muted/40 text-muted-foreground border-border/60 hover:bg-muted/80 hover:text-foreground'
               }`}
             >
               <span>{c.emoji}</span>
@@ -245,15 +245,15 @@ export const ConcernBasedRecommender = ({ onSelectTest, onNavigate }: ConcernBas
                   <span>{isEnglish ? 'AI is analyzing your concern...' : 'AI가 고민을 분석하고 있어요...'}</span>
                 </div>
               ) : (
-                <div className="mt-3 space-y-2">
+                <div className="mt-4 space-y-2.5">
                   <p className="text-xs text-muted-foreground mb-2">
                     {isEnglish ? '✨ Recommended for you based on your concern' : '✨ 고민에 맞는 추천 검사예요'}
                   </p>
-                  {recs.map((rec, i) => (
+                  {recs.map((rec) => (
                     <button
                       key={rec.testKey}
                       onClick={() => handleTestClick(rec)}
-                      className={`w-full flex items-center justify-between p-3 rounded-xl bg-gradient-to-r ${rec.gradient} border border-border/50 hover:border-primary/30 hover:shadow-sm transition-all group text-left`}
+                      className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-white dark:bg-card border border-border/60 hover:border-primary/30 hover:shadow-md transition-all group text-left"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">

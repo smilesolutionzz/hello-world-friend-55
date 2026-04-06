@@ -95,7 +95,7 @@ const StepIndicator = ({ currentStep, steps }: { currentStep: number; steps: str
   </div>
 );
 
-const ReportGenerator = () => {
+const ReportGeneratorPro = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [reportData, setReportData] = useState<any>(null);
@@ -825,4 +825,4 @@ const ReportGenerator = () => {
   );
 };
 
-export default ReportGenerator;
+export default ReportGeneratorPro;

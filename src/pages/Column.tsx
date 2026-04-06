@@ -197,7 +197,7 @@ const Column = () => {
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => navigate("/brain-training")}
+                  onClick={() => navigate("/metaverse-voice")}
                   className="rounded-full px-8"
                 >
                   두뇌 트레이닝

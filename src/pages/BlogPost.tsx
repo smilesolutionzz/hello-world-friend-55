@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Clock, Calendar, ArrowRight, User, Check, AlertTriangle, CheckCircle2 } from "lucide-react";
 import Footer from "@/components/ui/footer";
 import SEOHead from "@/components/common/SEOHead";
-import { blogPosts, type InfoGraphic } from "@/data/blogPosts";
+import { blogPosts, type InfoGraphic, type InlineCTA } from "@/data/blogPosts";
 import blogChildEmotion from "@/assets/blog/blog-child-emotion.jpg";
 import blogSeniorBrain from "@/assets/blog/blog-senior-brain.jpg";
 import blogParentBurnout from "@/assets/blog/blog-parent-burnout.jpg";

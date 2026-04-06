@@ -9,6 +9,18 @@ import SEOHead from "@/components/common/SEOHead";
 import { blogPosts } from "@/data/blogPosts";
 import blogChildEmotion from "@/assets/blog/blog-child-emotion.jpg";
 import blogSeniorBrain from "@/assets/blog/blog-senior-brain.jpg";
+import blogParentBurnout from "@/assets/blog/blog-parent-burnout.jpg";
+
+const thumbnailMap: Record<string, string> = {
+  "blog-child-emotion.jpg": blogChildEmotion,
+  "blog-senior-brain.jpg": blogSeniorBrain,
+  "blog-parent-burnout.jpg": blogParentBurnout,
+};
+import Footer from "@/components/ui/footer";
+import SEOHead from "@/components/common/SEOHead";
+import { blogPosts } from "@/data/blogPosts";
+import blogChildEmotion from "@/assets/blog/blog-child-emotion.jpg";
+import blogSeniorBrain from "@/assets/blog/blog-senior-brain.jpg";
 
 const thumbnailMap: Record<string, string> = {
   "blog-child-emotion.jpg": blogChildEmotion,

@@ -108,7 +108,7 @@ export const AIAssistantDashboard: React.FC = () => {
         primaryDiagnosis: "추가 평가 필요",
         confidence: 65,
         differentialDiagnoses: ["불안 장애", "적응 장애"],
-        recommendedTests: ["K-CBCL", "추가 면담"],
+        recommendedTests: ["행동관찰 평가", "추가 면담"],
         treatmentSuggestions: ["인지행동치료", "가족치료"],
         riskFactors: ["스트레스", "환경적 요인"]
       });

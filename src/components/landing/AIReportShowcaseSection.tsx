@@ -126,7 +126,7 @@ export const AIReportShowcaseSection = () => {
                   </div>
                   <div className="flex-1">
                     <p className="font-semibold text-slate-900 text-sm">김○○ (만 4세 7개월)</p>
-                    <p className="text-xs text-slate-500">검사 유형: 종합 발달 심리 평가 · K-CDI, Bayley-III, CBCL 기반</p>
+                    <p className="text-xs text-slate-500">검사 유형: 종합 발달 심리 평가 · AI 다중영역 분석</p>
                   </div>
                   <div className="text-right">
                     <div className="flex items-center gap-1">
@@ -149,11 +149,11 @@ export const AIReportShowcaseSection = () => {
                     <p className="text-xs text-slate-700 leading-relaxed">
                       김○○ 아동은 전반적 발달 수준에서 <span className="font-semibold text-blue-600">인지(82점)</span>와 <span className="font-semibold text-green-600">대근육 운동(91점)</span> 영역에서 또래 대비 
                       우수한 발달을 보이고 있으나, <span className="font-semibold text-orange-600">사회성(68점)</span> 영역에서 또래 평균 하위 15%ile에 해당하는 
-                      지연 경향이 관찰됩니다. Piaget의 전조작기 발달 이론에 따르면...
+                      지연 경향이 관찰됩니다. 인지발달 이론에 따르면 전조작기에서...
                     </p>
                     <p className="text-xs text-slate-500 leading-relaxed">
-                      Vygotsky의 근접발달영역(ZPD) 관점에서 현재 사회적 상호작용 능력은 성인 또는 유능한 
-                      또래의 스캐폴딩을 통해 유의미한 향상이 기대되며, Erikson의 주도성 대 죄책감 단계에서...
+                      근접발달영역 관점에서 현재 사회적 상호작용 능력은 성인 또는 유능한 
+                      또래의 지원을 통해 유의미한 향상이 기대되며, 심리사회적 발달단계에서...
                     </p>
                   </div>
                 </div>
@@ -191,7 +191,7 @@ export const AIReportShowcaseSection = () => {
                       ))}
                     </div>
                     <p className="text-xs text-slate-600 leading-relaxed">
-                      DSM-5 진단 기준 및 Bayley-III 발달 척도에 근거하여 5개 발달 영역을 분석한 결과, 
+                      AI 전문 분석 엔진을 통해 5개 발달 영역을 분석한 결과, 
                       사회성 영역에서 <span className="text-red-500 font-medium">또래 평균 대비 -1.2 SD</span>의 차이가 확인되었습니다...
                     </p>
                   </div>

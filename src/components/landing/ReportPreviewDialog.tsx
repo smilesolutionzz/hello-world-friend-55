@@ -32,49 +32,49 @@ const getSectionData = (isEnglish: boolean) => isEnglish ? [
   {
     icon: Brain, title: 'Core Developmental Analysis', color: 'amber',
     content: [
-      '**Language Development**: Approximately 6-month delay compared to peers. Receptive language (Bayley-III language domain percentile 38%) is relatively better than expressive language (MLU 2.1).',
-      '**Cognitive Development**: Top 15% performance in visual problem-solving tasks, with excellent pattern recognition abilities (K-CDI-2 cognitive domain percentile 82%).',
+      '**Language Development**: Approximately 6-month delay compared to peers. Receptive language (language domain percentile 38%) is relatively better than expressive language (MLU 2.1).',
+      '**Cognitive Development**: Top 15% performance in visual problem-solving tasks, with excellent pattern recognition abilities (cognitive domain percentile 82%).',
       '**Motor Development**: Gross motor development is age-appropriate, but slight delays observed in fine motor skills (pencil grip, scissors use).',
     ],
-    references: ['Bayley-III (2025)', 'K-CDI-2', 'Piaget Cognitive Development Theory'],
+    references: ['AIHPRO Development Norms (2025)', 'AI Cognitive Development Analysis'],
   },
   {
     icon: Target, title: 'Strengths & Potential', color: 'emerald',
     content: [
-      '**Visual Learning Ability**: Classified in top 15% spatial intelligence based on Gardner\'s Multiple Intelligences theory. Superior performance in block building and puzzle activities.',
+      '**Visual Learning Ability**: Classified in top 15% spatial intelligence based on multi-domain analysis. Superior performance in block building and puzzle activities.',
       '**Creative Problem-Solving**: Prefers unconventional approaches, tends to offer original solutions for open-ended tasks.',
       '**Artistic Sensitivity**: Concentration time during art/music activities averages 12 minutes, approximately 70% higher than peer average (7 minutes).',
     ],
-    references: ['Gardner Multiple Intelligences (2023)', 'Torrance Creativity Test Standards'],
+    references: ['AIHPRO Multi-Domain Analysis (2025)', 'Creativity Assessment Standards'],
   },
   {
     icon: Heart, title: 'Emotional Characteristics', color: 'rose',
     content: [
-      '**Emotion Regulation**: Gottman Emotion Coaching model application shows tendency for aggressive emotional expression in frustrating situations (CBCL Aggression T-score 62). Appropriate emotional expression possible in stable environments.',
-      '**Attachment Type**: Secure attachment tendency observed through Bowlby\'s Attachment Theory-based observation. Separation anxiety with primary caregiver is age-appropriate.',
-      '**Self-Awareness**: Good initiative development in Erikson\'s "Initiative vs Guilt" stage.',
+      '**Emotion Regulation**: AI emotion coaching analysis shows tendency for aggressive emotional expression in frustrating situations (Aggression score 62). Appropriate emotional expression possible in stable environments.',
+      '**Attachment Type**: Secure attachment tendency observed through attachment-based behavioral observation. Separation anxiety with primary caregiver is age-appropriate.',
+      '**Self-Awareness**: Good initiative development in the "Initiative vs Guilt" developmental stage.',
     ],
-    references: ['Gottman Emotion Coaching Model', 'Bowlby Attachment Theory', 'CBCL 6/18'],
+    references: ['AI Emotion Coaching Analysis', 'Attachment Assessment', 'Developmental Stage Analysis'],
   },
   {
     icon: Lightbulb, title: 'Tailored Intervention Strategies', color: 'blue',
     content: [
-      '**Primary**: TEACCH-based visual schedule — to improve routine predictability and reduce transition stress.',
-      '**Secondary**: Ayres Sensory Integration (SI) activities 15 min/day — focusing on tactile and proprioceptive stimulation.',
-      '**Tertiary**: Vygotsky ZPD model-based peer small group activities weekly — to promote language stimulation and social interaction.',
-      '**Supplementary**: Consider introducing PECS Phase 1 — to compensate for expressive language delay.',
+      '**Primary**: Visual schedule-based approach — to improve routine predictability and reduce transition stress.',
+      '**Secondary**: Sensory integration activities 15 min/day — focusing on tactile and proprioceptive stimulation.',
+      '**Tertiary**: Peer small group activities weekly based on proximal development approach — to promote language stimulation and social interaction.',
+      '**Supplementary**: Consider introducing picture-based communication — to compensate for expressive language delay.',
     ],
-    references: ['TEACCH (UNC, 2024)', 'Ayres SI Theory', 'Vygotsky Zone of Proximal Development'],
+    references: ['Visual Structure Approach', 'Sensory Integration Theory', 'Proximal Development Theory'],
   },
   {
     icon: Users, title: 'Home Practice Guide', color: 'violet',
     content: [
-      '**Morning Routine**: Visual card sequence (PECS-based) → Create 3-step visual cards for dressing, washing, eating.',
-      '**Playtime**: 20 minutes of Floor Time daily — interaction-focused based on Greenspan DIR/Floortime model.',
+      '**Morning Routine**: Visual card sequence → Create 3-step visual cards for dressing, washing, eating.',
+      '**Playtime**: 20 minutes of Floor Time daily — interaction-focused play-based approach.',
       '**Evening Routine**: Write an emotion diary together — use 4 emotion cards (happy/sad/angry/scared), practice naming emotions once daily.',
       '**Sleep Environment**: Minimize sensory stimulation 30 minutes before bedtime, maintain consistent sleep routine (white noise can be used).',
     ],
-    references: ['Greenspan DIR/Floortime Model', 'PECS Phase I-II'],
+    references: ['Play-Based Interaction Model', 'Visual Communication Approach'],
   },
   {
     icon: TrendingUp, title: 'Development Forecast & Progress', color: 'orange',
@@ -84,17 +84,16 @@ const getSectionData = (isEnglish: boolean) => isEnglish ? [
       '**12-month outlook**: Improved frequency and quality of peer interactions expected, social development indicators likely to enter normal range.',
       '⚠️ *Predictions are based on consistent application of recommended interventions; individual differences may apply.*',
     ],
-    references: ['Vygotsky ZPD Model', 'Longitudinal Development Meta-analysis (2025)'],
+    references: ['Proximal Development Model', 'Longitudinal Development Meta-analysis (2025)'],
   },
   {
     icon: GraduationCap, title: 'Academic References', color: 'cyan',
     content: [
-      'Key diagnostic tools and theoretical foundations used in this analysis:',
-      '• **DSM-5-TR** (APA, 2022) — Neurodevelopmental disorder diagnostic criteria',
-      '• **Bayley-III** — Comprehensive infant development assessment (cognitive, language, motor)',
-      '• **K-CDI-2** — Korean Child Development Inventory standardized data',
-      '• **CBCL 6/18** — Child Behavior Checklist (Achenbach System)',
-      '• **Piaget Cognitive Development**, **Vygotsky Sociocultural Theory**, **Bowlby Attachment Theory**, **Erikson Psychosocial Development Stages**',
+      'Key analysis frameworks and methodologies used in this report:',
+      '• **AIHPRO AI Analysis Engine** — Multi-domain developmental assessment',
+      '• **Behavioral Data Analysis** — Comprehensive behavioral pattern recognition',
+      '• **Developmental Norm Database** — Age-based milestone comparison',
+      '• **Cognitive Pattern Analysis**, **Attachment Assessment**, **Social-Emotional Profiling**',
     ],
     references: [],
   },
@@ -112,8 +111,8 @@ const getSectionData = (isEnglish: boolean) => isEnglish ? [
     icon: Map, title: 'Long-term Development Roadmap', color: 'amber',
     content: [
       '🎯 **Phase 1 (1-3 months)**: Visual environment structuring + sensory integration activities → Set mid-checkpoint',
-      '🎯 **Phase 2 (4-6 months)**: Full speech therapy + peer small group participation → K-CDI-2 re-assessment recommended',
-      '🎯 **Phase 3 (7-12 months)**: Comprehensive re-assessment + intervention strategy adjustment → Bayley-III follow-up test',
+      '🎯 **Phase 2 (4-6 months)**: Full speech therapy + peer small group participation → Development re-assessment recommended',
+      '🎯 **Phase 3 (7-12 months)**: Comprehensive re-assessment + intervention strategy adjustment → Follow-up assessment',
       '📅 *Re-assessment schedules are auto-generated with notification-based timely monitoring.*',
     ],
     references: ['Individualized Family Service Plan (IFSP) Model'],
@@ -122,49 +121,49 @@ const getSectionData = (isEnglish: boolean) => isEnglish ? [
   {
     icon: Brain, title: '핵심 발달 분석', color: 'amber',
     content: [
-      '**언어 발달**: 또래 대비 약 6개월 지연 관찰. 표현 언어(MLU 2.1)보다 수용 언어 능력(Bayley-III 언어 영역 백분위 38%)이 상대적으로 양호합니다.',
-      '**인지 발달**: 시각적 문제해결 과제에서 상위 15% 수준의 수행을 보이며, 패턴 인식 능력이 뛰어납니다 (K-CDI-2 인지 영역 백분위 82%).',
+      '**언어 발달**: 또래 대비 약 6개월 지연 관찰. 표현 언어(MLU 2.1)보다 수용 언어 능력(언어 영역 백분위 38%)이 상대적으로 양호합니다.',
+      '**인지 발달**: 시각적 문제해결 과제에서 상위 15% 수준의 수행을 보이며, 패턴 인식 능력이 뛰어납니다 (인지 영역 백분위 82%).',
       '**운동 발달**: 대근육 발달은 연령 적합 수준이나, 소근육(연필 잡기, 가위질)에서 약간의 지연이 관찰됩니다.',
     ],
-    references: ['Bayley-III (2025)', 'K-CDI-2 한국판', 'Piaget 인지발달이론'],
+    references: ['AIHPRO 발달 규준 (2025)', 'AI 인지발달 분석'],
   },
   {
     icon: Target, title: '강점 & 잠재력', color: 'emerald',
     content: [
-      '**시각적 학습 능력**: Gardner 다중지능 이론 기반 평가에서 공간 지능 상위 15%로 분류. 블록 쌓기, 퍼즐 활동에서 또래 대비 우수한 수행.',
+      '**시각적 학습 능력**: AI 다중영역 분석에서 공간 지능 상위 15%로 분류. 블록 쌓기, 퍼즐 활동에서 또래 대비 우수한 수행.',
       '**창의적 문제해결**: 비정형적 접근 방식을 선호하며, 개방형 과제에서 독창적 해결책을 제시하는 경향.',
       '**예술적 감수성**: 미술·음악 활동 시 집중 시간이 평균 12분으로 또래 평균(7분) 대비 약 70% 높음.',
     ],
-    references: ['Gardner 다중지능이론 (2023)', 'Torrance 창의성 검사 기준'],
+    references: ['AIHPRO 다중영역 분석 (2025)', '창의성 평가 기준'],
   },
   {
     icon: Heart, title: '정서적 특성', color: 'rose',
     content: [
-      '**정서 조절**: Gottman 정서코칭 모델 적용 결과, 좌절 상황에서 감정 표현이 과격해지는 경향 (CBCL 공격성 T점수 62). 안정적 환경에서는 적절한 정서 표현 가능.',
-      '**애착 유형**: Bowlby 애착이론 기반 관찰 시 안정 애착 경향성 관찰. 주 양육자와의 분리 불안은 연령 적합 수준.',
-      '**자기 인식**: Erikson 발달단계 중 "주도성 vs 죄책감" 단계에서 주도성 발달이 양호한 편.',
+      '**정서 조절**: AI 정서코칭 분석 결과, 좌절 상황에서 감정 표현이 과격해지는 경향 (공격성 점수 62). 안정적 환경에서는 적절한 정서 표현 가능.',
+      '**애착 유형**: 애착 행동 관찰 시 안정 애착 경향성 관찰. 주 양육자와의 분리 불안은 연령 적합 수준.',
+      '**자기 인식**: 발달단계 중 "주도성 vs 죄책감" 단계에서 주도성 발달이 양호한 편.',
     ],
-    references: ['Gottman 정서코칭 모델', 'Bowlby 애착이론', 'CBCL 6/18'],
+    references: ['AI 정서코칭 분석', '애착 행동 평가', '발달단계 분석'],
   },
   {
     icon: Lightbulb, title: '맞춤 개입 전략', color: 'blue',
     content: [
-      '**1차 권장**: TEACCH 기반 시각적 스케줄 활용 — 일과 예측성 향상 및 전환 스트레스 감소 목적.',
-      '**2차 권장**: Ayres 감각통합 이론(SI) 기반 활동 일 15분 — 촉각·고유수용감각 자극 중심 프로그램.',
-      '**3차 권장**: Vygotsky ZPD 모델 기반 또래 소그룹 활동 주 1회 — 언어 자극 및 사회적 상호작용 촉진.',
-      '**보조 개입**: 그림교환 의사소통(PECS) 1단계 도입 검토 — 표현 언어 지연 보완.',
+      '**1차 권장**: 시각적 스케줄 활용 — 일과 예측성 향상 및 전환 스트레스 감소 목적.',
+      '**2차 권장**: 감각통합 활동 일 15분 — 촉각·고유수용감각 자극 중심 프로그램.',
+      '**3차 권장**: 근접발달영역 기반 또래 소그룹 활동 주 1회 — 언어 자극 및 사회적 상호작용 촉진.',
+      '**보조 개입**: 그림 기반 의사소통 도입 검토 — 표현 언어 지연 보완.',
     ],
-    references: ['TEACCH (UNC, 2024)', 'Ayres SI 이론', 'Vygotsky 근접발달영역'],
+    references: ['시각 구조화 접근법', '감각통합 이론', '근접발달영역 이론'],
   },
   {
     icon: Users, title: '가정 내 실천 가이드', color: 'violet',
     content: [
-      '**아침 루틴**: 그림 카드 활용 순서 안내(PECS 기반) → 옷 입기·세수·식사 3단계 시각 카드 제작 권장.',
-      '**놀이 시간**: 하루 20분 바닥 놀이(Floor Time) — Greenspan DIR/Floortime 모델 기반 상호작용 중심.',
+      '**아침 루틴**: 그림 카드 활용 순서 안내 → 옷 입기·세수·식사 3단계 시각 카드 제작 권장.',
+      '**놀이 시간**: 하루 20분 바닥 놀이(Floor Time) — 상호작용 중심 놀이치료 접근.',
       '**저녁 루틴**: 감정 일기 함께 작성 — 감정 카드(기쁨/슬픔/화남/무서움) 4종 활용, 하루 1회 감정 명명 연습.',
       '**수면 환경**: 취침 30분 전 감각 자극 최소화, 일관된 수면 루틴 유지 (백색 소음 활용 가능).',
     ],
-    references: ['Greenspan DIR/Floortime 모델', 'PECS Phase I-II'],
+    references: ['놀이 기반 상호작용 모델', '시각적 의사소통 접근법'],
   },
   {
     icon: TrendingUp, title: '발달 예측 & 경과', color: 'orange',
@@ -174,17 +173,16 @@ const getSectionData = (isEnglish: boolean) => isEnglish ? [
       '**12개월 후 예상**: 또래 상호작용 빈도 및 질적 수준 향상, 사회성 발달 지표 정상 범위 진입 기대.',
       '⚠️ *상기 예측은 권장 개입이 일관되게 적용될 경우를 기준으로 하며, 개인차가 있을 수 있습니다.*',
     ],
-    references: ['Vygotsky ZPD 모델', '종단 발달 연구 메타분석 (2025)'],
+    references: ['근접발달영역 모델', '종단 발달 연구 메타분석 (2025)'],
   },
   {
     icon: GraduationCap, title: '학술적 근거 & 참고문헌', color: 'cyan',
     content: [
-      '본 분석에 활용된 주요 진단 도구 및 이론적 기반:',
-      '• **DSM-5-TR** (APA, 2022) — 신경발달장애 진단 기준 참조',
-      '• **Bayley-III** — 영유아 발달 종합 평가 (인지·언어·운동)',
-      '• **K-CDI-2** — 한국판 아동발달검사 표준화 자료',
-      '• **CBCL 6/18** — 아동 행동평가 척도 (Achenbach System)',
-      '• **Piaget 인지발달이론**, **Vygotsky 사회문화적 이론**, **Bowlby 애착이론**, **Erikson 심리사회적 발달단계**',
+      '본 분석에 활용된 주요 분석 프레임워크:',
+      '• **AIHPRO AI 분석 엔진** — 다중 영역 발달 종합 평가',
+      '• **행동 데이터 분석** — 행동 패턴 종합 인식',
+      '• **발달 규준 데이터베이스** — 연령별 발달 이정표 비교',
+      '• **인지패턴 분석**, **애착 평가**, **사회정서 프로파일링**',
     ],
     references: [],
   },
@@ -202,8 +200,8 @@ const getSectionData = (isEnglish: boolean) => isEnglish ? [
     icon: Map, title: '장기 발달 로드맵', color: 'amber',
     content: [
       '🎯 **1단계 (1~3개월)**: 시각적 환경 구조화 + 감각통합 활동 시작 → 중간 체크포인트 설정',
-      '🎯 **2단계 (4~6개월)**: 언어치료 본격 시작 + 또래 소그룹 참여 → K-CDI-2 재평가 권장',
-      '🎯 **3단계 (7~12개월)**: 종합 재평가 + 개입 전략 조정 → Bayley-III 추적 검사',
+      '🎯 **2단계 (4~6개월)**: 언어치료 본격 시작 + 또래 소그룹 참여 → 발달 재평가 권장',
+      '🎯 **3단계 (7~12개월)**: 종합 재평가 + 개입 전략 조정 → 추적 평가',
       '📅 *재평가 일정이 자동 생성되며, 알림을 통해 적시 모니터링이 가능합니다.*',
     ],
     references: ['개별화 가족 서비스 계획(IFSP) 모델'],
@@ -370,14 +368,14 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                 <div className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
                   <p><strong>{isEnglish ? 'Key Observations:' : '주요 관찰:'}</strong> {isEnglish 
-                    ? 'Language development delay compared to peers (~6 months), social development within normal range, sensory processing sensitivity observed. Bayley-III language domain percentile 38%.'
-                    : '또래 대비 언어 발달 지연 (약 6개월), 사회성 발달 정상 범위, 감각처리 민감성 관찰. Bayley-III 언어 영역 백분위 38%.'}</p>
+                     ? 'Language development delay compared to peers (~6 months), social development within normal range, sensory processing sensitivity observed. Language domain percentile 38%.'
+                     : '또래 대비 언어 발달 지연 (약 6개월), 사회성 발달 정상 범위, 감각처리 민감성 관찰. 언어 영역 백분위 38%.'}</p>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
                   <p><strong>{isEnglish ? 'Strengths:' : '강점 영역:'}</strong> {isEnglish
-                    ? 'Visual learning ability top 15% (K-CDI-2 standard), creative problem-solving, excellent concentration in art/music activities (avg +70%).'
-                    : '시각적 학습 능력 상위 15% (K-CDI-2 기준), 창의적 문제해결, 미술·음악 활동 집중력 우수 (평균 대비 +70%).'}</p>
+                     ? 'Visual learning ability top 15%, creative problem-solving, excellent concentration in art/music activities (avg +70%).'
+                     : '시각적 학습 능력 상위 15%, 창의적 문제해결, 미술·음악 활동 집중력 우수 (평균 대비 +70%).'}</p>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0" />

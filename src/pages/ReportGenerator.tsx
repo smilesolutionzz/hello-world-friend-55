@@ -200,8 +200,8 @@ const ReportGenerator = () => {
           <div className="space-y-3">
             {[
               { icon: Brain, title: '행동 패턴 심층 분석', desc: '15개 심리이론 기반 인지·정서·사회성 종합 프로파일', gradient: 'from-blue-500 to-cyan-500' },
-              { icon: AlertTriangle, title: '문제 가능성 진단', desc: 'DSM-5 기반 위험 신호 조기 감지 및 경고 시스템', gradient: 'from-red-500 to-orange-500' },
-              { icon: Target, title: '부모 맞춤 대응 전략', desc: 'ABA·CBT·Floortime 기반 가정 내 개입 프로그램', gradient: 'from-purple-500 to-violet-500' },
+              { icon: AlertTriangle, title: '문제 가능성 진단', desc: 'AI 기반 위험 신호 조기 감지 및 경고 시스템', gradient: 'from-red-500 to-orange-500' },
+              { icon: Target, title: '부모 맞춤 대응 전략', desc: '행동분석·인지행동·놀이치료 기반 가정 내 개입 프로그램', gradient: 'from-purple-500 to-violet-500' },
               { icon: Shield, title: '전문가 연결 가이드', desc: '아이의 상태에 맞는 전문가 유형 및 기관 추천', gradient: 'from-teal-500 to-emerald-500' },
             ].map((item, i) => (
               <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }}
@@ -268,13 +268,13 @@ const ReportGenerator = () => {
                 <div className="space-y-2 blur-sm select-none pointer-events-none">
                   <p className="text-sm text-foreground font-semibold">📋 종합 소견</p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    대상 아동은 Piaget의 전조작기에서 구체적 조작기로의 전환 과정에 있으며, 
-                    Vygotsky의 ZPD 관점에서 적절한 스캐폴딩이 제공될 경우 인지 발달의 
-                    비약적 성장이 예상됩니다. Beck의 인지 삼제 모델 분석 결과...
+                    대상 아동은 전조작기에서 구체적 조작기로의 전환 과정에 있으며, 
+                    근접발달영역 관점에서 적절한 지원이 제공될 경우 인지 발달의 
+                    비약적 성장이 예상됩니다. AI 인지패턴 분석 결과...
                   </p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    DSM-5-TR 기준 주의력결핍 관련 항목에서 경계선 수준의 반응이 관찰되었으며,
-                    Bowlby의 애착이론에 기반한 정서적 안정감 분석에서...
+                    주의력 관련 항목에서 경계선 수준의 반응이 관찰되었으며,
+                    애착유형 기반 정서적 안정감 분석에서...
                   </p>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">

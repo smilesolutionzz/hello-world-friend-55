@@ -23,15 +23,15 @@ interface CuratedTest {
 
 const CURATED_TESTS_KO: CuratedTest[] = [
   {
-    name: '우울증 선별검사 (PHQ-9)',
-    description: '정서 상태를 빠르게 확인하는 글로벌 표준 검사',
+    name: '우울증 선별검사',
+    description: '정서 상태를 빠르게 확인하는 AI 기반 검사',
     icon: <Heart className="w-5 h-5" />,
     path: '/assessment/depression',
     tag: 'free',
     color: 'from-pink-500 to-rose-500',
   },
   {
-    name: '불안장애 선별검사 (GAD-7)',
+    name: '불안장애 선별검사',
     description: '만성 불안과 걱정 수준을 정밀 측정',
     icon: <Shield className="w-5 h-5" />,
     path: '/assessment/anxiety',
@@ -63,7 +63,7 @@ const CURATED_TESTS_KO: CuratedTest[] = [
     color: 'from-blue-500 to-indigo-500',
   },
   {
-    name: '자존감 검사 (Rosenberg)',
+    name: '자존감 검사',
     description: '자기 가치감과 자존감 수준 평가',
     icon: <Brain className="w-5 h-5" />,
     path: '/assessment/self-esteem',
@@ -74,15 +74,15 @@ const CURATED_TESTS_KO: CuratedTest[] = [
 
 const CURATED_TESTS_EN: CuratedTest[] = [
   {
-    name: 'Depression Screening (PHQ-9)',
-    description: 'Global standard for quick emotional state check',
+    name: 'Depression Screening',
+    description: 'AI-powered emotional state assessment',
     icon: <Heart className="w-5 h-5" />,
     path: '/assessment/depression',
     tag: 'free',
     color: 'from-pink-500 to-rose-500',
   },
   {
-    name: 'Anxiety Screening (GAD-7)',
+    name: 'Anxiety Screening',
     description: 'Measure chronic anxiety and worry levels',
     icon: <Shield className="w-5 h-5" />,
     path: '/assessment/anxiety',
@@ -114,7 +114,7 @@ const CURATED_TESTS_EN: CuratedTest[] = [
     color: 'from-blue-500 to-indigo-500',
   },
   {
-    name: 'Self-Esteem Scale (Rosenberg)',
+    name: 'Self-Esteem Assessment',
     description: 'Evaluate self-worth and self-esteem levels',
     icon: <Brain className="w-5 h-5" />,
     path: '/assessment/self-esteem',

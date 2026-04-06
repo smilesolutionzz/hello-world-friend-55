@@ -414,6 +414,28 @@ const PremiumAssessment = () => {
             </div>
           </a>
 
+          <ConcernBasedRecommender
+            onSelectTest={(step) => {
+              // Map test step keys to premium assessment keys or navigate
+              const premiumMap: Record<string, string> = {
+                'depression-test': '/assessment?test=depression',
+                'stress-test': '/assessment?test=stress',
+                'adhd-test': '/assessment?test=adhd',
+                'bigfive-test': '/assessment?test=bigfive',
+                'attachment-test': '/assessment?test=attachment',
+                'career-test': '/assessment?test=career',
+                'selfesteem-test': '/assessment?test=selfesteem',
+                'developmental-delay-test': '/assessment?test=developmental-delay',
+                'social-development-test': '/assessment?test=social-development',
+                'learning-disability-test': '/assessment?test=learning-disability',
+                'sensory-integration-test': '/assessment?test=sensory-integration',
+              };
+              const path = premiumMap[step];
+              if (path) navigate(path);
+            }}
+            onNavigate={(path) => navigate(path)}
+          />
+
           {/* Neurodevelopmental */}
           {renderTestSection(p.sectionNeuro, p.sectionNeuroBadge, 'purple', ['autismSpectrumScreening', 'premiumAdhd', 'languageDevelopment', 'motorDevelopment'])}
 

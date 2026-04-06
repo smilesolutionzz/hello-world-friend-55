@@ -405,6 +405,28 @@ GPS에 의존하는 것과는 다릅니다. 본인이 잘 아는 동네인데도
         ]
       }
     ],
+    inlineCTAs: [
+      {
+        type: 'inline-cta',
+        emoji: '😔',
+        label: '무료 체험',
+        title: '혹시 나도 우울한 걸까? 3분 체험검사',
+        description: '번아웃과 우울증은 증상이 비슷합니다. 무료 우울 체험검사로 현재 상태를 확인해보세요.',
+        ctaText: '우울 체험검사 해보기',
+        ctaLink: '/assessment',
+        insertAfterParagraph: 15
+      },
+      {
+        type: 'inline-cta',
+        emoji: '💬',
+        label: '상담',
+        title: '말하기 어려운 마음, 금쪽상담소에서 편하게',
+        description: '전문 상담사와의 게임형 대화로, 부담 없이 내 마음을 들여다볼 수 있습니다.',
+        ctaText: '금쪽상담소 체험하기',
+        ctaLink: '/metaverse-counseling',
+        insertAfterParagraph: 32
+      }
+    ],
     platformTip: {
       title: "내 마음 상태, 3분이면 확인할 수 있어요",
       description: "스트레스 지수, 번아웃 수준, 우울감 체크까지 — 간단한 자가 체크로 현재 상태를 파악해보세요.",

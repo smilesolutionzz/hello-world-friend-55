@@ -93,6 +93,7 @@ import MindDiary from "./pages/MindDiary";
 
 // Content & Column
 import Column from "./pages/Column";
+const BlogPost = React.lazy(() => import("./pages/BlogPost"));
 import IEPGenerator from "./pages/IEPGenerator";
 import IEPView from "./pages/IEPView";
 
@@ -261,6 +262,7 @@ const App = () => {
 
           {/* Content */}
           <Route path="/column" element={<Column />} />
+          <Route path="/column/:slug" element={<React.Suspense fallback={<div />}><BlogPost /></React.Suspense>} />
           <Route path="/iep-generator" element={<IEPGenerator />} />
           <Route path="/iep-view/:id" element={<IEPView />} />
           <Route path="/wellness-lifestyle" element={<WellnessLifestyle />} />
@@ -353,6 +355,7 @@ const App = () => {
           <Route path="/en/payment-success" element={<PaymentSuccess />} />
           <Route path="/en/payment-fail" element={<PaymentFail />} />
           <Route path="/en/column" element={<Column />} />
+          <Route path="/en/column/:slug" element={<React.Suspense fallback={<div />}><BlogPost /></React.Suspense>} />
           <Route path="/en/wellness-lifestyle" element={<WellnessLifestyle />} />
           <Route path="/en/referral" element={<Referral />} />
           <Route path="/en/install" element={<InstallGuide />} />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Download, Share2, Brain, ChevronDown, ChevronUp } from 'lucide-react';
@@ -7,6 +7,7 @@ import { PDFHeader } from '@/components/common/PDFHeader';
 import { cleanMarkdown, extractFootnotes } from '@/utils/cleanMarkdown';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useLanguage } from '@/i18n/LanguageContext';
+import PostPaymentConversionFlow from './PostPaymentConversionFlow';
 
 /* ─── Types ─── */
 export interface DomainScore {
@@ -244,6 +245,15 @@ const ClinicalReportLayout = ({
 
         {/* ── Extra Content ── */}
         {!childrenBeforeAnalysis && children}
+
+        {/* ── Post-Payment Conversion Flow ── */}
+        <PostPaymentConversionFlow
+          testName={testName}
+          onViewReport={() => {
+            const el = document.getElementById(pdfId || 'clinical-report-content');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }}
+        />
 
         {/* ── Disclaimer ── */}
         <div className="mt-6 px-1">

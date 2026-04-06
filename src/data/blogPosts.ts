@@ -1,8 +1,19 @@
+export interface InlineCTA {
+  type: 'inline-cta';
+  emoji: string;
+  label: string;       // short label like "무료 체험"
+  title: string;
+  description: string;
+  ctaText: string;
+  ctaLink: string;
+  insertAfterParagraph: number;
+}
+
 export interface InfoGraphic {
   type: 'bar-chart' | 'stat-row' | 'checklist' | 'comparison';
   title?: string;
   data: any;
-  insertAfterParagraph: number; // insert after this paragraph index in content
+  insertAfterParagraph: number;
 }
 
 export interface BlogPost {
@@ -20,6 +31,7 @@ export interface BlogPost {
   readTime: string;
   featured?: boolean;
   infographics?: InfoGraphic[];
+  inlineCTAs?: InlineCTA[];
   platformTip?: {
     title: string;
     description: string;
@@ -131,6 +143,28 @@ export const blogPosts: BlogPost[] = [
         ]
       }
     ],
+    inlineCTAs: [
+      {
+        type: 'inline-cta',
+        emoji: '🧩',
+        label: '무료 체험',
+        title: '우리 아이 ADHD 성향, 3분 만에 확인해보세요',
+        description: '주의력·과잉행동 패턴을 간단히 체크할 수 있는 무료 체험검사입니다.',
+        ctaText: 'ADHD 체험검사 해보기',
+        ctaLink: '/assessment',
+        insertAfterParagraph: 18
+      },
+      {
+        type: 'inline-cta',
+        emoji: '🎮',
+        label: '두뇌 게임',
+        title: '아이와 함께하는 집중력 두뇌 게임',
+        description: '퍼즐, 기억력 게임 등으로 아이의 인지 능력을 재미있게 확인해보세요.',
+        ctaText: '게임 시작하기',
+        ctaLink: '/brain-training',
+        insertAfterParagraph: 28
+      }
+    ],
     platformTip: {
       title: "우리 아이 감정 발달, 3분 만에 체크해보세요",
       description: "영유아·아동 감정 발달 체크리스트로 현재 상태를 객관적으로 확인할 수 있습니다. 무료로 제공됩니다.",
@@ -235,6 +269,28 @@ GPS에 의존하는 것과는 다릅니다. 본인이 잘 아는 동네인데도
           { label: '규칙적 운동의 위험도 감소', value: '30%', color: 'secondary' },
           { label: '사회 활동 유지 시 인지 보호', value: '55%', color: 'primary' },
         ]
+      }
+    ],
+    inlineCTAs: [
+      {
+        type: 'inline-cta',
+        emoji: '🧠',
+        label: '두뇌 게임',
+        title: '기억력·집중력, 게임으로 간단히 체크해보세요',
+        description: '패턴 맞추기, 순서 기억하기 등 간단한 두뇌 게임으로 현재 인지 상태를 확인할 수 있습니다.',
+        ctaText: '두뇌 트레이닝 시작',
+        ctaLink: '/brain-training',
+        insertAfterParagraph: 20
+      },
+      {
+        type: 'inline-cta',
+        emoji: '📋',
+        label: '무료 체험',
+        title: '스트레스 지수, 3분이면 확인할 수 있어요',
+        description: '가족 돌봄 스트레스 체험검사로 현재 상태를 객관적으로 파악해보세요.',
+        ctaText: '무료 스트레스 체크',
+        ctaLink: '/assessment',
+        insertAfterParagraph: 28
       }
     ],
     platformTip: {
@@ -347,6 +403,28 @@ GPS에 의존하는 것과는 다릅니다. 본인이 잘 아는 동네인데도
           '배우자에게 감정 한 가지 솔직히 말하기',
           '주 1회 30분 이상 혼자 외출하기',
         ]
+      }
+    ],
+    inlineCTAs: [
+      {
+        type: 'inline-cta',
+        emoji: '😔',
+        label: '무료 체험',
+        title: '혹시 나도 우울한 걸까? 3분 체험검사',
+        description: '번아웃과 우울증은 증상이 비슷합니다. 무료 우울 체험검사로 현재 상태를 확인해보세요.',
+        ctaText: '우울 체험검사 해보기',
+        ctaLink: '/assessment',
+        insertAfterParagraph: 15
+      },
+      {
+        type: 'inline-cta',
+        emoji: '💬',
+        label: '상담',
+        title: '말하기 어려운 마음, 금쪽상담소에서 편하게',
+        description: '전문 상담사와의 게임형 대화로, 부담 없이 내 마음을 들여다볼 수 있습니다.',
+        ctaText: '금쪽상담소 체험하기',
+        ctaLink: '/metaverse-counseling',
+        insertAfterParagraph: 32
       }
     ],
     platformTip: {

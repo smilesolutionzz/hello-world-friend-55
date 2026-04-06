@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Clock, Calendar, ArrowRight, User, Check, AlertTriangle, CheckCircle2 } from "lucide-react";
 import Footer from "@/components/ui/footer";
 import SEOHead from "@/components/common/SEOHead";
-import { blogPosts, type InfoGraphic } from "@/data/blogPosts";
+import { blogPosts, type InfoGraphic, type InlineCTA } from "@/data/blogPosts";
 import blogChildEmotion from "@/assets/blog/blog-child-emotion.jpg";
 import blogSeniorBrain from "@/assets/blog/blog-senior-brain.jpg";
 import blogParentBurnout from "@/assets/blog/blog-parent-burnout.jpg";
@@ -106,6 +106,30 @@ const renderInfographic = (info: InfoGraphic) => {
   }
 };
 
+const InlineCTACard = ({ cta, onNavigate }: { cta: InlineCTA; onNavigate: (path: string) => void }) => (
+  <div className="my-8 p-5 md:p-6 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 via-background to-secondary/5 relative overflow-hidden">
+    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div className="text-3xl shrink-0">{cta.emoji}</div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <Badge variant="secondary" className="rounded-full text-[10px] px-2 py-0.5">{cta.label}</Badge>
+        </div>
+        <p className="font-bold text-foreground text-sm mb-1">{cta.title}</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">{cta.description}</p>
+      </div>
+      <Button
+        size="sm"
+        onClick={(e) => { e.stopPropagation(); onNavigate(cta.ctaLink); }}
+        className="rounded-full shrink-0 text-xs"
+      >
+        {cta.ctaText}
+        <ArrowRight className="w-3 h-3 ml-1" />
+      </Button>
+    </div>
+  </div>
+);
+
 /* ── Main Component ── */
 
 const BlogPost = () => {
@@ -126,12 +150,19 @@ const BlogPost = () => {
 
   const otherPosts = blogPosts.filter((p) => p.id !== post.id).slice(0, 2);
 
-  // Build infographic insertion map
+  // Build insertion maps
   const infoMap = new Map<number, InfoGraphic[]>();
   post.infographics?.forEach((ig) => {
     const arr = infoMap.get(ig.insertAfterParagraph) || [];
     arr.push(ig);
     infoMap.set(ig.insertAfterParagraph, arr);
+  });
+
+  const ctaMap = new Map<number, InlineCTA[]>();
+  post.inlineCTAs?.forEach((cta) => {
+    const arr = ctaMap.get(cta.insertAfterParagraph) || [];
+    arr.push(cta);
+    ctaMap.set(cta.insertAfterParagraph, arr);
   });
 
   // Parse content into paragraphs
@@ -242,6 +273,14 @@ const BlogPost = () => {
               const infos = infoMap.get(idx);
               if (infos) {
                 infos.forEach((ig) => elements.push(renderInfographic(ig)));
+              }
+
+              // Check for inline CTAs after this paragraph
+              const ctas = ctaMap.get(idx);
+              if (ctas) {
+                ctas.forEach((cta) => elements.push(
+                  <InlineCTACard key={`cta-${cta.ctaLink}-${idx}`} cta={cta} onNavigate={navigate} />
+                ));
               }
 
               return elements;

@@ -246,6 +246,15 @@ const ClinicalReportLayout = ({
         {/* ── Extra Content ── */}
         {!childrenBeforeAnalysis && children}
 
+        {/* ── Post-Payment Conversion Flow ── */}
+        <PostPaymentConversionFlow
+          testName={testName}
+          onViewReport={() => {
+            const el = document.getElementById(pdfId || 'clinical-report-content');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }}
+        />
+
         {/* ── Disclaimer ── */}
         <div className="mt-6 px-1">
           <p className="text-[10px] text-muted-foreground/60 text-center leading-relaxed">

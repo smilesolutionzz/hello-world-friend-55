@@ -271,6 +271,28 @@ GPS에 의존하는 것과는 다릅니다. 본인이 잘 아는 동네인데도
         ]
       }
     ],
+    inlineCTAs: [
+      {
+        type: 'inline-cta',
+        emoji: '🧠',
+        label: '두뇌 게임',
+        title: '기억력·집중력, 게임으로 간단히 체크해보세요',
+        description: '패턴 맞추기, 순서 기억하기 등 간단한 두뇌 게임으로 현재 인지 상태를 확인할 수 있습니다.',
+        ctaText: '두뇌 트레이닝 시작',
+        ctaLink: '/brain-training',
+        insertAfterParagraph: 20
+      },
+      {
+        type: 'inline-cta',
+        emoji: '📋',
+        label: '무료 체험',
+        title: '스트레스 지수, 3분이면 확인할 수 있어요',
+        description: '가족 돌봄 스트레스 체험검사로 현재 상태를 객관적으로 파악해보세요.',
+        ctaText: '무료 스트레스 체크',
+        ctaLink: '/assessment',
+        insertAfterParagraph: 28
+      }
+    ],
     platformTip: {
       title: "인지 건강 상태, 5분 만에 확인해보세요",
       description: "간단한 인지 기능 체크와 두뇌 트레이닝 게임으로 현재 상태를 파악하고, 꾸준히 관리할 수 있습니다.",

@@ -28,6 +28,7 @@ import NotFound from "./pages/NotFound";
 import AIAssistant from "./pages/AIAssistant";
 import ConcernStorage from "./pages/ConcernStorage";
 import ReportGenerator from "./pages/ReportGenerator";
+import ReportGeneratorPro from "./pages/ReportGeneratorPro";
 import MetaverseVoice from "./pages/MetaverseVoice";
 // GameCounseling integrated into MetaverseVoice
 

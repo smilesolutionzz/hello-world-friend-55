@@ -1,826 +1,409 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SEOHead from '@/components/common/SEOHead';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { useTokens } from '@/hooks/useTokens';
 import { useSubscription } from '@/hooks/useSubscription';
-import { sanitizeAIContent } from '@/utils/sanitizeHtml';
-import html2pdf from 'html2pdf.js';
-import ScratchCard from '@/components/gamification/ScratchCard';
-import ReportCurationSection from '@/components/report/ReportCurationSection';
-import VisualSummaryButton from '@/components/visual-summary/VisualSummaryButton';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
-  FileText, Download, Loader2, Sparkles, Brain, Heart, TrendingUp,
-  Users, Target, Activity, BarChart3, Zap, Shield, Award, BookOpen,
-  LineChart, CheckCircle2, AlertCircle, ArrowRight, Database, Upload,
-  ChevronDown, ChevronUp, Eye, Calendar, Crown, Copy, Share2, Mail,
-  FileDown, MessageSquare, Lock, ImageIcon, ArrowLeft, Layers, Compass,
-  GraduationCap, FlaskConical, Microscope, Globe
+  FileText, Crown, Brain, Heart, TrendingUp, Target, LineChart,
+  Users, Shield, Activity, BarChart3, ArrowRight, Lock,
+  AlertTriangle, CheckCircle2, Zap, Clock, Star, ChevronDown,
+  Sparkles, Eye, ArrowLeft
 } from 'lucide-react';
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from '@/components/ui/dialog';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
 
-// ── 샘플 리포트 섹션 데이터 ──
-const SAMPLE_REPORT_SECTIONS_KO = [
-  { title: '종합 발달 프로파일', icon: Brain, color: 'from-blue-500 to-cyan-500', theory: 'Piaget 인지발달이론 · Vygotsky 근접발달영역(ZPD)', preview: '대상자의 인지, 언어, 사회정서, 운동 영역을 Piaget의 인지발달 단계와 Vygotsky의 ZPD 이론에 기반하여 종합 분석합니다.' },
-  { title: '심리·정서 심층 분석', icon: Heart, color: 'from-pink-500 to-rose-500', theory: 'Beck 인지치료이론 · Bowlby 애착이론 · DSM-5 기준', preview: 'Beck의 인지 삼제 모델과 Bowlby의 애착이론을 적용하여 불안, 우울, 자존감, 스트레스 반응 패턴을 다층적으로 분석합니다.' },
-  { title: '강점·약점 매트릭스', icon: TrendingUp, color: 'from-green-500 to-emerald-500', theory: 'Gardner 다중지능이론 · Seligman 긍정심리학', preview: 'Gardner의 8가지 다중지능 이론과 Seligman의 VIA 성격 강점 분류를 기반으로 핵심 강점 영역과 지원 필요 영역을 시각화합니다.' },
-  { title: '맞춤형 개입 프로그램', icon: Target, color: 'from-purple-500 to-violet-500', theory: 'ABA 응용행동분석 · CBT 인지행동치료 · Floortime DIR 모델', preview: '근거 기반 치료의 Gold Standard에 따라 ABA, CBT, DIR/Floortime 등 효과가 검증된 개입 전략을 설계합니다.' },
-  { title: '발달 로드맵 & 예후', icon: LineChart, color: 'from-orange-500 to-amber-500', theory: 'Bronfenbrenner 생태체계이론 · Erikson 심리사회적 발달단계', preview: 'Bronfenbrenner의 생태체계모델과 Erikson의 8단계 심리사회적 발달이론을 통합 적용하여 발달 경로를 예측합니다.' },
-  { title: '또래 비교 분석', icon: Users, color: 'from-indigo-500 to-blue-500', theory: 'WHO 글로벌 발달 규준 · CDC Milestone Tracker', preview: 'WHO 다국적 성장 기준과 CDC의 발달 이정표, 한국 아동 발달 규준 데이터를 기반으로 각 영역별 백분위를 산출합니다.' },
-  { title: '전문가 소견서', icon: Shield, color: 'from-teal-500 to-cyan-500', theory: 'ICD-11 · DSM-5-TR · 한국 임상심리학회 기준', preview: 'ICD-11 및 DSM-5-TR 진단 체계를 참조하고 APA 가이드라인에 따라 임상 수준의 전문가 소견서를 생성합니다.' },
-  { title: '가족 지원 가이드', icon: Activity, color: 'from-fuchsia-500 to-pink-500', theory: 'Baumrind 양육유형이론 · Gottman 정서코칭 · PCIT', preview: 'Baumrind의 양육유형 모델과 Gottman의 정서코칭 5단계, PCIT 프로토콜에 기반한 양육 전략을 제공합니다.' },
-  { title: '종합 요약 및 제언', icon: BarChart3, color: 'from-violet-500 to-purple-500', theory: 'ICF 국제기능분류 · WHO 통합 케어 프레임워크', preview: 'WHO의 ICF 프레임워크에 따라 전체 분석을 통합 정리합니다. 500개 이상의 최신 연구논문을 교차 검증합니다.' }
+// 레이더 차트 샘플 데이터
+const radarData = [
+  { subject: '인지', value: 72, fullMark: 100 },
+  { subject: '정서', value: 58, fullMark: 100 },
+  { subject: '사회성', value: 65, fullMark: 100 },
+  { subject: '언어', value: 80, fullMark: 100 },
+  { subject: '운동', value: 75, fullMark: 100 },
 ];
 
-const SAMPLE_REPORT_SECTIONS_EN = [
-  { title: 'Comprehensive Development Profile', icon: Brain, color: 'from-blue-500 to-cyan-500', theory: "Piaget's Cognitive Development · Vygotsky's ZPD", preview: "Comprehensive analysis of cognitive, language, social-emotional, and motor domains based on Piaget's developmental stages and Vygotsky's Zone of Proximal Development." },
-  { title: 'Psychological & Emotional Deep Analysis', icon: Heart, color: 'from-pink-500 to-rose-500', theory: "Beck's Cognitive Theory · Bowlby's Attachment · DSM-5", preview: "Multi-layered analysis of anxiety, depression, self-esteem, and stress response patterns using Beck's cognitive triad and Bowlby's attachment theory." },
-  { title: 'Strengths & Weaknesses Matrix', icon: TrendingUp, color: 'from-green-500 to-emerald-500', theory: "Gardner's Multiple Intelligences · Seligman's Positive Psychology", preview: "Visualization of key strengths and areas needing support based on Gardner's 8 intelligences and Seligman's VIA character strengths." },
-  { title: 'Tailored Intervention Program', icon: Target, color: 'from-purple-500 to-violet-500', theory: 'ABA · CBT · Floortime DIR Model', preview: 'Evidence-based intervention strategies designed according to Gold Standard practices including ABA, CBT, and DIR/Floortime.' },
-  { title: 'Development Roadmap & Prognosis', icon: LineChart, color: 'from-orange-500 to-amber-500', theory: "Bronfenbrenner's Ecological Systems · Erikson's Psychosocial Stages", preview: "Developmental trajectory prediction integrating Bronfenbrenner's ecological model and Erikson's 8-stage psychosocial development theory." },
-  { title: 'Peer Comparison Analysis', icon: Users, color: 'from-indigo-500 to-blue-500', theory: 'WHO Global Standards · CDC Milestone Tracker', preview: 'Percentile calculations for each domain based on WHO multinational growth standards and CDC developmental milestones.' },
-  { title: 'Expert Clinical Opinion', icon: Shield, color: 'from-teal-500 to-cyan-500', theory: 'ICD-11 · DSM-5-TR · APA Guidelines', preview: 'Clinical-level expert opinion generated referencing ICD-11 and DSM-5-TR diagnostic systems following APA guidelines.' },
-  { title: 'Family Support Guide', icon: Activity, color: 'from-fuchsia-500 to-pink-500', theory: "Baumrind's Parenting Styles · Gottman's Emotion Coaching · PCIT", preview: "Parenting strategies based on Baumrind's parenting model, Gottman's 5-step emotion coaching, and PCIT protocol." },
-  { title: 'Summary & Recommendations', icon: BarChart3, color: 'from-violet-500 to-purple-500', theory: "ICF Classification · WHO Integrated Care Framework", preview: "Integrated summary following WHO's ICF framework. Cross-verified with 500+ latest research papers." }
+// 바 차트 샘플 데이터
+const barData = [
+  { name: '집중력', score: 45, avg: 70 },
+  { name: '감정조절', score: 38, avg: 65 },
+  { name: '자존감', score: 55, avg: 72 },
+  { name: '사회적응', score: 60, avg: 68 },
 ];
-
-// ── 애니메이션 카운터 ──
-const AnimatedCounter = ({ value, duration = 1.5 }: { value: number; duration?: number }) => {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    let start = 0;
-    const end = value;
-    const timer = setInterval(() => {
-      start += Math.ceil(end / (duration * 30));
-      if (start >= end) { setCount(end); clearInterval(timer); }
-      else setCount(start);
-    }, 1000 / 30);
-    return () => clearInterval(timer);
-  }, [value, duration]);
-  return <span>{count}</span>;
-};
-
-// ── 스텝 인디케이터 ──
-const StepIndicator = ({ currentStep, steps }: { currentStep: number; steps: string[] }) => (
-  <div className="flex items-center gap-1 w-full max-w-md mx-auto mb-8">
-    {steps.map((label, i) => (
-      <React.Fragment key={i}>
-        <div className="flex flex-col items-center gap-1">
-          <motion.div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-              i <= currentStep ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-muted text-muted-foreground'
-            }`}
-            animate={i === currentStep ? { scale: [1, 1.15, 1] } : {}}
-            transition={{ duration: 0.6, repeat: i === currentStep ? Infinity : 0, repeatDelay: 1 }}
-          >
-            {i < currentStep ? '✓' : i + 1}
-          </motion.div>
-          <span className={`text-[10px] ${i <= currentStep ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>{label}</span>
-        </div>
-        {i < steps.length - 1 && (
-          <div className={`flex-1 h-0.5 rounded-full mt-[-16px] ${i < currentStep ? 'bg-primary' : 'bg-muted'}`} />
-        )}
-      </React.Fragment>
-    ))}
-  </div>
-);
 
 const ReportGenerator = () => {
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(true);
-  const [reportData, setReportData] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
-  const [progress, setProgress] = useState(0);
-  const [uploadedFiles, setUploadedFiles] = useState<{name: string; type: string}[]>([]);
-  const [isAnalyzingImages, setIsAnalyzingImages] = useState(false);
-  const [imageAnalysisResults, setImageAnalysisResults] = useState<string>('');
-  const [reportMode, setReportMode] = useState<'with-data' | 'without-data'>('with-data');
-  const [userInput, setUserInput] = useState({ name: '', birthDate: '', gender: '', recentConcerns: '', developmentalNotes: '' });
-  const [showDataDetails, setShowDataDetails] = useState({ assessments: false, observations: false, observationSessions: false, chatMessages: false });
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { tokenBalance, consumeTokens, checkTokenAvailability } = useTokens();
   const { isPremiumUser, loading: subLoading } = useSubscription();
-  const [familyEmail, setFamilyEmail] = useState('');
-  const [isSendingEmail, setIsSendingEmail] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const [showScratchCard, setShowScratchCard] = useState(false);
-  const [showSampleReport, setShowSampleReport] = useState(false);
-  const [activeReportSection, setActiveReportSection] = useState(0);
   const { isEnglish, localePath } = useLanguage();
+  const ctaRef = useRef<HTMLDivElement>(null);
 
   const isPremium = isPremiumUser();
-  const currentStep = !isPremium ? 0 : reportMode ? (userInput.name ? (reportData ? 3 : 2) : 1) : 0;
-
-  const SAMPLE_REPORT_SECTIONS = isEnglish ? SAMPLE_REPORT_SECTIONS_EN : SAMPLE_REPORT_SECTIONS_KO;
-
-  // i18n helper
-  const t = (ko: string, en: string) => isEnglish ? en : ko;
 
   useEffect(() => { loadUserData(); }, []);
 
   const loadUserData = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { setIsLoggedIn(false); setIsLoadingData(false); return; }
+      if (!session) { setIsLoggedIn(false); setIsLoading(false); return; }
       setIsLoggedIn(true);
-      const [{ data: assessments }, { data: observations }, { data: chatRooms }, { data: observationSessions }, { data: profile }] = await Promise.all([
-        supabase.from('assessments').select('*').or(`user_id.eq.${session.user.id},profile_id.eq.${session.user.id}`).order('created_at', { ascending: false }),
-        supabase.from('observation_logs').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
-        supabase.from('chat_rooms').select('*, chat_messages(*)').eq('user_id', session.user.id).order('created_at', { ascending: false }),
-        supabase.from('observation_sessions').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
-        supabase.from('profiles').select('*').eq('id', session.user.id).single(),
+      const [{ data: assessments }, { data: observations }] = await Promise.all([
+        supabase.from('assessments').select('age_group, risk_level, results, created_at').or(`user_id.eq.${session.user.id},profile_id.eq.${session.user.id}`).order('created_at', { ascending: false }).limit(5),
+        supabase.from('observation_logs').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }).limit(5),
       ]);
-      const totalDataCount = (assessments?.length || 0) + (observations?.length || 0) + (observationSessions?.length || 0) + (chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0);
-      setUserData({ assessments: assessments || [], observations: observations || [], observationSessions: observationSessions || [], chatRooms: chatRooms || [], profile: profile || {}, totalAssessments: assessments?.length || 0, totalObservations: observations?.length || 0, totalObservationSessions: observationSessions?.length || 0, totalChatMessages: chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0, totalDataCount });
-    } catch (error) {
-      console.error('데이터 로드 오류:', error);
-      toast({ title: t("데이터 로드 실패", "Failed to Load Data"), description: t("사용자 데이터를 불러오는 중 오류가 발생했습니다.", "An error occurred while loading user data."), variant: "destructive" });
-    } finally { setIsLoadingData(false); }
+      setUserData({
+        assessmentCount: assessments?.length || 0,
+        observationCount: observations?.length || 0,
+        latestRisk: assessments?.[0]?.risk_level || null,
+        latestAgeGroup: assessments?.[0]?.age_group || null,
+      });
+    } catch (e) { console.error(e); } finally { setIsLoading(false); }
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    setIsAnalyzingImages(true);
-    toast({ title: t("📎 파일 분석 중", "📎 Analyzing Files"), description: t("AI가 외부 검사 파일을 분석합니다...", "AI is analyzing external test files...") });
-    try {
-      const fileDataList: { data: string; name: string; type: string }[] = [];
-      for (const file of Array.from(files)) {
-        const reader = new FileReader();
-        const dataUrl = await new Promise<string>((resolve) => { reader.onload = () => resolve(reader.result as string); reader.readAsDataURL(file); });
-        fileDataList.push({ data: dataUrl, name: file.name, type: file.type });
-      }
-      setUploadedFiles(fileDataList.map(f => ({ name: f.name, type: f.type })));
-      const { data, error } = await supabase.functions.invoke('analyze-test-images', { body: { files: fileDataList } });
-      if (error) throw error;
-      setImageAnalysisResults(data?.analysis || '');
-      toast({ title: t("✅ 파일 분석 완료", "✅ File Analysis Complete"), description: t(`${fileDataList.length}개 파일이 분석되었습니다.`, `${fileDataList.length} file(s) analyzed.`) });
-    } catch (err) { toast({ title: t("분석 실패", "Analysis Failed"), description: t("파일 분석에 실패했습니다.", "Failed to analyze files."), variant: "destructive" }); } finally { setIsAnalyzingImages(false); }
-  };
-
-  const generateReport = async () => {
-    if (!isPremium) { navigate(localePath('/token-subscription')); return; }
-    if (reportMode === 'with-data') {
-      const totalData = userData?.totalDataCount || 0;
-      if (totalData < 3) {
-        toast({ title: t("데이터 부족", "Insufficient Data"), description: t(`종합 리포트 생성에는 최소 3개의 데이터가 필요합니다. (현재: ${totalData}개)`, `At least 3 data points are required. (Current: ${totalData})`), variant: "destructive" });
-        return;
-      }
-    } else {
-      if (!userInput.recentConcerns && !userInput.developmentalNotes) {
-        toast({ title: t("정보 부족", "Insufficient Information"), description: t("고민·상태 기반 리포트를 생성하려면 '고민이나 걱정거리' 또는 '발달/심리적 특징' 중 하나 이상 입력해주세요.", "Please enter at least one of 'Concerns' or 'Developmental Notes' to generate a report."), variant: "destructive" });
-        return;
-      }
-    }
-    if (!userInput.name || !userInput.birthDate || !userInput.gender) {
-      toast({ title: t("필수 정보 누락", "Required Fields Missing"), description: t("이름, 생년월일, 성별은 필수 입력 항목입니다.", "Name, date of birth, and gender are required."), variant: "destructive" });
+  const handlePayment = () => {
+    if (!isLoggedIn) {
+      localStorage.setItem('auth_redirect_after', localePath('/report-generator'));
+      navigate(localePath('/auth'));
       return;
     }
-    setIsGenerating(true); setProgress(0);
-    try {
-      const progressInterval = setInterval(() => { setProgress(prev => Math.min(prev + 5, 90)); }, 1000);
-      toast({ title: t("🔬 전문가급 분석 시작", "🔬 Expert-Level Analysis Started"), description: reportMode === 'with-data' ? t("실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다...", "Performing real-time web search + latest research-based deep analysis...") : t("고민·상태 정보를 기반으로 맞춤 분석을 진행합니다...", "Performing personalized analysis based on your concerns...") });
-      const body: any = { reportMode, userInput: { name: userInput.name, birthDate: userInput.birthDate, gender: userInput.gender, recentConcerns: userInput.recentConcerns, developmentalNotes: userInput.developmentalNotes }, language: isEnglish ? 'en' : 'ko' };
-      if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.chatRooms = userData.chatRooms; body.profile = userData.profile; }
-      if (imageAnalysisResults) { body.externalTestImages = imageAnalysisResults; }
-      const { data, error } = await supabase.functions.invoke('generate-expert-report', { body });
-      clearInterval(progressInterval); setProgress(100);
-      if (error) throw error;
-      if (data?.error === 'LOVABLE_AI_CREDITS_INSUFFICIENT') { toast({ title: t("💳 AI 크레딧 부족", "💳 Insufficient AI Credits"), description: data.message, variant: "destructive" }); return; }
-      if (data?.success && data?.report) {
-        setReportData({ ...data.report, generatedAt: new Date().toISOString(), dataSource: { assessments: userData?.totalAssessments || 0, observations: userData?.totalObservations || 0, observationSessions: userData?.totalObservationSessions || 0, chatMessages: userData?.totalChatMessages || 0, totalDataCount: userData?.totalDataCount || 0 } });
-        toast({ title: t("🎉 프리미엄 리포트 생성 완료!", "🎉 Premium Report Generated!"), description: t("세계 최고 수준의 분석 리포트가 생성되었습니다.", "Your world-class analysis report has been generated.") });
-        setTimeout(() => setShowScratchCard(true), 1500);
-      } else { throw new Error(data?.error || t('리포트 데이터가 없습니다.', 'No report data found.')); }
-    } catch (error: any) {
-      const errorMessage = error?.message || '';
-      const isPaymentError = errorMessage.includes('402') || errorMessage.includes('크레딧');
-      toast({ title: isPaymentError ? t("💳 AI 크레딧 부족", "💳 Insufficient AI Credits") : t("생성 실패", "Generation Failed"), description: isPaymentError ? t("AI 크레딧이 부족합니다.", "Insufficient AI credits.") : t("리포트 생성 중 오류가 발생했습니다.", "An error occurred while generating the report."), variant: "destructive" });
-    } finally { setIsGenerating(false); setProgress(0); }
+    navigate(localePath('/token-subscription'));
   };
 
-  const downloadPDF = () => {
-    const element = document.getElementById('report-content');
-    if (!element) return;
-    import('@/utils/pdfBrandingHeader').then(({ injectPdfBrandingHeader, removePdfBrandingHeader }) => {
-      injectPdfBrandingHeader(element);
-      const style = document.createElement('style'); style.id = 'pdf-page-break-style';
-      style.textContent = `#report-content .pdf-section-break { page-break-before: always !important; break-before: page !important; } #report-content .pdf-no-break { page-break-inside: avoid !important; break-inside: avoid !important; }`;
-      document.head.appendChild(style);
-      const sections = element.querySelectorAll('[data-report-section]');
-      sections.forEach((sec, idx) => { if (idx > 0) sec.classList.add('pdf-section-break'); sec.classList.add('pdf-no-break'); });
-      html2pdf().set({ margin: [15, 15, 15, 15], filename: `${isEnglish ? 'PremiumAnalysis' : '프리미엄분석'}_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg' as const, quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const } } as any).from(element).save().then(() => { document.getElementById('pdf-page-break-style')?.remove(); sections.forEach((sec) => { sec.classList.remove('pdf-section-break', 'pdf-no-break'); }); removePdfBrandingHeader(element); });
-    });
-    toast({ title: t("📥 PDF 다운로드 시작", "📥 PDF Download Started") });
+  const scrollToCTA = () => {
+    ctaRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const copyToClipboard = async () => {
-    if (!reportData) return;
-    let text = t(`프리미엄 종합 분석 리포트\n대상: ${userInput.name}\n\n`, `Premium Comprehensive Analysis Report\nSubject: ${userInput.name}\n\n`);
-    reportData.sections?.forEach((s: any, i: number) => { text += `${i + 1}. ${s.title}\n${s.content.replace(/<[^>]*>/g, '')}\n\n`; });
-    await navigator.clipboard.writeText(text); toast({ title: t("📋 클립보드에 복사됨", "📋 Copied to Clipboard") });
-  };
-
-  const shareReport = async () => { if (navigator.share) { await navigator.share({ title: t('프리미엄 종합 분석 리포트', 'Premium Analysis Report'), text: t(`${userInput.name}님의 프리미엄 분석 리포트`, `Premium Analysis Report for ${userInput.name}`), url: window.location.href }); } else { copyToClipboard(); } };
-
-  const sendFamilyEmail = async () => {
-    if (!familyEmail || !reportData) { toast({ title: t("이메일 주소를 입력해주세요", "Please enter an email address"), variant: "destructive" }); return; }
-    setIsSendingEmail(true);
-    try {
-      const summaryText = reportData.summary?.replace(/<[^>]*>/g, '') || '';
-      const sections = reportData.sections?.map((s: any) => ({ title: s.title, content: s.content?.replace(/<[^>]*>/g, '').substring(0, 800) || '' })) || [];
-      const recommendations = reportData.sections?.slice(0, 5).map((s: any) => s.title) || [];
-      const { error } = await supabase.functions.invoke('send-share-email', { body: { email: familyEmail, type: 'report', title: t(`${userInput.name}님의 프리미엄 종합 분석 리포트`, `Premium Analysis Report for ${userInput.name}`), recipientName: '', senderName: userInput.name, content: { summary: summaryText, sections, recommendations } } });
-      if (error) throw error;
-      toast({ title: t("✅ 이메일 전송 완료", "✅ Email Sent"), description: t(`${familyEmail}로 리포트가 전송되었습니다.`, `Report sent to ${familyEmail}.`) }); setFamilyEmail('');
-    } catch (e: any) { toast({ title: t("이메일 전송 실패", "Email Send Failed"), description: e?.message || t("잠시 후 다시 시도해주세요.", "Please try again later."), variant: "destructive" }); } finally { setIsSendingEmail(false); }
-  };
-
-  // ── 로딩 ──
-  if (isLoadingData || subLoading) {
+  if (isLoading || subLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center space-y-4">
-          <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mx-auto">
-            <FlaskConical className="w-8 h-8 text-primary-foreground" />
-          </motion.div>
-          <p className="text-muted-foreground text-lg font-semibold">{t('데이터를 불러오는 중...', 'Loading data...')}</p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
+          <Brain className="w-6 h-6 text-primary-foreground" />
         </motion.div>
       </div>
     );
   }
 
-  const sectionIcons = [Brain, Heart, TrendingUp, Target, LineChart, Users, Shield, Activity, BarChart3, FileText];
-  const sectionColors = [
-    { bg: 'bg-blue-50', border: 'border-blue-200', title: 'text-blue-800', icon: 'bg-blue-100 text-blue-600' },
-    { bg: 'bg-rose-50', border: 'border-rose-200', title: 'text-rose-800', icon: 'bg-rose-100 text-rose-600' },
-    { bg: 'bg-green-50', border: 'border-green-200', title: 'text-green-800', icon: 'bg-green-100 text-green-600' },
-    { bg: 'bg-purple-50', border: 'border-purple-200', title: 'text-purple-800', icon: 'bg-purple-100 text-purple-600' },
-    { bg: 'bg-orange-50', border: 'border-orange-200', title: 'text-orange-800', icon: 'bg-orange-100 text-orange-600' },
-    { bg: 'bg-indigo-50', border: 'border-indigo-200', title: 'text-indigo-800', icon: 'bg-indigo-100 text-indigo-600' },
-    { bg: 'bg-teal-50', border: 'border-teal-200', title: 'text-teal-800', icon: 'bg-teal-100 text-teal-600' },
-    { bg: 'bg-fuchsia-50', border: 'border-fuchsia-200', title: 'text-fuchsia-800', icon: 'bg-fuchsia-100 text-fuchsia-600' },
-    { bg: 'bg-violet-50', border: 'border-violet-200', title: 'text-violet-800', icon: 'bg-violet-100 text-violet-600' },
-    { bg: 'bg-cyan-50', border: 'border-cyan-200', title: 'text-cyan-800', icon: 'bg-cyan-100 text-cyan-600' },
-  ];
+  // 프리미엄 사용자는 기존 리포트 생성 플로우로
+  if (isPremium && isLoggedIn) {
+    navigate(localePath('/report-generator-pro'));
+    return null;
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-background">
       <SEOHead
-        title="AI 종합 리포트 - AIHPRO | 박사급 심리·발달 분석 리포트"
-        description="500+ 논문과 15개 심리이론 기반 AI 종합 리포트. 검사 결과, 상담 내용, 관찰 기록을 통합 분석한 박사급 임상 수준 보고서."
-        keywords="심리리포트,종합분석리포트,AI분석보고서,발달평가리포트,심리검사결과"
+        title="AI 종합 리포트 - AIHPRO | 행동 데이터 기반 심층 분석"
+        description="검사 결과 기반 AI 행동 분석 리포트. 기질 유형, 정서 상태, 위험 신호, 부모 맞춤 대응 전략까지."
+        keywords="심리리포트,행동분석,AI리포트,발달평가,심리검사결과"
         canonicalUrl="https://aihpro.app/report-generator"
       />
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* ── 네비게이션 ── */}
-        <Button onClick={() => navigate(localePath('/'))} variant="ghost" className="mb-6 text-muted-foreground hover:text-foreground gap-2">
-          <ArrowLeft className="w-4 h-4" /> {t('뒤로가기', 'Back')}
+
+      <div className="max-w-lg mx-auto px-4 pb-32">
+        {/* 뒤로가기 */}
+        <Button onClick={() => navigate(localePath('/'))} variant="ghost" className="mt-4 mb-2 text-muted-foreground hover:text-foreground gap-2 text-sm px-2">
+          <ArrowLeft className="w-4 h-4" /> 뒤로
         </Button>
 
-        {/* ── 히어로 헤더 ── */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10 space-y-5">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full border border-primary/20">
-            <Crown className="w-4 h-4 text-primary" />
-            <span className="text-sm font-bold text-primary">Premium Personal Report</span>
-          </div>
-          <h1 className="text-3xl md:text-5xl font-black leading-tight text-white">
-            {t('나만의 AI 종합 리포트', 'My AI Comprehensive Report')}
-          </h1>
-          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-            {isEnglish ? (
-              <>Based on <strong className="text-white">500+ papers · 15 psychological theories</strong><br className="hidden md:block" />
-              A <strong className="text-white">doctoral-level clinical</strong> report with 9 professional sections</>
-            ) : (
-              <>전 세계 <strong className="text-white">500+ 논문 · 15개 심리이론</strong> 기반<br className="hidden md:block" />
-              9가지 전문 섹션으로 통합 분석하는 <strong className="text-white">박사급 임상 수준</strong> 리포트</>
+        {/* ─── 섹션 1: 결과 리마인드 ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <div className="bg-card rounded-2xl border border-border p-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">분석 완료</p>
+                <h2 className="text-lg font-bold text-foreground">아이의 분석 결과가 생성되었습니다</h2>
+              </div>
+            </div>
+
+            {/* 기질/정서 미리보기 */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-blue-50 dark:bg-blue-950/30 rounded-xl p-4 border border-blue-100 dark:border-blue-900/50">
+                <Brain className="w-5 h-5 text-blue-500 mb-2" />
+                <p className="text-xs text-muted-foreground">기질 유형</p>
+                <p className="text-sm font-bold text-foreground">민감-탐색형</p>
+                <div className="mt-2 h-1.5 bg-blue-100 dark:bg-blue-900/50 rounded-full overflow-hidden">
+                  <div className="h-full w-[72%] bg-blue-500 rounded-full" />
+                </div>
+              </div>
+              <div className="bg-rose-50 dark:bg-rose-950/30 rounded-xl p-4 border border-rose-100 dark:border-rose-900/50">
+                <Heart className="w-5 h-5 text-rose-500 mb-2" />
+                <p className="text-xs text-muted-foreground">정서 상태</p>
+                <p className="text-sm font-bold text-foreground">주의 관찰 필요</p>
+                <div className="mt-2 h-1.5 bg-rose-100 dark:bg-rose-900/50 rounded-full overflow-hidden">
+                  <div className="h-full w-[58%] bg-rose-500 rounded-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 데이터 기반 강조 */}
+            {userData && userData.assessmentCount > 0 && (
+              <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg">
+                <BarChart3 className="w-4 h-4 text-primary" />
+                <p className="text-xs text-muted-foreground">
+                  검사 {userData.assessmentCount}건 · 관찰 {userData.observationCount}건의 행동 데이터 분석 완료
+                </p>
+              </div>
             )}
-          </p>
-
-          {/* 학술 뱃지 */}
-          <div className="flex flex-wrap justify-center gap-1.5 max-w-xl mx-auto">
-            {['DSM-5-TR', 'ICD-11', 'WHO', 'APA', 'Cochrane', 'JAMA', 'Lancet'].map((tag) => (
-              <span key={tag} className="px-2.5 py-1 text-[10px] font-medium rounded-full bg-white/5 text-white/50 border border-white/10">
-                {tag}
-              </span>
-            ))}
           </div>
+        </motion.section>
 
-          {/* 프리미엄 상태 */}
-          {isLoggedIn && (
-            <div>
-              {isPremium ? (
-                <Badge className="bg-primary/20 text-primary border-primary/30 px-4 py-1.5 text-xs">
-                  <Crown className="w-3.5 h-3.5 mr-1.5" /> {t('프리미엄 · 무제한 생성', 'Premium · Unlimited Generation')}
-                </Badge>
-              ) : (
-                <Badge variant="outline" className="border-white/20 text-white/60 px-4 py-1.5 text-xs">
-                  <Lock className="w-3.5 h-3.5 mr-1.5" /> {t('프리미엄 구독 필요', 'Premium Subscription Required')}
-                </Badge>
-              )}
-            </div>
-          )}
-        </motion.div>
-
-        {/* ── 스텝 인디케이터 ── */}
-        {isPremium && !reportData && (
-          <StepIndicator currentStep={currentStep} steps={isEnglish ? ['Select Mode', 'Enter Info', 'Generate Report'] : ['모드 선택', '정보 입력', '리포트 생성']} />
-        )}
-
-        {/* ── 비로그인/비구독자: 구독 유도 ── */}
-        {(isLoggedIn === false || (isLoggedIn && !isPremium)) && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto mb-10">
-            <div className="rounded-2xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-white/10 p-8 text-center space-y-5">
-              <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mx-auto">
-                <Crown className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold text-white">{t('프리미엄 구독자 전용', 'Premium Subscribers Only')}</h3>
-              <p className="text-muted-foreground text-sm max-w-md mx-auto">
-                {t('프리미엄 패스를 구독하면 AI 종합 리포트, 심층 분석, PDF 다운로드 등 모든 기능을 무제한으로 이용할 수 있습니다.',
-                   'Subscribe to Premium Pass for unlimited access to AI reports, deep analysis, PDF downloads, and all features.')}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                {isLoggedIn === false ? (
-                  <Button onClick={() => { localStorage.setItem('auth_redirect_after', localePath('/report-generator')); navigate(localePath('/auth')); }} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-3 rounded-xl">
-                    {t('회원가입 / 로그인', 'Sign Up / Log In')} <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                ) : (
-                  <Button onClick={() => navigate(localePath('/token-subscription'))} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-3 rounded-xl">
-                    <Crown className="w-5 h-5 mr-2" /> {t('프리미엄 구독하기', 'Subscribe to Premium')}
-                  </Button>
-                )}
-                <Button onClick={() => setShowSampleReport(true)} variant="outline" className="border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 px-8 py-3 rounded-xl">
-                  <Eye className="w-5 h-5 mr-2" /> {t('샘플 미리보기', 'Sample Preview')}
-                </Button>
+        {/* ─── 섹션 2: 부족함 강조 ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8">
+          <div className="bg-amber-50 dark:bg-amber-950/20 rounded-2xl border border-amber-200 dark:border-amber-900/50 p-6 space-y-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-6 h-6 text-amber-500 mt-0.5 shrink-0" />
+              <div>
+                <h3 className="text-base font-bold text-foreground">지금 보신 결과는 일부입니다</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  전체 리포트에는 아래 항목이 포함되어 있지만,<br/>
+                  아직 확인하지 않으셨습니다.
+                </p>
               </div>
             </div>
-          </motion.div>
-        )}
 
-        {/* ── 샘플 리포트 다이얼로그 ── */}
-        <Dialog open={showSampleReport} onOpenChange={setShowSampleReport}>
-          <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white border-0">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                <Crown className="w-7 h-7 text-amber-500" /> {t('프리미엄 리포트 샘플', 'Premium Report Sample')}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6 mt-4">
-              <div className="bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 rounded-2xl p-8 text-center text-white space-y-4">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-purple-500 flex items-center justify-center mx-auto">
-                  <FileText className="w-10 h-10" />
+            <div className="space-y-2.5">
+              {[
+                { icon: AlertTriangle, text: '문제 원인 분석 및 위험 신호 감지', color: 'text-red-500' },
+                { icon: Target, text: '맞춤형 개입 방법 및 해결 전략', color: 'text-purple-500' },
+                { icon: Users, text: '부모 행동 가이드 및 양육 코칭', color: 'text-blue-500' },
+                { icon: Shield, text: '전문가 수준의 임상 소견서', color: 'text-teal-500' },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3 bg-background/80 rounded-xl px-4 py-3 border border-border/50">
+                  <Lock className="w-4 h-4 text-muted-foreground/50" />
+                  <item.icon className={`w-4 h-4 ${item.color}`} />
+                  <span className="text-sm text-foreground/80">{item.text}</span>
                 </div>
-                <h2 className="text-2xl font-black">{t('AI 종합 발달·심리 분석 리포트', 'AI Comprehensive Development & Psychology Report')}</h2>
-                <p className="text-purple-200">{t('대상: 홍길동 (7세) · 생성일: 2025년 2월 6일', 'Subject: John Doe (Age 7) · Generated: Feb 6, 2025')}</p>
-                <div className="flex justify-center gap-3 flex-wrap">
-                  <Badge className="bg-blue-500/20 text-blue-200 border border-blue-400/30">{t('검사 12건', '12 Assessments')}</Badge>
-                  <Badge className="bg-green-500/20 text-green-200 border border-green-400/30">{t('관찰 8건', '8 Observations')}</Badge>
-                  <Badge className="bg-pink-500/20 text-pink-200 border border-pink-400/30">{t('상담 5건', '5 Consultations')}</Badge>
-                </div>
-              </div>
-              {SAMPLE_REPORT_SECTIONS.map((section, idx) => {
-                const IconComp = section.icon;
-                return (
-                  <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="relative">
-                    <div className="flex items-start gap-4 p-5 rounded-xl bg-slate-50 border border-slate-200">
-                      <div className={`p-3 rounded-xl bg-gradient-to-br ${section.color} shadow-md shrink-0`}>
-                        <IconComp className="w-6 h-6 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg text-slate-800 mb-2">{idx + 1}. {section.title}</h3>
-                        <p className="text-xs text-indigo-600 font-semibold mb-1">📖 {section.theory}</p>
-                        <p className="text-sm text-slate-600 leading-relaxed">{section.preview}</p>
-                      </div>
-                    </div>
-                    {idx >= 4 && (
-                      <div className="absolute inset-0 bg-white/60 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                        <div className="text-center space-y-2"><Lock className="w-6 h-6 text-purple-400 mx-auto" /><p className="text-sm font-semibold text-purple-600">{t('프리미엄 구독 시 전체 공개', 'Full access with Premium')}</p></div>
-                      </div>
-                    )}
-                  </motion.div>
-                );
-              })}
-              <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 space-y-3">
-                <div className="flex items-center gap-3 justify-center">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center"><Shield className="w-5 h-5 text-white" /></div>
-                  <h3 className="text-lg font-bold text-emerald-800">{t('실제 전문가에게 직접 검사받고 싶으신가요?', 'Want a professional assessment from a real expert?')}</h3>
-                </div>
-                <p className="text-sm text-emerald-700 text-center max-w-lg mx-auto">{t('공인 자격을 갖춘 임상심리전문가가 직접 전문 검사를 실시합니다.', 'Licensed clinical psychologists conduct professional assessments.')}</p>
-                <div className="text-center">
-                  <a href="https://smilesolution.kr" target="_blank" rel="noopener noreferrer">
-                    <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-8 py-3 rounded-xl">
-                      <Award className="w-5 h-5 mr-2" /> {t('전문가 맞춤 검사 신청', 'Request Expert Assessment')}
-                    </Button>
-                  </a>
-                </div>
-              </div>
-              <div className="text-center py-6">
-                <Button onClick={() => { setShowSampleReport(false); navigate(localePath('/token-subscription')); }} size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-10 py-4 rounded-xl text-lg">
-                  <Crown className="w-6 h-6 mr-2" /> {t('프리미엄 구독하고 내 리포트 받기', 'Subscribe & Get My Report')}
-                </Button>
-              </div>
+              ))}
             </div>
-          </DialogContent>
-        </Dialog>
+          </div>
+        </motion.section>
 
-        {/* ── 9개 섹션 인터랙티브 쇼케이스 ── */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="max-w-5xl mx-auto mb-10">
-          <div className="text-center mb-6">
-            <h2 className="text-lg md:text-xl font-bold text-white flex items-center justify-center gap-2">
-              <Microscope className="w-5 h-5 text-primary" /> {t('9가지 전문 분석 섹션', '9 Professional Analysis Sections')}
-            </h2>
-            <p className="text-muted-foreground text-xs mt-1">{t('각 카드를 클릭하여 상세 내용을 확인하세요', 'Click each card to view details')}</p>
+        {/* ─── 섹션 3: 프리미엄 리포트 해결책 ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-8">
+          <div className="text-center mb-5">
+            <Badge className="bg-primary/10 text-primary border-primary/20 mb-3">
+              <Crown className="w-3 h-3 mr-1" /> 프리미엄 리포트
+            </Badge>
+            <h3 className="text-xl font-black text-foreground">
+              전체 분석 리포트에서<br/>확인할 수 있는 것들
+            </h3>
           </div>
 
-          {/* 인터랙티브 그리드 */}
-          <div className="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-3">
-            {SAMPLE_REPORT_SECTIONS.map((section, idx) => {
-              const IconComp = section.icon;
-              const isActive = activeReportSection === idx;
-              return (
-                <motion.button
-                  key={idx}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => setActiveReportSection(idx)}
-                  className={`relative p-3 md:p-4 rounded-xl border text-left transition-all ${
-                    isActive
-                      ? 'bg-primary/10 border-primary/40 shadow-lg shadow-primary/10'
-                      : 'bg-white/5 border-white/10 hover:border-white/20'
-                  }`}
-                >
-                  <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-br ${section.color} flex items-center justify-center mb-2`}>
-                    <IconComp className="w-4 h-4 md:w-5 md:h-5 text-white" />
-                  </div>
-                  <p className="text-[10px] md:text-xs font-semibold text-white leading-tight">{section.title}</p>
-                  {isActive && (
-                    <motion.div layoutId="active-indicator" className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
-                  )}
-                </motion.button>
-              );
-            })}
-          </div>
-
-          {/* 선택된 섹션 상세 */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeReportSection}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="mt-4 bg-white/5 rounded-xl border border-white/10 p-4 md:p-5"
-            >
-              <div className="flex items-start gap-3">
-                <div className={`p-2 rounded-lg bg-gradient-to-br ${SAMPLE_REPORT_SECTIONS[activeReportSection].color} shrink-0`}>
-                  {React.createElement(SAMPLE_REPORT_SECTIONS[activeReportSection].icon, { className: "w-5 h-5 text-white" })}
+          <div className="space-y-3">
+            {[
+              { icon: Brain, title: '행동 패턴 심층 분석', desc: '15개 심리이론 기반 인지·정서·사회성 종합 프로파일', gradient: 'from-blue-500 to-cyan-500' },
+              { icon: AlertTriangle, title: '문제 가능성 진단', desc: 'DSM-5 기반 위험 신호 조기 감지 및 경고 시스템', gradient: 'from-red-500 to-orange-500' },
+              { icon: Target, title: '부모 맞춤 대응 전략', desc: 'ABA·CBT·Floortime 기반 가정 내 개입 프로그램', gradient: 'from-purple-500 to-violet-500' },
+              { icon: Shield, title: '전문가 연결 가이드', desc: '아이의 상태에 맞는 전문가 유형 및 기관 추천', gradient: 'from-teal-500 to-emerald-500' },
+            ].map((item, i) => (
+              <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }}
+                className="flex items-start gap-4 bg-card rounded-xl border border-border p-4 hover:shadow-md transition-shadow">
+                <div className={`p-2.5 rounded-xl bg-gradient-to-br ${item.gradient} shrink-0`}>
+                  <item.icon className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white mb-1">{SAMPLE_REPORT_SECTIONS[activeReportSection].title}</h4>
-                  <p className="text-[10px] text-primary font-semibold mb-2">{SAMPLE_REPORT_SECTIONS[activeReportSection].theory}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{SAMPLE_REPORT_SECTIONS[activeReportSection].preview}</p>
+                  <h4 className="text-sm font-bold text-foreground">{item.title}</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* ─── 섹션 4: 리포트 샘플 UI ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mb-8">
+          <div className="bg-card rounded-2xl border border-border overflow-hidden">
+            <div className="bg-gradient-to-r from-slate-800 to-slate-900 p-5 text-center">
+              <p className="text-xs text-white/60 mb-1">리포트 미리보기</p>
+              <h4 className="text-base font-bold text-white">AI 종합 분석 리포트 샘플</h4>
+            </div>
+
+            <div className="p-5 space-y-5">
+              {/* 레이더 차트 */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1">
+                  <Eye className="w-3.5 h-3.5" /> 5대 영역 발달 프로파일
+                </p>
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart data={radarData}>
+                      <PolarGrid stroke="hsl(var(--border))" />
+                      <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
+                      <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                      <Radar name="점수" dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.2} strokeWidth={2} />
+                    </RadarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
 
-        {/* ── 프리미엄 사용자: 리포트 생성 인터페이스 ── */}
-        {isPremium && !reportData && (
-          <div className="max-w-4xl mx-auto space-y-6">
-            {/* 모드 선택 */}
-            <div className="grid md:grid-cols-2 gap-3">
-              {[
-                { mode: 'with-data' as const, icon: Database, title: t('데이터 기반 종합 리포트', 'Data-Based Comprehensive Report'), desc: t('기존 검사·관찰·상담 데이터를 포함한 심층 분석', 'Deep analysis including existing assessment, observation, and consultation data'), tags: isEnglish ? ['Assessments', 'Observations', 'Consultations'] : ['검사 기록', '관찰 기록', '상담 기록'], color: 'primary' },
-                { mode: 'without-data' as const, icon: Heart, title: t('고민·상태 기반 리포트', 'Concern-Based Report'), desc: t('현재 고민이나 발달·심리 상태 설명만으로 분석', 'Analysis based solely on current concerns or developmental status'), tags: isEnglish ? ['Concerns', 'Current State', 'Development'] : ['고민 상담', '현재 상태', '발달 특징'], color: 'cyan' },
-              ].map((opt) => (
-                <motion.button key={opt.mode} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                  onClick={() => setReportMode(opt.mode)}
-                  className={`relative p-5 rounded-xl border-2 transition-all text-left ${
-                    reportMode === opt.mode
-                      ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
-                      : 'border-white/10 bg-white/5 hover:border-white/20'
-                  }`}
-                >
-                  {reportMode === opt.mode && <CheckCircle2 className="absolute top-3 right-3 w-5 h-5 text-primary" />}
-                  <opt.icon className="w-7 h-7 text-primary mb-2" />
-                  <h3 className="text-base font-bold text-white mb-1">{opt.title}</h3>
-                  <p className="text-xs text-muted-foreground mb-3">{opt.desc}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {opt.tags.map(tg => <span key={tg} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">{tg}</span>)}
+              {/* 바 차트 */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1">
+                  <BarChart3 className="w-3.5 h-3.5" /> 핵심 지표 vs 또래 평균
+                </p>
+                <div className="h-40">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={barData} barCategoryGap="20%">
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
+                      <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} domain={[0, 100]} />
+                      <Tooltip />
+                      <Bar dataKey="score" name="아이 점수" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="avg" name="또래 평균" fill="hsl(var(--muted))" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* 텍스트 분석 미리보기 - 블러 처리 */}
+              <div className="relative">
+                <div className="space-y-2 blur-sm select-none pointer-events-none">
+                  <p className="text-sm text-foreground font-semibold">📋 종합 소견</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    대상 아동은 Piaget의 전조작기에서 구체적 조작기로의 전환 과정에 있으며, 
+                    Vygotsky의 ZPD 관점에서 적절한 스캐폴딩이 제공될 경우 인지 발달의 
+                    비약적 성장이 예상됩니다. Beck의 인지 삼제 모델 분석 결과...
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    DSM-5-TR 기준 주의력결핍 관련 항목에서 경계선 수준의 반응이 관찰되었으며,
+                    Bowlby의 애착이론에 기반한 정서적 안정감 분석에서...
+                  </p>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="bg-card/90 backdrop-blur-sm px-5 py-3 rounded-xl border border-border shadow-lg flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-bold text-foreground">전체 내용은 리포트에서 확인</span>
                   </div>
-                </motion.button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ─── 섹션 5: 가격 + 긴급성 ─── */}
+        <motion.section ref={ctaRef} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-8">
+          <div className="bg-card rounded-2xl border-2 border-primary/30 p-6 space-y-5">
+            {/* 긴급성 뱃지 */}
+            <div className="flex items-center justify-center gap-2">
+              <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 rounded-full border border-red-200 dark:border-red-900/50 text-xs font-bold">
+                <Clock className="w-3.5 h-3.5" /> 초기 사용자 한정 특별가
+              </motion.div>
+            </div>
+
+            {/* 가격 */}
+            <div className="text-center space-y-2">
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-lg text-muted-foreground line-through">₩14,900</span>
+                <Badge variant="destructive" className="text-xs font-bold">-73%</Badge>
+              </div>
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-4xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
+                <span className="text-sm text-muted-foreground">/1회</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                또는 월 ₩{SUBSCRIPTION_PRICE.toLocaleString()}으로 무제한 이용
+              </p>
+            </div>
+
+            {/* 포함 항목 */}
+            <div className="space-y-2">
+              {[
+                '9가지 전문 분석 섹션 (박사급 임상 수준)',
+                '500+ 논문 기반 행동 데이터 분석',
+                'PDF 다운로드 · 이메일 공유',
+                '전문가 연결 가이드 포함',
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span className="text-xs text-foreground">{item}</span>
+                </div>
               ))}
             </div>
 
-            {/* 사용자 입력 폼 */}
-            <div className="bg-white/5 rounded-xl border border-white/10 p-5 md:p-6 space-y-5">
-              <div className="flex items-center gap-2 mb-1">
-                <Sparkles className="w-5 h-5 text-primary" />
-                <h3 className="text-lg font-bold text-white">{t('대상자 정보 입력', 'Subject Information')}</h3>
-              </div>
-              <div className="grid md:grid-cols-3 gap-3">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {t('이름 *', 'Name *')}</label>
-                  <input type="text" value={userInput.name} onChange={(e) => setUserInput({ ...userInput, name: e.target.value })}
-                    placeholder={t('예: 홍길동', 'e.g. John Doe')} className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary text-sm" maxLength={50} />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {t('생년월일 *', 'Date of Birth *')}</label>
-                  <input type="date" value={userInput.birthDate} onChange={(e) => setUserInput({ ...userInput, birthDate: e.target.value })}
-                    className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm" />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {t('성별 *', 'Gender *')}</label>
-                  <select value={userInput.gender} onChange={(e) => setUserInput({ ...userInput, gender: e.target.value })}
-                    className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm [&>option]:bg-slate-800 [&>option]:text-white">
-                    <option value="" className="bg-slate-800 text-white">{t('선택', 'Select')}</option>
-                    <option value={isEnglish ? 'Male' : '남성'} className="bg-slate-800 text-white">{t('남성', 'Male')}</option>
-                    <option value={isEnglish ? 'Female' : '여성'} className="bg-slate-800 text-white">{t('여성', 'Female')}</option>
-                    <option value={isEnglish ? 'Other' : '기타'} className="bg-slate-800 text-white">{t('기타', 'Other')}</option>
-                  </select>
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Heart className="w-3.5 h-3.5" /> {t('고민이나 걱정거리', 'Concerns or Worries')} {reportMode === 'without-data' && <span className="text-primary">*</span>}</label>
-                <textarea value={userInput.recentConcerns} onChange={(e) => setUserInput({ ...userInput, recentConcerns: e.target.value })}
-                  placeholder={t('예: 아이가 또래 관계에서 어려움을 겪고 있어요...', 'e.g. My child is having difficulties with peer relationships...')}
-                  className="w-full min-h-[90px] p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm" maxLength={1000} />
-                <div className="flex flex-wrap gap-1.5 mt-1.5">
-                  {[
-                    { label: t('아이가 또래 관계에서 어려움을 겪고 있어요', 'My child struggles with peer relationships') },
-                    { label: t('직장 스트레스로 번아웃이 심해요', 'I\'m experiencing severe burnout from work stress') },
-                    { label: t('불면증과 만성 불안이 계속돼요', 'I have persistent insomnia and chronic anxiety') },
-                    { label: t('부모 역할에 자신이 없고 죄책감이 들어요', 'I lack confidence as a parent and feel guilty') },
-                  ].map((example) => (
-                    <button
-                      key={example.label}
-                      type="button"
-                      onClick={() => setUserInput({ ...userInput, recentConcerns: example.label })}
-                      className="text-[11px] px-2.5 py-1 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-primary/50 hover:bg-primary/10 transition-all"
-                    >
-                      {example.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Brain className="w-3.5 h-3.5" /> {t('발달/심리적 특징이나 메모', 'Developmental/Psychological Notes')} {reportMode === 'without-data' && <span className="text-primary">*</span>}</label>
-                <textarea value={userInput.developmentalNotes} onChange={(e) => setUserInput({ ...userInput, developmentalNotes: e.target.value })}
-                  placeholder={t('예: 최근 3개월간 언어 표현이 늘었지만, 감정 조절에 어려움을 보입니다...', 'e.g. Language expression has improved over the past 3 months, but emotional regulation remains challenging...')}
-                  className="w-full min-h-[90px] p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm" maxLength={1000} />
-              </div>
-            </div>
+            {/* CTA 버튼 */}
+            <Button onClick={handlePayment} size="lg"
+              className="w-full h-14 text-base font-black bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-lg shadow-primary/20">
+              <Crown className="w-5 h-5 mr-2" />
+              {isLoggedIn ? '지금 전체 리포트 확인하기' : '회원가입하고 리포트 받기'}
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
 
-            {/* 데이터 현황 - with-data 모드 */}
-            {reportMode === 'with-data' && (
-              <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                  <Database className="w-4 h-4 text-primary" /> {t('수집된 데이터 현황', 'Collected Data Overview')}
-                </h4>
-                <div className="grid grid-cols-4 gap-3">
-                  {[
-                    { icon: FileText, label: t('검사', 'Tests'), count: userData?.totalAssessments || 0, color: 'text-blue-400' },
-                    { icon: Eye, label: t('관찰', 'Obs.'), count: userData?.totalObservations || 0, color: 'text-green-400' },
-                    { icon: BookOpen, label: t('세션', 'Sessions'), count: userData?.totalObservationSessions || 0, color: 'text-purple-400' },
-                    { icon: MessageSquare, label: t('상담', 'Chats'), count: userData?.totalChatMessages || 0, color: 'text-pink-400' },
-                  ].map((item, idx) => (
-                    <div key={idx} className="bg-white/5 p-3 rounded-lg border border-white/5 text-center">
-                      <item.icon className={`w-5 h-5 ${item.color} mx-auto mb-1`} />
-                      <p className="text-xl font-black text-white"><AnimatedCounter value={item.count} /></p>
-                      <p className="text-[10px] text-muted-foreground">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* 외부 파일 업로드 - 두 모드 모두 지원 */}
-            {(reportMode === 'with-data' || reportMode === 'without-data') && (
-              <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-                <div className="flex items-start gap-3">
-                  <Upload className="w-5 h-5 text-primary mt-0.5" />
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-white text-sm mb-1">{t('외부 기관 검사 결과 추가 (선택)', 'Add External Test Results (Optional)')}</h4>
-                    <p className="text-xs text-muted-foreground mb-3">{t('다른 기관에서 받은 검사 결과를 업로드하면 AI가 자동 반영 (이미지, PDF, Word, 한글 등)', 'Upload test results from other institutions for AI integration (images, PDF, Word, HWP, etc.)')}</p>
-                    <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.hwp,.hwpx,.xlsx,.xls,.txt,.rtf" onChange={handleFileUpload} disabled={isAnalyzingImages}
-                      className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer" />
-                    {isAnalyzingImages && <div className="mt-3 flex items-center gap-2 text-primary"><Loader2 className="w-4 h-4 animate-spin" /><span className="text-sm">{t('분석 중...', 'Analyzing...')}</span></div>}
-                    {uploadedFiles.length > 0 && !isAnalyzingImages && (
-                      <div className="mt-3 space-y-1">
-                        <div className="flex items-center gap-2 text-emerald-400"><CheckCircle2 className="w-4 h-4" /><span className="text-sm">{t(`${uploadedFiles.length}개 파일 분석 완료`, `${uploadedFiles.length} file(s) analyzed`)}</span></div>
-                        <div className="flex flex-wrap gap-1.5 mt-2">
-                          {uploadedFiles.map((f, i) => (
-                            <Badge key={i} variant="secondary" className="text-[10px] bg-white/10 border-white/20">
-                              {f.name.length > 20 ? f.name.slice(0, 17) + '...' : f.name}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 생성 버튼 */}
-            <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-              <Button onClick={generateReport} disabled={isGenerating} size="lg"
-                className="w-full h-16 text-lg font-black bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-2xl shadow-primary/20 border-0">
-                {isGenerating ? (
-                  <><Loader2 className="w-6 h-6 animate-spin mr-3" /> {t('AI 분석 중...', 'AI Analyzing...')} ({progress}%)</>
-                ) : (
-                  <><Crown className="w-6 h-6 mr-3" /> {t('프리미엄 리포트 생성하기', 'Generate Premium Report')}</>
-                )}
-              </Button>
-            </motion.div>
-
-            {/* 생성 진행 바 */}
-            {isGenerating && (
-              <div className="space-y-3">
-                <div className="w-full bg-white/5 rounded-full h-2 overflow-hidden">
-                  <motion.div className="h-full bg-primary rounded-full" animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} />
-                </div>
-                <div className="flex justify-between text-[10px] text-muted-foreground">
-                  {(isEnglish ? ['Data Collection', 'Theory Matching', 'Research Search', 'Report Writing'] : ['데이터 수집', '심리이론 매칭', '논문 검색', '리포트 작성']).map((label, i) => (
-                    <span key={i} className={progress > (i + 1) * 22 ? 'text-primary font-semibold' : ''}>{label}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── 리포트 결과 ── */}
-        {reportData && (
-          <div className="max-w-5xl mx-auto space-y-6">
-            {/* 플로팅 액션 바 */}
-            <div className="sticky top-4 z-20 bg-slate-900/95 backdrop-blur-xl rounded-xl border border-white/10 p-4 shadow-2xl space-y-3">
-              {/* 상단: 주요 액션 버튼들 */}
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                <Button onClick={downloadPDF} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5 text-xs font-semibold h-9">
-                  <FileDown className="w-3.5 h-3.5" /> PDF
-                </Button>
-                <Button onClick={copyToClipboard} size="sm" className="bg-slate-700 hover:bg-slate-600 text-white gap-1.5 text-xs font-semibold h-9">
-                  <Copy className="w-3.5 h-3.5" /> {t('복사', 'Copy')}
-                </Button>
-                <Button onClick={shareReport} size="sm" className="bg-slate-700 hover:bg-slate-600 text-white gap-1.5 text-xs font-semibold h-9">
-                  <Share2 className="w-3.5 h-3.5" /> {t('공유', 'Share')}
-                </Button>
-                <VisualSummaryButton type="assessment"
-                  content={{ sections: reportData.sections?.map((s: any) => ({ title: s.title, content: s.content?.replace(/<[^>]*>/g, '').substring(0, 200) })), summary: reportData.summary?.replace(/<[^>]*>/g, ''), userName: userInput.name }}
-                  testType={t('종합 분석 리포트', 'Comprehensive Analysis Report')} label={t('🎨 비주얼 노트', '🎨 Visual Note')}
-                  className="bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white border-0 text-xs font-semibold h-9"
-                />
-                <a href="https://open.kakao.com/o/sHLdK3Ch" target="_blank" rel="noopener noreferrer" className="w-full">
-                  <Button size="sm" className="w-full bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold gap-1.5 text-xs h-9">
-                    <MessageSquare className="w-3.5 h-3.5" /> {t('카카오톡 검수', 'KakaoTalk Review')}
-                  </Button>
-                </a>
-              </div>
-              {/* 하단: 이메일 전송 */}
-              <div className="flex items-center gap-2 max-w-md mx-auto">
-                <Mail className="w-4 h-4 text-white/40 shrink-0" />
-                <input type="email" value={familyEmail} onChange={(e) => setFamilyEmail(e.target.value)}
-                  placeholder={t('가족 이메일로 전송', 'Send to family email')} className="flex-1 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs placeholder:text-white/30 focus:border-primary/50 focus:outline-none" />
-                <Button onClick={sendFamilyEmail} disabled={isSendingEmail} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-8 px-4">
-                  {isSendingEmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t('전송', 'Send')}
-                </Button>
-              </div>
-            </div>
-
-            {/* 리포트 본문 */}
-            <div id="report-content" className="bg-white rounded-2xl p-6 md:p-12 shadow-2xl space-y-8">
-              {/* 표지 */}
-              <div className="text-center space-y-6 pb-8 border-b-4 border-slate-200">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 rounded-full">
-                  <Crown className="w-5 h-5 text-amber-600" />
-                  <span className="text-sm font-bold text-amber-700">PREMIUM PERSONAL REPORT</span>
-                </div>
-                <h1 className="text-3xl md:text-4xl font-black text-slate-900">{t('AI 종합 분석 리포트', 'AI Comprehensive Analysis Report')}</h1>
-                <div className="flex justify-center gap-4 flex-wrap text-sm text-slate-500">
-                  <span>{t('대상', 'Subject')}: {userInput.name || t('미입력', 'N/A')}</span>
-                  <span>{t('생성일', 'Generated')}: {new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</span>
-                </div>
-                <div className="flex justify-center gap-3 flex-wrap">
-                  <Badge variant="outline">{t('검사', 'Tests')} {reportData.dataSource?.assessments || 0}{t('건', '')}</Badge>
-                  <Badge variant="outline">{t('관찰', 'Obs.')} {reportData.dataSource?.observations || 0}{t('건', '')}</Badge>
-                  <Badge variant="outline">{t('상담', 'Chats')} {reportData.dataSource?.chatMessages || 0}{t('건', '')}</Badge>
-                </div>
-              </div>
-
-              {/* 섹션들 */}
-              {reportData.sections?.map((section: any, index: number) => {
-                const colorIndex = index % sectionColors.length;
-                const colors = sectionColors[colorIndex];
-                const IconComponent = sectionIcons[index % sectionIcons.length];
-                return (
-                  <div key={index} className="space-y-4" data-report-section={index}>
-                    <h3 className={`text-2xl font-bold flex items-center gap-3 ${colors.title}`}>
-                      <div className={`p-3 rounded-xl ${colors.icon} shadow-sm`}><IconComponent className="w-6 h-6" /></div>
-                      {index + 1}. {section.title}
-                    </h3>
-                    <div className={`p-6 rounded-xl border-2 ${colors.bg} ${colors.border} shadow-sm`}>
-                      <div className="prose prose-slate max-w-none leading-relaxed prose-headings:font-bold prose-p:text-slate-700 prose-strong:text-slate-900"
-                        dangerouslySetInnerHTML={{ __html: sanitizeAIContent(section.content) }} />
-                    </div>
-                  </div>
-                );
-              })}
-
-              {/* 최신 연구 기반 인사이트 */}
-              {reportData.researchInsightsContent && (
-                <div className="space-y-4 pt-8 border-t-2 border-indigo-200">
-                  <h2 className="text-2xl font-bold text-indigo-900 flex items-center gap-3">
-                    <div className="p-3 rounded-xl bg-indigo-100 text-indigo-600 shadow-sm"><Sparkles className="w-6 h-6" /></div>
-                    {t('🔬 최신 연구·논문 기반 인사이트', '🔬 Latest Research & Paper-Based Insights')}
-                  </h2>
-                  <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-6 rounded-xl border-2 border-indigo-200">
-                    <p className="text-xs text-indigo-500 mb-3 font-semibold">{t('📡 Perplexity AI 실시간 웹 검색 · 최신 1개월 이내 연구 반영', '📡 Perplexity AI real-time web search · Latest research within 1 month')}</p>
-                    <div className="prose prose-slate max-w-none leading-relaxed whitespace-pre-wrap text-sm text-slate-700">{reportData.researchInsightsContent}</div>
-                  </div>
-                </div>
-              )}
-
-              {/* 관련 기관 및 리소스 */}
-              {reportData.relatedResourcesContent && (
-                <div className="space-y-4 pt-6">
-                  <h2 className="text-2xl font-bold text-teal-900 flex items-center gap-3">
-                    <div className="p-3 rounded-xl bg-teal-100 text-teal-600 shadow-sm"><BookOpen className="w-6 h-6" /></div>
-                    {t('🏛️ 관련 기관 및 추천 리소스', '🏛️ Related Institutions & Recommended Resources')}
-                  </h2>
-                  <div className="bg-gradient-to-br from-teal-50 to-emerald-50 p-6 rounded-xl border-2 border-teal-200">
-                    <p className="text-xs text-teal-500 mb-3 font-semibold">{t('🔍 Firecrawl AI 웹 크롤링 · 공공기관 및 전문 기관 정보', '🔍 Firecrawl AI web crawling · Public & professional institution info')}</p>
-                    <div className="prose prose-slate max-w-none leading-relaxed text-sm text-slate-700 whitespace-pre-wrap">{reportData.relatedResourcesContent}</div>
-                  </div>
-                </div>
-              )}
-
-              {/* 종합 요약 */}
-              {reportData.summary && (
-                <div className="space-y-6 pt-12 border-t-4 border-slate-200">
-                  <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-600" /> {t('종합 요약 및 권장사항', 'Summary & Recommendations')}
-                  </h2>
-                  <div className="bg-gradient-to-br from-slate-50 to-blue-50 p-8 rounded-xl border-2 border-slate-200">
-                    <div className="prose prose-lg max-w-none text-slate-700 leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: sanitizeAIContent(reportData.summary) }} />
-                  </div>
-                </div>
-              )}
-
-              {/* 법적 고지 */}
-              <div className="text-center pt-12 border-t-2 border-slate-200 space-y-4">
-                <div className="flex items-center justify-center gap-2 text-amber-600">
-                  <AlertCircle className="w-5 h-5" /><p className="text-sm font-semibold">{t('중요 안내사항', 'Important Notice')}</p>
-                </div>
-                <p className="text-sm text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                  {t('본 리포트는 AI 기반 자동 분석 결과이며, 의학적 진단이나 전문가의 정확한 평가를 대체할 수 없습니다.',
-                     'This report is an AI-based automated analysis and cannot replace medical diagnosis or professional evaluation.')}
-                </p>
-                <p className="text-xs text-slate-500 mt-4">{t('Generated by 코끼리 AI | © 2025 All Rights Reserved', 'Generated by HiLight AI | © 2025 All Rights Reserved')}</p>
-              </div>
-
-              {/* 맞춤 검사 큐레이션 */}
-              <ReportCurationSection concerns={userInput.recentConcerns} />
+            {/* 신뢰 배지 */}
+            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> 안전 결제</span>
+              <span className="flex items-center gap-1"><Zap className="w-3.5 h-3.5" /> 즉시 생성</span>
+              <span className="flex items-center gap-1"><Star className="w-3.5 h-3.5" /> 만족도 96%</span>
             </div>
           </div>
-        )}
+        </motion.section>
 
-        {/* 전문가 대면 검사 CTA */}
-        <div className="max-w-4xl mx-auto mb-10 mt-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-            className="rounded-xl bg-white/5 border border-white/10 p-6">
-            <div className="flex flex-col md:flex-row items-center gap-5">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shrink-0">
-                <Award className="w-7 h-7 text-white" />
-              </div>
-              <div className="flex-1 text-center md:text-left space-y-1">
-                <h3 className="text-base font-bold text-white">{t('실제 전문가에게 전문 검사 받기', 'Get a Professional Assessment from a Real Expert')}</h3>
-                <p className="text-xs text-muted-foreground">{t('공인 임상심리전문가가 직접 대면/비대면 검사를 실시합니다.', 'Licensed clinical psychologists conduct in-person/remote assessments.')}</p>
-              </div>
-              <a href="https://smilesolution.kr" target="_blank" rel="noopener noreferrer" className="shrink-0">
-                <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-6 rounded-xl">
-                  {t('전문가 검사 신청', 'Request Expert Assessment')} <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
-              </a>
+        {/* ─── 섹션 6: 전문가 상담 연결 CTA ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mb-8">
+          <div className="bg-card rounded-2xl border border-border p-6 space-y-4">
+            <div className="text-center space-y-2">
+              <p className="text-xs text-muted-foreground">리포트 확인 후</p>
+              <h3 className="text-base font-bold text-foreground">전문가 상담으로 구체적인 방향 확인</h3>
+              <p className="text-xs text-muted-foreground">
+                아이의 행동 데이터를 기반으로 전문가가<br/>맞춤 솔루션을 제안합니다
+              </p>
             </div>
-          </motion.div>
+            <Button onClick={() => navigate(localePath('/expert-hiring'))} variant="outline"
+              className="w-full rounded-xl border-border hover:bg-muted/50 text-sm font-semibold h-11">
+              전문가 상담 연결하기 <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </motion.section>
+
+        {/* ─── 섹션 7: 변화 추적 CTA ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mb-8">
+          <div className="bg-muted/30 rounded-2xl border border-border p-6 space-y-3 text-center">
+            <Activity className="w-8 h-8 text-primary mx-auto" />
+            <h4 className="text-sm font-bold text-foreground">지속적인 변화 추적</h4>
+            <p className="text-xs text-muted-foreground">
+              아이의 행동 데이터를 기반으로<br/>정기적인 분석과 변화 리포트를 제공합니다
+            </p>
+            <Button onClick={() => navigate(localePath('/observation-log'))} variant="ghost"
+              className="text-primary text-xs font-semibold hover:bg-primary/5">
+              변화 추적 시작하기 <ArrowRight className="w-3.5 h-3.5 ml-1" />
+            </Button>
+          </div>
+        </motion.section>
+
+        {/* 법적 고지 */}
+        <div className="text-center py-6">
+          <p className="text-[10px] text-muted-foreground/60">
+            본 분석은 AI 기반 자동 분석이며, 의학적 진단을 대체하지 않습니다.<br/>
+            © 2025 AIHPRO. All Rights Reserved.
+          </p>
         </div>
       </div>
 
-      <ScratchCard isOpen={showScratchCard} onClose={() => setShowScratchCard(false)} />
+      {/* ─── Sticky CTA ─── */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl border-t border-border px-4 py-3 safe-area-inset-bottom">
+        <div className="max-w-lg mx-auto flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline gap-2">
+              <span className="text-xs text-muted-foreground line-through">₩14,900</span>
+              <span className="text-xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
+            </div>
+            <p className="text-[10px] text-muted-foreground truncate">오늘만 특별가 · 초기 사용자 한정</p>
+          </div>
+          <Button onClick={handlePayment} size="lg"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-black px-6 rounded-xl shadow-lg shadow-primary/20 shrink-0">
+            <Crown className="w-4 h-4 mr-1.5" />
+            리포트 받기
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

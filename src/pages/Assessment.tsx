@@ -792,6 +792,11 @@ const Assessment = () => {
             </button>
           </div>
 
+          <ConcernBasedRecommender
+            onSelectTest={(step) => setCurrentStep(step as any)}
+            onNavigate={(path) => navigate(path)}
+          />
+
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>

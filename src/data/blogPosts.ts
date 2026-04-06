@@ -1,8 +1,19 @@
+export interface InlineCTA {
+  type: 'inline-cta';
+  emoji: string;
+  label: string;       // short label like "무료 체험"
+  title: string;
+  description: string;
+  ctaText: string;
+  ctaLink: string;
+  insertAfterParagraph: number;
+}
+
 export interface InfoGraphic {
   type: 'bar-chart' | 'stat-row' | 'checklist' | 'comparison';
   title?: string;
   data: any;
-  insertAfterParagraph: number; // insert after this paragraph index in content
+  insertAfterParagraph: number;
 }
 
 export interface BlogPost {

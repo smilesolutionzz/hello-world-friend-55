@@ -143,6 +143,28 @@ export const blogPosts: BlogPost[] = [
         ]
       }
     ],
+    inlineCTAs: [
+      {
+        type: 'inline-cta',
+        emoji: '🧩',
+        label: '무료 체험',
+        title: '우리 아이 ADHD 성향, 3분 만에 확인해보세요',
+        description: '주의력·과잉행동 패턴을 간단히 체크할 수 있는 무료 체험검사입니다.',
+        ctaText: 'ADHD 체험검사 해보기',
+        ctaLink: '/assessment',
+        insertAfterParagraph: 18
+      },
+      {
+        type: 'inline-cta',
+        emoji: '🎮',
+        label: '두뇌 게임',
+        title: '아이와 함께하는 집중력 두뇌 게임',
+        description: '퍼즐, 기억력 게임 등으로 아이의 인지 능력을 재미있게 확인해보세요.',
+        ctaText: '게임 시작하기',
+        ctaLink: '/brain-training',
+        insertAfterParagraph: 28
+      }
+    ],
     platformTip: {
       title: "우리 아이 감정 발달, 3분 만에 체크해보세요",
       description: "영유아·아동 감정 발달 체크리스트로 현재 상태를 객관적으로 확인할 수 있습니다. 무료로 제공됩니다.",

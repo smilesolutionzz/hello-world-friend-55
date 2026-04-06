@@ -106,46 +106,29 @@ const renderInfographic = (info: InfoGraphic) => {
   }
 };
 
-const InlineCTACard = ({ cta, onNavigate }: { cta: InlineCTA; onNavigate: (path: string) => void }) => {
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    // Parse ctaLink for query params
-    const [path, query] = cta.ctaLink.split('?');
-    if (query) {
-      const params = new URLSearchParams(query);
-      const startTest = params.get('start');
-      if (startTest) {
-        onNavigate(`${path}?start=${startTest}`);
-        return;
-      }
-    }
-    onNavigate(cta.ctaLink);
-  };
-
-  return (
-    <div className="my-8 p-5 md:p-6 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 via-background to-secondary/5 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="text-3xl shrink-0">{cta.emoji}</div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <Badge variant="secondary" className="rounded-full text-[10px] px-2 py-0.5">{cta.label}</Badge>
-          </div>
-          <p className="font-bold text-foreground text-sm mb-1">{cta.title}</p>
-          <p className="text-xs text-muted-foreground leading-relaxed">{cta.description}</p>
+const InlineCTACard = ({ cta, onNavigate }: { cta: InlineCTA; onNavigate: (path: string) => void }) => (
+  <div className="my-8 p-5 md:p-6 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 via-background to-secondary/5 relative overflow-hidden">
+    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div className="text-3xl shrink-0">{cta.emoji}</div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <Badge variant="secondary" className="rounded-full text-[10px] px-2 py-0.5">{cta.label}</Badge>
         </div>
-        <Button
-          size="sm"
-          onClick={handleClick}
-          className="rounded-full shrink-0 text-xs"
-        >
-          {cta.ctaText}
-          <ArrowRight className="w-3 h-3 ml-1" />
-        </Button>
+        <p className="font-bold text-foreground text-sm mb-1">{cta.title}</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">{cta.description}</p>
       </div>
+      <Button
+        size="sm"
+        onClick={(e) => { e.stopPropagation(); onNavigate(cta.ctaLink); }}
+        className="rounded-full shrink-0 text-xs"
+      >
+        {cta.ctaText}
+        <ArrowRight className="w-3 h-3 ml-1" />
+      </Button>
     </div>
-  );
-};
+  </div>
+);
 
 /* ── Main Component ── */
 

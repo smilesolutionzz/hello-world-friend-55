@@ -151,7 +151,7 @@ export const blogPosts: BlogPost[] = [
         title: '우리 아이 ADHD 성향, 3분 만에 확인해보세요',
         description: '주의력·과잉행동 패턴을 간단히 체크할 수 있는 무료 체험검사입니다.',
         ctaText: 'ADHD 체험검사 해보기',
-        ctaLink: '/assessment?start=adhd',
+        ctaLink: '/assessment',
         insertAfterParagraph: 18
       },
       {
@@ -289,7 +289,7 @@ GPS에 의존하는 것과는 다릅니다. 본인이 잘 아는 동네인데도
         title: '스트레스 지수, 3분이면 확인할 수 있어요',
         description: '가족 돌봄 스트레스 체험검사로 현재 상태를 객관적으로 파악해보세요.',
         ctaText: '무료 스트레스 체크',
-        ctaLink: '/assessment?start=stress',
+        ctaLink: '/assessment',
         insertAfterParagraph: 28
       }
     ],
@@ -413,7 +413,7 @@ GPS에 의존하는 것과는 다릅니다. 본인이 잘 아는 동네인데도
         title: '혹시 나도 우울한 걸까? 3분 체험검사',
         description: '번아웃과 우울증은 증상이 비슷합니다. 무료 우울 체험검사로 현재 상태를 확인해보세요.',
         ctaText: '우울 체험검사 해보기',
-        ctaLink: '/assessment?start=depression',
+        ctaLink: '/assessment',
         insertAfterParagraph: 15
       },
       {

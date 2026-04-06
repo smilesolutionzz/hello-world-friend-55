@@ -268,13 +268,13 @@ const ReportGenerator = () => {
                 <div className="space-y-2 blur-sm select-none pointer-events-none">
                   <p className="text-sm text-foreground font-semibold">📋 종합 소견</p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    대상 아동은 Piaget의 전조작기에서 구체적 조작기로의 전환 과정에 있으며, 
-                    Vygotsky의 ZPD 관점에서 적절한 스캐폴딩이 제공될 경우 인지 발달의 
-                    비약적 성장이 예상됩니다. Beck의 인지 삼제 모델 분석 결과...
+                    대상 아동은 전조작기에서 구체적 조작기로의 전환 과정에 있으며, 
+                    근접발달영역 관점에서 적절한 지원이 제공될 경우 인지 발달의 
+                    비약적 성장이 예상됩니다. AI 인지패턴 분석 결과...
                   </p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    DSM-5-TR 기준 주의력결핍 관련 항목에서 경계선 수준의 반응이 관찰되었으며,
-                    Bowlby의 애착이론에 기반한 정서적 안정감 분석에서...
+                    주의력 관련 항목에서 경계선 수준의 반응이 관찰되었으며,
+                    애착유형 기반 정서적 안정감 분석에서...
                   </p>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">

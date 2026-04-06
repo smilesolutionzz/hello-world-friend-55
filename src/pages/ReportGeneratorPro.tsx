@@ -31,27 +31,27 @@ import { useLanguage } from '@/i18n/LanguageContext';
 
 // ── 샘플 리포트 섹션 데이터 ──
 const SAMPLE_REPORT_SECTIONS_KO = [
-  { title: '종합 발달 프로파일', icon: Brain, color: 'from-blue-500 to-cyan-500', theory: 'Piaget 인지발달이론 · Vygotsky 근접발달영역(ZPD)', preview: '대상자의 인지, 언어, 사회정서, 운동 영역을 Piaget의 인지발달 단계와 Vygotsky의 ZPD 이론에 기반하여 종합 분석합니다.' },
-  { title: '심리·정서 심층 분석', icon: Heart, color: 'from-pink-500 to-rose-500', theory: 'Beck 인지치료이론 · Bowlby 애착이론 · DSM-5 기준', preview: 'Beck의 인지 삼제 모델과 Bowlby의 애착이론을 적용하여 불안, 우울, 자존감, 스트레스 반응 패턴을 다층적으로 분석합니다.' },
-  { title: '강점·약점 매트릭스', icon: TrendingUp, color: 'from-green-500 to-emerald-500', theory: 'Gardner 다중지능이론 · Seligman 긍정심리학', preview: 'Gardner의 8가지 다중지능 이론과 Seligman의 VIA 성격 강점 분류를 기반으로 핵심 강점 영역과 지원 필요 영역을 시각화합니다.' },
-  { title: '맞춤형 개입 프로그램', icon: Target, color: 'from-purple-500 to-violet-500', theory: 'ABA 응용행동분석 · CBT 인지행동치료 · Floortime DIR 모델', preview: '근거 기반 치료의 Gold Standard에 따라 ABA, CBT, DIR/Floortime 등 효과가 검증된 개입 전략을 설계합니다.' },
-  { title: '발달 로드맵 & 예후', icon: LineChart, color: 'from-orange-500 to-amber-500', theory: 'Bronfenbrenner 생태체계이론 · Erikson 심리사회적 발달단계', preview: 'Bronfenbrenner의 생태체계모델과 Erikson의 8단계 심리사회적 발달이론을 통합 적용하여 발달 경로를 예측합니다.' },
-  { title: '또래 비교 분석', icon: Users, color: 'from-indigo-500 to-blue-500', theory: 'WHO 글로벌 발달 규준 · CDC Milestone Tracker', preview: 'WHO 다국적 성장 기준과 CDC의 발달 이정표, 한국 아동 발달 규준 데이터를 기반으로 각 영역별 백분위를 산출합니다.' },
-  { title: '전문가 소견서', icon: Shield, color: 'from-teal-500 to-cyan-500', theory: 'ICD-11 · DSM-5-TR · 한국 임상심리학회 기준', preview: 'ICD-11 및 DSM-5-TR 진단 체계를 참조하고 APA 가이드라인에 따라 임상 수준의 전문가 소견서를 생성합니다.' },
-  { title: '가족 지원 가이드', icon: Activity, color: 'from-fuchsia-500 to-pink-500', theory: 'Baumrind 양육유형이론 · Gottman 정서코칭 · PCIT', preview: 'Baumrind의 양육유형 모델과 Gottman의 정서코칭 5단계, PCIT 프로토콜에 기반한 양육 전략을 제공합니다.' },
-  { title: '종합 요약 및 제언', icon: BarChart3, color: 'from-violet-500 to-purple-500', theory: 'ICF 국제기능분류 · WHO 통합 케어 프레임워크', preview: 'WHO의 ICF 프레임워크에 따라 전체 분석을 통합 정리합니다. 500개 이상의 최신 연구논문을 교차 검증합니다.' }
+  { title: '종합 발달 프로파일', icon: Brain, color: 'from-blue-500 to-cyan-500', theory: 'AI 인지발달 분석 · 근접발달 영역 평가', preview: '대상자의 인지, 언어, 사회정서, 운동 영역을 AIHPRO AI 엔진이 발달 단계별로 종합 분석합니다.' },
+  { title: '심리·정서 심층 분석', icon: Heart, color: 'from-pink-500 to-rose-500', theory: 'AI 인지패턴 분석 · 애착유형 평가', preview: 'AI가 인지 패턴과 애착 유형을 분석하여 불안, 우울, 자존감, 스트레스 반응 패턴을 다층적으로 분석합니다.' },
+  { title: '강점·약점 매트릭스', icon: TrendingUp, color: 'from-green-500 to-emerald-500', theory: 'AI 다중영역 분석 · 성격 강점 평가', preview: '다중 영역 분석과 성격 강점 평가를 기반으로 핵심 강점 영역과 지원 필요 영역을 시각화합니다.' },
+  { title: '맞춤형 개입 프로그램', icon: Target, color: 'from-purple-500 to-violet-500', theory: 'AI 행동분석 · 인지행동 전략 · 놀이치료 접근', preview: '근거 기반 개입 전략에 따라 행동분석, 인지행동 전략, 놀이치료 접근 등 효과적인 개입 방안을 설계합니다.' },
+  { title: '발달 로드맵 & 예후', icon: LineChart, color: 'from-orange-500 to-amber-500', theory: 'AI 생태환경 분석 · 심리사회적 발달 평가', preview: '생태환경 요인과 심리사회적 발달 단계를 통합 적용하여 발달 경로를 예측합니다.' },
+  { title: '또래 비교 분석', icon: Users, color: 'from-indigo-500 to-blue-500', theory: 'AIHPRO 빅데이터 규준 · 연령별 발달 이정표', preview: 'AIHPRO 빅데이터와 연령별 발달 이정표를 기반으로 각 영역별 백분위를 산출합니다.' },
+  { title: '전문가 소견서', icon: Shield, color: 'from-teal-500 to-cyan-500', theory: 'AI 임상 분석 · 전문가 수준 평가', preview: 'AI가 임상 수준의 분석 체계를 참조하여 전문가 수준의 소견서를 생성합니다.' },
+  { title: '가족 지원 가이드', icon: Activity, color: 'from-fuchsia-500 to-pink-500', theory: 'AI 양육유형 분석 · 정서코칭 전략', preview: '양육 유형 분석과 정서코칭 전략에 기반한 맞춤형 양육 가이드를 제공합니다.' },
+  { title: '종합 요약 및 제언', icon: BarChart3, color: 'from-violet-500 to-purple-500', theory: 'AIHPRO 통합 분석 프레임워크', preview: 'AIHPRO 통합 분석 프레임워크에 따라 전체 분석을 통합 정리합니다.' }
 ];
 
 const SAMPLE_REPORT_SECTIONS_EN = [
-  { title: 'Comprehensive Development Profile', icon: Brain, color: 'from-blue-500 to-cyan-500', theory: "Piaget's Cognitive Development · Vygotsky's ZPD", preview: "Comprehensive analysis of cognitive, language, social-emotional, and motor domains based on Piaget's developmental stages and Vygotsky's Zone of Proximal Development." },
-  { title: 'Psychological & Emotional Deep Analysis', icon: Heart, color: 'from-pink-500 to-rose-500', theory: "Beck's Cognitive Theory · Bowlby's Attachment · DSM-5", preview: "Multi-layered analysis of anxiety, depression, self-esteem, and stress response patterns using Beck's cognitive triad and Bowlby's attachment theory." },
-  { title: 'Strengths & Weaknesses Matrix', icon: TrendingUp, color: 'from-green-500 to-emerald-500', theory: "Gardner's Multiple Intelligences · Seligman's Positive Psychology", preview: "Visualization of key strengths and areas needing support based on Gardner's 8 intelligences and Seligman's VIA character strengths." },
-  { title: 'Tailored Intervention Program', icon: Target, color: 'from-purple-500 to-violet-500', theory: 'ABA · CBT · Floortime DIR Model', preview: 'Evidence-based intervention strategies designed according to Gold Standard practices including ABA, CBT, and DIR/Floortime.' },
-  { title: 'Development Roadmap & Prognosis', icon: LineChart, color: 'from-orange-500 to-amber-500', theory: "Bronfenbrenner's Ecological Systems · Erikson's Psychosocial Stages", preview: "Developmental trajectory prediction integrating Bronfenbrenner's ecological model and Erikson's 8-stage psychosocial development theory." },
-  { title: 'Peer Comparison Analysis', icon: Users, color: 'from-indigo-500 to-blue-500', theory: 'WHO Global Standards · CDC Milestone Tracker', preview: 'Percentile calculations for each domain based on WHO multinational growth standards and CDC developmental milestones.' },
-  { title: 'Expert Clinical Opinion', icon: Shield, color: 'from-teal-500 to-cyan-500', theory: 'ICD-11 · DSM-5-TR · APA Guidelines', preview: 'Clinical-level expert opinion generated referencing ICD-11 and DSM-5-TR diagnostic systems following APA guidelines.' },
-  { title: 'Family Support Guide', icon: Activity, color: 'from-fuchsia-500 to-pink-500', theory: "Baumrind's Parenting Styles · Gottman's Emotion Coaching · PCIT", preview: "Parenting strategies based on Baumrind's parenting model, Gottman's 5-step emotion coaching, and PCIT protocol." },
-  { title: 'Summary & Recommendations', icon: BarChart3, color: 'from-violet-500 to-purple-500', theory: "ICF Classification · WHO Integrated Care Framework", preview: "Integrated summary following WHO's ICF framework. Cross-verified with 500+ latest research papers." }
+  { title: 'Comprehensive Development Profile', icon: Brain, color: 'from-blue-500 to-cyan-500', theory: 'AI Cognitive Development Analysis · Proximal Development Assessment', preview: 'Comprehensive analysis of cognitive, language, social-emotional, and motor domains using AIHPRO AI engine.' },
+  { title: 'Psychological & Emotional Deep Analysis', icon: Heart, color: 'from-pink-500 to-rose-500', theory: 'AI Cognitive Pattern Analysis · Attachment Assessment', preview: 'Multi-layered analysis of anxiety, depression, self-esteem, and stress response patterns using AI cognitive pattern analysis.' },
+  { title: 'Strengths & Weaknesses Matrix', icon: TrendingUp, color: 'from-green-500 to-emerald-500', theory: 'AI Multi-Domain Analysis · Character Strengths Assessment', preview: 'Visualization of key strengths and areas needing support based on multi-domain analysis and character strengths evaluation.' },
+  { title: 'Tailored Intervention Program', icon: Target, color: 'from-purple-500 to-violet-500', theory: 'AI Behavioral Analysis · Cognitive-Behavioral Strategy · Play Therapy', preview: 'Evidence-based intervention strategies including behavioral analysis, cognitive-behavioral approaches, and play therapy.' },
+  { title: 'Development Roadmap & Prognosis', icon: LineChart, color: 'from-orange-500 to-amber-500', theory: 'AI Ecological Analysis · Psychosocial Development Assessment', preview: 'Developmental trajectory prediction integrating ecological factors and psychosocial development stages.' },
+  { title: 'Peer Comparison Analysis', icon: Users, color: 'from-indigo-500 to-blue-500', theory: 'AIHPRO Big Data Norms · Age-Based Milestones', preview: 'Percentile calculations for each domain based on AIHPRO big data and age-based developmental milestones.' },
+  { title: 'Expert Clinical Opinion', icon: Shield, color: 'from-teal-500 to-cyan-500', theory: 'AI Clinical Analysis · Expert-Level Assessment', preview: 'Clinical-level expert opinion generated using AI-powered clinical analysis systems.' },
+  { title: 'Family Support Guide', icon: Activity, color: 'from-fuchsia-500 to-pink-500', theory: 'AI Parenting Style Analysis · Emotion Coaching Strategy', preview: 'Parenting strategies based on AI parenting style analysis and emotion coaching methodologies.' },
+  { title: 'Summary & Recommendations', icon: BarChart3, color: 'from-violet-500 to-purple-500', theory: 'AIHPRO Integrated Analysis Framework', preview: 'Integrated summary following AIHPRO analysis framework with comprehensive cross-verification.' }
 ];
 
 // ── 애니메이션 카운터 ──

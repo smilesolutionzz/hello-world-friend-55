@@ -153,8 +153,8 @@ const PostPaymentConversionFlow = ({ testName, onViewReport }: PostPaymentFlowPr
       >
         <p className="text-[11px] text-muted-foreground/70">
           {isEnglish
-            ? '📊 All reports are generated based on your behavioral response data and professional clinical scales'
-            : '📊 모든 리포트는 행동 반응 데이터와 전문 임상 척도를 기반으로 생성됩니다'}
+            ? '📊 All reports are generated based on your behavioral response data and AI-powered analysis'
+            : '📊 모든 리포트는 행동 반응 데이터와 AI 분석 엔진을 기반으로 생성됩니다'}
         </p>
       </motion.div>
     </div>

@@ -71,6 +71,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import SignupPromptModal from "@/components/guest/SignupPromptModal";
+import { ConcernBasedRecommender } from "@/components/assessment/ConcernBasedRecommender";
 import {
   Collapsible,
   CollapsibleContent,
@@ -790,6 +791,11 @@ const Assessment = () => {
               )}
             </button>
           </div>
+
+          <ConcernBasedRecommender
+            onSelectTest={(step) => setCurrentStep(step as any)}
+            onNavigate={(path) => navigate(path)}
+          />
 
           <section className="mb-8">
             <div className="flex items-center gap-3 mb-2">

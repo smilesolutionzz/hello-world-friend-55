@@ -368,14 +368,14 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                 <div className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
                   <p><strong>{isEnglish ? 'Key Observations:' : '주요 관찰:'}</strong> {isEnglish 
-                    ? 'Language development delay compared to peers (~6 months), social development within normal range, sensory processing sensitivity observed. Bayley-III language domain percentile 38%.'
-                    : '또래 대비 언어 발달 지연 (약 6개월), 사회성 발달 정상 범위, 감각처리 민감성 관찰. Bayley-III 언어 영역 백분위 38%.'}</p>
+                     ? 'Language development delay compared to peers (~6 months), social development within normal range, sensory processing sensitivity observed. Language domain percentile 38%.'
+                     : '또래 대비 언어 발달 지연 (약 6개월), 사회성 발달 정상 범위, 감각처리 민감성 관찰. 언어 영역 백분위 38%.'}</p>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
                   <p><strong>{isEnglish ? 'Strengths:' : '강점 영역:'}</strong> {isEnglish
-                    ? 'Visual learning ability top 15% (K-CDI-2 standard), creative problem-solving, excellent concentration in art/music activities (avg +70%).'
-                    : '시각적 학습 능력 상위 15% (K-CDI-2 기준), 창의적 문제해결, 미술·음악 활동 집중력 우수 (평균 대비 +70%).'}</p>
+                     ? 'Visual learning ability top 15%, creative problem-solving, excellent concentration in art/music activities (avg +70%).'
+                     : '시각적 학습 능력 상위 15%, 창의적 문제해결, 미술·음악 활동 집중력 우수 (평균 대비 +70%).'}</p>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0" />

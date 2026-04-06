@@ -1817,6 +1817,23 @@ const Assessment = () => {
     );
   }
 
+  if (currentStep === 'selfesteem-result' && selfesteemResults) {
+    return (
+      <SubscriptionGuard consumeAt="result" featureName="자존감 검사" creditType="test" trialKey="SELFESTEEM_TEST">
+        <ResultPaywall>
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+          <div className="container mx-auto max-w-4xl">
+            <SelfEsteemTestResult 
+              result={selfesteemResults}
+              onRestart={() => setCurrentStep('selfesteem-test')}
+            />
+          </div>
+        </div>
+      </ResultPaywall>
+      </SubscriptionGuard>
+    );
+  }
+
 
   if (currentStep === 'career-result' && careerResults) {
     return (

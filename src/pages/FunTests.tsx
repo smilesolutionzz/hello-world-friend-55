@@ -71,18 +71,9 @@ const FunTests = () => {
     return <ParentChildPlayTest onComplete={handleTestComplete} onBack={handleBack} />;
   }
 
-  if (currentTest === 'joseon_name') {
-    navigate('/joseon-name-test');
-    return null;
-  }
-
-  if (currentTest === 'joseon_job') {
-    navigate('/joseon-job-test');
-    return null;
-  }
-
-  if (currentTest === 'joseon_status') {
-    navigate('/joseon-status-test');
+  if (currentTest === 'joseon_name' || currentTest === 'joseon_job' || currentTest === 'joseon_status') {
+    // 조선시대 테스트는 준비 중 - 메뉴로 돌아가기
+    setCurrentTest('menu');
     return null;
   }
 

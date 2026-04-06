@@ -275,6 +275,14 @@ const BlogPost = () => {
                 infos.forEach((ig) => elements.push(renderInfographic(ig)));
               }
 
+              // Check for inline CTAs after this paragraph
+              const ctas = ctaMap.get(idx);
+              if (ctas) {
+                ctas.forEach((cta) => elements.push(
+                  <InlineCTACard key={`cta-${cta.ctaLink}-${idx}`} cta={cta} onNavigate={navigate} />
+                ));
+              }
+
               return elements;
             })}
           </article>

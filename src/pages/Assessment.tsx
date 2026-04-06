@@ -65,7 +65,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
-import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target, MessageCircle, Coins, ChevronDown, CheckCircle } from "lucide-react";
+import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target, MessageCircle, Coins, ChevronDown, CheckCircle, Clock, ArrowRight } from "lucide-react";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

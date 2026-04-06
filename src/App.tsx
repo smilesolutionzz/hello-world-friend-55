@@ -177,6 +177,7 @@ const App = () => {
           <Route path="/ai-coach" element={<AIAssistant />} />
           <Route path="/concern-storage" element={<ConcernStorage />} />
           <Route path="/report-generator" element={<ReportGenerator />} />
+          <Route path="/report-generator-pro" element={<ReportGeneratorPro />} />
           <Route path="/sample-report" element={<SampleReport />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
 
@@ -304,6 +305,7 @@ const App = () => {
           <Route path="/en/ai-coach" element={<AIAssistant />} />
           <Route path="/en/concern-storage" element={<ConcernStorage />} />
           <Route path="/en/report-generator" element={<ReportGenerator />} />
+          <Route path="/en/report-generator-pro" element={<ReportGeneratorPro />} />
           <Route path="/en/sample-report" element={<SampleReport />} />
           <Route path="/en/comprehensive-reporting" element={<ComprehensiveReporting />} />
           <Route path="/en/metaverse-voice" element={<MetaverseVoice />} />

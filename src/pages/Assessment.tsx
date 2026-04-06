@@ -192,6 +192,16 @@ const Assessment = () => {
       navigate('/fun-tests', { replace: true });
       return;
     }
+
+    // URL에서 ?start= 파라미터로 특정 검사 바로 시작
+    const startTest = searchParams.get('start');
+    if (startTest) {
+      const validTests = ['depression', 'stress', 'adhd', 'panic', 'bigfive', 'attachment', 'career', 'selfesteem', 'language', 'developmental-delay', 'sensory-integration', 'learning-disability', 'social-development', 'challenging-behavior', 'adaptive-behavior', 'parent-child-play', 'resilience'];
+      if (validTests.includes(startTest)) {
+        handleTestTypeSelect(startTest as any);
+        return;
+      }
+    }
     
     // location.state에서 testType 확인 (3분 테스트에서 온 경우)
     const stateTestType = location.state?.testType;

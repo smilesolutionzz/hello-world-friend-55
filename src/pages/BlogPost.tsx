@@ -2,22 +2,111 @@ import { useParams, useNavigate } from "react-router-dom";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Clock, Calendar, ArrowRight, User } from "lucide-react";
+import { ArrowLeft, Clock, Calendar, ArrowRight, User, Check, AlertTriangle, CheckCircle2 } from "lucide-react";
 import Footer from "@/components/ui/footer";
 import SEOHead from "@/components/common/SEOHead";
-import { blogPosts } from "@/data/blogPosts";
+import { blogPosts, type InfoGraphic } from "@/data/blogPosts";
 import blogChildEmotion from "@/assets/blog/blog-child-emotion.jpg";
 import blogSeniorBrain from "@/assets/blog/blog-senior-brain.jpg";
+import blogParentBurnout from "@/assets/blog/blog-parent-burnout.jpg";
 
 const thumbnailMap: Record<string, string> = {
   "blog-child-emotion.jpg": blogChildEmotion,
   "blog-senior-brain.jpg": blogSeniorBrain,
+  "blog-parent-burnout.jpg": blogParentBurnout,
 };
 
 const getThumb = (path: string) => {
   const file = path.split("/").pop() || "";
   return thumbnailMap[file] || path;
 };
+
+/* ── Infographic Components ── */
+
+const BarChart = ({ title, data }: { title?: string; data: { label: string; value: number; max: number }[] }) => (
+  <div className="my-8 p-5 md:p-6 rounded-2xl bg-muted/50 border border-border/50">
+    {title && <p className="text-sm font-bold text-foreground mb-4">{title}</p>}
+    <div className="space-y-3">
+      {data.map((item, i) => (
+        <div key={i} className="space-y-1">
+          <div className="flex justify-between text-xs">
+            <span className="text-foreground/70">{item.label}</span>
+            <span className="font-semibold text-foreground">{item.value}{item.max === 100 ? '%' : `개`}</span>
+          </div>
+          <div className="h-3 bg-background rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-1000"
+              style={{ width: `${(item.value / item.max) * 100}%` }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+    <p className="text-[10px] text-muted-foreground mt-3">출처: 소아정신건강 현장 데이터 기반 평균치</p>
+  </div>
+);
+
+const StatRow = ({ title, data }: { title?: string; data: { label: string; value: string; color: string }[] }) => (
+  <div className="my-8 p-5 md:p-6 rounded-2xl bg-muted/50 border border-border/50">
+    {title && <p className="text-sm font-bold text-foreground mb-4">{title}</p>}
+    <div className="grid grid-cols-3 gap-3">
+      {data.map((item, i) => (
+        <div key={i} className="text-center p-3 rounded-xl bg-background border border-border/30">
+          <div className={`text-2xl md:text-3xl font-black ${item.color === 'destructive' ? 'text-destructive' : item.color === 'secondary' ? 'text-secondary-foreground' : 'text-primary'}`}>
+            {item.value}
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-1 leading-tight">{item.label}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const Checklist = ({ title, data }: { title?: string; data: string[] }) => (
+  <div className="my-8 p-5 md:p-6 rounded-2xl bg-primary/5 border border-primary/20">
+    {title && <p className="text-sm font-bold text-foreground mb-4 flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" />{title}</p>}
+    <div className="space-y-2.5">
+      {data.map((item, i) => (
+        <label key={i} className="flex items-start gap-3 cursor-pointer group">
+          <div className="mt-0.5 w-5 h-5 rounded-md border-2 border-primary/30 flex items-center justify-center group-hover:border-primary transition-colors shrink-0">
+            <Check className="w-3 h-3 text-primary opacity-0 group-hover:opacity-40 transition-opacity" />
+          </div>
+          <span className="text-sm text-foreground/80 leading-relaxed">{item}</span>
+        </label>
+      ))}
+    </div>
+  </div>
+);
+
+const ComparisonTable = ({ title, data }: { title?: string; data: { normal: string; warning: string }[] }) => (
+  <div className="my-8 p-5 md:p-6 rounded-2xl bg-muted/50 border border-border/50 overflow-hidden">
+    {title && <p className="text-sm font-bold text-foreground mb-4">{title}</p>}
+    <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-3">
+        <div className="text-xs font-semibold text-primary px-3 py-2 bg-primary/10 rounded-lg text-center">✅ 정상 범위</div>
+        <div className="text-xs font-semibold text-destructive px-3 py-2 bg-destructive/10 rounded-lg text-center">⚠️ 주의 필요</div>
+      </div>
+      {data.map((row, i) => (
+        <div key={i} className="grid grid-cols-2 gap-3">
+          <div className="text-xs text-foreground/70 p-3 bg-background rounded-lg border border-border/30 leading-relaxed">{row.normal}</div>
+          <div className="text-xs text-foreground/70 p-3 bg-background rounded-lg border border-destructive/20 leading-relaxed">{row.warning}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const renderInfographic = (info: InfoGraphic) => {
+  switch (info.type) {
+    case 'bar-chart': return <BarChart key={info.title} title={info.title} data={info.data} />;
+    case 'stat-row': return <StatRow key={info.title} title={info.title} data={info.data} />;
+    case 'checklist': return <Checklist key={info.title} title={info.title} data={info.data} />;
+    case 'comparison': return <ComparisonTable key={info.title} title={info.title} data={info.data} />;
+    default: return null;
+  }
+};
+
+/* ── Main Component ── */
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -36,6 +125,17 @@ const BlogPost = () => {
   }
 
   const otherPosts = blogPosts.filter((p) => p.id !== post.id).slice(0, 2);
+
+  // Build infographic insertion map
+  const infoMap = new Map<number, InfoGraphic[]>();
+  post.infographics?.forEach((ig) => {
+    const arr = infoMap.get(ig.insertAfterParagraph) || [];
+    arr.push(ig);
+    infoMap.set(ig.insertAfterParagraph, arr);
+  });
+
+  // Parse content into paragraphs
+  const lines = post.content.split("\n").filter((l) => l.trim() !== "");
 
   return (
     <>
@@ -98,57 +198,53 @@ const BlogPost = () => {
             </span>
           </div>
 
-          {/* Content */}
+          {/* Content with infographics */}
           <article className="prose prose-lg max-w-none">
-            {post.content.split("\n").map((line, idx) => {
-              if (!line.trim()) return null;
-              if (/^\d+\.\s/.test(line)) {
-                return (
-                  <h3
-                    key={idx}
-                    className="text-xl font-bold text-foreground mt-10 mb-3"
-                  >
+            {lines.map((line, idx) => {
+              const elements: React.ReactNode[] = [];
+
+              // Render the line
+              if (/^\d+[\.\)]\s/.test(line)) {
+                elements.push(
+                  <h3 key={`h-${idx}`} className="text-xl font-bold text-foreground mt-10 mb-3">
                     {line}
                   </h3>
                 );
-              }
-              if (line.startsWith("·")) {
-                return (
-                  <li
-                    key={idx}
-                    className="ml-4 text-foreground/80 leading-relaxed mb-1"
-                  >
+              } else if (line.startsWith("·")) {
+                elements.push(
+                  <li key={`li-${idx}`} className="ml-4 text-foreground/80 leading-relaxed mb-1">
                     {line.replace("· ", "")}
                   </li>
                 );
-              }
-              if (
+              } else if (
                 line.startsWith("집에서 해볼") ||
                 line.startsWith("부모가 먼저") ||
                 line.startsWith("기록해보세요") ||
                 line.startsWith("참고 기준") ||
                 line.startsWith("가족이 할") ||
-                line.startsWith("매일 할 수")
+                line.startsWith("매일 할 수") ||
+                line.startsWith("쉽게 말하면")
               ) {
-                return (
-                  <div
-                    key={idx}
-                    className="bg-primary/5 border-l-4 border-primary px-5 py-3 rounded-r-lg my-4"
-                  >
-                    <p className="text-foreground/80 leading-relaxed text-base font-medium">
-                      {line}
-                    </p>
+                elements.push(
+                  <div key={`tip-${idx}`} className="bg-primary/5 border-l-4 border-primary px-5 py-3 rounded-r-lg my-4">
+                    <p className="text-foreground/80 leading-relaxed text-base font-medium">{line}</p>
                   </div>
                 );
+              } else {
+                elements.push(
+                  <p key={`p-${idx}`} className="text-foreground/80 leading-relaxed mb-4 text-base">
+                    {line}
+                  </p>
+                );
               }
-              return (
-                <p
-                  key={idx}
-                  className="text-foreground/80 leading-relaxed mb-4 text-base"
-                >
-                  {line}
-                </p>
-              );
+
+              // Check for infographics after this paragraph
+              const infos = infoMap.get(idx);
+              if (infos) {
+                infos.forEach((ig) => elements.push(renderInfographic(ig)));
+              }
+
+              return elements;
             })}
           </article>
 

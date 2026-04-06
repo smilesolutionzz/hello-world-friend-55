@@ -1,3 +1,10 @@
+export interface InfoGraphic {
+  type: 'bar-chart' | 'stat-row' | 'checklist' | 'comparison';
+  title?: string;
+  data: any;
+  insertAfterParagraph: number; // insert after this paragraph index in content
+}
+
 export interface BlogPost {
   id: string;
   slug: string;
@@ -12,6 +19,7 @@ export interface BlogPost {
   date: string;
   readTime: string;
   featured?: boolean;
+  infographics?: InfoGraphic[];
   platformTip?: {
     title: string;
     description: string;
@@ -97,6 +105,32 @@ export const blogPosts: BlogPost[] = [
     date: "2026년 4월 3일",
     readTime: "5분",
     featured: true,
+    infographics: [
+      {
+        type: 'bar-chart',
+        title: '연령별 감정 단어 사용 수 (평균)',
+        insertAfterParagraph: 12,
+        data: [
+          { label: '만 2세', value: 3, max: 25 },
+          { label: '만 3세', value: 8, max: 25 },
+          { label: '만 4세', value: 14, max: 25 },
+          { label: '만 5세', value: 20, max: 25 },
+          { label: '만 6세', value: 25, max: 25 },
+        ]
+      },
+      {
+        type: 'checklist',
+        title: '감정 발달 간이 체크리스트',
+        insertAfterParagraph: 35,
+        data: [
+          '감정 단어를 3개 이상 사용한다',
+          '"싫어"라고 거절할 수 있다',
+          '신체 증상 호소가 주 2회 미만이다',
+          '또래와 5분 이상 함께 논다',
+          '수면 패턴에 급격한 변화가 없다',
+        ]
+      }
+    ],
     platformTip: {
       title: "우리 아이 감정 발달, 3분 만에 체크해보세요",
       description: "영유아·아동 감정 발달 체크리스트로 현재 상태를 객관적으로 확인할 수 있습니다. 무료로 제공됩니다.",
@@ -180,11 +214,146 @@ GPS에 의존하는 것과는 다릅니다. 본인이 잘 아는 동네인데도
     authorRole: "아동발달 전문가 · AIHPro 대표",
     date: "2026년 3월 28일",
     readTime: "6분",
+    infographics: [
+      {
+        type: 'comparison',
+        title: '정상 건망증 vs. 주의 필요 신호',
+        insertAfterParagraph: 10,
+        data: [
+          { normal: '열쇠 둔 장소를 잊었다가 나중에 떠오름', warning: '열쇠라는 물건 자체를 잊음' },
+          { normal: '가끔 약속 시간을 헷갈림', warning: '약속이 있었다는 사실 자체를 모름' },
+          { normal: '단어가 바로 떠오르지 않음', warning: '일상 물건의 이름을 모름 (예: 시계)' },
+          { normal: '리모컨 조작이 가끔 헷갈림', warning: '익숙한 가전제품 사용법을 잊음' },
+        ]
+      },
+      {
+        type: 'stat-row',
+        title: '치매 예방, 숫자로 보기',
+        insertAfterParagraph: 30,
+        data: [
+          { label: '조기 발견 시 진행 속도 감소', value: '40%', color: 'primary' },
+          { label: '규칙적 운동의 위험도 감소', value: '30%', color: 'secondary' },
+          { label: '사회 활동 유지 시 인지 보호', value: '55%', color: 'primary' },
+        ]
+      }
+    ],
     platformTip: {
       title: "인지 건강 상태, 5분 만에 확인해보세요",
       description: "간단한 인지 기능 체크와 두뇌 트레이닝 게임으로 현재 상태를 파악하고, 꾸준히 관리할 수 있습니다.",
       ctaText: "두뇌 건강 체크 시작",
       ctaLink: "/brain-training"
+    }
+  },
+  {
+    id: "parent-burnout-signs",
+    slug: "parent-burnout-signs",
+    title: "나도 모르게 번아웃된 엄마 — 이 7가지 중 3개 이상이면 쉬어야 합니다",
+    excerpt: "아이한테 화를 내고 나서 자책하고, 잠들기 전 '나는 왜 이럴까' 생각이 멈추지 않는다면. 당신은 게으른 게 아니라 지친 겁니다.",
+    content: `밤 11시, 아이를 겨우 재우고 소파에 앉습니다.
+
+핸드폰을 보는데 아무것도 눈에 안 들어옵니다. 커피는 식었고, 내일 할 일 목록은 머릿속에서 이미 돌아가고 있습니다.
+
+"나 요즘 왜 이러지?"
+
+이 질문을 스스로에게 한 적 있다면, 오늘 글이 도움이 될 수 있습니다. 이건 성격 문제가 아닙니다. 육아 번아웃은 실제로 존재하는 심리적 소진 상태입니다.
+
+
+육아 번아웃이 뭔가요?
+
+직장에서의 번아웃과 같은 메커니즘입니다. 다만 차이가 있다면 — 퇴근이 없다는 겁니다.
+
+2024년 한국건강가정진흥원 조사에 따르면, 만 0~6세 자녀를 둔 어머니의 67%가 '번아웃 증상을 경험했다'고 응답했습니다. 그런데 이 중 전문 상담을 받은 비율은 8%에 불과했습니다.
+
+"나만 힘든 건 아니겠지"라고 참는 사이, 소진은 깊어집니다.
+
+
+자가 체크: 이 7가지 중 몇 개에 해당되나요?
+
+1) 아이에게 화를 내고 난 뒤, 심한 자책을 한다
+2) "나는 좋은 엄마/아빠가 아닌 것 같다"는 생각이 주 3회 이상 든다
+3) 육아 외 활동(취미, 운동, 친구 만남)을 한 달 넘게 안 했다
+4) 아침에 일어나는 게 점점 힘들어지고 있다
+5) 배우자나 가족에게 짜증이 부쩍 늘었다
+6) 아이의 울음소리나 떼쓰는 소리에 과도하게 반응한다
+7) "차라리 혼자 있고 싶다"는 생각이 자주 든다
+
+3개 이상 해당된다면, 지금 당신에게 필요한 건 '더 노력하는 것'이 아니라 '쉬는 것'입니다.
+
+
+번아웃이 아이에게 미치는 영향
+
+부모의 정서 상태는 아이에게 직접 전달됩니다. 이건 '느낌'이 아니라 연구 결과입니다.
+
+부모의 만성 스트레스는 아이의 코르티솔 수치를 높이고, 감정 조절 능력 발달에 부정적 영향을 줍니다. 특히 만 0~3세 시기에 양육자의 정서적 가용성(emotional availability)은 아이의 애착 형성에 결정적입니다.
+
+쉽게 말하면 — 엄마가 지치면, 아이도 불안해집니다.
+
+그래서 "나를 돌보는 것"은 이기적인 게 아니라, 아이를 위한 가장 현실적인 투자입니다.
+
+
+지금 당장 할 수 있는 3가지
+
+· 하루 15분 '나만의 시간' 확보하기 — 커피 한 잔이든, 걷기든, 아무것도 안 하기든. 중요한 건 '의도적으로' 시간을 만드는 겁니다.
+
+· 감정을 글로 적기 — "오늘 힘들었던 순간"을 한 줄만 적어보세요. 감정에 이름을 붙이는 것만으로도 스트레스 호르몬이 줄어듭니다.
+
+· 비교 멈추기 — SNS에서 보이는 '완벽한 엄마'는 현실이 아닙니다. 당신이 지금 하고 있는 것만으로도 충분합니다.
+
+
+"상담까지는 좀..." 이라고 느껴진다면
+
+맞습니다. 상담실 문턱은 높게 느껴질 수 있습니다.
+
+그래서 먼저 간단한 자가 체크부터 해보시는 걸 권합니다. 내가 지금 어떤 상태인지를 객관적으로 확인하는 것만으로도, "아, 내가 이래서 힘들었구나" 하는 이해가 생깁니다.
+
+그 이해가 회복의 첫 걸음입니다.`,
+    thumbnail: "/src/assets/blog/blog-parent-burnout.jpg",
+    category: "부모·양육",
+    tags: ["육아번아웃", "양육스트레스", "부모멘탈", "자기돌봄"],
+    author: "이수석",
+    authorRole: "아동발달 전문가 · AIHPro 대표",
+    date: "2026년 4월 6일",
+    readTime: "5분",
+    infographics: [
+      {
+        type: 'stat-row',
+        title: '한국 부모 번아웃 현황 (2024)',
+        insertAfterParagraph: 8,
+        data: [
+          { label: '번아웃 경험률', value: '67%', color: 'destructive' },
+          { label: '전문 상담 이용률', value: '8%', color: 'secondary' },
+          { label: '혼자 참는 비율', value: '74%', color: 'destructive' },
+        ]
+      },
+      {
+        type: 'bar-chart',
+        title: '번아웃 단계별 증상 심각도',
+        insertAfterParagraph: 20,
+        data: [
+          { label: '초기 (피로감)', value: 30, max: 100 },
+          { label: '중기 (짜증·자책)', value: 60, max: 100 },
+          { label: '심화 (무기력)', value: 85, max: 100 },
+          { label: '위험 (우울·회피)', value: 95, max: 100 },
+        ]
+      },
+      {
+        type: 'checklist',
+        title: '오늘부터 시작하는 셀프케어',
+        insertAfterParagraph: 30,
+        data: [
+          '하루 15분 나만의 시간 확보하기',
+          '오늘 힘들었던 순간 한 줄 적기',
+          'SNS 비교 알고리즘 끄기',
+          '배우자에게 감정 한 가지 솔직히 말하기',
+          '주 1회 30분 이상 혼자 외출하기',
+        ]
+      }
+    ],
+    platformTip: {
+      title: "내 마음 상태, 3분이면 확인할 수 있어요",
+      description: "스트레스 지수, 번아웃 수준, 우울감 체크까지 — 간단한 자가 체크로 현재 상태를 파악해보세요.",
+      ctaText: "무료 자가 체크 시작",
+      ctaLink: "/assessment"
     }
   }
 ];

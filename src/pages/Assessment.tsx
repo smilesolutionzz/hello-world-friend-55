@@ -71,6 +71,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import SignupPromptModal from "@/components/guest/SignupPromptModal";
+import { ConcernBasedRecommender } from "@/components/assessment/ConcernBasedRecommender";
 import {
   Collapsible,
   CollapsibleContent,

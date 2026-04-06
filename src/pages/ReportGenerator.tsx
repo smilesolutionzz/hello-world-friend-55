@@ -371,7 +371,7 @@ const ReportGenerator = () => {
             <p className="text-xs text-muted-foreground">
               아이의 행동 데이터를 기반으로<br/>정기적인 분석과 변화 리포트를 제공합니다
             </p>
-            <Button onClick={() => <Button onClick={() => navigate(localePath('/observation-list'))} variant="ghost"} variant="ghost"
+            <Button onClick={() => navigate(localePath('/observation-list'))} variant="ghost"
               className="text-primary text-xs font-semibold hover:bg-primary/5">
               변화 추적 시작하기 <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </Button>

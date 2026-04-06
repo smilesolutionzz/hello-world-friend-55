@@ -31,6 +31,7 @@ export interface BlogPost {
   readTime: string;
   featured?: boolean;
   infographics?: InfoGraphic[];
+  inlineCTAs?: InlineCTA[];
   platformTip?: {
     title: string;
     description: string;

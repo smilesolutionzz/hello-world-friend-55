@@ -149,6 +149,22 @@ const ReportGeneratorPro = () => {
       ]);
       const totalDataCount = (assessments?.length || 0) + (observations?.length || 0) + (observationSessions?.length || 0) + (chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0);
       setUserData({ assessments: assessments || [], observations: observations || [], observationSessions: observationSessions || [], chatRooms: chatRooms || [], profile: profile || {}, totalAssessments: assessments?.length || 0, totalObservations: observations?.length || 0, totalObservationSessions: observationSessions?.length || 0, totalChatMessages: chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0, totalDataCount });
+      
+      // 프로필 데이터로 대상자 정보 자동 채우기
+      if (profile) {
+        setUserInput(prev => ({
+          ...prev,
+          name: prev.name || profile.display_name || '',
+          birthDate: prev.birthDate || profile.birth_date || '',
+        }));
+      }
+      
+      // 데이터가 충분하면 자동으로 데이터 기반 모드, 없으면 고민 기반 모드
+      if (totalDataCount >= 3) {
+        setReportMode('with-data');
+      } else {
+        setReportMode('without-data');
+      }
     } catch (error) {
       console.error('데이터 로드 오류:', error);
       toast({ title: t("데이터 로드 실패", "Failed to Load Data"), description: t("사용자 데이터를 불러오는 중 오류가 발생했습니다.", "An error occurred while loading user data."), variant: "destructive" });

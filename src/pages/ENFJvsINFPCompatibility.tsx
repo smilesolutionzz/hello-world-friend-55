@@ -385,7 +385,7 @@ const ENFJvsINFPCompatibility = () => {
                   <Users className="w-16 h-16 text-pink-400" />
                 </motion.div>
                 <h2 className="text-3xl font-bold text-white mb-2">나는 누구?</h2>
-                <p className="text-white/60">당신의 성별과 MBTI를 선택하세요</p>
+                <p className="text-white/60">당신의 성별과 성격유형을 선택하세요</p>
               </div>
 
               {/* 성별 선택 */}
@@ -458,7 +458,7 @@ const ENFJvsINFPCompatibility = () => {
 
               {/* MBTI 선택 */}
               <div className="mb-8">
-                <h3 className="text-xl font-semibold text-white/80 text-center mb-4">MBTI 유형</h3>
+                <h3 className="text-xl font-semibold text-white/80 text-center mb-4">성격 유형</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <motion.button
                     whileHover={{ scale: 1.03 }}
@@ -532,7 +532,7 @@ const ENFJvsINFPCompatibility = () => {
                   <Heart className="w-16 h-16 text-red-400" fill="currentColor" />
                 </motion.div>
                 <h2 className="text-3xl font-bold text-white mb-2">상대방은?</h2>
-                <p className="text-white/60">상대방의 성별과 MBTI를 선택하세요</p>
+                <p className="text-white/60">상대방의 성별과 성격유형을 선택하세요</p>
               </div>
 
               {/* 성별 선택 */}
@@ -575,7 +575,7 @@ const ENFJvsINFPCompatibility = () => {
 
               {/* MBTI 선택 */}
               <div className="mb-8">
-                <h3 className="text-xl font-semibold text-white/80 text-center mb-4">MBTI 유형</h3>
+                <h3 className="text-xl font-semibold text-white/80 text-center mb-4">성격 유형</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <motion.button
                     whileHover={{ scale: 1.03 }}

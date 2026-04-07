@@ -28,7 +28,7 @@ const MBTITestInner = () => {
 
   // 결과가 표시될 때 자동 저장
   useAutoSaveTestResult({
-    testType: 'MBTI 검사',
+    testType: 'AI 성격유형 검사',
     results: showResult ? {
       mbtiType,
       percentages,
@@ -109,15 +109,15 @@ const MBTITestInner = () => {
   }
 
   if (isAnalyzing) {
-    const mbtiQuotes = [
-      { text: "성격을 이해하면 관계가 보입니다.", author: "칼 융" },
-      { text: "자기 이해는 타인 이해의 시작입니다.", author: "다니엘 골먼" },
-      { text: "모든 성격 유형에는 고유한 강점이 있습니다.", author: "이자벨 마이어스" },
-      { text: "진정한 자아를 발견하는 것이 인생의 목표입니다.", author: "아브라함 매슬로우" },
+    const personalityQuotes = [
+      { text: "성격을 이해하면 관계가 보입니다.", author: "심리학 연구" },
+      { text: "자기 이해는 타인 이해의 시작입니다.", author: "심리학 원칙" },
+      { text: "모든 성격 유형에는 고유한 강점이 있습니다.", author: "성격 심리학" },
+      { text: "진정한 자아를 발견하는 것이 인생의 목표입니다.", author: "인본주의 심리학" },
     ];
 
-    const mbtiInsights = [
-      { category: "성격", text: "MBTI는 선천적 성향과 후천적 발달의 조합입니다." },
+    const personalityInsights = [
+      { category: "성격", text: "성격유형은 선천적 성향과 후천적 발달의 조합입니다." },
       { category: "관계", text: "상호보완적인 성격 유형이 더 강한 팀을 만듭니다." },
       { category: "성장", text: "약한 기능을 발달시키면 더 균형잡힌 사람이 됩니다." },
       { category: "소통", text: "성격 유형에 맞는 소통 방식이 효과적입니다." },
@@ -125,12 +125,12 @@ const MBTITestInner = () => {
 
     return (
       <ModernAnalysisLoading
-        title="MBTI 성격 분석 중"
+        title="AI 성격유형 분석 중"
         description="AI가 당신의 답변을 분석하여 성격 유형을 도출하고 있습니다..."
         estimatedTime={15}
         icon={Heart}
-        quotes={mbtiQuotes}
-        insights={mbtiInsights}
+        quotes={personalityQuotes}
+        insights={personalityInsights}
       />
     );
   }
@@ -152,8 +152,8 @@ const MBTITestInner = () => {
               <Sparkles className="w-16 h-16 text-primary mx-auto" />
             </motion.div>
             
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              신박한 MBTI 테스트
+             <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              AI 16 퍼스널리티 테스트
             </h1>
             
             <p className="text-xl text-muted-foreground mb-8">
@@ -362,7 +362,7 @@ const MBTITestInner = () => {
 };
 
 const MBTITest = () => (
-  <SubscriptionGuard consumeAt="result" featureName="MBTI 검사" trialKey="FIVE_D_PERSONALITY">
+  <SubscriptionGuard consumeAt="result" featureName="AI 성격유형 검사" trialKey="FIVE_D_PERSONALITY">
     <MBTITestInner />
   </SubscriptionGuard>
 );

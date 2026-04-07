@@ -225,7 +225,7 @@ const IRDeck = () => {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    <span>성격검사 (Big5, HEXACO)</span>
+                    <span>성격검사 (Big5, 6요인 성격)</span>
                   </li>
                 </ul>
               </Card>

@@ -52,7 +52,7 @@ serve(async (req) => {
       const suggestions = [];
       
       if (assessmentsCount === 0) {
-        suggestions.push("📝 MBTI 성격유형검사 - 기본 성향 파악");
+        suggestions.push("📝 AI 성격유형검사 - 기본 성향 파악");
         suggestions.push("🎨 다중지능검사 - 강점 영역 발견");
       }
       

@@ -135,7 +135,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
   return (
     <ClinicalReportLayout
       testName={isEnglish ? 'Depression Check Result' : '우울감 체크 결과'}
-      subtitle={isEnglish ? 'PHQ-21 based assessment (reference only)' : 'PHQ 기반 평가 (참고용)'}
+      subtitle={isEnglish ? 'AIHPRO mood wellness assessment (reference only)' : 'AIHPRO 감정 웰니스 평가 (참고용)'}
       onBack={onBack}
       onDownload={handleDownload}
       totalScore={total}

@@ -43,7 +43,7 @@ const Footer = () => {
               <li><a href={localePath('/stress-package')} className="hover:text-white transition-colors">스트레스 검사</a></li>
               <li><a href={localePath('/anxiety-package')} className="hover:text-white transition-colors">불안장애 검사</a></li>
               <li><a href={localePath('/child-package')} className="hover:text-white transition-colors">아동 발달검사</a></li>
-              <li><a href={localePath('/assessment/mbti-test')} className="hover:text-white transition-colors">MBTI 성격유형</a></li>
+              <li><a href={localePath('/assessment/mbti-test')} className="hover:text-white transition-colors">AI 성격유형</a></li>
               <li><a href={localePath('/focus-package')} className="hover:text-white transition-colors">집중력 검사</a></li>
             </ul>
           </div>

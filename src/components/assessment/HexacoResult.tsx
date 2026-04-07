@@ -30,7 +30,7 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
   const dimInfo = getDimensionInfo(isEnglish);
 
   useAutoSaveTestResult({
-    testType: isEnglish ? 'HEXACO Personality Test' : 'HEXACO 성격검사',
+    testType: isEnglish ? '6-Factor Personality Analysis' : '6요인 성격 분석',
     results: { categoryScores: result.categoryScores, totalScore: result.totalScore },
     analysis: result.analysis,
     severity: isEnglish ? 'Normal' : '보통',
@@ -47,7 +47,7 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
   const avg = Object.values(result.categoryScores).reduce((s, v) => s + v, 0) / Object.keys(result.categoryScores).length;
 
   const handleDownload = async () => {
-    await downloadResultAsPDF('clinical-report-content', isEnglish ? 'HEXACO_Result' : 'HEXACO_성격_결과',
+    await downloadResultAsPDF('clinical-report-content', isEnglish ? '6Factor_Personality_Result' : '6요인_성격_결과',
       () => toast({ title: t.resultLayout.pdfComplete }),
       (e) => toast({ title: t.resultLayout.pdfFailed, description: e.message, variant: 'destructive' })
     );
@@ -55,7 +55,7 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
 
   return (
     <ClinicalReportLayout
-      testName={isEnglish ? 'HEXACO Personality Compass' : 'HEXACO 퍼스널리티 컴퍼스'}
+      testName={isEnglish ? '6-Factor Personality Compass' : '6요인 퍼스널리티 나침반'}
       subtitle={isEnglish ? '6 personality dimensions' : '6가지 성격 차원 분석'}
       onBack={onBack}
       onDownload={handleDownload}
@@ -70,7 +70,7 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
       <div className="mb-4">
         <VisualResultInfographic
           data={{
-            testName: 'HEXACO',
+            testName: isEnglish ? '6-Factor' : '6요인 성격',
             subtitle: isEnglish ? '6 Dimensions' : '6차원 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(Object.entries(result.categoryScores).map(([k, v]) => [k, (v / 5) * 7])),

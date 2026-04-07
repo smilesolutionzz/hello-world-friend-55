@@ -15,7 +15,7 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
+import { PostSignupOnboarding } from '@/components/onboarding/PostSignupOnboarding';
 import { FloatingOnboardingGuide } from '@/components/onboarding/FloatingOnboardingGuide';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
@@ -211,7 +211,7 @@ const Index = () => {
           <SocialProofToast />
           <FloatingOnboardingGuide />
           
-          <WelcomeOnboarding 
+          <PostSignupOnboarding 
             isOpen={showOnboarding} 
             onClose={handleOnboardingClose} 
           />

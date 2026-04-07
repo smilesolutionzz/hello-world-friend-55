@@ -724,6 +724,54 @@ const ReportGeneratorPro = () => {
                 </div>
               </div>
 
+              {/* ── Phase 2: 데이터 시각화 섹션 ── */}
+              {/* 데이터 소스 인포그래픽 */}
+              <DataSourceInfographic sources={[
+                { label: t('검사 결과', 'Assessments'), count: reportData.dataSource?.assessments || 0, icon: FileText, color: '#3b82f6' },
+                { label: t('관찰 기록', 'Observations'), count: reportData.dataSource?.observations || 0, icon: Eye, color: '#10b981' },
+                { label: t('세션 기록', 'Sessions'), count: reportData.dataSource?.observationSessions || 0, icon: BookOpen, color: '#8b5cf6' },
+                { label: t('상담 내용', 'Consultations'), count: reportData.dataSource?.chatMessages || 0, icon: MessageSquare, color: '#ec4899' },
+              ]} />
+
+              {/* 멀티도메인 레이더 차트 */}
+              {reportData.domainScores && reportData.domainScores.length > 0 && (
+                <DomainRadarChart
+                  domains={reportData.domainScores}
+                  title={t('다영역 발달·심리 프로파일', 'Multi-Domain Development & Psychology Profile')}
+                />
+              )}
+
+              {/* 종단적 변화 추이 */}
+              {reportData.trendData && reportData.trendData.length >= 2 && (
+                <TrendLineChart
+                  data={reportData.trendData}
+                  title={t('시간에 따른 변화 추이', 'Progress Over Time')}
+                  yLabel={t('종합점수', 'Overall')}
+                />
+              )}
+
+              {/* 강점/약점 매트릭스 */}
+              {reportData.strengthWeakness && reportData.strengthWeakness.length > 0 && (
+                <StrengthWeaknessChart
+                  items={reportData.strengthWeakness}
+                  title={t('강점·약점 분석 매트릭스', 'Strengths & Weaknesses Matrix')}
+                />
+              )}
+
+              {/* 위험도 게이지 */}
+              {reportData.riskScore !== undefined && (
+                <RiskGauge
+                  score={reportData.riskScore}
+                  label={t('종합 위험도 지수', 'Overall Risk Index')}
+                  riskLevel={reportData.riskLevel || t('보통', 'Moderate')}
+                />
+              )}
+
+              {/* 교차상관 인사이트 */}
+              {reportData.crossCorrelations && reportData.crossCorrelations.length > 0 && (
+                <CrossCorrelationInsight correlations={reportData.crossCorrelations} />
+              )}
+
               {/* 섹션들 */}
               {reportData.sections?.map((section: any, index: number) => {
                 const colorIndex = index % sectionColors.length;

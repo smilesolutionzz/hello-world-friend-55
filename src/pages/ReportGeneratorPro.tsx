@@ -30,7 +30,7 @@ import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Responsi
 import { useLanguage } from '@/i18n/LanguageContext';
 import {
   DomainRadarChart, TrendLineChart, StrengthWeaknessChart,
-  RiskGauge, DataSourceInfographic, RoadmapTimeline, CrossCorrelationInsight
+  RiskGauge, DataSourceInfographic, InteractiveRoadmap, CrossCorrelationInsight
 } from '@/components/report/ReportDataVisualizations';
 
 // ── 샘플 리포트 섹션 데이터 ──
@@ -823,9 +823,9 @@ const ReportGeneratorPro = () => {
                 );
               })}
 
-              {/* 맞춤형 로드맵 타임라인 */}
-              {reportData.roadmap && reportData.roadmap.length > 0 && (
-                <RoadmapTimeline weeks={reportData.roadmap} />
+              {/* 맞춤형 인터랙티브 로드맵 */}
+              {reportData.roadmap && (
+                <InteractiveRoadmap roadmapData={reportData.roadmap} />
               )}
 
               {/* 최신 연구 기반 인사이트 */}

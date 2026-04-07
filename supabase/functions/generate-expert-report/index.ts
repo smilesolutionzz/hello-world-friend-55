@@ -793,7 +793,8 @@ function buildUserPrompt(
   userAge: number,
   researchInsights: string,
   externalTestImages: string,
-  language: string
+  language: string,
+  onboardingData?: any
 ): string {
   const isKo = language !== 'en';
 

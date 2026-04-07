@@ -916,22 +916,22 @@ ${sectionList}
   "summary": "<div>핵심 요약 (300자 이상)</div>",
   "roadmap": {
     "weeks4": [
-      { "week": 1, "goal": "...", "activities": ["...", "..."], "platformFeatures": ["검사명/게임명"], "milestone": "..." },
-      { "week": 2, "goal": "...", "activities": ["...", "..."], "platformFeatures": ["..."], "milestone": "..." },
-      { "week": 3, "goal": "...", "activities": ["...", "..."], "platformFeatures": ["..."], "milestone": "..." },
-      { "week": 4, "goal": "...", "activities": ["...", "..."], "platformFeatures": ["..."], "milestone": "..." }
+      { "week": 1, "goal": "구체적 목표", "activities": ["구체적 활동1 (누가/무엇/어떻게/하루 몇 분)", "활동2", "활동3"], "platformFeatures": ["간편검사", "게임상담"], "milestone": "달성 기준" },
+      { "week": 2, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["관찰일지", "두뇌훈련"], "milestone": "..." },
+      { "week": 3, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["심층검사"], "milestone": "..." },
+      { "week": 4, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["리포트"], "milestone": "4주 중간점검" }
     ],
     "weeks8": [
-      { "week": 5, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
-      { "week": 6, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
-      { "week": 7, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
-      { "week": 8, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." }
+      { "week": 5, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["게임상담", "영상분석"], "milestone": "..." },
+      { "week": 6, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["인지훈련"], "milestone": "..." },
+      { "week": 7, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["음성상담"], "milestone": "..." },
+      { "week": 8, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["리포트"], "milestone": "8주 중간평가" }
     ],
     "weeks12": [
-      { "week": 9, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
-      { "week": 10, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
-      { "week": 11, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
-      { "week": 12, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." }
+      { "week": 9, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["간편검사"], "milestone": "..." },
+      { "week": 10, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["관찰일지"], "milestone": "..." },
+      { "week": 11, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["심층검사"], "milestone": "..." },
+      { "week": 12, "goal": "...", "activities": ["...", "...", "..."], "platformFeatures": ["리포트"], "milestone": "12주 최종평가" }
     ]
   },
   "chartData": {

@@ -28,6 +28,10 @@ import {
 } from '@/components/ui/dialog';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 import { useLanguage } from '@/i18n/LanguageContext';
+import {
+  DomainRadarChart, TrendLineChart, StrengthWeaknessChart,
+  RiskGauge, DataSourceInfographic, RoadmapTimeline, CrossCorrelationInsight
+} from '@/components/report/ReportDataVisualizations';
 
 // ── 샘플 리포트 섹션 데이터 ──
 const SAMPLE_REPORT_SECTIONS_KO = [

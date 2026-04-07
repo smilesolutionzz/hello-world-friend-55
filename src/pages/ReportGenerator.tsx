@@ -89,9 +89,14 @@ const ReportGenerator = () => {
     );
   }
 
-  // 프리미엄 사용자는 기존 리포트 생성 플로우로
-  if (isPremium && isLoggedIn) {
-    navigate(localePath('/report-generator-pro'));
+  // 현재 무료 개방 중 - 로그인 사용자는 바로 리포트 생성 페이지로
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate(localePath('/report-generator-pro'), { replace: true });
+    }
+  }, [isLoggedIn, navigate, localePath]);
+
+  if (isLoggedIn) {
     return null;
   }
 

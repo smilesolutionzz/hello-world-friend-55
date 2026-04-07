@@ -9,137 +9,1002 @@ const corsHeaders = {
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const PERPLEXITY_API_KEY = Deno.env.get('PERPLEXITY_API_KEY');
-const FIRECRAWL_API_KEY = Deno.env.get('FIRECRAWL_API_KEY');
 
-// Perplexity로 최신 연구/논문 검색
-async function searchLatestResearch(concerns: string, userAge: number, gender: string): Promise<string> {
-  if (!PERPLEXITY_API_KEY) {
-    console.log('PERPLEXITY_API_KEY not configured, skipping web search');
-    return '';
+// ══════════════════════════════════════════════════════════════
+// AIHPRO 독자 분석 프레임워크 v2.0
+// - 법적 이슈 없는 자체 이론 체계
+// - 8개 데이터 소스 교차분석
+// - 종단적 변화 추적 엔진
+// ══════════════════════════════════════════════════════════════
+
+// ── 1. 데이터 수집 레이어 ──
+interface CollectedData {
+  assessments: any[];
+  observations: any[];
+  observationSessions: any[];
+  chatMessages: any[];
+  progressTracking: any[];
+  aiObservations: any[];  // 영상분석
+  brainTraining: any[];
+  concernStorage: any[];
+  profile: any;
+}
+
+async function collectAllUserData(supabaseClient: any, userId: string): Promise<CollectedData> {
+  const [
+    { data: assessments },
+    { data: observations },
+    { data: observationSessions },
+    { data: chatRooms },
+    { data: progressTracking },
+    { data: aiObservations },
+    { data: brainTraining },
+    { data: concernStorage },
+    { data: profile },
+  ] = await Promise.all([
+    supabaseClient.from('assessments').select('*').or(`user_id.eq.${userId},profile_id.eq.${userId}`).order('created_at', { ascending: true }),
+    supabaseClient.from('observation_logs').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
+    supabaseClient.from('observation_sessions').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
+    supabaseClient.from('chat_rooms').select('*, chat_messages(*)').eq('user_id', userId).order('created_at', { ascending: true }),
+    supabaseClient.from('progress_tracking').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
+    supabaseClient.from('ai_observation_results').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
+    supabaseClient.from('brain_training_sessions').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
+    supabaseClient.from('concern_storage').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
+    supabaseClient.from('profiles').select('*').eq('id', userId).single(),
+  ]);
+
+  const chatMessages = chatRooms?.flatMap((room: any) =>
+    room.chat_messages?.map((msg: any) => ({
+      role: msg.role || msg.sender_id,
+      content: msg.message || msg.content,
+      date: msg.created_at,
+      roomId: room.id,
+    })) || []
+  ) || [];
+
+  return {
+    assessments: assessments || [],
+    observations: observations || [],
+    observationSessions: observationSessions || [],
+    chatMessages,
+    progressTracking: progressTracking || [],
+    aiObservations: aiObservations || [],
+    brainTraining: brainTraining || [],
+    concernStorage: concernStorage || [],
+    profile: profile || {},
+  };
+}
+
+// ── 2. 데이터 전처리 & 교차분석 엔진 ──
+interface DimensionScore {
+  dimension: string;
+  score: number;
+  maxScore: number;
+  percentage: number;
+  level: string;
+  source: string;
+  date: string;
+}
+
+interface TemporalTrend {
+  dimension: string;
+  dataPoints: { date: string; score: number; source: string }[];
+  direction: 'improving' | 'stable' | 'declining';
+  changePercent: number;
+  earliestDate: string;
+  latestDate: string;
+}
+
+interface CrossCorrelation {
+  dimensionA: string;
+  dimensionB: string;
+  sourceA: string;
+  sourceB: string;
+  correlation: 'strong_positive' | 'moderate_positive' | 'weak' | 'moderate_negative' | 'strong_negative';
+  insight: string;
+}
+
+interface PreprocessedData {
+  // 기본 통계
+  totalDataPoints: number;
+  dataSpanDays: number;
+  firstDataDate: string;
+  lastDataDate: string;
+  dataSourceCounts: Record<string, number>;
+
+  // 검사 결과 요약
+  assessmentSummaries: {
+    type: string;
+    date: string;
+    totalScore: number;
+    maxScore: number;
+    riskLevel: string;
+    domainScores: { domain: string; score: number; max: number }[];
+    analysis: string;
+  }[];
+
+  // 통합 차원 점수 (모든 소스 통합)
+  unifiedDimensionScores: DimensionScore[];
+
+  // 종단적 변화 추이
+  temporalTrends: TemporalTrend[];
+
+  // 교차 상관 인사이트
+  crossCorrelations: CrossCorrelation[];
+
+  // 관찰 기록 요약
+  observationInsights: {
+    totalEntries: number;
+    behaviorPatterns: { behavior: string; frequency: number; severity: string }[];
+    recentConcerns: string[];
+  };
+
+  // 영상분석 결과
+  videoAnalysisInsights: {
+    totalAnalyses: number;
+    riskDistribution: Record<string, number>;
+    keyFindings: string[];
+  };
+
+  // 인지훈련 진행도
+  cognitiveTrainingProgress: {
+    totalSessions: number;
+    averageScore: number;
+    bestGameType: string;
+    worstGameType: string;
+    improvementRate: number;
+    gameTypeScores: { type: string; avgScore: number; sessions: number; trend: string }[];
+  };
+
+  // 상담 기록 요약
+  counselingInsights: {
+    totalSessions: number;
+    emotionalTrends: string[];
+    keyThemes: string[];
+    recentTopics: string[];
+  };
+
+  // 변화 추적 데이터
+  progressSummary: {
+    totalRecords: number;
+    improvedDimensions: string[];
+    declinedDimensions: string[];
+    stableDimensions: string[];
+  };
+
+  // 고민 저장소 요약
+  concernSummary: {
+    totalConcerns: number;
+    severityDistribution: Record<string, number>;
+    topConcernTypes: string[];
+    recommendedTests: string[];
+  };
+
+  // 차트용 구조화 데이터
+  chartData: {
+    radarChart: { dimension: string; score: number; maxScore: number }[];
+    trendLineChart: { date: string; [dimension: string]: any }[];
+    comparisonBarChart: { category: string; earliest: number; latest: number; change: number }[];
+    riskGauge: { level: string; score: number; maxScore: number };
+  };
+}
+
+function preprocessData(data: CollectedData, userAge: number): PreprocessedData {
+  const allDates: string[] = [];
+
+  // 모든 날짜 수집
+  data.assessments.forEach(a => allDates.push(a.created_at));
+  data.observations.forEach(o => allDates.push(o.created_at));
+  data.progressTracking.forEach(p => allDates.push(p.created_at));
+  data.aiObservations.forEach(v => allDates.push(v.created_at));
+  data.brainTraining.forEach(b => allDates.push(b.created_at));
+
+  const sortedDates = allDates.sort();
+  const firstDate = sortedDates[0] || new Date().toISOString();
+  const lastDate = sortedDates[sortedDates.length - 1] || new Date().toISOString();
+  const dataSpanDays = Math.ceil((new Date(lastDate).getTime() - new Date(firstDate).getTime()) / (1000 * 60 * 60 * 24));
+
+  // ─── 검사 결과 요약 ───
+  const assessmentSummaries = data.assessments.map(a => {
+    const results = a.results || {};
+    let totalScore = 0;
+    let maxScore = 0;
+    const domainScores: { domain: string; score: number; max: number }[] = [];
+
+    // results 구조 파싱 (다양한 형태 대응)
+    if (results.domains && Array.isArray(results.domains)) {
+      results.domains.forEach((d: any) => {
+        const s = Number(d.score) || 0;
+        const m = Number(d.maxScore || d.max_score || d.max) || 100;
+        domainScores.push({ domain: d.label || d.key || d.name || 'unknown', score: s, max: m });
+        totalScore += s;
+        maxScore += m;
+      });
+    } else if (results.totalScore !== undefined) {
+      totalScore = Number(results.totalScore) || 0;
+      maxScore = Number(results.maxScore) || 100;
+    } else if (typeof results === 'object') {
+      // flat key-value scores
+      Object.entries(results).forEach(([key, val]) => {
+        if (typeof val === 'number' && key !== 'totalScore' && key !== 'maxScore') {
+          domainScores.push({ domain: key, score: val, max: 100 });
+          totalScore += val;
+          maxScore += 100;
+        }
+      });
+    }
+
+    return {
+      type: a.age_group || a.assessment_type || 'unknown',
+      date: a.created_at,
+      totalScore,
+      maxScore: maxScore || 100,
+      riskLevel: a.risk_level || 'unknown',
+      domainScores,
+      analysis: (a.analysis || '').substring(0, 500),
+    };
+  });
+
+  // ─── 통합 차원 점수 (모든 소스에서 추출) ───
+  const unifiedDimensionScores: DimensionScore[] = [];
+
+  // progress_tracking에서 추출 (가장 표준화된 데이터)
+  data.progressTracking.forEach(pt => {
+    const scores = pt.dimension_scores;
+    if (scores && typeof scores === 'object') {
+      Object.entries(scores).forEach(([dim, val]: [string, any]) => {
+        const score = typeof val === 'number' ? val : (val?.score || 0);
+        const maxScore = typeof val === 'object' ? (val?.max || 100) : 100;
+        unifiedDimensionScores.push({
+          dimension: dim,
+          score: Number(score),
+          maxScore: Number(maxScore),
+          percentage: Math.round((Number(score) / Number(maxScore)) * 100),
+          level: getLevel(Number(score) / Number(maxScore)),
+          source: pt.source_type || 'progress_tracking',
+          date: pt.created_at,
+        });
+      });
+    }
+  });
+
+  // assessments에서 추출
+  assessmentSummaries.forEach(a => {
+    a.domainScores.forEach(d => {
+      unifiedDimensionScores.push({
+        dimension: d.domain,
+        score: d.score,
+        maxScore: d.max,
+        percentage: Math.round((d.score / d.max) * 100),
+        level: getLevel(d.score / d.max),
+        source: a.type,
+        date: a.date,
+      });
+    });
+  });
+
+  // brain_training에서 추출
+  data.brainTraining.forEach(bt => {
+    unifiedDimensionScores.push({
+      dimension: `인지훈련_${bt.game_type}`,
+      score: bt.score || 0,
+      maxScore: bt.max_score || 100,
+      percentage: Math.round(((bt.score || 0) / (bt.max_score || 100)) * 100),
+      level: getLevel((bt.score || 0) / (bt.max_score || 100)),
+      source: 'brain_training',
+      date: bt.created_at,
+    });
+  });
+
+  // ─── 종단적 변화 추이 계산 ───
+  const temporalTrends = calculateTemporalTrends(unifiedDimensionScores);
+
+  // ─── 교차 상관 분석 ───
+  const crossCorrelations = calculateCrossCorrelations(unifiedDimensionScores, data);
+
+  // ─── 관찰 기록 분석 ───
+  const behaviorMap: Record<string, { count: number; severity: string }> = {};
+  data.observations.forEach(o => {
+    const bt = o.behavior_type || o.category || 'general';
+    if (!behaviorMap[bt]) behaviorMap[bt] = { count: 0, severity: 'low' };
+    behaviorMap[bt].count++;
+    if (o.severity === 'high' || o.severity === 'severe') behaviorMap[bt].severity = o.severity;
+  });
+
+  const observationInsights = {
+    totalEntries: data.observations.length,
+    behaviorPatterns: Object.entries(behaviorMap).map(([b, v]) => ({
+      behavior: b, frequency: v.count, severity: v.severity,
+    })).sort((a, b) => b.frequency - a.frequency),
+    recentConcerns: data.observations.slice(-5).map(o => o.description || o.title || '').filter(Boolean),
+  };
+
+  // ─── 영상분석 인사이트 ───
+  const riskDist: Record<string, number> = {};
+  const videoFindings: string[] = [];
+  data.aiObservations.forEach(v => {
+    const rl = v.risk_level || 'unknown';
+    riskDist[rl] = (riskDist[rl] || 0) + 1;
+    const result = v.analysis_result;
+    if (result?.overallAssessment) videoFindings.push(result.overallAssessment);
+    if (result?.overall_assessment) videoFindings.push(result.overall_assessment);
+    if (result?.takeaways) {
+      const takeaways = Array.isArray(result.takeaways) ? result.takeaways : [];
+      takeaways.forEach((t: any) => {
+        if (typeof t === 'string') videoFindings.push(t);
+        else if (t?.content) videoFindings.push(t.content);
+      });
+    }
+  });
+
+  const videoAnalysisInsights = {
+    totalAnalyses: data.aiObservations.length,
+    riskDistribution: riskDist,
+    keyFindings: videoFindings.slice(0, 10),
+  };
+
+  // ─── 인지훈련 진행도 ───
+  const gameTypeMap: Record<string, { totalScore: number; count: number; scores: number[] }> = {};
+  data.brainTraining.forEach(bt => {
+    const gt = bt.game_type || 'unknown';
+    if (!gameTypeMap[gt]) gameTypeMap[gt] = { totalScore: 0, count: 0, scores: [] };
+    const pct = ((bt.score || 0) / (bt.max_score || 100)) * 100;
+    gameTypeMap[gt].totalScore += pct;
+    gameTypeMap[gt].count++;
+    gameTypeMap[gt].scores.push(pct);
+  });
+
+  const gameTypeScores = Object.entries(gameTypeMap).map(([type, data]) => {
+    const avg = data.totalScore / data.count;
+    const firstHalf = data.scores.slice(0, Math.floor(data.scores.length / 2));
+    const secondHalf = data.scores.slice(Math.floor(data.scores.length / 2));
+    const firstAvg = firstHalf.length > 0 ? firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length : avg;
+    const secondAvg = secondHalf.length > 0 ? secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length : avg;
+    return {
+      type,
+      avgScore: Math.round(avg * 10) / 10,
+      sessions: data.count,
+      trend: secondAvg > firstAvg + 5 ? 'improving' : secondAvg < firstAvg - 5 ? 'declining' : 'stable',
+    };
+  }).sort((a, b) => b.avgScore - a.avgScore);
+
+  const allBrainScores = data.brainTraining.map(bt => ((bt.score || 0) / (bt.max_score || 100)) * 100);
+  const brainAvg = allBrainScores.length > 0 ? allBrainScores.reduce((a, b) => a + b, 0) / allBrainScores.length : 0;
+  const firstHalfBrain = allBrainScores.slice(0, Math.floor(allBrainScores.length / 2));
+  const secondHalfBrain = allBrainScores.slice(Math.floor(allBrainScores.length / 2));
+  const brainImprovement = firstHalfBrain.length > 0 && secondHalfBrain.length > 0
+    ? ((secondHalfBrain.reduce((a, b) => a + b, 0) / secondHalfBrain.length) - (firstHalfBrain.reduce((a, b) => a + b, 0) / firstHalfBrain.length))
+    : 0;
+
+  const cognitiveTrainingProgress = {
+    totalSessions: data.brainTraining.length,
+    averageScore: Math.round(brainAvg * 10) / 10,
+    bestGameType: gameTypeScores[0]?.type || 'N/A',
+    worstGameType: gameTypeScores[gameTypeScores.length - 1]?.type || 'N/A',
+    improvementRate: Math.round(brainImprovement * 10) / 10,
+    gameTypeScores,
+  };
+
+  // ─── 상담 기록 분석 ───
+  const recentMessages = data.chatMessages.slice(-30);
+  const keyThemes: string[] = [];
+  const emotionalKeywords = {
+    불안: 0, 우울: 0, 분노: 0, 슬픔: 0, 걱정: 0, 스트레스: 0,
+    행복: 0, 감사: 0, 희망: 0, 기쁨: 0,
+  };
+
+  recentMessages.forEach(m => {
+    const content = m.content || '';
+    Object.keys(emotionalKeywords).forEach(kw => {
+      if (content.includes(kw)) emotionalKeywords[kw as keyof typeof emotionalKeywords]++;
+    });
+  });
+
+  const emotionalTrends = Object.entries(emotionalKeywords)
+    .filter(([_, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1])
+    .map(([emotion, count]) => `${emotion}(${count}회 언급)`);
+
+  const counselingInsights = {
+    totalSessions: data.chatMessages.length,
+    emotionalTrends,
+    keyThemes,
+    recentTopics: recentMessages.slice(-5).map(m => (m.content || '').substring(0, 100)),
+  };
+
+  // ─── 변화 추적 요약 ───
+  const dimMap: Record<string, number[]> = {};
+  temporalTrends.forEach(t => {
+    dimMap[t.dimension] = t.dataPoints.map(dp => dp.score);
+  });
+
+  const progressSummary = {
+    totalRecords: data.progressTracking.length,
+    improvedDimensions: temporalTrends.filter(t => t.direction === 'improving').map(t => t.dimension),
+    declinedDimensions: temporalTrends.filter(t => t.direction === 'declining').map(t => t.dimension),
+    stableDimensions: temporalTrends.filter(t => t.direction === 'stable').map(t => t.dimension),
+  };
+
+  // ─── 고민 저장소 요약 ───
+  const severityDist: Record<string, number> = {};
+  const concernTypes: Record<string, number> = {};
+  const allRecommendedTests: string[] = [];
+
+  data.concernStorage.forEach(c => {
+    const sev = c.analysis_severity || 'unknown';
+    severityDist[sev] = (severityDist[sev] || 0) + 1;
+    const type = c.analysis_type || 'general';
+    concernTypes[type] = (concernTypes[type] || 0) + 1;
+    if (c.recommended_tests && Array.isArray(c.recommended_tests)) {
+      allRecommendedTests.push(...c.recommended_tests.map((t: any) => typeof t === 'string' ? t : t?.name || ''));
+    }
+  });
+
+  const concernSummary = {
+    totalConcerns: data.concernStorage.length,
+    severityDistribution: severityDist,
+    topConcernTypes: Object.entries(concernTypes).sort((a, b) => b[1] - a[1]).map(([t]) => t).slice(0, 5),
+    recommendedTests: [...new Set(allRecommendedTests)].slice(0, 10),
+  };
+
+  // ─── 차트용 구조화 데이터 ───
+  const chartData = buildChartData(unifiedDimensionScores, temporalTrends, assessmentSummaries);
+
+  return {
+    totalDataPoints: data.assessments.length + data.observations.length + data.progressTracking.length + data.aiObservations.length + data.brainTraining.length + data.chatMessages.length + data.concernStorage.length,
+    dataSpanDays,
+    firstDataDate: firstDate,
+    lastDataDate: lastDate,
+    dataSourceCounts: {
+      assessments: data.assessments.length,
+      observations: data.observations.length,
+      observationSessions: data.observationSessions.length,
+      chatMessages: data.chatMessages.length,
+      progressTracking: data.progressTracking.length,
+      videoAnalysis: data.aiObservations.length,
+      brainTraining: data.brainTraining.length,
+      concernStorage: data.concernStorage.length,
+    },
+    assessmentSummaries,
+    unifiedDimensionScores,
+    temporalTrends,
+    crossCorrelations,
+    observationInsights,
+    videoAnalysisInsights,
+    cognitiveTrainingProgress,
+    counselingInsights,
+    progressSummary,
+    concernSummary,
+    chartData,
+  };
+}
+
+function getLevel(ratio: number): string {
+  if (ratio >= 0.8) return '매우 높음';
+  if (ratio >= 0.6) return '높음';
+  if (ratio >= 0.4) return '보통';
+  if (ratio >= 0.2) return '낮음';
+  return '매우 낮음';
+}
+
+function calculateTemporalTrends(scores: DimensionScore[]): TemporalTrend[] {
+  const dimGroups: Record<string, { date: string; score: number; source: string }[]> = {};
+
+  scores.forEach(s => {
+    const key = normalizeDimension(s.dimension);
+    if (!dimGroups[key]) dimGroups[key] = [];
+    dimGroups[key].push({ date: s.date, score: s.percentage, source: s.source });
+  });
+
+  return Object.entries(dimGroups)
+    .filter(([_, points]) => points.length >= 2)
+    .map(([dimension, dataPoints]) => {
+      const sorted = dataPoints.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const firstThird = sorted.slice(0, Math.ceil(sorted.length / 3));
+      const lastThird = sorted.slice(-Math.ceil(sorted.length / 3));
+
+      const firstAvg = firstThird.reduce((s, p) => s + p.score, 0) / firstThird.length;
+      const lastAvg = lastThird.reduce((s, p) => s + p.score, 0) / lastThird.length;
+      const changePercent = Math.round(((lastAvg - firstAvg) / (firstAvg || 1)) * 100);
+
+      let direction: 'improving' | 'stable' | 'declining';
+      if (changePercent > 10) direction = 'improving';
+      else if (changePercent < -10) direction = 'declining';
+      else direction = 'stable';
+
+      return {
+        dimension,
+        dataPoints: sorted,
+        direction,
+        changePercent,
+        earliestDate: sorted[0].date,
+        latestDate: sorted[sorted.length - 1].date,
+      };
+    });
+}
+
+function normalizeDimension(dim: string): string {
+  const lower = dim.toLowerCase().replace(/[_\-\s]/g, '');
+  const mapping: Record<string, string> = {
+    '사회성': '사회성', 'social': '사회성', 'sociality': '사회성',
+    '정서': '정서안정', 'emotion': '정서안정', 'emotional': '정서안정', '정서안정': '정서안정',
+    '인지': '인지능력', 'cognitive': '인지능력', 'cognition': '인지능력', '인지능력': '인지능력',
+    '주의력': '주의력', 'attention': '주의력', 'focus': '주의력', '집중력': '주의력',
+    '언어': '언어능력', 'language': '언어능력', '언어능력': '언어능력',
+    '운동': '운동발달', 'motor': '운동발달', '운동발달': '운동발달',
+    '자존감': '자존감', 'selfesteem': '자존감',
+    '불안': '불안', 'anxiety': '불안',
+    '우울': '우울', 'depression': '우울',
+    '충동성': '충동성', 'impulsivity': '충동성',
+    '창의성': '창의성', 'creativity': '창의성',
+  };
+
+  for (const [key, val] of Object.entries(mapping)) {
+    if (lower.includes(key)) return val;
+  }
+  return dim;
+}
+
+function calculateCrossCorrelations(scores: DimensionScore[], data: CollectedData): CrossCorrelation[] {
+  const correlations: CrossCorrelation[] = [];
+
+  // 검사 결과 vs 영상분석 교차
+  if (data.assessments.length > 0 && data.aiObservations.length > 0) {
+    const assessmentRisks = data.assessments.filter(a => a.risk_level === 'high' || a.risk_level === 'severe');
+    const videoRisks = data.aiObservations.filter(v => v.risk_level === 'high' || v.risk_level === 'severe');
+
+    if (assessmentRisks.length > 0 && videoRisks.length > 0) {
+      correlations.push({
+        dimensionA: '검사 위험도',
+        dimensionB: '영상분석 위험도',
+        sourceA: 'assessments',
+        sourceB: 'video_analysis',
+        correlation: 'strong_positive',
+        insight: `심리검사와 영상행동분석 모두에서 주의가 필요한 신호가 감지되었습니다 (검사 ${assessmentRisks.length}건, 영상 ${videoRisks.length}건). 이는 일관된 패턴으로, 전문가 상담을 권장합니다.`,
+      });
+    }
   }
 
+  // 인지훈련 vs 검사 결과 교차
+  if (data.brainTraining.length >= 3 && data.assessments.length > 0) {
+    const brainAvg = data.brainTraining.reduce((s, b) => s + ((b.score || 0) / (b.max_score || 100)) * 100, 0) / data.brainTraining.length;
+    const hasAttentionIssue = data.assessments.some(a =>
+      (a.age_group || '').includes('adhd') || (a.age_group || '').includes('ADHD') || (a.age_group || '').includes('주의력')
+    );
+
+    if (hasAttentionIssue && brainAvg < 60) {
+      correlations.push({
+        dimensionA: '주의력 검사',
+        dimensionB: '인지훈련 성과',
+        sourceA: 'assessments',
+        sourceB: 'brain_training',
+        correlation: 'strong_positive',
+        insight: `주의력 관련 검사 결과와 인지훈련 성과가 일관되게 낮은 수준을 보이고 있습니다. 이는 주의력 강화를 위한 체계적 개입이 필요함을 의미합니다.`,
+      });
+    } else if (!hasAttentionIssue && brainAvg > 70) {
+      correlations.push({
+        dimensionA: '전반적 인지',
+        dimensionB: '인지훈련 성과',
+        sourceA: 'assessments',
+        sourceB: 'brain_training',
+        correlation: 'strong_positive',
+        insight: `검사 결과 전반적으로 양호하며, 인지훈련에서도 우수한 성과를 보이고 있습니다. 현재의 긍정적 발달 추세를 유지하는 것이 중요합니다.`,
+      });
+    }
+  }
+
+  // 관찰 빈도 vs 검사 위험도 교차
+  if (data.observations.length > 0 && data.assessments.length > 0) {
+    const highSeverityObs = data.observations.filter(o => o.severity === 'high' || o.severity === 'severe');
+    const highRiskAssessments = data.assessments.filter(a => a.risk_level === 'high' || a.risk_level === 'severe');
+
+    if (highSeverityObs.length > 2 && highRiskAssessments.length > 0) {
+      correlations.push({
+        dimensionA: '관찰 기록 심각도',
+        dimensionB: '검사 위험도',
+        sourceA: 'observations',
+        sourceB: 'assessments',
+        correlation: 'moderate_positive',
+        insight: `일상 관찰에서 기록된 고위험 행동 패턴(${highSeverityObs.length}건)이 검사 결과의 위험도와 일치합니다. 이는 구조화된 개입이 시급함을 보여줍니다.`,
+      });
+    }
+  }
+
+  // 고민 저장소 vs 검사 결과 교차
+  if (data.concernStorage.length > 0 && data.assessments.length > 0) {
+    const highSeverityConcerns = data.concernStorage.filter(c => c.analysis_severity === 'high' || c.analysis_severity === 'severe');
+    if (highSeverityConcerns.length > 0) {
+      correlations.push({
+        dimensionA: '보호자 고민 심각도',
+        dimensionB: '객관적 검사 결과',
+        sourceA: 'concern_storage',
+        sourceB: 'assessments',
+        correlation: 'moderate_positive',
+        insight: `보호자가 보고한 고민(${highSeverityConcerns.length}건의 높은 심각도)이 객관적 검사 데이터와 교차 확인됩니다. 보호자의 직관적 관찰이 데이터로 뒷받침되고 있습니다.`,
+      });
+    }
+  }
+
+  return correlations;
+}
+
+function buildChartData(
+  scores: DimensionScore[],
+  trends: TemporalTrend[],
+  assessments: PreprocessedData['assessmentSummaries']
+) {
+  // 레이더 차트 데이터 (최신 점수 기준)
+  const latestByDim: Record<string, DimensionScore> = {};
+  scores.forEach(s => {
+    const key = normalizeDimension(s.dimension);
+    const existing = latestByDim[key];
+    if (!existing || new Date(s.date) > new Date(existing.date)) {
+      latestByDim[key] = s;
+    }
+  });
+
+  const radarChart = Object.entries(latestByDim)
+    .map(([dim, s]) => ({ dimension: dim, score: s.percentage, maxScore: 100 }))
+    .slice(0, 8); // 최대 8개 차원
+
+  // 트렌드 라인 차트
+  const trendLineChart: { date: string;[key: string]: any }[] = [];
+  const dateSet = new Set<string>();
+  trends.forEach(t => t.dataPoints.forEach(dp => dateSet.add(dp.date.split('T')[0])));
+  const sortedDatesForChart = [...dateSet].sort();
+
+  sortedDatesForChart.forEach(date => {
+    const entry: any = { date };
+    trends.forEach(t => {
+      const point = t.dataPoints.find(dp => dp.date.split('T')[0] === date);
+      if (point) entry[t.dimension] = point.score;
+    });
+    trendLineChart.push(entry);
+  });
+
+  // 비교 바 차트 (최초 vs 최신)
+  const comparisonBarChart = trends
+    .filter(t => t.dataPoints.length >= 2)
+    .map(t => ({
+      category: t.dimension,
+      earliest: Math.round(t.dataPoints[0].score),
+      latest: Math.round(t.dataPoints[t.dataPoints.length - 1].score),
+      change: t.changePercent,
+    }))
+    .slice(0, 10);
+
+  // 위험도 게이지
+  const riskLevels = assessments.map(a => a.riskLevel);
+  const riskScore = riskLevels.reduce((s, r) => {
+    if (r === 'severe' || r === 'high') return s + 3;
+    if (r === 'moderate' || r === 'medium') return s + 2;
+    if (r === 'low' || r === 'normal') return s + 1;
+    return s + 1;
+  }, 0);
+  const maxRiskScore = riskLevels.length * 3;
+
+  const overallRiskPct = maxRiskScore > 0 ? Math.round((riskScore / maxRiskScore) * 100) : 30;
+  let riskLevel = '양호';
+  if (overallRiskPct >= 75) riskLevel = '주의 필요';
+  else if (overallRiskPct >= 50) riskLevel = '관심 필요';
+  else if (overallRiskPct >= 25) riskLevel = '양호';
+  else riskLevel = '매우 양호';
+
+  return {
+    radarChart,
+    trendLineChart: trendLineChart.slice(-20), // 최근 20개
+    comparisonBarChart,
+    riskGauge: { level: riskLevel, score: overallRiskPct, maxScore: 100 },
+  };
+}
+
+// ── 3. 최신 연구 검색 (Perplexity) ──
+async function searchLatestResearch(concerns: string, userAge: number, gender: string): Promise<string> {
+  if (!PERPLEXITY_API_KEY || !concerns) return '';
   try {
-    const searchQuery = `
-      아동 발달 심리 ${concerns}
-      최신 연구 논문 치료법 개입 방법
-      ${userAge}세 ${gender} 발달 특성
-      증거 기반 치료 EBP 연구
-    `.trim();
-
-    console.log('Perplexity 검색 시작:', searchQuery.substring(0, 100));
-
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Authorization': `Bearer ${PERPLEXITY_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'sonar-pro',
         messages: [
-          {
-            role: 'system',
-            content: `당신은 아동 발달 및 심리 연구 전문가입니다. 사용자의 고민과 관련된 최신 연구, 논문, 전문가 조언을 검색하여 정리해주세요.
-            
-다음 형식으로 응답해주세요:
-1. 관련 최신 연구 동향 (2-3개 핵심 연구 요약)
-2. 증거 기반 개입 방법 (3-5가지)
-3. 전문가 권고 사항
-4. 참고 자료 및 기관`
-          },
-          {
-            role: 'user',
-            content: `다음 정보를 기반으로 관련 최신 연구와 전문가 조언을 검색해주세요:
-
-대상: ${userAge}세 ${gender}
-주요 고민: ${concerns}
-
-실시간 웹 검색을 통해 최신 연구와 논문, 전문가 조언을 수집해주세요.`
-          }
+          { role: 'system', content: '최신 심리·발달 연구 동향을 검색하여 핵심 내용을 간결하게 정리하세요. 특정 진단 도구명(DSM, PHQ 등)은 사용하지 말고 일반적인 연구 동향만 요약하세요.' },
+          { role: 'user', content: `${userAge}세 ${gender}, 관련 키워드: ${concerns.substring(0, 200)}. 최신 연구 동향과 근거 기반 개입 방법을 검색해주세요.` },
         ],
         search_recency_filter: 'month',
         return_citations: true,
-        max_tokens: 2000,
+        max_tokens: 1500,
       }),
     });
-
-    if (!response.ok) {
-      console.error('Perplexity API error:', response.status);
-      return '';
-    }
-
+    if (!response.ok) return '';
     const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || '';
-    const citations = data.citations || [];
-
-    console.log('Perplexity 검색 완료, 길이:', content.length);
-    
-    return `
-## 🔬 최신 연구 기반 인사이트 (실시간 웹 검색 결과)
-
-${content}
-
-${citations.length > 0 ? `
-### 참고 출처
-${citations.map((c: string, i: number) => `${i + 1}. ${c}`).join('\n')}
-` : ''}
-    `.trim();
-  } catch (error) {
-    console.error('Perplexity search error:', error);
-    return '';
-  }
+    return data.choices?.[0]?.message?.content || '';
+  } catch { return ''; }
 }
 
-// Firecrawl로 관련 리소스 수집
-async function crawlRelatedResources(concerns: string): Promise<string> {
-  if (!FIRECRAWL_API_KEY) {
-    console.log('FIRECRAWL_API_KEY not configured, skipping crawl');
-    return '';
-  }
+// ── 4. AI 리포트 생성 프롬프트 ──
+function buildSystemPrompt(preprocessed: PreprocessedData, language: string, hasExternalImages: boolean): string {
+  const isKo = language !== 'en';
+  
+  return `${isKo ? '당신은 AIHPRO 종합분석 AI 엔진입니다.' : 'You are the AIHPRO Comprehensive Analysis AI Engine.'}
 
-  try {
-    // 신뢰할 수 있는 기관 웹사이트에서 관련 정보 검색
-    const response = await fetch('https://api.firecrawl.dev/v1/search', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${FIRECRAWL_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: `${concerns} 치료 상담 지원 기관 site:*.go.kr OR site:*.or.kr`,
-        limit: 5,
-        lang: 'ko',
-        country: 'KR',
-      }),
-    });
+${isKo ? `
+══ AIHPRO 분석 프레임워크 v2.0 ══
+이것은 AIHPRO 플랫폼이 독자적으로 개발한 통합 분석 체계입니다.
+법적으로 보호된 AIHPRO 고유 프레임워크이며, 특정 학술 도구나 특정 학자 이름을 인용하지 마세요.
 
-    if (!response.ok) {
-      console.error('Firecrawl API error:', response.status);
-      return '';
-    }
+[핵심 분석 축]
+1. AIHPRO 다차원 행동 패턴 인식 (8개 데이터 소스 교차분석)
+2. AIHPRO 종단적 변화 추적 엔진 (시간에 따른 성장 궤적)
+3. AIHPRO 빅데이터 기반 또래 비교 규준
+4. AIHPRO 맞춤형 개입 로드맵 설계 알고리즘
 
-    const data = await response.json();
-    const results = data.data || [];
+[절대 금지 사항]
+- DSM-5, PHQ-9, BDI-II, MMPI 등 특정 진단 도구명 사용 금지
+- 피아제, 보울비, 에릭슨 등 특정 학자 실명 인용 금지
+- '진단', 'diagnosis' 표현 금지 → '분석', '평가', '체크'로 대체
+- 마크다운 형식(#, **, ##) 절대 금지 → 오직 HTML 태그만 사용
 
-    if (results.length === 0) return '';
+[필수 사용 표현]
+- "AIHPRO AI 분석 엔진에 의한 분석 결과"
+- "AIHPRO 빅데이터 규준 기반 비교"
+- "AIHPRO 행동 패턴 인식 시스템"
+- "AIHPRO 종단 추적 알고리즘"
 
-    console.log('Firecrawl 검색 완료, 결과 수:', results.length);
+[데이터 활용 지침]
+이 리포트에는 ${preprocessed.totalDataPoints}개의 데이터 포인트가 사용됩니다.
+- 데이터 수집 기간: ${preprocessed.dataSpanDays}일
+- 데이터 소스: ${Object.entries(preprocessed.dataSourceCounts).filter(([_, v]) => v > 0).map(([k, v]) => `${k}(${v}건)`).join(', ')}
 
-    return `
-## 🏛️ 관련 기관 및 리소스
+⭐ 핵심 규칙: 제공된 전처리 데이터의 구체적 수치와 교차분석 결과를 반드시 인용하세요.
+⭐ 종단적 변화 데이터가 있으면 "N일 전 대비 X% 변화" 형태로 구체적으로 제시하세요.
+⭐ 교차 상관 분석 결과를 섹션 전반에 통합하여 인용하세요.
+⭐ 일반론이 아닌, 오직 이 개인의 데이터에서 도출된 인사이트만 제공하세요.
 
-${results.map((r: any, i: number) => `
-### ${i + 1}. ${r.title || '관련 리소스'}
-${r.description || ''}
-🔗 [바로가기](${r.url})
-`).join('\n')}
-    `.trim();
-  } catch (error) {
-    console.error('Firecrawl error:', error);
-    return '';
-  }
+[응답 형식]
+각 섹션 content는 HTML 태그만 사용 (<div>, <p>, <ul>, <li>, <strong>, <h3>, <h4>, <span>)
+각 섹션은 최소 600자 이상으로 작성
+` : `
+══ AIHPRO Analysis Framework v2.0 ══
+This is AIHPRO's proprietary integrated analysis system.
+
+[Core Analysis Pillars]
+1. AIHPRO Multi-Dimensional Behavioral Pattern Recognition (8 data sources cross-analyzed)
+2. AIHPRO Longitudinal Change Tracking Engine
+3. AIHPRO Big Data Peer Comparison Norms
+4. AIHPRO Personalized Intervention Roadmap Algorithm
+
+[Strictly Prohibited]
+- No specific diagnostic tool names (DSM-5, PHQ-9, BDI-II, etc.)
+- No specific scholar names
+- No "diagnosis" → use "analysis", "assessment", "evaluation"
+- No markdown → HTML tags only
+
+[Data Utilization]
+${preprocessed.totalDataPoints} data points across ${preprocessed.dataSpanDays} days.
+Cite specific preprocessed numbers and cross-correlations.
+Each section must be 600+ characters.
+`}`;
 }
 
+function buildUserPrompt(
+  preprocessed: PreprocessedData,
+  userInput: any,
+  userAge: number,
+  researchInsights: string,
+  externalTestImages: string,
+  language: string
+): string {
+  const isKo = language !== 'en';
+
+  const sectionDefs = isKo ? [
+    { title: '종합 발달·심리 프로파일', minChars: 800, desc: 'AIHPRO 다차원 분석 결과를 기반으로 인지, 정서, 사회성, 신체 영역별 종합 프로파일 작성. 반드시 교차분석 결과와 종단적 변화를 포함.' },
+    { title: '심리·정서 심층 분석', minChars: 700, desc: 'AIHPRO 행동패턴 인식 결과를 기반으로 정서 상태, 스트레스 반응, 대처 능력 분석. 상담 기록의 감정 키워드 분포를 활용.' },
+    { title: '강점·잠재력 매트릭스', minChars: 700, desc: 'AIHPRO 강점 발견 알고리즘으로 핵심 강점 5가지와 성장 가능 영역 5가지를 구체적 데이터와 함께 제시. 인지훈련 게임별 성과 데이터 활용.' },
+    { title: '데이터 기반 맞춤 개입 전략', minChars: 800, desc: '교차분석에서 도출된 패턴을 기반으로 10가지 구체적 활동 제안. 각 활동에 목적, 방법, 예상 효과, 빈도를 포함.' },
+    { title: '성장 로드맵 (4주/8주/12주)', minChars: 800, desc: '주차별 구체적 실행 계획. 각 주차에 목표, 핵심 활동 2-3가지, 달성 기준, 플랫폼 내 연계 기능(어떤 검사/게임/관찰을 할지)을 포함. JSON 형태의 roadmap 필드로도 별도 반환.' },
+    { title: 'AIHPRO 빅데이터 비교 분석', minChars: 600, desc: 'AIHPRO 플랫폼 빅데이터 규준과 비교한 영역별 백분위 추정치. 레이더 차트용 데이터 활용.' },
+    { title: '종합 소견서', minChars: 700, desc: 'AIHPRO AI 분석 엔진의 종합 소견. 교차 상관 분석 결과를 핵심 근거로 인용하며, 추가 검사 및 전문가 상담 권고 포함.' },
+    { title: '가정 내 실천 가이드', minChars: 700, desc: '가정에서 바로 실천할 수 있는 15가지 구체적 팁. 각 팁에 상황, 방법, 기대 효과를 포함.' },
+    { title: '핵심 요약 및 실행 제언', minChars: 600, desc: 'TOP 5 핵심 발견사항과 TOP 5 즉시 실행 사항. 긍정적 전망과 격려 메시지.' },
+  ] : [
+    { title: 'Comprehensive Development & Psychology Profile', minChars: 800, desc: 'Multi-dimensional profile based on AIHPRO cross-analysis.' },
+    { title: 'Psychological & Emotional Deep Analysis', minChars: 700, desc: 'Emotional state and coping analysis with counseling data.' },
+    { title: 'Strengths & Potential Matrix', minChars: 700, desc: 'Top 5 strengths and growth areas with data evidence.' },
+    { title: 'Data-Driven Personalized Intervention Strategies', minChars: 800, desc: '10 specific activities with purpose, method, and expected outcomes.' },
+    { title: 'Growth Roadmap (4/8/12 Weeks)', minChars: 800, desc: 'Week-by-week execution plan with goals, activities, and milestones.' },
+    { title: 'AIHPRO Big Data Comparative Analysis', minChars: 600, desc: 'Percentile estimates compared to AIHPRO platform norms.' },
+    { title: 'Comprehensive Clinical Opinion', minChars: 700, desc: 'Integrated opinion citing cross-correlation evidence.' },
+    { title: 'Home Practice Guide', minChars: 700, desc: '15 practical tips for home implementation.' },
+    { title: 'Key Summary & Action Items', minChars: 600, desc: 'TOP 5 findings and TOP 5 immediate actions.' },
+  ];
+
+  if (externalTestImages) {
+    sectionDefs.push(isKo
+      ? { title: '외부 검사 결과 통합 해석', minChars: 600, desc: '첨부된 외부 기관 검사 결과의 전문적 해석. 플랫폼 내부 데이터와 교차 비교.' }
+      : { title: 'External Test Results Integration', minChars: 600, desc: 'Professional interpretation of attached external test results.' }
+    );
+  }
+
+  const sectionList = sectionDefs.map((s, i) =>
+    `${i + 1}. "${s.title}" (최소 ${s.minChars}자)\n   - ${s.desc}`
+  ).join('\n\n');
+
+  return `
+═══ 대상자 정보 ═══
+이름: ${userInput?.name || 'N/A'}
+생년월일: ${userInput?.birthDate || 'N/A'} (만 ${userAge}세)
+성별: ${userInput?.gender || 'N/A'}
+
+═══ 전처리된 데이터 분석 결과 (AIHPRO 엔진) ═══
+
+📊 데이터 개요
+- 총 데이터 포인트: ${preprocessed.totalDataPoints}개
+- 데이터 수집 기간: ${preprocessed.dataSpanDays}일 (${preprocessed.firstDataDate?.split('T')[0]} ~ ${preprocessed.lastDataDate?.split('T')[0]})
+- 데이터 소스별: ${JSON.stringify(preprocessed.dataSourceCounts)}
+
+📋 검사 결과 요약 (${preprocessed.assessmentSummaries.length}건)
+${JSON.stringify(preprocessed.assessmentSummaries.map(a => ({
+    type: a.type, date: a.date?.split('T')[0], score: `${a.totalScore}/${a.maxScore}`,
+    risk: a.riskLevel, domains: a.domainScores.slice(0, 5),
+  })), null, 1)}
+
+📈 종단적 변화 추이 (AIHPRO 추적 엔진)
+${preprocessed.temporalTrends.length > 0 ? JSON.stringify(preprocessed.temporalTrends.map(t => ({
+    dimension: t.dimension, direction: t.direction, change: `${t.changePercent}%`,
+    period: `${t.earliestDate?.split('T')[0]} → ${t.latestDate?.split('T')[0]}`,
+    dataPoints: t.dataPoints.length,
+  })), null, 1) : '(종단 데이터 부족 - 2회 이상 측정 필요)'}
+
+🔗 교차 상관 분석 결과
+${preprocessed.crossCorrelations.length > 0 ? preprocessed.crossCorrelations.map(c =>
+    `• [${c.sourceA} ↔ ${c.sourceB}] ${c.correlation}: ${c.insight}`
+  ).join('\n') : '(교차 분석 데이터 부족)'}
+
+👁️ 관찰 기록 분석 (${preprocessed.observationInsights.totalEntries}건)
+행동 패턴: ${JSON.stringify(preprocessed.observationInsights.behaviorPatterns.slice(0, 5))}
+최근 우려사항: ${preprocessed.observationInsights.recentConcerns.join(' | ') || 'N/A'}
+
+🎬 영상분석 인사이트 (${preprocessed.videoAnalysisInsights.totalAnalyses}건)
+위험도 분포: ${JSON.stringify(preprocessed.videoAnalysisInsights.riskDistribution)}
+주요 발견: ${preprocessed.videoAnalysisInsights.keyFindings.slice(0, 3).join(' | ') || 'N/A'}
+
+🧠 인지훈련 진행도 (${preprocessed.cognitiveTrainingProgress.totalSessions}세션)
+평균 점수: ${preprocessed.cognitiveTrainingProgress.averageScore}%
+최강 영역: ${preprocessed.cognitiveTrainingProgress.bestGameType}
+개선률: ${preprocessed.cognitiveTrainingProgress.improvementRate}%
+게임별: ${JSON.stringify(preprocessed.cognitiveTrainingProgress.gameTypeScores.slice(0, 5))}
+
+💬 상담 기록 분석 (${preprocessed.counselingInsights.totalSessions}건)
+감정 키워드 분포: ${preprocessed.counselingInsights.emotionalTrends.join(', ') || 'N/A'}
+
+📊 변화 추적 요약
+개선된 영역: ${preprocessed.progressSummary.improvedDimensions.join(', ') || '해당 없음'}
+하락한 영역: ${preprocessed.progressSummary.declinedDimensions.join(', ') || '해당 없음'}
+안정적 영역: ${preprocessed.progressSummary.stableDimensions.join(', ') || '해당 없음'}
+
+❤️ 보호자 고민 분석 (${preprocessed.concernSummary.totalConcerns}건)
+심각도 분포: ${JSON.stringify(preprocessed.concernSummary.severityDistribution)}
+주요 고민 유형: ${preprocessed.concernSummary.topConcernTypes.join(', ') || 'N/A'}
+
+📉 차트용 데이터 (레이더 차트)
+${JSON.stringify(preprocessed.chartData.radarChart)}
+
+📉 차트용 데이터 (변화 비교)
+${JSON.stringify(preprocessed.chartData.comparisonBarChart)}
+
+📉 위험도 게이지
+${JSON.stringify(preprocessed.chartData.riskGauge)}
+
+${userInput?.recentConcerns ? `\n═══ 보호자 주요 고민 ═══\n${userInput.recentConcerns}` : ''}
+${userInput?.developmentalNotes ? `\n═══ 보호자 관찰 소견 ═══\n${userInput.developmentalNotes}` : ''}
+${researchInsights ? `\n═══ 최신 연구 참고 (웹 검색) ═══\n${researchInsights.substring(0, 2000)}` : ''}
+${externalTestImages ? `\n═══ 외부 기관 검사 결과 (AI 분석) ═══\n${externalTestImages}` : ''}
+
+═══ 작성할 섹션 목록 ═══
+${sectionList}
+
+═══ 응답 형식 (반드시 준수) ═══
+순수 JSON만 반환하세요. 마크다운 코드 블록 없이. 첫 문자는 { 마지막은 }
+
+{
+  "sections": [
+    ${sectionDefs.map(s => `{ "title": "${s.title}", "content": "<div>...</div>" }`).join(',\n    ')}
+  ],
+  "summary": "<div>핵심 요약 (300자 이상)</div>",
+  "roadmap": {
+    "weeks4": [
+      { "week": 1, "goal": "...", "activities": ["...", "..."], "platformFeatures": ["검사명/게임명"], "milestone": "..." },
+      { "week": 2, "goal": "...", "activities": ["...", "..."], "platformFeatures": ["..."], "milestone": "..." },
+      { "week": 3, "goal": "...", "activities": ["...", "..."], "platformFeatures": ["..."], "milestone": "..." },
+      { "week": 4, "goal": "...", "activities": ["...", "..."], "platformFeatures": ["..."], "milestone": "..." }
+    ],
+    "weeks8": [
+      { "week": 5, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
+      { "week": 6, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
+      { "week": 7, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
+      { "week": 8, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." }
+    ],
+    "weeks12": [
+      { "week": 9, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
+      { "week": 10, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
+      { "week": 11, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." },
+      { "week": 12, "goal": "...", "activities": ["..."], "platformFeatures": ["..."], "milestone": "..." }
+    ]
+  },
+  "chartData": {
+    "radarScores": [{"dimension": "...", "score": 0, "maxScore": 100}],
+    "riskLevel": "${preprocessed.chartData.riskGauge.level}",
+    "riskScore": ${preprocessed.chartData.riskGauge.score},
+    "keyMetrics": {
+      "overallWellbeing": 0,
+      "socialAdaptation": 0,
+      "emotionalStability": 0,
+      "cognitiveFunction": 0,
+      "behavioralRegulation": 0
+    }
+  }
+}`;
+}
+
+// ── 5. JSON 파싱 유틸리티 ──
+function extractJSON(text: string): any {
+  let cleaned = text.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+
+  try { return JSON.parse(cleaned); } catch {}
+
+  const firstBrace = cleaned.indexOf('{');
+  const lastBrace = cleaned.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace > firstBrace) {
+    const jsonStr = cleaned.substring(firstBrace, lastBrace + 1);
+    try { return JSON.parse(jsonStr); } catch {}
+    try { return JSON.parse(jsonStr.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']')); } catch {}
+  }
+
+  // Truncated JSON recovery
+  if (firstBrace !== -1) {
+    let truncated = cleaned.substring(firstBrace)
+      .replace(/,\s*\{[^}]*$/, '')
+      .replace(/,\s*"[^"]*$/, '')
+      .replace(/:\s*"[^"]*$/, ': ""');
+
+    let openBraces = 0, openBrackets = 0, inString = false, escape = false;
+    for (const ch of truncated) {
+      if (escape) { escape = false; continue; }
+      if (ch === '\\') { escape = true; continue; }
+      if (ch === '"') { inString = !inString; continue; }
+      if (inString) continue;
+      if (ch === '{') openBraces++;
+      if (ch === '}') openBraces--;
+      if (ch === '[') openBrackets++;
+      if (ch === ']') openBrackets--;
+    }
+    if (inString) truncated += '"';
+    truncated = truncated.replace(/,\s*$/, '');
+    for (let i = 0; i < openBrackets; i++) truncated += ']';
+    for (let i = 0; i < openBraces; i++) truncated += '}';
+    try { return JSON.parse(truncated); } catch {}
+  }
+
+  return null;
+}
+
+function extractMessageContent(rawJson: any): string {
+  const choice = rawJson?.choices?.[0];
+  if (!choice) return '';
+  const msg = choice.message;
+  if (!msg) return '';
+  if (typeof msg.content === 'string' && msg.content.trim()) return msg.content.trim();
+  if (Array.isArray(msg.content)) {
+    const text = msg.content.map((p: any) => typeof p === 'string' ? p : (p?.text || '')).join('').trim();
+    if (text) return text;
+  }
+  const toolArgs = msg.tool_calls?.[0]?.function?.arguments;
+  if (toolArgs) return typeof toolArgs === 'string' ? toolArgs : JSON.stringify(toolArgs);
+  return '';
+}
+
+// ── 6. 메인 핸들러 ──
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -149,30 +1014,19 @@ serve(async (req) => {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
-        },
-      }
+      { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     );
 
-    // Get user ID from JWT
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
-    if (userError || !user) {
-      throw new Error('Unauthorized');
-    }
+    if (userError || !user) throw new Error('Unauthorized');
 
-    const { assessments, observations, observationSessions, chatRooms, profile, externalTestImages, userInput, reportMode } = await req.json();
+    const { assessments: clientAssessments, observations: clientObservations, observationSessions: clientSessions, chatRooms: clientChatRooms, profile: clientProfile, externalTestImages, userInput, reportMode, language } = await req.json();
 
     const isWithData = reportMode !== 'without-data';
+    const isKo = language !== 'en';
 
-    console.log('전문가급 리포트 생성 요청:', {
-      userId: user.id,
-      reportMode: reportMode || 'with-data',
-      assessmentsCount: assessments?.length || 0,
-      observationsCount: observations?.length || 0,
-      userName: userInput?.name,
-      concerns: userInput?.recentConcerns?.substring(0, 50)
+    console.log('AIHPRO 리포트 v2.0 생성 시작:', {
+      userId: user.id, reportMode, userName: userInput?.name,
     });
 
     // 나이 계산
@@ -181,323 +1035,68 @@ serve(async (req) => {
       const today = new Date();
       const birth = new Date(birthDate);
       let age = today.getFullYear() - birth.getFullYear();
-      const monthDiff = today.getMonth() - birth.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-        age--;
-      }
+      if (today.getMonth() < birth.getMonth() || (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())) age--;
       return age;
     };
-
     const userAge = calculateAge(userInput?.birthDate);
 
-    // 데이터 정리 및 요약 (with-data 모드만)
-    const assessmentSummary = isWithData ? (assessments?.map((a: any) => ({
-      type: a.assessment_type || a.age_group,
-      date: new Date(a.created_at).toLocaleDateString('ko-KR'),
-      results: a.results,
-      analysis: a.analysis,
-      riskLevel: a.risk_level,
-      recommendations: a.recommendations
-    })) || []) : [];
+    let preprocessed: PreprocessedData;
 
-    const observationSummary = isWithData ? (observations?.map((o: any) => ({
-      title: o.title,
-      description: o.description,
-      date: new Date(o.created_at).toLocaleDateString('ko-KR'),
-      behaviorType: o.behavior_type,
-      severity: o.severity
-    })) || []) : [];
+    if (isWithData) {
+      // ★ 핵심 차별화: 서버에서 직접 8개 소스 수집 + 전처리
+      const collectedData = await collectAllUserData(supabaseClient, user.id);
 
-    const sessionSummary = isWithData ? (observationSessions?.map((s: any) => ({
-      activity: s.activity_type,
-      behaviors: s.observed_behaviors,
-      notes: s.notes,
-      date: new Date(s.created_at).toLocaleDateString('ko-KR')
-    })) || []) : [];
+      console.log('데이터 수집 완료:', {
+        assessments: collectedData.assessments.length,
+        observations: collectedData.observations.length,
+        progressTracking: collectedData.progressTracking.length,
+        videoAnalysis: collectedData.aiObservations.length,
+        brainTraining: collectedData.brainTraining.length,
+        chatMessages: collectedData.chatMessages.length,
+        concernStorage: collectedData.concernStorage.length,
+      });
 
-    const chatMessages = isWithData ? (chatRooms?.flatMap((room: any) => 
-      room.chat_messages?.map((msg: any) => ({
-        role: msg.role,
-        content: msg.content?.substring(0, 300),
-        date: new Date(msg.created_at).toLocaleDateString('ko-KR')
-      })) || []
-    ).slice(0, 30) || []) : [];
+      preprocessed = preprocessData(collectedData, userAge);
 
-    // 병렬로 외부 검색 수행
+      console.log('전처리 완료:', {
+        totalDataPoints: preprocessed.totalDataPoints,
+        dataSpanDays: preprocessed.dataSpanDays,
+        temporalTrends: preprocessed.temporalTrends.length,
+        crossCorrelations: preprocessed.crossCorrelations.length,
+        radarDimensions: preprocessed.chartData.radarChart.length,
+      });
+    } else {
+      // without-data 모드: 최소 구조 생성
+      preprocessed = {
+        totalDataPoints: 0, dataSpanDays: 0,
+        firstDataDate: new Date().toISOString(),
+        lastDataDate: new Date().toISOString(),
+        dataSourceCounts: {},
+        assessmentSummaries: [],
+        unifiedDimensionScores: [],
+        temporalTrends: [],
+        crossCorrelations: [],
+        observationInsights: { totalEntries: 0, behaviorPatterns: [], recentConcerns: [] },
+        videoAnalysisInsights: { totalAnalyses: 0, riskDistribution: {}, keyFindings: [] },
+        cognitiveTrainingProgress: { totalSessions: 0, averageScore: 0, bestGameType: 'N/A', worstGameType: 'N/A', improvementRate: 0, gameTypeScores: [] },
+        counselingInsights: { totalSessions: 0, emotionalTrends: [], keyThemes: [], recentTopics: [] },
+        progressSummary: { totalRecords: 0, improvedDimensions: [], declinedDimensions: [], stableDimensions: [] },
+        concernSummary: { totalConcerns: 0, severityDistribution: {}, topConcernTypes: [], recommendedTests: [] },
+        chartData: { radarChart: [], trendLineChart: [], comparisonBarChart: [], riskGauge: { level: '분석 중', score: 50, maxScore: 100 } },
+      };
+    }
+
+    // 최신 연구 검색 (비동기)
     const concerns = userInput?.recentConcerns || userInput?.developmentalNotes || '';
-    const [researchInsights, relatedResources] = await Promise.all([
-      searchLatestResearch(concerns, userAge, userInput?.gender || ''),
-      crawlRelatedResources(concerns)
-    ]);
+    const researchInsights = await searchLatestResearch(concerns, userAge, userInput?.gender || '');
 
-    console.log('외부 검색 완료:', {
-      researchLength: researchInsights.length,
-      resourcesLength: relatedResources.length
-    });
+    // AI 프롬프트 구성
+    const systemPrompt = buildSystemPrompt(preprocessed, language || 'ko', !!externalTestImages);
+    const userPrompt = buildUserPrompt(preprocessed, userInput, userAge, researchInsights, externalTestImages || '', language || 'ko');
 
-    // 매우 상세한 시스템 프롬프트 - 논문·이론 기반 강화
-    const systemPrompt = `당신은 대한민국 최고 수준의 발달심리학 및 임상심리 전문가입니다. 
-박사 학위와 20년 이상의 임상 경험을 가진 전문가로서, 제공된 모든 데이터를 심층 분석하여 세계 최고 수준의 종합 리포트를 작성합니다.
-
-⚠️ 중요 지침:
-1. 모든 분석은 제공된 실제 데이터에 근거해야 합니다
-2. 일반론이 아닌 이 개인만을 위한 맞춤 분석을 제공하세요
-3. 구체적인 수치, 예시, 근거를 풍부하게 사용하세요
-4. 각 섹션은 최소 500자 이상의 상세한 내용으로 작성하세요
-5. 전문적이면서도 보호자가 이해하기 쉬운 언어를 사용하세요
-6. HTML 태그(<div>, <p>, <ul>, <li>, <strong>, <h3>, <h4>)를 활용하여 가독성을 높이세요
-7. 부정적 표현보다는 발전 가능성과 잠재력에 초점을 맞추세요
-8. ⭐ 각 섹션에 반드시 관련 심리학 이론과 근거 논문을 인용하세요
-9. ⭐ 논문 인용 시 저자명, 발표 연도, 학술지명을 포함하세요 (예: Smith et al., 2023, Journal of Child Psychology)
-10. ⭐ 마크다운 형식(#, **, ## 등)은 절대 사용하지 마세요. 오직 HTML 태그만 사용하세요.
-11. ⭐⭐ 외부 기관 검사 결과가 첨부된 경우, 해당 검사 수치와 해석을 9개 전체 섹션 분석에 적극 반영하세요. 예: 발달 종합 평가에 외부 검사 점수 인용, 강점/약점 분석에 외부 검사 결과 교차 비교, 전문가 소견서에 외부 검사 기반 진단 근거 포함 등. 외부 검사 데이터를 별도 섹션에만 국한하지 말고 모든 관련 섹션에 통합적으로 분석하세요.
-
-📖 반드시 참조해야 할 핵심 분석 프레임워크:
-- 인지발달 단계 분석 (감각운동기~형식적 조작기)
-- 근접발달영역 평가 및 비계설정 전략
-- 애착유형 분석 (안전/불안정 애착 유형)
-- 심리사회적 발달 단계 평가
-- 인지패턴 분석 (인지 왜곡 및 자동적 사고)
-- 다중영역 지능 분석 (8가지 영역)
-- 긍정심리 강점 분석
-- 생태환경 체계 분석 (가정/학교/사회 환경)
-- 양육유형 분석 (권위적/허용적/권위주의적)
-- 정서코칭 5단계 전략
-- 행동분석 기반 개입
-- 인지행동 전략
-- 놀이치료 접근법
-- 국제 발달 규준 참조
-
-📋 작성할 9가지 섹션 (⚠️ 반드시 아래 정확한 제목을 사용하세요):
-
-1️⃣ "발달 종합 평가" (600자 이상)
-- 인지발달 단계와 근접발달영역 이론에 기반한 발달 수준 평가
-- 인지, 언어, 운동, 사회성 각 영역별 상세 분석
-- 관련 연구 근거 2-3개 인용
-- 연령 대비 발달 수준 해석
-
-2️⃣ "심리 상태 분석" (500자 이상)
-- 인지패턴 분석과 애착유형 이론 적용
-- 정서 상태 평가 및 심리적 안정감 분석
-- 관련 최신 연구 근거 인용
-- 스트레스 요인 및 대처 능력 분석
-
-3️⃣ "강점/약점 분석" (500자 이상)
-- 다중영역 지능 분석 기반 강점 영역 파악
-- 긍정심리 강점 분류 적용
-- 구체적 강점 5가지와 개선 필요 영역 5가지
-- 연구 근거 제시
-
-4️⃣ "맞춤 활동 제안" (600자 이상)
-- 행동분석, 인지행동 전략, 놀이치료 등 근거 기반 개입 전략
-- 전문 가이드라인 참조
-- 7-10가지 실천 활동 (목적, 방법, 예상 효과)
-- 난이도별 구분과 주간 활동 계획
-
-5️⃣ "발달 로드맵" (500자 이상)
-- 생태환경 분석과 심리사회적 발달 단계 통합 적용
-- 단기(1-3개월), 중기(3-6개월), 장기(6-12개월) 목표
-- 종단 연구 기반 예후
-- 각 목표별 달성 기준
-
-6️⃣ "또래 비교 분석" (400자 이상)
-- 국제 발달 규준과 연령별 발달 이정표 기반
-- 한국 아동 발달 규준 데이터 비교
-- 백분위 및 표준점수 해석
-- 개인차의 정상 범위 설명
-
-7️⃣ "전문가 소견서" (600자 이상)
-- 전문 진단 체계 참조
-- 임상 소견서 작성 가이드라인 준수
-- 전문적 개입 필요성 및 시급성 평가
-- 추가 검사 및 전문가 상담 권고
-
-8️⃣ "가족 지원 가이드" (600자 이상)
-- 양육유형 분석과 정서코칭 전략 적용
-- 부모-자녀 상호작용 증진 프로토콜 기반
-- 최신 발달심리 연구 반영
-- 가정 내 실천 팁 10가지 이상
-
-9️⃣ "종합 요약 및 제언" (500자 이상)
-- 통합 분석 프레임워크 기반 정리
-- 핵심 분석 결과와 TOP 5 실천 사항
-- 긍정적 예후 및 잠재력 평가
-- 격려와 응원 메시지
-
-${externalTestImages ? `
-🔟 "외부 검사 결과 해석" (600자 이상)
-- 첨부된 외부 기관 검사 결과지에 대한 전문적 해석
-- 검사 종류, 주요 점수/수치의 임상적 의미 설명
-- 정상 범위 대비 현재 수치 평가
-- 다른 검사 결과와의 교차 분석 및 종합적 의미 해석
-- 추가로 필요한 검사나 후속 조치 권고
-- 관련 학술 논문 2-3개 인용
-` : ''}
-
-⚠️⚠️⚠️ 매우 중요: sections 배열의 각 title 값은 반드시 위의 큰따옴표 안의 제목과 정확히 일치해야 합니다!`;
-
-    const userPrompt = `다음 ${isWithData ? '데이터를 기반으로' : '고민·상태 정보를 기반으로'} 세계 최고 수준의 전문가급 종합 리포트를 생성해주세요:
-
-═══════════════════════════════════════
-📌 대상자 정보
-═══════════════════════════════════════
-• 이름: ${userInput?.name || '미제공'}
-• 생년월일: ${userInput?.birthDate || '미제공'} (만 ${userAge}세)
-• 성별: ${userInput?.gender || '미제공'}
-
-${isWithData ? `
-═══════════════════════════════════════
-📊 검사 기록 (총 ${assessmentSummary.length}건)
-═══════════════════════════════════════
-${JSON.stringify(assessmentSummary, null, 2)}
-
-═══════════════════════════════════════
-📝 관찰 일지 (총 ${observationSummary.length}건)
-═══════════════════════════════════════
-${JSON.stringify(observationSummary, null, 2)}
-
-═══════════════════════════════════════
-🎬 관찰 세션 기록 (총 ${sessionSummary.length}건)
-═══════════════════════════════════════
-${JSON.stringify(sessionSummary, null, 2)}
-
-═══════════════════════════════════════
-💬 AI 상담 기록 (총 ${chatMessages.length}건)
-═══════════════════════════════════════
-${JSON.stringify(chatMessages, null, 2)}
-
-═══════════════════════════════════════
-👤 프로필 정보
-═══════════════════════════════════════
-${JSON.stringify(profile, null, 2)}
-
-${externalTestImages ? `
-═══════════════════════════════════════
-🖼️ 외부 기관 검사 결과 (AI 분석)
-═══════════════════════════════════════
-${externalTestImages}
-` : ''}
-` : `
-═══════════════════════════════════════
-⚠️ 리포트 모드: 고민·상태 기반 (데이터 미포함)
-═══════════════════════════════════════
-기존 검사/관찰 데이터 없이 아래 고민·상태 정보만으로 전문 분석을 수행합니다.
-보호자가 제공한 고민과 관찰 소견을 최대한 활용하여 깊이 있는 분석을 제공하세요.
-
-${externalTestImages ? `
-═══════════════════════════════════════
-🖼️ 외부 기관 검사 결과 (AI 분석)
-═══════════════════════════════════════
-${externalTestImages}
-` : ''}
-`}
-
-${userInput?.recentConcerns ? `
-═══════════════════════════════════════
-❤️ 보호자의 주요 고민
-═══════════════════════════════════════
-${userInput.recentConcerns}
-` : ''}
-
-${userInput?.developmentalNotes ? `
-═══════════════════════════════════════
-👁️ 보호자 관찰 소견
-═══════════════════════════════════════
-${userInput.developmentalNotes}
-` : ''}
-
-${researchInsights ? `
-═══════════════════════════════════════
-🔬 최신 연구 기반 인사이트 (실시간 웹 검색)
-═══════════════════════════════════════
-${researchInsights}
-` : ''}
-
-${relatedResources ? `
-═══════════════════════════════════════
-🏛️ 관련 기관 및 리소스
-═══════════════════════════════════════
-${relatedResources}
-` : ''}
-
-═══════════════════════════════════════
-📋 응답 형식 (반드시 준수)
-═══════════════════════════════════════
-
-반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 순수 JSON만 반환하세요:
-
-{
-  "sections": [
-    {
-      "title": "발달 종합 평가",
-      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 600자)...</div>"
-    },
-    {
-      "title": "심리 상태 분석",
-      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 500자)...</div>"
-    },
-    {
-      "title": "강점/약점 분석",
-      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 500자)...</div>"
-    },
-    {
-      "title": "맞춤 활동 제안",
-      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 600자)...</div>"
-    },
-    {
-      "title": "발달 로드맵",
-      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 500자)...</div>"
-    },
-    {
-      "title": "또래 비교 분석",
-      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 400자)...</div>"
-    },
-    {
-      "title": "전문가 소견서",
-      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 600자)...</div>"
-    },
-    {
-      "title": "가족 지원 가이드",
-      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 600자)...</div>"
-    },
-    {
-      "title": "종합 요약 및 제언",
-      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 500자)...</div>"
-    }${externalTestImages ? `,
-    {
-      "title": "외부 검사 결과 해석",
-      "content": "<div>HTML 형식의 매우 상세한 내용 (최소 600자)...</div>"
-    }` : ''}
-  ],
-  "summary": "<div>전체 분석의 핵심 요약 (300자 이상)</div>",
-  "researchInsights": "${researchInsights ? 'true' : 'false'}",
-  "relatedResources": "${relatedResources ? 'true' : 'false'}"
-}`;
-
-    // Lovable AI 호출 (최고급 모델 사용)
+    // AI 호출
     const aiModel = 'google/gemini-3-flash-preview';
-    console.log(`Lovable AI 호출 시작 (${aiModel})`);
-
-    const requiredSections: string[] = [
-      "발달 종합 평가",
-      "심리 상태 분석",
-      "강점/약점 분석",
-      "맞춤 활동 제안",
-      "발달 로드맵",
-      "또래 비교 분석",
-      "전문가 소견서",
-      "가족 지원 가이드",
-      "종합 요약 및 제언",
-      ...(externalTestImages ? ["외부 검사 결과 해석"] : []),
-    ];
-
-    const jsonInstruction = `
-
-⚠️ 절대 중요 규칙:
-- 응답은 반드시 순수 JSON 객체여야 합니다.
-- \`\`\`json 이나 \`\`\` 같은 마크다운 코드 블록을 절대 사용하지 마세요.
-- 응답의 첫 번째 문자는 반드시 { 이고 마지막 문자는 반드시 } 여야 합니다.
-- 그 외 어떤 텍스트, 설명, 주석도 포함하지 마세요.`;
+    console.log(`AI 호출 시작 (${aiModel}), 프롬프트 길이: ${systemPrompt.length + userPrompt.length}`);
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -508,7 +1107,7 @@ ${relatedResources}
       body: JSON.stringify({
         model: aiModel,
         messages: [
-          { role: 'system', content: systemPrompt + jsonInstruction },
+          { role: 'system', content: systemPrompt + '\n\n⚠️ 절대 중요: 응답은 순수 JSON만. ```json 없이. 첫 문자 { 마지막 }' },
           { role: 'user', content: userPrompt },
         ],
         max_tokens: 32000,
@@ -520,392 +1119,191 @@ ${relatedResources}
       console.error('AI 응답 오류:', aiResponse.status, errorText);
 
       if (aiResponse.status === 402) {
-        return new Response(
-          JSON.stringify({
-            error: 'LOVABLE_AI_CREDITS_INSUFFICIENT',
-            message: 'Lovable AI 크레딧이 부족합니다.'
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 402 }
-        );
+        return new Response(JSON.stringify({ error: 'LOVABLE_AI_CREDITS_INSUFFICIENT', message: 'AI 크레딧이 부족합니다.' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 402 });
       }
-
       if (aiResponse.status === 429) {
-        return new Response(
-          JSON.stringify({
-            error: 'LOVABLE_AI_RATE_LIMITED',
-            message: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.'
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 }
-        );
+        return new Response(JSON.stringify({ error: 'LOVABLE_AI_RATE_LIMITED', message: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 });
       }
-
       throw new Error(`AI 분석 실패: ${aiResponse.status}`);
     }
 
     const rawText = await aiResponse.text();
     console.log('AI 응답 길이:', rawText?.length);
 
+    // 섹션 정의
+    const isEn = language === 'en';
+    const requiredSections = isEn
+      ? ['Comprehensive Development & Psychology Profile', 'Psychological & Emotional Deep Analysis', 'Strengths & Potential Matrix', 'Data-Driven Personalized Intervention Strategies', 'Growth Roadmap (4/8/12 Weeks)', 'AIHPRO Big Data Comparative Analysis', 'Comprehensive Clinical Opinion', 'Home Practice Guide', 'Key Summary & Action Items']
+      : ['종합 발달·심리 프로파일', '심리·정서 심층 분석', '강점·잠재력 매트릭스', '데이터 기반 맞춤 개입 전략', '성장 로드맵 (4주/8주/12주)', 'AIHPRO 빅데이터 비교 분석', '종합 소견서', '가정 내 실천 가이드', '핵심 요약 및 실행 제언'];
+
+    if (externalTestImages) {
+      requiredSections.push(isEn ? 'External Test Results Integration' : '외부 검사 결과 통합 해석');
+    }
+
     const placeholderReport = (reason: string) => ({
-      sections: requiredSections.map((title) => ({
+      sections: requiredSections.map(title => ({
         title,
-        content: `<div>AI 리포트 생성 중 문제가 발생했습니다. (${reason}) 잠시 후 다시 시도해주세요.</div>`,
+        content: `<div><p>이 섹션의 분석이 생성되지 않았습니다. (${reason}) 다시 시도해주세요.</p></div>`,
       })),
-      summary: `<div>리포트 생성 중 일부 오류가 발생했습니다. (${reason})</div>`,
+      summary: `<div>리포트 생성 중 문제가 발생했습니다. (${reason})</div>`,
+      roadmap: null,
+      chartData: null,
       parseError: true,
     });
-
-    // Helper: robust JSON extraction from AI response (handles truncated JSON)
-    const extractJSON = (text: string): any => {
-      // 1) Strip markdown fences globally
-      let cleaned = text
-        .replace(/```json\s*/gi, '')
-        .replace(/```\s*/g, '')
-        .trim();
-
-      // 2) Try direct parse
-      try {
-        return JSON.parse(cleaned);
-      } catch {}
-
-      // 3) Extract from first { to last }
-      const firstBrace = cleaned.indexOf('{');
-      const lastBrace = cleaned.lastIndexOf('}');
-      if (firstBrace !== -1 && lastBrace > firstBrace) {
-        const jsonStr = cleaned.substring(firstBrace, lastBrace + 1);
-        try {
-          return JSON.parse(jsonStr);
-        } catch {}
-
-        // 4) Try fixing common JSON issues (trailing commas)
-        const fixed = jsonStr
-          .replace(/,\s*}/g, '}')
-          .replace(/,\s*]/g, ']');
-        try {
-          return JSON.parse(fixed);
-        } catch {}
-      }
-
-      // 5) Handle TRUNCATED JSON: close open brackets/braces
-      if (firstBrace !== -1) {
-        let truncated = cleaned.substring(firstBrace);
-        // Remove any trailing incomplete string value
-        truncated = truncated.replace(/,\s*\{[^}]*$/, '');
-        truncated = truncated.replace(/,\s*"[^"]*$/, '');
-        truncated = truncated.replace(/:\s*"[^"]*$/, ': ""');
-        
-        // Count open brackets and braces
-        let openBraces = 0, openBrackets = 0;
-        let inString = false, escape = false;
-        for (const ch of truncated) {
-          if (escape) { escape = false; continue; }
-          if (ch === '\\') { escape = true; continue; }
-          if (ch === '"') { inString = !inString; continue; }
-          if (inString) continue;
-          if (ch === '{') openBraces++;
-          if (ch === '}') openBraces--;
-          if (ch === '[') openBrackets++;
-          if (ch === ']') openBrackets--;
-        }
-        
-        // Close any unclosed strings, arrays, objects
-        if (inString) truncated += '"';
-        // Remove trailing comma before closing
-        truncated = truncated.replace(/,\s*$/, '');
-        for (let i = 0; i < openBrackets; i++) truncated += ']';
-        for (let i = 0; i < openBraces; i++) truncated += '}';
-        
-        try {
-          const result = JSON.parse(truncated);
-          console.log('잘린 JSON 복구 성공');
-          return result;
-        } catch (e) {
-          console.error('잘린 JSON 복구 실패:', (e as Error).message);
-        }
-      }
-
-      return null;
-    };
-
-    // Helper: extract message content from various AI response formats
-    const extractMessageContent = (rawJson: any): string => {
-      const choice = rawJson?.choices?.[0];
-      if (!choice) return '';
-      
-      const msg = choice.message;
-      if (!msg) return '';
-      
-      // Standard string content
-      if (typeof msg.content === 'string' && msg.content.trim()) {
-        return msg.content.trim();
-      }
-      
-      // Array of parts (Gemini style)
-      if (Array.isArray(msg.content)) {
-        const text = msg.content
-          .map((p: any) => {
-            if (typeof p === 'string') return p;
-            if (p?.text) return p.text;
-            if (p?.type === 'text' && p?.text) return p.text;
-            return '';
-          })
-          .join('')
-          .trim();
-        if (text) return text;
-      }
-      
-      // Tool calls fallback
-      const toolArgs = msg.tool_calls?.[0]?.function?.arguments;
-      if (toolArgs) {
-        return typeof toolArgs === 'string' ? toolArgs : JSON.stringify(toolArgs);
-      }
-      
-      // Last resort: check if the raw response itself contains JSON with sections
-      const rawStr = JSON.stringify(rawJson);
-      const sectionsMatch = rawStr.match(/"sections"\s*:\s*\[/);
-      if (sectionsMatch) {
-        console.log('Raw response에서 sections 발견, 전체 응답에서 추출 시도');
-        return rawStr;
-      }
-      
-      return '';
-    };
 
     let reportData: any;
     try {
       const aiData = JSON.parse(rawText);
       let messageContent = extractMessageContent(aiData);
-
       console.log('AI content 길이:', messageContent.length);
-      if (messageContent.length > 0) {
-        console.log('AI content 처음 300자:', messageContent.substring(0, 300));
-      }
 
-      // 빈 content인 경우 재시도 (다른 모델 사용)
       if (!messageContent || messageContent.length < 50) {
-        console.error('AI content 비어있음 또는 너무 짧음, finish_reason:', aiData?.choices?.[0]?.finish_reason);
-        console.log('전체 응답 구조:', JSON.stringify(aiData).substring(0, 500));
-        
-        // 재시도: 다른 모델로 한 번 더 시도
-        console.log('재시도: anthropic/claude-sonnet-4-20250514 모델로 재시도');
+        console.error('AI content 비어있음, 재시도');
         const retryResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Authorization': `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'anthropic/claude-sonnet-4-20250514',
+            model: 'google/gemini-2.5-flash',
             messages: [
-              { role: 'system', content: systemPrompt + jsonInstruction },
+              { role: 'system', content: systemPrompt + '\n\n⚠️ 응답은 순수 JSON만. 첫 문자 { 마지막 }' },
               { role: 'user', content: userPrompt },
             ],
             max_tokens: 16000,
           }),
         });
-
         if (retryResponse.ok) {
           const retryRaw = await retryResponse.text();
-          console.log('재시도 응답 길이:', retryRaw.length);
           const retryData = JSON.parse(retryRaw);
           messageContent = extractMessageContent(retryData);
-          console.log('재시도 content 길이:', messageContent.length);
-          if (messageContent.length > 0) {
-            console.log('재시도 content 처음 300자:', messageContent.substring(0, 300));
-          }
-        } else {
-          console.error('재시도도 실패:', retryResponse.status);
         }
-        
         if (!messageContent || messageContent.length < 50) {
-          reportData = placeholderReport('AI content가 비어있음 (재시도 포함)');
+          reportData = placeholderReport('AI content가 비어있음');
         }
       }
-      
+
       if (!reportData) {
         reportData = extractJSON(messageContent);
-        if (reportData) {
-          console.log('JSON 파싱 성공, sections:', reportData.sections?.length);
-          // Log each section title for debugging
-          if (Array.isArray(reportData.sections)) {
-            reportData.sections.forEach((s: any, i: number) => {
-              console.log(`  섹션[${i}] title: "${s?.title}", content길이: ${s?.content?.length || 0}`);
-            });
-          }
-        } else {
-          console.error('JSON 파싱 실패, content 처음 500자:', messageContent.substring(0, 500));
+        if (!reportData) {
           reportData = placeholderReport('JSON 파싱 실패');
         }
       }
 
-      if (!reportData || typeof reportData !== 'object') {
-        reportData = placeholderReport('응답 구조가 올바르지 않음');
-      }
+      // 섹션 타이틀 매칭
+      if (reportData && Array.isArray(reportData.sections)) {
+        const normTitle = (t: string) => t.replace(/[\d️⃣⃣0-9①-⑨#.·\-_:：,()（）「」【】《》<>⚠️📋📊🔬❤️💪🎯🗺️👥🏥👨‍👩‍👧📝✅☑️⭐🌟💡🧠📈📉🏠🤝💬📖🔍✨\s]/g, '').toLowerCase();
 
-      if (!Array.isArray(reportData.sections)) {
-        reportData.sections = [];
-      }
-
-      // Fuzzy title matching helper - very aggressive normalization
-      const normTitle = (t: string) => t
-        .replace(/[\d️⃣⃣0-9①②③④⑤⑥⑦⑧⑨⓪❶❷❸❹❺❻❼❽❾#️⃣.\s\/·\-_:：,，()（）「」【】《》<>⚠️📋📊🔬❤️💪🎯🗺️👥🏥👨‍👩‍👧📝✅☑️⭐🌟💡🧠🎯📈📉🏠🤝💬📖🔍✨]/g, '')
-        .replace(/[^\p{L}]/gu, '')
-        .toLowerCase();
-
-      // Comprehensive alias map - covers all possible AI title variations
-      const titleAliases: Record<string, string[]> = {
-        '발달 종합 평가': ['종합발달프로파일', '발달종합평가', '종합발달평가', '발달프로파일', '발달평가', '종합평가', '인지발달분석', '발달수준평가'],
-        '심리 상태 분석': ['심리정서심층분석', '심리상태분석', '정서심층분석', '심리분석', '정서분석', '심리정서분석', '정서상태분석'],
-        '강점/약점 분석': ['강점약점매트릭스', '강점약점분석', '강점분석', '약점분석', '강약점분석', '강점약점', '강약점매트릭스'],
-        '맞춤 활동 제안': ['맞춤형개입프로그램', '맞춤활동제안', '개입프로그램', '맞춤활동', '활동제안', '개입전략', '맞춤형개입', '맞춤프로그램'],
-        '발달 로드맵': ['발달로드맵및예후', '발달로드맵예후', '발달로드맵', '로드맵예후', '발달예후', '로드맵'],
-        '또래 비교 분석': ['또래비교분석', '또래비교', '비교분석'],
-        '전문가 소견서': ['전문가소견서', '소견서', '전문가소견', '임상소견서', '전문소견'],
-        '가족 지원 가이드': ['가족지원가이드', '가족지원', '양육가이드', '부모가이드', '가정지원'],
-        '종합 요약 및 제언': ['종합요약및제언', '종합요약제언', '종합요약', '요약및제언', '요약제언', '총평'],
-        '외부 검사 결과 해석': ['외부검사결과해석', '외부검사해석', '외부검사분석', '검사결과해석', '외부기관검사', '첨부검사해석'],
-      };
-
-      const findBestTitle = (aiTitle: string): string | null => {
-        if (!aiTitle) return null;
-        const norm = normTitle(aiTitle);
-        if (!norm) return null;
-        
-        // 1) Exact match against requiredSections
-        for (const req of requiredSections) {
-          if (normTitle(req) === norm) return req;
-        }
-        // 2) Alias exact match
-        for (const [target, aliases] of Object.entries(titleAliases)) {
-          for (const alias of aliases) {
-            if (norm === alias) return target;
-          }
-        }
-        // 3) Substring containment (both directions)
-        for (const req of requiredSections) {
-          const nReq = normTitle(req);
-          if (norm.includes(nReq) || nReq.includes(norm)) return req;
-        }
-        // 4) Alias substring containment
-        for (const [target, aliases] of Object.entries(titleAliases)) {
-          for (const alias of aliases) {
-            if (norm.includes(alias) || alias.includes(norm)) return target;
-          }
-        }
-        // 5) Check if the norm contains any key Korean words
-        const keywordMap: Record<string, string> = {
-          '발달': '발달 종합 평가',
-          '심리': '심리 상태 분석',
-          '정서': '심리 상태 분석',
-          '강점': '강점/약점 분석',
-          '약점': '강점/약점 분석',
-          '활동': '맞춤 활동 제안',
-          '개입': '맞춤 활동 제안',
-          '로드맵': '발달 로드맵',
-          '예후': '발달 로드맵',
-          '또래': '또래 비교 분석',
-          '소견': '전문가 소견서',
-          '가족': '가족 지원 가이드',
-          '양육': '가족 지원 가이드',
-          '요약': '종합 요약 및 제언',
-          '제언': '종합 요약 및 제언',
+        const titleAliases: Record<string, string[]> = {
+          '종합 발달·심리 프로파일': ['종합발달심리프로파일', '종합발달프로파일', '발달종합평가', '발달심리프로파일', '종합프로파일'],
+          '심리·정서 심층 분석': ['심리정서심층분석', '심리상태분석', '정서심층분석', '심리분석'],
+          '강점·잠재력 매트릭스': ['강점잠재력매트릭스', '강점약점분석', '강점분석', '잠재력매트릭스', '강점약점매트릭스'],
+          '데이터 기반 맞춤 개입 전략': ['데이터기반맞춤개입전략', '맞춤개입전략', '맞춤활동제안', '개입전략', '맞춤형개입프로그램'],
+          '성장 로드맵 (4주/8주/12주)': ['성장로드맵', '발달로드맵', '로드맵', '성장로드맵주주주'],
+          'AIHPRO 빅데이터 비교 분석': ['빅데이터비교분석', '또래비교분석', '비교분석', '빅데이터분석'],
+          '종합 소견서': ['종합소견서', '전문가소견서', '소견서'],
+          '가정 내 실천 가이드': ['가정내실천가이드', '가족지원가이드', '실천가이드', '양육가이드'],
+          '핵심 요약 및 실행 제언': ['핵심요약및실행제언', '종합요약및제언', '핵심요약', '요약제언'],
+          '외부 검사 결과 통합 해석': ['외부검사결과통합해석', '외부검사해석', '외부검사분석'],
         };
-        for (const [keyword, target] of Object.entries(keywordMap)) {
-          if (norm.includes(keyword)) return target;
-        }
-        
-        return null;
-      };
 
-      const byTitle = new Map<string, string>();
-      for (const s of reportData.sections) {
-        if (!s?.title || !s?.content) {
-          console.log('빈 섹션 스킵:', JSON.stringify(s).substring(0, 100));
-          continue;
-        }
-        if (typeof s.title !== 'string' || typeof s.content !== 'string') continue;
-        const matched = findBestTitle(s.title);
-        if (matched) {
-          // Don't overwrite if already matched (keep first match)
-          if (!byTitle.has(matched)) {
+        const findBestTitle = (aiTitle: string): string | null => {
+          if (!aiTitle) return null;
+          const norm = normTitle(aiTitle);
+          for (const req of requiredSections) { if (normTitle(req) === norm) return req; }
+          for (const [target, aliases] of Object.entries(titleAliases)) {
+            for (const alias of aliases) { if (norm.includes(alias) || alias.includes(norm)) return target; }
+          }
+          for (const req of requiredSections) {
+            const nReq = normTitle(req);
+            if (norm.includes(nReq) || nReq.includes(norm)) return req;
+          }
+          // Keyword fallback
+          const kw: Record<string, string> = {
+            '프로파일': '종합 발달·심리 프로파일', '정서': '심리·정서 심층 분석', '강점': '강점·잠재력 매트릭스',
+            '개입': '데이터 기반 맞춤 개입 전략', '로드맵': '성장 로드맵 (4주/8주/12주)',
+            '빅데이터': 'AIHPRO 빅데이터 비교 분석', '또래': 'AIHPRO 빅데이터 비교 분석',
+            '소견': '종합 소견서', '가정': '가정 내 실천 가이드', '실천': '가정 내 실천 가이드',
+            '요약': '핵심 요약 및 실행 제언', '제언': '핵심 요약 및 실행 제언',
+            '외부': '외부 검사 결과 통합 해석',
+          };
+          for (const [k, v] of Object.entries(kw)) { if (norm.includes(k)) return v; }
+          return null;
+        };
+
+        const byTitle = new Map<string, string>();
+        for (const s of reportData.sections) {
+          if (!s?.title || !s?.content || typeof s.title !== 'string' || typeof s.content !== 'string') continue;
+          const matched = findBestTitle(s.title);
+          if (matched && !byTitle.has(matched)) {
             byTitle.set(matched, s.content);
-            console.log(`✅ 매칭: "${s.title}" → "${matched}"`);
-          }
-        } else {
-          console.log(`❌ 매칭 실패: "${s.title}"`);
-        }
-      }
-
-      console.log('매칭된 섹션 수:', byTitle.size, '/', requiredSections.length);
-      
-      // Fallback: if no titles matched but we have sections, map by index
-      if (byTitle.size === 0 && reportData.sections?.length > 0) {
-        console.log('제목 매칭 전부 실패, 순서대로 매핑');
-        for (let i = 0; i < Math.min(reportData.sections.length, requiredSections.length); i++) {
-          const s = reportData.sections[i];
-          if (s?.content && typeof s.content === 'string' && s.content.length > 10) {
-            byTitle.set(requiredSections[i], s.content);
-            console.log(`  순서매핑[${i}]: "${requiredSections[i]}" ← content길이:${s.content.length}`);
           }
         }
-        console.log('순서 매핑 후 섹션 수:', byTitle.size);
+
+        // Fallback: index-based mapping
+        if (byTitle.size === 0 && reportData.sections.length > 0) {
+          for (let i = 0; i < Math.min(reportData.sections.length, requiredSections.length); i++) {
+            const s = reportData.sections[i];
+            if (s?.content && typeof s.content === 'string' && s.content.length > 10) {
+              byTitle.set(requiredSections[i], s.content);
+            }
+          }
+        }
+
+        console.log('매칭된 섹션:', byTitle.size, '/', requiredSections.length);
+
+        reportData.sections = requiredSections.map(title => ({
+          title,
+          content: byTitle.get(title) ?? `<div><p>이 섹션의 분석이 생성되지 않았습니다. 다시 시도해주세요.</p></div>`,
+        }));
       }
-
-      // Final assembly
-      reportData.sections = requiredSections.map((title) => ({
-        title,
-        content: byTitle.get(title) ?? `<div><p>이 섹션의 분석 데이터가 생성되지 않았습니다. 다시 시도해주세요.</p></div>`,
-      }));
-
-      const filledCount = requiredSections.filter(t => byTitle.has(t)).length;
-      console.log('리포트 파싱 성공, 채워진 섹션:', filledCount, '/', requiredSections.length);
     } catch (parseError) {
       console.error('AI 응답 파싱 최종 오류:', parseError);
-      console.error('원본 응답 미리보기(앞 1200자):', rawText?.substring(0, 1200));
-      reportData = placeholderReport('rawText JSON 파싱 실패');
+      reportData = placeholderReport('JSON 파싱 실패');
     }
 
-    // 메타데이터 추가
+    // 메타데이터 & 전처리 데이터 첨부
     reportData.metadata = {
       generatedAt: new Date().toISOString(),
       model: aiModel,
-      dataCount: {
-        assessments: assessmentSummary.length,
-        observations: observationSummary.length,
-        sessions: sessionSummary.length,
-        chats: chatMessages.length
-      },
+      frameworkVersion: 'AIHPRO_v2.0',
+      dataCount: preprocessed.dataSourceCounts,
+      dataSpanDays: preprocessed.dataSpanDays,
       hasResearchInsights: !!researchInsights,
-      hasRelatedResources: !!relatedResources,
-      userInfo: {
-        name: userInput?.name,
-        age: userAge,
-        gender: userInput?.gender
-      }
+      userInfo: { name: userInput?.name, age: userAge, gender: userInput?.gender },
     };
 
-    // 외부 검색 결과 추가
+    // 프론트엔드 시각화용 전처리 데이터 첨부
+    reportData.preprocessedData = {
+      chartData: preprocessed.chartData,
+      temporalTrends: preprocessed.temporalTrends.map(t => ({
+        dimension: t.dimension,
+        direction: t.direction,
+        changePercent: t.changePercent,
+        dataPoints: t.dataPoints.map(dp => ({ date: dp.date.split('T')[0], score: dp.score })),
+      })),
+      crossCorrelations: preprocessed.crossCorrelations.map(c => ({
+        insight: c.insight,
+        correlation: c.correlation,
+        sources: `${c.sourceA} ↔ ${c.sourceB}`,
+      })),
+      cognitiveTrainingProgress: preprocessed.cognitiveTrainingProgress,
+      dataSourceCounts: preprocessed.dataSourceCounts,
+      totalDataPoints: preprocessed.totalDataPoints,
+      dataSpanDays: preprocessed.dataSpanDays,
+      progressSummary: preprocessed.progressSummary,
+    };
+
     if (researchInsights) {
       reportData.researchInsightsContent = researchInsights;
     }
-    if (relatedResources) {
-      reportData.relatedResourcesContent = relatedResources;
-    }
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        report: reportData
-      }),
+      JSON.stringify({ success: true, report: reportData }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-
   } catch (error) {
-    console.error('전문가급 리포트 생성 오류:', error);
+    console.error('리포트 생성 오류:', error);
     return new Response(
-      JSON.stringify({
-        error: error instanceof Error ? error.message : '리포트 생성 중 오류가 발생했습니다.',
-        details: error instanceof Error ? error.stack : undefined
-      }),
+      JSON.stringify({ error: error instanceof Error ? error.message : '리포트 생성 중 오류가 발생했습니다.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

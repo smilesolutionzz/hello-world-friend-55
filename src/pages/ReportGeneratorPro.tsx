@@ -791,6 +791,11 @@ const ReportGeneratorPro = () => {
                 );
               })}
 
+              {/* 맞춤형 로드맵 타임라인 */}
+              {reportData.roadmap && reportData.roadmap.length > 0 && (
+                <RoadmapTimeline weeks={reportData.roadmap} />
+              )}
+
               {/* 최신 연구 기반 인사이트 */}
               {reportData.researchInsightsContent && (
                 <div className="space-y-4 pt-8 border-t-2 border-indigo-200">

@@ -150,8 +150,8 @@ ${result.recommendations?.map((rec: string, index: number) => `${index + 1}. ${r
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎭 오트로버트 성격 진단
-MBTI를 넘어서는 새로운 성격 분석: aihpro.com
-#오트로버트 #성격테스트 #MBTI대안`;
+성격유형을 넘어서는 새로운 성격 분석: aihpro.com
+#오트로버트 #성격테스트 #AIHPRO`;
 
     case 'joseon_name':
       return `🏯 조선시대 내 이름: ${result.joseonName}

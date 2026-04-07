@@ -23,7 +23,7 @@ interface MobilePaymentFlowProps {
 
 const ASSESSMENT_CATEGORIES = [
   { id: 'mental', label: '심리검사', desc: '우울·불안·스트레스', icon: Brain, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-950/30' },
-  { id: 'personality', label: '성격분석', desc: 'MBTI·Big5·방어기제', icon: Star, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-950/30' },
+  { id: 'personality', label: '성격분석', desc: 'AI성격유형·Big5·방어기제', icon: Star, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-950/30' },
   { id: 'child', label: '발달검사', desc: '아동 발달·감각·학습', icon: Zap, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-950/30' },
   { id: 'career', label: '진로·관계', desc: '직업흥미·애착·소통', icon: FileText, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-950/30' },
 ];

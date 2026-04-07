@@ -16,8 +16,8 @@ import { motion } from 'framer-motion';
 const newFeatures = [
   {
     id: 'mbti_test',
-    title: '🧠 신박한 MBTI 테스트',
-    description: 'AI가 분석하는 창작형 MBTI 성격유형 검사 + 기질별 퍼센트 그래프',
+    title: '🧠 AI 16 퍼스널리티 테스트',
+    description: 'AI가 분석하는 창작형 성격유형 검사 + 기질별 퍼센트 그래프',
     date: '2025-11-30',
     badge: 'NEW',
     color: 'from-blue-500 to-indigo-500',

@@ -277,7 +277,7 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
                   <div className="p-8 rounded-xl bg-muted/50 border border-border text-center">
                     <ImageIcon className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
                     <p className="text-muted-foreground">
-                      AI가 당신의 MBTI 특성을 시각적으로 표현합니다
+                      AI가 당신의 성격 특성을 시각적으로 표현합니다
                     </p>
                   </div>
                 )}
@@ -461,7 +461,7 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
             {/* 카카오톡 */}
             <Button
               onClick={() => {
-                const message = `🎯 나의 MBTI는 ${mbtiType}!\n\n${description.title}\n${description.subtitle}\n\n🔗 너도 해봐: ${window.location.origin}/assessment/mbti-test\n\n#MBTI #성격테스트 #AIHPRO`;
+                const message = `🎯 나의 성격유형은 ${mbtiType}!\n\n${description.title}\n${description.subtitle}\n\n🔗 너도 해봐: ${window.location.origin}/assessment/mbti-test\n\n#성격유형 #성격테스트 #AIHPRO`;
                 if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
                   window.location.href = `kakaotalk://send?text=${encodeURIComponent(message)}`;
                 } else {

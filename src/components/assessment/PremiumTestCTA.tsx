@@ -35,7 +35,7 @@ export function PremiumTestCTA({
           };
         case 'otrovert':
           return {
-            testName: 'MBTI + Comprehensive Personality Test',
+            testName: 'AI Comprehensive Personality Test',
             testRoute: '/assessment',
             benefits: ['16 personality types precision analysis', 'Career aptitude & guidance counseling', 'In-depth interpersonal relationship pattern analysis', 'Self-development roadmap']
           };
@@ -58,7 +58,7 @@ export function PremiumTestCTA({
       case 'mental-health-quick':
         return { testName: '정신건강 전문 검사', testRoute: '/assessment', benefits: ['30개 이상의 심층 질문으로 정확한 분석', '전문의 수준의 상세 분석 리포트', '맞춤형 관리 계획 제공', '월별 추적 관리 및 개선도 분석'] };
       case 'otrovert':
-        return { testName: 'MBTI + 성격 종합 검사', testRoute: '/assessment', benefits: ['16가지 성격 유형 정밀 분석', '직업 적합도 및 진로 상담', '대인관계 패턴 심층 분석', '자기계발 로드맵 제공'] };
+        return { testName: 'AI 성격 종합 검사', testRoute: '/assessment', benefits: ['16가지 성격 유형 정밀 분석', '직업 적합도 및 진로 상담', '대인관계 패턴 심층 분석', '자기계발 로드맵 제공'] };
       case 'communication-style':
         return { testName: '관계 심리 전문 검사', testRoute: '/assessment', benefits: ['애착 유형 및 소통 패턴 분석', '파트너십 호환성 평가', '갈등 해결 전략 제공', '관계 개선 실천 프로그램'] };
       default:

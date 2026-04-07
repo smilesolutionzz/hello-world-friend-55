@@ -31,7 +31,7 @@ export const TestSelector = () => {
       const mockTestTypes = [
         {
           id: 'mbti-test',
-          name: 'MBTI 성격유형 검사',
+          name: 'AI 성격유형 검사',
           description: 'AI 분석 기반 창작 성격유형 검사',
           typebot_url: '',
           duration_minutes: 5
@@ -128,7 +128,7 @@ export const TestSelector = () => {
   };
 
   const getTestIcon = (testName: string) => {
-    if (testName.includes('MBTI')) return Brain;
+    if (testName.includes('성격유형')) return Brain;
     if (testName.includes('언어')) return MessageSquare;
     if (testName.includes('회복력')) return Activity;
     if (testName.includes('ADHD')) return Brain;

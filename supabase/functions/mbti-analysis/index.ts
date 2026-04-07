@@ -38,7 +38,7 @@ serve(async (req) => {
       'ESFP': '사교성과 즐거움'
     };
 
-    const systemPrompt = `당신은 MBTI 전문가입니다. 사용자의 MBTI 타입(${mbtiType})과 테스트 답변을 바탕으로 심층적이고 개인화된 성격 분석을 제공하세요.
+    const systemPrompt = `당신은 성격유형 분석 전문가입니다. 사용자의 성격유형(${mbtiType})과 테스트 답변을 바탕으로 심층적이고 개인화된 성격 분석을 제공하세요. 특정 상표명이나 저작권이 있는 도구명은 사용하지 마세요.
 
 분석 포인트:
 1. ${typeCharacteristics[mbtiType]}의 특성이 어떻게 나타나는지
@@ -49,7 +49,7 @@ serve(async (req) => {
 
 답변은 친근하고 공감적인 톤으로, 200-300자 정도로 작성해주세요.`;
 
-    const userPrompt = `MBTI 타입: ${mbtiType}\n답변 패턴: ${JSON.stringify(answers)}\n\n이 사람의 성격을 심층적으로 분석해주세요.`;
+    const userPrompt = `성격유형: ${mbtiType}\n답변 패턴: ${JSON.stringify(answers)}\n\n이 사람의 성격을 심층적으로 분석해주세요.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',

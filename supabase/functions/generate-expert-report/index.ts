@@ -1094,7 +1094,7 @@ serve(async (req) => {
 
     // AI 프롬프트 구성
     const systemPrompt = buildSystemPrompt(preprocessed, language || 'ko', !!externalTestImages);
-    const userPrompt = buildUserPrompt(preprocessed, userInput, userAge, researchInsights, externalTestImages || '', language || 'ko');
+    const userPrompt = buildUserPrompt(preprocessed, userInput, userAge, researchInsights, externalTestImages || '', language || 'ko', onboardingData);
 
     // AI 호출
     const aiModel = 'google/gemini-3-flash-preview';

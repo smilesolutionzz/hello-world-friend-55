@@ -79,6 +79,13 @@ const ReportGenerator = () => {
     ctaRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // 현재 무료 개방 중 - 로그인 사용자는 바로 리포트 생성 페이지로
+  useEffect(() => {
+    if (!isLoading && !subLoading && isLoggedIn) {
+      navigate(localePath('/report-generator-pro'), { replace: true });
+    }
+  }, [isLoggedIn, isLoading, subLoading, navigate, localePath]);
+
   if (isLoading || subLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -89,9 +96,7 @@ const ReportGenerator = () => {
     );
   }
 
-  // 프리미엄 사용자는 기존 리포트 생성 플로우로
-  if (isPremium && isLoggedIn) {
-    navigate(localePath('/report-generator-pro'));
+  if (isLoggedIn) {
     return null;
   }
 

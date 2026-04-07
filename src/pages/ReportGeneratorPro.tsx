@@ -124,7 +124,8 @@ const ReportGeneratorPro = () => {
   const [activeReportSection, setActiveReportSection] = useState(0);
   const { isEnglish, localePath } = useLanguage();
 
-  const isPremium = isPremiumUser();
+  // 현재 무료 개방 중 - 모든 사용자에게 프리미엄 기능 제공
+  const isPremium = true;
   const currentStep = !isPremium ? 0 : reportMode ? (userInput.name ? (reportData ? 3 : 2) : 1) : 0;
 
   const SAMPLE_REPORT_SECTIONS = isEnglish ? SAMPLE_REPORT_SECTIONS_EN : SAMPLE_REPORT_SECTIONS_KO;

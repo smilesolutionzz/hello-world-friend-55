@@ -553,9 +553,9 @@ const ReportGeneratorPro = () => {
               </div>
               <div className="grid md:grid-cols-3 gap-3">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {t('이름 *', 'Name *')}</label>
+                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {t('닉네임 *', 'Nickname *')}</label>
                   <input type="text" value={userInput.name} onChange={(e) => setUserInput({ ...userInput, name: e.target.value })}
-                    placeholder={t('예: 홍길동', 'e.g. John Doe')} className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary text-sm" maxLength={50} />
+                    placeholder={t('예: 하늘맘, 별이아빠', 'e.g. SkyMom, StarDad')} className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary text-sm" maxLength={50} />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {t('생년월일 *', 'Date of Birth *')}</label>

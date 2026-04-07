@@ -899,6 +899,7 @@ ${JSON.stringify(preprocessed.chartData.riskGauge)}
 
 ${userInput?.recentConcerns ? `\n═══ 보호자 주요 고민 ═══\n${userInput.recentConcerns}` : ''}
 ${userInput?.developmentalNotes ? `\n═══ 보호자 관찰 소견 ═══\n${userInput.developmentalNotes}` : ''}
+${onboardingData ? `\n═══ 온보딩 기초 데이터 ═══\n대상: ${onboardingData.subject_type === 'child' ? '아이' : '본인'}\n${onboardingData.child_age ? `아이 나이: ${onboardingData.child_age}세` : ''}\n${onboardingData.child_gender ? `성별: ${onboardingData.child_gender === 'male' ? '남아' : '여아'}` : ''}\n관심 키워드: ${(onboardingData.concern_keywords || []).join(', ')}\n기초 상태 체크: ${JSON.stringify(onboardingData.baseline_answers || {})}` : ''}
 ${researchInsights ? `\n═══ 최신 연구 참고 (웹 검색) ═══\n${researchInsights.substring(0, 2000)}` : ''}
 ${externalTestImages ? `\n═══ 외부 기관 검사 결과 (AI 분석) ═══\n${externalTestImages}` : ''}
 

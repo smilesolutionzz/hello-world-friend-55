@@ -10496,6 +10496,45 @@ export type Database = {
           },
         ]
       }
+      user_onboarding_data: {
+        Row: {
+          baseline_answers: Json | null
+          child_age: number | null
+          child_gender: string | null
+          concern_keywords: string[] | null
+          created_at: string
+          id: string
+          onboarding_completed_at: string | null
+          subject_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          baseline_answers?: Json | null
+          child_age?: number | null
+          child_gender?: string | null
+          concern_keywords?: string[] | null
+          created_at?: string
+          id?: string
+          onboarding_completed_at?: string | null
+          subject_type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          baseline_answers?: Json | null
+          child_age?: number | null
+          child_gender?: string | null
+          concern_keywords?: string[] | null
+          created_at?: string
+          id?: string
+          onboarding_completed_at?: string | null
+          subject_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_packages: {
         Row: {
           created_at: string | null

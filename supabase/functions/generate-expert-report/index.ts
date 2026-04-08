@@ -698,7 +698,122 @@ function buildChartData(
   };
 }
 
-// ── 3. 최신 연구 검색 (Perplexity) ──
+// ── 3. 또래 비교 백분위 계산 ──
+async function calculatePeerComparison(
+  supabaseClient: any,
+  userId: string,
+  dimensionScores: DimensionScore[]
+): Promise<Record<string, any>> {
+  const peerData: Record<string, any> = {};
+
+  // 최신 점수만 추출 (차원별)
+  const latestByDim: Record<string, DimensionScore> = {};
+  dimensionScores.forEach(s => {
+    const key = normalizeDimension(s.dimension);
+    const existing = latestByDim[key];
+    if (!existing || new Date(s.date) > new Date(existing.date)) {
+      latestByDim[key] = s;
+    }
+  });
+
+  // 각 차원별 백분위 계산 (병렬)
+  const entries = Object.entries(latestByDim).slice(0, 8);
+  const results = await Promise.allSettled(
+    entries.map(async ([dim, score]) => {
+      try {
+        const { data } = await supabaseClient.rpc('get_peer_percentile', {
+          p_user_id: userId,
+          p_dimension: dim,
+          p_user_score: score.percentage,
+        });
+        return { dim, data };
+      } catch {
+        return { dim, data: { percentile: Math.round(score.percentage * 0.85), is_estimated: true, sample_size: 0, message: '추정치' } };
+      }
+    })
+  );
+
+  results.forEach(r => {
+    if (r.status === 'fulfilled' && r.value) {
+      peerData[r.value.dim] = r.value.data;
+    }
+  });
+
+  return peerData;
+}
+
+// ── 3b. 이전 리포트 비교 데이터 ──
+async function getPreviousReportComparison(
+  supabaseClient: any,
+  userId: string
+): Promise<any> {
+  try {
+    const { data } = await supabaseClient.rpc('get_report_comparison', {
+      p_user_id: userId,
+    });
+    return data || { has_comparison: false };
+  } catch {
+    return { has_comparison: false };
+  }
+}
+
+// ── 3c. 리포트 이력 저장 ──
+async function saveReportHistory(
+  supabaseClient: any,
+  userId: string,
+  reportData: any,
+  preprocessed: PreprocessedData,
+  model: string
+): Promise<void> {
+  try {
+    // 리포트 번호 계산
+    const { count } = await supabaseClient
+      .from('premium_report_history')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId);
+
+    const reportNumber = (count || 0) + 1;
+
+    // 차원별 점수 추출
+    const dimScores: Record<string, number> = {};
+    const latestByDim: Record<string, DimensionScore> = {};
+    preprocessed.unifiedDimensionScores.forEach(s => {
+      const key = normalizeDimension(s.dimension);
+      const existing = latestByDim[key];
+      if (!existing || new Date(s.date) > new Date(existing.date)) {
+        latestByDim[key] = s;
+      }
+    });
+    Object.entries(latestByDim).forEach(([dim, s]) => {
+      dimScores[dim] = s.percentage;
+    });
+
+    // 전체 점수 계산
+    const scores = Object.values(dimScores);
+    const overallScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+
+    await supabaseClient.from('premium_report_history').insert({
+      user_id: userId,
+      report_number: reportNumber,
+      report_data: reportData,
+      preprocessed_data: preprocessed.chartData,
+      dimension_scores: dimScores,
+      risk_level: preprocessed.chartData.riskGauge.level,
+      overall_score: overallScore,
+      model_used: model,
+      research_citations: reportData.researchInsightsContent ? [reportData.researchInsightsContent] : [],
+      data_source_counts: preprocessed.dataSourceCounts,
+      data_span_days: preprocessed.dataSpanDays,
+      report_mode: preprocessed.totalDataPoints > 0 ? 'with-data' : 'without-data',
+    });
+
+    console.log(`리포트 이력 저장 완료: #${reportNumber}`);
+  } catch (err) {
+    console.error('리포트 이력 저장 실패:', err);
+  }
+}
+
+// ── 4. 최신 연구 검색 (Perplexity sonar-pro) ──
 async function searchLatestResearch(concerns: string, userAge: number, gender: string): Promise<string> {
   if (!PERPLEXITY_API_KEY || !concerns) return '';
   try {
@@ -712,6 +827,7 @@ async function searchLatestResearch(concerns: string, userAge: number, gender: s
           { role: 'user', content: `대상: ${userAge}세 ${gender}. 관련 키워드: ${concerns.substring(0, 300)}.\n\n다음을 검색하고 정리해주세요:\n1. 이 키워드와 관련된 최신 연구 동향 (2024-2026)\n2. 근거 기반 개입 방법과 효과 크기\n3. 발달/심리 전문가들의 최신 권고사항\n4. 관련 메타분석 또는 체계적 고찰 결과\n5. 가정에서 적용 가능한 연구 기반 전략\n\n각 항목에 구체적 수치와 참고문헌을 포함해주세요.` },
         ],
         search_recency_filter: 'month',
+        search_mode: 'academic',
         return_citations: true,
         max_tokens: 3000,
       }),
@@ -720,7 +836,6 @@ async function searchLatestResearch(concerns: string, userAge: number, gender: s
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '';
     const citations = data.citations || [];
-    // 인용 출처가 있으면 하단에 추가
     if (citations.length > 0) {
       return content + '\n\n📚 참고 출처:\n' + citations.map((c: string, i: number) => `[${i + 1}] ${c}`).join('\n');
     }

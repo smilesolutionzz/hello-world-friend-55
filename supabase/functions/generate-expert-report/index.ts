@@ -915,7 +915,9 @@ function buildUserPrompt(
   researchInsights: string,
   externalTestImages: string,
   language: string,
-  onboardingData?: any
+  onboardingData?: any,
+  peerComparison?: Record<string, any>,
+  reportComparison?: any
 ): string {
   const isKo = language !== 'en';
 

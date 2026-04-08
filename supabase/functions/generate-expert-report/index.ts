@@ -1275,7 +1275,8 @@ serve(async (req) => {
     reportData.metadata = {
       generatedAt: new Date().toISOString(),
       model: aiModel,
-      frameworkVersion: 'AIHPRO_v2.0',
+      frameworkVersion: 'AIHPRO_v3.0_PhD',
+      analysisLevel: 'PhD-grade (GPT-5 + Perplexity sonar-pro)',
       dataCount: preprocessed.dataSourceCounts,
       dataSpanDays: preprocessed.dataSpanDays,
       hasResearchInsights: !!researchInsights,

@@ -1005,6 +1005,14 @@ const ReportGeneratorPro = () => {
       </div>
 
       <ScratchCard isOpen={showScratchCard} onClose={() => setShowScratchCard(false)} />
+      
+      {/* 리포트 공유 모달 */}
+      <ReportShareModal
+        open={showShareModal}
+        onOpenChange={setShowShareModal}
+        reportHistoryIds={currentReportHistoryId ? [currentReportHistoryId] : []}
+        reportTitle={reportData?.title || userInput.name ? `${userInput.name}의 심리 분석 리포트` : '프리미엄 분석 리포트'}
+      />
     </div>
   );
 };

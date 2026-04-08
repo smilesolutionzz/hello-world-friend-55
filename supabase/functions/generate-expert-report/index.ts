@@ -708,17 +708,23 @@ async function searchLatestResearch(concerns: string, userAge: number, gender: s
       body: JSON.stringify({
         model: 'sonar-pro',
         messages: [
-          { role: 'system', content: '최신 심리·발달 연구 동향을 검색하여 핵심 내용을 간결하게 정리하세요. 특정 진단 도구명(DSM, PHQ 등)은 사용하지 말고 일반적인 연구 동향만 요약하세요.' },
-          { role: 'user', content: `${userAge}세 ${gender}, 관련 키워드: ${concerns.substring(0, 200)}. 최신 연구 동향과 근거 기반 개입 방법을 검색해주세요.` },
+          { role: 'system', content: '당신은 아동·성인 발달심리 및 임상심리 분야의 연구 전문가입니다. 최신 논문과 메타분석, 체계적 문헌고찰을 중심으로 근거 수준이 높은 연구를 검색하세요. 특정 진단 도구명(DSM, PHQ 등)은 사용하지 말고 연구 동향과 개입 효과를 요약하세요. 반드시 출처(저자, 연도, 저널명)를 포함하세요.' },
+          { role: 'user', content: `대상: ${userAge}세 ${gender}. 관련 키워드: ${concerns.substring(0, 300)}.\n\n다음을 검색하고 정리해주세요:\n1. 이 키워드와 관련된 최신 연구 동향 (2024-2026)\n2. 근거 기반 개입 방법과 효과 크기\n3. 발달/심리 전문가들의 최신 권고사항\n4. 관련 메타분석 또는 체계적 고찰 결과\n5. 가정에서 적용 가능한 연구 기반 전략\n\n각 항목에 구체적 수치와 참고문헌을 포함해주세요.` },
         ],
         search_recency_filter: 'month',
         return_citations: true,
-        max_tokens: 1500,
+        max_tokens: 3000,
       }),
     });
     if (!response.ok) return '';
     const data = await response.json();
-    return data.choices?.[0]?.message?.content || '';
+    const content = data.choices?.[0]?.message?.content || '';
+    const citations = data.citations || [];
+    // 인용 출처가 있으면 하단에 추가
+    if (citations.length > 0) {
+      return content + '\n\n📚 참고 출처:\n' + citations.map((c: string, i: number) => `[${i + 1}] ${c}`).join('\n');
+    }
+    return content;
   } catch { return ''; }
 }
 

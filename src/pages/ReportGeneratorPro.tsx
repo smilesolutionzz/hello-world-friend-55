@@ -754,7 +754,25 @@ const ReportGeneratorPro = () => {
                   <Badge variant="outline">{t('관찰', 'Obs.')} {reportData.dataSource?.observations || 0}{t('건', '')}</Badge>
                   <Badge variant="outline">{t('상담', 'Chats')} {reportData.dataSource?.chatMessages || 0}{t('건', '')}</Badge>
                 </div>
-              </div>
+                </div>
+                {/* 리포트 번호 & 메타 뱃지 */}
+                <div className="flex justify-center gap-2 flex-wrap mt-3">
+                  {reportData.preprocessedData?.reportComparison?.has_comparison && (
+                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-300">
+                      📊 {t(`리포트 #${reportData.metadata?.reportNumber || 1} · 이전 대비 비교 분석 포함`, `Report #${reportData.metadata?.reportNumber || 1} · Includes comparison analysis`)}
+                    </Badge>
+                  )}
+                  {reportData.metadata?.hasPeerComparison && (
+                    <Badge className="bg-blue-100 text-blue-700 border-blue-300">
+                      👥 {t('또래 비교 백분위 포함', 'Includes peer percentile comparison')}
+                    </Badge>
+                  )}
+                  {reportData.metadata?.hasResearchInsights && (
+                    <Badge className="bg-purple-100 text-purple-700 border-purple-300">
+                      🔬 {t('최신 연구 근거 포함', 'Includes research citations')}
+                    </Badge>
+                  )}
+                </div>
 
               {/* ── Phase 2: 데이터 시각화 섹션 ── */}
               {/* 데이터 소스 인포그래픽 */}

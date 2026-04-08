@@ -337,17 +337,17 @@ const ReportGeneratorPro = () => {
           </h1>
           <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
             {isEnglish ? (
-              <>Based on <strong className="text-white">500+ papers · 15 psychological theories</strong><br className="hidden md:block" />
-              A <strong className="text-white">doctoral-level clinical</strong> report with 9 professional sections</>
+              <>Powered by <strong className="text-white">GPT-5 + Perplexity sonar-pro</strong><br className="hidden md:block" />
+              A <strong className="text-white">PhD-grade clinical</strong> report with 9 professional sections</>
             ) : (
-              <>전 세계 <strong className="text-white">500+ 논문 · 15개 심리이론</strong> 기반<br className="hidden md:block" />
+              <><strong className="text-white">GPT-5 + Perplexity sonar-pro</strong> 이중 엔진<br className="hidden md:block" />
               9가지 전문 섹션으로 통합 분석하는 <strong className="text-white">박사급 임상 수준</strong> 리포트</>
             )}
           </p>
 
           {/* 학술 뱃지 */}
           <div className="flex flex-wrap justify-center gap-1.5 max-w-xl mx-auto">
-            {['AIHPRO', 'AI분석', '빅데이터', '발달규준', '행동분석', '인지패턴', '정서코칭'].map((tag) => (
+            {['GPT-5', 'Perplexity', '학술논문', '교차분석', '행동패턴', '인지추론', '정서코칭'].map((tag) => (
               <span key={tag} className="px-2.5 py-1 text-[10px] font-medium rounded-full bg-white/5 text-white/50 border border-white/10">
                 {tag}
               </span>
@@ -836,7 +836,7 @@ const ReportGeneratorPro = () => {
                     {t('🔬 최신 연구·논문 기반 인사이트', '🔬 Latest Research & Paper-Based Insights')}
                   </h2>
                   <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-6 rounded-xl border-2 border-indigo-200">
-                    <p className="text-xs text-indigo-500 mb-3 font-semibold">{t('📡 Perplexity AI 실시간 웹 검색 · 최신 1개월 이내 연구 반영', '📡 Perplexity AI real-time web search · Latest research within 1 month')}</p>
+                    <p className="text-xs text-indigo-500 mb-3 font-semibold">{t('📡 Perplexity sonar-pro 실시간 학술 검색 · GPT-5 PhD급 종합 분석 · 최신 1개월 이내 연구 반영', '📡 Perplexity sonar-pro real-time academic search · GPT-5 PhD-grade analysis · Latest research within 1 month')}</p>
                     <div className="prose prose-slate max-w-none leading-relaxed whitespace-pre-wrap text-sm text-slate-700">{reportData.researchInsightsContent}</div>
                   </div>
                 </div>

@@ -1307,7 +1307,7 @@ serve(async (req) => {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-pro',
+            model: 'openai/gpt-5.2',
             messages: [
               { role: 'system', content: systemPrompt + '\n\n⚠️ 응답은 순수 JSON만. 첫 문자 { 마지막 }' },
               { role: 'user', content: userPrompt },
@@ -1408,11 +1408,14 @@ serve(async (req) => {
     reportData.metadata = {
       generatedAt: new Date().toISOString(),
       model: aiModel,
-      frameworkVersion: 'AIHPRO_v3.0_PhD',
-      analysisLevel: 'PhD-grade (GPT-5 + Perplexity sonar-pro)',
+      frameworkVersion: 'AIHPRO_v4.0_PhD',
+      analysisLevel: 'PhD-grade (Gemini 3.1 Pro + Perplexity sonar-pro)',
       dataCount: preprocessed.dataSourceCounts,
       dataSpanDays: preprocessed.dataSpanDays,
       hasResearchInsights: !!researchInsights,
+      hasPeerComparison: Object.keys(peerComparison).length > 0,
+      hasReportComparison: reportComparison?.has_comparison || false,
+      reportNumber: reportComparison?.current_report_number || 1,
       userInfo: { name: userInput?.name, age: userAge, gender: userInput?.gender },
     };
 
@@ -1435,11 +1438,18 @@ serve(async (req) => {
       totalDataPoints: preprocessed.totalDataPoints,
       dataSpanDays: preprocessed.dataSpanDays,
       progressSummary: preprocessed.progressSummary,
+      peerComparison,
+      reportComparison,
     };
 
     if (researchInsights) {
       reportData.researchInsightsContent = researchInsights;
     }
+
+    // ★ 리포트 이력 저장 (비동기 - 응답 블로킹 안함)
+    saveReportHistory(supabaseClient, user.id, reportData, preprocessed, aiModel).catch(err => {
+      console.error('리포트 이력 저장 백그라운드 오류:', err);
+    });
 
     return new Response(
       JSON.stringify({ success: true, report: reportData }),

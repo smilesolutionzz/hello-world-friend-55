@@ -12,6 +12,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 import html2pdf from 'html2pdf.js';
 import ScratchCard from '@/components/gamification/ScratchCard';
+import ReportShareModal from '@/components/report/ReportShareModal';
 import ReportCurationSection from '@/components/report/ReportCurationSection';
 import VisualSummaryButton from '@/components/visual-summary/VisualSummaryButton';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -120,6 +121,8 @@ const ReportGeneratorPro = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [showScratchCard, setShowScratchCard] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [currentReportHistoryId, setCurrentReportHistoryId] = useState<string | null>(null);
   const [showSampleReport, setShowSampleReport] = useState(false);
   const [activeReportSection, setActiveReportSection] = useState(0);
   const { isEnglish, localePath } = useLanguage();

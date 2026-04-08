@@ -66,6 +66,7 @@ import AssessmentHistory from "./components/history/AssessmentHistory";
 import SampleReport from "./pages/SampleReport";
 import ComprehensiveReporting from "./pages/ComprehensiveReporting";
 import ENFJvsINFPCompatibility from "./pages/ENFJvsINFPCompatibility";
+import SharedReport from "./pages/SharedReport";
 
 // Observation
 import ObservationNew from "./pages/ObservationNew";
@@ -279,6 +280,7 @@ const App = () => {
           <Route path="/admin" element={<AdminDashboard />} />
 
           {/* Utility */}
+          <Route path="/shared-report/:token" element={<SharedReport />} />
           <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/referral" element={<Referral />} />
           <Route path="/rewards" element={<Rewards />} />

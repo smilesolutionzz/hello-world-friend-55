@@ -7904,6 +7904,7 @@ export type Database = {
           data_span_days: number | null
           dimension_scores: Json | null
           id: string
+          is_shared: boolean | null
           model_used: string | null
           overall_score: number | null
           preprocessed_data: Json
@@ -7912,6 +7913,7 @@ export type Database = {
           report_number: number
           research_citations: Json | null
           risk_level: string | null
+          share_count: number | null
           user_id: string
         }
         Insert: {
@@ -7920,6 +7922,7 @@ export type Database = {
           data_span_days?: number | null
           dimension_scores?: Json | null
           id?: string
+          is_shared?: boolean | null
           model_used?: string | null
           overall_score?: number | null
           preprocessed_data?: Json
@@ -7928,6 +7931,7 @@ export type Database = {
           report_number?: number
           research_citations?: Json | null
           risk_level?: string | null
+          share_count?: number | null
           user_id: string
         }
         Update: {
@@ -7936,6 +7940,7 @@ export type Database = {
           data_span_days?: number | null
           dimension_scores?: Json | null
           id?: string
+          is_shared?: boolean | null
           model_used?: string | null
           overall_score?: number | null
           preprocessed_data?: Json
@@ -7944,6 +7949,7 @@ export type Database = {
           report_number?: number
           research_citations?: Json | null
           risk_level?: string | null
+          share_count?: number | null
           user_id?: string
         }
         Relationships: []
@@ -8227,6 +8233,133 @@ export type Database = {
           verified_at?: string | null
         }
         Relationships: []
+      }
+      report_share_links: {
+        Row: {
+          created_at: string | null
+          current_views: number | null
+          description: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          max_views: number | null
+          report_history_id: string | null
+          share_token: string
+          share_type: string
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_views?: number | null
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_views?: number | null
+          report_history_id?: string | null
+          share_token?: string
+          share_type?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_views?: number | null
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_views?: number | null
+          report_history_id?: string | null
+          share_token?: string
+          share_type?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_share_links_report_history_id_fkey"
+            columns: ["report_history_id"]
+            isOneToOne: false
+            referencedRelation: "premium_report_history"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_share_reports: {
+        Row: {
+          created_at: string | null
+          id: string
+          report_history_id: string
+          report_order: number
+          share_link_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          report_history_id: string
+          report_order?: number
+          share_link_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          report_history_id?: string
+          report_order?: number
+          share_link_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_share_reports_report_history_id_fkey"
+            columns: ["report_history_id"]
+            isOneToOne: false
+            referencedRelation: "premium_report_history"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "report_share_reports_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "report_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_share_views: {
+        Row: {
+          id: string
+          share_link_id: string
+          viewed_at: string | null
+          viewer_agent: string | null
+          viewer_ip: string | null
+        }
+        Insert: {
+          id?: string
+          share_link_id: string
+          viewed_at?: string | null
+          viewer_agent?: string | null
+          viewer_ip?: string | null
+        }
+        Update: {
+          id?: string
+          share_link_id?: string
+          viewed_at?: string | null
+          viewer_agent?: string | null
+          viewer_ip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_share_views_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "report_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       resident_activities: {
         Row: {

@@ -928,7 +928,7 @@ const ReportGeneratorPro = () => {
                     {t('🔬 최신 연구·논문 기반 인사이트', '🔬 Latest Research & Paper-Based Insights')}
                   </h2>
                   <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-6 rounded-xl border-2 border-indigo-200">
-                    <p className="text-xs text-indigo-500 mb-3 font-semibold">{t('📡 Perplexity sonar-pro 실시간 학술 검색 · GPT-5 PhD급 종합 분석 · 최신 1개월 이내 연구 반영', '📡 Perplexity sonar-pro real-time academic search · GPT-5 PhD-grade analysis · Latest research within 1 month')}</p>
+                    <p className="text-xs text-indigo-500 mb-3 font-semibold">{t('📡 Perplexity sonar-pro 학술 검색 · Gemini 3.1 Pro PhD급 분석 · 최신 1개월 이내 연구 반영', '📡 Perplexity sonar-pro academic search · Gemini 3.1 Pro PhD-grade analysis · Latest research within 1 month')}</p>
                     <div className="prose prose-slate max-w-none leading-relaxed whitespace-pre-wrap text-sm text-slate-700">{reportData.researchInsightsContent}</div>
                   </div>
                 </div>

@@ -1174,12 +1174,12 @@ serve(async (req) => {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
+            model: 'google/gemini-2.5-pro',
             messages: [
               { role: 'system', content: systemPrompt + '\n\n⚠️ 응답은 순수 JSON만. 첫 문자 { 마지막 }' },
               { role: 'user', content: userPrompt },
             ],
-            max_tokens: 16000,
+            max_tokens: 32000,
           }),
         });
         if (retryResponse.ok) {

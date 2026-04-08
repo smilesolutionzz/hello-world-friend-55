@@ -1020,10 +1020,16 @@ ${JSON.stringify(preprocessed.chartData.comparisonBarChart)}
 📉 위험도 게이지
 ${JSON.stringify(preprocessed.chartData.riskGauge)}
 
+${peerComparison && Object.keys(peerComparison).length > 0 ? `\n═══ 또래 비교 백분위 (AIHPRO 빅데이터) ═══\n${Object.entries(peerComparison).map(([dim, data]: [string, any]) => 
+  `• ${dim}: 상위 ${100 - (data?.percentile || 50)}% (백분위 ${data?.percentile || 50}위, ${data?.is_estimated ? '추정치' : `${data?.sample_size}명 기반`}, 평균 ${data?.avg_score || 'N/A'}점)`
+).join('\n')}\n⭐ 반드시 "AIHPRO 빅데이터 비교 분석" 섹션에서 이 백분위 데이터를 정확히 인용하세요.` : ''}
+
+${reportComparison?.has_comparison ? `\n═══ 이전 리포트 대비 변화 분석 ═══\n• 이전 리포트: #${reportComparison.previous_report_number} (${reportComparison.previous_report_date?.split('T')[0]})\n• 현재 리포트: #${reportComparison.current_report_number}\n• 간격: ${reportComparison.days_between}일\n• 종합 점수 변화: ${reportComparison.previous_overall_score} → ${reportComparison.current_overall_score} (${reportComparison.overall_change > 0 ? '+' : ''}${reportComparison.overall_change})\n• 위험도 변화: ${reportComparison.previous_risk_level} → ${reportComparison.current_risk_level}\n• 차원별 변화:\n${(reportComparison.dimension_changes || []).map((d: any) => `  - ${d.dimension}: ${d.previous_score} → ${d.current_score} (${d.change > 0 ? '+' : ''}${d.change}, ${d.status === 'improved' ? '✅ 개선' : d.status === 'declined' ? '⚠️ 하락' : '➡️ 유지'})`).join('\n')}\n⭐ 이전 리포트와의 변화를 모든 관련 섹션에서 구체적으로 언급하세요.` : ''}
+
 ${userInput?.recentConcerns ? `\n═══ 보호자 주요 고민 ═══\n${userInput.recentConcerns}` : ''}
 ${userInput?.developmentalNotes ? `\n═══ 보호자 관찰 소견 ═══\n${userInput.developmentalNotes}` : ''}
 ${onboardingData ? `\n═══ 온보딩 기초 데이터 ═══\n대상: ${onboardingData.subject_type === 'child' ? '아이' : '본인'}\n${onboardingData.child_age ? `아이 나이: ${onboardingData.child_age}세` : ''}\n${onboardingData.child_gender ? `성별: ${onboardingData.child_gender === 'male' ? '남아' : '여아'}` : ''}\n관심 키워드: ${(onboardingData.concern_keywords || []).join(', ')}\n기초 상태 체크: ${JSON.stringify(onboardingData.baseline_answers || {})}` : ''}
-${researchInsights ? `\n═══ 최신 연구 참고 (웹 검색) ═══\n${researchInsights.substring(0, 2000)}` : ''}
+${researchInsights ? `\n═══ 최신 연구 참고 (Perplexity 학술 검색) ═══\n${researchInsights.substring(0, 2500)}` : ''}
 ${externalTestImages ? `\n═══ 외부 기관 검사 결과 (AI 분석) ═══\n${externalTestImages}` : ''}
 
 ═══ 작성할 섹션 목록 ═══

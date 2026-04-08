@@ -817,6 +817,80 @@ const ReportGeneratorPro = () => {
                 />
               )}
 
+              {/* ── 이전 리포트 대비 변화 분석 ── */}
+              {reportData.preprocessedData?.reportComparison?.has_comparison && (
+                <div className="space-y-4 pt-6">
+                  <h2 className="text-2xl font-bold text-emerald-900 flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-emerald-100 text-emerald-600 shadow-sm"><TrendingUp className="w-6 h-6" /></div>
+                    {t('📊 이전 리포트 대비 변화 분석', '📊 Changes Since Last Report')}
+                  </h2>
+                  <div className="bg-gradient-to-br from-emerald-50 to-green-50 p-6 rounded-xl border-2 border-emerald-200">
+                    {(() => {
+                      const comp = reportData.preprocessedData.reportComparison;
+                      return (
+                        <div className="space-y-4">
+                          <div className="flex flex-wrap gap-4 text-sm">
+                            <span className="px-3 py-1 bg-emerald-100 rounded-full text-emerald-700 font-semibold">
+                              {t(`리포트 #${comp.previous_report_number} → #${comp.current_report_number}`, `Report #${comp.previous_report_number} → #${comp.current_report_number}`)}
+                            </span>
+                            <span className="px-3 py-1 bg-slate-100 rounded-full text-slate-600">
+                              {t(`${comp.days_between}일 간격`, `${comp.days_between} days apart`)}
+                            </span>
+                            <span className={`px-3 py-1 rounded-full font-bold ${comp.overall_change > 0 ? 'bg-green-100 text-green-700' : comp.overall_change < 0 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600'}`}>
+                              {t('종합', 'Overall')}: {comp.overall_change > 0 ? '+' : ''}{comp.overall_change}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {(comp.dimension_changes || []).map((d: any, i: number) => (
+                              <div key={i} className={`p-3 rounded-lg border ${d.status === 'improved' ? 'bg-green-50 border-green-200' : d.status === 'declined' ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200'}`}>
+                                <div className="text-xs text-slate-500">{d.dimension}</div>
+                                <div className="text-lg font-bold">
+                                  {d.previous_score} → {d.current_score}
+                                </div>
+                                <div className={`text-xs font-semibold ${d.status === 'improved' ? 'text-green-600' : d.status === 'declined' ? 'text-red-600' : 'text-gray-500'}`}>
+                                  {d.status === 'improved' ? '✅ 개선' : d.status === 'declined' ? '⚠️ 주의' : '➡️ 유지'} ({d.change > 0 ? '+' : ''}{d.change})
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              )}
+
+              {/* ── 또래 비교 백분위 ── */}
+              {reportData.preprocessedData?.peerComparison && Object.keys(reportData.preprocessedData.peerComparison).length > 0 && (
+                <div className="space-y-4 pt-6">
+                  <h2 className="text-2xl font-bold text-blue-900 flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-blue-100 text-blue-600 shadow-sm"><Users className="w-6 h-6" /></div>
+                    {t('👥 AIHPRO 빅데이터 또래 비교 백분위', '👥 AIHPRO Big Data Peer Comparison')}
+                  </h2>
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border-2 border-blue-200">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {Object.entries(reportData.preprocessedData.peerComparison).map(([dim, data]: [string, any], i: number) => {
+                        const percentile = data?.percentile || 50;
+                        const isEstimated = data?.is_estimated;
+                        const barColor = percentile >= 75 ? 'bg-emerald-500' : percentile >= 50 ? 'bg-blue-500' : percentile >= 25 ? 'bg-amber-500' : 'bg-red-500';
+                        return (
+                          <div key={i} className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm space-y-2">
+                            <div className="text-xs font-semibold text-slate-600 truncate">{dim}</div>
+                            <div className="text-2xl font-black text-slate-900">{t(`상위 ${100 - percentile}%`, `Top ${100 - percentile}%`)}</div>
+                            <div className="w-full bg-slate-200 rounded-full h-2">
+                              <div className={`h-2 rounded-full ${barColor} transition-all duration-700`} style={{ width: `${percentile}%` }} />
+                            </div>
+                            <div className="text-[10px] text-slate-400">
+                              {isEstimated ? t('추정치', 'Estimated') : t(`${data?.sample_size}명 기준`, `Based on ${data?.sample_size} users`)}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* 교차상관 인사이트 */}
               {reportData.crossCorrelations && reportData.crossCorrelations.length > 0 && (
                 <CrossCorrelationInsight correlations={reportData.crossCorrelations} />

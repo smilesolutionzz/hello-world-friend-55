@@ -337,10 +337,10 @@ const ReportGeneratorPro = () => {
           </h1>
           <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
             {isEnglish ? (
-              <>Based on <strong className="text-white">500+ papers · 15 psychological theories</strong><br className="hidden md:block" />
-              A <strong className="text-white">doctoral-level clinical</strong> report with 9 professional sections</>
+              <>Powered by <strong className="text-white">GPT-5 + Perplexity sonar-pro</strong><br className="hidden md:block" />
+              A <strong className="text-white">PhD-grade clinical</strong> report with 9 professional sections</>
             ) : (
-              <>전 세계 <strong className="text-white">500+ 논문 · 15개 심리이론</strong> 기반<br className="hidden md:block" />
+              <><strong className="text-white">GPT-5 + Perplexity sonar-pro</strong> 이중 엔진<br className="hidden md:block" />
               9가지 전문 섹션으로 통합 분석하는 <strong className="text-white">박사급 임상 수준</strong> 리포트</>
             )}
           </p>

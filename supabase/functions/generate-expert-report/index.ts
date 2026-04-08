@@ -1096,9 +1096,9 @@ serve(async (req) => {
     const systemPrompt = buildSystemPrompt(preprocessed, language || 'ko', !!externalTestImages);
     const userPrompt = buildUserPrompt(preprocessed, userInput, userAge, researchInsights, externalTestImages || '', language || 'ko', onboardingData);
 
-    // AI 호출
-    const aiModel = 'google/gemini-3-flash-preview';
-    console.log(`AI 호출 시작 (${aiModel}), 프롬프트 길이: ${systemPrompt.length + userPrompt.length}`);
+    // AI 호출 — 최고 사양 모델 (GPT-5) 사용
+    const aiModel = 'openai/gpt-5';
+    console.log(`AI 호출 시작 (${aiModel} — PhD급 분석), 프롬프트 길이: ${systemPrompt.length + userPrompt.length}`);
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -1113,6 +1113,9 @@ serve(async (req) => {
           { role: 'user', content: userPrompt },
         ],
         max_tokens: 32000,
+        reasoning: {
+          effort: 'high',
+        },
       }),
     });
 

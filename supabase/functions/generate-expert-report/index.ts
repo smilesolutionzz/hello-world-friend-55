@@ -1217,16 +1217,26 @@ serve(async (req) => {
       };
     }
 
-    // 최신 연구 검색 (비동기)
+    // ★ 병렬로 연구 검색 + 또래 비교 + 이전 리포트 비교 수행
     const concerns = userInput?.recentConcerns || userInput?.developmentalNotes || '';
-    const researchInsights = await searchLatestResearch(concerns, userAge, userInput?.gender || '');
+    const [researchInsights, peerComparison, reportComparison] = await Promise.all([
+      searchLatestResearch(concerns, userAge, userInput?.gender || ''),
+      isWithData ? calculatePeerComparison(supabaseClient, user.id, preprocessed.unifiedDimensionScores) : {},
+      getPreviousReportComparison(supabaseClient, user.id),
+    ]);
+
+    console.log('부가 데이터 수집 완료:', {
+      hasResearch: !!researchInsights,
+      peerDimensions: Object.keys(peerComparison).length,
+      hasComparison: reportComparison?.has_comparison,
+    });
 
     // AI 프롬프트 구성
     const systemPrompt = buildSystemPrompt(preprocessed, language || 'ko', !!externalTestImages);
-    const userPrompt = buildUserPrompt(preprocessed, userInput, userAge, researchInsights, externalTestImages || '', language || 'ko', onboardingData);
+    const userPrompt = buildUserPrompt(preprocessed, userInput, userAge, researchInsights, externalTestImages || '', language || 'ko', onboardingData, peerComparison, reportComparison);
 
-    // AI 호출 — 최고 사양 모델 (GPT-5) 사용
-    const aiModel = 'openai/gpt-5';
+    // AI 호출 — 최고 사양 모델 (Gemini 3.1 Pro Preview) 사용
+    const aiModel = 'google/gemini-3.1-pro-preview';
     console.log(`AI 호출 시작 (${aiModel} — PhD급 분석), 프롬프트 길이: ${systemPrompt.length + userPrompt.length}`);
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {

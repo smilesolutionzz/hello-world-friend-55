@@ -698,7 +698,122 @@ function buildChartData(
   };
 }
 
-// ── 3. 최신 연구 검색 (Perplexity) ──
+// ── 3. 또래 비교 백분위 계산 ──
+async function calculatePeerComparison(
+  supabaseClient: any,
+  userId: string,
+  dimensionScores: DimensionScore[]
+): Promise<Record<string, any>> {
+  const peerData: Record<string, any> = {};
+
+  // 최신 점수만 추출 (차원별)
+  const latestByDim: Record<string, DimensionScore> = {};
+  dimensionScores.forEach(s => {
+    const key = normalizeDimension(s.dimension);
+    const existing = latestByDim[key];
+    if (!existing || new Date(s.date) > new Date(existing.date)) {
+      latestByDim[key] = s;
+    }
+  });
+
+  // 각 차원별 백분위 계산 (병렬)
+  const entries = Object.entries(latestByDim).slice(0, 8);
+  const results = await Promise.allSettled(
+    entries.map(async ([dim, score]) => {
+      try {
+        const { data } = await supabaseClient.rpc('get_peer_percentile', {
+          p_user_id: userId,
+          p_dimension: dim,
+          p_user_score: score.percentage,
+        });
+        return { dim, data };
+      } catch {
+        return { dim, data: { percentile: Math.round(score.percentage * 0.85), is_estimated: true, sample_size: 0, message: '추정치' } };
+      }
+    })
+  );
+
+  results.forEach(r => {
+    if (r.status === 'fulfilled' && r.value) {
+      peerData[r.value.dim] = r.value.data;
+    }
+  });
+
+  return peerData;
+}
+
+// ── 3b. 이전 리포트 비교 데이터 ──
+async function getPreviousReportComparison(
+  supabaseClient: any,
+  userId: string
+): Promise<any> {
+  try {
+    const { data } = await supabaseClient.rpc('get_report_comparison', {
+      p_user_id: userId,
+    });
+    return data || { has_comparison: false };
+  } catch {
+    return { has_comparison: false };
+  }
+}
+
+// ── 3c. 리포트 이력 저장 ──
+async function saveReportHistory(
+  supabaseClient: any,
+  userId: string,
+  reportData: any,
+  preprocessed: PreprocessedData,
+  model: string
+): Promise<void> {
+  try {
+    // 리포트 번호 계산
+    const { count } = await supabaseClient
+      .from('premium_report_history')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId);
+
+    const reportNumber = (count || 0) + 1;
+
+    // 차원별 점수 추출
+    const dimScores: Record<string, number> = {};
+    const latestByDim: Record<string, DimensionScore> = {};
+    preprocessed.unifiedDimensionScores.forEach(s => {
+      const key = normalizeDimension(s.dimension);
+      const existing = latestByDim[key];
+      if (!existing || new Date(s.date) > new Date(existing.date)) {
+        latestByDim[key] = s;
+      }
+    });
+    Object.entries(latestByDim).forEach(([dim, s]) => {
+      dimScores[dim] = s.percentage;
+    });
+
+    // 전체 점수 계산
+    const scores = Object.values(dimScores);
+    const overallScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+
+    await supabaseClient.from('premium_report_history').insert({
+      user_id: userId,
+      report_number: reportNumber,
+      report_data: reportData,
+      preprocessed_data: preprocessed.chartData,
+      dimension_scores: dimScores,
+      risk_level: preprocessed.chartData.riskGauge.level,
+      overall_score: overallScore,
+      model_used: model,
+      research_citations: reportData.researchInsightsContent ? [reportData.researchInsightsContent] : [],
+      data_source_counts: preprocessed.dataSourceCounts,
+      data_span_days: preprocessed.dataSpanDays,
+      report_mode: preprocessed.totalDataPoints > 0 ? 'with-data' : 'without-data',
+    });
+
+    console.log(`리포트 이력 저장 완료: #${reportNumber}`);
+  } catch (err) {
+    console.error('리포트 이력 저장 실패:', err);
+  }
+}
+
+// ── 4. 최신 연구 검색 (Perplexity sonar-pro) ──
 async function searchLatestResearch(concerns: string, userAge: number, gender: string): Promise<string> {
   if (!PERPLEXITY_API_KEY || !concerns) return '';
   try {
@@ -712,6 +827,7 @@ async function searchLatestResearch(concerns: string, userAge: number, gender: s
           { role: 'user', content: `대상: ${userAge}세 ${gender}. 관련 키워드: ${concerns.substring(0, 300)}.\n\n다음을 검색하고 정리해주세요:\n1. 이 키워드와 관련된 최신 연구 동향 (2024-2026)\n2. 근거 기반 개입 방법과 효과 크기\n3. 발달/심리 전문가들의 최신 권고사항\n4. 관련 메타분석 또는 체계적 고찰 결과\n5. 가정에서 적용 가능한 연구 기반 전략\n\n각 항목에 구체적 수치와 참고문헌을 포함해주세요.` },
         ],
         search_recency_filter: 'month',
+        search_mode: 'academic',
         return_citations: true,
         max_tokens: 3000,
       }),
@@ -720,7 +836,6 @@ async function searchLatestResearch(concerns: string, userAge: number, gender: s
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '';
     const citations = data.citations || [];
-    // 인용 출처가 있으면 하단에 추가
     if (citations.length > 0) {
       return content + '\n\n📚 참고 출처:\n' + citations.map((c: string, i: number) => `[${i + 1}] ${c}`).join('\n');
     }
@@ -800,7 +915,9 @@ function buildUserPrompt(
   researchInsights: string,
   externalTestImages: string,
   language: string,
-  onboardingData?: any
+  onboardingData?: any,
+  peerComparison?: Record<string, any>,
+  reportComparison?: any
 ): string {
   const isKo = language !== 'en';
 
@@ -903,10 +1020,16 @@ ${JSON.stringify(preprocessed.chartData.comparisonBarChart)}
 📉 위험도 게이지
 ${JSON.stringify(preprocessed.chartData.riskGauge)}
 
+${peerComparison && Object.keys(peerComparison).length > 0 ? `\n═══ 또래 비교 백분위 (AIHPRO 빅데이터) ═══\n${Object.entries(peerComparison).map(([dim, data]: [string, any]) => 
+  `• ${dim}: 상위 ${100 - (data?.percentile || 50)}% (백분위 ${data?.percentile || 50}위, ${data?.is_estimated ? '추정치' : `${data?.sample_size}명 기반`}, 평균 ${data?.avg_score || 'N/A'}점)`
+).join('\n')}\n⭐ 반드시 "AIHPRO 빅데이터 비교 분석" 섹션에서 이 백분위 데이터를 정확히 인용하세요.` : ''}
+
+${reportComparison?.has_comparison ? `\n═══ 이전 리포트 대비 변화 분석 ═══\n• 이전 리포트: #${reportComparison.previous_report_number} (${reportComparison.previous_report_date?.split('T')[0]})\n• 현재 리포트: #${reportComparison.current_report_number}\n• 간격: ${reportComparison.days_between}일\n• 종합 점수 변화: ${reportComparison.previous_overall_score} → ${reportComparison.current_overall_score} (${reportComparison.overall_change > 0 ? '+' : ''}${reportComparison.overall_change})\n• 위험도 변화: ${reportComparison.previous_risk_level} → ${reportComparison.current_risk_level}\n• 차원별 변화:\n${(reportComparison.dimension_changes || []).map((d: any) => `  - ${d.dimension}: ${d.previous_score} → ${d.current_score} (${d.change > 0 ? '+' : ''}${d.change}, ${d.status === 'improved' ? '✅ 개선' : d.status === 'declined' ? '⚠️ 하락' : '➡️ 유지'})`).join('\n')}\n⭐ 이전 리포트와의 변화를 모든 관련 섹션에서 구체적으로 언급하세요.` : ''}
+
 ${userInput?.recentConcerns ? `\n═══ 보호자 주요 고민 ═══\n${userInput.recentConcerns}` : ''}
 ${userInput?.developmentalNotes ? `\n═══ 보호자 관찰 소견 ═══\n${userInput.developmentalNotes}` : ''}
 ${onboardingData ? `\n═══ 온보딩 기초 데이터 ═══\n대상: ${onboardingData.subject_type === 'child' ? '아이' : '본인'}\n${onboardingData.child_age ? `아이 나이: ${onboardingData.child_age}세` : ''}\n${onboardingData.child_gender ? `성별: ${onboardingData.child_gender === 'male' ? '남아' : '여아'}` : ''}\n관심 키워드: ${(onboardingData.concern_keywords || []).join(', ')}\n기초 상태 체크: ${JSON.stringify(onboardingData.baseline_answers || {})}` : ''}
-${researchInsights ? `\n═══ 최신 연구 참고 (웹 검색) ═══\n${researchInsights.substring(0, 2000)}` : ''}
+${researchInsights ? `\n═══ 최신 연구 참고 (Perplexity 학술 검색) ═══\n${researchInsights.substring(0, 2500)}` : ''}
 ${externalTestImages ? `\n═══ 외부 기관 검사 결과 (AI 분석) ═══\n${externalTestImages}` : ''}
 
 ═══ 작성할 섹션 목록 ═══
@@ -1094,16 +1217,26 @@ serve(async (req) => {
       };
     }
 
-    // 최신 연구 검색 (비동기)
+    // ★ 병렬로 연구 검색 + 또래 비교 + 이전 리포트 비교 수행
     const concerns = userInput?.recentConcerns || userInput?.developmentalNotes || '';
-    const researchInsights = await searchLatestResearch(concerns, userAge, userInput?.gender || '');
+    const [researchInsights, peerComparison, reportComparison] = await Promise.all([
+      searchLatestResearch(concerns, userAge, userInput?.gender || ''),
+      isWithData ? calculatePeerComparison(supabaseClient, user.id, preprocessed.unifiedDimensionScores) : {},
+      getPreviousReportComparison(supabaseClient, user.id),
+    ]);
+
+    console.log('부가 데이터 수집 완료:', {
+      hasResearch: !!researchInsights,
+      peerDimensions: Object.keys(peerComparison).length,
+      hasComparison: reportComparison?.has_comparison,
+    });
 
     // AI 프롬프트 구성
     const systemPrompt = buildSystemPrompt(preprocessed, language || 'ko', !!externalTestImages);
-    const userPrompt = buildUserPrompt(preprocessed, userInput, userAge, researchInsights, externalTestImages || '', language || 'ko', onboardingData);
+    const userPrompt = buildUserPrompt(preprocessed, userInput, userAge, researchInsights, externalTestImages || '', language || 'ko', onboardingData, peerComparison, reportComparison);
 
-    // AI 호출 — 최고 사양 모델 (GPT-5) 사용
-    const aiModel = 'openai/gpt-5';
+    // AI 호출 — 최고 사양 모델 (Gemini 3.1 Pro Preview) 사용
+    const aiModel = 'google/gemini-3.1-pro-preview';
     console.log(`AI 호출 시작 (${aiModel} — PhD급 분석), 프롬프트 길이: ${systemPrompt.length + userPrompt.length}`);
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -1174,7 +1307,7 @@ serve(async (req) => {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-pro',
+            model: 'openai/gpt-5.2',
             messages: [
               { role: 'system', content: systemPrompt + '\n\n⚠️ 응답은 순수 JSON만. 첫 문자 { 마지막 }' },
               { role: 'user', content: userPrompt },
@@ -1275,11 +1408,14 @@ serve(async (req) => {
     reportData.metadata = {
       generatedAt: new Date().toISOString(),
       model: aiModel,
-      frameworkVersion: 'AIHPRO_v3.0_PhD',
-      analysisLevel: 'PhD-grade (GPT-5 + Perplexity sonar-pro)',
+      frameworkVersion: 'AIHPRO_v4.0_PhD',
+      analysisLevel: 'PhD-grade (Gemini 3.1 Pro + Perplexity sonar-pro)',
       dataCount: preprocessed.dataSourceCounts,
       dataSpanDays: preprocessed.dataSpanDays,
       hasResearchInsights: !!researchInsights,
+      hasPeerComparison: Object.keys(peerComparison).length > 0,
+      hasReportComparison: reportComparison?.has_comparison || false,
+      reportNumber: reportComparison?.current_report_number || 1,
       userInfo: { name: userInput?.name, age: userAge, gender: userInput?.gender },
     };
 
@@ -1302,11 +1438,18 @@ serve(async (req) => {
       totalDataPoints: preprocessed.totalDataPoints,
       dataSpanDays: preprocessed.dataSpanDays,
       progressSummary: preprocessed.progressSummary,
+      peerComparison,
+      reportComparison,
     };
 
     if (researchInsights) {
       reportData.researchInsightsContent = researchInsights;
     }
+
+    // ★ 리포트 이력 저장 (비동기 - 응답 블로킹 안함)
+    saveReportHistory(supabaseClient, user.id, reportData, preprocessed, aiModel).catch(err => {
+      console.error('리포트 이력 저장 백그라운드 오류:', err);
+    });
 
     return new Response(
       JSON.stringify({ success: true, report: reportData }),

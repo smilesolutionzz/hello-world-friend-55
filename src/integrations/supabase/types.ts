@@ -7897,6 +7897,57 @@ export type Database = {
         }
         Relationships: []
       }
+      premium_report_history: {
+        Row: {
+          created_at: string
+          data_source_counts: Json | null
+          data_span_days: number | null
+          dimension_scores: Json | null
+          id: string
+          model_used: string | null
+          overall_score: number | null
+          preprocessed_data: Json
+          report_data: Json
+          report_mode: string | null
+          report_number: number
+          research_citations: Json | null
+          risk_level: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_source_counts?: Json | null
+          data_span_days?: number | null
+          dimension_scores?: Json | null
+          id?: string
+          model_used?: string | null
+          overall_score?: number | null
+          preprocessed_data?: Json
+          report_data?: Json
+          report_mode?: string | null
+          report_number?: number
+          research_citations?: Json | null
+          risk_level?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data_source_counts?: Json | null
+          data_span_days?: number | null
+          dimension_scores?: Json | null
+          id?: string
+          model_used?: string | null
+          overall_score?: number | null
+          preprocessed_data?: Json
+          report_data?: Json
+          report_mode?: string | null
+          report_number?: number
+          research_citations?: Json | null
+          risk_level?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"] | null
@@ -11929,6 +11980,15 @@ export type Database = {
           total_revenue: number
         }[]
       }
+      get_peer_percentile: {
+        Args: {
+          p_age_group?: string
+          p_dimension: string
+          p_user_id: string
+          p_user_score: number
+        }
+        Returns: Json
+      }
       get_post_likes_count: { Args: { post_id: string }; Returns: number }
       get_public_expert_info: {
         Args: { expert_id: string }
@@ -11980,6 +12040,7 @@ export type Database = {
           website_url: string
         }[]
       }
+      get_report_comparison: { Args: { p_user_id: string }; Returns: Json }
       get_transfer_statistics: {
         Args: never
         Returns: {

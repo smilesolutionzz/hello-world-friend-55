@@ -790,82 +790,177 @@ const DemoSharedReport = () => {
   };
 
   const handleDownloadHTML = () => {
-    const allSectionsHtml = sections.map(s => `
+    // 전체 3회차 통합 리포트 생성
+    const allSessionsHtml = DEMO_REPORTS.map((report, rIdx) => {
+      const sessionsHtml = report.sections.map(s => `
 <div class="section">
 <div class="section-title">${s.title}</div>
 <div class="section-body">${s.body}</div>
 </div>`).join('');
 
-    const dimensionBarsHtml = Object.entries(currentReport.dimension_scores).map(([key, val]) => `
+      const dimBars = Object.entries(report.dimension_scores).map(([key, val]) => `
 <div class="bar-container">
 <span class="bar-label">${key}</span>
 <div class="bar-track"><div class="bar-fill" style="width:${val}%;background:${val > 70 ? '#ef4444' : val > 50 ? '#f59e0b' : '#22c55e'};"></div></div>
 <span class="bar-value">${val}</span>
 </div>`).join('');
 
+      const riskStyle = report.risk_level === 'high' ? 'background:#fef2f2;color:#dc2626' : report.risk_level === 'medium' ? 'background:#fffbeb;color:#ca8a04' : 'background:#f0fdf4;color:#16a34a';
+      const riskLabel = report.risk_level === 'high' ? '⚠️ 고위험' : report.risk_level === 'medium' ? '⚡ 경계' : '✅ 정상';
+      const dateStr = new Date(report.created_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      return `
+<div class="session-divider">
+<div class="session-badge">${rIdx + 1}회차 검사</div>
+<span class="session-date">${dateStr}</span>
+</div>
+<div class="score-card">
+<div style="display:flex;justify-content:space-between;align-items:center;">
+<div>
+<p style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#64748b;margin:0 0 4px 0;">종합 점수</p>
+<p class="score" style="margin:0;">${report.total_score}</p>
+</div>
+<span class="badge" style="${riskStyle}">${riskLabel}</span>
+</div>
+<div style="margin-top:20px;">
+${dimBars}
+</div>
+</div>
+${sessionsHtml}`;
+    }).join('\n<div style="page-break-before:always;margin:40px 0;border-top:3px solid #6366f1;"></div>\n');
+
     const htmlContent = `<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AIHPRO 프리미엄 분석 리포트 - ${activeReport + 1}회차</title>
+<title>AIHPRO 프리미엄 통합 리포트 (1~3회차)</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;}
-body{font-family:'Noto Sans KR',sans-serif;margin:0;padding:24px;background:#f8fafc;color:#1e293b;line-height:1.6;}
+body{font-family:'Noto Sans KR',sans-serif;margin:0;padding:24px;background:#f8fafc;color:#1e293b;line-height:1.7;font-size:13px;}
 .container{max-width:800px;margin:0 auto;}
-.header{text-align:center;padding:32px 20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px;}
-.header .brand{font-size:10px;color:#6366f1;font-weight:600;letter-spacing:3px;margin-bottom:8px;}
-.header h1{font-size:22px;margin:0 0 6px 0;font-weight:900;}
+.header{text-align:center;padding:40px 20px 32px;border-bottom:3px solid #6366f1;margin-bottom:32px;}
+.header .brand{font-size:11px;color:#6366f1;font-weight:600;letter-spacing:4px;margin-bottom:12px;}
+.header h1{font-size:24px;margin:0 0 8px 0;font-weight:900;}
 .header .subtitle{color:#64748b;font-size:13px;margin:0;}
-.header .date{color:#94a3b8;font-size:11px;margin-top:8px;}
+.header .date{color:#94a3b8;font-size:11px;margin-top:10px;}
+.header .summary-box{margin-top:20px;padding:16px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:12px;text-align:left;font-size:12px;line-height:1.8;color:#334155;}
+.session-divider{display:flex;align-items:center;gap:12px;margin:32px 0 16px;padding:16px 0;border-bottom:2px solid #e2e8f0;}
+.session-badge{background:#6366f1;color:white;padding:6px 16px;border-radius:8px;font-size:14px;font-weight:800;letter-spacing:1px;}
+.session-date{color:#64748b;font-size:12px;}
 .score-card{background:white;border:1px solid #e2e8f0;border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
 .score-card .score{font-size:48px;font-weight:900;line-height:1;}
 .badge{display:inline-block;padding:6px 16px;border-radius:999px;font-size:12px;font-weight:700;}
 .section{background:white;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:14px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.03);}
 .section-title{padding:16px 20px;font-size:14px;font-weight:700;border-bottom:1px solid #f1f5f9;background:#fafafa;}
 .section-body{padding:20px;font-size:13px;line-height:1.9;color:#334155;}
-.section-body ul{padding-left:20px;} .section-body li{margin-bottom:8px;}
-.section-body ol{padding-left:20px;} .section-body ol li{margin-bottom:4px;}
+.section-body p{margin:0 0 12px 0;}
+.section-body ul{padding-left:20px;margin:8px 0;} .section-body li{margin-bottom:8px;}
+.section-body ol{padding-left:20px;margin:8px 0;} .section-body ol li{margin-bottom:4px;}
 .section-body table{width:100%;border-collapse:collapse;margin:14px 0;}
 .section-body th,.section-body td{padding:10px;border:1px solid #e2e8f0;font-size:12px;}
 .section-body th{background:#f1f5f9;text-align:left;font-weight:600;}
+.section-body strong{color:#1e293b;}
+.section-body em{color:#64748b;font-size:11px;}
 .bar-container{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.bar-label{width:80px;font-size:12px;font-weight:600;flex-shrink:0;}
+.bar-label{width:85px;font-size:12px;font-weight:600;flex-shrink:0;}
 .bar-track{flex:1;height:10px;background:#f1f5f9;border-radius:5px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:5px;}
+.bar-fill{height:100%;border-radius:5px;transition:width 0.3s;}
 .bar-value{width:32px;text-align:right;font-size:12px;font-weight:700;}
-.footer{text-align:center;padding:32px;color:#94a3b8;font-size:10px;margin-top:32px;border-top:2px solid #e2e8f0;}
+.footer{text-align:center;padding:40px 20px;color:#94a3b8;font-size:10px;margin-top:40px;border-top:3px solid #6366f1;}
 .footer a{color:#6366f1;text-decoration:none;font-weight:600;}
-@media print{body{padding:12px;} .section{break-inside:avoid;}}
+.toc{background:white;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:24px;}
+.toc h3{font-size:14px;font-weight:700;margin:0 0 16px 0;}
+.toc ul{list-style:none;padding:0;margin:0;}
+.toc li{padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:12px;color:#475569;}
+.toc li:last-child{border-bottom:none;}
+.toc .session-label{font-weight:700;color:#6366f1;margin-top:12px;display:block;}
+@media print{body{padding:12px;font-size:11px;} .section{break-inside:avoid;} .session-divider{break-before:page;}}
 </style>
 </head>
 <body>
 <div class="container">
 <div class="header">
 <p class="brand">AIHPRO.COM</p>
-<h1>🧠 프리미엄 AI 심리 분석 리포트</h1>
-<p class="subtitle">${activeReport + 1}회차 종합 분석 · 프리미엄 AI 분석 엔진</p>
-<p class="date">${new Date(currentReport.created_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-</div>
-<div class="score-card">
-<div style="display:flex;justify-content:space-between;align-items:center;">
-<div>
-<p style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#64748b;margin:0 0 4px 0;">종합 점수</p>
-<p class="score" style="margin:0;">${currentReport.total_score}</p>
-</div>
-<span class="badge" style="background:${currentReport.risk_level === 'high' ? '#fef2f2;color:#dc2626' : currentReport.risk_level === 'medium' ? '#fffbeb;color:#ca8a04' : '#f0fdf4;color:#16a34a'}">
-${currentReport.risk_level === 'high' ? '⚠️ 고위험' : currentReport.risk_level === 'medium' ? '⚡ 경계' : '✅ 정상'}
-</span>
-</div>
-<div style="margin-top:20px;">
-${dimensionBarsHtml}
+<h1>🧠 프리미엄 AI 심리 분석 통합 리포트</h1>
+<p class="subtitle">1~3회차 종합 종단 분석 · 프리미엄 AI 분석 엔진 v2</p>
+<p class="date">리포트 생성일: ${new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+<div class="summary-box">
+<strong>📋 리포트 개요</strong><br/>
+• 검사 횟수: 총 3회 (2026.03.15 ~ 2026.04.28, 44일간)<br/>
+• 총점 변화: 24점 → 18점 → 11점 (<strong>54.2% 감소</strong>)<br/>
+• 위험도 변화: 경계 → 경미 → <strong>정상</strong><br/>
+• RCI 판정: |RCI| = 2.41 > 1.96 → <strong>통계적 유의미 변화 확정</strong><br/>
+• 분석 영역: 8개 차원, ${DEMO_REPORTS.reduce((sum, r) => sum + r.sections.length, 0)}개 세부 섹션<br/>
+• 분석 엔진: AIHPRO Premium AI Engine v2 (Cronbach's α = 0.89~0.95)
 </div>
 </div>
-${allSectionsHtml}
+
+<div class="toc">
+<h3>📑 목차 (Table of Contents)</h3>
+<ul>
+${DEMO_REPORTS.map((report, rIdx) => `
+<li class="session-label">━━ ${rIdx + 1}회차 (${new Date(report.created_at).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' })}) · 총점 ${report.total_score}점 ━━</li>
+${report.sections.map((s, sIdx) => `<li>&nbsp;&nbsp;${rIdx + 1}-${sIdx + 1}. ${s.title}</li>`).join('\n')}
+`).join('\n')}
+</ul>
+</div>
+
+${allSessionsHtml}
+
+<div class="section" style="border:2px solid #6366f1;margin-top:32px;">
+<div class="section-title" style="background:#6366f1;color:white;font-size:15px;">📊 전체 여정 총괄 요약 (Executive Summary)</div>
+<div class="section-body">
+<p><strong>1. 핵심 성과</strong></p>
+<ul>
+<li>44일 만에 PHQ-9 기준 '중등도 우울' → '정상' 전환 달성</li>
+<li>8개 평가 영역 중 7개에서 유의미한 개선 확인</li>
+<li>RCI = -2.41로 통계적 유의미 변화(|RCI| > 1.96) 충족</li>
+<li>1차 예후 시나리오의 '적극 개입 3개월' 목표를 6주 만에 초과 달성</li>
+</ul>
+
+<p><strong>2. 가장 두드러진 변화 Top 3</strong></p>
+<table style="width:100%;border-collapse:collapse;margin:12px 0;">
+<thead><tr style="background:#f0f4ff;">
+<th style="padding:10px;border:1px solid #e2e8f0;">순위</th>
+<th style="padding:10px;border:1px solid #e2e8f0;">영역</th>
+<th style="padding:10px;border:1px solid #e2e8f0;">1차</th>
+<th style="padding:10px;border:1px solid #e2e8f0;">3차</th>
+<th style="padding:10px;border:1px solid #e2e8f0;">변화율</th>
+</tr></thead>
+<tbody>
+<tr><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">🥇</td><td style="padding:10px;border:1px solid #e2e8f0;">수면 질</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">45</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">75</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">+66.7%</td></tr>
+<tr><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">🥈</td><td style="padding:10px;border:1px solid #e2e8f0;">정서 조절</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">48</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">74</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">+54.2%</td></tr>
+<tr><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">🥉</td><td style="padding:10px;border:1px solid #e2e8f0;">자기효능감</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">52</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">78</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">+50.0%</td></tr>
+</tbody></table>
+
+<p><strong>3. 응답 신뢰도 추이</strong></p>
+<ul>
+<li>1차: 85% (양호) → 2차: 91% (매우 양호) → 3차: 94% (매우 우수)</li>
+<li>자기 인식 능력(self-awareness)의 지속적 향상으로 해석</li>
+</ul>
+
+<p><strong>4. 향후 권고</strong></p>
+<ul>
+<li>현재 상태 유지를 위한 재발 방지 전략 실행</li>
+<li>4차 검사: 8주 후 안정성 확인</li>
+<li>이후 연 1~2회 정기 체크로 전환</li>
+</ul>
+
+<p style="margin-top:16px;padding:12px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0;font-size:12px;">
+<strong>🎯 최종 판정:</strong> 본 내담자는 6주간의 적극적 개입을 통해 임상적으로 유의미한 회복을 달성했습니다. 
+Jacobson-Truax 기준에 의거, <strong>Clinically Significant Change(CSC)</strong>가 확정되며, 
+현 시점에서 정기 관찰 모드로의 전환을 권고합니다.
+</p>
+</div>
+</div>
+
 <div class="footer">
-<p>© AIHPRO.COM · 본 리포트는 AI 기반 참고용 분석이며 의학적 진단을 대체하지 않습니다.</p>
-<p style="margin-top:12px;font-size:12px;"><a href="https://aihpro.app">🧠 나도 AI 심리 분석 받아보기 →</a></p>
+<p>© ${new Date().getFullYear()} AIHPRO.COM · AI 기반 심리·발달 분석 플랫폼</p>
+<p style="margin-top:4px;">본 리포트는 AI 기반 참고용 분석이며 의학적 진단을 대체하지 않습니다.</p>
+<p style="margin-top:4px;">분석 엔진: Premium AI Engine v2 · 응답 유효성 4단계 검증 · RCI/CSC 통계 모델 적용</p>
+<p style="margin-top:16px;font-size:13px;"><a href="https://aihpro.app">🧠 나도 AI 심리 분석 받아보기 →</a></p>
 </div>
 </div>
 </body>
@@ -875,10 +970,10 @@ ${allSectionsHtml}
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `AIHPRO_프리미엄리포트_${activeReport + 1}회차.html`;
+    a.download = `AIHPRO_프리미엄_통합리포트_1-3회차.html`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('HTML 파일이 다운로드되었습니다!');
+    toast.success('전체 3회차 통합 리포트가 다운로드되었습니다!');
   };
 
   return (

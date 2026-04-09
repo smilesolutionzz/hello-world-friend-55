@@ -48,22 +48,25 @@ export const CrossTestMatrixCard: React.FC<CrossTestMatrixCardProps> = ({
         if (!user) { setLoading(false); return; }
 
         const { data } = await supabase
-          .from('test_results')
-          .select('test_type, score, max_score, created_at')
+          .from('assessment_enhanced_analysis')
+          .select('assessment_type, score_interpretation, created_at')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(20);
 
         if (data && data.length > 0) {
-          // Get latest result per test type, excluding current
           const latest = new Map<string, TestScore>();
           for (const row of data) {
-            if (row.test_type === currentTestName) continue;
-            if (!latest.has(row.test_type) && row.score != null && row.max_score != null) {
-              latest.set(row.test_type, {
-                testName: row.test_type,
-                score: row.score,
-                maxScore: row.max_score,
+            if (row.assessment_type === currentTestName) continue;
+            if (latest.has(row.assessment_type)) continue;
+            const interp = row.score_interpretation as Record<string, any> | null;
+            const score = interp?.total_score ?? interp?.score ?? null;
+            const maxScore = interp?.max_score ?? 100;
+            if (score != null) {
+              latest.set(row.assessment_type, {
+                testName: row.assessment_type,
+                score: Number(score),
+                maxScore: Number(maxScore),
                 date: new Date(row.created_at).toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR', { month: 'short', day: 'numeric' }),
               });
             }

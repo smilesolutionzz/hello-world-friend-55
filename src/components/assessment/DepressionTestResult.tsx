@@ -169,6 +169,30 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
           }}
         />
       </div>
+
+      {/* 응답 신뢰도 분석 */}
+      <ResponseValidityCard validity={validity} className="mb-4" />
+
+      {/* 점수 신뢰구간 */}
+      <ConfidenceIntervalCard
+        score={total}
+        maxScore={42}
+        lower={ci.lower}
+        upper={ci.upper}
+        sem={ci.sem}
+        reliability={reliability}
+        label={isEnglish ? 'Depression Score (95% Confidence Interval)' : '우울감 점수 (95% 신뢰구간)'}
+        className="mb-4"
+      />
+
+      {/* 예후 시나리오 */}
+      <PrognosisScenarioCard
+        currentScore={total}
+        maxScore={42}
+        scenarios={scenarios}
+        scoreName={isEnglish ? 'Depression Score' : '우울감 점수'}
+        className="mb-4"
+      />
     </ClinicalReportLayout>
   );
 };

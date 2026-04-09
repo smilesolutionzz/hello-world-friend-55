@@ -205,6 +205,24 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
         scoreName={isEnglish ? 'Depression Score' : '우울감 점수'}
         className="mb-4"
       />
+
+      {/* 교차분석 매트릭스 */}
+      <CrossTestMatrixCard
+        currentTestName={isEnglish ? 'Depression Check' : '우울감 체크'}
+        currentScore={total}
+        currentMaxScore={42}
+        className="mb-4"
+      />
+
+      {/* 참고용 소견서 */}
+      <ReferralLetterCard
+        testName={isEnglish ? 'Depression Check' : '우울감 체크'}
+        totalScore={total}
+        maxScore={42}
+        severity={severityLabel}
+        domains={domains.map(d => ({ label: d.label, score: d.score, maxScore: d.maxScore, level: d.level }))}
+        className="mb-4"
+      />
     </ClinicalReportLayout>
   );
 };

@@ -67,6 +67,7 @@ import SampleReport from "./pages/SampleReport";
 import ComprehensiveReporting from "./pages/ComprehensiveReporting";
 import ENFJvsINFPCompatibility from "./pages/ENFJvsINFPCompatibility";
 import SharedReport from "./pages/SharedReport";
+import DemoSharedReport from "./pages/DemoSharedReport";
 
 // Observation
 import ObservationNew from "./pages/ObservationNew";
@@ -280,6 +281,7 @@ const App = () => {
           <Route path="/admin" element={<AdminDashboard />} />
 
           {/* Utility */}
+          <Route path="/shared-report/demo" element={<DemoSharedReport />} />
           <Route path="/shared-report/:token" element={<SharedReport />} />
           <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/referral" element={<Referral />} />

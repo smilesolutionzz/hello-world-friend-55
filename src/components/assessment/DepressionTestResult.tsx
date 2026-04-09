@@ -13,6 +13,8 @@ import { analyzeResponseValidity, calcInternalConsistency, calcConfidenceInterva
 import { ResponseValidityCard } from '@/components/report/ResponseValidityCard';
 import { ConfidenceIntervalCard } from '@/components/report/ConfidenceIntervalCard';
 import { PrognosisScenarioCard, generateDefaultScenarios } from '@/components/report/PrognosisScenarioCard';
+import { ReferralLetterCard } from '@/components/report/ReferralLetterCard';
+import { CrossTestMatrixCard } from '@/components/report/CrossTestMatrixCard';
 
 interface DepressionTestResultProps {
   results: {
@@ -201,6 +203,24 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
         maxScore={42}
         scenarios={scenarios}
         scoreName={isEnglish ? 'Depression Score' : '우울감 점수'}
+        className="mb-4"
+      />
+
+      {/* 교차분석 매트릭스 */}
+      <CrossTestMatrixCard
+        currentTestName={isEnglish ? 'Depression Check' : '우울감 체크'}
+        currentScore={total}
+        currentMaxScore={42}
+        className="mb-4"
+      />
+
+      {/* 참고용 소견서 */}
+      <ReferralLetterCard
+        testName={isEnglish ? 'Depression Check' : '우울감 체크'}
+        totalScore={total}
+        maxScore={42}
+        severity={severityLabel}
+        domains={domains.map(d => ({ label: d.label, score: d.score, maxScore: d.maxScore, level: d.level }))}
         className="mb-4"
       />
     </ClinicalReportLayout>

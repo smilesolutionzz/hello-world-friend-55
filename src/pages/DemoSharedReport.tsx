@@ -789,6 +789,21 @@ const DemoSharedReport = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // 대상자 프로필
+  const SUBJECT_PROFILE = {
+    name: '김○○',
+    id: 'SUBJ-2026-0412',
+    birthDate: '2014.08.23',
+    age: '만 11세 8개월',
+    gender: '남',
+    school: 'OO초등학교 5학년',
+    guardian: '어머니 (박○○)',
+    referralReason: '학교 부적응, 또래관계 어려움, 집중력 저하 호소',
+    testTool: 'AIHPRO 종합 심리건강 검사 (PHQ-A/GAD-7/PSS 통합)',
+    examiner: 'AI 분석 엔진 v2 (임상심리전문가 감수)',
+    testDates: '2026.03.15 / 2026.04.05 / 2026.04.28',
+  };
+
   const handleDownloadHTML = () => {
     // 전체 3회차 통합 리포트 생성
     const allSessionsHtml = DEMO_REPORTS.map((report, rIdx) => {
@@ -876,6 +891,13 @@ body{font-family:'Noto Sans KR',sans-serif;margin:0;padding:24px;background:#f8f
 .toc li{padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:12px;color:#475569;}
 .toc li:last-child{border-bottom:none;}
 .toc .session-label{font-weight:700;color:#6366f1;margin-top:12px;display:block;}
+.profile-card{background:white;border:2px solid #6366f1;border-radius:16px;padding:24px;margin-bottom:24px;box-shadow:0 2px 8px rgba(99,102,241,0.08);}
+.profile-card h3{font-size:15px;font-weight:800;color:#6366f1;margin:0 0 16px 0;padding-bottom:12px;border-bottom:2px solid #e0e7ff;}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;}
+.profile-item{display:flex;gap:8px;font-size:12px;padding:6px 0;border-bottom:1px solid #f1f5f9;}
+.profile-label{font-weight:700;color:#475569;min-width:90px;flex-shrink:0;}
+.profile-value{color:#1e293b;}
+.profile-full{grid-column:1/-1;}
 @media print{body{padding:12px;font-size:11px;} .section{break-inside:avoid;} .session-divider{break-before:page;}}
 </style>
 </head>
@@ -884,16 +906,34 @@ body{font-family:'Noto Sans KR',sans-serif;margin:0;padding:24px;background:#f8f
 <div class="header">
 <p class="brand">AIHPRO.COM</p>
 <h1>🧠 프리미엄 AI 심리 분석 통합 리포트</h1>
-<p class="subtitle">1~3회차 종합 종단 분석 · 프리미엄 AI 분석 엔진 v2</p>
+<p class="subtitle">대상자: ${SUBJECT_PROFILE.name} (${SUBJECT_PROFILE.age}) · 1~3회차 종합 종단 분석</p>
 <p class="date">리포트 생성일: ${new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
 <div class="summary-box">
 <strong>📋 리포트 개요</strong><br/>
-• 검사 횟수: 총 3회 (2026.03.15 ~ 2026.04.28, 44일간)<br/>
+• 대상자: ${SUBJECT_PROFILE.name} / ${SUBJECT_PROFILE.age} / ${SUBJECT_PROFILE.gender} / ${SUBJECT_PROFILE.school}<br/>
+• 검사 횟수: 총 3회 (${SUBJECT_PROFILE.testDates})<br/>
 • 총점 변화: 24점 → 18점 → 11점 (<strong>54.2% 감소</strong>)<br/>
 • 위험도 변화: 경계 → 경미 → <strong>정상</strong><br/>
 • RCI 판정: |RCI| = 2.41 > 1.96 → <strong>통계적 유의미 변화 확정</strong><br/>
 • 분석 영역: 8개 차원, ${DEMO_REPORTS.reduce((sum, r) => sum + r.sections.length, 0)}개 세부 섹션<br/>
 • 분석 엔진: AIHPRO Premium AI Engine v2 (Cronbach's α = 0.89~0.95)
+</div>
+</div>
+
+<div class="profile-card">
+<h3>👤 대상자 정보 (Subject Profile)</h3>
+<div class="profile-grid">
+<div class="profile-item"><span class="profile-label">관리번호</span><span class="profile-value">${SUBJECT_PROFILE.id}</span></div>
+<div class="profile-item"><span class="profile-label">성명</span><span class="profile-value">${SUBJECT_PROFILE.name}</span></div>
+<div class="profile-item"><span class="profile-label">생년월일</span><span class="profile-value">${SUBJECT_PROFILE.birthDate}</span></div>
+<div class="profile-item"><span class="profile-label">연령</span><span class="profile-value">${SUBJECT_PROFILE.age}</span></div>
+<div class="profile-item"><span class="profile-label">성별</span><span class="profile-value">${SUBJECT_PROFILE.gender}</span></div>
+<div class="profile-item"><span class="profile-label">소속</span><span class="profile-value">${SUBJECT_PROFILE.school}</span></div>
+<div class="profile-item"><span class="profile-label">보호자</span><span class="profile-value">${SUBJECT_PROFILE.guardian}</span></div>
+<div class="profile-item"><span class="profile-label">검사도구</span><span class="profile-value">${SUBJECT_PROFILE.testTool}</span></div>
+<div class="profile-item profile-full"><span class="profile-label">의뢰사유</span><span class="profile-value">${SUBJECT_PROFILE.referralReason}</span></div>
+<div class="profile-item profile-full"><span class="profile-label">검사자</span><span class="profile-value">${SUBJECT_PROFILE.examiner}</span></div>
+<div class="profile-item profile-full"><span class="profile-label">검사일시</span><span class="profile-value">${SUBJECT_PROFILE.testDates} (총 3회)</span></div>
 </div>
 </div>
 
@@ -970,10 +1010,10 @@ Jacobson-Truax 기준에 의거, <strong>Clinically Significant Change(CSC)</str
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `AIHPRO_프리미엄_통합리포트_1-3회차.html`;
+    a.download = `AIHPRO_${SUBJECT_PROFILE.name}_종합리포트_1-3회차.html`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('전체 3회차 통합 리포트가 다운로드되었습니다!');
+    toast.success(`${SUBJECT_PROFILE.name} 대상 전체 3회차 통합 리포트가 다운로드되었습니다!`);
   };
 
   return (
@@ -1026,7 +1066,7 @@ Jacobson-Truax 기준에 의거, <strong>Clinically Significant Change(CSC)</str
               🧠 프리미엄 AI 심리 분석 리포트
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              임상 통계 엔진 기반 종합 심리 건강 리포트 · {sections.length}개 분석 섹션
+              대상자: {SUBJECT_PROFILE.name} ({SUBJECT_PROFILE.age}) · {sections.length}개 분석 섹션
             </p>
             <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
@@ -1043,6 +1083,44 @@ Jacobson-Truax 기준에 의거, <strong>Clinically Significant Change(CSC)</str
               </span>
             </div>
           </div>
+
+          {/* 대상자 프로필 카드 */}
+          <Card className="border-2 border-primary/30 bg-white dark:bg-card mb-4">
+            <CardContent className="p-5">
+              <h3 className="text-sm font-bold text-primary mb-3 pb-2 border-b border-primary/20 flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                대상자 정보
+              </h3>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+                {[
+                  ['관리번호', SUBJECT_PROFILE.id],
+                  ['성명', SUBJECT_PROFILE.name],
+                  ['생년월일', SUBJECT_PROFILE.birthDate],
+                  ['연령', SUBJECT_PROFILE.age],
+                  ['성별', SUBJECT_PROFILE.gender],
+                  ['소속', SUBJECT_PROFILE.school],
+                  ['보호자', SUBJECT_PROFILE.guardian],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex gap-2 text-xs py-1 border-b border-border/20">
+                    <span className="font-semibold text-muted-foreground min-w-[70px]">{label}</span>
+                    <span className="text-foreground">{value}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 space-y-1.5">
+                {[
+                  ['의뢰사유', SUBJECT_PROFILE.referralReason],
+                  ['검사도구', SUBJECT_PROFILE.testTool],
+                  ['검사일시', SUBJECT_PROFILE.testDates],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex gap-2 text-xs py-1 border-b border-border/20">
+                    <span className="font-semibold text-muted-foreground min-w-[70px]">{label}</span>
+                    <span className="text-foreground">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* 회차별 네비게이션 */}
           <div className="mb-4">

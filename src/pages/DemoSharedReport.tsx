@@ -1010,10 +1010,10 @@ Jacobson-Truax 기준에 의거, <strong>Clinically Significant Change(CSC)</str
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `AIHPRO_프리미엄_통합리포트_1-3회차.html`;
+    a.download = `AIHPRO_${SUBJECT_PROFILE.name}_종합리포트_1-3회차.html`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('전체 3회차 통합 리포트가 다운로드되었습니다!');
+    toast.success(`${SUBJECT_PROFILE.name} 대상 전체 3회차 통합 리포트가 다운로드되었습니다!`);
   };
 
   return (

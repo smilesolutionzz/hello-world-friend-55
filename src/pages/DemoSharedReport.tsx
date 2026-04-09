@@ -973,7 +973,7 @@ ${allSectionsHtml}
               })}
             </div>
             {/* 타임라인 */}
-            <div className="mt-3 p-3 bg-card rounded-xl border border-border/40">
+            <div className="mt-3 p-3 bg-white dark:bg-card rounded-xl border border-border/40">
               <p className="text-[10px] text-muted-foreground mb-2 font-medium">📊 검사 이력 타임라인</p>
               <div className="flex items-center gap-1">
                 {DEMO_REPORTS.map((r, i) => (

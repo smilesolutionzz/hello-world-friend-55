@@ -1066,7 +1066,7 @@ Jacobson-Truax 기준에 의거, <strong>Clinically Significant Change(CSC)</str
               🧠 프리미엄 AI 심리 분석 리포트
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              임상 통계 엔진 기반 종합 심리 건강 리포트 · {sections.length}개 분석 섹션
+              대상자: {SUBJECT_PROFILE.name} ({SUBJECT_PROFILE.age}) · {sections.length}개 분석 섹션
             </p>
             <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
@@ -1083,6 +1083,44 @@ Jacobson-Truax 기준에 의거, <strong>Clinically Significant Change(CSC)</str
               </span>
             </div>
           </div>
+
+          {/* 대상자 프로필 카드 */}
+          <Card className="border-2 border-primary/30 bg-white dark:bg-card mb-4">
+            <CardContent className="p-5">
+              <h3 className="text-sm font-bold text-primary mb-3 pb-2 border-b border-primary/20 flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                대상자 정보
+              </h3>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+                {[
+                  ['관리번호', SUBJECT_PROFILE.id],
+                  ['성명', SUBJECT_PROFILE.name],
+                  ['생년월일', SUBJECT_PROFILE.birthDate],
+                  ['연령', SUBJECT_PROFILE.age],
+                  ['성별', SUBJECT_PROFILE.gender],
+                  ['소속', SUBJECT_PROFILE.school],
+                  ['보호자', SUBJECT_PROFILE.guardian],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex gap-2 text-xs py-1 border-b border-border/20">
+                    <span className="font-semibold text-muted-foreground min-w-[70px]">{label}</span>
+                    <span className="text-foreground">{value}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 space-y-1.5">
+                {[
+                  ['의뢰사유', SUBJECT_PROFILE.referralReason],
+                  ['검사도구', SUBJECT_PROFILE.testTool],
+                  ['검사일시', SUBJECT_PROFILE.testDates],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex gap-2 text-xs py-1 border-b border-border/20">
+                    <span className="font-semibold text-muted-foreground min-w-[70px]">{label}</span>
+                    <span className="text-foreground">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* 회차별 네비게이션 */}
           <div className="mb-4">

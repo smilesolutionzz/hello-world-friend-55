@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,6 +9,10 @@ import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
+import { analyzeResponseValidity, calcInternalConsistency, calcConfidenceInterval } from '@/utils/responseValidityAnalyzer';
+import { ResponseValidityCard } from '@/components/report/ResponseValidityCard';
+import { ConfidenceIntervalCard } from '@/components/report/ConfidenceIntervalCard';
+import { PrognosisScenarioCard, generateDefaultScenarios } from '@/components/report/PrognosisScenarioCard';
 
 interface DepressionTestResultProps {
   results: {
@@ -94,6 +98,16 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
     { key: 'physical', label: isEnglish ? 'Physical' : '신체적 증상', score: physicalScore, maxScore: maxDomain, level: getLevel(physicalScore), color: getColor(physicalScore) },
   ];
 
+  // 응답 신뢰도 & 통계 지표
+  const validity = useMemo(() => analyzeResponseValidity(answers, 2), [answers]);
+  const reliability = useMemo(() => calcInternalConsistency(answers, {
+    emotional: [0, 1, 2, 3, 4, 5, 6],
+    cognitive: [7, 8, 9, 10, 11, 12, 13],
+    physical: [14, 15, 16, 17, 18, 19, 20],
+  }), [answers]);
+  const ci = useMemo(() => calcConfidenceInterval(total, 42, reliability), [total, reliability]);
+  const scenarios = useMemo(() => generateDefaultScenarios(total, 42, false), [total]);
+
   const parseAnalysisSections = (text: string): ReportSection[] => {
     if (!text) return [];
     const sections: ReportSection[] = [];
@@ -165,6 +179,30 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
           }}
         />
       </div>
+
+      {/* 응답 신뢰도 분석 */}
+      <ResponseValidityCard validity={validity} className="mb-4" />
+
+      {/* 점수 신뢰구간 */}
+      <ConfidenceIntervalCard
+        score={total}
+        maxScore={42}
+        lower={ci.lower}
+        upper={ci.upper}
+        sem={ci.sem}
+        reliability={reliability}
+        label={isEnglish ? 'Depression Score (95% Confidence Interval)' : '우울감 점수 (95% 신뢰구간)'}
+        className="mb-4"
+      />
+
+      {/* 예후 시나리오 */}
+      <PrognosisScenarioCard
+        currentScore={total}
+        maxScore={42}
+        scenarios={scenarios}
+        scoreName={isEnglish ? 'Depression Score' : '우울감 점수'}
+        className="mb-4"
+      />
     </ClinicalReportLayout>
   );
 };

@@ -586,6 +586,177 @@ const DEMO_REPORTS = [
 </ol>`
       }
     ]
+  },
+  {
+    report_order: 3,
+    created_at: '2026-04-28T09:00:00Z',
+    total_score: 11,
+    risk_level: 'low',
+    dimension_scores: {
+      '우울감': 35,
+      '불안': 30,
+      '스트레스': 42,
+      '수면 질': 75,
+      '사회적 기능': 80,
+      '인지 기능': 85,
+      '자기효능감': 78,
+      '정서 조절': 74
+    },
+    sections: [
+      {
+        title: '종합 분석 요약',
+        icon: 'Brain',
+        body: `<p>3차 검사 결과, <strong>정상 범위 진입</strong>이 확인됩니다. 총점이 18점에서 <strong>11점으로 38.9% 추가 감소</strong>하여 PHQ-9 기준 정상~경미 수준으로 전환되었습니다.</p>
+<p>1차(24점) 대비 <strong>총 54.2% 감소</strong>로, 12주 예후 시나리오의 "적극 개입" 경로를 초과 달성했습니다. 특히 수면 질(45→75, +66.7%)과 자기효능감(52→78, +50.0%)의 개선이 두드러집니다.</p>
+<p><strong>핵심 소견:</strong> 스트레스-수면 악순환 고리가 해소되었으며, 정서 조절(48→74)과 사회적 기능(60→80) 모두 양호 수준에 도달했습니다. 현재 상태를 유지하기 위한 재발 방지 전략이 필요합니다.</p>`
+      },
+      {
+        title: '3회차 종단 변화 분석 (1차→2차→3차)',
+        icon: 'LineChart',
+        body: `<p>6주간 3회 검사를 통한 <strong>전체 변화 궤적</strong>을 분석합니다.</p>
+
+<p><strong>📊 전체 변화 추이 테이블</strong></p>
+<table style="width:100%;border-collapse:collapse;margin:12px 0;">
+<thead><tr style="background:#f1f5f9;">
+<th style="padding:8px;border:1px solid #e2e8f0;text-align:left;">영역</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">1차</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">2차</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">3차</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">총 변화</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">판정</th>
+</tr></thead>
+<tbody>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">총점</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">24</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">18</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">11</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">-54.2%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 대폭 개선</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">우울감</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">68</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">52</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">35</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">-48.5%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 정상화</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">불안</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">55</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">42</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">30</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">-45.5%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 정상화</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">스트레스</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">72</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">58</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">42</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">-41.7%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">📈 개선</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">수면 질</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">45</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">62</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">75</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">+66.7%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 대폭 개선</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">사회적 기능</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">60</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">71</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">80</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">+33.3%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">📈 개선</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">인지 기능</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">78</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">82</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">85</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">+9.0%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">➡️ 유지</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">자기효능감</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">52</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">65</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">78</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">+50.0%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 대폭 개선</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">정서 조절</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">48</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">61</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">74</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">+54.2%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 대폭 개선</td></tr>
+</tbody></table>
+
+<p><strong>🎯 Reliable Change Index (RCI) 분석 — 1차→3차</strong></p>
+<ul>
+<li>RCI = (11-24) / √(2 × 3.82²) = <strong>-2.41</strong></li>
+<li>|RCI| > 1.96 기준 충족 ✅ → <strong>통계적으로 유의미한 변화 확정</strong></li>
+<li>Jacobson-Truax 기준: 임상적으로 유의미한 개선(Clinically Significant Change) 달성</li>
+</ul>
+
+<p><strong>📈 회복 속도 분석</strong></p>
+<ul>
+<li>총 검사 기간: 44일</li>
+<li>일평균 점수 변화: -0.30점/일</li>
+<li>1차→2차 회복 속도: -0.29점/일</li>
+<li>2차→3차 회복 속도: -0.30점/일 → <strong>회복 속도 안정적 유지</strong></li>
+<li>가장 극적인 개선: 수면 질 (+30점, +66.7%)</li>
+</ul>`
+      },
+      {
+        title: '예후 시나리오 검증 (1차 예측 vs 실제)',
+        icon: 'Sparkles',
+        body: `<p>1차 검사 시 제시했던 예후 시나리오와 실제 결과를 비교합니다.</p>
+
+<table style="width:100%;border-collapse:collapse;margin:12px 0;">
+<thead><tr style="background:#f0fdf4;">
+<th style="padding:10px;border:1px solid #e2e8f0;text-align:left;">항목</th>
+<th style="padding:10px;border:1px solid #e2e8f0;">예측값 (적극개입 3개월)</th>
+<th style="padding:10px;border:1px solid #e2e8f0;">실제값 (6주)</th>
+<th style="padding:10px;border:1px solid #e2e8f0;">달성률</th>
+</tr></thead>
+<tbody>
+<tr><td style="padding:10px;border:1px solid #e2e8f0;">총점</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">18점</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">11점</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">🌟 초과 달성</td></tr>
+<tr><td style="padding:10px;border:1px solid #e2e8f0;">우울감</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">55</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">35</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">🌟 초과 달성</td></tr>
+<tr><td style="padding:10px;border:1px solid #e2e8f0;">스트레스</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">58</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">42</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">🌟 초과 달성</td></tr>
+<tr><td style="padding:10px;border:1px solid #e2e8f0;">수면 질</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;">58</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">75</td><td style="padding:10px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">🌟 초과 달성</td></tr>
+</tbody></table>
+
+<p><strong>결론:</strong> 6주 만에 3개월 예측치를 모두 초과 달성했습니다. 이는 수면 위생 개선을 중심으로 한 개입 전략이 예상보다 빠르게 효과를 발휘했음을 의미합니다. AIHPRO 예후 모델의 예측 정확도가 검증되었습니다.</p>`
+      },
+      {
+        title: '3차 응답 신뢰도 분석',
+        icon: 'Shield',
+        body: `<p><strong>종합 신뢰도 판정: 94% (매우 우수)</strong></p>
+<table style="width:100%;border-collapse:collapse;margin:12px 0;">
+<thead><tr style="background:#f1f5f9;">
+<th style="padding:8px;border:1px solid #e2e8f0;">검증 항목</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">1차</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">2차</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">3차</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">추세</th>
+</tr></thead>
+<tbody>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">일관성 지수</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">0.87</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">0.92</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">0.95</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">📈 지속 향상</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">극단 응답 편향</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">8.3%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">5.1%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">3.8%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">📈 지속 개선</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">묵종 편향</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">15.2%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">11.8%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">8.5%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">📈 지속 개선</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">응답 변산성</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">0.62</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">0.78</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">0.85</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">📈 정상화 완료</td></tr>
+</tbody></table>
+<p>3회 연속 신뢰도 향상은 응답자의 <strong>자기 인식 능력(self-awareness)</strong>이 개선되고 있음을 시사합니다. 이는 심리적 회복의 부수적 지표로 해석됩니다.</p>`
+      },
+      {
+        title: '3차 또래 비교 분석 — 정상 범위 진입',
+        icon: 'Users',
+        body: `<p>3차 검사 결과의 또래 비교 순위 변화:</p>
+<table style="width:100%;border-collapse:collapse;margin:12px 0;">
+<thead><tr style="background:#f1f5f9;">
+<th style="padding:8px;border:1px solid #e2e8f0;text-align:left;">영역</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">1차 백분위</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">2차 백분위</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">3차 백분위</th>
+<th style="padding:8px;border:1px solid #e2e8f0;">총 변화</th>
+</tr></thead>
+<tbody>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">우울감</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#dc2626;">상위 28%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#ca8a04;">상위 45%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">상위 68%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 +40%p</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">스트레스</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#dc2626;">상위 22%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#ca8a04;">상위 38%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">상위 58%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 +36%p</td></tr>
+<tr><td style="padding:8px;border:1px solid #e2e8f0;">수면 질</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#dc2626;">하위 30%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#ca8a04;">상위 52%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">상위 72%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 +42%p</td></tr>
+</tbody></table>
+<p>전 영역에서 <strong>전문 상담 권장 기준(상위 25%)을 벗어나</strong> 정상 범위에 안착했습니다.</p>`
+      },
+      {
+        title: '재발 방지 및 유지 전략',
+        icon: 'Target',
+        body: `<p>정상 범위에 도달했으나, <strong>재발 방지</strong>를 위한 장기 유지 전략이 필요합니다.</p>
+
+<p><strong>🛡️ 조기 경고 신호 체크리스트</strong></p>
+<p>아래 항목 중 3개 이상이 2주 이상 지속되면 재검사를 권합니다:</p>
+<ul>
+<li>□ 수면 잠복기가 다시 30분 이상으로 증가</li>
+<li>□ 이전에 즐기던 활동에 대한 흥미가 감소</li>
+<li>□ 사회적 모임을 연속 3회 이상 회피</li>
+<li>□ 원인 없는 피로감이 지속</li>
+<li>□ 집중력 저하로 업무/학업에 지장</li>
+<li>□ 부정적 자기 대화가 빈번해짐</li>
+</ul>
+
+<p><strong>📋 주간 유지 루틴</strong></p>
+<ul>
+<li>수면 위생: 취침/기상 시간 고정 유지</li>
+<li>운동: 주 3-4회 30분 유산소 운동</li>
+<li>마음챙김: 매일 5-10분 호흡 명상</li>
+<li>사회 활동: 주 2회 이상 대면 만남</li>
+<li>자기 점검: 월 1회 간이 자가 체크</li>
+</ul>
+
+<p><strong>📅 향후 검사 일정</strong></p>
+<ul>
+<li>4차 검사: 8주 후 (2026년 6월 말) — 안정성 확인</li>
+<li>5차 검사: 6개월 후 (2026년 10월) — 장기 유지 확인</li>
+<li>이후: 연 1-2회 정기 체크</li>
+</ul>`
+      },
+      {
+        title: '학술 참고문헌',
+        icon: 'BookOpen',
+        body: `<p>3차 리포트에서 추가 활용된 분석 방법론:</p>
+<ol style="font-size:12px;line-height:2;">
+<li>Jacobson, N.S., & Truax, P. (1991). Clinical significance: A statistical approach to defining meaningful change. <em>Journal of Consulting and Clinical Psychology</em>, 59(1), 12-19.</li>
+<li>Lambert, M.J., & Ogles, B.M. (2009). Using clinical significance in psychotherapy outcome research: The need for a common procedure and validity data. <em>Psychotherapy Research</em>, 19(4-5), 493-501.</li>
+<li>Cuijpers, P., et al. (2024). Psychotherapy for depression: A network meta-analysis. <em>World Psychiatry</em>, 23(1), 45-57.</li>
+<li>Irwin, M.R. (2024). Sleep interventions and mental health outcomes: Systematic review. <em>Sleep Medicine Reviews</em>, 73, 101876.</li>
+</ol>`
+      }
+    ]
   }
 ];
 
@@ -829,7 +1000,7 @@ ${allSectionsHtml}
           {/* 리포트 본문 */}
           <div className="space-y-3">
             {/* 총점 요약 카드 */}
-            <Card className="border-border/40">
+            <Card className="border-border/40 bg-white dark:bg-card">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -873,7 +1044,7 @@ ${allSectionsHtml}
               const isOpen = expandedSections.has(idx);
               return (
                 <Collapsible key={idx} open={isOpen} onOpenChange={() => toggleSection(idx)}>
-                  <Card className="border-border/40 overflow-hidden">
+                  <Card className="border-border/40 overflow-hidden bg-white dark:bg-card">
                     <CollapsibleTrigger asChild>
                       <button className="w-full flex items-center justify-between p-4 hover:bg-muted/30 transition-colors text-left">
                         <span className="flex items-center gap-2 text-sm font-semibold text-foreground">

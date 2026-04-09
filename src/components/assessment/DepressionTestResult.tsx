@@ -13,6 +13,8 @@ import { analyzeResponseValidity, calcInternalConsistency, calcConfidenceInterva
 import { ResponseValidityCard } from '@/components/report/ResponseValidityCard';
 import { ConfidenceIntervalCard } from '@/components/report/ConfidenceIntervalCard';
 import { PrognosisScenarioCard, generateDefaultScenarios } from '@/components/report/PrognosisScenarioCard';
+import { ReferralLetterCard } from '@/components/report/ReferralLetterCard';
+import { CrossTestMatrixCard } from '@/components/report/CrossTestMatrixCard';
 
 interface DepressionTestResultProps {
   results: {

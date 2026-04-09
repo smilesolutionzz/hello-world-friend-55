@@ -891,6 +891,13 @@ body{font-family:'Noto Sans KR',sans-serif;margin:0;padding:24px;background:#f8f
 .toc li{padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:12px;color:#475569;}
 .toc li:last-child{border-bottom:none;}
 .toc .session-label{font-weight:700;color:#6366f1;margin-top:12px;display:block;}
+.profile-card{background:white;border:2px solid #6366f1;border-radius:16px;padding:24px;margin-bottom:24px;box-shadow:0 2px 8px rgba(99,102,241,0.08);}
+.profile-card h3{font-size:15px;font-weight:800;color:#6366f1;margin:0 0 16px 0;padding-bottom:12px;border-bottom:2px solid #e0e7ff;}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;}
+.profile-item{display:flex;gap:8px;font-size:12px;padding:6px 0;border-bottom:1px solid #f1f5f9;}
+.profile-label{font-weight:700;color:#475569;min-width:90px;flex-shrink:0;}
+.profile-value{color:#1e293b;}
+.profile-full{grid-column:1/-1;}
 @media print{body{padding:12px;font-size:11px;} .section{break-inside:avoid;} .session-divider{break-before:page;}}
 </style>
 </head>
@@ -899,16 +906,34 @@ body{font-family:'Noto Sans KR',sans-serif;margin:0;padding:24px;background:#f8f
 <div class="header">
 <p class="brand">AIHPRO.COM</p>
 <h1>🧠 프리미엄 AI 심리 분석 통합 리포트</h1>
-<p class="subtitle">1~3회차 종합 종단 분석 · 프리미엄 AI 분석 엔진 v2</p>
+<p class="subtitle">대상자: ${SUBJECT_PROFILE.name} (${SUBJECT_PROFILE.age}) · 1~3회차 종합 종단 분석</p>
 <p class="date">리포트 생성일: ${new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
 <div class="summary-box">
 <strong>📋 리포트 개요</strong><br/>
-• 검사 횟수: 총 3회 (2026.03.15 ~ 2026.04.28, 44일간)<br/>
+• 대상자: ${SUBJECT_PROFILE.name} / ${SUBJECT_PROFILE.age} / ${SUBJECT_PROFILE.gender} / ${SUBJECT_PROFILE.school}<br/>
+• 검사 횟수: 총 3회 (${SUBJECT_PROFILE.testDates})<br/>
 • 총점 변화: 24점 → 18점 → 11점 (<strong>54.2% 감소</strong>)<br/>
 • 위험도 변화: 경계 → 경미 → <strong>정상</strong><br/>
 • RCI 판정: |RCI| = 2.41 > 1.96 → <strong>통계적 유의미 변화 확정</strong><br/>
 • 분석 영역: 8개 차원, ${DEMO_REPORTS.reduce((sum, r) => sum + r.sections.length, 0)}개 세부 섹션<br/>
 • 분석 엔진: AIHPRO Premium AI Engine v2 (Cronbach's α = 0.89~0.95)
+</div>
+</div>
+
+<div class="profile-card">
+<h3>👤 대상자 정보 (Subject Profile)</h3>
+<div class="profile-grid">
+<div class="profile-item"><span class="profile-label">관리번호</span><span class="profile-value">${SUBJECT_PROFILE.id}</span></div>
+<div class="profile-item"><span class="profile-label">성명</span><span class="profile-value">${SUBJECT_PROFILE.name}</span></div>
+<div class="profile-item"><span class="profile-label">생년월일</span><span class="profile-value">${SUBJECT_PROFILE.birthDate}</span></div>
+<div class="profile-item"><span class="profile-label">연령</span><span class="profile-value">${SUBJECT_PROFILE.age}</span></div>
+<div class="profile-item"><span class="profile-label">성별</span><span class="profile-value">${SUBJECT_PROFILE.gender}</span></div>
+<div class="profile-item"><span class="profile-label">소속</span><span class="profile-value">${SUBJECT_PROFILE.school}</span></div>
+<div class="profile-item"><span class="profile-label">보호자</span><span class="profile-value">${SUBJECT_PROFILE.guardian}</span></div>
+<div class="profile-item"><span class="profile-label">검사도구</span><span class="profile-value">${SUBJECT_PROFILE.testTool}</span></div>
+<div class="profile-item profile-full"><span class="profile-label">의뢰사유</span><span class="profile-value">${SUBJECT_PROFILE.referralReason}</span></div>
+<div class="profile-item profile-full"><span class="profile-label">검사자</span><span class="profile-value">${SUBJECT_PROFILE.examiner}</span></div>
+<div class="profile-item profile-full"><span class="profile-label">검사일시</span><span class="profile-value">${SUBJECT_PROFILE.testDates} (총 3회)</span></div>
 </div>
 </div>
 

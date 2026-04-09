@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,6 +9,10 @@ import { useTranslation } from '@/i18n/useTranslation';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
+import { analyzeResponseValidity, calcInternalConsistency, calcConfidenceInterval } from '@/utils/responseValidityAnalyzer';
+import { ResponseValidityCard } from '@/components/report/ResponseValidityCard';
+import { ConfidenceIntervalCard } from '@/components/report/ConfidenceIntervalCard';
+import { PrognosisScenarioCard, generateDefaultScenarios } from '@/components/report/PrognosisScenarioCard';
 
 interface DepressionTestResultProps {
   results: {

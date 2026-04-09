@@ -789,6 +789,21 @@ const DemoSharedReport = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // 대상자 프로필
+  const SUBJECT_PROFILE = {
+    name: '김○○',
+    id: 'SUBJ-2026-0412',
+    birthDate: '2014.08.23',
+    age: '만 11세 8개월',
+    gender: '남',
+    school: 'OO초등학교 5학년',
+    guardian: '어머니 (박○○)',
+    referralReason: '학교 부적응, 또래관계 어려움, 집중력 저하 호소',
+    testTool: 'AIHPRO 종합 심리건강 검사 (PHQ-A/GAD-7/PSS 통합)',
+    examiner: 'AI 분석 엔진 v2 (임상심리전문가 감수)',
+    testDates: '2026.03.15 / 2026.04.05 / 2026.04.28',
+  };
+
   const handleDownloadHTML = () => {
     // 전체 3회차 통합 리포트 생성
     const allSessionsHtml = DEMO_REPORTS.map((report, rIdx) => {

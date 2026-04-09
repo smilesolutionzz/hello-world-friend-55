@@ -98,6 +98,16 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
     { key: 'physical', label: isEnglish ? 'Physical' : '신체적 증상', score: physicalScore, maxScore: maxDomain, level: getLevel(physicalScore), color: getColor(physicalScore) },
   ];
 
+  // 응답 신뢰도 & 통계 지표
+  const validity = useMemo(() => analyzeResponseValidity(answers, 2), [answers]);
+  const reliability = useMemo(() => calcInternalConsistency(answers, {
+    emotional: [0, 1, 2, 3, 4, 5, 6],
+    cognitive: [7, 8, 9, 10, 11, 12, 13],
+    physical: [14, 15, 16, 17, 18, 19, 20],
+  }), [answers]);
+  const ci = useMemo(() => calcConfidenceInterval(total, 42, reliability), [total, reliability]);
+  const scenarios = useMemo(() => generateDefaultScenarios(total, 42, false), [total]);
+
   const parseAnalysisSections = (text: string): ReportSection[] => {
     if (!text) return [];
     const sections: ReportSection[] = [];

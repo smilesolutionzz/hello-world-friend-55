@@ -183,7 +183,7 @@ export default function ComprehensiveReporting() {
           items: (progressRes.data || []).map(t => ({
             id: t.id,
             source: 'progress_tracking',
-            label: t.service_type || '변화 추적',
+            label: t.source_label || t.source_type || '변화 추적',
             detail: t.summary ? t.summary.substring(0, 40) + '...' : '기록됨',
             date: formatDate(t.created_at),
             selected: true,

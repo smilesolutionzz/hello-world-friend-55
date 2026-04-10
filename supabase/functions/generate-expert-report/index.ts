@@ -1635,78 +1635,39 @@ serve(async (req) => {
       }
 
       if (!reportData) {
-        reportData = extractJSON(messageContent);
-        if (!reportData) {
-          reportData = placeholderReport('JSON 파싱 실패');
-        }
+        const parsedCandidate = extractJSON(messageContent);
+        reportData = normalizeReportPayload(parsedCandidate, requiredSections, isEn);
       }
 
-      // 섹션 타이틀 매칭
+      if (!reportData) {
+        console.warn('기본 JSON 파싱 실패, 섹션 텍스트 복원 시도');
+        reportData = reconstructReportFromText(messageContent, requiredSections, isEn);
+      }
+
+      if (!reportData) {
+        console.warn('섹션 텍스트 복원 실패, AI JSON 복구 시도');
+        const repairedCandidate = await repairMalformedReportJSON(messageContent, requiredSections, language || 'ko');
+        reportData = normalizeReportPayload(repairedCandidate, requiredSections, isEn);
+      }
+
+      if (!reportData) {
+        reportData = placeholderReport('JSON 파싱 실패');
+      }
+
       if (reportData && Array.isArray(reportData.sections)) {
-        const normTitle = (t: string) => t.replace(/[\d️⃣⃣0-9①-⑨#.·\-_:：,()（）「」【】《》<>⚠️📋📊🔬❤️💪🎯🗺️👥🏥👨‍👩‍👧📝✅☑️⭐🌟💡🧠📈📉🏠🤝💬📖🔍✨\s]/g, '').toLowerCase();
+        const validSectionCount = reportData.sections.filter((section: any) => {
+          const content = typeof section?.content === 'string' ? section.content.replace(/<[^>]*>/g, '').trim() : '';
+          return content.length > 20 && !content.includes('이 섹션의 분석이 생성되지 않았습니다');
+        }).length;
 
-        const titleAliases: Record<string, string[]> = {
-          '종합 발달·심리 프로파일': ['종합발달심리프로파일', '종합발달프로파일', '발달종합평가', '발달심리프로파일', '종합프로파일'],
-          '심리·정서 심층 분석': ['심리정서심층분석', '심리상태분석', '정서심층분석', '심리분석'],
-          '강점·잠재력 매트릭스': ['강점잠재력매트릭스', '강점약점분석', '강점분석', '잠재력매트릭스', '강점약점매트릭스'],
-          '데이터 기반 맞춤 개입 전략': ['데이터기반맞춤개입전략', '맞춤개입전략', '맞춤활동제안', '개입전략', '맞춤형개입프로그램'],
-          '성장 로드맵 (4주/8주/12주)': ['성장로드맵', '발달로드맵', '로드맵', '성장로드맵주주주'],
-          'AIHPRO 빅데이터 비교 분석': ['빅데이터비교분석', '또래비교분석', '비교분석', '빅데이터분석'],
-          '종합 소견서': ['종합소견서', '전문가소견서', '소견서'],
-          '가정 내 실천 가이드': ['가정내실천가이드', '가족지원가이드', '실천가이드', '양육가이드'],
-          '핵심 요약 및 실행 제언': ['핵심요약및실행제언', '종합요약및제언', '핵심요약', '요약제언'],
-          '외부 검사 결과 통합 해석': ['외부검사결과통합해석', '외부검사해석', '외부검사분석'],
-        };
+        console.log('복원된 섹션 수:', validSectionCount, '/', requiredSections.length);
 
-        const findBestTitle = (aiTitle: string): string | null => {
-          if (!aiTitle) return null;
-          const norm = normTitle(aiTitle);
-          for (const req of requiredSections) { if (normTitle(req) === norm) return req; }
-          for (const [target, aliases] of Object.entries(titleAliases)) {
-            for (const alias of aliases) { if (norm.includes(alias) || alias.includes(norm)) return target; }
-          }
-          for (const req of requiredSections) {
-            const nReq = normTitle(req);
-            if (norm.includes(nReq) || nReq.includes(norm)) return req;
-          }
-          // Keyword fallback
-          const kw: Record<string, string> = {
-            '프로파일': '종합 발달·심리 프로파일', '정서': '심리·정서 심층 분석', '강점': '강점·잠재력 매트릭스',
-            '개입': '데이터 기반 맞춤 개입 전략', '로드맵': '성장 로드맵 (4주/8주/12주)',
-            '빅데이터': 'AIHPRO 빅데이터 비교 분석', '또래': 'AIHPRO 빅데이터 비교 분석',
-            '소견': '종합 소견서', '가정': '가정 내 실천 가이드', '실천': '가정 내 실천 가이드',
-            '요약': '핵심 요약 및 실행 제언', '제언': '핵심 요약 및 실행 제언',
-            '외부': '외부 검사 결과 통합 해석',
-          };
-          for (const [k, v] of Object.entries(kw)) { if (norm.includes(k)) return v; }
-          return null;
-        };
-
-        const byTitle = new Map<string, string>();
-        for (const s of reportData.sections) {
-          if (!s?.title || !s?.content || typeof s.title !== 'string' || typeof s.content !== 'string') continue;
-          const matched = findBestTitle(s.title);
-          if (matched && !byTitle.has(matched)) {
-            byTitle.set(matched, s.content);
+        if (validSectionCount === 0) {
+          const fallbackReconstructed = reconstructReportFromText(messageContent, requiredSections, isEn);
+          if (fallbackReconstructed) {
+            reportData = fallbackReconstructed;
           }
         }
-
-        // Fallback: index-based mapping
-        if (byTitle.size === 0 && reportData.sections.length > 0) {
-          for (let i = 0; i < Math.min(reportData.sections.length, requiredSections.length); i++) {
-            const s = reportData.sections[i];
-            if (s?.content && typeof s.content === 'string' && s.content.length > 10) {
-              byTitle.set(requiredSections[i], s.content);
-            }
-          }
-        }
-
-        console.log('매칭된 섹션:', byTitle.size, '/', requiredSections.length);
-
-        reportData.sections = requiredSections.map(title => ({
-          title,
-          content: byTitle.get(title) ?? `<div><p>이 섹션의 분석이 생성되지 않았습니다. 다시 시도해주세요.</p></div>`,
-        }));
       }
     } catch (parseError) {
       console.error('AI 응답 파싱 최종 오류:', parseError);

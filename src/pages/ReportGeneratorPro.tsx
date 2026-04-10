@@ -212,6 +212,39 @@ const ReportGeneratorPro = () => {
     } catch (err) { toast({ title: t("분석 실패", "Analysis Failed"), description: t("파일 분석에 실패했습니다.", "Failed to analyze files."), variant: "destructive" }); } finally { setIsAnalyzingImages(false); }
   };
 
+  // 폴링: premium_report_history에서 최신 리포트 가져오기
+  const pollForSavedReport = async (startTime: string, maxAttempts = 30): Promise<any | null> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return null;
+    
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const { data } = await supabase
+        .from('premium_report_history')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .gt('created_at', startTime)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (data) {
+        console.log(`폴링 ${attempt + 1}회차에서 리포트 발견`);
+        // DB에 저장된 report_data를 프론트엔드 형식으로 변환
+        const reportFromDB = data.report_data as any;
+        if (reportFromDB) {
+          reportFromDB.preprocessedData = data.preprocessed_data;
+          reportFromDB.dataSource = data.data_source_counts;
+          return reportFromDB;
+        }
+      }
+      
+      // 10초 대기 후 재시도
+      setProgress(prev => Math.min(prev + 2, 95));
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    }
+    return null;
+  };
+
   const generateReport = async () => {
     if (!isPremium) { navigate(localePath('/token-subscription')); return; }
     if (reportMode === 'with-data') {
@@ -230,6 +263,7 @@ const ReportGeneratorPro = () => {
       return;
     }
     setIsGenerating(true); setProgress(0);
+    const startTime = new Date().toISOString();
     try {
       const progressInterval = setInterval(() => { setProgress(prev => Math.min(prev + 5, 90)); }, 1000);
       toast({ title: t("🔬 전문가급 분석 시작", "🔬 Expert-Level Analysis Started"), description: reportMode === 'with-data' ? t("실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다...", "Performing real-time web search + latest research-based deep analysis...") : t("고민·상태 정보를 기반으로 맞춤 분석을 진행합니다...", "Performing personalized analysis based on your concerns...") });
@@ -237,19 +271,38 @@ const ReportGeneratorPro = () => {
       if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.chatRooms = userData.chatRooms; body.profile = userData.profile; body.selectedData = selectedChecklistData; body.selectedDataCount = checklistSelectedCount; }
       if (userData.onboardingData) { body.onboardingData = userData.onboardingData; }
       if (imageAnalysisResults) { body.externalTestImages = imageAnalysisResults; }
-      const { data, error } = await supabase.functions.invoke('generate-expert-report', { body });
-      clearInterval(progressInterval); setProgress(100);
-      if (error) throw error;
-      if (data?.error === 'LOVABLE_AI_CREDITS_INSUFFICIENT') { toast({ title: t("💳 AI 크레딧 부족", "💳 Insufficient AI Credits"), description: data.message, variant: "destructive" }); return; }
-      if (data?.success && data?.report) {
-        setReportData({ ...data.report, generatedAt: new Date().toISOString(), dataSource: { assessments: userData?.totalAssessments || 0, observations: userData?.totalObservations || 0, observationSessions: userData?.totalObservationSessions || 0, chatMessages: userData?.totalChatMessages || 0, totalDataCount: userData?.totalDataCount || 0 } });
+      
+      let reportResult: any = null;
+      
+      try {
+        const { data, error } = await supabase.functions.invoke('generate-expert-report', { body });
+        clearInterval(progressInterval);
+        if (error) throw error;
+        if (data?.error === 'LOVABLE_AI_CREDITS_INSUFFICIENT') { toast({ title: t("💳 AI 크레딧 부족", "💳 Insufficient AI Credits"), description: data.message, variant: "destructive" }); return; }
+        if (data?.success && data?.report) {
+          reportResult = data.report;
+        }
+      } catch (fnError: any) {
+        clearInterval(progressInterval);
+        console.warn('Edge function 직접 응답 실패, DB 폴링 시작:', fnError?.message);
+        // Edge function이 타임아웃되었지만 서버에서는 리포트 생성이 완료되었을 수 있음
+        // premium_report_history 테이블에서 폴링
+        toast({ title: t("⏳ AI 분석이 진행 중입니다", "⏳ AI Analysis in Progress"), description: t("고급 분석에 시간이 걸리고 있습니다. 잠시만 기다려주세요...", "Advanced analysis is taking longer. Please wait...") });
+        reportResult = await pollForSavedReport(startTime);
+      }
+      
+      if (reportResult) {
+        setProgress(100);
+        setReportData({ ...reportResult, generatedAt: new Date().toISOString(), dataSource: reportResult.dataSource || { assessments: userData?.totalAssessments || 0, observations: userData?.totalObservations || 0, observationSessions: userData?.totalObservationSessions || 0, chatMessages: userData?.totalChatMessages || 0, totalDataCount: userData?.totalDataCount || 0 } });
         toast({ title: t("🎉 프리미엄 리포트 생성 완료!", "🎉 Premium Report Generated!"), description: t("세계 최고 수준의 분석 리포트가 생성되었습니다.", "Your world-class analysis report has been generated.") });
         setTimeout(() => setShowScratchCard(true), 1500);
-      } else { throw new Error(data?.error || t('리포트 데이터가 없습니다.', 'No report data found.')); }
+      } else {
+        throw new Error(t('리포트 생성에 실패했습니다. 다시 시도해주세요.', 'Report generation failed. Please try again.'));
+      }
     } catch (error: any) {
       const errorMessage = error?.message || '';
       const isPaymentError = errorMessage.includes('402') || errorMessage.includes('크레딧');
-      toast({ title: isPaymentError ? t("💳 AI 크레딧 부족", "💳 Insufficient AI Credits") : t("생성 실패", "Generation Failed"), description: isPaymentError ? t("AI 크레딧이 부족합니다.", "Insufficient AI credits.") : t("리포트 생성 중 오류가 발생했습니다.", "An error occurred while generating the report."), variant: "destructive" });
+      toast({ title: isPaymentError ? t("💳 AI 크레딧 부족", "💳 Insufficient AI Credits") : t("생성 실패", "Generation Failed"), description: isPaymentError ? t("AI 크레딧이 부족합니다.", "Insufficient AI credits.") : t("리포트 생성 중 오류가 발생했습니다. 다시 시도해주세요.", "An error occurred. Please try again."), variant: "destructive" });
     } finally { setIsGenerating(false); setProgress(0); }
   };
 

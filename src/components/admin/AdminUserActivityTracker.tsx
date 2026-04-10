@@ -136,10 +136,10 @@ export function AdminUserActivityTracker() {
           detail: '놀이평가 완료',
           created_at: p.created_at,
         })),
-        ...(progressData || []).map(p => ({
+        ...(progressData || []).map((p: any) => ({
           id: p.id, user_id: p.user_id, ...enrich(p.user_id),
           activity_type: 'progress',
-          detail: `변화추적: ${(p as any).service_type || '종합'}`,
+          detail: `변화추적: ${p.source_label || p.source_type || '종합'}`,
           created_at: p.created_at,
         })),
       ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());

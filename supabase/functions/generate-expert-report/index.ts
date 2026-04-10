@@ -1079,8 +1079,131 @@ ${sectionList}
 }
 
 // ── 5. JSON 파싱 유틸리티 ──
+function stripCodeFences(text: string): string {
+  return (text || '').replace(/^\uFEFF/, '').replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+}
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function toHtmlContent(value: unknown): string {
+  if (typeof value !== 'string') return '';
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  if (/<[a-z][\s\S]*>/i.test(trimmed)) return trimmed;
+
+  return `<div>${trimmed
+    .split(/\n{2,}/)
+    .map(block => `<p>${escapeHtml(block).replace(/\n/g, '<br />')}</p>`)
+    .join('')}</div>`;
+}
+
+function normalizeSectionTitle(title: string): string {
+  return title
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/[\d️⃣⃣0-9①-⑨#.·\-_:：,()（）「」【】《》<>⚠️📋📊🔬❤️💪🎯🗺️👥🏥👨‍👩‍👧📝✅☑️⭐🌟💡🧠📈📉🏠🤝💬📖🔍✨•]/g, '')
+    .replace(/\s+/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function getTitleAliases(isEn: boolean): Record<string, string[]> {
+  return isEn
+    ? {
+        'Comprehensive Development & Psychology Profile': ['comprehensivedevelopmentpsychologyprofile', 'developmentprofile', 'comprehensiveprofile'],
+        'Psychological & Emotional Deep Analysis': ['psychologicalemotionaldeepanalysis', 'emotionalanalysis', 'psychologicalanalysis'],
+        'Strengths & Potential Matrix': ['strengthspotentialmatrix', 'strengthsweaknessesmatrix', 'strengthsanalysis'],
+        'Data-Driven Personalized Intervention Strategies': ['datadrivenpersonalizedinterventionstrategies', 'interventionstrategies', 'personalizedintervention'],
+        'Growth Roadmap (4/8/12 Weeks)': ['growthroadmap4812weeks', 'growthroadmap', 'roadmap'],
+        'AIHPRO Big Data Comparative Analysis': ['aihprobigdatacomparativeanalysis', 'bigdatacomparison', 'peercomparison'],
+        'Comprehensive Clinical Opinion': ['comprehensiveclinicalopinion', 'clinicalopinion', 'expertopinion'],
+        'Home Practice Guide': ['homepracticeguide', 'familyguide', 'practiceguide'],
+        'Key Summary & Action Items': ['keysummaryactionitems', 'summaryactionitems', 'summary'],
+        'External Test Results Integration': ['externaltestresultsintegration', 'externaltestintegration', 'externalresults'],
+      }
+    : {
+        '종합 발달·심리 프로파일': ['종합발달심리프로파일', '종합발달프로파일', '발달종합평가', '발달심리프로파일', '종합프로파일'],
+        '심리·정서 심층 분석': ['심리정서심층분석', '심리상태분석', '정서심층분석', '심리분석'],
+        '강점·잠재력 매트릭스': ['강점잠재력매트릭스', '강점약점분석', '강점분석', '잠재력매트릭스', '강점약점매트릭스'],
+        '데이터 기반 맞춤 개입 전략': ['데이터기반맞춤개입전략', '맞춤개입전략', '맞춤활동제안', '개입전략', '맞춤형개입프로그램'],
+        '성장 로드맵 (4주/8주/12주)': ['성장로드맵', '발달로드맵', '로드맵', '성장로드맵주주주'],
+        'AIHPRO 빅데이터 비교 분석': ['빅데이터비교분석', '또래비교분석', '비교분석', '빅데이터분석'],
+        '종합 소견서': ['종합소견서', '전문가소견서', '소견서'],
+        '가정 내 실천 가이드': ['가정내실천가이드', '가족지원가이드', '실천가이드', '양육가이드'],
+        '핵심 요약 및 실행 제언': ['핵심요약및실행제언', '종합요약및제언', '핵심요약', '요약제언'],
+        '외부 검사 결과 통합 해석': ['외부검사결과통합해석', '외부검사해석', '외부검사분석'],
+      };
+}
+
+function findBestReportTitle(aiTitle: string, requiredSections: string[], isEn: boolean): string | null {
+  if (!aiTitle) return null;
+
+  const normalized = normalizeSectionTitle(aiTitle);
+  if (!normalized) return null;
+
+  for (const required of requiredSections) {
+    if (normalizeSectionTitle(required) === normalized) return required;
+  }
+
+  const titleAliases = getTitleAliases(isEn);
+  for (const [target, aliases] of Object.entries(titleAliases)) {
+    for (const alias of aliases) {
+      if (normalized.includes(alias) || alias.includes(normalized)) return target;
+    }
+  }
+
+  for (const required of requiredSections) {
+    const normalizedRequired = normalizeSectionTitle(required);
+    if (normalized.includes(normalizedRequired) || normalizedRequired.includes(normalized)) return required;
+  }
+
+  const keywordMap: Record<string, string> = isEn
+    ? {
+        profile: 'Comprehensive Development & Psychology Profile',
+        emotional: 'Psychological & Emotional Deep Analysis',
+        strength: 'Strengths & Potential Matrix',
+        intervention: 'Data-Driven Personalized Intervention Strategies',
+        roadmap: 'Growth Roadmap (4/8/12 Weeks)',
+        bigdata: 'AIHPRO Big Data Comparative Analysis',
+        peer: 'AIHPRO Big Data Comparative Analysis',
+        clinical: 'Comprehensive Clinical Opinion',
+        practice: 'Home Practice Guide',
+        summary: 'Key Summary & Action Items',
+        action: 'Key Summary & Action Items',
+        external: 'External Test Results Integration',
+      }
+    : {
+        '프로파일': '종합 발달·심리 프로파일',
+        '정서': '심리·정서 심층 분석',
+        '강점': '강점·잠재력 매트릭스',
+        '개입': '데이터 기반 맞춤 개입 전략',
+        '로드맵': '성장 로드맵 (4주/8주/12주)',
+        '빅데이터': 'AIHPRO 빅데이터 비교 분석',
+        '또래': 'AIHPRO 빅데이터 비교 분석',
+        '소견': '종합 소견서',
+        '가정': '가정 내 실천 가이드',
+        '실천': '가정 내 실천 가이드',
+        '요약': '핵심 요약 및 실행 제언',
+        '제언': '핵심 요약 및 실행 제언',
+        '외부': '외부 검사 결과 통합 해석',
+      };
+
+  for (const [keyword, title] of Object.entries(keywordMap)) {
+    if (normalized.includes(keyword)) return title;
+  }
+
+  return null;
+}
+
 function extractJSON(text: string): any {
-  let cleaned = text.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+  const cleaned = stripCodeFences(text);
 
   try { return JSON.parse(cleaned); } catch {}
 
@@ -1092,7 +1215,6 @@ function extractJSON(text: string): any {
     try { return JSON.parse(jsonStr.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']')); } catch {}
   }
 
-  // Truncated JSON recovery
   if (firstBrace !== -1) {
     let truncated = cleaned.substring(firstBrace)
       .replace(/,\s*\{[^}]*$/, '')
@@ -1110,6 +1232,7 @@ function extractJSON(text: string): any {
       if (ch === '[') openBrackets++;
       if (ch === ']') openBrackets--;
     }
+
     if (inString) truncated += '"';
     truncated = truncated.replace(/,\s*$/, '');
     for (let i = 0; i < openBrackets; i++) truncated += ']';
@@ -1118,6 +1241,192 @@ function extractJSON(text: string): any {
   }
 
   return null;
+}
+
+function normalizeReportPayload(candidate: any, requiredSections: string[], isEn: boolean): any | null {
+  if (!candidate || typeof candidate !== 'object') return null;
+
+  let rawSections: any[] = [];
+  if (Array.isArray(candidate.sections)) {
+    rawSections = candidate.sections;
+  } else if (candidate.sections && typeof candidate.sections === 'object') {
+    rawSections = Object.entries(candidate.sections).map(([title, value]) => ({ title, content: value }));
+  }
+
+  if (rawSections.length === 0) {
+    rawSections = Object.entries(candidate)
+      .map(([title, value]) => {
+        const matchedTitle = findBestReportTitle(title, requiredSections, isEn);
+        if (!matchedTitle) return null;
+        return { title, content: value };
+      })
+      .filter(Boolean) as any[];
+  }
+
+  const byTitle = new Map<string, string>();
+  for (const section of rawSections) {
+    const title = typeof section?.title === 'string'
+      ? section.title
+      : typeof section?.name === 'string'
+      ? section.name
+      : typeof section?.heading === 'string'
+      ? section.heading
+      : '';
+
+    const rawContent = typeof section?.content === 'string'
+      ? section.content
+      : typeof section?.body === 'string'
+      ? section.body
+      : typeof section?.html === 'string'
+      ? section.html
+      : typeof section?.text === 'string'
+      ? section.text
+      : typeof section === 'string'
+      ? section
+      : '';
+
+    const matchedTitle = findBestReportTitle(title, requiredSections, isEn);
+    const normalizedContent = toHtmlContent(rawContent);
+
+    if (matchedTitle && normalizedContent && !byTitle.has(matchedTitle)) {
+      byTitle.set(matchedTitle, normalizedContent);
+    }
+  }
+
+  if (byTitle.size === 0 && rawSections.length > 0) {
+    for (let i = 0; i < Math.min(rawSections.length, requiredSections.length); i++) {
+      const rawContent = typeof rawSections[i]?.content === 'string'
+        ? rawSections[i].content
+        : typeof rawSections[i]?.body === 'string'
+        ? rawSections[i].body
+        : typeof rawSections[i]?.html === 'string'
+        ? rawSections[i].html
+        : typeof rawSections[i]?.text === 'string'
+        ? rawSections[i].text
+        : '';
+      const normalizedContent = toHtmlContent(rawContent);
+      if (normalizedContent && normalizedContent.length > 20) {
+        byTitle.set(requiredSections[i], normalizedContent);
+      }
+    }
+  }
+
+  if (byTitle.size === 0) return null;
+
+  const summaryTitle = isEn ? 'Key Summary & Action Items' : '핵심 요약 및 실행 제언';
+  const fallbackSummaryText = Array.from(byTitle.values())
+    .map(content => content.replace(/<[^>]*>/g, ' '))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 1200);
+
+  return {
+    ...candidate,
+    sections: requiredSections.map(title => ({
+      title,
+      content: byTitle.get(title) ?? `<div><p>이 섹션의 분석이 생성되지 않았습니다. 다시 시도해주세요.</p></div>`,
+    })),
+    summary: toHtmlContent(candidate.summary) || toHtmlContent(candidate.executiveSummary) || toHtmlContent(candidate.overallSummary) || byTitle.get(summaryTitle) || toHtmlContent(fallbackSummaryText),
+    roadmap: candidate.roadmap ?? candidate.growthRoadmap ?? null,
+    chartData: candidate.chartData ?? null,
+  };
+}
+
+function reconstructReportFromText(text: string, requiredSections: string[], isEn: boolean): any | null {
+  const prepared = stripCodeFences(text)
+    .replace(/<(\/?(?:h[1-6]|p|div|li|ul|ol|br))\b[^>]*>/gi, '\n$&\n')
+    .replace(/\r/g, '\n');
+
+  const lines = prepared.split('\n').map(line => line.trim()).filter(Boolean);
+  const buckets = new Map<string, string[]>();
+  let currentTitle: string | null = null;
+
+  for (const rawLine of lines) {
+    const plainLine = rawLine.replace(/<[^>]*>/g, ' ').replace(/&nbsp;|&#160;/gi, ' ').replace(/\s+/g, ' ').trim();
+    const matchedTitle = findBestReportTitle(plainLine, requiredSections, isEn);
+    const looksLikeHeading = matchedTitle && plainLine.length <= 80;
+
+    if (looksLikeHeading) {
+      currentTitle = matchedTitle;
+      if (!buckets.has(matchedTitle)) buckets.set(matchedTitle, []);
+      continue;
+    }
+
+    if (currentTitle) {
+      buckets.get(currentTitle)?.push(rawLine);
+    }
+  }
+
+  const recoveredCount = Array.from(buckets.values()).filter(lines => lines.join(' ').trim().length > 40).length;
+  if (recoveredCount === 0) return null;
+
+  const sections = requiredSections.map(title => ({
+    title,
+    content: toHtmlContent((buckets.get(title) || []).join('\n')),
+  }));
+  const summaryTitle = isEn ? 'Key Summary & Action Items' : '핵심 요약 및 실행 제언';
+  const summarySection = sections.find(section => section.title === summaryTitle && section.content);
+  const fallbackSummary = sections
+    .filter(section => section.content)
+    .map(section => section.content.replace(/<[^>]*>/g, ' '))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 1200);
+
+  return {
+    sections,
+    summary: summarySection?.content || toHtmlContent(fallbackSummary),
+    roadmap: null,
+    chartData: null,
+    recoveredFrom: 'section-parser',
+  };
+}
+
+async function repairMalformedReportJSON(text: string, requiredSections: string[], language: string): Promise<any | null> {
+  if (!LOVABLE_API_KEY || !text?.trim()) return null;
+
+  try {
+    const repairPrompt = `아래 깨진 프리미엄 리포트 결과를 엄격한 JSON으로 복구하세요.\n- 의미를 바꾸거나 새 임상 사실을 만들지 마세요.\n- HTML은 가능한 그대로 유지하세요.\n- 응답은 JSON만 출력하세요.\n- sections는 반드시 title/content를 가진 배열이어야 합니다.\n- title은 아래 목록 중 하나와 정확히 일치해야 합니다.\n\n[필수 섹션]\n${requiredSections.join('\n')}\n\n[JSON 스키마]\n{\n  "sections": [{ "title": "섹션명", "content": "<div>...</div>" }],\n  "summary": "<div>...</div>",\n  "roadmap": null\n}\n\n[복구할 원본]\n${text.slice(0, 28000)}`;
+
+    const repairResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-3.1-flash-preview',
+        messages: [
+          {
+            role: 'system',
+            content: language === 'en'
+              ? 'You repair malformed AI outputs into strict JSON. Return JSON only.'
+              : '당신은 깨진 AI 응답을 엄격한 JSON으로 복구하는 엔진입니다. 반드시 JSON만 반환하세요.',
+          },
+          { role: 'user', content: repairPrompt },
+        ],
+        max_tokens: 16000,
+      }),
+    });
+
+    if (!repairResponse.ok) {
+      console.error('JSON 복구 호출 실패:', repairResponse.status);
+      return null;
+    }
+
+    const repairRawText = await repairResponse.text();
+    try {
+      const repairEnvelope = JSON.parse(repairRawText);
+      return extractJSON(extractMessageContent(repairEnvelope));
+    } catch {
+      return extractJSON(repairRawText);
+    }
+  } catch (error) {
+    console.error('JSON 복구 실패:', error);
+    return null;
+  }
 }
 
 function extractMessageContent(rawJson: any): string {

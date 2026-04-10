@@ -32,6 +32,7 @@ import { InstitutionManagement } from '@/components/admin/InstitutionManagement'
 import { InstitutionAdminAssignment } from '@/components/admin/InstitutionAdminAssignment';
 import AdminTokenAdd from '@/components/AdminTokenAdd';
 import { AdminBookingManagement } from '@/components/admin/AdminBookingManagement';
+import { AdminPaymentManager } from '@/components/admin/AdminPaymentManager';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 interface RealtimeStats {
@@ -327,6 +328,10 @@ export default function AdminDashboard() {
               <Search className="h-3.5 w-3.5" />
               사용자 데이터
             </TabsTrigger>
+            <TabsTrigger value="payments" className="text-xs gap-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <CreditCard className="h-3.5 w-3.5" />
+              결제/구독
+            </TabsTrigger>
             <TabsTrigger value="management" className="text-xs gap-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
               <Settings className="h-3.5 w-3.5" />
               관리
@@ -337,6 +342,7 @@ export default function AdminDashboard() {
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>
           <TabsContent value="experts"><ExpertApplicationManagement /></TabsContent>
           <TabsContent value="user-data"><EnhancedUserDataViewer /></TabsContent>
+          <TabsContent value="payments"><AdminPaymentManager /></TabsContent>
           <TabsContent value="management">
             <div className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

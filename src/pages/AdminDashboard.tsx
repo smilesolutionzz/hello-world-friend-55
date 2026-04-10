@@ -120,6 +120,7 @@ export default function AdminDashboard() {
           <TabsContent value="overview">
             <AdminOverviewPanel key={refreshKey} />
           </TabsContent>
+          <TabsContent value="activity"><AdminUserActivityTracker /></TabsContent>
           <TabsContent value="payments"><AdminPaymentManager /></TabsContent>
           <TabsContent value="bookings"><AdminBookingManagement /></TabsContent>
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>

@@ -19,6 +19,7 @@ import AdminTokenAdd from '@/components/AdminTokenAdd';
 import { AdminBookingManagement } from '@/components/admin/AdminBookingManagement';
 import { AdminPaymentManager } from '@/components/admin/AdminPaymentManager';
 import { AdminOverviewPanel } from '@/components/admin/AdminOverviewPanel';
+import { AdminUserActivityTracker } from '@/components/admin/AdminUserActivityTracker';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 export default function AdminDashboard() {

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowLeft, RefreshCw, Bell, Settings, Calendar, 
-  UserCheck, Search, Coins, CreditCard, LayoutDashboard
+  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity
 } from 'lucide-react';
 import { AdminNotifications } from '@/components/AdminNotifications';
 import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
@@ -19,6 +19,7 @@ import AdminTokenAdd from '@/components/AdminTokenAdd';
 import { AdminBookingManagement } from '@/components/admin/AdminBookingManagement';
 import { AdminPaymentManager } from '@/components/admin/AdminPaymentManager';
 import { AdminOverviewPanel } from '@/components/admin/AdminOverviewPanel';
+import { AdminUserActivityTracker } from '@/components/admin/AdminUserActivityTracker';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 export default function AdminDashboard() {
@@ -86,6 +87,10 @@ export default function AdminDashboard() {
               <LayoutDashboard className="h-3 w-3" />
               대시보드
             </TabsTrigger>
+            <TabsTrigger value="activity" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <Activity className="h-3 w-3" />
+              활동 추적
+            </TabsTrigger>
             <TabsTrigger value="payments" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <CreditCard className="h-3 w-3" />
               결제/구독
@@ -115,6 +120,7 @@ export default function AdminDashboard() {
           <TabsContent value="overview">
             <AdminOverviewPanel key={refreshKey} />
           </TabsContent>
+          <TabsContent value="activity"><AdminUserActivityTracker /></TabsContent>
           <TabsContent value="payments"><AdminPaymentManager /></TabsContent>
           <TabsContent value="bookings"><AdminBookingManagement /></TabsContent>
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>

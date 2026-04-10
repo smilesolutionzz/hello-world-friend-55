@@ -677,7 +677,9 @@ const ReportGeneratorPro = () => {
                 {isGenerating ? (
                   <><Loader2 className="w-6 h-6 animate-spin mr-3" /> {t('AI 분석 중...', 'AI Analyzing...')} ({progress}%)</>
                 ) : (
-                  <><Crown className="w-6 h-6 mr-3" /> {t('프리미엄 리포트 생성하기', 'Generate Premium Report')}</>
+                  <><Crown className="w-6 h-6 mr-3" /> {reportMode === 'with-data' && checklistSelectedCount > 0
+                    ? t(`프리미엄 리포트 생성하기 (${checklistSelectedCount}개 데이터 반영)`, `Generate Premium Report (${checklistSelectedCount} data points)`)
+                    : t('프리미엄 리포트 생성하기', 'Generate Premium Report')}</>
                 )}
               </Button>
             </motion.div>

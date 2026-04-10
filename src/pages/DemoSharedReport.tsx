@@ -636,11 +636,11 @@ const DEMO_REPORTS = [
 <tr><td style="padding:8px;border:1px solid #e2e8f0;">정서 조절</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">48</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">61</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">74</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">+54.2%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 대폭 개선</td></tr>
 </tbody></table>
 
-<p><strong>🎯 Reliable Change Index (RCI) 분석 — 1차→3차</strong></p>
+<p><strong>🎯 임상적 유의미 변화 지수(AIHPRO-RCI) 분석 — 1차→3차</strong></p>
 <ul>
-<li>RCI = (11-24) / √(2 × 3.82²) = <strong>-2.41</strong></li>
-<li>|RCI| > 1.96 기준 충족 ✅ → <strong>통계적으로 유의미한 변화 확정</strong></li>
-<li>Jacobson-Truax 기준: 임상적으로 유의미한 개선(Clinically Significant Change) 달성</li>
+<li>AIHPRO-RCI = (11-24) / √(2 × 3.82²) = <strong>-2.41</strong></li>
+<li>|AIHPRO-RCI| > 1.96 기준 충족 ✅ → <strong>통계적으로 유의미한 변화 확정</strong></li>
+<li>AIHPRO 임상적 유의미 변화 기준: 임상적으로 유의미한 개선 달성</li>
 </ul>
 
 <p><strong>📈 회복 속도 분석</strong></p>
@@ -953,9 +953,9 @@ ${allSessionsHtml}
 <div class="section-body">
 <p><strong>1. 핵심 성과</strong></p>
 <ul>
-<li>44일 만에 PHQ-9 기준 '중등도 우울' → '정상' 전환 달성</li>
+<li>44일 만에 AIHPRO 심리건강 분석 기준 '중등도' → '정상' 전환 달성</li>
 <li>8개 평가 영역 중 7개에서 유의미한 개선 확인</li>
-<li>RCI = -2.41로 통계적 유의미 변화(|RCI| > 1.96) 충족</li>
+<li>AIHPRO-RCI = -2.41로 통계적 유의미 변화(|AIHPRO-RCI| > 1.96) 충족</li>
 <li>1차 예후 시나리오의 '적극 개입 3개월' 목표를 6주 만에 초과 달성</li>
 </ul>
 
@@ -989,7 +989,7 @@ ${allSessionsHtml}
 
 <p style="margin-top:16px;padding:12px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0;font-size:12px;">
 <strong>🎯 최종 판정:</strong> 본 내담자는 6주간의 적극적 개입을 통해 임상적으로 유의미한 회복을 달성했습니다. 
-Jacobson-Truax 기준에 의거, <strong>Clinically Significant Change(CSC)</strong>가 확정되며, 
+AIHPRO 임상적 유의미 변화 기준에 의거, <strong>임상적으로 유의미한 개선(Clinically Significant Improvement)</strong>이 확정되며, 
 현 시점에서 정기 관찰 모드로의 전환을 권고합니다.
 </p>
 </div>

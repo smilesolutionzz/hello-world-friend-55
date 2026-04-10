@@ -57,7 +57,7 @@ export default function ComprehensiveReporting() {
         supabase.from('brain_training_sessions').select('id, game_type, game_name, score, max_score, session_date, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         supabase.from('assessment_enhanced_analysis').select('id, assessment_type, risk_level, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         supabase.from('play_assessment_results').select('id, age_group, style, cognitive_score, emotional_score, social_score, physical_score, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
-        supabase.from('progress_tracking').select('id, service_type, summary, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+        supabase.from('progress_tracking').select('id, source_type, source_label, summary, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
       ]);
 
       // Also fetch test type names

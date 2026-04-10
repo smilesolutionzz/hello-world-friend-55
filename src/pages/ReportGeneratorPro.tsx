@@ -33,6 +33,7 @@ import {
   DomainRadarChart, TrendLineChart, StrengthWeaknessChart,
   RiskGauge, DataSourceInfographic, InteractiveRoadmap, CrossCorrelationInsight
 } from '@/components/report/ReportDataVisualizations';
+import ReportDataChecklist from '@/components/report/ReportDataChecklist';
 
 // ── 샘플 리포트 섹션 데이터 ──
 const SAMPLE_REPORT_SECTIONS_KO = [
@@ -125,6 +126,9 @@ const ReportGeneratorPro = () => {
   const [currentReportHistoryId, setCurrentReportHistoryId] = useState<string | null>(null);
   const [showSampleReport, setShowSampleReport] = useState(false);
   const [activeReportSection, setActiveReportSection] = useState(0);
+  const [selectedChecklistData, setSelectedChecklistData] = useState<Record<string, string[]>>({});
+  const [checklistSelectedCount, setChecklistSelectedCount] = useState(0);
+  const [checklistTotalCount, setChecklistTotalCount] = useState(0);
   const { isEnglish, localePath } = useLanguage();
 
   // 현재 무료 개방 중 - 모든 사용자에게 프리미엄 기능 제공
@@ -211,9 +215,8 @@ const ReportGeneratorPro = () => {
   const generateReport = async () => {
     if (!isPremium) { navigate(localePath('/token-subscription')); return; }
     if (reportMode === 'with-data') {
-      const totalData = userData?.totalDataCount || 0;
-      if (totalData < 3) {
-        toast({ title: t("데이터 부족", "Insufficient Data"), description: t(`종합 리포트 생성에는 최소 3개의 데이터가 필요합니다. (현재: ${totalData}개)`, `At least 3 data points are required. (Current: ${totalData})`), variant: "destructive" });
+      if (checklistSelectedCount < 3) {
+        toast({ title: t("데이터 부족", "Insufficient Data"), description: t(`종합 리포트 생성에는 최소 3개의 데이터가 필요합니다. (현재: ${checklistSelectedCount}개 선택)`, `At least 3 data points are required. (Currently selected: ${checklistSelectedCount})`), variant: "destructive" });
         return;
       }
     } else {
@@ -231,7 +234,7 @@ const ReportGeneratorPro = () => {
       const progressInterval = setInterval(() => { setProgress(prev => Math.min(prev + 5, 90)); }, 1000);
       toast({ title: t("🔬 전문가급 분석 시작", "🔬 Expert-Level Analysis Started"), description: reportMode === 'with-data' ? t("실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다...", "Performing real-time web search + latest research-based deep analysis...") : t("고민·상태 정보를 기반으로 맞춤 분석을 진행합니다...", "Performing personalized analysis based on your concerns...") });
       const body: any = { reportMode, userInput: { name: userInput.name, birthDate: userInput.birthDate, gender: userInput.gender, recentConcerns: userInput.recentConcerns, developmentalNotes: userInput.developmentalNotes }, language: isEnglish ? 'en' : 'ko' };
-      if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.chatRooms = userData.chatRooms; body.profile = userData.profile; }
+      if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.chatRooms = userData.chatRooms; body.profile = userData.profile; body.selectedData = selectedChecklistData; body.selectedDataCount = checklistSelectedCount; }
       if (userData.onboardingData) { body.onboardingData = userData.onboardingData; }
       if (imageAnalysisResults) { body.externalTestImages = imageAnalysisResults; }
       const { data, error } = await supabase.functions.invoke('generate-expert-report', { body });
@@ -624,24 +627,18 @@ const ReportGeneratorPro = () => {
 
             {/* 데이터 현황 - with-data 모드 */}
             {reportMode === 'with-data' && (
-              <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                  <Database className="w-4 h-4 text-primary" /> {t('수집된 데이터 현황', 'Collected Data Overview')}
+              <div className="space-y-4">
+                <h4 className="text-sm font-bold text-white flex items-center gap-2 mb-1">
+                  <Database className="w-4 h-4 text-primary" /> {t('리포트에 포함할 데이터 선택', 'Select Data for Report')}
                 </h4>
-                <div className="grid grid-cols-4 gap-3">
-                  {[
-                    { icon: FileText, label: t('검사', 'Tests'), count: userData?.totalAssessments || 0, color: 'text-blue-400' },
-                    { icon: Eye, label: t('관찰', 'Obs.'), count: userData?.totalObservations || 0, color: 'text-green-400' },
-                    { icon: BookOpen, label: t('세션', 'Sessions'), count: userData?.totalObservationSessions || 0, color: 'text-purple-400' },
-                    { icon: MessageSquare, label: t('상담', 'Chats'), count: userData?.totalChatMessages || 0, color: 'text-pink-400' },
-                  ].map((item, idx) => (
-                    <div key={idx} className="bg-white/5 p-3 rounded-lg border border-white/5 text-center">
-                      <item.icon className={`w-5 h-5 ${item.color} mx-auto mb-1`} />
-                      <p className="text-xl font-black text-white"><AnimatedCounter value={item.count} /></p>
-                      <p className="text-[10px] text-muted-foreground">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
+                <p className="text-xs text-muted-foreground mb-3">{t('포함할 데이터를 직접 선택하세요. 체크된 항목만 리포트에 반영됩니다.', 'Select the data to include. Only checked items will be reflected in the report.')}</p>
+                <ReportDataChecklist
+                  onSelectionChange={(data, count, total) => {
+                    setSelectedChecklistData(data);
+                    setChecklistSelectedCount(count);
+                    setChecklistTotalCount(total);
+                  }}
+                />
               </div>
             )}
 
@@ -680,7 +677,9 @@ const ReportGeneratorPro = () => {
                 {isGenerating ? (
                   <><Loader2 className="w-6 h-6 animate-spin mr-3" /> {t('AI 분석 중...', 'AI Analyzing...')} ({progress}%)</>
                 ) : (
-                  <><Crown className="w-6 h-6 mr-3" /> {t('프리미엄 리포트 생성하기', 'Generate Premium Report')}</>
+                  <><Crown className="w-6 h-6 mr-3" /> {reportMode === 'with-data' && checklistSelectedCount > 0
+                    ? t(`프리미엄 리포트 생성하기 (${checklistSelectedCount}개 데이터 반영)`, `Generate Premium Report (${checklistSelectedCount} data points)`)
+                    : t('프리미엄 리포트 생성하기', 'Generate Premium Report')}</>
                 )}
               </Button>
             </motion.div>

@@ -87,6 +87,10 @@ export default function AdminDashboard() {
               <LayoutDashboard className="h-3 w-3" />
               대시보드
             </TabsTrigger>
+            <TabsTrigger value="activity" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <Activity className="h-3 w-3" />
+              활동 추적
+            </TabsTrigger>
             <TabsTrigger value="payments" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <CreditCard className="h-3 w-3" />
               결제/구독

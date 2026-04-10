@@ -32,6 +32,7 @@ import { InstitutionManagement } from '@/components/admin/InstitutionManagement'
 import { InstitutionAdminAssignment } from '@/components/admin/InstitutionAdminAssignment';
 import AdminTokenAdd from '@/components/AdminTokenAdd';
 import { AdminBookingManagement } from '@/components/admin/AdminBookingManagement';
+import { AdminPaymentManager } from '@/components/admin/AdminPaymentManager';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 interface RealtimeStats {

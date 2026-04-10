@@ -59,7 +59,7 @@ export function AdminUserActivityTracker() {
         supabase.from('consultation_bookings').select('id, user_id, booking_date, start_time, duration_minutes, status, booking_type, created_at').order('created_at', { ascending: false }).limit(200),
         supabase.from('personality_test_results').select('id, user_id, created_at').order('created_at', { ascending: false }).limit(200),
         supabase.from('play_assessment_results').select('id, user_id, created_at').order('created_at', { ascending: false }).limit(200),
-        supabase.from('progress_tracking').select('id, user_id, service_type, dimension_scores, created_at').order('created_at', { ascending: false }).limit(200),
+        supabase.from('progress_tracking').select('id, user_id, source_type, source_label, created_at').order('created_at', { ascending: false }).limit(200),
       ]);
 
       // Collect all user IDs

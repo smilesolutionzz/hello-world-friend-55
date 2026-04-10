@@ -126,6 +126,9 @@ const ReportGeneratorPro = () => {
   const [currentReportHistoryId, setCurrentReportHistoryId] = useState<string | null>(null);
   const [showSampleReport, setShowSampleReport] = useState(false);
   const [activeReportSection, setActiveReportSection] = useState(0);
+  const [selectedChecklistData, setSelectedChecklistData] = useState<Record<string, string[]>>({});
+  const [checklistSelectedCount, setChecklistSelectedCount] = useState(0);
+  const [checklistTotalCount, setChecklistTotalCount] = useState(0);
   const { isEnglish, localePath } = useLanguage();
 
   // 현재 무료 개방 중 - 모든 사용자에게 프리미엄 기능 제공

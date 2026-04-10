@@ -628,24 +628,18 @@ const ReportGeneratorPro = () => {
 
             {/* 데이터 현황 - with-data 모드 */}
             {reportMode === 'with-data' && (
-              <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                  <Database className="w-4 h-4 text-primary" /> {t('수집된 데이터 현황', 'Collected Data Overview')}
+              <div className="space-y-4">
+                <h4 className="text-sm font-bold text-white flex items-center gap-2 mb-1">
+                  <Database className="w-4 h-4 text-primary" /> {t('리포트에 포함할 데이터 선택', 'Select Data for Report')}
                 </h4>
-                <div className="grid grid-cols-4 gap-3">
-                  {[
-                    { icon: FileText, label: t('검사', 'Tests'), count: userData?.totalAssessments || 0, color: 'text-blue-400' },
-                    { icon: Eye, label: t('관찰', 'Obs.'), count: userData?.totalObservations || 0, color: 'text-green-400' },
-                    { icon: BookOpen, label: t('세션', 'Sessions'), count: userData?.totalObservationSessions || 0, color: 'text-purple-400' },
-                    { icon: MessageSquare, label: t('상담', 'Chats'), count: userData?.totalChatMessages || 0, color: 'text-pink-400' },
-                  ].map((item, idx) => (
-                    <div key={idx} className="bg-white/5 p-3 rounded-lg border border-white/5 text-center">
-                      <item.icon className={`w-5 h-5 ${item.color} mx-auto mb-1`} />
-                      <p className="text-xl font-black text-white"><AnimatedCounter value={item.count} /></p>
-                      <p className="text-[10px] text-muted-foreground">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
+                <p className="text-xs text-muted-foreground mb-3">{t('포함할 데이터를 직접 선택하세요. 체크된 항목만 리포트에 반영됩니다.', 'Select the data to include. Only checked items will be reflected in the report.')}</p>
+                <ReportDataChecklist
+                  onSelectionChange={(data, count, total) => {
+                    setSelectedChecklistData(data);
+                    setChecklistSelectedCount(count);
+                    setChecklistTotalCount(total);
+                  }}
+                />
               </div>
             )}
 

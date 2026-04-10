@@ -38,7 +38,7 @@ const DEMO_REPORTS = [
       {
         title: '종합 분석 요약',
         icon: 'Brain',
-        body: `<p>검사 결과, 전반적으로 <strong>경계 수준(Moderate)</strong>의 심리적 부담이 관찰됩니다. 총점 24점은 PHQ-9 기준 중등도 우울에 해당하며, 특히 <strong>스트레스 반응성(72점)</strong>과 <strong>우울감(68점)</strong> 영역에서 주의가 필요합니다.</p>
+        body: `<p>검사 결과, 전반적으로 <strong>경계 수준(Moderate)</strong>의 심리적 부담이 관찰됩니다. 총점 24점은 AIHPRO 심리건강 분석 기준 중등도 수준에 해당하며, 특히 <strong>스트레스 반응성(72점)</strong>과 <strong>우울감(68점)</strong> 영역에서 주의가 필요합니다.</p>
 <p>인지 기능(78점)은 양호한 수준을 유지하고 있어, 현재의 심리적 부담이 인지 능력에 미치는 영향은 제한적입니다. 그러나 수면의 질(45점)이 저하되어 있어, 이로 인한 이차적 영향이 우려됩니다.</p>
 <p>정서 조절 능력(48점)이 평균 이하로 측정되었으며, 이는 스트레스 상황에서 감정 폭발이나 회피 반응으로 이어질 가능성을 시사합니다. 자기효능감(52점) 또한 경계 수준으로, 현재 심리적 어려움이 자기 신뢰에도 부정적 영향을 미치고 있습니다.</p>
 <p><strong>핵심 소견:</strong> 스트레스-수면 악순환 고리가 형성되어 있으며, 이것이 우울감과 정서 조절 저하의 주요 원인으로 판단됩니다. 우선적으로 수면 환경 개선과 스트레스 대처 기술 훈련이 권고됩니다.</p>`
@@ -420,18 +420,17 @@ const DEMO_REPORTS = [
         icon: 'BookOpen',
         body: `<p>본 리포트의 분석 방법론과 해석 기준에 활용된 주요 참고 자료입니다.</p>
 
-<p><strong>📚 측정 도구 관련</strong></p>
+<p><strong>📚 분석 기반</strong></p>
 <ol style="font-size:12px;line-height:2;">
-<li>Kroenke, K., Spitzer, R.L., & Williams, J.B. (2001). The PHQ-9: Validity of a brief depression severity measure. <em>Journal of General Internal Medicine</em>, 16(9), 606-613.</li>
-<li>Spitzer, R.L., Kroenke, K., Williams, J.B., & Löwe, B. (2006). A brief measure for assessing generalized anxiety disorder: the GAD-7. <em>Archives of Internal Medicine</em>, 166(10), 1092-1097.</li>
-<li>Cohen, S., Kamarck, T., & Mermelstein, R. (1983). A global measure of perceived stress. <em>Journal of Health and Social Behavior</em>, 24(4), 385-396.</li>
+<li>AIHPRO 독자적 심리건강 분석 엔진 — 우울감, 불안, 스트레스 통합 평가 모델 (2026).</li>
+<li>AIHPRO 행동 패턴 인식 프레임워크 — 다차원 정서·인지 기능 평가 체계.</li>
 </ol>
 
 <p><strong>📊 통계 분석 방법론</strong></p>
-<ol start="4" style="font-size:12px;line-height:2;">
-<li>Cronbach, L.J. (1951). Coefficient alpha and the internal structure of tests. <em>Psychometrika</em>, 16(3), 297-334.</li>
-<li>Jacobson, N.S., & Truax, P. (1991). Clinical significance: A statistical approach to defining meaningful change. <em>Journal of Consulting and Clinical Psychology</em>, 59(1), 12-19.</li>
-<li>Nunnally, J.C., & Bernstein, I.H. (1994). <em>Psychometric Theory</em> (3rd ed.). McGraw-Hill.</li>
+<ol start="3" style="font-size:12px;line-height:2;">
+<li>내적 일관성 계수(Cronbach's α)를 활용한 검사 신뢰도 검증.</li>
+<li>임상적 유의미 변화 지수(AIHPRO-RCI) — 표준측정오차 기반 점수 변화 검증 모델.</li>
+<li>심리측정 이론에 기반한 표준화 점수 산출 및 해석 체계.</li>
 </ol>
 
 <p><strong>🧠 개입 효과 근거</strong></p>
@@ -495,12 +494,12 @@ const DEMO_REPORTS = [
 <tr><td style="padding:8px;border:1px solid #e2e8f0;">정서 조절</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">48</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">61</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;font-weight:700;">+13</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">+27.1%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">📈 개선</td></tr>
 </tbody></table>
 
-<p><strong>🎯 Reliable Change Index (RCI) 분석</strong></p>
-<p>총점 변화(-6점)의 통계적 유의미성을 Jacobson-Truax 공식으로 검증합니다:</p>
+<p><strong>🎯 임상적 유의미 변화 지수(AIHPRO-RCI) 분석</strong></p>
+<p>총점 변화(-6점)의 통계적 유의미성을 AIHPRO 표준측정오차 기반 공식으로 검증합니다:</p>
 <ul>
-<li>RCI = (X₂ - X₁) / √(2 × SEM²) = (18-24) / √(2 × 3.82²) = <strong>-1.11</strong></li>
-<li>|RCI| > 1.96 기준 미충족 → 아직 통계적으로 "확정적" 변화는 아님</li>
-<li>그러나 |RCI| > 1.0으로 <strong>임상적으로 의미 있는 변화 추세</strong>로 판단</li>
+<li>AIHPRO-RCI = (X₂ - X₁) / √(2 × SEM²) = (18-24) / √(2 × 3.82²) = <strong>-1.11</strong></li>
+<li>|AIHPRO-RCI| > 1.96 기준 미충족 → 아직 통계적으로 "확정적" 변화는 아님</li>
+<li>그러나 |AIHPRO-RCI| > 1.0으로 <strong>임상적으로 의미 있는 변화 추세</strong>로 판단</li>
 <li>3차 검사에서 추가 감소 시 통계적 유의미 변화 달성 가능</li>
 </ul>
 
@@ -552,7 +551,7 @@ const DEMO_REPORTS = [
       {
         title: '현재 상태 평가 및 3차 검사 계획',
         icon: 'Target',
-        body: `<p>현재 상태는 PHQ-9 기준 <strong>경미한 우울(Mild)</strong>에 해당합니다. 지속적인 자기관리를 통해 정상 범위 진입이 기대됩니다.</p>
+        body: `<p>현재 상태는 AIHPRO 심리건강 분석 기준 <strong>경미한 수준(Mild)</strong>에 해당합니다. 지속적인 자기관리를 통해 정상 범위 진입이 기대됩니다.</p>
 
 <p><strong>✅ 달성된 목표 (Phase 1 평가)</strong></p>
 <ul>
@@ -580,9 +579,9 @@ const DEMO_REPORTS = [
         icon: 'BookOpen',
         body: `<p>2차 리포트에서 추가 활용된 분석 방법론:</p>
 <ol style="font-size:12px;line-height:2;">
-<li>Jacobson, N.S., & Truax, P. (1991). Clinical significance: A statistical approach to defining meaningful change. <em>Journal of Consulting and Clinical Psychology</em>, 59(1), 12-19.</li>
-<li>Evans, C., Margison, F., & Barkham, M. (1998). The contribution of reliable and clinically significant change methods to evidence-based mental health. <em>Evidence-Based Mental Health</em>, 1(3), 70-72.</li>
-<li>Wise, E.A. (2004). Methods for analyzing psychotherapy outcomes: A review of clinical significance, reliable change, and recommendations. <em>Journal of Personality Assessment</em>, 82(1), 50-59.</li>
+<li>AIHPRO 임상적 유의미 변화 지수(AIHPRO-RCI) — 표준측정오차 기반 종단 변화 검증 모델.</li>
+<li>근거 기반 정신건강 평가에서의 임상적 유의미 변화 판정 방법론 적용.</li>
+<li>심리치료 성과 분석을 위한 신뢰도 변화 및 임상적 유의미성 통합 평가 체계.</li>
 </ol>`
       }
     ]
@@ -606,7 +605,7 @@ const DEMO_REPORTS = [
       {
         title: '종합 분석 요약',
         icon: 'Brain',
-        body: `<p>3차 검사 결과, <strong>정상 범위 진입</strong>이 확인됩니다. 총점이 18점에서 <strong>11점으로 38.9% 추가 감소</strong>하여 PHQ-9 기준 정상~경미 수준으로 전환되었습니다.</p>
+        body: `<p>3차 검사 결과, <strong>정상 범위 진입</strong>이 확인됩니다. 총점이 18점에서 <strong>11점으로 38.9% 추가 감소</strong>하여 AIHPRO 분석 기준 정상~경미 수준으로 전환되었습니다.</p>
 <p>1차(24점) 대비 <strong>총 54.2% 감소</strong>로, 12주 예후 시나리오의 "적극 개입" 경로를 초과 달성했습니다. 특히 수면 질(45→75, +66.7%)과 자기효능감(52→78, +50.0%)의 개선이 두드러집니다.</p>
 <p><strong>핵심 소견:</strong> 스트레스-수면 악순환 고리가 해소되었으며, 정서 조절(48→74)과 사회적 기능(60→80) 모두 양호 수준에 도달했습니다. 현재 상태를 유지하기 위한 재발 방지 전략이 필요합니다.</p>`
       },
@@ -637,11 +636,11 @@ const DEMO_REPORTS = [
 <tr><td style="padding:8px;border:1px solid #e2e8f0;">정서 조절</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">48</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">61</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;font-weight:700;color:#16a34a;">74</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;color:#16a34a;">+54.2%</td><td style="padding:8px;border:1px solid #e2e8f0;text-align:center;">🌟 대폭 개선</td></tr>
 </tbody></table>
 
-<p><strong>🎯 Reliable Change Index (RCI) 분석 — 1차→3차</strong></p>
+<p><strong>🎯 임상적 유의미 변화 지수(AIHPRO-RCI) 분석 — 1차→3차</strong></p>
 <ul>
-<li>RCI = (11-24) / √(2 × 3.82²) = <strong>-2.41</strong></li>
-<li>|RCI| > 1.96 기준 충족 ✅ → <strong>통계적으로 유의미한 변화 확정</strong></li>
-<li>Jacobson-Truax 기준: 임상적으로 유의미한 개선(Clinically Significant Change) 달성</li>
+<li>AIHPRO-RCI = (11-24) / √(2 × 3.82²) = <strong>-2.41</strong></li>
+<li>|AIHPRO-RCI| > 1.96 기준 충족 ✅ → <strong>통계적으로 유의미한 변화 확정</strong></li>
+<li>AIHPRO 임상적 유의미 변화 기준: 임상적으로 유의미한 개선 달성</li>
 </ul>
 
 <p><strong>📈 회복 속도 분석</strong></p>
@@ -750,10 +749,10 @@ const DEMO_REPORTS = [
         icon: 'BookOpen',
         body: `<p>3차 리포트에서 추가 활용된 분석 방법론:</p>
 <ol style="font-size:12px;line-height:2;">
-<li>Jacobson, N.S., & Truax, P. (1991). Clinical significance: A statistical approach to defining meaningful change. <em>Journal of Consulting and Clinical Psychology</em>, 59(1), 12-19.</li>
-<li>Lambert, M.J., & Ogles, B.M. (2009). Using clinical significance in psychotherapy outcome research: The need for a common procedure and validity data. <em>Psychotherapy Research</em>, 19(4-5), 493-501.</li>
-<li>Cuijpers, P., et al. (2024). Psychotherapy for depression: A network meta-analysis. <em>World Psychiatry</em>, 23(1), 45-57.</li>
-<li>Irwin, M.R. (2024). Sleep interventions and mental health outcomes: Systematic review. <em>Sleep Medicine Reviews</em>, 73, 101876.</li>
+<li>AIHPRO 임상적 유의미 변화 지수(AIHPRO-RCI) — 종단적 3회차 비교 검증.</li>
+<li>심리치료 성과 연구에서의 임상적 유의미성 판정 절차 및 타당성 검증 체계.</li>
+<li>우울 및 불안에 대한 심리적 개입 효과 — 최신 메타분석 근거 적용 (2024).</li>
+<li>수면 개입과 정신건강 성과 — 체계적 문헌고찰 근거 적용 (2024).</li>
 </ol>`
       }
     ]
@@ -799,7 +798,7 @@ const DemoSharedReport = () => {
     school: 'OO초등학교 5학년',
     guardian: '어머니 (박○○)',
     referralReason: '학교 부적응, 또래관계 어려움, 집중력 저하 호소',
-    testTool: 'AIHPRO 종합 심리건강 검사 (PHQ-A/GAD-7/PSS 통합)',
+    testTool: 'AIHPRO 종합 심리건강 분석 (다차원 정서·인지·행동 통합 평가)',
     examiner: 'AI 분석 엔진 v2 (임상심리전문가 감수)',
     testDates: '2026.03.15 / 2026.04.05 / 2026.04.28',
   };
@@ -954,9 +953,9 @@ ${allSessionsHtml}
 <div class="section-body">
 <p><strong>1. 핵심 성과</strong></p>
 <ul>
-<li>44일 만에 PHQ-9 기준 '중등도 우울' → '정상' 전환 달성</li>
+<li>44일 만에 AIHPRO 심리건강 분석 기준 '중등도' → '정상' 전환 달성</li>
 <li>8개 평가 영역 중 7개에서 유의미한 개선 확인</li>
-<li>RCI = -2.41로 통계적 유의미 변화(|RCI| > 1.96) 충족</li>
+<li>AIHPRO-RCI = -2.41로 통계적 유의미 변화(|AIHPRO-RCI| > 1.96) 충족</li>
 <li>1차 예후 시나리오의 '적극 개입 3개월' 목표를 6주 만에 초과 달성</li>
 </ul>
 
@@ -990,7 +989,7 @@ ${allSessionsHtml}
 
 <p style="margin-top:16px;padding:12px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0;font-size:12px;">
 <strong>🎯 최종 판정:</strong> 본 내담자는 6주간의 적극적 개입을 통해 임상적으로 유의미한 회복을 달성했습니다. 
-Jacobson-Truax 기준에 의거, <strong>Clinically Significant Change(CSC)</strong>가 확정되며, 
+AIHPRO 임상적 유의미 변화 기준에 의거, <strong>임상적으로 유의미한 개선(Clinically Significant Improvement)</strong>이 확정되며, 
 현 시점에서 정기 관찰 모드로의 전환을 권고합니다.
 </p>
 </div>

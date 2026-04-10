@@ -215,9 +215,8 @@ const ReportGeneratorPro = () => {
   const generateReport = async () => {
     if (!isPremium) { navigate(localePath('/token-subscription')); return; }
     if (reportMode === 'with-data') {
-      const totalData = userData?.totalDataCount || 0;
-      if (totalData < 3) {
-        toast({ title: t("데이터 부족", "Insufficient Data"), description: t(`종합 리포트 생성에는 최소 3개의 데이터가 필요합니다. (현재: ${totalData}개)`, `At least 3 data points are required. (Current: ${totalData})`), variant: "destructive" });
+      if (checklistSelectedCount < 3) {
+        toast({ title: t("데이터 부족", "Insufficient Data"), description: t(`종합 리포트 생성에는 최소 3개의 데이터가 필요합니다. (현재: ${checklistSelectedCount}개 선택)`, `At least 3 data points are required. (Currently selected: ${checklistSelectedCount})`), variant: "destructive" });
         return;
       }
     } else {
@@ -235,7 +234,7 @@ const ReportGeneratorPro = () => {
       const progressInterval = setInterval(() => { setProgress(prev => Math.min(prev + 5, 90)); }, 1000);
       toast({ title: t("🔬 전문가급 분석 시작", "🔬 Expert-Level Analysis Started"), description: reportMode === 'with-data' ? t("실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다...", "Performing real-time web search + latest research-based deep analysis...") : t("고민·상태 정보를 기반으로 맞춤 분석을 진행합니다...", "Performing personalized analysis based on your concerns...") });
       const body: any = { reportMode, userInput: { name: userInput.name, birthDate: userInput.birthDate, gender: userInput.gender, recentConcerns: userInput.recentConcerns, developmentalNotes: userInput.developmentalNotes }, language: isEnglish ? 'en' : 'ko' };
-      if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.chatRooms = userData.chatRooms; body.profile = userData.profile; }
+      if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.chatRooms = userData.chatRooms; body.profile = userData.profile; body.selectedData = selectedChecklistData; body.selectedDataCount = checklistSelectedCount; }
       if (userData.onboardingData) { body.onboardingData = userData.onboardingData; }
       if (imageAnalysisResults) { body.externalTestImages = imageAnalysisResults; }
       const { data, error } = await supabase.functions.invoke('generate-expert-report', { body });

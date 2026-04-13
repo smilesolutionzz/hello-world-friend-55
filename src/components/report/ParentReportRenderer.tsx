@@ -363,9 +363,9 @@ function generateParentReportHTML(
   // Progress summary
   let progressHTML = '';
   if (progressSummary.totalRecords > 0) {
-    const improved = (progressSummary.improvedDimensions || []).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
-    const declined = (progressSummary.declinedDimensions || []).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
-    const stable = (progressSummary.stableDimensions || []).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
+    const improved = (progressSummary.improvedDimensions || []).map((d: string) => getDimensionLabel(d, isEnglish)).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
+    const declined = (progressSummary.declinedDimensions || []).map((d: string) => getDimensionLabel(d, isEnglish)).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
+    const stable = (progressSummary.stableDimensions || []).map((d: string) => getDimensionLabel(d, isEnglish)).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
 
     progressHTML = `
       <div class="section">

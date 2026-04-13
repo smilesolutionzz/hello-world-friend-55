@@ -36,31 +36,7 @@ import {
 import ReportDataChecklist from '@/components/report/ReportDataChecklist';
 import ReportProHeader from '@/components/report/ReportProHeader';
 import ReportProOutput from '@/components/report/ReportProOutput';
-
-// ── 샘플 리포트 섹션 데이터 ──
-const SAMPLE_REPORT_SECTIONS_KO = [
-  { title: '종합 발달 프로파일', icon: Brain, color: 'from-blue-500 to-cyan-500', theory: 'AI 인지발달 분석 · 근접발달 영역 평가', preview: '대상자의 인지, 언어, 사회정서, 운동 영역을 AIHPRO AI 엔진이 발달 단계별로 종합 분석합니다.' },
-  { title: '심리·정서 심층 분석', icon: Heart, color: 'from-pink-500 to-rose-500', theory: 'AI 인지패턴 분석 · 애착유형 평가', preview: 'AI가 인지 패턴과 애착 유형을 분석하여 불안, 우울, 자존감, 스트레스 반응 패턴을 다층적으로 분석합니다.' },
-  { title: '강점·약점 매트릭스', icon: TrendingUp, color: 'from-green-500 to-emerald-500', theory: 'AI 다중영역 분석 · 성격 강점 평가', preview: '다중 영역 분석과 성격 강점 평가를 기반으로 핵심 강점 영역과 지원 필요 영역을 시각화합니다.' },
-  { title: '맞춤형 개입 프로그램', icon: Target, color: 'from-purple-500 to-violet-500', theory: 'AI 행동분석 · 인지행동 전략 · 놀이치료 접근', preview: '근거 기반 개입 전략에 따라 행동분석, 인지행동 전략, 놀이치료 접근 등 효과적인 개입 방안을 설계합니다.' },
-  { title: '발달 로드맵 & 예후', icon: LineChart, color: 'from-orange-500 to-amber-500', theory: 'AI 생태환경 분석 · 심리사회적 발달 평가', preview: '생태환경 요인과 심리사회적 발달 단계를 통합 적용하여 발달 경로를 예측합니다.' },
-  { title: '또래 비교 분석', icon: Users, color: 'from-indigo-500 to-blue-500', theory: 'AIHPRO 빅데이터 규준 · 연령별 발달 이정표', preview: 'AIHPRO 빅데이터와 연령별 발달 이정표를 기반으로 각 영역별 백분위를 산출합니다.' },
-  { title: '전문가 소견서', icon: Shield, color: 'from-teal-500 to-cyan-500', theory: 'AI 임상 분석 · 전문가 수준 평가', preview: 'AI가 임상 수준의 분석 체계를 참조하여 전문가 수준의 소견서를 생성합니다.' },
-  { title: '가족 지원 가이드', icon: Activity, color: 'from-fuchsia-500 to-pink-500', theory: 'AI 양육유형 분석 · 정서코칭 전략', preview: '양육 유형 분석과 정서코칭 전략에 기반한 맞춤형 양육 가이드를 제공합니다.' },
-  { title: '종합 요약 및 제언', icon: BarChart3, color: 'from-violet-500 to-purple-500', theory: 'AIHPRO 통합 분석 프레임워크', preview: 'AIHPRO 통합 분석 프레임워크에 따라 전체 분석을 통합 정리합니다.' }
-];
-
-const SAMPLE_REPORT_SECTIONS_EN = [
-  { title: 'Comprehensive Development Profile', icon: Brain, color: 'from-blue-500 to-cyan-500', theory: 'AI Cognitive Development Analysis · Proximal Development Assessment', preview: 'Comprehensive analysis of cognitive, language, social-emotional, and motor domains using AIHPRO AI engine.' },
-  { title: 'Psychological & Emotional Deep Analysis', icon: Heart, color: 'from-pink-500 to-rose-500', theory: 'AI Cognitive Pattern Analysis · Attachment Assessment', preview: 'Multi-layered analysis of anxiety, depression, self-esteem, and stress response patterns using AI cognitive pattern analysis.' },
-  { title: 'Strengths & Weaknesses Matrix', icon: TrendingUp, color: 'from-green-500 to-emerald-500', theory: 'AI Multi-Domain Analysis · Character Strengths Assessment', preview: 'Visualization of key strengths and areas needing support based on multi-domain analysis and character strengths evaluation.' },
-  { title: 'Tailored Intervention Program', icon: Target, color: 'from-purple-500 to-violet-500', theory: 'AI Behavioral Analysis · Cognitive-Behavioral Strategy · Play Therapy', preview: 'Evidence-based intervention strategies including behavioral analysis, cognitive-behavioral approaches, and play therapy.' },
-  { title: 'Development Roadmap & Prognosis', icon: LineChart, color: 'from-orange-500 to-amber-500', theory: 'AI Ecological Analysis · Psychosocial Development Assessment', preview: 'Developmental trajectory prediction integrating ecological factors and psychosocial development stages.' },
-  { title: 'Peer Comparison Analysis', icon: Users, color: 'from-indigo-500 to-blue-500', theory: 'AIHPRO Big Data Norms · Age-Based Milestones', preview: 'Percentile calculations for each domain based on AIHPRO big data and age-based developmental milestones.' },
-  { title: 'Expert Clinical Opinion', icon: Shield, color: 'from-teal-500 to-cyan-500', theory: 'AI Clinical Analysis · Expert-Level Assessment', preview: 'Clinical-level expert opinion generated using AI-powered clinical analysis systems.' },
-  { title: 'Family Support Guide', icon: Activity, color: 'from-fuchsia-500 to-pink-500', theory: 'AI Parenting Style Analysis · Emotion Coaching Strategy', preview: 'Parenting strategies based on AI parenting style analysis and emotion coaching methodologies.' },
-  { title: 'Summary & Recommendations', icon: BarChart3, color: 'from-violet-500 to-purple-500', theory: 'AIHPRO Integrated Analysis Framework', preview: 'Integrated summary following AIHPRO analysis framework with comprehensive cross-verification.' }
-];
+import ReportContentShowcase from '@/components/report/ReportContentShowcase';
 
 // ── 애니메이션 카운터 ──
 const AnimatedCounter = ({ value, duration = 1.5 }: { value: number; duration?: number }) => {
@@ -126,8 +102,6 @@ const ReportGeneratorPro = () => {
   
   const [showShareModal, setShowShareModal] = useState(false);
   const [currentReportHistoryId, setCurrentReportHistoryId] = useState<string | null>(null);
-  const [showSampleReport, setShowSampleReport] = useState(false);
-  const [activeReportSection, setActiveReportSection] = useState(0);
   const [selectedChecklistData, setSelectedChecklistData] = useState<Record<string, string[]>>({});
   const [checklistSelectedCount, setChecklistSelectedCount] = useState(0);
   const [checklistTotalCount, setChecklistTotalCount] = useState(0);
@@ -137,7 +111,7 @@ const ReportGeneratorPro = () => {
   const isPremium = true;
   const currentStep = !isPremium ? 0 : reportMode ? (userInput.name ? (reportData ? 3 : 2) : 1) : 0;
 
-  const SAMPLE_REPORT_SECTIONS = isEnglish ? SAMPLE_REPORT_SECTIONS_EN : SAMPLE_REPORT_SECTIONS_KO;
+  
 
   // i18n helper
   const t = (ko: string, en: string) => isEnglish ? en : ko;
@@ -404,7 +378,7 @@ const ReportGeneratorPro = () => {
                     <Crown className="w-5 h-5 mr-2" /> {t('프리미엄 구독하기', 'Subscribe to Premium')}
                   </Button>
                 )}
-                <Button onClick={() => setShowSampleReport(true)} variant="outline" className="border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 px-8 py-3 rounded-xl">
+                <Button onClick={() => document.getElementById('report-showcase')?.scrollIntoView({ behavior: 'smooth' })} variant="outline" className="border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 px-8 py-3 rounded-xl">
                   <Eye className="w-5 h-5 mr-2" /> {t('샘플 미리보기', 'Sample Preview')}
                 </Button>
               </div>
@@ -412,133 +386,10 @@ const ReportGeneratorPro = () => {
           </motion.div>
         )}
 
-        {/* ── 샘플 리포트 다이얼로그 ── */}
-        <Dialog open={showSampleReport} onOpenChange={setShowSampleReport}>
-          <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white border-0">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                <Crown className="w-7 h-7 text-amber-500" /> {t('프리미엄 리포트 샘플', 'Premium Report Sample')}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6 mt-4">
-              <div className="bg-gradient-to-br from-slate-800 via-purple-800 to-indigo-900 rounded-2xl p-8 text-center text-white space-y-4">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-purple-500 flex items-center justify-center mx-auto">
-                  <FileText className="w-10 h-10" />
-                </div>
-                <h2 className="text-2xl font-black">{t('AI 종합 발달·심리 분석 리포트', 'AI Comprehensive Development & Psychology Report')}</h2>
-                <p className="text-purple-200">{t('대상: 홍길동 (7세) · 생성일: 2025년 2월 6일', 'Subject: John Doe (Age 7) · Generated: Feb 6, 2025')}</p>
-                <div className="flex justify-center gap-3 flex-wrap">
-                  <Badge className="bg-blue-500/20 text-blue-200 border border-blue-400/30">{t('검사 12건', '12 Assessments')}</Badge>
-                  <Badge className="bg-green-500/20 text-green-200 border border-green-400/30">{t('관찰 8건', '8 Observations')}</Badge>
-                  <Badge className="bg-pink-500/20 text-pink-200 border border-pink-400/30">{t('상담 5건', '5 Consultations')}</Badge>
-                </div>
-              </div>
-              {SAMPLE_REPORT_SECTIONS.map((section, idx) => {
-                const IconComp = section.icon;
-                return (
-                  <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="relative">
-                    <div className="flex items-start gap-4 p-5 rounded-xl bg-slate-50 border border-slate-200">
-                      <div className={`p-3 rounded-xl bg-gradient-to-br ${section.color} shadow-md shrink-0`}>
-                        <IconComp className="w-6 h-6 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg text-slate-800 mb-2">{idx + 1}. {section.title}</h3>
-                        <p className="text-xs text-indigo-600 font-semibold mb-1">📖 {section.theory}</p>
-                        <p className="text-sm text-slate-600 leading-relaxed">{section.preview}</p>
-                      </div>
-                    </div>
-                    {idx >= 4 && (
-                      <div className="absolute inset-0 bg-white/60 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                        <div className="text-center space-y-2"><Lock className="w-6 h-6 text-purple-400 mx-auto" /><p className="text-sm font-semibold text-purple-600">{t('프리미엄 구독 시 전체 공개', 'Full access with Premium')}</p></div>
-                      </div>
-                    )}
-                  </motion.div>
-                );
-              })}
-              <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 space-y-3">
-                <div className="flex items-center gap-3 justify-center">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center"><Shield className="w-5 h-5 text-white" /></div>
-                  <h3 className="text-lg font-bold text-emerald-800">{t('실제 전문가에게 직접 검사받고 싶으신가요?', 'Want a professional assessment from a real expert?')}</h3>
-                </div>
-                <p className="text-sm text-emerald-700 text-center max-w-lg mx-auto">{t('공인 자격을 갖춘 임상심리전문가가 직접 전문 검사를 실시합니다.', 'Licensed clinical psychologists conduct professional assessments.')}</p>
-                <div className="text-center">
-                  <a href="https://smilesolution.kr" target="_blank" rel="noopener noreferrer">
-                    <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-8 py-3 rounded-xl">
-                      <Award className="w-5 h-5 mr-2" /> {t('전문가 맞춤 검사 신청', 'Request Expert Assessment')}
-                    </Button>
-                  </a>
-                </div>
-              </div>
-              <div className="text-center py-6">
-                <Button onClick={() => { setShowSampleReport(false); navigate(localePath('/token-subscription')); }} size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-10 py-4 rounded-xl text-lg">
-                  <Crown className="w-6 h-6 mr-2" /> {t('프리미엄 구독하고 내 리포트 받기', 'Subscribe & Get My Report')}
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* ── 9개 섹션 인터랙티브 쇼케이스 ── */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="max-w-5xl mx-auto mb-10">
-          <div className="text-center mb-6">
-            <h2 className="text-lg md:text-xl font-bold text-white flex items-center justify-center gap-2">
-              <Microscope className="w-5 h-5 text-primary" /> {t('9가지 전문 분석 섹션', '9 Professional Analysis Sections')}
-            </h2>
-            <p className="text-muted-foreground text-xs mt-1">{t('각 카드를 클릭하여 상세 내용을 확인하세요', 'Click each card to view details')}</p>
-          </div>
-
-          {/* 인터랙티브 그리드 */}
-          <div className="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-3">
-            {SAMPLE_REPORT_SECTIONS.map((section, idx) => {
-              const IconComp = section.icon;
-              const isActive = activeReportSection === idx;
-              return (
-                <motion.button
-                  key={idx}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => setActiveReportSection(idx)}
-                  className={`relative p-3 md:p-4 rounded-xl border text-left transition-all ${
-                    isActive
-                      ? 'bg-primary/10 border-primary/40 shadow-lg shadow-primary/10'
-                      : 'bg-white/5 border-white/10 hover:border-white/20'
-                  }`}
-                >
-                  <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-br ${section.color} flex items-center justify-center mb-2`}>
-                    <IconComp className="w-4 h-4 md:w-5 md:h-5 text-white" />
-                  </div>
-                  <p className="text-[10px] md:text-xs font-semibold text-white leading-tight">{section.title}</p>
-                  {isActive && (
-                    <motion.div layoutId="active-indicator" className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
-                  )}
-                </motion.button>
-              );
-            })}
-          </div>
-
-          {/* 선택된 섹션 상세 */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeReportSection}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="mt-4 bg-white/5 rounded-xl border border-white/10 p-4 md:p-5"
-            >
-              <div className="flex items-start gap-3">
-                <div className={`p-2 rounded-lg bg-gradient-to-br ${SAMPLE_REPORT_SECTIONS[activeReportSection].color} shrink-0`}>
-                  {React.createElement(SAMPLE_REPORT_SECTIONS[activeReportSection].icon, { className: "w-5 h-5 text-white" })}
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-white mb-1">{SAMPLE_REPORT_SECTIONS[activeReportSection].title}</h4>
-                  <p className="text-[10px] text-primary font-semibold mb-2">{SAMPLE_REPORT_SECTIONS[activeReportSection].theory}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{SAMPLE_REPORT_SECTIONS[activeReportSection].preview}</p>
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-
+        {/* ── 리포트 구성 안내 (통합 쇼케이스) ── */}
+        <div id="report-showcase">
+          <ReportContentShowcase />
+        </div>
         {/* ── 프리미엄 사용자: 리포트 생성 인터페이스 ── */}
         {isPremium && !reportData && (
           <div className="max-w-4xl mx-auto space-y-6">

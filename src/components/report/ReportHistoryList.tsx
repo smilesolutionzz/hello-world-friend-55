@@ -102,7 +102,6 @@ const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onS
             </div>
           </div>
         )}
-        </div>
 
         <CardContent className="p-3 space-y-2">
           <AnimatePresence mode="popLayout">

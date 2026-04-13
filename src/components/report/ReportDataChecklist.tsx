@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { 
-  CheckCircle, Brain, Users, Eye, Gamepad2, Sparkles, 
-  BarChart3, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle
+  CheckCircle, Brain, Eye, Gamepad2, Mic,
+  BarChart3, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, Microscope
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 

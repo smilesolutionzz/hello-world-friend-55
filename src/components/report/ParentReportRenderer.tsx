@@ -119,6 +119,100 @@ function generateExpertComment(dimension: string, percentage: number, trend: str
   return `${dimLabel} 점수는 정상 범위 내로, 이 영역에서 건강한 기능을 보이고 있습니다. ${trend === 'improving' ? '긍정적인 추세가 고무적이며, 이를 유지하시기 바랍니다.' : '현재의 지원 방식을 계속해 주세요.'}`;
 }
 
+// ── Age-appropriate developmental context generator ──
+function generateDevelopmentalIntro(userAge: number, gender: string, isEnglish: boolean): string {
+  if (!userAge || userAge <= 0) return '';
+
+  let ageGroup = '';
+  let devFocus = '';
+  let keyAreas = '';
+  let emotionalNote = '';
+
+  if (isEnglish) {
+    if (userAge <= 2) {
+      ageGroup = 'Infant/Toddler (0-2)';
+      devFocus = 'sensory-motor development, attachment formation, and early communication';
+      keyAreas = 'Motor milestones, social smile, babbling/first words, separation anxiety patterns';
+      emotionalNote = 'At this age, emotional regulation is primarily dependent on caregiver responsiveness. Secure attachment is the foundation for all future development.';
+    } else if (userAge <= 5) {
+      ageGroup = 'Early Childhood (3-5)';
+      devFocus = 'language explosion, social play, emotional identification, and self-regulation';
+      keyAreas = 'Vocabulary growth, peer interaction, imaginative play, following rules, emotional expression';
+      emotionalNote = 'This is a critical period for developing emotional vocabulary and learning to manage frustration. Play-based assessment provides the most accurate developmental picture.';
+    } else if (userAge <= 9) {
+      ageGroup = 'Middle Childhood (6-9)';
+      devFocus = 'academic foundations, peer relationships, self-concept, and executive function';
+      keyAreas = 'Reading/math skills, friendship formation, attention span, rule comprehension, self-esteem';
+      emotionalNote = 'School entry marks a major transition. Academic performance, social belonging, and self-efficacy become interlinked developmental priorities.';
+    } else if (userAge <= 12) {
+      ageGroup = 'Late Childhood (10-12)';
+      devFocus = 'abstract thinking, identity formation, and pre-adolescent emotional changes';
+      keyAreas = 'Critical thinking, moral reasoning, body image, peer pressure management';
+      emotionalNote = 'Pre-adolescence brings increased self-awareness and sensitivity to social evaluation. Early signs of mood or anxiety difficulties may emerge.';
+    } else if (userAge <= 18) {
+      ageGroup = 'Adolescence (13-18)';
+      devFocus = 'identity development, emotional independence, and future planning';
+      keyAreas = 'Identity exploration, emotional regulation, academic stress, peer/romantic relationships';
+      emotionalNote = 'Adolescence is characterized by significant brain reorganization. Mood variability and risk-taking behavior are developmentally normative but require monitoring.';
+    } else {
+      ageGroup = 'Adult (19+)';
+      devFocus = 'stress management, emotional well-being, and life satisfaction';
+      keyAreas = 'Work-life balance, relationship quality, stress coping, self-care practices';
+      emotionalNote = 'Adult mental health assessment focuses on current functioning, coping mechanisms, and the impact of life stressors on overall well-being.';
+    }
+  } else {
+    if (userAge <= 2) {
+      ageGroup = '영아기 (0~2세)';
+      devFocus = '감각-운동 발달, 애착 형성, 초기 의사소통 능력';
+      keyAreas = '대근육·소근육 발달, 사회적 미소, 옹알이/첫 단어, 분리불안 양상';
+      emotionalNote = '이 시기의 정서 조절은 주 양육자의 반응성에 크게 의존합니다. 안정 애착은 이후 모든 발달의 토대가 됩니다.';
+    } else if (userAge <= 5) {
+      ageGroup = '유아기 (3~5세)';
+      devFocus = '언어 폭발기, 사회적 놀이, 감정 인식, 자기 조절력';
+      keyAreas = '어휘 성장, 또래 상호작용, 상상놀이, 규칙 이해, 감정 표현';
+      emotionalNote = '감정 어휘를 발달시키고 좌절감을 관리하는 법을 배우는 결정적 시기입니다. 놀이 기반 평가가 가장 정확한 발달 상태를 보여줍니다.';
+    } else if (userAge <= 9) {
+      ageGroup = '학령기 (6~9세)';
+      devFocus = '학업 기초, 또래 관계, 자기 개념, 실행 기능';
+      keyAreas = '읽기·수학 능력, 우정 형성, 집중력, 규칙 이해, 자존감';
+      emotionalNote = '학교 입학은 큰 전환점입니다. 학업 성취, 사회적 소속감, 자기효능감이 서로 연결된 핵심 발달 과제가 됩니다.';
+    } else if (userAge <= 12) {
+      ageGroup = '전사춘기 (10~12세)';
+      devFocus = '추상적 사고, 정체성 형성, 사춘기 이전 정서 변화';
+      keyAreas = '비판적 사고, 도덕적 판단, 신체 이미지, 또래 압력 대처';
+      emotionalNote = '전사춘기에는 자기 인식이 높아지고 사회적 평가에 대한 민감성이 증가합니다. 기분이나 불안 문제의 초기 징후가 나타날 수 있습니다.';
+    } else if (userAge <= 18) {
+      ageGroup = '청소년기 (13~18세)';
+      devFocus = '정체성 발달, 정서적 독립, 미래 계획';
+      keyAreas = '정체성 탐색, 감정 조절, 학업 스트레스, 또래·이성 관계';
+      emotionalNote = '청소년기는 뇌의 대대적 재구성이 일어나는 시기입니다. 기분 변동과 위험 감수 행동은 발달적으로 정상이지만 모니터링이 필요합니다.';
+    } else {
+      ageGroup = '성인 (19세 이상)';
+      devFocus = '스트레스 관리, 정서적 안녕, 삶의 만족도';
+      keyAreas = '일-생활 균형, 대인관계, 스트레스 대처, 자기 돌봄';
+      emotionalNote = '성인 심리 평가는 현재 기능 수준, 대처 메커니즘, 생활 스트레서가 전반적 안녕에 미치는 영향에 초점을 맞춥니다.';
+    }
+  }
+
+  const genderLabel = gender === 'male' ? (isEnglish ? 'Male' : '남') : gender === 'female' ? (isEnglish ? 'Female' : '여') : '';
+
+  return `
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon" style="background: #DBEAFE;">🌱</div>
+        <h2>${isEnglish ? 'Developmental Context' : '발달 단계별 맥락 분석'}</h2>
+        <span class="badge" style="background: #EFF6FF; color: #2563EB;">${isEnglish ? `Age ${userAge}` : `만 ${userAge}세`}${genderLabel ? ` · ${genderLabel}` : ''}</span>
+      </div>
+      <div class="expert-box" style="border-left-color: #6366F1;">
+        <div class="label">${isEnglish ? `${ageGroup} — Key Developmental Focus` : `${ageGroup} — 핵심 발달 과제`}</div>
+        <p><strong>${isEnglish ? 'Focus Areas:' : '주요 발달 영역:'}</strong> ${devFocus}</p>
+        <p><strong>${isEnglish ? 'Key Indicators:' : '핵심 지표:'}</strong> ${keyAreas}</p>
+        <p style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #E0E7FF;">${emotionalNote}</p>
+      </div>
+    </div>
+  `;
+}
+
 // ── Main HTML Generator ──
 function generateParentReportHTML(
   reportData: any,
@@ -134,11 +228,26 @@ function generateParentReportHTML(
   const trends = pp?.temporalTrends || [];
   const correlations = pp?.crossCorrelations || [];
   const cognitive = pp?.cognitiveTrainingProgress || {};
-  const dataCounts = pp?.dataSourceCounts || {};
+  
+  // Fallback: merge dataSourceCounts from preprocessedData AND reportData.dataSource
+  const ppCounts = pp?.dataSourceCounts || {};
+  const dsCounts = reportData?.dataSource || {};
+  const dataCounts: Record<string, number> = {
+    assessments: ppCounts.assessments || dsCounts.assessments || 0,
+    observations: ppCounts.observations || dsCounts.observations || 0,
+    observationSessions: ppCounts.observationSessions || dsCounts.observationSessions || 0,
+    chatMessages: ppCounts.chatMessages || dsCounts.chatMessages || 0,
+    progressTracking: ppCounts.progressTracking || 0,
+    videoAnalysis: ppCounts.videoAnalysis || 0,
+    brainTraining: ppCounts.brainTraining || 0,
+    concernStorage: ppCounts.concernStorage || 0,
+  };
+  
   const progressSummary = pp?.progressSummary || {};
   const peerComparison = pp?.peerComparison || {};
   const reportComparison = pp?.reportComparison || {};
-  const totalDataPoints = pp?.totalDataPoints || 0;
+  const activeSourceCount = Object.values(dataCounts).filter(v => v > 0).length;
+  const totalDataPoints = pp?.totalDataPoints || dsCounts.totalDataCount || Object.values(dataCounts).reduce((a, b) => a + b, 0);
   const dataSpanDays = pp?.dataSpanDays || 0;
   
   // Determine overall risk level from chartData
@@ -243,18 +352,27 @@ function generateParentReportHTML(
     `;
   }
 
-  // Build data source infographic
-  const dataSourceNames: Record<string, string> = isEnglish
-    ? { assessments: 'Psychology Tests', observations: 'Observation Records', brainTraining: 'Brain Training', videoAnalysis: 'AI Observation', chatMessages: 'Counseling Records', concernStorage: 'Concern Records' }
-    : { assessments: '심리검사', observations: '관찰 기록', brainTraining: '두뇌 훈련', videoAnalysis: 'AI 관찰 분석', chatMessages: '상담 기록', concernStorage: '고민 기록' };
+  // Build data source infographic with icons
+  const dataSourceConfig: Record<string, { label: string; labelEn: string; icon: string; color: string }> = {
+    assessments: { label: '심리검사', labelEn: 'Assessments', icon: '🧠', color: '#6366F1' },
+    observations: { label: '관찰일지', labelEn: 'Observations', icon: '📝', color: '#8B5CF6' },
+    observationSessions: { label: 'AI 관찰 분석', labelEn: 'AI Analysis', icon: '🔬', color: '#A855F7' },
+    chatMessages: { label: '음성 상담', labelEn: 'Counseling', icon: '🎙️', color: '#EC4899' },
+    brainTraining: { label: '게임 상담', labelEn: 'Game Assessment', icon: '🎮', color: '#F59E0B' },
+    videoAnalysis: { label: 'AI 영상 분석', labelEn: 'Video Analysis', icon: '📹', color: '#14B8A6' },
+    concernStorage: { label: '고민 기록', labelEn: 'Concerns', icon: '💭', color: '#F97316' },
+    progressTracking: { label: '변화 추적', labelEn: 'Progress', icon: '📈', color: '#059669' },
+  };
   
   let dataSourceHTML = '';
   Object.entries(dataCounts).forEach(([key, count]) => {
-    if (count && Number(count) > 0 && dataSourceNames[key]) {
+    const cfg = dataSourceConfig[key];
+    if (count && Number(count) > 0 && cfg) {
       dataSourceHTML += `
-        <div class="stat-card">
-          <div class="value" style="color: #2563EB;">${count}</div>
-          <div class="label">${dataSourceNames[key]}</div>
+        <div class="stat-card" style="border-top: 3px solid ${cfg.color};">
+          <div style="font-size: 24px; margin-bottom: 4px;">${cfg.icon}</div>
+          <div class="value" style="color: ${cfg.color};">${count}</div>
+          <div class="label">${isEnglish ? cfg.labelEn : cfg.label}</div>
         </div>
       `;
     }
@@ -473,6 +591,7 @@ function generateParentReportHTML(
   .insight-card p { font-size: 13px; line-height: 1.85; color: #4B5563; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
   .stat-card { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; text-align: center; }
   .stat-card .value { font-size: 24px; font-weight: 800; }
   .stat-card .label { font-size: 11px; color: #6B7280; margin-top: 4px; }
@@ -496,13 +615,16 @@ function generateParentReportHTML(
 <div class="cover">
   <div class="cover-badge">${sessionLabel} · ${sessionDescription}</div>
   <h1>${userName}${isEnglish ? "'s" : ' 님의'}<br>${isEnglish ? 'Comprehensive Analysis Report' : '심층 분석 리포트'}</h1>
-  <p class="subtitle">${isEnglish ? `Based on ${totalDataPoints} data points across ${Object.keys(dataCounts).filter(k => dataCounts[k] > 0).length} analysis sources` : `${Object.keys(dataCounts).filter(k => dataCounts[k] > 0).length}가지 데이터 소스 · ${totalDataPoints}개 데이터 포인트 기반 전문가 심층 분석`}</p>
+  <p class="subtitle">${isEnglish ? `Based on ${totalDataPoints} data points across ${activeSourceCount} analysis sources` : `${activeSourceCount}가지 데이터 소스 · ${totalDataPoints}개 데이터 포인트 기반 전문가 심층 분석`}</p>
   <div class="cover-meta">
     <span>📅 ${formatDate(new Date().toISOString(), isEnglish)}</span>
     ${userAge ? `<span>👤 ${isEnglish ? `Age ${userAge}` : `만 ${userAge}세`}</span>` : ''}
-    <span>📊 ${isEnglish ? `${dataSpanDays} days tracked` : `${dataSpanDays}일간 데이터 추적`}</span>
+    ${dataSpanDays > 0 ? `<span>📊 ${isEnglish ? `${dataSpanDays} days tracked` : `${dataSpanDays}일간 데이터 추적`}</span>` : ''}
   </div>
 </div>
+
+<!-- Age-Appropriate Developmental Context -->
+${generateDevelopmentalIntro(userAge, gender, isEnglish)}
 
 <!-- Overall Summary -->
 <div class="section">
@@ -522,7 +644,7 @@ function generateParentReportHTML(
         <h3>${isEnglish ? 'Overall Wellness Score' : '정서건강 종합 점수'}</h3>
         <p>${isEnglish 
           ? `Analysis based on ${totalDataPoints} data points collected over ${dataSpanDays} days.`
-          : `${dataSpanDays}일간 수집된 ${totalDataPoints}개 데이터 포인트를 기반으로 분석한 결과입니다.`}</p>
+          : `${totalDataPoints}개 데이터 포인트를 기반으로 분석한 결과입니다.`}</p>
       </div>
     </div>
   </div>
@@ -539,7 +661,7 @@ function generateParentReportHTML(
       ? 'Multiple independent data sources were cross-analyzed for a comprehensive and reliable assessment.'
       : '여러 독립적인 데이터 소스를 교차 분석하여 종합적이고 신뢰도 높은 평가를 수행했습니다.'}
   </p>
-  <div class="grid-3">
+  <div class="grid-4">
     ${dataSourceHTML}
   </div>
 </div>

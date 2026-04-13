@@ -23,6 +23,7 @@ interface ReportHistoryItem {
 interface ReportHistoryListProps {
   onViewReport?: (report: any) => void;
   onShareReport?: (reportId: string) => void;
+  activeReportId?: string | null;
 }
 
 const RISK_CONFIG: Record<string, { label: string; labelEn: string; color: string; bg: string }> = {
@@ -32,7 +33,7 @@ const RISK_CONFIG: Record<string, { label: string; labelEn: string; color: strin
   critical: { label: '긴급', labelEn: 'Critical', color: 'text-red-800', bg: 'bg-red-200 border-red-300' },
 };
 
-const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onShareReport }) => {
+const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onShareReport, activeReportId }) => {
   const [reports, setReports] = useState<ReportHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -103,7 +104,9 @@ const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onS
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors group cursor-pointer"
+                  className={`flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 border transition-colors group cursor-pointer ${
+                    activeReportId === report.id ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/5'
+                  }`}
                   onClick={() => onViewReport?.(report)}
                 >
                   {/* Report number */}

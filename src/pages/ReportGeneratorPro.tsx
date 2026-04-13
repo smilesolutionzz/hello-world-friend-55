@@ -701,7 +701,20 @@ const ReportGeneratorPro = () => {
           </div>
         )}
 
-        {/* ── 리포트 결과 ── */}
+        {/* ── 리포트 히스토리 ── */}
+        <ReportHistoryList
+          onViewReport={(report) => {
+            // 리포트 클릭 시 해당 리포트 데이터로 전환
+            if (report.report_data) {
+              setReportData(report.report_data);
+            }
+          }}
+          onShareReport={(reportId) => {
+            setCurrentReportHistoryId(reportId);
+            setShowShareModal(true);
+          }}
+        />
+
         {reportData && (
           <ReportProOutput
             reportData={reportData}

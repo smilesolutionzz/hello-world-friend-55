@@ -51,7 +51,7 @@ const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onS
 
       const { data } = await supabase
         .from('premium_report_history')
-        .select('id, report_number, created_at, overall_score, risk_level, model_used, dimension_scores, data_source_counts, is_shared, share_count')
+        .select('id, report_number, created_at, overall_score, risk_level, model_used, dimension_scores, data_source_counts, is_shared, share_count, report_data')
         .eq('user_id', session.user.id)
         .order('created_at', { ascending: false })
         .limit(20);

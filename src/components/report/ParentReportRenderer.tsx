@@ -390,37 +390,45 @@ function generateParentReportHTML(
     `;
   }
 
-  // AI sections summary (from the main report)
+  // AI sections - include ALL sections from the full report
   let aiSectionsHTML = '';
   const sections = reportData?.sections || [];
   if (sections.length > 0) {
-    // Pick key sections: home guide and summary
-    const homeGuide = sections.find((s: any) => s.title?.includes('가정') || s.title?.includes('Family') || s.title?.includes('Home'));
-    const summary = sections.find((s: any) => s.title?.includes('요약') || s.title?.includes('Summary') || s.title?.includes('제언'));
+    const sectionIcons = ['📋', '🧠', '🏠', '🎯', '💡', '📊', '🔬', '⚡', '🌱', '📈'];
+    const sectionBgs = ['#DBEAFE', '#EDE9FE', '#D1FAE5', '#FEF3C7', '#FCE7F3', '#E0E7FF', '#F3E8FF', '#FFF7ED', '#ECFDF5', '#EFF6FF'];
     
-    if (homeGuide) {
+    sections.forEach((section: any, idx: number) => {
+      const icon = sectionIcons[idx % sectionIcons.length];
+      const bg = sectionBgs[idx % sectionBgs.length];
+      const pageBreak = idx > 0 && idx % 2 === 0 ? 'page-break' : '';
+      
       aiSectionsHTML += `
-        <div class="section page-break">
+        <div class="section ${pageBreak}">
           <div class="section-header">
-            <div class="section-icon" style="background: #D1FAE5;">🏠</div>
-            <h2>${homeGuide.title}</h2>
+            <div class="section-icon" style="background: ${bg};">${icon}</div>
+            <h2>${section.title}</h2>
           </div>
-          <div class="ai-content">${cleanAIContent(homeGuide.content)}</div>
+          <div class="ai-content">${cleanAIContent(section.content)}</div>
         </div>
       `;
-    }
-    
-    if (summary) {
-      aiSectionsHTML += `
-        <div class="section">
-          <div class="section-header">
-            <div class="section-icon" style="background: #DBEAFE;">📋</div>
-            <h2>${summary.title}</h2>
-          </div>
-          <div class="ai-content">${cleanAIContent(summary.content)}</div>
+    });
+  }
+  
+  // Overall summary from reportData
+  let overallSummaryHTML = '';
+  if (reportData?.summary) {
+    overallSummaryHTML = `
+      <div class="section page-break">
+        <div class="section-header">
+          <div class="section-icon" style="background: #D1FAE5;">✅</div>
+          <h2>${isEnglish ? 'Executive Summary & Recommendations' : '종합 요약 및 제언'}</h2>
         </div>
-      `;
-    }
+        <div class="expert-box" style="border-left-color: #059669;">
+          <div class="label">${isEnglish ? 'AIHPRO Expert Summary' : 'AIHPRO 전문가 종합 소견'}</div>
+          <div class="ai-content">${cleanAIContent(reportData.summary)}</div>
+        </div>
+      </div>
+    `;
   }
 
   return `<!DOCTYPE html>
@@ -560,8 +568,11 @@ ${correlationHTML}
 <!-- Progress Summary -->
 ${progressHTML}
 
-<!-- AI-Generated Sections (Home Guide + Summary) -->
+<!-- AI Expert Analysis Sections -->
 ${aiSectionsHTML}
+
+<!-- Executive Summary -->
+${overallSummaryHTML}
 
 <!-- Disclaimer -->
 <div class="disclaimer">

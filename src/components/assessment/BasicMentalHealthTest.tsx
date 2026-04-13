@@ -102,8 +102,8 @@ const BasicMentalHealthTest = () => {
         color: "text-red-600", bgColor: "bg-red-50", borderColor: "border-red-200",
         description: isEnglish ? "You may be experiencing serious psychological difficulties. Professional help is needed." : "심리적 어려움이 심각할 수 있습니다. 전문가의 도움이 필요합니다.",
         recommendations: isEnglish
-          ? ["Please seek professional counseling immediately", "Ask family or friends for help", "Crisis hotline: 988 (Suicide & Crisis Lifeline)"]
-          : ["즉시 전문가 상담을 받으시기 바랍니다", "가족이나 친구에게 도움을 요청하세요", "위기상황시 자살예방 상담전화 1577-0199"]
+          ? ["Please seek professional counseling immediately", "Ask family or friends for help", "Use our urgent expert matching for immediate support"]
+          : ["즉시 전문가 상담을 받으시기 바랍니다", "가족이나 친구에게 도움을 요청하세요", "플랫폼 내 긴급 전문가 매칭을 이용하세요"]
       };
     }
   };

@@ -51,9 +51,9 @@ export const ExpertConsultationNotice = () => {
           </div>
 
           <p className="text-xs text-gray-700 pt-2 border-t border-amber-300">
-            <strong className="text-red-600">{isEnglish ? 'Emergency:' : '응급상황:'}</strong> {isEnglish 
-              ? 'In crisis situations, call 911 or the Crisis Hotline 988 immediately'
-              : '위기 상황 시 즉시 119 또는 자살예방상담 1577-0199로 연락하세요'}
+            <strong className="text-red-600">{isEnglish ? 'Urgent:' : '긴급상황:'}</strong> {isEnglish 
+              ? 'In crisis situations, use our urgent expert matching for immediate professional support'
+              : '위기 상황 시 플랫폼 내 긴급 전문가 매칭을 통해 즉시 전문가 지원을 받으세요'}
           </p>
         </div>
       </div>

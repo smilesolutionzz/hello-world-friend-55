@@ -56,11 +56,11 @@ const LegalSafetyNotice = ({ onAccept, testType }: LegalSafetyNoticeProps) => {
           <div className="space-y-2 text-red-700 font-medium">
             <div className="flex items-center justify-center gap-2">
               <Phone className="w-4 h-4" />
-              <span>{isEnglish ? 'Emergency: 911' : '응급실: 119'}</span>
+              <span>{isEnglish ? 'Urgent Expert Matching Available' : '긴급 전문가 매칭 지원'}</span>
             </div>
             <div className="flex items-center justify-center gap-2">
               <Heart className="w-4 h-4" />
-              <span>{isEnglish ? 'Crisis Hotline: 988 (24/7)' : '자살예방상담: 1577-0199 (24시간)'}</span>
+              <span>{isEnglish ? '24/7 Professional Support via Platform' : '24시간 플랫폼 내 전문 상담 지원'}</span>
             </div>
           </div>
         </div>
@@ -81,7 +81,7 @@ const LegalSafetyNotice = ({ onAccept, testType }: LegalSafetyNoticeProps) => {
               <li><strong>{isEnglish ? 'No Diagnosis/Treatment:' : '진단·평가·치료 불가:'}</strong> {isEnglish ? 'This test is not intended for diagnosis, evaluation, or treatment and is for self-reference only' : '본 테스트는 진단, 평가, 치료의 목적이 없으며 단순 자가 참고용입니다'}</li>
               <li><strong>{isEnglish ? 'Professional Consultation Required:' : '전문가 상담 필수:'}</strong> {isEnglish ? 'For accurate diagnosis and treatment, please visit a medical institution and consult with professionals' : '정확한 진단과 치료를 위해서는 반드시 의료기관 및 전문가를 방문하시기 바랍니다'}</li>
               <li><strong>{isEnglish ? 'Individual Variation:' : '개인차 존재:'}</strong> {isEnglish ? 'Results may vary significantly between individuals and should be used as reference only' : '결과는 개인차가 클 수 있으며 참고자료로만 활용해주시기 바랍니다'}</li>
-              <li><strong>{isEnglish ? 'Emergency Response:' : '응급상황 대응:'}</strong> {isEnglish ? 'In case of emergency, please call 911 or the Crisis Hotline 988 immediately' : '위기 상황 시에는 즉시 119 또는 자살예방상담 1577-0199로 연락하시기 바랍니다'}</li>
+              <li><strong>{isEnglish ? 'Emergency Response:' : '긴급상황 대응:'}</strong> {isEnglish ? 'In case of emergency, use our urgent expert matching for immediate professional support' : '위기 상황 시에는 플랫폼 내 긴급 전문가 매칭을 통해 즉시 전문가 지원을 받으시기 바랍니다'}</li>
             </ul>
           </div>
         </div>

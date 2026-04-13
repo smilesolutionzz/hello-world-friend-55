@@ -76,7 +76,7 @@ const ChatInterface = () => {
       if (data.riskLevel === 'high') {
         toast({
           title: "⚠️ 긴급 상황 감지",
-          description: "즉시 전문가 도움이 필요합니다. 119 또는 1577-0199로 연락하세요.",
+          description: "즉시 전문가 도움이 필요합니다. 긴급 전문가 매칭을 이용하세요.",
           variant: "destructive"
         });
       }
@@ -150,7 +150,7 @@ const ChatInterface = () => {
               <div>
                 <h3 className="font-bold text-lg">🚨 긴급상황 감지</h3>
                 <p className="text-sm mt-1">
-                  즉시 도움이 필요합니다. <strong>응급실: 119 / 자살예방: 1577-0199</strong>
+                  즉시 도움이 필요합니다. <strong>플랫폼 내 긴급 전문가 매칭을 이용하세요</strong>
                 </p>
               </div>
             </div>

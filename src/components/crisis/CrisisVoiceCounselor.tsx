@@ -308,7 +308,7 @@ export const CrisisVoiceCounselor = () => {
           </Button>
         </div>
         <p className="text-xs text-muted-foreground mt-2 text-center">
-          긴급 시: 자살예방상담전화 <button className="text-red-500 font-medium" onClick={() => window.open('tel:1393', '_self')}>1393</button>
+          긴급 시: <a href="/expert-hiring?urgent=true" className="text-red-500 font-medium underline">긴급 전문가 매칭</a>
         </p>
       </Card>
     </div>

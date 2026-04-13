@@ -199,8 +199,8 @@ const ko = {
     bizType: '업태: 정보통신업 | 종목: 응용 소프트웨어 개발 및 공급업',
     phone: '대표 전화: 010-3363-6604',
     emailInquiry: '이메일 문의: aihpro@naver.com',
-    emergency: '응급상황: 119',
-    suicidePrevention: '자살예방상담: 1577-0199',
+    emergency: '긴급 전문가 매칭: aihpro.com/expert-hiring',
+    suicidePrevention: '24시간 전문 상담 지원',
   },
 
   // Common
@@ -1379,7 +1379,7 @@ const ko = {
     crisisDetected: '⚠️ 위기 지원 안내',
     crisisDesc: '많이 힘들어보여요. 전문가와 이야기해볼까요?',
     crisisButton: '전문가 연결',
-    emergencyLine: '자살예방상담: 1577-0199',
+    emergencyLine: '긴급 전문가 매칭 이용하기',
     shareButton: '친구 초대하기',
     rewardBanner: '🎁 친구 초대하면 둘 다 보상!',
     loginRequired: '일기를 저장하려면 로그인이 필요해요',

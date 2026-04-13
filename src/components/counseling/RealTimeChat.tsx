@@ -434,7 +434,7 @@ const RealTimeChat = ({ assessmentResults, onClose }: RealTimeChatProps) => {
         {/* Emergency Notice */}
         <Card className="mt-6 p-4 bg-red-50 border-red-200">
           <p className="text-red-800 text-sm text-center">
-            <strong>응급상황:</strong> 위급한 상황이시면 119 또는 자살예방상담 1577-0199로 즉시 연락하세요.
+            <strong>긴급상황:</strong> 위급한 상황이시면 <a href="/expert-hiring?urgent=true" className="underline font-bold">긴급 전문가 매칭</a>을 이용하세요.
           </p>
         </Card>
       </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +27,7 @@ interface ExpertMatchingProps {
 }
 
 const ExpertMatching = ({ analysis, ageGroup, age, onExpertSelect }: ExpertMatchingProps) => {
+  const navigate = useNavigate();
   const [recommendedExperts, setRecommendedExperts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -380,23 +382,23 @@ const ExpertMatching = ({ analysis, ageGroup, age, onExpertSelect }: ExpertMatch
           })}
         </div>
 
-        {/* Emergency Contact */}
+        {/* Emergency Expert Connection */}
         <div className="max-w-4xl mx-auto mt-12">
           <Card className="bg-red-50 border-red-200">
             <div className="p-6 text-center space-y-4">
               <div className="flex items-center justify-center gap-2">
                 <Phone className="w-6 h-6 text-red-600" />
-                <h3 className="text-lg font-semibold text-red-700">응급상황 시</h3>
+                <h3 className="text-lg font-semibold text-red-700">긴급 전문가 연결</h3>
               </div>
               <p className="text-red-600">
-                위기상황이거나 즉시 도움이 필요하다면 24시간 응급상담센터로 연락해주세요
+                위기상황이거나 즉시 도움이 필요하다면 플랫폼 내 긴급 전문가 매칭을 이용하세요
               </p>
               <div className="flex justify-center gap-4">
-                <Button variant="destructive">
-                  응급상담 1577-0199
+                <Button variant="destructive" onClick={() => navigate('/expert-hiring?urgent=true')}>
+                  긴급 전문가 매칭
                 </Button>
-                <Button variant="outline" className="text-red-600 border-red-300">
-                  생명의전화 1588-9191
+                <Button variant="outline" className="text-red-600 border-red-300" onClick={() => navigate('/expert-hiring')}>
+                  전문가 상담 신청
                 </Button>
               </div>
             </div>

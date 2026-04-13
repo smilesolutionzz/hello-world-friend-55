@@ -256,10 +256,10 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
                     <Button 
                       size="sm" 
                       variant="outline"
-                      onClick={() => window.open('tel:1577-0199')}
+                      onClick={() => window.open('/expert-hiring?urgent=true', '_self')}
                     >
                       <Phone className="w-4 h-4 mr-1" />
-                      자살예방상담 1577-0199
+                      긴급 전문가 매칭
                     </Button>
                   </div>
                 </div>
@@ -360,7 +360,7 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground mt-2 text-center">
-                이 상담은 참고용입니다. 응급상황시 119 또는 자살예방상담 1577-0199로 연락하세요.
+                이 상담은 참고용입니다. 긴급 시 플랫폼 내 전문가 매칭을 이용하세요.
               </p>
             </div>
           </Card>

@@ -134,11 +134,26 @@ function generateParentReportHTML(
   const trends = pp?.temporalTrends || [];
   const correlations = pp?.crossCorrelations || [];
   const cognitive = pp?.cognitiveTrainingProgress || {};
-  const dataCounts = pp?.dataSourceCounts || {};
+  
+  // Fallback: merge dataSourceCounts from preprocessedData AND reportData.dataSource
+  const ppCounts = pp?.dataSourceCounts || {};
+  const dsCounts = reportData?.dataSource || {};
+  const dataCounts: Record<string, number> = {
+    assessments: ppCounts.assessments || dsCounts.assessments || 0,
+    observations: ppCounts.observations || dsCounts.observations || 0,
+    observationSessions: ppCounts.observationSessions || dsCounts.observationSessions || 0,
+    chatMessages: ppCounts.chatMessages || dsCounts.chatMessages || 0,
+    progressTracking: ppCounts.progressTracking || 0,
+    videoAnalysis: ppCounts.videoAnalysis || 0,
+    brainTraining: ppCounts.brainTraining || 0,
+    concernStorage: ppCounts.concernStorage || 0,
+  };
+  
   const progressSummary = pp?.progressSummary || {};
   const peerComparison = pp?.peerComparison || {};
   const reportComparison = pp?.reportComparison || {};
-  const totalDataPoints = pp?.totalDataPoints || 0;
+  const activeSourceCount = Object.values(dataCounts).filter(v => v > 0).length;
+  const totalDataPoints = pp?.totalDataPoints || dsCounts.totalDataCount || Object.values(dataCounts).reduce((a, b) => a + b, 0);
   const dataSpanDays = pp?.dataSpanDays || 0;
   
   // Determine overall risk level from chartData

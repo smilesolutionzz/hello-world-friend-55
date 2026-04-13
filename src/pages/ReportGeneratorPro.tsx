@@ -34,6 +34,8 @@ import {
   RiskGauge, DataSourceInfographic, InteractiveRoadmap, CrossCorrelationInsight
 } from '@/components/report/ReportDataVisualizations';
 import ReportDataChecklist from '@/components/report/ReportDataChecklist';
+import ReportProHeader from '@/components/report/ReportProHeader';
+import ReportProOutput from '@/components/report/ReportProOutput';
 
 // ── 샘플 리포트 섹션 데이터 ──
 const SAMPLE_REPORT_SECTIONS_KO = [

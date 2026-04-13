@@ -47,6 +47,55 @@ function calculateRCI(score1: number, score2: number, sem: number): { rci: numbe
   return { rci: Math.round(rci * 100) / 100, significant: rci > 1.96 };
 }
 
+// ── Dimension name mapping ──
+const DIMENSION_LABELS: Record<string, { ko: string; en: string }> = {
+  total: { ko: '종합 점수', en: 'Total Score' },
+  average: { ko: '평균 점수', en: 'Average Score' },
+  age: { ko: '연령 발달', en: 'Age Development' },
+  ageInMonths: { ko: '월령 발달', en: 'Monthly Development' },
+  anxiety: { ko: '불안', en: 'Anxiety' },
+  depression: { ko: '우울', en: 'Depression' },
+  stress: { ko: '스트레스', en: 'Stress' },
+  anger: { ko: '분노', en: 'Anger' },
+  positive: { ko: '긍정 정서', en: 'Positive Emotions' },
+  engagement: { ko: '몰입도', en: 'Engagement' },
+  social: { ko: '사회성', en: 'Social Skills' },
+  emotional: { ko: '정서 조절', en: 'Emotional Regulation' },
+  cognitive: { ko: '인지 발달', en: 'Cognitive Development' },
+  language: { ko: '언어 발달', en: 'Language Development' },
+  motor: { ko: '운동 발달', en: 'Motor Development' },
+  attention: { ko: '주의력', en: 'Attention' },
+  selfEsteem: { ko: '자존감', en: 'Self-Esteem' },
+  sleep: { ko: '수면', en: 'Sleep' },
+  behavior: { ko: '행동', en: 'Behavior' },
+};
+
+function getDimensionLabel(dim: string, isEnglish: boolean): string {
+  const entry = DIMENSION_LABELS[dim];
+  if (entry) return isEnglish ? entry.en : entry.ko;
+  // Fallback: capitalize first letter
+  return dim.charAt(0).toUpperCase() + dim.slice(1).replace(/([A-Z])/g, ' $1');
+}
+
+// ── Clean AI section content ──
+function cleanAIContent(content: string): string {
+  if (!content) return '';
+  let cleaned = content;
+  // Remove JSON wrapper artifacts like "content": "..." and trailing }, {
+  cleaned = cleaned.replace(/^["']?content["']?\s*:\s*["']/i, '');
+  cleaned = cleaned.replace(/["']\s*\}?\s*,?\s*\{?\s*$/g, '');
+  cleaned = cleaned.replace(/["']\s*\}\s*$/g, '');
+  // Remove stray JSON array/object closures
+  cleaned = cleaned.replace(/^\s*\}\s*,?\s*\{/gm, '');
+  cleaned = cleaned.replace(/\}\s*,\s*$/g, '');
+  cleaned = cleaned.replace(/^\s*\]\s*,?\s*$/gm, '');
+  // Remove "summary": "..." wrapper if present
+  cleaned = cleaned.replace(/^["']?summary["']?\s*:\s*["']/i, '');
+  // Remove "roadmap": { ... at end
+  cleaned = cleaned.replace(/["']\s*,\s*["']?roadmap["']?\s*:\s*\{[\s\S]*$/i, '');
+  return cleaned.trim();
+}
+
 // ── Expert commentary generator ──
 function generateExpertComment(dimension: string, percentage: number, trend: string, isEnglish: boolean): string {
   const dimLabel = dimension;
@@ -122,6 +171,7 @@ function generateParentReportHTML(
     const trend = trends.find((t: any) => t.dimension === d.dimension);
     const trendDir = trend?.direction || 'stable';
     const changePercent = trend?.changePercent || 0;
+    const dimLabel = getDimensionLabel(d.dimension, isEnglish);
     
     const trendIcon = trendDir === 'improving' ? '📈' : trendDir === 'declining' ? '📉' : '➡️';
     const trendText = trendDir === 'improving'
@@ -130,12 +180,12 @@ function generateParentReportHTML(
       ? (isEnglish ? `Declining (${changePercent}%)` : `주의 필요 (${changePercent}%)`)
       : (isEnglish ? 'Stable' : '안정');
 
-    const expertComment = generateExpertComment(d.dimension, pct, trendDir, isEnglish);
+    const expertComment = generateExpertComment(dimLabel, pct, trendDir, isEnglish);
 
     domainSectionsHTML += `
       <div class="gauge-container">
         <div class="gauge-label">
-          <span>${d.dimension}</span>
+          <span>${dimLabel}</span>
           <span style="color: ${color};">${d.score}/${d.maxScore} (${label})</span>
         </div>
         <div class="gauge-track">
@@ -159,7 +209,7 @@ function generateParentReportHTML(
       const changeSign = c.change > 0 ? '+' : '';
       compRows += `
         <div class="insight-card">
-          <h4>${c.category} <span style="color: ${changeColor}; font-size: 12px;">(${changeSign}${c.change}%)</span></h4>
+          <h4>${getDimensionLabel(c.category, isEnglish)} <span style="color: ${changeColor}; font-size: 12px;">(${changeSign}${c.change}%)</span></h4>
           <div style="display: flex; gap: 8px; margin: 10px 0;">
             <div style="flex: 1;">
               <div style="font-size: 10px; color: #6B7280; margin-bottom: 4px;">${isEnglish ? 'Initial' : '초기'} (${c.earliest}%)</div>
@@ -293,7 +343,7 @@ function generateParentReportHTML(
       const position = percentile > 70 ? (isEnglish ? 'Above average' : '또래 평균 이상') : percentile < 30 ? (isEnglish ? 'Needs support' : '지원 필요') : (isEnglish ? 'Average' : '또래 평균');
       peerRows += `
         <div class="insight-card">
-          <h4>${dim} · ${isEnglish ? 'Percentile' : '백분위'} ${percentile}%</h4>
+          <h4>${getDimensionLabel(dim, isEnglish)} · ${isEnglish ? 'Percentile' : '백분위'} ${percentile}%</h4>
           <p>${isEnglish ? `Among 100 peers, your child ranks at the ${percentile}th percentile. Status: ${position}.` : `같은 나이 100명 중 ${percentile}번째 위치입니다. 평가: ${position}.`}</p>
         </div>
       `;
@@ -313,9 +363,9 @@ function generateParentReportHTML(
   // Progress summary
   let progressHTML = '';
   if (progressSummary.totalRecords > 0) {
-    const improved = (progressSummary.improvedDimensions || []).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
-    const declined = (progressSummary.declinedDimensions || []).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
-    const stable = (progressSummary.stableDimensions || []).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
+    const improved = (progressSummary.improvedDimensions || []).map((d: string) => getDimensionLabel(d, isEnglish)).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
+    const declined = (progressSummary.declinedDimensions || []).map((d: string) => getDimensionLabel(d, isEnglish)).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
+    const stable = (progressSummary.stableDimensions || []).map((d: string) => getDimensionLabel(d, isEnglish)).join(', ') || (isEnglish ? 'None detected' : '해당 없음');
 
     progressHTML = `
       <div class="section">
@@ -355,7 +405,7 @@ function generateParentReportHTML(
             <div class="section-icon" style="background: #D1FAE5;">🏠</div>
             <h2>${homeGuide.title}</h2>
           </div>
-          <div class="ai-content">${homeGuide.content}</div>
+          <div class="ai-content">${cleanAIContent(homeGuide.content)}</div>
         </div>
       `;
     }
@@ -367,7 +417,7 @@ function generateParentReportHTML(
             <div class="section-icon" style="background: #DBEAFE;">📋</div>
             <h2>${summary.title}</h2>
           </div>
-          <div class="ai-content">${summary.content}</div>
+          <div class="ai-content">${cleanAIContent(summary.content)}</div>
         </div>
       `;
     }

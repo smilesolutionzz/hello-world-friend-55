@@ -303,13 +303,12 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
       <ReportCurationSection concerns={userInput.recentConcerns} />
 
       {/* Share Modal */}
-      {showShareModal && (
-        <ReportShareModal
-          open={showShareModal}
-          onClose={() => setShowShareModal(false)}
-          reportHistoryId={null}
-        />
-      )}
+      <ReportShareModal
+        open={showShareModal}
+        onOpenChange={setShowShareModal}
+        reportHistoryIds={[]}
+        reportTitle={t(`${userInput.name}님의 종합 분석 리포트`, `Report for ${userInput.name}`)}
+      />
     </div>
   );
 };

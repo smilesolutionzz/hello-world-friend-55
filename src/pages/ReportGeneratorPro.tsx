@@ -375,8 +375,9 @@ const ReportGeneratorPro = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <ReportProHeader isLoggedIn={isLoggedIn} isPremium={isPremium} />
-        {/* ── 스텝 인디케이터 ── */}
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <ReportProHeader isLoggedIn={isLoggedIn} isPremium={isPremium} />
+
         {isPremium && !reportData && (
           <StepIndicator currentStep={currentStep} steps={isEnglish ? ['Select Mode', 'Enter Info', 'Generate Report'] : ['모드 선택', '정보 입력', '리포트 생성']} />
         )}

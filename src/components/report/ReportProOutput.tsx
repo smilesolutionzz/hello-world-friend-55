@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   FileDown, Copy, Share2, Mail, Loader2, MessageSquare, Crown,
   Eye, BarChart3, TrendingUp, AlertTriangle, CheckCircle2
@@ -116,7 +115,7 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
   const [showShareModal, setShowShareModal] = useState(false);
   const [familyEmail, setFamilyEmail] = useState('');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
-  const [activeTab, setActiveTab] = useState('visual');
+  
 
   const scenario = detectScenario(reportData);
   const banner = getScenarioBanner(scenario, isEnglish);
@@ -210,94 +209,13 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
         </div>
       </div>
 
-      {/* View Mode Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-slate-800/80 border border-white/10 rounded-xl p-1 gap-0">
-          <TabsTrigger value="visual" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white/60 text-sm font-semibold rounded-lg py-2.5">
-            📊 {t('학부모용 비주얼 리포트', 'Visual Report')}
-          </TabsTrigger>
-          <TabsTrigger value="detail" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white/60 text-sm font-semibold rounded-lg py-2.5">
-            📋 {t('전문 상세 분석', 'Detailed Analysis')}
-          </TabsTrigger>
-        </TabsList>
-
-        {/* 학부모용 비주얼 리포트 */}
-        <TabsContent value="visual" className="mt-6">
-          <ParentReportRenderer
-            reportData={reportData}
-            userName={userInput.name}
-            userAge={userAge}
-            gender={userInput.gender}
-          />
-        </TabsContent>
-
-        {/* 전문 상세 분석 (기존 텍스트 리포트) */}
-        <TabsContent value="detail" className="mt-6">
-          <div id="report-content" className="bg-white rounded-2xl p-6 md:p-12 shadow-2xl space-y-8">
-            {/* Cover */}
-            <div className="text-center space-y-6 pb-8 border-b-4 border-slate-200">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 rounded-full">
-                <Crown className="w-5 h-5 text-amber-600" />
-                <span className="text-sm font-bold text-amber-700">PREMIUM PERSONAL REPORT</span>
-              </div>
-              <h1 className="text-3xl md:text-4xl font-black text-slate-900">{t('AI 종합 분석 리포트', 'AI Comprehensive Report')}</h1>
-              <div className="flex justify-center gap-4 flex-wrap text-sm text-slate-500">
-                <span>{t('대상', 'Subject')}: {userInput.name}</span>
-                <span>{t('생성일', 'Generated')}: {new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR')}</span>
-              </div>
-              <div className="flex justify-center gap-3 flex-wrap">
-                <Badge variant="outline">{t('검사', 'Tests')} {reportData.dataSource?.assessments || 0}{t('건', '')}</Badge>
-                <Badge variant="outline">{t('관찰', 'Obs.')} {reportData.dataSource?.observations || 0}{t('건', '')}</Badge>
-                <Badge variant="outline">{t('상담', 'Chats')} {reportData.dataSource?.chatMessages || 0}{t('건', '')}</Badge>
-              </div>
-            </div>
-
-            {/* Sections */}
-            {reportData.sections?.map((section: any, index: number) => {
-              const colors = [
-                { bg: 'bg-blue-50', border: 'border-blue-200', title: 'text-blue-800' },
-                { bg: 'bg-rose-50', border: 'border-rose-200', title: 'text-rose-800' },
-                { bg: 'bg-green-50', border: 'border-green-200', title: 'text-green-800' },
-                { bg: 'bg-purple-50', border: 'border-purple-200', title: 'text-purple-800' },
-                { bg: 'bg-orange-50', border: 'border-orange-200', title: 'text-orange-800' },
-              ][index % 5];
-              return (
-                <div key={index} className="space-y-4" data-report-section={index}>
-                  <h3 className={`text-2xl font-bold ${colors.title}`}>
-                    {index + 1}. {section.title}
-                  </h3>
-                  <div className={`p-6 rounded-xl border-2 ${colors.bg} ${colors.border}`}>
-                    <div className="prose prose-slate max-w-none leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: section.content }} />
-                  </div>
-                </div>
-              );
-            })}
-
-            {/* Summary */}
-            {reportData.summary && (
-              <div className="space-y-6 pt-12 border-t-4 border-slate-200">
-                <h2 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-600" /> {t('종합 요약', 'Summary')}
-                </h2>
-                <div className="bg-gradient-to-br from-slate-50 to-blue-50 p-8 rounded-xl border-2 border-slate-200">
-                  <div className="prose prose-lg max-w-none text-slate-700 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: reportData.summary }} />
-                </div>
-              </div>
-            )}
-
-            {/* Disclaimer */}
-            <div className="text-center pt-12 border-t-2 border-slate-200 space-y-4">
-              <p className="text-sm text-slate-600 max-w-3xl mx-auto">
-                {t('본 리포트는 AI 기반 자동 분석 결과이며, 의학적 진단이나 전문가의 정확한 평가를 대체할 수 없습니다.',
-                   'This report is AI-based and cannot replace professional evaluation.')}
-              </p>
-              <p className="text-xs text-slate-500">Generated by AIHPRO | © 2025</p>
-            </div>
-          </div>
-        </TabsContent>
-      </Tabs>
+      {/* Unified Report */}
+      <ParentReportRenderer
+        reportData={reportData}
+        userName={userInput.name}
+        userAge={userAge}
+        gender={userInput.gender}
+      />
 
       {/* Curation */}
       <ReportCurationSection concerns={userInput.recentConcerns} />

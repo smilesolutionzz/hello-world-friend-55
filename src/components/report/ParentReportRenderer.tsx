@@ -258,18 +258,27 @@ function generateParentReportHTML(
     `;
   }
 
-  // Build data source infographic
-  const dataSourceNames: Record<string, string> = isEnglish
-    ? { assessments: 'Psychology Tests', observations: 'Observation Records', brainTraining: 'Brain Training', videoAnalysis: 'AI Observation', chatMessages: 'Counseling Records', concernStorage: 'Concern Records' }
-    : { assessments: '심리검사', observations: '관찰 기록', brainTraining: '두뇌 훈련', videoAnalysis: 'AI 관찰 분석', chatMessages: '상담 기록', concernStorage: '고민 기록' };
+  // Build data source infographic with icons
+  const dataSourceConfig: Record<string, { label: string; labelEn: string; icon: string; color: string }> = {
+    assessments: { label: '심리검사', labelEn: 'Assessments', icon: '🧠', color: '#6366F1' },
+    observations: { label: '관찰일지', labelEn: 'Observations', icon: '📝', color: '#8B5CF6' },
+    observationSessions: { label: 'AI 관찰 분석', labelEn: 'AI Analysis', icon: '🔬', color: '#A855F7' },
+    chatMessages: { label: '음성 상담', labelEn: 'Counseling', icon: '🎙️', color: '#EC4899' },
+    brainTraining: { label: '게임 상담', labelEn: 'Game Assessment', icon: '🎮', color: '#F59E0B' },
+    videoAnalysis: { label: 'AI 영상 분석', labelEn: 'Video Analysis', icon: '📹', color: '#14B8A6' },
+    concernStorage: { label: '고민 기록', labelEn: 'Concerns', icon: '💭', color: '#F97316' },
+    progressTracking: { label: '변화 추적', labelEn: 'Progress', icon: '📈', color: '#059669' },
+  };
   
   let dataSourceHTML = '';
   Object.entries(dataCounts).forEach(([key, count]) => {
-    if (count && Number(count) > 0 && dataSourceNames[key]) {
+    const cfg = dataSourceConfig[key];
+    if (count && Number(count) > 0 && cfg) {
       dataSourceHTML += `
-        <div class="stat-card">
-          <div class="value" style="color: #2563EB;">${count}</div>
-          <div class="label">${dataSourceNames[key]}</div>
+        <div class="stat-card" style="border-top: 3px solid ${cfg.color};">
+          <div style="font-size: 24px; margin-bottom: 4px;">${cfg.icon}</div>
+          <div class="value" style="color: ${cfg.color};">${count}</div>
+          <div class="label">${isEnglish ? cfg.labelEn : cfg.label}</div>
         </div>
       `;
     }

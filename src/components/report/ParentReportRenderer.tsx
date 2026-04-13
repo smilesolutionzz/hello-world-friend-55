@@ -47,6 +47,55 @@ function calculateRCI(score1: number, score2: number, sem: number): { rci: numbe
   return { rci: Math.round(rci * 100) / 100, significant: rci > 1.96 };
 }
 
+// ── Dimension name mapping ──
+const DIMENSION_LABELS: Record<string, { ko: string; en: string }> = {
+  total: { ko: '종합 점수', en: 'Total Score' },
+  average: { ko: '평균 점수', en: 'Average Score' },
+  age: { ko: '연령 발달', en: 'Age Development' },
+  ageInMonths: { ko: '월령 발달', en: 'Monthly Development' },
+  anxiety: { ko: '불안', en: 'Anxiety' },
+  depression: { ko: '우울', en: 'Depression' },
+  stress: { ko: '스트레스', en: 'Stress' },
+  anger: { ko: '분노', en: 'Anger' },
+  positive: { ko: '긍정 정서', en: 'Positive Emotions' },
+  engagement: { ko: '몰입도', en: 'Engagement' },
+  social: { ko: '사회성', en: 'Social Skills' },
+  emotional: { ko: '정서 조절', en: 'Emotional Regulation' },
+  cognitive: { ko: '인지 발달', en: 'Cognitive Development' },
+  language: { ko: '언어 발달', en: 'Language Development' },
+  motor: { ko: '운동 발달', en: 'Motor Development' },
+  attention: { ko: '주의력', en: 'Attention' },
+  selfEsteem: { ko: '자존감', en: 'Self-Esteem' },
+  sleep: { ko: '수면', en: 'Sleep' },
+  behavior: { ko: '행동', en: 'Behavior' },
+};
+
+function getDimensionLabel(dim: string, isEnglish: boolean): string {
+  const entry = DIMENSION_LABELS[dim];
+  if (entry) return isEnglish ? entry.en : entry.ko;
+  // Fallback: capitalize first letter
+  return dim.charAt(0).toUpperCase() + dim.slice(1).replace(/([A-Z])/g, ' $1');
+}
+
+// ── Clean AI section content ──
+function cleanAIContent(content: string): string {
+  if (!content) return '';
+  let cleaned = content;
+  // Remove JSON wrapper artifacts like "content": "..." and trailing }, {
+  cleaned = cleaned.replace(/^["']?content["']?\s*:\s*["']/i, '');
+  cleaned = cleaned.replace(/["']\s*\}?\s*,?\s*\{?\s*$/g, '');
+  cleaned = cleaned.replace(/["']\s*\}\s*$/g, '');
+  // Remove stray JSON array/object closures
+  cleaned = cleaned.replace(/^\s*\}\s*,?\s*\{/gm, '');
+  cleaned = cleaned.replace(/\}\s*,\s*$/g, '');
+  cleaned = cleaned.replace(/^\s*\]\s*,?\s*$/gm, '');
+  // Remove "summary": "..." wrapper if present
+  cleaned = cleaned.replace(/^["']?summary["']?\s*:\s*["']/i, '');
+  // Remove "roadmap": { ... at end
+  cleaned = cleaned.replace(/["']\s*,\s*["']?roadmap["']?\s*:\s*\{[\s\S]*$/i, '');
+  return cleaned.trim();
+}
+
 // ── Expert commentary generator ──
 function generateExpertComment(dimension: string, percentage: number, trend: string, isEnglish: boolean): string {
   const dimLabel = dimension;

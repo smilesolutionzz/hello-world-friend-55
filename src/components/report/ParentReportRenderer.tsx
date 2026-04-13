@@ -185,7 +185,7 @@ function generateParentReportHTML(
     domainSectionsHTML += `
       <div class="gauge-container">
         <div class="gauge-label">
-          <span>${d.dimension}</span>
+          <span>${dimLabel}</span>
           <span style="color: ${color};">${d.score}/${d.maxScore} (${label})</span>
         </div>
         <div class="gauge-track">

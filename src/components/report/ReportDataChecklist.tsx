@@ -66,13 +66,19 @@ export default function ReportDataChecklist({ onSelectionChange }: ReportDataChe
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const [testRes, personalityRes, observationRes, brainRes, enhancedRes, playRes, progressRes] = await Promise.all([
+      // AIHPRO 5대 데이터 소스: 간편검사, 심층검사, 관찰일지, 게임검사, 음성상담
+      const [testRes, enhancedRes, observationRes, gameRes, voiceRes, progressRes] = await Promise.all([
+        // 1. 간편검사 (심리검사 결과)
         supabase.from('test_results').select('id, test_type_id, scores, completed_at, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
-        supabase.from('personality_test_results').select('id, personality_type, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
-        supabase.from('ai_observation_results').select('id, analysis_type, input_type, title, risk_level, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
-        supabase.from('brain_training_sessions').select('id, game_type, game_name, score, max_score, session_date, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+        // 2. 심층검사 (심층 분석 리포트)
         supabase.from('assessment_enhanced_analysis').select('id, assessment_type, risk_level, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+        // 3. 관찰일지 (AI 관찰 분석)
+        supabase.from('ai_observation_results').select('id, analysis_type, input_type, title, risk_level, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+        // 4. 게임검사 (금쪽상담소 해바라기 마을 - play_assessment_results)
         supabase.from('play_assessment_results').select('id, age_group, style, cognitive_score, emotional_score, social_score, physical_score, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+        // 5. 음성상담 (AI 코칭 세션)
+        supabase.from('ai_coaching_sessions').select('id, session_type, session_summary, mood_before, mood_after, created_at, completed_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+        // 변화 추적 (종단 분석용 보조 데이터)
         supabase.from('progress_tracking').select('id, source_type, source_label, summary, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
       ]);
 
@@ -87,31 +93,27 @@ export default function ReportDataChecklist({ onSelectionChange }: ReportDataChe
 
       const newCategories: DataCategory[] = [
         {
-          key: 'tests', label: '심리검사 결과', icon: <Brain className="w-4 h-4" />, color: 'text-blue-600', expanded: true,
+          key: 'tests', label: '간편검사', icon: <Brain className="w-4 h-4" />, color: 'text-blue-600', expanded: true,
           items: (testRes.data || []).map(t => ({ id: t.id, source: 'test_results', label: testTypeMap[t.test_type_id] || '심리검사', detail: t.completed_at ? '완료' : '진행중', date: formatDate(t.completed_at || t.created_at), selected: true })),
         },
         {
-          key: 'personality', label: '성격/기질 검사', icon: <Users className="w-4 h-4" />, color: 'text-violet-600', expanded: true,
-          items: (personalityRes.data || []).map(t => ({ id: t.id, source: 'personality_test_results', label: personalityTypeLabels[t.personality_type] || t.personality_type, detail: '완료', date: formatDate(t.created_at), selected: true })),
-        },
-        {
-          key: 'enhanced', label: '심층 분석 리포트', icon: <FileText className="w-4 h-4" />, color: 'text-amber-600', expanded: true,
+          key: 'enhanced', label: '심층검사', icon: <Microscope className="w-4 h-4" />, color: 'text-amber-600', expanded: true,
           items: (enhancedRes.data || []).map(t => ({ id: t.id, source: 'assessment_enhanced_analysis', label: t.assessment_type || '심층 분석', detail: t.risk_level ? `위험도: ${t.risk_level}` : '완료', date: formatDate(t.created_at), riskLevel: t.risk_level || undefined, selected: true })),
         },
         {
-          key: 'observations', label: 'AI 관찰 분석', icon: <Eye className="w-4 h-4" />, color: 'text-emerald-600', expanded: true,
+          key: 'observations', label: '관찰일지', icon: <Eye className="w-4 h-4" />, color: 'text-emerald-600', expanded: true,
           items: (observationRes.data || []).map(t => ({ id: t.id, source: 'ai_observation_results', label: t.title || analysisTypeLabels[t.analysis_type] || t.analysis_type, detail: `${t.input_type} 기반`, date: formatDate(t.created_at), riskLevel: t.risk_level || undefined, selected: true })),
         },
         {
-          key: 'brain', label: '두뇌훈련 기록', icon: <Gamepad2 className="w-4 h-4" />, color: 'text-sky-600', expanded: false,
-          items: (brainRes.data || []).map(t => ({ id: t.id, source: 'brain_training_sessions', label: t.game_name || t.game_type, detail: `${t.score}/${t.max_score}점`, date: formatDate(t.session_date || t.created_at), selected: false })),
+          key: 'game', label: '게임검사', icon: <Gamepad2 className="w-4 h-4" />, color: 'text-pink-600', expanded: true,
+          items: (gameRes.data || []).map(t => ({ id: t.id, source: 'play_assessment_results', label: `게임검사 (${t.age_group || '전연령'})`, detail: `인지:${t.cognitive_score} 정서:${t.emotional_score} 사회:${t.social_score}`, date: formatDate(t.created_at), selected: true })),
         },
         {
-          key: 'play', label: '놀이 평가', icon: <Sparkles className="w-4 h-4" />, color: 'text-pink-600', expanded: true,
-          items: (playRes.data || []).map(t => ({ id: t.id, source: 'play_assessment_results', label: `놀이 평가 (${t.age_group || '전연령'})`, detail: `인지:${t.cognitive_score} 정서:${t.emotional_score}`, date: formatDate(t.created_at), selected: true })),
+          key: 'voice', label: '음성상담', icon: <Mic className="w-4 h-4" />, color: 'text-violet-600', expanded: true,
+          items: (voiceRes.data || []).map(t => ({ id: t.id, source: 'ai_coaching_sessions', label: t.session_type === 'voice' ? '음성 상담' : (t.session_type || '상담'), detail: t.mood_before && t.mood_after ? `기분 ${t.mood_before}→${t.mood_after}` : (t.session_summary ? t.session_summary.substring(0, 25) + '...' : '완료'), date: formatDate(t.completed_at || t.created_at), selected: true })),
         },
         {
-          key: 'progress', label: '변화 추적 기록', icon: <BarChart3 className="w-4 h-4" />, color: 'text-orange-600', expanded: true,
+          key: 'progress', label: '변화 추적', icon: <BarChart3 className="w-4 h-4" />, color: 'text-orange-600', expanded: true,
           items: (progressRes.data || []).map(t => ({ id: t.id, source: 'progress_tracking', label: t.source_label || t.source_type || '변화 추적', detail: t.summary ? t.summary.substring(0, 30) + '...' : '기록됨', date: formatDate(t.created_at), selected: true })),
         },
       ].filter(c => c.items.length > 0);

@@ -378,7 +378,7 @@ const ReportGeneratorPro = () => {
                     <Crown className="w-5 h-5 mr-2" /> {t('프리미엄 구독하기', 'Subscribe to Premium')}
                   </Button>
                 )}
-                <Button onClick={() => setShowSampleReport(true)} variant="outline" className="border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 px-8 py-3 rounded-xl">
+                <Button onClick={() => document.getElementById('report-showcase')?.scrollIntoView({ behavior: 'smooth' })} variant="outline" className="border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 px-8 py-3 rounded-xl">
                   <Eye className="w-5 h-5 mr-2" /> {t('샘플 미리보기', 'Sample Preview')}
                 </Button>
               </div>

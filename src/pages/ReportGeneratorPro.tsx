@@ -102,8 +102,6 @@ const ReportGeneratorPro = () => {
   
   const [showShareModal, setShowShareModal] = useState(false);
   const [currentReportHistoryId, setCurrentReportHistoryId] = useState<string | null>(null);
-  const [showSampleReport, setShowSampleReport] = useState(false);
-  const [activeReportSection, setActiveReportSection] = useState(0);
   const [selectedChecklistData, setSelectedChecklistData] = useState<Record<string, string[]>>({});
   const [checklistSelectedCount, setChecklistSelectedCount] = useState(0);
   const [checklistTotalCount, setChecklistTotalCount] = useState(0);

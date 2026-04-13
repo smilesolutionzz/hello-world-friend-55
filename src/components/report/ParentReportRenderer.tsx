@@ -171,6 +171,7 @@ function generateParentReportHTML(
     const trend = trends.find((t: any) => t.dimension === d.dimension);
     const trendDir = trend?.direction || 'stable';
     const changePercent = trend?.changePercent || 0;
+    const dimLabel = getDimensionLabel(d.dimension, isEnglish);
     
     const trendIcon = trendDir === 'improving' ? '📈' : trendDir === 'declining' ? '📉' : '➡️';
     const trendText = trendDir === 'improving'
@@ -179,7 +180,7 @@ function generateParentReportHTML(
       ? (isEnglish ? `Declining (${changePercent}%)` : `주의 필요 (${changePercent}%)`)
       : (isEnglish ? 'Stable' : '안정');
 
-    const expertComment = generateExpertComment(d.dimension, pct, trendDir, isEnglish);
+    const expertComment = generateExpertComment(dimLabel, pct, trendDir, isEnglish);
 
     domainSectionsHTML += `
       <div class="gauge-container">

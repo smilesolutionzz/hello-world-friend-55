@@ -23,6 +23,7 @@ interface ReportHistoryItem {
 interface ReportHistoryListProps {
   onViewReport?: (report: any) => void;
   onShareReport?: (reportId: string) => void;
+  activeReportId?: string | null;
 }
 
 const RISK_CONFIG: Record<string, { label: string; labelEn: string; color: string; bg: string }> = {
@@ -32,7 +33,7 @@ const RISK_CONFIG: Record<string, { label: string; labelEn: string; color: strin
   critical: { label: '긴급', labelEn: 'Critical', color: 'text-red-800', bg: 'bg-red-200 border-red-300' },
 };
 
-const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onShareReport }) => {
+const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onShareReport, activeReportId }) => {
   const [reports, setReports] = useState<ReportHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -89,6 +90,19 @@ const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onS
           </Badge>
         </div>
 
+        {/* Longitudinal analysis banner */}
+        {reports.length >= 2 && (
+          <div className="mx-5 mt-3 px-3 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-3.5 h-3.5 text-primary shrink-0" />
+              <p className="text-[10px] text-primary font-semibold">
+                {t(`${reports.length}회차 종단 분석 가능 · 각 리포트를 클릭해 비교하세요`, 
+                   `${reports.length} sessions available for longitudinal analysis · Click to compare`)}
+              </p>
+            </div>
+          </div>
+        )}
+
         <CardContent className="p-3 space-y-2">
           <AnimatePresence mode="popLayout">
             {displayReports.map((report, idx) => {
@@ -103,7 +117,9 @@ const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onS
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors group cursor-pointer"
+                  className={`flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 border transition-colors group cursor-pointer ${
+                    activeReportId === report.id ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/5'
+                  }`}
                   onClick={() => onViewReport?.(report)}
                 >
                   {/* Report number */}

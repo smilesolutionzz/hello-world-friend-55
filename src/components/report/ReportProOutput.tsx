@@ -11,6 +11,7 @@ import ParentReportRenderer from '@/components/report/ParentReportRenderer';
 import VisualSummaryButton from '@/components/visual-summary/VisualSummaryButton';
 import ReportShareModal from '@/components/report/ReportShareModal';
 import ReportCurationSection from '@/components/report/ReportCurationSection';
+import ReportVisualNoteSummary from '@/components/report/ReportVisualNoteSummary';
 import { supabase } from '@/integrations/supabase/client';
 import html2pdf from 'html2pdf.js';
 
@@ -211,6 +212,14 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
 
       {/* Unified Report */}
       <ParentReportRenderer
+        reportData={reportData}
+        userName={userInput.name}
+        userAge={userAge}
+        gender={userInput.gender}
+      />
+
+      {/* 1장 요약 비주얼 노트 카드 */}
+      <ReportVisualNoteSummary
         reportData={reportData}
         userName={userInput.name}
         userAge={userAge}

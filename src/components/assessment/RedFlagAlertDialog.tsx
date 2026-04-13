@@ -26,7 +26,7 @@ const RedFlagAlertDialog = ({ isOpen, onClose, redFlagResult }: RedFlagAlertDial
   const isCritical = redFlagResult.overallSeverity === 'critical';
 
   const handleConsultation = () => { onClose(); navigate('/expert-hiring'); };
-  const handleEmergencyCall = () => { window.location.href = isEnglish ? 'tel:988' : 'tel:1577-0199'; };
+  const handleEmergencyMatch = () => { onClose(); navigate('/expert-hiring?urgent=true'); };
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -54,19 +54,18 @@ const RedFlagAlertDialog = ({ isOpen, onClose, redFlagResult }: RedFlagAlertDial
               {isCritical && (
                 <div className="bg-destructive/10 p-4 rounded-lg border border-destructive/30">
                   <p className="text-sm font-medium text-destructive mb-2">
-                    {isEnglish ? '🚨 Emergency Contacts' : '🚨 긴급 연락처'}
+                    {isEnglish ? '🚨 Immediate Expert Support Available' : '🚨 즉시 전문가 지원 가능'}
                   </p>
                   <div className="space-y-1 text-sm">
                     {isEnglish ? (
                       <>
-                        <p>• Suicide & Crisis Lifeline: <strong>988</strong> (24/7)</p>
-                        <p>• Crisis Text Line: Text <strong>HOME</strong> to <strong>741741</strong></p>
+                        <p>• <strong>Urgent expert matching</strong> available within 30 minutes</p>
+                        <p>• Connect with a licensed professional through our platform</p>
                       </>
                     ) : (
                       <>
-                        <p>• 정신건강 위기상담: <strong>1577-0199</strong> (24시간)</p>
-                        <p>• 자살예방 상담전화: <strong>1393</strong></p>
-                        <p>• 생명의전화: <strong>1588-9191</strong></p>
+                        <p>• 플랫폼 내 <strong>긴급 전문가 매칭</strong> 30분 이내 가능</p>
+                        <p>• 검증된 전문 상담사와 즉시 연결됩니다</p>
                       </>
                     )}
                   </div>
@@ -82,9 +81,9 @@ const RedFlagAlertDialog = ({ isOpen, onClose, redFlagResult }: RedFlagAlertDial
         </AlertDialogHeader>
         <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
           {isCritical && (
-            <Button onClick={handleEmergencyCall} variant="destructive" className="w-full">
-              <Phone className="w-4 h-4 mr-2" />
-              {isEnglish ? 'Emergency Call (988)' : '긴급 상담 전화 (1577-0199)'}
+            <Button onClick={handleEmergencyMatch} variant="destructive" className="w-full">
+              <MessageCircle className="w-4 h-4 mr-2" />
+              {isEnglish ? 'Urgent Expert Match' : '긴급 전문가 연결'}
             </Button>
           )}
           <Button onClick={handleConsultation} className={`w-full ${isCritical ? 'bg-orange-600 hover:bg-orange-700' : 'bg-primary'}`}>

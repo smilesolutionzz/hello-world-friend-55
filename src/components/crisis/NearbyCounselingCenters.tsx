@@ -239,44 +239,36 @@ export const NearbyCounselingCenters = ({ isYouth = true, crisisLevel }: Props) 
         )}
       </Card>
 
-      {/* 전국 긴급 연락처 */}
+      {/* 플랫폼 내 전문가 연결 */}
       <Card className="p-4 bg-muted/30">
         <h4 className="font-medium mb-3 flex items-center gap-2">
           <Phone className="w-4 h-4" />
-          전국 어디서나 24시간
+          긴급 전문가 지원
         </h4>
         <div className="grid grid-cols-2 gap-3">
           <Button
             variant="outline"
-            className="justify-start"
-            onClick={() => window.open('tel:1393', '_self')}
+            className="justify-start col-span-2"
+            onClick={() => window.open('/expert-hiring?urgent=true', '_self')}
           >
             <Phone className="w-4 h-4 mr-2 text-red-500" />
-            자살예방 1393
+            긴급 전문가 매칭
           </Button>
           <Button
             variant="outline"
             className="justify-start"
-            onClick={() => window.open('tel:1577-0199', '_self')}
+            onClick={() => window.open('/expert-hiring', '_self')}
           >
             <Phone className="w-4 h-4 mr-2 text-blue-500" />
-            정신건강 1577-0199
+            전문가 상담 신청
           </Button>
           <Button
             variant="outline"
             className="justify-start"
-            onClick={() => window.open('tel:1388', '_self')}
+            onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')}
           >
             <Phone className="w-4 h-4 mr-2 text-green-500" />
-            청소년 1388
-          </Button>
-          <Button
-            variant="outline"
-            className="justify-start"
-            onClick={() => window.open('tel:1588-9191', '_self')}
-          >
-            <Phone className="w-4 h-4 mr-2 text-purple-500" />
-            생명의전화
+            카카오톡 상담
           </Button>
         </div>
       </Card>

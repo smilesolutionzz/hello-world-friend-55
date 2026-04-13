@@ -387,7 +387,9 @@ const ReportGeneratorPro = () => {
         )}
 
         {/* ── 리포트 구성 안내 (통합 쇼케이스) ── */}
-        <ReportContentShowcase />
+        <div id="report-showcase">
+          <ReportContentShowcase />
+        </div>
         {/* ── 프리미엄 사용자: 리포트 생성 인터페이스 ── */}
         {isPremium && !reportData && (
           <div className="max-w-4xl mx-auto space-y-6">

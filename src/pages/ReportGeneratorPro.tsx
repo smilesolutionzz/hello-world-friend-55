@@ -113,7 +113,7 @@ const ReportGeneratorPro = () => {
   const isPremium = true;
   const currentStep = !isPremium ? 0 : reportMode ? (userInput.name ? (reportData ? 3 : 2) : 1) : 0;
 
-  const SAMPLE_REPORT_SECTIONS = isEnglish ? SAMPLE_REPORT_SECTIONS_EN : SAMPLE_REPORT_SECTIONS_KO;
+  
 
   // i18n helper
   const t = (ko: string, en: string) => isEnglish ? en : ko;

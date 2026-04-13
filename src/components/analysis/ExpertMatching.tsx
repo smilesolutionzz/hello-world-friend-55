@@ -27,6 +27,7 @@ interface ExpertMatchingProps {
 }
 
 const ExpertMatching = ({ analysis, ageGroup, age, onExpertSelect }: ExpertMatchingProps) => {
+  const navigate = useNavigate();
   const [recommendedExperts, setRecommendedExperts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 

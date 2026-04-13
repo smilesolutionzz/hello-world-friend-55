@@ -212,11 +212,11 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
 
       {/* View Mode Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-slate-800 border border-white/10">
-          <TabsTrigger value="visual" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white/60 text-sm font-semibold">
+        <TabsList className="grid w-full grid-cols-2 bg-slate-800/80 border border-white/10 rounded-xl p-1 gap-0">
+          <TabsTrigger value="visual" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white/60 text-sm font-semibold rounded-lg py-2.5">
             📊 {t('학부모용 비주얼 리포트', 'Visual Report')}
           </TabsTrigger>
-          <TabsTrigger value="detail" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white/60 text-sm font-semibold">
+          <TabsTrigger value="detail" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white/60 text-sm font-semibold rounded-lg py-2.5">
             📋 {t('전문 상세 분석', 'Detailed Analysis')}
           </TabsTrigger>
         </TabsList>

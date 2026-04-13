@@ -209,7 +209,7 @@ function generateParentReportHTML(
       const changeSign = c.change > 0 ? '+' : '';
       compRows += `
         <div class="insight-card">
-          <h4>${c.category} <span style="color: ${changeColor}; font-size: 12px;">(${changeSign}${c.change}%)</span></h4>
+          <h4>${getDimensionLabel(c.category, isEnglish)} <span style="color: ${changeColor}; font-size: 12px;">(${changeSign}${c.change}%)</span></h4>
           <div style="display: flex; gap: 8px; margin: 10px 0;">
             <div style="flex: 1;">
               <div style="font-size: 10px; color: #6B7280; margin-bottom: 4px;">${isEnglish ? 'Initial' : '초기'} (${c.earliest}%)</div>
@@ -343,7 +343,7 @@ function generateParentReportHTML(
       const position = percentile > 70 ? (isEnglish ? 'Above average' : '또래 평균 이상') : percentile < 30 ? (isEnglish ? 'Needs support' : '지원 필요') : (isEnglish ? 'Average' : '또래 평균');
       peerRows += `
         <div class="insight-card">
-          <h4>${dim} · ${isEnglish ? 'Percentile' : '백분위'} ${percentile}%</h4>
+          <h4>${getDimensionLabel(dim, isEnglish)} · ${isEnglish ? 'Percentile' : '백분위'} ${percentile}%</h4>
           <p>${isEnglish ? `Among 100 peers, your child ranks at the ${percentile}th percentile. Status: ${position}.` : `같은 나이 100명 중 ${percentile}번째 위치입니다. 평가: ${position}.`}</p>
         </div>
       `;
@@ -405,7 +405,7 @@ function generateParentReportHTML(
             <div class="section-icon" style="background: #D1FAE5;">🏠</div>
             <h2>${homeGuide.title}</h2>
           </div>
-          <div class="ai-content">${homeGuide.content}</div>
+          <div class="ai-content">${cleanAIContent(homeGuide.content)}</div>
         </div>
       `;
     }
@@ -417,7 +417,7 @@ function generateParentReportHTML(
             <div class="section-icon" style="background: #DBEAFE;">📋</div>
             <h2>${summary.title}</h2>
           </div>
-          <div class="ai-content">${summary.content}</div>
+          <div class="ai-content">${cleanAIContent(summary.content)}</div>
         </div>
       `;
     }

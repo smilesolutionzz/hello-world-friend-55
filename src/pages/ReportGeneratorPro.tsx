@@ -11,7 +11,7 @@ import { useTokens } from '@/hooks/useTokens';
 import { useSubscription } from '@/hooks/useSubscription';
 import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 import html2pdf from 'html2pdf.js';
-import ScratchCard from '@/components/gamification/ScratchCard';
+import ReportHistoryList from '@/components/report/ReportHistoryList';
 import ReportShareModal from '@/components/report/ReportShareModal';
 import ReportCurationSection from '@/components/report/ReportCurationSection';
 import VisualSummaryButton from '@/components/visual-summary/VisualSummaryButton';
@@ -123,7 +123,7 @@ const ReportGeneratorPro = () => {
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const [showScratchCard, setShowScratchCard] = useState(false);
+  
   const [showShareModal, setShowShareModal] = useState(false);
   const [currentReportHistoryId, setCurrentReportHistoryId] = useState<string | null>(null);
   const [showSampleReport, setShowSampleReport] = useState(false);
@@ -297,7 +297,7 @@ const ReportGeneratorPro = () => {
         setProgress(100);
         setReportData({ ...reportResult, generatedAt: new Date().toISOString(), dataSource: reportResult.dataSource || { assessments: userData?.totalAssessments || 0, observations: userData?.totalObservations || 0, observationSessions: userData?.totalObservationSessions || 0, chatMessages: userData?.totalChatMessages || 0, totalDataCount: userData?.totalDataCount || 0 } });
         toast({ title: t("🎉 프리미엄 리포트 생성 완료!", "🎉 Premium Report Generated!"), description: t("세계 최고 수준의 분석 리포트가 생성되었습니다.", "Your world-class analysis report has been generated.") });
-        setTimeout(() => setShowScratchCard(true), 1500);
+        
       } else {
         throw new Error(t('리포트 생성에 실패했습니다. 다시 시도해주세요.', 'Report generation failed. Please try again.'));
       }
@@ -731,7 +731,7 @@ const ReportGeneratorPro = () => {
         </div>
       </div>
 
-      <ScratchCard isOpen={showScratchCard} onClose={() => setShowScratchCard(false)} />
+      
       
       {/* 리포트 공유 모달 */}
       <ReportShareModal

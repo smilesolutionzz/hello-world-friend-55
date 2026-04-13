@@ -520,13 +520,16 @@ function generateParentReportHTML(
 <div class="cover">
   <div class="cover-badge">${sessionLabel} · ${sessionDescription}</div>
   <h1>${userName}${isEnglish ? "'s" : ' 님의'}<br>${isEnglish ? 'Comprehensive Analysis Report' : '심층 분석 리포트'}</h1>
-  <p class="subtitle">${isEnglish ? `Based on ${totalDataPoints} data points across ${Object.keys(dataCounts).filter(k => dataCounts[k] > 0).length} analysis sources` : `${Object.keys(dataCounts).filter(k => dataCounts[k] > 0).length}가지 데이터 소스 · ${totalDataPoints}개 데이터 포인트 기반 전문가 심층 분석`}</p>
+  <p class="subtitle">${isEnglish ? `Based on ${totalDataPoints} data points across ${activeSourceCount} analysis sources` : `${activeSourceCount}가지 데이터 소스 · ${totalDataPoints}개 데이터 포인트 기반 전문가 심층 분석`}</p>
   <div class="cover-meta">
     <span>📅 ${formatDate(new Date().toISOString(), isEnglish)}</span>
     ${userAge ? `<span>👤 ${isEnglish ? `Age ${userAge}` : `만 ${userAge}세`}</span>` : ''}
-    <span>📊 ${isEnglish ? `${dataSpanDays} days tracked` : `${dataSpanDays}일간 데이터 추적`}</span>
+    ${dataSpanDays > 0 ? `<span>📊 ${isEnglish ? `${dataSpanDays} days tracked` : `${dataSpanDays}일간 데이터 추적`}</span>` : ''}
   </div>
 </div>
+
+<!-- Age-Appropriate Developmental Context -->
+${generateDevelopmentalIntro(userAge, gender, isEnglish)}
 
 <!-- Overall Summary -->
 <div class="section">
@@ -546,7 +549,7 @@ function generateParentReportHTML(
         <h3>${isEnglish ? 'Overall Wellness Score' : '정서건강 종합 점수'}</h3>
         <p>${isEnglish 
           ? `Analysis based on ${totalDataPoints} data points collected over ${dataSpanDays} days.`
-          : `${dataSpanDays}일간 수집된 ${totalDataPoints}개 데이터 포인트를 기반으로 분석한 결과입니다.`}</p>
+          : `${totalDataPoints}개 데이터 포인트를 기반으로 분석한 결과입니다.`}</p>
       </div>
     </div>
   </div>

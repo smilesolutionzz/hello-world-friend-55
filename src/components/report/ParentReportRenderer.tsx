@@ -591,6 +591,7 @@ function generateParentReportHTML(
   .insight-card p { font-size: 13px; line-height: 1.85; color: #4B5563; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
   .stat-card { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; text-align: center; }
   .stat-card .value { font-size: 24px; font-weight: 800; }
   .stat-card .label { font-size: 11px; color: #6B7280; margin-top: 4px; }
@@ -660,7 +661,7 @@ ${generateDevelopmentalIntro(userAge, gender, isEnglish)}
       ? 'Multiple independent data sources were cross-analyzed for a comprehensive and reliable assessment.'
       : '여러 독립적인 데이터 소스를 교차 분석하여 종합적이고 신뢰도 높은 평가를 수행했습니다.'}
   </p>
-  <div class="grid-3">
+  <div class="grid-4">
     ${dataSourceHTML}
   </div>
 </div>

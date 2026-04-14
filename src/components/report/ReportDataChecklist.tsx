@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { 
   CheckCircle, Brain, Eye, Gamepad2, Mic,
-  BarChart3, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, Microscope
+  BarChart3, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, Microscope, Heart
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -66,8 +66,8 @@ export default function ReportDataChecklist({ onSelectionChange }: ReportDataChe
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // AIHPRO 5대 데이터 소스: 간편검사, 심층검사, 관찰일지, 게임검사, 음성상담
-      const [testRes, enhancedRes, observationRes, gameRes, voiceRes, progressRes] = await Promise.all([
+      // AIHPRO 6대 데이터 소스: 간편검사, 심층검사, 관찰일지, 게임검사, 음성상담, 고민/인사이트
+      const [testRes, enhancedRes, observationRes, gameRes, voiceRes, progressRes, insightsRes] = await Promise.all([
         // 1. 간편검사 (심리검사 결과)
         supabase.from('test_results').select('id, test_type_id, scores, completed_at, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         // 2. 심층검사 (심층 분석 리포트)
@@ -80,6 +80,8 @@ export default function ReportDataChecklist({ onSelectionChange }: ReportDataChe
         supabase.from('ai_coaching_sessions').select('id, session_type, session_summary, mood_before, mood_after, created_at, completed_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         // 변화 추적 (종단 분석용 보조 데이터)
         supabase.from('progress_tracking').select('id, source_type, source_label, summary, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+        // 6. 고민/건강 인사이트 (부모 고민, 상담 인사이트)
+        supabase.from('ai_health_insights').select('id, insight_type, content, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
       ]);
 
       const testTypeIds = [...new Set((testRes.data || []).map(t => t.test_type_id))];
@@ -115,6 +117,25 @@ export default function ReportDataChecklist({ onSelectionChange }: ReportDataChe
         {
           key: 'progress', label: '변화 추적', icon: <BarChart3 className="w-4 h-4" />, color: 'text-orange-600', expanded: true,
           items: (progressRes.data || []).map(t => ({ id: t.id, source: 'progress_tracking', label: t.source_label || t.source_type || '변화 추적', detail: t.summary ? t.summary.substring(0, 30) + '...' : '기록됨', date: formatDate(t.created_at), selected: true })),
+        },
+        {
+          key: 'concerns', label: '고민/인사이트', icon: <Heart className="w-4 h-4" />, color: 'text-rose-600', expanded: true,
+          items: (insightsRes.data || []).map(t => {
+            const typeLabels: Record<string, string> = {
+              structured_counseling: '구조화 상담',
+              sct_analysis: 'SCT 분석',
+              mood_check: '기분 체크',
+              concern: '고민 입력',
+            };
+            return {
+              id: t.id,
+              source: 'ai_health_insights',
+              label: typeLabels[t.insight_type] || t.insight_type || '고민/인사이트',
+              detail: t.content ? t.content.substring(0, 30) + '...' : '기록됨',
+              date: formatDate(t.created_at),
+              selected: true,
+            };
+          }),
         },
       ].filter(c => c.items.length > 0);
 

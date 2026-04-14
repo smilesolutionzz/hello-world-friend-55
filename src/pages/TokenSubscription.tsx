@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import { 
   Brain, Users, Crown, ArrowRight, 
   Check, Sparkles, 
   Zap, Shield, Star, Loader2,
-  TrendingUp, Award, X, Heart, Target, Rocket, Lock, UserPlus, CheckCircle
+  X, Target, Lock, UserPlus, CheckCircle
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -71,256 +70,240 @@ const TokenSubscription = () => {
     }
   };
 
+  const fade = (delay: number) => ({ initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { delay, duration: 0.4 } });
+
   return (
     <div className="min-h-screen bg-white dark:bg-background text-foreground overflow-x-hidden">
-      {/* 모바일에서는 MobilePaymentFlow 사용 */}
+      {/* 모바일 */}
       <div className="md:hidden">
         <MobilePaymentFlow initialStep="plan" />
       </div>
 
-      {/* 데스크탑에서는 기존 레이아웃 */}
+      {/* 데스크탑 */}
       <div className="hidden md:block">
-      <UnifiedNavigation />
-      
-      <div className="container mx-auto px-4 pt-24 pb-16 max-w-5xl">
-        {/* 비로그인 상태 */}
-        {isAuthenticated === false && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <Card className="border border-amber-200 dark:border-amber-400 bg-white dark:bg-card rounded-3xl shadow-lg overflow-hidden">
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg">
-                      <Lock className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg">로그인 후 구독 가능합니다</h3>
-                      <p className="text-sm text-muted-foreground">가입 30초 · 모든 이용 내역이 계정에 저장됩니다</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 w-full md:w-auto">
-                    <Button onClick={() => { localStorage.setItem('auth_redirect_after', '/token-subscription'); navigate('/auth?mode=signup'); }} className="flex-1 md:flex-none bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">
-                      <UserPlus className="w-4 h-4 mr-2" />무료 회원가입
-                    </Button>
-                    <Button variant="outline" onClick={() => { localStorage.setItem('auth_redirect_after', '/token-subscription'); navigate('/auth'); }} className="flex-1 md:flex-none">
-                      <Lock className="w-4 h-4 mr-2" />로그인
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
+        <UnifiedNavigation />
 
-        {/* 구독 중 상태 */}
-        {isPremium && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-violet-100 to-purple-100 dark:from-violet-950/40 dark:to-purple-950/40 border border-violet-300 dark:border-violet-700 rounded-2xl px-6 py-3 shadow-lg">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
-                <Crown className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-left">
-                <div className="text-xs text-violet-600 dark:text-violet-400 font-medium">현재 이용중</div>
-                <div className="text-xl font-black text-violet-700 dark:text-violet-300 flex items-center gap-2">
-                  {subscriptionLabel} <Sparkles className="w-4 h-4 text-amber-500" />
+        <div className="container mx-auto px-4 pt-28 pb-20 max-w-4xl">
+
+          {/* 비로그인 배너 */}
+          {isAuthenticated === false && (
+            <motion.div {...fade(0)} className="mb-10 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-card p-5 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gray-900 dark:bg-gray-100 flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-white dark:text-gray-900" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">로그인 후 이용 가능합니다</p>
+                  <p className="text-xs text-gray-500">가입 30초 · 모든 내역이 계정에 저장됩니다</p>
                 </div>
               </div>
-              <Badge className="ml-2 bg-gradient-to-r from-violet-500 to-purple-500 text-white border-0 font-bold">무제한 이용</Badge>
+              <div className="flex gap-2">
+                <Button size="sm" onClick={() => { localStorage.setItem('auth_redirect_after', '/token-subscription'); navigate('/auth?mode=signup'); }} className="bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100">
+                  <UserPlus className="w-3.5 h-3.5 mr-1.5" />회원가입
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => { localStorage.setItem('auth_redirect_after', '/token-subscription'); navigate('/auth'); }}>
+                  로그인
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* 구독 중 상태 */}
+          {isPremium && (
+            <motion.div {...fade(0)} className="flex justify-center mb-10">
+              <div className="inline-flex items-center gap-3 border border-emerald-200 dark:border-emerald-800 rounded-full px-6 py-2.5 bg-emerald-50 dark:bg-emerald-950/30">
+                <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <span className="font-semibold text-emerald-700 dark:text-emerald-300">{subscriptionLabel} 이용중</span>
+                <Badge className="bg-emerald-600 text-white border-0 text-xs">무제한</Badge>
+              </div>
+            </motion.div>
+          )}
+
+          {/* 리포트 크레딧 */}
+          {!isPremium && reportCredits > 0 && (
+            <motion.div {...fade(0)} className="mb-8 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-card p-4 flex items-center gap-3">
+              <Zap className="w-4 h-4 text-amber-500" />
+              <span className="text-sm">리포트 이용권 <strong>{reportCredits}회</strong> 보유 중</span>
+              <span className="text-xs text-gray-400 ml-auto">구독하면 무제한!</span>
+            </motion.div>
+          )}
+
+          {/* Hero */}
+          <motion.div {...fade(0.05)} className="text-center mb-12">
+            <div className="inline-flex items-center gap-1.5 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 text-xs font-semibold px-3 py-1.5 rounded-full mb-5 border border-rose-100 dark:border-rose-900">
+              <Sparkles className="w-3 h-3" />
+              론칭 특가 {SUBSCRIPTION_DISCOUNT_PERCENT}% 할인
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black mb-3 text-gray-900 dark:text-white tracking-tight">
+              나에게 맞는 플랜
+            </h1>
+            <p className="text-gray-500 text-lg">
+              1회만 써보거나, 무제한으로 이용하거나
+            </p>
+          </motion.div>
+
+          {/* 월간/연간 토글 */}
+          <motion.div {...fade(0.1)} className="flex justify-center mb-10">
+            <div className="inline-flex items-center bg-gray-100 dark:bg-gray-800 rounded-full p-1 gap-0.5">
+              <button
+                onClick={() => setBillingCycle('monthly')}
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                  billingCycle === 'monthly'
+                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                }`}
+              >
+                월간
+              </button>
+              <button
+                onClick={() => setBillingCycle('yearly')}
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 ${
+                  billingCycle === 'yearly'
+                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                }`}
+              >
+                연간
+                <span className="text-[10px] font-bold bg-emerald-500 text-white px-1.5 py-0.5 rounded-full">-17%</span>
+              </button>
             </div>
           </motion.div>
-        )}
 
-        {/* 리포트 크레딧 보유 안내 */}
-        {!isPremium && reportCredits > 0 && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <Card className="border border-amber-200/50 dark:border-amber-400/50 bg-white dark:bg-card rounded-3xl shadow-sm">
-              <CardContent className="p-4 flex items-center gap-3">
-                <Zap className="w-5 h-5 text-amber-500" />
-                <span className="text-sm font-medium">리포트 이용권 <Badge variant="secondary">{reportCredits}회</Badge> 보유 중</span>
-                <span className="text-xs text-muted-foreground ml-auto">구독하면 무제한!</span>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
-        {/* Hero */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-center mb-10">
-          <Badge className="mb-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white border-0 text-sm px-4 py-1">
-            🎉 론칭 특가 {SUBSCRIPTION_DISCOUNT_PERCENT}% 할인
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-black mb-3 bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 bg-clip-text text-transparent leading-tight">
-            나에게 맞는 플랜 선택
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            1회만 써보거나, 무제한으로 이용하거나
-          </p>
-        </motion.div>
-
-        {/* 월간/연간 토글 */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex justify-center mb-8">
-          <div className="inline-flex items-center bg-gray-100 dark:bg-muted rounded-2xl p-1 gap-1">
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                billingCycle === 'monthly'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              월간
-            </button>
-            <button
-              onClick={() => setBillingCycle('yearly')}
-              className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-1.5 ${
-                billingCycle === 'yearly'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              연간
-              <Badge className="bg-destructive text-destructive-foreground text-[10px] border-0 px-1.5 py-0">-17%</Badge>
-            </button>
-          </div>
-        </motion.div>
-
-        {/* 듀얼 프라이싱 카드 */}
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
-          {/* 단건 이용권 */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="h-full border border-border/30 bg-white dark:bg-card rounded-3xl shadow-md hover:shadow-lg transition-shadow">
-              <CardContent className="p-8 flex flex-col h-full">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
-                    <Zap className="w-6 h-6 text-white" />
+          {/* 프라이싱 카드 */}
+          <div className="grid md:grid-cols-2 gap-5 mb-16">
+            
+            {/* 단건 이용권 */}
+            <motion.div {...fade(0.15)}>
+              <div className="h-full rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-card p-7 flex flex-col">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/30 flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-black">단건 이용권</h2>
-                    <p className="text-xs text-muted-foreground">필요할 때만 한 번씩</p>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">단건 이용권</h2>
+                    <p className="text-xs text-gray-500">필요할 때만 한 번씩</p>
                   </div>
                 </div>
 
-                <p className="text-sm text-muted-foreground mb-6">
+                <p className="text-sm text-gray-500 mb-6">
                   구독 없이 원하는 기능만 골라서 이용하세요
                 </p>
 
                 {/* 검사 1회 */}
-                <div className="border border-border rounded-xl p-4 mb-3">
+                <div className="rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 p-4 mb-3">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Target className="w-4 h-4 text-emerald-500" />
-                      <span className="font-bold text-sm">심리검사 1회</span>
+                      <span className="font-semibold text-sm text-gray-900 dark:text-white">심리검사 1회</span>
                     </div>
-                    <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs">61% 할인</Badge>
+                    <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full">61% 할인</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs text-muted-foreground line-through">₩4,900</span>
-                      <span className="text-2xl font-black text-foreground">₩{SINGLE_TEST_PRICE.toLocaleString()}</span>
+                      <span className="text-xs text-gray-400 line-through">₩4,900</span>
+                      <span className="text-2xl font-black text-gray-900 dark:text-white">₩{SINGLE_TEST_PRICE.toLocaleString()}</span>
                     </div>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="border-emerald-500/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
+                      className="h-8 text-xs border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
                       onClick={handlePayTest}
                       disabled={paymentLoading || !isReady}
                     >
-                      {paymentLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : '구매'}
+                      {paymentLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : '구매'}
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1.5">검사 실시 + 기본 결과 확인</p>
+                  <p className="text-[11px] text-gray-400 mt-1.5">검사 실시 + 기본 결과 확인</p>
                 </div>
 
                 {/* 리포트 1회 */}
-                <div className="border border-border rounded-xl p-4 mb-5">
+                <div className="rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 p-4 mb-6">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-amber-500" />
-                      <span className="font-bold text-sm">심층 분석 리포트 1회</span>
+                      <span className="font-semibold text-sm text-gray-900 dark:text-white">심층 분석 리포트 1회</span>
                     </div>
-                    <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30 text-xs">60% 할인</Badge>
+                    <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 px-2 py-0.5 rounded-full">60% 할인</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs text-muted-foreground line-through">₩14,900</span>
-                      <span className="text-2xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
+                      <span className="text-xs text-gray-400 line-through">₩14,900</span>
+                      <span className="text-2xl font-black text-gray-900 dark:text-white">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
                     </div>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+                      className="h-8 text-xs border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
                       onClick={handlePaySingle}
                       disabled={paymentLoading || !isReady}
                     >
-                      {paymentLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : '구매'}
+                      {paymentLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : '구매'}
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1.5">AI 심층 분석 + PDF 리포트 + 맞춤 솔루션</p>
+                  <p className="text-[11px] text-gray-400 mt-1.5">AI 심층 분석 + PDF 리포트 + 맞춤 솔루션</p>
                 </div>
 
                 <div className="mt-auto space-y-2">
                   {['구독 없이 바로 이용', '결제 즉시 사용 가능'].map((f, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                    <div key={i} className="flex items-center gap-2 text-sm text-gray-500">
+                      <Check className="w-3.5 h-3.5 text-gray-400" />
                       <span>{f}</span>
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+              </div>
+            </motion.div>
 
-          {/* 구독 카드 (월간/연간 토글) */}
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
-            <Card className="h-full relative overflow-hidden border border-primary/20 shadow-lg bg-white dark:bg-card rounded-3xl">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-              <Badge className="absolute top-4 right-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-0 text-sm px-3 py-1 shadow-lg">
-                <Rocket className="w-3 h-3 mr-1" />{billingCycle === 'yearly' ? 'BEST' : '인기'}
-              </Badge>
+            {/* 구독 카드 */}
+            <motion.div {...fade(0.2)}>
+              <div className="h-full rounded-2xl border-2 border-gray-900 dark:border-white bg-white dark:bg-card p-7 flex flex-col relative">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold px-4 py-1.5 rounded-full">
+                    {billingCycle === 'yearly' ? 'BEST VALUE' : 'POPULAR'}
+                  </span>
+                </div>
 
-              <CardContent className="relative p-8 flex flex-col h-full">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/30">
-                    <Crown className="w-6 h-6 text-primary-foreground" />
+                <div className="flex items-center gap-3 mb-5 mt-2">
+                  <div className="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white flex items-center justify-center">
+                    <Crown className="w-5 h-5 text-white dark:text-gray-900" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-black">{billingCycle === 'monthly' ? '월간 구독' : '연간 구독'}</h2>
-                    <p className="text-xs text-muted-foreground">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">{billingCycle === 'monthly' ? '월간 구독' : '연간 구독'}</h2>
+                    <p className="text-xs text-gray-500">
                       {billingCycle === 'monthly' ? '모든 기능 무제한' : '월간 대비 17% 절약'}
                     </p>
                   </div>
                 </div>
 
-                <p className="text-sm text-muted-foreground mb-6">
-                  {billingCycle === 'monthly' 
-                    ? '하루 약 330원으로 모든 AI 분석, 심리검사, 리포트를 무제한 이용'
-                    : '하루 약 271원으로 모든 AI 분석, 심리검사, 리포트를 무제한 이용'
+                <p className="text-sm text-gray-500 mb-6">
+                  {billingCycle === 'monthly'
+                    ? '하루 약 330원으로 모든 AI 분석을 무제한 이용'
+                    : '하루 약 271원으로 모든 AI 분석을 무제한 이용'
                   }
                 </p>
 
                 <div className="mb-6">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-sm text-muted-foreground line-through">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm text-gray-400 line-through">
                       ₩{billingCycle === 'monthly' ? SUBSCRIPTION_ORIGINAL_PRICE.toLocaleString() : SUBSCRIPTION_YEARLY_ORIGINAL_PRICE.toLocaleString()}
                     </span>
-                    <Badge className="bg-destructive text-destructive-foreground border-0">
+                    <span className="text-[11px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/30 px-2 py-0.5 rounded-full">
                       {billingCycle === 'monthly' ? SUBSCRIPTION_DISCOUNT_PERCENT : SUBSCRIPTION_YEARLY_DISCOUNT_PERCENT}% OFF
-                    </Badge>
+                    </span>
                   </div>
-                  <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-4xl font-black bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-black text-gray-900 dark:text-white">
                       ₩{billingCycle === 'monthly' ? SUBSCRIPTION_PRICE.toLocaleString() : SUBSCRIPTION_YEARLY_PRICE.toLocaleString()}
                     </span>
-                    <span className="text-muted-foreground text-sm">{billingCycle === 'monthly' ? '/월' : '/년'}</span>
+                    <span className="text-gray-400 text-sm">{billingCycle === 'monthly' ? '/월' : '/년'}</span>
                   </div>
                   {billingCycle === 'yearly' && (
-                    <p className="text-xs text-primary font-semibold mt-1">
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">
                       월 ₩{SUBSCRIPTION_YEARLY_MONTHLY_PRICE.toLocaleString()} 꼴 · 연 ₩19,800 절약
                     </p>
                   )}
                   {billingCycle === 'monthly' && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      3번만 써도 단건보다 이득!
-                    </p>
+                    <p className="text-xs text-gray-400 mt-1">3번만 써도 단건보다 이득!</p>
                   )}
                 </div>
 
@@ -334,90 +317,73 @@ const TokenSubscription = () => {
                     { text: '우선 고객 지원' },
                     ...(billingCycle === 'yearly' ? [{ text: '신규 기능 우선 이용' }, { text: '전문가 상담 할인' }] : []),
                   ].map((item, i) => (
-                    <div key={i} className={`flex items-center gap-2 text-sm ${item.highlight ? 'font-semibold' : ''}`}>
-                      <Check className={`w-4 h-4 flex-shrink-0 ${item.highlight ? 'text-primary' : 'text-emerald-500'}`} />
-                      <span className="text-foreground">{item.text}</span>
-                      {item.highlight && <Badge className="ml-auto bg-primary text-primary-foreground text-[10px] border-0 px-1.5">핵심</Badge>}
+                    <div key={i} className="flex items-center gap-2.5 text-sm">
+                      <Check className={`w-4 h-4 flex-shrink-0 ${item.highlight ? 'text-gray-900 dark:text-white' : 'text-emerald-500'}`} />
+                      <span className={`${item.highlight ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}>{item.text}</span>
                     </div>
                   ))}
                 </div>
 
                 <Button
                   size="lg"
-                  className="w-full h-14 rounded-2xl font-bold text-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/30 transition-all hover:scale-[1.02]"
+                  className="w-full h-13 rounded-xl font-bold text-base bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 transition-all"
                   onClick={billingCycle === 'monthly' ? handlePaySubscription : handlePayYearly}
                   disabled={paymentLoading || !isReady || isPremium}
                 >
                   {paymentLoading ? (
-                    <><Loader2 className="w-5 h-5 mr-2 animate-spin" />결제 중...</>
+                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" />결제 중...</>
                   ) : isPremium ? (
-                    <><Check className="w-5 h-5 mr-2" />이미 이용 중</>
+                    <><Check className="w-4 h-4 mr-2" />이미 이용 중</>
                   ) : (
-                    <><Crown className="w-5 h-5 mr-2" />
-                      {billingCycle === 'monthly' 
-                        ? `구독 시작하기 — ₩${SUBSCRIPTION_PRICE.toLocaleString()}/월`
+                    <>
+                      {billingCycle === 'monthly'
+                        ? `구독 시작 — ₩${SUBSCRIPTION_PRICE.toLocaleString()}/월`
                         : `연간 구독 — ₩${SUBSCRIPTION_YEARLY_PRICE.toLocaleString()}/년`
                       }
                     </>
                   )}
                 </Button>
 
-                <p className="text-xs text-muted-foreground mt-3 text-center flex items-center justify-center gap-1">
+                <p className="text-[11px] text-gray-400 mt-3 text-center flex items-center justify-center gap-1">
                   <Shield className="w-3 h-3" />7일 이내 100% 환불 보장 · 언제든 해지
                 </p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
-
-        {/* 가격 비교 계산 */}
-        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mb-12">
-          <Card className="overflow-hidden bg-white dark:bg-card border-border/30 rounded-3xl shadow-md">
-            <CardContent className="p-6">
-              <h3 className="font-bold text-center mb-4">💡 어떤 플랜이 나에게 맞을까?</h3>
-              <div className="grid grid-cols-5 gap-2 text-center text-sm">
-                <div className="p-3 rounded-xl bg-gray-50 dark:bg-muted/50">
-                  <div className="font-bold text-foreground">검사 1회</div>
-                  <div className="text-muted-foreground text-xs mb-1">단건</div>
-                  <div className="font-bold text-emerald-600 dark:text-emerald-400">₩{SINGLE_TEST_PRICE.toLocaleString()}</div>
-                </div>
-                <div className="p-3 rounded-xl bg-gray-50 dark:bg-muted/50">
-                  <div className="font-bold text-foreground">리포트 1회</div>
-                  <div className="text-muted-foreground text-xs mb-1">단건</div>
-                  <div className="font-bold text-amber-600 dark:text-amber-400">₩{SINGLE_REPORT_PRICE.toLocaleString()}</div>
-                </div>
-                <div className="p-3 rounded-xl bg-gray-50 dark:bg-muted/50">
-                  <div className="font-bold text-foreground">검사+리포트</div>
-                  <div className="text-muted-foreground text-xs mb-1">각 1회</div>
-                  <div className="font-bold text-foreground">₩{(SINGLE_TEST_PRICE + SINGLE_REPORT_PRICE).toLocaleString()}</div>
-                </div>
-                <div className="p-3 rounded-xl bg-gray-50 dark:bg-muted/50">
-                  <div className="font-bold text-foreground">무제한</div>
-                  <div className="text-muted-foreground text-xs mb-1">월간 구독</div>
-                  <div className="font-bold text-violet-600 dark:text-violet-400">₩{SUBSCRIPTION_PRICE.toLocaleString()}/월</div>
-                </div>
-                <div className="p-3 rounded-xl bg-primary/5 border border-primary/20">
-                  <div className="font-bold text-primary">무제한</div>
-                  <div className="text-muted-foreground text-xs mb-1">연간 구독</div>
-                  <div className="font-bold text-primary">₩{SUBSCRIPTION_YEARLY_MONTHLY_PRICE.toLocaleString()}/월</div>
-                  <Badge className="mt-1 bg-primary text-primary-foreground text-[10px] border-0">최저가!</Badge>
-                </div>
               </div>
-            </CardContent>
-          </Card>
-        </motion.section>
+            </motion.div>
+          </div>
 
-        {/* 무료 vs 구독 비교 */}
-        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mb-12">
-          <h3 className="text-xl font-bold text-center mb-6">
-            무료 체험 vs <span className="text-violet-600 dark:text-violet-400">구독</span>
-          </h3>
-           <Card className="overflow-hidden bg-white dark:bg-card rounded-3xl shadow-md border-border/30">
-            <CardContent className="p-0">
-              <div className="grid grid-cols-3 text-center text-sm font-bold border-b bg-gray-50 dark:bg-muted/50">
-                <div className="p-4">기능</div>
-                <div className="p-4 text-muted-foreground">무료 체험</div>
-                <div className="p-4 bg-gradient-to-r from-violet-500 to-purple-500 text-white">구독</div>
+          {/* 가격 비교 */}
+          <motion.section {...fade(0.25)} className="mb-16">
+            <h3 className="font-bold text-center text-gray-900 dark:text-white mb-5 text-lg">어떤 플랜이 나에게 맞을까?</h3>
+            <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-card overflow-hidden">
+              <div className="grid grid-cols-5 text-center text-sm border-b border-gray-100 dark:border-gray-700">
+                {[
+                  { label: '검사 1회', sub: '단건', price: `₩${SINGLE_TEST_PRICE.toLocaleString()}`, color: 'text-gray-900 dark:text-white' },
+                  { label: '리포트 1회', sub: '단건', price: `₩${SINGLE_REPORT_PRICE.toLocaleString()}`, color: 'text-gray-900 dark:text-white' },
+                  { label: '검사+리포트', sub: '각 1회', price: `₩${(SINGLE_TEST_PRICE + SINGLE_REPORT_PRICE).toLocaleString()}`, color: 'text-gray-900 dark:text-white' },
+                  { label: '무제한', sub: '월간', price: `₩${SUBSCRIPTION_PRICE.toLocaleString()}/월`, color: 'text-gray-900 dark:text-white' },
+                  { label: '무제한', sub: '연간', price: `₩${SUBSCRIPTION_YEARLY_MONTHLY_PRICE.toLocaleString()}/월`, color: 'text-emerald-600 dark:text-emerald-400', best: true },
+                ].map((item, i) => (
+                  <div key={i} className={`p-4 ${item.best ? 'bg-gray-50 dark:bg-gray-800/50' : ''}`}>
+                    <div className="font-semibold text-gray-900 dark:text-white text-xs">{item.label}</div>
+                    <div className="text-gray-400 text-[11px] mb-1">{item.sub}</div>
+                    <div className={`font-bold text-sm ${item.color}`}>{item.price}</div>
+                    {item.best && <span className="inline-block mt-1 text-[10px] font-bold bg-emerald-500 text-white px-1.5 py-0.5 rounded-full">최저가</span>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.section>
+
+          {/* 무료 vs 구독 비교 */}
+          <motion.section {...fade(0.3)} className="mb-16">
+            <h3 className="font-bold text-center text-gray-900 dark:text-white mb-5 text-lg">
+              무료 체험 vs 구독
+            </h3>
+            <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-card overflow-hidden">
+              <div className="grid grid-cols-3 text-center text-sm font-semibold border-b border-gray-100 dark:border-gray-700">
+                <div className="p-4 text-gray-500">기능</div>
+                <div className="p-4 text-gray-400">무료 체험</div>
+                <div className="p-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900">구독</div>
               </div>
               {[
                 { feature: 'AI 심층 분석', free: '1~2회', premium: '무제한' },
@@ -427,101 +393,98 @@ const TokenSubscription = () => {
                 { feature: '전문가 해석', free: false, premium: true },
                 { feature: '트렌드 추적', free: false, premium: true },
               ].map((item, idx) => (
-                <div key={idx} className="grid grid-cols-3 text-center text-sm border-b last:border-0">
-                  <div className="p-4 font-semibold text-left">{item.feature}</div>
+                <div key={idx} className="grid grid-cols-3 text-center text-sm border-b border-gray-50 dark:border-gray-800 last:border-0">
+                  <div className="p-4 font-medium text-left text-gray-700 dark:text-gray-300">{item.feature}</div>
                   <div className="p-4 flex items-center justify-center">
                     {typeof item.free === 'boolean' ? (
-                      item.free ? <Check className="w-5 h-5 text-emerald-500" /> : <X className="w-5 h-5 text-slate-300" />
+                      item.free ? <Check className="w-4 h-4 text-emerald-500" /> : <X className="w-4 h-4 text-gray-300 dark:text-gray-600" />
                     ) : (
-                      <span className="text-muted-foreground text-xs font-medium">{item.free}</span>
+                      <span className="text-gray-400 text-xs">{item.free}</span>
                     )}
                   </div>
-                  <div className="p-4 bg-primary/5 flex items-center justify-center">
+                  <div className="p-4 bg-gray-50/50 dark:bg-gray-800/30 flex items-center justify-center">
                     {typeof item.premium === 'boolean' ? (
-                      <Check className="w-5 h-5 text-violet-500" />
+                      <Check className="w-4 h-4 text-emerald-500" />
                     ) : (
-                      <span className="font-bold text-violet-700 dark:text-violet-300 text-xs">{item.premium}</span>
+                      <span className="font-semibold text-gray-900 dark:text-white text-xs">{item.premium}</span>
                     )}
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
-        </motion.section>
+            </div>
+          </motion.section>
 
-        {/* 논문 기반 섹션 */}
-        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-12">
-          <Card className="overflow-hidden border border-border/30 bg-white dark:bg-card rounded-3xl shadow-md">
-            <CardContent className="p-6 md:p-8">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/20">
-                  <Brain className="w-6 h-6 text-white" />
+          {/* 하단 정보 카드 그리드 */}
+          <div className="grid md:grid-cols-2 gap-5 mb-16">
+            {/* 논문 기반 */}
+            <motion.div {...fade(0.35)}>
+              <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-card p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center">
+                    <Brain className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-gray-900 dark:text-white">전세계 논문 기반 맞춤 큐레이션</h4>
+                    <p className="text-[11px] text-gray-400">글로벌 연구와 평가도구를 실시간 참고</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-black text-lg">전세계 논문 기반 맞춤 큐레이션</h4>
-                  <p className="text-sm text-muted-foreground">글로벌 연구와 평가도구를 실시간 참고합니다</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {['AI 행동분석', '발달규준 비교', '인지패턴 분석', '정서 프로파일링', '학술 연구 기반'].map((tag, i) => (
+                    <span key={i} className="text-[11px] text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-full">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {['AI 행동분석', '발달규준 비교', '인지패턴 분석', '정서 프로파일링', '학술 연구 기반'].map((tag, i) => (
-                  <Badge key={i} variant="outline" className="text-xs bg-violet-100/50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-700">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.section>
+            </motion.div>
 
-        {/* 전문가 상담 안내 */}
-        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="mb-12">
-          <Card className="overflow-hidden bg-white dark:bg-card rounded-3xl shadow-md border-border/30">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500">
-                  <Users className="w-5 h-5 text-white" />
+            {/* 전문가 상담 */}
+            <motion.div {...fade(0.4)}>
+              <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-card p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center">
+                    <Users className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-gray-900 dark:text-white">전문가 1:1 상담</h4>
+                    <p className="text-[11px] text-gray-400">검증된 심리 전문가 · 별도 요금</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold">전문가 1:1 상담</h4>
-                  <p className="text-xs text-muted-foreground">검증된 심리 전문가</p>
-                </div>
+                <ul className="space-y-1.5 mb-4">
+                  {['1:1 화상/전화 상담', '전문가 맞춤 조언', '프로필에서 요금 확인'].map((f, i) => (
+                    <li key={i} className="flex items-center gap-2 text-xs text-gray-500">
+                      <CheckCircle className="w-3 h-3 text-emerald-500 flex-shrink-0" />{f}
+                    </li>
+                  ))}
+                </ul>
+                <Button variant="ghost" size="sm" className="w-full text-xs text-gray-500 hover:text-gray-900 dark:hover:text-white" onClick={() => navigate('/expert-hiring')}>
+                  전문가 프로필 보기 <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                </Button>
               </div>
-              <p className="text-sm text-muted-foreground mb-3">전문가별 상담 요금이 상이합니다</p>
-              <ul className="space-y-1.5 mb-4">
-                {['1:1 화상/전화 상담', '전문가 맞춤 조언', '전문가 프로필에서 요금 확인'].map((f, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />{f}
-                  </li>
-                ))}
-              </ul>
-              <Button variant="ghost" size="sm" className="w-full" onClick={() => navigate('/expert-hiring')}>
-                전문가 프로필 보기 <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.section>
-
-        {/* 신뢰 배지 */}
-        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="bg-white dark:bg-card rounded-3xl p-6 shadow-md border border-border/30">
-          <div className="grid grid-cols-3 gap-4 text-center">
-            {[
-              { icon: Shield, label: '환불 보장', sub: '7일 이내', gradient: 'from-emerald-500 to-teal-500' },
-              { icon: Zap, label: '즉시 이용', sub: '결제 즉시', gradient: 'from-blue-500 to-cyan-500' },
-              { icon: Star, label: '안전 결제', sub: '토스페이먼츠', gradient: 'from-violet-500 to-purple-500' },
-            ].map((item, idx) => (
-              <div key={idx} className="flex flex-col items-center gap-2">
-                <div className={`p-2 rounded-xl bg-gradient-to-br ${item.gradient}`}>
-                  <item.icon className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <div className="font-bold text-sm">{item.label}</div>
-                  <div className="text-xs text-muted-foreground">{item.sub}</div>
-                </div>
-              </div>
-            ))}
+            </motion.div>
           </div>
-        </motion.section>
-      </div>
+
+          {/* 신뢰 배지 */}
+          <motion.div {...fade(0.45)} className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-card p-6">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              {[
+                { icon: Shield, label: '환불 보장', sub: '7일 이내' },
+                { icon: Zap, label: '즉시 이용', sub: '결제 즉시' },
+                { icon: Star, label: '안전 결제', sub: '토스페이먼츠' },
+              ].map((item, idx) => (
+                <div key={idx} className="flex flex-col items-center gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                    <item.icon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm text-gray-900 dark:text-white">{item.label}</div>
+                    <div className="text-[11px] text-gray-400">{item.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -29,6 +29,7 @@ import { SocialProofToast } from '@/components/landing/SocialProofToast';
 import RealFeedbackSection from '@/components/landing/RealFeedbackSection';
 import TrialOnboarding from '@/components/onboarding/TrialOnboarding';
 import { useTrialProfile } from '@/hooks/useTrialProfile';
+import { CopilotBubble } from '@/components/copilot/CopilotBubble';
 
 
 const structuredData = {
@@ -216,7 +217,7 @@ const Index = () => {
           <StickyConversionBar />
           <SocialProofToast />
           <FloatingOnboardingGuide />
-          
+          <CopilotBubble />
           <PostSignupOnboarding 
             isOpen={showOnboarding} 
             onClose={handleOnboardingClose} 

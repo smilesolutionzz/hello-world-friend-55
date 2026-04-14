@@ -95,10 +95,10 @@ const RealFeedbackSection = () => {
               {/* 채팅 헤더 */}
               <div className="flex items-center justify-between mb-3 px-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-white text-xs font-bold">AI</div>
-                  <span className="text-slate-800 text-sm font-bold">AIHPRO 전문 상담</span>
+                  <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-white text-xs font-bold">AI</div>
+                  <span className="text-slate-900 text-sm font-extrabold">AIHPRO 전문 상담</span>
                 </div>
-                <span className="text-slate-600 text-xs">오늘</span>
+                <span className="text-slate-700 text-xs font-medium">오늘</span>
               </div>
 
               {chatMessages.map((msg, i) => (

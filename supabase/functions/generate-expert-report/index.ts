@@ -935,11 +935,11 @@ function buildUserPrompt(
     { title: 'Comprehensive Development & Psychology Profile', minChars: 800, desc: 'Multi-dimensional profile based on AIHPRO cross-analysis.' },
     { title: 'Psychological & Emotional Deep Analysis', minChars: 700, desc: 'Emotional state and coping analysis with counseling data.' },
     { title: 'Strengths & Potential Matrix', minChars: 700, desc: 'Top 5 strengths and growth areas with data evidence.' },
-    { title: 'Data-Driven Personalized Intervention Strategies', minChars: 800, desc: '10 specific activities with purpose, method, and expected outcomes.' },
-    { title: 'Growth Roadmap (4/8/12 Weeks)', minChars: 800, desc: 'Week-by-week execution plan with goals, activities, and milestones.' },
+    { title: 'Data-Driven Personalized Intervention Strategies', minChars: 800, desc: '10 specific activities. Each activity MUST include these 4 items on separate lines: 🎯 Purpose, 📋 Method, ✨ Expected Effect, 🔄 Frequency.' },
+    { title: 'Growth Roadmap (4/8/12 Weeks)', minChars: 800, desc: 'Week-by-week plan. Each week MUST have: 🎯 Goal, 📋 Key Activities (2-3, each on its own line), ✅ Success Criteria, 🔗 Platform Features. Use clear spacing between weeks.' },
     { title: 'AIHPRO Big Data Comparative Analysis', minChars: 600, desc: 'Percentile estimates compared to AIHPRO platform norms.' },
     { title: 'Comprehensive Clinical Opinion', minChars: 700, desc: 'Integrated opinion citing cross-correlation evidence.' },
-    { title: 'Home Practice Guide', minChars: 700, desc: '15 practical tips for home implementation.' },
+    { title: 'Home Practice Guide', minChars: 700, desc: '15 practical tips. Each tip MUST include these 3 items on separate lines: 📍 Situation, 📋 Method (with dialogue examples), ✨ Effect. Use clear spacing between tips.' },
     { title: 'Key Summary & Action Items', minChars: 600, desc: 'TOP 5 findings and TOP 5 immediate actions.' },
   ];
 

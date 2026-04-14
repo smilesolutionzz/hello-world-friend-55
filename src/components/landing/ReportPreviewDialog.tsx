@@ -255,7 +255,7 @@ const ReportPreviewDialog: React.FC<Props> = ({ isOpen, onOpenChange }) => {
                 {isEnglish ? 'Expert-Level Developmental Analysis Report' : '전문가급 발달 분석 리포트'}
               </h2>
               <p className="text-white/50 text-xs mt-1">
-                {isEnglish ? 'Generated Mar 12, 2026 · Gemini 3 Flash + Perplexity powered' : '2026년 3월 12일 생성 · Gemini 3 Flash + Perplexity 기반'}
+                {isEnglish ? 'Generated Apr 14, 2026 · Expert-designed analysis engine' : '2026년 4월 생성 · 전문가 설계 분석 엔진'}
               </p>
             </div>
             <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)} className="text-white/60 hover:text-white hover:bg-white/10 -mt-1">

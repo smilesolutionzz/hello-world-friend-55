@@ -237,7 +237,7 @@ const IRDeck = () => {
                 <ul className="space-y-2">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    <span>Gemini 2.5 Flash 기반</span>
+                    <span>자체 개발 AI 분석 엔진</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-500" />

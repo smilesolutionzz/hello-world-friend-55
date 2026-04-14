@@ -128,7 +128,7 @@ ${contentRef.current?.innerHTML || ''}
               3. 기술·제품 경쟁력
             </h2>
             <ul style={{ margin: '2px 0 6px 18px', padding: 0, fontSize: '9.5pt' }}>
-              <li>GPT-4/Gemini 기반 <strong>박사급 종합 리포팅</strong></li>
+              <li>14년 전문가 설계 <strong>박사급 종합 리포팅</strong></li>
               <li>AI 영상관찰 분석 (행동 패턴 자동 감지)</li>
               <li>30종 자체 개발 심리검사 엔진</li>
               <li>기관용 대시보드 + 다국어 (한/영) 지원</li>

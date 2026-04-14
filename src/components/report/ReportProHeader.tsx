@@ -39,10 +39,10 @@ const ReportProHeader: React.FC<ReportProHeaderProps> = ({ isLoggedIn, isPremium
         </h1>
         <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
           {isEnglish ? (
-            <>Powered by <strong className="text-white">GPT-5 + Perplexity sonar-pro</strong><br className="hidden md:block" />
+            <>Powered by <strong className="text-white">14-year expert-designed engine</strong><br className="hidden md:block" />
             Visual infographics + Easy language + Expert-level clinical analysis</>
           ) : (
-            <><strong className="text-white">GPT-5 + Perplexity sonar-pro</strong> 이중 엔진<br className="hidden md:block" />
+            <><strong className="text-white">14년 전문가 설계</strong> 빅데이터 분석 엔진<br className="hidden md:block" />
             시각적 인포그래픽 + 쉬운 말 설명 + 전문가급 임상 해설</>
           )}
         </p>

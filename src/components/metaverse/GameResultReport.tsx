@@ -154,7 +154,7 @@ export default function GameResultReport({
       const { data, error } = await supabase.functions.invoke('generate-visual-summary', {
         body: {
           type: 'counseling',
-          content: `## 금쪽상담소 게임 상담 결과 - Gemini 3.1 심층 분석 요청
+          content: `## 금쪽상담소 게임 상담 결과 - 전문가급 심층 분석 요청
 
 ### 스토리: ${chapter.title}
 ### 대상 연령: ${chapter.targetAge}

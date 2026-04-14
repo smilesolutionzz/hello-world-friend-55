@@ -364,22 +364,19 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
               )}
 
               {/* 검사 1회 구매 */}
-              <Card className="p-4 border border-border rounded-2xl space-y-3">
+              <Card className="p-4 border border-border rounded-2xl space-y-3 bg-white dark:bg-card">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Brain className="w-5 h-5 text-blue-500" />
-                    <span className="font-bold text-foreground">검사 1회</span>
+                    <Brain className="w-5 h-5 text-emerald-600" />
+                    <span className="font-bold text-foreground">심리검사 1회</span>
                   </div>
-                  <Badge variant="secondary" className="text-xs">가벼운 시작</Badge>
+                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 dark:bg-emerald-900/40 dark:text-emerald-300 px-2.5 py-1 rounded-full">61% 할인</span>
                 </div>
                 <div className="flex items-baseline gap-2">
+                  <span className="text-sm text-muted-foreground line-through">₩4,900</span>
                   <span className="text-2xl font-extrabold text-foreground">₩{SINGLE_TEST_PRICE.toLocaleString()}</span>
-                  <span className="text-sm text-muted-foreground">/ 1회</span>
                 </div>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />심리검사 1회 이용</li>
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />기본 결과 확인</li>
-                </ul>
+                <p className="text-xs text-muted-foreground">검사 실시 + 기본 결과 확인</p>
                 <Button
                   variant="outline"
                   className="w-full h-12 text-base font-semibold rounded-xl"
@@ -387,26 +384,23 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
                   disabled={isAuthenticated ? (loading || !isReady) : false}
                 >
                   {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                  검사 1회 구매
+                  구매
                 </Button>
               </Card>
 
-              <Card className="p-4 border border-border rounded-2xl space-y-3">
+              <Card className="p-4 border border-border rounded-2xl space-y-3 bg-white dark:bg-card">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Zap className="w-5 h-5 text-amber-500" />
-                    <span className="font-bold text-foreground">1회 이용권</span>
+                    <span className="font-bold text-foreground">심층 분석 리포트 1회</span>
                   </div>
-                  <Badge variant="secondary" className="text-xs">60% 할인</Badge>
+                  <span className="text-[11px] font-bold text-amber-700 bg-amber-100 dark:bg-amber-900/40 dark:text-amber-300 px-2.5 py-1 rounded-full">60% 할인</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm text-muted-foreground line-through">₩9,900</span>
+                  <span className="text-sm text-muted-foreground line-through">₩14,900</span>
                   <span className="text-2xl font-extrabold text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
                 </div>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />전문가급 AI 심층 분석 1회</li>
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />맞춤 가이드 & 제언 포함</li>
-                </ul>
+                <p className="text-xs text-muted-foreground">AI 심층 분석 + PDF 리포트 + 맞춤 솔루션</p>
                 <Button
                   variant="outline"
                   className="w-full h-12 text-base font-semibold rounded-xl"
@@ -414,7 +408,7 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
                   disabled={isAuthenticated ? (loading || !isReady) : false}
                 >
                   {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                  리포트 1회 구매
+                  구매
                 </Button>
               </Card>
 

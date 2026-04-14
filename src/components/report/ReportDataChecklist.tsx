@@ -139,6 +139,21 @@ export default function ReportDataChecklist({ onSelectionChange }: ReportDataChe
             };
           }),
         },
+        {
+          key: 'concern_reports', label: '고민 리포트', icon: <MessageCircle className="w-4 h-4" />, color: 'text-indigo-600', expanded: true,
+          items: (concernRes.data || []).map(t => {
+            const severityMap: Record<string, string> = { '높음': 'high', '중간': 'medium', '낮음': 'low' };
+            return {
+              id: t.id,
+              source: 'concern_storage',
+              label: t.analysis_type || '고민 분석',
+              detail: t.concern_text ? t.concern_text.substring(0, 30) + '...' : '기록됨',
+              date: formatDate(t.created_at),
+              riskLevel: severityMap[t.analysis_severity || ''] || undefined,
+              selected: true,
+            };
+          }),
+        },
       ].filter(c => c.items.length > 0);
 
       setCategories(newCategories);

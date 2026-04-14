@@ -167,6 +167,11 @@ const Index = () => {
             <LazyLoad rootMargin="200px">
               <TestimonialSection />
             </LazyLoad>
+
+            {/* 2.5️⃣ 실제 카톡 피드백 — 리얼 소셜 프루프 */}
+            <LazyLoad rootMargin="200px">
+              <RealFeedbackSection />
+            </LazyLoad>
             
             {/* 3️⃣ AI 전문가급 리포트 미리보기 */}
             <LazyLoad rootMargin="200px">

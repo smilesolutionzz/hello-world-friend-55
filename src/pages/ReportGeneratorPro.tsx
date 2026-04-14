@@ -576,6 +576,13 @@ const ReportGeneratorPro = () => {
           />
         )}
 
+        {/* ── 리포트 구성 안내 (프리미엄 사용자: 하단 배치) ── */}
+        {isPremium && (
+          <div id="report-showcase" className="mt-10">
+            <ReportContentShowcase />
+          </div>
+        )}
+
         {/* 전문가 대면 검사 CTA */}
         <div className="max-w-4xl mx-auto mb-10 mt-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}

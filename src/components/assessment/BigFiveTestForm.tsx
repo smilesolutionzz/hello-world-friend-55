@@ -156,7 +156,7 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <div className="text-center">
                 <h3 className="font-semibold text-lg">{isEnglish ? "Analyzing personality..." : "성격 분석 중..."}</h3>
-                <p className="text-muted-foreground">{isEnglish ? "Analyzing your Big Five personality factors" : "빅파이브 성격 요인을 분석하고 있습니다"}</p>
+                <p className="text-muted-foreground">{isEnglish ? "Analyzing your personality factors" : "성격 요인을 분석하고 있습니다"}</p>
               </div>
             </div>
           </CardContent>
@@ -183,7 +183,7 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">{isEnglish ? "Big Five Personality Test" : "빅파이브 성격검사"}</CardTitle>
+            <CardTitle className="text-xl">{isEnglish ? "5-Factor Personality Test" : "5요인 성격 분석"}</CardTitle>
             <p className="text-sm text-muted-foreground">
               {isEnglish ? "Select how well each statement describes you" : "각 문항에 대해 자신과 얼마나 일치하는지 선택해주세요"}
             </p>

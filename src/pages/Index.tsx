@@ -26,6 +26,7 @@ import SubscriptionValueSection from '@/components/landing/SubscriptionValueSect
 import StickyConversionBar from '@/components/conversion/StickyConversionBar';
 import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
 import { SocialProofToast } from '@/components/landing/SocialProofToast';
+import RealFeedbackSection from '@/components/landing/RealFeedbackSection';
 import TrialOnboarding from '@/components/onboarding/TrialOnboarding';
 import { useTrialProfile } from '@/hooks/useTrialProfile';
 

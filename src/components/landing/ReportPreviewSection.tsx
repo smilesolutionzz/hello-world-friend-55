@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Brain, Target, Heart, Lightbulb, Users, TrendingUp, BookOpen, ArrowRight, Sparkles, CheckCircle2, Download, Share2, Mail, Eye, GraduationCap, MapPin, Map, AlertTriangle } from 'lucide-react';
+import { FileText, Brain, Target, Heart, Lightbulb, Users, TrendingUp, BookOpen, ArrowRight, Sparkles, CheckCircle2, Download, Share2, Mail, Eye, GraduationCap, MapPin, Map, AlertTriangle, BarChart3, Stethoscope } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -10,29 +10,28 @@ const ReportPreviewSection = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [expandedSection, setExpandedSection] = useState<number | null>(0);
 
   const reportSections = [
-    { icon: Brain, title: t.reportPreview.sec1, preview: t.reportPreview.sec1Preview, color: 'amber' },
-    { icon: Target, title: t.reportPreview.sec2, preview: t.reportPreview.sec2Preview, color: 'emerald' },
-    { icon: Heart, title: t.reportPreview.sec3, preview: t.reportPreview.sec3Preview, color: 'rose' },
-    { icon: Lightbulb, title: t.reportPreview.sec4, preview: t.reportPreview.sec4Preview, color: 'blue' },
-    { icon: Users, title: t.reportPreview.sec5, preview: t.reportPreview.sec5Preview, color: 'violet' },
-    { icon: TrendingUp, title: t.reportPreview.sec6, preview: t.reportPreview.sec6Preview, color: 'orange' },
-    { icon: GraduationCap, title: t.reportPreview.sec7, preview: t.reportPreview.sec7Preview, color: 'cyan' },
-    { icon: MapPin, title: t.reportPreview.sec8, preview: t.reportPreview.sec8Preview, color: 'indigo' },
-    { icon: Map, title: t.reportPreview.sec9, preview: t.reportPreview.sec9Preview, color: 'amber' },
+    { icon: BookOpen, title: t.reportPreview.sec1, preview: t.reportPreview.sec1Preview, color: 'amber' },
+    { icon: Brain, title: t.reportPreview.sec2, preview: t.reportPreview.sec2Preview, color: 'emerald' },
+    { icon: Target, title: t.reportPreview.sec3, preview: t.reportPreview.sec3Preview, color: 'rose' },
+    { icon: Users, title: t.reportPreview.sec4, preview: t.reportPreview.sec4Preview, color: 'blue' },
+    { icon: TrendingUp, title: t.reportPreview.sec5, preview: t.reportPreview.sec5Preview, color: 'violet' },
+    { icon: Map, title: t.reportPreview.sec6, preview: t.reportPreview.sec6Preview, color: 'orange' },
+    { icon: Stethoscope, title: t.reportPreview.sec7, preview: t.reportPreview.sec7Preview, color: 'cyan' },
+    { icon: BarChart3, title: t.reportPreview.sec8, preview: t.reportPreview.sec8Preview, color: 'indigo' },
+    { icon: Lightbulb, title: t.reportPreview.sec9, preview: t.reportPreview.sec9Preview, color: 'amber' },
   ];
 
-  const colorClasses: Record<string, { bg: string; icon: string; border: string }> = {
-    amber: { bg: 'bg-amber-50', icon: 'text-amber-600 bg-amber-100', border: 'border-amber-200' },
-    emerald: { bg: 'bg-emerald-50', icon: 'text-emerald-600 bg-emerald-100', border: 'border-emerald-200' },
-    rose: { bg: 'bg-rose-50', icon: 'text-rose-600 bg-rose-100', border: 'border-rose-200' },
-    blue: { bg: 'bg-blue-50', icon: 'text-blue-600 bg-blue-100', border: 'border-blue-200' },
-    violet: { bg: 'bg-violet-50', icon: 'text-violet-600 bg-violet-100', border: 'border-violet-200' },
-    orange: { bg: 'bg-orange-50', icon: 'text-orange-600 bg-orange-100', border: 'border-orange-200' },
-    cyan: { bg: 'bg-cyan-50', icon: 'text-cyan-600 bg-cyan-100', border: 'border-cyan-200' },
-    indigo: { bg: 'bg-indigo-50', icon: 'text-indigo-600 bg-indigo-100', border: 'border-indigo-200' },
+  const colorClasses: Record<string, { icon: string }> = {
+    amber: { icon: 'text-amber-600 bg-amber-100' },
+    emerald: { icon: 'text-emerald-600 bg-emerald-100' },
+    rose: { icon: 'text-rose-600 bg-rose-100' },
+    blue: { icon: 'text-blue-600 bg-blue-100' },
+    violet: { icon: 'text-violet-600 bg-violet-100' },
+    orange: { icon: 'text-orange-600 bg-orange-100' },
+    cyan: { icon: 'text-cyan-600 bg-cyan-100' },
+    indigo: { icon: 'text-indigo-600 bg-indigo-100' },
   };
 
   const features = [
@@ -44,6 +43,15 @@ const ReportPreviewSection = () => {
   const benefits = [
     t.reportPreview.benefit1, t.reportPreview.benefit2, t.reportPreview.benefit3,
     t.reportPreview.benefit4, t.reportPreview.benefit5, t.reportPreview.benefit6,
+  ];
+
+  // Radar chart data for visual preview
+  const radarData = [
+    { label: '자기주도성', score: 85 },
+    { label: '규범적 성숙도', score: 80 },
+    { label: '인지적 유연성', score: 35 },
+    { label: '스트레스 대처', score: 40 },
+    { label: '수면·활력', score: 20 },
   ];
 
   return (
@@ -59,12 +67,11 @@ const ReportPreviewSection = () => {
             {t.reportPreview.badge}
           </span>
           <h2 className="text-2xl md:text-4xl font-bold text-white mb-3">{t.reportPreview.heading}</h2>
-          <p className="text-white/60 text-sm md:text-base max-w-xl mx-auto">{t.reportPreview.subheading}</p>
+          <p className="text-white/60 text-sm md:text-base max-w-2xl mx-auto">{t.reportPreview.subheading}</p>
         </motion.div>
 
-        {/* Report Preview Card */}
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-3xl mx-auto">
-          {/* Report Header with ID & Risk */}
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-4xl mx-auto">
+          {/* Report Header */}
           <div className="bg-slate-800/80 backdrop-blur-sm border border-white/10 rounded-t-2xl p-4 md:p-6">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div>
@@ -79,7 +86,6 @@ const ReportPreviewSection = () => {
                 <p className="text-amber-400 font-bold text-sm">AIHPRO</p>
               </div>
             </div>
-            {/* Risk Level & AI Confidence Bar */}
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-1.5 px-3 py-1 bg-orange-500/15 border border-orange-500/30 rounded-full">
                 <AlertTriangle className="w-3.5 h-3.5 text-orange-400" />
@@ -101,46 +107,80 @@ const ReportPreviewSection = () => {
             </div>
           </div>
 
-          {/* Report Content */}
-          <div className="bg-amber-50/95 border-x border-b border-amber-200/50 rounded-b-2xl p-4 md:p-6 space-y-4">
-            {/* Summary */}
-            <div className="bg-white rounded-xl p-4 border border-amber-100">
+          {/* Report Body */}
+          <div className="bg-white border-x border-b border-slate-200 rounded-b-2xl p-4 md:p-6 space-y-5">
+            {/* Executive Summary */}
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-200">
               <div className="flex items-center gap-2 mb-3">
                 <FileText className="w-5 h-5 text-amber-600" />
                 <h4 className="font-bold text-slate-800">{t.reportPreview.summaryTitle}</h4>
               </div>
-              <div className="space-y-2 text-sm text-slate-600">
+              <div className="space-y-2.5 text-sm text-slate-600">
                 <p className="flex items-start gap-2">
-                  <span className="text-amber-500 mt-0.5">•</span>
-                  <span><strong>{t.reportPreview.summaryObs}</strong> {t.reportPreview.summaryObsText}</span>
+                  <span className="text-red-500 mt-0.5 font-bold">▸</span>
+                  <span><strong className="text-slate-800">{t.reportPreview.summaryObs}</strong> {t.reportPreview.summaryObsText}</span>
                 </p>
                 <p className="flex items-start gap-2">
-                  <span className="text-green-500 mt-0.5">•</span>
-                  <span><strong>{t.reportPreview.summaryStrength}</strong> {t.reportPreview.summaryStrengthText}</span>
+                  <span className="text-emerald-500 mt-0.5 font-bold">▸</span>
+                  <span><strong className="text-slate-800">{t.reportPreview.summaryStrength}</strong> {t.reportPreview.summaryStrengthText}</span>
                 </p>
                 <p className="flex items-start gap-2">
-                  <span className="text-blue-500 mt-0.5">•</span>
-                  <span><strong>{t.reportPreview.summaryAction}</strong> {t.reportPreview.summaryActionText}</span>
+                  <span className="text-blue-500 mt-0.5 font-bold">▸</span>
+                  <span><strong className="text-slate-800">{t.reportPreview.summaryAction}</strong> {t.reportPreview.summaryActionText}</span>
                 </p>
               </div>
             </div>
 
-            {/* All 9 Sections */}
-            <div className="bg-white rounded-xl p-4 border border-amber-100">
+            {/* Radar Chart Preview */}
+            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+              <div className="flex items-center gap-2 mb-3">
+                <BarChart3 className="w-5 h-5 text-indigo-600" />
+                <h4 className="font-bold text-slate-800">심리 프로파일 레이더</h4>
+              </div>
+              <div className="grid grid-cols-5 gap-2">
+                {radarData.map((item, i) => (
+                  <div key={i} className="text-center">
+                    <div className="relative mx-auto w-12 h-12 mb-1">
+                      <svg viewBox="0 0 48 48" className="w-full h-full">
+                        <circle cx="24" cy="24" r="20" fill="none" stroke="#e2e8f0" strokeWidth="4" />
+                        <motion.circle
+                          cx="24" cy="24" r="20"
+                          fill="none"
+                          stroke={item.score >= 70 ? '#10b981' : item.score >= 50 ? '#f59e0b' : '#ef4444'}
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          strokeDasharray={`${(item.score / 100) * 125.6} 125.6`}
+                          transform="rotate(-90 24 24)"
+                          initial={{ strokeDasharray: '0 125.6' }}
+                          whileInView={{ strokeDasharray: `${(item.score / 100) * 125.6} 125.6` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, delay: i * 0.15 }}
+                        />
+                      </svg>
+                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-slate-700">{item.score}</span>
+                    </div>
+                    <p className="text-[10px] text-slate-500 leading-tight">{item.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 10 Analysis Sections */}
+            <div className="bg-white rounded-xl p-4 border border-slate-200">
               <div className="flex items-center gap-2 mb-3">
                 <BookOpen className="w-5 h-5 text-amber-600" />
                 <h4 className="font-bold text-slate-800">{t.reportPreview.detailedTitle}</h4>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {reportSections.map((section, index) => {
                   const colors = colorClasses[section.color] || colorClasses.amber;
                   return (
-                    <div key={index} className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-amber-50/70 transition-colors">
+                    <div key={index} className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-slate-50 transition-colors">
                       <div className={`p-1.5 rounded-lg shrink-0 ${colors.icon}`}>
                         <section.icon className="w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h5 className="font-semibold text-slate-700 text-sm">{section.title}</h5>
+                        <h5 className="font-semibold text-slate-700 text-sm">{index + 1}. {section.title}</h5>
                         <p className="text-xs text-slate-500 line-clamp-1">{section.preview}</p>
                       </div>
                     </div>
@@ -153,7 +193,7 @@ const ReportPreviewSection = () => {
             <Button
               onClick={() => setIsPreviewOpen(true)}
               variant="outline"
-              className="w-full py-5 border-amber-300 text-amber-700 hover:bg-amber-100 font-semibold"
+              className="w-full py-5 border-amber-300 text-amber-700 hover:bg-amber-50 font-semibold"
             >
               <Eye className="w-5 h-5 mr-2" />
               {t.reportPreview.previewButton}
@@ -185,7 +225,7 @@ const ReportPreviewSection = () => {
             ))}
           </div>
 
-          {/* Strong CTA */}
+          {/* CTA */}
           <div className="text-center space-y-3">
             <Button
               onClick={() => navigate('/report-generator')}

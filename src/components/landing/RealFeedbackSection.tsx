@@ -61,22 +61,28 @@ const RealFeedbackSection = () => {
               {isEnglish ? 'Real Parent Feedback' : '실제 학부모 반응'}
             </span>
           </div>
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-3">
+          <h2 className="text-xl md:text-4xl font-bold text-white mb-3 leading-snug">
             {isEnglish ? (
               <>
-                "I thought something was <span className="text-rose-400">seriously wrong</span>"
+                "I thought something was{' '}
+                <span className="text-rose-400">seriously wrong</span>"
                 <br />
                 <span className="text-emerald-400">Then the report changed everything</span>
               </>
             ) : (
               <>
                 "정신병인가 싶었는데"
-                <br />
-                <span className="text-emerald-400">리포트를 보고 이해하려는 시도가 생겼어요</span>
+                <br className="md:hidden" />
+                {' '}
+                <span className="text-emerald-400 text-lg md:text-4xl">
+                  리포트를 보고
+                  <br className="md:hidden" />
+                  이해하려는 시도가 생겼어요
+                </span>
               </>
             )}
           </h2>
-          <p className="text-white/50 text-sm max-w-lg mx-auto">
+          <p className="text-white/50 text-xs md:text-sm max-w-lg mx-auto">
             {isEnglish
               ? 'A real conversation between a parent and our team after receiving a behavioral analysis report'
               : '리포트를 받은 후 실제 학부모와 나눈 대화를 재구성했습니다'}

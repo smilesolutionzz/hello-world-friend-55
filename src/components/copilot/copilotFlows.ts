@@ -40,6 +40,12 @@ export const copilotFlows: Record<string, CopilotStep> = {
         nextStep: 'test_guide',
       },
       {
+        emoji: '📊',
+        label: '종합 리포트를 받고 싶어요',
+        description: '검사 데이터 기반 전문 분석 리포트',
+        nextStep: 'report_intro',
+      },
+      {
         emoji: '💬',
         label: '전문가 상담 연결해주세요',
         description: '14년 경력 전문가 직접 상담',
@@ -75,8 +81,7 @@ export const copilotFlows: Record<string, CopilotStep> = {
         emoji: '🤷',
         label: '잘 모르겠어요, 전체적으로 봐주세요',
         description: 'AI 종합 발달평가',
-        action: 'navigate',
-        route: '/assessment',
+        nextStep: 'child_next_step',
       },
     ],
   },
@@ -88,20 +93,17 @@ export const copilotFlows: Record<string, CopilotStep> = {
       {
         label: '0~2세 (영아)',
         description: '영아기 발달 선별검사',
-        action: 'navigate',
-        route: '/assessment',
+        nextStep: 'child_next_step',
       },
       {
         label: '3~5세 (유아)',
         description: '유아 발달 종합평가',
-        action: 'navigate',
-        route: '/assessment',
+        nextStep: 'child_next_step',
       },
       {
         label: '6세 이상 (학령기)',
         description: '학령기 언어/학습 체크',
-        action: 'navigate',
-        route: '/assessment',
+        nextStep: 'child_next_step',
       },
       {
         emoji: '💬',
@@ -118,8 +120,7 @@ export const copilotFlows: Record<string, CopilotStep> = {
       {
         label: '가끔 그래요, 체크해보고 싶어요',
         description: 'AI 행동 체크리스트',
-        action: 'navigate',
-        route: '/assessment',
+        nextStep: 'child_next_step',
       },
       {
         label: '매일 힘들어요, 빨리 도움받고 싶어요',
@@ -142,8 +143,7 @@ export const copilotFlows: Record<string, CopilotStep> = {
     options: [
       {
         label: '친구를 잘 못 사귀어요',
-        action: 'navigate',
-        route: '/assessment',
+        nextStep: 'child_next_step',
       },
       {
         label: '유치원/학교에서 문제가 있어요',
@@ -151,8 +151,42 @@ export const copilotFlows: Record<string, CopilotStep> = {
       },
       {
         label: '전체 발달 상태를 알고 싶어요',
+        nextStep: 'child_next_step',
+      },
+    ],
+  },
+
+  // ─── 아이 → 다음 단계 분기 ───
+  child_next_step: {
+    question: '어떻게 진행할까요?',
+    subtitle: '검사 → 리포트 → 상담 순서를 추천드려요',
+    emoji: '✨',
+    options: [
+      {
+        emoji: '📋',
+        label: '먼저 AI 검사부터 해볼게요',
+        description: '3~5분 무료 선별검사',
         action: 'navigate',
         route: '/assessment',
+      },
+      {
+        emoji: '📊',
+        label: '바로 종합 리포트를 받고 싶어요',
+        description: '기존 데이터로 즉시 생성 가능',
+        action: 'navigate',
+        route: '/report-generator-pro',
+      },
+      {
+        emoji: '🎮',
+        label: '금쪽상담소에서 놀이 관찰하기',
+        description: 'AI 게임으로 행동 데이터 수집',
+        action: 'navigate',
+        route: '/geumjjok-counseling',
+      },
+      {
+        emoji: '💬',
+        label: '전문가와 먼저 상담할게요',
+        action: 'kakao',
       },
     ],
   },
@@ -166,26 +200,51 @@ export const copilotFlows: Record<string, CopilotStep> = {
         emoji: '😰',
         label: '스트레스 / 불안 / 번아웃',
         description: 'AI 스트레스 분석',
-        action: 'navigate',
-        route: '/assessment',
+        nextStep: 'adult_next_step',
       },
       {
         emoji: '😞',
         label: '우울감 / 무기력',
         description: 'AI 우울 선별검사',
-        action: 'navigate',
-        route: '/assessment',
+        nextStep: 'adult_next_step',
       },
       {
         emoji: '🪞',
         label: '내 성격/기질을 알고 싶어요',
         description: 'AI 성격 분석, DISC 등',
-        action: 'navigate',
-        route: '/assessment',
+        nextStep: 'adult_next_step',
       },
       {
         emoji: '💬',
         label: '직접 전문가와 상담하고 싶어요',
+        action: 'kakao',
+      },
+    ],
+  },
+
+  // ─── 성인 → 다음 단계 분기 ───
+  adult_next_step: {
+    question: '어떻게 시작할까요?',
+    subtitle: '검사 후 리포트를 받으면 더 정확해요',
+    emoji: '🎯',
+    options: [
+      {
+        emoji: '📋',
+        label: '무료 검사 먼저 해볼게요',
+        description: '3~5분 간단 선별검사',
+        action: 'navigate',
+        route: '/assessment',
+      },
+      {
+        emoji: '📊',
+        label: '종합 리포트 바로 받기',
+        description: '내 데이터 기반 전문 분석',
+        action: 'navigate',
+        route: '/report-generator-pro',
+      },
+      {
+        emoji: '💬',
+        label: '전문가 상담 연결',
         action: 'kakao',
       },
     ],
@@ -205,9 +264,9 @@ export const copilotFlows: Record<string, CopilotStep> = {
       },
       {
         emoji: '📊',
-        label: 'AI 정밀 리포트를 받고 싶어요',
-        description: '빅데이터 기반 전문 리포트',
-        nextStep: 'test_premium',
+        label: '검사 + 리포트 한번에 받기',
+        description: '검사 후 자동으로 전문 리포트 생성',
+        nextStep: 'test_to_report',
       },
       {
         emoji: '🎨',
@@ -226,27 +285,126 @@ export const copilotFlows: Record<string, CopilotStep> = {
     ],
   },
 
-  test_premium: {
-    question: '리포트 이용권이 필요해요',
-    subtitle: '₩990 단건 ~ ₩3,900 구독까지 다양한 옵션',
+  // ─── 검사 → 리포트 연계 ───
+  test_to_report: {
+    question: '검사 데이터가 많을수록 리포트가 정확해져요',
+    subtitle: '검사 → 관찰 → 리포트 순서를 추천드려요',
+    emoji: '📈',
+    options: [
+      {
+        emoji: '📋',
+        label: '검사부터 시작할게요',
+        description: '완료 후 리포트 자동 생성 가능',
+        action: 'navigate',
+        route: '/assessment',
+      },
+      {
+        emoji: '📊',
+        label: '이미 검사했어요, 리포트 바로 받기',
+        description: '기존 데이터로 즉시 생성',
+        action: 'navigate',
+        route: '/report-generator-pro',
+      },
+      {
+        emoji: '💳',
+        label: '이용권 먼저 구매할게요',
+        description: '구독/단건 결제',
+        action: 'payment',
+      },
+    ],
+  },
+
+  // ─── 리포트 안내 ───
+  report_intro: {
+    question: '어떤 리포트를 원하세요?',
+    subtitle: '14년 전문가 설계 빅데이터 엔진 분석',
     emoji: '📊',
     options: [
       {
-        emoji: '💳',
-        label: '이용권 구매하러 가기',
-        description: '구독/단건 결제 옵션',
-        action: 'payment',
+        emoji: '👶',
+        label: '아이 발달 종합 리포트',
+        description: '검사+관찰+게임 데이터 통합 분석',
+        nextStep: 'report_child',
       },
       {
-        emoji: '🆓',
-        label: '무료 검사 먼저 해볼게요',
+        emoji: '🧠',
+        label: '내 심리 상태 분석 리포트',
+        description: '스트레스, 우울, 성격 통합 분석',
+        nextStep: 'report_adult',
+      },
+      {
+        emoji: '📄',
+        label: '데모 리포트 먼저 볼래요',
+        description: '실제 16페이지 샘플 확인',
+        action: 'navigate',
+        route: '/shared-report/demo',
+      },
+    ],
+  },
+
+  report_child: {
+    question: '리포트 데이터를 모아볼까요?',
+    subtitle: '데이터가 많을수록 30~50페이지 정밀 분석 가능',
+    emoji: '🧩',
+    options: [
+      {
+        emoji: '📊',
+        label: '바로 리포트 생성하기',
+        description: '기존 데이터로 즉시 시작',
+        action: 'navigate',
+        route: '/report-generator-pro',
+      },
+      {
+        emoji: '📋',
+        label: '검사 더 해서 데이터 추가하기',
+        description: '정밀도 UP',
+        action: 'navigate',
+        route: '/assessment',
+      },
+      {
+        emoji: '🎮',
+        label: '금쪽상담소로 행동 데이터 수집',
+        description: '게임+음성 분석 데이터 추가',
+        action: 'navigate',
+        route: '/geumjjok-counseling',
+      },
+      {
+        emoji: '💳',
+        label: '이용권 구매하기',
+        action: 'payment',
+      },
+    ],
+  },
+
+  report_adult: {
+    question: '리포트 정밀도를 높여볼까요?',
+    subtitle: '여러 검사를 받을수록 교차분석이 가능해요',
+    emoji: '🔍',
+    options: [
+      {
+        emoji: '📊',
+        label: '바로 리포트 생성하기',
+        description: '기존 데이터로 즉시 시작',
+        action: 'navigate',
+        route: '/report-generator-pro',
+      },
+      {
+        emoji: '📋',
+        label: '검사 더 해서 데이터 추가',
+        description: '스트레스+우울+성격 교차분석',
         action: 'navigate',
         route: '/assessment',
       },
       {
         emoji: '💬',
-        label: '상담 먼저 받고 결정할래요',
+        label: '전문가 상담과 함께 받기',
+        description: '리포트 기반 전문 상담',
         action: 'kakao',
+      },
+      {
+        emoji: '💳',
+        label: '이용권 구매하기',
+        action: 'payment',
       },
     ],
   },

@@ -446,48 +446,28 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
           </p>
         </div>
 
-        <Button
-          onClick={() => {
-            localStorage.setItem('instant_analysis_result', JSON.stringify(analysisResult));
-            localStorage.setItem('instant_analysis_input', inputText);
-            navigate(isEnglish ? '/en/report-generator' : '/report-generator');
-          }}
-          className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-4 rounded-xl"
-        >
-          <FileText className="w-5 h-5 mr-2" />
-          {isEnglish ? '🔬 Get PhD-Grade Full Report — ₩3,900' : '🔬 이 고민, PhD급 전문 리포트로 깊이 분석하기 — ₩3,900'}
-          <ArrowRight className="w-5 h-5 ml-2" />
-        </Button>
-        <p className="text-center text-white/40 text-xs">
-          {isEnglish
-            ? 'Includes 12-week roadmap, risk assessment, and expert-level commentary'
-            : '12주 실천 로드맵 · 위험도 평가 · 전문가급 종합 소견 포함'}
-        </p>
-      </div>
-
-      {/* 13. CTA */}
-      <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-xl rounded-2xl border border-amber-500/30 p-5">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-lg bg-amber-500/30 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-amber-300" />
-          </div>
-          <div>
-            <p className="text-white font-bold text-sm">{L.wantMore}</p>
-            <p className="text-white/60 text-xs">{L.wantMoreSub}</p>
-          </div>
-        </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <Button
-            onClick={() => { localStorage.setItem('instant_analysis_input', inputText); navigate(isEnglish ? '/en/assessment' : '/assessment'); }}
-            className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-5 rounded-xl"
+            onClick={() => {
+              localStorage.setItem('instant_analysis_result', JSON.stringify(analysisResult));
+              localStorage.setItem('instant_analysis_input', inputText);
+              navigate(isEnglish ? '/en/report-generator' : '/report-generator');
+            }}
+            className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl text-sm"
           >
-            <Sparkles className="w-4 h-4 mr-2" />
-            {L.preciseAnalysis}
+            <FileText className="w-4 h-4 mr-1.5" />
+            {isEnglish ? 'PhD-Grade Report — ₩3,900' : 'PhD급 리포트 보기 — ₩3,900'}
+            <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
-          <Button onClick={onReset} variant="outline" className="bg-white/5 border-white/20 text-white/80 hover:bg-white/10 py-5 rounded-xl">
+          <Button onClick={onReset} variant="outline" className="bg-white/5 border-white/20 text-white/80 hover:bg-white/10 py-3 rounded-xl text-sm px-4">
             {L.analyzeAgain}
           </Button>
         </div>
+        <p className="text-center text-white/40 text-[11px]">
+          {isEnglish
+            ? '12-week roadmap · risk assessment · expert commentary'
+            : '12주 로드맵 · 위험도 평가 · 전문가급 소견 포함'}
+        </p>
       </div>
 
       {/* 면책 문구 */}

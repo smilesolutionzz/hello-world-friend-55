@@ -83,7 +83,6 @@ function cleanAIContent(content: string): string {
   let cleaned = content;
 
   // 1. Remove entire JSON blocks: roadmap, chartData, weeks arrays, radarScores, keyMetrics, etc.
-  // Match "key": { ... } or "key": [ ... ] patterns that span multiple lines
   const jsonBlockKeys = [
     'roadmap', 'chartData', 'radarScores', 'keyMetrics', 'riskLevel', 'riskScore',
     'platformFeatures', 'weeks\\d+', 'behavioralPatterns', 'interventionPriorities',
@@ -96,27 +95,33 @@ function cleanAIContent(content: string): string {
   cleaned = cleaned.replace(blockPattern, '');
 
   // 2. Remove lines that look like raw JSON key-value pairs
-  // e.g., "week": 9, "goal": "...", "milestone": "...", "score": 85, "maxScore": 100
   cleaned = cleaned.replace(/^\s*["']?\w+["']?\s*:\s*[\[\{]?\s*$/gm, '');
   cleaned = cleaned.replace(/^\s*["']\w+["']\s*:\s*(".*?"|[\d.]+|true|false|null)\s*,?\s*$/gm, '');
-  cleaned = cleaned.replace(/^\s*["']?(week|goal|activities|milestone|platformFeatures|dimension|score|maxScore|overallWellbeing|socialAdaptation|emotionalStability|cognitiveFunction|behavioralRegulation|riskLevel|riskScore)["']?\s*:\s*.*/gi, '');
+  cleaned = cleaned.replace(/^\s*["']?(week|goal|activities|milestone|platformFeatures|dimension|score|maxScore|overallWellbeing|socialAdaptation|emotionalStability|cognitiveFunction|behavioralRegulation|riskLevel|riskScore)["']?\s*:\s*.*/gim, '');
 
-  // 3. Remove stray JSON syntax characters on their own lines
+  // 3. Remove summary/content wrapper tokens even when they appear mid-text
+  cleaned = cleaned.replace(/["']\s*["']?summary["']?\s*:\s*["']?/gi, '');
+  cleaned = cleaned.replace(/["']\s*["']?content["']?\s*:\s*["']?/gi, '');
+  cleaned = cleaned.replace(/^["']?summary["']?\s*:\s*["']?/i, '');
+  cleaned = cleaned.replace(/^["']?content["']?\s*:\s*["']?/i, '');
+
+  // 4. Remove obvious trailing preprocessed/meta fragments
+  cleaned = cleaned.replace(/["']\s*,?\s*["']?(preprocessedData|metadata|sections|summary)["']?\s*:\s*[\[{"'][\s\S]*$/i, '');
+  cleaned = cleaned.replace(/본 리포트는 전처리 데이터[\s\S]*$/i, '');
+
+  // 5. Remove stray JSON syntax characters on their own lines
   cleaned = cleaned.replace(/^\s*[\[\]{},]+\s*$/gm, '');
 
-  // 4. Remove JSON wrapper artifacts
-  cleaned = cleaned.replace(/^["']?content["']?\s*:\s*["']/i, '');
+  // 6. Remove JSON wrapper artifacts
   cleaned = cleaned.replace(/["']\s*\}?\s*,?\s*\{?\s*$/g, '');
   cleaned = cleaned.replace(/["']\s*\}\s*$/g, '');
   cleaned = cleaned.replace(/^\s*\}\s*,?\s*\{/gm, '');
   cleaned = cleaned.replace(/\}\s*,\s*$/g, '');
   cleaned = cleaned.replace(/^\s*\]\s*,?\s*$/gm, '');
-  cleaned = cleaned.replace(/^["']?summary["']?\s*:\s*["']/i, '');
-
-  // 5. Remove any remaining "key": value patterns that look like JSON (not inside HTML tags)
   cleaned = cleaned.replace(/["']\s*,\s*["']?roadmap["']?\s*:\s*\{[\s\S]*$/i, '');
 
-  // 6. Clean up excessive blank lines left after removal
+  // 7. Normalize leftover quotes/blank lines
+  cleaned = cleaned.replace(/^["'\s]+|["'\s]+$/g, '');
   cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
 
   return cleaned.trim();

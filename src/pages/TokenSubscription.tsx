@@ -187,7 +187,7 @@ const TokenSubscription = () => {
         <div className="grid md:grid-cols-2 gap-6 mb-12">
           {/* 단건 이용권 */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="h-full border border-border/50 bg-white dark:bg-card rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <Card className="h-full border border-border/30 bg-white dark:bg-card rounded-3xl shadow-md hover:shadow-lg transition-shadow">
               <CardContent className="p-8 flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500">
@@ -271,7 +271,7 @@ const TokenSubscription = () => {
 
           {/* 구독 카드 (월간/연간 토글) */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
-            <Card className="h-full relative overflow-hidden border-2 border-primary/30 shadow-2xl shadow-primary/10 bg-white dark:bg-card rounded-3xl">
+            <Card className="h-full relative overflow-hidden border border-primary/20 shadow-lg bg-white dark:bg-card rounded-3xl">
               <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
               <Badge className="absolute top-4 right-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-0 text-sm px-3 py-1 shadow-lg">
                 <Rocket className="w-3 h-3 mr-1" />{billingCycle === 'yearly' ? 'BEST' : '인기'}
@@ -372,7 +372,7 @@ const TokenSubscription = () => {
 
         {/* 가격 비교 계산 */}
         <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mb-12">
-          <Card className="overflow-hidden bg-white dark:bg-card border-border/50 rounded-3xl shadow-lg">
+          <Card className="overflow-hidden bg-white dark:bg-card border-border/30 rounded-3xl shadow-md">
             <CardContent className="p-6">
               <h3 className="font-bold text-center mb-4">💡 어떤 플랜이 나에게 맞을까?</h3>
               <div className="grid grid-cols-5 gap-2 text-center text-sm">
@@ -412,7 +412,7 @@ const TokenSubscription = () => {
           <h3 className="text-xl font-bold text-center mb-6">
             무료 체험 vs <span className="text-violet-600 dark:text-violet-400">구독</span>
           </h3>
-           <Card className="overflow-hidden bg-white dark:bg-card rounded-3xl shadow-lg border-border/50">
+           <Card className="overflow-hidden bg-white dark:bg-card rounded-3xl shadow-md border-border/30">
             <CardContent className="p-0">
               <div className="grid grid-cols-3 text-center text-sm font-bold border-b bg-muted/50">
                 <div className="p-4">기능</div>
@@ -451,7 +451,7 @@ const TokenSubscription = () => {
 
         {/* 논문 기반 섹션 */}
         <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-12">
-          <Card className="overflow-hidden border border-violet-100 dark:border-violet-800 bg-white dark:bg-card rounded-3xl shadow-lg">
+          <Card className="overflow-hidden border border-border/30 bg-white dark:bg-card rounded-3xl shadow-md">
             <CardContent className="p-6 md:p-8">
               <div className="flex items-center gap-3 mb-5">
                 <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/20">
@@ -475,7 +475,7 @@ const TokenSubscription = () => {
 
         {/* 전문가 상담 안내 */}
         <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="mb-12">
-          <Card className="overflow-hidden bg-white dark:bg-card rounded-3xl shadow-lg border-border/50">
+          <Card className="overflow-hidden bg-white dark:bg-card rounded-3xl shadow-md border-border/30">
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500">
@@ -502,7 +502,7 @@ const TokenSubscription = () => {
         </motion.section>
 
         {/* 신뢰 배지 */}
-        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="bg-white dark:bg-card rounded-3xl p-6 shadow-lg border border-border/50">
+        <motion.section initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="bg-white dark:bg-card rounded-3xl p-6 shadow-md border border-border/30">
           <div className="grid grid-cols-3 gap-4 text-center">
             {[
               { icon: Shield, label: '환불 보장', sub: '7일 이내', gradient: 'from-emerald-500 to-teal-500' },

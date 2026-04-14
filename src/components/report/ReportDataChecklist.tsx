@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { 
   CheckCircle, Brain, Eye, Gamepad2, Mic,
-  BarChart3, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, Microscope
+  BarChart3, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, Microscope, Heart
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 

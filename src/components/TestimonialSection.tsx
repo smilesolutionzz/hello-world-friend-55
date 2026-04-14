@@ -70,7 +70,7 @@ const TestimonialSection = () => {
             <Award className="w-4 h-4 text-amber-400" />
             <span className="text-sm font-semibold text-amber-300">{t.testimonials.badge}</span>
           </div>
-          <h2 className="text-2xl md:text-4xl font-bold text-white">{t.testimonials.heading}</h2>
+          <h2 className="text-xl md:text-4xl font-bold text-white break-keep">{t.testimonials.heading}</h2>
         </motion.div>
 
         <div className="max-w-6xl mx-auto" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>

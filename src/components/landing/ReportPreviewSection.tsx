@@ -66,8 +66,8 @@ const ReportPreviewSection = () => {
             <Sparkles className="w-4 h-4" />
             {t.reportPreview.badge}
           </span>
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-3">{t.reportPreview.heading}</h2>
-          <p className="text-white/60 text-sm md:text-base max-w-2xl mx-auto">{t.reportPreview.subheading}</p>
+          <h2 className="text-xl md:text-4xl font-bold text-white mb-3 break-keep">{t.reportPreview.heading}</h2>
+          <p className="text-white/60 text-xs md:text-base max-w-2xl mx-auto px-2 break-keep">{t.reportPreview.subheading}</p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-4xl mx-auto">
@@ -79,7 +79,7 @@ const ReportPreviewSection = () => {
                   <p className="text-white/50 text-xs">{t.reportPreview.dateGenerated}</p>
                   <span className="text-[10px] text-white/30 font-mono">{t.reportPreview.reportId}</span>
                 </div>
-                <h3 className="text-white font-bold text-lg">{t.reportPreview.reportTitle}</h3>
+                <h3 className="text-white font-bold text-sm md:text-lg break-keep">{t.reportPreview.reportTitle}</h3>
               </div>
               <div className="text-right space-y-1">
                 <p className="text-white/50 text-xs">{t.reportPreview.from}</p>

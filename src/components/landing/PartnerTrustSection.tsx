@@ -41,10 +41,10 @@ const PartnerTrustSection = () => {
             <Building2 className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary">{t.partnerTrust.badge}</span>
           </div>
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="text-xl md:text-4xl font-bold text-white mb-4 break-keep">
             <span className="text-primary">{t.partnerTrust.headingCount}</span>{t.partnerTrust.headingEnd}
           </h2>
-          <p className="text-white/60 text-[13px] md:text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-white/60 text-xs md:text-lg max-w-2xl mx-auto leading-relaxed px-2 break-keep">
             {t.partnerTrust.description1}<br />
             {t.partnerTrust.description2}
           </p>

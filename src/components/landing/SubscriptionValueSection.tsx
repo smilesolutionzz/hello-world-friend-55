@@ -76,10 +76,10 @@ const SubscriptionValueSection = () => {
                 {isEnglish ? 'Single Report' : '단건 심층 리포트'}
               </span>
             </div>
-            <h3 className="text-2xl font-bold text-white mb-2">
+            <h3 className="text-xl md:text-2xl font-bold text-white mb-2 break-keep">
               {isEnglish ? 'Expert-Level Analysis' : '전문가급 심층 분석'}
             </h3>
-            <p className="text-slate-400 text-sm mb-6">
+            <p className="text-slate-400 text-xs md:text-sm mb-6 break-keep">
               {isEnglish ? 'Get one expert-level AI analysis report' : '궁금한 검사 하나를 전문가 수준으로 분석받아보세요'}
             </p>
 
@@ -120,10 +120,10 @@ const SubscriptionValueSection = () => {
                 {isEnglish ? 'Monthly Subscription' : '월간 구독'}
               </span>
             </div>
-            <h3 className="text-2xl font-bold text-white mb-2">
+            <h3 className="text-xl md:text-2xl font-bold text-white mb-2 break-keep">
               {isEnglish ? 'Unlimited Access' : '전체 이용 구독'}
             </h3>
-            <p className="text-slate-400 text-sm mb-6">
+            <p className="text-slate-400 text-xs md:text-sm mb-6 break-keep">
               {isEnglish ? 'Everything unlimited for 30 days' : '30일간 모든 검사와 리포트를 자유롭게 이용하세요'}
             </p>
 

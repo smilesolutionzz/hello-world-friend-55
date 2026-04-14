@@ -158,7 +158,7 @@ const TokenSubscription = () => {
 
         {/* 월간/연간 토글 */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex justify-center mb-8">
-          <div className="inline-flex items-center bg-muted rounded-2xl p-1 gap-1">
+          <div className="inline-flex items-center bg-gray-100 dark:bg-muted rounded-2xl p-1 gap-1">
             <button
               onClick={() => setBillingCycle('monthly')}
               className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
@@ -376,27 +376,27 @@ const TokenSubscription = () => {
             <CardContent className="p-6">
               <h3 className="font-bold text-center mb-4">💡 어떤 플랜이 나에게 맞을까?</h3>
               <div className="grid grid-cols-5 gap-2 text-center text-sm">
-                <div className="p-3 rounded-xl bg-background/60">
+                <div className="p-3 rounded-xl bg-gray-50 dark:bg-muted/50">
                   <div className="font-bold text-foreground">검사 1회</div>
                   <div className="text-muted-foreground text-xs mb-1">단건</div>
                   <div className="font-bold text-emerald-600 dark:text-emerald-400">₩{SINGLE_TEST_PRICE.toLocaleString()}</div>
                 </div>
-                <div className="p-3 rounded-xl bg-background/60">
+                <div className="p-3 rounded-xl bg-gray-50 dark:bg-muted/50">
                   <div className="font-bold text-foreground">리포트 1회</div>
                   <div className="text-muted-foreground text-xs mb-1">단건</div>
                   <div className="font-bold text-amber-600 dark:text-amber-400">₩{SINGLE_REPORT_PRICE.toLocaleString()}</div>
                 </div>
-                <div className="p-3 rounded-xl bg-background/60">
+                <div className="p-3 rounded-xl bg-gray-50 dark:bg-muted/50">
                   <div className="font-bold text-foreground">검사+리포트</div>
                   <div className="text-muted-foreground text-xs mb-1">각 1회</div>
                   <div className="font-bold text-foreground">₩{(SINGLE_TEST_PRICE + SINGLE_REPORT_PRICE).toLocaleString()}</div>
                 </div>
-                <div className="p-3 rounded-xl bg-background/60">
+                <div className="p-3 rounded-xl bg-gray-50 dark:bg-muted/50">
                   <div className="font-bold text-foreground">무제한</div>
                   <div className="text-muted-foreground text-xs mb-1">월간 구독</div>
                   <div className="font-bold text-violet-600 dark:text-violet-400">₩{SUBSCRIPTION_PRICE.toLocaleString()}/월</div>
                 </div>
-                <div className="p-3 rounded-xl bg-primary/10 border border-primary/30">
+                <div className="p-3 rounded-xl bg-primary/5 border border-primary/20">
                   <div className="font-bold text-primary">무제한</div>
                   <div className="text-muted-foreground text-xs mb-1">연간 구독</div>
                   <div className="font-bold text-primary">₩{SUBSCRIPTION_YEARLY_MONTHLY_PRICE.toLocaleString()}/월</div>
@@ -414,7 +414,7 @@ const TokenSubscription = () => {
           </h3>
            <Card className="overflow-hidden bg-white dark:bg-card rounded-3xl shadow-md border-border/30">
             <CardContent className="p-0">
-              <div className="grid grid-cols-3 text-center text-sm font-bold border-b bg-muted/50">
+              <div className="grid grid-cols-3 text-center text-sm font-bold border-b bg-gray-50 dark:bg-muted/50">
                 <div className="p-4">기능</div>
                 <div className="p-4 text-muted-foreground">무료 체험</div>
                 <div className="p-4 bg-gradient-to-r from-violet-500 to-purple-500 text-white">구독</div>
@@ -436,7 +436,7 @@ const TokenSubscription = () => {
                       <span className="text-muted-foreground text-xs font-medium">{item.free}</span>
                     )}
                   </div>
-                  <div className="p-4 bg-violet-50/50 dark:bg-violet-950/20 flex items-center justify-center">
+                  <div className="p-4 bg-primary/5 flex items-center justify-center">
                     {typeof item.premium === 'boolean' ? (
                       <Check className="w-5 h-5 text-violet-500" />
                     ) : (

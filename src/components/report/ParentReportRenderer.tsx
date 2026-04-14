@@ -582,7 +582,10 @@ function generateParentReportHTML(
   .stat-card .value { font-size: 24px; font-weight: 800; }
   .stat-card .label { font-size: 11px; color: #6B7280; margin-top: 4px; }
   .ai-content { font-size: 13.5px; line-height: 1.9; color: #374151; }
-  .ai-content h3, .ai-content h4 { font-size: 15px; font-weight: 700; margin: 16px 0 8px; color: #111827; }
+  .ai-content h3 { font-size: 15px; font-weight: 700; margin: 20px 0 10px; color: #111827; padding-top: 8px; border-top: 1px solid #F3F4F6; }
+  .ai-content h3:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+  .ai-content h4 { font-size: 14px; font-weight: 700; margin: 16px 0 6px; color: #1F2937; }
+  .ai-content p { margin-bottom: 6px; }
   .ai-content ul, .ai-content ol { padding-left: 20px; margin: 8px 0; }
   .ai-content li { margin-bottom: 6px; }
   .disclaimer { margin-top: 40px; padding: 20px; background: #F9FAFB; border-radius: 12px; border: 1px solid #E5E7EB; }

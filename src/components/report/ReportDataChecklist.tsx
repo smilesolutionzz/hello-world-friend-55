@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { 
   CheckCircle, Brain, Eye, Gamepad2, Mic,
-  BarChart3, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, Microscope, Heart
+  BarChart3, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, Microscope, Heart, MessageCircle
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -66,8 +66,8 @@ export default function ReportDataChecklist({ onSelectionChange }: ReportDataChe
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // AIHPRO 6대 데이터 소스: 간편검사, 심층검사, 관찰일지, 게임검사, 음성상담, 고민/인사이트
-      const [testRes, enhancedRes, observationRes, gameRes, voiceRes, progressRes, insightsRes] = await Promise.all([
+      // AIHPRO 7대 데이터 소스: 간편검사, 심층검사, 관찰일지, 게임검사, 음성상담, 고민/인사이트, 고민 리포트
+      const [testRes, enhancedRes, observationRes, gameRes, voiceRes, progressRes, insightsRes, concernRes] = await Promise.all([
         // 1. 간편검사 (심리검사 결과)
         supabase.from('test_results').select('id, test_type_id, scores, completed_at, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         // 2. 심층검사 (심층 분석 리포트)
@@ -82,6 +82,8 @@ export default function ReportDataChecklist({ onSelectionChange }: ReportDataChe
         supabase.from('progress_tracking').select('id, source_type, source_label, summary, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         // 6. 고민/건강 인사이트 (부모 고민, 상담 인사이트)
         supabase.from('ai_health_insights').select('id, insight_type, content, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+        // 7. 고민 리포트 (메인페이지 고민 입력 → AI 분석)
+        supabase.from('concern_storage').select('id, concern_text, analysis_type, analysis_severity, analysis_advice, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
       ]);
 
       const testTypeIds = [...new Set((testRes.data || []).map(t => t.test_type_id))];
@@ -133,6 +135,21 @@ export default function ReportDataChecklist({ onSelectionChange }: ReportDataChe
               label: typeLabels[t.insight_type] || t.insight_type || '고민/인사이트',
               detail: t.content ? t.content.substring(0, 30) + '...' : '기록됨',
               date: formatDate(t.created_at),
+              selected: true,
+            };
+          }),
+        },
+        {
+          key: 'concern_reports', label: '고민 리포트', icon: <MessageCircle className="w-4 h-4" />, color: 'text-indigo-600', expanded: true,
+          items: (concernRes.data || []).map(t => {
+            const severityMap: Record<string, string> = { '높음': 'high', '중간': 'medium', '낮음': 'low' };
+            return {
+              id: t.id,
+              source: 'concern_storage',
+              label: t.analysis_type || '고민 분석',
+              detail: t.concern_text ? t.concern_text.substring(0, 30) + '...' : '기록됨',
+              date: formatDate(t.created_at),
+              riskLevel: severityMap[t.analysis_severity || ''] || undefined,
               selected: true,
             };
           }),

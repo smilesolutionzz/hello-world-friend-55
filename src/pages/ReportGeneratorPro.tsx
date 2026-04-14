@@ -128,7 +128,7 @@ const ReportGeneratorPro = () => {
         supabase.from('observation_logs').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
         supabase.from('chat_rooms').select('*, chat_messages(*)').eq('user_id', session.user.id).order('created_at', { ascending: false }),
         supabase.from('observation_sessions').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
-        supabase.from('profiles').select('*').eq('id', session.user.id).single(),
+        supabase.from('profiles').select('*').eq('user_id', session.user.id).single(),
         (supabase.from('user_onboarding_data') as any).select('*').eq('user_id', session.user.id).maybeSingle(),
       ]);
       const totalDataCount = (assessments?.length || 0) + (observations?.length || 0) + (observationSessions?.length || 0) + (chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0);

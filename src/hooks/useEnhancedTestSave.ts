@@ -253,7 +253,7 @@ export const useEnhancedTestSave = () => {
         areasOfConcern: extractConcerns(analysisText),
         personalizedRecommendations: extractRecommendations(analysisText),
         confidenceScore: 0.85,
-        analysisModel: 'gpt-4o-mini',
+        analysisModel: 'aihpro-engine-v1',
         analysisTimestamp: new Date().toISOString()
       };
     } catch (error) {

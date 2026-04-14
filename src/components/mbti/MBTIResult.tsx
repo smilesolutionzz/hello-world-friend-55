@@ -461,7 +461,7 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
             {/* 카카오톡 */}
             <Button
               onClick={() => {
-                const message = `🎯 나의 성격유형은 ${mbtiType}!\n\n${description.title}\n${description.subtitle}\n\n🔗 너도 해봐: ${window.location.origin}/assessment/mbti-test\n\n#성격유형 #성격테스트 #AIHPRO`;
+                const message = `🎯 나의 성격유형은 ${mbtiType}!\n\n${description.title}\n${description.subtitle}\n\n🔗 너도 해봐: ${window.location.origin}/assessment/16-personality\n\n#성격유형 #성격테스트 #AIHPRO`;
                 if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
                   window.location.href = `kakaotalk://send?text=${encodeURIComponent(message)}`;
                 } else {
@@ -492,13 +492,13 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
                     await navigator.share({
                       title: `나는 ${mbtiType} - ${description.title}`,
                       text: `${description.subtitle}\n\n나도 테스트해보기!`,
-                      url: `${window.location.origin}/assessment/mbti-test`,
+                      url: `${window.location.origin}/assessment/16-personality`,
                     });
                   } catch (error) {
                     console.log('공유 취소됨');
                   }
                 } else {
-                  navigator.clipboard.writeText(`${window.location.origin}/assessment/mbti-test`);
+                  navigator.clipboard.writeText(`${window.location.origin}/assessment/16-personality`);
                   toast.success("링크가 복사되었습니다!");
                 }
               }}
@@ -513,7 +513,7 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
           {/* 링크 복사 */}
           <Button
             onClick={() => {
-              const message = `🎯 ${mbtiType} - ${description.title}\n${description.subtitle}\n\n테스트 해보기 👉 ${window.location.origin}/assessment/mbti-test`;
+              const message = `🎯 ${mbtiType} - ${description.title}\n${description.subtitle}\n\n테스트 해보기 👉 ${window.location.origin}/assessment/16-personality`;
               navigator.clipboard.writeText(message);
               toast.success("결과가 복사되었습니다! 친구에게 공유하세요 💌");
             }}

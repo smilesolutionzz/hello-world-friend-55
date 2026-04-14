@@ -304,7 +304,7 @@ export const SubscriptionGuard = ({
               <div className="flex items-baseline gap-2">
                 <span className="text-sm text-muted-foreground line-through">₩{creditOriginalPrice.toLocaleString()}</span>
                 <span className="text-2xl font-black text-foreground">₩{creditPrice.toLocaleString()}</span>
-                <Badge variant="secondary" className="text-xs">{creditDiscount}% 할인</Badge>
+                <Badge className="text-xs bg-rose-600 text-white border-0 hover:bg-rose-600">{creditDiscount}% 할인</Badge>
               </div>
               <Button
                 onClick={() => setPaymentOpen(true)}

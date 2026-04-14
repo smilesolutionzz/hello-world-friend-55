@@ -885,20 +885,6 @@ ${isKo ? `
 [응답 형식]
 각 섹션 content는 HTML 태그만 사용 (<div>, <p>, <ul>, <li>, <strong>, <h3>, <h4>, <span>)
 각 섹션은 최소 600자 이상으로 작성
-
-[문단 정리 필수 규칙 — 가독성 최우선]
-⭐ "성장 로드맵", "데이터 기반 맞춤 개입 전략", "가정 내 실천 가이드" 섹션은 반드시 아래 형식을 따르세요:
-- 각 항목(활동/팁/주차)은 <h4> 또는 <strong>으로 번호와 제목을 명확히 표시
-- 목적/방법/효과/빈도 등 하위 항목은 각각 별도 <p> 태그로 줄바꿈 처리
-- 항목 간에 <br/> 또는 빈 <p> 태그로 시각적 여백 확보
-- 절대로 한 문단에 모든 내용을 몰아쓰지 마세요
-- 예시 형식:
-  <h4>1. 감정 인식 훈련</h4>
-  <p>🎯 목적: 아이가 자신의 감정을 정확히 인식하고 표현하는 능력을 키웁니다.</p>
-  <p>📋 방법: 매일 저녁 "오늘 가장 기분 좋았던/힘들었던 순간"을 함께 이야기합니다.</p>
-  <p>✨ 효과: 정서 인식력 향상, 부모-자녀 소통 강화</p>
-  <p>🔄 빈도: 매일 10분, 취침 전</p>
-
 ` : `
 ══ AIHPRO Analysis Framework v2.0 ══
 This is AIHPRO's proprietary integrated analysis system.
@@ -939,21 +925,21 @@ function buildUserPrompt(
     { title: '종합 발달·심리 프로파일', minChars: 800, desc: 'AIHPRO 다차원 분석 결과를 기반으로 인지, 정서, 사회성, 신체 영역별 종합 프로파일 작성. 반드시 교차분석 결과와 종단적 변화를 포함.' },
     { title: '심리·정서 심층 분석', minChars: 700, desc: 'AIHPRO 행동패턴 인식 결과를 기반으로 정서 상태, 스트레스 반응, 대처 능력 분석. 상담 기록의 감정 키워드 분포를 활용.' },
     { title: '강점·잠재력 매트릭스', minChars: 700, desc: 'AIHPRO 강점 발견 알고리즘으로 핵심 강점 5가지와 성장 가능 영역 5가지를 구체적 데이터와 함께 제시. 인지훈련 게임별 성과 데이터 활용.' },
-    { title: '데이터 기반 맞춤 개입 전략', minChars: 800, desc: '교차분석에서 도출된 패턴을 기반으로 10가지 구체적 활동 제안. 반드시 각 활동마다 아래 4가지 항목을 줄바꿈(<br/>)으로 구분하여 작성:\n   • 🎯 목적: (이 활동을 하는 이유)\n   • 📋 방법: (구체적인 실행 방법)\n   • ✨ 예상 효과: (기대할 수 있는 변화)\n   • 🔄 빈도: (주 몇 회, 하루 몇 분)' },
-    { title: '성장 로드맵 (4주/8주/12주)', minChars: 800, desc: '주차별 구체적 실행 계획. 각 주차를 명확한 소제목으로 구분하고 아래 항목을 줄바꿈(<br/>)으로 구분하여 작성:\n   • 🎯 목표: (이 주차의 핵심 목표)\n   • 📋 핵심 활동: (2-3가지 구체적 활동, 각각 한 줄씩)\n   • ✅ 달성 기준: (성공 여부를 판단할 기준)\n   • 🔗 연계 기능: (플랫폼 내 어떤 검사/게임/관찰을 할지)\n   문단 사이에 충분한 여백을 두어 가독성을 확보하세요. JSON 형태의 roadmap 필드로도 별도 반환.' },
+    { title: '데이터 기반 맞춤 개입 전략', minChars: 800, desc: '교차분석에서 도출된 패턴을 기반으로 10가지 구체적 활동 제안. 각 활동에 목적, 방법, 예상 효과, 빈도를 포함.' },
+    { title: '성장 로드맵 (4주/8주/12주)', minChars: 800, desc: '주차별 구체적 실행 계획. 각 주차에 목표, 핵심 활동 2-3가지, 달성 기준, 플랫폼 내 연계 기능(어떤 검사/게임/관찰을 할지)을 포함. JSON 형태의 roadmap 필드로도 별도 반환.' },
     { title: 'AIHPRO 빅데이터 비교 분석', minChars: 600, desc: 'AIHPRO 플랫폼 빅데이터 규준과 비교한 영역별 백분위 추정치. 레이더 차트용 데이터 활용.' },
     { title: '종합 소견서', minChars: 700, desc: 'AIHPRO AI 분석 엔진의 종합 소견. 교차 상관 분석 결과를 핵심 근거로 인용하며, 추가 검사 및 전문가 상담 권고 포함.' },
-    { title: '가정 내 실천 가이드', minChars: 700, desc: '가정에서 바로 실천할 수 있는 15가지 구체적 팁. 반드시 각 팁마다 아래 3가지 항목을 줄바꿈(<br/>)으로 구분하여 작성:\n   • 📍 상황: (언제/어떤 상황에서 적용하는지)\n   • 📋 방법: (구체적으로 어떻게 하는지, 대화 예시 포함)\n   • ✨ 효과: (이 방법을 통해 기대할 수 있는 변화)\n   각 팁 사이에 충분한 여백을 두어 읽기 쉽게 구성하세요.' },
+    { title: '가정 내 실천 가이드', minChars: 700, desc: '가정에서 바로 실천할 수 있는 15가지 구체적 팁. 각 팁에 상황, 방법, 기대 효과를 포함.' },
     { title: '핵심 요약 및 실행 제언', minChars: 600, desc: 'TOP 5 핵심 발견사항과 TOP 5 즉시 실행 사항. 긍정적 전망과 격려 메시지.' },
   ] : [
     { title: 'Comprehensive Development & Psychology Profile', minChars: 800, desc: 'Multi-dimensional profile based on AIHPRO cross-analysis.' },
     { title: 'Psychological & Emotional Deep Analysis', minChars: 700, desc: 'Emotional state and coping analysis with counseling data.' },
     { title: 'Strengths & Potential Matrix', minChars: 700, desc: 'Top 5 strengths and growth areas with data evidence.' },
-    { title: 'Data-Driven Personalized Intervention Strategies', minChars: 800, desc: '10 specific activities. Each activity MUST include these 4 items on separate lines: 🎯 Purpose, 📋 Method, ✨ Expected Effect, 🔄 Frequency.' },
-    { title: 'Growth Roadmap (4/8/12 Weeks)', minChars: 800, desc: 'Week-by-week plan. Each week MUST have: 🎯 Goal, 📋 Key Activities (2-3, each on its own line), ✅ Success Criteria, 🔗 Platform Features. Use clear spacing between weeks.' },
+    { title: 'Data-Driven Personalized Intervention Strategies', minChars: 800, desc: '10 specific activities with purpose, method, and expected outcomes.' },
+    { title: 'Growth Roadmap (4/8/12 Weeks)', minChars: 800, desc: 'Week-by-week execution plan with goals, activities, and milestones.' },
     { title: 'AIHPRO Big Data Comparative Analysis', minChars: 600, desc: 'Percentile estimates compared to AIHPRO platform norms.' },
     { title: 'Comprehensive Clinical Opinion', minChars: 700, desc: 'Integrated opinion citing cross-correlation evidence.' },
-    { title: 'Home Practice Guide', minChars: 700, desc: '15 practical tips. Each tip MUST include these 3 items on separate lines: 📍 Situation, 📋 Method (with dialogue examples), ✨ Effect. Use clear spacing between tips.' },
+    { title: 'Home Practice Guide', minChars: 700, desc: '15 practical tips for home implementation.' },
     { title: 'Key Summary & Action Items', minChars: 600, desc: 'TOP 5 findings and TOP 5 immediate actions.' },
   ];
 

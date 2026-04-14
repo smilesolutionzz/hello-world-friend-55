@@ -226,16 +226,16 @@ const ReportPreviewSection = () => {
           </div>
 
           {/* CTA */}
-          <div className="text-center space-y-3">
+          <div className="text-center space-y-2">
             <Button
               onClick={() => navigate('/report-generator')}
-              className="px-10 py-7 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-lg rounded-2xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all hover:scale-[1.02]"
+              className="px-6 md:px-10 py-5 md:py-7 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm md:text-lg rounded-2xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all hover:scale-[1.02] max-w-full"
             >
-              <Sparkles className="w-5 h-5 mr-2" />
+              <Sparkles className="w-4 h-4 md:w-5 md:h-5 mr-1.5 md:mr-2 flex-shrink-0" />
               {t.reportPreview.ctaButton}
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-1.5 md:ml-2 flex-shrink-0" />
             </Button>
-            <p className="text-white/50 text-sm">{t.reportPreview.ctaSubtext}</p>
+            <p className="text-white/50 text-[10px] md:text-sm whitespace-nowrap">{t.reportPreview.ctaSubtext}</p>
             <motion.p
               animate={{ opacity: [0.6, 1, 0.6] }}
               transition={{ duration: 2, repeat: Infinity }}

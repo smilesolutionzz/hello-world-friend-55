@@ -180,7 +180,7 @@ const TokenSubscription = () => {
                       <Target className="w-4 h-4 text-emerald-500" />
                       <span className="font-semibold text-sm text-foreground">심리검사 1회</span>
                     </div>
-                    <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full">61% 할인</span>
+                    <span className="text-[11px] font-bold text-white bg-emerald-600 dark:bg-emerald-500 px-2 py-0.5 rounded-full">61% 할인</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-baseline gap-2">
@@ -201,7 +201,7 @@ const TokenSubscription = () => {
                       <Sparkles className="w-4 h-4 text-amber-500" />
                       <span className="font-semibold text-sm text-foreground">심층 분석 리포트 1회</span>
                     </div>
-                    <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 px-2 py-0.5 rounded-full">60% 할인</span>
+                    <span className="text-[11px] font-bold text-white bg-amber-600 dark:bg-amber-500 px-2 py-0.5 rounded-full">60% 할인</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-baseline gap-2">

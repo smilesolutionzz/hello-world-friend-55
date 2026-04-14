@@ -386,10 +386,12 @@ const ReportGeneratorPro = () => {
           </motion.div>
         )}
 
-        {/* ── 리포트 구성 안내 (통합 쇼케이스) ── */}
-        <div id="report-showcase">
-          <ReportContentShowcase />
-        </div>
+        {/* ── 리포트 구성 안내 (통합 쇼케이스) — 비구독자에게만 먼저 표시 ── */}
+        {(isLoggedIn === false || (isLoggedIn && !isPremium)) && (
+          <div id="report-showcase">
+            <ReportContentShowcase />
+          </div>
+        )}
         {/* ── 프리미엄 사용자: 리포트 생성 인터페이스 ── */}
         {isPremium && !reportData && (
           <div className="max-w-4xl mx-auto space-y-6">
@@ -572,6 +574,13 @@ const ReportGeneratorPro = () => {
             reportData={reportData}
             userInput={userInput}
           />
+        )}
+
+        {/* ── 리포트 구성 안내 (프리미엄 사용자: 하단 배치) ── */}
+        {isPremium && (
+          <div id="report-showcase" className="mt-10">
+            <ReportContentShowcase />
+          </div>
         )}
 
         {/* 전문가 대면 검사 CTA */}

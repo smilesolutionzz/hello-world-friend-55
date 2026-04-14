@@ -1562,7 +1562,7 @@ serve(async (req) => {
         ],
         max_tokens: 32000,
         reasoning: {
-          effort: 'high',
+          effort: 'medium',
         },
       }),
     });

@@ -182,7 +182,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
     expertOpinion: isEnglish ? 'Expert Opinion & Recommendations' : '전문가 소견 및 권고',
     urgency: isEnglish ? 'Urgency' : '긴급도',
     fullReport: isEnglish ? '9 Comprehensive Expert Reports' : '9가지 종합 전문 리포트',
-    reportSub: isEnglish ? 'Perplexity + Firecrawl academic reports' : 'Perplexity + Firecrawl 기반 학술 리포트',
+    reportSub: isEnglish ? 'Evidence-based expert analysis reports' : '최신 학술 근거 기반 전문 분석 리포트',
     wantMore: isEnglish ? 'Want a more accurate analysis?' : '더 정확한 분석을 원하신다면?',
     wantMoreSub: isEnglish ? 'Get personalized solutions with 3-min onboarding' : '3분 온보딩으로 맞춤형 솔루션을 받아보세요',
     preciseAnalysis: isEnglish ? '3-Min Precision Analysis' : '3분 정밀 분석',

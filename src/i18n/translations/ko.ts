@@ -559,7 +559,7 @@ const ko = {
   reportPreview: {
     badge: '박사급 AI 심층 분석',
     heading: '10대 전문 분석 섹션',
-    subheading: 'Gemini 3.1 Pro + Perplexity 최신 학술 검색 기반, 병원 심리검사(15~30만원)를 뛰어넘는 정밀 리포트',
+    subheading: '14년 발달·심리상담 전문가가 직접 설계한 빅데이터 엔진 기반 정밀 리포트',
     dateGenerated: '2026년 4월 생성',
     reportTitle: '프리미엄 종합 행동·심리 분석 리포트',
     reportId: 'RPT-2026-0414-P3K7',

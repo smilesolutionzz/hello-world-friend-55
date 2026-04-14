@@ -803,7 +803,7 @@ const IEPView = () => {
               <div className="grid md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">
-                    <span className="font-medium text-foreground">AI 모델:</span> GPT-5 (2025년 안정화 버전)
+                    <span className="font-medium text-foreground">분석 엔진:</span> AIHPRO 전문가 설계 엔진 v2
                   </p>
                   <p className="text-muted-foreground">
                     <span className="font-medium text-foreground">검증:</span> 특수교육 전문가 감수 프롬프트

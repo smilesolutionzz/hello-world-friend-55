@@ -519,7 +519,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
                 <h3 className="text-lg font-semibold">전문 한의사 수준 AI 분석</h3>
               </div>
               <p className="text-muted-foreground mb-4">
-                🏥 <strong>GPT-4.1</strong>이 30년 경력 한의사의 전문 지식으로 <br/>
+                🏥 <strong>전문 한의학 엔진</strong>이 30년 경력 한의사의 전문 지식으로 <br/>
                 <strong>2000자 이상 상세 체질별 맞춤 분석</strong>과 관리법을 제공합니다
               </p>
               <div className="flex items-center justify-center mb-4 space-x-4 text-sm text-muted-foreground">

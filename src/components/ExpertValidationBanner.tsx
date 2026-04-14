@@ -37,7 +37,7 @@ const ExpertValidationBanner = () => {
             일반 AI와 <span className="text-primary">완전히 다른</span> 차별점
           </h2>
           <p className="text-gray-600 text-lg">
-            GPT, 클로드와 달리 <strong className="text-gray-900">모든 결과는 전문가검토</strong>를 거칩니다
+            일반 AI와 달리 <strong className="text-gray-900">모든 결과는 전문가검토</strong>를 거칩니다
           </p>
         </div>
 

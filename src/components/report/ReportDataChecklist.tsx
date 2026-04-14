@@ -118,6 +118,25 @@ export default function ReportDataChecklist({ onSelectionChange }: ReportDataChe
           key: 'progress', label: '변화 추적', icon: <BarChart3 className="w-4 h-4" />, color: 'text-orange-600', expanded: true,
           items: (progressRes.data || []).map(t => ({ id: t.id, source: 'progress_tracking', label: t.source_label || t.source_type || '변화 추적', detail: t.summary ? t.summary.substring(0, 30) + '...' : '기록됨', date: formatDate(t.created_at), selected: true })),
         },
+        {
+          key: 'concerns', label: '고민/인사이트', icon: <Heart className="w-4 h-4" />, color: 'text-rose-600', expanded: true,
+          items: (insightsRes.data || []).map(t => {
+            const typeLabels: Record<string, string> = {
+              structured_counseling: '구조화 상담',
+              sct_analysis: 'SCT 분석',
+              mood_check: '기분 체크',
+              concern: '고민 입력',
+            };
+            return {
+              id: t.id,
+              source: 'ai_health_insights',
+              label: typeLabels[t.insight_type] || t.insight_type || '고민/인사이트',
+              detail: t.content ? t.content.substring(0, 30) + '...' : '기록됨',
+              date: formatDate(t.created_at),
+              selected: true,
+            };
+          }),
+        },
       ].filter(c => c.items.length > 0);
 
       setCategories(newCategories);

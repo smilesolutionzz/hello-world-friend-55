@@ -351,11 +351,11 @@ const ko = {
   // Emotional Hook
   emotionalHook: {
     badge: '엄마들의 진심 고백',
-    heading1: '"혹시 우리 아이도...?"',
-    heading2: '그 불안, 혼자 안고 계셨죠',
-    subtext: '검색으로는 답이 안 나와요. 3분 검사가',
-    subtextBold: '골든타임',
-    subtextEnd: '을 살렸습니다.',
+    heading1: '"일상은 괜찮다가, 오늘 같은 날이 오면"',
+    heading2: '정신병인가 싶은 그 순간, 혼자 감당하셨죠',
+    subtext: '검색으로는 답이 안 나와요. ',
+    subtextBold: '리포트 하나로 공포가 이해로',
+    subtextEnd: ' 바뀝니다.',
     stat1Value: '73%',
     stat1Label: '발달 문제, 부모가 먼저 느낀다',
     stat2Value: '0~7세',

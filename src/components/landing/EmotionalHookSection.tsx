@@ -63,11 +63,11 @@ const EmotionalHookSection = () => {
             <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />
             <span className="text-sm font-semibold text-rose-300">{t.emotionalHook.badge}</span>
           </div>
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-3">
+          <h2 className="text-xl md:text-4xl font-bold text-white mb-3 leading-snug break-keep">
             {t.emotionalHook.heading1}<br />
             <span className="text-rose-400">{t.emotionalHook.heading2}</span>
           </h2>
-          <p className="text-white/60 text-xs md:text-base max-w-xl mx-auto leading-relaxed">
+          <p className="text-white/60 text-xs md:text-base max-w-xl mx-auto leading-relaxed px-2 break-keep">
             {t.emotionalHook.subtext} <span className="text-white font-semibold">{t.emotionalHook.subtextBold}</span>{t.emotionalHook.subtextEnd}
           </p>
         </motion.div>

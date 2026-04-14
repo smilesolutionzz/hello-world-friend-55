@@ -55,9 +55,9 @@ const RealFeedbackSection = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-full mb-4">
-            <MessageCircle className="w-4 h-4 text-green-400" />
-            <span className="text-sm font-semibold text-green-300">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-green-500/10 border border-green-500/20 rounded-full mb-4">
+            <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-green-400" />
+            <span className="text-xs md:text-sm font-semibold text-green-300">
               {isEnglish ? 'Real Parent Feedback' : '실제 학부모 반응'}
             </span>
           </div>

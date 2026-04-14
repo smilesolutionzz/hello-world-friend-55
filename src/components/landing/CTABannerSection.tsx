@@ -40,14 +40,14 @@ const CTABannerSection = () => {
           </div>
 
           {/* Headline */}
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-tight">
+          <h2 className="text-xl sm:text-3xl md:text-5xl font-bold text-white leading-tight break-keep">
             {t.cta.headline}<br />
             <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               {t.cta.headlineHighlight}
             </span>
           </h2>
           
-          <p className="text-lg md:text-xl text-white/70 font-medium">
+          <p className="text-sm md:text-xl text-white/70 font-medium break-keep">
             {t.cta.subheadline}
           </p>
 

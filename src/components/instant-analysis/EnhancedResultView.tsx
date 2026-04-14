@@ -407,8 +407,45 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
       {/* 11. Visual Note (replaces report images) */}
       <VisualNoteSection analysisResult={analysisResult} inputText={inputText} />
 
-      {/* 12. Full Report CTA */}
-      <div className="bg-gradient-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-xl rounded-2xl border border-indigo-500/20 p-5">
+      {/* 12. Full Report CTA — 전환 강화 */}
+      <div className="bg-gradient-to-br from-indigo-900/50 to-violet-900/50 backdrop-blur-xl rounded-2xl border border-indigo-500/20 p-5 space-y-4">
+        {/* 감성 트리거 카피 */}
+        <div className="text-center space-y-2">
+          <p className="text-white/90 text-sm font-bold leading-snug">
+            {isEnglish 
+              ? '"I thought something was seriously wrong with my child..."'
+              : '"평소엔 괜찮다가, 오늘 같은 날이 오면\n진짜 정신병인가 싶거든요"'}
+          </p>
+          <p className="text-white/50 text-xs">
+            {isEnglish
+              ? 'A real parent found clarity through our PhD-grade report'
+              : '— 실제 사용자가 리포트를 보고 아이를 이해하기 시작했습니다'}
+          </p>
+        </div>
+
+        {/* Before → After 전환 */}
+        <div className="bg-white/5 rounded-xl p-4 space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0" />
+            <p className="text-white/60 text-xs line-through">
+              {isEnglish ? '"Is my child really sick?"' : '"우리 아이 진짜 이상한 건 아닐까?"'}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
+            <p className="text-white/90 text-xs font-semibold">
+              {isEnglish 
+                ? '"It\'s a natural stress response at this developmental stage"'
+                : '"발달 단계상 매우 자연스러운 스트레스 반응입니다"'}
+            </p>
+          </div>
+          <p className="text-amber-300/80 text-[11px] text-center">
+            {isEnglish
+              ? '→ Fear turned into understanding with one report'
+              : '→ 리포트 하나로 공포가 이해로 바뀌었습니다'}
+          </p>
+        </div>
+
         <Button
           onClick={() => {
             localStorage.setItem('instant_analysis_result', JSON.stringify(analysisResult));
@@ -418,10 +455,14 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
           className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-4 rounded-xl"
         >
           <FileText className="w-5 h-5 mr-2" />
-          {L.fullReport}
+          {isEnglish ? '🔬 Get PhD-Grade Full Report — ₩3,900' : '🔬 이 고민, PhD급 전문 리포트로 깊이 분석하기 — ₩3,900'}
           <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
-        <p className="text-center text-white/40 text-xs mt-2">{L.reportSub}</p>
+        <p className="text-center text-white/40 text-xs">
+          {isEnglish
+            ? 'Includes 12-week roadmap, risk assessment, and expert-level commentary'
+            : '12주 실천 로드맵 · 위험도 평가 · 전문가급 종합 소견 포함'}
+        </p>
       </div>
 
       {/* 13. CTA */}

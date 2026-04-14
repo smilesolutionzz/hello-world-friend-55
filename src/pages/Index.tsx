@@ -26,6 +26,7 @@ import SubscriptionValueSection from '@/components/landing/SubscriptionValueSect
 import StickyConversionBar from '@/components/conversion/StickyConversionBar';
 import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
 import { SocialProofToast } from '@/components/landing/SocialProofToast';
+import RealFeedbackSection from '@/components/landing/RealFeedbackSection';
 import TrialOnboarding from '@/components/onboarding/TrialOnboarding';
 import { useTrialProfile } from '@/hooks/useTrialProfile';
 
@@ -165,6 +166,11 @@ const Index = () => {
             {/* 2️⃣ 실제 후기 - 사회적 증거 (상단 배치) */}
             <LazyLoad rootMargin="200px">
               <TestimonialSection />
+            </LazyLoad>
+
+            {/* 2.5️⃣ 실제 카톡 피드백 — 리얼 소셜 프루프 */}
+            <LazyLoad rootMargin="200px">
+              <RealFeedbackSection />
             </LazyLoad>
             
             {/* 3️⃣ AI 전문가급 리포트 미리보기 */}

@@ -351,10 +351,10 @@ const en = {
   // Emotional Hook
   emotionalHook: {
     badge: "Real Stories from Parents",
-    heading1: '"Could my child also...?"',
-    heading2: "You've been carrying that worry alone",
-    subtext: "Searching online won't give you answers. A 3-minute test saved the",
-    subtextBold: 'golden window',
+    heading1: '"Everything seemed fine, until a day like today"',
+    heading2: "In that moment of fear, you were alone",
+    subtext: "Searching online won't give you answers. ",
+    subtextBold: 'One report turns fear into understanding',
     subtextEnd: '.',
     stat1Value: '73%',
     stat1Label: 'Parents notice developmental issues first',

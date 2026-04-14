@@ -847,7 +847,7 @@ const ko = {
     attachmentTestTitle: '애착 유형 검사',
     attachmentTestSubtitle: '관계 패턴 분석 36문항 (4분)',
     careerTestTitle: '직업 흥미 검사',
-    careerTestSubtitle: 'Holland 진로 탐색 60문항 (7분)',
+    careerTestSubtitle: '진로 탐색 60문항 (7분)',
     selfesteemTestTitle: '자아가치 측정',
     selfesteemTestSubtitle: '나의 자존감 수준 체크 15문항 (4분)',
     emotionalDevTitle: '영유아 정서발달 체크',

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { formatReportContent } from './reportContentUtils';
 
 interface ParentReportRendererProps {
   reportData: any;
@@ -73,58 +74,12 @@ const DIMENSION_LABELS: Record<string, { ko: string; en: string }> = {
 function getDimensionLabel(dim: string, isEnglish: boolean): string {
   const entry = DIMENSION_LABELS[dim];
   if (entry) return isEnglish ? entry.en : entry.ko;
-  // Fallback: capitalize first letter
   return dim.charAt(0).toUpperCase() + dim.slice(1).replace(/([A-Z])/g, ' $1');
 }
 
 // ── Clean AI section content ──
 function cleanAIContent(content: string): string {
-  if (!content) return '';
-  let cleaned = content;
-
-  // 1. Remove entire JSON blocks: roadmap, chartData, weeks arrays, radarScores, keyMetrics, etc.
-  const jsonBlockKeys = [
-    'roadmap', 'chartData', 'radarScores', 'keyMetrics', 'riskLevel', 'riskScore',
-    'platformFeatures', 'weeks\\d+', 'behavioralPatterns', 'interventionPriorities',
-    'funnel_strategy', 'revenue_forecast', 'target_audience',
-  ];
-  const blockPattern = new RegExp(
-    `["']?(${jsonBlockKeys.join('|')})["']?\\s*:\\s*[\\[\\{][\\s\\S]*?(?:\\]\\}|\\}\\]|\\]|\\})(\\s*,?\\s*)`,
-    'gi'
-  );
-  cleaned = cleaned.replace(blockPattern, '');
-
-  // 2. Remove lines that look like raw JSON key-value pairs
-  cleaned = cleaned.replace(/^\s*["']?\w+["']?\s*:\s*[\[\{]?\s*$/gm, '');
-  cleaned = cleaned.replace(/^\s*["']\w+["']\s*:\s*(".*?"|[\d.]+|true|false|null)\s*,?\s*$/gm, '');
-  cleaned = cleaned.replace(/^\s*["']?(week|goal|activities|milestone|platformFeatures|dimension|score|maxScore|overallWellbeing|socialAdaptation|emotionalStability|cognitiveFunction|behavioralRegulation|riskLevel|riskScore)["']?\s*:\s*.*/gim, '');
-
-  // 3. Remove summary/content wrapper tokens even when they appear mid-text
-  cleaned = cleaned.replace(/["']\s*["']?summary["']?\s*:\s*["']?/gi, '');
-  cleaned = cleaned.replace(/["']\s*["']?content["']?\s*:\s*["']?/gi, '');
-  cleaned = cleaned.replace(/^["']?summary["']?\s*:\s*["']?/i, '');
-  cleaned = cleaned.replace(/^["']?content["']?\s*:\s*["']?/i, '');
-
-  // 4. Remove obvious trailing preprocessed/meta fragments
-  cleaned = cleaned.replace(/["']\s*,?\s*["']?(preprocessedData|metadata|sections|summary)["']?\s*:\s*[\[{"'][\s\S]*$/i, '');
-  cleaned = cleaned.replace(/본 리포트는 전처리 데이터[\s\S]*$/i, '');
-
-  // 5. Remove stray JSON syntax characters on their own lines
-  cleaned = cleaned.replace(/^\s*[\[\]{},]+\s*$/gm, '');
-
-  // 6. Remove JSON wrapper artifacts
-  cleaned = cleaned.replace(/["']\s*\}?\s*,?\s*\{?\s*$/g, '');
-  cleaned = cleaned.replace(/["']\s*\}\s*$/g, '');
-  cleaned = cleaned.replace(/^\s*\}\s*,?\s*\{/gm, '');
-  cleaned = cleaned.replace(/\}\s*,\s*$/g, '');
-  cleaned = cleaned.replace(/^\s*\]\s*,?\s*$/gm, '');
-  cleaned = cleaned.replace(/["']\s*,\s*["']?roadmap["']?\s*:\s*\{[\s\S]*$/i, '');
-
-  // 7. Normalize leftover quotes/blank lines
-  cleaned = cleaned.replace(/^["'\s]+|["'\s]+$/g, '');
-  cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
-
-  return cleaned.trim();
+  return formatReportContent(content);
 }
 
 // ── Expert commentary generator ──

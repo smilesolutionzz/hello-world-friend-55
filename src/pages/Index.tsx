@@ -217,7 +217,7 @@ const Index = () => {
           <StickyConversionBar />
           <SocialProofToast />
           <FloatingOnboardingGuide />
-          
+          <CopilotBubble />
           <PostSignupOnboarding 
             isOpen={showOnboarding} 
             onClose={handleOnboardingClose} 

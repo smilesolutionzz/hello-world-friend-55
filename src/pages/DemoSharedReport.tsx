@@ -761,6 +761,7 @@ const DEMO_REPORTS = [
 ];
 
 const DemoSharedReport = () => {
+  const navigate = useNavigate();
   const [activeReport, setActiveReport] = useState(0);
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([0]));
   const [copied, setCopied] = useState(false);

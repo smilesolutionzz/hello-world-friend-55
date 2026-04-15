@@ -11,6 +11,7 @@ import {
   Download, Share2, Copy, Check, AlertTriangle, BookOpen, Stethoscope, Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const SECTION_ICONS: Record<string, React.ElementType> = {
   Brain, Heart, TrendingUp, Target, LineChart, Users, Shield, Activity, BarChart3,
@@ -760,6 +761,7 @@ const DEMO_REPORTS = [
 ];
 
 const DemoSharedReport = () => {
+  const navigate = useNavigate();
   const [activeReport, setActiveReport] = useState(0);
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([0]));
   const [copied, setCopied] = useState(false);
@@ -1022,11 +1024,11 @@ AIHPRO 임상적 유의미 변화 기준에 의거, <strong>임상적으로 유�
         {/* ── Sticky Header ── */}
         <div className="sticky top-0 z-30 bg-white/95 dark:bg-background/95 backdrop-blur-sm border-b border-border/20 shadow-sm">
           <div className="max-w-2xl mx-auto px-4 flex items-center justify-between h-12">
-            <div className="flex items-center gap-2">
+            <button onClick={() => navigate('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <Brain className="w-4 h-4 text-primary" />
               <span className="font-bold text-sm tracking-tight">AIHPRO</span>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">전문가 분석 리포트</span>
-            </div>
+            </button>
             <div className="flex items-center gap-1.5">
               <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={expandAll}>
                 <ChevronDown className="w-4 h-4" />
@@ -1247,7 +1249,7 @@ AIHPRO 임상적 유의미 변화 기준에 의거, <strong>임상적으로 유�
               AIHPRO에서 무료 검사 후 프리미엄 리포트를 받아보세요
             </p>
             <Button 
-              onClick={() => window.open('/', '_blank')}
+              onClick={() => navigate('/')}
               className="bg-primary text-primary-foreground"
               size="sm"
             >

@@ -142,9 +142,9 @@ export const CopilotBubble: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-className="fixed bottom-[72px] left-3 right-3 z-[60] md:left-6 md:right-auto md:w-[380px] md:bottom-6"
+className="fixed bottom-[80px] left-3 right-3 z-[60] md:left-6 md:right-auto md:w-[380px] md:bottom-6"
           >
-            <div className="rounded-2xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100vh-90px)] md:max-h-[70vh]">
+            <div className="rounded-2xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100dvh-100px)] md:max-h-[70vh]">
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/20 to-transparent border-b border-white/10 shrink-0">
                 <div className="flex items-center gap-2">

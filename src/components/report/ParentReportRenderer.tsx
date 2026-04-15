@@ -582,12 +582,45 @@ function generateParentReportHTML(
   .ai-content li { margin-bottom: 6px; }
   .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
   .tag { display: inline-block; background: #F3F4F6; border: 1px solid #D1D5DB; border-radius: 2px; padding: 4px 12px; font-size: 12px; font-weight: 500; color: #374151; }
+  
+  /* ── Professional Data Table ── */
+  .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  .data-table thead { background: #F8F6F1; }
+  .data-table th { padding: 12px 16px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #C8B88A; font-size: 12px; letter-spacing: 0.3px; }
+  .data-table td { padding: 12px 16px; border-bottom: 1px solid #F3F4F6; color: #4B5563; }
+  .data-table tbody tr:hover { background: #FAFAF8; }
+  .data-table .rank-badge { display: inline-block; padding: 2px 10px; border-radius: 2px; font-size: 11px; font-weight: 700; }
+  .data-table .rank-1 { background: #FEF3C7; color: #92400E; }
+  .data-table .rank-2 { background: #EFF6FF; color: #1E40AF; }
+  .data-table .rank-3 { background: #F0FDF4; color: #166534; }
+  
+  /* ── CSS Bar Chart ── */
+  .bar-chart { margin: 16px 0; }
+  .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .bar-label { width: 100px; font-size: 12px; font-weight: 600; color: #374151; text-align: right; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 28px; background: #F3F4F6; border-radius: 3px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 3px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; transition: width 0.6s ease; }
+  .bar-fill span { font-size: 11px; font-weight: 800; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+  .bar-value { width: 52px; font-size: 13px; font-weight: 800; color: #111827; text-align: right; flex-shrink: 0; }
+  
+  /* ── KPI Cards ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+  .kpi-card { background: #FAFAF8; border: 1px solid #E5E7EB; border-top: 3px solid #C8B88A; border-radius: 4px; padding: 20px 16px; }
+  .kpi-card .kpi-label { font-size: 11px; color: #9CA3AF; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .kpi-card .kpi-value { font-family: 'Noto Serif KR', serif; font-size: 28px; font-weight: 900; color: #111827; line-height: 1.2; }
+  .kpi-card .kpi-sub { font-size: 12px; color: #6B7280; margin-top: 4px; }
+  
+  /* ── Callout Box ── */
+  .callout { background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 4px; padding: 16px 20px; margin: 16px 0; font-size: 13px; line-height: 1.8; color: #92400E; }
+  .callout strong { color: #78350F; }
+  
   .disclaimer { margin-top: 48px; padding: 20px; background: #FAFAFA; border-radius: 4px; border: 1px solid #E5E7EB; }
   .disclaimer p { font-size: 11px; color: #6B7280; line-height: 1.7; }
   .brand-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 2px solid #111827; }
   .brand-footer .logo { font-size: 18px; font-weight: 900; color: #111827; letter-spacing: 2px; }
   .brand-footer p { font-size: 11px; color: #9CA3AF; margin-top: 6px; letter-spacing: 0.5px; }
   .page-break { page-break-before: always; margin-top: 40px; }
+  @media (max-width: 600px) { .kpi-grid { grid-template-columns: 1fr; } .grid-4 { grid-template-columns: 1fr 1fr; } .data-table { font-size: 11px; } .data-table th, .data-table td { padding: 8px 10px; } .bar-label { width: 72px; font-size: 11px; } }
   @media print { .report { padding: 20px; } .page-break { page-break-before: always; } }
 </style>
 </head>

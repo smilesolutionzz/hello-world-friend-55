@@ -1557,10 +1557,10 @@ serve(async (req) => {
       body: JSON.stringify({
         model: aiModel,
         messages: [
-          { role: 'system', content: systemPrompt + '\n\n⚠️ 절대 중요: 응답은 순수 JSON만. ```json 없이. 첫 문자 { 마지막 }' },
+          { role: 'system', content: systemPrompt + '\n\n⚠️ 절대 중요: 응답은 순수 JSON만. ```json 없이. 첫 문자 { 마지막 }. 반드시 모든 9개 섹션을 빠짐없이 포함하세요. 특히 "핵심 요약 및 실행 제언" 섹션을 절대 생략하지 마세요.' },
           { role: 'user', content: userPrompt },
         ],
-        max_tokens: 32000,
+        max_tokens: 48000,
         reasoning: {
           effort: 'medium',
         },

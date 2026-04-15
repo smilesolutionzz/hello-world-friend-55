@@ -684,9 +684,10 @@ ${userInput.developmentalNotes}
       body: JSON.stringify({
         model: config.model,
         messages: [
-          { role: 'system', content: systemPrompt + '\n\n중요: 응답은 반드시 유효한 JSON 형식으로만 작성하세요. 코드블록이나 다른 텍스트 없이 순수 JSON만 반환하세요.' },
+          { role: 'system', content: systemPrompt + '\n\n중요: 응답은 반드시 유효한 JSON 형식으로만 작성하세요. 코드블록이나 다른 텍스트 없이 순수 JSON만 반환하세요. 모든 섹션(특히 "종합 요약 및 제언")을 반드시 포함하세요.' },
           { role: 'user', content: userPrompt }
         ],
+        max_tokens: 16000,
         temperature: 0.7,
         response_format: { type: "json_object" }
       }),

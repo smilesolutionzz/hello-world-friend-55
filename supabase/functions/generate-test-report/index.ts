@@ -373,7 +373,7 @@ function generateHTMLReport(testType: string, results: any, analysis: string, te
 </head>
 <body>
     <div class="brand-header">
-        <div class="brand-title">AIHPRO.COM</div>
+        <div class="brand-title">AIHPRO.APP</div>
         <div class="brand-subtitle">AIH 기반 심리검사 전문 플랫폼</div>
     </div>
     
@@ -471,7 +471,7 @@ function generateHTMLReport(testType: string, results: any, analysis: string, te
         <p><strong>중요 안내사항</strong></p>
         <p>본 리포트는 참고용이며 의학적 진단이 아닙니다.</p>
         <p>정확한 진단과 치료를 위해서는 전문의와 상담하시기 바랍니다.</p>
-        <p style="margin-top: 15px;">© 2024 AIHPRO.COM. All rights reserved.</p>
+        <p style="margin-top: 15px;">© 2024 AIHPRO.APP. All rights reserved.</p>
         <p style="margin-top: 10px; font-size: 10px;">
             이 문서는 ${new Date().toLocaleString('ko-KR')}에 생성되었습니다.
         </p>

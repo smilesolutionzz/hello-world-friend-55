@@ -296,7 +296,7 @@ function generateReportHTML(sessionData: any, reportType: string): string {
 </head>
 <body>
     <div style="text-align: center; margin-bottom: 30px; padding: 30px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px;">
-        <div style="font-size: 32px; font-weight: bold; margin-bottom: 8px;">aihpro.com</div>
+        <div style="font-size: 32px; font-weight: bold; margin-bottom: 8px;">aihpro.app</div>
         <div style="font-size: 14px; opacity: 0.95;">AI 기반 심리 관찰 분석 전문 플랫폼</div>
     </div>
     
@@ -392,7 +392,7 @@ function generateReportHTML(sessionData: any, reportType: string): string {
     </div>
     
     <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #666; font-size: 12px;">
-        © 2024 AIHPRO.COM. All rights reserved.
+        © 2024 AIHPRO.APP. All rights reserved.
     </div>
 </body>
 </html>

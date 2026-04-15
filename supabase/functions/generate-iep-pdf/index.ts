@@ -194,7 +194,7 @@ Deno.serve(async (req) => {
 </head>
 <body>
   <div class="header">
-    <div class="brand">AIHPRO.COM</div>
+    <div class="brand">AIHPRO.APP</div>
     <div class="title">개별교육계획서 (IEP)</div>
     <div class="subtitle">AI 전문가 시스템으로 생성된 맞춤형 교육계획</div>
   </div>
@@ -313,7 +313,7 @@ Deno.serve(async (req) => {
   ` : ''}
 
   <div class="footer">
-    <div class="footer-brand">AIHPRO.COM - AI 전문가 교육 솔루션</div>
+    <div class="footer-brand">AIHPRO.APP - AI 전문가 교육 솔루션</div>
     <div>본 개별교육계획서는 AI 전문가 시스템으로 생성되었습니다.</div>
     <div>생성일: ${new Date(iepData.created_at).toLocaleDateString('ko-KR')} | GPT-5 전문가 모델 사용</div>
     <div style="margin-top: 10px; font-size: 11px;">

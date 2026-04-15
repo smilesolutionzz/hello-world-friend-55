@@ -283,11 +283,11 @@ const generatePDFHTML = (data: any) => {
     </head>
     <body>
       <div class="source-header">
-        <div class="source-url">aihpro.com</div>
+        <div class="source-url">aihpro.app</div>
       </div>
       
       <div class="brand-header">
-        <div class="brand-title">AIHPRO.COM</div>
+        <div class="brand-title">AIHPRO.APP</div>
         <div class="brand-subtitle">AIH 기반 심리검사 전문 플랫폼</div>
       </div>
       
@@ -361,7 +361,7 @@ const generatePDFHTML = (data: any) => {
         <p><strong>프리미엄 분석 리포트</strong></p>
         <p>생성일: ${new Date().toLocaleString('ko-KR')}</p>
         <p>이 보고서는 프리미엄 심리검사 결과를 바탕으로 생성되었습니다.</p>
-        <p style="margin-top: 15px;">© 2024 AIHPRO.COM. All rights reserved.</p>
+        <p style="margin-top: 15px;">© 2024 AIHPRO.APP. All rights reserved.</p>
       </div>
     </body>
     </html>

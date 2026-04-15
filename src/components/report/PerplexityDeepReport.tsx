@@ -188,7 +188,7 @@ const PerplexityDeepReport: React.FC<PerplexityDeepReportProps> = ({
 
     textContent += `\n${'='.repeat(50)}\n`;
     textContent += `※ 본 리포트는 참고용이며 의학적 진단이 아닙니다.\n`;
-    textContent += `© ${new Date().getFullYear()} AIHPRO.COM. All rights reserved.\n`;
+    textContent += `© ${new Date().getFullYear()} AIHPRO.APP. All rights reserved.\n`;
 
     const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -379,7 +379,7 @@ const PerplexityDeepReport: React.FC<PerplexityDeepReportProps> = ({
               ※ 본 리포트는 참고용이며 의학적 진단이 아닙니다. 정확한 진단과 치료를 위해서는 전문의와 상담하시기 바랍니다.
             </p>
             <p className="text-xs text-gray-400 mt-2">
-              © {new Date().getFullYear()} AIHPRO.COM. All rights reserved.
+              © {new Date().getFullYear()} AIHPRO.APP. All rights reserved.
             </p>
           </div>
         </div>

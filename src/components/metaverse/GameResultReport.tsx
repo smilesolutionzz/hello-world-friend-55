@@ -496,7 +496,7 @@ ${scoreDetails}
         </Card>
 
         <p className="text-[9px] text-center text-white/30 mt-3 px-4">
-          © AIHPRO.COM | 이 결과는 놀이 기반 관찰 자료이며, 전문적인 심리 진단을 대체하지 않습니다.
+          © AIHPRO.APP | 이 결과는 놀이 기반 관찰 자료이며, 전문적인 심리 진단을 대체하지 않습니다.
         </p>
       </div>
       {/* PDF 영역 끝 */}

@@ -59,7 +59,7 @@ ${result.advice}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌟 AI 전생 직업 분석 서비스
-더 많은 재미있는 테스트: aihpro.com`;
+더 많은 재미있는 테스트: aihpro.app`;
 
     case 'animal_face_match':
       return `🐾 내 얼굴 닮은 동물 분석 결과
@@ -91,7 +91,7 @@ ${result.advice}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📸 AI 얼굴 분석 서비스
-친구들과 함께 재미있는 테스트: aihpro.com`;
+친구들과 함께 재미있는 테스트: aihpro.app`;
 
     case 'inner_animal':
       return `🦋 내 내면 동물 분석 결과
@@ -124,7 +124,7 @@ ${result.currentLifePhase}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔮 AI 내면 동물 분석 서비스
-나의 진정한 모습을 발견: aihpro.com`;
+나의 진정한 모습을 발견: aihpro.app`;
 
     case 'otrovert':
       return `🎭 오트로버트 성격 진단 결과
@@ -150,7 +150,7 @@ ${result.recommendations?.map((rec: string, index: number) => `${index + 1}. ${r
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎭 오트로버트 성격 진단
-성격유형을 넘어서는 새로운 성격 분석: aihpro.com
+성격유형을 넘어서는 새로운 성격 분석: aihpro.app
 #오트로버트 #성격테스트 #AIHPRO`;
 
     case 'joseon_name':
@@ -209,12 +209,12 @@ ${analysis || '추가 분석 정보가 없습니다.'}
 • 주변 지인들과 소통을 유지하세요
 
 🚨 긴급 시 전문가 연결:
-• 긴급 전문가 매칭: aihpro.com/expert-hiring
+• 긴급 전문가 매칭: aihpro.app/expert-hiring
 • 카카오톡 상담: open.kakao.com/o/sHLdK3Ch
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🏥 전문 심리검사 서비스
-더 정확한 진단: aihpro.com`;
+더 정확한 진단: aihpro.app`;
 
     case 'anxiety':
     case 'panic':
@@ -233,12 +233,12 @@ ${analysis || '추가 분석 정보가 없습니다.'}
 • 전문가 상담 고려
 
 🚨 긴급 시 전문가 연결:
-• 긴급 전문가 매칭: aihpro.com/expert-hiring
+• 긴급 전문가 매칭: aihpro.app/expert-hiring
 • 카카오톡 상담: open.kakao.com/o/sHLdK3Ch
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🏥 전문 심리검사 서비스
-더 많은 테스트: aihpro.com`;
+더 많은 테스트: aihpro.app`;
 
     case 'adhd':
       return `🎯 ADHD 성향 검사 결과
@@ -258,7 +258,7 @@ ${analysis || '추가 분석 정보가 없습니다.'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🏥 전문 심리검사 서비스
-더 많은 테스트: aihpro.com`;
+더 많은 테스트: aihpro.app`;
 
     default:
       return `심리검사 결과
@@ -301,7 +301,7 @@ export const formatMedicalTestResult = (testType: string, result: any): string =
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🏥 AI 체질 성향 분석 서비스
-정확한 체질 관리: aihpro.com`;
+정확한 체질 관리: aihpro.app`;
   }
   
   return `한의학 검사 결과

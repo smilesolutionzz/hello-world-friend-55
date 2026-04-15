@@ -268,7 +268,7 @@ function generateParentReportHTML(
     const changePercent = trend?.changePercent || 0;
     const dimLabel = getDimensionLabel(d.dimension, isEnglish);
     
-    const trendIcon = trendDir === 'improving' ? '📈' : trendDir === 'declining' ? '📉' : '➡️';
+    const trendIcon = trendDir === 'improving' ? '▲' : trendDir === 'declining' ? '▼' : '—';
     const trendText = trendDir === 'improving'
       ? (isEnglish ? `Improving (+${changePercent}%)` : `개선 중 (+${changePercent}%)`)
       : trendDir === 'declining'
@@ -322,7 +322,7 @@ function generateParentReportHTML(
     comparisonHTML = `
       <div class="section page-break">
         <div class="section-header">
-          <div class="section-icon" style="background: #DBEAFE;">📊</div>
+           <div class="section-number">04</div>
           <h2>${isEnglish ? 'Change Tracking' : '회차별 변화 추적'}</h2>
         </div>
         ${compRows}
@@ -339,15 +339,15 @@ function generateParentReportHTML(
   }
 
   // Build data source infographic with icons
-  const dataSourceConfig: Record<string, { label: string; labelEn: string; icon: string; color: string }> = {
-    assessments: { label: '심리검사', labelEn: 'Assessments', icon: '🧠', color: '#6366F1' },
-    observations: { label: '관찰일지', labelEn: 'Observations', icon: '📝', color: '#8B5CF6' },
-    observationSessions: { label: 'AI 관찰 분석', labelEn: 'AI Analysis', icon: '🔬', color: '#A855F7' },
-    chatMessages: { label: '음성 상담', labelEn: 'Counseling', icon: '🎙️', color: '#EC4899' },
-    brainTraining: { label: '게임 상담', labelEn: 'Game Assessment', icon: '🎮', color: '#F59E0B' },
-    videoAnalysis: { label: 'AI 영상 분석', labelEn: 'Video Analysis', icon: '📹', color: '#14B8A6' },
-    concernStorage: { label: '고민 기록', labelEn: 'Concerns', icon: '💭', color: '#F97316' },
-    progressTracking: { label: '변화 추적', labelEn: 'Progress', icon: '📈', color: '#059669' },
+  const dataSourceConfig: Record<string, { label: string; labelEn: string; color: string }> = {
+    assessments: { label: '심리검사', labelEn: 'Assessments', color: '#6366F1' },
+    observations: { label: '관찰일지', labelEn: 'Observations', color: '#8B5CF6' },
+    observationSessions: { label: 'AI 관찰 분석', labelEn: 'AI Analysis', color: '#A855F7' },
+    chatMessages: { label: '음성 상담', labelEn: 'Counseling', color: '#EC4899' },
+    brainTraining: { label: '게임 상담', labelEn: 'Game Assessment', color: '#F59E0B' },
+    videoAnalysis: { label: 'AI 영상 분석', labelEn: 'Video Analysis', color: '#14B8A6' },
+    concernStorage: { label: '고민 기록', labelEn: 'Concerns', color: '#F97316' },
+    progressTracking: { label: '변화 추적', labelEn: 'Progress', color: '#059669' },
   };
   
   let dataSourceHTML = '';
@@ -356,7 +356,6 @@ function generateParentReportHTML(
     if (count && Number(count) > 0 && cfg) {
       dataSourceHTML += `
         <div class="stat-card" style="border-top: 3px solid ${cfg.color};">
-          <div style="font-size: 24px; margin-bottom: 4px;">${cfg.icon}</div>
           <div class="value" style="color: ${cfg.color};">${count}</div>
           <div class="label">${isEnglish ? cfg.labelEn : cfg.label}</div>
         </div>
@@ -369,7 +368,7 @@ function generateParentReportHTML(
   if (cognitive.totalSessions > 0) {
     let gameRows = '';
     (cognitive.gameTypeScores || []).slice(0, 4).forEach((g: any) => {
-      const tIcon = g.trend === 'improving' ? '📈' : g.trend === 'declining' ? '📉' : '➡️';
+      const tIcon = g.trend === 'improving' ? '▲' : g.trend === 'declining' ? '▼' : '—';
       gameRows += `
         <div class="insight-card">
           <h4>${g.type} ${tIcon}</h4>
@@ -381,7 +380,7 @@ function generateParentReportHTML(
     cognitiveHTML = `
       <div class="section page-break">
         <div class="section-header">
-          <div class="section-icon" style="background: #FEF3C7;">🎮</div>
+          <div class="section-number">05</div>
           <h2>${isEnglish ? 'Brain Training Progress' : '두뇌 훈련 분석'}</h2>
         </div>
         <div class="grid-3">
@@ -400,7 +399,7 @@ function generateParentReportHTML(
         </div>
         ${gameRows}
         <div class="expert-box">
-          <div class="label">${isEnglish ? 'Expert Commentary' : '💬 전문가 해설'}</div>
+          <div class="label">${isEnglish ? 'Expert Commentary' : '전문가 해설'}</div>
           <p>${isEnglish
             ? `With ${cognitive.totalSessions} training sessions completed, the average score is ${cognitive.averageScore}%. The best performing area is "${cognitive.bestGameType}". ${cognitive.improvementRate > 0 ? `A ${cognitive.improvementRate}% improvement rate indicates positive cognitive development.` : 'Continued consistent training is recommended for improvement.'}`
             : `총 ${cognitive.totalSessions}회 훈련을 완료했으며, 평균 점수는 ${cognitive.averageScore}%입니다. 가장 뛰어난 영역은 "${cognitive.bestGameType}"입니다. ${cognitive.improvementRate > 0 ? `${cognitive.improvementRate}% 향상률은 긍정적인 인지 발달을 나타냅니다.` : '지속적인 훈련을 통해 향상이 기대됩니다.'}`}</p>
@@ -416,7 +415,7 @@ function generateParentReportHTML(
     correlations.forEach((c: any) => {
       corrRows += `
         <div class="insight-card">
-          <h4>🔗 ${c.sources}</h4>
+          <h4>${c.sources}</h4>
           <p>${c.insight}</p>
         </div>
       `;
@@ -425,7 +424,7 @@ function generateParentReportHTML(
     correlationHTML = `
       <div class="section">
         <div class="section-header">
-          <div class="section-icon" style="background: #EDE9FE;">🔬</div>
+           <div class="section-number">06</div>
           <h2>${isEnglish ? 'Cross-Analysis Insights' : '교차 분석 인사이트'}</h2>
         </div>
         <p style="font-size: 13.5px; color: #6B7280; margin-bottom: 16px;">
@@ -456,7 +455,7 @@ function generateParentReportHTML(
     peerHTML = `
       <div class="section">
         <div class="section-header">
-          <div class="section-icon" style="background: #FCE7F3;">👥</div>
+          <div class="section-number">07</div>
           <h2>${isEnglish ? 'Peer Comparison' : '또래 비교 분석'}</h2>
         </div>
         ${peerRows}
@@ -474,20 +473,20 @@ function generateParentReportHTML(
     progressHTML = `
       <div class="section">
         <div class="section-header">
-          <div class="section-icon" style="background: #D1FAE5;">📈</div>
+          <div class="section-number">08</div>
           <h2>${isEnglish ? 'Progress Summary' : '변화 추적 요약'}</h2>
         </div>
         <div class="insight-card" style="border-left: 3px solid #059669;">
-          <h4>🟢 ${isEnglish ? 'Improved Areas' : '개선된 영역'}</h4>
+          <h4>${isEnglish ? 'Improved Areas' : '개선된 영역'}</h4>
           <p>${improved}</p>
         </div>
         <div class="insight-card" style="border-left: 3px solid #D97706;">
-          <h4>🟡 ${isEnglish ? 'Stable Areas' : '안정 유지 영역'}</h4>
+          <h4>${isEnglish ? 'Stable Areas' : '안정 유지 영역'}</h4>
           <p>${stable}</p>
         </div>
         ${(progressSummary.declinedDimensions || []).length > 0 ? `
         <div class="insight-card" style="border-left: 3px solid #DC2626;">
-          <h4>🔴 ${isEnglish ? 'Areas Needing Attention' : '주의 필요 영역'}</h4>
+          <h4>${isEnglish ? 'Areas Needing Attention' : '주의 필요 영역'}</h4>
           <p>${declined}</p>
         </div>` : ''}
       </div>

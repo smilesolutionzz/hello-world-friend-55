@@ -11,6 +11,7 @@ import {
   Download, Share2, Copy, Check, AlertTriangle, BookOpen, Stethoscope, Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const SECTION_ICONS: Record<string, React.ElementType> = {
   Brain, Heart, TrendingUp, Target, LineChart, Users, Shield, Activity, BarChart3,

@@ -1583,6 +1583,16 @@ serve(async (req) => {
     const rawText = await aiResponse.text();
     console.log('AI 응답 길이:', rawText?.length);
 
+    // finish_reason 체크 — 토큰 한도로 인한 잘림 감지
+    try {
+      const parsed = JSON.parse(rawText);
+      const finishReason = parsed?.choices?.[0]?.finish_reason;
+      if (finishReason === 'length') {
+        console.warn('⚠️ AI 응답이 max_tokens 한도로 잘렸습니다 (finish_reason: length). 마지막 섹션이 누락될 수 있습니다.');
+      }
+      console.log('finish_reason:', finishReason);
+    } catch (_) { /* 파싱은 아래에서 재시도 */ }
+
     // 섹션 정의
     const isEn = language === 'en';
     const requiredSections = isEn

@@ -803,7 +803,7 @@ ${overallSummaryHTML}
 
 <div class="brand-footer">
   <div class="logo">AIHPRO</div>
-  <p>${isEnglish ? 'Expert Analysis Report · aihpro.com' : '전문가 심층 분석 리포트 · aihpro.com'}</p>
+  <p>${isEnglish ? 'Expert Analysis Report · aihpro.app' : '전문가 심층 분석 리포트 · aihpro.app'}</p>
 </div>
 
 </div>

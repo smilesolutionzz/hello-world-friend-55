@@ -281,7 +281,7 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
 
         <div style={{ textAlign: 'center', marginTop: '14px' }}>
           <p style={{ fontSize: '9px', color: '#9ca3af', letterSpacing: '0.3px' }}>
-            AIHPRO.COM · {t.resultLayout.aiPlatform}
+            AIHPRO.APP · {t.resultLayout.aiPlatform}
           </p>
         </div>
       </div>

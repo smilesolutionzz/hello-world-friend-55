@@ -199,7 +199,7 @@ const ko = {
     bizType: '업태: 정보통신업 | 종목: 응용 소프트웨어 개발 및 공급업',
     phone: '대표 전화: 010-3363-6604',
     emailInquiry: '이메일 문의: aihpro@naver.com',
-    emergency: '긴급 전문가 매칭: aihpro.com/expert-hiring',
+    emergency: '긴급 전문가 매칭: aihpro.app/expert-hiring',
     suicidePrevention: '24시간 전문 상담 지원',
   },
 

@@ -116,7 +116,7 @@ function FingerprintTemperamentTestInner() {
           "@type": "WebApplication",
           "name": f.title,
           "description": f.seoDesc,
-          "url": "https://aihpro.com/fingerprint-temperament",
+          "url": "https://aihpro.app/fingerprint-temperament",
           "applicationCategory": "HealthApplication",
           "operatingSystem": "Web",
           "provider": { "@type": "Organization", "name": "AIHUMANPRO" }

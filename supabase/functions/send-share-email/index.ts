@@ -235,13 +235,13 @@ const getEmailTemplate = (data: ShareEmailRequest): string => {
           
           <div class="cta-section">
             <p style="margin: 0 0 16px 0; color: #4b5563;">더 자세한 분석이 필요하신가요?</p>
-            <a href="https://aihpro.com" class="cta-button">AIHPRO에서 무료 분석받기</a>
+            <a href="https://aihpro.app" class="cta-button">AIHPRO에서 무료 분석받기</a>
           </div>
           
           <div class="footer">
             <p>본 분석 결과는 AI 기반으로 제공되며, 전문가의 진단을 대체할 수 없습니다.</p>
             <p style="margin-top: 12px;">
-              <a href="https://aihpro.com">AIHPRO</a> | AI 기반 심리·발달 케어 플랫폼
+              <a href="https://aihpro.app">AIHPRO</a> | AI 기반 심리·발달 케어 플랫폼
             </p>
             <p style="margin-top: 8px; color: #9ca3af; font-size: 11px;">
               © 2025 AIHPRO. All rights reserved.

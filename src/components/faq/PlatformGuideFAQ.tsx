@@ -115,7 +115,7 @@ export const PlatformGuideFAQ: React.FC<PlatformGuideFAQProps> = ({ isOpen, onCl
       id: (Date.now() + 1).toString(),
       role: 'assistant',
       content: matchedFAQ?.answer || 
-        '죄송해요, 해당 질문에 대한 답변을 찾지 못했어요. 😅\n\n아래 자주 묻는 질문을 확인하시거나, 고객센터로 문의해주세요!\n\n📧 support@aihpro.com\n📞 1588-0000'
+        '죄송해요, 해당 질문에 대한 답변을 찾지 못했어요. 😅\n\n아래 자주 묻는 질문을 확인하시거나, 고객센터로 문의해주세요!\n\n📧 support@aihpro.app\n📞 1588-0000'
     };
 
     setMessages(prev => [...prev, userMessage, assistantMessage]);

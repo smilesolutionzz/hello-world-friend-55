@@ -261,7 +261,7 @@ const ClinicalReportLayout = ({
             {t.resultLayout.disclaimer1}<br />
             {t.resultLayout.disclaimer2}
           </p>
-          <p className="text-[9px] text-muted-foreground/40 text-center mt-1">© AIHPRO.COM</p>
+          <p className="text-[9px] text-muted-foreground/40 text-center mt-1">© AIHPRO.APP</p>
         </div>
       </div>
     </div>

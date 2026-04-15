@@ -186,7 +186,7 @@ export default function DrawingDiaryHTP() {
           "@type": "WebApplication",
           "name": "그림 마음일기",
           "description": "AI 기반 아동 그림심리분석 서비스",
-          "url": "https://aihpro.com/drawing-diary-htp",
+          "url": "https://aihpro.app/drawing-diary-htp",
           "applicationCategory": "HealthApplication"
         }}
       />

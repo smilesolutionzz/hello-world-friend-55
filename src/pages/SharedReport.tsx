@@ -385,7 +385,7 @@ const SharedReport = () => {
               </Button>
             </div>
             <p className="text-[10px] text-muted-foreground/50">
-              © AIHPRO.COM · 본 리포트는 참고용이며 의학적 진단을 대체하지 않습니다.
+              © AIHPRO.APP · 본 리포트는 참고용이며 의학적 진단을 대체하지 않습니다.
             </p>
           </div>
         </div>

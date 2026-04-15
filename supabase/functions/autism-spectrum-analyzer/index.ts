@@ -17,8 +17,8 @@ serve(async (req) => {
   try {
     const { results, answers, ageGroup } = await req.json();
 
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not found');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not found');
     }
 
     // Calculate category scores

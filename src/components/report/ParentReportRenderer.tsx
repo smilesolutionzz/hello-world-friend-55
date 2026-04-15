@@ -537,21 +537,21 @@ function generateParentReportHTML(
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIHPRO ${userName} ${sessionLabel} ${isEnglish ? 'Report' : '리포트'}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=Noto+Serif+KR:wght@400;700;900&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Noto Sans KR', -apple-system, sans-serif; background: #fff; color: #1F2937; line-height: 1.8; font-size: 14px; }
   .report { max-width: 800px; margin: 0 auto; padding: 40px 32px; }
-  .cover { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #EFF6FF 0%, #F0FDF4 100%); border-radius: 24px; margin-bottom: 40px; border: 1px solid #E5E7EB; }
-  .cover-badge { display: inline-block; background: #2563EB; color: white; font-size: 11px; font-weight: 700; padding: 4px 14px; border-radius: 20px; letter-spacing: 0.5px; margin-bottom: 16px; }
-  .cover h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 8px; line-height: 1.4; }
-  .cover .subtitle { font-size: 15px; color: #4B5563; margin-bottom: 24px; }
-  .cover-meta { display: flex; justify-content: center; gap: 24px; font-size: 13px; color: #6B7280; flex-wrap: wrap; }
-  .section { margin-bottom: 36px; page-break-inside: avoid; }
-  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #E5E7EB; }
-  .section-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .section-header h2 { font-size: 18px; font-weight: 700; color: #111827; }
-  .section-header .badge { margin-left: auto; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; }
-  .score-card { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  .cover { text-align: center; padding: 60px 20px 48px; margin-bottom: 48px; border-bottom: 3px solid #111827; }
+  .cover-badge { display: inline-block; background: #111827; color: white; font-size: 11px; font-weight: 700; padding: 5px 16px; border-radius: 2px; letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase; }
+  .cover h1 { font-family: 'Noto Serif KR', serif; font-size: 32px; font-weight: 900; color: #111827; margin-bottom: 12px; line-height: 1.4; }
+  .cover .subtitle { font-size: 14px; color: #6B7280; margin-bottom: 28px; letter-spacing: 0.3px; }
+  .cover-meta { display: flex; justify-content: center; gap: 32px; font-size: 12px; color: #9CA3AF; flex-wrap: wrap; letter-spacing: 0.5px; }
+  .section { margin-bottom: 40px; page-break-inside: avoid; }
+  .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid #E5E7EB; }
+  .section-number { font-family: 'Noto Serif KR', serif; font-size: 32px; font-weight: 900; color: #C8B88A; line-height: 1; flex-shrink: 0; }
+  .section-header h2 { font-size: 18px; font-weight: 700; color: #111827; letter-spacing: -0.3px; }
+  .section-header .badge { margin-left: auto; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 2px; }
+  .score-card { background: #FAFAFA; border: 1px solid #E5E7EB; border-radius: 4px; padding: 24px; margin-bottom: 20px; }
   .score-main { display: flex; align-items: center; gap: 20px; margin-bottom: 16px; }
   .score-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; font-size: 28px; flex-shrink: 0; border: 3px solid; }
   .score-circle small { font-size: 10px; font-weight: 500; }
@@ -561,30 +561,32 @@ function generateParentReportHTML(
   .gauge-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
   .gauge-label span:first-child { font-size: 13px; font-weight: 600; color: #374151; }
   .gauge-label span:last-child { font-size: 12px; font-weight: 700; }
-  .gauge-track { height: 10px; background: #E5E7EB; border-radius: 5px; overflow: hidden; }
-  .gauge-fill { height: 100%; border-radius: 5px; transition: width 0.5s; }
-  .expert-box { background: #FAFBFF; border: 1px solid #E0E7FF; border-left: 4px solid #2563EB; border-radius: 12px; padding: 20px; margin: 16px 0; }
-  .expert-box .label { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .gauge-track { height: 8px; background: #E5E7EB; border-radius: 2px; overflow: hidden; }
+  .gauge-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+  .expert-box { background: #FAFBFC; border: 1px solid #E0E7FF; border-left: 4px solid #2563EB; border-radius: 4px; padding: 20px; margin: 16px 0; }
+  .expert-box .label { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
   .expert-box p { font-size: 13.5px; line-height: 1.9; color: #374151; margin-bottom: 8px; }
   .expert-box p:last-child { margin-bottom: 0; }
-  .insight-card { background: white; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
-  .insight-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .insight-card { background: white; border: 1px solid #E5E7EB; border-radius: 4px; padding: 16px 20px; margin-bottom: 12px; }
+  .insight-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; color: #111827; }
   .insight-card p { font-size: 13px; line-height: 1.85; color: #4B5563; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-  .stat-card { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; text-align: center; }
+  .stat-card { background: #FAFAFA; border: 1px solid #E5E7EB; border-radius: 4px; padding: 16px; text-align: center; }
   .stat-card .value { font-size: 24px; font-weight: 800; }
-  .stat-card .label { font-size: 11px; color: #6B7280; margin-top: 4px; }
+  .stat-card .label { font-size: 11px; color: #6B7280; margin-top: 4px; letter-spacing: 0.3px; }
   .ai-content { font-size: 13.5px; line-height: 1.9; color: #374151; }
   .ai-content h3, .ai-content h4 { font-size: 15px; font-weight: 700; margin: 16px 0 8px; color: #111827; }
   .ai-content ul, .ai-content ol { padding-left: 20px; margin: 8px 0; }
   .ai-content li { margin-bottom: 6px; }
-  .disclaimer { margin-top: 40px; padding: 20px; background: #F9FAFB; border-radius: 12px; border: 1px solid #E5E7EB; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .tag { display: inline-block; background: #F3F4F6; border: 1px solid #D1D5DB; border-radius: 2px; padding: 4px 12px; font-size: 12px; font-weight: 500; color: #374151; }
+  .disclaimer { margin-top: 48px; padding: 20px; background: #FAFAFA; border-radius: 4px; border: 1px solid #E5E7EB; }
   .disclaimer p { font-size: 11px; color: #6B7280; line-height: 1.7; }
-  .brand-footer { text-align: center; margin-top: 32px; padding-top: 20px; border-top: 1px solid #E5E7EB; }
-  .brand-footer .logo { font-size: 16px; font-weight: 800; color: #2563EB; }
-  .brand-footer p { font-size: 11px; color: #6B7280; margin-top: 4px; }
+  .brand-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 2px solid #111827; }
+  .brand-footer .logo { font-size: 18px; font-weight: 900; color: #111827; letter-spacing: 2px; }
+  .brand-footer p { font-size: 11px; color: #9CA3AF; margin-top: 6px; letter-spacing: 0.5px; }
   .page-break { page-break-before: always; margin-top: 40px; }
   @media print { .report { padding: 20px; } .page-break { page-break-before: always; } }
 </style>

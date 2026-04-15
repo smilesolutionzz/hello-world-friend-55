@@ -18,6 +18,12 @@ interface ReportShareModalProps {
   reportTitle?: string;
 }
 
+interface ReportHistoryItem {
+  id: string;
+  title: string;
+  created_at: string;
+}
+
 const SHARE_OPTIONS = [
   {
     type: 'permanent' as const,
@@ -54,14 +60,46 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const [title, setTitle] = useState(reportTitle || '나의 심리 분석 리포트');
   const [existingLinks, setExistingLinks] = useState<any[]>([]);
+  const [reportHistory, setReportHistory] = useState<ReportHistoryItem[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   useEffect(() => {
     if (open) {
       setSelectedReports(new Set(reportHistoryIds));
       setGeneratedLink(null);
       loadExistingLinks();
+      loadReportHistory();
     }
   }, [open, reportHistoryIds]);
+
+  const loadReportHistory = async () => {
+    setIsLoadingHistory(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from('report_history')
+        .select('id, title, created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      if (data) {
+        setReportHistory(data.map(r => ({
+          id: r.id,
+          title: r.title || '리포트',
+          created_at: r.created_at
+        })));
+        // If no pre-selected IDs but we have history, auto-select the first one
+        if (reportHistoryIds.length === 0 && data.length > 0) {
+          setSelectedReports(new Set([data[0].id]));
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load report history:', err);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
 
   const loadExistingLinks = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -91,7 +129,6 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
         ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         : null;
 
-      // 1) 공유 링크 생성
       const { data: linkData, error: linkError } = await supabase
         .from('report_share_links')
         .insert({
@@ -106,7 +143,6 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
 
       if (linkError) throw linkError;
 
-      // 2) 리포트 연결
       const reportInserts = Array.from(selectedReports).map((rid, idx) => ({
         share_link_id: linkData.id,
         report_history_id: rid,
@@ -115,7 +151,6 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
 
       await supabase.from('report_share_reports').insert(reportInserts);
 
-      // 3) 링크 생성
       const shareUrl = `${window.location.origin}/shared-report/${linkData.share_token}`;
       setGeneratedLink(shareUrl);
       toast.success('공유 링크가 생성되었습니다!');
@@ -152,6 +187,20 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
     loadExistingLinks();
   };
 
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+  };
+
+  // Merge pre-passed IDs with loaded history for display
+  const displayReports: ReportHistoryItem[] = reportHistory.length > 0
+    ? reportHistory
+    : reportHistoryIds.map((id, i) => ({
+        id,
+        title: `${i + 1}회차 리포트`,
+        created_at: ''
+      }));
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
@@ -175,6 +224,53 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
                 placeholder="리포트 제목을 입력하세요"
                 className="text-sm"
               />
+            </div>
+
+            {/* 공유할 리포트 선택 */}
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-2 block">
+                공유할 리포트 선택 ({selectedReports.size}개 선택)
+              </label>
+              {isLoadingHistory ? (
+                <div className="flex items-center justify-center py-4 text-sm text-muted-foreground">
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  리포트 목록 불러오는 중...
+                </div>
+              ) : displayReports.length === 0 ? (
+                <div className="text-sm text-muted-foreground py-3 text-center bg-muted/30 rounded-lg">
+                  공유 가능한 리포트가 없습니다.
+                </div>
+              ) : (
+                <div className="space-y-1.5 max-h-40 overflow-y-auto border border-border/40 rounded-xl p-2">
+                  {displayReports.map((report) => (
+                    <label
+                      key={report.id}
+                      className={`flex items-center gap-2.5 p-2.5 rounded-lg cursor-pointer transition-all ${
+                        selectedReports.has(report.id)
+                          ? 'bg-primary/5 border border-primary/20'
+                          : 'hover:bg-muted/30 border border-transparent'
+                      }`}
+                    >
+                      <Checkbox
+                        checked={selectedReports.has(report.id)}
+                        onCheckedChange={(checked) => {
+                          const next = new Set(selectedReports);
+                          if (checked) next.add(report.id); else next.delete(report.id);
+                          setSelectedReports(next);
+                        }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm font-medium truncate block">{report.title}</span>
+                        {report.created_at && (
+                          <span className="text-[11px] text-muted-foreground">
+                            {formatDate(report.created_at)}
+                          </span>
+                        )}
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* 공유 타입 선택 */}
@@ -217,34 +313,10 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
               </div>
             </div>
 
-            {/* 포함 리포트 */}
-            {reportHistoryIds.length > 1 && (
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-2 block">
-                  포함할 리포트 회차 ({selectedReports.size}개 선택)
-                </label>
-                <div className="space-y-1.5 max-h-32 overflow-y-auto">
-                  {reportHistoryIds.map((id, i) => (
-                    <label key={id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/30 cursor-pointer">
-                      <Checkbox
-                        checked={selectedReports.has(id)}
-                        onCheckedChange={(checked) => {
-                          const next = new Set(selectedReports);
-                          if (checked) next.add(id); else next.delete(id);
-                          setSelectedReports(next);
-                        }}
-                      />
-                      <span className="text-sm">{i + 1}회차 리포트</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* 생성 버튼 */}
             <Button
               onClick={handleGenerate}
-              disabled={isGenerating}
+              disabled={isGenerating || selectedReports.size === 0}
               className="w-full bg-primary text-primary-foreground"
             >
               {isGenerating ? (

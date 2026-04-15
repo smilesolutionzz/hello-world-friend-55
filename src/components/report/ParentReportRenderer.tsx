@@ -185,7 +185,7 @@ function generateDevelopmentalIntro(userAge: number, gender: string, isEnglish: 
   return `
     <div class="section">
       <div class="section-header">
-        <div class="section-icon" style="background: #DBEAFE;">🌱</div>
+        <div class="section-number">00</div>
         <h2>${isEnglish ? 'Developmental Context' : '발달 단계별 맥락 분석'}</h2>
         <span class="badge" style="background: #EFF6FF; color: #2563EB;">${isEnglish ? `Age ${userAge}` : `만 ${userAge}세`}${genderLabel ? ` · ${genderLabel}` : ''}</span>
       </div>

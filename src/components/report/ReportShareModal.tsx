@@ -78,8 +78,8 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       const { data } = await supabase
-        .from('report_history')
-        .select('id, title, created_at')
+        .from('premium_report_history')
+        .select('id, report_number, created_at, overall_score, risk_level')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(20);

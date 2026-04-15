@@ -341,7 +341,7 @@ export const InteractiveRoadmap = ({ roadmapData }: { roadmapData: RoadmapData |
                 </div>
                 {w.milestone && (
                   <Badge className="bg-white/20 text-white border-white/30 text-[10px]">
-                    🎯 {w.milestone}
+                    {w.milestone}
                   </Badge>
                 )}
               </div>

@@ -176,7 +176,7 @@ export const useTestResultActions = () => {
           <div id="pdf-content" style="font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; padding: 30px; max-width: 800px; margin: 0 auto; background: white;">
             ${getPdfBrandingHeaderHtml()}
             <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #3b82f6;">
-              <div style="font-size: 28px; font-weight: bold; color: #3b82f6; letter-spacing: 2px;">AIHPRO.COM</div>
+              <div style="font-size: 28px; font-weight: bold; color: #3b82f6; letter-spacing: 2px;">AIHPRO.APP</div>
               <div style="font-size: 13px; color: #6b7280; margin-top: 8px;">AIH 기반 심리검사 전문 플랫폼</div>
             </div>
             <h1 style="margin:0 0 10px 0; color: #1e40af; text-align: center; font-size: 24px;">${testData.testType} 결과 보고서</h1>
@@ -202,7 +202,7 @@ export const useTestResultActions = () => {
               <p style="margin: 5px 0;"><strong style="color: #374151;">중요 안내사항</strong></p>
               <p style="margin: 5px 0;">본 리포트는 참고용이며 의학적 진단이 아닙니다.</p>
               <p style="margin: 5px 0;">정확한 진단과 치료를 위해서는 전문의와 상담하시기 바랍니다.</p>
-              <p style="margin-top: 15px; color: #9ca3af; font-size: 11px;">© 2024 AIHPRO.COM. All rights reserved.</p>
+              <p style="margin-top: 15px; color: #9ca3af; font-size: 11px;">© 2024 AIHPRO.APP. All rights reserved.</p>
             </div>
           </div>`;
       }

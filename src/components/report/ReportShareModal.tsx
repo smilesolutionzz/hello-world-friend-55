@@ -86,7 +86,7 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
       if (data) {
         setReportHistory(data.map(r => ({
           id: r.id,
-          title: r.title || '리포트',
+          title: `${r.report_number}회차 리포트${r.risk_level ? ` (${r.risk_level})` : ''}`,
           created_at: r.created_at
         })));
         // If no pre-selected IDs but we have history, auto-select the first one

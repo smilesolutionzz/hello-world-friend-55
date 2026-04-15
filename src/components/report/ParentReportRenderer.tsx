@@ -724,7 +724,7 @@ const ParentReportRenderer: React.FC<ParentReportRendererProps> = ({
           onClick={handleDownloadHTML}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
         >
-          📥 {isEnglish ? 'Download Report (HTML)' : '리포트 다운로드 (HTML)'}
+          {isEnglish ? 'Download Report (HTML)' : '리포트 다운로드 (HTML)'}
         </button>
       </div>
       <iframe

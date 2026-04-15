@@ -497,18 +497,14 @@ function generateParentReportHTML(
   let aiSectionsHTML = '';
   const sections = reportData?.sections || [];
   if (sections.length > 0) {
-    const sectionIcons = ['📋', '🧠', '🏠', '🎯', '💡', '📊', '🔬', '⚡', '🌱', '📈'];
-    const sectionBgs = ['#DBEAFE', '#EDE9FE', '#D1FAE5', '#FEF3C7', '#FCE7F3', '#E0E7FF', '#F3E8FF', '#FFF7ED', '#ECFDF5', '#EFF6FF'];
-    
     sections.forEach((section: any, idx: number) => {
-      const icon = sectionIcons[idx % sectionIcons.length];
-      const bg = sectionBgs[idx % sectionBgs.length];
+      const sectionNum = String(idx + 1).padStart(2, '0');
       const pageBreak = idx > 0 && idx % 2 === 0 ? 'page-break' : '';
       
       aiSectionsHTML += `
         <div class="section ${pageBreak}">
           <div class="section-header">
-            <div class="section-icon" style="background: ${bg};">${icon}</div>
+            <div class="section-number">${sectionNum}</div>
             <h2>${section.title}</h2>
           </div>
           <div class="ai-content">${cleanAIContent(section.content)}</div>
@@ -523,7 +519,7 @@ function generateParentReportHTML(
     overallSummaryHTML = `
       <div class="section page-break">
         <div class="section-header">
-          <div class="section-icon" style="background: #D1FAE5;">✅</div>
+          <div class="section-number" style="background: #D1FAE5; color: #059669;">S</div>
           <h2>${isEnglish ? 'Executive Summary & Recommendations' : '종합 요약 및 제언'}</h2>
         </div>
         <div class="expert-box" style="border-left-color: #059669;">

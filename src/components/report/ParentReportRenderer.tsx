@@ -185,7 +185,7 @@ function generateDevelopmentalIntro(userAge: number, gender: string, isEnglish: 
   return `
     <div class="section">
       <div class="section-header">
-        <div class="section-icon" style="background: #DBEAFE;">🌱</div>
+        <div class="section-number">00</div>
         <h2>${isEnglish ? 'Developmental Context' : '발달 단계별 맥락 분석'}</h2>
         <span class="badge" style="background: #EFF6FF; color: #2563EB;">${isEnglish ? `Age ${userAge}` : `만 ${userAge}세`}${genderLabel ? ` · ${genderLabel}` : ''}</span>
       </div>
@@ -268,7 +268,7 @@ function generateParentReportHTML(
     const changePercent = trend?.changePercent || 0;
     const dimLabel = getDimensionLabel(d.dimension, isEnglish);
     
-    const trendIcon = trendDir === 'improving' ? '📈' : trendDir === 'declining' ? '📉' : '➡️';
+    const trendIcon = trendDir === 'improving' ? '▲' : trendDir === 'declining' ? '▼' : '—';
     const trendText = trendDir === 'improving'
       ? (isEnglish ? `Improving (+${changePercent}%)` : `개선 중 (+${changePercent}%)`)
       : trendDir === 'declining'
@@ -322,7 +322,7 @@ function generateParentReportHTML(
     comparisonHTML = `
       <div class="section page-break">
         <div class="section-header">
-          <div class="section-icon" style="background: #DBEAFE;">📊</div>
+           <div class="section-number">04</div>
           <h2>${isEnglish ? 'Change Tracking' : '회차별 변화 추적'}</h2>
         </div>
         ${compRows}
@@ -339,15 +339,15 @@ function generateParentReportHTML(
   }
 
   // Build data source infographic with icons
-  const dataSourceConfig: Record<string, { label: string; labelEn: string; icon: string; color: string }> = {
-    assessments: { label: '심리검사', labelEn: 'Assessments', icon: '🧠', color: '#6366F1' },
-    observations: { label: '관찰일지', labelEn: 'Observations', icon: '📝', color: '#8B5CF6' },
-    observationSessions: { label: 'AI 관찰 분석', labelEn: 'AI Analysis', icon: '🔬', color: '#A855F7' },
-    chatMessages: { label: '음성 상담', labelEn: 'Counseling', icon: '🎙️', color: '#EC4899' },
-    brainTraining: { label: '게임 상담', labelEn: 'Game Assessment', icon: '🎮', color: '#F59E0B' },
-    videoAnalysis: { label: 'AI 영상 분석', labelEn: 'Video Analysis', icon: '📹', color: '#14B8A6' },
-    concernStorage: { label: '고민 기록', labelEn: 'Concerns', icon: '💭', color: '#F97316' },
-    progressTracking: { label: '변화 추적', labelEn: 'Progress', icon: '📈', color: '#059669' },
+  const dataSourceConfig: Record<string, { label: string; labelEn: string; color: string }> = {
+    assessments: { label: '심리검사', labelEn: 'Assessments', color: '#6366F1' },
+    observations: { label: '관찰일지', labelEn: 'Observations', color: '#8B5CF6' },
+    observationSessions: { label: 'AI 관찰 분석', labelEn: 'AI Analysis', color: '#A855F7' },
+    chatMessages: { label: '음성 상담', labelEn: 'Counseling', color: '#EC4899' },
+    brainTraining: { label: '게임 상담', labelEn: 'Game Assessment', color: '#F59E0B' },
+    videoAnalysis: { label: 'AI 영상 분석', labelEn: 'Video Analysis', color: '#14B8A6' },
+    concernStorage: { label: '고민 기록', labelEn: 'Concerns', color: '#F97316' },
+    progressTracking: { label: '변화 추적', labelEn: 'Progress', color: '#059669' },
   };
   
   let dataSourceHTML = '';
@@ -356,7 +356,6 @@ function generateParentReportHTML(
     if (count && Number(count) > 0 && cfg) {
       dataSourceHTML += `
         <div class="stat-card" style="border-top: 3px solid ${cfg.color};">
-          <div style="font-size: 24px; margin-bottom: 4px;">${cfg.icon}</div>
           <div class="value" style="color: ${cfg.color};">${count}</div>
           <div class="label">${isEnglish ? cfg.labelEn : cfg.label}</div>
         </div>
@@ -369,7 +368,7 @@ function generateParentReportHTML(
   if (cognitive.totalSessions > 0) {
     let gameRows = '';
     (cognitive.gameTypeScores || []).slice(0, 4).forEach((g: any) => {
-      const tIcon = g.trend === 'improving' ? '📈' : g.trend === 'declining' ? '📉' : '➡️';
+      const tIcon = g.trend === 'improving' ? '▲' : g.trend === 'declining' ? '▼' : '—';
       gameRows += `
         <div class="insight-card">
           <h4>${g.type} ${tIcon}</h4>
@@ -381,7 +380,7 @@ function generateParentReportHTML(
     cognitiveHTML = `
       <div class="section page-break">
         <div class="section-header">
-          <div class="section-icon" style="background: #FEF3C7;">🎮</div>
+          <div class="section-number">05</div>
           <h2>${isEnglish ? 'Brain Training Progress' : '두뇌 훈련 분석'}</h2>
         </div>
         <div class="grid-3">
@@ -400,7 +399,7 @@ function generateParentReportHTML(
         </div>
         ${gameRows}
         <div class="expert-box">
-          <div class="label">${isEnglish ? 'Expert Commentary' : '💬 전문가 해설'}</div>
+          <div class="label">${isEnglish ? 'Expert Commentary' : '전문가 해설'}</div>
           <p>${isEnglish
             ? `With ${cognitive.totalSessions} training sessions completed, the average score is ${cognitive.averageScore}%. The best performing area is "${cognitive.bestGameType}". ${cognitive.improvementRate > 0 ? `A ${cognitive.improvementRate}% improvement rate indicates positive cognitive development.` : 'Continued consistent training is recommended for improvement.'}`
             : `총 ${cognitive.totalSessions}회 훈련을 완료했으며, 평균 점수는 ${cognitive.averageScore}%입니다. 가장 뛰어난 영역은 "${cognitive.bestGameType}"입니다. ${cognitive.improvementRate > 0 ? `${cognitive.improvementRate}% 향상률은 긍정적인 인지 발달을 나타냅니다.` : '지속적인 훈련을 통해 향상이 기대됩니다.'}`}</p>
@@ -416,7 +415,7 @@ function generateParentReportHTML(
     correlations.forEach((c: any) => {
       corrRows += `
         <div class="insight-card">
-          <h4>🔗 ${c.sources}</h4>
+          <h4>${c.sources}</h4>
           <p>${c.insight}</p>
         </div>
       `;
@@ -425,7 +424,7 @@ function generateParentReportHTML(
     correlationHTML = `
       <div class="section">
         <div class="section-header">
-          <div class="section-icon" style="background: #EDE9FE;">🔬</div>
+           <div class="section-number">06</div>
           <h2>${isEnglish ? 'Cross-Analysis Insights' : '교차 분석 인사이트'}</h2>
         </div>
         <p style="font-size: 13.5px; color: #6B7280; margin-bottom: 16px;">
@@ -456,7 +455,7 @@ function generateParentReportHTML(
     peerHTML = `
       <div class="section">
         <div class="section-header">
-          <div class="section-icon" style="background: #FCE7F3;">👥</div>
+          <div class="section-number">07</div>
           <h2>${isEnglish ? 'Peer Comparison' : '또래 비교 분석'}</h2>
         </div>
         ${peerRows}
@@ -474,20 +473,20 @@ function generateParentReportHTML(
     progressHTML = `
       <div class="section">
         <div class="section-header">
-          <div class="section-icon" style="background: #D1FAE5;">📈</div>
+          <div class="section-number">08</div>
           <h2>${isEnglish ? 'Progress Summary' : '변화 추적 요약'}</h2>
         </div>
         <div class="insight-card" style="border-left: 3px solid #059669;">
-          <h4>🟢 ${isEnglish ? 'Improved Areas' : '개선된 영역'}</h4>
+          <h4>${isEnglish ? 'Improved Areas' : '개선된 영역'}</h4>
           <p>${improved}</p>
         </div>
         <div class="insight-card" style="border-left: 3px solid #D97706;">
-          <h4>🟡 ${isEnglish ? 'Stable Areas' : '안정 유지 영역'}</h4>
+          <h4>${isEnglish ? 'Stable Areas' : '안정 유지 영역'}</h4>
           <p>${stable}</p>
         </div>
         ${(progressSummary.declinedDimensions || []).length > 0 ? `
         <div class="insight-card" style="border-left: 3px solid #DC2626;">
-          <h4>🔴 ${isEnglish ? 'Areas Needing Attention' : '주의 필요 영역'}</h4>
+          <h4>${isEnglish ? 'Areas Needing Attention' : '주의 필요 영역'}</h4>
           <p>${declined}</p>
         </div>` : ''}
       </div>
@@ -498,18 +497,14 @@ function generateParentReportHTML(
   let aiSectionsHTML = '';
   const sections = reportData?.sections || [];
   if (sections.length > 0) {
-    const sectionIcons = ['📋', '🧠', '🏠', '🎯', '💡', '📊', '🔬', '⚡', '🌱', '📈'];
-    const sectionBgs = ['#DBEAFE', '#EDE9FE', '#D1FAE5', '#FEF3C7', '#FCE7F3', '#E0E7FF', '#F3E8FF', '#FFF7ED', '#ECFDF5', '#EFF6FF'];
-    
     sections.forEach((section: any, idx: number) => {
-      const icon = sectionIcons[idx % sectionIcons.length];
-      const bg = sectionBgs[idx % sectionBgs.length];
+      const sectionNum = String(idx + 1).padStart(2, '0');
       const pageBreak = idx > 0 && idx % 2 === 0 ? 'page-break' : '';
       
       aiSectionsHTML += `
         <div class="section ${pageBreak}">
           <div class="section-header">
-            <div class="section-icon" style="background: ${bg};">${icon}</div>
+            <div class="section-number">${sectionNum}</div>
             <h2>${section.title}</h2>
           </div>
           <div class="ai-content">${cleanAIContent(section.content)}</div>
@@ -524,7 +519,7 @@ function generateParentReportHTML(
     overallSummaryHTML = `
       <div class="section page-break">
         <div class="section-header">
-          <div class="section-icon" style="background: #D1FAE5;">✅</div>
+          <div class="section-number" style="background: #D1FAE5; color: #059669;">S</div>
           <h2>${isEnglish ? 'Executive Summary & Recommendations' : '종합 요약 및 제언'}</h2>
         </div>
         <div class="expert-box" style="border-left-color: #059669;">
@@ -542,21 +537,21 @@ function generateParentReportHTML(
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIHPRO ${userName} ${sessionLabel} ${isEnglish ? 'Report' : '리포트'}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=Noto+Serif+KR:wght@400;700;900&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Noto Sans KR', -apple-system, sans-serif; background: #fff; color: #1F2937; line-height: 1.8; font-size: 14px; }
   .report { max-width: 800px; margin: 0 auto; padding: 40px 32px; }
-  .cover { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #EFF6FF 0%, #F0FDF4 100%); border-radius: 24px; margin-bottom: 40px; border: 1px solid #E5E7EB; }
-  .cover-badge { display: inline-block; background: #2563EB; color: white; font-size: 11px; font-weight: 700; padding: 4px 14px; border-radius: 20px; letter-spacing: 0.5px; margin-bottom: 16px; }
-  .cover h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 8px; line-height: 1.4; }
-  .cover .subtitle { font-size: 15px; color: #4B5563; margin-bottom: 24px; }
-  .cover-meta { display: flex; justify-content: center; gap: 24px; font-size: 13px; color: #6B7280; flex-wrap: wrap; }
-  .section { margin-bottom: 36px; page-break-inside: avoid; }
-  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #E5E7EB; }
-  .section-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .section-header h2 { font-size: 18px; font-weight: 700; color: #111827; }
-  .section-header .badge { margin-left: auto; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; }
-  .score-card { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  .cover { text-align: center; padding: 60px 20px 48px; margin-bottom: 48px; border-bottom: 3px solid #111827; }
+  .cover-badge { display: inline-block; background: #111827; color: white; font-size: 11px; font-weight: 700; padding: 5px 16px; border-radius: 2px; letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase; }
+  .cover h1 { font-family: 'Noto Serif KR', serif; font-size: 32px; font-weight: 900; color: #111827; margin-bottom: 12px; line-height: 1.4; }
+  .cover .subtitle { font-size: 14px; color: #6B7280; margin-bottom: 28px; letter-spacing: 0.3px; }
+  .cover-meta { display: flex; justify-content: center; gap: 32px; font-size: 12px; color: #9CA3AF; flex-wrap: wrap; letter-spacing: 0.5px; }
+  .section { margin-bottom: 40px; page-break-inside: avoid; }
+  .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid #E5E7EB; }
+  .section-number { font-family: 'Noto Serif KR', serif; font-size: 32px; font-weight: 900; color: #C8B88A; line-height: 1; flex-shrink: 0; }
+  .section-header h2 { font-size: 18px; font-weight: 700; color: #111827; letter-spacing: -0.3px; }
+  .section-header .badge { margin-left: auto; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 2px; }
+  .score-card { background: #FAFAFA; border: 1px solid #E5E7EB; border-radius: 4px; padding: 24px; margin-bottom: 20px; }
   .score-main { display: flex; align-items: center; gap: 20px; margin-bottom: 16px; }
   .score-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; font-size: 28px; flex-shrink: 0; border: 3px solid; }
   .score-circle small { font-size: 10px; font-weight: 500; }
@@ -566,30 +561,32 @@ function generateParentReportHTML(
   .gauge-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
   .gauge-label span:first-child { font-size: 13px; font-weight: 600; color: #374151; }
   .gauge-label span:last-child { font-size: 12px; font-weight: 700; }
-  .gauge-track { height: 10px; background: #E5E7EB; border-radius: 5px; overflow: hidden; }
-  .gauge-fill { height: 100%; border-radius: 5px; transition: width 0.5s; }
-  .expert-box { background: #FAFBFF; border: 1px solid #E0E7FF; border-left: 4px solid #2563EB; border-radius: 12px; padding: 20px; margin: 16px 0; }
-  .expert-box .label { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .gauge-track { height: 8px; background: #E5E7EB; border-radius: 2px; overflow: hidden; }
+  .gauge-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+  .expert-box { background: #FAFBFC; border: 1px solid #E0E7FF; border-left: 4px solid #2563EB; border-radius: 4px; padding: 20px; margin: 16px 0; }
+  .expert-box .label { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
   .expert-box p { font-size: 13.5px; line-height: 1.9; color: #374151; margin-bottom: 8px; }
   .expert-box p:last-child { margin-bottom: 0; }
-  .insight-card { background: white; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
-  .insight-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .insight-card { background: white; border: 1px solid #E5E7EB; border-radius: 4px; padding: 16px 20px; margin-bottom: 12px; }
+  .insight-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; color: #111827; }
   .insight-card p { font-size: 13px; line-height: 1.85; color: #4B5563; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-  .stat-card { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; text-align: center; }
+  .stat-card { background: #FAFAFA; border: 1px solid #E5E7EB; border-radius: 4px; padding: 16px; text-align: center; }
   .stat-card .value { font-size: 24px; font-weight: 800; }
-  .stat-card .label { font-size: 11px; color: #6B7280; margin-top: 4px; }
+  .stat-card .label { font-size: 11px; color: #6B7280; margin-top: 4px; letter-spacing: 0.3px; }
   .ai-content { font-size: 13.5px; line-height: 1.9; color: #374151; }
   .ai-content h3, .ai-content h4 { font-size: 15px; font-weight: 700; margin: 16px 0 8px; color: #111827; }
   .ai-content ul, .ai-content ol { padding-left: 20px; margin: 8px 0; }
   .ai-content li { margin-bottom: 6px; }
-  .disclaimer { margin-top: 40px; padding: 20px; background: #F9FAFB; border-radius: 12px; border: 1px solid #E5E7EB; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .tag { display: inline-block; background: #F3F4F6; border: 1px solid #D1D5DB; border-radius: 2px; padding: 4px 12px; font-size: 12px; font-weight: 500; color: #374151; }
+  .disclaimer { margin-top: 48px; padding: 20px; background: #FAFAFA; border-radius: 4px; border: 1px solid #E5E7EB; }
   .disclaimer p { font-size: 11px; color: #6B7280; line-height: 1.7; }
-  .brand-footer { text-align: center; margin-top: 32px; padding-top: 20px; border-top: 1px solid #E5E7EB; }
-  .brand-footer .logo { font-size: 16px; font-weight: 800; color: #2563EB; }
-  .brand-footer p { font-size: 11px; color: #6B7280; margin-top: 4px; }
+  .brand-footer { text-align: center; margin-top: 40px; padding-top: 24px; border-top: 2px solid #111827; }
+  .brand-footer .logo { font-size: 18px; font-weight: 900; color: #111827; letter-spacing: 2px; }
+  .brand-footer p { font-size: 11px; color: #9CA3AF; margin-top: 6px; letter-spacing: 0.5px; }
   .page-break { page-break-before: always; margin-top: 40px; }
   @media print { .report { padding: 20px; } .page-break { page-break-before: always; } }
 </style>
@@ -603,9 +600,9 @@ function generateParentReportHTML(
   <h1>${userName}${isEnglish ? "'s" : ' 님의'}<br>${isEnglish ? 'Comprehensive Analysis Report' : '심층 분석 리포트'}</h1>
   <p class="subtitle">${isEnglish ? `Based on ${totalDataPoints} data points across ${activeSourceCount} analysis sources` : `${activeSourceCount}가지 데이터 소스 · ${totalDataPoints}개 데이터 포인트 기반 전문가 심층 분석`}</p>
   <div class="cover-meta">
-    <span>📅 ${formatDate(new Date().toISOString(), isEnglish)}</span>
-    ${userAge ? `<span>👤 ${isEnglish ? `Age ${userAge}` : `만 ${userAge}세`}</span>` : ''}
-    ${dataSpanDays > 0 ? `<span>📊 ${isEnglish ? `${dataSpanDays} days tracked` : `${dataSpanDays}일간 데이터 추적`}</span>` : ''}
+    <span>${formatDate(new Date().toISOString(), isEnglish)}</span>
+    ${userAge ? `<span>${isEnglish ? `Age ${userAge}` : `만 ${userAge}세`}</span>` : ''}
+    ${dataSpanDays > 0 ? `<span>${isEnglish ? `${dataSpanDays} days tracked` : `${dataSpanDays}일간 데이터 추적`}</span>` : ''}
   </div>
 </div>
 
@@ -615,7 +612,7 @@ ${generateDevelopmentalIntro(userAge, gender, isEnglish)}
 <!-- Overall Summary -->
 <div class="section">
   <div class="section-header">
-    <div class="section-icon" style="background: ${riskBadge.bg};">📋</div>
+    <div class="section-number">01</div>
     <h2>${isEnglish ? 'Overall Status at a Glance' : '한눈에 보는 종합 상태'}</h2>
     <span class="badge" style="background: ${riskBadge.bg}; color: ${riskBadge.color};">${riskBadge.label}</span>
   </div>
@@ -639,7 +636,7 @@ ${generateDevelopmentalIntro(userAge, gender, isEnglish)}
 <!-- Data Sources -->
 <div class="section">
   <div class="section-header">
-    <div class="section-icon" style="background: #EDE9FE;">🔬</div>
+    <div class="section-number">02</div>
     <h2>${isEnglish ? 'Analysis Data Sources' : '분석에 사용된 데이터'}</h2>
   </div>
   <p style="font-size: 13.5px; color: #6B7280; margin-bottom: 16px;">
@@ -655,7 +652,7 @@ ${generateDevelopmentalIntro(userAge, gender, isEnglish)}
 <!-- Domain Analysis -->
 <div class="section page-break">
   <div class="section-header">
-    <div class="section-icon" style="background: #DBEAFE;">📊</div>
+    <div class="section-number">03</div>
     <h2>${isEnglish ? 'Detailed Domain Analysis' : '영역별 상세 분석'}</h2>
   </div>
   ${domainSectionsHTML || `<p style="font-size: 13px; color: #6B7280;">${isEnglish ? 'Domain data will appear after assessments are completed.' : '검사 데이터가 쌓이면 영역별 분석이 표시됩니다.'}</p>`}
@@ -684,7 +681,7 @@ ${overallSummaryHTML}
 
 <!-- Disclaimer -->
 <div class="disclaimer">
-  <p>⚠️ <strong>${isEnglish ? 'Notice' : '안내사항'}</strong><br>
+  <p><strong>${isEnglish ? 'Notice' : '안내사항'}</strong><br>
   ${isEnglish
     ? 'This report is generated by the AIHPRO Expert Analysis Engine and does not replace professional medical diagnosis. Please consult qualified healthcare professionals for accurate diagnosis and treatment.'
     : '본 리포트는 AIHPRO 전문가 심층분석 엔진을 기반으로 작성되었으며, 의학적 진단을 대체하지 않습니다. 정확한 진단과 치료는 반드시 전문 의료기관을 통해 받으시기 바랍니다.'}</p>
@@ -727,7 +724,7 @@ const ParentReportRenderer: React.FC<ParentReportRendererProps> = ({
           onClick={handleDownloadHTML}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2"
         >
-          📥 {isEnglish ? 'Download Report (HTML)' : '리포트 다운로드 (HTML)'}
+          {isEnglish ? 'Download Report (HTML)' : '리포트 다운로드 (HTML)'}
         </button>
       </div>
       <iframe

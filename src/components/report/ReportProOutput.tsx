@@ -69,7 +69,7 @@ function getScenarioBanner(scenario: ReturnType<typeof detectScenario>, isEnglis
       return {
         icon: <CheckCircle2 className="w-6 h-6 text-emerald-600" />,
         bg: 'bg-emerald-50 border-emerald-200',
-        title: t('🎉 의미 있는 성장이 확인되었습니다', '🎉 Meaningful Growth Detected'),
+        title: t('의미 있는 성장이 확인되었습니다', 'Meaningful Growth Detected'),
         desc: t('부모님의 노력이 빛을 발하고 있습니다. 아래 리포트에서 상세한 변화를 확인하세요.', 
                'Your efforts are paying off. Check detailed changes in the report below.'),
       };
@@ -77,7 +77,7 @@ function getScenarioBanner(scenario: ReturnType<typeof detectScenario>, isEnglis
       return {
         icon: <BarChart3 className="w-6 h-6 text-blue-600" />,
         bg: 'bg-blue-50 border-blue-200',
-        title: t('📊 안정적인 상태가 유지되고 있습니다', '📊 Stable Condition Maintained'),
+        title: t('안정적인 상태가 유지되고 있습니다', 'Stable Condition Maintained'),
         desc: t('유지도 중요한 성과입니다. 한 단계 더 나아갈 수 있는 방법을 안내드립니다.', 
                'Maintenance is also an achievement. We\'ll guide you on how to take the next step.'),
       };
@@ -85,7 +85,7 @@ function getScenarioBanner(scenario: ReturnType<typeof detectScenario>, isEnglis
       return {
         icon: <AlertTriangle className="w-6 h-6 text-amber-600" />,
         bg: 'bg-amber-50 border-amber-200',
-        title: t('📋 일부 영역에서 변화가 감지되었습니다', '📋 Changes Detected in Some Areas'),
+        title: t('일부 영역에서 변화가 감지되었습니다', 'Changes Detected in Some Areas'),
         desc: t('이것은 "나빠졌다"는 의미가 아닙니다. 조기에 알아차리고 대응하면 충분히 개선할 수 있습니다. 발견이 늦은 것보다, 지금 알게 된 것이 다행입니다.', 
                'This doesn\'t mean things have gotten worse. Early detection enables effective intervention. It\'s better to know now than to find out later.'),
       };
@@ -93,7 +93,7 @@ function getScenarioBanner(scenario: ReturnType<typeof detectScenario>, isEnglis
       return {
         icon: <TrendingUp className="w-6 h-6 text-indigo-600" />,
         bg: 'bg-indigo-50 border-indigo-200',
-        title: t('⚖️ 성장과 주의가 함께 나타났습니다', '⚖️ Growth and Attention Areas Coexist'),
+        title: t('성장과 주의가 함께 나타났습니다', 'Growth and Attention Areas Coexist'),
         desc: t('일부 영역은 좋아지고 있고, 일부는 관심이 필요합니다. 균형 있는 지원이 중요합니다.', 
                'Some areas are improving while others need attention. Balanced support is key.'),
       };
@@ -101,7 +101,7 @@ function getScenarioBanner(scenario: ReturnType<typeof detectScenario>, isEnglis
       return {
         icon: <Eye className="w-6 h-6 text-slate-600" />,
         bg: 'bg-slate-50 border-slate-200',
-        title: t('📝 첫 번째 평가 리포트입니다', '📝 This is Your First Assessment Report'),
+        title: t('첫 번째 평가 리포트입니다', 'This is Your First Assessment Report'),
         desc: t('기준선이 설정되었습니다. 다음 검사에서 변화 추이를 비교 분석합니다.', 
                'Your baseline has been set. Changes will be tracked in future assessments.'),
       };
@@ -130,7 +130,7 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
     let text = t(`종합 분석 리포트\n대상: ${userInput.name}\n\n`, `Report\nSubject: ${userInput.name}\n\n`);
     reportData.sections?.forEach((s: any, i: number) => { text += `${i + 1}. ${s.title}\n${s.content?.replace(/<[^>]*>/g, '')}\n\n`; });
     await navigator.clipboard.writeText(text);
-    toast({ title: t("📋 클립보드에 복사됨", "📋 Copied") });
+    toast({ title: t("클립보드에 복사됨", "Copied") });
   };
 
   const shareReport = async () => {
@@ -152,7 +152,7 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
         }
       });
       if (error) throw error;
-      toast({ title: t("✅ 이메일 전송 완료", "✅ Sent") });
+      toast({ title: t("이메일 전송 완료", "Sent") });
       setFamilyEmail('');
     } catch { toast({ title: t("전송 실패", "Failed"), variant: "destructive" }); }
     finally { setIsSendingEmail(false); }
@@ -199,7 +199,7 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
             {scenario.overall === 'declined' && scenario.severity === 'severe' && (
               <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-sm text-red-700 font-semibold">
-                  {t('⚠️ 전문 기관 상담을 권장드립니다', '⚠️ Professional consultation is recommended')}
+                  {t('전문 기관 상담을 권장드립니다', 'Professional consultation is recommended')}
                 </p>
                 <p className="text-xs text-red-600 mt-1">
                   {t('자살예방상담전화 1393 · 정신건강위기상담전화 1577-0199', 'Crisis Hotline: 1393 · Mental Health: 1577-0199')}

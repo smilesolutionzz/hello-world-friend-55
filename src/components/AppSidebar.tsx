@@ -8,7 +8,9 @@ import {
   User, 
   ClipboardCheck,
   Home,
-  Heart
+  Heart,
+  Building2,
+  Share2
 } from "lucide-react"
 
 import {
@@ -30,6 +32,11 @@ const mainItems = [
   { title: "AI 음성일기", url: "/voice-emotion-diary", icon: Heart },
   { title: "관찰일지", url: "/observation", icon: FileText },
   { title: "나만의 맞춤리포팅 신청", url: "/comprehensive-reporting", icon: ClipboardCheck },
+  { title: "데이터 공유 관리", url: "/data-sharing", icon: Share2 },
+]
+
+const institutionItems = [
+  { title: "고객 관리 대시보드", url: "/institution-clients", icon: Building2 },
 ]
 
 const accountItems = [
@@ -62,6 +69,28 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {mainItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to={item.url} 
+                      end 
+                      className={({ isActive }) => getNavCls({ isActive })}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {state !== "collapsed" && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-white font-medium">기관 관리</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {institutionItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink 

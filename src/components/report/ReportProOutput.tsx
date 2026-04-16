@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   FileDown, Copy, Share2, Mail, Loader2, MessageSquare, Crown,
-  Eye, BarChart3, TrendingUp, AlertTriangle, CheckCircle2
+  Eye, BarChart3, TrendingUp, AlertTriangle, CheckCircle2, FileText
 } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
@@ -12,6 +12,9 @@ import VisualSummaryButton from '@/components/visual-summary/VisualSummaryButton
 import ReportShareModal from '@/components/report/ReportShareModal';
 import ReportCurationSection from '@/components/report/ReportCurationSection';
 import ReportVisualNoteSummary from '@/components/report/ReportVisualNoteSummary';
+import ReportReminderBanner from '@/components/report/ReportReminderBanner';
+import ExpertCommentLayer from '@/components/report/ExpertCommentLayer';
+import { downloadReportAsDocx } from '@/utils/docxDownload';
 import { supabase } from '@/integrations/supabase/client';
 import html2pdf from 'html2pdf.js';
 
@@ -162,7 +165,7 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Floating Action Bar */}
       <div className="sticky top-4 z-20 bg-slate-900/95 backdrop-blur-xl rounded-xl border border-white/10 p-4 space-y-3">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           <Button onClick={copyToClipboard} size="sm" className="bg-slate-700 hover:bg-slate-600 text-white gap-1.5 text-xs font-semibold h-9">
             <Copy className="w-3.5 h-3.5" /> {t('복사', 'Copy')}
           </Button>
@@ -171,6 +174,21 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
           </Button>
           <Button onClick={() => setShowShareModal(true)} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5 text-xs font-semibold h-9">
             <Mail className="w-3.5 h-3.5" /> {t('링크 공유', 'Share Link')}
+          </Button>
+          <Button
+            onClick={() => {
+              downloadReportAsDocx(
+                reportData,
+                userInput.name,
+                `${isEnglish ? 'PremiumReport' : '프리미엄리포트'}_${userInput.name}_${new Date().toISOString().split('T')[0]}`,
+                () => toast({ title: t('📥 DOCX 다운로드 완료', '📥 DOCX Downloaded') }),
+                (e) => toast({ title: t('다운로드 실패', 'Download Failed'), description: e.message, variant: 'destructive' })
+              );
+            }}
+            size="sm"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 text-xs font-semibold h-9"
+          >
+            <FileText className="w-3.5 h-3.5" /> DOCX
           </Button>
           <a href="https://open.kakao.com/o/sHLdK3Ch" target="_blank" rel="noopener noreferrer" className="w-full">
             <Button size="sm" className="w-full bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold gap-1.5 text-xs h-9">
@@ -224,6 +242,16 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
         userName={userInput.name}
         userAge={userAge}
         gender={userInput.gender}
+      />
+
+      {/* 재검사 알림 배너 */}
+      <ReportReminderBanner testType="premium_report" />
+
+      {/* 전문가 코멘트 레이어 (B2B) */}
+      <ExpertCommentLayer
+        reportHistoryId={reportData?.id}
+        isExpert={false}
+        isReadOnly={true}
       />
 
       {/* Curation */}

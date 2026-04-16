@@ -3855,6 +3855,59 @@ export type Database = {
         }
         Relationships: []
       }
+      expert_report_comments: {
+        Row: {
+          comment_text: string
+          comment_type: string
+          created_at: string
+          expert_user_id: string
+          highlighted_section: string | null
+          id: string
+          institution_id: string | null
+          is_visible_to_parent: boolean
+          parent_viewed_at: string | null
+          report_history_id: string | null
+          report_share_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          comment_text: string
+          comment_type?: string
+          created_at?: string
+          expert_user_id: string
+          highlighted_section?: string | null
+          id?: string
+          institution_id?: string | null
+          is_visible_to_parent?: boolean
+          parent_viewed_at?: string | null
+          report_history_id?: string | null
+          report_share_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          comment_text?: string
+          comment_type?: string
+          created_at?: string
+          expert_user_id?: string
+          highlighted_section?: string | null
+          id?: string
+          institution_id?: string | null
+          is_visible_to_parent?: boolean
+          parent_viewed_at?: string | null
+          report_history_id?: string | null
+          report_share_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_report_comments_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expert_reviews: {
         Row: {
           consultation_id: string | null
@@ -8438,6 +8491,48 @@ export type Database = {
           status?: string
           tokens_awarded?: number | null
           verified_at?: string | null
+        }
+        Relationships: []
+      }
+      report_reassessment_reminders: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          reminder_type: string
+          report_id: string | null
+          scheduled_at: string
+          sent_at: string | null
+          status: string
+          test_type: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          reminder_type?: string
+          report_id?: string | null
+          scheduled_at: string
+          sent_at?: string | null
+          status?: string
+          test_type?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          reminder_type?: string
+          report_id?: string | null
+          scheduled_at?: string
+          sent_at?: string | null
+          status?: string
+          test_type?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

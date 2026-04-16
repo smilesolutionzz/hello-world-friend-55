@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   FileDown, Copy, Share2, Mail, Loader2, MessageSquare, Crown,
-  Eye, BarChart3, TrendingUp, AlertTriangle, CheckCircle2
+  Eye, BarChart3, TrendingUp, AlertTriangle, CheckCircle2, FileText
 } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
@@ -12,6 +12,9 @@ import VisualSummaryButton from '@/components/visual-summary/VisualSummaryButton
 import ReportShareModal from '@/components/report/ReportShareModal';
 import ReportCurationSection from '@/components/report/ReportCurationSection';
 import ReportVisualNoteSummary from '@/components/report/ReportVisualNoteSummary';
+import ReportReminderBanner from '@/components/report/ReportReminderBanner';
+import ExpertCommentLayer from '@/components/report/ExpertCommentLayer';
+import { downloadReportAsDocx } from '@/utils/docxDownload';
 import { supabase } from '@/integrations/supabase/client';
 import html2pdf from 'html2pdf.js';
 

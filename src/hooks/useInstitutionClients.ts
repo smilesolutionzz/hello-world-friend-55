@@ -171,12 +171,12 @@ export const useInstitutionClients = (institutionId?: string) => {
     }
 
     if (dataTypes.includes('progress')) {
-      const { data } = await supabase
+      const { data } = await (supabase
         .from('timeline_activities')
         .select('*')
         .eq('user_id', clientUserId)
         .order('created_at', { ascending: false })
-        .limit(30);
+        .limit(30) as any);
       result.progress = data || [];
     }
 

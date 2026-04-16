@@ -244,6 +244,16 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
         gender={userInput.gender}
       />
 
+      {/* 재검사 알림 배너 */}
+      <ReportReminderBanner testType="premium_report" />
+
+      {/* 전문가 코멘트 레이어 (B2B) */}
+      <ExpertCommentLayer
+        reportHistoryId={reportData?.id}
+        isExpert={false}
+        isReadOnly={true}
+      />
+
       {/* Curation */}
       <ReportCurationSection concerns={userInput.recentConcerns} />
 

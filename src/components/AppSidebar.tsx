@@ -8,7 +8,9 @@ import {
   User, 
   ClipboardCheck,
   Home,
-  Heart
+  Heart,
+  Building2,
+  Share2
 } from "lucide-react"
 
 import {
@@ -30,6 +32,11 @@ const mainItems = [
   { title: "AI 음성일기", url: "/voice-emotion-diary", icon: Heart },
   { title: "관찰일지", url: "/observation", icon: FileText },
   { title: "나만의 맞춤리포팅 신청", url: "/comprehensive-reporting", icon: ClipboardCheck },
+  { title: "데이터 공유 관리", url: "/data-sharing", icon: Share2 },
+]
+
+const institutionItems = [
+  { title: "고객 관리 대시보드", url: "/institution-clients", icon: Building2 },
 ]
 
 const accountItems = [

@@ -1696,6 +1696,53 @@ export type Database = {
           },
         ]
       }
+      client_data_consents: {
+        Row: {
+          client_user_id: string
+          consent_note: string | null
+          consent_status: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          institution_id: string
+          revoked_at: string | null
+          shared_data_types: string[]
+          updated_at: string
+        }
+        Insert: {
+          client_user_id: string
+          consent_note?: string | null
+          consent_status?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          institution_id: string
+          revoked_at?: string | null
+          shared_data_types?: string[]
+          updated_at?: string
+        }
+        Update: {
+          client_user_id?: string
+          consent_note?: string | null
+          consent_status?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          institution_id?: string
+          revoked_at?: string | null
+          shared_data_types?: string[]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_data_consents_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cognitive_assessment_results: {
         Row: {
           assessed_at: string
@@ -5321,6 +5368,69 @@ export type Database = {
         }
         Relationships: []
       }
+      institution_client_links: {
+        Row: {
+          assigned_therapist: string | null
+          client_label: string | null
+          client_user_id: string
+          consent_id: string | null
+          created_at: string
+          id: string
+          institution_id: string
+          internal_notes: string | null
+          last_viewed_at: string | null
+          priority: string | null
+          tags: string[] | null
+          treatment_status: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_therapist?: string | null
+          client_label?: string | null
+          client_user_id: string
+          consent_id?: string | null
+          created_at?: string
+          id?: string
+          institution_id: string
+          internal_notes?: string | null
+          last_viewed_at?: string | null
+          priority?: string | null
+          tags?: string[] | null
+          treatment_status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_therapist?: string | null
+          client_label?: string | null
+          client_user_id?: string
+          consent_id?: string | null
+          created_at?: string
+          id?: string
+          institution_id?: string
+          internal_notes?: string | null
+          last_viewed_at?: string | null
+          priority?: string | null
+          tags?: string[] | null
+          treatment_status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_client_links_consent_id_fkey"
+            columns: ["consent_id"]
+            isOneToOne: false
+            referencedRelation: "client_data_consents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "institution_client_links_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       institution_content_calendar: {
         Row: {
           channel: string
@@ -5362,6 +5472,47 @@ export type Database = {
           week_number?: number
         }
         Relationships: []
+      }
+      institution_data_access_logs: {
+        Row: {
+          access_type: string
+          accessed_by: string
+          client_user_id: string
+          created_at: string
+          data_types_accessed: string[] | null
+          id: string
+          institution_id: string
+          ip_address: string | null
+        }
+        Insert: {
+          access_type: string
+          accessed_by: string
+          client_user_id: string
+          created_at?: string
+          data_types_accessed?: string[] | null
+          id?: string
+          institution_id: string
+          ip_address?: string | null
+        }
+        Update: {
+          access_type?: string
+          accessed_by?: string
+          client_user_id?: string
+          created_at?: string
+          data_types_accessed?: string[] | null
+          id?: string
+          institution_id?: string
+          ip_address?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_data_access_logs_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       institution_data_metrics: {
         Row: {
@@ -5817,6 +5968,62 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institution_treatment_reports: {
+        Row: {
+          ai_model_used: string | null
+          client_user_id: string
+          created_at: string
+          generated_by: string
+          html_content: string | null
+          id: string
+          institution_id: string
+          report_content: string | null
+          report_title: string
+          report_type: string
+          source_data_summary: Json | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_model_used?: string | null
+          client_user_id: string
+          created_at?: string
+          generated_by: string
+          html_content?: string | null
+          id?: string
+          institution_id: string
+          report_content?: string | null
+          report_title: string
+          report_type?: string
+          source_data_summary?: Json | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_model_used?: string | null
+          client_user_id?: string
+          created_at?: string
+          generated_by?: string
+          html_content?: string | null
+          id?: string
+          institution_id?: string
+          report_content?: string | null
+          report_title?: string
+          report_type?: string
+          source_data_summary?: Json | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_treatment_reports_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
             referencedColumns: ["id"]
           },
         ]
@@ -12227,6 +12434,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_active_consent: {
+        Args: { p_client_user_id: string; p_institution_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -12239,7 +12450,10 @@ export type Database = {
         Returns: undefined
       }
       is_facility_admin: { Args: { facility_uuid: string }; Returns: boolean }
-      is_institution_admin: { Args: { _user_id: string }; Returns: boolean }
+      is_institution_admin: {
+        Args: { p_institution_id: string }
+        Returns: boolean
+      }
       is_session_participant: {
         Args: { session_uuid: string }
         Returns: boolean

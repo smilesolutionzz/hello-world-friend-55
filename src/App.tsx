@@ -240,6 +240,8 @@ const App = () => {
           <Route path="/institution-detail/:id" element={<InstitutionDetailPage />} />
           <Route path="/partner-benefits" element={<InstitutionDetailPage />} />
           <Route path="/institution-application" element={<InstitutionApplication />} />
+          <Route path="/data-sharing" element={<DataSharingConsent />} />
+          <Route path="/institution-clients" element={<InstitutionClientDashboard />} />
           <Route path="/expert-application" element={<ExpertApplication />} />
           <Route path="/expert-contract/:expertId" element={<ExpertContract />} />
           <Route path="/expert-contract-success" element={<ExpertContractSuccess />} />

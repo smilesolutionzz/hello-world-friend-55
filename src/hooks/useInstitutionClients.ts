@@ -141,7 +141,7 @@ export const useInstitutionClients = (institutionId?: string) => {
     const result: Record<string, any> = {};
 
     if (dataTypes.includes('assessments')) {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from('test_results')
         .select('*')
         .eq('user_id', clientUserId)
@@ -151,7 +151,7 @@ export const useInstitutionClients = (institutionId?: string) => {
     }
 
     if (dataTypes.includes('observations')) {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from('observation_logs')
         .select('*')
         .eq('user_id', clientUserId)
@@ -161,7 +161,7 @@ export const useInstitutionClients = (institutionId?: string) => {
     }
 
     if (dataTypes.includes('brain_training')) {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from('brain_training_sessions')
         .select('*')
         .eq('user_id', clientUserId)
@@ -171,12 +171,12 @@ export const useInstitutionClients = (institutionId?: string) => {
     }
 
     if (dataTypes.includes('progress')) {
-      const { data } = await (supabase
+      const { data } = await (supabase as any)
         .from('timeline_activities')
         .select('*')
         .eq('user_id', clientUserId)
         .order('created_at', { ascending: false })
-        .limit(30) as any);
+        .limit(30);
       result.progress = data || [];
     }
 

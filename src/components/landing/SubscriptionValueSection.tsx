@@ -51,11 +51,11 @@ const SubscriptionValueSection = () => {
   const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <section id="subscription-section" className="py-20 px-4 bg-gradient-to-b from-slate-900 via-[#0f0a1e] to-slate-900">
+    <section id="subscription-section" className="py-20 px-4 bg-gradient-to-b from-white to-slate-50">
       <div className="container mx-auto max-w-5xl">
         {/* Top Badge */}
         <motion.div initial={{ opacity: 0, y: -10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
-          <Badge className="bg-violet-500/20 text-violet-300 border border-violet-500/40 px-5 py-1.5 text-sm">
+          <Badge className="bg-violet-100 text-violet-700 border border-violet-200 px-5 py-1.5 text-sm">
             <Crown className="w-3.5 h-3.5 mr-1.5" />
             {isEnglish ? 'Choose Your Plan' : '나에게 맞는 플랜 선택하기'}
           </Badge>
@@ -68,36 +68,36 @@ const SubscriptionValueSection = () => {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative rounded-2xl border border-slate-700/50 bg-slate-800/60 backdrop-blur-xl p-8"
+            className="relative rounded-2xl border border-slate-200 bg-white shadow-md p-8"
           >
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-amber-400" />
-              <span className="text-amber-400 font-semibold text-sm">
+              <Zap className="w-5 h-5 text-amber-500" />
+              <span className="text-amber-600 font-semibold text-sm">
                 {isEnglish ? 'Single Report' : '단건 심층 리포트'}
               </span>
             </div>
-            <h3 className="text-xl md:text-2xl font-bold text-white mb-2 break-keep">
+            <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-2 break-keep">
               {isEnglish ? 'Expert-Level Analysis' : '전문가급 심층 분석'}
             </h3>
-            <p className="text-slate-400 text-xs md:text-sm mb-6 break-keep">
+            <p className="text-slate-500 text-xs md:text-sm mb-6 break-keep">
               {isEnglish ? 'Get one expert-level AI analysis report' : '궁금한 검사 하나를 전문가 수준으로 분석받아보세요'}
             </p>
 
             <div className="flex items-end gap-2 mb-6">
-              <span className="text-3xl font-black text-white">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
-              <span className="text-slate-400 text-sm pb-1">/{isEnglish ? 'report' : '1회'}</span>
+              <span className="text-3xl font-black text-slate-900">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
+              <span className="text-slate-500 text-sm pb-1">/{isEnglish ? 'report' : '1회'}</span>
             </div>
 
             <Button
               onClick={() => setPaymentOpen(true)}
               variant="outline"
-              className="w-full py-6 bg-amber-500/10 border-amber-500/30 text-amber-300 hover:bg-amber-500/20 font-bold rounded-xl"
+              className="w-full py-6 bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100 font-bold rounded-xl"
               size="lg"
             >
               <Zap className="w-5 h-5 mr-2" />
               {isEnglish ? 'Get Single Report' : '심층 리포트 받기'}
             </Button>
-            <p className="text-xs text-slate-500 mt-3 text-center">
+            <p className="text-xs text-slate-400 mt-3 text-center">
               {isEnglish ? 'No subscription needed' : '구독 없이 바로 이용'}
             </p>
           </motion.div>
@@ -107,31 +107,30 @@ const SubscriptionValueSection = () => {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative rounded-2xl border-2 border-violet-500/40 bg-gradient-to-br from-slate-800/90 via-violet-950/30 to-slate-800/90 backdrop-blur-xl p-8 shadow-2xl shadow-violet-500/10"
+            className="relative rounded-2xl border-2 border-violet-300 bg-gradient-to-br from-white via-violet-50/40 to-white shadow-xl p-8"
           >
             <Badge className="absolute -top-3 right-6 bg-gradient-to-r from-violet-500 to-purple-500 text-white border-0 px-4 py-1">
               {isEnglish ? 'Best Value' : '추천'}
             </Badge>
-            <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-violet-500/20 via-purple-500/10 to-violet-500/20 blur-sm -z-10" />
 
             <div className="flex items-center gap-2 mb-4">
-              <Crown className="w-5 h-5 text-violet-400" />
-              <span className="text-violet-400 font-semibold text-sm">
+              <Crown className="w-5 h-5 text-violet-500" />
+              <span className="text-violet-600 font-semibold text-sm">
                 {isEnglish ? 'Monthly Subscription' : '월간 구독'}
               </span>
             </div>
-            <h3 className="text-xl md:text-2xl font-bold text-white mb-2 break-keep">
+            <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-2 break-keep">
               {isEnglish ? 'Unlimited Access' : '전체 이용 구독'}
             </h3>
-            <p className="text-slate-400 text-xs md:text-sm mb-6 break-keep">
+            <p className="text-slate-500 text-xs md:text-sm mb-6 break-keep">
               {isEnglish ? 'Everything unlimited for 30 days' : '30일간 모든 검사와 리포트를 자유롭게 이용하세요'}
             </p>
 
             <div className="flex items-end gap-2 mb-1">
-              <span className="text-3xl font-black text-white">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
-              <span className="text-slate-400 text-sm pb-1">/{isEnglish ? 'mo' : '월'}</span>
+              <span className="text-3xl font-black text-slate-900">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
+              <span className="text-slate-500 text-sm pb-1">/{isEnglish ? 'mo' : '월'}</span>
             </div>
-            <p className="text-xs text-emerald-400 mb-6">
+            <p className="text-xs text-emerald-600 mb-6">
               {isEnglish ? 'Use 3+ times? Subscription is the smarter choice.' : '리포트 2회 이상이면 구독이 합리적입니다'}
             </p>
 
@@ -145,8 +144,8 @@ const SubscriptionValueSection = () => {
                   transition={{ delay: i * 0.08 }}
                   className="flex items-center gap-2.5"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                  <span className="text-slate-200 text-sm">{b}</span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span className="text-slate-700 text-sm">{b}</span>
                 </motion.div>
               ))}
             </div>
@@ -161,7 +160,7 @@ const SubscriptionValueSection = () => {
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
 
-            <div className="flex items-center justify-center gap-3 mt-3 text-xs text-slate-500">
+            <div className="flex items-center justify-center gap-3 mt-3 text-xs text-slate-400">
               <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {isEnglish ? 'Cancel anytime' : '언제든 해지'}</span>
               <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> {isEnglish ? 'Secure' : '안전결제'}</span>
             </div>
@@ -170,10 +169,10 @@ const SubscriptionValueSection = () => {
 
         {/* Countdown Timer */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-md mx-auto mb-8">
-          <div className="bg-slate-800/80 border border-slate-700/50 rounded-xl p-5 text-center">
+          <div className="bg-white shadow-sm border border-slate-200 rounded-xl p-5 text-center">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <Clock className="w-4 h-4 text-violet-400" />
-              <span className="text-violet-300 font-semibold text-sm">
+              <Clock className="w-4 h-4 text-violet-500" />
+              <span className="text-violet-600 font-semibold text-sm">
                 {isEnglish ? 'Special offer ends in' : '특별 할인 마감까지'}
               </span>
             </div>
@@ -184,8 +183,8 @@ const SubscriptionValueSection = () => {
                 { val: pad(timeLeft.seconds), label: isEnglish ? 'Sec' : '초' },
               ].map((item, i) => (
                 <div key={i} className="flex flex-col items-center">
-                  <div className="bg-slate-900 border border-slate-600/50 rounded-lg w-14 h-14 flex items-center justify-center mb-1">
-                    <span className="text-xl font-black text-white tabular-nums">{item.val}</span>
+                  <div className="bg-slate-50 border border-slate-200 rounded-lg w-14 h-14 flex items-center justify-center mb-1">
+                    <span className="text-xl font-black text-slate-900 tabular-nums">{item.val}</span>
                   </div>
                   <span className="text-xs text-slate-500">{item.label}</span>
                 </div>
@@ -201,10 +200,10 @@ const SubscriptionValueSection = () => {
               <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
             ))}
           </div>
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-500 text-sm">
             {isEnglish 
-              ? <>Already <strong className="text-violet-300">3,247</strong> parents chose our service</>
-              : <>이미 <strong className="text-violet-300">3,247명</strong>의 부모님이 선택했습니다</>}
+              ? <>Already <strong className="text-violet-600">3,247</strong> parents chose our service</>
+              : <>이미 <strong className="text-violet-600">3,247명</strong>의 부모님이 선택했습니다</>}
           </p>
         </motion.div>
       </div>

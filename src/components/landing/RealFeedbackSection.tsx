@@ -43,9 +43,9 @@ const RealFeedbackSection = () => {
   ];
 
   return (
-    <section className="relative py-16 md:py-24 overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-slate-900 via-indigo-950/30 to-slate-900" />
-      <div className="absolute top-20 right-10 w-80 h-80 bg-indigo-500/10 rounded-full blur-[120px]" />
+    <section className="relative py-16 md:py-24 overflow-hidden bg-white">
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-white via-slate-50 to-white" />
+      <div className="absolute top-20 right-10 w-80 h-80 bg-indigo-200/20 rounded-full blur-[120px]" />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
@@ -55,26 +55,26 @@ const RealFeedbackSection = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-green-500/10 border border-green-500/20 rounded-full mb-4">
-            <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-green-400" />
-            <span className="text-xs md:text-sm font-semibold text-green-300">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-emerald-50 border border-emerald-200 rounded-full mb-4">
+            <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-600" />
+            <span className="text-xs md:text-sm font-semibold text-emerald-700">
               {isEnglish ? 'Real Parent Feedback' : '실제 학부모 반응'}
             </span>
           </div>
-          <h2 className="text-xl md:text-4xl font-bold text-white mb-3 leading-snug">
+          <h2 className="text-xl md:text-4xl font-bold text-slate-900 mb-3 leading-snug">
             {isEnglish ? (
               <>
                 "I thought something was{' '}
-                <span className="text-rose-400">seriously wrong</span>"
+                <span className="text-rose-500">seriously wrong</span>"
                 <br />
-                <span className="text-emerald-400">Then the report changed everything</span>
+                <span className="text-emerald-600">Then the report changed everything</span>
               </>
             ) : (
               <>
                 "정신병인가 싶었는데"
                 <br className="md:hidden" />
                 {' '}
-                <span className="text-emerald-400 text-lg md:text-4xl">
+                <span className="text-emerald-600 text-lg md:text-4xl">
                   리포트를 보고
                   <br className="md:hidden" />
                   이해하려는 시도가 생겼어요
@@ -82,7 +82,7 @@ const RealFeedbackSection = () => {
               </>
             )}
           </h2>
-          <p className="text-white/50 text-xs md:text-sm max-w-lg mx-auto">
+          <p className="text-slate-500 text-xs md:text-sm max-w-lg mx-auto">
             {isEnglish
               ? 'A real conversation between a parent and our team after receiving a behavioral analysis report'
               : '리포트를 받은 후 실제 학부모와 나눈 대화를 재구성했습니다'}
@@ -147,25 +147,25 @@ const RealFeedbackSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-white/10 p-4 space-y-3"
+                className="bg-white shadow-sm rounded-xl border border-slate-200 p-4 space-y-3"
               >
                 <div className="flex items-start gap-3">
                   <span className="text-2xl flex-shrink-0">{item.emoji}</span>
                   <div className="space-y-2 flex-1">
                     <div className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 flex-shrink-0" />
-                      <p className="text-white/50 text-xs line-through leading-relaxed">
+                      <div className="w-1.5 h-1.5 rounded-full bg-rose-400 mt-1.5 flex-shrink-0" />
+                      <p className="text-slate-400 text-xs line-through leading-relaxed">
                         {item.before}
                       </p>
                     </div>
                     <div className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0" />
-                      <p className="text-white/90 text-xs font-medium leading-relaxed">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
+                      <p className="text-slate-800 text-xs font-medium leading-relaxed">
                         {item.after}
                       </p>
                     </div>
-                    <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-1.5">
-                      <p className="text-amber-300 text-xs font-semibold flex items-center gap-1">
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5">
+                      <p className="text-amber-700 text-xs font-semibold flex items-center gap-1">
                         <Quote className="w-3 h-3" /> {item.reaction}
                       </p>
                     </div>
@@ -180,12 +180,12 @@ const RealFeedbackSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 rounded-xl border border-indigo-500/20 p-4 text-center"
+              className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200 p-4 text-center"
             >
-              <p className="text-white/80 text-sm font-bold mb-1">
+              <p className="text-slate-800 text-sm font-bold mb-1">
                 {isEnglish ? 'Fear → Understanding → Action' : '공포 → 이해 → 실천'}
               </p>
-              <p className="text-white/50 text-xs mb-3">
+              <p className="text-slate-500 text-xs mb-3">
                 {isEnglish
                   ? 'One report transforms how you see your child'
                   : '리포트 하나로 아이를 바라보는 시선이 달라집니다'}

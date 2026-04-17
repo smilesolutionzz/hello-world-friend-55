@@ -86,7 +86,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: deepAnalysis ? 'google/gemini-3.1-flash-preview' : 'google/gemini-3-flash-preview',
+        model: deepAnalysis ? 'google/gemini-3.1-flash-preview' : 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: summarizePrompt },
           { role: 'user', content: userPrompt }
@@ -147,7 +147,7 @@ IMPORTANT: Do NOT include ANY text, words, letters, or characters in the image. 
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-3-flash-preview-image',
+          model: 'google/gemini-2.5-flash-image',
           messages: [{ role: 'user', content: bgPrompt }],
           modalities: ['image', 'text']
         })

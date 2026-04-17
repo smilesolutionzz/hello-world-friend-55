@@ -196,7 +196,7 @@ ${processedData.developmentTrends.map((t: any) =>
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3-flash-preview',
+        model: 'google/gemini-2.5-flash',
         messages: [
           {
             role: 'system',
@@ -304,7 +304,7 @@ async function generateInterventionPlan(analysis: MLAnalysisResult, processedDat
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3-flash-preview',
+        model: 'google/gemini-2.5-flash',
         messages: [
           {
             role: 'system',

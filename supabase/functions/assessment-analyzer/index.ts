@@ -179,7 +179,7 @@ ${Object.entries(results).map(([key, value]) => `${key}: ${value}점`).join('\n'
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3-flash-preview', // 검사 분석용 고품질 모델
+        model: 'google/gemini-2.5-flash', // 검사 분석용 고품질 모델
         messages: [
           { role: 'system', content: '당신은 임상심리학 전문가입니다. 정확하고 전문적인 심리검사 분석을 제공합니다.' },
           { role: 'user', content: analysisPrompt }

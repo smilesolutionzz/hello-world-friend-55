@@ -53,7 +53,7 @@ ${result.averageScores.map((s: any) => `- ${s.category}: ${s.average.toFixed(1)}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3-flash-preview',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: '당신은 애착 이론 전문가이자 따뜻한 심리 상담사입니다. 사용자의 애착 유형 결과를 깊이 있고 구체적으로 분석하여 성장을 돕는 조언을 제공합니다.' },
           { role: 'user', content: prompt }

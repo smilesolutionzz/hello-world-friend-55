@@ -78,7 +78,7 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
             </TabsTrigger>
             <TabsTrigger value="prescription" className="flex items-center">
               <Pill className="h-4 w-4 mr-2" />
-              한약 처방
+              체질 케어 가이드
             </TabsTrigger>
             <TabsTrigger value="lifestyle" className="flex items-center">
               <Activity className="h-4 w-4 mr-2" />
@@ -86,7 +86,7 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
             </TabsTrigger>
             <TabsTrigger value="clinics" className="flex items-center">
               <Star className="h-4 w-4 mr-2" />
-              한의사 전문가
+              면허 한의사 상담
             </TabsTrigger>
           </TabsList>
 
@@ -200,26 +200,29 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
             </div>
           </TabsContent>
 
-          {/* 한약 처방 탭 */}
+          {/* 체질 케어 가이드 탭 */}
           <TabsContent value="prescription" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Pill className="h-5 w-5 mr-2 text-green-600" />
-                  맞춤 한약 처방
+                  체질 케어 가이드 (참고용)
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
+                  <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900">
+                    아래 내용은 면허 한의사 상담 시 참고하실 수 있는 일반 정보이며, 의학적 처방이 아닙니다. 실제 한약 복용·치료는 반드시 면허 한의사의 진료를 받으세요.
+                  </div>
                   <div>
-                    <h4 className="font-semibold mb-3">처방명: {analysis.herbal_prescription?.formula_name || "맞춤 처방"}</h4>
+                    <h4 className="font-semibold mb-3">참고 케어 카테고리: {analysis.herbal_prescription?.formula_name || "체질 맞춤 카테고리"}</h4>
                     <p className="text-muted-foreground mb-4">
-                      {analysis.herbal_prescription?.preparation_method || "전문 한의사 상담 후 조제"}
+                      {analysis.herbal_prescription?.preparation_method || "면허 한의사 상담 시 참고용 정보로 활용하세요."}
                     </p>
                   </div>
 
                   <div className="grid gap-4">
-                    <h4 className="font-semibold">주요 약재</h4>
+                    <h4 className="font-semibold">참고 약재 (정보 제공용)</h4>
                     {analysis.herbal_prescription?.main_herbs?.map((herb: any, index: number) => (
                       <Card key={index} className="border-l-4 border-green-500">
                         <CardContent className="p-4">
@@ -228,12 +231,12 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
                               <h5 className="font-medium">{herb.name}</h5>
                               <p className="text-sm text-muted-foreground mt-1">{herb.effect}</p>
                             </div>
-                            <Badge variant="outline">{herb.dosage}</Badge>
+                            <Badge variant="outline">참고</Badge>
                           </div>
                         </CardContent>
                       </Card>
                     )) || (
-                      <p className="text-muted-foreground">전문 한의사와 상담하여 정확한 처방을 받으세요.</p>
+                      <p className="text-muted-foreground">면허 한의사 상담을 통해 본인에게 맞는 가이드를 받으세요.</p>
                     )}
                   </div>
                 </div>

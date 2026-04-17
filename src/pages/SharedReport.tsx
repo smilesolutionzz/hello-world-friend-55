@@ -401,8 +401,13 @@ const SharedReport = () => {
               </Button>
             </div>
             <p className="text-[10px] text-muted-foreground/50">
-              © AIHPRO.APP · 본 리포트는 참고용이며 의학적 진단을 대체하지 않습니다.
+              © AIHPRO.APP · 발달 코칭 및 의사결정 보조 도구 · 의료 진단을 대체하지 않습니다.
             </p>
+            {token && (
+              <p className="text-[10px] text-muted-foreground/40">
+                리포트 진위 확인: <a href={`/verify-report/${token}`} className="underline">aihpro.app/verify-report/{token.slice(0, 8)}...</a>
+              </p>
+            )}
           </div>
         </div>
       </div>

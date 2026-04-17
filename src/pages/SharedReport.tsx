@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { sanitizeAIContent } from '@/utils/sanitizeHtml';
+import { ReportVerificationBadge } from '@/components/report/ReportVerificationBadge';
+import { useParams as _useParams } from 'react-router-dom';
 import {
   FileText, ChevronDown, ChevronUp, Calendar, Lock, Eye, Shield,
   Brain, Heart, TrendingUp, Target, LineChart, Users, Activity, BarChart3
@@ -367,7 +369,21 @@ const SharedReport = () => {
             </Card>
           )}
 
-          {/* 푸터 */}
+          {/* STEP 6: 검증 메타데이터 + QR */}
+          {shareLink && token && (
+            <div className="mt-6">
+              <ReportVerificationBadge
+                meta={{
+                  reportId: shareLink.id,
+                  shareToken: token,
+                  generatedAt: shareLink.created_at,
+                  modelVersion: 'Gemini 3.1 Pro + RCI v1.96',
+                  dataPoints: reports.length,
+                  statisticalBasis: 'Jacobson & Truax 1991 (RCI)',
+                }}
+              />
+            </div>
+          )}
           <div className="mt-8 text-center space-y-3">
             <div className="p-4 bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl border border-primary/20">
               <p className="text-sm font-semibold text-foreground mb-1">

@@ -295,6 +295,10 @@ function generateParentReportHTML(
     `;
   });
 
+  // ── Unified section counter for dynamic sections (starts after fixed 01-03) ──
+  let _sectionCounter = 3;
+  const nextNum = () => String(++_sectionCounter).padStart(2, '0');
+
   // Build comparison sections if multi-session
   let comparisonHTML = '';
   if (comparisonData.length > 0 && reportNumber > 1) {

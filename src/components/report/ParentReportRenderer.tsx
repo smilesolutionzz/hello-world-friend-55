@@ -326,7 +326,7 @@ function generateParentReportHTML(
     comparisonHTML = `
       <div class="section page-break">
         <div class="section-header">
-           <div class="section-number">04</div>
+           <div class="section-number">${nextNum()}</div>
           <h2>${isEnglish ? 'Change Tracking' : '회차별 변화 추적'}</h2>
         </div>
         ${compRows}
@@ -384,7 +384,7 @@ function generateParentReportHTML(
     cognitiveHTML = `
       <div class="section page-break">
         <div class="section-header">
-          <div class="section-number">05</div>
+          <div class="section-number">${nextNum()}</div>
           <h2>${isEnglish ? 'Brain Training Progress' : '두뇌 훈련 분석'}</h2>
         </div>
         <div class="grid-3">
@@ -428,7 +428,7 @@ function generateParentReportHTML(
     correlationHTML = `
       <div class="section">
         <div class="section-header">
-           <div class="section-number">06</div>
+           <div class="section-number">${nextNum()}</div>
           <h2>${isEnglish ? 'Cross-Analysis Insights' : '교차 분석 인사이트'}</h2>
         </div>
         <p style="font-size: 13.5px; color: #6B7280; margin-bottom: 16px;">
@@ -459,7 +459,7 @@ function generateParentReportHTML(
     peerHTML = `
       <div class="section">
         <div class="section-header">
-          <div class="section-number">07</div>
+          <div class="section-number">${nextNum()}</div>
           <h2>${isEnglish ? 'Peer Comparison' : '또래 비교 분석'}</h2>
         </div>
         ${peerRows}
@@ -477,7 +477,7 @@ function generateParentReportHTML(
     progressHTML = `
       <div class="section">
         <div class="section-header">
-          <div class="section-number">08</div>
+          <div class="section-number">${nextNum()}</div>
           <h2>${isEnglish ? 'Progress Summary' : '변화 추적 요약'}</h2>
         </div>
         <div class="insight-card" style="border-left: 3px solid #059669;">

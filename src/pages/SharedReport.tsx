@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { sanitizeAIContent } from '@/utils/sanitizeHtml';
+import { ReportVerificationBadge } from '@/components/report/ReportVerificationBadge';
+import { useParams as _useParams } from 'react-router-dom';
 import {
   FileText, ChevronDown, ChevronUp, Calendar, Lock, Eye, Shield,
   Brain, Heart, TrendingUp, Target, LineChart, Users, Activity, BarChart3
@@ -367,7 +369,21 @@ const SharedReport = () => {
             </Card>
           )}
 
-          {/* 푸터 */}
+          {/* STEP 6: 검증 메타데이터 + QR */}
+          {shareLink && token && (
+            <div className="mt-6">
+              <ReportVerificationBadge
+                meta={{
+                  reportId: shareLink.id,
+                  shareToken: token,
+                  generatedAt: shareLink.created_at,
+                  modelVersion: 'Gemini 3.1 Pro + RCI v1.96',
+                  dataPoints: reports.length,
+                  statisticalBasis: 'Jacobson & Truax 1991 (RCI)',
+                }}
+              />
+            </div>
+          )}
           <div className="mt-8 text-center space-y-3">
             <div className="p-4 bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl border border-primary/20">
               <p className="text-sm font-semibold text-foreground mb-1">
@@ -385,8 +401,13 @@ const SharedReport = () => {
               </Button>
             </div>
             <p className="text-[10px] text-muted-foreground/50">
-              © AIHPRO.APP · 본 리포트는 참고용이며 의학적 진단을 대체하지 않습니다.
+              © AIHPRO.APP · 발달 코칭 및 의사결정 보조 도구 · 의료 진단을 대체하지 않습니다.
             </p>
+            {token && (
+              <p className="text-[10px] text-muted-foreground/40">
+                리포트 진위 확인: <a href={`/verify-report/${token}`} className="underline">aihpro.app/verify-report/{token.slice(0, 8)}...</a>
+              </p>
+            )}
           </div>
         </div>
       </div>

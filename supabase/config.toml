@@ -6,6 +6,9 @@ verify_jwt = false
 [functions.voice-emotion-diary]
 verify_jwt = false
 
+[functions.send-weekly-coaching-digest]
+verify_jwt = false  # cron job에서 호출되므로 JWT 불필요
+
 # toss-payments-confirm 제거됨 → unified-payment으로 통합
 
 [api]

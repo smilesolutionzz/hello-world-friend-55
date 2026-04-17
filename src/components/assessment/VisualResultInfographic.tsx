@@ -192,7 +192,7 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
               {t.resultLayout.overallEval}
             </p>
             <p style={{ fontSize: '36px', fontWeight: 900, color: '#fff', lineHeight: 1, marginBottom: '2px' }}>
-              {avg.toFixed(1)}<span style={{ fontSize: '16px', fontWeight: 500, opacity: 0.7 }}>/{max}</span>
+              {totalScore.toFixed(0)}<span style={{ fontSize: '16px', fontWeight: 500, opacity: 0.7 }}>/{totalMax}</span>
             </p>
             <div style={{
               display: 'inline-block', background: 'rgba(255,255,255,0.25)', borderRadius: '999px',

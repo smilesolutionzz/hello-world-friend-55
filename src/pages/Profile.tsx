@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   User, Crown, FileText, ChevronRight, LogOut, Settings,
   CreditCard, HelpCircle, Shield, Bell, Pencil, Check, X,
-  Brain, MessageSquare, ClipboardList, Infinity, Lock, UserPlus, Sparkles, CheckCircle
+  Brain, MessageSquare, ClipboardList, Infinity, Lock, UserPlus, Sparkles, CheckCircle, Compass
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -239,6 +239,12 @@ const Profile = () => {
     {
       title: "이용권·구독",
       items: [
+        {
+          icon: Compass,
+          label: "My Journey · 종단 추적",
+          desc: "리포트 변화 추이 분석 (RCI)",
+          path: "/my-journey",
+        },
         {
           icon: CreditCard,
           label: isSubscriber ? "구독 관리" : "이용권 구매",

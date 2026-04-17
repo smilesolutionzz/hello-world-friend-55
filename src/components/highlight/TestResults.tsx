@@ -162,7 +162,7 @@ export const TestResults = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-slate-50">
         <div className="text-center space-y-4">
           <div className="relative w-16 h-16 mx-auto">
             <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
@@ -176,7 +176,7 @@ export const TestResults = () => {
 
   if (!result) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-slate-50 p-4">
         <Card className="p-8 text-center max-w-md rounded-2xl border-border/50">
           <Brain className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">결과를 찾을 수 없습니다</h2>

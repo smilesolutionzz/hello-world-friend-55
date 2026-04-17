@@ -247,7 +247,7 @@ const Auth = () => {
   const passwordStrength = getPasswordStrength(signupData.password);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-5">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 flex items-center justify-center p-5">
       <div className="w-full max-w-sm">
         {/* Header */}
         <div className="text-center mb-8">

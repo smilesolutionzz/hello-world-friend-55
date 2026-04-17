@@ -45,7 +45,7 @@ const LegalSafetyNotice = ({ onAccept, testType }: LegalSafetyNoticeProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6 flex items-center justify-center">
       <Card className="max-w-4xl mx-auto p-8 space-y-6">
         {/* Emergency Contact */}
         <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">

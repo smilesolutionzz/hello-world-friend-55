@@ -149,7 +149,7 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
 
   if (isAnalyzing) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 flex items-center justify-center">
         <Card className="w-full max-w-md mx-4">
           <CardContent className="pt-6">
             <div className="flex flex-col items-center space-y-4">
@@ -166,7 +166,7 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-4">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-4">
       <div className="max-w-2xl mx-auto pt-8">
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">

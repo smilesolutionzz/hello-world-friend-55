@@ -104,7 +104,7 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
 
   if (!hasStarted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6 flex items-center justify-center">
         <TokenGate
           tokensRequired={TOKEN_COSTS.LANGUAGE_TEST}
           featureName={isEnglish ? `Language Development Check (${ageGroup === 'infant' ? 'Infant' : 'Child'} 20 items)` : `언어발달 자가체크 (${ageGroup === 'infant' ? '영유아' : '아동청소년'} 20문항)`}

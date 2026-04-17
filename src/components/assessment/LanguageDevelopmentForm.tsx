@@ -131,7 +131,7 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
   const isAnswered = answers[currentQuestion?.id] !== undefined;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-peach-bloom/10 to-lavender-mist/20 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-peach-bloom/20 rounded-full blur-3xl animate-float" />

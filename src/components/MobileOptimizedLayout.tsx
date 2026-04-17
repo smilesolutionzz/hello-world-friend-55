@@ -24,7 +24,7 @@ const MobileOptimizedLayout: React.FC<MobileOptimizedLayoutProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-background via-muted/30 to-background ${className}`}>
+    <div className={`min-h-screen bg-gradient-to-b from-white to-slate-50 ${className}`}>
       {/* Mobile Header */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="flex items-center justify-between p-4">

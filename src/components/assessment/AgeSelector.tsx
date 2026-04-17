@@ -111,7 +111,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">
       {/* Navigation */}
       <UnifiedNavigation />
       

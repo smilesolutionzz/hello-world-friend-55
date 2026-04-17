@@ -155,7 +155,7 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-4">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-4">
         <div className="max-w-2xl mx-auto pt-8">
           <div className="mb-6">
             <div className="flex items-center justify-between mb-4">

@@ -112,11 +112,11 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         setAnalysis(`분석 생성 중 오류가 발생했습니다.
 
 ⚠️ 중요 안내:
-- 이 결과는 참고용 선별검사입니다
-- 의학적 진단이 아니며 전문가 상담이 필요합니다
-- 지속적인 어려움이 있으시면 정신건강의학과 전문의와 상담하세요
+- 본 결과는 발달 코칭 및 의사결정 보조를 위한 참고용 분석입니다
+- 의료 진단이 아니며, 임상적 판단이 필요한 경우 자격을 갖춘 전문가와 상담하시기 바랍니다
+- 지속적인 어려움이 있으시면 플랫폼 내 전문가 매칭 서비스를 이용해 주세요
 
-전문가 상담 서비스를 이용하시면 정확한 해석을 받으실 수 있습니다.`);
+플랫폼 내 전문가 상담 서비스를 통해 보다 자세한 코칭 인사이트를 받으실 수 있습니다.`);
       } finally {
         setIsAnalyzing(false);
       }
@@ -183,8 +183,8 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
             <p className="font-medium text-yellow-800 mb-1">{isEnglish ? 'Important Notice' : '중요 안내사항'}</p>
             <p className="text-yellow-700">
               {isEnglish 
-                ? 'These results are a self-observation tool for reference only and cannot replace professional evaluation. Please consult a specialist for accurate diagnosis and treatment.'
-                : '본 체크 결과는 자가 관찰 도구로서 참고 목적으로만 사용되며, 정식 전문평가를 대체할 수 없습니다. 정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.'}
+                ? 'This report is a developmental coaching and decision-support reference. It is not a medical diagnosis or treatment. Please consult a qualified professional when clinical judgment is needed.'
+                : '본 리포트는 발달 코칭 및 의사결정 보조를 위한 참고용 분석이며, 의료 진단·치료를 대체하지 않습니다. 임상적 판단이 필요한 경우 자격을 갖춘 전문가와 상담하시기 바랍니다.'}
             </p>
           </div>
         </div>

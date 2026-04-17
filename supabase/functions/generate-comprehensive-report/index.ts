@@ -445,19 +445,19 @@ serve(async (req) => {
     // 리포트 타입별 설정
     const reportTypeConfig = {
       basic: {
-        model: 'google/gemini-3-flash-preview-lite',
+        model: 'google/gemini-2.5-flash-lite',
         sectionCount: 5,
         minLength: 200,
         sections: ['발달 종합 평가', '심리 상태 분석', '강점/약점 분석', '맞춤 활동 제안', '종합 요약 및 제언']
       },
       detailed: {
-        model: 'google/gemini-3-flash-preview',
+        model: 'google/gemini-2.5-flash',
         sectionCount: 9,
         minLength: 400,
         sections: ['발달 종합 평가', '심리 상태 분석', '강점/약점 분석', '맞춤 활동 제안', '발달 로드맵', '또래 비교 분석', '전문가 소견서', '가족 지원 가이드', '종합 요약 및 제언']
       },
       expert: {
-        model: 'google/gemini-3-flash-preview',
+        model: 'google/gemini-2.5-flash',
         sectionCount: 9,
         minLength: 400,
         sections: ['발달 종합 평가', '심리 상태 분석', '강점/약점 분석', '맞춤 활동 제안', '발달 로드맵', '또래 비교 분석', '전문가 소견서', '가족 지원 가이드', '종합 요약 및 제언']

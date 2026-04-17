@@ -18,11 +18,11 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Pretendard', 'Inter', 'Noto Sans KR', 'system-ui', 'sans-serif'],
-				korean: ['Noto Sans KR', 'sans-serif'],
-				pretendard: ['Pretendard', 'system-ui', 'sans-serif'],
-				display: ['Outfit', 'Pretendard', 'system-ui', 'sans-serif'], // For headings with high visual weight
-				serif: ['Playfair Display', 'serif'], // For elegant headings
+				sans: ['"Pretendard Variable"', 'Pretendard', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+				korean: ['"Pretendard Variable"', 'Pretendard', 'sans-serif'],
+				pretendard: ['"Pretendard Variable"', 'Pretendard', 'system-ui', 'sans-serif'],
+				display: ['"Space Grotesk"', '"Pretendard Variable"', 'Pretendard', 'system-ui', 'sans-serif'],
+				serif: ['"Instrument Serif"', 'Georgia', 'serif'],
 			},
 			fontSize: {
 				'giant': ['4rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '900' }],

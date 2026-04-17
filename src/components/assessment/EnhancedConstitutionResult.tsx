@@ -385,12 +385,12 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <Star className="h-8 w-8 text-primary" />
                 </div>
-                <h4 className="text-xl font-semibold mb-2">AI 체질 분석 + 전문가 상담</h4>
+                <h4 className="text-xl font-semibold mb-2">AI 체질 인사이트 + 면허 한의사 상담</h4>
                 <p className="text-muted-foreground mb-4">
-                  AI가 분석한 체질 결과를 전문 한의사가 직접 검토하고, 맞춤 처방과 생활 관리법을 안내해드립니다.
+                  AI가 분석한 체질 인사이트를 면허 한의사가 직접 검토하고, 개인 맞춤 라이프스타일과 케어 방향을 안내해드립니다 (실제 처방·치료는 면허 한의사 진료를 통해서만 이루어집니다).
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 mb-6">
-                  <Badge variant="outline" className="border-primary/30">체질 맞춤 처방</Badge>
+                  <Badge variant="outline" className="border-primary/30">체질 맞춤 코칭</Badge>
                   <Badge variant="outline" className="border-primary/30">1:1 비대면 상담</Badge>
                   <Badge variant="outline" className="border-primary/30">생활습관 코칭</Badge>
                 </div>
@@ -410,10 +410,10 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
                 <h4 className="font-semibold mb-4">이런 분께 추천드립니다</h4>
                 <div className="space-y-3">
                   {[
-                    '체질에 맞는 정확한 한약 처방을 받고 싶은 분',
-                    '만성 피로, 소화불량 등 체질 관련 증상이 있는 분', 
-                    '식이요법과 생활습관을 전문가와 함께 관리하고 싶은 분',
-                    '한방 다이어트나 체질 개선에 관심 있는 분'
+                    '체질에 맞는 라이프스타일·케어 가이드를 받고 싶은 분',
+                    '만성 피로, 소화불량 등 일상 컨디션을 점검하고 싶은 분',
+                    '식이·생활습관을 전문가와 함께 관리하고 싶은 분',
+                    '체질 기반 다이어트·웰니스에 관심 있는 분'
                   ].map((item, idx) => (
                     <div key={idx} className="flex items-center">
                       <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>

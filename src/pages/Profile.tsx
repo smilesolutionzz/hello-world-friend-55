@@ -82,8 +82,8 @@ const Profile = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
 
-      // Fetch profile, reports, concerns, assessments in parallel
-      const [profileRes, reportsRes, concernsRes, assessmentsRes] = await Promise.all([
+      // Fetch profile, reports, concerns, assessments, onboarding in parallel
+      const [profileRes, reportsRes, concernsRes, assessmentsRes, onboardingRes] = await Promise.all([
         supabase
           .from('profiles')
           .select('display_name, email, phone, birth_date, account_type, subscription_tier')
@@ -101,6 +101,11 @@ const Profile = () => {
           .from('assessments')
           .select('id', { count: 'exact', head: true })
           .eq('user_id', user.id),
+        (supabase as any)
+          .from('user_onboarding_data')
+          .select('subject_type, child_age, child_gender, concern_keywords, onboarding_completed_at')
+          .eq('user_id', user.id)
+          .maybeSingle(),
       ]);
 
       if (profileRes.data) {
@@ -112,6 +117,7 @@ const Profile = () => {
         concerns: concernsRes.count || 0,
         assessments: assessmentsRes.count || 0,
       });
+      if (onboardingRes?.data) setOnboardingInfo(onboardingRes.data);
     } catch (error) {
       console.error('프로필 조회 오류:', error);
     } finally {

@@ -78,7 +78,7 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
             </TabsTrigger>
             <TabsTrigger value="prescription" className="flex items-center">
               <Pill className="h-4 w-4 mr-2" />
-              한약 처방
+              체질 케어 가이드
             </TabsTrigger>
             <TabsTrigger value="lifestyle" className="flex items-center">
               <Activity className="h-4 w-4 mr-2" />
@@ -86,7 +86,7 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
             </TabsTrigger>
             <TabsTrigger value="clinics" className="flex items-center">
               <Star className="h-4 w-4 mr-2" />
-              한의사 전문가
+              면허 한의사 상담
             </TabsTrigger>
           </TabsList>
 
@@ -200,26 +200,29 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
             </div>
           </TabsContent>
 
-          {/* 한약 처방 탭 */}
+          {/* 체질 케어 가이드 탭 */}
           <TabsContent value="prescription" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Pill className="h-5 w-5 mr-2 text-green-600" />
-                  맞춤 한약 처방
+                  체질 케어 가이드 (참고용)
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
+                  <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900">
+                    아래 내용은 면허 한의사 상담 시 참고하실 수 있는 일반 정보이며, 의학적 처방이 아닙니다. 실제 한약 복용·치료는 반드시 면허 한의사의 진료를 받으세요.
+                  </div>
                   <div>
-                    <h4 className="font-semibold mb-3">처방명: {analysis.herbal_prescription?.formula_name || "맞춤 처방"}</h4>
+                    <h4 className="font-semibold mb-3">참고 케어 카테고리: {analysis.herbal_prescription?.formula_name || "체질 맞춤 카테고리"}</h4>
                     <p className="text-muted-foreground mb-4">
-                      {analysis.herbal_prescription?.preparation_method || "전문 한의사 상담 후 조제"}
+                      {analysis.herbal_prescription?.preparation_method || "면허 한의사 상담 시 참고용 정보로 활용하세요."}
                     </p>
                   </div>
 
                   <div className="grid gap-4">
-                    <h4 className="font-semibold">주요 약재</h4>
+                    <h4 className="font-semibold">참고 약재 (정보 제공용)</h4>
                     {analysis.herbal_prescription?.main_herbs?.map((herb: any, index: number) => (
                       <Card key={index} className="border-l-4 border-green-500">
                         <CardContent className="p-4">
@@ -228,12 +231,12 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
                               <h5 className="font-medium">{herb.name}</h5>
                               <p className="text-sm text-muted-foreground mt-1">{herb.effect}</p>
                             </div>
-                            <Badge variant="outline">{herb.dosage}</Badge>
+                            <Badge variant="outline">참고</Badge>
                           </div>
                         </CardContent>
                       </Card>
                     )) || (
-                      <p className="text-muted-foreground">전문 한의사와 상담하여 정확한 처방을 받으세요.</p>
+                      <p className="text-muted-foreground">면허 한의사 상담을 통해 본인에게 맞는 가이드를 받으세요.</p>
                     )}
                   </div>
                 </div>
@@ -382,12 +385,12 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <Star className="h-8 w-8 text-primary" />
                 </div>
-                <h4 className="text-xl font-semibold mb-2">AI 체질 분석 + 전문가 상담</h4>
+                <h4 className="text-xl font-semibold mb-2">AI 체질 인사이트 + 면허 한의사 상담</h4>
                 <p className="text-muted-foreground mb-4">
-                  AI가 분석한 체질 결과를 전문 한의사가 직접 검토하고, 맞춤 처방과 생활 관리법을 안내해드립니다.
+                  AI가 분석한 체질 인사이트를 면허 한의사가 직접 검토하고, 개인 맞춤 라이프스타일과 케어 방향을 안내해드립니다 (실제 처방·치료는 면허 한의사 진료를 통해서만 이루어집니다).
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 mb-6">
-                  <Badge variant="outline" className="border-primary/30">체질 맞춤 처방</Badge>
+                  <Badge variant="outline" className="border-primary/30">체질 맞춤 코칭</Badge>
                   <Badge variant="outline" className="border-primary/30">1:1 비대면 상담</Badge>
                   <Badge variant="outline" className="border-primary/30">생활습관 코칭</Badge>
                 </div>
@@ -407,10 +410,10 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
                 <h4 className="font-semibold mb-4">이런 분께 추천드립니다</h4>
                 <div className="space-y-3">
                   {[
-                    '체질에 맞는 정확한 한약 처방을 받고 싶은 분',
-                    '만성 피로, 소화불량 등 체질 관련 증상이 있는 분', 
-                    '식이요법과 생활습관을 전문가와 함께 관리하고 싶은 분',
-                    '한방 다이어트나 체질 개선에 관심 있는 분'
+                    '체질에 맞는 라이프스타일·케어 가이드를 받고 싶은 분',
+                    '만성 피로, 소화불량 등 일상 컨디션을 점검하고 싶은 분',
+                    '식이·생활습관을 전문가와 함께 관리하고 싶은 분',
+                    '체질 기반 다이어트·웰니스에 관심 있는 분'
                   ].map((item, idx) => (
                     <div key={idx} className="flex items-center">
                       <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>

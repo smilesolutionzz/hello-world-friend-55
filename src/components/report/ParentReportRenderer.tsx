@@ -821,6 +821,10 @@ ${overallSummaryHTML}
 </div>
 </body>
 </html>`;
+
+  // Replace section number tokens sequentially in document order, starting after fixed 01-03
+  let counter = 3;
+  return rawHTML.replace(/__AIHPRO_SECNUM__/g, () => String(++counter).padStart(2, '0'));
 }
 
 // ── React Component ──

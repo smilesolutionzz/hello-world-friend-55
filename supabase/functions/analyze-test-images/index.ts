@@ -87,7 +87,7 @@ ${documentFiles.length > 0 ? `\n[문서 파일 ${documentFiles.length}개 포함
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'google/gemini-3.1-flash-preview',
         messages: [
           {
             role: 'user',

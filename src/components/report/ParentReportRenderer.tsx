@@ -542,7 +542,7 @@ function generateParentReportHTML(
     `;
   }
 
-  return `<!DOCTYPE html>
+  const rawHTML = `<!DOCTYPE html>
 <html lang="${isEnglish ? 'en' : 'ko'}">
 <head>
 <meta charset="UTF-8">

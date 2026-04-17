@@ -31,22 +31,14 @@ const PremiumAssessmentForm = ({
   const { consumeTokens, checkTokenAvailability } = useTokens();
   const { toast } = useToast();
 
-  // Guard against empty/invalid question lists or out-of-range index
-  if (!questions || questions.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-6">
-        <div className="text-center space-y-4">
-          <p className="text-muted-foreground">검사 문항을 불러올 수 없습니다.</p>
-          <Button onClick={onBack} variant="outline">돌아가기</Button>
-        </div>
-      </div>
-    );
-  }
+  const hasQuestions = !!questions && questions.length > 0;
+  const safeIndex = hasQuestions
+    ? Math.min(Math.max(currentQuestionIndex, 0), questions.length - 1)
+    : 0;
+  const currentQuestion = hasQuestions ? questions[safeIndex] : null;
+  const progress = hasQuestions ? ((safeIndex + 1) / questions.length) * 100 : 0;
+  const isLastQuestion = hasQuestions && safeIndex === questions.length - 1;
 
-  const safeIndex = Math.min(Math.max(currentQuestionIndex, 0), questions.length - 1);
-  const currentQuestion = questions[safeIndex];
-  const progress = ((safeIndex + 1) / questions.length) * 100;
-  const isLastQuestion = safeIndex === questions.length - 1;
 
   const advanceToNext = () => {
     if (isAdvancing) return;

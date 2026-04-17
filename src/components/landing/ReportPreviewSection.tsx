@@ -55,45 +55,45 @@ const ReportPreviewSection = () => {
   ];
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-[150px]" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px]" />
+    <section className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-200/15 rounded-full blur-[150px]" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-200/15 rounded-full blur-[120px]" />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-bold mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-amber-100 to-orange-100 border border-amber-200 rounded-full text-amber-700 text-sm font-bold mb-4">
             <Sparkles className="w-4 h-4" />
             {t.reportPreview.badge}
           </span>
-          <h2 className="text-xl md:text-4xl font-bold text-white mb-3 break-keep">{t.reportPreview.heading}</h2>
-          <p className="text-white/60 text-xs md:text-base max-w-2xl mx-auto px-2 break-keep">{t.reportPreview.subheading}</p>
+          <h2 className="text-xl md:text-4xl font-bold text-slate-900 mb-3 break-keep">{t.reportPreview.heading}</h2>
+          <p className="text-slate-600 text-xs md:text-base max-w-2xl mx-auto px-2 break-keep">{t.reportPreview.subheading}</p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-4xl mx-auto">
           {/* Report Header */}
-          <div className="bg-slate-800/80 backdrop-blur-sm border border-white/10 rounded-t-2xl p-4 md:p-6">
+          <div className="bg-white shadow-md border border-slate-200 rounded-t-2xl p-4 md:p-6">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div>
                 <div className="flex items-center gap-3 mb-1">
-                  <p className="text-white/50 text-xs">{t.reportPreview.dateGenerated}</p>
-                  <span className="text-[10px] text-white/30 font-mono">{t.reportPreview.reportId}</span>
+                  <p className="text-slate-500 text-xs">{t.reportPreview.dateGenerated}</p>
+                  <span className="text-[10px] text-slate-400 font-mono">{t.reportPreview.reportId}</span>
                 </div>
-                <h3 className="text-white font-bold text-sm md:text-lg break-keep">{t.reportPreview.reportTitle}</h3>
+                <h3 className="text-slate-900 font-bold text-sm md:text-lg break-keep">{t.reportPreview.reportTitle}</h3>
               </div>
               <div className="text-right space-y-1">
-                <p className="text-white/50 text-xs">{t.reportPreview.from}</p>
-                <p className="text-amber-400 font-bold text-sm">AIHPRO</p>
+                <p className="text-slate-500 text-xs">{t.reportPreview.from}</p>
+                <p className="text-amber-600 font-bold text-sm">AIHPRO</p>
               </div>
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-orange-500/15 border border-orange-500/30 rounded-full">
-                <AlertTriangle className="w-3.5 h-3.5 text-orange-400" />
-                <span className="text-xs font-semibold text-orange-300">{t.reportPreview.riskLevel}</span>
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-orange-50 border border-orange-200 rounded-full">
+                <AlertTriangle className="w-3.5 h-3.5 text-orange-500" />
+                <span className="text-xs font-semibold text-orange-700">{t.reportPreview.riskLevel}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-white/40">{t.reportPreview.aiConfidence}</span>
-                <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
+                <span className="text-xs text-slate-500">{t.reportPreview.aiConfidence}</span>
+                <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     whileInView={{ width: '94.2%' }}
@@ -102,7 +102,7 @@ const ReportPreviewSection = () => {
                     className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full"
                   />
                 </div>
-                <span className="text-xs font-bold text-emerald-400">{t.reportPreview.aiConfidenceScore}</span>
+                <span className="text-xs font-bold text-emerald-600">{t.reportPreview.aiConfidenceScore}</span>
               </div>
             </div>
           </div>
@@ -202,16 +202,16 @@ const ReportPreviewSection = () => {
             <p className="text-center text-xs text-slate-400 pt-1">{t.reportPreview.disclaimer}</p>
           </div>
 
-          <p className="text-center text-white/40 text-xs mt-4">{t.reportPreview.sampleNote}</p>
+          <p className="text-center text-slate-400 text-xs mt-4">{t.reportPreview.sampleNote}</p>
         </motion.div>
 
         {/* Features & Benefits */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="max-w-3xl mx-auto mt-10">
           <div className="flex flex-wrap justify-center gap-3 mb-6">
             {features.map((feature, idx) => (
-              <div key={idx} className="flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur border border-white/10 rounded-full">
-                <feature.icon className="w-4 h-4 text-amber-400" />
-                <span className="text-sm font-medium text-slate-200">{feature.text}</span>
+              <div key={idx} className="flex items-center gap-2 px-4 py-2 bg-white shadow-sm border border-slate-200 rounded-full">
+                <feature.icon className="w-4 h-4 text-amber-600" />
+                <span className="text-sm font-medium text-slate-700">{feature.text}</span>
               </div>
             ))}
           </div>
@@ -219,8 +219,8 @@ const ReportPreviewSection = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
             {benefits.map((benefit, idx) => (
               <div key={idx} className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span className="text-xs md:text-sm text-slate-300">{benefit}</span>
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                <span className="text-xs md:text-sm text-slate-700">{benefit}</span>
               </div>
             ))}
           </div>
@@ -235,11 +235,11 @@ const ReportPreviewSection = () => {
               {t.reportPreview.ctaButton}
               <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-1.5 md:ml-2 flex-shrink-0" />
             </Button>
-            <p className="text-white/50 text-[10px] md:text-sm whitespace-nowrap">{t.reportPreview.ctaSubtext}</p>
+            <p className="text-slate-500 text-[10px] md:text-sm whitespace-nowrap">{t.reportPreview.ctaSubtext}</p>
             <motion.p
               animate={{ opacity: [0.6, 1, 0.6] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="text-amber-400/80 text-xs font-medium"
+              className="text-amber-600 text-xs font-medium"
             >
               {t.reportPreview.ctaUrgency}
             </motion.p>

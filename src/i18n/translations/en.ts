@@ -335,7 +335,7 @@ const en = {
     value1Desc: 'PhD-level expert analysis powered by AI.',
     value1Savings: '90% less than clinic visits',
     value2Title: '9-Section In-Depth Report',
-    value2Desc: 'Includes diagnosis, strategies, and developmental roadmap.',
+    value2Desc: 'Includes comprehensive analysis, coaching strategies, and developmental roadmap.',
     value2Savings: '80% less than professional reports',
     value3Title: 'Priority Expert Matching',
     value3Desc: 'Fast connection with verified specialists.',

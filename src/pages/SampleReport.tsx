@@ -149,7 +149,7 @@ const SampleReport = () => {
               {isEnglish ? '* These are AI-generated sample reports. Actual reports vary based on individual data.' : '* 본 리포트는 AI 분석 기반 예시이며, 실제 리포트는 개인의 데이터에 따라 다르게 생성됩니다.'}
             </p>
             <p>
-              {isEnglish ? '* This does not replace medical diagnosis or treatment. Please consult a specialist if needed.' : '* 의학적 진단이나 치료를 대체할 수 없으며, 필요시 전문의 상담을 받으시기 바랍니다.'}
+              {isEnglish ? '* This is a developmental coaching and decision-support reference. It does not replace medical diagnosis or treatment. Please consult a qualified professional when clinical judgment is needed.' : '* 본 리포트는 발달 코칭 및 의사결정 보조를 위한 참고용 분석이며, 의료 진단·치료를 대체하지 않습니다. 임상적 판단이 필요한 경우 자격을 갖춘 전문가와 상담하시기 바랍니다.'}
             </p>
           </div>
         </main>

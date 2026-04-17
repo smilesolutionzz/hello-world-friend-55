@@ -324,7 +324,7 @@ export const AIReportShowcaseSection = () => {
             <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
               <AlertCircle className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
               <p className="text-[10px] text-slate-400">
-                본 리포트는 AI 기반 분석 시스템에 의해 생성되었으며, 전문 의료 진단을 대체하지 않습니다. 심각한 우려 시 전문가 상담을 권장합니다.
+                본 리포트는 발달 코칭 및 의사결정 보조를 위한 참고용 분석이며, 의료 진단·치료를 대체하지 않습니다. 임상적 판단이 필요한 경우 자격을 갖춘 전문가와 상담하시기 바랍니다.
               </p>
             </div>
           </div>

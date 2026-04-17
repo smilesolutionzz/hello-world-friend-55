@@ -463,9 +463,9 @@ export default function AssessmentDetail() {
         <div className="max-w-6xl mx-auto">
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-6 text-center">
-              <h4 className="font-semibold text-blue-900 mb-2">{isEnglish ? 'Professional Assessment Notice' : '전문 심리검사 결과 안내'}</h4>
+              <h4 className="font-semibold text-blue-900 mb-2">{isEnglish ? 'Coaching Reference Notice' : '코칭 참고 자료 안내'}</h4>
               <p className="text-blue-800 text-sm leading-relaxed">
-                {isEnglish ? 'These results are reference materials based on expert knowledge. For accurate diagnosis or treatment, please consult a professional.' : '본 검사 결과는 전문가 지식 기반으로 작성된 참고 자료입니다. 정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다.'}
+                {isEnglish ? 'These results are reference materials for developmental coaching and decision support. They do not replace medical diagnosis or treatment. Please consult a qualified professional when clinical judgment is needed.' : '본 검사 결과는 발달 코칭 및 의사결정 보조를 위한 참고 자료이며, 의료 진단·치료를 대체하지 않습니다. 임상적 판단이 필요한 경우 자격을 갖춘 전문가와 상담하시기 바랍니다.'}
               </p>
               <p className="text-blue-600/60 text-[11px] mt-2">{isEnglish ? 'AI Engine Analysis Based on Expert Knowledge' : '전문가 지식 기반 AI 엔진 분석'}</p>
             </CardContent>

@@ -187,7 +187,7 @@ const PerplexityDeepReport: React.FC<PerplexityDeepReportProps> = ({
     }
 
     textContent += `\n${'='.repeat(50)}\n`;
-    textContent += `※ 본 리포트는 참고용이며 의학적 진단이 아닙니다.\n`;
+    textContent += `※ 본 리포트는 발달 코칭 및 의사결정 보조를 위한 참고용 분석이며, 의료 진단·치료를 대체하지 않습니다.\n`;
     textContent += `© ${new Date().getFullYear()} AIHPRO.APP. All rights reserved.\n`;
 
     const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
@@ -376,7 +376,7 @@ const PerplexityDeepReport: React.FC<PerplexityDeepReportProps> = ({
           {/* 면책 조항 */}
           <div className="mt-8 pt-6 border-t border-gray-200 text-center">
             <p className="text-xs text-gray-500">
-              ※ 본 리포트는 참고용이며 의학적 진단이 아닙니다. 정확한 진단과 치료를 위해서는 전문의와 상담하시기 바랍니다.
+              ※ 본 리포트는 발달 코칭 및 의사결정 보조를 위한 참고용 분석이며, 의료 진단·치료를 대체하지 않습니다. 임상적 판단이 필요한 경우 자격을 갖춘 전문가와 상담하시기 바랍니다.
             </p>
             <p className="text-xs text-gray-400 mt-2">
               © {new Date().getFullYear()} AIHPRO.APP. All rights reserved.

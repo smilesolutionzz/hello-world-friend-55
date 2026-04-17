@@ -386,8 +386,8 @@ const ReportGenerator = () => {
         {/* 법적 고지 */}
         <div className="text-center py-6">
           <p className="text-[10px] text-muted-foreground/60">
-            본 분석은 AI 기반 자동 분석이며, 의학적 진단을 대체하지 않습니다.<br/>
-            © 2025 AIHPRO. All Rights Reserved.
+            본 분석은 발달 코칭 및 의사결정 보조를 위한 참고용 분석이며, 의료 진단·치료를 대체하지 않습니다.<br/>
+            © 2026 AIHPRO. All Rights Reserved.
           </p>
         </div>
       </div>

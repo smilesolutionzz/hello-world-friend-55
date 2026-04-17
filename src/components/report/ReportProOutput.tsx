@@ -16,6 +16,7 @@ import ReportReminderBanner from '@/components/report/ReportReminderBanner';
 import ExpertCommentLayer from '@/components/report/ExpertCommentLayer';
 import ReliabilityBadge from '@/components/report/ReliabilityBadge';
 import MethodologyFooter from '@/components/report/MethodologyFooter';
+import CoachingBadge from '@/components/branding/CoachingBadge';
 import { downloadReportAsDocx } from '@/utils/docxDownload';
 import { supabase } from '@/integrations/supabase/client';
 import html2pdf from 'html2pdf.js';
@@ -248,6 +249,9 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
           </div>
         </div>
       </div>
+
+      {/* 비의료 코칭 브랜딩 배지 */}
+      <CoachingBadge variant="card" className="mb-3" />
 
       {/* 신뢰도 배지 — 학부모/전문가에게 분석 신뢰성을 사전 고지 */}
       <ReliabilityBadge

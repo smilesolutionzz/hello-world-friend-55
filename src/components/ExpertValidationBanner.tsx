@@ -33,38 +33,38 @@ const ExpertValidationBanner = () => {
       <div className="container mx-auto px-6 max-w-7xl">
         {/* 메인 헤딩 */}
         <div className="text-center mb-8">
-          <h2 className="text-xl md:text-3xl font-bold text-gray-900 mb-2 whitespace-nowrap">
+          <h2 className="text-xl md:text-3xl font-bold text-gray-900 mb-2 break-keep">
             일반 AI와 <span className="text-primary">완전히 다른</span> 차별점
           </h2>
-          <p className="text-gray-600 text-lg">
-            일반 AI와 달리 <strong className="text-gray-900">모든 결과는 전문가검토</strong>를 거칩니다
+          <p className="text-gray-600 text-lg break-keep">
+            일반 AI와 달리 <strong className="text-gray-900">모든 결과는 전문가 검토</strong>를 거칩니다
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
           {/* 비교 섹션 */}
           <Card className="p-6 h-full border-2 border-gray-100 hover:border-gray-200 transition-colors">
-            <h3 className="font-semibold text-gray-900 mb-4 text-center">일반 AI vs 우리</h3>
+            <h3 className="font-semibold text-gray-900 mb-4 text-center">일반 AI vs AIHPRO</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">검증 방식</span>
                 <div className="text-right">
                   <div className="text-xs text-red-500">❌ AI만 응답</div>
-                  <div className="text-xs text-green-600">✅ AI+전문가검토</div>
+                  <div className="text-xs text-green-600">✅ AI+전문가 검토</div>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">신뢰도</span>
+                <span className="text-sm text-gray-600">분석 기반</span>
                 <div className="text-right">
-                  <div className="text-xs text-red-500">❌ 참고용만</div>
-                  <div className="text-xs text-green-600">✅ 의료급 신뢰</div>
+                  <div className="text-xs text-red-500">❌ 텍스트 패턴</div>
+                  <div className="text-xs text-green-600">✅ 임상 통계 모델</div>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">책임소재</span>
+                <span className="text-sm text-gray-600">서비스 성격</span>
                 <div className="text-right">
-                  <div className="text-xs text-red-500">❌ 책임 없음</div>
-                  <div className="text-xs text-green-600">✅ 전문가 보증</div>
+                  <div className="text-xs text-red-500">❌ 일반 챗봇</div>
+                  <div className="text-xs text-green-600">✅ 발달 코칭 도구</div>
                 </div>
               </div>
             </div>
@@ -121,11 +121,14 @@ const ExpertValidationBanner = () => {
         <div className="mt-8 text-center">
           <div className="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg border border-gray-200">
             <Shield className="w-5 h-5 text-green-500" />
-            <span className="font-medium text-gray-900">
-              모든 리포팅은 의료진 및 전문가가 검토합니다
+            <span className="font-medium text-gray-900 break-keep">
+              모든 리포트는 자격을 갖춘 전문가가 검토합니다
             </span>
             <Badge className="bg-green-500 text-white">검증완료</Badge>
           </div>
+          <p className="mt-3 text-xs text-gray-500 break-keep">
+            ※ AIHPRO는 발달 코칭 & 의사결정 보조 도구이며, 의료 진단이 아닙니다.
+          </p>
         </div>
       </div>
     </div>

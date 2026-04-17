@@ -308,7 +308,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
             </div>
             <div>
               <h3 className="text-xl font-bold text-purple-900">{isEnglish ? '🧠 AI Expert Analysis' : '🧠 AI 전문가 심층 분석'}</h3>
-              <p className="text-sm text-purple-600">{isEnglish ? 'Clinical-grade ADHD analysis report' : 'ADHD 전문 정신과 전문의 수준의 임상 분석 리포트'}</p>
+              <p className="text-sm text-purple-600">{isEnglish ? 'In-depth ADHD coaching analysis report' : 'ADHD 심층 코칭 분석 리포트'}</p>
             </div>
           </div>
           
@@ -433,9 +433,9 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         <div className="text-center space-y-3">
           <h3 className="font-semibold text-blue-800">{isEnglish ? 'Next Steps' : '다음 단계 안내'}</h3>
           <div className="text-sm text-blue-700 space-y-2">
-            <p>• {isEnglish ? 'This is a self-assessment tool for reference only' : '본 검사는 자가 평가 도구로서 참고용입니다'}</p>
-            <p>• {isEnglish ? 'Accurate diagnosis requires professional consultation' : '정확한 진단을 위해서는 전문의 상담이 필요합니다'}</p>
-            <p>• {isEnglish ? 'ADHD can be significantly improved with proper treatment' : 'ADHD는 적절한 치료와 관리로 충분히 개선 가능합니다'}</p>
+            <p>• {isEnglish ? 'This is a self-assessment coaching tool for reference only' : '본 검사는 자가 평가 코칭 도구로서 참고용입니다'}</p>
+            <p>• {isEnglish ? 'For clinical judgment, please consult a qualified professional' : '임상적 판단이 필요한 경우 자격을 갖춘 전문가와 상담하시기 바랍니다'}</p>
+            <p>• {isEnglish ? 'ADHD-related challenges can improve with proper care and support' : 'ADHD 관련 어려움은 적절한 관리와 지원으로 충분히 개선될 수 있습니다'}</p>
             <p>• {isEnglish ? 'Understanding and support from family is important' : '가족과 주변의 이해와 지원이 중요합니다'}</p>
           </div>
         </div>

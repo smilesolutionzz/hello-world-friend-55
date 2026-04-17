@@ -195,7 +195,7 @@ ${Object.entries(domainScores).map(([domain, score]) => `${domain}: ${score}점`
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'google/gemini-3.1-flash-preview',
         messages: [
           {
             role: 'system',

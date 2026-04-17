@@ -209,7 +209,7 @@ async function generateInterventionStrategies(supabaseClient: any, familyId: str
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-2.5-flash',
+      model: 'google/gemini-3.1-flash-preview',
       messages: [
         { 
           role: 'system', 
@@ -413,7 +413,7 @@ JSON 형태로 응답해주세요.`;
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-2.5-flash',
+      model: 'google/gemini-3.1-flash-preview',
       messages: [
         { role: 'system', content: '가족 시스템 분석 전문가' },
         { role: 'user', content: prompt }

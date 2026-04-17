@@ -249,7 +249,16 @@ html, body {
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-family: 'Pretendard Variable', Pretendard, 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-feature-settings: 'ss01', 'ss02', 'cv01', 'cv11', 'kern';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.011em;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.022em;
+    font-feature-settings: 'ss01', 'ss02', 'kern';
   }
 }
 

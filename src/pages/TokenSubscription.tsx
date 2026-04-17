@@ -17,6 +17,7 @@ import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE, SINGLE_TEST_PRICE, SUBSCRIPTION_YEARLY_PRICE, SUBSCRIPTION_YEARLY_ORIGINAL_PRICE, SUBSCRIPTION_YEARLY_DISCOUNT_PERCENT, SUBSCRIPTION_YEARLY_MONTHLY_PRICE } from '@/constants/tokenCosts';
 import { MobilePaymentFlow } from '@/components/payments/MobilePaymentFlow';
+import AIComparisonTable from '@/components/conversion/AIComparisonTable';
 
 const TokenSubscription = () => {
   const navigate = useNavigate();
@@ -126,6 +127,11 @@ const TokenSubscription = () => {
             <p className="text-muted-foreground text-lg">
               1회만 써보거나, 무제한으로 이용하거나
             </p>
+          </motion.div>
+
+          {/* AI 비교표 — 결제 직전 신뢰 형성 */}
+          <motion.div {...fade(0.1)} className="mb-12">
+            <AIComparisonTable />
           </motion.div>
 
           {/* 토글 */}

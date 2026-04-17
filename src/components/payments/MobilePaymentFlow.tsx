@@ -13,6 +13,7 @@ import { useAccessControl } from '@/hooks/useAccessControl';
 import { supabase } from '@/integrations/supabase/client';
 import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE, SINGLE_TEST_PRICE } from '@/constants/tokenCosts';
 import { motion, AnimatePresence } from 'framer-motion';
+import AIComparisonTable from '@/components/conversion/AIComparisonTable';
 
 type Step = 'select' | 'tests' | 'plan' | 'confirm';
 
@@ -302,6 +303,9 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
               exit={{ opacity: 0, x: 20 }}
               className="space-y-4"
             >
+              {/* AI 비교표 (모바일 컴팩트) */}
+              <AIComparisonTable variant="compact" className="mb-2" />
+
               <div className="text-center mb-5">
                 <h2 className="text-xl font-bold text-foreground">이용 방법을 선택하세요</h2>
                 {selectedTest && (

@@ -147,7 +147,18 @@ const PremiumAssessmentForm = ({
     }
   };
 
-  const isAnswered = answers[currentQuestion.id] !== undefined;
+  const isAnswered = currentQuestion ? answers[currentQuestion.id] !== undefined : false;
+
+  if (!hasQuestions || !currentQuestion) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="text-center space-y-4">
+          <p className="text-muted-foreground">검사 문항을 불러올 수 없습니다.</p>
+          <Button onClick={onBack} variant="outline">돌아가기</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">

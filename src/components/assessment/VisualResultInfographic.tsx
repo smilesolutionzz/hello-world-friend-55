@@ -13,6 +13,8 @@ export interface VisualResultData {
   date: string;
   scores: Record<string, number>;
   maxScore?: number;
+  totalScoreOverride?: number;
+  totalMaxOverride?: number;
   categoryTranslations: Record<string, string>;
   aiSummary?: string;
   actionItems?: string[];

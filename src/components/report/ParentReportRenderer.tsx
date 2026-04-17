@@ -295,9 +295,10 @@ function generateParentReportHTML(
     `;
   });
 
-  // ── Unified section counter for dynamic sections (starts after fixed 01-03) ──
-  let _sectionCounter = 3;
-  const nextNum = () => String(++_sectionCounter).padStart(2, '0');
+  // ── Section number placeholder. Replaced sequentially in document order
+  // after final HTML assembly so numbering stays consistent regardless of build order. ──
+  const NUM_TOKEN = '__AIHPRO_SECNUM__';
+  const nextNum = () => NUM_TOKEN;
 
   // Build comparison sections if multi-session
   let comparisonHTML = '';

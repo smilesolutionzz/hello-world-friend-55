@@ -299,7 +299,7 @@ const ShareView = () => {
         <div className="max-w-4xl mx-auto flex items-center gap-3">
           <AlertTriangle className="h-5 w-5 text-amber-600" />
           <p className="text-amber-800 text-sm">
-            <strong>{isEnglish ? 'Medical Reference:' : '의학적 참고 자료:'}</strong> {isEnglish ? 'This information is for reference only, not a medical diagnosis.' : '이 정보는 의학적 진단이 아닌 참고 목적으로만 사용해주세요.'}
+            <strong>{isEnglish ? 'Coaching Reference:' : '코칭 참고 자료:'}</strong> {isEnglish ? 'This is a developmental coaching and decision-support reference. It does not replace medical diagnosis or treatment.' : '본 자료는 발달 코칭 및 의사결정 보조를 위한 참고용 분석이며, 의료 진단·치료를 대체하지 않습니다.'}
           </p>
         </div>
       </div>

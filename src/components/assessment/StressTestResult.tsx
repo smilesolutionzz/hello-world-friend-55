@@ -161,6 +161,8 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
             scores: Object.fromEntries(radarData.map(d => [d.key, d.score])),
             maxScore: 5,
+            totalScoreOverride: result.total,
+            totalMaxOverride: 48,
             categoryTranslations: Object.fromEntries(radarData.map(d => [d.key, d.label])),
             aiSummary: analysis,
             riskLevel: result.total > 32 ? 'high' : result.total > 16 ? 'moderate' : 'low',

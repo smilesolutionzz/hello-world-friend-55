@@ -13,6 +13,8 @@ export interface VisualResultData {
   date: string;
   scores: Record<string, number>;
   maxScore?: number;
+  totalScoreOverride?: number;
+  totalMaxOverride?: number;
   categoryTranslations: Record<string, string>;
   aiSummary?: string;
   actionItems?: string[];
@@ -77,9 +79,10 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
 
   const palette = PALETTES[risk];
   const entries = Object.entries(data.scores);
-  const totalScore = entries.reduce((s, [, v]) => s + v, 0);
-  const totalMax = max * entries.length;
-  const avg = entries.length > 0 ? totalScore / entries.length : 0;
+  const computedTotal = entries.reduce((s, [, v]) => s + v, 0);
+  const totalScore = data.totalScoreOverride ?? computedTotal;
+  const totalMax = data.totalMaxOverride ?? (max * entries.length);
+  const avg = entries.length > 0 ? computedTotal / entries.length : 0;
   const topCategories = [...entries].sort((a, b) => b[1] - a[1]).slice(0, 3);
   const keyPoints = useMemo(() => extractKeyPoints(data.aiSummary || ''), [data.aiSummary]);
 

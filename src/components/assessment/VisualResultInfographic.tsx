@@ -77,7 +77,9 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
 
   const palette = PALETTES[risk];
   const entries = Object.entries(data.scores);
-  const avg = entries.reduce((s, [, v]) => s + v, 0) / entries.length;
+  const totalScore = entries.reduce((s, [, v]) => s + v, 0);
+  const totalMax = max * entries.length;
+  const avg = entries.length > 0 ? totalScore / entries.length : 0;
   const topCategories = [...entries].sort((a, b) => b[1] - a[1]).slice(0, 3);
   const keyPoints = useMemo(() => extractKeyPoints(data.aiSummary || ''), [data.aiSummary]);
 

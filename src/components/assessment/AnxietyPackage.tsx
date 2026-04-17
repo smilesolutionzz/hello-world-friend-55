@@ -49,7 +49,7 @@ export const AnxietyPackage = () => {
     : ['불안 유형별 정밀 분석', '공황발작 대처 방법', '즉시 안정화 기법 제공', '24시간 위기개입 지원'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50">
       <div className="fixed top-4 left-4 z-50">
         <Button onClick={() => navigate('/')} variant="outline" size="sm" className="bg-white/90 backdrop-blur-sm border border-gray-200 hover:bg-white shadow-lg">
           <Home className="w-4 h-4 mr-2" />

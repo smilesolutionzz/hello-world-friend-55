@@ -75,7 +75,7 @@ export const CareerPackage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50">
       {/* Home CTA Button */}
       <div className="fixed top-4 left-4 z-50">
         <Button

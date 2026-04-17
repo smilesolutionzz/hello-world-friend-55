@@ -88,7 +88,7 @@ const CommunicationStyleForm = ({ onComplete, onBack }: CommunicationStyleFormPr
   if (!currentQ) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 py-8">
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">

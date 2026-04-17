@@ -113,7 +113,7 @@ const BasicMentalHealthTest = () => {
 
   if (isCompleted && result) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-4">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-4">
         <div className="container mx-auto max-w-4xl">
           <Card className={`${result.bgColor} ${result.borderColor} border-2`}>
             <CardHeader className="text-center">
@@ -207,7 +207,7 @@ const BasicMentalHealthTest = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-4">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-4">
       <div className="container mx-auto max-w-2xl">
         <div className="mb-6">
           <Button variant="ghost" onClick={() => navigate('/free-trial')} className="mb-4">

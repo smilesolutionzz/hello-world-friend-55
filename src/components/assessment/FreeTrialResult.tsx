@@ -146,7 +146,7 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-purple-500/10 to-blue-500/20 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 py-8">
       <RedFlagAlertDialog isOpen={showAlert} onClose={closeAlert} redFlagResult={redFlagResult} />
 
       <div id="free-trial-result" className="container mx-auto px-4 max-w-4xl">

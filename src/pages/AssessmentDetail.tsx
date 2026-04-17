@@ -250,7 +250,7 @@ export default function AssessmentDetail() {
   const riskLevel = enhancedAnalysis?.risk_level || (isEnglish ? 'N/A' : '정보 없음');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/30 to-blue-50/30">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50">
       <UnifiedNavigation />
       <div className="container mx-auto px-4 sm:px-6 pt-4 sm:pt-8 pb-16">
         {/* Header - 모바일 최적화 */}

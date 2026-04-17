@@ -274,7 +274,7 @@ const RealTimeChat = ({ assessmentResults, onClose }: RealTimeChatProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
       <div className="container mx-auto max-w-4xl">
         {/* Header */}
         <div className="mb-6">

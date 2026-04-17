@@ -1212,7 +1212,7 @@ const Assessment = () => {
     return (
       <div>
         <UnifiedNavigation />
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden pt-4">
+        <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 relative overflow-hidden pt-4">
           <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
             <div className="text-center mb-12">
               <button
@@ -1299,7 +1299,7 @@ const Assessment = () => {
     return (
       <SubscriptionGuard consumeAt="result" featureName="언어발달 검사" creditType="test" trialKey="LANGUAGE_TEST">
         <ResultPaywall>
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
           <div className="container mx-auto max-w-4xl">
             <LanguageTestResult 
               results={languageResults}
@@ -1314,7 +1314,7 @@ const Assessment = () => {
 
   if (currentStep === 'panic-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-12">
             <div className="inline-block px-4 py-2 bg-primary/10 rounded-full mb-4">
@@ -1359,7 +1359,7 @@ const Assessment = () => {
 
   if (currentStep === 'depression-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.depressionTestTitle}</h1>
@@ -1377,7 +1377,7 @@ const Assessment = () => {
 
   if (currentStep === 'depression-result' && depressionResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <DepressionTestResult 
             results={depressionResults}
@@ -1395,7 +1395,7 @@ const Assessment = () => {
 
   if (currentStep === 'panic-result' && panicResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <PanicTestResult 
             results={panicResults}
@@ -1413,7 +1413,7 @@ const Assessment = () => {
 
   if (currentStep === 'child-result' && childResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <ChildAssessmentResult 
             results={childResults}
@@ -1426,7 +1426,7 @@ const Assessment = () => {
 
   if (currentStep === 'infant-result' && infantResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <InfantAssessmentResult 
             results={infantResults}
@@ -1439,7 +1439,7 @@ const Assessment = () => {
 
   if (currentStep === 'adult-result' && adultResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <AdultAssessmentResult 
             results={adultResults}
@@ -1454,7 +1454,7 @@ const Assessment = () => {
 
   if (currentStep === 'adhd-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.adhdTestTitle}</h1>
@@ -1471,7 +1471,7 @@ const Assessment = () => {
 
   if (currentStep === 'adhd-result' && adhdResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <AdhdTestResult 
             results={adhdResults}
@@ -1487,7 +1487,7 @@ const Assessment = () => {
 
   if (currentStep === 'stress-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.stressTestTitle}</h1>
@@ -1506,7 +1506,7 @@ const Assessment = () => {
     return (
       <div>
         <UnifiedNavigation />
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
+        <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6 pt-8">
           <div className="container mx-auto max-w-4xl">
             <StressTestResult 
               result={stressResults}
@@ -1521,7 +1521,7 @@ const Assessment = () => {
 
   if (currentStep === 'bigfive-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.bigfiveTestTitle}</h1>
@@ -1540,7 +1540,7 @@ const Assessment = () => {
     return (
       <SubscriptionGuard consumeAt="result" featureName="Big5 성격검사" creditType="test" trialKey="FIVE_D_PERSONALITY">
         <ResultPaywall>
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
           <div className="container mx-auto max-w-4xl">
             <BigFiveTestResult 
               result={bigfiveResults}
@@ -1555,7 +1555,7 @@ const Assessment = () => {
 
   if (currentStep === 'attachment-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.attachmentTestTitle}</h1>
@@ -1574,7 +1574,7 @@ const Assessment = () => {
     return (
       <SubscriptionGuard consumeAt="result" featureName="애착유형 검사" creditType="test" trialKey="RELATIONSHIP_TYPE">
         <ResultPaywall>
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
           <div className="container mx-auto max-w-4xl">
             <AttachmentStyleResult 
               result={attachmentResults}
@@ -1589,7 +1589,7 @@ const Assessment = () => {
 
   if (currentStep === 'career-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.careerTestTitle}</h1>
@@ -1606,7 +1606,7 @@ const Assessment = () => {
 
   if (currentStep === 'selfesteem-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.selfesteemTestTitle}</h1>
@@ -1623,7 +1623,7 @@ const Assessment = () => {
 
   if (currentStep === 'emotional-development-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">{t.assessment.emotionalDevTitle}</h1>
@@ -1821,7 +1821,7 @@ const Assessment = () => {
     return (
       <SubscriptionGuard consumeAt="result" featureName="자존감 검사" creditType="test" trialKey="SELFESTEEM_TEST">
         <ResultPaywall>
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
           <div className="container mx-auto max-w-4xl">
             <SelfEsteemTestResult 
               result={selfesteemResults}
@@ -1839,7 +1839,7 @@ const Assessment = () => {
     return (
       <SubscriptionGuard consumeAt="result" featureName="직업흥미 검사" creditType="test" trialKey="CAREER_TEST">
         <ResultPaywall>
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 p-6">
           <div className="container mx-auto max-w-4xl">
             <CareerInterestResult 
               result={careerResults}

@@ -503,16 +503,23 @@ function generateParentReportHTML(
   const sections = reportData?.sections || [];
   if (sections.length > 0) {
     sections.forEach((section: any, idx: number) => {
-      const sectionNum = String(idx + 1).padStart(2, '0');
       const pageBreak = idx > 0 && idx % 2 === 0 ? 'page-break' : '';
-      
+      const cleaned = cleanAIContent(section.content || '');
+      // Fallback when AI content is empty/whitespace-only after sanitization
+      const stripped = cleaned.replace(/<[^>]+>/g, '').trim();
+      const bodyHTML = stripped.length > 0
+        ? cleaned
+        : `<p style="color:#6B7280; font-size:13px;">${isEnglish
+            ? 'This section was not generated in detail in this report. Additional data inputs will enrich this analysis in the next session.'
+            : '이번 리포트에서는 본 섹션의 세부 내용이 생성되지 않았습니다. 추가 데이터가 누적되면 다음 회차에서 더욱 풍부한 분석이 제공됩니다.'}</p>`;
+
       aiSectionsHTML += `
         <div class="section ${pageBreak}">
           <div class="section-header">
-            <div class="section-number">${sectionNum}</div>
+            <div class="section-number">${nextNum()}</div>
             <h2>${section.title}</h2>
           </div>
-          <div class="ai-content">${cleanAIContent(section.content)}</div>
+          <div class="ai-content">${bodyHTML}</div>
         </div>
       `;
     });

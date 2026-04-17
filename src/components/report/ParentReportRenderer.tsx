@@ -295,6 +295,11 @@ function generateParentReportHTML(
     `;
   });
 
+  // ── Section number placeholder. Replaced sequentially in document order
+  // after final HTML assembly so numbering stays consistent regardless of build order. ──
+  const NUM_TOKEN = '__AIHPRO_SECNUM__';
+  const nextNum = () => NUM_TOKEN;
+
   // Build comparison sections if multi-session
   let comparisonHTML = '';
   if (comparisonData.length > 0 && reportNumber > 1) {
@@ -322,7 +327,7 @@ function generateParentReportHTML(
     comparisonHTML = `
       <div class="section page-break">
         <div class="section-header">
-           <div class="section-number">04</div>
+           <div class="section-number">${nextNum()}</div>
           <h2>${isEnglish ? 'Change Tracking' : '회차별 변화 추적'}</h2>
         </div>
         ${compRows}
@@ -380,7 +385,7 @@ function generateParentReportHTML(
     cognitiveHTML = `
       <div class="section page-break">
         <div class="section-header">
-          <div class="section-number">05</div>
+          <div class="section-number">${nextNum()}</div>
           <h2>${isEnglish ? 'Brain Training Progress' : '두뇌 훈련 분석'}</h2>
         </div>
         <div class="grid-3">
@@ -424,7 +429,7 @@ function generateParentReportHTML(
     correlationHTML = `
       <div class="section">
         <div class="section-header">
-           <div class="section-number">06</div>
+           <div class="section-number">${nextNum()}</div>
           <h2>${isEnglish ? 'Cross-Analysis Insights' : '교차 분석 인사이트'}</h2>
         </div>
         <p style="font-size: 13.5px; color: #6B7280; margin-bottom: 16px;">
@@ -455,7 +460,7 @@ function generateParentReportHTML(
     peerHTML = `
       <div class="section">
         <div class="section-header">
-          <div class="section-number">07</div>
+          <div class="section-number">${nextNum()}</div>
           <h2>${isEnglish ? 'Peer Comparison' : '또래 비교 분석'}</h2>
         </div>
         ${peerRows}
@@ -473,7 +478,7 @@ function generateParentReportHTML(
     progressHTML = `
       <div class="section">
         <div class="section-header">
-          <div class="section-number">08</div>
+          <div class="section-number">${nextNum()}</div>
           <h2>${isEnglish ? 'Progress Summary' : '변화 추적 요약'}</h2>
         </div>
         <div class="insight-card" style="border-left: 3px solid #059669;">
@@ -498,16 +503,23 @@ function generateParentReportHTML(
   const sections = reportData?.sections || [];
   if (sections.length > 0) {
     sections.forEach((section: any, idx: number) => {
-      const sectionNum = String(idx + 1).padStart(2, '0');
       const pageBreak = idx > 0 && idx % 2 === 0 ? 'page-break' : '';
-      
+      const cleaned = cleanAIContent(section.content || '');
+      // Fallback when AI content is empty/whitespace-only after sanitization
+      const stripped = cleaned.replace(/<[^>]+>/g, '').trim();
+      const bodyHTML = stripped.length > 0
+        ? cleaned
+        : `<p style="color:#6B7280; font-size:13px;">${isEnglish
+            ? 'This section was not generated in detail in this report. Additional data inputs will enrich this analysis in the next session.'
+            : '이번 리포트에서는 본 섹션의 세부 내용이 생성되지 않았습니다. 추가 데이터가 누적되면 다음 회차에서 더욱 풍부한 분석이 제공됩니다.'}</p>`;
+
       aiSectionsHTML += `
         <div class="section ${pageBreak}">
           <div class="section-header">
-            <div class="section-number">${sectionNum}</div>
+            <div class="section-number">${nextNum()}</div>
             <h2>${section.title}</h2>
           </div>
-          <div class="ai-content">${cleanAIContent(section.content)}</div>
+          <div class="ai-content">${bodyHTML}</div>
         </div>
       `;
     });
@@ -530,7 +542,7 @@ function generateParentReportHTML(
     `;
   }
 
-  return `<!DOCTYPE html>
+  const rawHTML = `<!DOCTYPE html>
 <html lang="${isEnglish ? 'en' : 'ko'}">
 <head>
 <meta charset="UTF-8">
@@ -809,6 +821,10 @@ ${overallSummaryHTML}
 </div>
 </body>
 </html>`;
+
+  // Replace section number tokens sequentially in document order, starting after fixed 01-03
+  let counter = 3;
+  return rawHTML.replace(/__AIHPRO_SECNUM__/g, () => String(++counter).padStart(2, '0'));
 }
 
 // ── React Component ──

@@ -26,10 +26,16 @@ export const PersonalityLoveResult: React.FC<PersonalityLoveResultProps> = ({ re
     ageGroup: 'adult',
   });
 
-  const domains: DomainScore[] = (personalityType.characteristics || []).map((char: string, idx: number) => ({
+  // Deterministic strength scoring based on trait order (no render-time randomness)
+  const characteristics: string[] = personalityType.characteristics || [];
+  const strengthFor = (idx: number, total: number) => {
+    if (total <= 1) return 90;
+    return Math.round(92 - (idx * (20 / Math.max(total - 1, 1))));
+  };
+  const domains: DomainScore[] = characteristics.map((char: string, idx: number) => ({
     key: `char-${idx}`,
     label: char,
-    score: 70 + Math.random() * 25,
+    score: strengthFor(idx, characteristics.length),
     maxScore: 100,
     level: t.resultLayout.high,
     color: 'bg-pink-500',
@@ -75,9 +81,9 @@ export const PersonalityLoveResult: React.FC<PersonalityLoveResultProps> = ({ re
             testName: isEnglish ? 'Romantic Personality' : '연애 성격',
             subtitle: isEnglish ? 'Type Analysis' : '유형 분석',
             date: new Date().toLocaleDateString(isEnglish ? 'en-US' : 'ko-KR'),
-            scores: Object.fromEntries((personalityType.characteristics || []).map((c: string, i: number) => [`char${i}`, 4 + Math.random() * 3])),
+            scores: Object.fromEntries(characteristics.map((c: string, i: number) => [`char${i}`, (strengthFor(i, characteristics.length) / 100) * 7])),
             maxScore: 7,
-            categoryTranslations: Object.fromEntries((personalityType.characteristics || []).map((c: string, i: number) => [`char${i}`, c])),
+            categoryTranslations: Object.fromEntries(characteristics.map((c: string, i: number) => [`char${i}`, c])),
             riskLevel: 'low',
           }}
         />

@@ -35,9 +35,12 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
     });
   }, [ageInMonths]);
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const progress = questions.length > 0 ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0;
-  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const safeIndex = questions.length > 0
+    ? Math.min(Math.max(currentQuestionIndex, 0), questions.length - 1)
+    : 0;
+  const currentQuestion = questions[safeIndex];
+  const progress = questions.length > 0 ? ((safeIndex + 1) / questions.length) * 100 : 0;
+  const isLastQuestion = safeIndex === questions.length - 1;
 
   const handleBirthDateConfirm = (date: Date, months: number, group: string) => {
     setBirthDate(date);

@@ -27,40 +27,46 @@ const PremiumAssessmentForm = ({
 }: PremiumAssessmentFormProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [isAdvancing, setIsAdvancing] = useState(false);
   const { consumeTokens, checkTokenAvailability } = useTokens();
   const { toast } = useToast();
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
-  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const hasQuestions = !!questions && questions.length > 0;
+  const safeIndex = hasQuestions
+    ? Math.min(Math.max(currentQuestionIndex, 0), questions.length - 1)
+    : 0;
+  const currentQuestion = hasQuestions ? questions[safeIndex] : null;
+  const progress = hasQuestions ? ((safeIndex + 1) / questions.length) * 100 : 0;
+  const isLastQuestion = hasQuestions && safeIndex === questions.length - 1;
+
+
+  const advanceToNext = () => {
+    if (isAdvancing) return;
+    setIsAdvancing(true);
+    setTimeout(() => {
+      setCurrentQuestionIndex(prev => Math.min(prev + 1, questions.length - 1));
+      setIsAdvancing(false);
+    }, 300);
+  };
 
   const handleAnswerChange = (value: string) => {
+    if (!currentQuestion) return;
     const numValue = parseInt(value);
-    const newAnswers = {
-      ...answers,
-      [currentQuestion.id]: numValue
-    };
-    setAnswers(newAnswers);
-    
-    // 약간의 딜레이 후 다음 문항으로 이동 (렌더링 안정화)
-    setTimeout(() => {
-      if (!isLastQuestion) {
-        setCurrentQuestionIndex(prev => prev + 1);
-      }
-    }, 300);
+    setAnswers(prev => ({ ...prev, [currentQuestion.id]: numValue }));
+
+    if (!isLastQuestion) {
+      advanceToNext();
+    }
   };
 
   // 같은 답을 다시 클릭했을 때도 다음으로 넘어가도록 처리
   const handleOptionClick = (optionValue: number) => {
-    if (answers[currentQuestion.id] === optionValue) {
-      // 이미 같은 값이 선택되어 있으면 onValueChange가 발생하지 않으므로 직접 다음으로 이동
-      setTimeout(() => {
-        if (!isLastQuestion) {
-          setCurrentQuestionIndex(prev => prev + 1);
-        }
-      }, 300);
+    if (!currentQuestion) return;
+    if (answers[currentQuestion.id] === optionValue && !isLastQuestion) {
+      advanceToNext();
     }
   };
+
 
   const handleNext = async () => {
     if (isLastQuestion) {
@@ -141,7 +147,18 @@ const PremiumAssessmentForm = ({
     }
   };
 
-  const isAnswered = answers[currentQuestion.id] !== undefined;
+  const isAnswered = currentQuestion ? answers[currentQuestion.id] !== undefined : false;
+
+  if (!hasQuestions || !currentQuestion) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="text-center space-y-4">
+          <p className="text-muted-foreground">검사 문항을 불러올 수 없습니다.</p>
+          <Button onClick={onBack} variant="outline">돌아가기</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">

@@ -26,9 +26,12 @@ const ChildAssessmentSimplified = ({ age, onComplete, onBack }: ChildAssessmentS
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
-  const currentQuestion = allQuestions[currentQuestionIndex];
-  const progress = ((currentQuestionIndex + 1) / allQuestions.length) * 100;
-  const isLastQuestion = currentQuestionIndex === allQuestions.length - 1;
+  const safeIndex = allQuestions.length > 0
+    ? Math.min(Math.max(currentQuestionIndex, 0), allQuestions.length - 1)
+    : 0;
+  const currentQuestion = allQuestions[safeIndex];
+  const progress = allQuestions.length > 0 ? ((safeIndex + 1) / allQuestions.length) * 100 : 0;
+  const isLastQuestion = safeIndex === allQuestions.length - 1;
 
   const getCategoryIcon = (category: string) => {
     const icons = {

@@ -11,7 +11,7 @@ import {
   Building2, Download, FileText, Sparkles, Users, BarChart3,
   Brain, Heart, TrendingUp, Shield, CheckCircle2, Loader2, Image as ImageIcon
 } from 'lucide-react';
-import { CoachingBadge } from '@/components/branding/CoachingBadge';
+import CoachingBadge from '@/components/branding/CoachingBadge';
 import { toast } from 'sonner';
 import html2pdf from 'html2pdf.js';
 import { useNavigate } from 'react-router-dom';
@@ -90,8 +90,7 @@ const B2BDemoReport: React.FC = () => {
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
-        })
+        } as any)
         .from(previewRef.current)
         .save();
       toast.success('화이트라벨 PDF 다운로드 완료');

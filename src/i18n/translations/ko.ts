@@ -224,8 +224,8 @@ const ko = {
 
   // SEO
   seo: {
-    title: 'AIHPRO | AI 기반 통합 케어 플랫폼 - 전생애 통합 건강관리 서비스',
-    description: '3분 만에 완성하는 AI 심리검사. ADHD, 우울증, 스트레스 검사부터 전문가 상담까지. 검증된 전문가와 함께하는 전생애 통합 케어 서비스.',
+    title: 'AIHPRO | AI 심리검사·발달평가·전문상담 플랫폼',
+    description: 'AI 심리검사·ADHD·우울·스트레스 검사부터 전문가 상담까지 원스톱 케어.',
   },
 
   // Core Services

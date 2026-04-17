@@ -77,7 +77,9 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
 
   const palette = PALETTES[risk];
   const entries = Object.entries(data.scores);
-  const avg = entries.reduce((s, [, v]) => s + v, 0) / entries.length;
+  const totalScore = entries.reduce((s, [, v]) => s + v, 0);
+  const totalMax = max * entries.length;
+  const avg = entries.length > 0 ? totalScore / entries.length : 0;
   const topCategories = [...entries].sort((a, b) => b[1] - a[1]).slice(0, 3);
   const keyPoints = useMemo(() => extractKeyPoints(data.aiSummary || ''), [data.aiSummary]);
 
@@ -190,7 +192,7 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
               {t.resultLayout.overallEval}
             </p>
             <p style={{ fontSize: '36px', fontWeight: 900, color: '#fff', lineHeight: 1, marginBottom: '2px' }}>
-              {avg.toFixed(1)}<span style={{ fontSize: '16px', fontWeight: 500, opacity: 0.7 }}>/{max}</span>
+              {totalScore.toFixed(0)}<span style={{ fontSize: '16px', fontWeight: 500, opacity: 0.7 }}>/{totalMax}</span>
             </p>
             <div style={{
               display: 'inline-block', background: 'rgba(255,255,255,0.25)', borderRadius: '999px',

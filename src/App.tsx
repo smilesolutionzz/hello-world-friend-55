@@ -29,6 +29,7 @@ import AIAssistant from "./pages/AIAssistant";
 import ConcernStorage from "./pages/ConcernStorage";
 import ReportGenerator from "./pages/ReportGenerator";
 import ReportGeneratorPro from "./pages/ReportGeneratorPro";
+import MyJourney from "./pages/MyJourney";
 import MetaverseVoice from "./pages/MetaverseVoice";
 // GameCounseling integrated into MetaverseVoice
 
@@ -182,6 +183,8 @@ const App = () => {
           <Route path="/concern-storage" element={<ConcernStorage />} />
           <Route path="/report-generator" element={<ReportGenerator />} />
           <Route path="/report-generator-pro" element={<ReportGeneratorPro />} />
+          <Route path="/my-journey" element={<MyJourney />} />
+          <Route path="/en/my-journey" element={<MyJourney />} />
           <Route path="/sample-report" element={<SampleReport />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
 

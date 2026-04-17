@@ -156,7 +156,7 @@ const Index = () => {
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
       
       <ErrorBoundary>
-        <div className="min-h-screen max-w-full overflow-x-hidden bg-slate-900 pb-16 md:pb-0">
+        <div className="min-h-screen max-w-full overflow-x-hidden bg-white pb-16 md:pb-0">
           <ScrollProgressBar />
           <UnifiedNavigation />
           

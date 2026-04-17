@@ -335,7 +335,7 @@ const ko = {
     value1Desc: '박사급 전문가의 분석 수준을 AI로 제공.',
     value1Savings: '병원 상담 대비 90% 절약',
     value2Title: '9개 섹션 심층 리포트',
-    value2Desc: '종합 진단, 개입 전략, 발달 로드맵 포함.',
+    value2Desc: '종합 분석, 코칭 전략, 발달 로드맵 포함.',
     value2Savings: '전문기관 리포트 대비 80% 절약',
     value3Title: '전문가 매칭 우선권',
     value3Desc: '검증된 전문가와 빠른 상담 연결.',

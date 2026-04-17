@@ -43,6 +43,13 @@ const Profile = () => {
     concerns: 0,
     assessments: 0,
   });
+  const [onboardingInfo, setOnboardingInfo] = useState<{
+    subject_type?: string | null;
+    child_age?: number | null;
+    child_gender?: string | null;
+    concern_keywords?: string[] | null;
+    onboarding_completed_at?: string | null;
+  } | null>(null);
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 

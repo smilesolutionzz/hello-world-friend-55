@@ -117,17 +117,18 @@ export const CopilotBubble: React.FC = () => {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="fixed bottom-[72px] left-4 z-[60] md:bottom-6 md:left-6"
+            className="fixed bottom-[80px] right-3 z-[60] md:bottom-6 md:right-6"
           >
             <button
               onClick={() => setIsOpen(true)}
-              className="group relative flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary/80 px-4 py-3 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+              aria-label="발달심리 코파일럿 열기"
+              className="group relative flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary/80 px-3 py-2 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
-              <Sparkles className="w-5 h-5" />
-              <span className="text-sm font-semibold">무엇이 궁금하세요?</span>
-              <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <Sparkles className="w-4 h-4" />
+              <span className="text-xs font-semibold hidden md:inline">코파일럿</span>
+              <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
               </span>
             </button>
           </motion.div>

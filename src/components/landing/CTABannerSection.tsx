@@ -11,10 +11,10 @@ const CTABannerSection = () => {
   const { localePath } = useLanguage();
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-slate-50 to-white">
-      {/* Soft accent orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-200/20 rounded-full blur-[150px]" />
-      <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-purple-200/20 rounded-full blur-[100px]" />
+    <section className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-slate-800 to-slate-900">
+      {/* Gradient orbs */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[150px]" />
+      <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[100px]" />
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div 
@@ -28,36 +28,36 @@ const CTABannerSection = () => {
             <motion.div 
               animate={{ scale: [1, 1.03, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-50 border border-orange-200 rounded-full"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/10 border border-orange-500/20 rounded-full"
             >
-              <Clock className="w-3.5 h-3.5 text-orange-500" />
-              <span className="text-xs font-bold text-orange-700">{t.cta.urgencyBadge}</span>
+              <Clock className="w-3.5 h-3.5 text-orange-400" />
+              <span className="text-xs font-bold text-orange-300">{t.cta.urgencyBadge}</span>
             </motion.div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full">
-              <Users className="w-3 h-3 text-emerald-600" />
-              <span className="text-xs text-emerald-700">{t.cta.applicants}</span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
+              <Users className="w-3 h-3 text-green-400" />
+              <span className="text-xs text-green-300">{t.cta.applicants}</span>
             </div>
           </div>
 
           {/* Headline */}
-          <h2 className="text-xl sm:text-3xl md:text-5xl font-bold text-slate-900 leading-tight break-keep">
+          <h2 className="text-xl sm:text-3xl md:text-5xl font-bold text-white leading-tight break-keep">
             {t.cta.headline}<br />
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               {t.cta.headlineHighlight}
             </span>
           </h2>
           
-          <p className="text-sm md:text-xl text-slate-600 font-medium break-keep">
+          <p className="text-sm md:text-xl text-white/70 font-medium break-keep">
             {t.cta.subheadline}
           </p>
 
           {/* Social Proof */}
-          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 text-slate-500 text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 text-white/60 text-sm">
             <span>{t.cta.ratingText}</span>
             <span className="hidden sm:inline">·</span>
             <span>{t.cta.reviewCount}</span>
             <span className="hidden sm:inline">·</span>
-            <span className="text-amber-600">
+            <span className="text-amber-400">
               <Gift className="w-4 h-4 inline mr-1" />
               {t.cta.freeTokens}
             </span>
@@ -79,7 +79,7 @@ const CTABannerSection = () => {
               size="lg"
               onClick={() => navigate(localePath('/premium-assessment'))}
               variant="outline"
-              className="bg-white border-slate-200 text-slate-800 text-lg font-medium px-8 py-7 rounded-xl hover:bg-slate-50"
+              className="bg-white/5 border-white/10 text-white text-lg font-medium px-8 py-7 rounded-xl hover:bg-white/10"
             >
               {t.cta.tryFirst}
             </Button>
@@ -87,10 +87,10 @@ const CTABannerSection = () => {
 
           {/* Trust */}
           <div className="pt-4 space-y-2">
-            <p className="text-slate-400 text-xs">
+            <p className="text-white/40 text-xs">
               {t.cta.trustLine}
             </p>
-            <p className="text-amber-600 text-sm font-medium">
+            <p className="text-amber-400/80 text-sm font-medium">
               {t.cta.bonusLine}
             </p>
           </div>

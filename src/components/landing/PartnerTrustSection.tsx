@@ -34,32 +34,32 @@ const PartnerTrustSection = () => {
   const row3 = partners.slice(34, 50);
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-white">
+    <section className="relative py-20 md:py-28 overflow-hidden bg-slate-900">
       <div className="container mx-auto px-4 relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-6">
             <Building2 className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary">{t.partnerTrust.badge}</span>
           </div>
-          <h2 className="text-xl md:text-4xl font-bold text-slate-900 mb-4 break-keep">
+          <h2 className="text-xl md:text-4xl font-bold text-white mb-4 break-keep">
             <span className="text-primary">{t.partnerTrust.headingCount}</span>{t.partnerTrust.headingEnd}
           </h2>
-          <p className="text-slate-600 text-xs md:text-lg max-w-2xl mx-auto leading-relaxed px-2 break-keep">
+          <p className="text-white/60 text-xs md:text-lg max-w-2xl mx-auto leading-relaxed px-2 break-keep">
             {t.partnerTrust.description1}<br />
             {t.partnerTrust.description2}
           </p>
           <div className="flex justify-center gap-8 md:gap-16 mt-8">
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-primary">50+</div>
-              <div className="text-sm text-slate-500">{t.partnerTrust.statPartners}</div>
+              <div className="text-sm text-white/50">{t.partnerTrust.statPartners}</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-blue-500">1,000+</div>
-              <div className="text-sm text-slate-500">{t.partnerTrust.statExperts}</div>
+              <div className="text-3xl md:text-4xl font-bold text-blue-400">1,000+</div>
+              <div className="text-sm text-white/50">{t.partnerTrust.statExperts}</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-emerald-500">{t.partnerTrust.statRegion}</div>
-              <div className="text-sm text-slate-500">{t.partnerTrust.statRegion}</div>
+              <div className="text-3xl md:text-4xl font-bold text-green-400">{t.partnerTrust.statRegion}</div>
+              <div className="text-sm text-white/50">{t.partnerTrust.statRegion}</div>
             </div>
           </div>
         </motion.div>
@@ -68,8 +68,8 @@ const PartnerTrustSection = () => {
           <div className="relative overflow-hidden">
             <div className="marquee-track marquee-left">
               {[...row1, ...row1].map((partner, index) => (
-                <div key={index} className={`flex-shrink-0 px-4 py-2.5 rounded-lg transition-colors ${partner === "삼성웰니스의원" ? "bg-gradient-to-r from-primary/10 to-blue-100 border-2 border-primary/40 shadow-sm" : "bg-white border border-slate-200 hover:border-primary/30 hover:shadow-sm"}`}>
-                  <p className={`text-sm whitespace-nowrap font-medium ${partner === "삼성웰니스의원" ? "text-primary font-bold" : "text-slate-600"}`}>{partner}</p>
+                <div key={index} className={`flex-shrink-0 px-4 py-2.5 rounded-lg transition-colors ${partner === "삼성웰니스의원" ? "bg-gradient-to-r from-primary/20 to-blue-500/20 border-2 border-primary/50 shadow-lg shadow-primary/10" : "bg-slate-800/80 border border-white/10 hover:border-primary/30 hover:bg-slate-800"}`}>
+                  <p className={`text-sm whitespace-nowrap font-medium ${partner === "삼성웰니스의원" ? "text-primary font-bold" : "text-white/70"}`}>{partner}</p>
                 </div>
               ))}
             </div>
@@ -77,8 +77,8 @@ const PartnerTrustSection = () => {
           <div className="relative overflow-hidden">
             <div className="marquee-track marquee-right">
               {[...row2, ...row2].map((partner, index) => (
-                <div key={index} className="flex-shrink-0 px-4 py-2.5 bg-white border border-slate-200 rounded-lg hover:border-primary/30 hover:shadow-sm transition-colors">
-                  <p className="text-sm text-slate-600 whitespace-nowrap font-medium">{partner}</p>
+                <div key={index} className="flex-shrink-0 px-4 py-2.5 bg-slate-800/80 border border-white/10 rounded-lg hover:border-primary/30 hover:bg-slate-800 transition-colors">
+                  <p className="text-sm text-white/70 whitespace-nowrap font-medium">{partner}</p>
                 </div>
               ))}
             </div>
@@ -86,25 +86,25 @@ const PartnerTrustSection = () => {
           <div className="relative overflow-hidden">
             <div className="marquee-track marquee-left-slow">
               {[...row3, ...row3].map((partner, index) => (
-                <div key={index} className="flex-shrink-0 px-4 py-2.5 bg-white border border-slate-200 rounded-lg hover:border-primary/30 hover:shadow-sm transition-colors">
-                  <p className="text-sm text-slate-600 whitespace-nowrap font-medium">{partner}</p>
+                <div key={index} className="flex-shrink-0 px-4 py-2.5 bg-slate-800/80 border border-white/10 rounded-lg hover:border-primary/30 hover:bg-slate-800 transition-colors">
+                  <p className="text-sm text-white/70 whitespace-nowrap font-medium">{partner}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mt-16 pt-12 border-t border-slate-200">
-          <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-6">{t.partnerTrust.trustHeading}</p>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mt-16 pt-12 border-t border-white/5">
+          <p className="text-xs font-medium text-white/40 uppercase tracking-wider mb-6">{t.partnerTrust.trustHeading}</p>
           <div className="flex flex-wrap justify-center gap-6 md:gap-10">
             {trustBadges.map((badge, index) => {
               const Icon = badge.icon;
               return (
                 <div key={index} className="flex flex-col items-center gap-2">
-                  <div className="w-12 h-12 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-blue-500" />
+                  <div className="w-12 h-12 bg-slate-800 border border-white/5 rounded-xl flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-blue-400" />
                   </div>
-                  <p className="text-xs text-slate-500">{badge.title}</p>
+                  <p className="text-xs text-white/50">{badge.title}</p>
                 </div>
               );
             })}

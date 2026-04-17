@@ -21,13 +21,13 @@ export const ExpertConsultationNotice = () => {
           <div className="text-sm space-y-2">
             <p className="font-semibold text-gray-900">
               {isEnglish
-                ? 'These results are a self-reference checklist. For accurate diagnosis and treatment, professional consultation is essential.'
-                : '본 결과는 자가 참고용 체크리스트이며, 정확한 진단과 치료를 위해서는 반드시 전문가 상담이 필요합니다.'}
+                ? 'This result is a non-medical self-reference checklist. It is not a diagnosis. For accurate evaluation, please consult a licensed professional.'
+                : '본 결과는 비의료 자가 참고용 체크리스트이며 의학적 진단이 아닙니다. 정확한 평가가 필요할 경우 면허 전문가 상담을 권장드립니다.'}
             </p>
             <ul className="list-disc list-inside space-y-1 ml-2 text-gray-800">
-              <li>{isEnglish ? 'Direct evaluation by licensed professionals at medical institutions is required' : '의료기관 및 전문 면허 소지 치료사의 직접 평가가 필요합니다'}</li>
-              <li>{isEnglish ? 'Speech, occupational, and physical therapy are licensed professional fields' : '언어치료, 작업치료, 물리치료 등은 전문 면허 영역입니다'}</li>
-              <li>{isEnglish ? 'Individual differences may be significant — use results as reference only' : '개인차가 클 수 있으므로 결과는 참고용으로만 활용하세요'}</li>
+              <li>{isEnglish ? 'Clinical evaluation can only be performed by licensed professionals' : '임상 평가는 면허 전문가만이 수행할 수 있습니다'}</li>
+              <li>{isEnglish ? 'Speech, occupational, and physical therapy are licensed professional fields' : '언어·작업·물리치료 등은 면허 전문가 영역입니다'}</li>
+              <li>{isEnglish ? 'Individual differences may be significant — use results as a reference only' : '개인차가 크므로 결과는 참고용으로만 활용해 주세요'}</li>
             </ul>
           </div>
 

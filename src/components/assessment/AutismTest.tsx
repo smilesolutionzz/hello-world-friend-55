@@ -60,25 +60,25 @@ export const AutismTest: React.FC<AutismTestProps> = ({ onComplete, onBack }) =>
       let recommendations: string[];
 
       if (percentage >= 80) {
-        severity = isEnglish ? 'High' : '높음';
+        severity = isEnglish ? 'High attention' : '높은 관심 필요';
         recommendations = isEnglish
-          ? ['Comprehensive evaluation and treatment plan at a specialist clinic', 'Herbal medicine for emotional regulation and focus', 'Digestive function improvement and nutritional balance', 'Parent consultation and home management education']
-          : ['전문 한의원에서 정밀 평가와 치료 계획 수립', '감정 조절과 집중력 향상을 위한 한약 처방', '소화기능 개선과 영양 균형 맞춤 치료', '부모 상담과 가정 내 관리법 교육'];
+          ? ['Seek a comprehensive professional evaluation at a licensed clinic', 'Daily routines that support emotional regulation and focus', 'Balanced nutrition and digestive-friendly meal habits', 'Parent coaching and structured home environment guidance']
+          : ['면허 전문기관에서 정밀 평가 받기', '감정 조절과 집중력을 돕는 일상 루틴 가이드', '소화에 부담이 적은 균형 잡힌 식습관', '부모 코칭 및 구조화된 가정 환경 안내'];
       } else if (percentage >= 60) {
-        severity = isEnglish ? 'Moderate' : '중간';
+        severity = isEnglish ? 'Moderate attention' : '중간 관심 필요';
         recommendations = isEnglish
-          ? ['Regular holistic management and consultation', 'Stress relief and stabilization treatment', 'Sleep pattern improvement and digestive strengthening', 'Comprehensive approach for social skill development']
-          : ['정기적인 한의학적 관리와 상담', '스트레스 완화와 안정화를 위한 한방 치료', '수면 패턴 개선과 소화기능 강화', '사회성 향상을 위한 종합적 접근'];
+          ? ['Regular check-ins with a developmental specialist', 'Stress-relief routines and consistent sleep schedule', 'Digestive-friendly meal habits', 'Step-by-step social skill coaching']
+          : ['발달 전문가와 정기 상담', '스트레스 완화 루틴과 규칙적인 수면 습관', '소화에 부담이 적은 식습관', '단계별 사회성 코칭 가이드'];
       } else {
-        severity = isEnglish ? 'Mild' : '경미';
+        severity = isEnglish ? 'Low attention' : '낮은 관심 수준';
         recommendations = isEnglish
-          ? ['Preventive holistic management', 'Immune strengthening and constitution improvement', 'Customized care for healthy growth', 'Regular monitoring and consultation']
-          : ['예방적 차원의 한방 관리', '면역력 강화와 체질 개선', '건강한 성장 발달을 위한 맞춤 케어', '정기적인 모니터링과 상담'];
+          ? ['Preventive lifestyle care', 'Constitution-friendly daily habits', 'Customized care plan for healthy growth', 'Periodic monitoring and follow-up consultation']
+          : ['예방적 생활 관리', '체질 친화적 일상 습관 가이드', '건강한 성장 발달을 위한 맞춤 케어 플랜', '주기적인 모니터링과 후속 상담'];
       }
 
       const analysis = isEnglish
-        ? `Autism spectrum symptom score is ${totalScore}/${maxScore} (${Math.round(percentage)}%). From a holistic perspective, autism spectrum is related to nervous system imbalance, digestive function decline, and emotional regulation difficulties. Personalized treatment can promote overall development and stabilization.`
-        : `자폐 스펙트럼 관련 증상 점수는 ${totalScore}/${maxScore}점(${Math.round(percentage)}%)입니다. 한의학적 관점에서 자폐 스펙트럼은 신경계의 불균형과 소화기능 저하, 감정 조절 어려움 등과 관련이 있습니다. 체질에 맞는 한방 치료를 통해 전반적인 발달과 안정화를 도모할 수 있습니다.`;
+        ? `Your responses scored ${totalScore}/${maxScore} (${Math.round(percentage)}%) on this autism-related self-check. This is a non-medical screening designed for educational and self-awareness purposes only. It is not a diagnosis. For an accurate clinical evaluation, please consult a licensed professional.`
+        : `자폐 관련 자가 체크 결과 ${totalScore}/${maxScore}점(${Math.round(percentage)}%)입니다. 본 결과는 교육·자기이해 목적의 비의료 선별 도구이며 의학적 진단이 아닙니다. 정확한 평가는 반드시 면허 전문가 상담을 통해 받으시기 바랍니다.`;
 
       onComplete({ type: 'autism', score: totalScore, maxScore, percentage: Math.round(percentage), severity, answers, recommendations, analysis });
     }
@@ -98,10 +98,10 @@ export const AutismTest: React.FC<AutismTestProps> = ({ onComplete, onBack }) =>
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Users className="h-8 w-8 text-blue-500 mr-3" />
-              <CardTitle className="text-2xl text-blue-800">{isEnglish ? 'Autism Spectrum Assessment' : '자폐 스펙트럼 한방 체크'}</CardTitle>
+              <CardTitle className="text-2xl text-blue-800">{isEnglish ? 'Autism Spectrum Self-Check' : '자폐 스펙트럼 자가 체크'}</CardTitle>
             </div>
             <CardDescription className="text-lg">
-              {isEnglish ? 'Analyze autism spectrum symptoms from a holistic perspective' : '아동의 자폐 스펙트럼 증상을 한의학적 관점에서 분석합니다'}
+              {isEnglish ? 'A non-medical self-check to help you understand developmental tendencies (educational use only).' : '발달 경향을 이해하기 위한 비의료 자가 체크입니다 (교육·자기이해 목적).'}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">

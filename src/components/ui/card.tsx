@@ -10,21 +10,21 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, visualWeight = "medium", interactive = false, glassMorphism = true, floating = false, ...props }, ref) => {
+  ({ className, visualWeight = "medium", interactive = false, glassMorphism = false, floating = false, ...props }, ref) => {
     
+    // Clean white-tone design system - glass effects deprecated for premium minimal look
     const weightClasses = {
-      heavy: glassMorphism ? "card-glass-purple shadow-xl border-2" : "bg-white shadow-xl border-2 border-primary/20",
-      medium: glassMorphism ? "card-glass-blue shadow-lg border" : "bg-white shadow-lg border border-border",
-      light: glassMorphism ? "card-glass-green shadow-md border" : "bg-white shadow-md border border-border/50",
-      subtle: glassMorphism ? "card-glass-yellow shadow-sm" : "bg-white/80 shadow-sm border-0"
+      heavy: "bg-white shadow-xl border border-slate-200/70",
+      medium: "bg-white shadow-md border border-slate-200/60",
+      light: "bg-white shadow-sm border border-slate-200/50",
+      subtle: "bg-white shadow-sm border border-slate-100"
     }
     
     return (
       <div
         ref={ref}
         className={cn(
-          "rounded-visual-secondary overflow-hidden transition-all duration-300",
-          glassMorphism ? "card-glass" : "",
+          "rounded-2xl overflow-hidden transition-all duration-300",
           weightClasses[visualWeight],
           interactive && "interactive-primary cursor-pointer",
           floating && "animate-float hover-lift",

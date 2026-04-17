@@ -43,6 +43,13 @@ const Profile = () => {
     concerns: 0,
     assessments: 0,
   });
+  const [onboardingInfo, setOnboardingInfo] = useState<{
+    subject_type?: string | null;
+    child_age?: number | null;
+    child_gender?: string | null;
+    concern_keywords?: string[] | null;
+    onboarding_completed_at?: string | null;
+  } | null>(null);
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
@@ -75,8 +82,8 @@ const Profile = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
 
-      // Fetch profile, reports, concerns, assessments in parallel
-      const [profileRes, reportsRes, concernsRes, assessmentsRes] = await Promise.all([
+      // Fetch profile, reports, concerns, assessments, onboarding in parallel
+      const [profileRes, reportsRes, concernsRes, assessmentsRes, onboardingRes] = await Promise.all([
         supabase
           .from('profiles')
           .select('display_name, email, phone, birth_date, account_type, subscription_tier')
@@ -94,6 +101,11 @@ const Profile = () => {
           .from('assessments')
           .select('id', { count: 'exact', head: true })
           .eq('user_id', user.id),
+        (supabase as any)
+          .from('user_onboarding_data')
+          .select('subject_type, child_age, child_gender, concern_keywords, onboarding_completed_at')
+          .eq('user_id', user.id)
+          .maybeSingle(),
       ]);
 
       if (profileRes.data) {
@@ -105,6 +117,7 @@ const Profile = () => {
         concerns: concernsRes.count || 0,
         assessments: assessmentsRes.count || 0,
       });
+      if (onboardingRes?.data) setOnboardingInfo(onboardingRes.data);
     } catch (error) {
       console.error('프로필 조회 오류:', error);
     } finally {
@@ -367,6 +380,76 @@ const Profile = () => {
           <MessageSquare className="w-5 h-5 mx-auto mb-1 text-primary" />
           <p className="text-lg font-bold text-foreground">{activityCounts.concerns}</p>
           <p className="text-[10px] text-muted-foreground mt-0.5">고민 기록</p>
+        </div>
+      </div>
+
+      {/* 맞춤 분석 설정 요약 */}
+      <div className="px-5 mt-5">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1 flex items-center gap-1.5">
+          <Sparkles className="w-3 h-3" />
+          맞춤 분석 설정
+        </p>
+        <div className="bg-gradient-to-br from-primary/5 to-primary/[0.02] border border-primary/15 rounded-2xl p-4">
+          {onboardingInfo ? (
+            <div className="space-y-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground mb-1">분석 대상</p>
+                  <p className="text-sm font-semibold text-foreground">
+                    {onboardingInfo.subject_type === 'self'
+                      ? '나 자신'
+                      : onboardingInfo.child_age != null
+                        ? `우리 아이 (${onboardingInfo.child_age}개월${onboardingInfo.child_gender === 'male' ? ' · 남' : onboardingInfo.child_gender === 'female' ? ' · 여' : ''})`
+                        : '우리 아이'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('onboarding_completed');
+                    navigate('/');
+                  }}
+                  className="text-xs font-medium text-primary hover:underline whitespace-nowrap"
+                >
+                  다시 설정
+                </button>
+              </div>
+              {onboardingInfo.concern_keywords && onboardingInfo.concern_keywords.length > 0 && (
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1.5">선택한 관심 영역</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {onboardingInfo.concern_keywords.slice(0, 6).map((k) => (
+                      <span key={k} className="px-2 py-0.5 rounded-full bg-white border border-primary/20 text-[11px] font-medium text-primary">
+                        {k}
+                      </span>
+                    ))}
+                    {onboardingInfo.concern_keywords.length > 6 && (
+                      <span className="px-2 py-0.5 text-[11px] text-muted-foreground">
+                        +{onboardingInfo.concern_keywords.length - 6}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+              <p className="text-[11px] text-muted-foreground flex items-center gap-1 pt-1 border-t border-primary/10">
+                <CheckCircle className="w-3 h-3 text-green-500" />
+                AI 분석에 자동 반영되고 있어요
+              </p>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                localStorage.removeItem('onboarding_completed');
+                navigate('/');
+              }}
+              className="w-full text-left flex items-center justify-between"
+            >
+              <div>
+                <p className="text-sm font-semibold text-foreground">아직 맞춤 설정 전이에요</p>
+                <p className="text-xs text-muted-foreground mt-0.5">3분이면 더 정밀한 분석을 받을 수 있어요</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-primary" />
+            </button>
+          )}
         </div>
       </div>
 

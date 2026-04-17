@@ -67,19 +67,34 @@ const Index = () => {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
-      
-      if (user && !localStorage.getItem('onboarding_completed')) {
+
+      if (user) {
+        // 1) Fast path: localStorage marker (avoids flash of dialog on repeat visits)
+        if (localStorage.getItem('onboarding_completed')) return;
+
+        // 2) Source of truth: DB. If onboarding row exists for this user, never show again.
+        try {
+          const { data: onboardingRow } = await (supabase as any)
+            .from('user_onboarding_data')
+            .select('user_id, onboarding_completed_at')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          if (onboardingRow) {
+            localStorage.setItem('onboarding_completed', 'true');
+            return;
+          }
+        } catch (err) {
+          // Table query failed - fall back to showing onboarding once
+          console.warn('Onboarding check failed:', err);
+        }
+
         setShowOnboarding(true);
       }
-      
-      // 트라이얼 온보딩 비활성화
-      // if (!user && !hasTrialProfile && !localStorage.getItem('trial_onboarding_dismissed')) {
-      //   setShowTrialOnboarding(true);
-      // }
     };
-    
+
     checkUser();
-    
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
     });

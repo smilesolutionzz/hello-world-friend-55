@@ -15,6 +15,7 @@ export interface VisualResultData {
   maxScore?: number;
   totalScoreOverride?: number;
   totalMaxOverride?: number;
+  categoryMaxScores?: Record<string, number>;
   categoryTranslations: Record<string, string>;
   aiSummary?: string;
   actionItems?: string[];
@@ -26,9 +27,18 @@ interface Props {
   onClose?: () => void;
 }
 
-function deriveRiskLevel(scores: Record<string, number>, max: number): 'low' | 'moderate' | 'high' {
-  const avg = Object.values(scores).reduce((a, b) => a + b, 0) / Object.keys(scores).length;
-  const ratio = avg / max;
+function deriveRiskLevel(
+  scores: Record<string, number>,
+  max: number,
+  categoryMaxScores?: Record<string, number>
+): 'low' | 'moderate' | 'high' {
+  const entries = Object.entries(scores);
+  if (entries.length === 0) return 'low';
+
+  const totalScore = entries.reduce((sum, [, score]) => sum + score, 0);
+  const totalMax = entries.reduce((sum, [key]) => sum + (categoryMaxScores?.[key] ?? max), 0);
+  const ratio = totalMax > 0 ? totalScore / totalMax : 0;
+
   if (ratio >= 0.7) return 'high';
   if (ratio >= 0.45) return 'moderate';
   return 'low';
@@ -48,7 +58,7 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const max = data.maxScore || 7;
-  const risk = data.riskLevel || deriveRiskLevel(data.scores, max);
+  const risk = data.riskLevel || deriveRiskLevel(data.scores, max, data.categoryMaxScores);
 
   const PALETTES = {
     low: {
@@ -80,11 +90,13 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
   const palette = PALETTES[risk];
   const entries = Object.entries(data.scores);
   const computedTotal = entries.reduce((s, [, v]) => s + v, 0);
+  const computedTotalMax = entries.reduce((sum, [key]) => sum + (data.categoryMaxScores?.[key] ?? max), 0);
   const totalScore = data.totalScoreOverride ?? computedTotal;
-  const totalMax = data.totalMaxOverride ?? (max * entries.length);
+  const totalMax = data.totalMaxOverride ?? computedTotalMax;
   const avg = entries.length > 0 ? computedTotal / entries.length : 0;
   const topCategories = [...entries].sort((a, b) => b[1] - a[1]).slice(0, 3);
   const keyPoints = useMemo(() => extractKeyPoints(data.aiSummary || ''), [data.aiSummary]);
+  const formatScore = (value: number) => (Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1));
 
   const getScoreLabel = (score: number, maxVal: number) => {
     const r = score / maxVal;
@@ -113,7 +125,7 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
       shareTestResult({
         testName: data.testName,
         resultTitle: `${data.testName} ${t.resultLayout.analysisComplete}`,
-        resultSummary: `${t.resultLayout.average} ${avg.toFixed(1)}/${max} · ${palette.label}`,
+          resultSummary: `${t.resultLayout.overallEval} ${formatScore(totalScore)}/${formatScore(totalMax)} · ${palette.label}`,
       });
     } else {
       toast({ title: t.resultLayout.kakaoReady, description: t.resultLayout.kakaoRetry });
@@ -195,7 +207,7 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
               {t.resultLayout.overallEval}
             </p>
             <p style={{ fontSize: '36px', fontWeight: 900, color: '#fff', lineHeight: 1, marginBottom: '2px' }}>
-              {totalScore.toFixed(0)}<span style={{ fontSize: '16px', fontWeight: 500, opacity: 0.7 }}>/{totalMax}</span>
+              {formatScore(totalScore)}<span style={{ fontSize: '16px', fontWeight: 500, opacity: 0.7 }}>/{formatScore(totalMax)}</span>
             </p>
             <div style={{
               display: 'inline-block', background: 'rgba(255,255,255,0.25)', borderRadius: '999px',
@@ -209,7 +221,8 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
           {entries.map(([key, score]) => {
             const label = data.categoryTranslations[key.toLowerCase()] || key.replace(/_/g, ' ');
-            const pct = Math.round((score / max) * 100);
+            const itemMax = data.categoryMaxScores?.[key] ?? max;
+            const pct = Math.round((score / itemMax) * 100);
             const isTop = topCategories.some(([k]) => k === key);
             return (
               <div key={key} style={{
@@ -220,7 +233,7 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                   <span style={{ fontSize: '12px', fontWeight: 700, color: '#374151' }}>{label}</span>
                   <span style={{ fontSize: '11px', fontWeight: 600, color: palette.primary }}>
-                    {getScoreLabel(score, max)}
+                    {getScoreLabel(score, itemMax)}
                   </span>
                 </div>
                 <div style={{ background: '#e5e7eb', borderRadius: '999px', height: '6px', overflow: 'hidden' }}>
@@ -231,7 +244,7 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
                   }} />
                 </div>
                 <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '4px', textAlign: 'right' }}>
-                  {score.toFixed(1)} / {max}
+                  {formatScore(score)} / {formatScore(itemMax)}
                 </div>
               </div>
             );

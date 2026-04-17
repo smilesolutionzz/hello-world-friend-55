@@ -26,6 +26,8 @@ interface ExpertCommentLayerProps {
   institutionId?: string;
   isExpert?: boolean;
   isReadOnly?: boolean;
+  /** 검증된 코멘트가 1개 이상 존재할 때 호출 — 'Expert Verified' 배지 활성화에 사용 */
+  onVerifiedChange?: (hasVerified: boolean) => void;
 }
 
 const commentTypeLabels: Record<string, { ko: string; en: string; color: string }> = {
@@ -41,6 +43,7 @@ const ExpertCommentLayer: React.FC<ExpertCommentLayerProps> = ({
   institutionId,
   isExpert = false,
   isReadOnly = false,
+  onVerifiedChange,
 }) => {
   const { toast } = useToast();
   const { isEnglish } = useLanguage();
@@ -59,6 +62,12 @@ const ExpertCommentLayer: React.FC<ExpertCommentLayerProps> = ({
   useEffect(() => {
     fetchComments();
   }, [reportShareId, reportHistoryId]);
+
+  // 검증 완료 코멘트(학부모 공개) 1개 이상이면 부모 컴포넌트에 통보
+  useEffect(() => {
+    const hasVerified = comments.some(c => c.is_visible_to_parent);
+    onVerifiedChange?.(hasVerified);
+  }, [comments, onVerifiedChange]);
 
   const fetchComments = async () => {
     setLoading(true);

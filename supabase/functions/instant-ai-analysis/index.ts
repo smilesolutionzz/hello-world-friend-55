@@ -226,6 +226,7 @@ ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
           { role: 'system', content: systemPrompt },
           { role: 'user', content: inputText }
         ],
+        response_format: { type: 'json_object' },
       }),
     });
 

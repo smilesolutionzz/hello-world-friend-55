@@ -54,7 +54,7 @@ const PartnerTrustSection = () => {
               <div className="text-sm text-white/50">{t.partnerTrust.statPartners}</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-blue-400">1,000+</div>
+              <div className="text-3xl md:text-4xl font-bold text-blue-400">35+</div>
               <div className="text-sm text-white/50">{t.partnerTrust.statExperts}</div>
             </div>
             <div className="text-center">

@@ -30,6 +30,7 @@ import RealFeedbackSection from '@/components/landing/RealFeedbackSection';
 import TrialOnboarding from '@/components/onboarding/TrialOnboarding';
 import { useTrialProfile } from '@/hooks/useTrialProfile';
 import { CopilotBubble } from '@/components/copilot/CopilotBubble';
+import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
 
 
 const structuredData = {

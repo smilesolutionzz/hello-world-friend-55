@@ -248,15 +248,37 @@ const MindTrack: React.FC = () => {
                 <Textarea
                   value={concern}
                   onChange={(e) => setConcern(e.target.value)}
-                  placeholder="예) 요즘 잠자리에 누우면 잡생각이 멈추질 않고, 아침마다 너무 무기력해요..."
-                  className="min-h-[120px] resize-none text-base leading-relaxed border-slate-200 focus:border-blue-400"
+                  placeholder={examplePlaceholders[placeholderIdx]}
+                  className="min-h-[120px] resize-none text-base leading-relaxed border-slate-200 focus:border-blue-400 transition-all"
                   maxLength={500}
-                  disabled={reportLoading}
+                  disabled={reportLoading || polishing}
                 />
 
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>{concern.length} / 500</span>
-                  <span>입력하신 내용은 저장되지 않아요</span>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-3 text-xs text-slate-400">
+                    <span>{concern.length} / 500</span>
+                    <span className="hidden sm:inline">입력하신 내용은 저장되지 않아요</span>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePolish}
+                    disabled={polishing || reportLoading || concern.trim().length < 2}
+                    className="h-8 text-xs gap-1.5 border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800"
+                  >
+                    {polishing ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        다듬는 중...
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="w-3.5 h-3.5" />
+                        AI로 자연스럽게 다듬기
+                      </>
+                    )}
+                  </Button>
                 </div>
 
                 <Button

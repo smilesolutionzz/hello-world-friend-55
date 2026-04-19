@@ -7133,6 +7133,176 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_baseline_assessments: {
+        Row: {
+          ai_interpretation: string | null
+          assessment_mode: string
+          clarity_score: number | null
+          created_at: string
+          energy_score: number | null
+          enrollment_id: string
+          id: string
+          measurement_point: string
+          mood_label: string | null
+          primary_concern: string | null
+          raw_responses: Json | null
+          stress_score: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_interpretation?: string | null
+          assessment_mode?: string
+          clarity_score?: number | null
+          created_at?: string
+          energy_score?: number | null
+          enrollment_id: string
+          id?: string
+          measurement_point?: string
+          mood_label?: string | null
+          primary_concern?: string | null
+          raw_responses?: Json | null
+          stress_score?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_interpretation?: string | null
+          assessment_mode?: string
+          clarity_score?: number | null
+          created_at?: string
+          energy_score?: number | null
+          enrollment_id?: string
+          id?: string
+          measurement_point?: string
+          mood_label?: string | null
+          primary_concern?: string | null
+          raw_responses?: Json | null
+          stress_score?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_baseline_assessments_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mind_track_checkins: {
+        Row: {
+          checked_at: string
+          clarity_score: number | null
+          completed: boolean | null
+          day_number: number
+          energy_score: number | null
+          enrollment_id: string
+          id: string
+          mission_id: string | null
+          mood_score: number | null
+          reflection_note: string | null
+          user_id: string
+        }
+        Insert: {
+          checked_at?: string
+          clarity_score?: number | null
+          completed?: boolean | null
+          day_number: number
+          energy_score?: number | null
+          enrollment_id: string
+          id?: string
+          mission_id?: string | null
+          mood_score?: number | null
+          reflection_note?: string | null
+          user_id: string
+        }
+        Update: {
+          checked_at?: string
+          clarity_score?: number | null
+          completed?: boolean | null
+          day_number?: number
+          energy_score?: number | null
+          enrollment_id?: string
+          id?: string
+          mission_id?: string | null
+          mood_score?: number | null
+          reflection_note?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_checkins_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mind_track_checkins_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_daily_missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mind_track_daily_missions: {
+        Row: {
+          created_at: string
+          day_number: number
+          enrollment_id: string
+          estimated_minutes: number | null
+          id: string
+          mission_description: string | null
+          mission_title: string
+          mission_type: string | null
+          user_id: string
+          week_number: number
+          workbook_id: string
+        }
+        Insert: {
+          created_at?: string
+          day_number: number
+          enrollment_id: string
+          estimated_minutes?: number | null
+          id?: string
+          mission_description?: string | null
+          mission_title: string
+          mission_type?: string | null
+          user_id: string
+          week_number: number
+          workbook_id: string
+        }
+        Update: {
+          created_at?: string
+          day_number?: number
+          enrollment_id?: string
+          estimated_minutes?: number | null
+          id?: string
+          mission_description?: string | null
+          mission_title?: string
+          mission_type?: string | null
+          user_id?: string
+          week_number?: number
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_daily_missions_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mind_track_daily_missions_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_workbooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mind_track_enrollments: {
         Row: {
           baseline_data: Json | null
@@ -7183,6 +7353,59 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      mind_track_workbooks: {
+        Row: {
+          challenge_theme: string | null
+          created_at: string
+          enrollment_id: string
+          expected_outcomes: Json | null
+          generated_by_ai: boolean | null
+          id: string
+          initial_summary: string | null
+          root_causes: Json | null
+          strength_areas: Json | null
+          updated_at: string
+          user_id: string
+          weekly_themes: Json | null
+        }
+        Insert: {
+          challenge_theme?: string | null
+          created_at?: string
+          enrollment_id: string
+          expected_outcomes?: Json | null
+          generated_by_ai?: boolean | null
+          id?: string
+          initial_summary?: string | null
+          root_causes?: Json | null
+          strength_areas?: Json | null
+          updated_at?: string
+          user_id: string
+          weekly_themes?: Json | null
+        }
+        Update: {
+          challenge_theme?: string | null
+          created_at?: string
+          enrollment_id?: string
+          expected_outcomes?: Json | null
+          generated_by_ai?: boolean | null
+          id?: string
+          initial_summary?: string | null
+          root_causes?: Json | null
+          strength_areas?: Json | null
+          updated_at?: string
+          user_id?: string
+          weekly_themes?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_workbooks_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: true
+            referencedRelation: "mind_track_enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       monthly_program_plans: {
         Row: {

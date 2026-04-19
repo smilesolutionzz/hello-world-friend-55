@@ -16,6 +16,7 @@ import {
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import CoachingBadge from '@/components/branding/CoachingBadge';
+import MindTrackProgressWidget from '@/components/mind-track/MindTrackProgressWidget';
 
 interface ReportPoint {
   id: string;
@@ -188,6 +189,7 @@ const MyJourney: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50/40">
       <UnifiedNavigation />
       <div className="container mx-auto px-4 pt-24 pb-20 max-w-5xl">
+        <MindTrackProgressWidget />
         {/* 헤더 */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <CoachingBadge variant="card" className="mb-4" />

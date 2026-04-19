@@ -62,6 +62,11 @@ const PaymentComplete = () => {
         }
         
         toast({ title: '🎉 결제 완료!', description: getSuccessMessage(productType === 'consultation' ? 'consultation' : data.productType) });
+
+        // Auto-redirect for Mind Track to start initial assessment
+        if (productType === 'mind_track' || data.productType === 'mind_track') {
+          setTimeout(() => navigate('/mind-track/start'), 1500);
+        }
       } catch (err: any) {
         console.error('Payment confirmation error:', err);
         setSuccess(false);
@@ -122,6 +127,7 @@ const PaymentComplete = () => {
       case 'single_test': return '검사 이용권 1회가 추가되었습니다. 바로 검사를 시작해보세요!';
       case 'single_report': return '리포트 이용권 1회가 추가되었습니다.';
       case 'consultation': return '상담 예약이 확정되었습니다! 전문가가 확인 후 연락드립니다.';
+      case 'mind_track': return '30일 마음 변화 트랙이 시작되었습니다! 잠시 후 초기 진단으로 이동합니다.';
       case 'pass': return '프리미엄 패스가 활성화되었습니다.';
       case 'cash': return '캐시가 충전되었습니다.';
       default: return '결제가 완료되었습니다.';
@@ -197,6 +203,12 @@ const PaymentComplete = () => {
                 <Button className="w-full" onClick={() => navigate('/booking-management')}>
                   <CalendarCheck className="w-4 h-4 mr-2" />
                   예약 내역 확인
+                </Button>
+              )}
+              {resolvedType === 'mind_track' && (
+                <Button className="w-full" onClick={() => navigate('/mind-track/start')}>
+                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                  초기 진단 시작하기 (5분)
                 </Button>
               )}
               <Button variant="outline" className="w-full" onClick={() => navigate('/')}>

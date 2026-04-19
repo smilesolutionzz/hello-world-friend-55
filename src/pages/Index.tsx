@@ -183,22 +183,27 @@ const Index = () => {
             
             {/* 2️⃣ 실제 후기 - 사회적 증거 (상단 배치) */}
             <LazyLoad rootMargin="200px">
-              <TestimonialSection />
+              <SmartScrollReveal kind="cards"><TestimonialSection /></SmartScrollReveal>
             </LazyLoad>
 
             {/* 2.5️⃣ 실제 카톡 피드백 — 리얼 소셜 프루프 */}
             <LazyLoad rootMargin="200px">
-              <RealFeedbackSection />
+              <SmartScrollReveal kind="cards"><RealFeedbackSection /></SmartScrollReveal>
             </LazyLoad>
             
             {/* 3️⃣ AI 전문가급 리포트 미리보기 */}
             <LazyLoad rootMargin="200px">
-              <ReportPreviewSection />
+              <SmartScrollReveal kind="image"><ReportPreviewSection /></SmartScrollReveal>
+            </LazyLoad>
+
+            {/* 3.5️⃣ 휴먼터치 매니페스토 — AI × 전문가 철학 */}
+            <LazyLoad rootMargin="200px">
+              <SmartScrollReveal kind="text"><HumanTouchManifesto variant="landing" /></SmartScrollReveal>
             </LazyLoad>
             
             {/* 4️⃣ 영상 관찰 - WOW 팩터 */}
             <LazyLoad rootMargin="200px">
-              <VideoObservationShowcase />
+              <SmartScrollReveal kind="image"><VideoObservationShowcase /></SmartScrollReveal>
             </LazyLoad>
             
             {/* 5️⃣ 전문가 팀 소개 - 임시 숨김 */}
@@ -208,22 +213,22 @@ const Index = () => {
 
             {/* 6️⃣ 감성 후킹 - 공감 스토리 */}
             <LazyLoad rootMargin="200px">
-              <EmotionalHookSection />
+              <SmartScrollReveal kind="text"><EmotionalHookSection /></SmartScrollReveal>
             </LazyLoad>
             
             {/* 7️⃣ 파트너 신뢰 - 50+ 제휴기관 */}
             <LazyLoad rootMargin="200px">
-              <PartnerTrustSection />
+              <SmartScrollReveal kind="stats"><PartnerTrustSection /></SmartScrollReveal>
             </LazyLoad>
             
             {/* 8️⃣ 구독/결제 - 전환 유도 */}
             <LazyLoad rootMargin="200px">
-              <SubscriptionValueSection />
+              <SmartScrollReveal kind="cta"><SubscriptionValueSection /></SmartScrollReveal>
             </LazyLoad>
             
             {/* 9️⃣ 최종 CTA */}
             <LazyLoad rootMargin="200px">
-              <CTABannerSection />
+              <SmartScrollReveal kind="cta"><CTABannerSection /></SmartScrollReveal>
             </LazyLoad>
             
             {/* Footer */}

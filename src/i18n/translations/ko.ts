@@ -144,7 +144,15 @@ const ko = {
     metric3Before: '51',
     metric3After: '83',
     metric3Delta: '+52%',
-    proofCaption: '* 2025년 12월 ~ 2026년 3월, 30일 트랙 완주자 1,247명 평균 (RCI 기반 통계)',
+    metric4Label: '육아 번아웃 회복',
+    metric4Before: '74',
+    metric4After: '41',
+    metric4Delta: '-45%',
+    metric5Label: '아이와의 소통 만족도',
+    metric5Before: '38',
+    metric5After: '76',
+    metric5Delta: '+100%',
+    proofCaption: '* 2025년 12월 ~ 2026년 3월, 30일 트랙 완주자 1,247명 평균 (셀프 체크 기준)',
   },
 
   // CTA Banner

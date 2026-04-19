@@ -7133,6 +7133,57 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_enrollments: {
+        Row: {
+          baseline_data: Json | null
+          completed_at: string | null
+          created_at: string
+          current_day: number
+          daily_progress: Json | null
+          goal_focus: string | null
+          id: string
+          payment_amount: number | null
+          payment_status: string
+          started_at: string
+          status: string
+          track_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          baseline_data?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          current_day?: number
+          daily_progress?: Json | null
+          goal_focus?: string | null
+          id?: string
+          payment_amount?: number | null
+          payment_status?: string
+          started_at?: string
+          status?: string
+          track_type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          baseline_data?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          current_day?: number
+          daily_progress?: Json | null
+          goal_focus?: string | null
+          id?: string
+          payment_amount?: number | null
+          payment_status?: string
+          started_at?: string
+          status?: string
+          track_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       monthly_program_plans: {
         Row: {
           activities: Json | null

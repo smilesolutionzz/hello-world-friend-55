@@ -194,6 +194,8 @@ const App = () => {
           <Route path="/en/verify-report/:token" element={<VerifyReport />} />
           <Route path="/sample-report" element={<SampleReport />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
+          <Route path="/mind-track" element={<MindTrack />} />
+          <Route path="/en/mind-track" element={<MindTrack />} />
 
           {/* AI Azit */}
           <Route path="/metaverse-voice" element={<MetaverseVoice />} />

@@ -140,7 +140,7 @@ export function usePayment() {
       }
 
       const tossPayments = await loadTossPayments(state.clientKey);
-      const paymentType = product?.type || 'subscription';
+      const paymentType = isMindTrack ? 'mind_track' : (product?.type || 'subscription');
       const baseFailUrl = `${window.location.origin}/payment-complete?status=fail&type=${paymentType}`;
       
       await tossPayments.requestPayment('카드', {

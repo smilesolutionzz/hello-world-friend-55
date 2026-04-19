@@ -11,7 +11,7 @@ import { ArrowRight, Loader2, Brain, Zap, Eye, Clock, Sparkles, ShieldCheck } fr
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import SEOHead from "@/components/common/SEOHead";
-import UnifiedNavigation from "@/components/UnifiedNavigation";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
 type Mode = "quick" | "precise" | null;
 

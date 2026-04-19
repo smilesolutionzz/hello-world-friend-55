@@ -98,8 +98,9 @@ export function usePayment() {
 
   const pay = useCallback(async (productId: ProductId | string, customPrice?: number) => {
     const product = PRODUCTS[productId as ProductId];
-    
-    if (!product && !customPrice) {
+    const isMindTrack = productId === 'mind_track_30';
+
+    if (!product && !customPrice && !isMindTrack) {
       toast({ title: '상품 오류', description: '잘못된 상품입니다.', variant: 'destructive' });
       return false;
     }
@@ -119,13 +120,16 @@ export function usePayment() {
         return false;
       }
 
+      const productType = isMindTrack ? 'mind_track' : (product?.type || 'subscription');
+      const productName = isMindTrack ? '30일 마음 변화 트랙' : (product?.name || '월간 구독');
+
       const { data, error } = await supabase.functions.invoke('unified-payment', {
         headers: { Authorization: `Bearer ${session.session.access_token}` },
         body: { 
           action: 'create-payment',
-          productId: product?.id || productId,
-          productType: product?.type || 'subscription',
-          productName: product?.name || '월간 구독',
+          productId: isMindTrack ? 'mind_track_30' : (product?.id || productId),
+          productType,
+          productName,
           amount: customPrice || product?.price,
           tokens: 0,
         }
@@ -136,7 +140,7 @@ export function usePayment() {
       }
 
       const tossPayments = await loadTossPayments(state.clientKey);
-      const paymentType = product?.type || 'subscription';
+      const paymentType = isMindTrack ? 'mind_track' : (product?.type || 'subscription');
       const baseFailUrl = `${window.location.origin}/payment-complete?status=fail&type=${paymentType}`;
       
       await tossPayments.requestPayment('카드', {

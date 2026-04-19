@@ -100,6 +100,8 @@ import MindDiary from "./pages/MindDiary";
 
 // Killer Product: 30 Day Mind Track
 import MindTrack from "./pages/MindTrack";
+import MindTrackStart from "./pages/MindTrackStart";
+import MindTrackWorkbook from "./pages/MindTrackWorkbook";
 
 // Content & Column
 import Column from "./pages/Column";
@@ -195,6 +197,8 @@ const App = () => {
           <Route path="/sample-report" element={<SampleReport />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
           <Route path="/mind-track" element={<MindTrack />} />
+          <Route path="/mind-track/start" element={<MindTrackStart />} />
+          <Route path="/mind-track/workbook" element={<MindTrackWorkbook />} />
           <Route path="/en/mind-track" element={<MindTrack />} />
 
           {/* AI Azit */}

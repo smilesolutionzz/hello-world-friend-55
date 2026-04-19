@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Sparkles, Calendar, TrendingUp, Heart, Target, CheckCircle2,
-  ArrowRight, Award, BarChart3, Compass, Shield, Zap, Quote,
+  Sparkles, Calendar, CheckCircle2, ArrowRight, Award, BarChart3,
+  Shield, Zap, Loader2, Lightbulb, Target, Heart, MessageSquareHeart,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
+import { Progress } from '@/components/ui/progress';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import Footer from '@/components/ui/footer';
 import SEOHead from '@/components/common/SEOHead';
@@ -28,18 +30,24 @@ const focusGoals = [
 ];
 
 const dailyFlow = [
-  { day: '1일차', title: '베이스라인 진단', desc: '4가지 핵심 검사로 출발점 측정' },
-  { day: '2~7일차', title: '습관 설계 주간', desc: '하루 3분, AI가 제안하는 마이크로 루틴' },
-  { day: '8~21일차', title: '실천 & 추적', desc: '일일 체크인 + 주간 인사이트 리포트' },
-  { day: '22~29일차', title: '심화 코칭', desc: '맞춤 워크북 + 1:1 AI 코파일럿 상담' },
-  { day: '30일차', title: '변화 리포트', desc: 'Before/After 그래프 + 다음 30일 가이드' },
+  { day: '1일차', title: '나의 출발점 기록', desc: '간단한 셀프 체크로 지금의 나를 정리' },
+  { day: '2~7일차', title: '하루 3분 마음 루틴', desc: '맞춤 마이크로 액션을 매일 안내' },
+  { day: '8~21일차', title: '실천하며 기록하기', desc: '매일 체크인 + 주간 인사이트 정리본' },
+  { day: '22~29일차', title: '깊이 있는 코칭', desc: '맞춤 워크북과 AI 코파일럿 1:1 대화' },
+  { day: '30일차', title: '나의 변화 리포트', desc: '시작과 지금을 비교하고 다음 한 달 가이드' },
 ];
 
-const benchmarkBadges = [
-  { label: 'Calm 검증 모델', desc: '$2B 평가받은 라이프스타일 코칭 구조' },
-  { label: 'Noom 30일 트랙', desc: 'IPO 검증된 행동 변화 프로그램 패턴' },
-  { label: 'Wysa AI Coach', desc: '영국 NHS 채택 디지털 코치 프레임' },
-];
+interface ConcernReport {
+  summary: string;
+  rootCauses: string[];
+  currentState: { stress: number; energy: number; clarity: number };
+  quickActions: string[];
+  trackRecommendation: {
+    matchedGoal: string;
+    reason: string;
+    expectedChange: string;
+  };
+}
 
 const MindTrack: React.FC = () => {
   const navigate = useNavigate();
@@ -47,9 +55,48 @@ const MindTrack: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  // 고민 진단 리포트
+  const [concern, setConcern] = useState('');
+  const [reportLoading, setReportLoading] = useState(false);
+  const [report, setReport] = useState<ConcernReport | null>(null);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
   }, []);
+
+  const handleGenerateReport = async () => {
+    if (concern.trim().length < 5) {
+      toast.error('고민을 조금 더 자세히 적어주세요 (5자 이상)');
+      return;
+    }
+    setReportLoading(true);
+    setReport(null);
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        'mind-track-concern-report',
+        { body: { concern: concern.trim(), goal: selectedGoal } }
+      );
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setReport(data as ConcernReport);
+
+      // AI가 추천한 목표를 자동 선택
+      if (data?.trackRecommendation?.matchedGoal) {
+        setSelectedGoal(data.trackRecommendation.matchedGoal);
+      }
+
+      // 결과 섹션으로 부드럽게 스크롤
+      setTimeout(() => {
+        document.getElementById('concern-report-result')?.scrollIntoView({
+          behavior: 'smooth', block: 'start',
+        });
+      }, 200);
+    } catch (e: any) {
+      toast.error(e.message || '리포트 생성에 실패했습니다');
+    } finally {
+      setReportLoading(false);
+    }
+  };
 
   const handleStart = async () => {
     if (!selectedGoal) {
@@ -79,71 +126,260 @@ const MindTrack: React.FC = () => {
     }
   };
 
+  const recommendedGoal = report
+    ? focusGoals.find((g) => g.id === report.trackRecommendation.matchedGoal)
+    : null;
+
   return (
     <>
       <SEOHead
-        title="30일 마음 변화 트랙 · AIHPRO 마음 코칭"
-        description="30일간 측정 가능한 마음의 변화. 베이스라인 진단부터 일일 코칭, 변화 리포트까지. 비의료 발달 코칭 도구."
+        title="30일 마음 변화 트랙 · 무료 고민 리포트"
+        description="고민을 적으면 즉석 마음 리포트가 나오고, 나에게 맞춤 30일 변화 트랙을 제안받을 수 있어요."
         canonicalUrl="https://aihpro.app/mind-track"
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
         <UnifiedNavigation />
 
         {/* Hero */}
-        <section className="relative pt-28 pb-16 px-4">
+        <section className="relative pt-28 pb-10 px-4">
           <div className="max-w-5xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="space-y-6"
+              className="space-y-5"
             >
-              <div className="flex justify-center gap-2">
+              <div className="flex justify-center gap-2 flex-wrap">
                 <CoachingBadge variant="pill" />
                 <Badge className="bg-amber-100 text-amber-800 border-amber-200">
                   <Sparkles className="w-3 h-3 mr-1" />
-                  킬러 상품
+                  무료 고민 리포트 + 30일 트랙
                 </Badge>
               </div>
 
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight break-keep">
-                30일 후, <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">달라진 나</span>를<br />
-                숫자로 확인하세요
+                지금 마음에 걸리는 고민,<br />
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  3분 안에 정리해드릴게요
+                </span>
               </h1>
 
               <p className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto break-keep leading-relaxed">
-                Calm·Noom·Wysa 글로벌 모델을 한국형으로 재설계한<br className="hidden md:block" />
-                <strong className="text-slate-900">측정 가능한 마음 변화 프로그램</strong>
+                고민을 한 줄 적으면 <strong className="text-slate-900">즉석 마음 리포트</strong>를 받고,<br className="hidden md:block" />
+                나에게 꼭 맞는 <strong className="text-slate-900">30일 변화 트랙</strong>을 제안받을 수 있어요.
               </p>
-
-              <div className="flex flex-wrap justify-center gap-2 pt-2">
-                {benchmarkBadges.map((b) => (
-                  <div key={b.label} className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-xs text-slate-600 shadow-sm">
-                    <strong className="text-slate-900">{b.label}</strong> · {b.desc}
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-center justify-center gap-4 pt-4">
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-slate-900">₩19,900</div>
-                  <div className="text-xs text-slate-500 line-through">₩39,800</div>
-                </div>
-                <div className="text-left text-sm text-slate-600">
-                  <div className="font-semibold text-slate-900">론칭 50% 할인</div>
-                  <div>구독 회원은 무료 포함</div>
-                </div>
-              </div>
             </motion.div>
           </div>
         </section>
 
+        {/* 무료 고민 리포트 입력 */}
+        <section className="px-4 pb-12">
+          <div className="max-w-3xl mx-auto">
+            <Card className="border-2 border-blue-100 shadow-xl bg-white">
+              <CardContent className="p-6 md:p-8 space-y-5">
+                <div className="flex items-start gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center flex-shrink-0">
+                    <MessageSquareHeart className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h2 className="text-lg md:text-xl font-bold text-slate-900">
+                        무료 고민 리포트 받기
+                      </h2>
+                      <Badge variant="outline" className="text-[10px] border-emerald-300 text-emerald-700 bg-emerald-50">
+                        무료 · 비로그인 OK
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-slate-500 mt-0.5">
+                      어떤 고민이든 편하게 적어주세요. 판단하지 않고 따뜻하게 정리해드려요.
+                    </p>
+                  </div>
+                </div>
+
+                <Textarea
+                  value={concern}
+                  onChange={(e) => setConcern(e.target.value)}
+                  placeholder="예) 요즘 잠자리에 누우면 잡생각이 멈추질 않고, 아침마다 너무 무기력해요..."
+                  className="min-h-[120px] resize-none text-base leading-relaxed border-slate-200 focus:border-blue-400"
+                  maxLength={500}
+                  disabled={reportLoading}
+                />
+
+                <div className="flex items-center justify-between text-xs text-slate-400">
+                  <span>{concern.length} / 500</span>
+                  <span>입력하신 내용은 저장되지 않아요</span>
+                </div>
+
+                <Button
+                  onClick={handleGenerateReport}
+                  disabled={reportLoading || concern.trim().length < 5}
+                  className="w-full h-13 py-4 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl"
+                >
+                  {reportLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      마음을 들여다보는 중...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      무료 리포트 받기
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* 고민 리포트 결과 */}
+        <AnimatePresence>
+          {report && (
+            <motion.section
+              id="concern-report-result"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="px-4 pb-16"
+            >
+              <div className="max-w-3xl mx-auto space-y-5">
+                {/* Summary */}
+                <Card className="border-blue-100 shadow-md">
+                  <CardContent className="p-6 md:p-7 space-y-4">
+                    <div className="flex items-center gap-2">
+                      <Heart className="w-5 h-5 text-rose-500" />
+                      <h3 className="font-bold text-slate-900 text-lg">지금 마음 들여다보기</h3>
+                    </div>
+                    <p className="text-slate-700 leading-relaxed break-keep">{report.summary}</p>
+                  </CardContent>
+                </Card>
+
+                {/* Current state bars */}
+                <Card className="border-slate-100 shadow-sm">
+                  <CardContent className="p-6 md:p-7 space-y-4">
+                    <div className="flex items-center gap-2">
+                      <BarChart3 className="w-5 h-5 text-blue-500" />
+                      <h3 className="font-bold text-slate-900 text-lg">현재 마음 상태</h3>
+                    </div>
+                    <div className="space-y-4">
+                      <StateBar label="스트레스 부담감" value={report.currentState.stress} color="rose" inverse />
+                      <StateBar label="마음의 에너지" value={report.currentState.energy} color="amber" />
+                      <StateBar label="생각의 명료함" value={report.currentState.clarity} color="emerald" />
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-2">
+                      ※ 셀프 리포트 기반 추정치. 의료적 진단이 아니에요.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Root causes */}
+                {report.rootCauses?.length > 0 && (
+                  <Card className="border-slate-100 shadow-sm">
+                    <CardContent className="p-6 md:p-7 space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Lightbulb className="w-5 h-5 text-amber-500" />
+                        <h3 className="font-bold text-slate-900 text-lg">짚어볼 만한 원인</h3>
+                      </div>
+                      <ul className="space-y-2">
+                        {report.rootCauses.map((c, i) => (
+                          <li key={i} className="flex gap-2 text-slate-700 text-sm leading-relaxed">
+                            <span className="text-amber-500 font-bold flex-shrink-0">{i + 1}.</span>
+                            <span className="break-keep">{c}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Quick actions */}
+                {report.quickActions?.length > 0 && (
+                  <Card className="border-emerald-100 shadow-sm bg-emerald-50/30">
+                    <CardContent className="p-6 md:p-7 space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Zap className="w-5 h-5 text-emerald-600" />
+                        <h3 className="font-bold text-slate-900 text-lg">오늘 바로 해볼 수 있는 것</h3>
+                      </div>
+                      <ul className="space-y-2.5">
+                        {report.quickActions.map((a, i) => (
+                          <li key={i} className="flex gap-2.5 text-slate-700 text-sm leading-relaxed">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                            <span className="break-keep">{a}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Track recommendation */}
+                <Card className="border-2 border-blue-200 shadow-xl bg-gradient-to-br from-blue-50 to-purple-50">
+                  <CardContent className="p-6 md:p-8 space-y-4">
+                    <div className="flex items-center gap-2">
+                      <Target className="w-5 h-5 text-blue-600" />
+                      <h3 className="font-bold text-slate-900 text-lg">
+                        이 고민에 딱 맞는 30일 트랙
+                      </h3>
+                    </div>
+
+                    {recommendedGoal && (
+                      <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-blue-100">
+                        <div className="text-3xl">{recommendedGoal.icon}</div>
+                        <div>
+                          <div className="font-bold text-slate-900">{recommendedGoal.title}</div>
+                          <div className="text-xs text-slate-500">{recommendedGoal.desc}</div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-3 text-sm">
+                      <div>
+                        <div className="font-semibold text-slate-900 mb-1">왜 이 트랙인가요?</div>
+                        <p className="text-slate-700 leading-relaxed break-keep">
+                          {report.trackRecommendation.reason}
+                        </p>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-slate-900 mb-1">30일 후, 기대되는 변화</div>
+                        <p className="text-slate-700 leading-relaxed break-keep">
+                          {report.trackRecommendation.expectedChange}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 flex items-center justify-between flex-wrap gap-3">
+                      <div>
+                        <div className="text-2xl font-bold text-slate-900">₩19,900</div>
+                        <div className="text-xs text-slate-500 line-through">₩39,800 · 14일 환불</div>
+                      </div>
+                      <Button
+                        onClick={() => {
+                          document.getElementById('goal-section')?.scrollIntoView({
+                            behavior: 'smooth', block: 'start',
+                          });
+                        }}
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-12 px-6 rounded-xl font-bold"
+                      >
+                        30일 트랙으로 이어가기
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
+
         {/* Goal Selection */}
-        <section className="px-4 pb-16">
+        <section id="goal-section" className="px-4 pb-16 scroll-mt-24">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">먼저, 30일 동안 집중할 목표를 골라주세요</h2>
-              <p className="text-slate-600">선택한 목표에 맞춰 일일 코칭이 자동 설계됩니다</p>
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
+                30일 동안 집중할 목표를 골라주세요
+              </h2>
+              <p className="text-slate-600">선택한 목표에 맞춰 일일 코칭이 자동 설계돼요</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
               {focusGoals.map((goal) => (
@@ -173,7 +409,7 @@ const MindTrack: React.FC = () => {
           <div className="max-w-5xl mx-auto py-12">
             <div className="text-center mb-10">
               <Calendar className="w-10 h-10 text-blue-600 mx-auto mb-3" />
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">30일, 이렇게 진행됩니다</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">30일, 이렇게 진행돼요</h2>
               <p className="text-slate-600">하루 3~5분, 부담 없이 누적되는 변화</p>
             </div>
             <div className="space-y-3">
@@ -183,7 +419,7 @@ const MindTrack: React.FC = () => {
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
+                  transition={{ delay: i * 0.08 }}
                   className="flex items-start gap-4 bg-white p-4 md:p-5 rounded-2xl border border-slate-200"
                 >
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center font-bold flex-shrink-0">
@@ -206,15 +442,15 @@ const MindTrack: React.FC = () => {
         <section className="px-4 py-16">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">왜 이 트랙이 다른가</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">왜 이 트랙이 다를까요</h2>
             </div>
             <div className="grid md:grid-cols-3 gap-4">
               <Card className="border-blue-100">
                 <CardContent className="p-6 space-y-3">
                   <BarChart3 className="w-8 h-8 text-blue-600" />
-                  <h3 className="font-bold text-slate-900">측정 가능한 변화</h3>
+                  <h3 className="font-bold text-slate-900">눈에 보이는 변화</h3>
                   <p className="text-sm text-slate-600 break-keep">
-                    RCI(신뢰변화지수) 기반으로 1일차 vs 30일차를 통계적으로 비교. 단순 후기가 아닌 데이터로 증명.
+                    1일차와 30일차의 셀프 체크 결과를 한눈에 비교. 막연한 후기가 아닌 내 데이터로 확인.
                   </p>
                 </CardContent>
               </Card>
@@ -223,7 +459,7 @@ const MindTrack: React.FC = () => {
                   <Zap className="w-8 h-8 text-purple-600" />
                   <h3 className="font-bold text-slate-900">매일 3분, 부담 ZERO</h3>
                   <p className="text-sm text-slate-600 break-keep">
-                    명상 앱처럼 길지 않고, 검사처럼 무겁지 않습니다. 출근길·점심시간에 끝나는 마이크로 루틴.
+                    명상 앱처럼 길지 않고, 검사처럼 무겁지 않아요. 출근길·점심시간에 끝나는 짧은 루틴.
                   </p>
                 </CardContent>
               </Card>
@@ -232,7 +468,7 @@ const MindTrack: React.FC = () => {
                   <Shield className="w-8 h-8 text-amber-600" />
                   <h3 className="font-bold text-slate-900">의료가 아닌 코칭</h3>
                   <p className="text-sm text-slate-600 break-keep">
-                    진단·치료가 아닌 자기이해·습관설계·웰빙 가이드. 누구나 안심하고 시작할 수 있습니다.
+                    진단·치료가 아닌 자기이해·습관설계·웰빙 가이드. 누구나 안심하고 시작할 수 있어요.
                   </p>
                 </CardContent>
               </Card>
@@ -245,7 +481,7 @@ const MindTrack: React.FC = () => {
           <div className="max-w-3xl mx-auto text-center text-white space-y-6">
             <Award className="w-12 h-12 mx-auto opacity-90" />
             <h2 className="text-3xl md:text-4xl font-bold break-keep">
-              30일 후, 숫자로 증명되는 변화
+              30일 후, 한결 가벼워진 마음으로
             </h2>
             <p className="text-white/90 text-base md:text-lg break-keep">
               지금 시작하면 ₩19,900 (정가 ₩39,800)<br />
@@ -272,7 +508,6 @@ const MindTrack: React.FC = () => {
           </div>
         </section>
 
-        {/* Disclaimer */}
         <section className="px-4 py-8 max-w-4xl mx-auto">
           <MedicalDisclaimer variant="full" />
         </section>
@@ -282,5 +517,37 @@ const MindTrack: React.FC = () => {
     </>
   );
 };
+
+// 상태 막대
+function StateBar({
+  label, value, color, inverse = false,
+}: { label: string; value: number; color: 'rose' | 'amber' | 'emerald'; inverse?: boolean }) {
+  const colorMap = {
+    rose: 'bg-gradient-to-r from-rose-400 to-orange-400',
+    amber: 'bg-gradient-to-r from-amber-400 to-yellow-400',
+    emerald: 'bg-gradient-to-r from-emerald-400 to-teal-400',
+  };
+  const textColor = {
+    rose: 'text-rose-600',
+    amber: 'text-amber-600',
+    emerald: 'text-emerald-600',
+  };
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-sm font-medium text-slate-700">{label}</span>
+        <span className={`text-sm font-bold tabular-nums ${textColor[color]}`}>{value}</span>
+      </div>
+      <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${value}%` }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
+          className={`h-full rounded-full ${colorMap[color]}`}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default MindTrack;

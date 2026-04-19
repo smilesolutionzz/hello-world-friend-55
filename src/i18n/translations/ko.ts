@@ -130,7 +130,7 @@ const ko = {
     kakaoShareDesc: 'Before/After 리포트로 진짜 변화를 확인해봐. 7일 무료!',
     kakaoShareButton: '나도 시작하기',
     kakaoShareToast: '카카오톡에 붙여넣기 하세요! 💬',
-    // Noom-style proof metrics
+    // Before/After proof metrics
     beforeAfterTitle: '실제 사용자 30일 변화',
     metric1Label: '스트레스 지수',
     metric1Before: '78',

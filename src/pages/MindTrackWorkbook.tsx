@@ -1,0 +1,414 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
+import { Slider } from "@/components/ui/slider";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  CheckCircle2, Circle, Loader2, Sparkles, TrendingUp, Calendar,
+  Brain, Zap, Eye, Heart, Target, ChevronRight, Lock
+} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import SEOHead from "@/components/common/SEOHead";
+import UnifiedNavigation from "@/components/UnifiedNavigation";
+
+export default function MindTrackWorkbook() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [enrollment, setEnrollment] = useState<any>(null);
+  const [workbook, setWorkbook] = useState<any>(null);
+  const [missions, setMissions] = useState<any[]>([]);
+  const [checkins, setCheckins] = useState<any[]>([]);
+  const [baselines, setBaselines] = useState<any[]>([]);
+  const [activeMission, setActiveMission] = useState<any>(null);
+  const [reflectionNote, setReflectionNote] = useState("");
+  const [moodScore, setMoodScore] = useState(5);
+  const [energyScore, setEnergyScore] = useState(5);
+  const [clarityScore, setClarityScore] = useState(5);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => { load(); }, []);
+
+  const load = async () => {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { navigate("/auth?redirect=/mind-track/workbook"); return; }
+
+    const { data: wbs } = await supabase
+      .from("mind_track_workbooks")
+      .select("*, mind_track_enrollments(*)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1);
+    if (!wbs || wbs.length === 0) { navigate("/mind-track/start"); return; }
+
+    const wb = wbs[0];
+    setWorkbook(wb);
+    setEnrollment(wb.mind_track_enrollments);
+
+    const [mRes, cRes, bRes] = await Promise.all([
+      supabase.from("mind_track_daily_missions").select("*").eq("enrollment_id", wb.enrollment_id).order("day_number"),
+      supabase.from("mind_track_checkins").select("*").eq("enrollment_id", wb.enrollment_id).order("day_number"),
+      supabase.from("mind_track_baseline_assessments").select("*").eq("enrollment_id", wb.enrollment_id).order("created_at"),
+    ]);
+    setMissions(mRes.data ?? []);
+    setCheckins(cRes.data ?? []);
+    setBaselines(bRes.data ?? []);
+    setLoading(false);
+  };
+
+  // Calculate current day from started_at
+  const startedAt = enrollment?.started_at ? new Date(enrollment.started_at) : new Date();
+  const daysSinceStart = Math.floor((Date.now() - startedAt.getTime()) / 86400000) + 1;
+  const currentDay = Math.min(Math.max(daysSinceStart, 1), 30);
+
+  const completedCount = checkins.filter((c) => c.completed).length;
+  const completionRate = Math.round((completedCount / 30) * 100);
+
+  const todayMission = missions.find((m) => m.day_number === currentDay);
+  const todayCheckin = checkins.find((c) => c.day_number === currentDay);
+
+  // Trigger weekly refresh if needed
+  useEffect(() => {
+    const weekNum = Math.ceil(currentDay / 7);
+    if (weekNum < 2 || !enrollment) return;
+    const hasWeek = missions.some((m) => m.week_number === weekNum);
+    if (!hasWeek) {
+      (async () => {
+        const { data: session } = await supabase.auth.getSession();
+        await supabase.functions.invoke("mind-track-weekly-refresh", {
+          headers: { Authorization: `Bearer ${session.session?.access_token}` },
+          body: { enrollmentId: enrollment.id, weekNumber: weekNum },
+        });
+        load();
+      })();
+    }
+  }, [currentDay, enrollment, missions]);
+
+  const openMission = (mission: any) => {
+    const existing = checkins.find((c) => c.day_number === mission.day_number);
+    setActiveMission(mission);
+    setReflectionNote(existing?.reflection_note ?? "");
+    setMoodScore(existing?.mood_score ?? 5);
+    setEnergyScore(existing?.energy_score ?? 5);
+    setClarityScore(existing?.clarity_score ?? 5);
+  };
+
+  const submitCheckin = async () => {
+    if (!activeMission || !enrollment) return;
+    setSubmitting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const existing = checkins.find((c) => c.day_number === activeMission.day_number);
+      const payload = {
+        user_id: user!.id,
+        enrollment_id: enrollment.id,
+        mission_id: activeMission.id,
+        day_number: activeMission.day_number,
+        completed: true,
+        mood_score: moodScore,
+        energy_score: energyScore,
+        clarity_score: clarityScore,
+        reflection_note: reflectionNote || null,
+        checked_at: new Date().toISOString(),
+      };
+      if (existing) {
+        await supabase.from("mind_track_checkins").update(payload).eq("id", existing.id);
+      } else {
+        await supabase.from("mind_track_checkins").insert(payload);
+      }
+      toast.success("체크인 완료! 🎉");
+      setActiveMission(null);
+      load();
+    } catch (e: any) {
+      toast.error(e.message || "오류가 발생했습니다");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!workbook) return null;
+
+  const baseline = baselines.find((b) => b.measurement_point === "baseline");
+  const latest = baselines[baselines.length - 1];
+
+  return (
+    <>
+      <SEOHead title="나의 30일 워크북" description="초기 진단 결과와 매일의 미션을 관리하세요." />
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
+        <UnifiedNavigation />
+        <div className="max-w-4xl mx-auto px-4 pt-24 pb-16 space-y-6">
+
+          {/* Header */}
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+            <Badge className="bg-amber-100 text-amber-800 border-amber-200">
+              <Sparkles className="w-3 h-3 mr-1" /> 30일 마음 변화 트랙
+            </Badge>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 break-keep leading-tight">
+              {workbook.challenge_theme}
+            </h1>
+            <p className="text-slate-600 break-keep">{workbook.initial_summary}</p>
+          </motion.div>
+
+          {/* Progress */}
+          <Card className="p-5 bg-gradient-to-br from-primary/5 to-purple-500/5 border-primary/20">
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <div>
+                <div className="text-xs text-slate-500">진행 중</div>
+                <div className="text-xl font-bold text-slate-900">Day {currentDay} / 30</div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-slate-500">완료율</div>
+                <div className="text-xl font-bold text-primary">{completionRate}%</div>
+              </div>
+            </div>
+            <Progress value={(currentDay / 30) * 100} className="h-2" />
+            <div className="text-xs text-slate-500 mt-2">{completedCount}일 체크인 완료</div>
+          </Card>
+
+          {/* Today's Mission */}
+          {todayMission && (
+            <Card className="p-5 border-2 border-primary shadow-lg">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex items-center gap-2">
+                  <Target className="w-5 h-5 text-primary" />
+                  <span className="text-sm font-bold text-primary">오늘의 미션 · Day {currentDay}</span>
+                </div>
+                {todayCheckin?.completed && (
+                  <Badge className="bg-emerald-500 text-white">✓ 완료</Badge>
+                )}
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-1 break-keep">{todayMission.mission_title}</h3>
+              <p className="text-sm text-slate-600 mb-4 break-keep">{todayMission.mission_description}</p>
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-3 text-xs text-slate-500">
+                  <span>⏱ {todayMission.estimated_minutes}분</span>
+                  <span>· {todayMission.mission_type}</span>
+                </div>
+                <Button onClick={() => openMission(todayMission)} className="bg-gradient-to-r from-primary to-purple-600">
+                  {todayCheckin?.completed ? "기록 수정" : "체크인하기"} <ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
+              </div>
+            </Card>
+          )}
+
+          {/* Initial Report */}
+          <Card className="p-5">
+            <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
+              <Brain className="w-4 h-4 text-primary" /> 초기 분석 리포트
+            </h3>
+            <div className="space-y-4">
+              {baseline && (
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  {[
+                    { label: "스트레스", value: baseline.stress_score, icon: Brain, color: "text-rose-600", reverse: true },
+                    { label: "에너지", value: baseline.energy_score, icon: Zap, color: "text-amber-600" },
+                    { label: "명료성", value: baseline.clarity_score, icon: Eye, color: "text-blue-600" },
+                  ].map((m) => (
+                    <div key={m.label} className="p-3 rounded-xl bg-slate-50">
+                      <m.icon className={`w-4 h-4 mx-auto mb-1 ${m.color}`} />
+                      <div className="text-xs text-slate-500">{m.label}</div>
+                      <div className="text-xl font-bold text-slate-900">{m.value}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {workbook.root_causes && workbook.root_causes.length > 0 && (
+                <div>
+                  <div className="text-xs font-bold text-slate-700 mb-1">현재 마음을 무겁게 하는 것</div>
+                  <ul className="space-y-1">
+                    {workbook.root_causes.map((c: string, i: number) => (
+                      <li key={i} className="text-sm text-slate-600 flex gap-2 break-keep">
+                        <span className="text-primary">•</span><span>{c}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {workbook.strength_areas && workbook.strength_areas.length > 0 && (
+                <div>
+                  <div className="text-xs font-bold text-slate-700 mb-1">이미 가진 힘</div>
+                  <ul className="space-y-1">
+                    {workbook.strength_areas.map((s: string, i: number) => (
+                      <li key={i} className="text-sm text-slate-600 flex gap-2 break-keep">
+                        <span className="text-emerald-500">✓</span><span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* Weekly Themes */}
+          {workbook.weekly_themes && (
+            <Card className="p-5">
+              <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-primary" /> 주차별 테마
+              </h3>
+              <div className="space-y-2">
+                {workbook.weekly_themes.map((wt: any) => {
+                  const isCurrent = Math.ceil(currentDay / 7) === wt.week;
+                  const isPast = Math.ceil(currentDay / 7) > wt.week;
+                  return (
+                    <div
+                      key={wt.week}
+                      className={`p-3 rounded-xl border-2 ${
+                        isCurrent ? "border-primary bg-primary/5" : isPast ? "border-emerald-200 bg-emerald-50/50" : "border-slate-200"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant={isCurrent ? "default" : "outline"} className="text-[10px]">Week {wt.week}</Badge>
+                          <span className="font-medium text-sm text-slate-900 break-keep">{wt.theme}</span>
+                        </div>
+                        {isPast && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
+                      </div>
+                      <p className="text-xs text-slate-600 mt-1 break-keep">{wt.focus}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
+
+          {/* 30-day Calendar */}
+          <Card className="p-5">
+            <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
+              <Heart className="w-4 h-4 text-primary" /> 30일 챌린지 캘린더
+            </h3>
+            <div className="grid grid-cols-7 sm:grid-cols-10 gap-1.5">
+              {Array.from({ length: 30 }, (_, i) => i + 1).map((day) => {
+                const mission = missions.find((m) => m.day_number === day);
+                const checkin = checkins.find((c) => c.day_number === day);
+                const isFuture = day > currentDay;
+                const isToday = day === currentDay;
+                const isLocked = !mission;
+
+                return (
+                  <button
+                    key={day}
+                    onClick={() => mission && !isFuture && openMission(mission)}
+                    disabled={isLocked || isFuture}
+                    className={`aspect-square rounded-lg border-2 text-xs font-bold flex flex-col items-center justify-center transition-all ${
+                      checkin?.completed
+                        ? "bg-emerald-500 border-emerald-500 text-white"
+                        : isToday
+                        ? "bg-primary border-primary text-primary-foreground animate-pulse"
+                        : isLocked
+                        ? "border-slate-200 bg-slate-50 text-slate-300"
+                        : isFuture
+                        ? "border-slate-200 bg-white text-slate-400"
+                        : "border-slate-300 bg-white text-slate-700 hover:border-primary"
+                    }`}
+                  >
+                    {checkin?.completed ? <CheckCircle2 className="w-3.5 h-3.5" /> : isLocked && !isFuture ? <Lock className="w-3 h-3" /> : day}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-slate-500 mt-3 text-center">
+              ✓ 완료 · 오늘은 강조 표시 · 자물쇠 = 다음주 미션 자동 생성 대기
+            </p>
+          </Card>
+
+          {/* Variation tracking */}
+          {baselines.length > 1 && (
+            <Card className="p-5">
+              <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-emerald-500" /> 변화 추적
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { key: "stress_score", label: "스트레스", reverse: true },
+                  { key: "energy_score", label: "에너지" },
+                  { key: "clarity_score", label: "명료성" },
+                ].map((m) => {
+                  const start = baseline?.[m.key] ?? 50;
+                  const now = latest?.[m.key] ?? start;
+                  const diff = m.reverse ? start - now : now - start;
+                  const positive = diff > 0;
+                  return (
+                    <div key={m.key} className="flex items-center justify-between gap-3">
+                      <span className="text-sm text-slate-700 w-20">{m.label}</span>
+                      <div className="flex-1 flex items-center gap-2 text-sm">
+                        <span className="text-slate-500">{start}</span>
+                        <div className="flex-1 h-1.5 bg-slate-200 rounded-full">
+                          <div className="h-full bg-gradient-to-r from-primary to-purple-500 rounded-full" style={{ width: `${now}%` }} />
+                        </div>
+                        <span className="font-bold text-slate-900">{now}</span>
+                      </div>
+                      <span className={`text-xs font-bold w-12 text-right ${positive ? "text-emerald-600" : diff < 0 ? "text-rose-500" : "text-slate-400"}`}>
+                        {positive ? "↑" : diff < 0 ? "↓" : "·"}{Math.abs(diff)}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
+        </div>
+      </div>
+
+      {/* Check-in Dialog */}
+      <Dialog open={!!activeMission} onOpenChange={(o) => !o && setActiveMission(null)}>
+        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-left break-keep">{activeMission?.mission_title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-5 pt-2">
+            <p className="text-sm text-slate-600 break-keep">{activeMission?.mission_description}</p>
+
+            {[
+              { state: moodScore, set: setMoodScore, label: "지금 기분", icon: Heart },
+              { state: energyScore, set: setEnergyScore, label: "지금 에너지", icon: Zap },
+              { state: clarityScore, set: setClarityScore, label: "지금 명료성", icon: Eye },
+            ].map((s) => (
+              <div key={s.label} className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
+                    <s.icon className="w-3.5 h-3.5" /> {s.label}
+                  </div>
+                  <span className="text-lg font-bold text-primary tabular-nums">{s.state}</span>
+                </div>
+                <Slider value={[s.state]} onValueChange={(v) => s.set(v[0])} min={0} max={10} step={1} />
+              </div>
+            ))}
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-slate-700">오늘의 메모 (선택)</label>
+              <Textarea
+                value={reflectionNote}
+                onChange={(e) => setReflectionNote(e.target.value)}
+                placeholder="짧게 한 줄도 좋아요"
+                rows={3}
+                className="resize-none"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={submitCheckin} disabled={submitting} className="w-full bg-gradient-to-r from-primary to-purple-600">
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+              체크인 완료
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}

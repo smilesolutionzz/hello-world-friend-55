@@ -73,6 +73,22 @@ const HeroSection = () => {
       direction: 'up' as const,
       color: 'from-sky-400 to-indigo-400',
     },
+    {
+      label: (t.hero as any).metric4Label,
+      before: 74,
+      after: 41,
+      delta: (t.hero as any).metric4Delta,
+      direction: 'down' as const,
+      color: 'from-fuchsia-400 to-pink-400',
+    },
+    {
+      label: (t.hero as any).metric5Label,
+      before: 38,
+      after: 76,
+      delta: (t.hero as any).metric5Delta,
+      direction: 'up' as const,
+      color: 'from-amber-400 to-yellow-400',
+    },
   ];
 
   return (

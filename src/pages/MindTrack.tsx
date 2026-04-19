@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Calendar, CheckCircle2, ArrowRight, Award, BarChart3,
-  Shield, Zap, Loader2, Lightbulb, Target, Heart, MessageSquareHeart,
+  Shield, Zap, Loader2, Lightbulb, Target, Heart, MessageSquareHeart, Wand2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';

@@ -222,6 +222,11 @@ const MindTrack: React.FC = () => {
           </div>
         </section>
 
+        {/* 휴먼터치 매니페스토 — 따뜻형 카드 */}
+        <section className="px-4 pb-8">
+          <HumanTouchManifesto variant="track" />
+        </section>
+
         {/* 무료 고민 리포트 입력 */}
         <section className="px-4 pb-12">
           <div className="max-w-3xl mx-auto">

@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Sparkles, Building2, Users, Zap, Crown, Gift, Shield, Brain, TrendingUp, Bell, FileText, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SEOHead from "@/components/common/SEOHead";
+import MindTrackCheckoutHero from "@/components/pricing/MindTrackCheckoutHero";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { useTranslation } from '@/i18n';
@@ -10,6 +11,9 @@ import { useLanguage } from '@/i18n/LanguageContext';
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const productParam = searchParams.get("product");
+  const isMindTrack = productParam === "mind_track_30";
   const { t } = useTranslation();
   const { localePath } = useLanguage();
   const p = t.pricingPage;
@@ -92,12 +96,18 @@ const Pricing = () => {
       />
       
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-secondary/30">
-        <section className="container mx-auto px-4 py-16 md:py-24">
+        <section className="container mx-auto px-4 pt-24 md:pt-28 pb-16">
+          {isMindTrack && <MindTrackCheckoutHero />}
+
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-16"
+            id="other-plans"
+            className="text-center mb-12 scroll-mt-24"
           >
+            {isMindTrack && (
+              <Badge variant="outline" className="mb-3">선택 사항 · 다른 플랜 비교</Badge>
+            )}
             <Badge className="mb-4 bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30">
               <Gift className="w-3 h-3 mr-1" />
               {p.badge}

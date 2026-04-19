@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { trackEvent } from "@/components/common/Analytics";
 
 /**
- * Noom-style Hero: Before/After 변화를 데이터로 증명하는 결과 중심 히어로
+ * 결과 중심 히어로: Before/After 변화를 데이터로 증명
  * - 좌: 강력한 카피 + CTA
  * - 우: 실제 변화 지표 시각화 (애니메이션 카운터 + 비교 막대)
  */

@@ -98,6 +98,9 @@ import Pricing from "./pages/Pricing";
 // Mind Diary
 import MindDiary from "./pages/MindDiary";
 
+// Killer Product: 30 Day Mind Track
+import MindTrack from "./pages/MindTrack";
+
 // Content & Column
 import Column from "./pages/Column";
 const BlogPost = React.lazy(() => import("./pages/BlogPost"));

@@ -52,7 +52,7 @@ serve(async (req) => {
     "행동 3"
   ],
   "trackRecommendation": {
-    "matchedGoal": "sleep | stress | mood | focus | relationship | self 중 1개",
+    "matchedGoal": "sleep | stress | mood | focus | relationship | self | parenting | child_development | family_communication 중 1개",
     "reason": "왜 30일 트랙이 이 고민에 맞는지 2~3문장",
     "expectedChange": "30일 후 기대되는 변화를 구체적으로 2문장"
   }

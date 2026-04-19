@@ -62,10 +62,56 @@ const MindTrack: React.FC = () => {
   const [concern, setConcern] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
   const [report, setReport] = useState<ConcernReport | null>(null);
+  const [polishing, setPolishing] = useState(false);
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
+
+  const examplePlaceholders = [
+    '예) 요즘 잠자리에 누우면 잡생각이 멈추질 않고, 아침마다 너무 무기력해요...',
+    '예) 회사에서 작은 일에도 짜증이 나고, 퇴근 후엔 아무것도 하기 싫어요.',
+    '예) 아이가 말을 안 듣는데 화부터 나서, 그러고 나면 또 죄책감이 들어요.',
+    '예) 사람들 앞에 서면 심장이 두근거리고 머릿속이 하얘져요.',
+    '예) 미래가 막막해서 자꾸 불안하고, 작은 일도 결정하기가 힘들어요.',
+    '예) 남편(아내)과 대화만 하면 싸우게 되고, 점점 거리감이 느껴져요.',
+    '예) 다이어트를 시작했다가 무너지고를 반복해서 자존감이 바닥이에요.',
+    '예) 친구 관계에서 자꾸 눈치를 보게 되고, 진짜 내 모습을 잃은 것 같아요.',
+  ];
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
   }, []);
+
+  // 입력값이 비어있을 때만 5초마다 예시 placeholder 회전
+  useEffect(() => {
+    if (concern.length > 0) return;
+    const t = setInterval(() => {
+      setPlaceholderIdx((i) => (i + 1) % examplePlaceholders.length);
+    }, 5000);
+    return () => clearInterval(t);
+  }, [concern.length, examplePlaceholders.length]);
+
+  const handlePolish = async () => {
+    if (concern.trim().length < 2) {
+      toast.error('다듬을 내용을 조금 더 적어주세요');
+      return;
+    }
+    setPolishing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        'mind-track-concern-polish',
+        { body: { concern: concern.trim() } }
+      );
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data?.polished) {
+        setConcern(data.polished);
+        toast.success('AI가 자연스럽게 다듬었어요');
+      }
+    } catch (e: any) {
+      toast.error(e.message || '다듬기에 실패했습니다');
+    } finally {
+      setPolishing(false);
+    }
+  };
 
   const handleGenerateReport = async () => {
     if (concern.trim().length < 5) {

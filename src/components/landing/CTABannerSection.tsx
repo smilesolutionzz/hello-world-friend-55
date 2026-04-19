@@ -67,21 +67,21 @@ const CTABannerSection = () => {
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
             <Button 
               size="lg"
-              onClick={() => navigate(localePath('/auth?mode=signup'))}
-              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-lg font-bold px-10 py-7 rounded-xl shadow-lg shadow-amber-500/25"
+              onClick={() => navigate(localePath('/mind-track'))}
+              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white text-lg font-bold px-10 py-7 rounded-xl shadow-lg shadow-blue-500/25"
             >
               <Sparkles className="w-5 h-5 mr-2" />
-              {t.cta.signupButton}
+              30일 마음 변화 트랙 시작
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             
             <Button 
               size="lg"
-              onClick={() => navigate(localePath('/premium-assessment'))}
+              onClick={() => navigate(localePath('/auth?mode=signup'))}
               variant="outline"
               className="bg-white/5 border-white/10 text-white text-lg font-medium px-8 py-7 rounded-xl hover:bg-white/10"
             >
-              {t.cta.tryFirst}
+              {t.cta.signupButton}
             </Button>
           </div>
 

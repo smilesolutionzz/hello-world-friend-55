@@ -16,6 +16,7 @@ import SEOHead from '@/components/common/SEOHead';
 import CoachingBadge from '@/components/branding/CoachingBadge';
 import { MedicalDisclaimer } from '@/components/legal/MedicalDisclaimer';
 import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
+import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -223,9 +224,9 @@ const MindTrack: React.FC = () => {
         </section>
 
         {/* 휴먼터치 매니페스토 — 따뜻형 카드 */}
-        <section className="px-4 pb-8">
+        <SmartScrollReveal kind="text" className="px-4 pb-8 block">
           <HumanTouchManifesto variant="track" />
-        </section>
+        </SmartScrollReveal>
 
         {/* 무료 고민 리포트 입력 */}
         <section className="px-4 pb-12">
@@ -450,36 +451,38 @@ const MindTrack: React.FC = () => {
         </AnimatePresence>
 
         {/* Goal Selection */}
-        <section id="goal-section" className="px-4 pb-16 scroll-mt-24">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-                30일 동안 집중할 목표를 골라주세요
-              </h2>
-              <p className="text-slate-600">선택한 목표에 맞춰 일일 코칭이 자동 설계돼요</p>
+        <SmartScrollReveal kind="cards" className="block">
+          <section id="goal-section" className="px-4 pb-16 scroll-mt-24">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
+                  30일 동안 집중할 목표를 골라주세요
+                </h2>
+                <p className="text-slate-600">선택한 목표에 맞춰 일일 코칭이 자동 설계돼요</p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                {focusGoals.map((goal) => (
+                  <button
+                    key={goal.id}
+                    onClick={() => setSelectedGoal(goal.id)}
+                    className={`p-4 md:p-5 rounded-2xl border-2 text-left transition-all ${
+                      selectedGoal === goal.id
+                        ? 'border-blue-500 bg-blue-50 shadow-lg scale-[1.02]'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="text-3xl mb-2">{goal.icon}</div>
+                    <div className="font-bold text-slate-900 text-sm md:text-base mb-1">{goal.title}</div>
+                    <div className="text-xs text-slate-500 break-keep">{goal.desc}</div>
+                    {selectedGoal === goal.id && (
+                      <CheckCircle2 className="w-5 h-5 text-blue-600 mt-2" />
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-              {focusGoals.map((goal) => (
-                <button
-                  key={goal.id}
-                  onClick={() => setSelectedGoal(goal.id)}
-                  className={`p-4 md:p-5 rounded-2xl border-2 text-left transition-all ${
-                    selectedGoal === goal.id
-                      ? 'border-blue-500 bg-blue-50 shadow-lg scale-[1.02]'
-                      : 'border-slate-200 bg-white hover:border-slate-300'
-                  }`}
-                >
-                  <div className="text-3xl mb-2">{goal.icon}</div>
-                  <div className="font-bold text-slate-900 text-sm md:text-base mb-1">{goal.title}</div>
-                  <div className="text-xs text-slate-500 break-keep">{goal.desc}</div>
-                  {selectedGoal === goal.id && (
-                    <CheckCircle2 className="w-5 h-5 text-blue-600 mt-2" />
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
+          </section>
+        </SmartScrollReveal>
 
         {/* 30 Day Flow */}
         <section className="px-4 pb-16 bg-gradient-to-b from-white to-slate-50">
@@ -516,74 +519,78 @@ const MindTrack: React.FC = () => {
         </section>
 
         {/* Value Pillars */}
-        <section className="px-4 py-16">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">왜 이 트랙이 다를까요</h2>
+        <SmartScrollReveal kind="stats" className="block">
+          <section className="px-4 py-16">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-10">
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">왜 이 트랙이 다를까요</h2>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
+                <Card className="border-blue-100">
+                  <CardContent className="p-6 space-y-3">
+                    <BarChart3 className="w-8 h-8 text-blue-600" />
+                    <h3 className="font-bold text-slate-900">눈에 보이는 변화</h3>
+                    <p className="text-sm text-slate-600 break-keep">
+                      1일차와 30일차의 셀프 체크 결과를 한눈에 비교. 막연한 후기가 아닌 내 데이터로 확인.
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="border-purple-100">
+                  <CardContent className="p-6 space-y-3">
+                    <Zap className="w-8 h-8 text-purple-600" />
+                    <h3 className="font-bold text-slate-900">매일 3분, 부담 ZERO</h3>
+                    <p className="text-sm text-slate-600 break-keep">
+                      명상 앱처럼 길지 않고, 검사처럼 무겁지 않아요. 출근길·점심시간에 끝나는 짧은 루틴.
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="border-amber-100">
+                  <CardContent className="p-6 space-y-3">
+                    <Shield className="w-8 h-8 text-amber-600" />
+                    <h3 className="font-bold text-slate-900">의료가 아닌 코칭</h3>
+                    <p className="text-sm text-slate-600 break-keep">
+                      진단·치료가 아닌 자기이해·습관설계·웰빙 가이드. 누구나 안심하고 시작할 수 있어요.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
-            <div className="grid md:grid-cols-3 gap-4">
-              <Card className="border-blue-100">
-                <CardContent className="p-6 space-y-3">
-                  <BarChart3 className="w-8 h-8 text-blue-600" />
-                  <h3 className="font-bold text-slate-900">눈에 보이는 변화</h3>
-                  <p className="text-sm text-slate-600 break-keep">
-                    1일차와 30일차의 셀프 체크 결과를 한눈에 비교. 막연한 후기가 아닌 내 데이터로 확인.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-purple-100">
-                <CardContent className="p-6 space-y-3">
-                  <Zap className="w-8 h-8 text-purple-600" />
-                  <h3 className="font-bold text-slate-900">매일 3분, 부담 ZERO</h3>
-                  <p className="text-sm text-slate-600 break-keep">
-                    명상 앱처럼 길지 않고, 검사처럼 무겁지 않아요. 출근길·점심시간에 끝나는 짧은 루틴.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-amber-100">
-                <CardContent className="p-6 space-y-3">
-                  <Shield className="w-8 h-8 text-amber-600" />
-                  <h3 className="font-bold text-slate-900">의료가 아닌 코칭</h3>
-                  <p className="text-sm text-slate-600 break-keep">
-                    진단·치료가 아닌 자기이해·습관설계·웰빙 가이드. 누구나 안심하고 시작할 수 있어요.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
+          </section>
+        </SmartScrollReveal>
 
         {/* CTA */}
-        <section className="px-4 py-16 bg-gradient-to-br from-blue-600 to-purple-600">
-          <div className="max-w-3xl mx-auto text-center text-white space-y-6">
-            <Award className="w-12 h-12 mx-auto opacity-90" />
-            <h2 className="text-3xl md:text-4xl font-bold break-keep">
-              30일 후, 한결 가벼워진 마음으로
-            </h2>
-            <p className="text-white/90 text-base md:text-lg break-keep">
-              지금 시작하면 ₩19,900 (정가 ₩39,800)<br />
-              만족하지 않으면 14일 내 100% 환불
-            </p>
-            <div className="pt-2">
-              <Button
-                size="lg"
-                onClick={handleStart}
-                disabled={loading}
-                className="bg-white text-blue-700 hover:bg-slate-100 text-lg px-8 py-6 h-auto rounded-2xl shadow-2xl font-bold"
-              >
-                {loading ? '등록 중...' : (
-                  <>
-                    {selectedGoal ? '30일 트랙 시작하기' : '먼저 목표를 선택해주세요'}
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </>
-                )}
-              </Button>
+        <SmartScrollReveal kind="cta" className="block">
+          <section className="px-4 py-16 bg-gradient-to-br from-blue-600 to-purple-600">
+            <div className="max-w-3xl mx-auto text-center text-white space-y-6">
+              <Award className="w-12 h-12 mx-auto opacity-90" />
+              <h2 className="text-3xl md:text-4xl font-bold break-keep">
+                30일 후, 한결 가벼워진 마음으로
+              </h2>
+              <p className="text-white/90 text-base md:text-lg break-keep">
+                지금 시작하면 ₩19,900 (정가 ₩39,800)<br />
+                만족하지 않으면 14일 내 100% 환불
+              </p>
+              <div className="pt-2">
+                <Button
+                  size="lg"
+                  onClick={handleStart}
+                  disabled={loading}
+                  className="bg-white text-blue-700 hover:bg-slate-100 text-lg px-8 py-6 h-auto rounded-2xl shadow-2xl font-bold"
+                >
+                  {loading ? '등록 중...' : (
+                    <>
+                      {selectedGoal ? '30일 트랙 시작하기' : '먼저 목표를 선택해주세요'}
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </>
+                  )}
+                </Button>
+              </div>
+              <p className="text-white/70 text-xs">
+                결제는 다음 단계에서 진행됩니다 · 안전한 토스페이먼츠 결제
+              </p>
             </div>
-            <p className="text-white/70 text-xs">
-              결제는 다음 단계에서 진행됩니다 · 안전한 토스페이먼츠 결제
-            </p>
-          </div>
-        </section>
+          </section>
+        </SmartScrollReveal>
 
         <section className="px-4 py-8 max-w-4xl mx-auto">
           <MedicalDisclaimer variant="full" />

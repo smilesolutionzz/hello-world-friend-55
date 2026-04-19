@@ -31,6 +31,7 @@ import TrialOnboarding from '@/components/onboarding/TrialOnboarding';
 import { useTrialProfile } from '@/hooks/useTrialProfile';
 import { CopilotBubble } from '@/components/copilot/CopilotBubble';
 import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
+import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 
 
 const structuredData = {

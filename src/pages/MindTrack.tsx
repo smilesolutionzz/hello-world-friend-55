@@ -15,6 +15,7 @@ import Footer from '@/components/ui/footer';
 import SEOHead from '@/components/common/SEOHead';
 import CoachingBadge from '@/components/branding/CoachingBadge';
 import { MedicalDisclaimer } from '@/components/legal/MedicalDisclaimer';
+import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -219,6 +220,11 @@ const MindTrack: React.FC = () => {
               </p>
             </motion.div>
           </div>
+        </section>
+
+        {/* 휴먼터치 매니페스토 — 따뜻형 카드 */}
+        <section className="px-4 pb-8">
+          <HumanTouchManifesto variant="track" />
         </section>
 
         {/* 무료 고민 리포트 입력 */}

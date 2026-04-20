@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import SEOHead from "@/components/common/SEOHead";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { useSmartBack } from "@/hooks/useSmartBack";
+import InviteFriendsButton from "@/components/mind-track/InviteFriendsButton";
 
 export default function MindTrackWorkbook() {
   const navigate = useNavigate();
@@ -214,7 +215,10 @@ export default function MindTrackWorkbook() {
               </div>
             </div>
             <Progress value={(currentDay / 30) * 100} className="h-2" />
-            <div className="text-xs text-slate-500 mt-2">{completedCount}일 체크인 완료</div>
+            <div className="flex items-center justify-between mt-2 gap-2 flex-wrap">
+              <div className="text-xs text-slate-500">{completedCount}일 체크인 완료</div>
+              <InviteFriendsButton currentDay={currentDay} />
+            </div>
           </Card>
 
           {/* Today's Mission */}

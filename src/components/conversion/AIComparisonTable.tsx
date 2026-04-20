@@ -76,11 +76,11 @@ const AIComparisonTable: React.FC<AIComparisonTableProps> = ({ className = '', v
             className="grid grid-cols-[1fr_72px_72px] sm:grid-cols-[1fr_120px_120px] hover:bg-slate-50/50 transition-colors"
           >
             <div className="p-2.5 sm:p-4">
-              <div className="text-xs sm:text-sm font-semibold text-slate-800 break-keep leading-snug">
+              <div className="text-xs sm:text-sm font-bold text-slate-900 break-keep leading-snug">
                 {row.key}
               </div>
               {!isCompact && (
-                <div className="text-[10px] sm:text-xs text-slate-500 mt-0.5 break-keep">
+                <div className="text-[10px] sm:text-xs text-slate-600 mt-0.5 break-keep">
                   {row.desc}
                 </div>
               )}

@@ -41,51 +41,39 @@ serve(async (req) => {
       );
     }
 
-    // 시스템 프롬프트 - 친구처럼 한 가지씩 체크하며 묻는 대화 스타일
+    // 시스템 프롬프트 - 친구처럼 하나씩 체크 + 빠른 선택 칩 제공
     const systemPrompt = `당신은 AIH 플랫폼의 따뜻한 AI 상담 친구입니다.
-절대 처음부터 긴 답이나 조언을 쏟아내지 말고, **친한 친구가 옆에서 차근차근 물어보듯** 한 번에 딱 하나씩 짧게 체크하며 대화하세요.
+친한 친구가 옆에서 차근차근 물어보듯, 한 번에 딱 하나씩 짧게 체크하며 대화하세요.
 
-## 절대 규칙
+## 응답 형식 (반드시 respond 함수로만 반환)
+- message: 1~3문장의 자연스러운 말투. 마크다운 헤더/리스트 금지. 한 번에 질문 1개만.
+- chips: 사용자가 바로 누를 수 있는 빠른 답변 칩 2~5개.
+  · 진단 단계: 항상 chips 제공 (객관식 선택지 형태, 상황에 맞게 동적 생성)
+  · 자유 입력이 필요하면 마지막에 "직접 입력하기" 칩 추가 가능
+  · 결과를 정리해 답하는 단계: chips를 빈 배열 []로
+- isFinal: 결과/조언을 정리해 답한 경우 true, 아직 진단 중이면 false
 
-**1. 한 번에 질문 1개만**
-- 절대 2개 이상 묻지 않습니다.
-- 한 메시지는 1~3문장 이내로 짧게.
-- 리스트(•, -, 1.)나 마크다운 헤더(##) 사용 금지. 그냥 자연스러운 말투.
+## 진행 순서 (유연하게)
+① 누구 얘기? (예시 chips: ["본인", "자녀", "가족", "기타"])
+② 연령대? (자녀면 ["영유아(0-5)", "초등(6-12)", "청소년(13-18)", "성인"])
+③ 언제부터? (["며칠 전", "몇 주 전", "몇 달 됨", "1년 이상"])
+④ 주로 어떤 상황? (상황에 맞춰 동적 생성)
+⑤ 시도해 본 것? / 가장 원하는 것? (["그냥 들어주기", "원인 파악", "구체 방법"])
 
-**2. 체크리스트처럼 하나씩 짚어가기**
-처음에는 가볍게 공감 + 질문 1개부터 시작하세요. 사용자가 답하면, 그 답을 받아서 다음 질문 1개로 자연스럽게 이어갑니다.
+3~5번 주고받아 충분히 파악되면 결과 정리(message 6문장 이내, chips: [], isFinal: true).
 
-순서 예시 (상황에 맞게 유연하게):
-- ① 누구 얘기예요? (본인 / 자녀 / 가족 — 연령대도)
-- ② 언제부터 그랬어요?
-- ③ 주로 어떤 상황에서 그래요?
-- ④ 혹시 시도해 본 게 있나요?
-- ⑤ 지금 가장 원하는 건 뭐예요? (그냥 들어주길 / 원인 파악 / 구체적 방법)
-
-**3. 말투 예시**
-- "아, 그러시구나… 혹시 본인 얘기인가요, 아니면 가족 중 누구 얘기인가요?"
-- "음, 그게 언제부터 그랬는지 기억나세요?"
-- "그럴 때 보통 어떤 상황에서 더 심해지는 것 같아요?"
-
-**4. 결과는 충분히 들은 뒤에만**
-3~5번 정도 주고받아 충분히 파악되면, 그때 비로소 정리해서 답변하세요. 그때도 6문장 이내, 차분하게.
-
-**5. 금지**
-- 첫 응답에 긴 설명/조언/리스트 주지 않기
+## 금지
+- 첫 응답에 긴 설명/조언/리스트 금지
 - "다음 정보를 알려주세요:" 같은 폼 형식 금지
 - 의료 진단 단정 금지 ("우울증입니다" X)
-- 한 번에 여러 질문 쏟아내기 금지
+- 한 번에 여러 질문 금지`;
 
-기억하세요: 당신은 폼이 아니라 **친구**입니다. 한 마디씩, 따뜻하게.`;
-
-    // 메시지 구성
     const messages = [
       { role: 'system', content: systemPrompt },
-      ...(chatHistory || []).slice(-10), // 최근 10개 메시지만 사용
+      ...(chatHistory || []).slice(-10),
       { role: 'user', content: message }
     ];
 
-    // OpenAI API 호출
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -95,30 +83,75 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages: messages,
-        max_tokens: 500,
+        max_tokens: 600,
         temperature: 0.7,
+        tools: [{
+          type: 'function',
+          function: {
+            name: 'respond',
+            description: '사용자에게 보낼 짧은 응답과 빠른 선택 칩을 반환',
+            parameters: {
+              type: 'object',
+              properties: {
+                message: { type: 'string', description: '1~3문장의 짧은 응답 또는 결과 정리(6문장 이내)' },
+                chips: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: '빠른 답변 칩 0~5개. 진단 중이면 2~5개, 결과 단계면 빈 배열.'
+                },
+                isFinal: { type: 'boolean', description: '결과/조언 단계면 true' }
+              },
+              required: ['message', 'chips', 'isFinal'],
+              additionalProperties: false,
+            }
+          }
+        }],
+        tool_choice: { type: 'function', function: { name: 'respond' } },
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('OpenAI API error:', response.status, errorData);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error('AI gateway error:', response.status, errorData);
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: '요청이 많아요. 잠시 후 다시 시도해주세요.' }), {
+          status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ error: 'AI 크레딧이 부족합니다.' }), {
+          status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      throw new Error(`AI gateway error: ${response.status}`);
     }
 
     const aiResponse = await response.json();
-    
-    if (!aiResponse.choices?.[0]?.message?.content) {
-      throw new Error('Invalid response from OpenAI');
+    const toolCall = aiResponse.choices?.[0]?.message?.tool_calls?.[0];
+    let parsed: { message: string; chips: string[]; isFinal: boolean } = {
+      message: '',
+      chips: [],
+      isFinal: false,
+    };
+
+    if (toolCall?.function?.arguments) {
+      try {
+        parsed = JSON.parse(toolCall.function.arguments);
+      } catch (e) {
+        console.error('Failed to parse tool args:', e);
+      }
+    }
+    if (!parsed.message) {
+      parsed.message = aiResponse.choices?.[0]?.message?.content || '죄송해요, 다시 한 번 말씀해주실래요?';
     }
 
-    const aiMessage = aiResponse.choices[0].message.content;
-
     return new Response(
-      JSON.stringify({ response: aiMessage }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
+      JSON.stringify({
+        response: parsed.message,
+        chips: Array.isArray(parsed.chips) ? parsed.chips.slice(0, 5) : [],
+        isFinal: !!parsed.isFinal,
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {

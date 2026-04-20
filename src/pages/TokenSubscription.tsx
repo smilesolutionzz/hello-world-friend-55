@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Sparkles, ArrowRight, Check, Shield, Star, Zap,
-  Lock, UserPlus, CheckCircle, Calendar
+  Lock, UserPlus, CheckCircle, Calendar, Mail, Target, BookOpen
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -132,7 +132,38 @@ const TokenSubscription = () => {
           <AIComparisonTable variant="compact" />
         </motion.div>
 
-        {/* 임상 통계 신뢰성 섹션 */}
+        {/* 🆕 데일리 코칭 메일 가치 섹션 */}
+        <motion.div {...fade(0.11)} className="mb-10 rounded-3xl border border-foreground/10 bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="relative">
+            <div className="inline-flex items-center gap-1.5 bg-white/10 text-white text-[10px] font-bold tracking-[0.18em] uppercase px-2.5 py-1 rounded-full mb-4">
+              <Mail className="w-3 h-3" />
+              Daily Coaching · 신규
+            </div>
+            <h3 className="text-xl md:text-2xl font-black mb-3 break-keep">
+              매일 아침 8시, 박사급 1:1 코칭 메일이 도착합니다
+            </h3>
+            <p className="text-white/70 text-sm md:text-base mb-6 break-keep leading-relaxed">
+              30일간 매일 받는 한 줄의 미션과 임상 근거. Noom 스타일 데일리 코칭을 임상심리학 기반으로 설계했습니다.
+            </p>
+            <div className="grid sm:grid-cols-3 gap-3">
+              {[
+                { icon: Target, label: '목표 1개 선택', desc: '우울·불안·수면·ADHD·양육 등' },
+                { icon: Mail, label: '매일 1:1 메일', desc: '5분 안에 실천하는 미션' },
+                { icon: BookOpen, label: '졸업 워크북', desc: '30일 변화 종합 리포트' },
+              ].map((item, i) => (
+                <div key={i} className="rounded-xl bg-white/5 border border-white/10 p-4">
+                  <item.icon className="w-5 h-5 text-blue-300 mb-2" />
+                  <div className="font-bold text-sm mb-1">{item.label}</div>
+                  <div className="text-xs text-white/60 break-keep">{item.desc}</div>
+                </div>
+              ))}
+            </div>
+            <p className="text-[11px] text-white/50 italic mt-5 break-keep">
+              ※ 결제 후 코칭 목표 설정 페이지에서 주제를 선택하면 다음 날 오전 8시부터 메일이 시작됩니다.
+            </p>
+          </div>
+        </motion.div>
         <motion.div {...fade(0.12)} className="mb-10 rounded-3xl border border-border bg-gradient-to-br from-slate-50 to-blue-50/30 dark:from-slate-900/50 dark:to-blue-950/20 p-6 md:p-8">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">

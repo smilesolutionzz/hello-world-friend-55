@@ -794,6 +794,235 @@ export type Database = {
         }
         Relationships: []
       }
+      b2b_jobcoach_employee_sessions: {
+        Row: {
+          burnout_score: number | null
+          created_at: string
+          department_code: string | null
+          duration_minutes: number | null
+          employee_user_id: string
+          id: string
+          institution_id: string | null
+          notes: string | null
+          risk_level: string | null
+          satisfaction_score: number | null
+          session_type: string
+          stress_score: number | null
+        }
+        Insert: {
+          burnout_score?: number | null
+          created_at?: string
+          department_code?: string | null
+          duration_minutes?: number | null
+          employee_user_id: string
+          id?: string
+          institution_id?: string | null
+          notes?: string | null
+          risk_level?: string | null
+          satisfaction_score?: number | null
+          session_type: string
+          stress_score?: number | null
+        }
+        Update: {
+          burnout_score?: number | null
+          created_at?: string
+          department_code?: string | null
+          duration_minutes?: number | null
+          employee_user_id?: string
+          id?: string
+          institution_id?: string | null
+          notes?: string | null
+          risk_level?: string | null
+          satisfaction_score?: number | null
+          session_type?: string
+          stress_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_jobcoach_employee_sessions_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      b2b_jobcoach_inquiries: {
+        Row: {
+          admin_note: string | null
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          contacted_at: string | null
+          created_at: string
+          employee_count: number
+          id: string
+          industry: string | null
+          interested_tier: string | null
+          message: string | null
+          position: string | null
+          source: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_note?: string | null
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          employee_count?: number
+          id?: string
+          industry?: string | null
+          interested_tier?: string | null
+          message?: string | null
+          position?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_note?: string | null
+          company_name?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          employee_count?: number
+          id?: string
+          industry?: string | null
+          interested_tier?: string | null
+          message?: string | null
+          position?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      b2b_jobcoach_plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          features: Json
+          free_coaching_per_employee: number
+          id: string
+          is_active: boolean
+          is_recommended: boolean
+          max_employees: number | null
+          min_employees: number
+          plan_key: string
+          plan_name: string
+          price_per_employee_monthly: number
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          features?: Json
+          free_coaching_per_employee?: number
+          id?: string
+          is_active?: boolean
+          is_recommended?: boolean
+          max_employees?: number | null
+          min_employees?: number
+          plan_key: string
+          plan_name: string
+          price_per_employee_monthly?: number
+          tier: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          features?: Json
+          free_coaching_per_employee?: number
+          id?: string
+          is_active?: boolean
+          is_recommended?: boolean
+          max_employees?: number | null
+          min_employees?: number
+          plan_key?: string
+          plan_name?: string
+          price_per_employee_monthly?: number
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      b2b_jobcoach_team_reports: {
+        Row: {
+          ai_summary: string | null
+          avg_burnout_score: number | null
+          avg_satisfaction_score: number | null
+          avg_stress_score: number | null
+          created_at: string
+          department_code: string | null
+          generated_by: string | null
+          high_risk_count: number | null
+          id: string
+          institution_id: string
+          participated_employees: number | null
+          recommendations: Json | null
+          report_month: string
+          total_employees: number | null
+          turnover_risk_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          avg_burnout_score?: number | null
+          avg_satisfaction_score?: number | null
+          avg_stress_score?: number | null
+          created_at?: string
+          department_code?: string | null
+          generated_by?: string | null
+          high_risk_count?: number | null
+          id?: string
+          institution_id: string
+          participated_employees?: number | null
+          recommendations?: Json | null
+          report_month: string
+          total_employees?: number | null
+          turnover_risk_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          ai_summary?: string | null
+          avg_burnout_score?: number | null
+          avg_satisfaction_score?: number | null
+          avg_stress_score?: number | null
+          created_at?: string
+          department_code?: string | null
+          generated_by?: string | null
+          high_risk_count?: number | null
+          id?: string
+          institution_id?: string
+          participated_employees?: number | null
+          recommendations?: Json | null
+          report_month?: string
+          total_employees?: number | null
+          turnover_risk_score?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_jobcoach_team_reports_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       b2b_partner_institutions: {
         Row: {
           address: string | null

@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Sparkles, ArrowRight, Check, Shield, Star, Zap,
-  Lock, UserPlus, CheckCircle, Calendar, Mail, Target, BookOpen
+  Lock, UserPlus, CheckCircle, Calendar, Mail, Target, BookOpen,
+  Users, Phone, Award
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -286,6 +287,75 @@ const TokenSubscription = () => {
               7일 이내 100% 환불 보장 · 안전 결제 · 자동 갱신 없음
             </p>
           </div>
+        </motion.div>
+
+        {/* 구독자 전용 — 실제 전문가 1:1 상담 할인 */}
+        <motion.div {...fade(0.22)} className="rounded-3xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 md:p-8 shadow-lg">
+          <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold mb-3">
+                <Award className="w-3 h-3" />
+                구독자 전용 혜택
+              </div>
+              <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-1.5 break-keep">
+                실제 분야별 프로 전문가 1:1 상담을 <span className="text-emerald-600">최대 50% 할인</span>
+              </h3>
+              <p className="text-sm text-slate-600 break-keep leading-relaxed">
+                언어치료·심리상담·발달재활·ABA·미술/감각통합 등 검증된 임상 전문가를 필요할 때 즉시 예약하세요.
+                AI 분석 결과만으로 부족할 때, 진짜 사람의 눈으로 한 번 더 짚어드립니다.
+              </p>
+            </div>
+            <div className="hidden md:flex w-14 h-14 rounded-2xl bg-emerald-100 items-center justify-center flex-shrink-0">
+              <Users className="w-7 h-7 text-emerald-600" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mb-5">
+            <div className="rounded-2xl bg-white border border-emerald-100 p-4">
+              <div className="text-[11px] font-bold text-slate-500 mb-1">월간 구독자</div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xs text-slate-400 line-through">₩49,000</span>
+                <span className="text-xl font-black text-emerald-600">₩34,300</span>
+              </div>
+              <div className="text-[11px] text-emerald-700 font-semibold mt-1">30% 할인 / 40분</div>
+            </div>
+            <div className="rounded-2xl bg-emerald-600 text-white p-4 relative overflow-hidden">
+              <div className="absolute top-1.5 right-1.5 text-[9px] font-bold bg-white text-emerald-700 px-1.5 py-0.5 rounded-full">BEST</div>
+              <div className="text-[11px] font-bold text-emerald-100 mb-1">연간 구독자</div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xs text-emerald-200 line-through">₩49,000</span>
+                <span className="text-xl font-black text-white">₩24,500</span>
+              </div>
+              <div className="text-[11px] text-emerald-100 font-semibold mt-1">50% 할인 / 40분</div>
+            </div>
+          </div>
+
+          <div className="space-y-2 mb-5">
+            {[
+              '언어치료·심리상담·발달재활·ABA·미술치료·특수체육·감각통합 7개 분야',
+              '평균 8년 이상 경력 검증된 임상 전문가만 매칭',
+              '카카오톡 또는 화상으로 즉시 진행 (40분 기준)',
+              '상담 불만족 시 100% 환불 보장',
+            ].map((t, i) => (
+              <div key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <span className="break-keep leading-relaxed">{t}</span>
+              </div>
+            ))}
+          </div>
+
+          <Button
+            variant="outline"
+            className="w-full h-12 rounded-xl font-bold text-sm md:text-base border-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
+            onClick={() => navigate('/expert-hiring')}
+          >
+            <Phone className="w-4 h-4 mr-2" />
+            전문가 둘러보기
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+          <p className="text-[11px] text-slate-500 mt-2.5 text-center">
+            * 할인은 활성 구독 상태에서 자동 적용됩니다 · 비구독 사용자는 정가 ₩49,000
+          </p>
         </motion.div>
 
         {/* 신뢰 배지 */}

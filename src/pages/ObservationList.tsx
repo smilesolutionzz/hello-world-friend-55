@@ -17,6 +17,7 @@ import {
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { motion } from "framer-motion";
+import ReportHubReadyBanner from "@/components/report/ReportHubReadyBanner";
 
 interface Observation {
   id: string;

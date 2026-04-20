@@ -23,6 +23,7 @@ import DashboardRouter from "./pages/DashboardRouter";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import Unsubscribe from "./pages/Unsubscribe";
 
 // AI Analysis & Core Features
 import AIAssistant from "./pages/AIAssistant";
@@ -413,6 +414,9 @@ const App = () => {
           <Route path="/en/refund" element={<RefundPolicy />} />
           <Route path="/en/about" element={<About />} />
           <Route path="/en/share/:shareId" element={<ShareView />} />
+
+          {/* Email unsubscribe */}
+          <Route path="/unsubscribe" element={<Unsubscribe />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

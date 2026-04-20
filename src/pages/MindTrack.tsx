@@ -568,7 +568,7 @@ const MindTrack: React.FC = () => {
               </h2>
               <p className="text-white/90 text-base md:text-lg break-keep">
                 지금 시작하면 ₩19,900 (정가 ₩39,800)<br />
-                만족하지 않으면 14일 내 100% 환불
+                7일 무료 체험 후 결제 · 언제든 해지 가능
               </p>
               <div className="pt-2">
                 <Button

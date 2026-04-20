@@ -28,7 +28,7 @@ import {
   Save,
   Share2
 } from "lucide-react";
-import { KakaoShareButton } from "@/components/social/KakaoShareButton";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -901,15 +901,6 @@ export default function VideoObservationAnalyzer({ onAnalysisComplete, onSaved }
                     )}
                     {isSaved ? '저장 완료!' : isSaving ? '저장 중...' : '분석 결과 저장하기'}
                   </Button>
-
-                  {/* KakaoTalk Share Button */}
-                  <KakaoShareButton
-                    title={`AI 영상 관찰 분석 결과 - ${getRiskLabel(analysisResult.overallAssessment.riskLevel)}`}
-                    description={`분석 결과: ${analysisResult.overallAssessment.summary || '영상 기반 AI 행동 분석을 완료했습니다.'}`}
-                    buttonText="카카오톡 공유하기"
-                    className="w-full"
-                    size="default"
-                  />
 
                   <div className="border-t pt-4 mt-4">
                     <h3 className="text-lg font-bold text-foreground">

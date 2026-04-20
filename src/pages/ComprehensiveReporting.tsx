@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useSmartBack } from '@/hooks/useSmartBack';
 import { useToast } from '@/hooks/use-toast';
 
 interface DataItem {
@@ -39,6 +40,7 @@ export default function ComprehensiveReporting() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generateProgress, setGenerateProgress] = useState(0);
   const navigate = useNavigate();
+  const goBack = useSmartBack('/');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -306,7 +308,7 @@ export default function ComprehensiveReporting() {
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+          <Button variant="ghost" size="icon" onClick={goBack}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>

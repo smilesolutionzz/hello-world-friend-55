@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useSmartBack } from '@/hooks/useSmartBack';
 import { useRewards } from '@/hooks/useRewards';
 import { RewardPointsHeader } from '@/components/rewards/RewardPointsHeader';
 import { AttendanceCheck } from '@/components/rewards/AttendanceCheck';
@@ -12,6 +13,7 @@ import { RewardHistory } from '@/components/rewards/RewardHistory';
 
 const RewardsPage = () => {
   const navigate = useNavigate();
+  const goBack = useSmartBack('/');
   const {
     points,
     attendance,
@@ -27,7 +29,7 @@ const RewardsPage = () => {
       <div className="container max-w-md mx-auto px-4 py-6 space-y-5">
         {/* 헤더 */}
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+          <Button variant="ghost" size="icon" onClick={goBack}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <h1 className="text-xl font-bold">리워드 센터</h1>

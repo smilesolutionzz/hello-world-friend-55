@@ -27,6 +27,7 @@ interface ChatMessage {
   recommendedTrack?: string | null;
   recommendedRoute?: string | null;
   recommendedMessage?: string | null;
+  summary?: string | null;
 }
 
 type Mode = 'guide' | 'chat';
@@ -164,8 +165,9 @@ export const CopilotBubble: React.FC = () => {
         chips: Array.isArray(data?.chips) ? data.chips : [],
         isFinal: !!data?.isFinal,
         recommendedTrack: data?.recommendedTrack || null,
-        recommendedRoute: data?.recommendedRoute || null,
+        recommendedRoute: data?.recommendedRoute || (data?.isFinal ? '/mind-track' : null),
         recommendedMessage: data?.recommendedMessage || null,
+        summary: data?.summary || null,
       };
       setChatMessages((prev) => [...prev, assistantMsg]);
 
@@ -417,25 +419,50 @@ className="fixed bottom-[80px] left-3 right-3 z-[60] md:left-6 md:right-auto md:
                             </div>
                           )}
                           {/* Final recommendation CTA */}
-                          {msg.role === 'assistant' && msg.isFinal && msg.recommendedRoute && (
-                            <div className="ml-8 mt-2 rounded-xl border border-primary/40 bg-gradient-to-br from-primary/15 to-purple-500/10 p-3 space-y-2">
-                              <div className="flex items-center gap-1.5 text-[11px] font-semibold text-primary">
+                          {msg.role === 'assistant' && msg.isFinal && (
+                            <div className="ml-8 mt-2 rounded-xl border border-primary/40 bg-gradient-to-br from-primary/20 via-primary/10 to-purple-500/10 p-3.5 space-y-3 shadow-lg shadow-primary/10">
+                              <div className="flex items-center gap-1.5 text-[11px] font-bold text-primary uppercase tracking-wide">
                                 <Sparkles className="w-3 h-3" />
-                                대화 내용을 바탕으로 추천드려요
+                                대화 정리 & 맞춤 제안
                               </div>
-                              {msg.recommendedMessage && (
-                                <p className="text-xs text-white/80 leading-relaxed">{msg.recommendedMessage}</p>
+
+                              {msg.summary && (
+                                <div className="rounded-lg bg-white/5 border border-white/10 px-3 py-2">
+                                  <p className="text-[10px] text-white/50 mb-0.5">📝 요약</p>
+                                  <p className="text-xs text-white/90 leading-relaxed">{msg.summary}</p>
+                                </div>
                               )}
-                              <button
-                                onClick={() => {
-                                  navigate(msg.recommendedRoute!);
-                                  setIsOpen(false);
-                                }}
-                                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-r from-primary to-purple-600 text-white text-xs font-bold hover:opacity-90 transition-opacity"
-                              >
-                                {msg.recommendedTrack === 'expert_urgent' ? '긴급 전문가 연결' : '30일 마음 트랙 시작하기'}
-                                <ArrowRight className="w-3.5 h-3.5" />
-                              </button>
+
+                              {msg.recommendedMessage && (
+                                <p className="text-xs text-white/85 leading-relaxed">
+                                  {msg.recommendedMessage}
+                                </p>
+                              )}
+
+                              <div className="space-y-1.5 pt-1">
+                                <button
+                                  onClick={() => {
+                                    navigate(msg.recommendedRoute || '/mind-track');
+                                    setIsOpen(false);
+                                  }}
+                                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg bg-gradient-to-r from-primary to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-all hover:scale-[1.02] shadow-md"
+                                >
+                                  {msg.recommendedTrack === 'expert_urgent' ? '🚨 긴급 전문가 연결' : '✨ 30일 마음 트랙 시작하기'}
+                                  <ArrowRight className="w-4 h-4" />
+                                </button>
+
+                                {msg.recommendedTrack !== 'expert_urgent' && (
+                                  <button
+                                    onClick={() => {
+                                      navigate('/expert-hiring');
+                                      setIsOpen(false);
+                                    }}
+                                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-xs font-medium transition-colors"
+                                  >
+                                    또는 전문가 1:1 상담 보기
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           )}
                         </div>

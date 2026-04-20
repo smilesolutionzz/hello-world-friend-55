@@ -498,3 +498,10 @@ const UnifiedNavigationInner = () => {
     </>
   );
 };
+
+// Wrapper that suppresses the nav when rendered inside the Assessment Hub (prevents duplicate nav)
+export const UnifiedNavigation = () => {
+  const { insideHub } = useContext(HubContext);
+  if (insideHub) return null;
+  return <UnifiedNavigationInner />;
+};

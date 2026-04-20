@@ -56,7 +56,7 @@ const UnifiedAssessmentHub = () => {
         description="무료 빠른 체크부터 임상 통계 기반 심층 분석까지, 한 곳에서 모든 검사를 받아보세요."
         canonicalUrl="https://aihpro.app/assessment"
       />
-      <UnifiedNavigation />
+      {/* nav는 내부 Assessment/PremiumAssessment 페이지에서 렌더링됨 (중복 방지) */}
 
       {/* Hero + Tabs */}
       <div className="pt-16 bg-gradient-to-b from-background to-muted/30">

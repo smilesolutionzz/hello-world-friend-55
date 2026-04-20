@@ -54,9 +54,9 @@ const AIComparisonTable: React.FC<AIComparisonTableProps> = ({ className = '', v
         <div className="p-2.5 sm:p-3" />
         <div className="p-2.5 sm:p-3 text-center border-l border-slate-200">
           <div className="flex flex-col items-center gap-1">
-            <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
-            <span className="text-[10px] sm:text-xs font-semibold text-slate-500">일반 AI</span>
-            <span className="text-[9px] text-slate-400 hidden sm:block">ChatGPT 등</span>
+            <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600" />
+            <span className="text-[10px] sm:text-xs font-bold text-slate-700">일반 AI</span>
+            <span className="text-[9px] text-slate-500 hidden sm:block">ChatGPT 등</span>
           </div>
         </div>
         <div className="p-2.5 sm:p-3 text-center border-l border-slate-200 bg-primary/5">

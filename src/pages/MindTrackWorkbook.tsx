@@ -23,6 +23,8 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
 export default function MindTrackWorkbook() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const showWelcome = searchParams.get("welcome") === "1";
   const [loading, setLoading] = useState(true);
   const [enrollment, setEnrollment] = useState<any>(null);
   const [workbook, setWorkbook] = useState<any>(null);

@@ -2,7 +2,6 @@ import { useEffect, useState, lazy, Suspense } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Sparkles, Brain, Baby, Layers } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import SEOHead from '@/components/common/SEOHead';
 
 // 두 거대한 페이지를 lazy import → 첫 진입 시 활성 탭만 로드

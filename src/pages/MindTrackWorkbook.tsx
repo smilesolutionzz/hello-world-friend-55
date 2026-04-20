@@ -375,6 +375,9 @@ export default function MindTrackWorkbook() {
               </div>
             </Card>
           )}
+
+          {/* 다음 액션 추천 — 워크북 외부로 자연스럽게 연결 */}
+          <NextActionCards />
         </div>
       </div>
 

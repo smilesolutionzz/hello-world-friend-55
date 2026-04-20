@@ -62,6 +62,14 @@ serve(async (req) => {
 
 3~5번 주고받아 충분히 파악되면 결과 정리(message 6문장 이내, chips: [], isFinal: true).
 
+## 결과(isFinal=true) 단계 추가 필드
+- summary: 사용자 상황 한 줄 요약 (예: "초등 자녀의 등교 거부, 약 2주 지속")
+- detectedTarget: "self" | "child" | "family" | "other"
+- detectedConcerns: 핵심 키워드 배열 (예: ["등교거부","불안"])
+- detectedSeverity: "low" | "moderate" | "high"
+- recommendedTrack: 다음 단계 추천. 거의 항상 "mind_track_30" 추천 (30일 마음 트랙). 위급하면 "expert_urgent".
+- recommendedMessage: 한 줄 부드러운 권유 (예: "30일 동안 매일 5분, 함께 천천히 살펴볼까요?")
+
 ## 금지
 - 첫 응답에 긴 설명/조언/리스트 금지
 - "다음 정보를 알려주세요:" 같은 폼 형식 금지

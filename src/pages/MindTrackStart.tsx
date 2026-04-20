@@ -7,11 +7,12 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowRight, Loader2, Brain, Zap, Eye, Clock, Sparkles, ShieldCheck } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, Brain, Zap, Eye, Clock, Sparkles, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import SEOHead from "@/components/common/SEOHead";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import { useSmartBack } from "@/hooks/useSmartBack";
 
 type Mode = "quick" | "precise" | null;
 
@@ -32,6 +33,7 @@ const SCALE_LABELS = ["전혀 아니에요", "거의 아니에요", "가끔 그�
 
 export default function MindTrackStart() {
   const navigate = useNavigate();
+  const goBack = useSmartBack('/mind-track');
   const [mode, setMode] = useState<Mode>(null);
   const [enrollment, setEnrollment] = useState<any>(null);
   const [step, setStep] = useState(0);

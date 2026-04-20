@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSmartBack } from '@/hooks/useSmartBack';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Mic, ArrowLeft, Home, Gamepad2 } from 'lucide-react';
@@ -10,6 +11,7 @@ import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 
 const MetaverseVoicePage = () => {
   const navigate = useNavigate();
+  const goBack = useSmartBack('/');
   const [activeTab, setActiveTab] = useState<string | null>(null);
 
   const [structuredConfig, setStructuredConfig] = useState<{
@@ -36,7 +38,7 @@ const MetaverseVoicePage = () => {
       {/* 상단 네비게이션 */}
       <div className="fixed top-4 left-4 z-50 flex gap-2">
         <Button
-          onClick={() => navigate(-1)}
+          onClick={goBack}
           variant="outline"
           size="sm"
           className="gap-2 bg-background/90 backdrop-blur-sm shadow-lg"

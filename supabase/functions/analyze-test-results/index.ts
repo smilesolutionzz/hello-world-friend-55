@@ -23,49 +23,149 @@ serve(async (req) => {
     const systemPrompt = getSystemPrompt(testType);
     const userPrompt = formatUserPrompt(testType, results, answers);
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-3-flash-preview',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 4000,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
+    if (!LOVABLE_API_KEY) {
+      console.warn('LOVABLE_API_KEY missing — returning score-based fallback');
+      return new Response(JSON.stringify({
+        analysis: buildScoreBasedFallback(testType, results, answers),
+        testType,
+        results,
+        fallback: true,
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const data = await response.json();
-    const analysis = data.choices[0].message.content;
+    const models = ['google/gemini-2.5-flash', 'google/gemini-2.5-flash-lite'];
+    let analysis: string | null = null;
+    let lastErr = '';
 
-    return new Response(JSON.stringify({ 
+    for (const model of models) {
+      try {
+        const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt }
+            ],
+            temperature: 0.7,
+            max_tokens: 4000,
+          }),
+        });
+
+        if (!response.ok) {
+          const raw = await response.text();
+          lastErr = `[${model}] HTTP ${response.status}: ${raw.slice(0, 300)}`;
+          console.error(lastErr);
+          if (response.status === 429 || response.status === 402) break; // no point retrying other models
+          continue;
+        }
+
+        const data = await response.json();
+        analysis = data?.choices?.[0]?.message?.content ?? null;
+        if (analysis && analysis.trim().length > 50) break;
+        lastErr = `[${model}] empty content`;
+      } catch (e) {
+        lastErr = `[${model}] ${(e as Error).message}`;
+        console.error(lastErr);
+      }
+    }
+
+    if (!analysis) {
+      console.warn('AI failed, using fallback. Last error:', lastErr);
+      analysis = buildScoreBasedFallback(testType, results, answers);
+    }
+
+    return new Response(JSON.stringify({
       analysis,
       testType,
-      results 
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      results,
+      fallback: !analysis || analysis.startsWith('## 1.'),
+    }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (error: unknown) {
     console.error('Error in analyze-test-results function:', error);
-    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
-    return new Response(JSON.stringify({ 
-      error: message 
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    // Even on hard failure, return a usable fallback so the UI never shows just "전문가 상담을 권장합니다"
+    try {
+      const body = await req.clone().json().catch(() => ({}));
+      return new Response(JSON.stringify({
+        analysis: buildScoreBasedFallback(body?.testType ?? 'general', body?.results ?? {}, body?.answers),
+        error: message,
+        fallback: true,
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    } catch {
+      return new Response(JSON.stringify({ error: message }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
   }
 });
+
+function buildScoreBasedFallback(testType: string, results: any, answers?: number[]): string {
+  const total = Number(results?.total ?? 0);
+  const average = Number(results?.average ?? 0);
+  const severity = String(results?.severity ?? '보통');
+  const ageGroup = String(results?.ageGroup ?? '미지정');
+
+  // Domain extraction
+  const domainKeys = ['developmentalDomains', 'sensoryDomains', 'learningDomains', 'socialDomains', 'domains'];
+  let domains: any[] = [];
+  for (const k of domainKeys) {
+    if (Array.isArray(results?.[k]) && results[k].length) { domains = results[k]; break; }
+  }
+
+  const top = [...domains].sort((a, b) => (b.percentage ?? 0) - (a.percentage ?? 0)).slice(0, 3);
+  const low = [...domains].sort((a, b) => (a.percentage ?? 0) - (b.percentage ?? 0)).slice(0, 3);
+
+  const sevLabel = /high|위험|심각/i.test(severity) ? '높은 주의가 필요한 수준'
+    : /mod|중간|보통/i.test(severity) ? '관리가 필요한 중간 수준'
+    : '대체로 안정적인 수준';
+
+  const focusList = top.map(d => `**${d.domain ?? d.label}** (${d.percentage ?? 0}%)`).join(', ') || '주요 관심 영역 데이터 없음';
+  const strengthList = low.map(d => `**${d.domain ?? d.label}** (${d.percentage ?? 0}%)`).join(', ') || '데이터가 부족합니다';
+
+  return `## 1. 종합 평가 및 점수 해석
+이번 검사에서 총점 **${total}점**, 평균 **${average.toFixed(1)}점**으로 ${sevLabel}으로 분석됩니다. ${ageGroup} 연령대 기준으로 볼 때, 현재 상태는 즉각적인 개입이 필수적인 수준은 아니지만, 패턴을 면밀히 관찰하고 일상에서 작은 변화를 만들어 나갈 가치가 충분합니다. 점수 자체보다 중요한 것은 어떤 영역에서 균형이 무너져 있는가이며, 이번 결과는 그 단서를 명확히 보여주고 있습니다.
+
+## 2. 영역별 상세 분석
+${domains.length ? domains.map(d => `- **${d.domain ?? d.label}**: ${d.score ?? '-'}/${d.maxScore ?? '-'}점 (${d.percentage ?? 0}%, ${d.level ?? '-'})`).join('\n') : '- 영역 세부 데이터가 제공되지 않아 총점 기반으로만 해석합니다.'}
+
+가장 높은 부담을 보인 영역은 ${focusList}이며, 이는 현재의 스트레스나 어려움이 집중되는 지점입니다. 반대로 ${strengthList} 영역은 상대적으로 안정적이어서, 회복 자원으로 활용할 수 있는 강점입니다.
+
+## 3. 숨겨진 강점 및 잠재력
+검사 결과는 어려움뿐 아니라 회복 가능성도 함께 보여줍니다. 위에서 안정적으로 나타난 영역은 단순히 '문제가 없는 곳'이 아니라, 어려운 영역을 끌어올리는 지렛대가 됩니다. 예를 들어 안정 영역에서 사용하던 대처 방식(루틴, 관계, 표현 방식 등)을 부담 영역에 의식적으로 적용해 보면 변화가 빠르게 나타납니다.
+
+## 4. 위험 요인 및 주의사항
+${sevLabel.includes('높은') ? '현재 수준이 일정 기간 지속될 경우 수면, 집중력, 대인관계에 누적 영향을 줄 수 있습니다. 2주 이상 동일한 패턴이 이어지면 전문가의 객관적 평가를 권합니다.' : '지금 수준에서는 일상 기능에 큰 지장은 없으나, 갑작스러운 환경 변화나 스트레스 사건이 겹치면 부담 영역이 빠르게 악화될 수 있습니다. 자가 모니터링을 권장합니다.'}
+
+## 5. 맞춤형 실천 전략
+**지금 바로 시작할 수 있는 5가지**
+1. 부담 영역과 관련된 상황을 하루 1회 5분간 기록 (트리거-반응-결과)
+2. 안정 영역의 활동을 의식적으로 주 3회 이상 유지
+3. 수면-기상 시간 ±30분 이내로 고정
+4. 하루 한 번 신체를 움직이는 시간 10분 확보 (산책·스트레칭)
+5. 주 1회 신뢰할 수 있는 사람과 상태를 언어로 공유
+
+**중장기 방향**
+- 30일 단위로 같은 검사를 재측정해 변화 추이 확인
+- 부담 영역에 특화된 워크북·코칭 프로그램 활용
+- 안정 영역을 지속 가능한 일상 루틴으로 정착
+
+## 6. 전문가 권고사항
+${sevLabel.includes('높은') 
+  ? '현재 점수대는 자가 관리만으로 호전이 더딜 수 있습니다. 임상심리·정신건강 전문가와의 1회 평가를 권장하며, 필요 시 단기 인지행동 프로그램이 효과적일 수 있습니다.'
+  : '현재는 자가 관리와 데이터 추적으로 충분히 관리 가능한 수준입니다. 다만 한 달간 변화가 없거나 악화된다면 전문가 상담을 고려하시기 바랍니다.'}
+
+## 7. 📋 요약 및 제언
+- 핵심 상태: ${sevLabel}, 주요 부담 영역은 ${top[0]?.domain ?? top[0]?.label ?? '파악 필요'}
+- 즉시 실행: ① 트리거 5분 기록 ② 안정 영역 루틴화 ③ 수면 시간 고정
+- 30일 마음 챌린지를 통해 baseline → 14일 → 30일 변화량을 수치로 확인하실 수 있습니다.
+- 점수는 '나'를 평가하는 도구가 아니라, 변화를 설계하기 위한 출발점입니다. 작은 한 걸음이 다음 검사에서 분명한 차이로 나타날 것입니다.`;
+}
 
 function getSystemPrompt(testType: string): string {
   const basePrompt = `당신은 25년 경력의 임상심리학 박사이자 아동발달 전문가입니다. 최고 수준의 전문가적 관점에서 매우 상세하고 심층적인 분석을 제공합니다.

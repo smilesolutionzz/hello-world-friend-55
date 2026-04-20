@@ -5,6 +5,7 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from '@/i18n/useTranslation';
+import { buildScoreBasedFallback } from '@/utils/scoreBasedFallback';
 import ClinicalReportLayout, { DomainScore, ReportSection } from './ClinicalReportLayout';
 import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
@@ -40,10 +41,27 @@ const AdaptiveBehaviorResult = ({ results }: AdaptiveBehaviorResultProps) => {
         const { data, error } = await supabase.functions.invoke('analyze-test-results', {
           body: { testType: 'adaptive-behavior', results: { ...results, categoryScores }, answers: results.answers },
         });
+        const fallback = buildScoreBasedFallback({
+          testLabel: isEnglish ? 'Adaptive Behavior Assessment' : '적응행동 검사',
+          total: results.total, average: results.average, severity: results.level,
+          domains: catNames.map((name, i) => ({
+            label: name, score: categoryScores[name], maxScore: catMaxScores[i],
+            percentage: Math.round((categoryScores[name] / catMaxScores[i]) * 100),
+          })),
+          isEnglish,
+        });
         if (error) throw error;
-        setExpertInterpretation(data.analysis || '');
+        setExpertInterpretation(data?.analysis || fallback);
       } catch {
-        setExpertInterpretation(isEnglish ? 'Unable to load expert analysis.' : '전문가 분석을 불러올 수 없습니다.');
+        setExpertInterpretation(buildScoreBasedFallback({
+          testLabel: isEnglish ? 'Adaptive Behavior Assessment' : '적응행동 검사',
+          total: results.total, average: results.average, severity: results.level,
+          domains: catNames.map((name, i) => ({
+            label: name, score: categoryScores[name], maxScore: catMaxScores[i],
+            percentage: Math.round((categoryScores[name] / catMaxScores[i]) * 100),
+          })),
+          isEnglish,
+        }));
       } finally {
         setIsLoading(false);
       }

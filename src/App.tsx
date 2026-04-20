@@ -116,6 +116,7 @@ import IEPView from "./pages/IEPView";
 import IRDeck from "./pages/IRDeck";
 import PlatformOnePager from "./pages/PlatformOnePager";
 import B2BProposal from "./pages/B2BProposal";
+import B2BJobCoach from "./pages/B2BJobCoach";
 import B2BDemoReport from "./pages/B2BDemoReport";
 import StartupPackage from "./pages/StartupPackage";
 

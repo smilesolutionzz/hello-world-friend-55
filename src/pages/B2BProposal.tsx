@@ -13,6 +13,7 @@ import {
   ChevronDown, MousePointerClick, Globe, Gift, Flame
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import B2BJobCoachSection from '@/components/b2b/B2BJobCoachSection';
 import { Search } from 'lucide-react';
 
 const fadeUp = {

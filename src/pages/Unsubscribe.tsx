@@ -129,7 +129,7 @@ export default function Unsubscribe() {
 
           {state.kind === "success" && (
             <div className="flex flex-col items-center gap-3">
-              <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+              <CheckCircle2 className="w-10 h-10 text-primary" />
               <p className="text-foreground font-medium">수신 거부가 완료됐어요.</p>
               <p className="text-sm text-muted-foreground">
                 앞으로 알림 메일을 보내드리지 않을게요.
@@ -139,7 +139,7 @@ export default function Unsubscribe() {
 
           {state.kind === "already" && (
             <div className="flex flex-col items-center gap-3">
-              <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+              <CheckCircle2 className="w-10 h-10 text-primary" />
               <p className="text-foreground font-medium">
                 이미 수신 거부된 주소예요.
               </p>

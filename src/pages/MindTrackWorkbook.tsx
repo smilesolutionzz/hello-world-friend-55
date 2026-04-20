@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import MindTrackWelcomeModal from "@/components/mind-track/MindTrackWelcomeModal";
+import DataAccumulationCounter from "@/components/mind-track/DataAccumulationCounter";
+import NextActionCards from "@/components/mind-track/NextActionCards";
+import ReportHubReadyBanner from "@/components/report/ReportHubReadyBanner";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

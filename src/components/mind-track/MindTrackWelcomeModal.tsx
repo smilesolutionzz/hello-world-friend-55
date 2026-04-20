@@ -23,11 +23,10 @@ const STEPS: Step[] = [
   {
     badge: "1 / 4",
     icon: Sparkles,
-    badge_label: "환영해요",
     title: "축하해요 — 이제 모든 데이터가 한곳에 모입니다",
     desc: "결제 완료! 지금부터 검사·관찰·코칭 모든 활동이 자동으로 누적되어 당신만의 변화 기록이 됩니다.",
     highlight: "all-data-one-place",
-  } as any,
+  },
   {
     badge: "2 / 4",
     icon: Database,

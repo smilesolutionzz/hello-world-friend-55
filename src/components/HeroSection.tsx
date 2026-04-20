@@ -4,8 +4,6 @@ import { useRef, useState, useEffect } from "react";
 import { ArrowRight, TrendingDown, TrendingUp, ShieldCheck, Sparkles, Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/i18n";
-import { sharePage } from "@/lib/kakaoShare";
-import { toast } from "sonner";
 import { trackEvent } from "@/components/common/Analytics";
 
 /**
@@ -36,16 +34,6 @@ const HeroSection = () => {
   const handleSecondaryCTA = () => {
     trackEvent('hero_cta_free_test');
     navigate('/assessment');
-  };
-
-  const handleKakaoShare = () => {
-    trackEvent('hero_kakao_share');
-    const success = sharePage({
-      title: (t.hero as any).kakaoShareTitle,
-      description: (t.hero as any).kakaoShareDesc,
-      buttonText: (t.hero as any).kakaoShareButton,
-    });
-    if (!success) toast.success((t.hero as any).kakaoShareToast);
   };
 
   const metrics = [
@@ -253,14 +241,6 @@ const HeroSection = () => {
                 </p>
               </div>
 
-              {/* Floating share button */}
-              <button
-                onClick={handleKakaoShare}
-                className="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-[#FEE500] hover:bg-[#FFE000] text-slate-900 font-bold shadow-lg flex items-center justify-center transition-transform hover:scale-110"
-                aria-label="카카오톡 공유"
-              >
-                <span className="text-lg">💬</span>
-              </button>
             </div>
 
             {/* Bottom urgency */}

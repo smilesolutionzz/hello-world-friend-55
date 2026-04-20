@@ -263,6 +263,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_consultation_matches: {
+        Row: {
+          concern_text: string
+          created_at: string | null
+          detected_category: string | null
+          detected_severity: string | null
+          id: string
+          recommended_expert_ids: string[] | null
+          recommended_offering_key: string | null
+          resulted_in_booking_id: string | null
+          selected_expert_id: string | null
+          trigger_source: string | null
+          user_id: string | null
+        }
+        Insert: {
+          concern_text: string
+          created_at?: string | null
+          detected_category?: string | null
+          detected_severity?: string | null
+          id?: string
+          recommended_expert_ids?: string[] | null
+          recommended_offering_key?: string | null
+          resulted_in_booking_id?: string | null
+          selected_expert_id?: string | null
+          trigger_source?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          concern_text?: string
+          created_at?: string | null
+          detected_category?: string | null
+          detected_severity?: string | null
+          id?: string
+          recommended_expert_ids?: string[] | null
+          recommended_offering_key?: string | null
+          resulted_in_booking_id?: string | null
+          selected_expert_id?: string | null
+          trigger_source?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_health_insights: {
         Row: {
           confidence_score: number | null
@@ -2165,19 +2207,23 @@ export type Database = {
           booking_type: string | null
           cancellation_reason: string | null
           cancelled_at: string | null
+          channel: string | null
           commission_type: string | null
           confirmed_at: string | null
           created_at: string | null
+          credit_used_id: string | null
           crisis_alert_id: string | null
           duration_minutes: number
           end_time: string
           expert_earning: number | null
           expert_id: string
           id: string
+          is_emergency: boolean | null
           is_quick_consultation: boolean | null
           meeting_link: string | null
           meeting_platform: string | null
           notes: string | null
+          offering_key: string | null
           platform_fee: number | null
           start_time: string
           status: string
@@ -2190,19 +2236,23 @@ export type Database = {
           booking_type?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
+          channel?: string | null
           commission_type?: string | null
           confirmed_at?: string | null
           created_at?: string | null
+          credit_used_id?: string | null
           crisis_alert_id?: string | null
           duration_minutes?: number
           end_time: string
           expert_earning?: number | null
           expert_id: string
           id?: string
+          is_emergency?: boolean | null
           is_quick_consultation?: boolean | null
           meeting_link?: string | null
           meeting_platform?: string | null
           notes?: string | null
+          offering_key?: string | null
           platform_fee?: number | null
           start_time: string
           status?: string
@@ -2215,19 +2265,23 @@ export type Database = {
           booking_type?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
+          channel?: string | null
           commission_type?: string | null
           confirmed_at?: string | null
           created_at?: string | null
+          credit_used_id?: string | null
           crisis_alert_id?: string | null
           duration_minutes?: number
           end_time?: string
           expert_earning?: number | null
           expert_id?: string
           id?: string
+          is_emergency?: boolean | null
           is_quick_consultation?: boolean | null
           meeting_link?: string | null
           meeting_platform?: string | null
           notes?: string | null
+          offering_key?: string | null
           platform_fee?: number | null
           start_time?: string
           status?: string
@@ -3607,6 +3661,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      expert_consultation_offerings: {
+        Row: {
+          base_price: number
+          channel: string
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          duration_minutes: number
+          id: string
+          is_active: boolean | null
+          is_emergency: boolean | null
+          monthly_subscriber_price: number
+          name: string
+          offering_key: string
+          updated_at: string | null
+          validity_days: number | null
+          yearly_subscriber_price: number
+        }
+        Insert: {
+          base_price: number
+          channel: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean | null
+          is_emergency?: boolean | null
+          monthly_subscriber_price: number
+          name: string
+          offering_key: string
+          updated_at?: string | null
+          validity_days?: number | null
+          yearly_subscriber_price: number
+        }
+        Update: {
+          base_price?: number
+          channel?: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean | null
+          is_emergency?: boolean | null
+          monthly_subscriber_price?: number
+          name?: string
+          offering_key?: string
+          updated_at?: string | null
+          validity_days?: number | null
+          yearly_subscriber_price?: number
+        }
+        Relationships: []
       }
       expert_contracts: {
         Row: {
@@ -11052,6 +11160,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_consultation_credits: {
+        Row: {
+          created_at: string | null
+          credit_amount: number
+          expires_at: string | null
+          granted_at: string
+          id: string
+          offering_key: string
+          source: string
+          used_at: string | null
+          used_booking_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credit_amount?: number
+          expires_at?: string | null
+          granted_at?: string
+          id?: string
+          offering_key: string
+          source: string
+          used_at?: string | null
+          used_booking_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credit_amount?: number
+          expires_at?: string | null
+          granted_at?: string
+          id?: string
+          offering_key?: string
+          source?: string
+          used_at?: string | null
+          used_booking_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_experiment_assignments: {
         Row: {
           assigned_at: string
@@ -12903,6 +13050,10 @@ export type Database = {
           target_user_id: string
         }
         Returns: boolean
+      }
+      grant_subscriber_consultation_credit: {
+        Args: { p_user_id: string }
+        Returns: string
       }
       has_active_consent: {
         Args: { p_client_user_id: string; p_institution_id: string }

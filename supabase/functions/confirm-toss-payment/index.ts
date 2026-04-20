@@ -282,6 +282,18 @@ serve(async (req) => {
           .update({ subscription_id: subscription.id })
           .eq('id', payment.id);
       }
+
+      // 🎁 구독자 무료 상담권 자동 지급 (월 1회)
+      try {
+        const { data: creditId } = await supabaseService.rpc('grant_subscriber_consultation_credit', {
+          p_user_id: payment.user_id,
+        });
+        if (creditId) {
+          console.log('✅ Subscriber consultation credit granted:', creditId);
+        }
+      } catch (e) {
+        console.error('⚠️ Failed to grant consultation credit:', e);
+      }
     }
 
     return new Response(JSON.stringify({ 

@@ -85,15 +85,7 @@ export const UnifiedNavigation = () => {
         { label: t.nav.column, path: '/column', desc: t.nav.columnDesc, icon: Heart },
       ]
     },
-    {
-      label: 'B2B',
-      icon: Users,
-      children: [
-        { label: '데모 리포트 생성기', path: '/b2b-demo-report', desc: '학교·상담·복지·기업 화이트라벨 샘플 30초 생성', icon: FileText, badge: 'NEW' },
-        { label: '어린이집·유치원 솔루션', path: '/b2b-proposal#kindergarten', desc: '교사 부모상담 자동화 · 30·60일 개선도 추적', icon: UserCheck, badge: 'PMF' },
-        { label: '기관 도입 제안', path: '/b2b-proposal', desc: '학교·상담센터·복지기관 운영 자동화', icon: UserCheck },
-      ]
-    },
+    // B2B 메뉴는 상단 네비에서 숨김 — 푸터 및 /expert-hiring 협력기관 탭으로만 진입
   ];
 
   const handleNavigation = (path: string) => {

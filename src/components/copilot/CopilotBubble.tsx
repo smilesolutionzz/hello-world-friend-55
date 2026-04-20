@@ -21,6 +21,8 @@ interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  chips?: string[];
+  chipsUsed?: boolean;
 }
 
 type Mode = 'guide' | 'chat';

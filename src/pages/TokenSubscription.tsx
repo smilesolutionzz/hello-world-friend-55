@@ -125,7 +125,7 @@ const TokenSubscription = () => {
 
         {/* AI 비교표 */}
         <motion.div {...fade(0.1)} className="mb-10">
-          <AIComparisonTable />
+          <AIComparisonTable variant="compact" />
         </motion.div>
 
         {/* 임상 통계 신뢰성 섹션 */}

@@ -25,8 +25,7 @@ const AIComparisonTable: React.FC<AIComparisonTableProps> = ({ className = '', v
   ];
   const isCompactVar = variant === 'compact';
   const rows = isCompactVar ? allRows.slice(0, 4) : allRows;
-
-  const isCompact = variant === 'compact';
+  const isCompact = isCompactVar;
 
   return (
     <motion.div

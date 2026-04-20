@@ -304,6 +304,7 @@ const App = () => {
           <Route path="/ir-deck" element={<IRDeck />} />
           <Route path="/platform-summary" element={<PlatformOnePager />} />
           <Route path="/b2b-proposal" element={<B2BProposal />} />
+          <Route path="/b2b-jobcoach" element={<B2BJobCoach />} />
           <Route path="/b2b-demo-report" element={<B2BDemoReport />} />
           <Route path="/en/b2b-demo-report" element={<B2BDemoReport />} />
           <Route path="/startup-package" element={<StartupPackage />} />

@@ -742,28 +742,33 @@ function MovablePlayer({ startPos, targetPos, onReachTarget, sceneKey }: {
 
 // ============ 방향 화살표 (빛기둥 가이드) ============
 function DirectionArrow({ playerRef, to }: { playerRef: React.RefObject<THREE.Group>; to: [number, number, number] }) {
-  const ref = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
+  const matRef = useRef<THREE.MeshBasicMaterial>(null);
 
   useFrame((state) => {
-    if (!ref.current || !playerRef.current) return;
+    if (!groupRef.current || !playerRef.current) return;
     const px = playerRef.current.position.x;
     const pz = playerRef.current.position.z;
     // 플레이어와 목적지 중간에 표시
     const midX = (px + to[0]) / 2;
     const midZ = (pz + to[2]) / 2;
-    ref.current.position.set(midX, 0.5 + Math.sin(state.clock.elapsedTime * 2) * 0.2, midZ);
-    // 방향
+    groupRef.current.position.set(midX, 0.5 + Math.sin(state.clock.elapsedTime * 2) * 0.2, midZ);
+    // 그룹의 Y축 회전으로 방향 지정 (목표를 향해 정확히 가리킴)
     const angle = Math.atan2(to[0] - px, to[2] - pz);
-    ref.current.rotation.set(-Math.PI / 2, 0, -angle);
-    const mat = ref.current.material as THREE.MeshBasicMaterial;
-    mat.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 3) * 0.3;
+    groupRef.current.rotation.y = angle;
+    if (matRef.current) {
+      matRef.current.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 3) * 0.3;
+    }
   });
 
   return (
-    <mesh ref={ref} position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <coneGeometry args={[0.4, 1, 4]} />
-      <meshBasicMaterial color="#FFD700" transparent opacity={0.6} />
-    </mesh>
+    <group ref={groupRef}>
+      {/* 콘은 +Y 방향이 기본 → X축 -90도 회전으로 +Z(앞쪽)를 가리키게 함 */}
+      <mesh position={[0, 0, 0.5]} rotation={[Math.PI / 2, 0, 0]}>
+        <coneGeometry args={[0.4, 1, 4]} />
+        <meshBasicMaterial ref={matRef} color="#FFD700" transparent opacity={0.6} />
+      </mesh>
+    </group>
   );
 }
 

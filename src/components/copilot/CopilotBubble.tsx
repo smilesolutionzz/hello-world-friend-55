@@ -112,12 +112,45 @@ export const CopilotBubble: React.FC = () => {
 
       if (error) throw error;
 
-      setChatMessages((prev) => [...prev, {
+      const assistantMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: data?.response || '죄송합니다, 다시 시도해주세요.',
         chips: Array.isArray(data?.chips) ? data.chips : [],
-      }]);
+        isFinal: !!data?.isFinal,
+        recommendedTrack: data?.recommendedTrack || null,
+        recommendedRoute: data?.recommendedRoute || null,
+        recommendedMessage: data?.recommendedMessage || null,
+      };
+      setChatMessages((prev) => [...prev, assistantMsg]);
+
+      // 대화 저장 (개인화 데이터로 활용)
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        const fullMessages = [...chatMessages, userMsg, assistantMsg].map(m => ({
+          role: m.role, content: m.content,
+        }));
+        const payload: any = {
+          session_id: sessionIdRef.current,
+          user_id: user?.id ?? null,
+          messages: fullMessages,
+          is_complete: !!data?.isFinal,
+          summary: data?.summary ?? null,
+          detected_target: data?.detectedTarget ?? null,
+          detected_concerns: data?.detectedConcerns ?? null,
+          detected_severity: data?.detectedSeverity ?? null,
+          recommended_track: data?.recommendedTrack ?? null,
+          recommended_route: data?.recommendedRoute ?? null,
+        };
+        if (conversationIdRef.current) {
+          await supabase.from('copilot_conversations').update(payload).eq('id', conversationIdRef.current);
+        } else {
+          const { data: ins } = await supabase.from('copilot_conversations').insert(payload).select('id').maybeSingle();
+          if (ins?.id) conversationIdRef.current = ins.id;
+        }
+      } catch (saveErr) {
+        console.warn('copilot save failed', saveErr);
+      }
     } catch {
       setChatMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),

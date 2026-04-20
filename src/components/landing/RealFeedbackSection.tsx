@@ -195,7 +195,7 @@ const RealFeedbackSection = () => {
                 className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
-                {isEnglish ? 'Get My Report — ₩3,900' : '나도 리포트 받아보기 — ₩3,900'}
+                {isEnglish ? '30-Day Mind Track — ₩19,900' : '30일 마음 변화 트랙 — ₩19,900'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </motion.div>

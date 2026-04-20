@@ -121,6 +121,7 @@ export default function ObservationList() {
       </header>
 
       <main className="container mx-auto max-w-2xl px-4 py-6">
+        <ReportHubReadyBanner />
         {/* 통계 */}
         {observations.length > 0 && (
           <motion.div

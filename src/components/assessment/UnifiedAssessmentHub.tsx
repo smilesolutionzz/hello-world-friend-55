@@ -1,10 +1,10 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Sparkles, Brain, Baby, Layers } from 'lucide-react';
+import { useEffect, useState, lazy, Suspense, createContext } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Sparkles, Brain, Layers } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import SEOHead from '@/components/common/SEOHead';
 
-// 두 거대한 페이지를 lazy import → 첫 진입 시 활성 탭만 로드
 const Assessment = lazy(() => import('@/pages/Assessment'));
 const PremiumAssessment = lazy(() => import('@/pages/PremiumAssessment'));
 
@@ -16,15 +16,11 @@ const TABS: { key: TabKey; label: string; sub: string; icon: typeof Sparkles }[]
   { key: 'deep', label: '심층 전문 분석', sub: '10~15분 · 리포트 ₩3,900', icon: Brain },
 ];
 
-/**
- * `/assessment`와 `/premium-assessment`를 하나의 허브로 통합.
- * - 탭 전환은 내부 state + ?tab= 쿼리로 동기화
- * - 기존 Assessment.tsx / PremiumAssessment.tsx는 변경 없이 그대로 mount
- * - 각 컴포넌트가 자체 SEO/Nav를 가지고 있어 중복 방지를 위해 여기서는 SEO만 최상위 처리
- */
+// 내부 Assessment/PremiumAssessment가 자체 nav를 숨기도록 알려주는 컨텍스트
+export const HubContext = createContext<{ insideHub: boolean }>({ insideHub: false });
+
 const UnifiedAssessmentHub = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   const initialTab = (searchParams.get('tab') as TabKey) || 'all';
   const [activeTab, setActiveTab] = useState<TabKey>(
     ['quick', 'deep', 'all'].includes(initialTab) ? initialTab : 'all'
@@ -40,27 +36,22 @@ const UnifiedAssessmentHub = () => {
   const handleTabChange = (key: TabKey) => {
     setActiveTab(key);
     const next = new URLSearchParams(searchParams);
-    if (key === 'all') {
-      next.delete('tab');
-    } else {
-      next.set('tab', key);
-    }
+    if (key === 'all') next.delete('tab');
+    else next.set('tab', key);
     setSearchParams(next, { replace: true });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <>
+    <HubContext.Provider value={{ insideHub: true }}>
       <SEOHead
         title="심리 검사 통합 허브 | AIHPRO"
         description="무료 빠른 체크부터 임상 통계 기반 심층 분석까지, 한 곳에서 모든 검사를 받아보세요."
         canonicalUrl="https://aihpro.app/assessment"
       />
-      {/* nav는 내부 Assessment/PremiumAssessment 페이지에서 렌더링됨 (중복 방지) */}
+      <UnifiedNavigation />
 
-      {/* Hero + Tabs — 내부 페이지의 nav가 위에 렌더되도록 pt-16 제거, 내부 페이지가 nav를 그릴 때 hero 아래로 자연스럽게 흐름 */}
-      <div className="bg-gradient-to-b from-background to-muted/30">
-        {/* 내부 Assessment 페이지의 UnifiedNavigation이 sticky로 상단 고정됨 */}
+      <div className="pt-16 bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4 py-8 max-w-6xl">
           <div className="text-center mb-8">
             <Badge variant="outline" className="mb-3 border-primary/30 text-primary">
@@ -75,7 +66,6 @@ const UnifiedAssessmentHub = () => {
             </p>
           </div>
 
-          {/* Tab buttons */}
           <div className="grid grid-cols-3 gap-2 md:gap-3 max-w-3xl mx-auto mb-6">
             {TABS.map((tab) => {
               const Icon = tab.icon;
@@ -102,7 +92,6 @@ const UnifiedAssessmentHub = () => {
         </div>
       </div>
 
-      {/* Active panel — 기존 페이지를 그대로 mount */}
       <Suspense
         fallback={
           <div className="min-h-[400px] flex items-center justify-center">
@@ -110,8 +99,7 @@ const UnifiedAssessmentHub = () => {
           </div>
         }
       >
-        <div className="-mt-16">
-          {/* 음의 마진으로 내부 페이지의 pt-16(자체 nav 자리)와 hero 중복을 시각적으로 줄임 */}
+        <div>
           {activeTab === 'quick' && <Assessment />}
           {activeTab === 'deep' && <PremiumAssessment />}
           {activeTab === 'all' && (
@@ -123,7 +111,7 @@ const UnifiedAssessmentHub = () => {
           )}
         </div>
       </Suspense>
-    </>
+    </HubContext.Provider>
   );
 };
 

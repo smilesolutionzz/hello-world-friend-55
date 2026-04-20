@@ -2798,6 +2798,57 @@ export type Database = {
           },
         ]
       }
+      copilot_conversations: {
+        Row: {
+          converted_to_track: boolean
+          created_at: string
+          detected_concerns: string[] | null
+          detected_severity: string | null
+          detected_target: string | null
+          id: string
+          is_complete: boolean
+          messages: Json
+          recommended_route: string | null
+          recommended_track: string | null
+          session_id: string
+          summary: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          converted_to_track?: boolean
+          created_at?: string
+          detected_concerns?: string[] | null
+          detected_severity?: string | null
+          detected_target?: string | null
+          id?: string
+          is_complete?: boolean
+          messages?: Json
+          recommended_route?: string | null
+          recommended_track?: string | null
+          session_id: string
+          summary?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          converted_to_track?: boolean
+          created_at?: string
+          detected_concerns?: string[] | null
+          detected_severity?: string | null
+          detected_target?: string | null
+          id?: string
+          is_complete?: boolean
+          messages?: Json
+          recommended_route?: string | null
+          recommended_track?: string | null
+          session_id?: string
+          summary?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       corporate_clients: {
         Row: {
           company_name: string

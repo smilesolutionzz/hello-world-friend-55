@@ -23,6 +23,10 @@ interface ChatMessage {
   content: string;
   chips?: string[];
   chipsUsed?: boolean;
+  isFinal?: boolean;
+  recommendedTrack?: string | null;
+  recommendedRoute?: string | null;
+  recommendedMessage?: string | null;
 }
 
 type Mode = 'guide' | 'chat';
@@ -46,6 +50,8 @@ export const CopilotBubble: React.FC = () => {
   const [chatInput, setChatInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sessionIdRef = useRef<string>(`cp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
+  const conversationIdRef = useRef<string | null>(null);
 
   const currentStep = copilotFlows[currentStepId];
 
@@ -106,12 +112,45 @@ export const CopilotBubble: React.FC = () => {
 
       if (error) throw error;
 
-      setChatMessages((prev) => [...prev, {
+      const assistantMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: data?.response || '죄송합니다, 다시 시도해주세요.',
         chips: Array.isArray(data?.chips) ? data.chips : [],
-      }]);
+        isFinal: !!data?.isFinal,
+        recommendedTrack: data?.recommendedTrack || null,
+        recommendedRoute: data?.recommendedRoute || null,
+        recommendedMessage: data?.recommendedMessage || null,
+      };
+      setChatMessages((prev) => [...prev, assistantMsg]);
+
+      // 대화 저장 (개인화 데이터로 활용)
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        const fullMessages = [...chatMessages, userMsg, assistantMsg].map(m => ({
+          role: m.role, content: m.content,
+        }));
+        const payload: any = {
+          session_id: sessionIdRef.current,
+          user_id: user?.id ?? null,
+          messages: fullMessages,
+          is_complete: !!data?.isFinal,
+          summary: data?.summary ?? null,
+          detected_target: data?.detectedTarget ?? null,
+          detected_concerns: data?.detectedConcerns ?? null,
+          detected_severity: data?.detectedSeverity ?? null,
+          recommended_track: data?.recommendedTrack ?? null,
+          recommended_route: data?.recommendedRoute ?? null,
+        };
+        if (conversationIdRef.current) {
+          await supabase.from('copilot_conversations').update(payload).eq('id', conversationIdRef.current);
+        } else {
+          const { data: ins } = await supabase.from('copilot_conversations').insert(payload).select('id').maybeSingle();
+          if (ins?.id) conversationIdRef.current = ins.id;
+        }
+      } catch (saveErr) {
+        console.warn('copilot save failed', saveErr);
+      }
     } catch {
       setChatMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
@@ -315,6 +354,28 @@ className="fixed bottom-[80px] left-3 right-3 z-[60] md:left-6 md:right-auto md:
                                   {chip}
                                 </button>
                               ))}
+                            </div>
+                          )}
+                          {/* Final recommendation CTA */}
+                          {msg.role === 'assistant' && msg.isFinal && msg.recommendedRoute && (
+                            <div className="ml-8 mt-2 rounded-xl border border-primary/40 bg-gradient-to-br from-primary/15 to-purple-500/10 p-3 space-y-2">
+                              <div className="flex items-center gap-1.5 text-[11px] font-semibold text-primary">
+                                <Sparkles className="w-3 h-3" />
+                                대화 내용을 바탕으로 추천드려요
+                              </div>
+                              {msg.recommendedMessage && (
+                                <p className="text-xs text-white/80 leading-relaxed">{msg.recommendedMessage}</p>
+                              )}
+                              <button
+                                onClick={() => {
+                                  navigate(msg.recommendedRoute!);
+                                  setIsOpen(false);
+                                }}
+                                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-r from-primary to-purple-600 text-white text-xs font-bold hover:opacity-90 transition-opacity"
+                              >
+                                {msg.recommendedTrack === 'expert_urgent' ? '긴급 전문가 연결' : '30일 마음 트랙 시작하기'}
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              </button>
                             </div>
                           )}
                         </div>

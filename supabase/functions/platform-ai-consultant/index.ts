@@ -62,6 +62,14 @@ serve(async (req) => {
 
 3~5번 주고받아 충분히 파악되면 결과 정리(message 6문장 이내, chips: [], isFinal: true).
 
+## 결과(isFinal=true) 단계 추가 필드
+- summary: 사용자 상황 한 줄 요약 (예: "초등 자녀의 등교 거부, 약 2주 지속")
+- detectedTarget: "self" | "child" | "family" | "other"
+- detectedConcerns: 핵심 키워드 배열 (예: ["등교거부","불안"])
+- detectedSeverity: "low" | "moderate" | "high"
+- recommendedTrack: 다음 단계 추천. 거의 항상 "mind_track_30" 추천 (30일 마음 트랙). 위급하면 "expert_urgent".
+- recommendedMessage: 한 줄 부드러운 권유 (예: "30일 동안 매일 5분, 함께 천천히 살펴볼까요?")
+
 ## 금지
 - 첫 응답에 긴 설명/조언/리스트 금지
 - "다음 정보를 알려주세요:" 같은 폼 형식 금지
@@ -99,7 +107,13 @@ serve(async (req) => {
                   items: { type: 'string' },
                   description: '빠른 답변 칩 0~5개. 진단 중이면 2~5개, 결과 단계면 빈 배열.'
                 },
-                isFinal: { type: 'boolean', description: '결과/조언 단계면 true' }
+                isFinal: { type: 'boolean', description: '결과/조언 단계면 true' },
+                summary: { type: 'string', description: 'isFinal=true일 때만. 사용자 상황 한 줄 요약' },
+                detectedTarget: { type: 'string', description: 'self|child|family|other' },
+                detectedConcerns: { type: 'array', items: { type: 'string' } },
+                detectedSeverity: { type: 'string', description: 'low|moderate|high' },
+                recommendedTrack: { type: 'string', description: 'mind_track_30 | expert_urgent | none' },
+                recommendedMessage: { type: 'string' }
               },
               required: ['message', 'chips', 'isFinal'],
               additionalProperties: false,
@@ -128,11 +142,7 @@ serve(async (req) => {
 
     const aiResponse = await response.json();
     const toolCall = aiResponse.choices?.[0]?.message?.tool_calls?.[0];
-    let parsed: { message: string; chips: string[]; isFinal: boolean } = {
-      message: '',
-      chips: [],
-      isFinal: false,
-    };
+    let parsed: any = { message: '', chips: [], isFinal: false };
 
     if (toolCall?.function?.arguments) {
       try {
@@ -145,11 +155,24 @@ serve(async (req) => {
       parsed.message = aiResponse.choices?.[0]?.message?.content || '죄송해요, 다시 한 번 말씀해주실래요?';
     }
 
+    const routeMap: Record<string, string> = {
+      mind_track_30: '/mind-track',
+      expert_urgent: '/expert-hiring?urgent=true',
+    };
+    const recommendedRoute = parsed.recommendedTrack ? (routeMap[parsed.recommendedTrack] || null) : null;
+
     return new Response(
       JSON.stringify({
         response: parsed.message,
         chips: Array.isArray(parsed.chips) ? parsed.chips.slice(0, 5) : [],
         isFinal: !!parsed.isFinal,
+        summary: parsed.summary || null,
+        detectedTarget: parsed.detectedTarget || null,
+        detectedConcerns: Array.isArray(parsed.detectedConcerns) ? parsed.detectedConcerns : null,
+        detectedSeverity: parsed.detectedSeverity || null,
+        recommendedTrack: parsed.recommendedTrack || null,
+        recommendedRoute,
+        recommendedMessage: parsed.recommendedMessage || null,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

@@ -238,29 +238,91 @@ const HeroSection = () => {
             transition={{ duration: 0.7, delay: 0.15 }}
             className="relative"
           >
-            <div className="relative rounded-3xl bg-gradient-to-br from-white/[0.07] to-white/[0.02] backdrop-blur-xl border border-white/10 p-6 md:p-8 shadow-2xl">
+            <div
+              className="relative rounded-3xl bg-gradient-to-br from-white/[0.07] to-white/[0.02] backdrop-blur-xl border border-white/10 p-6 md:p-8 shadow-2xl"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
               {/* Card header */}
-              <div className="flex items-center justify-between mb-6">
-                <div>
+              <div className="flex items-center justify-between mb-5">
+                <div className="min-w-0 flex-1">
                   <p className="text-[11px] font-semibold tracking-[0.15em] text-emerald-300/80 uppercase mb-1">
                     Before · After · 30 Days
                   </p>
-                  <h3 className="text-white text-lg md:text-xl font-bold">
+                  <h3 className="text-white text-lg md:text-xl font-bold truncate">
                     {(t.hero as any).beforeAfterTitle}
                   </h3>
                 </div>
-                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30">
+                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 shrink-0 ml-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span className="text-[10px] font-bold text-emerald-300 tracking-wider">LIVE</span>
                 </div>
               </div>
 
-              {/* Metrics */}
-              <div className="space-y-5">
-                {metrics.map((m, i) => (
-                  <MetricRow key={m.label} metric={m} delay={0.3 + i * 0.15} />
-                ))}
+              {/* Persona switcher */}
+              <div className="flex items-center justify-between gap-2 mb-4 p-2 rounded-2xl bg-white/[0.04] border border-white/10">
+                <button
+                  onClick={goPrev}
+                  aria-label="이전 페르소나"
+                  className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition shrink-0"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentPersona.key}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.25 }}
+                    className="flex items-center gap-2 min-w-0"
+                  >
+                    <span className="text-xl">{currentPersona.emoji}</span>
+                    <div className="text-left min-w-0">
+                      <div className="text-white text-sm font-bold leading-tight truncate">{currentPersona.name}</div>
+                      <div className="text-white/50 text-[10px] leading-tight truncate">{currentPersona.sub}</div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+
+                <div className="flex items-center gap-1 shrink-0">
+                  {personas.map((p, i) => (
+                    <button
+                      key={p.key}
+                      onClick={() => setPersonaIndex(i)}
+                      aria-label={`${p.name} 슬라이드`}
+                      className={`h-1.5 rounded-full transition-all ${
+                        i === personaIndex ? 'w-5 bg-emerald-400' : 'w-1.5 bg-white/25 hover:bg-white/40'
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  onClick={goNext}
+                  aria-label="다음 페르소나"
+                  className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition shrink-0"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
+
+              {/* Metrics (animated per persona) */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentPersona.key}
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -16 }}
+                  transition={{ duration: 0.35 }}
+                  className="space-y-5"
+                >
+                  {currentPersona.metrics.map((m, i) => (
+                    <MetricRow key={`${currentPersona.key}-${m.label}`} metric={m} delay={0.1 + i * 0.1} />
+                  ))}
+                </motion.div>
+              </AnimatePresence>
 
               {/* Footer caption */}
               <div className="mt-6 pt-5 border-t border-white/10">

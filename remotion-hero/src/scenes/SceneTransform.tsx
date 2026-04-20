@@ -18,7 +18,7 @@ export const SceneTransform: React.FC = () => {
       <div style={{ opacity: headerIn, transform: `translateY(${interpolate(headerIn, [0, 1], [20, 0])}px)` }}>
         <p
           style={{
-            fontFamily: "Space Grotesk, Nanum Gothic, sans-serif",
+            fontFamily: "Space Grotesk, Noto Sans KR, sans-serif",
             fontSize: 22,
             color: "#ec4899",
             letterSpacing: 4,
@@ -69,7 +69,7 @@ export const SceneTransform: React.FC = () => {
             >
               <div
                 style={{
-                  fontFamily: "Nanum Gothic, Inter, sans-serif",
+                  fontFamily: "Noto Sans KR, Inter, sans-serif",
                   fontWeight: 600,
                   fontSize: 36,
                   color: "#0f172a",
@@ -113,7 +113,7 @@ export const SceneTransform: React.FC = () => {
               </div>
               <div
                 style={{
-                  fontFamily: "Space Grotesk, Nanum Gothic, sans-serif",
+                  fontFamily: "Space Grotesk, Noto Sans KR, sans-serif",
                   fontWeight: 700,
                   fontSize: 56,
                   color: m.color,
@@ -133,7 +133,7 @@ export const SceneTransform: React.FC = () => {
           marginTop: 50,
           display: "flex",
           gap: 40,
-          fontFamily: "Nanum Gothic, Inter, sans-serif",
+          fontFamily: "Noto Sans KR, Inter, sans-serif",
           fontSize: 18,
           color: "#94a3b8",
           opacity: interpolate(frame, [80, 110], [0, 1], { extrapolateRight: "clamp" }),

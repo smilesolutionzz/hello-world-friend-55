@@ -57,7 +57,7 @@ export const SceneClose: React.FC = () => {
 
         <p
           style={{
-            fontFamily: "Nanum Gothic, Inter, sans-serif",
+            fontFamily: "Noto Sans KR, Inter, sans-serif",
             fontWeight: 400,
             fontSize: 32,
             color: "#475569",
@@ -75,7 +75,7 @@ export const SceneClose: React.FC = () => {
             marginTop: 80,
             opacity: logoIn,
             transform: `translateY(${logoY}px)`,
-            fontFamily: "Space Grotesk, Nanum Gothic, sans-serif",
+            fontFamily: "Space Grotesk, Noto Sans KR, sans-serif",
             fontWeight: 700,
             fontSize: 38,
             color: "#0f172a",

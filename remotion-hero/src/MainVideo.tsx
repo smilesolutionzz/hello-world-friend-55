@@ -1,13 +1,12 @@
 import React from "react";
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate } from "remotion";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, staticFile } from "remotion";
 import { TransitionSeries, springTiming, linearTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { wipe } from "@remotion/transitions/wipe";
 import { loadFont as loadInter } from "@remotion/google-fonts/Inter";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/SpaceGrotesk";
 import { loadFont as loadSerif } from "@remotion/google-fonts/PlayfairDisplay";
-import { loadFont as loadKr } from "@remotion/google-fonts/NanumGothic";
-import { loadFont as loadKrSerif } from "@remotion/google-fonts/NanumMyeongjo";
+import { loadFont as loadCustom } from "@remotion/fonts";
 
 import { SceneOpen } from "./scenes/SceneOpen";
 import { ScenePersonas } from "./scenes/ScenePersonas";
@@ -18,10 +17,11 @@ import { SceneClose } from "./scenes/SceneClose";
 loadInter("normal", { weights: ["400", "600"], subsets: ["latin"] });
 loadDisplay("normal", { weights: ["500", "700"], subsets: ["latin"] });
 loadSerif("normal", { weights: ["400", "700"], subsets: ["latin"], style: "italic" });
-loadKr("normal", { weights: ["400", "700", "800"], subsets: ["korean"] });
-loadKrSerif("normal", { weights: ["400", "700"], subsets: ["korean"] });
 
-// Persistent ambient background — soft warm gradient with slow drift
+loadCustom({ family: "Noto Sans KR", url: staticFile("fonts/NotoSansKR-Regular.ttf"), weight: "400" });
+loadCustom({ family: "Noto Sans KR", url: staticFile("fonts/NotoSansKR-Bold.ttf"), weight: "700" });
+loadCustom({ family: "Nanum Myeongjo", url: staticFile("fonts/NanumMyeongjo-Bold.ttf"), weight: "800" });
+
 const PersistentBackground: React.FC = () => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
@@ -36,7 +36,6 @@ const PersistentBackground: React.FC = () => {
   );
 };
 
-// Floating subtle orbs
 const PersistentOrbs: React.FC = () => {
   const frame = useCurrentFrame();
   const orbs = [
@@ -50,20 +49,7 @@ const PersistentOrbs: React.FC = () => {
         const dy = Math.sin((frame * o.speed) / 30) * 40;
         const dx = Math.cos((frame * o.speed) / 40) * 30;
         return (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              left: `${o.x}%`,
-              top: `${o.y}%`,
-              width: o.size,
-              height: o.size,
-              borderRadius: "50%",
-              background: o.color,
-              filter: "blur(80px)",
-              transform: `translate(${dx}px, ${dy}px)`,
-            }}
-          />
+          <div key={i} style={{ position: "absolute", left: `${o.x}%`, top: `${o.y}%`, width: o.size, height: o.size, borderRadius: "50%", background: o.color, filter: "blur(80px)", transform: `translate(${dx}px, ${dy}px)` }} />
         );
       })}
     </AbsoluteFill>
@@ -76,37 +62,15 @@ export const MainVideo: React.FC = () => {
       <PersistentBackground />
       <PersistentOrbs />
       <TransitionSeries>
-        <TransitionSeries.Sequence durationInFrames={110}>
-          <SceneOpen />
-        </TransitionSeries.Sequence>
-        <TransitionSeries.Transition
-          presentation={fade()}
-          timing={linearTiming({ durationInFrames: 18 })}
-        />
-        <TransitionSeries.Sequence durationInFrames={150}>
-          <ScenePersonas />
-        </TransitionSeries.Sequence>
-        <TransitionSeries.Transition
-          presentation={wipe({ direction: "from-right" })}
-          timing={springTiming({ config: { damping: 200 }, durationInFrames: 24 })}
-        />
-        <TransitionSeries.Sequence durationInFrames={150}>
-          <SceneTransform />
-        </TransitionSeries.Sequence>
-        <TransitionSeries.Transition
-          presentation={fade()}
-          timing={linearTiming({ durationInFrames: 18 })}
-        />
-        <TransitionSeries.Sequence durationInFrames={110}>
-          <SceneTrust />
-        </TransitionSeries.Sequence>
-        <TransitionSeries.Transition
-          presentation={fade()}
-          timing={linearTiming({ durationInFrames: 18 })}
-        />
-        <TransitionSeries.Sequence durationInFrames={130}>
-          <SceneClose />
-        </TransitionSeries.Sequence>
+        <TransitionSeries.Sequence durationInFrames={110}><SceneOpen /></TransitionSeries.Sequence>
+        <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 18 })} />
+        <TransitionSeries.Sequence durationInFrames={150}><ScenePersonas /></TransitionSeries.Sequence>
+        <TransitionSeries.Transition presentation={wipe({ direction: "from-right" })} timing={springTiming({ config: { damping: 200 }, durationInFrames: 24 })} />
+        <TransitionSeries.Sequence durationInFrames={150}><SceneTransform /></TransitionSeries.Sequence>
+        <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 18 })} />
+        <TransitionSeries.Sequence durationInFrames={110}><SceneTrust /></TransitionSeries.Sequence>
+        <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 18 })} />
+        <TransitionSeries.Sequence durationInFrames={130}><SceneClose /></TransitionSeries.Sequence>
       </TransitionSeries>
     </AbsoluteFill>
   );

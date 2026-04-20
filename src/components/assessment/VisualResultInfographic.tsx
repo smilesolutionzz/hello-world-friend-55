@@ -3,7 +3,6 @@ import { Download, Share2, ImageIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import html2canvas from 'html2canvas';
-import { shareTestResult, isKakaoInitialized } from '@/lib/kakaoShare';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useLanguage } from '@/i18n/LanguageContext';
 
@@ -120,18 +119,6 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
     }
   };
 
-  const handleKakaoShare = () => {
-    if (isKakaoInitialized()) {
-      shareTestResult({
-        testName: data.testName,
-        resultTitle: `${data.testName} ${t.resultLayout.analysisComplete}`,
-          resultSummary: `${t.resultLayout.overallEval} ${formatScore(totalScore)}/${formatScore(totalMax)} · ${palette.label}`,
-      });
-    } else {
-      toast({ title: t.resultLayout.kakaoReady, description: t.resultLayout.kakaoRetry });
-    }
-  };
-
   const handleNativeShare = async () => {
     if (!cardRef.current) return;
     try {
@@ -142,11 +129,11 @@ const VisualResultInfographic = ({ data, onClose }: Props) => {
         if (navigator.share && navigator.canShare({ files: [file] })) {
           await navigator.share({ files: [file], title: data.testName });
         } else {
-          handleKakaoShare();
+          downloadImage();
         }
       });
     } catch {
-      handleKakaoShare();
+      toast({ title: t.resultLayout.saveFailed, variant: 'destructive' });
     }
   };
 

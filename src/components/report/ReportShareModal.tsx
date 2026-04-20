@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import {
-  Share2, Copy, Link2, Clock, Infinity, Eye, MessageCircle,
+  Share2, Copy, Link2, Clock, Infinity, Eye,
   Check, Loader2, Calendar, Lock
 } from 'lucide-react';
 
@@ -165,17 +165,6 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
     if (!generatedLink) return;
     await navigator.clipboard.writeText(generatedLink);
     toast.success('링크가 복사되었습니다!');
-  };
-
-  const handleKakaoShare = () => {
-    if (!generatedLink) return;
-    const message = `${title}\n\nAI 심리 분석 리포트를 확인해보세요!\n${generatedLink}`;
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      window.location.href = `kakaotalk://send?text=${encodeURIComponent(message)}`;
-    } else {
-      navigator.clipboard.writeText(generatedLink);
-      toast.success('링크가 복사되었습니다. 카카오톡에서 붙여넣기하세요!');
-    }
   };
 
   const handleDeactivateLink = async (linkId: string) => {
@@ -347,7 +336,7 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
             </div>
 
             {/* 공유 버튼들 */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2">
               <Button
                 onClick={handleCopy}
                 variant="outline"
@@ -355,13 +344,6 @@ const ReportShareModal: React.FC<ReportShareModalProps> = ({
               >
                 <Copy className="w-4 h-4 mr-2" />
                 링크 복사
-              </Button>
-              <Button
-                onClick={handleKakaoShare}
-                className="bg-yellow-400 hover:bg-yellow-300 text-black text-sm"
-              >
-                <MessageCircle className="w-4 h-4 mr-2" />
-                카카오톡
               </Button>
             </div>
 

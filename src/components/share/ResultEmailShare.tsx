@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Mail, Copy, Share2, Download, MessageCircle, Loader2 } from 'lucide-react';
+import { Mail, Copy, Share2, Download, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -103,45 +103,6 @@ const ResultEmailShare: React.FC<ResultEmailShareProps> = ({
     }
   };
 
-  const handleKakaoShare = () => {
-    if (typeof window !== 'undefined' && (window as any).Kakao) {
-      const kakao = (window as any).Kakao;
-      if (!kakao.isInitialized()) {
-        toast({
-          title: "카카오톡 공유 준비 중",
-          description: "잠시 후 다시 시도해주세요.",
-        });
-        return;
-      }
-      
-      kakao.Share.sendDefault({
-        objectType: 'feed',
-        content: {
-          title: title,
-          description: content.summary?.substring(0, 100) || '검사 결과를 확인해보세요!',
-          imageUrl: 'https://aihpro.app/og-image.png',
-          link: {
-            mobileWebUrl: shareUrl || window.location.href,
-            webUrl: shareUrl || window.location.href,
-          },
-        },
-        buttons: [
-          {
-            title: '결과 확인하기',
-            link: {
-              mobileWebUrl: shareUrl || window.location.href,
-              webUrl: shareUrl || window.location.href,
-            },
-          },
-        ],
-      });
-    } else {
-      // Fallback: open kakao talk share
-      const text = encodeURIComponent(`${title}\n\n${shareUrl || window.location.href}`);
-      window.open(`https://story.kakao.com/share?url=${encodeURIComponent(shareUrl || window.location.href)}`, '_blank');
-    }
-  };
-
   const handleNativeShare = async () => {
     if (navigator.share) {
       try {
@@ -170,14 +131,6 @@ const ResultEmailShare: React.FC<ResultEmailShareProps> = ({
       </p>
 
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <Button
-          onClick={handleKakaoShare}
-          className="bg-[#FEE500] hover:bg-[#FDD835] text-[#3C1E1E] font-medium"
-        >
-          <MessageCircle className="w-4 h-4 mr-2" />
-          카카오톡
-        </Button>
-        
         <Button
           variant="outline"
           onClick={handleCopyLink}

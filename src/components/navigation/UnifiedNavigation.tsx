@@ -85,6 +85,15 @@ export const UnifiedNavigation = () => {
         { label: t.nav.column, path: '/column', desc: t.nav.columnDesc, icon: Heart },
       ]
     },
+    {
+      label: 'B2B',
+      icon: Users,
+      children: [
+        { label: '데모 리포트 생성기', path: '/b2b-demo-report', desc: '학교·상담·복지·기업 화이트라벨 샘플 30초 생성', icon: FileText, badge: 'NEW' },
+        { label: '직장 잡코치', path: '/b2b-jobcoach', desc: '기업 임직원 정신건강 SaaS · 익명 코칭', icon: Sparkles },
+        { label: '기관 도입 제안', path: '/b2b-proposal', desc: '학교·상담센터·복지기관 운영 자동화', icon: UserCheck },
+      ]
+    },
   ];
 
   const handleNavigation = (path: string) => {

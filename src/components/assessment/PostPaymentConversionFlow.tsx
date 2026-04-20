@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { SmartConsultMatcher } from '@/components/expert/SmartConsultMatcher';
+import ReportHubCTA from '@/components/report/ReportHubCTA';
 
 interface PostPaymentFlowProps {
   testName: string;

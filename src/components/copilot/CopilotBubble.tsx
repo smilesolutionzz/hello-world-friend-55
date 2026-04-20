@@ -27,6 +27,7 @@ interface ChatMessage {
   recommendedTrack?: string | null;
   recommendedRoute?: string | null;
   recommendedMessage?: string | null;
+  summary?: string | null;
 }
 
 type Mode = 'guide' | 'chat';

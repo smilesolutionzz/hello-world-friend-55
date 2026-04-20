@@ -8,6 +8,7 @@
         "@remotion/bundler": "^4.0.448",
         "@remotion/cli": "^4.0.448",
         "@remotion/compositor-linux-x64-musl": "^4.0.448",
+        "@remotion/fonts": "^4.0.448",
         "@remotion/google-fonts": "^4.0.448",
         "@remotion/renderer": "^4.0.448",
         "@remotion/transitions": "^4.0.448",
@@ -136,6 +137,8 @@
     "@remotion/compositor-linux-x64-musl": ["@remotion/compositor-linux-x64-musl@4.0.448", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@remotion/compositor-linux-x64-musl/-/compositor-linux-x64-musl-4.0.448.tgz", { "os": "linux", "cpu": "x64" }, "sha512-7OK/AtkKWFFrzgZF7Ti6Ld9vIsQ4Uh61k9iKPsmAw0f3CeXHJIuG0m3uhcLoqaBsD35fnL9D12vHgXPHpHyjng=="],
 
     "@remotion/compositor-win32-x64-msvc": ["@remotion/compositor-win32-x64-msvc@4.0.448", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@remotion/compositor-win32-x64-msvc/-/compositor-win32-x64-msvc-4.0.448.tgz", { "os": "win32", "cpu": "x64" }, "sha512-qjygadAQ+lEBmWRqM+KX1qWy69eXQLCkJ9xUkaLDWgtPkKNglvh+sBa2Nd9hp84ye4u+7fUO8MxKEPVSt2f54g=="],
+
+    "@remotion/fonts": ["@remotion/fonts@4.0.448", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@remotion/fonts/-/fonts-4.0.448.tgz", { "dependencies": { "remotion": "4.0.448" } }, "sha512-LGjYtDU8nx/vCLQCf2Um2LC8/pu/rHa0PJT5jNvwwWL6Iu2Ld466mrXRUUldvWWyp7g0Hpt206/q19UnJdUVkQ=="],
 
     "@remotion/google-fonts": ["@remotion/google-fonts@4.0.448", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@remotion/google-fonts/-/google-fonts-4.0.448.tgz", { "dependencies": { "remotion": "4.0.448" } }, "sha512-mpey2nMUu8PLcAt8wnNFfA22vOLNUH60SjC/YOs7e8CUoisNyjEV9itKOwVdtoUdfKDOdeAWbAQuDrSsua7gTg=="],
 

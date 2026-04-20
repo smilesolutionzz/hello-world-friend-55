@@ -147,6 +147,18 @@ serve(async (req) => {
 
     console.log("✅ Payment history recorded");
 
+    // 🎁 평생 구독자 무료 상담권 자동 지급
+    try {
+      const { data: creditId } = await supabaseAdmin.rpc('grant_subscriber_consultation_credit', {
+        p_user_id: user.id,
+      });
+      if (creditId) {
+        console.log('✅ Lifetime subscriber consultation credit granted:', creditId);
+      }
+    } catch (e) {
+      console.error('⚠️ Failed to grant consultation credit:', e);
+    }
+
     return new Response(JSON.stringify({
       ok: true,
       orderId: tossData.orderId,

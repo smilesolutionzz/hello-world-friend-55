@@ -28,7 +28,7 @@ export const SceneOpen: React.FC = () => {
             borderRadius: 999,
             background: "rgba(99, 102, 241, 0.10)",
             color: "#4f46e5",
-            fontFamily: "Space Grotesk, sans-serif",
+            fontFamily: "Space Grotesk, Nanum Gothic, sans-serif",
             fontWeight: 500,
             fontSize: 22,
             letterSpacing: 0.5,
@@ -43,7 +43,7 @@ export const SceneOpen: React.FC = () => {
 
         <h1
           style={{
-            fontFamily: "Playfair Display, serif",
+            fontFamily: "Nanum Myeongjo, Playfair Display, serif",
             fontStyle: "italic",
             fontWeight: 700,
             fontSize: 144,
@@ -72,7 +72,7 @@ export const SceneOpen: React.FC = () => {
 
         <p
           style={{
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Nanum Gothic, Inter, sans-serif",
             fontWeight: 400,
             fontSize: 30,
             color: "#475569",

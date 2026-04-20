@@ -26,7 +26,7 @@ export const SceneTrust: React.FC = () => {
       >
         <p
           style={{
-            fontFamily: "Space Grotesk, sans-serif",
+            fontFamily: "Space Grotesk, Nanum Gothic, sans-serif",
             fontSize: 22,
             color: "#0ea5e9",
             letterSpacing: 4,
@@ -39,7 +39,7 @@ export const SceneTrust: React.FC = () => {
         </p>
         <h2
           style={{
-            fontFamily: "Playfair Display, serif",
+            fontFamily: "Nanum Myeongjo, Playfair Display, serif",
             fontStyle: "italic",
             fontSize: 88,
             color: "#0f172a",
@@ -70,7 +70,7 @@ export const SceneTrust: React.FC = () => {
             >
               <div
                 style={{
-                  fontFamily: "Space Grotesk, sans-serif",
+                  fontFamily: "Space Grotesk, Nanum Gothic, sans-serif",
                   fontWeight: 700,
                   fontSize: 96,
                   color: "#0f172a",
@@ -85,7 +85,7 @@ export const SceneTrust: React.FC = () => {
               </div>
               <div
                 style={{
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Nanum Gothic, Inter, sans-serif",
                   fontSize: 22,
                   color: "#475569",
                   marginTop: 14,

@@ -21,7 +21,7 @@ export const SceneClose: React.FC = () => {
       <div style={{ textAlign: "center", maxWidth: 1500 }}>
         <h1
           style={{
-            fontFamily: "Playfair Display, serif",
+            fontFamily: "Nanum Myeongjo, Playfair Display, serif",
             fontStyle: "italic",
             fontWeight: 700,
             fontSize: 156,
@@ -57,7 +57,7 @@ export const SceneClose: React.FC = () => {
 
         <p
           style={{
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Nanum Gothic, Inter, sans-serif",
             fontWeight: 400,
             fontSize: 32,
             color: "#475569",
@@ -75,7 +75,7 @@ export const SceneClose: React.FC = () => {
             marginTop: 80,
             opacity: logoIn,
             transform: `translateY(${logoY}px)`,
-            fontFamily: "Space Grotesk, sans-serif",
+            fontFamily: "Space Grotesk, Nanum Gothic, sans-serif",
             fontWeight: 700,
             fontSize: 38,
             color: "#0f172a",

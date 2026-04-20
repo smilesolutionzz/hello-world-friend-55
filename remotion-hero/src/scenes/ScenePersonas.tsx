@@ -24,7 +24,7 @@ export const ScenePersonas: React.FC = () => {
       >
         <p
           style={{
-            fontFamily: "Space Grotesk, sans-serif",
+            fontFamily: "Space Grotesk, Nanum Gothic, sans-serif",
             fontSize: 22,
             color: "#6366f1",
             letterSpacing: 4,
@@ -37,7 +37,7 @@ export const ScenePersonas: React.FC = () => {
         </p>
         <h2
           style={{
-            fontFamily: "Playfair Display, serif",
+            fontFamily: "Nanum Myeongjo, Playfair Display, serif",
             fontStyle: "italic",
             fontSize: 96,
             color: "#0f172a",
@@ -72,7 +72,7 @@ export const ScenePersonas: React.FC = () => {
               <div style={{ fontSize: 88, marginBottom: 20 }}>{p.emoji}</div>
               <div
                 style={{
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Nanum Gothic, Inter, sans-serif",
                   fontWeight: 600,
                   fontSize: 36,
                   color: "#0f172a",
@@ -83,7 +83,7 @@ export const ScenePersonas: React.FC = () => {
               </div>
               <div
                 style={{
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Nanum Gothic, Inter, sans-serif",
                   fontSize: 20,
                   color: "#64748b",
                   marginTop: 8,

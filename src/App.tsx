@@ -215,8 +215,10 @@ const App = () => {
           <Route path="/game-counseling" element={<Navigate to="/metaverse-voice" replace />} />
 
           {/* Assessment & Tests */}
-          <Route path="/assessment" element={<Assessment />} />
-          <Route path="/premium-assessment" element={<PremiumAssessment />} />
+          <Route path="/assessment" element={<UnifiedAssessmentHub />} />
+          <Route path="/premium-assessment" element={<UnifiedAssessmentHub />} />
+          <Route path="/assessment-classic" element={<Assessment />} />
+          <Route path="/premium-assessment-classic" element={<PremiumAssessment />} />
           <Route path="/free-trial" element={<FreeTrialAssessment />} />
           <Route path="/free-trial-result" element={<FreeTrialResult />} />
           <Route path="/assessment/mental-health-quick-test" element={<BasicMentalHealthTest />} />
@@ -354,8 +356,8 @@ const App = () => {
           <Route path="/en/sample-report" element={<SampleReport />} />
           <Route path="/en/comprehensive-reporting" element={<ComprehensiveReporting />} />
           <Route path="/en/metaverse-voice" element={<MetaverseVoice />} />
-          <Route path="/en/assessment" element={<Assessment />} />
-          <Route path="/en/premium-assessment" element={<PremiumAssessment />} />
+          <Route path="/en/assessment" element={<UnifiedAssessmentHub />} />
+          <Route path="/en/premium-assessment" element={<UnifiedAssessmentHub />} />
           <Route path="/en/free-trial" element={<FreeTrialAssessment />} />
           <Route path="/en/free-trial-result" element={<FreeTrialResult />} />
           <Route path="/en/assessment/mental-health-quick-test" element={<BasicMentalHealthTest />} />

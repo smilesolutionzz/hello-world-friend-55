@@ -118,6 +118,7 @@ import PlatformOnePager from "./pages/PlatformOnePager";
 import B2BProposal from "./pages/B2BProposal";
 import B2BJobCoach from "./pages/B2BJobCoach";
 import B2BDemoReport from "./pages/B2BDemoReport";
+import B2BHRDashboard from "./pages/B2BHRDashboard";
 import StartupPackage from "./pages/StartupPackage";
 
 // Legal
@@ -308,6 +309,7 @@ const App = () => {
           <Route path="/b2b-jobcoach" element={<B2BJobCoach />} />
           <Route path="/b2b-demo-report" element={<B2BDemoReport />} />
           <Route path="/en/b2b-demo-report" element={<B2BDemoReport />} />
+          <Route path="/b2b-hr-dashboard" element={<B2BHRDashboard />} />
           <Route path="/startup-package" element={<StartupPackage />} />
 
           {/* Admin */}

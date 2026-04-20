@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import B2BJobCoachSection from '@/components/b2b/B2BJobCoachSection';
+import HRDataPipelineDiagram from '@/components/b2b/HRDataPipelineDiagram';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Briefcase, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -70,8 +71,21 @@ const B2BJobCoach: React.FC = () => {
           </div>
         </div>
 
+        {/* HR 데이터 파이프라인 — 직원 데이터가 어떻게 회사로 가는지 */}
+        <HRDataPipelineDiagram />
+
         <div id="jobcoach-section">
           <B2BJobCoachSection />
+        </div>
+
+        {/* 이미 도입한 기관용 HR 대시보드 진입 */}
+        <div className="bg-slate-50 py-12 border-t">
+          <div className="max-w-3xl mx-auto px-4 text-center">
+            <p className="text-sm text-muted-foreground mb-2">이미 잡코치를 도입한 회사이신가요?</p>
+            <Button onClick={() => navigate('/b2b-hr-dashboard')} variant="outline" size="lg">
+              HR 대시보드 바로가기 <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
         </div>
       </div>
     </>

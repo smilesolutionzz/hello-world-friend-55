@@ -156,7 +156,14 @@ export default function MindTrackWorkbook() {
       <SEOHead title="나의 30일 워크북" description="초기 진단 결과와 매일의 미션을 관리하세요." />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
         <UnifiedNavigation />
+        <MindTrackWelcomeModal forceOpen={showWelcome} />
         <div className="max-w-4xl mx-auto px-4 pt-24 pb-16 space-y-6">
+
+          {/* 데이터 누적 카운터 — 결제 후 가치 즉시 시각화 */}
+          <DataAccumulationCounter />
+
+          {/* 종합 리포트 타이밍 배너 — 데이터 ≥3건 시 자동 노출 */}
+          <ReportHubReadyBanner />
 
           {/* Header */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">

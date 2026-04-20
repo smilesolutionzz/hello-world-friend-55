@@ -54,9 +54,9 @@ const AIComparisonTable: React.FC<AIComparisonTableProps> = ({ className = '', v
         <div className="p-2.5 sm:p-3" />
         <div className="p-2.5 sm:p-3 text-center border-l border-slate-200">
           <div className="flex flex-col items-center gap-1">
-            <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
-            <span className="text-[10px] sm:text-xs font-semibold text-slate-500">일반 AI</span>
-            <span className="text-[9px] text-slate-400 hidden sm:block">ChatGPT 등</span>
+            <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600" />
+            <span className="text-[10px] sm:text-xs font-bold text-slate-700">일반 AI</span>
+            <span className="text-[9px] text-slate-500 hidden sm:block">ChatGPT 등</span>
           </div>
         </div>
         <div className="p-2.5 sm:p-3 text-center border-l border-slate-200 bg-primary/5">
@@ -76,11 +76,11 @@ const AIComparisonTable: React.FC<AIComparisonTableProps> = ({ className = '', v
             className="grid grid-cols-[1fr_72px_72px] sm:grid-cols-[1fr_120px_120px] hover:bg-slate-50/50 transition-colors"
           >
             <div className="p-2.5 sm:p-4">
-              <div className="text-xs sm:text-sm font-semibold text-slate-800 break-keep leading-snug">
+              <div className="text-xs sm:text-sm font-bold text-slate-900 break-keep leading-snug">
                 {row.key}
               </div>
               {!isCompact && (
-                <div className="text-[10px] sm:text-xs text-slate-500 mt-0.5 break-keep">
+                <div className="text-[10px] sm:text-xs text-slate-600 mt-0.5 break-keep">
                   {row.desc}
                 </div>
               )}

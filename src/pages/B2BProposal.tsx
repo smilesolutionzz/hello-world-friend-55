@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import B2BJobCoachSection from '@/components/b2b/B2BJobCoachSection';
+import B2BKindergartenSection from '@/components/b2b/B2BKindergartenSection';
 import { Search } from 'lucide-react';
 
 const fadeUp = {
@@ -541,6 +542,11 @@ const B2BProposal = () => {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* 어린이집·유치원 부모상담 솔루션 */}
+      <section className="border-t border-border">
+        <B2BKindergartenSection />
       </section>
 
       {/* B2B 잡코치 통합 섹션 */}

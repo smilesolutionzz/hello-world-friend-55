@@ -6750,6 +6750,225 @@ export type Database = {
         }
         Relationships: []
       }
+      kindergarten_action_plans: {
+        Row: {
+          ai_summary: string | null
+          case_id: string
+          created_at: string
+          domain_scores: Json
+          generated_at: string
+          id: string
+          improvement_status: string | null
+          parent_actions: Json
+          parent_pdf_url: string | null
+          rci_changes: Json | null
+          round_label: string
+          teacher_actions: Json
+          teacher_pdf_url: string | null
+        }
+        Insert: {
+          ai_summary?: string | null
+          case_id: string
+          created_at?: string
+          domain_scores?: Json
+          generated_at?: string
+          id?: string
+          improvement_status?: string | null
+          parent_actions?: Json
+          parent_pdf_url?: string | null
+          rci_changes?: Json | null
+          round_label: string
+          teacher_actions?: Json
+          teacher_pdf_url?: string | null
+        }
+        Update: {
+          ai_summary?: string | null
+          case_id?: string
+          created_at?: string
+          domain_scores?: Json
+          generated_at?: string
+          id?: string
+          improvement_status?: string | null
+          parent_actions?: Json
+          parent_pdf_url?: string | null
+          rci_changes?: Json | null
+          round_label?: string
+          teacher_actions?: Json
+          teacher_pdf_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kindergarten_action_plans_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "kindergarten_consultation_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kindergarten_assessment_invites: {
+        Row: {
+          case_id: string
+          completed_at: string | null
+          computed_scores: Json | null
+          created_at: string
+          curated_assessment: Json
+          expires_at: string
+          id: string
+          invite_token: string
+          opened_at: string | null
+          parent_responses: Json | null
+          round_label: string
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          case_id: string
+          completed_at?: string | null
+          computed_scores?: Json | null
+          created_at?: string
+          curated_assessment?: Json
+          expires_at?: string
+          id?: string
+          invite_token?: string
+          opened_at?: string | null
+          parent_responses?: Json | null
+          round_label: string
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          case_id?: string
+          completed_at?: string | null
+          computed_scores?: Json | null
+          created_at?: string
+          curated_assessment?: Json
+          expires_at?: string
+          id?: string
+          invite_token?: string
+          opened_at?: string | null
+          parent_responses?: Json | null
+          round_label?: string
+          sent_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kindergarten_assessment_invites_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "kindergarten_consultation_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kindergarten_consultation_cases: {
+        Row: {
+          child_age_months: number
+          child_gender: string | null
+          child_nickname: string
+          classroom_name: string | null
+          consultation_focus: string[] | null
+          created_at: string
+          id: string
+          institution_id: string
+          notes: string | null
+          scheduled_consultation_at: string | null
+          status: string
+          teacher_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          child_age_months: number
+          child_gender?: string | null
+          child_nickname: string
+          classroom_name?: string | null
+          consultation_focus?: string[] | null
+          created_at?: string
+          id?: string
+          institution_id: string
+          notes?: string | null
+          scheduled_consultation_at?: string | null
+          status?: string
+          teacher_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          child_age_months?: number
+          child_gender?: string | null
+          child_nickname?: string
+          classroom_name?: string | null
+          consultation_focus?: string[] | null
+          created_at?: string
+          id?: string
+          institution_id?: string
+          notes?: string | null
+          scheduled_consultation_at?: string | null
+          status?: string
+          teacher_user_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kindergarten_consultation_cases_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "kindergarten_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kindergarten_institutions: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          institution_name: string
+          institution_type: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          license_number: string | null
+          owner_user_id: string
+          region: string | null
+          total_children: number | null
+          total_teachers: number | null
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          institution_name: string
+          institution_type: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          license_number?: string | null
+          owner_user_id: string
+          region?: string | null
+          total_children?: number | null
+          total_teachers?: number | null
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          institution_name?: string
+          institution_type?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          license_number?: string | null
+          owner_user_id?: string
+          region?: string | null
+          total_children?: number | null
+          total_teachers?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       legacy_memories: {
         Row: {
           category: string | null
@@ -13277,6 +13496,20 @@ export type Database = {
           updated_at: string
         }[]
       }
+      get_parent_invite_by_token: {
+        Args: { p_token: string }
+        Returns: {
+          case_id: string
+          child_age_months: number
+          child_nickname: string
+          curated_assessment: Json
+          expires_at: string
+          institution_name: string
+          invite_id: string
+          round_label: string
+          status: string
+        }[]
+      }
       get_payment_statistics_secure: {
         Args: never
         Returns: {
@@ -13451,6 +13684,10 @@ export type Database = {
       }
       secure_cleanup_old_payment_data: { Args: never; Returns: undefined }
       spin_roulette: { Args: { p_user_id: string }; Returns: Json }
+      submit_parent_assessment: {
+        Args: { p_responses: Json; p_scores: Json; p_token: string }
+        Returns: string
+      }
       track_feature_usage: {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: undefined

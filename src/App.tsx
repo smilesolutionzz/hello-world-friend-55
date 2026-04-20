@@ -119,6 +119,8 @@ import B2BProposal from "./pages/B2BProposal";
 import B2BJobCoach from "./pages/B2BJobCoach";
 import B2BDemoReport from "./pages/B2BDemoReport";
 import B2BHRDashboard from "./pages/B2BHRDashboard";
+import B2BKindergartenConsole from "./pages/B2BKindergartenConsole";
+import ParentAssessment from "./pages/ParentAssessment";
 import StartupPackage from "./pages/StartupPackage";
 
 // Legal
@@ -310,6 +312,8 @@ const App = () => {
           <Route path="/b2b-demo-report" element={<B2BDemoReport />} />
           <Route path="/en/b2b-demo-report" element={<B2BDemoReport />} />
           <Route path="/b2b-hr-dashboard" element={<B2BHRDashboard />} />
+          <Route path="/b2b-kindergarten-console" element={<B2BKindergartenConsole />} />
+          <Route path="/parent-assessment/:token" element={<ParentAssessment />} />
           <Route path="/startup-package" element={<StartupPackage />} />
 
           {/* Admin */}

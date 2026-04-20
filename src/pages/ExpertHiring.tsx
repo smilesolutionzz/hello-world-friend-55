@@ -21,6 +21,9 @@ import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
+import { ExpertPriceTag } from '@/components/expert/ExpertPriceTag';
+import { useSubscription } from '@/hooks/useSubscription';
+import { calculateExpertPricing, formatKRW } from '@/lib/expertPricing';
 
 // Facility images
 import facilityDev from '@/assets/facilities/facility-development-center.jpg';
@@ -137,6 +140,8 @@ const TIME_SLOTS = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00
 
 const ExpertHiring = () => {
   const navigate = useNavigate();
+  const { subscription } = useSubscription();
+  const subscriberPricing = calculateExpertPricing(subscription);
   const [experts, setExperts] = useState<Expert[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -235,7 +240,7 @@ const ExpertHiring = () => {
           status: 'pending',
           is_quick_consultation: false,
           notes: bookingTopic,
-          tokens_paid: CONSULT_PRICE
+          tokens_paid: subscriberPricing.final
         }]);
       if (error) throw error;
 
@@ -595,13 +600,8 @@ const ExpertCard = ({ expert, onBook, navigate }: { expert: Expert; onBook: () =
         <div className="my-4 h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
 
         {/* Price + CTA */}
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-xl font-extrabold tracking-tight text-foreground">₩{CONSULT_PRICE.toLocaleString()}</span>
-              <span className="text-[11px] text-muted-foreground font-medium">/40분</span>
-            </div>
-          </div>
+        <div className="flex items-center justify-between gap-3">
+          <ExpertPriceTag size="md" />
           <Button
             size="sm"
             className="rounded-2xl px-5 h-9 text-xs font-bold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all"
@@ -628,6 +628,8 @@ const BookingDialog = ({
   bookingTopic: string; setBookingTopic: (t: string) => void;
   loading: boolean; onSubmit: () => void;
 }) => {
+  const { subscription } = useSubscription();
+  const pricing = calculateExpertPricing(subscription);
   if (!expert) return null;
 
   return (
@@ -702,7 +704,17 @@ const BookingDialog = ({
               <span className="font-medium text-foreground">상담 비용</span>
             </div>
             <div className="text-right">
-              <span className="text-lg font-bold text-primary">₩{CONSULT_PRICE.toLocaleString()}</span>
+              {pricing.discountPercent > 0 && (
+                <div className="flex items-center gap-1.5 justify-end mb-0.5">
+                  <span className="text-[10px] text-muted-foreground line-through">{formatKRW(pricing.base)}</span>
+                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full">
+                    구독자 {pricing.discountPercent}% 할인
+                  </span>
+                </div>
+              )}
+              <span className={cn("text-lg font-bold", pricing.discountPercent > 0 ? "text-emerald-600" : "text-primary")}>
+                {formatKRW(pricing.final)}
+              </span>
               <span className="text-xs text-muted-foreground ml-1">/ 40분</span>
             </div>
           </div>

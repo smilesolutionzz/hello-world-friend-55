@@ -79,9 +79,16 @@ export const CopilotBubble: React.FC = () => {
     setHistory([]);
   }, []);
 
-  const handleChatSend = async () => {
-    if (!chatInput.trim() || isLoading) return;
-    const userMsg: ChatMessage = { id: Date.now().toString(), role: 'user', content: chatInput.trim() };
+  const sendMessage = async (text: string, fromChipMsgId?: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || isLoading) return;
+
+    // 칩이 사용된 메시지는 비활성화
+    if (fromChipMsgId) {
+      setChatMessages(prev => prev.map(m => m.id === fromChipMsgId ? { ...m, chipsUsed: true } : m));
+    }
+
+    const userMsg: ChatMessage = { id: Date.now().toString(), role: 'user', content: trimmed };
     setChatMessages(prev => [...prev, userMsg]);
     setChatInput('');
     setIsLoading(true);
@@ -91,15 +98,10 @@ export const CopilotBubble: React.FC = () => {
         role: m.role,
         content: m.content,
       }));
-
       const chatHistory = recentMessages.slice(0, -1);
-      const latestMessage = userMsg.content;
 
       const { data, error } = await supabase.functions.invoke('platform-ai-consultant', {
-        body: {
-          message: latestMessage,
-          chatHistory,
-        },
+        body: { message: trimmed, chatHistory },
       });
 
       if (error) throw error;
@@ -108,6 +110,7 @@ export const CopilotBubble: React.FC = () => {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: data?.response || '죄송합니다, 다시 시도해주세요.',
+        chips: Array.isArray(data?.chips) ? data.chips : [],
       }]);
     } catch {
       setChatMessages(prev => [...prev, {
@@ -119,6 +122,8 @@ export const CopilotBubble: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  const handleChatSend = () => sendMessage(chatInput);
 
   if (!currentStep) return null;
 

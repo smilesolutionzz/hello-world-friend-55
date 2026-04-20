@@ -181,7 +181,7 @@ const TokenSubscription = () => {
               <h3 className="text-base md:text-lg font-bold text-foreground break-keep">
                 왜 ChatGPT가 아닌 AIHPRO여야 할까요?
               </h3>
-              <p className="text-[11px] md:text-xs text-muted-foreground">검증된 임상 통계 모델 기반 분석</p>
+              <p className="text-[11px] md:text-xs text-slate-700 dark:text-slate-300 font-medium">검증된 임상 통계 모델 기반 분석</p>
             </div>
           </div>
 

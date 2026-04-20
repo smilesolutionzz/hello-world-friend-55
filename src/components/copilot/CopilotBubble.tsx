@@ -21,6 +21,8 @@ interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  chips?: string[];
+  chipsUsed?: boolean;
 }
 
 type Mode = 'guide' | 'chat';
@@ -34,7 +36,12 @@ export const CopilotBubble: React.FC = () => {
 
   // Chat state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    { id: '1', role: 'assistant', content: '안녕하세요! 😊 무엇이든 편하게 물어보세요.\n\n발달, 심리, 검사, 리포트 등 궁금한 점을 말씀해주세요.' }
+    {
+      id: '1',
+      role: 'assistant',
+      content: '안녕하세요 😊 어떤 고민을 함께 살펴볼까요? 먼저 누구에 대한 이야기인지 알려주실래요?',
+      chips: ['본인', '자녀', '가족', '기타'],
+    }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -72,9 +79,16 @@ export const CopilotBubble: React.FC = () => {
     setHistory([]);
   }, []);
 
-  const handleChatSend = async () => {
-    if (!chatInput.trim() || isLoading) return;
-    const userMsg: ChatMessage = { id: Date.now().toString(), role: 'user', content: chatInput.trim() };
+  const sendMessage = async (text: string, fromChipMsgId?: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || isLoading) return;
+
+    // 칩이 사용된 메시지는 비활성화
+    if (fromChipMsgId) {
+      setChatMessages(prev => prev.map(m => m.id === fromChipMsgId ? { ...m, chipsUsed: true } : m));
+    }
+
+    const userMsg: ChatMessage = { id: Date.now().toString(), role: 'user', content: trimmed };
     setChatMessages(prev => [...prev, userMsg]);
     setChatInput('');
     setIsLoading(true);
@@ -84,15 +98,10 @@ export const CopilotBubble: React.FC = () => {
         role: m.role,
         content: m.content,
       }));
-
       const chatHistory = recentMessages.slice(0, -1);
-      const latestMessage = userMsg.content;
 
       const { data, error } = await supabase.functions.invoke('platform-ai-consultant', {
-        body: {
-          message: latestMessage,
-          chatHistory,
-        },
+        body: { message: trimmed, chatHistory },
       });
 
       if (error) throw error;
@@ -101,6 +110,7 @@ export const CopilotBubble: React.FC = () => {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: data?.response || '죄송합니다, 다시 시도해주세요.',
+        chips: Array.isArray(data?.chips) ? data.chips : [],
       }]);
     } catch {
       setChatMessages(prev => [...prev, {
@@ -112,6 +122,8 @@ export const CopilotBubble: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  const handleChatSend = () => sendMessage(chatInput);
 
   if (!currentStep) return null;
 
@@ -265,27 +277,44 @@ className="fixed bottom-[80px] left-3 right-3 z-[60] md:left-6 md:right-auto md:
                   <ScrollArea className="flex-1 min-h-0 h-full">
                     <div className="p-4 space-y-3 max-w-full break-words [&_*]:max-w-full">
                       {chatMessages.map((msg) => (
-                        <div key={msg.id} className={cn("flex gap-2", msg.role === 'user' ? "justify-end" : "justify-start")}>
-                          {msg.role === 'assistant' && (
-                            <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-1">
-                              <Bot className="w-3.5 h-3.5 text-primary" />
-                            </div>
-                          )}
-                          <div className={cn(
-                            "max-w-[80%] rounded-xl px-3 py-2 text-sm",
-                            msg.role === 'user'
-                              ? "bg-primary text-white"
-                              : "bg-white/10 text-white/90"
-                          )}>
-                            {msg.role === 'assistant' ? (
-                              <div className="prose prose-sm prose-invert max-w-none [&_p]:m-0 [&_p]:leading-relaxed">
-                                <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        <div key={msg.id} className="space-y-2">
+                          <div className={cn("flex gap-2", msg.role === 'user' ? "justify-end" : "justify-start")}>
+                            {msg.role === 'assistant' && (
+                              <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-1">
+                                <Bot className="w-3.5 h-3.5 text-primary" />
                               </div>
-                            ) : msg.content}
+                            )}
+                            <div className={cn(
+                              "max-w-[80%] rounded-xl px-3 py-2 text-sm",
+                              msg.role === 'user'
+                                ? "bg-primary text-white"
+                                : "bg-white/10 text-white/90"
+                            )}>
+                              {msg.role === 'assistant' ? (
+                                <div className="prose prose-sm prose-invert max-w-none [&_p]:m-0 [&_p]:leading-relaxed">
+                                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                                </div>
+                              ) : msg.content}
+                            </div>
+                            {msg.role === 'user' && (
+                              <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0 mt-1">
+                                <User className="w-3.5 h-3.5 text-white/60" />
+                              </div>
+                            )}
                           </div>
-                          {msg.role === 'user' && (
-                            <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0 mt-1">
-                              <User className="w-3.5 h-3.5 text-white/60" />
+                          {/* Quick chips */}
+                          {msg.role === 'assistant' && msg.chips && msg.chips.length > 0 && !msg.chipsUsed && (
+                            <div className="flex flex-wrap gap-1.5 pl-8">
+                              {msg.chips.map((chip, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => sendMessage(chip, msg.id)}
+                                  disabled={isLoading}
+                                  className="px-3 py-1.5 rounded-full bg-primary/15 hover:bg-primary/25 border border-primary/30 text-primary text-xs font-medium transition-colors disabled:opacity-50"
+                                >
+                                  {chip}
+                                </button>
+                              ))}
                             </div>
                           )}
                         </div>

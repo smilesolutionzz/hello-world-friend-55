@@ -181,7 +181,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.platform-ai-consultant]
-verify_jwt = true  # 🔒 보안: 플랫폼 AI 컨설턴트 인증 필수
+verify_jwt = false  # 랜딩 코파일럿은 비로그인 사용자도 사용 가능
 
 [functions.premium-adhd-analyzer]
 verify_jwt = true  # 🔒 보안: 프리미엄 ADHD 분석 인증 필수

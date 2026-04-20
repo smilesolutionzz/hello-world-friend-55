@@ -80,20 +80,27 @@ export const CopilotBubble: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const recentMessages = [...chatMessages.slice(-8), userMsg].map(m => ({
-        role: m.role, content: m.content,
+      const recentMessages = [...chatMessages.slice(-8), userMsg].map((m) => ({
+        role: m.role,
+        content: m.content,
       }));
 
+      const chatHistory = recentMessages.slice(0, -1);
+      const latestMessage = userMsg.content;
+
       const { data, error } = await supabase.functions.invoke('platform-ai-consultant', {
-        body: { messages: recentMessages },
+        body: {
+          message: latestMessage,
+          chatHistory,
+        },
       });
 
       if (error) throw error;
 
-      setChatMessages(prev => [...prev, {
+      setChatMessages((prev) => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: data?.reply || '죄송합니다, 다시 시도해주세요.',
+        content: data?.response || '죄송합니다, 다시 시도해주세요.',
       }]);
     } catch {
       setChatMessages(prev => [...prev, {

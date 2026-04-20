@@ -93,6 +93,33 @@ const Quiz: React.FC = () => {
   });
   const [analyzeProgress, setAnalyzeProgress] = useState(0);
   const [user, setUser] = useState<any>(null);
+  const [isExpanding, setIsExpanding] = useState(false);
+
+  const handleAIExpand = async () => {
+    const text = data.concern.trim();
+    if (text.length < 2) {
+      toast.error('먼저 한두 단어라도 적어주세요');
+      return;
+    }
+    setIsExpanding(true);
+    try {
+      const { data: res, error } = await supabase.functions.invoke('mind-track-concern-polish', {
+        body: { concern: text },
+      });
+      if (error) throw error;
+      const polished = (res as any)?.polished || (res as any)?.text || (res as any)?.result;
+      if (polished && typeof polished === 'string') {
+        setData((d) => ({ ...d, concern: polished.trim() }));
+        toast.success('AI가 문장을 다듬어줬어요');
+      } else {
+        toast.error('확장에 실패했어요. 다시 시도해주세요');
+      }
+    } catch (e: any) {
+      toast.error(e?.message || 'AI 확장에 실패했어요');
+    } finally {
+      setIsExpanding(false);
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => setUser(user));

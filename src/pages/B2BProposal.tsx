@@ -13,6 +13,7 @@ import {
   ChevronDown, MousePointerClick, Globe, Gift, Flame
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import B2BJobCoachSection from '@/components/b2b/B2BJobCoachSection';
 import { Search } from 'lucide-react';
 
 const fadeUp = {
@@ -540,6 +541,11 @@ const B2BProposal = () => {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* B2B 잡코치 통합 섹션 */}
+      <section className="bg-gradient-to-b from-white via-slate-50 to-white border-t border-border">
+        <B2BJobCoachSection embedded />
       </section>
 
       {/* Footer CTA */}

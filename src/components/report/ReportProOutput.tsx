@@ -212,11 +212,6 @@ const ReportProOutput: React.FC<ReportProOutputProps> = ({ reportData, userInput
           >
             <FileText className="w-3.5 h-3.5" /> DOCX
           </Button>
-          <a href="https://open.kakao.com/o/sHLdK3Ch" target="_blank" rel="noopener noreferrer" className="w-full">
-            <Button size="sm" className="w-full bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold gap-1.5 text-xs h-9">
-              <MessageSquare className="w-3.5 h-3.5" /> {t('카카오톡', 'KakaoTalk')}
-            </Button>
-          </a>
         </div>
         <div className="flex items-center gap-2 max-w-md mx-auto">
           <Mail className="w-4 h-4 text-white/40 shrink-0" />

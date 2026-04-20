@@ -1,10 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Share2, Download, Copy, MessageCircle, Sparkles, Instagram, Twitter } from 'lucide-react';
+import { Share2, Download, Copy, Sparkles, Instagram, Twitter } from 'lucide-react';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
-import { shareTestResult, isKakaoInitialized } from '@/lib/kakaoShare';
 import { trackEvent } from '@/components/common/Analytics';
 
 interface ViralShareCardProps {
@@ -113,24 +112,6 @@ export const ViralShareCard: React.FC<ViralShareCardProps> = ({
     }
   };
 
-  const handleKakaoShare = () => {
-    trackEvent('viral_kakao_share', { testName, resultTitle });
-    
-    const success = shareTestResult({
-      testName,
-      resultTitle,
-      resultSummary,
-      emoji,
-      score,
-      referralCode,
-    });
-
-    if (!success) {
-      handleCopyLink();
-      toast.success("카카오톡에 붙여넣기 하세요! 💬");
-    }
-  };
-
   const handleInstagramShare = () => {
     handleDownloadImage();
     toast.success("이미지를 저장했어요!\n인스타 스토리에 업로드하세요 📸", {
@@ -194,7 +175,7 @@ export const ViralShareCard: React.FC<ViralShareCardProps> = ({
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-2 mb-3">
+        <div className="grid grid-cols-3 gap-2 mb-3">
           {/* 이미지 저장 */}
           <Button
             onClick={handleDownloadImage}
@@ -207,15 +188,6 @@ export const ViralShareCard: React.FC<ViralShareCardProps> = ({
               <Download className="w-5 h-5 mb-1" />
             )}
             <span className="text-[10px]">이미지 저장</span>
-          </Button>
-
-          {/* 카카오톡 */}
-          <Button
-            onClick={handleKakaoShare}
-            className="flex-col h-auto py-3 bg-yellow-400 hover:bg-yellow-500 text-black"
-          >
-            <MessageCircle className="w-5 h-5 mb-1" />
-            <span className="text-[10px]">카카오톡</span>
           </Button>
 
           {/* 인스타그램 */}

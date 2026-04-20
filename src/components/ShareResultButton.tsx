@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Share2, Copy, MessageCircle, Camera, Download } from 'lucide-react';
-import { KakaoShareButton } from '@/components/social/KakaoShareButton';
+import { Share2, Copy, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 
@@ -80,26 +79,6 @@ const ShareResultButton: React.FC<ShareResultButtonProps> = ({
     }
   };
 
-  const handleKakaoTalkShare = () => {
-    // 카카오톡 공유용 메시지 생성
-    const kakaoMessage = `${title}\n\n${description}\n\n자세한 결과 보기: ${shareUrl}`;
-    
-    // 카카오톡 앱으로 직접 연결 (모바일에서)
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      const kakaoUrl = `kakaotalk://send?text=${encodeURIComponent(kakaoMessage)}`;
-      window.location.href = kakaoUrl;
-      
-      // 카카오톡 앱이 없는 경우 대체
-      setTimeout(() => {
-        handleCopyLink();
-      }, 1000);
-    } else {
-      // 데스크톱에서는 링크 복사
-      handleCopyLink();
-      toast.success('링크가 복사되었습니다. 카카오톡에서 붙여넣기하세요!');
-    }
-  };
-
   return (
     <div className={`space-y-3 ${className}`}>
       <div className="text-center mb-4">
@@ -110,16 +89,6 @@ const ShareResultButton: React.FC<ShareResultButtonProps> = ({
       </div>
       
       <div className="grid grid-cols-2 gap-3">
-        {/* 카카오톡 공유 */}
-        <Button
-          onClick={handleKakaoTalkShare}
-          className="bg-yellow-400 hover:bg-yellow-300 text-black"
-          size="sm"
-        >
-          <MessageCircle className="w-4 h-4 mr-2" />
-          카카오톡
-        </Button>
-
         {/* 링크 복사 */}
         <Button
           onClick={handleCopyLink}

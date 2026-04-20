@@ -10,7 +10,9 @@ export interface TemplateEntry {
 }
 
 import { template as reportReady } from './report-ready-notification.tsx'
+import { template as mindTrackCompletion } from './mind-track-completion.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'report-ready-notification': reportReady,
+  'mind-track-completion': mindTrackCompletion,
 }

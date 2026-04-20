@@ -163,6 +163,11 @@ export const ExpertApplicationForm = () => {
         return;
       }
 
+      // 지역 정보를 address 필드에 합쳐 저장 (테이블에 region/sub_region 컬럼이 없음)
+      const fullAddress = [formData.region, formData.subRegion, formData.address]
+        .filter(Boolean)
+        .join(' ');
+
       const { error } = await supabase
         .from('expert_applications')
         .insert({
@@ -172,9 +177,7 @@ export const ExpertApplicationForm = () => {
           email: formData.email,
           birth_date: formData.birthDate || null,
           gender: formData.gender || null,
-          address: formData.address || null,
-          region: formData.region || null,
-          sub_region: formData.subRegion || null,
+          address: fullAddress || null,
           specializations: formData.specializations,
           consultation_methods: formData.consultationMethods,
           target_age_groups: formData.targetAgeGroups,

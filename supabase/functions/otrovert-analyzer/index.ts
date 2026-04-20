@@ -45,7 +45,7 @@ ${Object.entries(answers).map(([key, answer]: [string, any]) => `- ${key}: ${ans
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3.1-flash-preview',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: '당신은 성격 심리학과 성격유형 이론, 빅5 성격 이론을 깊이 이해하는 전문가입니다. 오트로버트는 외향성과 내향성 사이의 스펙트럼을 측정하는 새로운 개념입니다.' },
           { role: 'user', content: prompt }

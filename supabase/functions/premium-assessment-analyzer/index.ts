@@ -422,7 +422,7 @@ ${Object.entries(actualResults).map(([domain, score]) => `- ${domain}: ${score}�
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3.1-flash-preview', // 프리미엄 분석용 고품질 모델
+        model: 'google/gemini-3-flash-preview', // 프리미엄 분석용 고품질 모델
         messages: [
           {
             role: 'system',

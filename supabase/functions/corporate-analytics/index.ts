@@ -101,7 +101,7 @@ ${JSON.stringify(employeeWellness, null, 2)}
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-3.1-flash-preview',
+      model: 'google/gemini-3-flash-preview',
       messages: [{ role: 'user', content: analysisPrompt }],
       max_completion_tokens: 2000,
     }),
@@ -177,7 +177,7 @@ ${JSON.stringify(employeeData.slice(0, 50), null, 2)}
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-3.1-flash-preview',
+      model: 'google/gemini-3-flash-preview',
       messages: [{ role: 'user', content: predictionPrompt }],
       max_completion_tokens: 2000,
     }),
@@ -244,7 +244,7 @@ ${JSON.stringify(departments, null, 2)}
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-3.1-flash-preview',
+      model: 'google/gemini-3-flash-preview',
       messages: [{ role: 'user', content: conflictPrompt }],
       max_completion_tokens: 2000,
     }),
@@ -321,7 +321,7 @@ async function generateInterventionStrategies(organizationId: string, targetData
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-3.1-flash-preview',
+      model: 'google/gemini-3-flash-preview',
       messages: [{ role: 'user', content: strategyPrompt }],
       max_completion_tokens: 2000,
     }),
@@ -377,7 +377,7 @@ async function calculateROIMetrics(organizationId: string, periodData: any) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-3.1-flash-preview',
+      model: 'google/gemini-3-flash-preview',
       messages: [{ role: 'user', content: roiPrompt }],
       max_completion_tokens: 2000,
     }),
@@ -460,7 +460,7 @@ async function createCorporateProgram(organizationId: string, programData: any) 
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'google/gemini-3.1-flash-preview',
+      model: 'google/gemini-3-flash-preview',
       messages: [{ role: 'user', content: programPrompt }],
       max_completion_tokens: 2000,
     }),

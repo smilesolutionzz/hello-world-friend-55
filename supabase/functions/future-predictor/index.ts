@@ -83,7 +83,7 @@ ${ageGroup}세 ${age}세 아동/성인의 6개월 후 발달 지연 위험도를
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3.1-flash-preview',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }

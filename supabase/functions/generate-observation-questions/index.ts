@@ -43,7 +43,7 @@ ${observationContent}${previousContext}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3.1-flash-preview',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: '당신은 아동 발달 전문가로서 관찰일지 분석을 돕는 AI입니다.' },
           { role: 'user', content: prompt }

@@ -356,6 +356,28 @@ className="fixed bottom-[80px] left-3 right-3 z-[60] md:left-6 md:right-auto md:
                               ))}
                             </div>
                           )}
+                          {/* Final recommendation CTA */}
+                          {msg.role === 'assistant' && msg.isFinal && msg.recommendedRoute && (
+                            <div className="ml-8 mt-2 rounded-xl border border-primary/40 bg-gradient-to-br from-primary/15 to-purple-500/10 p-3 space-y-2">
+                              <div className="flex items-center gap-1.5 text-[11px] font-semibold text-primary">
+                                <Sparkles className="w-3 h-3" />
+                                대화 내용을 바탕으로 추천드려요
+                              </div>
+                              {msg.recommendedMessage && (
+                                <p className="text-xs text-white/80 leading-relaxed">{msg.recommendedMessage}</p>
+                              )}
+                              <button
+                                onClick={() => {
+                                  navigate(msg.recommendedRoute!);
+                                  setIsOpen(false);
+                                }}
+                                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-r from-primary to-purple-600 text-white text-xs font-bold hover:opacity-90 transition-opacity"
+                              >
+                                {msg.recommendedTrack === 'expert_urgent' ? '긴급 전문가 연결' : '30일 마음 트랙 시작하기'}
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          )}
                         </div>
                       ))}
                       {isLoading && (

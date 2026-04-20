@@ -2847,6 +2847,56 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_coaching_email_log: {
+        Row: {
+          created_at: string
+          day_number: number
+          error_message: string | null
+          goal_id: string
+          id: string
+          insight_content: string | null
+          mission_content: string | null
+          send_date: string
+          status: string
+          subject: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          day_number: number
+          error_message?: string | null
+          goal_id: string
+          id?: string
+          insight_content?: string | null
+          mission_content?: string | null
+          send_date: string
+          status?: string
+          subject?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          day_number?: number
+          error_message?: string | null
+          goal_id?: string
+          id?: string
+          insight_content?: string | null
+          mission_content?: string | null
+          send_date?: string
+          status?: string
+          subject?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_coaching_email_log_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "user_coaching_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       development_goals: {
         Row: {
           category: string
@@ -10908,6 +10958,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_coaching_goals: {
+        Row: {
+          created_at: string
+          current_day: number
+          daily_email_opt_in: boolean
+          end_date: string | null
+          goal_category: string
+          goal_description: string | null
+          id: string
+          is_active: boolean
+          preferred_send_hour: number
+          start_date: string
+          target_age_group: string | null
+          total_days: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_day?: number
+          daily_email_opt_in?: boolean
+          end_date?: string | null
+          goal_category: string
+          goal_description?: string | null
+          id?: string
+          is_active?: boolean
+          preferred_send_hour?: number
+          start_date?: string
+          target_age_group?: string | null
+          total_days?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_day?: number
+          daily_email_opt_in?: boolean
+          end_date?: string | null
+          goal_category?: string
+          goal_description?: string | null
+          id?: string
+          is_active?: boolean
+          preferred_send_hour?: number
+          start_date?: string
+          target_age_group?: string | null
+          total_days?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_cohorts: {
         Row: {

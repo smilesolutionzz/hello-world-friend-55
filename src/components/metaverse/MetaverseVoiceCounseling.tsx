@@ -1446,12 +1446,26 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   }
 
   // 입장 후 상담 화면
+  // 스마트 뒤로가기: 결과 모달 → 입장 전 → 이전 페이지 순으로 단계적으로 빠져나옴
+  const handleSmartBack = () => {
+    if (showAnalysisResult) {
+      setShowAnalysisResult(false);
+      setSctAnalysisResult(null);
+      return;
+    }
+    if (hasEntered) {
+      setHasEntered(false);
+      return;
+    }
+    navigate(-1);
+  };
+
   return (
     <div className="relative min-h-screen">
       {/* 네비게이션 버튼 - 하단 중앙 */}
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] flex gap-2 pointer-events-auto">
         <Button
-          onClick={() => navigate(-1)}
+          onClick={handleSmartBack}
           variant="outline"
           size="sm"
           className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg pointer-events-auto text-xs sm:text-sm px-2 py-1 sm:px-4 sm:py-2 h-7 sm:h-9"

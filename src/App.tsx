@@ -103,6 +103,7 @@ import MindDiary from "./pages/MindDiary";
 import MindTrack from "./pages/MindTrack";
 import MindTrackStart from "./pages/MindTrackStart";
 import MindTrackWorkbook from "./pages/MindTrackWorkbook";
+import Quiz from "./pages/Quiz";
 
 // Content & Column
 import Column from "./pages/Column";
@@ -268,6 +269,8 @@ const App = () => {
           <Route path="/subscription" element={<TokenSubscription />} />
           <Route path="/subscription/business" element={<BusinessSubscription />} />
           <Route path="/en/subscription/business" element={<BusinessSubscription />} />
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/en/quiz" element={<Quiz />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />

@@ -65,8 +65,8 @@ const BusinessModelSection: React.FC = () => {
                   </li>
                 ))}
               </ul>
-              <Button onClick={() => navigate('/mind-track')} size="lg" className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-                30일 트랙 시작하기 <ArrowRight className="w-4 h-4 ml-2" />
+              <Button onClick={() => navigate('/quiz')} size="lg" className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                1분 무료 진단으로 시작 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </CardContent>
           </Card>

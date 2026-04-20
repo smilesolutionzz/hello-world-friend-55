@@ -1,9 +1,10 @@
-import { useEffect, useState, lazy, Suspense, createContext } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Sparkles, Brain, Layers } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import SEOHead from '@/components/common/SEOHead';
+import { HubContext } from './HubContext';
 
 const Assessment = lazy(() => import('@/pages/Assessment'));
 const PremiumAssessment = lazy(() => import('@/pages/PremiumAssessment'));
@@ -15,9 +16,6 @@ const TABS: { key: TabKey; label: string; sub: string; icon: typeof Sparkles }[]
   { key: 'quick', label: '무료 빠른 체크', sub: '3분 · 무료', icon: Sparkles },
   { key: 'deep', label: '심층 전문 분석', sub: '10~15분 · 리포트 ₩3,900', icon: Brain },
 ];
-
-// 내부 Assessment/PremiumAssessment가 자체 nav를 숨기도록 알려주는 컨텍스트
-export const HubContext = createContext<{ insideHub: boolean }>({ insideHub: false });
 
 const UnifiedAssessmentHub = () => {
   const [searchParams, setSearchParams] = useSearchParams();

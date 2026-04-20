@@ -37,7 +37,7 @@ import { supabase } from '@/integrations/supabase/client';
 import logo from '@/assets/logo.png';
 
 import { useContext } from 'react';
-import { HubContext } from '@/components/assessment/UnifiedAssessmentHub';
+import { HubContext } from '@/components/assessment/HubContext';
 
 const UnifiedNavigationInner = () => {
   const navigate = useNavigate();

@@ -3,6 +3,7 @@ import { FileText, Users, TrendingUp, ArrowRight, CheckCircle, Sparkles } from '
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { motion } from 'framer-motion';
+import { SmartConsultMatcher } from '@/components/expert/SmartConsultMatcher';
 
 interface PostPaymentFlowProps {
   testName: string;
@@ -143,6 +144,17 @@ const PostPaymentConversionFlow = ({ testName, onViewReport }: PostPaymentFlowPr
           </div>
         </motion.div>
       ))}
+
+      {/* AI 전문가 매칭 — 결과 직후 황금 타이밍 */}
+      {!isEnglish && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.75 }}
+        >
+          <SmartConsultMatcher triggerSource="post_report" compact />
+        </motion.div>
+      )}
 
       {/* Subtle data emphasis */}
       <motion.div

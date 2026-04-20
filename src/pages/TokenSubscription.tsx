@@ -199,18 +199,18 @@ const TokenSubscription = () => {
                   </span>
                   <span className="text-xs font-bold text-foreground">{m.name}</span>
                 </div>
-                <p className="text-[11px] text-muted-foreground leading-relaxed break-keep">{m.desc}</p>
+                <p className="text-[11px] text-slate-700 dark:text-slate-300 leading-relaxed break-keep">{m.desc}</p>
               </div>
             ))}
           </div>
 
           <div className="rounded-xl bg-blue-600/5 border border-blue-200/60 dark:border-blue-800/40 p-4">
-            <p className="text-xs md:text-sm text-foreground/80 leading-relaxed break-keep">
-              <span className="font-bold text-foreground">일반 AI 챗봇은 텍스트 패턴만 생성합니다.</span>{' '}
+            <p className="text-xs md:text-sm text-slate-800 dark:text-slate-200 leading-relaxed break-keep">
+              <span className="font-bold text-slate-900 dark:text-white">일반 AI 챗봇은 텍스트 패턴만 생성합니다.</span>{' '}
               AIHPRO는 30일 트랙 동안 누적되는 데이터를 <span className="font-semibold text-blue-700 dark:text-blue-400">RCI(신뢰변화지수)</span>로 분석하여,
               "기분 탓"이 아닌 통계적으로 유의미한 변화가 일어났는지 객관적으로 증명합니다.
             </p>
-            <p className="text-[10px] text-muted-foreground italic mt-2 break-keep">
+            <p className="text-[10px] text-slate-600 dark:text-slate-400 italic mt-2 break-keep">
               ※ 본 서비스는 발달 코칭 및 의사결정 보조 도구이며, 의료 진단이 아닙니다.
             </p>
           </div>

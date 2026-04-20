@@ -96,6 +96,29 @@ export default function MindTrackWorkbook() {
     }
   }, [currentDay, enrollment, missions]);
 
+  // Day 30 도달 + 아직 완료처리 안된 경우 → 자동 finalize + 메일 발송
+  useEffect(() => {
+    if (!enrollment) return;
+    if (currentDay < 30) return;
+    if (enrollment.status === "completed" && enrollment.completed_at) return;
+    (async () => {
+      try {
+        const { data: session } = await supabase.auth.getSession();
+        const { data, error } = await supabase.functions.invoke("mind-track-finalize", {
+          headers: { Authorization: `Bearer ${session.session?.access_token}` },
+          body: { enrollmentId: enrollment.id },
+        });
+        if (error) throw error;
+        if (data?.success && !data?.alreadyCompleted) {
+          toast.success("30일 트랙 완료! 종합 리포트를 메일로도 보내드렸어요 🎉");
+          load();
+        }
+      } catch (e: any) {
+        console.error("finalize failed:", e);
+      }
+    })();
+  }, [currentDay, enrollment?.id, enrollment?.status]);
+
   const openMission = (mission: any) => {
     const existing = checkins.find((c) => c.day_number === mission.day_number);
     setActiveMission(mission);

@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import { Button } from '@/components/ui/button';
-import { Crown, Lock, Zap, CheckCircle, Sparkles } from 'lucide-react';
+import { Lock, CheckCircle, Sparkles, ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { PaymentModal } from '@/components/payments/PaymentModal';
 import { SubscriptionGuardContext } from './SubscriptionGuard';
-import { SUBSCRIPTION_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE, MIND_TRACK_DISCOUNT_PERCENT } from '@/constants/tokenCosts';
 import { useNavigate } from 'react-router-dom';
 
 /**
@@ -22,17 +21,10 @@ export const ResultPaywall: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const {
     unlockResult,
-    creditLabel,
-    creditPrice,
-    creditOriginalPrice,
-    creditDiscount,
     hasCreditAccess,
     isTrialAllowed,
     remaining,
     featureName,
-    paymentOpen,
-    setPaymentOpen,
-    creditType,
     loading,
   } = ctx;
 
@@ -40,7 +32,7 @@ export const ResultPaywall: React.FC<{ children: React.ReactNode }> = ({ childre
     return (
       <div className="flex items-center justify-center min-h-[300px]">
         <div className="animate-pulse text-center">
-          <Crown className="w-10 h-10 text-primary mx-auto mb-3" />
+          <Sparkles className="w-10 h-10 text-primary mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">결과 확인 중...</p>
         </div>
       </div>
@@ -54,7 +46,6 @@ export const ResultPaywall: React.FC<{ children: React.ReactNode }> = ({ childre
         <div className="filter blur-sm pointer-events-none select-none" aria-hidden>
           {children}
         </div>
-        {/* 그라데이션 페이드아웃 */}
         <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background via-background/80 to-transparent" />
       </div>
 
@@ -73,98 +64,65 @@ export const ResultPaywall: React.FC<{ children: React.ReactNode }> = ({ childre
 
           {/* 무료 체험 가능 */}
           {isTrialAllowed && (
-            <Button
-              onClick={unlockResult}
-              className="w-full h-12 text-base"
-              size="lg"
-            >
+            <Button onClick={unlockResult} className="w-full h-12 text-base" size="lg">
               <Sparkles className="w-5 h-5 mr-2" />
-              무료 체험으로 결과 확인 (남은 {remaining === Infinity ? '무제한' : `${remaining}회`})
+              무료로 결과 확인 (남은 {remaining === Infinity ? '무제한' : `${remaining}회`})
             </Button>
           )}
 
-          {/* 크레딧 보유 시 */}
+          {/* 챌린지 보유 시 즉시 잠금 해제 */}
           {!isTrialAllowed && hasCreditAccess && (
-            <Button
-              onClick={unlockResult}
-              className="w-full h-12 text-base"
-              size="lg"
-            >
-              <Zap className="w-5 h-5 mr-2" />
-              {creditLabel} 이용권 1회 사용하여 결과 확인
+            <Button onClick={unlockResult} className="w-full h-12 text-base" size="lg">
+              <Sparkles className="w-5 h-5 mr-2" />
+              30일 마음 챌린지로 결과 확인
             </Button>
           )}
 
-          {/* 크레딧도 무료체험도 없을 때 */}
+          {/* 챌린지 미구매 → 단일 CTA */}
           {!isTrialAllowed && !hasCreditAccess && (
             <div className="space-y-3">
-              {/* 단건 구매 */}
-              <div className="border border-border rounded-xl p-4 space-y-2">
+              <div className="border-2 border-primary rounded-xl p-4 space-y-3 relative bg-gradient-to-br from-primary/5 to-transparent">
+                <Badge className="absolute -top-2.5 right-3 bg-primary text-primary-foreground text-[10px]">
+                  단일 상품
+                </Badge>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-amber-500" />
-                    <span className="font-semibold text-sm">{creditLabel} 1회 이용권</span>
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <span className="font-semibold text-sm">30일 마음 변화 챌린지</span>
                   </div>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-xs text-muted-foreground line-through">₩{creditOriginalPrice.toLocaleString()}</span>
-                    <span className="text-lg font-bold text-primary">₩{creditPrice.toLocaleString()}</span>
-                    <Badge variant="secondary" className="text-[10px]">{creditDiscount}%↓</Badge>
-                  </div>
-                </div>
-                <Button
-                  onClick={() => setPaymentOpen(true)}
-                  variant="outline"
-                  className="w-full"
-                >
-                  <Zap className="w-4 h-4 mr-2" />
-                  {creditLabel} 1회 구매하기
-                </Button>
-              </div>
-
-              {/* 구독 */}
-              <div className="border-2 border-primary rounded-xl p-4 space-y-2 relative">
-                <Badge className="absolute -top-2.5 right-3 bg-primary text-primary-foreground text-[10px]">추천</Badge>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Crown className="w-4 h-4 text-primary" />
-                    <span className="font-semibold text-sm">월간 구독</span>
-                  </div>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-xs text-muted-foreground line-through">₩19,900</span>
-                    <span className="text-lg font-bold text-primary">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
-                    <span className="text-xs text-muted-foreground">/월</span>
+                    <span className="text-xs text-muted-foreground line-through">
+                      ₩{MIND_TRACK_ORIGINAL_PRICE.toLocaleString()}
+                    </span>
+                    <span className="text-lg font-bold text-primary">
+                      ₩{MIND_TRACK_PRICE.toLocaleString()}
+                    </span>
+                    <Badge variant="secondary" className="text-[10px]">
+                      {MIND_TRACK_DISCOUNT_PERCENT}%↓
+                    </Badge>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-1">
-                  {['모든 검사 무제한', 'AI 심층 분석', '리포트 다운로드', '맞춤 솔루션'].map((f, i) => (
+                  {['모든 검사 결과 잠금 해제', 'AI 심층 분석 리포트', '30일 맞춤 코칭', '30일 무조건 환불 보장'].map((f, i) => (
                     <div key={i} className="flex items-center gap-1 text-xs text-muted-foreground">
                       <CheckCircle className="w-3 h-3 text-primary flex-shrink-0" />
                       <span>{f}</span>
                     </div>
                   ))}
                 </div>
-                <Button
-                  onClick={() => navigate('/token-subscription')}
-                  className="w-full"
-                >
-                  <Crown className="w-4 h-4 mr-2" />
-                  구독하고 무제한 이용
+                <Button onClick={() => navigate('/pricing')} className="w-full" size="lg">
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  30일 챌린지 시작하기
                 </Button>
+                <p className="flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
+                  <ShieldCheck className="w-3 h-3" />
+                  마음에 들지 않으면 30일 내 100% 환불
+                </p>
               </div>
             </div>
           )}
         </div>
       </div>
-
-      <PaymentModal
-        open={paymentOpen}
-        onOpenChange={setPaymentOpen}
-        mode="single"
-        creditType={creditType}
-        title={`${featureName} ${creditLabel} 이용권 구매`}
-        description={`${featureName} ${creditLabel} 1회를 이용할 수 있습니다.`}
-        onSuccess={unlockResult}
-      />
     </div>
   );
 };

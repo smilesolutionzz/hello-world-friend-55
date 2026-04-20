@@ -31,27 +31,72 @@ interface ChatMessage {
 
 type Mode = 'guide' | 'chat';
 
+const STORAGE_KEY = 'copilot_state_v1';
+const INITIAL_GREETING: ChatMessage = {
+  id: '1',
+  role: 'assistant',
+  content: '안녕하세요 😊 어떤 고민을 함께 살펴볼까요? 먼저 누구에 대한 이야기인지 알려주실래요?',
+  chips: ['본인', '자녀', '가족', '기타'],
+};
+
+interface PersistedState {
+  mode: Mode;
+  currentStepId: string;
+  history: HistoryEntry[];
+  chatMessages: ChatMessage[];
+  sessionId: string;
+  conversationId: string | null;
+}
+
+const loadPersisted = (): Partial<PersistedState> => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
+};
+
 export const CopilotBubble: React.FC = () => {
+  const persisted = useRef<Partial<PersistedState>>(loadPersisted()).current;
+
   const [isOpen, setIsOpen] = useState(false);
-  const [mode, setMode] = useState<Mode>('guide');
-  const [currentStepId, setCurrentStepId] = useState<string>('root');
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [mode, setMode] = useState<Mode>(persisted.mode ?? 'guide');
+  const [currentStepId, setCurrentStepId] = useState<string>(persisted.currentStepId ?? 'root');
+  const [history, setHistory] = useState<HistoryEntry[]>(persisted.history ?? []);
   const navigate = useNavigate();
 
-  // Chat state
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: '안녕하세요 😊 어떤 고민을 함께 살펴볼까요? 먼저 누구에 대한 이야기인지 알려주실래요?',
-      chips: ['본인', '자녀', '가족', '기타'],
-    }
-  ]);
+  // Chat state - 복원
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(
+    persisted.chatMessages && persisted.chatMessages.length > 0
+      ? persisted.chatMessages
+      : [INITIAL_GREETING]
+  );
   const [chatInput, setChatInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const sessionIdRef = useRef<string>(`cp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
-  const conversationIdRef = useRef<string | null>(null);
+  const sessionIdRef = useRef<string>(
+    persisted.sessionId ?? `cp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+  );
+  const conversationIdRef = useRef<string | null>(persisted.conversationId ?? null);
+
+  // 상태 변경 시 자동 저장
+  useEffect(() => {
+    try {
+      const state: PersistedState = {
+        mode,
+        currentStepId,
+        history,
+        chatMessages,
+        sessionId: sessionIdRef.current,
+        conversationId: conversationIdRef.current,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // ignore quota errors
+    }
+  }, [mode, currentStepId, history, chatMessages]);
 
   const currentStep = copilotFlows[currentStepId];
 

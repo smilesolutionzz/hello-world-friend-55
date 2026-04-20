@@ -543,6 +543,11 @@ const B2BProposal = () => {
         </div>
       </section>
 
+      {/* B2B 잡코치 통합 섹션 */}
+      <section className="bg-gradient-to-b from-white via-slate-50 to-white border-t border-border">
+        <B2BJobCoachSection embedded />
+      </section>
+
       {/* Footer CTA */}
       <section className="bg-slate-900 text-white py-14">
         <div className="container mx-auto px-4 max-w-3xl text-center">

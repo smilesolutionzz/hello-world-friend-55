@@ -41,14 +41,15 @@ const UnifiedAssessmentHub = () => {
   };
 
   return (
-    <HubContext.Provider value={{ insideHub: true }}>
+    <>
       <SEOHead
         title="심리 검사 통합 허브 | AIHPRO"
         description="무료 빠른 체크부터 임상 통계 기반 심층 분석까지, 한 곳에서 모든 검사를 받아보세요."
         canonicalUrl="https://aihpro.app/assessment"
       />
+      {/* Hub의 nav는 Provider 밖에서 렌더 → 항상 표시 */}
       <UnifiedNavigation />
-
+      <HubContext.Provider value={{ insideHub: true }}>
       <div className="pt-16 bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4 py-8 max-w-6xl">
           <div className="text-center mb-8">

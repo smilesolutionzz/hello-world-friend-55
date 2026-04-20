@@ -36,7 +36,12 @@ export const CopilotBubble: React.FC = () => {
 
   // Chat state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    { id: '1', role: 'assistant', content: '안녕하세요! 😊 무엇이든 편하게 물어보세요.\n\n발달, 심리, 검사, 리포트 등 궁금한 점을 말씀해주세요.' }
+    {
+      id: '1',
+      role: 'assistant',
+      content: '안녕하세요 😊 어떤 고민을 함께 살펴볼까요? 먼저 누구에 대한 이야기인지 알려주실래요?',
+      chips: ['본인', '자녀', '가족', '기타'],
+    }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);

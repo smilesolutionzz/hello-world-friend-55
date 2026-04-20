@@ -142,6 +142,37 @@ const ClinicalReportLayout = ({
     ? footnotedAnalysis.split('\n\n').map(p => p.trim()).filter(Boolean)
     : [];
 
+  // 🎯 검사 결과 → 30일 챌린지 baseline 자동 저장
+  const riskAreas = (domains || [])
+    .filter(d => {
+      const pct = d.maxScore > 0 ? (Number(d.score) / d.maxScore) * 100 : 0;
+      return pct >= 60;
+    })
+    .map(d => d.label);
+  const strengthAreas = (domains || [])
+    .filter(d => {
+      const pct = d.maxScore > 0 ? (Number(d.score) / d.maxScore) * 100 : 0;
+      return pct < 30;
+    })
+    .map(d => d.label);
+  const baselineScores = (domains || []).reduce((acc, d) => {
+    acc[d.key] = Number(d.score);
+    return acc;
+  }, {} as Record<string, number>);
+  baselineScores._total = typeof totalScore === 'number' ? totalScore : Number(totalScore) || 0;
+
+  useChallengeBaseline(
+    !isAnalyzing && (domains?.length || aiAnalysis)
+      ? {
+          testType: testName,
+          scores: baselineScores,
+          riskAreas,
+          strengthAreas,
+          recommendedFocus: scoreSeverity,
+        }
+      : null
+  );
+
   return (
     <div className="min-h-screen bg-background">
       {/* ── Sticky Header ── */}

@@ -50,6 +50,8 @@ export const CopilotBubble: React.FC = () => {
   const [chatInput, setChatInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sessionIdRef = useRef<string>(`cp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
+  const conversationIdRef = useRef<string | null>(null);
 
   const currentStep = copilotFlows[currentStepId];
 

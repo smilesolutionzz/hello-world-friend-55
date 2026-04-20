@@ -84,10 +84,14 @@ const CTABannerSection = () => {
             <Button
               size="lg"
               onClick={() => navigate(localePath('/quiz'))}
-              className="group relative h-14 px-10 bg-white hover:bg-[#F5F5F5] text-[#0A0A0B] text-[15px] font-medium tracking-wide rounded-none border-0 shadow-[0_20px_60px_-15px_rgba(212,175,115,0.5)] transition-all duration-500 hover:shadow-[0_25px_70px_-15px_rgba(212,175,115,0.7)] hover:-translate-y-0.5"
+              className="group relative h-16 px-10 bg-white hover:bg-[#F5F5F5] text-[#0A0A0B] rounded-none border-0 shadow-[0_20px_60px_-15px_rgba(212,175,115,0.5)] transition-all duration-500 hover:shadow-[0_25px_70px_-15px_rgba(212,175,115,0.7)] hover:-translate-y-0.5"
             >
               <Sparkles className="w-4 h-4 mr-3 text-[#D4AF73]" />
-              <span>{t.cta.signupButton ? '1분 무료 진단 시작' : '1분 무료 진단 시작'}</span>
+              <span className="flex items-baseline gap-3">
+                <span className="text-[15px] font-medium tracking-wide">30일 트랙 시작</span>
+                <span className="w-px h-4 bg-[#0A0A0B]/15 self-center" />
+                <span className="text-[15px] font-light tabular-nums tracking-tight">₩19,900</span>
+              </span>
               <ArrowUpRight className="w-4 h-4 ml-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Button>
 
@@ -95,11 +99,16 @@ const CTABannerSection = () => {
               size="lg"
               onClick={() => navigate(localePath('/auth?mode=signup'))}
               variant="ghost"
-              className="h-14 px-8 text-white/70 hover:text-white hover:bg-white/5 text-[15px] font-light tracking-wide rounded-none border border-white/15 hover:border-white/30 transition-all duration-300"
+              className="h-16 px-8 text-white/70 hover:text-white hover:bg-white/5 text-[15px] font-light tracking-wide rounded-none border border-white/15 hover:border-white/30 transition-all duration-300"
             >
               {t.cta.signupButton}
             </Button>
           </div>
+
+          {/* Price anchoring */}
+          <p className="mt-5 text-center text-[11px] text-white/35 tracking-[0.2em] uppercase">
+            한정가 · 정가 <span className="line-through">₩39,800</span> <span className="text-[#D4AF73]/80 ml-1">50% OFF</span>
+          </p>
 
           {/* Footer fineprint */}
           <div className="mt-12 text-center space-y-2">

@@ -1768,6 +1768,51 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_baselines: {
+        Row: {
+          baseline_scores: Json
+          challenge_id: string | null
+          challenge_started: boolean | null
+          created_at: string
+          id: string
+          recommended_focus: string | null
+          risk_areas: string[] | null
+          source_test_id: string | null
+          source_test_type: string
+          strength_areas: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          baseline_scores?: Json
+          challenge_id?: string | null
+          challenge_started?: boolean | null
+          created_at?: string
+          id?: string
+          recommended_focus?: string | null
+          risk_areas?: string[] | null
+          source_test_id?: string | null
+          source_test_type: string
+          strength_areas?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          baseline_scores?: Json
+          challenge_id?: string | null
+          challenge_started?: boolean | null
+          created_at?: string
+          id?: string
+          recommended_focus?: string | null
+          risk_areas?: string[] | null
+          source_test_id?: string | null
+          source_test_type?: string
+          strength_areas?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       challenge_posts: {
         Row: {
           created_at: string

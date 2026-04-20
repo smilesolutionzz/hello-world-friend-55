@@ -128,6 +128,51 @@ const TokenSubscription = () => {
           <AIComparisonTable />
         </motion.div>
 
+        {/* 임상 통계 신뢰성 섹션 */}
+        <motion.div {...fade(0.12)} className="mb-10 rounded-3xl border border-border bg-gradient-to-br from-slate-50 to-blue-50/30 dark:from-slate-900/50 dark:to-blue-950/20 p-6 md:p-8">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
+              <Shield className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h3 className="text-base md:text-lg font-bold text-foreground break-keep">
+                왜 ChatGPT가 아닌 AIHPRO여야 할까요?
+              </h3>
+              <p className="text-[11px] md:text-xs text-muted-foreground">검증된 임상 통계 모델 기반 분석</p>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-3 mb-5">
+            {[
+              { code: 'RCI', name: '신뢰변화지수', desc: 'Jacobson & Truax (1991) — 점수 변화가 진짜 개선인지 측정 오차인지 95% 신뢰수준에서 검증' },
+              { code: 'SEM', name: '측정표준오차', desc: '모든 점수에 ±오차 범위를 함께 제시하여 과잉 해석 방지' },
+              { code: 'α', name: "Cronbach's Alpha", desc: '검사 문항의 내적 일관성 신뢰도(α ≥ 0.80)를 충족한 도구만 사용' },
+              { code: 'T', name: '연령 정규화 점수', desc: '같은 연령대 규준집단(N=1,247) 대비 백분위로 객관적 위치 산출' },
+            ].map((m, i) => (
+              <div key={i} className="rounded-xl bg-white dark:bg-card border border-border/60 p-3.5">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-[10px] font-black bg-blue-600 text-white px-1.5 py-0.5 rounded">
+                    {m.code}
+                  </span>
+                  <span className="text-xs font-bold text-foreground">{m.name}</span>
+                </div>
+                <p className="text-[11px] text-muted-foreground leading-relaxed break-keep">{m.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-xl bg-blue-600/5 border border-blue-200/60 dark:border-blue-800/40 p-4">
+            <p className="text-xs md:text-sm text-foreground/80 leading-relaxed break-keep">
+              <span className="font-bold text-foreground">일반 AI 챗봇은 텍스트 패턴만 생성합니다.</span>{' '}
+              AIHPRO는 30일 트랙 동안 누적되는 데이터를 <span className="font-semibold text-blue-700 dark:text-blue-400">RCI(신뢰변화지수)</span>로 분석하여,
+              "기분 탓"이 아닌 통계적으로 유의미한 변화가 일어났는지 객관적으로 증명합니다.
+            </p>
+            <p className="text-[10px] text-muted-foreground italic mt-2 break-keep">
+              ※ 본 서비스는 발달 코칭 및 의사결정 보조 도구이며, 의료 진단이 아닙니다.
+            </p>
+          </div>
+        </motion.div>
+
         {/* 단일 상품 카드 */}
         <motion.div {...fade(0.15)} className="mb-12">
           <div className="rounded-3xl border-2 border-foreground bg-white dark:bg-card p-6 md:p-10 relative">

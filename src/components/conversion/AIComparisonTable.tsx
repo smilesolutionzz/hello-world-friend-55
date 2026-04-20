@@ -12,7 +12,7 @@ interface AIComparisonTableProps {
  * '왜 ₩9,900을 내야 하는가?'에 대한 시각적 답변.
  */
 const AIComparisonTable: React.FC<AIComparisonTableProps> = ({ className = '', variant = 'default' }) => {
-  const rows = [
+  const allRows = [
     { key: '검증된 임상 통계 모델', desc: 'RCI, SEM, 95% CI', chatgpt: false, aihpro: true },
     { key: '연령 정규화 비교 (N=1,247)', desc: '같은 연령대 대비 백분위', chatgpt: false, aihpro: true },
     { key: '다중 데이터 삼각검증', desc: '검사+관찰+훈련+음성 7종 통합', chatgpt: false, aihpro: true },
@@ -23,6 +23,8 @@ const AIComparisonTable: React.FC<AIComparisonTableProps> = ({ className = '', v
     { key: '응답 속도', desc: '즉시 답변', chatgpt: true, aihpro: true },
     { key: '대화형 질의응답', desc: '자유로운 질문', chatgpt: true, aihpro: true },
   ];
+  const isCompactVar = variant === 'compact';
+  const rows = isCompactVar ? allRows.slice(0, 4) : allRows;
 
   const isCompact = variant === 'compact';
 

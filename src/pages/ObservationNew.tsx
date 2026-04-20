@@ -512,7 +512,7 @@ const ObservationNew = () => {
                     {/* 다음 단계 버튼 */}
                     <Button
                       onClick={() => startQAFlow(content)}
-                      disabled={content.length < 20 || isGeneratingQuestions}
+                      disabled={content.trim().length < 5 || isGeneratingQuestions}
                       size="lg"
                       className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0 shadow-lg rounded-xl h-14 text-base font-semibold"
                     >
@@ -520,6 +520,10 @@ const ObservationNew = () => {
                         <>
                           <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                           질문 생성 중...
+                        </>
+                      ) : content.trim().length < 5 ? (
+                        <>
+                          최소 5자 이상 입력해주세요
                         </>
                       ) : (
                         <>

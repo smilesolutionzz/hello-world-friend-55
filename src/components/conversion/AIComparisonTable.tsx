@@ -16,7 +16,7 @@ const AIComparisonTable: React.FC<AIComparisonTableProps> = ({ className = '', v
     { key: '검증된 임상 통계 모델', desc: 'RCI, SEM, 95% CI', chatgpt: false, aihpro: true },
     { key: '연령 정규화 비교 (N=1,247)', desc: '같은 연령대 대비 백분위', chatgpt: false, aihpro: true },
     { key: '다중 데이터 삼각검증', desc: '검사+관찰+훈련+음성 7종 통합', chatgpt: false, aihpro: true },
-    { key: '전문가 검토 (Human-in-the-Loop)', desc: '제휴 임상 전문가 직접 코멘트', chatgpt: false, aihpro: true },
+    { key: '전문가 더블체크 옵션', desc: '필요 시 제휴 임상 전문가와 교차 검증 가능', chatgpt: false, aihpro: true },
     { key: '재검사 추적 및 변화 분석', desc: '3·6개월 알림 + 종단 비교', chatgpt: false, aihpro: true },
     { key: '구조화된 PDF/DOCX 리포트', desc: '병원·학교 제출 가능 형식', chatgpt: false, aihpro: true },
     { key: '결과의 일관성 (재현 가능)', desc: '같은 입력 → 같은 결과', chatgpt: false, aihpro: true },
@@ -111,7 +111,7 @@ const AIComparisonTable: React.FC<AIComparisonTableProps> = ({ className = '', v
           <strong className="text-slate-900">AIHPRO는 일반 LLM이 아닙니다.</strong>{' '}
           검증된 임상 통계 모델(Cronbach's α, RCI, SEM)과 연령 정규화 표본을 결합한{' '}
           <span className="text-primary font-bold">전문 분석 엔진</span>이며,{' '}
-          제휴 임상 전문가가 직접 검토합니다.
+          필요 시 제휴 임상 전문가와의 더블체크 옵션을 제공합니다.
         </p>
         <p className="text-[10px] sm:text-xs text-slate-500 mt-2 italic break-keep">
           ※ 의료 진단이 아닌 발달 코칭 및 의사결정 보조 도구입니다.

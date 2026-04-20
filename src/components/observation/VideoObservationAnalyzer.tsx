@@ -28,7 +28,7 @@ import {
   Save,
   Share2
 } from "lucide-react";
-import { KakaoShareButton } from "@/components/social/KakaoShareButton";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";

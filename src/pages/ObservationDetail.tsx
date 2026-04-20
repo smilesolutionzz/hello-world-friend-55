@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import ReportHubCTA from "@/components/report/ReportHubCTA";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -434,6 +435,11 @@ export default function ObservationDetail() {
             </Card>
           </motion.div>
         )}
+
+        {/* 🎯 리포트 허브 통일 CTA */}
+        <div className="mt-8">
+          <ReportHubCTA originLabel="이 관찰일지" sources={['observations', 'tests']} />
+        </div>
       </main>
 
       {/* 삭제 확인 다이얼로그 */}

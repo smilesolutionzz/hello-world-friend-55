@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTokens } from '@/hooks/useTokens';
 import { useSubscription } from '@/hooks/useSubscription';
 import { sanitizeAIContent } from '@/utils/sanitizeHtml';
@@ -93,6 +93,7 @@ const ReportGeneratorPro = () => {
   const [showDataDetails, setShowDataDetails] = useState({ assessments: false, observations: false, observationSessions: false, chatMessages: false });
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { tokenBalance, consumeTokens, checkTokenAvailability } = useTokens();
   const { isPremiumUser, loading: subLoading } = useSubscription();
   const [familyEmail, setFamilyEmail] = useState('');
@@ -106,6 +107,11 @@ const ReportGeneratorPro = () => {
   const [checklistSelectedCount, setChecklistSelectedCount] = useState(0);
   const [checklistTotalCount, setChecklistTotalCount] = useState(0);
   const { isEnglish, localePath } = useLanguage();
+
+  // 🎯 진입 컨텍스트 — ReportHubCTA에서 ?sources=&origin= 으로 진입
+  const sourcesParam = searchParams.get('sources');
+  const originLabel = searchParams.get('origin');
+  const autoSelectCategories = sourcesParam ? sourcesParam.split(',').filter(Boolean) : undefined;
 
   // 현재 무료 개방 중 - 모든 사용자에게 프리미엄 기능 제공
   const isPremium = true;
@@ -482,7 +488,13 @@ const ReportGeneratorPro = () => {
                   <Database className="w-4 h-4 text-primary" /> {t('리포트에 포함할 데이터 선택', 'Select Data for Report')}
                 </h4>
                 <p className="text-xs text-muted-foreground mb-3">{t('포함할 데이터를 직접 선택하세요. 체크된 항목만 리포트에 반영됩니다.', 'Select the data to include. Only checked items will be reflected in the report.')}</p>
+                {originLabel && (
+                  <div className="mb-3 rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-xs text-primary">
+                    🎯 <span className="font-semibold">{decodeURIComponent(originLabel)}</span>에서 이어졌어요 — 관련 데이터를 자동 선택했습니다.
+                  </div>
+                )}
                 <ReportDataChecklist
+                  autoSelectOnly={autoSelectCategories}
                   onSelectionChange={(data, count, total) => {
                     setSelectedChecklistData(data);
                     setChecklistSelectedCount(count);

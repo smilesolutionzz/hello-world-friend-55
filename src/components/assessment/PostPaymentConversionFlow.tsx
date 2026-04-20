@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { SmartConsultMatcher } from '@/components/expert/SmartConsultMatcher';
+import ReportHubCTA from '@/components/report/ReportHubCTA';
 
 interface PostPaymentFlowProps {
   testName: string;
@@ -146,7 +147,18 @@ const PostPaymentConversionFlow = ({ testName, onViewReport }: PostPaymentFlowPr
         </motion.div>
       ))}
 
-      {/* AI 전문가 매칭 — 결과 직후 황금 타이밍 */}
+      {/* 🎯 리포트 허브 통일 CTA — 모든 데이터를 종합 리포트로 모은다 */}
+      {!isEnglish && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65 }}
+        >
+          <ReportHubCTA originLabel={testName} sources={['tests', 'enhanced']} />
+        </motion.div>
+      )}
+
+
       {!isEnglish && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}

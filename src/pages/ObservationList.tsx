@@ -17,6 +17,7 @@ import {
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { motion } from "framer-motion";
+import ReportHubReadyBanner from "@/components/report/ReportHubReadyBanner";
 
 interface Observation {
   id: string;
@@ -120,6 +121,7 @@ export default function ObservationList() {
       </header>
 
       <main className="container mx-auto max-w-2xl px-4 py-6">
+        <ReportHubReadyBanner />
         {/* 통계 */}
         {observations.length > 0 && (
           <motion.div

@@ -90,8 +90,7 @@ export const UnifiedNavigation = () => {
       icon: Users,
       children: [
         { label: '데모 리포트 생성기', path: '/b2b-demo-report', desc: '학교·상담·복지·기업 화이트라벨 샘플 30초 생성', icon: FileText, badge: 'NEW' },
-        { label: '직장 잡코치', path: '/b2b-jobcoach', desc: '기업 임직원 정신건강 SaaS · 익명 코칭', icon: Sparkles },
-        { label: 'HR 대시보드', path: '/b2b-hr-dashboard', desc: '부서별 익명 집계·위험 알림·월간 PDF', icon: Users },
+        { label: '어린이집·유치원 솔루션', path: '/b2b-proposal#kindergarten', desc: '교사 부모상담 자동화 · 30·60일 개선도 추적', icon: UserCheck, badge: 'PMF' },
         { label: '기관 도입 제안', path: '/b2b-proposal', desc: '학교·상담센터·복지기관 운영 자동화', icon: UserCheck },
       ]
     },

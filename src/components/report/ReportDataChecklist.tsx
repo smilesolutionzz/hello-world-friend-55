@@ -29,6 +29,8 @@ export interface DataCategory {
 
 interface ReportDataChecklistProps {
   onSelectionChange: (selectedData: Record<string, string[]>, selectedCount: number, totalCount: number) => void;
+  /** URL 진입 시 자동으로 선택할 카테고리 키들 (이외 카테고리는 모두 해제) */
+  autoSelectOnly?: string[];
 }
 
 const analysisTypeLabels: Record<string, string> = {
@@ -42,11 +44,23 @@ const personalityTypeLabels: Record<string, string> = {
   TCI_ANALYSIS: 'TCI 기질 분석',
 };
 
-export default function ReportDataChecklist({ onSelectionChange }: ReportDataChecklistProps) {
+export default function ReportDataChecklist({ onSelectionChange, autoSelectOnly }: ReportDataChecklistProps) {
   const [categories, setCategories] = useState<DataCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasAppliedAutoSelect, setHasAppliedAutoSelect] = useState(false);
 
   useEffect(() => { fetchUserData(); }, []);
+
+  // 진입 컨텍스트(URL 쿼리)에 따라 특정 카테고리만 자동 선택
+  useEffect(() => {
+    if (!autoSelectOnly || autoSelectOnly.length === 0 || hasAppliedAutoSelect) return;
+    if (categories.length === 0) return;
+    setCategories(prev => prev.map(c => ({
+      ...c,
+      items: c.items.map(i => ({ ...i, selected: autoSelectOnly.includes(c.key) })),
+    })));
+    setHasAppliedAutoSelect(true);
+  }, [categories, autoSelectOnly, hasAppliedAutoSelect]);
 
   useEffect(() => {
     const selectedData: Record<string, string[]> = {};

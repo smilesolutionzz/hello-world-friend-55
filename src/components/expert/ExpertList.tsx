@@ -264,10 +264,7 @@ function ExpertCard({ expert, navigate }: { expert: Expert; navigate: ReturnType
 
         {/* Price + CTA */}
         <div className="flex items-center justify-between mt-4 pt-3.5 border-t border-border/50">
-          <div>
-            <span className="text-lg font-bold text-foreground">₩49,000</span>
-            <span className="text-xs text-muted-foreground ml-1">/40분</span>
-          </div>
+          <ExpertPriceTag size="md" />
           <Button
             size="sm"
             className="rounded-xl px-4 h-9 text-sm font-semibold shadow-sm"

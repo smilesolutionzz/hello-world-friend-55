@@ -83,6 +83,29 @@ const Profile = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
 
+      // 비로그인 시 입력했던 고민이 sessionStorage에 보류 중이면 자동 저장
+      try {
+        const pending = sessionStorage.getItem('pending_concern_to_save');
+        if (pending) {
+          const parsed = JSON.parse(pending);
+          const { error: pendingErr } = await supabase.from('concern_storage').insert({
+            user_id: user.id,
+            concern_text: parsed.concern_text,
+            analysis_type: parsed.analysis_type,
+            analysis_severity: parsed.analysis_severity,
+            analysis_advice: parsed.analysis_advice,
+            full_analysis: parsed.full_analysis,
+            report_images: parsed.report_images || [],
+          });
+          if (!pendingErr) {
+            sessionStorage.removeItem('pending_concern_to_save');
+            toast({ title: '고민이 저장됐어요', description: '비로그인 상태에서 입력한 고민을 저장소에 추가했어요.' });
+          }
+        }
+      } catch (e) {
+        console.warn('[profile] pending concern save skip:', e);
+      }
+
       // Fetch profile, reports, concerns, assessments, onboarding in parallel
       const [profileRes, reportsRes, concernsRes, assessmentsRes, onboardingRes] = await Promise.all([
         supabase

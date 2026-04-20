@@ -17,10 +17,20 @@ export function useSmartBack(fallback?: string) {
   const location = useLocation();
 
   return useCallback(() => {
-    // window.history.length 는 같은 탭에서 실제로 navigate 된 횟수가 1 초과여야 의미있음.
-    // 새 탭/외부 진입 시 length === 1 (또는 2). state.idx 를 보는 게 더 정확하지만,
-    // react-router 의 internal idx는 외부에서 접근하기 어려워 length를 휴리스틱으로 사용.
-    const hasHistory = window.history.length > 1 && (window.history.state?.idx ?? 0) > 0;
+    // 같은 출처(same-origin)에서 진입한 경우에만 navigate(-1)이 의미있음
+    const sameOriginReferrer =
+      typeof document !== 'undefined' &&
+      document.referrer &&
+      (() => {
+        try {
+          return new URL(document.referrer).origin === window.location.origin;
+        } catch {
+          return false;
+        }
+      })();
+
+    const idx = (window.history.state?.idx ?? 0) as number;
+    const hasHistory = idx > 0 || (window.history.length > 1 && sameOriginReferrer);
 
     if (hasHistory) {
       navigate(-1);

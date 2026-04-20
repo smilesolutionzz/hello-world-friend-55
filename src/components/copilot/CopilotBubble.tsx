@@ -262,7 +262,22 @@ className="fixed bottom-[80px] left-3 right-3 z-[60] md:left-6 md:right-auto md:
                 </div>
                 <div className="flex gap-1">
                   {mode === 'guide' && history.length > 0 && (
-                    <Button variant="ghost" size="icon-sm" onClick={resetFlow} className="text-white/60 hover:text-white hover:bg-white/10">
+                    <Button variant="ghost" size="icon-sm" onClick={resetFlow} className="text-white/60 hover:text-white hover:bg-white/10" title="처음으로">
+                      <RotateCcw className="w-4 h-4" />
+                    </Button>
+                  )}
+                  {mode === 'chat' && chatMessages.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => {
+                        setChatMessages([INITIAL_GREETING]);
+                        sessionIdRef.current = `cp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+                        conversationIdRef.current = null;
+                      }}
+                      className="text-white/60 hover:text-white hover:bg-white/10"
+                      title="새 대화 시작"
+                    >
                       <RotateCcw className="w-4 h-4" />
                     </Button>
                   )}

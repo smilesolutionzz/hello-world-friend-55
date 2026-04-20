@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE, MIND_TRACK_DISCOUNT_PERCENT, SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
 
 // 레이더 차트 샘플 데이터
 const radarData = [
@@ -307,15 +307,15 @@ const ReportGenerator = () => {
             {/* 가격 */}
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center gap-3">
-                <span className="text-lg text-muted-foreground line-through">₩14,900</span>
-                <Badge variant="destructive" className="text-xs font-bold">-73%</Badge>
+                <span className="text-lg text-muted-foreground line-through">₩{MIND_TRACK_ORIGINAL_PRICE.toLocaleString()}</span>
+                <Badge variant="destructive" className="text-xs font-bold">-{MIND_TRACK_DISCOUNT_PERCENT}%</Badge>
               </div>
               <div className="flex items-baseline justify-center gap-1">
-                <span className="text-4xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
-                <span className="text-sm text-muted-foreground">/1회</span>
+                <span className="text-4xl font-black text-foreground">₩{MIND_TRACK_PRICE.toLocaleString()}</span>
+                <span className="text-sm text-muted-foreground">/30일</span>
               </div>
               <p className="text-xs text-muted-foreground">
-                또는 월 ₩{SUBSCRIPTION_PRICE.toLocaleString()}으로 무제한 이용
+                일시불 결제 · 30일 마음 변화 트랙 전체 포함
               </p>
             </div>
 
@@ -397,10 +397,10 @@ const ReportGenerator = () => {
         <div className="max-w-lg mx-auto flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-2">
-              <span className="text-xs text-muted-foreground line-through">₩14,900</span>
-              <span className="text-xl font-black text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
+              <span className="text-xs text-muted-foreground line-through">₩{MIND_TRACK_ORIGINAL_PRICE.toLocaleString()}</span>
+              <span className="text-xl font-black text-foreground">₩{MIND_TRACK_PRICE.toLocaleString()}</span>
             </div>
-            <p className="text-[10px] text-muted-foreground truncate">오늘만 특별가 · 초기 사용자 한정</p>
+            <p className="text-[10px] text-muted-foreground truncate">30일 마음 변화 트랙 · 초기 사용자 특별가</p>
           </div>
           <Button onClick={handlePayment} size="lg"
             className="bg-primary hover:bg-primary/90 text-primary-foreground font-black px-6 rounded-xl shadow-lg shadow-primary/20 shrink-0">

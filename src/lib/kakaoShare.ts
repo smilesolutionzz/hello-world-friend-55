@@ -28,7 +28,7 @@ export const isKakaoInitialized = (): boolean => {
 /**
  * 카카오톡 피드 공유
  */
-export const shareToKakao = (options: KakaoShareOptions): boolean => {
+export const shareToKakao = async (options: KakaoShareOptions): Promise<boolean> => {
   // 현재 경로를 aihpro.app 도메인으로 변환
   const currentPath = window.location.pathname + window.location.search;
   const defaultUrl = `${BASE_URL}${currentPath}`;
@@ -76,19 +76,31 @@ export const shareToKakao = (options: KakaoShareOptions): boolean => {
       return true;
     } catch (error) {
       console.error('Kakao Share Error:', error);
+      // 카카오 SDK 실패 → 폴백으로 클립보드 복사
+      try {
+        const message = `${title}\n\n${description}\n\n👉 ${shareUrl}`;
+        await navigator.clipboard.writeText(message);
+      } catch {}
+      return false;
     }
   }
 
   // 폴백: 모바일에서 카카오톡 앱 직접 호출
   if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
     const message = `${title}\n\n${description}\n\n👉 ${shareUrl}`;
+    // 클립보드 먼저 복사 (앱 호출이 막힐 경우 대비)
+    try {
+      await navigator.clipboard.writeText(message);
+    } catch {}
     window.location.href = `kakaotalk://send?text=${encodeURIComponent(message)}`;
     return true;
   }
 
   // 최후 폴백: 클립보드 복사
   const message = `${title}\n\n${description}\n\n👉 ${shareUrl}`;
-  navigator.clipboard.writeText(message);
+  try {
+    await navigator.clipboard.writeText(message);
+  } catch {}
   return false;
 };
 

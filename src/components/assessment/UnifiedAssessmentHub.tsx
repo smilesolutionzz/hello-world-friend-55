@@ -58,8 +58,9 @@ const UnifiedAssessmentHub = () => {
       />
       {/* nav는 내부 Assessment/PremiumAssessment 페이지에서 렌더링됨 (중복 방지) */}
 
-      {/* Hero + Tabs */}
-      <div className="pt-16 bg-gradient-to-b from-background to-muted/30">
+      {/* Hero + Tabs — 내부 페이지의 nav가 위에 렌더되도록 pt-16 제거, 내부 페이지가 nav를 그릴 때 hero 아래로 자연스럽게 흐름 */}
+      <div className="bg-gradient-to-b from-background to-muted/30">
+        {/* 내부 Assessment 페이지의 UnifiedNavigation이 sticky로 상단 고정됨 */}
         <div className="container mx-auto px-4 py-8 max-w-6xl">
           <div className="text-center mb-8">
             <Badge variant="outline" className="mb-3 border-primary/30 text-primary">

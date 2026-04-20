@@ -40,6 +40,7 @@ export default function ComprehensiveReporting() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generateProgress, setGenerateProgress] = useState(0);
   const navigate = useNavigate();
+  const goBack = useSmartBack('/');
   const { toast } = useToast();
 
   useEffect(() => {

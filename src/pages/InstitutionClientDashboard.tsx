@@ -37,6 +37,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 const InstitutionClientDashboard = () => {
   const navigate = useNavigate();
+  const goBack = useSmartBack('/');
   const { toast } = useToast();
   const [institutionId, setInstitutionId] = useState<string | null>(null);
   const [institutionName, setInstitutionName] = useState('');

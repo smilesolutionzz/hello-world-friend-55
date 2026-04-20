@@ -170,6 +170,9 @@ export const CopilotBubble: React.FC = () => {
         recommendedTrack: data?.recommendedTrack || null,
         recommendedRoute: data?.recommendedRoute || null,
         recommendedMessage: data?.recommendedMessage || null,
+        summary: data?.summary || null,
+        detectedConcerns: Array.isArray(data?.detectedConcerns) ? data.detectedConcerns : null,
+        detectedSeverity: data?.detectedSeverity || null,
       };
       setChatMessages((prev) => [...prev, assistantMsg]);
 

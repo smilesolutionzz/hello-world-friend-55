@@ -23,6 +23,10 @@ interface ChatMessage {
   content: string;
   chips?: string[];
   chipsUsed?: boolean;
+  isFinal?: boolean;
+  recommendedTrack?: string | null;
+  recommendedRoute?: string | null;
+  recommendedMessage?: string | null;
 }
 
 type Mode = 'guide' | 'chat';

@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles, Clock, Users, Gift } from 'lucide-react';
+import { ArrowUpRight, Sparkles, ShieldCheck, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/i18n';
@@ -11,86 +11,102 @@ const CTABannerSection = () => {
   const { localePath } = useLanguage();
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-b from-slate-800 to-slate-900">
-      {/* Gradient orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[150px]" />
-      <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[100px]" />
+    <section className="relative py-24 md:py-36 overflow-hidden bg-[#0A0A0B]">
+      {/* Editorial gradient field */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,175,115,0.08),_transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_rgba(255,255,255,0.03),_transparent_70%)]" />
+        {/* Grid texture */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+            backgroundSize: '64px 64px',
+          }}
+        />
+        {/* Top & bottom hairlines */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      </div>
 
-      <div className="container mx-auto px-4 relative z-10">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
+      <div className="container mx-auto px-6 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-3xl mx-auto text-center space-y-6"
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-4xl mx-auto"
         >
-          {/* Urgency Badge */}
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <motion.div 
-              animate={{ scale: [1, 1.03, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/10 border border-orange-500/20 rounded-full"
-            >
-              <Clock className="w-3.5 h-3.5 text-orange-400" />
-              <span className="text-xs font-bold text-orange-300">{t.cta.urgencyBadge}</span>
-            </motion.div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
-              <Users className="w-3 h-3 text-green-400" />
-              <span className="text-xs text-green-300">{t.cta.applicants}</span>
+          {/* Eyebrow */}
+          <div className="flex items-center justify-center mb-10">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-10 bg-gradient-to-r from-transparent to-[#D4AF73]/60" />
+              <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-[#D4AF73] font-medium">
+                Begin Your Journey
+              </span>
+              <span className="h-px w-10 bg-gradient-to-l from-transparent to-[#D4AF73]/60" />
             </div>
           </div>
 
-          {/* Headline */}
-          <h2 className="text-xl sm:text-3xl md:text-5xl font-bold text-white leading-tight break-keep">
-            {t.cta.headline}<br />
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          {/* Editorial headline */}
+          <h2 className="text-center font-serif text-white leading-[1.05] tracking-tight break-keep">
+            <span className="block text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light">
+              {t.cta.headline}
+            </span>
+            <span className="block mt-3 text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-normal italic bg-gradient-to-r from-[#E8D5B0] via-[#D4AF73] to-[#B8935A] bg-clip-text text-transparent">
               {t.cta.headlineHighlight}
             </span>
           </h2>
-          
-          <p className="text-sm md:text-xl text-white/70 font-medium break-keep">
+
+          {/* Subheadline */}
+          <p className="mt-8 text-center text-base md:text-lg text-white/55 font-light max-w-2xl mx-auto leading-relaxed break-keep">
             {t.cta.subheadline}
           </p>
 
-          {/* Social Proof */}
-          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 text-white/60 text-sm">
-            <span>{t.cta.ratingText}</span>
-            <span className="hidden sm:inline">·</span>
-            <span>{t.cta.reviewCount}</span>
-            <span className="hidden sm:inline">·</span>
-            <span className="text-amber-400">
-              <Gift className="w-4 h-4 inline mr-1" />
-              {t.cta.freeTokens}
-            </span>
+          {/* Refined trust row */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs md:text-sm text-white/40">
+            <div className="flex items-center gap-2">
+              <Star className="w-3.5 h-3.5 fill-[#D4AF73] text-[#D4AF73]" />
+              <span className="tracking-wide">{t.cta.ratingText}</span>
+            </div>
+            <span className="hidden md:inline w-px h-4 bg-white/10" />
+            <span className="tracking-wide">{t.cta.reviewCount}</span>
+            <span className="hidden md:inline w-px h-4 bg-white/10" />
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-3.5 h-3.5 text-white/50" />
+              <span className="tracking-wide">{t.cta.applicants}</span>
+            </div>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
-            <Button 
+          {/* CTA cluster */}
+          <div className="mt-14 flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button
               size="lg"
               onClick={() => navigate(localePath('/quiz'))}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white text-lg font-bold px-10 py-7 rounded-xl shadow-lg shadow-blue-500/25"
+              className="group relative h-14 px-10 bg-white hover:bg-[#F5F5F5] text-[#0A0A0B] text-[15px] font-medium tracking-wide rounded-none border-0 shadow-[0_20px_60px_-15px_rgba(212,175,115,0.5)] transition-all duration-500 hover:shadow-[0_25px_70px_-15px_rgba(212,175,115,0.7)] hover:-translate-y-0.5"
             >
-              <Sparkles className="w-5 h-5 mr-2" />
-              1분 무료 진단 시작
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <Sparkles className="w-4 h-4 mr-3 text-[#D4AF73]" />
+              <span>{t.cta.signupButton ? '1분 무료 진단 시작' : '1분 무료 진단 시작'}</span>
+              <ArrowUpRight className="w-4 h-4 ml-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Button>
-            
-            <Button 
+
+            <Button
               size="lg"
               onClick={() => navigate(localePath('/auth?mode=signup'))}
-              variant="outline"
-              className="bg-white/5 border-white/10 text-white text-lg font-medium px-8 py-7 rounded-xl hover:bg-white/10"
+              variant="ghost"
+              className="h-14 px-8 text-white/70 hover:text-white hover:bg-white/5 text-[15px] font-light tracking-wide rounded-none border border-white/15 hover:border-white/30 transition-all duration-300"
             >
               {t.cta.signupButton}
             </Button>
           </div>
 
-          {/* Trust */}
-          <div className="pt-4 space-y-2">
-            <p className="text-white/40 text-xs">
+          {/* Footer fineprint */}
+          <div className="mt-12 text-center space-y-2">
+            <p className="text-[11px] md:text-xs text-white/30 tracking-widest uppercase">
               {t.cta.trustLine}
             </p>
-            <p className="text-amber-400/80 text-sm font-medium">
+            <p className="text-xs md:text-sm text-[#D4AF73]/70 font-light italic">
               {t.cta.bonusLine}
             </p>
           </div>

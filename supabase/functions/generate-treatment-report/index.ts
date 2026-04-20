@@ -82,7 +82,7 @@ Noto Sans KR 폰트를 사용하고, 절제된 컬러(#1a1a1a, #2563eb, #dc2626,
         'X-Title': 'AIHPRO Treatment Report',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3-flash-preview-preview',
+        model: 'google/gemini-3-flash-preview',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 4000,
         temperature: 0.3,

@@ -147,7 +147,7 @@ IMPORTANT: Do NOT include ANY text, words, letters, or characters in the image. 
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-3-flash-preview-image',
+          model: 'google/gemini-3.1-flash-image-preview',
           messages: [{ role: 'user', content: bgPrompt }],
           modalities: ['image', 'text']
         })

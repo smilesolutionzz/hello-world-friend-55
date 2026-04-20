@@ -151,7 +151,7 @@ const TokenSubscription = () => {
               매일 아침 8시, 박사급 1:1 코칭 메일이 도착합니다
             </h3>
             <p className="text-white/70 text-sm md:text-base mb-6 break-keep leading-relaxed">
-              30일간 매일 받는 한 줄의 미션과 임상 근거. Noom 스타일 데일리 코칭을 임상심리학 기반으로 설계했습니다.
+              30일간 매일 받는 한 줄의 미션과 임상 근거. 임상심리학 기반으로 설계된 AIHPRO만의 데일리 코칭 시스템입니다.
             </p>
             <div className="grid sm:grid-cols-3 gap-3">
               {[

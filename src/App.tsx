@@ -22,6 +22,7 @@ import ResetPassword from "./pages/ResetPassword";
 import DashboardRouter from "./pages/DashboardRouter";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import BookingManagement from "./pages/BookingManagement";
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
 
@@ -262,7 +263,9 @@ const App = () => {
           <Route path="/mind-diary" element={<MindDiary />} />
 
           {/* Expert Finding */}
-          <Route path="/expert-hiring" element={<ExpertHiring />} />
+         <Route path="/expert-hiring" element={<ExpertHiring />} />
+         <Route path="/booking-management" element={<BookingManagement />} />
+         <Route path="/my-bookings" element={<BookingManagement />} />
           <Route path="/expert-detail/:id" element={<ExpertDetail />} />
           <Route path="/institution-detail/:id" element={<InstitutionDetailPage />} />
           <Route path="/partner-benefits" element={<InstitutionDetailPage />} />

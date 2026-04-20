@@ -3,9 +3,11 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate } from "remo
 import { TransitionSeries, springTiming, linearTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { wipe } from "@remotion/transitions/wipe";
-import { loadFont as loadPretendard } from "@remotion/google-fonts/Inter";
+import { loadFont as loadInter } from "@remotion/google-fonts/Inter";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/SpaceGrotesk";
 import { loadFont as loadSerif } from "@remotion/google-fonts/PlayfairDisplay";
+import { loadFont as loadKr } from "@remotion/google-fonts/NanumGothic";
+import { loadFont as loadKrSerif } from "@remotion/google-fonts/NanumMyeongjo";
 
 import { SceneOpen } from "./scenes/SceneOpen";
 import { ScenePersonas } from "./scenes/ScenePersonas";
@@ -13,9 +15,11 @@ import { SceneTransform } from "./scenes/SceneTransform";
 import { SceneTrust } from "./scenes/SceneTrust";
 import { SceneClose } from "./scenes/SceneClose";
 
-loadPretendard("normal", { weights: ["400", "600"], subsets: ["latin"] });
+loadInter("normal", { weights: ["400", "600"], subsets: ["latin"] });
 loadDisplay("normal", { weights: ["500", "700"], subsets: ["latin"] });
 loadSerif("normal", { weights: ["400", "700"], subsets: ["latin"], style: "italic" });
+loadKr("normal", { weights: ["400", "700", "800"], subsets: ["korean"] });
+loadKrSerif("normal", { weights: ["400", "700"], subsets: ["korean"] });
 
 // Persistent ambient background — soft warm gradient with slow drift
 const PersistentBackground: React.FC = () => {

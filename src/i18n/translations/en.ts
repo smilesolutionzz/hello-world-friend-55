@@ -605,7 +605,7 @@ const en = {
     benefit4: 'Longitudinal analysis (session tracking)',
     benefit5: 'Unlimited regeneration',
     benefit6: 'Clinical referral letter included',
-    ctaButton: 'Get My Report Now — ₩3,900',
+    ctaButton: 'Start 30-Day Mind Track — ₩19,900',
     ctaSubtext: 'Ready in 3 min · Unlimited with subscription · Expert-designed engine',
     ctaUrgency: '🔥 237 reports generated today',
   },

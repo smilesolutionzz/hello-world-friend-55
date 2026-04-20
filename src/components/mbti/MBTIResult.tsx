@@ -448,7 +448,7 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
             </p>
           </div>
 
-          <div className="grid grid-cols-4 gap-2 mb-4">
+          <div className="grid grid-cols-3 gap-2 mb-4">
             {/* 이미지 저장 */}
             <Button
               onClick={handleDownload}
@@ -456,23 +456,6 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
             >
               <Download className="w-5 h-5 mb-1" />
               <span className="text-[10px]">이미지 저장</span>
-            </Button>
-
-            {/* 카카오톡 */}
-            <Button
-              onClick={() => {
-                const message = `🎯 나의 성격유형은 ${mbtiType}!\n\n${description.title}\n${description.subtitle}\n\n🔗 너도 해봐: ${window.location.origin}/assessment/16-personality\n\n#성격유형 #성격테스트 #AIHPRO`;
-                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                  window.location.href = `kakaotalk://send?text=${encodeURIComponent(message)}`;
-                } else {
-                  navigator.clipboard.writeText(message);
-                  toast.success("카카오톡에 붙여넣기 하세요! 💬");
-                }
-              }}
-              className="flex-col h-auto py-3 bg-yellow-400 hover:bg-yellow-500 text-black"
-            >
-              <MessageCircle className="w-5 h-5 mb-1" />
-              <span className="text-[10px]">카카오톡</span>
             </Button>
 
             {/* 인스타그램 */}

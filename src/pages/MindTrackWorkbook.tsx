@@ -14,15 +14,17 @@ import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import {
   CheckCircle2, Circle, Loader2, Sparkles, TrendingUp, Calendar,
-  Brain, Zap, Eye, Heart, Target, ChevronRight, Lock
+  Brain, Zap, Eye, Heart, Target, ChevronRight, Lock, ArrowLeft
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import SEOHead from "@/components/common/SEOHead";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import { useSmartBack } from "@/hooks/useSmartBack";
 
 export default function MindTrackWorkbook() {
   const navigate = useNavigate();
+  const goBack = useSmartBack('/mind-track');
   const [searchParams] = useSearchParams();
   const showWelcome = searchParams.get("welcome") === "1";
   const [loading, setLoading] = useState(true);

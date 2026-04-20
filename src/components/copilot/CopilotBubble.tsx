@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { copilotFlows, type CopilotOption } from './copilotFlows';
 import { supabase } from '@/integrations/supabase/client';
 import ReactMarkdown from 'react-markdown';
+import { CopilotRecommendationCard } from './CopilotRecommendationCard';
 
 const KAKAO_CHANNEL_URL = 'https://open.kakao.com/o/sHLdK3Ch';
 

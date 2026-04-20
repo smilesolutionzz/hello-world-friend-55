@@ -36,7 +36,10 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import logo from '@/assets/logo.png';
 
-export const UnifiedNavigation = () => {
+import { useContext } from 'react';
+import { HubContext } from '@/components/assessment/UnifiedAssessmentHub';
+
+const UnifiedNavigationInner = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { language, localePath } = useLanguage();
@@ -494,4 +497,11 @@ export const UnifiedNavigation = () => {
       </nav>
     </>
   );
+};
+
+// Wrapper that suppresses the nav when rendered inside the Assessment Hub (prevents duplicate nav)
+export const UnifiedNavigation = () => {
+  const { insideHub } = useContext(HubContext);
+  if (insideHub) return null;
+  return <UnifiedNavigationInner />;
 };

@@ -140,7 +140,7 @@ const Pricing = () => {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full" variant="outline" onClick={() => navigate(localePath("/contact"))}>
+                  <Button className="w-full" variant="outline" onClick={() => navigate(localePath("/b2b-proposal"))}>
                     상담 요청하기
                   </Button>
                 </CardFooter>

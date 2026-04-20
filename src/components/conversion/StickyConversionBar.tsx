@@ -40,19 +40,19 @@ const StickyConversionBar = () => {
             <div className="hidden sm:flex items-center gap-3 flex-shrink-0">
               <Sparkles className="w-5 h-5 text-amber-300" />
               <div>
-                <p className="text-white text-sm font-bold">30일 마음 변화 트랙</p>
-                <p className="text-slate-400 text-xs">AI 분석 + 전문가 코칭 · 일시불 ₩{MIND_TRACK_PRICE.toLocaleString()}</p>
+                <p className="text-white text-sm font-bold">1분 무료 마음 진단</p>
+                <p className="text-slate-400 text-xs">맞춤 30일 플랜 받기 · 7일 무료 체험</p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Button
-                onClick={() => navigate('/mind-track')}
+                onClick={() => navigate('/quiz')}
                 size="lg"
                 className="flex-1 sm:flex-none bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold text-sm sm:text-base px-4 sm:px-6 h-11"
               >
                 <Sparkles className="w-4 h-4 mr-1.5" />
-                30일 트랙 시작 ₩{MIND_TRACK_PRICE.toLocaleString()}
+                무료 진단 시작하기
                 <ArrowRight className="w-4 h-4 ml-1.5" />
               </Button>
               <button

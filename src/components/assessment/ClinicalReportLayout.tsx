@@ -279,6 +279,15 @@ const ClinicalReportLayout = ({
         {/* ── Extra Content ── */}
         {!childrenBeforeAnalysis && children}
 
+        {/* ── 30일 마음 챌린지 CTA (우선 노출) ── */}
+        {!isAnalyzing && (domains?.length > 0 || aiAnalysis) && (
+          <ChallengeStartCTA
+            testName={testName}
+            recommendedFocus={scoreSeverity}
+            source={testName}
+          />
+        )}
+
         {/* ── Post-Payment Conversion Flow ── */}
         <PostPaymentConversionFlow
           testName={testName}

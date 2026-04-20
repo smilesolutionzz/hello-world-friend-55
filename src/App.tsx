@@ -38,6 +38,7 @@ import MetaverseVoice from "./pages/MetaverseVoice";
 // Assessment & Tests
 import Assessment from "./pages/Assessment";
 import PremiumAssessment from "./pages/PremiumAssessment";
+import UnifiedAssessmentHub from "./components/assessment/UnifiedAssessmentHub";
 import FreeTrialAssessment from "./pages/FreeTrialAssessment";
 import FreeTrialResult from "./pages/FreeTrialResult";
 import BasicMentalHealthTest from "./components/assessment/BasicMentalHealthTest";

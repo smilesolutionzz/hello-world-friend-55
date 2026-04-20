@@ -394,23 +394,71 @@ const Quiz: React.FC = () => {
                   </h2>
                   <p className="text-sm text-muted-foreground">선택사항 · 한 줄도 괜찮아요</p>
                 </div>
-                <Textarea
-                  value={data.concern}
-                  onChange={(e) => setData({ ...data, concern: e.target.value })}
-                  placeholder="예) 요즘 잠자리에 누우면 잡생각이 멈추질 않아요..."
-                  rows={6}
-                  maxLength={1000}
-                  className="text-base p-4 rounded-2xl"
-                />
+
+                <div className="relative">
+                  <Textarea
+                    value={data.concern}
+                    onChange={(e) => setData({ ...data, concern: e.target.value })}
+                    placeholder="예) 요즘 잠자리에 누우면 잡생각이 멈추질 않아요..."
+                    rows={6}
+                    maxLength={1000}
+                    className="text-base p-4 pb-14 rounded-2xl resize-none"
+                  />
+
+                  {/* AI 확장하기 버튼 */}
+                  <button
+                    type="button"
+                    onClick={handleAIExpand}
+                    disabled={isExpanding || data.concern.trim().length < 2}
+                    className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold
+                               bg-gradient-to-r from-violet-500 to-indigo-500 text-white shadow-md
+                               hover:shadow-lg hover:scale-[1.03] active:scale-95
+                               disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all"
+                  >
+                    {isExpanding ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        다듬는 중...
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="w-3.5 h-3.5" />
+                        AI 확장하기
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <p className="mt-2 text-xs text-muted-foreground flex items-center gap-1.5">
+                  <Sparkles className="w-3 h-3 text-violet-500" />
+                  키워드만 적어도 AI가 자연스러운 문장으로 다듬어 드려요
+                </p>
+
                 <div className="mt-6 flex gap-3">
-                  <Button variant="outline" size="lg" onClick={back} className="flex-1">
+                  <Button variant="outline" size="lg" onClick={back} className="flex-1 rounded-2xl h-14">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     이전
                   </Button>
-                  <Button size="lg" onClick={() => setStep('analyzing')} className="flex-[2]">
-                    내 플랜 만들기
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
+
+                  {/* 프리미엄 CTA */}
+                  <button
+                    onClick={() => setStep('analyzing')}
+                    className="flex-[2] relative h-14 rounded-2xl overflow-hidden group
+                               bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600
+                               text-white font-bold text-base shadow-lg shadow-indigo-500/30
+                               hover:shadow-xl hover:shadow-indigo-500/40 hover:scale-[1.02]
+                               active:scale-[0.98] transition-all duration-300"
+                  >
+                    {/* shine sweep */}
+                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full
+                                     bg-gradient-to-r from-transparent via-white/25 to-transparent
+                                     transition-transform duration-700 ease-out" />
+                    <span className="relative flex items-center justify-center gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      내 플랜 만들기
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </button>
                 </div>
               </motion.div>
             )}

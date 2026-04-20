@@ -257,7 +257,7 @@ const InstantAIAnalysis = () => {
 
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase.from('concern_storage').insert({
+        const { error: saveErr } = await supabase.from('concern_storage').insert({
           user_id: user.id,
           concern_text: inputText,
           analysis_type: analysis.type || '기타',
@@ -265,6 +265,31 @@ const InstantAIAnalysis = () => {
           analysis_advice: analysis.detailedAdvice || '',
           full_analysis: analysis,
           report_images: reportImages || []
+        });
+        if (saveErr) {
+          console.error('[concern_storage] save failed:', saveErr);
+          toast({
+            title: '저장 실패',
+            description: '고민 저장 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.',
+            variant: 'destructive',
+          });
+        }
+      } else {
+        // 비로그인 → sessionStorage에 임시 보관, 로그인 후 자동 저장 가능하도록
+        try {
+          sessionStorage.setItem('pending_concern_to_save', JSON.stringify({
+            concern_text: inputText,
+            analysis_type: analysis.type || '기타',
+            analysis_severity: analysis.severity || '낮음',
+            analysis_advice: analysis.detailedAdvice || '',
+            full_analysis: analysis,
+            report_images: reportImages || [],
+            created_at: new Date().toISOString(),
+          }));
+        } catch {}
+        toast({
+          title: '로그인하면 고민이 저장돼요',
+          description: '회원가입 후 "고민 저장소"에서 분석 기록을 다시 볼 수 있어요.',
         });
       }
     } catch (error) {

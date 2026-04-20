@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import { Button } from '@/components/ui/button';
-import { Crown, Lock, Zap, CheckCircle, Sparkles } from 'lucide-react';
+import { Lock, CheckCircle, Sparkles, ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { PaymentModal } from '@/components/payments/PaymentModal';
 import { SubscriptionGuardContext } from './SubscriptionGuard';
-import { SUBSCRIPTION_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE, MIND_TRACK_DISCOUNT_PERCENT } from '@/constants/tokenCosts';
 import { useNavigate } from 'react-router-dom';
 
 /**

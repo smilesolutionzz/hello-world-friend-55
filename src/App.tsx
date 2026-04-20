@@ -118,6 +118,7 @@ import PlatformOnePager from "./pages/PlatformOnePager";
 import B2BProposal from "./pages/B2BProposal";
 import B2BJobCoach from "./pages/B2BJobCoach";
 import B2BDemoReport from "./pages/B2BDemoReport";
+import B2BHRDashboard from "./pages/B2BHRDashboard";
 import StartupPackage from "./pages/StartupPackage";
 
 // Legal

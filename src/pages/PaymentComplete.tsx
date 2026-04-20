@@ -63,9 +63,9 @@ const PaymentComplete = () => {
         
         toast({ title: '🎉 결제 완료!', description: getSuccessMessage(productType === 'consultation' ? 'consultation' : data.productType) });
 
-        // Auto-redirect for Mind Track to start initial assessment
+        // Auto-redirect for Mind Track to start initial assessment (with welcome flag)
         if (productType === 'mind_track' || data.productType === 'mind_track') {
-          setTimeout(() => navigate('/mind-track/start'), 1500);
+          setTimeout(() => navigate('/mind-track/start?welcome=1'), 1500);
         }
       } catch (err: any) {
         console.error('Payment confirmation error:', err);
@@ -206,7 +206,7 @@ const PaymentComplete = () => {
                 </Button>
               )}
               {resolvedType === 'mind_track' && (
-                <Button className="w-full" onClick={() => navigate('/mind-track/start')}>
+                <Button className="w-full" onClick={() => navigate('/mind-track/start?welcome=1')}>
                   <CheckCircle2 className="w-4 h-4 mr-2" />
                   초기 진단 시작하기 (5분)
                 </Button>

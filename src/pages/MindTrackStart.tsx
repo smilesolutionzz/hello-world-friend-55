@@ -125,7 +125,9 @@ export default function MindTrackStart() {
       });
       if (error || !data?.success) throw new Error(data?.error || error?.message || "초기 진단 처리 실패");
       toast.success("초기 리포트와 30일 워크북이 준비됐어요!");
-      navigate("/mind-track/workbook");
+      const sp = new URLSearchParams(window.location.search);
+      const welcome = sp.get("welcome");
+      navigate(welcome ? "/mind-track/workbook?welcome=1" : "/mind-track/workbook");
     } catch (e: any) {
       toast.error(e.message || "오류가 발생했습니다");
     } finally {

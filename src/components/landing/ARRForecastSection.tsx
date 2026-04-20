@@ -225,10 +225,10 @@ const ARRForecastSection = () => {
         >
           <Card className="p-8 bg-gradient-to-r from-primary/10 to-purple-500/10 border-primary/30">
             <h3 className="text-2xl font-bold mb-4">
-              지금 가입하면 <span className="text-primary">70% 할인</span> 혜택!
+              지금 시작하면 <span className="text-primary">무제한 이용</span>
             </h3>
             <p className="text-muted-foreground mb-6">
-              얼리어답터 특별 혜택 • 정가 99,000원 → <span className="font-bold text-primary">월 29,900원</span>
+              모든 검사·리포트·전문가 매칭을 한 번에
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 

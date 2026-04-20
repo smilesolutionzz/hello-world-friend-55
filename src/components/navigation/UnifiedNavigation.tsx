@@ -39,9 +39,7 @@ import logo from '@/assets/logo.png';
 import { useContext } from 'react';
 import { HubContext } from '@/components/assessment/UnifiedAssessmentHub';
 
-export const UnifiedNavigation = () => {
-  const { insideHub } = useContext(HubContext);
-  if (insideHub) return null; // Hub 내부에 mount된 페이지에서는 자체 nav 숨김 (중복 방지)
+const UnifiedNavigationInner = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { language, localePath } = useLanguage();

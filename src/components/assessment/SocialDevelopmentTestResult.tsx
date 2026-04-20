@@ -7,6 +7,7 @@ import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from '@/i18n/useTranslation';
+import { buildScoreBasedFallback } from '@/utils/scoreBasedFallback';
 
 interface SocialDevelopmentTestResultProps {
   results: {
@@ -50,10 +51,21 @@ const SocialDevelopmentTestResult = ({ results, onBack }: SocialDevelopmentTestR
         const { data, error } = await supabase.functions.invoke('analyze-test-results', {
           body: { testType: 'social-development', results, answers: results.answers }
         });
+        const fallback = buildScoreBasedFallback({
+          testLabel: isEnglish ? 'Social Development Assessment' : '사회성 발달 검사',
+          total: results.total, average: results.average, severity: results.severity, ageGroup: results.ageGroup,
+          domains: domainScores.map(d => ({ label: d.label, score: d.score, maxScore: 100, percentage: d.score })),
+          isEnglish,
+        });
         if (error) throw error;
-        setAnalysis(data.analysis || '');
+        setAnalysis(data?.analysis || fallback);
       } catch {
-        setAnalysis(isEnglish ? 'Professional consultation is recommended for result analysis.' : '결과 분석을 위해 전문가 상담을 권장합니다.');
+        setAnalysis(buildScoreBasedFallback({
+          testLabel: isEnglish ? 'Social Development Assessment' : '사회성 발달 검사',
+          total: results.total, average: results.average, severity: results.severity, ageGroup: results.ageGroup,
+          domains: domainScores.map(d => ({ label: d.label, score: d.score, maxScore: 100, percentage: d.score })),
+          isEnglish,
+        }));
       } finally {
         setIsLoading(false);
       }

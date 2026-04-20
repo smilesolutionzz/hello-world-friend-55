@@ -9,6 +9,7 @@ import VisualResultInfographic from './VisualResultInfographic';
 import AnalysisLoadingScreen from './AnalysisLoadingScreen';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from '@/i18n/useTranslation';
+import { buildScoreBasedFallback } from '@/utils/scoreBasedFallback';
 
 interface LearningDisabilityTestResultProps {
   results: {
@@ -58,9 +59,19 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
           body: { testType: 'learning-disability', results: { ...results, learningDomains: domainData }, answers: results.answers },
         });
         if (error) throw error;
-        setAnalysis(data.analysis);
+        setAnalysis(data?.analysis || buildScoreBasedFallback({
+          testLabel: isEnglish ? 'Learning Disability Screening' : '학습장애 검사',
+          total: results.total, average: results.average, severity: results.severity, ageGroup: results.ageGroup,
+          domains: domainData.map(d => ({ label: d.name, score: d.score, maxScore: 100, percentage: d.score })),
+          isEnglish,
+        }));
       } catch {
-        setAnalysis('전문가 상담을 권장합니다.');
+        setAnalysis(buildScoreBasedFallback({
+          testLabel: isEnglish ? 'Learning Disability Screening' : '학습장애 검사',
+          total: results.total, average: results.average, severity: results.severity, ageGroup: results.ageGroup,
+          domains: domainData.map(d => ({ label: d.name, score: d.score, maxScore: 100, percentage: d.score })),
+          isEnglish,
+        }));
       } finally {
         setIsLoading(false);
       }

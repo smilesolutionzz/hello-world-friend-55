@@ -4,20 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Brain, Users, Building2, Sparkles, ArrowRight, Check, Crown
+  Brain, Users, Building2, Sparkles, ArrowRight, Check, Calendar
 } from 'lucide-react';
-import { SUBSCRIPTION_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE, MIND_TRACK_DISCOUNT_PERCENT } from '@/constants/tokenCosts';
 import { motion } from 'framer-motion';
 
 const BusinessModelSection: React.FC = () => {
   const navigate = useNavigate();
 
-  const subscriptionBenefits = [
-    '모든 AI 심층 분석 무제한',
-    '20종+ 심리검사 무제한',
-    'PDF 리포트 다운로드',
-    '맞춤형 솔루션 & 가이드',
-    '발달 트렌드 추적',
+  const trackBenefits = [
+    '30일 맞춤 마음 변화 로드맵',
+    'AI 심층 분석 리포트 무제한',
+    '전문가 코칭 가이드 동봉',
+    '주간 진척도 트래킹 & 리마인더',
+    '종료 시 변화 종합 리포트(PDF)',
   ];
 
   const b2bBenefits = [
@@ -32,34 +32,41 @@ const BusinessModelSection: React.FC = () => {
     <section className="py-16 md:py-24 bg-gradient-to-b from-slate-50 to-white">
       <div className="container mx-auto px-4 max-w-7xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-          <Badge className="mb-4 bg-gradient-to-r from-violet-500 to-purple-500 text-white">
-            <Crown className="w-3 h-3 mr-1" />월간 구독
+          <Badge className="mb-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+            <Calendar className="w-3 h-3 mr-1" />30일 단일 상품
           </Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">하루 660원으로 모든 기능 무제한</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">하나의 가격, 30일의 변화</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            비구독자도 1~2회 무료 체험 가능! 마음에 드시면 구독하세요
+            복잡한 플랜 없이, AI 분석부터 전문가 코칭까지 30일 동안 모두 이용하세요
           </p>
         </motion.div>
 
-        {/* 구독 카드 */}
+        {/* 30일 트랙 단일 카드 */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="max-w-lg mx-auto mb-16">
           <Card className="ring-2 ring-primary shadow-xl">
             <CardContent className="p-8 text-center">
-              <Crown className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-2xl font-bold mb-2">월간 구독</h3>
+              <Sparkles className="w-12 h-12 mx-auto mb-4 text-primary" />
+              <Badge className="mb-3 bg-rose-50 text-rose-600 border-rose-100">
+                {MIND_TRACK_DISCOUNT_PERCENT}% OFF · 일시불
+              </Badge>
+              <h3 className="text-2xl font-bold mb-2">30일 마음 변화 트랙</h3>
               <div className="mb-4">
-                <span className="text-lg text-muted-foreground line-through">₩29,900</span>
-                <div className="text-4xl font-black text-primary">₩{SUBSCRIPTION_PRICE.toLocaleString()}<span className="text-base font-normal text-muted-foreground">/월</span></div>
+                <span className="text-lg text-muted-foreground line-through">₩{MIND_TRACK_ORIGINAL_PRICE.toLocaleString()}</span>
+                <div className="text-4xl font-black text-primary">
+                  ₩{MIND_TRACK_PRICE.toLocaleString()}
+                  <span className="text-base font-normal text-muted-foreground"> · 일시불</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">하루 약 ₩{Math.round(MIND_TRACK_PRICE / 30).toLocaleString()} · 자동 결제 없음</p>
               </div>
               <ul className="space-y-2 mb-6 text-left">
-                {subscriptionBenefits.map((b, i) => (
+                {trackBenefits.map((b, i) => (
                   <li key={i} className="flex items-center gap-2 text-sm">
                     <Check className="w-4 h-4 text-green-500 flex-shrink-0" />{b}
                   </li>
                 ))}
               </ul>
-              <Button onClick={() => navigate('/token-subscription')} size="lg" className="w-full bg-gradient-to-r from-violet-500 to-purple-600 text-white">
-                지금 구독하기 <ArrowRight className="w-4 h-4 ml-2" />
+              <Button onClick={() => navigate('/mind-track')} size="lg" className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                30일 트랙 시작하기 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </CardContent>
           </Card>

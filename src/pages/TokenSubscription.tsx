@@ -310,32 +310,41 @@ const TokenSubscription = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 mb-5">
-            <div className="rounded-2xl bg-white border border-emerald-100 p-4">
-              <div className="text-[11px] font-bold text-slate-500 mb-1">월간 구독자</div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xs text-slate-400 line-through">₩49,000</span>
-                <span className="text-xl font-black text-emerald-600">₩34,300</span>
+          {/* 4가지 상담 패키지 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
+            {[
+              { icon: '💬', name: '카톡 비동기 상담 (3일)', base: 9900, monthly: 6900, yearly: 4900, badge: '입문' },
+              { icon: '⚡', name: '15분 긴급 줌 콜', base: 19900, monthly: 13900, yearly: 9900, badge: '위기 대응' },
+              { icon: '📹', name: '리포트 해석 30분', base: 49000, monthly: 34300, yearly: 24500, badge: '인기' },
+              { icon: '🎯', name: '월 정기 코칭 (4회)', base: 159000, monthly: 119000, yearly: 79000, badge: 'LTV' },
+            ].map((pkg) => (
+              <div key={pkg.name} className="rounded-2xl bg-white border border-emerald-100 p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-lg">{pkg.icon}</span>
+                    <span className="text-xs font-bold text-slate-700">{pkg.name}</span>
+                  </div>
+                  <span className="text-[9px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">{pkg.badge}</span>
+                </div>
+                <div className="space-y-0.5">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-[10px] text-slate-400 line-through">₩{pkg.base.toLocaleString()}</span>
+                    <span className="text-base font-black text-emerald-600">₩{pkg.yearly.toLocaleString()}</span>
+                    <span className="text-[9px] text-emerald-700 font-semibold">연간</span>
+                  </div>
+                  <div className="text-[10px] text-slate-600">월간 구독자 ₩{pkg.monthly.toLocaleString()}</div>
+                </div>
               </div>
-              <div className="text-[11px] text-emerald-700 font-semibold mt-1">30% 할인 / 40분</div>
-            </div>
-            <div className="rounded-2xl bg-emerald-600 text-white p-4 relative overflow-hidden">
-              <div className="absolute top-1.5 right-1.5 text-[9px] font-bold bg-white text-emerald-700 px-1.5 py-0.5 rounded-full">BEST</div>
-              <div className="text-[11px] font-bold text-emerald-100 mb-1">연간 구독자</div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xs text-emerald-200 line-through">₩49,000</span>
-                <span className="text-xl font-black text-white">₩24,500</span>
-              </div>
-              <div className="text-[11px] text-emerald-100 font-semibold mt-1">50% 할인 / 40분</div>
-            </div>
+            ))}
           </div>
 
           <div className="space-y-2 mb-5">
             {[
-              '언어치료·심리상담·발달재활·ABA·미술치료·특수체육·감각통합 7개 분야',
-              '평균 8년 이상 경력 검증된 임상 전문가만 매칭',
-              '카카오톡 또는 화상으로 즉시 진행 (40분 기준)',
-              '상담 불만족 시 100% 환불 보장',
+              '🎁 월 1회 무료 카톡 상담권 자동 지급 (구독 활성 시)',
+              '🤖 AI 매칭으로 고민 한 줄 → 적합 전문가 3명 즉시 추천',
+              '💬 카톡(비동기) · 줌(실시간) · 긴급 상담까지 4가지 채널',
+              '✅ 평균 8년 이상 검증된 임상 전문가만 매칭',
+              '💯 상담 불만족 시 100% 환불 보장',
             ].map((t, i) => (
               <div key={i} className="flex items-start gap-2 text-sm text-slate-700">
                 <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
@@ -350,11 +359,11 @@ const TokenSubscription = () => {
             onClick={() => navigate('/expert-hiring')}
           >
             <Phone className="w-4 h-4 mr-2" />
-            전문가 둘러보기
+            전문가 둘러보기 & 상담 예약
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
           <p className="text-[11px] text-slate-500 mt-2.5 text-center">
-            * 할인은 활성 구독 상태에서 자동 적용됩니다 · 비구독 사용자는 정가 ₩49,000
+            * 모든 할인은 활성 구독 상태에서 자동 적용 · 비구독 사용자는 정가 적용
           </p>
         </motion.div>
 

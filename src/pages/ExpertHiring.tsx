@@ -140,6 +140,8 @@ const TIME_SLOTS = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00
 
 const ExpertHiring = () => {
   const navigate = useNavigate();
+  const { subscription } = useSubscription();
+  const subscriberPricing = calculateExpertPricing(subscription);
   const [experts, setExperts] = useState<Expert[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -238,7 +240,7 @@ const ExpertHiring = () => {
           status: 'pending',
           is_quick_consultation: false,
           notes: bookingTopic,
-          tokens_paid: CONSULT_PRICE
+          tokens_paid: subscriberPricing.final
         }]);
       if (error) throw error;
 

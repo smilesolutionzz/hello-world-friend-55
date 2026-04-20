@@ -202,23 +202,57 @@ const B2BDemoReport: React.FC = () => {
   const downloadWhiteLabelPDF = async () => {
     if (!previewRef.current) return;
     setIsGenerating(true);
+
+    // 파일명 안전 처리 (특수문자/공백/콜론 제거)
+    const safeName = (brand.institutionName || 'AIHPRO_Report')
+      .replace(/[\\/:*?"<>|]/g, '')
+      .replace(/\s+/g, '_')
+      .slice(0, 40);
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const filename = `${safeName}_AIHPRO_DemoReport_${dateStr}.pdf`;
+
+    // PDF 생성 시 색상 충돌 방지용 임시 스타일 (oklch/var() 차단)
+    const style = document.createElement('style');
+    style.id = 'b2b-pdf-style';
+    style.textContent = `
+      .pdf-rendering * {
+        animation: none !important;
+        transition: none !important;
+      }
+      .pdf-rendering .pdf-page-break {
+        page-break-before: always;
+        break-before: page;
+      }
+    `;
+    document.head.appendChild(style);
+    previewRef.current.classList.add('pdf-rendering');
+
     try {
-      const filename = `${brand.institutionName}_데모리포트_${new Date().toISOString().slice(0, 10)}.pdf`;
       await html2pdf()
         .set({
           margin: [10, 10, 10, 10],
           filename,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          image: { type: 'jpeg', quality: 0.95 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false,
+            windowWidth: previewRef.current.scrollWidth,
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
+          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
         } as any)
         .from(previewRef.current)
         .save();
       toast.success('화이트라벨 PDF 다운로드 완료');
     } catch (err) {
-      console.error(err);
-      toast.error('PDF 생성에 실패했습니다.');
+      console.error('[B2BDemoReport] PDF 생성 실패:', err);
+      toast.error('PDF 생성에 실패했습니다. 새로고침 후 다시 시도해주세요.');
     } finally {
+      previewRef.current?.classList.remove('pdf-rendering');
+      document.getElementById('b2b-pdf-style')?.remove();
       setIsGenerating(false);
     }
   };

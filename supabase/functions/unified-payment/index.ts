@@ -10,10 +10,12 @@ const corsHeaders = {
 const PRODUCTS: Record<string, any> = {
   single_test: { type: 'single_test', name: '심리검사 1회', price: 990 },
   single_report: { type: 'single_report', name: '심층 분석 리포트 1회', price: 3900 },
-  subscription_monthly: { type: 'subscription', name: '월간 구독', price: 9900 },
-  subscription_yearly: { type: 'subscription', name: '연간 구독', price: 99000 },
+  subscription_monthly: { type: 'subscription', name: '월간 구독', price: 19900 },
+  subscription_yearly: { type: 'subscription', name: '연간 구독', price: 19900 },
+  // 30일 마음 변화 트랙 (일시불, 30일 프리미엄 액세스)
+  mind_track_30: { type: 'mind_track', name: '30일 마음 변화 트랙', price: 19900 },
   // 하위 호환성
-  pass_30: { type: 'subscription', name: '월간 구독', price: 9900 },
+  pass_30: { type: 'subscription', name: '월간 구독', price: 19900 },
 };
 
 // 🔒 인증된 사용자 확인 헬퍼
@@ -244,8 +246,8 @@ serve(async (req) => {
 
         console.log(`✅ Added 1 report credit for user ${payment.user_id}`);
 
-      } else if (productType === 'subscription' || productType === 'pass') {
-        // 구독 처리 - 월간(30일) 또는 연간(365일)
+      } else if (productType === 'subscription' || productType === 'pass' || productType === 'mind_track') {
+        // 구독 처리 - 월간(30일), 연간(365일), 또는 마음 트랙(30일 일시불)
         const startDate = new Date();
         const endDate = new Date(startDate);
         const isYearly = payment.toss_order_id?.includes('subscription_yearly');

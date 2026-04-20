@@ -8,6 +8,8 @@ import { cleanMarkdown, extractFootnotes } from '@/utils/cleanMarkdown';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useLanguage } from '@/i18n/LanguageContext';
 import PostPaymentConversionFlow from './PostPaymentConversionFlow';
+import ChallengeStartCTA from './ChallengeStartCTA';
+import { useChallengeBaseline } from '@/hooks/useChallengeBaseline';
 
 /* ─── Types ─── */
 export interface DomainScore {

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { FileText, Users, TrendingUp, ArrowRight, CheckCircle, Sparkles } from 'lucide-react';
+import { FileText, Users, TrendingUp, ArrowRight, CheckCircle, Sparkles, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { SmartConsultMatcher } from '@/components/expert/SmartConsultMatcher';
@@ -156,11 +157,43 @@ const PostPaymentConversionFlow = ({ testName, onViewReport }: PostPaymentFlowPr
         </motion.div>
       )}
 
+      {/* HR 담당자 / 기관 운영자 바이럴 진입 */}
+      {!isEnglish && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.85 }}
+        >
+          <button
+            onClick={() => navigate('/b2b-demo-report')}
+            className="w-full text-left p-4 rounded-2xl bg-gradient-to-br from-teal-50 to-blue-50 border border-teal-200/60 hover:border-teal-400 hover:shadow-md transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm shrink-0">
+                <Building2 className="w-5 h-5 text-teal-700" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <Badge variant="outline" className="text-[10px] border-teal-300 text-teal-700 bg-white mb-1">
+                  HR 담당자 · 기관 운영자
+                </Badge>
+                <p className="text-sm font-semibold text-foreground leading-snug break-keep">
+                  우리 회사·기관에도 이런 분석을 도입하고 싶으세요?
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5 break-keep">
+                  부서별 번아웃 히트맵·이직 위험 예측·익명 코칭 포함 화이트라벨 데모를 30초 만에
+                </p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-teal-700 shrink-0" />
+            </div>
+          </button>
+        </motion.div>
+      )}
+
       {/* Subtle data emphasis */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.9 }}
+        transition={{ delay: 0.95 }}
         className="text-center pt-2"
       >
         <p className="text-[11px] text-muted-foreground/70">

@@ -31,6 +31,7 @@ import TrialOnboarding from '@/components/onboarding/TrialOnboarding';
 import { useTrialProfile } from '@/hooks/useTrialProfile';
 import { CopilotBubble } from '@/components/copilot/CopilotBubble';
 import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
+import B2BEntryBanner from '@/components/landing/B2BEntryBanner';
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 
 
@@ -226,6 +227,11 @@ const Index = () => {
               <SmartScrollReveal kind="cta"><SubscriptionValueSection /></SmartScrollReveal>
             </LazyLoad>
             
+            {/* 8.5️⃣ B2B 진입 배너 — 기관·기업 도입 유도 */}
+            <LazyLoad rootMargin="200px">
+              <SmartScrollReveal kind="cards"><B2BEntryBanner /></SmartScrollReveal>
+            </LazyLoad>
+
             {/* 9️⃣ 최종 CTA */}
             <LazyLoad rootMargin="200px">
               <SmartScrollReveal kind="cta"><CTABannerSection /></SmartScrollReveal>

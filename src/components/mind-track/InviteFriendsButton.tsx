@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { UserPlus, MessageCircle, Instagram, Link2, Check } from "lucide-react";
-import { shareToKakao } from "@/lib/kakaoShare";
+import { UserPlus, Instagram, Link2, Check } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
@@ -14,7 +13,6 @@ interface Props {
 
 /**
  * 친구 초대 통합 위젯
- * - 카카오톡 공유
  * - 인스타그램 스토리 (이미지 클립보드 복사 + 안내)
  * - 링크 복사
  */
@@ -26,16 +24,6 @@ export default function InviteFriendsButton({ currentDay, variant = "outline", s
   const message = currentDay
     ? `저는 30일 마음 챌린지 ${currentDay}일째 진행 중이에요. 같이 해볼래요?`
     : `30일이면 마음이 진짜 가벼워져요. 같이 해볼래요?`;
-
-  const handleKakao = async () => {
-    await shareToKakao({
-      title: "🌱 30일 마음 챌린지, 같이 할래요?",
-      description: message,
-      url: inviteUrl,
-      buttonText: "나도 시작하기",
-    });
-    setOpen(false);
-  };
 
   const handleInstagram = async () => {
     try {
@@ -79,17 +67,7 @@ export default function InviteFriendsButton({ currentDay, variant = "outline", s
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid grid-cols-3 gap-3 py-3">
-            <button
-              onClick={handleKakao}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50 transition-all"
-            >
-              <div className="w-12 h-12 rounded-full bg-[#FEE500] flex items-center justify-center">
-                <MessageCircle className="w-6 h-6 text-[#3C1E1E]" />
-              </div>
-              <span className="text-xs font-medium text-slate-700">카카오톡</span>
-            </button>
-
+          <div className="grid grid-cols-2 gap-3 py-3">
             <button
               onClick={handleInstagram}
               className="flex flex-col items-center gap-2 p-3 rounded-xl border border-slate-200 hover:border-pink-400 hover:bg-pink-50 transition-all"

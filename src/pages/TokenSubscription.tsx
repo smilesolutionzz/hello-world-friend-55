@@ -104,12 +104,19 @@ const TokenSubscription = () => {
 
         {/* 이용중 */}
         {isPremium && (
-          <motion.div {...fade(0)} className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-3 border border-emerald-200 dark:border-emerald-800 rounded-full px-6 py-2.5 bg-emerald-50 dark:bg-emerald-950/30">
-              <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-              <span className="font-semibold text-emerald-700 dark:text-emerald-300">{subscriptionLabel} 이용중</span>
-              <Badge className="bg-emerald-600 text-white border-0 text-xs">활성</Badge>
+          <motion.div {...fade(0)} className="mb-8">
+            <div className="flex justify-center mb-4">
+              <div className="inline-flex items-center gap-3 border border-emerald-200 dark:border-emerald-800 rounded-full px-6 py-2.5 bg-emerald-50 dark:bg-emerald-950/30">
+                <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <span className="font-semibold text-emerald-700 dark:text-emerald-300">{subscriptionLabel} 이용중</span>
+                <Badge className="bg-emerald-600 text-white border-0 text-xs">활성</Badge>
+              </div>
             </div>
+            <Button onClick={() => navigate('/coaching-goals')} className="w-full h-12 rounded-xl bg-foreground text-background hover:bg-foreground/90 font-bold">
+              <Target className="w-4 h-4 mr-2" />
+              데일리 코칭 목표 설정하기
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
           </motion.div>
         )}
 

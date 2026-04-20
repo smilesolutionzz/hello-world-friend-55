@@ -90,6 +90,7 @@ import ExpertContractSuccess from "./pages/ExpertContractSuccess";
 // Payment
 import Payment from "./pages/Payment";
 import TokenSubscription from "./pages/TokenSubscription";
+import CoachingGoals from "./pages/CoachingGoals";
 import BusinessSubscription from "./pages/BusinessSubscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentComplete from "./pages/PaymentComplete";
@@ -267,6 +268,8 @@ const App = () => {
           {/* Payment & Pricing */}
           <Route path="/token-subscription" element={<TokenSubscription />} />
           <Route path="/subscription" element={<TokenSubscription />} />
+          <Route path="/coaching-goals" element={<CoachingGoals />} />
+          <Route path="/en/coaching-goals" element={<CoachingGoals />} />
           <Route path="/subscription/business" element={<BusinessSubscription />} />
           <Route path="/en/subscription/business" element={<BusinessSubscription />} />
           <Route path="/quiz" element={<Quiz />} />

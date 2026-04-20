@@ -51,7 +51,10 @@ const TokenSubscription = () => {
       return;
     }
     const success = await pay('mind_track_30');
-    if (success) toast({ title: '결제 완료', description: '30일 트랙이 시작되었습니다!' });
+    if (success) {
+      toast({ title: '결제 완료', description: '30일 트랙이 시작되었습니다! 코칭 목표를 설정해주세요.' });
+      setTimeout(() => navigate('/coaching-goals'), 800);
+    }
   };
 
   const fade = (delay: number) => ({ 
@@ -61,6 +64,7 @@ const TokenSubscription = () => {
   });
 
   const benefits = [
+    { highlight: true, text: '매일 오전 8시 박사급 1:1 코칭 메일 (30일)' },
     { highlight: true, text: '30일 맞춤 마음 변화 로드맵' },
     { text: 'AI 심층 분석 리포트 무제한' },
     { text: '20종+ 심리검사 무제한 이용' },

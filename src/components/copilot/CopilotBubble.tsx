@@ -277,27 +277,44 @@ className="fixed bottom-[80px] left-3 right-3 z-[60] md:left-6 md:right-auto md:
                   <ScrollArea className="flex-1 min-h-0 h-full">
                     <div className="p-4 space-y-3 max-w-full break-words [&_*]:max-w-full">
                       {chatMessages.map((msg) => (
-                        <div key={msg.id} className={cn("flex gap-2", msg.role === 'user' ? "justify-end" : "justify-start")}>
-                          {msg.role === 'assistant' && (
-                            <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-1">
-                              <Bot className="w-3.5 h-3.5 text-primary" />
-                            </div>
-                          )}
-                          <div className={cn(
-                            "max-w-[80%] rounded-xl px-3 py-2 text-sm",
-                            msg.role === 'user'
-                              ? "bg-primary text-white"
-                              : "bg-white/10 text-white/90"
-                          )}>
-                            {msg.role === 'assistant' ? (
-                              <div className="prose prose-sm prose-invert max-w-none [&_p]:m-0 [&_p]:leading-relaxed">
-                                <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        <div key={msg.id} className="space-y-2">
+                          <div className={cn("flex gap-2", msg.role === 'user' ? "justify-end" : "justify-start")}>
+                            {msg.role === 'assistant' && (
+                              <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-1">
+                                <Bot className="w-3.5 h-3.5 text-primary" />
                               </div>
-                            ) : msg.content}
+                            )}
+                            <div className={cn(
+                              "max-w-[80%] rounded-xl px-3 py-2 text-sm",
+                              msg.role === 'user'
+                                ? "bg-primary text-white"
+                                : "bg-white/10 text-white/90"
+                            )}>
+                              {msg.role === 'assistant' ? (
+                                <div className="prose prose-sm prose-invert max-w-none [&_p]:m-0 [&_p]:leading-relaxed">
+                                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                                </div>
+                              ) : msg.content}
+                            </div>
+                            {msg.role === 'user' && (
+                              <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0 mt-1">
+                                <User className="w-3.5 h-3.5 text-white/60" />
+                              </div>
+                            )}
                           </div>
-                          {msg.role === 'user' && (
-                            <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0 mt-1">
-                              <User className="w-3.5 h-3.5 text-white/60" />
+                          {/* Quick chips */}
+                          {msg.role === 'assistant' && msg.chips && msg.chips.length > 0 && !msg.chipsUsed && (
+                            <div className="flex flex-wrap gap-1.5 pl-8">
+                              {msg.chips.map((chip, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => sendMessage(chip, msg.id)}
+                                  disabled={isLoading}
+                                  className="px-3 py-1.5 rounded-full bg-primary/15 hover:bg-primary/25 border border-primary/30 text-primary text-xs font-medium transition-colors disabled:opacity-50"
+                                >
+                                  {chip}
+                                </button>
+                              ))}
                             </div>
                           )}
                         </div>

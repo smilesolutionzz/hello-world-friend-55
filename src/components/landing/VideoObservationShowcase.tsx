@@ -35,10 +35,7 @@ export const VideoObservationShowcase = () => {
           className="w-full h-full object-cover"
           poster="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=1920&q=80"
         >
-          <source 
-            src="https://videos.pexels.com/video-files/3209828/3209828-uhd_2560_1440_25fps.mp4" 
-            type="video/mp4" 
-          />
+          <source src="/videos/video-analysis-promo.mp4" type="video/mp4" />
         </video>
         {/* Dark overlay for readability */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-purple-900/70 to-slate-900/85" />

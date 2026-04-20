@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import { ArrowRight, TrendingDown, TrendingUp, ShieldCheck, Sparkles, Play } from "lucide-react";
+import { ArrowRight, TrendingDown, TrendingUp, ShieldCheck, Sparkles, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/components/common/Analytics";
@@ -36,48 +36,76 @@ const HeroSection = () => {
     navigate('/assessment');
   };
 
-  const metrics = [
+  // 페르소나별 Before/After 데이터 슬라이드
+  const personas = [
     {
-      label: (t.hero as any).metric1Label,
-      before: 78,
-      after: 48,
-      delta: (t.hero as any).metric1Delta,
-      direction: 'down' as const,
-      color: 'from-rose-400 to-orange-400',
+      key: 'workingmom',
+      name: '워킹맘',
+      emoji: '👩‍💼',
+      sub: '직장 + 육아 병행',
+      metrics: [
+        { label: '스트레스 지수', before: 82, after: 49, delta: '-40%', direction: 'down' as const, color: 'from-rose-400 to-orange-400' },
+        { label: '수면 만족도', before: 38, after: 75, delta: '+97%', direction: 'up' as const, color: 'from-emerald-400 to-teal-400' },
+        { label: '감정 안정성', before: 47, after: 81, delta: '+72%', direction: 'up' as const, color: 'from-sky-400 to-indigo-400' },
+        { label: '육아 번아웃', before: 79, after: 44, delta: '-44%', direction: 'down' as const, color: 'from-fuchsia-400 to-pink-400' },
+        { label: '아이와의 소통', before: 35, after: 78, delta: '+123%', direction: 'up' as const, color: 'from-amber-400 to-yellow-400' },
+      ],
     },
     {
-      label: (t.hero as any).metric2Label,
-      before: 42,
-      after: 79,
-      delta: (t.hero as any).metric2Delta,
-      direction: 'up' as const,
-      color: 'from-emerald-400 to-teal-400',
+      key: 'stayhomemom',
+      name: '전업맘',
+      emoji: '👩‍🍼',
+      sub: '하루종일 육아',
+      metrics: [
+        { label: '스트레스 지수', before: 74, after: 46, delta: '-38%', direction: 'down' as const, color: 'from-rose-400 to-orange-400' },
+        { label: '수면 만족도', before: 45, after: 82, delta: '+82%', direction: 'up' as const, color: 'from-emerald-400 to-teal-400' },
+        { label: '자기효능감', before: 42, after: 79, delta: '+88%', direction: 'up' as const, color: 'from-sky-400 to-indigo-400' },
+        { label: '고립감', before: 81, after: 38, delta: '-53%', direction: 'down' as const, color: 'from-fuchsia-400 to-pink-400' },
+        { label: '아이와의 소통', before: 51, after: 86, delta: '+69%', direction: 'up' as const, color: 'from-amber-400 to-yellow-400' },
+      ],
     },
     {
-      label: (t.hero as any).metric3Label,
-      before: 51,
-      after: 83,
-      delta: (t.hero as any).metric3Delta,
-      direction: 'up' as const,
-      color: 'from-sky-400 to-indigo-400',
+      key: 'dad',
+      name: '아빠',
+      emoji: '👨‍👧',
+      sub: '일과 가정의 균형',
+      metrics: [
+        { label: '스트레스 지수', before: 76, after: 52, delta: '-32%', direction: 'down' as const, color: 'from-rose-400 to-orange-400' },
+        { label: '수면 만족도', before: 48, after: 77, delta: '+60%', direction: 'up' as const, color: 'from-emerald-400 to-teal-400' },
+        { label: '감정 표현력', before: 39, after: 71, delta: '+82%', direction: 'up' as const, color: 'from-sky-400 to-indigo-400' },
+        { label: '업무 번아웃', before: 71, after: 45, delta: '-37%', direction: 'down' as const, color: 'from-fuchsia-400 to-pink-400' },
+        { label: '아이와의 친밀도', before: 44, after: 80, delta: '+82%', direction: 'up' as const, color: 'from-amber-400 to-yellow-400' },
+      ],
     },
     {
-      label: (t.hero as any).metric4Label,
-      before: 74,
-      after: 41,
-      delta: (t.hero as any).metric4Delta,
-      direction: 'down' as const,
-      color: 'from-fuchsia-400 to-pink-400',
-    },
-    {
-      label: (t.hero as any).metric5Label,
-      before: 38,
-      after: 76,
-      delta: (t.hero as any).metric5Delta,
-      direction: 'up' as const,
-      color: 'from-amber-400 to-yellow-400',
+      key: 'professional',
+      name: '직장인',
+      emoji: '💼',
+      sub: '커리어 집중기',
+      metrics: [
+        { label: '스트레스 지수', before: 80, after: 47, delta: '-41%', direction: 'down' as const, color: 'from-rose-400 to-orange-400' },
+        { label: '수면 만족도', before: 41, after: 78, delta: '+90%', direction: 'up' as const, color: 'from-emerald-400 to-teal-400' },
+        { label: '감정 안정성', before: 49, after: 83, delta: '+69%', direction: 'up' as const, color: 'from-sky-400 to-indigo-400' },
+        { label: '업무 번아웃', before: 78, after: 43, delta: '-45%', direction: 'down' as const, color: 'from-fuchsia-400 to-pink-400' },
+        { label: '집중력', before: 46, after: 82, delta: '+78%', direction: 'up' as const, color: 'from-amber-400 to-yellow-400' },
+      ],
     },
   ];
+
+  const [personaIndex, setPersonaIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setPersonaIndex((prev) => (prev + 1) % personas.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [isPaused, personas.length]);
+
+  const currentPersona = personas[personaIndex];
+  const goPrev = () => setPersonaIndex((p) => (p - 1 + personas.length) % personas.length);
+  const goNext = () => setPersonaIndex((p) => (p + 1) % personas.length);
 
   return (
     <section

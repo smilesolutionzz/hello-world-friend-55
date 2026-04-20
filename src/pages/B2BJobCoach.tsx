@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import B2BJobCoachSection from '@/components/b2b/B2BJobCoachSection';
+import HRDataPipelineDiagram from '@/components/b2b/HRDataPipelineDiagram';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Briefcase, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';

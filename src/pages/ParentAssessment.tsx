@@ -51,7 +51,7 @@ const ParentAssessment = () => {
         setError('만료되었거나 유효하지 않은 링크입니다');
       } else {
         const row = Array.isArray(data) ? data[0] : data;
-        setInvite(row as Invite);
+        setInvite(row as unknown as Invite);
       }
       setLoading(false);
     })();

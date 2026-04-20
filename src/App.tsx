@@ -119,6 +119,8 @@ import B2BProposal from "./pages/B2BProposal";
 import B2BJobCoach from "./pages/B2BJobCoach";
 import B2BDemoReport from "./pages/B2BDemoReport";
 import B2BHRDashboard from "./pages/B2BHRDashboard";
+import B2BKindergartenConsole from "./pages/B2BKindergartenConsole";
+import ParentAssessment from "./pages/ParentAssessment";
 import StartupPackage from "./pages/StartupPackage";
 
 // Legal

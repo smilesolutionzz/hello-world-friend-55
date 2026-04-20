@@ -3703,6 +3703,115 @@ export type Database = {
         }
         Relationships: []
       }
+      employee_data_sharing_preferences: {
+        Row: {
+          allow_crisis_alert: boolean
+          consent_version: string
+          consented_at: string
+          created_at: string
+          id: string
+          institution_id: string
+          revoked_at: string | null
+          share_burnout_score: boolean
+          share_coaching_usage: boolean
+          share_identity: boolean
+          share_stress_score: boolean
+          share_turnover_risk: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          allow_crisis_alert?: boolean
+          consent_version?: string
+          consented_at?: string
+          created_at?: string
+          id?: string
+          institution_id: string
+          revoked_at?: string | null
+          share_burnout_score?: boolean
+          share_coaching_usage?: boolean
+          share_identity?: boolean
+          share_stress_score?: boolean
+          share_turnover_risk?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          allow_crisis_alert?: boolean
+          consent_version?: string
+          consented_at?: string
+          created_at?: string
+          id?: string
+          institution_id?: string
+          revoked_at?: string | null
+          share_burnout_score?: boolean
+          share_coaching_usage?: boolean
+          share_identity?: boolean
+          share_stress_score?: boolean
+          share_turnover_risk?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_data_sharing_preferences_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employee_organization_links: {
+        Row: {
+          created_at: string
+          department_code: string | null
+          employee_code: string | null
+          id: string
+          institution_id: string
+          is_active: boolean
+          joined_at: string
+          joined_via_code: string | null
+          left_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          department_code?: string | null
+          employee_code?: string | null
+          id?: string
+          institution_id: string
+          is_active?: boolean
+          joined_at?: string
+          joined_via_code?: string | null
+          left_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          department_code?: string | null
+          employee_code?: string | null
+          id?: string
+          institution_id?: string
+          is_active?: boolean
+          joined_at?: string
+          joined_via_code?: string | null
+          left_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_organization_links_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expert_application_access_log: {
         Row: {
           access_reason: string | null
@@ -13119,6 +13228,18 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+        }[]
+      }
+      get_department_aggregated_stats: {
+        Args: { p_institution_id: string; p_period_days?: number }
+        Returns: {
+          avg_burnout_score: number
+          avg_stress_score: number
+          department_code: string
+          high_risk_count: number
+          is_masked: boolean
+          participated_employees: number
+          total_employees: number
         }[]
       }
       get_expert_stats: {

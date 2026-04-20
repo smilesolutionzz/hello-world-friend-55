@@ -110,7 +110,8 @@ const UnifiedAssessmentHub = () => {
           )}
         </div>
       </Suspense>
-    </HubContext.Provider>
+      </HubContext.Provider>
+    </>
   );
 };
 

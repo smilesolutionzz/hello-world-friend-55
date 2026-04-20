@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useAccessControl } from "@/hooks/useAccessControl";
 import { useNavigate } from "react-router-dom";
+import MindTrackProfileCard from "@/components/mind-track/MindTrackProfileCard";
 
 interface ProfileData {
   display_name: string | null;
@@ -254,6 +255,12 @@ const Profile = () => {
       items: [
         {
           icon: Compass,
+          label: "30일 챌린지 워크북",
+          desc: "오늘 미션 · 체크인 · 변화 그래프",
+          path: "/mind-track/workbook",
+        },
+        {
+          icon: Compass,
           label: "My Journey · 종단 추적",
           desc: "리포트 변화 추이 분석 (RCI)",
           path: "/my-journey",
@@ -349,6 +356,9 @@ const Profile = () => {
           <ChevronRight className="w-5 h-5 text-muted-foreground" />
         </div>
       </div>
+
+      {/* 30일 챌린지 진행 카드 */}
+      <MindTrackProfileCard />
 
       {/* Quick Stats - 3 columns */}
       <div className="px-5 mt-4 grid grid-cols-3 gap-2.5">

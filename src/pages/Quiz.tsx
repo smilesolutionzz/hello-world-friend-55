@@ -502,21 +502,257 @@ const Quiz: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                {/* Social proof */}
-                <Card className="bg-amber-50/50 border-amber-200">
-                  <CardContent className="p-5">
-                    <div className="flex items-center gap-1 mb-2">
-                      {[1, 2, 3, 4, 5].map((s) => (
-                        <Star key={s} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      ))}
-                      <span className="ml-2 text-sm font-semibold">4.8 / 5.0</span>
+                {/* 30일 변화 리포트 미리보기 (블러 PDF) */}
+                <div>
+                  <div className="text-center mb-4">
+                    <Badge className="mb-2 bg-violet-50 text-violet-700 border-violet-200">
+                      <FileText className="w-3 h-3 mr-1" />
+                      30일 후 받게 될 리포트
+                    </Badge>
+                    <h3 className="text-lg font-bold break-keep">실제 받게 되는 리포트 미리보기</h3>
+                    <p className="text-xs text-muted-foreground mt-1">결제 시 14페이지 전체가 잠금 해제됩니다</p>
+                  </div>
+
+                  <div className="relative rounded-2xl overflow-hidden border-2 border-slate-200 shadow-xl bg-white">
+                    <div className="aspect-[1/1.35] bg-gradient-to-b from-white to-slate-50 p-5 md:p-7 relative">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                            <Sparkles className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <div className="text-[9px] text-slate-500 tracking-wider">AIHPRO REPORT</div>
+                            <div className="text-xs font-bold text-slate-900">30일 마음 변화 리포트</div>
+                          </div>
+                        </div>
+                        <div className="text-[10px] text-slate-400">PAGE 01 / 14</div>
+                      </div>
+
+                      <div className="mt-4 space-y-3">
+                        <div>
+                          <div className="text-[9px] text-slate-400 uppercase tracking-wider">Executive Summary</div>
+                          <div className="text-sm md:text-base font-bold text-slate-900 mt-1 break-keep">
+                            {data.goalLabel} 영역에서 유의미한 개선이 관찰되었습니다
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="p-2 bg-emerald-50 rounded-lg border border-emerald-100">
+                            <div className="text-[9px] text-emerald-700 font-medium">스트레스</div>
+                            <div className="text-base font-bold text-emerald-900">-42%</div>
+                          </div>
+                          <div className="p-2 bg-blue-50 rounded-lg border border-blue-100">
+                            <div className="text-[9px] text-blue-700 font-medium">에너지</div>
+                            <div className="text-base font-bold text-blue-900">+58%</div>
+                          </div>
+                          <div className="p-2 bg-violet-50 rounded-lg border border-violet-100">
+                            <div className="text-[9px] text-violet-700 font-medium">명료함</div>
+                            <div className="text-base font-bold text-violet-900">+67%</div>
+                          </div>
+                        </div>
+
+                        <div className="h-20 -mx-2">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={[
+                              { d: 'D1', v: 30 }, { d: 'D7', v: 42 }, { d: 'D14', v: 58 },
+                              { d: 'D21', v: 71 }, { d: 'D30', v: 84 },
+                            ]}>
+                              <Line type="monotone" dataKey="v" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
+                              <XAxis dataKey="d" tick={{ fontSize: 8 }} axisLine={false} tickLine={false} />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+
+                        <div className="space-y-2 pt-1">
+                          <div className="text-[9px] text-slate-400 uppercase tracking-wider">Personal Insights</div>
+                          <div className="space-y-1.5 filter blur-sm select-none pointer-events-none">
+                            <div className="h-2.5 bg-slate-200 rounded w-full" />
+                            <div className="h-2.5 bg-slate-200 rounded w-11/12" />
+                            <div className="h-2.5 bg-slate-200 rounded w-4/5" />
+                            <div className="h-2.5 bg-slate-200 rounded w-full" />
+                            <div className="h-2.5 bg-slate-200 rounded w-3/4" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-white via-white/95 to-transparent flex items-end justify-center pb-5">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-full text-xs font-medium shadow-lg">
+                          <Lock className="w-3.5 h-3.5" />
+                          14페이지 전체 리포트 잠김
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-sm text-foreground">
-                      "30일 만에 잠드는 시간이 1시간 → 15분으로 줄었어요. 진짜 인생 바뀌었습니다."
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-2">— 30대 직장인 이OO님</p>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 mt-3 text-center">
+                    {['14페이지 분량', '7대 데이터 분석', 'PDF 다운로드'].map((t, i) => (
+                      <div key={i} className="text-[10px] text-muted-foreground py-1.5 bg-slate-50 rounded-lg">
+                        {t}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Before / After 변화 차트 */}
+                <Card className="border-slate-200">
+                  <CardContent className="p-5 md:p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="font-bold text-base flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4 text-emerald-500" />
+                          평균 사용자의 30일 변화
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">12,847명 누적 데이터 기반</p>
+                      </div>
+                      <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                        +73% 개선
+                      </Badge>
+                    </div>
+
+                    <div className="h-44 -mx-2">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={[
+                          { day: '시작', 스트레스: 78, 에너지: 32, 마음명료함: 28 },
+                          { day: '7일', 스트레스: 65, 에너지: 45, 마음명료함: 42 },
+                          { day: '14일', 스트레스: 52, 에너지: 58, 마음명료함: 56 },
+                          { day: '21일', 스트레스: 38, 에너지: 71, 마음명료함: 70 },
+                          { day: '30일', 스트레스: 25, 에너지: 82, 마음명료함: 84 },
+                        ]} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="day" tick={{ fontSize: 10 }} />
+                          <YAxis tick={{ fontSize: 10 }} />
+                          <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid hsl(var(--border))' }} />
+                          <Legend wrapperStyle={{ fontSize: 10 }} iconType="circle" />
+                          <Line type="monotone" dataKey="스트레스" stroke="#ef4444" strokeWidth={2} dot={{ r: 3 }} />
+                          <Line type="monotone" dataKey="에너지" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3 }} />
+                          <Line type="monotone" dataKey="마음명료함" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 3 }} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 mt-2 pt-3 border-t border-slate-100">
+                      <div className="text-center">
+                        <div className="text-[10px] text-muted-foreground">스트레스</div>
+                        <div className="text-sm font-bold text-rose-500">-68%</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-[10px] text-muted-foreground">에너지</div>
+                        <div className="text-sm font-bold text-blue-500">+156%</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-[10px] text-muted-foreground">마음명료함</div>
+                        <div className="text-sm font-bold text-violet-500">+200%</div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
+
+                {/* 실제 변화 사례 3명 */}
+                <div>
+                  <div className="text-center mb-4">
+                    <h3 className="text-lg font-bold break-keep">실제 30일 만에 바뀐 사람들</h3>
+                    <div className="flex items-center justify-center gap-1 mt-2">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      ))}
+                      <span className="ml-1 text-xs font-semibold">4.8 / 5.0 · 3,247건의 후기</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    {[
+                      {
+                        icon: Moon,
+                        color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+                        name: '워킹맘 김OO',
+                        tag: '수면 / 30대',
+                        before: '잠드는 데 1시간',
+                        after: '15분 이내 입면',
+                        change: '+2시간 수면',
+                        quote: '아이 재우고 나면 이미 새벽 1시였는데, 이제 11시면 자연스럽게 잠이 와요. 아침이 정말 달라졌어요.',
+                      },
+                      {
+                        icon: Zap,
+                        color: 'bg-amber-50 text-amber-600 border-amber-100',
+                        name: '직장인 이OO',
+                        tag: '스트레스 / 30대',
+                        before: '주 4회 번아웃',
+                        after: '주 1회 미만',
+                        change: '-75% 스트레스',
+                        quote: '회의 전마다 손이 떨렸는데, 3분 루틴 하나로 마음이 가라앉아요. 회사에서도 평이 달라졌어요.',
+                      },
+                      {
+                        icon: Smile,
+                        color: 'bg-rose-50 text-rose-600 border-rose-100',
+                        name: '학부모 박OO',
+                        tag: '관계 / 40대',
+                        before: '아이와 매일 갈등',
+                        after: '주 1회 미만',
+                        change: '+89% 관계 만족',
+                        quote: '제가 먼저 바뀌니까 아이가 따라왔어요. 이제 저녁 식탁에서 진짜 대화가 돼요.',
+                      },
+                    ].map((c, i) => {
+                      const Icon = c.icon;
+                      return (
+                        <Card key={i} className="overflow-hidden hover:shadow-md transition-shadow">
+                          <CardContent className="p-4 md:p-5">
+                            <div className="flex items-start gap-3">
+                              <div className={`w-11 h-11 rounded-xl ${c.color} border flex items-center justify-center shrink-0`}>
+                                <Icon className="w-5 h-5" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between gap-2 mb-2">
+                                  <div>
+                                    <div className="font-semibold text-sm">{c.name}</div>
+                                    <div className="text-[10px] text-muted-foreground">{c.tag}</div>
+                                  </div>
+                                  <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px]">
+                                    {c.change}
+                                  </Badge>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-2 mb-3">
+                                  <div className="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                    <div className="text-[9px] text-slate-400 uppercase">Before</div>
+                                    <div className="text-xs font-medium text-slate-700 mt-0.5 break-keep">{c.before}</div>
+                                  </div>
+                                  <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-100">
+                                    <div className="text-[9px] text-emerald-600 uppercase">After 30일</div>
+                                    <div className="text-xs font-medium text-emerald-900 mt-0.5 break-keep">{c.after}</div>
+                                  </div>
+                                </div>
+
+                                <div className="relative pl-4">
+                                  <Quote className="w-3 h-3 text-primary/40 absolute left-0 top-0.5" />
+                                  <p className="text-xs text-muted-foreground leading-relaxed break-keep">
+                                    {c.quote}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+
+                  <div className="flex items-center justify-center gap-4 mt-4 py-3 px-4 bg-slate-50 rounded-xl">
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-primary">94%</div>
+                      <div className="text-[10px] text-muted-foreground">변화 체감</div>
+                    </div>
+                    <div className="w-px h-8 bg-slate-200" />
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-primary">12,847명</div>
+                      <div className="text-[10px] text-muted-foreground">누적 사용자</div>
+                    </div>
+                    <div className="w-px h-8 bg-slate-200" />
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-primary">4.8★</div>
+                      <div className="text-[10px] text-muted-foreground">평균 평점</div>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Pricing CTA */}
                 <Card className="bg-gradient-to-br from-primary to-primary/80 border-0 text-primary-foreground">

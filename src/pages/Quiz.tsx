@@ -20,7 +20,14 @@ import {
   Brain,
   Heart,
   Users,
+  FileText,
+  Lock,
+  Quote,
+  Moon,
+  Zap,
+  Smile,
 } from 'lucide-react';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 

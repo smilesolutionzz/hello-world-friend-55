@@ -9,6 +9,12 @@ verify_jwt = false
 [functions.send-weekly-coaching-digest]
 verify_jwt = false  # cron job에서 호출되므로 JWT 불필요
 
+[functions.mind-track-concern-polish]
+verify_jwt = false
+
+[functions.mind-track-concern-report]
+verify_jwt = false
+
 # toss-payments-confirm 제거됨 → unified-payment으로 통합
 
 [api]

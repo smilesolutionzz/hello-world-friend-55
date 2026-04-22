@@ -71,7 +71,7 @@ const ChallengeStartCTA = ({ testName, recommendedFocus, source }: ChallengeStar
         </Button>
 
         <p className="text-[11px] opacity-75 text-center mt-3">
-          ₩9,900/월 · 언제든 해지 · 첫 7일 무료 체험
+          ₩19,900 일시불 · 30일 환불 보장 · 자동 결제 없음
         </p>
       </div>
     </Card>

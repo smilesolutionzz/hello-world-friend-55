@@ -1,39 +1,52 @@
 
-사용자가 단건 결제(₩990 검사 / ₩3,900 리포트)를 완전히 제거할지, 아니면 30일 챌린지(₩19,900)와 함께 유지할지 의견을 물어봤습니다.
+## 심층검사 결제 단일화 — ₩19,900 30일 마음 트랙
 
-## 내 판단: **단건 제거 + 30일 챌린지 단일화가 맞습니다**
+레거시 단건 결제(₩990 검사 / ₩3,900 리포트) 잔재를 모두 제거하고, B2C 유료 진입점은 **₩19,900 30일 마음 트랙** 단일 상품으로 통일합니다. B2B는 별도 모델 그대로 유지.
 
-### 이유 3가지
+### 정리 대상 (사용자 노출 영역)
 
-**1. PMF 포지셔닝과 일치**
-메모리(`mem://strategy/pmf-positioning-2026-ko`)에 명시된 Calm + Wysa 하이브리드 전략의 핵심은 **"30일 마음 챌린지가 킬러 상품"** 이라는 단일 메시지입니다. 단건 ₩990·₩3,900을 같이 노출하면 "값싼 옵션도 있네?"로 빠져 챌린지 전환이 깎입니다. Calm·Noom·Wysa 모두 단건 결제가 없습니다 — 30일 약속이 곧 변화의 약속이기 때문입니다.
+1. **`src/components/assessment/UnifiedAssessmentHub.tsx`**
+   - `'심층 전문 분석' sub: '10~15분 · 리포트 ₩3,900'` → `'10~15분 · 30일 마음 트랙 ₩19,900'`
 
-**2. 의사결정 피로 제거 (Hick's Law)**
-현재 요금제 페이지는 무료 / ₩990 / ₩3,900 / ₩9,900 / ₩19,900 / B2B로 6개 옵션이 있었습니다. 사용자가 "어떤 걸 사야 하지?"를 고민하는 순간 이탈합니다. **무료 → 30일 챌린지 → B2B** 3단 구조가 모바일 전환율에 압도적으로 유리합니다.
+2. **`src/components/payments/MobilePaymentFlow.tsx`**
+   - 검사 ₩990 / 리포트 ₩3,900 카드 2개 제거
+   - "30일 마음 변화 트랙 ₩19,900" 단일 카드 + "30일 환불 보장" 배지로 대체
+   - 결제 호출 시 `pay('mind_track_30')`로 통일
 
-**3. 단가 상승 = LTV 상승**
-- 단건 ₩990 10명 결제 = ₩9,900
-- 챌린지 ₩19,900 1명 결제 = ₩19,900 (2배 + CS 부담 1/10)
+3. **`src/components/landing/SubscriptionValueSection.tsx`**
+   - `SINGLE_REPORT_PRICE` 표기 → `MIND_TRACK_PRICE` (₩19,900) + 가치 카피 재정리
 
-게다가 챌린지 사용자는 30일 동안 매일 앱에 들어오므로 리텐션 데이터·전문가 상담 업셀(₩49,000) 기회가 훨씬 큽니다.
+4. **`src/components/payments/PaymentModal.tsx`**
+   - 단건(test/report) vs 구독 분기 로직 제거
+   - 모달 전체를 "30일 마음 트랙 단일 상품" 카드로 단순화 (원가 ₩49,000 → ₩19,900, 60% OFF, 환불 보장)
 
-### 단건을 남겨야 한다면? (반대 논거 검토)
-- "비싸서 못 사는 사람은?" → **무료 멤버십(₩0)** 으로 이미 검사·리포트·관찰일지 모두 무료 제공 중. 단건이 없어도 진입 장벽 없음.
-- "체험 없이 ₩19,900 부담?" → 이건 **체험검사 3종(우울·스트레스·ADHD) 무료 + 30일 환불 정책**으로 해소하면 됩니다. 단건을 남기는 게 아니라.
+5. **`src/i18n/translations/ko.ts` / `en.ts`**
+   - `assessments.price`: `'990원'` / `'₩990'` → `'30일 마음 트랙 ₩19,900'` / `'30-day Mind Track ₩19,900'`
 
-### 결론 — 권장 실행안
-이미 `/pricing` 페이지는 단일화 완료. 남은 작업은 **레거시 단건 결제 진입점 정리**입니다:
+6. **`src/pages/About.tsx`** (FAQ)
+   - "비용은 얼마인가요?" 답변을 단일 상품(₩19,900 / 30일 / 환불 보장 / 무료 체험검사 3종) 기준으로 재작성
 
-1. **랜딩 StickyConversionBar** — ₩990·₩3,900 버튼 제거, "30일 챌린지 시작 ₩19,900" 단일 CTA로 교체
-2. **검사 결과 ResultPaywall (블러 잠금)** — "₩990로 단건 결제" 옵션 제거, "30일 챌린지로 모두 잠금 해제 ₩19,900"만 남김
-3. **상수 정리** — `SINGLE_TEST_PRICE`·`SINGLE_REPORT_PRICE`는 이미 `MIND_TRACK_PRICE`로 통일되어 있어 코드 수정은 UI 텍스트와 버튼 라벨만
-4. **`PRODUCTS` 상수 정리** — `usePayment.ts`의 `single_test`, `single_report`, `subscription_monthly`, `subscription_yearly` 제거 → `mind_track_30`만 유지
+7. **`src/pages/TermsOfService.tsx`** & **`src/pages/RefundPolicy.tsx`**
+   - 단건 ₩990·₩3,900, 월간 ₩9,900, 연간 ₩99,000 조항 삭제
+   - "30일 마음 트랙 ₩19,900 · 30일 내 100% 환불" 단일 조항으로 교체
 
-대신 무료 가치를 더 강하게 노출:
-- "회원가입 시 체험검사 3종 무제한 + 결과 리포트 무료"
-- "30일 무조건 환불 보장" 배지를 챌린지 카드에 추가 → ₩19,900 부담감 해소
+### 정리 대상 (코드/상수)
 
-### 다음 단계
-이 방향으로 진행하길 원하시면 "GO"라고 말씀해주세요. 그러면 위 1~4번 작업을 default 모드에서 일괄 정리하겠습니다.
+8. **`src/hooks/usePayment.ts`**
+   - `PRODUCTS`에서 `single_test`, `single_report`, `subscription_monthly`, `subscription_yearly`, `pass_30` 제거
+   - `mind_track_30` 단일 항목만 정식 등록 (₩19,900, 원가 ₩49,000, 60% OFF)
+   - `paySubscription()`도 `pay('mind_track_30')` 호출로 변경
 
-만약 단건을 남기고 싶다면 그 이유(예: "검사 한 번만 해보고 싶은 사용자용")를 알려주세요 — 그에 맞는 절충안(예: 단건은 숨기고 검사 결과 페이지에서만 노출)을 다시 설계하겠습니다.
+9. **`src/constants/tokenCosts.ts`**
+   - `SINGLE_TEST_PRICE`, `SINGLE_REPORT_PRICE`, `SUBSCRIPTION_PRICE`, `SUBSCRIPTION_YEARLY_PRICE` 등 별칭 상수 deprecated 처리(계속 `MIND_TRACK_PRICE` 동일 값 유지하되 신규 사용 금지 주석 추가)
+
+### 제외 (의도적으로 건드리지 않음)
+
+- **B2B 영역**: `BusinessModelSection.tsx` B2B 카드, `/b2b`, `/b2b-proposal`, 기관 대시보드 — 별도 모델
+- **사업계획서 문서**: `StartupPackage.tsx`, `K-STARTUP_*.md`, `공동대표_회의자료_*.md` — 내부/투자용 historical 문서 (사용자 노출 X)
+- **전문가 상담료 ₩49,000** (`expertPricing.ts`) — 별개 상품
+
+### 검증
+
+- `/depth-test`(심층검사 허브), `/mind-track`, `/quiz` 결과, `/pricing`, 결제 모달, About FAQ, 이용약관/환불정책에서 ₩990·₩3,900·₩9,900 표기 0건 확인
+- grep 재실행: `990원|₩990|3,900원|₩3,900|9,900원/월` → 노출 페이지에서 빈 결과

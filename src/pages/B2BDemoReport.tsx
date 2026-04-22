@@ -579,6 +579,78 @@ const B2BDemoReport: React.FC = () => {
                 </div>
               </section>
 
+              {(() => {
+                const pool = getInstitutionPool(brand.institutionType);
+                return (
+                  <section className="space-y-5">
+                    <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                      <Users className="w-5 h-5" style={{ color: brand.primaryColor }} />
+                      추천 전문가 풀 · {preset.label} 전용
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {pool.experts.map((ex) => (
+                        <div key={ex.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/60">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="font-bold text-slate-900">{ex.name}</p>
+                              <p className="text-xs text-slate-600 break-keep">{ex.role}</p>
+                            </div>
+                            <Badge variant="outline" className="text-[11px]">★ {ex.rating}</Badge>
+                          </div>
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {ex.specialties.map((s) => (
+                              <Badge key={s} variant="secondary" className="text-[10px]">{s}</Badge>
+                            ))}
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 mt-3 text-xs text-slate-700">
+                            <div>경력 <strong>{ex.yearsExperience}년</strong></div>
+                            <div>요금 <strong>{formatKRW(ex.pricePerSession)}</strong> / {ex.sessionMinutes}분</div>
+                            <div className="col-span-2">일정 · {ex.availability}</div>
+                            <div className="col-span-2 text-slate-500">진행 방식 · {ex.modality.join(' / ')}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-3">
+                      <div className="p-4 rounded-xl border border-slate-200">
+                        <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
+                          <DollarSign className="w-4 h-4" style={{ color: brand.primaryColor }} />
+                          기관 운영 요금제
+                        </h4>
+                        <div className="space-y-2">
+                          {pool.pricing.map((p) => (
+                            <div key={p.tier} className="text-xs border-l-4 pl-3 py-1" style={{ borderColor: brand.primaryColor }}>
+                              <div className="flex justify-between"><span className="font-semibold">{p.tier}</span><span className="font-bold">{formatKRW(p.monthlyFee)}/월</span></div>
+                              <ul className="list-disc list-inside text-slate-600 mt-1 break-keep">
+                                {p.includes.map((it) => <li key={it}>{it}</li>)}
+                              </ul>
+                              {p.note && <p className="text-[11px] text-slate-500 mt-1">※ {p.note}</p>}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-xl border border-slate-200">
+                        <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
+                          <BarChart3 className="w-4 h-4" style={{ color: brand.primaryColor }} />
+                          운영 일정 · 가용 자원
+                        </h4>
+                        <table className="w-full text-xs">
+                          <thead className="text-slate-500"><tr><th className="text-left py-1">요일</th><th className="text-left py-1">운영 시간</th><th className="text-left py-1">수용</th></tr></thead>
+                          <tbody>
+                            {pool.schedule.map((s) => (
+                              <tr key={s.day} className="border-t border-slate-100"><td className="py-1.5 font-semibold">{s.day}</td><td className="py-1.5 text-slate-700 break-keep">{s.hours}</td><td className="py-1.5 text-slate-700 break-keep">{s.capacity}</td></tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <p className="text-[11px] text-slate-500 mt-3 break-keep">📋 {pool.contractNote}</p>
+                      </div>
+                    </div>
+                  </section>
+                );
+              })()}
+
               <footer className="pt-6 border-t border-slate-200 text-xs text-slate-500 space-y-2">
                 <p>본 리포트는 <strong>{brand.institutionName}</strong>의 운영 보조를 위한
                   {isCorporate ? ' 임직원 정신건강 의사결정 지원 자료' : ` ${preset.subjectLabel} 케어 의사결정 지원 자료`}이며, 의료적 진단이나 치료 권고를 대체하지 않습니다.

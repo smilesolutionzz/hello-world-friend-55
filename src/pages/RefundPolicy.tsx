@@ -71,67 +71,29 @@ const RefundPolicy = () => {
                   <Separator />
 
                   <section>
-                    <h2 className="text-xl font-semibold mb-3">{isEnglish ? '2. Subscription Refund Policy' : '2. 구독 환불 정책'}</h2>
-                    <div className="space-y-4">
-                      <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                        <div className="flex items-start gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold text-green-800 dark:text-green-200">{isEnglish ? 'Full refund eligible' : '전액 환불 가능'}</p>
-                            <ul className="list-disc pl-4 mt-2 text-sm text-green-700 dark:text-green-300 space-y-1">
-                              {isEnglish ? (
-                                <>
-                                  <li>Within 7 days of subscription payment if unused</li>
-                                  <li>Duplicate charges due to system error</li>
-                                  <li>Service unavailable due to company fault</li>
-                                </>
-                              ) : (
-                                <>
-                                  <li>구독 결제 후 7일 이내 서비스 미사용 시</li>
-                                  <li>시스템 오류로 인한 중복 결제</li>
-                                  <li>회사 귀책사유로 서비스 이용 불가</li>
-                                </>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                        <div className="flex items-start gap-2">
-                          <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold text-yellow-800 dark:text-yellow-200">{isEnglish ? 'Partial refund' : '부분 환불'}</p>
-                            <ul className="list-disc pl-4 mt-2 text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                              {isEnglish ? (
-                                <>
-                                  <li><strong>Monthly:</strong> Refund excluding days used</li>
-                                  <li><strong>Annual:</strong> Refund excluding months used and 10% cancellation fee</li>
-                                </>
-                              ) : (
-                                <>
-                                  <li><strong>월간 구독:</strong> 사용일수에 해당하는 금액을 제외하고 환불</li>
-                                  <li><strong>연간 구독:</strong> 사용월수에 해당하는 금액 및 해지 수수료(10%)를 제외하고 환불</li>
-                                </>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-sm text-muted-foreground">
-                        {isEnglish ? (
-                          <>
-                            <p>• Auto-renewal can be cancelled anytime; charges stop from the next billing date.</p>
-                            <p>• After cancellation, service remains active until the end of the current period.</p>
-                          </>
-                        ) : (
-                          <>
-                            <p>• 자동 결제 해지는 언제든 가능하며, 해지 시 다음 결제일부터 과금되지 않습니다.</p>
-                            <p>• 구독 해지 후에도 남은 구독 기간 동안 서비스를 이용할 수 있습니다.</p>
-                          </>
-                        )}
-                      </div>
+                    <h2 className="text-xl font-semibold mb-3">{isEnglish ? '2. Single Product Policy' : '2. 단일 상품 정책'}</h2>
+                    <div className="space-y-2 text-muted-foreground text-sm">
+                      {isEnglish ? (
+                        <>
+                          <p>AIHPRO operates a single B2C paid product:</p>
+                          <ul className="list-disc pl-6 space-y-1 mt-2">
+                            <li><strong>30-Day Mind Track</strong> — ₩19,900 one-time payment (originally ₩49,000, 60% off)</li>
+                            <li>No subscription, no auto-renewal, no recurring charges</li>
+                            <li>Includes all premium assessments, AI in-depth reports, expert coaching guides, and a final transformation report (PDF) for 30 days</li>
+                          </ul>
+                          <p className="mt-2">Free trial assessments (Depression, Stress, ADHD) remain free with no payment required.</p>
+                        </>
+                      ) : (
+                        <>
+                          <p>AIHPRO의 B2C 유료 상품은 단일 상품 한 가지로 운영됩니다:</p>
+                          <ul className="list-disc pl-6 space-y-1 mt-2">
+                            <li><strong>30일 마음 변화 트랙</strong> — ₩19,900 일시불 (정가 ₩49,000, 60% 할인)</li>
+                            <li>구독·자동 결제·정기 청구 없음</li>
+                            <li>30일간 모든 심층 검사·AI 분석 리포트·전문가 코칭 가이드·종합 변화 리포트(PDF) 무제한 제공</li>
+                          </ul>
+                          <p className="mt-2">체험검사(우울·스트레스·ADHD)는 결제 없이 계속 무료로 이용할 수 있습니다.</p>
+                        </>
+                      )}
                     </div>
                   </section>
 

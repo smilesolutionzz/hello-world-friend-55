@@ -100,9 +100,44 @@ const Quiz: React.FC = () => {
   });
   const [analyzeProgress, setAnalyzeProgress] = useState(0);
   const [user, setUser] = useState<any>(null);
+  const [isExpanding, setIsExpanding] = useState(false);
+  const [expandProgress, setExpandProgress] = useState(0);
+  const [hasPolished, setHasPolished] = useState(false);
 
+  // Initial mount: load user + restore concern from localStorage / DB
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
+    let cancelled = false;
+    (async () => {
+      const { data: { user: u } } = await supabase.auth.getUser();
+      if (cancelled) return;
+      setUser(u);
+
+      // Restore quiz draft (concern + other answers) from localStorage
+      try {
+        const raw = localStorage.getItem('quiz_data');
+        if (raw) {
+          const saved = JSON.parse(raw);
+          if (saved && typeof saved === 'object') {
+            setData((prev) => ({ ...prev, ...saved }));
+            if (saved.concernPolished) setHasPolished(true);
+          }
+        }
+      } catch {}
+
+      // If logged in, prefer DB value
+      if (u) {
+        const { data: row } = await supabase
+          .from('user_onboarding_data')
+          .select('free_text_concern')
+          .eq('user_id', u.id)
+          .maybeSingle();
+        if (!cancelled && row?.free_text_concern) {
+          setData((prev) => ({ ...prev, concern: row.free_text_concern as string }));
+          setHasPolished(true);
+        }
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   const stepIndex = useMemo(() => {

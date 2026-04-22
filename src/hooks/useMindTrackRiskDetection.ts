@@ -22,9 +22,15 @@ export function useMindTrackRiskDetection(
   currentDay: number,
 ) {
   const [activeAlert, setActiveAlert] = useState<RiskAlert | null>(null);
+  const [refreshTick, setRefreshTick] = useState(0);
+
+  // 시뮬레이터/외부 트리거에서 강제 재조회
+  const refetch = () => setRefreshTick((n) => n + 1);
 
   useEffect(() => {
-    if (!enrollmentId || currentDay < 3) return;
+    if (!enrollmentId) return;
+    // currentDay < 3이어도 외부에서 시뮬레이션으로 삽입된 알림은 표시되어야 하므로
+    // "기존 미해결 알림 조회"는 항상 수행하고, 자동 패턴 감지는 day >= 3일 때만 수행
 
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();

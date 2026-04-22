@@ -24,6 +24,7 @@ import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { ExpertPriceTag } from '@/components/expert/ExpertPriceTag';
 import { useSubscription } from '@/hooks/useSubscription';
 import { calculateExpertPricing, formatKRW } from '@/lib/expertPricing';
+import MindTrackContextBanner, { useMindTrackPrefill } from '@/components/mind-track/MindTrackContextBanner';
 
 // Facility images
 import facilityDev from '@/assets/facilities/facility-development-center.jpg';
@@ -142,6 +143,7 @@ const ExpertHiring = () => {
   const navigate = useNavigate();
   const { subscription } = useSubscription();
   const subscriberPricing = calculateExpertPricing(subscription);
+  const mindTrackCtx = useMindTrackPrefill();
   const [experts, setExperts] = useState<Expert[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -155,6 +157,13 @@ const ExpertHiring = () => {
   const [bookingTopic, setBookingTopic] = useState('');
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+
+  // 마인드트랙 컨텍스트가 있으면 주제 자동 프리필
+  useEffect(() => {
+    if (mindTrackCtx?.topic && !bookingTopic) {
+      setBookingTopic(mindTrackCtx.topic);
+    }
+  }, [mindTrackCtx?.topic]);
 
   useEffect(() => { loadExperts(); }, []);
 
@@ -228,6 +237,12 @@ const ExpertHiring = () => {
       const total = h * 60 + m + 40;
       const endTime = `${String(Math.floor(total / 60) % 24).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 
+      // 마인드트랙 컨텍스트가 있으면 메모에 추적 태그 추가
+      const interventionId = sessionStorage.getItem("mind_track_intervention_id");
+      const trackingSuffix = interventionId
+        ? `\n\n[mind_track:intervention=${interventionId};from=${mindTrackCtx?.from ?? "direct"};day=${mindTrackCtx?.day ?? "?"};offering=${mindTrackCtx?.offering ?? "?"}]`
+        : "";
+
       const { error } = await supabase
         .from('consultation_bookings')
         .insert([{
@@ -239,10 +254,20 @@ const ExpertHiring = () => {
           duration_minutes: 40,
           status: 'pending',
           is_quick_consultation: false,
-          notes: bookingTopic,
+          notes: bookingTopic + trackingSuffix,
           tokens_paid: subscriberPricing.final
         }]);
       if (error) throw error;
+
+      // 마인드트랙 개입 결제 완료로 업데이트
+      if (interventionId) {
+        await supabase
+          .from('mind_track_interventions')
+          .update({ status: 'purchased', acted_at: new Date().toISOString() })
+          .eq('id', interventionId)
+          .eq('user_id', user.id);
+        sessionStorage.removeItem("mind_track_intervention_id");
+      }
 
       setBookingOpen(false);
       setBookingSuccess(true);
@@ -259,7 +284,7 @@ const ExpertHiring = () => {
     setSelectedExpert(null);
     setBookingDate(undefined);
     setBookingTime('10:00');
-    setBookingTopic('');
+    if (!mindTrackCtx?.topic) setBookingTopic('');
   };
 
   return (

@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Copy, Gift, Users, Sparkles } from 'lucide-react';
+import { Copy, Gift, Share2, Sparkles, Users } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 
@@ -178,7 +178,7 @@ export const ReferralSystem = () => {
     }
   };
 
-  const shareViaKakao = () => {
+  const shareReferralLink = async () => {
     if (isLimitReached) {
       toast({
         title: "이번 달 추천 제한 도달",
@@ -190,31 +190,25 @@ export const ReferralSystem = () => {
 
     const link = getReferralLink();
     const shareMessage = `🎉 AI 심리 상담 플랫폼 초대장!\n\n친구도 10토큰, 나도 10토큰 받아요!\n지금 가입하고 무료로 시작하세요 ✨\n\n${link}`;
-    
-    // 카카오톡이 설치되어 있는지 확인
-    if (/kakaotalk/i.test(navigator.userAgent)) {
-      // 모바일 카카오톡 앱에서 열기
-      window.location.href = `kakaotalk://share?text=${encodeURIComponent(shareMessage)}`;
-    } else {
-      // 웹에서 공유 API 사용
-      if (navigator.share) {
-        navigator.share({
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
           title: 'AI 심리 상담 플랫폼 초대',
           text: shareMessage,
-        }).then(() => {
-          toast({
-            title: "공유 완료!",
-            description: "친구가 가입하면 10토큰을 받아요",
-          });
-        }).catch(() => {
-          // 공유 취소 또는 실패시 링크 복사
-          copyReferralLink();
+          url: link,
         });
-      } else {
-        // Web Share API 미지원시 링크 복사
-        copyReferralLink();
+        toast({
+          title: "공유 완료!",
+          description: "친구가 가입하면 10토큰을 받아요",
+        });
+        return;
+      } catch {
+        // 사용자가 공유를 취소한 경우에는 추가 토스트 없이 종료
       }
     }
+
+    copyReferralLink();
   };
 
   if (loading) {
@@ -351,14 +345,14 @@ export const ReferralSystem = () => {
               <Users className="w-3.5 h-3.5 mr-1.5" />
               초대 현황
             </Button>
-            <Button 
-              onClick={shareViaKakao}
+            <Button
+              onClick={shareReferralLink}
               size="default"
-              className="w-full bg-[#FEE500] hover:bg-[#FDD835] text-black text-sm font-semibold"
+              className="w-full text-sm font-semibold"
               disabled={isLimitReached}
             >
-              <span className="mr-1">💬</span>
-              카톡 공유
+              <Share2 className="w-3.5 h-3.5 mr-1.5" />
+              공유하기
             </Button>
           </div>
 

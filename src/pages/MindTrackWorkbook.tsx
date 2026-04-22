@@ -326,6 +326,14 @@ export default function MindTrackWorkbook() {
             </div>
           </Card>
 
+          {/* 위험 감지 무료 케어 알림 + Day 마일스톤 전문가 개입 카드 */}
+          <InterventionSection
+            enrollmentId={enrollment?.id}
+            currentDay={currentDay}
+            checkins={checkins}
+            baselines={baselines}
+          />
+
           {/* Day 30 완료 리포트 — 완료 시 자동 노출 */}
           {enrollment?.status === "completed" && enrollment?.completed_at && (
             <Card className="p-6 border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-white to-orange-50 shadow-lg">

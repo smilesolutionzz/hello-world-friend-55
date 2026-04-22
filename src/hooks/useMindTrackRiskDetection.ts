@@ -22,9 +22,15 @@ export function useMindTrackRiskDetection(
   currentDay: number,
 ) {
   const [activeAlert, setActiveAlert] = useState<RiskAlert | null>(null);
+  const [refreshTick, setRefreshTick] = useState(0);
+
+  // 시뮬레이터/외부 트리거에서 강제 재조회
+  const refetch = () => setRefreshTick((n) => n + 1);
 
   useEffect(() => {
-    if (!enrollmentId || currentDay < 3) return;
+    if (!enrollmentId) return;
+    // currentDay < 3이어도 외부에서 시뮬레이션으로 삽입된 알림은 표시되어야 하므로
+    // "기존 미해결 알림 조회"는 항상 수행하고, 자동 패턴 감지는 day >= 3일 때만 수행
 
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -46,6 +52,9 @@ export function useMindTrackRiskDetection(
         return;
       }
 
+      // 자동 패턴 감지는 day >= 3부터
+      if (currentDay < 3) return;
+
       // 패턴 1: 최근 3일 연속 미체크인
       const last3 = [currentDay - 1, currentDay - 2, currentDay - 3];
       const missed3 = last3.every((d) => {
@@ -60,13 +69,11 @@ export function useMindTrackRiskDetection(
         alertType = "missed_3days";
         triggerData = { missed_days: last3 };
       } else {
-        // 패턴 2: 점수 30% 악화 (베이스라인 대비)
         const baseline = baselines.find((b) => b.measurement_point === "baseline");
         const recentCheckin = checkins
           .filter((c) => c.completed && c.mood_score != null)
           .sort((a, b) => b.day_number - a.day_number)[0];
         if (baseline && recentCheckin) {
-          // mood/energy/clarity는 0-10, baseline은 0-100
           const baselineEnergy = baseline.energy_score ?? 50;
           const currentEnergy = (recentCheckin.energy_score ?? 5) * 10;
           const drop = baselineEnergy - currentEnergy;
@@ -94,7 +101,24 @@ export function useMindTrackRiskDetection(
         if (created) setActiveAlert(created as RiskAlert);
       }
     })();
-  }, [enrollmentId, currentDay, checkins.length, baselines.length]);
+  }, [enrollmentId, currentDay, checkins.length, baselines.length, refreshTick]);
+
+  // Realtime: 동일 enrollment의 risk_alerts INSERT 즉시 반영 (시뮬레이터 검증용)
+  useEffect(() => {
+    if (!enrollmentId) return;
+    const channel = supabase
+      .channel(`risk-alerts-${enrollmentId}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "mind_track_risk_alerts", filter: `enrollment_id=eq.${enrollmentId}` },
+        (payload: any) => {
+          const row = payload.new as RiskAlert & { resolved_at: string | null };
+          if (!row?.resolved_at) setActiveAlert(row);
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [enrollmentId]);
 
   const resolveAlert = async (response: "acknowledged" | "requested_help" | "ignored") => {
     if (!activeAlert) return;
@@ -108,5 +132,5 @@ export function useMindTrackRiskDetection(
     setActiveAlert(null);
   };
 
-  return { activeAlert, resolveAlert };
+  return { activeAlert, resolveAlert, refetch };
 }

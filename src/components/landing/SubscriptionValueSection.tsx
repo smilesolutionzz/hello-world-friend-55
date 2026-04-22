@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SINGLE_REPORT_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE, MIND_TRACK_DISCOUNT_PERCENT } from '@/constants/tokenCosts';
 import { PaymentModal } from '@/components/payments/PaymentModal';
 
 const SubscriptionValueSection = () => {
@@ -37,15 +37,17 @@ const SubscriptionValueSection = () => {
   }, []);
 
   const subscriptionBenefits = isEnglish ? [
-    'Unlimited AI psychological assessments',
-    'Expert-level deep analysis reports',
-    'Priority expert consultation booking',
-    'Ad-free experience',
+    '30 days of unlimited in-depth assessments',
+    'Unlimited expert-level AI analysis reports',
+    'Personalized 30-day mind transformation roadmap',
+    'Final transformation report (PDF) included',
+    '30-day money-back guarantee',
   ] : [
-    '모든 AI 심리검사 무제한 이용',
-    '전문가급 심층 분석 리포트 무제한',
-    '전문가 상담 우선 예약',
-    '광고 없는 쾌적한 환경',
+    '30일간 모든 심층 검사 무제한 이용',
+    '전문가급 AI 분석 리포트 무제한',
+    '개인 맞춤 30일 마음 변화 로드맵',
+    '종료 시 변화 종합 리포트(PDF) 제공',
+    '30일 무조건 환불 보장',
   ];
 
   const pad = (n: number) => String(n).padStart(2, '0');
@@ -61,78 +63,43 @@ const SubscriptionValueSection = () => {
           </Badge>
         </motion.div>
 
-        {/* Dual Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
-          {/* Single Report Card */}
+        {/* 단일 상품 — 30일 마음 변화 트랙 */}
+        <div className="max-w-xl mx-auto mb-12">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="relative rounded-2xl border border-slate-700/50 bg-slate-800/60 backdrop-blur-xl p-8"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-amber-400" />
-              <span className="text-amber-400 font-semibold text-sm">
-                {isEnglish ? 'Single Report' : '단건 심층 리포트'}
-              </span>
-            </div>
-            <h3 className="text-xl md:text-2xl font-bold text-white mb-2 break-keep">
-              {isEnglish ? 'Expert-Level Analysis' : '전문가급 심층 분석'}
-            </h3>
-            <p className="text-slate-400 text-xs md:text-sm mb-6 break-keep">
-              {isEnglish ? 'Get one expert-level AI analysis report' : '궁금한 검사 하나를 전문가 수준으로 분석받아보세요'}
-            </p>
-
-            <div className="flex items-end gap-2 mb-6">
-              <span className="text-3xl font-black text-white">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
-              <span className="text-slate-400 text-sm pb-1">/{isEnglish ? 'report' : '1회'}</span>
-            </div>
-
-            <Button
-              onClick={() => setPaymentOpen(true)}
-              variant="outline"
-              className="w-full py-6 bg-amber-500/10 border-amber-500/30 text-amber-300 hover:bg-amber-500/20 font-bold rounded-xl"
-              size="lg"
-            >
-              <Zap className="w-5 h-5 mr-2" />
-              {isEnglish ? 'Get Single Report' : '심층 리포트 받기'}
-            </Button>
-            <p className="text-xs text-slate-500 mt-3 text-center">
-              {isEnglish ? 'No subscription needed' : '구독 없이 바로 이용'}
-            </p>
-          </motion.div>
-
-          {/* Subscription Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="relative rounded-2xl border-2 border-violet-500/40 bg-gradient-to-br from-slate-800/90 via-violet-950/30 to-slate-800/90 backdrop-blur-xl p-8 shadow-2xl shadow-violet-500/10"
           >
             <Badge className="absolute -top-3 right-6 bg-gradient-to-r from-violet-500 to-purple-500 text-white border-0 px-4 py-1">
-              {isEnglish ? 'Best Value' : '추천'}
+              {isEnglish ? `${MIND_TRACK_DISCOUNT_PERCENT}% OFF · One-time` : `${MIND_TRACK_DISCOUNT_PERCENT}% 할인 · 일시불`}
             </Badge>
             <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-violet-500/20 via-purple-500/10 to-violet-500/20 blur-sm -z-10" />
 
             <div className="flex items-center gap-2 mb-4">
               <Crown className="w-5 h-5 text-violet-400" />
               <span className="text-violet-400 font-semibold text-sm">
-                {isEnglish ? 'Monthly Subscription' : '월간 구독'}
+                {isEnglish ? '30-Day Mind Transformation Track' : '30일 마음 변화 트랙'}
               </span>
             </div>
             <h3 className="text-xl md:text-2xl font-bold text-white mb-2 break-keep">
-              {isEnglish ? 'Unlimited Access' : '전체 이용 구독'}
+              {isEnglish ? 'One product. 30 days of change.' : '하나의 가격, 30일의 변화'}
             </h3>
             <p className="text-slate-400 text-xs md:text-sm mb-6 break-keep">
-              {isEnglish ? 'Everything unlimited for 30 days' : '30일간 모든 검사와 리포트를 자유롭게 이용하세요'}
+              {isEnglish 
+                ? 'No subscriptions, no recurring charges. Everything you need for 30 days.' 
+                : '복잡한 구독 없이, 30일에 필요한 모든 것을 한 번에'}
             </p>
 
             <div className="flex items-end gap-2 mb-1">
-              <span className="text-3xl font-black text-white">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
-              <span className="text-slate-400 text-sm pb-1">/{isEnglish ? 'mo' : '월'}</span>
+              <span className="text-base text-slate-500 line-through pb-1">₩{MIND_TRACK_ORIGINAL_PRICE.toLocaleString()}</span>
+              <span className="text-3xl font-black text-white">₩{MIND_TRACK_PRICE.toLocaleString()}</span>
+              <span className="text-slate-400 text-sm pb-1">{isEnglish ? '/ one-time' : '/ 일시불'}</span>
             </div>
             <p className="text-xs text-emerald-400 mb-6">
-              {isEnglish ? 'Use 3+ times? Subscription is the smarter choice.' : '리포트 2회 이상이면 구독이 합리적입니다'}
+              {isEnglish
+                ? `Just ₩${Math.round(MIND_TRACK_PRICE / 30).toLocaleString()} per day · Auto-renewal disabled`
+                : `하루 약 ₩${Math.round(MIND_TRACK_PRICE / 30).toLocaleString()} · 자동 결제 없음`}
             </p>
 
             <div className="space-y-2.5 mb-6">
@@ -152,18 +119,18 @@ const SubscriptionValueSection = () => {
             </div>
 
             <Button
-              onClick={() => navigate(localePath('/token-subscription'))}
+              onClick={() => navigate(localePath('/quiz'))}
               className="w-full py-6 bg-gradient-to-r from-violet-500 via-purple-500 to-violet-600 hover:from-violet-600 hover:via-purple-600 hover:to-violet-700 text-white font-bold shadow-xl shadow-violet-500/30 rounded-xl"
               size="lg"
             >
-              <Crown className="w-5 h-5 mr-2" />
-              {isEnglish ? 'Start Subscription' : '구독 시작하기'}
+              <Sparkles className="w-5 h-5 mr-2" />
+              {isEnglish ? 'Start 30-Day Mind Track' : '1분 무료 진단으로 시작'}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
 
             <div className="flex items-center justify-center gap-3 mt-3 text-xs text-slate-500">
-              <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {isEnglish ? 'Cancel anytime' : '언제든 해지'}</span>
-              <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> {isEnglish ? 'Secure' : '안전결제'}</span>
+              <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> {isEnglish ? '30-day money-back' : '30일 환불 보장'}</span>
+              <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {isEnglish ? 'No auto-renewal' : '자동 결제 없음'}</span>
             </div>
           </motion.div>
         </div>

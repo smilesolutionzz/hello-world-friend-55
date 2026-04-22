@@ -936,7 +936,7 @@ const en = {
   premiumPage: {
     pageTitle: 'In-Depth Tests',
     pageSubtitle: 'Beyond surface results — discover your true self',
-    price: '₩990',
+    price: '30-day Mind Track ₩19,900',
     authFallback: 'Please log in to access premium psychological tests.',
     expertBanner: 'Expert Interpretation',
     expertBannerDesc: ' available at AIHPRO official tests.',

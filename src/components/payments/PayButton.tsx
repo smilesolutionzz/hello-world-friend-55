@@ -25,7 +25,12 @@ export const PayButton: React.FC<PayButtonProps> = ({
   const { pay, loading, isReady } = usePayment();
 
   const handleClick = async () => {
-    const success = await pay(productId || 'mind_track_30');
+    const finalProductId = productId || 'mind_track_30';
+    if (finalProductId === 'mind_track_30') {
+      const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
+      await ensureMindTrackEnrollment();
+    }
+    const success = await pay(finalProductId);
     if (success) {
       onSuccess?.();
     } else {

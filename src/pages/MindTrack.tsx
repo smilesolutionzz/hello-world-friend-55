@@ -160,14 +160,9 @@ const MindTrack: React.FC = () => {
     }
     setLoading(true);
     try {
-      const { error } = await supabase.from('mind_track_enrollments').insert({
-        user_id: user.id,
-        track_type: 'mind_30day',
-        goal_focus: selectedGoal,
-        payment_status: 'pending',
-        payment_amount: TRACK_PRICE,
-      });
-      if (error) throw error;
+      const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
+      const res = await ensureMindTrackEnrollment({ goal: selectedGoal, concern });
+      if (!res.enrollmentId) throw new Error(res.error || '등록 실패');
       toast.success('등록 완료! 결제 페이지로 이동합니다.');
       navigate('/pricing?product=mind_track_30');
     } catch (e: any) {

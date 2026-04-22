@@ -52,6 +52,8 @@ export default function MindTrackCheckoutHero() {
       navigate("/auth?redirect=/pricing?product=mind_track_30");
       return;
     }
+    const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
+    await ensureMindTrackEnrollment();
     const ok = await pay("mind_track_30" as any, TRACK_PRICE);
     if (!ok) {
       toast.error("결제를 시작하지 못했어요. 잠시 후 다시 시도해주세요.");

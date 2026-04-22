@@ -171,14 +171,14 @@ const BasicMentalHealthTest = () => {
                     {isEnglish ? 'Share your results and get 5 free tokens!' : <>결과를 공유하고 <span className="font-semibold">무료 토큰 5개</span>를 받아보세요!</>}
                   </p>
                   <div className="flex gap-2 justify-center">
-                    <Button size="sm" className="bg-yellow-400 hover:bg-yellow-500 text-gray-800" onClick={() => {
+                    <Button size="sm" onClick={() => {
                       const text = isEnglish
                         ? `My mental health result: ${result.level}\n\n${result.description}\n\n👆 Try it free!\n\nhttps://mindgrowth.co.kr/free-trial`
                         : `나의 심리상태 분석 결과: ${result.level}\n\n${result.description}\n\n👆 너도 무료로 체험해봐!\n\nhttps://mindgrowth.co.kr/free-trial`;
                       if (navigator.share) { navigator.share({ title: isEnglish ? 'Mental Health Result' : '심리상태 분석 결과', text }); }
                       else { navigator.clipboard.writeText(text); }
                     }}>
-                      {isEnglish ? 'Share' : '카톡 공유하기'}
+                      {isEnglish ? 'Share' : '공유하기'}
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => {
                       const text = isEnglish

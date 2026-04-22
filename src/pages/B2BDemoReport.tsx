@@ -18,8 +18,7 @@ import CoachingBadge from '@/components/branding/CoachingBadge';
 import { toast } from 'sonner';
 import html2pdf from 'html2pdf.js';
 import { supabase } from '@/integrations/supabase/client';
-
-type InstitutionType = 'school' | 'counseling' | 'welfare' | 'corporate';
+import { getInstitutionPool, formatKRW, type InstitutionType } from '@/data/institutionExperts';
 type RequestType = 'free_trial' | 'paid_inquiry' | 'demo_download';
 
 interface BrandConfig {

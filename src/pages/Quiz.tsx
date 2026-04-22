@@ -463,20 +463,100 @@ const Quiz: React.FC = () => {
                   </h2>
                   <p className="text-sm text-muted-foreground">선택사항 · 한 줄도 괜찮아요</p>
                 </div>
-                <Textarea
-                  value={data.concern}
-                  onChange={(e) => setData({ ...data, concern: e.target.value })}
-                  placeholder="예) 요즘 잠자리에 누우면 잡생각이 멈추질 않아요..."
-                  rows={6}
-                  maxLength={1000}
-                  className="text-base p-4 rounded-2xl"
-                />
+                {hasPolished && !isExpanding && (
+                  <div className="mb-3 flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1.5 w-fit">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    AI 확장 완료 · 새로고침해도 유지돼요
+                  </div>
+                )}
+                <div className="relative">
+                  <Textarea
+                    value={data.concern}
+                    onChange={(e) => {
+                      setData({ ...data, concern: e.target.value });
+                      if (hasPolished) setHasPolished(false);
+                    }}
+                    onBlur={() => {
+                      try {
+                        if (data.concern.trim().length > 0) {
+                          localStorage.setItem('quiz_data', JSON.stringify(data));
+                        }
+                      } catch {}
+                    }}
+                    placeholder="예) 요즘 잠자리에 누우면 잡생각이 멈추질 않아요..."
+                    rows={7}
+                    maxLength={1000}
+                    disabled={isExpanding}
+                    className={`text-base p-4 rounded-2xl pr-3 transition-opacity ${
+                      isExpanding ? 'opacity-60' : ''
+                    }`}
+                  />
+
+                  {/* Loading overlay */}
+                  <AnimatePresence>
+                    {isExpanding && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 rounded-2xl bg-white/85 backdrop-blur-sm flex flex-col items-center justify-center gap-3 pointer-events-auto"
+                      >
+                        <div className="flex items-center gap-2 text-primary">
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span className="font-semibold text-sm">AI가 고민을 더 깊이 풀어쓰는 중</span>
+                        </div>
+                        <div className="w-3/4 max-w-xs">
+                          <Progress value={expandProgress} className="h-1.5" />
+                          <div className="text-center mt-1.5 text-xs text-muted-foreground tabular-nums">
+                            {expandProgress}%
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground text-center px-6 break-keep">
+                          맥락을 살려 4~7문장으로 확장 중이에요
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Counter + AI button */}
+                <div className="mt-2 flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground tabular-nums">
+                    {data.concern.length} / 1000
+                  </span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAIExpand}
+                    disabled={isExpanding || data.concern.trim().length < 5}
+                    className="gap-1.5 border-primary/40 text-primary hover:bg-primary/5"
+                  >
+                    {isExpanding ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        다듬는 중...
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="w-3.5 h-3.5" />
+                        AI로 확장하기
+                      </>
+                    )}
+                  </Button>
+                </div>
+
                 <div className="mt-6 flex gap-3">
-                  <Button variant="outline" size="lg" onClick={back} className="flex-1">
+                  <Button variant="outline" size="lg" onClick={back} disabled={isExpanding} className="flex-1">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     이전
                   </Button>
-                  <Button size="lg" onClick={() => setStep('analyzing')} className="flex-[2]">
+                  <Button
+                    size="lg"
+                    onClick={() => setStep('analyzing')}
+                    disabled={isExpanding}
+                    className="flex-[2]"
+                  >
                     내 플랜 만들기
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>

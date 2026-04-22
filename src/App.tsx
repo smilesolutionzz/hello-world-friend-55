@@ -61,7 +61,8 @@ import BusinessMetacognitionTest from "./pages/BusinessMetacognitionTest";
 import AssessmentDetail from "./pages/AssessmentDetail";
 import FunTests from "./pages/FunTests";
 import FunTestResult from "./pages/FunTestResult";
-import HanMedicineTest from "./pages/HanMedicineTest";
+// import HanMedicineTest from "./pages/HanMedicineTest"; // 한의/사상체질 영역 비활성화
+import B2BMyRequests from "./pages/B2BMyRequests";
 import AdvancedAdhdTest from "./pages/AdvancedAdhdTest";
 import ADHDScreening from "./pages/ADHDScreening";
 import FingerprintTemperamentTest from "./pages/FingerprintTemperamentTest";
@@ -252,7 +253,9 @@ const App = () => {
           <Route path="/drawing-diary-htp" element={<DrawingDiaryHTP />} />
           <Route path="/growth-report" element={<GrowthDevelopmentReport />} />
           <Route path="/adhd-screening" element={<ADHDScreening />} />
-          <Route path="/han-medicine-test" element={<HanMedicineTest />} />
+          {/* 한의/사상체질 검사 영역 비활성화 — Assessment로 리다이렉트 */}
+          <Route path="/han-medicine-test" element={<Navigate to="/assessment" replace />} />
+          <Route path="/b2b/my-requests" element={<B2BMyRequests />} />
           <Route path="/advanced-adhd-test" element={<AdvancedAdhdTest />} />
 
           {/* Observation */}
@@ -395,7 +398,8 @@ const App = () => {
           <Route path="/en/drawing-diary-htp" element={<DrawingDiaryHTP />} />
           <Route path="/en/growth-report" element={<GrowthDevelopmentReport />} />
           <Route path="/en/adhd-screening" element={<ADHDScreening />} />
-          <Route path="/en/han-medicine-test" element={<HanMedicineTest />} />
+          <Route path="/en/han-medicine-test" element={<Navigate to="/en/assessment" replace />} />
+          <Route path="/en/b2b/my-requests" element={<B2BMyRequests />} />
           <Route path="/en/advanced-adhd-test" element={<AdvancedAdhdTest />} />
           <Route path="/en/observation" element={<ObservationNew />} />
           <Route path="/en/observation-list" element={<ObservationList />} />

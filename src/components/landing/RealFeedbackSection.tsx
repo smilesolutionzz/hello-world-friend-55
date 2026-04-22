@@ -16,9 +16,9 @@ const RealFeedbackSection = () => {
     { sender: 'parent', text: "맨날 '빨리빨리'만 외쳤어요", time: '12:06' },
     { sender: 'expert', text: '재촉이 아이에겐 “준비도 안 됐는데 떠밀린다”는 불안으로 느껴져 더 큰 저항을 만든 거예요.', time: '12:06' },
     { sender: 'parent', text: '아... 이제 좀 이해가 돼요', time: '12:07', highlight: true },
-    { sender: 'parent', text: '이런 고민 생길 때마다 계속 물어볼 수 있나요?', time: '12:09' },
-    { sender: 'expert', text: '네! 구독하시면 검사·리포트·전문가 코칭까지 무제한으로 이용하실 수 있어요.', time: '12:09' },
-    { sender: 'parent', text: '한 달에 9,900원이면 완전 가성비네요 🤩', time: '12:10', highlight: true },
+    { sender: 'parent', text: '이런 고민 생길 때마다 계속 받아볼 수 있나요?', time: '12:09' },
+    { sender: 'expert', text: '네! 30일 마음 챌린지(₩19,900) 한 번이면 매일 워크북·검사·전문가 코칭까지 30일간 함께해요.', time: '12:09' },
+    { sender: 'parent', text: '상담 한 번 값으로 30일이라니 🤩', time: '12:10', highlight: true },
   ];
 
   const feedbackHighlights = [

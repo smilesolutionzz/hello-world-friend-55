@@ -83,6 +83,7 @@ import { useSmartBack } from "@/hooks/useSmartBack";
 import InviteFriendsButton from "@/components/mind-track/InviteFriendsButton";
 import ExpertInterventionCard, { RiskAlertCard, type InterventionDay } from "@/components/mind-track/ExpertInterventionCard";
 import InterventionCalendar from "@/components/mind-track/InterventionCalendar";
+import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulator";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 import { HelpCircle } from "lucide-react";
 
@@ -598,6 +599,12 @@ export default function MindTrackWorkbook() {
           <NextActionCards />
         </div>
       </div>
+
+      {/* 위험 감지 시뮬레이터 (검증용 플로팅 패널) */}
+      <MindTrackRiskSimulator
+        enrollmentId={enrollment?.id ?? null}
+        onSimulated={() => load()}
+      />
 
       {/* Check-in Dialog */}
       <Dialog open={!!activeMission} onOpenChange={(o) => !o && setActiveMission(null)}>

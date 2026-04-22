@@ -600,6 +600,12 @@ export default function MindTrackWorkbook() {
         </div>
       </div>
 
+      {/* 위험 감지 시뮬레이터 (검증용 플로팅 패널) */}
+      <MindTrackRiskSimulator
+        enrollmentId={enrollment?.id ?? null}
+        onSimulated={() => load()}
+      />
+
       {/* Check-in Dialog */}
       <Dialog open={!!activeMission} onOpenChange={(o) => !o && setActiveMission(null)}>
         <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">

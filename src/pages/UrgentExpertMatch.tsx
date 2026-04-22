@@ -116,10 +116,14 @@ const UrgentExpertMatch = () => {
   return (
     <div
       className="min-h-screen bg-gradient-to-b from-destructive/5 to-background py-6 sm:py-10"
-      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 6rem)' }}
+      style={{
+        // Reserve space so card content never overlaps the mobile sticky CTA on short devices
+        // Sticky bar height ≈ button(56) + vertical padding(20) + safe-area inset
+        paddingBottom: 'calc(env(safe-area-inset-bottom) + 96px)',
+      }}
     >
       <div className="container mx-auto max-w-2xl px-4 md:pb-0">
-        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-3 sm:mb-4 -ml-2 h-10">
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-3 sm:mb-4 -ml-2 min-h-[44px] h-11 px-3">
           <ArrowLeft className="w-4 h-4 mr-1" />
           {isEnglish ? 'Back' : '뒤로'}
         </Button>

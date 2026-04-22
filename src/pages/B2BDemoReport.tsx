@@ -241,7 +241,14 @@ const B2BDemoReport: React.FC = () => {
         },
       }).catch((e) => console.warn('[B2B] admin email failed', e));
 
-      toast.success('신청이 접수되었습니다. 확인 메일을 보내드렸어요.', { description: '영업일 1일 이내 전담 매니저가 회신드립니다.' });
+      toast.success('신청이 접수되었습니다. 확인 메일을 보내드렸어요.', {
+        description: '영업일 1일 이내 전담 매니저가 회신드립니다.',
+        action: {
+          label: '내 신청 내역 보기',
+          onClick: () => { window.location.href = '/b2b/my-requests'; },
+        },
+        duration: 8000,
+      });
       setRequestOpen(false);
       setForm({ institutionName: '', contactName: '', contactEmail: '', contactPhone: '', employeeCount: '', message: '' });
     } catch (e: any) {

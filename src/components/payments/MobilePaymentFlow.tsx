@@ -11,7 +11,7 @@ import { usePayment } from '@/hooks/usePayment';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAccessControl } from '@/hooks/useAccessControl';
 import { supabase } from '@/integrations/supabase/client';
-import { SUBSCRIPTION_PRICE, SUBSCRIPTION_ORIGINAL_PRICE, SUBSCRIPTION_DISCOUNT_PERCENT, SINGLE_REPORT_PRICE, SINGLE_TEST_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE, MIND_TRACK_DISCOUNT_PERCENT } from '@/constants/tokenCosts';
 import { motion, AnimatePresence } from 'framer-motion';
 import AIComparisonTable from '@/components/conversion/AIComparisonTable';
 
@@ -124,28 +124,12 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
     navigate('/auth?mode=signup');
   };
 
-  const handlePayTest = async () => {
+  const handlePayMindTrack = async () => {
     if (!isAuthenticated) {
       redirectToLogin('/token-subscription');
       return;
     }
-    await pay('single_test');
-  };
-
-  const handlePaySingle = async () => {
-    if (!isAuthenticated) {
-      redirectToLogin('/token-subscription');
-      return;
-    }
-    await pay('single_report');
-  };
-
-  const handlePaySubscription = async () => {
-    if (!isAuthenticated) {
-      redirectToLogin('/token-subscription');
-      return;
-    }
-    await pay('subscription_monthly');
+    await pay('mind_track_30');
   };
 
   const handleBack = () => {

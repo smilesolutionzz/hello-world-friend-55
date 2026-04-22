@@ -763,10 +763,15 @@ function DirectionArrow({ playerRef, to }: { playerRef: React.RefObject<THREE.Gr
 
   return (
     <group ref={groupRef}>
-      {/* 콘은 +Y 방향이 기본 → X축 -90도 회전으로 +Z(앞쪽)를 가리키게 함 */}
-      <mesh position={[0, 0, 0.5]} rotation={[Math.PI / 2, 0, 0]}>
-        <coneGeometry args={[0.4, 1, 4]} />
-        <meshBasicMaterial ref={matRef} color="#FFD700" transparent opacity={0.6} />
+      {/* 뾰족한 화살촉: -X축 90도 회전으로 +Z(목표 방향)를 가리킴 */}
+      <mesh position={[0, 0, 0.9]} rotation={[-Math.PI / 2, 0, 0]}>
+        <coneGeometry args={[0.35, 1.4, 16]} />
+        <meshBasicMaterial ref={matRef} color="#FFD700" transparent opacity={0.85} />
+      </mesh>
+      {/* 화살대(샤프트) */}
+      <mesh position={[0, 0, -0.1]} rotation={[-Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.12, 0.12, 1.4, 12]} />
+        <meshBasicMaterial color="#FFC107" transparent opacity={0.75} />
       </mesh>
     </group>
   );

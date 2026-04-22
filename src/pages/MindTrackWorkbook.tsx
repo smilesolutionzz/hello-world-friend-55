@@ -81,6 +81,8 @@ import SEOHead from "@/components/common/SEOHead";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { useSmartBack } from "@/hooks/useSmartBack";
 import InviteFriendsButton from "@/components/mind-track/InviteFriendsButton";
+import ExpertInterventionCard, { RiskAlertCard, type InterventionDay } from "@/components/mind-track/ExpertInterventionCard";
+import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 
 export default function MindTrackWorkbook() {
   const navigate = useNavigate();
@@ -323,6 +325,14 @@ export default function MindTrackWorkbook() {
               <InviteFriendsButton currentDay={currentDay} />
             </div>
           </Card>
+
+          {/* 위험 감지 무료 케어 알림 + Day 마일스톤 전문가 개입 카드 */}
+          <InterventionSection
+            enrollmentId={enrollment?.id}
+            currentDay={currentDay}
+            checkins={checkins}
+            baselines={baselines}
+          />
 
           {/* Day 30 완료 리포트 — 완료 시 자동 노출 */}
           {enrollment?.status === "completed" && enrollment?.completed_at && (
@@ -618,5 +628,54 @@ export default function MindTrackWorkbook() {
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 전문가 개입 섹션 (Day 7/14/21/30 마일스톤 + 위험 감지 무료 케어)
+// ─────────────────────────────────────────────────────────────
+function InterventionSection({
+  enrollmentId,
+  currentDay,
+  checkins,
+  baselines,
+}: {
+  enrollmentId: string | undefined;
+  currentDay: number;
+  checkins: any[];
+  baselines: any[];
+}) {
+  const navigate = useNavigate();
+  const { activeAlert, resolveAlert } = useMindTrackRiskDetection(
+    enrollmentId ?? null,
+    checkins,
+    baselines,
+    currentDay,
+  );
+
+  if (!enrollmentId) return null;
+
+  // 현재 도달한 마일스톤 day 계산 (7/14/21/30)
+  const milestones: InterventionDay[] = [7, 14, 21, 30];
+  const activeMilestone = milestones
+    .filter((d) => currentDay >= d)
+    .sort((a, b) => b - a)[0]; // 가장 최근 마일스톤만 노출
+
+  return (
+    <div className="space-y-4">
+      {activeAlert && (
+        <RiskAlertCard
+          alertType={activeAlert.alert_type as any}
+          onRequestHelp={async () => {
+            await resolveAlert("requested_help");
+            navigate("/expert-hiring?from=risk_alert&urgent=true");
+          }}
+          onDismiss={() => resolveAlert("acknowledged")}
+        />
+      )}
+      {activeMilestone && (
+        <ExpertInterventionCard day={activeMilestone} enrollmentId={enrollmentId} />
+      )}
+    </div>
   );
 }

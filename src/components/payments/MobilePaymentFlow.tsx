@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
   Brain, Crown, Zap, ArrowLeft, ArrowRight, Check, 
-  ChevronRight, Loader2, Shield, Star, FileText, Heart
+  ChevronRight, Loader2, Shield, Star, FileText, Heart, Sparkles
 } from 'lucide-react';
 import { usePayment } from '@/hooks/usePayment';
 import { useSubscription } from '@/hooks/useSubscription';

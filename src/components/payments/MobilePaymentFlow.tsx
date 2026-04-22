@@ -351,83 +351,42 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
                 </Card>
               )}
 
-              {/* 검사 1회 구매 */}
-              <Card className="p-4 border border-border rounded-2xl space-y-3 bg-white dark:bg-card">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Brain className="w-5 h-5 text-emerald-600" />
-                    <span className="font-bold text-foreground">심리검사 1회</span>
-                  </div>
-                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 dark:bg-emerald-900/40 dark:text-emerald-300 px-2.5 py-1 rounded-full">61% 할인</span>
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm text-muted-foreground line-through">₩4,900</span>
-                  <span className="text-2xl font-extrabold text-foreground">₩{SINGLE_TEST_PRICE.toLocaleString()}</span>
-                </div>
-                <p className="text-xs text-muted-foreground">검사 실시 + 기본 결과 확인</p>
-                <Button
-                  variant="outline"
-                  className="w-full h-12 text-base font-semibold rounded-xl"
-                  onClick={handlePayTest}
-                  disabled={isAuthenticated ? (loading || !isReady) : false}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                  구매
-                </Button>
-              </Card>
-
-              <Card className="p-4 border border-border rounded-2xl space-y-3 bg-white dark:bg-card">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-amber-500" />
-                    <span className="font-bold text-foreground">심층 분석 리포트 1회</span>
-                  </div>
-                  <span className="text-[11px] font-bold text-amber-700 bg-amber-100 dark:bg-amber-900/40 dark:text-amber-300 px-2.5 py-1 rounded-full">60% 할인</span>
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm text-muted-foreground line-through">₩14,900</span>
-                  <span className="text-2xl font-extrabold text-foreground">₩{SINGLE_REPORT_PRICE.toLocaleString()}</span>
-                </div>
-                <p className="text-xs text-muted-foreground">AI 심층 분석 + PDF 리포트 + 맞춤 솔루션</p>
-                <Button
-                  variant="outline"
-                  className="w-full h-12 text-base font-semibold rounded-xl"
-                  onClick={handlePaySingle}
-                  disabled={isAuthenticated ? (loading || !isReady) : false}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                  구매
-                </Button>
-              </Card>
-
-              {/* 월간 구독 - 추천 */}
-              <Card className="p-4 border-2 border-primary rounded-2xl space-y-3 relative overflow-hidden">
+              {/* 30일 마음 변화 트랙 — 단일 상품 */}
+              <Card className="p-5 border-2 border-primary rounded-2xl space-y-4 relative overflow-hidden bg-gradient-to-br from-primary/5 to-transparent">
                 <Badge className="absolute top-0 right-0 rounded-none rounded-bl-xl bg-primary text-primary-foreground text-xs px-3 py-1">
-                  추천
+                  <Sparkles className="w-3 h-3 mr-1" />
+                  단일 상품 · {MIND_TRACK_DISCOUNT_PERCENT}% OFF
                 </Badge>
                 <div className="flex items-center gap-2 pt-1">
                   <Crown className="w-5 h-5 text-primary" />
-                  <span className="font-bold text-foreground">월간 구독</span>
+                  <span className="font-bold text-foreground">30일 마음 변화 트랙</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm text-muted-foreground line-through">₩{SUBSCRIPTION_ORIGINAL_PRICE.toLocaleString()}</span>
-                  <span className="text-2xl font-extrabold text-primary">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
-                  <Badge className="bg-destructive text-destructive-foreground text-xs">{SUBSCRIPTION_DISCOUNT_PERCENT}% 할인</Badge>
+                  <span className="text-sm text-muted-foreground line-through">₩{MIND_TRACK_ORIGINAL_PRICE.toLocaleString()}</span>
+                  <span className="text-3xl font-extrabold text-primary">₩{MIND_TRACK_PRICE.toLocaleString()}</span>
+                  <span className="text-xs text-muted-foreground">· 일시불</span>
                 </div>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />모든 AI 분석 무제한 이용</li>
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />프리미엄 리포트 무제한</li>
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />전문가 우선 매칭</li>
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />광고 없는 서비스</li>
+                <p className="text-[11px] text-muted-foreground -mt-2">
+                  하루 약 ₩{Math.round(MIND_TRACK_PRICE / 30).toLocaleString()} · 자동 결제 없음
+                </p>
+                <ul className="text-xs text-muted-foreground space-y-1.5">
+                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />모든 심층 검사 무제한 이용</li>
+                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />AI 심층 분석 리포트 무제한</li>
+                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />30일 맞춤 마음 변화 로드맵</li>
+                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />종료 시 변화 종합 리포트(PDF)</li>
                 </ul>
                 <Button
                   className="w-full h-12 text-base font-semibold rounded-xl"
-                  onClick={handlePaySubscription}
+                  onClick={handlePayMindTrack}
                   disabled={isAuthenticated ? (loading || !isReady) : false}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Crown className="w-4 h-4 mr-2" />}
-                  구독 시작하기
+                  {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                  30일 마음 트랙 시작하기
                 </Button>
+                <p className="flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
+                  <Shield className="w-3 h-3" />
+                  마음에 들지 않으면 30일 내 100% 환불 보장
+                </p>
               </Card>
 
               {/* 신뢰 배지 */}

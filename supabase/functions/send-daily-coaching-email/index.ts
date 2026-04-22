@@ -231,15 +231,30 @@ serve(async (req) => {
           .maybeSingle();
         if (existing) { skipped++; continue; }
 
-        // 구독 상태 확인
-        const { data: sub } = await supa
-          .from("user_subscriptions")
-          .select("status,subscription_type")
-          .eq("user_id", goal.user_id)
-          .eq("status", "active")
-          .in("subscription_type", ["premium", "paid"])
-          .maybeSingle();
-        if (!sub) { skipped++; continue; }
+        // 발송 자격 확인:
+        // (1) 활성 유료/프리미엄/평생 구독자, 또는
+        // (2) 활성 30일 마음 변화 트랙 결제자
+        const [{ data: sub }, { data: enrollment }] = await Promise.all([
+          supa
+            .from("user_subscriptions")
+            .select("status,subscription_type,is_lifetime")
+            .eq("user_id", goal.user_id)
+            .eq("status", "active")
+            .in("subscription_type", ["premium", "paid", "lifetime"])
+            .maybeSingle(),
+          supa
+            .from("mind_track_enrollments")
+            .select("id,status,payment_status")
+            .eq("user_id", goal.user_id)
+            .in("status", ["active", "completed"])
+            .eq("payment_status", "completed")
+            .maybeSingle(),
+        ]);
+        if (!sub && !enrollment) {
+          log("Skip: no active subscription or mind track", { user_id: goal.user_id });
+          skipped++;
+          continue;
+        }
 
         // 이메일/닉네임
         const { data: userData } = await supa.auth.admin.getUserById(goal.user_id);

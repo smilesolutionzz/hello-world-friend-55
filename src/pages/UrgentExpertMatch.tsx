@@ -63,32 +63,33 @@ const UrgentExpertMatch = () => {
     });
   };
 
-  // Sticky bottom bar shown on mobile only
+  // Sticky bottom bar shown on mobile only — min touch target 44x44 (WCAG / Apple HIG)
   const StickyMobileBar = () => (
     <div
       className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border bg-background/95 backdrop-blur-md shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.08)]"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 0.5rem)' }}
     >
-      <div className="container mx-auto max-w-2xl px-4 py-3">
+      <div className="container mx-auto max-w-2xl px-4 pt-3 pb-2">
         {stage === 'idle' && (
           <Button
             onClick={handleRequest}
             variant="destructive"
             size="lg"
-            className="w-full h-14 text-sm sm:text-base whitespace-normal break-keep leading-tight"
+            className="w-full min-h-[56px] h-14 text-sm sm:text-base whitespace-normal break-keep leading-tight active:scale-[0.98] transition-transform"
+            aria-label={isEnglish ? 'Request urgent expert match now' : '지금 긴급 매칭 요청하기'}
           >
             <AlertTriangle className="w-5 h-5 mr-2 flex-shrink-0" />
             <span className="min-w-0">{isEnglish ? 'Request Urgent Match Now' : '지금 긴급 매칭 요청하기'}</span>
           </Button>
         )}
         {stage === 'requesting' && (
-          <div className="flex items-center justify-center gap-2 h-14 text-sm font-medium text-destructive">
+          <div className="flex items-center justify-center gap-2 min-h-[56px] h-14 text-sm font-medium text-destructive">
             <Loader2 className="w-5 h-5 animate-spin" />
             <span>{isEnglish ? 'Sending...' : '전송 중...'}</span>
           </div>
         )}
         {stage === 'waiting' && (
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-3 min-h-[56px]">
             <div className="min-w-0 flex-1">
               <p className="text-[10px] text-muted-foreground leading-none mb-1">
                 {isEnglish ? 'Time left' : '남은 시간'}
@@ -100,8 +101,9 @@ const UrgentExpertMatch = () => {
             <Button
               variant="outline"
               size="lg"
-              className="flex-shrink-0 h-12 px-4 text-sm"
+              className="flex-shrink-0 min-h-[48px] h-12 min-w-[48px] px-5 text-sm active:scale-[0.98] transition-transform"
               onClick={() => navigate('/booking-management')}
+              aria-label={isEnglish ? 'View my requests' : '내 요청 내역 보기'}
             >
               {isEnglish ? 'My requests' : '내 요청 내역'}
             </Button>
@@ -114,10 +116,14 @@ const UrgentExpertMatch = () => {
   return (
     <div
       className="min-h-screen bg-gradient-to-b from-destructive/5 to-background py-6 sm:py-10"
-      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 6rem)' }}
+      style={{
+        // Reserve space so card content never overlaps the mobile sticky CTA on short devices
+        // Sticky bar height ≈ button(56) + vertical padding(20) + safe-area inset
+        paddingBottom: 'calc(env(safe-area-inset-bottom) + 96px)',
+      }}
     >
       <div className="container mx-auto max-w-2xl px-4 md:pb-0">
-        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-3 sm:mb-4 -ml-2 h-10">
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-3 sm:mb-4 -ml-2 min-h-[44px] h-11 px-3">
           <ArrowLeft className="w-4 h-4 mr-1" />
           {isEnglish ? 'Back' : '뒤로'}
         </Button>

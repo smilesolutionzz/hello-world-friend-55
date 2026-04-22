@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, ArrowRight, Sparkles, Quote, Zap, LineChart, UserCheck } from 'lucide-react';
+import { MessageCircle, ArrowRight, Sparkles, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -9,61 +9,38 @@ const RealFeedbackSection = () => {
   const navigate = useNavigate();
   const { isEnglish } = useLanguage();
 
-  // 핵심 임팩트만 남긴 4개 메시지 (이해도 우선)
   const chatMessages = [
-    { sender: 'parent', text: isEnglish ? '"I really thought something was wrong with my child..."' : '쟤 진짜 정신병인가 싶을 때가 있어요', time: '12:04' },
-    { sender: 'expert', text: isEnglish ? 'Cognitive flexibility drops sharply under uncontrolled stress — a normal reaction.' : '통제 밖 상황에서 인지적 유연성이 떨어지는 자연스러운 반응입니다.', time: '12:04' },
-    { sender: 'parent', text: isEnglish ? '"Oh… I’m starting to understand."' : '아... 이해가 되기 시작해요', time: '12:05', highlight: true },
-    { sender: 'parent', text: isEnglish ? '"Can I keep using this for a month?"' : '이거 한 달 동안 계속 쓸 수 있어요?', time: '12:06' },
-    { sender: 'expert', text: isEnglish ? 'Yes — 30-day Mind Track + unlimited reports & assessments.' : '네! 30일 마음 트랙 + 리포트·검사 무제한이에요.', time: '12:06' },
-    { sender: 'parent', text: isEnglish ? '"That’s actually so affordable. Amazing 🤩"' : '완전 저렴한데요? 대박이에요 🤩', time: '12:07', highlight: true },
+    { sender: 'parent', text: '평소엔 괜찮다가 이러면 쟤 진짜 정신병인가 진심 그 생각 들거든요', time: '12:04' },
+    { sender: 'expert', text: '상황이 통제 범위를 벗어났을 때 대안을 찾는 인지적 유연성이 급격히 저하됨을 시사합니다.', time: '12:04' },
+    { sender: 'parent', text: '바로 이거에요. 와...', time: '12:05', highlight: true },
+    { sender: 'parent', text: '늦었으면 눈곱만 떼고 가야지', time: '12:06' },
+    { sender: 'expert', text: '불완전한 상태로 사회적 무대에 서라는 압박으로 느껴져 정서적 저항을 불러일으킨 겁니다.', time: '12:06' },
+    { sender: 'parent', text: '아... 이해가 되기 시작해요', time: '12:07', highlight: true },
+    { sender: 'parent', text: '이거 한 달 동안 고민 생길 때마다 쓸 수 있어요?', time: '12:09' },
+    { sender: 'expert', text: '네! 구독하시면 무제한 리포트, 검사, 데이터 축적까지 전부 가능합니다.', time: '12:09' },
+    { sender: 'parent', text: '완전 저렴한데요? 이거 대박이에요 🤩', time: '12:10', highlight: true },
   ];
 
-  // 실제 만들어둔 서비스 흐름과 1:1 매핑되는 3단계 여정 카드
-  const journey = [
+  const feedbackHighlights = [
     {
-      step: isEnglish ? 'STEP 1' : 'STEP 1',
-      icon: Zap,
-      color: 'from-emerald-500 to-teal-500',
-      title: isEnglish ? 'Instant AI Analysis' : '즉석 AI 분석',
-      desc: isEnglish
-        ? 'Type one sentence about a behavior → get a professional report in 30 seconds.'
-        : '아이의 행동 한 줄을 적으면 → 30초 안에 전문 해석 리포트가 나와요.',
-      price: isEnglish ? 'Free' : '무료 체험',
-      cta: isEnglish ? 'Try Free' : '무료로 해보기',
-      route: '/instant-analysis',
+      emoji: '😢',
+      before: isEnglish ? '"Is something seriously wrong with my child?"' : '"쟤 진짜 정신병인가..."',
+      after: isEnglish ? 'Cognitive inflexibility under stress — a natural response' : '인지적 유연성 저하 — 자연스러운 스트레스 반응',
+      reaction: isEnglish ? '"This is exactly it. Wow..."' : '"바로 이거에요. 와..."',
     },
     {
-      step: 'STEP 2',
-      icon: LineChart,
-      color: 'from-indigo-500 to-purple-500',
-      title: isEnglish ? '30-Day Mind Track' : '30일 마음 변화 트랙',
-      desc: isEnglish
-        ? 'Daily check-ins, expert touchpoints on Day 7/14/21/30, and a free care call when risk is detected.'
-        : '매일 체크인 + Day 7·14·21·30 전문가 개입 + 위험 감지 시 무료 케어콜이 자동으로 떠요.',
-      price: '₩19,900',
-      cta: isEnglish ? 'Start Track' : '트랙 시작하기',
-      route: '/mind-track-workbook',
-      featured: true,
+      emoji: '💡',
+      before: isEnglish ? '"Just wash your face and go!"' : '"늦었으면 눈곱만 떼고 가야지"',
+      after: isEnglish ? 'Perceived as pressure to appear incomplete in public' : '불완전한 모습으로 무대에 서라는 압박',
+      reaction: isEnglish ? '"Now I understand..."' : '"아... 이해가 되기 시작해요"',
     },
     {
-      step: 'STEP 3',
-      icon: UserCheck,
-      color: 'from-rose-500 to-orange-500',
-      title: isEnglish ? 'Expert Matching When You Need It' : '필요할 때 전문가 1:1 매칭',
-      desc: isEnglish
-        ? 'Tap "It’s hard" anytime — get matched with a 1:1 video counselor in minutes.'
-        : '“어려워요” 한 번이면 1:1 화상 상담 전문가와 바로 연결돼요.',
-      price: '₩9,900~',
-      cta: isEnglish ? 'See Experts' : '전문가 보기',
-      route: '/expert-hiring',
+      emoji: '🤩',
+      before: isEnglish ? '"How much does this cost?"' : '"이거 얼마에요?"',
+      after: isEnglish ? 'Unlimited reports & assessments with subscription' : '구독 시 리포트·검사 무제한',
+      reaction: isEnglish ? '"This is amazing! So affordable!"' : '"완전 저렴한데요? 이거 대박이에요"',
     },
   ];
-
-  // 하단 미니 라인업 — 우리가 운영 중인 기능 한눈에
-  const lineup = isEnglish
-    ? ['Instant AI Analysis', '20+ Assessments', 'AI Voice Chat', 'Expert Matching', 'Reports & Journal', 'Risk Care Call', 'Journey Dashboard', 'AI Copilot']
-    : ['즉석 AI 분석', '20+ 심리검사', 'AI 음성 상담', '전문가 매칭', '리포트·저널', '위험 감지 케어콜', '종단 대시보드', 'AI 코파일럿'];
 
   return (
     <section className="relative py-16 md:py-24 overflow-hidden">
@@ -71,63 +48,63 @@ const RealFeedbackSection = () => {
       <div className="absolute top-20 right-10 w-80 h-80 bg-indigo-500/10 rounded-full blur-[120px]" />
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Header — 의도 명확화 */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-4">
-            <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" />
-            <span className="text-xs md:text-sm font-semibold text-emerald-300">
-              {isEnglish ? 'How AIHPRO Works · 30-Second Tour' : '이렇게 작동해요 · 30초 요약'}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-green-500/10 border border-green-500/20 rounded-full mb-4">
+            <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-green-400" />
+            <span className="text-xs md:text-sm font-semibold text-green-300">
+              {isEnglish ? 'Real Parent Feedback' : '실제 학부모 반응'}
             </span>
           </div>
-          <h2 className="text-2xl md:text-4xl font-bold text-white mb-3 leading-snug break-keep">
+          <h2 className="text-xl md:text-4xl font-bold text-white mb-3 leading-snug">
             {isEnglish ? (
               <>
-                One sentence about your child →{' '}
-                <span className="text-emerald-400">an AI insight</span> →{' '}
-                <span className="text-indigo-300">a 30-day change track</span>
+                "I thought something was{' '}
+                <span className="text-rose-400">seriously wrong</span>"
+                <br />
+                <span className="text-emerald-400">Then the report changed everything</span>
               </>
             ) : (
               <>
-                아이의 행동 <span className="text-amber-300">한 마디</span>가
-                <br className="md:hidden" />{' '}
-                <span className="text-emerald-400">AI 분석 한 줄</span>이 되고
-                <br />
-                <span className="text-indigo-300">30일 변화 트랙</span>으로 이어집니다
+                "정신병인가 싶었는데"
+                <br className="md:hidden" />
+                {' '}
+                <span className="text-emerald-400 text-lg md:text-4xl">
+                  리포트를 보고
+                  <br className="md:hidden" />
+                  이해하려는 시도가 생겼어요
+                </span>
               </>
             )}
           </h2>
-          <p className="text-white/60 text-sm md:text-base max-w-xl mx-auto break-keep">
+          <p className="text-white/50 text-xs md:text-sm max-w-lg mx-auto">
             {isEnglish
-              ? 'A real conversation, then the exact 3-step service flow we’ve built for you.'
-              : '실제 학부모와 나눈 대화 + 우리가 만든 3단계 서비스 흐름을 한눈에 보여드릴게요.'}
+              ? 'A real conversation between a parent and our team after receiving a behavioral analysis report'
+              : '리포트를 받은 후 실제 학부모와 나눈 대화를 재구성했습니다'}
           </p>
         </motion.div>
 
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-start">
-          {/* 좌측: 채팅 목업 (축약) */}
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8 items-start">
+          {/* 카카오톡 스타일 채팅 목업 */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
-              <span className="text-[10px] md:text-xs font-bold text-amber-300">
-                {isEnglish ? 'STEP 1 · Parent → AI Interpretation' : 'STEP 1 · 부모님 한 마디 → AI 전문 해석'}
-              </span>
-            </div>
-            <div className="bg-[#b2c7d9] rounded-2xl border border-white/10 p-4 shadow-2xl space-y-2">
+            <div className="bg-[#b2c7d9] rounded-2xl border border-white/10 p-4 shadow-2xl max-h-[520px] overflow-y-auto space-y-2">
+              {/* 채팅 헤더 */}
               <div className="flex items-center justify-between mb-3 px-1">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-white text-xs font-bold">AI</div>
-                  <span className="text-slate-900 text-sm font-extrabold">AIHPRO</span>
+                  <span className="text-slate-900 text-sm font-extrabold">AIHPRO 전문 상담</span>
                 </div>
-                <span className="text-slate-700 text-xs font-medium">{isEnglish ? 'Today' : '오늘'}</span>
+                <span className="text-slate-700 text-xs font-medium">오늘</span>
               </div>
 
               {chatMessages.map((msg, i) => (
@@ -139,13 +116,13 @@ const RealFeedbackSection = () => {
                   transition={{ delay: i * 0.08 }}
                   className={`flex ${msg.sender === 'parent' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className="max-w-[82%] relative">
+                  <div className={`max-w-[80%] relative group`}>
                     <div
-                      className={`px-3 py-2 rounded-xl text-sm leading-relaxed break-keep ${
+                      className={`px-3 py-2 rounded-xl text-sm leading-relaxed ${
                         msg.sender === 'parent'
                           ? 'bg-[#fee500] text-slate-900 rounded-tr-sm'
                           : 'bg-white text-slate-800 rounded-tl-sm'
-                      } ${msg.highlight ? 'ring-2 ring-emerald-500/70' : ''}`}
+                      } ${msg.highlight ? 'ring-2 ring-emerald-400/60' : ''}`}
                     >
                       {msg.text}
                     </div>
@@ -161,102 +138,69 @@ const RealFeedbackSection = () => {
             </div>
           </motion.div>
 
-          {/* 우측: 3단계 여정 카드 + 통합 CTA */}
+          {/* 핵심 피드백 하이라이트 */}
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 mb-1 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
-              <span className="text-[10px] md:text-xs font-bold text-indigo-300">
-                {isEnglish ? 'Our 3-Step Service Flow' : '우리가 만든 3단계 서비스 흐름'}
-              </span>
-            </div>
-
-            {journey.map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <motion.button
-                  key={i}
-                  type="button"
-                  onClick={() => navigate(item.route)}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.12 }}
-                  className={`w-full text-left bg-slate-800/60 backdrop-blur-sm rounded-xl border p-4 transition-all hover:bg-slate-800/80 hover:scale-[1.01] ${
-                    item.featured ? 'border-indigo-400/40 ring-1 ring-indigo-400/20' : 'border-white/10'
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center flex-shrink-0 shadow-lg`}>
-                      <Icon className="w-5 h-5 text-white" />
+            {feedbackHighlights.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15 }}
+                className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-white/10 p-4 space-y-3"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl flex-shrink-0">{item.emoji}</span>
+                  <div className="space-y-2 flex-1">
+                    <div className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 flex-shrink-0" />
+                      <p className="text-white/50 text-xs line-through leading-relaxed">
+                        {item.before}
+                      </p>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="text-[10px] font-bold text-white/50 tracking-wider">{item.step}</span>
-                        <span className="text-xs font-bold text-amber-300">{item.price}</span>
-                      </div>
-                      <h3 className="text-white font-bold text-sm md:text-base mb-1 break-keep">{item.title}</h3>
-                      <p className="text-white/65 text-xs md:text-[13px] leading-relaxed break-keep mb-2">{item.desc}</p>
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-300">
-                        {item.cta} <ArrowRight className="w-3 h-3" />
-                      </span>
+                    <div className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0" />
+                      <p className="text-white/90 text-xs font-medium leading-relaxed">
+                        {item.after}
+                      </p>
+                    </div>
+                    <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-1.5">
+                      <p className="text-amber-300 text-xs font-semibold flex items-center gap-1">
+                        <Quote className="w-3 h-3" /> {item.reaction}
+                      </p>
                     </div>
                   </div>
-                </motion.button>
-              );
-            })}
+                </div>
+              </motion.div>
+            ))}
 
-            {/* 통합 CTA — 이중 버튼 */}
+            {/* CTA */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-indigo-900/50 to-purple-900/40 rounded-xl border border-indigo-500/20 p-4 space-y-2"
+              className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 rounded-xl border border-indigo-500/20 p-4 text-center"
             >
-              <p className="text-white/80 text-sm font-bold text-center mb-2 break-keep">
-                {isEnglish ? 'Fear → Understanding → Action' : '공포 → 이해 → 실천, 한 번에 시작하기'}
+              <p className="text-white/80 text-sm font-bold mb-1">
+                {isEnglish ? 'Fear → Understanding → Action' : '공포 → 이해 → 실천'}
+              </p>
+              <p className="text-white/50 text-xs mb-3">
+                {isEnglish
+                  ? 'One report transforms how you see your child'
+                  : '리포트 하나로 아이를 바라보는 시선이 달라집니다'}
               </p>
               <Button
-                onClick={() => navigate('/mind-track-workbook')}
+                onClick={() => navigate('/report-generator')}
                 className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 {isEnglish ? '30-Day Mind Track — ₩19,900' : '30일 마음 변화 트랙 — ₩19,900'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => navigate('/instant-analysis')}
-                className="w-full bg-transparent border-white/20 text-white hover:bg-white/5 font-semibold py-3 rounded-xl"
-              >
-                {isEnglish ? 'Try Free Analysis First' : '먼저 무료로 분석 받아보기'}
-              </Button>
             </motion.div>
           </div>
         </div>
-
-        {/* 하단: 운영 중인 전체 기능 라인업 */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="max-w-6xl mx-auto mt-10 pt-8 border-t border-white/10"
-        >
-          <p className="text-center text-white/50 text-xs md:text-sm mb-4 break-keep">
-            <Quote className="inline w-3 h-3 mr-1" />
-            {isEnglish ? 'And we’ve built much more — all included' : '이외에도 우리가 운영 중인 기능들 — 모두 포함되어 있어요'}
-          </p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {lineup.map((label, i) => (
-              <span
-                key={i}
-                className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/70 text-[11px] md:text-xs font-medium"
-              >
-                {label}
-              </span>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   );

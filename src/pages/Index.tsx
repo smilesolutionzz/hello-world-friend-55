@@ -194,22 +194,22 @@ const Index = () => {
             </LazyLoad>
 
             {/* 2.5️⃣ 실제 카톡 피드백 — 리얼 소셜 프루프 */}
-            <LazyLoad rootMargin="200px">
+            <LazyLoad rootMargin="200px" minHeight={600}>
               <SmartScrollReveal kind="cards"><RealFeedbackSection /></SmartScrollReveal>
             </LazyLoad>
             
             {/* 3️⃣ AI 전문가급 리포트 미리보기 */}
-            <LazyLoad rootMargin="200px">
+            <LazyLoad rootMargin="200px" minHeight={700}>
               <SmartScrollReveal kind="image"><ReportPreviewSection /></SmartScrollReveal>
             </LazyLoad>
 
             {/* 3.5️⃣ 휴먼터치 매니페스토 — AI × 전문가 철학 */}
-            <LazyLoad rootMargin="200px">
+            <LazyLoad rootMargin="200px" minHeight={500}>
               <SmartScrollReveal kind="text"><HumanTouchManifesto variant="landing" /></SmartScrollReveal>
             </LazyLoad>
             
             {/* 4️⃣ 영상 관찰 - WOW 팩터 */}
-            <LazyLoad rootMargin="200px">
+            <LazyLoad rootMargin="200px" minHeight={600}>
               <SmartScrollReveal kind="image"><VideoObservationShowcase /></SmartScrollReveal>
             </LazyLoad>
             
@@ -219,25 +219,22 @@ const Index = () => {
             </LazyLoad> */}
 
             {/* 6️⃣ 감성 후킹 - 공감 스토리 */}
-            <LazyLoad rootMargin="200px">
+            <LazyLoad rootMargin="200px" minHeight={500}>
               <SmartScrollReveal kind="text"><EmotionalHookSection /></SmartScrollReveal>
             </LazyLoad>
             
             {/* 7️⃣ 파트너 신뢰 - 50+ 제휴기관 */}
-            <LazyLoad rootMargin="200px">
+            <LazyLoad rootMargin="200px" minHeight={500}>
               <SmartScrollReveal kind="stats"><PartnerTrustSection /></SmartScrollReveal>
             </LazyLoad>
             
             {/* 8️⃣ 구독/결제 - 전환 유도 */}
-            <LazyLoad rootMargin="200px">
+            <LazyLoad rootMargin="200px" minHeight={700}>
               <SmartScrollReveal kind="cta"><SubscriptionValueSection /></SmartScrollReveal>
             </LazyLoad>
-            
-
-
 
             {/* 9️⃣ 최종 CTA */}
-            <LazyLoad rootMargin="200px">
+            <LazyLoad rootMargin="200px" minHeight={400}>
               <SmartScrollReveal kind="cta"><CTABannerSection /></SmartScrollReveal>
             </LazyLoad>
             

@@ -136,7 +136,12 @@ export async function ensureMindTrackEnrollment(
 
   if (existing) {
     const patch: Record<string, unknown> = { goal_focus: goalFocus };
-    if (baselineData) patch.baseline_data = { ...(existing.baseline_data || {}), ...baselineData };
+    if (baselineData) {
+      const prev = (existing.baseline_data && typeof existing.baseline_data === "object" && !Array.isArray(existing.baseline_data))
+        ? (existing.baseline_data as Record<string, unknown>)
+        : {};
+      patch.baseline_data = { ...prev, ...baselineData };
+    }
     await supabase.from("mind_track_enrollments").update(patch).eq("id", existing.id);
     return { enrollmentId: existing.id, hasBaseline };
   }

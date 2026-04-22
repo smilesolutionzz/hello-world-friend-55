@@ -33,6 +33,7 @@ import { CopilotBubble } from '@/components/copilot/CopilotBubble';
 import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
 import B2BEntryBanner from '@/components/landing/B2BEntryBanner';
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
+import PlatformFeaturesShowcase from '@/components/landing/PlatformFeaturesShowcase';
 
 
 const structuredData = {
@@ -181,9 +182,14 @@ const Index = () => {
             <main id="main-content" className="w-full">
             {/* 1️⃣ Hero - 메인 후킹 */}
             <HeroSection />
-            
+
+            {/* 1.5️⃣ 플랫폼 핵심 기능 한눈에 보기 — "이게 뭐예요?" 해소 */}
+            <LazyLoad rootMargin="200px" minHeight={700}>
+              <SmartScrollReveal kind="cards"><PlatformFeaturesShowcase /></SmartScrollReveal>
+            </LazyLoad>
+
             {/* 2️⃣ 실제 후기 - 사회적 증거 (상단 배치) */}
-            <LazyLoad rootMargin="200px">
+            <LazyLoad rootMargin="200px" minHeight={600}>
               <SmartScrollReveal kind="cards"><TestimonialSection /></SmartScrollReveal>
             </LazyLoad>
 

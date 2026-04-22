@@ -8219,6 +8219,111 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_interventions: {
+        Row: {
+          acted_at: string | null
+          created_at: string
+          enrollment_id: string | null
+          id: string
+          matched_expert_id: string | null
+          metadata: Json | null
+          offering_key: string
+          offering_price: number
+          payment_id: string | null
+          status: string
+          suggested_at: string
+          trigger_day: number
+          trigger_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          acted_at?: string | null
+          created_at?: string
+          enrollment_id?: string | null
+          id?: string
+          matched_expert_id?: string | null
+          metadata?: Json | null
+          offering_key: string
+          offering_price: number
+          payment_id?: string | null
+          status?: string
+          suggested_at?: string
+          trigger_day: number
+          trigger_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          acted_at?: string | null
+          created_at?: string
+          enrollment_id?: string | null
+          id?: string
+          matched_expert_id?: string | null
+          metadata?: Json | null
+          offering_key?: string
+          offering_price?: number
+          payment_id?: string | null
+          status?: string
+          suggested_at?: string
+          trigger_day?: number
+          trigger_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mind_track_risk_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          detected_at: string
+          enrollment_id: string | null
+          followup_intervention_id: string | null
+          id: string
+          notification_channel: string | null
+          notification_sent: boolean
+          resolved_at: string | null
+          severity: string
+          trigger_data: Json | null
+          updated_at: string
+          user_id: string
+          user_response: string | null
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          detected_at?: string
+          enrollment_id?: string | null
+          followup_intervention_id?: string | null
+          id?: string
+          notification_channel?: string | null
+          notification_sent?: boolean
+          resolved_at?: string | null
+          severity?: string
+          trigger_data?: Json | null
+          updated_at?: string
+          user_id: string
+          user_response?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          detected_at?: string
+          enrollment_id?: string | null
+          followup_intervention_id?: string | null
+          id?: string
+          notification_channel?: string | null
+          notification_sent?: boolean
+          resolved_at?: string | null
+          severity?: string
+          trigger_data?: Json | null
+          updated_at?: string
+          user_id?: string
+          user_response?: string | null
+        }
+        Relationships: []
+      }
       mind_track_workbooks: {
         Row: {
           challenge_theme: string | null

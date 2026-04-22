@@ -14,8 +14,67 @@ import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import {
   CheckCircle2, Circle, Loader2, Sparkles, TrendingUp, Calendar,
-  Brain, Zap, Eye, Heart, Target, ChevronRight, Lock, ArrowLeft
+  Brain, Zap, Eye, Heart, Target, ChevronRight, Lock, ArrowLeft,
+  Flame, Trophy, BookOpen, Wind, PenLine, Users, Activity, Award, Mail
 } from "lucide-react";
+
+// 미션 타입별 가이드 (라이브러리)
+const MISSION_TYPE_GUIDE: Record<string, {
+  icon: typeof Brain; label: string; color: string; steps: string[];
+}> = {
+  reflection: {
+    icon: BookOpen, label: "회고 (Reflection)", color: "from-blue-500 to-cyan-500",
+    steps: [
+      "조용한 곳에서 1분간 호흡을 가다듬어요",
+      "오늘 미션 질문을 천천히 읽고 떠오르는 생각을 적어요",
+      "옳고 그름을 판단하지 말고, 그저 알아차려요",
+    ],
+  },
+  action: {
+    icon: Activity, label: "실천 (Action)", color: "from-emerald-500 to-teal-500",
+    steps: [
+      "지금 바로 할 수 있는 작은 행동 하나를 정해요",
+      "5분 안에 끝낼 수 있는 단계로 쪼개요",
+      "마치고 나서 어떤 느낌이었는지 짧게 메모해요",
+    ],
+  },
+  breathing: {
+    icon: Wind, label: "호흡 (Breathing)", color: "from-sky-500 to-indigo-500",
+    steps: [
+      "편안한 자세로 앉거나 누워요",
+      "4초 들이마시고, 4초 멈추고, 6초 내쉬는 호흡을 5번 반복해요",
+      "끝나고 어깨와 턱의 긴장을 풀어요",
+    ],
+  },
+  journaling: {
+    icon: PenLine, label: "기록 (Journaling)", color: "from-amber-500 to-orange-500",
+    steps: [
+      "타이머 5분을 맞춰요",
+      "맞춤법·문법 신경 쓰지 말고 떠오르는 대로 적어요",
+      "다 쓴 뒤 한 문장으로 핵심 감정을 요약해요",
+    ],
+  },
+  connection: {
+    icon: Users, label: "소통 (Connection)", color: "from-rose-500 to-pink-500",
+    steps: [
+      "오늘 안부를 전하고 싶은 한 사람을 떠올려요",
+      "짧은 메시지나 전화로 마음을 전해요",
+      "상대 반응에 집착하지 말고 보낸 것 자체에 의미를 둬요",
+    ],
+  },
+};
+
+// 연속 체크인(streak) 계산: 가장 최근 체크인부터 거꾸로 연속된 일수
+function calcStreak(checkins: any[], currentDay: number): number {
+  let streak = 0;
+  for (let d = currentDay; d >= 1; d--) {
+    const c = checkins.find((x) => x.day_number === d);
+    if (c?.completed) streak++;
+    else if (d < currentDay) break; // 오늘은 아직 안했어도 어제까지 연속이면 인정
+    else continue;
+  }
+  return streak;
+}
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import SEOHead from "@/components/common/SEOHead";
@@ -202,7 +261,7 @@ export default function MindTrackWorkbook() {
             <p className="text-slate-600 break-keep">{workbook.initial_summary}</p>
           </motion.div>
 
-          {/* Progress */}
+          {/* Progress + 내 진행상황 (streak, baseline vs latest) */}
           <Card className="p-5 bg-gradient-to-br from-primary/5 to-purple-500/5 border-primary/20">
             <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
               <div>
@@ -215,37 +274,141 @@ export default function MindTrackWorkbook() {
               </div>
             </div>
             <Progress value={(currentDay / 30) * 100} className="h-2" />
-            <div className="flex items-center justify-between mt-2 gap-2 flex-wrap">
+
+            <div className="grid grid-cols-3 gap-2 mt-4">
+              <div className="p-2.5 rounded-lg bg-white border border-slate-200 text-center">
+                <Flame className="w-4 h-4 text-orange-500 mx-auto mb-0.5" />
+                <div className="text-[10px] text-slate-500">연속 체크인</div>
+                <div className="text-base font-bold text-slate-900">{calcStreak(checkins, currentDay)}일</div>
+              </div>
+              <div className="p-2.5 rounded-lg bg-white border border-slate-200 text-center">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 mx-auto mb-0.5" />
+                <div className="text-[10px] text-slate-500">총 완료</div>
+                <div className="text-base font-bold text-slate-900">{completedCount}일</div>
+              </div>
+              <div className="p-2.5 rounded-lg bg-white border border-slate-200 text-center">
+                <Trophy className="w-4 h-4 text-amber-500 mx-auto mb-0.5" />
+                <div className="text-[10px] text-slate-500">남은 일수</div>
+                <div className="text-base font-bold text-slate-900">{Math.max(0, 30 - currentDay)}일</div>
+              </div>
+            </div>
+
+            {baseline && latest && baseline.id !== latest.id && (
+              <div className="mt-3 p-2.5 rounded-lg bg-emerald-50 border border-emerald-200">
+                <div className="text-[10px] font-bold text-emerald-700 mb-1">시작 → 최근 점수 변화</div>
+                <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                  {[
+                    { k: "stress_score", label: "스트레스", reverse: true },
+                    { k: "energy_score", label: "에너지" },
+                    { k: "clarity_score", label: "명료성" },
+                  ].map((m) => {
+                    const s = baseline[m.k] ?? 0; const n = latest[m.k] ?? s;
+                    const diff = m.reverse ? s - n : n - s;
+                    return (
+                      <div key={m.k}>
+                        <div className="text-slate-600">{m.label}</div>
+                        <div className="font-bold text-slate-900">{s} → {n}</div>
+                        <div className={diff > 0 ? "text-emerald-600 font-bold" : diff < 0 ? "text-rose-500" : "text-slate-400"}>
+                          {diff > 0 ? "↑" : diff < 0 ? "↓" : "·"}{Math.abs(diff)}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between mt-3 gap-2 flex-wrap">
               <div className="text-xs text-slate-500">{completedCount}일 체크인 완료</div>
               <InviteFriendsButton currentDay={currentDay} />
             </div>
           </Card>
 
-          {/* Today's Mission */}
-          {todayMission && (
-            <Card className="p-5 border-2 border-primary shadow-lg">
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="flex items-center gap-2">
-                  <Target className="w-5 h-5 text-primary" />
-                  <span className="text-sm font-bold text-primary">오늘의 미션 · Day {currentDay}</span>
-                </div>
-                {todayCheckin?.completed && (
-                  <Badge className="bg-emerald-500 text-white">✓ 완료</Badge>
-                )}
+          {/* Day 30 완료 리포트 — 완료 시 자동 노출 */}
+          {enrollment?.status === "completed" && enrollment?.completed_at && (
+            <Card className="p-6 border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-white to-orange-50 shadow-lg">
+              <div className="flex items-center gap-2 mb-3">
+                <Award className="w-6 h-6 text-amber-500" />
+                <Badge className="bg-amber-500 text-white">30일 완료</Badge>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-1 break-keep">{todayMission.mission_title}</h3>
-              <p className="text-sm text-slate-600 mb-4 break-keep">{todayMission.mission_description}</p>
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-3 text-xs text-slate-500">
-                  <span>⏱ {todayMission.estimated_minutes}분</span>
-                  <span>· {todayMission.mission_type}</span>
+              <h3 className="text-xl font-bold text-slate-900 mb-2 break-keep">
+                30일 마음 챌린지를 완주하셨어요! 🎉
+              </h3>
+              <p className="text-sm text-slate-600 mb-4 break-keep">
+                완료일: {new Date(enrollment.completed_at).toLocaleDateString("ko-KR")} ·
+                총 {completedCount}일 체크인
+              </p>
+
+              {baseline && latest && baseline.id !== latest.id && (
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                  {[
+                    { k: "stress_score", label: "스트레스", reverse: true, icon: Brain },
+                    { k: "energy_score", label: "에너지", icon: Zap },
+                    { k: "clarity_score", label: "명료성", icon: Eye },
+                  ].map((m) => {
+                    const s = baseline[m.k] ?? 0; const n = latest[m.k] ?? s;
+                    const diff = m.reverse ? s - n : n - s;
+                    return (
+                      <div key={m.k} className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                        <m.icon className="w-4 h-4 text-primary mx-auto mb-1" />
+                        <div className="text-[11px] text-slate-500">{m.label}</div>
+                        <div className="text-sm text-slate-700">{s} → <span className="font-bold text-slate-900">{n}</span></div>
+                        <div className={`text-xs font-bold mt-0.5 ${diff > 0 ? "text-emerald-600" : diff < 0 ? "text-rose-500" : "text-slate-400"}`}>
+                          {diff > 0 ? "↑" : diff < 0 ? "↓" : "·"}{Math.abs(diff)}점
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <Button onClick={() => openMission(todayMission)} className="bg-gradient-to-r from-primary to-purple-600">
-                  {todayCheckin?.completed ? "기록 수정" : "체크인하기"} <ChevronRight className="w-4 h-4 ml-1" />
-                </Button>
+              )}
+
+              <div className="flex items-center gap-2 text-xs text-slate-600 bg-white/70 rounded-lg p-2.5 border border-amber-200">
+                <Mail className="w-4 h-4 text-amber-600 shrink-0" />
+                <span className="break-keep">상세 종합 리포트는 가입 이메일로도 발송되었어요. 받은편지함을 확인해보세요.</span>
               </div>
             </Card>
           )}
+
+          {/* Today's Mission */}
+          {todayMission && (() => {
+            const guide = MISSION_TYPE_GUIDE[todayMission.mission_type] ?? MISSION_TYPE_GUIDE.reflection;
+            const GuideIcon = guide.icon;
+            return (
+              <Card className="p-5 border-2 border-primary shadow-lg">
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-2">
+                    <Target className="w-5 h-5 text-primary" />
+                    <span className="text-sm font-bold text-primary">오늘의 미션 · Day {currentDay}</span>
+                  </div>
+                  {todayCheckin?.completed && (
+                    <Badge className="bg-emerald-500 text-white">✓ 완료</Badge>
+                  )}
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 mb-1 break-keep">{todayMission.mission_title}</h3>
+                <p className="text-sm text-slate-600 mb-3 break-keep">{todayMission.mission_description}</p>
+
+                {/* 미션 타입 라이브러리 가이드 */}
+                <div className={`rounded-xl p-3 mb-4 bg-gradient-to-br ${guide.color} text-white`}>
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <GuideIcon className="w-4 h-4" />
+                    <span className="text-xs font-bold">{guide.label}</span>
+                  </div>
+                  <ol className="text-xs space-y-1 list-decimal list-inside opacity-95">
+                    {guide.steps.map((s, i) => <li key={i} className="break-keep">{s}</li>)}
+                  </ol>
+                </div>
+
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-3 text-xs text-slate-500">
+                    <span>⏱ {todayMission.estimated_minutes}분</span>
+                  </div>
+                  <Button onClick={() => openMission(todayMission)} className="bg-gradient-to-r from-primary to-purple-600">
+                    {todayCheckin?.completed ? "기록 수정" : "체크인하기"} <ChevronRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </div>
+              </Card>
+            );
+          })()}
 
           {/* Initial Report */}
           <Card className="p-5">

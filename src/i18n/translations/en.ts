@@ -130,10 +130,10 @@ const en = {
     ratingCount: '⭐ 4.8/5.0 (4,248 users)',
     liveUsers: '🔥 47 people testing now',
     urgencyBanner: '⚠️ Don\'t miss the golden time — check today',
-    kakaoShareTitle: '🧠 I checked my child\'s development — the results were eye-opening',
-    kakaoShareDesc: 'Get expert-level developmental analysis in 3 minutes. It\'s free!',
-    kakaoShareButton: 'Try it too 🎁',
-    kakaoShareToast: 'Paste into KakaoTalk! 💬',
+    shareTitle: '🧠 I checked my child\'s development — the results were eye-opening',
+    shareDesc: 'Get expert-level developmental analysis in 3 minutes. It\'s free!',
+    shareButton: 'Try it too 🎁',
+    shareToast: 'Copy the link and share it anywhere.',
   },
 
   // CTA Banner

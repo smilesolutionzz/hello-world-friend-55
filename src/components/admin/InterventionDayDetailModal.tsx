@@ -48,6 +48,7 @@ export default function InterventionDayDetailModal({
         .from("mind_track_interventions")
         .select("id, user_id, status, created_at, acted_at, offering_price")
         .eq("trigger_day", day)
+        .order("acted_at", { ascending: false, nullsFirst: false })
         .order("created_at", { ascending: false });
       if (fromDate) query = query.gte("created_at", fromDate);
       if (toDate) query = query.lte("created_at", toDate);

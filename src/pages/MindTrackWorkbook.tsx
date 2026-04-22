@@ -81,6 +81,8 @@ import SEOHead from "@/components/common/SEOHead";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { useSmartBack } from "@/hooks/useSmartBack";
 import InviteFriendsButton from "@/components/mind-track/InviteFriendsButton";
+import ExpertInterventionCard, { RiskAlertCard, type InterventionDay } from "@/components/mind-track/ExpertInterventionCard";
+import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 
 export default function MindTrackWorkbook() {
   const navigate = useNavigate();

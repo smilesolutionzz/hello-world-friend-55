@@ -26,7 +26,7 @@ const RedFlagAlertDialog = ({ isOpen, onClose, redFlagResult }: RedFlagAlertDial
   const isCritical = redFlagResult.overallSeverity === 'critical';
 
   const handleConsultation = () => { onClose(); navigate('/expert-hiring'); };
-  const handleEmergencyMatch = () => { onClose(); navigate('/expert-hiring?urgent=true'); };
+  const handleEmergencyMatch = () => { onClose(); navigate('/expert-hiring/urgent-match'); };
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -81,15 +81,25 @@ const RedFlagAlertDialog = ({ isOpen, onClose, redFlagResult }: RedFlagAlertDial
         </AlertDialogHeader>
         <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
           {isCritical && (
-            <Button onClick={handleEmergencyMatch} variant="destructive" className="w-full">
-              <MessageCircle className="w-4 h-4 mr-2" />
-              {isEnglish ? 'Urgent Expert Match' : '긴급 전문가 연결'}
-            </Button>
+            <div className="w-full">
+              <Button onClick={handleEmergencyMatch} variant="destructive" className="w-full">
+                <AlertTriangle className="w-4 h-4 mr-2" />
+                {isEnglish ? 'Urgent Expert Match' : '긴급 전문가 연결'}
+              </Button>
+              <p className="text-[11px] text-muted-foreground text-center mt-1">
+                {isEnglish ? 'Auto-assigned within 30 min · single-tap request' : '30분 이내 자동 배정 · 검색 없이 1회 요청'}
+              </p>
+            </div>
           )}
-          <Button onClick={handleConsultation} className={`w-full ${isCritical ? 'bg-orange-600 hover:bg-orange-700' : 'bg-primary'}`}>
-            <MessageCircle className="w-4 h-4 mr-2" />
-            {isEnglish ? 'Request Professional Consultation' : '전문가 상담 신청하기'}
-          </Button>
+          <div className="w-full">
+            <Button onClick={handleConsultation} className={`w-full ${isCritical ? 'bg-orange-600 hover:bg-orange-700' : 'bg-primary'}`}>
+              <MessageCircle className="w-4 h-4 mr-2" />
+              {isEnglish ? 'Request Professional Consultation' : '전문가 상담 신청하기'}
+            </Button>
+            <p className="text-[11px] text-muted-foreground text-center mt-1">
+              {isEnglish ? 'Browse & choose your specialist' : '전문가 목록에서 직접 선택해 예약'}
+            </p>
+          </div>
           <AlertDialogCancel className="w-full mt-0">
             {isEnglish ? 'Later' : '나중에 하기'}
           </AlertDialogCancel>

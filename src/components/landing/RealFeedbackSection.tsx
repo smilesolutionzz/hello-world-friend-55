@@ -37,8 +37,8 @@ const RealFeedbackSection = () => {
     {
       emoji: '🤩',
       before: isEnglish ? '"How much does this cost?"' : '"이거 얼마에요?"',
-      after: isEnglish ? 'Unlimited reports, tests & expert coaching' : '월 9,900원에 검사·리포트·전문가 코칭 무제한',
-      reaction: isEnglish ? '"Best value ever!"' : '"완전 가성비네요!"',
+      after: isEnglish ? '30-Day Mind Track — ₩19,900 (one-time)' : '30일 마음 챌린지 — ₩19,900 (1회 결제)',
+      reaction: isEnglish ? '"30 days for the price of one session!"' : '"상담 한 번 값으로 30일이라니!"',
     },
   ];
 

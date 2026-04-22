@@ -132,5 +132,5 @@ export function useMindTrackRiskDetection(
     setActiveAlert(null);
   };
 
-  return { activeAlert, resolveAlert };
+  return { activeAlert, resolveAlert, refetch };
 }

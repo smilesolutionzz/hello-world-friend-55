@@ -274,6 +274,66 @@ serve(async (req) => {
 
         console.log(`✅ Created premium subscription for user ${payment.user_id}`);
 
+        // 🎯 Mind Track: also activate the enrollment row so MindTrackStart finds it.
+        if (productType === 'mind_track') {
+          // Find latest pending enrollment for this user (created before pay())
+          const { data: pendingEnroll } = await supabaseAdmin
+            .from('mind_track_enrollments')
+            .select('id, baseline_data')
+            .eq('user_id', payment.user_id)
+            .neq('status', 'completed')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (pendingEnroll?.id) {
+            await supabaseAdmin
+              .from('mind_track_enrollments')
+              .update({
+                payment_status: 'completed',
+                payment_amount: payment.amount,
+                payment_id: payment.id,
+              })
+              .eq('id', pendingEnroll.id);
+            console.log(`✅ Activated existing mind_track enrollment ${pendingEnroll.id}`);
+          } else {
+            // No pending row (user paid via a path that skipped ensureMindTrackEnrollment).
+            // Create one now so the user is never blocked.
+            const { data: onboarding } = await supabaseAdmin
+              .from('user_onboarding_data')
+              .select('primary_goal, free_text_concern, current_mood_score')
+              .eq('user_id', payment.user_id)
+              .maybeSingle();
+
+            const mood = Number((onboarding as any)?.current_mood_score);
+            const moodPct = Number.isFinite(mood) ? Math.max(0, Math.min(100, Math.round((mood / 10) * 100))) : null;
+            const baselineData: Record<string, unknown> = {
+              source: 'auto_post_payment',
+              primary_concern: (onboarding as any)?.free_text_concern ?? null,
+            };
+            if (moodPct != null) {
+              baselineData.stress_score = 100 - moodPct;
+              baselineData.energy_score = moodPct;
+              baselineData.clarity_score = moodPct;
+            }
+
+            const { data: createdEnroll } = await supabaseAdmin
+              .from('mind_track_enrollments')
+              .insert({
+                user_id: payment.user_id,
+                track_type: 'mind_30day',
+                goal_focus: (onboarding as any)?.primary_goal || 'stress',
+                payment_status: 'completed',
+                payment_amount: payment.amount,
+                payment_id: payment.id,
+                baseline_data: baselineData,
+              })
+              .select('id')
+              .single();
+            console.log(`✅ Auto-created mind_track enrollment ${createdEnroll?.id}`);
+          }
+        }
+
       } else if (productType === 'cash' && payment.token_amount) {
         // 캐시(토큰) 충전 (레거시 호환)
         const { data: tokenBalance } = await supabaseAdmin

@@ -26,6 +26,7 @@ import {
   Moon,
   Zap,
   Smile,
+  Wand2,
 } from 'lucide-react';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';

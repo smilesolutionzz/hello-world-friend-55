@@ -298,6 +298,8 @@ const ExpertHiring = () => {
       <UnifiedNavigation />
 
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-10">
+        {mindTrackCtx && <MindTrackContextBanner ctx={mindTrackCtx} />}
+
         {/* Tab switcher */}
         <div className="flex items-center gap-2 mb-6 border-b border-border pb-4">
           <button

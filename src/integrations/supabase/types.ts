@@ -708,6 +708,60 @@ export type Database = {
           },
         ]
       }
+      b2b_demo_requests: {
+        Row: {
+          admin_notes: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          employee_count: number | null
+          id: string
+          institution_name: string
+          institution_type: string
+          message: string | null
+          request_type: string
+          source: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          employee_count?: number | null
+          id?: string
+          institution_name: string
+          institution_type: string
+          message?: string | null
+          request_type?: string
+          source?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          employee_count?: number | null
+          id?: string
+          institution_name?: string
+          institution_type?: string
+          message?: string | null
+          request_type?: string
+          source?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       b2b_feature_unlocks: {
         Row: {
           created_at: string | null

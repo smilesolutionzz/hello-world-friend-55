@@ -630,3 +630,52 @@ export default function MindTrackWorkbook() {
     </>
   );
 }
+
+// ─────────────────────────────────────────────────────────────
+// 전문가 개입 섹션 (Day 7/14/21/30 마일스톤 + 위험 감지 무료 케어)
+// ─────────────────────────────────────────────────────────────
+function InterventionSection({
+  enrollmentId,
+  currentDay,
+  checkins,
+  baselines,
+}: {
+  enrollmentId: string | undefined;
+  currentDay: number;
+  checkins: any[];
+  baselines: any[];
+}) {
+  const navigate = useNavigate();
+  const { activeAlert, resolveAlert } = useMindTrackRiskDetection(
+    enrollmentId ?? null,
+    checkins,
+    baselines,
+    currentDay,
+  );
+
+  if (!enrollmentId) return null;
+
+  // 현재 도달한 마일스톤 day 계산 (7/14/21/30)
+  const milestones: InterventionDay[] = [7, 14, 21, 30];
+  const activeMilestone = milestones
+    .filter((d) => currentDay >= d)
+    .sort((a, b) => b - a)[0]; // 가장 최근 마일스톤만 노출
+
+  return (
+    <div className="space-y-4">
+      {activeAlert && (
+        <RiskAlertCard
+          alertType={activeAlert.alert_type as any}
+          onRequestHelp={async () => {
+            await resolveAlert("requested_help");
+            navigate("/expert-hiring?from=risk_alert&urgent=true");
+          }}
+          onDismiss={() => resolveAlert("acknowledged")}
+        />
+      )}
+      {activeMilestone && (
+        <ExpertInterventionCard day={activeMilestone} enrollmentId={enrollmentId} />
+      )}
+    </div>
+  );
+}

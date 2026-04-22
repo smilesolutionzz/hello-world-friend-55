@@ -14,7 +14,7 @@ type TabKey = 'quick' | 'deep' | 'all';
 const TABS: { key: TabKey; label: string; sub: string; icon: typeof Sparkles }[] = [
   { key: 'all', label: '전체', sub: '모든 검사 보기', icon: Layers },
   { key: 'quick', label: '무료 빠른 체크', sub: '3분 · 무료', icon: Sparkles },
-  { key: 'deep', label: '심층 전문 분석', sub: '10~15분 · 리포트 ₩3,900', icon: Brain },
+  { key: 'deep', label: '심층 전문 분석', sub: '10~15분 · 30일 마음 트랙 ₩19,900', icon: Brain },
 ];
 
 const UnifiedAssessmentHub = () => {

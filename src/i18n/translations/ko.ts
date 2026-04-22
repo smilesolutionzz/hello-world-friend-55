@@ -967,7 +967,7 @@ const ko = {
   premiumPage: {
     pageTitle: '심층테스트',
     pageSubtitle: '표면적인 결과가 아닌, 진짜 나를 마주하는 시간',
-    price: '990원',
+    price: '30일 마음 트랙 ₩19,900',
     authFallback: '프리미엄 심리검사를 이용하려면 로그인이 필요합니다.',
     expertBanner: '전문가 직접 해석',
     expertBannerDesc: '은 AIHPRO 공식검사.',

@@ -138,21 +138,21 @@ const RefundPolicy = () => {
                   <Separator />
 
                   <section>
-                    <h2 className="text-xl font-semibold mb-3">{isEnglish ? '3. Single-Use Pass Refund Policy' : '3. 이용권(단건 결제) 환불 정책'}</h2>
+                    <h2 className="text-xl font-semibold mb-3">{isEnglish ? '3. 30-Day Mind Track Refund Policy' : '3. 30일 마음 변화 트랙 환불 정책'}</h2>
                     <div className="space-y-2 text-muted-foreground">
-                      <p>{isEnglish ? 'Single-use passes (Assessment ₩990, Report ₩3,900) are refunded as follows:' : '단건 이용권(검사 1회 ₩990, 리포트 1회 ₩3,900)은 다음과 같이 환불됩니다:'}</p>
+                      <p>{isEnglish ? 'The 30-Day Mind Transformation Track (₩19,900, one-time payment) is backed by an unconditional 30-day money-back guarantee:' : '30일 마음 변화 트랙(₩19,900, 일시불)은 무조건 30일 환불 보장이 적용됩니다:'}</p>
                       <ul className="list-disc pl-6 space-y-1 mt-2">
                         {isEnglish ? (
                           <>
-                            <li><strong>Unused pass:</strong> Full refund within 7 days of purchase</li>
-                            <li><strong>Used pass:</strong> No refund after viewing results</li>
-                            <li><strong>System error:</strong> Full refund or pass reissue if assessment couldn't proceed</li>
+                            <li><strong>Within 30 days of purchase:</strong> 100% refund for any reason — no questions asked</li>
+                            <li><strong>After 30 days:</strong> Refund unavailable as the full track has been delivered</li>
+                            <li><strong>System error:</strong> Full refund if technical issues prevented the program from being delivered</li>
                           </>
                         ) : (
                           <>
-                            <li><strong>미사용 이용권:</strong> 구매 후 7일 이내 전액 환불</li>
-                            <li><strong>사용 완료 이용권:</strong> 결과 확인 후에는 환불 불가</li>
-                            <li><strong>검사 중 오류:</strong> 시스템 장애로 검사 진행 불가 시 전액 환불 또는 이용권 재발급</li>
+                            <li><strong>구매 후 30일 이내:</strong> 사유 불문 100% 전액 환불</li>
+                            <li><strong>30일 경과 후:</strong> 트랙 전 과정이 제공되었으므로 환불 불가</li>
+                            <li><strong>시스템 오류:</strong> 기술적 장애로 프로그램 제공이 불가했던 경우 전액 환불</li>
                           </>
                         )}
                       </ul>

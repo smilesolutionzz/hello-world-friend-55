@@ -292,7 +292,7 @@ serve(async (req) => {
               .update({
                 payment_status: 'completed',
                 payment_amount: payment.amount,
-                payment_id: payment.id,
+
               })
               .eq('id', pendingEnroll.id);
             console.log(`✅ Activated existing mind_track enrollment ${pendingEnroll.id}`);
@@ -325,7 +325,7 @@ serve(async (req) => {
                 goal_focus: (onboarding as any)?.primary_goal || 'stress',
                 payment_status: 'completed',
                 payment_amount: payment.amount,
-                payment_id: payment.id,
+
                 baseline_data: baselineData,
               })
               .select('id')

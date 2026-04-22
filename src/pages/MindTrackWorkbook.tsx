@@ -14,8 +14,67 @@ import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import {
   CheckCircle2, Circle, Loader2, Sparkles, TrendingUp, Calendar,
-  Brain, Zap, Eye, Heart, Target, ChevronRight, Lock, ArrowLeft
+  Brain, Zap, Eye, Heart, Target, ChevronRight, Lock, ArrowLeft,
+  Flame, Trophy, BookOpen, Wind, PenLine, Users, Activity, Award, Mail
 } from "lucide-react";
+
+// 미션 타입별 가이드 (라이브러리)
+const MISSION_TYPE_GUIDE: Record<string, {
+  icon: typeof Brain; label: string; color: string; steps: string[];
+}> = {
+  reflection: {
+    icon: BookOpen, label: "회고 (Reflection)", color: "from-blue-500 to-cyan-500",
+    steps: [
+      "조용한 곳에서 1분간 호흡을 가다듬어요",
+      "오늘 미션 질문을 천천히 읽고 떠오르는 생각을 적어요",
+      "옳고 그름을 판단하지 말고, 그저 알아차려요",
+    ],
+  },
+  action: {
+    icon: Activity, label: "실천 (Action)", color: "from-emerald-500 to-teal-500",
+    steps: [
+      "지금 바로 할 수 있는 작은 행동 하나를 정해요",
+      "5분 안에 끝낼 수 있는 단계로 쪼개요",
+      "마치고 나서 어떤 느낌이었는지 짧게 메모해요",
+    ],
+  },
+  breathing: {
+    icon: Wind, label: "호흡 (Breathing)", color: "from-sky-500 to-indigo-500",
+    steps: [
+      "편안한 자세로 앉거나 누워요",
+      "4초 들이마시고, 4초 멈추고, 6초 내쉬는 호흡을 5번 반복해요",
+      "끝나고 어깨와 턱의 긴장을 풀어요",
+    ],
+  },
+  journaling: {
+    icon: PenLine, label: "기록 (Journaling)", color: "from-amber-500 to-orange-500",
+    steps: [
+      "타이머 5분을 맞춰요",
+      "맞춤법·문법 신경 쓰지 말고 떠오르는 대로 적어요",
+      "다 쓴 뒤 한 문장으로 핵심 감정을 요약해요",
+    ],
+  },
+  connection: {
+    icon: Users, label: "소통 (Connection)", color: "from-rose-500 to-pink-500",
+    steps: [
+      "오늘 안부를 전하고 싶은 한 사람을 떠올려요",
+      "짧은 메시지나 전화로 마음을 전해요",
+      "상대 반응에 집착하지 말고 보낸 것 자체에 의미를 둬요",
+    ],
+  },
+};
+
+// 연속 체크인(streak) 계산: 가장 최근 체크인부터 거꾸로 연속된 일수
+function calcStreak(checkins: any[], currentDay: number): number {
+  let streak = 0;
+  for (let d = currentDay; d >= 1; d--) {
+    const c = checkins.find((x) => x.day_number === d);
+    if (c?.completed) streak++;
+    else if (d < currentDay) break; // 오늘은 아직 안했어도 어제까지 연속이면 인정
+    else continue;
+  }
+  return streak;
+}
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import SEOHead from "@/components/common/SEOHead";

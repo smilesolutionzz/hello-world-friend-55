@@ -64,20 +64,20 @@ const RealFeedbackSection = () => {
           <h2 className="text-xl md:text-4xl font-bold text-white mb-3 leading-snug">
             {isEnglish ? (
               <>
-                "I thought something was{' '}
-                <span className="text-rose-400">seriously wrong</span>"
+                "I thought I was a{' '}
+                <span className="text-rose-400">bad parent</span>"
                 <br />
                 <span className="text-emerald-400">Then the report changed everything</span>
               </>
             ) : (
               <>
-                "정신병인가 싶었는데"
+                "내가 잘못 키운 줄 알았는데"
                 <br className="md:hidden" />
                 {' '}
                 <span className="text-emerald-400 text-lg md:text-4xl">
                   리포트를 보고
                   <br className="md:hidden" />
-                  이해하려는 시도가 생겼어요
+                  아이를 이해하게 됐어요
                 </span>
               </>
             )}

@@ -14,6 +14,7 @@ const PaymentComplete = () => {
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [paymentInfo, setPaymentInfo] = useState<any>(null);
+  const [mindTrackStage, setMindTrackStage] = useState<'idle' | 'verifying' | 'creating' | 'ready' | 'failed'>('idle');
 
   const paymentKey = searchParams.get('paymentKey');
   const orderId = searchParams.get('orderId');
@@ -64,9 +65,20 @@ const PaymentComplete = () => {
         
         toast({ title: '🎉 결제 완료!', description: getSuccessMessage(productType === 'consultation' ? 'consultation' : data.productType) });
 
-        // Auto-redirect for Mind Track to start initial assessment (with welcome flag)
+        // Mind Track: poll the enrollment row instead of a fixed 1.5s timer.
         if (productType === 'mind_track' || data.productType === 'mind_track') {
-          setTimeout(() => navigate('/mind-track/start?welcome=1'), 1500);
+          setMindTrackStage('verifying');
+          setTimeout(() => setMindTrackStage('creating'), 600);
+          const result = await waitForCompletedEnrollment(15_000, 800);
+          if (result?.id) {
+            setMindTrackStage('ready');
+            const target = result.hasBaseline
+              ? '/mind-track/start?welcome=1&seeded=1'
+              : '/mind-track/start?welcome=1';
+            setTimeout(() => navigate(target), 700);
+          } else {
+            setMindTrackStage('failed');
+          }
         }
       } catch (err: any) {
         console.error('Payment confirmation error:', err);

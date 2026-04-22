@@ -51,11 +51,10 @@ const TokenSubscription = () => {
       navigate('/auth?mode=signup');
       return;
     }
-    const success = await pay('mind_track_30');
-    if (success) {
-      toast({ title: '결제 완료', description: '30일 트랙이 시작되었습니다! 코칭 목표를 설정해주세요.' });
-      setTimeout(() => navigate('/coaching-goals'), 800);
-    }
+    const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
+    await ensureMindTrackEnrollment();
+    await pay('mind_track_30');
+    // Navigation after payment is now handled by /payment-complete (status screen).
   };
 
   const fade = (delay: number) => ({ 

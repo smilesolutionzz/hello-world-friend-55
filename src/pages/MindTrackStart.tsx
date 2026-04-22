@@ -77,8 +77,47 @@ export default function MindTrackStart() {
         return;
       }
       setEnrollment(target);
+
+      // 🚀 Skip the 12-question diagnostic if Quiz already provided baseline scores.
+      const baseline = (target.baseline_data ?? {}) as Record<string, any>;
+      const hasSeed =
+        typeof baseline.stress_score === "number" &&
+        typeof baseline.energy_score === "number" &&
+        typeof baseline.clarity_score === "number";
+      if (hasSeed) {
+        await runInitFromSeed(target, baseline);
+      }
     })();
   }, [navigate]);
+
+  // Direct init when Quiz baseline data is already present.
+  const runInitFromSeed = async (target: any, baseline: Record<string, any>) => {
+    setSubmitting(true);
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      const { data, error } = await supabase.functions.invoke("mind-track-init", {
+        headers: { Authorization: `Bearer ${session.session?.access_token}` },
+        body: {
+          enrollmentId: target.id,
+          mode: "quick",
+          goalFocus: target.goal_focus,
+          stressScore: baseline.stress_score,
+          energyScore: baseline.energy_score,
+          clarityScore: baseline.clarity_score,
+          primaryConcern: baseline.primary_concern || null,
+          rawResponses: { source: "quiz_seed", ...baseline },
+        },
+      });
+      if (error || !data?.success) throw new Error(data?.error || error?.message || "워크북 생성 실패");
+      toast.success("Quiz 답변으로 워크북을 바로 만들었어요!");
+      navigate("/mind-track/workbook?welcome=1");
+    } catch (e: any) {
+      // If auto-init fails, fall back to manual diagnostic UI (don't block user).
+      console.warn("auto-init failed, showing manual flow", e);
+      toast.error(e.message || "자동 시작에 실패했어요. 직접 진행해주세요.");
+      setSubmitting(false);
+    }
+  };
 
   const questions = QUICK_QUESTIONS;
   const totalSteps = mode === "quick" ? questions.length : 3; // precise = 3 separate scores

@@ -33,6 +33,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   const { pay, loading, isReady } = usePayment();
 
   const handlePay = async () => {
+    const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
+    await ensureMindTrackEnrollment();
     const success = await pay('mind_track_30');
     if (success) {
       onOpenChange(false);

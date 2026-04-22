@@ -129,6 +129,11 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
       redirectToLogin('/token-subscription');
       return;
     }
+    const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
+    const res = await ensureMindTrackEnrollment();
+    if (!res.enrollmentId) {
+      console.warn('Mind track enrollment upsert failed, proceeding to pay anyway', res.error);
+    }
     await pay('mind_track_30');
   };
 

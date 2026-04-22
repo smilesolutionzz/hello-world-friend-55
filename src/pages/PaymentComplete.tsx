@@ -4,7 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, XCircle, Loader2, Home, Crown, Zap, FileText, CalendarCheck } from 'lucide-react';
+import { CheckCircle2, XCircle, Loader2, Home, Crown, Zap, FileText, CalendarCheck, Sparkles } from 'lucide-react';
+import { waitForCompletedEnrollment } from '@/lib/mindTrackEnrollment';
 
 const PaymentComplete = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const PaymentComplete = () => {
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [paymentInfo, setPaymentInfo] = useState<any>(null);
+  const [mindTrackStage, setMindTrackStage] = useState<'idle' | 'verifying' | 'creating' | 'ready' | 'failed'>('idle');
 
   const paymentKey = searchParams.get('paymentKey');
   const orderId = searchParams.get('orderId');
@@ -63,9 +65,20 @@ const PaymentComplete = () => {
         
         toast({ title: '🎉 결제 완료!', description: getSuccessMessage(productType === 'consultation' ? 'consultation' : data.productType) });
 
-        // Auto-redirect for Mind Track to start initial assessment (with welcome flag)
+        // Mind Track: poll the enrollment row instead of a fixed 1.5s timer.
         if (productType === 'mind_track' || data.productType === 'mind_track') {
-          setTimeout(() => navigate('/mind-track/start?welcome=1'), 1500);
+          setMindTrackStage('verifying');
+          setTimeout(() => setMindTrackStage('creating'), 600);
+          const result = await waitForCompletedEnrollment(15_000, 800);
+          if (result?.id) {
+            setMindTrackStage('ready');
+            const target = result.hasBaseline
+              ? '/mind-track/start?welcome=1&seeded=1'
+              : '/mind-track/start?welcome=1';
+            setTimeout(() => navigate(target), 700);
+          } else {
+            setMindTrackStage('failed');
+          }
         }
       } catch (err: any) {
         console.error('Payment confirmation error:', err);
@@ -205,10 +218,45 @@ const PaymentComplete = () => {
                   예약 내역 확인
                 </Button>
               )}
+              {resolvedType === 'mind_track' && mindTrackStage !== 'idle' && mindTrackStage !== 'failed' && (
+                <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-left space-y-2">
+                  <div className="flex items-center gap-2 text-sm">
+                    {mindTrackStage === 'ready'
+                      ? <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      : <Loader2 className="w-4 h-4 animate-spin text-primary" />}
+                    <span className={mindTrackStage === 'verifying' ? 'font-semibold' : 'text-muted-foreground'}>
+                      결제 검증 중
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    {mindTrackStage === 'ready'
+                      ? <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      : mindTrackStage === 'creating'
+                      ? <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                      : <span className="w-4 h-4 rounded-full border border-muted-foreground/30 inline-block" />}
+                    <span className={mindTrackStage === 'creating' ? 'font-semibold' : 'text-muted-foreground'}>
+                      30일 트랙 생성 중
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    {mindTrackStage === 'ready'
+                      ? <Sparkles className="w-4 h-4 text-emerald-500" />
+                      : <span className="w-4 h-4 rounded-full border border-muted-foreground/30 inline-block" />}
+                    <span className={mindTrackStage === 'ready' ? 'font-semibold' : 'text-muted-foreground'}>
+                      준비 완료 → 이동 중
+                    </span>
+                  </div>
+                </div>
+              )}
+              {resolvedType === 'mind_track' && mindTrackStage === 'failed' && (
+                <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-left text-sm text-amber-900">
+                  결제는 완료됐지만 트랙 생성 확인이 늦어지고 있어요. 아래 버튼으로 직접 시작해주세요.
+                </div>
+              )}
               {resolvedType === 'mind_track' && (
                 <Button className="w-full" onClick={() => navigate('/mind-track/start?welcome=1')}>
                   <CheckCircle2 className="w-4 h-4 mr-2" />
-                  초기 진단 시작하기 (5분)
+                  {mindTrackStage === 'ready' ? '바로 시작하기' : '초기 진단으로 이동'}
                 </Button>
               )}
               <Button variant="outline" className="w-full" onClick={() => navigate('/')}>

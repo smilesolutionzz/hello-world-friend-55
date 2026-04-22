@@ -167,6 +167,61 @@ const Quiz: React.FC = () => {
     return () => clearInterval(interval);
   }, [step]);
 
+  // Fake progress while expanding
+  useEffect(() => {
+    if (!isExpanding) return;
+    setExpandProgress(0);
+    const interval = setInterval(() => {
+      setExpandProgress((p) => (p >= 92 ? p : p + 4));
+    }, 180);
+    return () => clearInterval(interval);
+  }, [isExpanding]);
+
+  const handleAIExpand = async () => {
+    if (isExpanding) return;
+    const text = data.concern.trim();
+    if (text.length < 5) {
+      toast.error('5자 이상 입력해주세요');
+      return;
+    }
+    setIsExpanding(true);
+    try {
+      const { data: res, error } = await supabase.functions.invoke('mind-track-concern-polish', {
+        body: { concern: text },
+      });
+      if (error) throw error;
+      const polished: string = (res?.polished || '').trim();
+      if (!polished) throw new Error('빈 결과');
+
+      setExpandProgress(100);
+      setData((prev) => ({ ...prev, concern: polished }));
+      setHasPolished(true);
+
+      // Persist immediately
+      try {
+        localStorage.setItem(
+          'quiz_concern_polished',
+          JSON.stringify({ concern: polished, ts: Date.now() })
+        );
+        localStorage.setItem('quiz_data', JSON.stringify({ ...data, concern: polished, concernPolished: true }));
+      } catch {}
+
+      toast.success('AI가 고민을 더 깊이 풀어드렸어요', {
+        description: '잠시 후 30일 마음 트랙 리포트 미리보기를 보여드릴게요',
+      });
+
+      // Auto-advance to analyzing → plan (gives user time to read polished text first)
+      setTimeout(() => {
+        setIsExpanding(false);
+        setStep('analyzing');
+      }, 1400);
+    } catch (err: any) {
+      console.error('AI 다듬기 오류:', err);
+      toast.error('AI 다듬기에 실패했어요. 잠시 후 다시 시도해주세요.');
+      setIsExpanding(false);
+    }
+  };
+
   const next = () => {
     const order: Step[] = ['goal', 'lifestage', 'age', 'currentState', 'duration', 'concern', 'analyzing'];
     const i = order.indexOf(step);

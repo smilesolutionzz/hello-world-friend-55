@@ -10,35 +10,35 @@ const RealFeedbackSection = () => {
   const { isEnglish } = useLanguage();
 
   const chatMessages = [
-    { sender: 'parent', text: '평소엔 괜찮다가 이러면 쟤 진짜 정신병인가 진심 그 생각 들거든요', time: '12:04' },
-    { sender: 'expert', text: '상황이 통제 범위를 벗어났을 때 대안을 찾는 인지적 유연성이 급격히 저하됨을 시사합니다.', time: '12:04' },
-    { sender: 'parent', text: '바로 이거에요. 와...', time: '12:05', highlight: true },
-    { sender: 'parent', text: '늦었으면 눈곱만 떼고 가야지', time: '12:06' },
-    { sender: 'expert', text: '불완전한 상태로 사회적 무대에 서라는 압박으로 느껴져 정서적 저항을 불러일으킨 겁니다.', time: '12:06' },
-    { sender: 'parent', text: '아... 이해가 되기 시작해요', time: '12:07', highlight: true },
-    { sender: 'parent', text: '이거 한 달 동안 고민 생길 때마다 쓸 수 있어요?', time: '12:09' },
-    { sender: 'expert', text: '네! 구독하시면 무제한 리포트, 검사, 데이터 축적까지 전부 가능합니다.', time: '12:09' },
-    { sender: 'parent', text: '완전 저렴한데요? 이거 대박이에요 🤩', time: '12:10', highlight: true },
+    { sender: 'parent', text: '아침마다 어린이집 가기 싫다고 30분씩 울어요. 제가 뭘 잘못하고 있는 걸까요?', time: '12:04' },
+    { sender: 'expert', text: '아이가 게으른 게 아니라, 갑작스러운 환경 전환에 대한 적응 시간이 더 필요한 기질일 수 있어요.', time: '12:04' },
+    { sender: 'parent', text: '아 그래서 그랬구나... 와...', time: '12:05', highlight: true },
+    { sender: 'parent', text: "맨날 '빨리빨리'만 외쳤어요", time: '12:06' },
+    { sender: 'expert', text: '재촉이 아이에겐 “준비도 안 됐는데 떠밀린다”는 불안으로 느껴져 더 큰 저항을 만든 거예요.', time: '12:06' },
+    { sender: 'parent', text: '아... 이제 좀 이해가 돼요', time: '12:07', highlight: true },
+    { sender: 'parent', text: '이런 고민 생길 때마다 계속 물어볼 수 있나요?', time: '12:09' },
+    { sender: 'expert', text: '네! 구독하시면 검사·리포트·전문가 코칭까지 무제한으로 이용하실 수 있어요.', time: '12:09' },
+    { sender: 'parent', text: '한 달에 9,900원이면 완전 가성비네요 🤩', time: '12:10', highlight: true },
   ];
 
   const feedbackHighlights = [
     {
       emoji: '😢',
-      before: isEnglish ? '"Is something seriously wrong with my child?"' : '"쟤 진짜 정신병인가..."',
-      after: isEnglish ? 'Cognitive inflexibility under stress — a natural response' : '인지적 유연성 저하 — 자연스러운 스트레스 반응',
-      reaction: isEnglish ? '"This is exactly it. Wow..."' : '"바로 이거에요. 와..."',
+      before: isEnglish ? '"Am I a bad parent?"' : '"제가 뭘 잘못한 걸까요?"',
+      after: isEnglish ? "Slow-to-warm-up temperament — needs more transition time" : '환경 전환에 시간이 더 필요한 기질 — 부모 잘못 아님',
+      reaction: isEnglish ? '"Oh, that\'s why... wow"' : '"아 그래서 그랬구나... 와..."',
     },
     {
       emoji: '💡',
-      before: isEnglish ? '"Just wash your face and go!"' : '"늦었으면 눈곱만 떼고 가야지"',
-      after: isEnglish ? 'Perceived as pressure to appear incomplete in public' : '불완전한 모습으로 무대에 서라는 압박',
-      reaction: isEnglish ? '"Now I understand..."' : '"아... 이해가 되기 시작해요"',
+      before: isEnglish ? '"Hurry up! We\'re late!"' : '"빨리빨리 좀 해!"',
+      after: isEnglish ? 'Felt as “pushed out unprepared” — triggers resistance' : '"준비도 안 됐는데 떠밀린다" → 저항 행동 유발',
+      reaction: isEnglish ? '"Now it makes sense..."' : '"아... 이제 좀 이해가 돼요"',
     },
     {
       emoji: '🤩',
       before: isEnglish ? '"How much does this cost?"' : '"이거 얼마에요?"',
-      after: isEnglish ? 'Unlimited reports & assessments with subscription' : '구독 시 리포트·검사 무제한',
-      reaction: isEnglish ? '"This is amazing! So affordable!"' : '"완전 저렴한데요? 이거 대박이에요"',
+      after: isEnglish ? 'Unlimited reports, tests & expert coaching' : '월 9,900원에 검사·리포트·전문가 코칭 무제한',
+      reaction: isEnglish ? '"Best value ever!"' : '"완전 가성비네요!"',
     },
   ];
 
@@ -64,20 +64,20 @@ const RealFeedbackSection = () => {
           <h2 className="text-xl md:text-4xl font-bold text-white mb-3 leading-snug">
             {isEnglish ? (
               <>
-                "I thought something was{' '}
-                <span className="text-rose-400">seriously wrong</span>"
+                "I thought I was a{' '}
+                <span className="text-rose-400">bad parent</span>"
                 <br />
                 <span className="text-emerald-400">Then the report changed everything</span>
               </>
             ) : (
               <>
-                "정신병인가 싶었는데"
+                "내가 잘못 키운 줄 알았는데"
                 <br className="md:hidden" />
                 {' '}
                 <span className="text-emerald-400 text-lg md:text-4xl">
                   리포트를 보고
                   <br className="md:hidden" />
-                  이해하려는 시도가 생겼어요
+                  아이를 이해하게 됐어요
                 </span>
               </>
             )}

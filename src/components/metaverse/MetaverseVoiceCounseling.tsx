@@ -602,6 +602,17 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     // 사용자 음성 인식 완료
     else if (event.type === 'conversation.item.input_audio_transcription.completed') {
       const userText = cleanTranscript(event.transcript || '');
+
+      // 노이즈/에코 방지: 너무 짧거나 AI가 말하는 도중 잡힌 입력은 무시
+      if (!userText || userText.length < 2) {
+        console.log('🚫 Ignored empty/too-short transcript');
+        return;
+      }
+      if (isSpeaking) {
+        console.log('🚫 Ignored transcript while AI is speaking (likely echo)');
+        return;
+      }
+
       setMessages(prev => [...prev, {
         role: 'user',
         content: userText,

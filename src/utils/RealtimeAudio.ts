@@ -192,13 +192,21 @@ export class RealtimeChat {
           this.sessionCreated = true;
           this.reconnectAttempts = 0; // 성공적 연결 시 카운터 리셋
           
-          // AI가 먼저 인사하도록 트리거
-          console.log(`🎭 Triggering AI first message for ${this.mode} mode...`);
-          setTimeout(() => {
-            if (this.dc?.readyState === 'open') {
-              this.dc.send(JSON.stringify({ type: 'response.create' }));
-            }
-          }, 500);
+          // AI 선발화 트리거: 구조화/롤플레이/치료 모드에서만 (자유 모드는 사용자가 먼저 말함)
+          const shouldAIGreetFirst =
+            this.mode === 'structured' ||
+            this.mode === 'roleplay' ||
+            this.mode === 'therapy';
+          if (shouldAIGreetFirst) {
+            console.log(`🎭 Triggering AI first message for ${this.mode} mode...`);
+            setTimeout(() => {
+              if (this.dc?.readyState === 'open') {
+                this.dc.send(JSON.stringify({ type: 'response.create' }));
+              }
+            }, 500);
+          } else {
+            console.log('🎤 Free mode: waiting for user to speak first');
+          }
         }
 
         // 에러 이벤트 로깅

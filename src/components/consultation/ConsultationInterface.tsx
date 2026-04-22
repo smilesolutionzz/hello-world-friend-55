@@ -215,10 +215,10 @@ export const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({ ro
 
       toast({
         title: "상담 종료",
-        description: "상담이 완료되었습니다. 평가를 남겨주세요.",
+        description: "상담이 완료되었습니다. 예약 내역에서 리뷰를 남겨주세요.",
       });
 
-      navigate(`/consultation/${consultation?.id}/review`);
+      navigate('/booking-management');
     } catch (error) {
       console.error('상담 종료 실패:', error);
       toast({

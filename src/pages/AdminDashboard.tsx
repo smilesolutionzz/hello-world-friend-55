@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowLeft, RefreshCw, Bell, Settings, Calendar, 
-  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity
+  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart
 } from 'lucide-react';
+import MindTrackInterventionStats from '@/components/admin/MindTrackInterventionStats';
 import { AdminNotifications } from '@/components/AdminNotifications';
 import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
 import { EnhancedUserDataViewer } from '@/components/admin/EnhancedUserDataViewer';

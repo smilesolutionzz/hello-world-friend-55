@@ -1005,22 +1005,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     }
   };
 
-  // 카카오톡 공유
-  const shareToKakao = () => {
-    const text = getConversationText();
-    const encodedText = encodeURIComponent(text);
-    const kakaoUrl = `https://open.kakao.com/me`;
-    
-    // 텍스트를 클립보드에 복사하고 카카오톡 열기
-    navigator.clipboard.writeText(text).then(() => {
-      window.open(kakaoUrl, '_blank');
-      toast({
-        title: "카카오톡으로 이동",
-        description: "대화 내용이 복사되었습니다. 카카오톡에서 붙여넣기 하세요",
-      });
-    });
-  };
-
   const handleStructuredMessage = (message: string, isUser: boolean) => {
     setMessages(prev => [...prev, {
       role: isUser ? 'user' : 'assistant',

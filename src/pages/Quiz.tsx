@@ -124,18 +124,17 @@ const Quiz: React.FC = () => {
         }
       } catch {}
 
-      // If logged in, prefer DB value
-      if (u) {
-        const { data: row } = await supabase
-          .from('user_onboarding_data')
-          .select('free_text_concern')
-          .eq('user_id', u.id)
-          .maybeSingle();
-        if (!cancelled && row?.free_text_concern) {
-          setData((prev) => ({ ...prev, concern: row.free_text_concern as string }));
-          setHasPolished(true);
+      // Concern persistence (guest + logged in both via localStorage for simplicity)
+      try {
+        const polishedRaw = localStorage.getItem('quiz_concern_polished');
+        if (polishedRaw) {
+          const saved = JSON.parse(polishedRaw);
+          if (saved?.concern && typeof saved.concern === 'string') {
+            setData((prev) => ({ ...prev, concern: prev.concern || saved.concern }));
+            setHasPolished(true);
+          }
         }
-      }
+      } catch {}
     })();
     return () => { cancelled = true; };
   }, []);

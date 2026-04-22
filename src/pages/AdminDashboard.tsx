@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowLeft, RefreshCw, Bell, Settings, Calendar, 
-  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity
+  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart
 } from 'lucide-react';
+import MindTrackInterventionStats from '@/components/admin/MindTrackInterventionStats';
 import { AdminNotifications } from '@/components/AdminNotifications';
 import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
 import { EnhancedUserDataViewer } from '@/components/admin/EnhancedUserDataViewer';
@@ -99,6 +100,10 @@ export default function AdminDashboard() {
               <Calendar className="h-3 w-3" />
               예약
             </TabsTrigger>
+            <TabsTrigger value="mindtrack" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <Heart className="h-3 w-3" />
+              마음트랙
+            </TabsTrigger>
             <TabsTrigger value="notifications" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <Bell className="h-3 w-3" />
               알림
@@ -123,6 +128,7 @@ export default function AdminDashboard() {
           <TabsContent value="activity"><AdminUserActivityTracker /></TabsContent>
           <TabsContent value="payments"><AdminPaymentManager /></TabsContent>
           <TabsContent value="bookings"><AdminBookingManagement /></TabsContent>
+          <TabsContent value="mindtrack"><MindTrackInterventionStats /></TabsContent>
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>
           <TabsContent value="experts"><ExpertApplicationManagement /></TabsContent>
           <TabsContent value="user-data"><EnhancedUserDataViewer /></TabsContent>

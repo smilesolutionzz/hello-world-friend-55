@@ -82,7 +82,9 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { useSmartBack } from "@/hooks/useSmartBack";
 import InviteFriendsButton from "@/components/mind-track/InviteFriendsButton";
 import ExpertInterventionCard, { RiskAlertCard, type InterventionDay } from "@/components/mind-track/ExpertInterventionCard";
+import InterventionCalendar from "@/components/mind-track/InterventionCalendar";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
+import { HelpCircle } from "lucide-react";
 
 export default function MindTrackWorkbook() {
   const navigate = useNavigate();
@@ -412,9 +414,20 @@ export default function MindTrackWorkbook() {
                   <div className="flex items-center gap-3 text-xs text-slate-500">
                     <span>⏱ {todayMission.estimated_minutes}분</span>
                   </div>
-                  <Button onClick={() => openMission(todayMission)} className="bg-gradient-to-r from-primary to-purple-600">
-                    {todayCheckin?.completed ? "기록 수정" : "체크인하기"} <ChevronRight className="w-4 h-4 ml-1" />
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate(`/expert-hiring?from=mission_difficult&day=${currentDay}`)}
+                      className="text-xs border-amber-300 text-amber-700 hover:bg-amber-50"
+                    >
+                      <HelpCircle className="w-3.5 h-3.5 mr-1" />
+                      어려워요
+                    </Button>
+                    <Button onClick={() => openMission(todayMission)} className="bg-gradient-to-r from-primary to-purple-600">
+                      {todayCheckin?.completed ? "기록 수정" : "체크인하기"} <ChevronRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </div>
                 </div>
               </Card>
             );
@@ -501,6 +514,9 @@ export default function MindTrackWorkbook() {
               </div>
             </Card>
           )}
+
+          {/* 전문가 개입 일정 캘린더 (Day 7/14/21/30) */}
+          <InterventionCalendar currentDay={currentDay} />
 
           {/* 30-day Calendar */}
           <Card className="p-5">

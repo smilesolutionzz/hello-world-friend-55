@@ -186,7 +186,7 @@ const ReportContentShowcase: React.FC = () => {
 
       {/* 데모 리포트 다운로드 */}
       <div className="flex justify-center mb-5">
-        <a href="/demo/AIHPRO_데모_리포트.docx" download>
+        <a href="/demo/AIHPRO_Demo_Report.docx" download="AIHPRO_데모_리포트.docx">
           <Button variant="outline" className="border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 gap-2 rounded-xl px-6">
             <Download className="w-4 h-4" />
             {t('데모 리포트 다운로드 (.docx)', 'Download Demo Report (.docx)')}

@@ -603,11 +603,12 @@ const ReportGeneratorPro = () => {
                 <h3 className="text-base font-bold text-white">{t('실제 전문가에게 전문 검사 받기', 'Get a Professional Assessment from a Real Expert')}</h3>
                 <p className="text-xs text-muted-foreground">{t('공인 임상심리전문가가 직접 대면/비대면 검사를 실시합니다.', 'Licensed clinical psychologists conduct in-person/remote assessments.')}</p>
               </div>
-              <a href="https://smilesolution.kr" target="_blank" rel="noopener noreferrer" className="shrink-0">
-                <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-6 rounded-xl">
-                  {t('전문가 검사 신청', 'Request Expert Assessment')} <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
-              </a>
+              <Button
+                onClick={() => navigate('/expert-hiring?intent=offline-assessment')}
+                className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-6 rounded-xl shrink-0"
+              >
+                {t('전문가 검사 신청', 'Request Expert Assessment')} <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
             </div>
           </motion.div>
         </div>

@@ -94,12 +94,12 @@ const recommendationMap: Record<string, { ko: Recommendation[]; en: Recommendati
   stress: {
     ko: [
       { testKey: 'stress', title: '스트레스 검사', reason: '현재 스트레스 수준을 정확히 파악해요', badge: '무료', gradient: 'from-amber-500/10 to-orange-500/10' },
-      { testKey: 'depression', title: '우울감 검사', reason: '번아웃이 우울로 이어지고 있진 않은지 확인해요', badge: '무료', gradient: 'from-blue-500/10 to-indigo-500/10' },
+      { testKey: 'energy-flow', title: '에너지·번아웃 검사', reason: '회복탄력성과 번아웃 위험도를 측정해요', badge: '프리미엄', route: '/energy-flow-test', gradient: 'from-orange-500/10 to-rose-500/10' },
       { testKey: 'han-medicine', title: '사상체질 검사', reason: '체질별 맞춤 스트레스 해소법을 찾아보세요', badge: '프리미엄', route: '/han-medicine-test', gradient: 'from-green-500/10 to-emerald-500/10' },
     ],
     en: [
       { testKey: 'stress', title: 'Stress Assessment', reason: 'Accurately measure your current stress level', badge: 'Free', gradient: 'from-amber-500/10 to-orange-500/10' },
-      { testKey: 'depression', title: 'Depression Test', reason: 'Check if burnout is leading to depression', badge: 'Free', gradient: 'from-blue-500/10 to-indigo-500/10' },
+      { testKey: 'energy-flow', title: 'Energy & Burnout Check', reason: 'Measure your resilience and burnout risk', badge: 'Premium', route: '/energy-flow-test', gradient: 'from-orange-500/10 to-rose-500/10' },
       { testKey: 'han-medicine', title: 'Constitution Analysis', reason: 'Find stress relief methods suited to your body type', badge: 'Premium', route: '/han-medicine-test', gradient: 'from-green-500/10 to-emerald-500/10' },
     ],
   },

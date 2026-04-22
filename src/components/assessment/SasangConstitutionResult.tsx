@@ -411,7 +411,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full">
           <Button 
-            onClick={() => navigate('/han-medicine-test')}
+            onClick={() => navigate('/assessment')}
             variant="outline" 
             size="lg" 
             className="flex-1 w-full sm:w-auto"

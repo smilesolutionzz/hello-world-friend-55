@@ -999,7 +999,6 @@ const Assessment = () => {
               </h3>
               {[
                 { key: 'pattern-iq', title: t.assessment.patternIQTitle, duration: t.assessment.patternIQDuration, questions: t.assessment.patternIQQuestions, badge: 'NEW', description: t.assessment.patternIQDesc, features: t.assessment.patternIQFeatures, onClick: () => navigate('/assessment/pattern-iq-test'), gradient: 'from-blue-500/20 to-indigo-500/20', dotColor: 'bg-blue-500' },
-                { key: 'han-medicine', title: t.assessment.hanMedicineTitle, duration: t.assessment.hanMedicineDuration, questions: t.assessment.hanMedicineQuestions, description: t.assessment.hanMedicineDesc, features: t.assessment.hanMedicineFeatures, onClick: () => navigate('/han-medicine-test'), gradient: 'from-green-500/20 to-emerald-500/20', dotColor: 'bg-green-600' },
               ].map((test) => {
                 const isExpanded = expandedSimpleTest === test.key;
                 return (

@@ -245,3 +245,39 @@ const footer = {
   color: '#94a3b8',
   margin: 0,
 }
+const videosBlock = { margin: '0 0 28px' }
+const videoCard = {
+  display: 'block',
+  textDecoration: 'none',
+  color: '#0f172a',
+  background: '#ffffff',
+  border: '1px solid #e2e8f0',
+  borderRadius: '12px',
+  padding: '12px',
+  marginBottom: '10px',
+}
+const thumbStyle = {
+  width: '140px',
+  height: '80px',
+  objectFit: 'cover' as const,
+  borderRadius: '8px',
+  display: 'block',
+}
+const videoTitle = {
+  fontSize: '14px',
+  fontWeight: 600,
+  color: '#0f172a',
+  lineHeight: 1.4,
+  margin: '0 0 4px',
+}
+const videoChannel = {
+  fontSize: '11px',
+  color: '#64748b',
+  margin: '0 0 6px',
+}
+const videoReason = {
+  fontSize: '11px',
+  color: '#94a3b8',
+  lineHeight: 1.5,
+  margin: 0,
+}

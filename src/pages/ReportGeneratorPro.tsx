@@ -616,6 +616,31 @@ const ReportGeneratorPro = () => {
             setCurrentReportHistoryId(reportId);
             setShowShareModal(true);
           }}
+          onRegenerateFailed={async (reportId) => {
+            const ok = window.confirm(t(
+              '실패한 리포트를 무료로 재생성합니다. 기존 빈 리포트는 삭제되고 동일한 입력값으로 다시 생성됩니다. 진행할까요?',
+              'This will regenerate the failed report for free. The empty report will be deleted and regenerated with the same inputs. Continue?'
+            ));
+            if (!ok) return;
+            try {
+              const { error: delError } = await supabase
+                .from('premium_report_history')
+                .delete()
+                .eq('id', reportId);
+              if (delError) throw delError;
+              toast({
+                title: t('🔄 재생성 시작', '🔄 Regeneration Started'),
+                description: t('실패한 리포트를 삭제하고 재생성합니다.', 'Deleting failed report and regenerating.'),
+              });
+              await generateReport();
+            } catch (e: any) {
+              toast({
+                title: t('재생성 실패', 'Regeneration Failed'),
+                description: e?.message || t('잠시 후 다시 시도해주세요.', 'Please try again later.'),
+                variant: 'destructive',
+              });
+            }
+          }}
         />
 
         {reportData && (

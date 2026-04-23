@@ -1527,6 +1527,19 @@ serve(async (req) => {
         crossCorrelations: preprocessed.crossCorrelations.length,
         radarDimensions: preprocessed.chartData.radarChart.length,
       });
+
+      // ── 데이터 충분성 검증 (with-data 모드는 최소 3개 데이터 필요) ──
+      if (preprocessed.totalDataPoints < 3) {
+        console.warn('데이터 부족으로 리포트 생성 차단:', preprocessed.totalDataPoints);
+        return new Response(
+          JSON.stringify({
+            error: 'INSUFFICIENT_DATA',
+            message: `종합 리포트 생성에는 최소 3개의 활동 데이터가 필요합니다. 검사·관찰일지·상담 등을 먼저 진행해주세요. (현재 보유 데이터: ${preprocessed.totalDataPoints}개)`,
+            dataPoints: preprocessed.totalDataPoints,
+          }),
+          { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     } else {
       // without-data 모드: 최소 구조 생성
       preprocessed = {
@@ -1546,6 +1559,17 @@ serve(async (req) => {
         concernSummary: { totalConcerns: 0, severityDistribution: {}, topConcernTypes: [], recommendedTests: [] },
         chartData: { radarChart: [], trendLineChart: [], comparisonBarChart: [], riskGauge: { level: '분석 중', score: 50, maxScore: 100 } },
       };
+
+      // without-data 모드도 고민/관찰 노트 중 하나는 필수
+      if (!userInput?.recentConcerns && !userInput?.developmentalNotes) {
+        return new Response(
+          JSON.stringify({
+            error: 'INSUFFICIENT_INPUT',
+            message: '고민·상태 기반 리포트는 "고민이나 걱정거리" 또는 "발달/심리적 특징" 중 하나 이상을 입력해야 생성할 수 있습니다.',
+          }),
+          { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     // ★ 병렬로 연구 검색 + 또래 비교 + 이전 리포트 비교 수행

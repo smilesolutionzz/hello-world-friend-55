@@ -1,0 +1,202 @@
+import * as React from 'npm:react@18.3.1'
+import {
+  Body,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Section,
+  Text,
+  Button,
+  Hr,
+} from 'npm:@react-email/components@0.0.22'
+import type { TemplateEntry } from './registry.ts'
+
+const SITE_URL = 'https://aihpro.app'
+
+interface DailyCoachingProps {
+  nickname?: string
+  dayNumber?: number
+  totalDays?: number
+  categoryLabel?: string
+  mission?: string
+  insight?: string
+  researchBase?: string
+}
+
+const DailyCoachingEmail = ({
+  nickname = '회원',
+  dayNumber = 1,
+  totalDays = 30,
+  categoryLabel = '스트레스 회복탄력성',
+  mission = '오늘은 5분간 호흡에 집중하며 현재 감정 강도를 1~10점으로 기록해보세요.',
+  insight = '일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.',
+  researchBase = 'Kabat-Zinn MBSR 프로그램',
+}: DailyCoachingProps) => {
+  const progressPct = Math.min(100, Math.round((dayNumber / totalDays) * 100))
+  const dayLabel = String(dayNumber).padStart(2, '0')
+
+  return (
+    <Html lang="ko" dir="ltr">
+      <Head />
+      <Preview>{`Day ${dayLabel} · ${categoryLabel} · 오늘의 미션`}</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          <Text style={eyebrow}>AIHPRO Daily Coaching</Text>
+          <Text style={subEyebrow}>{`${nickname}님 · ${categoryLabel} 트랙`}</Text>
+
+          <Section style={dayBlock}>
+            <Heading as="h1" style={dayHeading}>
+              {`Day ${dayLabel}`}
+            </Heading>
+            <Text style={dayMeta}>{`/ ${totalDays}일 트랙`}</Text>
+          </Section>
+
+          <Section style={progressTrack}>
+            <Section style={{ ...progressFill, width: `${progressPct}%` }} />
+          </Section>
+
+          <Section style={missionBlock}>
+            <Text style={sectionLabel}>01 · 오늘의 미션</Text>
+            <Text style={missionText}>{mission}</Text>
+          </Section>
+
+          <Section style={insightBlock}>
+            <Text style={sectionLabel}>02 · 임상적 근거</Text>
+            <Text style={insightText}>{insight}</Text>
+            <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
+          </Section>
+
+          <Button href={`${SITE_URL}/observation-log`} style={ctaButton}>
+            오늘의 기록 남기기 →
+          </Button>
+
+          <Hr style={divider} />
+          <Text style={footer}>
+            본 메일은 의료 진단·치료를 대체하지 않으며, 발달 코칭 및 자기관찰 도구로 제공됩니다.
+            <br />© AIHPRO · 매일 아침 8시(KST) 자동 발송
+          </Text>
+        </Container>
+      </Body>
+    </Html>
+  )
+}
+
+export const template = {
+  component: DailyCoachingEmail,
+  subject: (data: Record<string, any>) =>
+    `[Day ${String(data?.dayNumber ?? 1).padStart(2, '0')}] ${data?.categoryLabel ?? '코칭'} - 오늘의 미션`,
+  displayName: '데일리 코칭 메일',
+  previewData: {
+    nickname: '테스트',
+    dayNumber: 7,
+    totalDays: 30,
+    categoryLabel: '스트레스 회복탄력성',
+    mission:
+      '오늘은 마음챙김 호흡을 5분간 시도하고, 호흡 전후의 긴장감을 1~10점으로 기록해보세요.',
+    insight:
+      'Kabat-Zinn MBSR 프로그램 연구에 따르면, 매일 5분의 마음챙김 호흡 훈련은 8주 후 코르티솔 수치를 평균 19% 감소시킵니다.',
+    researchBase: 'Kabat-Zinn MBSR 프로그램',
+  },
+} satisfies TemplateEntry
+
+const main = {
+  backgroundColor: '#ffffff',
+  fontFamily:
+    "-apple-system, 'Pretendard Variable', Inter, 'Segoe UI', sans-serif",
+  color: '#0f172a',
+  margin: 0,
+  padding: 0,
+}
+const container = { maxWidth: '560px', margin: '0 auto', padding: '32px 24px' }
+const eyebrow = {
+  fontSize: '11px',
+  letterSpacing: '0.18em',
+  color: '#64748b',
+  textTransform: 'uppercase' as const,
+  margin: '0 0 8px',
+}
+const subEyebrow = { fontSize: '13px', color: '#475569', margin: '0 0 24px' }
+const dayBlock = { margin: '0 0 6px' }
+const dayHeading = {
+  fontFamily: "Georgia, 'Times New Roman', serif",
+  fontSize: '42px',
+  fontWeight: 600,
+  color: '#0f172a',
+  lineHeight: 1,
+  margin: 0,
+  display: 'inline-block',
+}
+const dayMeta = {
+  fontSize: '13px',
+  color: '#94a3b8',
+  display: 'inline-block',
+  marginLeft: '12px',
+}
+const progressTrack = {
+  height: '4px',
+  background: '#f1f5f9',
+  borderRadius: '99px',
+  margin: '18px 0 32px',
+  overflow: 'hidden' as const,
+}
+const progressFill = {
+  height: '4px',
+  background: 'linear-gradient(90deg,#0f172a,#3b82f6)',
+}
+const missionBlock = {
+  borderLeft: '3px solid #0f172a',
+  padding: '4px 0 4px 16px',
+  margin: '0 0 28px',
+}
+const sectionLabel = {
+  fontSize: '11px',
+  letterSpacing: '0.16em',
+  color: '#64748b',
+  textTransform: 'uppercase' as const,
+  margin: '0 0 8px',
+}
+const missionText = {
+  fontSize: '16px',
+  lineHeight: 1.65,
+  color: '#0f172a',
+  fontWeight: 500,
+  margin: 0,
+}
+const insightBlock = {
+  background: '#f8fafc',
+  borderRadius: '12px',
+  padding: '20px 22px',
+  margin: '0 0 28px',
+}
+const insightText = {
+  fontSize: '14px',
+  lineHeight: 1.7,
+  color: '#334155',
+  margin: '0 0 14px',
+}
+const researchText = {
+  fontSize: '11px',
+  color: '#94a3b8',
+  fontStyle: 'italic' as const,
+  margin: 0,
+}
+const ctaButton = {
+  display: 'inline-block',
+  background: '#0f172a',
+  color: '#ffffff',
+  textDecoration: 'none',
+  padding: '14px 28px',
+  borderRadius: '10px',
+  fontSize: '14px',
+  fontWeight: 600,
+  letterSpacing: '0.02em',
+}
+const divider = { borderColor: '#e2e8f0', margin: '40px 0 24px' }
+const footer = {
+  fontSize: '11px',
+  lineHeight: 1.7,
+  color: '#94a3b8',
+  margin: 0,
+}

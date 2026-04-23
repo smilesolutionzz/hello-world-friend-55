@@ -134,6 +134,15 @@ export const template = {
     insight:
       'Kabat-Zinn MBSR 프로그램 연구에 따르면, 매일 5분의 마음챙김 호흡 훈련은 8주 후 코르티솔 수치를 평균 19% 감소시킵니다.',
     researchBase: 'Kabat-Zinn MBSR 프로그램',
+    videos: [
+      {
+        videoId: 'inpok4MKVLM',
+        title: '5분 마음챙김 호흡 명상',
+        channelTitle: '명상 채널',
+        thumbnail: 'https://i.ytimg.com/vi/inpok4MKVLM/mqdefault.jpg',
+        reason: '오늘 미션과 직접 연결되는 5분 가이드 명상',
+      },
+    ],
   },
 } satisfies TemplateEntry
 

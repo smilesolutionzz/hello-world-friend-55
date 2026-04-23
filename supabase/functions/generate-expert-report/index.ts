@@ -1480,6 +1480,28 @@ serve(async (req) => {
     };
     const userAge = calculateAge(userInput?.birthDate);
 
+    // ── 사전 검증 게이트 (음수 나이/이상 입력 차단) ──
+    if (userInput?.birthDate && (userAge < 0 || userAge > 120)) {
+      console.warn('잘못된 생년월일 입력:', userInput.birthDate, '→ age:', userAge);
+      return new Response(
+        JSON.stringify({
+          error: 'INVALID_BIRTHDATE',
+          message: '생년월일이 올바르지 않습니다. 다시 확인해주세요.',
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!userInput?.name || !userInput?.birthDate || !userInput?.gender) {
+      return new Response(
+        JSON.stringify({
+          error: 'MISSING_REQUIRED_FIELDS',
+          message: '이름, 생년월일, 성별은 필수 입력 항목입니다.',
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     let preprocessed: PreprocessedData;
 
     if (isWithData) {
@@ -1505,6 +1527,19 @@ serve(async (req) => {
         crossCorrelations: preprocessed.crossCorrelations.length,
         radarDimensions: preprocessed.chartData.radarChart.length,
       });
+
+      // ── 데이터 충분성 검증 (with-data 모드는 최소 3개 데이터 필요) ──
+      if (preprocessed.totalDataPoints < 3) {
+        console.warn('데이터 부족으로 리포트 생성 차단:', preprocessed.totalDataPoints);
+        return new Response(
+          JSON.stringify({
+            error: 'INSUFFICIENT_DATA',
+            message: `종합 리포트 생성에는 최소 3개의 활동 데이터가 필요합니다. 검사·관찰일지·상담 등을 먼저 진행해주세요. (현재 보유 데이터: ${preprocessed.totalDataPoints}개)`,
+            dataPoints: preprocessed.totalDataPoints,
+          }),
+          { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     } else {
       // without-data 모드: 최소 구조 생성
       preprocessed = {
@@ -1524,6 +1559,17 @@ serve(async (req) => {
         concernSummary: { totalConcerns: 0, severityDistribution: {}, topConcernTypes: [], recommendedTests: [] },
         chartData: { radarChart: [], trendLineChart: [], comparisonBarChart: [], riskGauge: { level: '분석 중', score: 50, maxScore: 100 } },
       };
+
+      // without-data 모드도 고민/관찰 노트 중 하나는 필수
+      if (!userInput?.recentConcerns && !userInput?.developmentalNotes) {
+        return new Response(
+          JSON.stringify({
+            error: 'INSUFFICIENT_INPUT',
+            message: '고민·상태 기반 리포트는 "고민이나 걱정거리" 또는 "발달/심리적 특징" 중 하나 이상을 입력해야 생성할 수 있습니다.',
+          }),
+          { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     // ★ 병렬로 연구 검색 + 또래 비교 + 이전 리포트 비교 수행
@@ -1724,6 +1770,32 @@ serve(async (req) => {
 
     if (researchInsights) {
       reportData.researchInsightsContent = researchInsights;
+    }
+
+    // ── 품질 검증: 빈 리포트는 DB에 저장하지 않고 422 반환 ──
+    const validSections = Array.isArray(reportData.sections)
+      ? reportData.sections.filter((section: any) => {
+          const content = typeof section?.content === 'string'
+            ? section.content.replace(/<[^>]*>/g, '').trim()
+            : '';
+          return content.length > 20 && !content.includes('이 섹션의 분석이 생성되지 않았습니다');
+        }).length
+      : 0;
+
+    if (reportData.parseError || validSections === 0) {
+      console.error('리포트 품질 검증 실패 — DB 저장 차단:', {
+        parseError: reportData.parseError,
+        validSections,
+        userId: user.id,
+      });
+      return new Response(
+        JSON.stringify({
+          error: 'REPORT_GENERATION_FAILED',
+          message: 'AI 분석 응답이 올바르지 않습니다. 잠시 후 다시 시도해주세요. (이 시도는 차감되지 않았습니다)',
+          validSections,
+        }),
+        { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // ★ 리포트 이력 저장 (비동기 - 응답 블로킹 안함)

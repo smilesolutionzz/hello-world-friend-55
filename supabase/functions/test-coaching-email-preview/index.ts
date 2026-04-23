@@ -8,7 +8,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const FROM_ADDRESS = "AIHPRO 데일리 코칭 <onboarding@resend.dev>";
+const FROM_ADDRESS = "AIHPRO 데일리 코칭 <coaching@send.aihpro.app>";
+const REPLY_TO = "support@aihpro.app";
 const SITE_URL = "https://aihpro.app";
 
 function buildSampleHtml(nickname: string) {
@@ -65,6 +66,7 @@ serve(async (req) => {
 
     const result = await resend.emails.send({
       from: FROM_ADDRESS,
+      reply_to: REPLY_TO,
       to: [to],
       subject: `[테스트] [Day 07] 스트레스 회복탄력성 - 오늘의 미션`,
       html: buildSampleHtml(nickname || "테스트"),

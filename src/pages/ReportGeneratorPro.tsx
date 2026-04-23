@@ -23,7 +23,7 @@ import {
   LineChart, CheckCircle2, AlertCircle, ArrowRight, Database, Upload,
   ChevronDown, ChevronUp, Eye, Calendar, Crown, Copy, Share2, Mail,
   FileDown, MessageSquare, Lock, ImageIcon, ArrowLeft, Layers, Compass,
-  GraduationCap, FlaskConical, Microscope, Globe
+  GraduationCap, FlaskConical, Microscope, Globe, Check, RefreshCw
 } from 'lucide-react';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
@@ -429,28 +429,68 @@ const ReportGeneratorPro = () => {
                 <Sparkles className="w-5 h-5 text-primary" />
                 <h3 className="text-lg font-bold text-white">{t('대상자 정보 입력', 'Subject Information')}</h3>
               </div>
-              <div className="grid md:grid-cols-3 gap-3">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {t('닉네임 *', 'Nickname *')}</label>
-                  <input type="text" value={userInput.name} onChange={(e) => setUserInput({ ...userInput, name: e.target.value })}
-                    placeholder={t('예: 하늘맘, 별이아빠', 'e.g. SkyMom, StarDad')} className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary text-sm" maxLength={50} />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {t('생년월일 *', 'Date of Birth *')}</label>
-                  <input type="date" value={userInput.birthDate} onChange={(e) => setUserInput({ ...userInput, birthDate: e.target.value })}
-                    className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm" />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {t('성별 *', 'Gender *')}</label>
-                  <select value={userInput.gender} onChange={(e) => setUserInput({ ...userInput, gender: e.target.value })}
-                    className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm [&>option]:bg-slate-800 [&>option]:text-white">
-                    <option value="" className="bg-slate-800 text-white">{t('선택', 'Select')}</option>
-                    <option value={isEnglish ? 'Male' : '남성'} className="bg-slate-800 text-white">{t('남성', 'Male')}</option>
-                    <option value={isEnglish ? 'Female' : '여성'} className="bg-slate-800 text-white">{t('여성', 'Female')}</option>
-                    <option value={isEnglish ? 'Other' : '기타'} className="bg-slate-800 text-white">{t('기타', 'Other')}</option>
-                  </select>
-                </div>
-              </div>
+              {(() => {
+                const today = new Date();
+                const birth = userInput.birthDate ? new Date(userInput.birthDate) : null;
+                const ageMs = birth ? today.getTime() - birth.getTime() : 0;
+                const ageYears = birth ? ageMs / (365.25 * 24 * 60 * 60 * 1000) : 0;
+                const nameError = userInput.name.trim().length > 0 && userInput.name.trim().length < 2
+                  ? t('닉네임은 2자 이상 입력해주세요', 'Nickname must be at least 2 characters')
+                  : '';
+                const birthError = !userInput.birthDate
+                  ? ''
+                  : !birth || isNaN(birth.getTime())
+                    ? t('올바른 날짜 형식이 아닙니다', 'Invalid date format')
+                    : ageMs < 0
+                      ? t('미래 날짜는 입력할 수 없습니다', 'Future date is not allowed')
+                      : ageYears > 120
+                        ? t('120세를 초과하는 날짜는 입력할 수 없습니다', 'Age cannot exceed 120 years')
+                        : '';
+                const showRequiredHint = userInput.name === '' || userInput.birthDate === '' || userInput.gender === '';
+                return (
+                  <>
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {t('닉네임 *', 'Nickname *')}</label>
+                        <input type="text" value={userInput.name} onChange={(e) => setUserInput({ ...userInput, name: e.target.value })}
+                          placeholder={t('예: 하늘맘, 별이아빠', 'e.g. SkyMom, StarDad')}
+                          className={`w-full p-3 bg-white/5 border rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-primary text-sm ${nameError ? 'border-destructive/60' : 'border-white/10'}`}
+                          maxLength={50} />
+                        {nameError && <p className="text-[10px] text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{nameError}</p>}
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {t('생년월일 *', 'Date of Birth *')}</label>
+                        <input type="date" value={userInput.birthDate} onChange={(e) => setUserInput({ ...userInput, birthDate: e.target.value })}
+                          max={new Date().toISOString().split('T')[0]}
+                          className={`w-full p-3 bg-white/5 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm ${birthError ? 'border-destructive/60' : 'border-white/10'}`} />
+                        {birthError
+                          ? <p className="text-[10px] text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{birthError}</p>
+                          : birth && !isNaN(birth.getTime()) && ageMs >= 0 && (
+                            <p className="text-[10px] text-emerald-400/80 flex items-center gap-1">
+                              <Check className="w-3 h-3" />{t(`현재 ${Math.floor(ageYears)}세`, `${Math.floor(ageYears)} years old`)}
+                            </p>
+                          )}
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {t('성별 *', 'Gender *')}</label>
+                        <select value={userInput.gender} onChange={(e) => setUserInput({ ...userInput, gender: e.target.value })}
+                          className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm [&>option]:bg-slate-800 [&>option]:text-white">
+                          <option value="" className="bg-slate-800 text-white">{t('선택', 'Select')}</option>
+                          <option value={isEnglish ? 'Male' : '남성'} className="bg-slate-800 text-white">{t('남성', 'Male')}</option>
+                          <option value={isEnglish ? 'Female' : '여성'} className="bg-slate-800 text-white">{t('여성', 'Female')}</option>
+                          <option value={isEnglish ? 'Other' : '기타'} className="bg-slate-800 text-white">{t('기타', 'Other')}</option>
+                        </select>
+                      </div>
+                    </div>
+                    {showRequiredHint && (
+                      <p className="text-[10px] text-muted-foreground flex items-center gap-1 pt-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {t('* 표시는 필수 입력 항목입니다 (닉네임, 생년월일, 성별)', '* fields are required (Nickname, Date of Birth, Gender)')}
+                      </p>
+                    )}
+                  </>
+                );
+              })()}
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Heart className="w-3.5 h-3.5" /> {t('고민이나 걱정거리', 'Concerns or Worries')} {reportMode === 'without-data' && <span className="text-primary">*</span>}</label>
                 <textarea value={userInput.recentConcerns} onChange={(e) => setUserInput({ ...userInput, recentConcerns: e.target.value })}
@@ -575,6 +615,31 @@ const ReportGeneratorPro = () => {
           onShareReport={(reportId) => {
             setCurrentReportHistoryId(reportId);
             setShowShareModal(true);
+          }}
+          onRegenerateFailed={async (reportId) => {
+            const ok = window.confirm(t(
+              '실패한 리포트를 무료로 재생성합니다. 기존 빈 리포트는 삭제되고 동일한 입력값으로 다시 생성됩니다. 진행할까요?',
+              'This will regenerate the failed report for free. The empty report will be deleted and regenerated with the same inputs. Continue?'
+            ));
+            if (!ok) return;
+            try {
+              const { error: delError } = await supabase
+                .from('premium_report_history')
+                .delete()
+                .eq('id', reportId);
+              if (delError) throw delError;
+              toast({
+                title: t('🔄 재생성 시작', '🔄 Regeneration Started'),
+                description: t('실패한 리포트를 삭제하고 재생성합니다.', 'Deleting failed report and regenerating.'),
+              });
+              await generateReport();
+            } catch (e: any) {
+              toast({
+                title: t('재생성 실패', 'Regeneration Failed'),
+                description: e?.message || t('잠시 후 다시 시도해주세요.', 'Please try again later.'),
+                variant: 'destructive',
+              });
+            }
           }}
         />
 

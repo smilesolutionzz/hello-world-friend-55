@@ -5,12 +5,22 @@ import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, CheckCircle2, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 
+interface FailureCase {
+  id: string;
+  user_id: string;
+  created_at: string;
+  reason: string;
+  detail: string;
+  validSections: number;
+  totalSections: number;
+}
+
 interface QualityStats {
   total: number;
   failed: number;
   failureRate: number;
   avgSections: number;
-  recentFailures: Array<{ id: string; user_id: string; created_at: string; reason: string }>;
+  recentFailures: FailureCase[];
 }
 
 export function ReportQualityCard() {
@@ -33,7 +43,7 @@ export function ReportQualityCard() {
       }
 
       let totalSections = 0;
-      const failures: QualityStats['recentFailures'] = [];
+      const failures: FailureCase[] = [];
 
       data.forEach((r: any) => {
         const rd = r.report_data || {};
@@ -44,12 +54,28 @@ export function ReportQualityCard() {
         }).length;
         totalSections += validCount;
 
-        if (rd.parseError === true || validCount === 0) {
+        const isFailed = rd.parseError === true || validCount === 0;
+        if (isFailed) {
+          let reason = 'unknown';
+          let detail = '';
+          if (rd.parseError === true) {
+            reason = 'parseError';
+            detail = rd.parseErrorMessage || rd.errorMessage || 'AI 응답 JSON 파싱 실패';
+          } else if (sections.length === 0) {
+            reason = 'no sections';
+            detail = '리포트에 섹션 데이터가 전혀 없음';
+          } else {
+            reason = 'empty content';
+            detail = `${sections.length}개 섹션 중 유효한 본문 0개 (placeholder만 저장됨)`;
+          }
           failures.push({
             id: r.id,
             user_id: r.user_id,
             created_at: r.created_at,
-            reason: rd.parseError ? 'parseError' : 'empty sections',
+            reason,
+            detail,
+            validSections: validCount,
+            totalSections: sections.length,
           });
         }
       });
@@ -59,7 +85,7 @@ export function ReportQualityCard() {
         failed: failures.length,
         failureRate: data.length > 0 ? Math.round((failures.length / data.length) * 100) : 0,
         avgSections: data.length > 0 ? Math.round((totalSections / data.length) * 10) / 10 : 0,
-        recentFailures: failures.slice(0, 10),
+        recentFailures: failures.slice(0, 15),
       });
       setLoading(false);
     };
@@ -115,20 +141,33 @@ export function ReportQualityCard() {
 
         {stats.recentFailures.length > 0 && (
           <div>
-            <div className="text-xs font-semibold text-gray-700 mb-2">최근 실패 케이스</div>
-            <div className="space-y-1.5">
+            <div className="text-xs font-semibold text-gray-700 mb-2">
+              최근 실패 케이스 ({stats.recentFailures.length}건)
+            </div>
+            <div className="space-y-2 max-h-96 overflow-y-auto">
               {stats.recentFailures.map(f => (
-                <div key={f.id} className="flex items-center justify-between text-[11px] bg-red-50 px-3 py-2 rounded">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <AlertTriangle className="h-3 w-3 text-red-500 flex-shrink-0" />
-                    <span className="font-mono text-gray-600 truncate">{f.user_id.slice(0, 8)}…</span>
-                    <Badge variant="outline" className="text-[10px] border-red-200 text-red-700">
-                      {f.reason}
-                    </Badge>
+                <div key={f.id} className="text-[11px] bg-red-50 border border-red-100 px-3 py-2 rounded-md">
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <AlertTriangle className="h-3 w-3 text-red-500 flex-shrink-0" />
+                      <Badge variant="outline" className="text-[10px] border-red-300 text-red-700 bg-white">
+                        {f.reason}
+                      </Badge>
+                      <span className="font-mono text-gray-500 truncate" title={f.user_id}>
+                        {f.user_id.slice(0, 8)}…
+                      </span>
+                    </div>
+                    <span className="text-gray-500 flex-shrink-0 font-mono">
+                      {format(new Date(f.created_at), 'MM/dd HH:mm:ss')}
+                    </span>
                   </div>
-                  <span className="text-gray-500 flex-shrink-0">
-                    {format(new Date(f.created_at), 'MM/dd HH:mm')}
-                  </span>
+                  <div className="text-gray-700 leading-relaxed pl-5">
+                    {f.detail}
+                  </div>
+                  <div className="flex items-center gap-3 mt-1 pl-5 text-[10px] text-gray-500">
+                    <span>유효 섹션: <strong className="text-gray-700">{f.validSections}/{f.totalSections}</strong></span>
+                    <span className="font-mono text-gray-400" title={f.id}>id: {f.id.slice(0, 8)}…</span>
+                  </div>
                 </div>
               ))}
             </div>

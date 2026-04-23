@@ -13,6 +13,7 @@ import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 import html2pdf from 'html2pdf.js';
 import ReportHistoryList from '@/components/report/ReportHistoryList';
 import ReportShareModal from '@/components/report/ReportShareModal';
+import ReportEmailButton from '@/components/report/ReportEmailButton';
 import ReportCurationSection from '@/components/report/ReportCurationSection';
 import VisualSummaryButton from '@/components/visual-summary/VisualSummaryButton';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -578,10 +579,20 @@ const ReportGeneratorPro = () => {
         />
 
         {reportData && (
-          <ReportProOutput
-            reportData={reportData}
-            userInput={userInput}
-          />
+          <>
+            <ReportProOutput
+              reportData={reportData}
+              userInput={userInput}
+            />
+            <div className="max-w-4xl mx-auto mt-6 flex flex-wrap gap-3 justify-center">
+              <ReportEmailButton
+                reportHistoryId={currentReportHistoryId || undefined}
+                reportTitle={reportData?.title || (userInput.name ? `${userInput.name}의 심리 분석 리포트` : '프리미엄 분석 리포트')}
+                variant="default"
+                className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 text-white font-semibold"
+              />
+            </div>
+          </>
         )}
 
         {/* ── 리포트 구성 안내 (프리미엄 사용자: 하단 배치) ── */}

@@ -289,6 +289,12 @@ const Profile = () => {
           path: "/my-journey",
         },
         {
+          icon: Bell,
+          label: "코칭 영상 추천 설정",
+          desc: "관심 주제·난이도·영상 길이",
+          path: "/coaching-preferences",
+        },
+        {
           icon: CreditCard,
           label: isSubscriber ? "구독 관리" : "이용권 구매",
           desc: isSubscriber ? "프리미엄 이용중" : "검사 이용권 충전",

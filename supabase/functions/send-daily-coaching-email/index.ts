@@ -13,49 +13,131 @@ const log = (step: string, details?: any) => {
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const YOUTUBE_API_KEY = Deno.env.get("YOUTUBE_API_KEY");
 
+const DUPLICATE_WINDOW_DAYS = 14;
+const MIN_VIEW_COUNT = 10_000;
+const MAX_DURATION_SECONDS = 20 * 60;
+const MIN_DURATION_SECONDS = 60;
+
 interface YouTubeVideo {
   videoId: string;
   title: string;
   channelTitle: string;
   thumbnail: string;
   reason: string;
+  viewCount?: number;
+  durationSeconds?: number;
+}
+
+interface VideoPreferences {
+  interest_topics: string[];
+  difficulty_level: string;
+  preferred_duration: string;
+  language: string;
 }
 
 const CATEGORY_SEARCH_TERMS: Record<string, string[]> = {
-  depression: ["우울증 극복 방법", "행동 활성화 우울"],
-  anxiety: ["불안 완화 호흡법", "공황 대처 명상"],
-  sleep: ["수면 위생 CBT-I", "잠 잘오는 방법"],
-  adhd: ["성인 ADHD 집중력", "포모도로 시간관리"],
-  parenting: ["정서 코칭 양육법", "아이 감정 코칭"],
-  stress: ["마음챙김 명상 5분", "스트레스 해소 호흡"],
-  self_esteem: ["자기 자비 명상", "자존감 회복"],
+  depression: ["우울증 극복 방법", "행동 활성화 우울", "우울감 자기돌봄 루틴"],
+  anxiety: ["불안 완화 호흡법", "공황 대처 명상", "사회불안 인지행동치료"],
+  sleep: ["수면 위생 CBT-I", "잠 잘오는 방법", "수면 명상 가이드"],
+  adhd: ["성인 ADHD 집중력", "포모도로 시간관리", "ADHD 실행기능 훈련"],
+  parenting: ["정서 코칭 양육법", "아이 감정 코칭", "부모 자녀 의사소통"],
+  stress: ["마음챙김 명상 5분", "스트레스 해소 호흡", "이완 명상 가이드"],
+  self_esteem: ["자기 자비 명상", "자존감 회복", "긍정 심리 훈련"],
 };
 
-async function fetchYouTubeVideos(category: string, mission: string): Promise<YouTubeVideo[]> {
-  if (!YOUTUBE_API_KEY) return [];
-  const terms = CATEGORY_SEARCH_TERMS[category] || CATEGORY_SEARCH_TERMS.stress;
-  const videos: YouTubeVideo[] = [];
+const DURATION_LIMITS: Record<string, number> = {
+  short: 10 * 60,
+  medium: 20 * 60,
+  long: 45 * 60,
+};
 
-  for (const term of terms.slice(0, 2)) {
+function parseISO8601Duration(iso: string): number {
+  const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!m) return 0;
+  const h = parseInt(m[1] || "0"), mn = parseInt(m[2] || "0"), s = parseInt(m[3] || "0");
+  return h * 3600 + mn * 60 + s;
+}
+
+async function searchYouTube(query: string, language = "ko", maxResults = 6): Promise<string[]> {
+  const regionCode = language === "en" ? "US" : "KR";
+  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=${maxResults}&relevanceLanguage=${language}&regionCode=${regionCode}&order=relevance&safeSearch=strict&videoEmbeddable=true&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}`;
+  const r = await fetch(url);
+  if (!r.ok) return [];
+  const j = await r.json();
+  return (j.items || []).map((i: any) => i.id?.videoId).filter(Boolean);
+}
+
+async function fetchVideoDetails(ids: string[]): Promise<any[]> {
+  if (ids.length === 0) return [];
+  const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${ids.join(",")}&key=${YOUTUBE_API_KEY}`;
+  const r = await fetch(url);
+  if (!r.ok) return [];
+  const j = await r.json();
+  return j.items || [];
+}
+
+async function fetchYouTubeVideos(
+  category: string,
+  mission: string,
+  excludeVideoIds: Set<string>,
+  prefs: VideoPreferences,
+): Promise<YouTubeVideo[]> {
+  if (!YOUTUBE_API_KEY) return [];
+
+  const baseTerms = CATEGORY_SEARCH_TERMS[category] || CATEGORY_SEARCH_TERMS.stress;
+  const interestBoost = (prefs.interest_topics || []).slice(0, 2);
+  const levelHint = prefs.difficulty_level === "advanced" ? " 심화" : prefs.difficulty_level === "intermediate" ? " 실전" : " 초보";
+  const terms = [...interestBoost.map((t) => `${t}${levelHint}`), ...baseTerms].slice(0, 4);
+  const maxDuration = DURATION_LIMITS[prefs.preferred_duration] ?? MAX_DURATION_SECONDS;
+
+  // Gather candidate video IDs across multiple terms
+  const candidateIds = new Set<string>();
+  const termByVideo = new Map<string, string>();
+  for (const term of terms) {
     try {
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&relevanceLanguage=ko&regionCode=KR&order=relevance&safeSearch=strict&q=${encodeURIComponent(term)}&key=${YOUTUBE_API_KEY}`;
-      const r = await fetch(url);
-      if (!r.ok) continue;
-      const j = await r.json();
-      const item = j.items?.[0];
-      if (!item) continue;
-      videos.push({
-        videoId: item.id.videoId,
-        title: item.snippet.title,
-        channelTitle: item.snippet.channelTitle,
-        thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
-        reason: `오늘 미션 "${mission.slice(0, 30)}..."에 도움이 되는 ${term} 관련 영상`,
-      });
+      const ids = await searchYouTube(term, prefs.language, 5);
+      for (const id of ids) {
+        if (excludeVideoIds.has(id)) continue;
+        if (!candidateIds.has(id)) {
+          candidateIds.add(id);
+          termByVideo.set(id, term);
+        }
+      }
     } catch (e) {
-      log("YouTube fetch error", { term, err: String(e) });
+      log("YouTube search error", { term, err: String(e) });
     }
+    if (candidateIds.size >= 12) break;
   }
-  return videos;
+
+  if (candidateIds.size === 0) return [];
+
+  // Fetch details for quality filtering
+  const details = await fetchVideoDetails([...candidateIds].slice(0, 20));
+
+  const scored: Array<YouTubeVideo & { score: number }> = [];
+  for (const item of details) {
+    const id = item.id;
+    const views = parseInt(item.statistics?.viewCount || "0");
+    const duration = parseISO8601Duration(item.contentDetails?.duration || "PT0S");
+    if (views < MIN_VIEW_COUNT) continue;
+    if (duration < MIN_DURATION_SECONDS || duration > maxDuration) continue;
+
+    const term = termByVideo.get(id) || baseTerms[0];
+    const score = Math.log10(views + 1) * 10 + (duration <= 600 ? 5 : 0);
+    scored.push({
+      videoId: id,
+      title: item.snippet.title,
+      channelTitle: item.snippet.channelTitle,
+      thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+      reason: `오늘 미션 "${mission.slice(0, 28)}…"을 ${Math.round(duration / 60)}분 안에 익히도록 도와주는 ${term} 가이드`,
+      viewCount: views,
+      durationSeconds: duration,
+      score,
+    });
+  }
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, 2).map(({ score, ...v }) => v);
 }
 
 interface GoalRow {
@@ -79,16 +161,29 @@ const CATEGORY_META: Record<string, { label: string; focus: string; researchBase
   self_esteem: { label: "자존감 강화", focus: "자기 자비 (Self-Compassion) 훈련", researchBase: "Neff & Germer (2013) MSC 프로그램" },
 };
 
-async function generateCoachingContent(goal: GoalRow): Promise<{ mission: string; insight: string }> {
+interface CoachingContent {
+  missionSummary: string;
+  mission: string;
+  keyActions: string[];
+  insight: string;
+}
+
+async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> {
   const meta = CATEGORY_META[goal.goal_category] || CATEGORY_META.stress;
   const dayNumber = goal.current_day + 1;
 
-  if (!LOVABLE_API_KEY) {
-    return {
-      mission: `오늘은 ${meta.focus}의 첫 단계로, 5분간 호흡에 집중하며 현재 감정을 1~10점으로 기록해보세요.`,
-      insight: `${meta.researchBase}에 따르면, 매일 짧은 자기 관찰 기록은 30일 후 ${goal.goal_category} 관련 증상을 평균 23% 완화시킵니다.`,
-    };
-  }
+  const fallback: CoachingContent = {
+    missionSummary: `${meta.label} Day ${dayNumber} — 오늘은 5분 자기관찰`,
+    mission: `${meta.focus}의 일환으로, 5분간 호흡에 집중하며 현재 감정 강도를 1~10점으로 기록해보세요.`,
+    keyActions: [
+      "타이머 5분 설정 후 조용한 자리 확보",
+      "호흡에만 집중하며 감정 강도 기록",
+      "끝난 뒤 한 줄 일지로 변화 메모",
+    ],
+    insight: `${meta.researchBase}에 따르면 일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.`,
+  };
+
+  if (!LOVABLE_API_KEY) return fallback;
 
   try {
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -97,26 +192,53 @@ async function generateCoachingContent(goal: GoalRow): Promise<{ mission: string
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
-          { role: "system", content: `당신은 임상심리학 박사급 코치입니다. AIHPRO 플랫폼의 데일리 코칭 메일을 작성합니다.\n근거 기반(EBT)이고 전문적이며, 의료 진단 표현은 피하고 "발달 코칭" 톤을 유지하세요.\n한국어로 작성하며, 절대 이모지를 사용하지 마세요.` },
-          { role: "user", content: `사용자 정보:\n- 코칭 목표: ${meta.label}\n- 진행 일차: Day ${dayNumber} / ${goal.total_days}\n- 핵심 접근법: ${meta.focus}\n- 근거: ${meta.researchBase}\n- 사용자 추가 설명: ${goal.goal_description || "없음"}\n\n다음 JSON 형식으로 출력하세요:\n{\n  "mission": "오늘 사용자가 5분 안에 실행할 수 있는 구체적 미션 1개 (200자 이내)",\n  "insight": "이 미션이 효과적인 임상적 근거 1문단 (300자 이내, 연구 인용 포함)"\n}` },
+          { role: "system", content: `당신은 임상심리학 박사급 코치입니다. AIHPRO 플랫폼의 데일리 코칭 메일을 작성합니다.\n근거 기반(EBT)이고 전문적이며, 의료 진단 표현은 피하고 "발달 코칭" 톤을 유지하세요.\n한국어, 이모지 절대 사용 금지.` },
+          { role: "user", content: `사용자 정보:\n- 코칭 목표: ${meta.label}\n- 진행 일차: Day ${dayNumber} / ${goal.total_days}\n- 핵심 접근법: ${meta.focus}\n- 근거: ${meta.researchBase}\n- 사용자 추가 설명: ${goal.goal_description || "없음"}\n\n다음 JSON 형식으로 출력:\n{\n  "missionSummary": "오늘 미션을 한 줄로 요약 (40자 이내, 동기부여 톤)",\n  "mission": "오늘 5분 안에 실행할 구체적 미션 (200자 이내)",\n  "keyActions": ["행동1 (15자 이내)", "행동2 (15자 이내)", "행동3 (15자 이내)"],\n  "insight": "이 미션이 효과적인 임상적 근거 (300자 이내, 연구 인용 포함)"\n}` },
         ],
         response_format: { type: "json_object" },
       }),
     });
     if (!resp.ok) throw new Error(`AI ${resp.status}`);
     const data = await resp.json();
-    const content = JSON.parse(data.choices[0].message.content);
+    const c = JSON.parse(data.choices[0].message.content);
     return {
-      mission: content.mission || "오늘의 미션",
-      insight: content.insight || meta.researchBase,
+      missionSummary: c.missionSummary || fallback.missionSummary,
+      mission: c.mission || fallback.mission,
+      keyActions: Array.isArray(c.keyActions) && c.keyActions.length >= 3 ? c.keyActions.slice(0, 3) : fallback.keyActions,
+      insight: c.insight || fallback.insight,
     };
   } catch (err) {
     log("AI fallback", { err: String(err) });
-    return {
-      mission: `${meta.focus}의 일환으로, 5분간 호흡에 집중하며 현재 감정 강도를 1~10점으로 기록해보세요.`,
-      insight: `${meta.researchBase}에 따르면 일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.`,
-    };
+    return fallback;
   }
+}
+
+async function loadExcludedVideoIds(supa: any, userId: string): Promise<Set<string>> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - DUPLICATE_WINDOW_DAYS);
+  const { data } = await supa.from("daily_coaching_video_history")
+    .select("video_id")
+    .eq("user_id", userId)
+    .gte("sent_date", cutoff.toISOString().slice(0, 10));
+  return new Set((data || []).map((r: any) => r.video_id));
+}
+
+async function loadPreferences(supa: any, userId: string): Promise<VideoPreferences> {
+  const { data } = await supa.from("user_video_preferences")
+    .select("interest_topics,difficulty_level,preferred_duration,language")
+    .eq("user_id", userId).maybeSingle();
+  return {
+    interest_topics: data?.interest_topics || [],
+    difficulty_level: data?.difficulty_level || "beginner",
+    preferred_duration: data?.preferred_duration || "short",
+    language: data?.language || "ko",
+  };
+}
+
+async function recordVideoHistory(supa: any, userId: string, category: string, videos: YouTubeVideo[], todayStr: string) {
+  if (videos.length === 0) return;
+  const rows = videos.map((v) => ({ user_id: userId, video_id: v.videoId, category, sent_date: todayStr }));
+  await supa.from("daily_coaching_video_history").insert(rows);
 }
 
 serve(async (req) => {
@@ -130,7 +252,6 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Optional manual override: { test_email?: string, test_user_id?: string }
     let testEmail: string | undefined;
     let testUserId: string | undefined;
     try {
@@ -144,7 +265,6 @@ serve(async (req) => {
     const today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
     const todayStr = today.toISOString().slice(0, 10);
 
-    // TEST MODE: send a sample to a single address without DB updates
     if (testEmail) {
       const sampleGoal: GoalRow = {
         id: "test", user_id: "test", goal_category: "stress", goal_description: null,
@@ -152,7 +272,8 @@ serve(async (req) => {
       };
       const meta = CATEGORY_META.stress;
       const content = await generateCoachingContent(sampleGoal);
-      const videos = await fetchYouTubeVideos(sampleGoal.goal_category, content.mission);
+      const prefs: VideoPreferences = { interest_topics: [], difficulty_level: "beginner", preferred_duration: "short", language: "ko" };
+      const videos = await fetchYouTubeVideos(sampleGoal.goal_category, content.mission, new Set(), prefs);
       const { error: invokeErr } = await supa.functions.invoke('send-transactional-email', {
         body: {
           templateName: 'daily-coaching',
@@ -160,18 +281,20 @@ serve(async (req) => {
           idempotencyKey: `daily-coaching-test-${Date.now()}`,
           templateData: {
             nickname: '테스트', dayNumber: 7, totalDays: 30,
-            categoryLabel: meta.label, mission: content.mission,
+            categoryLabel: meta.label,
+            missionSummary: content.missionSummary,
+            mission: content.mission,
+            keyActions: content.keyActions,
             insight: content.insight, researchBase: meta.researchBase,
             videos,
           },
         },
       });
       if (invokeErr) throw invokeErr;
-      return new Response(JSON.stringify({ success: true, mode: 'test', to: testEmail }),
+      return new Response(JSON.stringify({ success: true, mode: 'test', to: testEmail, videoCount: videos.length }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Active coaching goals
     let query = supa.from("user_coaching_goals")
       .select("id,user_id,goal_category,goal_description,target_age_group,current_day,total_days,start_date")
       .eq("is_active", true)
@@ -182,12 +305,10 @@ serve(async (req) => {
     const { data: goals, error: goalsErr } = await query;
     if (goalsErr) throw goalsErr;
     if (!goals || goals.length === 0) {
-      log("No active goals");
       return new Response(JSON.stringify({ success: true, sent: 0, message: "No active goals" }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    log("Active goals", { count: goals.length });
     let sent = 0, failed = 0, skipped = 0;
 
     for (const goal of goals as GoalRow[]) {
@@ -215,7 +336,14 @@ serve(async (req) => {
 
         const meta = CATEGORY_META[goal.goal_category] || CATEGORY_META.stress;
         const content = await generateCoachingContent(goal);
-        const videos = await fetchYouTubeVideos(goal.goal_category, content.mission);
+
+        const [excluded, prefs] = await Promise.all([
+          loadExcludedVideoIds(supa, goal.user_id),
+          loadPreferences(supa, goal.user_id),
+        ]);
+        const videos = await fetchYouTubeVideos(goal.goal_category, content.mission, excluded, prefs);
+        await recordVideoHistory(supa, goal.user_id, goal.goal_category, videos, todayStr);
+
         const dayNumber = goal.current_day + 1;
         const subject = `[Day ${String(dayNumber).padStart(2, '0')}] ${meta.label} - 오늘의 미션`;
 
@@ -226,7 +354,10 @@ serve(async (req) => {
             idempotencyKey: `daily-coaching-${goal.id}-${todayStr}`,
             templateData: {
               nickname, dayNumber, totalDays: goal.total_days,
-              categoryLabel: meta.label, mission: content.mission,
+              categoryLabel: meta.label,
+              missionSummary: content.missionSummary,
+              mission: content.mission,
+              keyActions: content.keyActions,
               insight: content.insight, researchBase: meta.researchBase,
               videos,
             },

@@ -3330,6 +3330,33 @@ export type Database = {
           },
         ]
       }
+      daily_coaching_video_history: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          sent_date: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          sent_date?: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          sent_date?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: []
+      }
       development_goals: {
         Row: {
           category: string
@@ -12782,6 +12809,36 @@ export type Database = {
           referral_bonus?: number | null
           total_purchased?: number
           total_used?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_video_preferences: {
+        Row: {
+          created_at: string
+          difficulty_level: string
+          interest_topics: string[]
+          language: string
+          preferred_duration: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty_level?: string
+          interest_topics?: string[]
+          language?: string
+          preferred_duration?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          difficulty_level?: string
+          interest_topics?: string[]
+          language?: string
+          preferred_duration?: string
           updated_at?: string
           user_id?: string
         }

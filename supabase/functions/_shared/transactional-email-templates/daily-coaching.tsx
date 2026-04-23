@@ -30,7 +30,9 @@ interface DailyCoachingProps {
   dayNumber?: number
   totalDays?: number
   categoryLabel?: string
+  missionSummary?: string
   mission?: string
+  keyActions?: string[]
   insight?: string
   researchBase?: string
   videos?: YouTubeVideoData[]
@@ -41,7 +43,9 @@ const DailyCoachingEmail = ({
   dayNumber = 1,
   totalDays = 30,
   categoryLabel = '스트레스 회복탄력성',
+  missionSummary = '오늘 5분으로 마음을 정돈하기',
   mission = '오늘은 5분간 호흡에 집중하며 현재 감정 강도를 1~10점으로 기록해보세요.',
+  keyActions = ['타이머 5분 설정', '호흡에 주의 집중', '전·후 감정 점수 기록'],
   insight = '일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.',
   researchBase = 'Kabat-Zinn MBSR 프로그램',
   videos = [],
@@ -69,20 +73,39 @@ const DailyCoachingEmail = ({
             <Section style={{ ...progressFill, width: `${progressPct}%` }} />
           </Section>
 
+          <Section style={summaryBlock}>
+            <Text style={summaryEyebrow}>오늘의 한 줄</Text>
+            <Text style={summaryText}>{missionSummary}</Text>
+          </Section>
+
           <Section style={missionBlock}>
             <Text style={sectionLabel}>01 · 오늘의 미션</Text>
             <Text style={missionText}>{mission}</Text>
           </Section>
 
+          <Section style={actionsBlock}>
+            <Text style={sectionLabel}>02 · 핵심 행동 3</Text>
+            {keyActions.slice(0, 3).map((a, i) => (
+              <table key={i} cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '8px' }}>
+                <tbody>
+                  <tr>
+                    <td style={actionNumber}>{i + 1}</td>
+                    <td style={actionText}>{a}</td>
+                  </tr>
+                </tbody>
+              </table>
+            ))}
+          </Section>
+
           <Section style={insightBlock}>
-            <Text style={sectionLabel}>02 · 임상적 근거</Text>
+            <Text style={sectionLabel}>03 · 임상적 근거</Text>
             <Text style={insightText}>{insight}</Text>
             <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
           </Section>
 
           {videos && videos.length > 0 && (
             <Section style={videosBlock}>
-              <Text style={sectionLabel}>03 · 오늘의 추천 영상</Text>
+              <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
               {videos.map((v) => (
                 <Link key={v.videoId} href={`https://www.youtube.com/watch?v=${v.videoId}`} style={videoCard}>
                   <table cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -129,8 +152,10 @@ export const template = {
     dayNumber: 7,
     totalDays: 30,
     categoryLabel: '스트레스 회복탄력성',
+    missionSummary: '5분 호흡으로 오늘의 긴장을 풀어내기',
     mission:
       '오늘은 마음챙김 호흡을 5분간 시도하고, 호흡 전후의 긴장감을 1~10점으로 기록해보세요.',
+    keyActions: ['타이머 5분 설정하기', '호흡에만 주의 집중', '전·후 긴장도 점수 기록'],
     insight:
       'Kabat-Zinn MBSR 프로그램 연구에 따르면, 매일 5분의 마음챙김 호흡 훈련은 8주 후 코르티솔 수치를 평균 19% 감소시킵니다.',
     researchBase: 'Kabat-Zinn MBSR 프로그램',
@@ -281,3 +306,9 @@ const videoReason = {
   lineHeight: 1.5,
   margin: 0,
 }
+const summaryBlock = { background: '#0f172a', borderRadius: '12px', padding: '18px 20px', margin: '0 0 24px' }
+const summaryEyebrow = { fontSize: '11px', letterSpacing: '0.16em', color: '#94a3b8', textTransform: 'uppercase' as const, margin: '0 0 6px' }
+const summaryText = { fontSize: '17px', fontWeight: 600, color: '#ffffff', lineHeight: 1.5, margin: 0 }
+const actionsBlock = { margin: '0 0 28px' }
+const actionNumber = { width: '22px', height: '22px', borderRadius: '99px', background: '#0f172a', color: '#ffffff', fontSize: '11px', fontWeight: 600, textAlign: 'center' as const, verticalAlign: 'top' as const, paddingTop: '3px' }
+const actionText = { fontSize: '14px', color: '#0f172a', lineHeight: 1.5, paddingLeft: '10px', verticalAlign: 'top' as const }

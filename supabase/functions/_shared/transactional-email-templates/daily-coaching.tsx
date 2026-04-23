@@ -152,8 +152,10 @@ export const template = {
     dayNumber: 7,
     totalDays: 30,
     categoryLabel: '스트레스 회복탄력성',
+    missionSummary: '5분 호흡으로 오늘의 긴장을 풀어내기',
     mission:
       '오늘은 마음챙김 호흡을 5분간 시도하고, 호흡 전후의 긴장감을 1~10점으로 기록해보세요.',
+    keyActions: ['타이머 5분 설정하기', '호흡에만 주의 집중', '전·후 긴장도 점수 기록'],
     insight:
       'Kabat-Zinn MBSR 프로그램 연구에 따르면, 매일 5분의 마음챙김 호흡 훈련은 8주 후 코르티솔 수치를 평균 19% 감소시킵니다.',
     researchBase: 'Kabat-Zinn MBSR 프로그램',

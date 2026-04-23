@@ -110,13 +110,15 @@ export const PostSignupOnboarding: React.FC<PostSignupOnboardingProps> = ({
       
       toast({
         title: '✅ 프로필 설정 완료!',
-        description: '맞춤형 분석이 준비되었습니다.',
+        description: '맞춤 고민 리포트로 이동합니다.',
       });
       onClose();
+      onComplete?.();
     } catch (err) {
       console.error('Onboarding save error:', err);
       localStorage.setItem('onboarding_completed', 'true');
       onClose();
+      onComplete?.();
     } finally {
       setSaving(false);
     }

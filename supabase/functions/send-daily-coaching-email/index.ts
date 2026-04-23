@@ -152,6 +152,7 @@ serve(async (req) => {
       };
       const meta = CATEGORY_META.stress;
       const content = await generateCoachingContent(sampleGoal);
+      const videos = await fetchYouTubeVideos(sampleGoal.goal_category, content.mission);
       const { error: invokeErr } = await supa.functions.invoke('send-transactional-email', {
         body: {
           templateName: 'daily-coaching',
@@ -161,6 +162,7 @@ serve(async (req) => {
             nickname: '테스트', dayNumber: 7, totalDays: 30,
             categoryLabel: meta.label, mission: content.mission,
             insight: content.insight, researchBase: meta.researchBase,
+            videos,
           },
         },
       });

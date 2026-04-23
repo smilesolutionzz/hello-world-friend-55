@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Calendar, TrendingUp, ChevronDown, ChevronUp, Eye, Share2, BarChart3 } from 'lucide-react';
+import { FileText, Calendar, TrendingUp, ChevronDown, ChevronUp, Eye, Share2, BarChart3, RefreshCw, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 interface ReportHistoryItem {
@@ -18,11 +18,14 @@ interface ReportHistoryItem {
   data_source_counts: any;
   is_shared: boolean | null;
   share_count: number | null;
+  is_failed?: boolean;
+  failure_reason?: string;
 }
 
 interface ReportHistoryListProps {
   onViewReport?: (report: any) => void;
   onShareReport?: (reportId: string) => void;
+  onRegenerateFailed?: (reportId: string) => void;
   activeReportId?: string | null;
 }
 
@@ -33,7 +36,7 @@ const RISK_CONFIG: Record<string, { label: string; labelEn: string; color: strin
   critical: { label: '긴급', labelEn: 'Critical', color: 'text-red-800', bg: 'bg-red-200 border-red-300' },
 };
 
-const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onShareReport, activeReportId }) => {
+const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onShareReport, onRegenerateFailed, activeReportId }) => {
   const [reports, setReports] = useState<ReportHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -57,7 +60,23 @@ const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onS
         .order('created_at', { ascending: false })
         .limit(20);
 
-      if (data) setReports(data);
+      if (data) {
+        const enriched = data.map((r: any) => {
+          const rd = r.report_data || {};
+          const sections = Array.isArray(rd.sections) ? rd.sections : [];
+          const validCount = sections.filter((s: any) => {
+            const c = typeof s?.content === 'string' ? s.content.replace(/<[^>]*>/g, '').trim() : '';
+            return c.length > 20 && !c.includes('이 섹션의 분석이 생성되지 않았습니다');
+          }).length;
+          const isFailed = rd.parseError === true || validCount === 0;
+          return {
+            ...r,
+            is_failed: isFailed,
+            failure_reason: isFailed ? (rd.parseError ? 'parseError' : 'empty content') : undefined,
+          };
+        });
+        setReports(enriched);
+      }
     } catch (e) {
       console.error('Failed to load report history:', e);
     } finally {

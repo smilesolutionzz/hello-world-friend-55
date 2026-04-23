@@ -73,20 +73,39 @@ const DailyCoachingEmail = ({
             <Section style={{ ...progressFill, width: `${progressPct}%` }} />
           </Section>
 
+          <Section style={summaryBlock}>
+            <Text style={summaryEyebrow}>오늘의 한 줄</Text>
+            <Text style={summaryText}>{missionSummary}</Text>
+          </Section>
+
           <Section style={missionBlock}>
             <Text style={sectionLabel}>01 · 오늘의 미션</Text>
             <Text style={missionText}>{mission}</Text>
           </Section>
 
+          <Section style={actionsBlock}>
+            <Text style={sectionLabel}>02 · 핵심 행동 3</Text>
+            {keyActions.slice(0, 3).map((a, i) => (
+              <table key={i} cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '8px' }}>
+                <tbody>
+                  <tr>
+                    <td style={actionNumber}>{i + 1}</td>
+                    <td style={actionText}>{a}</td>
+                  </tr>
+                </tbody>
+              </table>
+            ))}
+          </Section>
+
           <Section style={insightBlock}>
-            <Text style={sectionLabel}>02 · 임상적 근거</Text>
+            <Text style={sectionLabel}>03 · 임상적 근거</Text>
             <Text style={insightText}>{insight}</Text>
             <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
           </Section>
 
           {videos && videos.length > 0 && (
             <Section style={videosBlock}>
-              <Text style={sectionLabel}>03 · 오늘의 추천 영상</Text>
+              <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
               {videos.map((v) => (
                 <Link key={v.videoId} href={`https://www.youtube.com/watch?v=${v.videoId}`} style={videoCard}>
                   <table cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse' }}>

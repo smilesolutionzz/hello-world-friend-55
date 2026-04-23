@@ -215,6 +215,7 @@ serve(async (req) => {
 
         const meta = CATEGORY_META[goal.goal_category] || CATEGORY_META.stress;
         const content = await generateCoachingContent(goal);
+        const videos = await fetchYouTubeVideos(goal.goal_category, content.mission);
         const dayNumber = goal.current_day + 1;
         const subject = `[Day ${String(dayNumber).padStart(2, '0')}] ${meta.label} - 오늘의 미션`;
 
@@ -227,6 +228,7 @@ serve(async (req) => {
               nickname, dayNumber, totalDays: goal.total_days,
               categoryLabel: meta.label, mission: content.mission,
               insight: content.insight, researchBase: meta.researchBase,
+              videos,
             },
           },
         });

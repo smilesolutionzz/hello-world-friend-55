@@ -219,7 +219,8 @@ const Index = () => {
           <CopilotBubble />
           <PostSignupOnboarding 
             isOpen={showOnboarding} 
-            onClose={handleOnboardingClose} 
+            onClose={handleOnboardingClose}
+            onComplete={() => navigate('/mind-track')}
           />
           
           {showTrialOnboarding && (

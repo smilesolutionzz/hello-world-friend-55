@@ -63,6 +63,7 @@ const BASELINE_QUESTIONS = [
 export const PostSignupOnboarding: React.FC<PostSignupOnboardingProps> = ({
   isOpen,
   onClose,
+  onComplete,
 }) => {
   const { toast } = useToast();
   const [step, setStep] = useState(0);

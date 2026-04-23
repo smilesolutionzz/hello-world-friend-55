@@ -5,12 +5,22 @@ import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, CheckCircle2, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 
+interface FailureCase {
+  id: string;
+  user_id: string;
+  created_at: string;
+  reason: string;
+  detail: string;
+  validSections: number;
+  totalSections: number;
+}
+
 interface QualityStats {
   total: number;
   failed: number;
   failureRate: number;
   avgSections: number;
-  recentFailures: Array<{ id: string; user_id: string; created_at: string; reason: string }>;
+  recentFailures: FailureCase[];
 }
 
 export function ReportQualityCard() {

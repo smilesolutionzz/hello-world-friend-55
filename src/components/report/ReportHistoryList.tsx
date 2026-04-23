@@ -137,55 +137,89 @@ const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onS
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ delay: idx * 0.05 }}
                   className={`flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 border transition-colors group cursor-pointer ${
-                    activeReportId === report.id ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/5'
+                    report.is_failed
+                      ? 'bg-destructive/10 border-destructive/30'
+                      : activeReportId === report.id ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/5'
                   }`}
-                  onClick={() => onViewReport?.(report)}
+                  onClick={() => !report.is_failed && onViewReport?.(report)}
                 >
                   {/* Report number */}
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center shrink-0">
-                    <span className="text-sm font-bold text-primary">#{report.report_number}</span>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                    report.is_failed ? 'bg-destructive/20' : 'bg-gradient-to-br from-primary/30 to-primary/10'
+                  }`}>
+                    {report.is_failed
+                      ? <AlertTriangle className="w-4 h-4 text-destructive" />
+                      : <span className="text-sm font-bold text-primary">#{report.report_number}</span>}
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-semibold text-foreground truncate">
                         {t(`${report.report_number}차 통합 분석 리포트`, `Report #${report.report_number}`)}
                       </span>
-                      <Badge className={`text-[9px] px-1.5 py-0 border ${r.bg} ${r.color}`}>
-                        {isEnglish ? r.labelEn : r.label}
-                      </Badge>
+                      {report.is_failed ? (
+                        <Badge variant="destructive" className="text-[9px] px-1.5 py-0">
+                          {t('생성 실패', 'Generation Failed')}
+                        </Badge>
+                      ) : (
+                        <Badge className={`text-[9px] px-1.5 py-0 border ${r.bg} ${r.color}`}>
+                          {isEnglish ? r.labelEn : r.label}
+                        </Badge>
+                      )}
                     </div>
-                    <div className="flex items-center gap-3 mt-0.5">
+                    <div className="flex items-center gap-3 mt-0.5 flex-wrap">
                       <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                         <Calendar className="w-3 h-3" /> {dateStr}
                       </span>
-                      {report.overall_score !== null && (
-                        <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                          <TrendingUp className="w-3 h-3" /> {t('종합', 'Score')} {report.overall_score}{t('점', 'pt')}
+                      {report.is_failed ? (
+                        <span className="text-[10px] text-destructive/80">
+                          {t(`사유: ${report.failure_reason} · 무료 재생성 가능`, `Reason: ${report.failure_reason} · Free regeneration available`)}
                         </span>
-                      )}
-                      {report.is_shared && (
-                        <span className="text-[10px] text-primary/70 flex items-center gap-1">
-                          <Share2 className="w-3 h-3" /> {t('공유됨', 'Shared')}
-                        </span>
+                      ) : (
+                        <>
+                          {report.overall_score !== null && (
+                            <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                              <TrendingUp className="w-3 h-3" /> {t('종합', 'Score')} {report.overall_score}{t('점', 'pt')}
+                            </span>
+                          )}
+                          {report.is_shared && (
+                            <span className="text-[10px] text-primary/70 flex items-center gap-1">
+                              <Share2 className="w-3 h-3" /> {t('공유됨', 'Shared')}
+                            </span>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
 
                   {/* Action */}
-                  <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-7 w-7 p-0"
-                      onClick={(e) => { e.stopPropagation(); onShareReport?.(report.id); }}
-                    >
-                      <Share2 className="w-3.5 h-3.5" />
-                    </Button>
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                      <Eye className="w-3.5 h-3.5" />
-                    </Button>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {report.is_failed ? (
+                      <Button
+                        size="sm"
+                        variant="default"
+                        className="h-7 px-2.5 text-[10px] gap-1"
+                        onClick={(e) => { e.stopPropagation(); onRegenerateFailed?.(report.id); }}
+                      >
+                        <RefreshCw className="w-3 h-3" />
+                        {t('무료 재생성', 'Regenerate Free')}
+                      </Button>
+                    ) : (
+                      <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 w-7 p-0"
+                          onClick={(e) => { e.stopPropagation(); onShareReport?.(report.id); }}
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                          <Eye className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               );

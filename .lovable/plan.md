@@ -1,41 +1,47 @@
 
 
 ## 목표
-`tntjr91@kakao.com`으로 데일리 코칭 테스트 이메일을 실제로 발송하기.
+도메인 인증이 완료된 `aihpro.app`을 사용해 `tntjr91@kakao.com`로 데일리 코칭 테스트 이메일 실제 발송.
 
-## 현재 상태
-- 이 프로젝트는 외부 Supabase에 연결되어 있어 **Lovable Emails 메뉴를 사용할 수 없음**
-- 이메일 발송은 **Resend** (이미 `RESEND_API_KEY` 등록됨) 기반
-- 발송 도메인 `notify.aihpro.app`이 Resend에서 **미인증** 상태 → 본인 외 주소로 발송 불가 (403 에러)
+## 작업 내용
 
-## 사용자가 직접 해야 할 일 (DNS 작업, 약 10분)
+### 1. Resend 도메인 상태 검증
+- `aihpro.app` 도메인이 실제로 `verified` 상태인지 Resend API로 확인
+- 미인증 상태면 어떤 레코드가 빠졌는지 정확히 진단
 
-### 1단계 — Resend 대시보드에서 도메인 추가
-1. https://resend.com/domains 접속 (이미 등록된 계정 로그인)
-2. **Add Domain** 클릭
-3. `notify.aihpro.app` 입력 → Region: `Tokyo (ap-northeast-1)` 선택 (한국 사용자에 최적)
-4. Resend가 보여주는 DNS 레코드 4~5개 화면에 표시됨 (TXT 3개 + MX 1개)
+### 2. 발송 함수의 From 주소 변경
+**파일:** `supabase/functions/test-coaching-email-preview/index.ts`
+- 현재: `onboarding@resend.dev` (테스트 도메인, 본인 외 발송 불가)
+- 변경: `AIHPRO 데일리 코칭 <coaching@send.aihpro.app>` (인증된 도메인)
 
-### 2단계 — `aihpro.app` 도메인 등록업체에서 DNS 레코드 추가
-- 가비아/Cloudflare/카페24 등 도메인을 구매한 곳의 관리 페이지 접속
-- Resend가 알려준 TXT, MX 레코드 그대로 복사해서 추가
-  - 예: `notify.aihpro.app` 호스트에 TXT/MX 추가
-- 5분~1시간 후 Resend 대시보드에서 ✅ **Verified** 표시 확인
+> 참고: SPF/DKIM/MX를 `send` 서브도메인에 추가했으므로 `from`은 반드시 `@send.aihpro.app` 사용
 
-### 3단계 — 알려주시면 제가 즉시
-- Resend "Verified" 됐다고 채팅에 알려주기만 하시면
-- 제가 바로 `tntjr91@kakao.com`으로 Day 7 샘플 코칭 이메일 발송
-- 발송 결과(Resend message ID, 카카오 도착 여부) 확인 후 보고
+### 3. 실제 발송 실행
+- `test-coaching-email-preview` 함수를 호출:
+  - `to`: `tntjr91@kakao.com`
+  - `nickname`: `수석님` (기본값 가능)
+- Resend API 응답에서 `id` 확인 → 발송 성공 검증
+- 실패 시 에러 메시지 분석 후 즉시 수정
 
-## 만약 DNS 작업이 어려우신 경우 (대안)
-지금 당장 테스트만 하고 싶으시다면:
-- `tntjr91@kakao.com` 대신 **Resend 계정 가입 시 사용한 본인 이메일 주소**를 알려주세요
-- Resend는 미인증 상태에서도 계정 소유자 이메일로는 발송 허용 (`onboarding@resend.dev` from)
-- 도메인 인증 없이 즉시 실제 코칭 이메일 미리보기 가능
+### 4. 결과 보고
+- 발송 성공: Resend message ID, 도착 예상 시간 안내
+- 카카오 메일은 보통 1~2분 내 도착 (스팸함도 확인 안내)
+- 실패 시: 에러 원인 + 다음 액션 제시
 
-## 기술 메모 (참고용)
-- 발송 함수: `supabase/functions/send-daily-coaching-email/index.ts`
-- 테스트 함수: `supabase/functions/test-coaching-email-preview/index.ts` (이미 배포됨)
-- 크론: `send-daily-coaching-email-8am-kst` (매일 KST 08:00, 활성 상태)
-- 발송 대상 조건: `user_coaching_goals.daily_email_opt_in = true` + 활성 구독
+## 추가 작업 (옵션)
+
+### 본 발송 함수도 동일 도메인으로 통일
+**파일:** `supabase/functions/send-daily-coaching-email/index.ts`
+- 매일 8AM KST 크론 발송도 `coaching@send.aihpro.app`로 통일
+- 이렇게 하면 실제 구독자에게도 같은 브랜드로 발송됨
+
+### 발신자 표시 이름 정리
+- From: `AIHPRO 데일리 코칭 <coaching@send.aihpro.app>`
+- Reply-To: `support@aihpro.app` (선택)
+
+## 기술 메모
+- 발송 도메인: `send.aihpro.app` (서브도메인 — Resend 표준)
+- 인증 레코드: TXT(DKIM) + MX + TXT(SPF) 3종
+- 발송 후 `daily_coaching_email_log` 테이블 기록 없음 (테스트 함수는 로그 미기록)
+- 카카오 메일 도착 확인 후 → 매일 8AM KST 크론으로 정식 운영 시작
 

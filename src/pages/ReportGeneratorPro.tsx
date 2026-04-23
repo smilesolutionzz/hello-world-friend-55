@@ -23,7 +23,7 @@ import {
   LineChart, CheckCircle2, AlertCircle, ArrowRight, Database, Upload,
   ChevronDown, ChevronUp, Eye, Calendar, Crown, Copy, Share2, Mail,
   FileDown, MessageSquare, Lock, ImageIcon, ArrowLeft, Layers, Compass,
-  GraduationCap, FlaskConical, Microscope, Globe
+  GraduationCap, FlaskConical, Microscope, Globe, Check, RefreshCw
 } from 'lucide-react';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,

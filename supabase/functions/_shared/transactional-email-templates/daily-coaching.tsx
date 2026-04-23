@@ -17,6 +17,14 @@ import type { TemplateEntry } from './registry.ts'
 
 const SITE_URL = 'https://aihpro.app'
 
+interface YouTubeVideoData {
+  videoId: string
+  title: string
+  channelTitle: string
+  thumbnail: string
+  reason?: string
+}
+
 interface DailyCoachingProps {
   nickname?: string
   dayNumber?: number
@@ -25,6 +33,7 @@ interface DailyCoachingProps {
   mission?: string
   insight?: string
   researchBase?: string
+  videos?: YouTubeVideoData[]
 }
 
 const DailyCoachingEmail = ({
@@ -35,6 +44,7 @@ const DailyCoachingEmail = ({
   mission = '오늘은 5분간 호흡에 집중하며 현재 감정 강도를 1~10점으로 기록해보세요.',
   insight = '일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.',
   researchBase = 'Kabat-Zinn MBSR 프로그램',
+  videos = [],
 }: DailyCoachingProps) => {
   const progressPct = Math.min(100, Math.round((dayNumber / totalDays) * 100))
   const dayLabel = String(dayNumber).padStart(2, '0')

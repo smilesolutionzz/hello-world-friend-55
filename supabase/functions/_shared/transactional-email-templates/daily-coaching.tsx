@@ -80,6 +80,30 @@ const DailyCoachingEmail = ({
             <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
           </Section>
 
+          {videos && videos.length > 0 && (
+            <Section style={videosBlock}>
+              <Text style={sectionLabel}>03 · 오늘의 추천 영상</Text>
+              {videos.map((v) => (
+                <Link key={v.videoId} href={`https://www.youtube.com/watch?v=${v.videoId}`} style={videoCard}>
+                  <table cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <tbody>
+                      <tr>
+                        <td style={{ width: '140px', verticalAlign: 'top', paddingRight: '14px' }}>
+                          <Img src={v.thumbnail} alt={v.title} width="140" height="80" style={thumbStyle} />
+                        </td>
+                        <td style={{ verticalAlign: 'top' }}>
+                          <Text style={videoTitle}>{v.title}</Text>
+                          <Text style={videoChannel}>{v.channelTitle}</Text>
+                          {v.reason && <Text style={videoReason}>{v.reason}</Text>}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </Link>
+              ))}
+            </Section>
+          )}
+
           <Button href={`${SITE_URL}/observation-log`} style={ctaButton}>
             오늘의 기록 남기기 →
           </Button>

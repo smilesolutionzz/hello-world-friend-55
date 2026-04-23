@@ -8,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const FROM_ADDRESS = "AIHPRO 데일리 코칭 <coaching@send.aihpro.app>";
+const FROM_ADDRESS = "AIHPRO 데일리 코칭 <coaching@aihpro.app>";
 const REPLY_TO = "support@aihpro.app";
 const SITE_URL = "https://aihpro.app";
 

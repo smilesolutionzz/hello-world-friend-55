@@ -123,7 +123,19 @@ async function fetchYouTubeVideos(
     if (duration < MIN_DURATION_SECONDS || duration > maxDuration) continue;
 
     const term = termByVideo.get(id) || baseTerms[0];
-    const score = Math.log10(views + 1) * 10 + (duration <= 600 ? 5 : 0);
+    // Sweet-spot 조회수 선호: 30K~300K 가산점, 1M+ 페널티 (숨은 양질 콘텐츠 발굴)
+    let viewScore: number;
+    if (views >= 30_000 && views <= 300_000) {
+      viewScore = 25; // 중간 조회수대 최우선
+    } else if (views > 300_000 && views <= 1_000_000) {
+      viewScore = 18;
+    } else if (views > 1_000_000) {
+      viewScore = 10; // 너무 인기 영상은 감점
+    } else {
+      viewScore = 12; // 10K~30K
+    }
+    const durationBonus = duration <= 600 ? 5 : duration <= 900 ? 3 : 0;
+    const score = viewScore + durationBonus;
     scored.push({
       videoId: id,
       title: item.snippet.title,

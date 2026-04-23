@@ -30,7 +30,9 @@ interface DailyCoachingProps {
   dayNumber?: number
   totalDays?: number
   categoryLabel?: string
+  missionSummary?: string
   mission?: string
+  keyActions?: string[]
   insight?: string
   researchBase?: string
   videos?: YouTubeVideoData[]
@@ -41,7 +43,9 @@ const DailyCoachingEmail = ({
   dayNumber = 1,
   totalDays = 30,
   categoryLabel = '스트레스 회복탄력성',
+  missionSummary = '오늘 5분으로 마음을 정돈하기',
   mission = '오늘은 5분간 호흡에 집중하며 현재 감정 강도를 1~10점으로 기록해보세요.',
+  keyActions = ['타이머 5분 설정', '호흡에 주의 집중', '전·후 감정 점수 기록'],
   insight = '일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.',
   researchBase = 'Kabat-Zinn MBSR 프로그램',
   videos = [],

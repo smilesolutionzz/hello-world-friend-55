@@ -10,10 +10,20 @@ import {
   Text,
   Button,
   Hr,
+  Img,
+  Link,
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
 
 const SITE_URL = 'https://aihpro.app'
+
+interface YouTubeVideoData {
+  videoId: string
+  title: string
+  channelTitle: string
+  thumbnail: string
+  reason?: string
+}
 
 interface DailyCoachingProps {
   nickname?: string
@@ -23,6 +33,7 @@ interface DailyCoachingProps {
   mission?: string
   insight?: string
   researchBase?: string
+  videos?: YouTubeVideoData[]
 }
 
 const DailyCoachingEmail = ({
@@ -33,6 +44,7 @@ const DailyCoachingEmail = ({
   mission = '오늘은 5분간 호흡에 집중하며 현재 감정 강도를 1~10점으로 기록해보세요.',
   insight = '일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.',
   researchBase = 'Kabat-Zinn MBSR 프로그램',
+  videos = [],
 }: DailyCoachingProps) => {
   const progressPct = Math.min(100, Math.round((dayNumber / totalDays) * 100))
   const dayLabel = String(dayNumber).padStart(2, '0')
@@ -68,6 +80,30 @@ const DailyCoachingEmail = ({
             <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
           </Section>
 
+          {videos && videos.length > 0 && (
+            <Section style={videosBlock}>
+              <Text style={sectionLabel}>03 · 오늘의 추천 영상</Text>
+              {videos.map((v) => (
+                <Link key={v.videoId} href={`https://www.youtube.com/watch?v=${v.videoId}`} style={videoCard}>
+                  <table cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <tbody>
+                      <tr>
+                        <td style={{ width: '140px', verticalAlign: 'top', paddingRight: '14px' }}>
+                          <Img src={v.thumbnail} alt={v.title} width="140" height="80" style={thumbStyle} />
+                        </td>
+                        <td style={{ verticalAlign: 'top' }}>
+                          <Text style={videoTitle}>{v.title}</Text>
+                          <Text style={videoChannel}>{v.channelTitle}</Text>
+                          {v.reason && <Text style={videoReason}>{v.reason}</Text>}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </Link>
+              ))}
+            </Section>
+          )}
+
           <Button href={`${SITE_URL}/observation-log`} style={ctaButton}>
             오늘의 기록 남기기 →
           </Button>
@@ -98,6 +134,15 @@ export const template = {
     insight:
       'Kabat-Zinn MBSR 프로그램 연구에 따르면, 매일 5분의 마음챙김 호흡 훈련은 8주 후 코르티솔 수치를 평균 19% 감소시킵니다.',
     researchBase: 'Kabat-Zinn MBSR 프로그램',
+    videos: [
+      {
+        videoId: 'inpok4MKVLM',
+        title: '5분 마음챙김 호흡 명상',
+        channelTitle: '명상 채널',
+        thumbnail: 'https://i.ytimg.com/vi/inpok4MKVLM/mqdefault.jpg',
+        reason: '오늘 미션과 직접 연결되는 5분 가이드 명상',
+      },
+    ],
   },
 } satisfies TemplateEntry
 
@@ -198,5 +243,41 @@ const footer = {
   fontSize: '11px',
   lineHeight: 1.7,
   color: '#94a3b8',
+  margin: 0,
+}
+const videosBlock = { margin: '0 0 28px' }
+const videoCard = {
+  display: 'block',
+  textDecoration: 'none',
+  color: '#0f172a',
+  background: '#ffffff',
+  border: '1px solid #e2e8f0',
+  borderRadius: '12px',
+  padding: '12px',
+  marginBottom: '10px',
+}
+const thumbStyle = {
+  width: '140px',
+  height: '80px',
+  objectFit: 'cover' as const,
+  borderRadius: '8px',
+  display: 'block',
+}
+const videoTitle = {
+  fontSize: '14px',
+  fontWeight: 600,
+  color: '#0f172a',
+  lineHeight: 1.4,
+  margin: '0 0 4px',
+}
+const videoChannel = {
+  fontSize: '11px',
+  color: '#64748b',
+  margin: '0 0 6px',
+}
+const videoReason = {
+  fontSize: '11px',
+  color: '#94a3b8',
+  lineHeight: 1.5,
   margin: 0,
 }

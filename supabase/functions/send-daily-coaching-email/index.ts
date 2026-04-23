@@ -11,6 +11,52 @@ const log = (step: string, details?: any) => {
 };
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const YOUTUBE_API_KEY = Deno.env.get("YOUTUBE_API_KEY");
+
+interface YouTubeVideo {
+  videoId: string;
+  title: string;
+  channelTitle: string;
+  thumbnail: string;
+  reason: string;
+}
+
+const CATEGORY_SEARCH_TERMS: Record<string, string[]> = {
+  depression: ["우울증 극복 방법", "행동 활성화 우울"],
+  anxiety: ["불안 완화 호흡법", "공황 대처 명상"],
+  sleep: ["수면 위생 CBT-I", "잠 잘오는 방법"],
+  adhd: ["성인 ADHD 집중력", "포모도로 시간관리"],
+  parenting: ["정서 코칭 양육법", "아이 감정 코칭"],
+  stress: ["마음챙김 명상 5분", "스트레스 해소 호흡"],
+  self_esteem: ["자기 자비 명상", "자존감 회복"],
+};
+
+async function fetchYouTubeVideos(category: string, mission: string): Promise<YouTubeVideo[]> {
+  if (!YOUTUBE_API_KEY) return [];
+  const terms = CATEGORY_SEARCH_TERMS[category] || CATEGORY_SEARCH_TERMS.stress;
+  const videos: YouTubeVideo[] = [];
+
+  for (const term of terms.slice(0, 2)) {
+    try {
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&relevanceLanguage=ko&regionCode=KR&order=relevance&safeSearch=strict&q=${encodeURIComponent(term)}&key=${YOUTUBE_API_KEY}`;
+      const r = await fetch(url);
+      if (!r.ok) continue;
+      const j = await r.json();
+      const item = j.items?.[0];
+      if (!item) continue;
+      videos.push({
+        videoId: item.id.videoId,
+        title: item.snippet.title,
+        channelTitle: item.snippet.channelTitle,
+        thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+        reason: `오늘 미션 "${mission.slice(0, 30)}..."에 도움이 되는 ${term} 관련 영상`,
+      });
+    } catch (e) {
+      log("YouTube fetch error", { term, err: String(e) });
+    }
+  }
+  return videos;
+}
 
 interface GoalRow {
   id: string;
@@ -106,6 +152,7 @@ serve(async (req) => {
       };
       const meta = CATEGORY_META.stress;
       const content = await generateCoachingContent(sampleGoal);
+      const videos = await fetchYouTubeVideos(sampleGoal.goal_category, content.mission);
       const { error: invokeErr } = await supa.functions.invoke('send-transactional-email', {
         body: {
           templateName: 'daily-coaching',
@@ -115,6 +162,7 @@ serve(async (req) => {
             nickname: '테스트', dayNumber: 7, totalDays: 30,
             categoryLabel: meta.label, mission: content.mission,
             insight: content.insight, researchBase: meta.researchBase,
+            videos,
           },
         },
       });
@@ -167,6 +215,7 @@ serve(async (req) => {
 
         const meta = CATEGORY_META[goal.goal_category] || CATEGORY_META.stress;
         const content = await generateCoachingContent(goal);
+        const videos = await fetchYouTubeVideos(goal.goal_category, content.mission);
         const dayNumber = goal.current_day + 1;
         const subject = `[Day ${String(dayNumber).padStart(2, '0')}] ${meta.label} - 오늘의 미션`;
 
@@ -179,6 +228,7 @@ serve(async (req) => {
               nickname, dayNumber, totalDays: goal.total_days,
               categoryLabel: meta.label, mission: content.mission,
               insight: content.insight, researchBase: meta.researchBase,
+              videos,
             },
           },
         });

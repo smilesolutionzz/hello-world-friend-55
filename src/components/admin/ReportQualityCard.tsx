@@ -43,7 +43,7 @@ export function ReportQualityCard() {
       }
 
       let totalSections = 0;
-      const failures: QualityStats['recentFailures'] = [];
+      const failures: FailureCase[] = [];
 
       data.forEach((r: any) => {
         const rd = r.report_data || {};
@@ -54,12 +54,28 @@ export function ReportQualityCard() {
         }).length;
         totalSections += validCount;
 
-        if (rd.parseError === true || validCount === 0) {
+        const isFailed = rd.parseError === true || validCount === 0;
+        if (isFailed) {
+          let reason = 'unknown';
+          let detail = '';
+          if (rd.parseError === true) {
+            reason = 'parseError';
+            detail = rd.parseErrorMessage || rd.errorMessage || 'AI 응답 JSON 파싱 실패';
+          } else if (sections.length === 0) {
+            reason = 'no sections';
+            detail = '리포트에 섹션 데이터가 전혀 없음';
+          } else {
+            reason = 'empty content';
+            detail = `${sections.length}개 섹션 중 유효한 본문 0개 (placeholder만 저장됨)`;
+          }
           failures.push({
             id: r.id,
             user_id: r.user_id,
             created_at: r.created_at,
-            reason: rd.parseError ? 'parseError' : 'empty sections',
+            reason,
+            detail,
+            validSections: validCount,
+            totalSections: sections.length,
           });
         }
       });
@@ -69,7 +85,7 @@ export function ReportQualityCard() {
         failed: failures.length,
         failureRate: data.length > 0 ? Math.round((failures.length / data.length) * 100) : 0,
         avgSections: data.length > 0 ? Math.round((totalSections / data.length) * 10) / 10 : 0,
-        recentFailures: failures.slice(0, 10),
+        recentFailures: failures.slice(0, 15),
       });
       setLoading(false);
     };

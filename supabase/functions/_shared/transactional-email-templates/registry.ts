@@ -14,6 +14,7 @@ import { template as mindTrackCompletion } from './mind-track-completion.tsx'
 import { template as b2bDemoConfirm } from './b2b-demo-request-confirmation.tsx'
 import { template as b2bDemoAdmin } from './b2b-demo-request-admin.tsx'
 import { template as dailyCoaching } from './daily-coaching.tsx'
+import { template as reportSummary } from './report-summary-email.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'report-ready-notification': reportReady,
@@ -21,4 +22,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'b2b-demo-request-confirmation': b2bDemoConfirm,
   'b2b-demo-request-admin': b2bDemoAdmin,
   'daily-coaching': dailyCoaching,
+  'report-summary-email': reportSummary,
 }

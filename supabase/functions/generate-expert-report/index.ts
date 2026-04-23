@@ -1480,6 +1480,28 @@ serve(async (req) => {
     };
     const userAge = calculateAge(userInput?.birthDate);
 
+    // ── 사전 검증 게이트 (음수 나이/이상 입력 차단) ──
+    if (userInput?.birthDate && (userAge < 0 || userAge > 120)) {
+      console.warn('잘못된 생년월일 입력:', userInput.birthDate, '→ age:', userAge);
+      return new Response(
+        JSON.stringify({
+          error: 'INVALID_BIRTHDATE',
+          message: '생년월일이 올바르지 않습니다. 다시 확인해주세요.',
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!userInput?.name || !userInput?.birthDate || !userInput?.gender) {
+      return new Response(
+        JSON.stringify({
+          error: 'MISSING_REQUIRED_FIELDS',
+          message: '이름, 생년월일, 성별은 필수 입력 항목입니다.',
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     let preprocessed: PreprocessedData;
 
     if (isWithData) {

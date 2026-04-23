@@ -14,6 +14,7 @@ import {
 interface PostSignupOnboardingProps {
   isOpen: boolean;
   onClose: () => void;
+  onComplete?: () => void;
 }
 
 const CONCERN_OPTIONS = [

@@ -7,7 +7,6 @@ import HeroSection from "@/components/HeroSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
 import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
 import TestimonialSection from "@/components/TestimonialSection";
-import EmotionalHookSection from "@/components/landing/EmotionalHookSection";
 import BackToTop from "@/components/common/BackToTop";
 import SEOHead from "@/components/common/SEOHead";
 import { SkipLink } from "@/components/ui/skip-link";
@@ -30,7 +29,6 @@ import RealFeedbackSection from '@/components/landing/RealFeedbackSection';
 import TrialOnboarding from '@/components/onboarding/TrialOnboarding';
 import { useTrialProfile } from '@/hooks/useTrialProfile';
 import { CopilotBubble } from '@/components/copilot/CopilotBubble';
-import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
 import B2BEntryBanner from '@/components/landing/B2BEntryBanner';
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 

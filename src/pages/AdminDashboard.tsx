@@ -20,6 +20,7 @@ import AdminTokenAdd from '@/components/AdminTokenAdd';
 import { AdminBookingManagement } from '@/components/admin/AdminBookingManagement';
 import { AdminPaymentManager } from '@/components/admin/AdminPaymentManager';
 import { AdminOverviewPanel } from '@/components/admin/AdminOverviewPanel';
+import { ReportQualityCard } from '@/components/admin/ReportQualityCard';
 import { AdminUserActivityTracker } from '@/components/admin/AdminUserActivityTracker';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
@@ -122,7 +123,8 @@ export default function AdminDashboard() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview">
+          <TabsContent value="overview" className="space-y-4">
+            <ReportQualityCard key={`rq-${refreshKey}`} />
             <AdminOverviewPanel key={refreshKey} />
           </TabsContent>
           <TabsContent value="activity"><AdminUserActivityTracker /></TabsContent>

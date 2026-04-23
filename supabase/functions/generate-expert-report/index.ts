@@ -1772,6 +1772,32 @@ serve(async (req) => {
       reportData.researchInsightsContent = researchInsights;
     }
 
+    // ── 품질 검증: 빈 리포트는 DB에 저장하지 않고 422 반환 ──
+    const validSections = Array.isArray(reportData.sections)
+      ? reportData.sections.filter((section: any) => {
+          const content = typeof section?.content === 'string'
+            ? section.content.replace(/<[^>]*>/g, '').trim()
+            : '';
+          return content.length > 20 && !content.includes('이 섹션의 분석이 생성되지 않았습니다');
+        }).length
+      : 0;
+
+    if (reportData.parseError || validSections === 0) {
+      console.error('리포트 품질 검증 실패 — DB 저장 차단:', {
+        parseError: reportData.parseError,
+        validSections,
+        userId: user.id,
+      });
+      return new Response(
+        JSON.stringify({
+          error: 'REPORT_GENERATION_FAILED',
+          message: 'AI 분석 응답이 올바르지 않습니다. 잠시 후 다시 시도해주세요. (이 시도는 차감되지 않았습니다)',
+          validSections,
+        }),
+        { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // ★ 리포트 이력 저장 (비동기 - 응답 블로킹 안함)
     saveReportHistory(supabaseClient, user.id, reportData, preprocessed, aiModel).catch(err => {
       console.error('리포트 이력 저장 백그라운드 오류:', err);

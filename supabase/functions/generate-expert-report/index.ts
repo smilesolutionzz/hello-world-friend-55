@@ -315,12 +315,20 @@ function preprocessData(data: CollectedData, userAge: number): PreprocessedData 
     if (o.severity === 'high' || o.severity === 'severe') behaviorMap[bt].severity = o.severity;
   });
 
+  // 텍스트 관찰일지(사용자 작성 + AI 조언) 병합
+  const textObsConcerns = (data.textObservations || []).slice(-5).map((o: any) =>
+    [o.title, o.content, o.expert_advice].filter(Boolean).join(' / ').substring(0, 200)
+  ).filter(Boolean);
+
   const observationInsights = {
-    totalEntries: data.observations.length,
+    totalEntries: data.observations.length + (data.textObservations?.length || 0),
     behaviorPatterns: Object.entries(behaviorMap).map(([b, v]) => ({
       behavior: b, frequency: v.count, severity: v.severity,
     })).sort((a, b) => b.frequency - a.frequency),
-    recentConcerns: data.observations.slice(-5).map(o => o.description || o.title || '').filter(Boolean),
+    recentConcerns: [
+      ...data.observations.slice(-5).map(o => o.description || o.title || '').filter(Boolean),
+      ...textObsConcerns,
+    ],
   };
 
   // ─── 영상분석 인사이트 ───

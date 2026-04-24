@@ -22,6 +22,7 @@ interface CollectedData {
   assessments: any[];
   observations: any[];
   observationSessions: any[];
+  textObservations: any[];  // observations 테이블 (사용자 직접 작성 일지 + AI 조언)
   chatMessages: any[];
   progressTracking: any[];
   aiObservations: any[];  // 영상분석

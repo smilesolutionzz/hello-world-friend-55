@@ -38,7 +38,7 @@ import ReportDataChecklist from '@/components/report/ReportDataChecklist';
 import ReportProHeader from '@/components/report/ReportProHeader';
 import ReportProOutput from '@/components/report/ReportProOutput';
 import ReportContentShowcase from '@/components/report/ReportContentShowcase';
-import ReportDataSourcePanel from '@/components/report/ReportDataSourcePanel';
+import ReportDataSourcePanel, { type QuoteOptions } from '@/components/report/ReportDataSourcePanel';
 
 // ── 애니메이션 카운터 ──
 const AnimatedCounter = ({ value, duration = 1.5 }: { value: number; duration?: number }) => {
@@ -108,6 +108,7 @@ const ReportGeneratorPro = () => {
   const [selectedChecklistData, setSelectedChecklistData] = useState<Record<string, string[]>>({});
   const [checklistSelectedCount, setChecklistSelectedCount] = useState(0);
   const [checklistTotalCount, setChecklistTotalCount] = useState(0);
+  const [quoteOptions, setQuoteOptions] = useState<QuoteOptions>({ maxQuotes: 8, contentChars: 280, adviceChars: 200 });
   const { isEnglish, localePath } = useLanguage();
 
   // 🎯 진입 컨텍스트 — ReportHubCTA에서 ?sources=&origin= 으로 진입

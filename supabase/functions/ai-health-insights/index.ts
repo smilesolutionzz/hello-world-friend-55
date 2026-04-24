@@ -1,6 +1,13 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.55.0';
+import { z } from 'https://esm.sh/zod@3.23.8';
+
+const RequestSchema = z.object({
+  checkinData: z.any().optional(),
+  challengeHistory: z.array(z.any()).max(200).optional(),
+  userId: z.string().optional(), // ignored
+}).passthrough();
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;

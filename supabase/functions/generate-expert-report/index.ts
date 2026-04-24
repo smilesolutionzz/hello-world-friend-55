@@ -22,6 +22,7 @@ interface CollectedData {
   assessments: any[];
   observations: any[];
   observationSessions: any[];
+  textObservations: any[];  // observations 테이블 (사용자 직접 작성 일지 + AI 조언)
   chatMessages: any[];
   progressTracking: any[];
   aiObservations: any[];  // 영상분석
@@ -35,6 +36,7 @@ async function collectAllUserData(supabaseClient: any, userId: string): Promise<
     { data: assessments },
     { data: observations },
     { data: observationSessions },
+    { data: textObservations },
     { data: chatRooms },
     { data: progressTracking },
     { data: aiObservations },
@@ -45,6 +47,7 @@ async function collectAllUserData(supabaseClient: any, userId: string): Promise<
     supabaseClient.from('assessments').select('*').or(`user_id.eq.${userId},profile_id.eq.${userId}`).order('created_at', { ascending: true }),
     supabaseClient.from('observation_logs').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
     supabaseClient.from('observation_sessions').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
+    supabaseClient.from('observations').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
     supabaseClient.from('chat_rooms').select('*, chat_messages(*)').eq('user_id', userId).order('created_at', { ascending: true }),
     supabaseClient.from('progress_tracking').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
     supabaseClient.from('ai_observation_results').select('*').eq('user_id', userId).order('created_at', { ascending: true }),
@@ -66,6 +69,7 @@ async function collectAllUserData(supabaseClient: any, userId: string): Promise<
     assessments: assessments || [],
     observations: observations || [],
     observationSessions: observationSessions || [],
+    textObservations: textObservations || [],
     chatMessages,
     progressTracking: progressTracking || [],
     aiObservations: aiObservations || [],
@@ -311,12 +315,20 @@ function preprocessData(data: CollectedData, userAge: number): PreprocessedData 
     if (o.severity === 'high' || o.severity === 'severe') behaviorMap[bt].severity = o.severity;
   });
 
+  // 텍스트 관찰일지(사용자 작성 + AI 조언) 병합
+  const textObsConcerns = (data.textObservations || []).slice(-5).map((o: any) =>
+    [o.title, o.content, o.expert_advice].filter(Boolean).join(' / ').substring(0, 200)
+  ).filter(Boolean);
+
   const observationInsights = {
-    totalEntries: data.observations.length,
+    totalEntries: data.observations.length + (data.textObservations?.length || 0),
     behaviorPatterns: Object.entries(behaviorMap).map(([b, v]) => ({
       behavior: b, frequency: v.count, severity: v.severity,
     })).sort((a, b) => b.frequency - a.frequency),
-    recentConcerns: data.observations.slice(-5).map(o => o.description || o.title || '').filter(Boolean),
+    recentConcerns: [
+      ...data.observations.slice(-5).map(o => o.description || o.title || '').filter(Boolean),
+      ...textObsConcerns,
+    ],
   };
 
   // ─── 영상분석 인사이트 ───

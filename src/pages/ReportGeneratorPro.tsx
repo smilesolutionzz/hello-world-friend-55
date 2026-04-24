@@ -38,6 +38,7 @@ import ReportDataChecklist from '@/components/report/ReportDataChecklist';
 import ReportProHeader from '@/components/report/ReportProHeader';
 import ReportProOutput from '@/components/report/ReportProOutput';
 import ReportContentShowcase from '@/components/report/ReportContentShowcase';
+import ReportDataSourcePanel from '@/components/report/ReportDataSourcePanel';
 
 // ── 애니메이션 카운터 ──
 const AnimatedCounter = ({ value, duration = 1.5 }: { value: number; duration?: number }) => {
@@ -130,16 +131,18 @@ const ReportGeneratorPro = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { setIsLoggedIn(false); setIsLoadingData(false); return; }
       setIsLoggedIn(true);
-      const [{ data: assessments }, { data: observations }, { data: chatRooms }, { data: observationSessions }, { data: profile }, { data: onboardingData }] = await Promise.all([
+      const [{ data: assessments }, { data: observations }, { data: chatRooms }, { data: observationSessions }, textObsRes, { data: profile }, { data: onboardingData }] = await Promise.all([
         supabase.from('assessments').select('*').or(`user_id.eq.${session.user.id},profile_id.eq.${session.user.id}`).order('created_at', { ascending: false }),
         supabase.from('observation_logs').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
         supabase.from('chat_rooms').select('*, chat_messages(*)').eq('user_id', session.user.id).order('created_at', { ascending: false }),
         supabase.from('observation_sessions').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
+        (supabase.from('observations') as any).select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
         supabase.from('profiles').select('*').eq('user_id', session.user.id).single(),
         (supabase.from('user_onboarding_data') as any).select('*').eq('user_id', session.user.id).maybeSingle(),
       ]);
-      const totalDataCount = (assessments?.length || 0) + (observations?.length || 0) + (observationSessions?.length || 0) + (chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0);
-      setUserData({ assessments: assessments || [], observations: observations || [], observationSessions: observationSessions || [], chatRooms: chatRooms || [], profile: profile || {}, onboardingData: onboardingData || null, totalAssessments: assessments?.length || 0, totalObservations: observations?.length || 0, totalObservationSessions: observationSessions?.length || 0, totalChatMessages: chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0, totalDataCount });
+      const textObservations = (textObsRes as any)?.data || [];
+      const totalDataCount = (assessments?.length || 0) + (observations?.length || 0) + (observationSessions?.length || 0) + textObservations.length + (chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0);
+      setUserData({ assessments: assessments || [], observations: observations || [], observationSessions: observationSessions || [], textObservations, chatRooms: chatRooms || [], profile: profile || {}, onboardingData: onboardingData || null, totalAssessments: assessments?.length || 0, totalObservations: observations?.length || 0, totalObservationSessions: observationSessions?.length || 0, totalTextObservations: textObservations.length, totalChatMessages: chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0, totalDataCount });
       
       // 프로필 데이터로 대상자 정보 자동 채우기
       if (profile) {
@@ -247,7 +250,7 @@ const ReportGeneratorPro = () => {
       const progressInterval = setInterval(() => { setProgress(prev => Math.min(prev + 5, 90)); }, 1000);
       toast({ title: t("🔬 전문가급 분석 시작", "🔬 Expert-Level Analysis Started"), description: reportMode === 'with-data' ? t("실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다...", "Performing real-time web search + latest research-based deep analysis...") : t("고민·상태 정보를 기반으로 맞춤 분석을 진행합니다...", "Performing personalized analysis based on your concerns...") });
       const body: any = { reportMode, userInput: { name: userInput.name, birthDate: userInput.birthDate, gender: userInput.gender, recentConcerns: userInput.recentConcerns, developmentalNotes: userInput.developmentalNotes }, language: isEnglish ? 'en' : 'ko' };
-      if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.chatRooms = userData.chatRooms; body.profile = userData.profile; body.selectedData = selectedChecklistData; body.selectedDataCount = checklistSelectedCount; }
+      if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.textObservations = userData.textObservations; body.chatRooms = userData.chatRooms; body.profile = userData.profile; body.selectedData = selectedChecklistData; body.selectedDataCount = checklistSelectedCount; }
       if (userData.onboardingData) { body.onboardingData = userData.onboardingData; }
       if (imageAnalysisResults) { body.externalTestImages = imageAnalysisResults; }
       
@@ -529,6 +532,27 @@ const ReportGeneratorPro = () => {
                   <Database className="w-4 h-4 text-primary" /> {t('리포트에 포함할 데이터 선택', 'Select Data for Report')}
                 </h4>
                 <p className="text-xs text-muted-foreground mb-3">{t('포함할 데이터를 직접 선택하세요. 체크된 항목만 리포트에 반영됩니다.', 'Select the data to include. Only checked items will be reflected in the report.')}</p>
+
+                <ReportDataSourcePanel
+                  counts={{
+                    assessments: userData?.totalAssessments || 0,
+                    observations: userData?.totalObservations || 0,
+                    observationSessions: userData?.totalObservationSessions || 0,
+                    textObservations: userData?.totalTextObservations || 0,
+                    aiObservations: (selectedChecklistData['observations'] || []).length,
+                    chatMessages: userData?.totalChatMessages || 0,
+                  }}
+                  selectedCount={checklistSelectedCount}
+                  selectedSampleByCategory={{
+                    text_observations: (userData?.textObservations || []).slice(0, 3).map((o: any) => ({
+                      label: o.title || '관찰일지',
+                      detail: (o.expert_advice || o.content || '').substring(0, 120),
+                      date: new Date(o.created_at).toLocaleDateString('ko-KR'),
+                    })),
+                  }}
+                  userName={userInput.name}
+                />
+
                 {originLabel && (
                   <div className="mb-3 rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-xs text-primary">
                     🎯 <span className="font-semibold">{decodeURIComponent(originLabel)}</span>에서 이어졌어요 — 관련 데이터를 자동 선택했습니다.

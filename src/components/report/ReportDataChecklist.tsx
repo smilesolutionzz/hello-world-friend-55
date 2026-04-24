@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { 
   CheckCircle, Brain, Eye, Gamepad2, Mic,
-  BarChart3, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, Microscope, Heart, MessageCircle
+  BarChart3, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, Microscope, Heart, MessageCircle, BookOpen
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -80,14 +80,16 @@ export default function ReportDataChecklist({ onSelectionChange, autoSelectOnly 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // AIHPRO 7대 데이터 소스: 간편검사, 심층검사, 관찰일지, 게임검사, 음성상담, 고민/인사이트, 고민 리포트
-      const [testRes, enhancedRes, observationRes, gameRes, voiceRes, progressRes, insightsRes, concernRes] = await Promise.all([
+      // AIHPRO 8대 데이터 소스: 간편검사, 심층검사, AI관찰분석(영상), 텍스트 관찰일지, 게임검사, 음성상담, 고민/인사이트, 고민 리포트
+      const [testRes, enhancedRes, observationRes, textObsRes, gameRes, voiceRes, progressRes, insightsRes, concernRes] = await Promise.all([
         // 1. 간편검사 (심리검사 결과)
         supabase.from('test_results').select('id, test_type_id, scores, completed_at, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         // 2. 심층검사 (심층 분석 리포트)
         supabase.from('assessment_enhanced_analysis').select('id, assessment_type, risk_level, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
-        // 3. 관찰일지 (AI 관찰 분석)
+        // 3. AI 관찰 분석 (영상/음성)
         supabase.from('ai_observation_results').select('id, analysis_type, input_type, title, risk_level, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+        // 3-2. 텍스트 관찰일지 (사용자가 직접 작성한 일지 + AI 조언)
+        (supabase.from('observations') as any).select('id, title, content, expert_advice, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         // 4. 게임검사 (금쪽상담소 해바라기 마을 - play_assessment_results)
         supabase.from('play_assessment_results').select('id, age_group, style, cognitive_score, emotional_score, social_score, physical_score, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         // 5. 음성상담 (AI 코칭 세션)
@@ -119,8 +121,21 @@ export default function ReportDataChecklist({ onSelectionChange, autoSelectOnly 
           items: (enhancedRes.data || []).map(t => ({ id: t.id, source: 'assessment_enhanced_analysis', label: t.assessment_type || '심층 분석', detail: t.risk_level ? `위험도: ${t.risk_level}` : '완료', date: formatDate(t.created_at), riskLevel: t.risk_level || undefined, selected: true })),
         },
         {
-          key: 'observations', label: '관찰일지', icon: <Eye className="w-4 h-4" />, color: 'text-emerald-600', expanded: true,
+          key: 'observations', label: 'AI 관찰분석(영상/음성)', icon: <Eye className="w-4 h-4" />, color: 'text-emerald-600', expanded: true,
           items: (observationRes.data || []).map(t => ({ id: t.id, source: 'ai_observation_results', label: t.title || analysisTypeLabels[t.analysis_type] || t.analysis_type, detail: `${t.input_type} 기반`, date: formatDate(t.created_at), riskLevel: t.risk_level || undefined, selected: true })),
+        },
+        {
+          key: 'text_observations', label: '텍스트 관찰일지', icon: <BookOpen className="w-4 h-4" />, color: 'text-amber-700', expanded: true,
+          items: ((textObsRes as any).data || []).map((t: any) => ({
+            id: t.id,
+            source: 'observations',
+            label: t.title || '관찰일지',
+            detail: t.expert_advice
+              ? `AI 분석 완료 · ${(t.content || '').substring(0, 25)}…`
+              : (t.content ? (t.content as string).substring(0, 35) + '…' : '기록됨'),
+            date: formatDate(t.created_at),
+            selected: true,
+          })),
         },
         {
           key: 'game', label: '게임검사', icon: <Gamepad2 className="w-4 h-4" />, color: 'text-pink-600', expanded: true,

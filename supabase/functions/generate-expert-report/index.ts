@@ -1520,6 +1520,39 @@ serve(async (req) => {
       // ★ 핵심 차별화: 서버에서 직접 8개 소스 수집 + 전처리
       const collectedData = await collectAllUserData(supabaseClient, user.id);
 
+      // ★ 사용자가 체크리스트에서 선택한 항목만 분석에 포함 (선택이 비어있으면 전체 사용)
+      if (selectedData && typeof selectedData === 'object') {
+        const filterByIds = (arr: any[], key: string) => {
+          const ids = selectedData[key];
+          if (!Array.isArray(ids) || ids.length === 0) return arr; // 해당 카테고리 선택 없음 → 그대로
+          const set = new Set(ids);
+          return arr.filter((row: any) => set.has(row.id));
+        };
+        // 카테고리 키 매핑(체크리스트 key → CollectedData 필드)
+        if ('tests' in selectedData) {
+          // test_results 는 별도 테이블이라 collectedData 에 없음 — assessments만 보유
+        }
+        if ('enhanced' in selectedData) {
+          collectedData.assessments = filterByIds(collectedData.assessments, 'enhanced').length > 0
+            ? filterByIds(collectedData.assessments, 'enhanced')
+            : collectedData.assessments;
+        }
+        if ('observations' in selectedData) {
+          collectedData.aiObservations = filterByIds(collectedData.aiObservations, 'observations');
+        }
+        if ('text_observations' in selectedData) {
+          collectedData.textObservations = filterByIds(collectedData.textObservations, 'text_observations');
+        }
+        if ('concern_reports' in selectedData) {
+          collectedData.concernStorage = filterByIds(collectedData.concernStorage, 'concern_reports');
+        }
+        console.log('체크리스트 필터 적용 완료:', {
+          selectedCategories: Object.keys(selectedData),
+          aiObservations: collectedData.aiObservations.length,
+          textObservations: collectedData.textObservations.length,
+        });
+      }
+
       console.log('데이터 수집 완료:', {
         assessments: collectedData.assessments.length,
         observations: collectedData.observations.length,

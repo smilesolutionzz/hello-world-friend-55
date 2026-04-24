@@ -1472,7 +1472,7 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !user) throw new Error('Unauthorized');
 
-    const { assessments: clientAssessments, observations: clientObservations, observationSessions: clientSessions, chatRooms: clientChatRooms, profile: clientProfile, externalTestImages, userInput, reportMode, language, onboardingData } = await req.json();
+    const { assessments: clientAssessments, observations: clientObservations, observationSessions: clientSessions, chatRooms: clientChatRooms, profile: clientProfile, externalTestImages, userInput, reportMode, language, onboardingData, selectedData, selectedDataCount } = await req.json();
 
     const isWithData = reportMode !== 'without-data';
     const isKo = language !== 'en';

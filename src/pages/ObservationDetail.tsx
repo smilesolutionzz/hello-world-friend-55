@@ -376,9 +376,11 @@ export default function ObservationDetail() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                {observation.content}
-              </p>
+              <HighlightedObservationContent
+                content={observation.content}
+                expertAdvice={observation.expert_advice}
+                detailedAdvice={observation.detailed_advice}
+              />
             </CardContent>
           </Card>
         </motion.div>

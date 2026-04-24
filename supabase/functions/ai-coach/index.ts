@@ -1,6 +1,21 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.55.0';
+import { z } from 'https://esm.sh/zod@3.23.8';
+
+const RequestSchema = z.object({
+  sessionType: z.enum(['mood_coaching', 'energy_coaching', 'stress_management', 'goal_setting']).optional(),
+  message: z.string().max(4000).optional(),
+  conversationHistory: z.array(z.object({
+    role: z.string().max(32),
+    content: z.string().max(8000),
+    timestamp: z.string().optional(),
+  })).max(50).optional(),
+  moodBefore: z.number().min(0).max(10).optional(),
+  action: z.enum(['workout_plan', 'suggest_challenge', 'start_workout']).optional(),
+  prompt: z.string().max(4000).optional(),
+  userId: z.string().optional(), // ignored, kept for backward-compat
+});
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -38,7 +53,14 @@ serve(async (req) => {
     const authenticatedUserId = userData.user.id;
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const requestData = await req.json();
+    const rawBody = await req.json().catch(() => ({}));
+    const parsed = RequestSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return new Response(JSON.stringify({ error: 'Invalid input' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     const {
       sessionType,
       message,
@@ -46,7 +68,7 @@ serve(async (req) => {
       moodBefore,
       action,
       prompt
-    } = requestData;
+    } = parsed.data;
     // NOTE: client-supplied userId is intentionally ignored; we trust the JWT.
     const userId = authenticatedUserId;
 

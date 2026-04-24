@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { 
   Calendar, 
   Plus, 
@@ -12,12 +13,17 @@ import {
   ChevronRight,
   ArrowLeft,
   PenLine,
-  Feather
+  Feather,
+  Brain
 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { motion } from "framer-motion";
 import ReportHubReadyBanner from "@/components/report/ReportHubReadyBanner";
+import ObservationHeatmap from "@/components/observation/ObservationHeatmap";
+import ObservationInsightCard from "@/components/observation/ObservationInsightCard";
+import ObservationFilters, { FilterMode, SortMode } from "@/components/observation/ObservationFilters";
+import AIObservationResultsList from "@/components/observation/AIObservationResultsList";
 
 interface Observation {
   id: string;
@@ -32,8 +38,31 @@ interface Observation {
 export default function ObservationList() {
   const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<FilterMode>("all");
+  const [sort, setSort] = useState<SortMode>("newest");
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const filtered = useMemo(() => {
+    let list = [...observations];
+    if (filter === "ai") list = list.filter((o) => o.expert_advice);
+    if (filter === "no_ai") list = list.filter((o) => !o.expert_advice);
+    if (query.trim()) {
+      const q = query.trim().toLowerCase();
+      list = list.filter(
+        (o) =>
+          (o.title || "").toLowerCase().includes(q) ||
+          (o.content || "").toLowerCase().includes(q)
+      );
+    }
+    list.sort((a, b) => {
+      const da = new Date(a.created_at).getTime();
+      const db = new Date(b.created_at).getTime();
+      return sort === "newest" ? db - da : da - db;
+    });
+    return list;
+  }, [observations, query, filter, sort]);
 
   useEffect(() => {
     fetchObservations();
@@ -122,25 +151,7 @@ export default function ObservationList() {
 
       <main className="container mx-auto max-w-2xl px-4 py-6">
         <ReportHubReadyBanner />
-        {/* 통계 */}
-        {observations.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-4 mb-6 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-amber-200/50 shadow-sm"
-          >
-            <div className="flex-1 text-center border-r border-amber-200/50">
-              <p className="text-2xl font-bold text-amber-900">{observations.length}</p>
-              <p className="text-xs text-amber-600">전체 기록</p>
-            </div>
-            <div className="flex-1 text-center">
-              <p className="text-2xl font-bold text-orange-600">{observations.filter(o => o.expert_advice).length}</p>
-              <p className="text-xs text-amber-600">AI 분석</p>
-            </div>
-          </motion.div>
-        )}
 
-        {/* 빈 상태 */}
         {observations.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -167,60 +178,98 @@ export default function ObservationList() {
             </Button>
           </motion.div>
         ) : (
-          <div className="space-y-3">
-            {observations.map((obs, index) => (
-              <motion.div
-                key={obs.id}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                onClick={() => navigate(`/observation/${obs.id}`)}
-                className="group cursor-pointer"
+          <Tabs defaultValue="diary" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 bg-white/60 border border-amber-200/50 mb-4">
+              <TabsTrigger
+                value="diary"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white text-amber-700 gap-1.5"
               >
-                <div className="relative p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-amber-200/50 shadow-sm hover:shadow-md hover:bg-white/90 transition-all duration-300">
-                  {/* AI 분석 배지 */}
-                  {obs.expert_advice && (
-                    <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center shadow-md">
-                      <Sparkles className="w-4 h-4 text-white" />
-                    </div>
-                  )}
+                <BookOpen className="w-4 h-4" />
+                관찰일지 ({observations.length})
+              </TabsTrigger>
+              <TabsTrigger
+                value="ai"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white text-amber-700 gap-1.5"
+              >
+                <Brain className="w-4 h-4" />
+                AI 분석 결과
+              </TabsTrigger>
+            </TabsList>
 
-                  <div className="flex items-start gap-4">
-                    {/* 날짜 */}
-                    <div className="shrink-0 w-14 text-center">
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-100 to-orange-50 flex flex-col items-center justify-center border border-amber-200/50">
-                        <span className="text-xs text-amber-500 font-medium uppercase">
-                          {format(new Date(obs.created_at), "MMM", { locale: ko })}
-                        </span>
-                        <span className="text-xl font-bold text-amber-800">
-                          {format(new Date(obs.created_at), "d")}
-                        </span>
-                      </div>
-                    </div>
+            <TabsContent value="diary" className="mt-0 space-y-0">
+              <ObservationInsightCard observations={observations} />
+              <ObservationHeatmap dates={observations.map((o) => o.created_at)} />
+              <ObservationFilters
+                query={query}
+                onQueryChange={setQuery}
+                filter={filter}
+                onFilterChange={setFilter}
+                sort={sort}
+                onSortChange={setSort}
+              />
 
-                    {/* 내용 */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-amber-900 mb-1 truncate">
-                        {obs.title || "제목 없음"}
-                      </h3>
-                      <p className="text-sm text-amber-700/70 line-clamp-2 leading-relaxed mb-2">
-                        {obs.content}
-                      </p>
-                      <div className="flex items-center gap-1.5 text-xs text-amber-500">
-                        <Calendar className="w-3 h-3" />
-                        {format(new Date(obs.created_at), "yyyy년 M월 d일 (E)", { locale: ko })}
-                      </div>
-                    </div>
-
-                    {/* 화살표 */}
-                    <div className="shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ChevronRight className="w-5 h-5 text-amber-400" />
-                    </div>
-                  </div>
+              {filtered.length === 0 ? (
+                <div className="text-center py-12 text-amber-600 text-sm">
+                  검색 조건에 맞는 기록이 없어요
                 </div>
-              </motion.div>
-            ))}
-          </div>
+              ) : (
+                <div className="space-y-3">
+                  {filtered.map((obs, index) => (
+                    <motion.div
+                      key={obs.id}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: Math.min(index * 0.04, 0.3) }}
+                      onClick={() => navigate(`/observation/${obs.id}`)}
+                      className="group cursor-pointer"
+                    >
+                      <div className="relative p-4 rounded-2xl bg-white/70 backdrop-blur-sm border border-amber-200/50 shadow-sm hover:shadow-md hover:bg-white/90 transition-all duration-300">
+                        {obs.expert_advice && (
+                          <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center shadow-md">
+                            <Sparkles className="w-4 h-4 text-white" />
+                          </div>
+                        )}
+
+                        <div className="flex items-start gap-4">
+                          <div className="shrink-0 w-14 text-center">
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-100 to-orange-50 flex flex-col items-center justify-center border border-amber-200/50">
+                              <span className="text-xs text-amber-500 font-medium uppercase">
+                                {format(new Date(obs.created_at), "MMM", { locale: ko })}
+                              </span>
+                              <span className="text-xl font-bold text-amber-800">
+                                {format(new Date(obs.created_at), "d")}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-amber-900 mb-1 truncate">
+                              {obs.title || "제목 없음"}
+                            </h3>
+                            <p className="text-sm text-amber-700/70 line-clamp-2 leading-relaxed mb-2">
+                              {obs.content}
+                            </p>
+                            <div className="flex items-center gap-1.5 text-xs text-amber-500">
+                              <Calendar className="w-3 h-3" />
+                              {format(new Date(obs.created_at), "yyyy년 M월 d일 (E)", { locale: ko })}
+                            </div>
+                          </div>
+
+                          <div className="shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <ChevronRight className="w-5 h-5 text-amber-400" />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="ai" className="mt-0">
+              <AIObservationResultsList />
+            </TabsContent>
+          </Tabs>
         )}
       </main>
     </div>

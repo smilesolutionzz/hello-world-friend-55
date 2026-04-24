@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { 
   Calendar, 
   Plus, 
@@ -12,12 +13,17 @@ import {
   ChevronRight,
   ArrowLeft,
   PenLine,
-  Feather
+  Feather,
+  Brain
 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { motion } from "framer-motion";
 import ReportHubReadyBanner from "@/components/report/ReportHubReadyBanner";
+import ObservationHeatmap from "@/components/observation/ObservationHeatmap";
+import ObservationInsightCard from "@/components/observation/ObservationInsightCard";
+import ObservationFilters, { FilterMode, SortMode } from "@/components/observation/ObservationFilters";
+import AIObservationResultsList from "@/components/observation/AIObservationResultsList";
 
 interface Observation {
   id: string;
@@ -32,8 +38,31 @@ interface Observation {
 export default function ObservationList() {
   const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<FilterMode>("all");
+  const [sort, setSort] = useState<SortMode>("newest");
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const filtered = useMemo(() => {
+    let list = [...observations];
+    if (filter === "ai") list = list.filter((o) => o.expert_advice);
+    if (filter === "no_ai") list = list.filter((o) => !o.expert_advice);
+    if (query.trim()) {
+      const q = query.trim().toLowerCase();
+      list = list.filter(
+        (o) =>
+          (o.title || "").toLowerCase().includes(q) ||
+          (o.content || "").toLowerCase().includes(q)
+      );
+    }
+    list.sort((a, b) => {
+      const da = new Date(a.created_at).getTime();
+      const db = new Date(b.created_at).getTime();
+      return sort === "newest" ? db - da : da - db;
+    });
+    return list;
+  }, [observations, query, filter, sort]);
 
   useEffect(() => {
     fetchObservations();

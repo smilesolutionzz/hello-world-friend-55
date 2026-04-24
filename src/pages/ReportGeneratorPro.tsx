@@ -532,6 +532,27 @@ const ReportGeneratorPro = () => {
                   <Database className="w-4 h-4 text-primary" /> {t('리포트에 포함할 데이터 선택', 'Select Data for Report')}
                 </h4>
                 <p className="text-xs text-muted-foreground mb-3">{t('포함할 데이터를 직접 선택하세요. 체크된 항목만 리포트에 반영됩니다.', 'Select the data to include. Only checked items will be reflected in the report.')}</p>
+
+                <ReportDataSourcePanel
+                  counts={{
+                    assessments: userData?.totalAssessments || 0,
+                    observations: userData?.totalObservations || 0,
+                    observationSessions: userData?.totalObservationSessions || 0,
+                    textObservations: userData?.totalTextObservations || 0,
+                    aiObservations: (selectedChecklistData['observations'] || []).length,
+                    chatMessages: userData?.totalChatMessages || 0,
+                  }}
+                  selectedCount={checklistSelectedCount}
+                  selectedSampleByCategory={{
+                    text_observations: (userData?.textObservations || []).slice(0, 3).map((o: any) => ({
+                      label: o.title || '관찰일지',
+                      detail: (o.expert_advice || o.content || '').substring(0, 120),
+                      date: new Date(o.created_at).toLocaleDateString('ko-KR'),
+                    })),
+                  }}
+                  userName={userInput.name}
+                />
+
                 {originLabel && (
                   <div className="mb-3 rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-xs text-primary">
                     🎯 <span className="font-semibold">{decodeURIComponent(originLabel)}</span>에서 이어졌어요 — 관련 데이터를 자동 선택했습니다.

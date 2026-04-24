@@ -1,125 +1,83 @@
 
 
-# 리포트 품질 점검 결과 + 메인페이지 슬림화 진단
+## AIHPRO PM 미팅용 1장 PDF 요약본
 
-## 1. 리포트 품질 진단 (가장 중요)
+오늘 개발회사 PM 미팅에서 AIHPRO 플랫폼을 한 장으로 보여줄 수 있는 **A4 1페이지 PDF 브리프**를 만듭니다. 실무 협업용 캐주얼 톤이라 표·다이어그램 위주로 정보 밀도를 높이고, 디자인은 깔끔하게만 갑니다.
 
-### 발견된 문제
+### 결과물
+- `/mnt/documents/AIHPRO_PM_Brief_v1.pdf` (A4 세로, 1페이지)
 
-`premium_report_history` 테이블 직접 조회 결과 (최근 30일 27개 리포트):
+### 페이지 구성 (위→아래)
 
-| 항목 | 수치 | 상태 |
-|---|---|---|
-| 총 생성 | 27개 | — |
-| **빈 리포트 (parseError)** | **4개 (15%)** | 심각 |
-| 가장 최근 2건 (4/22, 4/20 03:22) | 모두 실패 | 위험 |
-| 정상 생성 케이스 | 23개 | 양호 |
+**1. 헤더 (상단 ~12%)**
+- 좌: AIHPRO 로고/워드마크 + 한 줄 태그라인 ("AI × 임상통계 기반 발달 코칭 & 의사결정 보조 플랫폼")
+- 우: 도메인(aihpro.app), 작성일, "PM 미팅용 브리프 v1"
 
-### 실패 케이스 상세
+**2. 제품·기능 구조 (상단 블록, ~30%)**
+3열 카드 레이아웃으로 핵심 서비스 묶음 표시:
+- **분석/리포트**: 즉석 AI 분석, 20+ 심리검사(체험/프리미엄), AI 리포트 생성기 Pro, My Journey(종단 분석)
+- **관찰·상담 데이터**: 관찰일지(텍스트/영상), 금쪽상담소(게임·음성), 변화 추적
+- **B2C·B2B 전환**: 전문가 매칭(/expert-hiring), 리워드, B2B Job Coach, 화이트라벨 리포트
 
-**케이스 A — 4/22, "경열맘"**
-- 9개 섹션 전부 `"이 섹션의 분석이 생성되지 않았습니다 (AI content가 비어있음)"` 로 저장
-- 데이터: `progressTracking 2건`, 나머지 0건 → 입력 데이터 거의 없음
-- 메타데이터 `userInfo.age: -17974` (생년월일 미입력 → 음수 나이 계산 버그)
+각 카드 하단에 대표 라우트(`/report-generator-pro`, `/observation`, `/b2b-jobcoach` 등) 명시.
 
-**케이스 B — 4/20 03:22**
-- "JSON 파싱 실패" 사유로 빈 리포트 저장
-- AI가 응답은 했으나 JSON 파싱 단계에서 깨짐
+**3. 기술 스택·아키텍처 (중단 블록, ~30%)**
+좌측: 스택 표
+| Layer | Tech |
+|---|---|
+| Frontend | React 18, Vite, TS, Tailwind, shadcn/ui, Framer Motion |
+| Backend | Lovable Cloud (Supabase) — Postgres + RLS, Edge Functions (Deno) |
+| AI | Lovable AI Gateway · Gemini 3 Flash/Pro, Whisper STT, Gemini Vision |
+| Payments | Toss Payments (빌링키 자동결제) |
+| Infra | Custom domain aihpro.app, Capacitor (모바일 래핑) |
 
-### 코드 추적 결과 (`generate-expert-report/index.ts`)
-
+우측: 데이터 흐름 ASCII 다이어그램
 ```text
-Gemini 3.1 Pro (medium effort, 48k tokens)
-  ↓ content < 50자면
-GPT-5.2 재시도 (32k tokens)
-  ↓ 그래도 실패면
-placeholderReport("AI content가 비어있음") → DB 저장
+User ─▶ React App ─▶ Edge Function ─▶ AI Gateway (Gemini)
+                 │                  │
+                 ▼                  ▼
+          Supabase (RLS)      Polling/DB Save
+                 │
+                 ▼
+        리포트 / 종단분석 / B2B 집계
 ```
+하단 한 줄: "임상 통계 엔진(RCI/SEM/Cronbach α) + 데이터-투-HTML 매핑 아키텍처"
 
-문제점:
-1. **입력 데이터가 너무 적은 경우** (assessments 0, observations 0) AI가 할 말이 없어 빈 응답 → 그대로 저장
-2. **음수 나이 (-17974)** 등 유효성 미검증 입력 → AI 혼란
-3. **placeholder 리포트도 그대로 DB에 저장** → 사용자는 결제했는데 빈 리포트 받음 (환불 분쟁 위험)
-4. **에지 함수 로그가 비어 있음** → 운영 모니터링 사각지대
+**4. 개발 로드맵·협업 범위 (하단 블록, ~25%)**
+2열 구성:
 
-### 정상 리포트 품질 (4/20 03:18 등)
-- 길이 충분 (17,275자), 임상 어조 적절
-- "AIHPRO 다차원 분석", 종단 추적, 4주/8주/12주 로드맵 모두 생성
-- 톤·구조 모두 메모리 정책(전문가 어조, 이모지 X, 넘버링)에 부합 → 잘 작동 중
+좌 — **현재 상태(Done)**
+- MVP 운영 중, 결제·구독·자동갱신 가동
+- 리포트 생성기 Pro, My Journey, B2B Job Coach 라이브
+- 50개 제휴기관 쇼케이스, 전문가 매칭 운영
 
-### 권장 조치 (다음 메시지에서 구현)
+우 — **다음 단계 / 협업 요청 영역**
+- 모바일 앱 안정화 (Capacitor 빌드·푸시·앱스토어 심사)
+- 결제/구독 엣지케이스 QA, Toss 빌링키 장애 복구 로직
+- B2B HR 대시보드 고도화 (집계/마스킹 정책)
+- 리포트 생성 지연·타임아웃 완화 (DB 폴링 강화)
+- 보안: RLS 정책 정기 감사, 스토리지 버킷 권한 점검
 
-**A. 리포트 생성 게이트 (사전 검증)**
-- 데이터 0~소량이면 생성 자체를 차단하고 "검사 N개 이상 필요" 안내
-- 음수 나이/이상 입력은 즉시 400 반환
+**5. 푸터 (~3%)**
+- 연락처/도메인, 비의료·코칭 도구 면책 한 줄
 
-**B. 실패 시 DB 저장 차단**
-- `parseError === true` 또는 유효 섹션 0개면 DB 저장 SKIP + 사용자에게 "다시 시도" 응답
-- 이미 차감된 크레딧/이용권 자동 환원
+### 디자인 가이드
+- 톤: 실무 캐주얼. 흰 배경, 골드 액센트(#C8B88A) 최소, 본문은 짙은 회색
+- 폰트: ReportLab 기본(Helvetica) — 한글 렌더링을 위해 시스템에 설치된 Pretendard/Noto Sans KR TTF를 등록해서 사용 (없으면 Noto Sans CJK 폴백)
+- 카드/표는 얇은 회색 보더, 섹션 헤더만 골드 underline
+- 이모지 없음, 임상/AI 표현은 메모리 규칙대로 "전문 분석" 톤 유지
 
-**C. 모니터링 대시보드**
-- `/admin` 에 "리포트 품질" 카드: 최근 7일 실패율, 파싱 실패 케이스 목록, 평균 섹션 수
-- 실패율 5% 초과 시 관리자 알림
+### 기술 구현 계획 (default 모드 진입 후)
+1. `/tmp/build_pm_brief.py` 작성 — ReportLab Platypus 기반 A4 1페이지
+2. 한글 폰트 등록 (`pdfmetrics.registerFont`) — Pretendard 또는 Noto Sans KR
+3. 3개 섹션을 `Table` + `Paragraph`로 조합, 1페이지 안에 들어가도록 폰트/패딩 조정
+4. `/mnt/documents/AIHPRO_PM_Brief_v1.pdf` 출력
+5. **QA**: `pdftoppm`으로 JPG 변환 → `code--view`로 검사 → 잘림/겹침/한글 깨짐 확인 → 필요 시 수정 후 재생성
+6. `<lov-artifact>` 태그로 다운로드 제공
 
-**D. 기존 빈 리포트 정리**
-- 4개의 placeholder 리포트는 사용자에게 "재생성 무료" 알림 후 삭제 또는 재생성
+### 확인 사항
+- 회사명/대표자명/연락처 같은 식별 정보는 넣지 않고 도메인(aihpro.app)만 표기합니다 (메모리상 닉네임/도메인 원칙).
+- 1페이지를 넘기면 안 되므로 위 4개 블록을 정보 우선순위대로 압축합니다. 미팅에서 말로 보강할 항목은 카드 안에 키워드만 남깁니다.
 
-## 2. 메인페이지 정보 과부하 진단
-
-### 현재 섹션 구성 (`src/pages/Index.tsx`)
-
-```text
-1. Hero
-2. Testimonial (후기)
-2.5 RealFeedback (카톡 피드백)
-3. ReportPreview
-3.5 HumanTouchManifesto
-4. VideoObservationShowcase
-5. ExpertTeam (이미 숨김 처리됨)
-6. EmotionalHook
-7. PartnerTrust (50+ 제휴기관)
-8. SubscriptionValue
-9. CTABanner
-+ Footer / StickyConversionBar / SocialProofToast / CopilotBubble
-```
-
-총 9~10개 본문 섹션 + 떠있는 4개 위젯 → 모바일에서 스크롤 피로도 매우 높음.
-
-### 슬림화 권고 (우선순위 순)
-
-| 섹션 | 권고 | 사유 |
-|---|---|---|
-| **2 Testimonial + 2.5 RealFeedback** | **둘 중 하나로 통합** | 같은 "사회적 증거" 중복 — RealFeedback(카톡)이 더 임팩트 있으니 그것만 유지 |
-| **3.5 HumanTouchManifesto** | **제거 또는 푸터 위로 이동** | 구독/CTA 흐름을 끊는 철학 텍스트 — 리포트/About 페이지로 이동이 적합 |
-| **6 EmotionalHook** | **제거** | Hero + Testimonial로 이미 감성 후킹 충족, 중복 |
-| **7 PartnerTrust** | **유지하되 슬림 (로고만 1줄)** | 50+ 기관 신뢰는 중요하나 현재 비중 큼 |
-| **4 VideoObservationShowcase** | **유지** | WOW 팩터 — 차별화 핵심 |
-| **3 ReportPreview** | **유지** | 결제 전환 직결 |
-| **8 Subscription + 9 CTA** | **하나로 통합** | 둘 다 구독/결제 CTA — 중복 |
-| **CopilotBubble + StickyConversionBar + SocialProofToast** | **모바일에서 2개만 노출** | 떠있는 위젯 4개는 화면을 가림 |
-
-### 슬림화 후 목표 구성 (7개 → 5개 본문)
-
-```text
-1. Hero (그대로)
-2. RealFeedback (카톡 후기 — Testimonial 통합)
-3. ReportPreview (전환 핵심)
-4. VideoObservation (WOW)
-5. Subscription + 최종 CTA (통합)
-+ PartnerTrust 슬림 1줄 (Footer 직전)
-+ Footer
-```
-
-스크롤 30~40% 감소 예상, 결제 CTA 도달률 상승 기대.
-
-## 작업 범위 (다음 메시지에서 진행)
-
-리포트 품질 안정화가 더 시급합니다. 다음 4가지를 순서대로 진행 권장:
-
-1. **리포트 생성 게이트 + 실패 시 DB 저장 차단 + 크레딧 자동 환원** (긴급)
-2. **`/admin` 리포트 품질 모니터링 카드 추가** 
-3. **기존 빈 리포트 4건 사용자 알림/재생성 처리**
-4. **메인페이지 슬림화** (위 표대로 섹션 통합/제거)
-
-각 항목 진행 전 추가 확인 사항이 있으면 알려주세요. 어디까지 한 번에 진행할지 정해주시면 바로 구현 들어갑니다.
+승인해주시면 바로 PDF 생성 + QA 돌려서 다운로드 링크 드릴게요.
 

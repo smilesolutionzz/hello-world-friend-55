@@ -193,7 +193,7 @@ interface PreprocessedData {
   };
 }
 
-function preprocessData(data: CollectedData, userAge: number): PreprocessedData {
+function preprocessData(data: CollectedData, userAge: number): PreprocessedData & { __rawTextObservations?: any[] } {
   const allDates: string[] = [];
 
   // 모든 날짜 수집

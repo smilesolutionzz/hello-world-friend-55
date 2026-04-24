@@ -53,7 +53,14 @@ serve(async (req) => {
     const authenticatedUserId = userData.user.id;
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const requestData = await req.json();
+    const rawBody = await req.json().catch(() => ({}));
+    const parsed = RequestSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return new Response(JSON.stringify({ error: 'Invalid input' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     const {
       sessionType,
       message,
@@ -61,7 +68,7 @@ serve(async (req) => {
       moodBefore,
       action,
       prompt
-    } = requestData;
+    } = parsed.data;
     // NOTE: client-supplied userId is intentionally ignored; we trust the JWT.
     const userId = authenticatedUserId;
 

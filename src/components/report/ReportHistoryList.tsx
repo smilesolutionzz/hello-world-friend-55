@@ -136,10 +136,10 @@ const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onS
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ delay: idx * 0.05 }}
-                  className={`flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 border transition-colors group cursor-pointer ${
+                  className={`flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 border transition-colors group cursor-pointer ${
                     report.is_failed
                       ? 'bg-destructive/10 border-destructive/30'
-                      : activeReportId === report.id ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/5'
+                      : activeReportId === report.id ? 'bg-primary/10 border-primary/30' : 'bg-muted/30 border-border'
                   }`}
                   onClick={() => !report.is_failed && onViewReport?.(report)}
                 >

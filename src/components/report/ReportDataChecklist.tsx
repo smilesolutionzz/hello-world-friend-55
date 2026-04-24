@@ -121,8 +121,21 @@ export default function ReportDataChecklist({ onSelectionChange, autoSelectOnly 
           items: (enhancedRes.data || []).map(t => ({ id: t.id, source: 'assessment_enhanced_analysis', label: t.assessment_type || '심층 분석', detail: t.risk_level ? `위험도: ${t.risk_level}` : '완료', date: formatDate(t.created_at), riskLevel: t.risk_level || undefined, selected: true })),
         },
         {
-          key: 'observations', label: '관찰일지', icon: <Eye className="w-4 h-4" />, color: 'text-emerald-600', expanded: true,
+          key: 'observations', label: 'AI 관찰분석(영상/음성)', icon: <Eye className="w-4 h-4" />, color: 'text-emerald-600', expanded: true,
           items: (observationRes.data || []).map(t => ({ id: t.id, source: 'ai_observation_results', label: t.title || analysisTypeLabels[t.analysis_type] || t.analysis_type, detail: `${t.input_type} 기반`, date: formatDate(t.created_at), riskLevel: t.risk_level || undefined, selected: true })),
+        },
+        {
+          key: 'text_observations', label: '텍스트 관찰일지', icon: <BookOpen className="w-4 h-4" />, color: 'text-amber-700', expanded: true,
+          items: ((textObsRes as any).data || []).map((t: any) => ({
+            id: t.id,
+            source: 'observations',
+            label: t.title || '관찰일지',
+            detail: t.expert_advice
+              ? `AI 분석 완료 · ${(t.content || '').substring(0, 25)}…`
+              : (t.content ? (t.content as string).substring(0, 35) + '…' : '기록됨'),
+            date: formatDate(t.created_at),
+            selected: true,
+          })),
         },
         {
           key: 'game', label: '게임검사', icon: <Gamepad2 className="w-4 h-4" />, color: 'text-pink-600', expanded: true,

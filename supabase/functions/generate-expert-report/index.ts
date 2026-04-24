@@ -193,7 +193,7 @@ interface PreprocessedData {
   };
 }
 
-function preprocessData(data: CollectedData, userAge: number): PreprocessedData {
+function preprocessData(data: CollectedData, userAge: number): PreprocessedData & { __rawTextObservations?: any[] } {
   const allDates: string[] = [];
 
   // 모든 날짜 수집
@@ -488,6 +488,8 @@ function preprocessData(data: CollectedData, userAge: number): PreprocessedData 
     progressSummary,
     concernSummary,
     chartData,
+    // 프롬프트에서 직접 인용용 원문 보존 (타입에는 없지만 런타임 첨부)
+    __rawTextObservations: data.textObservations || [],
   };
 }
 
@@ -1040,6 +1042,19 @@ ${reportComparison?.has_comparison ? `\n═══ 이전 리포트 대비 변화
 
 ${userInput?.recentConcerns ? `\n═══ 보호자 주요 고민 ═══\n${userInput.recentConcerns}` : ''}
 ${userInput?.developmentalNotes ? `\n═══ 보호자 관찰 소견 ═══\n${userInput.developmentalNotes}` : ''}
+${(() => {
+  // ── 텍스트 관찰일지 직접 인용 블록 (제목 · 내용 · AI 전문가 조언) ──
+  const textObs = (preprocessed as any).__rawTextObservations || [];
+  if (!Array.isArray(textObs) || textObs.length === 0) return '';
+  const quotes = textObs.slice(-8).map((o: any, i: number) => {
+    const date = (o.created_at || '').split('T')[0];
+    const title = (o.title || '제목 없음').toString().substring(0, 60);
+    const content = (o.content || '').toString().replace(/\s+/g, ' ').substring(0, 280);
+    const advice = (o.expert_advice || '').toString().replace(/\s+/g, ' ').substring(0, 200);
+    return `【일지 ${i + 1} | ${date}】\n• 제목: ${title}\n• 내용: "${content}"${advice ? `\n• 기존 AI 조언: "${advice}"` : ''}`;
+  }).join('\n\n');
+  return `\n═══ 사용자 작성 관찰일지 원문 인용 (반드시 분석에 반영) ═══\n${quotes}\n\n⭐ 위 일지의 제목·내용·기존 AI 조언을 직접 인용하여 패턴/위험신호/강점을 도출하세요.`;
+})()}
 ${onboardingData ? `\n═══ 온보딩 기초 데이터 ═══\n대상: ${onboardingData.subject_type === 'child' ? '아이' : '본인'}\n${onboardingData.child_age ? `아이 나이: ${onboardingData.child_age}세` : ''}\n${onboardingData.child_gender ? `성별: ${onboardingData.child_gender === 'male' ? '남아' : '여아'}` : ''}\n관심 키워드: ${(onboardingData.concern_keywords || []).join(', ')}\n기초 상태 체크: ${JSON.stringify(onboardingData.baseline_answers || {})}` : ''}
 ${researchInsights ? `\n═══ 최신 연구 참고 (Perplexity 학술 검색) ═══\n${researchInsights.substring(0, 2500)}` : ''}
 ${externalTestImages ? `\n═══ 외부 기관 검사 결과 (AI 분석) ═══\n${externalTestImages}` : ''}
@@ -1472,7 +1487,7 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !user) throw new Error('Unauthorized');
 
-    const { assessments: clientAssessments, observations: clientObservations, observationSessions: clientSessions, chatRooms: clientChatRooms, profile: clientProfile, externalTestImages, userInput, reportMode, language, onboardingData } = await req.json();
+    const { assessments: clientAssessments, observations: clientObservations, observationSessions: clientSessions, chatRooms: clientChatRooms, profile: clientProfile, externalTestImages, userInput, reportMode, language, onboardingData, selectedData, selectedDataCount } = await req.json();
 
     const isWithData = reportMode !== 'without-data';
     const isKo = language !== 'en';
@@ -1519,6 +1534,39 @@ serve(async (req) => {
     if (isWithData) {
       // ★ 핵심 차별화: 서버에서 직접 8개 소스 수집 + 전처리
       const collectedData = await collectAllUserData(supabaseClient, user.id);
+
+      // ★ 사용자가 체크리스트에서 선택한 항목만 분석에 포함 (선택이 비어있으면 전체 사용)
+      if (selectedData && typeof selectedData === 'object') {
+        const filterByIds = (arr: any[], key: string) => {
+          const ids = selectedData[key];
+          if (!Array.isArray(ids) || ids.length === 0) return arr; // 해당 카테고리 선택 없음 → 그대로
+          const set = new Set(ids);
+          return arr.filter((row: any) => set.has(row.id));
+        };
+        // 카테고리 키 매핑(체크리스트 key → CollectedData 필드)
+        if ('tests' in selectedData) {
+          // test_results 는 별도 테이블이라 collectedData 에 없음 — assessments만 보유
+        }
+        if ('enhanced' in selectedData) {
+          collectedData.assessments = filterByIds(collectedData.assessments, 'enhanced').length > 0
+            ? filterByIds(collectedData.assessments, 'enhanced')
+            : collectedData.assessments;
+        }
+        if ('observations' in selectedData) {
+          collectedData.aiObservations = filterByIds(collectedData.aiObservations, 'observations');
+        }
+        if ('text_observations' in selectedData) {
+          collectedData.textObservations = filterByIds(collectedData.textObservations, 'text_observations');
+        }
+        if ('concern_reports' in selectedData) {
+          collectedData.concernStorage = filterByIds(collectedData.concernStorage, 'concern_reports');
+        }
+        console.log('체크리스트 필터 적용 완료:', {
+          selectedCategories: Object.keys(selectedData),
+          aiObservations: collectedData.aiObservations.length,
+          textObservations: collectedData.textObservations.length,
+        });
+      }
 
       console.log('데이터 수집 완료:', {
         assessments: collectedData.assessments.length,

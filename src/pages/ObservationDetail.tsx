@@ -54,6 +54,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import HighlightedObservationContent from "@/components/observation/HighlightedObservationContent";
 
 interface Observation {
   id: string;

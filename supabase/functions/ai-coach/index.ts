@@ -4,6 +4,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.55.0';
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const corsHeaders = {
@@ -17,26 +18,45 @@ serve(async (req) => {
   }
 
   try {
+    // --- AUTH: verify caller's JWT and use their identity ---
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const token = authHeader.replace('Bearer ', '');
+    const authClient = createClient(supabaseUrl, supabaseAnonKey);
+    const { data: userData, error: userErr } = await authClient.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const authenticatedUserId = userData.user.id;
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const requestData = await req.json();
-    const { 
-      userId, 
-      sessionType, 
-      message, 
+    const {
+      sessionType,
+      message,
       conversationHistory = [],
       moodBefore,
       action,
-      prompt 
+      prompt
     } = requestData;
+    // NOTE: client-supplied userId is intentionally ignored; we trust the JWT.
+    const userId = authenticatedUserId;
 
-    console.log('AI Coach request:', { userId, sessionType, message, action, prompt });
+    console.log('AI Coach request:', { userId, sessionType, action });
 
     // Handle different action types
     if (action && prompt) {
-      // New action-based request
       const coachingResponse = await generateActionResponse(action, prompt);
-      return new Response(JSON.stringify({ 
-        success: true, 
+      return new Response(JSON.stringify({
+        success: true,
         response: coachingResponse.response,
         actionItems: coachingResponse.actionItems
       }), {
@@ -44,19 +64,17 @@ serve(async (req) => {
       });
     }
 
-    // Original coaching session logic
     const coachingResponse = await generateCoachingResponse(
-      sessionType, 
-      message, 
+      sessionType,
+      message,
       conversationHistory,
       moodBefore
     );
 
-    // Create or update coaching session
     const sessionData = {
       user_id: userId,
       session_type: sessionType,
-      conversation_history: [...conversationHistory, 
+      conversation_history: [...conversationHistory,
         { role: 'user', content: message, timestamp: new Date().toISOString() },
         { role: 'assistant', content: coachingResponse.response, timestamp: new Date().toISOString() }
       ],
@@ -75,8 +93,8 @@ serve(async (req) => {
       console.error('Error creating coaching session:', error);
     }
 
-    return new Response(JSON.stringify({ 
-      success: true, 
+    return new Response(JSON.stringify({
+      success: true,
       response: coachingResponse.response,
       actionItems: coachingResponse.actionItems,
       sessionId: session?.id
@@ -86,9 +104,9 @@ serve(async (req) => {
   } catch (error: unknown) {
     console.error('Error in AI coach:', error);
     const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       error: message,
-      success: false 
+      success: false
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -97,8 +115,8 @@ serve(async (req) => {
 });
 
 async function generateCoachingResponse(
-  sessionType: string, 
-  message: string, 
+  sessionType: string,
+  message: string,
   conversationHistory: any[],
   moodBefore?: number
 ) {
@@ -123,10 +141,10 @@ ${moodBefore ? `시작 기분 점수: ${moodBefore}/5` : ''}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'google/gemini-3-flash-preview',
         messages: [
-          { 
-            role: 'system', 
+          {
+            role: 'system',
             content: systemPrompts[sessionType as keyof typeof systemPrompts] || systemPrompts.mood_coaching
           },
           { role: 'user', content: prompt }
@@ -138,16 +156,11 @@ ${moodBefore ? `시작 기분 점수: ${moodBefore}/5` : ''}
 
     const data = await response.json();
     const content = data.choices[0].message.content;
-
-    // Extract action items (simple parsing)
     const actionItems = extractActionItems(content);
 
-    return {
-      response: content,
-      actionItems
-    };
+    return { response: content, actionItems };
   } catch (error) {
-    console.error('OpenAI API error:', error);
+    console.error('AI gateway error:', error);
     return {
       response: `${sessionType} 세션을 위한 맞춤 조언을 제공하고 있습니다. 현재 상황에 대해 더 자세히 말씀해 주시면 더 구체적인 도움을 드릴 수 있습니다.`,
       actionItems: ['규칙적인 생활 리듬 유지하기', '충분한 수면 취하기', '적절한 운동하기']
@@ -158,9 +171,8 @@ ${moodBefore ? `시작 기분 점수: ${moodBefore}/5` : ''}
 function extractActionItems(content: string): string[] {
   const lines = content.split('\n');
   const actionItems: string[] = [];
-  
+
   for (const line of lines) {
-    // Look for numbered lists, bullet points, or action-oriented sentences
     if (line.match(/^\d+\./) || line.match(/^[-*]/) || line.includes('해보세요') || line.includes('추천')) {
       const cleaned = line.replace(/^\d+\./, '').replace(/^[-*]/, '').trim();
       if (cleaned.length > 5) {
@@ -168,7 +180,7 @@ function extractActionItems(content: string): string[] {
       }
     }
   }
-  
+
   return actionItems.length > 0 ? actionItems.slice(0, 3) : [
     '오늘의 목표를 하나 설정해보세요',
     '긍정적인 마음가짐 유지하기',
@@ -191,10 +203,10 @@ async function generateActionResponse(action: string, prompt: string) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'google/gemini-3-flash-preview',
         messages: [
-          { 
-            role: 'system', 
+          {
+            role: 'system',
             content: actionPrompts[action as keyof typeof actionPrompts] || actionPrompts.workout_plan
           },
           { role: 'user', content: prompt }
@@ -207,12 +219,9 @@ async function generateActionResponse(action: string, prompt: string) {
     const data = await response.json();
     const content = data.choices[0].message.content;
 
-    return {
-      response: content,
-      actionItems: extractActionItems(content)
-    };
+    return { response: content, actionItems: extractActionItems(content) };
   } catch (error) {
-    console.error('OpenAI API error for action:', error);
+    console.error('AI gateway error for action:', error);
     return {
       response: getDefaultResponseForAction(action),
       actionItems: getDefaultActionItems(action)
@@ -222,11 +231,10 @@ async function generateActionResponse(action: string, prompt: string) {
 
 function getDefaultResponseForAction(action: string): string {
   const defaults = {
-    workout_plan: '🏃‍♂️ **30분 홈 트레이닝 계획**\n\n**워밍업 (5분)**\n- 제자리 걷기: 2분\n- 팔 돌리기: 1분\n- 목과 어깨 스트레칭: 2분\n\n**메인 운동 (20분)**\n- 스쿼트: 3세트 x 10회\n- 팔굽혀펴기: 3세트 x 8회\n- 플랭크: 3세트 x 30초\n- 런지: 3세트 x 각 다리 8회\n\n**쿨다운 (5분)**\n- 전신 스트레칭\n- 심호흡\n\n💡 **초보자 팁**: 무리하지 말고 자신의 페이스에 맞춰 진행하세요!',
-    suggest_challenge: '🌟 **추천 웰니스 챌린지**\n\n**30일 건강 습관 만들기**\n- 매일 물 8잔 마시기\n- 10분 명상하기\n- 1만보 걷기\n- 22시 전 잠자리에 들기\n\n친구들과 함께 도전하면 더 재미있어요!',
-    start_workout: '💪 **운동 시작 준비!**\n\n지금 바로 시작할 수 있는 간단한 운동을 추천드려요!\n\n1. 편안한 옷으로 갈아입기\n2. 물 한 잔 준비하기\n3. 5분 가벼운 스트레칭\n4. 좋아하는 음악 틀기\n\n작은 시작이 큰 변화를 만듭니다! 🌟'
+    workout_plan: '🏃‍♂️ **30분 홈 트레이닝 계획**\n\n간단한 워밍업 후 스쿼트, 팔굽혀펴기, 플랭크, 런지를 차례로 수행하고 마무리 스트레칭으로 마칩니다.',
+    suggest_challenge: '🌟 **30일 건강 습관 만들기 챌린지**',
+    start_workout: '💪 가벼운 스트레칭으로 운동을 시작해 보세요!'
   };
-  
   return defaults[action as keyof typeof defaults] || defaults.workout_plan;
 }
 
@@ -236,6 +244,5 @@ function getDefaultActionItems(action: string): string[] {
     suggest_challenge: ['오늘부터 물 8잔 마시기', '10분 산책하기', '일찍 잠자리에 들기'],
     start_workout: ['편안한 운동복 입기', '5분 스트레칭으로 시작', '운동 후 성취감 느끼기']
   };
-  
   return defaults[action as keyof typeof defaults] || defaults.workout_plan;
 }

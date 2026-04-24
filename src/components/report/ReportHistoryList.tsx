@@ -92,8 +92,8 @@ const ReportHistoryList: React.FC<ReportHistoryListProps> = ({ onViewReport, onS
 
   return (
     <div className="max-w-4xl mx-auto mb-6">
-      <Card className="bg-white border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-5 py-4 flex items-center justify-between border-b border-slate-200">
+      <Card className="bg-card border-border shadow-sm overflow-hidden">
+        <div className="px-5 py-4 flex items-center justify-between border-b border-border">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
               <FileText className="w-4 h-4 text-primary" />

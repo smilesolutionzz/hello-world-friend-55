@@ -94,22 +94,6 @@ const PartnerTrustSection = () => {
           </div>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mt-16 pt-12 border-t border-white/5">
-          <p className="text-xs font-medium text-white/40 uppercase tracking-wider mb-6">{t.partnerTrust.trustHeading}</p>
-          <div className="flex flex-wrap justify-center gap-6 md:gap-10">
-            {trustBadges.map((badge, index) => {
-              const Icon = badge.icon;
-              return (
-                <div key={index} className="flex flex-col items-center gap-2">
-                  <div className="w-12 h-12 bg-slate-800 border border-white/5 rounded-xl flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-blue-400" />
-                  </div>
-                  <p className="text-xs text-white/50">{badge.title}</p>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
       </div>
 
       <style>{`

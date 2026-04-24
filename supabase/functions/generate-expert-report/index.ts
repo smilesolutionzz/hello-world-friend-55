@@ -931,7 +931,8 @@ function buildUserPrompt(
   language: string,
   onboardingData?: any,
   peerComparison?: Record<string, any>,
-  reportComparison?: any
+  reportComparison?: any,
+  quoteOptions?: { maxQuotes: number; contentChars: number; adviceChars: number }
 ): string {
   const isKo = language !== 'en';
 
@@ -1044,16 +1045,24 @@ ${userInput?.recentConcerns ? `\n═══ 보호자 주요 고민 ═══\n${
 ${userInput?.developmentalNotes ? `\n═══ 보호자 관찰 소견 ═══\n${userInput.developmentalNotes}` : ''}
 ${(() => {
   // ── 텍스트 관찰일지 직접 인용 블록 (제목 · 내용 · AI 전문가 조언) ──
+  // 인용 옵션은 사용자가 UI에서 조정 가능 (최대 일지 수, 본문/조언 길이)
+  const opts = {
+    maxQuotes: Math.max(1, Math.min(10, quoteOptions?.maxQuotes ?? 8)),
+    contentChars: Math.max(80, Math.min(500, quoteOptions?.contentChars ?? 280)),
+    adviceChars: Math.max(60, Math.min(300, quoteOptions?.adviceChars ?? 200)),
+  };
   const textObs = (preprocessed as any).__rawTextObservations || [];
   if (!Array.isArray(textObs) || textObs.length === 0) return '';
-  const quotes = textObs.slice(-8).map((o: any, i: number) => {
+  const recent = textObs.slice(-opts.maxQuotes);
+  const quotes = recent.map((o: any, i: number) => {
     const date = (o.created_at || '').split('T')[0];
     const title = (o.title || '제목 없음').toString().substring(0, 60);
-    const content = (o.content || '').toString().replace(/\s+/g, ' ').substring(0, 280);
-    const advice = (o.expert_advice || '').toString().replace(/\s+/g, ' ').substring(0, 200);
-    return `【일지 ${i + 1} | ${date}】\n• 제목: ${title}\n• 내용: "${content}"${advice ? `\n• 기존 AI 조언: "${advice}"` : ''}`;
+    const content = (o.content || '').toString().replace(/\s+/g, ' ').substring(0, opts.contentChars);
+    const advice = (o.expert_advice || '').toString().replace(/\s+/g, ' ').substring(0, opts.adviceChars);
+    // [인용 #N] 번호로 라벨링 → AI가 본문에서 참조하도록 강제
+    return `【인용 #${i + 1} | ${date}】\n• 제목: ${title}\n• 내용: "${content}"${advice ? `\n• 기존 AI 조언: "${advice}"` : ''}`;
   }).join('\n\n');
-  return `\n═══ 사용자 작성 관찰일지 원문 인용 (반드시 분석에 반영) ═══\n${quotes}\n\n⭐ 위 일지의 제목·내용·기존 AI 조언을 직접 인용하여 패턴/위험신호/강점을 도출하세요.`;
+  return `\n═══ 사용자 작성 관찰일지 원문 인용 (${recent.length}건 / 반드시 분석에 반영) ═══\n${quotes}\n\n⭐⭐ **인용 강제 규칙 (반드시 준수)** ⭐⭐\n1. 위 일지를 본문에서 인용할 때는 반드시 **[인용 #N]** 형식의 번호로 명시 참조하세요. (예: "[인용 #2]에서 언급된 수면 패턴을 보면…")\n2. 최소 ${Math.min(3, recent.length)}개 이상의 인용 항목을 서로 다른 섹션에서 직접 인용해야 합니다.\n3. 인용 시 일지의 **제목·내용·기존 AI 조언** 중 하나 이상을 그대로 또는 요약하여 근거로 제시하세요.\n4. 인용 없이 일반론만 서술하는 섹션은 신뢰도 저하로 간주됩니다.\n5. 일지 내용에서 도출된 패턴/위험신호/강점은 반드시 해당 [인용 #N]을 근거로 명시하세요.`;
 })()}
 ${onboardingData ? `\n═══ 온보딩 기초 데이터 ═══\n대상: ${onboardingData.subject_type === 'child' ? '아이' : '본인'}\n${onboardingData.child_age ? `아이 나이: ${onboardingData.child_age}세` : ''}\n${onboardingData.child_gender ? `성별: ${onboardingData.child_gender === 'male' ? '남아' : '여아'}` : ''}\n관심 키워드: ${(onboardingData.concern_keywords || []).join(', ')}\n기초 상태 체크: ${JSON.stringify(onboardingData.baseline_answers || {})}` : ''}
 ${researchInsights ? `\n═══ 최신 연구 참고 (Perplexity 학술 검색) ═══\n${researchInsights.substring(0, 2500)}` : ''}
@@ -1487,7 +1496,14 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !user) throw new Error('Unauthorized');
 
-    const { assessments: clientAssessments, observations: clientObservations, observationSessions: clientSessions, chatRooms: clientChatRooms, profile: clientProfile, externalTestImages, userInput, reportMode, language, onboardingData, selectedData, selectedDataCount } = await req.json();
+    const { assessments: clientAssessments, observations: clientObservations, observationSessions: clientSessions, chatRooms: clientChatRooms, profile: clientProfile, externalTestImages, userInput, reportMode, language, onboardingData, selectedData, selectedDataCount, quoteOptions } = await req.json();
+
+    // 인용 옵션 정규화 (안전한 범위로 클램핑)
+    const normalizedQuoteOptions = {
+      maxQuotes: Math.max(1, Math.min(10, Number(quoteOptions?.maxQuotes) || 8)),
+      contentChars: Math.max(80, Math.min(500, Number(quoteOptions?.contentChars) || 280)),
+      adviceChars: Math.max(60, Math.min(300, Number(quoteOptions?.adviceChars) || 200)),
+    };
 
     const isWithData = reportMode !== 'without-data';
     const isKo = language !== 'en';
@@ -1535,8 +1551,22 @@ serve(async (req) => {
       // ★ 핵심 차별화: 서버에서 직접 8개 소스 수집 + 전처리
       const collectedData = await collectAllUserData(supabaseClient, user.id);
 
-      // ★ 사용자가 체크리스트에서 선택한 항목만 분석에 포함 (선택이 비어있으면 전체 사용)
-      if (selectedData && typeof selectedData === 'object') {
+      // ★ 사용자가 체크리스트에서 선택한 항목만 분석에 포함
+      // ⚠️ 기본 동작 명확화:
+      //    - selectedData 미전달 또는 모든 카테고리가 빈 배열 → 전체 데이터 사용 (fallback)
+      //    - 일부 카테고리만 선택 → 선택된 카테고리는 필터, 나머지는 전체 사용
+      const hasAnySelection =
+        selectedData &&
+        typeof selectedData === 'object' &&
+        Object.values(selectedData).some((arr: any) => Array.isArray(arr) && arr.length > 0);
+
+      if (!hasAnySelection) {
+        console.log('[selection] 선택된 항목 없음 → 전체 데이터로 자동 폴백', {
+          totalAssessments: collectedData.assessments.length,
+          totalAiObs: collectedData.aiObservations.length,
+          totalTextObs: collectedData.textObservations.length,
+        });
+      } else if (selectedData && typeof selectedData === 'object') {
         const filterByIds = (arr: any[], key: string) => {
           const ids = selectedData[key];
           if (!Array.isArray(ids) || ids.length === 0) return arr; // 해당 카테고리 선택 없음 → 그대로
@@ -1561,8 +1591,10 @@ serve(async (req) => {
         if ('concern_reports' in selectedData) {
           collectedData.concernStorage = filterByIds(collectedData.concernStorage, 'concern_reports');
         }
-        console.log('체크리스트 필터 적용 완료:', {
-          selectedCategories: Object.keys(selectedData),
+        console.log('[selection] 체크리스트 필터 적용 완료:', {
+          selectedCategories: Object.keys(selectedData).filter((k) =>
+            Array.isArray((selectedData as any)[k]) && (selectedData as any)[k].length > 0
+          ),
           aiObservations: collectedData.aiObservations.length,
           textObservations: collectedData.textObservations.length,
         });
@@ -1648,7 +1680,7 @@ serve(async (req) => {
 
     // AI 프롬프트 구성
     const systemPrompt = buildSystemPrompt(preprocessed, language || 'ko', !!externalTestImages);
-    const userPrompt = buildUserPrompt(preprocessed, userInput, userAge, researchInsights, externalTestImages || '', language || 'ko', onboardingData, peerComparison, reportComparison);
+    const userPrompt = buildUserPrompt(preprocessed, userInput, userAge, researchInsights, externalTestImages || '', language || 'ko', onboardingData, peerComparison, reportComparison, normalizedQuoteOptions);
 
     // AI 호출 — 최고 사양 모델 (Gemini 3.1 Pro Preview) 사용
     const aiModel = 'google/gemini-3.1-pro-preview';

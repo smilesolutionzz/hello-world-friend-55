@@ -38,7 +38,7 @@ import ReportDataChecklist from '@/components/report/ReportDataChecklist';
 import ReportProHeader from '@/components/report/ReportProHeader';
 import ReportProOutput from '@/components/report/ReportProOutput';
 import ReportContentShowcase from '@/components/report/ReportContentShowcase';
-import ReportDataSourcePanel from '@/components/report/ReportDataSourcePanel';
+import ReportDataSourcePanel, { type QuoteOptions } from '@/components/report/ReportDataSourcePanel';
 
 // ── 애니메이션 카운터 ──
 const AnimatedCounter = ({ value, duration = 1.5 }: { value: number; duration?: number }) => {
@@ -108,6 +108,7 @@ const ReportGeneratorPro = () => {
   const [selectedChecklistData, setSelectedChecklistData] = useState<Record<string, string[]>>({});
   const [checklistSelectedCount, setChecklistSelectedCount] = useState(0);
   const [checklistTotalCount, setChecklistTotalCount] = useState(0);
+  const [quoteOptions, setQuoteOptions] = useState<QuoteOptions>({ maxQuotes: 8, contentChars: 280, adviceChars: 200 });
   const { isEnglish, localePath } = useLanguage();
 
   // 🎯 진입 컨텍스트 — ReportHubCTA에서 ?sources=&origin= 으로 진입
@@ -250,7 +251,7 @@ const ReportGeneratorPro = () => {
       const progressInterval = setInterval(() => { setProgress(prev => Math.min(prev + 5, 90)); }, 1000);
       toast({ title: t("🔬 전문가급 분석 시작", "🔬 Expert-Level Analysis Started"), description: reportMode === 'with-data' ? t("실시간 웹 검색 + 최신 연구 기반 심층 분석을 진행합니다...", "Performing real-time web search + latest research-based deep analysis...") : t("고민·상태 정보를 기반으로 맞춤 분석을 진행합니다...", "Performing personalized analysis based on your concerns...") });
       const body: any = { reportMode, userInput: { name: userInput.name, birthDate: userInput.birthDate, gender: userInput.gender, recentConcerns: userInput.recentConcerns, developmentalNotes: userInput.developmentalNotes }, language: isEnglish ? 'en' : 'ko' };
-      if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.textObservations = userData.textObservations; body.chatRooms = userData.chatRooms; body.profile = userData.profile; body.selectedData = selectedChecklistData; body.selectedDataCount = checklistSelectedCount; }
+      if (reportMode === 'with-data') { body.assessments = userData.assessments; body.observations = userData.observations; body.observationSessions = userData.observationSessions; body.textObservations = userData.textObservations; body.chatRooms = userData.chatRooms; body.profile = userData.profile; body.selectedData = selectedChecklistData; body.selectedDataCount = checklistSelectedCount; body.quoteOptions = quoteOptions; }
       if (userData.onboardingData) { body.onboardingData = userData.onboardingData; }
       if (imageAnalysisResults) { body.externalTestImages = imageAnalysisResults; }
       
@@ -543,14 +544,24 @@ const ReportGeneratorPro = () => {
                     chatMessages: userData?.totalChatMessages || 0,
                   }}
                   selectedCount={checklistSelectedCount}
+                  selectedCountsByCategory={Object.fromEntries(
+                    Object.entries(selectedChecklistData).map(([k, ids]) => [k, ids.length])
+                  )}
                   selectedSampleByCategory={{
-                    text_observations: (userData?.textObservations || []).slice(0, 3).map((o: any) => ({
-                      label: o.title || '관찰일지',
-                      detail: (o.expert_advice || o.content || '').substring(0, 120),
-                      date: new Date(o.created_at).toLocaleDateString('ko-KR'),
-                    })),
+                    text_observations: (() => {
+                      const selectedIds = new Set(selectedChecklistData['text_observations'] || []);
+                      const all = (userData?.textObservations || []) as any[];
+                      const pool = selectedIds.size > 0 ? all.filter((o) => selectedIds.has(o.id)) : all;
+                      return pool.slice(0, quoteOptions.maxQuotes).map((o: any) => ({
+                        label: o.title || '관찰일지',
+                        detail: (o.expert_advice || o.content || '').substring(0, quoteOptions.contentChars),
+                        date: new Date(o.created_at).toLocaleDateString('ko-KR'),
+                      }));
+                    })(),
                   }}
                   userName={userInput.name}
+                  quoteOptions={quoteOptions}
+                  onQuoteOptionsChange={setQuoteOptions}
                 />
 
                 {originLabel && (

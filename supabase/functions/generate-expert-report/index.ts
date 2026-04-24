@@ -1487,7 +1487,14 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !user) throw new Error('Unauthorized');
 
-    const { assessments: clientAssessments, observations: clientObservations, observationSessions: clientSessions, chatRooms: clientChatRooms, profile: clientProfile, externalTestImages, userInput, reportMode, language, onboardingData, selectedData, selectedDataCount } = await req.json();
+    const { assessments: clientAssessments, observations: clientObservations, observationSessions: clientSessions, chatRooms: clientChatRooms, profile: clientProfile, externalTestImages, userInput, reportMode, language, onboardingData, selectedData, selectedDataCount, quoteOptions } = await req.json();
+
+    // 인용 옵션 정규화 (안전한 범위로 클램핑)
+    const normalizedQuoteOptions = {
+      maxQuotes: Math.max(1, Math.min(10, Number(quoteOptions?.maxQuotes) || 8)),
+      contentChars: Math.max(80, Math.min(500, Number(quoteOptions?.contentChars) || 280)),
+      adviceChars: Math.max(60, Math.min(300, Number(quoteOptions?.adviceChars) || 200)),
+    };
 
     const isWithData = reportMode !== 'without-data';
     const isKo = language !== 'en';
@@ -1535,8 +1542,22 @@ serve(async (req) => {
       // ★ 핵심 차별화: 서버에서 직접 8개 소스 수집 + 전처리
       const collectedData = await collectAllUserData(supabaseClient, user.id);
 
-      // ★ 사용자가 체크리스트에서 선택한 항목만 분석에 포함 (선택이 비어있으면 전체 사용)
-      if (selectedData && typeof selectedData === 'object') {
+      // ★ 사용자가 체크리스트에서 선택한 항목만 분석에 포함
+      // ⚠️ 기본 동작 명확화:
+      //    - selectedData 미전달 또는 모든 카테고리가 빈 배열 → 전체 데이터 사용 (fallback)
+      //    - 일부 카테고리만 선택 → 선택된 카테고리는 필터, 나머지는 전체 사용
+      const hasAnySelection =
+        selectedData &&
+        typeof selectedData === 'object' &&
+        Object.values(selectedData).some((arr: any) => Array.isArray(arr) && arr.length > 0);
+
+      if (!hasAnySelection) {
+        console.log('[selection] 선택된 항목 없음 → 전체 데이터로 자동 폴백', {
+          totalAssessments: collectedData.assessments.length,
+          totalAiObs: collectedData.aiObservations.length,
+          totalTextObs: collectedData.textObservations.length,
+        });
+      } else if (selectedData && typeof selectedData === 'object') {
         const filterByIds = (arr: any[], key: string) => {
           const ids = selectedData[key];
           if (!Array.isArray(ids) || ids.length === 0) return arr; // 해당 카테고리 선택 없음 → 그대로
@@ -1561,8 +1582,10 @@ serve(async (req) => {
         if ('concern_reports' in selectedData) {
           collectedData.concernStorage = filterByIds(collectedData.concernStorage, 'concern_reports');
         }
-        console.log('체크리스트 필터 적용 완료:', {
-          selectedCategories: Object.keys(selectedData),
+        console.log('[selection] 체크리스트 필터 적용 완료:', {
+          selectedCategories: Object.keys(selectedData).filter((k) =>
+            Array.isArray((selectedData as any)[k]) && (selectedData as any)[k].length > 0
+          ),
           aiObservations: collectedData.aiObservations.length,
           textObservations: collectedData.textObservations.length,
         });

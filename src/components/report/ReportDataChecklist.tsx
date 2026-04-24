@@ -80,14 +80,16 @@ export default function ReportDataChecklist({ onSelectionChange, autoSelectOnly 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // AIHPRO 7대 데이터 소스: 간편검사, 심층검사, 관찰일지, 게임검사, 음성상담, 고민/인사이트, 고민 리포트
-      const [testRes, enhancedRes, observationRes, gameRes, voiceRes, progressRes, insightsRes, concernRes] = await Promise.all([
+      // AIHPRO 8대 데이터 소스: 간편검사, 심층검사, AI관찰분석(영상), 텍스트 관찰일지, 게임검사, 음성상담, 고민/인사이트, 고민 리포트
+      const [testRes, enhancedRes, observationRes, textObsRes, gameRes, voiceRes, progressRes, insightsRes, concernRes] = await Promise.all([
         // 1. 간편검사 (심리검사 결과)
         supabase.from('test_results').select('id, test_type_id, scores, completed_at, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         // 2. 심층검사 (심층 분석 리포트)
         supabase.from('assessment_enhanced_analysis').select('id, assessment_type, risk_level, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
-        // 3. 관찰일지 (AI 관찰 분석)
+        // 3. AI 관찰 분석 (영상/음성)
         supabase.from('ai_observation_results').select('id, analysis_type, input_type, title, risk_level, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+        // 3-2. 텍스트 관찰일지 (사용자가 직접 작성한 일지 + AI 조언)
+        (supabase.from('observations') as any).select('id, title, content, expert_advice, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         // 4. 게임검사 (금쪽상담소 해바라기 마을 - play_assessment_results)
         supabase.from('play_assessment_results').select('id, age_group, style, cognitive_score, emotional_score, social_score, physical_score, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
         // 5. 음성상담 (AI 코칭 세션)

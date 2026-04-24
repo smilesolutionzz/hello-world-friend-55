@@ -4,6 +4,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.55.0';
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const corsHeaders = {
@@ -17,12 +18,29 @@ serve(async (req) => {
   }
 
   try {
+    // --- AUTH: verify caller's JWT ---
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const token = authHeader.replace('Bearer ', '');
+    const authClient = createClient(supabaseUrl, supabaseAnonKey);
+    const { data: userData, error: userErr } = await authClient.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const userId = userData.user.id; // Trust JWT, ignore client-supplied userId
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { userId } = await req.json();
 
     console.log('AI Personalized Suggestions request:', { userId });
 
-    // 사용자 데이터 수집
     const [assessments, observations, checkins, coachingSessions, challenges] = await Promise.all([
       supabase.from('assessments').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(5),
       supabase.from('observation_logs').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(10),
@@ -31,7 +49,6 @@ serve(async (req) => {
       supabase.from('user_challenges').select('*, challenges(*)').eq('user_id', userId).order('started_at', { ascending: false }).limit(5)
     ]);
 
-    // AI에게 전달할 사용자 컨텍스트 구성
     const userContext = {
       hasAssessments: (assessments.data?.length || 0) > 0,
       assessmentCount: assessments.data?.length || 0,
@@ -63,30 +80,19 @@ serve(async (req) => {
     "reasoning": "AI가 이 추천을 한 이유 (100자 이내)",
     "expectedBenefit": "예상 효과 (30자 이내)"
   }
-}
-
-추천 시 고려사항:
-1. 사용자의 현재 참여도와 활동 패턴
-2. 최근 기분, 에너지, 스트레스 수치의 변화
-3. 완료한 활동과 아직 시도하지 않은 기능
-4. 데이터 축적 정도 (평가 결과 분석을 위한 충분한 데이터)
-5. 사용자의 발전 단계 (초기/중기/심화)`;
+}`;
 
     const userPrompt = `사용자 활동 분석:
 - 검사 완료: ${userContext.hasAssessments ? '있음' : '없음'} (${userContext.assessmentCount}회)
 - 최근 검사 결과: ${userContext.latestAssessment ? JSON.stringify(userContext.latestAssessment.risk_level) : '없음'}
 - 관찰일지 기록: ${userContext.observationCount}회
-- 최근 관찰 내용: ${JSON.stringify(userContext.recentObservations)}
 - 체크인 연속일: ${userContext.checkinStreak}일
 - 평균 기분: ${userContext.avgMoodScore.toFixed(1)}/10
 - 평균 에너지: ${userContext.avgEnergyLevel.toFixed(1)}/10
 - 평균 스트레스: ${userContext.avgStressLevel.toFixed(1)}/10
 - AI 상담 이용: ${userContext.coachingSessionCount}회
 - 진행 중 챌린지: ${userContext.activeChallenges}개
-- 완료한 챌린지: ${userContext.completedChallenges}개
-
-위 데이터를 바탕으로 사용자에게 가장 도움이 될 다음 단계를 추천해주세요.
-참여도가 낮다면 쉽고 빠른 액션을, 활발하다면 심화 단계를 추천하세요.`;
+- 완료한 챌린지: ${userContext.completedChallenges}개`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -106,33 +112,24 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      throw new Error(`AI gateway error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('AI suggestion generated successfully');
-
     let suggestionResult;
     try {
       suggestionResult = JSON.parse(data.choices[0].message.content);
-    } catch (parseError) {
-      console.log('JSON parsing error, using fallback suggestion');
+    } catch {
       suggestionResult = createFallbackSuggestion(userContext);
     }
 
     return new Response(JSON.stringify(suggestionResult), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
-
   } catch (error) {
     console.error('Error in ai-personalized-suggestions function:', error);
-    
     return new Response(JSON.stringify({
-      suggestion: createFallbackSuggestion({
-        hasAssessments: false,
-        assessmentCount: 0,
-        observationCount: 0
-      })
+      suggestion: createFallbackSuggestion({ hasAssessments: false, assessmentCount: 0, observationCount: 0 })
     }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

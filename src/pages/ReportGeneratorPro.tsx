@@ -130,16 +130,18 @@ const ReportGeneratorPro = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { setIsLoggedIn(false); setIsLoadingData(false); return; }
       setIsLoggedIn(true);
-      const [{ data: assessments }, { data: observations }, { data: chatRooms }, { data: observationSessions }, { data: profile }, { data: onboardingData }] = await Promise.all([
+      const [{ data: assessments }, { data: observations }, { data: chatRooms }, { data: observationSessions }, textObsRes, { data: profile }, { data: onboardingData }] = await Promise.all([
         supabase.from('assessments').select('*').or(`user_id.eq.${session.user.id},profile_id.eq.${session.user.id}`).order('created_at', { ascending: false }),
         supabase.from('observation_logs').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
         supabase.from('chat_rooms').select('*, chat_messages(*)').eq('user_id', session.user.id).order('created_at', { ascending: false }),
         supabase.from('observation_sessions').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
+        (supabase.from('observations') as any).select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
         supabase.from('profiles').select('*').eq('user_id', session.user.id).single(),
         (supabase.from('user_onboarding_data') as any).select('*').eq('user_id', session.user.id).maybeSingle(),
       ]);
-      const totalDataCount = (assessments?.length || 0) + (observations?.length || 0) + (observationSessions?.length || 0) + (chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0);
-      setUserData({ assessments: assessments || [], observations: observations || [], observationSessions: observationSessions || [], chatRooms: chatRooms || [], profile: profile || {}, onboardingData: onboardingData || null, totalAssessments: assessments?.length || 0, totalObservations: observations?.length || 0, totalObservationSessions: observationSessions?.length || 0, totalChatMessages: chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0, totalDataCount });
+      const textObservations = (textObsRes as any)?.data || [];
+      const totalDataCount = (assessments?.length || 0) + (observations?.length || 0) + (observationSessions?.length || 0) + textObservations.length + (chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0);
+      setUserData({ assessments: assessments || [], observations: observations || [], observationSessions: observationSessions || [], textObservations, chatRooms: chatRooms || [], profile: profile || {}, onboardingData: onboardingData || null, totalAssessments: assessments?.length || 0, totalObservations: observations?.length || 0, totalObservationSessions: observationSessions?.length || 0, totalTextObservations: textObservations.length, totalChatMessages: chatRooms?.reduce((acc: number, room: any) => acc + (room.chat_messages?.length || 0), 0) || 0, totalDataCount });
       
       // 프로필 데이터로 대상자 정보 자동 채우기
       if (profile) {

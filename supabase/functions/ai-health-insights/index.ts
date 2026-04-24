@@ -45,7 +45,15 @@ serve(async (req) => {
     const userId = userData.user.id; // Trust JWT identity, ignore client-supplied userId
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { checkinData, challengeHistory } = await req.json();
+    const rawBody = await req.json().catch(() => ({}));
+    const parsed = RequestSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return new Response(JSON.stringify({ error: 'Invalid input' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const { checkinData, challengeHistory = [] } = parsed.data;
 
     console.log('AI Health Insights request for user:', userId);
 

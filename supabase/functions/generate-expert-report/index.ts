@@ -488,6 +488,8 @@ function preprocessData(data: CollectedData, userAge: number): PreprocessedData 
     progressSummary,
     concernSummary,
     chartData,
+    // 프롬프트에서 직접 인용용 원문 보존 (타입에는 없지만 런타임 첨부)
+    __rawTextObservations: data.textObservations || [],
   };
 }
 

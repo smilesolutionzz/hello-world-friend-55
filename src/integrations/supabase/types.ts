@@ -13675,6 +13675,7 @@ export type Database = {
         Args: { observation_user_id: string }
         Returns: boolean
       }
+      can_access_realtime_topic: { Args: { _topic: string }; Returns: boolean }
       check_and_award_badges: {
         Args: { p_result_id: string; p_user_id: string }
         Returns: undefined

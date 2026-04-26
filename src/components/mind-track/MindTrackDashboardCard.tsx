@@ -1,64 +1,43 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Sparkles, ChevronRight, Target, PlayCircle, BookOpen, AlertCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-
-type State =
-  | { kind: "loading" }
-  | { kind: "none" }
-  | { kind: "needs_baseline"; enrollmentId: string }
-  | { kind: "active"; workbook: any; currentDay: number; todayMission: any | null; completed: number };
+import { Sparkles, ChevronRight, Target, PlayCircle, BookOpen, AlertCircle, Coffee } from "lucide-react";
+import { useMindTrackDashboard } from "@/hooks/useMindTrackDashboard";
 
 export default function MindTrackDashboardCard() {
   const navigate = useNavigate();
-  const [state, setState] = useState<State>({ kind: "loading" });
+  const location = useLocation();
+  const state = useMindTrackDashboard();
 
-  useEffect(() => {
-    (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return setState({ kind: "none" });
+  // 자동 리디렉트 가드: 이미 마음 트랙 경로면 어떤 navigate도 트리거하지 않음
+  const onMindTrackRoute = location.pathname.startsWith("/mind-track");
 
-      const { data: enrollments } = await supabase
-        .from("mind_track_enrollments")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("payment_status", "completed")
-        .order("created_at", { ascending: false })
-        .limit(1);
-
-      if (!enrollments || enrollments.length === 0) return setState({ kind: "none" });
-      const en = enrollments[0] as any;
-
-      const { data: wbs } = await supabase
-        .from("mind_track_workbooks")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(1);
-
-      if (!wbs || wbs.length === 0) {
-        return setState({ kind: "needs_baseline", enrollmentId: en.id });
-      }
-
-      const wb = wbs[0] as any;
-      const startedAt = en?.started_at ? new Date(en.started_at) : new Date();
-      const currentDay = Math.min(Math.max(Math.floor((Date.now() - startedAt.getTime()) / 86400000) + 1, 1), 30);
-
-      const [{ data: missions }, { data: checkins }] = await Promise.all([
-        supabase.from("mind_track_daily_missions").select("*").eq("enrollment_id", en.id).eq("day_number", currentDay).maybeSingle(),
-        supabase.from("mind_track_checkins").select("completed").eq("enrollment_id", en.id),
-      ]);
-      const completed = (checkins ?? []).filter((c: any) => c.completed).length;
-
-      setState({ kind: "active", workbook: wb, currentDay, todayMission: missions, completed });
-    })();
-  }, []);
+  const goWorkbook = (day?: number) => {
+    if (onMindTrackRoute) return;
+    navigate(day ? `/mind-track/workbook?day=${day}` : "/mind-track/workbook");
+  };
+  const goStart = () => {
+    if (onMindTrackRoute) return;
+    navigate("/mind-track/start");
+  };
 
   if (state.kind === "loading" || state.kind === "none") return null;
+
+  if (state.kind === "error") {
+    return (
+      <Card className="p-4 border-2 border-red-200 bg-red-50/60 mb-6">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-slate-900 mb-1">마음 트랙 정보를 불러오지 못했어요</div>
+            <div className="text-xs text-slate-600 break-keep">{state.message}</div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
 
   if (state.kind === "needs_baseline") {
     return (
@@ -78,7 +57,8 @@ export default function MindTrackDashboardCard() {
               결제가 확인되었습니다. 기초 진단을 완료하면 30일 맞춤 워크북이 생성됩니다.
             </p>
             <Button
-              onClick={() => navigate("/mind-track/start")}
+              onClick={goStart}
+              disabled={onMindTrackRoute}
               className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 text-white"
             >
               <PlayCircle className="w-4 h-4 mr-1.5" /> 기초 진단 시작하기
@@ -109,10 +89,10 @@ export default function MindTrackDashboardCard() {
       <Progress value={(currentDay / 30) * 100} className="h-1.5 mb-2" />
       <div className="text-xs text-slate-600 mb-3">{completed}일 체크인 완료</div>
 
-      {todayMission && (
+      {todayMission ? (
         <div className="p-3 rounded-lg bg-white/80 border border-slate-200 mb-3">
           <div className="flex items-center gap-1.5 text-xs text-primary font-bold mb-1">
-            <Target className="w-3.5 h-3.5" /> 오늘의 미션
+            <Target className="w-3.5 h-3.5" /> 오늘의 미션 · Day {currentDay}
           </div>
           <div className="text-sm font-medium text-slate-900 break-keep">
             {todayMission.mission_title}
@@ -123,18 +103,29 @@ export default function MindTrackDashboardCard() {
             </div>
           )}
         </div>
+      ) : (
+        <div className="p-3 rounded-lg bg-slate-50 border border-dashed border-slate-300 mb-3">
+          <div className="flex items-center gap-2 text-xs text-slate-500 font-semibold mb-1">
+            <Coffee className="w-3.5 h-3.5" /> 오늘은 여유 있는 하루
+          </div>
+          <div className="text-sm text-slate-700 break-keep">
+            오늘(Day {currentDay})의 미션이 아직 준비되지 않았어요. 워크북에서 지난 미션을 돌아보거나 짧은 호흡 한 번을 가져보세요.
+          </div>
+        </div>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <Button
-          onClick={() => navigate("/mind-track/workbook")}
+          onClick={() => goWorkbook(currentDay)}
+          disabled={onMindTrackRoute}
           className="w-full bg-gradient-to-r from-primary to-purple-600 text-white"
         >
-          <BookOpen className="w-4 h-4 mr-1.5" /> 워크북 열기
+          <BookOpen className="w-4 h-4 mr-1.5" /> Day {currentDay} 워크북 열기
           <ChevronRight className="w-4 h-4 ml-1" />
         </Button>
         <Button
-          onClick={() => navigate("/mind-track/start")}
+          onClick={goStart}
+          disabled={onMindTrackRoute}
           variant="outline"
           className="w-full"
         >

@@ -152,7 +152,7 @@ const HeroSection = () => {
             </div>
 
             {/* Headline */}
-            <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-[56px] font-extrabold leading-[1.1] tracking-tight mb-5">
+            <h1 className="text-[28px] sm:text-4xl md:text-[44px] lg:text-[56px] font-extrabold leading-[1.15] md:leading-[1.18] tracking-tight mb-5 break-keep">
               <span className="block text-white/95">{(t.hero as any).headlineTop}</span>
               <span className="block bg-gradient-to-r from-emerald-300 via-teal-200 to-sky-300 bg-clip-text text-transparent">
                 {(t.hero as any).headlineBottom}

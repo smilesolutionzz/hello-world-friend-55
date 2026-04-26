@@ -453,6 +453,11 @@ const UnifiedNavigationInner = () => {
                             <div className="flex items-center gap-3 p-3 text-foreground/70">
                               <item.icon className="w-5 h-5" />
                               <span className="font-semibold text-sm">{item.label}</span>
+                              {(item as any).badge && (
+                                <Badge className="ml-auto bg-amber-100 text-amber-800 border-amber-200 text-[10px]">
+                                  {(item as any).badge}
+                                </Badge>
+                              )}
                             </div>
                             <div className="pl-4 space-y-1">
                               {item.children.map((child) => (

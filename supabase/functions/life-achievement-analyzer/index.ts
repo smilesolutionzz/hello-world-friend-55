@@ -16,7 +16,7 @@ serve(async (req) => {
   try {
     const { results, totalScore, level } = await req.json();
 
-    if (!openAIApiKey) {
+    if (!LOVABLE_API_KEY) {
       throw new Error('OpenAI API key not configured');
     }
 

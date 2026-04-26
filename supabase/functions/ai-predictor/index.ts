@@ -16,7 +16,7 @@ serve(async (req) => {
     const { results, analysis, ageGroup, age, familyMembers = [] } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!openAIApiKey) {
+    if (!LOVABLE_API_KEY) {
       throw new Error('OpenAI API key not found');
     }
 

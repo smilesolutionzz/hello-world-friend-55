@@ -24,7 +24,7 @@ serve(async (req) => {
     
     console.log(`Processing ${type} analysis:`, { dataKeys: Object.keys(data), hasContext: !!context });
 
-    if (!openAIApiKey) {
+    if (!LOVABLE_API_KEY) {
       throw new Error('OpenAI API key not configured');
     }
 

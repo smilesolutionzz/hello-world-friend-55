@@ -32,7 +32,7 @@ serve(async (req) => {
     }
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!OPENAI_API_KEY) {
+    if (!LOVABLE_API_KEY) {
       throw new Error('OPENAI_API_KEY not configured');
     }
 
@@ -82,7 +82,7 @@ serve(async (req) => {
           const contentText = await generateContentText(
             channel,
             contentType.type, 
-            OPENAI_API_KEY, 
+            LOVABLE_API_KEY, 
             institutionName, 
             contentTopic
           );

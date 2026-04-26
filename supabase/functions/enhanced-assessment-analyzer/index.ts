@@ -23,7 +23,7 @@ serve(async (req) => {
   }
 
   try {
-    if (!openAIApiKey) {
+    if (!LOVABLE_API_KEY) {
       throw new Error('OpenAI API key not configured');
     }
 

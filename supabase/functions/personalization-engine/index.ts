@@ -161,7 +161,7 @@ function generateInsights(behaviors: any[]): any[] {
 
 async function generatePersonalizedRecommendations(supabaseClient: any, profileId: string, requestType: string) {
   const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-  if (!openAIApiKey) {
+  if (!LOVABLE_API_KEY) {
     throw new Error('OpenAI API key not found');
   }
 

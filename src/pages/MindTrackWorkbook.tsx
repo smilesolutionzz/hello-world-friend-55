@@ -446,7 +446,7 @@ export default function MindTrackWorkbook() {
             const guide = MISSION_TYPE_GUIDE[todayMission.mission_type] ?? MISSION_TYPE_GUIDE.reflection;
             const GuideIcon = guide.icon;
             return (
-              <Card className="p-5 border-2 border-primary shadow-lg">
+              <Card className={`p-5 border-2 border-primary shadow-lg transition-all ${selectedDay === currentDay ? "ring-2 ring-primary ring-offset-2" : ""}`}>
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-2">
                     <Target className="w-5 h-5 text-primary" />

@@ -20,6 +20,7 @@ import { ThreeBackground } from '@/components/dashboard/ThreeBackground';
 import { TestComparison } from '@/components/dashboard/TestComparison';
 import { ActivityTimeline } from '@/components/dashboard/ActivityTimeline';
 import AuthenticationGuard from '@/components/observation/AuthenticationGuard';
+import MindTrackDashboardCard from '@/components/mind-track/MindTrackDashboardCard';
 import { useDashboardWidgets, WidgetType } from '@/hooks/useDashboardWidgets';
 import {
   DndContext,
@@ -494,6 +495,8 @@ function DashboardContent() {
                 </TabsList>
 
                 <TabsContent value="tests" className="space-y-4 sm:space-y-6">
+                  {/* 30일 마음 트랙 카드 (결제/진행 상태 자동 감지) */}
+                  <MindTrackDashboardCard />
                   {/* 빠른 시작 CTA 섹션 - 고정 */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     <Card 

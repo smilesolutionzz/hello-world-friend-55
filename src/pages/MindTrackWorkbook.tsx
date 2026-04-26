@@ -526,10 +526,70 @@ export default function MindTrackWorkbook() {
           <InterventionCalendar currentDay={currentDay} />
 
           {/* 30-day Calendar */}
-          <Card className="p-5">
-            <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
-              <Heart className="w-4 h-4 text-primary" /> 30일 챌린지 캘린더
-            </h3>
+          <Card className="p-5" ref={calendarRef as any}>
+            <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+              <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                <Heart className="w-4 h-4 text-primary" /> 30일 챌린지 캘린더
+              </h3>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {([
+                  { k: "all", label: "전체" },
+                  { k: "today", label: `오늘 Day ${currentDay}` },
+                  { k: "completed", label: `완료 ${completedCount}` },
+                  { k: "remaining", label: `남은 ${Math.max(0, currentDay - completedCount)}` },
+                ] as const).map((f) => (
+                  <button
+                    key={f.k}
+                    onClick={() => {
+                      setFilter(f.k);
+                      if (f.k === "today") {
+                        setSelectedDay(currentDay);
+                        const params = new URLSearchParams(searchParams);
+                        params.set("day", String(currentDay));
+                        setSearchParams(params, { replace: true });
+                      }
+                    }}
+                    className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
+                      filter === f.k
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-white text-slate-600 border-slate-200 hover:border-primary/50"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 빠른 점프 (Day 셀렉터) */}
+            <div className="mb-3 flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin">
+              {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => {
+                const isSel = selectedDay === d;
+                const isTd = d === currentDay;
+                return (
+                  <button
+                    key={d}
+                    onClick={() => {
+                      setSelectedDay(d);
+                      const params = new URLSearchParams(searchParams);
+                      params.set("day", String(d));
+                      setSearchParams(params, { replace: true });
+                      dayButtonRefs.current[d]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                    }}
+                    className={`shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-md border transition-all ${
+                      isSel
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : isTd
+                        ? "bg-amber-100 text-amber-800 border-amber-300"
+                        : "bg-slate-50 text-slate-600 border-slate-200 hover:border-primary/40"
+                    }`}
+                  >
+                    {d}
+                  </button>
+                );
+              })}
+            </div>
+
             <div className="grid grid-cols-7 sm:grid-cols-10 gap-1.5">
               {Array.from({ length: 30 }, (_, i) => i + 1).map((day) => {
                 const mission = missions.find((m) => m.day_number === day);
@@ -537,13 +597,30 @@ export default function MindTrackWorkbook() {
                 const isFuture = day > currentDay;
                 const isToday = day === currentDay;
                 const isLocked = !mission;
+                const isSelected = selectedDay === day;
+
+                // 필터 적용 (시각적 dim 처리)
+                const matchesFilter =
+                  filter === "all" ||
+                  (filter === "today" && isToday) ||
+                  (filter === "completed" && checkin?.completed) ||
+                  (filter === "remaining" && !checkin?.completed && !isFuture && !isLocked);
+                const dimmed = !matchesFilter;
 
                 return (
                   <button
                     key={day}
-                    onClick={() => mission && !isFuture && openMission(mission)}
+                    ref={(el) => { dayButtonRefs.current[day] = el; }}
+                    onClick={() => {
+                      setSelectedDay(day);
+                      if (mission && !isFuture) openMission(mission);
+                    }}
                     disabled={isLocked || isFuture}
-                    className={`aspect-square rounded-lg border-2 text-xs font-bold flex flex-col items-center justify-center transition-all ${
+                    className={`relative aspect-square rounded-lg border-2 text-xs font-bold flex flex-col items-center justify-center transition-all ${
+                      dimmed ? "opacity-30" : ""
+                    } ${
+                      isSelected ? "ring-2 ring-primary ring-offset-1" : ""
+                    } ${
                       checkin?.completed
                         ? "bg-emerald-500 border-emerald-500 text-white"
                         : isToday

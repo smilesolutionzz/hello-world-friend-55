@@ -192,6 +192,20 @@ export default function MindTrackWorkbook() {
     })();
   }, [currentDay, enrollment?.id, enrollment?.status]);
 
+  // URL ?day=N 으로 진입 시 해당 Day 셀로 스크롤·하이라이트
+  useEffect(() => {
+    if (loading || !selectedDay) return;
+    const t = setTimeout(() => {
+      const el = dayButtonRefs.current[selectedDay];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        calendarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 200);
+    return () => clearTimeout(t);
+  }, [loading, selectedDay]);
+
   const openMission = (mission: any) => {
     const existing = checkins.find((c) => c.day_number === mission.day_number);
     setActiveMission(mission);

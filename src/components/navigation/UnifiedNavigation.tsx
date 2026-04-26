@@ -95,6 +95,28 @@ const UnifiedNavigationInner = () => {
         { label: t.nav.column, path: '/column', desc: t.nav.columnDesc, icon: Heart },
       ]
     },
+    // 30일 마음 트랙 — 결제/진행 중 사용자에게만 노출
+    ...(showMindTrackMenu
+      ? [{
+          label: '30일 마음 트랙',
+          icon: Sparkles,
+          badge: mindTrackDay ? `Day ${mindTrackDay}/30` : undefined,
+          children: [
+            {
+              label: '오늘의 미션',
+              path: '/mind-track',
+              desc: '오늘 Day의 미션과 진행 현황',
+              icon: Target,
+            },
+            {
+              label: '30일 워크북',
+              path: '/mind-track/workbook',
+              desc: '전체 일자별 워크북·체크인',
+              icon: BookOpen,
+            },
+          ],
+        }]
+      : []),
     // B2B 메뉴는 상단 네비에서 숨김 — 푸터 및 /expert-hiring 협력기관 탭으로만 진입
   ];
 

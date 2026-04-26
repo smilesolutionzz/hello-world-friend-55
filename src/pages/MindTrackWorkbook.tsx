@@ -666,6 +666,9 @@ export default function MindTrackWorkbook() {
                     ref={(el) => { dayButtonRefs.current[day] = el; }}
                     onClick={() => {
                       setSelectedDay(day);
+                      const params = new URLSearchParams(searchParams);
+                      params.set("day", String(day));
+                      setSearchParams(params, { replace: true });
                       if (mission && !isFuture) openMission(mission);
                     }}
                     disabled={isLocked || isFuture}

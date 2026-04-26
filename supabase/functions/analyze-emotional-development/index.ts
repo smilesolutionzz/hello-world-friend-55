@@ -19,8 +19,8 @@ serve(async (req) => {
 
     console.log('분석 요청:', { total, average, level, answersCount: answers?.length });
 
-    if (!openAIApiKey) {
-      throw new Error('OPENAI_API_KEY is not configured');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is not configured');
     }
 
     const prompt = `당신은 영유아 정서발달 전문가입니다. 다음 검사 결과를 1000자 이상으로 상세하게 분석해주세요.

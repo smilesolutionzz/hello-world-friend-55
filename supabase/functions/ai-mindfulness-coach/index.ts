@@ -15,8 +15,8 @@ serve(async (req) => {
     const { stressLevel, focusLevel, userGoals, currentMood } = await req.json()
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is not set')
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is not set')
     }
 
     // AI 기반 개인 맞춤형 명상 가이드 생성

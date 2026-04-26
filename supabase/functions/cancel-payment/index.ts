@@ -141,7 +141,6 @@ serve(async (req) => {
           .from('user_tokens')
           .update({
             current_tokens: newBalance,
-            total_used: (tokenBalance.total_used || 0) - tokensGranted,
             updated_at: new Date().toISOString(),
           })
           .eq('user_id', payment.user_id);

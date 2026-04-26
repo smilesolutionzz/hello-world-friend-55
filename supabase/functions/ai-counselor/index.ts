@@ -32,8 +32,8 @@ serve(async (req) => {
     const sanitizedMessage = message.replace(/[<>]/g, '').trim();
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not found');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not found');
     }
 
     console.log('Processing AI counselor request:', { messageLength: message.length });

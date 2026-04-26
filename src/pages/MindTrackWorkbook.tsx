@@ -93,9 +93,34 @@ export default function MindTrackWorkbook() {
   const [searchParams, setSearchParams] = useSearchParams();
   const showWelcome = searchParams.get("welcome") === "1";
   const dayParam = parseInt(searchParams.get("day") ?? "", 10);
-  const initialSelectedDay = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 30 ? dayParam : null;
+  // localStorage 우선순위: URL ?day → URL 없으면 저장된 값
+  const storedDay = (() => {
+    try {
+      const v = parseInt(localStorage.getItem("mt_workbook_selected_day") ?? "", 10);
+      return Number.isFinite(v) && v >= 1 && v <= 30 ? v : null;
+    } catch { return null; }
+  })();
+  const initialSelectedDay = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 30
+    ? dayParam
+    : storedDay;
+  const storedFilter = (() => {
+    try {
+      const v = localStorage.getItem("mt_workbook_filter");
+      return v === "all" || v === "today" || v === "completed" || v === "remaining" ? v : "all";
+    } catch { return "all"; }
+  })();
   const [selectedDay, setSelectedDay] = useState<number | null>(initialSelectedDay);
-  const [filter, setFilter] = useState<"all" | "today" | "completed" | "remaining">("all");
+  const [filter, setFilter] = useState<"all" | "today" | "completed" | "remaining">(storedFilter as any);
+
+  // 필터/선택일 변경 시 localStorage 저장
+  useEffect(() => {
+    try { localStorage.setItem("mt_workbook_filter", filter); } catch {}
+  }, [filter]);
+  useEffect(() => {
+    try {
+      if (selectedDay) localStorage.setItem("mt_workbook_selected_day", String(selectedDay));
+    } catch {}
+  }, [selectedDay]);
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const dayButtonRefs = useRef<Record<number, HTMLButtonElement | null>>({});
   const [loading, setLoading] = useState(true);

@@ -231,6 +231,20 @@ export default function MindTrackWorkbook() {
     return () => clearTimeout(t);
   }, [loading, selectedDay]);
 
+  // ?day=N 이 오늘이면 미션 다이얼로그 자동 열기 (1회)
+  const autoOpenedRef = useRef(false);
+  useEffect(() => {
+    if (loading || autoOpenedRef.current) return;
+    const dp = parseInt(searchParams.get("day") ?? "", 10);
+    if (!Number.isFinite(dp)) return;
+    if (dp !== currentDay) return;
+    const m = missions.find((mm) => mm.day_number === dp);
+    if (m) {
+      autoOpenedRef.current = true;
+      openMission(m);
+    }
+  }, [loading, searchParams, currentDay, missions]);
+
   const openMission = (mission: any) => {
     const existing = checkins.find((c) => c.day_number === mission.day_number);
     setActiveMission(mission);

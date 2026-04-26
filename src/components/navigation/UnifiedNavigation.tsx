@@ -33,6 +33,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useMindTrackDashboard } from '@/hooks/useMindTrackDashboard';
 import { supabase } from '@/integrations/supabase/client';
 import logo from '@/assets/logo.png';
 
@@ -48,6 +49,12 @@ const UnifiedNavigationInner = () => {
   const { isPremiumUser, isLifetimeUser, getSubscriptionLabel } = useSubscription();
   const isPremium = isPremiumUser() || isLifetimeUser();
   const subscriptionLabel = getSubscriptionLabel();
+  const { state: mindTrackState } = useMindTrackDashboard();
+  // 결제 완료(needs_baseline) 또는 진행 중(active) 사용자에게만 노출
+  const showMindTrackMenu =
+    mindTrackState.kind === 'active' || mindTrackState.kind === 'needs_baseline';
+  const mindTrackDay =
+    mindTrackState.kind === 'active' ? mindTrackState.currentDay : null;
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 

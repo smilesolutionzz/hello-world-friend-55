@@ -10,7 +10,9 @@ export type MindTrackDashboardState =
       kind: "active";
       enrollmentId: string;
       workbook: any;
-      currentDay: number;
+      currentDay: number; // clamped 1..30
+      rawDay: number; // unclamped — can be <1 or >30
+      hasStartedAt: boolean;
       todayMission: any | null;
       completed: number;
     };
@@ -41,11 +43,19 @@ export function useMindTrackDashboard() {
   const [state, setState] = useState<MindTrackDashboardState>(
     cachedState && Date.now() - cachedAt < TTL_MS ? cachedState : { kind: "loading" }
   );
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const refresh = () => {
+    cachedState = null;
+    cachedAt = 0;
+    setState({ kind: "loading" });
+    setReloadKey((k) => k + 1);
+  };
 
   useEffect(() => {
     let cancelled = false;
 
-    if (cachedState && Date.now() - cachedAt < TTL_MS) {
+    if (cachedState && Date.now() - cachedAt < TTL_MS && reloadKey === 0) {
       setState(cachedState);
       return;
     }
@@ -80,9 +90,11 @@ export function useMindTrackDashboard() {
         }
 
         const wb = wbs[0] as any;
+        const hasStartedAt = !!en?.started_at;
         const startedAtIso = en?.started_at || en?.created_at || new Date().toISOString();
         const dayDiff = utcDayDiff(startedAtIso, Date.now());
-        const currentDay = Math.min(Math.max(dayDiff + 1, 1), 30);
+        const rawDay = dayDiff + 1;
+        const currentDay = Math.min(Math.max(rawDay, 1), 30);
 
         const [{ data: missions }, { data: checkins }] = await Promise.all([
           supabase
@@ -103,6 +115,8 @@ export function useMindTrackDashboard() {
           enrollmentId: en.id,
           workbook: wb,
           currentDay,
+          rawDay,
+          hasStartedAt,
           todayMission: missions ?? null,
           completed,
         });
@@ -120,12 +134,13 @@ export function useMindTrackDashboard() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadKey]);
 
-  return state;
+  return { state, refresh };
 }
 
 export function clearMindTrackDashboardCache() {
   cachedState = null;
   cachedAt = 0;
 }
+

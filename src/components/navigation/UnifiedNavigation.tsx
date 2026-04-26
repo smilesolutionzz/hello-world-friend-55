@@ -29,10 +29,13 @@ import {
   LogOut,
   LogIn,
   Sparkles,
+  Target,
+  BookOpen,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useMindTrackDashboard } from '@/hooks/useMindTrackDashboard';
 import { supabase } from '@/integrations/supabase/client';
 import logo from '@/assets/logo.png';
 
@@ -48,6 +51,12 @@ const UnifiedNavigationInner = () => {
   const { isPremiumUser, isLifetimeUser, getSubscriptionLabel } = useSubscription();
   const isPremium = isPremiumUser() || isLifetimeUser();
   const subscriptionLabel = getSubscriptionLabel();
+  const { state: mindTrackState } = useMindTrackDashboard();
+  // 결제 완료(needs_baseline) 또는 진행 중(active) 사용자에게만 노출
+  const showMindTrackMenu =
+    mindTrackState.kind === 'active' || mindTrackState.kind === 'needs_baseline';
+  const mindTrackDay =
+    mindTrackState.kind === 'active' ? mindTrackState.currentDay : null;
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
@@ -88,6 +97,28 @@ const UnifiedNavigationInner = () => {
         { label: t.nav.column, path: '/column', desc: t.nav.columnDesc, icon: Heart },
       ]
     },
+    // 30일 마음 트랙 — 결제/진행 중 사용자에게만 노출
+    ...(showMindTrackMenu
+      ? [{
+          label: '30일 마음 트랙',
+          icon: Sparkles,
+          badge: mindTrackDay ? `Day ${mindTrackDay}/30` : undefined,
+          children: [
+            {
+              label: '오늘의 미션',
+              path: '/mind-track',
+              desc: '오늘 Day의 미션과 진행 현황',
+              icon: Target,
+            },
+            {
+              label: '30일 워크북',
+              path: '/mind-track/workbook',
+              desc: '전체 일자별 워크북·체크인',
+              icon: BookOpen,
+            },
+          ],
+        }]
+      : []),
     // B2B 메뉴는 상단 네비에서 숨김 — 푸터 및 /expert-hiring 협력기관 탭으로만 진입
   ];
 
@@ -168,6 +199,11 @@ const UnifiedNavigationInner = () => {
                         }`}
                       >
                         {item.label}
+                        {(item as any).badge && (
+                          <Badge className="ml-1 bg-amber-100 text-amber-800 border-amber-200 text-[10px] px-1.5 py-0 h-4">
+                            {(item as any).badge}
+                          </Badge>
+                        )}
                         <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === item.label ? 'rotate-180' : ''}`} />
                       </Button>
                     </DropdownMenuTrigger>
@@ -417,6 +453,11 @@ const UnifiedNavigationInner = () => {
                             <div className="flex items-center gap-3 p-3 text-foreground/70">
                               <item.icon className="w-5 h-5" />
                               <span className="font-semibold text-sm">{item.label}</span>
+                              {(item as any).badge && (
+                                <Badge className="ml-auto bg-amber-100 text-amber-800 border-amber-200 text-[10px]">
+                                  {(item as any).badge}
+                                </Badge>
+                              )}
                             </div>
                             <div className="pl-4 space-y-1">
                               {item.children.map((child) => (

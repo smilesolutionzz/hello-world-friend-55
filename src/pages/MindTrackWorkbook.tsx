@@ -93,9 +93,34 @@ export default function MindTrackWorkbook() {
   const [searchParams, setSearchParams] = useSearchParams();
   const showWelcome = searchParams.get("welcome") === "1";
   const dayParam = parseInt(searchParams.get("day") ?? "", 10);
-  const initialSelectedDay = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 30 ? dayParam : null;
+  // localStorage 우선순위: URL ?day → URL 없으면 저장된 값
+  const storedDay = (() => {
+    try {
+      const v = parseInt(localStorage.getItem("mt_workbook_selected_day") ?? "", 10);
+      return Number.isFinite(v) && v >= 1 && v <= 30 ? v : null;
+    } catch { return null; }
+  })();
+  const initialSelectedDay = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 30
+    ? dayParam
+    : storedDay;
+  const storedFilter = (() => {
+    try {
+      const v = localStorage.getItem("mt_workbook_filter");
+      return v === "all" || v === "today" || v === "completed" || v === "remaining" ? v : "all";
+    } catch { return "all"; }
+  })();
   const [selectedDay, setSelectedDay] = useState<number | null>(initialSelectedDay);
-  const [filter, setFilter] = useState<"all" | "today" | "completed" | "remaining">("all");
+  const [filter, setFilter] = useState<"all" | "today" | "completed" | "remaining">(storedFilter as any);
+
+  // 필터/선택일 변경 시 localStorage 저장
+  useEffect(() => {
+    try { localStorage.setItem("mt_workbook_filter", filter); } catch {}
+  }, [filter]);
+  useEffect(() => {
+    try {
+      if (selectedDay) localStorage.setItem("mt_workbook_selected_day", String(selectedDay));
+    } catch {}
+  }, [selectedDay]);
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const dayButtonRefs = useRef<Record<number, HTMLButtonElement | null>>({});
   const [loading, setLoading] = useState(true);
@@ -205,6 +230,20 @@ export default function MindTrackWorkbook() {
     }, 200);
     return () => clearTimeout(t);
   }, [loading, selectedDay]);
+
+  // ?day=N 이 오늘이면 미션 다이얼로그 자동 열기 (1회)
+  const autoOpenedRef = useRef(false);
+  useEffect(() => {
+    if (loading || autoOpenedRef.current) return;
+    const dp = parseInt(searchParams.get("day") ?? "", 10);
+    if (!Number.isFinite(dp)) return;
+    if (dp !== currentDay) return;
+    const m = missions.find((mm) => mm.day_number === dp);
+    if (m) {
+      autoOpenedRef.current = true;
+      openMission(m);
+    }
+  }, [loading, searchParams, currentDay, missions]);
 
   const openMission = (mission: any) => {
     const existing = checkins.find((c) => c.day_number === mission.day_number);
@@ -407,7 +446,7 @@ export default function MindTrackWorkbook() {
             const guide = MISSION_TYPE_GUIDE[todayMission.mission_type] ?? MISSION_TYPE_GUIDE.reflection;
             const GuideIcon = guide.icon;
             return (
-              <Card className="p-5 border-2 border-primary shadow-lg">
+              <Card className={`p-5 border-2 border-primary shadow-lg transition-all ${selectedDay === currentDay ? "ring-2 ring-primary ring-offset-2" : ""}`}>
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-2">
                     <Target className="w-5 h-5 text-primary" />
@@ -627,6 +666,9 @@ export default function MindTrackWorkbook() {
                     ref={(el) => { dayButtonRefs.current[day] = el; }}
                     onClick={() => {
                       setSelectedDay(day);
+                      const params = new URLSearchParams(searchParams);
+                      params.set("day", String(day));
+                      setSearchParams(params, { replace: true });
                       if (mission && !isFuture) openMission(mission);
                     }}
                     disabled={isLocked || isFuture}

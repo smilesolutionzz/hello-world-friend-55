@@ -90,8 +90,14 @@ import { HelpCircle } from "lucide-react";
 export default function MindTrackWorkbook() {
   const navigate = useNavigate();
   const goBack = useSmartBack('/mind-track');
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const showWelcome = searchParams.get("welcome") === "1";
+  const dayParam = parseInt(searchParams.get("day") ?? "", 10);
+  const initialSelectedDay = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 30 ? dayParam : null;
+  const [selectedDay, setSelectedDay] = useState<number | null>(initialSelectedDay);
+  const [filter, setFilter] = useState<"all" | "today" | "completed" | "remaining">("all");
+  const calendarRef = useRef<HTMLDivElement | null>(null);
+  const dayButtonRefs = useRef<Record<number, HTMLButtonElement | null>>({});
   const [loading, setLoading] = useState(true);
   const [enrollment, setEnrollment] = useState<any>(null);
   const [workbook, setWorkbook] = useState<any>(null);

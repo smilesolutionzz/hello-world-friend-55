@@ -169,7 +169,7 @@ async function detectEmotionalContagion(supabaseClient: any, familyId: string) {
 
 async function generateInterventionStrategies(supabaseClient: any, familyId: string) {
   const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-  if (!openAIApiKey) {
+  if (!LOVABLE_API_KEY) {
     throw new Error('OpenAI API key not found');
   }
 
@@ -366,7 +366,7 @@ async function trackFamilyEvent(supabaseClient: any, familyId: string, eventData
 
 async function predictEventImpact(supabaseClient: any, familyId: string, eventData: any) {
   const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-  if (!openAIApiKey) {
+  if (!LOVABLE_API_KEY) {
     throw new Error('OpenAI API key not found');
   }
 

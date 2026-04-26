@@ -19,7 +19,7 @@ serve(async (req) => {
   try {
     const { userId, reportType = 'weekly' } = await req.json();
 
-    if (!openAIApiKey) {
+    if (!LOVABLE_API_KEY) {
       throw new Error('OpenAI API key not configured');
     }
 

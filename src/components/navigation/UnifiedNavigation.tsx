@@ -199,6 +199,11 @@ const UnifiedNavigationInner = () => {
                         }`}
                       >
                         {item.label}
+                        {(item as any).badge && (
+                          <Badge className="ml-1 bg-amber-100 text-amber-800 border-amber-200 text-[10px] px-1.5 py-0 h-4">
+                            {(item as any).badge}
+                          </Badge>
+                        )}
                         <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === item.label ? 'rotate-180' : ''}`} />
                       </Button>
                     </DropdownMenuTrigger>

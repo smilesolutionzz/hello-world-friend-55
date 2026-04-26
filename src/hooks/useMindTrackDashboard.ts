@@ -37,7 +37,7 @@ function utcDayDiff(startIso: string, nowMs: number): number {
 // 모듈 레벨 단순 캐시 — 동일 세션 내 중복 fetch 방지
 let cachedState: MindTrackDashboardState | null = null;
 let cachedAt = 0;
-const TTL_MS = 60_000;
+const TTL_MS = 5_000; // 5초 — 결제/체크인 후 거의 즉시 반영
 
 export function useMindTrackDashboard() {
   const [state, setState] = useState<MindTrackDashboardState>(
@@ -135,6 +135,47 @@ export function useMindTrackDashboard() {
       cancelled = true;
     };
   }, [reloadKey]);
+
+  // Realtime 구독 — 마음 트랙 관련 테이블 변경 시 즉시 새로고침
+  useEffect(() => {
+    let userId: string | null = null;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      userId = user.id;
+
+      channel = supabase
+        .channel(`mind-track-dashboard-${user.id}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "mind_track_enrollments", filter: `user_id=eq.${user.id}` },
+          () => refresh()
+        )
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "mind_track_workbooks", filter: `user_id=eq.${user.id}` },
+          () => refresh()
+        )
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "mind_track_daily_missions", filter: `user_id=eq.${user.id}` },
+          () => refresh()
+        )
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "mind_track_checkins", filter: `user_id=eq.${user.id}` },
+          () => refresh()
+        )
+        .subscribe();
+    })();
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { state, refresh };
 }

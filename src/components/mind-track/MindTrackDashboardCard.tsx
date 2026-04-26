@@ -23,6 +23,10 @@ export default function MindTrackDashboardCard() {
       state: day ? { day } : undefined,
     });
   };
+  const goMindTrackHome = () => {
+    if (onMindTrackRoute) return;
+    navigate("/mind-track");
+  };
   const goStart = () => {
     if (onMindTrackRoute) return;
     navigate("/mind-track/start");
@@ -178,12 +182,19 @@ export default function MindTrackDashboardCard() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         <Button
+          onClick={goMindTrackHome}
+          disabled={onMindTrackRoute}
+          className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white"
+        >
+          <Target className="w-4 h-4 mr-1.5" /> 오늘 미션 바로 보기
+          <ChevronRight className="w-4 h-4 ml-1" />
+        </Button>
+        <Button
           onClick={() => goWorkbook(currentDay)}
           disabled={onMindTrackRoute}
-          className="w-full sm:col-span-2 bg-gradient-to-r from-primary to-purple-600 text-white"
+          className="w-full bg-gradient-to-r from-primary to-purple-600 text-white"
         >
-          <BookOpen className="w-4 h-4 mr-1.5" /> Day {currentDay} 워크북 열기
-          <ChevronRight className="w-4 h-4 ml-1" />
+          <BookOpen className="w-4 h-4 mr-1.5" /> Day {currentDay} 워크북
         </Button>
         <Button onClick={refresh} variant="outline" className="w-full">
           <RefreshCw className="w-4 h-4 mr-1.5" /> 새로고침

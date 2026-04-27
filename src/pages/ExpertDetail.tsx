@@ -308,6 +308,70 @@ const ExpertEditModal = ({ open, onOpenChange, expert, onSave }: {
             </div>
           </div>
 
+          {/* 화상 상담 도구 설정 */}
+          <div className="rounded-2xl border border-border/50 bg-blue-50/30 p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <Video className="w-4 h-4 text-blue-600" />
+              <label className="text-sm font-semibold text-foreground">상담 진행 방식</label>
+            </div>
+            <Select
+              value={editData.preferredMeetingTool}
+              onValueChange={(v: MeetingTool) => setEditData(p => ({ ...p, preferredMeetingTool: v }))}
+            >
+              <SelectTrigger className="rounded-xl bg-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
+                {(Object.keys(MEETING_TOOL_LABELS) as MeetingTool[]).map(tool => (
+                  <SelectItem key={tool} value={tool}>{MEETING_TOOL_LABELS[tool]}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {(editData.preferredMeetingTool === 'zoom' || editData.preferredMeetingTool === 'custom') && (
+              <div>
+                <label className="text-xs font-medium text-foreground/70 mb-1 block">상담실 URL</label>
+                <Input
+                  value={editData.meetingRoomUrl}
+                  onChange={e => setEditData(p => ({ ...p, meetingRoomUrl: e.target.value }))}
+                  placeholder="https://zoom.us/j/..."
+                  className="rounded-xl bg-white text-sm"
+                />
+              </div>
+            )}
+
+            {(editData.preferredMeetingTool === 'kakao_video' || editData.preferredMeetingTool === 'phone') && (
+              <div>
+                <label className="text-xs font-medium text-foreground/70 mb-1 block">
+                  {editData.preferredMeetingTool === 'kakao_video' ? '카카오톡 ID 또는 오픈채팅 링크' : '연락 가능 전화번호'}
+                </label>
+                <Input
+                  value={editData.meetingHandle}
+                  onChange={e => setEditData(p => ({ ...p, meetingHandle: e.target.value }))}
+                  placeholder={editData.preferredMeetingTool === 'kakao_video' ? '카카오 ID 또는 https://open.kakao.com/...' : '010-1234-5678'}
+                  className="rounded-xl bg-white text-sm"
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="text-xs font-medium text-foreground/70 mb-1 block">사용자 안내 문구 (선택)</label>
+              <Textarea
+                value={editData.meetingToolNote}
+                onChange={e => setEditData(p => ({ ...p, meetingToolNote: e.target.value }))}
+                placeholder="예: 예약 10분 전 카톡으로 입장 링크를 보내드립니다."
+                rows={2}
+                className="rounded-xl bg-white text-sm resize-none"
+              />
+            </div>
+
+            {editData.preferredMeetingTool === 'google_meet' && (
+              <p className="text-[11px] text-blue-700 bg-blue-100/60 rounded-lg px-3 py-2 leading-relaxed">
+                💡 예약이 확정되면 시스템이 자동으로 Google Meet 링크를 생성하여 양쪽에 발송합니다. 별도 설정 불필요.
+              </p>
+            )}
+          </div>
+
           <div className="flex gap-3 pt-2">
             <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1 rounded-2xl h-11 border-border/50">
               <X className="w-4 h-4 mr-1" /> 취소

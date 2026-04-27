@@ -45,8 +45,8 @@ const HeroSection = () => {
       sub: '직장 + 육아 병행',
       metrics: [
         { label: '스트레스 지수', before: 82, after: 49, delta: '-40%', direction: 'down' as const, color: 'from-rose-400 to-orange-400' },
+        { label: '아이 발달 걱정도', before: 84, after: 41, delta: '-51%', direction: 'down' as const, color: 'from-violet-400 to-purple-400' },
         { label: '수면 만족도', before: 38, after: 75, delta: '+97%', direction: 'up' as const, color: 'from-emerald-400 to-teal-400' },
-        { label: '감정 안정성', before: 47, after: 81, delta: '+72%', direction: 'up' as const, color: 'from-sky-400 to-indigo-400' },
         { label: '육아 번아웃', before: 79, after: 44, delta: '-44%', direction: 'down' as const, color: 'from-fuchsia-400 to-pink-400' },
         { label: '아이와의 소통', before: 35, after: 78, delta: '+123%', direction: 'up' as const, color: 'from-amber-400 to-yellow-400' },
       ],
@@ -58,7 +58,7 @@ const HeroSection = () => {
       sub: '하루종일 육아',
       metrics: [
         { label: '스트레스 지수', before: 74, after: 46, delta: '-38%', direction: 'down' as const, color: 'from-rose-400 to-orange-400' },
-        { label: '수면 만족도', before: 45, after: 82, delta: '+82%', direction: 'up' as const, color: 'from-emerald-400 to-teal-400' },
+        { label: '아이 발달 걱정도', before: 88, after: 39, delta: '-56%', direction: 'down' as const, color: 'from-violet-400 to-purple-400' },
         { label: '자기효능감', before: 42, after: 79, delta: '+88%', direction: 'up' as const, color: 'from-sky-400 to-indigo-400' },
         { label: '고립감', before: 81, after: 38, delta: '-53%', direction: 'down' as const, color: 'from-fuchsia-400 to-pink-400' },
         { label: '아이와의 소통', before: 51, after: 86, delta: '+69%', direction: 'up' as const, color: 'from-amber-400 to-yellow-400' },

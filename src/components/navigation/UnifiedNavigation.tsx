@@ -71,17 +71,18 @@ const UnifiedNavigationInner = () => {
         { label: t.nav.simpleTest, path: '/assessment', desc: t.nav.simpleTestDesc, icon: Sparkles },
         { label: t.nav.deepTest, path: '/premium-assessment', desc: t.nav.deepTestDesc, icon: Brain },
         { label: t.nav.personalReport, path: '/report-generator', desc: t.nav.personalReportDesc, icon: FileText, badge: 'PREMIUM' },
-        ...(showMindTrackMenu
-          ? [
-              {
-                label: '30일 마음 트랙',
-                path: '/mind-track',
-                desc: '오늘의 미션과 진행 현황',
-                icon: Target,
-                badge: mindTrackDay ? `Day ${mindTrackDay}/30` : 'NEW',
-              },
-            ]
-          : []),
+        {
+          label: '30일 마음 트랙',
+          path: '/mind-track',
+          desc: showMindTrackMenu
+            ? '오늘의 미션과 진행 현황'
+            : '구독 후 이용 가능 · 30일 매일 코칭',
+          icon: Target,
+          badge: showMindTrackMenu
+            ? (mindTrackDay ? `Day ${mindTrackDay}/30` : 'NEW')
+            : 'PREMIUM',
+          locked: !showMindTrackMenu,
+        },
         { label: t.nav.aiObservation, path: '/observation', desc: t.nav.aiObservationDesc, icon: FileText },
       ]
     },

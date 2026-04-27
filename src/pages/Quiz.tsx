@@ -90,6 +90,7 @@ const stateLabels = ['매우 좋음', '좋음', '보통', '안 좋음', '매우 
 
 const Quiz: React.FC = () => {
   const navigate = useNavigate();
+  const { pay, loading: paymentLoading, isReady } = usePayment();
   const [step, setStep] = useState<Step>('goal');
   const [data, setData] = useState<QuizData>({
     goal: '',
@@ -236,10 +237,10 @@ const Quiz: React.FC = () => {
     if (i > 0) setStep(order[i - 1]);
   };
 
-  // Save quiz data + start payment
+  // Save quiz data + start Toss payment immediately
   const handleStartTrack = async () => {
     try {
-      // Save to user_onboarding_data if logged in
+      // 1) Save quiz answers (DB if logged in, localStorage otherwise)
       if (user) {
         await supabase.from('user_onboarding_data').upsert(
           {
@@ -254,13 +255,30 @@ const Quiz: React.FC = () => {
           { onConflict: 'user_id' }
         );
       } else {
-        // Save to localStorage to recover after signup
         localStorage.setItem('quiz_data', JSON.stringify(data));
       }
-      navigate('/token-subscription?source=quiz');
+
+      // 2) Require login before payment (preserve quiz data on return)
+      if (!user) {
+        localStorage.setItem('auth_redirect_after', '/quiz?resume=pay');
+        toast.info('결제를 위해 먼저 로그인이 필요해요 (30초)');
+        navigate('/auth?mode=signup');
+        return;
+      }
+
+      // 3) Pre-enroll mind track (idempotent) so credits/dashboard are ready post-payment
+      try {
+        const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
+        await ensureMindTrackEnrollment();
+      } catch (e) {
+        console.warn('mind track enrollment skipped:', e);
+      }
+
+      // 4) Open Toss payment popup directly
+      await pay('mind_track_30');
     } catch (err) {
-      console.error(err);
-      navigate('/token-subscription?source=quiz');
+      console.error('handleStartTrack error:', err);
+      toast.error('결제 시작 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.');
     }
   };
 

@@ -19,6 +19,7 @@ import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
 
 const TRACK_PRICE = 19900;
 
@@ -215,6 +216,13 @@ const MindTrack: React.FC = () => {
                 나에게 꼭 맞는 <strong className="text-slate-900">30일 변화 트랙</strong>을 제안받을 수 있어요.
               </p>
             </motion.div>
+          </div>
+        </section>
+
+        {/* 아이 발달 걱정도 자가체크 + 7일 플랜 */}
+        <section className="px-4 pb-10">
+          <div className="max-w-3xl mx-auto">
+            <ChildDevConcernSection />
           </div>
         </section>
 

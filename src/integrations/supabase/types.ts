@@ -2016,6 +2016,48 @@ export type Database = {
         }
         Relationships: []
       }
+      child_dev_concern_results: {
+        Row: {
+          child_age_months: number | null
+          created_at: string
+          id: string
+          interpretation: string | null
+          responses: Json
+          risk_level: Database["public"]["Enums"]["child_dev_risk_level"]
+          score: number
+          seven_day_plan: Json
+          top_factors: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          child_age_months?: number | null
+          created_at?: string
+          id?: string
+          interpretation?: string | null
+          responses?: Json
+          risk_level: Database["public"]["Enums"]["child_dev_risk_level"]
+          score: number
+          seven_day_plan?: Json
+          top_factors?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          child_age_months?: number | null
+          created_at?: string
+          id?: string
+          interpretation?: string | null
+          responses?: Json
+          risk_level?: Database["public"]["Enums"]["child_dev_risk_level"]
+          score?: number
+          seven_day_plan?: Json
+          top_factors?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       churn_risk_analysis: {
         Row: {
           analysis_date: string
@@ -14024,6 +14066,7 @@ export type Database = {
     Enums: {
       account_type: "parent" | "teacher" | "therapist" | "admin"
       app_role: "admin" | "expert" | "user" | "institution_admin"
+      child_dev_risk_level: "low" | "medium" | "high"
       consultation_session_status: "waiting" | "active" | "ended"
       facility_role: "owner" | "admin" | "staff" | "viewer"
       message_type: "text" | "image" | "file"
@@ -14163,6 +14206,7 @@ export const Constants = {
     Enums: {
       account_type: ["parent", "teacher", "therapist", "admin"],
       app_role: ["admin", "expert", "user", "institution_admin"],
+      child_dev_risk_level: ["low", "medium", "high"],
       consultation_session_status: ["waiting", "active", "ended"],
       facility_role: ["owner", "admin", "staff", "viewer"],
       message_type: ["text", "image", "file"],

@@ -302,6 +302,11 @@ const ExpertHiring = () => {
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-10">
         {mindTrackCtx && <MindTrackContextBanner ctx={mindTrackCtx} />}
 
+        {/* 상담 진행 흐름 안내 */}
+        <div className="mb-8">
+          <ConsultationFlowSteps />
+        </div>
+
         {/* Tab switcher */}
         <div className="flex items-center gap-2 mb-6 border-b border-border pb-4">
           <button

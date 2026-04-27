@@ -137,6 +137,7 @@ export default function ChildDevConcernSection() {
   const [interpretation, setInterpretation] = useState<string>("");
   const [savedId, setSavedId] = useState<string | null>(null);
   const [aiAssisting, setAiAssisting] = useState(false);
+  const [aiPreview, setAiPreview] = useState<string | null>(null);
   const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   const [history, setHistory] = useState<any[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -190,8 +191,8 @@ export default function ChildDevConcernSection() {
       if (error) throw error;
       const expanded = (data?.expandedPrompt || "").slice(0, 500);
       if (!expanded) throw new Error("AI가 작성을 도와주지 못했어요.");
-      setUserContext(expanded);
-      toast.success("AI가 걱정되는 점을 정리했어요. 자유롭게 수정해도 돼요.");
+      setAiPreview(expanded);
+      toast.success("AI 초안을 만들었어요. 미리보기에서 확인 후 적용하세요.");
     } catch (e: any) {
       console.error("AI assist error", e);
       toast.error(e?.message || "AI 작성 도움에 실패했어요.");
@@ -455,6 +456,50 @@ export default function ChildDevConcernSection() {
                   )}
                 </button>
               </div>
+              {aiPreview && (
+                <div className="mb-2 rounded-xl border border-violet-200 bg-violet-50/60 p-3">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Wand2 className="w-3.5 h-3.5 text-violet-600" />
+                    <span className="text-[11px] font-bold text-violet-700">AI 추천 초안 · 미리보기</span>
+                  </div>
+                  <p className="text-sm text-slate-700 whitespace-pre-wrap break-keep max-h-40 overflow-y-auto">
+                    {aiPreview}
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-2.5">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => {
+                        setUserContext(aiPreview);
+                        setAiPreview(null);
+                        toast.success("초안을 적용했어요. 자유롭게 수정해도 돼요.");
+                      }}
+                      className="h-8 px-3 bg-violet-600 hover:bg-violet-700 text-white text-xs"
+                    >
+                      적용하기
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={handleAiAssist}
+                      disabled={aiAssisting}
+                      className="h-8 px-3 text-xs"
+                    >
+                      {aiAssisting ? <Loader2 className="w-3 h-3 animate-spin" /> : "다시 생성"}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setAiPreview(null)}
+                      className="h-8 px-3 text-xs text-slate-500"
+                    >
+                      취소
+                    </Button>
+                  </div>
+                </div>
+              )}
               <Textarea
                 rows={3}
                 maxLength={500}

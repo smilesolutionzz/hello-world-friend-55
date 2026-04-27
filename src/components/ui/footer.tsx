@@ -31,6 +31,8 @@ const Footer = () => {
               <li><a href={localePath('/report-generator')} className="hover:text-white transition-colors">전문가급 리포트</a></li>
               <li><a href={localePath('/expert-hiring')} className="hover:text-white transition-colors">{t.footer.expertConnect}</a></li>
               <li><a href={localePath('/observation')} className="hover:text-white transition-colors">행동 관찰 분석</a></li>
+              <li><a href={localePath('/mind-diary')} className="hover:text-white transition-colors">마음 일기</a></li>
+              <li><a href={localePath('/mind-track/workbook')} className="hover:text-white transition-colors">30일 마음 트랙 워크북</a></li>
             </ul>
           </div>
 

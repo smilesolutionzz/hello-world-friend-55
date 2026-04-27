@@ -23,6 +23,17 @@ import Footer from "@/components/ui/footer";
 import { ExpertBookingModal } from "@/components/booking/ExpertBookingModal";
 import { toast } from "sonner";
 
+type MeetingTool = 'google_meet' | 'zoom' | 'kakao_video' | 'phone' | 'in_person' | 'custom';
+
+const MEETING_TOOL_LABELS: Record<MeetingTool, string> = {
+  google_meet: 'Google Meet (예약 시 자동 생성)',
+  zoom: 'Zoom (개인 상담실 URL 사용)',
+  kakao_video: '카카오톡 영상통화',
+  phone: '전화 상담',
+  in_person: '대면 상담 (오프라인)',
+  custom: '기타 (사용자에게 직접 안내)',
+};
+
 interface ExpertDetail {
   id: string;
   name: string;
@@ -42,6 +53,10 @@ interface ExpertDetail {
   certifications?: string[];
   approach?: string[];
   successCases?: number;
+  preferredMeetingTool?: MeetingTool;
+  meetingRoomUrl?: string;
+  meetingHandle?: string;
+  meetingToolNote?: string;
 }
 
 // 전문분야별 치료 철학 데이터

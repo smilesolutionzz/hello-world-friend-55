@@ -364,28 +364,15 @@ const UnifiedNavigationInner = () => {
             >
               {language === 'ko' ? 'EN' : '한국어'}
             </Button>
-            {/* Subscription Status */}
+            {/* Subscription Status — 아이콘만 */}
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={() => handleNavigation('/token-subscription')}
-              className={`h-8 rounded-full px-3 gap-1.5 ${isPremium ? '' : ''}`}
+              aria-label={isPremium ? subscriptionLabel : t.nav.subscribe}
+              className="h-8 w-8 rounded-full"
             >
-              {isPremium ? (
-                <>
-                  <Crown className="w-4 h-4 text-yellow-500" />
-                  <span className="font-semibold text-yellow-700 dark:text-yellow-400 text-sm">
-                    {subscriptionLabel}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <Crown className="w-4 h-4 text-muted-foreground" />
-                  <span className="font-semibold text-muted-foreground text-sm">
-                    {t.nav.subscribe}
-                  </span>
-                </>
-              )}
+              <Crown className={`w-4 h-4 ${isPremium ? 'text-yellow-500' : 'text-muted-foreground'}`} />
             </Button>
 
             {/* Menu Button */}

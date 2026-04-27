@@ -12,10 +12,12 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   CheckCircle2, Circle, Loader2, Sparkles, TrendingUp, Calendar,
   Brain, Zap, Eye, Heart, Target, ChevronRight, Lock, ArrowLeft,
-  Flame, Trophy, BookOpen, Wind, PenLine, Users, Activity, Award, Mail
+  Flame, Trophy, BookOpen, Wind, PenLine, Users, Activity, Award, Mail,
+  RotateCcw, Info
 } from "lucide-react";
 
 // 미션 타입별 가이드 (라이브러리)

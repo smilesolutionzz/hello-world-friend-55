@@ -323,10 +323,15 @@ const handler = async (req: Request): Promise<Response> => {
     
     const emailResponse = await resend.emails.send({
       from: fromAddress,
+      reply_to: "support@aihpro.app",
       to: [requestData.email],
       subject: `${subjectPrefix} - ${requestData.title}`,
       html: htmlContent,
     });
+
+    if ((emailResponse as any)?.error) {
+      throw new Error((emailResponse as any).error?.message || '이메일 발송 실패');
+    }
 
     console.log("이메일 발송 성공:", emailResponse);
 

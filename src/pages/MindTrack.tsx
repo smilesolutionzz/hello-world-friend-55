@@ -219,6 +219,13 @@ const MindTrack: React.FC = () => {
           </div>
         </section>
 
+        {/* 아이 발달 걱정도 자가체크 + 7일 플랜 */}
+        <section className="px-4 pb-10">
+          <div className="max-w-3xl mx-auto">
+            <ChildDevConcernSection />
+          </div>
+        </section>
+
         {/* 휴먼터치 매니페스토 — 따뜻형 카드 */}
         <SmartScrollReveal kind="text" className="px-4 pb-8 block">
           <HumanTouchManifesto variant="track" />

@@ -680,10 +680,12 @@ const ReportGeneratorPro = () => {
 
         {reportData && (
           <>
-            <ReportProOutput
-              reportData={reportData}
-              userInput={userInput}
-            />
+            <div id="report-content">
+              <ReportProOutput
+                reportData={reportData}
+                userInput={userInput}
+              />
+            </div>
             <div className="max-w-4xl mx-auto mt-6 flex flex-wrap gap-3 justify-center">
               <ReportEmailButton
                 reportHistoryId={currentReportHistoryId || undefined}

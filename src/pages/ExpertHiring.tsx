@@ -21,6 +21,8 @@ import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
+import ConsultationFlowSteps from '@/components/expert/ConsultationFlowSteps';
+import ExpertTrustCards from '@/components/expert/ExpertTrustCards';
 import { ExpertPriceTag } from '@/components/expert/ExpertPriceTag';
 import { useSubscription } from '@/hooks/useSubscription';
 import { calculateExpertPricing, formatKRW } from '@/lib/expertPricing';

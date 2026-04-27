@@ -216,6 +216,10 @@ const ExpertEditModal = ({ open, onOpenChange, expert, onSave }: {
     philosophy: expert.philosophy || '',
     location: expert.location,
     hourlyPrice: expert.hourlyPrice,
+    preferredMeetingTool: (expert.preferredMeetingTool || 'google_meet') as MeetingTool,
+    meetingRoomUrl: expert.meetingRoomUrl || '',
+    meetingHandle: expert.meetingHandle || '',
+    meetingToolNote: expert.meetingToolNote || '',
   });
   const [aiLoading, setAiLoading] = useState(false);
   const [aiField, setAiField] = useState<string | null>(null);

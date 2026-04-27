@@ -666,35 +666,51 @@ export default function MindTrackWorkbook() {
               <h3 className="font-bold text-slate-900 flex items-center gap-2">
                 <Heart className="w-4 h-4 text-primary" /> 30일 챌린지 캘린더
               </h3>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {([
-                  { k: "all", label: "전체" },
-                  { k: "today", label: `오늘 Day ${currentDay}` },
-                  { k: "completed", label: `완료 ${completedCount}` },
-                  { k: "remaining", label: `남은 ${Math.max(0, currentDay - completedCount)}` },
-                ] as const).map((f) => (
-                  <button
-                    key={f.k}
-                    onClick={() => {
-                      setFilter(f.k);
-                      if (f.k === "today") {
-                        setSelectedDay(currentDay);
-                        const params = new URLSearchParams(searchParams);
-                        params.set("day", String(currentDay));
-                        setSearchParams(params, { replace: true });
-                      }
-                    }}
-                    className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
-                      filter === f.k
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-white text-slate-600 border-slate-200 hover:border-primary/50"
-                    }`}
-                  >
-                    {f.label}
-                  </button>
-                ))}
-              </div>
+              <TooltipProvider delayDuration={150}>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {([
+                    { k: "all", label: "전체", tip: "30일 전체 캘린더를 보여줘요" },
+                    { k: "today", label: `오늘 Day ${currentDay}`, tip: "현재 진행 중인 오늘 Day만 강조" },
+                    { k: "completed", label: `완료 ${completedCount}`, tip: "체크인을 제출한(completed=true) Day 수" },
+                    { k: "remaining", label: `남은 ${Math.max(0, currentDay - completedCount)}`, tip: "오늘까지 도달했지만 아직 체크인을 제출하지 않은 Day 수" },
+                  ] as const).map((f) => (
+                    <Tooltip key={f.k}>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => {
+                            setFilter(f.k);
+                            if (f.k === "today") {
+                              setSelectedDay(currentDay);
+                              const params = new URLSearchParams(searchParams);
+                              params.set("day", String(currentDay));
+                              setSearchParams(params, { replace: true });
+                            }
+                          }}
+                          className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
+                            filter === f.k
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-white text-slate-600 border-slate-200 hover:border-primary/50"
+                          }`}
+                          aria-label={f.tip}
+                        >
+                          {f.label}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-[220px] text-xs break-keep">
+                        {f.tip}
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              </TooltipProvider>
             </div>
+            <p className="text-[11px] text-slate-500 mt-1 flex items-start gap-1 break-keep">
+              <Info className="w-3 h-3 mt-0.5 shrink-0" />
+              <span>
+                <strong className="text-slate-700">완료 기준</strong>은 체크인을 제출해 <code className="px-1 rounded bg-slate-100">completed=true</code>로 기록된 Day,
+                <strong className="text-slate-700"> 남은</strong>은 오늘까지 도달했지만 아직 체크인을 제출하지 않은 Day입니다.
+              </span>
+            </p>
 
             {/* 빠른 점프 (Day 셀렉터) */}
             <div className="mb-3 flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin">

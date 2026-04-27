@@ -120,8 +120,22 @@ const TokenSubscription = () => {
           </motion.div>
         )}
 
+        {/* 페이지 정체성 안내 (이 페이지가 뭐 하는 곳인지 한 줄로) */}
+        <motion.div {...fade(0.02)} className="mb-6">
+          <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3 flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-foreground/90 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-4 h-4 text-background" />
+            </div>
+            <div className="text-sm leading-relaxed text-foreground break-keep">
+              <span className="font-bold">결제 페이지</span> · 30일 마음 변화 트랙을 한 번 결제(₩{MIND_TRACK_PRICE.toLocaleString()})하면
+              <span className="font-semibold"> 모든 심리검사 · AI 심층 리포트 · 매일 코칭 메일</span>이 30일간 무제한 열립니다.
+              <span className="text-muted-foreground"> 자동 결제 없음 · 7일 환불 보장.</span>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Hero */}
-        <motion.div {...fade(0.05)} className="text-center mb-10">
+        <motion.div {...fade(0.05)} className="text-center mb-8">
           <div className="inline-flex items-center gap-1.5 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 text-xs font-semibold px-3 py-1.5 rounded-full mb-5 border border-rose-100 dark:border-rose-900">
             <Sparkles className="w-3 h-3" />
             론칭 특가 {MIND_TRACK_DISCOUNT_PERCENT}% 할인
@@ -132,6 +146,23 @@ const TokenSubscription = () => {
           <p className="text-muted-foreground text-base md:text-lg break-keep">
             단 하나의 가격, 모든 기능. 자동 결제 없는 일시불 트랙.
           </p>
+
+          {/* 3단계 이용 흐름 — "뭘 어찌해야 되나" 즉시 이해 */}
+          <div className="mt-6 grid grid-cols-3 gap-2 max-w-xl mx-auto">
+            {[
+              { n: '1', label: '결제', desc: '₩19,900 일시불' },
+              { n: '2', label: '목표 선택', desc: '우울·불안·수면 등' },
+              { n: '3', label: '30일 코칭', desc: '매일 8시 메일' },
+            ].map((s) => (
+              <div key={s.n} className="rounded-xl border border-border bg-white dark:bg-card px-2 py-3 text-center">
+                <div className="w-6 h-6 mx-auto mb-1.5 rounded-full bg-foreground text-background text-[11px] font-black flex items-center justify-center">
+                  {s.n}
+                </div>
+                <div className="text-xs font-bold text-foreground">{s.label}</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5 break-keep">{s.desc}</div>
+              </div>
+            ))}
+          </div>
         </motion.div>
 
         {/* AI 비교표 */}

@@ -440,8 +440,32 @@ const ExpertDetailPage = () => {
     finally { setLoading(false); }
   };
 
-  const handleSaveProfile = (data: Partial<ExpertDetail>) => {
-    if (expert) setExpert({ ...expert, ...data });
+  const handleSaveProfile = async (data: Partial<ExpertDetail> & {
+    preferredMeetingTool?: MeetingTool;
+    meetingRoomUrl?: string;
+    meetingHandle?: string;
+    meetingToolNote?: string;
+  }) => {
+    if (!expert) return;
+    // 낙관적 UI 업데이트
+    setExpert({ ...expert, ...data });
+    // DB가 있는 전문가만 저장 (mock 데이터는 제외)
+    try {
+      const { error } = await supabase.from('experts').update({
+        full_name: data.name,
+        bio: data.description,
+        hourly_rate: data.hourlyPrice,
+        preferred_meeting_tool: data.preferredMeetingTool,
+        meeting_room_url: data.meetingRoomUrl || null,
+        meeting_handle: data.meetingHandle || null,
+        meeting_tool_note: data.meetingToolNote || null,
+      } as any).eq('id', expert.id);
+      if (error) {
+        console.warn('Profile save warning:', error.message);
+      }
+    } catch (err) {
+      console.error('Profile save error:', err);
+    }
   };
 
   if (loading) {

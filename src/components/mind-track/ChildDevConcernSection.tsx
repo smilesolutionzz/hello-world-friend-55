@@ -130,6 +130,38 @@ export default function ChildDevConcernSection() {
   const [tunedActions, setTunedActions] = useState<Record<number, string>>({});
   const [interpretation, setInterpretation] = useState<string>("");
   const [savedId, setSavedId] = useState<string | null>(null);
+  const [aiAssisting, setAiAssisting] = useState(false);
+
+  const handleAiAssist = async () => {
+    if (aiAssisting) return;
+    setAiAssisting(true);
+    try {
+      // 자가체크 응답을 짧은 시드 문장으로 변환
+      const topConcerns = QUESTIONS
+        .filter((q) => responses[q.id] >= 3)
+        .map((q) => q.label);
+      const seed = userContext.trim().length >= 5
+        ? userContext.trim()
+        : `아이 발달이 걱정돼요.${
+            topConcerns.length ? ` 특히 ${topConcerns.join(", ")} 부분이 신경 쓰여요.` : ""
+          }`;
+      const prompt = seed.length >= 10 ? seed : seed + " 또래보다 늦은 것 같아요.";
+
+      const { data, error } = await supabase.functions.invoke("expand-prompt", {
+        body: { prompt, language: "ko" },
+      });
+      if (error) throw error;
+      const expanded = (data?.expandedPrompt || "").slice(0, 500);
+      if (!expanded) throw new Error("AI가 작성을 도와주지 못했어요.");
+      setUserContext(expanded);
+      toast.success("AI가 걱정되는 점을 정리했어요. 자유롭게 수정해도 돼요.");
+    } catch (e: any) {
+      console.error("AI assist error", e);
+      toast.error(e?.message || "AI 작성 도움에 실패했어요.");
+    } finally {
+      setAiAssisting(false);
+    }
+  };
 
   // 비교 차트용 가짜 비교 지표 (실 사용자 다른 트랙 데이터가 있으면 차후 연동)
   const score = useMemo(() => computeScore(responses), [responses]);

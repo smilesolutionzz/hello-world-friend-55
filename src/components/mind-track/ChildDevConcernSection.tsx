@@ -325,8 +325,62 @@ export default function ChildDevConcernSection() {
               5문항 + 부모님이 직접 적은 걱정을 반영해 위험도와 7일 코칭 플랜을 만들어드려요.
             </p>
           </div>
+          {isAuthed && history.length > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setHistoryOpen((o) => !o)}
+              className="h-8 text-xs shrink-0"
+            >
+              <History className="w-3.5 h-3.5 mr-1" />
+              지난 기록 {history.length}
+              {historyOpen ? <ChevronUp className="w-3 h-3 ml-1" /> : <ChevronDown className="w-3 h-3 ml-1" />}
+            </Button>
+          )}
         </div>
 
+        {/* 지난 기록 패널 */}
+        {historyOpen && isAuthed && (
+          <div className="rounded-2xl border border-slate-200 bg-white p-3 space-y-2">
+            <div className="text-xs font-bold text-slate-700 px-1">최근 자가체크 기록 (최신순)</div>
+            {historyLoading ? (
+              <div className="flex items-center gap-2 text-xs text-slate-500 p-3">
+                <Loader2 className="w-3 h-3 animate-spin" /> 불러오는 중…
+              </div>
+            ) : (
+              <ul className="space-y-1.5">
+                {history.map((h) => {
+                  const meta = RISK_META[h.risk_level as RiskLevel];
+                  return (
+                    <li key={h.id}>
+                      <button
+                        onClick={() => handleLoadPast(h)}
+                        className="w-full flex items-center gap-3 p-2.5 rounded-lg border border-slate-100 hover:border-violet-300 hover:bg-violet-50/50 transition-colors text-left"
+                      >
+                        <div className={`w-2.5 h-2.5 rounded-full ${meta.badge} shrink-0`} />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-semibold text-slate-900">
+                            위험도 {meta.label} · {h.score}/100
+                          </div>
+                          <div className="text-[10px] text-slate-500">
+                            {new Date(h.created_at).toLocaleString("ko-KR", {
+                              month: "short",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                            {h.child_age_months ? ` · ${h.child_age_months}개월` : ""}
+                          </div>
+                        </div>
+                        <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        )}
         {step === "form" ? (
           <div className="space-y-4">
             {/* 개월수 */}

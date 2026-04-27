@@ -191,8 +191,8 @@ export default function ChildDevConcernSection() {
       if (error) throw error;
       const expanded = (data?.expandedPrompt || "").slice(0, 500);
       if (!expanded) throw new Error("AI가 작성을 도와주지 못했어요.");
-      setUserContext(expanded);
-      toast.success("AI가 걱정되는 점을 정리했어요. 자유롭게 수정해도 돼요.");
+      setAiPreview(expanded);
+      toast.success("AI 초안을 만들었어요. 미리보기에서 확인 후 적용하세요.");
     } catch (e: any) {
       console.error("AI assist error", e);
       toast.error(e?.message || "AI 작성 도움에 실패했어요.");

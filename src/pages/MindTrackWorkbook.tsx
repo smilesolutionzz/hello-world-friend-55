@@ -105,24 +105,32 @@ export default function MindTrackWorkbook() {
   const initialSelectedDay = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 30
     ? dayParam
     : storedDay;
+  const filterParam = searchParams.get("filter");
   const storedFilter = (() => {
     try {
-      const v = localStorage.getItem("mt_workbook_filter");
+      const v = filterParam ?? localStorage.getItem("mt_workbook_filter");
       return v === "all" || v === "today" || v === "completed" || v === "remaining" ? v : "all";
     } catch { return "all"; }
   })();
   const [selectedDay, setSelectedDay] = useState<number | null>(initialSelectedDay);
   const [filter, setFilter] = useState<"all" | "today" | "completed" | "remaining">(storedFilter as any);
 
-  // 필터/선택일 변경 시 localStorage 저장
+  // 필터/선택일 변경 시 localStorage + URL 저장
   useEffect(() => {
     try { localStorage.setItem("mt_workbook_filter", filter); } catch {}
+    const params = new URLSearchParams(searchParams);
+    if (filter === "all") params.delete("filter");
+    else params.set("filter", filter);
+    setSearchParams(params, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
   useEffect(() => {
     try {
       if (selectedDay) localStorage.setItem("mt_workbook_selected_day", String(selectedDay));
     } catch {}
   }, [selectedDay]);
+  const missionSectionRef = useRef<HTMLDivElement | null>(null);
+  const reopenButtonRef = useRef<HTMLButtonElement | null>(null);
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const dayButtonRefs = useRef<Record<number, HTMLButtonElement | null>>({});
   const [loading, setLoading] = useState(true);

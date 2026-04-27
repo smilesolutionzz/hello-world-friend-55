@@ -18,9 +18,14 @@ import {
   CheckCircle2,
   Calendar,
   Wand2,
+  Phone,
+  History,
+  ArrowRight,
+  LogIn,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 // --- 5문항 자가체크 정의 ---
 type QId = "communication" | "social" | "motor" | "cognitive" | "emotion";
@@ -115,6 +120,7 @@ interface SnapshotMetric {
 }
 
 export default function ChildDevConcernSection() {
+  const navigate = useNavigate();
   const [step, setStep] = useState<"form" | "result">("form");
   const [ageMonths, setAgeMonths] = useState<string>("");
   const [responses, setResponses] = useState<Responses>({
@@ -131,6 +137,37 @@ export default function ChildDevConcernSection() {
   const [interpretation, setInterpretation] = useState<string>("");
   const [savedId, setSavedId] = useState<string | null>(null);
   const [aiAssisting, setAiAssisting] = useState(false);
+  const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
+  const [history, setHistory] = useState<any[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+
+  const loadHistory = async (uid: string) => {
+    setHistoryLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("child_dev_concern_results")
+        .select("id, created_at, score, risk_level, child_age_months, top_factors, interpretation, responses, seven_day_plan")
+        .eq("user_id", uid)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (error) throw error;
+      setHistory(data ?? []);
+    } catch (e: any) {
+      console.warn("history load failed", e?.message);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthed(!!user);
+      if (user) loadHistory(user.id);
+    })();
+  }, []);
+
 
   const handleAiAssist = async () => {
     if (aiAssisting) return;
@@ -227,8 +264,13 @@ export default function ChildDevConcernSection() {
           })
           .select("id")
           .single();
-        if (insErr) console.warn("save failed:", insErr.message);
-        else setSavedId(inserted.id);
+        if (insErr) {
+          console.warn("save failed:", insErr.message);
+          toast.error("결과 저장에 실패했어요. 잠시 후 다시 시도해주세요.");
+        } else {
+          setSavedId(inserted.id);
+          loadHistory(user.id);
+        }
       }
     } catch (e: any) {
       console.error(e);
@@ -236,6 +278,21 @@ export default function ChildDevConcernSection() {
     } finally {
       setTuning(false);
     }
+  };
+
+  const handleLoadPast = (item: any) => {
+    setResponses(item.responses as Responses);
+    setAgeMonths(item.child_age_months?.toString() ?? "");
+    setInterpretation(item.interpretation ?? "");
+    const planMap: Record<number, string> = {};
+    (item.seven_day_plan ?? []).forEach((p: any) => {
+      if (p.tunedAction) planMap[p.day] = p.tunedAction;
+    });
+    setTunedActions(planMap);
+    setSavedId(item.id);
+    setStep("result");
+    setHistoryOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleReset = () => {
@@ -268,8 +325,62 @@ export default function ChildDevConcernSection() {
               5문항 + 부모님이 직접 적은 걱정을 반영해 위험도와 7일 코칭 플랜을 만들어드려요.
             </p>
           </div>
+          {isAuthed && history.length > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setHistoryOpen((o) => !o)}
+              className="h-8 text-xs shrink-0"
+            >
+              <History className="w-3.5 h-3.5 mr-1" />
+              지난 기록 {history.length}
+              {historyOpen ? <ChevronUp className="w-3 h-3 ml-1" /> : <ChevronDown className="w-3 h-3 ml-1" />}
+            </Button>
+          )}
         </div>
 
+        {/* 지난 기록 패널 */}
+        {historyOpen && isAuthed && (
+          <div className="rounded-2xl border border-slate-200 bg-white p-3 space-y-2">
+            <div className="text-xs font-bold text-slate-700 px-1">최근 자가체크 기록 (최신순)</div>
+            {historyLoading ? (
+              <div className="flex items-center gap-2 text-xs text-slate-500 p-3">
+                <Loader2 className="w-3 h-3 animate-spin" /> 불러오는 중…
+              </div>
+            ) : (
+              <ul className="space-y-1.5">
+                {history.map((h) => {
+                  const meta = RISK_META[h.risk_level as RiskLevel];
+                  return (
+                    <li key={h.id}>
+                      <button
+                        onClick={() => handleLoadPast(h)}
+                        className="w-full flex items-center gap-3 p-2.5 rounded-lg border border-slate-100 hover:border-violet-300 hover:bg-violet-50/50 transition-colors text-left"
+                      >
+                        <div className={`w-2.5 h-2.5 rounded-full ${meta.badge} shrink-0`} />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-semibold text-slate-900">
+                            위험도 {meta.label} · {h.score}/100
+                          </div>
+                          <div className="text-[10px] text-slate-500">
+                            {new Date(h.created_at).toLocaleString("ko-KR", {
+                              month: "short",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                            {h.child_age_months ? ` · ${h.child_age_months}개월` : ""}
+                          </div>
+                        </div>
+                        <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        )}
         {step === "form" ? (
           <div className="space-y-4">
             {/* 개월수 */}
@@ -386,6 +497,51 @@ export default function ChildDevConcernSection() {
               </div>
               <Progress value={score} className="h-2 mt-3 bg-white/60" />
             </div>
+
+            {/* 위험도 '높음' — 전문가 상담 연결 안내 */}
+            {risk === "high" && (
+              <div className="rounded-2xl border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-orange-50 p-4 space-y-3">
+                <div className="flex items-start gap-2">
+                  <div className="p-1.5 rounded-lg bg-rose-500 text-white shrink-0">
+                    <AlertCircle className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-bold text-rose-900 break-keep">
+                      지금은 전문가 상담을 권장드려요
+                    </div>
+                    <p className="text-xs text-rose-800/90 mt-1 break-keep leading-relaxed">
+                      여러 발달 영역에서 걱정 신호가 함께 나타났어요. 자가체크는 진단이 아니므로,
+                      면허 전문가(언어·작업·놀이치료, 발달심리)와의 상담으로 정확한 평가를 받아보시는 것이 안전해요.
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-white/70 rounded-lg p-2.5 border border-rose-200/60">
+                  <div className="text-[11px] font-bold text-rose-900 mb-1.5">먼저 해보면 좋은 행동 3가지</div>
+                  <ul className="text-[11px] text-rose-900/90 space-y-1 list-disc pl-4 break-keep">
+                    <li>최근 2주 일상 관찰을 메모로 정리해두세요 (놀이·말·잠·식사).</li>
+                    <li>아이 영상 1~2분을 촬영해 상담 시 전문가와 함께 보세요.</li>
+                    <li>아래 ‘긴급 전문가 매칭’으로 30분 내 자동 배정을 받을 수 있어요.</li>
+                  </ul>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <Button
+                    onClick={() => navigate("/expert-hiring?urgent=true")}
+                    className="h-10 bg-rose-600 hover:bg-rose-700 text-white"
+                  >
+                    <AlertTriangle className="w-4 h-4 mr-1.5" />
+                    긴급 전문가 매칭
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/expert-hiring")}
+                    variant="outline"
+                    className="h-10 border-rose-300 text-rose-800 hover:bg-rose-100"
+                  >
+                    <Phone className="w-4 h-4 mr-1.5" />
+                    전문가 목록 둘러보기
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* 비교 차트 */}
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
@@ -516,11 +672,19 @@ export default function ChildDevConcernSection() {
                   );
                 })}
               </ol>
-              {savedId && (
+              {savedId ? (
                 <p className="text-[10px] text-emerald-700 mt-3 flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" /> 결과가 내 기록에 저장되었어요
+                  <CheckCircle2 className="w-3 h-3" /> 결과가 내 기록에 저장되었어요 · 위 ‘지난 기록’에서 다시 볼 수 있어요
                 </p>
-              )}
+              ) : isAuthed === false ? (
+                <button
+                  onClick={() => navigate("/auth")}
+                  className="mt-3 w-full flex items-center justify-center gap-1.5 text-[11px] text-violet-700 font-semibold bg-violet-50 hover:bg-violet-100 border border-violet-200 rounded-lg py-2 transition-colors"
+                >
+                  <LogIn className="w-3 h-3" />
+                  로그인하면 결과가 자동 저장돼서 다음에 변화를 비교할 수 있어요
+                </button>
+              ) : null}
             </div>
 
             <div className="flex gap-2">

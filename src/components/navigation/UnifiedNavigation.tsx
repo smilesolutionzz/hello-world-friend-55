@@ -432,26 +432,31 @@ const UnifiedNavigationInner = () => {
                               )}
                             </div>
                             <div className="pl-4 space-y-1">
-                              {item.children.map((child) => (
-                                <button
-                                  key={child.path}
-                                  onClick={() => handleNavigation(child.path)}
-                                  className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors ${
-                                    isActive(child.path) ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
-                                  }`}
-                                >
-                                  {child.icon ? <child.icon className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
-                                  <span className="text-sm">{child.label}</span>
-                                  {child.mobileNote && (
-                                    <span className="text-[10px] text-amber-600 dark:text-amber-400">{child.mobileNote}</span>
-                                  )}
-                                  {child.badge && (
-                                    <Badge className="bg-green-500/10 text-green-600 border-0 text-[10px] ml-auto">
-                                      {child.badge}
-                                    </Badge>
-                                  )}
-                                </button>
-                              ))}
+                              {item.children.map((child) => {
+                                const locked = (child as any).locked;
+                                return (
+                                  <button
+                                    key={child.path}
+                                    onClick={() => handleNavigation(locked ? '/token-subscription' : child.path)}
+                                    className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors ${
+                                      isActive(child.path) ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
+                                    } ${locked ? 'opacity-70' : ''}`}
+                                    aria-disabled={locked}
+                                  >
+                                    {child.icon ? <child.icon className={`w-4 h-4 ${locked ? 'blur-[1.5px]' : ''}`} /> : <Sparkles className="w-4 h-4" />}
+                                    <span className={`text-sm ${locked ? 'blur-[0.5px]' : ''}`}>{child.label}</span>
+                                    {locked && <Lock className="w-3 h-3 text-muted-foreground" />}
+                                    {child.mobileNote && (
+                                      <span className="text-[10px] text-amber-600 dark:text-amber-400">{child.mobileNote}</span>
+                                    )}
+                                    {child.badge && (
+                                      <Badge className={`border-0 text-[10px] ml-auto ${locked ? 'bg-amber-100 text-amber-800' : 'bg-green-500/10 text-green-600'}`}>
+                                        {child.badge}
+                                      </Badge>
+                                    )}
+                                  </button>
+                                );
+                              })}
                             </div>
                           </div>
                         ) : (

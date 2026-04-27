@@ -112,7 +112,11 @@ Deno.serve(async (req) => {
       year: 'numeric', month: '2-digit', day: '2-digit',
     })
 
-    const props = { nickname, reportTitle, reportUrl, generatedAt, summary, highlights, senderName }
+    const props = {
+      nickname, reportTitle, reportUrl, generatedAt, summary, highlights, senderName,
+      metrics: (body as any).metrics,
+      recommendation: (body as any).recommendation,
+    }
     const html = await renderAsync(React.createElement(reportSummary.component, props))
     const subject = typeof reportSummary.subject === 'function'
       ? reportSummary.subject(props)

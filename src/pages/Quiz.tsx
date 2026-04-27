@@ -142,6 +142,24 @@ const Quiz: React.FC = () => {
     return () => { cancelled = true; };
   }, []);
 
+  // Auto-resume payment after login redirect (?resume=pay)
+  useEffect(() => {
+    if (!user || !isReady) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('resume') !== 'pay') return;
+    // Jump straight to plan view + open payment popup once
+    setStep('plan');
+    const t = setTimeout(() => {
+      handleStartTrack();
+      // Clean up the query param so it doesn't re-trigger
+      const url = new URL(window.location.href);
+      url.searchParams.delete('resume');
+      window.history.replaceState({}, '', url.toString());
+    }, 400);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isReady]);
+
   const stepIndex = useMemo(() => {
     const order: Step[] = ['goal', 'lifestage', 'age', 'currentState', 'duration', 'concern'];
     return order.indexOf(step);

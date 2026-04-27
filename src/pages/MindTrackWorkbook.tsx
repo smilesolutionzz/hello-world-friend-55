@@ -469,12 +469,21 @@ export default function MindTrackWorkbook() {
             </Card>
           )}
 
-          {/* Today's Mission */}
+          {/* Today's Mission + Check-in 통합 강조 영역 */}
           {todayMission && (() => {
             const guide = MISSION_TYPE_GUIDE[todayMission.mission_type] ?? MISSION_TYPE_GUIDE.reflection;
             const GuideIcon = guide.icon;
+            const isHighlighted = selectedDay === currentDay;
             return (
-              <Card className={`p-5 border-2 border-primary shadow-lg transition-all ${selectedDay === currentDay ? "ring-2 ring-primary ring-offset-2" : ""}`}>
+              <div
+                ref={missionSectionRef}
+                tabIndex={-1}
+                className={`rounded-2xl transition-all outline-none ${
+                  isHighlighted ? "ring-4 ring-primary/40 ring-offset-2" : ""
+                }`}
+                aria-label={`Day ${currentDay} 미션 섹션`}
+              >
+              <Card className="p-5 border-2 border-primary shadow-lg transition-all">
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-2">
                     <Target className="w-5 h-5 text-primary" />
@@ -502,7 +511,18 @@ export default function MindTrackWorkbook() {
                   <div className="flex items-center gap-3 text-xs text-slate-500">
                     <span>⏱ {todayMission.estimated_minutes}분</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Button
+                      ref={reopenButtonRef}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openMission(todayMission)}
+                      className="text-xs"
+                      aria-label="오늘의 미션 다이얼로그 다시 열기"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                      다시 열기
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"
@@ -517,7 +537,41 @@ export default function MindTrackWorkbook() {
                     </Button>
                   </div>
                 </div>
+
+                {/* 체크인 카드 — 오늘 선택 시 함께 강조 */}
+                {todayCheckin && (
+                  <div className={`mt-4 pt-4 border-t border-slate-200 transition-all ${isHighlighted ? "bg-primary/5 -mx-5 -mb-5 px-5 pb-5 rounded-b-xl" : ""}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-slate-700 flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> 오늘의 체크인 기록
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        {todayCheckin.checked_at ? new Date(todayCheckin.checked_at).toLocaleString("ko-KR") : ""}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                      <div className="p-2 rounded-lg bg-white border border-slate-200">
+                        <div className="text-slate-500 text-[10px]">기분</div>
+                        <div className="font-bold text-slate-900">{todayCheckin.mood_score ?? "-"}</div>
+                      </div>
+                      <div className="p-2 rounded-lg bg-white border border-slate-200">
+                        <div className="text-slate-500 text-[10px]">에너지</div>
+                        <div className="font-bold text-slate-900">{todayCheckin.energy_score ?? "-"}</div>
+                      </div>
+                      <div className="p-2 rounded-lg bg-white border border-slate-200">
+                        <div className="text-slate-500 text-[10px]">명료성</div>
+                        <div className="font-bold text-slate-900">{todayCheckin.clarity_score ?? "-"}</div>
+                      </div>
+                    </div>
+                    {todayCheckin.reflection_note && (
+                      <p className="mt-2 text-xs text-slate-600 break-keep bg-white border border-slate-200 rounded-lg p-2">
+                        {todayCheckin.reflection_note}
+                      </p>
+                    )}
+                  </div>
+                )}
               </Card>
+              </div>
             );
           })()}
 

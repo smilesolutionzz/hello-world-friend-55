@@ -31,9 +31,11 @@ import {
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { usePayment } from '@/hooks/usePayment';
+import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';
 
-const TRACK_PRICE = 19900;
-const ORIGINAL_PRICE = 39800;
+const TRACK_PRICE = MIND_TRACK_PRICE;
+const ORIGINAL_PRICE = MIND_TRACK_ORIGINAL_PRICE;
 
 type Step =
   | 'goal'
@@ -88,6 +90,7 @@ const stateLabels = ['매우 좋음', '좋음', '보통', '안 좋음', '매우 
 
 const Quiz: React.FC = () => {
   const navigate = useNavigate();
+  const { pay, loading: paymentLoading, isReady } = usePayment();
   const [step, setStep] = useState<Step>('goal');
   const [data, setData] = useState<QuizData>({
     goal: '',
@@ -138,6 +141,24 @@ const Quiz: React.FC = () => {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  // Auto-resume payment after login redirect (?resume=pay)
+  useEffect(() => {
+    if (!user || !isReady) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('resume') !== 'pay') return;
+    // Jump straight to plan view + open payment popup once
+    setStep('plan');
+    const t = setTimeout(() => {
+      handleStartTrack();
+      // Clean up the query param so it doesn't re-trigger
+      const url = new URL(window.location.href);
+      url.searchParams.delete('resume');
+      window.history.replaceState({}, '', url.toString());
+    }, 400);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isReady]);
 
   const stepIndex = useMemo(() => {
     const order: Step[] = ['goal', 'lifestage', 'age', 'currentState', 'duration', 'concern'];
@@ -234,10 +255,10 @@ const Quiz: React.FC = () => {
     if (i > 0) setStep(order[i - 1]);
   };
 
-  // Save quiz data + start payment
+  // Save quiz data + start Toss payment immediately
   const handleStartTrack = async () => {
     try {
-      // Save to user_onboarding_data if logged in
+      // 1) Save quiz answers (DB if logged in, localStorage otherwise)
       if (user) {
         await supabase.from('user_onboarding_data').upsert(
           {
@@ -252,13 +273,30 @@ const Quiz: React.FC = () => {
           { onConflict: 'user_id' }
         );
       } else {
-        // Save to localStorage to recover after signup
         localStorage.setItem('quiz_data', JSON.stringify(data));
       }
-      navigate('/token-subscription?source=quiz');
+
+      // 2) Require login before payment (preserve quiz data on return)
+      if (!user) {
+        localStorage.setItem('auth_redirect_after', '/quiz?resume=pay');
+        toast.info('결제를 위해 먼저 로그인이 필요해요 (30초)');
+        navigate('/auth?mode=signup');
+        return;
+      }
+
+      // 3) Pre-enroll mind track (idempotent) so credits/dashboard are ready post-payment
+      try {
+        const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
+        await ensureMindTrackEnrollment();
+      } catch (e) {
+        console.warn('mind track enrollment skipped:', e);
+      }
+
+      // 4) Open Toss payment popup directly
+      await pay('mind_track_30');
     } catch (err) {
-      console.error(err);
-      navigate('/token-subscription?source=quiz');
+      console.error('handleStartTrack error:', err);
+      toast.error('결제 시작 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.');
     }
   };
 
@@ -929,13 +967,13 @@ const Quiz: React.FC = () => {
                   <CardContent className="p-6">
                     <div className="text-center mb-5">
                       <Badge className="mb-3 bg-white/20 text-white border-white/30">
-                        지금만 50% 할인
+                        론칭 특가 60% 할인
                       </Badge>
                       <div className="flex items-baseline justify-center gap-2 mb-2">
                         <span className="text-sm line-through opacity-70">₩{ORIGINAL_PRICE.toLocaleString()}</span>
                         <span className="text-4xl font-bold">₩{TRACK_PRICE.toLocaleString()}</span>
                       </div>
-                      <p className="text-sm opacity-90">7일 무료 체험 후 결제 · 언제든 해지 가능</p>
+                      <p className="text-sm opacity-90">30일 일시불 · 자동 결제 없음 · 7일 100% 환불 보장</p>
                     </div>
                     <div className="space-y-2 mb-6 text-sm">
                       {[
@@ -954,10 +992,15 @@ const Quiz: React.FC = () => {
                     <Button
                       size="lg"
                       onClick={handleStartTrack}
-                      className="w-full bg-white text-primary hover:bg-white/90 font-bold"
+                      disabled={paymentLoading || !isReady}
+                      className="w-full bg-white text-primary hover:bg-white/90 font-bold disabled:opacity-70"
                     >
-                      7일 무료 체험 시작하기
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                      {paymentLoading ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" />결제창 여는 중...</>
+                      ) : (
+                        <>₩{TRACK_PRICE.toLocaleString()} 결제하고 30일 트랙 시작
+                        <ArrowRight className="w-4 h-4 ml-2" /></>
+                      )}
                     </Button>
                     <div className="flex items-center justify-center gap-2 mt-4 text-xs opacity-80">
                       <ShieldCheck className="w-3 h-3" />

@@ -31,6 +31,7 @@ import {
   Sparkles,
   Target,
   BookOpen,
+  Lock,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -70,17 +71,18 @@ const UnifiedNavigationInner = () => {
         { label: t.nav.simpleTest, path: '/assessment', desc: t.nav.simpleTestDesc, icon: Sparkles },
         { label: t.nav.deepTest, path: '/premium-assessment', desc: t.nav.deepTestDesc, icon: Brain },
         { label: t.nav.personalReport, path: '/report-generator', desc: t.nav.personalReportDesc, icon: FileText, badge: 'PREMIUM' },
-        ...(showMindTrackMenu
-          ? [
-              {
-                label: '30일 마음 트랙',
-                path: '/mind-track',
-                desc: '오늘의 미션과 진행 현황',
-                icon: Target,
-                badge: mindTrackDay ? `Day ${mindTrackDay}/30` : 'NEW',
-              },
-            ]
-          : []),
+        {
+          label: '30일 마음 트랙',
+          path: '/mind-track',
+          desc: showMindTrackMenu
+            ? '오늘의 미션과 진행 현황'
+            : '구독 후 이용 가능 · 30일 매일 코칭',
+          icon: Target,
+          badge: showMindTrackMenu
+            ? (mindTrackDay ? `Day ${mindTrackDay}/30` : 'NEW')
+            : 'PREMIUM',
+          locked: !showMindTrackMenu,
+        },
         { label: t.nav.aiObservation, path: '/observation', desc: t.nav.aiObservationDesc, icon: FileText },
       ]
     },
@@ -186,36 +188,46 @@ const UnifiedNavigationInner = () => {
                       sideOffset={8}
                       className="w-72 p-2 rounded-2xl border border-border shadow-xl bg-background backdrop-blur-xl"
                     >
-                      {item.children.map((child) => (
-                        <button
-                          key={child.path}
-                          onClick={() => handleNavigation(child.path)}
-                          className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left group ${
-                            isActive(child.path) 
-                              ? 'bg-primary/10 text-primary' 
-                              : 'hover:bg-accent'
-                          }`}
-                        >
-                          <div className={`p-2 rounded-lg transition-colors ${
-                            isActive(child.path)
-                              ? 'bg-primary/20'
-                              : 'bg-muted group-hover:bg-accent'
-                          }`}>
-                            {child.icon ? <child.icon className="w-4 h-4" /> : <item.icon className="w-4 h-4" />}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-sm flex items-center gap-2 text-foreground">
-                              {child.label}
-                              {child.badge && (
-                                <Badge className="bg-green-500/10 text-green-600 border-0 text-[10px] px-1.5 py-0">
-                                  {child.badge}
-                                </Badge>
+                      {item.children.map((child) => {
+                        const locked = (child as any).locked;
+                        return (
+                          <button
+                            key={child.path}
+                            onClick={() => handleNavigation(locked ? '/token-subscription' : child.path)}
+                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left group ${
+                              isActive(child.path) 
+                                ? 'bg-primary/10 text-primary' 
+                                : 'hover:bg-accent'
+                            } ${locked ? 'opacity-70' : ''}`}
+                            aria-disabled={locked}
+                            title={locked ? '구독 시 이용 가능합니다' : undefined}
+                          >
+                            <div className={`relative p-2 rounded-lg transition-colors ${
+                              isActive(child.path)
+                                ? 'bg-primary/20'
+                                : 'bg-muted group-hover:bg-accent'
+                            }`}>
+                              {child.icon ? <child.icon className={`w-4 h-4 ${locked ? 'blur-[1.5px]' : ''}`} /> : <item.icon className="w-4 h-4" />}
+                              {locked && (
+                                <span className="absolute -top-1 -right-1 bg-background border border-border rounded-full p-0.5">
+                                  <Lock className="w-2.5 h-2.5 text-muted-foreground" />
+                                </span>
                               )}
                             </div>
-                            <div className="text-xs text-foreground/60 truncate">{child.desc}</div>
-                          </div>
-                        </button>
-                      ))}
+                            <div className="flex-1 min-w-0">
+                              <div className={`font-semibold text-sm flex items-center gap-2 text-foreground ${locked ? 'blur-[0.5px]' : ''}`}>
+                                {child.label}
+                                {child.badge && (
+                                  <Badge className={`border-0 text-[10px] px-1.5 py-0 ${locked ? 'bg-amber-100 text-amber-800' : 'bg-green-500/10 text-green-600'}`}>
+                                    {child.badge}
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="text-xs text-foreground/60 truncate">{child.desc}</div>
+                            </div>
+                          </button>
+                        );
+                      })}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
@@ -420,26 +432,31 @@ const UnifiedNavigationInner = () => {
                               )}
                             </div>
                             <div className="pl-4 space-y-1">
-                              {item.children.map((child) => (
-                                <button
-                                  key={child.path}
-                                  onClick={() => handleNavigation(child.path)}
-                                  className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors ${
-                                    isActive(child.path) ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
-                                  }`}
-                                >
-                                  {child.icon ? <child.icon className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
-                                  <span className="text-sm">{child.label}</span>
-                                  {child.mobileNote && (
-                                    <span className="text-[10px] text-amber-600 dark:text-amber-400">{child.mobileNote}</span>
-                                  )}
-                                  {child.badge && (
-                                    <Badge className="bg-green-500/10 text-green-600 border-0 text-[10px] ml-auto">
-                                      {child.badge}
-                                    </Badge>
-                                  )}
-                                </button>
-                              ))}
+                              {item.children.map((child) => {
+                                const locked = (child as any).locked;
+                                return (
+                                  <button
+                                    key={child.path}
+                                    onClick={() => handleNavigation(locked ? '/token-subscription' : child.path)}
+                                    className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors ${
+                                      isActive(child.path) ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
+                                    } ${locked ? 'opacity-70' : ''}`}
+                                    aria-disabled={locked}
+                                  >
+                                    {child.icon ? <child.icon className={`w-4 h-4 ${locked ? 'blur-[1.5px]' : ''}`} /> : <Sparkles className="w-4 h-4" />}
+                                    <span className={`text-sm ${locked ? 'blur-[0.5px]' : ''}`}>{child.label}</span>
+                                    {locked && <Lock className="w-3 h-3 text-muted-foreground" />}
+                                    {child.mobileNote && (
+                                      <span className="text-[10px] text-amber-600 dark:text-amber-400">{child.mobileNote}</span>
+                                    )}
+                                    {child.badge && (
+                                      <Badge className={`border-0 text-[10px] ml-auto ${locked ? 'bg-amber-100 text-amber-800' : 'bg-green-500/10 text-green-600'}`}>
+                                        {child.badge}
+                                      </Badge>
+                                    )}
+                                  </button>
+                                );
+                              })}
                             </div>
                           </div>
                         ) : (

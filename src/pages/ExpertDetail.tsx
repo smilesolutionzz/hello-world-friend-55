@@ -415,6 +415,10 @@ const ExpertDetailPage = () => {
           image: getExpertImage(name) || dbExpert.profile_image_url || '', description: dbExpert.bio || '',
           location: '온라인', isOnline: true, responseTime: '평균 2시간 이내',
           philosophy: extraData.philosophy, approach: extraData.approach, education: extraData.education, successCases: extraData.successCases,
+          preferredMeetingTool: ((dbExpert as any).preferred_meeting_tool as MeetingTool) || 'google_meet',
+          meetingRoomUrl: (dbExpert as any).meeting_room_url || '',
+          meetingHandle: (dbExpert as any).meeting_handle || '',
+          meetingToolNote: (dbExpert as any).meeting_tool_note || '',
         });
       } else {
         const mockExpert = mockExpertsData.find(e => e.id === id);

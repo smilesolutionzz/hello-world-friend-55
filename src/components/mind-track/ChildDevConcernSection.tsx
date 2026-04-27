@@ -137,6 +137,7 @@ export default function ChildDevConcernSection() {
   const [interpretation, setInterpretation] = useState<string>("");
   const [savedId, setSavedId] = useState<string | null>(null);
   const [aiAssisting, setAiAssisting] = useState(false);
+  const [aiPreview, setAiPreview] = useState<string | null>(null);
   const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   const [history, setHistory] = useState<any[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);

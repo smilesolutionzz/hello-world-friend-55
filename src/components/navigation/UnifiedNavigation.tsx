@@ -79,14 +79,9 @@ const UnifiedNavigationInner = () => {
                 icon: Target,
                 badge: mindTrackDay ? `Day ${mindTrackDay}/30` : 'NEW',
               },
-              {
-                label: '30일 워크북',
-                path: '/mind-track/workbook',
-                desc: '전체 일자별 체크인',
-                icon: BookOpen,
-              },
             ]
           : []),
+        { label: t.nav.aiObservation, path: '/observation', desc: t.nav.aiObservationDesc, icon: FileText },
       ]
     },
     {
@@ -98,17 +93,7 @@ const UnifiedNavigationInner = () => {
         { label: t.nav.expertConsult, path: '/expert-hiring', desc: t.nav.expertConsultDesc, icon: UserCheck },
       ]
     },
-    {
-      label: '기록',
-      icon: FileText,
-      children: [
-        { label: t.nav.aiObservation, path: '/observation', desc: t.nav.aiObservationDesc, icon: FileText },
-        { label: t.nav.mindDiary, path: '/mind-diary', desc: t.nav.mindDiaryDesc, icon: Heart },
-        { label: t.nav.column, path: '/column', desc: t.nav.columnDesc, icon: BookOpen },
-      ]
-    },
-    // B2B 메뉴는 상단 네비에서 숨김 — 푸터 및 /expert-hiring 협력기관 탭으로만 진입
-    // 구독은 우측 왕관 아이콘으로 통합
+    // 마음일기·칼럼·30일 워크북은 푸터 및 각 페이지 내부 진입점으로 이동 (네비 경량화)
   ];
 
   const handleNavigation = (path: string) => {

@@ -397,6 +397,9 @@ const ExpertHiring = () => {
               </div>
             )}
 
+            {/* 신뢰 + 가격 안내 */}
+            <ExpertTrustCards />
+
             {/* Expert application banner */}
             <div className="flex items-center justify-between rounded-2xl border border-border bg-muted/30 p-5 mt-4">
               <div>

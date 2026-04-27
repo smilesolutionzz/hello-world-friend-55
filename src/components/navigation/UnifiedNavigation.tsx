@@ -64,62 +64,51 @@ const UnifiedNavigationInner = () => {
 
   const navItems = [
     {
-      label: t.nav.assessmentTools,
+      label: '검사 · 리포트',
       icon: TrendingUp,
       children: [
-        { label: t.nav.simpleTest, path: '/assessment', desc: t.nav.simpleTestDesc },
-        { label: t.nav.deepTest, path: '/premium-assessment', desc: t.nav.deepTestDesc },
+        { label: t.nav.simpleTest, path: '/assessment', desc: t.nav.simpleTestDesc, icon: Sparkles },
+        { label: t.nav.deepTest, path: '/premium-assessment', desc: t.nav.deepTestDesc, icon: Brain },
         { label: t.nav.personalReport, path: '/report-generator', desc: t.nav.personalReportDesc, icon: FileText, badge: 'PREMIUM' },
+        ...(showMindTrackMenu
+          ? [
+              {
+                label: '30일 마음 트랙',
+                path: '/mind-track',
+                desc: '오늘의 미션과 진행 현황',
+                icon: Target,
+                badge: mindTrackDay ? `Day ${mindTrackDay}/30` : 'NEW',
+              },
+              {
+                label: '30일 워크북',
+                path: '/mind-track/workbook',
+                desc: '전체 일자별 체크인',
+                icon: BookOpen,
+              },
+            ]
+          : []),
       ]
     },
     {
-      label: t.nav.customCounseling,
-      icon: Bot,
+      label: '상담',
+      icon: MessageCircle,
       children: [
-        { label: t.nav.expertConsult, path: '/expert-hiring', desc: t.nav.expertConsultDesc, icon: UserCheck },
+        { label: t.nav.aiCounseling, path: '/ai-assistant', desc: t.nav.aiCounselingDesc, icon: Bot },
         { label: t.nav.aiAgit, path: '/metaverse-voice', desc: t.nav.aiAgitDesc, badge: 'NEW', icon: Mic, mobileNote: t.nav.aiAgitMobile },
-        { label: t.nav.aiCounseling, path: '/ai-assistant', desc: t.nav.aiCounselingDesc, icon: MessageCircle },
+        { label: t.nav.expertConsult, path: '/expert-hiring', desc: t.nav.expertConsultDesc, icon: UserCheck },
       ]
     },
     {
-      label: t.nav.observationLog,
+      label: '기록',
       icon: FileText,
       children: [
         { label: t.nav.aiObservation, path: '/observation', desc: t.nav.aiObservationDesc, icon: FileText },
         { label: t.nav.mindDiary, path: '/mind-diary', desc: t.nav.mindDiaryDesc, icon: Heart },
+        { label: t.nav.column, path: '/column', desc: t.nav.columnDesc, icon: BookOpen },
       ]
     },
-    {
-      label: t.nav.subscription,
-      icon: Crown,
-      children: [
-        { label: t.nav.purchasePass, path: '/token-subscription', desc: t.nav.purchasePassDesc },
-        { label: t.nav.column, path: '/column', desc: t.nav.columnDesc, icon: Heart },
-      ]
-    },
-    // 30일 마음 트랙 — 결제/진행 중 사용자에게만 노출
-    ...(showMindTrackMenu
-      ? [{
-          label: '30일 마음 트랙',
-          icon: Sparkles,
-          badge: mindTrackDay ? `Day ${mindTrackDay}/30` : undefined,
-          children: [
-            {
-              label: '오늘의 미션',
-              path: '/mind-track',
-              desc: '오늘 Day의 미션과 진행 현황',
-              icon: Target,
-            },
-            {
-              label: '30일 워크북',
-              path: '/mind-track/workbook',
-              desc: '전체 일자별 워크북·체크인',
-              icon: BookOpen,
-            },
-          ],
-        }]
-      : []),
     // B2B 메뉴는 상단 네비에서 숨김 — 푸터 및 /expert-hiring 협력기관 탭으로만 진입
+    // 구독은 우측 왕관 아이콘으로 통합
   ];
 
   const handleNavigation = (path: string) => {
@@ -264,42 +253,20 @@ const UnifiedNavigationInner = () => {
 
             {/* Right Side */}
             <div className="flex items-center gap-2">
-              {/* Language Toggle */}
+              {/* Subscription Status — 아이콘만 (프리미엄은 라벨 유지) */}
               <Button
                 variant="ghost"
-                size="sm"
-                onClick={() => navigate(toggleLanguagePath)}
-                className="h-9 rounded-full px-3 text-xs font-bold text-foreground/70 hover:text-foreground"
-              >
-                {language === 'ko' ? 'EN' : '한국어'}
-              </Button>
-
-              {/* Subscription Status */}
-              <Button
-                variant="outline"
-                size="sm"
+                size="icon"
                 onClick={() => handleNavigation('/token-subscription')}
-                className={`h-9 rounded-full gap-2 ${
-                  isPremium 
-                    ? 'border-yellow-400 dark:border-yellow-600 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 hover:from-yellow-100 hover:to-orange-100' 
-                    : 'border-muted-foreground/20 bg-muted/30 hover:bg-muted/50'
+                aria-label={isPremium ? subscriptionLabel : t.nav.subscribe}
+                title={isPremium ? subscriptionLabel : t.nav.subscribe}
+                className={`h-9 w-9 rounded-full ${
+                  isPremium
+                    ? 'bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 hover:from-yellow-100 hover:to-orange-100'
+                    : 'hover:bg-accent'
                 }`}
               >
-                {isPremium ? (
-                  <>
-                    <Crown className="w-4 h-4 text-yellow-500" />
-                    <span className="font-semibold text-yellow-700 dark:text-yellow-400">
-                      {subscriptionLabel}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <Crown className="w-4 h-4 text-muted-foreground" />
-                    <span className="font-semibold text-muted-foreground">
-                      {t.nav.subscribe}
-                    </span>
-                  </>
-                )}
+                <Crown className={`w-4 h-4 ${isPremium ? 'text-yellow-500' : 'text-muted-foreground'}`} />
               </Button>
 
               {/* User Menu */}
@@ -314,8 +281,8 @@ const UnifiedNavigationInner = () => {
                       <User className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent 
-                    align="end" 
+                  <DropdownMenuContent
+                    align="end"
                     sideOffset={8}
                     className="w-56 p-2 rounded-2xl border border-border shadow-xl bg-background backdrop-blur-xl"
                   >
@@ -331,6 +298,17 @@ const UnifiedNavigationInner = () => {
                       <span className="text-sm font-medium text-foreground">{t.nav.myRecords}</span>
                     </button>
                     <button
+                      onClick={() => navigate(toggleLanguagePath)}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-accent transition-colors text-left"
+                    >
+                      <span className="text-xs font-bold text-foreground/70 w-4 text-center">
+                        {language === 'ko' ? 'EN' : 'KO'}
+                      </span>
+                      <span className="text-sm font-medium text-foreground">
+                        {language === 'ko' ? 'English' : '한국어'}
+                      </span>
+                    </button>
+                    <button
                       onClick={handleAuth}
                       className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-destructive/10 text-destructive transition-colors text-left"
                     >
@@ -340,13 +318,23 @@ const UnifiedNavigationInner = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button
-                  size="sm"
-                  onClick={handleAuth}
-                  className="h-9 rounded-full px-5 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20"
-                >
-                  {t.nav.login}
-                </Button>
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate(toggleLanguagePath)}
+                    className="h-9 rounded-full px-3 text-xs font-bold text-foreground/70 hover:text-foreground"
+                  >
+                    {language === 'ko' ? 'EN' : '한국어'}
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleAuth}
+                    className="h-9 rounded-full px-5 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20"
+                  >
+                    {t.nav.login}
+                  </Button>
+                </>
               )}
             </div>
           </div>
@@ -376,28 +364,15 @@ const UnifiedNavigationInner = () => {
             >
               {language === 'ko' ? 'EN' : '한국어'}
             </Button>
-            {/* Subscription Status */}
+            {/* Subscription Status — 아이콘만 */}
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={() => handleNavigation('/token-subscription')}
-              className={`h-8 rounded-full px-3 gap-1.5 ${isPremium ? '' : ''}`}
+              aria-label={isPremium ? subscriptionLabel : t.nav.subscribe}
+              className="h-8 w-8 rounded-full"
             >
-              {isPremium ? (
-                <>
-                  <Crown className="w-4 h-4 text-yellow-500" />
-                  <span className="font-semibold text-yellow-700 dark:text-yellow-400 text-sm">
-                    {subscriptionLabel}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <Crown className="w-4 h-4 text-muted-foreground" />
-                  <span className="font-semibold text-muted-foreground text-sm">
-                    {t.nav.subscribe}
-                  </span>
-                </>
-              )}
+              <Crown className={`w-4 h-4 ${isPremium ? 'text-yellow-500' : 'text-muted-foreground'}`} />
             </Button>
 
             {/* Menu Button */}

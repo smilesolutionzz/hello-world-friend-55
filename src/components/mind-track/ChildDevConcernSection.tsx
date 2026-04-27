@@ -321,9 +321,29 @@ export default function ChildDevConcernSection() {
 
             {/* 자유 텍스트 — "현재 가장 걱정되는 점" */}
             <div>
-              <label className="text-xs font-semibold text-slate-700 block mb-1.5">
-                현재 가장 걱정되는 점 (선택, 최대 500자)
-              </label>
+              <div className="flex items-center justify-between mb-1.5 gap-2">
+                <label className="text-xs font-semibold text-slate-700">
+                  현재 가장 걱정되는 점 (선택, 최대 500자)
+                </label>
+                <button
+                  type="button"
+                  onClick={handleAiAssist}
+                  disabled={aiAssisting}
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-violet-600 hover:text-violet-700 disabled:opacity-60"
+                >
+                  {aiAssisting ? (
+                    <>
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      작성 중…
+                    </>
+                  ) : (
+                    <>
+                      <Wand2 className="w-3 h-3" />
+                      AI 작성 도움
+                    </>
+                  )}
+                </button>
+              </div>
               <Textarea
                 rows={3}
                 maxLength={500}

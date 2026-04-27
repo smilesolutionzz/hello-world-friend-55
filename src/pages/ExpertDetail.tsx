@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   Star, Calendar, Clock, MessageCircle, Video, CheckCircle, MapPin, Shield, Award, 
@@ -21,6 +22,17 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import Footer from "@/components/ui/footer";
 import { ExpertBookingModal } from "@/components/booking/ExpertBookingModal";
 import { toast } from "sonner";
+
+type MeetingTool = 'google_meet' | 'zoom' | 'kakao_video' | 'phone' | 'in_person' | 'custom';
+
+const MEETING_TOOL_LABELS: Record<MeetingTool, string> = {
+  google_meet: 'Google Meet (예약 시 자동 생성)',
+  zoom: 'Zoom (개인 상담실 URL 사용)',
+  kakao_video: '카카오톡 영상통화',
+  phone: '전화 상담',
+  in_person: '대면 상담 (오프라인)',
+  custom: '기타 (사용자에게 직접 안내)',
+};
 
 interface ExpertDetail {
   id: string;
@@ -41,6 +53,10 @@ interface ExpertDetail {
   certifications?: string[];
   approach?: string[];
   successCases?: number;
+  preferredMeetingTool?: MeetingTool;
+  meetingRoomUrl?: string;
+  meetingHandle?: string;
+  meetingToolNote?: string;
 }
 
 // 전문분야별 치료 철학 데이터
@@ -200,6 +216,10 @@ const ExpertEditModal = ({ open, onOpenChange, expert, onSave }: {
     philosophy: expert.philosophy || '',
     location: expert.location,
     hourlyPrice: expert.hourlyPrice,
+    preferredMeetingTool: (expert.preferredMeetingTool || 'google_meet') as MeetingTool,
+    meetingRoomUrl: expert.meetingRoomUrl || '',
+    meetingHandle: expert.meetingHandle || '',
+    meetingToolNote: expert.meetingToolNote || '',
   });
   const [aiLoading, setAiLoading] = useState(false);
   const [aiField, setAiField] = useState<string | null>(null);
@@ -288,6 +308,70 @@ const ExpertEditModal = ({ open, onOpenChange, expert, onSave }: {
             </div>
           </div>
 
+          {/* 화상 상담 도구 설정 */}
+          <div className="rounded-2xl border border-border/50 bg-blue-50/30 p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <Video className="w-4 h-4 text-blue-600" />
+              <label className="text-sm font-semibold text-foreground">상담 진행 방식</label>
+            </div>
+            <Select
+              value={editData.preferredMeetingTool}
+              onValueChange={(v: MeetingTool) => setEditData(p => ({ ...p, preferredMeetingTool: v }))}
+            >
+              <SelectTrigger className="rounded-xl bg-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
+                {(Object.keys(MEETING_TOOL_LABELS) as MeetingTool[]).map(tool => (
+                  <SelectItem key={tool} value={tool}>{MEETING_TOOL_LABELS[tool]}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {(editData.preferredMeetingTool === 'zoom' || editData.preferredMeetingTool === 'custom') && (
+              <div>
+                <label className="text-xs font-medium text-foreground/70 mb-1 block">상담실 URL</label>
+                <Input
+                  value={editData.meetingRoomUrl}
+                  onChange={e => setEditData(p => ({ ...p, meetingRoomUrl: e.target.value }))}
+                  placeholder="https://zoom.us/j/..."
+                  className="rounded-xl bg-white text-sm"
+                />
+              </div>
+            )}
+
+            {(editData.preferredMeetingTool === 'kakao_video' || editData.preferredMeetingTool === 'phone') && (
+              <div>
+                <label className="text-xs font-medium text-foreground/70 mb-1 block">
+                  {editData.preferredMeetingTool === 'kakao_video' ? '카카오톡 ID 또는 오픈채팅 링크' : '연락 가능 전화번호'}
+                </label>
+                <Input
+                  value={editData.meetingHandle}
+                  onChange={e => setEditData(p => ({ ...p, meetingHandle: e.target.value }))}
+                  placeholder={editData.preferredMeetingTool === 'kakao_video' ? '카카오 ID 또는 https://open.kakao.com/...' : '010-1234-5678'}
+                  className="rounded-xl bg-white text-sm"
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="text-xs font-medium text-foreground/70 mb-1 block">사용자 안내 문구 (선택)</label>
+              <Textarea
+                value={editData.meetingToolNote}
+                onChange={e => setEditData(p => ({ ...p, meetingToolNote: e.target.value }))}
+                placeholder="예: 예약 10분 전 카톡으로 입장 링크를 보내드립니다."
+                rows={2}
+                className="rounded-xl bg-white text-sm resize-none"
+              />
+            </div>
+
+            {editData.preferredMeetingTool === 'google_meet' && (
+              <p className="text-[11px] text-blue-700 bg-blue-100/60 rounded-lg px-3 py-2 leading-relaxed">
+                💡 예약이 확정되면 시스템이 자동으로 Google Meet 링크를 생성하여 양쪽에 발송합니다. 별도 설정 불필요.
+              </p>
+            )}
+          </div>
+
           <div className="flex gap-3 pt-2">
             <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1 rounded-2xl h-11 border-border/50">
               <X className="w-4 h-4 mr-1" /> 취소
@@ -331,6 +415,10 @@ const ExpertDetailPage = () => {
           image: getExpertImage(name) || dbExpert.profile_image_url || '', description: dbExpert.bio || '',
           location: '온라인', isOnline: true, responseTime: '평균 2시간 이내',
           philosophy: extraData.philosophy, approach: extraData.approach, education: extraData.education, successCases: extraData.successCases,
+          preferredMeetingTool: ((dbExpert as any).preferred_meeting_tool as MeetingTool) || 'google_meet',
+          meetingRoomUrl: (dbExpert as any).meeting_room_url || '',
+          meetingHandle: (dbExpert as any).meeting_handle || '',
+          meetingToolNote: (dbExpert as any).meeting_tool_note || '',
         });
       } else {
         const mockExpert = mockExpertsData.find(e => e.id === id);
@@ -352,8 +440,32 @@ const ExpertDetailPage = () => {
     finally { setLoading(false); }
   };
 
-  const handleSaveProfile = (data: Partial<ExpertDetail>) => {
-    if (expert) setExpert({ ...expert, ...data });
+  const handleSaveProfile = async (data: Partial<ExpertDetail> & {
+    preferredMeetingTool?: MeetingTool;
+    meetingRoomUrl?: string;
+    meetingHandle?: string;
+    meetingToolNote?: string;
+  }) => {
+    if (!expert) return;
+    // 낙관적 UI 업데이트
+    setExpert({ ...expert, ...data });
+    // DB가 있는 전문가만 저장 (mock 데이터는 제외)
+    try {
+      const { error } = await supabase.from('experts').update({
+        full_name: data.name,
+        bio: data.description,
+        hourly_rate: data.hourlyPrice,
+        preferred_meeting_tool: data.preferredMeetingTool,
+        meeting_room_url: data.meetingRoomUrl || null,
+        meeting_handle: data.meetingHandle || null,
+        meeting_tool_note: data.meetingToolNote || null,
+      } as any).eq('id', expert.id);
+      if (error) {
+        console.warn('Profile save warning:', error.message);
+      }
+    } catch (err) {
+      console.error('Profile save error:', err);
+    }
   };
 
   if (loading) {

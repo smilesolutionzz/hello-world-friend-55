@@ -154,8 +154,8 @@ const TokenSubscription = () => {
 
         {/* ─────────── 히어로 ─────────── */}
         <motion.div {...fade(0.1)} className="text-center mb-8">
-          <div className="inline-flex items-center gap-1.5 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 text-xs font-semibold px-3 py-1.5 rounded-full mb-5 border border-rose-100 dark:border-rose-900">
-            <Sparkles className="w-3 h-3" />
+          <div className="inline-flex items-center gap-1.5 bg-rose-600 text-white text-xs font-black px-3.5 py-1.5 rounded-full mb-5 shadow-md shadow-rose-200 dark:shadow-rose-950/50">
+            <Sparkles className="w-3.5 h-3.5" />
             론칭 특가 {MIND_TRACK_DISCOUNT_PERCENT}% 할인
           </div>
           <h1 className="text-3xl md:text-5xl font-black mb-3 text-foreground tracking-tight break-keep">
@@ -213,7 +213,7 @@ const TokenSubscription = () => {
             <div className="mb-5">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-sm text-muted-foreground line-through">₩{MIND_TRACK_ORIGINAL_PRICE.toLocaleString()}</span>
-                <span className="text-[11px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/30 px-2 py-0.5 rounded-full">
+                <span className="text-[11px] font-black text-white bg-rose-600 px-2.5 py-1 rounded-full shadow-sm">
                   {MIND_TRACK_DISCOUNT_PERCENT}% OFF
                 </span>
               </div>
@@ -221,7 +221,7 @@ const TokenSubscription = () => {
                 <span className="text-4xl md:text-5xl font-black text-foreground">₩{MIND_TRACK_PRICE.toLocaleString()}</span>
                 <span className="text-muted-foreground text-sm">· 일시불</span>
               </div>
-              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1.5">
+              <p className="text-xs text-white font-bold mt-1.5 bg-emerald-600 dark:bg-emerald-500 inline-block px-2.5 py-1 rounded-md shadow-sm">
                 하루 약 ₩{Math.round(MIND_TRACK_PRICE / 30).toLocaleString()} · 자동 결제 없음 · 30일 후 자동 종료
               </p>
             </div>
@@ -282,7 +282,7 @@ const TokenSubscription = () => {
           <h3 className="text-xl md:text-2xl font-black text-foreground mb-2 break-keep">
             7일 이내 100% 환불 보장
           </h3>
-          <p className="text-sm md:text-base text-muted-foreground break-keep max-w-md mx-auto">
+          <p className="text-sm md:text-base text-emerald-900 dark:text-emerald-100 break-keep max-w-md mx-auto leading-relaxed">
             결제 후 7일 안에 마음에 들지 않으면, 마이페이지 한 번 클릭으로 전액 환불해 드립니다.
             <strong className="text-foreground"> 부담 없이 시작해보세요.</strong>
           </p>

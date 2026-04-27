@@ -221,7 +221,7 @@ const TokenSubscription = () => {
                 <span className="text-4xl md:text-5xl font-black text-foreground">₩{MIND_TRACK_PRICE.toLocaleString()}</span>
                 <span className="text-muted-foreground text-sm">· 일시불</span>
               </div>
-              <p className="text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1.5 bg-emerald-50 dark:bg-emerald-950/40 inline-block px-2.5 py-1 rounded-md">
+              <p className="text-xs text-white font-bold mt-1.5 bg-emerald-600 dark:bg-emerald-500 inline-block px-2.5 py-1 rounded-md shadow-sm">
                 하루 약 ₩{Math.round(MIND_TRACK_PRICE / 30).toLocaleString()} · 자동 결제 없음 · 30일 후 자동 종료
               </p>
             </div>

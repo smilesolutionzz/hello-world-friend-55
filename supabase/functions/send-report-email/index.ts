@@ -72,16 +72,28 @@ Deno.serve(async (req) => {
       if (report && report.user_id === user.id) {
         const rd = (report.report_data as any) || {}
         reportTitle = rd.title || reportTitle
+        const stripHtml = (s: any): string => {
+          if (s == null) return ''
+          let t = typeof s === 'string' ? s : (typeof s === 'object' ? (s.text || s.content || JSON.stringify(s)) : String(s))
+          t = t.replace(/<\/?[a-zA-Z][^>]*>/g, ' ')
+          t = t.replace(/```[\s\S]*?```/g, ' ')
+          t = t.replace(/[#*_`>]+/g, ' ')
+          t = t.replace(/\s+/g, ' ').trim()
+          return t
+        }
         if (!summary) {
-          summary = rd.executiveSummary || rd.summary || rd.overview || ''
-          if (typeof summary === 'object') summary = JSON.stringify(summary).slice(0, 500)
-          if (summary.length > 600) summary = summary.slice(0, 600) + '…'
+          summary = stripHtml(rd.executiveSummary || rd.summary || rd.overview || '')
+          if (summary.length > 500) summary = summary.slice(0, 500) + '…'
         }
         if (!highlights.length && Array.isArray(rd.keyInsights)) {
-          highlights = rd.keyInsights.slice(0, 3).map((x: any) =>
-            typeof x === 'string' ? x : (x.text || x.title || JSON.stringify(x))
-          )
+          highlights = rd.keyInsights.slice(0, 5).map((x: any) =>
+            stripHtml(typeof x === 'string' ? x : (x.text || x.title || ''))
+          ).filter(Boolean)
         }
+        // metrics & recommendation passthrough
+        ;(props as any) // noop placeholder
+        ;(body as any).metrics = (body as any).metrics || (Array.isArray(rd.metrics) ? rd.metrics.slice(0, 4) : undefined)
+        ;(body as any).recommendation = (body as any).recommendation || stripHtml(rd.recommendation || rd.nextSteps || '')
         reportUrl = `${SITE_URL}/report-generator-pro?id=${report.id}`
       }
     }

@@ -31,6 +31,7 @@ import {
   Sparkles,
   Target,
   BookOpen,
+  Lock,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';

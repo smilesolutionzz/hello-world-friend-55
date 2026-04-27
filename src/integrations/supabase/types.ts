@@ -4794,6 +4794,10 @@ export type Database = {
           kakao_link: string | null
           languages: string[] | null
           license_number: string | null
+          meeting_handle: string | null
+          meeting_room_url: string | null
+          meeting_tool_note: string | null
+          preferred_meeting_tool: string
           professional_title: string
           profile_image_url: string | null
           specializations: string[]
@@ -4819,6 +4823,10 @@ export type Database = {
           kakao_link?: string | null
           languages?: string[] | null
           license_number?: string | null
+          meeting_handle?: string | null
+          meeting_room_url?: string | null
+          meeting_tool_note?: string | null
+          preferred_meeting_tool?: string
           professional_title: string
           profile_image_url?: string | null
           specializations?: string[]
@@ -4844,6 +4852,10 @@ export type Database = {
           kakao_link?: string | null
           languages?: string[] | null
           license_number?: string | null
+          meeting_handle?: string | null
+          meeting_room_url?: string | null
+          meeting_tool_note?: string | null
+          preferred_meeting_tool?: string
           professional_title?: string
           profile_image_url?: string | null
           specializations?: string[]

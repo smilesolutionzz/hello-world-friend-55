@@ -498,6 +498,51 @@ export default function ChildDevConcernSection() {
               <Progress value={score} className="h-2 mt-3 bg-white/60" />
             </div>
 
+            {/* 위험도 '높음' — 전문가 상담 연결 안내 */}
+            {risk === "high" && (
+              <div className="rounded-2xl border-2 border-rose-300 bg-gradient-to-br from-rose-50 to-orange-50 p-4 space-y-3">
+                <div className="flex items-start gap-2">
+                  <div className="p-1.5 rounded-lg bg-rose-500 text-white shrink-0">
+                    <AlertCircle className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-bold text-rose-900 break-keep">
+                      지금은 전문가 상담을 권장드려요
+                    </div>
+                    <p className="text-xs text-rose-800/90 mt-1 break-keep leading-relaxed">
+                      여러 발달 영역에서 걱정 신호가 함께 나타났어요. 자가체크는 진단이 아니므로,
+                      면허 전문가(언어·작업·놀이치료, 발달심리)와의 상담으로 정확한 평가를 받아보시는 것이 안전해요.
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-white/70 rounded-lg p-2.5 border border-rose-200/60">
+                  <div className="text-[11px] font-bold text-rose-900 mb-1.5">먼저 해보면 좋은 행동 3가지</div>
+                  <ul className="text-[11px] text-rose-900/90 space-y-1 list-disc pl-4 break-keep">
+                    <li>최근 2주 일상 관찰을 메모로 정리해두세요 (놀이·말·잠·식사).</li>
+                    <li>아이 영상 1~2분을 촬영해 상담 시 전문가와 함께 보세요.</li>
+                    <li>아래 ‘긴급 전문가 매칭’으로 30분 내 자동 배정을 받을 수 있어요.</li>
+                  </ul>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <Button
+                    onClick={() => navigate("/expert-hiring?urgent=true")}
+                    className="h-10 bg-rose-600 hover:bg-rose-700 text-white"
+                  >
+                    <AlertTriangle className="w-4 h-4 mr-1.5" />
+                    긴급 전문가 매칭
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/expert-hiring")}
+                    variant="outline"
+                    className="h-10 border-rose-300 text-rose-800 hover:bg-rose-100"
+                  >
+                    <Phone className="w-4 h-4 mr-1.5" />
+                    전문가 목록 둘러보기
+                  </Button>
+                </div>
+              </div>
+            )}
+
             {/* 비교 차트 */}
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
               <div className="flex items-center justify-between mb-3">

@@ -253,42 +253,20 @@ const UnifiedNavigationInner = () => {
 
             {/* Right Side */}
             <div className="flex items-center gap-2">
-              {/* Language Toggle */}
+              {/* Subscription Status — 아이콘만 (프리미엄은 라벨 유지) */}
               <Button
                 variant="ghost"
-                size="sm"
-                onClick={() => navigate(toggleLanguagePath)}
-                className="h-9 rounded-full px-3 text-xs font-bold text-foreground/70 hover:text-foreground"
-              >
-                {language === 'ko' ? 'EN' : '한국어'}
-              </Button>
-
-              {/* Subscription Status */}
-              <Button
-                variant="outline"
-                size="sm"
+                size="icon"
                 onClick={() => handleNavigation('/token-subscription')}
-                className={`h-9 rounded-full gap-2 ${
-                  isPremium 
-                    ? 'border-yellow-400 dark:border-yellow-600 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 hover:from-yellow-100 hover:to-orange-100' 
-                    : 'border-muted-foreground/20 bg-muted/30 hover:bg-muted/50'
+                aria-label={isPremium ? subscriptionLabel : t.nav.subscribe}
+                title={isPremium ? subscriptionLabel : t.nav.subscribe}
+                className={`h-9 w-9 rounded-full ${
+                  isPremium
+                    ? 'bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 hover:from-yellow-100 hover:to-orange-100'
+                    : 'hover:bg-accent'
                 }`}
               >
-                {isPremium ? (
-                  <>
-                    <Crown className="w-4 h-4 text-yellow-500" />
-                    <span className="font-semibold text-yellow-700 dark:text-yellow-400">
-                      {subscriptionLabel}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <Crown className="w-4 h-4 text-muted-foreground" />
-                    <span className="font-semibold text-muted-foreground">
-                      {t.nav.subscribe}
-                    </span>
-                  </>
-                )}
+                <Crown className={`w-4 h-4 ${isPremium ? 'text-yellow-500' : 'text-muted-foreground'}`} />
               </Button>
 
               {/* User Menu */}
@@ -303,8 +281,8 @@ const UnifiedNavigationInner = () => {
                       <User className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent 
-                    align="end" 
+                  <DropdownMenuContent
+                    align="end"
                     sideOffset={8}
                     className="w-56 p-2 rounded-2xl border border-border shadow-xl bg-background backdrop-blur-xl"
                   >
@@ -320,6 +298,17 @@ const UnifiedNavigationInner = () => {
                       <span className="text-sm font-medium text-foreground">{t.nav.myRecords}</span>
                     </button>
                     <button
+                      onClick={() => navigate(toggleLanguagePath)}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-accent transition-colors text-left"
+                    >
+                      <span className="text-xs font-bold text-foreground/70 w-4 text-center">
+                        {language === 'ko' ? 'EN' : 'KO'}
+                      </span>
+                      <span className="text-sm font-medium text-foreground">
+                        {language === 'ko' ? 'English' : '한국어'}
+                      </span>
+                    </button>
+                    <button
                       onClick={handleAuth}
                       className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-destructive/10 text-destructive transition-colors text-left"
                     >
@@ -329,13 +318,23 @@ const UnifiedNavigationInner = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button
-                  size="sm"
-                  onClick={handleAuth}
-                  className="h-9 rounded-full px-5 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20"
-                >
-                  {t.nav.login}
-                </Button>
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate(toggleLanguagePath)}
+                    className="h-9 rounded-full px-3 text-xs font-bold text-foreground/70 hover:text-foreground"
+                  >
+                    {language === 'ko' ? 'EN' : '한국어'}
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleAuth}
+                    className="h-9 rounded-full px-5 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20"
+                  >
+                    {t.nav.login}
+                  </Button>
+                </>
               )}
             </div>
           </div>

@@ -264,8 +264,13 @@ export default function ChildDevConcernSection() {
           })
           .select("id")
           .single();
-        if (insErr) console.warn("save failed:", insErr.message);
-        else setSavedId(inserted.id);
+        if (insErr) {
+          console.warn("save failed:", insErr.message);
+          toast.error("결과 저장에 실패했어요. 잠시 후 다시 시도해주세요.");
+        } else {
+          setSavedId(inserted.id);
+          loadHistory(user.id);
+        }
       }
     } catch (e: any) {
       console.error(e);
@@ -273,6 +278,21 @@ export default function ChildDevConcernSection() {
     } finally {
       setTuning(false);
     }
+  };
+
+  const handleLoadPast = (item: any) => {
+    setResponses(item.responses as Responses);
+    setAgeMonths(item.child_age_months?.toString() ?? "");
+    setInterpretation(item.interpretation ?? "");
+    const planMap: Record<number, string> = {};
+    (item.seven_day_plan ?? []).forEach((p: any) => {
+      if (p.tunedAction) planMap[p.day] = p.tunedAction;
+    });
+    setTunedActions(planMap);
+    setSavedId(item.id);
+    setStep("result");
+    setHistoryOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleReset = () => {

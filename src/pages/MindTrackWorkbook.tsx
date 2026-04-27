@@ -227,31 +227,49 @@ export default function MindTrackWorkbook() {
     })();
   }, [currentDay, enrollment?.id, enrollment?.status]);
 
-  // URL ?day=N 으로 진입 시 해당 Day 셀로 스크롤·하이라이트
+  // Day 선택 시 → 캘린더 day 셀로 스크롤 + 미션 섹션으로도 스크롤·포커스
   useEffect(() => {
     if (loading || !selectedDay) return;
     const t = setTimeout(() => {
-      const el = dayButtonRefs.current[selectedDay];
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      // 오늘 선택 시: 미션 섹션을 최우선으로 스크롤·포커스
+      if (selectedDay === currentDay && missionSectionRef.current) {
+        missionSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        reopenButtonRef.current?.focus({ preventScroll: true });
       } else {
-        calendarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        const el = dayButtonRefs.current[selectedDay];
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          el.focus({ preventScroll: true });
+        } else {
+          calendarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       }
     }, 200);
     return () => clearTimeout(t);
-  }, [loading, selectedDay]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, selectedDay, currentDay]);
 
-  // ?day=N 이 오늘이면 미션 다이얼로그 자동 열기 (1회)
+  // ?day=N 이 오늘이면 미션 다이얼로그 자동 열기
+  // - 최초 1회는 항상 자동 (autoOpenedRef 가드)
+  // - ?openMission=1 플래그가 있으면 명시적으로 다시 열기
   const autoOpenedRef = useRef(false);
   useEffect(() => {
-    if (loading || autoOpenedRef.current) return;
+    if (loading) return;
     const dp = parseInt(searchParams.get("day") ?? "", 10);
+    const explicitOpen = searchParams.get("openMission") === "1";
     if (!Number.isFinite(dp)) return;
     if (dp !== currentDay) return;
+    if (autoOpenedRef.current && !explicitOpen) return;
     const m = missions.find((mm) => mm.day_number === dp);
     if (m) {
       autoOpenedRef.current = true;
       openMission(m);
+      if (explicitOpen) {
+        // 플래그는 일회용 — 소비 후 제거
+        const params = new URLSearchParams(searchParams);
+        params.delete("openMission");
+        setSearchParams(params, { replace: true });
+      }
     }
   }, [loading, searchParams, currentDay, missions]);
 

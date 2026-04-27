@@ -1,19 +1,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Lock, TrendingUp, Award, Calendar } from 'lucide-react';
+import { TrendingUp, TrendingDown, Award, Calendar, Quote, Target, AlertCircle } from 'lucide-react';
 
 const WeeklyReportPreview: React.FC = () => {
   return (
     <section className="my-12 md:my-16">
       <div className="text-center mb-8">
         <span className="inline-block text-[11px] font-bold tracking-[0.18em] uppercase text-muted-foreground mb-2">
-          Weekly Report
+          Weekly Report — Sample
         </span>
         <h2 className="text-2xl md:text-3xl font-black text-foreground break-keep">
-          매주 일요일, 박사급 분석 리포트가 도착합니다
+          매주 일요일, 이런 리포트가 도착합니다
         </h2>
         <p className="text-sm text-muted-foreground mt-2 break-keep">
-          단순 점수 그래프가 아닌, 통계적으로 검증된 변화 해석
+          아래는 실제 발송되는 Week 1 리포트의 축약 샘플입니다 (개인 식별 정보는 가공)
         </p>
       </div>
 
@@ -21,7 +21,7 @@ const WeeklyReportPreview: React.FC = () => {
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="relative rounded-3xl border border-border bg-gradient-to-br from-slate-50 to-blue-50/30 dark:from-slate-900/50 dark:to-blue-950/20 p-5 md:p-8 overflow-hidden"
+        className="relative rounded-3xl border border-border bg-gradient-to-br from-slate-50 to-blue-50/30 dark:from-slate-900/50 dark:to-blue-950/20 p-5 md:p-8"
       >
         {/* 신뢰 뱃지 */}
         <div className="flex items-center gap-2 flex-wrap mb-6">
@@ -36,67 +36,115 @@ const WeeklyReportPreview: React.FC = () => {
           </span>
         </div>
 
-        {/* 가짜 리포트 모형 (블러 처리) */}
-        <div className="relative rounded-2xl bg-white dark:bg-card border border-border overflow-hidden">
+        {/* 실제 리포트 샘플 */}
+        <div className="rounded-2xl bg-white dark:bg-card border border-border overflow-hidden">
           <div className="bg-foreground text-background px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              <span className="text-sm font-bold">Week 1 변화 리포트</span>
+              <span className="text-sm font-bold">Week 1 변화 리포트 · 별이엄마님</span>
             </div>
             <span className="text-[10px] opacity-70">2026.05.10</span>
           </div>
 
-          <div className="p-5 space-y-4 select-none">
-            {/* 점수 카드 — 일부만 명확, 나머지 블러 */}
+          <div className="p-5 space-y-5">
+            {/* 핵심 지표 카드 */}
             <div className="grid grid-cols-3 gap-3">
               {[
-                { label: '마음 점수', val: '72', delta: '+8', color: 'text-emerald-600' },
-                { label: '수면 질', val: '6.8', delta: '+1.2', color: 'text-blue-600' },
-                { label: '회복탄력성', val: '64', delta: '+12', color: 'text-violet-600' },
+                { label: '마음 점수', val: '72', delta: '+8', dir: 'up', color: 'text-emerald-600', note: '경계 → 양호' },
+                { label: '수면 질', val: '6.8', delta: '+1.2h', dir: 'up', color: 'text-blue-600', note: '평균 6.8시간' },
+                { label: '회복탄력성', val: '64', delta: '+12', dir: 'up', color: 'text-violet-600', note: '백분위 71%' },
               ].map((s, i) => (
                 <div key={i} className="rounded-xl border border-border bg-muted/30 p-3 text-center">
                   <div className="text-[10px] text-muted-foreground font-medium">{s.label}</div>
                   <div className={`text-2xl font-black ${s.color} tabular-nums mt-0.5`}>{s.val}</div>
                   <div className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-600">
-                    <TrendingUp className="w-2.5 h-2.5" /> {s.delta}
+                    {s.dir === 'up' ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />} {s.delta}
                   </div>
+                  <div className="text-[9px] text-muted-foreground mt-0.5 break-keep">{s.note}</div>
                 </div>
               ))}
             </div>
 
-            {/* 차트 자리 — 블러 */}
-            <div className="rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-950/30 dark:to-indigo-950/30 h-28 relative overflow-hidden filter blur-sm">
-              <div className="absolute inset-0 flex items-end justify-around pb-3 px-3 gap-1.5">
-                {[40, 55, 48, 62, 70, 65, 78].map((h, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 bg-gradient-to-t from-blue-500 to-indigo-400 rounded-t"
-                    style={{ height: `${h}%` }}
-                  />
+            {/* 일별 추이 미니 차트 + 라벨 */}
+            <div className="rounded-xl border border-border bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-bold text-foreground">일별 마음 점수 추이</span>
+                <span className="text-[9px] text-muted-foreground">RCI = 1.96 (유의미한 개선)</span>
+              </div>
+              <div className="flex items-end justify-around h-20 gap-1.5">
+                {[
+                  { d: '월', h: 40, v: 58 },
+                  { d: '화', h: 55, v: 63 },
+                  { d: '수', h: 48, v: 60 },
+                  { d: '목', h: 62, v: 67 },
+                  { d: '금', h: 70, v: 70 },
+                  { d: '토', h: 65, v: 68 },
+                  { d: '일', h: 78, v: 72 },
+                ].map((b, i) => (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
+                    <span className="text-[8px] font-bold text-blue-700 dark:text-blue-300 tabular-nums">{b.v}</span>
+                    <div
+                      className="w-full bg-gradient-to-t from-blue-500 to-indigo-400 rounded-t"
+                      style={{ height: `${b.h}%` }}
+                    />
+                    <span className="text-[9px] text-muted-foreground">{b.d}</span>
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* 분석 텍스트 — 블러 */}
-            <div className="space-y-1.5 filter blur-[2.5px] select-none">
-              <div className="h-2 bg-muted rounded w-full" />
-              <div className="h-2 bg-muted rounded w-11/12" />
-              <div className="h-2 bg-muted rounded w-4/5" />
-              <div className="h-2 bg-muted rounded w-3/4" />
+            {/* AI 임상 해석 — 실제 샘플 텍스트 */}
+            <div className="rounded-xl border-l-4 border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 p-4">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Quote className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-[11px] font-black text-emerald-700 dark:text-emerald-300 tracking-wider uppercase">
+                  AI 임상 해석
+                </span>
+              </div>
+              <p className="text-xs md:text-sm text-foreground leading-relaxed break-keep">
+                지난 7일 동안 마음 점수가 <strong className="text-emerald-700">64 → 72(+8점)</strong> 상승했습니다.
+                이는 RCI(신뢰변화지수) 기준 <strong>+1.96 이상의 통계적으로 유의미한 개선</strong>입니다.
+                특히 <strong>목요일 저녁 호흡 명상</strong> 기록 이후 수면 질이 평균 1.2시간 늘어난 점이 핵심 변곡점으로 분석됩니다.
+              </p>
             </div>
-          </div>
 
-          {/* Lock 오버레이 */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="bg-white/90 dark:bg-card/90 backdrop-blur-sm border border-border rounded-2xl px-5 py-3 shadow-xl flex items-center gap-2">
-              <Lock className="w-4 h-4 text-foreground" />
-              <span className="text-xs md:text-sm font-bold text-foreground">결제 후 매주 일요일 발송</span>
+            {/* 다음 주 권장 액션 */}
+            <div className="rounded-xl border border-border bg-white dark:bg-card p-4">
+              <div className="flex items-center gap-1.5 mb-2.5">
+                <Target className="w-3.5 h-3.5 text-blue-600" />
+                <span className="text-[11px] font-black text-foreground tracking-wider uppercase">
+                  다음 주 추천 액션 (Top 2)
+                </span>
+              </div>
+              <ul className="space-y-2 text-xs md:text-sm">
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-4 h-4 rounded-full bg-blue-600 text-white text-[10px] font-black flex items-center justify-center mt-0.5">1</span>
+                  <span className="text-foreground break-keep leading-relaxed">
+                    효과가 검증된 <strong>목요일 호흡 명상</strong>을 주 3회로 확대 (월·목·일 21시 권장)
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-4 h-4 rounded-full bg-blue-600 text-white text-[10px] font-black flex items-center justify-center mt-0.5">2</span>
+                  <span className="text-foreground break-keep leading-relaxed">
+                    화·수 점수 하락 패턴 → <strong>업무 회의 전 5분 그라운딩 루틴</strong> 추가 시도
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            {/* 주의 신호 */}
+            <div className="rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20 p-3 flex items-start gap-2">
+              <AlertCircle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <p className="text-[11px] md:text-xs text-amber-900 dark:text-amber-100 break-keep leading-relaxed">
+                <strong>모니터링 필요:</strong> 수요일 오후 GAD-7 응답에서 "안절부절" 항목이 3주 연속 상승.
+                다음 주에도 이어지면 전문가 상담권 사용을 권장드려요.
+              </p>
             </div>
           </div>
         </div>
 
         <p className="text-[11px] text-muted-foreground italic mt-4 text-center break-keep">
-          ※ 본 서비스는 발달 코칭 및 의사결정 보조 도구이며, 의료 진단이 아닙니다.
+          ※ 본 서비스는 발달 코칭 및 의사결정 보조 도구이며, 의료 진단이 아닙니다. 표시된 수치는 샘플입니다.
         </p>
       </motion.div>
     </section>

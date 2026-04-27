@@ -967,13 +967,13 @@ const Quiz: React.FC = () => {
                   <CardContent className="p-6">
                     <div className="text-center mb-5">
                       <Badge className="mb-3 bg-white/20 text-white border-white/30">
-                        지금만 50% 할인
+                        론칭 특가 60% 할인
                       </Badge>
                       <div className="flex items-baseline justify-center gap-2 mb-2">
                         <span className="text-sm line-through opacity-70">₩{ORIGINAL_PRICE.toLocaleString()}</span>
                         <span className="text-4xl font-bold">₩{TRACK_PRICE.toLocaleString()}</span>
                       </div>
-                      <p className="text-sm opacity-90">7일 무료 체험 후 결제 · 언제든 해지 가능</p>
+                      <p className="text-sm opacity-90">30일 일시불 · 자동 결제 없음 · 7일 100% 환불 보장</p>
                     </div>
                     <div className="space-y-2 mb-6 text-sm">
                       {[
@@ -992,10 +992,15 @@ const Quiz: React.FC = () => {
                     <Button
                       size="lg"
                       onClick={handleStartTrack}
-                      className="w-full bg-white text-primary hover:bg-white/90 font-bold"
+                      disabled={paymentLoading || !isReady}
+                      className="w-full bg-white text-primary hover:bg-white/90 font-bold disabled:opacity-70"
                     >
-                      7일 무료 체험 시작하기
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                      {paymentLoading ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" />결제창 여는 중...</>
+                      ) : (
+                        <>₩{TRACK_PRICE.toLocaleString()} 결제하고 30일 트랙 시작
+                        <ArrowRight className="w-4 h-4 ml-2" /></>
+                      )}
                     </Button>
                     <div className="flex items-center justify-center gap-2 mt-4 text-xs opacity-80">
                       <ShieldCheck className="w-3 h-3" />

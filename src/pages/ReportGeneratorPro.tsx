@@ -289,20 +289,50 @@ const ReportGeneratorPro = () => {
     } finally { setIsGenerating(false); setProgress(0); }
   };
 
-  const downloadPDF = () => {
+  const downloadPDF = async () => {
     const element = document.getElementById('report-content');
-    if (!element) return;
-    import('@/utils/pdfBrandingHeader').then(({ injectPdfBrandingHeader, removePdfBrandingHeader }) => {
+    if (!element) {
+      toast({
+        title: t("리포트를 찾을 수 없습니다", "Report not found"),
+        description: t("리포트가 아직 렌더링되지 않았습니다. 잠시 후 다시 시도해주세요.", "Report is not rendered yet. Please try again."),
+        variant: "destructive"
+      });
+      return;
+    }
+    toast({ title: t("📥 PDF 생성 중...", "📥 Generating PDF...") });
+    try {
+      const { injectPdfBrandingHeader, removePdfBrandingHeader } = await import('@/utils/pdfBrandingHeader');
       injectPdfBrandingHeader(element);
-      const style = document.createElement('style'); style.id = 'pdf-page-break-style';
+      const style = document.createElement('style');
+      style.id = 'pdf-page-break-style';
       style.textContent = `#report-content .pdf-section-break { page-break-before: always !important; break-before: page !important; } #report-content .pdf-no-break { page-break-inside: avoid !important; break-inside: avoid !important; }`;
       document.head.appendChild(style);
       const sections = element.querySelectorAll('[data-report-section]');
       sections.forEach((sec, idx) => { if (idx > 0) sec.classList.add('pdf-section-break'); sec.classList.add('pdf-no-break'); });
-      html2pdf().set({ margin: [15, 15, 15, 15], filename: `${isEnglish ? 'PremiumAnalysis' : '프리미엄분석'}_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg' as const, quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const } } as any).from(element).save().then(() => { document.getElementById('pdf-page-break-style')?.remove(); sections.forEach((sec) => { sec.classList.remove('pdf-section-break', 'pdf-no-break'); }); removePdfBrandingHeader(element); });
-    });
-    toast({ title: t("📥 PDF 다운로드 시작", "📥 PDF Download Started") });
+      try {
+        await html2pdf().set({
+          margin: [15, 15, 15, 15],
+          filename: `${isEnglish ? 'PremiumAnalysis' : '프리미엄분석'}_${userInput.name || 'user'}_${new Date().toISOString().split('T')[0]}.pdf`,
+          image: { type: 'jpeg' as const, quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
+          jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
+        } as any).from(element).save();
+        toast({ title: t("✅ PDF 다운로드 완료", "✅ PDF Downloaded") });
+      } finally {
+        document.getElementById('pdf-page-break-style')?.remove();
+        sections.forEach((sec) => { sec.classList.remove('pdf-section-break', 'pdf-no-break'); });
+        removePdfBrandingHeader(element);
+      }
+    } catch (err: any) {
+      console.error('PDF 다운로드 실패:', err);
+      toast({
+        title: t("PDF 다운로드 실패", "PDF Download Failed"),
+        description: err?.message || t("브라우저 콘솔을 확인해주세요.", "Check browser console."),
+        variant: "destructive"
+      });
+    }
   };
+
 
   const copyToClipboard = async () => {
     if (!reportData) return;
@@ -680,10 +710,12 @@ const ReportGeneratorPro = () => {
 
         {reportData && (
           <>
-            <ReportProOutput
-              reportData={reportData}
-              userInput={userInput}
-            />
+            <div id="report-content">
+              <ReportProOutput
+                reportData={reportData}
+                userInput={userInput}
+              />
+            </div>
             <div className="max-w-4xl mx-auto mt-6 flex flex-wrap gap-3 justify-center">
               <ReportEmailButton
                 reportHistoryId={currentReportHistoryId || undefined}

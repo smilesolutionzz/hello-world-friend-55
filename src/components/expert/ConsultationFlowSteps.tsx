@@ -83,7 +83,7 @@ const ConsultationFlowSteps: React.FC = () => {
                 <p className="text-[11px] md:text-xs text-muted-foreground leading-snug break-keep mb-2">
                   {s.body}
                 </p>
-                <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 inline-block px-2 py-0.5 rounded">
+                <div className="text-[11px] font-black text-white bg-emerald-600 dark:bg-emerald-500 inline-block px-2.5 py-1 rounded-full shadow-sm">
                   ⏱ {s.time}
                 </div>
               </motion.div>

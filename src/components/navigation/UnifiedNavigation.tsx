@@ -188,36 +188,46 @@ const UnifiedNavigationInner = () => {
                       sideOffset={8}
                       className="w-72 p-2 rounded-2xl border border-border shadow-xl bg-background backdrop-blur-xl"
                     >
-                      {item.children.map((child) => (
-                        <button
-                          key={child.path}
-                          onClick={() => handleNavigation(child.path)}
-                          className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left group ${
-                            isActive(child.path) 
-                              ? 'bg-primary/10 text-primary' 
-                              : 'hover:bg-accent'
-                          }`}
-                        >
-                          <div className={`p-2 rounded-lg transition-colors ${
-                            isActive(child.path)
-                              ? 'bg-primary/20'
-                              : 'bg-muted group-hover:bg-accent'
-                          }`}>
-                            {child.icon ? <child.icon className="w-4 h-4" /> : <item.icon className="w-4 h-4" />}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-sm flex items-center gap-2 text-foreground">
-                              {child.label}
-                              {child.badge && (
-                                <Badge className="bg-green-500/10 text-green-600 border-0 text-[10px] px-1.5 py-0">
-                                  {child.badge}
-                                </Badge>
+                      {item.children.map((child) => {
+                        const locked = (child as any).locked;
+                        return (
+                          <button
+                            key={child.path}
+                            onClick={() => handleNavigation(locked ? '/token-subscription' : child.path)}
+                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left group ${
+                              isActive(child.path) 
+                                ? 'bg-primary/10 text-primary' 
+                                : 'hover:bg-accent'
+                            } ${locked ? 'opacity-70' : ''}`}
+                            aria-disabled={locked}
+                            title={locked ? '구독 시 이용 가능합니다' : undefined}
+                          >
+                            <div className={`relative p-2 rounded-lg transition-colors ${
+                              isActive(child.path)
+                                ? 'bg-primary/20'
+                                : 'bg-muted group-hover:bg-accent'
+                            }`}>
+                              {child.icon ? <child.icon className={`w-4 h-4 ${locked ? 'blur-[1.5px]' : ''}`} /> : <item.icon className="w-4 h-4" />}
+                              {locked && (
+                                <span className="absolute -top-1 -right-1 bg-background border border-border rounded-full p-0.5">
+                                  <Lock className="w-2.5 h-2.5 text-muted-foreground" />
+                                </span>
                               )}
                             </div>
-                            <div className="text-xs text-foreground/60 truncate">{child.desc}</div>
-                          </div>
-                        </button>
-                      ))}
+                            <div className="flex-1 min-w-0">
+                              <div className={`font-semibold text-sm flex items-center gap-2 text-foreground ${locked ? 'blur-[0.5px]' : ''}`}>
+                                {child.label}
+                                {child.badge && (
+                                  <Badge className={`border-0 text-[10px] px-1.5 py-0 ${locked ? 'bg-amber-100 text-amber-800' : 'bg-green-500/10 text-green-600'}`}>
+                                    {child.badge}
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="text-xs text-foreground/60 truncate">{child.desc}</div>
+                            </div>
+                          </button>
+                        );
+                      })}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (

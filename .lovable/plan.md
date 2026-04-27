@@ -1,36 +1,138 @@
-# 단일 상품 BM 메모리 등록 계획
 
-이전 답변에서 옛날 가격(₩990 / ₩3,900 / ₩9,900)을 잘못 언급한 일이 재발하지 않도록, **단건 검사·리포트·월정액 구독은 폐기됐고 ₩19,900 30일 마음 변화 트랙 단일 상품으로 통일됨**을 메모리에 영구 기록합니다.
+# AIHPRO 성장 패키지 — 4종 산출물 생성 계획
 
-## 작업 내용
+모두 **앱 코드 변경 없이** `/mnt/documents/`에 다운로드 가능한 파일로 생성합니다. 시나리오 기준은 직전 답변에 제시한 수치(Year1 7천만~8.5천만 / Year2 6~7억 / Year3 25~30억)를 그대로 사용합니다.
 
-### 1. 신규 메모리 파일 생성
-**경로:** `mem://product/single-product-bm-ko`
-**type:** `feature`
-**내용 요지:**
-- 개인 사용자 BM은 사실상 2개:
-  1. **30일 마음 변화 트랙** (`mind_track_30`, 일시불, 자동결제 없음, 7일 환불) — 코드 상수 `MIND_TRACK_PRICE` / `MIND_TRACK_ORIGINAL_PRICE`에서 읽기
-  2. **전문가 1:1 상담 매칭** (`src/lib/expertPricing.ts` 단가, 구독자 자동 할인 + 월 1회 무료 크레딧 RPC)
-- 보조: B2B 기관 플랜 (`b2b_*_plans` DB)
-- **폐기된 항목 (재도입 금지):** 단건 검사(SINGLE_TEST_PRICE), 단건 리포트(SINGLE_REPORT_PRICE), 월간/연간 구독(subscription_monthly/yearly). 옛 상수들은 모두 `MIND_TRACK_PRICE`로 매핑된 하위 호환 껍데기일 뿐 — UI에서 단건/구독 선택 화면을 만들지 않음.
-- 결제 진입점은 `PayButton` / `PaymentModal` / `MindTrackCheckoutHero` → 모두 `pay('mind_track_30')` 호출.
-- 가격 숫자는 절대 메모리/코드에 하드코딩하지 말고 항상 `src/constants/tokenCosts.ts`에서 import.
+---
 
-### 2. 메모리 인덱스 업데이트
-**경로:** `mem://index.md`
-- **Core 섹션 보강**: Pricing 룰에 "단건 검사·리포트·월/연 구독은 폐기 — 자체 결제 상품은 ₩19,900 30일 트랙 단일 상품 + 전문가 상담 단건 2종뿐. 옛 990/3,900/9,900은 영구 폐기" 한 줄 추가.
-- **Memories 섹션**: `[Single-product BM](mem://product/single-product-bm-ko)` 항목 추가.
-- 기존 `[Token decommission]`, `[Pricing constants]` 항목과 상호참조되도록 설명 한 줄 다듬기.
-- ⚠️ `code--write`는 파일 전체를 덮어쓰므로 기존 인덱스의 모든 줄을 보존하면서 위 두 변경만 반영.
+## 산출물 1 — 수익 계산기 (`AIHPRO_Revenue_Simulator.xlsx`)
 
-### 3. (선택) 기존 관련 메모리 정리 검토
-- `mem://product/token-system-decommission-ko`: 본문에 옛 가격(990/3,900/9,900) 예시가 박혀 있다면 "₩19,900 단일 상품으로 통일됨"으로 갱신.
-- `mem://ux/landing-page-saas-conversion-ko`: 스틱키 변환 바가 "3개 CTA"로 적혀 있다면 단일 CTA(₩19,900 30일 트랙)로 메모 보정. *(코드 실태 먼저 확인 후 결정)*
+**목적:** 가정값을 바꿔가며 월·연 매출 즉시 시뮬레이션. 투자자 미팅·B2B 영업 라이브 시연용.
 
-## 코드 변경 없음
-이 계획은 **메모리 룰만** 갱신합니다. `tokenCosts.ts` 등 코드의 하위 호환 상수는 그대로 두고, 향후 답변·작업에서 자동으로 단일 상품 룰이 적용되게 합니다.
+### 시트 구성 (4개)
+1. **Inputs (가정값)** — 파란색 셀, 사용자가 직접 변경
+   - MAU, 신규 가입율, B2C 30일 트랙 전환율(%), 객단가(₩19,900 — 코드 상수에서 인용)
+   - 전문가 상담 단가/월 건수, 구독자 무료 1회 차감율
+   - B2B 기관 수, 평균 월 단가, Job Coach 기업 수
+   - 결제 수수료(%), 전문가 정산율(%)
+2. **Monthly Forecast** — 12개월 자동 계산
+   - 매출 = `=B2C트랙 + 전문가상담 + B2B + JobCoach`
+   - 순매출 = 총매출 - 수수료 - 정산
+3. **Annual Summary** — Year1/Year2/Year3 시나리오 3컬럼 자동 비교
+4. **README** — 색상 규칙, 가정값 출처, 수정 가이드
 
-## 승인 후 실행 순서
-1. `mem://product/single-product-bm-ko` 생성
-2. `mem://index.md` 전체 재작성 (Core 한 줄 + Memories 한 줄 추가)
-3. (선택) 위 2개 기존 메모리 본문 점검 후 필요 시 갱신
+### 기술 규칙
+- 가격 하드코딩 금지 → README에 "수치는 `src/constants/tokenCosts.ts MIND_TRACK_PRICE` 기준" 명시
+- 모든 셀 색상 표준 준수 (파랑=입력, 검정=수식, 노랑=핵심 가정)
+- `recalculate_formulas.py`로 #DIV/0! 등 0건 검증
+- 한글 폰트는 Arial(영문)+기본 한글 폴백
+
+---
+
+## 산출물 2 — B2B Job Coach 제안서
+
+### 2-A. 원페이저 PDF (`AIHPRO_JobCoach_OnePager.pdf`)
+**용도:** 콜드 메일 첨부, 기관장 1차 스크리닝
+- A4 1장, 화이트 미니멀 (메모리 룰 준수)
+- 구성: Hook(직장 정신건강 통계) → Pain → AIHPRO Job Coach 솔루션 → 차별점 3가지(AI×휴먼터치, 익명 5명 미만 마스킹, B2B 50곳 레퍼런스) → 가격/플랜 → 데모 요청 CTA
+- 골드 액센트(#C8B88A), 이모지 금지
+
+### 2-B. 상세 PPT (`AIHPRO_JobCoach_Pitch.pptx`)
+**용도:** 미팅 발표용, 12~14슬라이드
+1. 표지 — "직장의 마음이 곧 생산성입니다"
+2. 시장 진단 — 한국 직장인 번아웃·이직 통계
+3. 기존 EAP의 한계 — 낮은 이용률, 비싼 단가
+4. AIHPRO Job Coach 소개 — AI 조기감지 + 전문가 익명 매칭
+5. 작동 원리 — 4단계 데이터 파이프라인(이미 만든 `HRDataPipelineDiagram` 콘셉트 차용)
+6. 차별점 — Calm/Wysa 비교표
+7. 익명성·법적 안전장치 — 5명 미만 마스킹, GDPR/개인정보보호법 준수
+8. HR 대시보드 미리보기 (스크린샷 placeholder)
+9. 도입 효과 시뮬레이션 — 결근율↓, 이직율↓ ROI 계산
+10. 가격 플랜 — Starter/Growth/Enterprise (DB `b2b_jobcoach_plans` 참조 안내)
+11. 레퍼런스 — 협력기관 50곳 로고 그리드
+12. 도입 프로세스 — 4주 온보딩
+13. FAQ — 익명성/책임/해지
+14. CTA — 무료 파일럿(30일) 신청
+
+각 슬라이드 발표자 노트에 **영업 토킹 포인트** 삽입 (반론 대응 포함)
+
+### 2-C. 영업 시나리오 (`AIHPRO_JobCoach_SalesPlaybook.docx`)
+- 콜드메일 템플릿 3종 (HR팀장/CEO/노조위원장)
+- 1차 미팅 스크립트(15분) — 오프닝/디스커버리/데모/클로징
+- 반론 대응표 10개 ("우리는 이미 EAP가 있어요" / "예산 없어요" / "정보유출 걱정" 등)
+- 후속 이메일 템플릿 (미팅 후 24h, 1주, 2주)
+- 클로징 체크리스트
+
+---
+
+## 산출물 3 — B2C A/B 실험 5가지 (`AIHPRO_AB_Experiments.docx`)
+
+각 실험마다 동일 포맷:
+- **가설** (사용자 행동 가정)
+- **변경 대상 컴포넌트** (실제 파일 경로 명시)
+- **A안 vs B안** (구체 카피·UI)
+- **성공 지표 (Primary KPI)** + 보조 지표
+- **필요 표본 수 / 유의수준 95% 기준 기간 추정**
+- **예상 리프트** (보수/공격)
+
+### 5가지 실험 후보
+1. **가격 표시 방식** — "₩19,900/30일" vs "하루 ₩663, 커피보다 싼 마음 PT"
+2. **CTA 카피** — "30일 마음 트랙 시작하기" vs "오늘부터 30일, 내 마음 바꾸기"
+3. **결과 페이퍼월 유형** — 블러 + 단일 CTA vs 미리보기 3줄 + 가치 강조 박스
+4. **온보딩 → 결제 동선** — 검사 결과 직후 결제 vs 결과 + 24h 후 이메일 리마인더
+5. **소셜 프루프 위치** — 결제 페이지 상단(현재) vs 검사 시작 전 추천 위젯 옆
+
+문서 끝에 **실험 운영 가이드** (한 번에 1개만, 최소 표본 수 도달 전 종료 금지)
+
+---
+
+## 산출물 4 — 3년 실행 로드맵
+
+### 4-A. 엑셀 (`AIHPRO_3Y_Roadmap.xlsx`)
+36개월 × 컬럼: `월 / 분기 / 단계 / KPI 목표(MAU·결제자·B2B 곳) / 핵심 액션(3개) / 담당 / 예상 비용 / 예상 매출 / 누적 매출`
+- 시트 1: Master 36개월
+- 시트 2: 분기별 마일스톤 요약
+- 시트 3: 시나리오 비교 (보수/기본/공격) — Inputs 시트와 연동
+- 색상: 단계별(Validation→PMF→Scale→Expansion) 행 배경 구분
+
+### 4-B. PDF 요약 리포트 (`AIHPRO_3Y_Roadmap_Summary.pdf`)
+- 8~10 페이지, 화이트 미니멀
+- 구성: 비전 한 줄 → 3년 매출 곡선 차트 → 분기별 마일스톤 → 핵심 KPI 추적 지표 → 리스크 매트릭스 → 자금 소요 추정
+- 표지에 "Internal Strategy / 2026~2028"
+
+### 단계 정의 (메모리 표준 — 2026 기준)
+- **Q1~Q2 2026 (M1~6) Validation** — PMF 검증, 30일 트랙 결제율 5% 돌파
+- **Q3 2026~Q1 2027 (M7~15) PMF** — 월 결제자 500↑, B2B 파일럿 5곳
+- **Q2~Q4 2027 (M16~24) Scale** — Job Coach 본격 출시, B2B 30곳
+- **2028 (M25~36) Expansion** — 해외(일본/동남아) 검토, Series A
+
+---
+
+## 산출물 생성 순서 (실행 시)
+
+1. `AIHPRO_Revenue_Simulator.xlsx` (openpyxl + 수식 재계산)
+2. `AIHPRO_3Y_Roadmap.xlsx` (1번 Inputs와 동일 가정값 사용)
+3. `AIHPRO_AB_Experiments.docx` (docx-js, 텍스트 중심)
+4. `AIHPRO_JobCoach_SalesPlaybook.docx`
+5. `AIHPRO_JobCoach_Pitch.pptx` (pptxgenjs, 비주얼 QA 필수)
+6. `AIHPRO_JobCoach_OnePager.pdf` (reportlab)
+7. `AIHPRO_3Y_Roadmap_Summary.pdf` (reportlab + 차트 이미지)
+
+각 파일 생성 후 **시각 QA**(이미지 변환 → 검수 → 수정)까지 완료한 뒤 `<lov-artifact>` 태그로 전달.
+
+---
+
+## 메모리 준수 체크리스트
+- ✅ 가격은 `MIND_TRACK_PRICE`만 인용, 옛 ₩990/3,900/9,900 등장 금지
+- ✅ "AI 진단" 표현 금지 → "전문가 종합 분석"
+- ✅ 마크다운 표 금지(워드/PDF는 실제 표 객체 사용)
+- ✅ 이모지 금지, 골드 액센트 #C8B88A
+- ✅ 2026 기준 캘린더
+- ✅ 의료 진단 뉘앙스 배제, "코칭 & 의사결정 보조" 톤
+
+---
+
+## 예상 소요
+대략 7개 파일 × QA 포함 → 작업 완료까지 **순차 실행**으로 한 턴에 처리. 산출물은 모두 `/mnt/documents/`에 저장됩니다.
+
+승인 주시면 바로 만들기 시작할게요.

@@ -120,6 +120,7 @@ interface SnapshotMetric {
 }
 
 export default function ChildDevConcernSection() {
+  const navigate = useNavigate();
   const [step, setStep] = useState<"form" | "result">("form");
   const [ageMonths, setAgeMonths] = useState<string>("");
   const [responses, setResponses] = useState<Responses>({
@@ -136,6 +137,37 @@ export default function ChildDevConcernSection() {
   const [interpretation, setInterpretation] = useState<string>("");
   const [savedId, setSavedId] = useState<string | null>(null);
   const [aiAssisting, setAiAssisting] = useState(false);
+  const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
+  const [history, setHistory] = useState<any[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+
+  const loadHistory = async (uid: string) => {
+    setHistoryLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("child_dev_concern_results")
+        .select("id, created_at, score, risk_level, child_age_months, top_factors, interpretation, responses, seven_day_plan")
+        .eq("user_id", uid)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (error) throw error;
+      setHistory(data ?? []);
+    } catch (e: any) {
+      console.warn("history load failed", e?.message);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthed(!!user);
+      if (user) loadHistory(user.id);
+    })();
+  }, []);
+
 
   const handleAiAssist = async () => {
     if (aiAssisting) return;

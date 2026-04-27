@@ -19,6 +19,7 @@ import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
 
 const TRACK_PRICE = 19900;
 

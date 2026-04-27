@@ -456,6 +456,50 @@ export default function ChildDevConcernSection() {
                   )}
                 </button>
               </div>
+              {aiPreview && (
+                <div className="mb-2 rounded-xl border border-violet-200 bg-violet-50/60 p-3">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Wand2 className="w-3.5 h-3.5 text-violet-600" />
+                    <span className="text-[11px] font-bold text-violet-700">AI 추천 초안 · 미리보기</span>
+                  </div>
+                  <p className="text-sm text-slate-700 whitespace-pre-wrap break-keep max-h-40 overflow-y-auto">
+                    {aiPreview}
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-2.5">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => {
+                        setUserContext(aiPreview);
+                        setAiPreview(null);
+                        toast.success("초안을 적용했어요. 자유롭게 수정해도 돼요.");
+                      }}
+                      className="h-8 px-3 bg-violet-600 hover:bg-violet-700 text-white text-xs"
+                    >
+                      적용하기
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={handleAiAssist}
+                      disabled={aiAssisting}
+                      className="h-8 px-3 text-xs"
+                    >
+                      {aiAssisting ? <Loader2 className="w-3 h-3 animate-spin" /> : "다시 생성"}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setAiPreview(null)}
+                      className="h-8 px-3 text-xs text-slate-500"
+                    >
+                      취소
+                    </Button>
+                  </div>
+                </div>
+              )}
               <Textarea
                 rows={3}
                 maxLength={500}

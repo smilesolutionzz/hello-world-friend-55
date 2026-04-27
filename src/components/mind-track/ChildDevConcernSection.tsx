@@ -18,9 +18,14 @@ import {
   CheckCircle2,
   Calendar,
   Wand2,
+  Phone,
+  History,
+  ArrowRight,
+  LogIn,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 // --- 5문항 자가체크 정의 ---
 type QId = "communication" | "social" | "motor" | "cognitive" | "emotion";

@@ -12,10 +12,12 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   CheckCircle2, Circle, Loader2, Sparkles, TrendingUp, Calendar,
   Brain, Zap, Eye, Heart, Target, ChevronRight, Lock, ArrowLeft,
-  Flame, Trophy, BookOpen, Wind, PenLine, Users, Activity, Award, Mail
+  Flame, Trophy, BookOpen, Wind, PenLine, Users, Activity, Award, Mail,
+  RotateCcw, Info
 } from "lucide-react";
 
 // 미션 타입별 가이드 (라이브러리)
@@ -103,24 +105,32 @@ export default function MindTrackWorkbook() {
   const initialSelectedDay = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 30
     ? dayParam
     : storedDay;
+  const filterParam = searchParams.get("filter");
   const storedFilter = (() => {
     try {
-      const v = localStorage.getItem("mt_workbook_filter");
+      const v = filterParam ?? localStorage.getItem("mt_workbook_filter");
       return v === "all" || v === "today" || v === "completed" || v === "remaining" ? v : "all";
     } catch { return "all"; }
   })();
   const [selectedDay, setSelectedDay] = useState<number | null>(initialSelectedDay);
   const [filter, setFilter] = useState<"all" | "today" | "completed" | "remaining">(storedFilter as any);
 
-  // 필터/선택일 변경 시 localStorage 저장
+  // 필터/선택일 변경 시 localStorage + URL 저장
   useEffect(() => {
     try { localStorage.setItem("mt_workbook_filter", filter); } catch {}
+    const params = new URLSearchParams(searchParams);
+    if (filter === "all") params.delete("filter");
+    else params.set("filter", filter);
+    setSearchParams(params, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
   useEffect(() => {
     try {
       if (selectedDay) localStorage.setItem("mt_workbook_selected_day", String(selectedDay));
     } catch {}
   }, [selectedDay]);
+  const missionSectionRef = useRef<HTMLDivElement | null>(null);
+  const reopenButtonRef = useRef<HTMLButtonElement | null>(null);
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const dayButtonRefs = useRef<Record<number, HTMLButtonElement | null>>({});
   const [loading, setLoading] = useState(true);
@@ -217,31 +227,49 @@ export default function MindTrackWorkbook() {
     })();
   }, [currentDay, enrollment?.id, enrollment?.status]);
 
-  // URL ?day=N 으로 진입 시 해당 Day 셀로 스크롤·하이라이트
+  // Day 선택 시 → 캘린더 day 셀로 스크롤 + 미션 섹션으로도 스크롤·포커스
   useEffect(() => {
     if (loading || !selectedDay) return;
     const t = setTimeout(() => {
-      const el = dayButtonRefs.current[selectedDay];
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      // 오늘 선택 시: 미션 섹션을 최우선으로 스크롤·포커스
+      if (selectedDay === currentDay && missionSectionRef.current) {
+        missionSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        reopenButtonRef.current?.focus({ preventScroll: true });
       } else {
-        calendarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        const el = dayButtonRefs.current[selectedDay];
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          el.focus({ preventScroll: true });
+        } else {
+          calendarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       }
     }, 200);
     return () => clearTimeout(t);
-  }, [loading, selectedDay]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, selectedDay, currentDay]);
 
-  // ?day=N 이 오늘이면 미션 다이얼로그 자동 열기 (1회)
+  // ?day=N 이 오늘이면 미션 다이얼로그 자동 열기
+  // - 최초 1회는 항상 자동 (autoOpenedRef 가드)
+  // - ?openMission=1 플래그가 있으면 명시적으로 다시 열기
   const autoOpenedRef = useRef(false);
   useEffect(() => {
-    if (loading || autoOpenedRef.current) return;
+    if (loading) return;
     const dp = parseInt(searchParams.get("day") ?? "", 10);
+    const explicitOpen = searchParams.get("openMission") === "1";
     if (!Number.isFinite(dp)) return;
     if (dp !== currentDay) return;
+    if (autoOpenedRef.current && !explicitOpen) return;
     const m = missions.find((mm) => mm.day_number === dp);
     if (m) {
       autoOpenedRef.current = true;
       openMission(m);
+      if (explicitOpen) {
+        // 플래그는 일회용 — 소비 후 제거
+        const params = new URLSearchParams(searchParams);
+        params.delete("openMission");
+        setSearchParams(params, { replace: true });
+      }
     }
   }, [loading, searchParams, currentDay, missions]);
 
@@ -441,12 +469,21 @@ export default function MindTrackWorkbook() {
             </Card>
           )}
 
-          {/* Today's Mission */}
+          {/* Today's Mission + Check-in 통합 강조 영역 */}
           {todayMission && (() => {
             const guide = MISSION_TYPE_GUIDE[todayMission.mission_type] ?? MISSION_TYPE_GUIDE.reflection;
             const GuideIcon = guide.icon;
+            const isHighlighted = selectedDay === currentDay;
             return (
-              <Card className={`p-5 border-2 border-primary shadow-lg transition-all ${selectedDay === currentDay ? "ring-2 ring-primary ring-offset-2" : ""}`}>
+              <div
+                ref={missionSectionRef}
+                tabIndex={-1}
+                className={`rounded-2xl transition-all outline-none ${
+                  isHighlighted ? "ring-4 ring-primary/40 ring-offset-2" : ""
+                }`}
+                aria-label={`Day ${currentDay} 미션 섹션`}
+              >
+              <Card className="p-5 border-2 border-primary shadow-lg transition-all">
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-2">
                     <Target className="w-5 h-5 text-primary" />
@@ -474,7 +511,18 @@ export default function MindTrackWorkbook() {
                   <div className="flex items-center gap-3 text-xs text-slate-500">
                     <span>⏱ {todayMission.estimated_minutes}분</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Button
+                      ref={reopenButtonRef}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openMission(todayMission)}
+                      className="text-xs"
+                      aria-label="오늘의 미션 다이얼로그 다시 열기"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                      다시 열기
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"
@@ -489,7 +537,41 @@ export default function MindTrackWorkbook() {
                     </Button>
                   </div>
                 </div>
+
+                {/* 체크인 카드 — 오늘 선택 시 함께 강조 */}
+                {todayCheckin && (
+                  <div className={`mt-4 pt-4 border-t border-slate-200 transition-all ${isHighlighted ? "bg-primary/5 -mx-5 -mb-5 px-5 pb-5 rounded-b-xl" : ""}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-slate-700 flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> 오늘의 체크인 기록
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        {todayCheckin.checked_at ? new Date(todayCheckin.checked_at).toLocaleString("ko-KR") : ""}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                      <div className="p-2 rounded-lg bg-white border border-slate-200">
+                        <div className="text-slate-500 text-[10px]">기분</div>
+                        <div className="font-bold text-slate-900">{todayCheckin.mood_score ?? "-"}</div>
+                      </div>
+                      <div className="p-2 rounded-lg bg-white border border-slate-200">
+                        <div className="text-slate-500 text-[10px]">에너지</div>
+                        <div className="font-bold text-slate-900">{todayCheckin.energy_score ?? "-"}</div>
+                      </div>
+                      <div className="p-2 rounded-lg bg-white border border-slate-200">
+                        <div className="text-slate-500 text-[10px]">명료성</div>
+                        <div className="font-bold text-slate-900">{todayCheckin.clarity_score ?? "-"}</div>
+                      </div>
+                    </div>
+                    {todayCheckin.reflection_note && (
+                      <p className="mt-2 text-xs text-slate-600 break-keep bg-white border border-slate-200 rounded-lg p-2">
+                        {todayCheckin.reflection_note}
+                      </p>
+                    )}
+                  </div>
+                )}
               </Card>
+              </div>
             );
           })()}
 
@@ -584,35 +666,51 @@ export default function MindTrackWorkbook() {
               <h3 className="font-bold text-slate-900 flex items-center gap-2">
                 <Heart className="w-4 h-4 text-primary" /> 30일 챌린지 캘린더
               </h3>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {([
-                  { k: "all", label: "전체" },
-                  { k: "today", label: `오늘 Day ${currentDay}` },
-                  { k: "completed", label: `완료 ${completedCount}` },
-                  { k: "remaining", label: `남은 ${Math.max(0, currentDay - completedCount)}` },
-                ] as const).map((f) => (
-                  <button
-                    key={f.k}
-                    onClick={() => {
-                      setFilter(f.k);
-                      if (f.k === "today") {
-                        setSelectedDay(currentDay);
-                        const params = new URLSearchParams(searchParams);
-                        params.set("day", String(currentDay));
-                        setSearchParams(params, { replace: true });
-                      }
-                    }}
-                    className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
-                      filter === f.k
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-white text-slate-600 border-slate-200 hover:border-primary/50"
-                    }`}
-                  >
-                    {f.label}
-                  </button>
-                ))}
-              </div>
+              <TooltipProvider delayDuration={150}>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {([
+                    { k: "all", label: "전체", tip: "30일 전체 캘린더를 보여줘요" },
+                    { k: "today", label: `오늘 Day ${currentDay}`, tip: "현재 진행 중인 오늘 Day만 강조" },
+                    { k: "completed", label: `완료 ${completedCount}`, tip: "체크인을 제출한(completed=true) Day 수" },
+                    { k: "remaining", label: `남은 ${Math.max(0, currentDay - completedCount)}`, tip: "오늘까지 도달했지만 아직 체크인을 제출하지 않은 Day 수" },
+                  ] as const).map((f) => (
+                    <Tooltip key={f.k}>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => {
+                            setFilter(f.k);
+                            if (f.k === "today") {
+                              setSelectedDay(currentDay);
+                              const params = new URLSearchParams(searchParams);
+                              params.set("day", String(currentDay));
+                              setSearchParams(params, { replace: true });
+                            }
+                          }}
+                          className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
+                            filter === f.k
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-white text-slate-600 border-slate-200 hover:border-primary/50"
+                          }`}
+                          aria-label={f.tip}
+                        >
+                          {f.label}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-[220px] text-xs break-keep">
+                        {f.tip}
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              </TooltipProvider>
             </div>
+            <p className="text-[11px] text-slate-500 mt-1 flex items-start gap-1 break-keep">
+              <Info className="w-3 h-3 mt-0.5 shrink-0" />
+              <span>
+                <strong className="text-slate-700">완료 기준</strong>은 체크인을 제출해 <code className="px-1 rounded bg-slate-100">completed=true</code>로 기록된 Day,
+                <strong className="text-slate-700"> 남은</strong>은 오늘까지 도달했지만 아직 체크인을 제출하지 않은 Day입니다.
+              </span>
+            </p>
 
             {/* 빠른 점프 (Day 셀렉터) */}
             <div className="mb-3 flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin">

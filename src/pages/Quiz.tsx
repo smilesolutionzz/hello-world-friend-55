@@ -31,9 +31,11 @@ import {
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { usePayment } from '@/hooks/usePayment';
+import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';
 
-const TRACK_PRICE = 19900;
-const ORIGINAL_PRICE = 39800;
+const TRACK_PRICE = MIND_TRACK_PRICE;
+const ORIGINAL_PRICE = MIND_TRACK_ORIGINAL_PRICE;
 
 type Step =
   | 'goal'

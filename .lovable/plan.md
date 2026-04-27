@@ -1,69 +1,36 @@
-## 1️⃣ AI 자유서술 — 인라인 미리보기 카드 (저장 전 확인)
+# 단일 상품 BM 메모리 등록 계획
 
-**파일:** `src/components/mind-track/ChildDevConcernSection.tsx`
+이전 답변에서 옛날 가격(₩990 / ₩3,900 / ₩9,900)을 잘못 언급한 일이 재발하지 않도록, **단건 검사·리포트·월정액 구독은 폐기됐고 ₩19,900 30일 마음 변화 트랙 단일 상품으로 통일됨**을 메모리에 영구 기록합니다.
 
-### 변경 내용
-- 신규 state 추가: `aiPreview: string | null` (AI가 만든 임시 결과 보관)
-- `handleAiAssist` 수정: `setUserContext(expanded)` 직접 호출 대신 `setAiPreview(expanded)`로 변경
-- textarea 위쪽에 미리보기 카드 노출 (aiPreview가 있을 때만):
-  - **헤더:** "AI 추천 초안" + Wand2 아이콘
-  - **본문:** 생성된 텍스트 (회색 박스, `bg-violet-50/60 border-violet-200 rounded-xl`)
-  - **하단 액션 3개 버튼:**
-    - `[적용하기]` → `setUserContext(aiPreview); setAiPreview(null)`
-    - `[다시 생성]` → `handleAiAssist()` 재호출
-    - `[취소]` → `setAiPreview(null)` (변형 ghost)
-- 토스트 문구 변경: "AI 초안을 만들었어요. 미리보기에서 확인 후 적용하세요"
-- 모바일 친화: 버튼은 `flex-wrap gap-2`, 카드 max-h with `overflow-y-auto`
+## 작업 내용
 
----
+### 1. 신규 메모리 파일 생성
+**경로:** `mem://product/single-product-bm-ko`
+**type:** `feature`
+**내용 요지:**
+- 개인 사용자 BM은 사실상 2개:
+  1. **30일 마음 변화 트랙** (`mind_track_30`, 일시불, 자동결제 없음, 7일 환불) — 코드 상수 `MIND_TRACK_PRICE` / `MIND_TRACK_ORIGINAL_PRICE`에서 읽기
+  2. **전문가 1:1 상담 매칭** (`src/lib/expertPricing.ts` 단가, 구독자 자동 할인 + 월 1회 무료 크레딧 RPC)
+- 보조: B2B 기관 플랜 (`b2b_*_plans` DB)
+- **폐기된 항목 (재도입 금지):** 단건 검사(SINGLE_TEST_PRICE), 단건 리포트(SINGLE_REPORT_PRICE), 월간/연간 구독(subscription_monthly/yearly). 옛 상수들은 모두 `MIND_TRACK_PRICE`로 매핑된 하위 호환 껍데기일 뿐 — UI에서 단건/구독 선택 화면을 만들지 않음.
+- 결제 진입점은 `PayButton` / `PaymentModal` / `MindTrackCheckoutHero` → 모두 `pay('mind_track_30')` 호출.
+- 가격 숫자는 절대 메모리/코드에 하드코딩하지 말고 항상 `src/constants/tokenCosts.ts`에서 import.
 
-## 2️⃣ 상단 네비 경량화 (11 → 8개) — 권장 정리
+### 2. 메모리 인덱스 업데이트
+**경로:** `mem://index.md`
+- **Core 섹션 보강**: Pricing 룰에 "단건 검사·리포트·월/연 구독은 폐기 — 자체 결제 상품은 ₩19,900 30일 트랙 단일 상품 + 전문가 상담 단건 2종뿐. 옛 990/3,900/9,900은 영구 폐기" 한 줄 추가.
+- **Memories 섹션**: `[Single-product BM](mem://product/single-product-bm-ko)` 항목 추가.
+- 기존 `[Token decommission]`, `[Pricing constants]` 항목과 상호참조되도록 설명 한 줄 다듬기.
+- ⚠️ `code--write`는 파일 전체를 덮어쓰므로 기존 인덱스의 모든 줄을 보존하면서 위 두 변경만 반영.
 
-**파일:** `src/components/navigation/UnifiedNavigation.tsx`
+### 3. (선택) 기존 관련 메모리 정리 검토
+- `mem://product/token-system-decommission-ko`: 본문에 옛 가격(990/3,900/9,900) 예시가 박혀 있다면 "₩19,900 단일 상품으로 통일됨"으로 갱신.
+- `mem://ux/landing-page-saas-conversion-ko`: 스틱키 변환 바가 "3개 CTA"로 적혀 있다면 단일 CTA(₩19,900 30일 트랙)로 메모 보정. *(코드 실태 먼저 확인 후 결정)*
 
-### Before → After 매핑
+## 코드 변경 없음
+이 계획은 **메모리 룰만** 갱신합니다. `tokenCosts.ts` 등 코드의 하위 호환 상수는 그대로 두고, 향후 답변·작업에서 자동으로 단일 상품 룰이 적용되게 합니다.
 
-| 그룹 | 이전 (11) | 이후 (8) |
-|---|---|---|
-| **검사·리포트** | 간편검사, 심층검사, 개인리포트, 30일 마음트랙, **30일 워크북** | 간편검사, 심층검사, 개인리포트, 30일 마음트랙 |
-| **상담** | AI상담, AI아지트, 전문가상담 | AI상담, AI아지트, 전문가상담 (유지) |
-| **기록** | AI관찰, **마음일기**, **칼럼** | AI관찰 |
-
-### 통합/이동 처리
-1. **30일 워크북 → 마음트랙 내부 탭으로 흡수**
-   - UnifiedNavigation에서 항목 제거
-   - 라우트는 유지 (직접 URL 접근 가능)
-   - `/mind-track` 페이지 상단에 "워크북" 탭/링크 카드 추가 (별도 작업이지만 본 변경에서 진입점 1개 노출)
-
-2. **마음일기 → AI관찰 페이지에 합치는 진입점 추가**
-   - 네비에서 제거
-   - `/observation` 상단에 "오늘의 마음일기 쓰기" 카드 CTA 노출 (기존 mindDiary 라우트 살림)
-
-3. **칼럼 → 푸터로 이동**
-   - 네비 항목에서 제거
-   - `Footer` 컴포넌트에 "콘텐츠 > 발달 칼럼" 링크 1줄 추가 (SEO 보존)
-   - 모바일 전체메뉴(드로어)에는 살려둠
-
-### 그룹 라벨 정돈
-- "검사 · 리포트"는 4개 그대로 (BM 핵심 그룹)
-- "상담" 3개 유지
-- "기록" 그룹은 항목이 1개로 줄어드므로 → **검사·리포트 그룹 끝에 'AI 관찰' 단독 항목으로 이동**, "기록" 그룹 자체 제거 → 결과적으로 **2개 그룹만** 표시되어 시각적으로 훨씬 가벼워짐
-
-### 최종 상단 네비 구조
-- **검사·리포트 (5):** 간편검사 / 심층검사 / 개인리포트 / 30일 마음트랙 / AI 관찰
-- **상담 (3):** AI 상담 / AI 아지트 / 전문가 상담
-
-→ 결제 동선(검사 → 리포트 → 구독 → 전문가)이 좌→우로 자연스럽게 흐름
-
-### 푸터 보강
-**파일:** `src/components/Footer.tsx` (또는 동등)
-- "콘텐츠" 섹션에 `발달 칼럼 → /column` 링크 추가
-- "마이" 섹션에 `마음 일기 → /mind-diary` 링크 추가 (사용자가 찾아갈 수 있게)
-
----
-
-## 영향 / 리스크
-- ✅ 기존 라우트는 모두 유지 → 북마크/딥링크 깨지지 않음
-- ✅ 모바일 하단 탭(MobileBottomTab)은 5개 유지 (별도 변경 없음)
-- ⚠️ 칼럼/마음일기/워크북은 검색·푸터·페이지 내부 진입점으로만 노출 → SEO 영향 최소화 위해 푸터 링크 필수
-- ⏱ 예상 작업: 단일 PR, 파일 3~4개 수정
+## 승인 후 실행 순서
+1. `mem://product/single-product-bm-ko` 생성
+2. `mem://index.md` 전체 재작성 (Core 한 줄 + Memories 한 줄 추가)
+3. (선택) 위 2개 기존 메모리 본문 점검 후 필요 시 갱신

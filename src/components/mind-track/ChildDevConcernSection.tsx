@@ -672,11 +672,19 @@ export default function ChildDevConcernSection() {
                   );
                 })}
               </ol>
-              {savedId && (
+              {savedId ? (
                 <p className="text-[10px] text-emerald-700 mt-3 flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" /> 결과가 내 기록에 저장되었어요
+                  <CheckCircle2 className="w-3 h-3" /> 결과가 내 기록에 저장되었어요 · 위 ‘지난 기록’에서 다시 볼 수 있어요
                 </p>
-              )}
+              ) : isAuthed === false ? (
+                <button
+                  onClick={() => navigate("/auth")}
+                  className="mt-3 w-full flex items-center justify-center gap-1.5 text-[11px] text-violet-700 font-semibold bg-violet-50 hover:bg-violet-100 border border-violet-200 rounded-lg py-2 transition-colors"
+                >
+                  <LogIn className="w-3 h-3" />
+                  로그인하면 결과가 자동 저장돼서 다음에 변화를 비교할 수 있어요
+                </button>
+              ) : null}
             </div>
 
             <div className="flex gap-2">

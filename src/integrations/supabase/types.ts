@@ -8289,6 +8289,10 @@ export type Database = {
           user_id: string
           week_number: number
           workbook_id: string
+          youtube_query: string | null
+          youtube_thumbnail: string | null
+          youtube_title: string | null
+          youtube_video_id: string | null
         }
         Insert: {
           created_at?: string
@@ -8302,6 +8306,10 @@ export type Database = {
           user_id: string
           week_number: number
           workbook_id: string
+          youtube_query?: string | null
+          youtube_thumbnail?: string | null
+          youtube_title?: string | null
+          youtube_video_id?: string | null
         }
         Update: {
           created_at?: string
@@ -8315,6 +8323,10 @@ export type Database = {
           user_id?: string
           week_number?: number
           workbook_id?: string
+          youtube_query?: string | null
+          youtube_thumbnail?: string | null
+          youtube_title?: string | null
+          youtube_video_id?: string | null
         }
         Relationships: [
           {

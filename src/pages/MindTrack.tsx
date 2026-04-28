@@ -20,6 +20,7 @@ import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
+import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
 
 const TRACK_PRICE = 19900;
 
@@ -61,12 +62,14 @@ const MindTrack: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  // 진행 중 트랙 (개인화 배너용)
+  // 진행 중인 30일 트랙 등록 정보 (있으면 개인화 배너 노출)
   const [activeEnrollment, setActiveEnrollment] = useState<{
     id: string;
-    started_at: string | null;
-    goal: string | null;
-    currentDay: number;
+    started_at: string;
+    current_day: number;
+    status: string;
+    goal_focus: string | null;
+    payment_status: string;
   } | null>(null);
 
   // 고민 진단 리포트
@@ -88,33 +91,36 @@ const MindTrack: React.FC = () => {
   ];
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase.auth.getUser();
-      const u = data.user;
-      setUser(u);
-      if (!u) return;
-      // 결제 완료된 활성 트랙이 있는지 조회 → 일차별 개인화 배너 노출
-      const { data: enr } = await supabase
-        .from('mind_track_enrollments')
-        .select('id, started_at, goal_focus, current_day, payment_status, status')
-        .eq('user_id', u.id)
-        .eq('payment_status', 'completed')
-        .order('started_at', { ascending: false })
-        .limit(1);
-      const row = enr?.[0];
-      if (!row?.started_at) return;
-      const startedAt = new Date(row.started_at);
-      const daysSinceStart = Math.floor((Date.now() - startedAt.getTime()) / 86400000) + 1;
-      const computedDay = Math.min(Math.max(daysSinceStart, 1), 30);
-      const currentDay = Math.max(row.current_day || 1, computedDay);
-      setActiveEnrollment({
-        id: row.id,
-        started_at: row.started_at,
-        goal: row.goal_focus,
-        currentDay,
-      });
-    })();
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
   }, []);
+
+  // 진행 중인 등록 정보 fetch (있으면 개인화 배너)
+  useEffect(() => {
+    if (!user?.id) {
+      setActiveEnrollment(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from('mind_track_enrollments')
+        .select('id, started_at, current_day, status, goal_focus, payment_status')
+        .eq('user_id', user.id)
+        .in('status', ['active', 'in_progress'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (cancelled) return;
+      if (error) {
+        console.warn('[mind-track] enrollment fetch error:', error.message);
+        return;
+      }
+      setActiveEnrollment(data ?? null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
 
   // 입력값이 비어있을 때만 5초마다 예시 placeholder 회전
   useEffect(() => {
@@ -252,49 +258,53 @@ const MindTrack: React.FC = () => {
           </div>
         </section>
 
-        {/* 진행 중 사용자 → 개인화 일차 배너 */}
-        {activeEnrollment && (
-          <section className="px-4 -mt-4 pb-2">
-            <div className="max-w-3xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-3xl bg-white border border-blue-200 shadow-lg p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-2">
-                    <Badge className="bg-blue-600 text-white border-0">
-                      Day {String(activeEnrollment.currentDay).padStart(2, '0')} / 30
-                    </Badge>
-                    <Badge variant="outline" className="border-emerald-300 text-emerald-700 bg-emerald-50">
-                      진행 중
-                    </Badge>
-                  </div>
-                  <h3 className="text-base md:text-lg font-bold text-slate-900 break-keep">
-                    {activeEnrollment.currentDay === 1
-                      ? '오늘은 출발점을 기록하는 1일차예요'
-                      : activeEnrollment.currentDay <= 7
-                        ? `${activeEnrollment.currentDay}일차 — 하루 3분 마음 루틴이 쌓이는 구간`
-                        : activeEnrollment.currentDay <= 21
-                          ? `${activeEnrollment.currentDay}일차 — 실천하며 기록을 누적하는 단계`
-                          : activeEnrollment.currentDay < 30
-                            ? `${activeEnrollment.currentDay}일차 — 깊이 있는 코칭 구간`
-                            : '30일차 — 변화 리포트가 준비됐어요'}
-                  </h3>
-                  <Progress value={(activeEnrollment.currentDay / 30) * 100} className="h-2 mt-3" />
-                </div>
-                <Button
-                  size="lg"
-                  onClick={() => navigate('/mind-track-workbook')}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md w-full md:w-auto"
-                >
-                  오늘 미션 보러가기
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
-              </motion.div>
-            </div>
-          </section>
-        )}
+        {/* 진행 중인 트랙 — 개인화 Day 배너 (결제 완료 + active 인 경우만) */}
+        {activeEnrollment && activeEnrollment.payment_status === 'paid' && (() => {
+          const day = calcMindTrackCurrentDay(activeEnrollment.started_at);
+          const copy = getDayCopy(day);
+          const progressPct = Math.round((day / 30) * 100);
+          return (
+            <section className="px-4 pb-10">
+              <div className="max-w-3xl mx-auto">
+                <Card className="border-2 border-blue-200 shadow-xl bg-gradient-to-br from-blue-50 via-white to-purple-50/40">
+                  <CardContent className="p-6 md:p-7 space-y-4">
+                    <div className="flex items-center justify-between flex-wrap gap-3">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge className="bg-blue-600 text-white border-0">
+                          진행 중 · Day {String(day).padStart(2, '0')} / 30
+                        </Badge>
+                        <Badge variant="outline" className="border-slate-300 text-slate-600 text-[11px]">
+                          {copy.phase}
+                        </Badge>
+                      </div>
+                      <span className="text-xs text-slate-500">{progressPct}% 완료</span>
+                    </div>
+                    <Progress value={progressPct} className="h-2" />
+                    <div className="space-y-1.5">
+                      <h3 className="text-lg md:text-xl font-bold text-slate-900 break-keep leading-snug">
+                        Day {String(day).padStart(2, '0')} · {copy.title}
+                      </h3>
+                      <p className="text-sm md:text-base text-slate-600 break-keep leading-relaxed">
+                        {copy.description}
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => navigate(`/mind-track/workbook?day=${day}&openMission=1`)}
+                      className="w-full h-12 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      오늘 미션 보러가기 (Day {String(day).padStart(2, '0')})
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                    <p className="text-[11px] text-slate-400 text-center">
+                      시작일 {new Date(activeEnrollment.started_at).toLocaleDateString('ko-KR')} 기준 · 매일 자정에 다음 일차로 자동 이동돼요
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+          );
+        })()}
 
         {/* 아이 발달 걱정도 자가체크 + 7일 플랜 */}
         <section className="px-4 pb-10">

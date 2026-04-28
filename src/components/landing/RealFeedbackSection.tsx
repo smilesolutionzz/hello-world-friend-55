@@ -72,9 +72,9 @@ const PERSONAS: Persona[] = [
       { sender: 'parent', text: '30 days for the price of one session 🤩', time: '12:10', highlight: true },
     ],
     highlights: [
-      { emoji: '😢', before: '"제가 뭘 잘못한 걸까요?"', after: '환경 전환에 시간이 더 필요한 기질 — 부모 잘못 아님', reaction: '"아 그래서 그랬구나... 와..."' },
-      { emoji: '💡', before: '"빨리빨리 좀 해!"', after: '"준비도 안 됐는데 떠밀린다" → 저항 행동 유발', reaction: '"아... 이제 좀 이해가 돼요"' },
-      { emoji: '🤩', before: '"이거 얼마에요?"', after: '30일 마음 챌린지 — ₩19,900 (1회 결제)', reaction: '"상담 한 번 값으로 30일이라니!"' },
+      { emoji: '😢', before: '“제가 뭘 잘못한 걸까요?”', after: '환경 전환에 시간이 더 필요한 기질 — 부모 잘못이 아니에요.', reaction: '“아, 그래서 그랬구나… 와….”' },
+      { emoji: '💡', before: '“빨리빨리 좀 해!”', after: '“준비도 안 됐는데 떠밀린다” → 저항 행동 유발', reaction: '“아… 이제 좀 이해가 돼요.”' },
+      { emoji: '🤩', before: '“이거 얼마예요?”', after: '30일 마음 챌린지 — ₩19,900 (1회 결제)', reaction: '“상담 한 번 값으로 30일이라니!”' },
     ],
     highlightsEn: [
       { emoji: '😢', before: '"Am I a bad parent?"', after: 'Slow-to-warm-up temperament — not your fault', reaction: '"Oh, that explains so much."' },

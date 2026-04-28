@@ -1,5 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import * as React from 'npm:react@18.3.1'
+import { renderAsync } from 'npm:@react-email/components@0.0.22'
+import { Resend } from 'npm:resend@2.0.0'
+import { template as dailyCoachingTpl } from '../_shared/transactional-email-templates/daily-coaching.tsx'
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,8 +14,12 @@ const log = (step: string, details?: any) => {
   console.log(`[DAILY-COACHING] ${step}${details ? ` - ${JSON.stringify(details)}` : ''}`);
 };
 
+const FROM_ADDRESS = 'AIHPRO 코칭 <coaching@aihpro.app>'
+const REPLY_TO = 'support@aihpro.app'
+
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const YOUTUBE_API_KEY = Deno.env.get("YOUTUBE_API_KEY");
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const DUPLICATE_WINDOW_DAYS = 14;
 const MIN_VIEW_COUNT = 10_000;

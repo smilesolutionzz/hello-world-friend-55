@@ -377,12 +377,12 @@ function MetricRow({
   }, [metric.before, metric.after, delay]);
 
   const Icon = metric.direction === 'up' ? TrendingUp : TrendingDown;
-  const deltaColor = metric.direction === 'up' ? 'text-emerald-300' : 'text-rose-300';
+  const deltaColor = metric.direction === 'up' ? 'text-emerald-600' : 'text-rose-600';
 
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-white/85 text-sm md:text-base font-semibold">{metric.label}</span>
+        <span className="text-slate-800 text-sm md:text-base font-semibold">{metric.label}</span>
         <div className={`inline-flex items-center gap-1 ${deltaColor} text-sm font-bold tabular-nums`}>
           <Icon className="w-3.5 h-3.5" />
           {metric.delta}
@@ -392,26 +392,26 @@ function MetricRow({
       <div className="flex items-center gap-3">
         {/* Before */}
         <div className="flex flex-col items-end min-w-[44px]">
-          <span className="text-[10px] text-white/40 uppercase tracking-wider">Before</span>
-          <span className="text-white/50 text-base font-bold tabular-nums line-through decoration-white/30">
+          <span className="text-[10px] text-slate-400 uppercase tracking-wider">Before</span>
+          <span className="text-slate-400 text-base font-bold tabular-nums line-through decoration-slate-300">
             {metric.before}
           </span>
         </div>
 
         {/* Bar */}
-        <div className="flex-1 h-2.5 rounded-full bg-white/[0.06] overflow-hidden relative">
+        <div className="flex-1 h-2.5 rounded-full bg-slate-100 overflow-hidden relative">
           <motion.div
             initial={{ width: `${metric.before}%` }}
             animate={{ width: `${metric.after}%` }}
             transition={{ duration: 1.6, delay, ease: 'easeOut' }}
-            className={`h-full rounded-full bg-gradient-to-r ${metric.color} shadow-[0_0_12px_currentColor]`}
+            className={`h-full rounded-full bg-gradient-to-r ${metric.color}`}
           />
         </div>
 
         {/* After (animated counter) */}
         <div className="flex flex-col items-start min-w-[44px]">
-          <span className="text-[10px] text-emerald-300/70 uppercase tracking-wider font-semibold">After</span>
-          <span className="text-white text-lg md:text-xl font-extrabold tabular-nums">
+          <span className="text-[10px] text-emerald-600/80 uppercase tracking-wider font-semibold">After</span>
+          <span className="text-slate-900 text-lg md:text-xl font-extrabold tabular-nums">
             {val}
           </span>
         </div>

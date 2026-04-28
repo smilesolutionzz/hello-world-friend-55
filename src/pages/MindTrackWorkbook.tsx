@@ -356,11 +356,19 @@ export default function MindTrackWorkbook() {
     }
   };
 
-  if (loading) {
+  if (loading || loadError) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
+      <MindTrackWorkbookSkeleton
+        steps={[
+          { key: "auth", label: "로그인 확인", done: loadSteps.auth },
+          { key: "workbook", label: "워크북 불러오기", done: loadSteps.workbook },
+          { key: "missions", label: "오늘의 미션 준비", done: loadSteps.missions },
+          { key: "checkins", label: "체크인 기록 정리", done: loadSteps.checkins },
+          { key: "baselines", label: "마일스톤 데이터 정렬", done: loadSteps.baselines },
+        ]}
+        error={loadError}
+        onRetry={load}
+      />
     );
   }
 

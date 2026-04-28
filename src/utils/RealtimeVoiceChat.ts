@@ -372,6 +372,11 @@ export class RealtimeVoiceChat {
     this.recorder.stop();
     this.recorder = null;
 
+    if (this.options.useServerVad) {
+      // server VAD handles commit + response automatically
+      return;
+    }
+
     this.pendingResponseAfterTranscription = true;
     this.ws.send(JSON.stringify({ type: 'input_audio_buffer.commit' }));
     console.log("Recording stopped, waiting for finalized transcript...");

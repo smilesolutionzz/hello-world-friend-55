@@ -48,29 +48,76 @@ const Auth = () => {
     displayName: "",
   });
 
+  // 로그인/세션 복귀 시 사용자 상태에 따라 가장 적절한 페이지로 보냄
+  // - 30일 마음 트랙 결제·진행 중: 오늘 Day 워크북으로 직행 (Day N + 미션 자동 오픈)
+  // - 결제했지만 baseline 필요: /mind-track 허브 (베이스라인 안내 자동 노출)
+  // - 그 외(미결제·신규): /mind-track 허브 (상품 소개 + CTA)
+  const resolvePostLoginPath = async (userId: string): Promise<string> => {
+    try {
+      const { data: enrollments } = await supabase
+        .from('mind_track_enrollments')
+        .select('id, started_at, created_at')
+        .eq('user_id', userId)
+        .eq('payment_status', 'completed')
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (!enrollments || enrollments.length === 0) return '/mind-track';
+
+      const en = enrollments[0] as any;
+
+      // 워크북(=baseline 완료) 존재 여부 확인
+      const { data: wbs } = await supabase
+        .from('mind_track_workbooks')
+        .select('id')
+        .eq('user_id', userId)
+        .limit(1);
+
+      if (!wbs || wbs.length === 0) {
+        // baseline 미완료 → 허브에서 안내
+        return '/mind-track';
+      }
+
+      // 진행 중 → 오늘 Day 계산 후 워크북 직행
+      const startedIso = en.started_at || en.created_at || new Date().toISOString();
+      const start = new Date(startedIso);
+      const startUtc = Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate());
+      const now = new Date();
+      const nowUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+      const dayDiff = Math.floor((nowUtc - startUtc) / 86400000);
+      const currentDay = Math.min(Math.max(dayDiff + 1, 1), 30);
+
+      return `/mind-track/workbook?day=${currentDay}&openMission=1`;
+    } catch (err) {
+      console.warn('[Auth] resolvePostLoginPath failed', err);
+      return '/mind-track';
+    }
+  };
+
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate('/dashboard');
+      if (session?.user) {
+        const dest = await resolvePostLoginPath(session.user.id);
+        navigate(dest, { replace: true });
       }
     };
-    
+
     checkUser();
-    
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
+      if (event === 'SIGNED_IN' && session?.user) {
         const referralCode = localStorage.getItem('referralCode');
         if (referralCode) {
           await processReferralReward(referralCode);
           localStorage.removeItem('referralCode');
         }
-        // 단일 상품 BM: 모든 신규 로그인은 30일 마음 트랙으로 직행
-        // (Index의 PostSignupOnboarding 완료 행선지와 일치)
-        navigate('/mind-track');
+        // 진행 중이면 오늘 Day 워크북, 아니면 허브
+        const dest = await resolvePostLoginPath(session.user.id);
+        navigate(dest, { replace: true });
       }
     });
-    
+
     return () => subscription.unsubscribe();
   }, [navigate, processReferralReward]);
 

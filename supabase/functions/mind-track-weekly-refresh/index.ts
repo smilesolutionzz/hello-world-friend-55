@@ -98,6 +98,31 @@ day ${startDay}부터 ${endDay}까지 ${dayCount}개 미션을 JSON으로만 출
     const parsed = JSON.parse((await aiRes.json()).choices[0].message.content);
     const missions = parsed.missions ?? [];
 
+    // Helper: fetch up to 3 YouTube candidates for a query (Korean, KR region).
+    // Falls back to empty list if YOUTUBE_API_KEY is missing or the request fails.
+    const ytKey = Deno.env.get("YOUTUBE_API_KEY");
+    async function fetchCandidates(q: string): Promise<Array<{ video_id: string; title: string; thumbnail: string }>> {
+      if (!ytKey || !q) return [];
+      try {
+        const url =
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=3` +
+          `&relevanceLanguage=ko&regionCode=KR&safeSearch=strict&q=${encodeURIComponent(q)}&key=${ytKey}`;
+        const r = await fetch(url);
+        if (!r.ok) return [];
+        const j = await r.json();
+        return (j.items ?? [])
+          .filter((it: any) => it?.id?.videoId)
+          .map((it: any) => ({
+            video_id: it.id.videoId,
+            title: it.snippet?.title ?? "",
+            thumbnail: it.snippet?.thumbnails?.medium?.url ?? it.snippet?.thumbnails?.default?.url ?? "",
+          }));
+      } catch (e) {
+        console.error("YT candidates fetch failed:", e);
+        return [];
+      }
+    }
+
     if (missions.length > 0) {
       // Day별 YouTube 검색 키워드 (1~30)
       const DAY_YT: Record<number, string> = {

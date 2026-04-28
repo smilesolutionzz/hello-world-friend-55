@@ -86,6 +86,7 @@ import InviteFriendsButton from "@/components/mind-track/InviteFriendsButton";
 import ExpertInterventionCard, { RiskAlertCard, type InterventionDay } from "@/components/mind-track/ExpertInterventionCard";
 import InterventionCalendar from "@/components/mind-track/InterventionCalendar";
 import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulator";
+import WeeklyMilestoneCards from "@/components/mind-track/WeeklyMilestoneCards";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 import { HelpCircle } from "lucide-react";
 
@@ -94,7 +95,21 @@ export default function MindTrackWorkbook() {
   const goBack = useSmartBack('/mind-track');
   const [searchParams, setSearchParams] = useSearchParams();
   const showWelcome = searchParams.get("welcome") === "1";
-  const dayParam = parseInt(searchParams.get("day") ?? "", 10);
+  const rawDayParam = searchParams.get("day");
+  const dayParam = parseInt(rawDayParam ?? "", 10);
+  const dayParamValid = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 30;
+
+  // 잘못된 day 파라미터(범위 밖 또는 NaN이지만 값이 있는 경우) → day=1로 보정 + 토스트
+  useEffect(() => {
+    if (rawDayParam !== null && !dayParamValid) {
+      toast.error(`Day ${rawDayParam}은(는) 유효하지 않아요. 1~30 범위만 가능해요. Day 1로 이동했어요.`);
+      const params = new URLSearchParams(searchParams);
+      params.set("day", "1");
+      setSearchParams(params, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawDayParam]);
+
   // localStorage 우선순위: URL ?day → URL 없으면 저장된 값
   const storedDay = (() => {
     try {
@@ -102,9 +117,7 @@ export default function MindTrackWorkbook() {
       return Number.isFinite(v) && v >= 1 && v <= 30 ? v : null;
     } catch { return null; }
   })();
-  const initialSelectedDay = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 30
-    ? dayParam
-    : storedDay;
+  const initialSelectedDay = dayParamValid ? dayParam : storedDay;
   const filterParam = searchParams.get("filter");
   const storedFilter = (() => {
     try {
@@ -415,6 +428,14 @@ export default function MindTrackWorkbook() {
               <InviteFriendsButton currentDay={currentDay} />
             </div>
           </Card>
+
+          {/* 7/14/21/28일 자가진단 마일스톤 카드 */}
+          <WeeklyMilestoneCards
+            currentDay={currentDay}
+            completedCount={completedCount}
+            baseline={baselines.find((b) => b.measurement_point === "baseline") ?? null}
+            latest={baselines[baselines.length - 1] ?? null}
+          />
 
           {/* 위험 감지 무료 케어 알림 + Day 마일스톤 전문가 개입 카드 */}
           <InterventionSection

@@ -99,6 +99,15 @@ day ${startDay}부터 ${endDay}까지 ${dayCount}개 미션을 JSON으로만 출
     const missions = parsed.missions ?? [];
 
     if (missions.length > 0) {
+      // Day별 YouTube 검색 키워드 (1~30)
+      const DAY_YT: Record<number, string> = {
+        1:'마음챙김 시작 5분',2:'3분 마음챙김 호흡',3:'감정 알아차림 명상',4:'몸의 긴장 풀기 스트레칭',5:'5분 작은 습관',
+        6:'에너지 도둑 멈추기',7:'한 주 회고 명상',8:'아침 마음챙김 루틴',9:'부정적 생각 끊기',10:'에너지 회복 낮잠',
+        11:'관계 패턴 알아차림',12:'4-7-8 호흡법',13:'저널링 글쓰기 5분',14:'2주 셀프 코칭',15:'중간 점검 자기 동기',
+        16:'회피 극복 작은 시작',17:'도움 요청 의사소통',18:'강한 감정 다루기',19:'자기 자비 명상',20:'환경 정리 미니멀',
+        21:'3주 마음 변화 회고',22:'내면 탐색 자기이해',23:'AI 코칭 대화 활용',24:'재발 방지 신호',25:'회복 루틴 5분',
+        26:'관계 회복 진솔한 대화',27:'거절 경계 만들기',28:'4주 마음챙김 정리',29:'한 달 셀프 리포트',30:'30일 마음 변화 마무리 감사 명상',
+      };
       await supabase.from("mind_track_daily_missions").insert(
         missions.map((m: any) => ({
           user_id: user.id,
@@ -110,6 +119,7 @@ day ${startDay}부터 ${endDay}까지 ${dayCount}개 미션을 JSON으로만 출
           mission_description: m.description,
           mission_type: m.type,
           estimated_minutes: m.minutes ?? 5,
+          youtube_query: DAY_YT[m.day] ?? null,
         }))
       );
     }

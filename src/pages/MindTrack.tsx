@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Calendar, CheckCircle2, ArrowRight, Award, BarChart3,
@@ -58,9 +58,33 @@ interface ConcernReport {
 
 const MindTrack: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
+  const [authChecking, setAuthChecking] = useState(true);
+  const [postLoginRedirecting, setPostLoginRedirecting] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showDebug, setShowDebug] = useState(false);
+
+  // 현재 URL이 별칭(/mind-track-workbook)인지 표준(/mind-track/workbook)인지 감지해
+  // 워크북 이동 시 같은 형식 유지 — referrer 기반 일관성 확보
+  const workbookBase = (() => {
+    try {
+      // location.pathname 또는 referrer 둘 다 체크
+      const ref = typeof document !== 'undefined' ? document.referrer : '';
+      if (location.pathname.startsWith('/mind-track-workbook')) return '/mind-track-workbook';
+      if (ref.includes('/mind-track-workbook')) return '/mind-track-workbook';
+      return '/mind-track/workbook';
+    } catch {
+      return '/mind-track/workbook';
+    }
+  })();
+  const buildWorkbookUrl = (day: number, openMission = true) => {
+    const params = new URLSearchParams();
+    params.set('day', String(day));
+    if (openMission) params.set('openMission', '1');
+    return `${workbookBase}?${params.toString()}`;
+  };
 
   // 진행 중인 30일 트랙 등록 정보 (있으면 개인화 배너 노출)
   const [activeEnrollment, setActiveEnrollment] = useState<{
@@ -91,7 +115,21 @@ const MindTrack: React.FC = () => {
   ];
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    let mounted = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (!mounted) return;
+      setUser(data.user);
+      setAuthChecking(false);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (!mounted) return;
+      setUser(session?.user ?? null);
+      setAuthChecking(false);
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   // 진행 중인 등록 정보 fetch (있으면 개인화 배너)
@@ -116,6 +154,17 @@ const MindTrack: React.FC = () => {
         return;
       }
       setActiveEnrollment(data ?? null);
+
+      // 로그인 직후(?postLogin=1) + 결제 완료 enrollment가 있으면
+      // → 안내 문구 노출 후 자동으로 워크북 해당 일차로 이동
+      const postLogin = new URLSearchParams(location.search).get('postLogin') === '1';
+      if (postLogin && data && data.payment_status === 'paid') {
+        setPostLoginRedirecting(true);
+        const day = calcMindTrackCurrentDay(data.started_at);
+        setTimeout(() => {
+          navigate(buildWorkbookUrl(day, true), { replace: true });
+        }, 1200);
+      }
     })();
     return () => {
       cancelled = true;
@@ -195,7 +244,7 @@ const MindTrack: React.FC = () => {
       return;
     }
     if (!user) {
-      navigate('/auth?redirect=/mind-track');
+      navigate('/auth?redirect=' + encodeURIComponent('/mind-track?postLogin=1'));
       return;
     }
     setLoading(true);
@@ -225,6 +274,54 @@ const MindTrack: React.FC = () => {
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
         <UnifiedNavigation />
+
+        {/* 로그인 후 자동 이동 안내 — postLogin=1 + 결제 enrollment 존재 시 */}
+        {postLoginRedirecting && (
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-white border-2 border-blue-200 shadow-2xl rounded-2xl px-5 py-3 flex items-center gap-3">
+            <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+            <div>
+              <div className="text-sm font-bold text-slate-900">로그인 완료 · 다음 단계로 이동 중…</div>
+              <div className="text-[11px] text-slate-500">진행 중인 워크북 일차로 이동합니다</div>
+            </div>
+          </div>
+        )}
+
+        {/* 인증 확인 중 안내 (최초 진입 시 잠깐) */}
+        {authChecking && (
+          <div className="fixed top-20 right-4 z-40 bg-white border border-slate-200 shadow rounded-xl px-3 py-2 text-xs text-slate-600 flex items-center gap-2">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            로그인 상태 확인 중…
+          </div>
+        )}
+
+        {/* 개발용 디버그 토글 (우하단 floating) — 운영자/QA 확인용 */}
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={() => setShowDebug((v) => !v)}
+            className="text-[10px] text-slate-400 hover:text-slate-700 bg-white/80 backdrop-blur border border-slate-200 rounded-full px-2 py-1 shadow-sm"
+            aria-label="MindTrack 디버그 정보 토글"
+          >
+            {showDebug ? '× 디버그 닫기' : '🛠 MT 디버그'}
+          </button>
+          {showDebug && (
+            <div className="mt-2 bg-slate-900 text-slate-100 text-[11px] font-mono rounded-xl p-3 shadow-2xl max-w-[280px] space-y-1">
+              <div>user: {user?.id?.slice(0, 8) ?? '(none)'}</div>
+              <div>auth checking: {String(authChecking)}</div>
+              <div>enrollment: {activeEnrollment?.id?.slice(0, 8) ?? '(none)'}</div>
+              <div>payment: {activeEnrollment?.payment_status ?? '-'}</div>
+              <div>started_at: {activeEnrollment?.started_at ?? '-'}</div>
+              <div>
+                computed day:{' '}
+                {activeEnrollment?.started_at
+                  ? calcMindTrackCurrentDay(activeEnrollment.started_at)
+                  : '-'}
+              </div>
+              <div>now: {new Date().toISOString()}</div>
+              <div>workbook base: {workbookBase}</div>
+              <div>postLogin: {String(postLoginRedirecting)}</div>
+            </div>
+          )}
+        </div>
 
         {/* Hero */}
         <section className="relative pt-28 pb-10 px-4">
@@ -289,7 +386,7 @@ const MindTrack: React.FC = () => {
                       </p>
                     </div>
                     <Button
-                      onClick={() => navigate(`/mind-track/workbook?day=${day}&openMission=1`)}
+                      onClick={() => navigate(buildWorkbookUrl(day, true))}
                       className="w-full h-12 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl"
                     >
                       <Sparkles className="w-4 h-4 mr-2" />

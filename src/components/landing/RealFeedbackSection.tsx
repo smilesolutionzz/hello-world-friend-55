@@ -186,9 +186,9 @@ const PERSONAS: Persona[] = [
       { sender: 'parent', text: "I'll start today.", time: '09:38', highlight: true },
     ],
     highlights: [
-      { emoji: '⚠️', before: '"그냥 체력 문제"', after: '번아웃 3단계 — 임상 기준 초과', reaction: '"진짜요? 그렇게 심해요?"' },
-      { emoji: '🌱', before: '"회사 그만둬야 하나"', after: '30일 회복 루틴이면 70% 회복', reaction: '"진짜요? 다행이다..."' },
-      { emoji: '💼', before: '"병원은 부담돼"', after: '매일 측정 + 코칭 — ₩19,900', reaction: '"오늘 바로 시작할게요"' },
+      { emoji: '⚠️', before: '“그냥 체력 문제겠지.”', after: '번아웃 3단계 — 임상 기준 초과', reaction: '“진짜요? 그렇게 심해요?”' },
+      { emoji: '🌱', before: '“회사 그만둬야 하나….”', after: '30일 회복 루틴이면 70%가 회복돼요.', reaction: '“진짜요? 다행이다….”' },
+      { emoji: '💼', before: '“병원은 부담돼요.”', after: '매일 측정 + 코칭 — ₩19,900', reaction: '“오늘 바로 시작할게요.”' },
     ],
     highlightsEn: [
       { emoji: '⚠️', before: '"Just stamina"', after: 'Burnout stage 3 — exceeds clinical level', reaction: '"That bad?"' },

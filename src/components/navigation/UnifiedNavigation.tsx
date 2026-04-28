@@ -430,6 +430,28 @@ const UnifiedNavigationInner = () => {
                       <span className="font-medium">{t.nav.home}</span>
                     </button>
 
+                    {/* 핵심 상품: 30일 마음 트랙 — 단독 강조 CTA (모바일) */}
+                    <button
+                      onClick={() => handleNavigation('/mind-track')}
+                      className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all border ${
+                        isActive('/mind-track')
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-white border-[#C8B88A]/60 hover:bg-[#C8B88A]/10 ring-1 ring-[#C8B88A]/20'
+                      }`}
+                    >
+                      <Target className="w-5 h-5" />
+                      <span className="font-semibold text-sm">30일 마음 트랙</span>
+                      {showMindTrackMenu ? (
+                        <Badge className="ml-auto bg-emerald-500/15 text-emerald-700 border-0 text-[10px]">
+                          {mindTrackDay ? `Day ${mindTrackDay}/30` : '시작하기'}
+                        </Badge>
+                      ) : (
+                        <Badge className="ml-auto bg-[#C8B88A]/20 text-[#8a7a4d] border-0 text-[10px]">
+                          ₩{MIND_TRACK_PRICE.toLocaleString()}
+                        </Badge>
+                      )}
+                    </button>
+
                     {/* Nav Items */}
                     {navItems.map((item) => (
                       <div key={item.label}>

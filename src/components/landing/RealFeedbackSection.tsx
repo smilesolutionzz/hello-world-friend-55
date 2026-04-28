@@ -129,9 +129,9 @@ const PERSONAS: Persona[] = [
       { sender: 'parent', text: 'This is exactly what I needed.', time: '21:22', highlight: true },
     ],
     highlights: [
-      { emoji: '🚨', before: '"그냥 사춘기"', after: 'PHQ-A 우울 중상 구간 — 즉시 케어 필요', reaction: '"네...? 그 정도였어요?"' },
-      { emoji: '💬', before: '"왜 또 빠졌어?"', after: '"오늘 뭐가 가장 힘들었어?" — 회피보다 공감', reaction: '"오늘 그렇게 물어볼게요"' },
-      { emoji: '📈', before: '"매번 검사 따로 받기 부담"', after: '주간 추적 + 위험 신호 알림 — ₩19,900', reaction: '"진짜 필요했던 거예요"' },
+      { emoji: '🚨', before: '“그냥 사춘기겠지.”', after: 'PHQ-A 우울 중상 구간 — 즉시 케어가 필요해요.', reaction: '“네…? 그 정도였어요?”' },
+      { emoji: '💬', before: '“왜 또 빠졌어?”', after: '“오늘 뭐가 가장 힘들었어?” — 추궁보다 공감이 먼저예요.', reaction: '“오늘 그렇게 물어볼게요.”' },
+      { emoji: '📈', before: '“매번 검사 따로 받기 부담돼요.”', after: '주간 추적 + 위험 신호 알림 — ₩19,900', reaction: '“진짜 필요했던 거예요.”' },
     ],
     highlightsEn: [
       { emoji: '🚨', before: '"Just puberty"', after: 'PHQ-A moderate depression — needs care', reaction: '"That high?"' },

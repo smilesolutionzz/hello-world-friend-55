@@ -65,7 +65,9 @@ const Auth = () => {
           await processReferralReward(referralCode);
           localStorage.removeItem('referralCode');
         }
-        navigate('/needs-assessment');
+        // 단일 상품 BM: 모든 신규 로그인은 30일 마음 트랙으로 직행
+        // (Index의 PostSignupOnboarding 완료 행선지와 일치)
+        navigate('/mind-track');
       }
     });
     

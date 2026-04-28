@@ -231,32 +231,32 @@ const HeroSection = () => {
             className="relative"
           >
             <div
-              className="relative rounded-3xl bg-gradient-to-br from-white/[0.07] to-white/[0.02] backdrop-blur-xl border border-white/10 p-6 md:p-8 shadow-2xl"
+              className="relative rounded-3xl bg-white border border-slate-200 p-6 md:p-8 shadow-[0_24px_60px_-24px_rgba(15,23,42,0.18)]"
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
             >
               {/* Card header */}
               <div className="flex items-center justify-between mb-5">
                 <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-semibold tracking-[0.15em] text-emerald-300/80 uppercase mb-1">
+                  <p className="text-[11px] font-semibold tracking-[0.15em] text-[#9a8657] uppercase mb-1">
                     Before · After · 30 Days
                   </p>
-                  <h3 className="text-white text-lg md:text-xl font-bold truncate">
+                  <h3 className="text-slate-900 text-lg md:text-xl font-bold truncate">
                     {(t.hero as any).beforeAfterTitle}
                   </h3>
                 </div>
-                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 shrink-0 ml-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[10px] font-bold text-emerald-300 tracking-wider">LIVE</span>
+                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 shrink-0 ml-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[10px] font-bold text-emerald-700 tracking-wider">LIVE</span>
                 </div>
               </div>
 
               {/* Persona switcher */}
-              <div className="flex items-center justify-between gap-2 mb-4 p-2 rounded-2xl bg-white/[0.04] border border-white/10">
+              <div className="flex items-center justify-between gap-2 mb-4 p-2 rounded-2xl bg-slate-50 border border-slate-200">
                 <button
                   onClick={goPrev}
                   aria-label="이전 페르소나"
-                  className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition shrink-0"
+                  className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white transition shrink-0"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -272,8 +272,8 @@ const HeroSection = () => {
                   >
                     <span className="text-xl">{currentPersona.emoji}</span>
                     <div className="text-left min-w-0">
-                      <div className="text-white text-sm font-bold leading-tight truncate">{currentPersona.name}</div>
-                      <div className="text-white/50 text-[10px] leading-tight truncate">{currentPersona.sub}</div>
+                      <div className="text-slate-900 text-sm font-bold leading-tight truncate">{currentPersona.name}</div>
+                      <div className="text-slate-500 text-[10px] leading-tight truncate">{currentPersona.sub}</div>
                     </div>
                   </motion.div>
                 </AnimatePresence>
@@ -285,7 +285,7 @@ const HeroSection = () => {
                       onClick={() => setPersonaIndex(i)}
                       aria-label={`${p.name} 슬라이드`}
                       className={`h-1.5 rounded-full transition-all ${
-                        i === personaIndex ? 'w-5 bg-emerald-400' : 'w-1.5 bg-white/25 hover:bg-white/40'
+                        i === personaIndex ? 'w-5 bg-[#C8B88A]' : 'w-1.5 bg-slate-300 hover:bg-slate-400'
                       }`}
                     />
                   ))}
@@ -294,7 +294,7 @@ const HeroSection = () => {
                 <button
                   onClick={goNext}
                   aria-label="다음 페르소나"
-                  className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition shrink-0"
+                  className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white transition shrink-0"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -317,8 +317,8 @@ const HeroSection = () => {
               </AnimatePresence>
 
               {/* Footer caption */}
-              <div className="mt-6 pt-5 border-t border-white/10">
-                <p className="text-[10px] md:text-[11px] text-white/45 leading-relaxed break-keep">
+              <div className="mt-6 pt-5 border-t border-slate-200">
+                <p className="text-[10px] md:text-[11px] text-slate-500 leading-relaxed break-keep">
                   {(t.hero as any).proofCaption}
                 </p>
               </div>
@@ -330,9 +330,9 @@ const HeroSection = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.9 }}
-              className="mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500/10 to-rose-500/10 border border-amber-400/20"
+              className="mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#C8B88A]/10 border border-[#C8B88A]/30"
             >
-              <span className="text-amber-300 text-sm font-medium break-keep text-center">
+              <span className="text-[#7a6a3f] text-sm font-medium break-keep text-center">
                 {(t.hero as any).urgencyBanner}
               </span>
             </motion.div>

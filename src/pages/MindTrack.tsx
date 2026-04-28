@@ -154,6 +154,17 @@ const MindTrack: React.FC = () => {
         return;
       }
       setActiveEnrollment(data ?? null);
+
+      // 로그인 직후(?postLogin=1) + 결제 완료 enrollment가 있으면
+      // → 안내 문구 노출 후 자동으로 워크북 해당 일차로 이동
+      const postLogin = new URLSearchParams(location.search).get('postLogin') === '1';
+      if (postLogin && data && data.payment_status === 'paid') {
+        setPostLoginRedirecting(true);
+        const day = calcMindTrackCurrentDay(data.started_at);
+        setTimeout(() => {
+          navigate(buildWorkbookUrl(day, true), { replace: true });
+        }, 1200);
+      }
     })();
     return () => {
       cancelled = true;

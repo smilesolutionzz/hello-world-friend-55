@@ -94,6 +94,34 @@ const MindTrack: React.FC = () => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
   }, []);
 
+  // 진행 중인 등록 정보 fetch (있으면 개인화 배너)
+  useEffect(() => {
+    if (!user?.id) {
+      setActiveEnrollment(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from('mind_track_enrollments')
+        .select('id, started_at, current_day, status, goal_focus, payment_status')
+        .eq('user_id', user.id)
+        .in('status', ['active', 'in_progress'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (cancelled) return;
+      if (error) {
+        console.warn('[mind-track] enrollment fetch error:', error.message);
+        return;
+      }
+      setActiveEnrollment(data ?? null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
+
   // 입력값이 비어있을 때만 5초마다 예시 placeholder 회전
   useEffect(() => {
     if (concern.length > 0) return;

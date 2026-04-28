@@ -204,9 +204,9 @@ const PERSONAS: Persona[] = [
     badgeEn: 'Senior Care Family',
     title: (
       <>
-        "치매 초기인가 무서웠는데"
+        “치매 초기인가 무서웠는데,”
         <br className="md:hidden" />{' '}
-        <span className="text-rose-400 text-lg md:text-4xl">정확히 어디부터<br className="md:hidden" />챙기면 되는지 알게 됐어요</span>
+        <span className="text-rose-400 text-lg md:text-4xl">정확히 어디부터<br className="md:hidden" /> 챙기면 되는지 알게 됐어요.</span>
       </>
     ),
     titleEn: (

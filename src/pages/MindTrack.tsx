@@ -20,6 +20,7 @@ import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
+import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
 
 const TRACK_PRICE = 19900;
 

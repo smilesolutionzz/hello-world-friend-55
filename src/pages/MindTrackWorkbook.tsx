@@ -429,6 +429,14 @@ export default function MindTrackWorkbook() {
             </div>
           </Card>
 
+          {/* 7/14/21/28일 자가진단 마일스톤 카드 */}
+          <WeeklyMilestoneCards
+            currentDay={currentDay}
+            completedCount={completedCount}
+            baseline={baselines.find((b) => b.measurement_point === "baseline") ?? null}
+            latest={baselines[baselines.length - 1] ?? null}
+          />
+
           {/* 위험 감지 무료 케어 알림 + Day 마일스톤 전문가 개입 카드 */}
           <InterventionSection
             enrollmentId={enrollment?.id}

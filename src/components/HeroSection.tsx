@@ -111,29 +111,20 @@ const HeroSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#0a0e1a] via-[#0f1729] to-[#0a0e1a]"
+      className="relative min-h-screen overflow-hidden bg-white"
     >
       {/* Subtle grid texture */}
       <div
-        className="absolute inset-0 opacity-[0.04]"
+        className="absolute inset-0 opacity-[0.035] pointer-events-none"
         style={{
           backgroundImage:
-            'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
+            'linear-gradient(to right, #0f172a 1px, transparent 1px), linear-gradient(to bottom, #0f172a 1px, transparent 1px)',
           backgroundSize: '64px 64px',
         }}
       />
-
-      {/* Ambient glows */}
-      <motion.div
-        animate={{ opacity: [0.15, 0.3, 0.15] }}
-        transition={{ duration: 8, repeat: Infinity }}
-        className="absolute top-0 -left-40 w-[500px] h-[500px] rounded-full bg-emerald-500/20 blur-[140px]"
-      />
-      <motion.div
-        animate={{ opacity: [0.1, 0.25, 0.1] }}
-        transition={{ duration: 10, repeat: Infinity, delay: 2 }}
-        className="absolute bottom-0 -right-40 w-[600px] h-[600px] rounded-full bg-indigo-500/20 blur-[160px]"
-      />
+      {/* Soft warm-gold ambient — replaces dark glows */}
+      <div className="absolute top-0 -left-40 w-[500px] h-[500px] rounded-full bg-[#C8B88A]/15 blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 -right-40 w-[600px] h-[600px] rounded-full bg-slate-200/40 blur-[160px] pointer-events-none" />
 
       <div className="relative z-10 container mx-auto px-4 md:px-6 pt-20 md:pt-28 pb-12 md:pb-20 min-h-screen flex flex-col">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center flex-1">
@@ -145,23 +136,23 @@ const HeroSection = () => {
             className="text-left"
           >
             {/* Trust badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 backdrop-blur border border-white/10 mb-5">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-[11px] md:text-xs font-medium text-white/80 tracking-wide">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-5">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#C8B88A]" />
+              <span className="text-[11px] md:text-xs font-medium text-slate-700 tracking-wide">
                 {(t.hero as any).innovationBadge}
               </span>
             </div>
 
             {/* Headline */}
             <h1 className="text-[28px] sm:text-4xl md:text-[44px] lg:text-[56px] font-extrabold leading-[1.15] md:leading-[1.18] tracking-tight mb-5 break-keep">
-              <span className="block text-white/95">{(t.hero as any).headlineTop}</span>
-              <span className="block bg-gradient-to-r from-emerald-300 via-teal-200 to-sky-300 bg-clip-text text-transparent">
+              <span className="block text-slate-900">{(t.hero as any).headlineTop}</span>
+              <span className="block text-[#9a8657]" style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 500, fontStyle: 'italic' }}>
                 {(t.hero as any).headlineBottom}
               </span>
             </h1>
 
             {/* Sub hook */}
-            <p className="text-white/75 text-base md:text-lg leading-relaxed mb-3 break-keep">
+            <p className="text-slate-600 text-base md:text-lg leading-relaxed mb-3 break-keep">
               {(t.hero as any).parentHook}
             </p>
 
@@ -174,10 +165,10 @@ const HeroSection = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -16 }}
                   transition={{ duration: 0.35 }}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-400/20"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#C8B88A]/10 border border-[#C8B88A]/30"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-emerald-200 text-sm md:text-base font-bold tabular-nums">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C8B88A] animate-pulse" />
+                  <span className="text-[#7a6a3f] text-sm md:text-base font-bold tabular-nums">
                     {phrases[phraseIndex]}
                   </span>
                 </motion.div>
@@ -185,7 +176,7 @@ const HeroSection = () => {
             </div>
 
             {/* Trust bullets */}
-            <div className="flex flex-wrap gap-x-5 gap-y-2 mb-7 text-white/70 text-sm">
+            <div className="flex flex-wrap gap-x-5 gap-y-2 mb-7 text-slate-500 text-sm">
               <span>{(t.hero as any).descriptionHighlight}</span>
               <span>{(t.hero as any).descriptionHighlight2}</span>
             </div>
@@ -194,16 +185,16 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row gap-3 mb-5">
               <Button
                 onClick={handlePrimaryCTA}
-                className="group h-14 px-7 text-base font-bold rounded-xl bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 hover:from-emerald-300 hover:to-teal-300 shadow-[0_8px_32px_-8px_rgba(52,211,153,0.6)] hover:shadow-[0_12px_40px_-8px_rgba(52,211,153,0.8)] transition-all hover:scale-[1.02]"
+                className="group h-14 px-7 text-base font-bold rounded-2xl bg-slate-900 text-white hover:bg-slate-800 shadow-[0_8px_24px_-8px_rgba(15,23,42,0.4)] transition-all hover:scale-[1.02]"
               >
-                <Sparkles className="w-5 h-5 mr-2" />
+                <Sparkles className="w-5 h-5 mr-2 text-[#C8B88A]" />
                 {(t.hero as any).ctaPrimary}
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button
                 onClick={handleSecondaryCTA}
                 variant="outline"
-                className="h-14 px-6 text-base font-medium rounded-xl bg-white/5 hover:bg-white/10 backdrop-blur border-white/15 text-white"
+                className="h-14 px-6 text-base font-medium rounded-2xl bg-white hover:bg-slate-50 border-slate-300 text-slate-800"
               >
                 <Play className="w-4 h-4 mr-2" />
                 {(t.hero as any).ctaExpertConsult}
@@ -211,7 +202,7 @@ const HeroSection = () => {
             </div>
 
             {/* Trust line */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs md:text-sm text-white/60">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs md:text-sm text-slate-500">
               <span>{(t.hero as any).trustNoSignup}</span>
               <span className="opacity-40">·</span>
               <span>{(t.hero as any).trustFree}</span>
@@ -220,12 +211,12 @@ const HeroSection = () => {
             </div>
 
             <div className="mt-3 flex items-center gap-3 text-xs md:text-sm">
-              <span className="text-amber-300 font-semibold">{(t.hero as any).ratingCount}</span>
-              <span className="text-white/50">·</span>
+              <span className="text-[#9a8657] font-semibold">{(t.hero as any).ratingCount}</span>
+              <span className="text-slate-300">·</span>
               <motion.span
                 animate={{ opacity: [0.7, 1, 0.7] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="text-emerald-300 font-medium"
+                className="text-emerald-600 font-medium"
               >
                 {(t.hero as any).liveUsers}
               </motion.span>

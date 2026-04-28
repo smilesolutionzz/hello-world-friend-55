@@ -372,9 +372,10 @@ serve(async (req) => {
     }
 
     if (testEmail) {
+      const day = testDay && testDay > 0 ? testDay : 7;
       const sampleGoal: GoalRow = {
         id: "test", user_id: "test", goal_category: "stress", goal_description: null,
-        target_age_group: null, current_day: 6, total_days: 30, start_date: todayStr,
+        target_age_group: null, current_day: day - 1, total_days: 30, start_date: todayStr,
       };
       const meta = CATEGORY_META.stress;
       const content = await generateCoachingContent(sampleGoal);
@@ -383,9 +384,9 @@ serve(async (req) => {
       const result = await callTransactionalEmail({
         templateName: 'daily-coaching',
         recipientEmail: testEmail,
-        idempotencyKey: `daily-coaching-test-${Date.now()}`,
+        idempotencyKey: `daily-coaching-test-d${day}-${Date.now()}`,
         templateData: {
-          nickname: '테스트', dayNumber: 7, totalDays: 30,
+          nickname: '테스트', dayNumber: day, totalDays: 30,
           categoryLabel: meta.label,
           missionSummary: content.missionSummary,
           mission: content.mission,
@@ -395,7 +396,7 @@ serve(async (req) => {
         },
       });
       if (!result.ok) throw new Error(result.error);
-      return new Response(JSON.stringify({ success: true, mode: 'test', to: testEmail, videoCount: videos.length, body: result.body }),
+      return new Response(JSON.stringify({ success: true, mode: 'test', to: testEmail, day, videoCount: videos.length, body: result.body }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 

@@ -338,7 +338,7 @@ const MindTrack: React.FC = () => {
                       </p>
                     </div>
                     <Button
-                      onClick={() => navigate(`/mind-track/workbook?day=${day}&openMission=1`)}
+                      onClick={() => navigate(buildWorkbookUrl(day, true))}
                       className="w-full h-12 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl"
                     >
                       <Sparkles className="w-4 h-4 mr-2" />

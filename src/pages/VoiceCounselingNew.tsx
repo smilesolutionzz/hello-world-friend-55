@@ -300,7 +300,7 @@ const VoiceCounselingNew = () => {
     reconnectAttempts.current = 0;
 
     const pre = await runPreflight();
-    if (!pre.ok) {
+    if (pre.ok === false) {
       handleErrorInfo({ code: pre.code, message: pre.message });
       return;
     }

@@ -61,6 +61,14 @@ const MindTrack: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  // 진행 중 트랙 (개인화 배너용)
+  const [activeEnrollment, setActiveEnrollment] = useState<{
+    id: string;
+    started_at: string | null;
+    goal: string | null;
+    currentDay: number;
+  } | null>(null);
+
   // 고민 진단 리포트
   const [concern, setConcern] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
@@ -80,7 +88,32 @@ const MindTrack: React.FC = () => {
   ];
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      const u = data.user;
+      setUser(u);
+      if (!u) return;
+      // 결제 완료된 활성 트랙이 있는지 조회 → 일차별 개인화 배너 노출
+      const { data: enr } = await supabase
+        .from('mind_track_enrollments')
+        .select('id, started_at, goal_focus, current_day, payment_status, status')
+        .eq('user_id', u.id)
+        .eq('payment_status', 'completed')
+        .order('started_at', { ascending: false })
+        .limit(1);
+      const row = enr?.[0];
+      if (!row?.started_at) return;
+      const startedAt = new Date(row.started_at);
+      const daysSinceStart = Math.floor((Date.now() - startedAt.getTime()) / 86400000) + 1;
+      const computedDay = Math.min(Math.max(daysSinceStart, 1), 30);
+      const currentDay = Math.max(row.current_day || 1, computedDay);
+      setActiveEnrollment({
+        id: row.id,
+        started_at: row.started_at,
+        goal: row.goal_focus,
+        currentDay,
+      });
+    })();
   }, []);
 
   // 입력값이 비어있을 때만 5초마다 예시 placeholder 회전
@@ -218,6 +251,50 @@ const MindTrack: React.FC = () => {
             </motion.div>
           </div>
         </section>
+
+        {/* 진행 중 사용자 → 개인화 일차 배너 */}
+        {activeEnrollment && (
+          <section className="px-4 -mt-4 pb-2">
+            <div className="max-w-3xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-3xl bg-white border border-blue-200 shadow-lg p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-2">
+                    <Badge className="bg-blue-600 text-white border-0">
+                      Day {String(activeEnrollment.currentDay).padStart(2, '0')} / 30
+                    </Badge>
+                    <Badge variant="outline" className="border-emerald-300 text-emerald-700 bg-emerald-50">
+                      진행 중
+                    </Badge>
+                  </div>
+                  <h3 className="text-base md:text-lg font-bold text-slate-900 break-keep">
+                    {activeEnrollment.currentDay === 1
+                      ? '오늘은 출발점을 기록하는 1일차예요'
+                      : activeEnrollment.currentDay <= 7
+                        ? `${activeEnrollment.currentDay}일차 — 하루 3분 마음 루틴이 쌓이는 구간`
+                        : activeEnrollment.currentDay <= 21
+                          ? `${activeEnrollment.currentDay}일차 — 실천하며 기록을 누적하는 단계`
+                          : activeEnrollment.currentDay < 30
+                            ? `${activeEnrollment.currentDay}일차 — 깊이 있는 코칭 구간`
+                            : '30일차 — 변화 리포트가 준비됐어요'}
+                  </h3>
+                  <Progress value={(activeEnrollment.currentDay / 30) * 100} className="h-2 mt-3" />
+                </div>
+                <Button
+                  size="lg"
+                  onClick={() => navigate('/mind-track-workbook')}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md w-full md:w-auto"
+                >
+                  오늘 미션 보러가기
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </motion.div>
+            </div>
+          </section>
+        )}
 
         {/* 아이 발달 걱정도 자가체크 + 7일 플랜 */}
         <section className="px-4 pb-10">

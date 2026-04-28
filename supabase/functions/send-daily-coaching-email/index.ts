@@ -1,5 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import * as React from 'npm:react@18.3.1'
+import { renderAsync } from 'npm:@react-email/components@0.0.22'
+import { Resend } from 'npm:resend@2.0.0'
+import { template as dailyCoachingTpl } from '../_shared/transactional-email-templates/daily-coaching.tsx'
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,8 +14,12 @@ const log = (step: string, details?: any) => {
   console.log(`[DAILY-COACHING] ${step}${details ? ` - ${JSON.stringify(details)}` : ''}`);
 };
 
+const FROM_ADDRESS = 'AIHPRO 코칭 <coaching@aihpro.app>'
+const REPLY_TO = 'support@aihpro.app'
+
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const YOUTUBE_API_KEY = Deno.env.get("YOUTUBE_API_KEY");
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const DUPLICATE_WINDOW_DAYS = 14;
 const MIN_VIEW_COUNT = 10_000;
@@ -277,26 +285,86 @@ serve(async (req) => {
     const today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
     const todayStr = today.toISOString().slice(0, 10);
 
-    const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
-    const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
+
+    // HTML 태그 잔존 감지 (이메일 평문/콘텐츠에 raw HTML이 노출되는 케이스 방지)
+    function detectRawHtml(s: string | undefined | null): string[] {
+      if (!s) return [];
+      const issues: string[] = [];
+      if (/<\/?[a-zA-Z][^>]*>/.test(s)) issues.push('html-tag');
+      if (/```/.test(s)) issues.push('code-fence');
+      return issues;
+    }
 
     async function callTransactionalEmail(payload: any): Promise<{ ok: boolean; error?: string; body?: any }> {
       try {
-        const r = await fetch(`${SUPABASE_URL}/functions/v1/send-transactional-email`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
-            'apikey': SERVICE_ROLE_KEY,
-          },
-          body: JSON.stringify(payload),
+        if (!resend) return { ok: false, error: 'RESEND_API_KEY missing' };
+        const { templateName, recipientEmail, templateData = {}, idempotencyKey } = payload;
+        if (templateName !== 'daily-coaching') {
+          return { ok: false, error: `unsupported template: ${templateName}` };
+        }
+
+        // 사전 검사: 본문에 raw HTML/코드펜스가 있으면 경고 로그 + email_send_log
+        const contentIssues = [
+          ...detectRawHtml(templateData.mission).map((x) => `mission:${x}`),
+          ...detectRawHtml(templateData.insight).map((x) => `insight:${x}`),
+          ...detectRawHtml(templateData.missionSummary).map((x) => `summary:${x}`),
+        ];
+        if (contentIssues.length) {
+          log('⚠️ HTML residue detected in templateData', { recipientEmail, issues: contentIssues });
+          await supa.from('email_send_log').insert({
+            message_id: idempotencyKey,
+            template_name: templateName,
+            recipient_email: recipientEmail,
+            status: 'warning',
+            error_message: `Raw HTML/markdown residue: ${contentIssues.join(', ')}`,
+            metadata: { contentIssues },
+          });
+        }
+
+        const html = await renderAsync(
+          React.createElement(dailyCoachingTpl.component, templateData)
+        );
+        const subject = typeof dailyCoachingTpl.subject === 'function'
+          ? dailyCoachingTpl.subject(templateData)
+          : dailyCoachingTpl.subject;
+
+        const result = await resend.emails.send({
+          from: FROM_ADDRESS,
+          reply_to: REPLY_TO,
+          to: [recipientEmail],
+          subject,
+          html,
         });
-        const text = await r.text();
-        let body: any = null;
-        try { body = JSON.parse(text); } catch { body = text; }
-        if (!r.ok) return { ok: false, error: `HTTP ${r.status}: ${typeof body === 'string' ? body : JSON.stringify(body)}`, body };
-        return { ok: true, body };
+
+        if ((result as any)?.error) {
+          await supa.from('email_send_log').insert({
+            message_id: idempotencyKey,
+            template_name: templateName,
+            recipient_email: recipientEmail,
+            status: 'failed',
+            error_message: JSON.stringify((result as any).error),
+          });
+          return { ok: false, error: JSON.stringify((result as any).error), body: result };
+        }
+
+        await supa.from('email_send_log').insert({
+          message_id: idempotencyKey,
+          template_name: templateName,
+          recipient_email: recipientEmail,
+          status: 'sent',
+          metadata: { resend_id: (result as any)?.data?.id },
+        });
+
+        return { ok: true, body: result };
       } catch (e) {
+        await supa.from('email_send_log').insert({
+          message_id: payload?.idempotencyKey,
+          template_name: payload?.templateName,
+          recipient_email: payload?.recipientEmail,
+          status: 'failed',
+          error_message: String(e),
+        }).then(() => {}, () => {});
         return { ok: false, error: String(e) };
       }
     }

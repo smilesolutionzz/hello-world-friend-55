@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowLeft, RefreshCw, Bell, Settings, Calendar, 
-  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart
+  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail
 } from 'lucide-react';
+import { EmailSendLogPanel } from '@/components/admin/EmailSendLogPanel';
 import MindTrackInterventionStats from '@/components/admin/MindTrackInterventionStats';
 import { AdminNotifications } from '@/components/AdminNotifications';
 import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
@@ -109,6 +110,10 @@ export default function AdminDashboard() {
               <Bell className="h-3 w-3" />
               알림
             </TabsTrigger>
+            <TabsTrigger value="email_logs" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <Mail className="h-3 w-3" />
+              발송 로그
+            </TabsTrigger>
             <TabsTrigger value="experts" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <UserCheck className="h-3 w-3" />
               전문가
@@ -132,6 +137,7 @@ export default function AdminDashboard() {
           <TabsContent value="bookings"><AdminBookingManagement /></TabsContent>
           <TabsContent value="mindtrack"><MindTrackInterventionStats /></TabsContent>
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>
+          <TabsContent value="email_logs"><EmailSendLogPanel /></TabsContent>
           <TabsContent value="experts"><ExpertApplicationManagement /></TabsContent>
           <TabsContent value="user-data"><EnhancedUserDataViewer /></TabsContent>
           <TabsContent value="management">

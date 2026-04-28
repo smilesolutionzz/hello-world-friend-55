@@ -244,7 +244,7 @@ const MindTrack: React.FC = () => {
       return;
     }
     if (!user) {
-      navigate('/auth?redirect=/mind-track');
+      navigate('/auth?redirect=' + encodeURIComponent('/mind-track?postLogin=1'));
       return;
     }
     setLoading(true);

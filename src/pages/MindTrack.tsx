@@ -323,8 +323,114 @@ const MindTrack: React.FC = () => {
           )}
         </div>
 
-        {/* Hero */}
-        <section className="relative pt-28 pb-10 px-4">
+        {/* ────────────────────────────────────────────────────────
+            진입 헤더 (Hero 위, 항상 노출) — 사용자 상태별 안내
+            1) 진행 중(결제 완료): Day N/30 + 다음 미션 카드
+            2) 결제했으나 baseline 미완료: 워크북 시작 카드
+            3) 비로그인/미결제: 락 처리된 "구독 후 이용 가능" 안내
+           ──────────────────────────────────────────────────────── */}
+        <section className="px-4 pt-24 pb-6">
+          <div className="max-w-3xl mx-auto">
+            {(() => {
+              // 1) 진행 중 — 가장 강력한 우선순위
+              if (activeEnrollment && activeEnrollment.payment_status === 'paid') {
+                const day = calcMindTrackCurrentDay(activeEnrollment.started_at);
+                const copy = getDayCopy(day);
+                const progressPct = Math.round((day / 30) * 100);
+                return (
+                  <div className="bg-white rounded-3xl border border-[#C8B88A]/40 ring-1 ring-[#C8B88A]/15 shadow-sm p-6 md:p-7 space-y-4">
+                    <div className="flex items-center justify-between flex-wrap gap-3">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge className="bg-emerald-500/15 text-emerald-700 border-0 text-xs">
+                          진행 중
+                        </Badge>
+                        <span className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
+                          Day {String(day).padStart(2, '0')} / 30 · {copy.phase}
+                        </span>
+                      </div>
+                      <span className="text-xs text-foreground/60">{progressPct}% 완료</span>
+                    </div>
+                    <Progress value={progressPct} className="h-1.5" />
+                    <div className="space-y-1.5">
+                      <h2 className="text-xl md:text-2xl font-bold text-foreground break-keep leading-snug">
+                        오늘의 미션 · {copy.title}
+                      </h2>
+                      <p className="text-sm md:text-base text-foreground/70 break-keep leading-relaxed">
+                        {copy.description}
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => navigate(buildWorkbookUrl(day, true))}
+                      className="w-full h-12 text-base font-bold bg-[#1a1a1a] text-white hover:bg-black rounded-xl"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Day {String(day).padStart(2, '0')} 미션 시작
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                    <p className="text-[11px] text-foreground/50 text-center">
+                      시작일 {new Date(activeEnrollment.started_at).toLocaleDateString('ko-KR')} 기준 · 매일 자정에 다음 일차로 자동 이동
+                    </p>
+                  </div>
+                );
+              }
+
+              // 2) 로그인 + 결제했으나 enrollment 없음 (이론상 드묾) → 안내 카드
+              // 3) 비로그인/미결제 — 통일된 "구독 후 이용 가능" 락 안내
+              const isLoggedIn = !!user && !authChecking;
+              return (
+                <div className="bg-white rounded-3xl border border-[#C8B88A]/40 ring-1 ring-[#C8B88A]/15 shadow-sm p-6 md:p-7">
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="w-11 h-11 rounded-2xl bg-[#C8B88A]/15 flex items-center justify-center shrink-0">
+                      <Target className="w-5 h-5 text-[#8a7a4d]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
+                        30 Day Mind Track
+                      </p>
+                      <h2 className="text-xl md:text-2xl font-bold text-foreground break-keep leading-snug">
+                        하루 3분, 30일 마음 변화 트랙
+                      </h2>
+                      <p className="text-sm text-foreground/70 mt-1 break-keep">
+                        Day 01부터 Day 30까지 매일 맞춤 미션과 코칭 인사이트를 받아보세요.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 30일 미리보기 — 항상 동일하게 보이는 락 처리 */}
+                  <div className="grid grid-cols-10 gap-1 mb-4">
+                    {Array.from({ length: 30 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="aspect-square rounded-md bg-[#FAF8F2] border border-[#C8B88A]/20 flex items-center justify-center text-[9px] font-semibold text-[#C8B88A]"
+                      >
+                        {String(i + 1).padStart(2, '0')}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#C8B88A]/20">
+                    <div className="flex items-center gap-2 text-xs text-foreground/60">
+                      <Shield className="w-3.5 h-3.5" />
+                      <span>{isLoggedIn ? '구독 후 이용 가능' : '로그인 후 결제하면 즉시 시작'}</span>
+                    </div>
+                    <Button
+                      onClick={() => navigate(isLoggedIn ? '/token-subscription' : '/auth')}
+                      size="sm"
+                      className="rounded-full bg-[#1a1a1a] text-white hover:bg-black"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+                      ₩{TRACK_PRICE.toLocaleString()} 시작하기
+                      <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </section>
+
+        {/* Hero — 마케팅 메시지 (헤더 아래) */}
+        <section className="relative pt-4 pb-10 px-4">
           <div className="max-w-5xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -354,54 +460,6 @@ const MindTrack: React.FC = () => {
             </motion.div>
           </div>
         </section>
-
-        {/* 진행 중인 트랙 — 개인화 Day 배너 (결제 완료 + active 인 경우만) */}
-        {activeEnrollment && activeEnrollment.payment_status === 'paid' && (() => {
-          const day = calcMindTrackCurrentDay(activeEnrollment.started_at);
-          const copy = getDayCopy(day);
-          const progressPct = Math.round((day / 30) * 100);
-          return (
-            <section className="px-4 pb-10">
-              <div className="max-w-3xl mx-auto">
-                <Card className="border-2 border-blue-200 shadow-xl bg-gradient-to-br from-blue-50 via-white to-purple-50/40">
-                  <CardContent className="p-6 md:p-7 space-y-4">
-                    <div className="flex items-center justify-between flex-wrap gap-3">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Badge className="bg-blue-600 text-white border-0">
-                          진행 중 · Day {String(day).padStart(2, '0')} / 30
-                        </Badge>
-                        <Badge variant="outline" className="border-slate-300 text-slate-600 text-[11px]">
-                          {copy.phase}
-                        </Badge>
-                      </div>
-                      <span className="text-xs text-slate-500">{progressPct}% 완료</span>
-                    </div>
-                    <Progress value={progressPct} className="h-2" />
-                    <div className="space-y-1.5">
-                      <h3 className="text-lg md:text-xl font-bold text-slate-900 break-keep leading-snug">
-                        Day {String(day).padStart(2, '0')} · {copy.title}
-                      </h3>
-                      <p className="text-sm md:text-base text-slate-600 break-keep leading-relaxed">
-                        {copy.description}
-                      </p>
-                    </div>
-                    <Button
-                      onClick={() => navigate(buildWorkbookUrl(day, true))}
-                      className="w-full h-12 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl"
-                    >
-                      <Sparkles className="w-4 h-4 mr-2" />
-                      오늘 미션 보러가기 (Day {String(day).padStart(2, '0')})
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                    <p className="text-[11px] text-slate-400 text-center">
-                      시작일 {new Date(activeEnrollment.started_at).toLocaleDateString('ko-KR')} 기준 · 매일 자정에 다음 일차로 자동 이동돼요
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            </section>
-          );
-        })()}
 
         {/* 아이 발달 걱정도 자가체크 + 7일 플랜 */}
         <section className="px-4 pb-10">

@@ -435,8 +435,8 @@ const UnifiedNavigationInner = () => {
                       onClick={() => handleNavigation('/mind-track')}
                       className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all border ${
                         isActive('/mind-track')
-                          ? 'bg-primary text-primary-foreground border-primary'
-                          : 'bg-white border-[#C8B88A]/60 hover:bg-[#C8B88A]/10 ring-1 ring-[#C8B88A]/20'
+                          ? 'bg-primary/10 text-primary border-primary/30'
+                          : 'bg-white text-foreground border-[#C8B88A]/60 hover:bg-[#C8B88A]/10 ring-1 ring-[#C8B88A]/20'
                       }`}
                     >
                       <Target className="w-5 h-5" />

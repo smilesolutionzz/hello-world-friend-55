@@ -219,17 +219,25 @@ export class RealtimeVoiceChat {
               type: 'session.update',
               session: {
                 modalities: ['text', 'audio'],
-                instructions: '당신은 친절하고 공감적인 한국어 심리 상담사입니다. 사용자의 발화를 끝까지 경청한 뒤 2~3문장으로 간결하게 답하고, 입력이 불명확하면 추측하지 말고 다시 물어보세요.',
-                voice: 'shimmer',
+                instructions: this.options.instructions ?? '당신은 친절하고 공감적인 한국어 심리 상담사입니다. 사용자의 발화를 끝까지 경청한 뒤 2~3문장으로 간결하게 답하고, 입력이 불명확하면 추측하지 말고 다시 물어보세요.',
+                voice: this.options.voice ?? 'shimmer',
                 input_audio_format: 'pcm16',
                 output_audio_format: 'pcm16',
                 input_audio_transcription: {
                   model: 'gpt-4o-transcribe',
                   language: 'ko'
                 },
-                turn_detection: null,
-                temperature: 0.6,
-                max_response_output_tokens: 240
+                turn_detection: this.options.useServerVad
+                  ? {
+                      type: 'server_vad',
+                      threshold: 0.55,
+                      prefix_padding_ms: 280,
+                      silence_duration_ms: 650,
+                      create_response: true,
+                    }
+                  : null,
+                temperature: 0.7,
+                max_response_output_tokens: 320
               }
             }));
 

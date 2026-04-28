@@ -34,14 +34,14 @@ const StickyConversionBar = () => {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-4 py-3 safe-area-pb shadow-[0_-8px_24px_-12px_rgba(15,23,42,0.12)]"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-lg border-t border-slate-700/50 px-4 py-3 safe-area-pb"
         >
           <div className="container mx-auto max-w-5xl flex items-center justify-between gap-3">
             <div className="hidden sm:flex items-center gap-3 flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-[#C8B88A]" />
+              <Sparkles className="w-5 h-5 text-amber-300" />
               <div>
-                <p className="text-slate-900 text-sm font-bold">1분 무료 마음 진단</p>
-                <p className="text-slate-500 text-xs">결과 기반 30일 마음 트랙 추천</p>
+                <p className="text-white text-sm font-bold">1분 무료 마음 진단</p>
+                <p className="text-slate-400 text-xs">결과 기반 30일 마음 트랙 추천</p>
               </div>
             </div>
 
@@ -49,15 +49,15 @@ const StickyConversionBar = () => {
               <Button
                 onClick={() => navigate('/quiz')}
                 size="lg"
-                className="flex-1 sm:flex-none bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm sm:text-base px-4 sm:px-6 h-11 rounded-2xl"
+                className="flex-1 sm:flex-none bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold text-sm sm:text-base px-4 sm:px-6 h-11"
               >
-                <Sparkles className="w-4 h-4 mr-1.5 text-[#C8B88A]" />
+                <Sparkles className="w-4 h-4 mr-1.5" />
                 무료 진단 시작하기
                 <ArrowRight className="w-4 h-4 ml-1.5" />
               </Button>
               <button
                 onClick={() => setDismissed(true)}
-                className="p-1.5 text-slate-400 hover:text-slate-900 transition-colors flex-shrink-0"
+                className="p-1.5 text-slate-500 hover:text-white transition-colors flex-shrink-0"
                 aria-label="닫기"
               >
                 <X className="w-4 h-4" />

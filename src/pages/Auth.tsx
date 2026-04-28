@@ -52,8 +52,7 @@ const Auth = () => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        // Sprint 1: 단일 상품 BM — 모든 인증 진입은 /mind-track으로 통합
-        navigate('/mind-track');
+        navigate('/dashboard');
       }
     };
     
@@ -169,7 +168,7 @@ const Auth = () => {
     }
     
     try {
-      const redirectUrl = `${window.location.origin}/mind-track`;
+      const redirectUrl = `${window.location.origin}/dashboard`;
       const referralCode = localStorage.getItem('referralCode');
       
       const { error } = await supabase.auth.signUp({

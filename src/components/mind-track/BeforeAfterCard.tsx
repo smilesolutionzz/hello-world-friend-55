@@ -56,8 +56,8 @@ const BeforeAfterCard: React.FC<BeforeAfterCardProps> = ({ onPayClick }) => {
           </div>
           <ul className="space-y-2.5">
             {BEFORE_ITEMS.map((t, i) => (
-              <li key={i} className="text-sm text-slate-800 dark:text-slate-200 font-medium flex gap-2 break-keep">
-                <span className="text-slate-500 flex-shrink-0">·</span>
+              <li key={i} className="text-sm text-slate-600 dark:text-slate-400 flex gap-2 break-keep">
+                <span className="text-slate-400 flex-shrink-0">·</span>
                 <span>{t}</span>
               </li>
             ))}

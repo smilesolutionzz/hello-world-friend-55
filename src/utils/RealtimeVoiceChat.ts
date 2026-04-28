@@ -333,7 +333,9 @@ export class RealtimeVoiceChat {
 
       console.log("Starting audio recording...");
       this.pendingResponseAfterTranscription = false;
-      this.ws.send(JSON.stringify({ type: 'input_audio_buffer.clear' }));
+      if (!this.options.useServerVad) {
+        this.ws.send(JSON.stringify({ type: 'input_audio_buffer.clear' }));
+      }
 
       this.recorder = new AudioRecorder((audioData) => {
         if (this.ws?.readyState === WebSocket.OPEN) {

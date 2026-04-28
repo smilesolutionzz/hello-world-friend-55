@@ -26,14 +26,15 @@ const HeroSection = () => {
     return () => clearInterval(timer);
   }, [phrases.length]);
 
+  // Sprint 1: CTA 단일화 — 두 버튼 모두 /quiz(1분 무료 진단) → /mind-track 결제로 직결
   const handlePrimaryCTA = () => {
     trackEvent('hero_cta_mind_track');
     navigate('/mind-track');
   };
 
   const handleSecondaryCTA = () => {
-    trackEvent('hero_cta_free_test');
-    navigate('/assessment');
+    trackEvent('hero_cta_free_quiz');
+    navigate('/quiz');
   };
 
   // 페르소나별 Before/After 데이터 슬라이드

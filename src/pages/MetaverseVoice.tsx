@@ -90,7 +90,19 @@ const MetaverseVoicePage = () => {
           </TabsContent>
 
           <TabsContent value="voice" className="mt-0">
-            <CounselingSetup onStart={handleStructuredStart} />
+            <div className="rounded-3xl bg-white/95 border border-white/40 p-8 text-center max-w-xl mx-auto shadow-xl">
+              <div className="text-6xl mb-4">🐘</div>
+              <h2 className="text-2xl font-semibold text-neutral-900 mb-2">코끼리와 실시간 음성 상담</h2>
+              <p className="text-neutral-500 mb-6 text-sm break-keep">
+                자연스럽게 말하면 코끼리가 끊김 없이 들어주고 답해드려요. 새로워진 깔끔한 화면으로 안내해드릴게요.
+              </p>
+              <Button
+                onClick={() => navigate('/voice-counseling')}
+                className="h-12 px-8 rounded-full bg-neutral-900 hover:bg-neutral-800 text-white gap-2"
+              >
+                <Mic className="w-4 h-4" /> 코끼리와 대화 시작
+              </Button>
+            </div>
           </TabsContent>
         </Tabs>
       </div>

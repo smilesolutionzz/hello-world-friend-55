@@ -137,6 +137,7 @@ export default function AdminDashboard() {
           <TabsContent value="bookings"><AdminBookingManagement /></TabsContent>
           <TabsContent value="mindtrack"><MindTrackInterventionStats /></TabsContent>
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>
+          <TabsContent value="email_logs"><EmailSendLogPanel /></TabsContent>
           <TabsContent value="experts"><ExpertApplicationManagement /></TabsContent>
           <TabsContent value="user-data"><EnhancedUserDataViewer /></TabsContent>
           <TabsContent value="management">

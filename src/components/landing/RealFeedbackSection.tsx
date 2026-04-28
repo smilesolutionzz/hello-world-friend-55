@@ -90,9 +90,9 @@ const PERSONAS: Persona[] = [
     badgeEn: 'Parent of Teens',
     title: (
       <>
-        "사춘기라 어쩔 수 없다 했는데"
+        “사춘기라 어쩔 수 없다 했는데,”
         <br className="md:hidden" />{' '}
-        <span className="text-sky-400 text-lg md:text-4xl">진짜 신호를<br className="md:hidden" />놓치고 있었어요</span>
+        <span className="text-sky-400 text-lg md:text-4xl">진짜 신호를<br className="md:hidden" /> 놓치고 있었어요.</span>
       </>
     ),
     titleEn: (

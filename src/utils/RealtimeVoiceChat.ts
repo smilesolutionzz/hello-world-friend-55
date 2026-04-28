@@ -354,19 +354,27 @@ export class RealtimeVoiceChat {
 
       console.log("Starting audio recording...");
       this.pendingResponseAfterTranscription = false;
-      this.ws.send(JSON.stringify({ type: 'input_audio_buffer.clear' }));
+      if (!this.options.useServerVad) {
+        this.ws.send(JSON.stringify({ type: 'input_audio_buffer.clear' }));
+      }
 
-      this.recorder = new AudioRecorder((audioData) => {
-        if (this.ws?.readyState === WebSocket.OPEN) {
-          const base64Audio = encodeAudioForAPI(audioData);
-          this.ws.send(JSON.stringify({
-            type: 'input_audio_buffer.append',
-            audio: base64Audio
-          }));
-        }
-      });
+      try {
+        this.recorder = new AudioRecorder((audioData) => {
+          if (this.ws?.readyState === WebSocket.OPEN) {
+            const base64Audio = encodeAudioForAPI(audioData);
+            this.ws.send(JSON.stringify({
+              type: 'input_audio_buffer.append',
+              audio: base64Audio
+            }));
+          }
+        });
 
-      await this.recorder.start();
+        await this.recorder.start();
+      } catch (e: any) {
+        this.options.onError?.({ code: 'MIC', message: e?.message || '마이크 접근에 실패했습니다.', raw: e });
+        throw e;
+      }
+
       this.onSpeakingChange(false);
       console.log("Recording started");
     } catch (error) {
@@ -390,6 +398,11 @@ export class RealtimeVoiceChat {
 
     this.recorder.stop();
     this.recorder = null;
+
+    if (this.options.useServerVad) {
+      // server VAD handles commit + response automatically
+      return;
+    }
 
     this.pendingResponseAfterTranscription = true;
     this.ws.send(JSON.stringify({ type: 'input_audio_buffer.commit' }));

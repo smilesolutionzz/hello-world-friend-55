@@ -147,9 +147,9 @@ const PERSONAS: Persona[] = [
     badgeEn: 'Burnout Worker',
     title: (
       <>
-        "그냥 피곤한 줄 알았는데"
+        “그냥 피곤한 줄 알았는데,”
         <br className="md:hidden" />{' '}
-        <span className="text-amber-400 text-lg md:text-4xl">번아웃 3단계<br className="md:hidden" />이미 진입했더라고요</span>
+        <span className="text-amber-400 text-lg md:text-4xl">번아웃 3단계에<br className="md:hidden" /> 이미 진입했더라고요.</span>
       </>
     ),
     titleEn: (

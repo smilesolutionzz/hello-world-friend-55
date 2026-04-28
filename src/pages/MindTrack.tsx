@@ -62,6 +62,16 @@ const MindTrack: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  // 진행 중인 30일 트랙 등록 정보 (있으면 개인화 배너 노출)
+  const [activeEnrollment, setActiveEnrollment] = useState<{
+    id: string;
+    started_at: string;
+    current_day: number;
+    status: string;
+    goal_focus: string | null;
+    payment_status: string;
+  } | null>(null);
+
   // 고민 진단 리포트
   const [concern, setConcern] = useState('');
   const [reportLoading, setReportLoading] = useState(false);

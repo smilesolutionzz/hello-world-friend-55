@@ -381,29 +381,27 @@ serve(async (req) => {
         const dayNumber = goal.current_day + 1;
         const subject = `[Day ${String(dayNumber).padStart(2, '0')}] ${meta.label} - 오늘의 미션`;
 
-        const { error: invokeErr } = await supa.functions.invoke('send-transactional-email', {
-          body: {
-            templateName: 'daily-coaching',
-            recipientEmail: email,
-            idempotencyKey: `daily-coaching-${goal.id}-${todayStr}`,
-            templateData: {
-              nickname, dayNumber, totalDays: goal.total_days,
-              categoryLabel: meta.label,
-              missionSummary: content.missionSummary,
-              mission: content.mission,
-              keyActions: content.keyActions,
-              insight: content.insight, researchBase: meta.researchBase,
-              videos,
-            },
+        const result = await callTransactionalEmail({
+          templateName: 'daily-coaching',
+          recipientEmail: email,
+          idempotencyKey: `daily-coaching-${goal.id}-${todayStr}`,
+          templateData: {
+            nickname, dayNumber, totalDays: goal.total_days,
+            categoryLabel: meta.label,
+            missionSummary: content.missionSummary,
+            mission: content.mission,
+            keyActions: content.keyActions,
+            insight: content.insight, researchBase: meta.researchBase,
+            videos,
           },
         });
 
-        if (invokeErr) {
+        if (!result.ok) {
           failed++;
           await supa.from("daily_coaching_email_log").insert({
             user_id: goal.user_id, goal_id: goal.id, send_date: todayStr,
             day_number: dayNumber, status: "failed", subject,
-            error_message: String(invokeErr),
+            error_message: result.error || 'unknown',
           });
           continue;
         }

@@ -111,20 +111,20 @@ const HeroSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-white"
+      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#0a0e1a] via-[#0f172a] to-[#1e293b]"
     >
       {/* Subtle grid texture */}
       <div
-        className="absolute inset-0 opacity-[0.035] pointer-events-none"
+        className="absolute inset-0 opacity-[0.07] pointer-events-none"
         style={{
           backgroundImage:
-            'linear-gradient(to right, #0f172a 1px, transparent 1px), linear-gradient(to bottom, #0f172a 1px, transparent 1px)',
+            'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
           backgroundSize: '64px 64px',
         }}
       />
-      {/* Soft warm-gold ambient — replaces dark glows */}
-      <div className="absolute top-0 -left-40 w-[500px] h-[500px] rounded-full bg-[#C8B88A]/15 blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 -right-40 w-[600px] h-[600px] rounded-full bg-slate-200/40 blur-[160px] pointer-events-none" />
+      {/* Ambient glows */}
+      <div className="absolute top-0 -left-40 w-[500px] h-[500px] rounded-full bg-blue-500/20 blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 -right-40 w-[600px] h-[600px] rounded-full bg-purple-500/20 blur-[160px] pointer-events-none" />
 
       <div className="relative z-10 container mx-auto px-4 md:px-6 pt-20 md:pt-28 pb-12 md:pb-20 min-h-screen flex flex-col">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center flex-1">

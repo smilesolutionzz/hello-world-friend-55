@@ -117,6 +117,34 @@ Deno.serve(async (req) => {
       metrics: (body as any).metrics,
       recommendation: (body as any).recommendation,
     }
+
+    // HTML 잔존/마크다운 코드펜스 자동 감지
+    const detectRawHtml = (s: string | undefined | null): string[] => {
+      if (!s) return []
+      const issues: string[] = []
+      if (/<\/?[a-zA-Z][^>]*>/.test(s)) issues.push('html-tag')
+      if (/```/.test(s)) issues.push('code-fence')
+      return issues
+    }
+    const contentIssues = [
+      ...detectRawHtml(summary).map(x => `summary:${x}`),
+      ...(highlights || []).flatMap((h, i) => detectRawHtml(h).map(x => `highlight[${i}]:${x}`)),
+      ...detectRawHtml((body as any).recommendation).map(x => `recommendation:${x}`),
+    ]
+    let warning: string | undefined
+    if (contentIssues.length) {
+      warning = `Raw HTML/markdown residue detected: ${contentIssues.join(', ')}`
+      console.warn('[send-report-email] ⚠️', warning)
+      await supa.from('email_send_log').insert({
+        message_id: body.reportHistoryId || `report-${Date.now()}`,
+        template_name: 'report-summary',
+        recipient_email: recipientEmail,
+        status: 'warning',
+        error_message: warning,
+        metadata: { contentIssues },
+      }).then(() => {}, () => {})
+    }
+
     const html = await renderAsync(React.createElement(reportSummary.component, props))
     const subject = typeof reportSummary.subject === 'function'
       ? reportSummary.subject(props)
@@ -136,12 +164,31 @@ Deno.serve(async (req) => {
 
     if ((result as any)?.error) {
       console.error('resend error', result)
-      return new Response(JSON.stringify({ success: false, error: (result as any).error }), {
+      await supa.from('email_send_log').insert({
+        message_id: body.reportHistoryId || `report-${Date.now()}`,
+        template_name: 'report-summary',
+        recipient_email: recipientEmail,
+        status: 'failed',
+        error_message: JSON.stringify((result as any).error),
+      }).then(() => {}, () => {})
+      return new Response(JSON.stringify({ success: false, error: (result as any).error, warning }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
-    return new Response(JSON.stringify({ success: true, messageId: (result as any)?.data?.id }), {
+    await supa.from('email_send_log').insert({
+      message_id: body.reportHistoryId || (result as any)?.data?.id,
+      template_name: 'report-summary',
+      recipient_email: recipientEmail,
+      status: 'sent',
+      metadata: { resend_id: (result as any)?.data?.id, warning },
+    }).then(() => {}, () => {})
+
+    return new Response(JSON.stringify({
+      success: true,
+      messageId: (result as any)?.data?.id,
+      warning,
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (e) {

@@ -168,6 +168,15 @@ class AudioQueue {
   }
 }
 
+export interface RealtimeVoiceChatOptions {
+  instructions?: string;
+  voice?: string;
+  useServerVad?: boolean;
+  onReady?: () => void;
+  onClose?: (event: { code: number; reason: string; wasClean: boolean }) => void;
+  onError?: (info: { code: 'WS' | 'SESSION' | 'MIC' | 'UNKNOWN'; message: string; raw?: any }) => void;
+}
+
 export class RealtimeVoiceChat {
   private ws: WebSocket | null = null;
   private recorder: AudioRecorder | null = null;
@@ -176,20 +185,22 @@ export class RealtimeVoiceChat {
   private isSessionStarted = false;
   private isSessionConfigured = false;
   private pendingResponseAfterTranscription = false;
+  private intentionalClose = false;
 
   constructor(
     private onMessage: (message: any) => void,
     private onSpeakingChange: (speaking: boolean) => void,
-    private options: {
-      instructions?: string;
-      voice?: string;
-      useServerVad?: boolean;
-    } = {}
+    private options: RealtimeVoiceChatOptions = {}
   ) {}
+
+  get isReady() {
+    return this.isSessionConfigured && this.ws?.readyState === WebSocket.OPEN;
+  }
 
   async init() {
     try {
       console.log("Initializing Realtime Voice Chat...");
+      this.intentionalClose = false;
 
       this.audioContext = new AudioContext({ sampleRate: 24000 });
       this.audioQueue = new AudioQueue(this.audioContext);
@@ -243,6 +254,7 @@ export class RealtimeVoiceChat {
 
             this.isSessionConfigured = true;
             this.onSpeakingChange(false);
+            this.options.onReady?.();
             console.log("🎤 Session configured. Waiting for user input.");
             return;
           }
@@ -297,6 +309,10 @@ export class RealtimeVoiceChat {
             this.onSpeakingChange(false);
           }
 
+          if (data.type === 'error') {
+            this.options.onError?.({ code: 'SESSION', message: data?.error?.message || 'session error', raw: data });
+          }
+
           this.onMessage(data);
         } catch (error) {
           console.error("Error processing message:", error);
@@ -305,11 +321,16 @@ export class RealtimeVoiceChat {
 
       this.ws.onerror = (error) => {
         console.error("❌ WebSocket error:", error);
+        this.options.onError?.({ code: 'WS', message: 'WebSocket 연결 오류', raw: error });
       };
 
       this.ws.onclose = (event) => {
         console.log("🔌 WebSocket closed:", event.code, event.reason);
+        const wasIntentional = this.intentionalClose;
         this.cleanup();
+        if (!wasIntentional) {
+          this.options.onClose?.({ code: event.code, reason: event.reason, wasClean: event.wasClean });
+        }
       };
     } catch (error) {
       console.error("Error initializing chat:", error);
@@ -337,17 +358,23 @@ export class RealtimeVoiceChat {
         this.ws.send(JSON.stringify({ type: 'input_audio_buffer.clear' }));
       }
 
-      this.recorder = new AudioRecorder((audioData) => {
-        if (this.ws?.readyState === WebSocket.OPEN) {
-          const base64Audio = encodeAudioForAPI(audioData);
-          this.ws.send(JSON.stringify({
-            type: 'input_audio_buffer.append',
-            audio: base64Audio
-          }));
-        }
-      });
+      try {
+        this.recorder = new AudioRecorder((audioData) => {
+          if (this.ws?.readyState === WebSocket.OPEN) {
+            const base64Audio = encodeAudioForAPI(audioData);
+            this.ws.send(JSON.stringify({
+              type: 'input_audio_buffer.append',
+              audio: base64Audio
+            }));
+          }
+        });
 
-      await this.recorder.start();
+        await this.recorder.start();
+      } catch (e: any) {
+        this.options.onError?.({ code: 'MIC', message: e?.message || '마이크 접근에 실패했습니다.', raw: e });
+        throw e;
+      }
+
       this.onSpeakingChange(false);
       console.log("Recording started");
     } catch (error) {
@@ -413,8 +440,9 @@ export class RealtimeVoiceChat {
   }
 
   disconnect() {
+    this.intentionalClose = true;
     this.cleanup();
-    this.ws?.close();
+    try { this.ws?.close(); } catch {}
     this.ws = null;
   }
 }

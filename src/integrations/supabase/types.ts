@@ -13134,6 +13134,45 @@ export type Database = {
         }
         Relationships: []
       }
+      voice_counseling_sessions: {
+        Row: {
+          created_at: string
+          duration_seconds: number
+          ended_at: string
+          id: string
+          message_count: number
+          started_at: string
+          summary: string | null
+          title: string | null
+          transcript: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number
+          ended_at?: string
+          id?: string
+          message_count?: number
+          started_at?: string
+          summary?: string | null
+          title?: string | null
+          transcript?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number
+          ended_at?: string
+          id?: string
+          message_count?: number
+          started_at?: string
+          summary?: string | null
+          title?: string | null
+          transcript?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       voice_diary_entries: {
         Row: {
           audio_duration: number | null

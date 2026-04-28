@@ -36,6 +36,7 @@ import CoachingPreferences from "./pages/CoachingPreferences";
 import VerifyReport from "./pages/VerifyReport";
 import MetaverseVoice from "./pages/MetaverseVoice";
 import VoiceCounselingNew from "./pages/VoiceCounselingNew";
+import VoiceCounselingHistory from "./pages/VoiceCounselingHistory";
 // GameCounseling integrated into MetaverseVoice
 
 // Assessment & Tests
@@ -220,6 +221,7 @@ const App = () => {
           {/* AI Azit */}
           <Route path="/metaverse-voice" element={<MetaverseVoice />} />
           <Route path="/voice-counseling" element={<VoiceCounselingNew />} />
+          <Route path="/voice-counseling/history" element={<VoiceCounselingHistory />} />
           <Route path="/game-counseling" element={<Navigate to="/metaverse-voice" replace />} />
 
           {/* Assessment & Tests */}

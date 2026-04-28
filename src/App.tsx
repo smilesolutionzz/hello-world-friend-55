@@ -35,6 +35,8 @@ import MyJourney from "./pages/MyJourney";
 import CoachingPreferences from "./pages/CoachingPreferences";
 import VerifyReport from "./pages/VerifyReport";
 import MetaverseVoice from "./pages/MetaverseVoice";
+import VoiceCounselingNew from "./pages/VoiceCounselingNew";
+import VoiceCounselingHistory from "./pages/VoiceCounselingHistory";
 // GameCounseling integrated into MetaverseVoice
 
 // Assessment & Tests

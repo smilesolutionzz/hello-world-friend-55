@@ -33,9 +33,9 @@ const PERSONAS: Persona[] = [
     badgeEn: 'Real Parent Feedback',
     title: (
       <>
-        "내가 잘못 키운 줄 알았는데"
+        “내가 잘못 키운 줄 알았는데,”
         <br className="md:hidden" />{' '}
-        <span className="text-emerald-400 text-lg md:text-4xl">리포트를 보고<br className="md:hidden" />아이를 이해하게 됐어요</span>
+        <span className="text-emerald-400 text-lg md:text-4xl">리포트를 보고 아이를<br className="md:hidden" /> 이해하게 됐어요.</span>
       </>
     ),
     titleEn: (

@@ -65,33 +65,106 @@ const WeeklyReportPreview: React.FC = () => {
               ))}
             </div>
 
-            {/* 일별 추이 미니 차트 + 라벨 */}
-            <div className="rounded-xl border border-border bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-3">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold text-foreground">일별 마음 점수 추이</span>
-                <span className="text-[9px] text-muted-foreground">RCI = 1.96 (유의미한 개선)</span>
-              </div>
-              <div className="flex items-end justify-around h-20 gap-1.5">
-                {[
-                  { d: '월', h: 40, v: 58 },
-                  { d: '화', h: 55, v: 63 },
-                  { d: '수', h: 48, v: 60 },
-                  { d: '목', h: 62, v: 67 },
-                  { d: '금', h: 70, v: 70 },
-                  { d: '토', h: 65, v: 68 },
-                  { d: '일', h: 78, v: 72 },
-                ].map((b, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
-                    <span className="text-[8px] font-bold text-blue-700 dark:text-blue-300 tabular-nums">{b.v}</span>
-                    <div
-                      className="w-full bg-gradient-to-t from-blue-500 to-indigo-400 rounded-t"
-                      style={{ height: `${b.h}%` }}
-                    />
-                    <span className="text-[9px] text-muted-foreground">{b.d}</span>
+            {/* 일별 추이 미니 차트 — 큰 숫자, 기준선, 시작→끝 표시 */}
+            {(() => {
+              const data = [
+                { d: '월', v: 58 },
+                { d: '화', v: 63 },
+                { d: '수', v: 60 },
+                { d: '목', v: 67 },
+                { d: '금', v: 70 },
+                { d: '토', v: 68 },
+                { d: '일', v: 72 },
+              ];
+              const min = 50;
+              const max = 80;
+              const range = max - min;
+              const baseline = 65; // 양호 기준선
+              const start = data[0].v;
+              const end = data[data.length - 1].v;
+              const delta = end - start;
+
+              return (
+                <div className="rounded-xl border border-border bg-white dark:bg-card p-4">
+                  {/* 헤더: 무엇을 보고 있는지 한 줄로 */}
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <div>
+                      <div className="text-xs font-bold text-foreground">일별 마음 점수 추이</div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5">100점 만점 · 65점 이상이 양호</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                        <TrendingUp className="w-3 h-3" /> 7일간 +{delta}점 상승
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
+
+                  {/* 시작 → 끝 한눈에 보이는 큰 숫자 */}
+                  <div className="flex items-center justify-center gap-3 my-3">
+                    <div className="text-center">
+                      <div className="text-[9px] text-muted-foreground font-bold">월요일</div>
+                      <div className="text-2xl font-black text-slate-400 tabular-nums">{start}</div>
+                    </div>
+                    <TrendingUp className="w-5 h-5 text-emerald-500" />
+                    <div className="text-center">
+                      <div className="text-[9px] text-emerald-700 font-bold">일요일</div>
+                      <div className="text-3xl font-black text-emerald-600 tabular-nums">{end}</div>
+                    </div>
+                  </div>
+
+                  {/* 막대 차트 + 기준선 */}
+                  <div className="relative h-24 mt-2">
+                    {/* 양호 기준선 */}
+                    <div
+                      className="absolute left-0 right-0 border-t border-dashed border-emerald-400 z-10"
+                      style={{ bottom: `${((baseline - min) / range) * 100}%` }}
+                    >
+                      <span className="absolute -top-2 right-0 text-[8px] font-bold text-emerald-600 bg-white px-1">
+                        양호 {baseline}
+                      </span>
+                    </div>
+                    <div className="flex items-end justify-around h-full gap-1.5">
+                      {data.map((b, i) => {
+                        const heightPct = ((b.v - min) / range) * 100;
+                        const isLast = i === data.length - 1;
+                        const aboveBaseline = b.v >= baseline;
+                        return (
+                          <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-1">
+                            <span className={`text-[10px] font-black tabular-nums ${isLast ? 'text-emerald-700' : 'text-slate-700 dark:text-slate-300'}`}>
+                              {b.v}
+                            </span>
+                            <div
+                              className={`w-full rounded-t-md ${
+                                isLast
+                                  ? 'bg-emerald-500'
+                                  : aboveBaseline
+                                  ? 'bg-blue-400'
+                                  : 'bg-slate-300'
+                              }`}
+                              style={{ height: `${heightPct}%`, minHeight: '4px' }}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  {/* 요일 라벨 */}
+                  <div className="flex items-center justify-around gap-1.5 mt-1">
+                    {data.map((b, i) => (
+                      <span key={i} className="flex-1 text-center text-[10px] text-muted-foreground font-medium">
+                        {b.d}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* 한 줄 해석 */}
+                  <div className="mt-3 pt-3 border-t border-border text-[11px] text-foreground break-keep leading-relaxed">
+                    <strong className="text-emerald-700">금요일</strong>부터 양호 구간(65점) 진입 ·
+                    통계적으로 유의미한 개선(<strong>RCI 1.96</strong>)
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* AI 임상 해석 — 실제 샘플 텍스트 */}
             <div className="rounded-xl border-l-4 border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 p-4">

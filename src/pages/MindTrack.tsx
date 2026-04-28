@@ -96,7 +96,7 @@ const MindTrack: React.FC = () => {
       // 결제 완료된 활성 트랙이 있는지 조회 → 일차별 개인화 배너 노출
       const { data: enr } = await supabase
         .from('mind_track_enrollments')
-        .select('id, started_at, goal, payment_status')
+        .select('id, started_at, goal_focus, current_day, payment_status, status')
         .eq('user_id', u.id)
         .eq('payment_status', 'completed')
         .order('started_at', { ascending: false })
@@ -105,11 +105,12 @@ const MindTrack: React.FC = () => {
       if (!row?.started_at) return;
       const startedAt = new Date(row.started_at);
       const daysSinceStart = Math.floor((Date.now() - startedAt.getTime()) / 86400000) + 1;
-      const currentDay = Math.min(Math.max(daysSinceStart, 1), 30);
+      const computedDay = Math.min(Math.max(daysSinceStart, 1), 30);
+      const currentDay = Math.max(row.current_day || 1, computedDay);
       setActiveEnrollment({
         id: row.id,
         started_at: row.started_at,
-        goal: row.goal,
+        goal: row.goal_focus,
         currentDay,
       });
     })();

@@ -429,6 +429,37 @@ const MindTrack: React.FC = () => {
           </div>
         </section>
 
+        {/* Hero — 마케팅 메시지 (헤더 아래) */}
+        <section className="relative pt-4 pb-10 px-4">
+          <div className="max-w-5xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-5"
+            >
+              <div className="flex justify-center gap-2 flex-wrap">
+                <CoachingBadge variant="pill" />
+                <Badge className="bg-amber-100 text-amber-800 border-amber-200">
+                  <Sparkles className="w-3 h-3 mr-1" />
+                  무료 고민 리포트 + 30일 트랙
+                </Badge>
+              </div>
+
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight break-keep">
+                지금 마음에 걸리는 고민,<br />
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  3분 안에 정리해드릴게요
+                </span>
+              </h1>
+
+              <p className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto break-keep leading-relaxed">
+                고민을 한 줄 적으면 <strong className="text-slate-900">즉석 마음 리포트</strong>를 받고,<br className="hidden md:block" />
+                나에게 꼭 맞는 <strong className="text-slate-900">30일 변화 트랙</strong>을 제안받을 수 있어요.
+              </p>
+            </motion.div>
+          </div>
+        </section>
 
         {/* 아이 발달 걱정도 자가체크 + 7일 플랜 */}
         <section className="px-4 pb-10">

@@ -109,13 +109,13 @@ const PERSONAS: Persona[] = [
     messages: [
       { sender: 'parent', text: '애가 방에만 있고 말도 안 해요. 그냥 사춘기겠죠?', time: '21:14' },
       { sender: 'expert', text: '리포트상 우울 지표(PHQ-A)가 중상 구간이에요. 사춘기보다 회복 케어가 우선이에요.', time: '21:14' },
-      { sender: 'parent', text: '네...? 그 정도였어요?', time: '21:15', highlight: true },
-      { sender: 'parent', text: '학원 빠지는 거 게을러서인 줄...', time: '21:16' },
-      { sender: 'expert', text: '에너지 고갈 + 회피 패턴이에요. 야단보다 "오늘 뭐가 가장 힘들었어?" 한 마디가 더 효과적이에요.', time: '21:16' },
-      { sender: 'parent', text: '오늘 그렇게 물어볼게요', time: '21:18', highlight: true },
+      { sender: 'parent', text: '네…? 그 정도였어요?', time: '21:15', highlight: true },
+      { sender: 'parent', text: '학원 빠지는 거 게을러서인 줄 알았어요….', time: '21:16' },
+      { sender: 'expert', text: '에너지 고갈 + 회피 패턴이에요. 야단보다 “오늘 뭐가 가장 힘들었어?” 한 마디가 더 효과적이에요.', time: '21:16' },
+      { sender: 'parent', text: '오늘 그렇게 물어볼게요.', time: '21:18', highlight: true },
       { sender: 'parent', text: '이런 거 매주 추적도 되나요?', time: '21:20' },
       { sender: 'expert', text: '30일 마음 챌린지(₩19,900)면 주간 변화 추적 + 위험 신호 알림까지 받아보실 수 있어요.', time: '21:20' },
-      { sender: 'parent', text: '이건 진짜 필요했던 거예요', time: '21:22', highlight: true },
+      { sender: 'parent', text: '이건 진짜 필요했던 거예요.', time: '21:22', highlight: true },
     ],
     messagesEn: [
       { sender: 'parent', text: 'He stays in his room, never talks. Just puberty, right?', time: '21:14' },

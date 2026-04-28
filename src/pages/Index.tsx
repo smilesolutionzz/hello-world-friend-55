@@ -156,8 +156,9 @@ const Index = () => {
   }, [searchParams, processReferralReward, toast]);
 
   const handleOnboardingClose = useCallback(() => {
+    // 닫기만 하고 영구 마킹하지 않음 — 미완료 사용자는 다음 방문 시 다시 1번 노출
+    // 영구 차단은 handleComplete()에서 user_onboarding_data row가 생성될 때만 적용
     setShowOnboarding(false);
-    localStorage.setItem('onboarding_completed', 'true');
   }, []);
 
   return (

@@ -179,7 +179,12 @@ export class RealtimeVoiceChat {
 
   constructor(
     private onMessage: (message: any) => void,
-    private onSpeakingChange: (speaking: boolean) => void
+    private onSpeakingChange: (speaking: boolean) => void,
+    private options: {
+      instructions?: string;
+      voice?: string;
+      useServerVad?: boolean;
+    } = {}
   ) {}
 
   async init() {

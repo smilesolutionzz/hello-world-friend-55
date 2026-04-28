@@ -17,6 +17,7 @@ import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import CoachingBadge from '@/components/branding/CoachingBadge';
 import MindTrackProgressWidget from '@/components/mind-track/MindTrackProgressWidget';
+import MindTrackMilestoneReportFlow from '@/components/mind-track/MindTrackMilestoneReportFlow';
 
 interface ReportPoint {
   id: string;

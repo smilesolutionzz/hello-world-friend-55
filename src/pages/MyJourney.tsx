@@ -191,6 +191,7 @@ const MyJourney: React.FC = () => {
       <UnifiedNavigation />
       <div className="container mx-auto px-4 pt-24 pb-20 max-w-5xl">
         <MindTrackProgressWidget />
+        <MindTrackMilestoneReportFlow />
         {/* 헤더 */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <CoachingBadge variant="card" className="mb-4" />

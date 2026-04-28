@@ -115,7 +115,21 @@ const MindTrack: React.FC = () => {
   ];
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    let mounted = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (!mounted) return;
+      setUser(data.user);
+      setAuthChecking(false);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (!mounted) return;
+      setUser(session?.user ?? null);
+      setAuthChecking(false);
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   // 진행 중인 등록 정보 fetch (있으면 개인화 배너)

@@ -243,9 +243,9 @@ const PERSONAS: Persona[] = [
       { sender: 'parent', text: 'Should have used this before the hospital.', time: '15:09', highlight: true },
     ],
     highlights: [
-      { emoji: '🧠', before: '"치매 초기 같아요"', after: '실행기능 약한 신호 — 우울·수면 영향', reaction: '"치매는 아닌 거네요"' },
-      { emoji: '☀️', before: '"뭘 해야 할지 모르겠어요"', after: '햇빛 + 수면 + 인지게임 3종', reaction: '"충분히 할 수 있어요"' },
-      { emoji: '👨‍👩‍👧', before: '"가족이 따로 챙기기 힘들어"', after: '가족 공유 추적 — ₩19,900', reaction: '"이걸 먼저 봤어야 했네요"' },
+      { emoji: '🧠', before: '“치매 초기 같아요.”', after: '실행기능 약한 신호 — 우울·수면 영향', reaction: '“치매는 아닌 거네요.”' },
+      { emoji: '☀️', before: '“뭘 해야 할지 모르겠어요.”', after: '햇빛 + 수면 + 인지 게임, 3종 루틴', reaction: '“충분히 할 수 있어요.”' },
+      { emoji: '👨‍👩‍👧', before: '“가족이 따로 챙기기 힘들어요.”', after: '가족 공유 추적 — ₩19,900', reaction: '“이걸 먼저 봤어야 했네요.”' },
     ],
     highlightsEn: [
       { emoji: '🧠', before: '"Early dementia?"', after: 'Mild executive signal — depression/sleep', reaction: '"Not dementia."' },

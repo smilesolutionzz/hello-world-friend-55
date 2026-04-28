@@ -87,6 +87,9 @@ import ExpertInterventionCard, { RiskAlertCard, type InterventionDay } from "@/c
 import InterventionCalendar from "@/components/mind-track/InterventionCalendar";
 import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulator";
 import WeeklyMilestoneCards from "@/components/mind-track/WeeklyMilestoneCards";
+import MilestoneProgressBar from "@/components/mind-track/MilestoneProgressBar";
+import MindTrackWorkbookSkeleton from "@/components/mind-track/MindTrackWorkbookSkeleton";
+import MissionVideoPicker from "@/components/mind-track/MissionVideoPicker";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 import { HelpCircle } from "lucide-react";
 

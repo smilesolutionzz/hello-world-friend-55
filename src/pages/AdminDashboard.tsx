@@ -110,6 +110,10 @@ export default function AdminDashboard() {
               <Bell className="h-3 w-3" />
               알림
             </TabsTrigger>
+            <TabsTrigger value="email_logs" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <Mail className="h-3 w-3" />
+              발송 로그
+            </TabsTrigger>
             <TabsTrigger value="experts" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <UserCheck className="h-3 w-3" />
               전문가

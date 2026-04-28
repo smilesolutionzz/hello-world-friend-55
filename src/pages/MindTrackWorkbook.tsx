@@ -150,6 +150,14 @@ export default function MindTrackWorkbook() {
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const dayButtonRefs = useRef<Record<number, HTMLButtonElement | null>>({});
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadSteps, setLoadSteps] = useState({
+    auth: false,
+    workbook: false,
+    missions: false,
+    checkins: false,
+    baselines: false,
+  });
   const [enrollment, setEnrollment] = useState<any>(null);
   const [workbook, setWorkbook] = useState<any>(null);
   const [missions, setMissions] = useState<any[]>([]);
@@ -166,30 +174,47 @@ export default function MindTrackWorkbook() {
 
   const load = async () => {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { navigate("/auth?redirect=/mind-track/workbook"); return; }
+    setLoadError(null);
+    setLoadSteps({ auth: false, workbook: false, missions: false, checkins: false, baselines: false });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { navigate("/auth?redirect=/mind-track/workbook"); return; }
+      setLoadSteps((s) => ({ ...s, auth: true }));
 
-    const { data: wbs } = await supabase
-      .from("mind_track_workbooks")
-      .select("*, mind_track_enrollments(*)")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(1);
-    if (!wbs || wbs.length === 0) { navigate("/mind-track/start"); return; }
+      const { data: wbs, error: wbErr } = await supabase
+        .from("mind_track_workbooks")
+        .select("*, mind_track_enrollments(*)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (wbErr) throw wbErr;
+      if (!wbs || wbs.length === 0) { navigate("/mind-track/start"); return; }
 
-    const wb = wbs[0];
-    setWorkbook(wb);
-    setEnrollment(wb.mind_track_enrollments);
+      const wb = wbs[0];
+      setWorkbook(wb);
+      setEnrollment(wb.mind_track_enrollments);
+      setLoadSteps((s) => ({ ...s, workbook: true }));
 
-    const [mRes, cRes, bRes] = await Promise.all([
-      supabase.from("mind_track_daily_missions").select("*").eq("enrollment_id", wb.enrollment_id).order("day_number"),
-      supabase.from("mind_track_checkins").select("*").eq("enrollment_id", wb.enrollment_id).order("day_number"),
-      supabase.from("mind_track_baseline_assessments").select("*").eq("enrollment_id", wb.enrollment_id).order("created_at"),
-    ]);
-    setMissions(mRes.data ?? []);
-    setCheckins(cRes.data ?? []);
-    setBaselines(bRes.data ?? []);
-    setLoading(false);
+      const [mRes, cRes, bRes] = await Promise.all([
+        supabase.from("mind_track_daily_missions").select("*").eq("enrollment_id", wb.enrollment_id).order("day_number"),
+        supabase.from("mind_track_checkins").select("*").eq("enrollment_id", wb.enrollment_id).order("day_number"),
+        supabase.from("mind_track_baseline_assessments").select("*").eq("enrollment_id", wb.enrollment_id).order("created_at"),
+      ]);
+      if (mRes.error) throw mRes.error;
+      if (cRes.error) throw cRes.error;
+      if (bRes.error) throw bRes.error;
+      setMissions(mRes.data ?? []);
+      setLoadSteps((s) => ({ ...s, missions: true }));
+      setCheckins(cRes.data ?? []);
+      setLoadSteps((s) => ({ ...s, checkins: true }));
+      setBaselines(bRes.data ?? []);
+      setLoadSteps((s) => ({ ...s, baselines: true }));
+    } catch (e: any) {
+      console.error("workbook load failed:", e);
+      setLoadError(e?.message ?? "데이터를 불러오는 중 문제가 발생했어요");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Calculate current day from started_at

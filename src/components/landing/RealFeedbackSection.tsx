@@ -33,9 +33,9 @@ const PERSONAS: Persona[] = [
     badgeEn: 'Real Parent Feedback',
     title: (
       <>
-        "내가 잘못 키운 줄 알았는데"
+        “내가 잘못 키운 줄 알았는데,”
         <br className="md:hidden" />{' '}
-        <span className="text-emerald-400 text-lg md:text-4xl">리포트를 보고<br className="md:hidden" />아이를 이해하게 됐어요</span>
+        <span className="text-emerald-400 text-lg md:text-4xl">리포트를 보고 아이를<br className="md:hidden" /> 이해하게 됐어요.</span>
       </>
     ),
     titleEn: (
@@ -52,10 +52,10 @@ const PERSONAS: Persona[] = [
     messages: [
       { sender: 'parent', text: '아침마다 어린이집 가기 싫다고 30분씩 울어요. 제가 뭘 잘못한 걸까요?', time: '12:04' },
       { sender: 'expert', text: '아이가 게으른 게 아니라, 환경 전환에 적응 시간이 더 필요한 기질일 수 있어요.', time: '12:04' },
-      { sender: 'parent', text: '아 그래서 그랬구나... 와...', time: '12:05', highlight: true },
-      { sender: 'parent', text: "맨날 '빨리빨리'만 외쳤어요", time: '12:06' },
-      { sender: 'expert', text: '재촉이 아이에겐 "준비도 안 됐는데 떠밀린다"는 불안으로 느껴져 더 큰 저항을 만든 거예요.', time: '12:06' },
-      { sender: 'parent', text: '아... 이제 좀 이해가 돼요', time: '12:07', highlight: true },
+      { sender: 'parent', text: '아, 그래서 그랬구나… 와….', time: '12:05', highlight: true },
+      { sender: 'parent', text: '맨날 “빨리빨리”만 외쳤어요.', time: '12:06' },
+      { sender: 'expert', text: '재촉이 아이에겐 “준비도 안 됐는데 떠밀린다”는 불안으로 느껴져 더 큰 저항을 만든 거예요.', time: '12:06' },
+      { sender: 'parent', text: '아… 이제 좀 이해가 돼요.', time: '12:07', highlight: true },
       { sender: 'parent', text: '이런 고민 생길 때마다 계속 받아볼 수 있나요?', time: '12:09' },
       { sender: 'expert', text: '네! 30일 마음 챌린지(₩19,900) 한 번이면 매일 워크북·검사·전문가 코칭까지 30일간 함께해요.', time: '12:09' },
       { sender: 'parent', text: '상담 한 번 값으로 30일이라니 🤩', time: '12:10', highlight: true },
@@ -72,9 +72,9 @@ const PERSONAS: Persona[] = [
       { sender: 'parent', text: '30 days for the price of one session 🤩', time: '12:10', highlight: true },
     ],
     highlights: [
-      { emoji: '😢', before: '"제가 뭘 잘못한 걸까요?"', after: '환경 전환에 시간이 더 필요한 기질 — 부모 잘못 아님', reaction: '"아 그래서 그랬구나... 와..."' },
-      { emoji: '💡', before: '"빨리빨리 좀 해!"', after: '"준비도 안 됐는데 떠밀린다" → 저항 행동 유발', reaction: '"아... 이제 좀 이해가 돼요"' },
-      { emoji: '🤩', before: '"이거 얼마에요?"', after: '30일 마음 챌린지 — ₩19,900 (1회 결제)', reaction: '"상담 한 번 값으로 30일이라니!"' },
+      { emoji: '😢', before: '“제가 뭘 잘못한 걸까요?”', after: '환경 전환에 시간이 더 필요한 기질 — 부모 잘못이 아니에요.', reaction: '“아, 그래서 그랬구나… 와….”' },
+      { emoji: '💡', before: '“빨리빨리 좀 해!”', after: '“준비도 안 됐는데 떠밀린다” → 저항 행동 유발', reaction: '“아… 이제 좀 이해가 돼요.”' },
+      { emoji: '🤩', before: '“이거 얼마예요?”', after: '30일 마음 챌린지 — ₩19,900 (1회 결제)', reaction: '“상담 한 번 값으로 30일이라니!”' },
     ],
     highlightsEn: [
       { emoji: '😢', before: '"Am I a bad parent?"', after: 'Slow-to-warm-up temperament — not your fault', reaction: '"Oh, that explains so much."' },
@@ -90,9 +90,9 @@ const PERSONAS: Persona[] = [
     badgeEn: 'Parent of Teens',
     title: (
       <>
-        "사춘기라 어쩔 수 없다 했는데"
+        “사춘기라 어쩔 수 없다 했는데,”
         <br className="md:hidden" />{' '}
-        <span className="text-sky-400 text-lg md:text-4xl">진짜 신호를<br className="md:hidden" />놓치고 있었어요</span>
+        <span className="text-sky-400 text-lg md:text-4xl">진짜 신호를<br className="md:hidden" /> 놓치고 있었어요.</span>
       </>
     ),
     titleEn: (
@@ -109,13 +109,13 @@ const PERSONAS: Persona[] = [
     messages: [
       { sender: 'parent', text: '애가 방에만 있고 말도 안 해요. 그냥 사춘기겠죠?', time: '21:14' },
       { sender: 'expert', text: '리포트상 우울 지표(PHQ-A)가 중상 구간이에요. 사춘기보다 회복 케어가 우선이에요.', time: '21:14' },
-      { sender: 'parent', text: '네...? 그 정도였어요?', time: '21:15', highlight: true },
-      { sender: 'parent', text: '학원 빠지는 거 게을러서인 줄...', time: '21:16' },
-      { sender: 'expert', text: '에너지 고갈 + 회피 패턴이에요. 야단보다 "오늘 뭐가 가장 힘들었어?" 한 마디가 더 효과적이에요.', time: '21:16' },
-      { sender: 'parent', text: '오늘 그렇게 물어볼게요', time: '21:18', highlight: true },
+      { sender: 'parent', text: '네…? 그 정도였어요?', time: '21:15', highlight: true },
+      { sender: 'parent', text: '학원 빠지는 거 게을러서인 줄 알았어요….', time: '21:16' },
+      { sender: 'expert', text: '에너지 고갈 + 회피 패턴이에요. 야단보다 “오늘 뭐가 가장 힘들었어?” 한 마디가 더 효과적이에요.', time: '21:16' },
+      { sender: 'parent', text: '오늘 그렇게 물어볼게요.', time: '21:18', highlight: true },
       { sender: 'parent', text: '이런 거 매주 추적도 되나요?', time: '21:20' },
       { sender: 'expert', text: '30일 마음 챌린지(₩19,900)면 주간 변화 추적 + 위험 신호 알림까지 받아보실 수 있어요.', time: '21:20' },
-      { sender: 'parent', text: '이건 진짜 필요했던 거예요', time: '21:22', highlight: true },
+      { sender: 'parent', text: '이건 진짜 필요했던 거예요.', time: '21:22', highlight: true },
     ],
     messagesEn: [
       { sender: 'parent', text: 'He stays in his room, never talks. Just puberty, right?', time: '21:14' },
@@ -129,9 +129,9 @@ const PERSONAS: Persona[] = [
       { sender: 'parent', text: 'This is exactly what I needed.', time: '21:22', highlight: true },
     ],
     highlights: [
-      { emoji: '🚨', before: '"그냥 사춘기"', after: 'PHQ-A 우울 중상 구간 — 즉시 케어 필요', reaction: '"네...? 그 정도였어요?"' },
-      { emoji: '💬', before: '"왜 또 빠졌어?"', after: '"오늘 뭐가 가장 힘들었어?" — 회피보다 공감', reaction: '"오늘 그렇게 물어볼게요"' },
-      { emoji: '📈', before: '"매번 검사 따로 받기 부담"', after: '주간 추적 + 위험 신호 알림 — ₩19,900', reaction: '"진짜 필요했던 거예요"' },
+      { emoji: '🚨', before: '“그냥 사춘기겠지.”', after: 'PHQ-A 우울 중상 구간 — 즉시 케어가 필요해요.', reaction: '“네…? 그 정도였어요?”' },
+      { emoji: '💬', before: '“왜 또 빠졌어?”', after: '“오늘 뭐가 가장 힘들었어?” — 추궁보다 공감이 먼저예요.', reaction: '“오늘 그렇게 물어볼게요.”' },
+      { emoji: '📈', before: '“매번 검사 따로 받기 부담돼요.”', after: '주간 추적 + 위험 신호 알림 — ₩19,900', reaction: '“진짜 필요했던 거예요.”' },
     ],
     highlightsEn: [
       { emoji: '🚨', before: '"Just puberty"', after: 'PHQ-A moderate depression — needs care', reaction: '"That high?"' },
@@ -147,9 +147,9 @@ const PERSONAS: Persona[] = [
     badgeEn: 'Burnout Worker',
     title: (
       <>
-        "그냥 피곤한 줄 알았는데"
+        “그냥 피곤한 줄 알았는데,”
         <br className="md:hidden" />{' '}
-        <span className="text-amber-400 text-lg md:text-4xl">번아웃 3단계<br className="md:hidden" />이미 진입했더라고요</span>
+        <span className="text-amber-400 text-lg md:text-4xl">번아웃 3단계에<br className="md:hidden" /> 이미 진입했더라고요.</span>
       </>
     ),
     titleEn: (
@@ -165,14 +165,14 @@ const PERSONAS: Persona[] = [
     chatTitleEn: 'AIHPRO Mind Coaching',
     messages: [
       { sender: 'parent', text: '주말에 12시간 자도 안 풀려요. 그냥 체력 문제겠죠?', time: '09:32' },
-      { sender: 'expert', text: '리포트상 정서적 소진 + 비인간화 점수가 임상 기준 초과예요. 번아웃 3단계입니다.', time: '09:32' },
-      { sender: 'parent', text: '...진짜요? 그렇게 심해요?', time: '09:33', highlight: true },
+      { sender: 'expert', text: '리포트상 정서적 소진 + 비인간화 점수가 임상 기준을 초과했어요. 번아웃 3단계입니다.', time: '09:32' },
+      { sender: 'parent', text: '…진짜요? 그렇게 심해요?', time: '09:33', highlight: true },
       { sender: 'parent', text: '회사 그만둬야 하나요?', time: '09:34' },
-      { sender: 'expert', text: '아직은 아니에요. 30일 회복 루틴(아침 5분 호흡 + 주 2회 코칭)으로 70%는 한 달 내 회복돼요.', time: '09:34' },
-      { sender: 'parent', text: '진짜요? 다행이다...', time: '09:35', highlight: true },
-      { sender: 'parent', text: '병원 가는 것보단 가벼운 게 좋아요', time: '09:36' },
+      { sender: 'expert', text: '아직은 아니에요. 30일 회복 루틴(아침 5분 호흡 + 주 2회 코칭)으로 70%는 한 달 안에 회복돼요.', time: '09:34' },
+      { sender: 'parent', text: '진짜요? 다행이다….', time: '09:35', highlight: true },
+      { sender: 'parent', text: '병원 가는 것보단 가벼운 게 좋아요.', time: '09:36' },
       { sender: 'expert', text: '30일 마음 챌린지(₩19,900) — 매일 측정 + 회복 가이드 + 전문가 코칭이 다 포함돼요.', time: '09:36' },
-      { sender: 'parent', text: '오늘 바로 시작할게요', time: '09:38', highlight: true },
+      { sender: 'parent', text: '오늘 바로 시작할게요.', time: '09:38', highlight: true },
     ],
     messagesEn: [
       { sender: 'parent', text: '12 hours of sleep on weekends and still drained. Just stamina?', time: '09:32' },
@@ -186,9 +186,9 @@ const PERSONAS: Persona[] = [
       { sender: 'parent', text: "I'll start today.", time: '09:38', highlight: true },
     ],
     highlights: [
-      { emoji: '⚠️', before: '"그냥 체력 문제"', after: '번아웃 3단계 — 임상 기준 초과', reaction: '"진짜요? 그렇게 심해요?"' },
-      { emoji: '🌱', before: '"회사 그만둬야 하나"', after: '30일 회복 루틴이면 70% 회복', reaction: '"진짜요? 다행이다..."' },
-      { emoji: '💼', before: '"병원은 부담돼"', after: '매일 측정 + 코칭 — ₩19,900', reaction: '"오늘 바로 시작할게요"' },
+      { emoji: '⚠️', before: '“그냥 체력 문제겠지.”', after: '번아웃 3단계 — 임상 기준 초과', reaction: '“진짜요? 그렇게 심해요?”' },
+      { emoji: '🌱', before: '“회사 그만둬야 하나….”', after: '30일 회복 루틴이면 70%가 회복돼요.', reaction: '“진짜요? 다행이다….”' },
+      { emoji: '💼', before: '“병원은 부담돼요.”', after: '매일 측정 + 코칭 — ₩19,900', reaction: '“오늘 바로 시작할게요.”' },
     ],
     highlightsEn: [
       { emoji: '⚠️', before: '"Just stamina"', after: 'Burnout stage 3 — exceeds clinical level', reaction: '"That bad?"' },
@@ -204,9 +204,9 @@ const PERSONAS: Persona[] = [
     badgeEn: 'Senior Care Family',
     title: (
       <>
-        "치매 초기인가 무서웠는데"
+        “치매 초기인가 무서웠는데,”
         <br className="md:hidden" />{' '}
-        <span className="text-rose-400 text-lg md:text-4xl">정확히 어디부터<br className="md:hidden" />챙기면 되는지 알게 됐어요</span>
+        <span className="text-rose-400 text-lg md:text-4xl">정확히 어디부터<br className="md:hidden" /> 챙기면 되는지 알게 됐어요.</span>
       </>
     ),
     titleEn: (
@@ -221,15 +221,15 @@ const PERSONAS: Persona[] = [
     chatTitle: 'AIHPRO 인지 케어',
     chatTitleEn: 'AIHPRO Cognitive Care',
     messages: [
-      { sender: 'parent', text: '엄마가 같은 말 자주 반복하세요. 치매 초기일까요?', time: '15:02' },
-      { sender: 'expert', text: 'DRSA-AIH 인지 검사 결과 단기기억은 정상, 실행기능에서 약한 신호가 있어요. 치매보다는 우울·수면 영향이 커요.', time: '15:02' },
-      { sender: 'parent', text: '아... 치매는 아닌 거네요', time: '15:03', highlight: true },
+      { sender: 'parent', text: '엄마가 같은 말을 자주 반복하세요. 치매 초기일까요?', time: '15:02' },
+      { sender: 'expert', text: 'DRSA-AIH 인지 검사 결과, 단기기억은 정상이고 실행기능에서 약한 신호가 있어요. 치매보다는 우울·수면 영향이 커요.', time: '15:02' },
+      { sender: 'parent', text: '아… 치매는 아닌 거네요.', time: '15:03', highlight: true },
       { sender: 'parent', text: '그럼 뭘 챙기면 돼요?', time: '15:04' },
-      { sender: 'expert', text: '햇빛 산책 20분 + 수면 일정 + 주 2회 인지 게임이 1순위예요. 30일 후 재측정으로 변화 확인 가능합니다.', time: '15:04' },
-      { sender: 'parent', text: '그 정도면 충분히 할 수 있어요', time: '15:05', highlight: true },
+      { sender: 'expert', text: '햇빛 산책 20분 + 수면 일정 + 주 2회 인지 게임이 1순위예요. 30일 후 재측정으로 변화를 확인할 수 있어요.', time: '15:04' },
+      { sender: 'parent', text: '그 정도면 충분히 할 수 있어요.', time: '15:05', highlight: true },
       { sender: 'parent', text: '저희 가족이 같이 추적할 수 있나요?', time: '15:07' },
       { sender: 'expert', text: '네, 30일 마음 챌린지(₩19,900)로 가족이 함께 변화 추적 + 위험 알림을 받으실 수 있어요.', time: '15:07' },
-      { sender: 'parent', text: '병원 가기 전에 이걸 먼저 봤어야 했네요', time: '15:09', highlight: true },
+      { sender: 'parent', text: '병원 가기 전에 이걸 먼저 봤어야 했네요.', time: '15:09', highlight: true },
     ],
     messagesEn: [
       { sender: 'parent', text: 'Mom repeats herself often. Early dementia?', time: '15:02' },
@@ -243,9 +243,9 @@ const PERSONAS: Persona[] = [
       { sender: 'parent', text: 'Should have used this before the hospital.', time: '15:09', highlight: true },
     ],
     highlights: [
-      { emoji: '🧠', before: '"치매 초기 같아요"', after: '실행기능 약한 신호 — 우울·수면 영향', reaction: '"치매는 아닌 거네요"' },
-      { emoji: '☀️', before: '"뭘 해야 할지 모르겠어요"', after: '햇빛 + 수면 + 인지게임 3종', reaction: '"충분히 할 수 있어요"' },
-      { emoji: '👨‍👩‍👧', before: '"가족이 따로 챙기기 힘들어"', after: '가족 공유 추적 — ₩19,900', reaction: '"이걸 먼저 봤어야 했네요"' },
+      { emoji: '🧠', before: '“치매 초기 같아요.”', after: '실행기능 약한 신호 — 우울·수면 영향', reaction: '“치매는 아닌 거네요.”' },
+      { emoji: '☀️', before: '“뭘 해야 할지 모르겠어요.”', after: '햇빛 + 수면 + 인지 게임, 3종 루틴', reaction: '“충분히 할 수 있어요.”' },
+      { emoji: '👨‍👩‍👧', before: '“가족이 따로 챙기기 힘들어요.”', after: '가족 공유 추적 — ₩19,900', reaction: '“이걸 먼저 봤어야 했네요.”' },
     ],
     highlightsEn: [
       { emoji: '🧠', before: '"Early dementia?"', after: 'Mild executive signal — depression/sleep', reaction: '"Not dementia."' },

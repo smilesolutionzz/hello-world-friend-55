@@ -440,8 +440,9 @@ export class RealtimeVoiceChat {
   }
 
   disconnect() {
+    this.intentionalClose = true;
     this.cleanup();
-    this.ws?.close();
+    try { this.ws?.close(); } catch {}
     this.ws = null;
   }
 }

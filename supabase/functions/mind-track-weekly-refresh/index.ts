@@ -98,6 +98,31 @@ day ${startDay}부터 ${endDay}까지 ${dayCount}개 미션을 JSON으로만 출
     const parsed = JSON.parse((await aiRes.json()).choices[0].message.content);
     const missions = parsed.missions ?? [];
 
+    // Helper: fetch up to 3 YouTube candidates for a query (Korean, KR region).
+    // Falls back to empty list if YOUTUBE_API_KEY is missing or the request fails.
+    const ytKey = Deno.env.get("YOUTUBE_API_KEY");
+    async function fetchCandidates(q: string): Promise<Array<{ video_id: string; title: string; thumbnail: string }>> {
+      if (!ytKey || !q) return [];
+      try {
+        const url =
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=3` +
+          `&relevanceLanguage=ko&regionCode=KR&safeSearch=strict&q=${encodeURIComponent(q)}&key=${ytKey}`;
+        const r = await fetch(url);
+        if (!r.ok) return [];
+        const j = await r.json();
+        return (j.items ?? [])
+          .filter((it: any) => it?.id?.videoId)
+          .map((it: any) => ({
+            video_id: it.id.videoId,
+            title: it.snippet?.title ?? "",
+            thumbnail: it.snippet?.thumbnails?.medium?.url ?? it.snippet?.thumbnails?.default?.url ?? "",
+          }));
+      } catch (e) {
+        console.error("YT candidates fetch failed:", e);
+        return [];
+      }
+    }
+
     if (missions.length > 0) {
       // Day별 YouTube 검색 키워드 (1~30)
       const DAY_YT: Record<number, string> = {
@@ -108,20 +133,31 @@ day ${startDay}부터 ${endDay}까지 ${dayCount}개 미션을 JSON으로만 출
         21:'3주 마음 변화 회고',22:'내면 탐색 자기이해',23:'AI 코칭 대화 활용',24:'재발 방지 신호',25:'회복 루틴 5분',
         26:'관계 회복 진솔한 대화',27:'거절 경계 만들기',28:'4주 마음챙김 정리',29:'한 달 셀프 리포트',30:'30일 마음 변화 마무리 감사 명상',
       };
-      await supabase.from("mind_track_daily_missions").insert(
-        missions.map((m: any) => ({
-          user_id: user.id,
-          enrollment_id: enrollmentId,
-          workbook_id: workbook.id,
-          day_number: m.day,
-          week_number: weekNumber,
-          mission_title: m.title,
-          mission_description: m.description,
-          mission_type: m.type,
-          estimated_minutes: m.minutes ?? 5,
-          youtube_query: DAY_YT[m.day] ?? null,
-        }))
+      // Resolve YouTube candidates per mission day in parallel
+      const rows = await Promise.all(
+        missions.map(async (m: any) => {
+          const q = DAY_YT[m.day] ?? null;
+          const candidates = q ? await fetchCandidates(q) : [];
+          return {
+            user_id: user.id,
+            enrollment_id: enrollmentId,
+            workbook_id: workbook.id,
+            day_number: m.day,
+            week_number: weekNumber,
+            mission_title: m.title,
+            mission_description: m.description,
+            mission_type: m.type,
+            estimated_minutes: m.minutes ?? 5,
+            youtube_query: q,
+            youtube_candidates: candidates,
+            // Keep first candidate as the default for legacy fields
+            youtube_video_id: candidates[0]?.video_id ?? null,
+            youtube_title: candidates[0]?.title ?? null,
+            youtube_thumbnail: candidates[0]?.thumbnail ?? null,
+          };
+        }),
       );
+      await supabase.from("mind_track_daily_missions").insert(rows);
     }
 
     return new Response(JSON.stringify({ success: true, generated: missions.length }), {

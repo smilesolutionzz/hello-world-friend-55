@@ -87,6 +87,9 @@ import ExpertInterventionCard, { RiskAlertCard, type InterventionDay } from "@/c
 import InterventionCalendar from "@/components/mind-track/InterventionCalendar";
 import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulator";
 import WeeklyMilestoneCards from "@/components/mind-track/WeeklyMilestoneCards";
+import MilestoneProgressBar from "@/components/mind-track/MilestoneProgressBar";
+import MindTrackWorkbookSkeleton from "@/components/mind-track/MindTrackWorkbookSkeleton";
+import MissionVideoPicker from "@/components/mind-track/MissionVideoPicker";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 import { HelpCircle } from "lucide-react";
 
@@ -147,6 +150,14 @@ export default function MindTrackWorkbook() {
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const dayButtonRefs = useRef<Record<number, HTMLButtonElement | null>>({});
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadSteps, setLoadSteps] = useState({
+    auth: false,
+    workbook: false,
+    missions: false,
+    checkins: false,
+    baselines: false,
+  });
   const [enrollment, setEnrollment] = useState<any>(null);
   const [workbook, setWorkbook] = useState<any>(null);
   const [missions, setMissions] = useState<any[]>([]);
@@ -163,30 +174,47 @@ export default function MindTrackWorkbook() {
 
   const load = async () => {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { navigate("/auth?redirect=/mind-track/workbook"); return; }
+    setLoadError(null);
+    setLoadSteps({ auth: false, workbook: false, missions: false, checkins: false, baselines: false });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { navigate("/auth?redirect=/mind-track/workbook"); return; }
+      setLoadSteps((s) => ({ ...s, auth: true }));
 
-    const { data: wbs } = await supabase
-      .from("mind_track_workbooks")
-      .select("*, mind_track_enrollments(*)")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(1);
-    if (!wbs || wbs.length === 0) { navigate("/mind-track/start"); return; }
+      const { data: wbs, error: wbErr } = await supabase
+        .from("mind_track_workbooks")
+        .select("*, mind_track_enrollments(*)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (wbErr) throw wbErr;
+      if (!wbs || wbs.length === 0) { navigate("/mind-track/start"); return; }
 
-    const wb = wbs[0];
-    setWorkbook(wb);
-    setEnrollment(wb.mind_track_enrollments);
+      const wb = wbs[0];
+      setWorkbook(wb);
+      setEnrollment(wb.mind_track_enrollments);
+      setLoadSteps((s) => ({ ...s, workbook: true }));
 
-    const [mRes, cRes, bRes] = await Promise.all([
-      supabase.from("mind_track_daily_missions").select("*").eq("enrollment_id", wb.enrollment_id).order("day_number"),
-      supabase.from("mind_track_checkins").select("*").eq("enrollment_id", wb.enrollment_id).order("day_number"),
-      supabase.from("mind_track_baseline_assessments").select("*").eq("enrollment_id", wb.enrollment_id).order("created_at"),
-    ]);
-    setMissions(mRes.data ?? []);
-    setCheckins(cRes.data ?? []);
-    setBaselines(bRes.data ?? []);
-    setLoading(false);
+      const [mRes, cRes, bRes] = await Promise.all([
+        supabase.from("mind_track_daily_missions").select("*").eq("enrollment_id", wb.enrollment_id).order("day_number"),
+        supabase.from("mind_track_checkins").select("*").eq("enrollment_id", wb.enrollment_id).order("day_number"),
+        supabase.from("mind_track_baseline_assessments").select("*").eq("enrollment_id", wb.enrollment_id).order("created_at"),
+      ]);
+      if (mRes.error) throw mRes.error;
+      if (cRes.error) throw cRes.error;
+      if (bRes.error) throw bRes.error;
+      setMissions(mRes.data ?? []);
+      setLoadSteps((s) => ({ ...s, missions: true }));
+      setCheckins(cRes.data ?? []);
+      setLoadSteps((s) => ({ ...s, checkins: true }));
+      setBaselines(bRes.data ?? []);
+      setLoadSteps((s) => ({ ...s, baselines: true }));
+    } catch (e: any) {
+      console.error("workbook load failed:", e);
+      setLoadError(e?.message ?? "데이터를 불러오는 중 문제가 발생했어요");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Calculate current day from started_at
@@ -328,11 +356,19 @@ export default function MindTrackWorkbook() {
     }
   };
 
-  if (loading) {
+  if (loading || loadError) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
+      <MindTrackWorkbookSkeleton
+        steps={[
+          { key: "auth", label: "로그인 확인", done: loadSteps.auth },
+          { key: "workbook", label: "워크북 불러오기", done: loadSteps.workbook },
+          { key: "missions", label: "오늘의 미션 준비", done: loadSteps.missions },
+          { key: "checkins", label: "체크인 기록 정리", done: loadSteps.checkins },
+          { key: "baselines", label: "마일스톤 데이터 정렬", done: loadSteps.baselines },
+        ]}
+        error={loadError}
+        onRetry={load}
+      />
     );
   }
 
@@ -428,6 +464,9 @@ export default function MindTrackWorkbook() {
               <InviteFriendsButton currentDay={currentDay} />
             </div>
           </Card>
+
+          {/* 마일스톤 진행 현황 (어떤 7/14/21/28일 카드가 완료되었는지 + 다음 목표 강조) */}
+          <MilestoneProgressBar currentDay={currentDay} checkins={checkins} />
 
           {/* 7/14/21/28일 자가진단 마일스톤 카드 */}
           <WeeklyMilestoneCards
@@ -528,6 +567,19 @@ export default function MindTrackWorkbook() {
                   </ol>
                 </div>
 
+                {/* 추천 영상 후보 — 사용자가 선호하는 영상을 직접 선택 */}
+                {Array.isArray(todayMission.youtube_candidates) && todayMission.youtube_candidates.length > 0 && (
+                  <MissionVideoPicker
+                    missionId={todayMission.id}
+                    candidates={todayMission.youtube_candidates}
+                    selectedVideoId={todayMission.selected_youtube_video_id ?? todayMission.youtube_video_id ?? null}
+                    onSelected={(vid) => {
+                      setMissions((prev) =>
+                        prev.map((m) => (m.id === todayMission.id ? { ...m, selected_youtube_video_id: vid } : m)),
+                      );
+                    }}
+                  />
+                )}
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center gap-3 text-xs text-slate-500">
                     <span>⏱ {todayMission.estimated_minutes}분</span>

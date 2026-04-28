@@ -8286,9 +8286,11 @@ export type Database = {
           mission_description: string | null
           mission_title: string
           mission_type: string | null
+          selected_youtube_video_id: string | null
           user_id: string
           week_number: number
           workbook_id: string
+          youtube_candidates: Json | null
           youtube_query: string | null
           youtube_thumbnail: string | null
           youtube_title: string | null
@@ -8303,9 +8305,11 @@ export type Database = {
           mission_description?: string | null
           mission_title: string
           mission_type?: string | null
+          selected_youtube_video_id?: string | null
           user_id: string
           week_number: number
           workbook_id: string
+          youtube_candidates?: Json | null
           youtube_query?: string | null
           youtube_thumbnail?: string | null
           youtube_title?: string | null
@@ -8320,9 +8324,11 @@ export type Database = {
           mission_description?: string | null
           mission_title?: string
           mission_type?: string | null
+          selected_youtube_video_id?: string | null
           user_id?: string
           week_number?: number
           workbook_id?: string
+          youtube_candidates?: Json | null
           youtube_query?: string | null
           youtube_thumbnail?: string | null
           youtube_title?: string | null
@@ -8446,6 +8452,45 @@ export type Database = {
           trigger_day?: number
           trigger_type?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mind_track_milestone_reports: {
+        Row: {
+          ai_narrative: string | null
+          baseline_snapshot: Json | null
+          checkin_summary: Json | null
+          created_at: string
+          enrollment_id: string
+          id: string
+          latest_snapshot: Json | null
+          milestone_day: number
+          pdf_url: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_narrative?: string | null
+          baseline_snapshot?: Json | null
+          checkin_summary?: Json | null
+          created_at?: string
+          enrollment_id: string
+          id?: string
+          latest_snapshot?: Json | null
+          milestone_day: number
+          pdf_url?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_narrative?: string | null
+          baseline_snapshot?: Json | null
+          checkin_summary?: Json | null
+          created_at?: string
+          enrollment_id?: string
+          id?: string
+          latest_snapshot?: Json | null
+          milestone_day?: number
+          pdf_url?: string | null
           user_id?: string
         }
         Relationships: []

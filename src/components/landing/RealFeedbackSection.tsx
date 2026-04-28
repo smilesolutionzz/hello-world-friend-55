@@ -28,6 +28,63 @@ type Persona = {
 
 const PERSONAS: Persona[] = [
   {
+    id: 'developmental-delay',
+    badge: '발달지연 의심 부모 반응',
+    badgeEn: 'Developmental Delay Concern',
+    title: (
+      <>
+        “말이 늦은 줄만 알았는데,”
+        <br className="md:hidden" />{' '}
+        <span className="text-violet-400 text-lg md:text-4xl">발달 신호를<br className="md:hidden" /> 정확히 짚어줬어요.</span>
+      </>
+    ),
+    titleEn: (
+      <>
+        "I thought he was just a <span className="text-rose-400">late talker</span>"
+        <br />
+        <span className="text-violet-400">The report pinpointed real signals</span>
+      </>
+    ),
+    subtitle: '36개월 자녀의 언어·사회성 발달 신호를 분석한 부모 사례',
+    subtitleEn: 'A parent analyzing language and social signals of a 36-month-old',
+    chatTitle: 'AIHPRO 발달 분석',
+    chatTitleEn: 'AIHPRO Development Analysis',
+    messages: [
+      { sender: 'parent', text: '36개월인데 말이 거의 없어요. 그냥 늦된 걸까요?', time: '10:12' },
+      { sender: 'expert', text: '리포트상 표현언어와 사회적 상호작용 영역에서 또래 대비 지연 신호가 보여요. 단순 늦됨과 구분이 필요해요.', time: '10:12' },
+      { sender: 'parent', text: '아…그게 그냥 기다리면 되는 게 아니었군요.', time: '10:13', highlight: true },
+      { sender: 'parent', text: '병원부터 가야 하나요?', time: '10:14' },
+      { sender: 'expert', text: '먼저 30일간 가정 내 상호작용 신호를 추적해보세요. 변화 없으면 전문기관 평가로 바로 연결해드려요.', time: '10:14' },
+      { sender: 'parent', text: '그럼 마음이 좀 놓이네요.', time: '10:15', highlight: true },
+      { sender: 'parent', text: '집에서 뭘 해주면 좋아요?', time: '10:16' },
+      { sender: 'expert', text: '30일 마음 챌린지(₩19,900)에 발달 놀이 워크북 + 주간 발달 체크 + 전문가 코칭이 포함돼요.', time: '10:16' },
+      { sender: 'parent', text: '이건 진짜 빨리 시작해야겠어요.', time: '10:18', highlight: true },
+    ],
+    messagesEn: [
+      { sender: 'parent', text: 'My 36-month-old barely speaks. Just a late bloomer?', time: '10:12' },
+      { sender: 'expert', text: 'Report shows delay signals in expressive language and social interaction vs peers.', time: '10:12' },
+      { sender: 'parent', text: 'So waiting it out wasn\'t the answer…', time: '10:13', highlight: true },
+      { sender: 'parent', text: 'Should we go straight to a hospital?', time: '10:14' },
+      { sender: 'expert', text: 'First, track home interaction signals for 30 days. If no change, we route you to expert evaluation.', time: '10:14' },
+      { sender: 'parent', text: 'That\'s a relief.', time: '10:15', highlight: true },
+      { sender: 'parent', text: 'What can we do at home?', time: '10:16' },
+      { sender: 'expert', text: '30-Day Mind Track (₩19,900) includes play workbook + weekly dev check + expert coaching.', time: '10:16' },
+      { sender: 'parent', text: 'We need to start this right away.', time: '10:18', highlight: true },
+    ],
+    highlights: [
+      { emoji: '🧩', before: '“그냥 늦된 거겠죠?”', after: '표현언어·사회성 영역 또래 대비 지연 신호', reaction: '“기다리면 되는 게 아니었군요.”' },
+      { emoji: '🏠', before: '“바로 병원 가야 하나?”', after: '30일 가정 추적 → 필요 시 전문기관 연결', reaction: '“마음이 좀 놓이네요.”' },
+      { emoji: '🎈', before: '“집에서 뭘 해줘야 할지 몰라요.”', after: '발달 놀이 워크북 + 주간 체크 — ₩19,900', reaction: '“진짜 빨리 시작해야겠어요.”' },
+    ],
+    highlightsEn: [
+      { emoji: '🧩', before: '"Just a late talker?"', after: 'Delay signals in language & social areas', reaction: '"Not just waiting."' },
+      { emoji: '🏠', before: '"Hospital first?"', after: '30-day home tracking → expert if needed', reaction: '"What a relief."' },
+      { emoji: '🎈', before: '"Don\'t know what to do at home"', after: 'Play workbook + weekly check — ₩19,900', reaction: '"Starting right away."' },
+    ],
+    cta: { label: '발달 추적 트랙 — ₩19,900', labelEn: 'Development Track — ₩19,900', href: '/report-generator' },
+    accent: 'from-violet-500/10 to-purple-500/10 border-violet-500/20 text-violet-300',
+  },
+  {
     id: 'parent-young',
     badge: '실제 학부모 반응',
     badgeEn: 'Real Parent Feedback',

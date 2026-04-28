@@ -58,9 +58,33 @@ interface ConcernReport {
 
 const MindTrack: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
+  const [authChecking, setAuthChecking] = useState(true);
+  const [postLoginRedirecting, setPostLoginRedirecting] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showDebug, setShowDebug] = useState(false);
+
+  // 현재 URL이 별칭(/mind-track-workbook)인지 표준(/mind-track/workbook)인지 감지해
+  // 워크북 이동 시 같은 형식 유지 — referrer 기반 일관성 확보
+  const workbookBase = (() => {
+    try {
+      // location.pathname 또는 referrer 둘 다 체크
+      const ref = typeof document !== 'undefined' ? document.referrer : '';
+      if (location.pathname.startsWith('/mind-track-workbook')) return '/mind-track-workbook';
+      if (ref.includes('/mind-track-workbook')) return '/mind-track-workbook';
+      return '/mind-track/workbook';
+    } catch {
+      return '/mind-track/workbook';
+    }
+  })();
+  const buildWorkbookUrl = (day: number, openMission = true) => {
+    const params = new URLSearchParams();
+    params.set('day', String(day));
+    if (openMission) params.set('openMission', '1');
+    return `${workbookBase}?${params.toString()}`;
+  };
 
   // 진행 중인 30일 트랙 등록 정보 (있으면 개인화 배너 노출)
   const [activeEnrollment, setActiveEnrollment] = useState<{

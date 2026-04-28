@@ -277,6 +277,30 @@ serve(async (req) => {
     const today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
     const todayStr = today.toISOString().slice(0, 10);
 
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
+    const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+
+    async function callTransactionalEmail(payload: any): Promise<{ ok: boolean; error?: string; body?: any }> {
+      try {
+        const r = await fetch(`${SUPABASE_URL}/functions/v1/send-transactional-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
+            'apikey': SERVICE_ROLE_KEY,
+          },
+          body: JSON.stringify(payload),
+        });
+        const text = await r.text();
+        let body: any = null;
+        try { body = JSON.parse(text); } catch { body = text; }
+        if (!r.ok) return { ok: false, error: `HTTP ${r.status}: ${typeof body === 'string' ? body : JSON.stringify(body)}`, body };
+        return { ok: true, body };
+      } catch (e) {
+        return { ok: false, error: String(e) };
+      }
+    }
+
     if (testEmail) {
       const sampleGoal: GoalRow = {
         id: "test", user_id: "test", goal_category: "stress", goal_description: null,
@@ -286,24 +310,22 @@ serve(async (req) => {
       const content = await generateCoachingContent(sampleGoal);
       const prefs: VideoPreferences = { interest_topics: [], difficulty_level: "beginner", preferred_duration: "short", language: "ko" };
       const videos = await fetchYouTubeVideos(sampleGoal.goal_category, content.mission, new Set(), prefs);
-      const { error: invokeErr } = await supa.functions.invoke('send-transactional-email', {
-        body: {
-          templateName: 'daily-coaching',
-          recipientEmail: testEmail,
-          idempotencyKey: `daily-coaching-test-${Date.now()}`,
-          templateData: {
-            nickname: '테스트', dayNumber: 7, totalDays: 30,
-            categoryLabel: meta.label,
-            missionSummary: content.missionSummary,
-            mission: content.mission,
-            keyActions: content.keyActions,
-            insight: content.insight, researchBase: meta.researchBase,
-            videos,
-          },
+      const result = await callTransactionalEmail({
+        templateName: 'daily-coaching',
+        recipientEmail: testEmail,
+        idempotencyKey: `daily-coaching-test-${Date.now()}`,
+        templateData: {
+          nickname: '테스트', dayNumber: 7, totalDays: 30,
+          categoryLabel: meta.label,
+          missionSummary: content.missionSummary,
+          mission: content.mission,
+          keyActions: content.keyActions,
+          insight: content.insight, researchBase: meta.researchBase,
+          videos,
         },
       });
-      if (invokeErr) throw invokeErr;
-      return new Response(JSON.stringify({ success: true, mode: 'test', to: testEmail, videoCount: videos.length }),
+      if (!result.ok) throw new Error(result.error);
+      return new Response(JSON.stringify({ success: true, mode: 'test', to: testEmail, videoCount: videos.length, body: result.body }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
@@ -359,29 +381,27 @@ serve(async (req) => {
         const dayNumber = goal.current_day + 1;
         const subject = `[Day ${String(dayNumber).padStart(2, '0')}] ${meta.label} - 오늘의 미션`;
 
-        const { error: invokeErr } = await supa.functions.invoke('send-transactional-email', {
-          body: {
-            templateName: 'daily-coaching',
-            recipientEmail: email,
-            idempotencyKey: `daily-coaching-${goal.id}-${todayStr}`,
-            templateData: {
-              nickname, dayNumber, totalDays: goal.total_days,
-              categoryLabel: meta.label,
-              missionSummary: content.missionSummary,
-              mission: content.mission,
-              keyActions: content.keyActions,
-              insight: content.insight, researchBase: meta.researchBase,
-              videos,
-            },
+        const result = await callTransactionalEmail({
+          templateName: 'daily-coaching',
+          recipientEmail: email,
+          idempotencyKey: `daily-coaching-${goal.id}-${todayStr}`,
+          templateData: {
+            nickname, dayNumber, totalDays: goal.total_days,
+            categoryLabel: meta.label,
+            missionSummary: content.missionSummary,
+            mission: content.mission,
+            keyActions: content.keyActions,
+            insight: content.insight, researchBase: meta.researchBase,
+            videos,
           },
         });
 
-        if (invokeErr) {
+        if (!result.ok) {
           failed++;
           await supa.from("daily_coaching_email_log").insert({
             user_id: goal.user_id, goal_id: goal.id, send_date: todayStr,
             day_number: dayNumber, status: "failed", subject,
-            error_message: String(invokeErr),
+            error_message: result.error || 'unknown',
           });
           continue;
         }

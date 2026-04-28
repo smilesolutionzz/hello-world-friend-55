@@ -567,6 +567,19 @@ export default function MindTrackWorkbook() {
                   </ol>
                 </div>
 
+                {/* 추천 영상 후보 — 사용자가 선호하는 영상을 직접 선택 */}
+                {Array.isArray(todayMission.youtube_candidates) && todayMission.youtube_candidates.length > 0 && (
+                  <MissionVideoPicker
+                    missionId={todayMission.id}
+                    candidates={todayMission.youtube_candidates}
+                    selectedVideoId={todayMission.selected_youtube_video_id ?? todayMission.youtube_video_id ?? null}
+                    onSelected={(vid) => {
+                      setMissions((prev) =>
+                        prev.map((m) => (m.id === todayMission.id ? { ...m, selected_youtube_video_id: vid } : m)),
+                      );
+                    }}
+                  />
+                )}
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center gap-3 text-xs text-slate-500">
                     <span>⏱ {todayMission.estimated_minutes}분</span>

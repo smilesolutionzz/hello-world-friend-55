@@ -465,6 +465,9 @@ export default function MindTrackWorkbook() {
             </div>
           </Card>
 
+          {/* 마일스톤 진행 현황 (어떤 7/14/21/28일 카드가 완료되었는지 + 다음 목표 강조) */}
+          <MilestoneProgressBar currentDay={currentDay} checkins={checkins} />
+
           {/* 7/14/21/28일 자가진단 마일스톤 카드 */}
           <WeeklyMilestoneCards
             currentDay={currentDay}

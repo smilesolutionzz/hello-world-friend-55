@@ -216,6 +216,8 @@ const App = () => {
           <Route path="/mind-track" element={<MindTrack />} />
           <Route path="/mind-track/start" element={<MindTrackStart />} />
           <Route path="/mind-track/workbook" element={<MindTrackWorkbook />} />
+          {/* 별칭: /mind-track-workbook 도 동일하게 동작 (?day=N 파라미터 그대로 전달) */}
+          <Route path="/mind-track-workbook" element={<MindTrackWorkbook />} />
           <Route path="/en/mind-track" element={<MindTrack />} />
 
           {/* AI Azit */}

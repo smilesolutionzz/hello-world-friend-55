@@ -859,12 +859,6 @@ const Quiz: React.FC = () => {
                 <div>
                   <div className="text-center mb-4">
                     <h3 className="text-lg font-bold break-keep">실제 30일 만에 바뀐 사람들</h3>
-                    <div className="flex items-center justify-center gap-1 mt-2">
-                      {[1, 2, 3, 4, 5].map((s) => (
-                        <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                      ))}
-                      <span className="ml-1 text-xs font-semibold">4.8 / 5.0 · 3,247건의 후기</span>
-                    </div>
                   </div>
 
                   <div className="space-y-3">

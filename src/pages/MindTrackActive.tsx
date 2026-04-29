@@ -40,7 +40,7 @@ export default function MindTrackActive({ enrollment }: Props) {
   const copy = getDayCopy(day);
   const progressPct = Math.round((day / 30) * 100);
 
-  const [recentCheckins, setRecentCheckins] = useState<Array<{ day_number: number; completed: boolean; one_line?: string | null; created_at: string }>>([]);
+  const [recentCheckins, setRecentCheckins] = useState<Array<{ day_number: number; completed: boolean; reflection_note?: string | null; created_at: string }>>([]);
   const [completedCount, setCompletedCount] = useState(0);
   const [todayMission, setTodayMission] = useState<{ mission_title?: string; mission_description?: string } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -80,7 +80,7 @@ export default function MindTrackActive({ enrollment }: Props) {
           .maybeSingle(),
         supabase
           .from("mind_track_checkins")
-          .select("day_number, completed, one_line, created_at")
+          .select("day_number, completed, reflection_note, created_at")
           .eq("enrollment_id", enrollment.id)
           .order("day_number", { ascending: false })
           .limit(20),
@@ -236,9 +236,9 @@ export default function MindTrackActive({ enrollment }: Props) {
                           <span>·</span>
                           <span>{new Date(c.created_at).toLocaleDateString("ko-KR")}</span>
                         </div>
-                        {c.one_line && (
+                        {c.reflection_note && (
                           <p className="text-sm text-slate-700 break-keep mt-0.5 line-clamp-2">
-                            {c.one_line}
+                            {c.reflection_note}
                           </p>
                         )}
                       </div>

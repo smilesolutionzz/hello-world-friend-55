@@ -264,7 +264,7 @@ export default function MissionLearningCard({
                 </>
               ) : draftStatus === "saved" ? (
                 <>
-                  <CloudCheck className="w-3 h-3" /> 자동 저장됨
+                  <CloudUpload className="w-3 h-3" /> 자동 저장됨
                 </>
               ) : null}
             </span>

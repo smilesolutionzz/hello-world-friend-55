@@ -21,7 +21,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
-import MindTrackActive from './MindTrackActive';
+// 결제자는 /mind-track/dashboard 전용 페이지로 자동 리다이렉트됨 (아래 분기 참고)
 
 const TRACK_PRICE = 19900;
 
@@ -267,17 +267,32 @@ const MindTrack: React.FC = () => {
     : null;
 
   // ──────────────────────────────────────────────────────────
-  // 결제 완료 사용자 → 단순 대시보드(ActiveView)로 분기
-  // 마케팅/목표선택/무료리포트/아동발달 위젯은 모두 숨김
-  // 피드백: "결제했는데 또 시작하기 보임 / 비로그인 위젯 보임" 해결
+  // 결제 완료 사용자 → /mind-track/dashboard 전용 페이지로 자동 리다이렉트
+  // 마케팅 페이지(/mind-track)는 비결제자 전용으로 완전 분리
   // ──────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (
+      activeEnrollment &&
+      (activeEnrollment.payment_status === 'paid' ||
+        activeEnrollment.payment_status === 'completed') &&
+      !postLoginRedirecting
+    ) {
+      navigate('/mind-track/dashboard', { replace: true });
+    }
+  }, [activeEnrollment?.id, activeEnrollment?.payment_status, postLoginRedirecting, navigate]);
+
+  // 리다이렉트 직전 깜빡임 방지 — 결제자면 빈 화면 반환
   if (
     activeEnrollment &&
     (activeEnrollment.payment_status === 'paid' ||
       activeEnrollment.payment_status === 'completed') &&
     !postLoginRedirecting
   ) {
-    return <MindTrackActive enrollment={activeEnrollment as any} />;
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+      </div>
+    );
   }
 
   return (

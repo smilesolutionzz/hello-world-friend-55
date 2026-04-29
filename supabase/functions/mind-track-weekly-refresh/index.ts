@@ -60,16 +60,17 @@ Deno.serve(async (req) => {
     const weekTheme = (workbook.weekly_themes as any[])?.find((w) => w.week === weekNumber);
     const dayCount = endDay - startDay + 1;
 
-    const systemPrompt = `당신은 따뜻한 코칭 가이드입니다. 사용자의 지난 주 체크인 데이터를 보고 ${weekNumber}주차 일일 미션 ${dayCount}개를 생성하세요.
+    const systemPrompt = `당신은 깊이 있는 코칭 가이드입니다. 사용자의 지난 주 체크인 데이터를 보고 ${weekNumber}주차 일일 미션 ${dayCount}개를 "구체적·단계적·측정가능한" 형태로 생성하세요.
 
 [규칙]
-- 의료 용어/외부 브랜드 약어 금지
-- 5분 이내 구체적 행동
-- 지난주 어려워한 부분은 더 작게, 잘한 부분은 확장
+- 의료 용어/외부 브랜드 약어(MBTI/CBT/Calm/Wysa/Noom 등) 금지
+- 추상적 위로 금지. 언제·어디서·무엇을·얼마나가 명확해야 함
+- 지난주 잘한 영역은 한 단계 확장, 어려워한 영역은 더 작게 분해
+- 매 미션은 다음 필드 모두 채울 것: title(8~16자 동사형), description(2~3문장 구체), why_it_matters(1문장), action_steps(3~5개 짧은 단계), success_criteria(객관적 완료 기준 1문장), deeper_prompts(2~3개 자기성찰 질문), difficulty(easy/medium/deep)
 - JSON만 출력
 
 [출력]
-{"missions":[{"day":${startDay},"title":"...","description":"...","type":"reflection|action|breathing|journaling|connection","minutes":5}, ...]}`;
+{"missions":[{"day":${startDay},"title":"...","description":"...","type":"reflection|action|breathing|journaling|connection","minutes":7,"difficulty":"medium","why_it_matters":"...","action_steps":["...","...","..."],"success_criteria":"...","deeper_prompts":["...","..."]}, ...]}`;
 
     const userPrompt = `[챌린지 슬로건] ${workbook.challenge_theme}
 [이번 주차 테마] ${weekTheme?.theme ?? ""} - ${weekTheme?.focus ?? ""}
@@ -147,7 +148,12 @@ day ${startDay}부터 ${endDay}까지 ${dayCount}개 미션을 JSON으로만 출
             mission_title: m.title,
             mission_description: m.description,
             mission_type: m.type,
-            estimated_minutes: m.minutes ?? 5,
+            estimated_minutes: m.minutes ?? 7,
+            difficulty: m.difficulty ?? 'medium',
+            why_it_matters: m.why_it_matters ?? null,
+            action_steps: Array.isArray(m.action_steps) ? m.action_steps : [],
+            success_criteria: m.success_criteria ?? null,
+            deeper_prompts: Array.isArray(m.deeper_prompts) ? m.deeper_prompts : [],
             youtube_query: q,
             youtube_candidates: candidates,
             // Keep first candidate as the default for legacy fields

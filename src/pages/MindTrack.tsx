@@ -21,6 +21,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
+import MindTrackActive from './MindTrackActive';
 
 const TRACK_PRICE = 19900;
 

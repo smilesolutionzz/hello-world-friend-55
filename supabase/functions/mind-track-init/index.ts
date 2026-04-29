@@ -180,7 +180,12 @@ Deno.serve(async (req) => {
         mission_title: m.title,
         mission_description: m.description,
         mission_type: m.type,
-        estimated_minutes: m.minutes ?? 5,
+        estimated_minutes: m.minutes ?? 7,
+        difficulty: m.difficulty ?? 'medium',
+        why_it_matters: m.why_it_matters ?? null,
+        action_steps: Array.isArray(m.action_steps) ? m.action_steps : [],
+        success_criteria: m.success_criteria ?? null,
+        deeper_prompts: Array.isArray(m.deeper_prompts) ? m.deeper_prompts : [],
       }));
       const { error: mErr } = await supabase
         .from("mind_track_daily_missions")

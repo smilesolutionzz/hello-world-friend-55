@@ -829,40 +829,131 @@ export default function MindTrackWorkbook() {
             </div>
           </Card>
 
-          {/* Weekly Themes */}
-          {workbook.weekly_themes && (
-            <Card className="p-5">
-              <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-primary" /> 주차별 테마
+          {/* 한눈에 보는 30일 로드맵: 주차별 테마 + 전문가 개입 (아코디언) */}
+          <Card className="p-5">
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-primary" /> 30일 로드맵 한눈에 보기
               </h3>
-              <div className="space-y-2">
-                {workbook.weekly_themes.map((wt: any) => {
-                  const isCurrent = Math.ceil(currentDay / 7) === wt.week;
-                  const isPast = Math.ceil(currentDay / 7) > wt.week;
-                  return (
-                    <div
-                      key={wt.week}
-                      className={`p-3 rounded-xl border-2 ${
-                        isCurrent ? "border-primary bg-primary/5" : isPast ? "border-emerald-200 bg-emerald-50/50" : "border-slate-200"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <div className="flex items-center gap-2">
-                          <Badge variant={isCurrent ? "default" : "outline"} className="text-[10px]">Week {wt.week}</Badge>
-                          <span className="font-medium text-sm text-slate-900 break-keep">{wt.theme}</span>
-                        </div>
-                        {isPast && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
-                      </div>
-                      <p className="text-xs text-slate-600 mt-1 break-keep">{wt.focus}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </Card>
-          )}
+              <Badge variant="outline" className="text-[10px]">현재 Day {currentDay}</Badge>
+            </div>
 
-          {/* 전문가 개입 일정 캘린더 (Day 7/14/21/30) */}
-          <InterventionCalendar currentDay={currentDay} />
+            {/* 미니 타임라인: 4주 + 마일스톤 점 */}
+            <div className="relative mb-3">
+              <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-primary to-purple-500 transition-all"
+                  style={{ width: `${Math.min(100, (currentDay / 30) * 100)}%` }}
+                />
+              </div>
+              <div className="flex justify-between mt-1 text-[10px] text-slate-500">
+                <span>D1</span><span>D7</span><span>D14</span><span>D21</span><span>D30</span>
+              </div>
+            </div>
+
+            {/* 4주 + 4개 개입 마일스톤 — 한 줄 그리드 */}
+            <div className="grid grid-cols-4 gap-1.5 mb-3">
+              {[1, 2, 3, 4].map((wk) => {
+                const wt = workbook.weekly_themes?.find((w: any) => w.week === wk);
+                const isCurrent = Math.ceil(currentDay / 7) === wk;
+                const isPast = Math.ceil(currentDay / 7) > wk;
+                const milestoneDay = wk * 7;
+                const milestoneReached = currentDay >= milestoneDay;
+                return (
+                  <div
+                    key={wk}
+                    className={`p-2 rounded-lg border text-center ${
+                      isCurrent ? "border-primary bg-primary/5" :
+                      isPast ? "border-emerald-200 bg-emerald-50/40" :
+                      "border-slate-200 bg-slate-50/40"
+                    }`}
+                  >
+                    <div className="text-[9px] text-slate-500 font-semibold">W{wk}</div>
+                    <div className="text-[10px] font-bold text-slate-900 break-keep leading-tight mt-0.5 line-clamp-2 min-h-[24px]">
+                      {wt?.theme || "—"}
+                    </div>
+                    <div className="mt-1 flex items-center justify-center">
+                      <Stethoscope className={`w-3 h-3 ${milestoneReached ? "text-amber-500" : "text-slate-300"}`} />
+                      <span className={`text-[9px] ml-0.5 ${milestoneReached ? "text-amber-600 font-semibold" : "text-slate-400"}`}>D{milestoneDay}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 상세는 아코디언으로 */}
+            <Accordion type="single" collapsible className="w-full">
+              {workbook.weekly_themes && (
+                <AccordionItem value="themes" className="border-b">
+                  <AccordionTrigger className="text-sm font-medium py-3 hover:no-underline">
+                    <span className="flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-primary" /> 주차별 테마 자세히 보기
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-2 pt-1">
+                      {workbook.weekly_themes.map((wt: any) => {
+                        const isCurrent = Math.ceil(currentDay / 7) === wt.week;
+                        return (
+                          <div
+                            key={wt.week}
+                            className={`p-2.5 rounded-lg border ${isCurrent ? "border-primary bg-primary/5" : "border-slate-200"}`}
+                          >
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <Badge variant={isCurrent ? "default" : "outline"} className="text-[10px]">Week {wt.week}</Badge>
+                              <span className="font-semibold text-sm text-slate-900 break-keep">{wt.theme}</span>
+                            </div>
+                            <p className="text-xs text-slate-600 mt-1 break-keep">{wt.focus}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+              <AccordionItem value="intervention" className="border-b-0">
+                <AccordionTrigger className="text-sm font-medium py-3 hover:no-underline">
+                  <span className="flex items-center gap-2">
+                    <Stethoscope className="w-3.5 h-3.5 text-amber-500" /> 전문가 개입 일정 자세히 보기
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <InterventionCalendar currentDay={currentDay} />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </Card>
+
+          {/* AI 프리미엄 부가가치 — 트랙 안에서 제공되는 것들 */}
+          <Card className="p-5 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0">
+            <div className="flex items-center gap-2 mb-1">
+              <Sparkle className="w-4 h-4 text-amber-300" />
+              <h3 className="font-bold">트랙에 포함된 AI 가치</h3>
+              <Badge className="bg-amber-400/20 text-amber-200 border-amber-400/30 text-[10px] ml-auto">PREMIUM</Badge>
+            </div>
+            <p className="text-xs text-slate-300 mb-4 break-keep">
+              30일 동안 매일 쌓이는 데이터를 분석해 단순 일기 앱이 아닌 진짜 변화를 만드는 도구로 작동합니다.
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { icon: Brain, title: "개인 맞춤 미션 생성", desc: "당신의 검사 결과 + 지난 체크인을 학습해 매주 미션 자동 재설계" },
+                { icon: BarChart3, title: "감정 추적 분석", desc: "매일 기분/에너지 점수를 시계열로 분석, 패턴과 트리거 자동 추출" },
+                { icon: Mic, title: "AI 음성 코치 (예정)", desc: "ElevenLabs 기반 호흡·이완 음성 가이드 — 5월 오픈" },
+                { icon: ShieldCheck, title: "위기 자동 감지", desc: "체크인 텍스트에서 위험 신호 감지 시 즉시 전문가 매칭 제안" },
+                { icon: Award, title: "마일스톤 리포트", desc: "Day 7/14/21/30에 자동 PhD급 분석 리포트 생성" },
+                { icon: Video, title: "맞춤 영상 큐레이션", desc: "오늘의 미션·기분에 맞춰 YouTube 영상 매일 자동 추천" },
+              ].map((f, i) => {
+                const Icon = f.icon;
+                return (
+                  <div key={i} className="p-2.5 rounded-lg bg-white/5 border border-white/10">
+                    <Icon className="w-4 h-4 text-amber-300 mb-1" />
+                    <div className="text-xs font-bold break-keep">{f.title}</div>
+                    <div className="text-[10px] text-slate-400 mt-0.5 break-keep leading-tight">{f.desc}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
 
           {/* 30-day Calendar */}
           <Card className="p-5" ref={calendarRef as any}>

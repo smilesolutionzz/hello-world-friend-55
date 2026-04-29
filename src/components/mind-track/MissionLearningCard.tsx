@@ -41,8 +41,6 @@ export default function MissionLearningCard({
   const [activeId, setActiveId] = useState<string | null>(candidates[0]?.video_id ?? null);
   const [reflection, setReflection] = useState(initialReflection);
   const [savingId, setSavingId] = useState<string | null>(null);
-  const [reflectionSaving, setReflectionSaving] = useState(false);
-  const [reflectionSavedAt, setReflectionSavedAt] = useState<number | null>(null);
 
   const playing = useMemo(
     () => candidates.find((c) => c.video_id === activeId) ?? candidates[0],

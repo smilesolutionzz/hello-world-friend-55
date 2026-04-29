@@ -61,12 +61,14 @@ const MindTrackWelcomeModal = ({ forceOpen, onClose }: Props) => {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
+    const shown = localStorage.getItem(STORAGE_KEY);
+    // 이미 본 적이 있다면 forceOpen(?welcome=1)이어도 다시 열지 않음 — 첫 결제 직후 1회만 노출
+    if (shown) return;
     if (forceOpen) {
       setOpen(true);
       return;
     }
-    const shown = localStorage.getItem(STORAGE_KEY);
-    if (!shown) setOpen(true);
+    setOpen(true);
   }, [forceOpen]);
 
   const close = () => {

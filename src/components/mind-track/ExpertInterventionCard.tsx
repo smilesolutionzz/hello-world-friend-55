@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 /**
  * Day 7 / 14 / 21 / 30 milestone에 자동 노출되는 전문가 개입 카드.
- * - Day 7: 전문가 텍스트 점검 ₩9,900 (소액 진입)
+ * - Day 7: 1주차 적응 점검 — 마음 트랙 가입자 1회 무료 (정가 ₩9,900)
  * - Day 14: 1:1 미드체크 상담 ₩29,000 (핵심 전환점)
  * - Day 21: 위험 감지 시 긴급 매칭 ₩49,000
  * - Day 30: 다음 60일 프리미엄 트랙 ₩99,000 (졸업 업셀)
@@ -36,13 +36,19 @@ const OFFERINGS: Record<InterventionDay, {
     price: 9900,
     title: "1주차 적응 점검",
     subtitle: "전문가가 당신의 첫 7일을 직접 읽어드려요",
-    description: "체크인 데이터를 전문가가 검토하고, 다음 3주를 위한 맞춤 조언을 텍스트로 전해드립니다. 24시간 내 답변.",
-    cta: "₩9,900 전문가 점검 받기",
+    description:
+      "체크인 데이터를 전문가가 검토하고, 다음 3주를 위한 맞춤 조언을 텍스트로 전해드립니다. 24시간 내 답변. 마음 트랙 가입자에게는 1회 무료로 제공돼요.",
+    cta: "무료로 전문가 점검 신청",
     icon: MessageCircle,
     gradient: "from-blue-500 to-cyan-500",
-    badge: "Day 7 적응 점검",
-    benefits: ["7일간의 체크인 데이터 분석", "맞춤 조언 텍스트 리포트", "24시간 내 회신 보장"],
-    route: "/expert-hiring?intervention=day7&offering=text_review",
+    badge: "Day 7 적응 점검 · 트랙 1회 무료",
+    benefits: [
+      "7일간의 체크인 데이터 분석",
+      "전문가 맞춤 조언 텍스트 리포트",
+      "24시간 내 회신 보장",
+      "마음 트랙 가입자 1회 무료 (정가 ₩9,900)",
+    ],
+    route: "/expert-hiring?intervention=day7&offering=text_review&free=mind_track",
   },
   14: {
     key: "midcheck_29000",
@@ -207,6 +213,18 @@ export default function ExpertInterventionCard({ day, enrollmentId }: Props) {
             ))}
           </ul>
 
+          {day === 7 && (
+            <div className="mb-3 flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50/70 px-3 py-2">
+              <span className="text-[11px] font-bold tracking-wider text-blue-700 uppercase">
+                Mind Track Benefit
+              </span>
+              <span className="text-[12px] text-slate-500 line-through">₩9,900</span>
+              <span className="text-[13px] font-extrabold text-emerald-600">
+                트랙 1회 무료
+              </span>
+            </div>
+          )}
+
           <Button
             onClick={handleClick}
             size="lg"
@@ -218,7 +236,9 @@ export default function ExpertInterventionCard({ day, enrollmentId }: Props) {
 
           <p className="text-[10px] text-slate-500 text-center mt-2">
             <Sparkles className="w-3 h-3 inline mr-0.5" />
-            검증된 전문가 매칭 · 안전결제 · 환불 보장
+            {day === 7
+              ? "검증 전문가 매칭 · 트랙 1회 무료 · 결제 없음"
+              : "검증된 전문가 매칭 · 안전결제 · 환불 보장"}
           </p>
         </div>
       </Card>

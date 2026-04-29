@@ -8,7 +8,6 @@ import { ArrowLeft, Download, Loader2, Award, Sparkles, BookOpen, FileText } fro
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { WORKBOOK_CHAPTERS } from "@/lib/mindTrackChapters";
-import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface FinalWorkbook {
   id: string;
@@ -72,8 +71,7 @@ export default function MindTrackWorkbookPreview() {
           image: { type: "jpeg", quality: 0.96 },
           html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          pagebreak: { mode: ["css", "legacy"] },
-        })
+        } as any)
         .from(el)
         .save();
       toast.success("워크북 PDF를 저장했어요");
@@ -85,7 +83,13 @@ export default function MindTrackWorkbookPreview() {
     }
   };
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="w-6 h-6 animate-spin text-[#8a7a4d]" />
+      </div>
+    );
+  }
   if (!workbook) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">

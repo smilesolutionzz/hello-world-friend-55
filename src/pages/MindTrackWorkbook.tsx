@@ -66,6 +66,37 @@ const MISSION_TYPE_GUIDE: Record<string, {
   },
 };
 
+const MISSION_CHECKIN_COPY: Record<string, { label: string; placeholder: string; error: string }> = {
+  reflection: {
+    label: "오늘 발견한 것",
+    placeholder: "예: 오늘 나를 웃게 만든 순간 하나, 새롭게 알아차린 생각 하나",
+    error: "오늘 발견한 것을 한 줄 이상 적어주세요",
+  },
+  action: {
+    label: "오늘 실제로 한 행동",
+    placeholder: "예: 5분 산책을 했다, 미뤘던 메시지를 보냈다",
+    error: "오늘 실제로 한 행동을 한 줄 이상 적어주세요",
+  },
+  breathing: {
+    label: "호흡 후 달라진 점",
+    placeholder: "예: 어깨 힘이 조금 빠졌다, 생각 속도가 느려졌다",
+    error: "호흡 후 달라진 점을 한 줄 이상 적어주세요",
+  },
+  journaling: {
+    label: "오늘 적은 핵심 문장",
+    placeholder: "예: 작은 기쁨은 퇴근길 바람이 시원했던 순간이었다",
+    error: "오늘 적은 핵심 문장을 한 줄 이상 남겨주세요",
+  },
+  connection: {
+    label: "오늘 전한 마음",
+    placeholder: "예: 친구에게 고맙다고 보냈다, 가족에게 안부를 물었다",
+    error: "오늘 누구에게 어떤 마음을 전했는지 적어주세요",
+  },
+};
+
+const getMissionCheckinCopy = (missionType?: string) =>
+  MISSION_CHECKIN_COPY[missionType || ""] ?? MISSION_CHECKIN_COPY.reflection;
+
 // 연속 체크인(streak) 계산: 가장 최근 체크인부터 거꾸로 연속된 일수
 function calcStreak(checkins: any[], currentDay: number): number {
   let streak = 0;

@@ -677,6 +677,23 @@ export default function MindTrackWorkbook() {
             </div>
             <Progress value={(currentDay / 30) * 100} className="h-2" />
 
+            {currentDay >= 30 && enrollment && (
+              <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                <Button
+                  onClick={() => navigate(`/mind-track/workbook-preview?enrollmentId=${enrollment.id}`)}
+                  className="flex-1 h-10 rounded-xl bg-[#8a7a4d] hover:bg-[#6f6240] text-white font-bold text-[12px]"
+                >
+                  완성된 워크북 보기 · PDF 받기
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowCelebration(true)}
+                  className="h-10 rounded-xl border-[#C8B88A]/50 text-[#8a7a4d] hover:bg-[#C8B88A]/10 hover:text-[#8a7a4d] font-bold text-[12px]"
+                >
+                  완주 배지 다시 보기
+                </Button>
+              </div>
+            )}
             <div className="grid grid-cols-3 gap-2 mt-4">
               <div className="p-2.5 rounded-lg bg-white border border-slate-200 text-center">
                 <Flame className="w-4 h-4 text-orange-500 mx-auto mb-0.5" />

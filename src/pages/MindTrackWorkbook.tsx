@@ -790,6 +790,17 @@ export default function MindTrackWorkbook() {
             checkins={checkins}
             baselines={baselines}
             enrollmentId={enrollment?.id}
+            onContinueCheckin={() => {
+              // Day 1·2 축하 후, 오늘 미션이 있으면 곧바로 체크인 다이얼로그 오픈
+              if (todayMission) {
+                setActiveMission(todayMission);
+              } else {
+                // 다음 미션이 있으면 그쪽으로, 없으면 페이지 상단으로 부드럽게 스크롤
+                const next = missions.find((m) => m.day_number > currentDay);
+                if (next) setActiveMission(next);
+                else window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
           />
 
           {/* 1/2/3/4주차 챕터 예고 카드 */}

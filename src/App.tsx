@@ -28,6 +28,7 @@ import Unsubscribe from "./pages/Unsubscribe";
 
 // AI Analysis & Core Features
 import AIAssistant from "./pages/AIAssistant";
+import AiCopilotPage from "./pages/AiCopilotPage";
 import ConcernStorage from "./pages/ConcernStorage";
 import ReportGenerator from "./pages/ReportGenerator";
 import ReportGeneratorPro from "./pages/ReportGeneratorPro";

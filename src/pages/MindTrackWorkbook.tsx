@@ -126,6 +126,11 @@ import WeeklyChapterPreview from "@/components/mind-track/WeeklyChapterPreview";
 import WorkbookCompletionCelebration from "@/components/mind-track/WorkbookCompletionCelebration";
 import MindTrackWorkbookSkeleton from "@/components/mind-track/MindTrackWorkbookSkeleton";
 import MissionLearningCard from "@/components/mind-track/MissionLearningCard";
+import MissionAssessmentCard from "@/components/mind-track/MissionAssessmentCard";
+import {
+  getAssessmentForDay,
+  isAssessmentMissionCompleted,
+} from "@/lib/mindTrackAssessmentMissions";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 import { HelpCircle } from "lucide-react";
 
@@ -399,6 +404,18 @@ export default function MindTrackWorkbook() {
 
   const submitCheckin = async () => {
     if (!activeMission || !enrollment) return;
+
+    // ── Day 1·2 추천 검사 미션 검증 ──────────────────────────
+    const recommendedAssessment = getAssessmentForDay(activeMission.day_number);
+    if (
+      recommendedAssessment &&
+      !isAssessmentMissionCompleted(enrollment.id, activeMission.day_number)
+    ) {
+      toast.error(
+        `'${recommendedAssessment.title}'을(를) 먼저 완료해 주세요. 미션 카드에서 시작할 수 있어요.`,
+      );
+      return;
+    }
 
     // ── 영상 학습 미션이 있을 때 시청/느낀점 필수 검증 ──────────
     const candidates = Array.isArray(activeMission.youtube_candidates)
@@ -943,6 +960,19 @@ export default function MindTrackWorkbook() {
                     reflectionReadonly={!!todayCheckin?.completed}
                   />
                 )}
+
+                {/* Day 1·2 추천 자가진단 — 우리 플랫폼 내부 검사를 미션화 */}
+                {enrollment && getAssessmentForDay(currentDay) && (
+                  <MissionAssessmentCard
+                    recommendation={getAssessmentForDay(currentDay)!}
+                    enrollmentId={enrollment.id}
+                    day={currentDay}
+                    onChanged={() => {
+                      // 진행 단계 표시기 갱신을 위해 missions 배열 객체 식별자 변경
+                      setMissions((prev) => [...prev]);
+                    }}
+                  />
+                )}
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center gap-3 text-xs text-slate-500">
                     <span>⏱ {todayMission.estimated_minutes}분</span>
@@ -1457,18 +1487,40 @@ export default function MindTrackWorkbook() {
               : 0;
             const draftLen = (activeMission?.video_reflection_draft ?? "").trim().length;
             const noteLen = reflectionNote.trim().length;
+            const recAssessment = activeMission ? getAssessmentForDay(activeMission.day_number) : null;
+            const assessmentDone = !!(
+              recAssessment &&
+              enrollment &&
+              isAssessmentMissionCompleted(enrollment.id, activeMission.day_number)
+            );
 
-            const steps = [
-              ...(hasVideo
+            const rawSteps: Array<{ label: string; done: boolean; hint: string }> = [
+              ...(recAssessment
                 ? [
-                    { num: 1, label: "추천 영상 시청", done: watchedCount > 0, hint: `${watchedCount}편 시청` },
-                    { num: 2, label: "영상 소감 메모", done: draftLen >= 10, hint: `${draftLen}자` },
+                    {
+                      label: `자가진단 · ${recAssessment.title}`,
+                      done: assessmentDone,
+                      hint: assessmentDone ? "완료됨" : `약 ${recAssessment.minutes}분`,
+                    },
                   ]
                 : []),
-              { num: hasVideo ? 3 : 1, label: "오늘 컨디션 체크", done: true, hint: "슬라이더 3개" },
-              { num: hasVideo ? 4 : 2, label: "미션 회고 작성", done: noteLen > 0, hint: `${noteLen}자` },
-              { num: hasVideo ? 5 : 3, label: "체크인 완료", done: false, hint: "버튼 클릭" },
+              ...(hasVideo
+                ? [
+                    { label: "추천 영상 시청", done: watchedCount > 0, hint: `${watchedCount}편 시청` },
+                    { label: "영상 소감 메모", done: draftLen >= 10, hint: `${draftLen}자` },
+                  ]
+                : []),
+              { label: "오늘 컨디션 체크", done: true, hint: "슬라이더 3개" },
+              { label: "미션 회고 작성", done: noteLen > 0, hint: `${noteLen}자` },
+              { label: "체크인 완료", done: false, hint: "버튼 클릭" },
             ];
+            const steps = rawSteps.map((s, i) => ({ num: i + 1, ...s }));
+            const blockerMessage =
+              recAssessment && !assessmentDone
+                ? `먼저 위 카드의 '${recAssessment.title}'을(를) 진행해 주세요.`
+                : hasVideo && (watchedCount === 0 || draftLen < 10)
+                ? "먼저 다이얼로그를 닫고 위 미션 카드의 추천 영상을 보고 메모를 남겨 주세요."
+                : null;
 
             return (
               <div className="space-y-5 pt-2">
@@ -1500,9 +1552,9 @@ export default function MindTrackWorkbook() {
                       );
                     })}
                   </ol>
-                  {hasVideo && (watchedCount === 0 || draftLen < 10) && (
+                  {blockerMessage && (
                     <p className="mt-2 text-[11px] text-amber-700 break-keep">
-                      먼저 다이얼로그를 닫고 위 미션 카드의 추천 영상을 보고 메모를 남겨 주세요.
+                      {blockerMessage}
                     </p>
                   )}
                 </div>

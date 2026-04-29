@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Lock, CheckCircle2, Sparkles, Eye, Bell } from "lucide-react";
+import { BookOpen, Lock, CheckCircle2, Sparkles, Eye, Bell, ClipboardCheck, Video, PenLine } from "lucide-react";
 import { toast } from "sonner";
 import WorkbookSamplePreviewModal from "./WorkbookSamplePreviewModal";
 import ChapterShareButton from "./ChapterShareButton";
 import { WORKBOOK_CHAPTERS } from "@/lib/mindTrackChapters";
+import {
+  getAssessmentForDay,
+  isAssessmentMissionCompleted,
+} from "@/lib/mindTrackAssessmentMissions";
 
 interface WorkbookPreviewCardProps {
   currentDay: number;
@@ -42,6 +46,25 @@ export default function WorkbookPreviewCard({
   const unlockedChapters = CHAPTERS.filter((c) => currentDay >= c.day).length;
   const isComplete = currentDay >= 30;
   const remainingDays = Math.max(0, 30 - currentDay);
+
+  // Day별 미션 완료 도트 — 검사·영상·체크인 3가지를 시각화
+  const missionProgress = useMemo(() => {
+    const map = new Map<number, { assessment: boolean | null; video: boolean | null; checkin: boolean }>();
+    const checkinByDay = new Map<number, any>();
+    for (const c of checkins) checkinByDay.set(c.day_number, c);
+
+    for (let d = 1; d <= currentDay; d++) {
+      const c = checkinByDay.get(d);
+      const rec = getAssessmentForDay(d);
+      map.set(d, {
+        assessment: rec ? isAssessmentMissionCompleted(enrollmentId, d) : null,
+        // 영상 완료 여부는 체크인의 video_reflection 존재 또는 watched 여부로 추정
+        video: c?.video_reflection ? true : c ? false : null,
+        checkin: !!c?.completed,
+      });
+    }
+    return map;
+  }, [checkins, currentDay, enrollmentId]);
 
   // 챕터 언락 인앱 알림 — sessionStorage에 enrollmentId+chapter로 1회만 표시
   useEffect(() => {
@@ -122,6 +145,51 @@ export default function WorkbookPreviewCard({
             </div>
           </div>
         </div>
+
+        {/* Day 1·2 미션 미니 진행 도트 — 검사·영상·체크인 */}
+        {(() => {
+          const trackedDays = [1, 2].filter((d) => d <= currentDay);
+          if (trackedDays.length === 0) return null;
+          return (
+            <div className="mb-5 grid gap-2" style={{ gridTemplateColumns: `repeat(${trackedDays.length}, minmax(0, 1fr))` }}>
+              {trackedDays.map((d) => {
+                const p = missionProgress.get(d);
+                if (!p) return null;
+                const items: Array<{ label: string; icon: any; done: boolean | null }> = [
+                  { label: "검사", icon: ClipboardCheck, done: p.assessment },
+                  { label: "영상", icon: Video, done: p.video },
+                  { label: "회고", icon: PenLine, done: p.checkin },
+                ];
+                return (
+                  <div key={d} className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                    <div className="text-[10px] font-bold text-slate-500 mb-1.5">Day {d} 미션</div>
+                    <div className="flex items-center gap-2">
+                      {items.map((it, i) => {
+                        const Icon = it.icon;
+                        const tone =
+                          it.done === true
+                            ? "bg-emerald-500 text-white border-emerald-500"
+                            : it.done === false
+                            ? "bg-slate-50 text-slate-400 border-slate-200"
+                            : "bg-slate-50 text-slate-300 border-slate-200";
+                        return (
+                          <div
+                            key={i}
+                            className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full border text-[10px] font-semibold ${tone}`}
+                            title={`${it.label} ${it.done ? "완료" : "미완료"}`}
+                          >
+                            <Icon className="w-2.5 h-2.5" />
+                            <span>{it.label}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
 
         {/* 카피 — 동기부여 메시지 */}
         <div className="text-center mb-5 px-2">

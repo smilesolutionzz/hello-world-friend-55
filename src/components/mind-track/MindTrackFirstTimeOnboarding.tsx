@@ -105,20 +105,32 @@ export default function MindTrackFirstTimeOnboarding({ open, onClose, onStart, o
           </motion.div>
         </AnimatePresence>
 
-        <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => (idx === 0 ? onClose() : setIdx((i) => i - 1))}
-            className="text-slate-500"
-          >
-            {idx === 0 ? "건너뛰기" : (
-              <>
-                <ChevronLeft className="w-4 h-4 mr-1" />
-                이전
-              </>
+        <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => (idx === 0 ? onClose() : setIdx((i) => i - 1))}
+              className="text-slate-500"
+            >
+              {idx === 0 ? "건너뛰기" : (
+                <>
+                  <ChevronLeft className="w-4 h-4 mr-1" />
+                  이전
+                </>
+              )}
+            </Button>
+            {onSnoozeToday && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onSnoozeToday}
+                className="text-slate-400 hover:text-slate-700 text-xs"
+              >
+                오늘 다시 보지 않기
+              </Button>
             )}
-          </Button>
+          </div>
 
           {isLast ? (
             <Button

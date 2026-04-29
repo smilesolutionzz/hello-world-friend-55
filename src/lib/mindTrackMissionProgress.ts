@@ -256,5 +256,4 @@ export function getCompletenessCopy(args: {
     tone: "nudge",
   };
 }
-  };
-}
+

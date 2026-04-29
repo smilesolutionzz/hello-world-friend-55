@@ -215,7 +215,7 @@ const Index = () => {
           
           <BackToTop />
           <StickyConversionBar />
-          <SocialProofToast />
+          {/* SocialProofToast 제거됨 — 실제 데이터 아닌 가짜 알림이라 비활성화 */}
           
           <CopilotBubble />
           <PostSignupOnboarding 

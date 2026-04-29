@@ -810,10 +810,10 @@ const Quiz: React.FC = () => {
                           <TrendingUp className="w-4 h-4 text-emerald-500" />
                           평균 사용자의 30일 변화
                         </h3>
-                        <p className="text-xs text-muted-foreground mt-0.5">12,847명 누적 데이터 기반</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">예시 시나리오 — 변화 폭은 개인별로 다를 수 있습니다</p>
                       </div>
                       <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                        +73% 개선
+                        예시
                       </Badge>
                     </div>
 

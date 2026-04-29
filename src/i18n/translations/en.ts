@@ -420,7 +420,7 @@ const en = {
     finalCtaFree: 'free',
     finalCtaButton: 'Start Free Test Now',
     trustAnonymous: 'Fully anonymous',
-    trustUsers: '4,248 tests completed',
+    trustUsers: 'No sign-up required',
     trustInstant: 'Instant results',
   },
 

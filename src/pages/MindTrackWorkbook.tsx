@@ -1519,6 +1519,22 @@ export default function MindTrackWorkbook() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* 30일 완주 축하 — 배지/공유 이미지 */}
+      {enrollment && (
+        <WorkbookCompletionCelebration
+          open={showCelebration}
+          onOpenChange={setShowCelebration}
+          nickname={enrollment?.baseline_data?.nickname || enrollment?.baseline_data?.display_name || "당신"}
+          trackTheme={workbook?.challenge_theme || "30일 마음 트랙"}
+          startedAt={enrollment?.started_at}
+          completedAt={enrollment?.completed_at}
+          totalCheckins={completedCount}
+          onDownloadWorkbook={() =>
+            navigate(`/mind-track/workbook-preview?enrollmentId=${enrollment.id}`)
+          }
+        />
+      )}
     </>
   );
 }

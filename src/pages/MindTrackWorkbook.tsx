@@ -405,6 +405,18 @@ export default function MindTrackWorkbook() {
   const submitCheckin = async () => {
     if (!activeMission || !enrollment) return;
 
+    // ── Day 1·2 추천 검사 미션 검증 ──────────────────────────
+    const recommendedAssessment = getAssessmentForDay(activeMission.day_number);
+    if (
+      recommendedAssessment &&
+      !isAssessmentMissionCompleted(enrollment.id, activeMission.day_number)
+    ) {
+      toast.error(
+        `'${recommendedAssessment.title}'을(를) 먼저 완료해 주세요. 미션 카드에서 시작할 수 있어요.`,
+      );
+      return;
+    }
+
     // ── 영상 학습 미션이 있을 때 시청/느낀점 필수 검증 ──────────
     const candidates = Array.isArray(activeMission.youtube_candidates)
       ? activeMission.youtube_candidates

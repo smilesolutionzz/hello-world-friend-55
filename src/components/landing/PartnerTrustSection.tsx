@@ -48,20 +48,6 @@ const PartnerTrustSection = () => {
             {t.partnerTrust.description1}<br />
             {t.partnerTrust.description2}
           </p>
-          <div className="flex justify-center gap-8 md:gap-16 mt-8">
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary">50+</div>
-              <div className="text-sm text-white/50">{t.partnerTrust.statPartners}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-blue-400">35+</div>
-              <div className="text-sm text-white/50">{t.partnerTrust.statExperts}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-green-400">{t.partnerTrust.statRegion}</div>
-              <div className="text-sm text-white/50">{t.partnerTrust.statRegion}</div>
-            </div>
-          </div>
         </motion.div>
 
         <div className="space-y-4">

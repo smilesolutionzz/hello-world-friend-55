@@ -113,6 +113,7 @@ import MindTrack from "./pages/MindTrack";
 import MindTrackStart from "./pages/MindTrackStart";
 import MindTrackWorkbook from "./pages/MindTrackWorkbook";
 import MindTrackDashboard from "./pages/MindTrackDashboard";
+import MindTrackWorkbookPreview from "./pages/MindTrackWorkbookPreview";
 import Quiz from "./pages/Quiz";
 
 // Content & Column
@@ -220,6 +221,7 @@ const App = () => {
           <Route path="/mind-track/workbook" element={<MindTrackWorkbook />} />
           {/* 별칭: /mind-track-workbook 도 동일하게 동작 (?day=N 파라미터 그대로 전달) */}
           <Route path="/mind-track-workbook" element={<MindTrackWorkbook />} />
+          <Route path="/mind-track/workbook-preview" element={<MindTrackWorkbookPreview />} />
           <Route path="/en/mind-track" element={<MindTrack />} />
           <Route path="/en/mind-track/dashboard" element={<MindTrackDashboard />} />
 

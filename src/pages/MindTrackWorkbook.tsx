@@ -121,6 +121,9 @@ import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulat
 import WeeklyMilestoneCards from "@/components/mind-track/WeeklyMilestoneCards";
 import MilestoneProgressBar from "@/components/mind-track/MilestoneProgressBar";
 import WorkbookPreviewCard from "@/components/mind-track/WorkbookPreviewCard";
+import NextChapterTeaser from "@/components/mind-track/NextChapterTeaser";
+import WeeklyChapterPreview from "@/components/mind-track/WeeklyChapterPreview";
+import WorkbookCompletionCelebration from "@/components/mind-track/WorkbookCompletionCelebration";
 import MindTrackWorkbookSkeleton from "@/components/mind-track/MindTrackWorkbookSkeleton";
 import MissionLearningCard from "@/components/mind-track/MissionLearningCard";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
@@ -195,6 +198,7 @@ export default function MindTrackWorkbook() {
   const [workbook, setWorkbook] = useState<any>(null);
   const [missions, setMissions] = useState<any[]>([]);
   const [checkins, setCheckins] = useState<any[]>([]);
+  const [showCelebration, setShowCelebration] = useState(false);
   const [baselines, setBaselines] = useState<any[]>([]);
   const [activeMission, setActiveMission] = useState<any>(null);
   const [reflectionNote, setReflectionNote] = useState("");
@@ -279,10 +283,18 @@ export default function MindTrackWorkbook() {
     }
   }, [currentDay, enrollment, missions]);
 
-  // Day 30 도달 + 아직 완료처리 안된 경우 → 자동 finalize + 메일 발송
+  // Day 30 도달 + 아직 완료처리 안된 경우 → 자동 finalize + 메일 발송 + 축하 모달
   useEffect(() => {
     if (!enrollment) return;
     if (currentDay < 30) return;
+
+    // 한 번 본 사용자에게는 다시 자동으로 띄우지 않음 (수동으로 다시 열 수 있는 버튼은 있음)
+    const seenKey = `mt-celebrated-${enrollment.id}`;
+    if (!sessionStorage.getItem(seenKey)) {
+      setShowCelebration(true);
+      sessionStorage.setItem(seenKey, "1");
+    }
+
     if (enrollment.status === "completed" && enrollment.completed_at) return;
     (async () => {
       try {
@@ -665,6 +677,23 @@ export default function MindTrackWorkbook() {
             </div>
             <Progress value={(currentDay / 30) * 100} className="h-2" />
 
+            {currentDay >= 30 && enrollment && (
+              <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                <Button
+                  onClick={() => navigate(`/mind-track/workbook-preview?enrollmentId=${enrollment.id}`)}
+                  className="flex-1 h-10 rounded-xl bg-[#8a7a4d] hover:bg-[#6f6240] text-white font-bold text-[12px]"
+                >
+                  완성된 워크북 보기 · PDF 받기
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowCelebration(true)}
+                  className="h-10 rounded-xl border-[#C8B88A]/50 text-[#8a7a4d] hover:bg-[#C8B88A]/10 hover:text-[#8a7a4d] font-bold text-[12px]"
+                >
+                  완주 배지 다시 보기
+                </Button>
+              </div>
+            )}
             <div className="grid grid-cols-3 gap-2 mt-4">
               <div className="p-2.5 rounded-lg bg-white border border-slate-200 text-center">
                 <Flame className="w-4 h-4 text-orange-500 mx-auto mb-0.5" />
@@ -714,6 +743,9 @@ export default function MindTrackWorkbook() {
             </div>
           </Card>
 
+          {/* "오늘 Day에 맞춘" 다음 추가 예고 미니카드 */}
+          <NextChapterTeaser currentDay={currentDay} />
+
           {/* "내 워크북" 미리보기 — 30일 후 손에 남는 결과물을 시각화 (동기부여) */}
           <WorkbookPreviewCard
             currentDay={currentDay}
@@ -721,6 +753,9 @@ export default function MindTrackWorkbook() {
             trackTheme={workbook?.challenge_theme}
             nickname={enrollment?.baseline_data?.nickname || enrollment?.baseline_data?.display_name}
           />
+
+          {/* 1/2/3/4주차 챕터 예고 카드 */}
+          <WeeklyChapterPreview currentDay={currentDay} />
 
           {/* 마일스톤 진행 현황 (어떤 7/14/21/28일 카드가 완료되었는지 + 다음 목표 강조) */}
           <MilestoneProgressBar currentDay={currentDay} checkins={checkins} />
@@ -1501,6 +1536,22 @@ export default function MindTrackWorkbook() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* 30일 완주 축하 — 배지/공유 이미지 */}
+      {enrollment && (
+        <WorkbookCompletionCelebration
+          open={showCelebration}
+          onOpenChange={setShowCelebration}
+          nickname={enrollment?.baseline_data?.nickname || enrollment?.baseline_data?.display_name || "당신"}
+          trackTheme={workbook?.challenge_theme || "30일 마음 트랙"}
+          startedAt={enrollment?.started_at}
+          completedAt={enrollment?.completed_at}
+          totalCheckins={completedCount}
+          onDownloadWorkbook={() =>
+            navigate(`/mind-track/workbook-preview?enrollmentId=${enrollment.id}`)
+          }
+        />
+      )}
     </>
   );
 }

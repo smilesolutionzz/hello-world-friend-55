@@ -8426,6 +8426,50 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_final_workbooks: {
+        Row: {
+          ai_insights: string | null
+          chart_data: Json | null
+          compiled_data: Json
+          completion_certificate: Json | null
+          created_at: string
+          enrollment_id: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_insights?: string | null
+          chart_data?: Json | null
+          compiled_data?: Json
+          completion_certificate?: Json | null
+          created_at?: string
+          enrollment_id: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_insights?: string | null
+          chart_data?: Json | null
+          compiled_data?: Json
+          completion_certificate?: Json | null
+          created_at?: string
+          enrollment_id?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_final_workbooks_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mind_track_interventions: {
         Row: {
           acted_at: string | null

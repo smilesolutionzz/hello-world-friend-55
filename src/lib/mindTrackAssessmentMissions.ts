@@ -148,7 +148,7 @@ export async function recordAssessmentResultToCheckin(args: {
     } · 단계 ${results.severity ?? "-"}`;
 
     // 같은 day에 이미 체크인이 있으면 update, 없으면 insert
-    const { data: existing } = await supabase
+    const { data: existing } = await (supabase as any)
       .from("mind_track_checkins")
       .select("id, reflection_note, completed")
       .eq("user_id", user.id)
@@ -157,8 +157,8 @@ export async function recordAssessmentResultToCheckin(args: {
       .maybeSingle();
 
     // 미션 id를 알아내서 같이 묶기 (있으면)
-    const { data: missionRow } = await supabase
-      .from("mind_track_missions")
+    const { data: missionRow } = await (supabase as any)
+      .from("mind_track_daily_missions")
       .select("id")
       .eq("enrollment_id", state.enrollmentId)
       .eq("day_number", state.day)
@@ -179,12 +179,12 @@ export async function recordAssessmentResultToCheckin(args: {
       const merged = existing.reflection_note
         ? `${summary}\n${existing.reflection_note}`
         : summary;
-      await supabase
+      await (supabase as any)
         .from("mind_track_checkins")
         .update({ ...basePayload, reflection_note: merged })
         .eq("id", existing.id);
     } else {
-      await supabase
+      await (supabase as any)
         .from("mind_track_checkins")
         .insert({ ...basePayload, reflection_note: summary });
     }

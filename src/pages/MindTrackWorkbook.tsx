@@ -333,6 +333,8 @@ export default function MindTrackWorkbook() {
     if (!Number.isFinite(dp)) return;
     if (dp !== currentDay) return;
     if (autoOpenedRef.current && !explicitOpen) return;
+    const completed = checkins.some((c) => c.day_number === dp && c.completed);
+    if (completed && !explicitOpen) return;
     const m = missions.find((mm) => mm.day_number === dp);
     if (m) {
       autoOpenedRef.current = true;
@@ -344,7 +346,7 @@ export default function MindTrackWorkbook() {
         setSearchParams(params, { replace: true });
       }
     }
-  }, [loading, searchParams, currentDay, missions]);
+  }, [loading, searchParams, currentDay, missions, checkins]);
 
   const openMission = (mission: any) => {
     const existing = checkins.find((c) => c.day_number === mission.day_number);

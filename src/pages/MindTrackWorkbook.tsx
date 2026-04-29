@@ -960,6 +960,19 @@ export default function MindTrackWorkbook() {
                     reflectionReadonly={!!todayCheckin?.completed}
                   />
                 )}
+
+                {/* Day 1·2 추천 자가진단 — 우리 플랫폼 내부 검사를 미션화 */}
+                {enrollment && getAssessmentForDay(currentDay) && (
+                  <MissionAssessmentCard
+                    recommendation={getAssessmentForDay(currentDay)!}
+                    enrollmentId={enrollment.id}
+                    day={currentDay}
+                    onChanged={() => {
+                      // 진행 단계 표시기 갱신을 위해 missions 배열 객체 식별자 변경
+                      setMissions((prev) => [...prev]);
+                    }}
+                  />
+                )}
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center gap-3 text-xs text-slate-500">
                     <span>⏱ {todayMission.estimated_minutes}분</span>

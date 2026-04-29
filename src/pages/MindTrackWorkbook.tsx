@@ -361,35 +361,54 @@ export default function MindTrackWorkbook() {
 
   // ?day=N 이 오늘이면 미션 다이얼로그 자동 열기
   // - 최초 1회는 항상 자동 (autoOpenedRef 가드)
-  // - ?openMission=1 플래그가 있으면 명시적으로 다시 열기
+  // - ?openMission=1 또는 ?mtOnce=<token> 플래그가 있으면 명시적으로 다시 열기
+  // - mtOnce는 토큰 1개당 단 한 번만 동작 (sessionStorage로 중복 방지) → 새로고침/뒤로가기 재진입 시에도 추가 오픈 없음
   const autoOpenedRef = useRef(false);
+  const consumedOnceTokensRef = useRef<Set<string>>(new Set());
   useEffect(() => {
     if (loading) return;
     const dp = parseInt(searchParams.get("day") ?? "", 10);
-    const explicitOpen = searchParams.get("openMission") === "1";
+    const explicitFlag = searchParams.get("openMission") === "1";
+    const onceToken = searchParams.get("mtOnce");
+    let onceValid = false;
+    if (onceToken) {
+      const sessionKey = `mt-once:${onceToken}`;
+      const alreadyConsumed =
+        consumedOnceTokensRef.current.has(onceToken) ||
+        (typeof window !== "undefined" && window.sessionStorage.getItem(sessionKey) === "1");
+      if (!alreadyConsumed) onceValid = true;
+    }
+    const explicitOpen = explicitFlag || onceValid;
+
     if (!Number.isFinite(dp)) return;
     if (dp !== currentDay) return;
-    // 완료된 미션은 사용자가 직접 "다시 열기"를 누르기 전에는 절대 자동 오픈하지 않음
+
+    const cleanupParams = () => {
+      const params = new URLSearchParams(searchParams);
+      let changed = false;
+      if (params.has("openMission")) { params.delete("openMission"); changed = true; }
+      if (params.has("mtOnce")) { params.delete("mtOnce"); changed = true; }
+      if (changed) setSearchParams(params, { replace: true });
+    };
+
+    // 완료된 미션은 자동 오픈 금지
     const completed = checkins.some((c) => c.day_number === dp && c.completed);
     if (completed) {
-      // 잔존하는 ?openMission=1 플래그도 제거해서 새로고침 시 재오픈 방지
-      if (explicitOpen) {
-        const params = new URLSearchParams(searchParams);
-        params.delete("openMission");
-        setSearchParams(params, { replace: true });
-      }
+      if (explicitFlag || onceToken) cleanupParams();
       return;
     }
     if (autoOpenedRef.current && !explicitOpen) return;
+
     const m = missions.find((mm) => mm.day_number === dp);
     if (m) {
       autoOpenedRef.current = true;
-      openMission(m);
-      if (explicitOpen) {
-        const params = new URLSearchParams(searchParams);
-        params.delete("openMission");
-        setSearchParams(params, { replace: true });
+      // mtOnce 토큰 소비 마킹 (같은 토큰으로 다시 열리지 않게)
+      if (onceToken && onceValid) {
+        consumedOnceTokensRef.current.add(onceToken);
+        try { window.sessionStorage.setItem(`mt-once:${onceToken}`, "1"); } catch {}
       }
+      openMission(m);
+      cleanupParams();
     }
   }, [loading, searchParams, currentDay, missions, checkins]);
 

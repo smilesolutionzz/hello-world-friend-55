@@ -577,9 +577,11 @@ export default function MindTrackWorkbook() {
                 {Array.isArray(todayMission.youtube_candidates) && todayMission.youtube_candidates.length > 0 && (
                   <MissionLearningCard
                     missionId={todayMission.id}
+                    missionType={todayMission.mission_type}
                     candidates={todayMission.youtube_candidates as any}
                     initialWatched={Array.isArray((todayMission as any).watched_video_ids) ? (todayMission as any).watched_video_ids : []}
                     initialReflection={todayCheckin?.video_reflection ?? ""}
+                    initialDraftReflection={(todayMission as any).video_reflection_draft ?? ""}
                     reflectionReadonly={!!todayCheckin?.completed}
                   />
                 )}

@@ -261,77 +261,104 @@ export default function WorkbookPreviewCard({
           </div>
         </div>
 
-        {/* 챕터 목록 — 잠금 해제 상태 + NEW 배지 + 공유 버튼 */}
-        <div className="space-y-2 mb-5">
-          {CHAPTERS.map((ch) => {
-            const unlocked = currentDay >= ch.day;
-            const isJustUnlocked = unlocked && ch.day === currentDay && ch.day > 1;
-            return (
-              <div
-                key={ch.id}
-                className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-colors ${
-                  unlocked
-                    ? "bg-white border-[#C8B88A]/30"
-                    : "bg-slate-50/60 border-slate-200/70"
-                }`}
-              >
-                {/* NEW 펄스 알림 닷 */}
-                {isJustUnlocked && (
-                  <span className="absolute -top-1 -left-1 flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C8B88A] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-[#8a7a4d]" />
-                  </span>
-                )}
-                <div
-                  className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                    unlocked
-                      ? "bg-[#C8B88A]/20 text-[#8a7a4d]"
-                      : "bg-slate-200/70 text-slate-400"
-                  }`}
-                >
-                  {unlocked ? (
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                  ) : (
-                    <Lock className="w-3.5 h-3.5" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span
-                      className={`text-[13px] font-bold break-keep ${
-                        unlocked ? "text-slate-900" : "text-slate-500"
+        {/* 챕터 목록 + 마일스톤 트래커 — 아코디언으로 정리 (기본 접힘) */}
+        <Accordion type="multiple" className="mb-5 rounded-2xl border border-slate-200 bg-white divide-y divide-slate-100">
+          <AccordionItem value="chapters" className="border-b-0 px-3">
+            <AccordionTrigger className="py-3 text-sm font-bold text-slate-800 hover:no-underline">
+              <span className="flex items-center gap-2">
+                <ListChecks className="w-4 h-4 text-[#8a7a4d]" />
+                챕터 목록 · {unlockedChapters}/{totalChapters} 잠금 해제
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="pb-3">
+              <div className="space-y-2">
+                {CHAPTERS.map((ch) => {
+                  const unlocked = currentDay >= ch.day;
+                  const isJustUnlocked = unlocked && ch.day === currentDay && ch.day > 1;
+                  return (
+                    <div
+                      key={ch.id}
+                      className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-colors ${
+                        unlocked
+                          ? "bg-white border-[#C8B88A]/30"
+                          : "bg-slate-50/60 border-slate-200/70"
                       }`}
                     >
-                      {ch.title}
-                    </span>
-                    {isJustUnlocked && (
-                      <Badge className="h-4 px-1.5 text-[9px] bg-[#C8B88A] text-white border-0 animate-pulse">
-                        NEW
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-slate-500 break-keep mt-0.5">
-                    {ch.desc}
-                  </p>
-                </div>
-                <div className="text-[10px] font-mono text-slate-400 flex-shrink-0">
-                  Day {String(ch.day).padStart(2, "0")}
-                </div>
-                {unlocked && (
-                  <ChapterShareButton
-                    chapterNo={ch.chapterNo}
-                    chapterTitle={ch.title}
-                    shortTitle={ch.shortTitle}
-                    desc={ch.desc}
-                    day={ch.day}
-                    nickname={nickname}
-                    trackTheme={trackTheme}
-                  />
-                )}
+                      {isJustUnlocked && (
+                        <span className="absolute -top-1 -left-1 flex h-3 w-3">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C8B88A] opacity-75" />
+                          <span className="relative inline-flex rounded-full h-3 w-3 bg-[#8a7a4d]" />
+                        </span>
+                      )}
+                      <div
+                        className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                          unlocked
+                            ? "bg-[#C8B88A]/20 text-[#8a7a4d]"
+                            : "bg-slate-200/70 text-slate-400"
+                        }`}
+                      >
+                        {unlocked ? (
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                        ) : (
+                          <Lock className="w-3.5 h-3.5" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span
+                            className={`text-[13px] font-bold break-keep ${
+                              unlocked ? "text-slate-900" : "text-slate-500"
+                            }`}
+                          >
+                            {ch.title}
+                          </span>
+                          {isJustUnlocked && (
+                            <Badge className="h-4 px-1.5 text-[9px] bg-[#C8B88A] text-white border-0 animate-pulse">
+                              NEW
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-slate-500 break-keep mt-0.5">
+                          {ch.desc}
+                        </p>
+                      </div>
+                      <div className="text-[10px] font-mono text-slate-400 flex-shrink-0">
+                        Day {String(ch.day).padStart(2, "0")}
+                      </div>
+                      {unlocked && (
+                        <ChapterShareButton
+                          chapterNo={ch.chapterNo}
+                          chapterTitle={ch.title}
+                          shortTitle={ch.shortTitle}
+                          desc={ch.desc}
+                          day={ch.day}
+                          nickname={nickname}
+                          trackTheme={trackTheme}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
-        </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="milestones" className="border-b-0 px-3">
+            <AccordionTrigger className="py-3 text-sm font-bold text-slate-800 hover:no-underline">
+              <span className="flex items-center gap-2">
+                <Flag className="w-4 h-4 text-[#8a7a4d]" />
+                Day별 미션 진행률 · 검사 / 영상 / 회고
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="pb-3">
+              <MissionMilestoneTracker
+                currentDay={currentDay}
+                checkins={checkins}
+                enrollmentId={enrollmentId}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         {/* CTA */}
         <Button

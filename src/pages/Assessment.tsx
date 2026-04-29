@@ -77,6 +77,10 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  recordAssessmentResultToCheckin,
+  type MindTrackMissionState,
+} from "@/lib/mindTrackAssessmentMissions";
 
 const Assessment = () => {
   const navigate = useNavigate();

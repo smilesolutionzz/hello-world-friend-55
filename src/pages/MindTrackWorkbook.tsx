@@ -17,8 +17,9 @@ import {
   CheckCircle2, Circle, Loader2, Sparkles, TrendingUp, Calendar,
   Brain, Zap, Eye, Heart, Target, ChevronRight, Lock, ArrowLeft,
   Flame, Trophy, BookOpen, Wind, PenLine, Users, Activity, Award, Mail,
-  RotateCcw, Info, Video, Stethoscope
+  RotateCcw, Info, Video, Stethoscope, Mic, Sparkle, BarChart3, ShieldCheck
 } from "lucide-react";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 
 // 미션 타입별 가이드 (라이브러리)
 const MISSION_TYPE_GUIDE: Record<string, {

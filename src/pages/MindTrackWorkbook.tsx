@@ -539,6 +539,28 @@ export default function MindTrackWorkbook() {
             const duration = enrollment.baseline_data?.issue_duration ? toKo(enrollment.baseline_data.issue_duration) : "";
             const moodScore = enrollment.baseline_data?.current_mood_score;
 
+            // 자연스러운 문장형 다듬기
+            const hasJongseong = (ch: string) => {
+              const code = ch.charCodeAt(0);
+              if (code < 0xAC00 || code > 0xD7A3) return false;
+              return (code - 0xAC00) % 28 !== 0;
+            };
+            const eulReul = (s: string) => (s && hasJongseong(s.slice(-1)) ? "을" : "를");
+            const polishGoal = (s: string) => {
+              if (!s) return "";
+              const t = s.trim().replace(/[.!~。]+$/, "");
+              if (/(요|다|함|기|음|죠|네|까|니다)$/.test(t)) return t + ".";
+              return `${t}${eulReul(t)} 바라고 있어요.`;
+            };
+            const polishConcern = (s: string) => {
+              if (!s) return "";
+              const t = s.trim().replace(/[.!~。]+$/, "");
+              if (/(요|다|함|기|음|죠|네|까|니다)$/.test(t)) return t + ".";
+              return `요즘 ${t} 때문에 마음이 무거워요.`;
+            };
+            const startedDate = new Date(enrollment.started_at);
+            const startedSentence = `${startedDate.getFullYear()}년 ${startedDate.getMonth() + 1}월 ${startedDate.getDate()}일에 시작했어요`;
+
             return (
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="track-detail" className="border-0">
@@ -551,17 +573,19 @@ export default function MindTrackWorkbook() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 mb-1">
                             <span className="text-[10px] font-bold tracking-[0.14em] text-[#8a7a4d]">
-                              ◆ 나의 개선 목표
+                              ◆ 내가 정한 목표
                             </span>
                           </div>
                           <div className="text-[15px] font-bold text-slate-900 truncate leading-tight">
                             {trackInfo.label}
                           </div>
-                          {(goal || concern) && (
-                            <div className="text-xs text-slate-500 truncate mt-1">
-                              {goal || concern}
-                            </div>
-                          )}
+                          <div className="text-xs text-slate-500 truncate mt-1">
+                            {goal
+                              ? `${goal}${eulReul(goal)} 함께 만들어가요`
+                              : concern
+                                ? `${concern}, 30일 동안 차근차근`
+                                : "30일 동안 마음을 차근차근 다져가요"}
+                          </div>
                         </div>
                         <ChevronRight className="chevron w-4 h-4 text-slate-400 transition-transform shrink-0" />
                       </div>
@@ -569,39 +593,43 @@ export default function MindTrackWorkbook() {
                     <AccordionContent className="px-5 pb-5 pt-0">
                       <div className="space-y-4 pt-3 border-t border-[#C8B88A]/20">
                         {goal && (
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             <div className="text-[10px] font-bold tracking-[0.14em] text-[#8a7a4d]">
-                              ✦ 개선 목표
+                              ✦ 이번 30일, 이렇게 달라지고 싶어요
                             </div>
-                            <p className="text-sm text-slate-800 break-keep leading-relaxed">{goal}</p>
+                            <p className="text-sm text-slate-800 break-keep leading-relaxed">
+                              {polishGoal(goal)}
+                            </p>
                           </div>
                         )}
                         {concern && (
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             <div className="text-[10px] font-bold tracking-[0.14em] text-[#8a7a4d]">
-                              ✦ 주요 고민
+                              ✦ 지금 마음에 걸리는 것
                             </div>
-                            <p className="text-sm text-slate-700 break-keep leading-relaxed">{concern}</p>
+                            <p className="text-sm text-slate-700 break-keep leading-relaxed">
+                              {polishConcern(concern)}
+                            </p>
                           </div>
                         )}
                         <div className="flex flex-wrap gap-1.5 pt-1">
                           {lifeStage && (
                             <Badge variant="outline" className="text-[10px] bg-slate-50 font-medium">
-                              ◇ {lifeStage}
+                              ◇ {lifeStage}으로 살아가는 중
                             </Badge>
                           )}
                           {duration && (
                             <Badge variant="outline" className="text-[10px] bg-slate-50 font-medium">
-                              ◷ 지속 기간 · {duration}
+                              ◷ {duration}째 이어진 고민
                             </Badge>
                           )}
                           {typeof moodScore === "number" && (
                             <Badge variant="outline" className="text-[10px] bg-slate-50 font-medium">
-                              ❖ 시작 기분 · {moodScore}/10
+                              ❖ 출발할 때 기분은 {moodScore}점이었어요
                             </Badge>
                           )}
                           <Badge variant="outline" className="text-[10px] bg-[#FAF8F2] border-[#C8B88A]/40 text-[#8a7a4d] font-medium">
-                            ☘ 시작일 · {new Date(enrollment.started_at).toLocaleDateString("ko-KR")}
+                            ☘ {startedSentence}
                           </Badge>
                         </div>
                         <Button

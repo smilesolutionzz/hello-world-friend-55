@@ -94,20 +94,31 @@ export default function MindTrackDashboard() {
   const copy = getDayCopy(day);
   const progressPct = Math.round((day / 30) * 100);
 
-  // 첫 진입 1회 온보딩
+  // 첫 진입 1회 온보딩 + "오늘 다시 보지 않기" 지원
+  const todayKey = () => new Date().toISOString().slice(0, 10); // YYYY-MM-DD (local-ish)
   useEffect(() => {
     if (!enrollment) return;
-    const key = `mind_track_onboarded_${enrollment.id}`;
     if (typeof window === "undefined") return;
-    if (!localStorage.getItem(key)) {
-      setTimeout(() => setShowOnboarding(true), 300);
-    }
+    const onboardedKey = `mind_track_onboarded_${enrollment.id}`;
+    const snoozeKey = `mind_track_onboarding_snooze_${enrollment.id}`;
+    const alreadyOnboarded = localStorage.getItem(onboardedKey);
+    const snoozedDate = localStorage.getItem(snoozeKey);
+    if (alreadyOnboarded) return;
+    if (snoozedDate === todayKey()) return;
+    setTimeout(() => setShowOnboarding(true), 300);
   }, [enrollment?.id]);
 
   const closeOnboarding = () => {
     if (!enrollment) return;
     localStorage.setItem(`mind_track_onboarded_${enrollment.id}`, new Date().toISOString());
     setShowOnboarding(false);
+  };
+
+  const snoozeOnboardingToday = () => {
+    if (!enrollment) return;
+    localStorage.setItem(`mind_track_onboarding_snooze_${enrollment.id}`, todayKey());
+    setShowOnboarding(false);
+    toast.success("오늘은 더 이상 보이지 않을게요");
   };
 
   const startTodayMission = () => {
@@ -190,6 +201,7 @@ export default function MindTrackDashboard() {
           open={showOnboarding}
           onClose={closeOnboarding}
           onStart={startTodayMission}
+          onSnoozeToday={snoozeOnboardingToday}
         />
 
         {/* 헤더 — Day N/30 + 진행률 + 스트릭 */}

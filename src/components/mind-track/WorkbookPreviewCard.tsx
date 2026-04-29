@@ -47,6 +47,25 @@ export default function WorkbookPreviewCard({
   const isComplete = currentDay >= 30;
   const remainingDays = Math.max(0, 30 - currentDay);
 
+  // Day별 미션 완료 도트 — 검사·영상·체크인 3가지를 시각화
+  const missionProgress = useMemo(() => {
+    const map = new Map<number, { assessment: boolean | null; video: boolean | null; checkin: boolean }>();
+    const checkinByDay = new Map<number, any>();
+    for (const c of checkins) checkinByDay.set(c.day_number, c);
+
+    for (let d = 1; d <= currentDay; d++) {
+      const c = checkinByDay.get(d);
+      const rec = getAssessmentForDay(d);
+      map.set(d, {
+        assessment: rec ? isAssessmentMissionCompleted(enrollmentId, d) : null,
+        // 영상 완료 여부는 체크인의 video_reflection 존재 또는 watched 여부로 추정
+        video: c?.video_reflection ? true : c ? false : null,
+        checkin: !!c?.completed,
+      });
+    }
+    return map;
+  }, [checkins, currentDay, enrollmentId]);
+
   // 챕터 언락 인앱 알림 — sessionStorage에 enrollmentId+chapter로 1회만 표시
   useEffect(() => {
     if (!enrollmentId) return;

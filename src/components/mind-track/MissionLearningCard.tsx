@@ -49,30 +49,8 @@ export default function MissionLearningCard({
     [candidates, activeId],
   );
 
-  // Auto-save reflection (debounced)
-  useEffect(() => {
-    if (reflectionReadonly) return;
-    if (reflection === initialReflection) return;
-    const t = setTimeout(async () => {
-      setReflectionSaving(true);
-      try {
-        const { error } = await supabase
-          .from("mind_track_daily_missions")
-          .update({ video_reflection_draft: null }) // legacy noop guard
-          .eq("id", missionId);
-        // We store the reflection on the check-in side via parent submit.
-        // Here we just mark saved locally; actual persist happens in check-in dialog.
-        if (error && !String(error.message).includes("video_reflection_draft")) throw error;
-      } catch (e) {
-        // silent — drafting only
-      } finally {
-        setReflectionSaving(false);
-        setReflectionSavedAt(Date.now());
-      }
-    }, 800);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reflection]);
+  // Reflection is read by the check-in dialog (via DOM data attribute) at submit time.
+  // No auto-save here — keeps everything in one transactional check-in write.
 
   if (!candidates || candidates.length === 0) return null;
 

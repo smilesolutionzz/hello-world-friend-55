@@ -332,15 +332,23 @@ export default function MindTrackWorkbook() {
     const explicitOpen = searchParams.get("openMission") === "1";
     if (!Number.isFinite(dp)) return;
     if (dp !== currentDay) return;
-    if (autoOpenedRef.current && !explicitOpen) return;
+    // 완료된 미션은 사용자가 직접 "다시 열기"를 누르기 전에는 절대 자동 오픈하지 않음
     const completed = checkins.some((c) => c.day_number === dp && c.completed);
-    if (completed && !explicitOpen) return;
+    if (completed) {
+      // 잔존하는 ?openMission=1 플래그도 제거해서 새로고침 시 재오픈 방지
+      if (explicitOpen) {
+        const params = new URLSearchParams(searchParams);
+        params.delete("openMission");
+        setSearchParams(params, { replace: true });
+      }
+      return;
+    }
+    if (autoOpenedRef.current && !explicitOpen) return;
     const m = missions.find((mm) => mm.day_number === dp);
     if (m) {
       autoOpenedRef.current = true;
       openMission(m);
       if (explicitOpen) {
-        // 플래그는 일회용 — 소비 후 제거
         const params = new URLSearchParams(searchParams);
         params.delete("openMission");
         setSearchParams(params, { replace: true });

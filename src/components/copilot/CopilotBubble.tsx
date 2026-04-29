@@ -70,6 +70,15 @@ export const CopilotBubble: React.FC = () => {
   const [currentStepId, setCurrentStepId] = useState<string>(persisted.currentStepId ?? 'root');
   const [history, setHistory] = useState<HistoryEntry[]>(persisted.history ?? []);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // /ai-copilot 라우트나 ?copilot=1 쿼리면 자동 오픈
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (location.pathname === '/ai-copilot' || params.get('copilot') === '1') {
+      setIsOpen(true);
+    }
+  }, [location.pathname, location.search]);
 
   // Chat state - 복원
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(

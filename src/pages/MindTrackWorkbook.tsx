@@ -66,6 +66,37 @@ const MISSION_TYPE_GUIDE: Record<string, {
   },
 };
 
+const MISSION_CHECKIN_COPY: Record<string, { label: string; placeholder: string; error: string }> = {
+  reflection: {
+    label: "오늘 발견한 것",
+    placeholder: "예: 오늘 나를 웃게 만든 순간 하나, 새롭게 알아차린 생각 하나",
+    error: "오늘 발견한 것을 한 줄 이상 적어주세요",
+  },
+  action: {
+    label: "오늘 실제로 한 행동",
+    placeholder: "예: 5분 산책을 했다, 미뤘던 메시지를 보냈다",
+    error: "오늘 실제로 한 행동을 한 줄 이상 적어주세요",
+  },
+  breathing: {
+    label: "호흡 후 달라진 점",
+    placeholder: "예: 어깨 힘이 조금 빠졌다, 생각 속도가 느려졌다",
+    error: "호흡 후 달라진 점을 한 줄 이상 적어주세요",
+  },
+  journaling: {
+    label: "오늘 적은 핵심 문장",
+    placeholder: "예: 작은 기쁨은 퇴근길 바람이 시원했던 순간이었다",
+    error: "오늘 적은 핵심 문장을 한 줄 이상 남겨주세요",
+  },
+  connection: {
+    label: "오늘 전한 마음",
+    placeholder: "예: 친구에게 고맙다고 보냈다, 가족에게 안부를 물었다",
+    error: "오늘 누구에게 어떤 마음을 전했는지 적어주세요",
+  },
+};
+
+const getMissionCheckinCopy = (missionType?: string) =>
+  MISSION_CHECKIN_COPY[missionType || ""] ?? MISSION_CHECKIN_COPY.reflection;
+
 // 연속 체크인(streak) 계산: 가장 최근 체크인부터 거꾸로 연속된 일수
 function calcStreak(checkins: any[], currentDay: number): number {
   let streak = 0;
@@ -227,6 +258,7 @@ export default function MindTrackWorkbook() {
 
   const todayMission = missions.find((m) => m.day_number === currentDay);
   const todayCheckin = checkins.find((c) => c.day_number === currentDay);
+  const activeMissionCheckinCopy = getMissionCheckinCopy(activeMission?.mission_type);
 
   // Trigger weekly refresh if needed
   useEffect(() => {
@@ -301,6 +333,8 @@ export default function MindTrackWorkbook() {
     if (!Number.isFinite(dp)) return;
     if (dp !== currentDay) return;
     if (autoOpenedRef.current && !explicitOpen) return;
+    const completed = checkins.some((c) => c.day_number === dp && c.completed);
+    if (completed && !explicitOpen) return;
     const m = missions.find((mm) => mm.day_number === dp);
     if (m) {
       autoOpenedRef.current = true;
@@ -312,7 +346,7 @@ export default function MindTrackWorkbook() {
         setSearchParams(params, { replace: true });
       }
     }
-  }, [loading, searchParams, currentDay, missions]);
+  }, [loading, searchParams, currentDay, missions, checkins]);
 
   const openMission = (mission: any) => {
     const existing = checkins.find((c) => c.day_number === mission.day_number);
@@ -357,6 +391,11 @@ export default function MindTrackWorkbook() {
       }
     }
 
+    if (!reflectionNote.trim()) {
+      toast.error(getMissionCheckinCopy(activeMission.mission_type).error);
+      return;
+    }
+
     setSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -379,7 +418,7 @@ export default function MindTrackWorkbook() {
       } else {
         await supabase.from("mind_track_checkins").insert(payload);
       }
-      toast.success("체크인 완료! 🎉");
+      toast.success("체크인 완료");
       setActiveMission(null);
       load();
     } catch (e: any) {
@@ -958,9 +997,9 @@ export default function MindTrackWorkbook() {
             <p className="text-sm text-slate-600 break-keep">{activeMission?.mission_description}</p>
 
             {[
-              { state: moodScore, set: setMoodScore, label: "지금 기분", icon: Heart },
-              { state: energyScore, set: setEnergyScore, label: "지금 에너지", icon: Zap },
-              { state: clarityScore, set: setClarityScore, label: "지금 명료성", icon: Eye },
+              { state: moodScore, set: setMoodScore, label: "마음 상태", icon: Heart, low: "무거움", high: "편안함" },
+              { state: energyScore, set: setEnergyScore, label: "몸의 여유", icon: Zap, low: "지침", high: "가벼움" },
+              { state: clarityScore, set: setClarityScore, label: "생각 정리", icon: Eye, low: "복잡함", high: "선명함" },
             ].map((s) => (
               <div key={s.label} className="space-y-1.5">
                 <div className="flex items-center justify-between">
@@ -970,15 +1009,21 @@ export default function MindTrackWorkbook() {
                   <span className="text-lg font-bold text-primary tabular-nums">{s.state}</span>
                 </div>
                 <Slider value={[s.state]} onValueChange={(v) => s.set(v[0])} min={0} max={10} step={1} />
+                <div className="flex justify-between text-[11px] text-slate-500">
+                  <span>{s.low}</span>
+                  <span>{s.high}</span>
+                </div>
               </div>
             ))}
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-slate-700">오늘의 메모 (선택)</label>
+              <label className="text-sm font-medium text-slate-700">
+                {activeMissionCheckinCopy.label} <span className="text-rose-500">필수</span>
+              </label>
               <Textarea
                 value={reflectionNote}
                 onChange={(e) => setReflectionNote(e.target.value)}
-                placeholder="짧게 한 줄도 좋아요"
+                placeholder={activeMissionCheckinCopy.placeholder}
                 rows={3}
                 className="resize-none"
               />

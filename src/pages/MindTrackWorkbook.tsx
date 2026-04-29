@@ -130,6 +130,8 @@ import MissionAssessmentCard from "@/components/mind-track/MissionAssessmentCard
 import {
   getAssessmentForDay,
   isAssessmentMissionCompleted,
+  extractUserReflection,
+  stripAssessmentBlocks,
 } from "@/lib/mindTrackAssessmentMissions";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 import { HelpCircle } from "lucide-react";

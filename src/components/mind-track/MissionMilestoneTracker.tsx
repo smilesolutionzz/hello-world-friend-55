@@ -146,29 +146,54 @@ function AxisChip({
   return (
     <div
       className={`rounded-lg border px-2 py-1.5 ${
-        done ? "border-emerald-200 bg-emerald-50/60" : "border-slate-200 bg-white"
+        isNA
+          ? "border-dashed border-slate-200 bg-slate-50/60"
+          : done
+          ? "border-emerald-200 bg-emerald-50/60"
+          : "border-slate-200 bg-white"
       }`}
+      title={isNA ? `${label}: 해당 없음 (이 마일스톤에는 적용되지 않아요)` : undefined}
     >
       <div className="flex items-center gap-1 mb-1">
         <Icon
-          className={`w-3 h-3 ${done ? "text-emerald-600" : "text-slate-400"}`}
+          className={`w-3 h-3 ${
+            isNA ? "text-slate-300" : done ? "text-emerald-600" : "text-slate-400"
+          }`}
         />
         <span
           className={`text-[10px] font-bold ${
-            done ? "text-emerald-700" : "text-slate-500"
+            isNA ? "text-slate-400" : done ? "text-emerald-700" : "text-slate-500"
           }`}
         >
           {label}
         </span>
-        <span className="ml-auto text-[10px] font-mono text-slate-500">
-          {isNA ? "—" : `${percent}%`}
+        <span
+          className={`ml-auto text-[10px] font-mono ${
+            isNA ? "text-slate-400" : "text-slate-500"
+          }`}
+        >
+          {isNA ? "해당 없음" : `${percent}%`}
         </span>
       </div>
-      <div className="h-1 rounded-full bg-slate-100 overflow-hidden">
-        <div
-          className={`h-full ${done ? "bg-emerald-500" : "bg-[#C8B88A]"}`}
-          style={{ width: isNA ? "0%" : `${percent}%` }}
-        />
+      <div
+        className={`h-1 rounded-full overflow-hidden ${
+          isNA ? "bg-slate-100/70" : "bg-slate-100"
+        }`}
+      >
+        {isNA ? (
+          <div
+            className="h-full w-full opacity-70"
+            style={{
+              background:
+                "repeating-linear-gradient(45deg, #e2e8f0 0 4px, transparent 4px 8px)",
+            }}
+          />
+        ) : (
+          <div
+            className={`h-full ${done ? "bg-emerald-500" : "bg-[#C8B88A]"}`}
+            style={{ width: `${percent}%` }}
+          />
+        )}
       </div>
     </div>
   );

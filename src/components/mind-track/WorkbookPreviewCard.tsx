@@ -1,42 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Lock, CheckCircle2, Sparkles, Eye } from "lucide-react";
+import { BookOpen, Lock, CheckCircle2, Sparkles, Eye, Bell } from "lucide-react";
+import { toast } from "sonner";
 import WorkbookSamplePreviewModal from "./WorkbookSamplePreviewModal";
+import ChapterShareButton from "./ChapterShareButton";
+import { WORKBOOK_CHAPTERS } from "@/lib/mindTrackChapters";
 
 interface WorkbookPreviewCardProps {
   currentDay: number;
   completedCount: number;
   trackTheme?: string;
   nickname?: string;
+  /** 실데이터 — 모달 통계용 */
+  checkins?: any[];
+  baselines?: any[];
+  enrollmentId?: string;
 }
 
-const CHAPTERS = [
-  { id: "cover",   day: 1,  title: "표지 & 여는 글",        desc: "30일 전, 당신이 원했던 것" },
-  { id: "ch1",     day: 7,  title: "1장 · 첫 1주 자가진단",  desc: "마음의 출발점 진단" },
-  { id: "ch2",     day: 14, title: "2장 · 2주차 변화 기록",  desc: "스트레스·에너지·명료도 추이" },
-  { id: "ch3",     day: 21, title: "3장 · 패턴의 발견",     desc: "21일간의 체크인 분석" },
-  { id: "ch4",     day: 28, title: "4장 · 핵심 인사이트",   desc: "30일이 알려준 자기이해" },
-  { id: "closing", day: 30, title: "닫는 글 · 다음 30일",   desc: "전문가 코칭 제안 · 검증 QR" },
-];
+const CHAPTERS = WORKBOOK_CHAPTERS;
 
 /**
  * "내 워크북" 책 메타포 카드 — 30일 후 손에 남는 결과물을 시각화.
  * Day 진행에 따라 챕터가 한 장씩 잠금 해제되는 모습으로 동기부여.
+ * - 잠금 해제된 챕터에 NEW 펄스 배지 + 공유 버튼
+ * - 미리보기 모달은 실제 체크인 데이터로 자동 채워짐
  */
 export default function WorkbookPreviewCard({
   currentDay,
   completedCount,
   trackTheme,
   nickname,
+  checkins = [],
+  baselines = [],
+  enrollmentId,
 }: WorkbookPreviewCardProps) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const totalChapters = CHAPTERS.length;
   const unlockedChapters = CHAPTERS.filter((c) => currentDay >= c.day).length;
   const isComplete = currentDay >= 30;
   const remainingDays = Math.max(0, 30 - currentDay);
+
+  // 챕터 언락 인앱 알림 — sessionStorage에 enrollmentId+chapter로 1회만 표시
+  useEffect(() => {
+    if (!enrollmentId) return;
+    const justUnlocked = CHAPTERS.find(
+      (c) => c.day === currentDay && c.day > 1
+    );
+    if (!justUnlocked) return;
+    const key = `mt-chapter-unlocked-${enrollmentId}-${justUnlocked.id}`;
+    if (typeof window !== "undefined" && sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    toast.success(`${justUnlocked.title} 잠금 해제!`, {
+      description: justUnlocked.preview,
+      icon: <Bell className="w-4 h-4" />,
+      duration: 6000,
+    });
+  }, [currentDay, enrollmentId]);
 
   return (
     <>
@@ -118,21 +140,27 @@ export default function WorkbookPreviewCard({
           )}
         </div>
 
-        {/* 챕터 목록 — 잠금 해제 상태 */}
+        {/* 챕터 목록 — 잠금 해제 상태 + NEW 배지 + 공유 버튼 */}
         <div className="space-y-2 mb-5">
           {CHAPTERS.map((ch) => {
             const unlocked = currentDay >= ch.day;
-            const isJustUnlocked =
-              unlocked && currentDay - ch.day < 1 && ch.day > 1;
+            const isJustUnlocked = unlocked && ch.day === currentDay && ch.day > 1;
             return (
               <div
                 key={ch.id}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-colors ${
+                className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-colors ${
                   unlocked
                     ? "bg-white border-[#C8B88A]/30"
                     : "bg-slate-50/60 border-slate-200/70"
                 }`}
               >
+                {/* NEW 펄스 알림 닷 */}
+                {isJustUnlocked && (
+                  <span className="absolute -top-1 -left-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C8B88A] opacity-75" />
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-[#8a7a4d]" />
+                  </span>
+                )}
                 <div
                   className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
                     unlocked
@@ -147,7 +175,7 @@ export default function WorkbookPreviewCard({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <span
                       className={`text-[13px] font-bold break-keep ${
                         unlocked ? "text-slate-900" : "text-slate-500"
@@ -156,7 +184,7 @@ export default function WorkbookPreviewCard({
                       {ch.title}
                     </span>
                     {isJustUnlocked && (
-                      <Badge className="h-4 px-1.5 text-[9px] bg-[#C8B88A] text-white border-0">
+                      <Badge className="h-4 px-1.5 text-[9px] bg-[#C8B88A] text-white border-0 animate-pulse">
                         NEW
                       </Badge>
                     )}
@@ -168,6 +196,17 @@ export default function WorkbookPreviewCard({
                 <div className="text-[10px] font-mono text-slate-400 flex-shrink-0">
                   Day {String(ch.day).padStart(2, "0")}
                 </div>
+                {unlocked && (
+                  <ChapterShareButton
+                    chapterNo={ch.chapterNo}
+                    chapterTitle={ch.title}
+                    shortTitle={ch.shortTitle}
+                    desc={ch.desc}
+                    day={ch.day}
+                    nickname={nickname}
+                    trackTheme={trackTheme}
+                  />
+                )}
               </div>
             );
           })}
@@ -194,6 +233,9 @@ export default function WorkbookPreviewCard({
         onOpenChange={setPreviewOpen}
         nickname={nickname}
         trackTheme={trackTheme}
+        currentDay={currentDay}
+        checkins={checkins}
+        baselines={baselines}
       />
     </>
   );

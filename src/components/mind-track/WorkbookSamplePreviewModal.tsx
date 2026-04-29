@@ -2,24 +2,110 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, TrendingUp, FileText, Quote, Lightbulb, ShieldCheck } from "lucide-react";
 
+interface Checkin {
+  day_number: number;
+  mood_score?: number | null;
+  energy_score?: number | null;
+  clarity_score?: number | null;
+  reflection_text?: string | null;
+  completed?: boolean;
+  created_at?: string;
+}
+
+interface Baseline {
+  measurement_point?: string;
+  stress_score?: number | null;
+  energy_score?: number | null;
+  clarity_score?: number | null;
+}
+
 interface Props {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   nickname?: string;
   trackTheme?: string;
+  currentDay?: number;
+  checkins?: Checkin[];
+  baselines?: Baseline[];
 }
 
 /**
  * 30일 완주 시 받게 될 워크북 PDF의 샘플 6장 미리보기.
- * 책 페이지 메타포로 "이런 결과물이 손에 남는다"를 보여줘서 동기부여.
+ * 책 페이지 메타포 + 실제 체크인 데이터로 자동 채워짐.
  */
 export default function WorkbookSamplePreviewModal({
   open,
   onOpenChange,
   nickname = "당신",
   trackTheme,
+  currentDay = 1,
+  checkins = [],
+  baselines = [],
 }: Props) {
   const sampleTheme = trackTheme || "스트레스 회복과 회복탄력성 강화";
+
+  // ─── 실데이터 가공 ───────────────────────────────────────────
+  const baseline = baselines.find((b) => b.measurement_point === "baseline") ?? baselines[0];
+  const latest = baselines[baselines.length - 1] ?? baseline;
+  const completedCheckins = checkins.filter((c) => c.completed);
+  const totalCheckins = completedCheckins.length;
+
+  // 첫 번째 reflection을 "여는 글" 인용구로
+  const firstReflection = completedCheckins
+    .slice()
+    .sort((a, b) => (a.day_number ?? 0) - (b.day_number ?? 0))
+    .find((c) => (c.reflection_text ?? "").trim().length > 5);
+
+  // 베이스라인 표시값 (실데이터 우선, 없으면 샘플)
+  const fmt = (v?: number | null, fallback?: number) =>
+    v != null ? Math.round(v).toString() : fallback != null ? fallback.toString() : "—";
+
+  const startStress = fmt(baseline?.stress_score, 78);
+  const startEnergy = fmt(baseline?.energy_score, 32);
+  const startClarity = fmt(baseline?.clarity_score, 41);
+  const endStress = fmt(latest?.stress_score, 42);
+  const endEnergy = fmt(latest?.energy_score, 68);
+  const endClarity = fmt(latest?.clarity_score, 74);
+
+  // 최근 체크인 메모 3개 (실데이터 우선, 없으면 샘플)
+  const realQuotes = completedCheckins
+    .filter((c) => (c.reflection_text ?? "").trim().length > 3)
+    .slice(-3)
+    .reverse()
+    .map((c) => ({
+      day: c.day_number ?? 0,
+      mood: c.mood_score ?? 0,
+      text: (c.reflection_text ?? "").trim().slice(0, 90),
+    }));
+  const fallbackQuotes = [
+    { day: 3, mood: 4, text: "오늘은 처음으로 산책을 5분 했다. 햇빛이 따뜻했다." },
+    { day: 12, mood: 6, text: "어제보다 30분 일찍 잠들었다. 작은 변화가 쌓이는 게 보인다." },
+    { day: 21, mood: 7, text: "오랜만에 친구에게 먼저 연락했다. 무겁지 않았다." },
+  ];
+  const quotes = realQuotes.length > 0 ? realQuotes : fallbackQuotes;
+
+  // 무드 추이 SVG path — 실데이터 보간
+  const moodPath = (() => {
+    const pts = completedCheckins
+      .slice()
+      .sort((a, b) => (a.day_number ?? 0) - (b.day_number ?? 0))
+      .filter((c) => c.mood_score != null);
+    if (pts.length < 2) {
+      return "M0,80 Q40,75 60,68 T120,55 T180,42 T240,30 T300,22"; // 샘플
+    }
+    const W = 300;
+    const H = 100;
+    const max = 10;
+    return pts
+      .map((c, i) => {
+        const x = (i / Math.max(1, pts.length - 1)) * W;
+        const y = H - ((c.mood_score ?? 0) / max) * H;
+        return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
+      })
+      .join(" ");
+  })();
+
+  const remainingCount = Math.max(0, 30 - quotes.length);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -32,7 +118,12 @@ export default function WorkbookSamplePreviewModal({
             </DialogTitle>
           </div>
           <p className="text-[11px] text-slate-500 mt-1">
-            아래는 샘플입니다. 실제로는 당신의 30일 데이터로 채워집니다.
+            {totalCheckins > 0
+              ? `현재까지 ${totalCheckins}일치 데이터로 채워졌어요. 남은 ${Math.max(
+                  0,
+                  30 - currentDay
+                )}일을 마저 채우면 한 권이 완성됩니다.`
+              : "아래는 샘플입니다. 체크인이 쌓일수록 당신의 데이터로 자동 채워져요."}
           </p>
         </DialogHeader>
 
@@ -48,7 +139,7 @@ export default function WorkbookSamplePreviewModal({
                   AIHPRO Mind Track
                 </div>
                 <div className="text-[10px] text-slate-500 mt-1 font-mono">
-                  Vol. 01 · 30 Days
+                  Vol. 01 · 30 Days · Day {currentDay}/30
                 </div>
               </div>
 
@@ -62,58 +153,53 @@ export default function WorkbookSamplePreviewModal({
                   30일 기록
                 </div>
                 <div className="w-12 h-px bg-[#8a7a4d] mx-auto my-4" />
-                <div className="text-sm text-slate-700 break-keep">
-                  {sampleTheme}
-                </div>
+                <div className="text-sm text-slate-700 break-keep">{sampleTheme}</div>
               </div>
 
               <div className="text-center text-[11px] text-slate-500 mb-4">
                 <div className="font-bold text-slate-700">{nickname}</div>
-                <div className="mt-1">2026.04.01 — 2026.04.30</div>
+                <div className="mt-1">총 {totalCheckins || 0}일 체크인 누적</div>
               </div>
             </div>
           </PageFrame>
 
-          {/* PAGE 2 — 여는 글 */}
+          {/* PAGE 2 — 여는 글 (실데이터: 첫 reflection) */}
           <PageFrame label="여는 글 · Opening">
             <Page>
               <PageHeader title="30일 전, 당신이 원했던 것" chapter="00" />
               <p className="text-[13px] text-slate-700 leading-[1.9] break-keep">
-                "요즘 마음이 너무 무거워요. 매일 아침이 두렵고, 작은 일에도 쉽게
-                지쳐요. 다시 나답게 살고 싶어요."
+                {firstReflection?.reflection_text
+                  ? `"${firstReflection.reflection_text.trim().slice(0, 160)}"`
+                  : `"요즘 마음이 너무 무거워요. 매일 아침이 두렵고, 작은 일에도 쉽게 지쳐요. 다시 나답게 살고 싶어요."`}
               </p>
               <div className="mt-4 pt-4 border-t border-slate-100">
                 <div className="text-[10px] font-bold tracking-[0.15em] text-[#8a7a4d] uppercase mb-2">
-                  Baseline · 시작점
+                  Baseline · 시작점{baseline ? "" : " (샘플)"}
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center">
-                  <Stat label="스트레스" value="78" tone="rose" />
-                  <Stat label="에너지" value="32" tone="amber" />
-                  <Stat label="명료도" value="41" tone="slate" />
+                  <Stat label="스트레스" value={startStress} tone="rose" />
+                  <Stat label="에너지" value={startEnergy} tone="amber" />
+                  <Stat label="명료도" value={startClarity} tone="slate" />
                 </div>
               </div>
             </Page>
           </PageFrame>
 
-          {/* PAGE 3 — 마음 변화 그래프 */}
+          {/* PAGE 3 — 마음 변화 그래프 (실데이터) */}
           <PageFrame label="1장 · 마음 변화 그래프">
             <Page>
               <PageHeader title="30일간 마음의 흐름" chapter="01" icon={TrendingUp} />
               <p className="text-[12px] text-slate-500 mb-4 break-keep">
-                매일 체크인 데이터를 바탕으로 그린 당신의 회복 곡선
+                {completedCheckins.length >= 2
+                  ? `누적 ${completedCheckins.length}회 체크인을 바탕으로 그린 회복 곡선`
+                  : "매일 체크인 데이터를 바탕으로 그린 당신의 회복 곡선 (샘플)"}
               </p>
 
-              {/* 가짜 라인차트 */}
               <div className="h-32 relative bg-gradient-to-b from-[#fbf7eb] to-white rounded-xl p-3 border border-[#C8B88A]/20">
                 <svg viewBox="0 0 300 100" className="w-full h-full">
+                  <path d={moodPath} stroke="#8a7a4d" strokeWidth="2" fill="none" />
                   <path
-                    d="M0,80 Q40,75 60,68 T120,55 T180,42 T240,30 T300,22"
-                    stroke="#8a7a4d"
-                    strokeWidth="2"
-                    fill="none"
-                  />
-                  <path
-                    d="M0,80 Q40,75 60,68 T120,55 T180,42 T240,30 T300,22 L300,100 L0,100 Z"
+                    d={`${moodPath} L300,100 L0,100 Z`}
                     fill="url(#gradGold)"
                     opacity="0.3"
                   />
@@ -127,24 +213,20 @@ export default function WorkbookSamplePreviewModal({
               </div>
 
               <div className="grid grid-cols-3 gap-2 mt-4 text-center">
-                <Delta label="스트레스" before="78" after="42" tone="emerald" />
-                <Delta label="에너지" before="32" after="68" tone="emerald" />
-                <Delta label="명료도" before="41" after="74" tone="emerald" />
+                <Delta label="스트레스" before={startStress} after={endStress} tone="emerald" />
+                <Delta label="에너지" before={startEnergy} after={endEnergy} tone="emerald" />
+                <Delta label="명료도" before={startClarity} after={endClarity} tone="emerald" />
               </div>
             </Page>
           </PageFrame>
 
-          {/* PAGE 4 — 30일의 기록 */}
+          {/* PAGE 4 — 30일의 기록 (실 reflection) */}
           <PageFrame label="2장 · 30일의 기록">
             <Page>
               <PageHeader title="당신이 남긴 말들" chapter="02" icon={Quote} />
               <div className="space-y-3">
-                {[
-                  { day: 3, mood: 4, text: "오늘은 처음으로 산책을 5분 했다. 햇빛이 따뜻했다." },
-                  { day: 12, mood: 6, text: "어제보다 30분 일찍 잠들었다. 작은 변화가 쌓이는 게 보인다." },
-                  { day: 21, mood: 7, text: "오랜만에 친구에게 먼저 연락했다. 무겁지 않았다." },
-                ].map((c) => (
-                  <div key={c.day} className="border-l-2 border-[#C8B88A]/50 pl-3">
+                {quotes.map((c, i) => (
+                  <div key={i} className="border-l-2 border-[#C8B88A]/50 pl-3">
                     <div className="text-[10px] font-mono text-slate-400">
                       Day {c.day} · 무드 {c.mood}/10
                     </div>
@@ -153,14 +235,16 @@ export default function WorkbookSamplePreviewModal({
                     </p>
                   </div>
                 ))}
-                <div className="text-[10px] text-slate-400 text-center pt-2">
-                  ··· 27개의 기록이 더 이어집니다 ···
-                </div>
+                {remainingCount > 0 && (
+                  <div className="text-[10px] text-slate-400 text-center pt-2">
+                    ··· {remainingCount}개의 기록이 더 채워질 자리예요 ···
+                  </div>
+                )}
               </div>
             </Page>
           </PageFrame>
 
-          {/* PAGE 5 — 핵심 인사이트 */}
+          {/* PAGE 5 — 핵심 인사이트 (샘플 — 실 통찰은 Day 30 후 AI 생성) */}
           <PageFrame label="4장 · 핵심 인사이트">
             <Page>
               <PageHeader title="30일이 알려준 것" chapter="04" icon={Lightbulb} />
@@ -168,15 +252,18 @@ export default function WorkbookSamplePreviewModal({
                 {[
                   {
                     title: "성장 패턴",
-                    body: "주중보다 주말에 무드 점수가 안정적이며, 사람과의 짧은 접촉이 회복의 핵심 트리거였습니다.",
+                    body:
+                      totalCheckins >= 7
+                        ? `${totalCheckins}일치 데이터에서 회복 신호가 잡히기 시작했어요. 30일 완주 후 AI가 정밀 분석합니다.`
+                        : "주중보다 주말에 무드 점수가 안정적이며, 사람과의 짧은 접촉이 회복의 핵심 트리거였습니다. (샘플)",
                   },
                   {
                     title: "발견한 자기이해",
-                    body: "스트레스 신호를 신체 감각(어깨 긴장, 얕은 호흡)으로 먼저 알아차리는 능력이 생겼습니다.",
+                    body: "스트레스 신호를 신체 감각(어깨 긴장, 얕은 호흡)으로 먼저 알아차리는 능력이 생겼습니다. (예시)",
                   },
                   {
                     title: "다음 30일을 위한 제안",
-                    body: "주 2회 30분 산책 + 주 1회 신뢰하는 사람과의 대화를 루틴화하기를 권합니다.",
+                    body: "주 2회 30분 산책 + 주 1회 신뢰하는 사람과의 대화를 루틴화하기를 권합니다. (예시)",
                   },
                 ].map((it) => (
                   <div key={it.title}>
@@ -217,7 +304,7 @@ export default function WorkbookSamplePreviewModal({
           </PageFrame>
 
           <p className="text-center text-[11px] text-slate-500 break-keep px-4 pt-2 pb-2 leading-relaxed">
-            매일 체크인을 쌓아갈수록, 위 페이지들이 당신의 이야기로 채워집니다.
+            매일 체크인을 쌓아갈수록, 위 페이지들이 당신의 이야기로 더 짙게 채워집니다.
           </p>
         </div>
       </DialogContent>

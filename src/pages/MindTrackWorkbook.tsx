@@ -198,6 +198,7 @@ export default function MindTrackWorkbook() {
   const [workbook, setWorkbook] = useState<any>(null);
   const [missions, setMissions] = useState<any[]>([]);
   const [checkins, setCheckins] = useState<any[]>([]);
+  const [showCelebration, setShowCelebration] = useState(false);
   const [baselines, setBaselines] = useState<any[]>([]);
   const [activeMission, setActiveMission] = useState<any>(null);
   const [reflectionNote, setReflectionNote] = useState("");
@@ -282,10 +283,18 @@ export default function MindTrackWorkbook() {
     }
   }, [currentDay, enrollment, missions]);
 
-  // Day 30 도달 + 아직 완료처리 안된 경우 → 자동 finalize + 메일 발송
+  // Day 30 도달 + 아직 완료처리 안된 경우 → 자동 finalize + 메일 발송 + 축하 모달
   useEffect(() => {
     if (!enrollment) return;
     if (currentDay < 30) return;
+
+    // 한 번 본 사용자에게는 다시 자동으로 띄우지 않음 (수동으로 다시 열 수 있는 버튼은 있음)
+    const seenKey = `mt-celebrated-${enrollment.id}`;
+    if (!sessionStorage.getItem(seenKey)) {
+      setShowCelebration(true);
+      sessionStorage.setItem(seenKey, "1");
+    }
+
     if (enrollment.status === "completed" && enrollment.completed_at) return;
     (async () => {
       try {

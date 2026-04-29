@@ -2,35 +2,72 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Award, Sparkles, ArrowRight } from "lucide-react";
+import { Award, Sparkles, ArrowRight, CalendarClock } from "lucide-react";
 import confetti from "canvas-confetti";
+
+export type CelebrationDisplayPolicy = "session" | "daily" | "always";
 
 interface Props {
   /** Day 1·2 모두 fullyDone 일 때 true */
   shouldShow: boolean;
   enrollmentId?: string;
   onContinue: () => void;
+  /**
+   * 노출 정책
+   * - "session": 브라우저 세션당 1회 (기본)
+   * - "daily": 같은 날짜에 1회
+   * - "always": 매번 (테스트/QA 용)
+   */
+  displayPolicy?: CelebrationDisplayPolicy;
+  /** "다음 체크인" 버튼에 표시할 보조 라벨 — 예: "Day 3 미션" */
+  nextMissionLabel?: string;
+  /** 오늘 미션이 없을 때 "다음 미션으로 자동 이동" 버튼만 노출 */
+  hasTodayMission?: boolean;
+}
+
+function shouldShowByPolicy(
+  policy: CelebrationDisplayPolicy,
+  enrollmentId: string,
+): boolean {
+  if (typeof window === "undefined") return false;
+  if (policy === "always") return true;
+  if (policy === "session") {
+    const key = `mt-day12-celebration-session-${enrollmentId}`;
+    if (sessionStorage.getItem(key)) return false;
+    sessionStorage.setItem(key, "1");
+    return true;
+  }
+  // daily — localStorage에 yyyy-mm-dd 저장
+  const key = `mt-day12-celebration-daily-${enrollmentId}`;
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const last = window.localStorage.getItem(key);
+    if (last === today) return false;
+    window.localStorage.setItem(key, today);
+    return true;
+  } catch {
+    return true;
+  }
 }
 
 /**
- * Day 1·2 미션을 모두 완료한 직후, 한 번만 뜨는 작은 축하 모달.
- * sessionStorage로 enrollment별 1회 표시. 다음 체크인으로 부드럽게 연결.
+ * Day 1·2 미션 모두 완료 직후 노출되는 축하 모달.
+ * 노출 정책(session/daily/always)으로 반복 노출을 제어합니다.
  */
 export default function Day12CelebrationModal({
   shouldShow,
   enrollmentId,
   onContinue,
+  displayPolicy = "session",
+  nextMissionLabel,
+  hasTodayMission = true,
 }: Props) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!shouldShow || !enrollmentId) return;
-    const key = `mt-day12-celebration-${enrollmentId}`;
-    if (typeof window === "undefined") return;
-    if (sessionStorage.getItem(key)) return;
-    sessionStorage.setItem(key, "1");
+    if (!shouldShowByPolicy(displayPolicy, enrollmentId)) return;
     setOpen(true);
-    // 가벼운 컨페티
     try {
       confetti({
         particleCount: 60,
@@ -41,7 +78,17 @@ export default function Day12CelebrationModal({
     } catch {
       /* noop */
     }
-  }, [shouldShow, enrollmentId]);
+  }, [shouldShow, enrollmentId, displayPolicy]);
+
+  const ctaLabel = hasTodayMission
+    ? nextMissionLabel
+      ? `${nextMissionLabel}으로 이어가기`
+      : "다음 체크인으로 이어가기"
+    : nextMissionLabel
+    ? `${nextMissionLabel}으로 자동 이동`
+    : "가장 가까운 미션으로 자동 이동";
+
+  const CtaIcon = hasTodayMission ? ArrowRight : CalendarClock;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -96,9 +143,14 @@ export default function Day12CelebrationModal({
             }}
             className="mt-5 w-full h-11 rounded-xl bg-gradient-to-r from-[#8a7a4d] to-[#C8B88A] text-white font-bold hover:opacity-95"
           >
-            다음 체크인으로 이어가기
-            <ArrowRight className="w-4 h-4 ml-1.5" />
+            {ctaLabel}
+            <CtaIcon className="w-4 h-4 ml-1.5" />
           </Button>
+          {!hasTodayMission && (
+            <p className="mt-2 text-[11px] text-slate-500 break-keep">
+              오늘 미션이 비어있어요 — 가장 가까운 다음 미션으로 바로 데려다드릴게요.
+            </p>
+          )}
           <button
             onClick={() => setOpen(false)}
             className="mt-2 text-[11px] text-slate-400 hover:text-slate-600"

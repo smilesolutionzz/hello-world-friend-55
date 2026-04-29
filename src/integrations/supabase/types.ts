@@ -8291,6 +8291,7 @@ export type Database = {
           mission_type: string | null
           selected_youtube_video_id: string | null
           user_id: string
+          video_reflection_draft: string | null
           watched_video_ids: Json
           week_number: number
           workbook_id: string
@@ -8311,6 +8312,7 @@ export type Database = {
           mission_type?: string | null
           selected_youtube_video_id?: string | null
           user_id: string
+          video_reflection_draft?: string | null
           watched_video_ids?: Json
           week_number: number
           workbook_id: string
@@ -8331,6 +8333,7 @@ export type Database = {
           mission_type?: string | null
           selected_youtube_video_id?: string | null
           user_id?: string
+          video_reflection_draft?: string | null
           watched_video_ids?: Json
           week_number?: number
           workbook_id?: string

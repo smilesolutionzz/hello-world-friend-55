@@ -12,8 +12,8 @@ const TRUST_CARDS = [
   },
   {
     icon: Star,
-    title: '실제 후기 4.8/5',
-    body: '누적 1,200건 이상 상담 후기. 모든 평점은 실제 이용자만 작성.',
+    title: '실명 후기만 게시',
+    body: '실제 상담 이용자가 직접 작성한 후기만 노출됩니다.',
     accent: 'text-amber-600',
     bg: 'bg-amber-50 dark:bg-amber-950/30',
   },

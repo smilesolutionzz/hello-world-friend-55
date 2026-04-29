@@ -8,6 +8,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onStart: () => void;
+  onSnoozeToday?: () => void;
 }
 
 const SLIDES = [

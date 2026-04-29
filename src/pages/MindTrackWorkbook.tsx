@@ -417,7 +417,8 @@ export default function MindTrackWorkbook() {
   const openMission = (mission: any) => {
     const existing = checkins.find((c) => c.day_number === mission.day_number);
     setActiveMission(mission);
-    setReflectionNote(existing?.reflection_note ?? "");
+    // 검사 자동 prepend 블록은 제외하고 사용자 회고만 에디터에 노출
+    setReflectionNote(extractUserReflection(existing?.reflection_note));
     setMoodScore(existing?.mood_score ?? 5);
     setEnergyScore(existing?.energy_score ?? 5);
     setClarityScore(existing?.clarity_score ?? 5);

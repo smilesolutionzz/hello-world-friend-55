@@ -439,7 +439,7 @@ const ko = {
     finalCtaFree: '무료',
     finalCtaButton: '지금 무료 검사 시작',
     trustAnonymous: '완전 익명',
-    trustUsers: '4,248명이 검사 완료',
+    trustUsers: '회원가입 없이 바로 시작',
     trustInstant: '결과 즉시 확인',
   },
 

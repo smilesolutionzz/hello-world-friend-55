@@ -8232,6 +8232,7 @@ export type Database = {
           mood_score: number | null
           reflection_note: string | null
           user_id: string
+          video_reflection: string | null
         }
         Insert: {
           checked_at?: string
@@ -8245,6 +8246,7 @@ export type Database = {
           mood_score?: number | null
           reflection_note?: string | null
           user_id: string
+          video_reflection?: string | null
         }
         Update: {
           checked_at?: string
@@ -8258,6 +8260,7 @@ export type Database = {
           mood_score?: number | null
           reflection_note?: string | null
           user_id?: string
+          video_reflection?: string | null
         }
         Relationships: [
           {
@@ -8288,6 +8291,7 @@ export type Database = {
           mission_type: string | null
           selected_youtube_video_id: string | null
           user_id: string
+          watched_video_ids: Json
           week_number: number
           workbook_id: string
           youtube_candidates: Json | null
@@ -8307,6 +8311,7 @@ export type Database = {
           mission_type?: string | null
           selected_youtube_video_id?: string | null
           user_id: string
+          watched_video_ids?: Json
           week_number: number
           workbook_id: string
           youtube_candidates?: Json | null
@@ -8326,6 +8331,7 @@ export type Database = {
           mission_type?: string | null
           selected_youtube_video_id?: string | null
           user_id?: string
+          watched_video_ids?: Json
           week_number?: number
           workbook_id?: string
           youtube_candidates?: Json | null

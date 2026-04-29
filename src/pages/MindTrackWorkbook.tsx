@@ -89,7 +89,7 @@ import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulat
 import WeeklyMilestoneCards from "@/components/mind-track/WeeklyMilestoneCards";
 import MilestoneProgressBar from "@/components/mind-track/MilestoneProgressBar";
 import MindTrackWorkbookSkeleton from "@/components/mind-track/MindTrackWorkbookSkeleton";
-import MissionVideoPicker from "@/components/mind-track/MissionVideoPicker";
+import MissionLearningCard from "@/components/mind-track/MissionLearningCard";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 import { HelpCircle } from "lucide-react";
 
@@ -329,6 +329,11 @@ export default function MindTrackWorkbook() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       const existing = checkins.find((c) => c.day_number === activeMission.day_number);
+      // Pull the video reflection from the learning card textarea (if present)
+      const videoReflectionEl = document.querySelector<HTMLTextAreaElement>(
+        `textarea[data-mission-video-reflection="${activeMission.id}"]`,
+      );
+      const videoReflection = videoReflectionEl?.value?.trim() || null;
       const payload = {
         user_id: user!.id,
         enrollment_id: enrollment.id,
@@ -339,6 +344,7 @@ export default function MindTrackWorkbook() {
         energy_score: energyScore,
         clarity_score: clarityScore,
         reflection_note: reflectionNote || null,
+        video_reflection: videoReflection,
         checked_at: new Date().toISOString(),
       };
       if (existing) {
@@ -567,17 +573,14 @@ export default function MindTrackWorkbook() {
                   </ol>
                 </div>
 
-                {/* 추천 영상 후보 — 사용자가 선호하는 영상을 직접 선택 */}
+                {/* 학습 영상 + 느낀점 — 추천 영상 여러 편 시청 + 한 줄 회고 */}
                 {Array.isArray(todayMission.youtube_candidates) && todayMission.youtube_candidates.length > 0 && (
-                  <MissionVideoPicker
+                  <MissionLearningCard
                     missionId={todayMission.id}
-                    candidates={todayMission.youtube_candidates}
-                    selectedVideoId={todayMission.selected_youtube_video_id ?? todayMission.youtube_video_id ?? null}
-                    onSelected={(vid) => {
-                      setMissions((prev) =>
-                        prev.map((m) => (m.id === todayMission.id ? { ...m, selected_youtube_video_id: vid } : m)),
-                      );
-                    }}
+                    candidates={todayMission.youtube_candidates as any}
+                    initialWatched={Array.isArray((todayMission as any).watched_video_ids) ? (todayMission as any).watched_video_ids : []}
+                    initialReflection={todayCheckin?.video_reflection ?? ""}
+                    reflectionReadonly={!!todayCheckin?.completed}
                   />
                 )}
                 <div className="flex items-center justify-between flex-wrap gap-2">

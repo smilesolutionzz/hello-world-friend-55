@@ -45,11 +45,6 @@ const structuredData = {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "KRW"
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.8",
-    "ratingCount": "1247"
   }
 };
 

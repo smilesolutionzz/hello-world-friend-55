@@ -157,14 +157,14 @@ const ko = {
 
   // CTA Banner
   cta: {
-    urgencyBadge: '🔥 론칭 특가 50% 할인',
-    applicants: '387명 신청',
+    urgencyBadge: '',
+    applicants: '',
     headline: 'AIHumanPro와 함께',
     headlineHighlight: '당신의 회복을 시작하세요',
     subheadline: '3분이면 충분합니다',
-    ratingText: '⭐⭐⭐⭐⭐ 4.8/5.0',
-    reviewCount: '💬 1,247명 후기',
-    freeTokens: '무료 10토큰',
+    ratingText: '',
+    reviewCount: '',
+    freeTokens: '회원가입 시 무료 이용권 2회',
     signupButton: '무료 회원가입',
     tryFirst: '먼저 검사해보기',
     trustLine: '✓ 30초 가입 · ✓ 신용카드 불필요 · ✓ 영구 무료',

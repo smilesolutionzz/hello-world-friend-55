@@ -95,7 +95,7 @@ const ko = {
   // Hero Section
   hero: {
     badge: '30일이면 충분합니다',
-    innovationBadge: '4,248명이 30일 만에 마음의 변화를 측정했습니다',
+    innovationBadge: '30일이면 마음의 변화를 숫자로 확인할 수 있습니다',
     title: '30일 후, 당신의 마음은 달라집니다',
     titleHighlight: '데이터로 증명되는 변화',
     headlineTop: '느낌이 아니라,',

@@ -13,7 +13,15 @@ import {
   AlertTriangle,
   Flame,
   Trophy,
+  ListChecks,
+  Flag,
 } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { toast } from "sonner";
 import WorkbookSamplePreviewModal from "./WorkbookSamplePreviewModal";
 import ChapterShareButton from "./ChapterShareButton";

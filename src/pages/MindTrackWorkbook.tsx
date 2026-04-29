@@ -121,6 +121,9 @@ import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulat
 import WeeklyMilestoneCards from "@/components/mind-track/WeeklyMilestoneCards";
 import MilestoneProgressBar from "@/components/mind-track/MilestoneProgressBar";
 import WorkbookPreviewCard from "@/components/mind-track/WorkbookPreviewCard";
+import NextChapterTeaser from "@/components/mind-track/NextChapterTeaser";
+import WeeklyChapterPreview from "@/components/mind-track/WeeklyChapterPreview";
+import WorkbookCompletionCelebration from "@/components/mind-track/WorkbookCompletionCelebration";
 import MindTrackWorkbookSkeleton from "@/components/mind-track/MindTrackWorkbookSkeleton";
 import MissionLearningCard from "@/components/mind-track/MissionLearningCard";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
@@ -714,6 +717,9 @@ export default function MindTrackWorkbook() {
             </div>
           </Card>
 
+          {/* "오늘 Day에 맞춘" 다음 추가 예고 미니카드 */}
+          <NextChapterTeaser currentDay={currentDay} />
+
           {/* "내 워크북" 미리보기 — 30일 후 손에 남는 결과물을 시각화 (동기부여) */}
           <WorkbookPreviewCard
             currentDay={currentDay}
@@ -721,6 +727,9 @@ export default function MindTrackWorkbook() {
             trackTheme={workbook?.challenge_theme}
             nickname={enrollment?.baseline_data?.nickname || enrollment?.baseline_data?.display_name}
           />
+
+          {/* 1/2/3/4주차 챕터 예고 카드 */}
+          <WeeklyChapterPreview currentDay={currentDay} />
 
           {/* 마일스톤 진행 현황 (어떤 7/14/21/28일 카드가 완료되었는지 + 다음 목표 강조) */}
           <MilestoneProgressBar currentDay={currentDay} checkins={checkins} />

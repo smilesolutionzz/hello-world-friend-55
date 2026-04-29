@@ -201,6 +201,7 @@ export default function MindTrackDashboard() {
           open={showOnboarding}
           onClose={closeOnboarding}
           onStart={startTodayMission}
+          onSnoozeToday={snoozeOnboardingToday}
         />
 
         {/* 헤더 — Day N/30 + 진행률 + 스트릭 */}

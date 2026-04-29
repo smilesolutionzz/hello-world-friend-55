@@ -112,6 +112,7 @@ import MindDiary from "./pages/MindDiary";
 import MindTrack from "./pages/MindTrack";
 import MindTrackStart from "./pages/MindTrackStart";
 import MindTrackWorkbook from "./pages/MindTrackWorkbook";
+import MindTrackDashboard from "./pages/MindTrackDashboard";
 import Quiz from "./pages/Quiz";
 
 // Content & Column
@@ -214,11 +215,13 @@ const App = () => {
           <Route path="/sample-report" element={<SampleReport />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
           <Route path="/mind-track" element={<MindTrack />} />
+          <Route path="/mind-track/dashboard" element={<MindTrackDashboard />} />
           <Route path="/mind-track/start" element={<MindTrackStart />} />
           <Route path="/mind-track/workbook" element={<MindTrackWorkbook />} />
           {/* 별칭: /mind-track-workbook 도 동일하게 동작 (?day=N 파라미터 그대로 전달) */}
           <Route path="/mind-track-workbook" element={<MindTrackWorkbook />} />
           <Route path="/en/mind-track" element={<MindTrack />} />
+          <Route path="/en/mind-track/dashboard" element={<MindTrackDashboard />} />
 
           {/* AI Azit */}
           <Route path="/metaverse-voice" element={<MetaverseVoice />} />

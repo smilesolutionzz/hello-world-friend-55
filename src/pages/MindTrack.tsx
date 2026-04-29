@@ -266,6 +266,19 @@ const MindTrack: React.FC = () => {
     ? focusGoals.find((g) => g.id === report.trackRecommendation.matchedGoal)
     : null;
 
+  // ──────────────────────────────────────────────────────────
+  // 결제 완료 사용자 → 단순 대시보드(ActiveView)로 분기
+  // 마케팅/목표선택/무료리포트/아동발달 위젯은 모두 숨김
+  // 피드백: "결제했는데 또 시작하기 보임 / 비로그인 위젯 보임" 해결
+  // ──────────────────────────────────────────────────────────
+  if (
+    activeEnrollment &&
+    activeEnrollment.payment_status === 'paid' &&
+    !postLoginRedirecting
+  ) {
+    return <MindTrackActive enrollment={activeEnrollment as any} />;
+  }
+
   return (
     <>
       <SEOHead

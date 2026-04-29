@@ -329,6 +329,11 @@ export default function MindTrackWorkbook() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       const existing = checkins.find((c) => c.day_number === activeMission.day_number);
+      // Pull the video reflection from the learning card textarea (if present)
+      const videoReflectionEl = document.querySelector<HTMLTextAreaElement>(
+        `textarea[data-mission-video-reflection="${activeMission.id}"]`,
+      );
+      const videoReflection = videoReflectionEl?.value?.trim() || null;
       const payload = {
         user_id: user!.id,
         enrollment_id: enrollment.id,
@@ -339,6 +344,7 @@ export default function MindTrackWorkbook() {
         energy_score: energyScore,
         clarity_score: clarityScore,
         reflection_note: reflectionNote || null,
+        video_reflection: videoReflection,
         checked_at: new Date().toISOString(),
       };
       if (existing) {

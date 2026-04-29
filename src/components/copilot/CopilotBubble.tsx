@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { X, Sparkles, ArrowRight, MessageCircle, RotateCcw, Send, Bot, User, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { copilotFlows, type CopilotOption } from './copilotFlows';
 import { supabase } from '@/integrations/supabase/client';
 import ReactMarkdown from 'react-markdown';

@@ -47,7 +47,7 @@ const SLIDES = [
   },
 ];
 
-export default function MindTrackFirstTimeOnboarding({ open, onClose, onStart }: Props) {
+export default function MindTrackFirstTimeOnboarding({ open, onClose, onStart, onSnoozeToday }: Props) {
   const [idx, setIdx] = useState(0);
   const slide = SLIDES[idx];
   const Icon = slide.icon;

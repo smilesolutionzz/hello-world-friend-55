@@ -3,15 +3,28 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Lock, CheckCircle2, Sparkles, Eye, Bell, ClipboardCheck, Video, PenLine } from "lucide-react";
+import {
+  BookOpen,
+  Lock,
+  CheckCircle2,
+  Sparkles,
+  Eye,
+  Bell,
+  AlertTriangle,
+  Flame,
+  Trophy,
+} from "lucide-react";
 import { toast } from "sonner";
 import WorkbookSamplePreviewModal from "./WorkbookSamplePreviewModal";
 import ChapterShareButton from "./ChapterShareButton";
+import MissionMilestoneTracker from "./MissionMilestoneTracker";
+import Day12CelebrationModal from "./Day12CelebrationModal";
 import { WORKBOOK_CHAPTERS } from "@/lib/mindTrackChapters";
 import {
-  getAssessmentForDay,
-  isAssessmentMissionCompleted,
-} from "@/lib/mindTrackAssessmentMissions";
+  computeDayStatus,
+  computeMilestones,
+  getCompletenessCopy,
+} from "@/lib/mindTrackMissionProgress";
 
 interface WorkbookPreviewCardProps {
   currentDay: number;

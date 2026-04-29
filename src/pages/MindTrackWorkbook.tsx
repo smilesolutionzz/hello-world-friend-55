@@ -418,7 +418,7 @@ export default function MindTrackWorkbook() {
       } else {
         await supabase.from("mind_track_checkins").insert(payload);
       }
-      toast.success("체크인 완료! 🎉");
+      toast.success("체크인 완료");
       setActiveMission(null);
       load();
     } catch (e: any) {

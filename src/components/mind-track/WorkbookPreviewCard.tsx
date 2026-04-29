@@ -3,15 +3,28 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Lock, CheckCircle2, Sparkles, Eye, Bell, ClipboardCheck, Video, PenLine } from "lucide-react";
+import {
+  BookOpen,
+  Lock,
+  CheckCircle2,
+  Sparkles,
+  Eye,
+  Bell,
+  AlertTriangle,
+  Flame,
+  Trophy,
+} from "lucide-react";
 import { toast } from "sonner";
 import WorkbookSamplePreviewModal from "./WorkbookSamplePreviewModal";
 import ChapterShareButton from "./ChapterShareButton";
+import MissionMilestoneTracker from "./MissionMilestoneTracker";
+import Day12CelebrationModal from "./Day12CelebrationModal";
 import { WORKBOOK_CHAPTERS } from "@/lib/mindTrackChapters";
 import {
-  getAssessmentForDay,
-  isAssessmentMissionCompleted,
-} from "@/lib/mindTrackAssessmentMissions";
+  computeDayStatus,
+  computeMilestones,
+  getCompletenessCopy,
+} from "@/lib/mindTrackMissionProgress";
 
 interface WorkbookPreviewCardProps {
   currentDay: number;
@@ -22,6 +35,8 @@ interface WorkbookPreviewCardProps {
   checkins?: any[];
   baselines?: any[];
   enrollmentId?: string;
+  /** Day 1·2 미션 모두 완료 시, 축하 모달 닫기 후 다음 체크인 액션 */
+  onContinueCheckin?: () => void;
 }
 
 const CHAPTERS = WORKBOOK_CHAPTERS;
@@ -40,6 +55,7 @@ export default function WorkbookPreviewCard({
   checkins = [],
   baselines = [],
   enrollmentId,
+  onContinueCheckin,
 }: WorkbookPreviewCardProps) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const totalChapters = CHAPTERS.length;
@@ -47,24 +63,41 @@ export default function WorkbookPreviewCard({
   const isComplete = currentDay >= 30;
   const remainingDays = Math.max(0, 30 - currentDay);
 
-  // Day별 미션 완료 도트 — 검사·영상·체크인 3가지를 시각화
-  const missionProgress = useMemo(() => {
-    const map = new Map<number, { assessment: boolean | null; video: boolean | null; checkin: boolean }>();
+  // Day별 상세 상태 (검사·영상·회고 + 퍼센트)
+  const dayStatuses = useMemo(() => {
     const checkinByDay = new Map<number, any>();
     for (const c of checkins) checkinByDay.set(c.day_number, c);
-
-    for (let d = 1; d <= currentDay; d++) {
-      const c = checkinByDay.get(d);
-      const rec = getAssessmentForDay(d);
-      map.set(d, {
-        assessment: rec ? isAssessmentMissionCompleted(enrollmentId, d) : null,
-        // 영상 완료 여부는 체크인의 video_reflection 존재 또는 watched 여부로 추정
-        video: c?.video_reflection ? true : c ? false : null,
-        checkin: !!c?.completed,
-      });
+    const map = new Map<number, ReturnType<typeof computeDayStatus>>();
+    for (let d = 1; d <= Math.max(currentDay, 2); d++) {
+      map.set(d, computeDayStatus(d, checkinByDay.get(d), enrollmentId));
     }
     return map;
   }, [checkins, currentDay, enrollmentId]);
+
+  const day1Status = dayStatuses.get(1);
+  const day2Status = dayStatuses.get(2);
+
+  // 마일스톤 종합 진행률 — 워크북 완성도 카피용
+  const overallPercent = useMemo(() => {
+    const ms = computeMilestones(currentDay, checkins, enrollmentId);
+    return Math.round(ms.reduce((a, m) => a + m.overallPercent, 0) / ms.length);
+  }, [currentDay, checkins, enrollmentId]);
+
+  const completenessCopy = useMemo(
+    () =>
+      getCompletenessCopy({
+        currentDay,
+        day1: day1Status,
+        day2: day2Status,
+        overallPercent,
+        remainingDays,
+      }),
+    [currentDay, day1Status, day2Status, overallPercent, remainingDays],
+  );
+
+  // Day 1·2 모두 완료 시 축하 모달
+  const day12FullyDone =
+    !!day1Status?.fullyDone && !!day2Status?.fullyDone && currentDay >= 2;
 
   // 챕터 언락 인앱 알림 — sessionStorage에 enrollmentId+chapter로 1회만 표시
   useEffect(() => {
@@ -82,6 +115,15 @@ export default function WorkbookPreviewCard({
       duration: 6000,
     });
   }, [currentDay, enrollmentId]);
+
+  const toneStyles = {
+    warn: { bar: "bg-rose-500", chip: "bg-rose-50 text-rose-700", icon: AlertTriangle },
+    nudge: { bar: "bg-amber-500", chip: "bg-amber-50 text-amber-700", icon: Flame },
+    go: { bar: "bg-[#8a7a4d]", chip: "bg-[#C8B88A]/20 text-[#8a7a4d]", icon: Sparkles },
+    done: { bar: "bg-emerald-500", chip: "bg-emerald-50 text-emerald-700", icon: Trophy },
+  } as const;
+  const tone = toneStyles[completenessCopy.tone];
+  const ToneIcon = tone.icon;
 
   return (
     <>
@@ -146,66 +188,56 @@ export default function WorkbookPreviewCard({
           </div>
         </div>
 
-        {/* Day 1·2 미션 미니 진행 도트 — 검사·영상·체크인 */}
-        {(() => {
-          const trackedDays = [1, 2].filter((d) => d <= currentDay);
-          if (trackedDays.length === 0) return null;
-          return (
-            <div className="mb-5 grid gap-2" style={{ gridTemplateColumns: `repeat(${trackedDays.length}, minmax(0, 1fr))` }}>
-              {trackedDays.map((d) => {
-                const p = missionProgress.get(d);
-                if (!p) return null;
-                const items: Array<{ label: string; icon: any; done: boolean | null }> = [
-                  { label: "검사", icon: ClipboardCheck, done: p.assessment },
-                  { label: "영상", icon: Video, done: p.video },
-                  { label: "회고", icon: PenLine, done: p.checkin },
-                ];
-                return (
-                  <div key={d} className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-                    <div className="text-[10px] font-bold text-slate-500 mb-1.5">Day {d} 미션</div>
-                    <div className="flex items-center gap-2">
-                      {items.map((it, i) => {
-                        const Icon = it.icon;
-                        const tone =
-                          it.done === true
-                            ? "bg-emerald-500 text-white border-emerald-500"
-                            : it.done === false
-                            ? "bg-slate-50 text-slate-400 border-slate-200"
-                            : "bg-slate-50 text-slate-300 border-slate-200";
-                        return (
-                          <div
-                            key={i}
-                            className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full border text-[10px] font-semibold ${tone}`}
-                            title={`${it.label} ${it.done ? "완료" : "미완료"}`}
-                          >
-                            <Icon className="w-2.5 h-2.5" />
-                            <span>{it.label}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
+        {/* 완성도 — 검사·영상·회고 상태 기반 설득 카피 + 진행 바 */}
+        <div className="mb-5 rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full ${tone.chip}`}>
+              <ToneIcon className="w-3 h-3" />
+              <span className="text-[10px] font-bold tracking-wider uppercase">
+                Workbook · {overallPercent}%
+              </span>
             </div>
-          );
-        })()}
-
-        {/* 카피 — 동기부여 메시지 */}
-        <div className="text-center mb-5 px-2">
-          {isComplete ? (
-            <p className="text-[15px] font-bold text-slate-900 break-keep leading-relaxed">
-              30일을 모두 마쳤어요. 당신의 워크북이 완성되었습니다.
-            </p>
-          ) : (
-            <p className="text-[14px] sm:text-[15px] text-slate-700 break-keep leading-relaxed">
-              앞으로{" "}
-              <span className="font-bold text-[#8a7a4d]">{remainingDays}일</span> 후,
-              <br className="sm:hidden" />
-              <span className="font-semibold text-slate-900"> 나만의 마음 기록 한 권</span>이
-              완성됩니다
-            </p>
-          )}
+            <span className="text-[10px] font-mono text-slate-400">
+              {isComplete ? "완성" : `D-${remainingDays}`}
+            </span>
+          </div>
+          <p className="text-[14px] font-bold text-slate-900 break-keep leading-snug">
+            {completenessCopy.headline}
+          </p>
+          <p className="text-[12px] text-slate-500 break-keep mt-1 leading-relaxed">
+            {completenessCopy.sub}
+          </p>
+          <div className="mt-3 h-2 rounded-full bg-slate-100 overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${overallPercent}%` }}
+              transition={{ duration: 0.7 }}
+              className={`h-full ${tone.bar}`}
+            />
+          </div>
+          {/* 단계 바 — 6개 마일스톤 도트 */}
+          <div className="mt-2.5 flex items-center justify-between gap-1">
+            {[1, 2, 7, 14, 21, 30].map((d) => {
+              const reached = currentDay >= d;
+              const isCurrent = currentDay === d;
+              return (
+                <div key={d} className="flex flex-col items-center gap-1 flex-1">
+                  <div
+                    className={`h-1.5 w-full rounded-full ${
+                      reached ? "bg-[#8a7a4d]" : "bg-slate-200"
+                    } ${isCurrent ? "ring-2 ring-[#C8B88A]/60" : ""}`}
+                  />
+                  <span
+                    className={`text-[9px] font-mono ${
+                      reached ? "text-[#8a7a4d] font-bold" : "text-slate-400"
+                    }`}
+                  >
+                    D{d}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* 챕터 목록 — 잠금 해제 상태 + NEW 배지 + 공유 버튼 */}
@@ -296,6 +328,15 @@ export default function WorkbookPreviewCard({
         </p>
       </Card>
 
+      {/* Day 1·2·14·21·30 마일스톤별 검사·영상·회고 진행률 — 디테일 시각화 */}
+      <div className="mt-4">
+        <MissionMilestoneTracker
+          currentDay={currentDay}
+          checkins={checkins}
+          enrollmentId={enrollmentId}
+        />
+      </div>
+
       <WorkbookSamplePreviewModal
         open={previewOpen}
         onOpenChange={setPreviewOpen}
@@ -304,6 +345,12 @@ export default function WorkbookPreviewCard({
         currentDay={currentDay}
         checkins={checkins}
         baselines={baselines}
+      />
+
+      <Day12CelebrationModal
+        shouldShow={day12FullyDone}
+        enrollmentId={enrollmentId}
+        onContinue={() => onContinueCheckin?.()}
       />
     </>
   );

@@ -130,6 +130,8 @@ import MissionAssessmentCard from "@/components/mind-track/MissionAssessmentCard
 import {
   getAssessmentForDay,
   isAssessmentMissionCompleted,
+  extractUserReflection,
+  stripAssessmentBlocks,
 } from "@/lib/mindTrackAssessmentMissions";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 import { HelpCircle } from "lucide-react";
@@ -361,42 +363,62 @@ export default function MindTrackWorkbook() {
 
   // ?day=N 이 오늘이면 미션 다이얼로그 자동 열기
   // - 최초 1회는 항상 자동 (autoOpenedRef 가드)
-  // - ?openMission=1 플래그가 있으면 명시적으로 다시 열기
+  // - ?openMission=1 또는 ?mtOnce=<token> 플래그가 있으면 명시적으로 다시 열기
+  // - mtOnce는 토큰 1개당 단 한 번만 동작 (sessionStorage로 중복 방지) → 새로고침/뒤로가기 재진입 시에도 추가 오픈 없음
   const autoOpenedRef = useRef(false);
+  const consumedOnceTokensRef = useRef<Set<string>>(new Set());
   useEffect(() => {
     if (loading) return;
     const dp = parseInt(searchParams.get("day") ?? "", 10);
-    const explicitOpen = searchParams.get("openMission") === "1";
+    const explicitFlag = searchParams.get("openMission") === "1";
+    const onceToken = searchParams.get("mtOnce");
+    let onceValid = false;
+    if (onceToken) {
+      const sessionKey = `mt-once:${onceToken}`;
+      const alreadyConsumed =
+        consumedOnceTokensRef.current.has(onceToken) ||
+        (typeof window !== "undefined" && window.sessionStorage.getItem(sessionKey) === "1");
+      if (!alreadyConsumed) onceValid = true;
+    }
+    const explicitOpen = explicitFlag || onceValid;
+
     if (!Number.isFinite(dp)) return;
     if (dp !== currentDay) return;
-    // 완료된 미션은 사용자가 직접 "다시 열기"를 누르기 전에는 절대 자동 오픈하지 않음
+
+    const cleanupParams = () => {
+      const params = new URLSearchParams(searchParams);
+      let changed = false;
+      if (params.has("openMission")) { params.delete("openMission"); changed = true; }
+      if (params.has("mtOnce")) { params.delete("mtOnce"); changed = true; }
+      if (changed) setSearchParams(params, { replace: true });
+    };
+
+    // 완료된 미션은 자동 오픈 금지
     const completed = checkins.some((c) => c.day_number === dp && c.completed);
     if (completed) {
-      // 잔존하는 ?openMission=1 플래그도 제거해서 새로고침 시 재오픈 방지
-      if (explicitOpen) {
-        const params = new URLSearchParams(searchParams);
-        params.delete("openMission");
-        setSearchParams(params, { replace: true });
-      }
+      if (explicitFlag || onceToken) cleanupParams();
       return;
     }
     if (autoOpenedRef.current && !explicitOpen) return;
+
     const m = missions.find((mm) => mm.day_number === dp);
     if (m) {
       autoOpenedRef.current = true;
-      openMission(m);
-      if (explicitOpen) {
-        const params = new URLSearchParams(searchParams);
-        params.delete("openMission");
-        setSearchParams(params, { replace: true });
+      // mtOnce 토큰 소비 마킹 (같은 토큰으로 다시 열리지 않게)
+      if (onceToken && onceValid) {
+        consumedOnceTokensRef.current.add(onceToken);
+        try { window.sessionStorage.setItem(`mt-once:${onceToken}`, "1"); } catch {}
       }
+      openMission(m);
+      cleanupParams();
     }
   }, [loading, searchParams, currentDay, missions, checkins]);
 
   const openMission = (mission: any) => {
     const existing = checkins.find((c) => c.day_number === mission.day_number);
     setActiveMission(mission);
-    setReflectionNote(existing?.reflection_note ?? "");
+    // 검사 자동 prepend 블록은 제외하고 사용자 회고만 에디터에 노출
+    setReflectionNote(extractUserReflection(existing?.reflection_note));
     setMoodScore(existing?.mood_score ?? 5);
     setEnergyScore(existing?.energy_score ?? 5);
     setClarityScore(existing?.clarity_score ?? 5);
@@ -457,6 +479,13 @@ export default function MindTrackWorkbook() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       const existing = checkins.find((c) => c.day_number === activeMission.day_number);
+      // 검사 자동 블록(<!--mt:assessment ...-->)은 사용자가 회고를 저장해도 보존되어야 함
+      const existingNote = existing?.reflection_note ?? "";
+      const userClean = reflectionNote.trim();
+      const autoBlock = existingNote.replace(stripAssessmentBlocks(existingNote), "").trim();
+      const mergedReflection = autoBlock
+        ? (userClean ? `${autoBlock}\n${userClean}` : autoBlock)
+        : (userClean || null);
       const payload = {
         user_id: user!.id,
         enrollment_id: enrollment.id,
@@ -466,7 +495,7 @@ export default function MindTrackWorkbook() {
         mood_score: moodScore,
         energy_score: energyScore,
         clarity_score: clarityScore,
-        reflection_note: reflectionNote || null,
+        reflection_note: mergedReflection,
         video_reflection: videoReflection || null,
         checked_at: new Date().toISOString(),
       };
@@ -1049,9 +1078,9 @@ export default function MindTrackWorkbook() {
                         <div className="font-bold text-slate-900">{todayCheckin.clarity_score ?? "-"}</div>
                       </div>
                     </div>
-                    {todayCheckin.reflection_note && (
+                    {extractUserReflection(todayCheckin.reflection_note) && (
                       <p className="mt-2 text-xs text-slate-600 break-keep bg-white border border-slate-200 rounded-lg p-2">
-                        {todayCheckin.reflection_note}
+                        {extractUserReflection(todayCheckin.reflection_note)}
                       </p>
                     )}
                   </div>

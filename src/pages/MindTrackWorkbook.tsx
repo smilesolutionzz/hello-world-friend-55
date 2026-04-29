@@ -628,6 +628,57 @@ export default function MindTrackWorkbook() {
                 <h3 className="text-lg font-bold text-slate-900 mb-1 break-keep">{todayMission.mission_title}</h3>
                 <p className="text-sm text-slate-600 mb-3 break-keep">{todayMission.mission_description}</p>
 
+                {/* 깊이 있는 미션 컨텍스트: 왜 / 단계 / 완료 기준 / 깊은 질문 */}
+                {(todayMission.why_it_matters ||
+                  (Array.isArray(todayMission.action_steps) && todayMission.action_steps.length > 0) ||
+                  todayMission.success_criteria ||
+                  (Array.isArray(todayMission.deeper_prompts) && todayMission.deeper_prompts.length > 0)) && (
+                  <div className="mb-4 space-y-3">
+                    {todayMission.why_it_matters && (
+                      <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-3">
+                        <div className="text-[11px] font-bold text-amber-800 mb-1">왜 이 미션인가</div>
+                        <p className="text-sm text-amber-900 break-keep leading-relaxed">{todayMission.why_it_matters}</p>
+                      </div>
+                    )}
+                    {Array.isArray(todayMission.action_steps) && todayMission.action_steps.length > 0 && (
+                      <div className="rounded-xl border border-slate-200 bg-white p-3">
+                        <div className="text-[11px] font-bold text-slate-700 mb-2">오늘 할 일 단계</div>
+                        <ol className="space-y-1.5">
+                          {todayMission.action_steps.map((step: string, i: number) => (
+                            <li key={i} className="flex items-start gap-2 text-sm text-slate-800 break-keep">
+                              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 text-primary text-[11px] font-bold flex items-center justify-center">{i + 1}</span>
+                              <span className="leading-relaxed">{step}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+                    {todayMission.success_criteria && (
+                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-3">
+                        <div className="text-[11px] font-bold text-emerald-800 mb-1">완료 기준</div>
+                        <p className="text-sm text-emerald-900 break-keep leading-relaxed">{todayMission.success_criteria}</p>
+                      </div>
+                    )}
+                    {Array.isArray(todayMission.deeper_prompts) && todayMission.deeper_prompts.length > 0 && (
+                      <div className="rounded-xl border border-indigo-200 bg-indigo-50/60 p-3">
+                        <div className="text-[11px] font-bold text-indigo-800 mb-2">체크인 때 함께 생각해볼 질문</div>
+                        <ul className="space-y-1 text-sm text-indigo-900">
+                          {todayMission.deeper_prompts.map((q: string, i: number) => (
+                            <li key={i} className="break-keep leading-relaxed">· {q}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {todayMission.difficulty && (
+                      <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                        <span className="px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 font-semibold">
+                          난이도 · {todayMission.difficulty === 'deep' ? '깊은 작업' : todayMission.difficulty === 'easy' ? '가볍게' : '보통'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* 미션 타입 라이브러리 가이드 */}
                 <div className={`rounded-xl p-3 mb-4 bg-gradient-to-br ${guide.color} text-white`}>
                   <div className="flex items-center gap-1.5 mb-1.5">

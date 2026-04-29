@@ -205,7 +205,7 @@ const App = () => {
           <Route path="/ai-assistant" element={<AIAssistant />} />
           <Route path="/ai-counselor" element={<AIAssistant />} />
           <Route path="/ai-coach" element={<AIAssistant />} />
-          <Route path="/ai-copilot" element={<AIAssistant />} />
+          <Route path="/ai-copilot" element={<AiCopilotPage />} />
           <Route path="/concern-storage" element={<ConcernStorage />} />
           <Route path="/report-generator" element={<ReportGenerator />} />
           <Route path="/report-generator-pro" element={<ReportGeneratorPro />} />

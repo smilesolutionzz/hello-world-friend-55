@@ -693,7 +693,7 @@ const ko = {
     autoSubNote: '30일간 모든 기능 무제한',
     autoSubBold: '· 자동 결제 없음',
     autoSubEnd: '',
-    socialProof: '이미 3,247명의 사용자가 프리미엄을 선택했습니다',
+    socialProof: '',
   },
 
   // Index page specific

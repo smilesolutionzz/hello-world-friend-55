@@ -126,6 +126,11 @@ import WeeklyChapterPreview from "@/components/mind-track/WeeklyChapterPreview";
 import WorkbookCompletionCelebration from "@/components/mind-track/WorkbookCompletionCelebration";
 import MindTrackWorkbookSkeleton from "@/components/mind-track/MindTrackWorkbookSkeleton";
 import MissionLearningCard from "@/components/mind-track/MissionLearningCard";
+import MissionAssessmentCard from "@/components/mind-track/MissionAssessmentCard";
+import {
+  getAssessmentForDay,
+  isAssessmentMissionCompleted,
+} from "@/lib/mindTrackAssessmentMissions";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 import { HelpCircle } from "lucide-react";
 

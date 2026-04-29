@@ -938,22 +938,7 @@ const Quiz: React.FC = () => {
                     })}
                   </div>
 
-                  <div className="flex items-center justify-center gap-4 mt-4 py-3 px-4 bg-slate-50 rounded-xl">
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-primary">94%</div>
-                      <div className="text-[10px] text-muted-foreground">변화 체감</div>
-                    </div>
-                    <div className="w-px h-8 bg-slate-200" />
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-primary">12,847명</div>
-                      <div className="text-[10px] text-muted-foreground">누적 사용자</div>
-                    </div>
-                    <div className="w-px h-8 bg-slate-200" />
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-primary">4.8★</div>
-                      <div className="text-[10px] text-muted-foreground">평균 평점</div>
-                    </div>
-                  </div>
+                  {/* 누적 통계 위젯 제거됨 — 실제 데이터 확보 전까지 비활성화 */}
                 </div>
 
                 {/* Pricing CTA */}

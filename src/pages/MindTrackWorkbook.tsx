@@ -325,15 +325,42 @@ export default function MindTrackWorkbook() {
 
   const submitCheckin = async () => {
     if (!activeMission || !enrollment) return;
+
+    // ── 영상 학습 미션이 있을 때 시청/느낀점 필수 검증 ──────────
+    const candidates = Array.isArray(activeMission.youtube_candidates)
+      ? activeMission.youtube_candidates
+      : [];
+    const videoReflectionEl = document.querySelector<HTMLTextAreaElement>(
+      `textarea[data-mission-video-reflection="${activeMission.id}"]`,
+    );
+    const videoReflection = videoReflectionEl?.value?.trim() || "";
+
+    if (candidates.length > 0) {
+      // 최신 시청 상태를 DB에서 다시 읽어 검증 (다른 탭/새로고침 동기화 대응)
+      const { data: missionRow } = await supabase
+        .from("mind_track_daily_missions")
+        .select("watched_video_ids")
+        .eq("id", activeMission.id)
+        .maybeSingle();
+      const watchedIds = Array.isArray(missionRow?.watched_video_ids)
+        ? (missionRow!.watched_video_ids as string[])
+        : [];
+
+      if (watchedIds.length === 0) {
+        toast.error("영상을 1편 이상 시청 완료로 표시한 뒤 체크인해 주세요");
+        return;
+      }
+      if (videoReflection.length < 10) {
+        toast.error("영상을 본 뒤 느낀점을 10자 이상 적어주세요");
+        videoReflectionEl?.focus();
+        return;
+      }
+    }
+
     setSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       const existing = checkins.find((c) => c.day_number === activeMission.day_number);
-      // Pull the video reflection from the learning card textarea (if present)
-      const videoReflectionEl = document.querySelector<HTMLTextAreaElement>(
-        `textarea[data-mission-video-reflection="${activeMission.id}"]`,
-      );
-      const videoReflection = videoReflectionEl?.value?.trim() || null;
       const payload = {
         user_id: user!.id,
         enrollment_id: enrollment.id,
@@ -344,7 +371,7 @@ export default function MindTrackWorkbook() {
         energy_score: energyScore,
         clarity_score: clarityScore,
         reflection_note: reflectionNote || null,
-        video_reflection: videoReflection,
+        video_reflection: videoReflection || null,
         checked_at: new Date().toISOString(),
       };
       if (existing) {
@@ -577,9 +604,11 @@ export default function MindTrackWorkbook() {
                 {Array.isArray(todayMission.youtube_candidates) && todayMission.youtube_candidates.length > 0 && (
                   <MissionLearningCard
                     missionId={todayMission.id}
+                    missionType={todayMission.mission_type}
                     candidates={todayMission.youtube_candidates as any}
                     initialWatched={Array.isArray((todayMission as any).watched_video_ids) ? (todayMission as any).watched_video_ids : []}
                     initialReflection={todayCheckin?.video_reflection ?? ""}
+                    initialDraftReflection={(todayMission as any).video_reflection_draft ?? ""}
                     reflectionReadonly={!!todayCheckin?.completed}
                   />
                 )}

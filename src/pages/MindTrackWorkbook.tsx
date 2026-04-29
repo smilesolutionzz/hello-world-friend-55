@@ -258,6 +258,7 @@ export default function MindTrackWorkbook() {
 
   const todayMission = missions.find((m) => m.day_number === currentDay);
   const todayCheckin = checkins.find((c) => c.day_number === currentDay);
+  const activeMissionCheckinCopy = getMissionCheckinCopy(activeMission?.mission_type);
 
   // Trigger weekly refresh if needed
   useEffect(() => {
@@ -386,6 +387,11 @@ export default function MindTrackWorkbook() {
         videoReflectionEl?.focus();
         return;
       }
+    }
+
+    if (!reflectionNote.trim()) {
+      toast.error(getMissionCheckinCopy(activeMission.mission_type).error);
+      return;
     }
 
     setSubmitting(true);

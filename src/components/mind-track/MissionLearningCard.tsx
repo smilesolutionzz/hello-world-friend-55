@@ -168,7 +168,7 @@ export default function MissionLearningCard({
         <div className="flex items-center gap-1.5 mb-2">
           <MessageSquareHeart className="w-4 h-4 text-amber-600" />
           <span className="text-xs font-bold text-amber-900">영상을 본 뒤 느낀점</span>
-          {reflectionSaving && <Loader2 className="w-3 h-3 animate-spin text-amber-600" />}
+          {false && <Loader2 className="w-3 h-3 animate-spin text-amber-600" />}
         </div>
         <ul className="text-[11px] text-amber-800/90 space-y-0.5 mb-2 list-disc list-inside break-keep">
           {REFLECTION_PROMPTS.map((p, i) => (

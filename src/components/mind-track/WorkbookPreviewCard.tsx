@@ -376,14 +376,7 @@ export default function WorkbookPreviewCard({
         </p>
       </Card>
 
-      {/* Day 1·2·14·21·30 마일스톤별 검사·영상·회고 진행률 — 디테일 시각화 */}
-      <div className="mt-4">
-        <MissionMilestoneTracker
-          currentDay={currentDay}
-          checkins={checkins}
-          enrollmentId={enrollmentId}
-        />
-      </div>
+
 
       <WorkbookSamplePreviewModal
         open={previewOpen}

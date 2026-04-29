@@ -967,6 +967,17 @@ export default function MindTrackWorkbook() {
                 const isToday = day === currentDay;
                 const isLocked = !mission;
                 const isSelected = selectedDay === day;
+                const isMilestone = day === 7 || day === 14 || day === 21 || day === 30;
+                const hasVideo = Array.isArray(mission?.youtube_candidates) && mission!.youtube_candidates.length > 0;
+
+                // 미션 타입별 셀 안 작은 아이콘
+                const TypeIcon =
+                  mission?.mission_type === "breathing" ? Wind :
+                  mission?.mission_type === "journaling" ? PenLine :
+                  mission?.mission_type === "action" ? Activity :
+                  mission?.mission_type === "connection" ? Users :
+                  mission?.mission_type === "reflection" ? Brain :
+                  null;
 
                 // 필터 적용 (시각적 dim 처리)
                 const matchesFilter =
@@ -988,6 +999,7 @@ export default function MindTrackWorkbook() {
                       if (mission && !isFuture) openMission(mission);
                     }}
                     disabled={isLocked || isFuture}
+                    title={mission?.mission_title ?? (isLocked ? "다음주 미션 자동 생성 대기" : "")}
                     className={`relative aspect-square rounded-lg border-2 text-xs font-bold flex flex-col items-center justify-center transition-all ${
                       dimmed ? "opacity-30" : ""
                     } ${
@@ -1004,13 +1016,58 @@ export default function MindTrackWorkbook() {
                         : "border-slate-300 bg-white text-slate-700 hover:border-primary"
                     }`}
                   >
-                    {checkin?.completed ? <CheckCircle2 className="w-3.5 h-3.5" /> : isLocked && !isFuture ? <Lock className="w-3 h-3" /> : day}
+                    {/* 마일스톤 표식 (왼쪽 위 작은 점) */}
+                    {isMilestone && !isLocked && (
+                      <span
+                        className={`absolute -top-1 -left-1 w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-sm ${
+                          checkin?.completed ? "bg-amber-300 text-amber-900" : "bg-amber-400 text-white"
+                        }`}
+                        aria-label="전문가 개입 마일스톤"
+                      >
+                        <Stethoscope className="w-2 h-2" />
+                      </span>
+                    )}
+                    {/* 영상 보유 표식 (오른쪽 위) */}
+                    {hasVideo && !isLocked && (
+                      <span
+                        className={`absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-sm ${
+                          checkin?.completed ? "bg-white/90 text-emerald-700" : "bg-purple-500 text-white"
+                        }`}
+                        aria-label="추천 영상 포함"
+                      >
+                        <Video className="w-2 h-2" />
+                      </span>
+                    )}
+
+                    {/* 메인: 완료/잠금/Day 숫자 */}
+                    {checkin?.completed ? (
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    ) : isLocked && !isFuture ? (
+                      <Lock className="w-3 h-3" />
+                    ) : (
+                      <span className="leading-none">{day}</span>
+                    )}
+
+                    {/* 미션 타입 아이콘 (셀 하단, 잠금 아닐 때만) */}
+                    {TypeIcon && !isLocked && (
+                      <TypeIcon
+                        className={`w-2.5 h-2.5 mt-0.5 ${
+                          checkin?.completed
+                            ? "text-white/80"
+                            : isToday
+                            ? "text-white/80"
+                            : "text-slate-400"
+                        }`}
+                      />
+                    )}
                   </button>
                 );
               })}
             </div>
-            <p className="text-xs text-slate-500 mt-3 text-center">
-              ✓ 완료 · 오늘은 강조 표시 · 자물쇠 = 다음주 미션 자동 생성 대기
+            <p className="text-xs text-slate-500 mt-3 text-center break-keep">
+              ✓ 완료 · 오늘은 강조 · 자물쇠 = 다음주 미션 자동 생성 대기 ·
+              <Stethoscope className="inline w-3 h-3 mx-0.5 text-amber-500" />전문가 개입일 ·
+              <Video className="inline w-3 h-3 mx-0.5 text-purple-500" />영상 포함
             </p>
           </Card>
 

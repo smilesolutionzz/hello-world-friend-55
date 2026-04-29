@@ -64,6 +64,7 @@ import { ExpertProfile } from "@/types/assessment";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import { useSearchParams } from "react-router-dom";
 import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target, MessageCircle, Coins, ChevronDown, CheckCircle } from "lucide-react";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";

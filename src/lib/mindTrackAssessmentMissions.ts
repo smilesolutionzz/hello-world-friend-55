@@ -126,10 +126,38 @@ export function normalizeAssessmentScoreTo10(
 }
 
 /**
+ * 검사 점수 요약 블록 포맷 (v1).
+ * - 명확한 BEGIN/END 구분자로 기존 사용자 회고와 충돌하지 않음
+ * - 동일 검사가 재진입해도 기존 블록을 교체하고 사용자 회고는 보존
+ * - 향후 포맷 변경 시 v1 → v2 로 마이그레이션 가능 (가드: 알 수 없는 버전은 그대로 유지)
+ */
+const ASSESSMENT_BLOCK_BEGIN = "<!--mt:assessment v1-->";
+const ASSESSMENT_BLOCK_END = "<!--/mt:assessment-->";
+const ASSESSMENT_BLOCK_RE = /<!--mt:assessment v\d+-->[\s\S]*?<!--\/mt:assessment-->\n?/g;
+
+function buildAssessmentBlock(testTitle: string, results: { total?: number; average?: number; severity?: string }) {
+  const summary = `[${testTitle}] 점수 ${results.total ?? "-"}점 · 평균 ${
+    typeof results.average === "number" ? results.average.toFixed(2) : "-"
+  } · 단계 ${results.severity ?? "-"}`;
+  return `${ASSESSMENT_BLOCK_BEGIN}\n${summary}\n${ASSESSMENT_BLOCK_END}`;
+}
+
+/** 기존 reflection_note에서 자동 생성된 검사 요약 블록만 안전하게 제거 */
+export function stripAssessmentBlocks(note: string | null | undefined): string {
+  if (!note) return "";
+  return note.replace(ASSESSMENT_BLOCK_RE, "").replace(/^\n+/, "").trimEnd();
+}
+
+/** 사용자가 실제로 적은 회고만 추출 (UI 표시/검증용) */
+export function extractUserReflection(note: string | null | undefined): string {
+  return stripAssessmentBlocks(note);
+}
+
+/**
  * 검사 결과를 mind_track_checkin 한 줄로 자동 기록하고, 미션 완료 마킹까지 처리.
- * - reflection_note 앞부분에 점수 요약 자동 prepend
+ * - reflection_note: 버전드 BEGIN/END 블록으로 점수 요약을 머리에 부착 (기존 사용자 회고는 보존)
  * - mood_score: 검사 결과를 0~10으로 정규화한 값 (베이스라인 곡선용)
- * - completed: false (사용자가 회고 한 줄을 추가해야 비로소 true)
+ * - completed: 검사 저장만으로는 절대 true 로 올리지 않음 (사용자 회고가 별도 축)
  *   → 워크북으로 복귀해서 회고 다이얼로그가 자동으로 열리도록 returnTo에 openMission=1 포함
  */
 export async function recordAssessmentResultToCheckin(args: {
@@ -143,18 +171,17 @@ export async function recordAssessmentResultToCheckin(args: {
     if (!user) return { ok: false, error: "not_authenticated" };
 
     const score10 = normalizeAssessmentScoreTo10(state.testKey, results);
-    const summary = `[${testTitle}] 점수 ${results.total ?? "-"}점 · 평균 ${
-      typeof results.average === "number" ? results.average.toFixed(2) : "-"
-    } · 단계 ${results.severity ?? "-"}`;
+    const block = buildAssessmentBlock(testTitle, results);
 
     // 같은 day에 이미 체크인이 있으면 update, 없으면 insert
-    const { data: existing } = await (supabase as any)
+    const { data: existing, error: selErr } = await (supabase as any)
       .from("mind_track_checkins")
       .select("id, reflection_note, completed")
       .eq("user_id", user.id)
       .eq("enrollment_id", state.enrollmentId)
       .eq("day_number", state.day)
       .maybeSingle();
+    if (selErr) return { ok: false, error: selErr.message };
 
     // 미션 id를 알아내서 같이 묶기 (있으면)
     const { data: missionRow } = await (supabase as any)
@@ -164,29 +191,34 @@ export async function recordAssessmentResultToCheckin(args: {
       .eq("day_number", state.day)
       .maybeSingle();
 
+    // ── 가드 ───────────────────────────────────────────
+    // 1) completed는 검사 저장만으로 절대 true 가 되지 않음 (기존 값 유지)
+    // 2) reflection_note는 기존 자동 블록만 제거 후 새 블록 prepend → 사용자 회고는 보존
+    const userReflection = stripAssessmentBlocks(existing?.reflection_note);
+    const mergedNote = userReflection ? `${block}\n${userReflection}` : block;
+
     const basePayload: Record<string, any> = {
       user_id: user.id,
       enrollment_id: state.enrollmentId,
       day_number: state.day,
       mission_id: missionRow?.id ?? null,
       mood_score: score10,
-      // 검사로 들어온 시점에는 회고/완료는 사용자가 직접 마무리
-      completed: existing?.completed ?? false,
+      completed: existing?.completed ?? false, // ← 절대 true로 승격 금지
       checked_at: new Date().toISOString(),
+      reflection_note: mergedNote,
     };
 
     if (existing) {
-      const merged = existing.reflection_note
-        ? `${summary}\n${existing.reflection_note}`
-        : summary;
-      await (supabase as any)
+      const { error: upErr } = await (supabase as any)
         .from("mind_track_checkins")
-        .update({ ...basePayload, reflection_note: merged })
+        .update(basePayload)
         .eq("id", existing.id);
+      if (upErr) return { ok: false, error: upErr.message };
     } else {
-      await (supabase as any)
+      const { error: insErr } = await (supabase as any)
         .from("mind_track_checkins")
-        .insert({ ...basePayload, reflection_note: summary });
+        .insert(basePayload);
+      if (insErr) return { ok: false, error: insErr.message };
     }
 
     markAssessmentMissionCompleted(state.enrollmentId, state.day);
@@ -194,4 +226,24 @@ export async function recordAssessmentResultToCheckin(args: {
   } catch (e: any) {
     return { ok: false, error: e?.message ?? String(e) };
   }
+}
+
+/**
+ * 재시도 헬퍼 — 일시적 네트워크 장애에 한해 최대 N회 백오프 재시도.
+ * 영구 오류(인증 등)는 즉시 반환.
+ */
+export async function recordAssessmentResultToCheckinWithRetry(
+  args: Parameters<typeof recordAssessmentResultToCheckin>[0],
+  opts: { retries?: number } = {},
+): Promise<{ ok: boolean; error?: string; attempts: number }> {
+  const retries = opts.retries ?? 2;
+  let lastErr: string | undefined;
+  for (let i = 0; i <= retries; i++) {
+    const res = await recordAssessmentResultToCheckin(args);
+    if (res.ok) return { ok: true, attempts: i + 1 };
+    lastErr = res.error;
+    if (res.error === "not_authenticated") break;
+    await new Promise((r) => setTimeout(r, 400 * (i + 1)));
+  }
+  return { ok: false, error: lastErr, attempts: retries + 1 };
 }

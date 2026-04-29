@@ -479,6 +479,13 @@ export default function MindTrackWorkbook() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       const existing = checkins.find((c) => c.day_number === activeMission.day_number);
+      // 검사 자동 블록(<!--mt:assessment ...-->)은 사용자가 회고를 저장해도 보존되어야 함
+      const existingNote = existing?.reflection_note ?? "";
+      const userClean = reflectionNote.trim();
+      const autoBlock = existingNote.replace(stripAssessmentBlocks(existingNote), "").trim();
+      const mergedReflection = autoBlock
+        ? (userClean ? `${autoBlock}\n${userClean}` : autoBlock)
+        : (userClean || null);
       const payload = {
         user_id: user!.id,
         enrollment_id: enrollment.id,
@@ -488,7 +495,7 @@ export default function MindTrackWorkbook() {
         mood_score: moodScore,
         energy_score: energyScore,
         clarity_score: clarityScore,
-        reflection_note: reflectionNote || null,
+        reflection_note: mergedReflection,
         video_reflection: videoReflection || null,
         checked_at: new Date().toISOString(),
       };

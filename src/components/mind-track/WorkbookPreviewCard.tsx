@@ -204,6 +204,10 @@ export default function WorkbookPreviewCard({
           <p className="text-[14px] font-bold text-slate-900 break-keep leading-snug">
             {completenessCopy.headline}
           </p>
+          {/* 근거 한 줄 — 검사·영상·회고 중 무엇이 비어있는지 자동 요약 */}
+          <p className="text-[11.5px] text-[#8a7a4d] break-keep mt-1.5 leading-relaxed font-semibold">
+            {completenessCopy.reason}
+          </p>
           <p className="text-[12px] text-slate-500 break-keep mt-1 leading-relaxed">
             {completenessCopy.sub}
           </p>

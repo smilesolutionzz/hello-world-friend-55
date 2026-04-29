@@ -138,14 +138,14 @@ const en = {
 
   // CTA Banner
   cta: {
-    urgencyBadge: '🔥 Launch Special 50% Off',
-    applicants: '387 applied',
+    urgencyBadge: '',
+    applicants: '',
     headline: 'Start Your Recovery',
     headlineHighlight: 'with AIHumanPro',
     subheadline: 'Just 3 minutes is all it takes',
-    ratingText: '⭐⭐⭐⭐⭐ 4.8/5.0',
-    reviewCount: '💬 1,247 reviews',
-    freeTokens: '10 Free Tokens',
+    ratingText: '',
+    reviewCount: '',
+    freeTokens: '2 free credits on signup',
     signupButton: 'Sign Up Free',
     tryFirst: 'Try a Test First',
     trustLine: '✓ 30-sec signup · ✓ No credit card · ✓ Free forever',

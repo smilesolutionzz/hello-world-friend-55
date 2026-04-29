@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { X, Sparkles, ArrowRight, MessageCircle, RotateCcw, Send, Bot, User, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { copilotFlows, type CopilotOption } from './copilotFlows';
 import { supabase } from '@/integrations/supabase/client';
 import ReactMarkdown from 'react-markdown';
@@ -70,6 +70,15 @@ export const CopilotBubble: React.FC = () => {
   const [currentStepId, setCurrentStepId] = useState<string>(persisted.currentStepId ?? 'root');
   const [history, setHistory] = useState<HistoryEntry[]>(persisted.history ?? []);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // /ai-copilot 라우트나 ?copilot=1 쿼리면 자동 오픈
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (location.pathname === '/ai-copilot' || params.get('copilot') === '1') {
+      setIsOpen(true);
+    }
+  }, [location.pathname, location.search]);
 
   // Chat state - 복원
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(

@@ -8281,8 +8281,11 @@ export type Database = {
       }
       mind_track_daily_missions: {
         Row: {
+          action_steps: Json | null
           created_at: string
           day_number: number
+          deeper_prompts: Json | null
+          difficulty: string | null
           enrollment_id: string
           estimated_minutes: number | null
           id: string
@@ -8290,10 +8293,12 @@ export type Database = {
           mission_title: string
           mission_type: string | null
           selected_youtube_video_id: string | null
+          success_criteria: string | null
           user_id: string
           video_reflection_draft: string | null
           watched_video_ids: Json
           week_number: number
+          why_it_matters: string | null
           workbook_id: string
           youtube_candidates: Json | null
           youtube_query: string | null
@@ -8302,8 +8307,11 @@ export type Database = {
           youtube_video_id: string | null
         }
         Insert: {
+          action_steps?: Json | null
           created_at?: string
           day_number: number
+          deeper_prompts?: Json | null
+          difficulty?: string | null
           enrollment_id: string
           estimated_minutes?: number | null
           id?: string
@@ -8311,10 +8319,12 @@ export type Database = {
           mission_title: string
           mission_type?: string | null
           selected_youtube_video_id?: string | null
+          success_criteria?: string | null
           user_id: string
           video_reflection_draft?: string | null
           watched_video_ids?: Json
           week_number: number
+          why_it_matters?: string | null
           workbook_id: string
           youtube_candidates?: Json | null
           youtube_query?: string | null
@@ -8323,8 +8333,11 @@ export type Database = {
           youtube_video_id?: string | null
         }
         Update: {
+          action_steps?: Json | null
           created_at?: string
           day_number?: number
+          deeper_prompts?: Json | null
+          difficulty?: string | null
           enrollment_id?: string
           estimated_minutes?: number | null
           id?: string
@@ -8332,10 +8345,12 @@ export type Database = {
           mission_title?: string
           mission_type?: string | null
           selected_youtube_video_id?: string | null
+          success_criteria?: string | null
           user_id?: string
           video_reflection_draft?: string | null
           watched_video_ids?: Json
           week_number?: number
+          why_it_matters?: string | null
           workbook_id?: string
           youtube_candidates?: Json | null
           youtube_query?: string | null

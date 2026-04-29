@@ -152,7 +152,7 @@ const ko = {
     metric5Before: '38',
     metric5After: '76',
     metric5Delta: '+100%',
-    proofCaption: '* 2025년 12월 ~ 2026년 3월, 30일 트랙 완주자 1,247명 평균 (셀프 체크 기준)',
+    proofCaption: '* 예시 시나리오 — 실제 변화 폭은 개인별로 다를 수 있습니다',
   },
 
   // CTA Banner

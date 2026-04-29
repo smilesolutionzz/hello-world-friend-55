@@ -136,20 +136,72 @@ export function computeMilestones(
   });
 }
 
-/** 완성도 카피 톤 결정 — 검사/영상/회고 상태에 맞춘 설득 카피 */
+/**
+ * 검사·영상·회고 중 무엇이 비어있는지 한 줄로 요약 — 완성도 헤드라인의 근거 문장.
+ * 예: "지금은 검사·영상은 완료, 회고만 남았어요"
+ */
+export function summarizeMissingAxes(args: {
+  day1?: DayMissionStatus;
+  day2?: DayMissionStatus;
+  currentDay: number;
+}): string {
+  const { day1, day2, currentDay } = args;
+
+  if (currentDay >= 30) {
+    return "지금은 검사·영상·회고 모두 마감 — 워크북 한 권으로 묶을 준비가 끝났어요.";
+  }
+
+  // Day 1·2 기준으로 누가 비었는지 집계
+  const considered = [day1, day2].filter(Boolean) as DayMissionStatus[];
+  if (considered.length === 0) {
+    return "지금은 첫 체크인을 시작해 검사·영상·회고 기록을 모으는 단계예요.";
+  }
+
+  const missing: string[] = [];
+  const done: string[] = [];
+
+  const needsAssessment = considered.some((d) => d.needsAssessment);
+  const assessmentDone = considered.every((d) => !d.needsAssessment || d.assessmentDone);
+  if (needsAssessment) {
+    (assessmentDone ? done : missing).push("검사");
+  }
+
+  const videoDone = considered.every((d) => d.videoDone);
+  (videoDone ? done : missing).push("영상");
+
+  const reflectionDone = considered.every((d) => d.reflectionDone);
+  (reflectionDone ? done : missing).push("회고");
+
+  if (missing.length === 0) {
+    return "지금은 검사·영상·회고 모두 완료 — 다음 챕터 잠금 해제만 남았어요.";
+  }
+  if (done.length === 0) {
+    return `지금은 ${missing.join("·")}이(가) 모두 비어있어요. 가장 짧은 ${missing[0]} 1개부터 시작해 보세요.`;
+  }
+  return `지금은 ${done.join("·")}은 완료, ${missing.join("·")}만 남았어요.`;
+}
+
+/** 완성도 카피 톤 결정 — 검사/영상/회고 상태에 맞춘 설득 카피 + 근거 요약 */
 export function getCompletenessCopy(args: {
   currentDay: number;
   day1?: DayMissionStatus;
   day2?: DayMissionStatus;
   overallPercent: number;
   remainingDays: number;
-}): { headline: string; sub: string; tone: "warn" | "nudge" | "go" | "done" } {
+}): {
+  headline: string;
+  sub: string;
+  reason: string;
+  tone: "warn" | "nudge" | "go" | "done";
+} {
   const { currentDay, day1, day2, overallPercent, remainingDays } = args;
+  const reason = summarizeMissingAxes({ day1, day2, currentDay });
 
   if (currentDay >= 30) {
     return {
       headline: "30일을 모두 마쳤어요. 워크북이 한 권으로 완성되었습니다.",
       sub: "이제 표지부터 닫는 글까지 한 권으로 내려받을 수 있어요.",
+      reason,
       tone: "done",
     };
   }
@@ -163,17 +215,18 @@ export function getCompletenessCopy(args: {
     return {
       headline: "지금 베이스라인을 안 찍으면, 30일 뒤 변화량을 잴 수 없어요",
       sub: "Day 1·2 추천 검사 1개만 끝내면 워크북 완성도가 즉시 올라갑니다.",
+      reason,
       tone: "warn",
     };
   }
 
-  // 검사는 했지만 회고/영상이 비어있는 상태
   const day1NoReflection = day1 && day1.needsAssessment && day1.assessmentDone && !day1.reflectionDone;
   const day2NoReflection = day2 && day2.needsAssessment && day2.assessmentDone && !day2.reflectionDone;
   if (day1NoReflection || day2NoReflection) {
     return {
       headline: "검사 점수가 들어왔어요. 한 줄 회고만 더하면 워크북 1장이 채워집니다",
       sub: "회고 한 줄이 30일 뒤 ‘내 변화의 이유’를 설명해주는 단서가 돼요.",
+      reason,
       tone: "nudge",
     };
   }
@@ -182,6 +235,7 @@ export function getCompletenessCopy(args: {
     return {
       headline: `완성도 ${overallPercent}% — 결승선이 보여요`,
       sub: `앞으로 ${remainingDays}일이면 나만의 마음 기록 한 권이 손에 남습니다.`,
+      reason,
       tone: "go",
     };
   }
@@ -190,6 +244,7 @@ export function getCompletenessCopy(args: {
     return {
       headline: `완성도 ${overallPercent}% · ${remainingDays}일 뒤 워크북이 완성됩니다`,
       sub: "한 챕터씩 잠금이 풀리고 있어요. 오늘의 회고를 더해 페이지를 채워보세요.",
+      reason,
       tone: "go",
     };
   }
@@ -197,6 +252,9 @@ export function getCompletenessCopy(args: {
   return {
     headline: `완성도 ${overallPercent}% — 지금이 가장 중요한 출발 구간`,
     sub: "초반 7일의 기록이 30일 분석 정확도의 60% 이상을 결정합니다.",
+    reason,
     tone: "nudge",
+  };
+}
   };
 }

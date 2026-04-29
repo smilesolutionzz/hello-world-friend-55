@@ -95,7 +95,7 @@ const ko = {
   // Hero Section
   hero: {
     badge: '30일이면 충분합니다',
-    innovationBadge: '4,248명이 30일 만에 마음의 변화를 측정했습니다',
+    innovationBadge: '30일이면 마음의 변화를 숫자로 확인할 수 있습니다',
     title: '30일 후, 당신의 마음은 달라집니다',
     titleHighlight: '데이터로 증명되는 변화',
     headlineTop: '느낌이 아니라,',
@@ -123,9 +123,9 @@ const ko = {
     trustNoSignup: '✓ 30초 진단',
     trustFree: '✓ 7일 무료 체험',
     trust24h: '✓ 언제든 해지',
-    ratingCount: '⭐ 4.8/5.0 (4,248명 검증)',
-    liveUsers: '🔥 지금 47명이 트랙 진행 중',
-    urgencyBanner: '⏰ 오늘 시작하면 30일 뒤 변화를 확인할 수 있어요',
+    ratingCount: '',
+    liveUsers: '',
+    urgencyBanner: '오늘 시작하면 30일 뒤 변화를 확인할 수 있어요',
     shareTitle: '30일 만에 내 마음이 이렇게 달라졌어',
     shareDesc: 'Before/After 리포트로 진짜 변화를 확인해봐. 7일 무료!',
     shareButton: '나도 시작하기',
@@ -152,19 +152,19 @@ const ko = {
     metric5Before: '38',
     metric5After: '76',
     metric5Delta: '+100%',
-    proofCaption: '* 2025년 12월 ~ 2026년 3월, 30일 트랙 완주자 1,247명 평균 (셀프 체크 기준)',
+    proofCaption: '* 예시 시나리오 — 실제 변화 폭은 개인별로 다를 수 있습니다',
   },
 
   // CTA Banner
   cta: {
-    urgencyBadge: '🔥 론칭 특가 50% 할인',
-    applicants: '387명 신청',
+    urgencyBadge: '',
+    applicants: '',
     headline: 'AIHumanPro와 함께',
     headlineHighlight: '당신의 회복을 시작하세요',
     subheadline: '3분이면 충분합니다',
-    ratingText: '⭐⭐⭐⭐⭐ 4.8/5.0',
-    reviewCount: '💬 1,247명 후기',
-    freeTokens: '무료 10토큰',
+    ratingText: '',
+    reviewCount: '',
+    freeTokens: '회원가입 시 무료 이용권 2회',
     signupButton: '무료 회원가입',
     tryFirst: '먼저 검사해보기',
     trustLine: '✓ 30초 가입 · ✓ 신용카드 불필요 · ✓ 영구 무료',
@@ -439,7 +439,7 @@ const ko = {
     finalCtaFree: '무료',
     finalCtaButton: '지금 무료 검사 시작',
     trustAnonymous: '완전 익명',
-    trustUsers: '4,248명이 검사 완료',
+    trustUsers: '회원가입 없이 바로 시작',
     trustInstant: '결과 즉시 확인',
   },
 
@@ -693,7 +693,7 @@ const ko = {
     autoSubNote: '30일간 모든 기능 무제한',
     autoSubBold: '· 자동 결제 없음',
     autoSubEnd: '',
-    socialProof: '이미 3,247명의 사용자가 프리미엄을 선택했습니다',
+    socialProof: '',
   },
 
   // Index page specific

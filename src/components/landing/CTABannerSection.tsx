@@ -64,20 +64,24 @@ const CTABannerSection = () => {
             {t.cta.subheadline}
           </p>
 
-          {/* Refined trust row */}
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs md:text-sm text-white/40">
-            <div className="flex items-center gap-2">
-              <Star className="w-3.5 h-3.5 fill-[#D4AF73] text-[#D4AF73]" />
-              <span className="tracking-wide">{t.cta.ratingText}</span>
+          {/* Refined trust row — 가짜 평점/후기/신청자 통계 제거됨 */}
+          {(t.cta.ratingText || t.cta.reviewCount || t.cta.applicants) && (
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs md:text-sm text-white/40">
+              {t.cta.ratingText && (
+                <div className="flex items-center gap-2">
+                  <Star className="w-3.5 h-3.5 fill-[#D4AF73] text-[#D4AF73]" />
+                  <span className="tracking-wide">{t.cta.ratingText}</span>
+                </div>
+              )}
+              {t.cta.reviewCount && <span className="tracking-wide">{t.cta.reviewCount}</span>}
+              {t.cta.applicants && (
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-3.5 h-3.5 text-white/50" />
+                  <span className="tracking-wide">{t.cta.applicants}</span>
+                </div>
+              )}
             </div>
-            <span className="hidden md:inline w-px h-4 bg-white/10" />
-            <span className="tracking-wide">{t.cta.reviewCount}</span>
-            <span className="hidden md:inline w-px h-4 bg-white/10" />
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-white/50" />
-              <span className="tracking-wide">{t.cta.applicants}</span>
-            </div>
-          </div>
+          )}
 
           {/* CTA cluster */}
           <div className="mt-14 flex flex-col sm:flex-row gap-4 justify-center items-center">

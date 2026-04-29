@@ -62,16 +62,7 @@ export const QuickMatchCTA = ({ variant = 'default', onMatch }: QuickMatchCTAPro
         </Button>
       </div>
 
-      <div className="mt-6 pt-6 border-t border-white/10">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-white/60">평균 만족도</span>
-          <span className="text-yellow-400 font-bold">★ 4.8/5.0</span>
-        </div>
-        <div className="flex items-center justify-between text-sm mt-2">
-          <span className="text-white/60">오늘 상담 완료</span>
-          <span className="text-green-400 font-bold">{Math.floor(Math.random() * 50) + 150}건</span>
-        </div>
-      </div>
+      {/* 가짜 만족도/상담 건수 위젯 제거됨 */}
     </div>
   );
 };

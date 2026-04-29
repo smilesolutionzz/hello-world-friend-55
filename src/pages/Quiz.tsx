@@ -810,10 +810,10 @@ const Quiz: React.FC = () => {
                           <TrendingUp className="w-4 h-4 text-emerald-500" />
                           평균 사용자의 30일 변화
                         </h3>
-                        <p className="text-xs text-muted-foreground mt-0.5">12,847명 누적 데이터 기반</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">예시 시나리오 — 변화 폭은 개인별로 다를 수 있습니다</p>
                       </div>
                       <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                        +73% 개선
+                        예시
                       </Badge>
                     </div>
 
@@ -859,12 +859,6 @@ const Quiz: React.FC = () => {
                 <div>
                   <div className="text-center mb-4">
                     <h3 className="text-lg font-bold break-keep">실제 30일 만에 바뀐 사람들</h3>
-                    <div className="flex items-center justify-center gap-1 mt-2">
-                      {[1, 2, 3, 4, 5].map((s) => (
-                        <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                      ))}
-                      <span className="ml-1 text-xs font-semibold">4.8 / 5.0 · 3,247건의 후기</span>
-                    </div>
                   </div>
 
                   <div className="space-y-3">
@@ -944,22 +938,7 @@ const Quiz: React.FC = () => {
                     })}
                   </div>
 
-                  <div className="flex items-center justify-center gap-4 mt-4 py-3 px-4 bg-slate-50 rounded-xl">
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-primary">94%</div>
-                      <div className="text-[10px] text-muted-foreground">변화 체감</div>
-                    </div>
-                    <div className="w-px h-8 bg-slate-200" />
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-primary">12,847명</div>
-                      <div className="text-[10px] text-muted-foreground">누적 사용자</div>
-                    </div>
-                    <div className="w-px h-8 bg-slate-200" />
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-primary">4.8★</div>
-                      <div className="text-[10px] text-muted-foreground">평균 평점</div>
-                    </div>
-                  </div>
+                  {/* 누적 통계 위젯 제거됨 — 실제 데이터 확보 전까지 비활성화 */}
                 </div>
 
                 {/* Pricing CTA */}

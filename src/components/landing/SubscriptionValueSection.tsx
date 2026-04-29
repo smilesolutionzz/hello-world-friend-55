@@ -161,19 +161,7 @@ const SubscriptionValueSection = () => {
           </div>
         </motion.div>
 
-        {/* Social Proof */}
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center">
-          <div className="flex items-center justify-center gap-1 mb-2">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-            ))}
-          </div>
-          <p className="text-slate-400 text-sm">
-            {isEnglish 
-              ? <>Already <strong className="text-violet-300">3,247</strong> parents chose our service</>
-              : <>이미 <strong className="text-violet-300">3,247명</strong>의 부모님이 선택했습니다</>}
-          </p>
-        </motion.div>
+        {/* Social Proof 제거됨 — 실제 데이터 확보 전까지 비활성화 */}
       </div>
 
       <PaymentModal open={paymentOpen} onOpenChange={setPaymentOpen} mode="single" />

@@ -269,7 +269,7 @@ const DEMO_REPORTS = [
 <li>스트레스 상위 25% 이내 시 즉시 개입 권장 → <strong>현재 22%로 해당</strong></li>
 <li>수면 질 하위 25% 이내 시 수면 클리닉 권장 → <strong>현재 30%로 근접</strong></li>
 </ul>
-<p><em>※ 비교 데이터: 2024-2026년 AIHPRO 30대 이용자 12,847명 기준</em></p>`
+<p><em>※ 비교 데이터: 30대 동연령 표준 시나리오 (예시)</em></p>`
       },
       {
         title: '교차 분석 매트릭스 (Cross-Test Correlation)',

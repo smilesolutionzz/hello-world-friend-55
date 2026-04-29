@@ -17,7 +17,7 @@ import {
   CheckCircle2, Circle, Loader2, Sparkles, TrendingUp, Calendar,
   Brain, Zap, Eye, Heart, Target, ChevronRight, Lock, ArrowLeft,
   Flame, Trophy, BookOpen, Wind, PenLine, Users, Activity, Award, Mail,
-  RotateCcw, Info
+  RotateCcw, Info, Video, Stethoscope
 } from "lucide-react";
 
 // 미션 타입별 가이드 (라이브러리)

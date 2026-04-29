@@ -273,7 +273,8 @@ const MindTrack: React.FC = () => {
   // ──────────────────────────────────────────────────────────
   if (
     activeEnrollment &&
-    activeEnrollment.payment_status === 'paid' &&
+    (activeEnrollment.payment_status === 'paid' ||
+      activeEnrollment.payment_status === 'completed') &&
     !postLoginRedirecting
   ) {
     return <MindTrackActive enrollment={activeEnrollment as any} />;

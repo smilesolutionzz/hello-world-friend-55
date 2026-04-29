@@ -120,6 +120,7 @@ import InterventionCalendar from "@/components/mind-track/InterventionCalendar";
 import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulator";
 import WeeklyMilestoneCards from "@/components/mind-track/WeeklyMilestoneCards";
 import MilestoneProgressBar from "@/components/mind-track/MilestoneProgressBar";
+import WorkbookPreviewCard from "@/components/mind-track/WorkbookPreviewCard";
 import MindTrackWorkbookSkeleton from "@/components/mind-track/MindTrackWorkbookSkeleton";
 import MissionLearningCard from "@/components/mind-track/MissionLearningCard";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
@@ -712,6 +713,14 @@ export default function MindTrackWorkbook() {
               <InviteFriendsButton currentDay={currentDay} />
             </div>
           </Card>
+
+          {/* "내 워크북" 미리보기 — 30일 후 손에 남는 결과물을 시각화 (동기부여) */}
+          <WorkbookPreviewCard
+            currentDay={currentDay}
+            completedCount={completedCount}
+            trackTheme={workbook?.challenge_theme}
+            nickname={enrollment?.baseline_data?.nickname || enrollment?.baseline_data?.display_name}
+          />
 
           {/* 마일스톤 진행 현황 (어떤 7/14/21/28일 카드가 완료되었는지 + 다음 목표 강조) */}
           <MilestoneProgressBar currentDay={currentDay} checkins={checkins} />

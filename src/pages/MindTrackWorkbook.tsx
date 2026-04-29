@@ -284,6 +284,7 @@ export default function MindTrackWorkbook() {
   }, [currentDay, enrollment, missions]);
 
   // Day 30 도달 + 아직 완료처리 안된 경우 → 자동 finalize + 메일 발송 + 축하 모달
+  // + 완주 후 ‘완성된 워크북’ 페이지로 자동 이동 (1회만)
   useEffect(() => {
     if (!enrollment) return;
     if (currentDay < 30) return;
@@ -295,7 +296,22 @@ export default function MindTrackWorkbook() {
       sessionStorage.setItem(seenKey, "1");
     }
 
-    if (enrollment.status === "completed" && enrollment.completed_at) return;
+    // 자동 이동: enrollment가 완료 처리된 직후 1회만 완성 워크북 페이지로 점프
+    const navKey = `mt-auto-nav-final-${enrollment.id}`;
+    const maybeAutoNavigate = () => {
+      if (typeof window === "undefined") return;
+      if (sessionStorage.getItem(navKey)) return;
+      sessionStorage.setItem(navKey, "1");
+      // 축하 모달이 잠깐 보이도록 살짝 지연
+      setTimeout(() => {
+        navigate(`/mind-track/workbook-preview?enrollmentId=${enrollment.id}`);
+      }, 2200);
+    };
+
+    if (enrollment.status === "completed" && enrollment.completed_at) {
+      maybeAutoNavigate();
+      return;
+    }
     (async () => {
       try {
         const { data: session } = await supabase.auth.getSession();
@@ -308,6 +324,8 @@ export default function MindTrackWorkbook() {
           toast.success("30일 트랙 완료! 종합 리포트를 메일로도 보내드렸어요 🎉");
           load();
         }
+        // 완주(또는 이미 완주) 케이스 모두 한 번 자동 이동
+        maybeAutoNavigate();
       } catch (e: any) {
         console.error("finalize failed:", e);
       }

@@ -37,6 +37,12 @@ interface WorkbookPreviewCardProps {
   enrollmentId?: string;
   /** Day 1·2 미션 모두 완료 시, 축하 모달 닫기 후 다음 체크인 액션 */
   onContinueCheckin?: () => void;
+  /** 축하 모달 노출 정책 (기본: session) */
+  celebrationDisplayPolicy?: "session" | "daily" | "always";
+  /** 모달 CTA 보조 라벨 — 예: "Day 3 미션" */
+  nextMissionLabel?: string;
+  /** 오늘 미션 존재 여부 — 없으면 모달 CTA가 "자동 이동"으로 바뀜 */
+  hasTodayMission?: boolean;
 }
 
 const CHAPTERS = WORKBOOK_CHAPTERS;

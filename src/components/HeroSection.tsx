@@ -218,17 +218,25 @@ const HeroSection = () => {
               <span>{(t.hero as any).trust24h}</span>
             </div>
 
-            <div className="mt-3 flex items-center gap-3 text-xs md:text-sm">
-              <span className="text-amber-300 font-semibold">{(t.hero as any).ratingCount}</span>
-              <span className="text-white/50">·</span>
-              <motion.span
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="text-emerald-300 font-medium"
-              >
-                {(t.hero as any).liveUsers}
-              </motion.span>
-            </div>
+            {((t.hero as any).ratingCount || (t.hero as any).liveUsers) && (
+              <div className="mt-3 flex items-center gap-3 text-xs md:text-sm">
+                {(t.hero as any).ratingCount && (
+                  <span className="text-amber-300 font-semibold">{(t.hero as any).ratingCount}</span>
+                )}
+                {(t.hero as any).ratingCount && (t.hero as any).liveUsers && (
+                  <span className="text-white/50">·</span>
+                )}
+                {(t.hero as any).liveUsers && (
+                  <motion.span
+                    animate={{ opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="text-emerald-300 font-medium"
+                  >
+                    {(t.hero as any).liveUsers}
+                  </motion.span>
+                )}
+              </div>
+            )}
           </motion.div>
 
           {/* RIGHT: Before/After data card */}

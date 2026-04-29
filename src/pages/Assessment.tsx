@@ -542,19 +542,48 @@ const Assessment = () => {
   ) => {
     const state = location.state as MindTrackMissionState | null | undefined;
     if (!state || state.from !== 'mind-track-mission' || state.testKey !== testKey) return;
-    const res = await recordAssessmentResultToCheckin({ state, results, testTitle });
+
+    // 1차 저장 시도 (자동 백오프 재시도 포함)
+    const res = await recordAssessmentResultToCheckinWithRetry({ state, results, testTitle });
+
+    // 워크북 복귀 URL — 한 번만 회고 다이얼로그를 띄우기 위한 일회성 토큰을 부여
+    const oneShot = `mt-${state.day}-${Date.now()}`;
+    const sep = state.returnTo.includes('?') ? '&' : '?';
+    const returnTo = `${state.returnTo}${sep}mtOnce=${oneShot}`;
+
     if (res.ok) {
       toast({
         title: '검사 결과가 워크북에 저장됐어요',
         description: '회고 한 줄을 더하면 오늘의 미션이 완료돼요. 워크북으로 돌아갈게요.',
       });
-      // 결과 화면을 잠깐 보여준 뒤 자동 복귀 (사용자가 점수를 인지할 시간 확보)
-      setTimeout(() => navigate(state.returnTo), 1800);
+      setTimeout(() => navigate(returnTo), 1800);
     } else {
+      // 실패 → 사용자에게 명시적 리트라이 액션 제공
+      const handleRetry = async () => {
+        const r2 = await recordAssessmentResultToCheckinWithRetry(
+          { state, results, testTitle },
+          { retries: 3 },
+        );
+        if (r2.ok) {
+          toast({ title: '재시도 성공 — 워크북에 저장됐어요' });
+          setTimeout(() => navigate(returnTo), 1200);
+        } else {
+          toast({
+            title: '여전히 저장에 실패했어요',
+            description: `사유: ${r2.error ?? '알 수 없는 오류'}. 네트워크 확인 후 워크북에서 다시 시도해주세요.`,
+            variant: 'destructive',
+          });
+        }
+      };
       toast({
-        title: '워크북 저장 중 문제가 발생했어요',
-        description: '검사 결과는 저장됐지만 워크북 자동 기록에 실패했어요. 워크북에서 다시 시도해 주세요.',
+        title: '워크북 자동 저장 실패',
+        description: `검사 결과는 화면에 보이지만 워크북에는 아직 기록되지 않았어요. (${res.error ?? '오류'})`,
         variant: 'destructive',
+        action: (
+          <ToastAction altText="재시도" onClick={handleRetry}>
+            재시도
+          </ToastAction>
+        ) as any,
       });
     }
   };

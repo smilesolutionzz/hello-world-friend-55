@@ -915,6 +915,21 @@ export default function MindTrackWorkbook() {
               </span>
             </p>
 
+            {/* 트랙이 제공하는 것 — 범례 */}
+            <div className="mt-3 mb-2 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+              <div className="text-[11px] font-bold text-slate-700 mb-2">이 30일 트랙이 제공하는 것</div>
+              <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] text-slate-600">
+                <span className="inline-flex items-center gap-1"><Brain className="w-3 h-3 text-indigo-500" /> 자기 탐색</span>
+                <span className="inline-flex items-center gap-1"><Wind className="w-3 h-3 text-sky-500" /> 호흡 가이드</span>
+                <span className="inline-flex items-center gap-1"><PenLine className="w-3 h-3 text-amber-600" /> 저널링</span>
+                <span className="inline-flex items-center gap-1"><Activity className="w-3 h-3 text-rose-500" /> 행동 미션</span>
+                <span className="inline-flex items-center gap-1"><Users className="w-3 h-3 text-emerald-600" /> 관계 연습</span>
+                <span className="inline-flex items-center gap-1"><Video className="w-3 h-3 text-purple-500" /> 추천 영상</span>
+                <span className="inline-flex items-center gap-1"><Stethoscope className="w-3 h-3 text-amber-600" /> 전문가 개입(Day 7·14·21·30)</span>
+                <span className="inline-flex items-center gap-1"><Award className="w-3 h-3 text-amber-500" /> 마일스톤 리포트</span>
+              </div>
+            </div>
+
             {/* 빠른 점프 (Day 셀렉터) */}
             <div className="mb-3 flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin">
               {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => {

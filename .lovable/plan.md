@@ -1,93 +1,104 @@
 
-## 왜 필요한가
+# 4월 공동대표 회의자료 — Markdown 초안 생성 계획
 
-지금 워크북은 "오늘의 미션"만 보여서, 사용자 머릿속에 **"30일 후 내 손에 뭐가 남는가?"**가 안 그려져요. Noom·Calm·Wysa가 공통으로 쓰는 가장 강력한 리텐션 장치는 **"완성된 결과물의 미리보기"**입니다 — 사람은 비어있는 책장을 채우고 싶어하거든요.
+목표: Claude Code로 가져가서 다듬고 PPTX/PDF로 변환할 **단일 Markdown 파일** 한 벌을 만든다. 3월 자료(`공동대표_회의자료_2026년3월.md`) 톤을 그대로 잇되, 4월의 핵심 변화(마음트랙 단일상품 BM, 워크북 리뉴얼, 코파일럿/검사 라우팅 정리, AI×Expert 철학)를 중심에 둔다.
 
-이미 인프라는 있어요 (`mind_track_milestone_reports` 테이블, `mind-track-milestone-report` 엣지 함수, 7/14/21/28일 자가진단 리포트). 빠진 건 **"30일 = 한 권의 책"이라는 시각적 메타포와 최종 컴파일된 산출물**입니다.
+## 산출물
 
-## 무엇을 만들 것인가
+- 파일: `/mnt/documents/공동대표_회의자료_2026년4월.md` (단일 파일)
+- 형식: 3월 자료와 동일한 H1/H2/표/체크리스트 구조
+- 후속: 회의 당일 PPTX는 Claude Code 쪽에서 이 MD를 슬라이드로 분해 (이번 작업에는 포함하지 않음 — "MD만"이 답변)
 
-### 01. "내 워크북" 미리보기 카드 (워크북 페이지 상단)
-
-목표 카드 바로 아래에 **책 형태의 프로그레스 비주얼** 추가. 30개의 페이지가 매일 한 장씩 채워지는 모습.
+## 문서 목차 (8개 섹션)
 
 ```text
-┌─────────────────────────────────────┐
-│  📖 나의 30일 마음 워크북            │
-│                                      │
-│  ▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░  5/30  │
-│  [표지] [Day1] [Day2] ... [Day30]   │
-│                                      │
-│  앞으로 25일 후, 나만의 마음 기록    │
-│  한 권이 완성됩니다                  │
-│                                      │
-│  [완성된 모습 미리보기 →]            │
-└─────────────────────────────────────┘
+1. Executive Summary (한 페이지 요약)
+   - 4월 핵심 1줄: "마음트랙 단일상품 BM 확정 + 30일 코칭 운영 인프라 완성"
+   - KPI 스냅샷 (MAU, 결제, 마음트랙 가입자)
+
+2. 4월 개발 변경사항 — 영역별 표
+   2.1 비즈니스 모델
+       - 단건 검사/월·연 구독 → ₩19,900 30일 마음트랙 단일상품으로 통일
+       - 전문가 상담 단건 + 구독자 할인 + 무료 1회 자동지급 RPC
+   2.2 마음트랙 워크북
+       - DailyMissionPreview, WorkbookPreviewCard, MilestoneProgressBar
+       - 미션 축(검사/영상/회고) 진행률 규칙 정리
+       - 검사→워크북 복귀 시 회고 다이얼로그 자동 오픈
+   2.3 검사 시스템
+       - "검사 시작" 버튼 → 항상 /assessment?test=... 자체 검사로만 라우팅
+       - mind_track_checkins 자동 저장 + 실패 리트라이 UI
+   2.4 AI Copilot
+       - /ai-copilot 라우트 신설, CopilotBubble 자동 오픈
+       - 모바일 오버플로우 최적화
+   2.5 안정성/UX
+       - 모바일 타이포 표준, CTA 일원화, 아코디언 도입
+
+3. 마음트랙 BM 단일화 스토리 (의사결정 근거)
+   - Before: 토큰/단건 990원/구독 9,900·99,000원 — 가격 혼선, 결제 전환 낮음
+   - After: ₩19,900 단일 결제 + 전문가 상담 단건만
+   - 근거 3가지:
+     a. PMF 가설 — Calm+Wysa 하이브리드, "30일 변화 트랙"이 명확한 약속
+     b. 결제 단순화로 첫 결제 마찰 ↓
+     c. 상담 BM과 분리 — 구독은 코칭, 상담은 휴먼 터치
+   - 메모리 근거: mem://product/single-product-bm-ko, mem://strategy/pmf-positioning-2026-ko
+
+4. 기능 카탈로그 (4월 기준 가동 중)
+   - 마음트랙 30일 / 코파일럿 / 리포트 제너레이터 Pro / 전문가 매칭
+   - B2B Job Coach (워크플레이스 멘탈헬스)
+   - My Journey 종단 대시보드, Verification QR, Weekly Digest, Daily Coaching Email
+
+5. UI/UX 비포·애프터
+   - 캡처 자리표시자 6컷:
+     [PLACEHOLDER: /pricing 비포·애프터]
+     [PLACEHOLDER: /mind-track 워크북 리뉴얼]
+     [PLACEHOLDER: 검사 결과 → 워크북 회고 자동 오픈]
+     [PLACEHOLDER: /ai-copilot 모바일 최적화]
+     [PLACEHOLDER: /expert-hiring 단건 상담 UI]
+     [PLACEHOLDER: My Journey 대시보드]
+   - 회의 전 수동 캡처해 끼워넣을 위치를 명시
+
+6. 5월 로드맵
+   - 마음트랙 D7/D14/D30 리텐션 측정 인프라
+   - 영어버전 100% 완성 (3월 자료의 "4월 중순" 목표 이월분)
+   - B2B Job Coach 파일럿 1곳 클로징
+   - 전문가 상담 매칭 알고리즘 v2 (match-consultation-expert 고도화)
+
+7. KPI 목표 (5월 / Q2)
+   - 마음트랙 결제 가입자: 5월 50명 → 6월 150명
+   - 결제 전환율(랜딩→결제): 3% 목표
+   - D7 리텐션: 40%
+   - 전문가 상담 1건 이상 사용자 비율: 결제자의 20%
+
+8. 부록
+   - 핵심 라우트 목록
+   - 핵심 테이블 목록 (mind_track_*, user_subscriptions, b2b_jobcoach_*, consultation_*)
+   - 의존 메모리 인덱스 발췌
 ```
 
-클릭하면 샘플 워크북 미리보기 모달 — "이런 표지, 이런 챕터, 이런 통계가 들어갑니다" 6장 정도 스크린샷 형식.
+## 데이터 자동 추출 소스
 
-### 02. 워크북 구성 (30일 완주 시 PDF 한 권)
+- **가격/상품**: `src/constants/tokenCosts.ts` (MIND_TRACK_PRICE 등) — 하드코딩 금지 룰 준수
+- **마음트랙 구조**: `src/lib/mindTrackChapters.ts`, `mindTrackAssessmentMissions.ts`, `mindTrackMissionProgress.ts`, `mindTrackDayCopy.ts`
+- **신규 컴포넌트**: `src/components/mind-track/*` (디렉터리 전체 목록 → 4월 신설/수정 분류)
+- **라우트 변경**: `src/App.tsx` (특히 `/ai-copilot`, `/mind-track/*`)
+- **상담 BM**: `src/lib/consultationOfferings.ts`, `src/lib/expertPricing.ts`
+- **메모리 근거 인용**: mem://index.md의 Core 룰 + 관련 메모리 5개 (single-product-bm, pmf-positioning-2026, human-touch-philosophy, consultation-bm-expansion, jobcoach-workplace-mental-health)
+- **3월 자료 톤 매칭**: `공동대표_회의자료_2026년3월.md` 헤더/표 스타일 그대로 차용
 
-새 엣지 함수 `mind-track-final-workbook`이 다음을 컴파일:
+DB 실데이터(MAU, 결제수)는 답변에서 "코드/메모리만"으로 한정하셨으므로 이번에는 **자리표시자**(`[입력 필요: 5월 회의 직전 admin 대시보드에서 채우기]`)로 두고, 회의 직전 본인이 채우거나 별도 요청 시 DB 조회로 채워 넣는다.
 
-- **표지** — 사용자 닉네임, 시작일~종료일, 트랙 주제, 골드 라인 디자인
-- **여는 글** — "30일 전 당신이 원했던 것" (베이스라인 + 목표/주요 고민)
-- **챕터 1: 마음 변화 그래프** — 스트레스/에너지/명료도 30일 추이 (베이스라인 vs 최종)
-- **챕터 2: 30일의 기록** — 매일 체크인 노트(`reflection_note`) + 무드 점수를 일자별로 정리
-- **챕터 3: 4개의 자가진단** — 기존 7/14/21/28일 리포트 통합
-- **챕터 4: 핵심 인사이트** — Gemini로 30일 전체 데이터 요약 (성장 패턴 3가지, 발견한 자기이해 3가지)
-- **챕터 5: 다음 30일을 위한 제안** — 코칭 톤의 다음 단계
-- **닫는 글** — 전문가 상담 CTA + AIHPRO 검증 QR
+## 작업 단계 (빌드 모드 진입 후)
 
-### 03. 진행률 단계별 잠금 해제 UX
+1. 핵심 소스 파일 5개 일괄 read → 4월 신설/수정 컴포넌트 자동 분류
+2. tokenCosts.ts에서 가격 상수 import한 표 생성
+3. mem://의 single-product-bm / pmf-positioning-2026 메모리 본문 read
+4. 위 8개 섹션을 채워 `/mnt/documents/공동대표_회의자료_2026년4월.md` 단일 파일로 출력
+5. presentation-artifact 태그로 다운로드 링크 노출
 
-워크북이 "한 장씩 채워지는" 느낌을 위해:
+## 비기술적 메모
 
-- Day 1~6: "표지 + 여는 글" 잠금 해제 ✓
-- Day 7: "챕터 1 (1주차 자가진단)" 잠금 해제 + 토스트 알림
-- Day 14/21/28: 각 챕터 잠금 해제 + 알림
-- Day 30: "🎉 워크북 완성! 다운로드하기" 풀스크린 축하 화면
+- 가격 숫자는 메모리 룰상 코드에서 읽어 출력 (₩19,900 등). 본문에 박제하지 않고 "현재 정가: 코드 기준 ₩19,900" 식으로 표기.
+- 이모지 미사용, 마크다운 표는 3월 자료처럼 본문 내 비교 표로만 사용 (리포트 톤 룰의 "표 금지"는 사용자 향 리포트에 적용되는 룰이며, 내부 회의자료는 3월 자료와 동일하게 표 사용).
+- 분량 목표: 3월 자료와 비슷한 ~700줄 이내.
 
-각 마일스톤마다 책 아이콘 위에 새 챕터가 "쾅" 박히는 마이크로 애니메이션.
-
-### 04. 다운로드 기능
-
-- **PDF**: 기존 `pdfDownload.ts` 재활용, A4 세로, 골드 액센트 (#C8B88A) 브랜딩
-- **파일명**: `나의_마음_워크북_{닉네임}_{종료일}.pdf`
-- **다운로드 위치**:
-  - 워크북 페이지 진행률 카드의 "미리보기" 옆 (Day 30 후에만 활성)
-  - MindTrackDashboard 상단 배너
-  - 완주 축하 모달
-
-## 어디를 건드리나
-
-**새로 만들 파일**
-- `src/components/mind-track/WorkbookPreviewCard.tsx` — 책 메타포 진행률 카드
-- `src/components/mind-track/WorkbookSamplePreviewModal.tsx` — 샘플 6장 미리보기
-- `src/components/mind-track/FinalWorkbookDocument.tsx` — PDF 렌더용 컴포넌트 (a4 레이아웃)
-- `src/components/mind-track/WorkbookCompletionCelebration.tsx` — Day 30 풀스크린 축하
-- `supabase/functions/mind-track-final-workbook/index.ts` — 30일 데이터 통합 + Gemini 요약
-
-**수정**
-- `src/pages/MindTrackWorkbook.tsx` — 목표 카드 아래에 `WorkbookPreviewCard` 삽입
-- `src/pages/MindTrackDashboard.tsx` — 진행률 위젯에 챕터 잠금 해제 표시
-- 마이그레이션: `mind_track_final_workbooks` 테이블 (id, enrollment_id, user_id, compiled_data jsonb, ai_insights text, created_at)
-
-## 기술적 세부사항
-
-- 30일 전 데이터 미리보기에는 **샘플 데이터** 사용 (실제 사용자 데이터 노출 X)
-- 최종 컴파일은 비용이 드므로 (Gemini 호출) **Day 28 이후에만** 가능, 결과는 DB에 캐시
-- PDF는 클라이언트에서 `html2pdf.js`로 렌더 (이미 사용 중인 라이브러리)
-- 메모리 룰 준수: AI 모델명 노출 금지, 마크다운 표 금지, 골드(#C8B88A) 액센트, "전문가 종합 분석" 톤
-- 의료 면책 문구 (`MedicalDisclaimer`) 포함
-
-## 확인하고 싶은 것
-
-이대로 진행할지, 아니면 다음 중 우선순위 조정을 원하시는지:
-
-1. **풀버전** — 위 4단계 모두 (책 메타포 + 샘플 미리보기 + 단계별 잠금 해제 + 최종 PDF). 임팩트 최대지만 작업량 큼.
-2. **MVP** — 책 메타포 카드 + 샘플 미리보기 모달만 먼저 (동기부여 효과 80%, 빠른 출시). 최종 PDF는 다음 스프린트.
-3. **백엔드 우선** — 최종 PDF 생성 엣지 함수부터 만들고 UI는 나중. (실제 가치 우선)
-
-제 추천은 **2번 MVP** — "30일 후 이런 책이 나옵니다"를 보여주는 것만으로도 동기부여의 90%는 달성되고, 사용자 반응을 보고 백엔드 정밀도를 결정할 수 있어요.
+승인해 주시면 빌드 모드로 전환되는 다음 턴에 곧바로 파일 1개를 생성해 드리겠습니다.

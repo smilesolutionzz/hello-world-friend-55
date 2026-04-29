@@ -62,6 +62,9 @@ export default function WorkbookPreviewCard({
   baselines = [],
   enrollmentId,
   onContinueCheckin,
+  celebrationDisplayPolicy = "session",
+  nextMissionLabel,
+  hasTodayMission = true,
 }: WorkbookPreviewCardProps) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const totalChapters = CHAPTERS.length;
@@ -361,6 +364,9 @@ export default function WorkbookPreviewCard({
         shouldShow={day12FullyDone}
         enrollmentId={enrollmentId}
         onContinue={() => onContinueCheckin?.()}
+        displayPolicy={celebrationDisplayPolicy}
+        nextMissionLabel={nextMissionLabel}
+        hasTodayMission={hasTodayMission}
       />
     </>
   );

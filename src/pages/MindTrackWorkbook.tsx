@@ -935,93 +935,133 @@ export default function MindTrackWorkbook() {
                 <h3 className="text-lg font-bold text-slate-900 mb-1 break-keep">{todayMission.mission_title}</h3>
                 <p className="text-sm text-slate-600 mb-3 break-keep">{todayMission.mission_description}</p>
 
-                {/* 깊이 있는 미션 컨텍스트: 왜 / 단계 / 완료 기준 / 깊은 질문 */}
-                {(todayMission.why_it_matters ||
-                  (Array.isArray(todayMission.action_steps) && todayMission.action_steps.length > 0) ||
-                  todayMission.success_criteria ||
-                  (Array.isArray(todayMission.deeper_prompts) && todayMission.deeper_prompts.length > 0)) && (
-                  <div className="mb-4 space-y-3">
-                    {todayMission.why_it_matters && (
-                      <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-3">
-                        <div className="text-[11px] font-bold text-amber-800 mb-1">왜 이 미션인가</div>
-                        <p className="text-sm text-amber-900 break-keep leading-relaxed">{todayMission.why_it_matters}</p>
-                      </div>
-                    )}
-                    {Array.isArray(todayMission.action_steps) && todayMission.action_steps.length > 0 && (
-                      <div className="rounded-xl border border-slate-200 bg-white p-3">
-                        <div className="text-[11px] font-bold text-slate-700 mb-2">오늘 할 일 단계</div>
-                        <ol className="space-y-1.5">
-                          {todayMission.action_steps.map((step: string, i: number) => (
-                            <li key={i} className="flex items-start gap-2 text-sm text-slate-800 break-keep">
-                              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 text-primary text-[11px] font-bold flex items-center justify-center">{i + 1}</span>
-                              <span className="leading-relaxed">{step}</span>
-                            </li>
-                          ))}
-                        </ol>
-                      </div>
-                    )}
-                    {todayMission.success_criteria && (
-                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-3">
-                        <div className="text-[11px] font-bold text-emerald-800 mb-1">완료 기준</div>
-                        <p className="text-sm text-emerald-900 break-keep leading-relaxed">{todayMission.success_criteria}</p>
-                      </div>
-                    )}
-                    {Array.isArray(todayMission.deeper_prompts) && todayMission.deeper_prompts.length > 0 && (
-                      <div className="rounded-xl border border-indigo-200 bg-indigo-50/60 p-3">
-                        <div className="text-[11px] font-bold text-indigo-800 mb-2">체크인 때 함께 생각해볼 질문</div>
-                        <ul className="space-y-1 text-sm text-indigo-900">
-                          {todayMission.deeper_prompts.map((q: string, i: number) => (
-                            <li key={i} className="break-keep leading-relaxed">· {q}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {todayMission.difficulty && (
-                      <div className="flex items-center gap-2 text-[11px] text-slate-500">
-                        <span className="px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 font-semibold">
-                          난이도 · {todayMission.difficulty === 'deep' ? '깊은 작업' : todayMission.difficulty === 'easy' ? '가볍게' : '보통'}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )}
+                {/* 미션 상세 — 아코디언으로 정리해서 한눈에 보이고 필요할 때만 펼치기 */}
+                {(() => {
+                  const hasContext =
+                    todayMission.why_it_matters ||
+                    (Array.isArray(todayMission.action_steps) && todayMission.action_steps.length > 0) ||
+                    todayMission.success_criteria ||
+                    (Array.isArray(todayMission.deeper_prompts) && todayMission.deeper_prompts.length > 0);
+                  const hasVideos =
+                    Array.isArray(todayMission.youtube_candidates) && todayMission.youtube_candidates.length > 0;
+                  const hasAssessment = !!(enrollment && getAssessmentForDay(currentDay));
 
-                {/* 미션 타입 라이브러리 가이드 */}
-                <div className={`rounded-xl p-3 mb-4 bg-gradient-to-br ${guide.color} text-white`}>
-                  <div className="flex items-center gap-1.5 mb-1.5">
-                    <GuideIcon className="w-4 h-4" />
-                    <span className="text-xs font-bold">{guide.label}</span>
-                  </div>
-                  <ol className="text-xs space-y-1 list-decimal list-inside opacity-95">
-                    {guide.steps.map((s, i) => <li key={i} className="break-keep">{s}</li>)}
-                  </ol>
-                </div>
+                  return (
+                    <Accordion
+                      type="multiple"
+                      defaultValue={hasAssessment ? ["assessment"] : hasVideos ? ["video"] : ["context"]}
+                      className="mb-4 rounded-xl border border-slate-200 bg-white divide-y divide-slate-100"
+                    >
+                      {hasContext && (
+                        <AccordionItem value="context" className="border-b-0 px-3">
+                          <AccordionTrigger className="py-3 text-sm font-bold text-slate-800 hover:no-underline">
+                            <span className="flex items-center gap-2">
+                              <BookOpen className="w-4 h-4 text-[#8a7a4d]" />
+                              미션 가이드 · 왜 / 단계 / 완료 기준
+                            </span>
+                          </AccordionTrigger>
+                          <AccordionContent className="pb-3">
+                            <div className="space-y-3">
+                              {todayMission.why_it_matters && (
+                                <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-3">
+                                  <div className="text-[11px] font-bold text-amber-800 mb-1">왜 이 미션인가</div>
+                                  <p className="text-sm text-amber-900 break-keep leading-relaxed">{todayMission.why_it_matters}</p>
+                                </div>
+                              )}
+                              {Array.isArray(todayMission.action_steps) && todayMission.action_steps.length > 0 && (
+                                <div className="rounded-xl border border-slate-200 bg-white p-3">
+                                  <div className="text-[11px] font-bold text-slate-700 mb-2">오늘 할 일 단계</div>
+                                  <ol className="space-y-1.5">
+                                    {todayMission.action_steps.map((step: string, i: number) => (
+                                      <li key={i} className="flex items-start gap-2 text-sm text-slate-800 break-keep">
+                                        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 text-primary text-[11px] font-bold flex items-center justify-center">{i + 1}</span>
+                                        <span className="leading-relaxed">{step}</span>
+                                      </li>
+                                    ))}
+                                  </ol>
+                                </div>
+                              )}
+                              {todayMission.success_criteria && (
+                                <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-3">
+                                  <div className="text-[11px] font-bold text-emerald-800 mb-1">완료 기준</div>
+                                  <p className="text-sm text-emerald-900 break-keep leading-relaxed">{todayMission.success_criteria}</p>
+                                </div>
+                              )}
+                              {Array.isArray(todayMission.deeper_prompts) && todayMission.deeper_prompts.length > 0 && (
+                                <div className="rounded-xl border border-indigo-200 bg-indigo-50/60 p-3">
+                                  <div className="text-[11px] font-bold text-indigo-800 mb-2">체크인 때 함께 생각해볼 질문</div>
+                                  <ul className="space-y-1 text-sm text-indigo-900">
+                                    {todayMission.deeper_prompts.map((q: string, i: number) => (
+                                      <li key={i} className="break-keep leading-relaxed">· {q}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              {/* 미션 타입 라이브러리 가이드 */}
+                              <div className={`rounded-xl p-3 bg-gradient-to-br ${guide.color} text-white`}>
+                                <div className="flex items-center gap-1.5 mb-1.5">
+                                  <GuideIcon className="w-4 h-4" />
+                                  <span className="text-xs font-bold">{guide.label}</span>
+                                </div>
+                                <ol className="text-xs space-y-1 list-decimal list-inside opacity-95">
+                                  {guide.steps.map((s, i) => <li key={i} className="break-keep">{s}</li>)}
+                                </ol>
+                              </div>
+                              {todayMission.difficulty && (
+                                <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                                  <span className="px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 font-semibold">
+                                    난이도 · {todayMission.difficulty === 'deep' ? '깊은 작업' : todayMission.difficulty === 'easy' ? '가볍게' : '보통'}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      )}
 
-                {/* 학습 영상 + 느낀점 — 추천 영상 여러 편 시청 + 한 줄 회고 */}
-                {Array.isArray(todayMission.youtube_candidates) && todayMission.youtube_candidates.length > 0 && (
-                  <MissionLearningCard
-                    missionId={todayMission.id}
-                    missionType={todayMission.mission_type}
-                    candidates={todayMission.youtube_candidates as any}
-                    initialWatched={Array.isArray((todayMission as any).watched_video_ids) ? (todayMission as any).watched_video_ids : []}
-                    initialReflection={todayCheckin?.video_reflection ?? ""}
-                    initialDraftReflection={(todayMission as any).video_reflection_draft ?? ""}
-                    reflectionReadonly={!!todayCheckin?.completed}
-                  />
-                )}
+                      {hasAssessment && (
+                        <AccordionItem value="assessment" className="border-b-0 px-3">
+                          <AccordionTrigger className="py-3 text-sm font-bold text-slate-800 hover:no-underline">
+                            <span className="flex items-center gap-2">
+                              <Stethoscope className="w-4 h-4 text-[#8a7a4d]" />
+                              추천 자가검사 · 미션 연동
+                            </span>
+                          </AccordionTrigger>
+                          <AccordionContent className="pb-3">
+                            <MissionAssessmentCard
+                              recommendation={getAssessmentForDay(currentDay)!}
+                              enrollmentId={enrollment!.id}
+                              day={currentDay}
+                              onChanged={() => setMissions((prev) => [...prev])}
+                            />
+                          </AccordionContent>
+                        </AccordionItem>
+                      )}
 
-                {/* Day 1·2 추천 자가진단 — 우리 플랫폼 내부 검사를 미션화 */}
-                {enrollment && getAssessmentForDay(currentDay) && (
-                  <MissionAssessmentCard
-                    recommendation={getAssessmentForDay(currentDay)!}
-                    enrollmentId={enrollment.id}
-                    day={currentDay}
-                    onChanged={() => {
-                      // 진행 단계 표시기 갱신을 위해 missions 배열 객체 식별자 변경
-                      setMissions((prev) => [...prev]);
-                    }}
-                  />
-                )}
+                      {hasVideos && (
+                        <AccordionItem value="video" className="border-b-0 px-3">
+                          <AccordionTrigger className="py-3 text-sm font-bold text-slate-800 hover:no-underline">
+                            <span className="flex items-center gap-2">
+                              <Video className="w-4 h-4 text-[#8a7a4d]" />
+                              학습 영상 + 한 줄 회고
+                            </span>
+                          </AccordionTrigger>
+                          <AccordionContent className="pb-3">
+                            <MissionLearningCard
+                              missionId={todayMission.id}
+                              missionType={todayMission.mission_type}
+                              candidates={todayMission.youtube_candidates as any}
+                              initialWatched={Array.isArray((todayMission as any).watched_video_ids) ? (todayMission as any).watched_video_ids : []}
+                              initialReflection={todayCheckin?.video_reflection ?? ""}
+                              initialDraftReflection={(todayMission as any).video_reflection_draft ?? ""}
+                              reflectionReadonly={!!todayCheckin?.completed}
+                            />
+                          </AccordionContent>
+                        </AccordionItem>
+                      )}
+                    </Accordion>
+                  );
+                })()}
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center gap-3 text-xs text-slate-500">
                     <span>⏱ {todayMission.estimated_minutes}분</span>

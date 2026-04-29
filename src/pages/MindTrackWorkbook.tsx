@@ -17,7 +17,7 @@ import {
   CheckCircle2, Circle, Loader2, Sparkles, TrendingUp, Calendar,
   Brain, Zap, Eye, Heart, Target, ChevronRight, Lock, ArrowLeft,
   Flame, Trophy, BookOpen, Wind, PenLine, Users, Activity, Award, Mail,
-  RotateCcw, Info
+  RotateCcw, Info, Video, Stethoscope
 } from "lucide-react";
 
 // 미션 타입별 가이드 (라이브러리)
@@ -332,15 +332,23 @@ export default function MindTrackWorkbook() {
     const explicitOpen = searchParams.get("openMission") === "1";
     if (!Number.isFinite(dp)) return;
     if (dp !== currentDay) return;
-    if (autoOpenedRef.current && !explicitOpen) return;
+    // 완료된 미션은 사용자가 직접 "다시 열기"를 누르기 전에는 절대 자동 오픈하지 않음
     const completed = checkins.some((c) => c.day_number === dp && c.completed);
-    if (completed && !explicitOpen) return;
+    if (completed) {
+      // 잔존하는 ?openMission=1 플래그도 제거해서 새로고침 시 재오픈 방지
+      if (explicitOpen) {
+        const params = new URLSearchParams(searchParams);
+        params.delete("openMission");
+        setSearchParams(params, { replace: true });
+      }
+      return;
+    }
+    if (autoOpenedRef.current && !explicitOpen) return;
     const m = missions.find((mm) => mm.day_number === dp);
     if (m) {
       autoOpenedRef.current = true;
       openMission(m);
       if (explicitOpen) {
-        // 플래그는 일회용 — 소비 후 제거
         const params = new URLSearchParams(searchParams);
         params.delete("openMission");
         setSearchParams(params, { replace: true });
@@ -907,6 +915,21 @@ export default function MindTrackWorkbook() {
               </span>
             </p>
 
+            {/* 트랙이 제공하는 것 — 범례 */}
+            <div className="mt-3 mb-2 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+              <div className="text-[11px] font-bold text-slate-700 mb-2">이 30일 트랙이 제공하는 것</div>
+              <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] text-slate-600">
+                <span className="inline-flex items-center gap-1"><Brain className="w-3 h-3 text-indigo-500" /> 자기 탐색</span>
+                <span className="inline-flex items-center gap-1"><Wind className="w-3 h-3 text-sky-500" /> 호흡 가이드</span>
+                <span className="inline-flex items-center gap-1"><PenLine className="w-3 h-3 text-amber-600" /> 저널링</span>
+                <span className="inline-flex items-center gap-1"><Activity className="w-3 h-3 text-rose-500" /> 행동 미션</span>
+                <span className="inline-flex items-center gap-1"><Users className="w-3 h-3 text-emerald-600" /> 관계 연습</span>
+                <span className="inline-flex items-center gap-1"><Video className="w-3 h-3 text-purple-500" /> 추천 영상</span>
+                <span className="inline-flex items-center gap-1"><Stethoscope className="w-3 h-3 text-amber-600" /> 전문가 개입(Day 7·14·21·30)</span>
+                <span className="inline-flex items-center gap-1"><Award className="w-3 h-3 text-amber-500" /> 마일스톤 리포트</span>
+              </div>
+            </div>
+
             {/* 빠른 점프 (Day 셀렉터) */}
             <div className="mb-3 flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin">
               {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => {
@@ -944,6 +967,17 @@ export default function MindTrackWorkbook() {
                 const isToday = day === currentDay;
                 const isLocked = !mission;
                 const isSelected = selectedDay === day;
+                const isMilestone = day === 7 || day === 14 || day === 21 || day === 30;
+                const hasVideo = Array.isArray(mission?.youtube_candidates) && mission!.youtube_candidates.length > 0;
+
+                // 미션 타입별 셀 안 작은 아이콘
+                const TypeIcon =
+                  mission?.mission_type === "breathing" ? Wind :
+                  mission?.mission_type === "journaling" ? PenLine :
+                  mission?.mission_type === "action" ? Activity :
+                  mission?.mission_type === "connection" ? Users :
+                  mission?.mission_type === "reflection" ? Brain :
+                  null;
 
                 // 필터 적용 (시각적 dim 처리)
                 const matchesFilter =
@@ -965,6 +999,7 @@ export default function MindTrackWorkbook() {
                       if (mission && !isFuture) openMission(mission);
                     }}
                     disabled={isLocked || isFuture}
+                    title={mission?.mission_title ?? (isLocked ? "다음주 미션 자동 생성 대기" : "")}
                     className={`relative aspect-square rounded-lg border-2 text-xs font-bold flex flex-col items-center justify-center transition-all ${
                       dimmed ? "opacity-30" : ""
                     } ${
@@ -981,13 +1016,58 @@ export default function MindTrackWorkbook() {
                         : "border-slate-300 bg-white text-slate-700 hover:border-primary"
                     }`}
                   >
-                    {checkin?.completed ? <CheckCircle2 className="w-3.5 h-3.5" /> : isLocked && !isFuture ? <Lock className="w-3 h-3" /> : day}
+                    {/* 마일스톤 표식 (왼쪽 위 작은 점) */}
+                    {isMilestone && !isLocked && (
+                      <span
+                        className={`absolute -top-1 -left-1 w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-sm ${
+                          checkin?.completed ? "bg-amber-300 text-amber-900" : "bg-amber-400 text-white"
+                        }`}
+                        aria-label="전문가 개입 마일스톤"
+                      >
+                        <Stethoscope className="w-2 h-2" />
+                      </span>
+                    )}
+                    {/* 영상 보유 표식 (오른쪽 위) */}
+                    {hasVideo && !isLocked && (
+                      <span
+                        className={`absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-sm ${
+                          checkin?.completed ? "bg-white/90 text-emerald-700" : "bg-purple-500 text-white"
+                        }`}
+                        aria-label="추천 영상 포함"
+                      >
+                        <Video className="w-2 h-2" />
+                      </span>
+                    )}
+
+                    {/* 메인: 완료/잠금/Day 숫자 */}
+                    {checkin?.completed ? (
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    ) : isLocked && !isFuture ? (
+                      <Lock className="w-3 h-3" />
+                    ) : (
+                      <span className="leading-none">{day}</span>
+                    )}
+
+                    {/* 미션 타입 아이콘 (셀 하단, 잠금 아닐 때만) */}
+                    {TypeIcon && !isLocked && (
+                      <TypeIcon
+                        className={`w-2.5 h-2.5 mt-0.5 ${
+                          checkin?.completed
+                            ? "text-white/80"
+                            : isToday
+                            ? "text-white/80"
+                            : "text-slate-400"
+                        }`}
+                      />
+                    )}
                   </button>
                 );
               })}
             </div>
-            <p className="text-xs text-slate-500 mt-3 text-center">
-              ✓ 완료 · 오늘은 강조 표시 · 자물쇠 = 다음주 미션 자동 생성 대기
+            <p className="text-xs text-slate-500 mt-3 text-center break-keep">
+              ✓ 완료 · 오늘은 강조 · 자물쇠 = 다음주 미션 자동 생성 대기 ·
+              <Stethoscope className="inline w-3 h-3 mx-0.5 text-amber-500" />전문가 개입일 ·
+              <Video className="inline w-3 h-3 mx-0.5 text-purple-500" />영상 포함
             </p>
           </Card>
 
@@ -1038,48 +1118,113 @@ export default function MindTrackWorkbook() {
         onSimulated={() => load()}
       />
 
-      {/* Check-in Dialog */}
+      {/* Check-in Dialog — 단계형 가이드 */}
       <Dialog open={!!activeMission} onOpenChange={(o) => !o && setActiveMission(null)}>
         <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-left break-keep">{activeMission?.mission_title}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-5 pt-2">
-            <p className="text-sm text-slate-600 break-keep">{activeMission?.mission_description}</p>
+          {(() => {
+            const hasVideo =
+              Array.isArray(activeMission?.youtube_candidates) &&
+              activeMission.youtube_candidates.length > 0;
+            const watchedCount = Array.isArray(activeMission?.watched_video_ids)
+              ? activeMission.watched_video_ids.length
+              : 0;
+            const draftLen = (activeMission?.video_reflection_draft ?? "").trim().length;
+            const noteLen = reflectionNote.trim().length;
 
-            {[
-              { state: moodScore, set: setMoodScore, label: "마음 상태", icon: Heart, low: "무거움", high: "편안함" },
-              { state: energyScore, set: setEnergyScore, label: "몸의 여유", icon: Zap, low: "지침", high: "가벼움" },
-              { state: clarityScore, set: setClarityScore, label: "생각 정리", icon: Eye, low: "복잡함", high: "선명함" },
-            ].map((s) => (
-              <div key={s.label} className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
-                    <s.icon className="w-3.5 h-3.5" /> {s.label}
-                  </div>
-                  <span className="text-lg font-bold text-primary tabular-nums">{s.state}</span>
+            const steps = [
+              ...(hasVideo
+                ? [
+                    { num: 1, label: "추천 영상 시청", done: watchedCount > 0, hint: `${watchedCount}편 시청` },
+                    { num: 2, label: "영상 소감 메모", done: draftLen >= 10, hint: `${draftLen}자` },
+                  ]
+                : []),
+              { num: hasVideo ? 3 : 1, label: "오늘 컨디션 체크", done: true, hint: "슬라이더 3개" },
+              { num: hasVideo ? 4 : 2, label: "미션 회고 작성", done: noteLen > 0, hint: `${noteLen}자` },
+              { num: hasVideo ? 5 : 3, label: "체크인 완료", done: false, hint: "버튼 클릭" },
+            ];
+
+            return (
+              <div className="space-y-5 pt-2">
+                {/* 단계 진행 표시기 */}
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-3">
+                  <div className="text-[11px] font-bold text-slate-700 mb-2">진행 순서</div>
+                  <ol className="space-y-1.5">
+                    {steps.map((s, idx) => {
+                      const isLast = idx === steps.length - 1;
+                      const done = s.done;
+                      return (
+                        <li key={s.num} className="flex items-center gap-2 text-sm">
+                          <span
+                            className={`flex-shrink-0 w-6 h-6 rounded-full text-[11px] font-bold flex items-center justify-center ${
+                              done
+                                ? "bg-emerald-500 text-white"
+                                : isLast
+                                ? "bg-primary/10 text-primary border border-primary/40"
+                                : "bg-white text-slate-500 border border-slate-300"
+                            }`}
+                          >
+                            {done ? "✓" : s.num}
+                          </span>
+                          <span className={`flex-1 break-keep ${done ? "text-slate-500 line-through" : "text-slate-800 font-medium"}`}>
+                            {s.label}
+                          </span>
+                          <span className="text-[11px] text-slate-400 tabular-nums">{s.hint}</span>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                  {hasVideo && (watchedCount === 0 || draftLen < 10) && (
+                    <p className="mt-2 text-[11px] text-amber-700 break-keep">
+                      먼저 다이얼로그를 닫고 위 미션 카드의 추천 영상을 보고 메모를 남겨 주세요.
+                    </p>
+                  )}
                 </div>
-                <Slider value={[s.state]} onValueChange={(v) => s.set(v[0])} min={0} max={10} step={1} />
-                <div className="flex justify-between text-[11px] text-slate-500">
-                  <span>{s.low}</span>
-                  <span>{s.high}</span>
+
+                <p className="text-sm text-slate-600 break-keep">{activeMission?.mission_description}</p>
+
+                {/* 컨디션 슬라이더 */}
+                <div className="space-y-1">
+                  <div className="text-[11px] font-bold text-slate-700">오늘 컨디션</div>
+                  {[
+                    { state: moodScore, set: setMoodScore, label: "마음 상태", icon: Heart, low: "무거움", high: "편안함" },
+                    { state: energyScore, set: setEnergyScore, label: "몸의 여유", icon: Zap, low: "지침", high: "가벼움" },
+                    { state: clarityScore, set: setClarityScore, label: "생각 정리", icon: Eye, low: "복잡함", high: "선명함" },
+                  ].map((s) => (
+                    <div key={s.label} className="space-y-1.5 pt-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
+                          <s.icon className="w-3.5 h-3.5" /> {s.label}
+                        </div>
+                        <span className="text-lg font-bold text-primary tabular-nums">{s.state}</span>
+                      </div>
+                      <Slider value={[s.state]} onValueChange={(v) => s.set(v[0])} min={0} max={10} step={1} />
+                      <div className="flex justify-between text-[11px] text-slate-500">
+                        <span>{s.low}</span>
+                        <span>{s.high}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 미션 회고 */}
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-slate-700">
+                    {activeMissionCheckinCopy.label} <span className="text-rose-500">필수</span>
+                  </label>
+                  <Textarea
+                    value={reflectionNote}
+                    onChange={(e) => setReflectionNote(e.target.value)}
+                    placeholder={activeMissionCheckinCopy.placeholder}
+                    rows={3}
+                    className="resize-none"
+                  />
                 </div>
               </div>
-            ))}
-
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-slate-700">
-                {activeMissionCheckinCopy.label} <span className="text-rose-500">필수</span>
-              </label>
-              <Textarea
-                value={reflectionNote}
-                onChange={(e) => setReflectionNote(e.target.value)}
-                placeholder={activeMissionCheckinCopy.placeholder}
-                rows={3}
-                className="resize-none"
-              />
-            </div>
-          </div>
+            );
+          })()}
           <DialogFooter>
             <Button onClick={submitCheckin} disabled={submitting} className="w-full bg-gradient-to-r from-primary to-purple-600">
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}

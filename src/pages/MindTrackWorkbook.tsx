@@ -89,7 +89,7 @@ import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulat
 import WeeklyMilestoneCards from "@/components/mind-track/WeeklyMilestoneCards";
 import MilestoneProgressBar from "@/components/mind-track/MilestoneProgressBar";
 import MindTrackWorkbookSkeleton from "@/components/mind-track/MindTrackWorkbookSkeleton";
-import MissionVideoPicker from "@/components/mind-track/MissionVideoPicker";
+import MissionLearningCard from "@/components/mind-track/MissionLearningCard";
 import { useMindTrackRiskDetection } from "@/hooks/useMindTrackRiskDetection";
 import { HelpCircle } from "lucide-react";
 

@@ -1078,9 +1078,9 @@ export default function MindTrackWorkbook() {
                         <div className="font-bold text-slate-900">{todayCheckin.clarity_score ?? "-"}</div>
                       </div>
                     </div>
-                    {todayCheckin.reflection_note && (
+                    {extractUserReflection(todayCheckin.reflection_note) && (
                       <p className="mt-2 text-xs text-slate-600 break-keep bg-white border border-slate-200 rounded-lg p-2">
-                        {todayCheckin.reflection_note}
+                        {extractUserReflection(todayCheckin.reflection_note)}
                       </p>
                     )}
                   </div>

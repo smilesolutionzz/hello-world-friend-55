@@ -8,6 +8,7 @@ import {
   AssessmentRecommendation,
   isAssessmentMissionCompleted,
   markAssessmentMissionCompleted,
+  buildMissionState,
 } from "@/lib/mindTrackAssessmentMissions";
 
 interface Props {
@@ -49,13 +50,11 @@ export default function MissionAssessmentCard({
   }, [enrollmentId, day, completed, onChanged]);
 
   const handleStart = () => {
+    // 우리 자체 검사 화면으로 직접 진입 + mind-track 미션 컨텍스트 전달.
+    // 검사 완료 핸들러가 이 state를 보고 mind_track_checkin에 점수를 자동 기록하고
+    // 워크북으로 자동 복귀시킵니다.
     navigate(recommendation.route, {
-      state: {
-        from: "mind-track-mission",
-        enrollmentId,
-        day,
-        returnTo: `/mind-track/workbook?day=${day}&openMission=1`,
-      },
+      state: buildMissionState(recommendation, enrollmentId, day),
     });
   };
 

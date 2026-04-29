@@ -77,6 +77,10 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  recordAssessmentResultToCheckin,
+  type MindTrackMissionState,
+} from "@/lib/mindTrackAssessmentMissions";
 
 const Assessment = () => {
   const navigate = useNavigate();
@@ -477,7 +481,10 @@ const Assessment = () => {
     
     // Timeline에 검사 결과 저장
     await saveTestToTimeline('depression', results);
-    
+
+    // Mind Track 미션에서 진입한 경우: checkin에 자동 기록 + 워크북 복귀
+    await maybeRecordToMindTrack('depression', '마음 무게(우울감) 진단', results);
+
     setCurrentAssessmentResults({
       testType: 'depression',
       ageGroup: results.ageGroup || '성인',
@@ -508,7 +515,10 @@ const Assessment = () => {
     setStressResults(results);
     
     await saveTestToTimeline('stress', results);
-    
+
+    // Mind Track 미션에서 진입한 경우: checkin에 자동 기록 + 워크북 복귀
+    await maybeRecordToMindTrack('stress', '스트레스 베이스라인 진단', results);
+
     setCurrentAssessmentResults({
       testType: 'stress',
       ageGroup: '성인',
@@ -517,6 +527,36 @@ const Assessment = () => {
       severity: results.severity
     });
     setCurrentStep('stress-result');
+  };
+
+  /**
+   * Mind Track 미션 컨텍스트로 검사가 시작되었는지 확인하고,
+   * 결과를 mind_track_checkin에 자동 기록한 뒤 워크북으로 부드럽게 복귀시킵니다.
+   * - 회고 작성을 유도하기 위해 returnTo에 ?openMission=1 가 포함돼 있어,
+   *   복귀 후 워크북이 자동으로 회고 다이얼로그를 띄웁니다.
+   */
+  const maybeRecordToMindTrack = async (
+    testKey: 'stress' | 'depression',
+    testTitle: string,
+    results: { total?: number; average?: number; severity?: string },
+  ) => {
+    const state = location.state as MindTrackMissionState | null | undefined;
+    if (!state || state.from !== 'mind-track-mission' || state.testKey !== testKey) return;
+    const res = await recordAssessmentResultToCheckin({ state, results, testTitle });
+    if (res.ok) {
+      toast({
+        title: '검사 결과가 워크북에 저장됐어요',
+        description: '회고 한 줄을 더하면 오늘의 미션이 완료돼요. 워크북으로 돌아갈게요.',
+      });
+      // 결과 화면을 잠깐 보여준 뒤 자동 복귀 (사용자가 점수를 인지할 시간 확보)
+      setTimeout(() => navigate(state.returnTo), 1800);
+    } else {
+      toast({
+        title: '워크북 저장 중 문제가 발생했어요',
+        description: '검사 결과는 저장됐지만 워크북 자동 기록에 실패했어요. 워크북에서 다시 시도해 주세요.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleBigfiveTestComplete = async (results: {answers: Record<string, number>, scores: Record<string, number>, total: number, average: number}) => {

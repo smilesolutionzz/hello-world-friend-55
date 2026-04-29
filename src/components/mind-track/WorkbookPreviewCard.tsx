@@ -37,6 +37,12 @@ interface WorkbookPreviewCardProps {
   enrollmentId?: string;
   /** Day 1·2 미션 모두 완료 시, 축하 모달 닫기 후 다음 체크인 액션 */
   onContinueCheckin?: () => void;
+  /** 축하 모달 노출 정책 (기본: session) */
+  celebrationDisplayPolicy?: "session" | "daily" | "always";
+  /** 모달 CTA 보조 라벨 — 예: "Day 3 미션" */
+  nextMissionLabel?: string;
+  /** 오늘 미션 존재 여부 — 없으면 모달 CTA가 "자동 이동"으로 바뀜 */
+  hasTodayMission?: boolean;
 }
 
 const CHAPTERS = WORKBOOK_CHAPTERS;
@@ -56,6 +62,9 @@ export default function WorkbookPreviewCard({
   baselines = [],
   enrollmentId,
   onContinueCheckin,
+  celebrationDisplayPolicy = "session",
+  nextMissionLabel,
+  hasTodayMission = true,
 }: WorkbookPreviewCardProps) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const totalChapters = CHAPTERS.length;
@@ -204,6 +213,10 @@ export default function WorkbookPreviewCard({
           <p className="text-[14px] font-bold text-slate-900 break-keep leading-snug">
             {completenessCopy.headline}
           </p>
+          {/* 근거 한 줄 — 검사·영상·회고 중 무엇이 비어있는지 자동 요약 */}
+          <p className="text-[11.5px] text-[#8a7a4d] break-keep mt-1.5 leading-relaxed font-semibold">
+            {completenessCopy.reason}
+          </p>
           <p className="text-[12px] text-slate-500 break-keep mt-1 leading-relaxed">
             {completenessCopy.sub}
           </p>
@@ -351,6 +364,9 @@ export default function WorkbookPreviewCard({
         shouldShow={day12FullyDone}
         enrollmentId={enrollmentId}
         onContinue={() => onContinueCheckin?.()}
+        displayPolicy={celebrationDisplayPolicy}
+        nextMissionLabel={nextMissionLabel}
+        hasTodayMission={hasTodayMission}
       />
     </>
   );

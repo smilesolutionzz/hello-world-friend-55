@@ -782,26 +782,35 @@ export default function MindTrackWorkbook() {
           <NextChapterTeaser currentDay={currentDay} />
 
           {/* "내 워크북" 미리보기 — 30일 후 손에 남는 결과물을 시각화 (동기부여) */}
-          <WorkbookPreviewCard
-            currentDay={currentDay}
-            completedCount={completedCount}
-            trackTheme={workbook?.challenge_theme}
-            nickname={enrollment?.baseline_data?.nickname || enrollment?.baseline_data?.display_name}
-            checkins={checkins}
-            baselines={baselines}
-            enrollmentId={enrollment?.id}
-            onContinueCheckin={() => {
-              // Day 1·2 축하 후, 오늘 미션이 있으면 곧바로 체크인 다이얼로그 오픈
-              if (todayMission) {
-                setActiveMission(todayMission);
-              } else {
-                // 다음 미션이 있으면 그쪽으로, 없으면 페이지 상단으로 부드럽게 스크롤
-                const next = missions.find((m) => m.day_number > currentDay);
-                if (next) setActiveMission(next);
-                else window.scrollTo({ top: 0, behavior: "smooth" });
-              }
-            }}
-          />
+          {(() => {
+            const nextMission =
+              todayMission ?? missions.find((m) => m.day_number > currentDay) ?? null;
+            const nextLabel = nextMission ? `Day ${nextMission.day_number} 미션` : undefined;
+            return (
+              <WorkbookPreviewCard
+                currentDay={currentDay}
+                completedCount={completedCount}
+                trackTheme={workbook?.challenge_theme}
+                nickname={enrollment?.baseline_data?.nickname || enrollment?.baseline_data?.display_name}
+                checkins={checkins}
+                baselines={baselines}
+                enrollmentId={enrollment?.id}
+                celebrationDisplayPolicy="session"
+                nextMissionLabel={nextLabel}
+                hasTodayMission={!!todayMission}
+                onContinueCheckin={() => {
+                  // 오늘 미션 우선, 없으면 가장 가까운 다음 미션으로 자동 이동
+                  if (todayMission) {
+                    setActiveMission(todayMission);
+                  } else if (nextMission) {
+                    setActiveMission(nextMission);
+                  } else {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }
+                }}
+              />
+            );
+          })()}
 
           {/* 1/2/3/4주차 챕터 예고 카드 */}
           <WeeklyChapterPreview currentDay={currentDay} />

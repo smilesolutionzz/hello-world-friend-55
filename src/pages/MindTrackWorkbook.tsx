@@ -752,6 +752,9 @@ export default function MindTrackWorkbook() {
             completedCount={completedCount}
             trackTheme={workbook?.challenge_theme}
             nickname={enrollment?.baseline_data?.nickname || enrollment?.baseline_data?.display_name}
+            checkins={checkins}
+            baselines={baselines}
+            enrollmentId={enrollment?.id}
           />
 
           {/* 1/2/3/4주차 챕터 예고 카드 */}

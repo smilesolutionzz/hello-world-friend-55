@@ -483,99 +483,134 @@ export default function MindTrackWorkbook() {
             <p className="text-slate-600 break-keep">{workbook.initial_summary}</p>
           </motion.div>
 
-          {/* 🎯 내가 정한 트랙 — 키워드/주제 명확화 (클릭 시 상세) */}
+          {/* 내가 정한 트랙 — 한글 라벨화 + 고급 미니멀 카드 */}
           {enrollment && (() => {
-            const trackTypeLabel: Record<string, { label: string; icon: typeof Brain; color: string }> = {
-              stress: { label: "스트레스 완화", icon: Wind, color: "from-sky-500 to-indigo-500" },
-              anxiety: { label: "불안 다스리기", icon: Heart, color: "from-rose-500 to-pink-500" },
-              depression: { label: "우울감 회복", icon: Sparkle, color: "from-violet-500 to-purple-500" },
-              focus: { label: "집중력 회복", icon: Target, color: "from-emerald-500 to-teal-500" },
-              relationship: { label: "관계 회복", icon: Users, color: "from-amber-500 to-orange-500" },
-              sleep: { label: "수면 개선", icon: Brain, color: "from-blue-500 to-cyan-500" },
-              selfesteem: { label: "자존감 회복", icon: Trophy, color: "from-amber-500 to-yellow-500" },
-              burnout: { label: "번아웃 회복", icon: Activity, color: "from-rose-500 to-orange-500" },
+            const trackTypeLabel: Record<string, { label: string; icon: typeof Brain; tint: string; ring: string }> = {
+              stress:        { label: "스트레스 완화",   icon: Wind,     tint: "bg-sky-50 text-sky-700",         ring: "ring-sky-200/60" },
+              anxiety:       { label: "불안 다스리기",   icon: Heart,    tint: "bg-rose-50 text-rose-700",       ring: "ring-rose-200/60" },
+              depression:    { label: "우울감 회복",     icon: Sparkle,  tint: "bg-violet-50 text-violet-700",   ring: "ring-violet-200/60" },
+              focus:         { label: "집중력 회복",     icon: Target,   tint: "bg-emerald-50 text-emerald-700", ring: "ring-emerald-200/60" },
+              relationship:  { label: "관계 회복",       icon: Users,    tint: "bg-amber-50 text-amber-700",     ring: "ring-amber-200/60" },
+              sleep:         { label: "수면 개선",       icon: Brain,    tint: "bg-blue-50 text-blue-700",       ring: "ring-blue-200/60" },
+              selfesteem:    { label: "자존감 회복",     icon: Trophy,   tint: "bg-yellow-50 text-yellow-700",   ring: "ring-yellow-200/60" },
+              burnout:       { label: "번아웃 회복",     icon: Activity, tint: "bg-orange-50 text-orange-700",   ring: "ring-orange-200/60" },
+              mind_30day:    { label: "30일 마음 트랙",  icon: Sparkles, tint: "bg-[#C8B88A]/15 text-[#8a7a4d]", ring: "ring-[#C8B88A]/40" },
+              child_development: { label: "자녀 발달 케어", icon: Heart, tint: "bg-pink-50 text-pink-700",       ring: "ring-pink-200/60" },
             };
+            // 영문 raw 키 → 한글 라벨 사전
+            const KO_LABEL: Record<string, string> = {
+              child_development: "자녀 발달 케어",
+              mind_30day: "30일 마음 트랙",
+              stress: "스트레스 완화",
+              anxiety: "불안 다스리기",
+              depression: "우울감 회복",
+              focus: "집중력 회복",
+              relationship: "관계 회복",
+              sleep: "수면 개선",
+              selfesteem: "자존감 회복",
+              burnout: "번아웃 회복",
+              parenting: "육아 스트레스",
+              work_stress: "업무 스트레스",
+              study: "학업 집중",
+              // life_stage
+              adult: "성인", student: "학생", parent: "부모", senior: "시니어", teen: "청소년",
+              // duration
+              less_than_month: "한 달 미만",
+              one_to_three_months: "1~3개월",
+              three_to_six_months: "3~6개월",
+              six_to_twelve_months: "6개월~1년",
+              over_year: "1년 이상",
+              recent: "최근 시작",
+            };
+            const toKo = (v: any): string => {
+              if (v == null) return "";
+              const s = String(v);
+              return KO_LABEL[s] ?? KO_LABEL[s.toLowerCase()] ?? s.replace(/_/g, " ");
+            };
+
             const tType = (enrollment.track_type || "").toLowerCase();
-            const trackInfo = trackTypeLabel[tType] || { label: enrollment.track_type || "맞춤 트랙", icon: Sparkles, color: "from-primary to-purple-500" };
+            const trackInfo = trackTypeLabel[tType] || { label: toKo(enrollment.track_type) || "맞춤 트랙", icon: Sparkles, tint: "bg-[#C8B88A]/15 text-[#8a7a4d]", ring: "ring-[#C8B88A]/40" };
             const TIcon = trackInfo.icon;
-            const goal = enrollment.goal_focus || enrollment.baseline_data?.primary_goal || enrollment.baseline_data?.goal;
-            const concern = enrollment.baseline_data?.primary_concern || enrollment.baseline_data?.free_text_concern;
-            const lifeStage = enrollment.baseline_data?.life_stage;
-            const duration = enrollment.baseline_data?.issue_duration;
+            const rawGoal = enrollment.goal_focus || enrollment.baseline_data?.primary_goal || enrollment.baseline_data?.goal;
+            const rawConcern = enrollment.baseline_data?.primary_concern || enrollment.baseline_data?.free_text_concern;
+            const goal = rawGoal ? toKo(rawGoal) : "";
+            const concern = rawConcern ? toKo(rawConcern) : "";
+            const lifeStage = enrollment.baseline_data?.life_stage ? toKo(enrollment.baseline_data.life_stage) : "";
+            const duration = enrollment.baseline_data?.issue_duration ? toKo(enrollment.baseline_data.issue_duration) : "";
             const moodScore = enrollment.baseline_data?.current_mood_score;
 
             return (
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="track-detail" className="border-0">
-                  <Card className="overflow-hidden border-2 border-primary/15 hover:border-primary/30 transition-colors">
-                    <AccordionTrigger className="hover:no-underline px-4 py-3 [&[data-state=open]>div>svg.chevron]:rotate-180">
-                      <div className="flex items-center gap-3 w-full text-left">
-                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${trackInfo.color} flex items-center justify-center shrink-0 shadow-sm`}>
-                          <TIcon className="w-5 h-5 text-white" />
+                  <Card className={`overflow-hidden bg-white border border-[#C8B88A]/30 ring-1 ${trackInfo.ring} shadow-[0_2px_24px_-12px_rgba(200,184,138,0.35)] rounded-2xl`}>
+                    <AccordionTrigger className="hover:no-underline px-5 py-4 [&[data-state=open]>div>svg.chevron]:rotate-180">
+                      <div className="flex items-center gap-3.5 w-full text-left">
+                        <div className={`w-11 h-11 rounded-xl ${trackInfo.tint} flex items-center justify-center shrink-0 ring-1 ${trackInfo.ring}`}>
+                          <TIcon className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5 mb-0.5">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
-                              내 개선 목표
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <span className="text-[10px] font-bold tracking-[0.14em] text-[#8a7a4d]">
+                              ◆ 나의 개선 목표
                             </span>
                           </div>
-                          <div className="text-sm font-bold text-slate-900 truncate">
+                          <div className="text-[15px] font-bold text-slate-900 truncate leading-tight">
                             {trackInfo.label}
                           </div>
-                          {goal && (
-                            <div className="text-xs text-slate-500 truncate mt-0.5">
-                              "{goal}"
+                          {(goal || concern) && (
+                            <div className="text-xs text-slate-500 truncate mt-1">
+                              {goal || concern}
                             </div>
                           )}
                         </div>
                         <ChevronRight className="chevron w-4 h-4 text-slate-400 transition-transform shrink-0" />
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="px-4 pb-4 pt-0">
-                      <div className="space-y-3 pt-2 border-t border-slate-100">
+                    <AccordionContent className="px-5 pb-5 pt-0">
+                      <div className="space-y-4 pt-3 border-t border-[#C8B88A]/20">
                         {goal && (
-                          <div>
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                              개선 목표
+                          <div className="space-y-1">
+                            <div className="text-[10px] font-bold tracking-[0.14em] text-[#8a7a4d]">
+                              ✦ 개선 목표
                             </div>
                             <p className="text-sm text-slate-800 break-keep leading-relaxed">{goal}</p>
                           </div>
                         )}
                         {concern && (
-                          <div>
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                              주요 고민
+                          <div className="space-y-1">
+                            <div className="text-[10px] font-bold tracking-[0.14em] text-[#8a7a4d]">
+                              ✦ 주요 고민
                             </div>
                             <p className="text-sm text-slate-700 break-keep leading-relaxed">{concern}</p>
                           </div>
                         )}
                         <div className="flex flex-wrap gap-1.5 pt-1">
                           {lifeStage && (
-                            <Badge variant="outline" className="text-[10px] bg-slate-50">
-                              {lifeStage}
+                            <Badge variant="outline" className="text-[10px] bg-slate-50 font-medium">
+                              ◇ {lifeStage}
                             </Badge>
                           )}
                           {duration && (
-                            <Badge variant="outline" className="text-[10px] bg-slate-50">
-                              지속 기간: {duration}
+                            <Badge variant="outline" className="text-[10px] bg-slate-50 font-medium">
+                              ◷ 지속 기간 · {duration}
                             </Badge>
                           )}
                           {typeof moodScore === "number" && (
-                            <Badge variant="outline" className="text-[10px] bg-slate-50">
-                              시작 기분: {moodScore}/10
+                            <Badge variant="outline" className="text-[10px] bg-slate-50 font-medium">
+                              ❖ 시작 기분 · {moodScore}/10
                             </Badge>
                           )}
-                          <Badge variant="outline" className="text-[10px] bg-amber-50 border-amber-200 text-amber-800">
-                            시작일: {new Date(enrollment.started_at).toLocaleDateString("ko-KR")}
+                          <Badge variant="outline" className="text-[10px] bg-[#FAF8F2] border-[#C8B88A]/40 text-[#8a7a4d] font-medium">
+                            ☘ 시작일 · {new Date(enrollment.started_at).toLocaleDateString("ko-KR")}
                           </Badge>
                         </div>
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full text-xs h-8 mt-1"
+                          className="w-full text-xs h-9 rounded-full border-[#C8B88A]/40 hover:bg-[#FAF8F2]"
                           onClick={() => navigate("/coaching-goals")}
                         >
-                          목표 수정하기
+                          목표 다시 설정하기
                           <ChevronRight className="w-3 h-3 ml-1" />
                         </Button>
                       </div>

@@ -213,6 +213,18 @@ export default function ExpertInterventionCard({ day, enrollmentId }: Props) {
             ))}
           </ul>
 
+          {day === 7 && (
+            <div className="mb-3 flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50/70 px-3 py-2">
+              <span className="text-[11px] font-bold tracking-wider text-blue-700 uppercase">
+                Mind Track Benefit
+              </span>
+              <span className="text-[12px] text-slate-500 line-through">₩9,900</span>
+              <span className="text-[13px] font-extrabold text-emerald-600">
+                트랙 1회 무료
+              </span>
+            </div>
+          )}
+
           <Button
             onClick={handleClick}
             size="lg"
@@ -224,7 +236,9 @@ export default function ExpertInterventionCard({ day, enrollmentId }: Props) {
 
           <p className="text-[10px] text-slate-500 text-center mt-2">
             <Sparkles className="w-3 h-3 inline mr-0.5" />
-            검증된 전문가 매칭 · 안전결제 · 환불 보장
+            {day === 7
+              ? "검증 전문가 매칭 · 트랙 1회 무료 · 결제 없음"
+              : "검증된 전문가 매칭 · 안전결제 · 환불 보장"}
           </p>
         </div>
       </Card>

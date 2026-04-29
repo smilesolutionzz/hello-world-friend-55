@@ -146,6 +146,51 @@ export default function WorkbookPreviewCard({
           </div>
         </div>
 
+        {/* Day 1·2 미션 미니 진행 도트 — 검사·영상·체크인 */}
+        {(() => {
+          const trackedDays = [1, 2].filter((d) => d <= currentDay);
+          if (trackedDays.length === 0) return null;
+          return (
+            <div className="mb-5 grid gap-2" style={{ gridTemplateColumns: `repeat(${trackedDays.length}, minmax(0, 1fr))` }}>
+              {trackedDays.map((d) => {
+                const p = missionProgress.get(d);
+                if (!p) return null;
+                const items: Array<{ label: string; icon: any; done: boolean | null }> = [
+                  { label: "검사", icon: ClipboardCheck, done: p.assessment },
+                  { label: "영상", icon: Video, done: p.video },
+                  { label: "회고", icon: PenLine, done: p.checkin },
+                ];
+                return (
+                  <div key={d} className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                    <div className="text-[10px] font-bold text-slate-500 mb-1.5">Day {d} 미션</div>
+                    <div className="flex items-center gap-2">
+                      {items.map((it, i) => {
+                        const Icon = it.icon;
+                        const tone =
+                          it.done === true
+                            ? "bg-emerald-500 text-white border-emerald-500"
+                            : it.done === false
+                            ? "bg-slate-50 text-slate-400 border-slate-200"
+                            : "bg-slate-50 text-slate-300 border-slate-200";
+                        return (
+                          <div
+                            key={i}
+                            className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full border text-[10px] font-semibold ${tone}`}
+                            title={`${it.label} ${it.done ? "완료" : "미완료"}`}
+                          >
+                            <Icon className="w-2.5 h-2.5" />
+                            <span>{it.label}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
+
         {/* 카피 — 동기부여 메시지 */}
         <div className="text-center mb-5 px-2">
           {isComplete ? (

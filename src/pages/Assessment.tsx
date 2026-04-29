@@ -78,7 +78,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  recordAssessmentResultToCheckin,
+  recordAssessmentResultToCheckinWithRetry,
   type MindTrackMissionState,
 } from "@/lib/mindTrackAssessmentMissions";
 

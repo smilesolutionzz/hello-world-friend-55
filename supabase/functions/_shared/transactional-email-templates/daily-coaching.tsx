@@ -106,28 +106,33 @@ const DailyCoachingEmail = ({
           {videos && videos.length > 0 && (
             <Section style={videosBlock}>
               <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
-              {videos.map((v) => (
-                <Link key={v.videoId} href={`https://www.youtube.com/watch?v=${v.videoId}`} style={videoCard}>
-                  <table cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <tbody>
-                      <tr>
-                        <td style={{ width: '140px', verticalAlign: 'top', paddingRight: '14px' }}>
-                          <Img src={v.thumbnail} alt={v.title} width="140" height="80" style={thumbStyle} />
-                        </td>
-                        <td style={{ verticalAlign: 'top' }}>
-                          <Text style={videoTitle}>{v.title}</Text>
-                          <Text style={videoChannel}>{v.channelTitle}</Text>
-                          {v.reason && <Text style={videoReason}>{v.reason}</Text>}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </Link>
-              ))}
+              <Text style={videoIntro}>오늘 미션과 가장 잘 맞는 영상을 골랐어요. 보고 난 뒤 마음의 변화를 한 줄로 기록해 보세요.</Text>
+              {videos.map((v) => {
+                const thumb = v.thumbnail || `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`
+                return (
+                  <Link key={v.videoId} href={`https://www.youtube.com/watch?v=${v.videoId}`} style={videoCard}>
+                    <table cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <tbody>
+                        <tr>
+                          <td style={{ width: '140px', verticalAlign: 'top', paddingRight: '14px' }}>
+                            <Img src={thumb} alt={v.title} width="140" height="80" style={thumbStyle} />
+                          </td>
+                          <td style={{ verticalAlign: 'top' }}>
+                            <Text style={videoTitle}>{v.title}</Text>
+                            <Text style={videoChannel}>{v.channelTitle}</Text>
+                            {v.reason && <Text style={videoReason}>{v.reason}</Text>}
+                            <Text style={videoPlayHint}>▶ YouTube에서 재생</Text>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </Link>
+                )
+              })}
             </Section>
           )}
 
-          <Button href={`${SITE_URL}/observation-log`} style={ctaButton}>
+          <Button href={`${SITE_URL}/mind-track?utm_source=daily_email&utm_medium=email&utm_campaign=daily_coaching&day=${dayLabel}`} style={ctaButton}>
             오늘의 기록 남기기 →
           </Button>
 
@@ -305,6 +310,18 @@ const videoReason = {
   color: '#94a3b8',
   lineHeight: 1.5,
   margin: 0,
+}
+const videoIntro = {
+  fontSize: '12px',
+  color: '#475569',
+  lineHeight: 1.6,
+  margin: '0 0 12px',
+}
+const videoPlayHint = {
+  fontSize: '11px',
+  color: '#0f172a',
+  fontWeight: 600,
+  margin: '6px 0 0',
 }
 const summaryBlock = { background: '#0f172a', borderRadius: '12px', padding: '18px 20px', margin: '0 0 24px' }
 const summaryEyebrow = { fontSize: '11px', letterSpacing: '0.16em', color: '#94a3b8', textTransform: 'uppercase' as const, margin: '0 0 6px' }

@@ -227,19 +227,20 @@ const MindTrack: React.FC = () => {
 
       if (activeEnrollment?.id) {
         currentDay = activeEnrollment.current_day || calcMindTrackCurrentDay(activeEnrollment.started_at) || 1;
-        const [{ data: chk }, { data: bsl }] = await Promise.all([
-          supabase
+        const sb: any = supabase;
+        const [chkRes, bslRes] = await Promise.all([
+          sb
             .from('mind_track_daily_checkins')
             .select('day_number, mood_score, energy_score, clarity_score, reflection_text, completed, created_at')
             .eq('enrollment_id', activeEnrollment.id)
             .order('day_number', { ascending: true }),
-          supabase
+          sb
             .from('mind_track_baselines')
             .select('measurement_point, stress_score, energy_score, clarity_score')
             .eq('enrollment_id', activeEnrollment.id),
         ]);
-        checkins = chk || [];
-        baselines = bsl || [];
+        checkins = chkRes?.data || [];
+        baselines = bslRes?.data || [];
       }
 
       const nickname =

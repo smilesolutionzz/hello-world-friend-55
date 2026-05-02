@@ -23,10 +23,11 @@ import {
   PlayCircle,
 } from 'lucide-react';
 import {
-  getDailyContent,
   youtubeThumbnail,
   youtubeWatchUrl,
 } from '@/lib/mindTrackDailyContent';
+import { logMindTrackVideoEvent } from '@/lib/mindTrackVideoEvents';
+import { useDailyContent } from '@/hooks/useDailyContent';
 
 interface Props {
   day: number;
@@ -34,8 +35,17 @@ interface Props {
 
 export default function MindTrackTodayValueStack({ day }: Props) {
   const navigate = useNavigate();
-  const content = getDailyContent(day);
+  const { content } = useDailyContent(day);
   const dayLabel = String(day).padStart(2, '0');
+
+  const trackVideo = (eventType: 'click' | 'thumbnail_click' | 'start') => {
+    logMindTrackVideoEvent({
+      videoId: content.video.videoId,
+      videoTitle: content.video.title,
+      eventType,
+      day,
+    });
+  };
 
   return (
     <section className="px-4 pb-6">

@@ -278,7 +278,8 @@ const MindTrack: React.FC = () => {
     });
   };
 
-
+  // 입력값이 비어있을 때만 5초마다 예시 placeholder 회전
+  useEffect(() => {
     if (concern.length > 0) return;
     const t = setInterval(() => {
       setPlaceholderIdx((i) => (i + 1) % examplePlaceholders.length);

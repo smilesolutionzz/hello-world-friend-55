@@ -169,6 +169,7 @@ export default function MindTrackTodayValueStack({ day }: Props) {
                   href={youtubeWatchUrl(content.video.videoId, day)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackVideo('click')}
                 >
                   <PlayCircle className="w-4 h-4 mr-2" />
                   영상 보기

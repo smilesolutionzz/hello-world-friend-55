@@ -4,7 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Calendar, CheckCircle2, ArrowRight, Award, BarChart3,
   Shield, Zap, Loader2, Lightbulb, Target, Heart, MessageSquareHeart, Wand2,
+  BookOpen, Eye, FileText, Lock,
 } from 'lucide-react';
+import { WORKBOOK_CHAPTERS } from '@/lib/mindTrackChapters';
+import WorkbookSamplePreviewModal from '@/components/mind-track/WorkbookSamplePreviewModal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

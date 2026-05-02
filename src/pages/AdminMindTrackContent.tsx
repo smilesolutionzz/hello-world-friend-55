@@ -239,6 +239,11 @@ export default function AdminMindTrackContent() {
         </div>
       </div>
 
+      {tab === 'stats' ? (
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <MindTrackVideoStatsPanel />
+        </div>
+      ) : (
       <div className="max-w-6xl mx-auto px-4 py-6 grid md:grid-cols-[180px_1fr] gap-6">
         {/* Day 사이드바 */}
         <aside className="bg-white rounded-xl border p-2 h-fit md:sticky md:top-24 max-h-[70vh] overflow-y-auto">

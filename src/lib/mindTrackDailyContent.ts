@@ -496,11 +496,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 25,
     assessment: null,
     video: {
-      videoId: 'mNBmG24djoY',
-      title: '지속 가능한 회복 루틴 3가지의 조건',
-      channel: '책읽찰스',
-      durationLabel: '9분',
-      reason: '지금까지 효과 있던 루틴 3개를 고정하는 기준.',
+      videoId: 'IvtZBUSplr4',
+      title: '자기 자비(Self-Compassion)의 과학 — Kristin Neff',
+      channel: 'TEDx Talks',
+      durationLabel: '19분',
+      reason: '지속 가능한 회복 루틴의 핵심은 자기 자비. 이것을 고정하는 기준 (자막 ON).',
     },
     action: {
       title: '내 핵심 루틴 TOP 3 고정',

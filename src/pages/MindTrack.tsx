@@ -70,6 +70,14 @@ const MindTrack: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [sampleOpen, setSampleOpen] = useState(false);
+  const [sampleSeed, setSampleSeed] = useState<{
+    nickname?: string;
+    trackTheme?: string;
+    currentDay?: number;
+    checkins?: any[];
+    baselines?: any[];
+  }>({});
+  const sampleOpenedAtRef = React.useRef<number | null>(null);
 
   // 현재 URL이 별칭(/mind-track-workbook)인지 표준(/mind-track/workbook)인지 감지해
   // 워크북 이동 시 같은 형식 유지 — referrer 기반 일관성 확보

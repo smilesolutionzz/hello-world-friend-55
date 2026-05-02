@@ -260,7 +260,7 @@ const MindTrack: React.FC = () => {
   const handleSampleOpenChange = (v: boolean) => {
     if (!v && sampleOpen && sampleOpenedAtRef.current) {
       const dwellMs = Date.now() - sampleOpenedAtRef.current;
-      trackEvent('mt_workbook_sample_complete', {
+      trackWorkbookFunnel('mt_workbook_sample_complete', {
         dwell_ms: dwellMs,
         dwell_seconds: Math.round(dwellMs / 1000),
         viewed_full: dwellMs > 8000,

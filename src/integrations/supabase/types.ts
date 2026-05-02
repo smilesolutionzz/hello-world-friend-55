@@ -8279,6 +8279,42 @@ export type Database = {
           },
         ]
       }
+      mind_track_daily_content_overrides: {
+        Row: {
+          action: Json | null
+          assessment: Json | null
+          created_at: string
+          day_number: number
+          id: string
+          is_active: boolean
+          updated_at: string
+          updated_by: string | null
+          video: Json | null
+        }
+        Insert: {
+          action?: Json | null
+          assessment?: Json | null
+          created_at?: string
+          day_number: number
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          updated_by?: string | null
+          video?: Json | null
+        }
+        Update: {
+          action?: Json | null
+          assessment?: Json | null
+          created_at?: string
+          day_number?: number
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          updated_by?: string | null
+          video?: Json | null
+        }
+        Relationships: []
+      }
       mind_track_daily_missions: {
         Row: {
           action_steps: Json | null
@@ -8659,6 +8695,39 @@ export type Database = {
           share_id?: string
           summary?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      mind_track_video_events: {
+        Row: {
+          created_at: string
+          day_number: number | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          user_id: string
+          video_id: string
+          video_title: string | null
+        }
+        Insert: {
+          created_at?: string
+          day_number?: number | null
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          user_id: string
+          video_id: string
+          video_title?: string | null
+        }
+        Update: {
+          created_at?: string
+          day_number?: number | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string
+          video_id?: string
+          video_title?: string | null
         }
         Relationships: []
       }

@@ -518,11 +518,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
       why: '관계 회복 미션이 더 정확해지도록 패턴을 객관화합니다.',
     },
     video: {
-      videoId: '1Evwgu369Jw',
-      title: '공감의 힘 — 브레네 브라운',
-      channel: 'The RSA',
-      durationLabel: '3분',
-      reason: '미뤄둔 대화의 첫 문장은 "공감"에서 시작합니다 (자막 ON).',
+      videoId: 'wfDTp2GogaQ',
+      title: 'Mindful Breathing — 대화 직전 1분 호흡',
+      channel: 'Every Mind Matters',
+      durationLabel: '1분',
+      reason: '미뤄둔 대화의 첫 문장을 보내기 전, 1분만 호흡해 마음을 정렬.',
     },
     action: {
       title: '미뤄둔 대화 첫 문장 메시지로 보내기',

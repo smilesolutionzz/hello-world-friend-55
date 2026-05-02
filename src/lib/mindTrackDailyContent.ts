@@ -156,11 +156,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 6,
     assessment: null,
     video: {
-      videoId: 'JE6Ja_ueGtQ',
-      title: '거절하지 못해서 늘 지치는 사람들에게',
-      channel: '정신과의사 정우열',
-      durationLabel: '9분',
-      reason: '"내 에너지를 빼앗는 한 가지"를 줄이는 첫 언어를 배워요.',
+      videoId: '1Evwgu369Jw',
+      title: '공감과 거절 — 브레네 브라운',
+      channel: 'The RSA',
+      durationLabel: '3분',
+      reason: '"내 에너지를 빼앗는 한 가지"를 줄이기 전, 공감과 경계의 차이를 잡아요 (자막 ON).',
     },
     action: {
       title: '오늘 줄일 한 가지 정하기',

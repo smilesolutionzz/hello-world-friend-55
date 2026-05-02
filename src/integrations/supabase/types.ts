@@ -8614,6 +8614,54 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_self_checks: {
+        Row: {
+          answers: Json
+          created_at: string
+          goal_id: string
+          goal_title: string
+          id: string
+          is_public: boolean
+          level: string
+          max_score: number
+          questions: Json
+          score: number
+          share_id: string
+          summary: string | null
+          user_id: string | null
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          goal_id: string
+          goal_title: string
+          id?: string
+          is_public?: boolean
+          level: string
+          max_score: number
+          questions?: Json
+          score: number
+          share_id?: string
+          summary?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          goal_id?: string
+          goal_title?: string
+          id?: string
+          is_public?: boolean
+          level?: string
+          max_score?: number
+          questions?: Json
+          score?: number
+          share_id?: string
+          summary?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       mind_track_workbooks: {
         Row: {
           challenge_theme: string | null

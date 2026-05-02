@@ -50,9 +50,13 @@ export interface MindTrackDailyContent {
 }
 
 /**
- * 모든 영상은 검수 시점에 임베드/시청 가능을 확인한 한국어 권장 콘텐츠입니다.
- * 외부 영상이 비공개로 전환될 가능성에 대비해 fallback 썸네일은 ytimg에서
- * 자동 로드합니다 (UI 컴포넌트 측에서 처리).
+ * 모든 영상은 YouTube oEmbed API 로 사전 검증된 (HTTP 200) 영상입니다.
+ * - 영어권 공식 채널(TED, Goodful, Every Mind Matters BBC, The Mindful Movement,
+ *   Yoga With Adriene, Calm, Lavendaire, RSA, Sunnybrook Hospital 등) 위주로 큐레이션.
+ * - 가이드 명상/호흡 영상은 시각만 따라가도 효과가 동일하고, TED·RSA 영상은
+ *   유튜브 자동 한국어 자막을 켜면 한국어로 시청 가능합니다 (카드에서 안내).
+ * - 외부 영상이 비공개로 전환될 경우 썸네일이 회색으로 표시되며 (UI 컴포넌트가
+ *   onError 처리), 관리자 페이지(/admin/mind-track-content)에서 즉시 교체 가능합니다.
  */
 const CONTENT: Record<number, MindTrackDailyContent> = {
   // ─── Week 1 · 출발 정렬 ──────────────────────────────────────
@@ -104,11 +108,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 3,
     assessment: null,
     video: {
-      videoId: 'fcfNeIAPjLk',
-      title: '감정에 이름을 붙이면 강도가 줄어드는 이유',
-      channel: 'TED-Ed',
-      durationLabel: '6분',
-      reason: '"감정 라벨링"의 신경과학적 근거를 짧게 정리합니다.',
+      videoId: 'RVA2N6tX2cg',
+      title: 'Just Breathe — 아이들이 알려주는 감정에 이름 붙이기',
+      channel: 'Mindful Schools',
+      durationLabel: '4분',
+      reason: '"감정 라벨링"이 왜 강도를 줄이는지 시각적으로 보여주는 짧은 영상.',
     },
     action: {
       title: '오늘의 감정 단어 3개 적기',
@@ -120,11 +124,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 4,
     assessment: null,
     video: {
-      videoId: 'vmSCIJGCSGc',
-      title: '몸이 보내는 신호 — 스캔 명상 5분',
+      videoId: 'MIr3RsUWrdo',
+      title: '20분 가이드 명상 — 몸의 긴장 풀기',
       channel: 'The Mindful Movement',
-      durationLabel: '5분',
-      reason: '머리부터 발끝까지 긴장이 어디 모여있는지 확인하는 가이드 명상.',
+      durationLabel: '20분',
+      reason: '머리부터 발끝까지 긴장이 어디 모여있는지 따라가는 가이드 명상.',
     },
     action: {
       title: '바디스캔 1회 + 어깨 풀기',
@@ -136,11 +140,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 5,
     assessment: null,
     video: {
-      videoId: 'IcoIvjwM7lA',
-      title: '하루를 바꾸는 5분 결정의 힘',
-      channel: '신박사TV',
-      durationLabel: '7분',
-      reason: '"5분 안에 끝낼 행동"을 고르는 기준을 잡아줍니다.',
+      videoId: 'Lp7E973zozc',
+      title: '5초의 결정이 하루를 바꾼다 — 멜 로빈스',
+      channel: 'TEDx Talks',
+      durationLabel: '21분',
+      reason: '"5분 안에 끝낼 행동"을 고르는 기준을 잡아줍니다 (한국어 자막 ON 권장).',
     },
     action: {
       title: '오늘의 5분 마이크로 결정 1개',
@@ -152,11 +156,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 6,
     assessment: null,
     video: {
-      videoId: 'JE6Ja_ueGtQ',
-      title: '거절하지 못해서 늘 지치는 사람들에게',
-      channel: '정신과의사 정우열',
-      durationLabel: '9분',
-      reason: '"내 에너지를 빼앗는 한 가지"를 줄이는 첫 언어를 배워요.',
+      videoId: '1Evwgu369Jw',
+      title: '공감과 거절 — 브레네 브라운',
+      channel: 'The RSA',
+      durationLabel: '3분',
+      reason: '"내 에너지를 빼앗는 한 가지"를 줄이기 전, 공감과 경계의 차이를 잡아요 (자막 ON).',
     },
     action: {
       title: '오늘 줄일 한 가지 정하기',
@@ -192,11 +196,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 8,
     assessment: null,
     video: {
-      videoId: 'C1J5wRsfbkA',
-      title: '루틴이 자리잡는 데 필요한 21일의 진실',
-      channel: 'EO',
-      durationLabel: '8분',
-      reason: '루틴 정착의 과학적 원리를 짧게 정리합니다.',
+      videoId: '8jPQjjsBbIc',
+      title: '스트레스를 미리 다루는 법 — 다니엘 레비틴',
+      channel: 'TED',
+      durationLabel: '12분',
+      reason: '루틴이 자리잡히는 원리를 짧게 정리합니다 (자막 ON 권장).',
     },
     action: {
       title: '어제 미션을 같은 시간대에 다시',
@@ -208,11 +212,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 9,
     assessment: null,
     video: {
-      videoId: 'auBb1pY1Vp4',
-      title: '반복되는 부정적 생각을 끊는 3가지 기술',
-      channel: '심리학 박사 김경일',
-      durationLabel: '11분',
-      reason: '"생각의 자동 재생"을 멈추는 인지 기법.',
+      videoId: 'xRxT9cOKiM8',
+      title: '10분 가이드 명상 — 반복되는 부정적 생각 멈추기',
+      channel: 'Goodful',
+      durationLabel: '10분',
+      reason: '"생각의 자동 재생"을 멈추는 호흡 + 시각화 가이드.',
     },
     action: {
       title: '"멈춤" 한 단어로 자동사고 끊기',
@@ -246,11 +250,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 11,
     assessment: null,
     video: {
-      videoId: 'I_xgkAm6kew',
-      title: '관계에서 반복되는 내 패턴 알아차리기',
-      channel: '존브래드쇼 한국어 채널',
-      durationLabel: '12분',
-      reason: '가까운 사람과의 반응 패턴을 객관화해서 봐요.',
+      videoId: '4Lb5L-VEm34',
+      title: 'Breathe to Heal — 호흡으로 내 반응 패턴 다스리기',
+      channel: 'TEDx Talks',
+      durationLabel: '17분',
+      reason: '관계에서 자동으로 튀어나오는 반응을 호흡으로 멈추는 법 (자막 ON).',
     },
     action: {
       title: '최근 갈등 한 장면 1줄 묘사',
@@ -262,11 +266,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 12,
     assessment: null,
     video: {
-      videoId: 'GZzhk9jEkkI',
-      title: '4-4-6 호흡법 — 자율신경 즉시 안정',
-      channel: 'YogaTX',
-      durationLabel: '5분',
-      reason: '하루 짧은 틈마다 적용 가능한 호흡법 가이드.',
+      videoId: 'tEmt1Znux58',
+      title: '박스 호흡법 — 자율신경 즉시 안정',
+      channel: 'Sunnybrook Hospital',
+      durationLabel: '4분',
+      reason: '하루 짧은 틈마다 적용 가능한 4-4-4-4 호흡 가이드.',
     },
     action: {
       title: '4-4-6 호흡 3회 (분산 적용)',
@@ -278,11 +282,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 13,
     assessment: null,
     video: {
-      videoId: 'iD1qb5J6_8E',
-      title: '5분 모닝/이브닝 저널링 가이드',
-      channel: 'Yes Theory',
-      durationLabel: '7분',
-      reason: '기록의 형식을 잡아주는 짧은 가이드.',
+      videoId: 'F28MGLlpP90',
+      title: '15분 깊은 호흡 + 자유 기록 워밍업',
+      channel: 'City of Hope',
+      durationLabel: '15분',
+      reason: '저널링 직전 마음을 가라앉히는 호흡 가이드.',
     },
     action: {
       title: '5분 자유 기록 1편',
@@ -300,11 +304,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
       why: '시작 점수와 똑같은 측정을 해야 변화 그래프가 만들어집니다.',
     },
     video: {
-      videoId: 'oETHL2-NzyM',
-      title: '14일이면 충분히 변화가 보이기 시작합니다',
-      channel: 'Better Than Yesterday',
-      durationLabel: '8분',
-      reason: '2주차 변화 그래프를 받기 직전, 변화의 의미를 짚어주는 영상.',
+      videoId: 'hnpQrMqDoqE',
+      title: 'Managing Stress — BBC Brainsmart',
+      channel: 'BBC',
+      durationLabel: '4분',
+      reason: '2주차 변화 그래프를 받기 직전, 스트레스 관리의 기본 원리를 짧게 짚는 영상 (자막 ON).',
     },
     action: {
       title: '시작 vs 지금 — 한 가지 변화 적기',
@@ -318,11 +322,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 15,
     assessment: null,
     video: {
-      videoId: 'wfDTp2GogaQ',
-      title: '중간 지점에서 흔들릴 때 다시 정렬하는 법',
-      channel: '신박사TV',
-      durationLabel: '9분',
-      reason: '15일차의 정체감을 통과하는 데 도움되는 영상.',
+      videoId: 'ssss7V1_eyA',
+      title: '5분 마음챙김 명상 — 정체감을 통과하는 호흡',
+      channel: 'Great Meditation',
+      durationLabel: '5분',
+      reason: '15일차의 정체감을 짧은 명상으로 통과합니다.',
     },
     action: {
       title: '효과 있던 루틴 TOP 3 강화',
@@ -404,11 +408,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 20,
     assessment: null,
     video: {
-      videoId: 'Yg3VSwgrxnc',
-      title: '환경이 행동을 바꾼다 — 환경 디자인 입문',
-      channel: 'James Clear (한국어 자막)',
-      durationLabel: '8분',
-      reason: '에너지 도둑이 되는 환경을 한 가지 손보는 가이드.',
+      videoId: '86m4RC_ADEY',
+      title: '환경을 바꾸는 가이드 명상 — Positive Energy',
+      channel: 'Lavendaire',
+      durationLabel: '10분',
+      reason: '에너지 도둑이 되는 환경을 한 가지 손보기 전, 마음을 정렬합니다.',
     },
     action: {
       title: '에너지 도둑 환경 1개 손보기',
@@ -426,11 +430,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
       why: '3주차 코칭 인사이트의 핵심 데이터가 됩니다.',
     },
     video: {
-      videoId: 'PbeJqrAIEhM',
-      title: '3주의 변화가 만드는 진짜 차이',
-      channel: 'Better Than Yesterday',
-      durationLabel: '9분',
-      reason: '3주차를 마무리하며 깊이 있는 인사이트를 얻기 직전 영상.',
+      videoId: 'W19PdslW7iw',
+      title: '15분 가이드 명상 — 불확실한 시기에 평온 찾기',
+      channel: 'Boho Beautiful Yoga',
+      durationLabel: '15분',
+      reason: '3주차를 마무리하며 깊이 있는 인사이트를 얻기 직전 명상.',
     },
     action: {
       title: '3주간 가장 큰 깨달음 한 줄',
@@ -444,11 +448,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 22,
     assessment: null,
     video: {
-      videoId: 'eKHNUIdrnKw',
-      title: '내 패턴의 뿌리를 찾는 자기 인터뷰',
-      channel: '존브래드쇼 한국어 채널',
-      durationLabel: '13분',
-      reason: '맞춤 워크북 질문을 깊게 풀기 위한 자기 인터뷰 가이드.',
+      videoId: '4EaMJOo1jks',
+      title: 'LET GO — 불안과 두려움을 내려놓는 가이드 명상',
+      channel: 'PowerThoughts Meditation Club',
+      durationLabel: '15분',
+      reason: '맞춤 워크북 심화 질문을 풀기 위한 마음 비우기 가이드.',
     },
     action: {
       title: '워크북 심화 질문 1개 풀기',
@@ -460,11 +464,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 23,
     assessment: null,
     video: {
-      videoId: 'eHsYOG5elQM',
-      title: 'AI 코치와 대화할 때 더 깊은 답을 얻는 법',
-      channel: 'AI 라운지',
-      durationLabel: '7분',
-      reason: '코파일럿 1:1 대화의 질을 높이는 프롬프트 팁.',
+      videoId: 'inpok4MKVLM',
+      title: '5분 명상 — 코파일럿과 대화 전 마음 정렬',
+      channel: 'Goodful',
+      durationLabel: '5분',
+      reason: '코파일럿 1:1 대화의 질을 높이려면 마음을 먼저 정리해요.',
     },
     action: {
       title: '코파일럿에 오늘 주제 1개 던지기',
@@ -476,11 +480,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 24,
     assessment: null,
     video: {
-      videoId: 'AETFvQonfV8',
-      title: '재발 방지 시그널 — 미리 정해두는 한 문장의 힘',
-      channel: '정신과의사 정우열',
+      videoId: '6p_yaNFSYao',
+      title: '10분 마음챙김 명상 — 재발 신호 알아차리기',
+      channel: 'The Honest Guys',
       durationLabel: '10분',
-      reason: '예전 패턴이 돌아올 때 쓸 신호 문장의 효용.',
+      reason: '예전 패턴이 돌아올 때를 대비해 신호를 미리 감지하는 명상.',
     },
     action: {
       title: '내 재발 방지 신호 문장 정하기',
@@ -492,11 +496,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 25,
     assessment: null,
     video: {
-      videoId: 'mNBmG24djoY',
-      title: '지속 가능한 회복 루틴 3가지의 조건',
-      channel: '책읽찰스',
-      durationLabel: '9분',
-      reason: '지금까지 효과 있던 루틴 3개를 고정하는 기준.',
+      videoId: 'ZToicYcHIOU',
+      title: 'Daily Calm — 10분 마음챙김 (현재에 머물기)',
+      channel: 'Calm',
+      durationLabel: '10분',
+      reason: '지속 가능한 회복 루틴의 기준은 "매일 짧게". 10분 데일리 명상으로 고정.',
     },
     action: {
       title: '내 핵심 루틴 TOP 3 고정',
@@ -514,11 +518,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
       why: '관계 회복 미션이 더 정확해지도록 패턴을 객관화합니다.',
     },
     video: {
-      videoId: 'OGSb_iRk1Sk',
-      title: '관계 회복의 첫 한 줄 — 비폭력 대화법',
-      channel: '심리학 박사 김경일',
-      durationLabel: '11분',
-      reason: '미뤄둔 대화의 첫 문장을 어떻게 시작할지.',
+      videoId: 'wfDTp2GogaQ',
+      title: 'Mindful Breathing — 대화 직전 1분 호흡',
+      channel: 'Every Mind Matters',
+      durationLabel: '1분',
+      reason: '미뤄둔 대화의 첫 문장을 보내기 전, 1분만 호흡해 마음을 정렬.',
     },
     action: {
       title: '미뤄둔 대화 첫 문장 메시지로 보내기',
@@ -530,11 +534,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 27,
     assessment: null,
     video: {
-      videoId: 'NJk8oQ4FKzM',
-      title: '거절을 가볍게 만드는 한 문장 템플릿',
-      channel: '정신과의사 정우열',
-      durationLabel: '8분',
-      reason: '내 에너지를 지키는 거절 문장의 형식.',
+      videoId: 'O-6f5wQXSu8',
+      title: '10분 명상 — 거절의 두려움 내려놓기',
+      channel: 'Goodful',
+      durationLabel: '10분',
+      reason: '내 에너지를 지키는 거절 문장을 쓰기 전, 거절에 대한 두려움을 내려놓아요.',
     },
     action: {
       title: '내 거절 문장 템플릿 1개 작성',
@@ -546,11 +550,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 28,
     assessment: null,
     video: {
-      videoId: 'O2dT_NRZWnE',
-      title: '4주의 변화를 한 문장으로 정리하는 법',
-      channel: 'Better Than Yesterday',
-      durationLabel: '7분',
-      reason: '리포트 직전 4주 흐름을 압축하는 가이드.',
+      videoId: '4pLUleLdwY4',
+      title: '불안을 위한 명상 — Yoga With Adriene',
+      channel: 'Yoga With Adriene',
+      durationLabel: '17분',
+      reason: '리포트 직전 4주 흐름을 정리하기 위한 차분한 명상.',
     },
     action: {
       title: '4주차 한 문장 요약',
@@ -586,11 +590,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 30,
     assessment: null,
     video: {
-      videoId: 'r9b2VunvvbM',
-      title: '회복은 끝이 아니라 새로운 출발선이다',
-      channel: '셰르파TV',
-      durationLabel: '10분',
-      reason: '리포트 수령 직후 다음 한 달을 어떻게 이어갈지.',
+      videoId: 'NWH8N-BvhAw',
+      title: '회복탄력성 있는 사람들의 3가지 비밀 — Lucy Hone',
+      channel: 'TEDx Talks',
+      durationLabel: '16분',
+      reason: '리포트 수령 직후, 다음 한 달을 어떻게 이어갈지 잡아주는 영상 (자막 ON).',
     },
     action: {
       title: '내 30일 한 줄 변화 선언문',

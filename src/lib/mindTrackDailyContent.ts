@@ -408,11 +408,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 20,
     assessment: null,
     video: {
-      videoId: 'Yg3VSwgrxnc',
-      title: '환경이 행동을 바꾼다 — 환경 디자인 입문',
-      channel: 'James Clear (한국어 자막)',
-      durationLabel: '8분',
-      reason: '에너지 도둑이 되는 환경을 한 가지 손보는 가이드.',
+      videoId: '86m4RC_ADEY',
+      title: '환경을 바꾸는 가이드 명상 — Positive Energy',
+      channel: 'Lavendaire',
+      durationLabel: '10분',
+      reason: '에너지 도둑이 되는 환경을 한 가지 손보기 전, 마음을 정렬합니다.',
     },
     action: {
       title: '에너지 도둑 환경 1개 손보기',

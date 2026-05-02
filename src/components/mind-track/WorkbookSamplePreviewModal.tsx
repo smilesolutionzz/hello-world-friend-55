@@ -249,7 +249,43 @@ export default function WorkbookSamplePreviewModal({
             </Page>
           </PageFrame>
 
+          {/* PAGE 4.5 — 전문가 개입 노트 #1 (Day 8 무렵) */}
+          <PageFrame label="전문가 노트 · Day 8">
+            <Page>
+              <PageHeader title="코치가 함께 짚어준 지점" chapter="Note 01" icon={UserCheck} />
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-9 h-9 rounded-full bg-[#C8B88A]/20 border border-[#C8B88A]/40 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[11px] font-bold text-[#8a7a4d]">JK</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[12px] font-bold text-slate-900">정OO 코치</div>
+                  <div className="text-[10px] text-slate-500">임상심리 전문 · 회복 코칭 12년</div>
+                </div>
+              </div>
+              <div className="rounded-xl bg-[#fbf7eb] border border-[#C8B88A]/30 p-3.5 mb-3">
+                <div className="text-[10px] font-bold tracking-[0.15em] text-[#8a7a4d] uppercase mb-1.5">관찰</div>
+                <p className="text-[12.5px] text-slate-700 leading-relaxed break-keep">
+                  "Day 1~7 기록을 보니, 무드가 떨어지는 시점이 모두 <b>저녁 9시 이후</b>에 몰려 있어요.
+                  스스로의 리듬을 한 번도 의심해보지 않았다는 점이 인상적이었습니다."
+                </p>
+              </div>
+              <div className="rounded-xl bg-emerald-50/60 border border-emerald-200/50 p-3.5">
+                <div className="text-[10px] font-bold tracking-[0.15em] text-emerald-700 uppercase mb-1.5">함께 정한 미세 조정</div>
+                <ul className="text-[12.5px] text-slate-700 leading-relaxed break-keep space-y-1.5">
+                  <li>· 저녁 8시 30분 알림 → 화면 밝기 낮추기</li>
+                  <li>· 자기 전 5분 호흡 기록만 추가 (글은 생략 OK)</li>
+                  <li>· "잘 못한 날" 기록도 그대로 두기 — 지우지 않기</li>
+                </ul>
+              </div>
+              <div className="mt-3 flex items-center gap-2 text-[10.5px] text-slate-500">
+                <MessageCircleHeart className="w-3.5 h-3.5 text-[#8a7a4d]" />
+                <span>이 노트는 1:1 짧은 코칭 세션(15분) 후 자동으로 워크북에 추가되었습니다.</span>
+              </div>
+            </Page>
+          </PageFrame>
+
           {/* PAGE 5 — 핵심 인사이트 (샘플 — 실 통찰은 Day 30 후 AI 생성) */}
+
           <PageFrame label="4장 · 핵심 인사이트">
             <Page>
               <PageHeader title="30일이 알려준 것" chapter="04" icon={Lightbulb} />

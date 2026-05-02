@@ -124,11 +124,11 @@ export default function WorkbookSamplePreviewModal({
           </div>
           <p className="text-[11px] text-slate-500 mt-1">
             {totalCheckins > 0
-              ? `현재까지 ${totalCheckins}일치 데이터로 채워졌어요. 남은 ${Math.max(
+              ? `현재까지 ${totalCheckins}일치 데이터 + 코치 노트로 채워졌어요. 남은 ${Math.max(
                   0,
                   30 - currentDay
                 )}일을 마저 채우면 한 권이 완성됩니다.`
-              : "아래는 샘플입니다. 체크인이 쌓일수록 당신의 데이터로 자동 채워져요."}
+              : "아래는 샘플입니다. 체크인이 쌓일수록 당신의 데이터로, 정체기엔 실제 코치 노트가 함께 들어가요."}
           </p>
         </DialogHeader>
 

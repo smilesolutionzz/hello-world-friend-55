@@ -480,11 +480,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 24,
     assessment: null,
     video: {
-      videoId: 'AETFvQonfV8',
-      title: '재발 방지 시그널 — 미리 정해두는 한 문장의 힘',
-      channel: '정신과의사 정우열',
+      videoId: '6p_yaNFSYao',
+      title: '10분 마음챙김 명상 — 재발 신호 알아차리기',
+      channel: 'The Honest Guys',
       durationLabel: '10분',
-      reason: '예전 패턴이 돌아올 때 쓸 신호 문장의 효용.',
+      reason: '예전 패턴이 돌아올 때를 대비해 신호를 미리 감지하는 명상.',
     },
     action: {
       title: '내 재발 방지 신호 문장 정하기',

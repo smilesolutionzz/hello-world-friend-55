@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Sparkles, MessageCircle, Award, ShieldCheck, Crown } from "lucide-react";
+import { AlertCircle, Sparkles, MessageCircle, Award, ShieldCheck, Crown, ClipboardCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const OFFERING_INFO: Record<string, { label: string; price: number; icon: any; color: string; topic: string }> = {
@@ -10,6 +10,16 @@ const OFFERING_INFO: Record<string, { label: string; price: number; icon: any; c
   midcheck: { label: "Day 14 미드체크 (₩29,000)", price: 29000, icon: Award, color: "from-primary to-purple-600", topic: "30일 트랙 절반 지점에서 1:1 미드체크 상담을 받고 싶어요. 변화 그래프를 함께 보고 싶습니다." },
   urgent: { label: "Day 21 심화 케어 (₩49,000)", price: 49000, icon: ShieldCheck, color: "from-rose-500 to-orange-500", topic: "30일 트랙 마지막 9일을 위한 심화 케어 우선 매칭이 필요해요." },
   premium_60: { label: "Day 30 프리미엄 트랙 (₩99,000)", price: 99000, icon: Crown, color: "from-amber-500 to-yellow-500", topic: "30일 트랙을 완료했어요. 다음 60일 프리미엄 트랙에 등록하고 싶어요." },
+};
+
+const GOAL_LABEL: Record<string, string> = {
+  sleep: "수면 회복", stress: "스트레스 케어", mood: "감정 안정", focus: "집중력",
+  relationship: "관계", self: "자기 이해", parenting: "육아 번아웃",
+  family_communication: "아이와의 소통", child_development: "아이 발달 걱정",
+};
+
+const LEVEL_LABEL: Record<string, string> = {
+  calm: "안정권", watch: "주의권", support: "도움 권장",
 };
 
 interface PrefilledContext {
@@ -21,6 +31,8 @@ interface PrefilledContext {
   badge: string;
   icon: any;
   color: string;
+  /** 폼 메모에 추가할 점수/링크 정보 */
+  scoreLine?: string;
 }
 
 /**
@@ -34,12 +46,20 @@ export function useMindTrackPrefill(): PrefilledContext | null {
   const offering = params.get("offering");
   const intervention = params.get("intervention");
 
+  const goal = params.get("goal");
+  const level = params.get("level");
+  const score = params.get("score");
+  const max = params.get("max");
+  const checkId = params.get("check");
+  const via = params.get("via");
+
   if (!from && !offering && !intervention) return null;
 
   let topic = "";
   let badge = "";
   let Icon: any = Sparkles;
   let color = "from-primary to-purple-600";
+  let scoreLine: string | undefined;
 
   if (from === "mission_difficult") {
     topic = `오늘의 30일 챌린지 미션(Day ${day ?? "?"})이 어렵게 느껴져요. 어떻게 풀어가면 좋을지 도와주세요.`;
@@ -51,6 +71,21 @@ export function useMindTrackPrefill(): PrefilledContext | null {
     badge = "위험 감지 케어콜";
     Icon = AlertCircle;
     color = "from-rose-500 to-red-500";
+  } else if (from === "self_check" || (from === "smart_suggest" && goal)) {
+    const goalLabel = goal ? (GOAL_LABEL[goal] ?? goal) : "선택 목표";
+    const levelLabel = level ? (LEVEL_LABEL[level] ?? level) : "";
+    topic = `[${goalLabel}] 셀프체크 결과 ${levelLabel}${score && max ? ` (${score}/${max})` : ""}로 측정되어, 1:1로 점검과 다음 단계 안내를 받고 싶어요.`;
+    badge = `${goalLabel} · ${levelLabel || "셀프체크"}`;
+    Icon = ClipboardCheck;
+    color = level === "support"
+      ? "from-rose-500 to-orange-500"
+      : level === "watch"
+        ? "from-amber-500 to-yellow-500"
+        : "from-emerald-500 to-cyan-500";
+    if (score && max) {
+      const url = checkId ? `${typeof window !== "undefined" ? window.location.origin : ""}/mind-track/check/${checkId}` : null;
+      scoreLine = `[self_check] goal=${goal} level=${level} score=${score}/${max}${url ? ` link=${url}` : ""}${via ? ` via=${via}` : ""}`;
+    }
   } else if (offering && OFFERING_INFO[offering]) {
     const info = OFFERING_INFO[offering];
     topic = info.topic;
@@ -59,7 +94,7 @@ export function useMindTrackPrefill(): PrefilledContext | null {
     color = info.color;
   }
 
-  return { from, day, offering, intervention, topic, badge, icon: Icon, color };
+  return { from, day, offering, intervention, topic, badge, icon: Icon, color, scoreLine };
 }
 
 interface Props {

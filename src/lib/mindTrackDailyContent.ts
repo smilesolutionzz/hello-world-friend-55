@@ -518,11 +518,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
       why: '관계 회복 미션이 더 정확해지도록 패턴을 객관화합니다.',
     },
     video: {
-      videoId: 'OGSb_iRk1Sk',
-      title: '관계 회복의 첫 한 줄 — 비폭력 대화법',
-      channel: '심리학 박사 김경일',
-      durationLabel: '11분',
-      reason: '미뤄둔 대화의 첫 문장을 어떻게 시작할지.',
+      videoId: '1Evwgu369Jw',
+      title: '공감의 힘 — 브레네 브라운',
+      channel: 'The RSA',
+      durationLabel: '3분',
+      reason: '미뤄둔 대화의 첫 문장은 "공감"에서 시작합니다 (자막 ON).',
     },
     action: {
       title: '미뤄둔 대화 첫 문장 메시지로 보내기',

@@ -212,11 +212,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 9,
     assessment: null,
     video: {
-      videoId: 'auBb1pY1Vp4',
-      title: '반복되는 부정적 생각을 끊는 3가지 기술',
-      channel: '심리학 박사 김경일',
-      durationLabel: '11분',
-      reason: '"생각의 자동 재생"을 멈추는 인지 기법.',
+      videoId: 'xRxT9cOKiM8',
+      title: '10분 가이드 명상 — 반복되는 부정적 생각 멈추기',
+      channel: 'Goodful',
+      durationLabel: '10분',
+      reason: '"생각의 자동 재생"을 멈추는 호흡 + 시각화 가이드.',
     },
     action: {
       title: '"멈춤" 한 단어로 자동사고 끊기',

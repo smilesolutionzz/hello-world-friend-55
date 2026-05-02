@@ -430,11 +430,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
       why: '3주차 코칭 인사이트의 핵심 데이터가 됩니다.',
     },
     video: {
-      videoId: 'PbeJqrAIEhM',
-      title: '3주의 변화가 만드는 진짜 차이',
-      channel: 'Better Than Yesterday',
-      durationLabel: '9분',
-      reason: '3주차를 마무리하며 깊이 있는 인사이트를 얻기 직전 영상.',
+      videoId: 'W19PdslW7iw',
+      title: '15분 가이드 명상 — 불확실한 시기에 평온 찾기',
+      channel: 'Boho Beautiful Yoga',
+      durationLabel: '15분',
+      reason: '3주차를 마무리하며 깊이 있는 인사이트를 얻기 직전 명상.',
     },
     action: {
       title: '3주간 가장 큰 깨달음 한 줄',

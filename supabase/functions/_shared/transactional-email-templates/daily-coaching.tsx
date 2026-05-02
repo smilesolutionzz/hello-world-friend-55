@@ -127,7 +127,7 @@ const DailyCoachingEmail = ({
             </Section>
           )}
 
-          <Button href={`${SITE_URL}/observation-log`} style={ctaButton}>
+          <Button href={`${SITE_URL}/mind-track?utm_source=daily_email&utm_medium=email&utm_campaign=daily_coaching&day=${dayLabel}`} style={ctaButton}>
             오늘의 기록 남기기 →
           </Button>
 

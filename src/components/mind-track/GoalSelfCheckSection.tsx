@@ -12,7 +12,7 @@ import { toast } from "sonner";
 // 점수 0~10 → 안정 / 주의 / 도움 권장 3단계.
 // 결과는 onComplete(level)로 상위에 전달 → 자동 전문가 제안 배너 트리거.
 
-export type GoalCheckLevel = "calm" | "watch" | "support";
+export type GoalCheckLevel = SelfCheckLevel;
 
 interface GoalCheckDef {
   goalId: string;

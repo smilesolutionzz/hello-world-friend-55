@@ -304,11 +304,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
       why: '시작 점수와 똑같은 측정을 해야 변화 그래프가 만들어집니다.',
     },
     video: {
-      videoId: 'NWH8N-BvhAw',
-      title: '회복탄력성 있는 사람들의 3가지 비밀 — Lucy Hone',
-      channel: 'TEDx Talks',
-      durationLabel: '16분',
-      reason: '2주차 변화 그래프를 받기 직전, 변화의 의미를 짚어주는 영상 (자막 ON).',
+      videoId: 'hnpQrMqDoqE',
+      title: 'Managing Stress — BBC Brainsmart',
+      channel: 'BBC',
+      durationLabel: '4분',
+      reason: '2주차 변화 그래프를 받기 직전, 스트레스 관리의 기본 원리를 짧게 짚는 영상 (자막 ON).',
     },
     action: {
       title: '시작 vs 지금 — 한 가지 변화 적기',

@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BookOpen, TrendingUp, FileText, Quote, Lightbulb, ShieldCheck, Sparkles, ArrowRight } from "lucide-react";
+import { BookOpen, TrendingUp, FileText, Quote, Lightbulb, ShieldCheck, Sparkles, ArrowRight, UserCheck, MessageCircleHeart } from "lucide-react";
 
 interface Checkin {
   day_number: number;

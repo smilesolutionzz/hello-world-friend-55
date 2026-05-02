@@ -433,7 +433,10 @@ const MindTrack: React.FC = () => {
         activeEnrollment.payment_status === 'completed') &&
       !postLoginRedirecting
     ) {
-      navigate('/mind-track/dashboard', { replace: true });
+      // Preserve incoming UTM/day/after_video params so the dashboard can
+      // attribute the visit (e.g. arrived from daily-coaching email).
+      const search = location.search || '';
+      navigate(`/mind-track/dashboard${search}`, { replace: true });
     }
   }, [activeEnrollment?.id, activeEnrollment?.payment_status, postLoginRedirecting, navigate]);
 

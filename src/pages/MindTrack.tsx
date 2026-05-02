@@ -9,6 +9,9 @@ import {
 import { WORKBOOK_CHAPTERS } from '@/lib/mindTrackChapters';
 import WorkbookSamplePreviewModal from '@/components/mind-track/WorkbookSamplePreviewModal';
 import { Button } from '@/components/ui/button';
+import {
+  Accordion, AccordionItem, AccordionTrigger, AccordionContent,
+} from '@/components/ui/accordion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';

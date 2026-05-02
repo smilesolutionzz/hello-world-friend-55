@@ -1079,7 +1079,7 @@ const MindTrack: React.FC = () => {
         </SmartScrollReveal>
 
         {/* FAQ Accordion */}
-        <SmartScrollReveal kind="faq" className="block">
+        <SmartScrollReveal kind="text" className="block">
           <section className="px-4 py-14 bg-white">
             <div className="max-w-3xl mx-auto">
               <div className="text-center mb-8">

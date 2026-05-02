@@ -28,6 +28,8 @@ interface Props {
   currentDay?: number;
   checkins?: Checkin[];
   baselines?: Baseline[];
+  ctaPrice?: number;
+  onCtaClick?: () => void;
 }
 
 /**

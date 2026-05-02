@@ -18,12 +18,14 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, Save, RotateCcw, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, RotateCcw, Loader2, BarChart3, Pencil } from 'lucide-react';
 import {
   getDefaultDailyContent,
   mergeDailyOverride,
   type MindTrackDailyContent,
 } from '@/lib/mindTrackDailyContent';
+import MindTrackContentHistoryPanel from '@/components/admin/MindTrackContentHistoryPanel';
+import MindTrackVideoStatsPanel from '@/components/admin/MindTrackVideoStatsPanel';
 
 const DAYS = Array.from({ length: 30 }, (_, i) => i + 1);
 

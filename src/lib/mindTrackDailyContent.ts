@@ -448,11 +448,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 22,
     assessment: null,
     video: {
-      videoId: 'eKHNUIdrnKw',
-      title: '내 패턴의 뿌리를 찾는 자기 인터뷰',
-      channel: '존브래드쇼 한국어 채널',
-      durationLabel: '13분',
-      reason: '맞춤 워크북 질문을 깊게 풀기 위한 자기 인터뷰 가이드.',
+      videoId: '4EaMJOo1jks',
+      title: 'LET GO — 불안과 두려움을 내려놓는 가이드 명상',
+      channel: 'PowerThoughts Meditation Club',
+      durationLabel: '15분',
+      reason: '맞춤 워크북 심화 질문을 풀기 위한 마음 비우기 가이드.',
     },
     action: {
       title: '워크북 심화 질문 1개 풀기',

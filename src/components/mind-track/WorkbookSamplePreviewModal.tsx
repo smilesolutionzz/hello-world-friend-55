@@ -320,6 +320,56 @@ export default function WorkbookSamplePreviewModal({
             </Page>
           </PageFrame>
 
+          {/* PAGE 5.5 — 전문가 개입 노트 #2 (Day 22 무렵, 정체기 돌파) */}
+          <PageFrame label="전문가 노트 · Day 22">
+            <Page>
+              <PageHeader title="정체기에서 다시 움직인 순간" chapter="Note 02" icon={UserCheck} />
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-9 h-9 rounded-full bg-[#C8B88A]/20 border border-[#C8B88A]/40 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[11px] font-bold text-[#8a7a4d]">SH</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[12px] font-bold text-slate-900">서OO 코치</div>
+                  <div className="text-[10px] text-slate-500">관계·소진 회복 코칭 · 8년</div>
+                </div>
+              </div>
+              <div className="rounded-xl bg-rose-50/60 border border-rose-200/50 p-3.5 mb-3">
+                <div className="text-[10px] font-bold tracking-[0.15em] text-rose-700 uppercase mb-1.5">사용자가 보낸 메시지 (Day 18)</div>
+                <p className="text-[12.5px] text-slate-700 leading-relaxed break-keep">
+                  "2주차까지는 좋아지는 게 보였는데, 이번 주는 다시 제자리예요.
+                  내가 뭔가 잘못하고 있는 걸까요?"
+                </p>
+              </div>
+              <div className="rounded-xl bg-[#fbf7eb] border border-[#C8B88A]/30 p-3.5 mb-3">
+                <div className="text-[10px] font-bold tracking-[0.15em] text-[#8a7a4d] uppercase mb-1.5">코치의 관점 전환</div>
+                <p className="text-[12.5px] text-slate-700 leading-relaxed break-keep">
+                  "회복은 직선이 아니에요. <b>2주차 정체기는 거의 모든 사용자가 겪습니다.</b>
+                  지금까지 쌓은 14일을 '실패'가 아니라 '몸이 새 리듬을 학습 중'이라고 다시 읽어볼게요."
+                </p>
+              </div>
+              <div className="rounded-xl bg-emerald-50/60 border border-emerald-200/50 p-3.5">
+                <div className="text-[10px] font-bold tracking-[0.15em] text-emerald-700 uppercase mb-1.5">개입 후 변화 (Day 19~22)</div>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="bg-white rounded-lg py-2">
+                    <div className="text-[15px] font-bold text-emerald-700">+1.8</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">평균 무드</div>
+                  </div>
+                  <div className="bg-white rounded-lg py-2">
+                    <div className="text-[15px] font-bold text-emerald-700">4/4</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">체크인 완료율</div>
+                  </div>
+                  <div className="bg-white rounded-lg py-2">
+                    <div className="text-[15px] font-bold text-emerald-700">−22%</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">스트레스</div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-[10.5px] text-slate-500 mt-3 break-keep">
+                * 위 사례는 실제 사용자 동의 후 익명 가공된 코칭 기록입니다. 결과는 개인차가 있을 수 있어요.
+              </p>
+            </Page>
+          </PageFrame>
+
           {/* PAGE 6 — 닫는 글 */}
           <PageFrame label="닫는 글 · Closing">
             <Page>

@@ -151,6 +151,11 @@ const MindTrack: React.FC = () => {
   const [polishing, setPolishing] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
 
+  // 스마트 전문가 제안용 시그널
+  const [selfCheckLevel, setSelfCheckLevel] = useState<GoalCheckLevel | null>(null);
+  const [selfCheckGoalId, setSelfCheckGoalId] = useState<string | null>(null);
+  const [hasClickedCta, setHasClickedCta] = useState(false);
+
   const examplePlaceholders = [
     '예) 요즘 잠자리에 누우면 잡생각이 멈추질 않고, 아침마다 너무 무기력해요...',
     '예) 회사에서 작은 일에도 짜증이 나고, 퇴근 후엔 아무것도 하기 싫어요.',

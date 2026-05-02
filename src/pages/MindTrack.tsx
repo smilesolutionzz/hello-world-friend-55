@@ -602,7 +602,7 @@ const MindTrack: React.FC = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setSampleOpen(true)}
+                        onClick={openSamplePreview}
                         className="rounded-full border-[#C8B88A]/50 text-[#8a7a4d] hover:bg-[#C8B88A]/10 h-8 text-xs"
                       >
                         <Eye className="w-3.5 h-3.5 mr-1.5" />

@@ -250,11 +250,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 11,
     assessment: null,
     video: {
-      videoId: 'I_xgkAm6kew',
-      title: '관계에서 반복되는 내 패턴 알아차리기',
-      channel: '존브래드쇼 한국어 채널',
-      durationLabel: '12분',
-      reason: '가까운 사람과의 반응 패턴을 객관화해서 봐요.',
+      videoId: '4Lb5L-VEm34',
+      title: 'Breathe to Heal — 호흡으로 내 반응 패턴 다스리기',
+      channel: 'TEDx Talks',
+      durationLabel: '17분',
+      reason: '관계에서 자동으로 튀어나오는 반응을 호흡으로 멈추는 법 (자막 ON).',
     },
     action: {
       title: '최근 갈등 한 장면 1줄 묘사',

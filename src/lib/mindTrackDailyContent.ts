@@ -282,11 +282,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 13,
     assessment: null,
     video: {
-      videoId: 'iD1qb5J6_8E',
-      title: '5분 모닝/이브닝 저널링 가이드',
-      channel: 'Yes Theory',
-      durationLabel: '7분',
-      reason: '기록의 형식을 잡아주는 짧은 가이드.',
+      videoId: 'F28MGLlpP90',
+      title: '15분 깊은 호흡 + 자유 기록 워밍업',
+      channel: 'City of Hope',
+      durationLabel: '15분',
+      reason: '저널링 직전 마음을 가라앉히는 호흡 가이드.',
     },
     action: {
       title: '5분 자유 기록 1편',

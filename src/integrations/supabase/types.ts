@@ -8279,6 +8279,42 @@ export type Database = {
           },
         ]
       }
+      mind_track_daily_content_history: {
+        Row: {
+          action: Json | null
+          assessment: Json | null
+          change_type: string
+          changed_by: string | null
+          created_at: string
+          day_number: number
+          id: string
+          is_active: boolean
+          video: Json | null
+        }
+        Insert: {
+          action?: Json | null
+          assessment?: Json | null
+          change_type: string
+          changed_by?: string | null
+          created_at?: string
+          day_number: number
+          id?: string
+          is_active?: boolean
+          video?: Json | null
+        }
+        Update: {
+          action?: Json | null
+          assessment?: Json | null
+          change_type?: string
+          changed_by?: string | null
+          created_at?: string
+          day_number?: number
+          id?: string
+          is_active?: boolean
+          video?: Json | null
+        }
+        Relationships: []
+      }
       mind_track_daily_content_overrides: {
         Row: {
           action: Json | null
@@ -13998,6 +14034,19 @@ export type Database = {
           total_bookings: number | null
           total_tokens_earned: number | null
           user_id: string | null
+        }
+        Relationships: []
+      }
+      mind_track_video_event_stats: {
+        Row: {
+          click_count: number | null
+          complete_count: number | null
+          day_number: number | null
+          last_event_at: string | null
+          start_count: number | null
+          unique_users: number | null
+          video_id: string | null
+          video_title: string | null
         }
         Relationships: []
       }

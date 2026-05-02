@@ -18,12 +18,14 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, Save, RotateCcw, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, RotateCcw, Loader2, BarChart3, Pencil } from 'lucide-react';
 import {
   getDefaultDailyContent,
   mergeDailyOverride,
   type MindTrackDailyContent,
 } from '@/lib/mindTrackDailyContent';
+import MindTrackContentHistoryPanel from '@/components/admin/MindTrackContentHistoryPanel';
+import MindTrackVideoStatsPanel from '@/components/admin/MindTrackVideoStatsPanel';
 
 const DAYS = Array.from({ length: 30 }, (_, i) => i + 1);
 
@@ -37,10 +39,12 @@ interface OverrideRow {
 
 export default function AdminMindTrackContent() {
   const { isAdmin, loading: adminLoading } = useAdminCheck();
+  const [tab, setTab] = useState<'edit' | 'stats'>('edit');
   const [day, setDay] = useState(1);
   const [override, setOverride] = useState<OverrideRow | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
 
   const baseContent = useMemo(() => getDefaultDailyContent(day), [day]);
   const merged = useMemo(
@@ -82,9 +86,34 @@ export default function AdminMindTrackContent() {
   }
   if (!isAdmin) return <Navigate to="/" replace />;
 
+  // 변경 직전 스냅샷을 history 에 보관
+  const archiveCurrent = async (
+    changeType: 'save' | 'delete',
+    snapshot: OverrideRow | null,
+  ) => {
+    if (!snapshot) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      await supabase.from('mind_track_daily_content_history').insert({
+        day_number: day,
+        assessment: snapshot.assessment as never,
+        video: snapshot.video as never,
+        action: snapshot.action as never,
+        is_active: snapshot.is_active,
+        change_type: changeType,
+        changed_by: user?.id ?? null,
+      });
+    } catch (e) {
+      // 이력 기록 실패는 사용자 흐름을 막지 않음
+      console.warn('[AdminMindTrackContent] archive failed', e);
+    }
+  };
+
   // 현재 화면 상태(merged)를 오버라이드 row 로 저장
   const handleSave = async () => {
     setSaving(true);
+    // 직전 스냅샷 보관 (있을 때만)
+    await archiveCurrent('save', override);
     const payload = {
       day_number: day,
       assessment: merged.assessment as never,
@@ -102,11 +131,13 @@ export default function AdminMindTrackContent() {
     }
     toast({ title: 'Day ' + day + ' 저장 완료', description: '대시보드에 즉시 반영됩니다.' });
     setOverride({ ...payload });
+    setHistoryRefreshKey((k) => k + 1);
   };
 
   // 코드 기본값으로 되돌리기 (DB row 삭제)
   const handleReset = async () => {
     if (!confirm(`Day ${day} 오버라이드를 삭제하고 코드 기본값으로 되돌릴까요?`)) return;
+    await archiveCurrent('delete', override);
     const { error } = await supabase
       .from('mind_track_daily_content_overrides')
       .delete()
@@ -116,6 +147,7 @@ export default function AdminMindTrackContent() {
       return;
     }
     setOverride(null);
+    setHistoryRefreshKey((k) => k + 1);
     toast({ title: '코드 기본값으로 복원' });
   };
 
@@ -169,26 +201,49 @@ export default function AdminMindTrackContent() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleReset}
-              disabled={!override}
-            >
-              <RotateCcw className="w-4 h-4 mr-1" /> 기본값
-            </Button>
-            <Button size="sm" onClick={handleSave} disabled={saving}>
-              {saving ? (
-                <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-              ) : (
-                <Save className="w-4 h-4 mr-1" />
-              )}
-              저장
-            </Button>
+            {/* 탭 */}
+            <div className="hidden md:flex items-center gap-1 mr-2 bg-slate-100 rounded-lg p-1">
+              <button
+                onClick={() => setTab('edit')}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors flex items-center gap-1 ${
+                  tab === 'edit' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+                }`}
+              >
+                <Pencil className="w-3 h-3" /> 편집
+              </button>
+              <button
+                onClick={() => setTab('stats')}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors flex items-center gap-1 ${
+                  tab === 'stats' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+                }`}
+              >
+                <BarChart3 className="w-3 h-3" /> 영상 통계
+              </button>
+            </div>
+            {tab === 'edit' && (
+              <>
+                <Button variant="outline" size="sm" onClick={handleReset} disabled={!override}>
+                  <RotateCcw className="w-4 h-4 mr-1" /> 기본값
+                </Button>
+                <Button size="sm" onClick={handleSave} disabled={saving}>
+                  {saving ? (
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4 mr-1" />
+                  )}
+                  저장
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
 
+      {tab === 'stats' ? (
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <MindTrackVideoStatsPanel />
+        </div>
+      ) : (
       <div className="max-w-6xl mx-auto px-4 py-6 grid md:grid-cols-[180px_1fr] gap-6">
         {/* Day 사이드바 */}
         <aside className="bg-white rounded-xl border p-2 h-fit md:sticky md:top-24 max-h-[70vh] overflow-y-auto">
@@ -396,10 +451,30 @@ export default function AdminMindTrackContent() {
                   />
                 </Field>
               </Card>
+
+              {/* 변경 이력 + 되돌리기 */}
+              <MindTrackContentHistoryPanel
+                key={`hist-${day}-${historyRefreshKey}`}
+                day={day}
+                onRestored={() => {
+                  // 오버라이드 다시 로드
+                  setLoading(true);
+                  supabase
+                    .from('mind_track_daily_content_overrides')
+                    .select('*')
+                    .eq('day_number', day)
+                    .maybeSingle()
+                    .then(({ data }) => {
+                      setOverride((data as unknown as OverrideRow | null) ?? null);
+                      setLoading(false);
+                    });
+                }}
+              />
             </>
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }

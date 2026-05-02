@@ -1,11 +1,11 @@
 /**
- * MindTrack 영상 이벤트 로거
+ * MindTrack 영상 이벤트 로거 — 안전 모드
  *
- * 추천 영상의 클릭/시청 시작/완료 등의 이벤트를 videoId 기준으로
- *   1) Supabase `mind_track_video_events` 테이블에 기록 (관리자 분석용)
- *   2) GA dataLayer 로 push (외부 GA/믹스패널 분석용)
- * 두 곳에 동시에 남깁니다. 두 경로 모두 실패해도 사용자 경험은 깨지지 않도록
- * 모든 호출은 fire-and-forget 입니다.
+ * 원칙: 이벤트 기록 실패가 사용자 경험을 절대 깨뜨리지 않습니다.
+ *   - 모든 호출은 fire-and-forget (await 강제 안 함)
+ *   - try/catch 로 감싸 RLS·네트워크 오류를 흡수
+ *   - 실패 시 콘솔 + sessionStorage 의 'aih_log_errors' 큐에 기록 (관리자 진단용)
+ *   - GA dataLayer 푸시는 항상 시도 (Supabase 실패 무관)
  */
 
 import { supabase } from '@/integrations/supabase/client';
@@ -30,10 +30,28 @@ declare global {
   }
 }
 
-export async function logMindTrackVideoEvent(params: LogParams): Promise<void> {
+function recordError(scope: string, err: unknown) {
+  try {
+    console.warn(`[mindTrackVideoEvents:${scope}]`, err);
+    if (typeof window === 'undefined') return;
+    const key = 'aih_log_errors';
+    const raw = sessionStorage.getItem(key);
+    const arr = raw ? JSON.parse(raw) : [];
+    arr.unshift({
+      scope,
+      message: err instanceof Error ? err.message : String(err),
+      ts: new Date().toISOString(),
+    });
+    sessionStorage.setItem(key, JSON.stringify(arr.slice(0, 20)));
+  } catch {
+    // 무시 — 로깅의 로깅 실패는 절대 throw 하지 않음
+  }
+}
+
+export function logMindTrackVideoEvent(params: LogParams): void {
   const { videoId, videoTitle, eventType, day, metadata = {} } = params;
 
-  // 1) GA dataLayer push (즉시 — 동기적)
+  // 1) GA dataLayer push — 동기, 실패 무시
   try {
     if (typeof window !== 'undefined') {
       window.dataLayer = window.dataLayer || [];
@@ -47,23 +65,29 @@ export async function logMindTrackVideoEvent(params: LogParams): Promise<void> {
       });
     }
   } catch (e) {
-    // dataLayer 실패는 무시
+    recordError('dataLayer', e);
   }
 
-  // 2) Supabase 기록 (인증된 사용자만 — RLS 가 보호)
-  try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from('mind_track_video_events').insert({
-      user_id: user.id,
-      video_id: videoId,
-      video_title: videoTitle ?? null,
-      event_type: eventType,
-      day_number: day ?? null,
-      metadata: metadata as never,
-    });
-  } catch (e) {
-    // 로깅 실패는 사용자 경험에 영향 없음
-    console.warn('[mindTrackVideoEvents] insert failed', e);
-  }
+  // 2) Supabase 기록 — 비동기, 실패해도 throw 안 함
+  void (async () => {
+    try {
+      const { data: { user }, error: authErr } = await supabase.auth.getUser();
+      if (authErr) {
+        recordError('auth', authErr);
+        return;
+      }
+      if (!user) return; // 익명 사용자는 조용히 스킵
+      const { error } = await supabase.from('mind_track_video_events').insert({
+        user_id: user.id,
+        video_id: videoId,
+        video_title: videoTitle ?? null,
+        event_type: eventType,
+        day_number: day ?? null,
+        metadata: metadata as never,
+      });
+      if (error) recordError('insert', error);
+    } catch (e) {
+      recordError('catch', e);
+    }
+  })();
 }

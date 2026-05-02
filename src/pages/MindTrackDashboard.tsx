@@ -87,6 +87,41 @@ export default function MindTrackDashboard() {
     };
   }, [navigate]);
 
+  // ────────────────────────────────────────────────────────────
+  // UTM ingestion — record arrivals from daily-coaching email so
+  // dashboard analytics can confirm the link wired up correctly.
+  // Triggers a soft toast if the user just came back from watching a video.
+  // ────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const utmSource = params.get("utm_source");
+    if (!utmSource) return;
+
+    const utm = {
+      source: utmSource,
+      medium: params.get("utm_medium"),
+      campaign: params.get("utm_campaign"),
+      content: params.get("utm_content"),
+      day: params.get("day"),
+      after_video: params.get("after_video"),
+      arrived_at: new Date().toISOString(),
+    };
+
+    try {
+      sessionStorage.setItem("mind_track_last_utm", JSON.stringify(utm));
+      // Lightweight client analytics breadcrumb (PostHog/GA pickup if present)
+      (window as any).dataLayer?.push?.({ event: "mind_track_utm_arrival", ...utm });
+    } catch {
+      /* noop */
+    }
+
+    if (utm.after_video) {
+      toast.success("영상은 어떠셨나요? 짧게 한 줄로 남겨보세요 ✍️");
+    }
+  }, []);
+
+
   const day = useMemo(
     () => (enrollment ? calcMindTrackCurrentDay(enrollment.started_at) : 1),
     [enrollment]

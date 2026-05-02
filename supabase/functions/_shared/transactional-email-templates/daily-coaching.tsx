@@ -38,6 +38,43 @@ interface DailyCoachingProps {
   videos?: YouTubeVideoData[]
 }
 
+/**
+ * Build a YouTube watch URL with UTM tracking parameters that will be
+ * forwarded to /mind-track when the user comes back to log today's record.
+ *
+ * NOTE: YouTube ignores extra query params on watch URLs, but they are
+ * preserved in the referrer / Lovable email click logs, which is enough
+ * for downstream analytics to attribute the click to a specific videoId
+ * + day.
+ */
+const buildYouTubeUrl = (videoId: string, dayLabel: string) => {
+  const params = new URLSearchParams({
+    v: videoId,
+    utm_source: 'daily_email',
+    utm_medium: 'email',
+    utm_campaign: 'daily_coaching_video',
+    utm_content: videoId,
+    aih_day: dayLabel,
+  })
+  return `https://www.youtube.com/watch?${params.toString()}`
+}
+
+const buildMindTrackUrl = (
+  dayLabel: string,
+  source: 'cta' | 'after_video',
+  videoId?: string,
+) => {
+  const params = new URLSearchParams({
+    utm_source: 'daily_email',
+    utm_medium: 'email',
+    utm_campaign: 'daily_coaching',
+    utm_content: source,
+    day: dayLabel,
+  })
+  if (videoId) params.set('after_video', videoId)
+  return `${SITE_URL}/mind-track/dashboard?${params.toString()}`
+}
+
 const DailyCoachingEmail = ({
   nickname = '회원',
   dayNumber = 1,
@@ -52,6 +89,7 @@ const DailyCoachingEmail = ({
 }: DailyCoachingProps) => {
   const progressPct = Math.min(100, Math.round((dayNumber / totalDays) * 100))
   const dayLabel = String(dayNumber).padStart(2, '0')
+  const firstVideoId = videos?.[0]?.videoId
 
   return (
     <Html lang="ko" dir="ltr">
@@ -109,30 +147,50 @@ const DailyCoachingEmail = ({
               <Text style={videoIntro}>오늘 미션과 가장 잘 맞는 영상을 골랐어요. 보고 난 뒤 마음의 변화를 한 줄로 기록해 보세요.</Text>
               {videos.map((v) => {
                 const thumb = v.thumbnail || `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`
+                const watchUrl = buildYouTubeUrl(v.videoId, dayLabel)
                 return (
-                  <Link key={v.videoId} href={`https://www.youtube.com/watch?v=${v.videoId}`} style={videoCard}>
-                    <table cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse' }}>
-                      <tbody>
-                        <tr>
-                          <td style={{ width: '140px', verticalAlign: 'top', paddingRight: '14px' }}>
-                            <Img src={thumb} alt={v.title} width="140" height="80" style={thumbStyle} />
-                          </td>
-                          <td style={{ verticalAlign: 'top' }}>
-                            <Text style={videoTitle}>{v.title}</Text>
-                            <Text style={videoChannel}>{v.channelTitle}</Text>
-                            {v.reason && <Text style={videoReason}>{v.reason}</Text>}
-                            <Text style={videoPlayHint}>▶ YouTube에서 재생</Text>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </Link>
+                  <Section key={v.videoId} style={videoCard}>
+                    {/* Thumbnail (full-width, stacks above text on mobile) */}
+                    <Link href={watchUrl} style={videoThumbLink}>
+                      <Img
+                        src={thumb}
+                        alt={v.title}
+                        width="512"
+                        height="288"
+                        style={thumbStyle}
+                      />
+                    </Link>
+
+                    {/* Title + meta */}
+                    <Section style={videoTextBlock}>
+                      <Link href={watchUrl} style={videoTitleLink}>
+                        <Text style={videoTitle}>{v.title}</Text>
+                      </Link>
+                      <Text style={videoChannel}>{v.channelTitle}</Text>
+                      {v.reason && <Text style={videoReason}>{v.reason}</Text>}
+
+                      <Section style={videoActionRow}>
+                        <Link href={watchUrl} style={videoPrimaryBtn}>
+                          ▶ YouTube에서 재생
+                        </Link>
+                        <Link
+                          href={buildMindTrackUrl(dayLabel, 'after_video', v.videoId)}
+                          style={videoSecondaryBtn}
+                        >
+                          시청 후 기록하기 →
+                        </Link>
+                      </Section>
+                    </Section>
+                  </Section>
                 )
               })}
             </Section>
           )}
 
-          <Button href={`${SITE_URL}/mind-track?utm_source=daily_email&utm_medium=email&utm_campaign=daily_coaching&day=${dayLabel}`} style={ctaButton}>
+          <Button
+            href={buildMindTrackUrl(dayLabel, 'cta', firstVideoId)}
+            style={ctaButton}
+          >
             오늘의 기록 남기기 →
           </Button>
 
@@ -283,33 +341,40 @@ const videoCard = {
   background: '#ffffff',
   border: '1px solid #e2e8f0',
   borderRadius: '12px',
-  padding: '12px',
-  marginBottom: '10px',
+  padding: '0',
+  marginBottom: '14px',
+  overflow: 'hidden' as const,
 }
+const videoThumbLink = { display: 'block', textDecoration: 'none' }
 const thumbStyle = {
-  width: '140px',
-  height: '80px',
+  width: '100%',
+  height: 'auto',
+  maxHeight: '288px',
   objectFit: 'cover' as const,
-  borderRadius: '8px',
   display: 'block',
+  borderRadius: '0',
 }
+const videoTextBlock = { padding: '14px 16px 16px' }
+const videoTitleLink = { textDecoration: 'none', color: '#0f172a' }
 const videoTitle = {
-  fontSize: '14px',
+  fontSize: '15px',
   fontWeight: 600,
   color: '#0f172a',
-  lineHeight: 1.4,
-  margin: '0 0 4px',
+  lineHeight: 1.45,
+  margin: '0 0 6px',
+  wordBreak: 'keep-all' as const,
 }
 const videoChannel = {
-  fontSize: '11px',
+  fontSize: '12px',
   color: '#64748b',
-  margin: '0 0 6px',
+  margin: '0 0 8px',
 }
 const videoReason = {
-  fontSize: '11px',
-  color: '#94a3b8',
-  lineHeight: 1.5,
-  margin: 0,
+  fontSize: '12px',
+  color: '#475569',
+  lineHeight: 1.55,
+  margin: '0 0 12px',
+  wordBreak: 'keep-all' as const,
 }
 const videoIntro = {
   fontSize: '12px',
@@ -317,11 +382,29 @@ const videoIntro = {
   lineHeight: 1.6,
   margin: '0 0 12px',
 }
-const videoPlayHint = {
-  fontSize: '11px',
-  color: '#0f172a',
+const videoActionRow = { margin: '4px 0 0' }
+const videoPrimaryBtn = {
+  display: 'inline-block',
+  background: '#ef4444',
+  color: '#ffffff',
+  textDecoration: 'none',
+  padding: '9px 14px',
+  borderRadius: '8px',
+  fontSize: '12px',
   fontWeight: 600,
-  margin: '6px 0 0',
+  marginRight: '8px',
+  marginBottom: '6px',
+}
+const videoSecondaryBtn = {
+  display: 'inline-block',
+  background: '#0f172a',
+  color: '#ffffff',
+  textDecoration: 'none',
+  padding: '9px 14px',
+  borderRadius: '8px',
+  fontSize: '12px',
+  fontWeight: 600,
+  marginBottom: '6px',
 }
 const summaryBlock = { background: '#0f172a', borderRadius: '12px', padding: '18px 20px', margin: '0 0 24px' }
 const summaryEyebrow = { fontSize: '11px', letterSpacing: '0.16em', color: '#94a3b8', textTransform: 'uppercase' as const, margin: '0 0 6px' }

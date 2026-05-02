@@ -25,19 +25,27 @@ export function useDailyContent(day: number) {
     setLoading(true);
     setContent(getDefaultDailyContent(day));
 
-    supabase
-      .from('mind_track_daily_content_overrides')
-      .select('assessment, video, action, is_active')
-      .eq('day_number', day)
-      .eq('is_active', true)
-      .maybeSingle()
-      .then(({ data }) => {
+    // 안전 모드: 어떤 RLS/네트워크 오류도 사용자 화면을 깨지 않도록 try/catch
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from('mind_track_daily_content_overrides')
+          .select('assessment, video, action, is_active')
+          .eq('day_number', day)
+          .eq('is_active', true)
+          .maybeSingle();
         if (cancelled) return;
-        setContent(
-          mergeDailyOverride(day, data as never),
-        );
-        setLoading(false);
-      });
+        if (error) {
+          console.warn('[useDailyContent] override fetch failed', error);
+        } else {
+          setContent(mergeDailyOverride(day, data as never));
+        }
+      } catch (e) {
+        console.warn('[useDailyContent] unexpected error', e);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
 
     return () => {
       cancelled = true;

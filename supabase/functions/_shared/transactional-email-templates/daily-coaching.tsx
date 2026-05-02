@@ -106,24 +106,29 @@ const DailyCoachingEmail = ({
           {videos && videos.length > 0 && (
             <Section style={videosBlock}>
               <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
-              {videos.map((v) => (
-                <Link key={v.videoId} href={`https://www.youtube.com/watch?v=${v.videoId}`} style={videoCard}>
-                  <table cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <tbody>
-                      <tr>
-                        <td style={{ width: '140px', verticalAlign: 'top', paddingRight: '14px' }}>
-                          <Img src={v.thumbnail} alt={v.title} width="140" height="80" style={thumbStyle} />
-                        </td>
-                        <td style={{ verticalAlign: 'top' }}>
-                          <Text style={videoTitle}>{v.title}</Text>
-                          <Text style={videoChannel}>{v.channelTitle}</Text>
-                          {v.reason && <Text style={videoReason}>{v.reason}</Text>}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </Link>
-              ))}
+              <Text style={videoIntro}>오늘 미션과 가장 잘 맞는 영상을 골랐어요. 보고 난 뒤 마음의 변화를 한 줄로 기록해 보세요.</Text>
+              {videos.map((v) => {
+                const thumb = v.thumbnail || `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`
+                return (
+                  <Link key={v.videoId} href={`https://www.youtube.com/watch?v=${v.videoId}`} style={videoCard}>
+                    <table cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <tbody>
+                        <tr>
+                          <td style={{ width: '140px', verticalAlign: 'top', paddingRight: '14px' }}>
+                            <Img src={thumb} alt={v.title} width="140" height="80" style={thumbStyle} />
+                          </td>
+                          <td style={{ verticalAlign: 'top' }}>
+                            <Text style={videoTitle}>{v.title}</Text>
+                            <Text style={videoChannel}>{v.channelTitle}</Text>
+                            {v.reason && <Text style={videoReason}>{v.reason}</Text>}
+                            <Text style={videoPlayHint}>▶ YouTube에서 재생</Text>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </Link>
+                )
+              })}
             </Section>
           )}
 

@@ -638,7 +638,7 @@ const MindTrack: React.FC = () => {
                     <div className="flex items-center justify-between gap-2 flex-wrap pt-2 border-t border-[#C8B88A]/15">
                       <div className="flex items-center gap-1.5 text-[11px] text-foreground/55">
                         <FileText className="w-3 h-3" />
-                        <span>실제 PDF 6장 샘플 · 닉네임으로 자동 채움</span>
+                        <span>실제 PDF {SAMPLE_CHAPTER_COUNT}장 샘플 · 닉네임으로 자동 채움</span>
                       </div>
                       <Button
                         variant="outline"
@@ -647,7 +647,7 @@ const MindTrack: React.FC = () => {
                         className="rounded-full border-[#C8B88A]/50 text-[#8a7a4d] hover:bg-[#C8B88A]/10 h-8 text-xs"
                       >
                         <Eye className="w-3.5 h-3.5 mr-1.5" />
-                        워크북 샘플 6장 미리보기
+                        워크북 샘플 {SAMPLE_CHAPTER_COUNT}장 미리보기
                       </Button>
                     </div>
                   </div>

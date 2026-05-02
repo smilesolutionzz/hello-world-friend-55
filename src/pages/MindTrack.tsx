@@ -1131,7 +1131,7 @@ const MindTrack: React.FC = () => {
                     환불 정책은 어떻게 되나요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    결제 후 7일 이내, 워크북 진행률 20% 미만이면 전액 환불이 가능합니다. 그 외 기준은 결제 페이지 안내를 따릅니다.
+                    결제 후 {REFUND_WINDOW_DAYS}일 이내, 워크북 진행률 20% 미만이면 전액 환불이 가능합니다. 그 외 기준은 결제 페이지 약관을 따릅니다.
                   </AccordionContent>
                 </AccordionItem>
 

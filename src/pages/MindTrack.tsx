@@ -920,8 +920,8 @@ const MindTrack: React.FC = () => {
 
                     <div className="pt-2 flex items-center justify-between flex-wrap gap-3">
                       <div>
-                        <div className="text-2xl font-bold text-slate-900">₩19,900</div>
-                        <div className="text-xs text-slate-500 line-through">₩39,800 · 14일 환불</div>
+                        <div className="text-2xl font-bold text-slate-900">₩{TRACK_PRICE.toLocaleString()}</div>
+                        <div className="text-xs text-slate-500 line-through">₩{TRACK_ORIGINAL_PRICE.toLocaleString()} · {REFUND_WINDOW_DAYS}일 환불</div>
                       </div>
                       <Button
                         onClick={() => {

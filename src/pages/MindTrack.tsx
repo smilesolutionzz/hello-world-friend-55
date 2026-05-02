@@ -442,7 +442,73 @@ const MindTrack: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#C8B88A]/20">
+                  {/* 워크북 샘플 — 결제 전환 부스터 */}
+                  <div className="mt-5 rounded-2xl border border-[#C8B88A]/30 bg-gradient-to-br from-[#FBF9F2] to-white p-4 md:p-5">
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <div className="w-9 h-9 rounded-xl bg-[#C8B88A]/20 flex items-center justify-center shrink-0">
+                          <BookOpen className="w-4.5 h-4.5 text-[#8a7a4d]" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
+                            Workbook Preview
+                          </p>
+                          <h3 className="text-base md:text-lg font-bold text-foreground break-keep leading-snug">
+                            30일 후 손에 남는 워크북 (PDF · A4 30+면)
+                          </h3>
+                          <p className="text-xs text-foreground/60 mt-0.5 break-keep">
+                            매일 체크인이 한 권의 책으로 자동 정리돼요. 표지부터 졸업장까지 7개 챕터.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 챕터 목차 — 7장 한눈에 */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+                      {WORKBOOK_CHAPTERS.slice(0, 7).map((ch, idx) => {
+                        const Icon = ch.icon;
+                        return (
+                          <div
+                            key={ch.id}
+                            className="relative rounded-xl border border-[#C8B88A]/25 bg-white px-2.5 py-2 flex items-start gap-1.5"
+                          >
+                            <div className="w-6 h-6 rounded-md bg-[#FAF8F2] flex items-center justify-center shrink-0">
+                              <Icon className="w-3 h-3 text-[#8a7a4d]" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-[9px] font-mono text-[#C8B88A] tracking-wider">
+                                CH {ch.chapterNo}
+                              </p>
+                              <p className="text-[11px] font-semibold text-foreground/85 leading-tight break-keep">
+                                {ch.shortTitle}
+                              </p>
+                            </div>
+                            {idx > 0 && (
+                              <Lock className="absolute top-1.5 right-1.5 w-2.5 h-2.5 text-[#C8B88A]/60" />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 flex-wrap pt-2 border-t border-[#C8B88A]/15">
+                      <div className="flex items-center gap-1.5 text-[11px] text-foreground/55">
+                        <FileText className="w-3 h-3" />
+                        <span>실제 PDF 6장 샘플 · 닉네임으로 자동 채움</span>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSampleOpen(true)}
+                        className="rounded-full border-[#C8B88A]/50 text-[#8a7a4d] hover:bg-[#C8B88A]/10 h-8 text-xs"
+                      >
+                        <Eye className="w-3.5 h-3.5 mr-1.5" />
+                        워크북 샘플 6장 미리보기
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 pt-4 mt-4 border-t border-[#C8B88A]/20">
                     <div className="flex items-center gap-2 text-xs text-foreground/60">
                       <Shield className="w-3.5 h-3.5" />
                       <span>{isLoggedIn ? '구독 후 이용 가능' : '로그인 후 결제하면 즉시 시작'}</span>

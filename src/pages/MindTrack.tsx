@@ -617,7 +617,10 @@ const MindTrack: React.FC = () => {
                       <span>{isLoggedIn ? '구독 후 이용 가능' : '로그인 후 결제하면 즉시 시작'}</span>
                     </div>
                     <Button
-                      onClick={() => navigate(isLoggedIn ? '/token-subscription' : '/auth')}
+                      onClick={() => {
+                        handleStartCtaClick('lock_card_cta');
+                        navigate(isLoggedIn ? '/token-subscription' : '/auth');
+                      }}
                       size="sm"
                       className="rounded-full bg-[#1a1a1a] text-white hover:bg-black"
                     >

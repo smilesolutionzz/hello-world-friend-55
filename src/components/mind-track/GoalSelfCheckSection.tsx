@@ -1,16 +1,18 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, AlertTriangle, ArrowRight, Sparkles } from "lucide-react";
+import { AlertTriangle, ArrowRight, Sparkles, Share2, Copy, Check, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { trackEvent } from "@/components/common/Analytics";
+import { saveSelfCheck, type SelfCheckLevel } from "@/lib/mindTrackSelfCheck";
+import { toast } from "sonner";
 
 // 선택한 목표에 맞춰 표시되는 5문항 셀프체크 위젯.
 // 점수 0~10 → 안정 / 주의 / 도움 권장 3단계.
 // 결과는 onComplete(level)로 상위에 전달 → 자동 전문가 제안 배너 트리거.
 
-export type GoalCheckLevel = "calm" | "watch" | "support";
+export type GoalCheckLevel = SelfCheckLevel;
 
 interface GoalCheckDef {
   goalId: string;
@@ -156,7 +158,11 @@ const GOAL_CHECKS: Record<string, GoalCheckDef> = {
 
 interface Props {
   goalId: string | null;
-  onComplete?: (level: GoalCheckLevel, goalId: string) => void;
+  onComplete?: (
+    level: GoalCheckLevel,
+    goalId: string,
+    extra?: { shareId?: string; score: number; max: number; goalTitle: string },
+  ) => void;
 }
 
 export default function GoalSelfCheckSection({ goalId, onComplete }: Props) {
@@ -164,11 +170,16 @@ export default function GoalSelfCheckSection({ goalId, onComplete }: Props) {
   const def = goalId ? GOAL_CHECKS[goalId] : null;
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [shareId, setShareId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // 목표가 바뀌면 상태 초기화
-  useMemo(() => {
+  useEffect(() => {
     setAnswers({});
     setSubmitted(false);
+    setShareId(null);
+    setCopied(false);
   }, [goalId]);
 
   if (!def) return null;
@@ -186,16 +197,74 @@ export default function GoalSelfCheckSection({ goalId, onComplete }: Props) {
     support: { label: "도움 권장", className: "border-rose-200 bg-rose-50 text-rose-700" },
   }[level];
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!allAnswered) return;
     setSubmitted(true);
+    setSaving(true);
     trackEvent("mt_goal_check_complete", {
       goal_id: def.goalId,
       level,
       score: total,
       max,
     });
-    onComplete?.(level, def.goalId);
+    // DB 저장 (실패해도 결과 화면은 보여줌)
+    const saved = await saveSelfCheck({
+      goalId: def.goalId,
+      goalTitle: def.title,
+      level,
+      score: total,
+      maxScore: max,
+      questions: def.questions,
+      answers: def.questions.map((_, i) => answers[i] ?? 0),
+      summary: def.copy[level],
+    });
+    setSaving(false);
+    if (saved?.share_id) setShareId(saved.share_id);
+    onComplete?.(level, def.goalId, {
+      shareId: saved?.share_id,
+      score: total,
+      max,
+      goalTitle: def.title,
+    });
+  };
+
+  const shareUrl = shareId ? `${window.location.origin}/mind-track/check/${shareId}` : "";
+
+  const handleShare = async () => {
+    if (!shareUrl) return;
+    trackEvent("mt_goal_check_share", { goal_id: def.goalId, level });
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${def.title} 결과 (${meta.label})`,
+          text: `30일 마음 트랙 ${def.title}: ${meta.label} · ${total}/${max}`,
+          url: shareUrl,
+        });
+        return;
+      } catch { /* fallthrough */ }
+    }
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      toast.success("공유 링크가 복사되었어요");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("복사에 실패했어요. 직접 주소를 복사해주세요.");
+    }
+  };
+
+  const goExpertWithPrefill = (urgent: boolean) => {
+    trackEvent("mt_goal_check_cta_expert", { goal_id: def.goalId, level });
+    const params = new URLSearchParams({
+      from: "self_check",
+      goal: def.goalId,
+      level,
+      score: String(total),
+      max: String(max),
+    });
+    if (shareId) params.set("check", shareId);
+    if (urgent) params.set("urgent", "true");
+    navigate(`/expert-hiring?${params.toString()}`);
   };
 
   return (
@@ -260,6 +329,51 @@ export default function GoalSelfCheckSection({ goalId, onComplete }: Props) {
             <div className={`rounded-2xl border p-4 ${meta.className}`}>
               <p className="text-sm font-medium break-keep">{def.copy[level]}</p>
             </div>
+
+            {/* 공유 / 상세 보기 */}
+            <div className="flex gap-2 flex-wrap">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleShare}
+                disabled={!shareId || saving}
+                className="rounded-full text-xs"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 mr-1.5" /> : <Share2 className="w-3.5 h-3.5 mr-1.5" />}
+                {saving ? "저장 중..." : copied ? "복사됨" : "결과 공유"}
+              </Button>
+              {shareId && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    trackEvent("mt_goal_check_view_detail", { goal_id: def.goalId, level });
+                    navigate(`/mind-track/check/${shareId}`);
+                  }}
+                  className="rounded-full text-xs text-slate-500 hover:text-slate-800"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
+                  상세 결과 페이지
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={async () => {
+                  if (!shareUrl) return;
+                  await navigator.clipboard.writeText(shareUrl);
+                  setCopied(true);
+                  toast.success("링크 복사 완료");
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                disabled={!shareId}
+                className="rounded-full text-xs text-slate-500 hover:text-slate-800"
+              >
+                <Copy className="w-3.5 h-3.5 mr-1.5" />
+                링크
+              </Button>
+            </div>
+
             <div className="flex gap-2 flex-wrap">
               <Button
                 onClick={() => {
@@ -274,10 +388,7 @@ export default function GoalSelfCheckSection({ goalId, onComplete }: Props) {
               {level !== "calm" && (
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    trackEvent("mt_goal_check_cta_expert", { goal_id: def.goalId, level });
-                    navigate(level === "support" ? "/expert-hiring?urgent=true" : "/expert-hiring");
-                  }}
+                  onClick={() => goExpertWithPrefill(level === "support")}
                   className="rounded-2xl"
                 >
                   <AlertTriangle className="w-4 h-4 mr-1.5" />

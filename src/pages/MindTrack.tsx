@@ -1223,6 +1223,7 @@ const MindTrack: React.FC = () => {
       <SmartExpertSuggestion
         selfCheckLevel={selfCheckLevel}
         selfCheckGoalId={selfCheckGoalId}
+        activeGoalId={selectedGoal}
         reportRiskHigh={
           !!report &&
           (report.currentState?.stress >= 70 ||

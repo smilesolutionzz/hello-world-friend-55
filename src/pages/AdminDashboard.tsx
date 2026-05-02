@@ -107,6 +107,10 @@ export default function AdminDashboard() {
               <Heart className="h-3 w-3" />
               마음트랙
             </TabsTrigger>
+            <TabsTrigger value="workbook_funnel" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <BookOpen className="h-3 w-3" />
+              워크북 퍼널
+            </TabsTrigger>
             <TabsTrigger value="notifications" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <Bell className="h-3 w-3" />
               알림

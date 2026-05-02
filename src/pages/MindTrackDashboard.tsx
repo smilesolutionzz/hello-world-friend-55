@@ -16,6 +16,7 @@ import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { supabase } from "@/integrations/supabase/client";
 import { getDayCopy, calcMindTrackCurrentDay } from "@/lib/mindTrackDayCopy";
 import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirstTimeOnboarding";
+import MindTrackTodayValueStack from "@/components/mind-track/MindTrackTodayValueStack";
 import { toast } from "sonner";
 
 interface Enrollment {
@@ -337,6 +338,9 @@ export default function MindTrackDashboard() {
             </motion.div>
           </div>
         </section>
+
+        {/* 오늘의 가치 스택 — 검사 + 추천 영상 + 5분 액션 */}
+        <MindTrackTodayValueStack day={day} />
 
         {/* 빠른 메뉴 */}
         <section className="px-4 pb-6">

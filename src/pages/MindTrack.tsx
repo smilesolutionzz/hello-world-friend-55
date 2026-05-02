@@ -80,6 +80,28 @@ const MindTrack: React.FC = () => {
     baselines?: any[];
   }>({});
   const sampleOpenedAtRef = React.useRef<number | null>(null);
+  const sampleSeedRef = React.useRef<typeof sampleSeed>({});
+
+  // helper: build personalization flags from current seed
+  const buildPersonalizationFlags = () => {
+    const s = sampleSeedRef.current || {};
+    const checkinCount = s.checkins?.length || 0;
+    const baselineCount = s.baselines?.length || 0;
+    return {
+      has_nickname: !!s.nickname && s.nickname !== '당신',
+      has_track_theme: !!s.trackTheme,
+      has_checkins: checkinCount > 0,
+      has_baselines: baselineCount > 0,
+      checkin_count: checkinCount,
+      baseline_count: baselineCount,
+      current_day: s.currentDay ?? 1,
+      personalization_score:
+        (s.nickname && s.nickname !== '당신' ? 1 : 0) +
+        (s.trackTheme ? 1 : 0) +
+        (checkinCount > 0 ? 1 : 0) +
+        (baselineCount > 0 ? 1 : 0),
+    };
+  };
 
   // 현재 URL이 별칭(/mind-track-workbook)인지 표준(/mind-track/workbook)인지 감지해
   // 워크북 이동 시 같은 형식 유지 — referrer 기반 일관성 확보
@@ -196,7 +218,9 @@ const MindTrack: React.FC = () => {
     });
     // 비로그인: 모달만 샘플로 열기
     if (!user?.id) {
-      setSampleSeed({ currentDay: 1 });
+      const seed = { currentDay: 1 };
+      sampleSeedRef.current = seed;
+      setSampleSeed(seed);
       setSampleOpen(true);
       return;
     }
@@ -251,7 +275,9 @@ const MindTrack: React.FC = () => {
         user?.email?.split('@')[0] ||
         '당신';
 
-      setSampleSeed({ nickname, trackTheme, currentDay, checkins, baselines });
+      const seed = { nickname, trackTheme, currentDay, checkins, baselines };
+      sampleSeedRef.current = seed;
+      setSampleSeed(seed);
     } catch (e) {
       console.warn('[mind-track] sample seed load failed', e);
     }
@@ -265,6 +291,7 @@ const MindTrack: React.FC = () => {
         dwell_seconds: Math.round(dwellMs / 1000),
         viewed_full: dwellMs > 8000,
         logged_in: !!user?.id,
+        ...buildPersonalizationFlags(),
       });
       sampleOpenedAtRef.current = null;
     }
@@ -272,11 +299,15 @@ const MindTrack: React.FC = () => {
   };
 
   const handleStartCtaClick = (location: string) => {
+    const dwellMs = sampleOpenedAtRef.current ? Date.now() - sampleOpenedAtRef.current : 0;
     trackWorkbookFunnel('mt_workbook_sample_cta_click', {
-      cta_location: location,
+      cta_location: location, // 'lock_card_cta' | 'sample_modal_cta'
       sample_open: sampleOpen,
+      viewed_full: dwellMs > 8000,
+      dwell_seconds: Math.round(dwellMs / 1000),
       logged_in: !!user?.id,
       price: TRACK_PRICE,
+      ...buildPersonalizationFlags(),
     });
   };
 

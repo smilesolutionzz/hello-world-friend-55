@@ -2,10 +2,18 @@ import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, BookOpen, TrendingUp, MousePointerClick, Eye, Filter } from "lucide-react";
+import {
+  Loader2, BookOpen, TrendingUp, MousePointerClick, Eye, Filter,
+  Sparkles, ChevronRight,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
+} from "recharts";
 
 type RangeKey = "7d" | "30d" | "all";
+type CtaLocFilter = "all" | "lock_card_cta" | "sample_modal_cta";
+type ViewedFullFilter = "all" | "yes" | "no";
 
 const RANGE_OPTIONS: { key: RangeKey; label: string; days: number | null }[] = [
   { key: "7d", label: "최근 7일", days: 7 },
@@ -32,39 +40,26 @@ interface SegmentStats {
   open: number;
   complete: number;
   cta: number;
-  openToComplete: number; // %
-  openToCta: number; // %
-  completeToCta: number; // %
+  openToComplete: number;
+  openToCta: number;
+  completeToCta: number;
 }
 
 function emptySeg(label: string): SegmentStats {
-  return {
-    label,
-    open: 0,
-    complete: 0,
-    cta: 0,
-    openToComplete: 0,
-    openToCta: 0,
-    completeToCta: 0,
-  };
+  return { label, open: 0, complete: 0, cta: 0, openToComplete: 0, openToCta: 0, completeToCta: 0 };
 }
-
-function pct(n: number, d: number) {
-  if (!d) return 0;
-  return Math.round((n / d) * 1000) / 10;
-}
-
-function fillRates(s: SegmentStats): SegmentStats {
-  return {
-    ...s,
-    openToComplete: pct(s.complete, s.open),
-    openToCta: pct(s.cta, s.open),
-    completeToCta: pct(s.cta, s.complete),
-  };
-}
+const pct = (n: number, d: number) => (d ? Math.round((n / d) * 1000) / 10 : 0);
+const fillRates = (s: SegmentStats): SegmentStats => ({
+  ...s,
+  openToComplete: pct(s.complete, s.open),
+  openToCta: pct(s.cta, s.open),
+  completeToCta: pct(s.cta, s.complete),
+});
 
 export default function WorkbookFunnelDashboard() {
   const [range, setRange] = useState<RangeKey>("30d");
+  const [ctaLoc, setCtaLoc] = useState<CtaLocFilter>("all");
+  const [viewedFull, setViewedFull] = useState<ViewedFullFilter>("all");
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<RawEvent[]>([]);
 
@@ -79,7 +74,7 @@ export default function WorkbookFunnelDashboard() {
           .select("user_id, session_id, event_name, event_properties, created_at")
           .in("event_name", [EVENTS.open, EVENTS.complete, EVENTS.cta])
           .order("created_at", { ascending: false })
-          .limit(5000);
+          .limit(10000);
 
         const opt = RANGE_OPTIONS.find((r) => r.key === range);
         if (opt?.days) {
@@ -97,11 +92,29 @@ export default function WorkbookFunnelDashboard() {
         if (!cancelled) setLoading(false);
       }
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [range]);
 
+  // ─── Filter events by cta_location & viewed_full ──────────────────────
+  // cta_location filter only applies to cta events; for funnel rates we keep
+  // open/complete events unfiltered (they have no cta_location).
+  // viewed_full applies to complete + cta events.
+  const filteredEvents = useMemo(() => {
+    return events.filter((ev) => {
+      const props = ev.event_properties || {};
+      if (ev.event_name === EVENTS.cta && ctaLoc !== "all") {
+        if ((props.cta_location || "") !== ctaLoc) return false;
+      }
+      if (viewedFull !== "all" && ev.event_name !== EVENTS.open) {
+        const vf = !!props.viewed_full;
+        if (viewedFull === "yes" && !vf) return false;
+        if (viewedFull === "no" && vf) return false;
+      }
+      return true;
+    });
+  }, [events, ctaLoc, viewedFull]);
+
+  // ─── Segment stats ────────────────────────────────────────────────────
   const stats = useMemo(() => {
     const all = emptySeg("전체");
     const loggedIn = emptySeg("로그인");
@@ -110,39 +123,98 @@ export default function WorkbookFunnelDashboard() {
     const tablet = emptySeg("태블릿");
     const desktop = emptySeg("데스크톱");
 
-    for (const ev of events) {
+    for (const ev of filteredEvents) {
       const props = ev.event_properties || {};
       const isLoggedIn = !!props.logged_in || !!ev.user_id;
       const device = (props.device as string) || "desktop";
-
       const inc = (seg: SegmentStats) => {
         if (ev.event_name === EVENTS.open) seg.open += 1;
         else if (ev.event_name === EVENTS.complete) seg.complete += 1;
         else if (ev.event_name === EVENTS.cta) seg.cta += 1;
       };
-
       inc(all);
       inc(isLoggedIn ? loggedIn : guest);
       if (device === "mobile") inc(mobile);
       else if (device === "tablet") inc(tablet);
       else inc(desktop);
     }
-
     return {
       all: fillRates(all),
       byLogin: [fillRates(loggedIn), fillRates(guest)],
       byDevice: [fillRates(mobile), fillRates(tablet), fillRates(desktop)],
     };
-  }, [events]);
+  }, [filteredEvents]);
+
+  // ─── Daily series (Open / Complete / CTA + rate %) ────────────────────
+  const dailySeries = useMemo(() => {
+    const days = new Map<string, { date: string; open: number; complete: number; cta: number }>();
+    for (const ev of filteredEvents) {
+      const day = ev.created_at.slice(0, 10); // YYYY-MM-DD
+      if (!days.has(day)) days.set(day, { date: day, open: 0, complete: 0, cta: 0 });
+      const row = days.get(day)!;
+      if (ev.event_name === EVENTS.open) row.open += 1;
+      else if (ev.event_name === EVENTS.complete) row.complete += 1;
+      else if (ev.event_name === EVENTS.cta) row.cta += 1;
+    }
+    return Array.from(days.values())
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .map((r) => ({
+        ...r,
+        // 표시용 짧은 날짜
+        label: r.date.slice(5),
+        ctaRate: r.open ? Math.round((r.cta / r.open) * 1000) / 10 : 0,
+        completeRate: r.open ? Math.round((r.complete / r.open) * 1000) / 10 : 0,
+      }));
+  }, [filteredEvents]);
+
+  // ─── Personalization impact: opens with personalization flag → cta rate
+  // Group cta_click events by personalization_score (or by individual flags)
+  // and compare their CTA rate vs. the corresponding open population.
+  const personalizationImpact = useMemo(() => {
+    const flagKeys = ["has_nickname", "has_track_theme", "has_checkins", "has_baselines"] as const;
+    const result: { flag: string; label: string; with_open: number; with_cta: number; without_open: number; without_cta: number; uplift: number }[] = [];
+
+    for (const flag of flagKeys) {
+      let withOpen = 0, withCta = 0, withoutOpen = 0, withoutCta = 0;
+      for (const ev of filteredEvents) {
+        const props = ev.event_properties || {};
+        // We measure on cta + complete events because open events fire BEFORE
+        // personalization data loads. Use complete events to estimate the
+        // personalized population baseline.
+        if (ev.event_name === EVENTS.complete) {
+          if (props[flag]) withOpen += 1; else withoutOpen += 1;
+        }
+        if (ev.event_name === EVENTS.cta) {
+          if (props[flag]) withCta += 1; else withoutCta += 1;
+        }
+      }
+      const withRate = withOpen ? (withCta / withOpen) * 100 : 0;
+      const withoutRate = withoutOpen ? (withoutCta / withoutOpen) * 100 : 0;
+      result.push({
+        flag,
+        label: ({
+          has_nickname: "닉네임 적용",
+          has_track_theme: "목표 테마 적용",
+          has_checkins: "실 체크인 데이터",
+          has_baselines: "베이스라인 데이터",
+        } as any)[flag],
+        with_open: withOpen,
+        with_cta: withCta,
+        without_open: withoutOpen,
+        without_cta: withoutCta,
+        uplift: Math.round((withRate - withoutRate) * 10) / 10,
+      });
+    }
+    return result;
+  }, [filteredEvents]);
 
   const dwellAvg = useMemo(() => {
-    const dwells = events
+    const dwells = filteredEvents
       .filter((e) => e.event_name === EVENTS.complete)
       .map((e) => Number(e.event_properties?.dwell_seconds))
       .filter((n) => Number.isFinite(n) && n > 0);
-    if (!dwells.length) return 0;
-    return Math.round(dwells.reduce((a, b) => a + b, 0) / dwells.length);
-  }, [events]);
+    return dwells.length ? Math.round(dwells.reduce((a, b) => a + b, 0) / dwells.length) : 0;
+  }, [filteredEvents]);
 
   return (
     <div className="space-y-6">
@@ -154,7 +226,7 @@ export default function WorkbookFunnelDashboard() {
             워크북 미리보기 전환 퍼널
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            열기 → 완독 → 결제 클릭의 전환율을 로그인 상태와 디바이스별로 추적합니다.
+            열기 → 완독 → 결제 클릭의 전환율을 로그인/디바이스/CTA 위치/완독 여부로 분석합니다.
           </p>
         </div>
         <div className="flex items-center gap-1 bg-muted rounded-full p-1">
@@ -173,6 +245,33 @@ export default function WorkbookFunnelDashboard() {
         </div>
       </div>
 
+      {/* Secondary filters */}
+      <div className="flex items-center gap-3 flex-wrap text-xs">
+        <FilterGroup
+          label="CTA 위치"
+          value={ctaLoc}
+          onChange={(v) => setCtaLoc(v as CtaLocFilter)}
+          options={[
+            { v: "all", l: "전체" },
+            { v: "lock_card_cta", l: "락 카드" },
+            { v: "sample_modal_cta", l: "모달 내" },
+          ]}
+        />
+        <FilterGroup
+          label="완독 여부"
+          value={viewedFull}
+          onChange={(v) => setViewedFull(v as ViewedFullFilter)}
+          options={[
+            { v: "all", l: "전체" },
+            { v: "yes", l: "완독" },
+            { v: "no", l: "이탈" },
+          ]}
+        />
+        <Badge variant="outline" className="text-[10px] ml-auto">
+          이벤트 {filteredEvents.length.toLocaleString()}건 · 평균 체류 {dwellAvg}s
+        </Badge>
+      </div>
+
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
@@ -181,22 +280,111 @@ export default function WorkbookFunnelDashboard() {
         <>
           {/* Overall funnel */}
           <Card className="bg-white rounded-2xl p-6 border">
+            <h3 className="text-sm font-bold text-foreground mb-4">전체 퍼널</h3>
+            <FunnelBar stats={stats.all} />
+          </Card>
+
+          {/* Daily trend chart */}
+          <Card className="bg-white rounded-2xl p-6 border">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-foreground">전체 퍼널</h3>
+              <h3 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+                <TrendingUp className="w-4 h-4 text-[#8a7a4d]" />
+                일자별 추이 · 열기/완독/결제 클릭
+              </h3>
               <Badge variant="outline" className="text-[10px]">
-                평균 체류 {dwellAvg}s
+                {dailySeries.length}일
               </Badge>
             </div>
-            <FunnelBar stats={stats.all} />
+            <div className="h-64 -ml-2">
+              {dailySeries.length === 0 ? (
+                <div className="h-full flex items-center justify-center text-xs text-muted-foreground">
+                  데이터 없음
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={dailySeries} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
+                    <CartesianGrid stroke="#eee" strokeDasharray="3 3" />
+                    <XAxis dataKey="label" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} />
+                    <Tooltip
+                      contentStyle={{ fontSize: 11, borderRadius: 8 }}
+                      labelFormatter={(l) => `${l} (이벤트 수)`}
+                    />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    <Line type="monotone" dataKey="open" stroke="#C8B88A" strokeWidth={2} name="열기" dot={false} />
+                    <Line type="monotone" dataKey="complete" stroke="#8a7a4d" strokeWidth={2} name="완독" dot={false} />
+                    <Line type="monotone" dataKey="cta" stroke="#059669" strokeWidth={2} name="결제 클릭" dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+
+            {/* Conversion rate trend */}
+            <div className="h-48 -ml-2 mt-4 pt-4 border-t">
+              <p className="text-[11px] text-muted-foreground mb-2 ml-2">전환율 추이 (%)</p>
+              {dailySeries.length === 0 ? (
+                <div className="h-full flex items-center justify-center text-xs text-muted-foreground">
+                  데이터 없음
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={dailySeries} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
+                    <CartesianGrid stroke="#eee" strokeDasharray="3 3" />
+                    <XAxis dataKey="label" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} unit="%" />
+                    <Tooltip
+                      contentStyle={{ fontSize: 11, borderRadius: 8 }}
+                      formatter={(v: any) => `${v}%`}
+                    />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    <Line type="monotone" dataKey="completeRate" stroke="#8a7a4d" strokeWidth={2} name="열→완독 %" dot={false} />
+                    <Line type="monotone" dataKey="ctaRate" stroke="#059669" strokeWidth={2} name="열→결제 %" dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </Card>
+
+          {/* Personalization impact */}
+          <Card className="bg-white rounded-2xl p-6 border">
+            <h3 className="text-sm font-bold text-foreground mb-1 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-[#8a7a4d]" />
+              개인화 영향 분석
+            </h3>
+            <p className="text-[11px] text-muted-foreground mb-4">
+              각 개인화 필드 적용 여부에 따른 결제 클릭률 차이 (완독 이벤트 모집단 기준).
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {personalizationImpact.map((row) => {
+                const withRate = row.with_open ? Math.round((row.with_cta / row.with_open) * 1000) / 10 : 0;
+                const withoutRate = row.without_open ? Math.round((row.without_cta / row.without_open) * 1000) / 10 : 0;
+                const positive = row.uplift > 0;
+                return (
+                  <div key={row.flag} className="rounded-xl border bg-muted/20 p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-semibold text-foreground">{row.label}</span>
+                      <Badge
+                        variant="outline"
+                        className={`text-[10px] ${positive ? "border-emerald-300 text-emerald-700 bg-emerald-50" : row.uplift < 0 ? "border-rose-300 text-rose-700 bg-rose-50" : ""}`}
+                      >
+                        {positive ? "+" : ""}{row.uplift}%p
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-[11px]">
+                      <Mini label="적용" rate={withRate} n={row.with_open} />
+                      <Mini label="미적용" rate={withoutRate} n={row.without_open} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </Card>
 
           {/* By login */}
           <div>
             <h3 className="text-sm font-bold text-foreground mb-3">로그인 상태별</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {stats.byLogin.map((s) => (
-                <SegmentCard key={s.label} stats={s} />
-              ))}
+              {stats.byLogin.map((s) => <SegmentCard key={s.label} stats={s} />)}
             </div>
           </div>
 
@@ -204,24 +392,45 @@ export default function WorkbookFunnelDashboard() {
           <div>
             <h3 className="text-sm font-bold text-foreground mb-3">디바이스별</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {stats.byDevice.map((s) => (
-                <SegmentCard key={s.label} stats={s} />
-              ))}
+              {stats.byDevice.map((s) => <SegmentCard key={s.label} stats={s} />)}
             </div>
           </div>
 
-          {events.length === 0 && (
+          {filteredEvents.length === 0 && (
             <Card className="bg-muted/30 rounded-2xl p-8 text-center text-sm text-muted-foreground">
-              해당 기간에 수집된 이벤트가 없습니다. 사용자가 /mind-track 에서 워크북 샘플을 열면 자동으로 기록됩니다.
+              해당 조건에 수집된 이벤트가 없습니다.
             </Card>
           )}
-
-          <p className="text-[11px] text-muted-foreground">
-            * 비로그인 사용자는 RLS 정책상 DB에 저장되지 않습니다 (GA4에는 별도 기록).
-            전체 비로그인 트래픽은 GA에서 확인하세요.
-          </p>
         </>
       )}
+    </div>
+  );
+}
+
+function FilterGroup({
+  label, value, onChange, options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { v: string; l: string }[];
+}) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="text-muted-foreground">{label}:</span>
+      <div className="flex bg-muted rounded-full p-0.5">
+        {options.map((o) => (
+          <button
+            key={o.v}
+            onClick={() => onChange(o.v)}
+            className={`px-2.5 py-0.5 rounded-full text-[11px] transition ${
+              value === o.v ? "bg-gray-900 text-white" : "text-foreground/70 hover:text-foreground"
+            }`}
+          >
+            {o.l}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -238,12 +447,7 @@ function FunnelBar({ stats }: { stats: SegmentStats }) {
       {steps.map((s, i) => {
         const Icon = s.icon;
         const w = (s.value / max) * 100;
-        const conv =
-          i === 0
-            ? null
-            : i === 1
-              ? stats.openToComplete
-              : stats.openToCta;
+        const conv = i === 0 ? null : i === 1 ? stats.openToComplete : stats.openToCta;
         return (
           <div key={s.label}>
             <div className="flex items-center justify-between mb-1.5 text-xs">
@@ -293,13 +497,20 @@ function SegmentCard({ stats }: { stats: SegmentStats }) {
 function Metric({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
     <div className={`rounded-lg py-2 px-2 text-center ${highlight ? "bg-emerald-50" : "bg-muted/40"}`}>
-      <div className={`text-sm font-bold ${highlight ? "text-emerald-700" : "text-foreground"}`}>
-        {value}
-      </div>
+      <div className={`text-sm font-bold ${highlight ? "text-emerald-700" : "text-foreground"}`}>{value}</div>
       <div className="text-[10px] text-muted-foreground mt-0.5 flex items-center justify-center gap-0.5">
-        <TrendingUp className="w-2.5 h-2.5" />
-        {label}
+        <ChevronRight className="w-2.5 h-2.5" />{label}
       </div>
+    </div>
+  );
+}
+
+function Mini({ label, rate, n }: { label: string; rate: number; n: number }) {
+  return (
+    <div className="bg-white rounded-lg p-2 border">
+      <div className="text-[10px] text-muted-foreground">{label}</div>
+      <div className="text-sm font-bold text-foreground">{rate}%</div>
+      <div className="text-[9px] font-mono text-muted-foreground">n={n}</div>
     </div>
   );
 }

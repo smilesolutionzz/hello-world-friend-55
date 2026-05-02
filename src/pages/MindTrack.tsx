@@ -29,9 +29,15 @@ import { trackEvent } from '@/components/common/Analytics';
 import { trackWorkbookFunnel } from '@/lib/workbookFunnelTracking';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
+import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';
+import { WORKBOOK_TOTAL_CHAPTERS } from '@/lib/mindTrackChapters';
 // 결제자는 /mind-track/dashboard 전용 페이지로 자동 리다이렉트됨 (아래 분기 참고)
 
-const TRACK_PRICE = 19900;
+// 단일 상품(mind_track_30) — 가격은 상수에서만 읽는다
+const TRACK_PRICE = MIND_TRACK_PRICE;
+const TRACK_ORIGINAL_PRICE = MIND_TRACK_ORIGINAL_PRICE;
+const REFUND_WINDOW_DAYS = 14;
+const SAMPLE_CHAPTER_COUNT = WORKBOOK_TOTAL_CHAPTERS;
 
 const focusGoals = [
   { id: 'sleep', icon: '🌙', title: '깊은 수면 회복', desc: '잠 못 드는 밤, 무거운 아침에서 벗어나기' },
@@ -632,7 +638,7 @@ const MindTrack: React.FC = () => {
                     <div className="flex items-center justify-between gap-2 flex-wrap pt-2 border-t border-[#C8B88A]/15">
                       <div className="flex items-center gap-1.5 text-[11px] text-foreground/55">
                         <FileText className="w-3 h-3" />
-                        <span>실제 PDF 6장 샘플 · 닉네임으로 자동 채움</span>
+                        <span>실제 PDF {SAMPLE_CHAPTER_COUNT}장 샘플 · 닉네임으로 자동 채움</span>
                       </div>
                       <Button
                         variant="outline"
@@ -641,7 +647,7 @@ const MindTrack: React.FC = () => {
                         className="rounded-full border-[#C8B88A]/50 text-[#8a7a4d] hover:bg-[#C8B88A]/10 h-8 text-xs"
                       >
                         <Eye className="w-3.5 h-3.5 mr-1.5" />
-                        워크북 샘플 6장 미리보기
+                        워크북 샘플 {SAMPLE_CHAPTER_COUNT}장 미리보기
                       </Button>
                     </div>
                   </div>
@@ -914,8 +920,8 @@ const MindTrack: React.FC = () => {
 
                     <div className="pt-2 flex items-center justify-between flex-wrap gap-3">
                       <div>
-                        <div className="text-2xl font-bold text-slate-900">₩19,900</div>
-                        <div className="text-xs text-slate-500 line-through">₩39,800 · 14일 환불</div>
+                        <div className="text-2xl font-bold text-slate-900">₩{TRACK_PRICE.toLocaleString()}</div>
+                        <div className="text-xs text-slate-500 line-through">₩{TRACK_ORIGINAL_PRICE.toLocaleString()} · {REFUND_WINDOW_DAYS}일 환불</div>
                       </div>
                       <Button
                         onClick={() => {
@@ -1053,8 +1059,8 @@ const MindTrack: React.FC = () => {
                 30일 후, 한결 가벼워진 마음으로
               </h2>
               <p className="text-white/90 text-base md:text-lg break-keep">
-                지금 시작하면 ₩19,900 (정가 ₩39,800)<br />
-                7일 무료 체험 후 결제 · 언제든 해지 가능
+                지금 시작하면 ₩{TRACK_PRICE.toLocaleString()} (정가 ₩{TRACK_ORIGINAL_PRICE.toLocaleString()})<br />
+                30일 단건 결제 · {REFUND_WINDOW_DAYS}일 환불 보장 · 자동 갱신 없음
               </p>
               <div className="pt-2">
                 <Button
@@ -1125,7 +1131,7 @@ const MindTrack: React.FC = () => {
                     환불 정책은 어떻게 되나요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    결제 후 7일 이내, 워크북 진행률 20% 미만이면 전액 환불이 가능합니다. 그 외 기준은 결제 페이지 안내를 따릅니다.
+                    결제 후 {REFUND_WINDOW_DAYS}일 이내, 워크북 진행률 20% 미만이면 전액 환불이 가능합니다. 그 외 기준은 결제 페이지 약관을 따릅니다.
                   </AccordionContent>
                 </AccordionItem>
 
@@ -1134,7 +1140,7 @@ const MindTrack: React.FC = () => {
                     워크북 샘플을 미리 볼 수 있나요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    네. 위 ‘샘플 미리보기’를 누르면 6장 분량의 실제 워크북 일부가, 입력한 닉네임/목표/체크인 데이터가 반영된 형태로 표시됩니다.
+                    네. 위 ‘워크북 샘플 {SAMPLE_CHAPTER_COUNT}장 미리보기’를 누르면 실제 워크북의 첫 {SAMPLE_CHAPTER_COUNT}장이, 입력한 닉네임·목표·체크인 데이터가 반영된 개인화 PDF 형태로 표시됩니다.
                   </AccordionContent>
                 </AccordionItem>
 
@@ -1153,7 +1159,7 @@ const MindTrack: React.FC = () => {
                     전문가 개입(리뷰/상담/긴급/심화)은 별도 결제인가요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    네. 30일 트랙(₩19,900)에는 AI 코칭 콘텐츠가 포함되며, 전문가 리뷰/상담/긴급/심화 4종은 필요할 때만 추가로 결제해 이용하는 옵션입니다.
+                    네. 30일 마음 트랙(₩{TRACK_PRICE.toLocaleString()})에는 워크북과 AI 코칭 콘텐츠가 모두 포함되며, 전문가 리뷰·상담·긴급·심화 4종은 필요할 때만 단건으로 추가 결제하는 옵션입니다.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

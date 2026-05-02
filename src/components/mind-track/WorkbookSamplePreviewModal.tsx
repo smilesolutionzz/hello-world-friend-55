@@ -44,6 +44,8 @@ export default function WorkbookSamplePreviewModal({
   currentDay = 1,
   checkins = [],
   baselines = [],
+  ctaPrice,
+  onCtaClick,
 }: Props) {
   const sampleTheme = trackTheme || "스트레스 회복과 회복탄력성 강화";
 

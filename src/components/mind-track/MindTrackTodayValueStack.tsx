@@ -122,6 +122,7 @@ export default function MindTrackTodayValueStack({ day }: Props) {
             href={youtubeWatchUrl(content.video.videoId, day)}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackVideo('thumbnail_click')}
             className="block group"
             data-aih-event="mind_track_video_click"
             data-aih-day={dayLabel}

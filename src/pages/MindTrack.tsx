@@ -291,6 +291,7 @@ const MindTrack: React.FC = () => {
         dwell_seconds: Math.round(dwellMs / 1000),
         viewed_full: dwellMs > 8000,
         logged_in: !!user?.id,
+        ...buildPersonalizationFlags(),
       });
       sampleOpenedAtRef.current = null;
     }
@@ -298,11 +299,15 @@ const MindTrack: React.FC = () => {
   };
 
   const handleStartCtaClick = (location: string) => {
+    const dwellMs = sampleOpenedAtRef.current ? Date.now() - sampleOpenedAtRef.current : 0;
     trackWorkbookFunnel('mt_workbook_sample_cta_click', {
-      cta_location: location,
+      cta_location: location, // 'lock_card_cta' | 'sample_modal_cta'
       sample_open: sampleOpen,
+      viewed_full: dwellMs > 8000,
+      dwell_seconds: Math.round(dwellMs / 1000),
       logged_in: !!user?.id,
       price: TRACK_PRICE,
+      ...buildPersonalizationFlags(),
     });
   };
 

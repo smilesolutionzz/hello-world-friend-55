@@ -7,10 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowLeft, RefreshCw, Bell, Settings, Calendar, 
-  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail
+  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail, BookOpen
 } from 'lucide-react';
 import { EmailSendLogPanel } from '@/components/admin/EmailSendLogPanel';
 import MindTrackInterventionStats from '@/components/admin/MindTrackInterventionStats';
+import WorkbookFunnelDashboard from '@/components/admin/WorkbookFunnelDashboard';
 import { AdminNotifications } from '@/components/AdminNotifications';
 import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
 import { EnhancedUserDataViewer } from '@/components/admin/EnhancedUserDataViewer';

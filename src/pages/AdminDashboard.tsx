@@ -141,6 +141,7 @@ export default function AdminDashboard() {
           <TabsContent value="payments"><AdminPaymentManager /></TabsContent>
           <TabsContent value="bookings"><AdminBookingManagement /></TabsContent>
           <TabsContent value="mindtrack"><MindTrackInterventionStats /></TabsContent>
+          <TabsContent value="workbook_funnel"><WorkbookFunnelDashboard /></TabsContent>
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>
           <TabsContent value="email_logs"><EmailSendLogPanel /></TabsContent>
           <TabsContent value="experts"><ExpertApplicationManagement /></TabsContent>

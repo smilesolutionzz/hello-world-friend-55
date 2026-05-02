@@ -167,20 +167,52 @@ export default function WorkbookFunnelDashboard() {
       }));
   }, [filteredEvents]);
 
+  // ─── Statistical helpers ──────────────────────────────────────────────
+  // Wilson score 95% CI for a binomial proportion.
+  const wilson95 = (successes: number, n: number): { lo: number; hi: number } => {
+    if (!n) return { lo: 0, hi: 0 };
+    const z = 1.96;
+    const p = successes / n;
+    const denom = 1 + (z * z) / n;
+    const center = (p + (z * z) / (2 * n)) / denom;
+    const margin = (z * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n))) / denom;
+    return {
+      lo: Math.max(0, Math.round((center - margin) * 1000) / 10),
+      hi: Math.min(100, Math.round((center + margin) * 1000) / 10),
+    };
+  };
+  // Two-proportion z-test p-value (two-sided), normal approximation.
+  const twoPropPValue = (s1: number, n1: number, s2: number, n2: number): number => {
+    if (!n1 || !n2) return 1;
+    const p1 = s1 / n1, p2 = s2 / n2;
+    const p = (s1 + s2) / (n1 + n2);
+    const se = Math.sqrt(p * (1 - p) * (1 / n1 + 1 / n2));
+    if (!se) return 1;
+    const z = Math.abs((p1 - p2) / se);
+    // erfc approx → 2-sided p
+    const t = 1 / (1 + 0.2316419 * z);
+    const d = 0.3989422804 * Math.exp(-z * z / 2);
+    const cdf = 1 - d * (0.319381530 * t - 0.356563782 * t ** 2 + 1.781477937 * t ** 3 - 1.821255978 * t ** 4 + 1.330274429 * t ** 5);
+    return Math.max(0, Math.min(1, 2 * (1 - cdf)));
+  };
+
   // ─── Personalization impact: opens with personalization flag → cta rate
-  // Group cta_click events by personalization_score (or by individual flags)
-  // and compare their CTA rate vs. the corresponding open population.
   const personalizationImpact = useMemo(() => {
     const flagKeys = ["has_nickname", "has_track_theme", "has_checkins", "has_baselines"] as const;
-    const result: { flag: string; label: string; with_open: number; with_cta: number; without_open: number; without_cta: number; uplift: number }[] = [];
+    const result: {
+      flag: string; label: string;
+      with_open: number; with_cta: number;
+      without_open: number; without_cta: number;
+      uplift: number;
+      withCi: { lo: number; hi: number };
+      withoutCi: { lo: number; hi: number };
+      pValue: number;
+    }[] = [];
 
     for (const flag of flagKeys) {
       let withOpen = 0, withCta = 0, withoutOpen = 0, withoutCta = 0;
       for (const ev of filteredEvents) {
         const props = ev.event_properties || {};
-        // We measure on cta + complete events because open events fire BEFORE
-        // personalization data loads. Use complete events to estimate the
-        // personalized population baseline.
         if (ev.event_name === EVENTS.complete) {
           if (props[flag]) withOpen += 1; else withoutOpen += 1;
         }
@@ -198,14 +230,59 @@ export default function WorkbookFunnelDashboard() {
           has_checkins: "실 체크인 데이터",
           has_baselines: "베이스라인 데이터",
         } as any)[flag],
-        with_open: withOpen,
-        with_cta: withCta,
-        without_open: withoutOpen,
-        without_cta: withoutCta,
+        with_open: withOpen, with_cta: withCta,
+        without_open: withoutOpen, without_cta: withoutCta,
         uplift: Math.round((withRate - withoutRate) * 10) / 10,
+        withCi: wilson95(withCta, withOpen),
+        withoutCi: wilson95(withoutCta, withoutOpen),
+        pValue: twoPropPValue(withCta, withOpen, withoutCta, withoutOpen),
       });
     }
     return result;
+  }, [filteredEvents]);
+
+  // ─── Personalization SCORE buckets (0..4) ────────────────────────────
+  // Buckets: Low (0-1), Mid (2), High (3-4)
+  const scoreImpact = useMemo(() => {
+    const bucketOf = (s: number): "low" | "mid" | "high" =>
+      s >= 3 ? "high" : s === 2 ? "mid" : "low";
+    const buckets: Record<"low" | "mid" | "high", { complete: number; cta: number; scoreSum: number; n: number }> = {
+      low: { complete: 0, cta: 0, scoreSum: 0, n: 0 },
+      mid: { complete: 0, cta: 0, scoreSum: 0, n: 0 },
+      high: { complete: 0, cta: 0, scoreSum: 0, n: 0 },
+    };
+    for (const ev of filteredEvents) {
+      const props = ev.event_properties || {};
+      const score = Number(props.personalization_score);
+      if (!Number.isFinite(score)) continue;
+      const b = bucketOf(score);
+      if (ev.event_name === EVENTS.complete) {
+        buckets[b].complete += 1;
+        buckets[b].scoreSum += score; buckets[b].n += 1;
+      } else if (ev.event_name === EVENTS.cta) {
+        buckets[b].cta += 1;
+      }
+    }
+    const labels: Record<"low" | "mid" | "high", string> = {
+      low: "낮음 (0-1)", mid: "중간 (2)", high: "높음 (3-4)",
+    };
+    const baseline = buckets.low; // compare to lowest bucket
+    return (Object.keys(buckets) as Array<"low" | "mid" | "high">).map((k) => {
+      const b = buckets[k];
+      const rate = b.complete ? (b.cta / b.complete) * 100 : 0;
+      const baseRate = baseline.complete ? (baseline.cta / baseline.complete) * 100 : 0;
+      return {
+        key: k,
+        label: labels[k],
+        n: b.complete,
+        cta: b.cta,
+        rate: Math.round(rate * 10) / 10,
+        ci: wilson95(b.cta, b.complete),
+        avgScore: b.n ? Math.round((b.scoreSum / b.n) * 10) / 10 : 0,
+        upliftVsLow: k === "low" ? 0 : Math.round((rate - baseRate) * 10) / 10,
+        pVsLow: k === "low" ? 1 : twoPropPValue(b.cta, b.complete, baseline.cta, baseline.complete),
+      };
+    });
   }, [filteredEvents]);
 
   const dwellAvg = useMemo(() => {

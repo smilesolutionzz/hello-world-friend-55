@@ -311,6 +311,18 @@ const videoReason = {
   lineHeight: 1.5,
   margin: 0,
 }
+const videoIntro = {
+  fontSize: '12px',
+  color: '#475569',
+  lineHeight: 1.6,
+  margin: '0 0 12px',
+}
+const videoPlayHint = {
+  fontSize: '11px',
+  color: '#0f172a',
+  fontWeight: 600,
+  margin: '6px 0 0',
+}
 const summaryBlock = { background: '#0f172a', borderRadius: '12px', padding: '18px 20px', margin: '0 0 24px' }
 const summaryEyebrow = { fontSize: '11px', letterSpacing: '0.16em', color: '#94a3b8', textTransform: 'uppercase' as const, margin: '0 0 6px' }
 const summaryText = { fontSize: '17px', fontWeight: 600, color: '#ffffff', lineHeight: 1.5, margin: 0 }

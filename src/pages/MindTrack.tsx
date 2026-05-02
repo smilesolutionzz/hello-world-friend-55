@@ -1159,7 +1159,7 @@ const MindTrack: React.FC = () => {
                     전문가 개입(리뷰/상담/긴급/심화)은 별도 결제인가요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    네. 30일 트랙(₩19,900)에는 AI 코칭 콘텐츠가 포함되며, 전문가 리뷰/상담/긴급/심화 4종은 필요할 때만 추가로 결제해 이용하는 옵션입니다.
+                    네. 30일 마음 트랙(₩{TRACK_PRICE.toLocaleString()})에는 워크북과 AI 코칭 콘텐츠가 모두 포함되며, 전문가 리뷰·상담·긴급·심화 4종은 필요할 때만 단건으로 추가 결제하는 옵션입니다.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

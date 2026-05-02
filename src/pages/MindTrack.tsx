@@ -28,6 +28,8 @@ import { toast } from 'sonner';
 import { trackEvent } from '@/components/common/Analytics';
 import { trackWorkbookFunnel } from '@/lib/workbookFunnelTracking';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
+import GoalSelfCheckSection, { type GoalCheckLevel } from '@/components/mind-track/GoalSelfCheckSection';
+import SmartExpertSuggestion from '@/components/mind-track/SmartExpertSuggestion';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
 import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';
 import { WORKBOOK_TOTAL_CHAPTERS } from '@/lib/mindTrackChapters';

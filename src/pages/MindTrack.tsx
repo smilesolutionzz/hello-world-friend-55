@@ -315,6 +315,7 @@ const MindTrack: React.FC = () => {
   };
 
   const handleStartCtaClick = (location: string) => {
+    setHasClickedCta(true);
     const dwellMs = sampleOpenedAtRef.current ? Date.now() - sampleOpenedAtRef.current : 0;
     trackWorkbookFunnel('mt_workbook_sample_cta_click', {
       cta_location: location, // 'lock_card_cta' | 'sample_modal_cta'

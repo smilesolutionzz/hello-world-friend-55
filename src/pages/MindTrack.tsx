@@ -275,7 +275,9 @@ const MindTrack: React.FC = () => {
         user?.email?.split('@')[0] ||
         '당신';
 
-      setSampleSeed({ nickname, trackTheme, currentDay, checkins, baselines });
+      const seed = { nickname, trackTheme, currentDay, checkins, baselines };
+      sampleSeedRef.current = seed;
+      setSampleSeed(seed);
     } catch (e) {
       console.warn('[mind-track] sample seed load failed', e);
     }

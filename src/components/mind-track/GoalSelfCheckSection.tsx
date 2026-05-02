@@ -1,10 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, AlertTriangle, ArrowRight, Sparkles } from "lucide-react";
+import { AlertTriangle, ArrowRight, Sparkles, Share2, Copy, Check, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { trackEvent } from "@/components/common/Analytics";
+import { saveSelfCheck, type SelfCheckLevel } from "@/lib/mindTrackSelfCheck";
+import { toast } from "sonner";
 
 // 선택한 목표에 맞춰 표시되는 5문항 셀프체크 위젯.
 // 점수 0~10 → 안정 / 주의 / 도움 권장 3단계.

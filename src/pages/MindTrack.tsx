@@ -80,6 +80,28 @@ const MindTrack: React.FC = () => {
     baselines?: any[];
   }>({});
   const sampleOpenedAtRef = React.useRef<number | null>(null);
+  const sampleSeedRef = React.useRef<typeof sampleSeed>({});
+
+  // helper: build personalization flags from current seed
+  const buildPersonalizationFlags = () => {
+    const s = sampleSeedRef.current || {};
+    const checkinCount = s.checkins?.length || 0;
+    const baselineCount = s.baselines?.length || 0;
+    return {
+      has_nickname: !!s.nickname && s.nickname !== '당신',
+      has_track_theme: !!s.trackTheme,
+      has_checkins: checkinCount > 0,
+      has_baselines: baselineCount > 0,
+      checkin_count: checkinCount,
+      baseline_count: baselineCount,
+      current_day: s.currentDay ?? 1,
+      personalization_score:
+        (s.nickname && s.nickname !== '당신' ? 1 : 0) +
+        (s.trackTheme ? 1 : 0) +
+        (checkinCount > 0 ? 1 : 0) +
+        (baselineCount > 0 ? 1 : 0),
+    };
+  };
 
   // 현재 URL이 별칭(/mind-track-workbook)인지 표준(/mind-track/workbook)인지 감지해
   // 워크북 이동 시 같은 형식 유지 — referrer 기반 일관성 확보

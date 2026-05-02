@@ -142,6 +142,7 @@ import RefundPolicy from "./pages/RefundPolicy";
 
 // Admin
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminMindTrackContent from "./pages/AdminMindTrackContent";
 
 // Utility
 import ShareView from "./pages/ShareView";
@@ -349,6 +350,7 @@ const App = () => {
 
           {/* Admin */}
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/mind-track-content" element={<AdminMindTrackContent />} />
 
           {/* Utility */}
           <Route path="/shared-report/demo" element={<DemoSharedReport />} />

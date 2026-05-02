@@ -23,10 +23,11 @@ import {
   PlayCircle,
 } from 'lucide-react';
 import {
-  getDailyContent,
   youtubeThumbnail,
   youtubeWatchUrl,
 } from '@/lib/mindTrackDailyContent';
+import { logMindTrackVideoEvent } from '@/lib/mindTrackVideoEvents';
+import { useDailyContent } from '@/hooks/useDailyContent';
 
 interface Props {
   day: number;
@@ -34,8 +35,17 @@ interface Props {
 
 export default function MindTrackTodayValueStack({ day }: Props) {
   const navigate = useNavigate();
-  const content = getDailyContent(day);
+  const { content } = useDailyContent(day);
   const dayLabel = String(day).padStart(2, '0');
+
+  const trackVideo = (eventType: 'click' | 'thumbnail_click' | 'start') => {
+    logMindTrackVideoEvent({
+      videoId: content.video.videoId,
+      videoTitle: content.video.title,
+      eventType,
+      day,
+    });
+  };
 
   return (
     <section className="px-4 pb-6">
@@ -112,6 +122,7 @@ export default function MindTrackTodayValueStack({ day }: Props) {
             href={youtubeWatchUrl(content.video.videoId, day)}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackVideo('thumbnail_click')}
             className="block group"
             data-aih-event="mind_track_video_click"
             data-aih-day={dayLabel}
@@ -158,6 +169,7 @@ export default function MindTrackTodayValueStack({ day }: Props) {
                   href={youtubeWatchUrl(content.video.videoId, day)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackVideo('click')}
                 >
                   <PlayCircle className="w-4 h-4 mr-2" />
                   영상 보기

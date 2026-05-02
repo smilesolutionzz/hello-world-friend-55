@@ -429,27 +429,95 @@ export default function WorkbookFunnelDashboard() {
               개인화 영향 분석
             </h3>
             <p className="text-[11px] text-muted-foreground mb-4">
-              각 개인화 필드 적용 여부에 따른 결제 클릭률 차이 (완독 이벤트 모집단 기준).
+              각 개인화 필드 적용 여부에 따른 결제 클릭률 차이. 표본수(n), 95% 신뢰구간, p-값을 함께 표시합니다.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {personalizationImpact.map((row) => {
                 const withRate = row.with_open ? Math.round((row.with_cta / row.with_open) * 1000) / 10 : 0;
                 const withoutRate = row.without_open ? Math.round((row.without_cta / row.without_open) * 1000) / 10 : 0;
                 const positive = row.uplift > 0;
+                const sig = row.pValue < 0.05 && row.with_open >= 30 && row.without_open >= 30;
+                const lowN = row.with_open < 30 || row.without_open < 30;
                 return (
                   <div key={row.flag} className="rounded-xl border bg-muted/20 p-4">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between mb-2 gap-2">
                       <span className="text-sm font-semibold text-foreground">{row.label}</span>
-                      <Badge
-                        variant="outline"
-                        className={`text-[10px] ${positive ? "border-emerald-300 text-emerald-700 bg-emerald-50" : row.uplift < 0 ? "border-rose-300 text-rose-700 bg-rose-50" : ""}`}
-                      >
-                        {positive ? "+" : ""}{row.uplift}%p
-                      </Badge>
+                      <div className="flex items-center gap-1">
+                        {sig && (
+                          <Badge variant="outline" className="text-[9px] border-emerald-300 text-emerald-700 bg-emerald-50">
+                            유의
+                          </Badge>
+                        )}
+                        {lowN && (
+                          <Badge variant="outline" className="text-[9px] border-amber-300 text-amber-700 bg-amber-50">
+                            표본↓
+                          </Badge>
+                        )}
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] ${positive ? "border-emerald-300 text-emerald-700 bg-emerald-50" : row.uplift < 0 ? "border-rose-300 text-rose-700 bg-rose-50" : ""}`}
+                        >
+                          {positive ? "+" : ""}{row.uplift}%p
+                        </Badge>
+                      </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-[11px]">
-                      <Mini label="적용" rate={withRate} n={row.with_open} />
-                      <Mini label="미적용" rate={withoutRate} n={row.without_open} />
+                      <Mini label="적용" rate={withRate} n={row.with_open} ci={row.withCi} />
+                      <Mini label="미적용" rate={withoutRate} n={row.without_open} ci={row.withoutCi} />
+                    </div>
+                    <div className="mt-2 text-[10px] text-muted-foreground font-mono">
+                      p = {row.pValue < 0.001 ? "<0.001" : row.pValue.toFixed(3)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-3">
+              * 95% 신뢰구간(Wilson). p&lt;0.05 & 양 그룹 n≥30이면 “유의” 배지.
+            </p>
+          </Card>
+
+          {/* Personalization SCORE buckets */}
+          <Card className="bg-white rounded-2xl p-6 border">
+            <h3 className="text-sm font-bold text-foreground mb-1 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-emerald-600" />
+              개인화 점수(0–4)별 결제 클릭률
+            </h3>
+            <p className="text-[11px] text-muted-foreground mb-4">
+              닉네임·목표 테마·체크인·베이스라인 4개 항목 적용 합계 기준 버킷. 낮음 그룹 대비 uplift를 표시합니다.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {scoreImpact.map((b) => {
+                const sig = b.key !== "low" && b.pVsLow < 0.05 && b.n >= 30;
+                const lowN = b.n < 30;
+                return (
+                  <div key={b.key} className="rounded-xl border bg-muted/20 p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-semibold text-foreground">{b.label}</span>
+                      {b.key !== "low" ? (
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] ${b.upliftVsLow > 0 ? "border-emerald-300 text-emerald-700 bg-emerald-50" : b.upliftVsLow < 0 ? "border-rose-300 text-rose-700 bg-rose-50" : ""}`}
+                        >
+                          {b.upliftVsLow > 0 ? "+" : ""}{b.upliftVsLow}%p
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-[10px]">기준</Badge>
+                      )}
+                    </div>
+                    <div className="text-2xl font-bold text-foreground">{b.rate}%</div>
+                    <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                      95% CI [{b.ci.lo}–{b.ci.hi}] · n={b.n} · cta={b.cta}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground mt-1">
+                      평균 점수 {b.avgScore}
+                      {b.key !== "low" && (
+                        <span className="ml-2 font-mono">
+                          p={b.pVsLow < 0.001 ? "<0.001" : b.pVsLow.toFixed(3)}
+                        </span>
+                      )}
+                      {sig && <span className="ml-1 text-emerald-600">●</span>}
+                      {lowN && <span className="ml-1 text-amber-600">표본↓</span>}
                     </div>
                   </div>
                 );

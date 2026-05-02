@@ -308,9 +308,27 @@ export default function WorkbookSamplePreviewModal({
             </Page>
           </PageFrame>
 
-          <p className="text-center text-[11px] text-slate-500 break-keep px-4 pt-2 pb-2 leading-relaxed">
+          <p className="text-center text-[11px] text-slate-500 break-keep px-4 pt-2 leading-relaxed">
             매일 체크인을 쌓아갈수록, 위 페이지들이 당신의 이야기로 더 짙게 채워집니다.
           </p>
+
+          {onCtaClick && (
+            <div className="sticky bottom-0 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 bg-gradient-to-t from-[#faf6ec] via-[#faf6ec]/95 to-transparent">
+              <Button
+                onClick={onCtaClick}
+                className="w-full rounded-full bg-[#1a1a1a] text-white hover:bg-black h-11 text-sm font-semibold shadow-lg"
+              >
+                <Sparkles className="w-4 h-4 mr-1.5" />
+                {ctaPrice
+                  ? `₩${ctaPrice.toLocaleString()}로 내 워크북 시작하기`
+                  : "내 워크북 시작하기"}
+                <ArrowRight className="w-4 h-4 ml-1.5" />
+              </Button>
+              <p className="text-center text-[10px] text-slate-400 mt-2">
+                결제 즉시 Day 1부터 자동으로 채워지기 시작합니다.
+              </p>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

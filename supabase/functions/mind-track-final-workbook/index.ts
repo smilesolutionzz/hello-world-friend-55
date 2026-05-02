@@ -3,8 +3,13 @@
 // 동작: 체크인 + 베이스라인 + 마일스톤 리포트를 모아 AI 통찰을 생성하고
 // mind_track_final_workbooks 테이블에 캐시. 두 번째 호출부터는 캐시 반환.
 
-import { corsHeaders } from "@supabase/supabase-js/cors";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.95.0";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+};
 
 interface ReqBody {
   enrollmentId: string;

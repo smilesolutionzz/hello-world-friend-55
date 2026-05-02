@@ -464,11 +464,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 23,
     assessment: null,
     video: {
-      videoId: 'eHsYOG5elQM',
-      title: 'AI 코치와 대화할 때 더 깊은 답을 얻는 법',
-      channel: 'AI 라운지',
-      durationLabel: '7분',
-      reason: '코파일럿 1:1 대화의 질을 높이는 프롬프트 팁.',
+      videoId: 'inpok4MKVLM',
+      title: '5분 명상 — 코파일럿과 대화 전 마음 정렬',
+      channel: 'Goodful',
+      durationLabel: '5분',
+      reason: '코파일럿 1:1 대화의 질을 높이려면 마음을 먼저 정리해요.',
     },
     action: {
       title: '코파일럿에 오늘 주제 1개 던지기',

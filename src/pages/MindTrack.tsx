@@ -943,6 +943,12 @@ const MindTrack: React.FC = () => {
 
         <Footer />
       </div>
+
+      <WorkbookSamplePreviewModal
+        open={sampleOpen}
+        onOpenChange={setSampleOpen}
+        currentDay={1}
+      />
     </>
   );
 };

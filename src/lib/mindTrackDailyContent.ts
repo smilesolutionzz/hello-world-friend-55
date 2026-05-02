@@ -496,11 +496,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 25,
     assessment: null,
     video: {
-      videoId: 'IvtZBUSplr4',
-      title: '자기 자비(Self-Compassion)의 과학 — Kristin Neff',
-      channel: 'TEDx Talks',
-      durationLabel: '19분',
-      reason: '지속 가능한 회복 루틴의 핵심은 자기 자비. 이것을 고정하는 기준 (자막 ON).',
+      videoId: 'ZToicYcHIOU',
+      title: 'Daily Calm — 10분 마음챙김 (현재에 머물기)',
+      channel: 'Calm',
+      durationLabel: '10분',
+      reason: '지속 가능한 회복 루틴의 기준은 "매일 짧게". 10분 데일리 명상으로 고정.',
     },
     action: {
       title: '내 핵심 루틴 TOP 3 고정',

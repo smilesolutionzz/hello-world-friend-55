@@ -550,11 +550,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 28,
     assessment: null,
     video: {
-      videoId: 'O2dT_NRZWnE',
-      title: '4주의 변화를 한 문장으로 정리하는 법',
-      channel: 'Better Than Yesterday',
-      durationLabel: '7분',
-      reason: '리포트 직전 4주 흐름을 압축하는 가이드.',
+      videoId: '4pLUleLdwY4',
+      title: '불안을 위한 명상 — Yoga With Adriene',
+      channel: 'Yoga With Adriene',
+      durationLabel: '17분',
+      reason: '리포트 직전 4주 흐름을 정리하기 위한 차분한 명상.',
     },
     action: {
       title: '4주차 한 문장 요약',

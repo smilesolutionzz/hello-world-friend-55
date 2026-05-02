@@ -650,12 +650,19 @@ function Metric({ label, value, highlight }: { label: string; value: string; hig
   );
 }
 
-function Mini({ label, rate, n }: { label: string; rate: number; n: number }) {
+function Mini({
+  label, rate, n, ci,
+}: { label: string; rate: number; n: number; ci?: { lo: number; hi: number } }) {
   return (
     <div className="bg-white rounded-lg p-2 border">
       <div className="text-[10px] text-muted-foreground">{label}</div>
       <div className="text-sm font-bold text-foreground">{rate}%</div>
       <div className="text-[9px] font-mono text-muted-foreground">n={n}</div>
+      {ci && n > 0 && (
+        <div className="text-[9px] font-mono text-muted-foreground/80">
+          [{ci.lo}–{ci.hi}]
+        </div>
+      )}
     </div>
   );
 }

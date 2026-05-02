@@ -534,11 +534,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 27,
     assessment: null,
     video: {
-      videoId: 'NJk8oQ4FKzM',
-      title: '거절을 가볍게 만드는 한 문장 템플릿',
-      channel: '정신과의사 정우열',
-      durationLabel: '8분',
-      reason: '내 에너지를 지키는 거절 문장의 형식.',
+      videoId: 'O-6f5wQXSu8',
+      title: '10분 명상 — 거절의 두려움 내려놓기',
+      channel: 'Goodful',
+      durationLabel: '10분',
+      reason: '내 에너지를 지키는 거절 문장을 쓰기 전, 거절에 대한 두려움을 내려놓아요.',
     },
     action: {
       title: '내 거절 문장 템플릿 1개 작성',

@@ -108,11 +108,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 3,
     assessment: null,
     video: {
-      videoId: 'fcfNeIAPjLk',
-      title: '감정에 이름을 붙이면 강도가 줄어드는 이유',
-      channel: 'TED-Ed',
-      durationLabel: '6분',
-      reason: '"감정 라벨링"의 신경과학적 근거를 짧게 정리합니다.',
+      videoId: 'RVA2N6tX2cg',
+      title: 'Just Breathe — 아이들이 알려주는 감정에 이름 붙이기',
+      channel: 'Mindful Schools',
+      durationLabel: '4분',
+      reason: '"감정 라벨링"이 왜 강도를 줄이는지 시각적으로 보여주는 짧은 영상.',
     },
     action: {
       title: '오늘의 감정 단어 3개 적기',

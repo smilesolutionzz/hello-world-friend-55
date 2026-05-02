@@ -1052,8 +1052,18 @@ const MindTrack: React.FC = () => {
 
       <WorkbookSamplePreviewModal
         open={sampleOpen}
-        onOpenChange={setSampleOpen}
-        currentDay={1}
+        onOpenChange={handleSampleOpenChange}
+        nickname={sampleSeed.nickname}
+        trackTheme={sampleSeed.trackTheme}
+        currentDay={sampleSeed.currentDay ?? 1}
+        checkins={sampleSeed.checkins}
+        baselines={sampleSeed.baselines}
+        ctaPrice={TRACK_PRICE}
+        onCtaClick={() => {
+          handleStartCtaClick('sample_modal_cta');
+          setSampleOpen(false);
+          navigate(user?.id ? '/token-subscription' : '/auth');
+        }}
       />
     </>
   );

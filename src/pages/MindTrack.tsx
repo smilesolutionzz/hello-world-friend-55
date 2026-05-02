@@ -189,7 +189,7 @@ const MindTrack: React.FC = () => {
   // 워크북 샘플 미리보기 — 닉네임/목표/체크인을 자동 주입 (동적 개인화)
   const openSamplePreview = async () => {
     sampleOpenedAtRef.current = Date.now();
-    trackEvent('mt_workbook_sample_open', {
+    trackWorkbookFunnel('mt_workbook_sample_open', {
       logged_in: !!user?.id,
       has_active_enrollment: !!activeEnrollment,
       source: 'mind_track_lock_card',

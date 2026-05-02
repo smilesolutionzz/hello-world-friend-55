@@ -1059,8 +1059,8 @@ const MindTrack: React.FC = () => {
                 30일 후, 한결 가벼워진 마음으로
               </h2>
               <p className="text-white/90 text-base md:text-lg break-keep">
-                지금 시작하면 ₩19,900 (정가 ₩39,800)<br />
-                7일 무료 체험 후 결제 · 언제든 해지 가능
+                지금 시작하면 ₩{TRACK_PRICE.toLocaleString()} (정가 ₩{TRACK_ORIGINAL_PRICE.toLocaleString()})<br />
+                30일 단건 결제 · {REFUND_WINDOW_DAYS}일 환불 보장 · 자동 갱신 없음
               </p>
               <div className="pt-2">
                 <Button

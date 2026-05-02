@@ -218,7 +218,9 @@ const MindTrack: React.FC = () => {
     });
     // 비로그인: 모달만 샘플로 열기
     if (!user?.id) {
-      setSampleSeed({ currentDay: 1 });
+      const seed = { currentDay: 1 };
+      sampleSeedRef.current = seed;
+      setSampleSeed(seed);
       setSampleOpen(true);
       return;
     }

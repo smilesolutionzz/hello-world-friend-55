@@ -716,12 +716,33 @@ const MindTrack: React.FC = () => {
           </div>
         </section>
 
-        {/* 아이 발달 걱정도 자가체크 + 7일 플랜 */}
-        <section className="px-4 pb-10">
-          <div className="max-w-3xl mx-auto">
-            <ChildDevConcernSection />
-          </div>
-        </section>
+        {/* 선택한 목표에 맞는 자가체크 — 목표 선택 시에만 펼쳐짐 */}
+        <AnimatePresence mode="wait">
+          {selectedGoal && (
+            <motion.section
+              key={selectedGoal}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              className="px-4 pb-10"
+            >
+              <div className="max-w-3xl mx-auto">
+                {(selectedGoal === 'child_development' || selectedGoal === 'family_communication') ? (
+                  <ChildDevConcernSection />
+                ) : (
+                  <GoalSelfCheckSection
+                    goalId={selectedGoal}
+                    onComplete={(level, goalId) => {
+                      setSelfCheckLevel(level);
+                      setSelfCheckGoalId(goalId);
+                    }}
+                  />
+                )}
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
 
         {/* 휴먼터치 매니페스토 — 따뜻형 카드 */}
         <SmartScrollReveal kind="text" className="px-4 pb-8 block">

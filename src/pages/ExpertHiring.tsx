@@ -160,12 +160,15 @@ const ExpertHiring = () => {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
 
-  // 마인드트랙 컨텍스트가 있으면 주제 자동 프리필
+  // 마인드트랙/셀프체크 컨텍스트가 있으면 주제 자동 프리필
   useEffect(() => {
     if (mindTrackCtx?.topic && !bookingTopic) {
-      setBookingTopic(mindTrackCtx.topic);
+      const lines = [mindTrackCtx.topic];
+      if (mindTrackCtx.scoreLine) lines.push("", mindTrackCtx.scoreLine);
+      setBookingTopic(lines.join("\n"));
     }
-  }, [mindTrackCtx?.topic]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mindTrackCtx?.topic, mindTrackCtx?.scoreLine]);
 
   useEffect(() => { loadExperts(); }, []);
 

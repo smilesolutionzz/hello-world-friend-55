@@ -979,7 +979,7 @@ const MindTrack: React.FC = () => {
                 <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
                   30일 동안 집중할 목표를 골라주세요
                 </h2>
-                <p className="text-slate-600">선택한 목표에 맞춰 일일 코칭이 자동 설계돼요</p>
+                <p className="text-slate-600 break-keep">선택한 목표에 맞춰 일일 코칭이 자동 설계되고, 위에 1분 자가체크가 함께 열려요</p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                 {focusGoals.map((goal) => (

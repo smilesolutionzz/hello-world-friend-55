@@ -22,6 +22,7 @@ import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { trackEvent } from '@/components/common/Analytics';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
 // 결제자는 /mind-track/dashboard 전용 페이지로 자동 리다이렉트됨 (아래 분기 참고)
@@ -70,6 +71,14 @@ const MindTrack: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [sampleOpen, setSampleOpen] = useState(false);
+  const [sampleSeed, setSampleSeed] = useState<{
+    nickname?: string;
+    trackTheme?: string;
+    currentDay?: number;
+    checkins?: any[];
+    baselines?: any[];
+  }>({});
+  const sampleOpenedAtRef = React.useRef<number | null>(null);
 
   // 현재 URL이 별칭(/mind-track-workbook)인지 표준(/mind-track/workbook)인지 감지해
   // 워크북 이동 시 같은 형식 유지 — referrer 기반 일관성 확보
@@ -175,6 +184,100 @@ const MindTrack: React.FC = () => {
       cancelled = true;
     };
   }, [user?.id]);
+
+  // 워크북 샘플 미리보기 — 닉네임/목표/체크인을 자동 주입 (동적 개인화)
+  const openSamplePreview = async () => {
+    sampleOpenedAtRef.current = Date.now();
+    trackEvent('mt_workbook_sample_open', {
+      logged_in: !!user?.id,
+      has_active_enrollment: !!activeEnrollment,
+      source: 'mind_track_lock_card',
+    });
+    // 비로그인: 모달만 샘플로 열기
+    if (!user?.id) {
+      setSampleSeed({ currentDay: 1 });
+      setSampleOpen(true);
+      return;
+    }
+    setSampleOpen(true);
+    try {
+      // 닉네임
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('display_name, nickname')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      // 온보딩 데이터 (목표 + concern + 기상시간 등)
+      const { data: onboarding } = await supabase
+        .from('user_onboarding_data')
+        .select('primary_goal, free_text_concern')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      const goalId = activeEnrollment?.goal_focus || (onboarding as any)?.primary_goal;
+      const matchedGoal = focusGoals.find((g) => g.id === goalId);
+      const trackTheme = matchedGoal
+        ? `${matchedGoal.title} · ${matchedGoal.desc}`
+        : undefined;
+
+      let checkins: any[] = [];
+      let baselines: any[] = [];
+      let currentDay = 1;
+
+      if (activeEnrollment?.id) {
+        currentDay = activeEnrollment.current_day || calcMindTrackCurrentDay(activeEnrollment.started_at) || 1;
+        const sb: any = supabase;
+        const [chkRes, bslRes] = await Promise.all([
+          sb
+            .from('mind_track_daily_checkins')
+            .select('day_number, mood_score, energy_score, clarity_score, reflection_text, completed, created_at')
+            .eq('enrollment_id', activeEnrollment.id)
+            .order('day_number', { ascending: true }),
+          sb
+            .from('mind_track_baselines')
+            .select('measurement_point, stress_score, energy_score, clarity_score')
+            .eq('enrollment_id', activeEnrollment.id),
+        ]);
+        checkins = chkRes?.data || [];
+        baselines = bslRes?.data || [];
+      }
+
+      const nickname =
+        (profile as any)?.display_name ||
+        (profile as any)?.nickname ||
+        (onboarding as any)?.free_text_concern?.slice(0, 0) || // intentionally noop
+        user?.email?.split('@')[0] ||
+        '당신';
+
+      setSampleSeed({ nickname, trackTheme, currentDay, checkins, baselines });
+    } catch (e) {
+      console.warn('[mind-track] sample seed load failed', e);
+    }
+  };
+
+  const handleSampleOpenChange = (v: boolean) => {
+    if (!v && sampleOpen && sampleOpenedAtRef.current) {
+      const dwellMs = Date.now() - sampleOpenedAtRef.current;
+      trackEvent('mt_workbook_sample_complete', {
+        dwell_ms: dwellMs,
+        dwell_seconds: Math.round(dwellMs / 1000),
+        viewed_full: dwellMs > 8000,
+        logged_in: !!user?.id,
+      });
+      sampleOpenedAtRef.current = null;
+    }
+    setSampleOpen(v);
+  };
+
+  const handleStartCtaClick = (location: string) => {
+    trackEvent('mt_workbook_sample_cta_click', {
+      cta_location: location,
+      sample_open: sampleOpen,
+      logged_in: !!user?.id,
+      price: TRACK_PRICE,
+    });
+  };
 
   // 입력값이 비어있을 때만 5초마다 예시 placeholder 회전
   useEffect(() => {
@@ -499,7 +602,7 @@ const MindTrack: React.FC = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setSampleOpen(true)}
+                        onClick={openSamplePreview}
                         className="rounded-full border-[#C8B88A]/50 text-[#8a7a4d] hover:bg-[#C8B88A]/10 h-8 text-xs"
                       >
                         <Eye className="w-3.5 h-3.5 mr-1.5" />
@@ -514,7 +617,10 @@ const MindTrack: React.FC = () => {
                       <span>{isLoggedIn ? '구독 후 이용 가능' : '로그인 후 결제하면 즉시 시작'}</span>
                     </div>
                     <Button
-                      onClick={() => navigate(isLoggedIn ? '/token-subscription' : '/auth')}
+                      onClick={() => {
+                        handleStartCtaClick('lock_card_cta');
+                        navigate(isLoggedIn ? '/token-subscription' : '/auth');
+                      }}
                       size="sm"
                       className="rounded-full bg-[#1a1a1a] text-white hover:bg-black"
                     >
@@ -946,8 +1052,18 @@ const MindTrack: React.FC = () => {
 
       <WorkbookSamplePreviewModal
         open={sampleOpen}
-        onOpenChange={setSampleOpen}
-        currentDay={1}
+        onOpenChange={handleSampleOpenChange}
+        nickname={sampleSeed.nickname}
+        trackTheme={sampleSeed.trackTheme}
+        currentDay={sampleSeed.currentDay ?? 1}
+        checkins={sampleSeed.checkins}
+        baselines={sampleSeed.baselines}
+        ctaPrice={TRACK_PRICE}
+        onCtaClick={() => {
+          handleStartCtaClick('sample_modal_cta');
+          setSampleOpen(false);
+          navigate(user?.id ? '/token-subscription' : '/auth');
+        }}
       />
     </>
   );

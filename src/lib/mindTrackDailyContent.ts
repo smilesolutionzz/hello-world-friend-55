@@ -140,11 +140,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 5,
     assessment: null,
     video: {
-      videoId: 'IcoIvjwM7lA',
-      title: '하루를 바꾸는 5분 결정의 힘',
-      channel: '신박사TV',
-      durationLabel: '7분',
-      reason: '"5분 안에 끝낼 행동"을 고르는 기준을 잡아줍니다.',
+      videoId: 'Lp7E973zozc',
+      title: '5초의 결정이 하루를 바꾼다 — 멜 로빈스',
+      channel: 'TEDx Talks',
+      durationLabel: '21분',
+      reason: '"5분 안에 끝낼 행동"을 고르는 기준을 잡아줍니다 (한국어 자막 ON 권장).',
     },
     action: {
       title: '오늘의 5분 마이크로 결정 1개',

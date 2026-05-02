@@ -329,6 +329,51 @@ export default function GoalSelfCheckSection({ goalId, onComplete }: Props) {
             <div className={`rounded-2xl border p-4 ${meta.className}`}>
               <p className="text-sm font-medium break-keep">{def.copy[level]}</p>
             </div>
+
+            {/* 공유 / 상세 보기 */}
+            <div className="flex gap-2 flex-wrap">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleShare}
+                disabled={!shareId || saving}
+                className="rounded-full text-xs"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 mr-1.5" /> : <Share2 className="w-3.5 h-3.5 mr-1.5" />}
+                {saving ? "저장 중..." : copied ? "복사됨" : "결과 공유"}
+              </Button>
+              {shareId && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    trackEvent("mt_goal_check_view_detail", { goal_id: def.goalId, level });
+                    navigate(`/mind-track/check/${shareId}`);
+                  }}
+                  className="rounded-full text-xs text-slate-500 hover:text-slate-800"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
+                  상세 결과 페이지
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={async () => {
+                  if (!shareUrl) return;
+                  await navigator.clipboard.writeText(shareUrl);
+                  setCopied(true);
+                  toast.success("링크 복사 완료");
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                disabled={!shareId}
+                className="rounded-full text-xs text-slate-500 hover:text-slate-800"
+              >
+                <Copy className="w-3.5 h-3.5 mr-1.5" />
+                링크
+              </Button>
+            </div>
+
             <div className="flex gap-2 flex-wrap">
               <Button
                 onClick={() => {
@@ -343,10 +388,7 @@ export default function GoalSelfCheckSection({ goalId, onComplete }: Props) {
               {level !== "calm" && (
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    trackEvent("mt_goal_check_cta_expert", { goal_id: def.goalId, level });
-                    navigate(level === "support" ? "/expert-hiring?urgent=true" : "/expert-hiring");
-                  }}
+                  onClick={() => goExpertWithPrefill(level === "support")}
                   className="rounded-2xl"
                 >
                   <AlertTriangle className="w-4 h-4 mr-1.5" />

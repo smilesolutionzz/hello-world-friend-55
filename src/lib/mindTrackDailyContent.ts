@@ -50,9 +50,13 @@ export interface MindTrackDailyContent {
 }
 
 /**
- * 모든 영상은 검수 시점에 임베드/시청 가능을 확인한 한국어 권장 콘텐츠입니다.
- * 외부 영상이 비공개로 전환될 가능성에 대비해 fallback 썸네일은 ytimg에서
- * 자동 로드합니다 (UI 컴포넌트 측에서 처리).
+ * 모든 영상은 YouTube oEmbed API 로 사전 검증된 (HTTP 200) 영상입니다.
+ * - 영어권 공식 채널(TED, Goodful, Every Mind Matters BBC, The Mindful Movement,
+ *   Yoga With Adriene, Calm, Lavendaire, RSA, Sunnybrook Hospital 등) 위주로 큐레이션.
+ * - 가이드 명상/호흡 영상은 시각만 따라가도 효과가 동일하고, TED·RSA 영상은
+ *   유튜브 자동 한국어 자막을 켜면 한국어로 시청 가능합니다 (카드에서 안내).
+ * - 외부 영상이 비공개로 전환될 경우 썸네일이 회색으로 표시되며 (UI 컴포넌트가
+ *   onError 처리), 관리자 페이지(/admin/mind-track-content)에서 즉시 교체 가능합니다.
  */
 const CONTENT: Record<number, MindTrackDailyContent> = {
   // ─── Week 1 · 출발 정렬 ──────────────────────────────────────

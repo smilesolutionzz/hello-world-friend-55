@@ -266,11 +266,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 12,
     assessment: null,
     video: {
-      videoId: 'GZzhk9jEkkI',
-      title: '4-4-6 호흡법 — 자율신경 즉시 안정',
-      channel: 'YogaTX',
-      durationLabel: '5분',
-      reason: '하루 짧은 틈마다 적용 가능한 호흡법 가이드.',
+      videoId: 'tEmt1Znux58',
+      title: '박스 호흡법 — 자율신경 즉시 안정',
+      channel: 'Sunnybrook Hospital',
+      durationLabel: '4분',
+      reason: '하루 짧은 틈마다 적용 가능한 4-4-4-4 호흡 가이드.',
     },
     action: {
       title: '4-4-6 호흡 3회 (분산 적용)',

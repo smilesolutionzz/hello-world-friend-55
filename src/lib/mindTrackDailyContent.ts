@@ -124,11 +124,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 4,
     assessment: null,
     video: {
-      videoId: 'vmSCIJGCSGc',
-      title: '몸이 보내는 신호 — 스캔 명상 5분',
+      videoId: 'MIr3RsUWrdo',
+      title: '20분 가이드 명상 — 몸의 긴장 풀기',
       channel: 'The Mindful Movement',
-      durationLabel: '5분',
-      reason: '머리부터 발끝까지 긴장이 어디 모여있는지 확인하는 가이드 명상.',
+      durationLabel: '20분',
+      reason: '머리부터 발끝까지 긴장이 어디 모여있는지 따라가는 가이드 명상.',
     },
     action: {
       title: '바디스캔 1회 + 어깨 풀기',

@@ -196,11 +196,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 8,
     assessment: null,
     video: {
-      videoId: 'C1J5wRsfbkA',
-      title: '루틴이 자리잡는 데 필요한 21일의 진실',
-      channel: 'EO',
-      durationLabel: '8분',
-      reason: '루틴 정착의 과학적 원리를 짧게 정리합니다.',
+      videoId: '8jPQjjsBbIc',
+      title: '스트레스를 미리 다루는 법 — 다니엘 레비틴',
+      channel: 'TED',
+      durationLabel: '12분',
+      reason: '루틴이 자리잡히는 원리를 짧게 정리합니다 (자막 ON 권장).',
     },
     action: {
       title: '어제 미션을 같은 시간대에 다시',

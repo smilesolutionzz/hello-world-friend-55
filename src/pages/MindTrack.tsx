@@ -29,9 +29,15 @@ import { trackEvent } from '@/components/common/Analytics';
 import { trackWorkbookFunnel } from '@/lib/workbookFunnelTracking';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
+import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';
+import { WORKBOOK_TOTAL_CHAPTERS } from '@/lib/mindTrackChapters';
 // 결제자는 /mind-track/dashboard 전용 페이지로 자동 리다이렉트됨 (아래 분기 참고)
 
-const TRACK_PRICE = 19900;
+// 단일 상품(mind_track_30) — 가격은 상수에서만 읽는다
+const TRACK_PRICE = MIND_TRACK_PRICE;
+const TRACK_ORIGINAL_PRICE = MIND_TRACK_ORIGINAL_PRICE;
+const REFUND_WINDOW_DAYS = 14;
+const SAMPLE_CHAPTER_COUNT = WORKBOOK_TOTAL_CHAPTERS;
 
 const focusGoals = [
   { id: 'sleep', icon: '🌙', title: '깊은 수면 회복', desc: '잠 못 드는 밤, 무거운 아침에서 벗어나기' },

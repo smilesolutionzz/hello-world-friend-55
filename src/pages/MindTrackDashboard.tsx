@@ -339,6 +339,9 @@ export default function MindTrackDashboard() {
           </div>
         </section>
 
+        {/* 오늘의 가치 스택 — 검사 + 추천 영상 + 5분 액션 */}
+        <MindTrackTodayValueStack day={day} />
+
         {/* 빠른 메뉴 */}
         <section className="px-4 pb-6">
           <div className="max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3">

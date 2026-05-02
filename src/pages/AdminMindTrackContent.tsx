@@ -82,9 +82,34 @@ export default function AdminMindTrackContent() {
   }
   if (!isAdmin) return <Navigate to="/" replace />;
 
+  // 변경 직전 스냅샷을 history 에 보관
+  const archiveCurrent = async (
+    changeType: 'save' | 'delete',
+    snapshot: OverrideRow | null,
+  ) => {
+    if (!snapshot) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      await supabase.from('mind_track_daily_content_history').insert({
+        day_number: day,
+        assessment: snapshot.assessment as never,
+        video: snapshot.video as never,
+        action: snapshot.action as never,
+        is_active: snapshot.is_active,
+        change_type: changeType,
+        changed_by: user?.id ?? null,
+      });
+    } catch (e) {
+      // 이력 기록 실패는 사용자 흐름을 막지 않음
+      console.warn('[AdminMindTrackContent] archive failed', e);
+    }
+  };
+
   // 현재 화면 상태(merged)를 오버라이드 row 로 저장
   const handleSave = async () => {
     setSaving(true);
+    // 직전 스냅샷 보관 (있을 때만)
+    await archiveCurrent('save', override);
     const payload = {
       day_number: day,
       assessment: merged.assessment as never,
@@ -102,11 +127,13 @@ export default function AdminMindTrackContent() {
     }
     toast({ title: 'Day ' + day + ' 저장 완료', description: '대시보드에 즉시 반영됩니다.' });
     setOverride({ ...payload });
+    setHistoryRefreshKey((k) => k + 1);
   };
 
   // 코드 기본값으로 되돌리기 (DB row 삭제)
   const handleReset = async () => {
     if (!confirm(`Day ${day} 오버라이드를 삭제하고 코드 기본값으로 되돌릴까요?`)) return;
+    await archiveCurrent('delete', override);
     const { error } = await supabase
       .from('mind_track_daily_content_overrides')
       .delete()
@@ -116,6 +143,7 @@ export default function AdminMindTrackContent() {
       return;
     }
     setOverride(null);
+    setHistoryRefreshKey((k) => k + 1);
     toast({ title: '코드 기본값으로 복원' });
   };
 

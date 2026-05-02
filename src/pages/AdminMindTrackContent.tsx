@@ -201,22 +201,40 @@ export default function AdminMindTrackContent() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleReset}
-              disabled={!override}
-            >
-              <RotateCcw className="w-4 h-4 mr-1" /> 기본값
-            </Button>
-            <Button size="sm" onClick={handleSave} disabled={saving}>
-              {saving ? (
-                <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-              ) : (
-                <Save className="w-4 h-4 mr-1" />
-              )}
-              저장
-            </Button>
+            {/* 탭 */}
+            <div className="hidden md:flex items-center gap-1 mr-2 bg-slate-100 rounded-lg p-1">
+              <button
+                onClick={() => setTab('edit')}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors flex items-center gap-1 ${
+                  tab === 'edit' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+                }`}
+              >
+                <Pencil className="w-3 h-3" /> 편집
+              </button>
+              <button
+                onClick={() => setTab('stats')}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors flex items-center gap-1 ${
+                  tab === 'stats' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+                }`}
+              >
+                <BarChart3 className="w-3 h-3" /> 영상 통계
+              </button>
+            </div>
+            {tab === 'edit' && (
+              <>
+                <Button variant="outline" size="sm" onClick={handleReset} disabled={!override}>
+                  <RotateCcw className="w-4 h-4 mr-1" /> 기본값
+                </Button>
+                <Button size="sm" onClick={handleSave} disabled={saving}>
+                  {saving ? (
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4 mr-1" />
+                  )}
+                  저장
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

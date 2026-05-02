@@ -1140,7 +1140,7 @@ const MindTrack: React.FC = () => {
                     워크북 샘플을 미리 볼 수 있나요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    네. 위 ‘샘플 미리보기’를 누르면 6장 분량의 실제 워크북 일부가, 입력한 닉네임/목표/체크인 데이터가 반영된 형태로 표시됩니다.
+                    네. 위 ‘워크북 샘플 {SAMPLE_CHAPTER_COUNT}장 미리보기’를 누르면 실제 워크북의 첫 {SAMPLE_CHAPTER_COUNT}장이, 입력한 닉네임·목표·체크인 데이터가 반영된 개인화 PDF 형태로 표시됩니다.
                   </AccordionContent>
                 </AccordionItem>
 

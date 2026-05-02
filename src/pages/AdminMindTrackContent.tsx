@@ -65,7 +65,7 @@ export default function AdminMindTrackContent() {
       .maybeSingle()
       .then(({ data }) => {
         if (cancelled) return;
-        setOverride(data as OverrideRow | null);
+        setOverride((data as unknown as OverrideRow | null) ?? null);
         setLoading(false);
       });
     return () => {

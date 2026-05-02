@@ -23,6 +23,7 @@ import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { trackEvent } from '@/components/common/Analytics';
+import { trackWorkbookFunnel } from '@/lib/workbookFunnelTracking';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
 // 결제자는 /mind-track/dashboard 전용 페이지로 자동 리다이렉트됨 (아래 분기 참고)
@@ -188,7 +189,7 @@ const MindTrack: React.FC = () => {
   // 워크북 샘플 미리보기 — 닉네임/목표/체크인을 자동 주입 (동적 개인화)
   const openSamplePreview = async () => {
     sampleOpenedAtRef.current = Date.now();
-    trackEvent('mt_workbook_sample_open', {
+    trackWorkbookFunnel('mt_workbook_sample_open', {
       logged_in: !!user?.id,
       has_active_enrollment: !!activeEnrollment,
       source: 'mind_track_lock_card',
@@ -259,7 +260,7 @@ const MindTrack: React.FC = () => {
   const handleSampleOpenChange = (v: boolean) => {
     if (!v && sampleOpen && sampleOpenedAtRef.current) {
       const dwellMs = Date.now() - sampleOpenedAtRef.current;
-      trackEvent('mt_workbook_sample_complete', {
+      trackWorkbookFunnel('mt_workbook_sample_complete', {
         dwell_ms: dwellMs,
         dwell_seconds: Math.round(dwellMs / 1000),
         viewed_full: dwellMs > 8000,
@@ -271,7 +272,7 @@ const MindTrack: React.FC = () => {
   };
 
   const handleStartCtaClick = (location: string) => {
-    trackEvent('mt_workbook_sample_cta_click', {
+    trackWorkbookFunnel('mt_workbook_sample_cta_click', {
       cta_location: location,
       sample_open: sampleOpen,
       logged_in: !!user?.id,

@@ -7,10 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowLeft, RefreshCw, Bell, Settings, Calendar, 
-  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail
+  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail, BookOpen
 } from 'lucide-react';
 import { EmailSendLogPanel } from '@/components/admin/EmailSendLogPanel';
 import MindTrackInterventionStats from '@/components/admin/MindTrackInterventionStats';
+import WorkbookFunnelDashboard from '@/components/admin/WorkbookFunnelDashboard';
 import { AdminNotifications } from '@/components/AdminNotifications';
 import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
 import { EnhancedUserDataViewer } from '@/components/admin/EnhancedUserDataViewer';
@@ -106,6 +107,10 @@ export default function AdminDashboard() {
               <Heart className="h-3 w-3" />
               마음트랙
             </TabsTrigger>
+            <TabsTrigger value="workbook_funnel" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <BookOpen className="h-3 w-3" />
+              워크북 퍼널
+            </TabsTrigger>
             <TabsTrigger value="notifications" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <Bell className="h-3 w-3" />
               알림
@@ -136,6 +141,7 @@ export default function AdminDashboard() {
           <TabsContent value="payments"><AdminPaymentManager /></TabsContent>
           <TabsContent value="bookings"><AdminBookingManagement /></TabsContent>
           <TabsContent value="mindtrack"><MindTrackInterventionStats /></TabsContent>
+          <TabsContent value="workbook_funnel"><WorkbookFunnelDashboard /></TabsContent>
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>
           <TabsContent value="email_logs"><EmailSendLogPanel /></TabsContent>
           <TabsContent value="experts"><ExpertApplicationManagement /></TabsContent>

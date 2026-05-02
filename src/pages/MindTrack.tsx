@@ -28,6 +28,8 @@ import { toast } from 'sonner';
 import { trackEvent } from '@/components/common/Analytics';
 import { trackWorkbookFunnel } from '@/lib/workbookFunnelTracking';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
+import GoalSelfCheckSection, { type GoalCheckLevel } from '@/components/mind-track/GoalSelfCheckSection';
+import SmartExpertSuggestion from '@/components/mind-track/SmartExpertSuggestion';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
 import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';
 import { WORKBOOK_TOTAL_CHAPTERS } from '@/lib/mindTrackChapters';
@@ -148,6 +150,11 @@ const MindTrack: React.FC = () => {
   const [report, setReport] = useState<ConcernReport | null>(null);
   const [polishing, setPolishing] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
+
+  // 스마트 전문가 제안용 시그널
+  const [selfCheckLevel, setSelfCheckLevel] = useState<GoalCheckLevel | null>(null);
+  const [selfCheckGoalId, setSelfCheckGoalId] = useState<string | null>(null);
+  const [hasClickedCta, setHasClickedCta] = useState(false);
 
   const examplePlaceholders = [
     '예) 요즘 잠자리에 누우면 잡생각이 멈추질 않고, 아침마다 너무 무기력해요...',
@@ -308,6 +315,7 @@ const MindTrack: React.FC = () => {
   };
 
   const handleStartCtaClick = (location: string) => {
+    setHasClickedCta(true);
     const dwellMs = sampleOpenedAtRef.current ? Date.now() - sampleOpenedAtRef.current : 0;
     trackWorkbookFunnel('mt_workbook_sample_cta_click', {
       cta_location: location, // 'lock_card_cta' | 'sample_modal_cta'
@@ -708,12 +716,33 @@ const MindTrack: React.FC = () => {
           </div>
         </section>
 
-        {/* 아이 발달 걱정도 자가체크 + 7일 플랜 */}
-        <section className="px-4 pb-10">
-          <div className="max-w-3xl mx-auto">
-            <ChildDevConcernSection />
-          </div>
-        </section>
+        {/* 선택한 목표에 맞는 자가체크 — 목표 선택 시에만 펼쳐짐 */}
+        <AnimatePresence mode="wait">
+          {selectedGoal && (
+            <motion.section
+              key={selectedGoal}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              className="px-4 pb-10"
+            >
+              <div className="max-w-3xl mx-auto">
+                {(selectedGoal === 'child_development' || selectedGoal === 'family_communication') ? (
+                  <ChildDevConcernSection />
+                ) : (
+                  <GoalSelfCheckSection
+                    goalId={selectedGoal}
+                    onComplete={(level, goalId) => {
+                      setSelfCheckLevel(level);
+                      setSelfCheckGoalId(goalId);
+                    }}
+                  />
+                )}
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
 
         {/* 휴먼터치 매니페스토 — 따뜻형 카드 */}
         <SmartScrollReveal kind="text" className="px-4 pb-8 block">
@@ -950,7 +979,7 @@ const MindTrack: React.FC = () => {
                 <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
                   30일 동안 집중할 목표를 골라주세요
                 </h2>
-                <p className="text-slate-600">선택한 목표에 맞춰 일일 코칭이 자동 설계돼요</p>
+                <p className="text-slate-600 break-keep">선택한 목표에 맞춰 일일 코칭이 자동 설계되고, 위에 1분 자가체크가 함께 열려요</p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                 {focusGoals.map((goal) => (
@@ -1188,6 +1217,19 @@ const MindTrack: React.FC = () => {
           setSampleOpen(false);
           navigate(user?.id ? '/token-subscription' : '/auth');
         }}
+      />
+
+      {/* 타이밍 기반 전문가 연결 자동 제안 — 셀프체크/리포트/이탈 신호를 보고 알아서 권유 */}
+      <SmartExpertSuggestion
+        selfCheckLevel={selfCheckLevel}
+        selfCheckGoalId={selfCheckGoalId}
+        reportRiskHigh={
+          !!report &&
+          (report.currentState?.stress >= 70 ||
+            report.currentState?.energy <= 30 ||
+            report.currentState?.clarity <= 30)
+        }
+        ctaClicked={hasClickedCta}
       />
     </>
   );

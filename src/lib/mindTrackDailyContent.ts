@@ -608,6 +608,31 @@ export function getDailyContent(day: number): MindTrackDailyContent {
   return FALLBACK;
 }
 
+/** 코드 기본값을 반환 (편집 화면에서 비교용) */
+export function getDefaultDailyContent(day: number): MindTrackDailyContent {
+  return CONTENT[day] ?? FALLBACK;
+}
+
+/** DB 오버라이드(부분 필드)를 코드 기본값 위에 병합 */
+export function mergeDailyOverride(
+  day: number,
+  override: Partial<{
+    assessment: MindTrackAssessmentPick | null;
+    video: MindTrackVideoPick | null;
+    action: MindTrackDailyAction | null;
+  }> | null | undefined,
+): MindTrackDailyContent {
+  const base = getDefaultDailyContent(day);
+  if (!override) return base;
+  return {
+    day,
+    assessment:
+      override.assessment === undefined ? base.assessment : override.assessment,
+    video: override.video ?? base.video,
+    action: override.action ?? base.action,
+  };
+}
+
 export function youtubeWatchUrl(videoId: string, day: number): string {
   const params = new URLSearchParams({
     v: videoId,

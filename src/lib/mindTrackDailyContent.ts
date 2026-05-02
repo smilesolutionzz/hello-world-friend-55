@@ -590,11 +590,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 30,
     assessment: null,
     video: {
-      videoId: 'r9b2VunvvbM',
-      title: '회복은 끝이 아니라 새로운 출발선이다',
-      channel: '셰르파TV',
-      durationLabel: '10분',
-      reason: '리포트 수령 직후 다음 한 달을 어떻게 이어갈지.',
+      videoId: 'NWH8N-BvhAw',
+      title: '회복탄력성 있는 사람들의 3가지 비밀 — Lucy Hone',
+      channel: 'TEDx Talks',
+      durationLabel: '16분',
+      reason: '리포트 수령 직후, 다음 한 달을 어떻게 이어갈지 잡아주는 영상 (자막 ON).',
     },
     action: {
       title: '내 30일 한 줄 변화 선언문',

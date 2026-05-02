@@ -322,11 +322,11 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
     day: 15,
     assessment: null,
     video: {
-      videoId: 'wfDTp2GogaQ',
-      title: '중간 지점에서 흔들릴 때 다시 정렬하는 법',
-      channel: '신박사TV',
-      durationLabel: '9분',
-      reason: '15일차의 정체감을 통과하는 데 도움되는 영상.',
+      videoId: 'ssss7V1_eyA',
+      title: '5분 마음챙김 명상 — 정체감을 통과하는 호흡',
+      channel: 'Great Meditation',
+      durationLabel: '5분',
+      reason: '15일차의 정체감을 짧은 명상으로 통과합니다.',
     },
     action: {
       title: '효과 있던 루틴 TOP 3 강화',

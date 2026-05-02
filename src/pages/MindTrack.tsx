@@ -272,7 +272,7 @@ const MindTrack: React.FC = () => {
   };
 
   const handleStartCtaClick = (location: string) => {
-    trackEvent('mt_workbook_sample_cta_click', {
+    trackWorkbookFunnel('mt_workbook_sample_cta_click', {
       cta_location: location,
       sample_open: sampleOpen,
       logged_in: !!user?.id,

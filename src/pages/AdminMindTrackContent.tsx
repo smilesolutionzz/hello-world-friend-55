@@ -451,10 +451,30 @@ export default function AdminMindTrackContent() {
                   />
                 </Field>
               </Card>
+
+              {/* 변경 이력 + 되돌리기 */}
+              <MindTrackContentHistoryPanel
+                key={`hist-${day}-${historyRefreshKey}`}
+                day={day}
+                onRestored={() => {
+                  // 오버라이드 다시 로드
+                  setLoading(true);
+                  supabase
+                    .from('mind_track_daily_content_overrides')
+                    .select('*')
+                    .eq('day_number', day)
+                    .maybeSingle()
+                    .then(({ data }) => {
+                      setOverride((data as unknown as OverrideRow | null) ?? null);
+                      setLoading(false);
+                    });
+                }}
+              />
             </>
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }

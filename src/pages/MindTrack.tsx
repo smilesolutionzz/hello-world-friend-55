@@ -1078,6 +1078,89 @@ const MindTrack: React.FC = () => {
           </section>
         </SmartScrollReveal>
 
+        {/* FAQ Accordion */}
+        <SmartScrollReveal kind="faq" className="block">
+          <section className="px-4 py-14 bg-white">
+            <div className="max-w-3xl mx-auto">
+              <div className="text-center mb-8">
+                <Badge variant="outline" className="mb-3 text-xs">FAQ</Badge>
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 break-keep">
+                  결제 전 가장 많이 묻는 질문
+                </h2>
+                <p className="text-sm text-slate-500 mt-2 break-keep">
+                  궁금한 항목을 펼쳐서 확인해 보세요.
+                </p>
+              </div>
+              <Accordion type="single" collapsible className="space-y-2">
+                <AccordionItem value="q1" className="border rounded-2xl px-4 bg-white">
+                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
+                    하루에 얼마나 시간이 걸리나요?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
+                    하루 평균 3분이면 충분해요. 짧은 셀프 체크 + 한 줄 일기 + 그날의 마이크로 액션으로 구성됩니다.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="q2" className="border rounded-2xl px-4 bg-white">
+                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
+                    중간에 며칠 빠지면 어떻게 되나요?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
+                    빠진 날도 ‘건너뛴 일차’로 기록만 되고 트랙은 계속 이어집니다. 30일 안에 자기 페이스로 채워가면 돼요.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="q3" className="border rounded-2xl px-4 bg-white">
+                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
+                    의료 진단/치료 목적인가요?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
+                    아니요. 30일 마음 트랙은 자기이해·습관 설계·웰빙 가이드를 위한 코칭/분석 도구이며,
+                    진단·치료를 대체하지 않습니다. 위기 상황은 화면 내 ‘긴급 전문가 연결’을 이용해 주세요.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="q4" className="border rounded-2xl px-4 bg-white">
+                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
+                    환불 정책은 어떻게 되나요?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
+                    결제 후 7일 이내, 워크북 진행률 20% 미만이면 전액 환불이 가능합니다. 그 외 기준은 결제 페이지 안내를 따릅니다.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="q5" className="border rounded-2xl px-4 bg-white">
+                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
+                    워크북 샘플을 미리 볼 수 있나요?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
+                    네. 위 ‘샘플 미리보기’를 누르면 6장 분량의 실제 워크북 일부가, 입력한 닉네임/목표/체크인 데이터가 반영된 형태로 표시됩니다.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="q6" className="border rounded-2xl px-4 bg-white">
+                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
+                    내 데이터는 안전하게 보관되나요?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
+                    모든 기록은 본인 계정에서만 열람 가능하도록 행 수준 보안(RLS)으로 보호되며, 닉네임 기반으로 표시됩니다.
+                    실명·연락처는 전문가 상담을 신청한 경우에 한해 처리됩니다.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="q7" className="border rounded-2xl px-4 bg-white">
+                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
+                    전문가 개입(리뷰/상담/긴급/심화)은 별도 결제인가요?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
+                    네. 30일 트랙(₩19,900)에는 AI 코칭 콘텐츠가 포함되며, 전문가 리뷰/상담/긴급/심화 4종은 필요할 때만 추가로 결제해 이용하는 옵션입니다.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </section>
+        </SmartScrollReveal>
+
         <section className="px-4 py-8 max-w-4xl mx-auto">
           <MedicalDisclaimer variant="full" />
         </section>

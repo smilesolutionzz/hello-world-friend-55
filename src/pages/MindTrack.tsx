@@ -1218,6 +1218,19 @@ const MindTrack: React.FC = () => {
           navigate(user?.id ? '/token-subscription' : '/auth');
         }}
       />
+
+      {/* 타이밍 기반 전문가 연결 자동 제안 — 셀프체크/리포트/이탈 신호를 보고 알아서 권유 */}
+      <SmartExpertSuggestion
+        selfCheckLevel={selfCheckLevel}
+        selfCheckGoalId={selfCheckGoalId}
+        reportRiskHigh={
+          !!report &&
+          (report.currentState?.stress >= 70 ||
+            report.currentState?.energy <= 30 ||
+            report.currentState?.clarity <= 30)
+        }
+        ctaClicked={hasClickedCta}
+      />
     </>
   );
 };

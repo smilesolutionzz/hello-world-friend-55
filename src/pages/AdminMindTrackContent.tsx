@@ -37,10 +37,12 @@ interface OverrideRow {
 
 export default function AdminMindTrackContent() {
   const { isAdmin, loading: adminLoading } = useAdminCheck();
+  const [tab, setTab] = useState<'edit' | 'stats'>('edit');
   const [day, setDay] = useState(1);
   const [override, setOverride] = useState<OverrideRow | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
 
   const baseContent = useMemo(() => getDefaultDailyContent(day), [day]);
   const merged = useMemo(

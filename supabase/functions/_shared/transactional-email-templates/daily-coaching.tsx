@@ -325,6 +325,28 @@ const ctaButton = {
   fontWeight: 600,
   letterSpacing: '0.02em',
 }
+const recordCallout = {
+  background: '#f8fafc',
+  border: '1px solid #e2e8f0',
+  borderRadius: '14px',
+  padding: '22px 22px 24px',
+  margin: '4px 0 0',
+  textAlign: 'center' as const,
+}
+const recordCalloutLabel = {
+  fontSize: '11px',
+  letterSpacing: '0.16em',
+  color: '#64748b',
+  textTransform: 'uppercase' as const,
+  margin: '0 0 8px',
+}
+const recordCalloutText = {
+  fontSize: '13px',
+  lineHeight: 1.65,
+  color: '#334155',
+  margin: '0 0 16px',
+  wordBreak: 'keep-all' as const,
+}
 const divider = { borderColor: '#e2e8f0', margin: '40px 0 24px' }
 const footer = {
   fontSize: '11px',

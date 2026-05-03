@@ -121,7 +121,13 @@ export default function MindTrackDashboard() {
     }
 
     if (utm.after_video) {
-      toast.success("영상은 어떠셨나요? 짧게 한 줄로 남겨보세요 ✍️");
+      setArrivedFromVideo(true);
+      toast.success("영상은 어떠셨나요? 아래에 한 줄로 남겨보세요 ✍️");
+      // 폼으로 자동 스크롤
+      setTimeout(() => {
+        document.querySelector('[data-testid="quick-reflection-form"]')
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 400);
     }
   }, []);
 

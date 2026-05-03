@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getDayCopy, calcMindTrackCurrentDay } from "@/lib/mindTrackDayCopy";
 import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirstTimeOnboarding";
 import MindTrackTodayValueStack from "@/components/mind-track/MindTrackTodayValueStack";
+import QuickReflectionForm from "@/components/mind-track/QuickReflectionForm";
 import { toast } from "sonner";
 
 interface Enrollment {
@@ -55,6 +56,8 @@ export default function MindTrackDashboard() {
   const [baseline, setBaseline] = useState<{ stress?: number; energy?: number; clarity?: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [arrivedFromVideo, setArrivedFromVideo] = useState(false);
+  const [reflectionRefreshKey, setReflectionRefreshKey] = useState(0);
 
   // 인증 + enrollment 조회 → 결제자 아니면 랜딩으로 보냄
   useEffect(() => {
@@ -118,7 +121,13 @@ export default function MindTrackDashboard() {
     }
 
     if (utm.after_video) {
-      toast.success("영상은 어떠셨나요? 짧게 한 줄로 남겨보세요 ✍️");
+      setArrivedFromVideo(true);
+      toast.success("영상은 어떠셨나요? 아래에 한 줄로 남겨보세요 ✍️");
+      // 폼으로 자동 스크롤
+      setTimeout(() => {
+        document.querySelector('[data-testid="quick-reflection-form"]')
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 400);
     }
   }, []);
 
@@ -275,6 +284,21 @@ export default function MindTrackDashboard() {
           </div>
         </section>
 
+        {/* 영상 시청 후 도착했다면 한 줄 기록 폼을 미션보다 먼저 노출 */}
+        {arrivedFromVideo && (
+          <section className="px-4 pb-4">
+            <div className="max-w-3xl mx-auto">
+              <QuickReflectionForm
+                key={`r-top-${reflectionRefreshKey}`}
+                enrollmentId={enrollment.id}
+                day={day}
+                source="after_video"
+                onSaved={() => setReflectionRefreshKey((k) => k + 1)}
+              />
+            </div>
+          </section>
+        )}
+
         {/* 오늘의 미션 — 메인 CTA */}
         <section className="px-4 pb-6">
           <div className="max-w-3xl mx-auto">
@@ -341,6 +365,21 @@ export default function MindTrackDashboard() {
 
         {/* 오늘의 가치 스택 — 검사 + 추천 영상 + 5분 액션 */}
         <MindTrackTodayValueStack day={day} />
+
+        {/* 평상시용 한 줄 기록 폼 — 영상 도착 모드일 땐 위쪽에 이미 노출되므로 중복 표시 안 함 */}
+        {!arrivedFromVideo && (
+          <section className="px-4 pb-6">
+            <div className="max-w-3xl mx-auto">
+              <QuickReflectionForm
+                key={`r-bot-${reflectionRefreshKey}`}
+                enrollmentId={enrollment.id}
+                day={day}
+                source="dashboard"
+                onSaved={() => setReflectionRefreshKey((k) => k + 1)}
+              />
+            </div>
+          </section>
+        )}
 
         {/* 빠른 메뉴 */}
         <section className="px-4 pb-6">

@@ -268,14 +268,31 @@ export default function MindTrackDashboard() {
                   <span className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
                     Day {String(day).padStart(2, "0")} / 30 · {copy.phase}
                   </span>
+                  {(() => {
+                    const f = getFocus(enrollment.goal_focus);
+                    return (
+                      <Badge variant="outline" className={`${f.badgeClass} text-[10px] font-bold border`}>
+                        {f.icon} {f.label}
+                      </Badge>
+                    );
+                  })()}
                 </div>
-                <button
-                  onClick={() => setShowOnboarding(true)}
-                  className="text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2 inline-flex items-center gap-1"
-                >
-                  <HelpCircle className="w-3 h-3" />
-                  이용 방법 다시 보기
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setFocusSwitcherOpen(true)}
+                    className="text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2 inline-flex items-center gap-1"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    트랙 변경
+                  </button>
+                  <button
+                    onClick={() => setShowOnboarding(true)}
+                    className="text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2 inline-flex items-center gap-1"
+                  >
+                    <HelpCircle className="w-3 h-3" />
+                    이용 방법
+                  </button>
+                </div>
               </div>
               <Progress value={progressPct} className="h-1.5" />
 

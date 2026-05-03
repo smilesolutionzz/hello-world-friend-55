@@ -212,8 +212,8 @@ async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> 
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
-          { role: "system", content: `당신은 임상심리학 박사급 코치입니다. AIHPRO 플랫폼의 데일리 코칭 메일을 작성합니다.\n근거 기반(EBT)이고 전문적이며, 의료 진단 표현은 피하고 "발달 코칭" 톤을 유지하세요.\n한국어, 이모지 절대 사용 금지.` },
-          { role: "user", content: `사용자 정보:\n- 코칭 목표: ${meta.label}\n- 진행 일차: Day ${dayNumber} / ${goal.total_days}\n- 핵심 접근법: ${meta.focus}\n- 근거: ${meta.researchBase}\n- 사용자 추가 설명: ${goal.goal_description || "없음"}\n\n다음 JSON 형식으로 출력:\n{\n  "missionSummary": "오늘 미션을 한 줄로 요약 (40자 이내, 동기부여 톤)",\n  "mission": "오늘 5분 안에 실행할 구체적 미션 (200자 이내)",\n  "keyActions": ["행동1 (15자 이내)", "행동2 (15자 이내)", "행동3 (15자 이내)"],\n  "insight": "이 미션이 효과적인 임상적 근거 (300자 이내, 연구 인용 포함)"\n}` },
+          { role: "system", content: `당신은 임상심리학 박사급 코치입니다. AIHPRO 플랫폼의 데일리 코칭 메일을 작성합니다.\n근거 기반(EBT)이고 전문적이며, 의료 진단 표현은 피하고 "발달 코칭" 톤을 유지하세요.\n\n[절대 규칙]\n- 모든 출력은 반드시 한국어로만 작성. 영어 단어/문장 사용 절대 금지(고유명사·연구명 제외).\n- 이모지 사용 금지.\n- JSON 외 다른 텍스트 출력 금지.` },
+          { role: "user", content: `사용자 정보:\n- 코칭 목표: ${meta.label}\n- 진행 일차: Day ${dayNumber} / ${goal.total_days}\n- 핵심 접근법: ${meta.focus}\n- 근거: ${meta.researchBase}\n- 사용자 추가 설명: ${goal.goal_description || "없음"}\n\n반드시 한국어로 작성하여 다음 JSON 형식으로 출력:\n{\n  "missionSummary": "오늘 미션을 한 줄로 요약 (40자 이내, 동기부여 톤, 한국어)",\n  "mission": "오늘 5분 안에 실행할 구체적 미션 (200자 이내, 한국어)",\n  "keyActions": ["행동1 (15자 이내, 한국어)", "행동2 (15자 이내, 한국어)", "행동3 (15자 이내, 한국어)"],\n  "insight": "이 미션이 효과적인 임상적 근거 (300자 이내, 한국어, 연구명만 영문 허용)"\n}` },
         ],
         response_format: { type: "json_object" },
       }),
@@ -230,13 +230,25 @@ async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> 
         .replace(/[\u201C\u201D]/g, '"')
         .replace(/\s+/g, " ")
         .trim();
+    // 한국어 비율 검증: 한글이 30% 미만이면 영어 응답으로 간주하고 fallback
+    const isKorean = (s: string) => {
+      const txt = String(s ?? "");
+      const hangul = (txt.match(/[\uAC00-\uD7AF]/g) || []).length;
+      const letters = (txt.match(/[A-Za-z\uAC00-\uD7AF]/g) || []).length;
+      return letters === 0 || hangul / letters >= 0.3;
+    };
+    const pickKo = (val: string, fb: string) => {
+      const s = sanitize(val);
+      return s && isKorean(s) ? s : fb;
+    };
+    const koActions = Array.isArray(c.keyActions) && c.keyActions.length >= 3
+      ? c.keyActions.slice(0, 3).map((a: string) => sanitize(a)).filter((a: string) => isKorean(a))
+      : [];
     return {
-      missionSummary: sanitize(c.missionSummary) || fallback.missionSummary,
-      mission: sanitize(c.mission) || fallback.mission,
-      keyActions: Array.isArray(c.keyActions) && c.keyActions.length >= 3
-        ? c.keyActions.slice(0, 3).map(sanitize)
-        : fallback.keyActions,
-      insight: sanitize(c.insight) || fallback.insight,
+      missionSummary: pickKo(c.missionSummary, fallback.missionSummary),
+      mission: pickKo(c.mission, fallback.mission),
+      keyActions: koActions.length >= 3 ? koActions : fallback.keyActions,
+      insight: pickKo(c.insight, fallback.insight),
     };
   } catch (err) {
     log("AI fallback", { err: String(err) });

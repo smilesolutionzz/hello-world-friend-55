@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getDayCopy, calcMindTrackCurrentDay } from "@/lib/mindTrackDayCopy";
 import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirstTimeOnboarding";
 import MindTrackTodayValueStack from "@/components/mind-track/MindTrackTodayValueStack";
+import QuickReflectionForm from "@/components/mind-track/QuickReflectionForm";
 import { toast } from "sonner";
 
 interface Enrollment {

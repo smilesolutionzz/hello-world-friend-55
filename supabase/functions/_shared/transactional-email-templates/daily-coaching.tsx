@@ -167,7 +167,13 @@ const DailyCoachingEmail = ({
                         <Text style={videoTitle}>{v.title}</Text>
                       </Link>
                       <Text style={videoChannel}>{v.channelTitle}</Text>
-                      {v.reason && <Text style={videoReason}>{v.reason}</Text>}
+                      {v.reason && (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: `<details style="margin:8px 0 0 0;"><summary style="cursor:pointer;font-size:12px;color:#8a7a4d;font-weight:600;list-style:none;outline:none;">▸ 큐레이션 이유 보기</summary><p style="margin:6px 0 0 0;font-size:13px;line-height:1.6;color:#475569;">${String(v.reason).replace(/</g, '&lt;')}</p></details>`,
+                          }}
+                        />
+                      )}
                       <Section style={videoActionRow}>
                         <Link href={watchUrl} style={videoPrimaryBtn}>
                           ▶ YouTube에서 영상 보기

@@ -18,6 +18,9 @@ import { getDayCopy, calcMindTrackCurrentDay } from "@/lib/mindTrackDayCopy";
 import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirstTimeOnboarding";
 import MindTrackTodayValueStack from "@/components/mind-track/MindTrackTodayValueStack";
 import QuickReflectionForm from "@/components/mind-track/QuickReflectionForm";
+import MindTrackFocusSwitcher from "@/components/mind-track/MindTrackFocusSwitcher";
+import { getFocus } from "@/lib/mindTrackFocusTracks";
+import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 interface Enrollment {
@@ -58,6 +61,7 @@ export default function MindTrackDashboard() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [arrivedFromVideo, setArrivedFromVideo] = useState(false);
   const [reflectionRefreshKey, setReflectionRefreshKey] = useState(0);
+  const [focusSwitcherOpen, setFocusSwitcherOpen] = useState(false);
 
   // 인증 + enrollment 조회 → 결제자 아니면 랜딩으로 보냄
   useEffect(() => {

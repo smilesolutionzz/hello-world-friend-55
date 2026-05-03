@@ -31,15 +31,19 @@ import { useDailyContent } from '@/hooks/useDailyContent';
 import VideoFeedbackButton from './VideoFeedbackButton';
 import VideoSuggestionForm from './VideoSuggestionForm';
 import CollapsibleReason from './CollapsibleReason';
+import { getTrackMissionLabel } from '@/lib/mindTrackTrackContent';
+import type { MindTrackFocusId } from '@/lib/mindTrackFocusTracks';
 
 interface Props {
   day: number;
+  focusId?: string | null;
 }
 
-export default function MindTrackTodayValueStack({ day }: Props) {
+export default function MindTrackTodayValueStack({ day, focusId }: Props) {
   const navigate = useNavigate();
-  const { content } = useDailyContent(day);
+  const { content, focus } = useDailyContent(day, focusId);
   const dayLabel = String(day).padStart(2, '0');
+  const missionLabel = getTrackMissionLabel(focus.id as MindTrackFocusId, day);
 
   const trackVideo = (eventType: 'click' | 'thumbnail_click' | 'start') => {
     logMindTrackVideoEvent({
@@ -53,15 +57,21 @@ export default function MindTrackTodayValueStack({ day }: Props) {
   return (
     <section className="px-4 pb-6">
       <div className="max-w-3xl mx-auto space-y-4">
-        {/* 헤더 */}
+        {/* 헤더 — 트랙 배지 + 오늘 큐레이션 */}
         <div className="flex items-baseline justify-between flex-wrap gap-2">
-          <div>
-            <p className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-              Day {dayLabel} · 오늘 받는 가치
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase flex items-center gap-2 flex-wrap">
+              <span>Day {dayLabel} · 오늘 받는 가치</span>
+              <Badge variant="outline" className={`${focus.badgeClass} text-[10px] font-bold border`}>
+                {focus.icon} {focus.label} 트랙
+              </Badge>
             </p>
-            <h3 className="text-base md:text-lg font-bold text-slate-900 break-keep mt-0.5">
-              검사 · 추천 영상 · 5분 액션 — 오늘 하루치 큐레이션
+            <h3 className="text-base md:text-lg font-bold text-slate-900 break-keep mt-1">
+              {missionLabel}
             </h3>
+            <p className="text-[11px] text-slate-500 break-keep mt-0.5">
+              아래 검사·영상·5분 액션은 <b>{focus.label}</b> 트랙 흐름에 맞춰 매일 자동 큐레이션돼요.
+            </p>
           </div>
           <Badge className="bg-[#1a1a1a] text-white border-0 text-[10px]">
             구독자 전용

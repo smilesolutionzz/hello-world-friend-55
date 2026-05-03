@@ -18,6 +18,9 @@ import { getDayCopy, calcMindTrackCurrentDay } from "@/lib/mindTrackDayCopy";
 import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirstTimeOnboarding";
 import MindTrackTodayValueStack from "@/components/mind-track/MindTrackTodayValueStack";
 import QuickReflectionForm from "@/components/mind-track/QuickReflectionForm";
+import MindTrackFocusSwitcher from "@/components/mind-track/MindTrackFocusSwitcher";
+import { getFocus } from "@/lib/mindTrackFocusTracks";
+import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 interface Enrollment {
@@ -58,6 +61,7 @@ export default function MindTrackDashboard() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [arrivedFromVideo, setArrivedFromVideo] = useState(false);
   const [reflectionRefreshKey, setReflectionRefreshKey] = useState(0);
+  const [focusSwitcherOpen, setFocusSwitcherOpen] = useState(false);
 
   // 인증 + enrollment 조회 → 결제자 아니면 랜딩으로 보냄
   useEffect(() => {
@@ -264,14 +268,31 @@ export default function MindTrackDashboard() {
                   <span className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
                     Day {String(day).padStart(2, "0")} / 30 · {copy.phase}
                   </span>
+                  {(() => {
+                    const f = getFocus(enrollment.goal_focus);
+                    return (
+                      <Badge variant="outline" className={`${f.badgeClass} text-[10px] font-bold border`}>
+                        {f.icon} {f.label}
+                      </Badge>
+                    );
+                  })()}
                 </div>
-                <button
-                  onClick={() => setShowOnboarding(true)}
-                  className="text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2 inline-flex items-center gap-1"
-                >
-                  <HelpCircle className="w-3 h-3" />
-                  이용 방법 다시 보기
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setFocusSwitcherOpen(true)}
+                    className="text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2 inline-flex items-center gap-1"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    트랙 변경
+                  </button>
+                  <button
+                    onClick={() => setShowOnboarding(true)}
+                    className="text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2 inline-flex items-center gap-1"
+                  >
+                    <HelpCircle className="w-3 h-3" />
+                    이용 방법
+                  </button>
+                </div>
               </div>
               <Progress value={progressPct} className="h-1.5" />
 
@@ -364,7 +385,18 @@ export default function MindTrackDashboard() {
         </section>
 
         {/* 오늘의 가치 스택 — 검사 + 추천 영상 + 5분 액션 */}
-        <MindTrackTodayValueStack day={day} />
+        <MindTrackTodayValueStack day={day} focusId={enrollment.goal_focus} />
+
+        <MindTrackFocusSwitcher
+          open={focusSwitcherOpen}
+          onOpenChange={setFocusSwitcherOpen}
+          enrollmentId={enrollment.id}
+          currentFocusId={enrollment.goal_focus}
+          currentDay={day}
+          onSwitched={(newFocusId) =>
+            setEnrollment((prev) => (prev ? { ...prev, goal_focus: newFocusId } : prev))
+          }
+        />
 
         {/* 평상시용 한 줄 기록 폼 — 영상 도착 모드일 땐 위쪽에 이미 노출되므로 중복 표시 안 함 */}
         {!arrivedFromVideo && (

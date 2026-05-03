@@ -28,6 +28,9 @@ import {
 } from '@/lib/mindTrackDailyContent';
 import { logMindTrackVideoEvent } from '@/lib/mindTrackVideoEvents';
 import { useDailyContent } from '@/hooks/useDailyContent';
+import VideoFeedbackButton from './VideoFeedbackButton';
+import VideoSuggestionForm from './VideoSuggestionForm';
+import CollapsibleReason from './CollapsibleReason';
 
 interface Props {
   day: number;
@@ -154,11 +157,11 @@ export default function MindTrackTodayValueStack({ day }: Props) {
               {content.video.title}
             </h4>
             <p className="text-xs text-slate-500 mt-1">{content.video.channel}</p>
-            <div className="mt-3 px-3 py-2 rounded-lg bg-rose-50/60 border-l-2 border-rose-300">
-              <p className="text-xs text-slate-700 break-keep leading-relaxed">
-                <span className="font-semibold text-rose-700">큐레이션 이유 · </span>
-                {content.video.reason}
-              </p>
+            <div className="mt-3">
+              <CollapsibleReason reason={content.video.reason} tone="rose" />
+            </div>
+            <div className="mt-2 flex justify-end">
+              <VideoFeedbackButton day={day} videoId={content.video.videoId} />
             </div>
             <div className="mt-4 flex flex-col sm:flex-row gap-2">
               <Button

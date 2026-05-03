@@ -230,13 +230,25 @@ async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> 
         .replace(/[\u201C\u201D]/g, '"')
         .replace(/\s+/g, " ")
         .trim();
+    // 한국어 비율 검증: 한글이 30% 미만이면 영어 응답으로 간주하고 fallback
+    const isKorean = (s: string) => {
+      const txt = String(s ?? "");
+      const hangul = (txt.match(/[\uAC00-\uD7AF]/g) || []).length;
+      const letters = (txt.match(/[A-Za-z\uAC00-\uD7AF]/g) || []).length;
+      return letters === 0 || hangul / letters >= 0.3;
+    };
+    const pickKo = (val: string, fb: string) => {
+      const s = sanitize(val);
+      return s && isKorean(s) ? s : fb;
+    };
+    const koActions = Array.isArray(c.keyActions) && c.keyActions.length >= 3
+      ? c.keyActions.slice(0, 3).map((a: string) => sanitize(a)).filter((a: string) => isKorean(a))
+      : [];
     return {
-      missionSummary: sanitize(c.missionSummary) || fallback.missionSummary,
-      mission: sanitize(c.mission) || fallback.mission,
-      keyActions: Array.isArray(c.keyActions) && c.keyActions.length >= 3
-        ? c.keyActions.slice(0, 3).map(sanitize)
-        : fallback.keyActions,
-      insight: sanitize(c.insight) || fallback.insight,
+      missionSummary: pickKo(c.missionSummary, fallback.missionSummary),
+      mission: pickKo(c.mission, fallback.mission),
+      keyActions: koActions.length >= 3 ? koActions : fallback.keyActions,
+      insight: pickKo(c.insight, fallback.insight),
     };
   } catch (err) {
     log("AI fallback", { err: String(err) });

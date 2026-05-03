@@ -8474,6 +8474,69 @@ export type Database = {
           },
         ]
       }
+      mind_track_day_content: {
+        Row: {
+          category: string
+          created_at: string
+          day_number: number
+          focus_goal: string
+          id: string
+          last_validated_at: string | null
+          meta: Json
+          mission_description: string | null
+          mission_duration_minutes: number
+          mission_title: string
+          reason: string | null
+          updated_at: string
+          validation_notes: string | null
+          video_available: boolean
+          video_id: string | null
+          video_platform: string
+          video_title: string | null
+          video_url: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          day_number: number
+          focus_goal: string
+          id?: string
+          last_validated_at?: string | null
+          meta?: Json
+          mission_description?: string | null
+          mission_duration_minutes?: number
+          mission_title: string
+          reason?: string | null
+          updated_at?: string
+          validation_notes?: string | null
+          video_available?: boolean
+          video_id?: string | null
+          video_platform?: string
+          video_title?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          day_number?: number
+          focus_goal?: string
+          id?: string
+          last_validated_at?: string | null
+          meta?: Json
+          mission_description?: string | null
+          mission_duration_minutes?: number
+          mission_title?: string
+          reason?: string | null
+          updated_at?: string
+          validation_notes?: string | null
+          video_available?: boolean
+          video_id?: string | null
+          video_platform?: string
+          video_title?: string | null
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       mind_track_enrollments: {
         Row: {
           baseline_data: Json | null

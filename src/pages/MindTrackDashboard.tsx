@@ -366,6 +366,21 @@ export default function MindTrackDashboard() {
         {/* 오늘의 가치 스택 — 검사 + 추천 영상 + 5분 액션 */}
         <MindTrackTodayValueStack day={day} />
 
+        {/* 평상시용 한 줄 기록 폼 — 영상 도착 모드일 땐 위쪽에 이미 노출되므로 중복 표시 안 함 */}
+        {!arrivedFromVideo && (
+          <section className="px-4 pb-6">
+            <div className="max-w-3xl mx-auto">
+              <QuickReflectionForm
+                key={`r-bot-${reflectionRefreshKey}`}
+                enrollmentId={enrollment.id}
+                day={day}
+                source="dashboard"
+                onSaved={() => setReflectionRefreshKey((k) => k + 1)}
+              />
+            </div>
+          </section>
+        )}
+
         {/* 빠른 메뉴 */}
         <section className="px-4 pb-6">
           <div className="max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3">

@@ -221,11 +221,22 @@ async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> 
     if (!resp.ok) throw new Error(`AI ${resp.status}`);
     const data = await resp.json();
     const c = JSON.parse(data.choices[0].message.content);
+    // U+FFFD(replacement char), 깨진 surrogate, smart quote 정화
+    const sanitize = (s: string) =>
+      String(s ?? "")
+        .replace(/\uFFFD/g, "")
+        .replace(/[\uD800-\uDFFF]/g, "")
+        .replace(/[\u2018\u2019]/g, "'")
+        .replace(/[\u201C\u201D]/g, '"')
+        .replace(/\s+/g, " ")
+        .trim();
     return {
-      missionSummary: c.missionSummary || fallback.missionSummary,
-      mission: c.mission || fallback.mission,
-      keyActions: Array.isArray(c.keyActions) && c.keyActions.length >= 3 ? c.keyActions.slice(0, 3) : fallback.keyActions,
-      insight: c.insight || fallback.insight,
+      missionSummary: sanitize(c.missionSummary) || fallback.missionSummary,
+      mission: sanitize(c.mission) || fallback.mission,
+      keyActions: Array.isArray(c.keyActions) && c.keyActions.length >= 3
+        ? c.keyActions.slice(0, 3).map(sanitize)
+        : fallback.keyActions,
+      insight: sanitize(c.insight) || fallback.insight,
     };
   } catch (err) {
     log("AI fallback", { err: String(err) });

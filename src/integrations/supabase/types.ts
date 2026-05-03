@@ -8767,6 +8767,75 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_video_feedback: {
+        Row: {
+          comment: string | null
+          created_at: string
+          day: number
+          id: string
+          reason_type: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          day: number
+          id?: string
+          reason_type?: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          day?: number
+          id?: string
+          reason_type?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: []
+      }
+      mind_track_video_suggestions: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          id: string
+          note: string | null
+          status: string
+          suggested_for_day: number | null
+          updated_at: string
+          user_id: string
+          video_id: string | null
+          youtube_url: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          status?: string
+          suggested_for_day?: number | null
+          updated_at?: string
+          user_id: string
+          video_id?: string | null
+          youtube_url: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          status?: string
+          suggested_for_day?: number | null
+          updated_at?: string
+          user_id?: string
+          video_id?: string | null
+          youtube_url?: string
+        }
+        Relationships: []
+      }
       mind_track_workbooks: {
         Row: {
           challenge_theme: string | null

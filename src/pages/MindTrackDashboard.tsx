@@ -56,6 +56,8 @@ export default function MindTrackDashboard() {
   const [baseline, setBaseline] = useState<{ stress?: number; energy?: number; clarity?: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [arrivedFromVideo, setArrivedFromVideo] = useState(false);
+  const [reflectionRefreshKey, setReflectionRefreshKey] = useState(0);
 
   // 인증 + enrollment 조회 → 결제자 아니면 랜딩으로 보냄
   useEffect(() => {

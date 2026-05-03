@@ -385,7 +385,18 @@ export default function MindTrackDashboard() {
         </section>
 
         {/* 오늘의 가치 스택 — 검사 + 추천 영상 + 5분 액션 */}
-        <MindTrackTodayValueStack day={day} />
+        <MindTrackTodayValueStack day={day} focusId={enrollment.goal_focus} />
+
+        <MindTrackFocusSwitcher
+          open={focusSwitcherOpen}
+          onOpenChange={setFocusSwitcherOpen}
+          enrollmentId={enrollment.id}
+          currentFocusId={enrollment.goal_focus}
+          currentDay={day}
+          onSwitched={(newFocusId) =>
+            setEnrollment((prev) => (prev ? { ...prev, goal_focus: newFocusId } : prev))
+          }
+        />
 
         {/* 평상시용 한 줄 기록 폼 — 영상 도착 모드일 땐 위쪽에 이미 노출되므로 중복 표시 안 함 */}
         {!arrivedFromVideo && (

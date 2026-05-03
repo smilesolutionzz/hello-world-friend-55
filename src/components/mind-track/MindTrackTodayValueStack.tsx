@@ -31,15 +31,19 @@ import { useDailyContent } from '@/hooks/useDailyContent';
 import VideoFeedbackButton from './VideoFeedbackButton';
 import VideoSuggestionForm from './VideoSuggestionForm';
 import CollapsibleReason from './CollapsibleReason';
+import { getTrackMissionLabel } from '@/lib/mindTrackTrackContent';
+import type { MindTrackFocusId } from '@/lib/mindTrackFocusTracks';
 
 interface Props {
   day: number;
+  focusId?: string | null;
 }
 
-export default function MindTrackTodayValueStack({ day }: Props) {
+export default function MindTrackTodayValueStack({ day, focusId }: Props) {
   const navigate = useNavigate();
-  const { content } = useDailyContent(day);
+  const { content, focus } = useDailyContent(day, focusId);
   const dayLabel = String(day).padStart(2, '0');
+  const missionLabel = getTrackMissionLabel(focus.id as MindTrackFocusId, day);
 
   const trackVideo = (eventType: 'click' | 'thumbnail_click' | 'start') => {
     logMindTrackVideoEvent({

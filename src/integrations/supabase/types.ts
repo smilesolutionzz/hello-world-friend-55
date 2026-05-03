@@ -8279,6 +8279,33 @@ export type Database = {
           },
         ]
       }
+      mind_track_content_audit_log: {
+        Row: {
+          failed_items: Json | null
+          id: string
+          notes: string | null
+          run_at: string
+          total_checked: number
+          total_failed: number
+        }
+        Insert: {
+          failed_items?: Json | null
+          id?: string
+          notes?: string | null
+          run_at?: string
+          total_checked?: number
+          total_failed?: number
+        }
+        Update: {
+          failed_items?: Json | null
+          id?: string
+          notes?: string | null
+          run_at?: string
+          total_checked?: number
+          total_failed?: number
+        }
+        Relationships: []
+      }
       mind_track_daily_content_history: {
         Row: {
           action: Json | null
@@ -8541,6 +8568,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      mind_track_focus_changes: {
+        Row: {
+          created_at: string
+          day_when_changed: number | null
+          enrollment_id: string
+          from_focus: string | null
+          id: string
+          to_focus: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          day_when_changed?: number | null
+          enrollment_id: string
+          from_focus?: string | null
+          id?: string
+          to_focus: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          day_when_changed?: number | null
+          enrollment_id?: string
+          from_focus?: string | null
+          id?: string
+          to_focus?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       mind_track_interventions: {
         Row: {
@@ -14558,6 +14615,10 @@ export type Database = {
       submit_parent_assessment: {
         Args: { p_responses: Json; p_scores: Json; p_token: string }
         Returns: string
+      }
+      switch_mind_track_focus: {
+        Args: { _enrollment_id: string; _new_focus: string }
+        Returns: Json
       }
       track_feature_usage: {
         Args: { p_feature_type: string; p_user_id: string }

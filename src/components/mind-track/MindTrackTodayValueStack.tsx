@@ -233,6 +233,9 @@ export default function MindTrackTodayValueStack({ day }: Props) {
             </div>
           </div>
         </motion.div>
+
+        {/* 4) 사용자 영상 추천 */}
+        <VideoSuggestionForm defaultDay={day} />
       </div>
     </section>
   );

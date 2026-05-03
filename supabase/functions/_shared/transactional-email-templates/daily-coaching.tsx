@@ -147,13 +147,12 @@ const DailyCoachingEmail = ({
           {videos && videos.length > 0 && (
             <Section style={videosBlock}>
               <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
-              <Text style={videoIntro}>오늘 미션과 가장 잘 맞는 영상을 골랐어요. 보고 난 뒤 마음의 변화를 한 줄로 기록해 보세요.</Text>
+              <Text style={videoIntro}>오늘 미션과 가장 잘 맞는 영상을 골랐어요. 시청 후 아래 "오늘의 기록 남기기"에서 한 줄 기록을 남겨주세요.</Text>
               {videos.map((v) => {
                 const thumb = v.thumbnail || `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`
                 const watchUrl = buildYouTubeUrl(v.videoId, dayLabel)
                 return (
                   <Section key={v.videoId} style={videoCard}>
-                    {/* Thumbnail (full-width, stacks above text on mobile) */}
                     <Link href={watchUrl} style={videoThumbLink}>
                       <Img
                         src={thumb}
@@ -163,24 +162,15 @@ const DailyCoachingEmail = ({
                         style={thumbStyle}
                       />
                     </Link>
-
-                    {/* Title + meta */}
                     <Section style={videoTextBlock}>
                       <Link href={watchUrl} style={videoTitleLink}>
                         <Text style={videoTitle}>{v.title}</Text>
                       </Link>
                       <Text style={videoChannel}>{v.channelTitle}</Text>
                       {v.reason && <Text style={videoReason}>{v.reason}</Text>}
-
                       <Section style={videoActionRow}>
                         <Link href={watchUrl} style={videoPrimaryBtn}>
-                          ▶ YouTube에서 재생
-                        </Link>
-                        <Link
-                          href={buildMindTrackUrl(dayLabel, 'after_video', v.videoId)}
-                          style={videoSecondaryBtn}
-                        >
-                          시청 후 기록하기 →
+                          ▶ YouTube에서 영상 보기
                         </Link>
                       </Section>
                     </Section>
@@ -190,12 +180,18 @@ const DailyCoachingEmail = ({
             </Section>
           )}
 
-          <Button
-            href={buildMindTrackUrl(dayLabel, 'cta', firstVideoId)}
-            style={ctaButton}
-          >
-            오늘의 기록 남기기 →
-          </Button>
+          <Section style={recordCallout}>
+            <Text style={recordCalloutLabel}>05 · 오늘의 기록</Text>
+            <Text style={recordCalloutText}>
+              미션 또는 영상을 마친 뒤, 아래 버튼을 눌러 오늘 느낀 변화를 한 줄로 기록해 주세요. 30일간의 변화 그래프가 자동으로 누적됩니다.
+            </Text>
+            <Button
+              href={buildMindTrackUrl(dayLabel, 'cta', firstVideoId)}
+              style={ctaButton}
+            >
+              오늘의 기록 남기기 →
+            </Button>
+          </Section>
 
           <Hr style={divider} />
           <Text style={footer}>

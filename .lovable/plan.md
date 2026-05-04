@@ -1,52 +1,96 @@
-## 목표
+# B2B 구조 정리 Phase 1: Cleanup + Hub
 
-오늘 VC 미팅용 IR Deck을 `AIHPRO_IR_Deck_2026.04.29.pptx` 기반으로 v2 업데이트하여 `/mnt/documents/AIHPRO_IR_Deck_2026.04.30_v2.pptx`로 제공합니다.
+영업 미팅에서 한 줄로 보낼 수 있는 B2B 진입점을 만들고, 미사용 코드를 제거합니다.
 
-## v1 → v2 변경 포인트
+---
 
-1. **로드맵 슬라이드 전면 교체** — 4월 토대 다지기 완료 → 5월 하드닝 스프린트(시드 30~50명 내부 검증) → 6월 GA 정식 론칭(₩19,900 마음트랙 마케팅 ON, 영문판 동시 공개, B2B Job Coach 파일럿 클로징)
-2. **트랙션/지표 슬라이드 추가** — v1에서 제외했던 지표 슬라이드를 "보수적 추정치" 라벨로 신설:
-   - 5월 내부 KPI: 시드 30~50명, D7 리텐션 ≥ 40%, 결제 후 워크북 D3 진입 ≥ 70% (모두 "내부 추정치" 명시)
-   - 6월 KPI 목표: 결제 가입자 150명, 전환율 3%, 상담 사용 비율 20% (모두 "추정치" 라벨)
-3. **The Ask 업데이트** — 자금 사용처를 5월 하드닝 + 6월 GA + B2B GTM에 정렬
-4. **표지 날짜** — 2026.04.30
-5. **나머지 9장(Cover 일부, Problem, Solution, Product, Market, Why Now, BM, Moat, Competition, Team)** — v1 그대로 유지
+## 1. 죽은 코드 제거
 
-## 슬라이드 구성 (총 13장, +1)
+라우팅에 등록되지 않아 접근 불가능한 미사용 페이지를 삭제합니다.
+
+- `src/pages/InstitutionAdmin.tsx` (744줄) 삭제
+- `src/pages/InstitutionOnboarding.tsx` (418줄) 삭제
+- `App.tsx`에 import가 남아있다면 정리 (없을 가능성 높음)
+- 두 파일을 참조하는 다른 컴포넌트가 있는지 `rg`로 한 번 더 확인 후 안전하게 삭제
+
+---
+
+## 2. `/business` 허브 페이지 신규 생성
+
+기존 흩어진 4개 B2B 페이지의 **단일 진입점**.
+
+**파일:** `src/pages/Business.tsx`
+**라우트:** `/business` (App.tsx에 등록)
+
+### 페이지 구성 (위에서 아래로)
 
 ```text
-01 Cover               — 비전 + 2026.04.30
-02 Problem             — 한국 멘탈헬스 단편화 (유지)
-03 Solution            — 하이브리드(AI×전문가×Human Touch) (유지)
-04 Product             — 4 코어 모듈 (유지)
-05 Market              — 디지털 멘탈헬스 트렌드 (유지)
-06 Why Now             — 추론 AI 성숙 + 인식 변화 (유지)
-07 Business Model      — Mind Track 30(₩19,900) → 상담 → B2B (유지)
-08 Moat                — 종단 데이터 + 검증 전문가망 + 신뢰 (유지)
-09 Competition         — 일반 AI/단발 검사 대비 포지셔닝 (유지)
-10 Roadmap (NEW)       — 4월 완료 / 5월 하드닝 / 6월 GA / Q3-Q4
-11 Traction (NEW)      — 5·6월 KPI, 모두 "내부 추정치" 라벨
-12 Team                — 공동대표 구조 (유지)
-13 The Ask             — Use of Funds: 제품/임상망/B2B GTM
+[Hero]
+  타이틀: "조직의 마음건강을 데이터로 관리합니다"
+  서브: 익명성 보장 · HR은 집계만 열람 · 5명 미만 자동 마스킹
+  CTA(메인): "도입 상담 신청" → /b2b-proposal
+  CTA(보조): "데모 리포트 보기" → /b2b-demo-report
+
+[ROI 한 줄 배너]
+  "직원 1명 결근일 1일 = 평균 임금 손실 + 생산성 손실"
+  (계산기는 추후 추가, 지금은 카피만)
+
+[3-Step 도입 흐름]
+  01 도입 문의 → 02 직원 익명 코칭 시작 → 03 부서별 집계 리포트
+
+[B2B 자산 카드 그리드 — 4개]
+  - 잡코치 솔루션 소개      → /b2b-jobcoach
+  - HR 대시보드 미리보기    → /b2b-hr-dashboard
+  - 화이트라벨 데모 리포트  → /b2b-demo-report
+  - 도입 문의 / 견적 요청   → /b2b-proposal
+
+[신뢰 지표]
+  · 5명 미만 자동 마스킹
+  · 직원 동의 기반 데이터 파이프라인
+  · 비의료 코칭 도구 (MedicalDisclaimer 톤)
+
+[Footer CTA]
+  "도입 상담 신청" 버튼 1개
 ```
 
-## 디자인 가이드 (메모리 준수)
+### 디자인 규칙 (메모리 준수)
+- `bg-white`, `rounded-2xl/3xl`, 그라데이션/글래스 금지
+- 골드 액센트 `#C8B88A`, 번호 `01/02/03`
+- Pretendard(KR) + Space Grotesk(EN)
+- 이모지 금지, 마크다운 표 금지
+- "AI/진단" 단어 회피, "전문가 종합 분석" 톤
+- `MedicalDisclaimer` / `CoachingBadge` 활용
 
-- 화이트 미니멀, 골드 액센트 `#C8B88A`
-- 한글 본문 Pretendard 계열, 헤드라인 Instrument Serif
-- 이모지 금지, Markdown 표 금지, "AI 진단" 표현 금지
-- 가격은 `MIND_TRACK_PRICE` 기준 ₩19,900으로만 표기 (구 990/3,900/9,900 절대 금지)
-- 모든 정량 수치 슬라이드 하단에 "본 수치는 내부 보수적 추정치이며 실측치가 아닙니다" 디스클레이머 고정
+### SEO
+- Title: "AIHPRO 비즈니스 — 조직 마음건강 솔루션" (40자 이내)
+- Description: 익명성·HR 집계·도입 흐름 한 줄 (80자 이내)
 
-## 작업 순서 (빌드 모드 진입 후)
+---
 
-1. v1 빌드 스크립트(`/tmp/build_ir.js`) 잔존 여부 확인 → 없으면 새로 작성
-2. v2 스크립트로 13장 PPTX 생성 (`pptxgenjs`)
-3. LibreOffice로 PDF 변환 → `pdftoppm`로 슬라이드별 JPG 추출
-4. 13장 전수 시각 QA — 텍스트 잘림/오버랩/저대비/플레이스홀더 잔존 점검, 발견 시 수정 후 재렌더
-5. 최종 파일을 `/mnt/documents/AIHPRO_IR_Deck_2026.04.30_v2.pptx`로 저장
-6. `<lov-artifact>` 태그로 다운로드 링크 제공
+## 3. 헤더 진입점 추가
 
-## 산출물
+메모리 [B2B navigation]에 따르면 메인 nav에는 B2B를 숨기는 정책이 있으나, **`/business` 허브 1개는 예외로 추가**합니다 (영업 미팅 핵심 동선).
 
-- `/mnt/documents/AIHPRO_IR_Deck_2026.04.30_v2.pptx` (한국어, 13장, Seed/Pre-A 톤, 보수적 추정치 라벨링)
+- 헤더 우측 보조 링크에 "기업 (Business)" 1개 추가 → `/business`
+- 모바일 햄버거 메뉴에도 동일 항목 추가
+- 기존 `/b2b-jobcoach`, `/b2b-proposal` 등은 nav에서 노출하지 않음 (허브를 통해 진입)
+
+---
+
+## 4. 검증
+
+- `/business` 직접 방문 시 정상 렌더
+- 4개 카드 클릭 시 각 페이지로 이동
+- 모바일 800px 뷰포트에서 카드 그리드가 1열로 정렬
+- `InstitutionAdmin` / `InstitutionOnboarding` 삭제 후 빌드 에러 없음
+
+---
+
+## 다루지 않는 것 (다음 Phase)
+
+- Case Study 페이지 — 첫 고객 확보 후
+- 보안/익명성 백서 — PDF로 별도 제작
+- ROI 계산기 위젯 — `/business` 반응 보고 추가
+- `/b2b-proposal` 스코프 재정의 — 별도 작업으로
+
+승인하시면 바로 진행합니다.

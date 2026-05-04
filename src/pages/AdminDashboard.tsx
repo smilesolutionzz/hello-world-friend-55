@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowLeft, RefreshCw, Bell, Settings, Calendar, 
-  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail, BookOpen, Inbox
+  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail, BookOpen, Inbox, TrendingUp
 } from 'lucide-react';
 import B2BInquiryInbox from '@/components/admin/B2BInquiryInbox';
+import B2BFunnelDashboard from '@/components/admin/B2BFunnelDashboard';
 import { EmailSendLogPanel } from '@/components/admin/EmailSendLogPanel';
 import MindTrackInterventionStats from '@/components/admin/MindTrackInterventionStats';
 import WorkbookFunnelDashboard from '@/components/admin/WorkbookFunnelDashboard';

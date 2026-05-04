@@ -25,6 +25,20 @@ interface InquiryPayload {
   institution_type?: string;
   message?: string;
   inquiry_id?: string;
+  attachment_filename?: string | null;
+  preferred_contact_at?: string | null;
+}
+
+function formatPreferredAt(iso?: string | null): string {
+  if (!iso) return "-";
+  try {
+    const d = new Date(iso);
+    return new Intl.DateTimeFormat("ko-KR", {
+      timeZone: "Asia/Seoul",
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", hour12: false,
+    }).format(d) + " (KST)";
+  } catch { return iso ?? "-"; }
 }
 
 function escape(s?: string | null): string {

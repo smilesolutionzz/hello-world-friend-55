@@ -18,14 +18,11 @@ const B2BJobCoach: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>AIHPRO 잡코치 — 직장 마음건강 솔루션</title>
-        <meta
-          name="description"
-          content="번아웃·이직 위험을 조기 감지하고 임상 전문가와 익명 연결하는 차세대 EAP 솔루션."
-        />
-        <link rel="canonical" href="https://aihpro.app/b2b-jobcoach" />
-      </Helmet>
+      <BusinessSEO
+        title="AIHPRO 잡코치 — 직장 마음건강 솔루션"
+        description="번아웃·이직 위험을 조기 감지하고 임상 전문가와 익명 연결하는 차세대 EAP 솔루션."
+        path="/b2b-jobcoach"
+      />
 
       <div className="min-h-screen bg-white text-foreground">
         <BusinessBreadcrumb current="잡코치 솔루션" />

@@ -1,96 +1,105 @@
-# B2B 구조 정리 Phase 1: Cleanup + Hub
+# AIHPRO B2B 심화 설계 문서 (파트너용 v2)
 
-영업 미팅에서 한 줄로 보낼 수 있는 B2B 진입점을 만들고, 미사용 코드를 제거합니다.
+기존 `AIHPRO_B2B_파트너_공유_안내서.docx`를 잇는 **심화 편(v2)** 워드 파일을 새로 생성합니다. 두 가지 주제를 깊게 다룹니다.
 
----
+## 산출물
 
-## 1. 죽은 코드 제거
+`/mnt/documents/AIHPRO_B2B_심화설계_v2.docx` (새 파일, 기존 v1과 분리)
 
-라우팅에 등록되지 않아 접근 불가능한 미사용 페이지를 삭제합니다.
+## 문서 구조 (2부 구성)
 
-- `src/pages/InstitutionAdmin.tsx` (744줄) 삭제
-- `src/pages/InstitutionOnboarding.tsx` (418줄) 삭제
-- `App.tsx`에 import가 남아있다면 정리 (없을 가능성 높음)
-- 두 파일을 참조하는 다른 컴포넌트가 있는지 `rg`로 한 번 더 확인 후 안전하게 삭제
+### 1부. HR 대시보드 심화 설계
 
----
+1. **대시보드의 정체성**
+   - HR이 보는 것 vs 보지 못하는 것 (한 줄 원칙)
+   - "5명 미만 마스킹"의 사업적 이유 (개인정보보호법 + 직원 신뢰)
 
-## 2. `/business` 허브 페이지 신규 생성
+2. **집계 기준 (Aggregation Rules)**
+   - 집계 단위: 부서(department_code) × 월(report_month)
+   - 점수 3종: burnout / stress / satisfaction (avg, p50, p75)
+   - 위험도 분포: low / mid / high 비율
+   - 참여율 = participated_employees / total_employees
+   - 이직 위험 점수 (turnover_risk_score) 산식 개념
 
-기존 흩어진 4개 B2B 페이지의 **단일 진입점**.
+3. **익명성 처리 4단계 파이프라인**
+   ```
+   [개인 응답] → [동의 토글 검사] → [부서 집계 ≥5명] → [HR 노출]
+                  share_identity=false 강제
+   ```
+   - `employee_data_sharing_preferences` 토글별 매핑
+   - 5명 미만 자동 마스킹: SQL view 레벨에서 차단
+   - 위기 신호(allow_crisis_alert)만 예외적으로 익명 알림
 
-**파일:** `src/pages/Business.tsx`
-**라우트:** `/business` (App.tsx에 등록)
+4. **권한·보안 매트릭스**
+   - 역할: 직원 / HR / 관리자 / 개발자 (4단계)
+   - 테이블 × 역할 × 작업(R/W) 매트릭스 표
+   - RLS 정책 핵심 3개 발췌 (employees own / institution staff / admin)
+   - 감사 로그 (institution_data_access_logs 활용 방안)
 
-### 페이지 구성 (위에서 아래로)
+5. **HR 대시보드 화면 구성안**
+   - 상단: 4 KPI 카드 (참여율, 평균 번아웃, 고위험 비율, 이직위험)
+   - 중단: 부서별 히트맵, 월별 추이 라인차트
+   - 하단: AI 요약 카드 + 권장 액션, 위기 알림 배지
 
-```text
-[Hero]
-  타이틀: "조직의 마음건강을 데이터로 관리합니다"
-  서브: 익명성 보장 · HR은 집계만 열람 · 5명 미만 자동 마스킹
-  CTA(메인): "도입 상담 신청" → /b2b-proposal
-  CTA(보조): "데모 리포트 보기" → /b2b-demo-report
+### 2부. 데이터 모델 심화
 
-[ROI 한 줄 배너]
-  "직원 1명 결근일 1일 = 평균 임금 손실 + 생산성 손실"
-  (계산기는 추후 추가, 지금은 카피만)
+6. **B2B 도메인 ERD (텍스트 다이어그램)**
+   ```text
+   b2b_partner_institutions (회사)
+     ├── employee_organization_links (직원 매핑)
+     ├── employee_data_sharing_preferences (동의)
+     ├── b2b_jobcoach_employee_sessions (익명 세션)
+     └── b2b_jobcoach_team_reports (월간 부서 리포트)
 
-[3-Step 도입 흐름]
-  01 도입 문의 → 02 직원 익명 코칭 시작 → 03 부서별 집계 리포트
+   b2b_jobcoach_plans (요금제 카탈로그)
+   b2b_jobcoach_inquiries (도입 문의)
+     └── b2b_followup_queue (자동 메일 큐)
 
-[B2B 자산 카드 그리드 — 4개]
-  - 잡코치 솔루션 소개      → /b2b-jobcoach
-  - HR 대시보드 미리보기    → /b2b-hr-dashboard
-  - 화이트라벨 데모 리포트  → /b2b-demo-report
-  - 도입 문의 / 견적 요청   → /b2b-proposal
+   b2b_funnel_events (전환 분석)
+   ```
 
-[신뢰 지표]
-  · 5명 미만 자동 마스킹
-  · 직원 동의 기반 데이터 파이프라인
-  · 비의료 코칭 도구 (MedicalDisclaimer 톤)
+7. **테이블별 필드 사전 (Field Dictionary)**
+   - 8개 핵심 테이블 각각:
+     - 목적 1줄
+     - 주요 필드 5~7개 (타입 / 의미 / 예시)
+     - 키 관계
+     - RLS 정책 요약
 
-[Footer CTA]
-  "도입 상담 신청" 버튼 1개
-```
+8. **b2b_funnel_events 적재 규칙 (Tracking Spec)**
+   - 4개 이벤트 타입: page_view / cta_click / form_start / form_submit
+   - 트래킹 대상 페이지 7개 (B2B_PATHS)
+   - 세션 ID 생성 규칙 (sessionStorage, 8자 nanoid 변형)
+   - 자동 추적: useB2BFunnelAutoTrack
+   - 수동 추적: trackB2BEvent('cta_click', path, {button: 'demo'})
+   - metadata JSONB 권장 키: button, variant, step, source
+   - 적재 비용·인덱스 전략 (4개 인덱스)
 
-### 디자인 규칙 (메모리 준수)
-- `bg-white`, `rounded-2xl/3xl`, 그라데이션/글래스 금지
-- 골드 액센트 `#C8B88A`, 번호 `01/02/03`
-- Pretendard(KR) + Space Grotesk(EN)
-- 이모지 금지, 마크다운 표 금지
-- "AI/진단" 단어 회피, "전문가 종합 분석" 톤
-- `MedicalDisclaimer` / `CoachingBadge` 활용
+9. **분석 지표 카탈로그**
+   - 퍼널 단계: View → CTA → Start → Submit (단계별 전환율 정의)
+   - 페이지별 전환율 = form_submit / page_view (unique session)
+   - 핵심 KPI 5개: MQL 전환율, CPA, 페이지 이탈률, 평균 세션 시간, 리드 → 미팅 전환율
+   - get_b2b_funnel_summary RPC 활용법
+   - 향후 확장 아이디어: 코호트 분석, A/B 테스트 슬롯
 
-### SEO
-- Title: "AIHPRO 비즈니스 — 조직 마음건강 솔루션" (40자 이내)
-- Description: 익명성·HR 집계·도입 흐름 한 줄 (80자 이내)
+10. **데이터 거버넌스**
+    - 보존 기간 정책 (퍼널 90일 / 세션 2년 / 리포트 5년)
+    - 직원 탈퇴 시 처리 (left_at + 익명화)
+    - GDPR/개인정보보호법 대응 포인트
 
----
+## 기술 구현
 
-## 3. 헤더 진입점 추가
+- Node.js + `docx` 라이브러리로 생성
+- 폰트: Malgun Gothic, 골드 헤더(#C8B88A)
+- 표·다이어그램은 Word 네이티브 표 사용 (마크다운 표 금지)
+- 페이지 약 14~18쪽 예상
+- 생성 후 PDF 변환 + 페이지별 이미지로 QA (레이아웃·잘림 검증)
 
-메모리 [B2B navigation]에 따르면 메인 nav에는 B2B를 숨기는 정책이 있으나, **`/business` 허브 1개는 예외로 추가**합니다 (영업 미팅 핵심 동선).
+## 실행 순서
 
-- 헤더 우측 보조 링크에 "기업 (Business)" 1개 추가 → `/business`
-- 모바일 햄버거 메뉴에도 동일 항목 추가
-- 기존 `/b2b-jobcoach`, `/b2b-proposal` 등은 nav에서 노출하지 않음 (허브를 통해 진입)
+1. `/tmp/gen_b2b_v2.mjs` 작성 (docx 빌더)
+2. `node /tmp/gen_b2b_v2.mjs` → `/mnt/documents/AIHPRO_B2B_심화설계_v2.docx`
+3. LibreOffice로 PDF 변환 → 페이지별 PNG → 시각 QA
+4. 이슈 발견 시 수정·재생성
+5. `<lov-artifact>` 태그로 사용자에게 전달
 
----
-
-## 4. 검증
-
-- `/business` 직접 방문 시 정상 렌더
-- 4개 카드 클릭 시 각 페이지로 이동
-- 모바일 800px 뷰포트에서 카드 그리드가 1열로 정렬
-- `InstitutionAdmin` / `InstitutionOnboarding` 삭제 후 빌드 에러 없음
-
----
-
-## 다루지 않는 것 (다음 Phase)
-
-- Case Study 페이지 — 첫 고객 확보 후
-- 보안/익명성 백서 — PDF로 별도 제작
-- ROI 계산기 위젯 — `/business` 반응 보고 추가
-- `/b2b-proposal` 스코프 재정의 — 별도 작업으로
-
-승인하시면 바로 진행합니다.
+승인하시면 바로 작성 시작합니다.

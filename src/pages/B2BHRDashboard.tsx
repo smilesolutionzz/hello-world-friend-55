@@ -128,7 +128,9 @@ const B2BHRDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-4 md:p-6">
+    <div className="min-h-screen bg-white">
+      <BusinessBreadcrumb current="HR 대시보드" />
+      <div className="p-4 md:p-6">
       <Helmet>
         <title>HR 대시보드 · {institution.institution_name} | AIHPRO</title>
         <meta name="description" content="임직원 정신건강 부서별 익명 집계, 위험군 알림, ROI 추정을 한 화면에서" />

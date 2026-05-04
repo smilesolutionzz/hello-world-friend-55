@@ -80,6 +80,7 @@ const B2BProposal = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <BusinessBreadcrumb current="제휴·도입 문의" />
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
         <div className="absolute inset-0 opacity-10">

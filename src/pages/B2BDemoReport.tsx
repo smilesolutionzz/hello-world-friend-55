@@ -303,7 +303,8 @@ const B2BDemoReport: React.FC = () => {
   const recommendations = TYPE_RECOMMENDATIONS[brand.institutionType];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-white">
+      <BusinessBreadcrumb current="화이트라벨 데모 리포트" />
       <SEOHead title="기관·기업용 데모 리포트 생성기 | AIHPRO B2B"
         description="학교·상담센터·복지기관·기업을 위한 화이트라벨 리포트를 즉석 생성하고 PDF로 다운로드하세요."
         canonicalUrl="https://aihpro.app/b2b-demo-report" />

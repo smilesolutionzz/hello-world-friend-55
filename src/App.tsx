@@ -138,6 +138,7 @@ import B2BJobCoach from "./pages/B2BJobCoach";
 import Business from "./pages/Business";
 import BusinessCaseStudies from "./pages/BusinessCaseStudies";
 import BusinessSecurity from "./pages/BusinessSecurity";
+import BusinessPricing from "./pages/BusinessPricing";
 import B2BDemoReport from "./pages/B2BDemoReport";
 import B2BHRDashboard from "./pages/B2BHRDashboard";
 import B2BKindergartenConsole from "./pages/B2BKindergartenConsole";
@@ -357,6 +358,8 @@ const App = () => {
           <Route path="/en/business/case-studies/:slug" element={<BusinessCaseStudies />} />
           <Route path="/business/security" element={<BusinessSecurity />} />
           <Route path="/en/business/security" element={<BusinessSecurity />} />
+          <Route path="/b2b-pricing" element={<BusinessPricing />} />
+          <Route path="/en/b2b-pricing" element={<BusinessPricing />} />
           <Route path="/b2b-proposal" element={<B2BProposal />} />
           <Route path="/b2b-jobcoach" element={<B2BJobCoach />} />
           <Route path="/b2b-demo-report" element={<B2BDemoReport />} />

@@ -99,7 +99,7 @@ export default function Business() {
               size="lg"
               variant="outline"
               className="rounded-full px-8 h-12"
-              onClick={() => navigate('/b2b-demo-report')}
+              onClick={() => { trackCTA('hero_secondary', '/b2b-demo-report'); navigate('/b2b-demo-report'); }}
             >
               데모 리포트 보기
             </Button>

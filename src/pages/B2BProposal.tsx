@@ -13,9 +13,9 @@ import {
   ChevronDown, MousePointerClick, Globe, Gift, Flame
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import B2BJobCoachSection from '@/components/b2b/B2BJobCoachSection';
-import B2BKindergartenSection from '@/components/b2b/B2BKindergartenSection';
+import BusinessBreadcrumb from '@/components/b2b/BusinessBreadcrumb';
 import { Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -34,6 +34,7 @@ const ROTATING_KEYWORDS = [
 
 const B2BProposal = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     institution_name: '',
     contact_name: '',
@@ -79,6 +80,7 @@ const B2BProposal = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <BusinessBreadcrumb current="제휴·도입 문의" />
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
         <div className="absolute inset-0 opacity-10">
@@ -544,40 +546,52 @@ const B2BProposal = () => {
         </div>
       </section>
 
-      {/* 어린이집·유치원 부모상담 솔루션 */}
-      <section className="border-t border-border">
-        <B2BKindergartenSection />
-      </section>
-
-      {/* B2B 잡코치 통합 섹션 */}
-      <section className="bg-gradient-to-b from-white via-slate-50 to-white border-t border-border">
-        <B2BJobCoachSection embedded />
-      </section>
-
-      {/* Footer CTA */}
-      <section className="bg-slate-900 text-white py-14">
-        <div className="container mx-auto px-4 max-w-3xl text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-3">
-            검사 끝난 유저가<br />바로 내 센터를 찾게 하세요
+      {/* 다른 B2B 솔루션으로의 안내 (중복 임베드 대신 링크 분리) */}
+      <section className="border-t border-border/60 bg-white py-16 px-6">
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="text-xs tracking-[0.2em] text-foreground/50 mb-3">EXPLORE MORE</p>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-3 break-keep">
+            다른 B2B 솔루션
           </h2>
-          <p className="text-slate-400 mb-6 text-sm">
-            월 9.9만원 · 첫 달 무료 · 위약금 없음
+          <p className="text-foreground/60 mb-10 break-keep">
+            잡코치, HR 대시보드, 화이트라벨 리포트는 비즈니스 허브에서 한눈에 확인할 수 있습니다.
           </p>
-          <Button 
+          <Button
             size="lg"
-            className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl px-8 h-12"
+            variant="outline"
+            className="rounded-full px-8 h-12"
+            onClick={() => navigate('/business')}
+          >
+            비즈니스 허브 보기
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer CTA — 가격 하드코딩 제거, 도입 문의 단일화 */}
+      <section className="bg-white border-t border-border/60 py-14">
+        <div className="container mx-auto px-6 max-w-3xl text-center">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-3 break-keep">
+            제휴·도입 문의
+          </h2>
+          <p className="text-foreground/60 mb-6 text-sm break-keep">
+            상세 견적과 파일럿 조건은 상담을 통해 안내드립니다.
+          </p>
+          <Button
+            size="lg"
+            className="rounded-full px-10 h-12 bg-foreground text-background hover:bg-foreground/90"
             onClick={() => document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            무료 체험 신청
-            <ArrowRight className="ml-2 w-5 h-5" />
+            문의 폼으로 이동
+            <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm text-slate-500 mt-8">
-            <span className="flex items-center gap-2">
-              <Mail className="w-4 h-4" /> ad@aihpro.app
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center text-xs text-foreground/50 mt-8">
+            <span className="inline-flex items-center gap-2">
+              <Mail className="w-3.5 h-3.5" /> ad@aihpro.app
             </span>
             <span className="hidden sm:block">·</span>
-            <span className="flex items-center gap-2">
-              <Globe className="w-4 h-4" /> aihpro.app
+            <span className="inline-flex items-center gap-2">
+              <Globe className="w-3.5 h-3.5" /> aihpro.app
             </span>
           </div>
         </div>

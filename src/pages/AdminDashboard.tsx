@@ -155,6 +155,7 @@ export default function AdminDashboard() {
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>
           <TabsContent value="email_logs"><EmailSendLogPanel /></TabsContent>
           <TabsContent value="b2b_inbox"><B2BInquiryInbox key={`b2b-${refreshKey}`} /></TabsContent>
+          <TabsContent value="b2b_funnel"><B2BFunnelDashboard key={`bf-${refreshKey}`} /></TabsContent>
           <TabsContent value="experts"><ExpertApplicationManagement /></TabsContent>
           <TabsContent value="user-data"><EnhancedUserDataViewer /></TabsContent>
           <TabsContent value="management">

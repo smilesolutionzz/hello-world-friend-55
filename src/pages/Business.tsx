@@ -151,7 +151,7 @@ export default function Business() {
               return (
                 <button
                   key={a.path}
-                  onClick={() => navigate(a.path)}
+                  onClick={() => { trackCTA('asset_card', a.path); navigate(a.path); }}
                   className="group text-left rounded-3xl border bg-white p-7 hover:border-foreground/30 transition-all"
                 >
                   <div className="flex items-start justify-between mb-5">

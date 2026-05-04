@@ -193,7 +193,7 @@ export default function Business() {
           </div>
           <div className="mt-8 text-center">
             <button
-              onClick={() => navigate('/business/security')}
+              onClick={() => { trackCTA('security_link', '/business/security'); navigate('/business/security'); }}
               className="text-sm underline-offset-4 hover:underline"
               style={{ color: GOLD }}
             >

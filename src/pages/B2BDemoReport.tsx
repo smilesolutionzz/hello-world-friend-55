@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo } from 'react';
-import SEOHead from '@/components/common/SEOHead';
+import BusinessSEO from '@/components/b2b/BusinessSEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,6 +20,8 @@ import { toast } from 'sonner';
 import html2pdf from 'html2pdf.js';
 import { supabase } from '@/integrations/supabase/client';
 import { getInstitutionPool, formatKRW, type InstitutionType } from '@/data/institutionExperts';
+import { useB2BJobcoachPlans } from '@/hooks/useB2BJobcoachPlans';
+import { MIND_TRACK_PRICE } from '@/constants/tokenCosts';
 type RequestType = 'free_trial' | 'paid_inquiry' | 'demo_download';
 
 interface BrandConfig {
@@ -157,6 +159,7 @@ const careRiskColor = (risk: string) => risk === 'high' ? 'bg-red-100 text-red-7
 const careRiskLabel = (risk: string) => risk === 'high' ? '집중 관찰' : risk === 'medium' ? '주의 관찰' : '안정';
 
 const B2BDemoReport: React.FC = () => {
+  const { recommended: recommendedPlan } = useB2BJobcoachPlans();
   const [brand, setBrand] = useState<BrandConfig>({
     institutionType: 'school',
     institutionName: TYPE_PRESETS.school.defaultName,
@@ -289,14 +292,23 @@ const B2BDemoReport: React.FC = () => {
   };
 
   const roiData = useMemo(() => {
-    const employees = 100, monthlyLoss = employees * 4500000 * 0.18;
-    const monthlySaving = monthlyLoss * 0.42, programCost = 1490000, netROI = monthlySaving - programCost;
+    const employees = 100;
+    const monthlyLoss = employees * 4500000 * 0.18;
+    const monthlySaving = monthlyLoss * 0.42;
+    // 추천 플랜 가격(인당/월) × 직원 수 — DB 기반, 미로딩 시 0 처리
+    const perEmployee = recommendedPlan?.price_per_employee_monthly ?? 0;
+    const programCost = perEmployee * employees;
+    const netROI = monthlySaving - programCost;
     return {
-      employees, monthlyLoss: Math.round(monthlyLoss / 10000),
-      monthlySaving: Math.round(monthlySaving / 10000), programCost: Math.round(programCost / 10000),
-      netROI: Math.round(netROI / 10000), roiPercent: Math.round((netROI / programCost) * 100),
+      employees,
+      perEmployee,
+      monthlyLoss: Math.round(monthlyLoss / 10000),
+      monthlySaving: Math.round(monthlySaving / 10000),
+      programCost: Math.round(programCost / 10000),
+      netROI: Math.round(netROI / 10000),
+      roiPercent: programCost > 0 ? Math.round((netROI / programCost) * 100) : 0,
     };
-  }, []);
+  }, [recommendedPlan]);
 
   const cases = TYPE_CASES[brand.institutionType];
   const dimensions = TYPE_DIMENSIONS[brand.institutionType];
@@ -306,9 +318,11 @@ const B2BDemoReport: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       <BusinessBreadcrumb current="화이트라벨 데모 리포트" />
-      <SEOHead title="기관·기업용 데모 리포트 생성기 | AIHPRO B2B"
+      <BusinessSEO
+        title="화이트라벨 데모 리포트 — AIHPRO B2B"
         description="학교·상담센터·복지기관·기업을 위한 화이트라벨 리포트를 즉석 생성하고 PDF로 다운로드하세요."
-        canonicalUrl="https://aihpro.app/b2b-demo-report" />
+        path="/b2b-demo-report"
+      />
 
       <section className="border-b border-slate-200 bg-white">
         <div className="container mx-auto px-4 py-10 max-w-6xl">
@@ -676,8 +690,20 @@ const B2BDemoReport: React.FC = () => {
             <div>
               <Badge className="mb-2">SaaS 도입 효과</Badge>
               <h3 className="text-xl font-bold text-slate-900">
-                {isCorporate ? <>임직원당 <span className="text-blue-600">₩14,900/월</span> · 100명 기준 ROI {roiData.roiPercent}%</>
-                  : <>객단가 ₩9,900 → <span className="text-blue-600">₩590,000/월</span> 전환 모델</>}
+                {isCorporate ? (
+                  <>
+                    임직원당{' '}
+                    <span className="text-blue-600">
+                      {roiData.perEmployee > 0 ? `₩${roiData.perEmployee.toLocaleString()}/월` : '맞춤 견적'}
+                    </span>{' '}
+                    · 100명 기준 ROI {roiData.roiPercent}%
+                  </>
+                ) : (
+                  <>
+                    개인 마음 트랙 ₩{MIND_TRACK_PRICE.toLocaleString()} →{' '}
+                    <span className="text-blue-600">기관 단위 정액 도입</span>
+                  </>
+                )}
               </h3>
               <p className="text-sm text-slate-600 mt-1 break-keep">
                 {isCorporate ? '번아웃·이직으로 인한 생산성 손실을 월 단위로 가시화하고 익명 코칭으로 회복합니다.'

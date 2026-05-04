@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import BusinessSEO from '@/components/b2b/BusinessSEO';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -132,10 +132,11 @@ const B2BHRDashboard = () => {
     <div className="min-h-screen bg-white">
       <BusinessBreadcrumb current="HR 대시보드" />
       <div className="p-4 md:p-6">
-      <Helmet>
-        <title>HR 대시보드 · {institution.institution_name} | AIHPRO</title>
-        <meta name="description" content="임직원 정신건강 부서별 익명 집계, 위험군 알림, ROI 추정을 한 화면에서" />
-      </Helmet>
+      <BusinessSEO
+        title="HR 대시보드 — AIHPRO 잡코치"
+        description="임직원 정신건강 부서별 익명 집계, 위험군 알림, ROI 추정을 한 화면에서."
+        path="/b2b-hr-dashboard"
+      />
 
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}

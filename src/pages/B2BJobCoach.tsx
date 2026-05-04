@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import BusinessSEO from '@/components/b2b/BusinessSEO';
 import B2BJobCoachSection from '@/components/b2b/B2BJobCoachSection';
 import HRDataPipelineDiagram from '@/components/b2b/HRDataPipelineDiagram';
 import BusinessBreadcrumb from '@/components/b2b/BusinessBreadcrumb';

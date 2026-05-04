@@ -130,6 +130,7 @@ import PlatformOnePager from "./pages/PlatformOnePager";
 import B2BProposal from "./pages/B2BProposal";
 import B2BJobCoach from "./pages/B2BJobCoach";
 import Business from "./pages/Business";
+import BusinessCaseStudies from "./pages/BusinessCaseStudies";
 import B2BDemoReport from "./pages/B2BDemoReport";
 import B2BHRDashboard from "./pages/B2BHRDashboard";
 import B2BKindergartenConsole from "./pages/B2BKindergartenConsole";
@@ -342,6 +343,10 @@ const App = () => {
           <Route path="/platform-summary" element={<PlatformOnePager />} />
           <Route path="/business" element={<Business />} />
           <Route path="/en/business" element={<Business />} />
+          <Route path="/business/case-studies" element={<BusinessCaseStudies />} />
+          <Route path="/business/case-studies/:slug" element={<BusinessCaseStudies />} />
+          <Route path="/en/business/case-studies" element={<BusinessCaseStudies />} />
+          <Route path="/en/business/case-studies/:slug" element={<BusinessCaseStudies />} />
           <Route path="/b2b-proposal" element={<B2BProposal />} />
           <Route path="/b2b-jobcoach" element={<B2BJobCoach />} />
           <Route path="/b2b-demo-report" element={<B2BDemoReport />} />

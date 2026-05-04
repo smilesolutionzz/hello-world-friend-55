@@ -61,15 +61,36 @@ const B2BProposal = () => {
     }
     setSubmitting(true);
     try {
-      const { error } = await supabase.from('b2b_ad_inquiries').insert({
-        institution_name: formData.institution_name,
-        contact_name: formData.contact_name,
-        contact_phone: formData.contact_phone,
-        contact_email: formData.contact_email || 'N/A',
-        institution_type: formData.institution_type || '기타',
-        message: formData.message || null,
-      });
+      const { data: inserted, error } = await supabase
+        .from('b2b_ad_inquiries')
+        .insert({
+          institution_name: formData.institution_name,
+          contact_name: formData.contact_name,
+          contact_phone: formData.contact_phone,
+          contact_email: formData.contact_email || 'N/A',
+          institution_type: formData.institution_type || '기타',
+          message: formData.message || null,
+        })
+        .select('id')
+        .maybeSingle();
       if (error) throw error;
+
+      // 관리자 이메일 알림 (실패해도 사용자 흐름은 막지 않음)
+      supabase.functions
+        .invoke('notify-b2b-inquiry', {
+          body: {
+            source: 'b2b_proposal',
+            inquiry_id: inserted?.id,
+            institution_name: formData.institution_name,
+            contact_name: formData.contact_name,
+            contact_phone: formData.contact_phone,
+            contact_email: formData.contact_email || 'N/A',
+            institution_type: formData.institution_type || '기타',
+            message: formData.message || null,
+          },
+        })
+        .catch((err) => console.warn('[notify-b2b-inquiry] failed:', err));
+
       toast({ title: '광고 문의가 접수되었습니다!', description: '영업일 기준 1일 이내 연락드리겠습니다.' });
       setFormData({ institution_name: '', contact_name: '', contact_phone: '', contact_email: '', institution_type: '', message: '' });
     } catch (e: any) {

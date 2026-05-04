@@ -10,7 +10,8 @@ import {
   BarChart3, CheckCircle2, ArrowRight, 
   Users, Eye, Megaphone, TrendingUp, Star, Sparkles,
   Building2, Phone, Mail, Target, Zap, Award,
-  ChevronDown, MousePointerClick, Globe, Gift, Flame
+  ChevronDown, MousePointerClick, Globe, Gift, Flame,
+  Paperclip, X, Calendar as CalendarIcon, ShieldCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BusinessSEO from '@/components/b2b/BusinessSEO';
@@ -42,10 +43,34 @@ const B2BProposal = () => {
     contact_phone: '',
     contact_email: '',
     institution_type: '',
-    message: ''
+    message: '',
+    preferred_contact_at: '', // datetime-local 문자열
   });
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [kwIndex, setKwIndex] = useState(0);
+
+  const MAX_FILE_SIZE_MB = 20;
+  const ALLOWED_EXT = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'hwp', 'txt', 'png', 'jpg', 'jpeg'];
+
+  const handleFilePick = (file: File | null) => {
+    if (!file) {
+      setAttachment(null);
+      return;
+    }
+    const sizeMb = file.size / (1024 * 1024);
+    if (sizeMb > MAX_FILE_SIZE_MB) {
+      toast({ title: '파일이 너무 큽니다', description: `${MAX_FILE_SIZE_MB}MB 이하만 업로드 가능합니다.`, variant: 'destructive' });
+      return;
+    }
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    if (!ALLOWED_EXT.includes(ext)) {
+      toast({ title: '지원하지 않는 형식', description: 'PDF, DOC, XLS, PPT, HWP, 이미지만 가능합니다.', variant: 'destructive' });
+      return;
+    }
+    setAttachment(file);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {

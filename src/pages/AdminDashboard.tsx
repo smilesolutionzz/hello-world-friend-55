@@ -120,6 +120,10 @@ export default function AdminDashboard() {
               <Mail className="h-3 w-3" />
               발송 로그
             </TabsTrigger>
+            <TabsTrigger value="b2b_inbox" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <Inbox className="h-3 w-3" />
+              B2B 문의
+            </TabsTrigger>
             <TabsTrigger value="experts" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <UserCheck className="h-3 w-3" />
               전문가

@@ -94,8 +94,11 @@ const DailyCoachingEmail = ({
   return (
     <Html lang="ko" dir="ltr">
       <Head>
-        <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta charSet="UTF-8" />
+        <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="x-apple-disable-message-reformatting" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       </Head>
       <Preview>{`Day ${dayLabel} · ${categoryLabel} · 오늘의 미션`}</Preview>
       <Body style={main}>
@@ -144,7 +147,7 @@ const DailyCoachingEmail = ({
             <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
           </Section>
 
-          {videos && videos.length > 0 && (
+          {videos && videos.length > 0 ? (
             <Section style={videosBlock}>
               <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
               <Text style={videoIntro}>오늘 미션과 가장 잘 맞는 영상을 골랐어요. 시청 후 아래 "오늘의 기록 남기기"에서 한 줄 기록을 남겨주세요.</Text>
@@ -183,6 +186,11 @@ const DailyCoachingEmail = ({
                   </Section>
                 )
               })}
+            </Section>
+          ) : (
+            <Section style={videosBlock}>
+              <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
+              <Text style={videoIntro}>오늘은 추천 영상 대신 미션 실천에 집중해 보세요. 내일은 새로운 큐레이션 영상이 도착합니다.</Text>
             </Section>
           )}
 

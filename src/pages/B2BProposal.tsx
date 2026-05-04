@@ -664,14 +664,6 @@ const B2BProposal = () => {
 
       {/* 협력기관 — 맨 아래 배치 */}
       <section className="py-12 bg-white border-t border-slate-100">
-        {/* placeholder removed */}
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* 협력기관 — 맨 아래 배치 */}
-      <section className="py-12 bg-white border-t border-slate-100">
         <div className="container mx-auto px-4 max-w-5xl">
           <p className="text-center text-sm text-slate-400 mb-6">신뢰할 수 있는 플랫폼</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

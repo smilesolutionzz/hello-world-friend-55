@@ -187,10 +187,17 @@ export default function Business() {
               );
             })}
           </div>
+          <div className="mt-8 text-center">
+            <button
+              onClick={() => navigate('/business/security')}
+              className="text-sm underline-offset-4 hover:underline"
+              style={{ color: GOLD }}
+            >
+              보안·익명성 백서 전체 보기 →
+            </button>
+          </div>
         </div>
       </section>
-
-      {/* Footer CTA */}
       <section className="px-6 pb-24">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl md:text-3xl font-semibold mb-4 break-keep">

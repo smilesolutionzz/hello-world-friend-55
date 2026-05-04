@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { trackB2BEvent } from '@/hooks/useB2BFunnelTracking';
 import { 
   BarChart3, CheckCircle2, ArrowRight, 
   Users, Eye, Megaphone, TrendingUp, Star, Sparkles,

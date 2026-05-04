@@ -51,14 +51,11 @@ export default function Business() {
 
   return (
     <div className="min-h-screen bg-white text-foreground">
-      <Helmet>
-        <title>AIHPRO 비즈니스 — 조직 마음건강 솔루션</title>
-        <meta
-          name="description"
-          content="직원 익명 코칭과 부서별 집계 리포트로 조직 마음건강을 데이터로 관리합니다."
-        />
-        <link rel="canonical" href="https://aihpro.app/business" />
-      </Helmet>
+      <BusinessSEO
+        title="AIHPRO 비즈니스 — 조직 마음건강 솔루션"
+        description="직원 익명 코칭과 부서별 집계 리포트로 조직 마음건강을 데이터로 관리합니다."
+        path="/business"
+      />
 
       {/* Hero */}
       <section className="px-6 pt-20 pb-16 md:pt-28 md:pb-24">

@@ -20,6 +20,8 @@ import { toast } from 'sonner';
 import html2pdf from 'html2pdf.js';
 import { supabase } from '@/integrations/supabase/client';
 import { getInstitutionPool, formatKRW, type InstitutionType } from '@/data/institutionExperts';
+import { useB2BJobcoachPlans } from '@/hooks/useB2BJobcoachPlans';
+import { MIND_TRACK_PRICE } from '@/constants/tokenCosts';
 type RequestType = 'free_trial' | 'paid_inquiry' | 'demo_download';
 
 interface BrandConfig {

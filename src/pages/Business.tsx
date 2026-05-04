@@ -4,6 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import BusinessROICalculator from '@/components/b2b/BusinessROICalculator';
 import BusinessSEO from '@/components/b2b/BusinessSEO';
+import { trackB2BEvent } from '@/hooks/useB2BFunnelTracking';
+
+const trackCTA = (label: string, target: string) =>
+  trackB2BEvent('cta_click', '/business', { label, target });
 
 const GOLD = '#C8B88A';
 

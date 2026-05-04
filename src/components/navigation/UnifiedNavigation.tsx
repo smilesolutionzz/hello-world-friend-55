@@ -32,6 +32,7 @@ import {
   Target,
   BookOpen,
   Lock,
+  Building2,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -83,6 +84,11 @@ const UnifiedNavigationInner = () => {
         { label: t.nav.aiAgit, path: '/metaverse-voice', desc: t.nav.aiAgitDesc, badge: 'NEW', icon: Mic, mobileNote: t.nav.aiAgitMobile },
         { label: t.nav.expertConsult, path: '/expert-hiring', desc: t.nav.expertConsultDesc, icon: UserCheck },
       ]
+    },
+    {
+      label: '기업',
+      icon: Building2,
+      path: '/business',
     },
     // 마음일기·칼럼·30일 워크북은 푸터 및 각 페이지 내부 진입점으로 이동 (네비 경량화)
   ];

@@ -13,9 +13,9 @@ import {
   ChevronDown, MousePointerClick, Globe, Gift, Flame
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import B2BJobCoachSection from '@/components/b2b/B2BJobCoachSection';
-import B2BKindergartenSection from '@/components/b2b/B2BKindergartenSection';
+import BusinessBreadcrumb from '@/components/b2b/BusinessBreadcrumb';
 import { Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },

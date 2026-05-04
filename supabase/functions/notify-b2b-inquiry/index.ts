@@ -63,6 +63,8 @@ function adminHtml(p: InquiryPayload): string {
       <tr><td style="color:#888;padding:6px 0;">담당자</td><td style="padding:6px 0;">${escape(p.contact_name)}</td></tr>
       <tr><td style="color:#888;padding:6px 0;">연락처</td><td style="padding:6px 0;">${escape(p.contact_phone)}</td></tr>
       <tr><td style="color:#888;padding:6px 0;">이메일</td><td style="padding:6px 0;">${escape(p.contact_email)}</td></tr>
+      <tr><td style="color:#888;padding:6px 0;">희망 미팅</td><td style="padding:6px 0;">${escape(formatPreferredAt(p.preferred_contact_at))}</td></tr>
+      <tr><td style="color:#888;padding:6px 0;">첨부파일</td><td style="padding:6px 0;">${p.attachment_filename ? `📎 ${escape(p.attachment_filename)}` : "-"}</td></tr>
     </table>
     ${p.message ? `
       <div style="margin-top:22px;padding:16px 18px;background:#FAF8F2;border-radius:14px;font-size:14px;line-height:1.7;white-space:pre-wrap;color:#333;">

@@ -15,6 +15,9 @@ verify_jwt = false
 [functions.mind-track-concern-report]
 verify_jwt = false
 
+[functions.notify-b2b-inquiry]
+verify_jwt = false
+
 # toss-payments-confirm 제거됨 → unified-payment으로 통합
 
 [api]

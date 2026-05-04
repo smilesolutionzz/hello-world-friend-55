@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Users, BarChart3, FileText, Building2, Lock } from 'lucide-react';
+import { ArrowRight, Shield, Users, BarChart3, FileText, Building2, Lock, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import BusinessROICalculator from '@/components/b2b/BusinessROICalculator';
@@ -31,6 +31,12 @@ const assets = [
     desc: '플랜 상담 · 직원 규모별 견적 · 파일럿 제안',
     path: '/b2b-proposal',
     icon: Users,
+  },
+  {
+    title: '도입 사례 보기',
+    desc: '제조·교육·유아교육 익명 사례 · 파일럿 결과 지표',
+    path: '/business/case-studies',
+    icon: BookOpen,
   },
 ];
 

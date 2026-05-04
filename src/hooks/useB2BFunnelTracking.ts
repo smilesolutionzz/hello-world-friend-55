@@ -32,14 +32,14 @@ export async function trackB2BEvent(
   try {
     const sessionId = getOrCreateSessionId();
     const { data: { user } } = await supabase.auth.getUser();
-    await supabase.from('b2b_funnel_events').insert({
+    await supabase.from('b2b_funnel_events').insert([{
       event_type: eventType,
       page_path: pagePath,
       session_id: sessionId,
-      user_id: user?.id ?? null,
-      referrer: typeof document !== 'undefined' ? document.referrer || null : null,
-      metadata,
-    });
+      user_id: user?.id ?? undefined,
+      referrer: (typeof document !== 'undefined' ? document.referrer : '') || undefined,
+      metadata: metadata as never,
+    }]);
   } catch (err) {
     // Silent — tracking must not break UX
     console.warn('[b2b-funnel] track failed', err);

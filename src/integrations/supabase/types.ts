@@ -558,6 +558,8 @@ export type Database = {
       b2b_ad_inquiries: {
         Row: {
           admin_notes: string | null
+          attachment_filename: string | null
+          attachment_url: string | null
           budget_range: string | null
           contact_email: string
           contact_name: string
@@ -568,11 +570,14 @@ export type Database = {
           institution_type: string
           interested_plans: string[] | null
           message: string | null
+          preferred_contact_at: string | null
           status: string | null
           updated_at: string
         }
         Insert: {
           admin_notes?: string | null
+          attachment_filename?: string | null
+          attachment_url?: string | null
           budget_range?: string | null
           contact_email: string
           contact_name: string
@@ -583,11 +588,14 @@ export type Database = {
           institution_type: string
           interested_plans?: string[] | null
           message?: string | null
+          preferred_contact_at?: string | null
           status?: string | null
           updated_at?: string
         }
         Update: {
           admin_notes?: string | null
+          attachment_filename?: string | null
+          attachment_url?: string | null
           budget_range?: string | null
           contact_email?: string
           contact_name?: string
@@ -598,6 +606,7 @@ export type Database = {
           institution_type?: string
           interested_plans?: string[] | null
           message?: string | null
+          preferred_contact_at?: string | null
           status?: string | null
           updated_at?: string
         }

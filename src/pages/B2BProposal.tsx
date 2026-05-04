@@ -10,7 +10,8 @@ import {
   BarChart3, CheckCircle2, ArrowRight, 
   Users, Eye, Megaphone, TrendingUp, Star, Sparkles,
   Building2, Phone, Mail, Target, Zap, Award,
-  ChevronDown, MousePointerClick, Globe, Gift, Flame
+  ChevronDown, MousePointerClick, Globe, Gift, Flame,
+  Paperclip, X, Calendar as CalendarIcon, ShieldCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BusinessSEO from '@/components/b2b/BusinessSEO';
@@ -42,10 +43,34 @@ const B2BProposal = () => {
     contact_phone: '',
     contact_email: '',
     institution_type: '',
-    message: ''
+    message: '',
+    preferred_contact_at: '', // datetime-local 문자열
   });
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [kwIndex, setKwIndex] = useState(0);
+
+  const MAX_FILE_SIZE_MB = 20;
+  const ALLOWED_EXT = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'hwp', 'txt', 'png', 'jpg', 'jpeg'];
+
+  const handleFilePick = (file: File | null) => {
+    if (!file) {
+      setAttachment(null);
+      return;
+    }
+    const sizeMb = file.size / (1024 * 1024);
+    if (sizeMb > MAX_FILE_SIZE_MB) {
+      toast({ title: '파일이 너무 큽니다', description: `${MAX_FILE_SIZE_MB}MB 이하만 업로드 가능합니다.`, variant: 'destructive' });
+      return;
+    }
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    if (!ALLOWED_EXT.includes(ext)) {
+      toast({ title: '지원하지 않는 형식', description: 'PDF, DOC, XLS, PPT, HWP, 이미지만 가능합니다.', variant: 'destructive' });
+      return;
+    }
+    setAttachment(file);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -61,6 +86,27 @@ const B2BProposal = () => {
     }
     setSubmitting(true);
     try {
+      // 1) 첨부파일 먼저 업로드 (있으면)
+      let attachmentUrl: string | null = null;
+      let attachmentFilename: string | null = null;
+      if (attachment) {
+        setUploadingFile(true);
+        const folder = crypto.randomUUID();
+        const safeName = attachment.name.replace(/[^\w.\-가-힣]/g, '_');
+        const path = `${folder}/${safeName}`;
+        const { error: upErr } = await supabase.storage
+          .from('b2b-attachments')
+          .upload(path, attachment, { upsert: false, contentType: attachment.type || undefined });
+        setUploadingFile(false);
+        if (upErr) throw new Error(`첨부파일 업로드 실패: ${upErr.message}`);
+        attachmentUrl = path;
+        attachmentFilename = attachment.name;
+      }
+
+      const preferredAt = formData.preferred_contact_at
+        ? new Date(formData.preferred_contact_at).toISOString()
+        : null;
+
       const { data: inserted, error } = await supabase
         .from('b2b_ad_inquiries')
         .insert({
@@ -70,6 +116,9 @@ const B2BProposal = () => {
           contact_email: formData.contact_email || 'N/A',
           institution_type: formData.institution_type || '기타',
           message: formData.message || null,
+          attachment_url: attachmentUrl,
+          attachment_filename: attachmentFilename,
+          preferred_contact_at: preferredAt,
         })
         .select('id')
         .maybeSingle();
@@ -87,16 +136,20 @@ const B2BProposal = () => {
             contact_email: formData.contact_email || 'N/A',
             institution_type: formData.institution_type || '기타',
             message: formData.message || null,
+            attachment_filename: attachmentFilename,
+            preferred_contact_at: preferredAt,
           },
         })
         .catch((err) => console.warn('[notify-b2b-inquiry] failed:', err));
 
-      toast({ title: '광고 문의가 접수되었습니다!', description: '영업일 기준 1일 이내 연락드리겠습니다.' });
-      setFormData({ institution_name: '', contact_name: '', contact_phone: '', contact_email: '', institution_type: '', message: '' });
+      toast({ title: '도입 문의가 접수되었습니다!', description: '영업일 기준 1일 이내 연락드리겠습니다.' });
+      setFormData({ institution_name: '', contact_name: '', contact_phone: '', contact_email: '', institution_type: '', message: '', preferred_contact_at: '' });
+      setAttachment(null);
     } catch (e: any) {
       toast({ title: '오류가 발생했습니다', description: e.message, variant: 'destructive' });
     } finally {
       setSubmitting(false);
+      setUploadingFile(false);
     }
   };
 
@@ -533,16 +586,72 @@ const B2BProposal = () => {
                 <Textarea 
                   value={formData.message}
                   onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
-                  placeholder="관심 있는 광고 상품이나 궁금한 점을 적어주세요"
+                  placeholder="관심 있는 상품, RFP 요청사항, 궁금한 점을 적어주세요"
                   rows={3}
                 />
               </div>
+
+              {/* 희망 미팅 시간 */}
+              <div>
+                <label className="text-sm font-medium text-slate-700 mb-1.5 flex items-center gap-1.5">
+                  <CalendarIcon className="w-4 h-4 text-indigo-500" />
+                  희망 미팅 시간 <span className="text-slate-400 font-normal">(선택)</span>
+                </label>
+                <Input
+                  type="datetime-local"
+                  value={formData.preferred_contact_at}
+                  onChange={e => setFormData(p => ({ ...p, preferred_contact_at: e.target.value }))}
+                  className="h-11"
+                />
+                <p className="text-xs text-slate-400 mt-1.5">선택하시면 가능 여부를 확인 후 30분 화상/전화 미팅을 잡아드립니다.</p>
+              </div>
+
+              {/* 첨부파일 */}
+              <div>
+                <label className="text-sm font-medium text-slate-700 mb-1.5 flex items-center gap-1.5">
+                  <Paperclip className="w-4 h-4 text-indigo-500" />
+                  첨부파일 <span className="text-slate-400 font-normal">(선택, RFP·보안 체크리스트 등 / 최대 20MB)</span>
+                </label>
+                {!attachment ? (
+                  <label className="flex items-center justify-center gap-2 h-11 px-4 rounded-md border border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 cursor-pointer text-sm text-slate-600 transition">
+                    <Paperclip className="w-4 h-4" />
+                    파일 선택 (PDF, DOC, XLS, PPT, HWP, 이미지)
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.hwp,.txt,.png,.jpg,.jpeg"
+                      onChange={e => handleFilePick(e.target.files?.[0] ?? null)}
+                    />
+                  </label>
+                ) : (
+                  <div className="flex items-center justify-between gap-2 h-11 px-3 rounded-md border border-slate-200 bg-white text-sm">
+                    <span className="flex items-center gap-2 truncate">
+                      <Paperclip className="w-4 h-4 text-indigo-500 shrink-0" />
+                      <span className="truncate text-slate-700">{attachment.name}</span>
+                      <span className="text-xs text-slate-400 shrink-0">({(attachment.size / 1024 / 1024).toFixed(2)}MB)</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setAttachment(null)}
+                      className="p-1 rounded hover:bg-slate-100 text-slate-500"
+                      aria-label="첨부파일 제거"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+                <p className="text-xs text-slate-400 mt-1.5 flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" />
+                  업로드된 파일은 비공개 저장공간에 보관되며, 관리자만 열람할 수 있습니다.
+                </p>
+              </div>
+
               <Button 
                 className="w-full h-13 text-lg bg-indigo-500 hover:bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200"
                 onClick={handleSubmit}
                 disabled={submitting}
               >
-                {submitting ? '접수 중...' : '무료 체험 신청하기'}
+                {submitting ? (uploadingFile ? '파일 업로드 중...' : '접수 중...') : '도입 문의 보내기'}
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
               <p className="text-xs text-slate-400 text-center">

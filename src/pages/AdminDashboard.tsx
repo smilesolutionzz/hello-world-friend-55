@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowLeft, RefreshCw, Bell, Settings, Calendar, 
-  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail, BookOpen
+  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail, BookOpen, Inbox
 } from 'lucide-react';
+import B2BInquiryInbox from '@/components/admin/B2BInquiryInbox';
 import { EmailSendLogPanel } from '@/components/admin/EmailSendLogPanel';
 import MindTrackInterventionStats from '@/components/admin/MindTrackInterventionStats';
 import WorkbookFunnelDashboard from '@/components/admin/WorkbookFunnelDashboard';
@@ -119,6 +120,10 @@ export default function AdminDashboard() {
               <Mail className="h-3 w-3" />
               발송 로그
             </TabsTrigger>
+            <TabsTrigger value="b2b_inbox" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <Inbox className="h-3 w-3" />
+              B2B 문의
+            </TabsTrigger>
             <TabsTrigger value="experts" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <UserCheck className="h-3 w-3" />
               전문가
@@ -144,6 +149,7 @@ export default function AdminDashboard() {
           <TabsContent value="workbook_funnel"><WorkbookFunnelDashboard /></TabsContent>
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>
           <TabsContent value="email_logs"><EmailSendLogPanel /></TabsContent>
+          <TabsContent value="b2b_inbox"><B2BInquiryInbox key={`b2b-${refreshKey}`} /></TabsContent>
           <TabsContent value="experts"><ExpertApplicationManagement /></TabsContent>
           <TabsContent value="user-data"><EnhancedUserDataViewer /></TabsContent>
           <TabsContent value="management">

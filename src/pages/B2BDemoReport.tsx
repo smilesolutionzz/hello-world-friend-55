@@ -15,6 +15,7 @@ import {
   School, Briefcase, HeartHandshake, Quote, AlertTriangle, DollarSign, Mail
 } from 'lucide-react';
 import CoachingBadge from '@/components/branding/CoachingBadge';
+import BusinessBreadcrumb from '@/components/b2b/BusinessBreadcrumb';
 import { toast } from 'sonner';
 import html2pdf from 'html2pdf.js';
 import { supabase } from '@/integrations/supabase/client';

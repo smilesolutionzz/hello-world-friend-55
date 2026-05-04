@@ -12,6 +12,7 @@ import {
   EyeOff, FileDown, Bell, ArrowRight, CheckCircle2, Lock
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import BusinessBreadcrumb from '@/components/b2b/BusinessBreadcrumb';
 import { useToast } from '@/hooks/use-toast';
 
 interface Institution {
@@ -343,6 +344,7 @@ const B2BHRDashboard = () => {
             </Button>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );

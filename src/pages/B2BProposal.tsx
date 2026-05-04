@@ -86,6 +86,27 @@ const B2BProposal = () => {
     }
     setSubmitting(true);
     try {
+      // 1) 첨부파일 먼저 업로드 (있으면)
+      let attachmentUrl: string | null = null;
+      let attachmentFilename: string | null = null;
+      if (attachment) {
+        setUploadingFile(true);
+        const folder = crypto.randomUUID();
+        const safeName = attachment.name.replace(/[^\w.\-가-힣]/g, '_');
+        const path = `${folder}/${safeName}`;
+        const { error: upErr } = await supabase.storage
+          .from('b2b-attachments')
+          .upload(path, attachment, { upsert: false, contentType: attachment.type || undefined });
+        setUploadingFile(false);
+        if (upErr) throw new Error(`첨부파일 업로드 실패: ${upErr.message}`);
+        attachmentUrl = path;
+        attachmentFilename = attachment.name;
+      }
+
+      const preferredAt = formData.preferred_contact_at
+        ? new Date(formData.preferred_contact_at).toISOString()
+        : null;
+
       const { data: inserted, error } = await supabase
         .from('b2b_ad_inquiries')
         .insert({
@@ -95,6 +116,9 @@ const B2BProposal = () => {
           contact_email: formData.contact_email || 'N/A',
           institution_type: formData.institution_type || '기타',
           message: formData.message || null,
+          attachment_url: attachmentUrl,
+          attachment_filename: attachmentFilename,
+          preferred_contact_at: preferredAt,
         })
         .select('id')
         .maybeSingle();
@@ -112,16 +136,20 @@ const B2BProposal = () => {
             contact_email: formData.contact_email || 'N/A',
             institution_type: formData.institution_type || '기타',
             message: formData.message || null,
+            attachment_filename: attachmentFilename,
+            preferred_contact_at: preferredAt,
           },
         })
         .catch((err) => console.warn('[notify-b2b-inquiry] failed:', err));
 
-      toast({ title: '광고 문의가 접수되었습니다!', description: '영업일 기준 1일 이내 연락드리겠습니다.' });
-      setFormData({ institution_name: '', contact_name: '', contact_phone: '', contact_email: '', institution_type: '', message: '' });
+      toast({ title: '도입 문의가 접수되었습니다!', description: '영업일 기준 1일 이내 연락드리겠습니다.' });
+      setFormData({ institution_name: '', contact_name: '', contact_phone: '', contact_email: '', institution_type: '', message: '', preferred_contact_at: '' });
+      setAttachment(null);
     } catch (e: any) {
       toast({ title: '오류가 발생했습니다', description: e.message, variant: 'destructive' });
     } finally {
       setSubmitting(false);
+      setUploadingFile(false);
     }
   };
 

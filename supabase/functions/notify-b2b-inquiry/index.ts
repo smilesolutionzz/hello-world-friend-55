@@ -1,6 +1,7 @@
-// B2B 도입/광고 문의 알림 — 관리자 이메일 발송
+// B2B 도입/광고 문의 알림 — 관리자 + 사용자 양쪽에 메일 발송
 // 호출: supabase.functions.invoke('notify-b2b-inquiry', { body: { ...inquiry } })
 // 인증: 누구나 호출 가능 (verify_jwt=false). RLS는 호출 측 insert에서 처리.
+// 발신 도메인: aihpro.app (검증 완료)
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
@@ -10,6 +11,10 @@ const corsHeaders = {
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
+
+const FROM = "AIHPRO Business <noreply@aihpro.app>";
+const REPLY_TO = "kijung_kku@naver.com";
+const GOLD = "#C8B88A";
 
 interface InquiryPayload {
   source: "b2b_proposal" | "b2b_jobcoach" | "b2b_demo_report" | string;
@@ -22,6 +27,90 @@ interface InquiryPayload {
   inquiry_id?: string;
 }
 
+function escape(s?: string | null): string {
+  if (!s) return "-";
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function adminHtml(p: InquiryPayload): string {
+  return `
+  <div style="font-family:-apple-system,BlinkMacSystemFont,'Pretendard','Segoe UI',sans-serif;color:#111;max-width:560px;margin:0 auto;padding:32px 24px;background:#ffffff;">
+    <div style="border-bottom:2px solid ${GOLD};padding-bottom:14px;margin-bottom:24px;">
+      <p style="font-size:11px;letter-spacing:.24em;color:#888;margin:0;">AIHPRO BUSINESS</p>
+      <h1 style="font-size:22px;margin:6px 0 0;font-weight:600;letter-spacing:-0.01em;">신규 도입·제휴 문의</h1>
+    </div>
+    <table style="width:100%;font-size:14px;line-height:1.7;border-collapse:collapse;">
+      <tr><td style="color:#888;width:110px;padding:6px 0;">유입 경로</td><td style="padding:6px 0;"><strong>${escape(p.source)}</strong></td></tr>
+      <tr><td style="color:#888;padding:6px 0;">기관명</td><td style="padding:6px 0;">${escape(p.institution_name)}</td></tr>
+      <tr><td style="color:#888;padding:6px 0;">기관 유형</td><td style="padding:6px 0;">${escape(p.institution_type)}</td></tr>
+      <tr><td style="color:#888;padding:6px 0;">담당자</td><td style="padding:6px 0;">${escape(p.contact_name)}</td></tr>
+      <tr><td style="color:#888;padding:6px 0;">연락처</td><td style="padding:6px 0;">${escape(p.contact_phone)}</td></tr>
+      <tr><td style="color:#888;padding:6px 0;">이메일</td><td style="padding:6px 0;">${escape(p.contact_email)}</td></tr>
+    </table>
+    ${p.message ? `
+      <div style="margin-top:22px;padding:16px 18px;background:#FAF8F2;border-radius:14px;font-size:14px;line-height:1.7;white-space:pre-wrap;color:#333;">
+        ${escape(p.message)}
+      </div>` : ""}
+    <p style="margin-top:28px;font-size:12px;color:#999;">관리자 페이지에서 후속 처리하세요. · inquiry_id: ${escape(p.inquiry_id)}</p>
+  </div>`;
+}
+
+function userHtml(p: InquiryPayload): string {
+  return `
+  <div style="font-family:-apple-system,BlinkMacSystemFont,'Pretendard','Segoe UI',sans-serif;color:#111;max-width:560px;margin:0 auto;padding:36px 24px;background:#ffffff;">
+    <div style="border-bottom:2px solid ${GOLD};padding-bottom:14px;margin-bottom:26px;">
+      <p style="font-size:11px;letter-spacing:.24em;color:#888;margin:0;">AIHPRO BUSINESS</p>
+      <h1 style="font-size:22px;margin:6px 0 0;font-weight:600;letter-spacing:-0.01em;">문의가 정상 접수되었습니다</h1>
+    </div>
+    <p style="font-size:15px;line-height:1.7;color:#333;margin:0 0 16px;">
+      ${escape(p.contact_name)}님, <strong>${escape(p.institution_name)}</strong>의 도입 문의를 접수했습니다.
+    </p>
+    <p style="font-size:14px;line-height:1.7;color:#555;margin:0 0 22px;">
+      영업일 기준 1일 이내 담당자가 직접 회신드립니다. 추가 자료가 필요하시면 본 메일에 회신해 주세요.
+    </p>
+    <div style="padding:16px 18px;background:#FAF8F2;border-radius:14px;font-size:13px;line-height:1.7;color:#444;">
+      <p style="margin:0 0 6px;"><strong>접수 내역</strong></p>
+      <p style="margin:0;">기관: ${escape(p.institution_name)} · 담당자: ${escape(p.contact_name)}</p>
+      <p style="margin:0;">연락처: ${escape(p.contact_phone)}</p>
+    </div>
+    <p style="margin-top:28px;font-size:12px;color:#999;line-height:1.6;">
+      본 메일은 자동 발송되었습니다. 회신 시 담당자에게 직접 전달됩니다.<br />
+      AIHPRO는 발달적 코칭·의사결정 지원 도구이며, 의료적 진단·치료를 제공하지 않습니다.
+    </p>
+  </div>`;
+}
+
+async function sendMail(
+  resendKey: string,
+  to: string,
+  subject: string,
+  html: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${resendKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: FROM,
+      to: [to],
+      reply_to: REPLY_TO,
+      subject,
+      html,
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("[notify-b2b-inquiry] Resend error to", to, ":", text);
+    return { ok: false, error: text };
+  }
+  return { ok: true };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -30,33 +119,7 @@ serve(async (req) => {
   try {
     const payload = (await req.json()) as InquiryPayload;
     const RESEND_KEY = Deno.env.get("RESEND_API_KEY");
-    const ADMIN_EMAIL =
-      Deno.env.get("B2B_ADMIN_EMAIL") || "kijung_kku@naver.com";
-
-    const subject = `[AIHPRO Business] 신규 문의 — ${payload.institution_name ?? "이름 미상"}`;
-    const html = `
-      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#111;max-width:560px;margin:0 auto;padding:24px;">
-        <div style="border-bottom:2px solid #C8B88A;padding-bottom:12px;margin-bottom:20px;">
-          <p style="font-size:11px;letter-spacing:.2em;color:#888;margin:0;">AIHPRO BUSINESS</p>
-          <h1 style="font-size:20px;margin:6px 0 0;">신규 도입/광고 문의</h1>
-        </div>
-        <table style="width:100%;font-size:14px;line-height:1.6;">
-          <tr><td style="color:#888;width:120px;">유입</td><td><strong>${payload.source ?? "-"}</strong></td></tr>
-          <tr><td style="color:#888;">기관명</td><td>${payload.institution_name ?? "-"}</td></tr>
-          <tr><td style="color:#888;">기관 유형</td><td>${payload.institution_type ?? "-"}</td></tr>
-          <tr><td style="color:#888;">담당자</td><td>${payload.contact_name ?? "-"}</td></tr>
-          <tr><td style="color:#888;">연락처</td><td>${payload.contact_phone ?? "-"}</td></tr>
-          <tr><td style="color:#888;">이메일</td><td>${payload.contact_email ?? "-"}</td></tr>
-        </table>
-        ${payload.message ? `
-          <div style="margin-top:20px;padding:14px;background:#FAF8F2;border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap;">
-            ${payload.message.replace(/</g, "&lt;")}
-          </div>` : ""}
-        <p style="margin-top:24px;font-size:12px;color:#999;">
-          관리자 페이지에서 후속 처리하세요.
-        </p>
-      </div>
-    `;
+    const ADMIN_EMAIL = Deno.env.get("B2B_ADMIN_EMAIL") || REPLY_TO;
 
     if (!RESEND_KEY) {
       console.warn("[notify-b2b-inquiry] RESEND_API_KEY missing — logging only");
@@ -67,31 +130,22 @@ serve(async (req) => {
       );
     }
 
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${RESEND_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "AIHPRO Business <noreply@aihpro.app>",
-        to: [ADMIN_EMAIL],
-        subject,
-        html,
-      }),
-    });
+    const adminSubject = `[AIHPRO Business] 신규 문의 — ${payload.institution_name ?? "이름 미상"}`;
+    const userSubject = `[AIHPRO] 도입 문의가 정상 접수되었습니다`;
 
-    if (!res.ok) {
-      const text = await res.text();
-      console.error("[notify-b2b-inquiry] Resend error:", text);
-      return new Response(
-        JSON.stringify({ ok: false, error: text }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+    const adminRes = await sendMail(RESEND_KEY, ADMIN_EMAIL, adminSubject, adminHtml(payload));
+
+    let userRes: { ok: boolean; error?: string } = { ok: false, error: "no_user_email" };
+    if (payload.contact_email && payload.contact_email !== "N/A" && payload.contact_email.includes("@")) {
+      userRes = await sendMail(RESEND_KEY, payload.contact_email, userSubject, userHtml(payload));
     }
 
     return new Response(
-      JSON.stringify({ ok: true, delivered: true }),
+      JSON.stringify({
+        ok: true,
+        delivered: { admin: adminRes.ok, user: userRes.ok },
+        ...(adminRes.error || userRes.error ? { errors: { admin: adminRes.error, user: userRes.error } } : {}),
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {

@@ -809,6 +809,39 @@ export type Database = {
           },
         ]
       }
+      b2b_funnel_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          page_path: string
+          referrer: string | null
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          page_path: string
+          referrer?: string | null
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          page_path?: string
+          referrer?: string | null
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       b2b_inquiries: {
         Row: {
           contact_person: string
@@ -14428,6 +14461,15 @@ export type Database = {
           reversal_points: number
           story_points: number
           total_points: number
+        }[]
+      }
+      get_b2b_funnel_summary: {
+        Args: { end_date?: string; start_date?: string }
+        Returns: {
+          event_count: number
+          event_type: string
+          page_path: string
+          unique_sessions: number
         }[]
       }
       get_comment_likes_count: { Args: { comment_id: string }; Returns: number }

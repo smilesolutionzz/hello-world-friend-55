@@ -14,6 +14,12 @@ import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 import Analytics from "@/components/common/Analytics";
 import { FeedbackButton } from "@/components/feedback/FeedbackButton";
 import { ConversionTracker } from "@/components/analytics/ConversionTracker";
+import { useB2BFunnelAutoTrack } from "@/hooks/useB2BFunnelTracking";
+
+function B2BFunnelTracker() {
+  useB2BFunnelAutoTrack();
+  return null;
+}
 
 // Core Pages
 import Index from "./pages/Index";
@@ -192,6 +198,7 @@ const App = () => {
               <PerformanceMonitor enableConsoleLogging={process.env.NODE_ENV === 'development'} />
               <Analytics />
               <ConversionTracker />
+              <B2BFunnelTracker />
               <NetworkStatus />
               <SessionManager />
               <UpdatePrompt />

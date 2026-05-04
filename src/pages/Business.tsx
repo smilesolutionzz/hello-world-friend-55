@@ -4,6 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import BusinessROICalculator from '@/components/b2b/BusinessROICalculator';
 import BusinessSEO from '@/components/b2b/BusinessSEO';
+import { trackB2BEvent } from '@/hooks/useB2BFunnelTracking';
+
+const trackCTA = (label: string, target: string) =>
+  trackB2BEvent('cta_click', '/business', { label, target });
 
 const GOLD = '#C8B88A';
 
@@ -86,7 +90,7 @@ export default function Business() {
             <Button
               size="lg"
               className="rounded-full px-8 h-12 bg-foreground text-background hover:bg-foreground/90"
-              onClick={() => navigate('/b2b-proposal')}
+              onClick={() => { trackCTA('hero_primary', '/b2b-proposal'); navigate('/b2b-proposal'); }}
             >
               도입 상담 신청
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -95,7 +99,7 @@ export default function Business() {
               size="lg"
               variant="outline"
               className="rounded-full px-8 h-12"
-              onClick={() => navigate('/b2b-demo-report')}
+              onClick={() => { trackCTA('hero_secondary', '/b2b-demo-report'); navigate('/b2b-demo-report'); }}
             >
               데모 리포트 보기
             </Button>
@@ -147,7 +151,7 @@ export default function Business() {
               return (
                 <button
                   key={a.path}
-                  onClick={() => navigate(a.path)}
+                  onClick={() => { trackCTA('asset_card', a.path); navigate(a.path); }}
                   className="group text-left rounded-3xl border bg-white p-7 hover:border-foreground/30 transition-all"
                 >
                   <div className="flex items-start justify-between mb-5">
@@ -189,7 +193,7 @@ export default function Business() {
           </div>
           <div className="mt-8 text-center">
             <button
-              onClick={() => navigate('/business/security')}
+              onClick={() => { trackCTA('security_link', '/business/security'); navigate('/business/security'); }}
               className="text-sm underline-offset-4 hover:underline"
               style={{ color: GOLD }}
             >
@@ -209,7 +213,7 @@ export default function Business() {
           <Button
             size="lg"
             className="rounded-full px-10 h-12 bg-foreground text-background hover:bg-foreground/90"
-            onClick={() => navigate('/b2b-proposal')}
+            onClick={() => { trackCTA('footer_cta', '/b2b-proposal'); navigate('/b2b-proposal'); }}
           >
             도입 상담 신청
             <ArrowRight className="ml-2 h-4 w-4" />

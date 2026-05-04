@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { trackB2BEvent } from '@/hooks/useB2BFunnelTracking';
 import { 
   BarChart3, CheckCircle2, ArrowRight, 
   Users, Eye, Megaphone, TrendingUp, Star, Sparkles,
@@ -50,6 +51,12 @@ const B2BProposal = () => {
   const [uploadingFile, setUploadingFile] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [kwIndex, setKwIndex] = useState(0);
+  const [formStartLogged, setFormStartLogged] = useState(false);
+  const markFormStart = () => {
+    if (formStartLogged) return;
+    setFormStartLogged(true);
+    void trackB2BEvent('form_start', '/b2b-proposal');
+  };
 
   const MAX_FILE_SIZE_MB = 20;
   const ALLOWED_EXT = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'hwp', 'txt', 'png', 'jpg', 'jpeg'];
@@ -143,6 +150,11 @@ const B2BProposal = () => {
         .catch((err) => console.warn('[notify-b2b-inquiry] failed:', err));
 
       toast({ title: '도입 문의가 접수되었습니다!', description: '영업일 기준 1일 이내 연락드리겠습니다.' });
+      void trackB2BEvent('form_submit', '/b2b-proposal', {
+        institution_type: formData.institution_type,
+        has_attachment: !!attachment,
+        has_preferred_time: !!formData.preferred_contact_at,
+      });
       setFormData({ institution_name: '', contact_name: '', contact_phone: '', contact_email: '', institution_type: '', message: '', preferred_contact_at: '' });
       setAttachment(null);
     } catch (e: any) {
@@ -530,7 +542,7 @@ const B2BProposal = () => {
           </motion.div>
 
           <Card className="border-slate-200 shadow-lg">
-            <CardContent className="p-6 md:p-8 space-y-5">
+            <CardContent className="p-6 md:p-8 space-y-5" onFocus={markFormStart}>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-slate-700 mb-1.5 block">기관명 *</label>

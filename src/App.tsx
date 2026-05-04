@@ -192,6 +192,7 @@ const App = () => {
               <PerformanceMonitor enableConsoleLogging={process.env.NODE_ENV === 'development'} />
               <Analytics />
               <ConversionTracker />
+              <B2BFunnelTracker />
               <NetworkStatus />
               <SessionManager />
               <UpdatePrompt />

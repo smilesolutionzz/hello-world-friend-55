@@ -13,6 +13,7 @@ import {
   ChevronDown, MousePointerClick, Globe, Gift, Flame
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import BusinessSEO from '@/components/b2b/BusinessSEO';
 import BusinessBreadcrumb from '@/components/b2b/BusinessBreadcrumb';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -80,6 +81,11 @@ const B2BProposal = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <BusinessSEO
+        title="제휴·도입 문의 — AIHPRO Business"
+        description="검사 끝난 사용자를 내 센터로, 잡코치 도입 문의와 광고 제휴를 한 번에."
+        path="/b2b-proposal"
+      />
       <BusinessBreadcrumb current="제휴·도입 문의" />
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">

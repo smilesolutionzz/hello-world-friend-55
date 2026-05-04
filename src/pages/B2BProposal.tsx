@@ -150,6 +150,11 @@ const B2BProposal = () => {
         .catch((err) => console.warn('[notify-b2b-inquiry] failed:', err));
 
       toast({ title: '도입 문의가 접수되었습니다!', description: '영업일 기준 1일 이내 연락드리겠습니다.' });
+      void trackB2BEvent('form_submit', '/b2b-proposal', {
+        institution_type: formData.institution_type,
+        has_attachment: !!attachment,
+        has_preferred_time: !!formData.preferred_contact_at,
+      });
       setFormData({ institution_name: '', contact_name: '', contact_phone: '', contact_email: '', institution_type: '', message: '', preferred_contact_at: '' });
       setAttachment(null);
     } catch (e: any) {

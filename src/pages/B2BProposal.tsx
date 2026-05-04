@@ -34,6 +34,7 @@ const ROTATING_KEYWORDS = [
 
 const B2BProposal = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     institution_name: '',
     contact_name: '',

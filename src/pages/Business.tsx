@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Shield, Users, BarChart3, FileText, Building2, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import BusinessROICalculator from '@/components/b2b/BusinessROICalculator';
 
 const GOLD = '#C8B88A';
 
@@ -99,22 +100,10 @@ export default function Business() {
         </div>
       </section>
 
-      {/* ROI Banner */}
+      {/* ROI Calculator */}
       <section className="px-6 pb-16">
         <div className="mx-auto max-w-5xl">
-          <div
-            className="rounded-3xl border bg-white px-6 py-8 md:px-10 md:py-10 text-center"
-            style={{ borderColor: `${GOLD}40` }}
-          >
-            <p className="text-xs tracking-[0.2em] text-foreground/50 mb-3">WHY IT MATTERS</p>
-            <p className="text-xl md:text-2xl font-medium break-keep leading-relaxed">
-              직원 1명의 결근일 1일 ={' '}
-              <span style={{ color: GOLD }}>평균 임금 손실 + 생산성 손실</span>
-            </p>
-            <p className="mt-3 text-sm text-foreground/60 break-keep">
-              마음건강 이슈는 가장 조용히, 가장 비싸게 누적됩니다.
-            </p>
-          </div>
+          <BusinessROICalculator />
         </div>
       </section>
 

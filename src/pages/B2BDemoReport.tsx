@@ -159,6 +159,7 @@ const careRiskColor = (risk: string) => risk === 'high' ? 'bg-red-100 text-red-7
 const careRiskLabel = (risk: string) => risk === 'high' ? '집중 관찰' : risk === 'medium' ? '주의 관찰' : '안정';
 
 const B2BDemoReport: React.FC = () => {
+  const { recommended: recommendedPlan } = useB2BJobcoachPlans();
   const [brand, setBrand] = useState<BrandConfig>({
     institutionType: 'school',
     institutionName: TYPE_PRESETS.school.defaultName,
@@ -291,14 +292,23 @@ const B2BDemoReport: React.FC = () => {
   };
 
   const roiData = useMemo(() => {
-    const employees = 100, monthlyLoss = employees * 4500000 * 0.18;
-    const monthlySaving = monthlyLoss * 0.42, programCost = 1490000, netROI = monthlySaving - programCost;
+    const employees = 100;
+    const monthlyLoss = employees * 4500000 * 0.18;
+    const monthlySaving = monthlyLoss * 0.42;
+    // 추천 플랜 가격(인당/월) × 직원 수 — DB 기반, 미로딩 시 0 처리
+    const perEmployee = recommendedPlan?.price_per_employee_monthly ?? 0;
+    const programCost = perEmployee * employees;
+    const netROI = monthlySaving - programCost;
     return {
-      employees, monthlyLoss: Math.round(monthlyLoss / 10000),
-      monthlySaving: Math.round(monthlySaving / 10000), programCost: Math.round(programCost / 10000),
-      netROI: Math.round(netROI / 10000), roiPercent: Math.round((netROI / programCost) * 100),
+      employees,
+      perEmployee,
+      monthlyLoss: Math.round(monthlyLoss / 10000),
+      monthlySaving: Math.round(monthlySaving / 10000),
+      programCost: Math.round(programCost / 10000),
+      netROI: Math.round(netROI / 10000),
+      roiPercent: programCost > 0 ? Math.round((netROI / programCost) * 100) : 0,
     };
-  }, []);
+  }, [recommendedPlan]);
 
   const cases = TYPE_CASES[brand.institutionType];
   const dimensions = TYPE_DIMENSIONS[brand.institutionType];

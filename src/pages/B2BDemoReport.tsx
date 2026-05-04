@@ -688,8 +688,20 @@ const B2BDemoReport: React.FC = () => {
             <div>
               <Badge className="mb-2">SaaS 도입 효과</Badge>
               <h3 className="text-xl font-bold text-slate-900">
-                {isCorporate ? <>임직원당 <span className="text-blue-600">₩14,900/월</span> · 100명 기준 ROI {roiData.roiPercent}%</>
-                  : <>객단가 ₩9,900 → <span className="text-blue-600">₩590,000/월</span> 전환 모델</>}
+                {isCorporate ? (
+                  <>
+                    임직원당{' '}
+                    <span className="text-blue-600">
+                      {roiData.perEmployee > 0 ? `₩${roiData.perEmployee.toLocaleString()}/월` : '맞춤 견적'}
+                    </span>{' '}
+                    · 100명 기준 ROI {roiData.roiPercent}%
+                  </>
+                ) : (
+                  <>
+                    개인 마음 트랙 ₩{MIND_TRACK_PRICE.toLocaleString()} →{' '}
+                    <span className="text-blue-600">기관 단위 정액 도입</span>
+                  </>
+                )}
               </h3>
               <p className="text-sm text-slate-600 mt-1 break-keep">
                 {isCorporate ? '번아웃·이직으로 인한 생산성 손실을 월 단위로 가시화하고 익명 코칭으로 회복합니다.'

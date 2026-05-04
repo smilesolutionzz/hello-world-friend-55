@@ -94,8 +94,11 @@ const DailyCoachingEmail = ({
   return (
     <Html lang="ko" dir="ltr">
       <Head>
-        <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta charSet="UTF-8" />
+        <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="x-apple-disable-message-reformatting" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       </Head>
       <Preview>{`Day ${dayLabel} · ${categoryLabel} · 오늘의 미션`}</Preview>
       <Body style={main}>

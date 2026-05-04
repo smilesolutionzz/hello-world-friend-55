@@ -147,7 +147,7 @@ const DailyCoachingEmail = ({
             <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
           </Section>
 
-          {videos && videos.length > 0 && (
+          {videos && videos.length > 0 ? (
             <Section style={videosBlock}>
               <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
               <Text style={videoIntro}>오늘 미션과 가장 잘 맞는 영상을 골랐어요. 시청 후 아래 "오늘의 기록 남기기"에서 한 줄 기록을 남겨주세요.</Text>
@@ -186,6 +186,11 @@ const DailyCoachingEmail = ({
                   </Section>
                 )
               })}
+            </Section>
+          ) : (
+            <Section style={videosBlock}>
+              <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
+              <Text style={videoIntro}>오늘은 추천 영상 대신 미션 실천에 집중해 보세요. 내일은 새로운 큐레이션 영상이 도착합니다.</Text>
             </Section>
           )}
 

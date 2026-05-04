@@ -90,7 +90,7 @@ export default function Business() {
             <Button
               size="lg"
               className="rounded-full px-8 h-12 bg-foreground text-background hover:bg-foreground/90"
-              onClick={() => navigate('/b2b-proposal')}
+              onClick={() => { trackCTA('hero_primary', '/b2b-proposal'); navigate('/b2b-proposal'); }}
             >
               도입 상담 신청
               <ArrowRight className="ml-2 h-4 w-4" />

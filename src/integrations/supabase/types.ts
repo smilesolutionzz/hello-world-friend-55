@@ -809,6 +809,48 @@ export type Database = {
           },
         ]
       }
+      b2b_followup_queue: {
+        Row: {
+          contact_name: string | null
+          created_at: string
+          error: string | null
+          followup_type: string
+          id: string
+          inquiry_id: string | null
+          institution_name: string | null
+          recipient_email: string
+          scheduled_at: string
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          contact_name?: string | null
+          created_at?: string
+          error?: string | null
+          followup_type: string
+          id?: string
+          inquiry_id?: string | null
+          institution_name?: string | null
+          recipient_email: string
+          scheduled_at: string
+          sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          contact_name?: string | null
+          created_at?: string
+          error?: string | null
+          followup_type?: string
+          id?: string
+          inquiry_id?: string | null
+          institution_name?: string | null
+          recipient_email?: string
+          scheduled_at?: string
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       b2b_funnel_events: {
         Row: {
           created_at: string

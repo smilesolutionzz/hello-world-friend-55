@@ -5,6 +5,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -152,8 +153,36 @@ serve(async (req) => {
     const adminRes = await sendMail(RESEND_KEY, ADMIN_EMAIL, adminSubject, adminHtml(payload));
 
     let userRes: { ok: boolean; error?: string } = { ok: false, error: "no_user_email" };
-    if (payload.contact_email && payload.contact_email !== "N/A" && payload.contact_email.includes("@")) {
-      userRes = await sendMail(RESEND_KEY, payload.contact_email, userSubject, userHtml(payload));
+    const hasValidEmail = payload.contact_email && payload.contact_email !== "N/A" && payload.contact_email.includes("@");
+    if (hasValidEmail) {
+      userRes = await sendMail(RESEND_KEY, payload.contact_email!, userSubject, userHtml(payload));
+    }
+
+    // 후속 메일 큐 등록 (D+1 자료 / D+3 케이스)
+    if (hasValidEmail) {
+      try {
+        const supabase = createClient(
+          Deno.env.get("SUPABASE_URL")!,
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+        );
+        const now = Date.now();
+        const items = [
+          { followup_type: "resources_d1", scheduled_at: new Date(now + 24 * 3600 * 1000).toISOString() },
+          { followup_type: "case_studies_d3", scheduled_at: new Date(now + 72 * 3600 * 1000).toISOString() },
+        ].map((it) => ({
+          ...it,
+          inquiry_id: payload.inquiry_id ?? null,
+          recipient_email: payload.contact_email!,
+          contact_name: payload.contact_name ?? null,
+          institution_name: payload.institution_name ?? null,
+        }));
+        const { error: qErr } = await supabase
+          .from("b2b_followup_queue")
+          .upsert(items, { onConflict: "inquiry_id,followup_type", ignoreDuplicates: true });
+        if (qErr) console.warn("[notify-b2b-inquiry] enqueue followup failed:", qErr);
+      } catch (e) {
+        console.warn("[notify-b2b-inquiry] followup enqueue error:", e);
+      }
     }
 
     return new Response(

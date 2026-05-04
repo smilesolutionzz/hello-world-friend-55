@@ -1,9 +1,9 @@
-import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Shield, Users, BarChart3, FileText, Building2, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import BusinessROICalculator from '@/components/b2b/BusinessROICalculator';
+import BusinessSEO from '@/components/b2b/BusinessSEO';
 
 const GOLD = '#C8B88A';
 

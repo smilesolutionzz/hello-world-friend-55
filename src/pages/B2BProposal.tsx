@@ -51,6 +51,12 @@ const B2BProposal = () => {
   const [uploadingFile, setUploadingFile] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [kwIndex, setKwIndex] = useState(0);
+  const [formStartLogged, setFormStartLogged] = useState(false);
+  const markFormStart = () => {
+    if (formStartLogged) return;
+    setFormStartLogged(true);
+    void trackB2BEvent('form_start', '/b2b-proposal');
+  };
 
   const MAX_FILE_SIZE_MB = 20;
   const ALLOWED_EXT = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'hwp', 'txt', 'png', 'jpg', 'jpeg'];

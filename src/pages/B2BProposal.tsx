@@ -586,21 +586,85 @@ const B2BProposal = () => {
                 <Textarea 
                   value={formData.message}
                   onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
-                  placeholder="관심 있는 광고 상품이나 궁금한 점을 적어주세요"
+                  placeholder="관심 있는 상품, RFP 요청사항, 궁금한 점을 적어주세요"
                   rows={3}
                 />
               </div>
+
+              {/* 희망 미팅 시간 */}
+              <div>
+                <label className="text-sm font-medium text-slate-700 mb-1.5 flex items-center gap-1.5">
+                  <CalendarIcon className="w-4 h-4 text-indigo-500" />
+                  희망 미팅 시간 <span className="text-slate-400 font-normal">(선택)</span>
+                </label>
+                <Input
+                  type="datetime-local"
+                  value={formData.preferred_contact_at}
+                  onChange={e => setFormData(p => ({ ...p, preferred_contact_at: e.target.value }))}
+                  className="h-11"
+                />
+                <p className="text-xs text-slate-400 mt-1.5">선택하시면 가능 여부를 확인 후 30분 화상/전화 미팅을 잡아드립니다.</p>
+              </div>
+
+              {/* 첨부파일 */}
+              <div>
+                <label className="text-sm font-medium text-slate-700 mb-1.5 flex items-center gap-1.5">
+                  <Paperclip className="w-4 h-4 text-indigo-500" />
+                  첨부파일 <span className="text-slate-400 font-normal">(선택, RFP·보안 체크리스트 등 / 최대 20MB)</span>
+                </label>
+                {!attachment ? (
+                  <label className="flex items-center justify-center gap-2 h-11 px-4 rounded-md border border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 cursor-pointer text-sm text-slate-600 transition">
+                    <Paperclip className="w-4 h-4" />
+                    파일 선택 (PDF, DOC, XLS, PPT, HWP, 이미지)
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.hwp,.txt,.png,.jpg,.jpeg"
+                      onChange={e => handleFilePick(e.target.files?.[0] ?? null)}
+                    />
+                  </label>
+                ) : (
+                  <div className="flex items-center justify-between gap-2 h-11 px-3 rounded-md border border-slate-200 bg-white text-sm">
+                    <span className="flex items-center gap-2 truncate">
+                      <Paperclip className="w-4 h-4 text-indigo-500 shrink-0" />
+                      <span className="truncate text-slate-700">{attachment.name}</span>
+                      <span className="text-xs text-slate-400 shrink-0">({(attachment.size / 1024 / 1024).toFixed(2)}MB)</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setAttachment(null)}
+                      className="p-1 rounded hover:bg-slate-100 text-slate-500"
+                      aria-label="첨부파일 제거"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+                <p className="text-xs text-slate-400 mt-1.5 flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" />
+                  업로드된 파일은 비공개 저장공간에 보관되며, 관리자만 열람할 수 있습니다.
+                </p>
+              </div>
+
               <Button 
                 className="w-full h-13 text-lg bg-indigo-500 hover:bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200"
                 onClick={handleSubmit}
                 disabled={submitting}
               >
-                {submitting ? '접수 중...' : '무료 체험 신청하기'}
+                {submitting ? (uploadingFile ? '파일 업로드 중...' : '접수 중...') : '도입 문의 보내기'}
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
               <p className="text-xs text-slate-400 text-center">
                 * 첫 달 무료 체험 후 유지 여부를 결정하시면 됩니다. 위약금 없음.
               </p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* 협력기관 — 맨 아래 배치 */}
+      <section className="py-12 bg-white border-t border-slate-100">
+        {/* placeholder removed */}
             </CardContent>
           </Card>
         </div>

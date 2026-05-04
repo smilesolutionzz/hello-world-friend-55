@@ -542,7 +542,7 @@ const B2BProposal = () => {
           </motion.div>
 
           <Card className="border-slate-200 shadow-lg">
-            <CardContent className="p-6 md:p-8 space-y-5">
+            <CardContent className="p-6 md:p-8 space-y-5" onFocus={markFormStart}>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-slate-700 mb-1.5 block">기관명 *</label>

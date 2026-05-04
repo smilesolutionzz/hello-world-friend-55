@@ -8,6 +8,7 @@ const B2B_PATHS = [
   '/business',
   '/b2b-jobcoach',
   '/b2b-proposal',
+  '/b2b-pricing',
   '/b2b-hr-dashboard',
   '/b2b-demo-report',
   '/business-case-studies',

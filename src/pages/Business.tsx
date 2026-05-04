@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Users, BarChart3, FileText, Building2, Lock, BookOpen } from 'lucide-react';
+import { ArrowRight, Shield, Users, BarChart3, FileText, Building2, Lock, BookOpen, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import BusinessROICalculator from '@/components/b2b/BusinessROICalculator';
@@ -35,6 +35,12 @@ const assets = [
     desc: '플랜 상담 · 직원 규모별 견적 · 파일럿 제안',
     path: '/b2b-proposal',
     icon: Users,
+  },
+  {
+    title: '플랜 가격표 보기',
+    desc: '직원 1인당 월 단가 · EAP 대비 비교 · 연간 2개월 무상',
+    path: '/b2b-pricing',
+    icon: Tag,
   },
   {
     title: '도입 사례 보기',

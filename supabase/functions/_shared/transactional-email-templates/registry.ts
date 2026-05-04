@@ -15,6 +15,8 @@ import { template as b2bDemoConfirm } from './b2b-demo-request-confirmation.tsx'
 import { template as b2bDemoAdmin } from './b2b-demo-request-admin.tsx'
 import { template as dailyCoaching } from './daily-coaching.tsx'
 import { template as reportSummary } from './report-summary-email.tsx'
+import { template as b2bFollowupResources } from './b2b-followup-resources.tsx'
+import { template as b2bFollowupCases } from './b2b-followup-cases.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'report-ready-notification': reportReady,
@@ -23,4 +25,6 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'b2b-demo-request-admin': b2bDemoAdmin,
   'daily-coaching': dailyCoaching,
   'report-summary-email': reportSummary,
+  'b2b-followup-resources': b2bFollowupResources,
+  'b2b-followup-cases': b2bFollowupCases,
 }

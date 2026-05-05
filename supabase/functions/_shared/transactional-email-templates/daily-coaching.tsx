@@ -511,3 +511,13 @@ const summaryText = { fontSize: '17px', fontWeight: 600, color: '#ffffff', lineH
 const actionsBlock = { margin: '0 0 28px' }
 const actionNumber = { width: '22px', height: '22px', borderRadius: '99px', background: '#0f172a', color: '#ffffff', fontSize: '11px', fontWeight: 600, textAlign: 'center' as const, verticalAlign: 'top' as const, paddingTop: '3px' }
 const actionText = { fontSize: '14px', color: '#0f172a', lineHeight: 1.5, paddingLeft: '10px', verticalAlign: 'top' as const }
+
+// === Premium upgrade sections ===
+const whyBlock = { background: '#fffaf0', border: '1px solid #f0e6d2', borderRadius: '12px', padding: '18px 20px', margin: '0 0 24px' }
+const whyText = { fontSize: '14px', lineHeight: 1.75, color: '#3f3a2e', margin: 0, wordBreak: 'keep-all' as const }
+const scriptBlock = { background: '#0f172a', borderRadius: '12px', padding: '20px 22px', margin: '0 0 28px' }
+const scriptLine = { fontSize: '14px', lineHeight: 1.7, color: '#e2e8f0', margin: '0 0 8px', fontFamily: "'SF Mono', ui-monospace, Menlo, Consolas, monospace" }
+const outcomeBlock = { background: '#f0fdf4', border: '1px solid #d1fae5', borderRadius: '12px', padding: '18px 20px', margin: '0 0 28px' }
+const outcomeText = { fontSize: '14px', lineHeight: 1.7, color: '#065f46', margin: 0, wordBreak: 'keep-all' as const }
+const reflectionBlock = { borderLeft: '3px solid #C8B88A', padding: '4px 0 4px 16px', margin: '0 0 28px' }
+const reflectionText = { fontSize: '15px', lineHeight: 1.65, color: '#0f172a', fontStyle: 'italic' as const, margin: 0, wordBreak: 'keep-all' as const }

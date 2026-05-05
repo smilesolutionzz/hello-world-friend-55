@@ -321,7 +321,7 @@ serve(async (req) => {
       return issues;
     }
 
-    async function callTransactionalEmail(payload: any): Promise<{ ok: boolean; error?: string; body?: any }> {
+    async function callTransactionalEmail(payload: any): Promise<{ ok: boolean; error?: string; body?: any; renderCheck?: any }> {
       try {
         if (!resend) return { ok: false, error: 'RESEND_API_KEY missing' };
         const { templateName, recipientEmail, templateData = {}, idempotencyKey } = payload;
@@ -347,11 +347,39 @@ serve(async (req) => {
           });
         }
 
+        // 추적 토큰 생성 + 토큰 매핑 저장
+        const trackingToken = crypto.randomUUID().replace(/-/g, '');
+        const dataWithToken = { ...templateData, trackingToken };
+
         const html = await renderAsync(
-          React.createElement(dailyCoachingTpl.component, templateData)
+          React.createElement(dailyCoachingTpl.component, dataWithToken)
         );
+
+        // 렌더 결과 검증 (??/04 섹션 노출 여부)
+        const hasReplacementChar = /\uFFFD|\?\?/.test(html);
+        const hasSection04 = /04 · 오늘의 추천 영상/.test(html);
+        const hasSection03 = /03 · 임상적 근거/.test(html);
+        const hasSection05 = /05 · 오늘의 기록/.test(html);
+        const renderIssues: string[] = [];
+        if (hasReplacementChar) renderIssues.push('replacement_char');
+        if (!hasSection03) renderIssues.push('missing_section_03');
+        if (!hasSection04) renderIssues.push('missing_section_04');
+        if (!hasSection05) renderIssues.push('missing_section_05');
+        log('render check', { recipientEmail, hasReplacementChar, hasSection03, hasSection04, hasSection05 });
+
+        await supa.from('daily_coaching_email_tokens').insert({
+          token: trackingToken,
+          recipient_email: recipientEmail,
+          send_log_message_id: idempotencyKey,
+          day_number: templateData.dayNumber ?? null,
+          category: templateData.categoryLabel ?? null,
+          has_section_04: hasSection04,
+          has_replacement_char: hasReplacementChar,
+          render_issues: renderIssues,
+        }).then(() => {}, (e) => log('token insert failed', { err: String(e) }));
+
         const subject = typeof dailyCoachingTpl.subject === 'function'
-          ? dailyCoachingTpl.subject(templateData)
+          ? dailyCoachingTpl.subject(dataWithToken)
           : dailyCoachingTpl.subject;
 
         const result = await resend.emails.send({
@@ -362,6 +390,8 @@ serve(async (req) => {
           html,
         });
 
+        const renderCheck = { hasReplacementChar, hasSection03, hasSection04, hasSection05, trackingToken };
+
         if ((result as any)?.error) {
           await supa.from('email_send_log').insert({
             message_id: idempotencyKey,
@@ -369,8 +399,9 @@ serve(async (req) => {
             recipient_email: recipientEmail,
             status: 'failed',
             error_message: JSON.stringify((result as any).error),
+            metadata: { renderCheck },
           });
-          return { ok: false, error: JSON.stringify((result as any).error), body: result };
+          return { ok: false, error: JSON.stringify((result as any).error), body: result, renderCheck };
         }
 
         await supa.from('email_send_log').insert({
@@ -378,10 +409,10 @@ serve(async (req) => {
           template_name: templateName,
           recipient_email: recipientEmail,
           status: 'sent',
-          metadata: { resend_id: (result as any)?.data?.id },
+          metadata: { resend_id: (result as any)?.data?.id, renderCheck },
         });
 
-        return { ok: true, body: result };
+        return { ok: true, body: result, renderCheck };
       } catch (e) {
         await supa.from('email_send_log').insert({
           message_id: payload?.idempotencyKey,

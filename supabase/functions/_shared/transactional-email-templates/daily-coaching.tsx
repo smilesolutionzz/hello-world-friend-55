@@ -244,7 +244,7 @@ const DailyCoachingEmail = ({
           )}
 
           <Section style={recordCallout}>
-            <Text style={recordCalloutLabel}>05 · 오늘의 기록</Text>
+            <Text style={recordCalloutLabel}>09 · 오늘의 기록</Text>
             <Text style={recordCalloutText}>
               미션 또는 영상을 마친 뒤, 아래 버튼을 눌러 오늘 느낀 변화를 한 줄로 기록해 주세요. 30일간의 변화 그래프가 자동으로 누적됩니다.
             </Text>

@@ -151,8 +151,24 @@ const DailyCoachingEmail = ({
             <Text style={missionText}>{mission}</Text>
           </Section>
 
+          {whyToday && (
+            <Section style={whyBlock}>
+              <Text style={sectionLabel}>02 · 왜 하필 오늘 이 미션인가</Text>
+              <Text style={whyText}>{whyToday}</Text>
+            </Section>
+          )}
+
+          {microScript && microScript.length >= 3 && (
+            <Section style={scriptBlock}>
+              <Text style={sectionLabel}>03 · 5분 실행 스크립트</Text>
+              {microScript.slice(0, 6).map((line, i) => (
+                <Text key={i} style={scriptLine}>{line}</Text>
+              ))}
+            </Section>
+          )}
+
           <Section style={actionsBlock}>
-            <Text style={sectionLabel}>02 · 핵심 행동 3</Text>
+            <Text style={sectionLabel}>04 · 핵심 행동 3</Text>
             {keyActions.slice(0, 3).map((a, i) => (
               <table key={i} cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '8px' }}>
                 <tbody>
@@ -170,6 +186,13 @@ const DailyCoachingEmail = ({
             <Text style={insightText}>{insight}</Text>
             <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
           </Section>
+
+          {expectedOutcome && (
+            <Section style={outcomeBlock}>
+              <Text style={sectionLabel}>06 · 끝낸 직후 기대되는 변화</Text>
+              <Text style={outcomeText}>{expectedOutcome}</Text>
+            </Section>
+          )}
 
           <Section style={videosBlock}>
             <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>

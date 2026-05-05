@@ -222,14 +222,30 @@ async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> 
     const data = await resp.json();
     const c = JSON.parse(data.choices[0].message.content);
     // U+FFFD(replacement char), 깨진 surrogate, smart quote 정화
-    const sanitize = (s: string) =>
-      String(s ?? "")
-        .replace(/\uFFFD/g, "")
+    const sanitize = (s: string) => {
+      let out = String(s ?? "");
+      // 1) 이모지/픽토그램(BMP 밖, surrogate pair) 제거
+      try {
+        out = out.replace(/\p{Extended_Pictographic}/gu, "");
+        out = out.replace(/[\u{1F300}-\u{1FAFF}]/gu, "");
+        out = out.replace(/[\u{2600}-\u{27BF}]/gu, "");
+      } catch (_) { /* ignore if unsupported */ }
+      // 2) 잔여 surrogate halves, 변이선택자, ZWJ, 결합문자 잔재 제거
+      out = out
         .replace(/[\uD800-\uDFFF]/g, "")
+        .replace(/[\uFE00-\uFE0F]/g, "")
+        .replace(/\u200D/g, "")
+        .replace(/\uFFFD/g, "");
+      // 3) 따옴표 정규화 + 빈 괄호/문장부호 잔재 정리
+      out = out
         .replace(/[\u2018\u2019]/g, "'")
         .replace(/[\u201C\u201D]/g, '"')
+        .replace(/\(\s*\)/g, "")
+        .replace(/\s+([,.!?])/g, "$1")
         .replace(/\s+/g, " ")
         .trim();
+      return out;
+    };
     // 한국어 비율 검증: 한글이 30% 미만이면 영어 응답으로 간주하고 fallback
     const isKorean = (s: string) => {
       const txt = String(s ?? "");

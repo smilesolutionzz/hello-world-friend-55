@@ -33,9 +33,13 @@ interface DailyCoachingProps {
   categoryLabel?: string
   missionSummary?: string
   mission?: string
+  whyToday?: string
+  microScript?: string[]
   keyActions?: string[]
   insight?: string
   researchBase?: string
+  expectedOutcome?: string
+  eveningReflection?: string
   videos?: YouTubeVideoData[]
   trackingToken?: string
 }

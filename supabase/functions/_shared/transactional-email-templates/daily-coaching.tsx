@@ -33,9 +33,13 @@ interface DailyCoachingProps {
   categoryLabel?: string
   missionSummary?: string
   mission?: string
+  whyToday?: string
+  microScript?: string[]
   keyActions?: string[]
   insight?: string
   researchBase?: string
+  expectedOutcome?: string
+  eveningReflection?: string
   videos?: YouTubeVideoData[]
   trackingToken?: string
 }
@@ -84,9 +88,19 @@ const DailyCoachingEmail = ({
   categoryLabel = '스트레스 회복탄력성',
   missionSummary = '오늘 5분으로 마음을 정돈하기',
   mission = '오늘은 5분간 호흡에 집중하며 현재 감정 강도를 1~10점으로 기록해보세요.',
+  whyToday = '오늘은 자기관찰의 기초를 쌓는 단계입니다. 어제까지의 알아차림 위에, 오늘 한 번 더 호흡을 통해 현재로 돌아오는 회로를 강화합니다.',
+  microScript = [
+    '0:00 — 휴대폰 무음, 등 펴고 앉기',
+    '0:30 — 코로 4초 들숨, 6초 날숨 3회',
+    '1:30 — 지금 감정을 한 단어로 호명',
+    '3:00 — 1~10점으로 강도 기록',
+    '4:30 — 한 줄 변화 노트 작성',
+  ],
   keyActions = ['타이머 5분 설정', '호흡에 주의 집중', '전·후 감정 점수 기록'],
   insight = '일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.',
   researchBase = 'Kabat-Zinn MBSR 프로그램',
+  expectedOutcome = '5분 뒤, 어깨와 턱의 긴장이 풀리고 감정 강도가 1~2점 정도 내려간 것을 감지할 수 있습니다.',
+  eveningReflection = '오늘 미션 전과 후, 내 몸의 어디가 가장 다르게 느껴졌는가?',
   videos = [],
   trackingToken,
 }: DailyCoachingProps) => {
@@ -137,8 +151,24 @@ const DailyCoachingEmail = ({
             <Text style={missionText}>{mission}</Text>
           </Section>
 
+          {whyToday && (
+            <Section style={whyBlock}>
+              <Text style={sectionLabel}>02 · 왜 하필 오늘 이 미션인가</Text>
+              <Text style={whyText}>{whyToday}</Text>
+            </Section>
+          )}
+
+          {microScript && microScript.length >= 3 && (
+            <Section style={scriptBlock}>
+              <Text style={sectionLabel}>03 · 5분 실행 스크립트</Text>
+              {microScript.slice(0, 6).map((line, i) => (
+                <Text key={i} style={scriptLine}>{line}</Text>
+              ))}
+            </Section>
+          )}
+
           <Section style={actionsBlock}>
-            <Text style={sectionLabel}>02 · 핵심 행동 3</Text>
+            <Text style={sectionLabel}>04 · 핵심 행동 3</Text>
             {keyActions.slice(0, 3).map((a, i) => (
               <table key={i} cellPadding={0} cellSpacing={0} style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '8px' }}>
                 <tbody>
@@ -152,10 +182,17 @@ const DailyCoachingEmail = ({
           </Section>
 
           <Section style={insightBlock}>
-            <Text style={sectionLabel}>03 · 임상적 근거</Text>
+            <Text style={sectionLabel}>05 · 임상적 근거</Text>
             <Text style={insightText}>{insight}</Text>
             <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
           </Section>
+
+          {expectedOutcome && (
+            <Section style={outcomeBlock}>
+              <Text style={sectionLabel}>06 · 끝낸 직후 기대되는 변화</Text>
+              <Text style={outcomeText}>{expectedOutcome}</Text>
+            </Section>
+          )}
 
           <Section style={videosBlock}>
             <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
@@ -199,6 +236,13 @@ const DailyCoachingEmail = ({
             )}
           </Section>
 
+          {eveningReflection && (
+            <Section style={reflectionBlock}>
+              <Text style={sectionLabel}>08 · 잠들기 전 한 줄 회고</Text>
+              <Text style={reflectionText}>{`"${eveningReflection}"`}</Text>
+            </Section>
+          )}
+
           <Section style={recordCallout}>
             <Text style={recordCalloutLabel}>05 · 오늘의 기록</Text>
             <Text style={recordCalloutText}>
@@ -239,10 +283,22 @@ export const template = {
     missionSummary: '5분 호흡으로 오늘의 긴장을 풀어내기',
     mission:
       '오늘은 마음챙김 호흡을 5분간 시도하고, 호흡 전후의 긴장감을 1~10점으로 기록해보세요.',
+    whyToday:
+      'Day 07은 1주차 자각 훈련을 마무리하고 2주차 실험으로 넘어가는 분수령입니다. 어제까지 쌓은 신체 관찰을 바탕으로, 오늘은 호흡으로 의도적 휴지(休止)를 만들어 반응 사이의 틈을 확보합니다.',
+    microScript: [
+      '0:00 — 휴대폰 무음, 등 펴고 의자에 앉기',
+      '0:30 — 코로 4초 들숨, 6초 날숨 3회',
+      '1:30 — 지금 감정을 한 단어로 호명',
+      '3:00 — 1~10점으로 강도 기록',
+      '4:30 — 한 줄 변화 노트 작성',
+    ],
     keyActions: ['타이머 5분 설정하기', '호흡에만 주의 집중', '전·후 긴장도 점수 기록'],
     insight:
       'Kabat-Zinn MBSR 프로그램 연구에 따르면, 매일 5분의 마음챙김 호흡 훈련은 8주 후 코르티솔 수치를 평균 19% 감소시킵니다.',
     researchBase: 'Kabat-Zinn MBSR 프로그램',
+    expectedOutcome:
+      '5분 뒤, 어깨와 턱의 긴장이 풀리고 호흡이 깊어지며 감정 강도가 1~2점 정도 내려간 것을 감지할 수 있습니다.',
+    eveningReflection: '오늘 미션 전과 후, 내 몸의 어디가 가장 다르게 느껴졌는가?',
     videos: [
       {
         videoId: 'inpok4MKVLM',
@@ -455,3 +511,13 @@ const summaryText = { fontSize: '17px', fontWeight: 600, color: '#ffffff', lineH
 const actionsBlock = { margin: '0 0 28px' }
 const actionNumber = { width: '22px', height: '22px', borderRadius: '99px', background: '#0f172a', color: '#ffffff', fontSize: '11px', fontWeight: 600, textAlign: 'center' as const, verticalAlign: 'top' as const, paddingTop: '3px' }
 const actionText = { fontSize: '14px', color: '#0f172a', lineHeight: 1.5, paddingLeft: '10px', verticalAlign: 'top' as const }
+
+// === Premium upgrade sections ===
+const whyBlock = { background: '#fffaf0', border: '1px solid #f0e6d2', borderRadius: '12px', padding: '18px 20px', margin: '0 0 24px' }
+const whyText = { fontSize: '14px', lineHeight: 1.75, color: '#3f3a2e', margin: 0, wordBreak: 'keep-all' as const }
+const scriptBlock = { background: '#0f172a', borderRadius: '12px', padding: '20px 22px', margin: '0 0 28px' }
+const scriptLine = { fontSize: '14px', lineHeight: 1.7, color: '#e2e8f0', margin: '0 0 8px', fontFamily: "'SF Mono', ui-monospace, Menlo, Consolas, monospace" }
+const outcomeBlock = { background: '#f0fdf4', border: '1px solid #d1fae5', borderRadius: '12px', padding: '18px 20px', margin: '0 0 28px' }
+const outcomeText = { fontSize: '14px', lineHeight: 1.7, color: '#065f46', margin: 0, wordBreak: 'keep-all' as const }
+const reflectionBlock = { borderLeft: '3px solid #C8B88A', padding: '4px 0 4px 16px', margin: '0 0 28px' }
+const reflectionText = { fontSize: '15px', lineHeight: 1.65, color: '#0f172a', fontStyle: 'italic' as const, margin: 0, wordBreak: 'keep-all' as const }

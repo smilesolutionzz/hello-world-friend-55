@@ -184,23 +184,66 @@ const CATEGORY_META: Record<string, { label: string; focus: string; researchBase
 interface CoachingContent {
   missionSummary: string;
   mission: string;
+  whyToday: string;
+  microScript: string[];
   keyActions: string[];
   insight: string;
+  expectedOutcome: string;
+  eveningReflection: string;
+}
+
+function getPhase(dayNumber: number, totalDays: number) {
+  const ratio = dayNumber / totalDays;
+  if (ratio <= 0.25) return {
+    phase: "1주차 · 자각(Awareness)",
+    phaseGoal: "내 패턴을 알아차리는 감각 만들기",
+    pastFocus: "지금까지: 감정·신체 신호를 관찰하는 기초 훈련 단계",
+    nextFocus: "다음 단계: 패턴을 흔드는 작은 실험",
+  };
+  if (ratio <= 0.5) return {
+    phase: "2주차 · 실험(Experiment)",
+    phaseGoal: "기존 반응 대신 새로운 행동을 시도하기",
+    pastFocus: "지금까지: 자각이 자리잡으며 반응 사이 '틈'이 생기는 시기",
+    nextFocus: "다음 단계: 효과 있는 행동을 일상에 박아 넣기",
+  };
+  if (ratio <= 0.75) return {
+    phase: "3주차 · 통합(Integration)",
+    phaseGoal: "효과 있는 행동을 루틴으로 굳히기",
+    pastFocus: "지금까지: 새 행동이 의식적 노력 없이 시작되기 시작하는 단계",
+    nextFocus: "다음 단계: 압박 상황에서도 흔들리지 않는 회복 탄력",
+  };
+  return {
+    phase: "4주차 · 회복탄력(Resilience)",
+    phaseGoal: "스트레스 상황에서도 무너지지 않는 자기조절 능력",
+    pastFocus: "지금까지: 자각→실험→통합을 거쳐 자기 조절 회로가 안정화되는 시기",
+    nextFocus: "다음 단계: 30일 이후, 스스로 코치가 되어 루틴을 유지하기",
+  };
 }
 
 async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> {
   const meta = CATEGORY_META[goal.goal_category] || CATEGORY_META.stress;
   const dayNumber = goal.current_day + 1;
+  const phase = getPhase(dayNumber, goal.total_days);
 
   const fallback: CoachingContent = {
-    missionSummary: `${meta.label} Day ${dayNumber} — 오늘은 5분 자기관찰`,
+    missionSummary: `${phase.phase} · 오늘은 5분 자기관찰`,
     mission: `${meta.focus}의 일환으로, 5분간 호흡에 집중하며 현재 감정 강도를 1~10점으로 기록해보세요.`,
+    whyToday: `오늘은 ${phase.phase}에 해당합니다. ${phase.phaseGoal}이 이번 주의 핵심이며, 5분 자기관찰은 이 단계의 가장 단단한 기초가 됩니다.`,
+    microScript: [
+      "0:00 — 휴대폰 무음, 의자에 등 펴고 앉기",
+      "0:30 — 코로 4초 들숨, 6초 날숨 3회",
+      "1:30 — 지금 감정을 한 단어로 호명하기",
+      "3:00 — 1~10점으로 강도 기록",
+      "4:30 — 끝낸 뒤 한 줄 변화 노트",
+    ],
     keyActions: [
       "타이머 5분 설정 후 조용한 자리 확보",
       "호흡에만 집중하며 감정 강도 기록",
       "끝난 뒤 한 줄 일지로 변화 메모",
     ],
     insight: `${meta.researchBase}에 따르면 일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.`,
+    expectedOutcome: "5분 뒤, 머리가 조금 가벼워지고 감정 강도가 1~2점 정도 내려간 것을 감지할 수 있습니다.",
+    eveningReflection: "오늘 미션 전과 후, 내 몸의 어디가 가장 다르게 느껴졌는가?",
   };
 
   if (!LOVABLE_API_KEY) return fallback;
@@ -210,10 +253,50 @@ async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> 
       method: "POST",
       headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-2.5-pro",
+        reasoning: { effort: "medium" },
         messages: [
-          { role: "system", content: `당신은 임상심리학 박사급 코치입니다. AIHPRO 플랫폼의 데일리 코칭 메일을 작성합니다.\n근거 기반(EBT)이고 전문적이며, 의료 진단 표현은 피하고 "발달 코칭" 톤을 유지하세요.\n\n[절대 규칙]\n- 모든 출력은 반드시 한국어로만 작성. 영어 단어/문장 사용 절대 금지(고유명사·연구명 제외).\n- 이모지 사용 금지.\n- JSON 외 다른 텍스트 출력 금지.` },
-          { role: "user", content: `사용자 정보:\n- 코칭 목표: ${meta.label}\n- 진행 일차: Day ${dayNumber} / ${goal.total_days}\n- 핵심 접근법: ${meta.focus}\n- 근거: ${meta.researchBase}\n- 사용자 추가 설명: ${goal.goal_description || "없음"}\n\n반드시 한국어로 작성하여 다음 JSON 형식으로 출력:\n{\n  "missionSummary": "오늘 미션을 한 줄로 요약 (40자 이내, 동기부여 톤, 한국어)",\n  "mission": "오늘 5분 안에 실행할 구체적 미션 (200자 이내, 한국어)",\n  "keyActions": ["행동1 (15자 이내, 한국어)", "행동2 (15자 이내, 한국어)", "행동3 (15자 이내, 한국어)"],\n  "insight": "이 미션이 효과적인 임상적 근거 (300자 이내, 한국어, 연구명만 영문 허용)"\n}` },
+          { role: "system", content: `당신은 임상심리학 박사급 코치이자 행동설계 전문가입니다. AIHPRO 프리미엄 30일 트랙의 데일리 코칭 메일을 작성합니다.
+
+[작성 철학]
+- 사용자는 ₩19,900을 지불한 유료 구독자입니다. "돈 낸 가치가 있다"는 감각이 매일 느껴져야 합니다.
+- 일반 명상 앱이 줄 수 없는 것: (1) 오늘 이 미션이 트랙의 어느 단계에서 왜 필요한지의 임상적 논리, (2) 0~5분의 시간축 스크립트, (3) 끝낸 직후의 기대 변화, (4) 잠들기 전 회고 질문.
+- 어제·오늘·내일이 연결된 "여정의 N일차"라는 감각을 반드시 만들어주세요.
+- 톤: 박사급 임상가가 한 명의 클라이언트에게 직접 쓴 1:1 노트. 상투적 동기부여 슬로건 금지.
+
+[절대 규칙]
+- 모든 출력은 반드시 한국어. 영어 단어/문장 사용 금지(고유명사·연구명·시간표기 0:30 등 예외).
+- 이모지·아이콘·마크다운 기호(#, *, -, > 등) 사용 절대 금지.
+- JSON 외 다른 텍스트 출력 금지.` },
+          { role: "user", content: `[유료 구독자 컨텍스트]
+- 코칭 목표: ${meta.label}
+- 진행 일차: Day ${dayNumber} / ${goal.total_days}
+- 트랙 단계: ${phase.phase}
+- 이번 단계의 목적: ${phase.phaseGoal}
+- ${phase.pastFocus}
+- ${phase.nextFocus}
+- 핵심 접근법: ${meta.focus}
+- 임상 근거: ${meta.researchBase}
+- 사용자 추가 설명: ${goal.goal_description || "없음"}
+
+다음 JSON 스키마로 작성하세요. 각 필드는 트랙 단계와 일차를 명시적으로 반영해야 합니다.
+
+{
+  "missionSummary": "오늘 미션의 본질을 1줄로 (40자 이내, '오늘'이 왜 특별한지 암시)",
+  "mission": "오늘 5분 안에 실행할 단 하나의 구체적 미션. 장소·자세·도구까지 명시 (200자 이내)",
+  "whyToday": "왜 하필 Day ${dayNumber}의 ${phase.phase}에서 이 미션이 필요한가. 어제까지 쌓인 것 위에 오늘 무엇이 더해지는지 임상적으로 설명 (250자 이내)",
+  "microScript": [
+    "0:00 — 시작 자세/세팅 (한 문장)",
+    "0:30 — 첫 행동",
+    "1:30 — 중간 핵심 행동",
+    "3:00 — 변화 관찰",
+    "4:30 — 마무리·기록"
+  ],
+  "keyActions": ["행동1 (15자 이내)", "행동2 (15자 이내)", "행동3 (15자 이내)"],
+  "insight": "오늘 미션이 효과적인 임상 근거. 가능하면 효과 크기/% 숫자 포함 (300자 이내, 연구명만 영문 허용)",
+  "expectedOutcome": "미션 직후 사용자가 몸/머리/감정에서 감지할 변화 (120자 이내, 과장 금지·구체적 신체 감각 위주)",
+  "eveningReflection": "잠들기 전 스스로에게 던질 한 줄 질문 (60자 이내, 평가형 아닌 관찰형)"
+}` },
         ],
         response_format: { type: "json_object" },
       }),
@@ -221,22 +304,18 @@ async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> 
     if (!resp.ok) throw new Error(`AI ${resp.status}`);
     const data = await resp.json();
     const c = JSON.parse(data.choices[0].message.content);
-    // U+FFFD(replacement char), 깨진 surrogate, smart quote 정화
     const sanitize = (s: string) => {
       let out = String(s ?? "");
-      // 1) 이모지/픽토그램(BMP 밖, surrogate pair) 제거
       try {
         out = out.replace(/\p{Extended_Pictographic}/gu, "");
         out = out.replace(/[\u{1F300}-\u{1FAFF}]/gu, "");
         out = out.replace(/[\u{2600}-\u{27BF}]/gu, "");
-      } catch (_) { /* ignore if unsupported */ }
-      // 2) 잔여 surrogate halves, 변이선택자, ZWJ, 결합문자 잔재 제거
+      } catch (_) { /* ignore */ }
       out = out
         .replace(/[\uD800-\uDFFF]/g, "")
         .replace(/[\uFE00-\uFE0F]/g, "")
         .replace(/\u200D/g, "")
         .replace(/\uFFFD/g, "");
-      // 3) 따옴표 정규화 + 빈 괄호/문장부호 잔재 정리
       out = out
         .replace(/[\u2018\u2019]/g, "'")
         .replace(/[\u201C\u201D]/g, '"')
@@ -246,7 +325,6 @@ async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> 
         .trim();
       return out;
     };
-    // 한국어 비율 검증: 한글이 30% 미만이면 영어 응답으로 간주하고 fallback
     const isKorean = (s: string) => {
       const txt = String(s ?? "");
       const hangul = (txt.match(/[\uAC00-\uD7AF]/g) || []).length;
@@ -260,11 +338,18 @@ async function generateCoachingContent(goal: GoalRow): Promise<CoachingContent> 
     const koActions = Array.isArray(c.keyActions) && c.keyActions.length >= 3
       ? c.keyActions.slice(0, 3).map((a: string) => sanitize(a)).filter((a: string) => isKorean(a))
       : [];
+    const koScript = Array.isArray(c.microScript) && c.microScript.length >= 3
+      ? c.microScript.slice(0, 6).map((a: string) => sanitize(a)).filter((a: string) => isKorean(a))
+      : [];
     return {
       missionSummary: pickKo(c.missionSummary, fallback.missionSummary),
       mission: pickKo(c.mission, fallback.mission),
+      whyToday: pickKo(c.whyToday, fallback.whyToday),
+      microScript: koScript.length >= 3 ? koScript : fallback.microScript,
       keyActions: koActions.length >= 3 ? koActions : fallback.keyActions,
       insight: pickKo(c.insight, fallback.insight),
+      expectedOutcome: pickKo(c.expectedOutcome, fallback.expectedOutcome),
+      eveningReflection: pickKo(c.eveningReflection, fallback.eveningReflection),
     };
   } catch (err) {
     log("AI fallback", { err: String(err) });

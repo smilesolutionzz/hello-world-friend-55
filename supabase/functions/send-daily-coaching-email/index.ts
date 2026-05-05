@@ -356,16 +356,25 @@ serve(async (req) => {
         );
 
         // 렌더 결과 검증 (??/04 섹션 노출 여부)
-        const hasReplacementChar = /\uFFFD|\?\?/.test(html);
+        const ufffdCount = (html.match(/\uFFFD/g) || []).length;
+        const qqCount = (html.match(/\?\?/g) || []).length;
+        const hasReplacementChar = ufffdCount > 0 || qqCount > 0;
         const hasSection04 = /04 · 오늘의 추천 영상/.test(html);
         const hasSection03 = /03 · 임상적 근거/.test(html);
         const hasSection05 = /05 · 오늘의 기록/.test(html);
         const renderIssues: string[] = [];
-        if (hasReplacementChar) renderIssues.push('replacement_char');
+        if (ufffdCount > 0) renderIssues.push(`ufffd:${ufffdCount}`);
+        if (qqCount > 0) renderIssues.push(`qq:${qqCount}`);
         if (!hasSection03) renderIssues.push('missing_section_03');
         if (!hasSection04) renderIssues.push('missing_section_04');
         if (!hasSection05) renderIssues.push('missing_section_05');
-        log('render check', { recipientEmail, hasReplacementChar, hasSection03, hasSection04, hasSection05 });
+        // ?? 발견 시 주변 컨텍스트 추출 (디버깅)
+        let qqSamples: string[] = [];
+        if (qqCount > 0) {
+          const re = /.{0,40}\?\?.{0,40}/g;
+          qqSamples = (html.match(re) || []).slice(0, 5);
+        }
+        log('render check', { recipientEmail, ufffdCount, qqCount, hasSection03, hasSection04, hasSection05, qqSamples });
 
         await supa.from('daily_coaching_email_tokens').insert({
           token: trackingToken,

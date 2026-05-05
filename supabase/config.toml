@@ -9,6 +9,9 @@ verify_jwt = false
 [functions.send-weekly-coaching-digest]
 verify_jwt = false  # cron job에서 호출되므로 JWT 불필요
 
+[functions.track-daily-coaching]
+verify_jwt = false  # public pixel/click endpoint
+
 [functions.mind-track-concern-polish]
 verify_jwt = false
 

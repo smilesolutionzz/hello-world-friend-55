@@ -3406,6 +3406,39 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_coaching_email_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          ip_hash: string | null
+          metadata: Json | null
+          target_url: string | null
+          token: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          ip_hash?: string | null
+          metadata?: Json | null
+          target_url?: string | null
+          token: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          ip_hash?: string | null
+          metadata?: Json | null
+          target_url?: string | null
+          token?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       daily_coaching_email_log: {
         Row: {
           created_at: string
@@ -3455,6 +3488,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      daily_coaching_email_tokens: {
+        Row: {
+          category: string | null
+          created_at: string
+          day_number: number | null
+          has_replacement_char: boolean | null
+          has_section_04: boolean | null
+          id: string
+          recipient_email: string
+          render_issues: Json | null
+          send_log_message_id: string | null
+          token: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          day_number?: number | null
+          has_replacement_char?: boolean | null
+          has_section_04?: boolean | null
+          id?: string
+          recipient_email: string
+          render_issues?: Json | null
+          send_log_message_id?: string | null
+          token: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          day_number?: number | null
+          has_replacement_char?: boolean | null
+          has_section_04?: boolean | null
+          id?: string
+          recipient_email?: string
+          render_issues?: Json | null
+          send_log_message_id?: string | null
+          token?: string
+        }
+        Relationships: []
       }
       daily_coaching_video_history: {
         Row: {

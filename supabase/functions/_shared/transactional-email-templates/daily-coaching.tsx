@@ -16,6 +16,7 @@ import {
 import type { TemplateEntry } from './registry.ts'
 
 const SITE_URL = 'https://aihpro.app'
+const TRACK_URL = 'https://hrcqxjetmzxoephgyjlb.supabase.co/functions/v1/track-daily-coaching'
 
 interface YouTubeVideoData {
   videoId: string
@@ -36,6 +37,7 @@ interface DailyCoachingProps {
   insight?: string
   researchBase?: string
   videos?: YouTubeVideoData[]
+  trackingToken?: string
 }
 
 /**
@@ -86,7 +88,15 @@ const DailyCoachingEmail = ({
   insight = '일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.',
   researchBase = 'Kabat-Zinn MBSR 프로그램',
   videos = [],
+  trackingToken,
 }: DailyCoachingProps) => {
+  const wrapTrack = (url: string) =>
+    trackingToken
+      ? `${TRACK_URL}?t=${encodeURIComponent(trackingToken)}&e=click&u=${encodeURIComponent(url)}`
+      : url
+  const openPixelUrl = trackingToken
+    ? `${TRACK_URL}?t=${encodeURIComponent(trackingToken)}&e=open`
+    : null
   const progressPct = Math.min(100, Math.round((dayNumber / totalDays) * 100))
   const dayLabel = String(dayNumber).padStart(2, '0')
   const firstVideoId = videos?.[0]?.videoId
@@ -147,52 +157,47 @@ const DailyCoachingEmail = ({
             <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
           </Section>
 
-          {videos && videos.length > 0 ? (
-            <Section style={videosBlock}>
-              <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
-              <Text style={videoIntro}>오늘 미션과 가장 잘 맞는 영상을 골랐어요. 시청 후 아래 "오늘의 기록 남기기"에서 한 줄 기록을 남겨주세요.</Text>
-              {videos.map((v) => {
-                const thumb = v.thumbnail || `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`
-                const watchUrl = buildYouTubeUrl(v.videoId, dayLabel)
-                return (
-                  <Section key={v.videoId} style={videoCard}>
-                    <Link href={watchUrl} style={videoThumbLink}>
-                      <Img
-                        src={thumb}
-                        alt={v.title}
-                        width="512"
-                        height="288"
-                        style={thumbStyle}
-                      />
-                    </Link>
-                    <Section style={videoTextBlock}>
-                      <Link href={watchUrl} style={videoTitleLink}>
-                        <Text style={videoTitle}>{v.title}</Text>
-                      </Link>
-                      <Text style={videoChannel}>{v.channelTitle}</Text>
-                      {v.reason && (
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: `<details style="margin:8px 0 0 0;"><summary style="cursor:pointer;font-size:12px;color:#8a7a4d;font-weight:600;list-style:none;outline:none;">▸ 큐레이션 이유 보기</summary><p style="margin:6px 0 0 0;font-size:13px;line-height:1.6;color:#475569;">${String(v.reason).replace(/</g, '&lt;')}</p></details>`,
-                          }}
+          <Section style={videosBlock}>
+            <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
+            {videos && videos.length > 0 ? (
+              <>
+                <Text style={videoIntro}>오늘 미션과 가장 잘 맞는 영상을 골랐어요. 시청 후 아래 "오늘의 기록 남기기"에서 한 줄 기록을 남겨주세요.</Text>
+                {videos.map((v) => {
+                  const thumb = v.thumbnail || `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`
+                  const watchUrl = wrapTrack(buildYouTubeUrl(v.videoId, dayLabel))
+                  return (
+                    <Section key={v.videoId} style={videoCard}>
+                      <Link href={watchUrl} style={videoThumbLink}>
+                        <Img
+                          src={thumb}
+                          alt={v.title}
+                          width="512"
+                          height="288"
+                          style={thumbStyle}
                         />
-                      )}
-                      <Section style={videoActionRow}>
-                        <Link href={watchUrl} style={videoPrimaryBtn}>
-                          ▶ YouTube에서 영상 보기
+                      </Link>
+                      <Section style={videoTextBlock}>
+                        <Link href={watchUrl} style={videoTitleLink}>
+                          <Text style={videoTitle}>{v.title}</Text>
                         </Link>
+                        <Text style={videoChannel}>{v.channelTitle}</Text>
+                        {v.reason && (
+                          <Text style={videoReason}>{`▸ ${v.reason}`}</Text>
+                        )}
+                        <Section style={videoActionRow}>
+                          <Link href={watchUrl} style={videoPrimaryBtn}>
+                            ▶ YouTube에서 영상 보기
+                          </Link>
+                        </Section>
                       </Section>
                     </Section>
-                  </Section>
-                )
-              })}
-            </Section>
-          ) : (
-            <Section style={videosBlock}>
-              <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
+                  )
+                })}
+              </>
+            ) : (
               <Text style={videoIntro}>오늘은 추천 영상 대신 미션 실천에 집중해 보세요. 내일은 새로운 큐레이션 영상이 도착합니다.</Text>
-            </Section>
-          )}
+            )}
+          </Section>
 
           <Section style={recordCallout}>
             <Text style={recordCalloutLabel}>05 · 오늘의 기록</Text>
@@ -200,7 +205,7 @@ const DailyCoachingEmail = ({
               미션 또는 영상을 마친 뒤, 아래 버튼을 눌러 오늘 느낀 변화를 한 줄로 기록해 주세요. 30일간의 변화 그래프가 자동으로 누적됩니다.
             </Text>
             <Button
-              href={buildMindTrackUrl(dayLabel, 'cta', firstVideoId)}
+              href={wrapTrack(buildMindTrackUrl(dayLabel, 'cta', firstVideoId))}
               style={ctaButton}
             >
               오늘의 기록 남기기 →
@@ -212,6 +217,9 @@ const DailyCoachingEmail = ({
             본 메일은 의료 진단·치료를 대체하지 않으며, 발달 코칭 및 자기관찰 도구로 제공됩니다.
             <br />© AIHPRO · 매일 아침 8시(KST) 자동 발송
           </Text>
+          {openPixelUrl && (
+            <Img src={openPixelUrl} alt="" width="1" height="1" style={{ display: 'block', width: '1px', height: '1px', opacity: 0 }} />
+          )}
         </Container>
       </Body>
     </Html>

@@ -321,7 +321,7 @@ serve(async (req) => {
       return issues;
     }
 
-    async function callTransactionalEmail(payload: any): Promise<{ ok: boolean; error?: string; body?: any }> {
+    async function callTransactionalEmail(payload: any): Promise<{ ok: boolean; error?: string; body?: any; renderCheck?: any }> {
       try {
         if (!resend) return { ok: false, error: 'RESEND_API_KEY missing' };
         const { templateName, recipientEmail, templateData = {}, idempotencyKey } = payload;
@@ -347,11 +347,53 @@ serve(async (req) => {
           });
         }
 
+        // 추적 토큰 생성 + 토큰 매핑 저장
+        const trackingToken = crypto.randomUUID().replace(/-/g, '');
+        const dataWithToken = { ...templateData, trackingToken };
+
         const html = await renderAsync(
-          React.createElement(dailyCoachingTpl.component, templateData)
+          React.createElement(dailyCoachingTpl.component, dataWithToken)
         );
+
+        // 렌더 결과 검증 (??/04 섹션 노출 여부)
+        const ufffdCount = (html.match(/\uFFFD/g) || []).length;
+        const qqCount = (html.match(/\?\?/g) || []).length;
+        const hasReplacementChar = ufffdCount > 0 || qqCount > 0;
+        const hasSection04 = /04 · 오늘의 추천 영상/.test(html);
+        const hasSection03 = /03 · 임상적 근거/.test(html);
+        const hasSection05 = /05 · 오늘의 기록/.test(html);
+        const renderIssues: string[] = [];
+        if (ufffdCount > 0) renderIssues.push(`ufffd:${ufffdCount}`);
+        if (qqCount > 0) renderIssues.push(`qq:${qqCount}`);
+        if (!hasSection03) renderIssues.push('missing_section_03');
+        if (!hasSection04) renderIssues.push('missing_section_04');
+        if (!hasSection05) renderIssues.push('missing_section_05');
+        // ?? / U+FFFD 발견 시 주변 컨텍스트 추출 (디버깅)
+        let qqSamples: string[] = [];
+        if (qqCount > 0) {
+          const re = /.{0,40}\?\?.{0,40}/g;
+          qqSamples = (html.match(re) || []).slice(0, 5);
+        }
+        let ufffdSamples: string[] = [];
+        if (ufffdCount > 0) {
+          const re2 = /.{0,40}\uFFFD.{0,40}/g;
+          ufffdSamples = (html.match(re2) || []).slice(0, 5);
+        }
+        log('render check', { recipientEmail, ufffdCount, qqCount, hasSection03, hasSection04, hasSection05, qqSamples, ufffdSamples });
+
+        await supa.from('daily_coaching_email_tokens').insert({
+          token: trackingToken,
+          recipient_email: recipientEmail,
+          send_log_message_id: idempotencyKey,
+          day_number: templateData.dayNumber ?? null,
+          category: templateData.categoryLabel ?? null,
+          has_section_04: hasSection04,
+          has_replacement_char: hasReplacementChar,
+          render_issues: renderIssues,
+        }).then(() => {}, (e) => log('token insert failed', { err: String(e) }));
+
         const subject = typeof dailyCoachingTpl.subject === 'function'
-          ? dailyCoachingTpl.subject(templateData)
+          ? dailyCoachingTpl.subject(dataWithToken)
           : dailyCoachingTpl.subject;
 
         const result = await resend.emails.send({
@@ -362,6 +404,8 @@ serve(async (req) => {
           html,
         });
 
+        const renderCheck = { hasReplacementChar, hasSection03, hasSection04, hasSection05, trackingToken };
+
         if ((result as any)?.error) {
           await supa.from('email_send_log').insert({
             message_id: idempotencyKey,
@@ -369,8 +413,9 @@ serve(async (req) => {
             recipient_email: recipientEmail,
             status: 'failed',
             error_message: JSON.stringify((result as any).error),
+            metadata: { renderCheck },
           });
-          return { ok: false, error: JSON.stringify((result as any).error), body: result };
+          return { ok: false, error: JSON.stringify((result as any).error), body: result, renderCheck };
         }
 
         await supa.from('email_send_log').insert({
@@ -378,10 +423,10 @@ serve(async (req) => {
           template_name: templateName,
           recipient_email: recipientEmail,
           status: 'sent',
-          metadata: { resend_id: (result as any)?.data?.id },
+          metadata: { resend_id: (result as any)?.data?.id, renderCheck },
         });
 
-        return { ok: true, body: result };
+        return { ok: true, body: result, renderCheck };
       } catch (e) {
         await supa.from('email_send_log').insert({
           message_id: payload?.idempotencyKey,
@@ -421,6 +466,38 @@ serve(async (req) => {
       if (!result.ok) throw new Error(result.error);
       return new Response(JSON.stringify({ success: true, mode: 'test', to: testEmail, day, videoCount: videos.length, body: result.body }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // === Preflight: 매일 발송 직전 자동 테스트 메일 (운영자) ===
+    try {
+      const PREFLIGHT_TO = 'kijung_kku@naver.com';
+      const sampleGoal: GoalRow = {
+        id: 'preflight', user_id: 'preflight', goal_category: 'stress',
+        goal_description: null, target_age_group: null,
+        current_day: 6, total_days: 30, start_date: todayStr,
+      };
+      const metaPF = CATEGORY_META.stress;
+      const contentPF = await generateCoachingContent(sampleGoal);
+      const prefsPF: VideoPreferences = { interest_topics: [], difficulty_level: 'beginner', preferred_duration: 'short', language: 'ko' };
+      const videosPF = await fetchYouTubeVideos(sampleGoal.goal_category, contentPF.mission, new Set(), prefsPF);
+      const pre = await callTransactionalEmail({
+        templateName: 'daily-coaching',
+        recipientEmail: PREFLIGHT_TO,
+        idempotencyKey: `daily-coaching-preflight-${todayStr}-${Date.now()}`,
+        templateData: {
+          nickname: '운영자(프리플라이트)', dayNumber: 7, totalDays: 30,
+          categoryLabel: metaPF.label,
+          missionSummary: contentPF.missionSummary,
+          mission: contentPF.mission,
+          keyActions: contentPF.keyActions,
+          insight: contentPF.insight,
+          researchBase: metaPF.researchBase,
+          videos: videosPF,
+        },
+      });
+      log('PREFLIGHT result', { ok: pre.ok, renderCheck: pre.renderCheck, error: pre.error });
+    } catch (e) {
+      log('PREFLIGHT error (continuing)', { err: String(e) });
     }
 
     let query = supa.from("user_coaching_goals")

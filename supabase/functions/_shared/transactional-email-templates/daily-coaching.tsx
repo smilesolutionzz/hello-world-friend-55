@@ -195,7 +195,7 @@ const DailyCoachingEmail = ({
           )}
 
           <Section style={videosBlock}>
-            <Text style={sectionLabel}>04 · 오늘의 추천 영상</Text>
+            <Text style={sectionLabel}>07 · 오늘의 추천 영상</Text>
             {videos && videos.length > 0 ? (
               <>
                 <Text style={videoIntro}>오늘 미션과 가장 잘 맞는 영상을 골랐어요. 시청 후 아래 "오늘의 기록 남기기"에서 한 줄 기록을 남겨주세요.</Text>

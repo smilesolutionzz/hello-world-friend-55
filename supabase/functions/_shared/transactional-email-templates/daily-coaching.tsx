@@ -182,7 +182,7 @@ const DailyCoachingEmail = ({
           </Section>
 
           <Section style={insightBlock}>
-            <Text style={sectionLabel}>03 · 임상적 근거</Text>
+            <Text style={sectionLabel}>05 · 임상적 근거</Text>
             <Text style={insightText}>{insight}</Text>
             <Text style={researchText}>{`근거 기반: ${researchBase}`}</Text>
           </Section>
@@ -235,6 +235,13 @@ const DailyCoachingEmail = ({
               <Text style={videoIntro}>오늘은 추천 영상 대신 미션 실천에 집중해 보세요. 내일은 새로운 큐레이션 영상이 도착합니다.</Text>
             )}
           </Section>
+
+          {eveningReflection && (
+            <Section style={reflectionBlock}>
+              <Text style={sectionLabel}>08 · 잠들기 전 한 줄 회고</Text>
+              <Text style={reflectionText}>{`"${eveningReflection}"`}</Text>
+            </Section>
+          )}
 
           <Section style={recordCallout}>
             <Text style={recordCalloutLabel}>05 · 오늘의 기록</Text>

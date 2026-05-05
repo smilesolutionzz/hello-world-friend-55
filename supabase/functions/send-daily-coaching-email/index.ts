@@ -694,12 +694,29 @@ serve(async (req) => {
           user_id: goal.user_id, goal_id: goal.id, send_date: todayStr,
           day_number: dayNumber, status: "sent", subject,
           mission_content: content.mission, insight_content: content.insight,
+          mission_summary: content.missionSummary,
+          why_today: content.whyToday,
+          micro_script: content.microScript,
+          key_actions: content.keyActions,
+          expected_outcome: content.expectedOutcome,
+          evening_reflection: content.eveningReflection,
+          videos,
+          category_label: meta.label,
+          research_base: meta.researchBase,
         });
 
         await supa.from("user_coaching_goals").update({
           current_day: dayNumber,
           ...(dayNumber >= goal.total_days ? { is_active: false, end_date: todayStr } : {}),
         }).eq("id", goal.id);
+
+        // Mirror Day count to mind_track_enrollments so dashboard stays in sync.
+        if (enrollment?.id) {
+          await supa.from("mind_track_enrollments").update({
+            current_day: dayNumber,
+            ...(dayNumber >= goal.total_days ? { status: "completed", completed_at: new Date().toISOString() } : {}),
+          }).eq("id", enrollment.id);
+        }
 
         sent++;
       } catch (e) {

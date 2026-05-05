@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getDayCopy, calcMindTrackCurrentDay } from "@/lib/mindTrackDayCopy";
 import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirstTimeOnboarding";
 import MindTrackTodayValueStack from "@/components/mind-track/MindTrackTodayValueStack";
+import TodayCoachingEmailContent from "@/components/mind-track/TodayCoachingEmailContent";
 import QuickReflectionForm from "@/components/mind-track/QuickReflectionForm";
 import MindTrackFocusSwitcher from "@/components/mind-track/MindTrackFocusSwitcher";
 import { getFocus } from "@/lib/mindTrackFocusTracks";
@@ -383,6 +384,9 @@ export default function MindTrackDashboard() {
             </motion.div>
           </div>
         </section>
+
+        {/* 오늘 도착한 코칭 메일 — DB의 박사급 콘텐츠 그대로 노출 */}
+        <TodayCoachingEmailContent />
 
         {/* 오늘의 가치 스택 — 검사 + 추천 영상 + 5분 액션 */}
         <MindTrackTodayValueStack day={day} focusId={enrollment.goal_focus} />

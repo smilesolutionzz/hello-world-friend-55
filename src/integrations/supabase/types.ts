@@ -3462,43 +3462,70 @@ export type Database = {
       }
       daily_coaching_email_log: {
         Row: {
+          category_label: string | null
           created_at: string
           day_number: number
           error_message: string | null
+          evening_reflection: string | null
+          expected_outcome: string | null
           goal_id: string
           id: string
           insight_content: string | null
+          key_actions: Json | null
+          micro_script: Json | null
           mission_content: string | null
+          mission_summary: string | null
+          research_base: string | null
           send_date: string
           status: string
           subject: string | null
           user_id: string
+          videos: Json | null
+          why_today: string | null
         }
         Insert: {
+          category_label?: string | null
           created_at?: string
           day_number: number
           error_message?: string | null
+          evening_reflection?: string | null
+          expected_outcome?: string | null
           goal_id: string
           id?: string
           insight_content?: string | null
+          key_actions?: Json | null
+          micro_script?: Json | null
           mission_content?: string | null
+          mission_summary?: string | null
+          research_base?: string | null
           send_date: string
           status?: string
           subject?: string | null
           user_id: string
+          videos?: Json | null
+          why_today?: string | null
         }
         Update: {
+          category_label?: string | null
           created_at?: string
           day_number?: number
           error_message?: string | null
+          evening_reflection?: string | null
+          expected_outcome?: string | null
           goal_id?: string
           id?: string
           insight_content?: string | null
+          key_actions?: Json | null
+          micro_script?: Json | null
           mission_content?: string | null
+          mission_summary?: string | null
+          research_base?: string | null
           send_date?: string
           status?: string
           subject?: string | null
           user_id?: string
+          videos?: Json | null
+          why_today?: string | null
         }
         Relationships: [
           {

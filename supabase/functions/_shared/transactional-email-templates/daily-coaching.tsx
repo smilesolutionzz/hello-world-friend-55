@@ -88,7 +88,15 @@ const DailyCoachingEmail = ({
   insight = '일관된 자기 관찰 기록은 30일 후 평균 23%의 증상 완화를 가져옵니다.',
   researchBase = 'Kabat-Zinn MBSR 프로그램',
   videos = [],
+  trackingToken,
 }: DailyCoachingProps) => {
+  const wrapTrack = (url: string) =>
+    trackingToken
+      ? `${TRACK_URL}?t=${encodeURIComponent(trackingToken)}&e=click&u=${encodeURIComponent(url)}`
+      : url
+  const openPixelUrl = trackingToken
+    ? `${TRACK_URL}?t=${encodeURIComponent(trackingToken)}&e=open`
+    : null
   const progressPct = Math.min(100, Math.round((dayNumber / totalDays) * 100))
   const dayLabel = String(dayNumber).padStart(2, '0')
   const firstVideoId = videos?.[0]?.videoId

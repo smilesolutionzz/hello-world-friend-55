@@ -670,8 +670,12 @@ serve(async (req) => {
             categoryLabel: meta.label,
             missionSummary: content.missionSummary,
             mission: content.mission,
+            whyToday: content.whyToday,
+            microScript: content.microScript,
             keyActions: content.keyActions,
             insight: content.insight, researchBase: meta.researchBase,
+            expectedOutcome: content.expectedOutcome,
+            eveningReflection: content.eveningReflection,
             videos,
           },
         });

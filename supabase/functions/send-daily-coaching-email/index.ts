@@ -594,9 +594,13 @@ serve(async (req) => {
           categoryLabel: metaPF.label,
           missionSummary: contentPF.missionSummary,
           mission: contentPF.mission,
+          whyToday: contentPF.whyToday,
+          microScript: contentPF.microScript,
           keyActions: contentPF.keyActions,
           insight: contentPF.insight,
           researchBase: metaPF.researchBase,
+          expectedOutcome: contentPF.expectedOutcome,
+          eveningReflection: contentPF.eveningReflection,
           videos: videosPF,
         },
       });

@@ -454,6 +454,38 @@ serve(async (req) => {
         { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    // === Preflight: 매일 발송 직전 자동 테스트 메일 (운영자) ===
+    try {
+      const PREFLIGHT_TO = 'kijung_kku@naver.com';
+      const sampleGoal: GoalRow = {
+        id: 'preflight', user_id: 'preflight', goal_category: 'stress',
+        goal_description: null, target_age_group: null,
+        current_day: 6, total_days: 30, start_date: todayStr,
+      };
+      const metaPF = CATEGORY_META.stress;
+      const contentPF = await generateCoachingContent(sampleGoal);
+      const prefsPF: VideoPreferences = { interest_topics: [], difficulty_level: 'beginner', preferred_duration: 'short', language: 'ko' };
+      const videosPF = await fetchYouTubeVideos(sampleGoal.goal_category, contentPF.mission, new Set(), prefsPF);
+      const pre = await callTransactionalEmail({
+        templateName: 'daily-coaching',
+        recipientEmail: PREFLIGHT_TO,
+        idempotencyKey: `daily-coaching-preflight-${todayStr}-${Date.now()}`,
+        templateData: {
+          nickname: '운영자(프리플라이트)', dayNumber: 7, totalDays: 30,
+          categoryLabel: metaPF.label,
+          missionSummary: contentPF.missionSummary,
+          mission: contentPF.mission,
+          keyActions: contentPF.keyActions,
+          insight: contentPF.insight,
+          researchBase: metaPF.researchBase,
+          videos: videosPF,
+        },
+      });
+      log('PREFLIGHT result', { ok: pre.ok, renderCheck: pre.renderCheck, error: pre.error });
+    } catch (e) {
+      log('PREFLIGHT error (continuing)', { err: String(e) });
+    }
+
     let query = supa.from("user_coaching_goals")
       .select("id,user_id,goal_category,goal_description,target_age_group,current_day,total_days,start_date")
       .eq("is_active", true)

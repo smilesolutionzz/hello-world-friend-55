@@ -368,13 +368,18 @@ serve(async (req) => {
         if (!hasSection03) renderIssues.push('missing_section_03');
         if (!hasSection04) renderIssues.push('missing_section_04');
         if (!hasSection05) renderIssues.push('missing_section_05');
-        // ?? 발견 시 주변 컨텍스트 추출 (디버깅)
+        // ?? / U+FFFD 발견 시 주변 컨텍스트 추출 (디버깅)
         let qqSamples: string[] = [];
         if (qqCount > 0) {
           const re = /.{0,40}\?\?.{0,40}/g;
           qqSamples = (html.match(re) || []).slice(0, 5);
         }
-        log('render check', { recipientEmail, ufffdCount, qqCount, hasSection03, hasSection04, hasSection05, qqSamples });
+        let ufffdSamples: string[] = [];
+        if (ufffdCount > 0) {
+          const re2 = /.{0,40}\uFFFD.{0,40}/g;
+          ufffdSamples = (html.match(re2) || []).slice(0, 5);
+        }
+        log('render check', { recipientEmail, ufffdCount, qqCount, hasSection03, hasSection04, hasSection05, qqSamples, ufffdSamples });
 
         await supa.from('daily_coaching_email_tokens').insert({
           token: trackingToken,

@@ -2458,6 +2458,13 @@ export type Database = {
             referencedRelation: "community_posts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "community_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       community_likes: {
@@ -2491,10 +2498,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "community_likes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "community_comments_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "community_likes_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts_public"
             referencedColumns: ["id"]
           },
         ]
@@ -5518,6 +5539,13 @@ export type Database = {
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_check_results_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts_public"
             referencedColumns: ["id"]
           },
         ]
@@ -14367,6 +14395,78 @@ export type Database = {
       }
     }
     Views: {
+      community_comments_public: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string | null
+          is_anonymous: boolean | null
+          post_id: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_posts_public: {
+        Row: {
+          comments_count: number | null
+          content: string | null
+          created_at: string | null
+          id: string | null
+          is_anonymous: boolean | null
+          is_public: boolean | null
+          likes_count: number | null
+          media_urls: Json | null
+          tags: string[] | null
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          comments_count?: number | null
+          content?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          is_public?: boolean | null
+          likes_count?: number | null
+          media_urls?: Json | null
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: never
+        }
+        Update: {
+          comments_count?: number | null
+          content?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          is_public?: boolean | null
+          likes_count?: number | null
+          media_urls?: Json | null
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: never
+        }
+        Relationships: []
+      }
       expert_booking_stats: {
         Row: {
           average_rating: number | null

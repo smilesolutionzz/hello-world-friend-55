@@ -710,6 +710,14 @@ serve(async (req) => {
           ...(dayNumber >= goal.total_days ? { is_active: false, end_date: todayStr } : {}),
         }).eq("id", goal.id);
 
+        // Mirror Day count to mind_track_enrollments so dashboard stays in sync.
+        if (enrollment?.id) {
+          await supa.from("mind_track_enrollments").update({
+            current_day: dayNumber,
+            ...(dayNumber >= goal.total_days ? { status: "completed", completed_at: new Date().toISOString() } : {}),
+          }).eq("id", enrollment.id);
+        }
+
         sent++;
       } catch (e) {
         failed++;

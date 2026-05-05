@@ -16,6 +16,7 @@ import {
 import type { TemplateEntry } from './registry.ts'
 
 const SITE_URL = 'https://aihpro.app'
+const TRACK_URL = 'https://hrcqxjetmzxoephgyjlb.supabase.co/functions/v1/track-daily-coaching'
 
 interface YouTubeVideoData {
   videoId: string
@@ -36,6 +37,7 @@ interface DailyCoachingProps {
   insight?: string
   researchBase?: string
   videos?: YouTubeVideoData[]
+  trackingToken?: string
 }
 
 /**

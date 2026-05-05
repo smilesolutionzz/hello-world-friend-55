@@ -694,6 +694,15 @@ serve(async (req) => {
           user_id: goal.user_id, goal_id: goal.id, send_date: todayStr,
           day_number: dayNumber, status: "sent", subject,
           mission_content: content.mission, insight_content: content.insight,
+          mission_summary: content.missionSummary,
+          why_today: content.whyToday,
+          micro_script: content.microScript,
+          key_actions: content.keyActions,
+          expected_outcome: content.expectedOutcome,
+          evening_reflection: content.eveningReflection,
+          videos,
+          category_label: meta.label,
+          research_base: meta.researchBase,
         });
 
         await supa.from("user_coaching_goals").update({

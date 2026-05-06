@@ -178,6 +178,27 @@ function CaseStudyList() {
             </button>
           ))}
         </div>
+
+        <div className="mt-16 rounded-3xl border bg-zinc-50 p-8 text-center">
+          <p className="text-xs tracking-[0.2em] mb-2" style={{ color: GOLD }}>RESOURCES</p>
+          <h3 className="text-xl font-semibold mb-2">전체 케이스 PDF · 보안 백서</h3>
+          <p className="text-sm text-foreground/60 mb-5 break-keep">회사 이메일을 입력하시면 자료를 보내드립니다.</p>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <LeadCaptureGate
+              assetKey="case_studies_pdf"
+              assetTitle="AIHPRO 도입 케이스 스터디 모음 (PDF)"
+              triggerLabel="케이스 PDF 받기"
+              onUnlock={() => window.open('/sample-report', '_blank')}
+            />
+            <LeadCaptureGate
+              assetKey="security_whitepaper"
+              assetTitle="AIHPRO 보안 백서 (Security Whitepaper)"
+              triggerLabel="보안 백서 받기"
+              triggerVariant="outline"
+              onUnlock={() => window.open('/sample-report', '_blank')}
+            />
+          </div>
+        </div>
       </section>
     </div>
   );

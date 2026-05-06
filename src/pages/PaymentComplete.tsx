@@ -276,7 +276,7 @@ const PaymentComplete = () => {
             </p>
             {errorCode && <p className="text-xs text-muted-foreground/60 mb-6">오류 코드: {errorCode}</p>}
             <div className="space-y-3">
-              <Button className="w-full" onClick={() => navigate('/token-subscription')}>다시 시도</Button>
+              <Button className="w-full" onClick={() => navigate('/pricing')}>다시 시도</Button>
               <Button variant="outline" className="w-full" onClick={() => navigate('/')}>
                 <Home className="w-4 h-4 mr-2" />홈으로
               </Button>

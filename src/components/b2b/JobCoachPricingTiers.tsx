@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Sparkles, Crown, Zap } from 'lucide-react';
+import { Check, Sparkles, Crown, Zap, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
+import QuoteRequestDialog from './QuoteRequestDialog';
 
 interface JobCoachPlan {
   id: string;

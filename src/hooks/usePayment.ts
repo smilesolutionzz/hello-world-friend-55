@@ -171,6 +171,10 @@ export function usePayment() {
     } catch (err: any) {
       const message = err.message || '결제 중 오류가 발생했습니다.';
       setState(prev => ({ ...prev, error: message }));
+      trackEvent('payment_cancelled', {
+        product_id: typeof productId === 'string' ? productId : null,
+        error: message,
+      });
       toast({ title: '결제 오류', description: message, variant: 'destructive' });
       return false;
     } finally {

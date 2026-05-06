@@ -121,13 +121,13 @@ const ImprovedOnboarding = () => {
           navigate('/assessment/stress-test');
           break;
         case 'relationship':
-          navigate('/assessment/relationship-test');
+          navigate('/assessment/relationship-style-test');
           break;
         case 'emotion':
-          navigate('/assessment/depression-test');
+          navigate('/depression-package');
           break;
         case 'growth':
-          navigate('/assessment/personality-test');
+          navigate('/assessment/mbti-test');
           break;
         default:
           navigate('/free-trial');

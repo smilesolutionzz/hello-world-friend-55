@@ -40,7 +40,7 @@ const SimplifiedCoreServices = () => {
       description: t.coreServices.step3Desc,
       features: t.coreServices.step3Features,
       gradient: 'from-rose-500 to-pink-500',
-      route: '/expert-matching'
+      route: '/expert-hiring'
     }
   ];
 

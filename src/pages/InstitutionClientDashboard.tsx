@@ -53,7 +53,7 @@ const InstitutionClientDashboard = () => {
   useEffect(() => {
     const loadInstitution = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { navigate('/highlight-auth'); return; }
+      if (!user) { navigate('/auth'); return; }
 
       const { data } = await supabase
         .from('b2b_partner_institutions')

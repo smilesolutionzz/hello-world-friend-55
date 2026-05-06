@@ -46,7 +46,7 @@ const QuickOnboarding: React.FC<QuickOnboardingProps> = ({ open, onClose }) => {
       icon: Heart, 
       description: '실시간 전문가 매칭',
       color: 'bg-red-500',
-      route: '/expert-matching'
+      route: '/expert-hiring'
     }
   ];
 

@@ -278,46 +278,6 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
                 </Button>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <Button 
-                  onClick={() => navigate('/life-achievement-history')}
-                  variant="outline" 
-                  size="lg" 
-                  className="flex-1 w-full sm:w-auto"
-                >
-                  <History className="w-4 h-4 mr-2" />
-                  히스토리
-                </Button>
-                <Button 
-                  onClick={() => navigate('/life-achievement-stats')}
-                  variant="outline" 
-                  size="lg" 
-                  className="flex-1 w-full sm:w-auto"
-                >
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  통계
-                </Button>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <Button 
-                  onClick={() => navigate('/life-achievement-leaderboard')}
-                  variant="outline" 
-                  size="lg" 
-                  className="flex-1 w-full sm:w-auto"
-                >
-                  <Users className="w-4 h-4 mr-2" />
-                  리더보드
-                </Button>
-                <Button 
-                  onClick={() => navigate('/life-achievement-badges')}
-                  variant="outline" 
-                  size="lg" 
-                  className="flex-1 w-full sm:w-auto"
-                >
-                  <Award className="w-4 h-4 mr-2" />
-                  배지
-                </Button>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <Button
                   onClick={onRestart}
                   variant="outline"
@@ -338,15 +298,6 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
                 </Button>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <Button 
-                  onClick={() => navigate('/life-achievement-community')}
-                  variant="outline" 
-                  size="lg" 
-                  className="flex-1 w-full sm:w-auto"
-                >
-                  <Users className="w-4 h-4 mr-2" />
-                  커뮤니티
-                </Button>
                 <Button 
                   onClick={() => navigate('/life-achievement-goals')}
                   variant="outline" 

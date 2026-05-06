@@ -297,17 +297,6 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
                   다른 검사 하기
                 </Button>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <Button 
-                  onClick={() => navigate('/life-achievement-goals')}
-                  variant="outline" 
-                  size="lg" 
-                  className="flex-1 w-full sm:w-auto"
-                >
-                  <TargetIcon className="w-4 h-4 mr-2" />
-                  목표 관리
-                </Button>
-              </div>
             </div>
           </CardContent>
         </Card>

@@ -70,7 +70,7 @@ export const MindTrack30Showcase = () => {
               className="w-full h-full object-cover"
               poster="/videos/mind-track-30-poster.jpg"
             >
-              <source src="/videos/mind-track-30.mp4" type="video/mp4" />
+              <source src="/videos/mind-track-30.mp4?v=2" type="video/mp4" />
             </video>
           </div>
         </motion.div>

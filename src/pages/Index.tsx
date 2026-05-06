@@ -19,7 +19,7 @@ import { PostSignupOnboarding } from '@/components/onboarding/PostSignupOnboardi
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import ErrorBoundary from '@/components/ui/error-boundary';
-import { VideoObservationShowcase } from '@/components/landing/VideoObservationShowcase';
+import { MindTrack30Showcase } from '@/components/landing/MindTrack30Showcase';
 import ExpertTeamSection from '@/components/landing/ExpertTeamSection';
 import SubscriptionValueSection from '@/components/landing/SubscriptionValueSection';
 import StickyConversionBar from '@/components/conversion/StickyConversionBar';
@@ -186,9 +186,9 @@ const Index = () => {
               <SmartScrollReveal kind="image"><ReportPreviewSection /></SmartScrollReveal>
             </LazyLoad>
 
-            {/* 4️⃣ 영상 관찰 - WOW 팩터 */}
+            {/* 4️⃣ 30일 마음 트랙 — 영상 소개 */}
             <LazyLoad rootMargin="200px">
-              <SmartScrollReveal kind="image"><VideoObservationShowcase /></SmartScrollReveal>
+              <SmartScrollReveal kind="image"><MindTrack30Showcase /></SmartScrollReveal>
             </LazyLoad>
 
             {/* 5️⃣ 구독 + 최종 CTA (통합) */}

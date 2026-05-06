@@ -886,10 +886,14 @@ export type Database = {
       }
       b2b_inquiries: {
         Row: {
+          assigned_admin: string | null
           contact_person: string
           created_at: string
           email: string
           id: string
+          kanban_status: string | null
+          last_activity_at: string | null
+          lead_score: number | null
           message: string | null
           num_users: number | null
           organization_name: string
@@ -897,14 +901,19 @@ export type Database = {
           phone: string
           position: string | null
           service_interest: string
+          source: string | null
           status: string
           updated_at: string
         }
         Insert: {
+          assigned_admin?: string | null
           contact_person: string
           created_at?: string
           email: string
           id?: string
+          kanban_status?: string | null
+          last_activity_at?: string | null
+          lead_score?: number | null
           message?: string | null
           num_users?: number | null
           organization_name: string
@@ -912,14 +921,19 @@ export type Database = {
           phone: string
           position?: string | null
           service_interest: string
+          source?: string | null
           status?: string
           updated_at?: string
         }
         Update: {
+          assigned_admin?: string | null
           contact_person?: string
           created_at?: string
           email?: string
           id?: string
+          kanban_status?: string | null
+          last_activity_at?: string | null
+          lead_score?: number | null
           message?: string | null
           num_users?: number | null
           organization_name?: string
@@ -927,10 +941,79 @@ export type Database = {
           phone?: string
           position?: string | null
           service_interest?: string
+          source?: string | null
           status?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      b2b_invoices: {
+        Row: {
+          amount: number
+          billing_period_end: string | null
+          billing_period_start: string | null
+          company_name: string
+          contact_email: string
+          created_at: string
+          due_date: string
+          id: string
+          invoice_no: string
+          paid_at: string | null
+          pdf_url: string | null
+          quote_id: string | null
+          status: string
+          toss_payment_key: string | null
+          total: number
+          updated_at: string
+          vat: number
+        }
+        Insert: {
+          amount: number
+          billing_period_end?: string | null
+          billing_period_start?: string | null
+          company_name: string
+          contact_email: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          invoice_no?: string
+          paid_at?: string | null
+          pdf_url?: string | null
+          quote_id?: string | null
+          status?: string
+          toss_payment_key?: string | null
+          total: number
+          updated_at?: string
+          vat?: number
+        }
+        Update: {
+          amount?: number
+          billing_period_end?: string | null
+          billing_period_start?: string | null
+          company_name?: string
+          contact_email?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          invoice_no?: string
+          paid_at?: string | null
+          pdf_url?: string | null
+          quote_id?: string | null
+          status?: string
+          toss_payment_key?: string | null
+          total?: number
+          updated_at?: string
+          vat?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_invoices_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_quotes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       b2b_jobcoach_employee_sessions: {
         Row: {
@@ -988,6 +1071,7 @@ export type Database = {
       b2b_jobcoach_inquiries: {
         Row: {
           admin_note: string | null
+          assigned_admin: string | null
           company_name: string
           contact_email: string
           contact_name: string
@@ -998,6 +1082,9 @@ export type Database = {
           id: string
           industry: string | null
           interested_tier: string | null
+          kanban_status: string | null
+          last_activity_at: string | null
+          lead_score: number | null
           message: string | null
           position: string | null
           source: string | null
@@ -1006,6 +1093,7 @@ export type Database = {
         }
         Insert: {
           admin_note?: string | null
+          assigned_admin?: string | null
           company_name: string
           contact_email: string
           contact_name: string
@@ -1016,6 +1104,9 @@ export type Database = {
           id?: string
           industry?: string | null
           interested_tier?: string | null
+          kanban_status?: string | null
+          last_activity_at?: string | null
+          lead_score?: number | null
           message?: string | null
           position?: string | null
           source?: string | null
@@ -1024,6 +1115,7 @@ export type Database = {
         }
         Update: {
           admin_note?: string | null
+          assigned_admin?: string | null
           company_name?: string
           contact_email?: string
           contact_name?: string
@@ -1034,6 +1126,9 @@ export type Database = {
           id?: string
           industry?: string | null
           interested_tier?: string | null
+          kanban_status?: string | null
+          last_activity_at?: string | null
+          lead_score?: number | null
           message?: string | null
           position?: string | null
           source?: string | null
@@ -1161,6 +1256,65 @@ export type Database = {
           },
         ]
       }
+      b2b_lead_downloads: {
+        Row: {
+          asset_key: string
+          company: string | null
+          contact_name: string | null
+          created_at: string
+          email: string
+          id: string
+          inquiry_id: string | null
+          ip_address: string | null
+          phone: string | null
+          role: string | null
+          user_agent: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          asset_key: string
+          company?: string | null
+          contact_name?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          inquiry_id?: string | null
+          ip_address?: string | null
+          phone?: string | null
+          role?: string | null
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          asset_key?: string
+          company?: string | null
+          contact_name?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          inquiry_id?: string | null
+          ip_address?: string | null
+          phone?: string | null
+          role?: string | null
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_lead_downloads_inquiry_id_fkey"
+            columns: ["inquiry_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       b2b_partner_institutions: {
         Row: {
           address: string | null
@@ -1171,11 +1325,14 @@ export type Database = {
           data_accumulated_months: number | null
           description: string | null
           email: string | null
+          email_domain_whitelist: string[] | null
           id: string
           institution_name: string
           institution_type: string
           is_active: boolean | null
           is_verified: boolean | null
+          join_code: string | null
+          join_code_expires_at: string | null
           logo_url: string | null
           operating_hours: Json | null
           phone: string | null
@@ -1196,11 +1353,14 @@ export type Database = {
           data_accumulated_months?: number | null
           description?: string | null
           email?: string | null
+          email_domain_whitelist?: string[] | null
           id?: string
           institution_name: string
           institution_type: string
           is_active?: boolean | null
           is_verified?: boolean | null
+          join_code?: string | null
+          join_code_expires_at?: string | null
           logo_url?: string | null
           operating_hours?: Json | null
           phone?: string | null
@@ -1221,11 +1381,14 @@ export type Database = {
           data_accumulated_months?: number | null
           description?: string | null
           email?: string | null
+          email_domain_whitelist?: string[] | null
           id?: string
           institution_name?: string
           institution_type?: string
           is_active?: boolean | null
           is_verified?: boolean | null
+          join_code?: string | null
+          join_code_expires_at?: string | null
           logo_url?: string | null
           operating_hours?: Json | null
           phone?: string | null
@@ -1238,6 +1401,86 @@ export type Database = {
           website_url?: string | null
         }
         Relationships: []
+      }
+      b2b_quotes: {
+        Row: {
+          company_name: string
+          contact_email: string
+          contact_name: string | null
+          created_at: string
+          created_by: string | null
+          employee_count: number
+          id: string
+          inquiry_id: string | null
+          months: number
+          notes: string | null
+          pdf_url: string | null
+          plan_key: string
+          plan_name: string | null
+          quote_no: string
+          status: string
+          subtotal: number
+          total: number
+          unit_price: number
+          updated_at: string
+          valid_until: string
+          vat: number
+        }
+        Insert: {
+          company_name: string
+          contact_email: string
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          employee_count: number
+          id?: string
+          inquiry_id?: string | null
+          months?: number
+          notes?: string | null
+          pdf_url?: string | null
+          plan_key: string
+          plan_name?: string | null
+          quote_no?: string
+          status?: string
+          subtotal: number
+          total: number
+          unit_price: number
+          updated_at?: string
+          valid_until?: string
+          vat?: number
+        }
+        Update: {
+          company_name?: string
+          contact_email?: string
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          employee_count?: number
+          id?: string
+          inquiry_id?: string | null
+          months?: number
+          notes?: string | null
+          pdf_url?: string | null
+          plan_key?: string
+          plan_name?: string | null
+          quote_no?: string
+          status?: string
+          subtotal?: number
+          total?: number
+          unit_price?: number
+          updated_at?: string
+          valid_until?: string
+          vat?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_quotes_inquiry_id_fkey"
+            columns: ["inquiry_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_jobcoach_inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       b2b_retention_rewards: {
         Row: {
@@ -14522,6 +14765,51 @@ export type Database = {
         }
         Relationships: []
       }
+      v_b2b_company_overview: {
+        Row: {
+          at_risk_employees: number | null
+          at_risk_sessions: number | null
+          avg_burnout: number | null
+          avg_satisfaction: number | null
+          avg_stress: number | null
+          institution_id: string | null
+          last_session_at: string | null
+          total_employees: number | null
+          total_sessions: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_jobcoach_employee_sessions_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_b2b_dept_weekly_aggregates: {
+        Row: {
+          at_risk_count: number | null
+          avg_burnout: number | null
+          avg_satisfaction: number | null
+          avg_stress: number | null
+          department_code: string | null
+          employee_count: number | null
+          institution_id: string | null
+          is_visible: boolean | null
+          session_count: number | null
+          week_start: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_jobcoach_employee_sessions_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       add_daily_tokens: { Args: never; Returns: undefined }
@@ -14681,6 +14969,10 @@ export type Database = {
           p_trigger_source: string
           p_user_id: string
         }
+        Returns: string
+      }
+      generate_institution_join_code: {
+        Args: { _institution_id: string }
         Returns: string
       }
       generate_invitation_code: { Args: never; Returns: string }
@@ -14937,10 +15229,12 @@ export type Database = {
         Returns: undefined
       }
       is_facility_admin: { Args: { facility_uuid: string }; Returns: boolean }
-      is_institution_admin: {
-        Args: { p_institution_id: string }
-        Returns: boolean
-      }
+      is_institution_admin:
+        | {
+            Args: { _institution_id: string; _user_id: string }
+            Returns: boolean
+          }
+        | { Args: { p_institution_id: string }; Returns: boolean }
       is_session_participant: {
         Args: { session_uuid: string }
         Returns: boolean
@@ -14960,6 +15254,10 @@ export type Database = {
         Returns: Json
       }
       process_verified_referral_rewards: { Args: never; Returns: number }
+      redeem_join_code: {
+        Args: { _code: string; _department?: string }
+        Returns: Json
+      }
       refresh_admin_analytics: { Args: never; Returns: undefined }
       revoke_premium_access: {
         Args: { target_user_id: string }

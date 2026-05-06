@@ -21,7 +21,7 @@ const PaymentFail = () => {
           
           <div className="space-y-3 mt-6">
             <Button 
-              onClick={() => navigate('/token-subscription')} 
+              onClick={() => navigate('/pricing')} 
               className="w-full"
             >
               <RefreshCw className="w-4 h-4 mr-2" />

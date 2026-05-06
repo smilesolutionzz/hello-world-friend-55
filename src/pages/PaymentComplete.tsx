@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, XCircle, Loader2, Home, Crown, Zap, FileText, CalendarCheck, Sparkles } from 'lucide-react';
 import { waitForCompletedEnrollment } from '@/lib/mindTrackEnrollment';
+import { trackEvent } from '@/components/common/Analytics';
 
 const PaymentComplete = () => {
   const navigate = useNavigate();
@@ -27,6 +28,12 @@ const PaymentComplete = () => {
   useEffect(() => {
     const confirmPayment = async () => {
       if (status === 'fail') {
+        trackEvent('payment_failed', {
+          stage: 'toss_redirect',
+          product_type: productType,
+          error_code: errorCode,
+          error_message: errorMessage,
+        });
         setLoading(false);
         setSuccess(false);
         return;
@@ -57,12 +64,18 @@ const PaymentComplete = () => {
 
         setSuccess(true);
         setPaymentInfo(data);
-        
+
+        trackEvent('payment_completed', {
+          product_type: data.productType || productType,
+          amount: parseInt(amount || '0'),
+          order_id: orderId,
+        });
+
         // Handle consultation booking creation after successful payment
         if (productType === 'consultation') {
           await createConsultationBooking(session.session.access_token);
         }
-        
+
         toast({ title: '🎉 결제 완료!', description: getSuccessMessage(productType === 'consultation' ? 'consultation' : data.productType) });
 
         // Mind Track: poll the enrollment row instead of a fixed 1.5s timer.
@@ -83,6 +96,11 @@ const PaymentComplete = () => {
       } catch (err: any) {
         console.error('Payment confirmation error:', err);
         setSuccess(false);
+        trackEvent('payment_failed', {
+          stage: 'confirm',
+          product_type: productType,
+          error: err.message,
+        });
         toast({ title: '결제 확인 실패', description: err.message, variant: 'destructive' });
       } finally {
         setLoading(false);
@@ -276,7 +294,7 @@ const PaymentComplete = () => {
             </p>
             {errorCode && <p className="text-xs text-muted-foreground/60 mb-6">오류 코드: {errorCode}</p>}
             <div className="space-y-3">
-              <Button className="w-full" onClick={() => navigate('/token-subscription')}>다시 시도</Button>
+              <Button className="w-full" onClick={() => navigate('/pricing')}>다시 시도</Button>
               <Button variant="outline" className="w-full" onClick={() => navigate('/')}>
                 <Home className="w-4 h-4 mr-2" />홈으로
               </Button>

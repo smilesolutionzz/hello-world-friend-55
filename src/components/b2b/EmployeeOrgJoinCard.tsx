@@ -72,8 +72,8 @@ export const EmployeeOrgJoinCard = () => {
   };
 
   const handleJoin = async () => {
-    if (!code.trim()) {
-      toast({ title: '가입 코드를 입력하세요', variant: 'destructive' });
+    if (!code.trim() || code.trim().length < 6) {
+      toast({ title: '가입 코드를 입력하세요', description: '8자리 영숫자 코드입니다.', variant: 'destructive' });
       return;
     }
 
@@ -83,45 +83,26 @@ export const EmployeeOrgJoinCard = () => {
       return;
     }
 
-    // 가입 코드 = institution.id (실제 운영 시엔 별도 join_code 컬럼 권장)
-    const { data: inst, error: instErr } = await supabase
-      .from('b2b_partner_institutions')
-      .select('id, institution_name')
-      .eq('id', code.trim())
-      .maybeSingle();
-
-    if (instErr || !inst) {
-      toast({ title: '유효하지 않은 가입 코드', description: '회사에서 받은 코드를 다시 확인하세요.', variant: 'destructive' });
-      return;
-    }
-
-    const { error } = await supabase
-      .from('employee_organization_links')
-      .insert({
-        user_id: user.id,
-        institution_id: inst.id,
-        department_code: department.trim() || null,
-        joined_via_code: code.trim(),
-      });
+    const { data, error } = await supabase.rpc('redeem_join_code', {
+      _code: code.trim().toUpperCase(),
+      _department: department.trim() || null,
+    });
 
     if (error) {
       toast({ title: '가입 실패', description: error.message, variant: 'destructive' });
       return;
     }
 
-    // 기본 공유 설정 생성 (익명)
-    await supabase.from('employee_data_sharing_preferences').insert({
-      user_id: user.id,
-      institution_id: inst.id,
-      share_identity: false,
-      share_stress_score: true,
-      share_burnout_score: true,
-      share_turnover_risk: false,
-      share_coaching_usage: true,
-      allow_crisis_alert: true,
-    });
+    const result = data as { ok: boolean; error?: string; institution_name?: string };
+    if (!result?.ok) {
+      const msg = result?.error === 'invalid_code' ? '유효하지 않은 코드입니다'
+        : result?.error === 'expired_code' ? '코드가 만료되었습니다'
+        : '가입에 실패했습니다';
+      toast({ title: '가입 실패', description: msg, variant: 'destructive' });
+      return;
+    }
 
-    toast({ title: `${inst.institution_name}에 연결됐어요`, description: '기본은 익명 모드로 설정됩니다.' });
+    toast({ title: `${result.institution_name}에 연결됐어요`, description: '기본은 익명 모드로 설정됩니다.' });
     loadStatus();
   };
 
@@ -203,12 +184,14 @@ export const EmployeeOrgJoinCard = () => {
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <Label htmlFor="join-code" className="text-xs">가입 코드</Label>
+          <Label htmlFor="join-code" className="text-xs">가입 코드 (8자리)</Label>
           <Input
             id="join-code"
             value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="회사에서 받은 코드"
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            placeholder="예: A3X9KP7M"
+            maxLength={10}
+            className="font-mono tracking-widest"
           />
         </div>
         <div>

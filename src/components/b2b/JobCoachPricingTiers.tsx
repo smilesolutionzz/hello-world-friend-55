@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Sparkles, Crown, Zap } from 'lucide-react';
+import { Check, Sparkles, Crown, Zap, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
+import QuoteRequestDialog from './QuoteRequestDialog';
 
 interface JobCoachPlan {
   id: string;
@@ -33,6 +34,7 @@ interface Props {
 export const JobCoachPricingTiers: React.FC<Props> = ({ onSelectPlan }) => {
   const [plans, setPlans] = useState<JobCoachPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [quotePlan, setQuotePlan] = useState<JobCoachPlan | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -131,21 +133,41 @@ export const JobCoachPricingTiers: React.FC<Props> = ({ onSelectPlan }) => {
                 ))}
               </div>
 
-              <Button
-                size="lg"
-                className={`w-full h-11 font-bold ${
-                  isPro
-                    ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                    : 'bg-slate-900 hover:bg-slate-800 text-white'
-                }`}
-                onClick={() => onSelectPlan?.(plan.tier)}
-              >
-                {plan.tier === 'enterprise' ? '맞춤 상담 요청' : '도입 문의하기'}
-              </Button>
+              <div className="space-y-2">
+                <Button
+                  size="lg"
+                  className={`w-full h-11 font-bold ${
+                    isPro
+                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                      : 'bg-slate-900 hover:bg-slate-800 text-white'
+                  }`}
+                  onClick={() => setQuotePlan(plan)}
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  견적서 받기
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="w-full h-9 text-xs text-muted-foreground"
+                  onClick={() => onSelectPlan?.(plan.tier)}
+                >
+                  {plan.tier === 'enterprise' ? '맞춤 상담 요청' : '도입 문의'}
+                </Button>
+              </div>
             </Card>
           </motion.div>
         );
       })}
+      {quotePlan && (
+        <QuoteRequestDialog
+          open={!!quotePlan}
+          onOpenChange={(v) => !v && setQuotePlan(null)}
+          planKey={quotePlan.plan_key}
+          planName={quotePlan.plan_name}
+          unitPrice={quotePlan.price_per_employee_monthly}
+        />
+      )}
     </div>
   );
 };

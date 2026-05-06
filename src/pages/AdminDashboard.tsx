@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import B2BInquiryInbox from '@/components/admin/B2BInquiryInbox';
 import B2BFunnelDashboard from '@/components/admin/B2BFunnelDashboard';
+import B2BKanbanBoard from '@/components/admin/B2BKanbanBoard';
 import { EmailSendLogPanel } from '@/components/admin/EmailSendLogPanel';
 import MindTrackInterventionStats from '@/components/admin/MindTrackInterventionStats';
 import WorkbookFunnelDashboard from '@/components/admin/WorkbookFunnelDashboard';
@@ -125,6 +126,10 @@ export default function AdminDashboard() {
               <Inbox className="h-3 w-3" />
               B2B 문의
             </TabsTrigger>
+            <TabsTrigger value="b2b_kanban" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <TrendingUp className="h-3 w-3" />
+              B2B 칸반
+            </TabsTrigger>
             <TabsTrigger value="b2b_funnel" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <TrendingUp className="h-3 w-3" />
               B2B 퍼널
@@ -155,6 +160,7 @@ export default function AdminDashboard() {
           <TabsContent value="notifications"><AdminNotifications /></TabsContent>
           <TabsContent value="email_logs"><EmailSendLogPanel /></TabsContent>
           <TabsContent value="b2b_inbox"><B2BInquiryInbox key={`b2b-${refreshKey}`} /></TabsContent>
+          <TabsContent value="b2b_kanban"><B2BKanbanBoard /></TabsContent>
           <TabsContent value="b2b_funnel"><B2BFunnelDashboard key={`bf-${refreshKey}`} /></TabsContent>
           <TabsContent value="experts"><ExpertApplicationManagement /></TabsContent>
           <TabsContent value="user-data"><EnhancedUserDataViewer /></TabsContent>

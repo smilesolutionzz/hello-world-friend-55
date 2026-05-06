@@ -124,9 +124,9 @@ const Scene2: React.FC = () => {
         </div>
       </div>
       <div style={{ display: 'flex', gap: 32, marginTop: 80 }}>
-        <RoutineCard no="01" title="체크인" desc="오늘의 마음 상태를 30초 만에 기록합니다." min="30 sec" delay={20} />
-        <RoutineCard no="02" title="미션" desc="전문가가 설계한 오늘의 작은 실천을 따라갑니다." min="3 min" delay={35} />
-        <RoutineCard no="03" title="영상 코칭" desc="감정·관계·수면 — 그날에 맞는 짧은 가이드 영상." min="3 min" delay={50} />
+        <RoutineCard no="01" title="체크인" desc="오늘의 마음을 30초로 기록" min="30 sec" delay={20} />
+        <RoutineCard no="02" title="미션" desc="전문가가 설계한 작은 실천" min="3 min" delay={35} />
+        <RoutineCard no="03" title="영상 코칭" desc="그날에 맞는 짧은 가이드 영상" min="3 min" delay={50} />
       </div>
     </AbsoluteFill>
   );

@@ -184,12 +184,14 @@ export const EmployeeOrgJoinCard = () => {
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <Label htmlFor="join-code" className="text-xs">가입 코드</Label>
+          <Label htmlFor="join-code" className="text-xs">가입 코드 (8자리)</Label>
           <Input
             id="join-code"
             value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="회사에서 받은 코드"
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            placeholder="예: A3X9KP7M"
+            maxLength={10}
+            className="font-mono tracking-widest"
           />
         </div>
         <div>

@@ -126,6 +126,10 @@ export default function AdminDashboard() {
               <Inbox className="h-3 w-3" />
               B2B 문의
             </TabsTrigger>
+            <TabsTrigger value="b2b_kanban" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <TrendingUp className="h-3 w-3" />
+              B2B 칸반
+            </TabsTrigger>
             <TabsTrigger value="b2b_funnel" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <TrendingUp className="h-3 w-3" />
               B2B 퍼널

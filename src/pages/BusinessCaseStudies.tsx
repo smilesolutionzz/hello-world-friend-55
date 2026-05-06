@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import BusinessSEO from '@/components/b2b/BusinessSEO';
 import BusinessBreadcrumb from '@/components/b2b/BusinessBreadcrumb';
 import { CASE_STUDIES, getCaseStudyBySlug } from '@/data/businessCaseStudies';
+import LeadCaptureGate from '@/components/b2b/LeadCaptureGate';
 
 const GOLD = '#C8B88A';
 

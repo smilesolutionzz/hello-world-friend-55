@@ -3,7 +3,7 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Seq
 import { loadFont as loadKR } from '@remotion/google-fonts/NotoSansKR';
 import { loadFont as loadEN } from '@remotion/google-fonts/SpaceGrotesk';
 
-const kr = loadKR('normal', { weights: ['700', '900'], subsets: ['korean'] });
+const kr = loadKR();
 const en = loadEN('normal', { weights: ['400', '600', '700'], subsets: ['latin'] });
 
 export const FPS = 30;

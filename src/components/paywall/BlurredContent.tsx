@@ -63,7 +63,7 @@ export const BlurredContent = ({
                 </Button>
               ) : (
                 <Button 
-                  onClick={() => navigate('/token-purchase?type=cash&id=cash_5000&price=5000')}
+                  onClick={() => navigate('/pricing')}
                   className="w-full bg-gradient-to-r from-primary to-purple-600"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />

@@ -232,7 +232,7 @@ const ARRForecastSection = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
-                onClick={() => navigate('/token-purchase?type=subscription&id=premium_pass')}
+                onClick={() => navigate('/pricing')}
                 size="lg"
                 className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold"
               >
@@ -241,7 +241,7 @@ const ARRForecastSection = () => {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button 
-                onClick={() => navigate('/token-purchase?type=cash&id=cash_5000&price=5000')}
+                onClick={() => navigate('/pricing')}
                 size="lg"
                 variant="outline"
                 className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"

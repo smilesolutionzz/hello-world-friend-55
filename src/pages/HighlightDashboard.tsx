@@ -521,7 +521,7 @@ function DashboardContent() {
 
                     <Card 
                       className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/30 cursor-pointer group"
-                      onClick={() => navigate('/simple-observation')}
+                      onClick={() => navigate('/observation')}
                     >
                       <CardContent className="p-4 sm:p-6">
                         <div className="flex items-center gap-3 sm:gap-4">

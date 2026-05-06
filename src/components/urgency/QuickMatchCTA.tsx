@@ -14,7 +14,7 @@ export const QuickMatchCTA = ({ variant = 'default', onMatch }: QuickMatchCTAPro
     if (onMatch) {
       onMatch();
     } else {
-      navigate('/expert-matching');
+      navigate('/expert-hiring');
     }
   };
 

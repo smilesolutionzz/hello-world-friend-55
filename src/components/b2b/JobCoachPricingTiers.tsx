@@ -34,6 +34,7 @@ interface Props {
 export const JobCoachPricingTiers: React.FC<Props> = ({ onSelectPlan }) => {
   const [plans, setPlans] = useState<JobCoachPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [quotePlan, setQuotePlan] = useState<JobCoachPlan | null>(null);
 
   useEffect(() => {
     (async () => {

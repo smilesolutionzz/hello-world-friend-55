@@ -16,17 +16,17 @@ export const MindTrack30Showcase = () => {
     {
       icon: Clock,
       title: "매일 7분 루틴",
-      desc: "체크인 30초 · 미션 3분 · 영상 코칭 3분.",
+      desc: "체크인 · 미션 · 영상 코칭",
     },
     {
       icon: Sparkles,
       title: "한 챕터씩 단단하게",
-      desc: "주차별 테마 · 4주 마음 리포트로 변화를 확인합니다.",
+      desc: "주차별 테마 · 4주 마음 리포트",
     },
     {
       icon: ShieldCheck,
-      title: "전문가 검수 · 비의료 코칭",
-      desc: "14년 경력 임상 전문가가 설계하고 매주 점검합니다.",
+      title: "전문가 검수 코칭",
+      desc: "임상 전문가 설계 · 비의료 가이드",
     },
   ];
 
@@ -70,7 +70,7 @@ export const MindTrack30Showcase = () => {
               className="w-full h-full object-cover"
               poster="/videos/mind-track-30-poster.jpg"
             >
-              <source src="/videos/mind-track-30.mp4" type="video/mp4" />
+              <source src="/videos/mind-track-30.mp4?v=2" type="video/mp4" />
             </video>
           </div>
         </motion.div>

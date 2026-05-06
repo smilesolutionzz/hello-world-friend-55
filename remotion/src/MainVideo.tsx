@@ -90,18 +90,18 @@ const RoutineCard: React.FC<{ no: string; title: string; desc: string; min: stri
   const y = interpolate(s, [0, 1], [80, 0]);
   return (
     <div style={{
-      flex: 1, background: '#fff', borderRadius: 32, padding: 56,
+      flex: 1, background: '#fff', borderRadius: 32, padding: '48px 44px',
       boxShadow: '0 30px 80px -30px rgba(14,14,16,0.18)',
       opacity: s, transform: `translateY(${y}px)`,
-      display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 460,
+      display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 420,
       border: '1px solid rgba(200,184,138,0.2)',
     }}>
       <div>
-        <div style={{ fontFamily: enFont, color: GOLD, fontSize: 22, fontWeight: 700, letterSpacing: 2 }}>{no}</div>
-        <div style={{ fontFamily: krFont, color: INK, fontSize: 56, fontWeight: 800, marginTop: 24, letterSpacing: -2 }}>{title}</div>
-        <div style={{ fontFamily: krFont, color: MUTED, fontSize: 26, marginTop: 20, lineHeight: 1.5, letterSpacing: -0.3 }}>{desc}</div>
+        <div style={{ fontFamily: enFont, color: GOLD, fontSize: 20, fontWeight: 700, letterSpacing: 2 }}>{no}</div>
+        <div style={{ fontFamily: krFont, color: INK, fontSize: 56, fontWeight: 800, marginTop: 22, letterSpacing: -2 }}>{title}</div>
+        <div style={{ fontFamily: krFont, color: MUTED, fontSize: 20, marginTop: 18, lineHeight: 1.4, letterSpacing: -0.3, whiteSpace: 'nowrap' }}>{desc}</div>
       </div>
-      <div style={{ fontFamily: enFont, color: INK, fontSize: 30, fontWeight: 600, marginTop: 32 }}>
+      <div style={{ fontFamily: enFont, color: INK, fontSize: 28, fontWeight: 600, marginTop: 28 }}>
         <span style={{ color: GOLD }}>●</span> {min}
       </div>
     </div>
@@ -124,9 +124,9 @@ const Scene2: React.FC = () => {
         </div>
       </div>
       <div style={{ display: 'flex', gap: 32, marginTop: 80 }}>
-        <RoutineCard no="01" title="체크인" desc="오늘의 마음 상태를 30초 만에 기록합니다." min="30 sec" delay={20} />
-        <RoutineCard no="02" title="미션" desc="전문가가 설계한 오늘의 작은 실천을 따라갑니다." min="3 min" delay={35} />
-        <RoutineCard no="03" title="영상 코칭" desc="감정·관계·수면 — 그날에 맞는 짧은 가이드 영상." min="3 min" delay={50} />
+        <RoutineCard no="01" title="체크인" desc="오늘의 마음을 30초로 기록" min="30 sec" delay={20} />
+        <RoutineCard no="02" title="미션" desc="전문가가 설계한 작은 실천" min="3 min" delay={35} />
+        <RoutineCard no="03" title="영상 코칭" desc="그날에 맞는 짧은 가이드 영상" min="3 min" delay={50} />
       </div>
     </AbsoluteFill>
   );

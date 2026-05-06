@@ -90,18 +90,18 @@ const RoutineCard: React.FC<{ no: string; title: string; desc: string; min: stri
   const y = interpolate(s, [0, 1], [80, 0]);
   return (
     <div style={{
-      flex: 1, background: '#fff', borderRadius: 32, padding: 56,
+      flex: 1, background: '#fff', borderRadius: 32, padding: '48px 44px',
       boxShadow: '0 30px 80px -30px rgba(14,14,16,0.18)',
       opacity: s, transform: `translateY(${y}px)`,
-      display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 460,
+      display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 420,
       border: '1px solid rgba(200,184,138,0.2)',
     }}>
       <div>
-        <div style={{ fontFamily: enFont, color: GOLD, fontSize: 22, fontWeight: 700, letterSpacing: 2 }}>{no}</div>
-        <div style={{ fontFamily: krFont, color: INK, fontSize: 56, fontWeight: 800, marginTop: 24, letterSpacing: -2 }}>{title}</div>
-        <div style={{ fontFamily: krFont, color: MUTED, fontSize: 26, marginTop: 20, lineHeight: 1.5, letterSpacing: -0.3 }}>{desc}</div>
+        <div style={{ fontFamily: enFont, color: GOLD, fontSize: 20, fontWeight: 700, letterSpacing: 2 }}>{no}</div>
+        <div style={{ fontFamily: krFont, color: INK, fontSize: 56, fontWeight: 800, marginTop: 22, letterSpacing: -2 }}>{title}</div>
+        <div style={{ fontFamily: krFont, color: MUTED, fontSize: 20, marginTop: 18, lineHeight: 1.4, letterSpacing: -0.3, whiteSpace: 'nowrap' }}>{desc}</div>
       </div>
-      <div style={{ fontFamily: enFont, color: INK, fontSize: 30, fontWeight: 600, marginTop: 32 }}>
+      <div style={{ fontFamily: enFont, color: INK, fontSize: 28, fontWeight: 600, marginTop: 28 }}>
         <span style={{ color: GOLD }}>●</span> {min}
       </div>
     </div>

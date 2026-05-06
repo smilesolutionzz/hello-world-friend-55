@@ -4,6 +4,7 @@ import { loadTossPayments } from '@tosspayments/payment-sdk';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { SUBSCRIPTION_PRICE, SINGLE_REPORT_PRICE, SUBSCRIPTION_YEARLY_PRICE, SINGLE_TEST_PRICE } from '@/constants/tokenCosts';
+import { trackEvent } from '@/components/common/Analytics';
 
 // 상품 정의 - 단건 + 월간 + 연간
 export const PRODUCTS = {
@@ -122,6 +123,14 @@ export function usePayment() {
 
       const productType = isMindTrack ? 'mind_track' : (product?.type || 'subscription');
       const productName = isMindTrack ? '30일 마음 변화 트랙' : (product?.name || '월간 구독');
+      const finalAmount = customPrice || product?.price || 0;
+
+      // 📊 결제 시작 이벤트
+      trackEvent('payment_initiated', {
+        product_id: isMindTrack ? 'mind_track_30' : (product?.id || productId),
+        product_type: productType,
+        amount: finalAmount,
+      });
 
       const { data, error } = await supabase.functions.invoke('unified-payment', {
         headers: { Authorization: `Bearer ${session.session.access_token}` },
@@ -130,12 +139,17 @@ export function usePayment() {
           productId: isMindTrack ? 'mind_track_30' : (product?.id || productId),
           productType,
           productName,
-          amount: customPrice || product?.price,
+          amount: finalAmount,
           tokens: 0,
         }
       });
 
       if (error || !data?.success) {
+        trackEvent('payment_failed', {
+          stage: 'create',
+          product_type: productType,
+          error: data?.error || error?.message,
+        });
         throw new Error(data?.error || error?.message || '결제 준비에 실패했습니다.');
       }
 

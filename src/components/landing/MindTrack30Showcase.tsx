@@ -16,17 +16,17 @@ export const MindTrack30Showcase = () => {
     {
       icon: Clock,
       title: "매일 7분 루틴",
-      desc: "체크인 · 미션 · 영상 코칭",
+      desc: "체크인·미션·영상",
     },
     {
       icon: Sparkles,
       title: "한 챕터씩 단단하게",
-      desc: "주차별 테마 · 4주 마음 리포트",
+      desc: "4주 마음 리포트",
     },
     {
       icon: ShieldCheck,
       title: "전문가 검수 코칭",
-      desc: "임상 전문가 설계 · 비의료 가이드",
+      desc: "비의료 가이드",
     },
   ];
 
@@ -95,7 +95,7 @@ export const MindTrack30Showcase = () => {
                 <h3 className="text-base md:text-lg font-bold text-slate-900 break-keep">
                   {p.title}
                 </h3>
-                <p className="mt-1.5 text-xs md:text-sm text-slate-500 leading-relaxed break-keep">
+                <p className="mt-1.5 text-xs md:text-sm text-slate-500 leading-relaxed whitespace-nowrap">
                   {p.desc}
                 </p>
               </div>

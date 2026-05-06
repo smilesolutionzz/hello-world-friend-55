@@ -189,14 +189,14 @@ function CaseStudyList() {
               assetKey="case_studies_pdf"
               assetTitle="AIHPRO 도입 케이스 스터디 모음 (PDF)"
               triggerLabel="케이스 PDF 받기"
-              onUnlock={() => window.open('/sample-report', '_blank')}
+              onUnlock={() => { window.open('/sample-report', '_blank'); }}
             />
             <LeadCaptureGate
               assetKey="security_whitepaper"
               assetTitle="AIHPRO 보안 백서 (Security Whitepaper)"
               triggerLabel="보안 백서 받기"
               triggerVariant="outline"
-              onUnlock={() => window.open('/sample-report', '_blank')}
+              onUnlock={() => { window.open('/sample-report', '_blank'); }}
             />
           </div>
         </div>

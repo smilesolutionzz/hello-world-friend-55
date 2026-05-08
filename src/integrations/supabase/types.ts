@@ -6630,6 +6630,13 @@ export type Database = {
             referencedRelation: "partner_institutions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "institution_analytics_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       institution_bookings: {
@@ -6930,6 +6937,13 @@ export type Database = {
             referencedRelation: "partner_institutions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "institution_experts_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       institution_home_services: {
@@ -7093,6 +7107,13 @@ export type Database = {
             referencedRelation: "partner_institutions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "institution_premium_analytics_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       institution_premium_features: {
@@ -7135,6 +7156,13 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "institution_premium_features_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -7191,6 +7219,13 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "institution_premium_plans_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -7286,6 +7321,13 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "institution_reviews_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -10063,6 +10105,13 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_service_info_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -14762,6 +14811,78 @@ export type Database = {
           unique_users: number | null
           video_id: string | null
           video_title: string | null
+        }
+        Relationships: []
+      }
+      partner_institutions_public: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          description: string | null
+          established_year: number | null
+          gallery_images: string[] | null
+          id: string | null
+          institution_type: string | null
+          is_voucher_approved: boolean | null
+          latitude: number | null
+          longitude: number | null
+          name: string | null
+          operating_hours: Json | null
+          partnership_status: string | null
+          profile_image_url: string | null
+          rating: number | null
+          review_count: number | null
+          services_offered: string[] | null
+          total_experts: number | null
+          updated_at: string | null
+          voucher_types: string[] | null
+          website_url: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          established_year?: number | null
+          gallery_images?: string[] | null
+          id?: string | null
+          institution_type?: string | null
+          is_voucher_approved?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string | null
+          operating_hours?: Json | null
+          partnership_status?: string | null
+          profile_image_url?: string | null
+          rating?: number | null
+          review_count?: number | null
+          services_offered?: string[] | null
+          total_experts?: number | null
+          updated_at?: string | null
+          voucher_types?: string[] | null
+          website_url?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          established_year?: number | null
+          gallery_images?: string[] | null
+          id?: string | null
+          institution_type?: string | null
+          is_voucher_approved?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string | null
+          operating_hours?: Json | null
+          partnership_status?: string | null
+          profile_image_url?: string | null
+          rating?: number | null
+          review_count?: number | null
+          services_offered?: string[] | null
+          total_experts?: number | null
+          updated_at?: string | null
+          voucher_types?: string[] | null
+          website_url?: string | null
         }
         Relationships: []
       }

@@ -274,6 +274,7 @@ export default function MindTrackOnboarding() {
                 nextDelayMs: info.nextDelayMs,
               });
               if (info.requestId) setPersonalizeRequestId(info.requestId);
+              if (info.errorCode) setPersonalizeErrorCode(info.errorCode);
             },
           },
         );

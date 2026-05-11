@@ -168,7 +168,7 @@ export default function ActionBookPreviewSection({
             Action Book · 전문가 설계 30일 트랙
           </p>
           <h3 className="text-base md:text-lg font-bold text-foreground break-keep leading-snug">
-            임상심리 전문가가 설계한 30일 액션북
+            14년 경력 현장 전문가가 설계한 30일 액션북
           </h3>
           <p className="text-xs text-foreground/60 mt-0.5 break-keep">
             CBT·행동활성화 등 검증된 이론 위에, 내 닉네임·고민·목표에 맞춘 한 줄만 AI가 다듬어요.

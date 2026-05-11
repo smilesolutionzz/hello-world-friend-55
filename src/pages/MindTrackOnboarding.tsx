@@ -34,9 +34,9 @@ function logEvent(stage: Stage, event: string, meta: Record<string, unknown> = {
   supabase.auth.getUser().then(({ data }) => {
     const uid = data.user?.id;
     if (!uid) return;
-    supabase.from("mind_track_onboarding_events").insert({
-      user_id: uid, stage, event, meta,
-    }).then(() => {/* noop */});
+    supabase.from("mind_track_onboarding_events").insert([
+      { user_id: uid, stage, event, meta },
+    ]).then(() => {/* noop */});
   });
 }
 

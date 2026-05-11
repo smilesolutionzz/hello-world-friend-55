@@ -110,6 +110,7 @@ import BusinessSubscription from "./pages/BusinessSubscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import MindTrackOnboarding from "./pages/MindTrackOnboarding";
 import MindTrackOnboardingFunnel from "./pages/MindTrackOnboardingFunnel";
+import DevMindTrackGrant from "./pages/DevMindTrackGrant";
 import PaymentComplete from "./pages/PaymentComplete";
 import PaymentFail from "./pages/PaymentFail";
 import Pricing from "./pages/Pricing";

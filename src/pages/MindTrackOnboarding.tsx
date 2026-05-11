@@ -526,6 +526,7 @@ export default function MindTrackOnboarding() {
                 ageLabel={ageInfo?.label}
                 pains={pains}
                 error={personalizeError}
+                errorCode={personalizeErrorCode}
                 requestId={personalizeRequestId}
                 attempt={personalizeAttempt}
                 onRetry={() => { personalizeRan.current = false; runPersonalize(); }}

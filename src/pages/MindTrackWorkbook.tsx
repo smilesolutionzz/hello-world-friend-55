@@ -156,6 +156,17 @@ export default function MindTrackWorkbook() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawDayParam]);
 
+  // ✅ UX 단순화: day 파라미터 없이 들어왔고 환영/필터 의도도 없으면 → 대시보드(단일 홈)로 보냄
+  // "/mind-track/workbook"과 "/mind-track/dashboard"가 둘 다 진입 가능해서 혼란스러웠던 문제 해결
+  useEffect(() => {
+    if (rawDayParam !== null) return;
+    if (showWelcome) return;
+    if (filterParam) return;
+    if (searchParams.get("openMission") === "1") return;
+    navigate("/mind-track/dashboard", { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // localStorage 우선순위: URL ?day → URL 없으면 저장된 값
   const storedDay = (() => {
     try {

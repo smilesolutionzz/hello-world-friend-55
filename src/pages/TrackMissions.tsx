@@ -281,20 +281,17 @@ export default function TrackMissions() {
     setAiLoadingDays((prev) => { const n = new Set(prev); n.add(day); return n; });
     setAiErrorDays((prev) => { const { [day]: _, ...rest } = prev; return rest; });
     try {
-      const { data, error } = await supabase.functions.invoke("personalize-child-mission", {
-        body: {
+      const { personalizeWithRetry, describePersonalizeError } = await import("@/lib/personalizeChildMission");
+      try {
+        const res = await personalizeWithRetry({
           childProfileId: childProfile!.id,
           day,
           baseMission: baseDays[day - 1]?.mission ?? "",
-        },
-      });
-      if (error) throw error;
-      const line = (data as { personalLine?: string })?.personalLine;
-      if (line) setPersonalLines((prev) => ({ ...prev, [day]: line }));
-      else throw new Error("빈 응답");
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "AI 호출 실패";
-      setAiErrorDays((prev) => ({ ...prev, [day]: msg }));
+        });
+        setPersonalLines((prev) => ({ ...prev, [day]: res.personalLine }));
+      } catch (e) {
+        setAiErrorDays((prev) => ({ ...prev, [day]: describePersonalizeError(e) }));
+      }
     } finally {
       inflightRef.current.delete(day);
       setAiLoadingDays((prev) => { const n = new Set(prev); n.delete(day); return n; });

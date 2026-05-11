@@ -56,58 +56,108 @@ export default function MindTrackOnboarding() {
   const [personalizeError, setPersonalizeError] = useState<string | null>(null);
   const [personalizeRequestId, setPersonalizeRequestId] = useState<string | null>(null);
   const [personalizeAttempt, setPersonalizeAttempt] = useState<{ phase: string; attempt: number; maxAttempts: number; nextDelayMs?: number } | null>(null);
+  const [personalizeErrorCode, setPersonalizeErrorCode] = useState<string | null>(null);
+  const [restoreReady, setRestoreReady] = useState(false);
   const personalizeRan = useRef(false);
 
-  // Resume — restore stage + form fields from localStorage. Server-side: latest stage_enter event as authoritative source if newer than local.
+  // Resume — local first, then merge with server. Until restoreReady=true we suppress writes/logs to avoid clobbering.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("mt_onboarding_state");
-      if (raw) {
-        const s = JSON.parse(raw) as Partial<{
-          stage: Stage; audience: Audience; nickname: string; birth: string;
-          pains: string[]; goal: string; childProfileId: string;
-        }>;
-        if (s.stage && STAGES.includes(s.stage)) setStage(s.stage);
-        if (s.audience) setAudience(s.audience);
-        if (s.nickname) setNickname(s.nickname);
-        if (s.birth) setBirth(s.birth);
-        if (Array.isArray(s.pains)) setPains(s.pains);
-        if (s.goal) setGoal(s.goal);
-        if (s.childProfileId) setChildProfileId(s.childProfileId);
-      }
-    } catch { /* ignore */ }
-
-    // Server-side resume — restore furthest stage from event log if user re-enters on a fresh device
+    let cancelled = false;
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data } = await supabase
-        .from("mind_track_onboarding_events")
-        .select("stage, created_at")
-        .eq("user_id", user.id)
-        .eq("event", "stage_enter")
-        .order("created_at", { ascending: false })
-        .limit(1);
-      const last = (data?.[0] as { stage?: string } | undefined)?.stage as Stage | undefined;
-      if (last && STAGES.includes(last)) {
-        // 로컬에 더 최근 진행이 없을 때만 서버 값으로 설정
-        const localStage = localStorage.getItem("mt_onboarding_stage") as Stage | null;
-        if (!localStage) setStage(last);
-      }
-    })();
+      // 1) localStorage
+      let local: Partial<{ stage: Stage; audience: Audience; nickname: string; birth: string; pains: string[]; goal: string; childProfileId: string }> = {};
+      try {
+        const raw = localStorage.getItem("mt_onboarding_state");
+        if (raw) local = JSON.parse(raw);
+      } catch { /* ignore */ }
 
-    logEvent("welcome", "wizard_open", {});
+      const { data: { user } } = await supabase.auth.getUser();
+      let serverStage: Stage | null = null;
+      let serverChildProfileId: string | null = null;
+      let serverChild: { nickname?: string; birth?: string; pains?: string[]; goal?: string } | null = null;
+
+      if (user) {
+        // 2a) Latest stage_enter as floor (server-side resume)
+        const { data: stageRows } = await supabase
+          .from("mind_track_onboarding_events")
+          .select("stage")
+          .eq("user_id", user.id)
+          .eq("event", "stage_enter")
+          .order("created_at", { ascending: false })
+          .limit(1);
+        const last = (stageRows?.[0] as { stage?: string } | undefined)?.stage as Stage | undefined;
+        if (last && STAGES.includes(last)) serverStage = last;
+
+        // 2b) Reuse existing child profile so we never insert a duplicate
+        const { data: cp } = await supabase
+          .from("user_child_profiles")
+          .select("id, child_nickname, birth_date, pain_points, goal_text")
+          .eq("user_id", user.id)
+          .order("updated_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (cp) {
+          serverChildProfileId = (cp as { id: string }).id;
+          serverChild = {
+            nickname: (cp as { child_nickname?: string }).child_nickname,
+            birth: (cp as { birth_date?: string }).birth_date,
+            pains: (cp as { pain_points?: string[] }).pain_points,
+            goal: (cp as { goal_text?: string }).goal_text ?? "",
+          };
+        }
+      }
+
+      if (cancelled) return;
+
+      // Merge: local wins for in-progress fields; server fills gaps + provides childProfileId
+      const merged = {
+        stage: (local.stage && STAGES.includes(local.stage) ? local.stage : serverStage) ?? "welcome" as Stage,
+        audience: local.audience ?? (serverChild ? "child" as Audience : null),
+        nickname: local.nickname ?? serverChild?.nickname ?? "",
+        birth: local.birth ?? serverChild?.birth ?? "",
+        pains: (Array.isArray(local.pains) && local.pains.length ? local.pains : serverChild?.pains) ?? [],
+        goal: local.goal ?? serverChild?.goal ?? "",
+        childProfileId: local.childProfileId ?? serverChildProfileId ?? null,
+      };
+
+      setStage(merged.stage);
+      if (merged.audience) setAudience(merged.audience);
+      setNickname(merged.nickname);
+      setBirth(merged.birth);
+      setPains(merged.pains);
+      setGoal(merged.goal);
+      setChildProfileId(merged.childProfileId);
+
+      // 2c) If restored to personalize and a cached personal_line exists, jump straight to preview
+      if (merged.stage === "personalize" && merged.audience === "child" && merged.childProfileId) {
+        const { data: cached } = await supabase
+          .from("mind_track_personal_lines")
+          .select("personal_line")
+          .eq("child_profile_id", merged.childProfileId)
+          .eq("day", 1)
+          .maybeSingle();
+        if (cached?.personal_line) {
+          setPersonalLine(cached.personal_line);
+          setStage("preview");
+        }
+      }
+
+      setRestoreReady(true);
+      logEvent("welcome", "wizard_open", { resumedStage: merged.stage });
+    })();
+    return () => { cancelled = true; };
   }, []);
 
-  // 매 변경마다 진행 상태 저장
+  // 매 변경마다 진행 상태 저장 (복원 완료 후에만)
   useEffect(() => {
+    if (!restoreReady) return;
     localStorage.setItem("mt_onboarding_stage", stage);
     localStorage.setItem(
       "mt_onboarding_state",
       JSON.stringify({ stage, audience, nickname, birth, pains, goal, childProfileId }),
     );
-    logEvent(stage, "stage_enter", { audience });
-  }, [stage, audience, nickname, birth, pains, goal, childProfileId]); // eslint-disable-line react-hooks/exhaustive-deps
+    logEvent(stage, "stage_enter", { audience, childProfileId });
+  }, [restoreReady, stage, audience, nickname, birth, pains, goal, childProfileId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stageIdx = STAGES.indexOf(stage);
   const progress = Math.round(((stageIdx + 1) / STAGES.length) * 100);

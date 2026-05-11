@@ -439,7 +439,7 @@ export default function TrackMissions() {
         {/* 트랙 선택 */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 mb-8">
           {MIND_TRACK_FOCUSES.map((f) => {
-            const p = trackProgress(f.id, completed);
+            const p = trackProgress(f.id, completed, f.id === "child_development" ? childProfile?.id ?? null : null);
             const active = f.id === selected;
             return (
               <button

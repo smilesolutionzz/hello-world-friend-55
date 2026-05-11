@@ -514,9 +514,23 @@ export default function TrackMissions() {
                   <p className="text-[11px] font-medium tracking-wider flex items-center gap-1" style={{ color: "#C8B88A" }}>
                     <Sparkles className="w-3 h-3" /> {childProfile!.child_nickname} 맞춤 한 줄
                   </p>
-                  <p className="text-sm mt-1">
-                    {personalLines[currentDay] || (aiLoadingDay === currentDay ? "AI가 한 줄을 만드는 중..." : "맞춤 한 줄을 불러오는 중...")}
-                  </p>
+                  {personalLines[currentDay] ? (
+                    <p className="text-sm mt-1">{personalLines[currentDay]}</p>
+                  ) : aiLoadingDays.has(currentDay) ? (
+                    <div className="mt-2 space-y-1.5 animate-pulse">
+                      <div className="h-3 bg-[#E7DEC4] rounded w-5/6" />
+                      <div className="h-3 bg-[#E7DEC4] rounded w-2/3" />
+                    </div>
+                  ) : aiErrorDays[currentDay] ? (
+                    <div className="mt-2 flex items-center gap-2">
+                      <p className="text-xs text-red-600">{aiErrorDays[currentDay]}</p>
+                      <Button size="sm" variant="outline" className="h-7" onClick={() => fetchPersonalLine(currentDay)}>
+                        <RefreshCw className="w-3 h-3 mr-1" /> 재시도
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="text-sm mt-1 text-muted-foreground">맞춤 한 줄을 준비 중입니다…</p>
+                  )}
                 </div>
               )}
               <div className="mt-3 flex flex-wrap items-center gap-2">

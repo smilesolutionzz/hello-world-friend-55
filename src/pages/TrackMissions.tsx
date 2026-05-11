@@ -561,6 +561,25 @@ export default function TrackMissions() {
             <h3 className="text-lg font-bold">{focus.label} — 30일 매트릭스</h3>
             <p className="text-sm text-muted-foreground">진행률 {done}/30 ({pct}%)</p>
             <Progress value={pct} className="mt-2 h-2 w-64" />
+            {useChildData && (() => {
+              const total = baseDays.length;
+              const ready = baseDays.reduce((n, _, i) => n + (personalLines[i + 1] ? 1 : 0), 0);
+              const loading = baseDays.reduce((n, _, i) => n + (aiLoadingDays.has(i + 1) && !personalLines[i + 1] ? 1 : 0), 0);
+              const failed = baseDays.reduce((n, _, i) => {
+                const d = i + 1;
+                return n + (!personalLines[d] && !aiLoadingDays.has(d) && aiErrorDays[d] ? 1 : 0);
+              }, 0);
+              const pending = total - ready - loading - failed;
+              return (
+                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                  <span className="text-[11px] text-muted-foreground mr-1">맞춤 한 줄</span>
+                  <Badge className="text-[10px] bg-emerald-100 text-emerald-700 border-0">완료 {ready}</Badge>
+                  <Badge className="text-[10px] bg-blue-100 text-blue-700 border-0">생성중 {loading}</Badge>
+                  <Badge className="text-[10px] bg-red-100 text-red-700 border-0">실패 {failed}</Badge>
+                  <Badge variant="outline" className="text-[10px]">대기 {pending}</Badge>
+                </div>
+              );
+            })()}
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={downloadWord}>

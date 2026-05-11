@@ -38,8 +38,14 @@ import {
   renderName,
   type ChildAgeBucket,
 } from "@/lib/mindTrackChildMissions";
+import {
+  buildOverrideMap,
+  getOverrideDay,
+  PAIN_OVERRIDE_DAYS,
+  type OverrideMap,
+} from "@/lib/childPainPointMissions";
 import ChildProfileSetup, { type ChildProfile } from "@/components/mind-track/ChildProfileSetup";
-import { Sparkles, UserCog } from "lucide-react";
+import { Sparkles, UserCog, Info } from "lucide-react";
 
 const STORAGE_KEY = "track-missions:completed:v1";
 const START_KEY = "track-missions:started-at:v1";

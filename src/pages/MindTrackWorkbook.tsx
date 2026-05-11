@@ -481,10 +481,7 @@ export default function MindTrackWorkbook() {
       }
     }
 
-    if (!reflectionNote.trim()) {
-      toast.error(getMissionCheckinCopy(activeMission.mission_type).error);
-      return;
-    }
+    // 회고는 선택 입력. 비어 있어도 체크인 진행
 
     setSubmitting(true);
     try {

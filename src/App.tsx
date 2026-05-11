@@ -243,6 +243,7 @@ const App = () => {
           <Route path="/track-missions" element={<TrackMissions />} />
           <Route path="/mind-track/missions" element={<TrackMissions />} />
           <Route path="/onboarding/mind-track" element={<MindTrackOnboarding />} />
+          <Route path="/onboarding/mind-track/funnel" element={<MindTrackOnboardingFunnel />} />
           <Route path="/mind-track/check/:shareId" element={<MindTrackCheckResult />} />
           <Route path="/en/mind-track" element={<MindTrack />} />
           <Route path="/en/mind-track/dashboard" element={<MindTrackDashboard />} />

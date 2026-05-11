@@ -517,33 +517,36 @@ function NavRow({
 }
 
 function PersonalizingScreen({
-  nickname, audience, ageLabel, pains, error, onRetry, onSkip,
+  nickname, audience, ageLabel, pains, error, requestId, attempt, onRetry, onSkip,
 }: {
   nickname: string;
   audience: Audience | null;
   ageLabel?: string;
   pains: string[];
   error: string | null;
+  requestId?: string | null;
+  attempt?: { phase: string; attempt: number; maxAttempts: number; nextDelayMs?: number } | null;
   onRetry: () => void;
   onSkip: () => void;
 }) {
-  const lines = useMemo(() => {
-    const subj = audience === "child" ? `${nickname || "아이"}` : `${nickname || "당신"}`;
-    return [
-      ageLabel ? `${ageLabel} 매칭 완료` : `${subj} 코칭 트랙 매칭 완료`,
-      pains.length > 0 ? `페인포인트 ${pains.length}개 매핑: ${pains.slice(0, 3).join(" · ")}` : `기본 페인포인트 세트 적용`,
-      `Day 1·2 베이스라인 검사 선정`,
-      `${subj}에게 맞는 오늘의 한 줄 생성 중…`,
-    ];
-  }, [nickname, audience, ageLabel, pains]);
+  const subj = audience === "child" ? `${nickname || "아이"}` : `${nickname || "당신"}`;
+  const steps = useMemo(() => [
+    ageLabel ? `${ageLabel} 매칭 완료` : `${subj} 코칭 트랙 매칭 완료`,
+    pains.length > 0 ? `페인포인트 ${pains.length}개 매핑: ${pains.slice(0, 3).join(" · ")}` : `기본 페인포인트 세트 적용`,
+    `Day 1·2 베이스라인 검사 선정`,
+    `${subj}에게 맞는 오늘의 한 줄 생성`,
+  ], [subj, ageLabel, pains]);
 
-  const [shown, setShown] = useState(0);
-  useEffect(() => {
-    if (error) return;
-    if (shown >= lines.length) return;
-    const t = setTimeout(() => setShown((s) => s + 1), 1500);
-    return () => clearTimeout(t);
-  }, [shown, lines.length, error]);
+  // 첫 3단계는 즉시 완료, 마지막 단계는 attempt(phase)에 의해 제어
+  const lastStepDone = !!error ? false : !!attempt && attempt.phase === "success";
+  const lastStepLabel = (() => {
+    if (error) return `${steps[3]} — 실패`;
+    if (!attempt || attempt.phase === "preparing") return `${steps[3]} — 준비 중…`;
+    if (attempt.phase === "calling") return `${steps[3]} — 시도 ${attempt.attempt}/${attempt.maxAttempts}…`;
+    if (attempt.phase === "retrying") return `${steps[3]} — 재시도 대기 ${(attempt.nextDelayMs ?? 0) / 1000}s (${attempt.attempt}/${attempt.maxAttempts})`;
+    if (attempt.phase === "success") return `${steps[3]} — 완료`;
+    return steps[3];
+  })();
 
   return (
     <div className="space-y-6 pt-6">
@@ -566,21 +569,38 @@ function PersonalizingScreen({
       </div>
 
       <Card className="p-5 rounded-2xl border border-slate-100 space-y-3">
-        {lines.map((l, i) => (
+        {steps.slice(0, 3).map((l, i) => (
           <div key={i} className="flex items-start gap-2">
-            {i < shown ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
-            ) : (
-              <Loader2 className="w-4 h-4 text-slate-300 mt-0.5 shrink-0 animate-spin" />
-            )}
-            <span className={`text-sm break-keep ${i < shown ? "text-slate-800" : "text-slate-400"}`}>{l}</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+            <span className="text-sm break-keep text-slate-800">{l}</span>
           </div>
         ))}
+        <div className="flex items-start gap-2">
+          {lastStepDone ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+          ) : error ? (
+            <Sparkles className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+          ) : (
+            <Loader2 className="w-4 h-4 text-[#8a7a4d] mt-0.5 shrink-0 animate-spin" />
+          )}
+          <span className={`text-sm break-keep ${lastStepDone ? "text-slate-800" : error ? "text-red-600" : "text-slate-600"}`}>
+            {lastStepLabel}
+          </span>
+        </div>
       </Card>
+
+      {!error && attempt && attempt.phase === "retrying" && (
+        <p className="text-xs text-muted-foreground">
+          네트워크가 불안정해 자동으로 재시도하고 있어요. 잠시만 기다려 주세요.
+        </p>
+      )}
 
       {error && (
         <div className="space-y-3">
-          <p className="text-sm text-red-600">{error}</p>
+          <p className="text-sm text-red-600 break-keep">{error}</p>
+          {requestId && (
+            <p className="text-[11px] text-muted-foreground font-mono">요청 ID: {requestId}</p>
+          )}
           <div className="flex gap-2">
             <Button onClick={onRetry} className="bg-[#1a1a1a] text-white hover:bg-black rounded-xl">
               다시 만들기
@@ -593,6 +613,7 @@ function PersonalizingScreen({
       )}
     </div>
   );
+}
 }
 
 function PreviewScreen({

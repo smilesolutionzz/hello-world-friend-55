@@ -636,14 +636,27 @@ export default function TrackMissions() {
                           <Sparkles className="w-3 h-3 inline mr-1" />{personalLines[day]}
                         </p>
                       )}
-                      {useChildData && !personalLines[day] && (
+                      {useChildData && !personalLines[day] && aiLoadingDays.has(day) && (
+                        <div className="mt-2 space-y-1.5 animate-pulse">
+                          <div className="h-2.5 bg-[#E7DEC4] rounded w-5/6" />
+                          <div className="h-2.5 bg-[#E7DEC4] rounded w-1/2" />
+                        </div>
+                      )}
+                      {useChildData && !personalLines[day] && !aiLoadingDays.has(day) && aiErrorDays[day] && (
+                        <button
+                          className="text-xs mt-2 inline-flex items-center gap-1 underline text-red-600"
+                          onClick={() => fetchPersonalLine(day)}
+                        >
+                          <RefreshCw className="w-3 h-3" /> 재시도
+                        </button>
+                      )}
+                      {useChildData && !personalLines[day] && !aiLoadingDays.has(day) && !aiErrorDays[day] && (
                         <button
                           className="text-xs mt-2 underline"
                           style={{ color: "#C8B88A" }}
                           onClick={() => fetchPersonalLine(day)}
-                          disabled={aiLoadingDay === day}
                         >
-                          {aiLoadingDay === day ? "생성 중..." : "맞춤 한 줄 보기"}
+                          맞춤 한 줄 보기
                         </button>
                       )}
                     </div>

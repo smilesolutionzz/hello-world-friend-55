@@ -120,12 +120,21 @@ const PaymentSuccess = () => {
             </div>
           </div>
 
-          <Button 
-            onClick={() => navigate('/')} 
-            className="w-full"
-          >
-            홈으로 돌아가기
-          </Button>
+          {paymentData.pack === 'mind_track_30' ? (
+            <Button
+              onClick={() => navigate('/onboarding/mind-track')}
+              className="w-full"
+            >
+              30일 트랙 시작하기
+            </Button>
+          ) : (
+            <Button
+              onClick={() => navigate('/')}
+              className="w-full"
+            >
+              홈으로 돌아가기
+            </Button>
+          )}
         </CardContent>
       </Card>
     </div>

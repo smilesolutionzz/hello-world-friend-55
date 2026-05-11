@@ -103,7 +103,9 @@ export default function TrackMissions() {
   const [childProfile, setChildProfile] = useState<ChildProfile | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [personalLines, setPersonalLines] = useState<Record<number, string>>({}); // day -> line
-  const [aiLoadingDay, setAiLoadingDay] = useState<number | null>(null);
+  const [aiLoadingDays, setAiLoadingDays] = useState<Set<number>>(new Set());
+  const [aiErrorDays, setAiErrorDays] = useState<Record<number, string>>({});
+  const inflightRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     setCompleted(loadCompleted());
@@ -127,8 +129,25 @@ export default function TrackMissions() {
     return () => { cancelled = true; };
   }, []);
 
-  // Reset cached personal lines when profile changes
-  useEffect(() => { setPersonalLines({}); }, [childProfile?.id]);
+  // Reset cached personal lines when profile changes, then prefetch from DB
+  useEffect(() => {
+    setPersonalLines({});
+    setAiErrorDays({});
+    inflightRef.current.clear();
+    if (!childProfile?.id) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("mind_track_personal_lines")
+        .select("day, personal_line")
+        .eq("child_profile_id", childProfile.id);
+      if (cancelled || !data) return;
+      const map: Record<number, string> = {};
+      data.forEach((r: { day: number; personal_line: string }) => { map[r.day] = r.personal_line; });
+      setPersonalLines(map);
+    })();
+    return () => { cancelled = true; };
+  }, [childProfile?.id]);
 
   const ageBucket: ChildAgeBucket | null = childProfile ? getAgeBucket(childProfile.birth_date) : null;
   const isChildTrack = selected === "child_development";

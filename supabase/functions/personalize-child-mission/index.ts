@@ -19,10 +19,21 @@ function ageBucket(birthDate: string): string {
   return "청소년 (13~18세)";
 }
 
+function jres(body: Record<string, unknown>, status: number, requestId: string) {
+  return new Response(JSON.stringify({ ...body, requestId }), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json", "x-request-id": requestId },
+  });
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  const requestId = crypto.randomUUID();
+  const t0 = Date.now();
+
   try {
+    console.log(JSON.stringify({ tag: "personalize.start", requestId, ts: t0 }));
     const supa = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",

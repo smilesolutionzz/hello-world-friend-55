@@ -156,6 +156,17 @@ export default function MindTrackWorkbook() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawDayParam]);
 
+  // ✅ UX 단순화: day 파라미터 없이 들어왔고 환영/필터 의도도 없으면 → 대시보드(단일 홈)로 보냄
+  // "/mind-track/workbook"과 "/mind-track/dashboard"가 둘 다 진입 가능해서 혼란스러웠던 문제 해결
+  useEffect(() => {
+    if (rawDayParam !== null) return;
+    if (showWelcome) return;
+    if (filterParam) return;
+    if (searchParams.get("openMission") === "1") return;
+    navigate("/mind-track/dashboard", { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // localStorage 우선순위: URL ?day → URL 없으면 저장된 값
   const storedDay = (() => {
     try {
@@ -542,6 +553,15 @@ export default function MindTrackWorkbook() {
         <UnifiedNavigation />
         <MindTrackWelcomeModal forceOpen={showWelcome} />
         <div className="max-w-4xl mx-auto px-4 pt-24 pb-16 space-y-6">
+
+          {/* ✅ 단일 홈으로 돌아가는 명확한 경로 — UX 단순화 */}
+          <button
+            onClick={() => navigate("/mind-track/dashboard")}
+            className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            오늘 한눈에 보기 (대시보드)
+          </button>
 
           {/* 데이터 누적 카운터 — 결제 후 가치 즉시 시각화 */}
           <DataAccumulationCounter />

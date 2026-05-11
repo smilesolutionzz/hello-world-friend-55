@@ -580,13 +580,14 @@ function NavRow({
 }
 
 function PersonalizingScreen({
-  nickname, audience, ageLabel, pains, error, requestId, attempt, onRetry, onSkip,
+  nickname, audience, ageLabel, pains, error, errorCode, requestId, attempt, onRetry, onSkip,
 }: {
   nickname: string;
   audience: Audience | null;
   ageLabel?: string;
   pains: string[];
   error: string | null;
+  errorCode?: string | null;
   requestId?: string | null;
   attempt?: { phase: string; attempt: number; maxAttempts: number; nextDelayMs?: number } | null;
   onRetry: () => void;

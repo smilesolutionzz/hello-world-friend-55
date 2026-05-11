@@ -181,13 +181,7 @@ export default function TrackMissions() {
     return () => { cancelled = true; };
   }, [useChildData, childProfile?.id]);
 
-  // Auto-mark today's mission as "started" on the server when entering child track
-  useEffect(() => {
-    if (!useChildData) return;
-    if (serverStatus[currentDay]) return;
-    void persistChildStatus(currentDay, false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useChildData, currentDay, childProfile?.id, serverStatus[currentDay]]);
+
 
   const persistChildStatus = async (day: number, completed: boolean) => {
     if (!useChildData) return;

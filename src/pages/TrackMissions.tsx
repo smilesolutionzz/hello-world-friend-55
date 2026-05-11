@@ -281,17 +281,28 @@ export default function TrackMissions() {
     inflightRef.current.add(day);
     setAiLoadingDays((prev) => { const n = new Set(prev); n.add(day); return n; });
     setAiErrorDays((prev) => { const { [day]: _, ...rest } = prev; return rest; });
+    setAiAttemptInfo((prev) => { const { [day]: _, ...rest } = prev; return rest; });
     try {
-      const { personalizeWithRetry, describePersonalizeError } = await import("@/lib/personalizeChildMission");
+      const { personalizeWithRetry, describePersonalizeError, getRequestId } = await import("@/lib/personalizeChildMission");
       try {
         const res = await personalizeWithRetry({
           childProfileId: childProfile!.id,
           day,
           baseMission: baseDays[day - 1]?.mission ?? "",
+        }, {
+          onAttempt: (info) => {
+            setAiAttemptInfo((prev) => ({
+              ...prev,
+              [day]: { attempt: info.attempt, maxAttempts: info.maxAttempts, nextDelayMs: info.nextDelayMs, phase: info.phase },
+            }));
+          },
         });
         setPersonalLines((prev) => ({ ...prev, [day]: res.personalLine }));
       } catch (e) {
-        setAiErrorDays((prev) => ({ ...prev, [day]: describePersonalizeError(e) }));
+        setAiErrorDays((prev) => ({
+          ...prev,
+          [day]: { message: describePersonalizeError(e), code: (e as { code?: string })?.code, requestId: getRequestId(e) },
+        }));
       }
     } finally {
       inflightRef.current.delete(day);

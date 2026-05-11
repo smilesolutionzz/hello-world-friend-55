@@ -39,7 +39,8 @@ serve(async (req) => {
 - 부족한 부분은 "~한 느낌이 들어요", "~한 것 같아요" 같이 부드럽게 흘려두세요.
 
 [출력 형식]
-오직 다듬어진 고민 본문만 출력합니다. 따옴표·머리말·설명·번호 없이 본문만 반환하세요. 줄바꿈은 1~2회 이내로 자연스럽게.`;
+오직 다듬어진 고민 본문만 출력합니다. 따옴표·머리말·설명·번호 없이 본문만 반환하세요. 줄바꿈은 1~2회 이내로 자연스럽게.
+[금지] HTML 태그(<b>, </b>, <br> 등), 마크다운 기호(**, __, \`, ~~), 이모지, 영문 라벨을 절대 포함하지 마세요. 순수 한국어 평문만 출력합니다.`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -79,8 +80,18 @@ serve(async (req) => {
 
     const data = await response.json();
     let polished = (data.choices?.[0]?.message?.content || "").trim();
-    // 따옴표 제거
-    polished = polished.replace(/^["'「『]+|["'」』]+$/g, "").trim();
+    // HTML/마크다운 잔여물 제거 + 따옴표 제거
+    polished = polished
+      .replace(/<\/?[a-zA-Z][^>]*>/g, "")
+      .replace(/```[\s\S]*?```/g, "")
+      .replace(/[*_`~]+/g, "")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&amp;/g, "&")
+      .replace(/^["'「『]+|["'」』]+$/g, "")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
 
     if (!polished) throw new Error("다듬기 결과를 받지 못했습니다.");
 

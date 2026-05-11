@@ -107,7 +107,8 @@ export default function TrackMissions() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [personalLines, setPersonalLines] = useState<Record<number, string>>({}); // day -> line
   const [aiLoadingDays, setAiLoadingDays] = useState<Set<number>>(new Set());
-  const [aiErrorDays, setAiErrorDays] = useState<Record<number, string>>({});
+  const [aiErrorDays, setAiErrorDays] = useState<Record<number, { message: string; code?: string; requestId?: string }>>({});
+  const [aiAttemptInfo, setAiAttemptInfo] = useState<Record<number, { attempt: number; maxAttempts: number; nextDelayMs?: number; phase: string }>>({});
   const inflightRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
@@ -280,17 +281,28 @@ export default function TrackMissions() {
     inflightRef.current.add(day);
     setAiLoadingDays((prev) => { const n = new Set(prev); n.add(day); return n; });
     setAiErrorDays((prev) => { const { [day]: _, ...rest } = prev; return rest; });
+    setAiAttemptInfo((prev) => { const { [day]: _, ...rest } = prev; return rest; });
     try {
-      const { personalizeWithRetry, describePersonalizeError } = await import("@/lib/personalizeChildMission");
+      const { personalizeWithRetry, describePersonalizeError, getRequestId } = await import("@/lib/personalizeChildMission");
       try {
         const res = await personalizeWithRetry({
           childProfileId: childProfile!.id,
           day,
           baseMission: baseDays[day - 1]?.mission ?? "",
+        }, {
+          onAttempt: (info) => {
+            setAiAttemptInfo((prev) => ({
+              ...prev,
+              [day]: { attempt: info.attempt, maxAttempts: info.maxAttempts, nextDelayMs: info.nextDelayMs, phase: info.phase },
+            }));
+          },
         });
         setPersonalLines((prev) => ({ ...prev, [day]: res.personalLine }));
       } catch (e) {
-        setAiErrorDays((prev) => ({ ...prev, [day]: describePersonalizeError(e) }));
+        setAiErrorDays((prev) => ({
+          ...prev,
+          [day]: { message: describePersonalizeError(e), code: (e as { code?: string })?.code, requestId: getRequestId(e) },
+        }));
       }
     } finally {
       inflightRef.current.delete(day);
@@ -517,15 +529,27 @@ export default function TrackMissions() {
                   {personalLines[currentDay] ? (
                     <p className="text-sm mt-1">{personalLines[currentDay]}</p>
                   ) : aiLoadingDays.has(currentDay) ? (
-                    <div className="mt-2 space-y-1.5 animate-pulse">
-                      <div className="h-3 bg-[#E7DEC4] rounded w-5/6" />
-                      <div className="h-3 bg-[#E7DEC4] rounded w-2/3" />
+                    <div className="mt-2 space-y-1.5">
+                      <div className="animate-pulse space-y-1.5">
+                        <div className="h-3 bg-[#E7DEC4] rounded w-5/6" />
+                        <div className="h-3 bg-[#E7DEC4] rounded w-2/3" />
+                      </div>
+                      {aiAttemptInfo[currentDay] && aiAttemptInfo[currentDay].attempt > 1 && (
+                        <p className="text-[11px] text-muted-foreground">
+                          {aiAttemptInfo[currentDay].phase === "retrying"
+                            ? `재시도 대기 중 (${aiAttemptInfo[currentDay].attempt}/${aiAttemptInfo[currentDay].maxAttempts})…`
+                            : `재시도 중 (${aiAttemptInfo[currentDay].attempt}/${aiAttemptInfo[currentDay].maxAttempts})…`}
+                        </p>
+                      )}
                     </div>
                   ) : aiErrorDays[currentDay] ? (
-                    <div className="mt-2 flex items-center gap-2">
-                      <p className="text-xs text-red-600">{aiErrorDays[currentDay]}</p>
-                      <Button size="sm" variant="outline" className="h-7" onClick={() => fetchPersonalLine(currentDay)}>
-                        <RefreshCw className="w-3 h-3 mr-1" /> 재시도
+                    <div className="mt-2 space-y-1">
+                      <p className="text-xs text-red-600">{aiErrorDays[currentDay].message}</p>
+                      {aiErrorDays[currentDay].requestId && (
+                        <p className="text-[10px] text-muted-foreground font-mono">요청 ID: {aiErrorDays[currentDay].requestId}</p>
+                      )}
+                      <Button size="sm" variant="outline" className="h-7 mt-1" onClick={() => fetchPersonalLine(currentDay)}>
+                        <RefreshCw className="w-3 h-3 mr-1" /> 다시 시도
                       </Button>
                     </div>
                   ) : (
@@ -662,12 +686,18 @@ export default function TrackMissions() {
                         </div>
                       )}
                       {useChildData && !personalLines[day] && !aiLoadingDays.has(day) && aiErrorDays[day] && (
-                        <button
-                          className="text-xs mt-2 inline-flex items-center gap-1 underline text-red-600"
-                          onClick={() => fetchPersonalLine(day)}
-                        >
-                          <RefreshCw className="w-3 h-3" /> 재시도
-                        </button>
+                        <div className="mt-2 space-y-0.5">
+                          <button
+                            className="text-xs inline-flex items-center gap-1 underline text-red-600"
+                            onClick={() => fetchPersonalLine(day)}
+                            title={aiErrorDays[day].requestId ? `요청 ID: ${aiErrorDays[day].requestId}` : undefined}
+                          >
+                            <RefreshCw className="w-3 h-3" /> 다시 시도 · {aiErrorDays[day].message}
+                          </button>
+                          {aiErrorDays[day].requestId && (
+                            <p className="text-[10px] text-muted-foreground font-mono">ID: {aiErrorDays[day].requestId}</p>
+                          )}
+                        </div>
                       )}
                       {useChildData && !personalLines[day] && !aiLoadingDays.has(day) && !aiErrorDays[day] && (
                         <button

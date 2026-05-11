@@ -185,7 +185,7 @@ export default function ActionBookPreviewSection({
           <BadgeCheck className="w-3 h-3" /> CBT · 행동활성화 근거
         </span>
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FBF8EE] border border-[#C8B88A]/40 text-[#8a7a4d] text-[10px] font-semibold">
-          임상심리 자문 검수
+          14년 현장 전문가 검수
         </span>
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FBF8EE] border border-[#C8B88A]/40 text-[#8a7a4d] text-[10px] font-semibold">
           내 정보로 한 줄만 맞춤

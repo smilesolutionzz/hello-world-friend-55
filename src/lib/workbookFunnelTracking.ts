@@ -7,7 +7,11 @@ import { trackEvent as gaTrackEvent } from "@/components/common/Analytics";
 export type WorkbookFunnelEvent =
   | "mt_workbook_sample_open"
   | "mt_workbook_sample_complete"
-  | "mt_workbook_sample_cta_click";
+  | "mt_workbook_sample_cta_click"
+  | "mt_action_book_preview_view"
+  | "mt_action_book_live_generate"
+  | "mt_action_book_pdf_download"
+  | "mt_action_book_unlock_cta_click";
 
 /**
  * Personalization fields applied to a workbook sample render.

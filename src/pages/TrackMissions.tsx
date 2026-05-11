@@ -672,7 +672,11 @@ export default function TrackMissions() {
         open={profileOpen}
         initial={childProfile}
         onClose={() => setProfileOpen(false)}
-        onSaved={(p) => setChildProfile(p)}
+        onSaved={(p) => {
+          setChildProfile(p);
+          setSelected("child_development");
+          // Personal line will be fetched by the auto-effect after profile mounts.
+        }}
       />
     </div>
   );

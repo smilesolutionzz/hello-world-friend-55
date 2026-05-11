@@ -659,12 +659,37 @@ function PersonalizingScreen({
         </p>
       )}
 
+      {/* 항상 노출되는 디버그 패널 — 운영 중 진단/CS용 */}
+      <div className="rounded-xl border border-slate-100 bg-slate-50/60 px-3 py-2 text-[11px] font-mono text-slate-500 space-y-0.5">
+        <div className="flex justify-between gap-2">
+          <span>요청 ID</span>
+          <span className="truncate text-slate-700">{requestId || "(아직 발급 전)"}</span>
+        </div>
+        <div className="flex justify-between gap-2">
+          <span>상태</span>
+          <span className="text-slate-700">
+            {attempt ? `${attempt.phase} ${attempt.attempt}/${attempt.maxAttempts}${attempt.nextDelayMs ? ` · ${attempt.nextDelayMs}ms 후` : ""}` : "—"}
+          </span>
+        </div>
+        <div className="flex justify-between gap-2">
+          <span>마지막 에러</span>
+          <span className="text-slate-700 truncate">{errorCode || "—"}{error ? ` · ${error}` : ""}</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            const txt = `requestId=${requestId || "-"} | phase=${attempt?.phase || "-"} ${attempt?.attempt || 0}/${attempt?.maxAttempts || 0} | code=${errorCode || "-"} | msg=${error || "-"}`;
+            navigator.clipboard?.writeText(txt).catch(() => {});
+          }}
+          className="text-[10px] text-slate-400 hover:text-slate-700 underline"
+        >
+          디버그 정보 복사
+        </button>
+      </div>
+
       {error && (
         <div className="space-y-3">
           <p className="text-sm text-red-600 break-keep">{error}</p>
-          {requestId && (
-            <p className="text-[11px] text-muted-foreground font-mono">요청 ID: {requestId}</p>
-          )}
           <div className="flex gap-2">
             <Button onClick={onRetry} className="bg-[#1a1a1a] text-white hover:bg-black rounded-xl">
               다시 만들기

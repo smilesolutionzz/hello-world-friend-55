@@ -108,6 +108,7 @@ import TokenSubscription from "./pages/TokenSubscription";
 import CoachingGoals from "./pages/CoachingGoals";
 import BusinessSubscription from "./pages/BusinessSubscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import MindTrackOnboarding from "./pages/MindTrackOnboarding";
 import PaymentComplete from "./pages/PaymentComplete";
 import PaymentFail from "./pages/PaymentFail";
 import Pricing from "./pages/Pricing";
@@ -240,6 +241,7 @@ const App = () => {
           <Route path="/mind-track/workbook-preview" element={<MindTrackWorkbookPreview />} />
           <Route path="/track-missions" element={<TrackMissions />} />
           <Route path="/mind-track/missions" element={<TrackMissions />} />
+          <Route path="/onboarding/mind-track" element={<MindTrackOnboarding />} />
           <Route path="/mind-track/check/:shareId" element={<MindTrackCheckResult />} />
           <Route path="/en/mind-track" element={<MindTrack />} />
           <Route path="/en/mind-track/dashboard" element={<MindTrackDashboard />} />

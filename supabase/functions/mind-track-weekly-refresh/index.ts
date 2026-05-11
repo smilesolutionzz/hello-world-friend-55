@@ -1,6 +1,7 @@
 // Generate next week's missions based on user's check-in data
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { getWeekSeeds, formatSeedsForPrompt } from "../_shared/mindTrackExpertSeeds.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -60,7 +61,13 @@ Deno.serve(async (req) => {
     const weekTheme = (workbook.weekly_themes as any[])?.find((w) => w.week === weekNumber);
     const dayCount = endDay - startDay + 1;
 
-    const systemPrompt = `당신은 깊이 있는 코칭 가이드입니다. 사용자의 지난 주 체크인 데이터를 보고 ${weekNumber}주차 일일 미션 ${dayCount}개를 "구체적·단계적·측정가능한" 형태로 생성하세요.
+    const seeds = getWeekSeeds(weekNumber);
+    const seedBlock = formatSeedsForPrompt(seeds);
+
+    const systemPrompt = `당신은 14년 경력 현장 전문가가 설계한 30일 마음 트랙 큐레이터입니다. 아래 [전문가 시드]를 반드시 토대로 ${weekNumber}주차 일일 미션 ${dayCount}개를 "구체적·단계적·측정가능한" 형태로 생성하세요. 시드의 회복 메커니즘과 자기성찰 각도를 유지하되, 사용자 데이터에 맞게 톤·강도·예시를 개인화합니다.
+
+[전문가 시드 — 반드시 반영]
+${seedBlock}
 
 [규칙]
 - 의료 용어/외부 브랜드 약어(MBTI/CBT/Calm/Wysa/Noom 등) 금지

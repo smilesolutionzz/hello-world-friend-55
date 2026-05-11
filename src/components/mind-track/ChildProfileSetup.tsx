@@ -53,10 +53,34 @@ export default function ChildProfileSetup({ open, initial, onClose, onSaved }: P
   };
 
   const save = async () => {
-    if (!name.trim() || !birth) {
-      toast({ title: "닉네임과 생년월일을 입력해 주세요", variant: "destructive" });
-      return;
+    // Validation
+    const nick = name.trim();
+    if (nick.length < 1 || nick.length > 20) {
+      toast({ title: "닉네임은 1~20자로 입력해 주세요", variant: "destructive" }); return;
     }
+    if (!birth) {
+      toast({ title: "생년월일을 선택해 주세요", variant: "destructive" }); return;
+    }
+    const bd = new Date(birth);
+    if (isNaN(bd.getTime())) {
+      toast({ title: "올바른 생년월일을 입력해 주세요", variant: "destructive" }); return;
+    }
+    const now = new Date();
+    if (bd.getTime() > now.getTime()) {
+      toast({ title: "생년월일은 오늘 이전이어야 합니다", variant: "destructive" }); return;
+    }
+    const minDate = new Date(now.getFullYear() - 25, now.getMonth(), now.getDate());
+    if (bd.getTime() < minDate.getTime()) {
+      toast({ title: "이 코칭은 만 0~18세 대상입니다", variant: "destructive" }); return;
+    }
+    if (pains.length > 5) {
+      toast({ title: "고민은 최대 5개까지 선택할 수 있습니다", variant: "destructive" }); return;
+    }
+    const goalText = goal.trim();
+    if (goalText.length > 200) {
+      toast({ title: "목표는 200자 이내로 작성해 주세요", variant: "destructive" }); return;
+    }
+
     setSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -66,10 +90,10 @@ export default function ChildProfileSetup({ open, initial, onClose, onSaved }: P
       }
       const payload = {
         user_id: user.id,
-        child_nickname: name.trim(),
+        child_nickname: nick,
         birth_date: birth,
         pain_points: pains,
-        goal_text: goal.trim() || null,
+        goal_text: goalText || null,
       };
       const q = initial?.id
         ? supabase.from("user_child_profiles").update(payload).eq("id", initial.id).select().single()
@@ -77,7 +101,7 @@ export default function ChildProfileSetup({ open, initial, onClose, onSaved }: P
       const { data, error } = await q;
       if (error) throw error;
       onSaved(data as ChildProfile);
-      toast({ title: "아이 프로필이 저장되었습니다" });
+      toast({ title: "아이 프로필이 저장되었습니다", description: "맞춤 미션을 준비합니다…" });
       onClose();
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "저장 실패";

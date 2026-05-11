@@ -52,7 +52,6 @@ export default function ActionBookPreviewSection({
   const [days, setDays] = useState<DayLine[]>(DEFAULT_LINES);
   const [generating, setGenerating] = useState(false);
   const [isPersonalized, setIsPersonalized] = useState(false);
-  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);

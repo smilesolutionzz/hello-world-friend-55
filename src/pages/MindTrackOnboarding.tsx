@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PAIN_POINT_OPTIONS, getAgeBucket, getAgeYears, AGE_BUCKET_LABEL } from "@/lib/mindTrackChildMissions";
+import { personalizeWithRetry, describePersonalizeError } from "@/lib/personalizeChildMission";
 
 type Audience = "self" | "child" | "family";
 type Stage = "welcome" | "audience" | "child_basics" | "pain_points" | "goal" | "personalize" | "preview";

@@ -85,9 +85,49 @@ export default function TrackMissions() {
   const [search, setSearch] = useState("");
   const matrixRef = useRef<HTMLDivElement>(null);
 
+  // Child personalization
+  const [childProfile, setChildProfile] = useState<ChildProfile | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [personalLines, setPersonalLines] = useState<Record<number, string>>({}); // day -> line
+  const [aiLoadingDay, setAiLoadingDay] = useState<number | null>(null);
+
   useEffect(() => {
     setCompleted(loadCompleted());
   }, []);
+
+  // Load child profile when user is signed in
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      const { data } = await supabase
+        .from("user_child_profiles")
+        .select("id, child_nickname, birth_date, pain_points, goal_text")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (!cancelled && data) setChildProfile(data as ChildProfile);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Reset cached personal lines when profile changes
+  useEffect(() => { setPersonalLines({}); }, [childProfile?.id]);
+
+  const ageBucket: ChildAgeBucket | null = childProfile ? getAgeBucket(childProfile.birth_date) : null;
+  const isChildTrack = selected === "child_development";
+  const useChildData = isChildTrack && !!childProfile && !!ageBucket;
+
+  const baseDays: DayDef[] = useChildData
+    ? CHILD_MISSIONS_BY_AGE[ageBucket!].map((d) => ({
+        ...d,
+        mission: renderName(d.mission, childProfile!.child_nickname),
+        actionTitle: renderName(d.actionTitle, childProfile!.child_nickname),
+        actionHowTo: renderName(d.actionHowTo, childProfile!.child_nickname),
+      }))
+    : TRACK_DAYS[selected];
 
   const toggle = (trackId: MindTrackFocusId, day: number) => {
     setCompleted((prev) => {
@@ -100,13 +140,45 @@ export default function TrackMissions() {
 
   const startedAt = useMemo(() => loadStartedAt(selected), [selected]);
   const currentDay = getCurrentDay(startedAt);
-  const todayMission: DayDef = TRACK_DAYS[selected][currentDay - 1];
+  const todayMission: DayDef = baseDays[currentDay - 1];
   const todayAssessment = ASSESSMENT_DAYS[currentDay] ?? null;
 
   const focus = MIND_TRACK_FOCUSES.find((f) => f.id === selected)!;
   const { done, pct } = trackProgress(selected, completed);
 
-  // 검색: 전체 270개에서 매칭
+  const weeklyThemes = useChildData ? CHILD_WEEKLY_THEMES[ageBucket!] : focus.weeklyThemes;
+
+  const fetchPersonalLine = async (day: number) => {
+    if (!useChildData || personalLines[day] || aiLoadingDay === day) return;
+    setAiLoadingDay(day);
+    try {
+      const { data, error } = await supabase.functions.invoke("personalize-child-mission", {
+        body: {
+          childProfileId: childProfile!.id,
+          day,
+          baseMission: baseDays[day - 1]?.mission ?? "",
+        },
+      });
+      if (error) throw error;
+      const line = (data as { personalLine?: string })?.personalLine;
+      if (line) setPersonalLines((prev) => ({ ...prev, [day]: line }));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "AI 호출 실패";
+      toast({ title: msg, variant: "destructive" });
+    } finally {
+      setAiLoadingDay(null);
+    }
+  };
+
+  // Auto-fetch today's personal line when entering child track
+  useEffect(() => {
+    if (useChildData && !personalLines[currentDay] && aiLoadingDay !== currentDay) {
+      fetchPersonalLine(currentDay);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useChildData, currentDay, childProfile?.id]);
+
+  // 검색: 전체 270개에서 매칭 (child_development는 연령별로 동적이므로 기본 데이터로만 검색)
   const searchResults = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return [];

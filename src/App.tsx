@@ -238,6 +238,8 @@ const App = () => {
           {/* 별칭: /mind-track-workbook 도 동일하게 동작 (?day=N 파라미터 그대로 전달) */}
           <Route path="/mind-track-workbook" element={<MindTrackWorkbook />} />
           <Route path="/mind-track/workbook-preview" element={<MindTrackWorkbookPreview />} />
+          <Route path="/track-missions" element={<TrackMissions />} />
+          <Route path="/mind-track/missions" element={<TrackMissions />} />
           <Route path="/mind-track/check/:shareId" element={<MindTrackCheckResult />} />
           <Route path="/en/mind-track" element={<MindTrack />} />
           <Route path="/en/mind-track/dashboard" element={<MindTrackDashboard />} />

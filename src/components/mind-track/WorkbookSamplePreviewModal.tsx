@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BookOpen, TrendingUp, FileText, Quote, Lightbulb, ShieldCheck, Sparkles, ArrowRight, UserCheck, MessageCircleHeart } from "lucide-react";
+import { BookOpen, TrendingUp, FileText, Quote, Lightbulb, ShieldCheck, Sparkles, ArrowRight, UserCheck, MessageCircleHeart, Youtube, Play, Brain, Activity, Moon, HeartPulse, Compass, ListChecks, Calendar, BookMarked } from "lucide-react";
 
 interface Checkin {
   day_number: number;
@@ -366,6 +366,134 @@ export default function WorkbookSamplePreviewModal({
               </div>
               <p className="text-[10.5px] text-slate-500 mt-3 break-keep">
                 * 위 사례는 실제 사용자 동의 후 익명 가공된 코칭 기록입니다. 결과는 개인차가 있을 수 있어요.
+              </p>
+            </Page>
+          </PageFrame>
+
+          {/* PAGE 5.7 — 주간 심층 분석 (4주 리듬) */}
+          <PageFrame label="3장 · 주간 심층 분석">
+            <Page>
+              <PageHeader title="4주 동안 일어난 일" chapter="03" icon={Calendar} />
+              <p className="text-[12px] text-slate-500 mb-4 break-keep">
+                매주 끝에 코치가 직접 검토하고, AI가 행동 데이터·체크인·수면 리듬을 교차 분석한 요약입니다.
+              </p>
+              <div className="space-y-3">
+                {[
+                  { week: "Week 1", title: "관찰 · 내 리듬 알아차리기", color: "rose", icon: Activity, body: "아침 코르티솔이 높은 시간대(7~9시)에 부정 감정이 몰림. 카페인 섭취 시점과 무드 저하의 상관계수 0.62. → 카페인을 식사 후로 미루는 미세 조정.", metric: "체크인 5/7 · 수면 평균 5.8h" },
+                  { week: "Week 2", title: "조정 · 신체 신호 다루기", color: "amber", icon: HeartPulse, body: "어깨 긴장 → 얕은 호흡 → 무드 저하의 3단계 캐스케이드를 식별. 4-7-8 호흡 1분만 끼워넣었을 때 무드 회복 평균 +1.4점.", metric: "체크인 6/7 · 수면 평균 6.3h" },
+                  { week: "Week 3", title: "정체 · 학습 곡선의 평탄기", color: "slate", icon: Compass, body: "전형적인 ‘2주차 정체기’. 새 행동이 자동화되기 전 단계로, 기록만 유지해도 신경회로 통합이 진행됨. 코치가 ‘실패 아님’ 프레임을 제시.", metric: "체크인 4/7 · 수면 평균 6.1h" },
+                  { week: "Week 4", title: "통합 · 다음 30일을 위한 토대", color: "emerald", icon: TrendingUp, body: "회복의 트리거 3가지(짧은 산책, 신뢰 대화, 저녁 화면 차단)가 안정적으로 결합. 베이스라인 대비 스트레스 −36점, 명료도 +33점.", metric: "체크인 7/7 · 수면 평균 6.8h" },
+                ].map((w) => (
+                  <div key={w.week} className="rounded-xl border border-slate-200 bg-white/60 p-3.5">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <w.icon className={`w-3.5 h-3.5 text-${w.color}-600`} />
+                      <span className="text-[10px] font-mono text-slate-500">{w.week}</span>
+                      <span className="text-[12.5px] font-bold text-slate-900 break-keep">{w.title}</span>
+                    </div>
+                    <p className="text-[12px] text-slate-700 leading-relaxed break-keep mb-2">{w.body}</p>
+                    <div className="text-[10px] font-mono text-slate-400">{w.metric}</div>
+                  </div>
+                ))}
+              </div>
+            </Page>
+          </PageFrame>
+
+          {/* PAGE 5.8 — 큐레이션 영상 라이브러리 */}
+          <PageFrame label="부록 A · 큐레이션 영상">
+            <Page>
+              <PageHeader title="당신의 30일에 맞춘 영상 처방" chapter="A" icon={Youtube} />
+              <p className="text-[12px] text-slate-500 mb-4 break-keep">
+                코치가 직접 검수한 한국어 영상 라이브러리 + 매일 자동 매칭되는 ‘오늘의 영상’. 워크북에는 QR과 짧은 노트가 함께 인쇄됩니다.
+              </p>
+              <div className="space-y-2.5">
+                {[
+                  { day: "Day 02", tag: "호흡", title: "3분 마음챙김 호흡 가이드", note: "아침 첫 컵 물 마신 직후에 들어보기. 어깨가 내려가는 감각 관찰.", dur: "3:42", thumb: "from-rose-100 to-rose-50" },
+                  { day: "Day 09", tag: "수면", title: "잠들기 전 8분 바디스캔", note: "이어폰 없이 스피커로. 끝까지 못 들어도 OK — 끝나기 전 잠드는 게 목표.", dur: "8:10", thumb: "from-indigo-100 to-indigo-50" },
+                  { day: "Day 14", tag: "정체기", title: "회복은 직선이 아니다 — 학습 곡선의 평탄기", note: "Week 2 정체기 자동 푸시. 코치 인터뷰 컷 포함.", dur: "6:25", thumb: "from-amber-100 to-amber-50" },
+                  { day: "Day 18", tag: "자기자비", title: "Self-Compassion 5분 명상 (KR)", note: "‘내가 나에게 했더라면 좋았을 말’ 워크시트와 짝지음.", dur: "5:18", thumb: "from-emerald-100 to-emerald-50" },
+                  { day: "Day 24", tag: "관계", title: "거절 한 줄 — 경계 만들기 연습", note: "이번 주 ‘하지 않을 일 1가지’와 연결.", dur: "4:55", thumb: "from-sky-100 to-sky-50" },
+                  { day: "Day 30", tag: "마무리", title: "한 달 회고 — 감사 명상", note: "마지막 체크인 직후 자동 재생. PDF 마지막 페이지 QR로 영구 보관.", dur: "7:02", thumb: "from-[#fbf7eb] to-white" },
+                ].map((v) => (
+                  <div key={v.day} className="flex gap-3 p-2.5 rounded-xl border border-slate-200 hover:border-[#C8B88A]/50 transition-colors bg-white">
+                    <div className={`relative w-20 h-14 rounded-lg bg-gradient-to-br ${v.thumb} flex items-center justify-center flex-shrink-0 border border-slate-100`}>
+                      <Play className="w-5 h-5 text-slate-700" fill="currentColor" />
+                      <span className="absolute bottom-0.5 right-1 text-[8px] font-mono bg-black/70 text-white px-1 rounded">{v.dur}</span>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-[9px] font-mono text-[#8a7a4d]">{v.day}</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">{v.tag}</span>
+                      </div>
+                      <div className="text-[12px] font-bold text-slate-900 leading-snug break-keep">{v.title}</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5 break-keep leading-snug">코치 노트 — {v.note}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 rounded-xl bg-[#fbf7eb] border border-[#C8B88A]/30 p-3 text-[11px] text-slate-600 break-keep leading-relaxed">
+                총 30개 영상 · 평균 5분 22초 · 모두 한국어 자막. 매일 당신의 무드·수면·체크인 상태에 따라
+                자동 매칭되며, PDF 워크북에는 QR로 영구 보관됩니다.
+              </div>
+            </Page>
+          </PageFrame>
+
+          {/* PAGE 5.9 — 행동 처방전 */}
+          <PageFrame label="5장 · 행동 처방전">
+            <Page>
+              <PageHeader title="다음 30일을 위한 처방전" chapter="05" icon={ListChecks} />
+              <p className="text-[12px] text-slate-500 mb-4 break-keep">
+                30일 데이터에서 효과 크기가 가장 컸던 행동만 추려, 일상에 끼워 넣을 수 있는 형태로 정리했어요.
+              </p>
+              <div className="space-y-3">
+                {[
+                  { when: "매일 아침", act: "물 한 컵 → 햇빛 5분", why: "코르티솔 리듬 정상화 (효과크기 d=0.71)", time: "5분" },
+                  { when: "점심 후", act: "10분 산책 + 카페인 1잔 이내", why: "오후 무드 저하 −38% (당신 데이터 기준)", time: "10분" },
+                  { when: "저녁 8:30", act: "화면 밝기 절반 + 호흡 1분", why: "Day 1~7 식별된 ‘저녁 무드 절벽’ 차단", time: "1분" },
+                  { when: "취침 전", act: "오늘의 작은 회복 1줄 적기", why: "메타인지 강화, 다음날 회복 속도 +22%", time: "2분" },
+                  { when: "주 1회", act: "신뢰하는 사람에게 먼저 한 마디", why: "관계 트리거가 회복의 1순위 변수", time: "—" },
+                ].map((p, i) => (
+                  <div key={i} className="rounded-xl border border-emerald-200/60 bg-emerald-50/30 p-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] font-mono tracking-wider text-emerald-700 uppercase">{p.when}</span>
+                      <span className="text-[10px] font-mono text-slate-400">{p.time}</span>
+                    </div>
+                    <div className="text-[13px] font-bold text-slate-900 break-keep">{p.act}</div>
+                    <div className="text-[11px] text-slate-600 mt-1 break-keep leading-snug">왜? {p.why}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 flex items-start gap-2 text-[11px] text-slate-500 break-keep leading-relaxed">
+                <BookMarked className="w-3.5 h-3.5 text-[#8a7a4d] flex-shrink-0 mt-0.5" />
+                <span>처방전은 PDF 마지막에 별지로 인쇄되어 냉장고·책상에 붙여둘 수 있게 디자인됩니다.</span>
+              </div>
+            </Page>
+          </PageFrame>
+
+          {/* PAGE 5.95 — 뇌과학 해설 */}
+          <PageFrame label="부록 B · 뇌과학으로 본 변화">
+            <Page>
+              <PageHeader title="당신의 30일, 뇌에서는 무엇이 바뀌었나" chapter="B" icon={Brain} />
+              <p className="text-[12px] text-slate-500 mb-4 break-keep">
+                각 주차에서 활성·재구성된 회로를 짧게 풀어 설명합니다. 의학적 진단이 아니라, 행동 변화의 신경과학적 맥락이에요.
+              </p>
+              <div className="space-y-3">
+                {[
+                  { area: "전대상피질 (ACC)", week: "W1", body: "‘무엇이 나를 흔드는가’를 알아차리는 메타인지 회로. 첫 주 체크인이 가장 강하게 자극합니다." },
+                  { area: "편도체 (Amygdala)", week: "W2", body: "호흡·바디스캔이 반복될 때 과활성이 평균 18~25% 감소한다는 보고. 본 트랙 데이터에서도 ‘저녁 무드 절벽’ 완화로 관찰됨." },
+                  { area: "전전두피질 (PFC)", week: "W3", body: "정체기에 새 행동을 ‘자동화’하는 단계. 무드 변화는 적어 보여도 실행 회로가 가장 바쁜 시기." },
+                  { area: "기본모드망 (DMN)", week: "W4", body: "회고·서사화가 진행될 때 활성화. 워크북의 ‘닫는 글’과 회고 영상이 이 회로를 직접 자극하도록 설계됨." },
+                ].map((n) => (
+                  <div key={n.area} className="rounded-xl border border-slate-200 p-3 bg-white">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[12px] font-bold text-slate-900">{n.area}</span>
+                      <span className="text-[10px] font-mono text-[#8a7a4d]">{n.week}</span>
+                    </div>
+                    <p className="text-[11.5px] text-slate-600 leading-relaxed break-keep">{n.body}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-slate-400 mt-3 break-keep leading-relaxed">
+                * 출처: Tang et al. (2015), Hölzel et al. (2011) 등 마음챙김·행동 변화 메타분석을 코칭 맥락에 맞춰 재구성. 개별 효과는 차이가 있을 수 있어요.
               </p>
             </Page>
           </PageFrame>

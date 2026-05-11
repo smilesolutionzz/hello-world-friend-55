@@ -109,7 +109,7 @@ const ASSESSMENT_DAYS: Record<number, MindTrackDailyContent['assessment']> = {
   29: { route: "/depression-package", title: "우울감 최종 진단", desc: "Day 2와 같은 진단을 다시 — 30일 변화 그래프 완성", minutes: 6, why: "내일의 종합 리포트가 정확해지려면 마지막 측정이 필요해요." },
 };
 
-interface DayDef {
+export interface DayDef {
   mission: string;
   actionTitle: string;
   actionHowTo: string;
@@ -117,7 +117,7 @@ interface DayDef {
   videoReason: string;
 }
 
-const TRACK_DAYS: Record<MindTrackFocusId, DayDef[]> = {
+export const TRACK_DAYS: Record<MindTrackFocusId, DayDef[]> = {
   sleep: [
     { mission: "취침·기상 시각 기록", actionTitle: "오늘 수면 시각 기록", actionHowTo: "어젯밤 잠든 시각 / 오늘 일어난 시각을 적어요.", actionMinutes: 3, videoReason: "수면 베이스라인 직후 가장 가벼운 호흡 루틴." },
     { mission: "수면 환경 점검", actionTitle: "침실 조도·온도 1가지 손보기", actionHowTo: "조명을 한 단계 낮추거나 실내온도를 1도 조정.", actionMinutes: 4, videoReason: "취침 전 자극을 줄이는 호흡법." },

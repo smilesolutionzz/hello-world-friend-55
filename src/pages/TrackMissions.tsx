@@ -529,15 +529,27 @@ export default function TrackMissions() {
                   {personalLines[currentDay] ? (
                     <p className="text-sm mt-1">{personalLines[currentDay]}</p>
                   ) : aiLoadingDays.has(currentDay) ? (
-                    <div className="mt-2 space-y-1.5 animate-pulse">
-                      <div className="h-3 bg-[#E7DEC4] rounded w-5/6" />
-                      <div className="h-3 bg-[#E7DEC4] rounded w-2/3" />
+                    <div className="mt-2 space-y-1.5">
+                      <div className="animate-pulse space-y-1.5">
+                        <div className="h-3 bg-[#E7DEC4] rounded w-5/6" />
+                        <div className="h-3 bg-[#E7DEC4] rounded w-2/3" />
+                      </div>
+                      {aiAttemptInfo[currentDay] && aiAttemptInfo[currentDay].attempt > 1 && (
+                        <p className="text-[11px] text-muted-foreground">
+                          {aiAttemptInfo[currentDay].phase === "retrying"
+                            ? `재시도 대기 중 (${aiAttemptInfo[currentDay].attempt}/${aiAttemptInfo[currentDay].maxAttempts})…`
+                            : `재시도 중 (${aiAttemptInfo[currentDay].attempt}/${aiAttemptInfo[currentDay].maxAttempts})…`}
+                        </p>
+                      )}
                     </div>
                   ) : aiErrorDays[currentDay] ? (
-                    <div className="mt-2 flex items-center gap-2">
-                      <p className="text-xs text-red-600">{aiErrorDays[currentDay]}</p>
-                      <Button size="sm" variant="outline" className="h-7" onClick={() => fetchPersonalLine(currentDay)}>
-                        <RefreshCw className="w-3 h-3 mr-1" /> 재시도
+                    <div className="mt-2 space-y-1">
+                      <p className="text-xs text-red-600">{aiErrorDays[currentDay].message}</p>
+                      {aiErrorDays[currentDay].requestId && (
+                        <p className="text-[10px] text-muted-foreground font-mono">요청 ID: {aiErrorDays[currentDay].requestId}</p>
+                      )}
+                      <Button size="sm" variant="outline" className="h-7 mt-1" onClick={() => fetchPersonalLine(currentDay)}>
+                        <RefreshCw className="w-3 h-3 mr-1" /> 다시 시도
                       </Button>
                     </div>
                   ) : (

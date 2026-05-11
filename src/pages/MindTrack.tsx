@@ -586,17 +586,7 @@ const MindTrack: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* 30일 미리보기 — 항상 동일하게 보이는 락 처리 */}
-                  <div className="grid grid-cols-10 gap-1 mb-4">
-                    {Array.from({ length: 30 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="aspect-square rounded-md bg-[#FAF8F2] border border-[#C8B88A]/20 flex items-center justify-center text-[9px] font-semibold text-[#C8B88A]"
-                      >
-                        {String(i + 1).padStart(2, '0')}
-                      </div>
-                    ))}
-                  </div>
+                  {/* 상단 30칸 그리드는 액션북 미리보기와 중복되어 제거 — 흐름은 타임라인 + 미리보기 한 곳에서만 표현 */}
 
                   <ActionBookPreviewSection
                     nickname={sampleSeed.nickname}

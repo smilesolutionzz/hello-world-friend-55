@@ -284,21 +284,19 @@ export default function ActionBookPreviewSection({
           ))}
         </div>
 
-        {/* Day 4-30 잠금 */}
-        <div className="grid grid-cols-9 gap-1 mb-2">
-          {Array.from({ length: 27 }).map((_, i) => (
-            <div
-              key={i}
-              className="aspect-square rounded bg-[#FAF8F2] border border-[#C8B88A]/20 flex items-center justify-center text-[7px] font-mono text-[#C8B88A]/70 relative"
-            >
-              {String(i + 4).padStart(2, "0")}
-              <Lock className="absolute bottom-0 right-0 w-1.5 h-1.5 text-[#C8B88A]/50" />
-            </div>
-          ))}
+        {/* Day 4-30 잠금 — 그리드 대신 한 줄 진행 바로 압축 */}
+        <div className="rounded-xl border border-[#C8B88A]/25 bg-[#FAF8F2] px-3 py-2.5 flex items-center gap-3">
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Lock className="w-3.5 h-3.5 text-[#C8B88A]" />
+            <span className="text-[10px] font-mono font-semibold text-[#8a7a4d] tracking-wider">
+              DAY 04—30
+            </span>
+          </div>
+          <div className="flex-1 h-1.5 rounded-full bg-white border border-[#C8B88A]/20 overflow-hidden">
+            <div className="h-full w-[10%] bg-gradient-to-r from-[#C8B88A] to-[#1a1a1a] rounded-full" />
+          </div>
+          <span className="text-[10px] text-foreground/55 shrink-0">결제 후 매일 자동 열림</span>
         </div>
-        <p className="text-[9px] text-foreground/40 text-center font-mono">
-          Day 04—30 · 결제 후 매일 한 장씩 자동 생성
-        </p>
       </div>
 
       {/* 챕터 자동 정리 안내 */}

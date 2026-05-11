@@ -554,6 +554,15 @@ export default function MindTrackWorkbook() {
         <MindTrackWelcomeModal forceOpen={showWelcome} />
         <div className="max-w-4xl mx-auto px-4 pt-24 pb-16 space-y-6">
 
+          {/* ✅ 단일 홈으로 돌아가는 명확한 경로 — UX 단순화 */}
+          <button
+            onClick={() => navigate("/mind-track/dashboard")}
+            className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            오늘 한눈에 보기 (대시보드)
+          </button>
+
           {/* 데이터 누적 카운터 — 결제 후 가치 즉시 시각화 */}
           <DataAccumulationCounter />
 

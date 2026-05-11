@@ -56,7 +56,20 @@ export default function MindTrackDashboard() {
     Array<{ day_number: number; completed: boolean; reflection_note?: string | null; created_at: string; mood_score?: number | null }>
   >([]);
   const [allCheckins, setAllCheckins] = useState<Array<{ day_number: number; completed: boolean }>>([]);
-  const [todayMission, setTodayMission] = useState<{ mission_title?: string; mission_description?: string } | null>(null);
+  const [todayMission, setTodayMission] = useState<{
+    mission_title?: string;
+    mission_description?: string;
+    why_it_matters?: string | null;
+    action_steps?: string[] | null;
+    success_criteria?: string | null;
+    deeper_prompts?: string[] | null;
+    estimated_minutes?: number | null;
+    difficulty?: string | null;
+    mission_type?: string | null;
+    youtube_video_id?: string | null;
+    youtube_title?: string | null;
+    youtube_thumbnail?: string | null;
+  } | null>(null);
   const [baseline, setBaseline] = useState<{ stress?: number; energy?: number; clarity?: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -185,7 +198,7 @@ export default function MindTrackDashboard() {
       const [{ data: missions }, { data: checkins }, { data: enr }] = await Promise.all([
         supabase
           .from("mind_track_daily_missions")
-          .select("mission_title, mission_description")
+          .select("mission_title, mission_description, why_it_matters, action_steps, success_criteria, deeper_prompts, estimated_minutes, difficulty, mission_type, youtube_video_id, youtube_title, youtube_thumbnail")
           .eq("enrollment_id", enrollment.id)
           .eq("day_number", day)
           .maybeSingle(),
@@ -202,7 +215,7 @@ export default function MindTrackDashboard() {
           .maybeSingle(),
       ]);
       if (cancelled) return;
-      setTodayMission(missions ?? null);
+      setTodayMission((missions as any) ?? null);
       const list = (checkins ?? []) as any[];
       setRecentCheckins(list.slice(0, 5));
       setAllCheckins(list.map((c) => ({ day_number: c.day_number, completed: c.completed })));
@@ -349,13 +362,124 @@ export default function MindTrackDashboard() {
                   <Loader2 className="w-5 h-5 animate-spin" />
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-5">
+                  {/* 메타 배지 */}
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {todayMission?.estimated_minutes ? (
+                      <Badge variant="outline" className="text-[10px] font-bold border-slate-200 text-slate-600">
+                        약 {todayMission.estimated_minutes}분
+                      </Badge>
+                    ) : null}
+                    {todayMission?.difficulty ? (
+                      <Badge variant="outline" className="text-[10px] font-bold border-slate-200 text-slate-600">
+                        난이도 · {todayMission.difficulty === 'easy' ? '쉬움' : todayMission.difficulty === 'deep' ? '깊이' : '보통'}
+                      </Badge>
+                    ) : null}
+                    {todayMission?.mission_type ? (
+                      <Badge variant="outline" className="text-[10px] font-bold border-slate-200 text-slate-600">
+                        {todayMission.mission_type}
+                      </Badge>
+                    ) : null}
+                  </div>
+
                   <h2 className="text-lg md:text-xl font-bold text-slate-900 break-keep leading-snug">
                     {todayMission?.mission_title || copy.title}
                   </h2>
                   <p className="text-sm md:text-base text-slate-600 break-keep leading-relaxed">
                     {todayMission?.mission_description || copy.description}
                   </p>
+
+                  {/* 왜 중요한가 */}
+                  {todayMission?.why_it_matters && (
+                    <div className="bg-[#fbf7eb] border border-[#C8B88A]/40 rounded-2xl p-4">
+                      <div className="text-[10px] font-bold tracking-wider text-[#8a7a4d] uppercase mb-1.5">
+                        왜 이 미션인가
+                      </div>
+                      <p className="text-[13px] text-slate-700 leading-relaxed break-keep">
+                        {todayMission.why_it_matters}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* 액션 단계 체크리스트 */}
+                  {Array.isArray(todayMission?.action_steps) && todayMission!.action_steps!.length > 0 && (
+                    <div>
+                      <div className="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">
+                        오늘의 단계
+                      </div>
+                      <ol className="space-y-1.5">
+                        {todayMission!.action_steps!.map((step, i) => (
+                          <li key={i} className="flex items-start gap-2 text-[13px] text-slate-800 break-keep leading-relaxed">
+                            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center mt-0.5">
+                              {i + 1}
+                            </span>
+                            <span>{String(step)}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+
+                  {/* 완료 기준 */}
+                  {todayMission?.success_criteria && (
+                    <div className="border border-emerald-200/60 bg-emerald-50/50 rounded-2xl p-3.5">
+                      <div className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <div className="text-[10px] font-bold tracking-wider text-emerald-700 uppercase">
+                            오늘의 완료 기준
+                          </div>
+                          <p className="text-[13px] text-slate-800 mt-0.5 break-keep leading-relaxed">
+                            {todayMission.success_criteria}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 자기성찰 질문 */}
+                  {Array.isArray(todayMission?.deeper_prompts) && todayMission!.deeper_prompts!.length > 0 && (
+                    <div>
+                      <div className="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">
+                        오늘 떠올릴 질문
+                      </div>
+                      <ul className="space-y-1.5">
+                        {todayMission!.deeper_prompts!.map((q, i) => (
+                          <li key={i} className="text-[13px] text-slate-700 break-keep leading-relaxed pl-3 border-l-2 border-[#C8B88A]/60">
+                            {String(q)}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 추천 영상 */}
+                  {todayMission?.youtube_video_id && (
+                    <a
+                      href={`https://www.youtube.com/watch?v=${todayMission.youtube_video_id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-3 transition"
+                    >
+                      {todayMission.youtube_thumbnail && (
+                        <img
+                          src={todayMission.youtube_thumbnail}
+                          alt=""
+                          loading="lazy"
+                          className="w-20 h-14 object-cover rounded-lg flex-shrink-0"
+                        />
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[10px] font-bold text-red-600 tracking-wider uppercase">
+                          오늘의 추천 영상
+                        </div>
+                        <div className="text-[13px] font-bold text-slate-900 truncate mt-0.5">
+                          {todayMission.youtube_title || '재생'}
+                        </div>
+                      </div>
+                      <PlayCircle className="w-5 h-5 text-slate-500 flex-shrink-0" />
+                    </a>
+                  )}
                 </div>
               )}
 

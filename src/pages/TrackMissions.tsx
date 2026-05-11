@@ -95,7 +95,10 @@ function trackProgress(trackId: MindTrackFocusId, completed: CompletedMap, child
 export default function TrackMissions() {
   const { toast } = useToast();
   const [completed, setCompleted] = useState<CompletedMap>({});
-  const [selected, setSelected] = useState<MindTrackFocusId>("stress");
+  const [searchParams] = useSearchParams();
+  const initialAudienceTrack: MindTrackFocusId =
+    searchParams.get("audience") === "child" ? "child_development" : "stress";
+  const [selected, setSelected] = useState<MindTrackFocusId>(initialAudienceTrack);
   const [search, setSearch] = useState("");
   const matrixRef = useRef<HTMLDivElement>(null);
 

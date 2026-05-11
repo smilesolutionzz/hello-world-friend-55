@@ -9298,6 +9298,33 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_onboarding_events: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          meta: Json | null
+          stage: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          meta?: Json | null
+          stage: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          meta?: Json | null
+          stage?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mind_track_personal_lines: {
         Row: {
           base_mission: string | null

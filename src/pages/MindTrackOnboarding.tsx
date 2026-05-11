@@ -224,32 +224,42 @@ export default function MindTrackOnboarding() {
     setPersonalizeError(null);
     setPersonalizeRequestId(null);
     setPersonalizeAttempt(null);
+    setPersonalizeErrorCode(null);
     setPersonalLine(null);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("로그인이 필요합니다");
 
-      // 1) 아이 분기는 user_child_profiles에 저장
+      // 1) 아이 분기는 user_child_profiles에 저장 (이미 있으면 update — 중복 insert 방지)
       let cpid = childProfileId;
-      if (audience === "child" && !cpid) {
-        const { data: row, error } = await supabase
-          .from("user_child_profiles")
-          .insert({
-            user_id: user.id,
+      if (audience === "child") {
+        if (cpid) {
+          await supabase.from("user_child_profiles").update({
             child_nickname: nickname.trim(),
             birth_date: birth,
             pain_points: pains,
             goal_text: goal.trim() || null,
-          })
-          .select()
-          .single();
-        if (error) throw error;
-        cpid = (row as { id: string }).id;
-        setChildProfileId(cpid);
+          }).eq("id", cpid).eq("user_id", user.id);
+        } else {
+          const { data: row, error } = await supabase
+            .from("user_child_profiles")
+            .insert({
+              user_id: user.id,
+              child_nickname: nickname.trim(),
+              birth_date: birth,
+              pain_points: pains,
+              goal_text: goal.trim() || null,
+            })
+            .select()
+            .single();
+          if (error) throw error;
+          cpid = (row as { id: string }).id;
+          setChildProfileId(cpid);
+        }
       }
 
-      logEvent("personalize", "save_profile_done", { audience, painCount: pains.length, hasGoal: !!goal.trim() });
+      logEvent("personalize", "save_profile_done", { audience, painCount: pains.length, hasGoal: !!goal.trim(), childProfileId: cpid });
 
       // 2) Day 1 personal line — 아이 분기에만 edge function 호출 (자동 백오프 5회)
       if (audience === "child" && cpid) {

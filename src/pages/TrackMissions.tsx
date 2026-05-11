@@ -28,6 +28,18 @@ import {
 } from "@/lib/mindTrackTrackContent";
 import { downloadResultAsPDF } from "@/utils/pdfDownload";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  CHILD_MISSIONS_BY_AGE,
+  CHILD_WEEKLY_THEMES,
+  AGE_BUCKET_LABEL,
+  getAgeBucket,
+  getAgeYears,
+  renderName,
+  type ChildAgeBucket,
+} from "@/lib/mindTrackChildMissions";
+import ChildProfileSetup, { type ChildProfile } from "@/components/mind-track/ChildProfileSetup";
+import { Sparkles, UserCog } from "lucide-react";
 
 const STORAGE_KEY = "track-missions:completed:v1";
 const START_KEY = "track-missions:started-at:v1";
@@ -73,9 +85,49 @@ export default function TrackMissions() {
   const [search, setSearch] = useState("");
   const matrixRef = useRef<HTMLDivElement>(null);
 
+  // Child personalization
+  const [childProfile, setChildProfile] = useState<ChildProfile | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [personalLines, setPersonalLines] = useState<Record<number, string>>({}); // day -> line
+  const [aiLoadingDay, setAiLoadingDay] = useState<number | null>(null);
+
   useEffect(() => {
     setCompleted(loadCompleted());
   }, []);
+
+  // Load child profile when user is signed in
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      const { data } = await supabase
+        .from("user_child_profiles")
+        .select("id, child_nickname, birth_date, pain_points, goal_text")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (!cancelled && data) setChildProfile(data as ChildProfile);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Reset cached personal lines when profile changes
+  useEffect(() => { setPersonalLines({}); }, [childProfile?.id]);
+
+  const ageBucket: ChildAgeBucket | null = childProfile ? getAgeBucket(childProfile.birth_date) : null;
+  const isChildTrack = selected === "child_development";
+  const useChildData = isChildTrack && !!childProfile && !!ageBucket;
+
+  const baseDays: DayDef[] = useChildData
+    ? CHILD_MISSIONS_BY_AGE[ageBucket!].map((d) => ({
+        ...d,
+        mission: renderName(d.mission, childProfile!.child_nickname),
+        actionTitle: renderName(d.actionTitle, childProfile!.child_nickname),
+        actionHowTo: renderName(d.actionHowTo, childProfile!.child_nickname),
+      }))
+    : TRACK_DAYS[selected];
 
   const toggle = (trackId: MindTrackFocusId, day: number) => {
     setCompleted((prev) => {
@@ -88,13 +140,45 @@ export default function TrackMissions() {
 
   const startedAt = useMemo(() => loadStartedAt(selected), [selected]);
   const currentDay = getCurrentDay(startedAt);
-  const todayMission: DayDef = TRACK_DAYS[selected][currentDay - 1];
+  const todayMission: DayDef = baseDays[currentDay - 1];
   const todayAssessment = ASSESSMENT_DAYS[currentDay] ?? null;
 
   const focus = MIND_TRACK_FOCUSES.find((f) => f.id === selected)!;
   const { done, pct } = trackProgress(selected, completed);
 
-  // 검색: 전체 270개에서 매칭
+  const weeklyThemes = useChildData ? CHILD_WEEKLY_THEMES[ageBucket!] : focus.weeklyThemes;
+
+  const fetchPersonalLine = async (day: number) => {
+    if (!useChildData || personalLines[day] || aiLoadingDay === day) return;
+    setAiLoadingDay(day);
+    try {
+      const { data, error } = await supabase.functions.invoke("personalize-child-mission", {
+        body: {
+          childProfileId: childProfile!.id,
+          day,
+          baseMission: baseDays[day - 1]?.mission ?? "",
+        },
+      });
+      if (error) throw error;
+      const line = (data as { personalLine?: string })?.personalLine;
+      if (line) setPersonalLines((prev) => ({ ...prev, [day]: line }));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "AI 호출 실패";
+      toast({ title: msg, variant: "destructive" });
+    } finally {
+      setAiLoadingDay(null);
+    }
+  };
+
+  // Auto-fetch today's personal line when entering child track
+  useEffect(() => {
+    if (useChildData && !personalLines[currentDay] && aiLoadingDay !== currentDay) {
+      fetchPersonalLine(currentDay);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useChildData, currentDay, childProfile?.id]);
+
+  // 검색: 전체 270개에서 매칭 (child_development는 연령별로 동적이므로 기본 데이터로만 검색)
   const searchResults = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return [];
@@ -111,27 +195,32 @@ export default function TrackMissions() {
   }, [search]);
 
   const downloadWord = () => {
-    const rows = TRACK_DAYS[selected].map((d, i) => {
+    const rows = baseDays.map((d, i) => {
       const day = i + 1;
       const isAssess = !!ASSESSMENT_DAYS[day];
       const isDone = !!completed[`${selected}:${day}`];
+      const personal = useChildData ? (personalLines[day] || "") : "";
       return `<tr style="${isAssess ? "background:#FBF7EA;" : ""}">
         <td style="padding:8px;border:1px solid #DDD;text-align:center;font-weight:600;">${day}${isAssess ? " [진단]" : ""}</td>
         <td style="padding:8px;border:1px solid #DDD;">${d.mission}</td>
-        <td style="padding:8px;border:1px solid #DDD;">${d.actionTitle}</td>
+        <td style="padding:8px;border:1px solid #DDD;">${d.actionTitle}${personal ? `<br/><em style="color:#C8B88A;">${personal}</em>` : ""}</td>
         <td style="padding:8px;border:1px solid #DDD;">${d.actionHowTo}</td>
         <td style="padding:8px;border:1px solid #DDD;text-align:center;">${d.actionMinutes}분</td>
         <td style="padding:8px;border:1px solid #DDD;text-align:center;">${isDone ? "✓ 완료" : "—"}</td>
       </tr>`;
     }).join("");
 
-    const html = `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${focus.label} 30일 미션</title><style>@page{size:A4 landscape;margin:1.5cm;}body{font-family:'Malgun Gothic','맑은 고딕',sans-serif;color:#111;}h1{color:#C8B88A;border-bottom:2px solid #C8B88A;padding-bottom:8px;}h2{color:#111;margin-top:20px;font-size:14pt;}table{width:100%;border-collapse:collapse;font-size:10pt;margin-top:10px;}th{background:#111;color:#fff;padding:8px;border:1px solid #111;}</style></head><body>
-      <h1>${focus.label} — 30일 미션 매트릭스</h1>
+    const headerLabel = useChildData
+      ? `${childProfile!.child_nickname} (만 ${getAgeYears(childProfile!.birth_date)}세) — ${focus.label}`
+      : focus.label;
+
+    const html = `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${headerLabel} 30일 미션</title><style>@page{size:A4 landscape;margin:1.5cm;}body{font-family:'Malgun Gothic','맑은 고딕',sans-serif;color:#111;}h1{color:#C8B88A;border-bottom:2px solid #C8B88A;padding-bottom:8px;}h2{color:#111;margin-top:20px;font-size:14pt;}table{width:100%;border-collapse:collapse;font-size:10pt;margin-top:10px;}th{background:#111;color:#fff;padding:8px;border:1px solid #111;}</style></head><body>
+      <h1>${headerLabel} — 30일 미션 매트릭스</h1>
       <p style="color:#6B6B6B;">${focus.desc}</p>
       <p>진행률: ${done} / 30 완료 (${pct}%)</p>
       <h2>주차별 핵심 흐름</h2>
       <table><tr><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th></tr><tr>
-        ${focus.weeklyThemes.map((t) => `<td style="padding:8px;border:1px solid #DDD;background:#F6F1E3;">${t}</td>`).join("")}
+        ${weeklyThemes.map((t) => `<td style="padding:8px;border:1px solid #DDD;background:#F6F1E3;">${t}</td>`).join("")}
       </tr></table>
       <h2>30일 미션</h2>
       <table>
@@ -243,6 +332,38 @@ export default function TrackMissions() {
           })}
         </div>
 
+        {/* 아이 프로필 배너 (child_development 트랙 전용) */}
+        {isChildTrack && (
+          <Card className="p-4 md:p-5 mb-4 rounded-2xl border" style={{ borderColor: "#C8B88A", background: "#FBF8EE" }}>
+            {childProfile ? (
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="text-xs font-medium tracking-wider" style={{ color: "#C8B88A" }}>맞춤 코칭 활성</p>
+                  <p className="font-semibold mt-0.5">
+                    {childProfile.child_nickname} · 만 {getAgeYears(childProfile.birth_date)}세 · {ageBucket && AGE_BUCKET_LABEL[ageBucket]}
+                  </p>
+                  {childProfile.pain_points?.length > 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">고민: {childProfile.pain_points.join(" · ")}</p>
+                  )}
+                </div>
+                <Button variant="outline" size="sm" onClick={() => setProfileOpen(true)}>
+                  <UserCog className="w-4 h-4 mr-1" /> 프로필 수정
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="font-semibold">아이 정보를 입력하면 미션이 개인화됩니다</p>
+                  <p className="text-xs text-muted-foreground mt-1">연령대별 미션 + 매일 AI 맞춤 한 줄</p>
+                </div>
+                <Button onClick={() => setProfileOpen(true)} style={{ background: "#C8B88A" }}>
+                  <Sparkles className="w-4 h-4 mr-1" /> 내 아이에 맞게 시작
+                </Button>
+              </div>
+            )}
+          </Card>
+        )}
+
         {/* 오늘의 액션 */}
         <Card className="p-5 md:p-6 mb-6 rounded-2xl border-2" style={{ borderColor: "#C8B88A" }}>
           <div className="flex items-start gap-3">
@@ -255,6 +376,16 @@ export default function TrackMissions() {
               </p>
               <h2 className="mt-1 text-xl md:text-2xl font-bold">{todayMission.actionTitle}</h2>
               <p className="mt-2 text-muted-foreground">{todayMission.actionHowTo}</p>
+              {useChildData && (
+                <div className="mt-3 p-3 rounded-xl border" style={{ background: "#FBF8EE", borderColor: "#E7DEC4" }}>
+                  <p className="text-[11px] font-medium tracking-wider flex items-center gap-1" style={{ color: "#C8B88A" }}>
+                    <Sparkles className="w-3 h-3" /> {childProfile!.child_nickname} 맞춤 한 줄
+                  </p>
+                  <p className="text-sm mt-1">
+                    {personalLines[currentDay] || (aiLoadingDay === currentDay ? "AI가 한 줄을 만드는 중..." : "맞춤 한 줄을 불러오는 중...")}
+                  </p>
+                </div>
+              )}
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <Badge variant="secondary">미션: {todayMission.mission}</Badge>
                 <Badge variant="outline">{todayMission.actionMinutes}분</Badge>
@@ -298,7 +429,7 @@ export default function TrackMissions() {
         <div ref={matrixRef} className="bg-white">
           {/* 주차 테마 */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-            {focus.weeklyThemes.map((t, i) => (
+            {weeklyThemes.map((t, i) => (
               <div key={i} className="p-3 rounded-xl border" style={{ background: "#FBF8EE" }}>
                 <p className="text-[10px] font-medium tracking-wider" style={{ color: "#C8B88A" }}>WEEK 0{i + 1}</p>
                 <p className="text-sm font-semibold mt-1">{t}</p>
@@ -307,7 +438,7 @@ export default function TrackMissions() {
           </div>
 
           <div className="grid gap-2">
-            {TRACK_DAYS[selected].map((def, i) => {
+            {baseDays.map((def, i) => {
               const day = i + 1;
               const isAssess = !!ASSESSMENT_DAYS[day];
               const isDone = !!completed[`${selected}:${day}`];
@@ -340,6 +471,21 @@ export default function TrackMissions() {
                         <span className="font-medium">{def.actionTitle}</span>
                         <span className="text-muted-foreground"> · {def.actionHowTo}</span>
                       </p>
+                      {useChildData && personalLines[day] && (
+                        <p className="text-xs mt-2 p-2 rounded-lg" style={{ background: "#FBF8EE", color: "#8A7A4F" }}>
+                          <Sparkles className="w-3 h-3 inline mr-1" />{personalLines[day]}
+                        </p>
+                      )}
+                      {useChildData && !personalLines[day] && (
+                        <button
+                          className="text-xs mt-2 underline"
+                          style={{ color: "#C8B88A" }}
+                          onClick={() => fetchPersonalLine(day)}
+                          disabled={aiLoadingDay === day}
+                        >
+                          {aiLoadingDay === day ? "생성 중..." : "맞춤 한 줄 보기"}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </Card>
@@ -348,6 +494,13 @@ export default function TrackMissions() {
           </div>
         </div>
       </div>
+
+      <ChildProfileSetup
+        open={profileOpen}
+        initial={childProfile}
+        onClose={() => setProfileOpen(false)}
+        onSaved={(p) => setChildProfile(p)}
+      />
     </div>
   );
 }

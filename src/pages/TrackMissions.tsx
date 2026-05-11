@@ -453,6 +453,11 @@ export default function TrackMissions() {
               </p>
               <h2 className="mt-1 text-xl md:text-2xl font-bold">{todayMission.actionTitle}</h2>
               <p className="mt-2 text-muted-foreground">{todayMission.actionHowTo}</p>
+              {useChildData && reasonForDay(currentDay) && (
+                <p className="mt-2 text-xs flex items-center gap-1 text-muted-foreground">
+                  <Info className="w-3 h-3" /> 추천 근거: {reasonForDay(currentDay)}
+                </p>
+              )}
               {useChildData && (
                 <div className="mt-3 p-3 rounded-xl border" style={{ background: "#FBF8EE", borderColor: "#E7DEC4" }}>
                   <p className="text-[11px] font-medium tracking-wider flex items-center gap-1" style={{ color: "#C8B88A" }}>

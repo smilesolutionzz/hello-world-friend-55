@@ -56,16 +56,56 @@ export default function MindTrackOnboarding() {
   const [personalizeError, setPersonalizeError] = useState<string | null>(null);
   const personalizeRan = useRef(false);
 
-  // resume — last stage in localStorage
+  // Resume — restore stage + form fields from localStorage. Server-side: latest stage_enter event as authoritative source if newer than local.
   useEffect(() => {
-    const saved = localStorage.getItem("mt_onboarding_stage");
-    if (saved && STAGES.includes(saved as Stage)) setStage(saved as Stage);
+    try {
+      const raw = localStorage.getItem("mt_onboarding_state");
+      if (raw) {
+        const s = JSON.parse(raw) as Partial<{
+          stage: Stage; audience: Audience; nickname: string; birth: string;
+          pains: string[]; goal: string; childProfileId: string;
+        }>;
+        if (s.stage && STAGES.includes(s.stage)) setStage(s.stage);
+        if (s.audience) setAudience(s.audience);
+        if (s.nickname) setNickname(s.nickname);
+        if (s.birth) setBirth(s.birth);
+        if (Array.isArray(s.pains)) setPains(s.pains);
+        if (s.goal) setGoal(s.goal);
+        if (s.childProfileId) setChildProfileId(s.childProfileId);
+      }
+    } catch { /* ignore */ }
+
+    // Server-side resume — restore furthest stage from event log if user re-enters on a fresh device
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from("mind_track_onboarding_events")
+        .select("stage, created_at")
+        .eq("user_id", user.id)
+        .eq("event", "stage_enter")
+        .order("created_at", { ascending: false })
+        .limit(1);
+      const last = (data?.[0] as { stage?: string } | undefined)?.stage as Stage | undefined;
+      if (last && STAGES.includes(last)) {
+        // 로컬에 더 최근 진행이 없을 때만 서버 값으로 설정
+        const localStage = localStorage.getItem("mt_onboarding_stage") as Stage | null;
+        if (!localStage) setStage(last);
+      }
+    })();
+
     logEvent("welcome", "wizard_open", {});
   }, []);
+
+  // 매 변경마다 진행 상태 저장
   useEffect(() => {
     localStorage.setItem("mt_onboarding_stage", stage);
+    localStorage.setItem(
+      "mt_onboarding_state",
+      JSON.stringify({ stage, audience, nickname, birth, pains, goal, childProfileId }),
+    );
     logEvent(stage, "stage_enter", { audience });
-  }, [stage]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [stage, audience, nickname, birth, pains, goal, childProfileId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stageIdx = STAGES.indexOf(stage);
   const progress = Math.round(((stageIdx + 1) / STAGES.length) * 100);

@@ -195,27 +195,32 @@ export default function TrackMissions() {
   }, [search]);
 
   const downloadWord = () => {
-    const rows = TRACK_DAYS[selected].map((d, i) => {
+    const rows = baseDays.map((d, i) => {
       const day = i + 1;
       const isAssess = !!ASSESSMENT_DAYS[day];
       const isDone = !!completed[`${selected}:${day}`];
+      const personal = useChildData ? (personalLines[day] || "") : "";
       return `<tr style="${isAssess ? "background:#FBF7EA;" : ""}">
         <td style="padding:8px;border:1px solid #DDD;text-align:center;font-weight:600;">${day}${isAssess ? " [진단]" : ""}</td>
         <td style="padding:8px;border:1px solid #DDD;">${d.mission}</td>
-        <td style="padding:8px;border:1px solid #DDD;">${d.actionTitle}</td>
+        <td style="padding:8px;border:1px solid #DDD;">${d.actionTitle}${personal ? `<br/><em style="color:#C8B88A;">${personal}</em>` : ""}</td>
         <td style="padding:8px;border:1px solid #DDD;">${d.actionHowTo}</td>
         <td style="padding:8px;border:1px solid #DDD;text-align:center;">${d.actionMinutes}분</td>
         <td style="padding:8px;border:1px solid #DDD;text-align:center;">${isDone ? "✓ 완료" : "—"}</td>
       </tr>`;
     }).join("");
 
-    const html = `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${focus.label} 30일 미션</title><style>@page{size:A4 landscape;margin:1.5cm;}body{font-family:'Malgun Gothic','맑은 고딕',sans-serif;color:#111;}h1{color:#C8B88A;border-bottom:2px solid #C8B88A;padding-bottom:8px;}h2{color:#111;margin-top:20px;font-size:14pt;}table{width:100%;border-collapse:collapse;font-size:10pt;margin-top:10px;}th{background:#111;color:#fff;padding:8px;border:1px solid #111;}</style></head><body>
-      <h1>${focus.label} — 30일 미션 매트릭스</h1>
+    const headerLabel = useChildData
+      ? `${childProfile!.child_nickname} (만 ${getAgeYears(childProfile!.birth_date)}세) — ${focus.label}`
+      : focus.label;
+
+    const html = `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${headerLabel} 30일 미션</title><style>@page{size:A4 landscape;margin:1.5cm;}body{font-family:'Malgun Gothic','맑은 고딕',sans-serif;color:#111;}h1{color:#C8B88A;border-bottom:2px solid #C8B88A;padding-bottom:8px;}h2{color:#111;margin-top:20px;font-size:14pt;}table{width:100%;border-collapse:collapse;font-size:10pt;margin-top:10px;}th{background:#111;color:#fff;padding:8px;border:1px solid #111;}</style></head><body>
+      <h1>${headerLabel} — 30일 미션 매트릭스</h1>
       <p style="color:#6B6B6B;">${focus.desc}</p>
       <p>진행률: ${done} / 30 완료 (${pct}%)</p>
       <h2>주차별 핵심 흐름</h2>
       <table><tr><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th></tr><tr>
-        ${focus.weeklyThemes.map((t) => `<td style="padding:8px;border:1px solid #DDD;background:#F6F1E3;">${t}</td>`).join("")}
+        ${weeklyThemes.map((t) => `<td style="padding:8px;border:1px solid #DDD;background:#F6F1E3;">${t}</td>`).join("")}
       </tr></table>
       <h2>30일 미션</h2>
       <table>

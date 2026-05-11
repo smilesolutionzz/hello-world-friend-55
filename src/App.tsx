@@ -108,6 +108,7 @@ import TokenSubscription from "./pages/TokenSubscription";
 import CoachingGoals from "./pages/CoachingGoals";
 import BusinessSubscription from "./pages/BusinessSubscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import MindTrackOnboarding from "./pages/MindTrackOnboarding";
 import PaymentComplete from "./pages/PaymentComplete";
 import PaymentFail from "./pages/PaymentFail";
 import Pricing from "./pages/Pricing";

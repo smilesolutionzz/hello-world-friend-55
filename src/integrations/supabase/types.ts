@@ -9363,6 +9363,33 @@ export type Database = {
           },
         ]
       }
+      mind_track_reminders_sent: {
+        Row: {
+          channel: string
+          day_number: number
+          enrollment_id: string
+          id: string
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          channel?: string
+          day_number: number
+          enrollment_id: string
+          id?: string
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          day_number?: number
+          enrollment_id?: string
+          id?: string
+          sent_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mind_track_risk_alerts: {
         Row: {
           alert_type: string

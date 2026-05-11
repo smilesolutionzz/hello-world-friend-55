@@ -107,7 +107,8 @@ export default function TrackMissions() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [personalLines, setPersonalLines] = useState<Record<number, string>>({}); // day -> line
   const [aiLoadingDays, setAiLoadingDays] = useState<Set<number>>(new Set());
-  const [aiErrorDays, setAiErrorDays] = useState<Record<number, string>>({});
+  const [aiErrorDays, setAiErrorDays] = useState<Record<number, { message: string; code?: string; requestId?: string }>>({});
+  const [aiAttemptInfo, setAiAttemptInfo] = useState<Record<number, { attempt: number; maxAttempts: number; nextDelayMs?: number; phase: string }>>({});
   const inflightRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {

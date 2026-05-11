@@ -176,47 +176,39 @@ export default function ActionBookPreviewSection({
         </div>
       </div>
 
-      {/* 초맞춤 강조 칩 */}
+      {/* 신뢰성 강조 칩 — 전문가 이론 기반 */}
       <div className="flex flex-wrap gap-1.5 mb-3">
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#1a1a1a] text-white text-[10px] font-semibold">
-          <Sparkles className="w-3 h-3" /> 초맞춤 미션
+          <GraduationCap className="w-3 h-3" /> 전문가 설계 · 이론 기반 트랙
         </span>
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FBF8EE] border border-[#C8B88A]/40 text-[#8a7a4d] text-[10px] font-semibold">
-          AI가 매일 새로 작성
+          <BadgeCheck className="w-3 h-3" /> CBT · 행동활성화 근거
         </span>
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FBF8EE] border border-[#C8B88A]/40 text-[#8a7a4d] text-[10px] font-semibold">
-          대상·연령·고민 반영
+          임상심리 자문 검수
         </span>
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FBF8EE] border border-[#C8B88A]/40 text-[#8a7a4d] text-[10px] font-semibold">
-          30장 = 한 권의 PDF
+          내 정보로 한 줄만 맞춤
         </span>
       </div>
 
-      {/* 실시간 생성 버튼 */}
+      <p className="text-[11px] text-foreground/65 break-keep leading-relaxed mb-3">
+        30일 트랙은 임상심리 전문가가 설계한 <strong className="text-foreground">근거 기반 미션 구조</strong>예요.
+        AI는 그 위에 닉네임·연령·고민에 맞춰 표현만 다듬어 드려요.
+      </p>
+
+      {/* 실시간 생성 버튼 — 단일 CTA */}
       <div className="flex items-center gap-2 flex-wrap mb-3">
         <Button
           size="sm"
           onClick={handleGenerate}
           disabled={generating}
-          className="rounded-full bg-[#1a1a1a] text-white hover:bg-black h-8 text-xs"
+          className="rounded-full bg-[#1a1a1a] text-white hover:bg-black h-9 text-xs px-4"
         >
           {generating ? (
             <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> 생성 중…</>
           ) : (
             <><Wand2 className="w-3.5 h-3.5 mr-1.5" /> 내 정보로 Day 1~3 실시간 생성</>
-          )}
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={handleDownloadPdf}
-          disabled={downloadingPdf}
-          className="rounded-full border-[#C8B88A]/50 text-[#8a7a4d] hover:bg-[#C8B88A]/10 h-8 text-xs"
-        >
-          {downloadingPdf ? (
-            <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> PDF 만드는 중…</>
-          ) : (
-            <><Download className="w-3.5 h-3.5 mr-1.5" /> Day 1~3 PDF 다운로드</>
           )}
         </Button>
         {isPersonalized && (

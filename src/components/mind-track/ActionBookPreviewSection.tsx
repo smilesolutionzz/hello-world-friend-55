@@ -124,32 +124,7 @@ export default function ActionBookPreviewSection({
     }
   };
 
-  const handleDownloadPdf = async () => {
-    if (!previewRef.current) return;
-    setDownloadingPdf(true);
-    trackWorkbookFunnel("mt_action_book_pdf_download", {
-      personalized: isPersonalized,
-      logged_in: loggedIn,
-    });
-    try {
-      const html2pdf = (await import("html2pdf.js")).default as any;
-      await html2pdf()
-        .set({
-          margin: [12, 12, 12, 12],
-          filename: `aihpro-action-book-day1-3-${nickname || "preview"}.pdf`,
-          image: { type: "jpeg", quality: 0.95 },
-          html2canvas: { scale: 2, backgroundColor: "#ffffff", useCORS: true },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .from(previewRef.current)
-        .save();
-    } catch (e) {
-      console.warn("[preview] pdf failed", e);
-      toast.error("PDF 다운로드에 실패했어요");
-    } finally {
-      setDownloadingPdf(false);
-    }
-  };
+
 
   return (
     <div

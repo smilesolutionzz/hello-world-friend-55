@@ -126,20 +126,91 @@ export default function TrackMissions() {
   const isChildTrack = selected === "child_development";
   const useChildData = isChildTrack && !!childProfile && !!ageBucket;
 
+  const overrideMap: OverrideMap = useChildData
+    ? buildOverrideMap(childProfile!.pain_points || [])
+    : {};
+
   const baseDays: DayDef[] = useChildData
-    ? CHILD_MISSIONS_BY_AGE[ageBucket!].map((d) => ({
-        ...d,
-        mission: renderName(d.mission, childProfile!.child_nickname),
-        actionTitle: renderName(d.actionTitle, childProfile!.child_nickname),
-        actionHowTo: renderName(d.actionHowTo, childProfile!.child_nickname),
-      }))
+    ? CHILD_MISSIONS_BY_AGE[ageBucket!].map((d, idx) => {
+        const day = idx + 1;
+        const ov = getOverrideDay(day, ageBucket!, overrideMap);
+        const src = ov ? ov.def : d;
+        return {
+          ...src,
+          mission: renderName(src.mission, childProfile!.child_nickname),
+          actionTitle: renderName(src.actionTitle, childProfile!.child_nickname),
+          actionHowTo: renderName(src.actionHowTo, childProfile!.child_nickname),
+        };
+      })
     : TRACK_DAYS[selected];
+
+  const reasonForDay = (day: number): string | null => {
+    if (!useChildData) return null;
+    const pain = overrideMap[day];
+    const age = getAgeYears(childProfile!.birth_date);
+    if (pain) return `만 ${age}세 · 페인포인트 매칭: "${pain}"`;
+    return `만 ${age}세 · ${AGE_BUCKET_LABEL[ageBucket!]} 공통 코칭`;
+  };
+
+  const [serverStatus, setServerStatus] = useState<Record<number, "started" | "in_progress" | "completed">>({});
+  useEffect(() => {
+    let cancelled = false;
+    if (!useChildData) { setServerStatus({}); return; }
+    (async () => {
+      const { data } = await supabase
+        .from("mind_track_child_mission_status")
+        .select("day, status")
+        .eq("child_profile_id", childProfile!.id);
+      if (cancelled || !data) return;
+      const map: Record<number, "started" | "in_progress" | "completed"> = {};
+      data.forEach((r: { day: number; status: "started" | "in_progress" | "completed" }) => {
+        map[r.day] = r.status;
+      });
+      setServerStatus(map);
+      // Hydrate localStorage completed map from server (so checkbox reflects DB)
+      setCompleted((prev) => {
+        const next = { ...prev };
+        Object.entries(map).forEach(([d, s]) => {
+          const key = `child_development:${d}`;
+          if (s === "completed") next[key] = true;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        return next;
+      });
+    })();
+    return () => { cancelled = true; };
+  }, [useChildData, childProfile?.id]);
+
+  const persistChildStatus = async (day: number, completed: boolean) => {
+    if (!useChildData) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const status: "started" | "completed" = completed ? "completed" : "started";
+    setServerStatus((prev) => ({ ...prev, [day]: status }));
+    await supabase
+      .from("mind_track_child_mission_status")
+      .upsert(
+        {
+          user_id: user.id,
+          child_profile_id: childProfile!.id,
+          day,
+          status,
+          completed_at: completed ? new Date().toISOString() : null,
+        },
+        { onConflict: "child_profile_id,day" },
+      );
+  };
 
   const toggle = (trackId: MindTrackFocusId, day: number) => {
     setCompleted((prev) => {
-      const next = { ...prev, [`${trackId}:${day}`]: !prev[`${trackId}:${day}`] };
-      if (!next[`${trackId}:${day}`]) delete next[`${trackId}:${day}`];
+      const key = `${trackId}:${day}`;
+      const nextDone = !prev[key];
+      const next = { ...prev, [key]: nextDone };
+      if (!nextDone) delete next[key];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      if (trackId === "child_development" && useChildData) {
+        void persistChildStatus(day, nextDone);
+      }
       return next;
     });
   };

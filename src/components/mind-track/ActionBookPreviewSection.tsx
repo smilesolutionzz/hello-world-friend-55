@@ -168,7 +168,7 @@ export default function ActionBookPreviewSection({
             Action Book · 전문가 설계 30일 트랙
           </p>
           <h3 className="text-base md:text-lg font-bold text-foreground break-keep leading-snug">
-            임상심리 전문가가 설계한 30일 액션북
+            14년 경력 현장 전문가가 설계한 30일 액션북
           </h3>
           <p className="text-xs text-foreground/60 mt-0.5 break-keep">
             CBT·행동활성화 등 검증된 이론 위에, 내 닉네임·고민·목표에 맞춘 한 줄만 AI가 다듬어요.
@@ -185,7 +185,7 @@ export default function ActionBookPreviewSection({
           <BadgeCheck className="w-3 h-3" /> CBT · 행동활성화 근거
         </span>
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FBF8EE] border border-[#C8B88A]/40 text-[#8a7a4d] text-[10px] font-semibold">
-          임상심리 자문 검수
+          14년 현장 전문가 검수
         </span>
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FBF8EE] border border-[#C8B88A]/40 text-[#8a7a4d] text-[10px] font-semibold">
           내 정보로 한 줄만 맞춤
@@ -193,7 +193,7 @@ export default function ActionBookPreviewSection({
       </div>
 
       <p className="text-[11px] text-foreground/65 break-keep leading-relaxed mb-3">
-        30일 트랙은 임상심리 전문가가 설계한 <strong className="text-foreground">근거 기반 미션 구조</strong>예요.
+        30일 트랙은 14년 경력 현장 전문가가 설계한 <strong className="text-foreground">근거 기반 미션 구조</strong>예요.
         AI는 그 위에 닉네임·연령·고민에 맞춰 표현만 다듬어 드려요.
       </p>
 

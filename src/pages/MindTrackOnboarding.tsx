@@ -56,58 +56,108 @@ export default function MindTrackOnboarding() {
   const [personalizeError, setPersonalizeError] = useState<string | null>(null);
   const [personalizeRequestId, setPersonalizeRequestId] = useState<string | null>(null);
   const [personalizeAttempt, setPersonalizeAttempt] = useState<{ phase: string; attempt: number; maxAttempts: number; nextDelayMs?: number } | null>(null);
+  const [personalizeErrorCode, setPersonalizeErrorCode] = useState<string | null>(null);
+  const [restoreReady, setRestoreReady] = useState(false);
   const personalizeRan = useRef(false);
 
-  // Resume — restore stage + form fields from localStorage. Server-side: latest stage_enter event as authoritative source if newer than local.
+  // Resume — local first, then merge with server. Until restoreReady=true we suppress writes/logs to avoid clobbering.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("mt_onboarding_state");
-      if (raw) {
-        const s = JSON.parse(raw) as Partial<{
-          stage: Stage; audience: Audience; nickname: string; birth: string;
-          pains: string[]; goal: string; childProfileId: string;
-        }>;
-        if (s.stage && STAGES.includes(s.stage)) setStage(s.stage);
-        if (s.audience) setAudience(s.audience);
-        if (s.nickname) setNickname(s.nickname);
-        if (s.birth) setBirth(s.birth);
-        if (Array.isArray(s.pains)) setPains(s.pains);
-        if (s.goal) setGoal(s.goal);
-        if (s.childProfileId) setChildProfileId(s.childProfileId);
-      }
-    } catch { /* ignore */ }
-
-    // Server-side resume — restore furthest stage from event log if user re-enters on a fresh device
+    let cancelled = false;
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data } = await supabase
-        .from("mind_track_onboarding_events")
-        .select("stage, created_at")
-        .eq("user_id", user.id)
-        .eq("event", "stage_enter")
-        .order("created_at", { ascending: false })
-        .limit(1);
-      const last = (data?.[0] as { stage?: string } | undefined)?.stage as Stage | undefined;
-      if (last && STAGES.includes(last)) {
-        // 로컬에 더 최근 진행이 없을 때만 서버 값으로 설정
-        const localStage = localStorage.getItem("mt_onboarding_stage") as Stage | null;
-        if (!localStage) setStage(last);
-      }
-    })();
+      // 1) localStorage
+      let local: Partial<{ stage: Stage; audience: Audience; nickname: string; birth: string; pains: string[]; goal: string; childProfileId: string }> = {};
+      try {
+        const raw = localStorage.getItem("mt_onboarding_state");
+        if (raw) local = JSON.parse(raw);
+      } catch { /* ignore */ }
 
-    logEvent("welcome", "wizard_open", {});
+      const { data: { user } } = await supabase.auth.getUser();
+      let serverStage: Stage | null = null;
+      let serverChildProfileId: string | null = null;
+      let serverChild: { nickname?: string; birth?: string; pains?: string[]; goal?: string } | null = null;
+
+      if (user) {
+        // 2a) Latest stage_enter as floor (server-side resume)
+        const { data: stageRows } = await supabase
+          .from("mind_track_onboarding_events")
+          .select("stage")
+          .eq("user_id", user.id)
+          .eq("event", "stage_enter")
+          .order("created_at", { ascending: false })
+          .limit(1);
+        const last = (stageRows?.[0] as { stage?: string } | undefined)?.stage as Stage | undefined;
+        if (last && STAGES.includes(last)) serverStage = last;
+
+        // 2b) Reuse existing child profile so we never insert a duplicate
+        const { data: cp } = await supabase
+          .from("user_child_profiles")
+          .select("id, child_nickname, birth_date, pain_points, goal_text")
+          .eq("user_id", user.id)
+          .order("updated_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (cp) {
+          serverChildProfileId = (cp as { id: string }).id;
+          serverChild = {
+            nickname: (cp as { child_nickname?: string }).child_nickname,
+            birth: (cp as { birth_date?: string }).birth_date,
+            pains: (cp as { pain_points?: string[] }).pain_points,
+            goal: (cp as { goal_text?: string }).goal_text ?? "",
+          };
+        }
+      }
+
+      if (cancelled) return;
+
+      // Merge: local wins for in-progress fields; server fills gaps + provides childProfileId
+      const merged = {
+        stage: (local.stage && STAGES.includes(local.stage) ? local.stage : serverStage) ?? "welcome" as Stage,
+        audience: local.audience ?? (serverChild ? "child" as Audience : null),
+        nickname: local.nickname ?? serverChild?.nickname ?? "",
+        birth: local.birth ?? serverChild?.birth ?? "",
+        pains: (Array.isArray(local.pains) && local.pains.length ? local.pains : serverChild?.pains) ?? [],
+        goal: local.goal ?? serverChild?.goal ?? "",
+        childProfileId: local.childProfileId ?? serverChildProfileId ?? null,
+      };
+
+      setStage(merged.stage);
+      if (merged.audience) setAudience(merged.audience);
+      setNickname(merged.nickname);
+      setBirth(merged.birth);
+      setPains(merged.pains);
+      setGoal(merged.goal);
+      setChildProfileId(merged.childProfileId);
+
+      // 2c) If restored to personalize and a cached personal_line exists, jump straight to preview
+      if (merged.stage === "personalize" && merged.audience === "child" && merged.childProfileId) {
+        const { data: cached } = await supabase
+          .from("mind_track_personal_lines")
+          .select("personal_line")
+          .eq("child_profile_id", merged.childProfileId)
+          .eq("day", 1)
+          .maybeSingle();
+        if (cached?.personal_line) {
+          setPersonalLine(cached.personal_line);
+          setStage("preview");
+        }
+      }
+
+      setRestoreReady(true);
+      logEvent("welcome", "wizard_open", { resumedStage: merged.stage });
+    })();
+    return () => { cancelled = true; };
   }, []);
 
-  // 매 변경마다 진행 상태 저장
+  // 매 변경마다 진행 상태 저장 (복원 완료 후에만)
   useEffect(() => {
+    if (!restoreReady) return;
     localStorage.setItem("mt_onboarding_stage", stage);
     localStorage.setItem(
       "mt_onboarding_state",
       JSON.stringify({ stage, audience, nickname, birth, pains, goal, childProfileId }),
     );
-    logEvent(stage, "stage_enter", { audience });
-  }, [stage, audience, nickname, birth, pains, goal, childProfileId]); // eslint-disable-line react-hooks/exhaustive-deps
+    logEvent(stage, "stage_enter", { audience, childProfileId });
+  }, [restoreReady, stage, audience, nickname, birth, pains, goal, childProfileId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stageIdx = STAGES.indexOf(stage);
   const progress = Math.round(((stageIdx + 1) / STAGES.length) * 100);
@@ -174,32 +224,42 @@ export default function MindTrackOnboarding() {
     setPersonalizeError(null);
     setPersonalizeRequestId(null);
     setPersonalizeAttempt(null);
+    setPersonalizeErrorCode(null);
     setPersonalLine(null);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("로그인이 필요합니다");
 
-      // 1) 아이 분기는 user_child_profiles에 저장
+      // 1) 아이 분기는 user_child_profiles에 저장 (이미 있으면 update — 중복 insert 방지)
       let cpid = childProfileId;
-      if (audience === "child" && !cpid) {
-        const { data: row, error } = await supabase
-          .from("user_child_profiles")
-          .insert({
-            user_id: user.id,
+      if (audience === "child") {
+        if (cpid) {
+          await supabase.from("user_child_profiles").update({
             child_nickname: nickname.trim(),
             birth_date: birth,
             pain_points: pains,
             goal_text: goal.trim() || null,
-          })
-          .select()
-          .single();
-        if (error) throw error;
-        cpid = (row as { id: string }).id;
-        setChildProfileId(cpid);
+          }).eq("id", cpid).eq("user_id", user.id);
+        } else {
+          const { data: row, error } = await supabase
+            .from("user_child_profiles")
+            .insert({
+              user_id: user.id,
+              child_nickname: nickname.trim(),
+              birth_date: birth,
+              pain_points: pains,
+              goal_text: goal.trim() || null,
+            })
+            .select()
+            .single();
+          if (error) throw error;
+          cpid = (row as { id: string }).id;
+          setChildProfileId(cpid);
+        }
       }
 
-      logEvent("personalize", "save_profile_done", { audience, painCount: pains.length, hasGoal: !!goal.trim() });
+      logEvent("personalize", "save_profile_done", { audience, painCount: pains.length, hasGoal: !!goal.trim(), childProfileId: cpid });
 
       // 2) Day 1 personal line — 아이 분기에만 edge function 호출 (자동 백오프 5회)
       if (audience === "child" && cpid) {
@@ -214,6 +274,7 @@ export default function MindTrackOnboarding() {
                 nextDelayMs: info.nextDelayMs,
               });
               if (info.requestId) setPersonalizeRequestId(info.requestId);
+              if (info.errorCode) setPersonalizeErrorCode(info.errorCode);
             },
           },
         );
@@ -233,6 +294,7 @@ export default function MindTrackOnboarding() {
       const reqId = (e as { requestId?: string })?.requestId;
       const code = (e as { code?: string })?.code;
       setPersonalizeError(friendly);
+      if (code) setPersonalizeErrorCode(code);
       if (reqId) setPersonalizeRequestId(reqId);
       personalizeRan.current = false;
       const raw = e instanceof Error ? e.message : "unknown";
@@ -464,6 +526,7 @@ export default function MindTrackOnboarding() {
                 ageLabel={ageInfo?.label}
                 pains={pains}
                 error={personalizeError}
+                errorCode={personalizeErrorCode}
                 requestId={personalizeRequestId}
                 attempt={personalizeAttempt}
                 onRetry={() => { personalizeRan.current = false; runPersonalize(); }}
@@ -517,13 +580,14 @@ function NavRow({
 }
 
 function PersonalizingScreen({
-  nickname, audience, ageLabel, pains, error, requestId, attempt, onRetry, onSkip,
+  nickname, audience, ageLabel, pains, error, errorCode, requestId, attempt, onRetry, onSkip,
 }: {
   nickname: string;
   audience: Audience | null;
   ageLabel?: string;
   pains: string[];
   error: string | null;
+  errorCode?: string | null;
   requestId?: string | null;
   attempt?: { phase: string; attempt: number; maxAttempts: number; nextDelayMs?: number } | null;
   onRetry: () => void;
@@ -595,12 +659,37 @@ function PersonalizingScreen({
         </p>
       )}
 
+      {/* 항상 노출되는 디버그 패널 — 운영 중 진단/CS용 */}
+      <div className="rounded-xl border border-slate-100 bg-slate-50/60 px-3 py-2 text-[11px] font-mono text-slate-500 space-y-0.5">
+        <div className="flex justify-between gap-2">
+          <span>요청 ID</span>
+          <span className="truncate text-slate-700">{requestId || "(아직 발급 전)"}</span>
+        </div>
+        <div className="flex justify-between gap-2">
+          <span>상태</span>
+          <span className="text-slate-700">
+            {attempt ? `${attempt.phase} ${attempt.attempt}/${attempt.maxAttempts}${attempt.nextDelayMs ? ` · ${attempt.nextDelayMs}ms 후` : ""}` : "—"}
+          </span>
+        </div>
+        <div className="flex justify-between gap-2">
+          <span>마지막 에러</span>
+          <span className="text-slate-700 truncate">{errorCode || "—"}{error ? ` · ${error}` : ""}</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            const txt = `requestId=${requestId || "-"} | phase=${attempt?.phase || "-"} ${attempt?.attempt || 0}/${attempt?.maxAttempts || 0} | code=${errorCode || "-"} | msg=${error || "-"}`;
+            navigator.clipboard?.writeText(txt).catch(() => {});
+          }}
+          className="text-[10px] text-slate-400 hover:text-slate-700 underline"
+        >
+          디버그 정보 복사
+        </button>
+      </div>
+
       {error && (
         <div className="space-y-3">
           <p className="text-sm text-red-600 break-keep">{error}</p>
-          {requestId && (
-            <p className="text-[11px] text-muted-foreground font-mono">요청 ID: {requestId}</p>
-          )}
           <div className="flex gap-2">
             <Button onClick={onRetry} className="bg-[#1a1a1a] text-white hover:bg-black rounded-xl">
               다시 만들기

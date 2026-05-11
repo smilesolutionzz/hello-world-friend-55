@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PAIN_POINT_OPTIONS, getAgeBucket, getAgeYears, AGE_BUCKET_LABEL } from "@/lib/mindTrackChildMissions";
+import { personalizeWithRetry, describePersonalizeError } from "@/lib/personalizeChildMission";
 
 type Audience = "self" | "child" | "family";
 type Stage = "welcome" | "audience" | "child_basics" | "pain_points" | "goal" | "personalize" | "preview";
@@ -55,16 +56,56 @@ export default function MindTrackOnboarding() {
   const [personalizeError, setPersonalizeError] = useState<string | null>(null);
   const personalizeRan = useRef(false);
 
-  // resume — last stage in localStorage
+  // Resume — restore stage + form fields from localStorage. Server-side: latest stage_enter event as authoritative source if newer than local.
   useEffect(() => {
-    const saved = localStorage.getItem("mt_onboarding_stage");
-    if (saved && STAGES.includes(saved as Stage)) setStage(saved as Stage);
+    try {
+      const raw = localStorage.getItem("mt_onboarding_state");
+      if (raw) {
+        const s = JSON.parse(raw) as Partial<{
+          stage: Stage; audience: Audience; nickname: string; birth: string;
+          pains: string[]; goal: string; childProfileId: string;
+        }>;
+        if (s.stage && STAGES.includes(s.stage)) setStage(s.stage);
+        if (s.audience) setAudience(s.audience);
+        if (s.nickname) setNickname(s.nickname);
+        if (s.birth) setBirth(s.birth);
+        if (Array.isArray(s.pains)) setPains(s.pains);
+        if (s.goal) setGoal(s.goal);
+        if (s.childProfileId) setChildProfileId(s.childProfileId);
+      }
+    } catch { /* ignore */ }
+
+    // Server-side resume — restore furthest stage from event log if user re-enters on a fresh device
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from("mind_track_onboarding_events")
+        .select("stage, created_at")
+        .eq("user_id", user.id)
+        .eq("event", "stage_enter")
+        .order("created_at", { ascending: false })
+        .limit(1);
+      const last = (data?.[0] as { stage?: string } | undefined)?.stage as Stage | undefined;
+      if (last && STAGES.includes(last)) {
+        // 로컬에 더 최근 진행이 없을 때만 서버 값으로 설정
+        const localStage = localStorage.getItem("mt_onboarding_stage") as Stage | null;
+        if (!localStage) setStage(last);
+      }
+    })();
+
     logEvent("welcome", "wizard_open", {});
   }, []);
+
+  // 매 변경마다 진행 상태 저장
   useEffect(() => {
     localStorage.setItem("mt_onboarding_stage", stage);
+    localStorage.setItem(
+      "mt_onboarding_state",
+      JSON.stringify({ stage, audience, nickname, birth, pains, goal, childProfileId }),
+    );
     logEvent(stage, "stage_enter", { audience });
-  }, [stage]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [stage, audience, nickname, birth, pains, goal, childProfileId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stageIdx = STAGES.indexOf(stage);
   const progress = Math.round(((stageIdx + 1) / STAGES.length) * 100);
@@ -156,14 +197,10 @@ export default function MindTrackOnboarding() {
 
       logEvent("personalize", "save_profile_done", { audience, painCount: pains.length, hasGoal: !!goal.trim() });
 
-      // 2) Day 1 personal line — 아이 분기에만 edge function 호출
+      // 2) Day 1 personal line — 아이 분기에만 edge function 호출 (타임아웃+백오프)
       if (audience === "child" && cpid) {
-        const { data, error } = await supabase.functions.invoke("personalize-child-mission", {
-          body: { childProfileId: cpid, day: 1, baseMission: "" },
-        });
-        if (error) throw error;
-        const line = (data as { personalLine?: string })?.personalLine;
-        if (line) setPersonalLine(line);
+        const res = await personalizeWithRetry({ childProfileId: cpid, day: 1, baseMission: "" });
+        setPersonalLine(res.personalLine);
       } else {
         // 성인 분기 — 결정론적 한 줄
         const tag = pains[0] ? `‘${pains[0]}’` : "오늘의 마음";
@@ -174,10 +211,11 @@ export default function MindTrackOnboarding() {
       // 자동 진행
       setTimeout(() => setStage("preview"), 600);
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "알 수 없는 오류";
-      setPersonalizeError(msg);
+      const friendly = describePersonalizeError(e);
+      setPersonalizeError(friendly);
       personalizeRan.current = false;
-      logEvent("personalize", "personal_line_fail", { error: msg });
+      const raw = e instanceof Error ? e.message : "unknown";
+      logEvent("personalize", "personal_line_fail", { error: raw });
     }
   };
 
@@ -186,9 +224,18 @@ export default function MindTrackOnboarding() {
   }, [stage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const finishToTrack = () => {
-    logEvent("preview", "go_to_day1", { audience });
+    // 가드: 아이 분기인데 프로필 ID가 없으면 personalize로 되돌림
+    if (audience === "child" && !childProfileId) {
+      toast({ title: "프로필 저장이 완료되지 않았어요. 잠시만요…", variant: "destructive" });
+      setStage("personalize");
+      return;
+    }
+    logEvent("preview", "go_to_day1", { audience, childProfileId });
     localStorage.removeItem("mt_onboarding_stage");
-    nav("/track-missions?day=1");
+    localStorage.removeItem("mt_onboarding_state");
+    const params = new URLSearchParams({ day: "1" });
+    if (audience === "child") params.set("audience", "child");
+    nav(`/track-missions?${params.toString()}`);
   };
 
   return (

@@ -9,7 +9,7 @@
 
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Search, Download, FileText, Check, Calendar, ArrowLeft, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -95,7 +95,10 @@ function trackProgress(trackId: MindTrackFocusId, completed: CompletedMap, child
 export default function TrackMissions() {
   const { toast } = useToast();
   const [completed, setCompleted] = useState<CompletedMap>({});
-  const [selected, setSelected] = useState<MindTrackFocusId>("stress");
+  const [searchParams] = useSearchParams();
+  const initialAudienceTrack: MindTrackFocusId =
+    searchParams.get("audience") === "child" ? "child_development" : "stress";
+  const [selected, setSelected] = useState<MindTrackFocusId>(initialAudienceTrack);
   const [search, setSearch] = useState("");
   const matrixRef = useRef<HTMLDivElement>(null);
 
@@ -278,20 +281,17 @@ export default function TrackMissions() {
     setAiLoadingDays((prev) => { const n = new Set(prev); n.add(day); return n; });
     setAiErrorDays((prev) => { const { [day]: _, ...rest } = prev; return rest; });
     try {
-      const { data, error } = await supabase.functions.invoke("personalize-child-mission", {
-        body: {
+      const { personalizeWithRetry, describePersonalizeError } = await import("@/lib/personalizeChildMission");
+      try {
+        const res = await personalizeWithRetry({
           childProfileId: childProfile!.id,
           day,
           baseMission: baseDays[day - 1]?.mission ?? "",
-        },
-      });
-      if (error) throw error;
-      const line = (data as { personalLine?: string })?.personalLine;
-      if (line) setPersonalLines((prev) => ({ ...prev, [day]: line }));
-      else throw new Error("빈 응답");
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "AI 호출 실패";
-      setAiErrorDays((prev) => ({ ...prev, [day]: msg }));
+        });
+        setPersonalLines((prev) => ({ ...prev, [day]: res.personalLine }));
+      } catch (e) {
+        setAiErrorDays((prev) => ({ ...prev, [day]: describePersonalizeError(e) }));
+      }
     } finally {
       inflightRef.current.delete(day);
       setAiLoadingDays((prev) => { const n = new Set(prev); n.delete(day); return n; });

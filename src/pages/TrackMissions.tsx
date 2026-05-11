@@ -7,10 +7,10 @@
  * - Word(.doc) / PDF 다운로드 per 트랙
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Search, Download, FileText, Check, Calendar, ArrowLeft } from "lucide-react";
+import { Search, Download, FileText, Check, Calendar, ArrowLeft, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -50,7 +50,14 @@ import { Sparkles, UserCog, Info } from "lucide-react";
 const STORAGE_KEY = "track-missions:completed:v1";
 const START_KEY = "track-missions:started-at:v1";
 
-type CompletedMap = Record<string, boolean>; // key: `${trackId}:${day}` -> true
+type CompletedMap = Record<string, boolean>; // key: `${trackId}:${day}` or `child_development:${profileId}:${day}`
+
+function keyFor(trackId: MindTrackFocusId, day: number, childProfileId?: string | null): string {
+  if (trackId === "child_development" && childProfileId) {
+    return `child_development:${childProfileId}:${day}`;
+  }
+  return `${trackId}:${day}`;
+}
 
 function loadCompleted(): CompletedMap {
   try {
@@ -60,14 +67,15 @@ function loadCompleted(): CompletedMap {
   }
 }
 
-function loadStartedAt(trackId: MindTrackFocusId): number {
+function loadStartedAt(trackId: MindTrackFocusId, childProfileId?: string | null): number {
   try {
     const map = JSON.parse(localStorage.getItem(START_KEY) || "{}");
-    if (!map[trackId]) {
-      map[trackId] = Date.now();
+    const key = trackId === "child_development" && childProfileId ? `child_development:${childProfileId}` : trackId;
+    if (!map[key]) {
+      map[key] = Date.now();
       localStorage.setItem(START_KEY, JSON.stringify(map));
     }
-    return map[trackId];
+    return map[key];
   } catch {
     return Date.now();
   }
@@ -78,9 +86,9 @@ function getCurrentDay(startedAt: number): number {
   return Math.max(1, Math.min(30, days));
 }
 
-function trackProgress(trackId: MindTrackFocusId, completed: CompletedMap): { done: number; pct: number } {
+function trackProgress(trackId: MindTrackFocusId, completed: CompletedMap, childProfileId?: string | null): { done: number; pct: number } {
   let done = 0;
-  for (let d = 1; d <= 30; d++) if (completed[`${trackId}:${d}`]) done++;
+  for (let d = 1; d <= 30; d++) if (completed[keyFor(trackId, d, childProfileId)]) done++;
   return { done, pct: Math.round((done / 30) * 100) };
 }
 

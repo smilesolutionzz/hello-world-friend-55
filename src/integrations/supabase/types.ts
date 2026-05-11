@@ -9251,6 +9251,44 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_personal_lines: {
+        Row: {
+          base_mission: string | null
+          child_profile_id: string
+          created_at: string
+          day: number
+          id: string
+          personal_line: string
+          user_id: string
+        }
+        Insert: {
+          base_mission?: string | null
+          child_profile_id: string
+          created_at?: string
+          day: number
+          id?: string
+          personal_line: string
+          user_id: string
+        }
+        Update: {
+          base_mission?: string | null
+          child_profile_id?: string
+          created_at?: string
+          day?: number
+          id?: string
+          personal_line?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_personal_lines_child_profile_id_fkey"
+            columns: ["child_profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mind_track_risk_alerts: {
         Row: {
           alert_type: string
@@ -13034,6 +13072,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_child_profiles: {
+        Row: {
+          birth_date: string
+          child_nickname: string
+          created_at: string
+          goal_text: string | null
+          id: string
+          pain_points: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          birth_date: string
+          child_nickname: string
+          created_at?: string
+          goal_text?: string | null
+          id?: string
+          pain_points?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          birth_date?: string
+          child_nickname?: string
+          created_at?: string
+          goal_text?: string | null
+          id?: string
+          pain_points?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_coaching_goals: {
         Row: {

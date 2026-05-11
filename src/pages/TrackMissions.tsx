@@ -222,6 +222,14 @@ export default function TrackMissions() {
   const todayMission: DayDef = baseDays[currentDay - 1];
   const todayAssessment = ASSESSMENT_DAYS[currentDay] ?? null;
 
+  // Auto-mark today's mission as "started" on the server when entering child track
+  useEffect(() => {
+    if (!useChildData) return;
+    if (serverStatus[currentDay]) return;
+    void persistChildStatus(currentDay, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useChildData, currentDay, childProfile?.id]);
+
   const focus = MIND_TRACK_FOCUSES.find((f) => f.id === selected)!;
   const { done, pct } = trackProgress(selected, completed);
 

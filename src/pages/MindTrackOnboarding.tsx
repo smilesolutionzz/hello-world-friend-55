@@ -294,6 +294,7 @@ export default function MindTrackOnboarding() {
       const reqId = (e as { requestId?: string })?.requestId;
       const code = (e as { code?: string })?.code;
       setPersonalizeError(friendly);
+      if (code) setPersonalizeErrorCode(code);
       if (reqId) setPersonalizeRequestId(reqId);
       personalizeRan.current = false;
       const raw = e instanceof Error ? e.message : "unknown";

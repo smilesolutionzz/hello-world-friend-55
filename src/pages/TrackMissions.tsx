@@ -332,6 +332,38 @@ export default function TrackMissions() {
           })}
         </div>
 
+        {/* 아이 프로필 배너 (child_development 트랙 전용) */}
+        {isChildTrack && (
+          <Card className="p-4 md:p-5 mb-4 rounded-2xl border" style={{ borderColor: "#C8B88A", background: "#FBF8EE" }}>
+            {childProfile ? (
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="text-xs font-medium tracking-wider" style={{ color: "#C8B88A" }}>맞춤 코칭 활성</p>
+                  <p className="font-semibold mt-0.5">
+                    {childProfile.child_nickname} · 만 {getAgeYears(childProfile.birth_date)}세 · {ageBucket && AGE_BUCKET_LABEL[ageBucket]}
+                  </p>
+                  {childProfile.pain_points?.length > 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">고민: {childProfile.pain_points.join(" · ")}</p>
+                  )}
+                </div>
+                <Button variant="outline" size="sm" onClick={() => setProfileOpen(true)}>
+                  <UserCog className="w-4 h-4 mr-1" /> 프로필 수정
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="font-semibold">아이 정보를 입력하면 미션이 개인화됩니다</p>
+                  <p className="text-xs text-muted-foreground mt-1">연령대별 미션 + 매일 AI 맞춤 한 줄</p>
+                </div>
+                <Button onClick={() => setProfileOpen(true)} style={{ background: "#C8B88A" }}>
+                  <Sparkles className="w-4 h-4 mr-1" /> 내 아이에 맞게 시작
+                </Button>
+              </div>
+            )}
+          </Card>
+        )}
+
         {/* 오늘의 액션 */}
         <Card className="p-5 md:p-6 mb-6 rounded-2xl border-2" style={{ borderColor: "#C8B88A" }}>
           <div className="flex items-start gap-3">
@@ -344,6 +376,16 @@ export default function TrackMissions() {
               </p>
               <h2 className="mt-1 text-xl md:text-2xl font-bold">{todayMission.actionTitle}</h2>
               <p className="mt-2 text-muted-foreground">{todayMission.actionHowTo}</p>
+              {useChildData && (
+                <div className="mt-3 p-3 rounded-xl border" style={{ background: "#FBF8EE", borderColor: "#E7DEC4" }}>
+                  <p className="text-[11px] font-medium tracking-wider flex items-center gap-1" style={{ color: "#C8B88A" }}>
+                    <Sparkles className="w-3 h-3" /> {childProfile!.child_nickname} 맞춤 한 줄
+                  </p>
+                  <p className="text-sm mt-1">
+                    {personalLines[currentDay] || (aiLoadingDay === currentDay ? "AI가 한 줄을 만드는 중..." : "맞춤 한 줄을 불러오는 중...")}
+                  </p>
+                </div>
+              )}
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <Badge variant="secondary">미션: {todayMission.mission}</Badge>
                 <Badge variant="outline">{todayMission.actionMinutes}분</Badge>
@@ -387,7 +429,7 @@ export default function TrackMissions() {
         <div ref={matrixRef} className="bg-white">
           {/* 주차 테마 */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-            {focus.weeklyThemes.map((t, i) => (
+            {weeklyThemes.map((t, i) => (
               <div key={i} className="p-3 rounded-xl border" style={{ background: "#FBF8EE" }}>
                 <p className="text-[10px] font-medium tracking-wider" style={{ color: "#C8B88A" }}>WEEK 0{i + 1}</p>
                 <p className="text-sm font-semibold mt-1">{t}</p>
@@ -396,7 +438,7 @@ export default function TrackMissions() {
           </div>
 
           <div className="grid gap-2">
-            {TRACK_DAYS[selected].map((def, i) => {
+            {baseDays.map((def, i) => {
               const day = i + 1;
               const isAssess = !!ASSESSMENT_DAYS[day];
               const isDone = !!completed[`${selected}:${day}`];
@@ -429,6 +471,21 @@ export default function TrackMissions() {
                         <span className="font-medium">{def.actionTitle}</span>
                         <span className="text-muted-foreground"> · {def.actionHowTo}</span>
                       </p>
+                      {useChildData && personalLines[day] && (
+                        <p className="text-xs mt-2 p-2 rounded-lg" style={{ background: "#FBF8EE", color: "#8A7A4F" }}>
+                          <Sparkles className="w-3 h-3 inline mr-1" />{personalLines[day]}
+                        </p>
+                      )}
+                      {useChildData && !personalLines[day] && (
+                        <button
+                          className="text-xs mt-2 underline"
+                          style={{ color: "#C8B88A" }}
+                          onClick={() => fetchPersonalLine(day)}
+                          disabled={aiLoadingDay === day}
+                        >
+                          {aiLoadingDay === day ? "생성 중..." : "맞춤 한 줄 보기"}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </Card>
@@ -437,6 +494,13 @@ export default function TrackMissions() {
           </div>
         </div>
       </div>
+
+      <ChildProfileSetup
+        open={profileOpen}
+        initial={childProfile}
+        onClose={() => setProfileOpen(false)}
+        onSaved={(p) => setChildProfile(p)}
+      />
     </div>
   );
 }

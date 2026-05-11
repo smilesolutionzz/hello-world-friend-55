@@ -215,7 +215,7 @@ export default function MindTrackDashboard() {
           .maybeSingle(),
       ]);
       if (cancelled) return;
-      setTodayMission(missions ?? null);
+      setTodayMission((missions as any) ?? null);
       const list = (checkins ?? []) as any[];
       setRecentCheckins(list.slice(0, 5));
       setAllCheckins(list.map((c) => ({ day_number: c.day_number, completed: c.completed })));

@@ -241,6 +241,7 @@ const App = () => {
           <Route path="/mind-track/workbook-preview" element={<MindTrackWorkbookPreview />} />
           <Route path="/track-missions" element={<TrackMissions />} />
           <Route path="/mind-track/missions" element={<TrackMissions />} />
+          <Route path="/onboarding/mind-track" element={<MindTrackOnboarding />} />
           <Route path="/mind-track/check/:shareId" element={<MindTrackCheckResult />} />
           <Route path="/en/mind-track" element={<MindTrack />} />
           <Route path="/en/mind-track/dashboard" element={<MindTrackDashboard />} />

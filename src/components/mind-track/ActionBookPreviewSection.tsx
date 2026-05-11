@@ -193,7 +193,7 @@ export default function ActionBookPreviewSection({
       </div>
 
       <p className="text-[11px] text-foreground/65 break-keep leading-relaxed mb-3">
-        30일 트랙은 임상심리 전문가가 설계한 <strong className="text-foreground">근거 기반 미션 구조</strong>예요.
+        30일 트랙은 14년 경력 현장 전문가가 설계한 <strong className="text-foreground">근거 기반 미션 구조</strong>예요.
         AI는 그 위에 닉네임·연령·고민에 맞춰 표현만 다듬어 드려요.
       </p>
 

@@ -121,6 +121,7 @@ import MindTrackStart from "./pages/MindTrackStart";
 import MindTrackWorkbook from "./pages/MindTrackWorkbook";
 import MindTrackDashboard from "./pages/MindTrackDashboard";
 import MindTrackWorkbookPreview from "./pages/MindTrackWorkbookPreview";
+import TrackMissions from "./pages/TrackMissions";
 import MindTrackCheckResult from "./pages/MindTrackCheckResult";
 import Quiz from "./pages/Quiz";
 

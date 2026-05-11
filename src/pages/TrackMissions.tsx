@@ -7,10 +7,10 @@
  * - Word(.doc) / PDF 다운로드 per 트랙
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Search, Download, FileText, Check, Calendar, ArrowLeft } from "lucide-react";
+import { Search, Download, FileText, Check, Calendar, ArrowLeft, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -50,7 +50,14 @@ import { Sparkles, UserCog, Info } from "lucide-react";
 const STORAGE_KEY = "track-missions:completed:v1";
 const START_KEY = "track-missions:started-at:v1";
 
-type CompletedMap = Record<string, boolean>; // key: `${trackId}:${day}` -> true
+type CompletedMap = Record<string, boolean>; // key: `${trackId}:${day}` or `child_development:${profileId}:${day}`
+
+function keyFor(trackId: MindTrackFocusId, day: number, childProfileId?: string | null): string {
+  if (trackId === "child_development" && childProfileId) {
+    return `child_development:${childProfileId}:${day}`;
+  }
+  return `${trackId}:${day}`;
+}
 
 function loadCompleted(): CompletedMap {
   try {
@@ -60,14 +67,15 @@ function loadCompleted(): CompletedMap {
   }
 }
 
-function loadStartedAt(trackId: MindTrackFocusId): number {
+function loadStartedAt(trackId: MindTrackFocusId, childProfileId?: string | null): number {
   try {
     const map = JSON.parse(localStorage.getItem(START_KEY) || "{}");
-    if (!map[trackId]) {
-      map[trackId] = Date.now();
+    const key = trackId === "child_development" && childProfileId ? `child_development:${childProfileId}` : trackId;
+    if (!map[key]) {
+      map[key] = Date.now();
       localStorage.setItem(START_KEY, JSON.stringify(map));
     }
-    return map[trackId];
+    return map[key];
   } catch {
     return Date.now();
   }
@@ -78,9 +86,9 @@ function getCurrentDay(startedAt: number): number {
   return Math.max(1, Math.min(30, days));
 }
 
-function trackProgress(trackId: MindTrackFocusId, completed: CompletedMap): { done: number; pct: number } {
+function trackProgress(trackId: MindTrackFocusId, completed: CompletedMap, childProfileId?: string | null): { done: number; pct: number } {
   let done = 0;
-  for (let d = 1; d <= 30; d++) if (completed[`${trackId}:${d}`]) done++;
+  for (let d = 1; d <= 30; d++) if (completed[keyFor(trackId, d, childProfileId)]) done++;
   return { done, pct: Math.round((done / 30) * 100) };
 }
 
@@ -95,7 +103,9 @@ export default function TrackMissions() {
   const [childProfile, setChildProfile] = useState<ChildProfile | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [personalLines, setPersonalLines] = useState<Record<number, string>>({}); // day -> line
-  const [aiLoadingDay, setAiLoadingDay] = useState<number | null>(null);
+  const [aiLoadingDays, setAiLoadingDays] = useState<Set<number>>(new Set());
+  const [aiErrorDays, setAiErrorDays] = useState<Record<number, string>>({});
+  const inflightRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     setCompleted(loadCompleted());
@@ -119,8 +129,25 @@ export default function TrackMissions() {
     return () => { cancelled = true; };
   }, []);
 
-  // Reset cached personal lines when profile changes
-  useEffect(() => { setPersonalLines({}); }, [childProfile?.id]);
+  // Reset cached personal lines when profile changes, then prefetch from DB
+  useEffect(() => {
+    setPersonalLines({});
+    setAiErrorDays({});
+    inflightRef.current.clear();
+    if (!childProfile?.id) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("mind_track_personal_lines")
+        .select("day, personal_line")
+        .eq("child_profile_id", childProfile.id);
+      if (cancelled || !data) return;
+      const map: Record<number, string> = {};
+      data.forEach((r: { day: number; personal_line: string }) => { map[r.day] = r.personal_line; });
+      setPersonalLines(map);
+    })();
+    return () => { cancelled = true; };
+  }, [childProfile?.id]);
 
   const ageBucket: ChildAgeBucket | null = childProfile ? getAgeBucket(childProfile.birth_date) : null;
   const isChildTrack = selected === "child_development";
@@ -204,8 +231,9 @@ export default function TrackMissions() {
   };
 
   const toggle = (trackId: MindTrackFocusId, day: number) => {
+    const profileId = trackId === "child_development" ? childProfile?.id ?? null : null;
     setCompleted((prev) => {
-      const key = `${trackId}:${day}`;
+      const key = keyFor(trackId, day, profileId);
       const nextDone = !prev[key];
       const next = { ...prev, [key]: nextDone };
       if (!nextDone) delete next[key];
@@ -217,7 +245,10 @@ export default function TrackMissions() {
     });
   };
 
-  const startedAt = useMemo(() => loadStartedAt(selected), [selected]);
+  const startedAt = useMemo(
+    () => loadStartedAt(selected, selected === "child_development" ? childProfile?.id ?? null : null),
+    [selected, childProfile?.id],
+  );
   const currentDay = getCurrentDay(startedAt);
   const todayMission: DayDef = baseDays[currentDay - 1];
   const todayAssessment = ASSESSMENT_DAYS[currentDay] ?? null;
@@ -231,13 +262,21 @@ export default function TrackMissions() {
   }, [useChildData, currentDay, childProfile?.id]);
 
   const focus = MIND_TRACK_FOCUSES.find((f) => f.id === selected)!;
-  const { done, pct } = trackProgress(selected, completed);
+  const { done, pct } = trackProgress(
+    selected,
+    completed,
+    selected === "child_development" ? childProfile?.id ?? null : null,
+  );
 
   const weeklyThemes = useChildData ? CHILD_WEEKLY_THEMES[ageBucket!] : focus.weeklyThemes;
 
-  const fetchPersonalLine = async (day: number) => {
-    if (!useChildData || personalLines[day] || aiLoadingDay === day) return;
-    setAiLoadingDay(day);
+  const fetchPersonalLine = useCallback(async (day: number) => {
+    if (!useChildData) return;
+    if (personalLines[day]) return;
+    if (inflightRef.current.has(day)) return;
+    inflightRef.current.add(day);
+    setAiLoadingDays((prev) => { const n = new Set(prev); n.add(day); return n; });
+    setAiErrorDays((prev) => { const { [day]: _, ...rest } = prev; return rest; });
     try {
       const { data, error } = await supabase.functions.invoke("personalize-child-mission", {
         body: {
@@ -249,18 +288,20 @@ export default function TrackMissions() {
       if (error) throw error;
       const line = (data as { personalLine?: string })?.personalLine;
       if (line) setPersonalLines((prev) => ({ ...prev, [day]: line }));
+      else throw new Error("빈 응답");
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "AI 호출 실패";
-      toast({ title: msg, variant: "destructive" });
+      setAiErrorDays((prev) => ({ ...prev, [day]: msg }));
     } finally {
-      setAiLoadingDay(null);
+      inflightRef.current.delete(day);
+      setAiLoadingDays((prev) => { const n = new Set(prev); n.delete(day); return n; });
     }
-  };
+  }, [useChildData, personalLines, childProfile, baseDays]);
 
   // Auto-fetch today's personal line when entering child track
   useEffect(() => {
-    if (useChildData && !personalLines[currentDay] && aiLoadingDay !== currentDay) {
-      fetchPersonalLine(currentDay);
+    if (useChildData && !personalLines[currentDay] && !inflightRef.current.has(currentDay)) {
+      void fetchPersonalLine(currentDay);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useChildData, currentDay, childProfile?.id]);
@@ -285,7 +326,7 @@ export default function TrackMissions() {
     const rows = baseDays.map((d, i) => {
       const day = i + 1;
       const isAssess = !!ASSESSMENT_DAYS[day];
-      const isDone = !!completed[`${selected}:${day}`];
+      const isDone = !!completed[keyFor(selected, day, selected === "child_development" ? childProfile?.id ?? null : null)];
       const personal = useChildData ? (personalLines[day] || "") : "";
       return `<tr style="${isAssess ? "background:#FBF7EA;" : ""}">
         <td style="padding:8px;border:1px solid #DDD;text-align:center;font-weight:600;">${day}${isAssess ? " [진단]" : ""}</td>
@@ -398,7 +439,7 @@ export default function TrackMissions() {
         {/* 트랙 선택 */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 mb-8">
           {MIND_TRACK_FOCUSES.map((f) => {
-            const p = trackProgress(f.id, completed);
+            const p = trackProgress(f.id, completed, f.id === "child_development" ? childProfile?.id ?? null : null);
             const active = f.id === selected;
             return (
               <button
@@ -473,9 +514,23 @@ export default function TrackMissions() {
                   <p className="text-[11px] font-medium tracking-wider flex items-center gap-1" style={{ color: "#C8B88A" }}>
                     <Sparkles className="w-3 h-3" /> {childProfile!.child_nickname} 맞춤 한 줄
                   </p>
-                  <p className="text-sm mt-1">
-                    {personalLines[currentDay] || (aiLoadingDay === currentDay ? "AI가 한 줄을 만드는 중..." : "맞춤 한 줄을 불러오는 중...")}
-                  </p>
+                  {personalLines[currentDay] ? (
+                    <p className="text-sm mt-1">{personalLines[currentDay]}</p>
+                  ) : aiLoadingDays.has(currentDay) ? (
+                    <div className="mt-2 space-y-1.5 animate-pulse">
+                      <div className="h-3 bg-[#E7DEC4] rounded w-5/6" />
+                      <div className="h-3 bg-[#E7DEC4] rounded w-2/3" />
+                    </div>
+                  ) : aiErrorDays[currentDay] ? (
+                    <div className="mt-2 flex items-center gap-2">
+                      <p className="text-xs text-red-600">{aiErrorDays[currentDay]}</p>
+                      <Button size="sm" variant="outline" className="h-7" onClick={() => fetchPersonalLine(currentDay)}>
+                        <RefreshCw className="w-3 h-3 mr-1" /> 재시도
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="text-sm mt-1 text-muted-foreground">맞춤 한 줄을 준비 중입니다…</p>
+                  )}
                 </div>
               )}
               <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -488,9 +543,9 @@ export default function TrackMissions() {
               <Button
                 className="mt-4"
                 onClick={() => toggle(selected, currentDay)}
-                variant={completed[`${selected}:${currentDay}`] ? "secondary" : "default"}
+                variant={completed[keyFor(selected, currentDay, selected === "child_development" ? childProfile?.id ?? null : null)] ? "secondary" : "default"}
               >
-                {completed[`${selected}:${currentDay}`] ? (
+                {completed[keyFor(selected, currentDay, selected === "child_development" ? childProfile?.id ?? null : null)] ? (
                   <><Check className="w-4 h-4 mr-1" /> 오늘 완료됨</>
                 ) : (
                   "오늘의 액션 완료 표시"
@@ -533,7 +588,7 @@ export default function TrackMissions() {
             {baseDays.map((def, i) => {
               const day = i + 1;
               const isAssess = !!ASSESSMENT_DAYS[day];
-              const isDone = !!completed[`${selected}:${day}`];
+              const isDone = !!completed[keyFor(selected, day, selected === "child_development" ? childProfile?.id ?? null : null)];
               const isToday = day === currentDay;
               return (
                 <Card
@@ -581,14 +636,27 @@ export default function TrackMissions() {
                           <Sparkles className="w-3 h-3 inline mr-1" />{personalLines[day]}
                         </p>
                       )}
-                      {useChildData && !personalLines[day] && (
+                      {useChildData && !personalLines[day] && aiLoadingDays.has(day) && (
+                        <div className="mt-2 space-y-1.5 animate-pulse">
+                          <div className="h-2.5 bg-[#E7DEC4] rounded w-5/6" />
+                          <div className="h-2.5 bg-[#E7DEC4] rounded w-1/2" />
+                        </div>
+                      )}
+                      {useChildData && !personalLines[day] && !aiLoadingDays.has(day) && aiErrorDays[day] && (
+                        <button
+                          className="text-xs mt-2 inline-flex items-center gap-1 underline text-red-600"
+                          onClick={() => fetchPersonalLine(day)}
+                        >
+                          <RefreshCw className="w-3 h-3" /> 재시도
+                        </button>
+                      )}
+                      {useChildData && !personalLines[day] && !aiLoadingDays.has(day) && !aiErrorDays[day] && (
                         <button
                           className="text-xs mt-2 underline"
                           style={{ color: "#C8B88A" }}
                           onClick={() => fetchPersonalLine(day)}
-                          disabled={aiLoadingDay === day}
                         >
-                          {aiLoadingDay === day ? "생성 중..." : "맞춤 한 줄 보기"}
+                          맞춤 한 줄 보기
                         </button>
                       )}
                     </div>
@@ -604,7 +672,11 @@ export default function TrackMissions() {
         open={profileOpen}
         initial={childProfile}
         onClose={() => setProfileOpen(false)}
-        onSaved={(p) => setChildProfile(p)}
+        onSaved={(p) => {
+          setChildProfile(p);
+          setSelected("child_development");
+          // Personal line will be fetched by the auto-effect after profile mounts.
+        }}
       />
     </div>
   );

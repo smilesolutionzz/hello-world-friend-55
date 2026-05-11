@@ -8775,6 +8775,53 @@ export type Database = {
           },
         ]
       }
+      mind_track_child_mission_status: {
+        Row: {
+          child_profile_id: string
+          completed_at: string | null
+          created_at: string
+          day: number
+          id: string
+          note: string | null
+          started_at: string
+          status: Database["public"]["Enums"]["child_mission_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          child_profile_id: string
+          completed_at?: string | null
+          created_at?: string
+          day: number
+          id?: string
+          note?: string | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["child_mission_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          child_profile_id?: string
+          completed_at?: string | null
+          created_at?: string
+          day?: number
+          id?: string
+          note?: string | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["child_mission_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_child_mission_status_child_profile_id_fkey"
+            columns: ["child_profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mind_track_content_audit_log: {
         Row: {
           failed_items: Json | null
@@ -15489,6 +15536,7 @@ export type Database = {
       account_type: "parent" | "teacher" | "therapist" | "admin"
       app_role: "admin" | "expert" | "user" | "institution_admin"
       child_dev_risk_level: "low" | "medium" | "high"
+      child_mission_status: "started" | "in_progress" | "completed"
       consultation_session_status: "waiting" | "active" | "ended"
       facility_role: "owner" | "admin" | "staff" | "viewer"
       message_type: "text" | "image" | "file"
@@ -15629,6 +15677,7 @@ export const Constants = {
       account_type: ["parent", "teacher", "therapist", "admin"],
       app_role: ["admin", "expert", "user", "institution_admin"],
       child_dev_risk_level: ["low", "medium", "high"],
+      child_mission_status: ["started", "in_progress", "completed"],
       consultation_session_status: ["waiting", "active", "ended"],
       facility_role: ["owner", "admin", "staff", "viewer"],
       message_type: ["text", "image", "file"],

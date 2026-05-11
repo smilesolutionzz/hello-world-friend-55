@@ -38,8 +38,14 @@ import {
   renderName,
   type ChildAgeBucket,
 } from "@/lib/mindTrackChildMissions";
+import {
+  buildOverrideMap,
+  getOverrideDay,
+  PAIN_OVERRIDE_DAYS,
+  type OverrideMap,
+} from "@/lib/childPainPointMissions";
 import ChildProfileSetup, { type ChildProfile } from "@/components/mind-track/ChildProfileSetup";
-import { Sparkles, UserCog } from "lucide-react";
+import { Sparkles, UserCog, Info } from "lucide-react";
 
 const STORAGE_KEY = "track-missions:completed:v1";
 const START_KEY = "track-missions:started-at:v1";
@@ -120,20 +126,93 @@ export default function TrackMissions() {
   const isChildTrack = selected === "child_development";
   const useChildData = isChildTrack && !!childProfile && !!ageBucket;
 
+  const overrideMap: OverrideMap = useChildData
+    ? buildOverrideMap(childProfile!.pain_points || [])
+    : {};
+
   const baseDays: DayDef[] = useChildData
-    ? CHILD_MISSIONS_BY_AGE[ageBucket!].map((d) => ({
-        ...d,
-        mission: renderName(d.mission, childProfile!.child_nickname),
-        actionTitle: renderName(d.actionTitle, childProfile!.child_nickname),
-        actionHowTo: renderName(d.actionHowTo, childProfile!.child_nickname),
-      }))
+    ? CHILD_MISSIONS_BY_AGE[ageBucket!].map((d, idx) => {
+        const day = idx + 1;
+        const ov = getOverrideDay(day, ageBucket!, overrideMap);
+        const src = ov ? ov.def : d;
+        return {
+          ...src,
+          mission: renderName(src.mission, childProfile!.child_nickname),
+          actionTitle: renderName(src.actionTitle, childProfile!.child_nickname),
+          actionHowTo: renderName(src.actionHowTo, childProfile!.child_nickname),
+        };
+      })
     : TRACK_DAYS[selected];
+
+  const reasonForDay = (day: number): string | null => {
+    if (!useChildData) return null;
+    const pain = overrideMap[day];
+    const age = getAgeYears(childProfile!.birth_date);
+    if (pain) return `만 ${age}세 · 페인포인트 매칭: "${pain}"`;
+    return `만 ${age}세 · ${AGE_BUCKET_LABEL[ageBucket!]} 공통 코칭`;
+  };
+
+  const [serverStatus, setServerStatus] = useState<Record<number, "started" | "in_progress" | "completed">>({});
+  useEffect(() => {
+    let cancelled = false;
+    if (!useChildData) { setServerStatus({}); return; }
+    (async () => {
+      const { data } = await supabase
+        .from("mind_track_child_mission_status")
+        .select("day, status")
+        .eq("child_profile_id", childProfile!.id);
+      if (cancelled || !data) return;
+      const map: Record<number, "started" | "in_progress" | "completed"> = {};
+      data.forEach((r: { day: number; status: "started" | "in_progress" | "completed" }) => {
+        map[r.day] = r.status;
+      });
+      setServerStatus(map);
+      // Hydrate localStorage completed map from server (so checkbox reflects DB)
+      setCompleted((prev) => {
+        const next = { ...prev };
+        Object.entries(map).forEach(([d, s]) => {
+          const key = `child_development:${d}`;
+          if (s === "completed") next[key] = true;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        return next;
+      });
+    })();
+    return () => { cancelled = true; };
+  }, [useChildData, childProfile?.id]);
+
+
+
+  const persistChildStatus = async (day: number, completed: boolean) => {
+    if (!useChildData) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const status: "started" | "completed" = completed ? "completed" : "started";
+    setServerStatus((prev) => ({ ...prev, [day]: status }));
+    await supabase
+      .from("mind_track_child_mission_status")
+      .upsert(
+        {
+          user_id: user.id,
+          child_profile_id: childProfile!.id,
+          day,
+          status,
+          completed_at: completed ? new Date().toISOString() : null,
+        },
+        { onConflict: "child_profile_id,day" },
+      );
+  };
 
   const toggle = (trackId: MindTrackFocusId, day: number) => {
     setCompleted((prev) => {
-      const next = { ...prev, [`${trackId}:${day}`]: !prev[`${trackId}:${day}`] };
-      if (!next[`${trackId}:${day}`]) delete next[`${trackId}:${day}`];
+      const key = `${trackId}:${day}`;
+      const nextDone = !prev[key];
+      const next = { ...prev, [key]: nextDone };
+      if (!nextDone) delete next[key];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      if (trackId === "child_development" && useChildData) {
+        void persistChildStatus(day, nextDone);
+      }
       return next;
     });
   };
@@ -142,6 +221,14 @@ export default function TrackMissions() {
   const currentDay = getCurrentDay(startedAt);
   const todayMission: DayDef = baseDays[currentDay - 1];
   const todayAssessment = ASSESSMENT_DAYS[currentDay] ?? null;
+
+  // Auto-mark today's mission as "started" on the server when entering child track
+  useEffect(() => {
+    if (!useChildData) return;
+    if (serverStatus[currentDay]) return;
+    void persistChildStatus(currentDay, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useChildData, currentDay, childProfile?.id]);
 
   const focus = MIND_TRACK_FOCUSES.find((f) => f.id === selected)!;
   const { done, pct } = trackProgress(selected, completed);
@@ -376,6 +463,11 @@ export default function TrackMissions() {
               </p>
               <h2 className="mt-1 text-xl md:text-2xl font-bold">{todayMission.actionTitle}</h2>
               <p className="mt-2 text-muted-foreground">{todayMission.actionHowTo}</p>
+              {useChildData && reasonForDay(currentDay) && (
+                <p className="mt-2 text-xs flex items-center gap-1 text-muted-foreground">
+                  <Info className="w-3 h-3" /> 추천 근거: {reasonForDay(currentDay)}
+                </p>
+              )}
               {useChildData && (
                 <div className="mt-3 p-3 rounded-xl border" style={{ background: "#FBF8EE", borderColor: "#E7DEC4" }}>
                   <p className="text-[11px] font-medium tracking-wider flex items-center gap-1" style={{ color: "#C8B88A" }}>
@@ -466,11 +558,24 @@ export default function TrackMissions() {
                         {isAssess && <Badge className="bg-blue-100 text-blue-700 border-0 text-[10px]">진단</Badge>}
                         {isToday && <Badge className="bg-foreground text-background text-[10px]">오늘</Badge>}
                         <Badge variant="outline" className="text-[10px]">{def.actionMinutes}분</Badge>
+                        {useChildData && overrideMap[day] && (
+                          <Badge className="text-[10px] border-0" style={{ background: "#FBF8EE", color: "#8A7A4F" }}>
+                            맞춤: {overrideMap[day]}
+                          </Badge>
+                        )}
+                        {useChildData && serverStatus[day] === "completed" && (
+                          <Badge className="text-[10px] bg-emerald-100 text-emerald-700 border-0">기록 저장됨</Badge>
+                        )}
                       </div>
                       <p className="text-sm mt-1">
                         <span className="font-medium">{def.actionTitle}</span>
                         <span className="text-muted-foreground"> · {def.actionHowTo}</span>
                       </p>
+                      {useChildData && reasonForDay(day) && (
+                        <p className="text-[11px] mt-1 text-muted-foreground flex items-center gap-1">
+                          <Info className="w-3 h-3" /> {reasonForDay(day)}
+                        </p>
+                      )}
                       {useChildData && personalLines[day] && (
                         <p className="text-xs mt-2 p-2 rounded-lg" style={{ background: "#FBF8EE", color: "#8A7A4F" }}>
                           <Sparkles className="w-3 h-3 inline mr-1" />{personalLines[day]}

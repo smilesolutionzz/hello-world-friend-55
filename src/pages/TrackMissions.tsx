@@ -326,7 +326,7 @@ export default function TrackMissions() {
     const rows = baseDays.map((d, i) => {
       const day = i + 1;
       const isAssess = !!ASSESSMENT_DAYS[day];
-      const isDone = !!completed[`${selected}:${day}`];
+      const isDone = !!completed[keyFor(selected, day, selected === "child_development" ? childProfile?.id ?? null : null)];
       const personal = useChildData ? (personalLines[day] || "") : "";
       return `<tr style="${isAssess ? "background:#FBF7EA;" : ""}">
         <td style="padding:8px;border:1px solid #DDD;text-align:center;font-weight:600;">${day}${isAssess ? " [진단]" : ""}</td>
@@ -543,9 +543,9 @@ export default function TrackMissions() {
               <Button
                 className="mt-4"
                 onClick={() => toggle(selected, currentDay)}
-                variant={completed[`${selected}:${currentDay}`] ? "secondary" : "default"}
+                variant={completed[keyFor(selected, currentDay, selected === "child_development" ? childProfile?.id ?? null : null)] ? "secondary" : "default"}
               >
-                {completed[`${selected}:${currentDay}`] ? (
+                {completed[keyFor(selected, currentDay, selected === "child_development" ? childProfile?.id ?? null : null)] ? (
                   <><Check className="w-4 h-4 mr-1" /> 오늘 완료됨</>
                 ) : (
                   "오늘의 액션 완료 표시"
@@ -588,7 +588,7 @@ export default function TrackMissions() {
             {baseDays.map((def, i) => {
               const day = i + 1;
               const isAssess = !!ASSESSMENT_DAYS[day];
-              const isDone = !!completed[`${selected}:${day}`];
+              const isDone = !!completed[keyFor(selected, day, selected === "child_development" ? childProfile?.id ?? null : null)];
               const isToday = day === currentDay;
               return (
                 <Card

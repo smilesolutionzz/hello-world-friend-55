@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { WORKBOOK_CHAPTERS } from '@/lib/mindTrackChapters';
 import WorkbookSamplePreviewModal from '@/components/mind-track/WorkbookSamplePreviewModal';
+import ActionBookPreviewSection from '@/components/mind-track/ActionBookPreviewSection';
 import { Button } from '@/components/ui/button';
 import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,

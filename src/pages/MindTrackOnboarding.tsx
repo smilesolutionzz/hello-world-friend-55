@@ -614,7 +614,6 @@ function PersonalizingScreen({
     </div>
   );
 }
-}
 
 function PreviewScreen({
   nickname, audience, personalLine, onStart,

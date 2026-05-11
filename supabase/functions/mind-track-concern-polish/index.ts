@@ -80,8 +80,18 @@ serve(async (req) => {
 
     const data = await response.json();
     let polished = (data.choices?.[0]?.message?.content || "").trim();
-    // 따옴표 제거
-    polished = polished.replace(/^["'「『]+|["'」』]+$/g, "").trim();
+    // HTML/마크다운 잔여물 제거 + 따옴표 제거
+    polished = polished
+      .replace(/<\/?[a-zA-Z][^>]*>/g, "")
+      .replace(/```[\s\S]*?```/g, "")
+      .replace(/[*_`~]+/g, "")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&amp;/g, "&")
+      .replace(/^["'「『]+|["'」』]+$/g, "")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
 
     if (!polished) throw new Error("다듬기 결과를 받지 못했습니다.");
 

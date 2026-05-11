@@ -54,6 +54,8 @@ export default function MindTrackOnboarding() {
   const [childProfileId, setChildProfileId] = useState<string | null>(null);
   const [personalLine, setPersonalLine] = useState<string | null>(null);
   const [personalizeError, setPersonalizeError] = useState<string | null>(null);
+  const [personalizeRequestId, setPersonalizeRequestId] = useState<string | null>(null);
+  const [personalizeAttempt, setPersonalizeAttempt] = useState<{ phase: string; attempt: number; maxAttempts: number; nextDelayMs?: number } | null>(null);
   const personalizeRan = useRef(false);
 
   // Resume — restore stage + form fields from localStorage. Server-side: latest stage_enter event as authoritative source if newer than local.

@@ -597,104 +597,19 @@ const MindTrack: React.FC = () => {
                     ))}
                   </div>
 
-                  {/* 액션북 미리보기 — 30일 동안 채워지는 초맞춤 미션 페이지 */}
-                  <div className="mt-5 rounded-2xl border border-[#C8B88A]/30 bg-gradient-to-br from-[#FBF9F2] to-white p-4 md:p-5">
-                    <div className="flex items-start gap-2.5 mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-[#C8B88A]/20 flex items-center justify-center shrink-0">
-                        <BookOpen className="w-4 h-4 text-[#8a7a4d]" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[10px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-                          Action Book Preview · 30 Days
-                        </p>
-                        <h3 className="text-base md:text-lg font-bold text-foreground break-keep leading-snug">
-                          30일 동안 매일 한 장씩 채워지는 나만의 액션북
-                        </h3>
-                        <p className="text-xs text-foreground/60 mt-0.5 break-keep">
-                          닉네임·고민·목표를 학습한 AI가 매일 다른 “초맞춤 미션 한 장”을 만들어 드려요.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* 초맞춤 강조 칩 */}
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#1a1a1a] text-white text-[10px] font-semibold">
-                        <Sparkles className="w-3 h-3" /> 초맞춤 미션
-                      </span>
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FBF8EE] border border-[#C8B88A]/40 text-[#8a7a4d] text-[10px] font-semibold">
-                        AI가 매일 새로 작성
-                      </span>
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FBF8EE] border border-[#C8B88A]/40 text-[#8a7a4d] text-[10px] font-semibold">
-                        대상·연령·고민 반영
-                      </span>
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#FBF8EE] border border-[#C8B88A]/40 text-[#8a7a4d] text-[10px] font-semibold">
-                        30장 = 한 권의 PDF
-                      </span>
-                    </div>
-
-                    {/* 30일 액션북 페이지 그리드 — 첫 3장 펼쳐 보이고 나머지는 잠금 */}
-                    <div className="grid grid-cols-10 gap-1.5 mb-4">
-                      {Array.from({ length: 30 }).map((_, i) => {
-                        const dayNum = i + 1;
-                        const sample = dayNum <= 3;
-                        const sampleLines = [
-                          ["수면 리셋", "잠들기 30분 전 핸드폰 거실에 두기"],
-                          ["감정 신호", "오늘 짜증 1번을 한 줄로 적기"],
-                          ["회복 루틴", "퇴근 후 5분 산책 1바퀴"],
-                        ];
-                        if (sample) {
-                          const [title, body] = sampleLines[i];
-                          return (
-                            <div
-                              key={i}
-                              className="col-span-5 sm:col-span-3 md:col-span-2 row-span-2 rounded-lg bg-white border border-[#C8B88A]/40 p-2 flex flex-col justify-between min-h-[64px]"
-                            >
-                              <div>
-                                <p className="text-[8px] font-mono text-[#C8B88A] tracking-wider">DAY {String(dayNum).padStart(2, "0")}</p>
-                                <p className="text-[10px] font-bold text-foreground break-keep leading-tight mt-0.5">{title}</p>
-                              </div>
-                              <p className="text-[9px] text-foreground/60 break-keep leading-snug">{body}</p>
-                            </div>
-                          );
-                        }
-                        return (
-                          <div
-                            key={i}
-                            className="aspect-square rounded-md bg-[#FAF8F2] border border-[#C8B88A]/20 flex items-center justify-center text-[8px] font-mono text-[#C8B88A]/70 relative"
-                          >
-                            {String(dayNum).padStart(2, "0")}
-                            <Lock className="absolute bottom-0.5 right-0.5 w-2 h-2 text-[#C8B88A]/50" />
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* 챕터 자동 정리 안내 — 7개 챕터 한 줄로 압축 */}
-                    <div className="rounded-xl bg-[#FAF8F2] border border-[#C8B88A]/20 px-3 py-2 mb-3">
-                      <p className="text-[10px] font-semibold tracking-wider text-[#8a7a4d] uppercase mb-1">
-                        30장이 자동 정리되는 7개 챕터
-                      </p>
-                      <p className="text-[11px] text-foreground/70 break-keep leading-relaxed">
-                        {WORKBOOK_CHAPTERS.slice(0, 7).map((c) => `CH${c.chapterNo} ${c.shortTitle}`).join(" · ")}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-2 flex-wrap pt-2 border-t border-[#C8B88A]/15">
-                      <div className="flex items-center gap-1.5 text-[11px] text-foreground/55">
-                        <FileText className="w-3 h-3" />
-                        <span>샘플 PDF는 입력한 닉네임·목표로 자동 채워서 보여드려요</span>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={openSamplePreview}
-                        className="rounded-full border-[#C8B88A]/50 text-[#8a7a4d] hover:bg-[#C8B88A]/10 h-8 text-xs"
-                      >
-                        <Eye className="w-3.5 h-3.5 mr-1.5" />
-                        내 액션북 샘플 미리보기
-                      </Button>
-                    </div>
-                  </div>
+                  <ActionBookPreviewSection
+                    nickname={sampleSeed.nickname}
+                    concern={concern}
+                    goalId={selectedGoal}
+                    goalLabel={focusGoals.find((g) => g.id === selectedGoal)?.title || null}
+                    trackPrice={TRACK_PRICE}
+                    loggedIn={isLoggedIn}
+                    onOpenSampleModal={openSamplePreview}
+                    onUnlockClick={(loc) => {
+                      handleStartCtaClick(loc);
+                      navigate(isLoggedIn ? '/token-subscription' : '/auth');
+                    }}
+                  />
 
                   <div className="flex items-center justify-between gap-3 pt-4 mt-4 border-t border-[#C8B88A]/20">
                     <div className="flex items-center gap-2 text-xs text-foreground/60">

@@ -352,7 +352,19 @@ const MindTrack: React.FC = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       if (data?.polished) {
-        setConcern(data.polished);
+        // HTML 태그/마크다운 잔여물 제거 (AI가 가끔 <b>, **, ``` 등을 남김)
+        const cleaned = String(data.polished)
+          .replace(/<\/?[a-zA-Z][^>]*>/g, '')
+          .replace(/```[\s\S]*?```/g, '')
+          .replace(/[*_`~]+/g, '')
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .replace(/[ \t]+\n/g, '\n')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+        setConcern(cleaned);
         toast.success('AI가 자연스럽게 다듬었어요');
       }
     } catch (e: any) {

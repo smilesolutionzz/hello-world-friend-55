@@ -165,13 +165,13 @@ export default function ActionBookPreviewSection({
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-            Action Book Preview · 30 Days
+            Action Book · 전문가 설계 30일 트랙
           </p>
           <h3 className="text-base md:text-lg font-bold text-foreground break-keep leading-snug">
-            30일 동안 매일 한 장씩 채워지는 나만의 액션북
+            임상심리 전문가가 설계한 30일 액션북
           </h3>
           <p className="text-xs text-foreground/60 mt-0.5 break-keep">
-            닉네임·고민·목표를 학습한 AI가 매일 다른 “초맞춤 미션 한 장”을 만들어 드려요.
+            CBT·행동활성화 등 검증된 이론 위에, 내 닉네임·고민·목표에 맞춘 한 줄만 AI가 다듬어요.
           </p>
         </div>
       </div>

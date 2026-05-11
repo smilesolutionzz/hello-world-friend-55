@@ -464,6 +464,8 @@ export default function MindTrackOnboarding() {
                 ageLabel={ageInfo?.label}
                 pains={pains}
                 error={personalizeError}
+                requestId={personalizeRequestId}
+                attempt={personalizeAttempt}
                 onRetry={() => { personalizeRan.current = false; runPersonalize(); }}
                 onSkip={() => setStage("preview")}
               />

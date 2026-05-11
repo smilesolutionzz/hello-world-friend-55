@@ -1,6 +1,9 @@
 // Live Day 1-3 action book preview generator (anonymous-friendly).
 // Returns 3 ultra-personalized mission cards for the workbook preview funnel.
-import { corsHeaders } from "@supabase/supabase-js/cors";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 

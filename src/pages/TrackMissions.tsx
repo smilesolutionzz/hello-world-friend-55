@@ -231,8 +231,9 @@ export default function TrackMissions() {
   };
 
   const toggle = (trackId: MindTrackFocusId, day: number) => {
+    const profileId = trackId === "child_development" ? childProfile?.id ?? null : null;
     setCompleted((prev) => {
-      const key = `${trackId}:${day}`;
+      const key = keyFor(trackId, day, profileId);
       const nextDone = !prev[key];
       const next = { ...prev, [key]: nextDone };
       if (!nextDone) delete next[key];
@@ -244,7 +245,10 @@ export default function TrackMissions() {
     });
   };
 
-  const startedAt = useMemo(() => loadStartedAt(selected), [selected]);
+  const startedAt = useMemo(
+    () => loadStartedAt(selected, selected === "child_development" ? childProfile?.id ?? null : null),
+    [selected, childProfile?.id],
+  );
   const currentDay = getCurrentDay(startedAt);
   const todayMission: DayDef = baseDays[currentDay - 1];
   const todayAssessment = ASSESSMENT_DAYS[currentDay] ?? null;
@@ -258,13 +262,21 @@ export default function TrackMissions() {
   }, [useChildData, currentDay, childProfile?.id]);
 
   const focus = MIND_TRACK_FOCUSES.find((f) => f.id === selected)!;
-  const { done, pct } = trackProgress(selected, completed);
+  const { done, pct } = trackProgress(
+    selected,
+    completed,
+    selected === "child_development" ? childProfile?.id ?? null : null,
+  );
 
   const weeklyThemes = useChildData ? CHILD_WEEKLY_THEMES[ageBucket!] : focus.weeklyThemes;
 
-  const fetchPersonalLine = async (day: number) => {
-    if (!useChildData || personalLines[day] || aiLoadingDay === day) return;
-    setAiLoadingDay(day);
+  const fetchPersonalLine = useCallback(async (day: number) => {
+    if (!useChildData) return;
+    if (personalLines[day]) return;
+    if (inflightRef.current.has(day)) return;
+    inflightRef.current.add(day);
+    setAiLoadingDays((prev) => { const n = new Set(prev); n.add(day); return n; });
+    setAiErrorDays((prev) => { const { [day]: _, ...rest } = prev; return rest; });
     try {
       const { data, error } = await supabase.functions.invoke("personalize-child-mission", {
         body: {
@@ -276,18 +288,20 @@ export default function TrackMissions() {
       if (error) throw error;
       const line = (data as { personalLine?: string })?.personalLine;
       if (line) setPersonalLines((prev) => ({ ...prev, [day]: line }));
+      else throw new Error("빈 응답");
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "AI 호출 실패";
-      toast({ title: msg, variant: "destructive" });
+      setAiErrorDays((prev) => ({ ...prev, [day]: msg }));
     } finally {
-      setAiLoadingDay(null);
+      inflightRef.current.delete(day);
+      setAiLoadingDays((prev) => { const n = new Set(prev); n.delete(day); return n; });
     }
-  };
+  }, [useChildData, personalLines, childProfile, baseDays]);
 
   // Auto-fetch today's personal line when entering child track
   useEffect(() => {
-    if (useChildData && !personalLines[currentDay] && aiLoadingDay !== currentDay) {
-      fetchPersonalLine(currentDay);
+    if (useChildData && !personalLines[currentDay] && !inflightRef.current.has(currentDay)) {
+      void fetchPersonalLine(currentDay);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useChildData, currentDay, childProfile?.id]);

@@ -1,110 +1,116 @@
 
-# 아이 발달 코칭 트랙 개인화
+# 30일 개인화 트랙 — 고객 UX/AX 온보딩 설계
 
-## 문제
+## 핵심 원칙
 
-현재 `child_development` 30일 미션은 모든 아이에게 동일한 문구("아이 감정 라벨링", "아이 강점 3개"…). 그러나:
-- **연령대가 다름** — 영아(0-2), 유아(3-5), 학령기(6-12), 청소년(13-18) 발달 과제가 완전히 다름
-- **페인포인트가 다름** — 수면/식사/언어 지연/또래 갈등/공부 거부/사춘기 반항 등
-- **부모 목표가 다름** — 애착 형성 vs 자기조절 vs 학업동기 vs 분리
+- **60초 룰**: 결제 직후 60초 안에 "내 아이/내 이름이 들어간 오늘의 한 줄"을 보게 한다. 첫 가치 경험(=AX의 Aha Moment)이 없으면 30일 트랙은 D1에서 70%가 이탈한다.
+- **점진적 공개(Progressive Disclosure)**: 한 화면 = 한 질문. 생년월일/페인포인트/목표를 한 폼에 몰지 않는다.
+- **즉시 반영 피드백**: 입력할 때마다 "이렇게 바뀌어요" 미리보기가 옆에서 갱신된다 (AX 신호).
+- **나갈 권리 보장**: 모든 단계에 "나중에 하기"가 있고, 누락 항목은 홈 상단 배너로 회수한다.
 
-→ 공통 미션만으로는 "내 아이를 위한 코칭"이라는 가치 제안이 무너짐.
-
-## 해결 방향
-
-미션을 **3-Layer 구조**로 재설계:
+## 전체 플로우 (결제 → Day 1 미션 시작)
 
 ```text
-Layer 1: 부모 자신의 미션 (공통, 30일 고정)
-  - 호흡, 자기관찰, 감정 라벨링 — 모든 부모에게 유효
-  
-Layer 2: 연령대 미션 (4개 연령 버킷별 30일)
-  - 영아 / 유아 / 학령기 / 청소년
-  - 각 버킷마다 발달 과제 기반 미션
-  
-Layer 3: 페인포인트 미션 (AI 개인화, 매일 1줄)
-  - 온보딩에서 받은 주요 고민 + 아이 정보로
-  - Gemini가 "오늘 ___아이에게 ___해보세요" 1줄 생성
+[결제 완료]
+   │
+   ▼
+[STEP 0] 환영 영상 카드 (15초, 스킵 가능)
+   "이제 30일, 같이 시작해요" — 진행자/코치 얼굴
+   │
+   ▼
+[STEP 1] 누구를 위한 트랙인가요?
+   ◯ 나 자신   ◯ 내 아이   ◯ 가족/배우자
+   │           │
+   │           ▼
+   │      [STEP 1-a] 아이 닉네임 + 생년월일 (한 화면)
+   │           ▼
+   ▼      [STEP 1-b] 아이 페인포인트 (칩 5개 이내)
+[STEP 2] 페인포인트 (성인 칩셋)
+   │
+   ▼
+[STEP 3] 30일 후 보고 싶은 변화 한 줄 (선택, 스킵 가능)
+   │
+   ▼
+[STEP 4] 개인화 생성 로딩 (8~12초, 진짜 AI 호출)
+   "민준이 7세 · 떼쓰기 패턴에 맞춰 30일을 짜고 있어요…"
+   체크리스트가 한 줄씩 켜짐:
+   ✓ 연령대 매칭        ✓ 페인포인트 매핑
+   ✓ Day 1·2 베이스라인 검사 선정
+   ✓ 오늘의 한 줄 생성
+   │
+   ▼
+[STEP 5] "내 트랙 미리보기" (최대 임팩트 화면)
+   - 큰 제목: "민준이 30일 코칭이 준비됐어요"
+   - Day 1 카드 1개 + Day 7/14/30 마일스톤 미리보기 3개
+   - 단일 CTA: [지금 Day 1 시작]
+   - 보조: [캘린더에 알림 추가] [나중에 시작]
+   │
+   ▼
+[Day 1 미션 화면 — 본 트랙 진입]
 ```
 
-## 온보딩 보강
+## 단계별 UX 디테일
 
-`/onboarding` 또는 트랙 시작 시점에 추가 입력:
-1. 아이 생년월일 (필수)
-2. 아이 닉네임/호칭 (예: "민준이", "둘째")
-3. 주요 고민 3개 선택 + 1개 자유 서술
-   - 수면, 식사, 언어, 또래 관계, 분리불안, 짜증/떼, 학습, 형제 갈등, 미디어, 사춘기 등
-4. 30일 후 보고 싶은 변화 1문장
+### STEP 0 — 환영 카드 (5초)
+- 풀스크린 모달 1개. 골드 액센트(#C8B88A) + 흰 배경.
+- 문구: **"19,900원짜리 약속을 했으니, 이제 우리가 30일을 책임질게요."** (결제 정당화 + 신뢰 형성)
+- "시작하기" 단일 CTA. 영상은 자동재생 음소거.
 
-저장: `user_child_profiles` 테이블 (user_id, child_nickname, birth_date, pain_points[], goal_text)
+### STEP 1 — 대상 선택 (10초)
+- 3개의 큰 카드 (이미지 + 한 줄). 클릭 = 다음.
+- AX 핵심: 이 한 번의 선택이 **온보딩 전체 카피와 검사 세트를 분기**한다. ChildProfileSetup vs 성인 페인포인트 셀렉터.
 
-## 미션 데이터 재설계
+### STEP 1-a — 닉네임 + 생년월일 (아이 분기 시)
+- 한 화면, 두 입력. 키보드는 닉네임에 자동 포커스.
+- **즉시 피드백**: 생년월일 입력 시 우측에 "만 ◯세 ◯개월 → 학령기 트랙" 칩이 뜬다.
+- 실명 금지 안내는 placeholder가 아니라 인라인 헬퍼: *"별명을 써주세요. 실명은 저장하지 않습니다."*
 
-`mindTrackTrackContent.ts`의 `child_development`를 분리:
+### STEP 1-b / STEP 2 — 페인포인트 (15초)
+- 칩 그리드. 페인포인트 5개 제한. 6번째 클릭 시 자동으로 가장 오래된 칩이 빠짐 (선택지 잠금 X).
+- 하단 sticky bar: 선택한 칩 수 + "다음" 버튼. 0개여도 "지금 정하지 않을래요"로 진행 가능.
 
-```text
-src/lib/mindTrackChildMissions.ts
-  - CHILD_AGE_BUCKETS: 'infant' | 'toddler' | 'school' | 'teen'
-  - getAgeBucket(birthDate) → bucket
-  - CHILD_MISSIONS_BY_AGE: Record<bucket, DayDef[30]>
-    - 영아: 애착, 옹알이 반응, 루틴, 안전 기지
-    - 유아: 감정 어휘, 놀이 주도, 한계 설정, 분리연습
-    - 학령기: 자기조절, 또래 코칭, 학습 동기, 자율성
-    - 청소년: 경청, 사생활 존중, 가치 대화, 갈등 협상
-```
+### STEP 3 — 목표 한 줄 (선택, 10초)
+- Textarea + 3개의 클릭형 예시 문장 ("떼쓰기가 줄었으면", "수면이 안정됐으면", "아이가 자기감정을 말로"). 클릭 = 자동 채움.
+- 스킵 시 30일 리포트에 "목표 미설정" 표기 (회수 트리거).
 
-미션 문구 안의 "아이"는 `{{childName}}` 토큰으로 치환 → 화면 렌더 시 닉네임 삽입.
+### STEP 4 — 개인화 생성 로딩 (10초 전후)
+- **이건 가짜 스피너가 아니라 실제 호출이어야 한다.** `personalize-child-mission` edge function + Day 1 베이스 미션 매칭이 동시에 돈다.
+- 카피가 1.5초마다 교체되며 입력값을 그대로 보여준다 → "내 데이터로 진짜 만들어진다"는 AX 신호.
+- 실패 시: "다시 만들기" + "기본 트랙으로 시작" 두 갈래 (절대 막다른 길 X).
 
-## AI 페인포인트 줄 (Layer 3)
+### STEP 5 — 트랙 미리보기 (전환의 정점)
+- 상단: 닉네임이 들어간 헤드라인.
+- 가운데: Day 1 카드(완전 공개) + Day 7/14/30 카드(잠금/미리보기). 잠금이 "다음에 또 와야 할 이유"를 만든다.
+- CTA는 **하나만**: 지금 Day 1 시작. 보조 액션은 텍스트 링크.
 
-매일 1회 호출되는 신규 엣지 함수:
-```text
-supabase/functions/personalize-child-mission/
-  입력: childProfile + day(1-30) + baseMission
-  출력: { personalLine: string }  // 한 문장
-  모델: Gemini 3.1, reasoning.effort: medium
-  캐시: child_id + day → DB (mind_track_personal_lines)
-```
+## 회수(리텐션) 트리거 — 첫 24~72시간
 
-UI에는 "오늘의 베이스 미션" 아래에 "민준이 맞춤 한 줄" 카드로 표시.
+- 온보딩 미완료 시 홈 상단 sticky 배너: "프로필 60% 완성 — 한 줄만 더하면 맞춤 한 줄이 켜져요" + 진행률 게이지.
+- Day 1 미클릭 + 6시간: 푸시/이메일 1회. **Day 0 자정 전 리마인드 1회 제한** (스팸 방지).
+- 페인포인트 0개 상태로 Day 3 진입 시 인앱 모달 1회: "지금 고민을 알려주면 남은 27일이 달라져요".
 
-## UI 변화 (`/track-missions`)
+## 측정 지표 (AX 검증용)
 
-`child_development` 트랙 선택 시:
-1. 아이 프로필 미입력이면 입력 모달 (CTA: "내 아이에 맞게 시작하기")
-2. 매트릭스에 아이 닉네임/연령 헤더 노출 ("민준이(만 4세) 30일 발달 코칭")
-3. 매 Day 카드에 3-Layer 표시:
-   - 부모 미션 (회색)
-   - 연령 미션 (골드)
-   - 맞춤 한 줄 (서브 박스, 로딩/생성)
-4. 다른 트랙(uncertainty, anxiety 등)은 기존 공통 미션 유지
+- **TTFV(Time-To-First-Value)**: 결제 → Day 1 미션 카드 도달 시간. 목표 < 90초.
+- **개인화 한 줄 생성 성공률**: STEP 4에서 실제 personalLine 캐싱된 비율. 목표 > 95%.
+- **Day 1 완료율**: 온보딩 마친 사용자 중 24h 내 첫 미션 완료. 목표 > 60%.
+- **온보딩 완주율 (전 단계 통과)**: 결제자 기준. 목표 > 75%.
+- 분기점별 드롭오프 퍼널을 `mind_track_onboarding_events` 테이블에 stage별로 기록.
 
-## 저장/접근 모델
+## 기술 구현 매핑
 
-- `user_child_profiles` — RLS: 본인만 select/insert/update
-- `mind_track_personal_lines` — RLS: 본인만 select, edge function이 service_role로 insert
-- 비로그인 사용자는 미리보기(연령 버킷 선택만으로 샘플 미션 1주차) → 가입 유도
+- **재사용**: `MindTrackFirstTimeOnboarding`(현 3슬라이드 교육형) → STEP 0으로 축소. `ChildProfileSetup`(현 단일 폼) → STEP 1-a/1-b/3 로 **분리된 위저드** 컴포넌트로 리팩터.
+- **신규**: `MindTrackOnboardingWizard.tsx` (대상 분기 + step state machine), `OnboardingPersonalizingScreen.tsx` (STEP 4 실시간 호출), `OnboardingTrackPreview.tsx` (STEP 5).
+- **데이터**:
+  - `user_child_profiles` — 기존 사용 (닉네임/생년월일/페인포인트/목표).
+  - `user_onboarding_data` — 성인 분기 + 진행 stage 저장 (어디서 멈췄는지 복원용).
+  - `mind_track_personal_lines` — STEP 4에서 Day 1 한 줄 선캐싱.
+- **라우팅**: 결제 success → `/onboarding/mind-track` (위저드) → `/track-missions?day=1`. 위저드는 미완료 시 어떤 step에서든 재진입 가능.
+- **AI**: STEP 4는 Gemini 3.1 (`reasoning.effort: medium`). 실패시 deterministic fallback으로 한 줄 생성 (`childPainPointMissions.ts` 기반)해 절대 빈 화면 X.
+- **접근성**: 모든 step 키보드 내비게이션, focus trap, prefers-reduced-motion 시 트랜지션 OFF.
 
-## 다른 트랙은 어떻게?
+## 만들지 않을 것 (의도적 제외)
 
-같은 의문이 다른 트랙에도 적용됩니다:
-- `relationship` → 파트너/가족/직장 중 선택
-- `career` → 이직/창업/번아웃
-- `sleep`, `anxiety`, `stress` → 페인포인트 자체가 명확해서 공통 미션도 의미 있음
-
-→ **이번 작업은 child_development 우선**, 검증 후 relationship/career에 동일 패턴 확장.
-
-## 산출물
-
-1. DB 마이그레이션: `user_child_profiles`, `mind_track_personal_lines`
-2. `src/lib/mindTrackChildMissions.ts` (4 연령 버킷 × 30일 = 120 미션 데이터)
-3. `src/components/mind-track/ChildProfileSetup.tsx` (모달)
-4. `src/pages/TrackMissions.tsx` 분기 — child_development는 새 렌더러 사용
-5. `supabase/functions/personalize-child-mission/index.ts`
-6. 메모리 1건: 트랙 개인화 정책
-
-## 비기술 요약
-
-- 아이 발달 트랙은 **아이 생년월일·닉네임·고민 3개**를 먼저 입력받게 함
-- 미션은 ① 부모 공통 ② 연령대(4단계) ③ AI가 매일 1줄 맞춤 — 3겹으로 보여줌
-- 다른 트랙(불안/수면/스트레스)은 그대로 유지, 검증 후 관계/커리어로 확장
+- 다중 페이지 설문(10문항+) — Calm/Wysa 벤치 대비 과한 마찰.
+- "더 많은 정보를 주실수록 정확해요" 카피 — 사용자가 책임을 떠안는 듯한 인상.
+- 결제 전 무거운 온보딩 — 결제는 랜딩의 카피로 끝내고, 온보딩은 결제 후에만.

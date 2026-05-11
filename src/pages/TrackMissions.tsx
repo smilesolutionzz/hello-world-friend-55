@@ -686,12 +686,18 @@ export default function TrackMissions() {
                         </div>
                       )}
                       {useChildData && !personalLines[day] && !aiLoadingDays.has(day) && aiErrorDays[day] && (
-                        <button
-                          className="text-xs mt-2 inline-flex items-center gap-1 underline text-red-600"
-                          onClick={() => fetchPersonalLine(day)}
-                        >
-                          <RefreshCw className="w-3 h-3" /> 재시도
-                        </button>
+                        <div className="mt-2 space-y-0.5">
+                          <button
+                            className="text-xs inline-flex items-center gap-1 underline text-red-600"
+                            onClick={() => fetchPersonalLine(day)}
+                            title={aiErrorDays[day].requestId ? `요청 ID: ${aiErrorDays[day].requestId}` : undefined}
+                          >
+                            <RefreshCw className="w-3 h-3" /> 다시 시도 · {aiErrorDays[day].message}
+                          </button>
+                          {aiErrorDays[day].requestId && (
+                            <p className="text-[10px] text-muted-foreground font-mono">ID: {aiErrorDays[day].requestId}</p>
+                          )}
+                        </div>
                       )}
                       {useChildData && !personalLines[day] && !aiLoadingDays.has(day) && !aiErrorDays[day] && (
                         <button

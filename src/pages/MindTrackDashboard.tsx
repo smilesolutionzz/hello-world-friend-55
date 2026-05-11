@@ -56,7 +56,20 @@ export default function MindTrackDashboard() {
     Array<{ day_number: number; completed: boolean; reflection_note?: string | null; created_at: string; mood_score?: number | null }>
   >([]);
   const [allCheckins, setAllCheckins] = useState<Array<{ day_number: number; completed: boolean }>>([]);
-  const [todayMission, setTodayMission] = useState<{ mission_title?: string; mission_description?: string } | null>(null);
+  const [todayMission, setTodayMission] = useState<{
+    mission_title?: string;
+    mission_description?: string;
+    why_it_matters?: string | null;
+    action_steps?: string[] | null;
+    success_criteria?: string | null;
+    deeper_prompts?: string[] | null;
+    estimated_minutes?: number | null;
+    difficulty?: string | null;
+    mission_type?: string | null;
+    youtube_video_id?: string | null;
+    youtube_title?: string | null;
+    youtube_thumbnail?: string | null;
+  } | null>(null);
   const [baseline, setBaseline] = useState<{ stress?: number; energy?: number; clarity?: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -185,7 +198,7 @@ export default function MindTrackDashboard() {
       const [{ data: missions }, { data: checkins }, { data: enr }] = await Promise.all([
         supabase
           .from("mind_track_daily_missions")
-          .select("mission_title, mission_description")
+          .select("mission_title, mission_description, why_it_matters, action_steps, success_criteria, deeper_prompts, estimated_minutes, difficulty, mission_type, youtube_video_id, youtube_title, youtube_thumbnail")
           .eq("enrollment_id", enrollment.id)
           .eq("day_number", day)
           .maybeSingle(),

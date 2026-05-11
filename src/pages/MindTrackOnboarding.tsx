@@ -172,6 +172,8 @@ export default function MindTrackOnboarding() {
     if (personalizeRan.current) return;
     personalizeRan.current = true;
     setPersonalizeError(null);
+    setPersonalizeRequestId(null);
+    setPersonalizeAttempt(null);
     setPersonalLine(null);
 
     try {
@@ -199,10 +201,24 @@ export default function MindTrackOnboarding() {
 
       logEvent("personalize", "save_profile_done", { audience, painCount: pains.length, hasGoal: !!goal.trim() });
 
-      // 2) Day 1 personal line — 아이 분기에만 edge function 호출 (타임아웃+백오프)
+      // 2) Day 1 personal line — 아이 분기에만 edge function 호출 (자동 백오프 5회)
       if (audience === "child" && cpid) {
-        const res = await personalizeWithRetry({ childProfileId: cpid, day: 1, baseMission: "" });
+        const res = await personalizeWithRetry(
+          { childProfileId: cpid, day: 1, baseMission: "" },
+          {
+            onAttempt: (info) => {
+              setPersonalizeAttempt({
+                phase: info.phase,
+                attempt: info.attempt,
+                maxAttempts: info.maxAttempts,
+                nextDelayMs: info.nextDelayMs,
+              });
+              if (info.requestId) setPersonalizeRequestId(info.requestId);
+            },
+          },
+        );
         setPersonalLine(res.personalLine);
+        if (res.requestId) setPersonalizeRequestId(res.requestId);
       } else {
         // 성인 분기 — 결정론적 한 줄
         const tag = pains[0] ? `‘${pains[0]}’` : "오늘의 마음";
@@ -214,10 +230,13 @@ export default function MindTrackOnboarding() {
       setTimeout(() => setStage("preview"), 600);
     } catch (e: unknown) {
       const friendly = describePersonalizeError(e);
+      const reqId = (e as { requestId?: string })?.requestId;
+      const code = (e as { code?: string })?.code;
       setPersonalizeError(friendly);
+      if (reqId) setPersonalizeRequestId(reqId);
       personalizeRan.current = false;
       const raw = e instanceof Error ? e.message : "unknown";
-      logEvent("personalize", "personal_line_fail", { error: raw });
+      logEvent("personalize", "personal_line_fail", { error: raw, code, requestId: reqId });
     }
   };
 

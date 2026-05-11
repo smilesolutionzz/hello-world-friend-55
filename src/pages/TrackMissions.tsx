@@ -28,6 +28,18 @@ import {
 } from "@/lib/mindTrackTrackContent";
 import { downloadResultAsPDF } from "@/utils/pdfDownload";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  CHILD_MISSIONS_BY_AGE,
+  CHILD_WEEKLY_THEMES,
+  AGE_BUCKET_LABEL,
+  getAgeBucket,
+  getAgeYears,
+  renderName,
+  type ChildAgeBucket,
+} from "@/lib/mindTrackChildMissions";
+import ChildProfileSetup, { type ChildProfile } from "@/components/mind-track/ChildProfileSetup";
+import { Sparkles, UserCog } from "lucide-react";
 
 const STORAGE_KEY = "track-missions:completed:v1";
 const START_KEY = "track-missions:started-at:v1";

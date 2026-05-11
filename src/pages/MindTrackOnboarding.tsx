@@ -35,7 +35,7 @@ function logEvent(stage: Stage, event: string, meta: Record<string, unknown> = {
     const uid = data.user?.id;
     if (!uid) return;
     supabase.from("mind_track_onboarding_events").insert([
-      { user_id: uid, stage, event, meta },
+      { user_id: uid, stage, event, meta: meta as never },
     ]).then(() => {/* noop */});
   });
 }

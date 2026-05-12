@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Upload, ExternalLink, Copy, Loader2 } from "lucide-react";
 import { MIND_TRACK_PRICE } from "@/constants/tokenCosts";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 type Org = {
   id: string;

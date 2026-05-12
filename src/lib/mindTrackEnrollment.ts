@@ -146,6 +146,22 @@ export async function ensureMindTrackEnrollment(
     return { enrollmentId: existing.id, hasBaseline };
   }
 
+  // 파트너 센터 추천 슬러그 (CenterReferralLanding에서 저장됨)
+  let referrerSlug: string | null = null;
+  let referrerOrgId: string | null = null;
+  try {
+    referrerSlug = localStorage.getItem("referrer_org_slug");
+    if (referrerSlug) {
+      const { data: orgData } = await supabase.rpc("get_partner_org_by_slug", {
+        _slug: referrerSlug,
+      });
+      const row = Array.isArray(orgData) && orgData.length > 0 ? (orgData[0] as { id: string }) : null;
+      if (row?.id) referrerOrgId = row.id;
+    }
+  } catch {
+    /* ignore */
+  }
+
   const { data: created, error } = await supabase
     .from("mind_track_enrollments")
     .insert({
@@ -155,6 +171,8 @@ export async function ensureMindTrackEnrollment(
       payment_status: "pending",
       payment_amount: MIND_TRACK_PRICE,
       baseline_data: baselineData ?? {},
+      referrer_org_id: referrerOrgId,
+      referrer_slug: referrerSlug,
     })
     .select("id")
     .single();

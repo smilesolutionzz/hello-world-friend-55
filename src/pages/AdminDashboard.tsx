@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowLeft, RefreshCw, Bell, Settings, Calendar, 
-  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail, BookOpen, Inbox, TrendingUp
+  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail, BookOpen, Inbox, TrendingUp, Share2
 } from 'lucide-react';
+import PartnerReferralStats from '@/components/admin/PartnerReferralStats';
 import B2BInquiryInbox from '@/components/admin/B2BInquiryInbox';
 import B2BFunnelDashboard from '@/components/admin/B2BFunnelDashboard';
 import B2BKanbanBoard from '@/components/admin/B2BKanbanBoard';
@@ -142,6 +143,10 @@ export default function AdminDashboard() {
               <Search className="h-3 w-3" />
               사용자 조회
             </TabsTrigger>
+            <TabsTrigger value="partner_referrals" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <Share2 className="h-3 w-3" />
+              파트너 추천
+            </TabsTrigger>
             <TabsTrigger value="management" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <Settings className="h-3 w-3" />
               관리
@@ -164,6 +169,7 @@ export default function AdminDashboard() {
           <TabsContent value="b2b_funnel"><B2BFunnelDashboard key={`bf-${refreshKey}`} /></TabsContent>
           <TabsContent value="experts"><ExpertApplicationManagement /></TabsContent>
           <TabsContent value="user-data"><EnhancedUserDataViewer /></TabsContent>
+          <TabsContent value="partner_referrals"><PartnerReferralStats /></TabsContent>
           <TabsContent value="management">
             <div className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

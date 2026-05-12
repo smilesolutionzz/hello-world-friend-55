@@ -98,9 +98,9 @@ const ko = {
     innovationBadge: '30일이면 마음의 변화를 숫자로 확인할 수 있습니다',
     title: '30일 후, 당신의 마음은 달라집니다',
     titleHighlight: '데이터로 증명되는 변화',
-    headlineTop: '느낌이 아니라,',
-    headlineBottom: '숫자로 증명되는 마음의 변화',
-    parentHook: '"좋아진 것 같아요"가 아니라 "이만큼 좋아졌어요"',
+    headlineTop: '30일 후, 자녀의 마음 점수가',
+    headlineBottom: '얼마나 바뀌었는지 숫자로 보여드립니다',
+    parentHook: '발달센터 14년 임상 전문가가 설계한 자녀 마음 코칭. 매일 1분 체크인 + 임상 검증 검사, 이걸로 바꿉니다.',
     parentHookPhrases: [
       '스트레스 지수 -38%',
       '수면 만족도 +47%',

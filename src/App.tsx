@@ -235,10 +235,6 @@ const App = () => {
           <Route path="/sample-report" element={<SampleReport />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
           <Route path="/mind-track" element={<MindTrack />} />
-          {/* 신규 별칭: /track/child → 자녀 마음트랙 (Hero CTA) */}
-          <Route path="/track/child" element={<MindTrack />} />
-          {/* 신규 별칭: /b2b → 발달센터·상담센터 파트너 신청 */}
-          <Route path="/b2b" element={<Navigate to="/b2b-proposal" replace />} />
           <Route path="/mind-track/dashboard" element={<MindTrackDashboard />} />
           <Route path="/mind-track/start" element={<MindTrackStart />} />
           <Route path="/mind-track/workbook" element={<MindTrackWorkbook />} />

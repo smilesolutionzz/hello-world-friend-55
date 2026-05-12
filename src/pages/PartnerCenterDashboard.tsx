@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Upload, ExternalLink, Copy, Loader2 } from "lucide-react";
+import { Upload, ExternalLink, Copy, Loader2, CheckCircle2, AlertCircle, Users, X } from "lucide-react";
 import { MIND_TRACK_PRICE } from "@/constants/tokenCosts";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 

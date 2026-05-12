@@ -169,6 +169,7 @@ import TrackAdultComingSoon from "./pages/TrackAdultComingSoon";
 import TrackTeenComingSoon from "./pages/TrackTeenComingSoon";
 import CenterReferralLanding from "./pages/CenterReferralLanding";
 import PartnerCenterDashboard from "./pages/PartnerCenterDashboard";
+import PartnerCenterReferrals from "./pages/PartnerCenterReferrals";
 import BetaRecruitment from "./pages/BetaRecruitment";
 import Reviews from "./pages/Reviews";
 import AboutExpert from "./pages/AboutExpert";

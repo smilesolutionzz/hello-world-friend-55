@@ -143,6 +143,10 @@ export default function AdminDashboard() {
               <Search className="h-3 w-3" />
               사용자 조회
             </TabsTrigger>
+            <TabsTrigger value="partner_referrals" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
+              <Share2 className="h-3 w-3" />
+              파트너 추천
+            </TabsTrigger>
             <TabsTrigger value="management" className="text-[11px] gap-1 px-3 py-1.5 data-[state=active]:bg-gray-900 data-[state=active]:text-white">
               <Settings className="h-3 w-3" />
               관리

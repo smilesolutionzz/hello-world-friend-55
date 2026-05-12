@@ -194,17 +194,31 @@ export default function PartnerCenterDashboard() {
           ))}
         </section>
 
+        {/* Referrals link */}
+        <Card className="p-5 rounded-2xl flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium">추천 신청자 목록</p>
+            <p className="text-xs text-muted-foreground">기간·상태 필터로 신청 내역을 확인하고 CSV로 내보내세요.</p>
+          </div>
+          <Button variant="outline" asChild>
+            <Link to="/app/center/referrals"><Users className="w-4 h-4 mr-1" /> 보기</Link>
+          </Button>
+        </Card>
+
         {/* Referral URL */}
-        {slug && org.is_referral_active && (
+        {savedSlug && org.is_referral_active && (
           <Card className="p-6 rounded-2xl">
-            <p className="text-xs text-muted-foreground mb-2">전용 추천 링크</p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs text-muted-foreground">전용 추천 링크</p>
+              {slugDirty && <span className="text-xs text-amber-600">저장 후 새 슬러그로 갱신됩니다</span>}
+            </div>
             <div className="flex items-center gap-2">
               <code className="flex-1 text-sm bg-muted/40 rounded-lg px-3 py-2 truncate">{referralUrl}</code>
               <Button size="sm" variant="outline" onClick={() => { navigator.clipboard.writeText(referralUrl); toast.success("복사됨"); }}>
                 <Copy className="w-4 h-4" />
               </Button>
-              <Button size="sm" variant="outline" asChild>
-                <a href={referralUrl} target="_blank" rel="noreferrer"><ExternalLink className="w-4 h-4" /></a>
+              <Button size="sm" variant="outline" onClick={() => window.open(referralUrl, "_blank", "noopener,noreferrer")}>
+                <ExternalLink className="w-4 h-4" />
               </Button>
             </div>
           </Card>
@@ -214,20 +228,48 @@ export default function PartnerCenterDashboard() {
         <Card className="p-6 md:p-8 rounded-2xl space-y-6">
           <h2 className="text-lg font-medium">센터 정보</h2>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Label>로고</Label>
-            <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-xl bg-muted/40 flex items-center justify-center overflow-hidden border">
-                {logoUrl ? <img src={logoUrl} alt="logo" className="w-full h-full object-contain" /> : <span className="text-xs text-muted-foreground">없음</span>}
+            <div className="flex items-start gap-4">
+              <div className="w-20 h-20 rounded-xl bg-muted/40 flex items-center justify-center overflow-hidden border shrink-0">
+                {(pendingPreview || logoUrl) ? (
+                  <img src={pendingPreview || logoUrl} alt="logo" className="w-full h-full object-contain" />
+                ) : (
+                  <span className="text-xs text-muted-foreground">없음</span>
+                )}
               </div>
-              <div>
+              <div className="flex-1 space-y-2">
                 <input ref={fileRef} type="file" accept="image/*" hidden
-                  onChange={(e) => e.target.files?.[0] && onUpload(e.target.files[0])} />
-                <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()} disabled={uploading}>
-                  {uploading ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Upload className="w-4 h-4 mr-1" />}
-                  이미지 업로드
-                </Button>
-                <p className="text-xs text-muted-foreground mt-1">PNG/JPG, 2MB 이하 권장</p>
+                  onChange={(e) => e.target.files?.[0] && onSelectFile(e.target.files[0])} />
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()} disabled={uploadStatus === "uploading"}>
+                    <Upload className="w-4 h-4 mr-1" /> 파일 선택
+                  </Button>
+                  {pendingFile && (
+                    <>
+                      <Button size="sm" onClick={onUpload} disabled={uploadStatus === "uploading"}>
+                        {uploadStatus === "uploading" ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Upload className="w-4 h-4 mr-1" />}
+                        업로드
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={clearPending} disabled={uploadStatus === "uploading"}>
+                        <X className="w-4 h-4 mr-1" /> 취소
+                      </Button>
+                    </>
+                  )}
+                </div>
+                {pendingFile && uploadStatus !== "uploading" && (
+                  <p className="text-xs text-muted-foreground">미리보기: {pendingFile.name} · {(pendingFile.size / 1024).toFixed(0)}KB</p>
+                )}
+                {uploadStatus === "uploading" && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> 업로드 중…</p>
+                )}
+                {uploadStatus === "success" && (
+                  <p className="text-xs text-emerald-600 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> 업로드 완료 — 저장 버튼을 눌러 적용하세요</p>
+                )}
+                {uploadStatus === "error" && (
+                  <p className="text-xs text-rose-600 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {uploadError}</p>
+                )}
+                <p className="text-xs text-muted-foreground">PNG/JPG, 2MB 이하 권장</p>
               </div>
             </div>
           </div>

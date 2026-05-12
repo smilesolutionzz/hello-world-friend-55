@@ -165,6 +165,12 @@ import Rewards from "./pages/Rewards";
 import InstallGuide from "./pages/InstallGuide";
 import WellnessLifestyle from "./pages/WellnessLifestyle";
 import About from "./pages/About";
+import TrackAdultComingSoon from "./pages/TrackAdultComingSoon";
+import TrackTeenComingSoon from "./pages/TrackTeenComingSoon";
+import CenterReferralLanding from "./pages/CenterReferralLanding";
+import BetaRecruitment from "./pages/BetaRecruitment";
+import Reviews from "./pages/Reviews";
+import AboutExpert from "./pages/AboutExpert";
 
 // Packages (SEO landing pages)
 import StressPackage from "./pages/StressPackage";
@@ -480,6 +486,22 @@ const App = () => {
 
           {/* Email unsubscribe */}
           <Route path="/unsubscribe" element={<Unsubscribe />} />
+
+          {/* New track / b2b / partner routes (placeholders + aliases) */}
+          <Route path="/track/child" element={<Navigate to="/mind-track" replace />} />
+          <Route path="/track/adult" element={<TrackAdultComingSoon />} />
+          <Route path="/track/teen" element={<TrackTeenComingSoon />} />
+          <Route path="/tests/child-development" element={<Navigate to="/child-package" replace />} />
+          <Route path="/b2b" element={<Navigate to="/business" replace />} />
+          <Route path="/b2b/dev-center" element={<Navigate to="/b2b-proposal?segment=dev-center" replace />} />
+          <Route path="/b2b/counseling" element={<Navigate to="/b2b-proposal?segment=counseling" replace />} />
+          <Route path="/app/parent" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/app/center" element={<Navigate to="/institution-client-dashboard" replace />} />
+          <Route path="/app/center/clients" element={<Navigate to="/institution-client-dashboard" replace />} />
+          <Route path="/c/:slug" element={<CenterReferralLanding />} />
+          <Route path="/beta" element={<BetaRecruitment />} />
+          <Route path="/reviews" element={<Reviews />} />
+          <Route path="/about/expert" element={<AboutExpert />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

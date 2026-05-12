@@ -52,6 +52,7 @@ export default function PartnerCenterDashboard() {
       if (data) {
         setOrg(data as Org);
         setSlug(data.slug || "");
+        setSavedSlug(data.slug || "");
         setTagline(data.tagline || "");
         setLogoUrl(data.logo_url || "");
         loadStats(data.id);
@@ -74,18 +75,52 @@ export default function PartnerCenterDashboard() {
     setStats({ clicks: clicks ?? 0, enrollments, paid, commission });
   };
 
-  const onUpload = async (file: File) => {
-    if (!org) return;
-    if (file.size > 2 * 1024 * 1024) { toast.error("2MB 이하 이미지만 업로드 가능합니다"); return; }
-    setUploading(true);
-    const ext = file.name.split(".").pop() || "png";
+  const onSelectFile = (file: File) => {
+    setUploadStatus("idle");
+    setUploadError("");
+    if (file.size > 2 * 1024 * 1024) {
+      setUploadStatus("error");
+      setUploadError("2MB 이하 이미지만 업로드 가능합니다");
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      setUploadStatus("error");
+      setUploadError("이미지 파일만 업로드 가능합니다");
+      return;
+    }
+    setPendingFile(file);
+    if (pendingPreview) URL.revokeObjectURL(pendingPreview);
+    setPendingPreview(URL.createObjectURL(file));
+  };
+
+  const clearPending = () => {
+    if (pendingPreview) URL.revokeObjectURL(pendingPreview);
+    setPendingFile(null);
+    setPendingPreview("");
+    setUploadStatus("idle");
+    setUploadError("");
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const onUpload = async () => {
+    if (!org || !pendingFile) return;
+    setUploadStatus("uploading");
+    setUploadError("");
+    const ext = pendingFile.name.split(".").pop() || "png";
     const path = `${org.id}/logo-${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("partner-logos").upload(path, file, { upsert: true });
-    if (error) { toast.error("업로드 실패: " + error.message); setUploading(false); return; }
+    const { error } = await supabase.storage.from("partner-logos")
+      .upload(path, pendingFile, { upsert: true, contentType: pendingFile.type });
+    if (error) {
+      setUploadStatus("error");
+      setUploadError(error.message);
+      toast.error("업로드 실패: " + error.message);
+      return;
+    }
     const { data } = supabase.storage.from("partner-logos").getPublicUrl(path);
     setLogoUrl(data.publicUrl);
-    setUploading(false);
-    toast.success("로고가 업로드되었습니다");
+    setUploadStatus("success");
+    toast.success("로고 업로드 완료 — '저장'을 눌러 적용하세요");
+    clearPending();
   };
 
   const onSave = async () => {
@@ -106,9 +141,11 @@ export default function PartnerCenterDashboard() {
     }
     toast.success("저장되었습니다");
     setOrg({ ...org, slug, tagline, logo_url: logoUrl });
+    setSavedSlug(slug);
   };
 
-  const referralUrl = slug ? `${window.location.origin}/c/${slug}` : "";
+  const referralUrl = savedSlug ? `${window.location.origin}/c/${savedSlug}` : "";
+  const slugDirty = slug !== savedSlug;
 
   if (authLoading || loading) {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin" /></div>;

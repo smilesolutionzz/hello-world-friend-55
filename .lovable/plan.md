@@ -1,64 +1,73 @@
-# Day 미션 다이얼로그 정리 (`/mind-track/workbook`)
+## 현재 상태 진단
 
-## 배경
+기존 코드베이스에 이미 있는 것:
+- **마음트랙 코어**: `/mind-track`, `MindTrackDashboard`, `MindTrackWorkbook`, Toss Billing(`mind_track_30` ₩19,900) — 이미 단일 상품 BM 메모리에 잠겨있음
+- **B2B**: `/business`, `/b2b-proposal`, `/business-case-studies`, `B2BJobCoach`, `InstitutionClientDashboard`, `InstitutionApplication`
+- **발달 검사**: `ChildPackage`, `ParentAssessment`, `ADHDScreening`, `AdvancedAdhdTest`, `GrowthDevelopmentReport`, `UnifiedAssessmentHub`
+- **추천/리퍼럴**: `/referral`
+- **운영자 소개**: `/about`
+- **결제**: usePayment.ts에 `mind_track_30` 흐름 완성
 
-`/mind-track/workbook?day=N`에서 미션 카드를 클릭하면 뜨는 **체크인 다이얼로그**(`MindTrackWorkbook.tsx` 1585~1720줄)가 한 화면에 너무 많은 단계·입력을 쌓아두어 사용자에게 부담을 줍니다.
+따라서 클로드코드 조언 중 **새로 만들 가치가 있는 것만** 골라서 최소로 추가.
 
-현재 구성:
-1. **5단계 진행 순서 카드** (자가진단/영상시청/소감메모/컨디션/회고/완료)
-2. 미션 설명 문단
-3. **컨디션 슬라이더 3개** (마음 상태 / 몸의 여유 / 생각 정리)
-4. **미션 회고 텍스트(`필수` 라벨 빨간색)**
-5. 체크인 완료 버튼
+---
 
-## 결정 사항
+## 이번 라운드에 추가할 것 (placeholder만, 다음 단계에서 채움)
 
-- **슬라이더는 유지** — 사용자가 시각적으로 컨디션을 체크하고 싶어함.
-  - (참고: 슬라이더 점수는 `useMindTrackRiskDetection`(위험 감지)와 `WorkbookSamplePreviewModal`(PDF 미리보기 차트)에서 실제로 사용 중. 따라서 데이터 저장 로직은 그대로 둠.)
-- **나머지 군더더기는 모두 제거**.
+### A. 라우트 신설 (placeholder 페이지)
+1. **`/track/adult`** — Coming Soon (성인 트랙 2차)
+2. **`/track/teen`** — Coming Soon (청소년 트랙 2차)
+3. **`/c/:slug`** — 발달센터별 추천 랜딩 (동적). 슬러그로 `organizations` 조회, 추천 코드 캡처해서 `localStorage` + 결제 시 enrollment에 전달
+4. **`/beta`** — 베타 1기 모집 (쿼리 `?code=` 검증, 신청 폼)
+5. **`/reviews`** — 졸업 후기 모음
+6. **`/about/expert`** — 운영자 14년 임상 신뢰 페이지 (기존 `/about`와 별도 — 결제 직전 신뢰 시그널 전용)
 
-## 변경 내용
+### B. 라우트 alias (기존 페이지 재사용, 새 페이지 만들지 않음)
+- `/track/child` → `/mind-track` 리다이렉트 (또는 동일 컴포넌트)
+- `/b2b` → `/business`
+- `/b2b/dev-center` → `/b2b-proposal?segment=dev-center`
+- `/b2b/counseling` → `/b2b-proposal?segment=counseling`
+- `/tests/child-development` → `/child-package` (기존 자녀 검사 패키지)
+- `/app/parent` → `/dashboard` (DashboardRouter가 이미 역할별 라우팅)
+- `/app/center` → `/institution-client-dashboard`
+- `/app/center/clients` → `/institution-client-dashboard` (탭 파라미터)
 
-`src/pages/MindTrackWorkbook.tsx` 다이얼로그 내부 (1584~1720) 한 곳만 수정:
+### C. 명시적으로 **추가하지 않을** 것 (이미 충분 / 메모리 정책 위반)
+- ❌ 새 검사 6종 seed (PHQ-A, SCARED, K-DST 등) — `IP risk mitigation` 메모리상 PHQ/MBTI 등 임상 도구명 사용 금지. 기존 자체 브랜딩 검사로 대체
+- ❌ 새 Edge Function `score-assessment`, `invite-parent`, `toss-issue-billing-key`, `generate-graduation-pdf` — Toss billing은 `unified-payment`로 이미 작동, 점수 채점은 기존 `save-test-result` 등에 있음
+- ❌ 가격 ₩99,000 / ₩69,000 / ₩49,000 하드코딩 — 메모리 잠금: **자체 결제는 `mind_track_30` ₩19,900 단일 상품**. 파트너/도매 가격은 상담 수익 셰어 로직으로 별도 처리
+- ❌ Day 30 졸업 페이지 별도 신설 — `MindTrackDashboard`에 Day 30 섹션 추가가 더 적합
 
-1. **"진행 순서" 카드 제거** (1606~1669) — 5단계 체크리스트와 blocker 메시지 통째로 삭제. 영상 시청·메모는 미션 카드에서 이미 처리되므로 다이얼로그 안에서 다시 안내할 필요 없음. (영상이 안 봤거나 메모가 짧으면) blocker 메시지는 `submitCheckin`에서 토스트로 한 줄 띄움.
-2. **미션 설명 문단**(1671)은 한 줄로 압축, 상단으로 이동.
-3. **"오늘 컨디션" 슬라이더 3개 유지**하되 컴팩트화:
-   - 섹션 라벨 "오늘 컨디션" → 부드럽게 "오늘 어땠어요?" 1줄
-   - 슬라이더 사이 간격 축소 (`pt-2` → `pt-1`)
-4. **"미션 회고" 입력**:
-   - 빨간 "필수" 라벨 제거 → "오늘의 한 줄 (선택)"
-   - placeholder를 "한 문장이면 충분해요. 예) 호흡 5분 뒤 어깨가 한결 가벼워졌어요." 로 부담 완화
-   - rows 3 → 2
-5. **체크인 완료 버튼**: 그라디언트(`from-primary to-purple-600`) 제거, 디자인 표준대로 `bg-[#1a1a1a] text-white` 검정 버튼으로 통일 (메모리 standard).
-6. `submitCheckin`에서 회고 글자 수 검증이 있으면 완화(또는 제거). `activeMissionCheckinCopy.label`/`필수` 의존 부분 정리.
+---
 
-## 결과 (예상 다이얼로그 모습)
+## 파일 변화 (모두 가벼움)
 
-```text
-─────────────────────────────────
-  생각 자유롭게 쏟아내기        ✕
-  머릿속 복잡한 생각을 5분만 흘려보내요.
+신규 placeholder 페이지 6개 (각 ~30줄, 디자인 토큰 사용, 다음 라운드에서 본문 채움):
+- `src/pages/TrackAdultComingSoon.tsx`
+- `src/pages/TrackTeenComingSoon.tsx`
+- `src/pages/CenterReferralLanding.tsx` (`/c/:slug`)
+- `src/pages/BetaRecruitment.tsx`
+- `src/pages/Reviews.tsx`
+- `src/pages/AboutExpert.tsx`
 
-  오늘 어땠어요?
-   ♡ 마음 상태       ━━━●━━  5
-   ⚡ 몸의 여유       ━━━●━━  5
-   👁 생각 정리       ━━━●━━  5
+`src/App.tsx` Routes 블록에 8개 라우트 추가 (신규 6 + alias 2~3개 Navigate).
 
-  오늘의 한 줄 (선택)
-  ┌──────────────────────────┐
-  │ 한 문장이면 충분해요...    │
-  └──────────────────────────┘
+---
 
-  [   체크인 완료   ]
-─────────────────────────────────
-```
+## 다음 라운드 후보 (지금은 안 만듦)
 
-5단계 카드·중복 안내·"필수" 압박이 사라져 한 화면에 깔끔하게 들어옵니다.
+승인 시 이어서:
+1. `/about/expert` 본문 디자인 (결제 전환용 신뢰 페이지)
+2. `/c/:slug` 발달센터 organization 조회 + referrer 추적 로직
+3. `/beta` 신청 폼 → `organizations.sales_status='pilot'` 등록 (DB 마이그레이션 필요)
+4. `/reviews` — 졸업 후기 DB 스키마 + 메인 하단 위젯
 
-## 손대지 않는 것
+---
 
-- 슬라이더 데이터 저장(`mood_score`/`energy_score`/`clarity_score`) — 위험 감지·PDF 차트에서 사용 중
-- 미션 카드(`MissionLearningCard`)의 영상 시청·자동 저장 로직
-- 대시보드(`/mind-track/dashboard`)의 `QuickReflectionForm`
-- 체크인 RPC/insert 스키마
+## 확인 부탁
+
+이 범위로 진행해도 될까? 특히:
+- **가격 정책**: ₩99,000 등 새 가격은 메모리상 금지된 상태인데, 정말 단일 상품 정책을 깨고 새 가격 체계로 가고 싶은 거야? 아니면 기존 ₩19,900 마음트랙 30일 위에 파트너 셰어만 얹는 거야?
+- **새 검사 6종**: 임상명(PHQ-A 등) 그대로 갈지, 아니면 기존처럼 자체 브랜딩으로 갈지?
+
+이 두 가지는 답에 따라 다음 라운드 작업 범위가 크게 갈려.

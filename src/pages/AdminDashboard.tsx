@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowLeft, RefreshCw, Bell, Settings, Calendar, 
-  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail, BookOpen, Inbox, TrendingUp
+  UserCheck, Search, Coins, CreditCard, LayoutDashboard, Activity, Heart, Mail, BookOpen, Inbox, TrendingUp, Share2
 } from 'lucide-react';
+import PartnerReferralStats from '@/components/admin/PartnerReferralStats';
 import B2BInquiryInbox from '@/components/admin/B2BInquiryInbox';
 import B2BFunnelDashboard from '@/components/admin/B2BFunnelDashboard';
 import B2BKanbanBoard from '@/components/admin/B2BKanbanBoard';

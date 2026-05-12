@@ -25,7 +25,7 @@ type Org = {
 type Stats = { clicks: number; enrollments: number; paid: number; commission: number };
 
 export default function PartnerCenterDashboard() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuthGuard();
   const [loading, setLoading] = useState(true);
   const [org, setOrg] = useState<Org | null>(null);
   const [slug, setSlug] = useState("");

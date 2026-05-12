@@ -9091,6 +9091,8 @@ export type Database = {
           id: string
           payment_amount: number | null
           payment_status: string
+          referrer_org_id: string | null
+          referrer_slug: string | null
           started_at: string
           status: string
           track_type: string
@@ -9107,6 +9109,8 @@ export type Database = {
           id?: string
           payment_amount?: number | null
           payment_status?: string
+          referrer_org_id?: string | null
+          referrer_slug?: string | null
           started_at?: string
           status?: string
           track_type?: string
@@ -9123,13 +9127,23 @@ export type Database = {
           id?: string
           payment_amount?: number | null
           payment_status?: string
+          referrer_org_id?: string | null
+          referrer_slug?: string | null
           started_at?: string
           status?: string
           track_type?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_enrollments_referrer_org_id_fkey"
+            columns: ["referrer_org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mind_track_final_workbooks: {
         Row: {
@@ -10046,43 +10060,58 @@ export type Database = {
         Row: {
           address: string | null
           admin_user_id: string | null
+          commission_rate: number
           created_at: string
           email: string | null
           id: string
           is_active: boolean | null
+          is_referral_active: boolean
+          logo_url: string | null
           name: string
           org_type: Database["public"]["Enums"]["organization_type"]
           phone: string | null
           registration_number: string | null
           settings: Json | null
+          slug: string | null
+          tagline: string | null
           updated_at: string
         }
         Insert: {
           address?: string | null
           admin_user_id?: string | null
+          commission_rate?: number
           created_at?: string
           email?: string | null
           id?: string
           is_active?: boolean | null
+          is_referral_active?: boolean
+          logo_url?: string | null
           name: string
           org_type: Database["public"]["Enums"]["organization_type"]
           phone?: string | null
           registration_number?: string | null
           settings?: Json | null
+          slug?: string | null
+          tagline?: string | null
           updated_at?: string
         }
         Update: {
           address?: string | null
           admin_user_id?: string | null
+          commission_rate?: number
           created_at?: string
           email?: string | null
           id?: string
           is_active?: boolean | null
+          is_referral_active?: boolean
+          logo_url?: string | null
           name?: string
           org_type?: Database["public"]["Enums"]["organization_type"]
           phone?: string | null
           registration_number?: string | null
           settings?: Json | null
+          slug?: string | null
+          tagline?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -10188,6 +10217,44 @@ export type Database = {
           website_url?: string | null
         }
         Relationships: []
+      }
+      partner_referral_clicks: {
+        Row: {
+          created_at: string
+          id: string
+          org_id: string | null
+          referrer_url: string | null
+          slug: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          org_id?: string | null
+          referrer_url?: string | null
+          slug: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          org_id?: string | null
+          referrer_url?: string | null
+          slug?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_referral_clicks_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       partner_service_info: {
         Row: {
@@ -15378,6 +15445,18 @@ export type Database = {
           status: string
         }[]
       }
+      get_partner_org_by_slug: {
+        Args: { _slug: string }
+        Returns: {
+          id: string
+          is_referral_active: boolean
+          logo_url: string
+          name: string
+          org_type: string
+          slug: string
+          tagline: string
+        }[]
+      }
       get_payment_statistics_secure: {
         Args: never
         Returns: {
@@ -15568,6 +15647,10 @@ export type Database = {
       }
       track_feature_usage: {
         Args: { p_feature_type: string; p_user_id: string }
+        Returns: undefined
+      }
+      track_partner_referral_click: {
+        Args: { _referrer_url?: string; _slug: string; _user_agent?: string }
         Returns: undefined
       }
       user_can_access_community: { Args: never; Returns: boolean }

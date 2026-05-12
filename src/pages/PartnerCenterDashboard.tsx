@@ -29,10 +29,14 @@ export default function PartnerCenterDashboard() {
   const [loading, setLoading] = useState(true);
   const [org, setOrg] = useState<Org | null>(null);
   const [slug, setSlug] = useState("");
+  const [savedSlug, setSavedSlug] = useState("");
   const [tagline, setTagline] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [pendingPreview, setPendingPreview] = useState<string>("");
+  const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
+  const [uploadError, setUploadError] = useState<string>("");
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [stats, setStats] = useState<Stats>({ clicks: 0, enrollments: 0, paid: 0, commission: 0 });
   const fileRef = useRef<HTMLInputElement>(null);
 

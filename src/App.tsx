@@ -496,7 +496,7 @@ const App = () => {
           <Route path="/b2b/dev-center" element={<Navigate to="/b2b-proposal?segment=dev-center" replace />} />
           <Route path="/b2b/counseling" element={<Navigate to="/b2b-proposal?segment=counseling" replace />} />
           <Route path="/app/parent" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/app/center" element={<Navigate to="/institution-client-dashboard" replace />} />
+          <Route path="/app/center" element={<PartnerCenterDashboard />} />
           <Route path="/app/center/clients" element={<Navigate to="/institution-client-dashboard" replace />} />
           <Route path="/c/:slug" element={<CenterReferralLanding />} />
           <Route path="/beta" element={<BetaRecruitment />} />

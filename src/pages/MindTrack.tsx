@@ -977,70 +977,86 @@ const MindTrack: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* Goal Selection */}
+        {/* Goal Selection — Quick Picker (1 question → matched track) */}
         <SmartScrollReveal kind="cards" className="block">
           <section id="goal-section" className="px-4 pb-16 scroll-mt-24">
-            <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-6">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-                  30일 동안 집중할 목표를 골라주세요
-                </h2>
-                <p className="text-slate-600 break-keep">고민·역할·생애주기로 좁혀 보거나, AI 추천을 참고하세요</p>
-              </div>
-
-              {/* AI 추천 — 데이터 있을 때만 노출 */}
-              <TrackRecommendation
-                userId={user?.id}
+            <div className="max-w-3xl mx-auto">
+              <TrackQuickPicker
                 selectedGoal={selectedGoal}
                 onSelect={(id) => setSelectedGoal(id)}
+                onStart={handleStart}
+                loading={loading}
+                showAdvancedOpen={advancedOpen}
+                onToggleAdvanced={() => setAdvancedOpen((v) => !v)}
               />
 
-              {/* 카테고리 칩 */}
-              <div className="bg-white rounded-3xl border border-slate-200 p-4 md:p-5 mb-5">
-                <TrackCategoryChips
-                  axis={categoryAxis}
-                  selectedTags={categoryTags}
-                  onAxisChange={setCategoryAxis}
-                  onTagsChange={setCategoryTags}
-                />
-              </div>
+              {/* 고급 — 펼치면 AI 추천 + 4축 칩 + 9개 그리드 */}
+              <AnimatePresence initial={false}>
+                {advancedOpen && (
+                  <motion.div
+                    key="advanced-tracks"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pt-8 mt-2 border-t border-slate-200 space-y-5">
+                      <TrackRecommendation
+                        userId={user?.id}
+                        selectedGoal={selectedGoal}
+                        onSelect={(id) => setSelectedGoal(id)}
+                      />
 
-              {(() => {
-                const filtered = focusGoals.filter((g) =>
-                  matchTrack(g.id as MindTrackFocusId, categoryAxis, categoryTags)
-                );
-                const showFallback = categoryTags.length > 0 && filtered.length === 0;
-                const list = showFallback ? focusGoals : filtered;
-                return (
-                  <>
-                    {showFallback && (
-                      <div className="text-center text-xs text-slate-500 mb-3">
-                        선택한 조건과 맞는 트랙이 없어 전체 트랙을 보여드려요
+                      <div className="bg-white rounded-3xl border border-slate-200 p-4 md:p-5">
+                        <TrackCategoryChips
+                          axis={categoryAxis}
+                          selectedTags={categoryTags}
+                          onAxisChange={setCategoryAxis}
+                          onTagsChange={setCategoryTags}
+                        />
                       </div>
-                    )}
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                      {list.map((goal) => (
-                        <button
-                          key={goal.id}
-                          onClick={() => setSelectedGoal(goal.id)}
-                          className={`p-4 md:p-5 rounded-2xl border-2 text-left transition-all ${
-                            selectedGoal === goal.id
-                              ? 'border-blue-500 bg-blue-50 shadow-lg scale-[1.02]'
-                              : 'border-slate-200 bg-white hover:border-slate-300'
-                          }`}
-                        >
-                          <div className="text-3xl mb-2">{goal.icon}</div>
-                          <div className="font-bold text-slate-900 text-sm md:text-base mb-1">{goal.title}</div>
-                          <div className="text-xs text-slate-500 break-keep">{goal.desc}</div>
-                          {selectedGoal === goal.id && (
-                            <CheckCircle2 className="w-5 h-5 text-blue-600 mt-2" />
-                          )}
-                        </button>
-                      ))}
+
+                      {(() => {
+                        const filtered = focusGoals.filter((g) =>
+                          matchTrack(g.id as MindTrackFocusId, categoryAxis, categoryTags)
+                        );
+                        const showFallback = categoryTags.length > 0 && filtered.length === 0;
+                        const list = showFallback ? focusGoals : filtered;
+                        return (
+                          <>
+                            {showFallback && (
+                              <div className="text-center text-xs text-slate-500 mb-3">
+                                선택한 조건과 맞는 트랙이 없어 전체 트랙을 보여드려요
+                              </div>
+                            )}
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                              {list.map((goal) => (
+                                <button
+                                  key={goal.id}
+                                  onClick={() => setSelectedGoal(goal.id)}
+                                  className={`p-4 md:p-5 rounded-2xl border-2 text-left transition-all ${
+                                    selectedGoal === goal.id
+                                      ? 'border-blue-500 bg-blue-50 shadow-lg scale-[1.02]'
+                                      : 'border-slate-200 bg-white hover:border-slate-300'
+                                  }`}
+                                >
+                                  <div className="text-3xl mb-2">{goal.icon}</div>
+                                  <div className="font-bold text-slate-900 text-sm md:text-base mb-1">{goal.title}</div>
+                                  <div className="text-xs text-slate-500 break-keep">{goal.desc}</div>
+                                  {selectedGoal === goal.id && (
+                                    <CheckCircle2 className="w-5 h-5 text-blue-600 mt-2" />
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
-                  </>
-                );
-              })()}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </section>
         </SmartScrollReveal>

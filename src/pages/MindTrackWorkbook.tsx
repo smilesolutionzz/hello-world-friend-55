@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import MindTrackWelcomeModal from "@/components/mind-track/MindTrackWelcomeModal";
+import DashboardVsWorkbookHelp from "@/components/mind-track/DashboardVsWorkbookHelp";
 import DataAccumulationCounter from "@/components/mind-track/DataAccumulationCounter";
 import NextActionCards from "@/components/mind-track/NextActionCards";
 import ReportHubReadyBanner from "@/components/report/ReportHubReadyBanner";

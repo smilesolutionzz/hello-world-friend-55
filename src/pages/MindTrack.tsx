@@ -126,6 +126,27 @@ const MindTrack: React.FC = () => {
     if (newUrl !== cur) window.history.replaceState(null, '', newUrl);
   }, [categoryAxis, categoryTags]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ?goal= URL 동기화 — 빠른 선택/딥링크 공유용
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (selectedGoal) params.set('goal', selectedGoal);
+    else params.delete('goal');
+    const next = params.toString();
+    const newUrl = `${location.pathname}${next ? '?' + next : ''}${location.hash}`;
+    const cur = `${location.pathname}${location.search}${location.hash}`;
+    if (newUrl !== cur) window.history.replaceState(null, '', newUrl);
+  }, [selectedGoal]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ?goal= 딥링크로 진입 시 goal-section으로 스크롤
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get('goal')) {
+      setTimeout(() => {
+        document.getElementById('goal-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 400);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // 카테고리 딥링크 진입 시 goal-section으로 자동 스크롤
   useEffect(() => {
     if (initialTags.length > 0 || new URLSearchParams(location.search).get('category')) {

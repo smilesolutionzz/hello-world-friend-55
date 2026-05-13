@@ -35,7 +35,7 @@ import TrackCategoryChips from '@/components/mind-track/TrackCategoryChips';
 import TrackRecommendation from '@/components/mind-track/TrackRecommendation';
 import TrackQuickPicker from '@/components/mind-track/TrackQuickPicker';
 import StickyTrackCTA from '@/components/mind-track/StickyTrackCTA';
-import { matchTrack, getAxis, type CategoryAxis } from '@/lib/mindTrackCategories';
+import { matchTrack, getAxis, recommendTracks, TRACK_TAGS, type CategoryAxis } from '@/lib/mindTrackCategories';
 import type { MindTrackFocusId } from '@/lib/mindTrackFocusTracks';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
 import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';

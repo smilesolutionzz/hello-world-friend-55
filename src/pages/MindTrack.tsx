@@ -31,6 +31,10 @@ import { trackWorkbookFunnel } from '@/lib/workbookFunnelTracking';
 import ChildDevConcernSection from '@/components/mind-track/ChildDevConcernSection';
 import GoalSelfCheckSection, { type GoalCheckLevel } from '@/components/mind-track/GoalSelfCheckSection';
 import SmartExpertSuggestion from '@/components/mind-track/SmartExpertSuggestion';
+import TrackCategoryChips from '@/components/mind-track/TrackCategoryChips';
+import TrackRecommendation from '@/components/mind-track/TrackRecommendation';
+import { matchTrack, getAxis, type CategoryAxis } from '@/lib/mindTrackCategories';
+import type { MindTrackFocusId } from '@/lib/mindTrackFocusTracks';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
 import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';
 import { WORKBOOK_TOTAL_CHAPTERS } from '@/lib/mindTrackChapters';
@@ -83,6 +87,45 @@ const MindTrack: React.FC = () => {
   const [postLoginRedirecting, setPostLoginRedirecting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
+
+  // 카테고리 필터 — URL 쿼리스트링이 단일 진실 (?category=concern&tag=sleep,stress)
+  const initialAxis = (() => {
+    const v = new URLSearchParams(location.search).get('category');
+    return (['concern', 'lifeStage', 'role', 'intensity'].includes(v ?? '') ? v : 'concern') as CategoryAxis;
+  })();
+  const initialTags = (() => {
+    const v = new URLSearchParams(location.search).get('tag');
+    return v ? v.split(',').filter(Boolean) : [];
+  })();
+  const [categoryAxis, setCategoryAxis] = useState<CategoryAxis>(initialAxis);
+  const [categoryTags, setCategoryTags] = useState<string[]>(initialTags);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const hasFilter = categoryAxis !== 'concern' || categoryTags.length > 0;
+    if (hasFilter) {
+      params.set('category', categoryAxis);
+      if (categoryTags.length) params.set('tag', categoryTags.join(','));
+      else params.delete('tag');
+    } else {
+      params.delete('category');
+      params.delete('tag');
+    }
+    const next = params.toString();
+    const newUrl = `${location.pathname}${next ? '?' + next : ''}${location.hash}`;
+    const cur = `${location.pathname}${location.search}${location.hash}`;
+    if (newUrl !== cur) window.history.replaceState(null, '', newUrl);
+  }, [categoryAxis, categoryTags]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 카테고리 딥링크 진입 시 goal-section으로 자동 스크롤
+  useEffect(() => {
+    if (initialTags.length > 0 || new URLSearchParams(location.search).get('category')) {
+      setTimeout(() => {
+        document.getElementById('goal-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 400);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [sampleOpen, setSampleOpen] = useState(false);
   const [sampleSeed, setSampleSeed] = useState<{
     nickname?: string;
@@ -929,32 +972,66 @@ const MindTrack: React.FC = () => {
         <SmartScrollReveal kind="cards" className="block">
           <section id="goal-section" className="px-4 pb-16 scroll-mt-24">
             <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-8">
+              <div className="text-center mb-6">
                 <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
                   30일 동안 집중할 목표를 골라주세요
                 </h2>
-                <p className="text-slate-600 break-keep">선택한 목표에 맞춰 일일 코칭이 자동 설계되고, 위에 1분 자가체크가 함께 열려요</p>
+                <p className="text-slate-600 break-keep">고민·역할·생애주기로 좁혀 보거나, AI 추천을 참고하세요</p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                {focusGoals.map((goal) => (
-                  <button
-                    key={goal.id}
-                    onClick={() => setSelectedGoal(goal.id)}
-                    className={`p-4 md:p-5 rounded-2xl border-2 text-left transition-all ${
-                      selectedGoal === goal.id
-                        ? 'border-blue-500 bg-blue-50 shadow-lg scale-[1.02]'
-                        : 'border-slate-200 bg-white hover:border-slate-300'
-                    }`}
-                  >
-                    <div className="text-3xl mb-2">{goal.icon}</div>
-                    <div className="font-bold text-slate-900 text-sm md:text-base mb-1">{goal.title}</div>
-                    <div className="text-xs text-slate-500 break-keep">{goal.desc}</div>
-                    {selectedGoal === goal.id && (
-                      <CheckCircle2 className="w-5 h-5 text-blue-600 mt-2" />
+
+              {/* AI 추천 — 데이터 있을 때만 노출 */}
+              <TrackRecommendation
+                userId={user?.id}
+                selectedGoal={selectedGoal}
+                onSelect={(id) => setSelectedGoal(id)}
+              />
+
+              {/* 카테고리 칩 */}
+              <div className="bg-white rounded-3xl border border-slate-200 p-4 md:p-5 mb-5">
+                <TrackCategoryChips
+                  axis={categoryAxis}
+                  selectedTags={categoryTags}
+                  onAxisChange={setCategoryAxis}
+                  onTagsChange={setCategoryTags}
+                />
+              </div>
+
+              {(() => {
+                const filtered = focusGoals.filter((g) =>
+                  matchTrack(g.id as MindTrackFocusId, categoryAxis, categoryTags)
+                );
+                const showFallback = categoryTags.length > 0 && filtered.length === 0;
+                const list = showFallback ? focusGoals : filtered;
+                return (
+                  <>
+                    {showFallback && (
+                      <div className="text-center text-xs text-slate-500 mb-3">
+                        선택한 조건과 맞는 트랙이 없어 전체 트랙을 보여드려요
+                      </div>
                     )}
-                  </button>
-                ))}
-              </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                      {list.map((goal) => (
+                        <button
+                          key={goal.id}
+                          onClick={() => setSelectedGoal(goal.id)}
+                          className={`p-4 md:p-5 rounded-2xl border-2 text-left transition-all ${
+                            selectedGoal === goal.id
+                              ? 'border-blue-500 bg-blue-50 shadow-lg scale-[1.02]'
+                              : 'border-slate-200 bg-white hover:border-slate-300'
+                          }`}
+                        >
+                          <div className="text-3xl mb-2">{goal.icon}</div>
+                          <div className="font-bold text-slate-900 text-sm md:text-base mb-1">{goal.title}</div>
+                          <div className="text-xs text-slate-500 break-keep">{goal.desc}</div>
+                          {selectedGoal === goal.id && (
+                            <CheckCircle2 className="w-5 h-5 text-blue-600 mt-2" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           </section>
         </SmartScrollReveal>

@@ -102,13 +102,59 @@ export default function TodayCoachingEmailContent() {
     );
   }
 
+  if (!content && fallback) {
+    return (
+      <section className="px-4 pb-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="px-6 md:px-8 pt-6 pb-4 border-b border-slate-100 flex items-center gap-2">
+            <div className="w-9 h-9 rounded-xl bg-[#C8B88A]/15 flex items-center justify-center">
+              <Mail className="w-4 h-4 text-[#8B7838]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase">오늘의 코칭</p>
+              <p className="text-sm font-bold text-slate-900 truncate">Day {String(fallback.day).padStart(2, "0")} · 오늘의 미션</p>
+            </div>
+          </div>
+          <div className="px-6 md:px-8 py-6 space-y-5">
+            <Block label="01" title="오늘의 미션" icon={<Sparkles className="w-4 h-4" />}>
+              <p className="text-base font-bold text-slate-900 break-keep leading-snug mb-2">{fallback.title}</p>
+              {fallback.description && (
+                <p className="text-sm text-slate-700 break-keep leading-relaxed whitespace-pre-line">{fallback.description}</p>
+              )}
+            </Block>
+            {fallback.why && (
+              <Block label="02" title="왜 오늘 이 미션인가" icon={<Brain className="w-4 h-4" />}>
+                <p className="text-sm text-slate-700 break-keep leading-relaxed">{fallback.why}</p>
+              </Block>
+            )}
+            {fallback.actions.length > 0 && (
+              <Block label="03" title="핵심 행동" icon={<Target className="w-4 h-4" />}>
+                <ul className="space-y-1.5">
+                  {fallback.actions.map((a, i) => (
+                    <li key={i} className="text-sm text-slate-700 break-keep leading-relaxed flex gap-2">
+                      <span className="text-[#8B7838] mt-0.5">·</span>
+                      <span>{a}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Block>
+            )}
+            <p className="text-[11px] text-slate-400 break-keep pt-2 border-t border-slate-100">
+              오늘의 코칭 메일은 매일 아침 8시(KST)에 자동 발송돼요. 메일을 못 받으셨다면 스팸함을 확인해 주세요.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (!content) {
     return (
       <section className="px-4 pb-6">
         <div className="max-w-3xl mx-auto bg-white rounded-3xl border border-slate-200 p-8 text-center">
           <Mail className="w-8 h-8 text-slate-300 mx-auto mb-3" />
           <p className="text-sm text-slate-500 break-keep">
-            오늘의 코칭 메일이 아직 도착하지 않았어요. 매일 아침 자동 발송됩니다.
+            오늘의 코칭 메일이 아직 도착하지 않았어요. 매일 아침 8시(KST)에 자동 발송됩니다.
           </p>
         </div>
       </section>

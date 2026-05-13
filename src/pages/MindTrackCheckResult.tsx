@@ -148,7 +148,12 @@ export default function MindTrackCheckResult() {
                   {/* CTA */}
                   <div className="flex gap-2 flex-wrap">
                     <Button
-                      onClick={() => navigate(`/mind-track?category=concern&tag=${encodeURIComponent(data.goal_id)}#goal-section`)}
+                      onClick={() => {
+                        const tag = (data.goal_id === 'child_development' || data.goal_id === 'family_communication')
+                          ? 'family'
+                          : data.goal_id;
+                        navigate(`/mind-track?category=concern&tag=${encodeURIComponent(tag)}#goal-section`);
+                      }}
                       className="flex-1 min-w-[160px] rounded-2xl bg-slate-900 hover:bg-black text-white"
                     >
                       <Sparkles className="w-4 h-4 mr-1.5" />

@@ -8,7 +8,7 @@ import { loadFont as loadKR } from '@remotion/google-fonts/NotoSansKR';
 import { loadFont as loadSerif } from '@remotion/google-fonts/InstrumentSerif';
 
 const display = loadDisplay('normal', { weights: ['500', '700'], subsets: ['latin'] });
-const kr = loadKR('normal', { weights: ['400', '500', '700', '900'], subsets: ['korean'] });
+const kr = loadKR('normal', { weights: ['400', '500', '700', '900'] });
 const serif = loadSerif('normal', { weights: ['400'], subsets: ['latin'] });
 
 export const FPS = 30;

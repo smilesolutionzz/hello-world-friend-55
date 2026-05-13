@@ -381,7 +381,8 @@ export default function MindTrackWorkbook() {
   useEffect(() => {
     if (loading) return;
     const dp = parseInt(searchParams.get("day") ?? "", 10);
-    const explicitFlag = searchParams.get("openMission") === "1";
+    // checkin=1 은 openMission=1 의 사용자 친화 별칭
+    const explicitFlag = searchParams.get("openMission") === "1" || searchParams.get("checkin") === "1";
     const onceToken = searchParams.get("mtOnce");
     let onceValid = false;
     if (onceToken) {

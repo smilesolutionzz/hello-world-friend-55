@@ -401,6 +401,7 @@ export default function MindTrackWorkbook() {
       const params = new URLSearchParams(searchParams);
       let changed = false;
       if (params.has("openMission")) { params.delete("openMission"); changed = true; }
+      if (params.has("checkin")) { params.delete("checkin"); changed = true; }
       if (params.has("mtOnce")) { params.delete("mtOnce"); changed = true; }
       if (changed) setSearchParams(params, { replace: true });
     };

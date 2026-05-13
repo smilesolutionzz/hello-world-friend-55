@@ -33,6 +33,8 @@ import GoalSelfCheckSection, { type GoalCheckLevel } from '@/components/mind-tra
 import SmartExpertSuggestion from '@/components/mind-track/SmartExpertSuggestion';
 import TrackCategoryChips from '@/components/mind-track/TrackCategoryChips';
 import TrackRecommendation from '@/components/mind-track/TrackRecommendation';
+import TrackQuickPicker from '@/components/mind-track/TrackQuickPicker';
+import StickyTrackCTA from '@/components/mind-track/StickyTrackCTA';
 import { matchTrack, getAxis, type CategoryAxis } from '@/lib/mindTrackCategories';
 import type { MindTrackFocusId } from '@/lib/mindTrackFocusTracks';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';

@@ -192,44 +192,69 @@ export default function MindTrackDashboard() {
     navigate(`/mind-track/workbook?day=${day}&openMission=1`);
   };
 
-  // 데이터 로드
+  // 데이터 로드 — realtime/이벤트에서도 다시 호출할 수 있도록 함수로 추출
+  const loadDashboard = async (opts?: { silent?: boolean }) => {
+    if (!enrollment) return;
+    if (!opts?.silent) setLoading(true);
+    const [{ data: missions }, { data: checkins }, { data: enr }] = await Promise.all([
+      supabase
+        .from("mind_track_daily_missions")
+        .select("mission_title, mission_description, why_it_matters, action_steps, success_criteria, deeper_prompts, estimated_minutes, difficulty, mission_type, youtube_video_id, youtube_title, youtube_thumbnail")
+        .eq("enrollment_id", enrollment.id)
+        .eq("day_number", day)
+        .maybeSingle(),
+      supabase
+        .from("mind_track_checkins")
+        .select("day_number, completed, reflection_note, created_at, mood_score")
+        .eq("enrollment_id", enrollment.id)
+        .order("day_number", { ascending: false })
+        .limit(50),
+      supabase
+        .from("mind_track_enrollments")
+        .select("baseline_data")
+        .eq("id", enrollment.id)
+        .maybeSingle(),
+    ]);
+    setTodayMission((missions as any) ?? null);
+    const list = (checkins ?? []) as any[];
+    setRecentCheckins(list.slice(0, 5));
+    setAllCheckins(list.map((c) => ({ day_number: c.day_number, completed: c.completed })));
+    const bl = (enr?.baseline_data as any) ?? null;
+    if (bl?.currentState) setBaseline(bl.currentState);
+    if (!opts?.silent) setLoading(false);
+  };
+
   useEffect(() => {
     if (!enrollment) return;
     let cancelled = false;
     (async () => {
-      setLoading(true);
-      const [{ data: missions }, { data: checkins }, { data: enr }] = await Promise.all([
-        supabase
-          .from("mind_track_daily_missions")
-          .select("mission_title, mission_description, why_it_matters, action_steps, success_criteria, deeper_prompts, estimated_minutes, difficulty, mission_type, youtube_video_id, youtube_title, youtube_thumbnail")
-          .eq("enrollment_id", enrollment.id)
-          .eq("day_number", day)
-          .maybeSingle(),
-        supabase
-          .from("mind_track_checkins")
-          .select("day_number, completed, reflection_note, created_at, mood_score")
-          .eq("enrollment_id", enrollment.id)
-          .order("day_number", { ascending: false })
-          .limit(50),
-        supabase
-          .from("mind_track_enrollments")
-          .select("baseline_data")
-          .eq("id", enrollment.id)
-          .maybeSingle(),
-      ]);
+      await loadDashboard();
       if (cancelled) return;
-      setTodayMission((missions as any) ?? null);
-      const list = (checkins ?? []) as any[];
-      setRecentCheckins(list.slice(0, 5));
-      setAllCheckins(list.map((c) => ({ day_number: c.day_number, completed: c.completed })));
-      const bl = (enr?.baseline_data as any) ?? null;
-      if (bl?.currentState) setBaseline(bl.currentState);
-      setLoading(false);
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enrollment?.id, day]);
+
+  // Realtime — 체크인 변경 시 즉시 반영
+  useEffect(() => {
+    if (!enrollment?.id) return;
+    const channel = supabase
+      .channel(`mt-dashboard-checkins-${enrollment.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "mind_track_checkins", filter: `enrollment_id=eq.${enrollment.id}` },
+        () => { loadDashboard({ silent: true }); }
+      )
+      .subscribe();
+    const onLocal = () => { loadDashboard({ silent: true }); };
+    window.addEventListener("mt:checkin-updated", onLocal);
+    return () => {
+      supabase.removeChannel(channel);
+      window.removeEventListener("mt:checkin-updated", onLocal);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enrollment?.id, day]);
+
 
   // 연속 체크인(스트릭) 계산 — 오늘부터 거꾸로 끊김 없이 완료된 일수
   const streak = useMemo(() => {

@@ -844,12 +844,12 @@ const MindTrack: React.FC = () => {
                   {reportLoading ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      마음을 들여다보는 중...
+                      트랙을 찾는 중...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      무료 리포트 받기
+                      <Target className="w-5 h-5 mr-2" />
+                      내 트랙 찾기
                     </>
                   )}
                 </Button>

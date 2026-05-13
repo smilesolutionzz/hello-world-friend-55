@@ -11,7 +11,7 @@ interface TrackRecommendationProps {
 }
 
 /**
- * AI 추천 트랙 섹션 — 검사 결과/온보딩 응답 기반 top3
+ * AI 추천 트랙 — 셀프체크 + 온보딩 + 활성 등록 기반 top3
  * 데이터 부족 시 자체적으로 숨김 (graceful degrade)
  */
 const TrackRecommendation: React.FC<TrackRecommendationProps> = ({
@@ -32,33 +32,44 @@ const TrackRecommendation: React.FC<TrackRecommendationProps> = ({
       }
       try {
         const sb: any = supabase;
-        const [obRes, scRes] = await Promise.all([
+        const [obRes, scRes, enRes] = await Promise.all([
           sb
             .from('user_onboarding_data')
-            .select('primary_goal, age_range, role')
+            .select('subject_type, child_age, concern_keywords')
             .eq('user_id', userId)
             .maybeSingle(),
           sb
-            .from('mind_track_self_check_results')
+            .from('mind_track_self_checks')
             .select('goal_id, level')
             .eq('user_id', userId)
             .order('created_at', { ascending: false })
             .limit(10),
+          sb
+            .from('mind_track_enrollments')
+            .select('goal_focus')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle(),
         ]);
 
         const onboarding = obRes?.data ?? {};
         const checks: { goal_id: string; level: string }[] = scRes?.data ?? [];
+        const enrollment = enRes?.data ?? null;
 
-        // 위험 도메인 = level이 calm이 아닌 셀프체크의 goal_id
-        const riskConcerns = Array.from(
-          new Set(checks.filter((c) => c.level && c.level !== 'calm').map((c) => c.goal_id))
-        );
+        const fromChecks = checks
+          .filter((c) => c.level && c.level !== 'calm')
+          .map((c) => c.goal_id);
+        const fromKeywords = (onboarding.concern_keywords as string[] | null) ?? [];
+        const riskConcerns = Array.from(new Set([...fromChecks, ...fromKeywords]));
+
+        const isParent = onboarding.subject_type === 'child' || (onboarding.child_age ?? 0) > 0;
 
         const profile = {
           riskConcerns,
-          lifeStage: mapAgeRangeToLifeStage(onboarding.age_range),
-          role: onboarding.role,
-          primaryGoal: (onboarding.primary_goal ?? null) as MindTrackFocusId | null,
+          lifeStage: isParent ? 'parent' : undefined,
+          role: isParent ? 'parent' : 'personal',
+          primaryGoal: (enrollment?.goal_focus ?? null) as MindTrackFocusId | null,
         };
 
         const recs = recommendTracks(profile, 3);
@@ -120,15 +131,5 @@ const TrackRecommendation: React.FC<TrackRecommendationProps> = ({
     </div>
   );
 };
-
-function mapAgeRangeToLifeStage(ageRange?: string): string | undefined {
-  if (!ageRange) return undefined;
-  const r = String(ageRange).toLowerCase();
-  if (r.includes('10') || r.includes('20') || r.includes('teen') || r.includes('youth')) return 'youth';
-  if (r.includes('30') || r.includes('40')) return 'worker';
-  if (r.includes('50') || r.includes('60')) return 'midlife';
-  if (r.includes('70') || r.includes('senior')) return 'senior';
-  return undefined;
-}
 
 export default TrackRecommendation;

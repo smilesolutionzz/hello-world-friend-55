@@ -36,6 +36,7 @@ interface EmailContent {
 export default function TodayCoachingEmailContent() {
   const [content, setContent] = useState<EmailContent | null>(null);
   const [loading, setLoading] = useState(true);
+  const [fallback, setFallback] = useState<{ day: number; title: string; description: string; why: string | null; actions: string[] } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -52,7 +53,40 @@ export default function TodayCoachingEmailContent() {
         .limit(1)
         .maybeSingle();
       if (cancelled) return;
-      setContent(data as any);
+      if (data) {
+        setContent(data as any);
+        setLoading(false);
+        return;
+      }
+      // Fallback: today's mind track daily mission
+      const { data: en } = await supabase
+        .from("mind_track_enrollments")
+        .select("id, started_at, created_at")
+        .eq("user_id", user.id)
+        .eq("payment_status", "completed")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (en) {
+        const startedAt = new Date((en as any).started_at || (en as any).created_at);
+        const day = Math.min(Math.max(Math.floor((Date.now() - startedAt.getTime()) / 86400000) + 1, 1), 30);
+        const { data: mission } = await supabase
+          .from("mind_track_daily_missions")
+          .select("day_number, mission_title, mission_description, why_it_matters, action_steps")
+          .eq("enrollment_id", (en as any).id)
+          .eq("day_number", day)
+          .maybeSingle();
+        if (mission && !cancelled) {
+          const steps = Array.isArray((mission as any).action_steps) ? (mission as any).action_steps : [];
+          setFallback({
+            day: (mission as any).day_number,
+            title: (mission as any).mission_title || "오늘의 미션",
+            description: (mission as any).mission_description || "",
+            why: (mission as any).why_it_matters || null,
+            actions: steps.map((s: any) => typeof s === "string" ? s : (s?.text || s?.title || "")).filter(Boolean),
+          });
+        }
+      }
       setLoading(false);
     })();
     return () => { cancelled = true; };

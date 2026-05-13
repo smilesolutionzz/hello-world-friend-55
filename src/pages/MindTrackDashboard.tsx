@@ -347,6 +347,13 @@ export default function MindTrackDashboard() {
           </div>
         </section>
 
+        {/* 대시보드 vs 워크북 안내 */}
+        <section className="px-4 pb-4">
+          <div className="max-w-3xl mx-auto">
+            <DashboardVsWorkbookHelp mode="dashboard" />
+          </div>
+        </section>
+
         {/* 영상 시청 후 도착했다면 한 줄 기록 폼을 미션보다 먼저 노출 */}
         {arrivedFromVideo && (
           <section className="px-4 pb-4">

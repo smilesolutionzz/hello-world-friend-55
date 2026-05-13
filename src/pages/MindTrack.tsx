@@ -87,6 +87,45 @@ const MindTrack: React.FC = () => {
   const [postLoginRedirecting, setPostLoginRedirecting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
+
+  // 카테고리 필터 — URL 쿼리스트링이 단일 진실 (?category=concern&tag=sleep,stress)
+  const initialAxis = (() => {
+    const v = new URLSearchParams(location.search).get('category');
+    return (['concern', 'lifeStage', 'role', 'intensity'].includes(v ?? '') ? v : 'concern') as CategoryAxis;
+  })();
+  const initialTags = (() => {
+    const v = new URLSearchParams(location.search).get('tag');
+    return v ? v.split(',').filter(Boolean) : [];
+  })();
+  const [categoryAxis, setCategoryAxis] = useState<CategoryAxis>(initialAxis);
+  const [categoryTags, setCategoryTags] = useState<string[]>(initialTags);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const hasFilter = categoryAxis !== 'concern' || categoryTags.length > 0;
+    if (hasFilter) {
+      params.set('category', categoryAxis);
+      if (categoryTags.length) params.set('tag', categoryTags.join(','));
+      else params.delete('tag');
+    } else {
+      params.delete('category');
+      params.delete('tag');
+    }
+    const next = params.toString();
+    const newUrl = `${location.pathname}${next ? '?' + next : ''}${location.hash}`;
+    const cur = `${location.pathname}${location.search}${location.hash}`;
+    if (newUrl !== cur) window.history.replaceState(null, '', newUrl);
+  }, [categoryAxis, categoryTags]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 카테고리 딥링크 진입 시 goal-section으로 자동 스크롤
+  useEffect(() => {
+    if (initialTags.length > 0 || new URLSearchParams(location.search).get('category')) {
+      setTimeout(() => {
+        document.getElementById('goal-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 400);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [sampleOpen, setSampleOpen] = useState(false);
   const [sampleSeed, setSampleSeed] = useState<{
     nickname?: string;

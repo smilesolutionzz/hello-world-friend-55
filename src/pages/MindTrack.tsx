@@ -788,14 +788,14 @@ const MindTrack: React.FC = () => {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h2 className="text-lg md:text-xl font-bold text-slate-900">
-                        무료 고민 리포트 받기
+                        내 트랙 찾기
                       </h2>
                       <Badge variant="outline" className="text-[10px] border-emerald-300 text-emerald-700 bg-emerald-50">
-                        무료 · 비로그인 OK
+                        1분 · 무료 · 비로그인 OK
                       </Badge>
                     </div>
                     <p className="text-sm text-slate-500 mt-0.5">
-                      어떤 고민이든 편하게 적어주세요. 판단하지 않고 따뜻하게 정리해드려요.
+                      고민을 한 줄만 적어주시면, 짧은 리포트와 함께 가장 잘 맞는 30일 트랙 3가지를 추천해드려요.
                     </p>
                   </div>
                 </div>

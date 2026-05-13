@@ -605,13 +605,14 @@ export default function MindTrackDashboard() {
                   const isToday = d === day;
                   const isPast = d < day;
                   const isFuture = d > day;
+                  const isCompleted = !!c?.completed;
                   return (
                     <button
                       key={d}
                       onClick={() => navigate(`/mind-track/workbook?day=${d}`)}
-                      className={`aspect-square rounded-md text-[10px] font-bold flex items-center justify-center transition-all ${
-                        c?.completed
-                          ? "bg-emerald-500 text-white"
+                      className={`relative aspect-square rounded-md text-[10px] font-bold flex items-center justify-center transition-all overflow-hidden ${
+                        isCompleted
+                          ? "bg-white text-slate-300"
                           : isToday
                           ? "bg-[#1a1a1a] text-white ring-2 ring-offset-1 ring-[#C8B88A]"
                           : isPast
@@ -620,15 +621,44 @@ export default function MindTrackDashboard() {
                           ? "bg-slate-50 text-slate-300"
                           : "bg-slate-50 text-slate-400"
                       }`}
-                      title={`Day ${d}`}
+                      title={`Day ${d}${isCompleted ? " · 완료" : ""}`}
                     >
-                      {d}
+                      <span className={isCompleted ? "opacity-30" : ""}>{d}</span>
+                      {isCompleted && (
+                        <span
+                          aria-hidden
+                          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                          style={{ transform: "rotate(-14deg)" }}
+                        >
+                          <span
+                            className="flex items-center justify-center rounded-full font-extrabold tracking-tighter"
+                            style={{
+                              width: "82%",
+                              height: "82%",
+                              border: "2px solid #d63b3b",
+                              color: "#d63b3b",
+                              fontSize: "9px",
+                              fontFamily: "'Instrument Serif', serif",
+                              letterSpacing: "0.02em",
+                              boxShadow: "inset 0 0 0 1px rgba(214,59,59,0.15)",
+                            }}
+                          >
+                            완료
+                          </span>
+                        </span>
+                      )}
                     </button>
                   );
                 })}
               </div>
               <div className="flex items-center gap-3 text-[10px] text-slate-500 pt-1">
-                <span className="inline-flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" />완료</span>
+                <span className="inline-flex items-center gap-1">
+                  <span
+                    className="inline-flex items-center justify-center rounded-full font-extrabold"
+                    style={{ width: 14, height: 14, border: "1.5px solid #d63b3b", color: "#d63b3b", fontSize: 6, fontFamily: "'Instrument Serif', serif", transform: "rotate(-14deg)" }}
+                  >완료</span>
+                  완료
+                </span>
                 <span className="inline-flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-[#1a1a1a]" />오늘</span>
                 <span className="inline-flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-slate-100" />지난 일차</span>
               </div>

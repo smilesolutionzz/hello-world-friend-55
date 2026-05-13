@@ -79,16 +79,18 @@ export default function QuickReflectionForm({ enrollmentId, day, source = "dashb
           .eq("id", existing.id);
         if (error) throw error;
       } else {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("로그인이 필요합니다");
         const { error } = await supabase
           .from("mind_track_checkins")
           .insert({
+            user_id: user.id,
             enrollment_id: enrollmentId,
             day_number: day,
             reflection_note: trimmed,
             completed: true,
             checked_at: new Date().toISOString(),
-            source,
-          } as any);
+          });
         if (error) throw error;
       }
       setSaved(true);
@@ -96,7 +98,7 @@ export default function QuickReflectionForm({ enrollmentId, day, source = "dashb
       onSaved?.();
     } catch (e: any) {
       console.error("[QuickReflectionForm] save failed", e);
-      toast.error("저장에 실패했어요. 잠시 후 다시 시도해 주세요");
+      toast.error(e?.message ? `저장 실패: ${e.message}` : "저장에 실패했어요. 잠시 후 다시 시도해 주세요");
     } finally {
       setSaving(false);
     }

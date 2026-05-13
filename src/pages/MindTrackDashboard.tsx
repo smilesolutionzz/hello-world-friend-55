@@ -17,7 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getDayCopy, calcMindTrackCurrentDay } from "@/lib/mindTrackDayCopy";
 import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirstTimeOnboarding";
 import MindTrackTodayValueStack from "@/components/mind-track/MindTrackTodayValueStack";
-import MindConditionRing from "@/components/mind-condition/MindConditionRing";
+import MindConditionPanel from "@/components/mind-condition/MindConditionPanel";
 import TodayCoachingEmailContent from "@/components/mind-track/TodayCoachingEmailContent";
 import QuickReflectionForm from "@/components/mind-track/QuickReflectionForm";
 import MindTrackFocusSwitcher from "@/components/mind-track/MindTrackFocusSwitcher";
@@ -513,7 +513,7 @@ export default function MindTrackDashboard() {
         </section>
 
         {/* 마음 컨디션 점수 — 단일 결과 숫자 (Noom-style outcome) */}
-        {userId && <MindConditionRing userId={userId} className="mb-6" />}
+        {userId && <MindConditionPanel userId={userId} className="mb-6" />}
 
         {/* 오늘 도착한 코칭 메일 — DB의 박사급 콘텐츠 그대로 노출 */}
         <TodayCoachingEmailContent />

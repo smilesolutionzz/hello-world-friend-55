@@ -227,9 +227,30 @@ export default function MindTrackTodayValueStack({ day, focusId }: Props) {
               <h4 className="text-base md:text-lg font-bold text-slate-900 break-keep leading-snug">
                 {content.action.title}
               </h4>
-              <p className="text-sm text-slate-600 mt-2 break-keep leading-relaxed">
-                {content.action.howTo}
-              </p>
+              {(() => {
+                const steps = content.action.howTo
+                  .split('·')
+                  .map((s) => s.trim())
+                  .map((s) => {
+                    const m = s.match(/^(\d+~\d+분)\s*(.+?)[.。]?$/);
+                    return m ? { time: m[1], text: m[2] } : { time: '', text: s.replace(/[.。]$/, '') };
+                  })
+                  .filter((s) => s.text);
+                return (
+                  <ol className="mt-3 space-y-2">
+                    {steps.map((step, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="shrink-0 mt-0.5 inline-flex items-center justify-center min-w-[58px] h-6 rounded-md bg-amber-50 text-amber-700 text-[11px] font-mono font-bold tracking-tight px-2">
+                          {step.time || `${String(i + 1).padStart(2, '0')}`}
+                        </span>
+                        <span className="text-sm text-slate-700 break-keep leading-relaxed">
+                          {step.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                );
+              })()}
               <Button
                 onClick={() =>
                   navigate(`/mind-track/workbook?day=${day}&openMission=1`)

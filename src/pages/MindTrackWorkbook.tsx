@@ -284,6 +284,44 @@ export default function MindTrackWorkbook() {
   const todayCheckin = checkins.find((c) => c.day_number === currentDay);
   const activeMissionCheckinCopy = getMissionCheckinCopy(activeMission?.mission_type);
 
+  // 미래 Day 딥링크 보정: ?day=N 이 currentDay 보다 미래면 currentDay 로 redirect
+  useEffect(() => {
+    if (loading) return;
+    if (!dayParamValid) return;
+    if (dayParam <= currentDay) return;
+    toast.info(`Day ${dayParam}은(는) 아직 열리지 않았어요. 오늘 Day ${currentDay}로 이동했어요.`);
+    setSelectedDay(currentDay);
+    const params = new URLSearchParams(searchParams);
+    params.set("day", String(currentDay));
+    params.delete("openMission");
+    params.delete("checkin");
+    setSearchParams(params, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, dayParam, dayParamValid, currentDay]);
+
+  // 키보드 ←/→ 로 selectedDay 이동 (Dialog 열려있거나 input focus 일 땐 무시)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (activeMission) return;
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement)?.isContentEditable) return;
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const cur = selectedDay ?? currentDay;
+      const next = e.key === "ArrowLeft" ? cur - 1 : cur + 1;
+      if (next < 1 || next > 30) return;
+      if (next > currentDay) return; // 미래 Day 차단
+      e.preventDefault();
+      setSelectedDay(next);
+      const params = new URLSearchParams(searchParams);
+      params.set("day", String(next));
+      setSearchParams(params, { replace: true });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDay, currentDay, activeMission]);
+
+
   // Trigger weekly refresh if needed
   useEffect(() => {
     const weekNum = Math.ceil(currentDay / 7);

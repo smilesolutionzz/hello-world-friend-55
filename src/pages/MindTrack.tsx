@@ -83,7 +83,14 @@ interface ConcernReport {
 const MindTrack: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
+  const [selectedGoal, setSelectedGoal] = useState<string | null>(() => {
+    const v = new URLSearchParams(location.search).get('goal');
+    return v && focusGoals.some((g) => g.id === v) ? v : null;
+  });
+  const [advancedOpen, setAdvancedOpen] = useState<boolean>(() => {
+    const sp = new URLSearchParams(location.search);
+    return !!(sp.get('category') || sp.get('tag'));
+  });
   const [user, setUser] = useState<any>(null);
   const [authChecking, setAuthChecking] = useState(true);
   const [postLoginRedirecting, setPostLoginRedirecting] = useState(false);

@@ -555,6 +555,14 @@ export default function MindTrackWorkbook() {
       toast.success("체크인 완료");
       setActiveMission(null);
       load();
+      // 대시보드/위젯 즉시 갱신을 위해 캐시 무효화 + 커스텀 이벤트 브로드캐스트
+      try {
+        const { clearMindTrackDashboardCache } = await import("@/hooks/useMindTrackDashboard");
+        clearMindTrackDashboardCache();
+      } catch {}
+      try {
+        window.dispatchEvent(new CustomEvent("mt:checkin-updated"));
+      } catch {}
     } catch (e: any) {
       toast.error(e.message || "오류가 발생했습니다");
     } finally {

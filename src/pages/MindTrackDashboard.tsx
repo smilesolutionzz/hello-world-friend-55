@@ -50,6 +50,7 @@ interface Enrollment {
 export default function MindTrackDashboard() {
   const navigate = useNavigate();
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [authChecking, setAuthChecking] = useState(true);
 
   const [recentCheckins, setRecentCheckins] = useState<

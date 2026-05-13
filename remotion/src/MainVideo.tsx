@@ -33,7 +33,7 @@ const MUTED = '#6B6B72';
 
 const KR_FONT = `${kr.fontFamily}, 'Pretendard Variable', system-ui, sans-serif`;
 const DISP = `${display.fontFamily}, ${kr.fontFamily}, sans-serif`;
-const SERIF = `${serif.fontFamily}, serif`;
+const SERIF = `${serif.fontFamily}, ${serifKR.fontFamily}, serif`;
 
 // ----------- Persistent paper background -----------
 const PaperBG: React.FC = () => {

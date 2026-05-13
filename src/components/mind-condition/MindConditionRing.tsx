@@ -30,7 +30,7 @@ const DIM_LABELS: Record<string, string> = {
  * 마음 컨디션 점수 — 0~100 단일 숫자.
  * 첫 점수 vs 최근 점수 델타 표시. Noom 스타일 단일 결과 지표.
  */
-export default function MindConditionRing({ userId, className }: Props) {
+export default function MindConditionRing({ userId, className, onDimensionClick }: Props) {
   const [latest, setLatest] = useState<ScoreRow | null>(null);
   const [first, setFirst] = useState<ScoreRow | null>(null);
   const [loading, setLoading] = useState(true);

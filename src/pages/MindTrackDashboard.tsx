@@ -16,6 +16,7 @@ import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { supabase } from "@/integrations/supabase/client";
 import { getDayCopy, calcMindTrackCurrentDay } from "@/lib/mindTrackDayCopy";
 import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirstTimeOnboarding";
+import DashboardVsWorkbookHelp from "@/components/mind-track/DashboardVsWorkbookHelp";
 import MindTrackTodayValueStack from "@/components/mind-track/MindTrackTodayValueStack";
 import MindConditionPanel from "@/components/mind-condition/MindConditionPanel";
 import TodayCoachingEmailContent from "@/components/mind-track/TodayCoachingEmailContent";

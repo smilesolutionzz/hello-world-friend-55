@@ -1,111 +1,74 @@
-# Noom-Grade Closing Plan — 마음트랙 30일 v2
+# 워크북·대시보드 동기화/네비게이션 개선
 
-답변 반영: **(1) 단일 결과 숫자**, **(2) 코치 비동기 채팅(현 AI/전문가 자원 그대로)**, **(3) Before/After 졸업 후기**, **(4) 스트릭+푸시 루프** 4가지 갭을 모두 닫고, BM은 **30일 후 자동갱신을 옵션**으로 추가합니다. 가격은 ₩19,900 단일 유지.
+요청 4가지를 한 번에 정리해서 적용합니다. 모두 프론트엔드 한정 작업이고 DB 스키마 변경은 없습니다.
 
----
+## 1. 워크북 상단에 "다음 Day"·"오늘 미션으로 점프" 버튼 추가
 
-## 트랙 1 — 마음 컨디션 점수 시스템 (P0, 4일)
+대상: `src/pages/MindTrackWorkbook.tsx`
 
-**목표:** 사용자가 30일 동안 "내 점수가 72 → 85로 올랐다"를 한 숫자로 보게 한다.
+선택된 Day(`selectedDay`)와 오늘(`currentDay`)을 기준으로, 캘린더 위쪽 헤더 영역에 작은 네비게이션 바를 추가합니다.
 
-- 신규 테이블 `mind_condition_scores`: `user_id`, `score`(0–100), `dimensions`(jsonb: 정서·수면·관계·집중·회복탄력성), `source`(self_check / ai_inference / assessment), `recorded_at`
-- 점수 산출 RPC `calculate_mind_condition_score(user_id)`: 최근 자가체크 + 워크북 진척도 + 감정 추적(`progress_tracking`) + 최근 검사 결과를 RCI 가중치로 0–100 정규화
-- UI:
-  - `/dashboard` 메인에 큰 점수 링 위젯 (`MindConditionRing`), Day1 vs 오늘 델타 표시 (+13)
-  - `/my-journey`에 30일 라인 차트 추가 (이미 있는 longitudinal dashboard 확장)
-  - 졸업 시 "졸업 카드" 자동 생성 — 닉네임/시작점수→종료점수/주요 변화 (PNG 공유용)
-- 기록 트리거: 자가체크 제출, 워크북 단계 완료, 검사 완료 시 자동 insert
+- ◀ 이전 Day 버튼: `selectedDay > 1`일 때 활성, 클릭 시 `setSelectedDay(selectedDay - 1)` + URL `?day=` 동기화.
+- ▶ 다음 Day 버튼: `selectedDay < 30`일 때 활성, 클릭 시 `setSelectedDay(selectedDay + 1)` + URL `?day=` 동기화. 미래 Day(잠긴 Day)인 경우 버튼은 보이되 살짝 흐리게(disabled tooltip "아직 잠긴 미래 Day예요") 처리.
+- 🎯 "오늘 미션으로 점프" 버튼: `selectedDay !== currentDay`일 때만 노출. 클릭 시 `setSelectedDay(currentDay)` + URL `?day=currentDay&openMission=1` → 기존 자동 다이얼로그 오픈 로직(395~426줄)이 미션 모달을 띄움.
+- 키보드: ← / → 화살표 키로 같은 동작(이미 dialog가 열려있을 때는 무시).
 
-## 트랙 2 — 코치 비동기 채팅 (P0, 5일) — 현 자원 활용
+URL 업데이트는 기존 `setSearchParams` 사용 패턴(190~200줄 근처) 그대로.
 
-방향: **AI 코치를 메인**으로, 위험 신호/사용자 요청 시 **기존 `/expert-hiring` 단건 상담으로 escalate**. 가격 변경 없음.
+## 2. 체크인 제출 시 대시보드 진행률·스트릭 즉시 반영
 
-- 신규 테이블 `coach_conversations` (사용자당 1개), `coach_messages`(`role`: user/coach, `content`, `is_ai`, `expert_id` nullable, `created_at`)
-- 신규 페이지 `/coach` — Noom-style 카톡 인터페이스 (AI 응답 마크다운 렌더, 풀 컨버세이션 히스토리 전송)
-- Edge function `coach-reply`: Gemini 3.1, 시스템 프롬프트에 "이서연 코치" 페르소나(따뜻한 행동 코치, 비의료 톤, 위기 키워드 감지 시 `/expert-hiring?urgent=true` 안내)
-- Daily nudge: 매일 오전 9시 AI가 먼저 메시지 1통 (cron + `coach-daily-nudge` edge fn)
-- 위기/심층상담 요청 감지 시 채팅 안에 `<ExpertEscalationCard />` 노출 → 기존 expert-hiring 단건 상담으로 라우팅 (이미 있는 인프라 재사용)
+대상: `src/pages/MindTrackDashboard.tsx`
 
-## 트랙 3 — 졸업 후기 시스템 (P1, 3일)
+문제: 대시보드는 `enrollment.id`/`day` 변할 때만 fetch하고 realtime 구독이 없어, 워크북에서 체크인 완료해도 대시보드 탭으로 돌아왔을 때 갱신이 늦음.
 
-- 신규 테이블 `graduation_stories`: `user_id`, `display_name`, `start_score`, `end_score`, `headline`(한줄), `body`, `is_published`, `consent_given`
-- 졸업 시점(Day 30 자가체크 완료) 모달 자동 노출 → "이야기 남기기" 폼
-- `/reviews` 페이지: 카드 그리드 (닉네임 · +N점 · 한줄 후기 · 변화 요약)
-- 시드 5건은 운영팀이 어드민 수동 입력 (`/admin/stories` 관리 UI 포함)
-- 랜딩페이지 `/mind-track` 하단 "30일 후, 이렇게 달라졌습니다" 섹션에 최근 6건 자동 노출
+수정:
+- `useEffect`로 Supabase realtime 채널을 구독: `mind_track_checkins` 테이블의 `enrollment_id=eq.<enrollment.id>` 필터로 INSERT/UPDATE 이벤트 시 fetch 함수를 다시 호출.
+- 안정성을 위해 fetch 로직을 `loadDashboard()` 함수로 추출하고, mount 시점·realtime 이벤트 시점에 모두 호출.
+- 동일 탭 내에서도 즉시 반영되도록, 워크북 `submitCheckin` 성공 직후 `clearMindTrackDashboardCache()` (이미 존재하는 헬퍼)를 호출 + `window.dispatchEvent(new CustomEvent('mt:checkin-updated'))` 발행. 대시보드는 해당 이벤트 리스너로도 refetch.
 
-## 트랙 4 — 스트릭 + 푸시 압박 루프 (P1, 3일)
+`useMindTrackDashboard` 훅은 이미 realtime 구독이 있으므로 사이드바 위젯 쪽 진행률은 자동 갱신됨 — 별도 수정 불필요.
 
-- 신규 테이블 `user_streaks`: `user_id`, `current_streak`, `longest_streak`, `last_check_at`, `freeze_used`(월 1회 끊김 방지)
-- 자가체크/워크북/코치 메시지 중 1개라도 하면 그날 스트릭 +1
-- UI:
-  - 대시보드 우상단 🔥 N일 뱃지 (디자인: 골드 #C8B88A, 흰 배경 원칙 유지)
-  - D-Day 카운터 ("30일 트랙 D-12")
-  - 끊김 위험(20시 기준 미실행) → 푸시/이메일 알림 (web push + 이미 있는 `daily-coaching-email` 활용)
-  - 7/14/30일 마일스톤 셀러브레이션 모달
-- 기존 `daily_coaching_email_log`와 연동, 알림 빈도 사용자 설정 페이지 `/notifications`
+## 3. `?day=` 딥링크 개선
 
-## 트랙 5 — 30일 후 자동갱신 옵션 (P1, 4일)
+대상: `src/pages/MindTrackWorkbook.tsx`
 
-자체 결제 단일상품 정책 유지 — `mind_track_30` 동일 ₩19,900을 30일마다 자동 청구하는 **선택 옵션**만 추가.
+현재 동작 정리:
+- `?day=N` (1~30) 으로 들어오면 해당 Day가 selected 됨. 잘못된 값은 Day 1로 보정 후 토스트.
+- `?day=N&openMission=1` → 자동으로 미션 다이얼로그 오픈.
 
-- 결제 페이지에 토글: "30일 후 자동 연장 (해지는 언제든지)" — 기본 OFF
-- Toss Billing Key 플로우 활용 (이미 있는 `auto-renewal-status` 인프라 재사용)
-- 컬럼 추가: `user_subscriptions.auto_renew`(bool), `next_charge_at`
-- 갱신 D-3 알림 이메일 + 설정 페이지에서 1클릭 해지
-- 갱신 실패 시 grace 3일 + 재시도 후 비활성
+개선 사항:
+- selectedDay가 사용자 인터랙션으로 바뀔 때 항상 URL `?day=` 를 업데이트(이미 일부 분기에 있음 — 누락된 캘린더 클릭 핸들러 1402, 1455, 1346줄 케이스 검수해서 통일).
+- `?day=N&checkin=1` 별칭을 추가: openMission=1과 동일하게 동작 (사용자/공유 링크 가독성용).
+- 미래 Day(잠긴 Day)로의 딥링크는 토스트 "아직 열리지 않은 Day예요. Day {currentDay}로 이동했어요." 후 currentDay로 보정.
+- 30일 종료(currentDay > 30) 상태에서도 ?day=N 으로 과거 미션 회고 보기를 허용하도록 가드 정리.
+- 대시보드/워크북 카드(`MindTrackDashboardCard.tsx`, `MindTrackProgressWidget.tsx`)의 워크북 링크에 `?day=` 파라미터 일관 부여(이미 일부 적용 — 누락 부분 보강).
 
----
+## 4. 대시보드 vs 워크북 차이 도움말 배너
 
-## 기술 세부
+대상: 새 컴포넌트 `src/components/mind-track/DashboardVsWorkbookHelp.tsx` + 두 페이지에 삽입.
+
+- 대시보드 상단(헤더 카드 바로 아래, 첫 진입 시): "대시보드 = 오늘 한눈에 / 워크북 = Day별 미션·체크인" 한 줄 + 펼치기 토글.
+- 워크북 상단: 동일 컴포넌트의 워크북 모드 — "여기는 Day별 상세 워크북이에요. 오늘 요약은 대시보드에서 확인하세요." + 대시보드로 가는 링크.
+- 닫기 버튼 → `localStorage` 키(`mt_help_banner_dismissed_v1`)로 영구 숨김. 헤더의 ⓘ "이용 방법" 버튼(309줄)에서 다시 열 수 있게 dismissed 상태도 reset 가능하도록 prop 노출.
+- 디자인: 화이트 미니멀(`bg-white rounded-2xl border border-slate-200`), `Lightbulb` 아이콘 + gold accent(#C8B88A) 한 줄 — 그라디언트/이모지 금지(메모리 룰).
+
+## 기술 메모
+
+- Realtime 구독은 페이지 unmount 시 `supabase.removeChannel()` 정리.
+- 키보드 핸들러는 Dialog open 상태/inputfocus 상태 체크 후 동작.
+- 모든 변경 프론트엔드 only — 마이그레이션 없음.
+- 영향 파일:
+  - edit `src/pages/MindTrackWorkbook.tsx`
+  - edit `src/pages/MindTrackDashboard.tsx`
+  - edit `src/components/mind-track/MindTrackDashboardCard.tsx` (deep link 파라미터 통일 검토)
+  - new  `src/components/mind-track/DashboardVsWorkbookHelp.tsx`
+
+## 작업 순서
 
 ```text
-DB 변경
-├─ mind_condition_scores (신규)
-├─ coach_conversations, coach_messages (신규)
-├─ graduation_stories (신규)
-├─ user_streaks (신규)
-└─ user_subscriptions: + auto_renew, next_charge_at
-
-Edge Functions (신규)
-├─ calculate-mind-score (RPC 래퍼)
-├─ coach-reply (Gemini 3.1 medium)
-├─ coach-daily-nudge (cron)
-└─ subscription-renew-charge (cron, Toss Billing)
-
-UI 신규/확장
-├─ src/components/mind-condition/MindConditionRing.tsx
-├─ src/pages/Coach.tsx + CoachMessage 컴포넌트
-├─ src/pages/Reviews.tsx (졸업 후기)
-├─ src/components/streak/StreakBadge.tsx
-└─ src/pages/CheckoutMindTrack.tsx 자동갱신 토글
+1. DashboardVsWorkbookHelp 컴포넌트 작성
+2. 워크북: 네비 버튼 + 키보드 + checkin 별칭 + 미래Day 보정
+3. 워크북: submitCheckin 후 캐시 무효화 + 이벤트 발행
+4. 대시보드: loadDashboard 추출 → realtime + 이벤트 리스너 추가
+5. 두 페이지에 도움말 배너 삽입
 ```
-
-가격 상수는 `src/constants/tokenCosts.ts`에서만 읽는 기존 정책 유지. 모든 신규 UI는 흰 배경 + `rounded-2xl/3xl` + 골드 액센트 표준 준수.
-
----
-
-## 2주 실행 순서
-
-| 일정 | 작업 |
-|---|---|
-| Day 1–4 | 트랙 1 (마음 컨디션 점수) — 가장 임팩트 큼, 모든 트랙의 기반 |
-| Day 5–9 | 트랙 2 (코치 채팅) — Noom 카피의 핵심 차별화 |
-| Day 10–12 | 트랙 4 (스트릭 루프) — 점수+채팅과 동시 가시화 |
-| Day 13–15 | 트랙 3 (졸업 후기) — 시드 5건 + /reviews + 랜딩 노출 |
-| Day 16–19 | 트랙 5 (자동갱신 옵션) — 결제/billing 안정화 |
-| Day 20 | 통합 QA — 전체 30일 시뮬레이션, 푸시·이메일·갱신 점검 |
-
-## Go/No-Go 게이트
-
-- 점수 시스템: 새 사용자 가입→Day1 점수 자동 산출 < 2초
-- 코치 채팅: 평균 응답 < 5초, 위기 키워드 감지율 100%
-- 스트릭: 끊김 위험 알림 발송 정확도 > 95%
-- 자동갱신: 모의 갱신 1회 성공 + 1클릭 해지 검증
-
-## 메모리 영향
-
-- `mem://product/single-product-bm-ko` 갱신: 자동갱신 옵션은 **단일 상품 내 옵션**임을 명시 (새 상품 아님)
-- 신규 메모리 후보: mind condition score system, coach conversation system, streak system
-
-승인하시면 트랙 1(마음 컨디션 점수)부터 마이그레이션 작성을 시작합니다.

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import MindTrackWelcomeModal from "@/components/mind-track/MindTrackWelcomeModal";
+import DashboardVsWorkbookHelp from "@/components/mind-track/DashboardVsWorkbookHelp";
 import DataAccumulationCounter from "@/components/mind-track/DataAccumulationCounter";
 import NextActionCards from "@/components/mind-track/NextActionCards";
 import ReportHubReadyBanner from "@/components/report/ReportHubReadyBanner";
@@ -284,6 +285,44 @@ export default function MindTrackWorkbook() {
   const todayCheckin = checkins.find((c) => c.day_number === currentDay);
   const activeMissionCheckinCopy = getMissionCheckinCopy(activeMission?.mission_type);
 
+  // 미래 Day 딥링크 보정: ?day=N 이 currentDay 보다 미래면 currentDay 로 redirect
+  useEffect(() => {
+    if (loading) return;
+    if (!dayParamValid) return;
+    if (dayParam <= currentDay) return;
+    toast.info(`Day ${dayParam}은(는) 아직 열리지 않았어요. 오늘 Day ${currentDay}로 이동했어요.`);
+    setSelectedDay(currentDay);
+    const params = new URLSearchParams(searchParams);
+    params.set("day", String(currentDay));
+    params.delete("openMission");
+    params.delete("checkin");
+    setSearchParams(params, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, dayParam, dayParamValid, currentDay]);
+
+  // 키보드 ←/→ 로 selectedDay 이동 (Dialog 열려있거나 input focus 일 땐 무시)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (activeMission) return;
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement)?.isContentEditable) return;
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const cur = selectedDay ?? currentDay;
+      const next = e.key === "ArrowLeft" ? cur - 1 : cur + 1;
+      if (next < 1 || next > 30) return;
+      if (next > currentDay) return; // 미래 Day 차단
+      e.preventDefault();
+      setSelectedDay(next);
+      const params = new URLSearchParams(searchParams);
+      params.set("day", String(next));
+      setSearchParams(params, { replace: true });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDay, currentDay, activeMission]);
+
+
   // Trigger weekly refresh if needed
   useEffect(() => {
     const weekNum = Math.ceil(currentDay / 7);
@@ -381,7 +420,8 @@ export default function MindTrackWorkbook() {
   useEffect(() => {
     if (loading) return;
     const dp = parseInt(searchParams.get("day") ?? "", 10);
-    const explicitFlag = searchParams.get("openMission") === "1";
+    // checkin=1 은 openMission=1 의 사용자 친화 별칭
+    const explicitFlag = searchParams.get("openMission") === "1" || searchParams.get("checkin") === "1";
     const onceToken = searchParams.get("mtOnce");
     let onceValid = false;
     if (onceToken) {
@@ -400,6 +440,7 @@ export default function MindTrackWorkbook() {
       const params = new URLSearchParams(searchParams);
       let changed = false;
       if (params.has("openMission")) { params.delete("openMission"); changed = true; }
+      if (params.has("checkin")) { params.delete("checkin"); changed = true; }
       if (params.has("mtOnce")) { params.delete("mtOnce"); changed = true; }
       if (changed) setSearchParams(params, { replace: true });
     };
@@ -515,6 +556,14 @@ export default function MindTrackWorkbook() {
       toast.success("체크인 완료");
       setActiveMission(null);
       load();
+      // 대시보드/위젯 즉시 갱신을 위해 캐시 무효화 + 커스텀 이벤트 브로드캐스트
+      try {
+        const { clearMindTrackDashboardCache } = await import("@/hooks/useMindTrackDashboard");
+        clearMindTrackDashboardCache();
+      } catch {}
+      try {
+        window.dispatchEvent(new CustomEvent("mt:checkin-updated"));
+      } catch {}
     } catch (e: any) {
       toast.error(e.message || "오류가 발생했습니다");
     } finally {
@@ -1322,6 +1371,79 @@ export default function MindTrackWorkbook() {
               })}
             </div>
           </Card>
+
+          {/* Day 네비게이션 — 이전/다음/오늘 미션 점프 */}
+          {(() => {
+            const sd = selectedDay ?? currentDay;
+            const canPrev = sd > 1;
+            const nextDay = sd + 1;
+            const canNext = nextDay <= 30 && nextDay <= currentDay;
+            const showJumpToday = sd !== currentDay;
+            const goDay = (d: number, opts?: { openMission?: boolean }) => {
+              setSelectedDay(d);
+              const params = new URLSearchParams(searchParams);
+              params.set("day", String(d));
+              if (opts?.openMission) params.set("openMission", "1");
+              else params.delete("openMission");
+              setSearchParams(params, { replace: true });
+              dayButtonRefs.current[d]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+            };
+            return (
+              <Card className="p-3 sm:p-4 flex items-center gap-2 flex-wrap justify-between">
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={!canPrev}
+                    onClick={() => goDay(sd - 1)}
+                    aria-label="이전 Day"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" /> 이전 Day
+                  </Button>
+                  <div className="text-xs sm:text-sm font-bold text-slate-700">
+                    Day {String(sd).padStart(2, "0")} / 30
+                    {sd === currentDay && (
+                      <span className="ml-1.5 text-[10px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">오늘</span>
+                    )}
+                  </div>
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={!canNext}
+                            onClick={() => goDay(sd + 1)}
+                            aria-label="다음 Day"
+                          >
+                            다음 Day <ChevronRight className="w-3.5 h-3.5" />
+                          </Button>
+                        </span>
+                      </TooltipTrigger>
+                      {!canNext && (
+                        <TooltipContent side="bottom" className="text-xs">
+                          {sd >= 30 ? "마지막 Day 입니다" : "아직 잠긴 미래 Day 예요"}
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                {showJumpToday && (
+                  <Button
+                    size="sm"
+                    onClick={() => goDay(currentDay, { openMission: true })}
+                    className="bg-[#1a1a1a] text-white hover:bg-black"
+                  >
+                    <Target className="w-3.5 h-3.5" /> 오늘 미션으로 점프
+                  </Button>
+                )}
+              </Card>
+            );
+          })()}
+
+          {/* 대시보드 vs 워크북 안내 */}
+          <DashboardVsWorkbookHelp mode="workbook" />
 
           {/* 30-day Calendar */}
           <Card className="p-5" ref={calendarRef as any}>

@@ -149,10 +149,8 @@ export default function MindTrackCheckResult() {
                   <div className="flex gap-2 flex-wrap">
                     <Button
                       onClick={() => {
-                        const tag = (data.goal_id === 'child_development' || data.goal_id === 'family_communication')
-                          ? 'family'
-                          : data.goal_id;
-                        navigate(`/mind-track?category=concern&tag=${encodeURIComponent(tag)}#goal-section`);
+                        // /mind-track 빠른 선택과 동기화 — goal_id가 9개 트랙 중 하나면 그대로 ?goal=
+                        navigate(`/mind-track?goal=${encodeURIComponent(data.goal_id)}#goal-section`);
                       }}
                       className="flex-1 min-w-[160px] rounded-2xl bg-slate-900 hover:bg-black text-white"
                     >

@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -226,56 +227,62 @@ export default function MindConditionPanel({ userId, className }: Props) {
           </div>
         ) : (
           <ScrollArea className="max-h-[420px] pr-3">
-            <ul className="space-y-2">
+            <Accordion type="single" collapsible className="space-y-2">
               {rows
                 .slice()
                 .reverse()
                 .map((r) => (
-                  <motion.li
+                  <AccordionItem
                     key={r.id}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="border border-neutral-200 rounded-2xl p-4 hover:border-neutral-300 transition-colors"
+                    value={String(r.id)}
+                    className="border border-neutral-200 rounded-2xl px-4 data-[state=open]:border-neutral-300 data-[state=open]:bg-neutral-50/40"
                   >
-                    <div className="flex items-baseline justify-between mb-2">
-                      <span className="text-xs text-neutral-500 tabular-nums">
-                        {fmtDateTime(r.recorded_at)}
-                      </span>
-                      <span className="text-2xl font-light tabular-nums text-neutral-900">
-                        {r.score}
-                        <span className="text-xs text-neutral-400 ml-1">/100</span>
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-5 gap-2">
-                      {Object.keys(DIM_LABELS).map((k) => {
-                        const v = Number(r.dimensions?.[k] ?? 0);
-                        return (
-                          <button
-                            key={k}
-                            type="button"
-                            onClick={() => setActiveDim(k)}
-                            className="text-left group"
-                          >
-                            <div className="text-[10px] text-neutral-500 mb-1 group-hover:text-neutral-900 transition-colors">
-                              {DIM_LABELS[k]}
-                            </div>
-                            <div className="h-1 bg-neutral-100 rounded-full overflow-hidden mb-1">
-                              <div
-                                className="h-full bg-neutral-900 rounded-full"
-                                style={{ width: `${v}%` }}
-                              />
-                            </div>
-                            <div className="text-[11px] tabular-nums text-neutral-700">{v}</div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {r.note && (
-                      <p className="text-xs text-neutral-600 mt-2 break-keep">{r.note}</p>
-                    )}
-                  </motion.li>
+                    <AccordionTrigger className="py-3 hover:no-underline">
+                      <div className="flex items-center justify-between w-full pr-2">
+                        <span className="text-xs text-neutral-500 tabular-nums">
+                          {fmtDateTime(r.recorded_at)}
+                        </span>
+                        <span className="text-xl font-light tabular-nums text-neutral-900">
+                          {r.score}
+                          <span className="text-[10px] text-neutral-400 ml-1">/100</span>
+                        </span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-4">
+                      <div className="grid grid-cols-5 gap-2 pt-1">
+                        {Object.keys(DIM_LABELS).map((k) => {
+                          const v = Number(r.dimensions?.[k] ?? 0);
+                          return (
+                            <button
+                              key={k}
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveDim(k);
+                              }}
+                              className="text-left group"
+                            >
+                              <div className="text-[10px] text-neutral-500 mb-1 group-hover:text-neutral-900 transition-colors">
+                                {DIM_LABELS[k]}
+                              </div>
+                              <div className="h-1 bg-neutral-100 rounded-full overflow-hidden mb-1">
+                                <div
+                                  className="h-full bg-neutral-900 rounded-full"
+                                  style={{ width: `${v}%` }}
+                                />
+                              </div>
+                              <div className="text-[11px] tabular-nums text-neutral-700">{v}</div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {r.note && (
+                        <p className="text-xs text-neutral-600 mt-3 break-keep">{r.note}</p>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
                 ))}
-            </ul>
+            </Accordion>
           </ScrollArea>
         )}
       </section>

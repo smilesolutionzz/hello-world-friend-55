@@ -1371,6 +1371,79 @@ export default function MindTrackWorkbook() {
             </div>
           </Card>
 
+          {/* Day 네비게이션 — 이전/다음/오늘 미션 점프 */}
+          {(() => {
+            const sd = selectedDay ?? currentDay;
+            const canPrev = sd > 1;
+            const nextDay = sd + 1;
+            const canNext = nextDay <= 30 && nextDay <= currentDay;
+            const showJumpToday = sd !== currentDay;
+            const goDay = (d: number, opts?: { openMission?: boolean }) => {
+              setSelectedDay(d);
+              const params = new URLSearchParams(searchParams);
+              params.set("day", String(d));
+              if (opts?.openMission) params.set("openMission", "1");
+              else params.delete("openMission");
+              setSearchParams(params, { replace: true });
+              dayButtonRefs.current[d]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+            };
+            return (
+              <Card className="p-3 sm:p-4 flex items-center gap-2 flex-wrap justify-between">
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={!canPrev}
+                    onClick={() => goDay(sd - 1)}
+                    aria-label="이전 Day"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" /> 이전 Day
+                  </Button>
+                  <div className="text-xs sm:text-sm font-bold text-slate-700">
+                    Day {String(sd).padStart(2, "0")} / 30
+                    {sd === currentDay && (
+                      <span className="ml-1.5 text-[10px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">오늘</span>
+                    )}
+                  </div>
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={!canNext}
+                            onClick={() => goDay(sd + 1)}
+                            aria-label="다음 Day"
+                          >
+                            다음 Day <ChevronRight className="w-3.5 h-3.5" />
+                          </Button>
+                        </span>
+                      </TooltipTrigger>
+                      {!canNext && (
+                        <TooltipContent side="bottom" className="text-xs">
+                          {sd >= 30 ? "마지막 Day 입니다" : "아직 잠긴 미래 Day 예요"}
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                {showJumpToday && (
+                  <Button
+                    size="sm"
+                    onClick={() => goDay(currentDay, { openMission: true })}
+                    className="bg-[#1a1a1a] text-white hover:bg-black"
+                  >
+                    <Target className="w-3.5 h-3.5" /> 오늘 미션으로 점프
+                  </Button>
+                )}
+              </Card>
+            );
+          })()}
+
+          {/* 대시보드 vs 워크북 안내 */}
+          <DashboardVsWorkbookHelp mode="workbook" />
+
           {/* 30-day Calendar */}
           <Card className="p-5" ref={calendarRef as any}>
             <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">

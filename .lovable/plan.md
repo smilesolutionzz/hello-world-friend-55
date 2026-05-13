@@ -1,72 +1,98 @@
-# 마음 트랙 카테고리 재편 회의 결론
+# 마음 트랙 선택 UX 단순화 — Wizard + Sticky CTA
 
-## 1. 핵심 아이디어
+## 결정한 기본값
 
-현재 9개 트랙이 personal/family 2그룹으로만 묶여 있어 사용자가 "내 상황에 뭘 골라야 하지?"에서 막힘. 트랙 자체는 그대로 두고, **태그 메타데이터를 추가**해 4가지 축으로 다중 분류한 뒤, "AI 추천 우선 + 카테고리 보조" UI로 재구성한다.
+질문이 스킵되어 다음 두 가지를 기본 채택합니다.
 
-트랙 콘텐츠(30일 30개) 자체는 변경 없음. 분류·필터·진입 동선만 손본다.
+1. **선택 단순화** → "질문 1개로 자동 추천" (위저드형)
+2. **페이지 흐름** → 하단 sticky CTA 바(선택한 트랙 + 결제 가격) 추가
 
-## 2. 분류 체계 (4축 동시 적용)
+이유: 현재 4축 칩 + 9개 그리드 + AI 추천 카드 3단 구조는 모바일(390px)에서 결정 피로가 큼. Calm·Wysa 류는 "한 가지 질문"에 답하면 한 트랙을 크게 보여주는 패턴이 표준.
 
-각 트랙은 4개 축의 태그를 가진다.
+## 1. 새 트랙 선택 컴포넌트
 
-- **고민/증상** — `sleep` `stress` `mood` `anxiety` `focus` `relationship` `self` `parenting` `family`
-- **생애주기** — `youth`(청년) `worker`(직장인) `parent`(부모) `midlife`(중장년) `senior`(시니어)
-- **역할/상황** — `personal` `parent` `couple` `manager`
-- **목표 기간/난이도** — 현재 30일 단일 → 우선 `focus_30`(30일 집중)으로 표기, `light_5`(5분 가볍게)·`deep_90`(90일 심화)는 향후 확장 자리만 마련
-
-매핑은 `MIND_TRACK_FOCUSES`에 `tags: { concern[], lifeStage[], role[], intensity[] }` 필드를 추가해 단일 진실 공급원에 보관.
-
-## 3. 트랙 선택 UI (`/mind-track`)
-
-상단부터 아래로:
+신규 `src/components/mind-track/TrackQuickPicker.tsx`
 
 ```text
-[1] AI 추천 카드 (1~3개)
-    └ 가장 최근 검사/온보딩 응답 기반. "당신에게 맞는 트랙" 헤드라인.
+┌─────────────────────────────────────┐
+│  지금 가장 신경 쓰이는 게 뭐예요?    │   ← 한 줄 헤드라인
+│                                     │
+│  [😴 잠이 안 와요]   [🌿 늘 긴장돼요]│   ← 5개 큰 버튼
+│  [☁️ 기분이 가라앉]  [🤝 관계가 힘들]│      (2열, h-20, rounded-2xl)
+│  [🤱 육아가 버거워요]                │
+│                                     │
+│  ─ 또는 ─                           │
+│  [전체 9개 트랙 보기 ▾]             │   ← 접힘. 펼치면 기존 그리드
+└─────────────────────────────────────┘
 
-[2] 카테고리 칩 라인 (가로 스크롤)
-    "내 고민으로" | "내 나이로" | "역할로" | "기간으로"
-    └ 칩 선택 시 아래 카드 그리드가 즉시 필터링 (다중 선택 가능)
+선택 즉시 ↓
 
-[3] 9개 트랙 카드 그리드
-    └ 필터 결과 0건이면 "전체 트랙 보기" 폴백
+┌─────────────────────────────────────┐
+│  당신에게 맞는 트랙                  │
+│  ┌───────────────────────────────┐  │
+│  │ 🌿 스트레스 다스리기 30일      │  │   ← 매칭된 1개 트랙 큰 카드
+│  │ 일상 속 긴장과 압박감을…       │  │
+│  │ • 1주차: 긴장 신호 인식        │  │
+│  │ • 2주차: 호흡·이완 루틴        │  │
+│  │ ...                           │  │
+│  │ [이 트랙으로 시작하기 →]       │  │
+│  └───────────────────────────────┘  │
+│  [다른 트랙도 보기]                  │   ← 보조 링크 (전체 그리드)
+└─────────────────────────────────────┘
 ```
 
-- 추천 로직: `assessment_results` 최신 1건의 위험 도메인 + `user_onboarding_data`의 `age_range`/`role`을 본 뒤 태그 교집합 점수가 높은 트랙 top3.
-- 추천 근거가 없으면 추천 섹션 숨기고 카테고리 칩 + 전체 그리드만 표시 (기존 UX와 동일).
-- 칩은 한 번에 한 축만 활성화(라디오) + 그 축 안에서는 다중 선택. 다축 동시 필터는 1차 범위 외(과복잡).
+매핑(고민 → 트랙):
+- 잠이 안 와요 → `sleep`
+- 늘 긴장돼요 → `stress`
+- 기분이 가라앉아요 → `mood`
+- 관계가 힘들어요 → `relationship`
+- 육아가 버거워요 → `parenting`
 
-## 4. 진입점 연결
+URL은 `?goal=sleep` 단일 파라미터로 단순화(기존 `?category=&tag=` 딥링크는 호환 유지 — 들어오면 그에 맞는 빠른 답을 자동 선택).
 
-- **Index(랜딩)** — 기존 마음 트랙 섹션의 9개 카드 대신 "AI가 추천하는 3개 + 카테고리로 둘러보기" 미니 위젯으로 교체. CTA는 `/mind-track?category=concern` 식 딥링크.
-- **검사 결과 페이지(MindTrackCheckResult, Assessment 결과 화면)** — 결과 카드 하단 "이 결과에 맞는 마음 트랙 보기" CTA에 `?category=concern&tag=sleep` 같은 쿼리 부착. `/mind-track` 진입 즉시 해당 칩 프리셀렉트.
-- 신규 페이지/라우트 추가 없음.
+## 2. 기존 컴포넌트 처리
+
+- `TrackCategoryChips`, `TrackRecommendation` — 즉시 삭제하지 않고 "전체 9개 트랙 보기" 펼침 영역 안으로 이동(파워유저용 보조). 카테고리 칩은 4축 → 2축(고민/역할)으로 압축.
+- 기존 9개 카드 그리드 — 펼침 영역에 그대로 유지.
+
+## 3. 하단 Sticky CTA 바
+
+`src/components/mind-track/StickyTrackCTA.tsx` 신규.
+
+```text
+[선택: 🌿 스트레스 다스리기]   ₩19,900   [시작하기 →]
+```
+
+- 트랙이 선택된 상태에서만 표시
+- 모바일은 가로 풀폭, 데스크톱은 max-w-xl 중앙
+- 가격은 `MIND_TRACK_PRICE` 상수에서만 읽음 (메모리 정책 준수)
+- 클릭 시 기존 결제 진입(현재 "이 트랙으로 시작하기" 핸들러 재사용)
+
+## 4. Index(랜딩) 페이지 동기화
+
+`src/pages/Index.tsx`의 마음 트랙 미니 위젯도 동일한 5개 한 줄 질문 형태로 교체. 클릭 시 `/mind-track?goal=<id>`로 진입 → MindTrack에서 자동 매칭 답안 표시.
 
 ## 5. 작업 범위 (파일)
 
 신규
-- `src/lib/mindTrackCategories.ts` — 4축 카테고리 정의 + 라벨 + 트랙→태그 매핑 + `recommendTracks(profile)` 헬퍼.
-- `src/components/mind-track/TrackCategoryChips.tsx` — 가로 스크롤 칩 + 다중 선택 상태.
-- `src/components/mind-track/TrackRecommendation.tsx` — AI 추천 카드 섹션.
+- `src/components/mind-track/TrackQuickPicker.tsx` — 5개 빠른 선택 + 매칭 카드
+- `src/components/mind-track/StickyTrackCTA.tsx` — 하단 고정 결제 바
 
 수정
-- `src/lib/mindTrackFocusTracks.ts` — 각 트랙에 `tags` 필드 추가(타입 확장 + 9개 데이터 채우기).
-- `src/pages/MindTrack.tsx` — 추천 → 칩 → 그리드 구조로 레이아웃 재배치 + URL 쿼리(`?category=&tag=`) 동기화.
-- `src/pages/Index.tsx` 마음 트랙 섹션 — 추천 위젯 + 카테고리 진입 CTA.
-- `src/pages/MindTrackCheckResult.tsx` — 결과 도메인 → `?category=concern&tag=` 딥링크.
-- `src/pages/Assessment.tsx` 결과 단계 CTA — 동일 패턴 딥링크.
+- `src/pages/MindTrack.tsx` — `goal-section`을 QuickPicker 중심으로 재배치, 칩/추천/그리드는 "전체 보기" Disclosure 안쪽으로 이동, sticky CTA 마운트, `?goal=` 파라미터 처리
+- `src/pages/Index.tsx` — 마음 트랙 미니 위젯에 동일한 5개 질문 버튼 노출
+- `src/pages/MindTrackCheckResult.tsx` — 결과→트랙 딥링크를 `?goal=<id>` 형식으로 단순화(기존 `?category=&tag=` 호환 유지)
 
 ## 6. 비범위(이번엔 안 함)
 
-- 90일/5분 트랙 신설 — UI 자리만 마련, 콘텐츠는 후속.
-- B2B Job Coach 트랙 — 별도 파이프라인.
-- 카테고리별 SEO 허브 페이지(`/mind-track/catalog`) — 회의 결과 보류, 검색 유입 데이터 본 뒤 결정.
-- 결제 흐름·`mind_track_30` 단일 상품 정책 — 변경 없음.
+- 결제 흐름·`mind_track_30` 가격 정책 변경 없음
+- 9개 트랙 콘텐츠/Day 카피 변경 없음
+- 4축 카테고리 데이터(`mindTrackCategories.ts`) 자체는 보존(고급 필터에서 계속 사용)
+- B2B Job Coach, /coaching-goals 등은 영향 없음
 
-## 7. 기술 메모
+## 7. 디자인/메모리 준수
 
-- 칩 상태/필터 상태는 URL 쿼리스트링이 단일 진실. 새로고침/공유 가능.
-- 추천 로직은 클라이언트 사이드 점수 매칭(Edge Function 불필요). 데이터 부족 시 graceful degrade.
-- 메모리 정책 준수: 이모지 미사용(트랙 아이콘은 기존 `icon` 필드 유지하되 카테고리 칩에는 점 아이콘+라벨만), `bg-white` `rounded-2xl/3xl`, 그라데이션 금지, Pretendard.
-- 가격/상품 표기 변동 없음 (단일 상품 정책 유지).
+- 흰 배경 + `rounded-2xl/3xl`, 그라데이션 금지
+- Pretendard, `break-keep`
+- 5개 빠른 선택 버튼의 이모지는 입구 UX용으로만 사용(리포트/카테고리 칩은 점 아이콘 정책 그대로)
+- 가격은 상수에서만 읽음 — 하드코딩 금지

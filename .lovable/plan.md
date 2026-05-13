@@ -1,73 +1,100 @@
-## 현재 상태 진단
+# 론칭 D-Day 액션 플랜 (PM 보고서)
 
-기존 코드베이스에 이미 있는 것:
-- **마음트랙 코어**: `/mind-track`, `MindTrackDashboard`, `MindTrackWorkbook`, Toss Billing(`mind_track_30` ₩19,900) — 이미 단일 상품 BM 메모리에 잠겨있음
-- **B2B**: `/business`, `/b2b-proposal`, `/business-case-studies`, `B2BJobCoach`, `InstitutionClientDashboard`, `InstitutionApplication`
-- **발달 검사**: `ChildPackage`, `ParentAssessment`, `ADHDScreening`, `AdvancedAdhdTest`, `GrowthDevelopmentReport`, `UnifiedAssessmentHub`
-- **추천/리퍼럴**: `/referral`
-- **운영자 소개**: `/about`
-- **결제**: usePayment.ts에 `mind_track_30` 흐름 완성
-
-따라서 클로드코드 조언 중 **새로 만들 가치가 있는 것만** 골라서 최소로 추가.
+작성: 제품 PM | 기준일: 2026-05-12 | 제품: AIHPRO 마음트랙 30일 (₩19,900) + 전문가 상담 + 파트너 센터 리퍼럴
 
 ---
 
-## 이번 라운드에 추가할 것 (placeholder만, 다음 단계에서 채움)
+## 0. 한눈에 보는 현황
 
-### A. 라우트 신설 (placeholder 페이지)
-1. **`/track/adult`** — Coming Soon (성인 트랙 2차)
-2. **`/track/teen`** — Coming Soon (청소년 트랙 2차)
-3. **`/c/:slug`** — 발달센터별 추천 랜딩 (동적). 슬러그로 `organizations` 조회, 추천 코드 캡처해서 `localStorage` + 결제 시 enrollment에 전달
-4. **`/beta`** — 베타 1기 모집 (쿼리 `?code=` 검증, 신청 폼)
-5. **`/reviews`** — 졸업 후기 모음
-6. **`/about/expert`** — 운영자 14년 임상 신뢰 페이지 (기존 `/about`와 별도 — 결제 직전 신뢰 시그널 전용)
+- **코어 상품**: `mind_track_30` ₩19,900 단일 상품 + 전문가 상담 — 결제/구독/리포트 전부 가동
+- **파트너 채널**: `/c/:slug` 랜딩 + `mind_track_enrollments.referral_*` + `PartnerCenterDashboard` + `PartnerCenterReferrals` + 어드민 통계 — **이번 주 신규 구축 완료**
+- **남은 리스크**: 파트너 운영 폐루프(연결·정산·고지) 미완 / 결제 실패 회복 / 약관·개인정보 / 영어 35% / 콜드스타트 콘텐츠
 
-### B. 라우트 alias (기존 페이지 재사용, 새 페이지 만들지 않음)
-- `/track/child` → `/mind-track` 리다이렉트 (또는 동일 컴포넌트)
-- `/b2b` → `/business`
-- `/b2b/dev-center` → `/b2b-proposal?segment=dev-center`
-- `/b2b/counseling` → `/b2b-proposal?segment=counseling`
-- `/tests/child-development` → `/child-package` (기존 자녀 검사 패키지)
-- `/app/parent` → `/dashboard` (DashboardRouter가 이미 역할별 라우팅)
-- `/app/center` → `/institution-client-dashboard`
-- `/app/center/clients` → `/institution-client-dashboard` (탭 파라미터)
-
-### C. 명시적으로 **추가하지 않을** 것 (이미 충분 / 메모리 정책 위반)
-- ❌ 새 검사 6종 seed (PHQ-A, SCARED, K-DST 등) — `IP risk mitigation` 메모리상 PHQ/MBTI 등 임상 도구명 사용 금지. 기존 자체 브랜딩 검사로 대체
-- ❌ 새 Edge Function `score-assessment`, `invite-parent`, `toss-issue-billing-key`, `generate-graduation-pdf` — Toss billing은 `unified-payment`로 이미 작동, 점수 채점은 기존 `save-test-result` 등에 있음
-- ❌ 가격 ₩99,000 / ₩69,000 / ₩49,000 하드코딩 — 메모리 잠금: **자체 결제는 `mind_track_30` ₩19,900 단일 상품**. 파트너/도매 가격은 상담 수익 셰어 로직으로 별도 처리
-- ❌ Day 30 졸업 페이지 별도 신설 — `MindTrackDashboard`에 Day 30 섹션 추가가 더 적합
+상태를 4개 트랙으로 정리하고 우선순위를 매겼습니다.
 
 ---
 
-## 파일 변화 (모두 가벼움)
+## 1. 트랙 A — 파트너 리퍼럴 폐루프 완성 (P0, 1주)
 
-신규 placeholder 페이지 6개 (각 ~30줄, 디자인 토큰 사용, 다음 라운드에서 본문 채움):
-- `src/pages/TrackAdultComingSoon.tsx`
-- `src/pages/TrackTeenComingSoon.tsx`
-- `src/pages/CenterReferralLanding.tsx` (`/c/:slug`)
-- `src/pages/BetaRecruitment.tsx`
-- `src/pages/Reviews.tsx`
-- `src/pages/AboutExpert.tsx`
+지금 막은 것: 클릭 트래킹, 신청 연결, 센터 자체 편집, 클라이언트 목록.
+**막혀있는 것**: 정산·연결 신청·증빙·고지.
 
-`src/App.tsx` Routes 블록에 8개 라우트 추가 (신규 6 + alias 2~3개 Navigate).
+| # | 액션 | 산출물 |
+|---|---|---|
+| A1 | "센터 등록 신청" 폼 (`/partner/apply`) — 운영자가 admin에서 승인 → `is_referral_active=true` + `admin_user_id` 매핑 | 신청 테이블 + 어드민 승인 UI |
+| A2 | 정산 사이클 정의 (월말 마감 → 익월 10일 지급, 수수료 % 결정) + `partner_settlements` 테이블 | 정산 명세서 PDF/CSV 다운로드 |
+| A3 | 센터 대시보드에 "예상 정산금액" 카드 + 지난달 확정금액 + 세금계산서 발행 안내 | 대시보드 섹션 1개 |
+| A4 | 리퍼럴 수수료 정책서 (PDF/페이지) — 환불 시 차감 룰 포함 | `/partner/terms` |
+| A5 | `/c/:slug` 랜딩에 "이 센터 추천 혜택"(가격은 코드/DB에서) 명시 + 의료광고 수위 점검 | 랜딩 카피 검수 |
 
----
-
-## 다음 라운드 후보 (지금은 안 만듦)
-
-승인 시 이어서:
-1. `/about/expert` 본문 디자인 (결제 전환용 신뢰 페이지)
-2. `/c/:slug` 발달센터 organization 조회 + referrer 추적 로직
-3. `/beta` 신청 폼 → `organizations.sales_status='pilot'` 등록 (DB 마이그레이션 필요)
-4. `/reviews` — 졸업 후기 DB 스키마 + 메인 하단 위젯
+**의사결정 필요**: 수수료율(20%? 30%?), 최소 정산금(₩50,000?), 환불 차감 방식.
 
 ---
 
-## 확인 부탁
+## 2. 트랙 B — 결제·구독 안정화 (P0, 3일)
 
-이 범위로 진행해도 될까? 특히:
-- **가격 정책**: ₩99,000 등 새 가격은 메모리상 금지된 상태인데, 정말 단일 상품 정책을 깨고 새 가격 체계로 가고 싶은 거야? 아니면 기존 ₩19,900 마음트랙 30일 위에 파트너 셰어만 얹는 거야?
-- **새 검사 6종**: 임상명(PHQ-A 등) 그대로 갈지, 아니면 기존처럼 자체 브랜딩으로 갈지?
+| # | 액션 |
+|---|---|
+| B1 | 결제 실패 → 자동 재시도/사용자 안내 메일 (Toss Billing webhook 점검) |
+| B2 | 30일 구독 만료 D-3 알림 + 갱신 동의 플로우 (자동갱신 정책 메모리 준수) |
+| B3 | 환불 정책 페이지 + 어드민 환불 처리 → `mind_track_enrollments.refund_status` 갱신 → 파트너 정산 자동 차감 |
+| B4 | `unified-payment` 실패 케이스 sentry/log 모니터링 대시보드 |
 
-이 두 가지는 답에 따라 다음 라운드 작업 범위가 크게 갈려.
+---
+
+## 3. 트랙 C — 법무·신뢰 (P0, 1주, 차단요소)
+
+| # | 액션 |
+|---|---|
+| C1 | 이용약관 / 개인정보처리방침 / 환불약관 최신화 (₩19,900 단일 상품 기준, 파트너 데이터 공유 조항 포함) |
+| C2 | 파트너 센터 ↔ AIHPRO 간 **데이터 공유 동의** (마음트랙 사용자 → 센터에 식별정보 노출 범위 명확화. 현재는 마스킹 상태 유지 권장) |
+| C3 | 비의료 코칭 디스클레이머 전 페이지 일관 적용 (메모리 standard-disclaimer) |
+| C4 | 14세 미만 보호자 동의 (GuardianConsentDialog) 마음트랙 가입 시점에 강제 |
+| C5 | 사업자정보 footer + 통신판매업신고 + 고객센터 연락처 |
+
+---
+
+## 4. 트랙 D — 콜드스타트 & 마케팅 (P1, 론칭 동시)
+
+| # | 액션 |
+|---|---|
+| D1 | `/reviews` 졸업 후기 5건 시드 (베타 사용자에서 수집) |
+| D2 | `/about/expert` 운영자 신뢰 페이지 본문 (14년 임상) — 결제 직전 신뢰 시그널 |
+| D3 | 메인 → 마음트랙 → 결제 퍼널 GA/PMF 이벤트 점검 (`usePMFTracking`) |
+| D4 | 유튜브 23K → `/mind-track` 핀드 코멘트/카드 CTA |
+| D5 | 파트너 센터 5곳 파일럿 온보딩 (트랙 A 완료 후 즉시) |
+| D6 | 카카오 공유 OG 이미지 마음트랙 전용 1장 |
+
+---
+
+## 5. 트랙 E — 영어 버전 (P2, 론칭 후 4주)
+
+지금 손대면 P0 일정이 밀립니다. **국문 정식 론칭 후 즉시 착수**가 합리적.
+- 마음트랙 + 결제 + 대시보드 핵심 3페이지만 우선 i18n 적용 → 글로벌 베타.
+
+---
+
+## 6. 론칭 전 4주 타임라인
+
+```text
+Week 1 (이번 주)   : 트랙 A1~A3, 트랙 B1~B2, 트랙 C1~C2
+Week 2             : 트랙 A4~A5, 트랙 B3~B4, 트랙 C3~C5
+Week 3 (소프트론칭): 파트너 5곳 파일럿 + 베타 사용자 50명 + D1~D4
+Week 4 (정식론칭) : 모니터링 + 이슈 핫픽스 + D5~D6 + 영어 버전 착수
+```
+
+**Go/No-Go 게이트** (Week 3 끝):
+- [ ] 파트너 1건 이상 정산 모의 성공
+- [ ] 결제 실패 자동 회복 1건 이상 검증
+- [ ] 약관 3종 라이브
+- [ ] 5명 이상 마음트랙 30일 완주 후기
+
+---
+
+## 7. 지금 당장 결정 필요한 3가지
+
+1. **파트너 수수료율과 정산 사이클** — 트랙 A 전체가 여기에 묶여있음
+2. **데이터 공유 범위** — 센터에 닉네임만 보일지, 동의 시 실명/연락처도 보일지
+3. **소프트 론칭 베타 사용자 모집 채널** — 유튜브 공지? 기존 회원 메일? 파트너 센터 통해서?
+
+이 3개만 확정해주면 트랙 A부터 바로 빌드 들어갑니다. 어떤 순서로 진행할까요?

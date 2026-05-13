@@ -15,6 +15,7 @@ interface ScoreRow {
 interface Props {
   userId: string;
   className?: string;
+  onDimensionClick?: (dimensionKey: string) => void;
 }
 
 const DIM_LABELS: Record<string, string> = {

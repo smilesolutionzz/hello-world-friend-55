@@ -625,10 +625,12 @@ export default function MindTrackDashboard() {
                     >
                       <span className={isCompleted ? "opacity-30" : ""}>{d}</span>
                       {isCompleted && (
-                        <span
+                        <motion.span
+                          initial={{ scale: 1.6, opacity: 0, rotate: -25 }}
+                          animate={{ scale: 1, opacity: 1, rotate: -14 }}
+                          transition={{ type: "spring", stiffness: 300, damping: 12, delay: (d % 5) * 0.03 }}
                           aria-hidden
                           className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                          style={{ transform: "rotate(-14deg)" }}
                         >
                           <span
                             className="flex items-center justify-center rounded-full font-extrabold tracking-tighter"
@@ -645,7 +647,7 @@ export default function MindTrackDashboard() {
                           >
                             완료
                           </span>
-                        </span>
+                        </motion.span>
                       )}
                     </button>
                   );

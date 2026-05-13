@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Loader2, Sparkles, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -147,19 +147,35 @@ export default function QuickReflectionForm({ enrollmentId, day, source = "dashb
         </span>
       </div>
 
-      <Button
-        onClick={handleSubmit}
-        disabled={saving || note.trim().length < 2}
-        className="w-full h-11 text-sm font-bold bg-[#1a1a1a] text-white hover:bg-black rounded-xl"
-      >
-        {saving ? (
-          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> 저장 중...</>
-        ) : saved ? (
-          <><CheckCircle2 className="w-4 h-4 mr-2" /> 한 줄 기록 업데이트</>
-        ) : (
-          <><Send className="w-4 h-4 mr-2" /> 한 줄로 저장하기</>
-        )}
-      </Button>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={saved ? "stamp" : "button"}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ type: "spring", stiffness: 400, damping: 18 }}
+        >
+          {saved ? (
+            <div className="w-full h-11 rounded-xl border-2 border-[#d63b3b] bg-white flex items-center justify-center gap-2 text-[#d63b3b] font-extrabold"
+              style={{ transform: "rotate(-2deg)", fontFamily: "'Instrument Serif', serif" }}
+            >
+              <span className="inline-block animate-[scale-in_0.3s_ease-out]">완료</span>
+            </div>
+          ) : (
+            <Button
+              onClick={handleSubmit}
+              disabled={saving || note.trim().length < 2}
+              className="w-full h-11 text-sm font-bold bg-[#1a1a1a] text-white hover:bg-black rounded-xl"
+            >
+              {saving ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> 저장 중...</>
+              ) : (
+                <><Send className="w-4 h-4 mr-2" /> 한 줄로 저장하기</>
+              )}
+            </Button>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </motion.div>
   );
 }

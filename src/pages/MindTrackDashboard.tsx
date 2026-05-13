@@ -513,7 +513,7 @@ export default function MindTrackDashboard() {
         </section>
 
         {/* 마음 컨디션 점수 — 단일 결과 숫자 (Noom-style outcome) */}
-        {userId && <MindConditionRing userId={userId} className="mb-6" />}
+        {userId && <MindConditionPanel userId={userId} className="mb-6" />}
 
         {/* 오늘 도착한 코칭 메일 — DB의 박사급 콘텐츠 그대로 노출 */}
         <TodayCoachingEmailContent />

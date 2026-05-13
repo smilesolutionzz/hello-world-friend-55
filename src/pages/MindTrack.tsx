@@ -858,7 +858,7 @@ const MindTrack: React.FC = () => {
           </div>
         </section>
 
-        {/* 고민 리포트 결과 */}
+        {/* 짧은 리포트 + TOP 3 트랙 추천 */}
         <AnimatePresence>
           {report && (
             <motion.section
@@ -870,129 +870,172 @@ const MindTrack: React.FC = () => {
               className="px-4 pb-16"
             >
               <div className="max-w-3xl mx-auto space-y-5">
-                {/* Summary */}
-                <Card className="border-blue-100 shadow-md">
-                  <CardContent className="p-6 md:p-7 space-y-4">
+                {/* 컴팩트 리포트 */}
+                <Card className="border-slate-100 shadow-md bg-white rounded-3xl">
+                  <CardContent className="p-6 md:p-7 space-y-5">
                     <div className="flex items-center gap-2">
                       <Heart className="w-5 h-5 text-rose-500" />
-                      <h3 className="font-bold text-slate-900 text-lg">지금 마음 들여다보기</h3>
+                      <h3 className="font-bold text-slate-900 text-lg">짧은 마음 리포트</h3>
                     </div>
-                    <p className="text-slate-700 leading-relaxed break-keep">{report.summary}</p>
-                  </CardContent>
-                </Card>
+                    <p className="text-slate-700 leading-relaxed break-keep text-sm md:text-base">
+                      {report.summary}
+                    </p>
 
-                {/* Current state bars */}
-                <Card className="border-slate-100 shadow-sm">
-                  <CardContent className="p-6 md:p-7 space-y-4">
-                    <div className="flex items-center gap-2">
-                      <BarChart3 className="w-5 h-5 text-blue-500" />
-                      <h3 className="font-bold text-slate-900 text-lg">현재 마음 상태</h3>
-                    </div>
-                    <div className="space-y-4">
+                    <div className="space-y-3 pt-1">
                       <StateBar label="스트레스 부담감" value={report.currentState.stress} color="rose" inverse />
                       <StateBar label="마음의 에너지" value={report.currentState.energy} color="amber" />
                       <StateBar label="생각의 명료함" value={report.currentState.clarity} color="emerald" />
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-2">
-                      ※ 셀프 리포트 기반 추정치. 의료적 진단이 아니에요.
+
+                    {((report.rootCauses?.length ?? 0) > 0 || (report.quickActions?.length ?? 0) > 0) && (
+                      <Accordion type="multiple" className="border-t border-slate-100 pt-2">
+                        {report.rootCauses?.length > 0 && (
+                          <AccordionItem value="causes" className="border-b-0">
+                            <AccordionTrigger className="text-sm font-semibold text-slate-700 hover:no-underline py-2">
+                              <span className="flex items-center gap-2">
+                                <Lightbulb className="w-4 h-4 text-amber-500" />
+                                짚어볼 만한 원인 {report.rootCauses.length}가지
+                              </span>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <ul className="space-y-2 pt-1">
+                                {report.rootCauses.map((c, i) => (
+                                  <li key={i} className="flex gap-2 text-slate-700 text-sm leading-relaxed">
+                                    <span className="text-amber-500 font-bold flex-shrink-0">{i + 1}.</span>
+                                    <span className="break-keep">{c}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </AccordionContent>
+                          </AccordionItem>
+                        )}
+                        {report.quickActions?.length > 0 && (
+                          <AccordionItem value="actions" className="border-b-0">
+                            <AccordionTrigger className="text-sm font-semibold text-slate-700 hover:no-underline py-2">
+                              <span className="flex items-center gap-2">
+                                <Zap className="w-4 h-4 text-emerald-600" />
+                                오늘 바로 해볼 수 있는 것 {report.quickActions.length}가지
+                              </span>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <ul className="space-y-2.5 pt-1">
+                                {report.quickActions.map((a, i) => (
+                                  <li key={i} className="flex gap-2.5 text-slate-700 text-sm leading-relaxed">
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                                    <span className="break-keep">{a}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </AccordionContent>
+                          </AccordionItem>
+                        )}
+                      </Accordion>
+                    )}
+
+                    <p className="text-[11px] text-slate-400">
+                      ※ 셀프 리포트 기반 추정치예요. 의료적 진단이 아닙니다.
                     </p>
                   </CardContent>
                 </Card>
 
-                {/* Root causes */}
-                {report.rootCauses?.length > 0 && (
-                  <Card className="border-slate-100 shadow-sm">
-                    <CardContent className="p-6 md:p-7 space-y-4">
-                      <div className="flex items-center gap-2">
-                        <Lightbulb className="w-5 h-5 text-amber-500" />
-                        <h3 className="font-bold text-slate-900 text-lg">짚어볼 만한 원인</h3>
+                {/* TOP 3 트랙 추천 */}
+                {(() => {
+                  const matchedId = report.trackRecommendation.matchedGoal as MindTrackFocusId;
+                  const matched = focusGoals.find((g) => g.id === matchedId);
+                  // 1순위 매칭 트랙의 concern 태그를 시드로 유사 트랙 추출
+                  const seedConcerns = TRACK_TAGS[matchedId]?.concern ?? [];
+                  const others = recommendTracks({ riskConcerns: seedConcerns }, 5)
+                    .filter((r) => r.trackId !== matchedId)
+                    .slice(0, 2)
+                    .map((r) => focusGoals.find((g) => g.id === r.trackId))
+                    .filter(Boolean) as typeof focusGoals;
+
+                  const handlePick = (id: string) => {
+                    setSelectedGoal(id);
+                    toast.success('트랙이 선택됐어요. 하단의 시작 버튼으로 이어가세요.');
+                    document.getElementById('goal-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  };
+
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 px-1">
+                        <Target className="w-5 h-5 text-blue-600" />
+                        <h3 className="font-bold text-slate-900 text-lg">이 고민에 맞는 트랙 3가지</h3>
                       </div>
-                      <ul className="space-y-2">
-                        {report.rootCauses.map((c, i) => (
-                          <li key={i} className="flex gap-2 text-slate-700 text-sm leading-relaxed">
-                            <span className="text-amber-500 font-bold flex-shrink-0">{i + 1}.</span>
-                            <span className="break-keep">{c}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                )}
 
-                {/* Quick actions */}
-                {report.quickActions?.length > 0 && (
-                  <Card className="border-emerald-100 shadow-sm bg-emerald-50/30">
-                    <CardContent className="p-6 md:p-7 space-y-4">
-                      <div className="flex items-center gap-2">
-                        <Zap className="w-5 h-5 text-emerald-600" />
-                        <h3 className="font-bold text-slate-900 text-lg">오늘 바로 해볼 수 있는 것</h3>
-                      </div>
-                      <ul className="space-y-2.5">
-                        {report.quickActions.map((a, i) => (
-                          <li key={i} className="flex gap-2.5 text-slate-700 text-sm leading-relaxed">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                            <span className="break-keep">{a}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                )}
+                      {/* 1순위 — 큰 카드 */}
+                      {matched && (
+                        <Card className="border-2 border-blue-200 shadow-md bg-white rounded-3xl">
+                          <CardContent className="p-5 md:p-6 space-y-4">
+                            <div className="flex items-start gap-3">
+                              <div className="text-3xl flex-shrink-0">{matched.icon}</div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <Badge className="bg-blue-600 text-white text-[10px]">1순위 · 가장 잘 맞아요</Badge>
+                                </div>
+                                <div className="font-bold text-slate-900 mt-1.5">{matched.title}</div>
+                                <div className="text-xs text-slate-500 mt-0.5 break-keep">{matched.desc}</div>
+                              </div>
+                            </div>
 
-                {/* Track recommendation */}
-                <Card className="border-2 border-blue-200 shadow-xl bg-gradient-to-br from-blue-50 to-purple-50">
-                  <CardContent className="p-6 md:p-8 space-y-4">
-                    <div className="flex items-center gap-2">
-                      <Target className="w-5 h-5 text-blue-600" />
-                      <h3 className="font-bold text-slate-900 text-lg">
-                        이 고민에 딱 맞는 30일 트랙
-                      </h3>
-                    </div>
+                            <div className="text-sm text-slate-700 leading-relaxed break-keep bg-slate-50 rounded-2xl p-3">
+                              <span className="font-semibold text-slate-900">매칭 이유 · </span>
+                              {report.trackRecommendation.reason}
+                            </div>
 
-                    {recommendedGoal && (
-                      <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-blue-100">
-                        <div className="text-3xl">{recommendedGoal.icon}</div>
-                        <div>
-                          <div className="font-bold text-slate-900">{recommendedGoal.title}</div>
-                          <div className="text-xs text-slate-500">{recommendedGoal.desc}</div>
+                            <Button
+                              onClick={() => handlePick(matched.id)}
+                              className="w-full h-12 rounded-xl bg-slate-900 hover:bg-slate-800 font-bold"
+                            >
+                              이 트랙 선택하기
+                              <ArrowRight className="w-4 h-4 ml-2" />
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* 2~3순위 — 컴팩트 카드 */}
+                      {others.length > 0 && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {others.map((g, i) => (
+                            <button
+                              key={g.id}
+                              onClick={() => handlePick(g.id)}
+                              className="text-left bg-white border border-slate-200 hover:border-slate-400 rounded-2xl p-4 transition-all"
+                            >
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="text-[10px] text-slate-500 font-semibold">{i + 2}순위</span>
+                              </div>
+                              <div className="flex items-start gap-3">
+                                <div className="text-2xl flex-shrink-0">{g.icon}</div>
+                                <div className="min-w-0">
+                                  <div className="font-bold text-slate-900 text-sm">{g.title}</div>
+                                  <div className="text-xs text-slate-500 mt-0.5 break-keep line-clamp-2">{g.desc}</div>
+                                </div>
+                              </div>
+                              <div className="mt-3 text-xs text-blue-600 font-semibold flex items-center gap-1">
+                                선택하기 <ArrowRight className="w-3 h-3" />
+                              </div>
+                            </button>
+                          ))}
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    <div className="space-y-3 text-sm">
-                      <div>
-                        <div className="font-semibold text-slate-900 mb-1">왜 이 트랙인가요?</div>
-                        <p className="text-slate-700 leading-relaxed break-keep">
-                          {report.trackRecommendation.reason}
-                        </p>
-                      </div>
-                      <div>
-                        <div className="font-semibold text-slate-900 mb-1">30일 후, 기대되는 변화</div>
-                        <p className="text-slate-700 leading-relaxed break-keep">
-                          {report.trackRecommendation.expectedChange}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="pt-2 flex items-center justify-between flex-wrap gap-3">
-                      <div>
-                        <div className="text-2xl font-bold text-slate-900">₩{TRACK_PRICE.toLocaleString()}</div>
-                        <div className="text-xs text-slate-500 line-through">₩{TRACK_ORIGINAL_PRICE.toLocaleString()} · {REFUND_WINDOW_DAYS}일 환불</div>
-                      </div>
-                      <Button
+                      <button
+                        type="button"
                         onClick={() => {
-                          document.getElementById('goal-section')?.scrollIntoView({
-                            behavior: 'smooth', block: 'start',
-                          });
+                          setAdvancedOpen(true);
+                          setTimeout(() => {
+                            document.getElementById('goal-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          }, 50);
                         }}
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-12 px-6 rounded-xl font-bold"
+                        className="w-full text-xs text-slate-500 hover:text-slate-700 underline underline-offset-2 py-2"
                       >
-                        30일 트랙으로 이어가기
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
+                        다른 트랙도 모두 보기 →
+                      </button>
                     </div>
-                  </CardContent>
-                </Card>
+                  );
+                })()}
               </div>
             </motion.section>
           )}

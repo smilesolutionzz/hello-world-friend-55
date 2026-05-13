@@ -652,7 +652,13 @@ export default function MindTrackDashboard() {
                 })}
               </div>
               <div className="flex items-center gap-3 text-[10px] text-slate-500 pt-1">
-                <span className="inline-flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" />완료</span>
+                <span className="inline-flex items-center gap-1">
+                  <span
+                    className="inline-flex items-center justify-center rounded-full font-extrabold"
+                    style={{ width: 14, height: 14, border: "1.5px solid #d63b3b", color: "#d63b3b", fontSize: 6, fontFamily: "'Instrument Serif', serif", transform: "rotate(-14deg)" }}
+                  >완료</span>
+                  완료
+                </span>
                 <span className="inline-flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-[#1a1a1a]" />오늘</span>
                 <span className="inline-flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-slate-100" />지난 일차</span>
               </div>

@@ -103,6 +103,7 @@ export default function MindTrackDashboard() {
         return;
       }
       setEnrollment(data as Enrollment);
+      setUserId(user.id);
       setAuthChecking(false);
     })();
     return () => {

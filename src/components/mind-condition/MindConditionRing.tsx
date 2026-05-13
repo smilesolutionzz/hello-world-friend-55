@@ -195,8 +195,18 @@ export default function MindConditionRing({ userId, className, onDimensionClick 
             <div className="space-y-2.5">
               {Object.entries(DIM_LABELS).map(([key, label]) => {
                 const v = Number(dims[key] ?? 0);
+                const Tag: any = onDimensionClick ? "button" : "div";
                 return (
-                  <div key={key} className="flex items-center gap-3">
+                  <Tag
+                    key={key}
+                    type={onDimensionClick ? "button" : undefined}
+                    onClick={onDimensionClick ? () => onDimensionClick(key) : undefined}
+                    className={cn(
+                      "flex items-center gap-3 w-full text-left",
+                      onDimensionClick && "hover:opacity-80 transition-opacity cursor-pointer",
+                    )}
+                    aria-label={onDimensionClick ? `${label} 자세히 보기` : undefined}
+                  >
                     <span className="text-xs text-neutral-600 w-16 shrink-0">{label}</span>
                     <div className="flex-1 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
                       <motion.div
@@ -207,7 +217,7 @@ export default function MindConditionRing({ userId, className, onDimensionClick 
                       />
                     </div>
                     <span className="text-xs tabular-nums text-neutral-700 w-8 text-right">{v}</span>
-                  </div>
+                  </Tag>
                 );
               })}
             </div>

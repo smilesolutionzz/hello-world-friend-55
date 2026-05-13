@@ -1276,6 +1276,12 @@ const MindTrack: React.FC = () => {
       />
 
       {/* 타이밍 기반 전문가 연결 자동 제안 — 셀프체크/리포트/이탈 신호를 보고 알아서 권유 */}
+      <StickyTrackCTA
+        selectedGoal={selectedGoal}
+        loading={loading}
+        onStart={handleStart}
+      />
+
       <SmartExpertSuggestion
         selfCheckLevel={selfCheckLevel}
         selfCheckGoalId={selfCheckGoalId}

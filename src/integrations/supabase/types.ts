@@ -8659,6 +8659,39 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_condition_scores: {
+        Row: {
+          created_at: string
+          dimensions: Json
+          id: string
+          note: string | null
+          recorded_at: string
+          score: number
+          source: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dimensions?: Json
+          id?: string
+          note?: string | null
+          recorded_at?: string
+          score: number
+          source?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dimensions?: Json
+          id?: string
+          note?: string | null
+          recorded_at?: string
+          score?: number
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mind_track_baseline_assessments: {
         Row: {
           ai_interpretation: string | null
@@ -15274,6 +15307,10 @@ export type Database = {
       calculate_daily_reward_points: {
         Args: { p_entry_date: string; p_user_id: string }
         Returns: number
+      }
+      calculate_mind_condition_score: {
+        Args: { p_user_id: string }
+        Returns: Json
       }
       calculate_weekly_brain_stats: {
         Args: { p_user_id: string; p_week_start: string }

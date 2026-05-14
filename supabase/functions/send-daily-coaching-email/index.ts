@@ -424,12 +424,14 @@ serve(async (req) => {
     let testEmail: string | undefined;
     let testUserId: string | undefined;
     let testDay: number | undefined;
+    let testCategoryParam: string | undefined;
     try {
       if (req.method === "POST") {
         const body = await req.json();
         testEmail = body?.test_email;
         testUserId = body?.test_user_id;
         testDay = typeof body?.test_day === 'number' ? body.test_day : undefined;
+        testCategoryParam = typeof body?.test_category === 'string' ? body.test_category : undefined;
       }
     } catch { /* no body */ }
 

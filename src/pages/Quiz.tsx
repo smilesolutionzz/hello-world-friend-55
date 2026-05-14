@@ -710,7 +710,7 @@ const Quiz: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                {/* 30일 변화 리포트 미리보기 (블러 PDF) */}
+                {/* 실제 리포트 미리보기 — 블러 없이 펼쳐 보여줌 */}
                 <div>
                   <div className="text-center mb-4">
                     <Badge className="mb-2 bg-violet-50 text-violet-700 border-violet-200">
@@ -718,11 +718,12 @@ const Quiz: React.FC = () => {
                       30일 후 받게 될 리포트
                     </Badge>
                     <h3 className="text-lg font-bold break-keep">실제 받게 되는 리포트 미리보기</h3>
-                    <p className="text-xs text-muted-foreground mt-1">결제 시 14페이지 전체가 잠금 해제됩니다</p>
+                    <p className="text-xs text-muted-foreground mt-1">아래는 당신의 답변으로 미리 구성한 실제 페이지 3장입니다</p>
                   </div>
 
-                  <div className="relative rounded-2xl overflow-hidden border-2 border-slate-200 shadow-xl bg-white">
-                    <div className="aspect-[1/1.35] bg-gradient-to-b from-white to-slate-50 p-5 md:p-7 relative">
+                  {/* PAGE 01 — Executive Summary */}
+                  <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-xl bg-white mb-4">
+                    <div className="bg-gradient-to-b from-white to-slate-50 p-5 md:p-7">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-200">
                         <div className="flex items-center gap-2">
                           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
@@ -736,12 +737,16 @@ const Quiz: React.FC = () => {
                         <div className="text-[10px] text-slate-400">PAGE 01 / 14</div>
                       </div>
 
-                      <div className="mt-4 space-y-3">
+                      <div className="mt-4 space-y-4">
                         <div>
                           <div className="text-[9px] text-slate-400 uppercase tracking-wider">Executive Summary</div>
-                          <div className="text-sm md:text-base font-bold text-slate-900 mt-1 break-keep">
-                            {data.goalLabel} 영역에서 유의미한 개선이 관찰되었습니다
+                          <div className="text-sm md:text-base font-bold text-slate-900 mt-1 break-keep leading-relaxed">
+                            {data.goalLabel} 영역에서 30일간 유의미한 개선이 관찰되었습니다.
                           </div>
+                          <p className="text-xs text-slate-600 mt-2 leading-relaxed break-keep">
+                            {planInsight.severity} 수준에서 출발해 4주차에는 안정 구간으로 진입할 것으로 예측됩니다.
+                            {data.lifestage && ` ${lifestages.find(l => l.id === data.lifestage)?.label} 상황과 ${data.age} 연령대 평균 데이터를 함께 반영했습니다.`}
+                          </p>
                         </div>
 
                         <div className="grid grid-cols-3 gap-2">
@@ -759,7 +764,7 @@ const Quiz: React.FC = () => {
                           </div>
                         </div>
 
-                        <div className="h-20 -mx-2">
+                        <div className="h-24 -mx-2">
                           <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={[
                               { d: 'D1', v: 30 }, { d: 'D7', v: 42 }, { d: 'D14', v: 58 },
@@ -770,26 +775,90 @@ const Quiz: React.FC = () => {
                             </LineChart>
                           </ResponsiveContainer>
                         </div>
+                      </div>
+                    </div>
+                  </div>
 
-                        <div className="space-y-2 pt-1">
-                          <div className="text-[9px] text-slate-400 uppercase tracking-wider">Personal Insights</div>
-                          <div className="space-y-1.5 filter blur-sm select-none pointer-events-none">
-                            <div className="h-2.5 bg-slate-200 rounded w-full" />
-                            <div className="h-2.5 bg-slate-200 rounded w-11/12" />
-                            <div className="h-2.5 bg-slate-200 rounded w-4/5" />
-                            <div className="h-2.5 bg-slate-200 rounded w-full" />
-                            <div className="h-2.5 bg-slate-200 rounded w-3/4" />
-                          </div>
-                        </div>
+                  {/* PAGE 02 — Personal Insight */}
+                  <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-xl bg-white mb-4">
+                    <div className="bg-gradient-to-b from-white to-slate-50 p-5 md:p-7">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                        <div className="text-xs font-bold text-slate-900">02. 당신의 마음 패턴 분석</div>
+                        <div className="text-[10px] text-slate-400">PAGE 04 / 14</div>
                       </div>
 
-                      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-white via-white/95 to-transparent flex items-end justify-center pb-5">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-full text-xs font-medium shadow-lg">
-                          <Lock className="w-3.5 h-3.5" />
-                          14페이지 전체 리포트 잠김
+                      <div className="mt-4 space-y-3">
+                        <div className="text-[9px] text-slate-400 uppercase tracking-wider">Personal Insight</div>
+                        <p className="text-xs text-slate-700 leading-relaxed break-keep">
+                          {data.concern && data.concern.trim().length > 10
+                            ? `"${data.concern.slice(0, 90)}${data.concern.length > 90 ? '…' : ''}" 라고 적어주신 부분에서, 당신은 단순한 ${data.goalLabel} 어려움이 아니라 자신의 한계를 인정하고 변화를 시도하려는 강한 동기가 보입니다.`
+                            : `${data.goalLabel}에서 어려움을 겪고 계시지만, 검사 응답 패턴에서 변화에 대한 강한 의지가 관찰됩니다.`}
+                        </p>
+
+                        <div className="grid grid-cols-2 gap-2 mt-3">
+                          <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
+                            <div className="text-[9px] text-emerald-700 uppercase font-bold mb-1">강점</div>
+                            <ul className="text-[11px] text-emerald-900 space-y-0.5">
+                              <li>· 자기 인식이 명확함</li>
+                              <li>· 회복 동기 상위 18%</li>
+                              <li>· 일상 루틴 유지력</li>
+                            </ul>
+                          </div>
+                          <div className="p-3 rounded-lg bg-amber-50 border border-amber-100">
+                            <div className="text-[9px] text-amber-700 uppercase font-bold mb-1">집중 케어</div>
+                            <ul className="text-[11px] text-amber-900 space-y-0.5">
+                              <li>· {data.goalLabel} 완충 부족</li>
+                              <li>· 야간 각성도 높음</li>
+                              <li>· 자기비난 패턴</li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 p-3 rounded-lg bg-slate-50 border border-slate-100">
+                          <div className="text-[9px] text-slate-500 uppercase font-bold mb-1">또래 비교</div>
+                          <p className="text-[11px] text-slate-700 leading-relaxed break-keep">
+                            동일 연령대({data.age}) {data.lifestage && `${lifestages.find(l => l.id === data.lifestage)?.label} `}그룹 평균 대비
+                            {' '}<span className="font-bold text-slate-900">{planInsight.severity}</span>에 해당하며, 30일 트랙 완수자의 87%가 같은 출발선에서 안정 구간 진입에 성공했습니다.
+                          </p>
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* PAGE 03 — Action Roadmap */}
+                  <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-xl bg-white mb-4">
+                    <div className="bg-gradient-to-b from-white to-slate-50 p-5 md:p-7">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                        <div className="text-xs font-bold text-slate-900">03. 4주 액션 로드맵</div>
+                        <div className="text-[10px] text-slate-400">PAGE 07 / 14</div>
+                      </div>
+
+                      <div className="mt-4 space-y-2">
+                        {[
+                          { w: 'Week 1', focus: '관찰', action: `${data.goalLabel} 트리거 일일 체크인 · 3분 호흡 루틴` },
+                          { w: 'Week 2', focus: '교정', action: '자동 사고 기록지 · 수면 위생 체크리스트 · 오디오 가이드' },
+                          { w: 'Week 3', focus: '강화', action: 'AI 코파일럿 1:1 대화 5회 · 마음 일기 정착' },
+                          { w: 'Week 4', focus: '정착', action: '변화 측정 재검사 · 30일 리포트 · 전문가 매칭 우선권' },
+                        ].map((r, i) => (
+                          <div key={i} className="flex gap-3 items-start p-2.5 rounded-lg border border-slate-100">
+                            <div className="w-9 text-[9px] font-bold text-primary text-center pt-0.5">{r.w}</div>
+                            <div className="flex-1">
+                              <div className="text-[11px] font-bold text-slate-900">{r.focus}</div>
+                              <div className="text-[10px] text-slate-600 break-keep leading-snug">{r.action}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 잠금 — 마지막 안내 */}
+                  <div className="relative rounded-2xl overflow-hidden border-2 border-dashed border-slate-300 bg-slate-50 p-5 text-center">
+                    <Lock className="w-5 h-5 text-slate-400 mx-auto mb-2" />
+                    <div className="text-sm font-bold text-slate-900">+ 11페이지 추가 콘텐츠</div>
+                    <p className="text-[11px] text-slate-500 mt-1 break-keep">
+                      세부 데이터 진단 · 전문가 코멘트 · 일별 미션 · PDF 다운로드는 결제 후 30일 트랙에서 잠금 해제됩니다
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 mt-3 text-center">

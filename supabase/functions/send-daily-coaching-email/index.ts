@@ -589,18 +589,27 @@ serve(async (req) => {
 
     if (testEmail) {
       const day = testDay && testDay > 0 ? testDay : 7;
+      let testCategory: string = 'stress';
+      try {
+        if (req.method === 'POST') {
+          // re-read body safely; req.json() already consumed earlier so use stored value
+        }
+      } catch {}
+      // pull category from already-parsed body if present
+      const bodyCat = (typeof (globalThis as any).__lastBody === 'object' && (globalThis as any).__lastBody?.test_category) || undefined;
+      if (bodyCat && CATEGORY_META[bodyCat]) testCategory = bodyCat;
       const sampleGoal: GoalRow = {
-        id: "test", user_id: "test", goal_category: "stress", goal_description: null,
+        id: "test", user_id: "test", goal_category: testCategory, goal_description: null,
         target_age_group: null, current_day: day - 1, total_days: 30, start_date: todayStr,
       };
-      const meta = CATEGORY_META.stress;
+      const meta = CATEGORY_META[testCategory] || CATEGORY_META.stress;
       const content = await generateCoachingContent(sampleGoal);
       const prefs: VideoPreferences = { interest_topics: [], difficulty_level: "beginner", preferred_duration: "short", language: "ko" };
       const videos = await fetchYouTubeVideos(sampleGoal.goal_category, content.mission, new Set(), prefs);
       const result = await callTransactionalEmail({
         templateName: 'daily-coaching',
         recipientEmail: testEmail,
-        idempotencyKey: `daily-coaching-test-d${day}-${Date.now()}`,
+        idempotencyKey: `daily-coaching-test-${testCategory}-d${day}-${Date.now()}`,
         templateData: {
           nickname: '테스트', dayNumber: day, totalDays: 30,
           categoryLabel: meta.label,
@@ -616,7 +625,7 @@ serve(async (req) => {
         },
       });
       if (!result.ok) throw new Error(result.error);
-      return new Response(JSON.stringify({ success: true, mode: 'test', to: testEmail, day, videoCount: videos.length, body: result.body }),
+      return new Response(JSON.stringify({ success: true, mode: 'test', to: testEmail, day, category: testCategory, videoCount: videos.length, body: result.body }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 

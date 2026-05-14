@@ -59,6 +59,31 @@ const DURATION_LIMITS: Record<string, number> = {
   long: 45 * 60,
 };
 
+// Module-level text sanitizer: strip surrogates, variation selectors, ZWJ, FFFD,
+// emojis & smart quotes/whitespace cleanup. Mirrors AI-output sanitize().
+function sanitizeText(s: any): string {
+  let out = String(s ?? "");
+  try {
+    out = out.replace(/\p{Extended_Pictographic}/gu, "");
+    out = out.replace(/[\u{1F300}-\u{1FAFF}]/gu, "");
+    out = out.replace(/[\u{2600}-\u{27BF}]/gu, "");
+  } catch (_) { /* ignore */ }
+  out = out
+    .replace(/[\uD800-\uDFFF]/g, "")
+    .replace(/[\uFE00-\uFE0F]/g, "")
+    .replace(/\u200D/g, "")
+    .replace(/\uFFFD/g, "")
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/\s+/g, " ")
+    .trim();
+  return out;
+}
+
+function countFFFD(s: any): number {
+  return (String(s ?? "").match(/\uFFFD/g) || []).length;
+}
+
 function parseISO8601Duration(iso: string): number {
   const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if (!m) return 0;
@@ -146,10 +171,10 @@ async function fetchYouTubeVideos(
     const score = viewScore + durationBonus;
     scored.push({
       videoId: id,
-      title: item.snippet.title,
-      channelTitle: item.snippet.channelTitle,
+      title: sanitizeText(item.snippet.title),
+      channelTitle: sanitizeText(item.snippet.channelTitle),
       thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
-      reason: `오늘 미션 "${mission.slice(0, 28)}…"을 ${Math.round(duration / 60)}분 안에 익히도록 도와주는 ${term} 가이드`,
+      reason: sanitizeText(`오늘 미션 "${mission.slice(0, 28)}…"을 ${Math.round(duration / 60)}분 안에 익히도록 도와주는 ${term} 가이드`),
       viewCount: views,
       durationSeconds: duration,
       score,
@@ -452,24 +477,46 @@ serve(async (req) => {
         const trackingToken = crypto.randomUUID().replace(/-/g, '');
         const dataWithToken = { ...templateData, trackingToken };
 
-        const html = await renderAsync(
+        // 필드별 FFFD 카운트 (회귀 시 즉시 원인 파악용)
+        const fieldFFFD: Record<string, number> = {
+          mission: countFFFD(templateData.mission),
+          missionSummary: countFFFD(templateData.missionSummary),
+          insight: countFFFD(templateData.insight),
+          whyToday: countFFFD(templateData.whyToday),
+          eveningReflection: countFFFD(templateData.eveningReflection),
+          videoTitles: (templateData.videos || []).reduce((s: number, v: any) => s + countFFFD(v?.title), 0),
+          videoChannels: (templateData.videos || []).reduce((s: number, v: any) => s + countFFFD(v?.channelTitle), 0),
+          videoReasons: (templateData.videos || []).reduce((s: number, v: any) => s + countFFFD(v?.reason), 0),
+        };
+
+        let html = await renderAsync(
           React.createElement(dailyCoachingTpl.component, dataWithToken)
         );
 
-        // 렌더 결과 검증 (??/04 섹션 노출 여부)
+        // 최종 안전망: 어떤 경로로 들어왔든 발송 전 FFFD 제거
+        const ufffdCountBefore = (html.match(/\uFFFD/g) || []).length;
+        if (ufffdCountBefore > 0) {
+          log('FFFD final strip', { recipientEmail, removed: ufffdCountBefore, fieldFFFD });
+          html = html.replace(/\uFFFD/g, '');
+        }
+
+        // 렌더 결과 검증 (섹션 번호 갱신: 05/07/09)
         const ufffdCount = (html.match(/\uFFFD/g) || []).length;
         const qqCount = (html.match(/\?\?/g) || []).length;
         const hasReplacementChar = ufffdCount > 0 || qqCount > 0;
-        const hasSection04 = /04 · 오늘의 추천 영상/.test(html);
-        const hasSection03 = /03 · 임상적 근거/.test(html);
-        const hasSection05 = /05 · 오늘의 기록/.test(html);
+        const hasSection07 = /07 · 오늘의 추천 영상/.test(html);
+        const hasSection05 = /05 · 임상적 근거/.test(html);
+        const hasSection09 = /09 · 오늘의 기록/.test(html);
+        // backwards-compat alias for downstream code/log fields
+        const hasSection03 = hasSection05;
+        const hasSection04 = hasSection07;
         const renderIssues: string[] = [];
+        if (ufffdCountBefore > 0) renderIssues.push(`ufffd_pre:${ufffdCountBefore}`);
         if (ufffdCount > 0) renderIssues.push(`ufffd:${ufffdCount}`);
         if (qqCount > 0) renderIssues.push(`qq:${qqCount}`);
-        if (!hasSection03) renderIssues.push('missing_section_03');
-        if (!hasSection04) renderIssues.push('missing_section_04');
         if (!hasSection05) renderIssues.push('missing_section_05');
-        // ?? / U+FFFD 발견 시 주변 컨텍스트 추출 (디버깅)
+        if (!hasSection07) renderIssues.push('missing_section_07');
+        if (!hasSection09) renderIssues.push('missing_section_09');
         let qqSamples: string[] = [];
         if (qqCount > 0) {
           const re = /.{0,40}\?\?.{0,40}/g;
@@ -480,7 +527,7 @@ serve(async (req) => {
           const re2 = /.{0,40}\uFFFD.{0,40}/g;
           ufffdSamples = (html.match(re2) || []).slice(0, 5);
         }
-        log('render check', { recipientEmail, ufffdCount, qqCount, hasSection03, hasSection04, hasSection05, qqSamples, ufffdSamples });
+        log('render check', { recipientEmail, ufffdCountBefore, ufffdCount, qqCount, hasSection05, hasSection07, hasSection09, fieldFFFD, qqSamples, ufffdSamples });
 
         await supa.from('daily_coaching_email_tokens').insert({
           token: trackingToken,
@@ -488,7 +535,7 @@ serve(async (req) => {
           send_log_message_id: idempotencyKey,
           day_number: templateData.dayNumber ?? null,
           category: templateData.categoryLabel ?? null,
-          has_section_04: hasSection04,
+          has_section_04: hasSection07,
           has_replacement_char: hasReplacementChar,
           render_issues: renderIssues,
         }).then(() => {}, (e) => log('token insert failed', { err: String(e) }));

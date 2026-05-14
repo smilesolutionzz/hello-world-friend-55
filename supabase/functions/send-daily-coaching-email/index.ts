@@ -591,15 +591,7 @@ serve(async (req) => {
 
     if (testEmail) {
       const day = testDay && testDay > 0 ? testDay : 7;
-      let testCategory: string = 'stress';
-      try {
-        if (req.method === 'POST') {
-          // re-read body safely; req.json() already consumed earlier so use stored value
-        }
-      } catch {}
-      // pull category from already-parsed body if present
-      const bodyCat = (typeof (globalThis as any).__lastBody === 'object' && (globalThis as any).__lastBody?.test_category) || undefined;
-      if (bodyCat && CATEGORY_META[bodyCat]) testCategory = bodyCat;
+      const testCategory = (testCategoryParam && CATEGORY_META[testCategoryParam]) ? testCategoryParam : 'stress';
       const sampleGoal: GoalRow = {
         id: "test", user_id: "test", goal_category: testCategory, goal_description: null,
         target_age_group: null, current_day: day - 1, total_days: 30, start_date: todayStr,

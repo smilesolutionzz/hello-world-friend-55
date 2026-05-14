@@ -1058,6 +1058,9 @@ const Quiz: React.FC = () => {
                   </CardContent>
                 </Card>
 
+                {/* Soft Funnel CTA — 결제 거부감 완화용 보조 옵션 */}
+                <QuizSoftFunnelCTA goalLabel={data.goalLabel} concern={data.concern} />
+
                 <div className="text-center text-xs text-muted-foreground">
                   ※ 본 플랜은 의료 진단이 아니며, 비임상 라이프스타일 코칭을 위한 자료입니다.
                 </div>

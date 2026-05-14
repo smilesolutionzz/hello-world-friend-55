@@ -59,6 +59,31 @@ const DURATION_LIMITS: Record<string, number> = {
   long: 45 * 60,
 };
 
+// Module-level text sanitizer: strip surrogates, variation selectors, ZWJ, FFFD,
+// emojis & smart quotes/whitespace cleanup. Mirrors AI-output sanitize().
+function sanitizeText(s: any): string {
+  let out = String(s ?? "");
+  try {
+    out = out.replace(/\p{Extended_Pictographic}/gu, "");
+    out = out.replace(/[\u{1F300}-\u{1FAFF}]/gu, "");
+    out = out.replace(/[\u{2600}-\u{27BF}]/gu, "");
+  } catch (_) { /* ignore */ }
+  out = out
+    .replace(/[\uD800-\uDFFF]/g, "")
+    .replace(/[\uFE00-\uFE0F]/g, "")
+    .replace(/\u200D/g, "")
+    .replace(/\uFFFD/g, "")
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/\s+/g, " ")
+    .trim();
+  return out;
+}
+
+function countFFFD(s: any): number {
+  return (String(s ?? "").match(/\uFFFD/g) || []).length;
+}
+
 function parseISO8601Duration(iso: string): number {
   const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if (!m) return 0;

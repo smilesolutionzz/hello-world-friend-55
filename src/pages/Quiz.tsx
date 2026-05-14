@@ -33,6 +33,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { usePayment } from '@/hooks/usePayment';
 import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';
+import { QuizSoftFunnelCTA } from '@/components/quiz/QuizSoftFunnelCTA';
 
 const TRACK_PRICE = MIND_TRACK_PRICE;
 const ORIGINAL_PRICE = MIND_TRACK_ORIGINAL_PRICE;
@@ -1056,6 +1057,9 @@ const Quiz: React.FC = () => {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Soft Funnel CTA — 결제 거부감 완화용 보조 옵션 */}
+                <QuizSoftFunnelCTA goalLabel={data.goalLabel} concern={data.concern} />
 
                 <div className="text-center text-xs text-muted-foreground">
                   ※ 본 플랜은 의료 진단이 아니며, 비임상 라이프스타일 코칭을 위한 자료입니다.

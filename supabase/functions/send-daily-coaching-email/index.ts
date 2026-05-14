@@ -171,10 +171,10 @@ async function fetchYouTubeVideos(
     const score = viewScore + durationBonus;
     scored.push({
       videoId: id,
-      title: item.snippet.title,
-      channelTitle: item.snippet.channelTitle,
+      title: sanitizeText(item.snippet.title),
+      channelTitle: sanitizeText(item.snippet.channelTitle),
       thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
-      reason: `오늘 미션 "${mission.slice(0, 28)}…"을 ${Math.round(duration / 60)}분 안에 익히도록 도와주는 ${term} 가이드`,
+      reason: sanitizeText(`오늘 미션 "${mission.slice(0, 28)}…"을 ${Math.round(duration / 60)}분 안에 익히도록 도와주는 ${term} 가이드`),
       viewCount: views,
       durationSeconds: duration,
       score,

@@ -33,6 +33,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { usePayment } from '@/hooks/usePayment';
 import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';
+import { QuizSoftFunnelCTA } from '@/components/quiz/QuizSoftFunnelCTA';
 
 const TRACK_PRICE = MIND_TRACK_PRICE;
 const ORIGINAL_PRICE = MIND_TRACK_ORIGINAL_PRICE;

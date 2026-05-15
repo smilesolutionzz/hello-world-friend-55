@@ -1319,7 +1319,7 @@ const MindTrack: React.FC = () => {
                     중간에 며칠 빠지면 어떻게 되나요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    빠진 날도 ‘건너뛴 일차’로 기록만 되고 트랙은 계속 이어집니다. 7일 안에 자기 페이스로 채워가면 되고, 더 길게 이어가고 싶다면 +23일 연장권으로 30일까지 확장할 수 있어요.
+                    빠진 날도 ‘건너뛴 일차’로 기록만 되고 트랙은 계속 이어집니다. 7일 안에 자기 페이스로 채워가면 되고, 완주하면 Day 07 변화 리포트가 평생 보관돼요.
                   </AccordionContent>
                 </AccordionItem>
 

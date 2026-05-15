@@ -41,7 +41,7 @@ const StickyConversionBar = () => {
               <Sparkles className="w-5 h-5 text-amber-300" />
               <div>
                 <p className="text-white text-sm font-bold">1분 무료 마음 진단</p>
-                <p className="text-slate-400 text-xs">결과 기반 30일 마음 트랙 추천</p>
+                <p className="text-slate-400 text-xs">결과 기반 7일 마음 트랙 ₩{MIND_TRACK_7_PRICE.toLocaleString()} 추천</p>
               </div>
             </div>
 

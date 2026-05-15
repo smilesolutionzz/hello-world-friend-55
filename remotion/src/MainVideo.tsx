@@ -260,13 +260,13 @@ const Scene5: React.FC = () => {
   return (
     <AbsoluteFill style={{ fontFamily: KR_FONT, color: INK, justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
       <div style={{ opacity: a, transform: `translateY(${interpolate(a,[0,1],[20,0])}px)`, fontFamily: DISP, letterSpacing: 6, color: GOLD, fontSize: 22, fontWeight: 500 }}>
-        START YOUR 30 DAYS
+        START YOUR 7 DAYS
       </div>
       <div style={{ opacity: a, transform: `translateY(${interpolate(a,[0,1],[30,0])}px)`, marginTop: 28, fontFamily: SERIF, fontStyle: 'italic', fontSize: 96, color: INK }}>
-        오늘의 마음에서,
+        하루 7분에서,
       </div>
       <div style={{ opacity: a, transform: `translateY(${interpolate(a,[0,1],[30,0])}px)`, fontSize: 110, fontWeight: 900, letterSpacing: -4, marginTop: -6 }}>
-        내일의 변화로.
+        7일의 변화로.
       </div>
       <div style={{ width: lineW, height: 2, background: GOLD, marginTop: 50 }} />
       <div style={{ opacity: c, marginTop: 36, fontFamily: DISP, fontSize: 44, fontWeight: 700, letterSpacing: 2 }}>

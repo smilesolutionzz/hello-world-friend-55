@@ -96,8 +96,11 @@ async function loadQuizSeed(userId: string): Promise<QuizSeed> {
  * Returns the enrollment id and whether baseline scores were seeded (so
  * MindTrackStart can skip the 12-question diagnostic).
  */
+export type MindTrackPlan = '7d' | '30d';
+
 export async function ensureMindTrackEnrollment(
   overrides: QuizSeed = {},
+  plan: MindTrackPlan = '7d',
 ): Promise<EnsureResult> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { enrollmentId: null, hasBaseline: false, error: "not_authenticated" };

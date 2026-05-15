@@ -687,7 +687,7 @@ export default function MindTrackDashboard() {
                 <div className="flex items-center gap-2">
                   <Award className="w-4 h-4 text-slate-500" />
                   <h3 className="text-sm font-bold text-slate-900">시작 시점 지표</h3>
-                  <span className="text-[10px] text-slate-400">· 30일 후 비교 예정</span>
+                  <span className="text-[10px] text-slate-400">· {totalDays}일 후 비교 예정</span>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   <BaselineBar label="스트레스" value={baseline.stress ?? 0} color="bg-rose-400" />

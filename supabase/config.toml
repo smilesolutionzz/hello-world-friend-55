@@ -298,6 +298,9 @@ verify_jwt = false
 [functions.mind-track-reminder-cron]
 verify_jwt = false
 
+[functions.mind-track-milestone-cron]
+verify_jwt = false
+
 [functions.realtime-voice]
 verify_jwt = false
 

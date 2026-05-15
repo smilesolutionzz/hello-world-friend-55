@@ -94,9 +94,11 @@ export function useMindTrackDashboard() {
         const wb = wbs[0] as any;
         const hasStartedAt = !!en?.started_at;
         const startedAtIso = en?.started_at || en?.created_at || new Date().toISOString();
+        const trackType: string = (en?.track_type || "mind_7day").toLowerCase();
+        const totalDays = trackType === "mind_30day" ? 30 : 7;
         const dayDiff = utcDayDiff(startedAtIso, Date.now());
         const rawDay = dayDiff + 1;
-        const currentDay = Math.min(Math.max(rawDay, 1), 30);
+        const currentDay = Math.min(Math.max(rawDay, 1), totalDays);
 
         const [{ data: missions }, { data: checkins }] = await Promise.all([
           supabase
@@ -121,6 +123,8 @@ export function useMindTrackDashboard() {
           hasStartedAt,
           todayMission: missions ?? null,
           completed,
+          trackType,
+          totalDays,
         });
       } catch (e: any) {
         finish({ kind: "error", message: e?.message ?? "데이터를 불러오지 못했어요" });

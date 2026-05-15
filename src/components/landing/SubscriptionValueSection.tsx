@@ -37,17 +37,17 @@ const SubscriptionValueSection = () => {
   }, []);
 
   const subscriptionBenefits = isEnglish ? [
-    '30 days of unlimited in-depth assessments',
+    '7 days of unlimited in-depth assessments',
     'Unlimited expert-level AI analysis reports',
-    'Personalized 30-day mind transformation roadmap',
-    'Final transformation report (PDF) included',
-    '30-day money-back guarantee',
+    'Personalized 7-day mind kickstart roadmap',
+    '7-day completion report (PDF) included',
+    'Optional +23 day extension after Day 7',
   ] : [
-    '30일간 모든 심층 검사 무제한 이용',
+    '7일간 모든 심층 검사 무제한 이용',
     '전문가급 AI 분석 리포트 무제한',
-    '개인 맞춤 30일 마음 변화 로드맵',
-    '종료 시 변화 종합 리포트(PDF) 제공',
-    '30일 무조건 환불 보장',
+    '개인 맞춤 7일 마음 킥오프 로드맵',
+    '7일 완주 리포트(PDF) 제공',
+    '7일 완주 후 +23일 연장 옵션',
   ];
 
   const pad = (n: number) => String(n).padStart(2, '0');

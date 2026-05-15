@@ -167,7 +167,7 @@ Deno.serve(async (req) => {
         trigger_keywords: body.trigger_keywords ?? [],
         detected_score: body.detected_score ?? null,
         assessment_type: body.assessment_type ?? null,
-        matched_centers: matched,
+        matched_centers: finalMatched,
         expert_referral_url: expertUrl,
         guardian_consent: !!body.guardian_consent,
         guardian_contact_email: body.guardian_contact_email ?? null,
@@ -189,7 +189,7 @@ Deno.serve(async (req) => {
     // Audit events
     await adminClient.from('teen_risk_referral_events').insert([
       { referral_id: inserted.id, event_type: 'detected', payload: { trigger_source: body.trigger_source, risk_level: body.risk_level, score: body.detected_score ?? null }, actor_user_id: userId },
-      { referral_id: inserted.id, event_type: 'centers_matched', payload: { count: matched.length, ids: matched.map(m => m.id) }, actor_user_id: userId },
+      { referral_id: inserted.id, event_type: 'centers_matched', payload: { count: finalMatched.length, ids: finalMatched.map(m => m.id) }, actor_user_id: userId },
     ])
 
     const guardianUrl = `${SITE_URL}/g/${inserted.guardian_token}`
@@ -199,7 +199,7 @@ Deno.serve(async (req) => {
       guardian_token: inserted.guardian_token,
       guardian_url: guardianUrl,
       expert_referral_url: expertUrl,
-      matched_centers: matched,
+      matched_centers: finalMatched,
       status: inserted.status,
     }), {
       status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },

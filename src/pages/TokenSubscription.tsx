@@ -122,7 +122,7 @@ const TokenSubscription = () => {
       return;
     }
     const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
-    await ensureMindTrackEnrollment({ plan });
+    await ensureMindTrackEnrollment({}, plan);
     await pay(planInfo.productId);
   };
 

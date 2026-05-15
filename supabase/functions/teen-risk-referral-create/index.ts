@@ -92,39 +92,63 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     )
 
-    // Match centers: prefer same sigungu → same sido → 1388 fallback
+    // Nearest-center matching priority:
+    //  1) Same sigungu (closest geographic match) — Wee infrastructure first, then 1388
+    //  2) Same sido (province-level fallback) — Wee centers, then Wee classes, then 1388
+    //  3) Nationwide 1388 hotline (always-available fallback)
+    // Within each tier we prefer center types in this order:
+    //   wee_center > wee_class > wee_school > youth_counseling_1388 (for province tiers)
+    //   1388 is always appended last via fallback to guarantee an always-available channel.
+    const TYPE_PRIORITY: Record<string, number> = {
+      wee_center: 0,
+      wee_class: 1,
+      wee_school: 2,
+      youth_counseling_1388: 3,
+    }
+    const sortByType = (rows: any[]) =>
+      [...(rows ?? [])].sort((a, b) => (TYPE_PRIORITY[a.center_type] ?? 9) - (TYPE_PRIORITY[b.center_type] ?? 9))
+
     const matched: any[] = []
+    const pushUnique = (rows: any[]) => {
+      for (const r of rows) if (!matched.some((m) => m.id === r.id)) matched.push(r)
+    }
+
+    const SELECT = 'id,name,center_type,phone,region_sido,region_sigungu,address,website'
+    const MAX = 4
+
     if (body.region_sido) {
-      const sigunguQ = body.region_sigungu
-        ? adminClient.from('wee_center_directory').select('id,name,center_type,phone,region_sido,region_sigungu,address,website').eq('is_active', true).eq('region_sido', body.region_sido).eq('region_sigungu', body.region_sigungu).limit(3)
-        : null
-      if (sigunguQ) {
-        const { data } = await sigunguQ
-        if (data) matched.push(...data)
-      }
-      if (matched.length < 3) {
+      // Tier 1 — same sigungu
+      if (body.region_sigungu) {
         const { data } = await adminClient
           .from('wee_center_directory')
-          .select('id,name,center_type,phone,region_sido,region_sigungu,address,website')
+          .select(SELECT)
           .eq('is_active', true)
           .eq('region_sido', body.region_sido)
-          .is('region_sigungu', null)
-          .limit(3 - matched.length)
-        if (data) matched.push(...data)
+          .eq('region_sigungu', body.region_sigungu)
+          .limit(MAX)
+        if (data) pushUnique(sortByType(data))
+      }
+      // Tier 2 — same sido (any sigungu)
+      if (matched.length < MAX) {
+        const { data } = await adminClient
+          .from('wee_center_directory')
+          .select(SELECT)
+          .eq('is_active', true)
+          .eq('region_sido', body.region_sido)
+          .limit(MAX - matched.length + 2)
+        if (data) pushUnique(sortByType(data))
       }
     }
-    // Always include 1388 fallback
+    // Tier 3 — nationwide 1388 (always)
     const { data: fallback } = await adminClient
       .from('wee_center_directory')
-      .select('id,name,center_type,phone,region_sido,region_sigungu,address,website')
-      .eq('center_type', 'youth_counseling_1388')
+      .select(SELECT)
       .eq('is_active', true)
+      .eq('center_type', 'youth_counseling_1388')
       .limit(2)
-    if (fallback) {
-      for (const f of fallback) {
-        if (!matched.some(m => m.id === f.id)) matched.push(f)
-      }
-    }
+    if (fallback) pushUnique(fallback)
+
+    const finalMatched = matched.slice(0, MAX)
 
     const guardianToken = genToken()
     const expertUrl = `${SITE_URL}/expert-hiring?urgent=true`

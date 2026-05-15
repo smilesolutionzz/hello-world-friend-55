@@ -159,6 +159,12 @@ const FreeTrialResult = ({ result, userAge, region_sido, region_sigungu }: FreeT
       <div id="free-trial-result" className="container mx-auto px-4 max-w-4xl">
         <div className="mb-6"><CashBalanceDisplay /></div>
 
+        {teenReferral && (
+          <div className="mb-6">
+            <TeenRiskConnectCard referral={teenReferral} />
+          </div>
+        )}
+
         {hasRedFlags && (
           <div onClick={openAlert} className={`mb-6 p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-lg ${
             redFlagResult.overallSeverity === 'critical' ? 'bg-destructive/10 border-destructive animate-pulse' : 'bg-orange-50 border-orange-400'

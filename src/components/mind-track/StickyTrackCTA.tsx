@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { MIND_TRACK_FOCUSES } from '@/lib/mindTrackFocusTracks';
-import { MIND_TRACK_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 
 interface StickyTrackCTAProps {
   selectedGoal: string | null;

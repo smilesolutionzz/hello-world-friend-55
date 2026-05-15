@@ -18,8 +18,10 @@ import { template as dailyCoaching } from './daily-coaching.tsx'
 import { template as reportSummary } from './report-summary-email.tsx'
 import { template as b2bFollowupResources } from './b2b-followup-resources.tsx'
 import { template as b2bFollowupCases } from './b2b-followup-cases.tsx'
+import { template as teenRiskGuardianNotice } from './teen-risk-guardian-notice.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
+  'teen-risk-guardian-notice': teenRiskGuardianNotice,
   'report-ready-notification': reportReady,
   'mind-track-completion': mindTrackCompletion,
   'mind-track-mission': mindTrackMission,

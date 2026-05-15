@@ -59,6 +59,104 @@ const FREE_TESTS = [
   { id: 'anxiety', label: '불안 셀프체크', desc: '20문항 · 약 5분', tag: '무료' },
 ];
 
+/** 트랙별 썸네일 — 솔리드 컬러 블록 + 패턴 + 후킹 카피 (그라데이션 금지) */
+const TRACK_THUMBS: Record<string, {
+  bg: string;        // 카드 배경
+  ink: string;       // 본문 텍스트
+  sub: string;       // 서브 텍스트
+  accent: string;    // 도형 색
+  hook: string;      // 후킹 한 줄
+  tag: string;       // 우상단 태그
+  pattern: 'dots' | 'rings' | 'wave' | 'grid' | 'beam';
+}> = {
+  sleep: {
+    bg: 'bg-[#0F1B3D]', ink: 'text-white', sub: 'text-indigo-200', accent: 'bg-indigo-400/30',
+    hook: '잠 못 드는 밤, 7일 안에 끝.', tag: '수면 회복', pattern: 'rings',
+  },
+  stress: {
+    bg: 'bg-[#0E3B2E]', ink: 'text-white', sub: 'text-emerald-200', accent: 'bg-emerald-400/30',
+    hook: '꽉 막힌 가슴이 풀리는 7일.', tag: '스트레스', pattern: 'wave',
+  },
+  mood: {
+    bg: 'bg-[#3A1F0B]', ink: 'text-white', sub: 'text-amber-200', accent: 'bg-amber-400/30',
+    hook: '가라앉은 기분, 다시 떠오르게.', tag: '감정 안정', pattern: 'beam',
+  },
+  focus: {
+    bg: 'bg-[#0B2A4A]', ink: 'text-white', sub: 'text-sky-200', accent: 'bg-sky-400/30',
+    hook: '산만한 뇌, 7일이면 다릅니다.', tag: '집중력', pattern: 'grid',
+  },
+  relationship: {
+    bg: 'bg-[#3B0F1F]', ink: 'text-white', sub: 'text-rose-200', accent: 'bg-rose-400/30',
+    hook: '말 한 마디로 관계가 바뀝니다.', tag: '관계 개선', pattern: 'dots',
+  },
+  self: {
+    bg: 'bg-[#22143E]', ink: 'text-white', sub: 'text-violet-200', accent: 'bg-violet-400/30',
+    hook: '나를 가장 정확히 보는 7일.', tag: '자기 이해', pattern: 'rings',
+  },
+  parenting: {
+    bg: 'bg-[#3D0E2A]', ink: 'text-white', sub: 'text-pink-200', accent: 'bg-pink-400/30',
+    hook: '엄마·아빠의 회복이 먼저입니다.', tag: '육아 번아웃', pattern: 'wave',
+  },
+  child_development: {
+    bg: 'bg-[#0E3531]', ink: 'text-white', sub: 'text-teal-200', accent: 'bg-teal-400/30',
+    hook: '우리 아이, 지금이 결정적 시기.', tag: '아이 발달', pattern: 'grid',
+  },
+  family_communication: {
+    bg: 'bg-[#3A0E36]', ink: 'text-white', sub: 'text-fuchsia-200', accent: 'bg-fuchsia-400/30',
+    hook: '훈육 말고, 닿는 대화로.', tag: '아이와 소통', pattern: 'dots',
+  },
+};
+
+const ThumbPattern: React.FC<{ kind: TrackThumbKind; accent: string }> = ({ kind, accent }) => {
+  if (kind === 'dots') {
+    return (
+      <div className="absolute inset-0 opacity-60"
+        style={{
+          backgroundImage: 'radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1.2px)',
+          backgroundSize: '14px 14px',
+        }}
+      />
+    );
+  }
+  if (kind === 'grid') {
+    return (
+      <div className="absolute inset-0 opacity-40"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+        }}
+      />
+    );
+  }
+  if (kind === 'rings') {
+    return (
+      <>
+        <div className={`absolute -right-12 -top-12 w-44 h-44 rounded-full border ${accent} border-white/20`} />
+        <div className={`absolute -right-4 top-6 w-28 h-28 rounded-full border ${accent} border-white/20`} />
+        <div className={`absolute right-8 top-16 w-14 h-14 rounded-full ${accent}`} />
+      </>
+    );
+  }
+  if (kind === 'wave') {
+    return (
+      <svg className="absolute inset-x-0 bottom-0 w-full h-20 opacity-50" viewBox="0 0 400 80" preserveAspectRatio="none">
+        <path d="M0,40 C80,80 160,0 240,40 C320,80 400,20 400,40 L400,80 L0,80 Z" fill="rgba(255,255,255,0.18)" />
+        <path d="M0,55 C100,90 200,20 300,55 C360,75 400,40 400,55 L400,80 L0,80 Z" fill="rgba(255,255,255,0.10)" />
+      </svg>
+    );
+  }
+  // beam
+  return (
+    <>
+      <div className="absolute -left-10 -top-10 w-56 h-56 rounded-full bg-white/10 blur-2xl" />
+      <div className="absolute right-6 bottom-6 w-24 h-24 rounded-full bg-white/15 blur-xl" />
+    </>
+  );
+};
+
+type TrackThumbKind = 'dots' | 'rings' | 'wave' | 'grid' | 'beam';
+
 const POPULAR_KEYWORDS = [
   '잠이 안 와요', '번아웃', '육아 번아웃', '직장 스트레스', '관계 갈등',
   '감정 조절', '집중력 저하', '아이 발달', '자기 이해', '회복 루틴',
@@ -138,23 +236,43 @@ const InflearnStyleHubSection: React.FC = () => {
 
           {/* 트랙 카드 그리드 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tracks.map((t, i) => (
+            {tracks.map((t, i) => {
+              const thumb = TRACK_THUMBS[t.id] ?? TRACK_THUMBS.stress;
+              return (
               <button
                 key={t.id}
                 onClick={() => navigate(`/mind-track?goal=${t.id}`)}
                 className="group text-left bg-white border border-slate-200 hover:border-slate-900 rounded-2xl overflow-hidden transition-all hover:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.18)]"
               >
-                {/* 상단 비주얼 영역 */}
-                <div className="relative aspect-[16/9] bg-slate-50 flex items-center justify-center overflow-hidden">
-                  <span className="text-[64px] leading-none">{t.icon}</span>
+                {/* 상단 비주얼 — 후킹 썸네일 */}
+                <div className={`relative aspect-[16/9] ${thumb.bg} ${thumb.ink} overflow-hidden`}>
+                  <ThumbPattern kind={thumb.pattern} accent={thumb.accent} />
+
+                  <div className="absolute top-3 right-3 z-10">
+                    <span className="bg-white/15 backdrop-blur-sm border border-white/25 text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                      DAY 1–7
+                    </span>
+                  </div>
+
                   {i < 3 && (
-                    <div className="absolute top-3 left-3 inline-flex items-center gap-1 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded">
+                    <div className="absolute top-3 left-3 inline-flex items-center gap-1 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">
                       <Flame className="w-3 h-3" />
                       LIVE BEST
                     </div>
                   )}
-                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-slate-900 text-[10px] font-bold px-2 py-1 rounded-full">
-                    7 Days
+
+                  <div className="absolute inset-0 p-4 flex flex-col justify-end z-10">
+                    <div className={`text-[10px] font-bold tracking-[0.2em] uppercase mb-1.5 ${thumb.sub}`}>
+                      {thumb.tag}
+                    </div>
+                    <div className="flex items-end justify-between gap-2">
+                      <h4 className="text-[17px] md:text-[19px] font-extrabold leading-tight break-keep drop-shadow-sm">
+                        {thumb.hook}
+                      </h4>
+                      <span className="text-[40px] leading-none -mb-1 drop-shadow-md shrink-0">
+                        {t.icon}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -164,9 +282,9 @@ const InflearnStyleHubSection: React.FC = () => {
                     <Badge className={`${t.badgeClass} text-[10px] font-semibold border`}>
                       {t.category === 'family' ? '가족·아이' : '나'}
                     </Badge>
-                    <span className="text-[10px] text-slate-400">Day 01–07</span>
+                    <span className="text-[10px] text-slate-400">매일 5분 · 7일 완주</span>
                   </div>
-                  <h3 className="font-bold text-slate-900 text-base leading-snug break-keep group-hover:text-slate-900">
+                  <h3 className="font-bold text-slate-900 text-base leading-snug break-keep">
                     {t.label}
                   </h3>
                   <p className="text-xs text-slate-500 break-keep leading-relaxed line-clamp-2">
@@ -186,7 +304,8 @@ const InflearnStyleHubSection: React.FC = () => {
                   </div>
                 </div>
               </button>
-            ))}
+              );
+            })}
           </div>
         </div>
 

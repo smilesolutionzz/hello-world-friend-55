@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE, MIND_TRACK_DISCOUNT_PERCENT } from '@/constants/tokenCosts';
+import { MIND_TRACK_7_PRICE, MIND_TRACK_7_ORIGINAL_PRICE, MIND_TRACK_7_DISCOUNT_PERCENT, MIND_TRACK_PRICE } from '@/constants/tokenCosts';
 import { PaymentModal } from '@/components/payments/PaymentModal';
 
 const SubscriptionValueSection = () => {

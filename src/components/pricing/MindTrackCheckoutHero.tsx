@@ -8,10 +8,15 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import usePayment from "@/hooks/usePayment";
 import { toast } from "sonner";
+import {
+  MIND_TRACK_7_PRICE,
+  MIND_TRACK_7_ORIGINAL_PRICE,
+  MIND_TRACK_PRICE,
+} from "@/constants/tokenCosts";
 
-const TRACK_PRICE = 7900;
-const ORIGINAL_PRICE = 15800;
-const TRACK_30_PRICE = 19900;
+const TRACK_PRICE = MIND_TRACK_7_PRICE;
+const ORIGINAL_PRICE = MIND_TRACK_7_ORIGINAL_PRICE;
+const TRACK_30_PRICE = MIND_TRACK_PRICE;
 
 const goalLabels: Record<string, string> = {
   stress: "스트레스 회복",

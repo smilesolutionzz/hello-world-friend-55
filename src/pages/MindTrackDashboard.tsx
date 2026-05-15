@@ -155,12 +155,20 @@ export default function MindTrackDashboard() {
   }, []);
 
 
+  const totalDays = useMemo(() => {
+    const t = (enrollment?.track_type || "mind_7day").toLowerCase();
+    return t.includes("30") ? 30 : 7;
+  }, [enrollment?.track_type]);
+
   const day = useMemo(
-    () => (enrollment ? calcMindTrackCurrentDay(enrollment.started_at) : 1),
-    [enrollment]
+    () => (enrollment ? calcMindTrackCurrentDay(enrollment.started_at, totalDays) : 1),
+    [enrollment, totalDays]
   );
-  const copy = getDayCopy(day);
-  const progressPct = Math.round((day / 30) * 100);
+  const copy = getDayCopy(day, totalDays);
+  const progressPct = Math.round((day / totalDays) * 100);
+  const trackLabel = totalDays === 7 ? "7일 마음 트랙" : "30일 마음 트랙";
+  const isShortTrack = totalDays === 7;
+  const isFinalDay = day >= totalDays;
 
   // 첫 진입 1회 온보딩 + "오늘 다시 보지 않기" 지원
   const todayKey = () => new Date().toISOString().slice(0, 10); // YYYY-MM-DD (local-ish)

@@ -10,6 +10,7 @@ import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useRedFlagDetection } from '@/hooks/useRedFlagDetection';
 import RedFlagAlertDialog from './RedFlagAlertDialog';
+import TeenRiskConnectCard from '@/components/safety/TeenRiskConnectCard';
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -33,9 +34,13 @@ interface FreeTrialResultProps {
     averageScore?: number;
     answers?: any;
   };
+  /** 청소년(10-19) 자동 위기 연계용 */
+  userAge?: number;
+  region_sido?: string;
+  region_sigungu?: string;
 }
 
-const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
+const FreeTrialResult = ({ result, userAge, region_sido, region_sigungu }: FreeTrialResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -47,7 +52,7 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
-  const { redFlagResult, showAlert, closeAlert, openAlert, hasRedFlags } = useRedFlagDetection({
+  const { redFlagResult, showAlert, closeAlert, openAlert, hasRedFlags, teenReferral } = useRedFlagDetection({
     result: {
       level: result.level,
       description: result.description,
@@ -55,7 +60,10 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
       recommendations: result.recommendations
     },
     testType: result.testType,
-    enabled: true
+    enabled: true,
+    age: userAge,
+    region_sido,
+    region_sigungu,
   });
 
   const handleDownloadPDF = async () => {
@@ -151,6 +159,12 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
 
       <div id="free-trial-result" className="container mx-auto px-4 max-w-4xl">
         <div className="mb-6"><CashBalanceDisplay /></div>
+
+        {teenReferral && (
+          <div className="mb-6">
+            <TeenRiskConnectCard referral={teenReferral} />
+          </div>
+        )}
 
         {hasRedFlags && (
           <div onClick={openAlert} className={`mb-6 p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-lg ${

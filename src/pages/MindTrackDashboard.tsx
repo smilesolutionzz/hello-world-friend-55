@@ -832,6 +832,23 @@ export default function MindTrackDashboard() {
                   </p>
                 </details>
               ))}
+
+              {/* FAQ → 전문가 상담 예약 진입 */}
+              <div className="mt-5 pt-5 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <Button
+                  onClick={() => navigate(`/expert-hiring?from=mind_track_faq&intent=consultation&day=${day}`)}
+                  className="h-11 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold"
+                >
+                  <Calendar className="w-4 h-4 mr-2" /> 전문가 상담 예약하기
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/expert-hiring?urgent=true&from=mind_track_faq")}
+                  className="h-11 rounded-xl border-slate-300"
+                >
+                  <Phone className="w-4 h-4 mr-2" /> 긴급 1:1 즉시 매칭
+                </Button>
+              </div>
             </div>
           </div>
         </section>

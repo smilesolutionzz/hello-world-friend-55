@@ -613,7 +613,8 @@ const MindTrack: React.FC = () => {
               if (activeEnrollment && activeEnrollment.payment_status === 'paid') {
                 const day = calcMindTrackCurrentDay(activeEnrollment.started_at);
                 const copy = getDayCopy(day);
-                const progressPct = Math.round((day / 30) * 100);
+                const totalDays = TRACK_TOTAL_DAYS;
+                const progressPct = Math.round((Math.min(day, totalDays) / totalDays) * 100);
                 return (
                   <div className="bg-white rounded-3xl border border-[#C8B88A]/40 ring-1 ring-[#C8B88A]/15 shadow-sm p-6 md:p-7 space-y-4">
                     <div className="flex items-center justify-between flex-wrap gap-3">
@@ -622,7 +623,7 @@ const MindTrack: React.FC = () => {
                           진행 중
                         </Badge>
                         <span className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-                          Day {String(day).padStart(2, '0')} / 30 · {copy.phase}
+                          Day {String(day).padStart(2, '0')} / {totalDays} · {copy.phase}
                         </span>
                       </div>
                       <span className="text-xs text-foreground/60">{progressPct}% 완료</span>

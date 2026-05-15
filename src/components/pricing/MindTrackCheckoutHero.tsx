@@ -95,7 +95,7 @@ export default function MindTrackCheckoutHero() {
           <div className="flex justify-center sm:justify-start">
             <Badge className="mb-3 bg-amber-100 text-amber-800 border-amber-200">
               <Sparkles className="w-3 h-3 mr-1" />
-              30일 마음 변화 트랙
+              7일 마음 트랙 (메인)
             </Badge>
           </div>
 

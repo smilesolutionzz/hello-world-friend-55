@@ -20,8 +20,8 @@ export const MindTrack30Showcase = () => {
     },
     {
       icon: Sparkles,
-      title: "한 챕터씩 단단하게",
-      desc: "4주 마음 리포트",
+      title: "7일에 한 챕터씩",
+      desc: "완주 시 23일 연장 옵션",
     },
     {
       icon: ShieldCheck,

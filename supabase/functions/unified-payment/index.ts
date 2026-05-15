@@ -355,7 +355,7 @@ serve(async (req) => {
               .from('mind_track_enrollments')
               .insert({
                 user_id: payment.user_id,
-                track_type: 'mind_30day',
+                track_type: isMindTrack7 ? 'mind_7day' : 'mind_30day',
                 goal_focus: (onboarding as any)?.primary_goal || 'stress',
                 payment_status: 'completed',
                 payment_amount: payment.amount,
@@ -364,7 +364,7 @@ serve(async (req) => {
               })
               .select('id')
               .single();
-            console.log(`✅ Auto-created mind_track enrollment ${createdEnroll?.id}`);
+            console.log(`✅ Auto-created mind_track enrollment ${createdEnroll?.id} (${isMindTrack7 ? '7d' : '30d'})`);
           }
         }
 

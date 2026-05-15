@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 /**
  * MindTrack30Showcase
  * 메인 랜딩의 영상 섹션 — 30일 마음 트랙을 25초 영상으로 소개합니다.
- * 영상은 Remotion으로 자체 제작 (public/videos/mind-track-30.mp4).
+ * 영상은 Remotion으로 자체 제작 (public/videos/mind-track-7.mp4).
  * 가격은 src/constants/tokenCosts.ts 기준이며, 표기는 영상 내부에만 노출.
  */
 export const MindTrack30Showcase = () => {

@@ -76,17 +76,17 @@ const Scene1: React.FC = () => {
   return (
     <AbsoluteFill style={{ padding: '120px 140px', justifyContent: 'center', fontFamily: KR_FONT, color: INK }}>
       <div style={{ opacity: t1, transform: `translateY(${yA}px)`, fontFamily: DISP, letterSpacing: 4, color: GOLD, fontSize: 22, fontWeight: 500, marginBottom: 28 }}>
-        AIHPRO · MIND TRACK
+        AIHPRO · MIND TRACK 7
       </div>
       <div style={{ opacity: t2, transform: `translateY(${yB}px)`, fontFamily: SERIF, fontSize: 168, lineHeight: 1.02, letterSpacing: -2, fontStyle: 'italic' }}>
-        마음을,
+        하루 7분,
       </div>
       <div style={{ opacity: t2, transform: `translateY(${yB}px)`, fontSize: 168, lineHeight: 1.02, letterSpacing: -6, fontWeight: 900, marginTop: -12 }}>
-        데이터로 본다.
+        7일의 시작.
       </div>
       <div style={{ width: lineW, height: 2, background: GOLD, marginTop: 44 }} />
       <div style={{ opacity: t3, transform: `translateY(${yC}px)`, marginTop: 28, fontSize: 26, color: MUTED, letterSpacing: -0.5 }}>
-        전문가가 검증한 30일 마음 트랙
+        전문가가 설계한 7일 마음 트랙 · ₩7,900
       </div>
     </AbsoluteFill>
   );

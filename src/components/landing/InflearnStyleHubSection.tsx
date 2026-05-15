@@ -508,6 +508,75 @@ const InflearnStyleHubSection: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* ─── 7일 커리큘럼 미리보기 모달 ─── */}
+      <Dialog open={!!previewTrack} onOpenChange={(o) => !o && setPreviewTrack(null)}>
+        <DialogContent className="max-w-lg p-0 overflow-hidden bg-white border-slate-200">
+          {previewTrack && (() => {
+            const thumb = TRACK_THUMBS[previewTrack.id] ?? TRACK_THUMBS.stress;
+            const days = TRACK_CURRICULUM[previewTrack.id] ?? [];
+            return (
+              <>
+                <div className={`relative ${thumb.bg} ${thumb.ink} px-6 pt-6 pb-5 overflow-hidden`}>
+                  <ThumbPattern kind={thumb.pattern} accent={thumb.accent} />
+                  <div className="relative z-10">
+                    <div className={`text-[10px] font-bold tracking-[0.22em] uppercase mb-2 ${thumb.sub}`}>
+                      {thumb.tag} · 7 DAY MIND TRACK
+                    </div>
+                    <DialogHeader className="space-y-1.5">
+                      <DialogTitle className="text-2xl font-extrabold text-white break-keep">
+                        {previewTrack.label}
+                      </DialogTitle>
+                      <DialogDescription className="text-sm text-white/80 break-keep">
+                        {thumb.hook}
+                      </DialogDescription>
+                    </DialogHeader>
+                  </div>
+                </div>
+
+                <div className="px-6 py-5 max-h-[55vh] overflow-y-auto">
+                  <div className="text-[11px] font-bold tracking-[0.18em] text-slate-500 uppercase mb-3">
+                    7일 커리큘럼 미리보기
+                  </div>
+                  <ol className="space-y-2.5">
+                    {days.map((d, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <div className="shrink-0 w-7 h-7 rounded-full bg-slate-900 text-white text-[11px] font-extrabold flex items-center justify-center mt-0.5">
+                          {idx + 1}
+                        </div>
+                        <div className="flex-1 pt-0.5">
+                          <div className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">DAY {idx + 1}</div>
+                          <div className="text-sm font-semibold text-slate-900 break-keep leading-snug">{d}</div>
+                        </div>
+                        {idx === days.length - 1 && (
+                          <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-2" />
+                        )}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[10px] text-slate-400 line-through">전문가 단회 ₩60,000~</div>
+                    <div className="text-lg font-extrabold text-slate-900">
+                      ₩{MIND_TRACK_7_PRICE.toLocaleString()}
+                      <span className="text-[10px] font-medium text-slate-500 ml-1">/ 7일 전체</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { setPreviewTrack(null); navigate(`/mind-track?goal=${previewTrack.id}`); }}
+                    className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-rose-500 text-white text-sm font-bold px-5 py-3 rounded-xl transition-colors shadow-md"
+                  >
+                    이 트랙 시작하기
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

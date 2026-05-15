@@ -31,6 +31,7 @@ import Settings from "./pages/Settings";
 import BookingManagement from "./pages/BookingManagement";
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
+import GuardianNotice from "./pages/GuardianNotice";
 
 // AI Analysis & Core Features
 import AIAssistant from "./pages/AIAssistant";

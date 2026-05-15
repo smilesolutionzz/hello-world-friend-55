@@ -95,15 +95,17 @@ export default function MindTrackDashboardCard() {
   }
 
   // active
-  const { workbook, currentDay, rawDay, hasStartedAt, todayMission, completed } = state;
+  const { workbook, currentDay, rawDay, hasStartedAt, todayMission, completed, totalDays, trackType } = state;
+  const trackLabel = totalDays === 7 ? "7일 마음 트랙" : "30일 마음 트랙";
+  const isShortTrack = totalDays === 7;
 
-  // Day가 1~30 범위를 벗어난 경우 (started_at 미설정 또는 30일 초과)
-  if (rawDay < 1 || rawDay > 30 || !hasStartedAt) {
+  // Day가 1~totalDays 범위를 벗어난 경우 (started_at 미설정 또는 종료)
+  if (rawDay < 1 || rawDay > totalDays || !hasStartedAt) {
     const reason = !hasStartedAt
       ? "트랙 시작일(started_at)이 아직 설정되지 않았어요."
       : rawDay < 1
       ? "트랙 시작일이 미래로 설정되어 있어요."
-      : "30일 트랙이 종료되었어요. 새 진단으로 다음 사이클을 시작해 보세요.";
+      : `${totalDays}일 트랙이 종료되었어요. 새 진단으로 다음 사이클을 시작해 보세요.`;
     return (
       <Card className="p-5 border-2 border-slate-300 bg-slate-50 mb-6">
         {OnRouteNote}
@@ -113,7 +115,7 @@ export default function MindTrackDashboardCard() {
           </div>
           <div className="flex-1 min-w-0">
             <Badge className="mb-2 bg-slate-200 text-slate-800 border-slate-300">
-              <Sparkles className="w-3 h-3 mr-1" /> 30일 마음 트랙
+              <Sparkles className="w-3 h-3 mr-1" /> {trackLabel}
             </Badge>
             <h3 className="font-bold text-slate-900 mb-1 break-keep">
               현재 진행일을 계산할 수 없어요 (Day {rawDay})
@@ -143,16 +145,16 @@ export default function MindTrackDashboardCard() {
       <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
         <div className="min-w-0">
           <Badge className="mb-2 bg-amber-100 text-amber-800 border-amber-200">
-            <Sparkles className="w-3 h-3 mr-1" /> 30일 마음 트랙
+            <Sparkles className="w-3 h-3 mr-1" /> {trackLabel}
           </Badge>
           <h3 className="font-bold text-slate-900 break-keep">{workbook.challenge_theme}</h3>
         </div>
         <div className="text-right">
           <div className="text-xs text-slate-500">진행</div>
-          <div className="text-xl font-bold text-primary">Day {currentDay}/30</div>
+          <div className="text-xl font-bold text-primary">Day {currentDay}/{totalDays}</div>
         </div>
       </div>
-      <Progress value={(currentDay / 30) * 100} className="h-1.5 mb-2" />
+      <Progress value={(currentDay / totalDays) * 100} className="h-1.5 mb-2" />
       <div className="text-xs text-slate-600 mb-3">{completed}일 체크인 완료</div>
 
       {todayMission ? (
@@ -200,6 +202,22 @@ export default function MindTrackDashboardCard() {
           <RefreshCw className="w-4 h-4 mr-1.5" /> 새로고침
         </Button>
       </div>
+
+      {isShortTrack && (
+        <div className="mt-3 pt-3 border-t border-slate-200/70 flex items-center justify-between gap-3 flex-wrap">
+          <div className="text-[12px] text-slate-600 break-keep">
+            7일이 짧게 느껴지나요? <span className="font-semibold text-slate-900">+23일 연장권</span>으로 30일 풀 트랙까지 이어갈 수 있어요.
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => navigate("/mind-track?plan=extend_23")}
+            className="text-xs"
+          >
+            연장 옵션 보기 <ChevronRight className="w-3.5 h-3.5 ml-1" />
+          </Button>
+        </div>
+      )}
     </Card>
   );
 }

@@ -10,6 +10,7 @@ import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useRedFlagDetection } from '@/hooks/useRedFlagDetection';
 import RedFlagAlertDialog from './RedFlagAlertDialog';
+import TeenRiskConnectCard from '@/components/safety/TeenRiskConnectCard';
 import { CashBalanceDisplay } from '@/components/paywall/CashBalanceDisplay';
 import { BlurredContent } from '@/components/paywall/BlurredContent';
 import { useSubscription } from '@/hooks/useSubscription';

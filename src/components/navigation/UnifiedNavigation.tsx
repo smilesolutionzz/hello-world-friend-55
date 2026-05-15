@@ -151,7 +151,7 @@ const UnifiedNavigationInner = () => {
                 {t.nav.home}
               </Button>
 
-              {/* 핵심 상품: 30일 마음 트랙 — 단독 강조 CTA */}
+              {/* 핵심 상품: 7일 마음 트랙 — 단독 강조 CTA */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -163,14 +163,14 @@ const UnifiedNavigationInner = () => {
                 }`}
               >
                 <Target className="w-4 h-4" />
-                <span>30일 마음 트랙</span>
+                <span>7일 마음 트랙</span>
                 {showMindTrackMenu ? (
                   <Badge className="ml-0.5 bg-emerald-500/15 text-emerald-700 border-0 text-[10px] px-1.5 py-0 h-4">
-                    {mindTrackDay ? `Day ${mindTrackDay}/30` : '시작하기'}
+                    {mindTrackDay ? `Day ${mindTrackDay}/7` : '시작하기'}
                   </Badge>
                 ) : (
                   <Badge className="ml-0.5 bg-[#C8B88A]/20 text-[#8a7a4d] border-0 text-[10px] px-1.5 py-0 h-4">
-                    ₩{MIND_TRACK_PRICE.toLocaleString()}
+                    ₩{MIND_TRACK_7_PRICE.toLocaleString()}
                   </Badge>
                 )}
               </Button>

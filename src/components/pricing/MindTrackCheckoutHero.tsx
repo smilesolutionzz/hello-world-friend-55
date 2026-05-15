@@ -8,10 +8,15 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import usePayment from "@/hooks/usePayment";
 import { toast } from "sonner";
+import {
+  MIND_TRACK_7_PRICE,
+  MIND_TRACK_7_ORIGINAL_PRICE,
+  MIND_TRACK_PRICE,
+} from "@/constants/tokenCosts";
 
-const TRACK_PRICE = 7900;
-const ORIGINAL_PRICE = 15800;
-const TRACK_30_PRICE = 19900;
+const TRACK_PRICE = MIND_TRACK_7_PRICE;
+const ORIGINAL_PRICE = MIND_TRACK_7_ORIGINAL_PRICE;
+const TRACK_30_PRICE = MIND_TRACK_PRICE;
 
 const goalLabels: Record<string, string> = {
   stress: "스트레스 회복",
@@ -90,7 +95,7 @@ export default function MindTrackCheckoutHero() {
           <div className="flex justify-center sm:justify-start">
             <Badge className="mb-3 bg-amber-100 text-amber-800 border-amber-200">
               <Sparkles className="w-3 h-3 mr-1" />
-              30일 마음 변화 트랙
+              7일 마음 트랙 (메인)
             </Badge>
           </div>
 

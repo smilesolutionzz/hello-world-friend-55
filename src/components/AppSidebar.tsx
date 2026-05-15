@@ -10,7 +10,9 @@ import {
   Home,
   Heart,
   Building2,
-  Share2
+  Share2,
+  Sparkles,
+  CalendarDays,
 } from "lucide-react"
 
 import {
@@ -25,6 +27,12 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { MIND_TRACK_7_PRICE, MIND_TRACK_PRICE } from "@/constants/tokenCosts"
+
+const mindTrackItems = [
+  { title: `7일 마음 트랙 · ₩${MIND_TRACK_7_PRICE.toLocaleString()}`, url: "/mind-track", icon: Sparkles, badge: "추천" },
+  { title: `30일 옵션 · ₩${MIND_TRACK_PRICE.toLocaleString()}`, url: "/mind-track?plan=30d", icon: CalendarDays },
+]
 
 const mainItems = [
   { title: "홈", url: "/", icon: Home },
@@ -64,6 +72,36 @@ export function AppSidebar() {
       collapsible="icon"
     >
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-white font-medium">마음 트랙</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {mindTrackItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.url}
+                      className={({ isActive }) => getNavCls({ isActive })}
+                    >
+                      <item.icon className="h-4 w-4 text-amber-300" />
+                      {state !== "collapsed" && (
+                        <span className="flex items-center gap-1.5 text-xs">
+                          {item.title}
+                          {item.badge && (
+                            <span className="px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200 text-[9px] font-bold">
+                              {item.badge}
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
         <SidebarGroup>
           <SidebarGroupLabel className="text-white font-medium">메인</SidebarGroupLabel>
           <SidebarGroupContent>

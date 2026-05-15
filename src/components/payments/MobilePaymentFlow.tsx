@@ -11,7 +11,12 @@ import { usePayment } from '@/hooks/usePayment';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAccessControl } from '@/hooks/useAccessControl';
 import { supabase } from '@/integrations/supabase/client';
-import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE, MIND_TRACK_DISCOUNT_PERCENT } from '@/constants/tokenCosts';
+import {
+  MIND_TRACK_PRICE,
+  MIND_TRACK_7_PRICE,
+  MIND_TRACK_7_ORIGINAL_PRICE,
+  MIND_TRACK_7_DISCOUNT_PERCENT,
+} from '@/constants/tokenCosts';
 import { motion, AnimatePresence } from 'framer-motion';
 import AIComparisonTable from '@/components/conversion/AIComparisonTable';
 
@@ -124,17 +129,17 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
     navigate('/auth?mode=signup');
   };
 
-  const handlePayMindTrack = async () => {
+  const handlePayMindTrack = async (plan: '7d' | '30d' = '7d') => {
     if (!isAuthenticated) {
       redirectToLogin('/token-subscription');
       return;
     }
     const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
-    const res = await ensureMindTrackEnrollment();
+    const res = await ensureMindTrackEnrollment({}, plan);
     if (!res.enrollmentId) {
       console.warn('Mind track enrollment upsert failed, proceeding to pay anyway', res.error);
     }
-    await pay('mind_track_30');
+    await pay(plan === '7d' ? 'mind_track_7' : 'mind_track_30');
   };
 
   const handleBack = () => {
@@ -356,42 +361,52 @@ export const MobilePaymentFlow: React.FC<MobilePaymentFlowProps> = ({
                 </Card>
               )}
 
-              {/* 30일 마음 변화 트랙 — 단일 상품 */}
+              {/* 7일 마음 트랙 — 메인 결제 진입점 */}
               <Card className="p-5 border-2 border-primary rounded-2xl space-y-4 relative overflow-hidden bg-gradient-to-br from-primary/5 to-transparent">
                 <Badge className="absolute top-0 right-0 rounded-none rounded-bl-xl bg-primary text-primary-foreground text-xs px-3 py-1">
                   <Sparkles className="w-3 h-3 mr-1" />
-                  단일 상품 · {MIND_TRACK_DISCOUNT_PERCENT}% OFF
+                  추천 · {MIND_TRACK_7_DISCOUNT_PERCENT}% OFF
                 </Badge>
                 <div className="flex items-center gap-2 pt-1">
                   <Crown className="w-5 h-5 text-primary" />
-                  <span className="font-bold text-foreground">30일 마음 변화 트랙</span>
+                  <span className="font-bold text-foreground">7일 마음 트랙</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm text-muted-foreground line-through">₩{MIND_TRACK_ORIGINAL_PRICE.toLocaleString()}</span>
-                  <span className="text-3xl font-extrabold text-primary">₩{MIND_TRACK_PRICE.toLocaleString()}</span>
+                  <span className="text-sm text-muted-foreground line-through">₩{MIND_TRACK_7_ORIGINAL_PRICE.toLocaleString()}</span>
+                  <span className="text-3xl font-extrabold text-primary">₩{MIND_TRACK_7_PRICE.toLocaleString()}</span>
                   <span className="text-xs text-muted-foreground">· 일시불</span>
                 </div>
                 <p className="text-[11px] text-muted-foreground -mt-2">
-                  하루 약 ₩{Math.round(MIND_TRACK_PRICE / 30).toLocaleString()} · 자동 결제 없음
+                  하루 약 ₩{Math.round(MIND_TRACK_7_PRICE / 7).toLocaleString()} · 자동 결제 없음
                 </p>
                 <ul className="text-xs text-muted-foreground space-y-1.5">
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />모든 심층 검사 무제한 이용</li>
+                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />매일 5분 맞춤 코칭 미션 (7일)</li>
                   <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />AI 심층 분석 리포트 무제한</li>
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />30일 맞춤 마음 변화 로드맵</li>
-                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />종료 시 변화 종합 리포트(PDF)</li>
+                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />7일 완주 리포트(PDF) 제공</li>
+                  <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" />완주 후 +23일 연장 옵션</li>
                 </ul>
                 <Button
                   className="w-full h-12 text-base font-semibold rounded-xl"
-                  onClick={handlePayMindTrack}
+                  onClick={() => handlePayMindTrack('7d')}
                   disabled={isAuthenticated ? (loading || !isReady) : false}
                 >
                   {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
-                  30일 마음 트랙 시작하기
+                  7일 마음 트랙 시작하기 · ₩{MIND_TRACK_7_PRICE.toLocaleString()}
                 </Button>
                 <p className="flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
                   <Shield className="w-3 h-3" />
-                  마음에 들지 않으면 30일 내 100% 환불 보장
+                  마음에 들지 않으면 7일 내 100% 환불 보장
                 </p>
+
+                {/* 30일 보조 옵션 (업셀) */}
+                <button
+                  type="button"
+                  onClick={() => handlePayMindTrack('30d')}
+                  disabled={isAuthenticated ? (loading || !isReady) : false}
+                  className="w-full text-xs text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1 py-2 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50"
+                >
+                  처음부터 길게 가고 싶다면 → <strong>30일 한 번에 ₩{MIND_TRACK_PRICE.toLocaleString()}</strong>
+                </button>
               </Card>
 
               {/* 신뢰 배지 */}

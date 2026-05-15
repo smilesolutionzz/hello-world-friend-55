@@ -255,7 +255,7 @@ const HeroSection = () => {
               <div className="flex items-center justify-between mb-5">
                 <div className="min-w-0 flex-1">
                   <p className="text-[11px] font-semibold tracking-[0.15em] text-emerald-300/80 uppercase mb-1">
-                    Before · After · 30 Days
+                    Before · After · 7 Days
                   </p>
                   <h3 className="text-white text-lg md:text-xl font-bold truncate">
                     {(t.hero as any).beforeAfterTitle}

@@ -545,8 +545,8 @@ const MindTrack: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="30일 마음 변화 트랙 · 무료 고민 리포트"
-        description="고민을 적으면 즉석 마음 리포트가 나오고, 나에게 맞춤 30일 변화 트랙을 제안받을 수 있어요."
+        title="7일 마음 변화 트랙 · 무료 고민 리포트"
+        description="고민을 적으면 즉석 마음 리포트가 나오고, 7일 만에 시작할 수 있는 맞춤 마음 변화 트랙을 제안받을 수 있어요."
         canonicalUrl="https://aihpro.app/mind-track"
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">

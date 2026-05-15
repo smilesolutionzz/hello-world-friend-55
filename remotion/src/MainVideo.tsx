@@ -76,17 +76,17 @@ const Scene1: React.FC = () => {
   return (
     <AbsoluteFill style={{ padding: '120px 140px', justifyContent: 'center', fontFamily: KR_FONT, color: INK }}>
       <div style={{ opacity: t1, transform: `translateY(${yA}px)`, fontFamily: DISP, letterSpacing: 4, color: GOLD, fontSize: 22, fontWeight: 500, marginBottom: 28 }}>
-        AIHPRO · MIND TRACK
+        AIHPRO · MIND TRACK 7
       </div>
       <div style={{ opacity: t2, transform: `translateY(${yB}px)`, fontFamily: SERIF, fontSize: 168, lineHeight: 1.02, letterSpacing: -2, fontStyle: 'italic' }}>
-        마음을,
+        하루 7분,
       </div>
       <div style={{ opacity: t2, transform: `translateY(${yB}px)`, fontSize: 168, lineHeight: 1.02, letterSpacing: -6, fontWeight: 900, marginTop: -12 }}>
-        데이터로 본다.
+        7일의 시작.
       </div>
       <div style={{ width: lineW, height: 2, background: GOLD, marginTop: 44 }} />
       <div style={{ opacity: t3, transform: `translateY(${yC}px)`, marginTop: 28, fontSize: 26, color: MUTED, letterSpacing: -0.5 }}>
-        전문가가 검증한 30일 마음 트랙
+        전문가가 설계한 7일 마음 트랙 · ₩7,900
       </div>
     </AbsoluteFill>
   );
@@ -145,12 +145,12 @@ const Scene3: React.FC = () => {
   const { fps } = useVideoConfig();
   const headT = spring({ frame: frame - 2, fps, config: { damping: 200 } });
   const cardT = spring({ frame: frame - 14, fps, config: { damping: 18, stiffness: 120 } });
-  const weeks = ['Week 1\n알아차리기', 'Week 2\n뿌리 보기', 'Week 3\n바꿔보기', 'Week 4\n자리잡기'];
+  const days = ['Day 1\n발가벗기', 'Day 3\n뿌리 진단', 'Day 5\n루틴 설계', 'Day 7\n변화 리포트'];
   return (
     <AbsoluteFill style={{ fontFamily: KR_FONT, color: INK, padding: '80px 120px' }}>
       <div style={{ opacity: headT, transform: `translateY(${interpolate(headT,[0,1],[20,0])}px)` }}>
-        <div style={{ fontFamily: DISP, color: GOLD, letterSpacing: 4, fontSize: 18, fontWeight: 500 }}>02 · 30-DAY MIND TRACK</div>
-        <div style={{ fontSize: 60, fontWeight: 800, letterSpacing: -2.5, marginTop: 12 }}>30일, 한 가지 마음에 집중.</div>
+        <div style={{ fontFamily: DISP, color: GOLD, letterSpacing: 4, fontSize: 18, fontWeight: 500 }}>02 · 7-DAY MIND TRACK</div>
+        <div style={{ fontSize: 60, fontWeight: 800, letterSpacing: -2.5, marginTop: 12 }}>7일, 한 가지 마음에 집중.</div>
       </div>
       <div
         style={{
@@ -165,16 +165,16 @@ const Scene3: React.FC = () => {
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ color: MUTED, fontSize: 18, letterSpacing: 1, fontWeight: 500 }}>SLEEP RESET TRACK</div>
-            <div style={{ fontSize: 52, fontWeight: 800, letterSpacing: -2, marginTop: 8 }}>잠, 다시 시작하는 30일</div>
+            <div style={{ color: MUTED, fontSize: 18, letterSpacing: 1, fontWeight: 500 }}>DAILY 7-MIN ROUTINE</div>
+            <div style={{ fontSize: 52, fontWeight: 800, letterSpacing: -2, marginTop: 8 }}>하루 7분, 7일의 변화</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-            <span style={{ fontFamily: DISP, fontSize: 64, fontWeight: 700, color: INK }}>₩19,900</span>
+            <span style={{ fontFamily: DISP, fontSize: 64, fontWeight: 700, color: INK }}>₩7,900</span>
           </div>
         </div>
         <div style={{ height: 1, background: 'rgba(14,14,16,0.08)', margin: '32px 0' }} />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 18 }}>
-          {weeks.map((w, i) => {
+          {days.map((w, i) => {
             const t = spring({ frame: frame - 30 - i * 6, fps, config: { damping: 200 } });
             return (
               <div
@@ -200,7 +200,7 @@ const Scene3: React.FC = () => {
           })}
         </div>
         <div style={{ marginTop: 28, color: MUTED, fontSize: 20, letterSpacing: -0.3 }}>
-          매일 5분 · AI 코칭 + 전문가 검증 · 진행도 리포트
+          하루 7분 · 체크인 + 미션 + 영상 코칭 · 7일 변화 리포트
         </div>
       </div>
     </AbsoluteFill>
@@ -260,13 +260,13 @@ const Scene5: React.FC = () => {
   return (
     <AbsoluteFill style={{ fontFamily: KR_FONT, color: INK, justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
       <div style={{ opacity: a, transform: `translateY(${interpolate(a,[0,1],[20,0])}px)`, fontFamily: DISP, letterSpacing: 6, color: GOLD, fontSize: 22, fontWeight: 500 }}>
-        START YOUR 30 DAYS
+        START YOUR 7 DAYS
       </div>
       <div style={{ opacity: a, transform: `translateY(${interpolate(a,[0,1],[30,0])}px)`, marginTop: 28, fontFamily: SERIF, fontStyle: 'italic', fontSize: 96, color: INK }}>
-        오늘의 마음에서,
+        하루 7분에서,
       </div>
       <div style={{ opacity: a, transform: `translateY(${interpolate(a,[0,1],[30,0])}px)`, fontSize: 110, fontWeight: 900, letterSpacing: -4, marginTop: -6 }}>
-        내일의 변화로.
+        7일의 변화로.
       </div>
       <div style={{ width: lineW, height: 2, background: GOLD, marginTop: 50 }} />
       <div style={{ opacity: c, marginTop: 36, fontFamily: DISP, fontSize: 44, fontWeight: 700, letterSpacing: 2 }}>

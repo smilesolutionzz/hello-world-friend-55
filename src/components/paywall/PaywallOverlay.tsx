@@ -68,13 +68,13 @@ export const PaywallOverlay = ({
 
           <div>
             <h3 className="text-xl font-bold mb-1">{featureName} 잠금 해제</h3>
-            <p className="text-sm text-muted-foreground">전문가급 심층 분석을 확인하려면 30일 마음 트랙이 필요합니다</p>
+            <p className="text-sm text-muted-foreground">전문가급 심층 분석을 확인하려면 7일 마음 트랙이 필요합니다</p>
           </div>
 
           <div className="py-3">
             <Badge className="bg-gradient-to-r from-primary to-purple-600 text-white px-4 py-2 text-lg">
               <Sparkles className="w-4 h-4 mr-2" />
-              30일 마음 트랙 ₩19,900 (일시불)
+              7일 마음 트랙 ₩7,900 (일시불)
             </Badge>
           </div>
 

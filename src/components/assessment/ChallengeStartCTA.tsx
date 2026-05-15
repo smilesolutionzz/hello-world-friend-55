@@ -10,7 +10,7 @@ interface ChallengeStartCTAProps {
 }
 
 /**
- * 검사 결과 직후 노출되는 30일 마음 챌린지 가입 CTA.
+ * 검사 결과 직후 노출되는 7일 마음 트랙 가입 CTA.
  * 우선 전환 동선이며 ResultPaywall, PostPaymentConversionFlow보다 상단 배치.
  */
 const ChallengeStartCTA = ({ testName, recommendedFocus, source }: ChallengeStartCTAProps) => {
@@ -39,7 +39,7 @@ const ChallengeStartCTA = ({ testName, recommendedFocus, source }: ChallengeStar
 
         <h3 className="text-2xl md:text-3xl font-bold mb-2 leading-tight">
           이 결과를 시작점으로<br />
-          <span className="text-white">30일 마음 챌린지</span>를 시작해보세요
+          <span className="text-white">7일 마음 트랙</span>를 시작해보세요
         </h3>
 
         <p className="text-sm md:text-base opacity-90 mb-5 leading-relaxed">
@@ -66,12 +66,12 @@ const ChallengeStartCTA = ({ testName, recommendedFocus, source }: ChallengeStar
           variant="secondary"
           className="w-full bg-white text-primary hover:bg-white/90 font-bold text-base shadow-lg group"
         >
-          30일 마음 챌린지 시작하기
+          7일 마음 트랙 시작하기
           <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
         </Button>
 
         <p className="text-[11px] opacity-75 text-center mt-3">
-          ₩19,900 일시불 · 30일 환불 보장 · 자동 결제 없음
+          ₩7,900 일시불 · 7일 환불 보장 · 자동 결제 없음
         </p>
       </div>
     </Card>

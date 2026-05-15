@@ -456,7 +456,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
             className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl text-sm"
           >
             <FileText className="w-4 h-4 mr-1.5" />
-            {isEnglish ? '30-Day Mind Track — ₩19,900' : '30일 마음 변화 트랙 — ₩19,900'}
+            {isEnglish ? '7-Day Mind Track — ₩7,900' : '7일 마음 트랙 — ₩7,900'}
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
           <Button onClick={onReset} variant="outline" className="bg-white/5 border-white/20 text-white/80 hover:bg-white/10 py-3 rounded-xl text-sm px-4">

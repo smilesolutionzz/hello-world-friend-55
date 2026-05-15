@@ -48,13 +48,13 @@ const TrackQuickPicker: React.FC<TrackQuickPickerProps> = ({
         <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-1 break-keep">
           지금 가장 신경 쓰이는 게 뭐예요?
         </h2>
-        <p className="text-sm text-slate-500 break-keep">
-          한 가지만 골라주세요. 맞는 30일 트랙을 바로 보여드려요.
+        <p className="text-sm md:text-base text-slate-500 break-keep">
+          한 가지만 골라주세요. 맞는 7일 마음 트랙을 바로 보여드려요.
         </p>
       </div>
 
       {/* 5개 큰 버튼 */}
-      <div className="grid grid-cols-2 gap-2.5 md:gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
         {QUICK_OPTIONS.map((opt) => {
           const active = selectedGoal === opt.id;
           return (
@@ -63,29 +63,29 @@ const TrackQuickPicker: React.FC<TrackQuickPickerProps> = ({
               type="button"
               onClick={() => onSelect(opt.id)}
               className={cn(
-                'group relative h-20 md:h-24 px-4 rounded-2xl border-2 text-left transition-all flex items-center gap-3',
+                'group relative h-28 md:h-32 px-5 md:px-6 rounded-2xl border-2 text-left transition-all flex items-center gap-4',
                 active
                   ? 'border-blue-500 bg-blue-50 shadow-md'
                   : 'border-slate-200 bg-white hover:border-slate-300'
               )}
             >
-              <span className="text-2xl md:text-3xl">{opt.emoji}</span>
+              <span className="text-4xl md:text-5xl">{opt.emoji}</span>
               <span className="flex-1 min-w-0">
-                <span className="block font-bold text-sm md:text-base text-slate-900 break-keep">
+                <span className="block font-bold text-base md:text-lg text-slate-900 break-keep">
                   {opt.label}
                 </span>
-                <span className="block text-[11px] md:text-xs text-slate-500 mt-0.5 break-keep">
+                <span className="block text-xs md:text-sm text-slate-500 mt-1 break-keep">
                   {opt.helper}
                 </span>
               </span>
               {active && (
-                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <CheckCircle2 className="w-6 h-6 text-blue-600 shrink-0" />
               )}
             </button>
           );
         })}
         {/* 5번째는 풀폭 한 칸 */}
-        <div className="hidden md:block" />
+        <div className="hidden sm:block" />
       </div>
 
       {/* 매칭 결과 카드 */}

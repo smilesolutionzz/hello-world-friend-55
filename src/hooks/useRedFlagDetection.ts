@@ -62,38 +62,40 @@ export const useRedFlagDetection = ({
     const detection = detectRedFlagsFromResult(result, testType);
     setRedFlagResult(detection);
 
-    if (detection.hasRedFlags && !hasShownAlert) {
-      const timer = setTimeout(() => {
-        setShowAlert(true);
-        setHasShownAlert(true);
-      }, 1500);
+    if (!detection.hasRedFlags) return;
 
-      // Auto-trigger teen risk referral (one-shot)
-      if (isTeen(age) && !referralTriggered.current) {
-        referralTriggered.current = true;
-        const text = freeResponseText ?? result?.analysis ?? '';
-        const matchedKeywords = RISK_KEYWORDS.filter((k) => text.includes(k));
-        const triggerSource: 'assessment_score' | 'free_response_keyword' =
-          matchedKeywords.length > 0 ? 'free_response_keyword' : 'assessment_score';
+    const timer = setTimeout(() => {
+      setShowAlert(true);
+      setHasShownAlert(true);
+    }, 1500);
 
-        createReferral({
-          age,
-          region_sido,
-          region_sigungu,
-          risk_level: mapSeverityToRisk(detection.overallSeverity),
-          trigger_source: triggerSource,
-          trigger_keywords: matchedKeywords,
-          detected_score: result.totalScore,
-          assessment_type: testType,
-        }).then((r) => {
-          if (r) setTeenReferral(r);
-        }).catch((e) => {
+    // Auto-trigger teen risk referral exactly once across the lifetime of this hook.
+    if (isTeen(age) && !referralTriggered.current) {
+      referralTriggered.current = true; // set BEFORE await to prevent re-entrancy from re-renders
+      const text = freeResponseText ?? result?.analysis ?? '';
+      const matchedKeywords = RISK_KEYWORDS.filter((k) => text.includes(k));
+      const triggerSource: 'assessment_score' | 'free_response_keyword' =
+        matchedKeywords.length > 0 ? 'free_response_keyword' : 'assessment_score';
+
+      createReferral({
+        age,
+        region_sido,
+        region_sigungu,
+        risk_level: mapSeverityToRisk(detection.overallSeverity),
+        trigger_source: triggerSource,
+        trigger_keywords: matchedKeywords,
+        detected_score: result.totalScore,
+        assessment_type: testType,
+      })
+        .then((r) => { if (r) setTeenReferral(r); })
+        .catch((e) => {
           console.warn('[teen-risk-referral] failed', e);
+          // Allow a single retry on hard failure (network/etc.) by resetting the latch.
+          referralTriggered.current = false;
         });
-      }
-
-      return () => clearTimeout(timer);
     }
+
+    return () => clearTimeout(timer);
   }, [result, testType, enabled, hasShownAlert, age, region_sido, region_sigungu, freeResponseText, createReferral]);
 
   const closeAlert = useCallback(() => {

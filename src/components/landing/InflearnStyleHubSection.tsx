@@ -192,6 +192,7 @@ const TRENDING_KEYWORDS = [
 const InflearnStyleHubSection: React.FC = () => {
   const navigate = useNavigate();
   const [activeChip, setActiveChip] = useState('all');
+  const [previewTrack, setPreviewTrack] = useState<MindTrackFocus | null>(null);
 
   const tracks = useMemo(() => {
     if (activeChip === 'all') return MIND_TRACK_FOCUSES;

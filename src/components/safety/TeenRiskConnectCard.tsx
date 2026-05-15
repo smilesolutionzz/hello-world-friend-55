@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Phone, MapPin, ExternalLink, ShieldCheck, ArrowRight, Mail } from 'lucide-react'
 import type { MatchedCenter, ReferralResult } from '@/hooks/useTeenRiskReferral'
-import { useTeenRiskReferral } from '@/hooks/useTeenRiskReferral'
 import { toast } from 'sonner'
 
 interface Props {
@@ -23,7 +22,6 @@ const typeLabel: Record<MatchedCenter['center_type'], string> = {
 }
 
 export function TeenRiskConnectCard({ referral, showGuardianForm = true }: Props) {
-  const { notifyGuardian } = useTeenRiskReferral()
   const [email, setEmail] = useState('')
   const [consent, setConsent] = useState(false)
   const [sending, setSending] = useState(false)

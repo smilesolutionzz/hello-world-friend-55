@@ -545,8 +545,8 @@ const MindTrack: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="7일 마음 변화 트랙 · 무료 고민 리포트"
-        description="고민을 적으면 즉석 마음 리포트가 나오고, 7일 만에 시작할 수 있는 맞춤 마음 변화 트랙을 제안받을 수 있어요."
+        title="7일 안에 발가벗겨지는 마음 트랙 · ₩7,900 | AIHPRO"
+        description="진단·자기관찰·전문가 1:1·회복 루틴까지 7일에 압축. ₩7,900으로 시작하는 AIHPRO 마음 변화 트랙. 무료 고민 리포트도 즉석으로 받아보세요."
         canonicalUrl="https://aihpro.app/mind-track"
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
@@ -739,20 +739,21 @@ const MindTrack: React.FC = () => {
                 <CoachingBadge variant="pill" />
                 <Badge className="bg-amber-100 text-amber-800 border-amber-200">
                   <Sparkles className="w-3 h-3 mr-1" />
-                  무료 고민 리포트 + 7일 트랙
+                  7일 ₩7,900 · 첫 15분 전문가 상담 무료
                 </Badge>
               </div>
 
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight break-keep">
-                지금 마음에 걸리는 고민,<br />
+                7일 만에<br className="md:hidden" />
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  3분 안에 정리해드릴게요
+                  발가벗겨진 기분, 그리고 확신
                 </span>
               </h1>
 
               <p className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto break-keep leading-relaxed">
-                고민을 한 줄 적으면 <strong className="text-slate-900">즉석 마음 리포트</strong>를 받고,<br className="hidden md:block" />
-                나에게 꼭 맞는 <strong className="text-slate-900">7일 변화 트랙</strong>을 제안받을 수 있어요.
+                <strong className="text-slate-900">진단 · 자기관찰 · 전문가 1:1 · 회복 루틴 · 변화 리포트</strong>까지<br className="hidden md:block" />
+                AIHPRO의 모든 기능을 7일 안에 압축해서 쏟아붓습니다.<br className="hidden md:block" />
+                <span className="text-slate-500 text-sm md:text-base">매일 5분, ₩7,900 — 길게 가고 싶다면 30일(₩19,900)도 선택할 수 있어요.</span>
               </p>
             </motion.div>
           </div>

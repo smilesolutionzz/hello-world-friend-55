@@ -288,14 +288,31 @@ export default function MindTrackDashboard() {
     );
   }
 
+  // SEO — 트랙별 og:title/description + FAQPage 구조화 데이터
+  const seoTitle = isShortTrack
+    ? "7일 마음 트랙 · 내 대시보드 | AIHPRO"
+    : "30일 마음 트랙 · 내 대시보드 | AIHPRO";
+  const seoDesc = isShortTrack
+    ? "7일 안에 진단·자기관찰·전문가 개입·회복 루틴까지 완주하는 압축 마음 변화 트랙. 오늘의 미션과 변화 추이를 한눈에."
+    : "30일 마음 변화 트랙 대시보드 — 매주 단계별 미션과 변화 추이, 코칭 인사이트를 한눈에 확인하세요.";
+  const faqList = isShortTrack ? FAQ_7 : FAQ_30;
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqList.map((q) => ({
+      "@type": "Question",
+      "name": q.q,
+      "acceptedAnswer": { "@type": "Answer", "text": q.a },
+    })),
+  };
+
   return (
     <>
       <SEOHead
-        title={`${trackLabel} · 내 대시보드 | AIHPRO`}
-        description={isShortTrack
-          ? "7일 안에 진단·자기관찰·전문가 개입·회복 루틴까지 완주하는 압축 마음 변화 트랙. 오늘의 미션과 변화 추이를 한눈에."
-          : "30일 마음 트랙 대시보드 — 오늘의 미션과 진행률, 변화 추이를 한눈에 확인하세요."}
+        title={seoTitle}
+        description={seoDesc}
         canonicalUrl="https://aihpro.app/mind-track/dashboard"
+        structuredData={faqStructuredData}
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/20">
         <UnifiedNavigation />
@@ -745,51 +762,51 @@ export default function MindTrackDashboard() {
           </section>
         )}
 
-        {/* 7일 완주 업셀 — Day 6 이후 또는 7일차일 때 30일 풀 트랙으로 유도 */}
-        {isShortTrack && day >= 6 && (
-          <section className="px-4 pb-8">
-            <div className="max-w-3xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] text-white rounded-3xl p-7 md:p-8 shadow-xl"
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="w-4 h-4 text-[#C8B88A]" />
-                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#C8B88A]">
-                    {isFinalDay ? "7일 완주 · 다음 단계" : "곧 완주 · 다음 단계 미리보기"}
-                  </span>
-                </div>
-                <h3 className="text-xl md:text-2xl font-black break-keep leading-tight mb-2">
-                  {isFinalDay
-                    ? "7일이 끝났어요. 이제 진짜 변화를 굳힐 시간"
-                    : "7일이 짧게 느껴지나요? +23일로 풀 30일 트랙 완주"}
-                </h3>
-                <p className="text-sm text-white/70 break-keep leading-relaxed mb-5">
-                  7일은 패턴을 발견하는 단계, 30일은 그 패턴을 뇌에 새기는 단계예요.
-                  지금까지 쌓은 데이터·진단·전문가 피드백을 그대로 이어받아 23일을 추가합니다.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
-                  <Button
-                    onClick={() => navigate("/mind-track?plan=extend_23")}
-                    className="h-12 bg-white text-black hover:bg-white/90 rounded-xl font-bold"
-                  >
-                    +23일 연장권 보기 (₩12,900)
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate("/expert-hiring?from=mind_track_complete")}
-                    className="h-12 rounded-xl border-white/20 bg-transparent text-white hover:bg-white/10"
-                  >
-                    <Phone className="w-4 h-4 mr-2" /> 전문가 1:1 이어가기
-                  </Button>
-                </div>
-              </motion.div>
-            </div>
-          </section>
-        )}
+        {/* 7일 진행 중 업셀 — Day 3부터 타이밍별 카피로 자연스럽게 노출 */}
+        {isShortTrack && day >= 3 && (() => {
+          const upsell = getUpsellCopy(day, isFinalDay);
+          return (
+            <section className="px-4 pb-8">
+              <div className="max-w-3xl mx-auto">
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] text-white rounded-3xl p-7 md:p-8 shadow-xl"
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-4 h-4 text-[#C8B88A]" />
+                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#C8B88A]">
+                      {upsell.eyebrow}
+                    </span>
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-black break-keep leading-tight mb-2">
+                    {upsell.headline}
+                  </h3>
+                  <p className="text-sm text-white/70 break-keep leading-relaxed mb-5">
+                    {upsell.body}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
+                    <Button
+                      onClick={() => navigate(`/mind-track?plan=extend_23&from=dashboard_day${day}`)}
+                      className="h-12 bg-white text-black hover:bg-white/90 rounded-xl font-bold"
+                    >
+                      {upsell.primaryCta}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate(`/expert-hiring?from=mind_track_day${day}&intent=consultation`)}
+                      className="h-12 rounded-xl border-white/20 bg-transparent text-white hover:bg-white/10"
+                    >
+                      <Phone className="w-4 h-4 mr-2" /> {upsell.secondaryCta}
+                    </Button>
+                  </div>
+                </motion.div>
+              </div>
+            </section>
+          );
+        })()}
 
         {/* FAQ — 7일 트랙 중심 통일 */}
         <section className="px-4 pb-8">
@@ -815,6 +832,23 @@ export default function MindTrackDashboard() {
                   </p>
                 </details>
               ))}
+
+              {/* FAQ → 전문가 상담 예약 진입 */}
+              <div className="mt-5 pt-5 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <Button
+                  onClick={() => navigate(`/expert-hiring?from=mind_track_faq&intent=consultation&day=${day}`)}
+                  className="h-11 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold"
+                >
+                  <Calendar className="w-4 h-4 mr-2" /> 전문가 상담 예약하기
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/expert-hiring?urgent=true&from=mind_track_faq")}
+                  className="h-11 rounded-xl border-slate-300"
+                >
+                  <Phone className="w-4 h-4 mr-2" /> 긴급 1:1 즉시 매칭
+                </Button>
+              </div>
             </div>
           </div>
         </section>
@@ -827,6 +861,54 @@ export default function MindTrackDashboard() {
       </div>
     </>
   );
+}
+
+// 7일 트랙 진행 중 업셀 카피 — Day별 톤 다르게
+function getUpsellCopy(day: number, isFinal: boolean) {
+  if (isFinal || day >= 7) {
+    return {
+      eyebrow: "7일 완주 · 다음 단계",
+      headline: "7일이 끝났어요. 이제 진짜 변화를 굳힐 시간",
+      body: "7일은 패턴을 발견하는 단계, 30일은 그 패턴을 뇌에 새기는 단계예요. 지금까지 쌓은 데이터·진단·전문가 피드백을 그대로 이어받아 23일을 추가합니다.",
+      primaryCta: "+23일 연장권 보기 (₩12,900)",
+      secondaryCta: "전문가 1:1 이어가기",
+    };
+  }
+  if (day === 6) {
+    return {
+      eyebrow: "내일이면 완주 · 미리보기",
+      headline: "내일 7일이 끝나요. 30일까지 이어갈까요?",
+      body: "지금까지 쌓은 6일치 데이터가 가장 비싸요. 끊기지 말고 +23일로 패턴을 뇌에 새기세요. 결제 없이도 변화 리포트는 받을 수 있어요.",
+      primaryCta: "+23일 연장권 미리 잡기",
+      secondaryCta: "전문가에게 마무리 점검 받기",
+    };
+  }
+  if (day === 5) {
+    return {
+      eyebrow: "회복 루틴 단계 · 굳히기",
+      headline: "여기까지 왔다면, 이제 뇌에 새겨야 해요",
+      body: "Day 5에 만든 회복 루틴은 21일 이상 반복해야 자동화돼요. 7일 트랙으로는 이제 막 심은 단계 — +23일 연장으로 진짜 내 것으로 만드세요.",
+      primaryCta: "+23일 연장으로 굳히기",
+      secondaryCta: "전문가 1:1로 점검 받기",
+    };
+  }
+  if (day === 4) {
+    return {
+      eyebrow: "전문가 개입의 날",
+      headline: "오늘 전문가가 짚어준 부분, 1:1로 더 깊이 가볼래요?",
+      body: "Day 4 매칭은 15분 무료. 더 길게 다루고 싶다면 1:1 정식 상담으로 이어갈 수 있어요. 마음 트랙 결제자에게는 상담료 할인이 자동 적용됩니다.",
+      primaryCta: "+23일 연장 + 상담 묶음 보기",
+      secondaryCta: "1:1 상담 정식 예약",
+    };
+  }
+  // Day 3
+  return {
+    eyebrow: "뿌리 진단 완료 · 한 발 더",
+    headline: "패턴이 보이기 시작했나요? 여기서 멈추면 다시 돌아가요",
+    body: "Day 3는 인사이트가 가장 강한 날이에요. 4일치만 더 쌓으면 변화 리포트가 나오지만, +23일로 가면 그 패턴을 진짜 바꿀 수 있어요.",
+    primaryCta: "+23일 연장권 미리 보기",
+    secondaryCta: "전문가에게 패턴 검토 받기",
+  };
 }
 
 const FAQ_7: { q: string; a: string }[] = [

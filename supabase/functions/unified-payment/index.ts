@@ -8,8 +8,10 @@ const corsHeaders = {
 
 // 상품 정의 (프론트엔드와 동기화) - SaaS 모델 v2
 const PRODUCTS: Record<string, any> = {
-  // 자체 결제 단일 상품: 30일 마음 변화 트랙 (일시불)
+  // mind_track 라인업: 7일(메인) / 30일(보조) / 23일 연장권(업셀)
+  mind_track_7: { type: 'mind_track', name: '7일 마음 변화 트랙', price: 7900 },
   mind_track_30: { type: 'mind_track', name: '30일 마음 변화 트랙', price: 19900 },
+  mind_track_extend_23: { type: 'mind_track', name: '마음 트랙 23일 연장권', price: 12900 },
 };
 
 // 🔒 인증된 사용자 확인 헬퍼

@@ -48,8 +48,8 @@ export const MindTrack30Showcase = () => {
             7일의 시작.
           </h2>
           <p className="mt-4 text-sm md:text-lg text-slate-500 break-keep max-w-xl mx-auto leading-relaxed">
-            ₩7,900으로 시작하는 7일 마음 트랙, 25초 영상으로 보여드릴게요.<br className="hidden md:block" />
-            <span className="text-slate-400 text-xs md:text-sm">처음부터 길게 가고 싶다면 30일(₩19,900) 옵션도 있어요.</span>
+            하루 7분, 7일의 변화. ₩7,900으로 시작하는 마음 트랙을<br className="hidden md:block" />
+            <span className="text-slate-400 text-xs md:text-sm">25초 영상으로 미리 만나보세요.</span>
           </p>
         </motion.div>
 

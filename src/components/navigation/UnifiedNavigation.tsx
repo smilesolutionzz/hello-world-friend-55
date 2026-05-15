@@ -40,7 +40,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useMindTrackDashboard } from '@/hooks/useMindTrackDashboard';
 import { supabase } from '@/integrations/supabase/client';
 import logo from '@/assets/logo.png';
-import { MIND_TRACK_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 
 import { useContext } from 'react';
 import { HubContext } from '@/components/assessment/HubContext';

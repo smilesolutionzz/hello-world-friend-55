@@ -739,7 +739,7 @@ const MindTrack: React.FC = () => {
                 <CoachingBadge variant="pill" />
                 <Badge className="bg-amber-100 text-amber-800 border-amber-200">
                   <Sparkles className="w-3 h-3 mr-1" />
-                  무료 고민 리포트 + 30일 트랙
+                  무료 고민 리포트 + 7일 트랙
                 </Badge>
               </div>
 
@@ -752,7 +752,7 @@ const MindTrack: React.FC = () => {
 
               <p className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto break-keep leading-relaxed">
                 고민을 한 줄 적으면 <strong className="text-slate-900">즉석 마음 리포트</strong>를 받고,<br className="hidden md:block" />
-                나에게 꼭 맞는 <strong className="text-slate-900">30일 변화 트랙</strong>을 제안받을 수 있어요.
+                나에게 꼭 맞는 <strong className="text-slate-900">7일 변화 트랙</strong>을 제안받을 수 있어요.
               </p>
             </motion.div>
           </div>
@@ -810,7 +810,7 @@ const MindTrack: React.FC = () => {
                       </Badge>
                     </div>
                     <p className="text-sm text-slate-500 mt-0.5">
-                      고민을 한 줄만 적어주시면, 짧은 리포트와 함께 가장 잘 맞는 30일 트랙 3가지를 추천해드려요.
+                      고민을 한 줄만 적어주시면, 짧은 리포트와 함께 가장 잘 맞는 7일 마음 트랙 3가지를 추천해드려요.
                     </p>
                   </div>
                 </div>
@@ -1140,12 +1140,12 @@ const MindTrack: React.FC = () => {
           </section>
         </SmartScrollReveal>
 
-        {/* 30 Day Flow */}
+        {/* 7 Day Flow */}
         <section className="px-4 pb-16 bg-gradient-to-b from-white to-slate-50">
           <div className="max-w-5xl mx-auto py-12">
             <div className="text-center mb-10">
               <Calendar className="w-10 h-10 text-blue-600 mx-auto mb-3" />
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">30일, 이렇게 진행돼요</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">7일, 이렇게 진행돼요</h2>
               <p className="text-slate-600">하루 3~5분, 부담 없이 누적되는 변화</p>
             </div>
             <div className="space-y-3">
@@ -1187,7 +1187,7 @@ const MindTrack: React.FC = () => {
                     <BarChart3 className="w-8 h-8 text-blue-600" />
                     <h3 className="font-bold text-slate-900">눈에 보이는 변화</h3>
                     <p className="text-sm text-slate-600 break-keep">
-                      1일차와 30일차의 셀프 체크 결과를 한눈에 비교. 막연한 후기가 아닌 내 데이터로 확인.
+                      1일차와 7일차의 셀프 체크 결과를 한눈에 비교. 막연한 후기가 아닌 내 데이터로 확인.
                     </p>
                   </CardContent>
                 </Card>
@@ -1224,7 +1224,7 @@ const MindTrack: React.FC = () => {
               </h2>
               <p className="text-white/90 text-base md:text-lg break-keep">
                 지금 시작하면 ₩{TRACK_PRICE.toLocaleString()} (정가 ₩{TRACK_ORIGINAL_PRICE.toLocaleString()})<br />
-                30일 단건 결제 · {REFUND_WINDOW_DAYS}일 환불 보장 · 자동 갱신 없음
+                7일 단건 결제 · {REFUND_WINDOW_DAYS}일 환불 보장 · 자동 갱신 없음
               </p>
               <div className="pt-2">
                 <Button
@@ -1235,7 +1235,7 @@ const MindTrack: React.FC = () => {
                 >
                   {loading ? '등록 중...' : (
                     <>
-                      {selectedGoal ? '30일 트랙 시작하기' : '먼저 목표를 선택해주세요'}
+                      {selectedGoal ? '7일 트랙 시작하기' : '먼저 목표를 선택해주세요'}
                       <ArrowRight className="w-5 h-5 ml-2" />
                     </>
                   )}
@@ -1276,7 +1276,7 @@ const MindTrack: React.FC = () => {
                     중간에 며칠 빠지면 어떻게 되나요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    빠진 날도 ‘건너뛴 일차’로 기록만 되고 트랙은 계속 이어집니다. 30일 안에 자기 페이스로 채워가면 돼요.
+                    빠진 날도 ‘건너뛴 일차’로 기록만 되고 트랙은 계속 이어집니다. 7일 안에 자기 페이스로 채워가면 되고, 더 길게 이어가고 싶다면 +23일 연장권으로 30일까지 확장할 수 있어요.
                   </AccordionContent>
                 </AccordionItem>
 
@@ -1285,7 +1285,7 @@ const MindTrack: React.FC = () => {
                     의료 진단/치료 목적인가요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    아니요. 30일 마음 트랙은 자기이해·습관 설계·웰빙 가이드를 위한 코칭/분석 도구이며,
+                    아니요. 7일 마음 트랙은 자기이해·습관 설계·웰빙 가이드를 위한 코칭/분석 도구이며,
                     진단·치료를 대체하지 않습니다. 위기 상황은 화면 내 ‘긴급 전문가 연결’을 이용해 주세요.
                   </AccordionContent>
                 </AccordionItem>
@@ -1323,7 +1323,7 @@ const MindTrack: React.FC = () => {
                     전문가 개입(리뷰/상담/긴급/심화)은 별도 결제인가요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    네. 30일 마음 트랙(₩{TRACK_PRICE.toLocaleString()})에는 워크북과 AI 코칭 콘텐츠가 모두 포함되며, 전문가 리뷰·상담·긴급·심화 4종은 필요할 때만 단건으로 추가 결제하는 옵션입니다.
+                    네. 7일 마음 트랙(₩{TRACK_PRICE.toLocaleString()})에는 워크북과 AI 코칭 콘텐츠가 모두 포함되며, 전문가 리뷰·상담·긴급·심화 4종은 필요할 때만 단건으로 추가 결제하는 옵션입니다.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

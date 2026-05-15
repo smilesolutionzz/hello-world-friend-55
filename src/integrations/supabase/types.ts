@@ -9306,6 +9306,38 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_milestone_emails_sent: {
+        Row: {
+          channel: string
+          enrollment_id: string
+          id: string
+          milestone_day: number
+          sent_at: string
+        }
+        Insert: {
+          channel?: string
+          enrollment_id: string
+          id?: string
+          milestone_day: number
+          sent_at?: string
+        }
+        Update: {
+          channel?: string
+          enrollment_id?: string
+          id?: string
+          milestone_day?: number
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_milestone_emails_sent_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mind_track_milestone_reports: {
         Row: {
           ai_narrative: string | null

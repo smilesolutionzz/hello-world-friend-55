@@ -545,8 +545,8 @@ const MindTrack: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="7일 마음 변화 트랙 · 무료 고민 리포트"
-        description="고민을 적으면 즉석 마음 리포트가 나오고, 7일 만에 시작할 수 있는 맞춤 마음 변화 트랙을 제안받을 수 있어요."
+        title="7일 안에 발가벗겨지는 마음 트랙 · ₩7,900 | AIHPRO"
+        description="진단·자기관찰·전문가 1:1·회복 루틴까지 7일에 압축. ₩7,900으로 시작하는 AIHPRO 마음 변화 트랙. 무료 고민 리포트도 즉석으로 받아보세요."
         canonicalUrl="https://aihpro.app/mind-track"
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">

@@ -147,22 +147,61 @@ const TrackQuickPicker: React.FC<TrackQuickPickerProps> = ({
         )}
       </AnimatePresence>
 
-      {/* 전체 보기 토글 */}
-      <div className="text-center">
-        <button
-          type="button"
-          onClick={onToggleAdvanced}
-          className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 transition-colors"
-        >
-          {showAdvancedOpen ? '간단히 보기' : '전체 9개 트랙 / 카테고리로 보기'}
-          <ChevronDown
+      {/* 전체 보기 토글 — 카드형 CTA */}
+      <button
+        type="button"
+        onClick={onToggleAdvanced}
+        className={cn(
+          'w-full group rounded-2xl border-2 p-4 md:p-5 text-left transition-all',
+          showAdvancedOpen
+            ? 'border-blue-300 bg-blue-50'
+            : 'border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-white'
+        )}
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="text-sm md:text-base font-bold text-slate-900 break-keep">
+              {showAdvancedOpen ? '간단히 보기' : '전체 9개 트랙 / 카테고리로 보기'}
+            </div>
+            <div className="text-xs md:text-sm text-slate-500 mt-0.5 break-keep">
+              {showAdvancedOpen
+                ? '다시 5개 빠른 선택으로 돌아가기'
+                : '내 고민에 꼭 맞는 트랙을 직접 골라보세요'}
+            </div>
+          </div>
+
+          {/* 9개 아이콘 티저 */}
+          {!showAdvancedOpen && (
+            <div className="hidden sm:flex items-center -space-x-2 mr-2">
+              {MIND_TRACK_FOCUSES.slice(0, 9).map((f) => (
+                <span
+                  key={f.id}
+                  className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-base shadow-sm"
+                  title={f.label}
+                >
+                  {f.icon}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div
             className={cn(
-              'w-3.5 h-3.5 transition-transform',
-              showAdvancedOpen && 'rotate-180'
+              'w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all',
+              showAdvancedOpen
+                ? 'bg-blue-100 text-blue-600'
+                : 'bg-white text-slate-400 group-hover:text-slate-600 border border-slate-200'
             )}
-          />
-        </button>
-      </div>
+          >
+            <ChevronDown
+              className={cn(
+                'w-5 h-5 transition-transform',
+                showAdvancedOpen && 'rotate-180'
+              )}
+            />
+          </div>
+        </div>
+      </button>
     </div>
   );
 };

@@ -498,7 +498,7 @@ function DashboardContent() {
                 <TabsContent value="tests" className="space-y-4 sm:space-y-6">
                   {/* 내 맞춤 분석 프로필 (온보딩 입력값 노출 + 수정 진입점) */}
                   <MyAnalysisProfileCard />
-                  {/* 30일 마음 트랙 카드 (결제/진행 상태 자동 감지) */}
+                  {/* 마음 트랙 카드 (7일 메인 / 30일 장기 옵션 자동 감지) */}
                   <MindTrackDashboardCard />
                   {/* 빠른 시작 CTA 섹션 - 고정 */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">

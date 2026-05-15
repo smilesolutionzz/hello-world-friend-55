@@ -77,7 +77,7 @@ const RefundPolicy = () => {
                         <>
                           <p>AIHPRO operates a single B2C paid product:</p>
                           <ul className="list-disc pl-6 space-y-1 mt-2">
-                            <li><strong>30-Day Mind Track</strong> — ₩19,900 one-time payment (originally ₩49,000, 60% off)</li>
+                            <li><strong>7-Day Mind Track</strong> — ₩7,900 one-time payment (originally ₩49,000, 60% off)</li>
                             <li>No subscription, no auto-renewal, no recurring charges</li>
                             <li>Includes all premium assessments, AI in-depth reports, expert coaching guides, and a final transformation report (PDF) for 30 days</li>
                           </ul>
@@ -87,7 +87,7 @@ const RefundPolicy = () => {
                         <>
                           <p>AIHPRO의 B2C 유료 상품은 단일 상품 한 가지로 운영됩니다:</p>
                           <ul className="list-disc pl-6 space-y-1 mt-2">
-                            <li><strong>30일 마음 변화 트랙</strong> — ₩19,900 일시불 (정가 ₩49,000, 60% 할인)</li>
+                            <li><strong>7일 마음 트랙</strong> — ₩7,900 일시불 (정가 ₩49,000, 60% 할인)</li>
                             <li>구독·자동 결제·정기 청구 없음</li>
                             <li>30일간 모든 심층 검사·AI 분석 리포트·전문가 코칭 가이드·종합 변화 리포트(PDF) 무제한 제공</li>
                           </ul>
@@ -100,9 +100,9 @@ const RefundPolicy = () => {
                   <Separator />
 
                   <section>
-                    <h2 className="text-xl font-semibold mb-3">{isEnglish ? '3. 30-Day Mind Track Refund Policy' : '3. 30일 마음 변화 트랙 환불 정책'}</h2>
+                    <h2 className="text-xl font-semibold mb-3">{isEnglish ? '3. 7-Day Mind Track Refund Policy' : '3. 7일 마음 트랙 환불 정책'}</h2>
                     <div className="space-y-2 text-muted-foreground">
-                      <p>{isEnglish ? 'The 30-Day Mind Transformation Track (₩19,900, one-time payment) is backed by an unconditional 30-day money-back guarantee:' : '30일 마음 변화 트랙(₩19,900, 일시불)은 무조건 30일 환불 보장이 적용됩니다:'}</p>
+                      <p>{isEnglish ? 'The 7-Day Mind Track (₩7,900, one-time payment) is backed by an unconditional 30-day money-back guarantee:' : '7일 마음 트랙(₩7,900, 일시불)은 무조건 30일 환불 보장이 적용됩니다:'}</p>
                       <ul className="list-disc pl-6 space-y-1 mt-2">
                         {isEnglish ? (
                           <>

@@ -79,7 +79,7 @@ const CoachingGoals: React.FC = () => {
   const handleStart = async () => {
     if (!userId) return;
     if (!isPremium) {
-      toast({ title: '프리미엄 구독이 필요해요', description: '30일 트랙 결제 후 코칭이 시작됩니다.' });
+      toast({ title: '프리미엄 구독이 필요해요', description: '7일 트랙 결제 후 코칭이 시작됩니다.' });
       navigate('/token-subscription');
       return;
     }
@@ -141,7 +141,7 @@ const CoachingGoals: React.FC = () => {
             매일 아침 8시, 박사급 1:1 코칭이 도착합니다
           </h1>
           <p className="text-muted-foreground break-keep">
-            30일간 매일 한 줄의 미션과 임상 근거가 담긴 메일을 받습니다. 자동 결제 없음, 언제든 끄기 가능.
+            7일간 매일 한 줄의 미션과 임상 근거가 담긴 메일을 받습니다. 자동 결제 없음, 언제든 끄기 가능.
           </p>
         </motion.div>
 
@@ -244,9 +244,9 @@ const CoachingGoals: React.FC = () => {
               className="w-full h-14 rounded-xl text-base font-bold bg-foreground text-background hover:bg-foreground/90"
             >
               {saving ? '시작 중...' : isPremium ? (
-                <><Target className="w-5 h-5 mr-2" />30일 코칭 시작하기<ArrowRight className="w-5 h-5 ml-2" /></>
+                <><Target className="w-5 h-5 mr-2" />7일 코칭 시작하기<ArrowRight className="w-5 h-5 ml-2" /></>
               ) : (
-                <><Sparkles className="w-5 h-5 mr-2" />30일 트랙 결제하고 시작하기</>
+                <><Sparkles className="w-5 h-5 mr-2" />7일 트랙 결제하고 시작하기</>
               )}
             </Button>
 

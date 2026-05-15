@@ -158,7 +158,7 @@ const PaymentComplete = () => {
       case 'single_test': return '검사 이용권 1회가 추가되었습니다. 바로 검사를 시작해보세요!';
       case 'single_report': return '리포트 이용권 1회가 추가되었습니다.';
       case 'consultation': return '상담 예약이 확정되었습니다! 전문가가 확인 후 연락드립니다.';
-      case 'mind_track': return '30일 마음 변화 트랙이 시작되었습니다! 잠시 후 초기 진단으로 이동합니다.';
+      case 'mind_track': return '7일 마음 트랙이 시작되었습니다! 잠시 후 초기 진단으로 이동합니다.';
       case 'pass': return '프리미엄 패스가 활성화되었습니다.';
       case 'cash': return '캐시가 충전되었습니다.';
       default: return '결제가 완료되었습니다.';
@@ -253,7 +253,7 @@ const PaymentComplete = () => {
                       ? <Loader2 className="w-4 h-4 animate-spin text-primary" />
                       : <span className="w-4 h-4 rounded-full border border-muted-foreground/30 inline-block" />}
                     <span className={mindTrackStage === 'creating' ? 'font-semibold' : 'text-muted-foreground'}>
-                      30일 트랙 생성 중
+                      7일 트랙 생성 중
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">

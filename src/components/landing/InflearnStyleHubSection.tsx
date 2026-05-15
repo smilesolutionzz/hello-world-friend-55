@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowRight, Flame, TrendingUp, Stethoscope, MessageSquareHeart, Shield, ChevronRight } from 'lucide-react';
-import { MIND_TRACK_FOCUSES } from '@/lib/mindTrackFocusTracks';
+import { Sparkles, ArrowRight, Flame, TrendingUp, Stethoscope, MessageSquareHeart, Shield, ChevronRight, Check, Calendar } from 'lucide-react';
+import { MIND_TRACK_FOCUSES, type MindTrackFocus } from '@/lib/mindTrackFocusTracks';
 import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 /**
  * 인플런 스타일 허브 섹션 — 메인 홈에서
@@ -157,6 +158,19 @@ const ThumbPattern: React.FC<{ kind: TrackThumbKind; accent: string }> = ({ kind
 
 type TrackThumbKind = 'dots' | 'rings' | 'wave' | 'grid' | 'beam';
 
+/** 트랙별 7일 커리큘럼 미리보기 */
+const TRACK_CURRICULUM: Record<string, string[]> = {
+  sleep: ['수면 패턴 셀프 진단', '취침 1시간 전 디지털 디톡스', '4-7-8 호흡 이완 루틴', '각성 신호·반추 다스리기', '수면 환경 최적화', '낮 활동·빛 노출 조정', '7일 회복 리포트 + 유지 루틴'],
+  stress: ['긴장 신호 인식·기록', '1분 호흡 이완 루틴', '인지 재구성 3단계', '경계 세우기 연습', '회복 활동 설계', '대인 스트레스 대응', '7일 종합 리포트 + 회복 처방'],
+  mood: ['오늘의 감정 라벨링', '감정과 거리두기', '자기자비 편지 쓰기', '활력 회복 활동 5선', '인지 왜곡 점검', '감정 일기 정착', '7일 감정 회복 리포트'],
+  focus: ['주의 집중 자가 진단', '디지털 절제 룰 만들기', '딥워크 25분 블록', '에너지 흐름 관리', '환경 디자인', '회복·휴식 설계', '7일 집중 리포트 + 루틴'],
+  relationship: ['관계 패턴 인식', '경청·공감 3단 연습', '나-전달법 대화', '경계 세우기', '갈등 회복 대화', '관계 자원 점검', '7일 관계 리포트'],
+  self: ['핵심 가치 카드 정렬', '강점·그림자 통합', '내면 대화 연습', '인생 곡선 그리기', '정체성 재정렬', '미래 자아 시각화', '7일 자기 이해 리포트'],
+  parenting: ['번아웃 신호 자가 진단', '나만의 회복 시간 확보', '죄책감 해체 작업', '감정 분리·자기자비', '파트너·가족 자원화', '지속 가능한 루틴 설계', '7일 회복 리포트'],
+  child_development: ['연령별 발달 지표 점검', '관찰 기록법 익히기', '발달 자극 활동 5선', '놀이 속 발달 코칭', '약점 영역 보완', '주간 점검 루틴', '7일 발달 리포트'],
+  family_communication: ['아이 감정 코칭 1단계', '경청·반영 대화 연습', '훈육 언어 재설계', 'NO 대신 YES 화법', '회복적 대화', '애착 회복 루틴', '7일 소통 리포트'],
+};
+
 const POPULAR_KEYWORDS = [
   '잠이 안 와요', '번아웃', '육아 번아웃', '직장 스트레스', '관계 갈등',
   '감정 조절', '집중력 저하', '아이 발달', '자기 이해', '회복 루틴',
@@ -178,6 +192,7 @@ const TRENDING_KEYWORDS = [
 const InflearnStyleHubSection: React.FC = () => {
   const navigate = useNavigate();
   const [activeChip, setActiveChip] = useState('all');
+  const [previewTrack, setPreviewTrack] = useState<MindTrackFocus | null>(null);
 
   const tracks = useMemo(() => {
     if (activeChip === 'all') return MIND_TRACK_FOCUSES;
@@ -241,23 +256,51 @@ const InflearnStyleHubSection: React.FC = () => {
               return (
               <button
                 key={t.id}
-                onClick={() => navigate(`/mind-track?goal=${t.id}`)}
-                className="group text-left bg-white border border-slate-200 hover:border-slate-900 rounded-2xl overflow-hidden transition-all hover:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.18)]"
+                onClick={() => setPreviewTrack(t)}
+                className="group relative text-left bg-white border border-slate-200 hover:border-slate-900 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_20px_50px_-15px_rgba(15,23,42,0.35)] hover:-translate-y-1"
               >
+                {/* 글로우 — hover 시 카드 외곽 발광 */}
+                <div className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background: 'radial-gradient(80% 60% at 50% 0%, rgba(244,63,94,0.18), transparent 70%)',
+                  }}
+                />
+
                 {/* 상단 비주얼 — 후킹 썸네일 */}
                 <div className={`relative aspect-[16/9] ${thumb.bg} ${thumb.ink} overflow-hidden`}>
-                  <ThumbPattern kind={thumb.pattern} accent={thumb.accent} />
+                  {/* 살짝 확대 + 밝아지는 패턴 */}
+                  <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110">
+                    <ThumbPattern kind={thumb.pattern} accent={thumb.accent} />
+                  </div>
+                  {/* hover 시 위에서 내려오는 라이트 글로우 */}
+                  <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: 'radial-gradient(60% 50% at 50% 0%, rgba(255,255,255,0.22), transparent 70%)' }}
+                  />
 
-                  <div className="absolute top-3 right-3 z-10">
-                    <span className="bg-white/15 backdrop-blur-sm border border-white/25 text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                  {/* DAY 1–7 배지 — 골드 그라데이션 */}
+                  <div className="absolute top-3 right-3 z-20">
+                    <span className="inline-flex items-center gap-1 text-white text-[10px] font-extrabold tracking-[0.14em] px-2.5 py-1 rounded-full shadow-[0_4px_14px_-4px_rgba(0,0,0,0.5)] border border-white/30"
+                      style={{ background: 'linear-gradient(135deg, #C8B88A 0%, #8B7A4A 100%)' }}
+                    >
+                      <Calendar className="w-3 h-3" />
                       DAY 1–7
                     </span>
                   </div>
 
+                  {/* LIVE BEST 배지 — 레드→앰버 그라데이션 + pulse */}
                   {i < 3 && (
-                    <div className="absolute top-3 left-3 inline-flex items-center gap-1 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">
-                      <Flame className="w-3 h-3" />
-                      LIVE BEST
+                    <div className="absolute top-3 left-3 z-20">
+                      <div className="relative">
+                        <div className="absolute inset-0 rounded-md blur-md opacity-70 animate-pulse"
+                          style={{ background: 'linear-gradient(135deg, #ef4444, #f59e0b)' }}
+                        />
+                        <div className="relative inline-flex items-center gap-1 text-white text-[10px] font-extrabold tracking-wider px-2.5 py-1 rounded-md shadow-lg border border-white/40"
+                          style={{ background: 'linear-gradient(135deg, #ef4444 0%, #f43f5e 50%, #f59e0b 100%)' }}
+                        >
+                          <Flame className="w-3 h-3" />
+                          LIVE BEST
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -269,7 +312,7 @@ const InflearnStyleHubSection: React.FC = () => {
                       <h4 className="text-[17px] md:text-[19px] font-extrabold leading-tight break-keep drop-shadow-sm">
                         {thumb.hook}
                       </h4>
-                      <span className="text-[40px] leading-none -mb-1 drop-shadow-md shrink-0">
+                      <span className="text-[40px] leading-none -mb-1 drop-shadow-md shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6">
                         {t.icon}
                       </span>
                     </div>
@@ -465,6 +508,75 @@ const InflearnStyleHubSection: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* ─── 7일 커리큘럼 미리보기 모달 ─── */}
+      <Dialog open={!!previewTrack} onOpenChange={(o) => !o && setPreviewTrack(null)}>
+        <DialogContent className="max-w-lg p-0 overflow-hidden bg-white border-slate-200">
+          {previewTrack && (() => {
+            const thumb = TRACK_THUMBS[previewTrack.id] ?? TRACK_THUMBS.stress;
+            const days = TRACK_CURRICULUM[previewTrack.id] ?? [];
+            return (
+              <>
+                <div className={`relative ${thumb.bg} ${thumb.ink} px-6 pt-6 pb-5 overflow-hidden`}>
+                  <ThumbPattern kind={thumb.pattern} accent={thumb.accent} />
+                  <div className="relative z-10">
+                    <div className={`text-[10px] font-bold tracking-[0.22em] uppercase mb-2 ${thumb.sub}`}>
+                      {thumb.tag} · 7 DAY MIND TRACK
+                    </div>
+                    <DialogHeader className="space-y-1.5">
+                      <DialogTitle className="text-2xl font-extrabold text-white break-keep">
+                        {previewTrack.label}
+                      </DialogTitle>
+                      <DialogDescription className="text-sm text-white/80 break-keep">
+                        {thumb.hook}
+                      </DialogDescription>
+                    </DialogHeader>
+                  </div>
+                </div>
+
+                <div className="px-6 py-5 max-h-[55vh] overflow-y-auto">
+                  <div className="text-[11px] font-bold tracking-[0.18em] text-slate-500 uppercase mb-3">
+                    7일 커리큘럼 미리보기
+                  </div>
+                  <ol className="space-y-2.5">
+                    {days.map((d, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <div className="shrink-0 w-7 h-7 rounded-full bg-slate-900 text-white text-[11px] font-extrabold flex items-center justify-center mt-0.5">
+                          {idx + 1}
+                        </div>
+                        <div className="flex-1 pt-0.5">
+                          <div className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">DAY {idx + 1}</div>
+                          <div className="text-sm font-semibold text-slate-900 break-keep leading-snug">{d}</div>
+                        </div>
+                        {idx === days.length - 1 && (
+                          <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-2" />
+                        )}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[10px] text-slate-400 line-through">전문가 단회 ₩60,000~</div>
+                    <div className="text-lg font-extrabold text-slate-900">
+                      ₩{MIND_TRACK_7_PRICE.toLocaleString()}
+                      <span className="text-[10px] font-medium text-slate-500 ml-1">/ 7일 전체</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { setPreviewTrack(null); navigate(`/mind-track?goal=${previewTrack.id}`); }}
+                    className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-rose-500 text-white text-sm font-bold px-5 py-3 rounded-xl transition-colors shadow-md"
+                  >
+                    이 트랙 시작하기
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

@@ -6,18 +6,18 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Brain, Users, Building2, Sparkles, ArrowRight, Check, Calendar
 } from 'lucide-react';
-import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE, MIND_TRACK_DISCOUNT_PERCENT } from '@/constants/tokenCosts';
+import { MIND_TRACK_7_PRICE, MIND_TRACK_7_ORIGINAL_PRICE, MIND_TRACK_7_DISCOUNT_PERCENT, MIND_TRACK_PRICE } from '@/constants/tokenCosts';
 import { motion } from 'framer-motion';
 
 const BusinessModelSection: React.FC = () => {
   const navigate = useNavigate();
 
   const trackBenefits = [
-    '30일 맞춤 마음 변화 로드맵',
+    '7일 마음 킥오프 로드맵',
     'AI 심층 분석 리포트 무제한',
     '전문가 코칭 가이드 동봉',
-    '주간 진척도 트래킹 & 리마인더',
-    '종료 시 변화 종합 리포트(PDF)',
+    '매일 체크인 & 미션 리마인더',
+    '7일 완주 리포트(PDF) + 23일 연장 옵션',
   ];
 
   const b2bBenefits = [

@@ -221,6 +221,7 @@ const App = () => {
               <Routes>
           {/* ===== Core Routes ===== */}
           <Route path="/" element={<Index />} />
+          <Route path="/g/:token" element={<GuardianNotice />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardRouter />} />

@@ -745,6 +745,80 @@ export default function MindTrackDashboard() {
           </section>
         )}
 
+        {/* 7일 완주 업셀 — Day 6 이후 또는 7일차일 때 30일 풀 트랙으로 유도 */}
+        {isShortTrack && day >= 6 && (
+          <section className="px-4 pb-8">
+            <div className="max-w-3xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] text-white rounded-3xl p-7 md:p-8 shadow-xl"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-4 h-4 text-[#C8B88A]" />
+                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#C8B88A]">
+                    {isFinalDay ? "7일 완주 · 다음 단계" : "곧 완주 · 다음 단계 미리보기"}
+                  </span>
+                </div>
+                <h3 className="text-xl md:text-2xl font-black break-keep leading-tight mb-2">
+                  {isFinalDay
+                    ? "7일이 끝났어요. 이제 진짜 변화를 굳힐 시간"
+                    : "7일이 짧게 느껴지나요? +23일로 풀 30일 트랙 완주"}
+                </h3>
+                <p className="text-sm text-white/70 break-keep leading-relaxed mb-5">
+                  7일은 패턴을 발견하는 단계, 30일은 그 패턴을 뇌에 새기는 단계예요.
+                  지금까지 쌓은 데이터·진단·전문가 피드백을 그대로 이어받아 23일을 추가합니다.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
+                  <Button
+                    onClick={() => navigate("/mind-track?plan=extend_23")}
+                    className="h-12 bg-white text-black hover:bg-white/90 rounded-xl font-bold"
+                  >
+                    +23일 연장권 보기 (₩12,900)
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate("/expert-hiring?from=mind_track_complete")}
+                    className="h-12 rounded-xl border-white/20 bg-transparent text-white hover:bg-white/10"
+                  >
+                    <Phone className="w-4 h-4 mr-2" /> 전문가 1:1 이어가기
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+          </section>
+        )}
+
+        {/* FAQ — 7일 트랙 중심 통일 */}
+        <section className="px-4 pb-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 md:p-7 space-y-1">
+              <div className="flex items-center gap-2 mb-3">
+                <HelpCircle className="w-4 h-4 text-slate-500" />
+                <h3 className="text-sm font-bold text-slate-900">자주 묻는 질문</h3>
+              </div>
+              {(isShortTrack ? FAQ_7 : FAQ_30).map((q, i) => (
+                <details
+                  key={i}
+                  className="group border-b border-slate-100 last:border-b-0 py-3"
+                >
+                  <summary className="flex items-center justify-between cursor-pointer list-none">
+                    <span className="text-sm font-semibold text-slate-800 break-keep pr-3">
+                      {q.q}
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-90 shrink-0" />
+                  </summary>
+                  <p className="text-[13px] text-slate-600 leading-relaxed break-keep mt-2 pr-6">
+                    {q.a}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="px-4 py-8 max-w-3xl mx-auto">
           <MedicalDisclaimer variant="compact" />
         </section>

@@ -1001,7 +1001,7 @@ const MindTrack: React.FC = () => {
 
                             <Button
                               onClick={() => handlePick(matched.id)}
-                              className="w-full h-12 rounded-xl bg-slate-900 hover:bg-slate-800 font-bold"
+                              className="w-full h-12 rounded-xl bg-slate-900 text-white hover:bg-slate-800 font-bold"
                             >
                               이 트랙 선택하기
                               <ArrowRight className="w-4 h-4 ml-2" />

@@ -57,22 +57,28 @@ export default function GuardianNotice() {
     return () => { cancelled = true }
   }, [token])
 
-  const [submitting, setSubmitting] = useState(false)
+  const [submitting, setSubmitting] = useState<null | 'accepted' | 'declined'>(null)
+  const [respondedAt, setRespondedAt] = useState<string | null>(null)
 
   const respond = async (action: 'accepted' | 'declined') => {
-    if (!token || submitting) return
-    setSubmitting(true)
+    if (!token || submitting || responded) return
+    setSubmitting(action)
     try {
       const { error: respErr } = await supabase.functions.invoke('teen-risk-guardian-respond', {
         body: { guardian_token: token, action },
       })
       if (respErr) throw respErr
       setResponded(action)
+      setRespondedAt(new Date().toISOString())
+      // Refresh referral state from DB so status badge stays in sync
+      const { data: rows } = await supabase.rpc('get_referral_by_guardian_token', { _token: token })
+      if (rows && rows.length > 0) setData(rows[0] as ReferralView)
     } catch (e) {
       console.warn('[guardian-respond] failed', e)
-      setResponded(action) // optimistic acknowledgement to avoid blocking parent
+      setResponded(action)
+      setRespondedAt(new Date().toISOString())
     } finally {
-      setSubmitting(false)
+      setSubmitting(null)
     }
   }
 
@@ -97,6 +103,19 @@ export default function GuardianNotice() {
   const centers = Array.isArray(data.matched_centers) ? data.matched_centers : []
   const expertPath = (data.expert_referral_url ?? 'https://aihpro.app/expert-hiring?urgent=true').replace(/^https?:\/\/[^/]+/, '')
 
+  const statusBadge = (() => {
+    if (responded === 'accepted' || data.status === 'guardian_accepted') {
+      return { label: '응답 완료 · 도움 연결 진행', tone: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+    }
+    if (responded === 'declined' || data.status === 'guardian_declined') {
+      return { label: '응답 완료 · 직접 챙기기 선택', tone: 'bg-slate-100 text-slate-700 border-slate-200' }
+    }
+    if (data.status === 'guardian_notified') {
+      return { label: '보호자 알림 발송됨 · 응답 대기', tone: 'bg-amber-50 text-amber-800 border-amber-200' }
+    }
+    return { label: '확인 대기 중', tone: 'bg-amber-50 text-amber-800 border-amber-200' }
+  })()
+
   return (
     <main className="min-h-[80vh] bg-slate-50/40 py-10 px-4">
       <div className="max-w-2xl mx-auto">
@@ -108,6 +127,10 @@ export default function GuardianNotice() {
           <p className="text-sm text-slate-600 mt-2 break-keep">
             이 페이지는 보호자께 발송된 단일 링크 전용으로, <b>이 1건만</b> 열람할 수 있습니다.
           </p>
+          <div className={`inline-flex items-center gap-1.5 mt-3 text-[11px] font-semibold border px-2.5 py-1 rounded-full ${statusBadge.tone}`}>
+            <span className="size-1.5 rounded-full bg-current opacity-60" />
+            {statusBadge.label}
+          </div>
         </div>
 
         <Card className="bg-white rounded-3xl border border-slate-200 p-6 mb-4">
@@ -188,25 +211,28 @@ export default function GuardianNotice() {
           <div className="flex gap-2">
             <Button
               onClick={() => respond('accepted')}
-              disabled={submitting || responded !== null}
+              disabled={!!submitting || responded !== null}
               variant={responded === 'accepted' ? 'default' : 'outline'}
               className="flex-1"
             >
-              확인 · 도움을 연결할게요
+              {submitting === 'accepted' ? '처리 중…' : responded === 'accepted' ? '✓ 도움 연결 응답 완료' : '확인 · 도움을 연결할게요'}
             </Button>
             <Button
               onClick={() => respond('declined')}
-              disabled={submitting || responded !== null}
+              disabled={!!submitting || responded !== null}
               variant={responded === 'declined' ? 'default' : 'outline'}
               className="flex-1"
             >
-              지금은 직접 챙길게요
+              {submitting === 'declined' ? '처리 중…' : responded === 'declined' ? '✓ 직접 챙기기 응답 완료' : '지금은 직접 챙길게요'}
             </Button>
           </div>
           {responded && (
-            <p className="text-xs text-slate-500 mt-2">응답이 기록되었습니다. 감사합니다.</p>
+            <p className="text-xs text-slate-500 mt-3">
+              응답이 기록되었습니다 ({respondedAt ? new Date(respondedAt).toLocaleString('ko-KR') : '방금'}). 감사합니다.
+            </p>
           )}
         </Card>
+
 
         <p className="text-[11px] text-slate-400 leading-relaxed break-keep">
           AIHPRO는 의료 진단을 제공하지 않으며, 발달·정서 코칭과 공공/전문가 자원 연계를 지원합니다.

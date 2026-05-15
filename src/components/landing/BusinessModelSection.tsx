@@ -33,30 +33,31 @@ const BusinessModelSection: React.FC = () => {
       <div className="container mx-auto px-4 max-w-7xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <Badge className="mb-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-            <Calendar className="w-3 h-3 mr-1" />30일 단일 상품
+            <Calendar className="w-3 h-3 mr-1" />7일 메인 · 30일 옵션
           </Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">하나의 가격, 30일의 변화</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">하루 7분, 7일이면 충분해요</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            복잡한 플랜 없이, AI 분석부터 전문가 코칭까지 30일 동안 모두 이용하세요
+            ₩7,900으로 가볍게 시작하고, 완주하면 +23일 연장권을 드려요.
+            처음부터 길게 가고 싶다면 30일 ₩{MIND_TRACK_PRICE.toLocaleString()} 옵션도 있어요.
           </p>
         </motion.div>
 
-        {/* 30일 트랙 단일 카드 */}
+        {/* 7일 트랙 메인 카드 */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="max-w-lg mx-auto mb-16">
           <Card className="ring-2 ring-primary shadow-xl">
             <CardContent className="p-8 text-center">
               <Sparkles className="w-12 h-12 mx-auto mb-4 text-primary" />
               <Badge className="mb-3 bg-rose-50 text-rose-600 border-rose-100">
-                {MIND_TRACK_DISCOUNT_PERCENT}% OFF · 일시불
+                {MIND_TRACK_7_DISCOUNT_PERCENT}% OFF · 일시불
               </Badge>
-              <h3 className="text-2xl font-bold mb-2">30일 마음 변화 트랙</h3>
+              <h3 className="text-2xl font-bold mb-2">7일 마음 트랙</h3>
               <div className="mb-4">
-                <span className="text-lg text-muted-foreground line-through">₩{MIND_TRACK_ORIGINAL_PRICE.toLocaleString()}</span>
+                <span className="text-lg text-muted-foreground line-through">₩{MIND_TRACK_7_ORIGINAL_PRICE.toLocaleString()}</span>
                 <div className="text-4xl font-black text-primary">
-                  ₩{MIND_TRACK_PRICE.toLocaleString()}
+                  ₩{MIND_TRACK_7_PRICE.toLocaleString()}
                   <span className="text-base font-normal text-muted-foreground"> · 일시불</span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">하루 약 ₩{Math.round(MIND_TRACK_PRICE / 30).toLocaleString()} · 자동 결제 없음</p>
+                <p className="text-xs text-muted-foreground mt-1">하루 약 ₩{Math.round(MIND_TRACK_7_PRICE / 7).toLocaleString()} · 자동 결제 없음</p>
               </div>
               <ul className="space-y-2 mb-6 text-left">
                 {trackBenefits.map((b, i) => (
@@ -68,6 +69,9 @@ const BusinessModelSection: React.FC = () => {
               <Button onClick={() => navigate('/quiz')} size="lg" className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white">
                 1분 무료 진단으로 시작 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
+              <p className="text-xs text-muted-foreground mt-3">
+                장기 원하시면 <button onClick={() => navigate('/mind-track')} className="underline hover:text-primary">30일 ₩{MIND_TRACK_PRICE.toLocaleString()}</button> 옵션도 있어요
+              </p>
             </CardContent>
           </Card>
         </motion.div>

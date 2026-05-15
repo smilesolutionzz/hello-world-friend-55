@@ -326,7 +326,7 @@ export const SubscriptionGuard = ({
                 모든 검사 · 분석 · 리포트 <strong>무제한</strong>
               </p>
               <div className="flex items-baseline gap-2">
-                <span className="text-sm text-muted-foreground line-through">₩19,900</span>
+                <span className="text-sm text-muted-foreground line-through">₩7,900</span>
                 <span className="text-2xl font-black text-foreground">₩{SUBSCRIPTION_PRICE.toLocaleString()}</span>
                 <span className="text-xs text-muted-foreground">/월</span>
               </div>

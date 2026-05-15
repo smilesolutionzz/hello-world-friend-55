@@ -111,7 +111,7 @@ const CTABannerSection = () => {
 
           {/* Price anchoring */}
           <p className="mt-5 text-center text-[11px] text-white/35 tracking-[0.2em] uppercase">
-            한정가 · 정가 <span className="line-through">₩15,800</span> <span className="text-[#D4AF73]/80 ml-1">50% OFF</span> · 장기 원할 시 30일 ₩19,900
+            한정가 · 정가 <span className="line-through">₩15,800</span> <span className="text-[#D4AF73]/80 ml-1">50% OFF</span> · 장기 원할 시 30일 ₩7,900
           </p>
 
           {/* Footer fineprint */}

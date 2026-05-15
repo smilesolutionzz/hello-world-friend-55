@@ -196,7 +196,7 @@ const BasicMentalHealthTest = () => {
                   {isEnglish ? 'Try Other Free Tests' : '다른 무료 테스트 해보기'}
                 </Button>
                 <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
-                  {isEnglish ? 'Start 30-Day Mind Track · ₩19,900' : '30일 마음 트랙 시작하기 · ₩19,900'}
+                  {isEnglish ? 'Start 7-Day Mind Track · ₩7,900' : '7일 마음 트랙 시작하기 · ₩7,900'}
                 </Button>
               </div>
             </CardContent>

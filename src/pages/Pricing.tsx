@@ -28,14 +28,14 @@ const Pricing = () => {
   return (
     <>
       <SEOHead
-        title="요금제 · 30일 마음 챌린지 ₩19,900"
-        description="가입은 무료, 검사는 모두 무료. 깊은 변화는 30일 마음 챌린지 한 가지 상품으로."
-        keywords="30일 챌린지, 마음 건강, 무료 검사, AI 분석"
+        title="요금제 · 7일 마음 트랙 ₩7,900"
+        description="가입은 무료, 검사는 모두 무료. 깊은 변화는 7일 마음 트랙 한 가지 상품으로."
+        keywords="7일 트랙, 마음 건강, 무료 검사, AI 분석"
       />
 
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-secondary/30">
         <section className="container mx-auto px-4 pt-24 md:pt-28 pb-16">
-          {/* 30일 챌린지 = 메인 상품. mind_track 쿼리가 없어도 항상 노출 */}
+          {/* 7일 트랙 = 메인 상품. mind_track 쿼리가 없어도 항상 노출 */}
           <MindTrackCheckoutHero />
 
           <motion.div
@@ -53,7 +53,7 @@ const Pricing = () => {
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               회원가입만 해도 모든 검사·결과 리포트·관찰 기록을 무료로 사용할 수 있어요.
-              <br />깊은 변화가 필요할 때 <strong className="text-foreground">30일 챌린지</strong> 단 하나를 선택하세요.
+              <br />깊은 변화가 필요할 때 <strong className="text-foreground">7일 트랙</strong> 단 하나를 선택하세요.
             </p>
           </motion.div>
 
@@ -136,7 +136,7 @@ const Pricing = () => {
                   <ul className="space-y-2">
                     <li className="flex items-start gap-2"><Check className="w-4 h-4 text-primary mt-0.5" /><span className="text-sm">기관 전용 대시보드 + 다중 사용자 관리</span></li>
                     <li className="flex items-start gap-2"><Check className="w-4 h-4 text-primary mt-0.5" /><span className="text-sm">화이트라벨 리포트 PDF 발급</span></li>
-                    <li className="flex items-start gap-2"><Check className="w-4 h-4 text-primary mt-0.5" /><span className="text-sm">단체 30일 챌린지 라이선스</span></li>
+                    <li className="flex items-start gap-2"><Check className="w-4 h-4 text-primary mt-0.5" /><span className="text-sm">단체 7일 트랙 라이선스</span></li>
                   </ul>
                 </CardContent>
                 <CardFooter>
@@ -170,7 +170,7 @@ const Pricing = () => {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                   >
-                    30일 챌린지 시작하기 · ₩19,900
+                    7일 트랙 시작하기 · ₩7,900
                   </Button>
                   <Button
                     size="lg"

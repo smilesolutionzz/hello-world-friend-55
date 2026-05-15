@@ -116,7 +116,7 @@ export const MindTrack30Showcase = () => {
             size="lg"
             className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-7 h-12 font-semibold group"
           >
-            30일 마음 트랙 시작하기
+            7일 마음 트랙 시작하기 · ₩7,900
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
           <Button

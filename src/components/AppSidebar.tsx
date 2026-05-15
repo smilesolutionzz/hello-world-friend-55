@@ -31,7 +31,6 @@ import { MIND_TRACK_7_PRICE, MIND_TRACK_PRICE } from "@/constants/tokenCosts"
 
 const mindTrackItems = [
   { title: `7일 마음 트랙 · ₩${MIND_TRACK_7_PRICE.toLocaleString()}`, url: "/mind-track", icon: Sparkles, badge: "추천" },
-  { title: `30일 옵션 · ₩${MIND_TRACK_PRICE.toLocaleString()}`, url: "/mind-track?plan=30d", icon: CalendarDays },
 ]
 
 const mainItems = [

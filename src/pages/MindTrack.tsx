@@ -663,18 +663,18 @@ const MindTrack: React.FC = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-                        30 Day Mind Track
+                        7 Day Mind Track
                       </p>
                       <h2 className="text-xl md:text-2xl font-bold text-foreground break-keep leading-snug">
-                        하루 3분, 30일 마음 변화 트랙
+                        하루 3분, 7일 마음 변화 트랙
                       </h2>
                       <p className="text-sm text-foreground/70 mt-1 break-keep">
-                        Day 01부터 Day 30까지 매일 맞춤 미션과 코칭 인사이트를 받아보세요.
+                        Day 01부터 Day 07까지 매일 맞춤 미션과 코칭 인사이트로 첫 변화를 만들고, 원하면 +23일 연장으로 30일까지 확장할 수 있어요.
                       </p>
                     </div>
                   </div>
 
-                  {/* 상단 30칸 그리드는 액션북 미리보기와 중복되어 제거 — 흐름은 타임라인 + 미리보기 한 곳에서만 표현 */}
+                  {/* 상단 일차 그리드는 액션북 미리보기와 중복되어 제거 — 흐름은 타임라인 + 미리보기 한 곳에서만 표현 */}
 
                   <ActionBookPreviewSection
                     nickname={sampleSeed.nickname}
@@ -693,7 +693,7 @@ const MindTrack: React.FC = () => {
                   <div className="flex items-center justify-between gap-3 pt-4 mt-4 border-t border-[#C8B88A]/20">
                     <div className="flex items-center gap-2 text-xs text-foreground/60">
                       <Shield className="w-3.5 h-3.5" />
-                      <span>{isLoggedIn ? '구독 후 이용 가능' : '로그인 후 결제하면 즉시 시작'}</span>
+                      <span>{isLoggedIn ? '결제 후 즉시 시작' : '로그인 후 결제하면 즉시 시작'}</span>
                     </div>
                     <Button
                       onClick={() => {
@@ -704,9 +704,21 @@ const MindTrack: React.FC = () => {
                       className="rounded-full bg-[#1a1a1a] text-white hover:bg-black"
                     >
                       <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-                      ₩{TRACK_PRICE.toLocaleString()} 시작하기
+                      ₩{TRACK_PRICE.toLocaleString()} · 7일 시작
                       <ArrowRight className="w-3.5 h-3.5 ml-1" />
                     </Button>
+                  </div>
+                  <div className="pt-2 text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleStartCtaClick('lock_card_long_option');
+                        navigate(isLoggedIn ? '/token-subscription?plan=30d' : '/auth?next=/token-subscription?plan=30d');
+                      }}
+                      className="text-[11px] text-foreground/55 underline underline-offset-2 hover:text-foreground"
+                    >
+                      처음부터 길게 가고 싶다면 · 30일 트랙 ₩{LONG_TRACK_PRICE.toLocaleString()}
+                    </button>
                   </div>
                 </div>
               );

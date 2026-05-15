@@ -41,14 +41,15 @@ export const MindTrack30Showcase = () => {
           transition={{ duration: 0.6 }}
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#C8B88A]/40 text-[#8A7A4E] text-[11px] md:text-xs font-semibold tracking-[0.18em] mb-4">
-            AIHPRO · MIND TRACK 30
+            AIHPRO · MIND TRACK 7
           </div>
           <h2 className="text-2xl md:text-5xl font-black text-slate-900 leading-[1.15] tracking-[-0.02em] break-keep">
             하루 7분, <br className="md:hidden" />
-            30일의 변화.
+            7일의 시작.
           </h2>
           <p className="mt-4 text-sm md:text-lg text-slate-500 break-keep max-w-xl mx-auto leading-relaxed">
-            30일 마음 트랙이 무엇인지, 25초 영상으로 보여드릴게요.
+            ₩7,900으로 시작하는 7일 마음 트랙, 25초 영상으로 보여드릴게요.<br className="hidden md:block" />
+            <span className="text-slate-400 text-xs md:text-sm">처음부터 길게 가고 싶다면 30일(₩19,900) 옵션도 있어요.</span>
           </p>
         </motion.div>
 

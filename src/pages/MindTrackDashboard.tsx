@@ -601,16 +601,16 @@ export default function MindTrackDashboard() {
           </div>
         </section>
 
-        {/* 30일 미니 그리드 — 한눈에 진행 상황 */}
+        {/* N일 미니 그리드 — 한눈에 진행 상황 */}
         <section className="px-4 pb-6">
           <div className="max-w-3xl mx-auto">
             <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-slate-500" />
-                <h3 className="text-sm font-bold text-slate-900">30일 진행 현황</h3>
+                <h3 className="text-sm font-bold text-slate-900">{totalDays}일 진행 현황</h3>
               </div>
-              <div className="grid grid-cols-10 gap-1.5">
-                {Array.from({ length: 30 }, (_, i) => {
+              <div className={isShortTrack ? "grid grid-cols-7 gap-2" : "grid grid-cols-10 gap-1.5"}>
+                {Array.from({ length: totalDays }, (_, i) => {
                   const d = i + 1;
                   const c = allCheckins.find((x) => x.day_number === d);
                   const isToday = d === day;
@@ -621,7 +621,7 @@ export default function MindTrackDashboard() {
                     <button
                       key={d}
                       onClick={() => navigate(`/mind-track/workbook?day=${d}`)}
-                      className={`relative aspect-square rounded-md text-[10px] font-bold flex items-center justify-center transition-all overflow-hidden ${
+                      className={`relative aspect-square rounded-md ${isShortTrack ? "text-xs" : "text-[10px]"} font-bold flex items-center justify-center transition-all overflow-hidden ${
                         isCompleted
                           ? "bg-white text-slate-300"
                           : isToday
@@ -650,7 +650,7 @@ export default function MindTrackDashboard() {
                               height: "82%",
                               border: "2px solid #d63b3b",
                               color: "#d63b3b",
-                              fontSize: "9px",
+                              fontSize: isShortTrack ? "11px" : "9px",
                               fontFamily: "'Instrument Serif', serif",
                               letterSpacing: "0.02em",
                               boxShadow: "inset 0 0 0 1px rgba(214,59,59,0.15)",

@@ -38,14 +38,14 @@ import StickyTrackCTA from '@/components/mind-track/StickyTrackCTA';
 import { matchTrack, getAxis, recommendTracks, TRACK_TAGS, type CategoryAxis } from '@/lib/mindTrackCategories';
 import type { MindTrackFocusId } from '@/lib/mindTrackFocusTracks';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
-import { MIND_TRACK_7_PRICE, MIND_TRACK_7_ORIGINAL_PRICE, MIND_TRACK_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_7_PRICE, MIND_TRACK_7_ORIGINAL_PRICE } from '@/constants/tokenCosts';
 import { WORKBOOK_TOTAL_CHAPTERS } from '@/lib/mindTrackChapters';
 // 결제자는 /mind-track/dashboard 전용 페이지로 자동 리다이렉트됨 (아래 분기 참고)
 
-// 메인 진입점은 7일 트랙 (₩7,900). 30일은 처음부터 길게 가는 사용자용 보조 옵션
+// /mind-track 페이지는 7일 트랙(₩7,900) 단일 진입점으로 운영
+// 30일 옵션은 결제 페이지에서만 노출 (이 페이지에서는 일체 노출 금지)
 const TRACK_PRICE = MIND_TRACK_7_PRICE;
 const TRACK_ORIGINAL_PRICE = MIND_TRACK_7_ORIGINAL_PRICE;
-const LONG_TRACK_PRICE = MIND_TRACK_PRICE;
 const TRACK_TOTAL_DAYS = 7;
 const REFUND_WINDOW_DAYS = 14;
 const SAMPLE_CHAPTER_COUNT = WORKBOOK_TOTAL_CHAPTERS;

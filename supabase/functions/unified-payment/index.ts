@@ -243,32 +243,70 @@ serve(async (req) => {
         console.log(`✅ Added 1 report credit for user ${payment.user_id}`);
 
       } else if (productType === 'subscription' || productType === 'pass' || productType === 'mind_track') {
-        // 구독 처리 - 월간(30일), 연간(365일), 또는 마음 트랙(30일 일시불)
+        // 구독 처리 - 월간(30일), 연간(365일), 마음 트랙 7일/30일/연장권
         const startDate = new Date();
         const endDate = new Date(startDate);
-        const isYearly = payment.toss_order_id?.includes('subscription_yearly');
-        endDate.setDate(endDate.getDate() + (isYearly ? 365 : 30));
+        const orderId = payment.toss_order_id || '';
+        const isYearly = orderId.includes('subscription_yearly');
+        const isMindTrack7 = orderId.includes('mind_track_7') && !orderId.includes('mind_track_30');
+        const isExtend23 = orderId.includes('mind_track_extend_23');
+        const days = isYearly ? 365 : isMindTrack7 ? 7 : isExtend23 ? 23 : 30;
+        endDate.setDate(endDate.getDate() + days);
 
-        // 기존 구독 취소
-        await supabaseAdmin
-          .from('user_subscriptions')
-          .update({ status: 'cancelled' })
-          .eq('user_id', payment.user_id)
-          .eq('status', 'active');
+        // 기존 구독 취소 (연장권은 기존 구독 취소하지 않고 연장)
+        if (!isExtend23) {
+          await supabaseAdmin
+            .from('user_subscriptions')
+            .update({ status: 'cancelled' })
+            .eq('user_id', payment.user_id)
+            .eq('status', 'active');
+        }
 
-        // 새 구독 생성
-        await supabaseAdmin
-          .from('user_subscriptions')
-          .insert({
-            user_id: payment.user_id,
-            subscription_type: 'premium',
-            payment_method: 'toss',
-            current_period_start: startDate.toISOString().split('T')[0],
-            current_period_end: endDate.toISOString().split('T')[0],
-            status: 'active',
-          });
+        // 새 구독 생성 (연장권은 기존 활성 구독의 end_date를 +23일)
+        if (isExtend23) {
+          const { data: activeSub } = await supabaseAdmin
+            .from('user_subscriptions')
+            .select('id, current_period_end')
+            .eq('user_id', payment.user_id)
+            .eq('status', 'active')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
 
-        console.log(`✅ Created premium subscription for user ${payment.user_id}`);
+          if (activeSub?.id) {
+            const base = activeSub.current_period_end ? new Date(activeSub.current_period_end) : startDate;
+            base.setDate(base.getDate() + 23);
+            await supabaseAdmin
+              .from('user_subscriptions')
+              .update({ current_period_end: base.toISOString().split('T')[0] })
+              .eq('id', activeSub.id);
+          } else {
+            // 활성 구독 없으면 신규 발급 (총 30일 = 7+23)
+            const newEnd = new Date(startDate);
+            newEnd.setDate(newEnd.getDate() + 30);
+            await supabaseAdmin.from('user_subscriptions').insert({
+              user_id: payment.user_id,
+              subscription_type: 'premium',
+              payment_method: 'toss',
+              current_period_start: startDate.toISOString().split('T')[0],
+              current_period_end: newEnd.toISOString().split('T')[0],
+              status: 'active',
+            });
+          }
+        } else {
+          await supabaseAdmin
+            .from('user_subscriptions')
+            .insert({
+              user_id: payment.user_id,
+              subscription_type: 'premium',
+              payment_method: 'toss',
+              current_period_start: startDate.toISOString().split('T')[0],
+              current_period_end: endDate.toISOString().split('T')[0],
+              status: 'active',
+            });
+        }
+
+        console.log(`✅ Subscription processed (${days}d) for user ${payment.user_id}`);
 
         // 🎯 Mind Track: also activate the enrollment row so MindTrackStart finds it.
         if (productType === 'mind_track') {

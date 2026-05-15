@@ -10,11 +10,13 @@ export type MindTrackDashboardState =
       kind: "active";
       enrollmentId: string;
       workbook: any;
-      currentDay: number; // clamped 1..30
-      rawDay: number; // unclamped — can be <1 or >30
+      currentDay: number; // clamped 1..totalDays
+      rawDay: number; // unclamped — can be <1 or >totalDays
       hasStartedAt: boolean;
       todayMission: any | null;
       completed: number;
+      trackType: string; // mind_7day | mind_30day | ...
+      totalDays: number; // 7 또는 30 (track_type 기준)
     };
 
 // UTC 기준 일수 차이 — 사용자의 로컬 타임존 영향을 받지 않음

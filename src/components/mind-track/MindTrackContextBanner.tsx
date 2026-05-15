@@ -6,10 +6,10 @@ import { AlertCircle, Sparkles, MessageCircle, Award, ShieldCheck, Crown, Clipbo
 import { supabase } from "@/integrations/supabase/client";
 
 const OFFERING_INFO: Record<string, { label: string; price: number; icon: any; color: string; topic: string }> = {
-  text_review: { label: "Day 7 텍스트 점검 (₩9,900)", price: 9900, icon: MessageCircle, color: "from-blue-500 to-cyan-500", topic: "30일 트랙 1주차 적응 점검을 받고 싶어요. 지금까지의 체크인 데이터를 검토해주세요." },
-  midcheck: { label: "Day 14 미드체크 (₩29,000)", price: 29000, icon: Award, color: "from-primary to-purple-600", topic: "30일 트랙 절반 지점에서 1:1 미드체크 상담을 받고 싶어요. 변화 그래프를 함께 보고 싶습니다." },
-  urgent: { label: "Day 21 심화 케어 (₩49,000)", price: 49000, icon: ShieldCheck, color: "from-rose-500 to-orange-500", topic: "30일 트랙 마지막 9일을 위한 심화 케어 우선 매칭이 필요해요." },
-  premium_60: { label: "Day 30 프리미엄 트랙 (₩99,000)", price: 99000, icon: Crown, color: "from-amber-500 to-yellow-500", topic: "30일 트랙을 완료했어요. 다음 60일 프리미엄 트랙에 등록하고 싶어요." },
+  text_review: { label: "Day 7 텍스트 점검 (₩9,900)", price: 9900, icon: MessageCircle, color: "from-blue-500 to-cyan-500", topic: "7일 마음 트랙 중간 점검을 받고 싶어요. 지금까지의 체크인 데이터를 검토해주세요." },
+  midcheck: { label: "Day 14 미드체크 (₩29,000)", price: 29000, icon: Award, color: "from-primary to-purple-600", topic: "마음 트랙 절반 지점에서 1:1 미드체크 상담을 받고 싶어요. 변화 그래프를 함께 보고 싶습니다." },
+  urgent: { label: "Day 21 심화 케어 (₩49,000)", price: 49000, icon: ShieldCheck, color: "from-rose-500 to-orange-500", topic: "마음 트랙 후반부를 위한 심화 케어 우선 매칭이 필요해요." },
+  premium_60: { label: "Day 30 프리미엄 트랙 (₩99,000)", price: 99000, icon: Crown, color: "from-amber-500 to-yellow-500", topic: "마음 트랙을 완료했어요. 다음 60일 프리미엄 트랙에 등록하고 싶어요." },
 };
 
 const GOAL_LABEL: Record<string, string> = {
@@ -62,12 +62,12 @@ export function useMindTrackPrefill(): PrefilledContext | null {
   let scoreLine: string | undefined;
 
   if (from === "mission_difficult") {
-    topic = `오늘의 30일 챌린지 미션(Day ${day ?? "?"})이 어렵게 느껴져요. 어떻게 풀어가면 좋을지 도와주세요.`;
+    topic = `오늘의 마음 트랙 미션(Day ${day ?? "?"})이 어렵게 느껴져요. 어떻게 풀어가면 좋을지 도와주세요.`;
     badge = `Day ${day ?? "?"} 미션 어려움`;
     Icon = AlertCircle;
     color = "from-amber-500 to-orange-500";
   } else if (from === "risk_alert") {
-    topic = "30일 트랙 진행 중 어려움이 감지되어 무료 케어 전문가 매칭을 요청합니다.";
+    topic = "마음 트랙 진행 중 어려움이 감지되어 무료 케어 전문가 매칭을 요청합니다.";
     badge = "위험 감지 케어콜";
     Icon = AlertCircle;
     color = "from-rose-500 to-red-500";
@@ -145,7 +145,7 @@ export default function MindTrackContextBanner({ ctx }: Props) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <Badge className="bg-white/25 text-white border-0 text-[10px]">30일 마음 트랙</Badge>
+            <Badge className="bg-white/25 text-white border-0 text-[10px]">마음 트랙</Badge>
             <Badge className="bg-white text-slate-900 border-0 text-[10px] font-bold">{ctx.badge}</Badge>
           </div>
           <p className="text-sm font-medium break-keep leading-snug">{ctx.topic}</p>

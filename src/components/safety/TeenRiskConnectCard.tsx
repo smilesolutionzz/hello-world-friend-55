@@ -92,8 +92,7 @@ export function TeenRiskConnectCard({ referral, showGuardianForm = true }: Props
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak: { mode: ['css', 'avoid-all'] },
-        })
+        } as any)
         .from(reportRef.current)
         .save()
     } catch (e) {

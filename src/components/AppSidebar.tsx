@@ -12,7 +12,6 @@ import {
   Building2,
   Share2,
   Sparkles,
-  CalendarDays,
 } from "lucide-react"
 
 import {

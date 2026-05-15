@@ -1,12 +1,34 @@
-// 30일 마음 변화 트랙 — Day별 짧은 설명 카피
-// 사용처: /mind-track 진행 배너, /mind-track-workbook?day=N 헤더
+// 마음 변화 트랙 — Day별 카피 (7일 / 30일)
+// 사용처: /mind-track 진행 배너, /mind-track-workbook?day=N 헤더, /mind-track/dashboard
 // 톤: 코칭/비의료, 친근하지만 전문적
+// 7일 트랙: 압축 집중형 (진단 → 자기관찰 → 패턴인식 → 전문가 개입 → 회복 루틴 고정 → 변화 리포트)
 
 export interface DayCopy {
   phase: string;        // 단계 이름 (예: "정렬 주차")
   title: string;        // 한 줄 요약
   description: string;  // 부연 설명 (1~2문장)
 }
+
+const PHASES_7 = {
+  d1: 'Day 1 · 발가벗기',
+  d2: 'Day 2 · 패턴 추적',
+  d3: 'Day 3 · 뿌리 진단',
+  d4: 'Day 4 · 전문가 개입',
+  d5: 'Day 5 · 회복 루틴 설계',
+  d6: 'Day 6 · 실전 적용',
+  d7: 'Day 7 · 변화 리포트',
+} as const;
+
+// 7일 압축 집중 트랙 — 모든 기능을 총동원해 "진짜 변화"가 일어나도록 설계
+const DAY_COPY_7: Record<number, DayCopy> = {
+  1: { phase: PHASES_7.d1, title: '나를 완전히 발가벗겨보기 (기초 진단)', description: '5종 자가진단 + 마음 점수 측정으로 출발선을 정확히 기록해요. 이 데이터가 7일 후 비교의 기준이 됩니다.' },
+  2: { phase: PHASES_7.d2, title: '하루 24시간, 내 감정/에너지 추적', description: '아침·점심·저녁 3회 마이크로 체크인으로 나만의 패턴을 찾아내요. AI가 자동으로 트렌드를 분석합니다.' },
+  3: { phase: PHASES_7.d3, title: '뿌리 패턴 진단 (심층 분석 리포트)', description: '2일간 쌓인 데이터를 박사급 AI가 분석해 핵심 패턴 1가지를 골라줘요. "왜 이렇게 사는지"가 보입니다.' },
+  4: { phase: PHASES_7.d4, title: '전문가 1:1 개입 (15분 무료 매칭 상담)', description: '내 데이터를 본 전문가가 직접 처방을 줘요. 혼자선 절대 못 보는 사각지대를 짚어줍니다.' },
+  5: { phase: PHASES_7.d5, title: '나만의 회복 루틴 3가지 고정', description: '4일간 가장 효과 있던 행동을 3가지로 압축해 일상에 심어요. 이게 평생 갑니다.' },
+  6: { phase: PHASES_7.d6, title: '실전 — 가장 어려운 상황에 적용', description: '평소 가장 무너지던 순간(스트레스/관계/수면)에 새 루틴을 직접 써봐요. 진짜 변화가 검증되는 날.' },
+  7: { phase: PHASES_7.d7, title: '7일 변화 리포트 + 다음 30일 가이드', description: 'Day 1과 비교한 종합 변화 리포트(PDF) + 이후에도 지속 가능한 셀프 코칭 가이드를 받습니다.' },
+};
 
 const PHASES = {
   week1: '1주차 · 출발 정렬',
@@ -53,24 +75,36 @@ const DAY_COPY: Record<number, DayCopy> = {
   30: { phase: PHASES.week5, title: '나의 30일 변화 리포트', description: '시작과 지금을 비교한 종합 리포트와 다음 한 달 가이드를 받아봐요.' },
 };
 
-export function getDayCopy(day: number): DayCopy {
+/**
+ * 지정된 트랙 길이(7 또는 30일)에 맞는 Day별 카피를 반환.
+ * - 7일 트랙은 압축 집중형 (진단 → 전문가 → 회복 루틴)
+ * - 30일 트랙은 점진적 코칭형
+ */
+export function getDayCopy(day: number, totalDays: number = 30): DayCopy {
+  if (totalDays === 7) {
+    const safe = Math.min(Math.max(Math.round(day), 1), 7);
+    return DAY_COPY_7[safe];
+  }
   const safe = Math.min(Math.max(Math.round(day), 1), 30);
   return DAY_COPY[safe];
 }
 
 /**
- * started_at(또는 ISO 문자열)과 현재 시각 기준으로 1~30 사이 currentDay를 계산.
+ * started_at(또는 ISO 문자열)과 현재 시각 기준으로 1~totalDays 사이 currentDay를 계산.
  * - 시작일 당일은 Day 1
- * - 자정(KST 기준 X, 단순 24시간 경과 기준)을 넘기면 +1
- * - 30 초과 시 30으로 고정
+ * - 24시간 경과 기준
+ * - totalDays 초과 시 totalDays로 고정 (기본 30, 7일 트랙은 7 전달)
  */
-export function calcMindTrackCurrentDay(startedAt: string | Date | null | undefined): number {
+export function calcMindTrackCurrentDay(
+  startedAt: string | Date | null | undefined,
+  totalDays: number = 30,
+): number {
   if (!startedAt) return 1;
   const start = typeof startedAt === 'string' ? new Date(startedAt) : startedAt;
   if (Number.isNaN(start.getTime())) return 1;
   const diffMs = Date.now() - start.getTime();
   const dayIndex = Math.floor(diffMs / 86_400_000) + 1;
   if (dayIndex < 1) return 1;
-  if (dayIndex > 30) return 30;
+  if (dayIndex > totalDays) return totalDays;
   return dayIndex;
 }

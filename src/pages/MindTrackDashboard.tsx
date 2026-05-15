@@ -33,6 +33,7 @@ interface Enrollment {
   status: string;
   goal_focus: string | null;
   payment_status: string;
+  track_type: string | null;
 }
 
 /**
@@ -92,7 +93,7 @@ export default function MindTrackDashboard() {
       }
       const { data, error } = await supabase
         .from("mind_track_enrollments")
-        .select("id, started_at, current_day, status, goal_focus, payment_status")
+        .select("id, started_at, current_day, status, goal_focus, payment_status, track_type")
         .eq("user_id", user.id)
         .in("status", ["active", "in_progress"])
         .order("created_at", { ascending: false })
@@ -100,7 +101,7 @@ export default function MindTrackDashboard() {
         .maybeSingle();
       if (cancelled) return;
       if (error || !data || (data.payment_status !== "paid" && data.payment_status !== "completed")) {
-        toast.info("아직 30일 마음 트랙에 등록되지 않았어요");
+        toast.info("아직 마음 트랙에 등록되지 않았어요");
         navigate("/mind-track", { replace: true });
         return;
       }
@@ -154,12 +155,20 @@ export default function MindTrackDashboard() {
   }, []);
 
 
+  const totalDays = useMemo(() => {
+    const t = (enrollment?.track_type || "mind_7day").toLowerCase();
+    return t.includes("30") ? 30 : 7;
+  }, [enrollment?.track_type]);
+
   const day = useMemo(
-    () => (enrollment ? calcMindTrackCurrentDay(enrollment.started_at) : 1),
-    [enrollment]
+    () => (enrollment ? calcMindTrackCurrentDay(enrollment.started_at, totalDays) : 1),
+    [enrollment, totalDays]
   );
-  const copy = getDayCopy(day);
-  const progressPct = Math.round((day / 30) * 100);
+  const copy = getDayCopy(day, totalDays);
+  const progressPct = Math.round((day / totalDays) * 100);
+  const trackLabel = totalDays === 7 ? "7일 마음 트랙" : "30일 마음 트랙";
+  const isShortTrack = totalDays === 7;
+  const isFinalDay = day >= totalDays;
 
   // 첫 진입 1회 온보딩 + "오늘 다시 보지 않기" 지원
   const todayKey = () => new Date().toISOString().slice(0, 10); // YYYY-MM-DD (local-ish)
@@ -282,8 +291,10 @@ export default function MindTrackDashboard() {
   return (
     <>
       <SEOHead
-        title="30일 마음 트랙 · 내 대시보드"
-        description="오늘의 미션과 진행률, 변화 추이를 한눈에 확인하세요."
+        title={`${trackLabel} · 내 대시보드 | AIHPRO`}
+        description={isShortTrack
+          ? "7일 안에 진단·자기관찰·전문가 개입·회복 루틴까지 완주하는 압축 마음 변화 트랙. 오늘의 미션과 변화 추이를 한눈에."
+          : "30일 마음 트랙 대시보드 — 오늘의 미션과 진행률, 변화 추이를 한눈에 확인하세요."}
         canonicalUrl="https://aihpro.app/mind-track/dashboard"
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/20">
@@ -296,7 +307,7 @@ export default function MindTrackDashboard() {
           onSnoozeToday={snoozeOnboardingToday}
         />
 
-        {/* 헤더 — Day N/30 + 진행률 + 스트릭 */}
+        {/* 헤더 — Day N/totalDays + 진행률 + 스트릭 */}
         <section className="px-4 pt-24 pb-4">
           <div className="max-w-3xl mx-auto">
             <motion.div
@@ -307,9 +318,9 @@ export default function MindTrackDashboard() {
             >
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className="bg-emerald-500/15 text-emerald-700 border-0 text-xs">진행 중</Badge>
+                  <Badge className="bg-emerald-500/15 text-emerald-700 border-0 text-xs">{trackLabel} 진행 중</Badge>
                   <span className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-                    Day {String(day).padStart(2, "0")} / 30 · {copy.phase}
+                    Day {String(day).padStart(2, "0")} / {totalDays} · {copy.phase}
                   </span>
                   {(() => {
                     const f = getFocus(enrollment.goal_focus);
@@ -590,16 +601,16 @@ export default function MindTrackDashboard() {
           </div>
         </section>
 
-        {/* 30일 미니 그리드 — 한눈에 진행 상황 */}
+        {/* N일 미니 그리드 — 한눈에 진행 상황 */}
         <section className="px-4 pb-6">
           <div className="max-w-3xl mx-auto">
             <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-slate-500" />
-                <h3 className="text-sm font-bold text-slate-900">30일 진행 현황</h3>
+                <h3 className="text-sm font-bold text-slate-900">{totalDays}일 진행 현황</h3>
               </div>
-              <div className="grid grid-cols-10 gap-1.5">
-                {Array.from({ length: 30 }, (_, i) => {
+              <div className={isShortTrack ? "grid grid-cols-7 gap-2" : "grid grid-cols-10 gap-1.5"}>
+                {Array.from({ length: totalDays }, (_, i) => {
                   const d = i + 1;
                   const c = allCheckins.find((x) => x.day_number === d);
                   const isToday = d === day;
@@ -610,7 +621,7 @@ export default function MindTrackDashboard() {
                     <button
                       key={d}
                       onClick={() => navigate(`/mind-track/workbook?day=${d}`)}
-                      className={`relative aspect-square rounded-md text-[10px] font-bold flex items-center justify-center transition-all overflow-hidden ${
+                      className={`relative aspect-square rounded-md ${isShortTrack ? "text-xs" : "text-[10px]"} font-bold flex items-center justify-center transition-all overflow-hidden ${
                         isCompleted
                           ? "bg-white text-slate-300"
                           : isToday
@@ -639,7 +650,7 @@ export default function MindTrackDashboard() {
                               height: "82%",
                               border: "2px solid #d63b3b",
                               color: "#d63b3b",
-                              fontSize: "9px",
+                              fontSize: isShortTrack ? "11px" : "9px",
                               fontFamily: "'Instrument Serif', serif",
                               letterSpacing: "0.02em",
                               boxShadow: "inset 0 0 0 1px rgba(214,59,59,0.15)",
@@ -676,7 +687,7 @@ export default function MindTrackDashboard() {
                 <div className="flex items-center gap-2">
                   <Award className="w-4 h-4 text-slate-500" />
                   <h3 className="text-sm font-bold text-slate-900">시작 시점 지표</h3>
-                  <span className="text-[10px] text-slate-400">· 30일 후 비교 예정</span>
+                  <span className="text-[10px] text-slate-400">· {totalDays}일 후 비교 예정</span>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   <BaselineBar label="스트레스" value={baseline.stress ?? 0} color="bg-rose-400" />
@@ -734,6 +745,80 @@ export default function MindTrackDashboard() {
           </section>
         )}
 
+        {/* 7일 완주 업셀 — Day 6 이후 또는 7일차일 때 30일 풀 트랙으로 유도 */}
+        {isShortTrack && day >= 6 && (
+          <section className="px-4 pb-8">
+            <div className="max-w-3xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] text-white rounded-3xl p-7 md:p-8 shadow-xl"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-4 h-4 text-[#C8B88A]" />
+                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#C8B88A]">
+                    {isFinalDay ? "7일 완주 · 다음 단계" : "곧 완주 · 다음 단계 미리보기"}
+                  </span>
+                </div>
+                <h3 className="text-xl md:text-2xl font-black break-keep leading-tight mb-2">
+                  {isFinalDay
+                    ? "7일이 끝났어요. 이제 진짜 변화를 굳힐 시간"
+                    : "7일이 짧게 느껴지나요? +23일로 풀 30일 트랙 완주"}
+                </h3>
+                <p className="text-sm text-white/70 break-keep leading-relaxed mb-5">
+                  7일은 패턴을 발견하는 단계, 30일은 그 패턴을 뇌에 새기는 단계예요.
+                  지금까지 쌓은 데이터·진단·전문가 피드백을 그대로 이어받아 23일을 추가합니다.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
+                  <Button
+                    onClick={() => navigate("/mind-track?plan=extend_23")}
+                    className="h-12 bg-white text-black hover:bg-white/90 rounded-xl font-bold"
+                  >
+                    +23일 연장권 보기 (₩12,900)
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate("/expert-hiring?from=mind_track_complete")}
+                    className="h-12 rounded-xl border-white/20 bg-transparent text-white hover:bg-white/10"
+                  >
+                    <Phone className="w-4 h-4 mr-2" /> 전문가 1:1 이어가기
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+          </section>
+        )}
+
+        {/* FAQ — 7일 트랙 중심 통일 */}
+        <section className="px-4 pb-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 md:p-7 space-y-1">
+              <div className="flex items-center gap-2 mb-3">
+                <HelpCircle className="w-4 h-4 text-slate-500" />
+                <h3 className="text-sm font-bold text-slate-900">자주 묻는 질문</h3>
+              </div>
+              {(isShortTrack ? FAQ_7 : FAQ_30).map((q, i) => (
+                <details
+                  key={i}
+                  className="group border-b border-slate-100 last:border-b-0 py-3"
+                >
+                  <summary className="flex items-center justify-between cursor-pointer list-none">
+                    <span className="text-sm font-semibold text-slate-800 break-keep pr-3">
+                      {q.q}
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-90 shrink-0" />
+                  </summary>
+                  <p className="text-[13px] text-slate-600 leading-relaxed break-keep mt-2 pr-6">
+                    {q.a}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="px-4 py-8 max-w-3xl mx-auto">
           <MedicalDisclaimer variant="compact" />
         </section>
@@ -743,6 +828,20 @@ export default function MindTrackDashboard() {
     </>
   );
 }
+
+const FAQ_7: { q: string; a: string }[] = [
+  { q: "왜 7일인가요? 너무 짧지 않나요?", a: "7일은 패턴을 발견하고 첫 변화를 체감하기에 충분한 시간입니다. 우리는 매일 진단·미션·전문가 개입·회복 루틴까지 압축해서 제공해요. 더 깊은 고착화를 원하시면 +23일 연장권으로 풀 30일까지 이어갈 수 있습니다." },
+  { q: "7일 안에 정말 변화가 일어나나요?", a: "Day 1 기초 진단 → Day 2 자기관찰 → Day 3 뿌리 패턴 분석 → Day 4 전문가 무료 매칭 → Day 5-6 회복 루틴 실전 적용 → Day 7 변화 리포트로 이어지는 구조라, 단순 일기 앱보다 훨씬 빠르게 '발가벗겨진 기분'과 '내가 좋아질 수 있겠다'는 확신이 옵니다." },
+  { q: "오늘 미션을 못 했어요. 어떻게 하나요?", a: "괜찮아요. 워크북에서 지난 일차로 돌아가 언제든 완료할 수 있습니다. 7일 트랙은 시작일 기준으로 자동 진행되지만, 미션 자체는 평생 열람 가능해요." },
+  { q: "전문가 상담은 어떻게 받나요?", a: "Day 4에 자동으로 매칭 카드가 뜹니다. 7일 트랙 결제자에게는 첫 15분 무료 상담 크레딧이 포함돼 있어요. 대시보드 빠른 메뉴의 '전문가 상담'에서도 언제든 매칭 가능합니다." },
+  { q: "7일이 끝나면 어떻게 되나요?", a: "Day 7에 종합 변화 리포트(PDF)와 다음 30일 셀프 코칭 가이드를 받습니다. 더 깊이 가고 싶다면 +23일 연장권(₩12,900)으로 30일 풀 트랙으로 자연스럽게 이어집니다." },
+];
+
+const FAQ_30: { q: string; a: string }[] = [
+  { q: "30일 동안 매일 뭘 하나요?", a: "주차별로 정렬·루틴·패턴 전환·깊이 코칭·리포트 단계가 있고, 매일 5분 안에 끝나는 미션이 자동으로 배정됩니다." },
+  { q: "오늘 미션을 못 했어요. 어떻게 하나요?", a: "워크북에서 지난 일차로 돌아가 언제든 완료할 수 있어요. 진행률은 자동으로 업데이트됩니다." },
+  { q: "전문가 상담은 어떻게 받나요?", a: "대시보드 빠른 메뉴의 '전문가 상담'에서 언제든 매칭 가능하며, 30일 구독자에게는 매월 무료 상담 크레딧이 자동 지급됩니다." },
+];
 
 function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (

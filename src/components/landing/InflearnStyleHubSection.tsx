@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowRight, Flame, TrendingUp, Stethoscope, MessageSquareHeart, Shield, ChevronRight } from 'lucide-react';
-import { MIND_TRACK_FOCUSES } from '@/lib/mindTrackFocusTracks';
+import { Sparkles, ArrowRight, Flame, TrendingUp, Stethoscope, MessageSquareHeart, Shield, ChevronRight, Check, Calendar } from 'lucide-react';
+import { MIND_TRACK_FOCUSES, type MindTrackFocus } from '@/lib/mindTrackFocusTracks';
 import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 /**
  * 인플런 스타일 허브 섹션 — 메인 홈에서

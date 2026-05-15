@@ -165,7 +165,7 @@ export default function MindTrackStart() {
         },
       });
       if (error || !data?.success) throw new Error(data?.error || error?.message || "초기 진단 처리 실패");
-      toast.success("초기 리포트와 30일 워크북이 준비됐어요!");
+      toast.success("초기 리포트와 맞춤 워크북이 준비됐어요!");
       const sp = new URLSearchParams(window.location.search);
       const welcome = sp.get("welcome");
       navigate(welcome ? "/mind-track/workbook?welcome=1" : "/mind-track/workbook");
@@ -186,7 +186,7 @@ export default function MindTrackStart() {
 
   return (
     <>
-      <SEOHead title="초기 진단 · 30일 마음 트랙" description="결제 직후 받는 5분 초기 진단으로 나만의 워크북을 만들어요." />
+      <SEOHead title="초기 진단 · 마음 트랙" description="결제 직후 받는 5분 초기 진단으로 나만의 워크북을 만들어요." />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
         <UnifiedNavigation />
         <div className="max-w-2xl mx-auto px-4 pt-24 pb-16">
@@ -200,7 +200,7 @@ export default function MindTrackStart() {
                   지금 마음 상태를 짧게 알려주세요
                 </h1>
                 <p className="text-slate-600 break-keep">
-                  이 데이터로 30일 워크북과 매일 미션이 만들어져요. 어떤 방식으로 시작할까요?
+                  이 데이터로 맞춤 워크북과 매일 미션이 만들어져요. 어떤 방식으로 시작할까요?
                 </p>
               </div>
 

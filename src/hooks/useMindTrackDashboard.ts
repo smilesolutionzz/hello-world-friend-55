@@ -10,11 +10,13 @@ export type MindTrackDashboardState =
       kind: "active";
       enrollmentId: string;
       workbook: any;
-      currentDay: number; // clamped 1..30
-      rawDay: number; // unclamped — can be <1 or >30
+      currentDay: number; // clamped 1..totalDays
+      rawDay: number; // unclamped — can be <1 or >totalDays
       hasStartedAt: boolean;
       todayMission: any | null;
       completed: number;
+      trackType: string; // mind_7day | mind_30day | ...
+      totalDays: number; // 7 또는 30 (track_type 기준)
     };
 
 // UTC 기준 일수 차이 — 사용자의 로컬 타임존 영향을 받지 않음
@@ -92,9 +94,11 @@ export function useMindTrackDashboard() {
         const wb = wbs[0] as any;
         const hasStartedAt = !!en?.started_at;
         const startedAtIso = en?.started_at || en?.created_at || new Date().toISOString();
+        const trackType: string = (en?.track_type || "mind_7day").toLowerCase();
+        const totalDays = trackType === "mind_30day" ? 30 : 7;
         const dayDiff = utcDayDiff(startedAtIso, Date.now());
         const rawDay = dayDiff + 1;
-        const currentDay = Math.min(Math.max(rawDay, 1), 30);
+        const currentDay = Math.min(Math.max(rawDay, 1), totalDays);
 
         const [{ data: missions }, { data: checkins }] = await Promise.all([
           supabase
@@ -119,6 +123,8 @@ export function useMindTrackDashboard() {
           hasStartedAt,
           todayMission: missions ?? null,
           completed,
+          trackType,
+          totalDays,
         });
       } catch (e: any) {
         finish({ kind: "error", message: e?.message ?? "데이터를 불러오지 못했어요" });

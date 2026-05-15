@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -12,6 +12,9 @@ import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import {
+  MIND_TRACK_7_PRICE,
+  MIND_TRACK_7_ORIGINAL_PRICE,
+  MIND_TRACK_7_DISCOUNT_PERCENT,
   MIND_TRACK_PRICE,
   MIND_TRACK_ORIGINAL_PRICE,
   MIND_TRACK_DISCOUNT_PERCENT,
@@ -22,11 +25,10 @@ import WeeklyReportPreview from '@/components/mind-track/WeeklyReportPreview';
 import ExpertCreditFlow from '@/components/mind-track/ExpertCreditFlow';
 
 /**
- * 결제 페이지 — 30일 마음 변화 트랙 (₩19,900 일시불)
+ * 결제 페이지 — 7일/30일 마음 변화 트랙 토글 (디폴트 7일)
  *
- * 구조: 한 줄 정체성 → 히어로(고민 칩 + 가격) → Before/After
- *      → 데일리 미션 미리보기 → 주간 리포트 미리보기 → 전문가 상담권 흐름
- *      → 환불 보장 + FAQ + 최종 CTA
+ * - ?plan=7d (default) → ₩7,900 / 7일 트랙
+ * - ?plan=30d           → ₩19,900 / 30일 트랙 (장기 사용자용)
  */
 
 const CONCERN_CHIPS = [
@@ -38,27 +40,57 @@ const CONCERN_CHIPS = [
   { id: 'parenting', label: '육아', emoji: '👶' },
 ];
 
-const FAQS = [
-  {
-    q: '결제 후 자동으로 다시 결제되나요?',
-    a: '아니요. 30일 일시불 상품으로 자동 갱신·정기 결제가 일절 없습니다.',
-  },
-  {
-    q: '30일이 끝나면 어떻게 되나요?',
-    a: '데이터·리포트는 모두 보존되며, 원하면 다시 30일 트랙을 결제할 수 있어요. 강제 연장은 없습니다.',
-  },
-  {
-    q: '환불은 어떻게 받나요?',
-    a: '결제 후 7일 이내 100% 환불 보장입니다. 마이페이지 → 결제 내역 → 환불 요청 한 번이면 됩니다.',
-  },
-];
-
 const TokenSubscription = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { isPremiumUser, isLifetimeUser, getSubscriptionLabel } = useSubscription();
   const { pay, loading: paymentLoading, isReady } = usePayment();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [selectedConcern, setSelectedConcern] = useState<string | null>(null);
+
+  // 디폴트는 7일 트랙. ?plan=30d 일 때만 장기 옵션
+  const initialPlan = searchParams.get('plan') === '30d' ? '30d' : '7d';
+  const [plan, setPlan] = useState<'7d' | '30d'>(initialPlan);
+
+  const planInfo = useMemo(() => {
+    if (plan === '30d') {
+      return {
+        productId: 'mind_track_30',
+        title: '30일 마음 변화 트랙',
+        days: 30,
+        price: MIND_TRACK_PRICE,
+        original: MIND_TRACK_ORIGINAL_PRICE,
+        discount: MIND_TRACK_DISCOUNT_PERCENT,
+        subtitle: 'AI 코칭 + 전문가 상담 · 30일 일시불',
+        bullets: [
+          '매일 오전 8시 박사급 1:1 코칭 메일 (30일)',
+          '주간 변화 리포트 (RCI 기반)',
+          '전문가 1:1 상담 1회권 포함',
+          '20종+ 심리검사 무제한 이용',
+          '종료 시 변화 종합 PDF',
+        ],
+        heroTitle: '30일이면, 마음이 바뀝니다',
+        heroSub: '나의 가장 큰 고민을 골라보세요. 30일 코칭이 거기서 시작됩니다.',
+      } as const;
+    }
+    return {
+      productId: 'mind_track_7',
+      title: '7일 마음 변화 트랙',
+      days: 7,
+      price: MIND_TRACK_7_PRICE,
+      original: MIND_TRACK_7_ORIGINAL_PRICE,
+      discount: MIND_TRACK_7_DISCOUNT_PERCENT,
+      subtitle: 'AI 코칭 · 7일 일시불 · 메인 진입점',
+      bullets: [
+        '매일 오전 8시 1:1 맞춤 코칭 메일 (7일)',
+        '7일 변화 리포트 (Before · After)',
+        '20종+ 심리검사 무제한 이용',
+        '7일 후 +23일 연장권으로 30일까지 확장 가능',
+      ],
+      heroTitle: '7일이면, 첫 변화가 시작됩니다',
+      heroSub: '하루 3분 · 7일 만에 손에 잡히는 마음 변화. 길게 가고 싶다면 30일 옵션도 있어요.',
+    } as const;
+  }, [plan]);
 
   const isPremium = isPremiumUser() || isLifetimeUser();
   const subscriptionLabel = getSubscriptionLabel();
@@ -75,15 +107,23 @@ const TokenSubscription = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const switchPlan = (next: '7d' | '30d') => {
+    setPlan(next);
+    const sp = new URLSearchParams(searchParams);
+    if (next === '30d') sp.set('plan', '30d');
+    else sp.delete('plan');
+    setSearchParams(sp, { replace: true });
+  };
+
   const handlePay = async () => {
     if (!isAuthenticated) {
-      localStorage.setItem('auth_redirect_after', '/token-subscription');
+      localStorage.setItem('auth_redirect_after', `/token-subscription${plan === '30d' ? '?plan=30d' : ''}`);
       navigate('/auth?mode=signup');
       return;
     }
     const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
-    await ensureMindTrackEnrollment();
-    await pay('mind_track_30');
+    await ensureMindTrackEnrollment({}, plan);
+    await pay(planInfo.productId);
   };
 
   const fade = (delay: number) => ({
@@ -91,6 +131,23 @@ const TokenSubscription = () => {
     animate: { opacity: 1, y: 0 },
     transition: { delay, duration: 0.4 },
   });
+
+  const FAQS = useMemo(() => ([
+    {
+      q: '결제 후 자동으로 다시 결제되나요?',
+      a: `아니요. ${planInfo.days}일 일시불 상품으로 자동 갱신·정기 결제가 일절 없습니다.`,
+    },
+    {
+      q: `${planInfo.days}일이 끝나면 어떻게 되나요?`,
+      a: plan === '7d'
+        ? '데이터·리포트는 모두 보존되며, 원하면 +23일 연장권으로 30일까지 이어서 진행할 수 있어요.'
+        : '데이터·리포트는 모두 보존되며, 원하면 다시 트랙을 결제할 수 있어요. 강제 연장은 없습니다.',
+    },
+    {
+      q: '환불은 어떻게 받나요?',
+      a: '결제 후 7일 이내 100% 환불 보장입니다. 마이페이지 → 결제 내역 → 환불 요청 한 번이면 됩니다.',
+    },
+  ]), [plan, planInfo.days]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-background text-foreground overflow-x-hidden">
@@ -104,10 +161,34 @@ const TokenSubscription = () => {
               <Sparkles className="w-4 h-4 text-background" />
             </div>
             <div className="text-sm leading-relaxed text-foreground break-keep">
-              <span className="font-bold">결제 페이지</span> · 30일 마음 변화 트랙(₩{MIND_TRACK_PRICE.toLocaleString()})을 한 번 결제하면
-              <span className="font-semibold"> 매일 코칭 미션 · 주간 리포트 · 전문가 상담 1회권</span>이 30일간 열립니다.
+              <span className="font-bold">결제 페이지</span> · {planInfo.title}(₩{planInfo.price.toLocaleString()})을 한 번 결제하면
+              <span className="font-semibold"> 매일 코칭 미션 · {plan === '30d' ? '주간 리포트 · 전문가 상담 1회권' : '변화 리포트'}</span>이 {planInfo.days}일간 열립니다.
               <span className="text-muted-foreground"> 자동 결제 없음 · 7일 환불 보장.</span>
             </div>
+          </div>
+        </motion.div>
+
+        {/* ─────────── 플랜 토글 (7일 메인 / 30일 보조) ─────────── */}
+        <motion.div {...fade(0.05)} className="mb-6">
+          <div className="inline-flex w-full sm:w-auto rounded-2xl border border-border bg-muted/40 p-1">
+            <button
+              type="button"
+              onClick={() => switchPlan('7d')}
+              className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                plan === '7d' ? 'bg-foreground text-background shadow' : 'text-foreground/70 hover:text-foreground'
+              }`}
+            >
+              7일 · ₩{MIND_TRACK_7_PRICE.toLocaleString()} <span className="text-[10px] font-normal opacity-80">(추천)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => switchPlan('30d')}
+              className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                plan === '30d' ? 'bg-foreground text-background shadow' : 'text-foreground/70 hover:text-foreground'
+              }`}
+            >
+              30일 · ₩{MIND_TRACK_PRICE.toLocaleString()} <span className="text-[10px] font-normal opacity-80">(장기)</span>
+            </button>
           </div>
         </motion.div>
 
@@ -124,10 +205,10 @@ const TokenSubscription = () => {
               </div>
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
-              <Button size="sm" onClick={() => { localStorage.setItem('auth_redirect_after', '/token-subscription'); navigate('/auth?mode=signup'); }} className="bg-foreground hover:bg-foreground/90 text-background flex-1 sm:flex-none">
+              <Button size="sm" onClick={() => { localStorage.setItem('auth_redirect_after', `/token-subscription${plan === '30d' ? '?plan=30d' : ''}`); navigate('/auth?mode=signup'); }} className="bg-foreground hover:bg-foreground/90 text-background flex-1 sm:flex-none">
                 <UserPlus className="w-3.5 h-3.5 mr-1.5" />회원가입
               </Button>
-              <Button size="sm" variant="outline" onClick={() => { localStorage.setItem('auth_redirect_after', '/token-subscription'); navigate('/auth'); }} className="flex-1 sm:flex-none">
+              <Button size="sm" variant="outline" onClick={() => { localStorage.setItem('auth_redirect_after', `/token-subscription${plan === '30d' ? '?plan=30d' : ''}`); navigate('/auth'); }} className="flex-1 sm:flex-none">
                 로그인
               </Button>
             </div>
@@ -156,13 +237,13 @@ const TokenSubscription = () => {
         <motion.div {...fade(0.1)} className="text-center mb-8">
           <div className="inline-flex items-center gap-1.5 bg-rose-600 text-white text-xs font-black px-3.5 py-1.5 rounded-full mb-5 shadow-md shadow-rose-200 dark:shadow-rose-950/50">
             <Sparkles className="w-3.5 h-3.5" />
-            론칭 특가 {MIND_TRACK_DISCOUNT_PERCENT}% 할인
+            론칭 특가 {planInfo.discount}% 할인
           </div>
           <h1 className="text-3xl md:text-5xl font-black mb-3 text-foreground tracking-tight break-keep">
-            30일이면, 마음이 바뀝니다
+            {planInfo.heroTitle}
           </h1>
           <p className="text-muted-foreground text-base md:text-lg break-keep">
-            나의 가장 큰 고민을 골라보세요. 30일 코칭이 거기서 시작됩니다.
+            {planInfo.heroSub}
           </p>
 
           {/* 고민 칩 — 사용자가 자기 문제를 인식 */}
@@ -191,12 +272,12 @@ const TokenSubscription = () => {
           )}
         </motion.div>
 
-        {/* ─────────── 가격 카드 (간결 버전) ─────────── */}
+        {/* ─────────── 가격 카드 ─────────── */}
         <motion.div {...fade(0.15)} className="mb-2">
           <div className="rounded-3xl border-2 border-foreground bg-white dark:bg-card p-6 md:p-8 relative">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
               <span className="bg-foreground text-background text-xs font-bold px-4 py-1.5 rounded-full">
-                BEST VALUE · 단일 상품
+                {plan === '7d' ? 'BEST VALUE · 메인 진입점' : 'LONG TRACK · 장기 옵션'}
               </span>
             </div>
 
@@ -205,35 +286,29 @@ const TokenSubscription = () => {
                 <Calendar className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-lg md:text-xl font-bold text-foreground">30일 마음 변화 트랙</h2>
-                <p className="text-xs text-muted-foreground">AI 코칭 + 전문가 상담 · 일시불</p>
+                <h2 className="text-lg md:text-xl font-bold text-foreground">{planInfo.title}</h2>
+                <p className="text-xs text-muted-foreground">{planInfo.subtitle}</p>
               </div>
             </div>
 
             <div className="mb-5">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-sm text-muted-foreground line-through">₩{MIND_TRACK_ORIGINAL_PRICE.toLocaleString()}</span>
+                <span className="text-sm text-muted-foreground line-through">₩{planInfo.original.toLocaleString()}</span>
                 <span className="text-[11px] font-black text-white bg-rose-600 px-2.5 py-1 rounded-full shadow-sm">
-                  {MIND_TRACK_DISCOUNT_PERCENT}% OFF
+                  {planInfo.discount}% OFF
                 </span>
               </div>
               <div className="flex items-baseline gap-2 flex-wrap">
-                <span className="text-4xl md:text-5xl font-black text-foreground">₩{MIND_TRACK_PRICE.toLocaleString()}</span>
+                <span className="text-4xl md:text-5xl font-black text-foreground">₩{planInfo.price.toLocaleString()}</span>
                 <span className="text-muted-foreground text-sm">· 일시불</span>
               </div>
               <p className="text-xs text-white font-bold mt-1.5 bg-emerald-600 dark:bg-emerald-500 inline-block px-2.5 py-1 rounded-md shadow-sm">
-                하루 약 ₩{Math.round(MIND_TRACK_PRICE / 30).toLocaleString()} · 자동 결제 없음 · 30일 후 자동 종료
+                하루 약 ₩{Math.round(planInfo.price / planInfo.days).toLocaleString()} · 자동 결제 없음 · {planInfo.days}일 후 자동 종료
               </p>
             </div>
 
             <div className="space-y-2.5 mb-6">
-              {[
-                '매일 오전 8시 박사급 1:1 코칭 메일 (30일)',
-                '주간 변화 리포트 (RCI 기반)',
-                '전문가 1:1 상담 1회권 포함',
-                '20종+ 심리검사 무제한 이용',
-                '종료 시 변화 종합 PDF',
-              ].map((t, i) => (
+              {planInfo.bullets.map((t, i) => (
                 <div key={i} className="flex items-center gap-2.5 text-sm">
                   <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span className="text-foreground">{t}</span>
@@ -252,7 +327,7 @@ const TokenSubscription = () => {
               ) : (
                 <>
                   <Sparkles className="w-5 h-5 mr-2" />
-                  ₩{MIND_TRACK_PRICE.toLocaleString()} 결제하고 내일 아침 8시부터 시작
+                  ₩{planInfo.price.toLocaleString()} 결제하고 내일 아침 8시부터 시작
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </>
               )}
@@ -261,6 +336,27 @@ const TokenSubscription = () => {
               <Shield className="w-3 h-3" />
               7일 이내 100% 환불 보장 · 토스페이먼츠 안전 결제
             </p>
+
+            {/* 보조 옵션 링크 */}
+            <div className="mt-4 text-center">
+              {plan === '7d' ? (
+                <button
+                  type="button"
+                  onClick={() => switchPlan('30d')}
+                  className="text-[11px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                >
+                  처음부터 길게 가고 싶다면 · 30일 트랙 ₩{MIND_TRACK_PRICE.toLocaleString()} 보기
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => switchPlan('7d')}
+                  className="text-[11px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                >
+                  부담 없이 시작하기 · 7일 트랙 ₩{MIND_TRACK_7_PRICE.toLocaleString()} 보기
+                </button>
+              )}
+            </div>
           </div>
         </motion.div>
 
@@ -313,7 +409,7 @@ const TokenSubscription = () => {
             오늘 결제하면, 내일 아침 8시부터 시작합니다
           </h2>
           <p className="text-background/70 text-sm md:text-base mb-6 break-keep">
-            30일 후 달라진 마음을 만나보세요. 마음에 들지 않으면 7일 안에 100% 환불.
+            {planInfo.days}일 후 달라진 마음을 만나보세요. 마음에 들지 않으면 7일 안에 100% 환불.
           </p>
           <Button
             size="lg"
@@ -322,7 +418,7 @@ const TokenSubscription = () => {
             disabled={paymentLoading || !isReady || isPremium}
           >
             <Sparkles className="w-5 h-5 mr-2" />
-            ₩{MIND_TRACK_PRICE.toLocaleString()} 결제하기
+            ₩{planInfo.price.toLocaleString()} 결제하기
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </motion.div>

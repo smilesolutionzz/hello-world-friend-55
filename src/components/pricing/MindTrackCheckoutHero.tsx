@@ -9,8 +9,9 @@ import { supabase } from "@/integrations/supabase/client";
 import usePayment from "@/hooks/usePayment";
 import { toast } from "sonner";
 
-const TRACK_PRICE = 19900;
-const ORIGINAL_PRICE = 39800;
+const TRACK_PRICE = 7900;
+const ORIGINAL_PRICE = 15800;
+const TRACK_30_PRICE = 19900;
 
 const goalLabels: Record<string, string> = {
   stress: "스트레스 회복",

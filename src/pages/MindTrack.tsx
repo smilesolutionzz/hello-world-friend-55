@@ -1220,7 +1220,7 @@ const MindTrack: React.FC = () => {
             <div className="max-w-3xl mx-auto text-center text-white space-y-6">
               <Award className="w-12 h-12 mx-auto opacity-90" />
               <h2 className="text-3xl md:text-4xl font-bold break-keep">
-                30일 후, 한결 가벼워진 마음으로
+                7일 후, 한결 가벼워진 마음으로
               </h2>
               <p className="text-white/90 text-base md:text-lg break-keep">
                 지금 시작하면 ₩{TRACK_PRICE.toLocaleString()} (정가 ₩{TRACK_ORIGINAL_PRICE.toLocaleString()})<br />

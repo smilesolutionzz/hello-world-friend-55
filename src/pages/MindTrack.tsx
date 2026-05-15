@@ -655,73 +655,115 @@ const MindTrack: React.FC = () => {
               // 2) 로그인 + 결제했으나 enrollment 없음 (이론상 드묾) → 안내 카드
               // 3) 비로그인/미결제 — 통일된 "구독 후 이용 가능" 락 안내
               const isLoggedIn = !!user && !authChecking;
-              return (
-                <div className="bg-white rounded-3xl border border-[#C8B88A]/40 ring-1 ring-[#C8B88A]/15 shadow-sm p-6 md:p-7">
-                  <div className="flex items-start gap-3 mb-4">
-                    <div className="w-11 h-11 rounded-2xl bg-[#C8B88A]/15 flex items-center justify-center shrink-0">
-                      <Target className="w-5 h-5 text-[#8a7a4d]" />
+                return (
+                  <div className="bg-white rounded-3xl border-2 border-[#1a1a1a] shadow-[0_8px_30px_-12px_rgba(0,0,0,0.25)] p-6 md:p-8">
+                    {/* 상단 강조 배지 */}
+                    <div className="flex items-center justify-between gap-2 mb-5 flex-wrap">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1a1a1a] text-white text-[11px] font-bold tracking-wide">
+                        <Sparkles className="w-3 h-3" />
+                        7일 집중 압축 트랙
+                      </div>
+                      <div className="inline-flex items-center gap-1 text-[11px] text-rose-600 font-semibold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                        오늘 시작 가능 · 즉시 Day 01
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
+
+                    <div className="space-y-2 mb-5">
                       <p className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-                        7 Day Mind Track
+                        7 Day Mind Track · 매일 5분
                       </p>
-                      <h2 className="text-xl md:text-2xl font-bold text-foreground break-keep leading-snug">
-                        하루 3분, 7일 마음 변화 트랙
+                      <h2 className="text-2xl md:text-[28px] font-bold text-foreground break-keep leading-tight">
+                        7일이면, 내가 왜 이런지<br className="hidden sm:block" />
+                        <span className="bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">발가벗겨진 듯</span> 보입니다.
                       </h2>
-                      <p className="text-sm text-foreground/70 mt-1 break-keep">
-                        Day 01부터 Day 07까지 매일 맞춤 미션과 코칭 인사이트로 첫 변화를 만들고, 원하면 +23일 연장으로 30일까지 확장할 수 있어요.
+                      <p className="text-sm md:text-base text-foreground/70 break-keep leading-relaxed">
+                        진단 · 자기관찰 · 전문가 1:1 · 회복 루틴 · 변화 리포트 — AIHPRO의 모든 기능을
+                        <strong className="text-foreground"> 7일에 압축</strong>해서 쏟아붓습니다.
+                        Day 7에는 ‘이거면 충분히 좋아지겠다’는 확신만 남아요.
                       </p>
                     </div>
-                  </div>
 
-                  {/* 상단 일차 그리드는 액션북 미리보기와 중복되어 제거 — 흐름은 타임라인 + 미리보기 한 곳에서만 표현 */}
-
-                  <ActionBookPreviewSection
-                    nickname={sampleSeed.nickname}
-                    concern={concern}
-                    goalId={selectedGoal}
-                    goalLabel={focusGoals.find((g) => g.id === selectedGoal)?.title || null}
-                    trackPrice={TRACK_PRICE}
-                    loggedIn={isLoggedIn}
-                    onOpenSampleModal={openSamplePreview}
-                    onUnlockClick={(loc) => {
-                      handleStartCtaClick(loc);
-                      navigate(isLoggedIn ? '/token-subscription' : '/auth');
-                    }}
-                  />
-
-                  <div className="flex items-center justify-between gap-3 pt-4 mt-4 border-t border-[#C8B88A]/20">
-                    <div className="flex items-center gap-2 text-xs text-foreground/60">
-                      <Shield className="w-3.5 h-3.5" />
-                      <span>{isLoggedIn ? '결제 후 즉시 시작' : '로그인 후 결제하면 즉시 시작'}</span>
+                    {/* 가치 스택 — 무엇이 들어있는가 */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+                      {[
+                        { d: 'Day 01', t: '나의 출발점 진단' },
+                        { d: 'Day 02–03', t: '자기관찰 · 패턴 발견' },
+                        { d: 'Day 04', t: '전문가 1:1 코칭' },
+                        { d: 'Day 05–06', t: '회복 루틴 · 실천' },
+                        { d: 'Day 07', t: '변화 리포트 · 다음 단계' },
+                        { d: '평생 보관', t: '내 트랙 기록 + PDF 리포트' },
+                      ].map((it) => (
+                        <div key={it.d} className="flex items-center gap-2 text-xs md:text-[13px] text-foreground/80">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <span className="font-semibold text-foreground/60 w-[74px] shrink-0">{it.d}</span>
+                          <span className="break-keep">{it.t}</span>
+                        </div>
+                      ))}
                     </div>
+
+                    <ActionBookPreviewSection
+                      nickname={sampleSeed.nickname}
+                      concern={concern}
+                      goalId={selectedGoal}
+                      goalLabel={focusGoals.find((g) => g.id === selectedGoal)?.title || null}
+                      trackPrice={TRACK_PRICE}
+                      loggedIn={isLoggedIn}
+                      onOpenSampleModal={openSamplePreview}
+                      onUnlockClick={(loc) => {
+                        handleStartCtaClick(loc);
+                        navigate(isLoggedIn ? '/token-subscription' : '/auth');
+                      }}
+                    />
+
+                    {/* 가격 + 비교 — 한눈에 ‘싸다’ 인지 */}
+                    <div className="mt-5 mb-4 p-4 rounded-2xl bg-[#FBF8F1] border border-[#C8B88A]/30">
+                      <div className="flex items-end justify-between gap-3 flex-wrap">
+                        <div>
+                          <div className="text-[11px] text-foreground/55 line-through">
+                            전문가 1:1 단회만 ₩60,000~
+                          </div>
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-3xl md:text-4xl font-extrabold text-[#1a1a1a]">
+                              ₩{TRACK_PRICE.toLocaleString()}
+                            </span>
+                            <span className="text-sm text-foreground/60 font-semibold">/ 7일 전체</span>
+                          </div>
+                          <div className="text-[11px] text-foreground/55 mt-0.5">
+                            하루 ₩{Math.round(TRACK_PRICE / 7).toLocaleString()} · 커피 한 잔보다 저렴
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-1">
+                            <Shield className="w-3 h-3" />
+                            14일 100% 환불 보장
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     <Button
                       onClick={() => {
                         handleStartCtaClick('lock_card_cta');
                         navigate(isLoggedIn ? '/token-subscription' : '/auth');
                       }}
-                      size="sm"
-                      className="rounded-full bg-[#1a1a1a] text-white hover:bg-black"
+                      className="w-full h-14 rounded-2xl bg-[#1a1a1a] text-white hover:bg-black font-bold text-base"
                     >
-                      <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-                      ₩{TRACK_PRICE.toLocaleString()} · 7일 시작
-                      <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      ₩{TRACK_PRICE.toLocaleString()}으로 7일 시작하기
+                      <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
+
+                    <div className="flex items-center justify-center gap-3 pt-3 text-[11px] text-foreground/55 flex-wrap">
+                      <span className="inline-flex items-center gap-1">
+                        <Shield className="w-3 h-3" />
+                        {isLoggedIn ? '결제 후 즉시 시작' : '로그인 후 결제하면 즉시 시작'}
+                      </span>
+                      <span>·</span>
+                      <span>첫 15분 전문가 상담 무료 포함</span>
+                    </div>
                   </div>
-                  <div className="pt-2 text-center">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleStartCtaClick('lock_card_long_option');
-                        navigate(isLoggedIn ? '/token-subscription?plan=30d' : '/auth?next=/token-subscription?plan=30d');
-                      }}
-                      className="text-[11px] text-foreground/55 underline underline-offset-2 hover:text-foreground"
-                    >
-                      처음부터 길게 가고 싶다면 · 30일 트랙 ₩{LONG_TRACK_PRICE.toLocaleString()}
-                    </button>
-                  </div>
-                </div>
-              );
+                );
             })()}
           </div>
         </section>

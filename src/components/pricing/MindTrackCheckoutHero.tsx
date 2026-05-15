@@ -47,15 +47,17 @@ export default function MindTrackCheckoutHero() {
     })();
   }, []);
 
-  const handlePay = async () => {
+  const handlePay = async (plan: '7d' | '30d' = '7d') => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      navigate("/auth?redirect=/pricing?product=mind_track_30");
+      navigate("/auth?redirect=/pricing?product=mind_track_7");
       return;
     }
     const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
-    await ensureMindTrackEnrollment();
-    const ok = await pay("mind_track_30" as any, TRACK_PRICE);
+    await ensureMindTrackEnrollment({}, plan);
+    const sku = plan === '7d' ? 'mind_track_7' : 'mind_track_30';
+    const amount = plan === '7d' ? TRACK_PRICE : TRACK_30_PRICE;
+    const ok = await pay(sku as any, amount);
     if (!ok) {
       toast.error("결제를 시작하지 못했어요. 잠시 후 다시 시도해주세요.");
     }

@@ -38,13 +38,15 @@ import StickyTrackCTA from '@/components/mind-track/StickyTrackCTA';
 import { matchTrack, getAxis, recommendTracks, TRACK_TAGS, type CategoryAxis } from '@/lib/mindTrackCategories';
 import type { MindTrackFocusId } from '@/lib/mindTrackFocusTracks';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
-import { MIND_TRACK_PRICE, MIND_TRACK_ORIGINAL_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_7_PRICE, MIND_TRACK_7_ORIGINAL_PRICE, MIND_TRACK_PRICE } from '@/constants/tokenCosts';
 import { WORKBOOK_TOTAL_CHAPTERS } from '@/lib/mindTrackChapters';
 // 결제자는 /mind-track/dashboard 전용 페이지로 자동 리다이렉트됨 (아래 분기 참고)
 
-// 단일 상품(mind_track_30) — 가격은 상수에서만 읽는다
-const TRACK_PRICE = MIND_TRACK_PRICE;
-const TRACK_ORIGINAL_PRICE = MIND_TRACK_ORIGINAL_PRICE;
+// 메인 진입점은 7일 트랙 (₩7,900). 30일은 처음부터 길게 가는 사용자용 보조 옵션
+const TRACK_PRICE = MIND_TRACK_7_PRICE;
+const TRACK_ORIGINAL_PRICE = MIND_TRACK_7_ORIGINAL_PRICE;
+const LONG_TRACK_PRICE = MIND_TRACK_PRICE;
+const TRACK_TOTAL_DAYS = 7;
 const REFUND_WINDOW_DAYS = 14;
 const SAMPLE_CHAPTER_COUNT = WORKBOOK_TOTAL_CHAPTERS;
 
@@ -55,17 +57,17 @@ const focusGoals = [
   { id: 'focus', icon: '🎯', title: '집중력 회복', desc: '산만함을 줄이고 일상 효율 끌어올리기' },
   { id: 'relationship', icon: '🤝', title: '관계 개선', desc: '가족·동료와의 소통 결을 다듬기' },
   { id: 'self', icon: '🪞', title: '자기 이해 심화', desc: '내 패턴을 알고 새로운 루틴 만들기' },
-  { id: 'parenting', icon: '🤱', title: '육아 번아웃 회복', desc: '엄마·아빠의 지친 마음을 회복하는 30일' },
+  { id: 'parenting', icon: '🤱', title: '육아 번아웃 회복', desc: '엄마·아빠의 지친 마음을 7일에 정돈하기' },
   { id: 'child_development', icon: '🌱', title: '아이 발달 코칭', desc: '연령별 발달 포인트와 부모 대응법 익히기' },
   { id: 'family_communication', icon: '💕', title: '아이와의 소통', desc: '훈육 갈등 줄이고 안정 애착 만들기' },
 ];
 
 const dailyFlow = [
   { day: '1일차', title: '나의 출발점 기록', desc: '간단한 셀프 체크로 지금의 나를 정리' },
-  { day: '2~7일차', title: '하루 3분 마음 루틴', desc: '맞춤 마이크로 액션을 매일 안내' },
-  { day: '8~21일차', title: '실천하며 기록하기', desc: '매일 체크인 + 주간 인사이트 정리본' },
-  { day: '22~29일차', title: '깊이 있는 코칭', desc: '맞춤 워크북과 AI 코파일럿 1:1 대화' },
-  { day: '30일차', title: '나의 변화 리포트', desc: '시작과 지금을 비교하고 다음 한 달 가이드' },
+  { day: '2~3일차', title: '하루 3분 마음 루틴', desc: '맞춤 마이크로 액션을 매일 안내' },
+  { day: '4~5일차', title: '실천하며 기록하기', desc: '매일 체크인 + 짧은 코칭 인사이트' },
+  { day: '6일차', title: '깊이 있는 코칭', desc: '맞춤 워크북과 AI 코파일럿 1:1 대화' },
+  { day: '7일차', title: '나의 변화 리포트', desc: '시작과 지금을 비교하고 다음 단계 가이드' },
 ];
 
 interface ConcernReport {

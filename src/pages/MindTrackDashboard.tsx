@@ -288,14 +288,31 @@ export default function MindTrackDashboard() {
     );
   }
 
+  // SEO — 트랙별 og:title/description + FAQPage 구조화 데이터
+  const seoTitle = isShortTrack
+    ? "7일 마음 트랙 · 내 대시보드 | AIHPRO"
+    : "30일 마음 트랙 · 내 대시보드 | AIHPRO";
+  const seoDesc = isShortTrack
+    ? "7일 안에 진단·자기관찰·전문가 개입·회복 루틴까지 완주하는 압축 마음 변화 트랙. 오늘의 미션과 변화 추이를 한눈에."
+    : "30일 마음 변화 트랙 대시보드 — 매주 단계별 미션과 변화 추이, 코칭 인사이트를 한눈에 확인하세요.";
+  const faqList = isShortTrack ? FAQ_7 : FAQ_30;
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqList.map((q) => ({
+      "@type": "Question",
+      "name": q.q,
+      "acceptedAnswer": { "@type": "Answer", "text": q.a },
+    })),
+  };
+
   return (
     <>
       <SEOHead
-        title={`${trackLabel} · 내 대시보드 | AIHPRO`}
-        description={isShortTrack
-          ? "7일 안에 진단·자기관찰·전문가 개입·회복 루틴까지 완주하는 압축 마음 변화 트랙. 오늘의 미션과 변화 추이를 한눈에."
-          : "30일 마음 트랙 대시보드 — 오늘의 미션과 진행률, 변화 추이를 한눈에 확인하세요."}
+        title={seoTitle}
+        description={seoDesc}
         canonicalUrl="https://aihpro.app/mind-track/dashboard"
+        structuredData={faqStructuredData}
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/20">
         <UnifiedNavigation />

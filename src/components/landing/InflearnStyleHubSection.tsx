@@ -236,23 +236,43 @@ const InflearnStyleHubSection: React.FC = () => {
 
           {/* 트랙 카드 그리드 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tracks.map((t, i) => (
+            {tracks.map((t, i) => {
+              const thumb = TRACK_THUMBS[t.id] ?? TRACK_THUMBS.stress;
+              return (
               <button
                 key={t.id}
                 onClick={() => navigate(`/mind-track?goal=${t.id}`)}
                 className="group text-left bg-white border border-slate-200 hover:border-slate-900 rounded-2xl overflow-hidden transition-all hover:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.18)]"
               >
-                {/* 상단 비주얼 영역 */}
-                <div className="relative aspect-[16/9] bg-slate-50 flex items-center justify-center overflow-hidden">
-                  <span className="text-[64px] leading-none">{t.icon}</span>
+                {/* 상단 비주얼 — 후킹 썸네일 */}
+                <div className={`relative aspect-[16/9] ${thumb.bg} ${thumb.ink} overflow-hidden`}>
+                  <ThumbPattern kind={thumb.pattern} accent={thumb.accent} />
+
+                  <div className="absolute top-3 right-3 z-10">
+                    <span className="bg-white/15 backdrop-blur-sm border border-white/25 text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                      DAY 1–7
+                    </span>
+                  </div>
+
                   {i < 3 && (
-                    <div className="absolute top-3 left-3 inline-flex items-center gap-1 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded">
+                    <div className="absolute top-3 left-3 inline-flex items-center gap-1 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">
                       <Flame className="w-3 h-3" />
                       LIVE BEST
                     </div>
                   )}
-                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-slate-900 text-[10px] font-bold px-2 py-1 rounded-full">
-                    7 Days
+
+                  <div className="absolute inset-0 p-4 flex flex-col justify-end z-10">
+                    <div className={`text-[10px] font-bold tracking-[0.2em] uppercase mb-1.5 ${thumb.sub}`}>
+                      {thumb.tag}
+                    </div>
+                    <div className="flex items-end justify-between gap-2">
+                      <h4 className="text-[17px] md:text-[19px] font-extrabold leading-tight break-keep drop-shadow-sm">
+                        {thumb.hook}
+                      </h4>
+                      <span className="text-[40px] leading-none -mb-1 drop-shadow-md shrink-0">
+                        {t.icon}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -262,9 +282,9 @@ const InflearnStyleHubSection: React.FC = () => {
                     <Badge className={`${t.badgeClass} text-[10px] font-semibold border`}>
                       {t.category === 'family' ? '가족·아이' : '나'}
                     </Badge>
-                    <span className="text-[10px] text-slate-400">Day 01–07</span>
+                    <span className="text-[10px] text-slate-400">매일 5분 · 7일 완주</span>
                   </div>
-                  <h3 className="font-bold text-slate-900 text-base leading-snug break-keep group-hover:text-slate-900">
+                  <h3 className="font-bold text-slate-900 text-base leading-snug break-keep">
                     {t.label}
                   </h3>
                   <p className="text-xs text-slate-500 break-keep leading-relaxed line-clamp-2">
@@ -284,7 +304,8 @@ const InflearnStyleHubSection: React.FC = () => {
                   </div>
                 </div>
               </button>
-            ))}
+              );
+            })}
           </div>
         </div>
 

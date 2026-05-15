@@ -307,7 +307,7 @@ export default function MindTrackDashboard() {
           onSnoozeToday={snoozeOnboardingToday}
         />
 
-        {/* 헤더 — Day N/30 + 진행률 + 스트릭 */}
+        {/* 헤더 — Day N/totalDays + 진행률 + 스트릭 */}
         <section className="px-4 pt-24 pb-4">
           <div className="max-w-3xl mx-auto">
             <motion.div
@@ -318,9 +318,9 @@ export default function MindTrackDashboard() {
             >
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className="bg-emerald-500/15 text-emerald-700 border-0 text-xs">진행 중</Badge>
+                  <Badge className="bg-emerald-500/15 text-emerald-700 border-0 text-xs">{trackLabel} 진행 중</Badge>
                   <span className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-                    Day {String(day).padStart(2, "0")} / 30 · {copy.phase}
+                    Day {String(day).padStart(2, "0")} / {totalDays} · {copy.phase}
                   </span>
                   {(() => {
                     const f = getFocus(enrollment.goal_focus);

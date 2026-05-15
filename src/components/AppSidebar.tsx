@@ -73,6 +73,36 @@ export function AppSidebar() {
     >
       <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupLabel className="text-white font-medium">마음 트랙</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {mindTrackItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.url}
+                      className={({ isActive }) => getNavCls({ isActive })}
+                    >
+                      <item.icon className="h-4 w-4 text-amber-300" />
+                      {state !== "collapsed" && (
+                        <span className="flex items-center gap-1.5 text-xs">
+                          {item.title}
+                          {item.badge && (
+                            <span className="px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200 text-[9px] font-bold">
+                              {item.badge}
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
           <SidebarGroupLabel className="text-white font-medium">메인</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>

@@ -33,6 +33,7 @@ interface Enrollment {
   status: string;
   goal_focus: string | null;
   payment_status: string;
+  track_type: string | null;
 }
 
 /**

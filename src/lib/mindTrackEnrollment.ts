@@ -169,10 +169,10 @@ export async function ensureMindTrackEnrollment(
     .from("mind_track_enrollments")
     .insert({
       user_id: user.id,
-      track_type: "mind_30day",
+      track_type: plan === '7d' ? "mind_7day" : "mind_30day",
       goal_focus: goalFocus,
       payment_status: "pending",
-      payment_amount: MIND_TRACK_PRICE,
+      payment_amount: plan === '7d' ? 7900 : MIND_TRACK_PRICE,
       baseline_data: baselineData ?? {},
       referrer_org_id: referrerOrgId,
       referrer_slug: referrerSlug,

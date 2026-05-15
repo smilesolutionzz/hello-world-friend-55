@@ -26,6 +26,7 @@ import StickyConversionBar from '@/components/conversion/StickyConversionBar';
 import ReportPreviewSection from '@/components/landing/ReportPreviewSection';
 import { SocialProofToast } from '@/components/landing/SocialProofToast';
 import RealFeedbackSection from '@/components/landing/RealFeedbackSection';
+import InflearnStyleHubSection from '@/components/landing/InflearnStyleHubSection';
 import TrialOnboarding from '@/components/onboarding/TrialOnboarding';
 import { useTrialProfile } from '@/hooks/useTrialProfile';
 import { CopilotBubble } from '@/components/copilot/CopilotBubble';
@@ -179,6 +180,11 @@ const Index = () => {
             {/* 2️⃣ 실제 카톡 후기 — 사회적 증거 (Testimonial 통합) */}
             <LazyLoad rootMargin="200px">
               <SmartScrollReveal kind="cards"><RealFeedbackSection /></SmartScrollReveal>
+            </LazyLoad>
+
+            {/* 2.5️⃣ 인플런 스타일 허브 — 7일 트랙 9종 + 전문가 + 무료검사 + 인기검색어 */}
+            <LazyLoad rootMargin="200px">
+              <SmartScrollReveal kind="cards"><InflearnStyleHubSection /></SmartScrollReveal>
             </LazyLoad>
 
             {/* 3️⃣ AI 전문가급 리포트 미리보기 — 결제 전환 핵심 */}

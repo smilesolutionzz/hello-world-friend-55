@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { MIND_TRACK_FOCUSES } from '@/lib/mindTrackFocusTracks';
-import { MIND_TRACK_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 
 interface StickyTrackCTAProps {
   selectedGoal: string | null;
@@ -38,9 +38,9 @@ const StickyTrackCTA: React.FC<StickyTrackCTAProps> = ({
           </div>
         </div>
         <div className="text-right shrink-0">
-          <div className="text-[10px] text-slate-400 leading-tight">30일</div>
+          <div className="text-[10px] text-slate-400 leading-tight">7일 시작</div>
           <div className="text-sm font-bold text-slate-900">
-            ₩{MIND_TRACK_PRICE.toLocaleString()}
+            ₩{MIND_TRACK_7_PRICE.toLocaleString()}
           </div>
         </div>
         <button

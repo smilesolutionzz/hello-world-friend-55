@@ -82,11 +82,19 @@ export const TOKEN_COST_DESCRIPTIONS = {
   0: "구독 시 무제한",
 } as const;
 
-// ★ 단일 상품 — 30일 마음 변화 트랙 (₩19,900 일시불)
-// 구버전 상수들은 호환성을 위해 동일 값으로 통일
+// ★ 마음 트랙 라인업 (단일 상품 BM의 mind_track 라인 확장)
+// - 7일 트랙 ₩7,900: 메인 결제 진입점 (디폴트 추천)
+// - 30일 트랙 ₩19,900: 처음부터 장기 원하는 사용자용 보조 옵션
+// - 23일 연장권 ₩12,900: 7일 완주자 대상 업셀 (Phase 2)
+export const MIND_TRACK_7_PRICE = 7900;
+export const MIND_TRACK_7_ORIGINAL_PRICE = 15800;
+export const MIND_TRACK_7_DISCOUNT_PERCENT = 50;
+
 export const MIND_TRACK_PRICE = 19900;
 export const MIND_TRACK_ORIGINAL_PRICE = 49000;
 export const MIND_TRACK_DISCOUNT_PERCENT = 60;
+
+export const MIND_TRACK_EXTEND_PRICE = 12900; // Phase 2 업셀 전용
 
 // === 하위 호환 (모든 구버전 상수를 30일 트랙 단일가로 통일) ===
 export const SUBSCRIPTION_PRICE = MIND_TRACK_PRICE;

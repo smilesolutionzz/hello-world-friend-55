@@ -1,44 +1,85 @@
-## Day 16 코칭 메일 FFFD 깨짐 수정 계획
+# 7일 메인 + 30일 업셀 구조 전환 플랜
 
-### 문제 요약
-- DB의 `mission_content`는 깨끗한데, React Email `renderAsync` 결과 HTML에 U+FFFD 15개 발생
-- 원인: `fetchYouTubeVideos`로 받아온 영상 메타데이터(`title`, `channelTitle`, `reason`)가 sanitize 되지 않은 채 템플릿에 주입됨
-- 추세 악화: Day 12: 0 → 13: 9 → 14: 5 → 15: 5 → 16: 15
+## 배경 (왜 바꾸나)
 
-### 수정 파일
-`supabase/functions/send-daily-coaching-email/index.ts` (또는 동등 위치)
+- 외부 PM 피드백: "30일은 너무 길다, 결제 심리 장벽이 너무 높다"
+- 업계 정설:
+  - Calm/Headspace 30일 챌린지 완주율 10~15%
+  - 한국 디지털 헬스케어 7일차 이탈 60%+
+  - Duolingo·클래스101이 모두 7일 챌린지로 진입점을 잡고 장기 상품 업셀하는 이유
+- 현재 BM 한계: 30일이 메인이라 "한 번 실패한 약속"으로 인식 → 결제 전 이탈
 
-### 변경사항
+## 핵심 의사결정
 
-**1. YouTube 메타데이터 sanitize**
-- `fetchYouTubeVideos` 결과 매핑 시 `title`, `channelTitle`, `reason` 각각 `sanitize()` 통과
-- AI가 생성한 `reason` 필드가 가장 큰 오염원으로 추정
+- 메인 결제 진입점: **7일 마음 트랙 ₩7,900**
+- 7일 완주(또는 결제 후 7일차) 시점: **+23일 연장권 ₩12,900** 업셀 (총합 ₩19,900으로 30일과 동일하게 정렬)
+- 30일 ₩19,900: "처음부터 길게 가고 싶은 분"을 위한 보조 옵션으로 유지 (메인 추천 아님)
+- 단일 상품 BM 메모리는 "mind_track 라인업"으로 확장 — 다른 무관한 상품 추가는 여전히 금지
 
-**2. 최종 안전망 (renderAsync 직후)**
-```ts
-let html = await renderAsync(...);
-const fffdCount = (html.match(/\uFFFD/g) || []).length;
-if (fffdCount > 0) {
-  console.warn('[FFFD] removed', fffdCount, 'replacement chars from final HTML');
-  html = html.replace(/\uFFFD/g, '');
-}
+## 가격 구조
+
+```text
+[메인]   7일 마음 트랙          ₩7,900     ← 1차 결제 (디폴트 추천)
+[업셀]   23일 연장권             ₩12,900    ← 7일 완주 직후 (총 ₩19,900)
+[보조]   30일 마음 트랙 (한번에)  ₩19,900    ← 처음부터 장기 원하는 사용자
+[유지]   전문가 상담 단건         (기존)
 ```
-어떤 경로로든 FFFD가 들어와도 발송 전 제거.
 
-**3. 검증 정규식 업데이트**
-섹션 번호가 바뀐 것을 반영:
-- `03 · 임상적 근거` → `05 · 임상적 근거`
-- `04 · 오늘의 추천 영상` → `07 · 오늘의 추천 영상`
-- `05 · 오늘의 기록` → `09 · 오늘의 기록`
+## 변경 범위
 
-**4. 필드별 FFFD 카운트 로깅**
-디버깅용으로 `mission_content`, `videos[].title/channelTitle/reason`, 최종 html 각 단계의 FFFD 수를 로그에 남김. 차후 회귀 발생 시 즉시 원인 파악 가능.
+### 1. 가격 상수 (`src/constants/tokenCosts.ts`)
+- `MIND_TRACK_7_PRICE = 7900` 신규
+- `MIND_TRACK_7_ORIGINAL_PRICE = 15800` (50% OFF 표기용)
+- `MIND_TRACK_EXTEND_PRICE = 12900` (23일 연장권)
+- 기존 `MIND_TRACK_PRICE = 19900` 유지 (30일 단권)
+- 모든 가격은 코드에서 읽기 — 메모리/하드코딩 금지 원칙 유지
 
-### 검증
-- 배포 후 한 명의 테스트 계정에 Day 16 재발송 트리거
-- `email_send_log` 확인 + 실제 받은편지함 본문에 � 없는지 육안 확인
-- Edge function 로그에서 단계별 FFFD 카운트 0 확인
+### 2. 결제 상품 ID
+- `mind_track_7` (신규, 메인)
+- `mind_track_extend_23` (신규, 업셀 전용)
+- `mind_track_30` (유지, 보조)
+- `usePayment.ts`에 3개 모두 매핑
 
-### 범위 외
-- 코칭 콘텐츠/디자인 변경 없음
-- 다른 템플릿(주간 다이제스트 등) 변경 없음
+### 3. UI — 메인 결제 흐름
+- `MindTrackCheckoutHero.tsx`: 디폴트를 7일로 변경
+  - 헤드라인: "7일이면 충분합니다 — 마음이 바뀌는 첫 일주일"
+  - 가격: ₩7,900 / 7일 (정가 ₩15,800 취소선)
+  - 보조 라인: "더 길게 가고 싶다면 30일 한 번에 ₩19,900 →" (작게)
+- `StickyTrackCTA.tsx`: 가격 ₩7,900 / 7일로 변경
+- `PayButton.tsx` 기본 라벨: "7일 마음 트랙 ₩7,900"
+- `PaymentModal.tsx`: 7일/30일 2개 카드, 7일에 "추천" 뱃지
+
+### 4. 업셀 시점 (별도 PR로 분리 가능)
+- 결제 후 D+5 ~ D+7 사이 1회 노출
+  - 일일 코칭 메일 하단 인라인 CTA
+  - 앱 내 `/mind-track` 대시보드 상단 배너
+- 카피: "7일 완주가 보입니다. 23일 더 이어가면 변화가 굳어져요 → ₩12,900"
+
+### 5. DB / 백엔드
+- `mind_track_enrollments.plan_type` enum에 `'7d' | '30d' | 'extended'` 추가
+- 결제 webhook: `mind_track_extend_23` 결제 시 기존 enrollment의 `end_date`에 +23일
+- `daily_coaching_email_log`: 7일짜리는 day 1~7만 발송, 연장권 결제 시 day 8~30 자동 큐잉
+
+### 6. 메모리 업데이트
+- Core "Pricing" 항목 수정: `mind_track_7` (메인) + `mind_track_30`/`extend_23` (보조/업셀)
+- `mem://product/single-product-bm-ko` 갱신: "mind_track 라인업 = 7일/30일/연장권 3종"
+
+## 변경하지 않는 것
+
+- 전문가 상담 가격/구조
+- 7일·30일 모두 일시불, **자동결제 없음** 정책
+- 일일 코칭 메일 콘텐츠 자체 (발송 일수만 가변)
+- 기존 30일 결제자: 영향 없음 (그대로 유지)
+
+## 검증 계획
+
+- 7일 결제 플로우 E2E (결제 → enrollment 생성 → day1 메일 → day7 메일 + 업셀 노출)
+- 업셀 결제 → end_date 연장 → day8 메일 정상 발송
+- 기존 30일 결제자 회귀 없음 확인
+- 가격 표기 누락/하드코딩 grep 체크
+
+## 예상 일정
+
+- Phase 1 (이번 PR): 가격 상수 + UI 변경 + `mind_track_7` 결제 라인 (1~2일)
+- Phase 2 (다음 PR): 업셀 상품 `mind_track_extend_23` + 업셀 트리거 (2~3일)
+- Phase 3 (운영 후 2주): 데이터 보고 30일 옵션 유지/제거 결정

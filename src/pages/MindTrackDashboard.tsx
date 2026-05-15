@@ -93,7 +93,7 @@ export default function MindTrackDashboard() {
       }
       const { data, error } = await supabase
         .from("mind_track_enrollments")
-        .select("id, started_at, current_day, status, goal_focus, payment_status")
+        .select("id, started_at, current_day, status, goal_focus, payment_status, track_type")
         .eq("user_id", user.id)
         .in("status", ["active", "in_progress"])
         .order("created_at", { ascending: false })
@@ -101,7 +101,7 @@ export default function MindTrackDashboard() {
         .maybeSingle();
       if (cancelled) return;
       if (error || !data || (data.payment_status !== "paid" && data.payment_status !== "completed")) {
-        toast.info("아직 30일 마음 트랙에 등록되지 않았어요");
+        toast.info("아직 마음 트랙에 등록되지 않았어요");
         navigate("/mind-track", { replace: true });
         return;
       }

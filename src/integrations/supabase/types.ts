@@ -12226,6 +12226,119 @@ export type Database = {
         }
         Relationships: []
       }
+      teen_risk_referral_events: {
+        Row: {
+          actor_user_id: string | null
+          created_at: string
+          event_type: string
+          id: string
+          payload: Json
+          referral_id: string
+        }
+        Insert: {
+          actor_user_id?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          payload?: Json
+          referral_id: string
+        }
+        Update: {
+          actor_user_id?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          payload?: Json
+          referral_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teen_risk_referral_events_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "teen_risk_referrals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teen_risk_referrals: {
+        Row: {
+          age: number | null
+          age_band: string | null
+          assessment_type: string | null
+          created_at: string
+          detected_score: number | null
+          expert_referral_url: string | null
+          guardian_consent: boolean
+          guardian_contact_email: string | null
+          guardian_contact_phone: string | null
+          guardian_notified_at: string | null
+          guardian_token: string | null
+          guest_session_id: string | null
+          id: string
+          matched_centers: Json
+          notes: string | null
+          region_sido: string | null
+          region_sigungu: string | null
+          risk_level: Database["public"]["Enums"]["teen_risk_level"]
+          status: Database["public"]["Enums"]["teen_referral_status"]
+          trigger_keywords: string[]
+          trigger_source: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          age?: number | null
+          age_band?: string | null
+          assessment_type?: string | null
+          created_at?: string
+          detected_score?: number | null
+          expert_referral_url?: string | null
+          guardian_consent?: boolean
+          guardian_contact_email?: string | null
+          guardian_contact_phone?: string | null
+          guardian_notified_at?: string | null
+          guardian_token?: string | null
+          guest_session_id?: string | null
+          id?: string
+          matched_centers?: Json
+          notes?: string | null
+          region_sido?: string | null
+          region_sigungu?: string | null
+          risk_level: Database["public"]["Enums"]["teen_risk_level"]
+          status?: Database["public"]["Enums"]["teen_referral_status"]
+          trigger_keywords?: string[]
+          trigger_source: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          age?: number | null
+          age_band?: string | null
+          assessment_type?: string | null
+          created_at?: string
+          detected_score?: number | null
+          expert_referral_url?: string | null
+          guardian_consent?: boolean
+          guardian_contact_email?: string | null
+          guardian_contact_phone?: string | null
+          guardian_notified_at?: string | null
+          guardian_token?: string | null
+          guest_session_id?: string | null
+          id?: string
+          matched_centers?: Json
+          notes?: string | null
+          region_sido?: string | null
+          region_sigungu?: string | null
+          risk_level?: Database["public"]["Enums"]["teen_risk_level"]
+          status?: Database["public"]["Enums"]["teen_referral_status"]
+          trigger_keywords?: string[]
+          trigger_source?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       temperament_test_results: {
         Row: {
           answers: Json
@@ -14744,6 +14857,63 @@ export type Database = {
         }
         Relationships: []
       }
+      wee_center_directory: {
+        Row: {
+          address: string | null
+          center_type: Database["public"]["Enums"]["wee_center_type"]
+          created_at: string
+          hours: string | null
+          id: string
+          is_active: boolean
+          lat: number | null
+          lng: number | null
+          name: string
+          phone: string | null
+          region_sido: string
+          region_sigungu: string | null
+          source: string | null
+          source_updated_at: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          center_type: Database["public"]["Enums"]["wee_center_type"]
+          created_at?: string
+          hours?: string | null
+          id?: string
+          is_active?: boolean
+          lat?: number | null
+          lng?: number | null
+          name: string
+          phone?: string | null
+          region_sido: string
+          region_sigungu?: string | null
+          source?: string | null
+          source_updated_at?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          center_type?: Database["public"]["Enums"]["wee_center_type"]
+          created_at?: string
+          hours?: string | null
+          id?: string
+          is_active?: boolean
+          lat?: number | null
+          lng?: number | null
+          name?: string
+          phone?: string | null
+          region_sido?: string
+          region_sigungu?: string | null
+          source?: string | null
+          source_updated_at?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       weekly_mission_completions: {
         Row: {
           completed_missions: number
@@ -15564,7 +15734,32 @@ export type Database = {
           website_url: string
         }[]
       }
+      get_referral_by_guardian_token: {
+        Args: { _token: string }
+        Returns: {
+          age_band: string
+          created_at: string
+          expert_referral_url: string
+          id: string
+          matched_centers: Json
+          region_sido: string
+          region_sigungu: string
+          risk_level: Database["public"]["Enums"]["teen_risk_level"]
+          status: Database["public"]["Enums"]["teen_referral_status"]
+        }[]
+      }
       get_report_comparison: { Args: { p_user_id: string }; Returns: Json }
+      get_teen_risk_aggregates: {
+        Args: { _region_sido?: string; _since?: string; _until?: string }
+        Returns: {
+          age_band: string
+          is_masked: boolean
+          region_sido: string
+          region_sigungu: string
+          risk_level: Database["public"]["Enums"]["teen_risk_level"]
+          total_count: number
+        }[]
+      }
       get_transfer_statistics: {
         Args: never
         Returns: {
@@ -15721,6 +15916,20 @@ export type Database = {
         | "development_center"
         | "none"
       subscription_type: "free" | "token_pack" | "monthly_unlimited"
+      teen_referral_status:
+        | "detected"
+        | "guardian_consent_pending"
+        | "guardian_notified"
+        | "center_contacted"
+        | "expert_assigned"
+        | "resolved"
+        | "dismissed"
+      teen_risk_level: "moderate" | "high" | "critical"
+      wee_center_type:
+        | "wee_class"
+        | "wee_center"
+        | "wee_school"
+        | "youth_counseling_1388"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -15863,6 +16072,22 @@ export const Constants = {
         "none",
       ],
       subscription_type: ["free", "token_pack", "monthly_unlimited"],
+      teen_referral_status: [
+        "detected",
+        "guardian_consent_pending",
+        "guardian_notified",
+        "center_contacted",
+        "expert_assigned",
+        "resolved",
+        "dismissed",
+      ],
+      teen_risk_level: ["moderate", "high", "critical"],
+      wee_center_type: [
+        "wee_class",
+        "wee_center",
+        "wee_school",
+        "youth_counseling_1388",
+      ],
     },
   },
 } as const

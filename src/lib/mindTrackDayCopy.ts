@@ -75,24 +75,36 @@ const DAY_COPY: Record<number, DayCopy> = {
   30: { phase: PHASES.week5, title: '나의 30일 변화 리포트', description: '시작과 지금을 비교한 종합 리포트와 다음 한 달 가이드를 받아봐요.' },
 };
 
-export function getDayCopy(day: number): DayCopy {
+/**
+ * 지정된 트랙 길이(7 또는 30일)에 맞는 Day별 카피를 반환.
+ * - 7일 트랙은 압축 집중형 (진단 → 전문가 → 회복 루틴)
+ * - 30일 트랙은 점진적 코칭형
+ */
+export function getDayCopy(day: number, totalDays: number = 30): DayCopy {
+  if (totalDays === 7) {
+    const safe = Math.min(Math.max(Math.round(day), 1), 7);
+    return DAY_COPY_7[safe];
+  }
   const safe = Math.min(Math.max(Math.round(day), 1), 30);
   return DAY_COPY[safe];
 }
 
 /**
- * started_at(또는 ISO 문자열)과 현재 시각 기준으로 1~30 사이 currentDay를 계산.
+ * started_at(또는 ISO 문자열)과 현재 시각 기준으로 1~totalDays 사이 currentDay를 계산.
  * - 시작일 당일은 Day 1
- * - 자정(KST 기준 X, 단순 24시간 경과 기준)을 넘기면 +1
- * - 30 초과 시 30으로 고정
+ * - 24시간 경과 기준
+ * - totalDays 초과 시 totalDays로 고정 (기본 30, 7일 트랙은 7 전달)
  */
-export function calcMindTrackCurrentDay(startedAt: string | Date | null | undefined): number {
+export function calcMindTrackCurrentDay(
+  startedAt: string | Date | null | undefined,
+  totalDays: number = 30,
+): number {
   if (!startedAt) return 1;
   const start = typeof startedAt === 'string' ? new Date(startedAt) : startedAt;
   if (Number.isNaN(start.getTime())) return 1;
   const diffMs = Date.now() - start.getTime();
   const dayIndex = Math.floor(diffMs / 86_400_000) + 1;
   if (dayIndex < 1) return 1;
-  if (dayIndex > 30) return 30;
+  if (dayIndex > totalDays) return totalDays;
   return dayIndex;
 }

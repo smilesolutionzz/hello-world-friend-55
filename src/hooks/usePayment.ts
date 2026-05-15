@@ -99,7 +99,10 @@ export function usePayment() {
 
   const pay = useCallback(async (productId: ProductId | string, customPrice?: number) => {
     const product = PRODUCTS[productId as ProductId];
-    const isMindTrack = productId === 'mind_track_30';
+    const isMindTrack30 = productId === 'mind_track_30';
+    const isMindTrack7 = productId === 'mind_track_7';
+    const isMindTrackExtend = productId === 'mind_track_extend_23';
+    const isMindTrack = isMindTrack30 || isMindTrack7 || isMindTrackExtend;
 
     if (!product && !customPrice && !isMindTrack) {
       toast({ title: '상품 오류', description: '잘못된 상품입니다.', variant: 'destructive' });
@@ -122,12 +125,21 @@ export function usePayment() {
       }
 
       const productType = isMindTrack ? 'mind_track' : (product?.type || 'subscription');
-      const productName = isMindTrack ? '30일 마음 변화 트랙' : (product?.name || '월간 구독');
-      const finalAmount = customPrice || product?.price || 0;
+      const mindTrackName =
+        isMindTrack7 ? '7일 마음 변화 트랙' :
+        isMindTrackExtend ? '마음 트랙 23일 연장권' :
+        '30일 마음 변화 트랙';
+      const mindTrackPrice =
+        isMindTrack7 ? 7900 :
+        isMindTrackExtend ? 12900 :
+        19900;
+      const productName = isMindTrack ? mindTrackName : (product?.name || '월간 구독');
+      const finalAmount = customPrice || (isMindTrack ? mindTrackPrice : (product?.price || 0));
+      const finalProductId = isMindTrack ? (productId as string) : (product?.id || productId);
 
       // 📊 결제 시작 이벤트
       trackEvent('payment_initiated', {
-        product_id: isMindTrack ? 'mind_track_30' : (product?.id || productId),
+        product_id: finalProductId,
         product_type: productType,
         amount: finalAmount,
       });
@@ -136,7 +148,7 @@ export function usePayment() {
         headers: { Authorization: `Bearer ${session.session.access_token}` },
         body: { 
           action: 'create-payment',
-          productId: isMindTrack ? 'mind_track_30' : (product?.id || productId),
+          productId: finalProductId,
           productType,
           productName,
           amount: finalAmount,

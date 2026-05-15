@@ -68,13 +68,13 @@ export default function MindTrackDashboardCard() {
           </div>
           <div className="flex-1 min-w-0">
             <Badge className="mb-2 bg-amber-100 text-amber-800 border-amber-200">
-              <Sparkles className="w-3 h-3 mr-1" /> 30일 마음 트랙 결제 완료
+              <Sparkles className="w-3 h-3 mr-1" /> 7일 마음 트랙 결제 완료
             </Badge>
             <h3 className="font-bold text-slate-900 mb-1 break-keep">
               지금 바로 기초 진단을 시작하세요
             </h3>
             <p className="text-sm text-slate-600 mb-3 break-keep">
-              결제가 확인되었습니다. 기초 진단을 완료하면 30일 맞춤 워크북이 생성됩니다.
+              결제가 확인되었습니다. 기초 진단을 완료하면 7일 맞춤 워크북이 생성됩니다.
             </p>
             <div className="flex flex-wrap gap-2">
               <Button

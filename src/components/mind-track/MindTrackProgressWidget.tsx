@@ -25,8 +25,10 @@ export default function MindTrackProgressWidget() {
       if (!wbs || wbs.length === 0) { setLoading(false); return; }
       const wb = wbs[0] as any;
       const en = wb.mind_track_enrollments;
+      const trackType = (en?.track_type || "mind_7day").toLowerCase();
+      const totalDays = trackType === "mind_30day" ? 30 : 7;
       const startedAt = en?.started_at ? new Date(en.started_at) : new Date();
-      const currentDay = Math.min(Math.max(Math.floor((Date.now() - startedAt.getTime()) / 86400000) + 1, 1), 30);
+      const currentDay = Math.min(Math.max(Math.floor((Date.now() - startedAt.getTime()) / 86400000) + 1, 1), totalDays);
 
       const [{ data: missions }, { data: checkins }] = await Promise.all([
         supabase.from("mind_track_daily_missions").select("*").eq("enrollment_id", en.id).eq("day_number", currentDay).maybeSingle(),
@@ -34,28 +36,29 @@ export default function MindTrackProgressWidget() {
       ]);
       const completed = (checkins ?? []).filter((c) => c.completed).length;
 
-      setData({ workbook: wb, currentDay, todayMission: missions, completed });
+      setData({ workbook: wb, currentDay, todayMission: missions, completed, totalDays });
       setLoading(false);
     })();
   }, []);
 
   if (loading || !data) return null;
+  const trackLabel = data.totalDays === 7 ? "7일 마음 트랙" : "30일 마음 트랙";
 
   return (
     <Card className="p-5 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-purple-500/5 mb-6">
       <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
         <div>
           <Badge className="mb-2 bg-amber-100 text-amber-800 border-amber-200">
-            <Sparkles className="w-3 h-3 mr-1" /> 30일 마음 트랙
+            <Sparkles className="w-3 h-3 mr-1" /> {trackLabel}
           </Badge>
           <h3 className="font-bold text-slate-900 break-keep">{data.workbook.challenge_theme}</h3>
         </div>
         <div className="text-right">
           <div className="text-xs text-slate-500">진행</div>
-          <div className="text-xl font-bold text-primary">Day {data.currentDay}/30</div>
+          <div className="text-xl font-bold text-primary">Day {data.currentDay}/{data.totalDays}</div>
         </div>
       </div>
-      <Progress value={(data.currentDay / 30) * 100} className="h-1.5 mb-2" />
+      <Progress value={(data.currentDay / data.totalDays) * 100} className="h-1.5 mb-2" />
       <div className="text-xs text-slate-600 mb-3">{data.completed}일 체크인 완료</div>
       {data.todayMission && (
         <div className="p-3 rounded-lg bg-white/70 border border-slate-200 mb-3">

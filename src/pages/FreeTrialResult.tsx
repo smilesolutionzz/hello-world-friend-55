@@ -6,7 +6,13 @@ import { useLanguage } from '@/i18n/LanguageContext';
 
 const FreeTrialResultPage = () => {
   const location = useLocation();
-  const result = location.state?.testResult || {};
+  const state = (location.state ?? {}) as {
+    testResult?: any
+    userAge?: number
+    region_sido?: string
+    region_sigungu?: string
+  };
+  const result = state.testResult || {};
   const { isEnglish } = useLanguage();
 
   return (
@@ -18,7 +24,12 @@ const FreeTrialResultPage = () => {
         canonicalUrl="https://aihpro.app/free-trial-result"
         noIndex={true}
       />
-      <FreeTrialResult result={result} />
+      <FreeTrialResult
+        result={result}
+        userAge={state.userAge}
+        region_sido={state.region_sido}
+        region_sigungu={state.region_sigungu}
+      />
     </>
   );
 };

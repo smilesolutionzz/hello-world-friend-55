@@ -25,10 +25,10 @@ export const PayButton: React.FC<PayButtonProps> = ({
   const { pay, loading, isReady } = usePayment();
 
   const handleClick = async () => {
-    const finalProductId = productId || 'mind_track_30';
-    if (finalProductId === 'mind_track_30') {
+    const finalProductId = productId || 'mind_track_7';
+    if (finalProductId === 'mind_track_7' || finalProductId === 'mind_track_30') {
       const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
-      await ensureMindTrackEnrollment();
+      await ensureMindTrackEnrollment({}, finalProductId === 'mind_track_7' ? '7d' : '30d');
     }
     const success = await pay(finalProductId);
     if (success) {
@@ -45,7 +45,7 @@ export const PayButton: React.FC<PayButtonProps> = ({
       ) : showIcon ? (
         <Crown className="w-4 h-4 mr-2" />
       ) : null}
-      {children || label || (showPrice ? '30일 마음 트랙 ₩19,900' : '30일 마음 트랙')}
+      {children || label || (showPrice ? '7일 마음 트랙 ₩7,900' : '7일 마음 트랙 시작')}
     </Button>
   );
 };

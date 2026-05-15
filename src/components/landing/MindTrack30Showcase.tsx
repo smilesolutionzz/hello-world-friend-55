@@ -69,9 +69,9 @@ export const MindTrack30Showcase = () => {
               preload="metadata"
               controls
               className="w-full h-full object-cover"
-              poster="/videos/mind-track-30-poster.jpg"
+              poster="/videos/mind-track-7-poster.jpg"
             >
-              <source src="/videos/mind-track-30.mp4?v=2" type="video/mp4" />
+              <source src="/videos/mind-track-7.mp4?v=1" type="video/mp4" />
             </video>
           </div>
         </motion.div>

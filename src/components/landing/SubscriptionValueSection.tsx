@@ -124,13 +124,13 @@ const SubscriptionValueSection = () => {
               size="lg"
             >
               <Sparkles className="w-5 h-5 mr-2" />
-              {isEnglish ? 'Start 30-Day Mind Track' : '1분 무료 진단으로 시작'}
+              {isEnglish ? 'Start 7-Day Mind Track' : '1분 무료 진단으로 시작'}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
 
             <div className="flex items-center justify-center gap-3 mt-3 text-xs text-slate-500">
-              <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> {isEnglish ? '30-day money-back' : '30일 환불 보장'}</span>
-              <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {isEnglish ? 'No auto-renewal' : '자동 결제 없음'}</span>
+              <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> {isEnglish ? 'No auto-renewal' : '자동 결제 없음'}</span>
+              <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {isEnglish ? `Long-term: 30 days ₩${MIND_TRACK_PRICE.toLocaleString()}` : `장기 원할 시 30일 ₩${MIND_TRACK_PRICE.toLocaleString()}`}</span>
             </div>
           </motion.div>
         </div>

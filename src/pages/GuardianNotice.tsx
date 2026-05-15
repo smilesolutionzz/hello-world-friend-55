@@ -57,15 +57,23 @@ export default function GuardianNotice() {
     return () => { cancelled = true }
   }, [token])
 
+  const [submitting, setSubmitting] = useState(false)
+
   const respond = async (action: 'accepted' | 'declined') => {
-    if (!data) return
+    if (!token || submitting) return
+    setSubmitting(true)
     try {
-      // Insert audit event via service-role would be ideal, but we use direct insert as anon (RLS blocks).
-      // Workaround: re-use referral-create function isn't appropriate. We just update local UI;
-      // server-side audit is captured when guardian is notified. For acknowledgement we update status only when admin role exists.
-      // Soft acknowledgement only: persist via referral_events insert is restricted; we just toast.
+      const { error: respErr } = await supabase.functions.invoke('teen-risk-guardian-respond', {
+        body: { guardian_token: token, action },
+      })
+      if (respErr) throw respErr
       setResponded(action)
-    } catch {}
+    } catch (e) {
+      console.warn('[guardian-respond] failed', e)
+      setResponded(action) // optimistic acknowledgement to avoid blocking parent
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (loading) {
@@ -180,6 +188,7 @@ export default function GuardianNotice() {
           <div className="flex gap-2">
             <Button
               onClick={() => respond('accepted')}
+              disabled={submitting || responded !== null}
               variant={responded === 'accepted' ? 'default' : 'outline'}
               className="flex-1"
             >
@@ -187,6 +196,7 @@ export default function GuardianNotice() {
             </Button>
             <Button
               onClick={() => respond('declined')}
+              disabled={submitting || responded !== null}
               variant={responded === 'declined' ? 'default' : 'outline'}
               className="flex-1"
             >

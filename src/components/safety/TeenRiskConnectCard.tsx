@@ -40,17 +40,17 @@ export function TeenRiskConnectCard({ referral, showGuardianForm = true }: Props
     }
     setSending(true)
     try {
-      // Patch consent first by invoking notify (server requires consent on the row).
-      // We update via referral metadata by re-creating? Simpler: rely on guardian_consent stored
-      // on referral. If false, server returns 403. So we must persist consent server-side.
-      // Use direct supabase update through user RLS.
       const { supabase } = await import('@/integrations/supabase/client')
-      await supabase
-        .from('teen_risk_referrals')
-        .update({ guardian_consent: true, guardian_contact_email: email })
-        .eq('id', referral.referral_id)
-
-      await notifyGuardian(referral.referral_id, email)
+      // Single source of truth: edge function records consent + dispatches email atomically.
+      const { error: respondErr } = await supabase.functions.invoke('teen-risk-guardian-respond', {
+        body: {
+          referral_id: referral.referral_id,
+          action: 'consent',
+          guardian_email: email,
+          notify: true,
+        },
+      })
+      if (respondErr) throw respondErr
       setSent(true)
       toast.success('보호자에게 안내 이메일을 보냈어요.')
     } catch (e: any) {

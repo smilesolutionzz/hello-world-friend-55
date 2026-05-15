@@ -795,7 +795,7 @@ const MindTrack: React.FC = () => {
               <p className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto break-keep leading-relaxed">
                 <strong className="text-slate-900">진단 · 자기관찰 · 전문가 1:1 · 회복 루틴 · 변화 리포트</strong>까지<br className="hidden md:block" />
                 AIHPRO의 모든 기능을 7일 안에 압축해서 쏟아붓습니다.<br className="hidden md:block" />
-                <span className="text-slate-500 text-sm md:text-base">매일 5분, ₩7,900 — 길게 가고 싶다면 30일(₩19,900)도 선택할 수 있어요.</span>
+                <span className="text-slate-500 text-sm md:text-base">매일 5분, 7일이면 충분합니다. ₩{TRACK_PRICE.toLocaleString()}으로 오늘 바로 Day 01부터.</span>
               </p>
             </motion.div>
           </div>

@@ -4,10 +4,10 @@ import { Sparkles, X, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSubscription } from '@/hooks/useSubscription';
-import { MIND_TRACK_PRICE } from '@/constants/tokenCosts';
+import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 
 /**
- * 하단 고정 CTA 바 — 30일 마음 변화 트랙 단일 상품 (₩19,900)
+ * 하단 고정 CTA 바 — 7일 마음 트랙(₩7,900) 메인 진입점
  * 구독자에게는 표시하지 않음
  */
 const StickyConversionBar = () => {
@@ -41,7 +41,7 @@ const StickyConversionBar = () => {
               <Sparkles className="w-5 h-5 text-amber-300" />
               <div>
                 <p className="text-white text-sm font-bold">1분 무료 마음 진단</p>
-                <p className="text-slate-400 text-xs">결과 기반 30일 마음 트랙 추천</p>
+                <p className="text-slate-400 text-xs">결과 기반 7일 마음 트랙 ₩{MIND_TRACK_7_PRICE.toLocaleString()} 추천</p>
               </div>
             </div>
 

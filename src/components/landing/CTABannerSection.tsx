@@ -92,9 +92,9 @@ const CTABannerSection = () => {
             >
               <Sparkles className="w-4 h-4 mr-3 text-[#D4AF73]" />
               <span className="flex items-baseline gap-3">
-                <span className="text-[15px] font-medium tracking-wide">30일 트랙 시작</span>
+                <span className="text-[15px] font-medium tracking-wide">7일 마음 트랙 시작</span>
                 <span className="w-px h-4 bg-[#0A0A0B]/15 self-center" />
-                <span className="text-[15px] font-light tabular-nums tracking-tight">₩19,900</span>
+                <span className="text-[15px] font-light tabular-nums tracking-tight">₩7,900</span>
               </span>
               <ArrowUpRight className="w-4 h-4 ml-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Button>
@@ -111,7 +111,7 @@ const CTABannerSection = () => {
 
           {/* Price anchoring */}
           <p className="mt-5 text-center text-[11px] text-white/35 tracking-[0.2em] uppercase">
-            한정가 · 정가 <span className="line-through">₩39,800</span> <span className="text-[#D4AF73]/80 ml-1">50% OFF</span>
+            한정가 · 정가 <span className="line-through">₩15,800</span> <span className="text-[#D4AF73]/80 ml-1">50% OFF</span> · 장기 원할 시 30일 ₩19,900
           </p>
 
           {/* Footer fineprint */}

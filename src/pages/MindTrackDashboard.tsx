@@ -291,8 +291,10 @@ export default function MindTrackDashboard() {
   return (
     <>
       <SEOHead
-        title="30일 마음 트랙 · 내 대시보드"
-        description="오늘의 미션과 진행률, 변화 추이를 한눈에 확인하세요."
+        title={`${trackLabel} · 내 대시보드 | AIHPRO`}
+        description={isShortTrack
+          ? "7일 안에 진단·자기관찰·전문가 개입·회복 루틴까지 완주하는 압축 마음 변화 트랙. 오늘의 미션과 변화 추이를 한눈에."
+          : "30일 마음 트랙 대시보드 — 오늘의 미션과 진행률, 변화 추이를 한눈에 확인하세요."}
         canonicalUrl="https://aihpro.app/mind-track/dashboard"
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/20">

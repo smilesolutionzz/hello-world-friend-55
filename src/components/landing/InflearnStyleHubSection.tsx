@@ -256,23 +256,51 @@ const InflearnStyleHubSection: React.FC = () => {
               return (
               <button
                 key={t.id}
-                onClick={() => navigate(`/mind-track?goal=${t.id}`)}
-                className="group text-left bg-white border border-slate-200 hover:border-slate-900 rounded-2xl overflow-hidden transition-all hover:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.18)]"
+                onClick={() => setPreviewTrack(t)}
+                className="group relative text-left bg-white border border-slate-200 hover:border-slate-900 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_20px_50px_-15px_rgba(15,23,42,0.35)] hover:-translate-y-1"
               >
+                {/* 글로우 — hover 시 카드 외곽 발광 */}
+                <div className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background: 'radial-gradient(80% 60% at 50% 0%, rgba(244,63,94,0.18), transparent 70%)',
+                  }}
+                />
+
                 {/* 상단 비주얼 — 후킹 썸네일 */}
                 <div className={`relative aspect-[16/9] ${thumb.bg} ${thumb.ink} overflow-hidden`}>
-                  <ThumbPattern kind={thumb.pattern} accent={thumb.accent} />
+                  {/* 살짝 확대 + 밝아지는 패턴 */}
+                  <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110">
+                    <ThumbPattern kind={thumb.pattern} accent={thumb.accent} />
+                  </div>
+                  {/* hover 시 위에서 내려오는 라이트 글로우 */}
+                  <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: 'radial-gradient(60% 50% at 50% 0%, rgba(255,255,255,0.22), transparent 70%)' }}
+                  />
 
-                  <div className="absolute top-3 right-3 z-10">
-                    <span className="bg-white/15 backdrop-blur-sm border border-white/25 text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                  {/* DAY 1–7 배지 — 골드 그라데이션 */}
+                  <div className="absolute top-3 right-3 z-20">
+                    <span className="inline-flex items-center gap-1 text-white text-[10px] font-extrabold tracking-[0.14em] px-2.5 py-1 rounded-full shadow-[0_4px_14px_-4px_rgba(0,0,0,0.5)] border border-white/30"
+                      style={{ background: 'linear-gradient(135deg, #C8B88A 0%, #8B7A4A 100%)' }}
+                    >
+                      <Calendar className="w-3 h-3" />
                       DAY 1–7
                     </span>
                   </div>
 
+                  {/* LIVE BEST 배지 — 레드→앰버 그라데이션 + pulse */}
                   {i < 3 && (
-                    <div className="absolute top-3 left-3 inline-flex items-center gap-1 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">
-                      <Flame className="w-3 h-3" />
-                      LIVE BEST
+                    <div className="absolute top-3 left-3 z-20">
+                      <div className="relative">
+                        <div className="absolute inset-0 rounded-md blur-md opacity-70 animate-pulse"
+                          style={{ background: 'linear-gradient(135deg, #ef4444, #f59e0b)' }}
+                        />
+                        <div className="relative inline-flex items-center gap-1 text-white text-[10px] font-extrabold tracking-wider px-2.5 py-1 rounded-md shadow-lg border border-white/40"
+                          style={{ background: 'linear-gradient(135deg, #ef4444 0%, #f43f5e 50%, #f59e0b 100%)' }}
+                        >
+                          <Flame className="w-3 h-3" />
+                          LIVE BEST
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -284,7 +312,7 @@ const InflearnStyleHubSection: React.FC = () => {
                       <h4 className="text-[17px] md:text-[19px] font-extrabold leading-tight break-keep drop-shadow-sm">
                         {thumb.hook}
                       </h4>
-                      <span className="text-[40px] leading-none -mb-1 drop-shadow-md shrink-0">
+                      <span className="text-[40px] leading-none -mb-1 drop-shadow-md shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6">
                         {t.icon}
                       </span>
                     </div>

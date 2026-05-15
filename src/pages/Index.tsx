@@ -182,6 +182,11 @@ const Index = () => {
               <SmartScrollReveal kind="cards"><RealFeedbackSection /></SmartScrollReveal>
             </LazyLoad>
 
+            {/* 2.5️⃣ 인플런 스타일 허브 — 7일 트랙 9종 + 전문가 + 무료검사 + 인기검색어 */}
+            <LazyLoad rootMargin="200px">
+              <SmartScrollReveal kind="cards"><InflearnStyleHubSection /></SmartScrollReveal>
+            </LazyLoad>
+
             {/* 3️⃣ AI 전문가급 리포트 미리보기 — 결제 전환 핵심 */}
             <LazyLoad rootMargin="200px">
               <SmartScrollReveal kind="image"><ReportPreviewSection /></SmartScrollReveal>

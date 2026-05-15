@@ -33,9 +33,13 @@ interface FreeTrialResultProps {
     averageScore?: number;
     answers?: any;
   };
+  /** 청소년(10-19) 자동 위기 연계용 */
+  userAge?: number;
+  region_sido?: string;
+  region_sigungu?: string;
 }
 
-const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
+const FreeTrialResult = ({ result, userAge, region_sido, region_sigungu }: FreeTrialResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -47,7 +51,7 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
-  const { redFlagResult, showAlert, closeAlert, openAlert, hasRedFlags } = useRedFlagDetection({
+  const { redFlagResult, showAlert, closeAlert, openAlert, hasRedFlags, teenReferral } = useRedFlagDetection({
     result: {
       level: result.level,
       description: result.description,
@@ -55,7 +59,10 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
       recommendations: result.recommendations
     },
     testType: result.testType,
-    enabled: true
+    enabled: true,
+    age: userAge,
+    region_sido,
+    region_sigungu,
   });
 
   const handleDownloadPDF = async () => {

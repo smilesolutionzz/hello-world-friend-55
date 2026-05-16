@@ -51,6 +51,26 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show, runKey]);
 
+  // 키보드 단축키: R = 다시 그리기, Esc/S = SKIP
+  useEffect(() => {
+    if (!show) return;
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || target?.isContentEditable) return;
+      if (e.key === "Escape" || e.key === "s" || e.key === "S") {
+        e.preventDefault();
+        handleClose("skip");
+      } else if (e.key === "r" || e.key === "R") {
+        e.preventDefault();
+        handleReset();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show]);
+
   const handleClose = (reason: "skip" | "complete" = "skip") => {
     sessionStorage.setItem(INTRO_KEYS.shown, "1");
     trackIntroEvent(reason, variant);
@@ -61,6 +81,7 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
   const handleReset = () => {
     setClosing(false);
     setRunKey((k) => k + 1);
+    trackIntroEvent("reset", variant);
   };
 
   if (!show) return null;
@@ -123,16 +144,19 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
         <button
           onClick={handleReset}
           className="px-3 py-1.5 md:px-4 md:py-2 border border-slate-300 text-slate-600 bg-white rounded-full text-xs md:text-sm font-medium hover:bg-slate-50 transition-colors flex items-center gap-1.5"
-          aria-label="인트로 다시 그리기"
+          aria-label="인트로 다시 그리기 (단축키 R)"
+          title="R"
         >
           <RotateCcw className="w-3.5 h-3.5" />
-          다시 그리기
+          다시 그리기 <kbd className="ml-1 hidden md:inline px-1.5 py-0.5 text-[10px] bg-slate-100 border border-slate-200 rounded">R</kbd>
         </button>
         <button
           onClick={() => handleClose("skip")}
-          className="px-4 py-1.5 md:px-5 md:py-2 border border-slate-300 text-slate-500 bg-white rounded-full text-xs md:text-sm font-medium hover:bg-slate-50 transition-colors"
+          className="px-4 py-1.5 md:px-5 md:py-2 border border-slate-300 text-slate-500 bg-white rounded-full text-xs md:text-sm font-medium hover:bg-slate-50 transition-colors flex items-center gap-1.5"
+          aria-label="인트로 건너뛰기 (단축키 Esc)"
+          title="Esc"
         >
-          SKIP
+          SKIP <kbd className="hidden md:inline px-1.5 py-0.5 text-[10px] bg-slate-100 border border-slate-200 rounded">Esc</kbd>
         </button>
       </div>
 

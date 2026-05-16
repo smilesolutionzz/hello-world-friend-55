@@ -53,7 +53,20 @@ const Settings = () => {
   // 인트로 애니메이션 환경설정
   const [introDisabled, setIntroDisabledState] = useState<boolean>(() => isIntroDisabled());
   const [introVariant, setIntroVariantState] = useState<IntroVariant>(() => getIntroVariant());
+  const [introMode, setIntroModeState] = useState<IntroMode>(() => getIntroMode());
   const [introPreview, setIntroPreview] = useState<IntroVariant | null>(null);
+
+  const handleIntroModeChange = (mode: IntroMode) => {
+    setIntroMode(mode);
+    setIntroModeState(mode);
+    toast({
+      title: mode === "random" ? "무작위 모드로 변경됨" : "고정 모드로 변경됨",
+      description:
+        mode === "random"
+          ? "방문할 때마다 A/B 변형이 무작위로 바뀌어요."
+          : `이제부터 변형 ${introVariant}로 고정되어 재생돼요.`,
+    });
+  };
 
   const handleIntroToggle = (checked: boolean) => {
     // checked = 켜기 → disabled false

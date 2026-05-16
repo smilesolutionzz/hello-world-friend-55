@@ -143,16 +143,19 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
         <button
           onClick={handleReset}
           className="px-3 py-1.5 md:px-4 md:py-2 border border-slate-300 text-slate-600 bg-white rounded-full text-xs md:text-sm font-medium hover:bg-slate-50 transition-colors flex items-center gap-1.5"
-          aria-label="인트로 다시 그리기"
+          aria-label="인트로 다시 그리기 (단축키 R)"
+          title="R"
         >
           <RotateCcw className="w-3.5 h-3.5" />
-          다시 그리기
+          다시 그리기 <kbd className="ml-1 hidden md:inline px-1.5 py-0.5 text-[10px] bg-slate-100 border border-slate-200 rounded">R</kbd>
         </button>
         <button
           onClick={() => handleClose("skip")}
-          className="px-4 py-1.5 md:px-5 md:py-2 border border-slate-300 text-slate-500 bg-white rounded-full text-xs md:text-sm font-medium hover:bg-slate-50 transition-colors"
+          className="px-4 py-1.5 md:px-5 md:py-2 border border-slate-300 text-slate-500 bg-white rounded-full text-xs md:text-sm font-medium hover:bg-slate-50 transition-colors flex items-center gap-1.5"
+          aria-label="인트로 건너뛰기 (단축키 Esc)"
+          title="Esc"
         >
-          SKIP
+          SKIP <kbd className="hidden md:inline px-1.5 py-0.5 text-[10px] bg-slate-100 border border-slate-200 rounded">Esc</kbd>
         </button>
       </div>
 

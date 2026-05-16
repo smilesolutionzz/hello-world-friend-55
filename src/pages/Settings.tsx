@@ -96,7 +96,7 @@ const Settings = () => {
     resetIntroShown();
     setIntroPreview(v ?? introVariant);
     // 컴포넌트가 unmount될 때까지 자동 닫힘 → 1회 재생 후 null 복귀
-    setTimeout(() => setIntroPreview(null), 5200);
+    setTimeout(() => setIntroPreview(null), 8200);
   };
 
   const handlePasswordChange = async () => {

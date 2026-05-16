@@ -297,29 +297,65 @@ const Settings = () => {
           <Separator />
 
           <div className="space-y-2">
+            <Label>변형 노출 방식</Label>
+            <p className="text-xs text-muted-foreground">
+              고정하면 항상 같은 변형이, 무작위면 방문할 때마다 A/B가 임의로 바뀌어요.
+            </p>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => handleIntroModeChange("locked")}
+                className={`text-left p-3 rounded-xl border transition-colors ${
+                  introMode === "locked"
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:bg-muted/50"
+                }`}
+              >
+                <div className="font-semibold text-sm">고정 (Locked)</div>
+                <div className="text-xs text-muted-foreground mt-0.5">선택한 변형으로만 재생</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleIntroModeChange("random")}
+                className={`text-left p-3 rounded-xl border transition-colors ${
+                  introMode === "random"
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:bg-muted/50"
+                }`}
+              >
+                <div className="font-semibold text-sm">무작위 (Random)</div>
+                <div className="text-xs text-muted-foreground mt-0.5">방문마다 A/B 자동 전환</div>
+              </button>
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="space-y-2">
             <Label>A/B 변형 선택</Label>
             <p className="text-xs text-muted-foreground">
-              현재 할당: <span className="font-semibold text-foreground">변형 {introVariant}</span>
-              {" · "}어떤 버전이 전환에 더 좋은지 비교해 보세요.
+              현재 {introMode === "random" ? "이번 회차" : "고정"} 변형:{" "}
+              <span className="font-semibold text-foreground">변형 {introVariant}</span>
+              {introMode === "random" && " · 무작위 모드라 다음 방문엔 달라질 수 있어요."}
             </p>
             <div className="grid grid-cols-2 gap-2 pt-1">
               <button
                 type="button"
                 onClick={() => handleIntroVariantChange("A")}
                 className={`text-left p-3 rounded-xl border transition-colors ${
-                  introVariant === "A"
+                  introVariant === "A" && introMode === "locked"
                     ? "border-primary bg-primary/5"
                     : "border-border hover:bg-muted/50"
                 }`}
               >
                 <div className="font-semibold text-sm">변형 A</div>
-                <div className="text-xs text-muted-foreground mt-0.5">디오라마 팝업</div>
+                <div className="text-xs text-muted-foreground mt-0.5">스케치 / 디오라마</div>
               </button>
               <button
                 type="button"
                 onClick={() => handleIntroVariantChange("B")}
                 className={`text-left p-3 rounded-xl border transition-colors ${
-                  introVariant === "B"
+                  introVariant === "B" && introMode === "locked"
                     ? "border-primary bg-primary/5"
                     : "border-border hover:bg-muted/50"
                 }`}
@@ -328,6 +364,10 @@ const Settings = () => {
                 <div className="text-xs text-muted-foreground mt-0.5">헤드라인 + 아크 라인업</div>
               </button>
             </div>
+            <p className="text-[11px] text-muted-foreground pt-1">
+              인트로 화면에서 <kbd className="px-1 py-0.5 bg-muted rounded border">R</kbd> = 다시 그리기,{" "}
+              <kbd className="px-1 py-0.5 bg-muted rounded border">Esc</kbd> = 건너뛰기
+            </p>
           </div>
 
           <Separator />

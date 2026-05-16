@@ -248,10 +248,10 @@ const SketchScene = () => {
           d="M385 200 L385 60 Q455 60 455 100 Q455 140 385 140" />
         {/* R */}
         <path className="sketch-path" style={{ ["--len" as any]: 320, ["--dur" as any]: ".7s", ["--delay" as any]: "1.9s" } as any}
-          d="M495 200 L495 60 Q565 60 565 100 Q565 140 495 140 L565 200" />
+          d="M495 200 L495 60 Q545 60 545 100 Q545 140 495 140 L555 200" />
         {/* O */}
         <path className="sketch-path" style={{ ["--len" as any]: 380, ["--dur" as any]: ".8s", ["--delay" as any]: "2.4s" } as any}
-          d="M650 130 Q650 60 605 60 Q560 60 560 130 Q560 200 605 200 Q650 200 650 130 Z" />
+          d="M675 130 Q675 60 632 60 Q590 60 590 130 Q590 200 632 200 Q675 200 675 130 Z" />
 
         {/* 강조 밑줄 (파란펜) */}
         <path

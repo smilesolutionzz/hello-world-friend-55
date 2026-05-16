@@ -247,7 +247,94 @@ const Settings = () => {
         </CardContent>
       </Card>
 
-      {/* 개인정보 및 보안 */}
+      {/* 인트로 애니메이션 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5" />
+            홈 인트로 애니메이션
+          </CardTitle>
+          <CardDescription>
+            홈에 들어올 때 4초간 재생되는 디오라마 인트로를 켜고 끄거나, A/B 변형을 선택할 수 있어요.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="intro-enabled">인트로 재생</Label>
+              <p className="text-sm text-muted-foreground">
+                {introDisabled ? "꺼짐 — 홈에서 인트로가 나타나지 않아요" : "켜짐 — 세션당 1회 재생"}
+              </p>
+            </div>
+            <Switch
+              id="intro-enabled"
+              checked={!introDisabled}
+              onCheckedChange={handleIntroToggle}
+            />
+          </div>
+
+          <Separator />
+
+          <div className="space-y-2">
+            <Label>A/B 변형 선택</Label>
+            <p className="text-xs text-muted-foreground">
+              현재 할당: <span className="font-semibold text-foreground">변형 {introVariant}</span>
+              {" · "}어떤 버전이 전환에 더 좋은지 비교해 보세요.
+            </p>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => handleIntroVariantChange("A")}
+                className={`text-left p-3 rounded-xl border transition-colors ${
+                  introVariant === "A"
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:bg-muted/50"
+                }`}
+              >
+                <div className="font-semibold text-sm">변형 A</div>
+                <div className="text-xs text-muted-foreground mt-0.5">디오라마 팝업</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleIntroVariantChange("B")}
+                className={`text-left p-3 rounded-xl border transition-colors ${
+                  introVariant === "B"
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:bg-muted/50"
+                }`}
+              >
+                <div className="font-semibold text-sm">변형 B</div>
+                <div className="text-xs text-muted-foreground mt-0.5">헤드라인 + 아크 라인업</div>
+              </button>
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handleIntroReplay("A")}
+              disabled={!!introPreview}
+              className="flex-1"
+            >
+              <Play className="w-4 h-4 mr-2" /> 변형 A 미리보기
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handleIntroReplay("B")}
+              disabled={!!introPreview}
+              className="flex-1"
+            >
+              <Play className="w-4 h-4 mr-2" /> 변형 B 미리보기
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {introPreview && <DioramaIntro force variantOverride={introPreview} />}
+
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

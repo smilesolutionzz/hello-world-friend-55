@@ -32,6 +32,7 @@ import { useTrialProfile } from '@/hooks/useTrialProfile';
 import { CopilotBubble } from '@/components/copilot/CopilotBubble';
 import B2BEntryBanner from '@/components/landing/B2BEntryBanner';
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
+import DioramaIntro from '@/components/intro/DioramaIntro';
 
 
 const structuredData = {

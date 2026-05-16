@@ -53,7 +53,7 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
     return () => clearTimeout(t);
   }, [show, runKey]);
 
-  // 키보드 단축키: R = 다시 그리기, Esc/S = SKIP
+  // 키보드 단축키: R = 다시 그리기, Esc/S = SKIP, Enter/Space = 다음으로 (ready 후)
   useEffect(() => {
     if (!show) return;
     const onKey = (e: KeyboardEvent) => {
@@ -66,12 +66,41 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
       } else if (e.key === "r" || e.key === "R") {
         e.preventDefault();
         handleReset();
+      } else if (ready && (e.key === "Enter" || e.key === " " || e.key === "ArrowDown" || e.key === "PageDown")) {
+        e.preventDefault();
+        handleClose("complete");
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [show]);
+  }, [show, ready]);
+
+  // 진입 가능 상태에서 마우스 휠/터치 스와이프로도 닫기
+  useEffect(() => {
+    if (!show || !ready) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 8) return;
+      handleClose("complete");
+    };
+    let touchStartY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const dy = (e.touches[0]?.clientY ?? 0) - touchStartY;
+      if (Math.abs(dy) > 24) handleClose("complete");
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show, ready]);
 
   const handleClose = (reason: "skip" | "complete" = "skip") => {
     sessionStorage.setItem(INTRO_KEYS.shown, "1");

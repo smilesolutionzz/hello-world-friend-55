@@ -5,7 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Settings as SettingsIcon, Lock, Bell, Shield, Trash2 } from "lucide-react";
+import { Settings as SettingsIcon, Lock, Bell, Shield, Trash2, Sparkles, Play } from "lucide-react";
+import {
+  isIntroDisabled,
+  setIntroDisabled,
+  getIntroVariant,
+  setIntroVariant,
+  resetIntroShown,
+  type IntroVariant,
+} from "@/lib/introPreferences";
+import DioramaIntro from "@/components/intro/DioramaIntro";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";

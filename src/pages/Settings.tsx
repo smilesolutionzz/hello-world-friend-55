@@ -47,6 +47,37 @@ const Settings = () => {
     marketing: false,
   });
 
+  // 인트로 애니메이션 환경설정
+  const [introDisabled, setIntroDisabledState] = useState<boolean>(() => isIntroDisabled());
+  const [introVariant, setIntroVariantState] = useState<IntroVariant>(() => getIntroVariant());
+  const [introPreview, setIntroPreview] = useState<IntroVariant | null>(null);
+
+  const handleIntroToggle = (checked: boolean) => {
+    // checked = 켜기 → disabled false
+    const disabled = !checked;
+    setIntroDisabled(disabled);
+    setIntroDisabledState(disabled);
+    toast({
+      title: disabled ? "인트로 애니메이션 끔" : "인트로 애니메이션 켬",
+      description: disabled
+        ? "이제 홈에 들어와도 인트로가 재생되지 않아요."
+        : "다음 방문부터 다시 인트로가 재생돼요.",
+    });
+  };
+
+  const handleIntroVariantChange = (v: IntroVariant) => {
+    setIntroVariant(v);
+    setIntroVariantState(v);
+    toast({ title: `인트로 변형 ${v}로 변경됨`, description: "다음 재생부터 적용됩니다." });
+  };
+
+  const handleIntroReplay = (v?: IntroVariant) => {
+    resetIntroShown();
+    setIntroPreview(v ?? introVariant);
+    // 컴포넌트가 unmount될 때까지 자동 닫힘 → 1회 재생 후 null 복귀
+    setTimeout(() => setIntroPreview(null), 5200);
+  };
+
   const handlePasswordChange = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast({

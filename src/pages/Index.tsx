@@ -32,6 +32,7 @@ import { useTrialProfile } from '@/hooks/useTrialProfile';
 import { CopilotBubble } from '@/components/copilot/CopilotBubble';
 import B2BEntryBanner from '@/components/landing/B2BEntryBanner';
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
+import DioramaIntro from '@/components/intro/DioramaIntro';
 
 
 const structuredData = {
@@ -167,6 +168,7 @@ const Index = () => {
         structuredData={structuredData}
       />
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
+      <DioramaIntro force={searchParams.get('intro') === '1'} />
       
       <ErrorBoundary>
         <div className="min-h-screen max-w-full overflow-x-hidden bg-slate-900 pb-16 md:pb-0">

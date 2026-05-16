@@ -84,7 +84,12 @@ const Settings = () => {
   const handleIntroVariantChange = (v: IntroVariant) => {
     setIntroVariant(v);
     setIntroVariantState(v);
-    toast({ title: `인트로 변형 ${v}로 변경됨`, description: "다음 재생부터 적용됩니다." });
+    // 수동 선택 시 자동으로 고정 모드로 전환
+    if (introMode !== "locked") {
+      setIntroMode("locked");
+      setIntroModeState("locked");
+    }
+    toast({ title: `인트로 변형 ${v}로 고정됨`, description: "다음 재생부터 이 변형으로 재생돼요." });
   };
 
   const handleIntroReplay = (v?: IntroVariant) => {

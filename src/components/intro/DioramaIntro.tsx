@@ -22,6 +22,7 @@ interface Props {
 const DioramaIntro = ({ force = false, variantOverride }: Props) => {
   const [show, setShow] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [ready, setReady] = useState(false); // 워터마크까지 다 그려져 진입 가능한 상태
   const [runKey, setRunKey] = useState(0); // 리셋시 증가 → 애니메이션 재시작
   const variant = useMemo<IntroVariant>(
     () => variantOverride ?? getIntroVariant(),
@@ -44,12 +45,12 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [force, variant]);
 
-  // 매 재생마다 자동 종료 타이머
+  // 애니메이션 종료 → 진입 가능 상태 (자동 닫지 않음)
   useEffect(() => {
     if (!show) return;
-    const t = setTimeout(() => handleClose("complete"), DURATION_MS);
+    setReady(false);
+    const t = setTimeout(() => setReady(true), READY_MS);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show, runKey]);
 
   // 키보드 단축키: R = 다시 그리기, Esc/S = SKIP

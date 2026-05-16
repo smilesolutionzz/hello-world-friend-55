@@ -51,6 +51,26 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show, runKey]);
 
+  // 키보드 단축키: R = 다시 그리기, Esc/S = SKIP
+  useEffect(() => {
+    if (!show) return;
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || target?.isContentEditable) return;
+      if (e.key === "Escape" || e.key === "s" || e.key === "S") {
+        e.preventDefault();
+        handleClose("skip");
+      } else if (e.key === "r" || e.key === "R") {
+        e.preventDefault();
+        handleReset();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show]);
+
   const handleClose = (reason: "skip" | "complete" = "skip") => {
     sessionStorage.setItem(INTRO_KEYS.shown, "1");
     trackIntroEvent(reason, variant);

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { RotateCcw, Heart, Clock, TrendingUp, ShieldCheck, Sparkles } from "lucide-react";
+import { RotateCcw, Heart, Clock, TrendingUp, ShieldCheck, Sparkles, ArrowDown, MousePointerClick } from "lucide-react";
 import {
   INTRO_KEYS,
   getIntroVariant,

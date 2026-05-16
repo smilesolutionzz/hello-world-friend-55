@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { RotateCcw, Heart, Clock, TrendingUp, ShieldCheck, Sparkles } from "lucide-react";
+import { RotateCcw, Heart, Clock, TrendingUp, ShieldCheck, Sparkles, ArrowDown, MousePointerClick } from "lucide-react";
 import {
   INTRO_KEYS,
   getIntroVariant,
@@ -10,9 +10,9 @@ import {
 
 // 인스타 릴스에서 유행하는 손글씨 스케치 인트로
 // - 펜이 'AIHPRO' 를 한 획씩 그리고, 밑줄·아이콘이 따라 그려짐
-// - SKIP / 다시 그리기(리셋) 버튼 제공
-// 마지막 워터마크(4.7s 노출)가 약 2.5초간 머문 뒤 부드럽게 사라지도록 충분히 길게 잡음
-const DURATION_MS = 7500;
+// - 자동 종료 없음 — 워터마크까지 다 보인 뒤 "다음으로" 버튼/스크롤/클릭/Enter로 진입
+// 워터마크 등장(4.7s) + pop(0.55s) ≈ 5.3s 이후 진입 가능
+const READY_MS = 5400;
 
 interface Props {
   force?: boolean;
@@ -22,6 +22,7 @@ interface Props {
 const DioramaIntro = ({ force = false, variantOverride }: Props) => {
   const [show, setShow] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [ready, setReady] = useState(false); // 워터마크까지 다 그려져 진입 가능한 상태
   const [runKey, setRunKey] = useState(0); // 리셋시 증가 → 애니메이션 재시작
   const variant = useMemo<IntroVariant>(
     () => variantOverride ?? getIntroVariant(),
@@ -44,15 +45,15 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [force, variant]);
 
-  // 매 재생마다 자동 종료 타이머
+  // 애니메이션 종료 → 진입 가능 상태 (자동 닫지 않음)
   useEffect(() => {
     if (!show) return;
-    const t = setTimeout(() => handleClose("complete"), DURATION_MS);
+    setReady(false);
+    const t = setTimeout(() => setReady(true), READY_MS);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show, runKey]);
 
-  // 키보드 단축키: R = 다시 그리기, Esc/S = SKIP
+  // 키보드 단축키: R = 다시 그리기, Esc/S = SKIP, Enter/Space = 다음으로 (ready 후)
   useEffect(() => {
     if (!show) return;
     const onKey = (e: KeyboardEvent) => {
@@ -65,12 +66,41 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
       } else if (e.key === "r" || e.key === "R") {
         e.preventDefault();
         handleReset();
+      } else if (ready && (e.key === "Enter" || e.key === " " || e.key === "ArrowDown" || e.key === "PageDown")) {
+        e.preventDefault();
+        handleClose("complete");
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [show]);
+  }, [show, ready]);
+
+  // 진입 가능 상태에서 마우스 휠/터치 스와이프로도 닫기
+  useEffect(() => {
+    if (!show || !ready) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 8) return;
+      handleClose("complete");
+    };
+    let touchStartY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const dy = (e.touches[0]?.clientY ?? 0) - touchStartY;
+      if (Math.abs(dy) > 24) handleClose("complete");
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show, ready]);
 
   const handleClose = (reason: "skip" | "complete" = "skip") => {
     sessionStorage.setItem(INTRO_KEYS.shown, "1");
@@ -172,6 +202,28 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
       />
 
       <SketchScene key={runKey} />
+
+      {/* 하단 진입 CTA — ready 상태에서만 등장 */}
+      <div
+        className={`absolute left-1/2 -translate-x-1/2 bottom-6 md:bottom-10 z-50 flex flex-col items-center gap-2 transition-all duration-500 ${
+          ready ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none"
+        }`}
+      >
+        <button
+          onClick={() => handleClose("complete")}
+          className="px-6 md:px-8 py-3 md:py-3.5 bg-slate-900 text-white rounded-full text-sm md:text-base font-semibold hover:bg-slate-800 transition-colors flex items-center gap-2 shadow-[4px_4px_0_0_rgba(15,23,42,0.15)]"
+        >
+          다음으로
+          <ArrowDown className="w-4 h-4 animate-bounce" />
+        </button>
+        <div className="hidden md:flex items-center gap-1.5 text-[11px] text-slate-400">
+          <MousePointerClick className="w-3 h-3" />
+          스크롤하거나 Enter를 눌러도 됩니다
+        </div>
+        <div className="md:hidden text-[11px] text-slate-400">
+          위로 살짝 스와이프해도 됩니다
+        </div>
+      </div>
     </div>
   );
 };

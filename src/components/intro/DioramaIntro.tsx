@@ -81,6 +81,7 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
   const handleReset = () => {
     setClosing(false);
     setRunKey((k) => k + 1);
+    trackIntroEvent("reset", variant);
   };
 
   if (!show) return null;

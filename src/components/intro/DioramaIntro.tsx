@@ -11,7 +11,8 @@ import {
 // 인스타 릴스에서 유행하는 손글씨 스케치 인트로
 // - 펜이 'AIHPRO' 를 한 획씩 그리고, 밑줄·아이콘이 따라 그려짐
 // - SKIP / 다시 그리기(리셋) 버튼 제공
-const DURATION_MS = 4600;
+// 마지막 워터마크(4.7s 노출)가 약 2.5초간 머문 뒤 부드럽게 사라지도록 충분히 길게 잡음
+const DURATION_MS = 7500;
 
 interface Props {
   force?: boolean;

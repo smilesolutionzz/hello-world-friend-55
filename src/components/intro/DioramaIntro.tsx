@@ -202,6 +202,28 @@ const DioramaIntro = ({ force = false, variantOverride }: Props) => {
       />
 
       <SketchScene key={runKey} />
+
+      {/* 하단 진입 CTA — ready 상태에서만 등장 */}
+      <div
+        className={`absolute left-1/2 -translate-x-1/2 bottom-6 md:bottom-10 z-50 flex flex-col items-center gap-2 transition-all duration-500 ${
+          ready ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none"
+        }`}
+      >
+        <button
+          onClick={() => handleClose("complete")}
+          className="px-6 md:px-8 py-3 md:py-3.5 bg-slate-900 text-white rounded-full text-sm md:text-base font-semibold hover:bg-slate-800 transition-colors flex items-center gap-2 shadow-[4px_4px_0_0_rgba(15,23,42,0.15)]"
+        >
+          다음으로
+          <ArrowDown className="w-4 h-4 animate-bounce" />
+        </button>
+        <div className="hidden md:flex items-center gap-1.5 text-[11px] text-slate-400">
+          <MousePointerClick className="w-3 h-3" />
+          스크롤하거나 Enter를 눌러도 됩니다
+        </div>
+        <div className="md:hidden text-[11px] text-slate-400">
+          위로 살짝 스와이프해도 됩니다
+        </div>
+      </div>
     </div>
   );
 };

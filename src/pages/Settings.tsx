@@ -12,7 +12,10 @@ import {
   getIntroVariant,
   setIntroVariant,
   resetIntroShown,
+  getIntroMode,
+  setIntroMode,
   type IntroVariant,
+  type IntroMode,
 } from "@/lib/introPreferences";
 import DioramaIntro from "@/components/intro/DioramaIntro";
 import { supabase } from "@/integrations/supabase/client";

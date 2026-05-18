@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,33 +13,45 @@ import {
   Clock,
   Sparkles,
 } from 'lucide-react';
-
-// 결제 실패 시 흔한 원인 → 사용자 친화 가이드 매핑
-const REASON_GUIDE: { match: RegExp; title: string; tip: string }[] = [
-  { match: /(LIMIT|한도|초과)/i, title: '카드 한도 초과', tip: '카드사 앱에서 한도를 확인하거나 다른 카드로 시도해 주세요.' },
-  { match: /(STOP|정지|disabled)/i, title: '카드 사용 정지', tip: '카드사에 이용 가능 상태인지 확인 후 다시 시도해 주세요.' },
-  { match: /(EXPIRE|유효기간|만료)/i, title: '카드 유효기간 만료', tip: '유효한 카드 정보로 다시 시도해 주세요.' },
-  { match: /(CANCEL|취소|user_cancel)/i, title: '결제 취소', tip: '결제 창을 닫으셨어요. 다시 진행하시면 그대로 이어서 결제할 수 있어요.' },
-  { match: /(NETWORK|타임아웃|timeout)/i, title: '네트워크 일시 오류', tip: 'Wi-Fi/데이터 연결을 확인하고 잠시 후 다시 시도해 주세요.' },
-];
+import { mapPaymentError, RETRY_BACKOFF_MS, MAX_AUTO_RETRIES } from '@/lib/paymentErrorMessages';
 
 const PaymentFail = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const message = decodeURIComponent(searchParams.get('message') || '결제가 취소되었거나 실패했어요.');
   const code = searchParams.get('code');
-  const type = searchParams.get('type'); // mind_track | subscription | ...
+  const type = searchParams.get('type');
   const isMindTrack = type === 'mind_track';
 
-  const guide = REASON_GUIDE.find((g) => g.match.test(message) || (code && g.match.test(code)));
+  const info = mapPaymentError(code || message);
+  const guide = { title: info.title, tip: info.description };
+
+  const [autoRetryCount, setAutoRetryCount] = useState(0);
+  const [autoRetryIn, setAutoRetryIn] = useState<number | null>(null);
 
   const handleRetry = () => {
-    if (isMindTrack) {
-      navigate('/mind-track?retry=1');
-    } else {
-      navigate('/pricing');
-    }
+    if (isMindTrack) navigate('/mind-track?retry=1');
+    else navigate('/pricing');
   };
+
+  // 일시적 오류는 자동 재시도 카운트다운 노출
+  useEffect(() => {
+    if (!info.transient || autoRetryCount >= MAX_AUTO_RETRIES) return;
+    const delay = RETRY_BACKOFF_MS[autoRetryCount] ?? 10000;
+    setAutoRetryIn(Math.ceil(delay / 1000));
+    const tick = setInterval(() => {
+      setAutoRetryIn((s) => (s && s > 1 ? s - 1 : 0));
+    }, 1000);
+    const timer = setTimeout(() => {
+      setAutoRetryCount((c) => c + 1);
+      handleRetry();
+    }, delay);
+    return () => {
+      clearInterval(tick);
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [info.transient, autoRetryCount]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-background to-muted/30">
@@ -102,6 +114,14 @@ const PaymentFail = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* 자동 재시도 카운트다운 (일시적 오류만) */}
+          {info.transient && autoRetryIn !== null && autoRetryCount < MAX_AUTO_RETRIES && (
+            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-3 text-[12px] text-blue-700 text-center">
+              잠시 후 자동으로 다시 시도해요… <span className="font-bold">{autoRetryIn}s</span>
+              <span className="text-blue-400 ml-2">({autoRetryCount + 1}/{MAX_AUTO_RETRIES})</span>
             </div>
           )}
 

@@ -1,6 +1,6 @@
 import { ReactNode, ComponentType } from 'react';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { LoadingSpinner } from './loading-spinner';
+import { SectionPlaceholder } from './section-placeholder';
 
 interface LazyLoadProps {
   children: ReactNode;
@@ -8,24 +8,40 @@ interface LazyLoadProps {
   threshold?: number;
   rootMargin?: string;
   className?: string;
+  /** Optional debug label shown in placeholder + scroll-reveal debug badges */
+  debugLabel?: string;
+  /** Override placeholder height (Tailwind class) when using default fallback */
+  placeholderHeight?: string;
 }
 
 const LazyLoad = ({
   children,
-  fallback = <LoadingSpinner />,
-  threshold = 0.1,
-  rootMargin = '100px',
-  className
+  fallback,
+  threshold = 0.01,
+  rootMargin = '300px',
+  className,
+  debugLabel,
+  placeholderHeight,
 }: LazyLoadProps) => {
   const { targetRef, isVisible } = useIntersectionObserver({
     threshold,
     rootMargin,
-    triggerOnce: true
+    triggerOnce: true,
   });
 
+  const resolvedFallback =
+    fallback ?? (
+      <SectionPlaceholder heightClass={placeholderHeight} label={debugLabel} />
+    );
+
   return (
-    <div ref={targetRef as any} className={className}>
-      {isVisible ? children : fallback}
+    <div
+      ref={targetRef as any}
+      className={className}
+      data-lazy-label={debugLabel}
+      data-lazy-visible={isVisible ? 'true' : 'false'}
+    >
+      {isVisible ? children : resolvedFallback}
     </div>
   );
 };

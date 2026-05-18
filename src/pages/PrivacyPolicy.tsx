@@ -27,7 +27,7 @@ const PrivacyPolicy = () => {
                 <CardTitle className="text-3xl font-bold">개인정보처리방침</CardTitle>
               </div>
               <LegalVersionBadge doc="privacy" />
-            
+            </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4 mb-8 p-6 bg-primary/5 rounded-lg">
                 <div className="text-center space-y-2">

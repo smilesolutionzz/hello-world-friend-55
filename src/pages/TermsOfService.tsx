@@ -27,7 +27,7 @@ const TermsOfService = () => {
                 <CardTitle className="text-3xl font-bold">서비스 이용약관</CardTitle>
               </div>
               <LegalVersionBadge doc="terms" />
-            
+            </CardHeader>
             <CardContent>
               <ScrollArea className="h-[600px] pr-4">
                 <div className="space-y-6">

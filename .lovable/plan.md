@@ -1,85 +1,90 @@
-# 7일 메인 + 30일 업셀 구조 전환 플랜
+# ABA 코칭 트랙 — 일일 카드 · 데이터 폼 · 7일 리포트
 
-## 배경 (왜 바꾸나)
+## 전제: B2B 매출 정합성
 
-- 외부 PM 피드백: "30일은 너무 길다, 결제 심리 장벽이 너무 높다"
-- 업계 정설:
-  - Calm/Headspace 30일 챌린지 완주율 10~15%
-  - 한국 디지털 헬스케어 7일차 이탈 60%+
-  - Duolingo·클래스101이 모두 7일 챌린지로 진입점을 잡고 장기 상품 업셀하는 이유
-- 현재 BM 한계: 30일이 메인이라 "한 번 실패한 약속"으로 인식 → 결제 전 이탈
+B2B(어린이집·발달센터·소아과)가 주매출원이라는 직관은 맞습니다. 단, B2B 영업의 무기는 결국 **"우리 부모가 7일 동안 이 미션을 진짜로 했고, 데이터가 남는다"** 라는 증거입니다. 지금 만들 ABA 자산은 두 가지로 동시에 작동합니다.
 
-## 핵심 의사결정
+- **B2C (mind_track_7 ₩7,900)** — 30-45 부모가 직접 결제하고 매일 데이터를 입력 → 7일 리포트.
+- **B2B 화이트라벨 자산** — 같은 ABA 데이터 스키마를 `b2b_jobcoach_*` / `client_data_sharing` 파이프라인에 그대로 흘려보낼 수 있어, 발달센터·어린이집이 부모에게 "우리 기관이 처방한 7일 ABA 프로토콜"로 재포장 가능. 즉 **이번 작업은 B2C 전환 + B2B 영업 데모용 자산을 동시에 짓는 작업**입니다. (별도 B2B UI 작업 아님 — B2C가 잘 돌면 B2B 자동 따라옴)
 
-- 메인 결제 진입점: **7일 마음 트랙 ₩7,900**
-- 7일 완주(또는 결제 후 7일차) 시점: **+23일 연장권 ₩12,900** 업셀 (총합 ₩19,900으로 30일과 동일하게 정렬)
-- 30일 ₩19,900: "처음부터 길게 가고 싶은 분"을 위한 보조 옵션으로 유지 (메인 추천 아님)
-- 단일 상품 BM 메모리는 "mind_track 라인업"으로 확장 — 다른 무관한 상품 추가는 여전히 금지
+## 범위 (이번 턴)
 
-## 가격 구조
+### 1. DB — `aba_observations`
+부모가 각 Day에 입력한 표적 행동/ABC 데이터를 저장.
+
+| 컬럼 | 타입 | 비고 |
+|---|---|---|
+| id | uuid PK | |
+| user_id | uuid | RLS 본인만 |
+| enrollment_id | uuid | mind_track_enrollments.id (FK 없이 nullable, 호환성) |
+| child_profile_id | uuid nullable | 다자녀 대비 |
+| day | int (1–7) | |
+| phase | text | Baseline / ABC 기록 / 강화 설계 / 선행 조작 / 대체 행동 / 일반화 / 유지 |
+| target_behavior | text | 부모가 정의한 표적 행동 |
+| data_method | text | frequency / duration / interval / abc_narrative |
+| frequency_count | int nullable | |
+| duration_seconds | int nullable | |
+| interval_hits | int nullable | / interval_total |
+| interval_total | int nullable | |
+| abc_antecedent | text nullable | |
+| abc_behavior | text nullable | |
+| abc_consequence | text nullable | |
+| reinforcer_used | text nullable | DRA 강화제 |
+| parent_script_used | boolean | |
+| notes | text nullable | |
+| created_at / updated_at | timestamptz | trigger |
+
+RLS: 본인만 select/insert/update/delete. `(user_id, enrollment_id, day, child_profile_id)` unique 인덱스로 day별 1행 upsert 보장.
+
+### 2. UI — `ABAMissionCard.tsx`
+`src/components/mind-track/aba/ABAMissionCard.tsx`. 각 Day 카드:
+- 헤더: `Day N · {phase}` + 후킹 한 줄(`abaChildCurriculum`에서 import)
+- 학습 목표 / 표적 행동 정의 / 부모 스크립트 예시 / 안전 메모
+- **데이터 입력 폼** — `data_method`에 따라 동적:
+  - frequency → 카운터(±1, 즉시 저장)
+  - duration → 스톱워치(시작/정지 → 누적 초)
+  - interval → "N회 중 발생 횟수" 두 칸
+  - abc_narrative → A/B/C 3칸 textarea
+- 강화제 사용 체크 + 자유 메모
+- "저장" / 자동저장 (debounce 800ms) — 동일 day 행 upsert
+
+### 3. TrackMissions 통합
+`src/pages/TrackMissions.tsx`에서 `selected === "child_development"`일 때:
+- 30일 매트릭스 위쪽에 **"오늘의 ABA 미션"** 섹션 신규 — `currentDay`에 해당하는 `ABAMissionCard` 1개 + 다음/이전 Day로 슬라이드.
+- 기존 매트릭스는 유지하되 Day 1~7 셀은 ABA phase 라벨 추가.
+
+### 4. 7일 요약 리포트 — `ABASummaryReport.tsx`
+`src/components/mind-track/aba/ABASummaryReport.tsx`. 트리거: `currentDay >= 7` 이고 child_development.
+- Day 1 baseline vs Day 6 비교 (frequency/duration 변화율)
+- ABC 패턴 요약 (가장 흔한 트리거/결과)
+- DRA 강화 일관성률 (parent_script_used true 비율)
+- 다음 23일 유지 처방 — `mind_track_extend_23` CTA로 연결
+- 다운로드:
+  - **PNG** (html2canvas — 이미 PDF 모듈에서 쓰는 패턴) → 부모 카톡 공유용
+  - **PDF** (`src/utils/pdfDownload.ts` 기존 헬퍼 재사용) → 발달센터/소아과 지참용
+
+### 5. 라이브러리
+- `src/lib/abaChildCurriculum.ts` (이미 생성됨) → `data_method` 필드를 폼 분기에 사용하도록 확장.
+- `src/lib/abaObservations.ts` (신규) — CRUD helper (`upsertObservation`, `listObservationsForEnrollment`, `summarizeObservations`).
+
+## 의도적으로 제외 (다음 턴)
+
+- B2B 어드민에서 기관별 ABA 데이터 집계 뷰 (B2B 영업 자산화 — 이번 ICP 검증 후)
+- 동영상/사진 첨부 (Storage 정책 검토 필요)
+- 전문가에게 데이터 공유(이미 `client_data_sharing` 파이프라인 있음 — 다음 턴에 ABA 데이터를 동일 파이프라인에 흘려넣기)
+
+## 기술 세부
 
 ```text
-[메인]   7일 마음 트랙          ₩7,900     ← 1차 결제 (디폴트 추천)
-[업셀]   23일 연장권             ₩12,900    ← 7일 완주 직후 (총 ₩19,900)
-[보조]   30일 마음 트랙 (한번에)  ₩19,900    ← 처음부터 장기 원하는 사용자
-[유지]   전문가 상담 단건         (기존)
+TrackMissions (child_development 선택 시)
+ ├─ ABAMissionCard (currentDay)        ← 신규
+ │   └─ ABAObservationForm
+ │        └─ upsertObservation → aba_observations
+ ├─ ABASummaryReport (Day ≥ 7)         ← 신규
+ │   ├─ summarizeObservations (client)
+ │   ├─ Download PNG (html2canvas)
+ │   └─ Download PDF (pdfDownload)
+ └─ 기존 30일 매트릭스 (유지, Day 1~7에 phase 라벨)
 ```
 
-## 변경 범위
-
-### 1. 가격 상수 (`src/constants/tokenCosts.ts`)
-- `MIND_TRACK_7_PRICE = 7900` 신규
-- `MIND_TRACK_7_ORIGINAL_PRICE = 15800` (50% OFF 표기용)
-- `MIND_TRACK_EXTEND_PRICE = 12900` (23일 연장권)
-- 기존 `MIND_TRACK_PRICE = 19900` 유지 (30일 단권)
-- 모든 가격은 코드에서 읽기 — 메모리/하드코딩 금지 원칙 유지
-
-### 2. 결제 상품 ID
-- `mind_track_7` (신규, 메인)
-- `mind_track_extend_23` (신규, 업셀 전용)
-- `mind_track_30` (유지, 보조)
-- `usePayment.ts`에 3개 모두 매핑
-
-### 3. UI — 메인 결제 흐름
-- `MindTrackCheckoutHero.tsx`: 디폴트를 7일로 변경
-  - 헤드라인: "7일이면 충분합니다 — 마음이 바뀌는 첫 일주일"
-  - 가격: ₩7,900 / 7일 (정가 ₩15,800 취소선)
-  - 보조 라인: "더 길게 가고 싶다면 30일 한 번에 ₩19,900 →" (작게)
-- `StickyTrackCTA.tsx`: 가격 ₩7,900 / 7일로 변경
-- `PayButton.tsx` 기본 라벨: "7일 마음 트랙 ₩7,900"
-- `PaymentModal.tsx`: 7일/30일 2개 카드, 7일에 "추천" 뱃지
-
-### 4. 업셀 시점 (별도 PR로 분리 가능)
-- 결제 후 D+5 ~ D+7 사이 1회 노출
-  - 일일 코칭 메일 하단 인라인 CTA
-  - 앱 내 `/mind-track` 대시보드 상단 배너
-- 카피: "7일 완주가 보입니다. 23일 더 이어가면 변화가 굳어져요 → ₩12,900"
-
-### 5. DB / 백엔드
-- `mind_track_enrollments.plan_type` enum에 `'7d' | '30d' | 'extended'` 추가
-- 결제 webhook: `mind_track_extend_23` 결제 시 기존 enrollment의 `end_date`에 +23일
-- `daily_coaching_email_log`: 7일짜리는 day 1~7만 발송, 연장권 결제 시 day 8~30 자동 큐잉
-
-### 6. 메모리 업데이트
-- Core "Pricing" 항목 수정: `mind_track_7` (메인) + `mind_track_30`/`extend_23` (보조/업셀)
-- `mem://product/single-product-bm-ko` 갱신: "mind_track 라인업 = 7일/30일/연장권 3종"
-
-## 변경하지 않는 것
-
-- 전문가 상담 가격/구조
-- 7일·30일 모두 일시불, **자동결제 없음** 정책
-- 일일 코칭 메일 콘텐츠 자체 (발송 일수만 가변)
-- 기존 30일 결제자: 영향 없음 (그대로 유지)
-
-## 검증 계획
-
-- 7일 결제 플로우 E2E (결제 → enrollment 생성 → day1 메일 → day7 메일 + 업셀 노출)
-- 업셀 결제 → end_date 연장 → day8 메일 정상 발송
-- 기존 30일 결제자 회귀 없음 확인
-- 가격 표기 누락/하드코딩 grep 체크
-
-## 예상 일정
-
-- Phase 1 (이번 PR): 가격 상수 + UI 변경 + `mind_track_7` 결제 라인 (1~2일)
-- Phase 2 (다음 PR): 업셀 상품 `mind_track_extend_23` + 업셀 트리거 (2~3일)
-- Phase 3 (운영 후 2주): 데이터 보고 30일 옵션 유지/제거 결정
+승인 시: 마이그레이션 → 코드 작성 → 빌드/테스트 1회 통과까지 한 번에 진행합니다.

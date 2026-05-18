@@ -46,6 +46,13 @@ import {
 } from "@/lib/childPainPointMissions";
 import ChildProfileSetup, { type ChildProfile } from "@/components/mind-track/ChildProfileSetup";
 import { Sparkles, UserCog, Info } from "lucide-react";
+import ABAMissionCard from "@/components/mind-track/aba/ABAMissionCard";
+import ABASummaryReport from "@/components/mind-track/aba/ABASummaryReport";
+import {
+  listObservations,
+  isTrackCompletable,
+  type ABAObservation,
+} from "@/lib/abaObservations";
 
 const STORAGE_KEY = "track-missions:completed:v1";
 const START_KEY = "track-missions:started-at:v1";

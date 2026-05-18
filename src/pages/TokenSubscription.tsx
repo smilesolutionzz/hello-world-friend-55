@@ -107,11 +107,10 @@ const TokenSubscription = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const switchPlan = (next: '7d' | '30d') => {
-    setPlan(next);
+  const switchPlan = (_next: '7d' | '30d') => {
+    // 단일 상품 정책: 30일 옵션은 비활성화. 호출은 호환용으로 무시합니다.
     const sp = new URLSearchParams(searchParams);
-    if (next === '30d') sp.set('plan', '30d');
-    else sp.delete('plan');
+    sp.delete('plan');
     setSearchParams(sp, { replace: true });
   };
 

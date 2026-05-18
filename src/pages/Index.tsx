@@ -179,37 +179,51 @@ const Index = () => {
             {/* 1️⃣ Hero */}
             <HeroSection />
 
-            {/* 2️⃣ 실제 카톡 후기 — 사회적 증거 (Testimonial 통합) */}
-            <LazyLoad rootMargin="200px">
-              <SmartScrollReveal kind="cards"><RealFeedbackSection /></SmartScrollReveal>
+            {/* 2️⃣ 실제 카톡 후기 — 사회적 증거 */}
+            <LazyLoad rootMargin="400px" debugLabel="feedback" placeholderHeight="h-[480px]">
+              <SmartScrollReveal kind="cards" mobileAmount={0} debugLabel="feedback">
+                <RealFeedbackSection />
+              </SmartScrollReveal>
             </LazyLoad>
 
-            {/* 2.5️⃣ 인플런 스타일 허브 — 7일 트랙 9종 + 전문가 + 무료검사 + 인기검색어 */}
-            <LazyLoad rootMargin="200px">
-              <SmartScrollReveal kind="cards"><InflearnStyleHubSection /></SmartScrollReveal>
+            {/* 2.5️⃣ 인플런 스타일 허브 */}
+            <LazyLoad rootMargin="400px" debugLabel="hub" placeholderHeight="h-[600px]">
+              <SmartScrollReveal kind="cards" mobileAmount={0} debugLabel="hub">
+                <InflearnStyleHubSection />
+              </SmartScrollReveal>
             </LazyLoad>
 
-            {/* 3️⃣ AI 전문가급 리포트 미리보기 — 결제 전환 핵심 */}
-            <LazyLoad rootMargin="200px">
-              <SmartScrollReveal kind="image"><ReportPreviewSection /></SmartScrollReveal>
+            {/* 3️⃣ AI 전문가급 리포트 미리보기 */}
+            <LazyLoad rootMargin="400px" debugLabel="report-preview" placeholderHeight="h-[520px]">
+              <SmartScrollReveal kind="image" mobileAmount={0} debugLabel="report-preview">
+                <ReportPreviewSection />
+              </SmartScrollReveal>
             </LazyLoad>
 
-            {/* 4️⃣ 30일 마음 트랙 — 영상 소개 */}
-            <LazyLoad rootMargin="200px">
-              <SmartScrollReveal kind="image"><MindTrack30Showcase /></SmartScrollReveal>
+            {/* 4️⃣ 30일 마음 트랙 */}
+            <LazyLoad rootMargin="400px" debugLabel="mindtrack30" placeholderHeight="h-[480px]">
+              <SmartScrollReveal kind="image" mobileAmount={0} debugLabel="mindtrack30">
+                <MindTrack30Showcase />
+              </SmartScrollReveal>
             </LazyLoad>
 
-            {/* 5️⃣ 구독 + 최종 CTA (통합) */}
-            <LazyLoad rootMargin="200px">
-              <SmartScrollReveal kind="cta"><SubscriptionValueSection /></SmartScrollReveal>
+            {/* 5️⃣ 구독 + 최종 CTA */}
+            <LazyLoad rootMargin="400px" debugLabel="subscription" placeholderHeight="h-[420px]">
+              <SmartScrollReveal kind="cta" mobileAmount={0} debugLabel="subscription">
+                <SubscriptionValueSection />
+              </SmartScrollReveal>
             </LazyLoad>
-            <LazyLoad rootMargin="200px">
-              <SmartScrollReveal kind="cta"><CTABannerSection /></SmartScrollReveal>
+            <LazyLoad rootMargin="400px" debugLabel="cta-banner" placeholderHeight="h-[320px]">
+              <SmartScrollReveal kind="cta" mobileAmount={0} debugLabel="cta-banner">
+                <CTABannerSection />
+              </SmartScrollReveal>
             </LazyLoad>
 
-            {/* 파트너 신뢰 - 슬림 1줄 (Footer 직전) */}
-            <LazyLoad rootMargin="200px">
-              <SmartScrollReveal kind="stats"><PartnerTrustSection /></SmartScrollReveal>
+            {/* 파트너 신뢰 */}
+            <LazyLoad rootMargin="400px" debugLabel="partners" placeholderHeight="h-[200px]">
+              <SmartScrollReveal kind="stats" mobileAmount={0} debugLabel="partners">
+                <PartnerTrustSection />
+              </SmartScrollReveal>
             </LazyLoad>
 
             {/* Footer */}

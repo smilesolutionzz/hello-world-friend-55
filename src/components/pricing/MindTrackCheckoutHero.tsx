@@ -169,14 +169,7 @@ export default function MindTrackCheckoutHero() {
             <span>카드 / 계좌이체 / 휴대폰</span>
           </div>
 
-          {/* 30일 보조 옵션 */}
-          <button
-            onClick={() => handlePay('30d')}
-            disabled={loading || checking}
-            className="mt-3 w-full text-xs text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1 py-2 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50"
-          >
-            처음부터 길게 가고 싶다면 → <strong>30일 한 번에 ₩{TRACK_30_PRICE.toLocaleString()}</strong>
-          </button>
+          {/* 30일 옵션은 단일 상품 정책에 따라 노출하지 않습니다. */}
 
           <button
             onClick={() => document.getElementById("other-plans")?.scrollIntoView({ behavior: "smooth" })}

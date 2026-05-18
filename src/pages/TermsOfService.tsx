@@ -5,6 +5,7 @@ import SEOHead from '@/components/common/SEOHead';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { FileText } from 'lucide-react';
+import { LegalVersionBadge } from '@/components/legal/LegalVersionBadge';
 
 const TermsOfService = () => {
   return (
@@ -25,9 +26,8 @@ const TermsOfService = () => {
                 <FileText className="w-8 h-8 text-primary" />
                 <CardTitle className="text-3xl font-bold">서비스 이용약관</CardTitle>
               </div>
-              <p className="text-sm text-muted-foreground">최종 수정일: 2026년 3월 24일</p>
+              <LegalVersionBadge doc="terms" />
             </CardHeader>
-            
             <CardContent>
               <ScrollArea className="h-[600px] pr-4">
                 <div className="space-y-6">

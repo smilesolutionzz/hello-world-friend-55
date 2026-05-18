@@ -294,7 +294,7 @@ const Quiz: React.FC = () => {
       }
 
       // 4) Open Toss payment popup directly
-      await pay('mind_track_30');
+      await pay('mind_track_7');
     } catch (err) {
       console.error('handleStartTrack error:', err);
       toast.error('결제 시작 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.');

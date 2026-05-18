@@ -35,7 +35,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   onSuccess,
 }) => {
   const { pay, loading, isReady } = usePayment();
-  const [plan, setPlan] = useState<Plan>('7d');
+  const [plan] = useState<Plan>('7d'); // 단일 상품: 7일 고정
 
   const handlePay = async () => {
     const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
@@ -77,40 +77,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Plan toggle */}
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => setPlan('7d')}
-            className={`relative rounded-2xl border-2 p-3 text-left transition-all ${
-              isSeven
-                ? 'border-primary bg-primary/5'
-                : 'border-slate-200 bg-white hover:border-slate-300'
-            }`}
-          >
-            <div className="flex items-center gap-1.5 mb-1">
-              <Zap className="w-3.5 h-3.5 text-amber-500" />
-              <span className="text-[10px] font-bold text-amber-600">추천</span>
-            </div>
-            <div className="text-xs text-slate-500">7일 시작</div>
-            <div className="text-base font-bold text-slate-900">₩{MIND_TRACK_7_PRICE.toLocaleString()}</div>
-            <div className="text-[10px] text-slate-500">하루 약 ₩{Math.round(MIND_TRACK_7_PRICE / 7).toLocaleString()}</div>
-          </button>
-          <button
-            type="button"
-            onClick={() => setPlan('30d')}
-            className={`relative rounded-2xl border-2 p-3 text-left transition-all ${
-              !isSeven
-                ? 'border-primary bg-primary/5'
-                : 'border-slate-200 bg-white hover:border-slate-300'
-            }`}
-          >
-            <div className="text-[10px] font-medium text-slate-400 mb-1">한 번에 길게</div>
-            <div className="text-xs text-slate-500">30일</div>
-            <div className="text-base font-bold text-slate-900">₩{MIND_TRACK_PRICE.toLocaleString()}</div>
-            <div className="text-[10px] text-slate-500">하루 약 ₩{Math.round(MIND_TRACK_PRICE / 30).toLocaleString()}</div>
-          </button>
-        </div>
+        {/* 단일 상품 정책: 7일 트랙만 노출 */}
 
         <div className="space-y-4">
           <div className="p-5 border-2 border-primary rounded-2xl space-y-4 relative bg-gradient-to-br from-primary/5 to-transparent">

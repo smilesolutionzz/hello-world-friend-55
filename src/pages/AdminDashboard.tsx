@@ -28,6 +28,7 @@ import { AdminPaymentManager } from '@/components/admin/AdminPaymentManager';
 import { AdminOverviewPanel } from '@/components/admin/AdminOverviewPanel';
 import { ReportQualityCard } from '@/components/admin/ReportQualityCard';
 import { AdminUserActivityTracker } from '@/components/admin/AdminUserActivityTracker';
+import AdminNSMHero from '@/components/admin/AdminNSMHero';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 export default function AdminDashboard() {
@@ -154,6 +155,7 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
+            <AdminNSMHero key={`nsm-${refreshKey}`} />
             <ReportQualityCard key={`rq-${refreshKey}`} />
             <AdminOverviewPanel key={refreshKey} />
           </TabsContent>

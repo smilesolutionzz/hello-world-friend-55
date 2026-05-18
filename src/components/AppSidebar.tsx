@@ -32,18 +32,16 @@ const mindTrackItems = [
   { title: `7일 마음 트랙 · ₩${MIND_TRACK_7_PRICE.toLocaleString()}`, url: "/mind-track", icon: Sparkles, badge: "추천" },
 ]
 
+// ICP: 30-45 부모 · 아이 발달/ADHD 고민 — 나머지 페르소나 진입은 메인에서 제거
 const mainItems = [
   { title: "홈", url: "/", icon: Home },
-  { title: "AI 분석", url: "/observation", icon: Brain },
-  { title: "AI 음성일기", url: "/voice-emotion-diary", icon: Heart },
-  { title: "관찰일지", url: "/observation", icon: FileText },
-  { title: "나만의 맞춤리포팅 신청", url: "/comprehensive-reporting", icon: ClipboardCheck },
+  { title: "아이 발달 · ADHD 분석", url: "/observation", icon: Brain },
+  { title: "맞춤 리포트 신청", url: "/comprehensive-reporting", icon: ClipboardCheck },
   { title: "데이터 공유 관리", url: "/data-sharing", icon: Share2 },
 ]
 
-const institutionItems = [
-  { title: "고객 관리 대시보드", url: "/institution-clients", icon: Building2 },
-]
+// 기관 사용자 전용 진입 (일반 ICP에는 노출하지 않음)
+const institutionItems: { title: string; url: string; icon: typeof Building2 }[] = []
 
 const accountItems = [
   { title: "프로필", url: "/profile", icon: User },

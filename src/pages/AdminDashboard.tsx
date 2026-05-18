@@ -155,6 +155,7 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
+            <AdminNSMHero key={`nsm-${refreshKey}`} />
             <ReportQualityCard key={`rq-${refreshKey}`} />
             <AdminOverviewPanel key={refreshKey} />
           </TabsContent>

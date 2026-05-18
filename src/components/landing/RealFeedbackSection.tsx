@@ -26,6 +26,8 @@ type Persona = {
   accent: string; // tailwind gradient classes for badge
 };
 
+// ICP: 30-45 부모 · 아이 발달/ADHD — 부모 페르소나만 노출.
+// 직장인 번아웃·시니어 케어 사례는 비-ICP라 PERSONAS에서 제외.
 const PERSONAS: Persona[] = [
   {
     id: 'developmental-delay',
@@ -198,120 +200,7 @@ const PERSONAS: Persona[] = [
     cta: { label: '청소년 마음 추적 트랙 — ₩7,900', labelEn: 'Teen Mind Track — ₩7,900', href: '/report-generator' },
     accent: 'from-sky-500/10 to-blue-500/10 border-sky-500/20 text-sky-300',
   },
-  {
-    id: 'burnout-worker',
-    badge: '직장인 번아웃 사례',
-    badgeEn: 'Burnout Worker',
-    title: (
-      <>
-        “그냥 피곤한 줄 알았는데,”
-        <br className="md:hidden" />{' '}
-        <span className="text-amber-400 text-lg md:text-4xl">번아웃 3단계에<br className="md:hidden" /> 이미 진입했더라고요.</span>
-      </>
-    ),
-    titleEn: (
-      <>
-        "I thought I was just <span className="text-rose-400">tired</span>"
-        <br />
-        <span className="text-amber-400">I was already in burnout stage 3</span>
-      </>
-    ),
-    subtitle: '5년차 직장인의 스트레스·번아웃 진단 후 회복 코칭 사례',
-    subtitleEn: 'A 5-year professional discovering hidden burnout',
-    chatTitle: 'AIHPRO 마음 코칭',
-    chatTitleEn: 'AIHPRO Mind Coaching',
-    messages: [
-      { sender: 'parent', text: '주말에 12시간 자도 안 풀려요. 그냥 체력 문제겠죠?', time: '09:32' },
-      { sender: 'expert', text: '리포트상 정서적 소진 + 비인간화 점수가 임상 기준을 초과했어요. 번아웃 3단계입니다.', time: '09:32' },
-      { sender: 'parent', text: '…진짜요? 그렇게 심해요?', time: '09:33', highlight: true },
-      { sender: 'parent', text: '회사 그만둬야 하나요?', time: '09:34' },
-      { sender: 'expert', text: '아직은 아니에요. 30일 회복 루틴(아침 5분 호흡 + 주 2회 코칭)으로 70%는 한 달 안에 회복돼요.', time: '09:34' },
-      { sender: 'parent', text: '진짜요? 다행이다….', time: '09:35', highlight: true },
-      { sender: 'parent', text: '병원 가는 것보단 가벼운 게 좋아요.', time: '09:36' },
-      { sender: 'expert', text: '7일 마음 트랙(₩7,900) — 매일 측정 + 회복 가이드 + 전문가 코칭이 다 포함돼요.', time: '09:36' },
-      { sender: 'parent', text: '오늘 바로 시작할게요.', time: '09:38', highlight: true },
-    ],
-    messagesEn: [
-      { sender: 'parent', text: '12 hours of sleep on weekends and still drained. Just stamina?', time: '09:32' },
-      { sender: 'expert', text: 'Your emotional exhaustion + depersonalization scores exceed clinical thresholds. Burnout stage 3.', time: '09:32' },
-      { sender: 'parent', text: '…seriously? That bad?', time: '09:33', highlight: true },
-      { sender: 'parent', text: 'Should I quit my job?', time: '09:34' },
-      { sender: 'expert', text: 'Not yet. A 30-day routine (5-min morning breath + 2x weekly coaching) recovers 70% in a month.', time: '09:34' },
-      { sender: 'parent', text: 'Really? What a relief…', time: '09:35', highlight: true },
-      { sender: 'parent', text: 'I prefer something lighter than seeing a doctor.', time: '09:36' },
-      { sender: 'expert', text: '7-Day Mind Track (₩7,900) — daily measurement + recovery guide + expert coaching.', time: '09:36' },
-      { sender: 'parent', text: "I'll start today.", time: '09:38', highlight: true },
-    ],
-    highlights: [
-      { emoji: '⚠️', before: '“그냥 체력 문제겠지.”', after: '번아웃 3단계 — 임상 기준 초과', reaction: '“진짜요? 그렇게 심해요?”' },
-      { emoji: '🌱', before: '“회사 그만둬야 하나….”', after: '30일 회복 루틴이면 70%가 회복돼요.', reaction: '“진짜요? 다행이다….”' },
-      { emoji: '💼', before: '“병원은 부담돼요.”', after: '매일 측정 + 코칭 — ₩7,900', reaction: '“오늘 바로 시작할게요.”' },
-    ],
-    highlightsEn: [
-      { emoji: '⚠️', before: '"Just stamina"', after: 'Burnout stage 3 — exceeds clinical level', reaction: '"That bad?"' },
-      { emoji: '🌱', before: '"Should I quit?"', after: '30-day routine recovers 70%', reaction: '"What a relief."' },
-      { emoji: '💼', before: '"Hospital is too much"', after: 'Daily check + coaching — ₩7,900', reaction: '"Starting today."' },
-    ],
-    cta: { label: '번아웃 회복 트랙 — ₩7,900', labelEn: 'Burnout Recovery — ₩7,900', href: '/report-generator' },
-    accent: 'from-amber-500/10 to-orange-500/10 border-amber-500/20 text-amber-300',
-  },
-  {
-    id: 'senior-care',
-    badge: '시니어 돌봄 가족',
-    badgeEn: 'Senior Care Family',
-    title: (
-      <>
-        “치매 초기인가 무서웠는데,”
-        <br className="md:hidden" />{' '}
-        <span className="text-rose-400 text-lg md:text-4xl">정확히 어디부터<br className="md:hidden" /> 챙기면 되는지 알게 됐어요.</span>
-      </>
-    ),
-    titleEn: (
-      <>
-        "I feared <span className="text-rose-400">early dementia</span>"
-        <br />
-        <span className="text-rose-300">Now I know exactly where to start</span>
-      </>
-    ),
-    subtitle: '70대 부모님의 인지 변화를 추적한 가족 사례',
-    subtitleEn: 'A family tracking cognitive change in a 70-year-old parent',
-    chatTitle: 'AIHPRO 인지 케어',
-    chatTitleEn: 'AIHPRO Cognitive Care',
-    messages: [
-      { sender: 'parent', text: '엄마가 같은 말을 자주 반복하세요. 치매 초기일까요?', time: '15:02' },
-      { sender: 'expert', text: 'DRSA-AIH 인지 검사 결과, 단기기억은 정상이고 실행기능에서 약한 신호가 있어요. 치매보다는 우울·수면 영향이 커요.', time: '15:02' },
-      { sender: 'parent', text: '아… 치매는 아닌 거네요.', time: '15:03', highlight: true },
-      { sender: 'parent', text: '그럼 뭘 챙기면 돼요?', time: '15:04' },
-      { sender: 'expert', text: '햇빛 산책 20분 + 수면 일정 + 주 2회 인지 게임이 1순위예요. 30일 후 재측정으로 변화를 확인할 수 있어요.', time: '15:04' },
-      { sender: 'parent', text: '그 정도면 충분히 할 수 있어요.', time: '15:05', highlight: true },
-      { sender: 'parent', text: '저희 가족이 같이 추적할 수 있나요?', time: '15:07' },
-      { sender: 'expert', text: '네, 7일 마음 트랙(₩7,900)로 가족이 함께 변화 추적 + 위험 알림을 받으실 수 있어요.', time: '15:07' },
-      { sender: 'parent', text: '병원 가기 전에 이걸 먼저 봤어야 했네요.', time: '15:09', highlight: true },
-    ],
-    messagesEn: [
-      { sender: 'parent', text: 'Mom repeats herself often. Early dementia?', time: '15:02' },
-      { sender: 'expert', text: 'Memory is normal but executive function shows mild signal. More likely depression + sleep impact.', time: '15:02' },
-      { sender: 'parent', text: 'Oh… so not dementia.', time: '15:03', highlight: true },
-      { sender: 'parent', text: 'What should we do?', time: '15:04' },
-      { sender: 'expert', text: '20-min sunlight walk + sleep schedule + 2x weekly cognitive games. Re-measure in 30 days.', time: '15:04' },
-      { sender: 'parent', text: 'We can do that.', time: '15:05', highlight: true },
-      { sender: 'parent', text: 'Can our family track together?', time: '15:07' },
-      { sender: 'expert', text: 'Yes, 7-Day Mind Track (₩7,900) lets family share tracking + risk alerts.', time: '15:07' },
-      { sender: 'parent', text: 'Should have used this before the hospital.', time: '15:09', highlight: true },
-    ],
-    highlights: [
-      { emoji: '🧠', before: '“치매 초기 같아요.”', after: '실행기능 약한 신호 — 우울·수면 영향', reaction: '“치매는 아닌 거네요.”' },
-      { emoji: '☀️', before: '“뭘 해야 할지 모르겠어요.”', after: '햇빛 + 수면 + 인지 게임, 3종 루틴', reaction: '“충분히 할 수 있어요.”' },
-      { emoji: '👨‍👩‍👧', before: '“가족이 따로 챙기기 힘들어요.”', after: '가족 공유 추적 — ₩7,900', reaction: '“이걸 먼저 봤어야 했네요.”' },
-    ],
-    highlightsEn: [
-      { emoji: '🧠', before: '"Early dementia?"', after: 'Mild executive signal — depression/sleep', reaction: '"Not dementia."' },
-      { emoji: '☀️', before: '"Don\'t know what to do"', after: 'Sunlight + sleep + cognitive games', reaction: '"We can do that."' },
-      { emoji: '👨‍👩‍👧', before: '"Hard to track together"', after: 'Family shared tracking — ₩7,900', reaction: '"Wish I knew earlier."' },
-    ],
-    cta: { label: '시니어 인지 케어 트랙 — ₩7,900', labelEn: 'Senior Cognitive Track — ₩7,900', href: '/report-generator' },
-    accent: 'from-rose-500/10 to-pink-500/10 border-rose-500/20 text-rose-300',
-  },
+  // ⛔ 비-ICP 페르소나(직장인 번아웃 / 시니어 돌봄) 제거 — 30-45 부모만.
 ];
 
 const RealFeedbackSection = () => {

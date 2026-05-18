@@ -13,14 +13,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
  * 디자인 원칙: 흰색 미니멀, rounded-2xl/3xl, 그라데이션 금지 (메모리 정책)
  */
 
+// ICP: 30-45 부모 · 아이 발달/ADHD — 부모/아이 카테고리 + 발달·ADHD·훈육·수면만 노출.
 const CATEGORY_CHIPS = [
   { id: 'all', label: '전체' },
-  { id: 'personal', label: '나' },
-  { id: 'family', label: '가족·아이' },
-  { id: 'sleep', label: '수면' },
-  { id: 'stress', label: '스트레스' },
-  { id: 'mood', label: '감정' },
-  { id: 'relationship', label: '관계' },
+  { id: 'child_development', label: '아이 발달·ADHD' },
+  { id: 'family_communication', label: '훈육·소통' },
+  { id: 'parenting', label: '부모 회복' },
+  { id: 'sleep', label: '아이 수면' },
 ];
 
 const EXPERT_PACKAGES = [
@@ -167,7 +166,15 @@ const TRACK_CURRICULUM: Record<string, string[]> = {
   relationship: ['관계 패턴 인식', '경청·공감 3단 연습', '나-전달법 대화', '경계 세우기', '갈등 회복 대화', '관계 자원 점검', '7일 관계 리포트'],
   self: ['핵심 가치 카드 정렬', '강점·그림자 통합', '내면 대화 연습', '인생 곡선 그리기', '정체성 재정렬', '미래 자아 시각화', '7일 자기 이해 리포트'],
   parenting: ['번아웃 신호 자가 진단', '나만의 회복 시간 확보', '죄책감 해체 작업', '감정 분리·자기자비', '파트너·가족 자원화', '지속 가능한 루틴 설계', '7일 회복 리포트'],
-  child_development: ['연령별 발달 지표 점검', '관찰 기록법 익히기', '발달 자극 활동 5선', '놀이 속 발달 코칭', '약점 영역 보완', '주간 점검 루틴', '7일 발달 리포트'],
+  child_development: [
+    'Day 1 · 베이스라인 — 표적 행동 1개 정의 + 24시간 빈도 측정',
+    'Day 2 · ABC 기록 — Antecedent/Behavior/Consequence 3건 수집',
+    'Day 3 · 차별 강화(DRA) — 사회적 강화 3초 룰 + 5회 시도',
+    'Day 4 · 선행 조작 — 트리거 1개 제거 + 시각 타이머 도입',
+    'Day 5 · 대체 행동(FCT) — 같은 기능 의사소통 카드 모델링',
+    'Day 6 · 일반화 — 새 환경 1곳에서 인터벌 측정',
+    'Day 7 · 유지·리포트 — 주간 변화율 + 23일 강화 스케줄 처방',
+  ],
   family_communication: ['아이 감정 코칭 1단계', '경청·반영 대화 연습', '훈육 언어 재설계', 'NO 대신 YES 화법', '회복적 대화', '애착 회복 루틴', '7일 소통 리포트'],
 };
 
@@ -194,12 +201,17 @@ const InflearnStyleHubSection: React.FC = () => {
   const [activeChip, setActiveChip] = useState('all');
   const [previewTrack, setPreviewTrack] = useState<MindTrackFocus | null>(null);
 
+  // ICP 잠금: child_development / family_communication / parenting / sleep 4개만 노출.
+  // 'all'은 이 4개의 ICP 트랙 묶음을 의미하며, 비-ICP(stress·mood·focus·relationship·self)는 숨김.
+  const ICP_TRACK_IDS = new Set(['child_development', 'family_communication', 'parenting', 'sleep']);
   const tracks = useMemo(() => {
-    if (activeChip === 'all') return MIND_TRACK_FOCUSES;
-    if (activeChip === 'personal' || activeChip === 'family') {
-      return MIND_TRACK_FOCUSES.filter((f) => f.category === activeChip);
-    }
-    return MIND_TRACK_FOCUSES.filter((f) => f.id === activeChip);
+    const icpOnly = MIND_TRACK_FOCUSES.filter((f) => ICP_TRACK_IDS.has(f.id));
+    // child_development 우선 정렬 (ICP 핵심)
+    icpOnly.sort((a, b) =>
+      a.id === 'child_development' ? -1 : b.id === 'child_development' ? 1 : 0,
+    );
+    if (activeChip === 'all') return icpOnly;
+    return icpOnly.filter((f) => f.id === activeChip);
   }, [activeChip]);
 
   return (

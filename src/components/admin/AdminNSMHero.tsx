@@ -17,40 +17,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Users, Target, Flame } from "lucide-react";
-
-interface Enrollment {
-  id: string;
-  user_id: string;
-  payment_status: string | null;
-  status: string | null;
-  current_day: number | null;
-  started_at: string | null;
-  completed_at: string | null;
-  updated_at: string | null;
-  track_type: string | null;
-}
-
-interface CohortRow {
-  weekStart: string;
-  cohortSize: number;
-  completers: number;
-  rate: number;
-}
-
-function startOfWeek(d: Date): Date {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  const day = x.getDay(); // 0=Sun
-  const diff = (day + 6) % 7; // Monday start
-  x.setDate(x.getDate() - diff);
-  return x;
-}
-
-function fmtWeek(d: Date): string {
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}-${m}-${day}`;
-}
+import {
+  computeNSMMetrics,
+  type CohortRow,
+  type NSMEnrollment as Enrollment,
+} from "@/lib/adminNSMMetrics";
 
 export function AdminNSMHero() {
   const [loading, setLoading] = useState(true);
@@ -76,77 +47,11 @@ export function AdminNSMHero() {
         if (error) throw error;
         const rows = (data || []) as Enrollment[];
 
-        const now = new Date();
-        const thisWeekStart = startOfWeek(now);
-        const oneWeekAgo = new Date(now);
-        oneWeekAgo.setDate(now.getDate() - 7);
-
-        // NSM: 이번 주 완주자 수 (completed_at가 이번 주에 들어온 paid)
-        const completersThisWeek = rows.filter(
-          (r) =>
-            r.payment_status === "paid" &&
-            r.completed_at &&
-            new Date(r.completed_at) >= thisWeekStart
-        ).length;
-
-        // WAPU: 지난 7일 내 활동(updated_at) 있는 paid
-        const activePaid = new Set(
-          rows
-            .filter(
-              (r) =>
-                r.payment_status === "paid" &&
-                r.updated_at &&
-                new Date(r.updated_at) >= oneWeekAgo
-            )
-            .map((r) => r.user_id)
-        ).size;
-
-        // 최근 4주 완주자 (스파크라인용)
-        const weekly: number[] = [];
-        for (let i = 3; i >= 0; i--) {
-          const wStart = new Date(thisWeekStart);
-          wStart.setDate(wStart.getDate() - i * 7);
-          const wEnd = new Date(wStart);
-          wEnd.setDate(wEnd.getDate() + 7);
-          const count = rows.filter(
-            (r) =>
-              r.payment_status === "paid" &&
-              r.completed_at &&
-              new Date(r.completed_at) >= wStart &&
-              new Date(r.completed_at) < wEnd
-          ).length;
-          weekly.push(count);
-        }
-
-        // 코호트: 시작 주별 완주율 (최근 8주)
-        const cohortMap = new Map<string, { size: number; done: number }>();
-        for (let i = 7; i >= 0; i--) {
-          const wStart = new Date(thisWeekStart);
-          wStart.setDate(wStart.getDate() - i * 7);
-          cohortMap.set(fmtWeek(wStart), { size: 0, done: 0 });
-        }
-        rows
-          .filter((r) => r.payment_status === "paid" && r.started_at)
-          .forEach((r) => {
-            const wk = fmtWeek(startOfWeek(new Date(r.started_at!)));
-            const c = cohortMap.get(wk);
-            if (!c) return;
-            c.size += 1;
-            if (r.status === "completed" || r.completed_at) c.done += 1;
-          });
-        const cohortRows: CohortRow[] = Array.from(cohortMap.entries()).map(
-          ([weekStart, v]) => ({
-            weekStart,
-            cohortSize: v.size,
-            completers: v.done,
-            rate: v.size > 0 ? Math.round((v.done / v.size) * 100) : 0,
-          })
-        );
-
-        setWeeklyCompleters(completersThisWeek);
-        setWeeklyActivePaid(activePaid);
-        setLast4Completers(weekly);
-        setCohorts(cohortRows);
+        const m = computeNSMMetrics(rows, new Date());
+        setWeeklyCompleters(m.weeklyCompleters);
+        setWeeklyActivePaid(m.weeklyActivePaid);
+        setLast4Completers(m.sparkline);
+        setCohorts(m.cohorts);
       } catch (e) {
         console.error("[AdminNSMHero] load failed", e);
       } finally {

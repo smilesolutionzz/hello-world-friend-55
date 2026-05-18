@@ -219,6 +219,16 @@ export default function TrackMissions() {
     return () => { cancelled = true; };
   }, [useChildData, childProfile?.id]);
 
+  // ABA observations (child_development 트랙 전용)
+  const [abaObs, setAbaObs] = useState<ABAObservation[]>([]);
+  const [abaDay, setAbaDay] = useState<number>(1);
+  const refreshAbaObs = useCallback(async () => {
+    if (!useChildData) { setAbaObs([]); return; }
+    const rows = await listObservations(childProfile!.id);
+    setAbaObs(rows);
+  }, [useChildData, childProfile?.id]);
+  useEffect(() => { void refreshAbaObs(); }, [refreshAbaObs]);
+
 
 
   const persistChildStatus = async (day: number, completed: boolean) => {

@@ -4,16 +4,12 @@ import { motion, useInView, useScroll, useTransform, useReducedMotion, Variants 
 /**
  * 섹션 타입(kind)에 따라 가장 어울리는 스크롤 인터랙션을 자동 적용하는 스마트 컴포넌트.
  *
- * kind:
- *  - hero      : 살짝 페이드 + slide-up (Hero/큰 타이틀)
- *  - text      : fade + slide-up (문단·설명)
- *  - cards     : stagger (자식 순차 등장 — Children에 적용)
- *  - stats     : scale + fade (강조감)
- *  - image     : 살짝 줌아웃 + fade (이미지·일러스트)
- *  - cta       : fade + scale (시선 락인)
- *  - default   : fade + slide-up
- *
- * `prefers-reduced-motion` 자동 감지 → 모션 비활성.
+ * 모바일 안전:
+ *  - `amount`는 기본 'some' (1px만 보여도 트리거) — 뷰포트보다 큰 섹션이 hidden에 갇히는 것 방지.
+ *  - `mobileAmount`로 모바일 한정 별도 값 지정 가능.
+ *  - `?reveal-debug=1` 쿼리 또는 localStorage `reveal-debug=1` 활성화 시:
+ *    · 콘솔에 [reveal] 로그 (kind/label/inView/opacity 가정)
+ *    · 우측 상단 작은 배지로 상태 표시
  */
 
 type RevealKind = 'hero' | 'text' | 'cards' | 'stats' | 'image' | 'cta' | 'default';
@@ -23,14 +19,14 @@ interface SmartScrollRevealProps {
   kind?: RevealKind;
   delay?: number;
   className?: string;
-  /** stagger 모드에서 자식 사이 간격 (초) */
   stagger?: number;
   once?: boolean;
-  /**
-   * 화면의 몇 % 보일 때 트리거 (기본 'some' — 1px만 보여도 등장).
-   * 모바일에서 뷰포트보다 큰 섹션이 영구 hidden되는 것을 방지.
-   */
+  /** 데스크탑 amount (기본 'some') */
   amount?: number | 'some' | 'all';
+  /** 모바일(<768px) 한정 amount. 미지정 시 amount 사용 */
+  mobileAmount?: number | 'some' | 'all';
+  /** 디버그 라벨 (배지/로그용) */
+  debugLabel?: string;
 }
 
 const baseVariants: Record<RevealKind, Variants> = {
@@ -69,6 +65,29 @@ const childItemVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
 };
 
+function isRevealDebugEnabled(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    if (new URLSearchParams(window.location.search).get('reveal-debug') === '1') return true;
+    return window.localStorage.getItem('reveal-debug') === '1';
+  } catch {
+    return false;
+  }
+}
+
+function useIsMobile(): boolean {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mql = window.matchMedia('(max-width: 767px)');
+    const sync = () => setM(mql.matches);
+    sync();
+    mql.addEventListener('change', sync);
+    return () => mql.removeEventListener('change', sync);
+  }, []);
+  return m;
+}
+
 export const SmartScrollReveal: React.FC<SmartScrollRevealProps> = ({
   children,
   kind = 'default',
@@ -77,10 +96,28 @@ export const SmartScrollReveal: React.FC<SmartScrollRevealProps> = ({
   stagger,
   once = true,
   amount = 'some',
+  mobileAmount,
+  debugLabel,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once, amount: amount as any });
+  const isMobile = useIsMobile();
+  const effectiveAmount = isMobile ? (mobileAmount ?? amount) : amount;
+  const inView = useInView(ref, { once, amount: effectiveAmount as any });
   const reduce = useReducedMotion();
+  const debug = isRevealDebugEnabled();
+
+  useEffect(() => {
+    if (!debug) return;
+    // eslint-disable-next-line no-console
+    console.log('[reveal]', {
+      label: debugLabel ?? kind,
+      kind,
+      inView,
+      amount: effectiveAmount,
+      isMobile,
+      reduce,
+    });
+  }, [debug, debugLabel, kind, inView, effectiveAmount, isMobile, reduce]);
 
   const variants =
     kind === 'cards' && stagger
@@ -90,8 +127,39 @@ export const SmartScrollReveal: React.FC<SmartScrollRevealProps> = ({
         }
       : baseVariants[kind];
 
+  const debugBadge = debug ? (
+    <span
+      style={{
+        position: 'absolute',
+        top: 4,
+        right: 4,
+        zIndex: 50,
+        fontSize: 10,
+        padding: '2px 6px',
+        borderRadius: 6,
+        background: inView ? 'rgba(16,185,129,0.9)' : 'rgba(244,63,94,0.9)',
+        color: 'white',
+        fontFamily: 'monospace',
+        pointerEvents: 'none',
+      }}
+    >
+      {(debugLabel ?? kind)}:{inView ? 'show' : 'hide'}
+    </span>
+  ) : null;
+
   if (reduce) {
-    return <div ref={ref} className={className}>{children}</div>;
+    return (
+      <div
+        ref={ref}
+        className={className}
+        data-reveal-label={debugLabel}
+        data-reveal-inview="true"
+        style={debug ? { position: 'relative' } : undefined}
+      >
+        {debugBadge}
+        {children}
+      </div>
+    );
   }
 
   return (
@@ -102,7 +170,11 @@ export const SmartScrollReveal: React.FC<SmartScrollRevealProps> = ({
       animate={inView ? 'visible' : 'hidden'}
       variants={variants}
       transition={{ delay }}
+      data-reveal-label={debugLabel}
+      data-reveal-inview={inView ? 'true' : 'false'}
+      style={debug ? { position: 'relative' } : undefined}
     >
+      {debugBadge}
       {kind === 'cards'
         ? React.Children.map(children, (child, i) => (
             <motion.div key={i} variants={childItemVariants}>
@@ -116,11 +188,9 @@ export const SmartScrollReveal: React.FC<SmartScrollRevealProps> = ({
 
 /**
  * 스크롤 진행도에 따라 살짝 위/아래로 이동하는 패럴럭스 래퍼.
- * Hero, 큰 이미지, 인용문 등에 사용.
  */
 interface ScrollParallaxProps {
   children: ReactNode;
-  /** 이동 강도 (px). 양수=올라감 효과 (기본 60) */
   offset?: number;
   className?: string;
 }
@@ -150,7 +220,7 @@ export const ScrollParallax: React.FC<ScrollParallaxProps> = ({
 };
 
 /**
- * 숫자 카운트업 (통계 섹션). 화면 진입 시 0 → value로 증가.
+ * 숫자 카운트업 (통계 섹션).
  */
 interface CountUpProps {
   value: number;

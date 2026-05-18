@@ -145,6 +145,7 @@ import BusinessCaseStudies from "./pages/BusinessCaseStudies";
 import BusinessSecurity from "./pages/BusinessSecurity";
 import BusinessPricing from "./pages/BusinessPricing";
 import B2BDemoReport from "./pages/B2BDemoReport";
+import B2BABADemoDashboard from "./pages/B2BABADemoDashboard";
 import B2BHRDashboard from "./pages/B2BHRDashboard";
 import B2BKindergartenConsole from "./pages/B2BKindergartenConsole";
 import ParentAssessment from "./pages/ParentAssessment";
@@ -385,6 +386,8 @@ const App = () => {
           <Route path="/b2b-jobcoach" element={<B2BJobCoach />} />
           <Route path="/b2b-demo-report" element={<B2BDemoReport />} />
           <Route path="/en/b2b-demo-report" element={<B2BDemoReport />} />
+          <Route path="/b2b/aba-demo" element={<B2BABADemoDashboard />} />
+          <Route path="/en/b2b/aba-demo" element={<B2BABADemoDashboard />} />
           <Route path="/b2b-hr-dashboard" element={<B2BHRDashboard />} />
           <Route path="/b2b-kindergarten-console" element={<B2BKindergartenConsole />} />
           <Route path="/parent-assessment/:token" element={<ParentAssessment />} />

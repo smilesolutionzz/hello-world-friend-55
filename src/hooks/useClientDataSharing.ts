@@ -28,6 +28,7 @@ export const DATA_TYPE_OPTIONS = [
   { key: 'brain_training', label: '두뇌 훈련', description: '인지 훈련 점수 및 추이' },
   { key: 'counseling', label: '상담 기록', description: '금쪽상담소 대화 요약' },
   { key: 'progress', label: '변화 추적', description: '장기 발달 변화 추이 데이터' },
+  { key: 'aba', label: 'ABA 7일 트랙 요약', description: '표적행동 빈도·지속·인터벌·ABC 요약 (개인정보 마스킹 후 집계)' },
 ] as const;
 
 export const useClientDataSharing = () => {

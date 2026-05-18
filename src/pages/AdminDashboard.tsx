@@ -28,6 +28,7 @@ import { AdminPaymentManager } from '@/components/admin/AdminPaymentManager';
 import { AdminOverviewPanel } from '@/components/admin/AdminOverviewPanel';
 import { ReportQualityCard } from '@/components/admin/ReportQualityCard';
 import { AdminUserActivityTracker } from '@/components/admin/AdminUserActivityTracker';
+import AdminNSMHero from '@/components/admin/AdminNSMHero';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 export default function AdminDashboard() {

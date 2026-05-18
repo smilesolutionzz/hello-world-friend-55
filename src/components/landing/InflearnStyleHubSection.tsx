@@ -201,12 +201,17 @@ const InflearnStyleHubSection: React.FC = () => {
   const [activeChip, setActiveChip] = useState('all');
   const [previewTrack, setPreviewTrack] = useState<MindTrackFocus | null>(null);
 
+  // ICP 잠금: child_development / family_communication / parenting / sleep 4개만 노출.
+  // 'all'은 이 4개의 ICP 트랙 묶음을 의미하며, 비-ICP(stress·mood·focus·relationship·self)는 숨김.
+  const ICP_TRACK_IDS = new Set(['child_development', 'family_communication', 'parenting', 'sleep']);
   const tracks = useMemo(() => {
-    if (activeChip === 'all') return MIND_TRACK_FOCUSES;
-    if (activeChip === 'personal' || activeChip === 'family') {
-      return MIND_TRACK_FOCUSES.filter((f) => f.category === activeChip);
-    }
-    return MIND_TRACK_FOCUSES.filter((f) => f.id === activeChip);
+    const icpOnly = MIND_TRACK_FOCUSES.filter((f) => ICP_TRACK_IDS.has(f.id));
+    // child_development 우선 정렬 (ICP 핵심)
+    icpOnly.sort((a, b) =>
+      a.id === 'child_development' ? -1 : b.id === 'child_development' ? 1 : 0,
+    );
+    if (activeChip === 'all') return icpOnly;
+    return icpOnly.filter((f) => f.id === activeChip);
   }, [activeChip]);
 
   return (

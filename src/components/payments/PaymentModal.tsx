@@ -35,7 +35,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   onSuccess,
 }) => {
   const { pay, loading, isReady } = usePayment();
-  const [plan, setPlan] = useState<Plan>('7d');
+  const [plan] = useState<Plan>('7d'); // 단일 상품: 7일 고정
 
   const handlePay = async () => {
     const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');

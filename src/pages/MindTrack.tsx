@@ -498,7 +498,7 @@ const MindTrack: React.FC = () => {
       const res = await ensureMindTrackEnrollment({ goal: selectedGoal, concern });
       if (!res.enrollmentId) throw new Error(res.error || '등록 실패');
       toast.success('등록 완료! 결제 페이지로 이동합니다.');
-      navigate('/pricing?product=mind_track_30');
+      navigate('/pricing?product=mind_track_7');
     } catch (e: any) {
       toast.error(e.message || '등록 중 오류가 발생했습니다');
     } finally {

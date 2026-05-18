@@ -48,9 +48,9 @@ const TokenSubscription = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [selectedConcern, setSelectedConcern] = useState<string | null>(null);
 
-  // 디폴트는 7일 트랙. ?plan=30d 일 때만 장기 옵션
-  const initialPlan = searchParams.get('plan') === '30d' ? '30d' : '7d';
-  const [plan, setPlan] = useState<'7d' | '30d'>(initialPlan);
+  // 단일 상품 정책: 7일 트랙만 노출 (30일 URL 파라미터 무시)
+  const initialPlan: '7d' = '7d';
+  const [plan] = useState<'7d' | '30d'>(initialPlan);
 
   const planInfo = useMemo(() => {
     if (plan === '30d') {

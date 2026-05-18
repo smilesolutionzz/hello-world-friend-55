@@ -188,7 +188,7 @@ export default function MindTrackProfileCard() {
           <p className="text-sm text-muted-foreground mt-1 mb-4 break-keep">
             결제를 마치면 마이페이지에서 오늘의 미션과 변화 그래프를 바로 볼 수 있어요.
           </p>
-          <Button onClick={() => navigate("/pricing?product=mind_track_30")} className="w-full">
+          <Button onClick={() => navigate("/pricing?product=mind_track_7")} className="w-full">
             결제 이어서 하기 <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
         </Card>

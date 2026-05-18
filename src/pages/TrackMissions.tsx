@@ -525,6 +525,33 @@ export default function TrackMissions() {
           </Card>
         )}
 
+        {/* ABA 7일 코칭 — child_development 전용 */}
+        {isChildTrack && useChildData && (
+          <section className="mb-6 grid gap-4">
+            <div>
+              <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+                <h2 className="text-lg font-bold">오늘의 ABA 미션 · Day {abaDay}</h2>
+                <span className="text-xs text-muted-foreground">
+                  부모 코칭 7단계 (응용행동분석 기반)
+                </span>
+              </div>
+              <ABAMissionCard
+                day={abaDay}
+                onDayChange={setAbaDay}
+                childProfileId={childProfile!.id}
+                initial={abaObs.find((o) => o.day === abaDay)}
+                onSaved={() => { void refreshAbaObs(); }}
+              />
+            </div>
+            {(currentDay >= 7 || isTrackCompletable(abaObs)) && abaObs.length > 0 && (
+              <ABASummaryReport
+                observations={abaObs}
+                childNickname={childProfile?.child_nickname}
+              />
+            )}
+          </section>
+        )}
+
         {/* 오늘의 액션 */}
         <Card className="p-5 md:p-6 mb-6 rounded-2xl border-2" style={{ borderColor: "#C8B88A" }}>
           <div className="flex items-start gap-3">

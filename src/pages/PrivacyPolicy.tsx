@@ -5,6 +5,7 @@ import SEOHead from '@/components/common/SEOHead';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Shield, Lock, Eye, Trash2 } from 'lucide-react';
+import { LegalVersionBadge } from '@/components/legal/LegalVersionBadge';
 
 const PrivacyPolicy = () => {
   return (
@@ -25,8 +26,7 @@ const PrivacyPolicy = () => {
                 <Shield className="w-8 h-8 text-primary" />
                 <CardTitle className="text-3xl font-bold">개인정보처리방침</CardTitle>
               </div>
-              <p className="text-sm text-muted-foreground">최종 수정일: 2026년 3월 24일</p>
-            </CardHeader>
+              <LegalVersionBadge doc="privacy" />
             
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4 mb-8 p-6 bg-primary/5 rounded-lg">

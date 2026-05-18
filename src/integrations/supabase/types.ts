@@ -53,6 +53,75 @@ export type Database = {
         }
         Relationships: []
       }
+      aba_observations: {
+        Row: {
+          abc_antecedent: string | null
+          abc_behavior: string | null
+          abc_consequence: string | null
+          child_profile_id: string | null
+          created_at: string
+          data_method: string
+          day: number
+          duration_seconds: number | null
+          enrollment_id: string | null
+          frequency_count: number | null
+          id: string
+          interval_hits: number | null
+          interval_total: number | null
+          notes: string | null
+          parent_script_used: boolean
+          phase: string
+          reinforcer_used: string | null
+          target_behavior: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          abc_antecedent?: string | null
+          abc_behavior?: string | null
+          abc_consequence?: string | null
+          child_profile_id?: string | null
+          created_at?: string
+          data_method: string
+          day: number
+          duration_seconds?: number | null
+          enrollment_id?: string | null
+          frequency_count?: number | null
+          id?: string
+          interval_hits?: number | null
+          interval_total?: number | null
+          notes?: string | null
+          parent_script_used?: boolean
+          phase: string
+          reinforcer_used?: string | null
+          target_behavior?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          abc_antecedent?: string | null
+          abc_behavior?: string | null
+          abc_consequence?: string | null
+          child_profile_id?: string | null
+          created_at?: string
+          data_method?: string
+          day?: number
+          duration_seconds?: number | null
+          enrollment_id?: string | null
+          frequency_count?: number | null
+          id?: string
+          interval_hits?: number | null
+          interval_total?: number | null
+          notes?: string | null
+          parent_script_used?: boolean
+          phase?: string
+          reinforcer_used?: string | null
+          target_behavior?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       admin_analytics: {
         Row: {
           active_subscribers: number | null

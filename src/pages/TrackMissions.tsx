@@ -46,6 +46,13 @@ import {
 } from "@/lib/childPainPointMissions";
 import ChildProfileSetup, { type ChildProfile } from "@/components/mind-track/ChildProfileSetup";
 import { Sparkles, UserCog, Info } from "lucide-react";
+import ABAMissionCard from "@/components/mind-track/aba/ABAMissionCard";
+import ABASummaryReport from "@/components/mind-track/aba/ABASummaryReport";
+import {
+  listObservations,
+  isTrackCompletable,
+  type ABAObservation,
+} from "@/lib/abaObservations";
 
 const STORAGE_KEY = "track-missions:completed:v1";
 const START_KEY = "track-missions:started-at:v1";
@@ -212,6 +219,16 @@ export default function TrackMissions() {
     return () => { cancelled = true; };
   }, [useChildData, childProfile?.id]);
 
+  // ABA observations (child_development 트랙 전용)
+  const [abaObs, setAbaObs] = useState<ABAObservation[]>([]);
+  const [abaDay, setAbaDay] = useState<number>(1);
+  const refreshAbaObs = useCallback(async () => {
+    if (!useChildData) { setAbaObs([]); return; }
+    const rows = await listObservations(childProfile!.id);
+    setAbaObs(rows);
+  }, [useChildData, childProfile?.id]);
+  useEffect(() => { void refreshAbaObs(); }, [refreshAbaObs]);
+
 
 
   const persistChildStatus = async (day: number, completed: boolean) => {
@@ -254,6 +271,10 @@ export default function TrackMissions() {
     [selected, childProfile?.id],
   );
   const currentDay = getCurrentDay(startedAt);
+  // sync ABA daily card to current day (cap at 7)
+  useEffect(() => {
+    if (useChildData) setAbaDay(Math.min(7, Math.max(1, currentDay)));
+  }, [useChildData, currentDay]);
   const todayMission: DayDef = baseDays[currentDay - 1];
   const todayAssessment = ASSESSMENT_DAYS[currentDay] ?? null;
 
@@ -502,6 +523,33 @@ export default function TrackMissions() {
               </div>
             )}
           </Card>
+        )}
+
+        {/* ABA 7일 코칭 — child_development 전용 */}
+        {isChildTrack && useChildData && (
+          <section className="mb-6 grid gap-4">
+            <div>
+              <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+                <h2 className="text-lg font-bold">오늘의 ABA 미션 · Day {abaDay}</h2>
+                <span className="text-xs text-muted-foreground">
+                  부모 코칭 7단계 (응용행동분석 기반)
+                </span>
+              </div>
+              <ABAMissionCard
+                day={abaDay}
+                onDayChange={setAbaDay}
+                childProfileId={childProfile!.id}
+                initial={abaObs.find((o) => o.day === abaDay)}
+                onSaved={() => { void refreshAbaObs(); }}
+              />
+            </div>
+            {(currentDay >= 7 || isTrackCompletable(abaObs)) && abaObs.length > 0 && (
+              <ABASummaryReport
+                observations={abaObs}
+                childNickname={childProfile?.child_nickname}
+              />
+            )}
+          </section>
         )}
 
         {/* 오늘의 액션 */}

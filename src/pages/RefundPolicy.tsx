@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { RefreshCw, AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { LegalVersionBadge } from '@/components/legal/LegalVersionBadge';
 
 const RefundPolicy = () => {
   const { isEnglish } = useLanguage();
@@ -29,7 +30,7 @@ const RefundPolicy = () => {
                 <RefreshCw className="w-8 h-8 text-primary" />
                 <CardTitle className="text-3xl font-bold">{isEnglish ? 'Refund Policy' : '환불 정책'}</CardTitle>
               </div>
-              <p className="text-sm text-muted-foreground">{isEnglish ? 'Last updated: March 24, 2026' : '최종 수정일: 2026년 3월 24일'}</p>
+              <LegalVersionBadge doc="refund" />
             </CardHeader>
             
             <CardContent>

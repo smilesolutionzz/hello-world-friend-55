@@ -32,7 +32,7 @@ const Footer = () => {
               <li><a href={localePath('/expert-hiring')} className="hover:text-white transition-colors">{t.footer.expertConnect}</a></li>
               <li><a href={localePath('/observation')} className="hover:text-white transition-colors">행동 관찰 분석</a></li>
               <li><a href={localePath('/mind-diary')} className="hover:text-white transition-colors">마음 일기</a></li>
-              <li><a href={localePath('/mind-track/workbook')} className="hover:text-white transition-colors">30일 마음 트랙 워크북</a></li>
+              <li><a href={localePath('/mind-track')} className="hover:text-white transition-colors">7일 마음 트랙</a></li>
             </ul>
           </div>
 
@@ -58,9 +58,11 @@ const Footer = () => {
               <li><a href={localePath('/column')} className="hover:text-white transition-colors">전문가 칼럼</a></li>
               <li><a href={localePath('/sample-report')} className="hover:text-white transition-colors">리포트 예시</a></li>
               <li><a href={localePath('/pricing')} className="hover:text-white transition-colors">요금제</a></li>
-              <li><a href={localePath('/terms-of-service')} className="hover:text-white transition-colors">{t.footer.terms}</a></li>
-              <li><a href={localePath('/privacy-policy')} className="hover:text-white transition-colors">{t.footer.privacy}</a></li>
-              <li><a href={localePath('/refund-policy')} className="hover:text-white transition-colors">{t.footer.refund}</a></li>
+              <li><a href={localePath('/legal/terms')} className="hover:text-white transition-colors">{t.footer.terms}</a></li>
+              <li><a href={localePath('/legal/privacy')} className="hover:text-white transition-colors">{t.footer.privacy}</a></li>
+              <li><a href={localePath('/legal/refund')} className="hover:text-white transition-colors">{t.footer.refund}</a></li>
+              <li><a href={localePath('/legal/medical-disclaimer')} className="hover:text-white transition-colors">의료 비면책 고지</a></li>
+              <li><a href={localePath('/legal/crisis')} className="hover:text-white transition-colors">위기 대응 안내</a></li>
               <li className="text-slate-300">{t.footer.inquiry} aihpro@naver.com</li>
             </ul>
           </div>

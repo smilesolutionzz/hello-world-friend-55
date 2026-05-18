@@ -61,4 +61,19 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-vendor': ['framer-motion', 'lucide-react'],
+          'supabase': ['@supabase/supabase-js'],
+          'charts': ['recharts'],
+          'pdf': ['jspdf', 'html2canvas'],
+          'tosspayments': ['@tosspayments/payment-sdk'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
 }));

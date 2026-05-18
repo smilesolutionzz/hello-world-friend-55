@@ -44,6 +44,34 @@ export const PRODUCTS = {
     originalPrice: 237600,
     discount: 58,
   },
+  // 마음 트랙 (메인 라인업)
+  mind_track_7: {
+    id: 'mind_track_7',
+    type: 'mind_track',
+    name: '7일 마음 변화 트랙',
+    description: '7일 맞춤 코칭 미션 + 변화 리포트',
+    price: 7900,
+    originalPrice: 15800,
+    discount: 50,
+  },
+  mind_track_30: {
+    id: 'mind_track_30',
+    type: 'mind_track',
+    name: '30일 마음 변화 트랙',
+    description: '30일 맞춤 코칭 + 종합 리포트',
+    price: 19900,
+    originalPrice: 39800,
+    discount: 50,
+  },
+  mind_track_extend_23: {
+    id: 'mind_track_extend_23',
+    type: 'mind_track',
+    name: '마음 트랙 23일 연장권',
+    description: '7일 완주자 전용 연장',
+    price: 12900,
+    originalPrice: 19900,
+    discount: 35,
+  },
   // 하위 호환성
   pass_30: { 
     id: 'subscription_monthly', 

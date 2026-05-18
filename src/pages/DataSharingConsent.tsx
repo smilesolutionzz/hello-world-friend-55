@@ -69,7 +69,7 @@ const DataSharingConsent = () => {
         </div>
 
         {/* Security Notice */}
-        <Card className="mb-6 border-primary/20 bg-primary/5">
+        <Card className="mb-4 border-primary/20 bg-primary/5">
           <CardContent className="p-4 flex gap-3">
             <Shield className="h-5 w-5 text-primary mt-0.5 shrink-0" />
             <div className="text-sm">
@@ -78,6 +78,22 @@ const DataSharingConsent = () => {
                 공유된 데이터는 선택한 기관만 열람할 수 있으며, 언제든지 공유를 철회할 수 있습니다. 
                 모든 접근 기록은 감사 로그로 보관됩니다.
               </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Anonymization Notice */}
+        <Card className="mb-6 border-emerald-200 bg-emerald-50/60">
+          <CardContent className="p-4 flex gap-3">
+            <Shield className="h-5 w-5 text-emerald-700 mt-0.5 shrink-0" />
+            <div className="text-xs text-emerald-900 leading-relaxed">
+              <p className="font-medium mb-1">익명화 · 마스킹 규칙</p>
+              <ul className="list-disc pl-4 space-y-0.5">
+                <li>실명·이메일·전화번호는 전송되지 않으며, 닉네임은 첫·마지막 글자만 노출됩니다 (예: 김**민).</li>
+                <li>사용자 ID는 짧은 익명 해시로 대체되어 역추적이 어렵습니다.</li>
+                <li>ABA 트랙 등 집계 화면은 동의자 5명 미만일 경우 개별 행이 숨김 처리됩니다.</li>
+                <li>언제든 아래 "공유 철회"로 데이터 공유를 즉시 중단할 수 있습니다.</li>
+              </ul>
             </div>
           </CardContent>
         </Card>

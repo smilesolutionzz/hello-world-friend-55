@@ -161,6 +161,7 @@ import MedicalDisclaimerPage from "./pages/legal/MedicalDisclaimerPage";
 // Admin
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminMindTrackContent from "./pages/AdminMindTrackContent";
+import AdminPaymentMonitor from "./pages/AdminPaymentMonitor";
 
 // Utility
 import ShareView from "./pages/ShareView";
@@ -396,6 +397,7 @@ const App = () => {
           {/* Admin */}
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/mind-track-content" element={<AdminMindTrackContent />} />
+          <Route path="/admin/payment-monitor" element={<AdminPaymentMonitor />} />
 
           {/* Utility */}
           <Route path="/shared-report/demo" element={<DemoSharedReport />} />

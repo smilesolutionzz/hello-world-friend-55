@@ -13,14 +13,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
  * 디자인 원칙: 흰색 미니멀, rounded-2xl/3xl, 그라데이션 금지 (메모리 정책)
  */
 
+// ICP: 30-45 부모 · 아이 발달/ADHD — 부모/아이 카테고리 + 발달·ADHD·훈육·수면만 노출.
 const CATEGORY_CHIPS = [
   { id: 'all', label: '전체' },
-  { id: 'personal', label: '나' },
-  { id: 'family', label: '가족·아이' },
-  { id: 'sleep', label: '수면' },
-  { id: 'stress', label: '스트레스' },
-  { id: 'mood', label: '감정' },
-  { id: 'relationship', label: '관계' },
+  { id: 'child_development', label: '아이 발달·ADHD' },
+  { id: 'family_communication', label: '훈육·소통' },
+  { id: 'parenting', label: '부모 회복' },
+  { id: 'sleep', label: '아이 수면' },
 ];
 
 const EXPERT_PACKAGES = [

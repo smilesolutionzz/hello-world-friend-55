@@ -17,40 +17,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Users, Target, Flame } from "lucide-react";
-
-interface Enrollment {
-  id: string;
-  user_id: string;
-  payment_status: string | null;
-  status: string | null;
-  current_day: number | null;
-  started_at: string | null;
-  completed_at: string | null;
-  updated_at: string | null;
-  track_type: string | null;
-}
-
-interface CohortRow {
-  weekStart: string;
-  cohortSize: number;
-  completers: number;
-  rate: number;
-}
-
-function startOfWeek(d: Date): Date {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  const day = x.getDay(); // 0=Sun
-  const diff = (day + 6) % 7; // Monday start
-  x.setDate(x.getDate() - diff);
-  return x;
-}
-
-function fmtWeek(d: Date): string {
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}-${m}-${day}`;
-}
+import {
+  computeNSMMetrics,
+  type CohortRow,
+  type NSMEnrollment as Enrollment,
+} from "@/lib/adminNSMMetrics";
 
 export function AdminNSMHero() {
   const [loading, setLoading] = useState(true);

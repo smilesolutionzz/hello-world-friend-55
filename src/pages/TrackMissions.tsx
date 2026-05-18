@@ -271,6 +271,10 @@ export default function TrackMissions() {
     [selected, childProfile?.id],
   );
   const currentDay = getCurrentDay(startedAt);
+  // sync ABA daily card to current day (cap at 7)
+  useEffect(() => {
+    if (useChildData) setAbaDay(Math.min(7, Math.max(1, currentDay)));
+  }, [useChildData, currentDay]);
   const todayMission: DayDef = baseDays[currentDay - 1];
   const todayAssessment = ASSESSMENT_DAYS[currentDay] ?? null;
 

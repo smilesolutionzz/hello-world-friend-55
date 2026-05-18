@@ -76,10 +76,10 @@ export const SmartScrollReveal: React.FC<SmartScrollRevealProps> = ({
   className = '',
   stagger,
   once = true,
-  amount = 0.15,
+  amount = 'some',
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once, amount });
+  const inView = useInView(ref, { once, amount: amount as any });
   const reduce = useReducedMotion();
 
   const variants =

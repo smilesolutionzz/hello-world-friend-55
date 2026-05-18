@@ -117,6 +117,14 @@ const PaymentFail = () => {
             </div>
           )}
 
+          {/* 자동 재시도 카운트다운 (일시적 오류만) */}
+          {info.transient && autoRetryIn !== null && autoRetryCount < MAX_AUTO_RETRIES && (
+            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-3 text-[12px] text-blue-700 text-center">
+              잠시 후 자동으로 다시 시도해요… <span className="font-bold">{autoRetryIn}s</span>
+              <span className="text-blue-400 ml-2">({autoRetryCount + 1}/{MAX_AUTO_RETRIES})</span>
+            </div>
+          )}
+
           {/* 액션 버튼 */}
           <div className="space-y-2.5 mt-5">
             <Button

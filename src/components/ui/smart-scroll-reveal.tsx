@@ -26,8 +26,11 @@ interface SmartScrollRevealProps {
   /** stagger 모드에서 자식 사이 간격 (초) */
   stagger?: number;
   once?: boolean;
-  /** 화면의 몇 % 보일 때 트리거 (기본 0.15) */
-  amount?: number;
+  /**
+   * 화면의 몇 % 보일 때 트리거 (기본 'some' — 1px만 보여도 등장).
+   * 모바일에서 뷰포트보다 큰 섹션이 영구 hidden되는 것을 방지.
+   */
+  amount?: number | 'some' | 'all';
 }
 
 const baseVariants: Record<RevealKind, Variants> = {

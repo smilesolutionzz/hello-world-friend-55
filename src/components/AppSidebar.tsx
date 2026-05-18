@@ -120,6 +120,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {institutionItems.length > 0 && (
         <SidebarGroup>
           <SidebarGroupLabel className="text-white font-medium">기관 관리</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -141,6 +142,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        )}
 
         <SidebarGroup>
           <SidebarGroupLabel className="text-white font-medium">계정</SidebarGroupLabel>

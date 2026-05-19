@@ -784,6 +784,20 @@ const MindTrack: React.FC = () => {
                   <Sparkles className="w-3 h-3 mr-1" />
                   7일 ₩7,900 · 첫 15분 전문가 상담 무료
                 </Badge>
+                {(() => {
+                  const a = new URLSearchParams(location.search).get('audience');
+                  const label =
+                    a === 'adult' ? '성인 트랙'
+                    : a === 'parent' ? '부모 트랙'
+                    : a === 'teen' ? '청소년 트랙'
+                    : a === 'child' ? '아동 트랙'
+                    : null;
+                  return label ? (
+                    <Badge variant="outline" className="border-[#C8B88A]/40 text-[#8a7a4c] bg-[#C8B88A]/5">
+                      {label}
+                    </Badge>
+                  ) : null;
+                })()}
               </div>
 
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight break-keep">

@@ -71,7 +71,7 @@ export function useMindTrackDashboard() {
           .from("mind_track_enrollments")
           .select("*")
           .eq("user_id", user.id)
-          .eq("payment_status", "completed")
+          .in("payment_status", ["completed", "paid"])
           .order("created_at", { ascending: false })
           .limit(1);
         if (enErr) throw enErr;

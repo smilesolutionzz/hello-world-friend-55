@@ -171,6 +171,7 @@ import InstallGuide from "./pages/InstallGuide";
 import WellnessLifestyle from "./pages/WellnessLifestyle";
 import About from "./pages/About";
 import TrackAdult from "./pages/TrackAdult";
+import TrackParent from "./pages/TrackParent";
 import TrackTeenComingSoon from "./pages/TrackTeenComingSoon";
 import CenterReferralLanding from "./pages/CenterReferralLanding";
 import PartnerCenterDashboard from "./pages/PartnerCenterDashboard";

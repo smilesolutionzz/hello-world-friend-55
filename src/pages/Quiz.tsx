@@ -325,6 +325,17 @@ const Quiz: React.FC = () => {
     return { goalDesc, dur, severity, severityColor };
   }, [data]);
 
+  // 무료 진단 리포트 발급 번호 — 진짜 발급된 문서 느낌을 위한 짧은 ID
+  const reportMeta = useMemo(() => {
+    const id = (typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      ? crypto.randomUUID()
+      : Math.random().toString(36).slice(2)
+    ).replace(/-/g, '').slice(0, 8).toUpperCase();
+    const today = new Date();
+    const issuedAt = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+    return { id: `AIH-${id}`, issuedAt };
+  }, [step === 'plan']); // recompute when entering plan
+
   return (
     <>
       <Helmet>

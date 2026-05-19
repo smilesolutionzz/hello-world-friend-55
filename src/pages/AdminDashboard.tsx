@@ -16,6 +16,7 @@ import B2BKanbanBoard from '@/components/admin/B2BKanbanBoard';
 import { EmailSendLogPanel } from '@/components/admin/EmailSendLogPanel';
 import MindTrackInterventionStats from '@/components/admin/MindTrackInterventionStats';
 import WorkbookFunnelDashboard from '@/components/admin/WorkbookFunnelDashboard';
+import BottomTabAnalyticsCard from '@/components/admin/BottomTabAnalyticsCard';
 import { AdminNotifications } from '@/components/AdminNotifications';
 import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
 import { EnhancedUserDataViewer } from '@/components/admin/EnhancedUserDataViewer';
@@ -156,6 +157,7 @@ export default function AdminDashboard() {
 
           <TabsContent value="overview" className="space-y-4">
             <AdminNSMHero key={`nsm-${refreshKey}`} />
+            <BottomTabAnalyticsCard key={`bt-${refreshKey}`} />
             <ReportQualityCard key={`rq-${refreshKey}`} />
             <AdminOverviewPanel key={refreshKey} />
           </TabsContent>

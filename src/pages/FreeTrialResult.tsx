@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import FreeTrialResult from '@/components/assessment/FreeTrialResult';
 import SEOHead from '@/components/common/SEOHead';
+import PostQuizOnboardingTour from '@/components/onboarding/PostQuizOnboardingTour';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 const FreeTrialResultPage = () => {
@@ -30,6 +31,7 @@ const FreeTrialResultPage = () => {
         region_sido={state.region_sido}
         region_sigungu={state.region_sigungu}
       />
+      <PostQuizOnboardingTour />
     </>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, Sparkles, UserRound, LineChart, Users } from 'lucide-react';
+import { Brain, Sparkles, UserRound, LineChart, Users } from 'lucide-react';
 import { useAccessControl } from '@/hooks/useAccessControl';
 
 /**

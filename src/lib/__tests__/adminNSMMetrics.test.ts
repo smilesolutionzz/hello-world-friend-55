@@ -115,6 +115,71 @@ describe("computeNSMMetrics", () => {
     expect(prev?.completers).toBe(2);
     expect(prev?.rate).toBe(67);
   });
+
+  it("treats payment_status='completed' as paid (DB uses 'completed', code historically used 'paid')", () => {
+    const rows: NSMEnrollment[] = [
+      mk({ user_id: "x", payment_status: "completed", completed_at: dayOffset(THIS_WEEK_START, 0) }),
+      mk({ user_id: "y", payment_status: "paid", completed_at: dayOffset(THIS_WEEK_START, 1) }),
+      mk({ user_id: "z", payment_status: "pending", completed_at: dayOffset(THIS_WEEK_START, 2) }),
+    ];
+    const m = computeNSMMetrics(rows, NOW);
+    expect(m.weeklyCompleters).toBe(2);
+  });
+
+  it("excludes cancelled enrollments from paid set", () => {
+    const rows: NSMEnrollment[] = [
+      mk({ user_id: "a", payment_status: "completed", status: "cancelled", completed_at: dayOffset(THIS_WEEK_START, 0) }),
+      mk({ user_id: "b", payment_status: "completed", completed_at: dayOffset(THIS_WEEK_START, 1) }),
+    ];
+    const m = computeNSMMetrics(rows, NOW);
+    expect(m.weeklyCompleters).toBe(1);
+  });
+});
+
+describe("computeAudienceBreakdown", () => {
+  it("computes user-level conversion + completion + repeat rate per audience, excluding cancelled/refunded", () => {
+    const rows: NSMEnrollment[] = [
+      // adult: u1 paid twice (repeat), u2 paid once, u3 started but cancelled, u4 pending
+      mk({ user_id: "u1", audience: "adult", payment_status: "completed", status: "active", completed_at: "2026-05-10T00:00:00Z" }),
+      mk({ user_id: "u1", audience: "adult", payment_status: "completed", status: "active" }),
+      mk({ user_id: "u2", audience: "adult", payment_status: "paid", status: "active" }),
+      mk({ user_id: "u3", audience: "adult", payment_status: "completed", status: "cancelled" }),
+      mk({ user_id: "u4", audience: "adult", payment_status: "pending", status: "active" }),
+      // parent: u5 paid, u6 pending
+      mk({ user_id: "u5", audience: "parent", payment_status: "completed", status: "completed", completed_at: "2026-05-12T00:00:00Z" }),
+      mk({ user_id: "u6", audience: "parent", payment_status: "pending", status: "active" }),
+    ];
+    const out = computeAudienceBreakdown(rows);
+    const adult = out.find((r) => r.audience === "adult")!;
+    // unique starters: u1,u2,u3,u4 = 4 (u1 twice counts once)
+    expect(adult.uniqueStarters).toBe(4);
+    // paid rows excluding cancelled: u1×2, u2×1 = 3
+    expect(adult.paidEnrollments).toBe(3);
+    // unique paid users: u1, u2 = 2
+    expect(adult.uniquePaidUsers).toBe(2);
+    // conversion = 2/4 = 50%
+    expect(adult.conversionRate).toBe(50);
+    // 1 completer
+    expect(adult.completers).toBe(1);
+    // 1/3 ≈ 33.3%
+    expect(adult.completionRate).toBe(33.3);
+    // repeats = u1 → 1, /2 unique = 50%
+    expect(adult.repeatPaidUsers).toBe(1);
+    expect(adult.repeatRate).toBe(50);
+
+    const parent = out.find((r) => r.audience === "parent")!;
+    expect(parent.uniquePaidUsers).toBe(1);
+    expect(parent.repeatPaidUsers).toBe(0);
+    expect(parent.completers).toBe(1);
+  });
+
+  it("buckets rows with null audience as 'child' (legacy default), not 'unknown'", () => {
+    const rows: NSMEnrollment[] = [
+      mk({ user_id: "old1", audience: null, payment_status: "completed", status: "active" }),
+    ];
+    const out = computeAudienceBreakdown(rows);
+    expect(out.find((r) => r.audience === "child")!.paidEnrollments).toBe(1);
+  });
 });
 
 function addDays(d: Date, n: number) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }

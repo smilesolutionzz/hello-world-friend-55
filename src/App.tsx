@@ -170,7 +170,7 @@ import Rewards from "./pages/Rewards";
 import InstallGuide from "./pages/InstallGuide";
 import WellnessLifestyle from "./pages/WellnessLifestyle";
 import About from "./pages/About";
-import TrackAdultComingSoon from "./pages/TrackAdultComingSoon";
+import TrackAdult from "./pages/TrackAdult";
 import TrackTeenComingSoon from "./pages/TrackTeenComingSoon";
 import CenterReferralLanding from "./pages/CenterReferralLanding";
 import PartnerCenterDashboard from "./pages/PartnerCenterDashboard";
@@ -510,7 +510,7 @@ const App = () => {
 
           {/* New track / b2b / partner routes (placeholders + aliases) */}
           <Route path="/track/child" element={<Navigate to="/mind-track" replace />} />
-          <Route path="/track/adult" element={<TrackAdultComingSoon />} />
+          <Route path="/track/adult" element={<TrackAdult />} />
           <Route path="/track/teen" element={<TrackTeenComingSoon />} />
           <Route path="/tests/child-development" element={<Navigate to="/child-package" replace />} />
           <Route path="/b2b" element={<Navigate to="/business" replace />} />

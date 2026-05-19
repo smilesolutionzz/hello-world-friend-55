@@ -9184,6 +9184,7 @@ export type Database = {
       }
       mind_track_enrollments: {
         Row: {
+          audience: string
           baseline_data: Json | null
           completed_at: string | null
           created_at: string
@@ -9202,6 +9203,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          audience?: string
           baseline_data?: Json | null
           completed_at?: string | null
           created_at?: string
@@ -9220,6 +9222,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          audience?: string
           baseline_data?: Json | null
           completed_at?: string | null
           created_at?: string

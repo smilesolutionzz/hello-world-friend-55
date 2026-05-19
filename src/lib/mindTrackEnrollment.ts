@@ -97,10 +97,12 @@ async function loadQuizSeed(userId: string): Promise<QuizSeed> {
  * MindTrackStart can skip the 12-question diagnostic).
  */
 export type MindTrackPlan = '7d' | '30d';
+export type MindTrackAudience = 'child' | 'adult' | 'parent' | 'teen';
 
 export async function ensureMindTrackEnrollment(
   overrides: QuizSeed = {},
   plan: MindTrackPlan = '7d',
+  audience: MindTrackAudience = 'child',
 ): Promise<EnsureResult> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { enrollmentId: null, hasBaseline: false, error: "not_authenticated" };
@@ -138,7 +140,7 @@ export async function ensureMindTrackEnrollment(
     .maybeSingle();
 
   if (existing) {
-    const patch: Record<string, unknown> = { goal_focus: goalFocus };
+    const patch: Record<string, unknown> = { goal_focus: goalFocus, audience };
     if (baselineData) {
       const prev = (existing.baseline_data && typeof existing.baseline_data === "object" && !Array.isArray(existing.baseline_data))
         ? (existing.baseline_data as Record<string, unknown>)
@@ -170,6 +172,7 @@ export async function ensureMindTrackEnrollment(
     .insert({
       user_id: user.id,
       track_type: plan === '7d' ? "mind_7day" : "mind_30day",
+      audience,
       goal_focus: goalFocus,
       payment_status: "pending",
       payment_amount: plan === '7d' ? 7900 : MIND_TRACK_PRICE,

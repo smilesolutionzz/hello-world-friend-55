@@ -9,6 +9,7 @@ import {
   MIND_TRACK_7_ORIGINAL_PRICE,
   MIND_TRACK_PRICE,
 } from '@/constants/tokenCosts';
+import { trackTrackEntryClick } from '@/lib/trackEntryAnalytics';
 
 /**
  * Parent track landing (audience='parent').
@@ -32,8 +33,14 @@ const STEPS = [
 
 export default function TrackParent() {
   const navigate = useNavigate();
-  const startQuiz = () => navigate('/quiz?audience=parent');
-  const goPay = () => navigate('/mind-track?audience=parent');
+  const startQuiz = () => {
+    trackTrackEntryClick({ audience: 'parent', source: 'track_parent_landing', destination: '/quiz?audience=parent' });
+    navigate('/quiz?audience=parent');
+  };
+  const goPay = () => {
+    trackTrackEntryClick({ audience: 'parent', source: 'track_parent_landing', destination: '/mind-track?audience=parent' });
+    navigate('/mind-track?audience=parent');
+  };
 
   return (
     <>

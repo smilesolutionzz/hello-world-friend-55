@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { computeNSMMetrics, startOfWeek, type NSMEnrollment } from "../adminNSMMetrics";
+import {
+  computeNSMMetrics,
+  computeAudienceBreakdown,
+  startOfWeek,
+  type NSMEnrollment,
+} from "../adminNSMMetrics";
 
 // Anchor "now" = Wed 2026-05-13 12:00 KST-agnostic (use UTC for determinism).
 const NOW = new Date("2026-05-13T12:00:00.000Z");

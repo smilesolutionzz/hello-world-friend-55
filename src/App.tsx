@@ -512,6 +512,7 @@ const App = () => {
           {/* New track / b2b / partner routes (placeholders + aliases) */}
           <Route path="/track/child" element={<Navigate to="/mind-track" replace />} />
           <Route path="/track/adult" element={<TrackAdult />} />
+          <Route path="/track/parent" element={<TrackParent />} />
           <Route path="/track/teen" element={<TrackTeenComingSoon />} />
           <Route path="/tests/child-development" element={<Navigate to="/child-package" replace />} />
           <Route path="/b2b" element={<Navigate to="/business" replace />} />

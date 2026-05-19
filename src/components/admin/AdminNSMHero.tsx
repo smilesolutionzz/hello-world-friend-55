@@ -89,6 +89,26 @@ export function AdminNSMHero() {
 
   return (
     <div className="space-y-4">
+      {/* Date range selector */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <Calendar className="w-3.5 h-3.5 text-slate-400" />
+        <span className="text-xs text-slate-500">기간:</span>
+        {RANGES.map((r) => (
+          <Button
+            key={r.key}
+            size="sm"
+            variant={rangeKey === r.key ? "default" : "outline"}
+            className="h-7 px-3 text-xs rounded-full"
+            onClick={() => setRangeKey(r.key)}
+          >
+            {r.label}
+          </Button>
+        ))}
+        <Badge variant="outline" className="ml-auto text-[10px]">
+          {rows.length}건 집계
+        </Badge>
+      </div>
+
       {/* NSM Hero */}
       <Card className="border-2 border-primary/30 bg-gradient-to-br from-white via-amber-50/40 to-rose-50/40 rounded-2xl">
         <CardHeader className="pb-2">

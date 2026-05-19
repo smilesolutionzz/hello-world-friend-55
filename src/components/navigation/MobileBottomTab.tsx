@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, Sparkles, UserRound, LineChart, Users } from 'lucide-react';
+import { Brain, Sparkles, UserRound, LineChart, Users } from 'lucide-react';
 import { useAccessControl } from '@/hooks/useAccessControl';
 
 /**
@@ -20,8 +20,8 @@ const MobileBottomTab: React.FC = () => {
 
   const path = location.pathname;
   const getActiveTab = () => {
-    if (path === '/' || path === '/en') return 'home';
-    if (path.startsWith('/mind-track')) return 'track';
+    if (path.startsWith('/quiz') || path.startsWith('/assessment') || path.startsWith('/concern')) return 'quiz';
+    if (path.startsWith('/mind-track') || path.startsWith('/track/')) return 'track';
     if (path.startsWith('/my-journey') || path.startsWith('/progress')) return 'journey';
     if (path.startsWith('/expert-hiring') || path.startsWith('/booking') || path.startsWith('/consultation')) return 'expert';
     if (path.startsWith('/profile') || path.startsWith('/settings') || path.startsWith('/dashboard') || path.startsWith('/rewards')) return 'profile';
@@ -32,7 +32,7 @@ const MobileBottomTab: React.FC = () => {
 
   const handleTabClick = (tabId: string) => {
     switch (tabId) {
-      case 'home': navigate('/'); break;
+      case 'quiz': navigate('/quiz'); break;
       case 'track': navigate('/mind-track'); break;
       case 'journey': navigate('/my-journey'); break;
       case 'expert': navigate('/expert-hiring'); break;
@@ -41,10 +41,10 @@ const MobileBottomTab: React.FC = () => {
   };
 
   const sideTabs = [
-    { id: 'home',    label: '홈',       icon: Home },
+    { id: 'quiz',    label: 'AI 검사',   icon: Brain },
     { id: 'journey', label: '나의 여정', icon: LineChart },
-    { id: 'expert',  label: '전문가',   icon: Users },
-    { id: 'profile', label: 'MY',       icon: UserRound },
+    { id: 'expert',  label: '전문가',    icon: Users },
+    { id: 'profile', label: 'MY',        icon: UserRound },
   ];
 
   // 좌측 2개 / 가운데 트랙 / 우측 2개로 분할

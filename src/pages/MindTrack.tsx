@@ -35,6 +35,7 @@ import TrackCategoryChips from '@/components/mind-track/TrackCategoryChips';
 import TrackRecommendation from '@/components/mind-track/TrackRecommendation';
 import TrackQuickPicker from '@/components/mind-track/TrackQuickPicker';
 import StickyTrackCTA from '@/components/mind-track/StickyTrackCTA';
+import AudienceHubSection from '@/components/mind-track/AudienceHubSection';
 import { matchTrack, getAxis, recommendTracks, TRACK_TAGS, type CategoryAxis } from '@/lib/mindTrackCategories';
 import type { MindTrackFocusId } from '@/lib/mindTrackFocusTracks';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
@@ -800,6 +801,11 @@ const MindTrack: React.FC = () => {
             </motion.div>
           </div>
         </section>
+
+        {/* Audience Hub — 4개 트랙(child/teen/adult/parent) 진입 */}
+        <AudienceHubSection />
+
+
 
         {/* 선택한 목표에 맞는 자가체크 — 목표 선택 시에만 펼쳐짐 */}
         <AnimatePresence mode="wait">

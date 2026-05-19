@@ -31,6 +31,7 @@ export function AdminNSMHero() {
   const [weeklyActivePaid, setWeeklyActivePaid] = useState(0);
   const [last4Completers, setLast4Completers] = useState<number[]>([]);
   const [cohorts, setCohorts] = useState<CohortRow[]>([]);
+  const [breakdown, setBreakdown] = useState<AudienceBreakdownRow[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -41,9 +42,9 @@ export function AdminNSMHero() {
         const { data, error } = await supabase
           .from("mind_track_enrollments")
           .select(
-            "id, user_id, payment_status, status, current_day, started_at, completed_at, updated_at, track_type"
+            "id, user_id, payment_status, status, current_day, started_at, completed_at, updated_at, track_type, audience"
           )
-          .gte("started_at", since.toISOString())
+          .gte("created_at", since.toISOString())
           .limit(5000);
 
         if (error) throw error;
@@ -54,6 +55,7 @@ export function AdminNSMHero() {
         setWeeklyActivePaid(m.weeklyActivePaid);
         setLast4Completers(m.sparkline);
         setCohorts(m.cohorts);
+        setBreakdown(computeAudienceBreakdown(rows));
       } catch (e) {
         console.error("[AdminNSMHero] load failed", e);
       } finally {

@@ -54,12 +54,12 @@ serve(async (req) => {
     console.log('Expert matcher function called');
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { analysis, ageGroup, age, preferences }: ExpertMatchRequest = await req.json();
+    const { analysis, ageGroup, age, audience, preferences }: ExpertMatchRequest = await req.json();
 
-    console.log('Received request:', { ageGroup, age, preferencesProvided: !!preferences });
+    console.log('Received request:', { ageGroup, age, audience, preferencesProvided: !!preferences });
 
     // 실제 전문가 데이터 가져오기
-    const { data: experts, error: expertsError } = await supabase
+    const { data: allExperts, error: expertsError } = await supabase
       .from('experts')
       .select('*')
       .eq('is_verified', true)
@@ -68,6 +68,19 @@ serve(async (req) => {
     if (expertsError) {
       console.error('Error fetching experts:', expertsError);
       throw new Error('전문가 데이터를 가져오는 중 오류가 발생했습니다.');
+    }
+
+    // Audience별 태그 사전 필터링 (성인=번아웃/수면/성인상담 태그 우선)
+    const requiredTags = AUDIENCE_REQUIRED_TAGS[audience ?? 'child'] ?? [];
+    let experts = allExperts ?? [];
+    if (requiredTags.length > 0) {
+      const filtered = experts.filter((e: Expert) => {
+        const specs = Array.isArray(e.specializations) ? e.specializations : [];
+        return specs.some((s: string) => requiredTags.includes(s));
+      });
+      // 태그 매칭 결과가 3명 미만이면 전체 풀로 폴백 (가용성 우선)
+      experts = filtered.length >= 3 ? filtered : (experts.length > 0 ? experts : []);
+      console.log(`Audience filter (${audience}): tagged=${filtered.length}, using=${experts.length}`);
     }
 
     console.log('Found experts:', experts.length);

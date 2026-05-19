@@ -246,8 +246,10 @@ export function AdminNSMHero() {
               <thead>
                 <tr className="text-slate-500 border-b border-slate-100">
                   <th className="text-left py-2 font-medium">Audience</th>
-                  <th className="text-right py-2 font-medium">시작</th>
-                  <th className="text-right py-2 font-medium">결제</th>
+                  <th className="text-right py-2 font-medium" title="시작 row (중복 시도 포함)">시작</th>
+                  <th className="text-right py-2 font-medium" title="고유 시작 사용자 수">시작 UU</th>
+                  <th className="text-right py-2 font-medium" title="결제 완료 row (cancelled/refunded 제외)">결제</th>
+                  <th className="text-right py-2 font-medium" title="결제 완료한 고유 사용자">결제 UU</th>
                   <th className="text-right py-2 font-medium">결제전환율</th>
                   <th className="text-right py-2 font-medium">완주자</th>
                   <th className="text-right py-2 font-medium">완주율</th>
@@ -259,8 +261,10 @@ export function AdminNSMHero() {
                 {breakdown.map((b) => (
                   <tr key={b.audience} className="border-b border-slate-50 last:border-0">
                     <td className="py-2 font-semibold text-slate-700 capitalize">{b.audience}</td>
-                    <td className="text-right tabular-nums">{b.totalEnrollments}</td>
-                    <td className="text-right tabular-nums">{b.paidEnrollments}</td>
+                    <td className="text-right tabular-nums text-slate-400">{b.totalEnrollments}</td>
+                    <td className="text-right tabular-nums">{b.uniqueStarters}</td>
+                    <td className="text-right tabular-nums text-slate-400">{b.paidEnrollments}</td>
+                    <td className="text-right tabular-nums">{b.uniquePaidUsers}</td>
                     <td className="text-right tabular-nums font-semibold text-primary">
                       {b.conversionRate}%
                     </td>
@@ -276,7 +280,7 @@ export function AdminNSMHero() {
                 ))}
                 {breakdown.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="text-center text-slate-400 py-6">
+                    <td colSpan={10} className="text-center text-slate-400 py-6">
                       집계할 데이터가 없습니다.
                     </td>
                   </tr>
@@ -284,8 +288,10 @@ export function AdminNSMHero() {
               </tbody>
             </table>
           </div>
-          <p className="text-[10px] text-slate-400 mt-3">
-            결제전환율 = 결제완료 / 시작 · 완주율 = 완주 / 결제완료 · 재구매율 = 2회 이상 결제 사용자 / 결제 사용자
+          <p className="text-[10px] text-slate-400 mt-3 leading-relaxed">
+            결제전환율 = 결제 UU / 시작 UU · 완주율 = 완주(row) / 결제(row) · 재구매율 = 결제 2회 이상 사용자 / 결제 UU
+            <br />
+            payment_status ∈ {"{paid, completed}"} & status ∉ {"{cancelled, refunded}"} 인 row 만 "결제"로 집계. 기간 필터는 enrollment.created_at 기준.
           </p>
         </CardContent>
       </Card>

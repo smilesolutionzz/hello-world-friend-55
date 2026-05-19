@@ -94,14 +94,23 @@ const MobileBottomTab: React.FC = () => {
     : '';
 
   const handleFabClick = () => {
-    // 활성 트랙이 있으면 미리보기 패널을 띄워 한 번 더 컨텍스트 확인 → 바로 시작
-    if (mtActive || mtNeedsBaseline) {
-      setTrackPreviewOpen((v) => !v);
-      void trackBottomTabClick({
-        tab: 'track',
-        destination: 'preview_open',
-        from_path: path,
-      });
+    // 상태에 따라 즉시 목적지로 이동 (단, 같은 페이지에 이미 있으면 프리뷰 토글)
+    if (mtActive) {
+      const dest = '/mind-track/dashboard';
+      if (path.startsWith('/mind-track/dashboard')) {
+        setTrackPreviewOpen((v) => !v);
+        return;
+      }
+      handleTabClick('track', dest);
+      return;
+    }
+    if (mtNeedsBaseline) {
+      const dest = '/mind-track/start';
+      if (path.startsWith('/mind-track/start')) {
+        setTrackPreviewOpen((v) => !v);
+        return;
+      }
+      handleTabClick('track', dest);
       return;
     }
     handleTabClick('track');

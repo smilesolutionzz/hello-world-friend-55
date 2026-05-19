@@ -35,6 +35,7 @@ import TrackCategoryChips from '@/components/mind-track/TrackCategoryChips';
 import TrackRecommendation from '@/components/mind-track/TrackRecommendation';
 import TrackQuickPicker from '@/components/mind-track/TrackQuickPicker';
 import StickyTrackCTA from '@/components/mind-track/StickyTrackCTA';
+import AudienceHubSection from '@/components/mind-track/AudienceHubSection';
 import { matchTrack, getAxis, recommendTracks, TRACK_TAGS, type CategoryAxis } from '@/lib/mindTrackCategories';
 import type { MindTrackFocusId } from '@/lib/mindTrackFocusTracks';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';
@@ -783,6 +784,20 @@ const MindTrack: React.FC = () => {
                   <Sparkles className="w-3 h-3 mr-1" />
                   7일 ₩7,900 · 첫 15분 전문가 상담 무료
                 </Badge>
+                {(() => {
+                  const a = new URLSearchParams(location.search).get('audience');
+                  const label =
+                    a === 'adult' ? '성인 트랙'
+                    : a === 'parent' ? '부모 트랙'
+                    : a === 'teen' ? '청소년 트랙'
+                    : a === 'child' ? '아동 트랙'
+                    : null;
+                  return label ? (
+                    <Badge variant="outline" className="border-[#C8B88A]/40 text-[#8a7a4c] bg-[#C8B88A]/5">
+                      {label}
+                    </Badge>
+                  ) : null;
+                })()}
               </div>
 
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight break-keep">
@@ -800,6 +815,11 @@ const MindTrack: React.FC = () => {
             </motion.div>
           </div>
         </section>
+
+        {/* Audience Hub — 4개 트랙(child/teen/adult/parent) 진입 */}
+        <AudienceHubSection />
+
+
 
         {/* 선택한 목표에 맞는 자가체크 — 목표 선택 시에만 펼쳐짐 */}
         <AnimatePresence mode="wait">

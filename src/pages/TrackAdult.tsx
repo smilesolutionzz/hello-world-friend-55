@@ -9,6 +9,7 @@ import {
   MIND_TRACK_7_ORIGINAL_PRICE,
   MIND_TRACK_PRICE,
 } from '@/constants/tokenCosts';
+import { trackTrackEntryClick } from '@/lib/trackEntryAnalytics';
 
 const FOCUS_AREAS = [
   {
@@ -41,8 +42,14 @@ const STEPS = [
 
 export default function TrackAdult() {
   const navigate = useNavigate();
-  const startQuiz = () => navigate('/quiz?audience=adult');
-  const goPay = () => navigate('/mind-track?audience=adult');
+  const startQuiz = () => {
+    trackTrackEntryClick({ audience: 'adult', source: 'track_adult_landing', destination: '/quiz?audience=adult' });
+    navigate('/quiz?audience=adult');
+  };
+  const goPay = () => {
+    trackTrackEntryClick({ audience: 'adult', source: 'track_adult_landing', destination: '/mind-track?audience=adult' });
+    navigate('/mind-track?audience=adult');
+  };
 
   return (
     <>

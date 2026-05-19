@@ -510,7 +510,7 @@ const App = () => {
           <Route path="/unsubscribe" element={<Unsubscribe />} />
 
           {/* New track / b2b / partner routes (placeholders + aliases) */}
-          <Route path="/track/child" element={<Navigate to="/mind-track" replace />} />
+          <Route path="/track/child" element={<Navigate to="/mind-track?audience=child" replace />} />
           <Route path="/track/adult" element={<TrackAdult />} />
           <Route path="/track/parent" element={<TrackParent />} />
           <Route path="/track/teen" element={<TrackTeenComingSoon />} />

@@ -15,12 +15,21 @@ interface ExpertMatchRequest {
   analysis: string;
   ageGroup: string;
   age?: number;
+  audience?: 'child' | 'adult' | 'parent' | 'teen';
   preferences?: {
     consultationType?: string;
     budget?: number;
     language?: string;
   };
 }
+
+// Audience별 우선 매칭 태그 (experts.specializations 배열에서 검색)
+const AUDIENCE_REQUIRED_TAGS: Record<string, string[]> = {
+  adult: ['burnout_specialist', 'sleep_coach', 'adult_counselor'],
+  parent: ['parent_coach', 'adult_counselor'],
+  teen: ['youth_counselor', 'adult_counselor'],
+  child: [], // 기존 child 전문가 풀 그대로
+};
 
 interface Expert {
   id: string;

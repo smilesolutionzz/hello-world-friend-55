@@ -659,25 +659,32 @@ const Quiz: React.FC = () => {
               </motion.div>
             )}
 
-            {/* PLAN RESULT */}
+            {/* PLAN RESULT — 무료 진단 리포트 우선 노출 */}
             {step === 'plan' && (
               <motion.div key="plan" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                {/* ───────────────────────────────────────────────
+                   [A] 무료 진단 리포트 — 1페이지 완본 (잠금 없음)
+                   ─────────────────────────────────────────────── */}
                 <div className="text-center">
                   <Badge className="mb-3 bg-emerald-50 text-emerald-700 border-emerald-200">
                     <CheckCircle2 className="w-3 h-3 mr-1" />
-                    플랜 완성
+                    무료 진단 리포트 발급 완료
                   </Badge>
                   <h2 className="text-2xl md:text-3xl font-bold mb-2 break-keep">
-                    {data.goalLabel}을(를) 위한<br />
-                    당신만의 30일 마음 트랙
+                    {data.goalLabel}<br />무료 진단 리포트
                   </h2>
+                  <div className="inline-flex items-center gap-3 mt-2 text-[11px] text-muted-foreground tracking-wider">
+                    <span>REPORT · {reportMeta.id}</span>
+                    <span className="w-1 h-1 rounded-full bg-muted-foreground/40" />
+                    <span>발급일 {reportMeta.issuedAt}</span>
+                  </div>
                 </div>
 
-                {/* Diagnostic snapshot */}
+                {/* [A1] 진단 스냅샷 */}
                 <Card className="border-2 border-primary/20">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm font-medium text-muted-foreground">현재 상태</span>
+                      <span className="text-sm font-medium text-muted-foreground">종합 진단</span>
                       <Badge className={planInsight.severityColor}>{planInsight.severity}</Badge>
                     </div>
                     <div className="grid grid-cols-3 gap-3 text-center">
@@ -688,7 +695,7 @@ const Quiz: React.FC = () => {
                       </div>
                       <div className="p-3 bg-slate-50 rounded-xl">
                         <Heart className="w-5 h-5 mx-auto mb-1 text-rose-500" />
-                        <div className="text-xs text-muted-foreground">컨디션</div>
+                        <div className="text-xs text-muted-foreground">현재 컨디션</div>
                         <div className="text-sm font-semibold mt-1">{stateLabels[data.state - 1]}</div>
                       </div>
                       <div className="p-3 bg-slate-50 rounded-xl">
@@ -700,12 +707,149 @@ const Quiz: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                {/* Plan modules */}
+                {/* [A2] 핵심 발견 — 강점 / 케어 / 또래 비교 */}
+                <Card>
+                  <CardContent className="p-6 space-y-4">
+                    <div>
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Personal Insight</div>
+                      <h3 className="font-bold text-base mt-1 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-primary" />
+                        당신의 마음 패턴 핵심 발견
+                      </h3>
+                    </div>
+
+                    <p className="text-sm text-slate-700 leading-relaxed break-keep">
+                      {data.concern && data.concern.trim().length > 10
+                        ? `"${data.concern.slice(0, 90)}${data.concern.length > 90 ? '…' : ''}" 라고 적어주신 부분에서, 단순한 ${data.goalLabel} 어려움이 아니라 자신의 한계를 인정하고 변화를 시도하려는 강한 동기가 보입니다.`
+                        : `${data.goalLabel}에서 어려움을 겪고 계시지만, 응답 패턴에서 변화에 대한 강한 의지가 관찰됩니다.`}
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
+                        <div className="text-[10px] text-emerald-700 uppercase font-bold mb-1">강점</div>
+                        <ul className="text-xs text-emerald-900 space-y-0.5">
+                          <li>· 자기 인식이 명확함</li>
+                          <li>· 회복 동기 상위 18%</li>
+                          <li>· 일상 루틴 유지력</li>
+                        </ul>
+                      </div>
+                      <div className="p-3 rounded-lg bg-amber-50 border border-amber-100">
+                        <div className="text-[10px] text-amber-700 uppercase font-bold mb-1">집중 케어</div>
+                        <ul className="text-xs text-amber-900 space-y-0.5">
+                          <li>· {data.goalLabel} 완충 부족</li>
+                          <li>· 야간 각성도 높음</li>
+                          <li>· 자기비난 패턴</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-slate-50 border border-slate-100">
+                      <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">또래 비교</div>
+                      <p className="text-xs text-slate-700 leading-relaxed break-keep">
+                        동일 연령대({data.age}) {data.lifestage && `${lifestages.find(l => l.id === data.lifestage)?.label} `}그룹 평균 대비
+                        {' '}<span className="font-bold text-slate-900">{planInsight.severity}</span>에 해당하며, 30일 트랙 완수자의 87%가 같은 출발선에서 안정 구간 진입에 성공했습니다.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* [A3] 30일 변화 시나리오 차트 */}
+                <Card className="border-slate-200">
+                  <CardContent className="p-5 md:p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="font-bold text-base flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4 text-emerald-500" />
+                          예상 30일 변화 시나리오
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">평균 사용자 기준 — 변화 폭은 개인별로 다를 수 있습니다</p>
+                      </div>
+                      <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">예시</Badge>
+                    </div>
+
+                    <div className="h-44 -mx-2">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={[
+                          { day: '시작', 스트레스: 78, 에너지: 32, 마음명료함: 28 },
+                          { day: '7일', 스트레스: 65, 에너지: 45, 마음명료함: 42 },
+                          { day: '14일', 스트레스: 52, 에너지: 58, 마음명료함: 56 },
+                          { day: '21일', 스트레스: 38, 에너지: 71, 마음명료함: 70 },
+                          { day: '30일', 스트레스: 25, 에너지: 82, 마음명료함: 84 },
+                        ]} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="day" tick={{ fontSize: 10 }} />
+                          <YAxis tick={{ fontSize: 10 }} />
+                          <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid hsl(var(--border))' }} />
+                          <Legend wrapperStyle={{ fontSize: 10 }} iconType="circle" />
+                          <Line type="monotone" dataKey="스트레스" stroke="#ef4444" strokeWidth={2} dot={{ r: 3 }} />
+                          <Line type="monotone" dataKey="에너지" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3 }} />
+                          <Line type="monotone" dataKey="마음명료함" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 3 }} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 mt-2 pt-3 border-t border-slate-100">
+                      <div className="text-center">
+                        <div className="text-[10px] text-muted-foreground">스트레스</div>
+                        <div className="text-sm font-bold text-rose-500">-68%</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-[10px] text-muted-foreground">에너지</div>
+                        <div className="text-sm font-bold text-blue-500">+156%</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-[10px] text-muted-foreground">마음명료함</div>
+                        <div className="text-sm font-bold text-violet-500">+200%</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* [A4] 추천 우선 액션 — Week 1만 풀어서 노출 */}
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Recommended Action</div>
+                    <h3 className="font-bold text-base mb-3 flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-primary" />
+                      이번 주, 가장 먼저 시도해볼 것
+                    </h3>
+                    <div className="flex gap-3 p-3 rounded-xl bg-primary/5 border border-primary/10">
+                      <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold shrink-0">
+                        1
+                      </div>
+                      <div>
+                        <div className="text-xs text-primary font-semibold">Week 1 · 관찰</div>
+                        <div className="font-semibold text-sm">{data.goalLabel} 트리거 일일 체크인</div>
+                        <div className="text-xs text-muted-foreground mt-0.5 break-keep">하루 3분, 어떤 순간에 마음이 흔들리는지 짧게 기록해보세요. 7일이면 본인의 패턴이 보입니다.</div>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-3 text-center break-keep">
+                      ↓ 2주차 이후 액션과 워크북·AI 코파일럿은 30일 트랙에서 단계별로 안내됩니다
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* ───────────────────────────────────────────────
+                   [B] 무료/유료 경계 — 더 깊이 들어가고 싶다면
+                   ─────────────────────────────────────────────── */}
+                <div className="relative pt-6 pb-2">
+                  <div className="absolute inset-x-0 top-3 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+                  <div className="relative text-center">
+                    <span className="inline-block px-3 bg-gradient-to-b from-slate-50 to-white text-[11px] text-muted-foreground tracking-wider">
+                      여기까지가 무료 리포트입니다
+                    </span>
+                    <p className="text-xs text-muted-foreground mt-2 break-keep">
+                      30일 마음 트랙은 같은 데이터를 14페이지 리포트와 매일 미션으로 확장합니다
+                    </p>
+                  </div>
+                </div>
+
+                {/* [B1] 30일 코칭 모듈 */}
                 <Card>
                   <CardContent className="p-6">
                     <h3 className="font-bold mb-4 flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-primary" />
-                      당신의 30일 코칭 모듈
+                      30일 코칭 모듈 (유료)
                     </h3>
                     <div className="space-y-3">
                       {[
@@ -729,15 +873,14 @@ const Quiz: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                {/* 실제 리포트 미리보기 — 블러 없이 펼쳐 보여줌 */}
+                {/* [B2] 유료 리포트 미리보기 — Executive Summary + Action Roadmap */}
                 <div>
                   <div className="text-center mb-4">
                     <Badge className="mb-2 bg-violet-50 text-violet-700 border-violet-200">
                       <FileText className="w-3 h-3 mr-1" />
-                      30일 후 받게 될 리포트
+                      30일 후 받게 될 14페이지 리포트
                     </Badge>
-                    <h3 className="text-lg font-bold break-keep">실제 받게 되는 리포트 미리보기</h3>
-                    <p className="text-xs text-muted-foreground mt-1">아래는 당신의 답변으로 미리 구성한 실제 페이지 3장입니다</p>
+                    <h3 className="text-lg font-bold break-keep">유료 트랙 리포트 페이지 미리보기</h3>
                   </div>
 
                   {/* PAGE 01 — Executive Summary */}
@@ -798,52 +941,6 @@ const Quiz: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* PAGE 02 — Personal Insight */}
-                  <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-xl bg-white mb-4">
-                    <div className="bg-gradient-to-b from-white to-slate-50 p-5 md:p-7">
-                      <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-                        <div className="text-xs font-bold text-slate-900">02. 당신의 마음 패턴 분석</div>
-                        <div className="text-[10px] text-slate-400">PAGE 04 / 14</div>
-                      </div>
-
-                      <div className="mt-4 space-y-3">
-                        <div className="text-[9px] text-slate-400 uppercase tracking-wider">Personal Insight</div>
-                        <p className="text-xs text-slate-700 leading-relaxed break-keep">
-                          {data.concern && data.concern.trim().length > 10
-                            ? `"${data.concern.slice(0, 90)}${data.concern.length > 90 ? '…' : ''}" 라고 적어주신 부분에서, 당신은 단순한 ${data.goalLabel} 어려움이 아니라 자신의 한계를 인정하고 변화를 시도하려는 강한 동기가 보입니다.`
-                            : `${data.goalLabel}에서 어려움을 겪고 계시지만, 검사 응답 패턴에서 변화에 대한 강한 의지가 관찰됩니다.`}
-                        </p>
-
-                        <div className="grid grid-cols-2 gap-2 mt-3">
-                          <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
-                            <div className="text-[9px] text-emerald-700 uppercase font-bold mb-1">강점</div>
-                            <ul className="text-[11px] text-emerald-900 space-y-0.5">
-                              <li>· 자기 인식이 명확함</li>
-                              <li>· 회복 동기 상위 18%</li>
-                              <li>· 일상 루틴 유지력</li>
-                            </ul>
-                          </div>
-                          <div className="p-3 rounded-lg bg-amber-50 border border-amber-100">
-                            <div className="text-[9px] text-amber-700 uppercase font-bold mb-1">집중 케어</div>
-                            <ul className="text-[11px] text-amber-900 space-y-0.5">
-                              <li>· {data.goalLabel} 완충 부족</li>
-                              <li>· 야간 각성도 높음</li>
-                              <li>· 자기비난 패턴</li>
-                            </ul>
-                          </div>
-                        </div>
-
-                        <div className="mt-3 p-3 rounded-lg bg-slate-50 border border-slate-100">
-                          <div className="text-[9px] text-slate-500 uppercase font-bold mb-1">또래 비교</div>
-                          <p className="text-[11px] text-slate-700 leading-relaxed break-keep">
-                            동일 연령대({data.age}) {data.lifestage && `${lifestages.find(l => l.id === data.lifestage)?.label} `}그룹 평균 대비
-                            {' '}<span className="font-bold text-slate-900">{planInsight.severity}</span>에 해당하며, 30일 트랙 완수자의 87%가 같은 출발선에서 안정 구간 진입에 성공했습니다.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
                   {/* PAGE 03 — Action Roadmap */}
                   <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-xl bg-white mb-4">
                     <div className="bg-gradient-to-b from-white to-slate-50 p-5 md:p-7">
@@ -874,7 +971,7 @@ const Quiz: React.FC = () => {
                   {/* 잠금 — 마지막 안내 */}
                   <div className="relative rounded-2xl overflow-hidden border-2 border-dashed border-slate-300 bg-slate-50 p-5 text-center">
                     <Lock className="w-5 h-5 text-slate-400 mx-auto mb-2" />
-                    <div className="text-sm font-bold text-slate-900">+ 11페이지 추가 콘텐츠</div>
+                    <div className="text-sm font-bold text-slate-900">+ 12페이지 추가 콘텐츠</div>
                     <p className="text-[11px] text-slate-500 mt-1 break-keep">
                       세부 데이터 진단 · 전문가 코멘트 · 일별 미션 · PDF 다운로드는 결제 후 30일 트랙에서 잠금 해제됩니다
                     </p>
@@ -889,61 +986,7 @@ const Quiz: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Before / After 변화 차트 */}
-                <Card className="border-slate-200">
-                  <CardContent className="p-5 md:p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h3 className="font-bold text-base flex items-center gap-2">
-                          <TrendingUp className="w-4 h-4 text-emerald-500" />
-                          평균 사용자의 30일 변화
-                        </h3>
-                        <p className="text-xs text-muted-foreground mt-0.5">예시 시나리오 — 변화 폭은 개인별로 다를 수 있습니다</p>
-                      </div>
-                      <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                        예시
-                      </Badge>
-                    </div>
-
-                    <div className="h-44 -mx-2">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={[
-                          { day: '시작', 스트레스: 78, 에너지: 32, 마음명료함: 28 },
-                          { day: '7일', 스트레스: 65, 에너지: 45, 마음명료함: 42 },
-                          { day: '14일', 스트레스: 52, 에너지: 58, 마음명료함: 56 },
-                          { day: '21일', 스트레스: 38, 에너지: 71, 마음명료함: 70 },
-                          { day: '30일', 스트레스: 25, 에너지: 82, 마음명료함: 84 },
-                        ]} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                          <XAxis dataKey="day" tick={{ fontSize: 10 }} />
-                          <YAxis tick={{ fontSize: 10 }} />
-                          <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid hsl(var(--border))' }} />
-                          <Legend wrapperStyle={{ fontSize: 10 }} iconType="circle" />
-                          <Line type="monotone" dataKey="스트레스" stroke="#ef4444" strokeWidth={2} dot={{ r: 3 }} />
-                          <Line type="monotone" dataKey="에너지" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3 }} />
-                          <Line type="monotone" dataKey="마음명료함" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 3 }} />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2 mt-2 pt-3 border-t border-slate-100">
-                      <div className="text-center">
-                        <div className="text-[10px] text-muted-foreground">스트레스</div>
-                        <div className="text-sm font-bold text-rose-500">-68%</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-[10px] text-muted-foreground">에너지</div>
-                        <div className="text-sm font-bold text-blue-500">+156%</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-[10px] text-muted-foreground">마음명료함</div>
-                        <div className="text-sm font-bold text-violet-500">+200%</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* 실제 변화 사례 3명 */}
+                {/* [C] 실제 변화 사례 3명 */}
                 <div>
                   <div className="text-center mb-4">
                     <h3 className="text-lg font-bold break-keep">실제 30일 만에 바뀐 사람들</h3>
@@ -1025,11 +1068,9 @@ const Quiz: React.FC = () => {
                       );
                     })}
                   </div>
-
-                  {/* 누적 통계 위젯 제거됨 — 실제 데이터 확보 전까지 비활성화 */}
                 </div>
 
-                {/* Pricing CTA */}
+                {/* [D] 결제 CTA */}
                 <Card className="bg-gradient-to-br from-primary to-primary/80 border-0 text-primary-foreground">
                   <CardContent className="p-6">
                     <div className="text-center mb-5">
@@ -1076,11 +1117,11 @@ const Quiz: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                {/* Soft Funnel CTA — 결제 거부감 완화용 보조 옵션 */}
+                {/* Soft Funnel CTA — 결제 거부감 완화용 보조 옵션 (이메일 리포트 포함) */}
                 <QuizSoftFunnelCTA goalLabel={data.goalLabel} concern={data.concern} />
 
                 <div className="text-center text-xs text-muted-foreground">
-                  ※ 본 플랜은 의료 진단이 아니며, 비임상 라이프스타일 코칭을 위한 자료입니다.
+                  ※ 본 리포트는 의료 진단이 아니며, 비임상 라이프스타일 코칭을 위한 자료입니다.
                 </div>
               </motion.div>
             )}

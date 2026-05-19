@@ -19,7 +19,7 @@ const PHASES_7 = {
   d7: 'Day 7 · 변화 리포트',
 } as const;
 
-// 7일 압축 집중 트랙 — 모든 기능을 총동원해 "진짜 변화"가 일어나도록 설계
+// 7일 압축 집중 트랙 (CHILD/부모 진단 기반) — 기존 카피 유지 (parent도 동일 베이스 사용)
 const DAY_COPY_7: Record<number, DayCopy> = {
   1: { phase: PHASES_7.d1, title: '나를 완전히 발가벗겨보기 (기초 진단)', description: '5종 자가진단 + 마음 점수 측정으로 출발선을 정확히 기록해요. 이 데이터가 7일 후 비교의 기준이 됩니다.' },
   2: { phase: PHASES_7.d2, title: '하루 24시간, 내 감정/에너지 추적', description: '아침·점심·저녁 3회 마이크로 체크인으로 나만의 패턴을 찾아내요. AI가 자동으로 트렌드를 분석합니다.' },
@@ -28,6 +28,50 @@ const DAY_COPY_7: Record<number, DayCopy> = {
   5: { phase: PHASES_7.d5, title: '나만의 회복 루틴 3가지 고정', description: '4일간 가장 효과 있던 행동을 3가지로 압축해 일상에 심어요. 이게 평생 갑니다.' },
   6: { phase: PHASES_7.d6, title: '실전 — 가장 어려운 상황에 적용', description: '평소 가장 무너지던 순간(스트레스/관계/수면)에 새 루틴을 직접 써봐요. 진짜 변화가 검증되는 날.' },
   7: { phase: PHASES_7.d7, title: '7일 변화 리포트 + 다음 30일 가이드', description: 'Day 1과 비교한 종합 변화 리포트(PDF) + 이후에도 지속 가능한 셀프 코칭 가이드를 받습니다.' },
+};
+
+// 7일 트랙 — 성인(번아웃·불안 통합)
+// Phase 2 출시 콘텐츠: 직장/사회생활 번아웃과 예기불안을 한 트랙에서 함께 다룸.
+const PHASES_7_ADULT = {
+  d1: 'Day 1 · 번아웃/불안 진단',
+  d2: 'Day 2 · 에너지 누수 추적',
+  d3: 'Day 3 · 불안 트리거 매핑',
+  d4: 'Day 4 · 전문가 처방',
+  d5: 'Day 5 · 회복 루틴 설계',
+  d6: 'Day 6 · 실전 — 가장 무너지는 순간',
+  d7: 'Day 7 · 변화 리포트',
+} as const;
+
+const DAY_COPY_7_ADULT: Record<number, DayCopy> = {
+  1: { phase: PHASES_7_ADULT.d1, title: '번아웃·불안 통합 진단', description: '직장/일상 번아웃 강도와 예기불안 빈도를 한 번에 측정해 출발선을 잡아요. 7일 후 같은 척도로 비교합니다.' },
+  2: { phase: PHASES_7_ADULT.d2, title: '하루 에너지가 어디서 새는지 추적', description: '아침·점심·저녁 3회 체크인으로 "에너지를 가장 많이 빼앗기는 시간/관계/업무"를 자동으로 찾아냅니다.' },
+  3: { phase: PHASES_7_ADULT.d3, title: '불안 트리거 1순위 진단', description: '쌓인 데이터를 AI가 분석해 "지금 가장 자주 작동하는 불안 패턴 1가지"를 짚어드려요. 막연한 불안을 구체화합니다.' },
+  4: { phase: PHASES_7_ADULT.d4, title: '전문가 1:1 처방 (15분 무료 매칭)', description: '번아웃·불안 코칭 전문가가 내 데이터를 보고 직접 처방을 줘요. 약 처방이 아닌 행동·환경 처방입니다.' },
+  5: { phase: PHASES_7_ADULT.d5, title: '하루 5분, 회복 루틴 3가지 고정', description: '효과가 검증된 호흡·이완·경계 루틴 중 가장 잘 맞는 3가지를 일상에 심습니다.' },
+  6: { phase: PHASES_7_ADULT.d6, title: '실전 — 평소 가장 무너지던 순간 적용', description: '회의 직전, 잠들기 전, 갈등 직후 등 가장 무너지던 장면에 새 루틴을 써봐요. 변화가 실제로 검증되는 날.' },
+  7: { phase: PHASES_7_ADULT.d7, title: '7일 변화 리포트 + 다음 30일 가이드', description: 'Day 1과 비교한 번아웃·불안 변화 리포트(PDF) + 30일 지속 가이드 + 전문가 후속 상담 제안을 받습니다.' },
+};
+
+// 7일 트랙 — 부모 (audience='parent')
+// 자기 자신을 케어하면서 동시에 아이와의 관계를 다루는 부모 전용 카피.
+const PHASES_7_PARENT = {
+  d1: 'Day 1 · 부모 번아웃 진단',
+  d2: 'Day 2 · 일상 트리거 추적',
+  d3: 'Day 3 · 반복 패턴 진단',
+  d4: 'Day 4 · 전문가 1:1 코칭',
+  d5: 'Day 5 · 부모 회복 루틴 설계',
+  d6: 'Day 6 · 실전 — 아이와의 가장 힘든 순간',
+  d7: 'Day 7 · 변화 리포트',
+} as const;
+
+const DAY_COPY_7_PARENT: Record<number, DayCopy> = {
+  1: { phase: PHASES_7_PARENT.d1, title: '부모 번아웃·죄책감 진단', description: '"좋은 부모가 되어야 한다"는 압박과 번아웃 강도를 함께 측정해요. 비교 안 하고 내 출발선만 확인합니다.' },
+  2: { phase: PHASES_7_PARENT.d2, title: '하루 중 무너지는 시간대 찾기', description: '등원·하교·취침 시간 등 부모가 가장 흔들리는 순간을 마이크로 체크인으로 추적합니다.' },
+  3: { phase: PHASES_7_PARENT.d3, title: '나 → 아이로 번지는 패턴 진단', description: '내 감정이 아이의 행동을 어떻게 흔드는지 1가지 핵심 패턴을 AI가 골라드려요.' },
+  4: { phase: PHASES_7_PARENT.d4, title: '부모 코칭 전문가 1:1 (15분 무료)', description: '부모 상담·발달 전문가가 내 패턴을 보고 "오늘부터 바꿀 한 가지"를 짚어줘요.' },
+  5: { phase: PHASES_7_PARENT.d5, title: '나를 먼저 채우는 회복 루틴 3가지', description: '아이가 아닌 "내 에너지"를 먼저 채우는 5분 루틴을 일상에 심습니다.' },
+  6: { phase: PHASES_7_PARENT.d6, title: '실전 — 아이와 가장 힘든 순간 적용', description: '떼쓰기·등원 거부·취침 거부 등 가장 힘든 장면에 새 루틴을 적용해봐요.' },
+  7: { phase: PHASES_7_PARENT.d7, title: '7일 부모 변화 리포트', description: 'Day 1과 비교한 변화 리포트(PDF) + 자녀 트랙 연계 제안 + 후속 상담 매칭을 받습니다.' },
 };
 
 const PHASES = {

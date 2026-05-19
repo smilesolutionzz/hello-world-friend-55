@@ -1,90 +1,110 @@
-# ABA 코칭 트랙 — 일일 카드 · 데이터 폼 · 7일 리포트
+# 성인 심리까지 포함 시 — 냉정 평가 & 확장 플랜
 
-## 전제: B2B 매출 정합성
+## 1. 결론 먼저
+"아이 발달 + 부모 번아웃"만으로는 **₩40~80억 천장**. 여기에 **성인 일반 심리(스트레스/불안/우울/관계/번아웃/수면)** 를 정식 라인으로 올리면 천장이 **₩300~500억대**로 열림. 단, "그냥 메뉴 추가"로는 둘 다 죽음. **브랜드·퍼널·가격을 재설계**해야 효과가 남.
 
-B2B(어린이집·발달센터·소아과)가 주매출원이라는 직관은 맞습니다. 단, B2B 영업의 무기는 결국 **"우리 부모가 7일 동안 이 미션을 진짜로 했고, 데이터가 남는다"** 라는 증거입니다. 지금 만들 ABA 자산은 두 가지로 동시에 작동합니다.
+---
 
-- **B2C (mind_track_7 ₩7,900)** — 30-45 부모가 직접 결제하고 매일 데이터를 입력 → 7일 리포트.
-- **B2B 화이트라벨 자산** — 같은 ABA 데이터 스키마를 `b2b_jobcoach_*` / `client_data_sharing` 파이프라인에 그대로 흘려보낼 수 있어, 발달센터·어린이집이 부모에게 "우리 기관이 처방한 7일 ABA 프로토콜"로 재포장 가능. 즉 **이번 작업은 B2C 전환 + B2B 영업 데모용 자산을 동시에 짓는 작업**입니다. (별도 B2B UI 작업 아님 — B2C가 잘 돌면 B2B 자동 따라옴)
+## 2. 성인 포함 시 좋아지는 것 (정량)
 
-## 범위 (이번 턴)
+| 지표 | 현재(아이+부모) | +성인 포함 | 근거 |
+|---|---|---|---|
+| TAM | 50~80K 결제의향 가구 | **400~600K** 결제의향 성인 | 통계청 정신건강 유병률 + 멘탈 SaaS 결제 전환율 2~3% |
+| 평균 LTV | 2~4개월 | **5~8개월** | 성인 자가 결제는 재구매 훅이 강함 (계절·이벤트 트리거 다양) |
+| CAC 효율 | ADHD/발달 검색 CPC 낮음 | **검색 키워드 풀 10배** (불안/번아웃/수면/관계) | 네이버·구글 키워드 볼륨 |
+| K-factor | <0.1 (낙인) | **0.2~0.4** (성인 자기검사는 공유 거부감 ↓) | MBTI/스트레스 테스트 사례 |
+| B2B 매칭 | 보육원·발달센터 (6~9개월) | **기업 EAP·복지몰** (3~4개월) | 단가 5~10배 |
 
-### 1. DB — `aba_observations`
-부모가 각 Day에 입력한 표적 행동/ABC 데이터를 저장.
+→ **수치상 무조건 포함이 유리.**
 
-| 컬럼 | 타입 | 비고 |
-|---|---|---|
-| id | uuid PK | |
-| user_id | uuid | RLS 본인만 |
-| enrollment_id | uuid | mind_track_enrollments.id (FK 없이 nullable, 호환성) |
-| child_profile_id | uuid nullable | 다자녀 대비 |
-| day | int (1–7) | |
-| phase | text | Baseline / ABC 기록 / 강화 설계 / 선행 조작 / 대체 행동 / 일반화 / 유지 |
-| target_behavior | text | 부모가 정의한 표적 행동 |
-| data_method | text | frequency / duration / interval / abc_narrative |
-| frequency_count | int nullable | |
-| duration_seconds | int nullable | |
-| interval_hits | int nullable | / interval_total |
-| interval_total | int nullable | |
-| abc_antecedent | text nullable | |
-| abc_behavior | text nullable | |
-| abc_consequence | text nullable | |
-| reinforcer_used | text nullable | DRA 강화제 |
-| parent_script_used | boolean | |
-| notes | text nullable | |
-| created_at / updated_at | timestamptz | trigger |
+## 3. 그런데 왜 위험한가 (냉정)
 
-RLS: 본인만 select/insert/update/delete. `(user_id, enrollment_id, day, child_profile_id)` unique 인덱스로 day별 1행 upsert 보장.
+1. **브랜드 혼란 (가장 큰 리스크)**
+   - 지금 랜딩 톤: "아이 발달 코칭" → 성인이 들어오면 즉시 이탈
+   - 반대로 성인 톤으로 바꾸면 부모 결제 전환율 -30~50% 추정
+   - **해결: 단일 도메인 / 듀얼 엔트리(`/track/child`, `/track/adult`) + 공통 결제·계정**
 
-### 2. UI — `ABAMissionCard.tsx`
-`src/components/mind-track/aba/ABAMissionCard.tsx`. 각 Day 카드:
-- 헤더: `Day N · {phase}` + 후킹 한 줄(`abaChildCurriculum`에서 import)
-- 학습 목표 / 표적 행동 정의 / 부모 스크립트 예시 / 안전 메모
-- **데이터 입력 폼** — `data_method`에 따라 동적:
-  - frequency → 카운터(±1, 즉시 저장)
-  - duration → 스톱워치(시작/정지 → 누적 초)
-  - interval → "N회 중 발생 횟수" 두 칸
-  - abc_narrative → A/B/C 3칸 textarea
-- 강화제 사용 체크 + 자유 메모
-- "저장" / 자동저장 (debounce 800ms) — 동일 day 행 upsert
+2. **제품 깊이 분산**
+   - mind_track_7/30 콘텐츠가 부모용으로 다 짜여있음 → 성인용 새로 만들어야 함 (Day1~30 코칭 카피, 미션, 리포트 템플릿 전부)
+   - 어설픈 성인 트랙은 Calm·Wysa·트로스트와 즉시 비교당함
 
-### 3. TrackMissions 통합
-`src/pages/TrackMissions.tsx`에서 `selected === "child_development"`일 때:
-- 30일 매트릭스 위쪽에 **"오늘의 ABA 미션"** 섹션 신규 — `currentDay`에 해당하는 `ABAMissionCard` 1개 + 다음/이전 Day로 슬라이드.
-- 기존 매트릭스는 유지하되 Day 1~7 셀은 ABA phase 라벨 추가.
+3. **전문가 매칭 풀 부족**
+   - 현재 전문가 DB는 발달/아동 중심
+   - 성인 트랙 출시하면 "성인 심리상담사" 50명+ 확보 안 되면 매칭 CTA가 죽은 링크가 됨
 
-### 4. 7일 요약 리포트 — `ABASummaryReport.tsx`
-`src/components/mind-track/aba/ABASummaryReport.tsx`. 트리거: `currentDay >= 7` 이고 child_development.
-- Day 1 baseline vs Day 6 비교 (frequency/duration 변화율)
-- ABC 패턴 요약 (가장 흔한 트리거/결과)
-- DRA 강화 일관성률 (parent_script_used true 비율)
-- 다음 23일 유지 처방 — `mind_track_extend_23` CTA로 연결
-- 다운로드:
-  - **PNG** (html2canvas — 이미 PDF 모듈에서 쓰는 패턴) → 부모 카톡 공유용
-  - **PDF** (`src/utils/pdfDownload.ts` 기존 헬퍼 재사용) → 발달센터/소아과 지참용
+4. **CAC 인플레이션**
+   - 성인 일반 멘탈 키워드는 트로스트·마인드카페가 이미 잡고 있음 → CPC 3~5배
+   - 차별화 카피 없으면 광고 효율 폭락
 
-### 5. 라이브러리
-- `src/lib/abaChildCurriculum.ts` (이미 생성됨) → `data_method` 필드를 폼 분기에 사용하도록 확장.
-- `src/lib/abaObservations.ts` (신규) — CRUD helper (`upsertObservation`, `listObservationsForEnrollment`, `summarizeObservations`).
+5. **결제 SKU 폭증 위험**
+   - 메모리상 자체 결제는 `mind_track_7/30/extend_23`만 남기기로 정함 → 성인 트랙도 **같은 SKU 재활용**해야 함 (별도 가격 절대 만들지 말 것)
 
-## 의도적으로 제외 (다음 턴)
-
-- B2B 어드민에서 기관별 ABA 데이터 집계 뷰 (B2B 영업 자산화 — 이번 ICP 검증 후)
-- 동영상/사진 첨부 (Storage 정책 검토 필요)
-- 전문가에게 데이터 공유(이미 `client_data_sharing` 파이프라인 있음 — 다음 턴에 ABA 데이터를 동일 파이프라인에 흘려넣기)
-
-## 기술 세부
+## 4. 권장 전략 — "원 백본, 듀얼 트랙"
 
 ```text
-TrackMissions (child_development 선택 시)
- ├─ ABAMissionCard (currentDay)        ← 신규
- │   └─ ABAObservationForm
- │        └─ upsertObservation → aba_observations
- ├─ ABASummaryReport (Day ≥ 7)         ← 신규
- │   ├─ summarizeObservations (client)
- │   ├─ Download PNG (html2canvas)
- │   └─ Download PDF (pdfDownload)
- └─ 기존 30일 매트릭스 (유지, Day 1~7에 phase 라벨)
+                    [공통 백본]
+        결제(mind_track_7/30) · 계정 · 전문가매칭 · 리포트
+                          │
+        ┌─────────────────┼─────────────────┐
+        ▼                 ▼                 ▼
+   /track/child      /track/adult      /track/parent
+   (아이 발달 +      (성인 자기관리:    (부모 번아웃 ·
+   부모 가이드)      불안/번아웃/수면)  관계 · 양육스트레스)
+        │                 │                 │
+        └─── 동일 7일/30일 트랙 구조, 콘텐츠만 분기 ───┘
 ```
 
-승인 시: 마이그레이션 → 코드 작성 → 빌드/테스트 1회 통과까지 한 번에 진행합니다.
+**핵심 원칙**
+- SKU 1세트 (7일 ₩7,900 / 30일 ₩19,900 / 연장 ₩12,900) — 메모리 정책 준수
+- 콘텐츠는 트랙별로 분기, 결제·권한·리포트 인프라는 100% 공유
+- 랜딩만 분리, 헤더/계정/대시보드는 공통
+- 전문가 매칭은 트랙 메타데이터로 필터링 (`expert.specialty includes 'adult_counselor'`)
+
+## 5. 단계적 출시 로드맵 (12주)
+
+**Phase 0 — 의사결정 (이번 주)**
+- 성인 트랙 포함 여부 GO/NO-GO 확정
+- 메모리 업데이트: `product/saas-feature-scope-ko`, `strategy/pmf-positioning-2026-ko`에 듀얼 트랙 정책 반영
+
+**Phase 1 (W1~W3) — 인프라 분기만**
+- `/track/adult` 라우트 활성화 (기존 `TrackAdultComingSoon` 교체)
+- `mind_track_enrollment`에 `track_type: 'child' | 'adult' | 'parent'` 컬럼 추가
+- 랜딩 카피·SEO만 별도, 결제·온보딩·대시보드는 재사용
+- 전문가 DB에 `adult_counselor` 태그 마이그레이션
+
+**Phase 2 (W4~W7) — 성인 7일 트랙 1종 (불안/번아웃 통합)**
+- Day1~7 카피·미션·리포트 작성 (가장 검색량 큰 1종부터)
+- 베타 100명 모집 → 완주율·만족도·재구매 측정
+- 목표: 완주율 ≥40%, 30일 트랙 전환율 ≥15%
+
+**Phase 3 (W8~W12) — 확장**
+- 성인 30일 트랙 + 수면/관계 트랙 추가
+- 부모 트랙 분리 (현재 아이+부모 혼재 → 부모 자기관리 트랙으로 독립)
+- B2B EAP 패키지 (`b2b_jobcoach`와 연동, 직원에게 성인 트랙 무상 제공)
+
+## 6. 가지 말아야 할 길 (안 됨)
+
+- ❌ 메인 랜딩을 "성인 + 아이" 통합 백화점으로 바꾸기 → 둘 다 죽음
+- ❌ 성인용 별도 가격 SKU 신설 → 메모리 정책 위반, 운영 복잡도 폭증
+- ❌ Calm/Wysa 베끼기 (명상·CBT 챗봇) → 차별화 0, CAC 사망
+- ❌ 전문가 풀 확보 전에 성인 매칭 CTA 노출 → 신뢰 박살
+
+## 7. 차별화 포인트 (성인 트랙도 살아남으려면)
+
+1. **"7일 마음 트랙"이라는 명확한 완주형 포맷** — 경쟁사는 무한 구독, 우리는 단기 결과형
+2. **AI 분석 + 전문가 매칭 하이브리드** — Calm은 AI만, 트로스트는 사람만
+3. **리포트 발행** — 결제하면 손에 잡히는 PDF가 남음 (경쟁사 없음)
+4. **부모 트랙 → 본인 트랙 크로스셀** — "아이 보다가 본인 번아웃 발견" 동선
+
+## 8. 의사결정 요청
+
+1. **듀얼 트랙으로 가는 것 동의?** (Phase 1 라우트·DB 분기부터)
+2. **첫 성인 트랙 1종은 "번아웃/불안 통합 7일"로 잡는 거 OK?** (검색 볼륨 1위)
+3. **부모 트랙을 아이 트랙에서 분리할지** — 분리 시 LTV +50% 예상, 개발 +2주
+
+## 기술 메모
+- `src/lib/mindTrackEnrollment.ts`에 `track_type` 추가 + DB 마이그레이션
+- `mindTrackChapters.ts` / `mindTrackDayCopy.ts`를 `{child, adult, parent}` 네임스페이스로 분기
+- `expertDatabase.ts` 태그 확장 (`adult_counselor`, `burnout_specialist`, `sleep_coach`)
+- 랜딩 라우트: `/` = 트랙 선택 허브, `/track/child`, `/track/adult`, `/track/parent`
+- 결제·`usePayment`·`useSubscription`은 손대지 않음 (SKU 동일)

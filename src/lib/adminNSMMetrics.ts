@@ -7,6 +7,8 @@
  * Cohort = 최근 8주 시작 paid의 시작 주 기준 완주율
  */
 
+export type Audience = 'child' | 'adult' | 'parent' | 'teen';
+
 export interface NSMEnrollment {
   id: string;
   user_id: string;
@@ -17,6 +19,18 @@ export interface NSMEnrollment {
   completed_at: string | null;
   updated_at: string | null;
   track_type: string | null;
+  audience?: string | null;
+}
+
+export interface AudienceBreakdownRow {
+  audience: Audience | 'unknown';
+  totalEnrollments: number;
+  paidEnrollments: number;
+  conversionRate: number;     // paid / total (%)
+  completers: number;
+  completionRate: number;     // completed / paid (%)
+  repeatPaidUsers: number;    // users with ≥2 paid enrollments
+  repeatRate: number;         // repeat / unique paid users (%)
 }
 
 export interface CohortRow {

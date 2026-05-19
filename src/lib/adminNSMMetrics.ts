@@ -7,6 +7,8 @@
  * Cohort = 최근 8주 시작 paid의 시작 주 기준 완주율
  */
 
+export type Audience = 'child' | 'adult' | 'parent' | 'teen';
+
 export interface NSMEnrollment {
   id: string;
   user_id: string;
@@ -17,6 +19,18 @@ export interface NSMEnrollment {
   completed_at: string | null;
   updated_at: string | null;
   track_type: string | null;
+  audience?: string | null;
+}
+
+export interface AudienceBreakdownRow {
+  audience: Audience | 'unknown';
+  totalEnrollments: number;
+  paidEnrollments: number;
+  conversionRate: number;     // paid / total (%)
+  completers: number;
+  completionRate: number;     // completed / paid (%)
+  repeatPaidUsers: number;    // users with ≥2 paid enrollments
+  repeatRate: number;         // repeat / unique paid users (%)
 }
 
 export interface CohortRow {
@@ -122,4 +136,39 @@ export function computeNSMMetrics(
     sparkline,
     cohorts,
   };
+}
+
+const AUDIENCES: (Audience | 'unknown')[] = ['child', 'adult', 'parent', 'teen', 'unknown'];
+
+/**
+ * Per-audience breakdown:
+ *  - 결제전환율 = paid / total enrollments
+ *  - 완주율   = completed / paid
+ *  - 재구매율 = (users with ≥2 paid) / unique paid users
+ */
+export function computeAudienceBreakdown(rows: NSMEnrollment[]): AudienceBreakdownRow[] {
+  return AUDIENCES.map((aud) => {
+    const subset = rows.filter((r) => {
+      const a = (r.audience ?? 'child') as Audience;
+      if (aud === 'unknown') return !r.audience;
+      return a === aud;
+    });
+    const total = subset.length;
+    const paid = subset.filter((r) => r.payment_status === 'paid');
+    const completers = paid.filter((r) => r.status === 'completed' || r.completed_at).length;
+    const userPaidCount = new Map<string, number>();
+    paid.forEach((r) => userPaidCount.set(r.user_id, (userPaidCount.get(r.user_id) ?? 0) + 1));
+    const uniquePaidUsers = userPaidCount.size;
+    const repeatPaidUsers = Array.from(userPaidCount.values()).filter((n) => n >= 2).length;
+    return {
+      audience: aud,
+      totalEnrollments: total,
+      paidEnrollments: paid.length,
+      conversionRate: total ? Math.round((paid.length / total) * 1000) / 10 : 0,
+      completers,
+      completionRate: paid.length ? Math.round((completers / paid.length) * 1000) / 10 : 0,
+      repeatPaidUsers,
+      repeatRate: uniquePaidUsers ? Math.round((repeatPaidUsers / uniquePaidUsers) * 1000) / 10 : 0,
+    };
+  }).filter((r) => r.totalEnrollments > 0 || r.audience === 'child' || r.audience === 'adult' || r.audience === 'parent');
 }

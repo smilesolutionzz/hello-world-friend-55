@@ -16,10 +16,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Users, Target, Flame } from "lucide-react";
+import { TrendingUp, Users, Target, Flame, Layers } from "lucide-react";
 import {
   computeNSMMetrics,
+  computeAudienceBreakdown,
   type CohortRow,
+  type AudienceBreakdownRow,
   type NSMEnrollment as Enrollment,
 } from "@/lib/adminNSMMetrics";
 
@@ -29,6 +31,7 @@ export function AdminNSMHero() {
   const [weeklyActivePaid, setWeeklyActivePaid] = useState(0);
   const [last4Completers, setLast4Completers] = useState<number[]>([]);
   const [cohorts, setCohorts] = useState<CohortRow[]>([]);
+  const [breakdown, setBreakdown] = useState<AudienceBreakdownRow[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -39,9 +42,9 @@ export function AdminNSMHero() {
         const { data, error } = await supabase
           .from("mind_track_enrollments")
           .select(
-            "id, user_id, payment_status, status, current_day, started_at, completed_at, updated_at, track_type"
+            "id, user_id, payment_status, status, current_day, started_at, completed_at, updated_at, track_type, audience"
           )
-          .gte("started_at", since.toISOString())
+          .gte("created_at", since.toISOString())
           .limit(5000);
 
         if (error) throw error;
@@ -52,6 +55,7 @@ export function AdminNSMHero() {
         setWeeklyActivePaid(m.weeklyActivePaid);
         setLast4Completers(m.sparkline);
         setCohorts(m.cohorts);
+        setBreakdown(computeAudienceBreakdown(rows));
       } catch (e) {
         console.error("[AdminNSMHero] load failed", e);
       } finally {
@@ -197,6 +201,64 @@ export function AdminNSMHero() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Audience 분리 집계 */}
+      <Card className="rounded-2xl">
+        <CardHeader className="pb-2">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+            <Layers className="w-3.5 h-3.5" />
+            Audience별 결제전환 · 완주 · 재구매
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-slate-500 border-b border-slate-100">
+                  <th className="text-left py-2 font-medium">Audience</th>
+                  <th className="text-right py-2 font-medium">시작</th>
+                  <th className="text-right py-2 font-medium">결제</th>
+                  <th className="text-right py-2 font-medium">결제전환율</th>
+                  <th className="text-right py-2 font-medium">완주자</th>
+                  <th className="text-right py-2 font-medium">완주율</th>
+                  <th className="text-right py-2 font-medium">재구매</th>
+                  <th className="text-right py-2 font-medium">재구매율</th>
+                </tr>
+              </thead>
+              <tbody>
+                {breakdown.map((b) => (
+                  <tr key={b.audience} className="border-b border-slate-50 last:border-0">
+                    <td className="py-2 font-semibold text-slate-700 capitalize">{b.audience}</td>
+                    <td className="text-right tabular-nums">{b.totalEnrollments}</td>
+                    <td className="text-right tabular-nums">{b.paidEnrollments}</td>
+                    <td className="text-right tabular-nums font-semibold text-primary">
+                      {b.conversionRate}%
+                    </td>
+                    <td className="text-right tabular-nums">{b.completers}</td>
+                    <td className="text-right tabular-nums font-semibold text-emerald-600">
+                      {b.completionRate}%
+                    </td>
+                    <td className="text-right tabular-nums">{b.repeatPaidUsers}</td>
+                    <td className="text-right tabular-nums font-semibold text-amber-600">
+                      {b.repeatRate}%
+                    </td>
+                  </tr>
+                ))}
+                {breakdown.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="text-center text-slate-400 py-6">
+                      집계할 데이터가 없습니다.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-[10px] text-slate-400 mt-3">
+            결제전환율 = 결제완료 / 시작 · 완주율 = 완주 / 결제완료 · 재구매율 = 2회 이상 결제 사용자 / 결제 사용자
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

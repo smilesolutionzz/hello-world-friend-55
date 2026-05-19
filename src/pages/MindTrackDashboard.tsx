@@ -164,7 +164,8 @@ export default function MindTrackDashboard() {
     () => (enrollment ? calcMindTrackCurrentDay(enrollment.started_at, totalDays) : 1),
     [enrollment, totalDays]
   );
-  const copy = getDayCopy(day, totalDays);
+  const audience = ((enrollment as any)?.audience || 'child') as 'child' | 'adult' | 'parent' | 'teen';
+  const copy = getDayCopy(day, totalDays, audience);
   const progressPct = Math.round((day / totalDays) * 100);
   const trackLabel = totalDays === 7 ? "7일 마음 트랙" : "30일 마음 트랙";
   const isShortTrack = totalDays === 7;

@@ -51,12 +51,20 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Expert matcher function called');
-    
+    const reqId = crypto.randomUUID().slice(0, 8);
+    const log = (msg: string, extra: Record<string, unknown> = {}) =>
+      console.log(JSON.stringify({ fn: 'expert-matcher', reqId, msg, ...extra }));
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const { analysis, ageGroup, age, audience, preferences }: ExpertMatchRequest = await req.json();
 
-    console.log('Received request:', { ageGroup, age, audience, preferencesProvided: !!preferences });
+    log('request', {
+      ageGroup,
+      age,
+      audience: audience ?? 'child',
+      hasPreferences: !!preferences,
+      analysisLen: typeof analysis === 'string' ? analysis.length : 0,
+    });
 
     // 실제 전문가 데이터 가져오기
     const { data: allExperts, error: expertsError } = await supabase
@@ -66,22 +74,40 @@ serve(async (req) => {
       .eq('is_available', true);
 
     if (expertsError) {
-      console.error('Error fetching experts:', expertsError);
+      log('experts_fetch_error', { error: expertsError.message });
       throw new Error('전문가 데이터를 가져오는 중 오류가 발생했습니다.');
     }
 
-    // Audience별 태그 사전 필터링 (성인=번아웃/수면/성인상담 태그 우선)
-    const requiredTags = AUDIENCE_REQUIRED_TAGS[audience ?? 'child'] ?? [];
+    // Audience별 태그 사전 필터링
+    const aud = audience ?? 'child';
+    const requiredTags = AUDIENCE_REQUIRED_TAGS[aud] ?? [];
     let experts = allExperts ?? [];
+    const poolSize = experts.length;
+
     if (requiredTags.length > 0) {
       const filtered = experts.filter((e: Expert) => {
         const specs = Array.isArray(e.specializations) ? e.specializations : [];
         return specs.some((s: string) => requiredTags.includes(s));
       });
       // 태그 매칭 결과가 3명 미만이면 전체 풀로 폴백 (가용성 우선)
-      experts = filtered.length >= 3 ? filtered : (experts.length > 0 ? experts : []);
-      console.log(`Audience filter (${audience}): tagged=${filtered.length}, using=${experts.length}`);
+      const usedFallback = filtered.length < 3;
+      experts = usedFallback ? experts : filtered;
+      const sampleTags = filtered
+        .flatMap((e: Expert) => (e.specializations || []).filter((s) => requiredTags.includes(s)))
+        .slice(0, 5);
+      log('audience_filter', {
+        audience: aud,
+        requiredTags,
+        pool: poolSize,
+        matched: filtered.length,
+        using: experts.length,
+        fallback: usedFallback,
+        sampleMatchedTags: sampleTags,
+      });
+    } else {
+      log('audience_filter_skipped', { audience: aud, pool: poolSize });
     }
+
 
     console.log('Found experts:', experts.length);
 

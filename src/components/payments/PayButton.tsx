@@ -5,6 +5,7 @@ import { usePayment } from '@/hooks/usePayment';
 
 interface PayButtonProps extends Omit<ButtonProps, 'onClick' | 'onError'> {
   productId?: string;
+  audience?: 'child' | 'adult' | 'parent' | 'teen';
   onSuccess?: () => void;
   onPaymentError?: (error: string) => void;
   showPrice?: boolean;
@@ -14,6 +15,7 @@ interface PayButtonProps extends Omit<ButtonProps, 'onClick' | 'onError'> {
 
 export const PayButton: React.FC<PayButtonProps> = ({
   productId,
+  audience,
   onSuccess,
   onPaymentError,
   showPrice = true,
@@ -27,8 +29,17 @@ export const PayButton: React.FC<PayButtonProps> = ({
   const handleClick = async () => {
     const finalProductId = productId || 'mind_track_7';
     if (finalProductId === 'mind_track_7' || finalProductId === 'mind_track_30') {
+      // audience 우선순위: prop → ?audience= URL 파라미터 → 'child'
+      let aud: 'child' | 'adult' | 'parent' | 'teen' = audience ?? 'child';
+      if (!audience) {
+        const raw = new URLSearchParams(window.location.search).get('audience');
+        if (raw && ['child', 'adult', 'parent', 'teen'].includes(raw)) {
+          aud = raw as typeof aud;
+        }
+      }
       const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
-      await ensureMindTrackEnrollment({}, finalProductId === 'mind_track_7' ? '7d' : '30d');
+      await ensureMindTrackEnrollment({}, finalProductId === 'mind_track_7' ? '7d' : '30d', aud);
+      console.log('[PayButton] enrollment ensured', { sku: finalProductId, audience: aud });
     }
     const success = await pay(finalProductId);
     if (success) {

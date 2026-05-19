@@ -58,8 +58,15 @@ export default function MindTrackCheckoutHero() {
       navigate("/auth?redirect=/pricing?product=mind_track_7");
       return;
     }
+    // audience 는 /track/adult /track/parent 에서 ?audience= 로 전달됨
+    const params = new URLSearchParams(window.location.search);
+    const rawAud = params.get('audience');
+    const audience = (['child', 'adult', 'parent', 'teen'].includes(rawAud ?? '')
+      ? rawAud
+      : 'child') as 'child' | 'adult' | 'parent' | 'teen';
     const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
-    await ensureMindTrackEnrollment({}, plan);
+    await ensureMindTrackEnrollment({}, plan, audience);
+    console.log('[MindTrackCheckoutHero] enrollment ensured', { plan, audience });
     const sku = plan === '7d' ? 'mind_track_7' : 'mind_track_30';
     const amount = plan === '7d' ? TRACK_PRICE : TRACK_30_PRICE;
     const ok = await pay(sku as any, amount);

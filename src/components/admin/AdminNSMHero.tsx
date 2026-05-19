@@ -11,12 +11,13 @@
  *  - started_at = 시작일 (코호트 기준)
  *  - current_day → 진행 일수 (0~7)
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Users, Target, Flame, Layers } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { TrendingUp, Users, Target, Flame, Layers, Calendar } from "lucide-react";
 import {
   computeNSMMetrics,
   computeAudienceBreakdown,
@@ -25,44 +26,53 @@ import {
   type NSMEnrollment as Enrollment,
 } from "@/lib/adminNSMMetrics";
 
+type RangeKey = "30d" | "90d" | "180d" | "all";
+const RANGES: { key: RangeKey; label: string; days: number | null }[] = [
+  { key: "30d", label: "최근 30일", days: 30 },
+  { key: "90d", label: "최근 90일", days: 90 },
+  { key: "180d", label: "최근 180일", days: 180 },
+  { key: "all", label: "전체", days: null },
+];
+
 export function AdminNSMHero() {
   const [loading, setLoading] = useState(true);
-  const [weeklyCompleters, setWeeklyCompleters] = useState(0);
-  const [weeklyActivePaid, setWeeklyActivePaid] = useState(0);
-  const [last4Completers, setLast4Completers] = useState<number[]>([]);
-  const [cohorts, setCohorts] = useState<CohortRow[]>([]);
-  const [breakdown, setBreakdown] = useState<AudienceBreakdownRow[]>([]);
+  const [rangeKey, setRangeKey] = useState<RangeKey>("90d");
+  const [rows, setRows] = useState<Enrollment[]>([]);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const since = new Date();
-        since.setDate(since.getDate() - 70); // ~10주
-        const { data, error } = await supabase
+        const cfg = RANGES.find((r) => r.key === rangeKey)!;
+        let q = supabase
           .from("mind_track_enrollments")
           .select(
-            "id, user_id, payment_status, status, current_day, started_at, completed_at, updated_at, track_type, audience"
+            "id, user_id, payment_status, status, current_day, started_at, completed_at, updated_at, created_at, track_type, audience"
           )
-          .gte("created_at", since.toISOString())
-          .limit(5000);
-
+          .limit(10000);
+        if (cfg.days != null) {
+          const since = new Date();
+          since.setDate(since.getDate() - cfg.days);
+          q = q.gte("created_at", since.toISOString());
+        }
+        const { data, error } = await q;
         if (error) throw error;
-        const rows = (data || []) as Enrollment[];
-
-        const m = computeNSMMetrics(rows, new Date());
-        setWeeklyCompleters(m.weeklyCompleters);
-        setWeeklyActivePaid(m.weeklyActivePaid);
-        setLast4Completers(m.sparkline);
-        setCohorts(m.cohorts);
-        setBreakdown(computeAudienceBreakdown(rows));
+        setRows((data || []) as Enrollment[]);
       } catch (e) {
         console.error("[AdminNSMHero] load failed", e);
+        setRows([]);
       } finally {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [rangeKey]);
+
+  const metrics = useMemo(() => computeNSMMetrics(rows, new Date()), [rows]);
+  const breakdown = useMemo(() => computeAudienceBreakdown(rows), [rows]);
+  const weeklyCompleters = metrics.weeklyCompleters;
+  const weeklyActivePaid = metrics.weeklyActivePaid;
+  const last4Completers = metrics.sparkline;
+  const cohorts: CohortRow[] = metrics.cohorts;
 
   if (loading) {
     return (
@@ -79,6 +89,26 @@ export function AdminNSMHero() {
 
   return (
     <div className="space-y-4">
+      {/* Date range selector */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <Calendar className="w-3.5 h-3.5 text-slate-400" />
+        <span className="text-xs text-slate-500">기간:</span>
+        {RANGES.map((r) => (
+          <Button
+            key={r.key}
+            size="sm"
+            variant={rangeKey === r.key ? "default" : "outline"}
+            className="h-7 px-3 text-xs rounded-full"
+            onClick={() => setRangeKey(r.key)}
+          >
+            {r.label}
+          </Button>
+        ))}
+        <Badge variant="outline" className="ml-auto text-[10px]">
+          {rows.length}건 집계
+        </Badge>
+      </div>
+
       {/* NSM Hero */}
       <Card className="border-2 border-primary/30 bg-gradient-to-br from-white via-amber-50/40 to-rose-50/40 rounded-2xl">
         <CardHeader className="pb-2">
@@ -216,8 +246,10 @@ export function AdminNSMHero() {
               <thead>
                 <tr className="text-slate-500 border-b border-slate-100">
                   <th className="text-left py-2 font-medium">Audience</th>
-                  <th className="text-right py-2 font-medium">시작</th>
-                  <th className="text-right py-2 font-medium">결제</th>
+                  <th className="text-right py-2 font-medium" title="시작 row (중복 시도 포함)">시작</th>
+                  <th className="text-right py-2 font-medium" title="고유 시작 사용자 수">시작 UU</th>
+                  <th className="text-right py-2 font-medium" title="결제 완료 row (cancelled/refunded 제외)">결제</th>
+                  <th className="text-right py-2 font-medium" title="결제 완료한 고유 사용자">결제 UU</th>
                   <th className="text-right py-2 font-medium">결제전환율</th>
                   <th className="text-right py-2 font-medium">완주자</th>
                   <th className="text-right py-2 font-medium">완주율</th>
@@ -229,8 +261,10 @@ export function AdminNSMHero() {
                 {breakdown.map((b) => (
                   <tr key={b.audience} className="border-b border-slate-50 last:border-0">
                     <td className="py-2 font-semibold text-slate-700 capitalize">{b.audience}</td>
-                    <td className="text-right tabular-nums">{b.totalEnrollments}</td>
-                    <td className="text-right tabular-nums">{b.paidEnrollments}</td>
+                    <td className="text-right tabular-nums text-slate-400">{b.totalEnrollments}</td>
+                    <td className="text-right tabular-nums">{b.uniqueStarters}</td>
+                    <td className="text-right tabular-nums text-slate-400">{b.paidEnrollments}</td>
+                    <td className="text-right tabular-nums">{b.uniquePaidUsers}</td>
                     <td className="text-right tabular-nums font-semibold text-primary">
                       {b.conversionRate}%
                     </td>
@@ -246,7 +280,7 @@ export function AdminNSMHero() {
                 ))}
                 {breakdown.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="text-center text-slate-400 py-6">
+                    <td colSpan={10} className="text-center text-slate-400 py-6">
                       집계할 데이터가 없습니다.
                     </td>
                   </tr>
@@ -254,8 +288,10 @@ export function AdminNSMHero() {
               </tbody>
             </table>
           </div>
-          <p className="text-[10px] text-slate-400 mt-3">
-            결제전환율 = 결제완료 / 시작 · 완주율 = 완주 / 결제완료 · 재구매율 = 2회 이상 결제 사용자 / 결제 사용자
+          <p className="text-[10px] text-slate-400 mt-3 leading-relaxed">
+            결제전환율 = 결제 UU / 시작 UU · 완주율 = 완주(row) / 결제(row) · 재구매율 = 결제 2회 이상 사용자 / 결제 UU
+            <br />
+            payment_status ∈ {"{paid, completed}"} & status ∉ {"{cancelled, refunded}"} 인 row 만 "결제"로 집계. 기간 필터는 enrollment.created_at 기준.
           </p>
         </CardContent>
       </Card>

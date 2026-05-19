@@ -285,10 +285,17 @@ const Quiz: React.FC = () => {
         return;
       }
 
-      // 3) Pre-enroll mind track (idempotent) so credits/dashboard are ready post-payment
+      // 3) Pre-enroll mind track (idempotent) so credits/dashboard are ready post-payment.
+      //    audience 는 ?audience=adult|parent|teen URL 파라미터에서 읽어 enrollment 에 그대로 저장됨.
       try {
+        const params = new URLSearchParams(window.location.search);
+        const rawAud = params.get('audience');
+        const audience = (['child', 'adult', 'parent', 'teen'].includes(rawAud ?? '')
+          ? rawAud
+          : 'child') as 'child' | 'adult' | 'parent' | 'teen';
         const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
-        await ensureMindTrackEnrollment();
+        await ensureMindTrackEnrollment({}, '7d', audience);
+        console.log('[Quiz] enrollment ensured', { audience });
       } catch (e) {
         console.warn('mind track enrollment skipped:', e);
       }

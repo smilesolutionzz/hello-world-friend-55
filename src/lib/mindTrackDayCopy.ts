@@ -119,14 +119,22 @@ const DAY_COPY: Record<number, DayCopy> = {
   30: { phase: PHASES.week5, title: '나의 30일 변화 리포트', description: '시작과 지금을 비교한 종합 리포트와 다음 한 달 가이드를 받아봐요.' },
 };
 
+export type MindTrackAudience = 'child' | 'adult' | 'parent' | 'teen';
+
 /**
- * 지정된 트랙 길이(7 또는 30일)에 맞는 Day별 카피를 반환.
- * - 7일 트랙은 압축 집중형 (진단 → 전문가 → 회복 루틴)
- * - 30일 트랙은 점진적 코칭형
+ * 지정된 트랙 길이(7 또는 30일) + audience에 맞는 Day별 카피를 반환.
+ * - 7일 트랙은 audience별 카피 (child=DAY_COPY_7, adult=DAY_COPY_7_ADULT, parent=DAY_COPY_7_PARENT)
+ * - 30일 트랙은 공통 점진적 코칭형 (audience 분리는 Phase 3에서 진행)
  */
-export function getDayCopy(day: number, totalDays: number = 30): DayCopy {
+export function getDayCopy(
+  day: number,
+  totalDays: number = 30,
+  audience: MindTrackAudience = 'child',
+): DayCopy {
   if (totalDays === 7) {
     const safe = Math.min(Math.max(Math.round(day), 1), 7);
+    if (audience === 'adult') return DAY_COPY_7_ADULT[safe];
+    if (audience === 'parent') return DAY_COPY_7_PARENT[safe];
     return DAY_COPY_7[safe];
   }
   const safe = Math.min(Math.max(Math.round(day), 1), 30);

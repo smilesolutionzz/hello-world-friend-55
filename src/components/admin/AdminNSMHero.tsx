@@ -16,10 +16,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Users, Target, Flame } from "lucide-react";
+import { TrendingUp, Users, Target, Flame, Layers } from "lucide-react";
 import {
   computeNSMMetrics,
+  computeAudienceBreakdown,
   type CohortRow,
+  type AudienceBreakdownRow,
   type NSMEnrollment as Enrollment,
 } from "@/lib/adminNSMMetrics";
 

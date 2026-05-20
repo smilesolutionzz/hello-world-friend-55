@@ -293,7 +293,6 @@ export default function MindTrackDashboard() {
   // 3일 무료 체험 게이트 — Day 4부터 결제 필요
   const isTrial = enrollment.payment_status === 'trial';
   if (isTrial && day >= 4) {
-    const MindTrackTrialPaywall = require('@/components/mind-track/MindTrackTrialPaywall').default;
     return <MindTrackTrialPaywall currentDay={day} totalDays={totalDays} />;
   }
 

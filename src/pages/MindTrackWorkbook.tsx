@@ -118,6 +118,7 @@ import { useSmartBack } from "@/hooks/useSmartBack";
 import InviteFriendsButton from "@/components/mind-track/InviteFriendsButton";
 import ExpertInterventionCard, { RiskAlertCard, type InterventionDay } from "@/components/mind-track/ExpertInterventionCard";
 import InterventionCalendar from "@/components/mind-track/InterventionCalendar";
+import SevenDayWorkbookView from "@/components/mind-track/seven-day/SevenDayWorkbookView";
 import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulator";
 import WeeklyMilestoneCards from "@/components/mind-track/WeeklyMilestoneCards";
 import MilestoneProgressBar from "@/components/mind-track/MilestoneProgressBar";
@@ -585,6 +586,11 @@ export default function MindTrackWorkbook() {
         onRetry={load}
       />
     );
+  }
+
+  // 7일 트랙은 별도 컴팩트 뷰로 분기
+  if (enrollment?.track_type === "mind_7day" && enrollment?.id) {
+    return <SevenDayWorkbookView enrollmentId={enrollment.id} />;
   }
 
   if (!workbook) return null;

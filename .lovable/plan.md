@@ -1,70 +1,88 @@
-## 방향
 
-`/check/done`의 메인 CTA를 **"7일 챌린지"**(자체 결제 상품)로 바꾸고, 기존 "우리 동네 기관 찾기"는 완전 제거. 보조 CTA는 **"맞춤 치료사 구독"** 진입점(그릿지 식 매칭 구독 모델). 위기 상황(점수가 매우 낮음)에서만 작은 안전망 링크로 `/expert-hiring?urgent=true` 노출.
+## 7일 트랙 콘텐츠 구조 설계
 
-## CTA 위계 (위→아래)
+### 1. Day 유형 — Hybrid 구조
+
+7일을 **무거운 Day**(이벤트성)와 **가벼운 Day**(5분 미션) 두 종류로 나눠 완주율을 챙기면서 핵심 Day엔 변화의 임팩트를 만든다.
 
 ```text
-[ 7일 챌린지 시작하기                          ]  ← 메인, 검정 큰 버튼
-  맞춤 영역별 7일 부모 코칭 · ₩7,900 (가격은 코드에서)
-[ 맞춤 치료사 구독 알아보기 →                  ]  ← 보조, 흰 버튼 + 골드 보더
-  내 아이에 맞는 치료사 매칭 · 월간 정기 코칭
-
-(점수 위험 구간일 때만 노출)
-"걱정이 크다면 전문가에게 바로 도움받기" → /expert-hiring?urgent=true   ← 12px, 회색 텍스트 링크
+Day 1 ━━━━━━ [무거움] 진단 (10~15분)
+Day 2 ───── [가벼움] 5분 미션
+Day 3 ───── [가벼움] 5분 미션
+Day 4 ━━━━━━ [무거움] 전문가 매칭 제안 (스킵 가능)
+Day 5 ───── [가벼움] 5분 미션
+Day 6 ───── [가벼움] 5분 미션
+Day 7 ━━━━━━ [무거움] 변화 리포트 (PDF)
 ```
 
-## 1) 메인 CTA — "7일 챌린지"
+**무거운 Day 화면 구성**
+- Day 1: 출발점 진단 위젯 (5종 자가체크 + 마음 점수) → DB에 baseline 저장
+- Day 4: "전문가 1:1 매칭" 카드 (audience별 태그된 전문가 1명 자동 추천 + "다음에" 스킵 버튼)
+- Day 7: Day1 vs Day7 비교 리포트 + PDF 다운로드 + 7일 연장권/30일 트랙 업셀
 
-- **라벨**: `7일 챌린지 시작하기`
-- **서브 라벨**: `{선택 영역} 7일 부모 코칭 · ₩7,900` (가격은 `src/constants/tokenCosts.ts`의 `mind_track_7`에서 읽기, 하드코딩 금지)
-- **이동**: `/mind-track?audience=child&from=check&area={area_code}` (기존 mind_track_7 결제 플로우 재사용)
-- **스타일**: `h-14 rounded-2xl bg-slate-900 text-white text-[18px] font-semibold`
+**가벼운 Day 화면 구성** (Day 2·3·5·6)
+- 오늘의 미션 카드 1개 (제목·How·소요 시간)
+- 미션 완료 체크 버튼
+- 2줄 자유 기록 (선택)
+- 어제 vs 오늘 미니 트렌드 (점수가 있으면)
 
-## 2) 보조 CTA — "맞춤 치료사 구독"
+### 2. audience별 미션 풀 분리
 
-기존 `/expert-hiring`은 단건 상담. 사용자는 **그릿지 식 정기 매칭 구독**을 원함. 현재 그 정확한 페이지가 없으므로 **Day 4 도착지 라우트를 먼저 자리만 잡고 임시 안내 페이지로 연결**.
+`src/lib/mindTrack7DayMissions.ts` 신규 — Day 2·3·5·6 (가벼운 4일치)에 대해 audience별 풀 분리.
 
-- **라벨**: `맞춤 치료사 구독 알아보기`
-- **서브 라벨**: `내 아이에 맞는 치료사 매칭 · 월간 정기 코칭`
-- **이동**: `/therapist-subscription?from=check&area={area_code}` (신규 임시 라우트)
-- **임시 페이지 `src/pages/lite/TherapistSubscriptionTeaser.tsx`**:
-  - "준비 중" 카드 + 가치 제안 3줄 (① 영역별 검증 치료사 매칭, ② 주 1회 화상/대면, ③ 월간 진척 리포트)
-  - 메일 알림 신청 입력(선택, 옵셔널) — 지금은 폼만, 백엔드 연결은 Day 5+
-  - 아래 작은 링크: "지금 1회 전문가 상담 받기" → `/expert-hiring` (단건 상담 대체 안내)
-- **스타일**: `h-12 rounded-2xl bg-white border border-[#C8B88A]/40 text-slate-900 text-[15px] font-medium`
+| audience | 미션 톤 | 예 |
+|---|---|---|
+| `child` (부모용 자녀 발달) | ABA 부모 코칭 | "{{name}} 강점 칭찬 3회", "감정 단어 1개 가르치기" |
+| `adult` | 번아웃·불안 회복 | "에너지 누수 시간대 기록", "4-7-8 호흡 × 3세트" |
+| `parent` (부모 자기 회복) | 부모 회복 | "나만의 10분 만들기", "거절 1개 연습" |
+| `teen` (Phase 2) | 자기 이해 | (Phase 2에서 추가) |
 
-## 3) 위기 안전망 (조건부)
+각 audience × Day(2·3·5·6) = 4개 미션씩 × 3 audience = **12개 미션 카피**만 새로 작성.
 
-`score < 40` (또는 `area === 'emotion' && score < 50`)일 때만 메인/보조 CTA 아래 작은 회색 텍스트 링크 노출:
-- 텍스트: `걱정이 크다면 전문가에게 바로 도움받기`
-- 링크: `/expert-hiring?urgent=true`
-- 스타일: `text-[12px] text-slate-400 underline underline-offset-2`
+### 3. Day 4 전문가 처리 (Phase 1)
 
-위기 임계값이 아니면 이 줄은 렌더하지 않음.
+- Day 4 화면: 매칭 카드 + "지금 매칭" CTA + "다음에 (계속 진행)" 보조 버튼
+- 카드 내부: audience 태그 매칭으로 전문가 1명 자동 추천 (이미 `expert-hiring` 인프라/매칭 함수 재사용)
+- 스킵 시 Day 4를 일반 미션 1개로 대체 ("전문가 없이 셀프 정리" 미션)
+- 매칭 클릭 시 `/expert-hiring?audience={audience}&from=mind_track_d4`로 라우팅
 
-## 4) 카피 톤
+### 4. 데이터 모델
 
-- 보고서 본문 톤은 그대로(비위협). CTA 영역만 "해결책 제시" 톤으로 강화:
-  - 카드 위 작은 헤더 한 줄: `다음 7일, 우리 아이에 맞게 시작해 볼게요`
-- "진단/장애/치료" 단어 금지 규칙 유지.
+DB 변경 최소화 — 기존 `mind_track_enrollments` + `mind_track_mission_progress` 재사용. 단:
+- `mind_track_enrollments.baseline_data jsonb` (Day1 진단 결과 — 없으면 추가)
+- `mind_track_enrollments.day7_report_url text` (Day7 PDF 캐시 — 없으면 추가)
 
-## 5) 변경 파일
+### 5. 파일 구조 (신규 / 수정)
 
-- `src/pages/lite/CheckDone.tsx` — CTA 블록 교체, 위기 안전망 조건부 렌더, 가격은 `MIND_TRACK_7` 상수에서 읽기
-- `src/pages/lite/TherapistSubscriptionTeaser.tsx` — 신규(임시 티저 페이지)
-- `src/App.tsx` — `/therapist-subscription` 라우트 등록
-- `src/components/navigation/MobileBottomTab.tsx` — `hiddenPaths`에 `/therapist-subscription` 추가
+```text
+src/lib/
+  mindTrack7DayMissions.ts          [신규] audience×Day(2·3·5·6) 미션 풀
+  mindTrack7DayResolver.ts          [신규] Day번호 → 화면 종류 + 미션 분기
 
-## 6) 메모리 업데이트
+src/components/mind-track/seven-day/
+  Day1DiagnosisScreen.tsx           [신규]
+  Day4ExpertMatchScreen.tsx         [신규]
+  Day7ReportScreen.tsx              [신규]
+  LightMissionScreen.tsx            [신규] Day 2·3·5·6 공통
 
-새 규칙을 메모리에 저장:
-- `mem://ux/conversion/check-done-cta-policy-ko` — 라이트 체크 결과 화면 CTA 정책 (7일 챌린지 메인, 치료사 구독 보조, 기관찾기는 위기 시 안전망)
+src/pages/MindTrackWorkbook.tsx     [수정] totalDays===7 분기 → 위 4종 화면 라우팅
+```
 
-## 검증
+기존 30일 트랙 코드(`mindTrackDayCopy.ts`의 `DAY_COPY` 30일, `mindTrackChildMissions.ts`)는 그대로 둠.
 
-- `/check` → 영역 선택 → 3문항 응답 → `/check/done`에서 메인 CTA가 "7일 챌린지 시작하기 · ₩7,900"으로 보이는지
-- 메인 CTA 클릭 시 `/mind-track?audience=child&from=check&area=…`로 이동
-- 보조 CTA 클릭 시 임시 티저 페이지로 이동
-- emotion 영역 + 30점으로 답해 위기 안전망 링크가 노출되는지
-- language 영역 + 90점으로 답해 위기 안전망이 숨겨지는지
+### 6. 단계 (이 순서로 빌드)
+
+1. **데이터 레이어**: `mindTrack7DayMissions.ts` + `mindTrack7DayResolver.ts` (DB 변경 없이 시작)
+2. **가벼운 Day 화면** (Day 2·3·5·6): `LightMissionScreen.tsx` — 가장 단순한 카드 1장
+3. **Day 1 진단 화면**: 기존 자가체크 위젯 재사용 + baseline 저장 (DB 컬럼 1개 추가)
+4. **Day 4 매칭 화면**: 전문가 추천 카드 (스킵 가능)
+5. **Day 7 리포트 화면**: Day1 vs Day7 비교 컴포넌트 + PDF
+6. `MindTrackWorkbook.tsx`에서 `totalDays===7` 분기 → 새 4종 화면으로 라우팅
+7. (마지막) DB 컬럼 2개 추가 마이그레이션
+
+### 7. 비범위 (이번에 안 함)
+
+- 30일 트랙 콘텐츠 (기존 유지)
+- `teen` audience (Phase 2)
+- 푸시 알림 / 매일 이메일 (이미 `daily-coaching-email` 인프라 별도)
+- 트랙 내부 전문가 1:1 채팅 UI (Day 4는 `/expert-hiring`으로 라우팅)

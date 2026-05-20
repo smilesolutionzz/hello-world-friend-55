@@ -36,6 +36,7 @@ import TrackRecommendation from '@/components/mind-track/TrackRecommendation';
 import TrackQuickPicker from '@/components/mind-track/TrackQuickPicker';
 import StickyTrackCTA from '@/components/mind-track/StickyTrackCTA';
 import AudienceHubSection from '@/components/mind-track/AudienceHubSection';
+import MindTrackFromCheckView from '@/components/mind-track/MindTrackFromCheckView';
 import { matchTrack, getAxis, recommendTracks, TRACK_TAGS, type CategoryAxis } from '@/lib/mindTrackCategories';
 import type { MindTrackFocusId } from '@/lib/mindTrackFocusTracks';
 import { getDayCopy, calcMindTrackCurrentDay } from '@/lib/mindTrackDayCopy';

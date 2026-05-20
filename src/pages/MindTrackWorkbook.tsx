@@ -118,6 +118,7 @@ import { useSmartBack } from "@/hooks/useSmartBack";
 import InviteFriendsButton from "@/components/mind-track/InviteFriendsButton";
 import ExpertInterventionCard, { RiskAlertCard, type InterventionDay } from "@/components/mind-track/ExpertInterventionCard";
 import InterventionCalendar from "@/components/mind-track/InterventionCalendar";
+import SevenDayWorkbookView from "@/components/mind-track/seven-day/SevenDayWorkbookView";
 import MindTrackRiskSimulator from "@/components/mind-track/MindTrackRiskSimulator";
 import WeeklyMilestoneCards from "@/components/mind-track/WeeklyMilestoneCards";
 import MilestoneProgressBar from "@/components/mind-track/MilestoneProgressBar";

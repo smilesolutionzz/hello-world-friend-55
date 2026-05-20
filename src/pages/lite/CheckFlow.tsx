@@ -88,8 +88,8 @@ const CheckFlow: React.FC = () => {
   };
 
   const handleNext = async () => {
-    if (!canNextStep1 || area === '') return;
-    await fetchQuestions(area);
+    if (!canNextStep1 || !area) return;
+    await fetchQuestions(area as AreaCode);
     setStep(2);
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   };

@@ -143,8 +143,11 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
       </main>
 
       {/* 하단 고정 CTA — 큰 글씨 */}
-      <div className="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-100">
-        <div className="max-w-xl mx-auto px-5 pt-3 pb-4">
+      <div
+        className="fixed inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-100"
+        style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }}
+      >
+        <div className="max-w-xl mx-auto px-5 pt-3 pb-3">
           <p className="text-[13px] text-slate-500 text-center mb-2">
             카드 등록 없이 · 지금 바로 시작 · 4일차부터 ₩{MIND_TRACK_7_PRICE.toLocaleString()}
           </p>

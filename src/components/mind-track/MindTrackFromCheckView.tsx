@@ -75,7 +75,7 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-white text-slate-900 break-keep">
-      <main className="max-w-xl mx-auto px-5 pt-8 pb-40">
+      <main className="max-w-xl mx-auto px-5 pt-8 pb-[220px]">
         {/* 컨텍스트 배너 — 체크 정보 이어받기 */}
         <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 mb-6 flex items-center gap-3">
           <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />

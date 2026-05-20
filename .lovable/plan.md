@@ -1,65 +1,132 @@
-# 무료 진단 리포트 우선 노출 (Quiz 결과 화면 재배치)
 
-## 문제
+# 부모챌린지 앱 전면 교체 계획 (Free PMF Build)
 
-`/quiz` 결과(`step === 'plan'`) 화면이 현재:
-1. 작은 "현재 상태" 카드 (3칸)
-2. 30일 코칭 모듈
-3. 리포트 미리보기 3장 + **+11페이지 잠금 카드**
-4. Before/After 차트
-5. 사례 3명
-6. **₩7,900 결제 CTA**
+기존 `mind_track_*` 결제·블러·잠금 구조를 전부 비활성화하고, 기획서 그대로의 **6영역 × 3축 × 3문항 = 18문항 무료 체크 진단 + 7일 루프** 부모챌린지 앱을 새로 만든다. 비회원 끝까지, 결제·로그인·페이월 0.
 
-→ 사용자 체감: "보긴 봤는데 다 잠겨있고 결제부터 누르라고 한다."
+---
 
-## 목표
+## 1. 새 정보 구조 (라우트)
 
-무료 응답만으로도 **이미 진단 리포트를 1장 받았다**는 만족감을 먼저 주고, 결제는 "더 깊이 가고 싶을 때" 자연스럽게 노출.
-
-## 변경 (`src/pages/Quiz.tsx` `step === 'plan'` 블록만)
-
-### 새 구조 (위→아래)
+새 도메인 루트는 `/check`. 기존 페이지는 살아있되 진입점은 신규 흐름으로 모두 리다이렉트.
 
 ```text
-[A] 무료 진단 리포트 — 1페이지 완본 (잠금 없음)
-    ├ 진단 헤더: "무료 1분 진단 리포트 · 발급 완료"
-    │   - 발급일/리포트 ID(uuid 앞 8자) — 진짜 문서 느낌
-    ├ 종합 진단 한 줄(planInsight.severity 기반 카피)
-    ├ 핵심 발견 3카드 (강점 / 집중 케어 / 또래 비교) — 이미 있는 데이터 재배치
-    ├ 30일 변화 시나리오 차트(현 Before/After 차트 옮겨옴)
-    ├ 추천 우선 액션 3가지 (현 4주 로드맵 Week1만 풀고, 나머지는 아래로)
-    └ "리포트 이메일/PDF로 받기" 보조 버튼 — QuizSoftFunnelCTA의 이메일 옵션 재사용
-
-[B] 더 깊이 들어가고 싶다면 — 30일 마음 트랙 미리보기
-    ├ "여기까지가 무료입니다" 구분선 (얇은 dashed border + 안내 카피)
-    ├ 30일 코칭 모듈 (현재 위치에서 이동)
-    ├ 리포트 페이지 02·03 미리보기 (현재 위치에서 이동)
-    └ +11페이지 잠금 안내 (현재 위치에서 이동)
-
-[C] 사회적 증거
-    └ 실제 변화 사례 3명 (그대로)
-
-[D] 결제 CTA (현재 위치 유지, 다만 위 무료 섹션 뒤로 자연스럽게 배치)
-    └ QuizSoftFunnelCTA (그대로)
+/check                  → 홈 (영역 6개 카드)
+/check/:area/level      → 기준선 입력 (개월수 / 학령 / 없음)
+/check/:area/questions  → 3문항 (+ ⑤⑥ 안전 문항)
+/check/:area/result     → 즉시 리포트 (4블록)
+/check/:area/recheck    → 7일 재체크 진입
+/check/:area/compare    → Day 0 vs Day 7 비교 + 분기
+/check/safe-now         → 오버라이드 분기 (위기 자원 + 전문가 연결 최우선)
 ```
 
-### 핵심 카피 변경
+- `/` (Index)는 새 부모챌린지 홈으로 교체, 기존 랜딩 컴포넌트는 보존(`/legacy-home`로 임시 격리).
+- `/mind-track*`, `/quiz` 등 기존 유료 진입점은 `/check`로 리다이렉트 (DB 마이그레이션 후).
 
-- 상단 Badge: `플랜 완성` → `무료 진단 리포트 발급 완료`
-- h2: `당신만의 30일 마음 트랙` → `{data.goalLabel} 무료 진단 리포트`
-- A 섹션 상단에 "REPORT ID · 발급일" 라벨 추가 (진짜 발급된 문서 느낌)
-- B 섹션 시작에 `여기까지가 무료로 받은 리포트입니다 — 30일 트랙은 같은 데이터를 14페이지로 확장합니다` 한 줄.
+## 2. 6영역 콘텐츠 (코드 상수로 박음)
 
-### 동작/데이터 변경 없음
+`src/lib/check/areas.ts` 신규.
 
-- 새 API 호출 없음. 기존 `planInsight`, `data`, lifestages 그대로 사용.
-- 가격 상수(`MIND_TRACK_PRICE`)는 그대로 `tokenCosts.ts`에서 읽음.
-- 결제 함수 `handleStartTrack` 그대로.
-- 메모리 가드레일 준수: 의료 진단 어휘 회피("진단 리포트"는 코칭용 자료로, 하단 비임상 disclaimer 유지).
+| # | area key | 라벨 | 응답자 | 기준선 | 안전 오버라이드 |
+|---|----------|------|--------|--------|-----------------|
+| 1 | language | 언어·발달 | 부모관찰 | 개월수(18~72) | X |
+| 2 | emotion | 감정·행동 | 부모관찰 | 개월수 | X |
+| 3 | social | 사회성·학교 | 부모관찰 | 개월수 | X |
+| 4 | focus | 집중력 | 부모관찰 | 개월수 | X (ADHD 단어 금지) |
+| 5 | youth_mind | 아동·청소년 심리 | 부모관찰 | 학령(초저/초고/중고) | ⭕ |
+| 6 | parent_burnout | 학부모 번아웃 | 부모자가 | 없음 | ⭕ |
 
-## 기술 노트
+각 영역마다 `axes: [{ key, label, question }]` 3개 + `patterns: [{ combo, message_key }]` 5개 + (⑤⑥) `safety_questions: [{ key, question }]` 2개. 문장은 기획서 그대로 (구체 18문항 + 안전4문항 전부 박음).
 
-- 단일 파일 수정: `src/pages/Quiz.tsx` (라인 651~1075 재정렬, JSX 블록 위치 이동 + 카피 5~6곳 변경).
-- 새 컴포넌트/훅/라우트/DB 변경 전혀 없음.
-- 모바일에서 무료 리포트 섹션이 첫 스크롤 안에 들어오도록 패딩 살짝 축소.
-- 검증: `/quiz` 끝까지 진행 → analyzing 후 첫 화면이 "무료 진단 리포트 발급 완료"로 보이고, 결제 카드는 한참 아래 스크롤 후 노출되는지 모바일 뷰포트에서 확인.
+## 3. 데이터 (Supabase 마이그레이션)
+
+**신규 테이블 2개**, 기존 mind_track 테이블은 건드리지 않음 (격리 후 추후 정리).
+
+```text
+check_sessions
+  id (uuid pk)
+  area text                        -- language/emotion/.../parent_burnout
+  level_basis text                 -- 'months' | 'school_age' | 'none'
+  level_value text                 -- '25-36' or 'elementary_low' etc.
+  email text NULL                  -- 7일 알림 옵션
+  device_id text                   -- 비회원 식별 (localStorage uuid)
+  user_id uuid NULL                -- 로그인 시 백필
+  created_at, updated_at
+
+check_responses
+  id (uuid pk)
+  session_id fk → check_sessions
+  round_no int                     -- 0=최초, 1=7일 재체크
+  axis1_score smallint             -- 1~5
+  axis2_score smallint
+  axis3_score smallint
+  safety_flags jsonb               -- {self_harm: bool, daily_collapse: bool}
+  pattern_code text                -- 판정 결과 ('low_good_good' 등)
+  override_triggered boolean default false
+  taken_at timestamptz
+```
+
+**RLS**: 비회원 흐름이 핵심이라 익명 INSERT 허용 + `device_id` 또는 `user_id` 기반 SELECT/UPDATE만 허용. 결과 조회는 `session_id` 직접 키로(공개 토큰 모델).
+
+**7일 재체크 이메일**: `mind-track-reminder-cron` 패턴 재활용 → `check-recheck-reminder` edge function 신규.
+
+## 4. UI/UX — 부모챌린지 앱 톤
+
+전체 톤은 "Calm + Wysa + Noom Parent" 하이브리드. 기존 premium white minimalism은 유지하되, **챌린지 앱 특유의 데일리 카드/진행률/Day 표시**를 도입.
+
+핵심 컴포넌트:
+- `<AreaCard />` — 6개 카드, 부드러운 파스텔 도트 + 한 줄 설명
+- `<LevelInput />` — 개월수 슬라이더(18~72) / 학령 3택 / 없음
+- `<AxisQuestion />` — 5점 빈도 척도, 큰 버튼(48px+), 글자 16px+
+- `<SafetyQuestion />` — ⑤⑥ 전용, 예/아니오 + 따뜻한 톤
+- `<PatternReport />` — 4블록(한 줄 진단 / 살펴볼 점 3 / 집에서 해볼 것 3 / 다음 단계)
+- `<CompareBars />` — Day0 vs Day7 축별 변화 막대 + 한 줄 해석
+- `<OverrideBanner />` — 위기 자원(1393/1388/1577-0199) + 지역 전문가 연결 카드
+- `<NaturalLink />` — 자녀 체크 후 "부모님, 괜찮으세요?" 카드 → 영역 6
+
+**금지 원칙 코드로 박음**: 결제 컴포넌트(`PaymentModal`, `ResultPaywall`, `BlurredContent`) 새 흐름에서 import 금지. 진단 단어 화이트리스트 검사 유틸 `src/lib/check/wordGuard.ts` 추가.
+
+## 5. 패턴 판정 로직
+
+`src/lib/check/patternEngine.ts`:
+```
+classify(score) = score≤2 ? 'low' : score===3 ? 'mid' : 'good'
+patternCode = `${a1}_${a2}_${a3}`
+영역별 patterns 테이블에서 메시지 lookup, 없으면 fallback '경계선'
+override: ⑤⑥ safety_flags 중 하나라도 true면 override_triggered=true → /check/:area/result 가 OverrideBanner 최상단 강제 렌더
+```
+
+## 6. 기존 시스템 처리
+
+- `mind_track_*` 결제 상품·라우트·hook은 **비활성화 플래그**(`FEATURE_MIND_TRACK_PAID=false`) 뒤로 격리. 코드 제거가 아니라 차단 (Phase 후 정리).
+- `/quiz`, `/mind-track-onboarding`, `MindTrackCheckoutHero`는 `/check`로 리다이렉트.
+- 메인 메모리 Core Pricing 규칙은 **"PMF 기간 자체 결제 일시 중단, 전문가 상담만 유지"**로 갱신 필요 (기획서 = 전부 무료). 별도 메모리 업데이트 안 (구현 후 묻고 처리).
+- 전문가 상담(`/expert-hiring`)은 그대로 유지 — Day 7 분기·오버라이드 CTA의 도착지로 재활용.
+
+## 7. 구현 순서 (PR 단위)
+
+1. **DB 마이그레이션** — `check_sessions`, `check_responses` + RLS + 익명 정책
+2. **콘텐츠 상수** — `src/lib/check/areas.ts` (18문항 + 안전4문항 + 30개 패턴 메시지 4블록)
+3. **라우트 + 7개 페이지 스캐폴딩** — 위 표대로
+4. **부모챌린지 컴포넌트 8개** — 위 목록
+5. **패턴 엔진 + 오버라이드 로직** + word guard
+6. **이메일 재체크 cron** — Day 7 트리거 edge function
+7. **Index 교체** — `/`를 새 홈으로, 구 진입점 리다이렉트
+8. **자녀→번아웃 자연 연결 카드**
+9. **Day0 vs Day7 비교 화면** (제품의 핵심 킥)
+10. **세션 복구** — `device_id` 기반 localStorage 백업 + 7일 후 deep link
+
+## 8. 이번 단계에서 안 하는 것 (의도적)
+
+- 결제 시스템 제거 (격리만)
+- 메모리/문서 일괄 갱신 (구현 후 한 번에)
+- 인증/회원가입 강제 (전 흐름 비회원 유지)
+- 30개 패턴 메시지 전부 카피라이팅 (스켈레톤 메시지 + 패턴별 TODO 주석으로 일단 깔고, 임상 검수 후 채움 — 사용자가 14년 임상 본인이 직접 채울 영역)
+
+## 9. 미결 확인 (구현 전 확인 부탁)
+
+- (a) **시각 톤**: 새 부모챌린지 홈 디자인은 redesign 스킬로 3개 방향 뽑아서 고르는 게 좋을지, 아니면 기존 premium white minimalism 그대로 가도 될지
+- (b) **30개 패턴 메시지**: 스켈레톤(`"○○이는 ~한 힘은 자랐는데..."` placeholder) + TODO로 깔고 후속 채우기 vs 첫 영역(언어·발달) 5패턴만 완성본으로 박고 나머지 placeholder
+- (c) **기존 mind_track 결제 안내**: 이미 결제한 사용자(`mind_track_enrollments` 보유)에게는 어떤 메시지? "PMF 검증을 위해 무료화, 잔여 권한 환불 안내" 배너 필요한지
+
+이 3가지만 정해주면 위 1~10번 그대로 순차 구현 들어감.
+

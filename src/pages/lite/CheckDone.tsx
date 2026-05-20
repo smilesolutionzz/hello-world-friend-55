@@ -250,21 +250,48 @@ const CheckDone: React.FC = () => {
         </p>
       </main>
 
-      {/* 하단 CTA 2개 — 위계 분명히 */}
+      {/* 하단 CTA — 7일 챌린지 메인 + 치료사 구독 보조 + (조건부) 안전망 */}
       <div className="fixed bottom-0 inset-x-0 z-20 bg-white/95 backdrop-blur border-t border-slate-100">
-        <div className="max-w-md mx-auto px-5 py-3 flex flex-col gap-2">
+        <div className="max-w-md mx-auto px-5 pt-3 pb-4 flex flex-col gap-2">
+          <p className="text-[12px] text-slate-500 text-center mb-0.5">
+            다음 7일, 우리 아이에 맞게 시작해 볼게요
+          </p>
+
+          {/* 메인: 7일 챌린지 */}
           <Link
-            to="/expert-hiring"
-            className="w-full h-14 rounded-2xl bg-slate-900 text-white text-[18px] font-semibold flex items-center justify-center active:scale-[0.98] transition"
+            to={`/mind-track?audience=child&from=check&area=${result.area}`}
+            className="w-full rounded-2xl bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between active:scale-[0.99] transition"
           >
-            우리 동네 기관 찾기
+            <span className="flex flex-col items-start">
+              <span className="text-[17px] font-semibold leading-tight">7일 챌린지 시작하기</span>
+              <span className="text-[11px] text-white/70 mt-0.5">
+                {copy.shortLabel} 7일 부모 코칭 · ₩{MIND_TRACK_7_PRICE.toLocaleString('ko-KR')}
+              </span>
+            </span>
+            <span className="text-[18px]">→</span>
           </Link>
+
+          {/* 보조: 맞춤 치료사 구독 */}
           <Link
-            to="/mind-track?audience=child"
-            className="w-full h-11 rounded-xl text-[14px] font-medium text-slate-500 flex items-center justify-center hover:text-slate-700"
+            to={`/therapist-subscription?from=check&area=${result.area}`}
+            className="w-full rounded-2xl bg-white border border-[#C8B88A]/50 text-slate-900 px-5 py-2.5 flex items-center justify-between hover:bg-[#C8B88A]/5 transition"
           >
-            30일 변화 추적하기 (선택)
+            <span className="flex flex-col items-start">
+              <span className="text-[14px] font-semibold leading-tight">맞춤 치료사 구독 알아보기</span>
+              <span className="text-[11px] text-slate-500 mt-0.5">내 아이에 맞는 치료사 매칭 · 월간 정기 코칭</span>
+            </span>
+            <span className="text-[14px] text-[#8a7a4a]">→</span>
           </Link>
+
+          {/* 위기 안전망 — 조건부 */}
+          {showSafetyNet && (
+            <Link
+              to="/expert-hiring?urgent=true"
+              className="text-center text-[12px] text-slate-400 underline underline-offset-2 hover:text-slate-600 mt-1"
+            >
+              걱정이 크다면 전문가에게 바로 도움받기
+            </Link>
+          )}
         </div>
       </div>
     </div>

@@ -40,6 +40,20 @@ type Question = {
 
 const DRAFT_KEY = 'lite_check_draft';
 
+const isExpiredJwtError = (error: unknown) => {
+  if (!error || typeof error !== 'object') return false;
+  const maybeError = error as { code?: string; message?: string };
+  return maybeError.code === 'PGRST303' || maybeError.message?.toLowerCase().includes('jwt expired');
+};
+
+const loadLiteQuestions = (code: AreaCode) =>
+  supabase
+    .from('lite_assessments')
+    .select('area_code, question_no, prompt')
+    .eq('area_code', code)
+    .eq('is_active', true)
+    .order('question_no', { ascending: true });
+
 const CheckFlow: React.FC = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2>(1);
@@ -78,15 +92,25 @@ const CheckFlow: React.FC = () => {
   const fetchQuestions = async (code: AreaCode) => {
     setLoadingQ(true);
     setFetchError(null);
-    const { data, error } = await supabase
-      .from('lite_assessments')
-      .select('area_code, question_no, prompt')
-      .eq('area_code', code)
-      .eq('is_active', true)
-      .order('question_no', { ascending: true });
+    setQuestions([]);
+
+    let { data, error } = await loadLiteQuestions(code);
+
+    if (isExpiredJwtError(error)) {
+      const { error: refreshError } = await supabase.auth.refreshSession();
+      if (!refreshError) {
+        ({ data, error } = await loadLiteQuestions(code));
+      }
+
+      if (isExpiredJwtError(error)) {
+        await supabase.auth.signOut({ scope: 'local' });
+        ({ data, error } = await loadLiteQuestions(code));
+      }
+    }
+
     if (error) {
       console.error('[CheckFlow] fetchQuestions error', error);
-      setFetchError(error.message);
+      setFetchError(isExpiredJwtError(error) ? '세션이 만료되어 질문을 불러오지 못했어요. 다시 시도해 주세요.' : error.message);
     } else if (!data || data.length === 0) {
       setFetchError('질문을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.');
       setQuestions([]);

@@ -19,7 +19,7 @@ const MobileBottomTab: React.FC = () => {
   const { state: mtState } = useMindTrackDashboard();
   const [trackPreviewOpen, setTrackPreviewOpen] = useState(false);
 
-  const hiddenPaths = ['/auth', '/reset-password', '/admin', '/check', '/check/done', '/therapist-subscription'];
+  const hiddenPaths = ['/auth', '/reset-password', '/admin', '/check', '/check/done', '/therapist-subscription', '/find-center'];
   const shouldHide = hiddenPaths.some((p) => location.pathname.startsWith(p));
   if (shouldHide) return null;
 

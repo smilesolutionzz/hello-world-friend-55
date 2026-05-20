@@ -6,11 +6,12 @@
  * 이후 Day7 비교에 사용.
  */
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle2, Compass } from "lucide-react";
+import { Loader2, CheckCircle2, Compass, Microscope, ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -120,6 +121,23 @@ export default function Day1DiagnosisScreen({
           )}
         </Button>
       </Card>
+
+      {/* 보조: 더 깊이 보고 싶으면 심층검사 */}
+      <Link
+        to="/assessment?from=mind_track_7d_d1"
+        className="flex items-center justify-between gap-3 rounded-2xl bg-white border border-slate-200 px-4 py-3 hover:border-slate-300 transition-colors"
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0">
+            <Microscope className="w-4 h-4 text-slate-700" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-slate-900 truncate">더 깊이 보고 싶다면 심층검사</p>
+            <p className="text-xs text-slate-400">10~20분 · Day1 이후 언제든</p>
+          </div>
+        </div>
+        <ArrowUpRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
+      </Link>
     </div>
   );
 }

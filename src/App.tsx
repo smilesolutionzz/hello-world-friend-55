@@ -232,6 +232,7 @@ const App = () => {
           {/* ===== Lite Check (Day 2) — 비회원 발달체크 ===== */}
           <Route path="/check" element={<CheckFlow />} />
           <Route path="/check/done" element={<CheckDone />} />
+          <Route path="/therapist-subscription" element={<TherapistSubscriptionTeaser />} />
           <Route path="/g/:token" element={<GuardianNotice />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/reset-password" element={<ResetPassword />} />

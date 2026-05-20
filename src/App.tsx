@@ -25,6 +25,7 @@ function B2BFunnelTracker() {
 import Index from "./pages/Index";
 import CheckFlow from "./pages/lite/CheckFlow";
 import CheckDone from "./pages/lite/CheckDone";
+import TherapistSubscriptionTeaser from "./pages/lite/TherapistSubscriptionTeaser";
 import HighlightAuth from "./pages/HighlightAuth";
 import ResetPassword from "./pages/ResetPassword";
 import DashboardRouter from "./pages/DashboardRouter";

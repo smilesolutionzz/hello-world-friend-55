@@ -178,14 +178,39 @@ const CheckDone: React.FC = () => {
               {score}
             </span>
             <span className="text-[18px] font-semibold text-slate-500 mb-2">점</span>
+            <span className="text-[12px] text-slate-400 mb-3 ml-1">/ 100</span>
           </div>
-          <p className="text-[13px] text-slate-500 mt-2">{copy.peer}</p>
+          <p className="text-[13px] text-slate-600 mt-2">{toPeerLine(score)}</p>
+
+          {/* 또래 평균 비교 막대 */}
+          <div className="mt-4">
+            <div className="relative h-2 rounded-full bg-slate-200 overflow-visible">
+              <div
+                className="absolute inset-y-0 left-0 rounded-full bg-slate-900 transition-all"
+                style={{ width: `${score}%` }}
+              />
+              {/* 또래 평균 마커 */}
+              <div
+                className="absolute -top-1 -translate-x-1/2"
+                style={{ left: `${PEER_AVG}%` }}
+                aria-label={`또래 평균 ${PEER_AVG}점`}
+              >
+                <div className="w-0.5 h-4 bg-amber-500 mx-auto" />
+              </div>
+            </div>
+            <div className="flex justify-between mt-2 text-[11px] text-slate-400 tabular-nums">
+              <span>0</span>
+              <span className="text-amber-600">또래 평균 {PEER_AVG}점</span>
+              <span>100</span>
+            </div>
+          </div>
+
           <div className={`inline-flex items-center mt-4 px-3 py-1 rounded-full text-[12px] font-medium border ${tone.color}`}>
             {tone.tag}
           </div>
         </section>
         <p className="text-[12px] text-slate-400 mb-8">
-          ※ 진단이 아닌, 부모님이 일상에서 살펴보시도록 돕는 참고용 체크예요.
+          ※ 진단이 아닌, 부모님이 일상에서 살펴보시도록 돕는 참고용 체크예요. 점수는 높을수록 또래 평균에 가깝습니다.
         </p>
 
         {/* 살펴보면 좋을 점 */}

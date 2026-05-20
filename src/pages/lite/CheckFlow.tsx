@@ -73,19 +73,36 @@ const CheckFlow: React.FC = () => {
   const canNextStep1 = age !== '' && area !== '';
   const canSubmit = questions.length > 0 && questions.every((q) => answers[q.question_no]);
 
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
   const fetchQuestions = async (code: AreaCode) => {
     setLoadingQ(true);
+    setFetchError(null);
     const { data, error } = await supabase
       .from('lite_assessments')
       .select('area_code, question_no, prompt')
       .eq('area_code', code)
       .eq('is_active', true)
       .order('question_no', { ascending: true });
-    if (!error && data) {
+    if (error) {
+      console.error('[CheckFlow] fetchQuestions error', error);
+      setFetchError(error.message);
+    } else if (!data || data.length === 0) {
+      setFetchError('질문을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.');
+      setQuestions([]);
+    } else {
       setQuestions(data as Question[]);
     }
     setLoadingQ(false);
   };
+
+  // Step 2 진입 후 questions가 비어있으면 자동 fetch (새로고침/뒤로가기 복원 대비)
+  useEffect(() => {
+    if (step === 2 && area && questions.length === 0 && !loadingQ && !fetchError) {
+      void fetchQuestions(area as AreaCode);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, area]);
 
   const handleNext = async () => {
     if (!canNextStep1 || !area) return;
@@ -203,6 +220,17 @@ const CheckFlow: React.FC = () => {
             </h1>
 
             {loadingQ && <p className="text-[15px] text-slate-500">불러오는 중…</p>}
+            {!loadingQ && fetchError && (
+              <div className="rounded-2xl bg-rose-50 border border-rose-100 p-4 mb-4">
+                <p className="text-[14px] text-rose-700 mb-3">{fetchError}</p>
+                <button
+                  onClick={() => area && fetchQuestions(area as AreaCode)}
+                  className="text-[14px] font-semibold text-rose-900 underline"
+                >
+                  다시 시도
+                </button>
+              </div>
+            )}
 
             <ol className="flex flex-col gap-7">
               {questions.map((q, idx) => (

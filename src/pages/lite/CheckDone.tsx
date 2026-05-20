@@ -147,6 +147,8 @@ const CheckDone: React.FC = () => {
   const copy = AREA_COPY[result.area];
   const score = toScore(result.total);
   const tone = toToneLabel(score);
+  // 위기 안전망: 전체 점수 매우 낮거나, 감정 영역에서 평균 이하
+  const showSafetyNet = score < 40 || (result.area === 'emotion' && score < 50);
 
   return (
     <div className="min-h-screen bg-white text-slate-900 break-keep flex flex-col">

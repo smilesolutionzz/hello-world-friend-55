@@ -522,21 +522,21 @@ const MindTrack: React.FC = () => {
     if (
       activeEnrollment &&
       (activeEnrollment.payment_status === 'paid' ||
-        activeEnrollment.payment_status === 'completed') &&
+        activeEnrollment.payment_status === 'completed' ||
+        activeEnrollment.payment_status === 'trial') &&
       !postLoginRedirecting
     ) {
-      // Preserve incoming UTM/day/after_video params so the dashboard can
-      // attribute the visit (e.g. arrived from daily-coaching email).
       const search = location.search || '';
       navigate(`/mind-track/dashboard${search}`, { replace: true });
     }
   }, [activeEnrollment?.id, activeEnrollment?.payment_status, postLoginRedirecting, navigate]);
 
-  // 리다이렉트 직전 깜빡임 방지 — 결제자면 빈 화면 반환
+  // 리다이렉트 직전 깜빡임 방지 — 결제자/체험자면 빈 화면 반환
   if (
     activeEnrollment &&
     (activeEnrollment.payment_status === 'paid' ||
-      activeEnrollment.payment_status === 'completed') &&
+      activeEnrollment.payment_status === 'completed' ||
+      activeEnrollment.payment_status === 'trial') &&
     !postLoginRedirecting
   ) {
     return (

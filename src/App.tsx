@@ -335,6 +335,7 @@ const App = () => {
          <Route path="/my-bookings" element={<BookingManagement />} />
           <Route path="/expert-detail/:id" element={<ExpertDetail />} />
           <Route path="/institution-detail/:id" element={<InstitutionDetailPage />} />
+          <Route path="/find-center" element={<FindCenter />} />
           <Route path="/partner-benefits" element={<InstitutionDetailPage />} />
           <Route path="/institution-application" element={<InstitutionApplication />} />
           <Route path="/data-sharing" element={<DataSharingConsent />} />

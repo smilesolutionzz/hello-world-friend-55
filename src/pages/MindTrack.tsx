@@ -560,7 +560,6 @@ const MindTrack: React.FC = () => {
       const scoreRaw = sp.get('score');
       const score = scoreRaw != null && !Number.isNaN(Number(scoreRaw)) ? Number(scoreRaw) : null;
       const audienceParam = (sp.get('audience') || 'child') as 'child' | 'adult' | 'parent' | 'teen';
-      const MindTrackFromCheckView = require('@/components/mind-track/MindTrackFromCheckView').default;
       return (
         <>
           <SEOHead

@@ -89,18 +89,35 @@ const AREA_COPY: Record<AreaCode, AreaCopy> = {
   },
 };
 
-/** 5점 척도 × 3문항 = 최대 15점. 역채점이므로 점수가 높을수록 "살펴볼 점이 많음". 100점 환산. */
+/**
+ * 발달 점수 (높을수록 좋음).
+ * 문항은 역채점(높게 답할수록 "걱정되는 모습이 잦음")이므로,
+ * 발달 점수 = ((최대점 - 응답합계) / (최대점 - 최소점)) × 100.
+ * 최소 3점(모두 1점) ~ 최대 15점(모두 5점) → 100점~0점.
+ */
 function toScore(total: number): number {
+  const min = 3;
   const max = 15;
-  const pct = Math.max(0, Math.min(100, Math.round((total / max) * 100)));
+  const pct = Math.max(0, Math.min(100, Math.round(((max - total) / (max - min)) * 100)));
   return pct;
 }
 
-/** 비위협적 카피: "이런 점을 함께 봐요" 톤 */
+/** 또래 평균 (참고치, 75점 기준). 실데이터 누적 전 임시 벤치마크. */
+const PEER_AVG = 75;
+
+/** 또래 대비 상태 카피. 발달 점수가 높을수록 편안한 톤. */
 function toToneLabel(score: number): { tag: string; color: string } {
-  if (score <= 40) return { tag: '편안한 편', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
-  if (score <= 65) return { tag: '살펴볼 점이 있어요', color: 'text-amber-700 bg-amber-50 border-amber-200' };
+  if (score >= PEER_AVG) return { tag: '또래 평균 수준', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+  if (score >= PEER_AVG - 20) return { tag: '살펴볼 점이 있어요', color: 'text-amber-700 bg-amber-50 border-amber-200' };
   return { tag: '함께 봐 주시면 좋아요', color: 'text-rose-700 bg-rose-50 border-rose-200' };
+}
+
+/** 또래 평균과의 비교 한 줄 (위협적이지 않게). */
+function toPeerLine(score: number): string {
+  const gap = score - PEER_AVG;
+  if (gap >= 5) return `또래 평균(${PEER_AVG}점)보다 ${gap}점 높아요`;
+  if (gap >= -4) return `또래 평균(${PEER_AVG}점)과 비슷한 수준이에요`;
+  return `또래 평균(${PEER_AVG}점)보다 ${Math.abs(gap)}점 낮은 편이에요`;
 }
 
 const CheckDone: React.FC = () => {
@@ -161,14 +178,39 @@ const CheckDone: React.FC = () => {
               {score}
             </span>
             <span className="text-[18px] font-semibold text-slate-500 mb-2">점</span>
+            <span className="text-[12px] text-slate-400 mb-3 ml-1">/ 100</span>
           </div>
-          <p className="text-[13px] text-slate-500 mt-2">{copy.peer}</p>
+          <p className="text-[13px] text-slate-600 mt-2">{toPeerLine(score)}</p>
+
+          {/* 또래 평균 비교 막대 */}
+          <div className="mt-4">
+            <div className="relative h-2 rounded-full bg-slate-200 overflow-visible">
+              <div
+                className="absolute inset-y-0 left-0 rounded-full bg-slate-900 transition-all"
+                style={{ width: `${score}%` }}
+              />
+              {/* 또래 평균 마커 */}
+              <div
+                className="absolute -top-1 -translate-x-1/2"
+                style={{ left: `${PEER_AVG}%` }}
+                aria-label={`또래 평균 ${PEER_AVG}점`}
+              >
+                <div className="w-0.5 h-4 bg-amber-500 mx-auto" />
+              </div>
+            </div>
+            <div className="flex justify-between mt-2 text-[11px] text-slate-400 tabular-nums">
+              <span>0</span>
+              <span className="text-amber-600">또래 평균 {PEER_AVG}점</span>
+              <span>100</span>
+            </div>
+          </div>
+
           <div className={`inline-flex items-center mt-4 px-3 py-1 rounded-full text-[12px] font-medium border ${tone.color}`}>
             {tone.tag}
           </div>
         </section>
         <p className="text-[12px] text-slate-400 mb-8">
-          ※ 진단이 아닌, 부모님이 일상에서 살펴보시도록 돕는 참고용 체크예요.
+          ※ 진단이 아닌, 부모님이 일상에서 살펴보시도록 돕는 참고용 체크예요. 점수는 높을수록 또래 평균에 가깝습니다.
         </p>
 
         {/* 살펴보면 좋을 점 */}

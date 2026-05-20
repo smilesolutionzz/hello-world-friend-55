@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import MindTrackTrialPaywall from "@/components/mind-track/MindTrackTrialPaywall";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -100,7 +101,8 @@ export default function MindTrackDashboard() {
         .limit(1)
         .maybeSingle();
       if (cancelled) return;
-      if (error || !data || (data.payment_status !== "paid" && data.payment_status !== "completed")) {
+      const allowed = data && ['paid', 'completed', 'trial'].includes(data.payment_status);
+      if (error || !allowed) {
         toast.info("아직 마음 트랙에 등록되지 않았어요");
         navigate("/mind-track", { replace: true });
         return;
@@ -287,6 +289,12 @@ export default function MindTrackDashboard() {
         <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
       </div>
     );
+  }
+
+  // 3일 무료 체험 게이트 — Day 4부터 결제 필요
+  const isTrial = enrollment.payment_status === 'trial';
+  if (isTrial && day >= 4) {
+    return <MindTrackTrialPaywall currentDay={day} totalDays={totalDays} />;
   }
 
   // SEO — 트랙별 og:title/description + FAQPage 구조화 데이터

@@ -190,6 +190,40 @@ export async function ensureMindTrackEnrollment(
   return { enrollmentId: created.id, hasBaseline };
 }
 
+/**
+ * Start a 3-day FREE trial of the 7-day Mind Track.
+ * - Reuses (or creates) an enrollment for the user.
+ * - Sets payment_status='trial' and started_at=now so Day 1 begins immediately.
+ * - Day 4+ gates show an upgrade paywall (handled in Dashboard).
+ * NO card required. Conversion happens on Day 4.
+ */
+export async function startMindTrackTrial(
+  overrides: QuizSeed = {},
+  audience: MindTrackAudience = 'child',
+): Promise<EnsureResult> {
+  const ensured = await ensureMindTrackEnrollment(overrides, '7d', audience);
+  if (!ensured.enrollmentId) return ensured;
+
+  const nowIso = new Date().toISOString();
+  const { error } = await supabase
+    .from('mind_track_enrollments')
+    .update({
+      payment_status: 'trial',
+      status: 'active',
+      started_at: nowIso,
+      current_day: 1,
+    })
+    .eq('id', ensured.enrollmentId)
+    // only flip if it isn't already paid/completed
+    .in('payment_status', ['pending', 'trial']);
+
+  if (error) {
+    console.warn('[mindTrackEnrollment] trial activation failed', error);
+    return { ...ensured, error: error.message };
+  }
+  return ensured;
+}
+
 /** Poll for the enrollment becoming payment_status='completed' after Toss confirm. */
 export async function waitForCompletedEnrollment(
   timeoutMs = 12_000,

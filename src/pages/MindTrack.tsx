@@ -490,16 +490,19 @@ const MindTrack: React.FC = () => {
       return;
     }
     if (!user) {
-      navigate('/auth?redirect=' + encodeURIComponent('/mind-track?postLogin=1'));
+      navigate('/auth?redirect=' + encodeURIComponent('/mind-track?postLogin=1&trial=1'));
       return;
     }
     setLoading(true);
     try {
-      const { ensureMindTrackEnrollment } = await import('@/lib/mindTrackEnrollment');
-      const res = await ensureMindTrackEnrollment({ goal: selectedGoal, concern });
+      const sp = new URLSearchParams(location.search);
+      const audienceParam = (sp.get('audience') || 'child') as 'child' | 'adult' | 'parent' | 'teen';
+      const { startMindTrackTrial } = await import('@/lib/mindTrackEnrollment');
+      const res = await startMindTrackTrial({ goal: selectedGoal, concern }, audienceParam);
       if (!res.enrollmentId) throw new Error(res.error || '등록 실패');
-      toast.success('등록 완료! 결제 페이지로 이동합니다.');
-      navigate('/pricing?product=mind_track_7');
+      trackEvent('mind_track_trial_start', { goal: selectedGoal, audience: audienceParam });
+      toast.success('3일 무료 체험을 시작합니다');
+      navigate('/mind-track/dashboard');
     } catch (e: any) {
       toast.error(e.message || '등록 중 오류가 발생했습니다');
     } finally {
@@ -519,21 +522,21 @@ const MindTrack: React.FC = () => {
     if (
       activeEnrollment &&
       (activeEnrollment.payment_status === 'paid' ||
-        activeEnrollment.payment_status === 'completed') &&
+        activeEnrollment.payment_status === 'completed' ||
+        activeEnrollment.payment_status === 'trial') &&
       !postLoginRedirecting
     ) {
-      // Preserve incoming UTM/day/after_video params so the dashboard can
-      // attribute the visit (e.g. arrived from daily-coaching email).
       const search = location.search || '';
       navigate(`/mind-track/dashboard${search}`, { replace: true });
     }
   }, [activeEnrollment?.id, activeEnrollment?.payment_status, postLoginRedirecting, navigate]);
 
-  // 리다이렉트 직전 깜빡임 방지 — 결제자면 빈 화면 반환
+  // 리다이렉트 직전 깜빡임 방지 — 결제자/체험자면 빈 화면 반환
   if (
     activeEnrollment &&
     (activeEnrollment.payment_status === 'paid' ||
-      activeEnrollment.payment_status === 'completed') &&
+      activeEnrollment.payment_status === 'completed' ||
+      activeEnrollment.payment_status === 'trial') &&
     !postLoginRedirecting
   ) {
     return (

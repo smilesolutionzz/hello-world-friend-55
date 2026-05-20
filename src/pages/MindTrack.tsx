@@ -582,6 +582,29 @@ const MindTrack: React.FC = () => {
     }
   }
 
+  // /check 결과에서 넘어온 부모를 위한 간결 뷰 (자녀 발달 컨텍스트 보존)
+  {
+    const sp = new URLSearchParams(location.search);
+    if (sp.get('from') === 'check') {
+      const area = (sp.get('area') as 'language' | 'emotion' | 'social' | 'focus') || 'language';
+      const age = sp.get('age');
+      const scoreRaw = sp.get('score');
+      const score = scoreRaw != null && scoreRaw !== '' ? Number(scoreRaw) : null;
+      const audience = (sp.get('audience') as 'child' | 'adult' | 'parent' | 'teen') || 'child';
+      return (
+        <>
+          <SEOHead
+            title="체크 결과로 시작하는 3일 무료 부모 코칭 | AIHPRO"
+            description="방금 본 자녀 발달 체크 결과를 그대로 이어 받아, 카드 등록 없이 3일 무료로 부모 코칭을 시작하세요."
+            canonicalUrl="https://aihpro.app/mind-track"
+          />
+          <UnifiedNavigation />
+          <MindTrackFromCheckView user={user} area={area} age={age} score={score} audience={audience} />
+        </>
+      );
+    }
+  }
+
   return (
     <>
       <SEOHead

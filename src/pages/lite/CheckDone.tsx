@@ -89,18 +89,35 @@ const AREA_COPY: Record<AreaCode, AreaCopy> = {
   },
 };
 
-/** 5점 척도 × 3문항 = 최대 15점. 역채점이므로 점수가 높을수록 "살펴볼 점이 많음". 100점 환산. */
+/**
+ * 발달 점수 (높을수록 좋음).
+ * 문항은 역채점(높게 답할수록 "걱정되는 모습이 잦음")이므로,
+ * 발달 점수 = ((최대점 - 응답합계) / (최대점 - 최소점)) × 100.
+ * 최소 3점(모두 1점) ~ 최대 15점(모두 5점) → 100점~0점.
+ */
 function toScore(total: number): number {
+  const min = 3;
   const max = 15;
-  const pct = Math.max(0, Math.min(100, Math.round((total / max) * 100)));
+  const pct = Math.max(0, Math.min(100, Math.round(((max - total) / (max - min)) * 100)));
   return pct;
 }
 
-/** 비위협적 카피: "이런 점을 함께 봐요" 톤 */
+/** 또래 평균 (참고치, 75점 기준). 실데이터 누적 전 임시 벤치마크. */
+const PEER_AVG = 75;
+
+/** 또래 대비 상태 카피. 발달 점수가 높을수록 편안한 톤. */
 function toToneLabel(score: number): { tag: string; color: string } {
-  if (score <= 40) return { tag: '편안한 편', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
-  if (score <= 65) return { tag: '살펴볼 점이 있어요', color: 'text-amber-700 bg-amber-50 border-amber-200' };
+  if (score >= PEER_AVG) return { tag: '또래 평균 수준', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+  if (score >= PEER_AVG - 20) return { tag: '살펴볼 점이 있어요', color: 'text-amber-700 bg-amber-50 border-amber-200' };
   return { tag: '함께 봐 주시면 좋아요', color: 'text-rose-700 bg-rose-50 border-rose-200' };
+}
+
+/** 또래 평균과의 비교 한 줄 (위협적이지 않게). */
+function toPeerLine(score: number): string {
+  const gap = score - PEER_AVG;
+  if (gap >= 5) return `또래 평균(${PEER_AVG}점)보다 ${gap}점 높아요`;
+  if (gap >= -4) return `또래 평균(${PEER_AVG}점)과 비슷한 수준이에요`;
+  return `또래 평균(${PEER_AVG}점)보다 ${Math.abs(gap)}점 낮은 편이에요`;
 }
 
 const CheckDone: React.FC = () => {

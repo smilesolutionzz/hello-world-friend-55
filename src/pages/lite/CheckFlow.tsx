@@ -220,6 +220,17 @@ const CheckFlow: React.FC = () => {
             </h1>
 
             {loadingQ && <p className="text-[15px] text-slate-500">불러오는 중…</p>}
+            {!loadingQ && fetchError && (
+              <div className="rounded-2xl bg-rose-50 border border-rose-100 p-4 mb-4">
+                <p className="text-[14px] text-rose-700 mb-3">{fetchError}</p>
+                <button
+                  onClick={() => area && fetchQuestions(area as AreaCode)}
+                  className="text-[14px] font-semibold text-rose-900 underline"
+                >
+                  다시 시도
+                </button>
+              </div>
+            )}
 
             <ol className="flex flex-col gap-7">
               {questions.map((q, idx) => (

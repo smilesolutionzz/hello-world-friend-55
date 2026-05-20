@@ -546,6 +546,42 @@ const MindTrack: React.FC = () => {
     );
   }
 
+  // ──────────────────────────────────────────────────────────
+  // /check → /mind-track 진입 (from=check): 단순화된 전용 화면.
+  // 체크 영역·연령·점수를 그대로 이어받아 큰 글씨로 보여주고
+  // 한 개의 명확한 CTA(3일 무료 코칭 시작)만 노출.
+  // ──────────────────────────────────────────────────────────
+  {
+    const sp = new URLSearchParams(location.search);
+    if (sp.get('from') === 'check' && !activeEnrollment) {
+      const areaParam = (sp.get('area') || 'language') as 'language' | 'emotion' | 'social' | 'focus';
+      const age = sp.get('age');
+      const scoreRaw = sp.get('score');
+      const score = scoreRaw != null && !Number.isNaN(Number(scoreRaw)) ? Number(scoreRaw) : null;
+      const audienceParam = (sp.get('audience') || 'child') as 'child' | 'adult' | 'parent' | 'teen';
+      const MindTrackFromCheckView = require('@/components/mind-track/MindTrackFromCheckView').default;
+      return (
+        <>
+          <SEOHead
+            title={`${age ?? ''}세 발달 체크 이후 · 7일 부모 코칭 무료 체험 | AIHPRO`}
+            description="방금 본 자녀 발달 체크 결과를 이어서 7일 부모 코칭으로. 카드 등록 없이 3일 무료 체험."
+            canonicalUrl="https://aihpro.app/mind-track"
+          />
+          <div className="min-h-screen bg-white">
+            <UnifiedNavigation />
+            <MindTrackFromCheckView
+              user={user}
+              area={areaParam}
+              age={age}
+              score={score}
+              audience={audienceParam}
+            />
+          </div>
+        </>
+      );
+    }
+  }
+
   return (
     <>
       <SEOHead
@@ -555,6 +591,7 @@ const MindTrack: React.FC = () => {
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
         <UnifiedNavigation />
+
 
         {/* 로그인 후 자동 이동 안내 — postLogin=1 + 결제 enrollment 존재 시 */}
         {postLoginRedirecting && (

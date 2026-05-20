@@ -587,6 +587,11 @@ export default function MindTrackWorkbook() {
     );
   }
 
+  // 7일 트랙은 별도 컴팩트 뷰로 분기
+  if (enrollment?.track_type === "mind_7day" && enrollment?.id) {
+    return <SevenDayWorkbookView enrollmentId={enrollment.id} />;
+  }
+
   if (!workbook) return null;
 
   const baseline = baselines.find((b) => b.measurement_point === "baseline");

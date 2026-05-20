@@ -23,6 +23,8 @@ function B2BFunnelTracker() {
 
 // Core Pages
 import Index from "./pages/Index";
+import CheckFlow from "./pages/lite/CheckFlow";
+import CheckDone from "./pages/lite/CheckDone";
 import HighlightAuth from "./pages/HighlightAuth";
 import ResetPassword from "./pages/ResetPassword";
 import DashboardRouter from "./pages/DashboardRouter";
@@ -226,6 +228,9 @@ const App = () => {
               <Routes>
           {/* ===== Core Routes ===== */}
           <Route path="/" element={<Index />} />
+          {/* ===== Lite Check (Day 2) — 비회원 발달체크 ===== */}
+          <Route path="/check" element={<CheckFlow />} />
+          <Route path="/check/done" element={<CheckDone />} />
           <Route path="/g/:token" element={<GuardianNotice />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/reset-password" element={<ResetPassword />} />

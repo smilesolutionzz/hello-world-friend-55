@@ -12,5 +12,5 @@ export const LITE_MODE = true;
 /** 홈에서 노출할 단 하나의 진입점 */
 export const LITE_PRIMARY_CTA = {
   label: '발달체크 시작하기',
-  href: '/mind-track?audience=child',
+  href: '/check',
 } as const;

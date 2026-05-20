@@ -8421,6 +8421,45 @@ export type Database = {
         }
         Relationships: []
       }
+      lite_assessments: {
+        Row: {
+          area_code: string
+          created_at: string
+          is_active: boolean
+          max_age_months: number
+          min_age_months: number
+          prompt: string
+          question_no: number
+          reverse_scored: boolean
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          area_code: string
+          created_at?: string
+          is_active?: boolean
+          max_age_months?: number
+          min_age_months?: number
+          prompt: string
+          question_no: number
+          reverse_scored?: boolean
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          area_code?: string
+          created_at?: string
+          is_active?: boolean
+          max_age_months?: number
+          min_age_months?: number
+          prompt?: string
+          question_no?: number
+          reverse_scored?: boolean
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: []
+      }
       mandatory_trainings: {
         Row: {
           created_at: string

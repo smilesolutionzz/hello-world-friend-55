@@ -256,18 +256,18 @@ const CheckDone: React.FC = () => {
       <div className="fixed bottom-0 inset-x-0 z-20 bg-white/95 backdrop-blur border-t border-slate-100">
         <div className="max-w-md mx-auto px-5 pt-3 pb-4 flex flex-col gap-2">
           <p className="text-[12px] text-slate-500 text-center mb-0.5">
-            다음 7일, 우리 아이에 맞게 시작해 볼게요
+            카드 등록 없이 · 지금 바로 시작
           </p>
 
-          {/* 메인: 7일 챌린지 */}
+          {/* 메인: 3일 무료 체험 */}
           <Link
             to={`/mind-track?audience=child&from=check&area=${result.area}`}
             className="w-full rounded-2xl bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between active:scale-[0.99] transition"
           >
             <span className="flex flex-col items-start">
-              <span className="text-[17px] font-semibold leading-tight">7일 챌린지 시작하기</span>
+              <span className="text-[17px] font-semibold leading-tight">3일 무료 체험 시작하기</span>
               <span className="text-[11px] text-white/70 mt-0.5">
-                {copy.shortLabel} 7일 부모 코칭 · ₩{MIND_TRACK_7_PRICE.toLocaleString('ko-KR')}
+                {copy.shortLabel} 7일 부모 코칭 · 4일차부터 ₩{MIND_TRACK_7_PRICE.toLocaleString('ko-KR')}
               </span>
             </span>
             <span className="text-[18px]">→</span>

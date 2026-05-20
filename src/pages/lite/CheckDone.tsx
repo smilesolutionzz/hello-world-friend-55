@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 
 /**
  * /check/done — Day 3 즉시 리포트
  * - 결제/로그인 0회. 결과 100% 공개. 블러/잠금 없음.
  * - 진단/장애/치료 단어 금지. "참고용 체크", "살펴볼 점" 톤.
- * - CTA 위계: 1순위 "우리 동네 기관 찾기" (크게), 2순위 "30일 변화 추적하기(선택)" (작게)
+ * - CTA: 1순위 "7일 챌린지 시작하기" (mind_track_7 결제), 2순위 "맞춤 치료사 구독" (티저).
+ *        위기 점수일 때만 작은 안전망 링크로 /expert-hiring?urgent=true 노출.
  */
 
 type AreaCode = 'language' | 'emotion' | 'social' | 'focus';

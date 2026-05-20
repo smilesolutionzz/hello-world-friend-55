@@ -290,6 +290,13 @@ export default function MindTrackDashboard() {
     );
   }
 
+  // 3일 무료 체험 게이트 — Day 4부터 결제 필요
+  const isTrial = enrollment.payment_status === 'trial';
+  if (isTrial && day >= 4) {
+    const MindTrackTrialPaywall = require('@/components/mind-track/MindTrackTrialPaywall').default;
+    return <MindTrackTrialPaywall currentDay={day} totalDays={totalDays} />;
+  }
+
   // SEO — 트랙별 og:title/description + FAQPage 구조화 데이터
   const seoTitle = isShortTrack
     ? "7일 마음 트랙 · 내 대시보드 | AIHPRO"

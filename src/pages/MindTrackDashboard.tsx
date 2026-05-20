@@ -100,7 +100,8 @@ export default function MindTrackDashboard() {
         .limit(1)
         .maybeSingle();
       if (cancelled) return;
-      if (error || !data || (data.payment_status !== "paid" && data.payment_status !== "completed")) {
+      const allowed = data && ['paid', 'completed', 'trial'].includes(data.payment_status);
+      if (error || !allowed) {
         toast.info("아직 마음 트랙에 등록되지 않았어요");
         navigate("/mind-track", { replace: true });
         return;

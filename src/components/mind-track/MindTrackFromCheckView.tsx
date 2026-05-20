@@ -75,7 +75,7 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-white text-slate-900 break-keep">
-      <main className="max-w-xl mx-auto px-5 pt-8 pb-40">
+      <main className="max-w-xl mx-auto px-5 pt-8 pb-[220px]">
         {/* 컨텍스트 배너 — 체크 정보 이어받기 */}
         <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 mb-6 flex items-center gap-3">
           <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
@@ -143,8 +143,11 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
       </main>
 
       {/* 하단 고정 CTA — 큰 글씨 */}
-      <div className="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-100">
-        <div className="max-w-xl mx-auto px-5 pt-3 pb-4">
+      <div
+        className="fixed inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-slate-100"
+        style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }}
+      >
+        <div className="max-w-xl mx-auto px-5 pt-3 pb-3">
           <p className="text-[13px] text-slate-500 text-center mb-2">
             카드 등록 없이 · 지금 바로 시작 · 4일차부터 ₩{MIND_TRACK_7_PRICE.toLocaleString()}
           </p>

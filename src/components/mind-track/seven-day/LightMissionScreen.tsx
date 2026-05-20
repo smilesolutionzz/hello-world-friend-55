@@ -125,6 +125,29 @@ export default function LightMissionScreen({
           )}
         </Button>
       </Card>
+
+      {/* 보조 도구 — 미션 외 옵션 */}
+      {HELPER_TOOL[day] && (() => {
+        const tool = HELPER_TOOL[day]!;
+        const Icon = tool.icon;
+        return (
+          <Link
+            to={tool.href}
+            className="flex items-center justify-between gap-3 rounded-2xl bg-white border border-slate-200 px-4 py-3 hover:border-slate-300 transition-colors"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0">
+                <Icon className="w-4 h-4 text-slate-700" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-slate-900 truncate">{tool.label}</p>
+                <p className="text-xs text-slate-400">{tool.hint}</p>
+              </div>
+            </div>
+            <ArrowUpRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
+          </Link>
+        );
+      })()}
     </div>
   );
 }

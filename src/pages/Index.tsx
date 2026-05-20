@@ -33,6 +33,8 @@ import { CopilotBubble } from '@/components/copilot/CopilotBubble';
 import B2BEntryBanner from '@/components/landing/B2BEntryBanner';
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import DioramaIntro from '@/components/intro/DioramaIntro';
+import { LITE_MODE } from '@/config/liteMode';
+import LiteHome from '@/components/landing/LiteHome';
 
 
 const structuredData = {
@@ -157,6 +159,25 @@ const Index = () => {
     // 영구 차단은 handleComplete()에서 user_onboarding_data row가 생성될 때만 적용
     setShowOnboarding(false);
   }, []);
+
+  // 🚦 LITE_MODE: 부모챌린지 스타일 라이트 홈 — 단일 진입점만 노출
+  if (LITE_MODE) {
+    return (
+      <>
+        <SEOHead
+          title={t.seo.title}
+          description={t.seo.description}
+          keywords="발달체크,아동발달,부모,체크"
+          canonicalUrl="https://aihpro.app"
+          structuredData={structuredData}
+        />
+        <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
+        <ErrorBoundary>
+          <LiteHome />
+        </ErrorBoundary>
+      </>
+    );
+  }
 
   return (
     <>

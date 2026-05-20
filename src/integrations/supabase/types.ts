@@ -2218,6 +2218,104 @@ export type Database = {
         }
         Relationships: []
       }
+      center_directory: {
+        Row: {
+          address: string | null
+          created_at: string
+          id: string
+          intro: string | null
+          is_active: boolean
+          is_partner: boolean
+          name: string
+          phone: string | null
+          region: string
+          slug: string
+          specialties: string[]
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          intro?: string | null
+          is_active?: boolean
+          is_partner?: boolean
+          name: string
+          phone?: string | null
+          region: string
+          slug: string
+          specialties?: string[]
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          intro?: string | null
+          is_active?: boolean
+          is_partner?: boolean
+          name?: string
+          phone?: string | null
+          region?: string
+          slug?: string
+          specialties?: string[]
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      center_inquiries: {
+        Row: {
+          center_id: string | null
+          check_summary: Json | null
+          child_age: string | null
+          contact: string
+          created_at: string
+          id: string
+          memo: string | null
+          name: string
+          source_path: string | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          center_id?: string | null
+          check_summary?: Json | null
+          child_age?: string | null
+          contact: string
+          created_at?: string
+          id?: string
+          memo?: string | null
+          name: string
+          source_path?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          center_id?: string | null
+          check_summary?: Json | null
+          child_age?: string | null
+          contact?: string
+          created_at?: string
+          id?: string
+          memo?: string | null
+          name?: string
+          source_path?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_inquiries_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_directory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenge_baselines: {
         Row: {
           baseline_scores: Json

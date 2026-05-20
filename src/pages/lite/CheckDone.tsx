@@ -287,12 +287,20 @@ const CheckDone: React.FC = () => {
 
           {/* 위기 안전망 — 조건부 */}
           {showSafetyNet && (
-            <Link
-              to="/expert-hiring?urgent=true"
-              className="text-center text-[12px] text-slate-400 underline underline-offset-2 hover:text-slate-600 mt-1"
-            >
-              걱정이 크다면 전문가에게 바로 도움받기
-            </Link>
+            <>
+              <Link
+                to="/expert-hiring?urgent=true"
+                className="text-center text-[12px] text-slate-400 underline underline-offset-2 hover:text-slate-600 mt-1"
+              >
+                걱정이 크다면 전문가에게 바로 도움받기
+              </Link>
+              <Link
+                to={`/find-center?region=${encodeURIComponent('서울')}`}
+                className="text-center text-[12px] text-slate-400 underline underline-offset-2 hover:text-slate-600"
+              >
+                우리 동네 기관 찾기
+              </Link>
+            </>
           )}
         </div>
       </div>

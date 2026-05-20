@@ -261,7 +261,7 @@ const CheckDone: React.FC = () => {
 
           {/* 메인: 3일 무료 체험 */}
           <Link
-            to={`/mind-track?audience=child&from=check&area=${result.area}`}
+            to={`/mind-track?audience=child&from=check&area=${result.area}&age=${encodeURIComponent(result.age)}&score=${score}`}
             className="w-full rounded-2xl bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between active:scale-[0.99] transition"
           >
             <span className="flex flex-col items-start">

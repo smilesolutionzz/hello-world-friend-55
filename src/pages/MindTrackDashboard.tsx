@@ -628,17 +628,6 @@ const FAQ_30: { q: string; a: string }[] = [
   { q: "전문가 상담은 어떻게 받나요?", a: "대시보드 빠른 메뉴의 '전문가 상담'에서 언제든 매칭 가능하며, 30일 구독자에게는 매월 무료 상담 크레딧이 자동 지급됩니다." },
 ];
 
-function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return (
-    <div className="bg-slate-50 rounded-2xl px-3 py-2.5 flex items-center gap-2">
-      {icon}
-      <div className="leading-tight">
-        <div className="text-[10px] text-slate-500">{label}</div>
-        <div className="text-sm font-bold text-slate-900">{value}</div>
-      </div>
-    </div>
-  );
-}
 
 function QuickLink({
   icon, title, desc, onClick,

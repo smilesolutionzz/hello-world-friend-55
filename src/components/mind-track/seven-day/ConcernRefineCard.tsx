@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Sparkles, RefreshCcw, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import RegenerationProgressOverlay from "./RegenerationProgressOverlay";
 
 interface Props {
   enrollmentId: string;
@@ -109,6 +110,8 @@ export default function ConcernRefineCard({
   }
 
   return (
+    <>
+    <RegenerationProgressOverlay open={loading} />
     <Card className="bg-white rounded-3xl border-[#C8B88A]/50 ring-1 ring-[#C8B88A]/20 p-5 space-y-3 shadow-sm">
       <div className="flex items-center justify-between">
         <Badge className="bg-[#C8B88A]/15 text-[#8a7a4d] border-[#C8B88A]/30 hover:bg-[#C8B88A]/20">
@@ -181,5 +184,6 @@ export default function ConcernRefineCard({
         기존 Day 1~7 맞춤 미션은 새 미션으로 교체됩니다. 체크인 기록은 그대로 보존돼요.
       </p>
     </Card>
+    </>
   );
 }

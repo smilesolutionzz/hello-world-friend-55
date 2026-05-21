@@ -395,6 +395,47 @@ export default function MindTrackDashboard() {
                   )}
                 </div>
 
+                {/* 지금 할 일 1-2-3 — 단계별 체크리스트 */}
+                {(() => {
+                  const steps =
+                    todayMission?.action_steps && todayMission.action_steps.length > 0
+                      ? todayMission.action_steps.slice(0, 3)
+                      : [
+                          '조용한 자리를 잡고 휴대폰 알림을 잠깐 꺼 주세요.',
+                          `미션 카드를 열고 안내대로 ${todayMission?.estimated_minutes ?? 5}분 진행해요.`,
+                          '끝나면 오늘 느낀 점을 한 줄로 기록해요.',
+                        ];
+                  return (
+                    <div className="mb-5 rounded-2xl bg-[#FBF8F1] border border-[#C8B88A]/40 px-4 py-4">
+                      <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#8a7a4d] mb-2.5">
+                        지금 할 일 · {steps.length}단계
+                      </p>
+                      <ol className="flex flex-col gap-2.5">
+                        {steps.map((s, i) => (
+                          <li key={i} className="flex items-start gap-2.5">
+                            <span
+                              className={`shrink-0 mt-0.5 w-5 h-5 rounded-full text-[11px] font-bold flex items-center justify-center tabular-nums ${
+                                todayDone
+                                  ? 'bg-emerald-500 text-white'
+                                  : 'bg-white border border-[#C8B88A]/60 text-[#8a7a4d]'
+                              }`}
+                            >
+                              {todayDone ? <CheckCircle2 className="w-3 h-3" /> : i + 1}
+                            </span>
+                            <p
+                              className={`text-[14px] leading-relaxed ${
+                                todayDone ? 'text-slate-500 line-through' : 'text-slate-800'
+                              }`}
+                            >
+                              {s}
+                            </p>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  );
+                })()}
+
                 <Button
                   onClick={() => navigate(`/mind-track/workbook?day=${day}&openMission=1`)}
                   className="w-full h-14 text-[16px] font-bold bg-slate-900 hover:bg-black text-white rounded-2xl"

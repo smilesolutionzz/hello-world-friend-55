@@ -153,8 +153,14 @@ const CheckDone: React.FC = () => {
   if (!result) return null;
 
   const copy = AREA_COPY[result.area];
-  const score = toScore(result.total);
+  const questionCount = result.questions?.length || Object.keys(result.answers).length || 5;
+  const score = toScore(result.total, questionCount);
   const tone = toToneLabel(score);
+  // 하이라이트: 가장 강하게(4~5) 표시된 문항 추출
+  const highlights = (result.questions ?? [])
+    .map((q) => ({ ...q, value: result.answers[q.question_no] ?? 0 }))
+    .filter((q) => q.value >= 4)
+    .sort((a, b) => b.value - a.value);
   // 위기 안전망: 전체 점수 매우 낮거나, 감정 영역에서 평균 이하
   const showSafetyNet = score < 40 || (result.area === 'emotion' && score < 50);
 

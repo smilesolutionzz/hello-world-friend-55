@@ -46,13 +46,38 @@ const isExpiredJwtError = (error: unknown) => {
   return maybeError.code === 'PGRST303' || maybeError.message?.toLowerCase().includes('jwt expired');
 };
 
-const loadLiteQuestions = (code: AreaCode) =>
-  supabase
+// 클라이언트 확장 문항: DB 3개 + 여기 2개 = 영역당 5문항.
+// DB 마이그레이션 없이 리포트 깊이를 키우기 위함. question_no는 100+ 로 충돌 방지.
+const EXTRA_QUESTIONS: Record<AreaCode, { question_no: number; prompt: string }[]> = {
+  language: [
+    { question_no: 101, prompt: '또래에 비해 말 길이가 짧거나 단어 선택이 단조롭다' },
+    { question_no: 102, prompt: '책이나 영상의 내용을 자기 말로 다시 설명하는 것을 어려워한다' },
+  ],
+  emotion: [
+    { question_no: 101, prompt: '잠들기 어렵거나 깨는 횟수가 늘었고, 컨디션 기복이 크다' },
+    { question_no: 102, prompt: '평소 좋아하던 활동에도 흥미를 덜 보이는 날이 있다' },
+  ],
+  social: [
+    { question_no: 101, prompt: '눈맞춤이나 인사 등 기본적인 사회적 반응이 평소보다 줄었다' },
+    { question_no: 102, prompt: '단체 활동에서 자기 차례를 기다리거나 규칙을 지키는 것을 어려워한다' },
+  ],
+  focus: [
+    { question_no: 101, prompt: '숙제·정리 등 해야 할 일을 미루거나 시작하지 못한다' },
+    { question_no: 102, prompt: '실수가 잦거나 같은 실수를 반복한다(물건 분실, 빠뜨림 등)' },
+  ],
+};
+
+const loadLiteQuestions = async (code: AreaCode) => {
+  const res = await supabase
     .from('lite_assessments')
     .select('area_code, question_no, prompt')
     .eq('area_code', code)
     .eq('is_active', true)
     .order('question_no', { ascending: true });
+  if (res.error || !res.data) return res;
+  const extras = EXTRA_QUESTIONS[code].map((q) => ({ area_code: code, ...q }));
+  return { ...res, data: [...res.data, ...extras] };
+};
 
 const CheckFlow: React.FC = () => {
   const navigate = useNavigate();

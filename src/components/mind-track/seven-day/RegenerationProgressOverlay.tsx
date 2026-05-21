@@ -1,9 +1,11 @@
 /**
  * Day 1~7 맞춤 미션 재생성 — 인포그래픽/애니메이션 진행 오버레이
- * 사용자에게 "AI가 발달·심리 이론을 근거로 7일 미션을 설계하는 중"이라는 과정을
- * 단계적으로 시각화해서 보여줍니다.
+ *
+ * sessionId 가 전달되면 mind_track_regen_progress 테이블을 폴링해
+ * 백엔드 단계(parse → map → design → personalize → verify → done)와
+ * 실시간 동기화됩니다. 각 단계에는 발달·심리 이론 근거가 표기됩니다.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Brain,
@@ -14,8 +16,9 @@ import {
   CheckCircle2,
   Loader2,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-interface Step {
+interface StepDef {
   key: string;
   icon: React.ComponentType<{ className?: string }>;
   title: string;
@@ -23,7 +26,7 @@ interface Step {
   detail: string;
 }
 
-const STEPS: Step[] = [
+const STEPS: StepDef[] = [
   {
     key: "parse",
     icon: Brain,
@@ -61,21 +64,93 @@ const STEPS: Step[] = [
   },
 ];
 
-export default function RegenerationProgressOverlay({ open }: { open: boolean }) {
-  const [active, setActive] = useState(0);
+const STAGE_ORDER = ["parse", "map", "design", "personalize", "verify", "done"];
 
+interface ProgressRow {
+  stage: string;
+  percent: number;
+  message: string | null;
+  theory: string | null;
+}
+
+export default function RegenerationProgressOverlay({
+  open,
+  sessionId,
+}: {
+  open: boolean;
+  sessionId?: string;
+}) {
+  const [progress, setProgress] = useState<ProgressRow | null>(null);
+  const [fallbackIdx, setFallbackIdx] = useState(0);
+  const pollRef = useRef<number | null>(null);
+
+  // Real polling against mind_track_regen_progress
+  useEffect(() => {
+    if (!open || !sessionId) return;
+    let cancelled = false;
+
+    const tick = async () => {
+      const { data } = await supabase
+        .from("mind_track_regen_progress")
+        .select("stage, percent, message, theory")
+        .eq("session_id", sessionId)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (cancelled) return;
+      if (data && data.length > 0) {
+        setProgress(data[0] as ProgressRow);
+      }
+    };
+
+    tick();
+    pollRef.current = window.setInterval(tick, 900) as unknown as number;
+    return () => {
+      cancelled = true;
+      if (pollRef.current) window.clearInterval(pollRef.current);
+      pollRef.current = null;
+    };
+  }, [open, sessionId]);
+
+  // Fallback animation when sessionId not provided OR before first row arrives
   useEffect(() => {
     if (!open) {
-      setActive(0);
+      setFallbackIdx(0);
+      setProgress(null);
       return;
     }
-    const id = setInterval(() => {
-      setActive((i) => (i + 1) % STEPS.length);
-    }, 2200);
-    return () => clearInterval(id);
-  }, [open]);
+    if (progress) return;
+    const id = window.setInterval(() => {
+      setFallbackIdx((i) => (i + 1) % STEPS.length);
+    }, 1800);
+    return () => window.clearInterval(id);
+  }, [open, progress]);
 
   if (!open) return null;
+
+  // Determine active step index from real progress (or fallback)
+  let activeIdx = fallbackIdx;
+  let percent = Math.min(95, ((fallbackIdx + 1) / (STEPS.length + 1)) * 100);
+  let liveMessage: string | null = null;
+  let liveTheory: string | null = null;
+  let isDone = false;
+  let isError = false;
+
+  if (progress) {
+    if (progress.stage === "done") {
+      activeIdx = STEPS.length - 1;
+      percent = 100;
+      isDone = true;
+    } else if (progress.stage === "error") {
+      isError = true;
+      percent = progress.percent ?? 100;
+    } else {
+      const idx = STAGE_ORDER.indexOf(progress.stage);
+      activeIdx = idx >= 0 && idx < STEPS.length ? idx : fallbackIdx;
+      percent = Math.max(5, Math.min(99, progress.percent ?? percent));
+    }
+    liveMessage = progress.message;
+    liveTheory = progress.theory;
+  }
 
   return (
     <div className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -100,26 +175,54 @@ export default function RegenerationProgressOverlay({ open }: { open: boolean })
           </div>
           <div className="relative">
             <div className="flex items-center gap-2 text-[11px] tracking-[0.2em] text-[#C8B88A] mb-1">
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              {isDone ? (
+                <CheckCircle2 className="w-3.5 h-3.5" />
+              ) : (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              )}
               MIND TRACK · PERSONALIZATION ENGINE
             </div>
             <h3 className="text-lg font-bold leading-tight break-keep">
-              당신의 고민을 근거로
-              <br />
-              Day 1~7 미션을 설계하고 있어요
+              {isDone
+                ? "Day 1~7 맞춤 미션 생성 완료"
+                : isError
+                ? "잠시 문제가 발생했어요"
+                : "당신의 고민을 근거로\nDay 1~7 미션을 설계하고 있어요"}
             </h3>
             <p className="text-xs text-white/60 mt-2">
-              발달·심리 이론 기반 5단계 · 평균 15~30초
+              발달·심리 이론 기반 5단계 · 실시간 진행률 {Math.round(percent)}%
             </p>
           </div>
         </div>
+
+        {/* Live message */}
+        {(liveMessage || liveTheory) && (
+          <div className="px-5 pt-4">
+            <div
+              className={`rounded-2xl border p-3 text-xs leading-relaxed break-keep ${
+                isError
+                  ? "border-rose-200 bg-rose-50 text-rose-800"
+                  : "border-[#C8B88A]/40 bg-[#FAF7EE] text-slate-700"
+              }`}
+            >
+              {liveMessage && <p className="font-medium">{liveMessage}</p>}
+              {liveTheory && !isError && (
+                <p className="text-[11px] text-[#8a7a4d] mt-1">근거 · {liveTheory}</p>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Steps */}
         <div className="p-5 space-y-3">
           {STEPS.map((s, i) => {
             const Icon = s.icon;
             const state =
-              i < active ? "done" : i === active ? "active" : "pending";
+              i < activeIdx || isDone
+                ? "done"
+                : i === activeIdx
+                ? "active"
+                : "pending";
             return (
               <motion.div
                 key={s.key}
@@ -206,18 +309,25 @@ export default function RegenerationProgressOverlay({ open }: { open: boolean })
           })}
         </div>
 
-        {/* Footer wave */}
+        {/* Real progress bar */}
         <div className="px-5 pb-5">
           <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
             <motion.div
-              className="h-full bg-gradient-to-r from-[#C8B88A] via-amber-400 to-[#C8B88A]"
-              animate={{ x: ["-100%", "100%"] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: "linear" }}
-              style={{ width: "60%" }}
+              className={`h-full ${
+                isError
+                  ? "bg-rose-400"
+                  : "bg-gradient-to-r from-[#C8B88A] via-amber-400 to-[#C8B88A]"
+              }`}
+              animate={{ width: `${percent}%` }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             />
           </div>
           <p className="text-[11px] text-slate-400 text-center mt-2 break-keep">
-            완료되면 Day 1부터 새 미션이 자동으로 반영돼요
+            {isDone
+              ? "Day 1부터 새 미션이 자동으로 반영됐어요"
+              : isError
+              ? "잠시 후 다시 시도해주세요"
+              : "완료되면 Day 1부터 새 미션이 자동으로 반영돼요"}
           </p>
         </div>
       </motion.div>

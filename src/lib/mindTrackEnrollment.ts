@@ -213,6 +213,7 @@ export async function startMindTrackTrial(
   const { error } = await supabase
     .from('mind_track_enrollments')
     .update({
+      track_type: 'mind_7day',
       payment_status: 'trial',
       status: 'active',
       started_at: nowIso,

@@ -1722,24 +1722,29 @@ export default function MindTrackWorkbook() {
                 )}
 
                 {/* 컨디션 슬라이더 */}
-                <div className="space-y-1">
-                  <div className="text-[12px] font-semibold text-slate-700">오늘 어땠어요?</div>
+                <div className="space-y-2 rounded-2xl bg-slate-50 p-4">
+                  <div className="space-y-0.5">
+                    <div className="text-[13px] font-semibold text-slate-900">미션을 마친 지금, 컨디션을 살짝 기록해 주세요</div>
+                    <p className="text-[11px] text-slate-500 leading-relaxed break-keep">
+                      점수는 평가가 아니라 "지금 내 상태" 표시예요. 0에 가까울수록 힘들고, 10에 가까울수록 편해요. 매일 기록하면 7일 뒤 변화 그래프로 보여드려요.
+                    </p>
+                  </div>
                   {[
-                    { state: moodScore, set: setMoodScore, label: "마음 상태", icon: Heart, low: "무거움", high: "편안함" },
-                    { state: energyScore, set: setEnergyScore, label: "몸의 여유", icon: Zap, low: "지침", high: "가벼움" },
-                    { state: clarityScore, set: setClarityScore, label: "생각 정리", icon: Eye, low: "복잡함", high: "선명함" },
+                    { state: moodScore, set: setMoodScore, label: "지금 마음이 얼마나 편한가요?", icon: Heart, low: "많이 무거움", high: "꽤 편안함" },
+                    { state: energyScore, set: setEnergyScore, label: "지금 몸이 얼마나 가벼운가요?", icon: Zap, low: "많이 지침", high: "꽤 가벼움" },
+                    { state: clarityScore, set: setClarityScore, label: "지금 생각이 얼마나 정리됐나요?", icon: Eye, low: "많이 복잡함", high: "꽤 선명함" },
                   ].map((s) => (
-                    <div key={s.label} className="space-y-1 pt-1">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 text-sm font-medium text-slate-700">
-                          <s.icon className="w-3.5 h-3.5" /> {s.label}
+                    <div key={s.label} className="space-y-1 pt-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 text-[13px] font-medium text-slate-700 break-keep">
+                          <s.icon className="w-3.5 h-3.5 shrink-0" /> {s.label}
                         </div>
-                        <span className="text-base font-bold text-slate-900 tabular-nums">{s.state}</span>
+                        <span className="text-base font-bold text-slate-900 tabular-nums">{s.state}<span className="text-[11px] font-normal text-slate-400">/10</span></span>
                       </div>
                       <Slider value={[s.state]} onValueChange={(v) => s.set(v[0])} min={0} max={10} step={1} />
                       <div className="flex justify-between text-[11px] text-slate-400">
-                        <span>{s.low}</span>
-                        <span>{s.high}</span>
+                        <span>0 · {s.low}</span>
+                        <span>{s.high} · 10</span>
                       </div>
                     </div>
                   ))}

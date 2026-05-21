@@ -193,17 +193,26 @@ Deno.serve(async (req) => {
       if (mErr) throw mErr;
     }
 
-    // 5. Activate enrollment
+    // 5. Activate enrollment — KEEP 'trial' as-is (3일 무료체험 사용자 보호).
+    //    Only auto-complete payment status for already-paid users.
+    const { data: existingEnroll } = await supabase
+      .from("mind_track_enrollments")
+      .select("payment_status")
+      .eq("id", input.enrollmentId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const keepTrial = existingEnroll?.payment_status === "trial";
     await supabase
       .from("mind_track_enrollments")
       .update({
-        payment_status: "completed",
+        payment_status: keepTrial ? "trial" : "completed",
         status: "active",
         started_at: new Date().toISOString(),
         current_day: 1,
       })
       .eq("id", input.enrollmentId)
       .eq("user_id", user.id);
+
 
     return new Response(
       JSON.stringify({ success: true, workbookId: workbook.id, baselineId: baseline.id }),

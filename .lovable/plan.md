@@ -1,101 +1,77 @@
-# 기존 핵심 기능 × Mind Track 7일 — 역할 재정의 플랜
+# 3일 무료체험 인테이크 퍼널 (이탈 방지)
 
-## 문제 인식
+## 지금 무엇이 문제였나
+- 3일 무료체험 시작 직후 곧바로 `/mind-track/dashboard`로 보냄 → 빈 미션 카드 → "지금 시작하기" 클릭 → 워크북 없음 → `/mind-track/start`로 튕김 → trial 상태가 필터에서 빠져 "진행중인 트랙이 없습니다" 토스트 → `/mind-track`로 리다이렉트 → **완전 이탈**.
+- (방금 즉시 수정함) `/mind-track/start`가 trial 상태도 받도록 픽스. 이걸로 죽는 화면은 사라졌지만, 여전히 "왜 내가 여기 있는지" 모르는 12문항 진단 화면이 첫인상이 됨.
 
-지금 `/check`(간편검사) · `/assessment`(심층검사) · `/metaverse-voice`(게임상담/VAD) · `/report-generator-pro`(전문가 리포트) · `/expert-hiring`(전문가 상담) 같은 핵심 자산이 **각자 따로 떠 있음**. 새로 만든 `mind_track_7`(7일 트랙)이 메인 결제 상품으로 자리잡으면서, **나머지 기능이 "이 7일 안에서 언제 쓰이는가"**가 불분명해진 상태.
+## 새 플로우 (5단계, 한 페이지·세로 스와이프)
 
-이걸 풀어내는 통합 동선을 제안.
-
----
-
-## 01. 기능별 역할 재정의 (Funnel Position)
-
-```text
-[ Top of Funnel : 무료 입구 ]
-  └ /check  (간편검사 5~10문항)        ← 신규 진입자 호기심 해소
-      → /check/done  → mind_track_7 결제 유도 (이미 적용됨)
-
-[ Mid Funnel : 메인 결제 상품 ]
-  └ /mind-track  (7일 트랙, ₩7,900 · 3일 무료체험)
-      ├ Day 1   Heavy  → 베이스라인 진단  ▶ /assessment 의 핵심 척도 1개 임베드
-      ├ Day 2~3 Light  → 5분 미션 카드
-      ├ Day 4   Heavy  → 전문가 매칭     ▶ /expert-hiring AI 매칭 결과 임베드
-      ├ Day 5~6 Light  → 5분 미션 + 셀프 리플렉션
-      └ Day 7   Heavy  → 비교 리포트     ▶ /report-generator-pro 의 "간이판" 임베드
-
-[ Bottom of Funnel : 업셀 ]
-  ├ 7일 완주자 → mind_track_extend_23 (₩12,900) 또는 mind_track_30
-  ├ 깊은 분석  → /report-generator-pro  (단건 결제 or 구독자 무료 1회)
-  ├ 전문가 1:1 → /expert-hiring          (구독자 할인 + 월 무료 크레딧)
-  └ 정서 환기  → /metaverse-voice (게임상담)   ← 미션 보조 도구로 위치 변경
-
-[ 평생 자산 ]
-  └ /my-journey  RCI 기반 종단 대시보드  ← 7일·30일·심층검사 결과를 한 곳에 누적
+```
+[/mind-track/start?intake=1]
+  Step 1  Why  → 환영 + "당신을 위해 첫 3일을 짜드릴게요"
+  Step 2  Concern → 고민 한 줄 입력 (체크 결과/audience 자동 프리필)
+  Step 3  AI Expand → mind-track-concern-polish 호출, 다듬어진 문장 + 핵심 키워드 3개
+  Step 4  Day1-3 Preview → 오늘·내일·모레 미션 카드 3장 + 5분 행동 액션
+  Step 5  Email Subscribe → "매일 아침 7시, 미션 + 관련 영상" 토글 + 메일 입력 → /dashboard
 ```
 
-핵심: **`/check`은 "입구", `mind_track_7`은 "메인 코스", 나머지는 "코스 안에서 호출되거나 코스 후에 업셀되는 모듈"**로 위치를 명확히 한다.
+각 단계 진입/이탈을 `mind_track_onboarding_events`에 기록 → 기존 `/mind-track/onboarding`(funnel 분석 페이지)에서 바로 확인 가능.
 
----
+## 단계별 구현
 
-## 02. Day별로 어떤 기존 기능을 끌어쓸지
+### Step 2 — 고민 입력 (프리필 + 가이드)
+- 체크에서 넘어왔다면(`?from=check&area=...`) 영역별 시드 문장 자동 채움.
+  - 예: `area=emotion` → "아이가 감정이 폭발하는 순간을 어떻게 다뤄야 할지 모르겠어요."
+- 글자수 카운터 + "어떤 상황인지 한 문장으로" 헬퍼.
 
-| Day | 타입 | 호출되는 기존 기능 | 호출 방식 |
-|-----|------|---------------------|-----------|
-| Day 1 | Heavy | `/assessment` 의 audience별 핵심 척도 1개 (예: child→ABA 관찰, adult→번아웃, parent→양육스트레스) | Day1DiagnosisScreen 내부에서 임베드. 결과는 `baseline_data` jsonb에 저장 |
-| Day 2 | Light | 셀프 미션 + (옵션) `/metaverse-voice` 짧은 정서 환기 5분 | 미션 카드 하단 "감정이 무거우면 게임상담 5분" 보조 링크 |
-| Day 3 | Light | 셀프 미션 + `/concern-storage` 고민 메모 | 동일 패턴, 보조 링크 |
-| Day 4 | Heavy | `/expert-hiring` AI 매칭 결과 (audience 태그 기반) | Day4ExpertMatchScreen 내부에서 추천 카드 표시, 결제는 expert-hiring 페이지로 이동. **스킵 가능** |
-| Day 5 | Light | 셀프 미션 + `/voice-counseling` 1회 짧은 음성 일기 | 보조 링크 |
-| Day 6 | Light | 셀프 미션 + ABA(child) / 셀프코칭(adult) 기록 폼 | 미션 카드에 폼 인라인 |
-| Day 7 | Heavy | `/report-generator-pro` 의 **mind_7day 전용 간이 리포트** | Day7ReportScreen에서 baseline_data + 7일 체크인 데이터로 생성. PDF는 `day7_report_url`에 저장 |
+### Step 3 — AI Expand (기존 엣지펑션 재사용)
+- `mind-track-concern-polish` 호출 → 다듬어진 한 문장 + 핵심 키워드(감정/맥락/원하는 변화) 3개.
+- 결과를 카드로 보여주며 "이대로 진행" / "다시 다듬기" 두 버튼.
+- 실패 시 원문 그대로 진행(절대 막지 않음).
 
-→ 게임상담·음성상담·고민함은 **"Day 안에서 호출되는 보조 도구"**로 위치가 분명해짐. 단독으로도 쓰지만, 7일 트랙 안에서는 미션 보조로 등장.
+### Step 4 — Day 1-3 미션 프리뷰
+- `mind-track-init` 호출 (이미 존재) — 다듬어진 concern + audience + (있다면) check 점수 전달.
+- 응답에서 Day 1·2·3 미션 + `action_steps`를 카드 3장으로 표시.
+- 각 카드: `Day N` 배지 / 미션 제목 / 5분 행동 액션 1-2-3 / 예상 시간.
+- "다음" 누르면 워크북이 이미 생성된 상태로 Step 5 진입.
 
----
+### Step 5 — 이메일 구독 (실제 발송)
+- 토글 ON 기본값, 메일 입력란(로그인 이메일 프리필).
+- "매일 아침 7시, 오늘 미션 카드 + 관련 영상 1편" 카피 + 작은 미리보기 썸네일.
+- 저장: `user_coaching_goals` upsert (`email_opt_in=true`, `email`, `track_focus`, `goal_text=다듬어진 concern`).
+- 즉시 1통 발송: `send-daily-coaching-email` invoke (Day 1 미션 + 영상 1편 + "내일 또 보내드릴게요" 문구).
+- 발송 성공 토스트 → `/mind-track/dashboard?welcome=1`.
 
-## 03. 비-가입자 / 비-결제자 경로
+### 진입점 변경
+- `MindTrackFromCheckView.handleStart`: 등록 성공 후 `/mind-track/dashboard` → **`/mind-track/start?intake=1`** 로 변경.
+- `PaymentComplete`의 mind_track 분기도 동일하게 intake 우선.
+
+## 변경 파일
 
 ```text
-비가입자
-  → /check (무료) → 결과 화면에서 mind_track_7 3일 무료체험 CTA
-
-가입했지만 mind_track 미결제
-  → /assessment 무료 트라이얼 3종(우울·스트레스·ADHD)만 노출
-  → /metaverse-voice, /voice-counseling 은 짧은 무료 1회 (현 정책 유지)
-  → 결과 페이지마다 mind_track_7 CTA
-
-mind_track_7 결제자 (구독자)
-  → Day 진행 중에는 위 표대로 기존 기능이 미션 안에서 호출됨
-  → 트랙 외에도 /assessment 전체 · /report-generator-pro 1회/월 · /expert-hiring 할인 사용 가능
+src/pages/MindTrackStart.tsx                     // intake=1 모드 분기, 5단계 UI
+src/components/mind-track/intake/                // (신규)
+  ├ IntakeConcernStep.tsx
+  ├ IntakeAIExpandStep.tsx
+  ├ IntakeMissionPreviewStep.tsx
+  └ IntakeEmailSubscribeStep.tsx
+src/components/mind-track/MindTrackFromCheckView.tsx   // 성공 시 /start?intake=1 로
+src/pages/PaymentComplete.tsx                    // 동일 라우팅 보정
 ```
 
----
+엣지펑션 신규 없음 — 기존 `mind-track-concern-polish`, `mind-track-init`, `send-daily-coaching-email` 재사용. 단, `send-daily-coaching-email`에 `force_send_now=true` 옵션 한 줄 추가.
 
-## 04. 구현 범위 (이 플랜에서 다룰 것)
+## DB 변경
+- `user_coaching_goals` 테이블에 `email_opt_in boolean DEFAULT true`, `email text` 컬럼 두 개가 없으면 추가 (마이그레이션 1건).
+- 그 외 변경 없음.
 
-이건 **"개념·동선 정리 플랜"**이지 곧바로 코드 대량 변경하는 플랜이 아님. 다음 한 가지만 합의되면 실제 코드 작업으로 넘어감:
+## 측정
+- 단계 진입마다 `mind_track_onboarding_events` 적재 → 어디서 이탈하는지 본인 계정 `/mind-track/onboarding` 페이지에서 확인.
 
-**Phase A (작은 작업, 1턴)**
-1. Day1DiagnosisScreen / Day4ExpertMatchScreen / Day7ReportScreen 안에서 **위 표대로 기존 기능을 실제로 호출**하도록 연결 (현재는 자체 더미 UI). 
-2. Light Day 미션 카드 하단에 **보조 도구 링크 1줄** 추가 (게임상담/음성일기/고민함).
-3. `/check/done` 결과 화면, `/assessment` 결과 화면, `/metaverse-voice` 종료 화면에 **"7일 트랙으로 이어가기" 동일 CTA 컴포넌트** 1개로 통일.
+## 안 하는 것 (스코프 밖)
+- 30일 트랙 인테이크는 7일 트랙 안정화 후 별도 작업.
+- 이메일 템플릿 비주얼 리브랜딩(나중에 한 번에).
+- 카카오 알림톡 — 이메일 먼저 검증.
 
-**Phase B (다음 턴 이후, 별도 결정 필요)**
-- `/report-generator-pro`에 `mind_7day` 전용 리포트 템플릿 추가
-- audience별 Day1 척도 매핑 테이블 (`mind_track_day1_assessment_map`) 정식화
-
----
-
-## 05. 다루지 않는 것 (Out of Scope)
-
-- 새 상품/가격 도입 (현재 mind_track 라인업 유지)
-- 30일 트랙 콘텐츠 재설계
-- B2B Job Coach / Find Center 동선 (별도 트랙)
-- 게임상담 자체의 기능 변경 — 호출 위치만 재배치
-- 30일 트랙 / teen audience (Phase 2)
-
----
-
-## 다음 단계
-
-Phase A부터 진행해도 될지, 아니면 위 표에서 **"이 Day엔 다른 기능을 붙이고 싶다"** 같은 조정이 있는지 알려주세요. 합의되면 Day1·4·7 화면에 실제 기존 기능을 끼워넣는 작업부터 시작하겠습니다.
+## 한 줄 요약
+체험 시작 → 빈 대시보드 대신 **5단계 인테이크 한 페이지**로 보내, 고민 받고 AI로 다듬어 Day 1-3 미션을 그 자리에서 보여주고 이메일까지 1통 발송 → 그 다음에야 대시보드. 이탈할 틈을 안 줌.

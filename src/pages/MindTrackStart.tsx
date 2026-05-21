@@ -48,20 +48,22 @@ export default function MindTrackStart() {
         navigate("/auth?redirect=/mind-track/start");
         return;
       }
-      // Find latest paid enrollment without workbook
+      // Find latest active enrollment (paid OR 3-day trial) without workbook
       const { data: enrollments } = await supabase
         .from("mind_track_enrollments")
         .select("*")
         .eq("user_id", user.id)
-        .eq("payment_status", "completed")
+        .in("payment_status", ["completed", "paid", "trial"])
+        .in("status", ["active", "in_progress"])
         .order("created_at", { ascending: false })
         .limit(5);
 
       if (!enrollments || enrollments.length === 0) {
-        toast.error("진행 중인 트랙이 없습니다. 결제 후 다시 시도해주세요.");
+        toast.error("진행 중인 트랙이 없어요. 3일 무료 체험부터 시작해 주세요.");
         navigate("/mind-track");
         return;
       }
+
 
       // Pick the one without a workbook yet
       const { data: workbooks } = await supabase

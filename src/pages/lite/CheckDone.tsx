@@ -231,6 +231,48 @@ const CheckDone: React.FC = () => {
           ※ 진단이 아닌, 부모님이 일상에서 살펴보시도록 돕는 참고용 체크예요. 점수는 높을수록 또래 평균에 가깝습니다.
         </p>
 
+        <p className="text-[12px] text-slate-400 mb-8">
+          ※ 진단이 아닌, 부모님이 일상에서 살펴보시도록 돕는 참고용 체크예요. 점수는 높을수록 또래 평균에 가깝습니다.
+        </p>
+
+        {/* 문항별 살펴보기 — 응답을 그대로 다시 비춰 줘 깊이감을 더함 */}
+        {result.questions && result.questions.length > 0 && (
+          <section className="mb-8">
+            <h2 className="text-[17px] font-semibold mb-1">문항별 살펴보기</h2>
+            <p className="text-[12px] text-slate-500 mb-3">
+              총 {result.questions.length}개 문항 · 합산 {result.total}점
+              {highlights.length > 0 && ` · 눈에 띄는 항목 ${highlights.length}개`}
+            </p>
+            <ul className="flex flex-col gap-2.5">
+              {result.questions.map((q, idx) => {
+                const v = result.answers[q.question_no] ?? 0;
+                const ins = answerInsight(v);
+                return (
+                  <li key={q.question_no} className="rounded-2xl border border-slate-200 px-4 py-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-[14px] leading-relaxed text-slate-800 flex-1">
+                        <span className="text-slate-400 mr-1 tabular-nums">{idx + 1}.</span>
+                        {q.prompt}
+                      </p>
+                      <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium border ${ins.tone}`}>
+                        {ins.tag}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((n) => (
+                        <span
+                          key={n}
+                          className={`h-1.5 flex-1 rounded-full ${n <= v ? (v >= 4 ? 'bg-rose-400' : v === 3 ? 'bg-amber-400' : 'bg-emerald-400') : 'bg-slate-100'}`}
+                        />
+                      ))}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
+
         {/* 살펴보면 좋을 점 */}
         <section className="mb-8">
           <h2 className="text-[17px] font-semibold mb-3">살펴보면 좋을 점</h2>

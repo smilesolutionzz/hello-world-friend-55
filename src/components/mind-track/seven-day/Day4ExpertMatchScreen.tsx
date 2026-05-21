@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { MindTrackAudience } from "@/lib/mindTrackEnrollment";
 import { getDay4SelfMission } from "@/lib/mindTrack7DayMissions";
+import MissionStepsForm, { type MissionStepsPayload } from "./MissionStepsForm";
 
 interface Props {
   enrollmentId: string;
@@ -22,6 +23,8 @@ interface Props {
   audience: MindTrackAudience;
   phaseLabel: string;
   initialNote?: string | null;
+  initialPayload?: MissionStepsPayload | null;
+  actionSteps?: string[];
   alreadyCompleted: boolean;
   onCompleted: () => void;
 }
@@ -55,6 +58,8 @@ export default function Day4ExpertMatchScreen({
   audience,
   phaseLabel,
   initialNote,
+  initialPayload,
+  actionSteps = [],
   alreadyCompleted,
   onCompleted,
 }: Props) {
@@ -63,6 +68,7 @@ export default function Day4ExpertMatchScreen({
   const fallback = getDay4SelfMission(audience);
   const [showSkip, setShowSkip] = useState(false);
   const [note, setNote] = useState(initialNote ?? "");
+  const [payload, setPayload] = useState<MissionStepsPayload | null>(initialPayload ?? null);
   const [saving, setSaving] = useState(false);
 
   const handleBookExpert = async () => {
@@ -90,7 +96,8 @@ export default function Day4ExpertMatchScreen({
           day_number: 4,
           completed: true,
           reflection_note: note.trim() || "self_resolved",
-        },
+          reflection_payload: payload as any,
+        } as any,
         { onConflict: "enrollment_id,day_number" },
       );
       if (error) throw error;
@@ -154,6 +161,18 @@ export default function Day4ExpertMatchScreen({
           </div>
           <p className="text-sm text-slate-700 leading-relaxed break-keep">{fallback.how}</p>
 
+          {actionSteps.length > 0 && (
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <p className="text-sm font-semibold text-slate-900">미션 칸 채우기</p>
+              <MissionStepsForm
+                day={4}
+                steps={actionSteps}
+                initial={payload}
+                onChange={setPayload}
+              />
+            </div>
+          )}
+
           <Textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -161,6 +180,7 @@ export default function Day4ExpertMatchScreen({
             rows={2}
             className="resize-none rounded-2xl border-slate-200"
           />
+
 
           <div className="space-y-2">
             <Button

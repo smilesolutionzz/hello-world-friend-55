@@ -14,6 +14,7 @@ import { CheckCircle2, Clock, PenLine, Loader2, ArrowUpRight, Gamepad2, Mic, Not
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { SevenDayMission } from "@/lib/mindTrack7DayMissions";
+import MissionStepsForm, { type MissionStepsPayload } from "./MissionStepsForm";
 
 // Day별 보조 도구 — 미션이 무거우면 5분만 다녀와도 되는 옵션
 const HELPER_TOOL: Record<number, { label: string; href: string; icon: typeof Gamepad2; hint: string } | undefined> = {
@@ -30,6 +31,8 @@ interface Props {
   mission: SevenDayMission;
   phaseLabel: string;
   initialNote?: string | null;
+  initialPayload?: MissionStepsPayload | null;
+  actionSteps?: string[];
   alreadyCompleted: boolean;
   onCompleted: () => void;
 }
@@ -41,10 +44,13 @@ export default function LightMissionScreen({
   mission,
   phaseLabel,
   initialNote,
+  initialPayload,
+  actionSteps = [],
   alreadyCompleted,
   onCompleted,
 }: Props) {
   const [note, setNote] = useState(initialNote ?? "");
+  const [payload, setPayload] = useState<MissionStepsPayload | null>(initialPayload ?? null);
   const [saving, setSaving] = useState(false);
 
   const handleComplete = async () => {
@@ -57,7 +63,8 @@ export default function LightMissionScreen({
           day_number: day,
           completed: true,
           reflection_note: note.trim() || null,
-        },
+          reflection_payload: payload as any,
+        } as any,
         { onConflict: "enrollment_id,day_number" },
       );
       if (error) throw error;
@@ -91,6 +98,18 @@ export default function LightMissionScreen({
             {mission.how}
           </p>
         </div>
+
+        {actionSteps.length > 0 && (
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <p className="text-sm font-semibold text-slate-900">미션 칸 채우기</p>
+            <MissionStepsForm
+              day={day}
+              steps={actionSteps}
+              initial={payload}
+              onChange={setPayload}
+            />
+          </div>
+        )}
 
         <div className="space-y-2 pt-2 border-t border-slate-100">
           <label className="flex items-center gap-2 text-sm font-medium text-slate-700">

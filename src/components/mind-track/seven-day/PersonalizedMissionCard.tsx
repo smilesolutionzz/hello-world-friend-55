@@ -96,7 +96,7 @@ export default function PersonalizedMissionCard({ mission, day }: { mission: Dai
       )}
 
       <p className="text-[11px] text-slate-400 text-center pt-1">
-        아래 칸에 한 줄 기록하고 “완료”를 눌러주세요.
+        아래 칸을 채우고 "완료"를 눌러주세요.
       </p>
     </Card>
   );

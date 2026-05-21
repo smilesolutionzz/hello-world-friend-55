@@ -11,9 +11,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle2, Compass, Microscope, ArrowUpRight, ChevronDown, Pencil } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2, CheckCircle2, Compass, Microscope, ArrowUpRight, ChevronDown, Pencil, PenLine } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import MissionStepsForm, { isPayloadComplete, type MissionStepsPayload } from "./MissionStepsForm";
 
 interface Props {
   enrollmentId: string;
@@ -21,6 +23,8 @@ interface Props {
   phaseLabel: string;
   baselineData: Record<string, any> | null;
   initialNote?: string | null;
+  initialPayload?: MissionStepsPayload | null;
+  actionSteps?: string[];
   alreadyCompleted: boolean;
   onCompleted: () => void;
 }
@@ -31,6 +35,8 @@ export default function Day1DiagnosisScreen({
   phaseLabel,
   baselineData,
   initialNote,
+  initialPayload,
+  actionSteps = [],
   alreadyCompleted,
   onCompleted,
 }: Props) {
@@ -38,6 +44,8 @@ export default function Day1DiagnosisScreen({
   const [mood, setMood] = useState<number>(Number(init.mood_score ?? 5));
   const [energy, setEnergy] = useState<number>(Number(init.energy_score ?? 5));
   const [clarity, setClarity] = useState<number>(Number(init.clarity_score ?? 5));
+  const [note, setNote] = useState<string>(initialNote ?? "");
+  const [payload, setPayload] = useState<MissionStepsPayload | null>(initialPayload ?? null);
   const [saving, setSaving] = useState(false);
   const [expanded, setExpanded] = useState(!alreadyCompleted);
 
@@ -67,8 +75,9 @@ export default function Day1DiagnosisScreen({
           mood_score: mood,
           energy_score: energy,
           clarity_score: clarity,
-          reflection_note: initialNote ?? null,
-        },
+          reflection_note: note.trim() || null,
+          reflection_payload: payload as any,
+        } as any,
         { onConflict: "enrollment_id,day_number" },
       );
       if (ciErr) throw ciErr;
@@ -125,6 +134,33 @@ export default function Day1DiagnosisScreen({
           <SliderRow label="마음 안정감" value={mood} onChange={setMood} hint="낮음 0 — 안정 10" />
           <SliderRow label="에너지" value={energy} onChange={setEnergy} hint="고갈 0 — 충만 10" />
           <SliderRow label="머릿속 명료도" value={clarity} onChange={setClarity} hint="혼란 0 — 또렷 10" />
+
+          {actionSteps.length > 0 && (
+            <div className="space-y-2 pt-4 border-t border-slate-100">
+              <p className="text-sm font-semibold text-slate-900">미션 칸 채우기</p>
+              <p className="text-xs text-slate-500">각 스텝을 작성하면 Day 7 리포트에 자동으로 인용됩니다.</p>
+              <MissionStepsForm
+                day={1}
+                steps={actionSteps}
+                initial={payload}
+                onChange={setPayload}
+              />
+            </div>
+          )}
+
+          <div className="space-y-2 pt-4 border-t border-slate-100">
+            <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+              <PenLine className="w-4 h-4" />
+              한 줄 마무리 <span className="text-xs text-slate-400 font-normal">(선택)</span>
+            </label>
+            <Textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="오늘 가장 마음에 남은 한 가지"
+              rows={2}
+              className="resize-none rounded-2xl border-slate-200"
+            />
+          </div>
 
           <Button
             onClick={handleSave}

@@ -572,7 +572,7 @@ export default function MindTrackDashboard() {
               자주 묻는 질문 보기
             </summary>
             <div className="mt-3 bg-white border border-slate-100 rounded-2xl p-5">
-              {(isShortTrack ? FAQ_7 : FAQ_30).map((q, i) => (
+              {FAQ_7.map((q, i) => (
                 <details key={i} className="group border-b border-slate-100 last:border-b-0 py-2.5">
                   <summary className="text-[13px] font-semibold text-slate-800 cursor-pointer list-none">{q.q}</summary>
                   <p className="text-[12px] text-slate-600 leading-relaxed mt-1.5">{q.a}</p>
@@ -669,13 +669,6 @@ const FAQ_7: { q: string; a: string }[] = [
   { q: "전문가 상담은 어떻게 받나요?", a: "Day 4에 자동으로 매칭 카드가 뜹니다. 7일 트랙 결제자에게는 첫 15분 무료 상담 크레딧이 포함돼 있어요. 대시보드 빠른 메뉴의 '전문가 상담'에서도 언제든 매칭 가능합니다." },
   { q: "7일이 끝나면 어떻게 되나요?", a: "Day 7에 종합 변화 리포트(PDF)와 다음 30일 셀프 코칭 가이드를 받습니다. 더 깊이 가고 싶다면 +23일 연장권(₩12,900)으로 30일 풀 트랙으로 자연스럽게 이어집니다." },
 ];
-
-const FAQ_30: { q: string; a: string }[] = [
-  { q: "30일 동안 매일 뭘 하나요?", a: "주차별로 정렬·루틴·패턴 전환·깊이 코칭·리포트 단계가 있고, 매일 5분 안에 끝나는 미션이 자동으로 배정됩니다." },
-  { q: "오늘 미션을 못 했어요. 어떻게 하나요?", a: "워크북에서 지난 일차로 돌아가 언제든 완료할 수 있어요. 진행률은 자동으로 업데이트됩니다." },
-  { q: "전문가 상담은 어떻게 받나요?", a: "대시보드 빠른 메뉴의 '전문가 상담'에서 언제든 매칭 가능하며, 30일 구독자에게는 매월 무료 상담 크레딧이 자동 지급됩니다." },
-];
-
 
 function QuickLink({
   icon, title, desc, onClick,

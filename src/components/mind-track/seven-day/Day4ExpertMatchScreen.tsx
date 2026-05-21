@@ -96,7 +96,8 @@ export default function Day4ExpertMatchScreen({
           day_number: 4,
           completed: true,
           reflection_note: note.trim() || "self_resolved",
-        },
+          reflection_payload: payload as any,
+        } as any,
         { onConflict: "enrollment_id,day_number" },
       );
       if (error) throw error;

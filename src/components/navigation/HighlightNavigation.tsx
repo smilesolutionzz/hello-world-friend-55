@@ -230,7 +230,7 @@ export const HighlightNavigation = () => {
               </span>
             </Button>
             <Button
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/home')}
               variant="ghost"
               size="sm"
             >

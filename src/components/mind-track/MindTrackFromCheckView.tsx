@@ -79,7 +79,11 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
       if (!res.enrollmentId) throw new Error(res.error || '등록 실패');
       trackEvent('mind_track_trial_start', { goal, audience, from: 'check', area });
       toast.success('3일 무료 코칭을 시작합니다');
-      navigate('/mind-track/dashboard');
+      const ip = new URLSearchParams({ intake: '1', from: 'check', audience, area });
+      if (age) ip.set('age', age);
+      if (score != null) ip.set('score', String(score));
+      navigate(`/mind-track/start?${ip.toString()}`);
+
     } catch (e: any) {
       toast.error(e.message || '등록 중 오류가 발생했어요');
     } finally {

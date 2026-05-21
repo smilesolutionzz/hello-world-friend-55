@@ -248,8 +248,21 @@ export default function MindTrackWorkbook() {
       if (!wbs || wbs.length === 0) { navigate("/mind-track/start"); return; }
 
       const wb = wbs[0];
+      const enrollmentRow = wb.mind_track_enrollments;
+      const normalizedEnrollment = enrollmentRow
+        ? { ...enrollmentRow, track_type: "mind_7day", current_day: Math.min(Number(enrollmentRow.current_day ?? 1), 7) }
+        : enrollmentRow;
+      if (enrollmentRow?.track_type !== "mind_7day") {
+        supabase
+          .from("mind_track_enrollments")
+          .update({ track_type: "mind_7day", current_day: normalizedEnrollment.current_day })
+          .eq("id", enrollmentRow.id)
+          .then(({ error }) => {
+            if (error) console.warn("[MindTrackWorkbook] 7-day normalization failed", error);
+          });
+      }
       setWorkbook(wb);
-      setEnrollment(wb.mind_track_enrollments);
+      setEnrollment(normalizedEnrollment);
       setLoadSteps((s) => ({ ...s, workbook: true }));
 
       const [mRes, cRes, bRes] = await Promise.all([

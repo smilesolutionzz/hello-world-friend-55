@@ -135,6 +135,33 @@ export default function Day1DiagnosisScreen({
           <SliderRow label="에너지" value={energy} onChange={setEnergy} hint="고갈 0 — 충만 10" />
           <SliderRow label="머릿속 명료도" value={clarity} onChange={setClarity} hint="혼란 0 — 또렷 10" />
 
+          {actionSteps.length > 0 && (
+            <div className="space-y-2 pt-4 border-t border-slate-100">
+              <p className="text-sm font-semibold text-slate-900">미션 칸 채우기</p>
+              <p className="text-xs text-slate-500">각 스텝을 작성하면 Day 7 리포트에 자동으로 인용됩니다.</p>
+              <MissionStepsForm
+                day={1}
+                steps={actionSteps}
+                initial={payload}
+                onChange={setPayload}
+              />
+            </div>
+          )}
+
+          <div className="space-y-2 pt-4 border-t border-slate-100">
+            <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+              <PenLine className="w-4 h-4" />
+              한 줄 마무리 <span className="text-xs text-slate-400 font-normal">(선택)</span>
+            </label>
+            <Textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="오늘 가장 마음에 남은 한 가지"
+              rows={2}
+              className="resize-none rounded-2xl border-slate-200"
+            />
+          </div>
+
           <Button
             onClick={handleSave}
             disabled={saving}

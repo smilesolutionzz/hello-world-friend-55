@@ -24,6 +24,17 @@ import LightMissionScreen from "./LightMissionScreen";
 import Day1DiagnosisScreen from "./Day1DiagnosisScreen";
 import Day4ExpertMatchScreen from "./Day4ExpertMatchScreen";
 import Day7ReportScreen from "./Day7ReportScreen";
+import PersonalizedMissionCard from "./PersonalizedMissionCard";
+
+interface DailyMissionRow {
+  day_number: number;
+  mission_title: string | null;
+  mission_description: string | null;
+  why_it_matters: string | null;
+  action_steps: any;
+  success_criteria: string | null;
+  estimated_minutes: number | null;
+}
 
 interface EnrollmentRow {
   id: string;
@@ -54,6 +65,7 @@ export default function SevenDayWorkbookView({
   const [loading, setLoading] = useState(true);
   const [enrollment, setEnrollment] = useState<EnrollmentRow | null>(null);
   const [checkins, setCheckins] = useState<CheckinRow[]>([]);
+  const [dailyMissions, setDailyMissions] = useState<DailyMissionRow[]>([]);
 
   const load = async () => {
     setLoading(true);
@@ -67,13 +79,21 @@ export default function SevenDayWorkbookView({
       if (!enr) throw new Error("워크북을 찾을 수 없어요");
       setEnrollment(enr as EnrollmentRow);
 
-      const { data: ci, error: e2 } = await supabase
-        .from("mind_track_checkins")
-        .select("day_number, completed, reflection_note, mood_score, energy_score, clarity_score")
-        .eq("enrollment_id", enrollmentId)
-        .order("day_number", { ascending: true });
+      const [{ data: ci, error: e2 }, { data: dm }] = await Promise.all([
+        supabase
+          .from("mind_track_checkins")
+          .select("day_number, completed, reflection_note, mood_score, energy_score, clarity_score")
+          .eq("enrollment_id", enrollmentId)
+          .order("day_number", { ascending: true }),
+        supabase
+          .from("mind_track_daily_missions")
+          .select("day_number, mission_title, mission_description, why_it_matters, action_steps, success_criteria, estimated_minutes")
+          .eq("enrollment_id", enrollmentId)
+          .order("day_number", { ascending: true }),
+      ]);
       if (e2) throw e2;
       setCheckins((ci ?? []) as CheckinRow[]);
+      setDailyMissions((dm ?? []) as DailyMissionRow[]);
     } catch (e: any) {
       toast.error(e?.message ?? "워크북 로드 실패");
     } finally {
@@ -168,7 +188,14 @@ export default function SevenDayWorkbookView({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
+            className="space-y-5"
           >
+            {/* 사용자 고민으로 만든 맞춤 미션 (mind-track-init 결과) */}
+            <PersonalizedMissionCard
+              mission={dailyMissions.find((m) => m.day_number === selectedDay) ?? null}
+              day={selectedDay}
+            />
+
             {kind === "diagnosis" && (
               <Day1DiagnosisScreen
                 enrollmentId={enrollment.id}

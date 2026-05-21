@@ -202,12 +202,32 @@ export default function MindTrackStart() {
     );
   }
 
+  // 🆕 Intake funnel mode — 3일 무료체험 직후 진입할 때 이탈 방지 5단계 흐름
+  if (intakeParams.isIntake) {
+    return (
+      <>
+        <SEOHead title="첫 3일 시작하기 · 마음 트랙" description="고민을 적으면 AI가 다듬어 Day 1-3 미션을 만들어 드려요." />
+        <div className="min-h-screen bg-white">
+          <UnifiedNavigation />
+          <MindTrackIntakeFlow
+            enrollment={enrollment}
+            audience={intakeParams.audience}
+            area={intakeParams.area}
+            age={intakeParams.age}
+            score={intakeParams.score}
+          />
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <SEOHead title="초기 진단 · 마음 트랙" description="결제 직후 받는 5분 초기 진단으로 나만의 워크북을 만들어요." />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
         <UnifiedNavigation />
         <div className="max-w-2xl mx-auto px-4 pt-24 pb-16">
+
           {!mode && (
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
               <div className="text-center space-y-3">

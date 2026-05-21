@@ -93,16 +93,23 @@ const AREA_COPY: Record<AreaCode, AreaCopy> = {
 };
 
 /**
- * 발달 점수 (높을수록 좋음).
- * 문항은 역채점(높게 답할수록 "걱정되는 모습이 잦음")이므로,
- * 발달 점수 = ((최대점 - 응답합계) / (최대점 - 최소점)) × 100.
- * 최소 3점(모두 1점) ~ 최대 15점(모두 5점) → 100점~0점.
+ * 발달 점수 (높을수록 좋음). 5문항 × 5점척도 → 최소 5, 최대 25.
+ * 발달 점수 = ((max - total) / (max - min)) × 100.
  */
-function toScore(total: number): number {
-  const min = 3;
-  const max = 15;
+function toScore(total: number, questionCount: number = 5): number {
+  const min = questionCount;
+  const max = questionCount * 5;
   const pct = Math.max(0, Math.min(100, Math.round(((max - total) / (max - min)) * 100)));
   return pct;
+}
+
+/** 응답 강도 라벨 (1~5점 → 짧은 해석 문구) */
+function answerInsight(v: number): { tag: string; tone: string } {
+  if (v <= 1) return { tag: '전혀 아니다', tone: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+  if (v === 2) return { tag: '드물게 보임', tone: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+  if (v === 3) return { tag: '가끔 보임', tone: 'text-amber-700 bg-amber-50 border-amber-200' };
+  if (v === 4) return { tag: '자주 보임', tone: 'text-rose-700 bg-rose-50 border-rose-200' };
+  return { tag: '매우 자주 보임', tone: 'text-rose-700 bg-rose-50 border-rose-200' };
 }
 
 /** 또래 평균 (참고치, 75점 기준). 실데이터 누적 전 임시 벤치마크. */

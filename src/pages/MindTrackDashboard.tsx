@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   Sparkles, ArrowRight, CheckCircle2, Circle, HelpCircle, Phone, Calendar,
-  PlayCircle, Loader2, BookOpen, BarChart3, MessageSquareHeart, Target,
-  TrendingUp, Award, Flame,
+  PlayCircle, Loader2, BookOpen, BarChart3, MessageSquareHeart, Target, Flame,
+  RefreshCw,
 } from "lucide-react";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import Footer from "@/components/ui/footer";
@@ -17,14 +17,8 @@ import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { supabase } from "@/integrations/supabase/client";
 import { getDayCopy, calcMindTrackCurrentDay } from "@/lib/mindTrackDayCopy";
 import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirstTimeOnboarding";
-import DashboardVsWorkbookHelp from "@/components/mind-track/DashboardVsWorkbookHelp";
-import MindTrackTodayValueStack from "@/components/mind-track/MindTrackTodayValueStack";
-import MindConditionPanel from "@/components/mind-condition/MindConditionPanel";
-import TodayCoachingEmailContent from "@/components/mind-track/TodayCoachingEmailContent";
-import QuickReflectionForm from "@/components/mind-track/QuickReflectionForm";
 import MindTrackFocusSwitcher from "@/components/mind-track/MindTrackFocusSwitcher";
 import { getFocus } from "@/lib/mindTrackFocusTracks";
-import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 interface Enrollment {
@@ -315,6 +309,12 @@ export default function MindTrackDashboard() {
     })),
   };
 
+  const todayDone = allCheckins.find((c) => c.day_number === day)?.completed ?? false;
+  const upsell = isShortTrack && day >= 3 ? getUpsellCopy(day, isFinalDay) : null;
+  const focusInfo = getFocus(enrollment.goal_focus);
+  const missionTitle = todayMission?.mission_title || copy.title;
+  const missionDesc = todayMission?.mission_description || copy.description;
+
   return (
     <>
       <SEOHead
@@ -323,7 +323,7 @@ export default function MindTrackDashboard() {
         canonicalUrl="https://aihpro.app/mind-track/dashboard"
         structuredData={faqStructuredData}
       />
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/20">
+      <div className="min-h-screen bg-white">
         <UnifiedNavigation />
 
         <MindTrackFirstTimeOnboarding
@@ -333,263 +333,220 @@ export default function MindTrackDashboard() {
           onSnoozeToday={snoozeOnboardingToday}
         />
 
-        {/* 헤더 — Day N/totalDays + 진행률 + 스트릭 */}
-        <section className="px-4 pt-24 pb-4">
-          <div className="max-w-3xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="bg-white rounded-3xl border border-[#C8B88A]/40 ring-1 ring-[#C8B88A]/15 shadow-sm p-6 md:p-7 space-y-4"
-            >
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className="bg-emerald-500/15 text-emerald-700 border-0 text-xs">{trackLabel} 진행 중</Badge>
-                  <span className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-                    Day {String(day).padStart(2, "0")} / {totalDays} · {copy.phase}
-                  </span>
-                  {(() => {
-                    const f = getFocus(enrollment.goal_focus);
-                    return (
-                      <Badge variant="outline" className={`${f.badgeClass} text-[10px] font-bold border`}>
-                        {f.icon} {f.label}
-                      </Badge>
-                    );
-                  })()}
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setFocusSwitcherOpen(true)}
-                    className="text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2 inline-flex items-center gap-1"
-                  >
-                    <RefreshCw className="w-3 h-3" />
-                    트랙 변경
-                  </button>
-                  <button
-                    onClick={() => setShowOnboarding(true)}
-                    className="text-[11px] text-slate-500 hover:text-slate-900 underline underline-offset-2 inline-flex items-center gap-1"
-                  >
-                    <HelpCircle className="w-3 h-3" />
-                    이용 방법
-                  </button>
-                </div>
-              </div>
-              <Progress value={progressPct} className="h-1.5" />
-
-              <div className="grid grid-cols-3 gap-3 pt-1">
-                <Stat icon={<CheckCircle2 className="w-4 h-4" />} label="완료" value={`${completedCount}일`} />
-                <Stat icon={<Flame className="w-4 h-4 text-orange-500" />} label="연속" value={`${streak}일`} />
-                <Stat icon={<TrendingUp className="w-4 h-4" />} label="진행률" value={`${progressPct}%`} />
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* 대시보드 vs 워크북 안내 */}
-        <section className="px-4 pb-4">
-          <div className="max-w-3xl mx-auto">
-            <DashboardVsWorkbookHelp mode="dashboard" />
-          </div>
-        </section>
-
-        {/* 영상 시청 후 도착했다면 한 줄 기록 폼을 미션보다 먼저 노출 */}
-        {arrivedFromVideo && (
-          <section className="px-4 pb-4">
-            <div className="max-w-3xl mx-auto">
-              <QuickReflectionForm
-                key={`r-top-${reflectionRefreshKey}`}
-                enrollmentId={enrollment.id}
-                day={day}
-                source="after_video"
-                onSaved={() => setReflectionRefreshKey((k) => k + 1)}
-              />
+        <main className="max-w-md mx-auto px-5 pt-20 pb-32 break-keep">
+          {/* 1) 미니멀 진행 헤더 */}
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase">Day</span>
+              <span className="text-2xl font-extrabold text-slate-900 tabular-nums leading-none">{day}</span>
+              <span className="text-sm text-slate-400 tabular-nums">/ {totalDays}</span>
             </div>
-          </section>
-        )}
+            <div className="flex items-center gap-2 text-[11px] text-slate-500">
+              <span className="inline-flex items-center gap-1">
+                <Flame className="w-3 h-3 text-orange-500" />
+                연속 {streak}일
+              </span>
+              <span>·</span>
+              <span>완료 {completedCount}일</span>
+            </div>
+          </div>
+          <Progress value={progressPct} className="h-1 mb-6" />
 
-        {/* 오늘의 미션 — 메인 CTA */}
-        <section className="px-4 pb-6">
-          <div className="max-w-3xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 space-y-5"
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-2xl bg-[#1a1a1a] text-white flex items-center justify-center">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
-                    오늘의 미션
-                  </p>
-                  <p className="text-sm text-slate-900 font-bold">
-                    Day {String(day).padStart(2, "0")} · {copy.title}
-                  </p>
-                </div>
+          {/* 2) 오늘의 미션 — 단 하나의 명확한 액션 */}
+          <motion.section
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 mb-4"
+          >
+            <div className="flex items-center gap-1.5 mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-[#8a7a4d]" />
+              <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#8a7a4d]">
+                오늘 할 일 · {copy.phase}
+              </span>
+            </div>
+
+            {loading ? (
+              <div className="py-10 flex items-center justify-center text-slate-300">
+                <Loader2 className="w-5 h-5 animate-spin" />
               </div>
+            ) : (
+              <>
+                <h1 className="text-[22px] font-extrabold text-slate-900 leading-tight mb-2">
+                  {missionTitle}
+                </h1>
+                <p className="text-[14px] text-slate-600 leading-relaxed mb-4">
+                  {missionDesc}
+                </p>
 
-              {loading ? (
-                <div className="py-8 flex items-center justify-center text-slate-400">
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                </div>
-              ) : (
-                <div className="space-y-5">
-                  {/* 메타 배지 */}
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    {todayMission?.estimated_minutes ? (
-                      <Badge variant="outline" className="text-[10px] font-bold border-slate-200 text-slate-600">
-                        약 {todayMission.estimated_minutes}분
-                      </Badge>
-                    ) : null}
-                    {todayMission?.difficulty ? (
-                      <Badge variant="outline" className="text-[10px] font-bold border-slate-200 text-slate-600">
-                        난이도 · {todayMission.difficulty === 'easy' ? '쉬움' : todayMission.difficulty === 'deep' ? '깊이' : '보통'}
-                      </Badge>
-                    ) : null}
-                    {todayMission?.mission_type ? (
-                      <Badge variant="outline" className="text-[10px] font-bold border-slate-200 text-slate-600">
-                        {todayMission.mission_type}
-                      </Badge>
-                    ) : null}
-                  </div>
-
-                  <h2 className="text-lg md:text-xl font-bold text-slate-900 break-keep leading-snug">
-                    {todayMission?.mission_title || copy.title}
-                  </h2>
-                  <p className="text-sm md:text-base text-slate-600 break-keep leading-relaxed">
-                    {todayMission?.mission_description || copy.description}
-                  </p>
-
-                  {/* 왜 중요한가 */}
-                  {todayMission?.why_it_matters && (
-                    <div className="bg-[#fbf7eb] border border-[#C8B88A]/40 rounded-2xl p-4">
-                      <div className="text-[10px] font-bold tracking-wider text-[#8a7a4d] uppercase mb-1.5">
-                        왜 이 미션인가
-                      </div>
-                      <p className="text-[13px] text-slate-700 leading-relaxed break-keep">
-                        {todayMission.why_it_matters}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* 액션 단계 체크리스트 */}
-                  {Array.isArray(todayMission?.action_steps) && todayMission!.action_steps!.length > 0 && (
-                    <div>
-                      <div className="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">
-                        오늘의 단계
-                      </div>
-                      <ol className="space-y-1.5">
-                        {todayMission!.action_steps!.map((step, i) => (
-                          <li key={i} className="flex items-start gap-2 text-[13px] text-slate-800 break-keep leading-relaxed">
-                            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center mt-0.5">
-                              {i + 1}
-                            </span>
-                            <span>{String(step)}</span>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                  )}
-
-                  {/* 완료 기준 */}
-                  {todayMission?.success_criteria && (
-                    <div className="border border-emerald-200/60 bg-emerald-50/50 rounded-2xl p-3.5">
-                      <div className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <div className="text-[10px] font-bold tracking-wider text-emerald-700 uppercase">
-                            오늘의 완료 기준
-                          </div>
-                          <p className="text-[13px] text-slate-800 mt-0.5 break-keep leading-relaxed">
-                            {todayMission.success_criteria}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 자기성찰 질문 */}
-                  {Array.isArray(todayMission?.deeper_prompts) && todayMission!.deeper_prompts!.length > 0 && (
-                    <div>
-                      <div className="text-[10px] font-bold tracking-wider text-slate-500 uppercase mb-2">
-                        오늘 떠올릴 질문
-                      </div>
-                      <ul className="space-y-1.5">
-                        {todayMission!.deeper_prompts!.map((q, i) => (
-                          <li key={i} className="text-[13px] text-slate-700 break-keep leading-relaxed pl-3 border-l-2 border-[#C8B88A]/60">
-                            {String(q)}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* 추천 영상 */}
-                  {todayMission?.youtube_video_id && (
-                    <a
-                      href={`https://www.youtube.com/watch?v=${todayMission.youtube_video_id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-3 transition"
-                    >
-                      {todayMission.youtube_thumbnail && (
-                        <img
-                          src={todayMission.youtube_thumbnail}
-                          alt=""
-                          loading="lazy"
-                          className="w-20 h-14 object-cover rounded-lg flex-shrink-0"
-                        />
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <div className="text-[10px] font-bold text-red-600 tracking-wider uppercase">
-                          오늘의 추천 영상
-                        </div>
-                        <div className="text-[13px] font-bold text-slate-900 truncate mt-0.5">
-                          {todayMission.youtube_title || '재생'}
-                        </div>
-                      </div>
-                      <PlayCircle className="w-5 h-5 text-slate-500 flex-shrink-0" />
-                    </a>
+                <div className="flex items-center gap-1.5 flex-wrap mb-5">
+                  {todayMission?.estimated_minutes ? (
+                    <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 rounded-full px-2.5 py-1">
+                      약 {todayMission.estimated_minutes}분
+                    </span>
+                  ) : null}
+                  <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 rounded-full px-2.5 py-1">
+                    {focusInfo.icon} {focusInfo.label}
+                  </span>
+                  {todayDone && (
+                    <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-1 inline-flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> 완료됨
+                    </span>
                   )}
                 </div>
-              )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
                 <Button
                   onClick={() => navigate(`/mind-track/workbook?day=${day}&openMission=1`)}
-                  className="h-12 text-base font-bold bg-[#1a1a1a] text-white hover:bg-black rounded-xl"
+                  className="w-full h-14 text-[16px] font-bold bg-slate-900 hover:bg-black text-white rounded-2xl"
                 >
-                  <PlayCircle className="w-4 h-4 mr-2" />
-                  Day {String(day).padStart(2, "0")} 미션 시작
+                  <PlayCircle className="w-5 h-5 mr-2" />
+                  {todayDone ? '오늘 미션 다시 보기' : '지금 시작하기'}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate(`/expert-hiring?from=mission_difficult&day=${day}`)}
-                  className="h-12 rounded-xl border-slate-200 text-slate-700 hover:bg-slate-50"
-                >
-                  <Phone className="w-4 h-4 mr-2" />
-                  막혔어요 · 도움받기
-                </Button>
+
+                <p className="text-[11px] text-slate-400 text-center mt-3">
+                  자정에 다음 일차로 자동 이동 · 놓친 일차도 언제든 가능
+                </p>
+              </>
+            )}
+          </motion.section>
+
+          {/* 3) 막혔어요 — 보조 1회 */}
+          <button
+            onClick={() => navigate(`/expert-hiring?from=mission_difficult&day=${day}`)}
+            className="w-full text-[13px] text-slate-500 underline underline-offset-2 hover:text-slate-900 mb-8"
+          >
+            막혔어요 · 전문가에게 5분만 물어보기
+          </button>
+
+          {/* 4) 진행 현황 — 펼침 */}
+          <details className="bg-white border border-slate-100 rounded-2xl mb-3 group">
+            <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none">
+              <span className="text-[14px] font-bold text-slate-900 inline-flex items-center gap-2">
+                <Target className="w-4 h-4 text-slate-400" />
+                {totalDays}일 진행 현황
+              </span>
+              <span className="text-[12px] text-slate-400 group-open:rotate-90 transition-transform">▸</span>
+            </summary>
+            <div className="px-5 pb-5 space-y-4">
+              <div className={isShortTrack ? "grid grid-cols-7 gap-2" : "grid grid-cols-10 gap-1.5"}>
+                {Array.from({ length: totalDays }, (_, i) => {
+                  const d = i + 1;
+                  const c = allCheckins.find((x) => x.day_number === d);
+                  const isToday = d === day;
+                  const isCompleted = !!c?.completed;
+                  return (
+                    <button
+                      key={d}
+                      onClick={() => navigate(`/mind-track/workbook?day=${d}`)}
+                      className={`aspect-square rounded-md text-[11px] font-bold flex items-center justify-center transition ${
+                        isCompleted
+                          ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+                          : isToday
+                          ? "bg-slate-900 text-white ring-2 ring-offset-1 ring-[#C8B88A]"
+                          : "bg-slate-50 text-slate-400"
+                      }`}
+                    >
+                      {d}
+                    </button>
+                  );
+                })}
               </div>
+              {baseline && (
+                <div className="pt-2 border-t border-slate-100 grid grid-cols-3 gap-3">
+                  <BaselineBar label="스트레스" value={baseline.stress ?? 0} color="bg-rose-400" />
+                  <BaselineBar label="에너지" value={baseline.energy ?? 0} color="bg-amber-400" />
+                  <BaselineBar label="명료도" value={baseline.clarity ?? 0} color="bg-sky-400" />
+                </div>
+              )}
+            </div>
+          </details>
 
-              <p className="text-[11px] text-slate-400 text-center break-keep">
-                시작일 {new Date(enrollment.started_at).toLocaleDateString("ko-KR")} 기준 · 매일 자정에 다음 일차로 자동 이동
-              </p>
-            </motion.div>
+          {/* 5) 도움 메뉴 — 펼침 */}
+          <details className="bg-white border border-slate-100 rounded-2xl mb-3 group">
+            <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none">
+              <span className="text-[14px] font-bold text-slate-900 inline-flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-slate-400" />
+                다른 도움 메뉴
+              </span>
+              <span className="text-[12px] text-slate-400 group-open:rotate-90 transition-transform">▸</span>
+            </summary>
+            <div className="px-5 pb-5 grid grid-cols-2 gap-2">
+              <QuickLink icon={<BookOpen className="w-4 h-4" />} title="워크북" desc="전체 일차" onClick={() => navigate(`/mind-track/workbook?day=${day}`)} />
+              <QuickLink icon={<BarChart3 className="w-4 h-4" />} title="변화 추이" desc="My Journey" onClick={() => navigate("/my-journey")} />
+              <QuickLink icon={<MessageSquareHeart className="w-4 h-4" />} title="AI 코파일럿" desc="고민 정리" onClick={() => navigate("/ai-copilot")} />
+              <QuickLink icon={<Phone className="w-4 h-4" />} title="전문가 상담" desc="1:1 매칭" onClick={() => navigate("/expert-hiring")} />
+            </div>
+          </details>
+
+          {/* 6) 최근 체크인 — 있을 때만 */}
+          {!loading && recentCheckins.length > 0 && (
+            <details className="bg-white border border-slate-100 rounded-2xl mb-3 group">
+              <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none">
+                <span className="text-[14px] font-bold text-slate-900 inline-flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-slate-400" />
+                  최근 체크인
+                </span>
+                <span className="text-[12px] text-slate-400 group-open:rotate-90 transition-transform">▸</span>
+              </summary>
+              <ul className="px-5 pb-5 space-y-2">
+                {recentCheckins.map((c) => (
+                  <li key={c.day_number} className="flex items-start gap-2 py-1.5 border-b border-slate-50 last:border-b-0">
+                    {c.completed ? <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" /> : <Circle className="w-4 h-4 text-slate-300 shrink-0 mt-0.5" />}
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[12px] text-slate-500 font-semibold">Day {String(c.day_number).padStart(2, "0")} · {new Date(c.created_at).toLocaleDateString("ko-KR")}</div>
+                      {c.reflection_note && <p className="text-[13px] text-slate-700 mt-0.5 line-clamp-2">{c.reflection_note}</p>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+
+          {/* 7) 업셀 — 7일 트랙 Day3+ 일 때만, 조용히 한 카드 */}
+          {upsell && (
+            <div className="mt-6 bg-[#1a1a1a] text-white rounded-2xl p-5">
+              <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#C8B88A] mb-2">{upsell.eyebrow}</div>
+              <h3 className="text-[16px] font-extrabold leading-snug mb-1.5">{upsell.headline}</h3>
+              <p className="text-[12px] text-white/70 leading-relaxed mb-4">{upsell.body}</p>
+              <Button
+                onClick={() => navigate(`/mind-track?plan=extend_23&from=dashboard_day${day}`)}
+                className="w-full h-11 bg-white text-black hover:bg-white/90 rounded-xl font-bold text-[13px]"
+              >
+                {upsell.primaryCta} <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+              </Button>
+            </div>
+          )}
+
+          {/* 8) FAQ + 트랙 변경/이용방법 — 최하단 작은 링크 */}
+          <details className="mt-6 group">
+            <summary className="text-[12px] text-slate-400 underline underline-offset-2 cursor-pointer list-none text-center">
+              자주 묻는 질문 보기
+            </summary>
+            <div className="mt-3 bg-white border border-slate-100 rounded-2xl p-5">
+              {(isShortTrack ? FAQ_7 : FAQ_30).map((q, i) => (
+                <details key={i} className="group border-b border-slate-100 last:border-b-0 py-2.5">
+                  <summary className="text-[13px] font-semibold text-slate-800 cursor-pointer list-none">{q.q}</summary>
+                  <p className="text-[12px] text-slate-600 leading-relaxed mt-1.5">{q.a}</p>
+                </details>
+              ))}
+            </div>
+          </details>
+
+          <div className="mt-6 flex items-center justify-center gap-4 text-[11px] text-slate-400">
+            <button onClick={() => setFocusSwitcherOpen(true)} className="underline underline-offset-2 inline-flex items-center gap-1">
+              <RefreshCw className="w-3 h-3" /> 트랙 변경
+            </button>
+            <span>·</span>
+            <button onClick={() => setShowOnboarding(true)} className="underline underline-offset-2 inline-flex items-center gap-1">
+              <HelpCircle className="w-3 h-3" /> 이용 방법
+            </button>
           </div>
-        </section>
 
-        {/* 마음 컨디션 점수 — 단일 결과 숫자 (Noom-style outcome) */}
-        {userId && <MindConditionPanel userId={userId} className="mb-6" />}
-
-        {/* 오늘 도착한 코칭 메일 — DB의 박사급 콘텐츠 그대로 노출 */}
-        <TodayCoachingEmailContent />
-
-        {/* 오늘의 가치 스택 — 검사 + 추천 영상 + 5분 액션 */}
-        <MindTrackTodayValueStack day={day} focusId={enrollment.goal_focus} />
+          <div className="mt-8">
+            <MedicalDisclaimer variant="compact" />
+          </div>
+        </main>
 
         <MindTrackFocusSwitcher
           open={focusSwitcherOpen}
@@ -602,275 +559,12 @@ export default function MindTrackDashboard() {
           }
         />
 
-        {/* 평상시용 한 줄 기록 폼 — 영상 도착 모드일 땐 위쪽에 이미 노출되므로 중복 표시 안 함 */}
-        {!arrivedFromVideo && (
-          <section className="px-4 pb-6">
-            <div className="max-w-3xl mx-auto">
-              <QuickReflectionForm
-                key={`r-bot-${reflectionRefreshKey}`}
-                enrollmentId={enrollment.id}
-                day={day}
-                source="dashboard"
-                onSaved={() => setReflectionRefreshKey((k) => k + 1)}
-              />
-            </div>
-          </section>
-        )}
-
-        {/* 빠른 메뉴 */}
-        <section className="px-4 pb-6">
-          <div className="max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3">
-            <QuickLink icon={<BookOpen className="w-5 h-5" />} title="워크북" desc="전체 일차 보기" onClick={() => navigate(`/mind-track/workbook?day=${day}`)} />
-            <QuickLink icon={<BarChart3 className="w-5 h-5" />} title="진행 리포트" desc="나의 변화 추이" onClick={() => navigate("/my-journey")} />
-            <QuickLink icon={<MessageSquareHeart className="w-5 h-5" />} title="AI 코파일럿" desc="고민 빠른 정리" onClick={() => navigate("/ai-copilot")} />
-            <QuickLink icon={<Phone className="w-5 h-5" />} title="전문가 상담" desc="1:1 매칭" onClick={() => navigate("/expert-hiring")} />
-          </div>
-        </section>
-
-        {/* N일 미니 그리드 — 한눈에 진행 상황 */}
-        <section className="px-4 pb-6">
-          <div className="max-w-3xl mx-auto">
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4">
-              <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-slate-500" />
-                <h3 className="text-sm font-bold text-slate-900">{totalDays}일 진행 현황</h3>
-              </div>
-              <div className={isShortTrack ? "grid grid-cols-7 gap-2" : "grid grid-cols-10 gap-1.5"}>
-                {Array.from({ length: totalDays }, (_, i) => {
-                  const d = i + 1;
-                  const c = allCheckins.find((x) => x.day_number === d);
-                  const isToday = d === day;
-                  const isPast = d < day;
-                  const isFuture = d > day;
-                  const isCompleted = !!c?.completed;
-                  return (
-                    <button
-                      key={d}
-                      onClick={() => navigate(`/mind-track/workbook?day=${d}`)}
-                      className={`relative aspect-square rounded-md ${isShortTrack ? "text-xs" : "text-[10px]"} font-bold flex items-center justify-center transition-all overflow-hidden ${
-                        isCompleted
-                          ? "bg-white text-slate-300"
-                          : isToday
-                          ? "bg-[#1a1a1a] text-white ring-2 ring-offset-1 ring-[#C8B88A]"
-                          : isPast
-                          ? "bg-slate-100 text-slate-400"
-                          : isFuture
-                          ? "bg-slate-50 text-slate-300"
-                          : "bg-slate-50 text-slate-400"
-                      }`}
-                      title={`Day ${d}${isCompleted ? " · 완료" : ""}`}
-                    >
-                      <span className={isCompleted ? "opacity-30" : ""}>{d}</span>
-                      {isCompleted && (
-                        <motion.span
-                          initial={{ scale: 1.6, opacity: 0, rotate: -25 }}
-                          animate={{ scale: 1, opacity: 1, rotate: -14 }}
-                          transition={{ type: "spring", stiffness: 300, damping: 12, delay: (d % 5) * 0.03 }}
-                          aria-hidden
-                          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                        >
-                          <span
-                            className="flex items-center justify-center rounded-full font-extrabold tracking-tighter"
-                            style={{
-                              width: "82%",
-                              height: "82%",
-                              border: "2px solid #d63b3b",
-                              color: "#d63b3b",
-                              fontSize: isShortTrack ? "11px" : "9px",
-                              fontFamily: "'Instrument Serif', serif",
-                              letterSpacing: "0.02em",
-                              boxShadow: "inset 0 0 0 1px rgba(214,59,59,0.15)",
-                            }}
-                          >
-                            완료
-                          </span>
-                        </motion.span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="flex items-center gap-3 text-[10px] text-slate-500 pt-1">
-                <span className="inline-flex items-center gap-1">
-                  <span
-                    className="inline-flex items-center justify-center rounded-full font-extrabold"
-                    style={{ width: 14, height: 14, border: "1.5px solid #d63b3b", color: "#d63b3b", fontSize: 6, fontFamily: "'Instrument Serif', serif", transform: "rotate(-14deg)" }}
-                  >완료</span>
-                  완료
-                </span>
-                <span className="inline-flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-[#1a1a1a]" />오늘</span>
-                <span className="inline-flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-slate-100" />지난 일차</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 베이스라인 지표 */}
-        {baseline && (
-          <section className="px-4 pb-6">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4">
-                <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4 text-slate-500" />
-                  <h3 className="text-sm font-bold text-slate-900">시작 시점 지표</h3>
-                  <span className="text-[10px] text-slate-400">· {totalDays}일 후 비교 예정</span>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                  <BaselineBar label="스트레스" value={baseline.stress ?? 0} color="bg-rose-400" />
-                  <BaselineBar label="에너지" value={baseline.energy ?? 0} color="bg-amber-400" />
-                  <BaselineBar label="명료도" value={baseline.clarity ?? 0} color="bg-sky-400" />
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* 최근 체크인 */}
-        {!loading && recentCheckins.length > 0 && (
-          <section className="px-4 pb-10">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-slate-500" />
-                  <h3 className="text-sm font-bold text-slate-900">최근 체크인</h3>
-                </div>
-                <ul className="space-y-2">
-                  {recentCheckins.map((c) => (
-                    <li
-                      key={c.day_number}
-                      className="flex items-start gap-3 py-2 border-b border-slate-50 last:border-b-0"
-                    >
-                      {c.completed ? (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                      ) : (
-                        <Circle className="w-4 h-4 text-slate-300 shrink-0 mt-0.5" />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 text-xs text-slate-500">
-                          <span className="font-semibold">Day {String(c.day_number).padStart(2, "0")}</span>
-                          <span>·</span>
-                          <span>{new Date(c.created_at).toLocaleDateString("ko-KR")}</span>
-                          {typeof c.mood_score === "number" && (
-                            <>
-                              <span>·</span>
-                              <span>기분 {c.mood_score}/10</span>
-                            </>
-                          )}
-                        </div>
-                        {c.reflection_note && (
-                          <p className="text-sm text-slate-700 break-keep mt-0.5 line-clamp-2">
-                            {c.reflection_note}
-                          </p>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* 7일 진행 중 업셀 — Day 3부터 타이밍별 카피로 자연스럽게 노출 */}
-        {isShortTrack && day >= 3 && (() => {
-          const upsell = getUpsellCopy(day, isFinalDay);
-          return (
-            <section className="px-4 pb-8">
-              <div className="max-w-3xl mx-auto">
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] text-white rounded-3xl p-7 md:p-8 shadow-xl"
-                >
-                  <div className="flex items-center gap-2 mb-3">
-                    <Sparkles className="w-4 h-4 text-[#C8B88A]" />
-                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#C8B88A]">
-                      {upsell.eyebrow}
-                    </span>
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-black break-keep leading-tight mb-2">
-                    {upsell.headline}
-                  </h3>
-                  <p className="text-sm text-white/70 break-keep leading-relaxed mb-5">
-                    {upsell.body}
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
-                    <Button
-                      onClick={() => navigate(`/mind-track?plan=extend_23&from=dashboard_day${day}`)}
-                      className="h-12 bg-white text-black hover:bg-white/90 rounded-xl font-bold"
-                    >
-                      {upsell.primaryCta}
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate(`/expert-hiring?from=mind_track_day${day}&intent=consultation`)}
-                      className="h-12 rounded-xl border-white/20 bg-transparent text-white hover:bg-white/10"
-                    >
-                      <Phone className="w-4 h-4 mr-2" /> {upsell.secondaryCta}
-                    </Button>
-                  </div>
-                </motion.div>
-              </div>
-            </section>
-          );
-        })()}
-
-        {/* FAQ — 7일 트랙 중심 통일 */}
-        <section className="px-4 pb-8">
-          <div className="max-w-3xl mx-auto">
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 md:p-7 space-y-1">
-              <div className="flex items-center gap-2 mb-3">
-                <HelpCircle className="w-4 h-4 text-slate-500" />
-                <h3 className="text-sm font-bold text-slate-900">자주 묻는 질문</h3>
-              </div>
-              {(isShortTrack ? FAQ_7 : FAQ_30).map((q, i) => (
-                <details
-                  key={i}
-                  className="group border-b border-slate-100 last:border-b-0 py-3"
-                >
-                  <summary className="flex items-center justify-between cursor-pointer list-none">
-                    <span className="text-sm font-semibold text-slate-800 break-keep pr-3">
-                      {q.q}
-                    </span>
-                    <ArrowRight className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-90 shrink-0" />
-                  </summary>
-                  <p className="text-[13px] text-slate-600 leading-relaxed break-keep mt-2 pr-6">
-                    {q.a}
-                  </p>
-                </details>
-              ))}
-
-              {/* FAQ → 전문가 상담 예약 진입 */}
-              <div className="mt-5 pt-5 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <Button
-                  onClick={() => navigate(`/expert-hiring?from=mind_track_faq&intent=consultation&day=${day}`)}
-                  className="h-11 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold"
-                >
-                  <Calendar className="w-4 h-4 mr-2" /> 전문가 상담 예약하기
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate("/expert-hiring?urgent=true&from=mind_track_faq")}
-                  className="h-11 rounded-xl border-slate-300"
-                >
-                  <Phone className="w-4 h-4 mr-2" /> 긴급 1:1 즉시 매칭
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="px-4 py-8 max-w-3xl mx-auto">
-          <MedicalDisclaimer variant="compact" />
-        </section>
-
         <Footer />
       </div>
     </>
   );
 }
+
 
 // 7일 트랙 진행 중 업셀 카피 — Day별 톤 다르게
 function getUpsellCopy(day: number, isFinal: boolean) {
@@ -934,17 +628,6 @@ const FAQ_30: { q: string; a: string }[] = [
   { q: "전문가 상담은 어떻게 받나요?", a: "대시보드 빠른 메뉴의 '전문가 상담'에서 언제든 매칭 가능하며, 30일 구독자에게는 매월 무료 상담 크레딧이 자동 지급됩니다." },
 ];
 
-function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return (
-    <div className="bg-slate-50 rounded-2xl px-3 py-2.5 flex items-center gap-2">
-      {icon}
-      <div className="leading-tight">
-        <div className="text-[10px] text-slate-500">{label}</div>
-        <div className="text-sm font-bold text-slate-900">{value}</div>
-      </div>
-    </div>
-  );
-}
 
 function QuickLink({
   icon, title, desc, onClick,

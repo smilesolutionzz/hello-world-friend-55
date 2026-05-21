@@ -405,9 +405,34 @@ const CheckDone: React.FC = () => {
           ※ 진단이 아닌, 부모님이 일상에서 살펴보시도록 돕는 참고용 체크예요. 점수는 높을수록 또래 평균에 가깝습니다.
         </p>
 
-        <p className="text-[12px] text-slate-400 mb-8">
-          ※ 진단이 아닌, 부모님이 일상에서 살펴보시도록 돕는 참고용 체크예요. 점수는 높을수록 또래 평균에 가깝습니다.
-        </p>
+        {/* 이맘때 갖춰야 할 능력 — 나이대 × 영역별 발달 이정표 */}
+        {(() => {
+          const bucket = toAgeBucket(result.age);
+          const items = MILESTONES[result.area][bucket];
+          return (
+            <section className="mb-8 rounded-3xl border border-[#C8B88A]/40 bg-[#FBF8F1] px-5 py-5">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[11px] tracking-[0.18em] text-[#8a7a4a] font-semibold">
+                  MILESTONE · {AGE_BUCKET_LABEL[bucket]}
+                </span>
+              </div>
+              <h2 className="text-[17px] font-semibold mb-1 text-slate-900">
+                이맘때 {copy.shortLabel} 영역에서<br />갖춰야 할 능력
+              </h2>
+              <p className="text-[12px] text-slate-500 mb-4">
+                또래 평균에서 흔히 보이는 모습이에요. 모두 갖춰야 한다는 뜻은 아니에요.
+              </p>
+              <ul className="flex flex-col gap-2.5">
+                {items.map((it, idx) => (
+                  <li key={idx} className="flex gap-2.5 items-start">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#C8B88A] shrink-0" />
+                    <p className="text-[14px] leading-relaxed text-slate-800">{it}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })()}
 
         {/* 문항별 살펴보기 — 응답을 그대로 다시 비춰 줘 깊이감을 더함 */}
         {result.questions && result.questions.length > 0 && (

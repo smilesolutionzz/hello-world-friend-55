@@ -9651,6 +9651,42 @@ export type Database = {
           },
         ]
       }
+      mind_track_regen_progress: {
+        Row: {
+          created_at: string
+          enrollment_id: string
+          id: string
+          message: string | null
+          percent: number
+          session_id: string
+          stage: string
+          theory: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enrollment_id: string
+          id?: string
+          message?: string | null
+          percent?: number
+          session_id: string
+          stage: string
+          theory?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enrollment_id?: string
+          id?: string
+          message?: string | null
+          percent?: number
+          session_id?: string
+          stage?: string
+          theory?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       mind_track_reminders_sent: {
         Row: {
           channel: string

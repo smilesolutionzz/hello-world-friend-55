@@ -368,7 +368,7 @@ export const B2BIntegratedDashboard: React.FC<B2BIntegratedDashboardProps> = ({
 
           <ScrollArea className="h-[400px] rounded-lg bg-white">
             <div 
-              dangerouslySetInnerHTML={{ __html: generatedReportContent }}
+              dangerouslySetInnerHTML={{ __html: sanitizeAIContent(generatedReportContent) }}
               className="p-4"
             />
           </ScrollArea>

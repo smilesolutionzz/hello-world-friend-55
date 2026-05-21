@@ -173,7 +173,7 @@ export default function ReportPreviewModal({
             <ScrollArea className="h-[60vh] border rounded-lg bg-white">
               <div 
                 className="p-6"
-                dangerouslySetInnerHTML={{ __html: htmlContent }}
+                dangerouslySetInnerHTML={{ __html: sanitizeAIContent(htmlContent) }}
               />
             </ScrollArea>
           </TabsContent>

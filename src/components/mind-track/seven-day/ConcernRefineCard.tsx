@@ -138,20 +138,42 @@ export default function ConcernRefineCard({
         <span>최소 20자 · 최대 1,200자</span>
         <span>{concern.length} / 1,200</span>
       </div>
+
       <Button
+        type="button"
+        onClick={handleAIExpand}
+        disabled={expanding || loading || concern.trim().length < 5}
+        variant="outline"
+        className="w-full h-11 rounded-2xl border-[#C8B88A]/50 text-[#8a7a4d] hover:bg-[#C8B88A]/10"
+      >
+        {expanding ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin mr-2" />
+            AI가 고민을 풍부하게 다듬는 중…
+          </>
+        ) : (
+          <>
+            <Wand2 className="w-4 h-4 mr-2" />
+            AI로 고민 풍부하게 확장하기
+          </>
+        )}
+      </Button>
+
+      <Button
+        type="button"
         onClick={handleRegenerate}
-        disabled={loading}
-        className="w-full h-12 rounded-2xl text-base font-semibold bg-slate-900 hover:bg-slate-800"
+        disabled={loading || expanding}
+        className="w-full h-12 rounded-2xl text-base font-semibold bg-slate-900 hover:bg-slate-800 text-white"
       >
         {loading ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin mr-2" />
-            Day 1~7 맞춤 미션 새로 만드는 중…
+            <span className="text-white">Day 1~7 맞춤 미션 새로 만드는 중…</span>
           </>
         ) : (
           <>
             <RefreshCcw className="w-5 h-5 mr-2" />
-            이 고민으로 Day 1~7 미션 재생성
+            <span className="text-white">이 고민으로 Day 1~7 미션 재생성</span>
           </>
         )}
       </Button>

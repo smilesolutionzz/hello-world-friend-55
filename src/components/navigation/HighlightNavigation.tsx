@@ -230,7 +230,7 @@ export const HighlightNavigation = () => {
               </span>
             </Button>
             <Button
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/home')}
               variant="ghost"
               size="sm"
             >
@@ -273,7 +273,7 @@ export const HighlightNavigation = () => {
                 <div className="mt-6 space-y-6">
                   {/* 홈 */}
                   <button
-                    onClick={() => handleMobileNavigate('/')}
+                    onClick={() => handleMobileNavigate('/home')}
                     className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-accent/50 transition-colors"
                   >
                     <Home className="h-5 w-5 text-muted-foreground" />

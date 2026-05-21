@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle2, Compass, Microscope, ArrowUpRight } from "lucide-react";
+import { Loader2, CheckCircle2, Compass, Microscope, ArrowUpRight, ChevronDown, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,6 +39,7 @@ export default function Day1DiagnosisScreen({
   const [energy, setEnergy] = useState<number>(Number(init.energy_score ?? 5));
   const [clarity, setClarity] = useState<number>(Number(init.clarity_score ?? 5));
   const [saving, setSaving] = useState(false);
+  const [expanded, setExpanded] = useState(!alreadyCompleted);
 
   const handleSave = async () => {
     setSaving(true);
@@ -73,6 +74,7 @@ export default function Day1DiagnosisScreen({
       if (ciErr) throw ciErr;
 
       toast.success("출발점을 기록했어요");
+      setExpanded(false);
       onCompleted();
     } catch (e: any) {
       toast.error(e?.message ?? "저장 실패");
@@ -95,32 +97,66 @@ export default function Day1DiagnosisScreen({
         </p>
       </div>
 
-      <Card className="bg-white rounded-3xl border-slate-200 p-6 space-y-7 shadow-sm">
-        <SliderRow label="마음 안정감" value={mood} onChange={setMood} hint="낮음 0 — 안정 10" />
-        <SliderRow label="에너지" value={energy} onChange={setEnergy} hint="고갈 0 — 충만 10" />
-        <SliderRow label="머릿속 명료도" value={clarity} onChange={setClarity} hint="혼란 0 — 또렷 10" />
+      {alreadyCompleted && !expanded ? (
+        <Card className="bg-white rounded-3xl border-slate-200 p-4 shadow-sm">
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="w-full flex items-center justify-between gap-3 text-left"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-slate-900">출발점이 기록됐어요</p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  안정 {mood} · 에너지 {energy} · 명료도 {clarity}
+                </p>
+              </div>
+            </div>
+            <span className="flex items-center gap-1 text-xs text-slate-400">
+              수정 <Pencil className="w-3.5 h-3.5" />
+            </span>
+          </button>
+        </Card>
+      ) : (
+        <Card className="bg-white rounded-3xl border-slate-200 p-6 space-y-7 shadow-sm">
+          <SliderRow label="마음 안정감" value={mood} onChange={setMood} hint="낮음 0 — 안정 10" />
+          <SliderRow label="에너지" value={energy} onChange={setEnergy} hint="고갈 0 — 충만 10" />
+          <SliderRow label="머릿속 명료도" value={clarity} onChange={setClarity} hint="혼란 0 — 또렷 10" />
 
-        <Button
-          onClick={handleSave}
-          disabled={saving}
-          className="w-full h-12 rounded-2xl text-base font-semibold mt-2"
-          variant={alreadyCompleted ? "secondary" : "default"}
-        >
-          {saving ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : alreadyCompleted ? (
-            <>
-              <CheckCircle2 className="w-5 h-5 mr-2" />
-              출발점 업데이트
-            </>
-          ) : (
-            <>
-              <Compass className="w-5 h-5 mr-2" />
-              출발점 저장하기
-            </>
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full h-12 rounded-2xl text-base font-semibold mt-2"
+            variant={alreadyCompleted ? "secondary" : "default"}
+          >
+            {saving ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : alreadyCompleted ? (
+              <>
+                <CheckCircle2 className="w-5 h-5 mr-2" />
+                출발점 업데이트
+              </>
+            ) : (
+              <>
+                <Compass className="w-5 h-5 mr-2" />
+                출발점 저장하기
+              </>
+            )}
+          </Button>
+          {alreadyCompleted && (
+            <button
+              type="button"
+              onClick={() => setExpanded(false)}
+              className="w-full text-xs text-slate-400 hover:text-slate-600 flex items-center justify-center gap-1"
+            >
+              접기 <ChevronDown className="w-3.5 h-3.5 rotate-180" />
+            </button>
           )}
-        </Button>
-      </Card>
+        </Card>
+      )}
 
       {/* 보조: 더 깊이 보고 싶으면 심층검사 */}
       <Link

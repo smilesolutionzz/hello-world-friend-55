@@ -131,7 +131,7 @@ ${concern}
       .eq("user_id", user.id)
       .maybeSingle();
 
-    // 4) Replace existing Day 1~7 daily missions
+    // 4) Replace existing Day 1~7 daily missions (delete then upsert to dodge unique key races)
     const { error: delErr } = await supabase
       .from("mind_track_daily_missions")
       .delete()
@@ -140,28 +140,33 @@ ${concern}
       .lte("day_number", 7);
     if (delErr) throw delErr;
 
-    const rows = missions
-      .filter((m: any) => Number.isFinite(m?.day) && m.day >= 1 && m.day <= 7)
-      .map((m: any) => ({
-        user_id: user.id,
-        enrollment_id: body.enrollmentId,
-        workbook_id: wb?.id ?? null,
-        day_number: m.day,
-        week_number: 1,
-        mission_title: String(m.title ?? "").slice(0, 120),
-        mission_description: String(m.description ?? "").slice(0, 600),
-        mission_type: m.type ?? "reflection",
-        estimated_minutes: typeof m.minutes === "number" ? m.minutes : 7,
-        difficulty: m.difficulty ?? "medium",
-        why_it_matters: m.why_it_matters ?? null,
-        action_steps: Array.isArray(m.action_steps) ? m.action_steps : [],
-        success_criteria: m.success_criteria ?? null,
-        deeper_prompts: Array.isArray(m.deeper_prompts) ? m.deeper_prompts : [],
-      }));
+    // Dedupe by day_number (keep first), keep only days 1~7
+    const byDay = new Map<number, any>();
+    for (const m of missions) {
+      const d = Number(m?.day);
+      if (!Number.isFinite(d) || d < 1 || d > 7) continue;
+      if (!byDay.has(d)) byDay.set(d, m);
+    }
+    const rows = Array.from(byDay.values()).map((m: any) => ({
+      user_id: user.id,
+      enrollment_id: body.enrollmentId,
+      workbook_id: wb?.id ?? null,
+      day_number: m.day,
+      week_number: 1,
+      mission_title: String(m.title ?? "").slice(0, 120),
+      mission_description: String(m.description ?? "").slice(0, 600),
+      mission_type: m.type ?? "reflection",
+      estimated_minutes: typeof m.minutes === "number" ? m.minutes : 7,
+      difficulty: m.difficulty ?? "medium",
+      why_it_matters: m.why_it_matters ?? null,
+      action_steps: Array.isArray(m.action_steps) ? m.action_steps : [],
+      success_criteria: m.success_criteria ?? null,
+      deeper_prompts: Array.isArray(m.deeper_prompts) ? m.deeper_prompts : [],
+    }));
 
     const { error: insErr } = await supabase
       .from("mind_track_daily_missions")
-      .insert(rows);
+      .upsert(rows, { onConflict: "enrollment_id,day_number" });
     if (insErr) throw insErr;
 
     // 5) Update enrollment baseline_data with the refined concern

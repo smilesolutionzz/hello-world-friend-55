@@ -16,6 +16,7 @@ type CheckResult = {
   age: string;
   area: AreaCode;
   answers: Record<number, number>;
+  questions?: { question_no: number; prompt: string }[];
   total: number;
   submittedAt: string;
 };

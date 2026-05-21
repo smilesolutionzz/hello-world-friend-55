@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Brain, Sparkles, UserRound, LineChart, Users, Play, X, ArrowRight } from 'lucide-react';
+import { Brain, Sparkles, UserRound, Home, Users, Play, X, ArrowRight } from 'lucide-react';
 import { useAccessControl } from '@/hooks/useAccessControl';
 import { useMindTrackDashboard } from '@/hooks/useMindTrackDashboard';
 import { trackBottomTabClick, type BottomTabId } from '@/lib/bottomTabAnalytics';
@@ -39,9 +39,8 @@ const MobileBottomTab: React.FC = () => {
       path.startsWith('/free-trial-result')
     ) return 'quiz';
     if (
-      path.startsWith('/my-journey') ||
-      path.startsWith('/progress') ||
-      path.startsWith('/journey')
+      path === '/home' ||
+      path === '/'
     ) return 'journey';
     if (
       path.startsWith('/expert-hiring') ||
@@ -66,7 +65,7 @@ const MobileBottomTab: React.FC = () => {
     switch (tabId) {
       case 'quiz': return '/quiz';
       case 'track': return '/mind-track';
-      case 'journey': return '/my-journey';
+      case 'journey': return '/home';
       case 'expert': return '/expert-hiring';
       case 'profile': return '/profile';
     }
@@ -128,7 +127,7 @@ const MobileBottomTab: React.FC = () => {
 
   const sideTabs: { id: BottomTabId; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'quiz',    label: 'AI 검사',   icon: Brain },
-    { id: 'journey', label: '나의 여정', icon: LineChart },
+    { id: 'journey', label: '홈',        icon: Home },
     { id: 'expert',  label: '전문가',    icon: Users },
     { id: 'profile', label: 'MY',        icon: UserRound },
   ];

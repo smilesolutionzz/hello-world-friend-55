@@ -456,6 +456,13 @@ export default function MindTrackWorkbook() {
 
     const m = missions.find((mm) => mm.day_number === dp);
     if (m) {
+      // 추천 베이스라인 검사가 있는데 아직 안 했으면 체크인 다이얼로그를 자동으로 띄우지 않음
+      // (검사부터 하지 않으면 체크인을 제출해도 막혀버려 플로우가 이상하게 보임)
+      const rec = getAssessmentForDay(dp);
+      if (rec && !isAssessmentMissionCompleted(enrollment?.id, dp)) {
+        if (explicitFlag || onceToken) cleanupParams();
+        return;
+      }
       autoOpenedRef.current = true;
       // mtOnce 토큰 소비 마킹 (같은 토큰으로 다시 열리지 않게)
       if (onceToken && onceValid) {
@@ -465,7 +472,8 @@ export default function MindTrackWorkbook() {
       openMission(m);
       cleanupParams();
     }
-  }, [loading, searchParams, currentDay, missions, checkins]);
+  }, [loading, searchParams, currentDay, missions, checkins, enrollment]);
+
 
   const openMission = (mission: any) => {
     const existing = checkins.find((c) => c.day_number === mission.day_number);

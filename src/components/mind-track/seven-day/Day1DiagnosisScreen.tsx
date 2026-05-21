@@ -75,8 +75,9 @@ export default function Day1DiagnosisScreen({
           mood_score: mood,
           energy_score: energy,
           clarity_score: clarity,
-          reflection_note: initialNote ?? null,
-        },
+          reflection_note: note.trim() || null,
+          reflection_payload: payload as any,
+        } as any,
         { onConflict: "enrollment_id,day_number" },
       );
       if (ciErr) throw ciErr;

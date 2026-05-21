@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Brain,
+  MessageSquareHeart,
   Sparkles,
   FileText,
   Users,
   ClipboardCheck,
   Mic,
-  HeartPulse,
+  Gamepad2,
   BookOpen,
   LineChart,
   Gift,
@@ -15,13 +15,11 @@ import {
   ShieldCheck,
   ArrowRight,
   Search,
+  ListChecks,
 } from 'lucide-react';
 
 /**
- * MobileHome — 흰 배경 모바일 홈 (Insure flow 스타일 참고)
- * - 핵심 캠페인 카드 1개 + 기능 아이콘 그리드 (4 cols x N rows)
- * - 흰 배경, 파스텔 아이콘 칩, 골드 액센트
- * - 모든 카드/아이콘은 1탭으로 핵심 기능 진입
+ * MobileHome — 흰 배경 모바일 홈
  */
 
 type Tile = {
@@ -34,18 +32,18 @@ type Tile = {
 };
 
 const tiles: Tile[] = [
-  { label: 'AI 검사',     icon: Brain,         to: '/quiz',                badge: '주요', iconBg: 'bg-violet-50',  iconColor: 'text-violet-600' },
-  { label: '마음 트랙',   icon: Sparkles,      to: '/mind-track',          badge: 'HOT',  iconBg: 'bg-amber-50',   iconColor: 'text-amber-600' },
-  { label: '리포트',      icon: FileText,      to: '/report-generator-pro',badge: '주요', iconBg: 'bg-sky-50',     iconColor: 'text-sky-600' },
-  { label: '전문가',      icon: Users,         to: '/expert-hiring',       badge: 'ON',   iconBg: 'bg-rose-50',    iconColor: 'text-rose-500' },
-  { label: '발달 체크',   icon: ClipboardCheck,to: '/check',                              iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600' },
-  { label: '음성 상담',   icon: Mic,           to: '/voice-counseling',                   iconBg: 'bg-teal-50',    iconColor: 'text-teal-600' },
-  { label: '나의 여정',   icon: LineChart,     to: '/my-journey',                         iconBg: 'bg-indigo-50',  iconColor: 'text-indigo-600' },
-  { label: 'AI 코파일럿', icon: HeartPulse,    to: '/ai-copilot',          badge: 'NEW',  iconBg: 'bg-pink-50',    iconColor: 'text-pink-500' },
-  { label: '고민 보관함', icon: BookOpen,      to: '/concern-storage',                    iconBg: 'bg-orange-50',  iconColor: 'text-orange-500' },
-  { label: '리워드',      icon: Gift,          to: '/rewards',                            iconBg: 'bg-yellow-50',  iconColor: 'text-yellow-600' },
-  { label: '알림센터',    icon: Bell,          to: '/profile?tab=notifications',          iconBg: 'bg-fuchsia-50', iconColor: 'text-fuchsia-600' },
-  { label: '구독 관리',   icon: ShieldCheck,   to: '/profile?tab=subscription',           iconBg: 'bg-cyan-50',    iconColor: 'text-cyan-600' },
+  { label: '고민 쓰기',   icon: MessageSquareHeart, to: '/ai-copilot',          badge: 'HOT',  iconBg: 'bg-violet-50',  iconColor: 'text-violet-600' },
+  { label: '마음 트랙',   icon: Sparkles,           to: '/mind-track',          badge: 'HOT',  iconBg: 'bg-amber-50',   iconColor: 'text-amber-600' },
+  { label: '리포트',      icon: FileText,           to: '/report-generator-pro',badge: '주요', iconBg: 'bg-sky-50',     iconColor: 'text-sky-600' },
+  { label: '전문가',      icon: Users,              to: '/expert-hiring',       badge: 'ON',   iconBg: 'bg-rose-50',    iconColor: 'text-rose-500' },
+  { label: '검사 모음',   icon: ListChecks,         to: '/assessment',          badge: '주요', iconBg: 'bg-fuchsia-50', iconColor: 'text-fuchsia-600' },
+  { label: '발달 체크',   icon: ClipboardCheck,     to: '/check',                              iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600' },
+  { label: '음성 상담',   icon: Mic,                to: '/voice-counseling',                   iconBg: 'bg-teal-50',    iconColor: 'text-teal-600' },
+  { label: '게임 검사',   icon: Gamepad2,           to: '/metaverse-voice',     badge: 'NEW',  iconBg: 'bg-pink-50',    iconColor: 'text-pink-500' },
+  { label: '나의 여정',   icon: LineChart,          to: '/my-journey',                         iconBg: 'bg-indigo-50',  iconColor: 'text-indigo-600' },
+  { label: '고민 보관함', icon: BookOpen,           to: '/concern-storage',                    iconBg: 'bg-orange-50',  iconColor: 'text-orange-500' },
+  { label: '리워드',      icon: Gift,               to: '/rewards',                            iconBg: 'bg-yellow-50',  iconColor: 'text-yellow-600' },
+  { label: '구독 관리',   icon: ShieldCheck,        to: '/profile?tab=subscription',           iconBg: 'bg-cyan-50',    iconColor: 'text-cyan-600' },
 ];
 
 const quickKeywords = ['#불안', '#번아웃', '#아이발달', '#수면', '#관계', '#우울'];

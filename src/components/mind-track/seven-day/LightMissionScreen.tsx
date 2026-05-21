@@ -99,6 +99,18 @@ export default function LightMissionScreen({
           </p>
         </div>
 
+        {actionSteps.length > 0 && (
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <p className="text-sm font-semibold text-slate-900">미션 칸 채우기</p>
+            <MissionStepsForm
+              day={day}
+              steps={actionSteps}
+              initial={payload}
+              onChange={setPayload}
+            />
+          </div>
+        )}
+
         <div className="space-y-2 pt-2 border-t border-slate-100">
           <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
             <PenLine className="w-4 h-4" />

@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Download, Printer, FileText, Copy, Eye, Code } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { downloadInstitutionPDF, downloadAsHTML, InstitutionPDFOptions } from '@/utils/institutionPdfDownload';
+import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 
 interface ReportPreviewModalProps {
   isOpen: boolean;
@@ -172,7 +173,7 @@ export default function ReportPreviewModal({
             <ScrollArea className="h-[60vh] border rounded-lg bg-white">
               <div 
                 className="p-6"
-                dangerouslySetInnerHTML={{ __html: htmlContent }}
+                dangerouslySetInnerHTML={{ __html: sanitizeAIContent(htmlContent) }}
               />
             </ScrollArea>
           </TabsContent>

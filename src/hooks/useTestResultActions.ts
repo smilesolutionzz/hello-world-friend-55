@@ -223,7 +223,8 @@ export const useTestResultActions = () => {
         // 첫 번째 div 내부 최상단에 삽입
         reportHtml = reportHtml.replace(/(<div[^>]*>)/, `$1${headerHtml}`);
       }
-      container.innerHTML = reportHtml;
+      const { sanitizeAIContent } = await import('@/utils/sanitizeHtml');
+      container.innerHTML = sanitizeAIContent(reportHtml);
       document.body.appendChild(container);
 
       // lazy import to keep bundle size small

@@ -27,7 +27,9 @@ const sevenDayText = (value?: string | null) =>
 export default function PersonalizedMissionCard({ mission, day }: { mission: DailyMission | null; day: number }) {
   if (!mission || !mission.mission_title) return null;
   const steps = Array.isArray(mission.action_steps)
-    ? mission.action_steps.filter((s: any) => typeof s === "string" && s.trim()).map(sevenDayText)
+    ? mission.action_steps
+        .filter((s: any): s is string => typeof s === "string" && s.trim().length > 0)
+        .map((s) => sevenDayText(s) ?? "")
     : [];
   const title = sevenDayText(mission.mission_title);
   const description = sevenDayText(mission.mission_description);

@@ -110,7 +110,7 @@ const MobileHome: React.FC = () => {
                 >
                   <div className="relative">
                     <div className={`w-14 h-14 rounded-2xl ${t.iconBg} flex items-center justify-center shadow-sm`}>
-                      <Icon className={`w-6 h-6 ${t.iconColor}`} strokeWidth={1.9} />
+                      <Icon className={`w-6 h-6 ${t.iconColor}`} />
                     </div>
                     {t.badge && (
                       <span className={`absolute -top-1.5 -right-1 px-1.5 h-4 rounded-full text-[9px] font-bold flex items-center justify-center text-white whitespace-nowrap ${

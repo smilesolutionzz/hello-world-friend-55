@@ -252,7 +252,7 @@ export default function MindTrackWorkbook() {
       const normalizedEnrollment = enrollmentRow
         ? { ...enrollmentRow, track_type: "mind_7day", current_day: Math.min(Number(enrollmentRow.current_day ?? 1), 7) }
         : enrollmentRow;
-      if (enrollmentRow?.track_type !== "mind_7day") {
+      if (enrollmentRow && enrollmentRow.track_type !== "mind_7day") {
         supabase
           .from("mind_track_enrollments")
           .update({ track_type: "mind_7day", current_day: normalizedEnrollment.current_day })

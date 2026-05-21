@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { MindTrackAudience } from "@/lib/mindTrackEnrollment";
 import { getDay4SelfMission } from "@/lib/mindTrack7DayMissions";
+import MissionStepsForm, { type MissionStepsPayload } from "./MissionStepsForm";
 
 interface Props {
   enrollmentId: string;
@@ -22,6 +23,8 @@ interface Props {
   audience: MindTrackAudience;
   phaseLabel: string;
   initialNote?: string | null;
+  initialPayload?: MissionStepsPayload | null;
+  actionSteps?: string[];
   alreadyCompleted: boolean;
   onCompleted: () => void;
 }
@@ -55,6 +58,8 @@ export default function Day4ExpertMatchScreen({
   audience,
   phaseLabel,
   initialNote,
+  initialPayload,
+  actionSteps = [],
   alreadyCompleted,
   onCompleted,
 }: Props) {
@@ -63,6 +68,7 @@ export default function Day4ExpertMatchScreen({
   const fallback = getDay4SelfMission(audience);
   const [showSkip, setShowSkip] = useState(false);
   const [note, setNote] = useState(initialNote ?? "");
+  const [payload, setPayload] = useState<MissionStepsPayload | null>(initialPayload ?? null);
   const [saving, setSaving] = useState(false);
 
   const handleBookExpert = async () => {

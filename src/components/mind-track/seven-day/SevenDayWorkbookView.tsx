@@ -25,6 +25,8 @@ import Day1DiagnosisScreen from "./Day1DiagnosisScreen";
 import Day4ExpertMatchScreen from "./Day4ExpertMatchScreen";
 import Day7ReportScreen from "./Day7ReportScreen";
 import PersonalizedMissionCard from "./PersonalizedMissionCard";
+import DailyResourcePanel from "./DailyResourcePanel";
+import ConcernRefineCard from "./ConcernRefineCard";
 
 interface DailyMissionRow {
   day_number: number;

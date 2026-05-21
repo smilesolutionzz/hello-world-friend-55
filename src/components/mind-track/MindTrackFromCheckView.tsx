@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Shield, Loader2, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { startMindTrackTrial } from '@/lib/mindTrackEnrollment';
 import { trackEvent } from '@/components/common/Analytics';
 import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
+
 
 type AreaCode = 'language' | 'emotion' | 'social' | 'focus';
 

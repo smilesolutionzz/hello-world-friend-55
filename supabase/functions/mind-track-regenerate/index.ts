@@ -26,6 +26,11 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY")!,
       { global: { headers: { Authorization: authHeader } } },
     );
+    const adminSupabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      { auth: { persistSession: false } },
+    );
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
@@ -37,7 +42,7 @@ Deno.serve(async (req) => {
     const concern = body.concern.trim().slice(0, 1200);
 
     // 1) Load enrollment (verify ownership) + audience/goal context
-    const { data: enr, error: e1 } = await supabase
+    const { data: enr, error: e1 } = await adminSupabase
       .from("mind_track_enrollments")
       .select("id, user_id, audience, goal_focus, baseline_data")
       .eq("id", body.enrollmentId)
@@ -124,7 +129,7 @@ ${concern}
     if (missions.length === 0) throw new Error("AI returned no missions");
 
     // 3) Find workbook_id (optional)
-    const { data: wb } = await supabase
+    const { data: wb } = await adminSupabase
       .from("mind_track_workbooks")
       .select("id")
       .eq("enrollment_id", body.enrollmentId)
@@ -132,7 +137,7 @@ ${concern}
       .maybeSingle();
 
     // 4) Replace existing Day 1~7 daily missions (delete then upsert to dodge unique key races)
-    const { error: delErr } = await supabase
+    const { error: delErr } = await adminSupabase
       .from("mind_track_daily_missions")
       .delete()
       .eq("enrollment_id", body.enrollmentId)
@@ -164,7 +169,7 @@ ${concern}
       deeper_prompts: Array.isArray(m.deeper_prompts) ? m.deeper_prompts : [],
     }));
 
-    const { error: insErr } = await supabase
+    const { error: insErr } = await adminSupabase
       .from("mind_track_daily_missions")
       .upsert(rows, { onConflict: "enrollment_id,day_number" });
     if (insErr) throw insErr;
@@ -175,7 +180,7 @@ ${concern}
       primary_concern: concern,
       concern_refined_at: new Date().toISOString(),
     };
-    await supabase
+    await adminSupabase
       .from("mind_track_enrollments")
       .update({ baseline_data: nextBaseline })
       .eq("id", body.enrollmentId)

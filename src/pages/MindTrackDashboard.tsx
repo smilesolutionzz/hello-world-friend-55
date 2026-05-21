@@ -31,6 +31,9 @@ interface Enrollment {
   track_type: string | null;
 }
 
+const sevenDayText = (value?: string | null) =>
+  value ? value.replace(/30일/g, "7일").replace(/한 달/g, "7일") : value;
+
 /**
  * /mind-track/dashboard — 결제자 전용 풀 대시보드
  *
@@ -317,8 +320,8 @@ export default function MindTrackDashboard() {
   const todayDone = allCheckins.find((c) => c.day_number === day)?.completed ?? false;
   const upsell = isShortTrack && day >= 3 ? getUpsellCopy(day, isFinalDay) : null;
   const focusInfo = getFocus(enrollment.goal_focus);
-  const missionTitle = todayMission?.mission_title || copy.title;
-  const missionDesc = todayMission?.mission_description || copy.description;
+  const missionTitle = sevenDayText(todayMission?.mission_title) || copy.title;
+  const missionDesc = sevenDayText(todayMission?.mission_description) || copy.description;
 
   return (
     <>

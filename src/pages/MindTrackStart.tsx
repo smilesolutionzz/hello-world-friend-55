@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,10 @@ import { toast } from "sonner";
 import SEOHead from "@/components/common/SEOHead";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { useSmartBack } from "@/hooks/useSmartBack";
+import MindTrackIntakeFlow from "@/components/mind-track/MindTrackIntakeFlow";
 
 type Mode = "quick" | "precise" | null;
+
 
 const QUICK_QUESTIONS = [
   { id: "stress_1", axis: "stress", text: "지난 한 주, 마음이 무거웠나요?" },

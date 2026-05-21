@@ -27,7 +27,33 @@ export default function ConcernRefineCard({
 }: Props) {
   const [concern, setConcern] = useState(currentConcern ?? "");
   const [loading, setLoading] = useState(false);
+  const [expanding, setExpanding] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const handleAIExpand = async () => {
+    const text = concern.trim();
+    if (text.length < 5) {
+      toast.error("확장할 내용을 최소 5자 이상 적어주세요");
+      return;
+    }
+    setExpanding(true);
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "mind-track-concern-polish",
+        { body: { concern: text } },
+      );
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      const polished = (data?.polished ?? "").trim();
+      if (!polished) throw new Error("AI 확장 결과가 비어 있어요");
+      setConcern(polished.slice(0, 1200));
+      toast.success("AI가 고민을 더 풍부하게 다듬어줬어요");
+    } catch (e: any) {
+      toast.error(e?.message ?? "AI 확장 중 문제가 발생했어요");
+    } finally {
+      setExpanding(false);
+    }
+  };
 
   const handleRegenerate = async () => {
     const text = concern.trim();

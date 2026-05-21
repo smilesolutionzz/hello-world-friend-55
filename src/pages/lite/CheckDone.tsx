@@ -403,6 +403,8 @@ function toPeerLine(score: number): string {
 
 const CheckDone: React.FC = () => {
   const navigate = useNavigate();
+  const [milestoneDetailOpen, setMilestoneDetailOpen] = useState(false);
+
 
   const result = useMemo<CheckResult | null>(() => {
     try {

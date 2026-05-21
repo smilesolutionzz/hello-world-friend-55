@@ -171,89 +171,104 @@ export default function GameCounseling3DMode() {
   // ============ 인트로 화면 ============
   if (gameState === 'intro') {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-        <div className="text-center space-y-3 py-4">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 text-slate-900">
+        {/* 창업가 직접 개발 강조 배지 */}
+        <div className="rounded-2xl border border-[#C8B88A]/40 ring-1 ring-[#C8B88A]/15 bg-white p-4">
+          <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
+            <Sparkles className="w-3 h-3" /> AIHPRO Original · Founder-Built
+          </div>
+          <h3 className="mt-1.5 text-[15px] font-bold text-slate-900 leading-snug break-keep">
+            AIHPRO 창업가가 직접 설계한
+            <br />게임 기반 기질·성격 검사
+          </h3>
+          <p className="mt-1.5 text-[12px] text-slate-600 leading-relaxed break-keep">
+            질문지가 아닌 이야기 속 선택으로 8개 심리 차원(불안·사회성·공감·자존감 등)을
+            정량화하는 자체 개발 평가 엔진입니다.
+          </p>
+        </div>
+
+        <div className="text-center space-y-3 py-2">
           <motion.div className="text-5xl" animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }} transition={{ duration: 2, repeat: Infinity }}>
             🌲
           </motion.div>
-          <h2 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+          <h2 className="text-xl font-bold text-slate-900">
             3D 마법의 숲 모험
           </h2>
-          <p className="text-purple-200/80 text-sm max-w-sm mx-auto">
-            터치해서 로블록스풍 동화 세계를 탐험하세요!
+          <p className="text-slate-600 text-sm max-w-sm mx-auto break-keep">
+            터치해서 동화 세계를 탐험하면, 선택이 곧 검사 응답이 됩니다.
           </p>
           <div className="flex items-center justify-center gap-2 mt-2">
             <Button
               variant={ttsEnabled ? 'default' : 'outline'}
               size="sm"
               onClick={() => setTtsEnabled(!ttsEnabled)}
-              className={ttsEnabled ? 'bg-emerald-600 hover:bg-emerald-700' : 'border-white/20 text-white/60'}
+              className={ttsEnabled ? 'bg-slate-900 hover:bg-slate-800 text-white' : 'border-slate-200 text-slate-600'}
             >
               {ttsEnabled ? <Volume2 className="w-4 h-4 mr-1" /> : <VolumeX className="w-4 h-4 mr-1" />}
-              {ttsEnabled ? '🎙️ AI 내레이션 ON' : '내레이션 OFF'}
+              {ttsEnabled ? 'AI 내레이션 ON' : '내레이션 OFF'}
             </Button>
           </div>
         </div>
 
-        <Card className="p-4 bg-emerald-500/10 border-emerald-500/20">
-          <h3 className="font-semibold text-sm mb-3 text-white flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
+        <Card className="p-4 bg-white border border-slate-200 shadow-none">
+          <h3 className="font-semibold text-sm mb-3 text-slate-900 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#8a7a4d]" />
             이렇게 진행돼요
           </h3>
-          <div className="space-y-2 text-xs text-purple-200/70">
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">1.</span> 금색 빛기둥이나 바닥을 터치하면 캐릭터가 걸어가요.</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">2.</span> NPC에게 다가가면 이야기가 시작돼요.</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">3.</span> 화면 안에서 바로 답을 선택하세요.</div>
-            <div className="flex gap-2"><span className="text-emerald-400 font-bold">4.</span> 모험을 완료하면 심리 분석 결과를 받아요.</div>
+          <div className="space-y-2 text-[12px] text-slate-600 leading-relaxed">
+            <div className="flex gap-2"><span className="text-[#8a7a4d] font-bold">01.</span> 금색 빛기둥이나 바닥을 터치하면 캐릭터가 걸어가요.</div>
+            <div className="flex gap-2"><span className="text-[#8a7a4d] font-bold">02.</span> NPC에게 다가가면 이야기가 시작돼요.</div>
+            <div className="flex gap-2"><span className="text-[#8a7a4d] font-bold">03.</span> 화면 안에서 바로 답을 선택하세요.</div>
+            <div className="flex gap-2"><span className="text-[#8a7a4d] font-bold">04.</span> 모험을 완료하면 기질·성격 분석 결과를 받아요.</div>
           </div>
         </Card>
 
         <div className="space-y-3">
-          <h3 className="font-semibold text-white">📖 모험을 선택하세요.</h3>
+          <h3 className="font-semibold text-slate-900 text-[14px]">모험을 선택하세요</h3>
           {allChapters.map((chapter) => {
             const isVillage = chapter.id === 'sunflower_village';
             return (
-              <motion.div key={chapter.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <motion.div key={chapter.id} whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
                 <Card
-                  className={`p-5 cursor-pointer hover:shadow-lg transition-all border-2 bg-white/5 ${
-                    isVillage 
-                      ? 'border-amber-500/30 hover:border-amber-500/60 ring-1 ring-amber-500/10' 
-                      : 'border-white/10 hover:border-emerald-500/50'
+                  className={`p-5 cursor-pointer hover:shadow-md transition-all border bg-white ${
+                    isVillage
+                      ? 'border-amber-200 hover:border-amber-400 ring-1 ring-amber-100'
+                      : 'border-slate-200 hover:border-emerald-300'
                   }`}
                   onClick={() => startGame(chapter)}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="text-4xl">{chapter.icon}</div>
-                    <div className="flex-1">
+                    <div className="text-4xl shrink-0">{chapter.icon}</div>
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-lg text-white">{chapter.title}</h4>
+                        <h4 className="font-bold text-[15px] text-slate-900">{chapter.title}</h4>
                         {isVillage && (
-                          <span className="text-[10px] bg-amber-500/30 text-amber-300 px-2 py-0.5 rounded-full font-bold animate-pulse">
+                          <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">
                             NEW
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] md:text-xs text-purple-200/70 whitespace-nowrap overflow-hidden text-ellipsis">{chapter.subtitle}</p>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${
-                          isVillage ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'
+                      <p className="text-[11px] md:text-xs text-slate-500 mt-0.5 line-clamp-2">{chapter.subtitle}</p>
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        <span className={`text-[11px] px-2 py-0.5 rounded-full ${
+                          isVillage ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'
                         }`}>
-                          🎮 3D 탐험형
+                          3D 탐험형
                         </span>
-                        <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">
-                          🎙️ AI 음성
+                        <span className="text-[11px] bg-sky-50 text-sky-700 px-2 py-0.5 rounded-full">
+                          AI 음성
                         </span>
-                        <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">
+                        <span className="text-[11px] bg-violet-50 text-violet-700 px-2 py-0.5 rounded-full">
                           {chapter.targetAge}
                         </span>
                         {isVillage && (
-                          <span className="text-xs bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full">
-                            📊 종합 행동분석
+                          <span className="text-[11px] bg-rose-50 text-rose-700 px-2 py-0.5 rounded-full">
+                            종합 행동분석
                           </span>
                         )}
                       </div>
                     </div>
-                    <Play className={`h-6 w-6 ${isVillage ? 'text-amber-400' : 'text-emerald-400'}`} />
+                    <Play className={`h-5 w-5 shrink-0 ${isVillage ? 'text-amber-500' : 'text-emerald-500'}`} />
                   </div>
                 </Card>
               </motion.div>

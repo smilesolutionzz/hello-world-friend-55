@@ -331,7 +331,19 @@ export default function MindTrackDashboard() {
           onClose={closeOnboarding}
           onStart={startTodayMission}
           onSnoozeToday={snoozeOnboardingToday}
+          totalDays={totalDays}
+          audience={audience}
+          goalFocus={(enrollment as any)?.goal_focus ?? null}
+          checkArea={
+            (new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').get('area') as
+              | 'language'
+              | 'emotion'
+              | 'social'
+              | 'focus'
+              | null) || null
+          }
         />
+
 
         <main className="max-w-md mx-auto px-5 pt-20 pb-32 break-keep">
           {/* 1) 미니멀 진행 헤더 */}

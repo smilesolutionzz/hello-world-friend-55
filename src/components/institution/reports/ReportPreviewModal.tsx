@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Download, Printer, FileText, Copy, Eye, Code } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { downloadInstitutionPDF, downloadAsHTML, InstitutionPDFOptions } from '@/utils/institutionPdfDownload';
+import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 
 interface ReportPreviewModalProps {
   isOpen: boolean;

@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle2, Compass, Microscope, ArrowUpRight } from "lucide-react";
+import { Loader2, CheckCircle2, Compass, Microscope, ArrowUpRight, ChevronDown, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,6 +39,7 @@ export default function Day1DiagnosisScreen({
   const [energy, setEnergy] = useState<number>(Number(init.energy_score ?? 5));
   const [clarity, setClarity] = useState<number>(Number(init.clarity_score ?? 5));
   const [saving, setSaving] = useState(false);
+  const [expanded, setExpanded] = useState(!alreadyCompleted);
 
   const handleSave = async () => {
     setSaving(true);
@@ -73,6 +74,7 @@ export default function Day1DiagnosisScreen({
       if (ciErr) throw ciErr;
 
       toast.success("출발점을 기록했어요");
+      setExpanded(false);
       onCompleted();
     } catch (e: any) {
       toast.error(e?.message ?? "저장 실패");

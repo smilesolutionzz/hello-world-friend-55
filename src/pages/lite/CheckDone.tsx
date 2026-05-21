@@ -420,7 +420,10 @@ const CheckDone: React.FC = () => {
     if (!result) {
       // 직접 진입 시 체크로 유도
       navigate('/check', { replace: true });
+      return;
     }
+    // 발달체크 1회 완료 마커 — 다음 방문 시 홈으로 자동 라우팅
+    try { localStorage.setItem('aihpro_check_done', '1'); } catch {}
   }, [result, navigate]);
 
   if (!result) return null;

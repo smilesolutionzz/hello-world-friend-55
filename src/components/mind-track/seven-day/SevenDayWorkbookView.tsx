@@ -35,8 +35,6 @@ interface DailyMissionRow {
   success_criteria: string | null;
   estimated_minutes: number | null;
 }
-import Day4ExpertMatchScreen from "./Day4ExpertMatchScreen";
-import Day7ReportScreen from "./Day7ReportScreen";
 
 interface EnrollmentRow {
   id: string;

@@ -101,7 +101,17 @@ export default function MindTrackDashboard() {
         navigate("/mind-track", { replace: true });
         return;
       }
-      setEnrollment(data as Enrollment);
+      const normalized = { ...(data as Enrollment), track_type: "mind_7day", current_day: Math.min(Number((data as Enrollment).current_day ?? 1), 7) };
+      if ((data as Enrollment).track_type !== "mind_7day") {
+        supabase
+          .from("mind_track_enrollments")
+          .update({ track_type: "mind_7day", current_day: normalized.current_day })
+          .eq("id", (data as Enrollment).id)
+          .then(({ error }) => {
+            if (error) console.warn("[MindTrackDashboard] 7-day normalization failed", error);
+          });
+      }
+      setEnrollment(normalized);
       setUserId(user.id);
       setAuthChecking(false);
     })();

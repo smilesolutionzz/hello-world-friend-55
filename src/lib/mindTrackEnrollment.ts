@@ -140,7 +140,12 @@ export async function ensureMindTrackEnrollment(
     .maybeSingle();
 
   if (existing) {
-    const patch: Record<string, unknown> = { goal_focus: goalFocus, audience };
+    const patch: Record<string, unknown> = {
+      goal_focus: goalFocus,
+      audience,
+      // ❗ 기존 enrollment가 다른 트랙(예: 30일)일 수 있으니 plan에 맞춰 강제 동기화
+      track_type: plan === '7d' ? 'mind_7day' : 'mind_30day',
+    };
     if (baselineData) {
       const prev = (existing.baseline_data && typeof existing.baseline_data === "object" && !Array.isArray(existing.baseline_data))
         ? (existing.baseline_data as Record<string, unknown>)
@@ -208,6 +213,7 @@ export async function startMindTrackTrial(
   const { error } = await supabase
     .from('mind_track_enrollments')
     .update({
+      track_type: 'mind_7day',
       payment_status: 'trial',
       status: 'active',
       started_at: nowIso,

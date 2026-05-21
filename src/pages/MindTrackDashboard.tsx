@@ -151,10 +151,9 @@ export default function MindTrackDashboard() {
   }, []);
 
 
-  const totalDays = useMemo(() => {
-    const t = (enrollment?.track_type || "mind_7day").toLowerCase();
-    return t.includes("30") ? 30 : 7;
-  }, [enrollment?.track_type]);
+  // 현재 메인 상품은 7일 트랙이다. 기존 DB에 남아있는 mind_30day 값이 있어도
+  // 대시보드/워크북 진행 기준은 7일로 고정하고, 30일 확장은 완주 후 제안한다.
+  const totalDays = 7;
 
   const day = useMemo(
     () => (enrollment ? calcMindTrackCurrentDay(enrollment.started_at, totalDays) : 1),

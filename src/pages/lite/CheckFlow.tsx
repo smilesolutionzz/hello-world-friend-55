@@ -165,11 +165,11 @@ const CheckFlow: React.FC = () => {
       age,
       area,
       answers,
+      questions: questions.map((q) => ({ question_no: q.question_no, prompt: q.prompt })),
       total: Object.values(answers).reduce((a, b) => a + b, 0),
       submittedAt: new Date().toISOString(),
     };
     sessionStorage.setItem('lite_check_result', JSON.stringify(payload));
-    // 결과 페이지는 Day 3에서 — 지금은 임시 안내
     navigate('/check/done', { replace: true });
   };
 

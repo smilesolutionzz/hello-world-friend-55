@@ -161,6 +161,18 @@ export default function Day4ExpertMatchScreen({
           </div>
           <p className="text-sm text-slate-700 leading-relaxed break-keep">{fallback.how}</p>
 
+          {actionSteps.length > 0 && (
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <p className="text-sm font-semibold text-slate-900">미션 칸 채우기</p>
+              <MissionStepsForm
+                day={4}
+                steps={actionSteps}
+                initial={payload}
+                onChange={setPayload}
+              />
+            </div>
+          )}
+
           <Textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -168,6 +180,7 @@ export default function Day4ExpertMatchScreen({
             rows={2}
             className="resize-none rounded-2xl border-slate-200"
           />
+
 
           <div className="space-y-2">
             <Button

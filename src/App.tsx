@@ -44,6 +44,7 @@ import ConcernStorage from "./pages/ConcernStorage";
 import ReportGenerator from "./pages/ReportGenerator";
 import ReportGeneratorPro from "./pages/ReportGeneratorPro";
 import MyJourney from "./pages/MyJourney";
+import MobileHome from "./pages/MobileHome";
 import CoachingPreferences from "./pages/CoachingPreferences";
 import VerifyReport from "./pages/VerifyReport";
 import MetaverseVoice from "./pages/MetaverseVoice";
@@ -230,6 +231,7 @@ const App = () => {
               <Routes>
           {/* ===== Core Routes ===== */}
           <Route path="/" element={<Index />} />
+          <Route path="/home" element={<MobileHome />} />
           {/* ===== Lite Check (Day 2) — 비회원 발달체크 ===== */}
           <Route path="/check" element={<CheckFlow />} />
           <Route path="/check/done" element={<CheckDone />} />

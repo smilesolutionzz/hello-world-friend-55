@@ -85,7 +85,7 @@ export default function SevenDayWorkbookView({
       const [{ data: ci, error: e2 }, { data: dm }] = await Promise.all([
         supabase
           .from("mind_track_checkins")
-          .select("day_number, completed, reflection_note, mood_score, energy_score, clarity_score")
+          .select("day_number, completed, reflection_note, reflection_payload, mood_score, energy_score, clarity_score")
           .eq("enrollment_id", enrollmentId)
           .order("day_number", { ascending: true }),
         supabase

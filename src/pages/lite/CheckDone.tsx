@@ -508,6 +508,9 @@ const CheckDone: React.FC = () => {
         {(() => {
           const bucket = toAgeBucket(result.age);
           const items = MILESTONES[result.area][bucket];
+          const theory = AREA_THEORY[result.area];
+          const windowText = BUCKET_WINDOW[bucket];
+          const watchSigns = AREA_WATCH_SIGNS[result.area][bucket] ?? [];
           return (
             <section className="mb-8 rounded-3xl border border-[#C8B88A]/40 bg-[#FBF8F1] px-5 py-5">
               <div className="flex items-center gap-2 mb-1">
@@ -529,9 +532,129 @@ const CheckDone: React.FC = () => {
                   </li>
                 ))}
               </ul>
+
+              <button
+                type="button"
+                onClick={() => setMilestoneDetailOpen(true)}
+                className="mt-5 w-full inline-flex items-center justify-center gap-1.5 rounded-full border border-[#C8B88A]/60 bg-white px-4 py-2.5 text-[13px] font-semibold text-[#8a7a4a] hover:bg-[#FBF8F1] transition"
+              >
+                상세보기 — 더 깊이 있는 발달 정보
+                <span aria-hidden>→</span>
+              </button>
+
+              <Dialog open={milestoneDetailOpen} onOpenChange={setMilestoneDetailOpen}>
+                <DialogContent className="max-w-md sm:max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-white p-0">
+                  <div className="px-6 pt-6 pb-2">
+                    <DialogHeader>
+                      <div className="text-[11px] tracking-[0.18em] text-[#8a7a4a] font-semibold mb-1">
+                        MILESTONE 상세 · {AGE_BUCKET_LABEL[bucket]} · {copy.shortLabel}
+                      </div>
+                      <DialogTitle className="text-[18px] leading-snug text-slate-900 break-keep">
+                        이 시기 {copy.shortLabel} 발달, 무엇을 어떻게 봐야 할까요?
+                      </DialogTitle>
+                      <DialogDescription className="text-[12px] text-slate-500 break-keep">
+                        진단이 아닌, 부모님이 일상에서 신호를 읽고 함께 자라도록 돕는 참고 자료예요.
+                      </DialogDescription>
+                    </DialogHeader>
+                  </div>
+
+                  <div className="px-6 pb-6 space-y-5">
+                    {/* 01 발달 창 */}
+                    <section className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-4">
+                      <div className="text-[11px] tracking-[0.16em] text-slate-500 font-semibold mb-1">
+                        01 · 지금 이 시기의 발달 창
+                      </div>
+                      <p className="text-[14px] leading-relaxed text-slate-800 break-keep">{windowText}</p>
+                    </section>
+
+                    {/* 02 이론 근거 */}
+                    <section className="rounded-2xl border border-[#C8B88A]/40 bg-[#FBF8F1] px-4 py-4">
+                      <div className="text-[11px] tracking-[0.16em] text-[#8a7a4a] font-semibold mb-1">
+                        02 · 이론적 근거
+                      </div>
+                      <p className="text-[13px] font-semibold text-slate-900 mb-1.5">{theory.framework}</p>
+                      <p className="text-[13.5px] leading-relaxed text-slate-700 break-keep">
+                        {theory.rationale}
+                      </p>
+                      <p className="text-[11px] text-slate-500 mt-2">{theory.source}</p>
+                    </section>
+
+                    {/* 03 갖춰야 할 능력 (재정리) */}
+                    <section>
+                      <div className="text-[11px] tracking-[0.16em] text-slate-500 font-semibold mb-2">
+                        03 · 또래에서 흔히 보이는 모습
+                      </div>
+                      <ul className="flex flex-col gap-2">
+                        {items.map((it, idx) => (
+                          <li key={idx} className="flex gap-2.5 items-start">
+                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#C8B88A] shrink-0" />
+                            <p className="text-[13.5px] leading-relaxed text-slate-800 break-keep">{it}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+
+                    {/* 04 가정 관찰 포인트 */}
+                    <section>
+                      <div className="text-[11px] tracking-[0.16em] text-slate-500 font-semibold mb-2">
+                        04 · 가정에서 살펴볼 포인트
+                      </div>
+                      <ul className="flex flex-col gap-2">
+                        {copy.observations.map((it, idx) => (
+                          <li key={idx} className="flex gap-2.5 items-start">
+                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+                            <p className="text-[13.5px] leading-relaxed text-slate-700 break-keep">{it}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+
+                    {/* 05 일상 액션 */}
+                    <section>
+                      <div className="text-[11px] tracking-[0.16em] text-slate-500 font-semibold mb-2">
+                        05 · 오늘부터 해볼 수 있는 일
+                      </div>
+                      <ul className="flex flex-col gap-2">
+                        {copy.homeTips.map((it, idx) => (
+                          <li key={idx} className="flex gap-2.5 items-start">
+                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                            <p className="text-[13.5px] leading-relaxed text-slate-700 break-keep">{it}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+
+                    {/* 06 주의 깊게 볼 신호 */}
+                    {watchSigns.length > 0 && (
+                      <section className="rounded-2xl border border-rose-200 bg-rose-50/60 px-4 py-4">
+                        <div className="text-[11px] tracking-[0.16em] text-rose-700 font-semibold mb-2">
+                          06 · 2주 이상 이어지면 전문가와 상의해 볼 신호
+                        </div>
+                        <ul className="flex flex-col gap-2">
+                          {watchSigns.map((it, idx) => (
+                            <li key={idx} className="flex gap-2.5 items-start">
+                              <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                              <p className="text-[13.5px] leading-relaxed text-slate-800 break-keep">{it}</p>
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="text-[11px] text-rose-700/80 mt-2 leading-relaxed">
+                          ※ 위 신호는 진단 기준이 아니라 관찰 가이드입니다. 일상에 지장이 크면 가까운 전문가에게 상담해 보세요.
+                        </p>
+                      </section>
+                    )}
+
+                    <p className="text-[11px] text-slate-400 leading-relaxed pt-1">
+                      ※ 본 자료는 K-DST, DSM-5, 발달심리 표준 이론을 일상 언어로 재구성한 참고 자료이며,
+                      의학적 진단·치료를 대체하지 않습니다.
+                    </p>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </section>
           );
         })()}
+
 
         {/* 문항별 살펴보기 — 응답을 그대로 다시 비춰 줘 깊이감을 더함 */}
         {result.questions && result.questions.length > 0 && (

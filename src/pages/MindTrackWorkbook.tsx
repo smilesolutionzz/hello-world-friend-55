@@ -456,6 +456,13 @@ export default function MindTrackWorkbook() {
 
     const m = missions.find((mm) => mm.day_number === dp);
     if (m) {
+      // 추천 베이스라인 검사가 있는데 아직 안 했으면 체크인 다이얼로그를 자동으로 띄우지 않음
+      // (검사부터 하지 않으면 체크인을 제출해도 막혀버려 플로우가 이상하게 보임)
+      const rec = getAssessmentForDay(dp);
+      if (rec && !isAssessmentMissionCompleted(enrollment?.id, dp)) {
+        if (explicitFlag || onceToken) cleanupParams();
+        return;
+      }
       autoOpenedRef.current = true;
       // mtOnce 토큰 소비 마킹 (같은 토큰으로 다시 열리지 않게)
       if (onceToken && onceValid) {
@@ -465,7 +472,8 @@ export default function MindTrackWorkbook() {
       openMission(m);
       cleanupParams();
     }
-  }, [loading, searchParams, currentDay, missions, checkins]);
+  }, [loading, searchParams, currentDay, missions, checkins, enrollment]);
+
 
   const openMission = (mission: any) => {
     const existing = checkins.find((c) => c.day_number === mission.day_number);
@@ -1713,6 +1721,58 @@ export default function MindTrackWorkbook() {
             <DialogTitle className="text-left break-keep">{activeMission?.mission_title}</DialogTitle>
           </DialogHeader>
           {(() => {
+            const pendingAssessment = activeMission
+              ? (() => {
+                  const rec = getAssessmentForDay(activeMission.day_number);
+                  if (!rec) return null;
+                  if (isAssessmentMissionCompleted(enrollment?.id, activeMission.day_number)) return null;
+                  return rec;
+                })()
+              : null;
+
+            if (pendingAssessment) {
+              return (
+                <div className="space-y-4 pt-2">
+                  {activeMission?.mission_description && (
+                    <p className="text-sm text-slate-600 break-keep leading-relaxed">
+                      {activeMission.mission_description}
+                    </p>
+                  )}
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 space-y-2">
+                    <div className="text-[12px] font-bold text-amber-800">먼저 베이스라인 진단부터</div>
+                    <div className="text-sm font-semibold text-slate-900 break-keep">{pendingAssessment.title}</div>
+                    <p className="text-[12px] text-slate-600 leading-relaxed break-keep">
+                      {pendingAssessment.why} 약 {pendingAssessment.minutes}분이면 끝나고, 끝나면 자동으로 워크북으로 돌아와 오늘의 체크인을 이어갈 수 있어요.
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      const rec = pendingAssessment;
+                      setActiveMission(null);
+                      navigate(rec.route, {
+                        state: {
+                          from: "mind-track-mission",
+                          enrollmentId: enrollment?.id,
+                          day: activeMission!.day_number,
+                          missionId: activeMission!.id,
+                        },
+                      });
+                    }}
+                    className="w-full bg-[#1a1a1a] text-white hover:bg-black rounded-xl"
+                  >
+                    지금 {pendingAssessment.minutes}분 진단 시작하기
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveMission(null)}
+                    className="w-full text-[12px] text-slate-500 hover:text-slate-700"
+                  >
+                    나중에 할게요
+                  </button>
+                </div>
+              );
+            }
+
             return (
               <div className="space-y-5 pt-2">
                 {activeMission?.mission_description && (
@@ -1767,11 +1827,21 @@ export default function MindTrackWorkbook() {
             );
           })()}
           <DialogFooter>
-            <Button onClick={submitCheckin} disabled={submitting} className="w-full bg-[#1a1a1a] text-white hover:bg-black rounded-xl">
-              {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-              체크인 완료
-            </Button>
+            {(() => {
+              const blocked = activeMission
+                ? !!getAssessmentForDay(activeMission.day_number) &&
+                  !isAssessmentMissionCompleted(enrollment?.id, activeMission.day_number)
+                : false;
+              if (blocked) return null;
+              return (
+                <Button onClick={submitCheckin} disabled={submitting} className="w-full bg-[#1a1a1a] text-white hover:bg-black rounded-xl">
+                  {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                  체크인 완료
+                </Button>
+              );
+            })()}
           </DialogFooter>
+
         </DialogContent>
       </Dialog>
 

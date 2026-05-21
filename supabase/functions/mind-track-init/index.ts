@@ -202,6 +202,7 @@ Deno.serve(async (req) => {
     await supabase
       .from("mind_track_enrollments")
       .update({
+        track_type: "mind_7day",
         payment_status: keepTrial ? "trial" : "completed",
         status: "active",
         started_at: new Date().toISOString(),

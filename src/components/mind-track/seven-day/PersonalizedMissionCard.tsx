@@ -21,9 +21,18 @@ interface DailyMission {
   estimated_minutes: number | null;
 }
 
+const sevenDayText = (value?: string | null) =>
+  value ? value.replace(/30일/g, "7일").replace(/한 달/g, "7일") : value;
+
 export default function PersonalizedMissionCard({ mission, day }: { mission: DailyMission | null; day: number }) {
   if (!mission || !mission.mission_title) return null;
-  const steps = Array.isArray(mission.action_steps) ? mission.action_steps.filter((s: any) => typeof s === "string" && s.trim()) : [];
+  const steps = Array.isArray(mission.action_steps)
+    ? mission.action_steps.filter((s: any) => typeof s === "string" && s.trim()).map(sevenDayText)
+    : [];
+  const title = sevenDayText(mission.mission_title);
+  const description = sevenDayText(mission.mission_description);
+  const why = sevenDayText(mission.why_it_matters);
+  const success = sevenDayText(mission.success_criteria);
 
   return (
     <Card className="bg-white rounded-3xl border-[#C8B88A]/40 ring-1 ring-[#C8B88A]/20 p-6 space-y-5 shadow-sm">
@@ -40,19 +49,19 @@ export default function PersonalizedMissionCard({ mission, day }: { mission: Dai
           ) : null}
         </div>
         <h2 className="text-xl sm:text-2xl font-bold text-slate-900 break-keep leading-snug">
-          {mission.mission_title}
+          {title}
         </h2>
-        {mission.mission_description && (
-          <p className="text-sm text-slate-600 leading-relaxed break-keep">{mission.mission_description}</p>
+        {description && (
+          <p className="text-sm text-slate-600 leading-relaxed break-keep">{description}</p>
         )}
       </div>
 
-      {mission.why_it_matters && (
+      {why && (
         <div className="rounded-2xl bg-slate-50 px-4 py-3 space-y-1.5">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
             <Target className="w-3.5 h-3.5" /> 왜 지금 이 미션인가
           </div>
-          <p className="text-sm text-slate-700 leading-relaxed break-keep">{mission.why_it_matters}</p>
+          <p className="text-sm text-slate-700 leading-relaxed break-keep">{why}</p>
         </div>
       )}
 
@@ -74,12 +83,12 @@ export default function PersonalizedMissionCard({ mission, day }: { mission: Dai
         </div>
       )}
 
-      {mission.success_criteria && (
+      {success && (
         <div className="flex items-start gap-2 rounded-2xl border border-emerald-100 bg-emerald-50/60 px-4 py-3">
           <Flag className="w-4 h-4 text-emerald-700 mt-0.5 shrink-0" />
           <div>
             <div className="text-xs font-semibold text-emerald-800 mb-0.5">오늘의 완료 기준</div>
-            <p className="text-sm text-emerald-900 leading-relaxed break-keep">{mission.success_criteria}</p>
+            <p className="text-sm text-emerald-900 leading-relaxed break-keep">{success}</p>
           </div>
         </div>
       )}

@@ -24,6 +24,19 @@ import LightMissionScreen from "./LightMissionScreen";
 import Day1DiagnosisScreen from "./Day1DiagnosisScreen";
 import Day4ExpertMatchScreen from "./Day4ExpertMatchScreen";
 import Day7ReportScreen from "./Day7ReportScreen";
+import PersonalizedMissionCard from "./PersonalizedMissionCard";
+
+interface DailyMissionRow {
+  day_number: number;
+  mission_title: string | null;
+  mission_description: string | null;
+  why_it_matters: string | null;
+  action_steps: any;
+  success_criteria: string | null;
+  estimated_minutes: number | null;
+}
+import Day4ExpertMatchScreen from "./Day4ExpertMatchScreen";
+import Day7ReportScreen from "./Day7ReportScreen";
 
 interface EnrollmentRow {
   id: string;

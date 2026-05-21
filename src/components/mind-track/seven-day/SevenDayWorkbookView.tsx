@@ -51,6 +51,7 @@ interface CheckinRow {
   day_number: number;
   completed: boolean | null;
   reflection_note: string | null;
+  reflection_payload: any | null;
   mood_score: number | null;
   energy_score: number | null;
   clarity_score: number | null;

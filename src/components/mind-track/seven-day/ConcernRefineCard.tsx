@@ -65,11 +65,17 @@ export default function ConcernRefineCard({
       return;
     }
     setLoading(true);
+    const newSession =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setSessionId(newSession);
     try {
       const { data, error } = await supabase.functions.invoke(
         "mind-track-regenerate",
-        { body: { enrollmentId, concern: text } },
+        { body: { enrollmentId, concern: text, sessionId: newSession } },
       );
+
       if (error) {
         const context = (error as any)?.context;
         const detail = context?.json ? await context.json().catch(() => null) : null;

@@ -25,6 +25,8 @@ import Day1DiagnosisScreen from "./Day1DiagnosisScreen";
 import Day4ExpertMatchScreen from "./Day4ExpertMatchScreen";
 import Day7ReportScreen from "./Day7ReportScreen";
 import PersonalizedMissionCard from "./PersonalizedMissionCard";
+import DailyResourcePanel from "./DailyResourcePanel";
+import ConcernRefineCard from "./ConcernRefineCard";
 
 interface DailyMissionRow {
   day_number: number;
@@ -195,6 +197,18 @@ export default function SevenDayWorkbookView({
               mission={dailyMissions.find((m) => m.day_number === selectedDay) ?? null}
               day={selectedDay}
             />
+
+            {/* 진짜 고민 다시 적기 → Day 1~7 맞춤 미션 재생성 */}
+            <ConcernRefineCard
+              enrollmentId={enrollment.id}
+              currentConcern={
+                (enrollment.baseline_data as any)?.primary_concern ?? null
+              }
+              onRegenerated={load}
+            />
+
+            {/* 오늘의 자체 검사 + 유튜브 영상 + 이론 근거 + 5분 실천 */}
+            <DailyResourcePanel enrollmentId={enrollment.id} day={selectedDay} />
 
             {kind === "diagnosis" && (
               <Day1DiagnosisScreen

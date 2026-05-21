@@ -211,55 +211,77 @@ export default function SevenDayWorkbookView({
             {/* 오늘의 자체 검사 + 유튜브 영상 + 이론 근거 + 5분 실천 */}
             <DailyResourcePanel enrollmentId={enrollment.id} day={selectedDay} />
 
-            {kind === "diagnosis" && (
-              <Day1DiagnosisScreen
-                enrollmentId={enrollment.id}
-                userId={enrollment.user_id}
-                phaseLabel={copy.phase}
-                baselineData={enrollment.baseline_data}
-                initialNote={ci?.reflection_note ?? null}
-                alreadyCompleted={!!ci?.completed}
-                onCompleted={load}
-              />
-            )}
-            {kind === "light" && (() => {
-              const m = getSevenDayLightMission(audience, selectedDay);
-              if (!m) return null;
-              return (
-                <LightMissionScreen
-                  enrollmentId={enrollment.id}
-                  userId={enrollment.user_id}
-                  day={selectedDay}
-                  mission={m}
-                  phaseLabel={copy.phase}
-                  initialNote={ci?.reflection_note ?? null}
-                  alreadyCompleted={!!ci?.completed}
-                  onCompleted={load}
-                />
-              );
+            {(() => {
+              const dm = dailyMissions.find((m) => m.day_number === selectedDay) ?? null;
+              const actionSteps: string[] = Array.isArray(dm?.action_steps)
+                ? (dm!.action_steps as any[])
+                    .filter((s): s is string => typeof s === "string" && s.trim().length > 0)
+                : [];
+              const initialPayload = (ci?.reflection_payload as any) ?? null;
+
+              if (kind === "diagnosis") {
+                return (
+                  <Day1DiagnosisScreen
+                    enrollmentId={enrollment.id}
+                    userId={enrollment.user_id}
+                    phaseLabel={copy.phase}
+                    baselineData={enrollment.baseline_data}
+                    initialNote={ci?.reflection_note ?? null}
+                    initialPayload={initialPayload}
+                    actionSteps={actionSteps}
+                    alreadyCompleted={!!ci?.completed}
+                    onCompleted={load}
+                  />
+                );
+              }
+              if (kind === "light") {
+                const m = getSevenDayLightMission(audience, selectedDay);
+                if (!m) return null;
+                return (
+                  <LightMissionScreen
+                    enrollmentId={enrollment.id}
+                    userId={enrollment.user_id}
+                    day={selectedDay}
+                    mission={m}
+                    phaseLabel={copy.phase}
+                    initialNote={ci?.reflection_note ?? null}
+                    initialPayload={initialPayload}
+                    actionSteps={actionSteps}
+                    alreadyCompleted={!!ci?.completed}
+                    onCompleted={load}
+                  />
+                );
+              }
+              if (kind === "expert") {
+                return (
+                  <Day4ExpertMatchScreen
+                    enrollmentId={enrollment.id}
+                    userId={enrollment.user_id}
+                    audience={audience}
+                    phaseLabel={copy.phase}
+                    initialNote={ci?.reflection_note ?? null}
+                    initialPayload={initialPayload}
+                    actionSteps={actionSteps}
+                    alreadyCompleted={!!ci?.completed}
+                    onCompleted={load}
+                  />
+                );
+              }
+              if (kind === "report") {
+                return (
+                  <Day7ReportScreen
+                    enrollmentId={enrollment.id}
+                    userId={enrollment.user_id}
+                    phaseLabel={copy.phase}
+                    baselineData={enrollment.baseline_data}
+                    day7Checkin={ci ?? null}
+                    alreadyCompleted={!!ci?.completed}
+                    onCompleted={load}
+                  />
+                );
+              }
+              return null;
             })()}
-            {kind === "expert" && (
-              <Day4ExpertMatchScreen
-                enrollmentId={enrollment.id}
-                userId={enrollment.user_id}
-                audience={audience}
-                phaseLabel={copy.phase}
-                initialNote={ci?.reflection_note ?? null}
-                alreadyCompleted={!!ci?.completed}
-                onCompleted={load}
-              />
-            )}
-            {kind === "report" && (
-              <Day7ReportScreen
-                enrollmentId={enrollment.id}
-                userId={enrollment.user_id}
-                phaseLabel={copy.phase}
-                baselineData={enrollment.baseline_data}
-                day7Checkin={ci ?? null}
-                alreadyCompleted={!!ci?.completed}
-                onCompleted={load}
-              />
-            )}
           </motion.div>
         </div>
       </div>

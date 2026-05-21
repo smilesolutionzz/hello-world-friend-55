@@ -25,9 +25,11 @@ import {
 } from "lucide-react";
 import {
   getDailyContent,
+  getDailyVideos,
   youtubeThumbnail,
   youtubeWatchUrl,
 } from "@/lib/mindTrackDailyContent";
+import YouTubePlayer from "@/components/ui/youtube-player";
 import { getDayTheory } from "@/lib/mindTrack7DayTheory";
 import {
   buildMissionState,

@@ -145,12 +145,12 @@ export default function MindTrackWorkbook() {
   const showWelcome = searchParams.get("welcome") === "1";
   const rawDayParam = searchParams.get("day");
   const dayParam = parseInt(rawDayParam ?? "", 10);
-  const dayParamValid = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 30;
+  const dayParamValid = Number.isFinite(dayParam) && dayParam >= 1 && dayParam <= 7;
 
   // 잘못된 day 파라미터(범위 밖 또는 NaN이지만 값이 있는 경우) → day=1로 보정 + 토스트
   useEffect(() => {
     if (rawDayParam !== null && !dayParamValid) {
-      toast.error(`Day ${rawDayParam}은(는) 유효하지 않아요. 1~30 범위만 가능해요. Day 1로 이동했어요.`);
+      toast.error(`Day ${rawDayParam}은(는) 유효하지 않아요. 7일 트랙은 Day 1~7까지만 가능해요. Day 1로 이동했어요.`);
       const params = new URLSearchParams(searchParams);
       params.set("day", "1");
       setSearchParams(params, { replace: true });
@@ -173,7 +173,7 @@ export default function MindTrackWorkbook() {
   const storedDay = (() => {
     try {
       const v = parseInt(localStorage.getItem("mt_workbook_selected_day") ?? "", 10);
-      return Number.isFinite(v) && v >= 1 && v <= 30 ? v : null;
+      return Number.isFinite(v) && v >= 1 && v <= 7 ? v : null;
     } catch { return null; }
   })();
   const initialSelectedDay = dayParamValid ? dayParam : storedDay;
@@ -596,8 +596,10 @@ export default function MindTrackWorkbook() {
     );
   }
 
-  // 7일 트랙은 별도 컴팩트 뷰로 분기
-  if (enrollment?.track_type === "mind_7day" && enrollment?.id) {
+  // 현재 상품의 기본 워크북은 7일 트랙으로 고정한다.
+  // 기존 사용자에게 남아있는 mind_30day enrollment도 여기서는 7일 워크북으로 보여주고,
+  // 30일 확장은 Day 7 이후 제안 카드/랜딩에서만 다룬다.
+  if (enrollment?.id) {
     return <SevenDayWorkbookView enrollmentId={enrollment.id} />;
   }
 

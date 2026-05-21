@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   Sparkles, ArrowRight, CheckCircle2, Circle, HelpCircle, Phone, Calendar,
-  PlayCircle, Loader2, BookOpen, BarChart3, MessageSquareHeart, Target,
-  TrendingUp, Award, Flame,
+  PlayCircle, Loader2, BookOpen, BarChart3, MessageSquareHeart, Target, Flame,
+  RefreshCw,
 } from "lucide-react";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import Footer from "@/components/ui/footer";
@@ -17,14 +17,8 @@ import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { supabase } from "@/integrations/supabase/client";
 import { getDayCopy, calcMindTrackCurrentDay } from "@/lib/mindTrackDayCopy";
 import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirstTimeOnboarding";
-import DashboardVsWorkbookHelp from "@/components/mind-track/DashboardVsWorkbookHelp";
-import MindTrackTodayValueStack from "@/components/mind-track/MindTrackTodayValueStack";
-import MindConditionPanel from "@/components/mind-condition/MindConditionPanel";
-import TodayCoachingEmailContent from "@/components/mind-track/TodayCoachingEmailContent";
-import QuickReflectionForm from "@/components/mind-track/QuickReflectionForm";
 import MindTrackFocusSwitcher from "@/components/mind-track/MindTrackFocusSwitcher";
 import { getFocus } from "@/lib/mindTrackFocusTracks";
-import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 interface Enrollment {

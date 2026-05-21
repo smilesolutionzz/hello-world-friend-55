@@ -50,13 +50,26 @@ const AREA_TO_GOAL: Record<AreaCode, string> = {
 
 const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audience }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
+  const autoStartedRef = useRef(false);
   const meta = AREA_LABEL[area];
   const goal = AREA_TO_GOAL[area];
 
   const handleStart = async () => {
     if (!user) {
-      navigate('/auth?redirect=' + encodeURIComponent(`/mind-track?postLogin=1&trial=1&from=check&area=${area}&audience=${audience}`));
+      // 로그인 후에도 체크 결과(age·score·area·audience)를 그대로 이어가도록 모든 파라미터를 redirect URL에 포함
+      const params = new URLSearchParams({
+        postLogin: '1',
+        trial: '1',
+        from: 'check',
+        area,
+        audience,
+        autostart: '1',
+      });
+      if (age) params.set('age', age);
+      if (score != null) params.set('score', String(score));
+      navigate('/auth?redirect=' + encodeURIComponent(`/mind-track?${params.toString()}`));
       return;
     }
     setLoading(true);
@@ -73,6 +86,18 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
       setLoading(false);
     }
   };
+
+  // 로그인 후 자동 진행 — autostart=1 이면서 user 있을 때 한 번만 트리거
+  useEffect(() => {
+    if (autoStartedRef.current) return;
+    const sp = new URLSearchParams(location.search);
+    const shouldAutoStart = sp.get('autostart') === '1' || (sp.get('postLogin') === '1' && sp.get('trial') === '1');
+    if (shouldAutoStart && user && !loading) {
+      autoStartedRef.current = true;
+      handleStart();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, location.search]);
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-white text-slate-900 break-keep">

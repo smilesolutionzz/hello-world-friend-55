@@ -360,6 +360,7 @@ ${scoreDetails}
     });
   };
 
+  return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 pb-20">
       {/* PDF 영역 시작 - 다크 테마 리포트 */}
       <div id="game-result-report" className="bg-slate-900 rounded-2xl p-4 space-y-4">

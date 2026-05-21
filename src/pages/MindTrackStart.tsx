@@ -97,12 +97,15 @@ export default function MindTrackStart() {
       setEnrollment(target);
 
       // 🚀 Skip the 12-question diagnostic if Quiz already provided baseline scores.
+      // ❗ But never auto-init in intake mode — user is actively writing their concern.
+      const sp = new URLSearchParams(location.search);
+      const isIntakeMode = sp.get("intake") === "1";
       const baseline = (target.baseline_data ?? {}) as Record<string, any>;
       const hasSeed =
         typeof baseline.stress_score === "number" &&
         typeof baseline.energy_score === "number" &&
         typeof baseline.clarity_score === "number";
-      if (hasSeed) {
+      if (hasSeed && !isIntakeMode) {
         await runInitFromSeed(target, baseline);
       }
     })();

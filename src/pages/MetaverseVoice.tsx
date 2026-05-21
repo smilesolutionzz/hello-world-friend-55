@@ -46,7 +46,7 @@ const MetaverseVoicePage = () => {
         </div>
       </div>
 
-      <main className="max-w-3xl mx-auto px-5 pt-8 pb-24 break-keep">
+      <main className="max-w-3xl mx-auto px-5 pt-8 pb-40 break-keep">
         {/* 헤더 */}
         <header className="mb-8">
           <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase mb-2">

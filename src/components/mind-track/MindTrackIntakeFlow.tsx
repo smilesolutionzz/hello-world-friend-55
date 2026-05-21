@@ -105,8 +105,9 @@ export default function MindTrackIntakeFlow({ enrollment, audience, area, age, s
 
   // --------- Step actions ---------
 
-  const goNext = () => setStep((s) => Math.min(4, (s + 1) as any));
-  const goBack = () => setStep((s) => Math.max(0, (s - 1) as any));
+  const goNext = () => setStep((s) => (Math.min(4, s + 1) as 0 | 1 | 2 | 3 | 4));
+  const goBack = () => setStep((s) => (Math.max(0, s - 1) as 0 | 1 | 2 | 3 | 4));
+
 
   const handlePolish = async () => {
     if (!concern.trim()) {

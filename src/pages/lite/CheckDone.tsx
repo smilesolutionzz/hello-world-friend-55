@@ -16,6 +16,7 @@ type CheckResult = {
   age: string;
   area: AreaCode;
   answers: Record<number, number>;
+  questions?: { question_no: number; prompt: string }[];
   total: number;
   submittedAt: string;
 };
@@ -37,11 +38,15 @@ const AREA_COPY: Record<AreaCode, AreaCopy> = {
       '하루 중 아이가 먼저 말을 거는 횟수가 줄었는지 살펴보세요.',
       '새 단어를 따라 말하기보다 손짓·표정으로 표현하려는 경향이 있는지 봐 주세요.',
       '질문에 단답형으로만 답하고 대화가 짧게 끊기는 순간이 있는지 떠올려 보세요.',
+      '책·영상의 내용을 자기 말로 다시 설명할 때 핵심을 놓치지는 않는지 확인해 주세요.',
+      '문장이 짧거나, "이거 · 저거" 같은 지시어에 의존하는 빈도가 늘었는지 살펴보세요.',
     ],
     homeTips: [
       '잠자기 전 5분, 오늘 가장 재밌었던 한 가지를 아이가 직접 말로 설명하게 해 주세요.',
       '그림책 한 페이지를 읽고 "여기서 뭐가 보여?"라고 열린 질문으로 되물어 주세요.',
       '아이의 말을 끊지 않고 끝까지 듣고, 마지막 단어를 한 번 더 따라 말해 주세요.',
+      '새 단어를 만나면 "어떤 느낌이야?"라고 감각·감정으로 연결해 설명해 주세요.',
+      '하루 한 번, "오늘은 ○○이가 선생님이에요"라며 아이가 부모에게 알려주는 역할극을 만들어 보세요.',
     ],
   },
   emotion: {
@@ -52,11 +57,15 @@ const AREA_COPY: Record<AreaCode, AreaCopy> = {
       '하루 중 짜증·분노가 올라오는 시간대(아침/등하원/잠자기 전)가 정해져 있는지 살펴보세요.',
       '감정이 격해진 뒤 스스로 진정하는 데 걸리는 시간이 점점 길어지는지 봐 주세요.',
       '감정 표현이 말보다 행동(밀기, 던지기, 울기)으로 먼저 나오는 순간이 있는지 떠올려 보세요.',
+      '잠들기·기상 패턴이 흔들리며 컨디션 기복이 함께 커졌는지 확인해 주세요.',
+      '평소 좋아하던 활동에도 흥미를 덜 보이는 날이 늘었는지 살펴보세요.',
     ],
     homeTips: [
       '아이가 짜증을 낼 때 "지금 화났구나"라고 감정 단어를 먼저 짚어 주세요.',
       '하루 한 번, 아이와 함께 깊게 숨을 3번 같이 들이쉬고 내쉬는 시간을 만들어 보세요.',
       '아이가 진정된 후 "아까 어떤 마음이었어?"라고 천천히 되짚어 주세요. 훈계는 잠시 미뤄도 괜찮아요.',
+      '저녁 루틴을 30분 일찍 시작해 자기 전 흥분을 가라앉힐 여백을 만들어 주세요.',
+      '잘한 행동 한 가지를 그날 안에 구체적으로 말로 칭찬해 주세요. ("스스로 진정한 거 멋졌어")',
     ],
   },
   social: {
@@ -67,11 +76,15 @@ const AREA_COPY: Record<AreaCode, AreaCopy> = {
       '아이가 친구 이름을 자주 언급하는지, 아니면 혼자 놀았다는 이야기가 늘었는지 살펴보세요.',
       '새로운 장소·새로운 사람 앞에서 평소보다 말수가 줄어드는지 봐 주세요.',
       '친구와 다툰 뒤 스스로 화해하려는 시도가 있는지, 회피하는지 떠올려 보세요.',
+      '눈맞춤·인사 같은 기본적인 사회적 반응이 줄지 않았는지 확인해 주세요.',
+      '단체 활동에서 자기 차례나 규칙을 지키는 것을 어려워하는지 살펴보세요.',
     ],
     homeTips: [
       '오늘 어린이집·학교에서 같이 논 친구 한 명의 이름을 자연스럽게 물어봐 주세요.',
       '주말에 1:1로 만날 수 있는 친구 한 명과 짧은 만남(30분~1시간)을 만들어 보세요.',
       '갈등 상황을 "어떻게 말하면 좋았을까?"라고 역할극처럼 함께 연습해 주세요.',
+      '아이가 인사·고마움을 표현했을 때, 그 자리에서 짧게 알아채 주세요.',
+      '보드게임·카드게임으로 차례 지키기·규칙 따르기를 놀이로 연습해 보세요.',
     ],
   },
   focus: {
@@ -82,26 +95,37 @@ const AREA_COPY: Record<AreaCode, AreaCopy> = {
       '시작한 활동을 끝까지 마치는 비율이 절반 이하인지 살펴보세요.',
       '주변 소리·움직임에 쉽게 시선이 흩어지는지 봐 주세요.',
       '해야 할 일을 자주 잊거나, 같은 안내를 여러 번 해야 하는지 떠올려 보세요.',
+      '숙제·정리 등 해야 할 일을 시작 자체를 미루는 경향이 있는지 확인해 주세요.',
+      '물건을 자주 잃어버리거나 같은 실수를 반복하는 빈도가 늘었는지 살펴보세요.',
     ],
     homeTips: [
       '한 번에 하나의 지시만 짧은 문장으로 전달해 주세요. ("책가방 정리해 줘" 하나만)',
       '타이머를 활용해 "10분만 집중" 같은 짧은 단위로 성공 경험을 쌓아 주세요.',
       '책상 위에 지금 필요한 물건만 남기고 나머지는 시야에서 치워 주세요.',
+      '시작 전에 "끝나면 ○○하자"라고 마무리 신호를 함께 정해 주세요.',
+      '체크리스트를 종이에 그려, 끝낼 때마다 아이가 직접 표시하게 해 주세요.',
     ],
   },
 };
 
 /**
- * 발달 점수 (높을수록 좋음).
- * 문항은 역채점(높게 답할수록 "걱정되는 모습이 잦음")이므로,
- * 발달 점수 = ((최대점 - 응답합계) / (최대점 - 최소점)) × 100.
- * 최소 3점(모두 1점) ~ 최대 15점(모두 5점) → 100점~0점.
+ * 발달 점수 (높을수록 좋음). 5문항 × 5점척도 → 최소 5, 최대 25.
+ * 발달 점수 = ((max - total) / (max - min)) × 100.
  */
-function toScore(total: number): number {
-  const min = 3;
-  const max = 15;
+function toScore(total: number, questionCount: number = 5): number {
+  const min = questionCount;
+  const max = questionCount * 5;
   const pct = Math.max(0, Math.min(100, Math.round(((max - total) / (max - min)) * 100)));
   return pct;
+}
+
+/** 응답 강도 라벨 (1~5점 → 짧은 해석 문구) */
+function answerInsight(v: number): { tag: string; tone: string } {
+  if (v <= 1) return { tag: '전혀 아니다', tone: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+  if (v === 2) return { tag: '드물게 보임', tone: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+  if (v === 3) return { tag: '가끔 보임', tone: 'text-amber-700 bg-amber-50 border-amber-200' };
+  if (v === 4) return { tag: '자주 보임', tone: 'text-rose-700 bg-rose-50 border-rose-200' };
+  return { tag: '매우 자주 보임', tone: 'text-rose-700 bg-rose-50 border-rose-200' };
 }
 
 /** 또래 평균 (참고치, 75점 기준). 실데이터 누적 전 임시 벤치마크. */
@@ -145,8 +169,14 @@ const CheckDone: React.FC = () => {
   if (!result) return null;
 
   const copy = AREA_COPY[result.area];
-  const score = toScore(result.total);
+  const questionCount = result.questions?.length || Object.keys(result.answers).length || 5;
+  const score = toScore(result.total, questionCount);
   const tone = toToneLabel(score);
+  // 하이라이트: 가장 강하게(4~5) 표시된 문항 추출
+  const highlights = (result.questions ?? [])
+    .map((q) => ({ ...q, value: result.answers[q.question_no] ?? 0 }))
+    .filter((q) => q.value >= 4)
+    .sort((a, b) => b.value - a.value);
   // 위기 안전망: 전체 점수 매우 낮거나, 감정 영역에서 평균 이하
   const showSafetyNet = score < 40 || (result.area === 'emotion' && score < 50);
 
@@ -216,6 +246,48 @@ const CheckDone: React.FC = () => {
         <p className="text-[12px] text-slate-400 mb-8">
           ※ 진단이 아닌, 부모님이 일상에서 살펴보시도록 돕는 참고용 체크예요. 점수는 높을수록 또래 평균에 가깝습니다.
         </p>
+
+        <p className="text-[12px] text-slate-400 mb-8">
+          ※ 진단이 아닌, 부모님이 일상에서 살펴보시도록 돕는 참고용 체크예요. 점수는 높을수록 또래 평균에 가깝습니다.
+        </p>
+
+        {/* 문항별 살펴보기 — 응답을 그대로 다시 비춰 줘 깊이감을 더함 */}
+        {result.questions && result.questions.length > 0 && (
+          <section className="mb-8">
+            <h2 className="text-[17px] font-semibold mb-1">문항별 살펴보기</h2>
+            <p className="text-[12px] text-slate-500 mb-3">
+              총 {result.questions.length}개 문항 · 합산 {result.total}점
+              {highlights.length > 0 && ` · 눈에 띄는 항목 ${highlights.length}개`}
+            </p>
+            <ul className="flex flex-col gap-2.5">
+              {result.questions.map((q, idx) => {
+                const v = result.answers[q.question_no] ?? 0;
+                const ins = answerInsight(v);
+                return (
+                  <li key={q.question_no} className="rounded-2xl border border-slate-200 px-4 py-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-[14px] leading-relaxed text-slate-800 flex-1">
+                        <span className="text-slate-400 mr-1 tabular-nums">{idx + 1}.</span>
+                        {q.prompt}
+                      </p>
+                      <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium border ${ins.tone}`}>
+                        {ins.tag}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((n) => (
+                        <span
+                          key={n}
+                          className={`h-1.5 flex-1 rounded-full ${n <= v ? (v >= 4 ? 'bg-rose-400' : v === 3 ? 'bg-amber-400' : 'bg-emerald-400') : 'bg-slate-100'}`}
+                        />
+                      ))}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
 
         {/* 살펴보면 좋을 점 */}
         <section className="mb-8">

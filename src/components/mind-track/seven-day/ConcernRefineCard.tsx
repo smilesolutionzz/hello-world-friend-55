@@ -68,9 +68,14 @@ export default function ConcernRefineCard({
         "mind-track-regenerate",
         { body: { enrollmentId, concern: text } },
       );
-      if (error) throw error;
+      if (error) {
+        const context = (error as any)?.context;
+        const detail = context?.json ? await context.json().catch(() => null) : null;
+        throw new Error(detail?.error ?? error.message ?? "재생성 실패");
+      }
       if (!data?.success) throw new Error(data?.error ?? "재생성 실패");
       toast.success("당신의 고민에 맞춘 Day 1~7 미션이 새로 생성되었어요");
+      setOpen(false);
       onRegenerated();
     } catch (e: any) {
       toast.error(e?.message ?? "재생성 중 문제가 발생했어요");

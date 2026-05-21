@@ -30,6 +30,8 @@ export default function ConcernRefineCard({
   const [loading, setLoading] = useState(false);
   const [expanding, setExpanding] = useState(false);
   const [open, setOpen] = useState(false);
+  const [sessionId, setSessionId] = useState<string | undefined>(undefined);
+
 
   const handleAIExpand = async () => {
     const text = concern.trim();

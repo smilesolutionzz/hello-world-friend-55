@@ -99,43 +99,55 @@ export default function DailyResourcePanel({
         </Card>
       )}
 
-      {/* 2) 오늘의 추천 유튜브 영상 */}
-      <Card className="bg-white rounded-3xl border-slate-200 p-5 space-y-3 shadow-sm">
+      {/* 2) 오늘의 추천 유튜브 영상 (2개, 인라인 재생) */}
+      <Card className="bg-white rounded-3xl border-slate-200 p-5 space-y-4 shadow-sm">
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="border-slate-200 text-slate-700 bg-white">
             <PlayCircle className="w-3 h-3 mr-1" />
-            오늘의 영상 추천
+            오늘의 영상 추천 · TOP 2
           </Badge>
-          <span className="text-xs text-slate-500">{content.video.durationLabel}</span>
+          <span className="text-xs text-slate-500">썸네일을 누르면 바로 재생</span>
         </div>
-        <a
-          href={youtubeWatchUrl(content.video.videoId, day)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block group"
-        >
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-100 ring-1 ring-slate-200">
-            <img
-              src={youtubeThumbnail(content.video.videoId)}
-              alt={content.video.title}
-              loading="lazy"
-              className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform"
-            />
-            <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-              <PlayCircle className="w-12 h-12 text-white drop-shadow-lg" />
-            </div>
-          </div>
-          <div className="pt-3 space-y-1">
-            <p className="text-sm font-semibold text-slate-900 leading-snug break-keep line-clamp-2">
-              {content.video.title}
-            </p>
-            <p className="text-xs text-slate-500">{content.video.channel}</p>
-            <p className="text-xs text-slate-600 leading-relaxed break-keep pt-1">
-              {content.video.reason}
-            </p>
-          </div>
-        </a>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {getDailyVideos(day).map((v, idx) => (
+            <YouTubePlayer
+              key={v.videoId}
+              title={v.title}
+              youtubeUrl={youtubeWatchUrl(v.videoId, day)}
+            >
+              <button type="button" className="block group text-left w-full">
+                <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-100 ring-1 ring-slate-200">
+                  <img
+                    src={youtubeThumbnail(v.videoId)}
+                    alt={v.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform"
+                  />
+                  <div className="absolute inset-0 bg-black/25 flex items-center justify-center">
+                    <PlayCircle className="w-12 h-12 text-white drop-shadow-lg" />
+                  </div>
+                  <span className="absolute top-2 left-2 text-[10px] font-semibold bg-white/90 text-slate-700 rounded-full px-2 py-0.5">
+                    Pick {idx + 1}
+                  </span>
+                  <span className="absolute bottom-2 right-2 text-[10px] font-medium bg-black/70 text-white rounded px-1.5 py-0.5">
+                    {v.durationLabel}
+                  </span>
+                </div>
+                <div className="pt-2 space-y-0.5">
+                  <p className="text-sm font-semibold text-slate-900 leading-snug break-keep line-clamp-2">
+                    {v.title}
+                  </p>
+                  <p className="text-xs text-slate-500">{v.channel}</p>
+                  <p className="text-xs text-slate-600 leading-relaxed break-keep pt-1 line-clamp-2">
+                    {v.reason}
+                  </p>
+                </div>
+              </button>
+            </YouTubePlayer>
+          ))}
+        </div>
       </Card>
+
 
       {/* 3) 미션 이론 근거 */}
       <Card className="bg-slate-50 rounded-3xl border-slate-200 p-5 space-y-2">

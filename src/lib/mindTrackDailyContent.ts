@@ -226,10 +226,33 @@ const CONTENT: Record<number, MindTrackDailyContent> = {
 
 const FALLBACK: MindTrackDailyContent = CONTENT[1];
 
+/**
+ * Day별 보조(2번째) 추천 영상 — 기존 검증된 영상 풀에서 재사용해
+ * 새 videoId 도입에 따른 임베드 실패 위험을 0으로 유지합니다.
+ * 값은 "다른 Day의 primary 영상을 빌려온다"는 의미입니다.
+ */
+const SECONDARY_FROM_DAY: Record<number, number> = {
+  1: 12, 2: 19, 3: 18, 4: 13, 5: 16, 6: 17, 7: 25,
+  8: 15, 9: 22, 10: 11, 11: 12, 12: 10, 13: 28, 14: 8,
+  15: 25, 16: 17, 17: 16, 18: 19, 19: 20, 20: 29, 21: 28,
+  22: 24, 23: 8, 24: 22, 25: 12, 26: 27, 27: 6, 28: 24,
+  29: 20, 30: 28,
+};
+
 export function getDailyContent(day: number): MindTrackDailyContent {
   if (CONTENT[day]) return CONTENT[day];
-  // 31일 이상이거나 0 이하 — 안전한 기본값
   return FALLBACK;
+}
+
+/** 오늘의 추천 영상 2개 (primary + secondary) */
+export function getDailyVideos(day: number): MindTrackVideoPick[] {
+  const primary = getDailyContent(day).video;
+  const secondDay = SECONDARY_FROM_DAY[day];
+  const secondary =
+    secondDay && CONTENT[secondDay] && CONTENT[secondDay].video.videoId !== primary.videoId
+      ? CONTENT[secondDay].video
+      : null;
+  return secondary ? [primary, secondary] : [primary];
 }
 
 /** 코드 기본값을 반환 (편집 화면에서 비교용) */

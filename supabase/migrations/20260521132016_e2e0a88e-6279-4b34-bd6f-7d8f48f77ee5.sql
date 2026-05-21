@@ -1,0 +1,1 @@
+ALTER TABLE public.mind_track_checkins ADD COLUMN IF NOT EXISTS reflection_payload jsonb;

@@ -8966,6 +8966,7 @@ export type Database = {
           mission_id: string | null
           mood_score: number | null
           reflection_note: string | null
+          reflection_payload: Json | null
           user_id: string
           video_reflection: string | null
         }
@@ -8980,6 +8981,7 @@ export type Database = {
           mission_id?: string | null
           mood_score?: number | null
           reflection_note?: string | null
+          reflection_payload?: Json | null
           user_id: string
           video_reflection?: string | null
         }
@@ -8994,6 +8996,7 @@ export type Database = {
           mission_id?: string | null
           mood_score?: number | null
           reflection_note?: string | null
+          reflection_payload?: Json | null
           user_id?: string
           video_reflection?: string | null
         }

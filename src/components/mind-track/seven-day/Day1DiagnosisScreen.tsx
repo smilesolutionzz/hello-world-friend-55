@@ -11,9 +11,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle2, Compass, Microscope, ArrowUpRight, ChevronDown, Pencil } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2, CheckCircle2, Compass, Microscope, ArrowUpRight, ChevronDown, Pencil, PenLine } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import MissionStepsForm, { isPayloadComplete, type MissionStepsPayload } from "./MissionStepsForm";
 
 interface Props {
   enrollmentId: string;
@@ -21,6 +23,8 @@ interface Props {
   phaseLabel: string;
   baselineData: Record<string, any> | null;
   initialNote?: string | null;
+  initialPayload?: MissionStepsPayload | null;
+  actionSteps?: string[];
   alreadyCompleted: boolean;
   onCompleted: () => void;
 }
@@ -31,6 +35,8 @@ export default function Day1DiagnosisScreen({
   phaseLabel,
   baselineData,
   initialNote,
+  initialPayload,
+  actionSteps = [],
   alreadyCompleted,
   onCompleted,
 }: Props) {
@@ -38,6 +44,8 @@ export default function Day1DiagnosisScreen({
   const [mood, setMood] = useState<number>(Number(init.mood_score ?? 5));
   const [energy, setEnergy] = useState<number>(Number(init.energy_score ?? 5));
   const [clarity, setClarity] = useState<number>(Number(init.clarity_score ?? 5));
+  const [note, setNote] = useState<string>(initialNote ?? "");
+  const [payload, setPayload] = useState<MissionStepsPayload | null>(initialPayload ?? null);
   const [saving, setSaving] = useState(false);
   const [expanded, setExpanded] = useState(!alreadyCompleted);
 

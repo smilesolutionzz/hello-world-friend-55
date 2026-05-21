@@ -162,8 +162,8 @@ export default function MindTrackDashboard() {
   const audience = ((enrollment as any)?.audience || 'child') as 'child' | 'adult' | 'parent' | 'teen';
   const copy = getDayCopy(day, totalDays, audience);
   const progressPct = Math.round((day / totalDays) * 100);
-  const trackLabel = totalDays === 7 ? "7일 마음 트랙" : "30일 마음 트랙";
-  const isShortTrack = totalDays === 7;
+  const trackLabel = "7일 마음 트랙";
+  const isShortTrack = true;
   const isFinalDay = day >= totalDays;
 
   // 첫 진입 1회 온보딩 + "오늘 다시 보지 않기" 지원
@@ -291,13 +291,9 @@ export default function MindTrackDashboard() {
   }
 
   // SEO — 트랙별 og:title/description + FAQPage 구조화 데이터
-  const seoTitle = isShortTrack
-    ? "7일 마음 트랙 · 내 대시보드 | AIHPRO"
-    : "30일 마음 트랙 · 내 대시보드 | AIHPRO";
-  const seoDesc = isShortTrack
-    ? "7일 안에 진단·자기관찰·전문가 개입·회복 루틴까지 완주하는 압축 마음 변화 트랙. 오늘의 미션과 변화 추이를 한눈에."
-    : "30일 마음 변화 트랙 대시보드 — 매주 단계별 미션과 변화 추이, 코칭 인사이트를 한눈에 확인하세요.";
-  const faqList = isShortTrack ? FAQ_7 : FAQ_30;
+  const seoTitle = "7일 마음 트랙 · 내 대시보드 | AIHPRO";
+  const seoDesc = "7일 안에 진단·자기관찰·전문가 개입·회복 루틴까지 완주하는 압축 마음 변화 트랙. 오늘의 미션과 변화 추이를 한눈에.";
+  const faqList = FAQ_7;
   const faqStructuredData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",

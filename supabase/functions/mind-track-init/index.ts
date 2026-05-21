@@ -1,4 +1,4 @@
-// Initialize 30-day Mind Track: takes baseline assessment + generates AI workbook + first week missions
+// Initialize 7-day Mind Track: takes baseline assessment + generates Day 1~7 personalized missions
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
 
     // 2. Generate AI workbook + week 1 missions
     const goalLabel = goalLabels[input.goalFocus] ?? input.goalFocus;
-    const systemPrompt = `당신은 깊이 있는 코칭 가이드입니다. 사용자의 30일 마음 변화 트랙 초기 워크북과 1주차 미션 7개를 "추상적 위로"가 아닌 "구체적·단계적·측정가능한 실천"으로 설계하세요.
+    const systemPrompt = `당신은 깊이 있는 코칭 가이드입니다. 사용자의 7일 마음 트랙 초기 워크북과 Day 1~7 미션 7개를 "추상적 위로"가 아닌 "구체적·단계적·측정가능한 실천"으로 설계하세요.
 
 [엄격한 규칙]
 - '진단', '치료', '환자', '증상' 같은 의료 용어 금지
@@ -91,13 +91,10 @@ Deno.serve(async (req) => {
     "initialSummary": "현재 마음 상태에 대한 따뜻하지만 구체적인 2-3문장 요약",
     "rootCauses": ["구체적 원인1", "구체적 원인2", "구체적 원인3"],
     "strengthAreas": ["강점1", "강점2"],
-    "challengeTheme": "30일 챌린지 한 줄 슬로건",
+    "challengeTheme": "7일 챌린지 한 줄 슬로건",
     "weeklyThemes": [
       {"week": 1, "theme": "...", "focus": "..."},
-      {"week": 2, "theme": "...", "focus": "..."},
-      {"week": 3, "theme": "...", "focus": "..."},
-      {"week": 4, "theme": "...", "focus": "..."},
-      {"week": 5, "theme": "...", "focus": "마무리/축하"}
+      {"week": 2, "theme": "7일 이후 30일 확장 제안", "focus": "완주 후 선택형 후속 루틴"}
     ],
     "expectedOutcomes": ["기대 효과1", "기대 효과2", "기대 효과3"]
   },
@@ -205,6 +202,7 @@ Deno.serve(async (req) => {
     await supabase
       .from("mind_track_enrollments")
       .update({
+        track_type: "mind_7day",
         payment_status: keepTrial ? "trial" : "completed",
         status: "active",
         started_at: new Date().toISOString(),

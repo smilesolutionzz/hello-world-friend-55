@@ -31,6 +31,9 @@ interface Enrollment {
   track_type: string | null;
 }
 
+const sevenDayText = (value?: string | null) =>
+  value ? value.replace(/30일/g, "7일").replace(/한 달/g, "7일") : value;
+
 /**
  * /mind-track/dashboard — 결제자 전용 풀 대시보드
  *
@@ -101,7 +104,17 @@ export default function MindTrackDashboard() {
         navigate("/mind-track", { replace: true });
         return;
       }
-      setEnrollment(data as Enrollment);
+      const normalized = { ...(data as Enrollment), track_type: "mind_7day", current_day: Math.min(Number((data as Enrollment).current_day ?? 1), 7) };
+      if ((data as Enrollment).track_type !== "mind_7day") {
+        supabase
+          .from("mind_track_enrollments")
+          .update({ track_type: "mind_7day", current_day: normalized.current_day })
+          .eq("id", (data as Enrollment).id)
+          .then(({ error }) => {
+            if (error) console.warn("[MindTrackDashboard] 7-day normalization failed", error);
+          });
+      }
+      setEnrollment(normalized);
       setUserId(user.id);
       setAuthChecking(false);
     })();
@@ -151,10 +164,9 @@ export default function MindTrackDashboard() {
   }, []);
 
 
-  const totalDays = useMemo(() => {
-    const t = (enrollment?.track_type || "mind_7day").toLowerCase();
-    return t.includes("30") ? 30 : 7;
-  }, [enrollment?.track_type]);
+  // 현재 메인 상품은 7일 트랙이다. 기존 DB에 남아있는 mind_30day 값이 있어도
+  // 대시보드/워크북 진행 기준은 7일로 고정하고, 30일 확장은 완주 후 제안한다.
+  const totalDays = 7;
 
   const day = useMemo(
     () => (enrollment ? calcMindTrackCurrentDay(enrollment.started_at, totalDays) : 1),
@@ -163,8 +175,8 @@ export default function MindTrackDashboard() {
   const audience = ((enrollment as any)?.audience || 'child') as 'child' | 'adult' | 'parent' | 'teen';
   const copy = getDayCopy(day, totalDays, audience);
   const progressPct = Math.round((day / totalDays) * 100);
-  const trackLabel = totalDays === 7 ? "7일 마음 트랙" : "30일 마음 트랙";
-  const isShortTrack = totalDays === 7;
+  const trackLabel = "7일 마음 트랙";
+  const isShortTrack = true;
   const isFinalDay = day >= totalDays;
 
   // 첫 진입 1회 온보딩 + "오늘 다시 보지 않기" 지원
@@ -292,13 +304,9 @@ export default function MindTrackDashboard() {
   }
 
   // SEO — 트랙별 og:title/description + FAQPage 구조화 데이터
-  const seoTitle = isShortTrack
-    ? "7일 마음 트랙 · 내 대시보드 | AIHPRO"
-    : "30일 마음 트랙 · 내 대시보드 | AIHPRO";
-  const seoDesc = isShortTrack
-    ? "7일 안에 진단·자기관찰·전문가 개입·회복 루틴까지 완주하는 압축 마음 변화 트랙. 오늘의 미션과 변화 추이를 한눈에."
-    : "30일 마음 변화 트랙 대시보드 — 매주 단계별 미션과 변화 추이, 코칭 인사이트를 한눈에 확인하세요.";
-  const faqList = isShortTrack ? FAQ_7 : FAQ_30;
+  const seoTitle = "7일 마음 트랙 · 내 대시보드 | AIHPRO";
+  const seoDesc = "7일 안에 진단·자기관찰·전문가 개입·회복 루틴까지 완주하는 압축 마음 변화 트랙. 오늘의 미션과 변화 추이를 한눈에.";
+  const faqList = FAQ_7;
   const faqStructuredData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -312,8 +320,8 @@ export default function MindTrackDashboard() {
   const todayDone = allCheckins.find((c) => c.day_number === day)?.completed ?? false;
   const upsell = isShortTrack && day >= 3 ? getUpsellCopy(day, isFinalDay) : null;
   const focusInfo = getFocus(enrollment.goal_focus);
-  const missionTitle = todayMission?.mission_title || copy.title;
-  const missionDesc = todayMission?.mission_description || copy.description;
+  const missionTitle = sevenDayText(todayMission?.mission_title) || copy.title;
+  const missionDesc = sevenDayText(todayMission?.mission_description) || copy.description;
 
   return (
     <>
@@ -577,7 +585,7 @@ export default function MindTrackDashboard() {
               자주 묻는 질문 보기
             </summary>
             <div className="mt-3 bg-white border border-slate-100 rounded-2xl p-5">
-              {(isShortTrack ? FAQ_7 : FAQ_30).map((q, i) => (
+              {FAQ_7.map((q, i) => (
                 <details key={i} className="group border-b border-slate-100 last:border-b-0 py-2.5">
                   <summary className="text-[13px] font-semibold text-slate-800 cursor-pointer list-none">{q.q}</summary>
                   <p className="text-[12px] text-slate-600 leading-relaxed mt-1.5">{q.a}</p>
@@ -674,13 +682,6 @@ const FAQ_7: { q: string; a: string }[] = [
   { q: "전문가 상담은 어떻게 받나요?", a: "Day 4에 자동으로 매칭 카드가 뜹니다. 7일 트랙 결제자에게는 첫 15분 무료 상담 크레딧이 포함돼 있어요. 대시보드 빠른 메뉴의 '전문가 상담'에서도 언제든 매칭 가능합니다." },
   { q: "7일이 끝나면 어떻게 되나요?", a: "Day 7에 종합 변화 리포트(PDF)와 다음 30일 셀프 코칭 가이드를 받습니다. 더 깊이 가고 싶다면 +23일 연장권(₩12,900)으로 30일 풀 트랙으로 자연스럽게 이어집니다." },
 ];
-
-const FAQ_30: { q: string; a: string }[] = [
-  { q: "30일 동안 매일 뭘 하나요?", a: "주차별로 정렬·루틴·패턴 전환·깊이 코칭·리포트 단계가 있고, 매일 5분 안에 끝나는 미션이 자동으로 배정됩니다." },
-  { q: "오늘 미션을 못 했어요. 어떻게 하나요?", a: "워크북에서 지난 일차로 돌아가 언제든 완료할 수 있어요. 진행률은 자동으로 업데이트됩니다." },
-  { q: "전문가 상담은 어떻게 받나요?", a: "대시보드 빠른 메뉴의 '전문가 상담'에서 언제든 매칭 가능하며, 30일 구독자에게는 매월 무료 상담 크레딧이 자동 지급됩니다." },
-];
-
 
 function QuickLink({
   icon, title, desc, onClick,

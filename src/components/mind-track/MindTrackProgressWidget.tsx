@@ -25,8 +25,7 @@ export default function MindTrackProgressWidget() {
       if (!wbs || wbs.length === 0) { setLoading(false); return; }
       const wb = wbs[0] as any;
       const en = wb.mind_track_enrollments;
-      const trackType = (en?.track_type || "mind_7day").toLowerCase();
-      const totalDays = trackType === "mind_30day" ? 30 : 7;
+      const totalDays = 7;
       const startedAt = en?.started_at ? new Date(en.started_at) : new Date();
       const currentDay = Math.min(Math.max(Math.floor((Date.now() - startedAt.getTime()) / 86400000) + 1, 1), totalDays);
 
@@ -42,7 +41,8 @@ export default function MindTrackProgressWidget() {
   }, []);
 
   if (loading || !data) return null;
-  const trackLabel = data.totalDays === 7 ? "7일 마음 트랙" : "30일 마음 트랙";
+  const trackLabel = "7일 마음 트랙";
+  const challengeTheme = String(data.workbook.challenge_theme || "7일 마음 트랙").replace(/30일/g, "7일").replace(/한 달/g, "7일");
 
   return (
     <Card className="p-5 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-purple-500/5 mb-6">
@@ -51,7 +51,7 @@ export default function MindTrackProgressWidget() {
           <Badge className="mb-2 bg-amber-100 text-amber-800 border-amber-200">
             <Sparkles className="w-3 h-3 mr-1" /> {trackLabel}
           </Badge>
-          <h3 className="font-bold text-slate-900 break-keep">{data.workbook.challenge_theme}</h3>
+          <h3 className="font-bold text-slate-900 break-keep">{challengeTheme}</h3>
         </div>
         <div className="text-right">
           <div className="text-xs text-slate-500">진행</div>

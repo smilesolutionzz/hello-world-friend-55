@@ -188,7 +188,14 @@ export default function SevenDayWorkbookView({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
+            className="space-y-5"
           >
+            {/* 사용자 고민으로 만든 맞춤 미션 (mind-track-init 결과) */}
+            <PersonalizedMissionCard
+              mission={dailyMissions.find((m) => m.day_number === selectedDay) ?? null}
+              day={selectedDay}
+            />
+
             {kind === "diagnosis" && (
               <Day1DiagnosisScreen
                 enrollmentId={enrollment.id}

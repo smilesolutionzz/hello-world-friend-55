@@ -857,10 +857,8 @@ const MindTrack: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* 휴먼터치 매니페스토 — 따뜻형 카드 */}
-        <SmartScrollReveal kind="text" className="px-4 pb-8 block">
-          <HumanTouchManifesto variant="track" />
-        </SmartScrollReveal>
+
+
 
         {/* 무료 고민 리포트 입력 */}
         <section className="px-4 pb-12">

@@ -21,7 +21,7 @@ const PHASES_7 = {
 
 // 7일 압축 집중 트랙 (CHILD/부모 진단 기반) — 기존 카피 유지 (parent도 동일 베이스 사용)
 const DAY_COPY_7: Record<number, DayCopy> = {
-  1: { phase: PHASES_7.d1, title: '나를 완전히 발가벗겨보기 (기초 진단)', description: '5종 자가진단 + 마음 점수 측정으로 출발선을 정확히 기록해요. 이 데이터가 7일 후 비교의 기준이 됩니다.' },
+  1: { phase: PHASES_7.d1, title: '나의 출발선 진단 (5종 기초 진단)', description: '5종 자가진단 + 마음 점수로 출발선을 기록해요. 7일 후 비교의 기준이 됩니다.' },
   2: { phase: PHASES_7.d2, title: '하루 24시간, 내 감정/에너지 추적', description: '아침·점심·저녁 3회 마이크로 체크인으로 나만의 패턴을 찾아내요. AI가 자동으로 트렌드를 분석합니다.' },
   3: { phase: PHASES_7.d3, title: '뿌리 패턴 진단 (심층 분석 리포트)', description: '2일간 쌓인 데이터를 박사급 AI가 분석해 핵심 패턴 1가지를 골라줘요. "왜 이렇게 사는지"가 보입니다.' },
   4: { phase: PHASES_7.d4, title: '전문가 1:1 개입 (15분 무료 매칭 상담)', description: '내 데이터를 본 전문가가 직접 처방을 줘요. 혼자선 절대 못 보는 사각지대를 짚어줍니다.' },

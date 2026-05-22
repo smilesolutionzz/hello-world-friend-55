@@ -807,17 +807,15 @@ const MindTrack: React.FC = () => {
                       className="w-full h-14 rounded-2xl bg-[#1a1a1a] text-white hover:bg-black font-bold text-base"
                     >
                       <Sparkles className="w-4 h-4 mr-2" />
-                      ₩{TRACK_PRICE.toLocaleString()}으로 7일 시작하기
+                      3일 무료로 시작하기
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
 
                     <div className="flex items-center justify-center gap-3 pt-3 text-[11px] text-foreground/55 flex-wrap">
                       <span className="inline-flex items-center gap-1">
                         <Shield className="w-3 h-3" />
-                        {isLoggedIn ? '결제 후 즉시 시작' : '로그인 후 결제하면 즉시 시작'}
+                        카드 등록 없이 즉시 시작 · 언제든 중단
                       </span>
-                      <span>·</span>
-                      <span>첫 15분 전문가 상담 무료 포함</span>
                     </div>
                   </div>
                 );

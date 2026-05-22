@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Heart, Star } from 'lucide-react';
 import type { StoreProduct } from '@/data/storeProducts';
 import { STORE_BASE_URL } from '@/data/storeProducts';
@@ -14,6 +14,8 @@ interface Props {
  * 클릭 시 외부 Cafe24 상품 페이지를 새 창으로 연다 (rel=noopener).
  */
 export const StoreProductCard: React.FC<Props> = ({ product, className, onClick }) => {
+  const [imageFailed, setImageFailed] = useState(false);
+
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     onClick?.(product);
@@ -33,12 +35,17 @@ export const StoreProductCard: React.FC<Props> = ({ product, className, onClick 
       className={`group block w-[160px] sm:w-[180px] shrink-0 ${className ?? ''}`}
     >
       <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-100">
-        <img
-          src={product.image}
-          alt={product.name}
-          loading="lazy"
-          className="h-full w-full object-cover transition group-active:scale-[0.98]"
-        />
+        {!imageFailed && product.image ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            onError={() => setImageFailed(true)}
+            className="h-full w-full object-cover transition group-active:scale-[0.98]"
+          />
+        ) : (
+          <div className="h-full w-full bg-slate-100" aria-hidden="true" />
+        )}
         {product.badge && (
           <span className="absolute left-2 top-2 rounded-md bg-rose-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
             {product.badge}

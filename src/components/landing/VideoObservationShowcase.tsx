@@ -78,7 +78,7 @@ export const VideoObservationShowcase = () => {
           </div>
           <div className="flex flex-col items-center gap-4 lg:min-w-[280px]">
             <div className="flex items-center gap-2 text-slate-400"><Clock className="w-4 h-4" /><span className="text-sm">{t.videoObservation.analysisTime}</span></div>
-            <Button onClick={() => navigate(localePath('/observation'))} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-6 text-lg rounded-xl group">
+            <Button onClick={() => navigate(localePath('/observation?mode=video'))} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-6 text-lg rounded-xl group">
               <Video className="w-5 h-5 mr-2" />{t.videoObservation.ctaButton}<ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <p className="text-xs text-slate-500 text-center">{t.videoObservation.uploadNote}</p>

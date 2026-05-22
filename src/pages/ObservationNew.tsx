@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -41,6 +41,9 @@ interface QAItem {
 
 const ObservationNew = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialMode = (searchParams.get('mode') === 'video' ? 'video'
+    : searchParams.get('mode') === 'text' ? 'text' : 'voice') as 'voice' | 'text' | 'video';
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -48,7 +51,7 @@ const ObservationNew = () => {
   
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [activeMode, setActiveMode] = useState<'voice' | 'text' | 'video'>('voice');
+  const [activeMode, setActiveMode] = useState<'voice' | 'text' | 'video'>(initialMode);
   const [structuredData, setStructuredData] = useState<any>(null);
   
   // Q&A 플로우 상태
@@ -265,25 +268,25 @@ const ObservationNew = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-amber-50/80 via-orange-50/50 to-background flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <motion.div 
           className="text-center space-y-4"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
         >
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto shadow-lg">
-            <Loader2 className="w-8 h-8 text-amber-600 animate-spin" />
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center mx-auto shadow-lg">
+            <Loader2 className="w-8 h-8 text-slate-600 animate-spin" />
           </div>
-          <p className="text-amber-700 font-medium">로딩 중...</p>
+          <p className="text-slate-700 font-medium">로딩 중...</p>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50/80 via-orange-50/50 to-background">
+    <div className="min-h-screen bg-white">
       {/* 헤더 */}
-      <header className="sticky top-0 z-50 bg-gradient-to-b from-amber-50/95 to-amber-50/80 backdrop-blur-md border-b border-amber-200/50">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200">
         <div className="container mx-auto max-w-2xl px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -300,19 +303,19 @@ const ObservationNew = () => {
                     navigate('/');
                   }
                 }}
-                className="shrink-0 hover:bg-amber-100/50 text-amber-700"
+                className="shrink-0 hover:bg-slate-100 text-slate-700"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center shadow-md">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#C8B88A] to-[#a89968] flex items-center justify-center shadow-md">
                   <Feather className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold text-amber-900">
+                  <h1 className="text-lg font-bold text-slate-900">
                     {step === 'input' ? '새 기록' : step === 'questions' ? '추가 질문' : '분석 리포트'}
                   </h1>
-                  <p className="text-xs text-amber-600/80">
+                  <p className="text-xs text-slate-500">
                     {step === 'input' ? '오늘의 관찰' : step === 'questions' ? `${currentQuestionIndex + 1}/${questions.length}` : 'AI 전문가 분석'}
                   </p>
                 </div>
@@ -322,7 +325,7 @@ const ObservationNew = () => {
               variant="ghost"
               size="sm"
               onClick={() => navigate('/observation-list')}
-              className="text-amber-700 hover:bg-amber-100/50"
+              className="text-slate-700 hover:bg-slate-100"
             >
               <List className="w-4 h-4 mr-2" />
               목록
@@ -343,13 +346,13 @@ const ObservationNew = () => {
               className="space-y-6"
             >
               {/* 모드 선택 버튼 */}
-              <div className="flex gap-2 p-1 bg-white/60 backdrop-blur-sm rounded-2xl border border-amber-200/50">
+              <div className="flex gap-2 p-1 bg-white/60 backdrop-blur-sm rounded-2xl border border-slate-200">
                 <button
                   onClick={() => setActiveMode('voice')}
                   className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
                     activeMode === 'voice'
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md'
-                      : 'text-amber-700 hover:bg-amber-50'
+                      ? 'bg-slate-900 text-white shadow-sm'
+                      : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
                   <Mic className="w-5 h-5" />
@@ -359,8 +362,8 @@ const ObservationNew = () => {
                   onClick={() => setActiveMode('text')}
                   className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
                     activeMode === 'text'
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md'
-                      : 'text-amber-700 hover:bg-amber-50'
+                      ? 'bg-slate-900 text-white shadow-sm'
+                      : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
                   <FileText className="w-5 h-5" />
@@ -371,7 +374,7 @@ const ObservationNew = () => {
                   className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
                     activeMode === 'video'
                       ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-md'
-                      : 'text-amber-700 hover:bg-amber-50'
+                      : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
                   <Video className="w-5 h-5" />
@@ -403,13 +406,13 @@ const ObservationNew = () => {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.1 * idx }}
-                          className="text-center p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-amber-200/50"
+                          className="text-center p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-slate-200"
                         >
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto mb-3">
-                            <item.icon className="w-6 h-6 text-amber-600" />
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center mx-auto mb-3">
+                            <item.icon className="w-6 h-6 text-slate-600" />
                           </div>
-                          <p className="text-sm font-semibold text-amber-900">{item.label}</p>
-                          <p className="text-xs text-amber-600/70">{item.desc}</p>
+                          <p className="text-sm font-semibold text-slate-900">{item.label}</p>
+                          <p className="text-xs text-slate-500">{item.desc}</p>
                         </motion.div>
                       ))}
                     </div>
@@ -434,52 +437,52 @@ const ObservationNew = () => {
                   >
                     {/* 제목 입력 */}
                     <div className="space-y-2">
-                      <label className="text-sm font-semibold text-amber-800">제목</label>
+                      <label className="text-sm font-semibold text-slate-800">제목</label>
                       <Input
                         placeholder="예: 오늘 아이의 특별한 순간"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="bg-white/70 border-amber-200/50 focus:border-amber-400 focus:ring-amber-400/20 rounded-xl"
+                        className="bg-white/70 border-slate-200 focus:border-slate-400 focus:ring-slate-900/10 rounded-xl"
                       />
                     </div>
 
                     {/* 내용 입력 */}
                     <div className="space-y-2">
-                      <label className="text-sm font-semibold text-amber-800">관찰 내용</label>
+                      <label className="text-sm font-semibold text-slate-800">관찰 내용</label>
                       <Textarea
                         placeholder="오늘 관찰한 아이의 행동, 감정, 특별한 순간을 자유롭게 적어주세요... (최소 20자 이상 작성하면 AI가 추가 질문을 드려요)"
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         rows={8}
-                        className="resize-none bg-white/70 border-amber-200/50 focus:border-amber-400 focus:ring-amber-400/20 rounded-xl"
+                        className="resize-none bg-white/70 border-slate-200 focus:border-slate-400 focus:ring-slate-900/10 rounded-xl"
                       />
-                      <p className="text-xs text-amber-500 text-right">
+                      <p className="text-xs text-slate-400 text-right">
                         {content.length}자 
                         {content.length >= 20 && <span className="text-emerald-600 ml-2">✓ 분석 가능</span>}
                       </p>
                     </div>
 
                     {/* 플로우 안내 */}
-                    <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/50">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-50 to-white border border-slate-200">
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center shrink-0 shadow-md">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#C8B88A] to-[#a89968] flex items-center justify-center shrink-0 shadow-md">
                           <MessageCircle className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-amber-800 mb-1">
+                          <p className="text-sm font-semibold text-slate-800 mb-1">
                             AI 분석 프로세스
                           </p>
                           <div className="space-y-1">
-                            <p className="text-xs text-amber-700 flex items-center gap-2">
-                              <span className="w-5 h-5 rounded-full bg-amber-200 text-amber-800 flex items-center justify-center text-[10px] font-bold">1</span>
+                            <p className="text-xs text-slate-700 flex items-center gap-2">
+                              <span className="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-bold">1</span>
                               관찰 내용 작성
                             </p>
-                            <p className="text-xs text-amber-700 flex items-center gap-2">
-                              <span className="w-5 h-5 rounded-full bg-amber-200 text-amber-800 flex items-center justify-center text-[10px] font-bold">2</span>
+                            <p className="text-xs text-slate-700 flex items-center gap-2">
+                              <span className="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-bold">2</span>
                               AI 추가 질문 3개 답변
                             </p>
-                            <p className="text-xs text-amber-700 flex items-center gap-2">
-                              <span className="w-5 h-5 rounded-full bg-amber-200 text-amber-800 flex items-center justify-center text-[10px] font-bold">3</span>
+                            <p className="text-xs text-slate-700 flex items-center gap-2">
+                              <span className="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-bold">3</span>
                               상세 분석 리포트 확인
                             </p>
                           </div>
@@ -494,15 +497,15 @@ const ObservationNew = () => {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="p-4 rounded-2xl bg-amber-50 border border-amber-200/50"
+                          className="p-4 rounded-2xl bg-slate-50 border border-slate-200"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
-                              <Loader2 className="w-5 h-5 text-amber-600 animate-spin" />
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+                              <Loader2 className="w-5 h-5 text-slate-600 animate-spin" />
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-amber-800">AI가 질문을 준비하고 있어요</p>
-                              <p className="text-xs text-amber-600/70">잠시만 기다려주세요...</p>
+                              <p className="text-sm font-medium text-slate-800">AI가 질문을 준비하고 있어요</p>
+                              <p className="text-xs text-slate-500">잠시만 기다려주세요...</p>
                             </div>
                           </div>
                         </motion.div>
@@ -514,7 +517,7 @@ const ObservationNew = () => {
                       onClick={() => startQAFlow(content)}
                       disabled={content.trim().length < 5 || isGeneratingQuestions}
                       size="lg"
-                      className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0 shadow-lg rounded-xl h-14 text-base font-semibold"
+                      className="w-full bg-slate-900 hover:bg-slate-800 text-white border-0 shadow-lg rounded-xl h-14 text-base font-semibold"
                     >
                       {isGeneratingQuestions ? (
                         <>
@@ -550,12 +553,12 @@ const ObservationNew = () => {
               {/* 진행률 */}
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-amber-700 font-medium">질문 진행률</span>
-                  <span className="text-amber-600">{currentQuestionIndex + 1} / {questions.length}</span>
+                  <span className="text-slate-700 font-medium">질문 진행률</span>
+                  <span className="text-slate-600">{currentQuestionIndex + 1} / {questions.length}</span>
                 </div>
                 <Progress 
                   value={((currentQuestionIndex + 1) / questions.length) * 100} 
-                  className="h-2 bg-amber-100"
+                  className="h-2 bg-slate-100"
                 />
               </div>
 
@@ -564,17 +567,17 @@ const ObservationNew = () => {
                 key={currentQuestionIndex}
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-amber-200/50 shadow-lg"
+                className="p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-slate-200 shadow-lg"
               >
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center text-2xl shadow-md">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#C8B88A] to-[#a89968] flex items-center justify-center text-2xl shadow-md">
                     {getCategoryIcon(questions[currentQuestionIndex]?.category)}
                   </div>
                   <div className="flex-1">
-                    <Badge className="mb-2 bg-amber-100 text-amber-800 border-amber-200">
+                    <Badge className="mb-2 bg-slate-100 text-slate-800 border-slate-200">
                       {questions[currentQuestionIndex]?.category}
                     </Badge>
-                    <p className="text-lg font-semibold text-amber-900 leading-relaxed">
+                    <p className="text-lg font-semibold text-slate-900 leading-relaxed">
                       {questions[currentQuestionIndex]?.question}
                     </p>
                   </div>
@@ -585,14 +588,14 @@ const ObservationNew = () => {
                   value={currentAnswer}
                   onChange={(e) => setCurrentAnswer(e.target.value)}
                   rows={4}
-                  className="resize-none bg-amber-50/50 border-amber-200/50 focus:border-amber-400 focus:ring-amber-400/20 rounded-xl"
+                  className="resize-none bg-slate-50 border-slate-200 focus:border-slate-400 focus:ring-slate-900/10 rounded-xl"
                 />
               </motion.div>
 
               {/* 이전 답변 히스토리 */}
               {qaHistory.length > 0 && (
                 <div className="space-y-3">
-                  <p className="text-sm font-medium text-amber-700">이전 답변</p>
+                  <p className="text-sm font-medium text-slate-700">이전 답변</p>
                   {qaHistory.map((qa, idx) => (
                     <motion.div
                       key={idx}
@@ -612,7 +615,7 @@ const ObservationNew = () => {
                 onClick={handleAnswerSubmit}
                 disabled={!currentAnswer.trim()}
                 size="lg"
-                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0 shadow-lg rounded-xl h-14 text-base font-semibold"
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white border-0 shadow-lg rounded-xl h-14 text-base font-semibold"
               >
                 {currentQuestionIndex < questions.length - 1 ? (
                   <>
@@ -650,15 +653,15 @@ const ObservationNew = () => {
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
-                    className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center mx-auto shadow-xl"
+                    className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#C8B88A] to-[#a89968] flex items-center justify-center mx-auto shadow-xl"
                   >
                     <Brain className="w-10 h-10 text-white" />
                   </motion.div>
                   <div>
-                    <p className="text-lg font-semibold text-amber-900 mb-2">
+                    <p className="text-lg font-semibold text-slate-900 mb-2">
                       전문가 분석 리포트를 작성하고 있어요
                     </p>
-                    <p className="text-sm text-amber-600">
+                    <p className="text-sm text-slate-600">
                       관찰 내용과 답변을 종합하여 전문가 수준의 분석을 제공합니다
                     </p>
                   </div>
@@ -672,7 +675,7 @@ const ObservationNew = () => {
                           repeat: Infinity,
                           delay: i * 0.2
                         }}
-                        className="w-3 h-3 rounded-full bg-amber-400"
+                        className="w-3 h-3 rounded-full bg-slate-700"
                       />
                     ))}
                   </div>
@@ -705,16 +708,16 @@ const ObservationNew = () => {
 
                   {/* Q&A 요약 */}
                   {qaHistory.length > 0 && (
-                    <div className="p-5 rounded-2xl bg-white/70 backdrop-blur-sm border border-amber-200/50">
-                      <h3 className="text-sm font-semibold text-amber-800 mb-3 flex items-center gap-2">
+                    <div className="p-5 rounded-2xl bg-white/70 backdrop-blur-sm border border-slate-200">
+                      <h3 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
                         <MessageCircle className="w-4 h-4" />
                         답변 요약
                       </h3>
                       <div className="space-y-3">
                         {qaHistory.map((qa, idx) => (
-                          <div key={idx} className="p-3 rounded-xl bg-amber-50/50 border border-amber-100">
-                            <p className="text-xs text-amber-600 mb-1">Q: {qa.question}</p>
-                            <p className="text-sm text-amber-800">A: {qa.answer}</p>
+                          <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                            <p className="text-xs text-slate-600 mb-1">Q: {qa.question}</p>
+                            <p className="text-sm text-slate-800">A: {qa.answer}</p>
                           </div>
                         ))}
                       </div>

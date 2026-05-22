@@ -16,7 +16,9 @@ import {
   ArrowRight,
   Search,
   ListChecks,
+  ShoppingBag,
 } from 'lucide-react';
+import StoreSection from '@/components/store/StoreSection';
 
 /**
  * MobileHome — 흰 배경 모바일 홈
@@ -44,6 +46,7 @@ const tiles: Tile[] = [
   { label: '고민 보관함', icon: BookOpen,           to: '/concern-storage',                    iconBg: 'bg-orange-50',  iconColor: 'text-orange-500' },
   { label: '리워드',      icon: Gift,               to: '/rewards',                            iconBg: 'bg-yellow-50',  iconColor: 'text-yellow-600' },
   { label: '구독 관리',   icon: ShieldCheck,        to: '/profile?tab=subscription',           iconBg: 'bg-cyan-50',    iconColor: 'text-cyan-600' },
+  { label: '스토어',      icon: ShoppingBag,        to: '/store',               badge: 'NEW',  iconBg: 'bg-lime-50',    iconColor: 'text-lime-600' },
 ];
 
 const quickKeywords = ['#불안', '#번아웃', '#아이발달', '#수면', '#관계', '#우울'];
@@ -144,6 +147,9 @@ const MobileHome: React.FC = () => {
             <Stat label="전문가" value="12" />
           </div>
         </section>
+
+        {/* 추천 스토어 (Cafe24 연동) */}
+        <StoreSection />
 
         {/* AI 빠른 질문 */}
         <section>

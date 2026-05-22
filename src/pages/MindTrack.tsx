@@ -722,46 +722,39 @@ const MindTrack: React.FC = () => {
                 return (
                   <div className="bg-white rounded-3xl border-2 border-[#1a1a1a] shadow-[0_8px_30px_-12px_rgba(0,0,0,0.25)] p-6 md:p-8">
                     {/* 상단 강조 배지 */}
-                    <div className="flex items-center justify-between gap-2 mb-5 flex-wrap">
+                    <div className="flex items-center justify-between gap-2 mb-6 flex-wrap">
                       <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1a1a1a] text-white text-[11px] font-bold tracking-wide">
                         <Sparkles className="w-3 h-3" />
-                        7일 집중 압축 트랙
+                        7일 마음 트랙
                       </div>
                       <div className="inline-flex items-center gap-1 text-[11px] text-rose-600 font-semibold">
                         <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                        오늘 시작 가능 · 즉시 Day 01
+                        3일 무료 · 카드 없이 시작
                       </div>
                     </div>
 
-                    <div className="space-y-2 mb-5">
-                      <p className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-                        7 Day Mind Track · 매일 5분
-                      </p>
-                      <h2 className="text-2xl md:text-[28px] font-bold text-foreground break-keep leading-tight">
-                        7일이면, 내 마음이<br className="hidden sm:block" />
-                        <span className="bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">한 줄로 정리</span>됩니다.
-                      </h2>
-                      <p className="text-sm md:text-base text-foreground/70 break-keep leading-relaxed">
-                        진단 · 자기관찰 · 전문가 1:1 · 회복 루틴 — 모든 기능을
-                        <strong className="text-foreground"> 7일에 압축</strong>.
-                        Day 7엔 ‘좋아지겠다’는 확신만 남아요.
-                      </p>
-                    </div>
+                    {/* 한눈 헤드라인 */}
+                    <h2 className="text-[30px] md:text-[40px] font-black text-foreground break-keep leading-[1.15] tracking-tight mb-3">
+                      매일 5분,<br />
+                      <span className="bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">
+                        7일이면 달라져요.
+                      </span>
+                    </h2>
+                    <p className="text-[15px] text-foreground/70 break-keep leading-relaxed mb-6">
+                      진단 · 자기관찰 · 전문가 1:1 · 회복 루틴까지<br />
+                      <strong className="text-foreground">한 트랙에 압축</strong>했어요.
+                    </p>
 
-                    {/* 가치 스택 — 무엇이 들어있는가 */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+                    {/* 3가지 핵심만 — 한눈에 */}
+                    <div className="grid grid-cols-3 gap-2 mb-6">
                       {[
-                        { d: 'Day 01', t: '나의 출발점 진단' },
-                        { d: 'Day 02–03', t: '자기관찰 · 패턴 발견' },
-                        { d: 'Day 04', t: '전문가 1:1 코칭' },
-                        { d: 'Day 05–06', t: '회복 루틴 · 실천' },
-                        { d: 'Day 07', t: '변화 리포트 · 다음 단계' },
-                        { d: '평생 보관', t: '내 트랙 기록 + PDF 리포트' },
+                        { n: '5분', t: '하루 미션' },
+                        { n: '7일', t: '완주 구조' },
+                        { n: '1:1', t: '전문가 코칭' },
                       ].map((it) => (
-                        <div key={it.d} className="flex items-center gap-2 text-xs md:text-[13px] text-foreground/80">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                          <span className="font-semibold text-foreground/60 w-[74px] shrink-0">{it.d}</span>
-                          <span className="break-keep">{it.t}</span>
+                        <div key={it.n} className="rounded-2xl bg-[#FBF8F1] border border-[#C8B88A]/30 px-3 py-3 text-center">
+                          <div className="text-xl md:text-2xl font-black text-[#1a1a1a] leading-none">{it.n}</div>
+                          <div className="text-[11px] text-foreground/60 mt-1 font-medium">{it.t}</div>
                         </div>
                       ))}
                     </div>

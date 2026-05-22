@@ -1831,6 +1831,7 @@ const Assessment = () => {
           onBack={handleBack} 
           onRestart={() => setCurrentStep('developmental-delay-test')} 
         />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1845,6 +1846,7 @@ const Assessment = () => {
           onBack={handleBack} 
           onRestart={() => setCurrentStep('sensory-integration-test')} 
         />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1859,6 +1861,7 @@ const Assessment = () => {
           onBack={handleBack} 
           onRestart={() => setCurrentStep('learning-disability-test')} 
         />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1873,6 +1876,7 @@ const Assessment = () => {
           onBack={handleBack} 
           onRestart={() => setCurrentStep('social-development-test')} 
         />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1884,6 +1888,7 @@ const Assessment = () => {
       <SubscriptionGuard consumeAt="result" featureName="문제행동 검사" creditType="test" trialKey="CHALLENGING_BEHAVIOR_TEST">
         <ResultPaywall>
         <ChallengingBehaviorResult results={challengingBehaviorResults} />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1894,6 +1899,7 @@ const Assessment = () => {
       <SubscriptionGuard consumeAt="result" featureName="적응행동 검사" creditType="test" trialKey="ADAPTIVE_BEHAVIOR_TEST">
         <ResultPaywall>
         <AdaptiveBehaviorResult results={adaptiveBehaviorResults} />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );

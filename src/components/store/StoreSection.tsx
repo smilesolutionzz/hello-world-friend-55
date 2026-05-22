@@ -9,7 +9,7 @@ import StoreProductCard from './StoreProductCard';
  * 키즈노트 '어디가지' 톤을 차용 — 가로 스크롤 카드 + 더보기.
  */
 const StoreSection: React.FC = () => {
-  const items = STORE_PRODUCTS.slice(0, 6);
+  const items = STORE_PRODUCTS.slice(0, 5);
 
   return (
     <section className="space-y-3">

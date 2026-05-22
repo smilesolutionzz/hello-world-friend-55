@@ -27,6 +27,7 @@ import Day7ReportScreen from "./Day7ReportScreen";
 import PersonalizedMissionCard from "./PersonalizedMissionCard";
 import DailyResourcePanel from "./DailyResourcePanel";
 import ConcernRefineCard from "./ConcernRefineCard";
+import DailyAgentPanel from "./DailyAgentPanel";
 
 interface DailyMissionRow {
   day_number: number;
@@ -193,6 +194,14 @@ export default function SevenDayWorkbookView({
             transition={{ duration: 0.2 }}
             className="space-y-5"
           >
+            {/* AI 에이전트 — 오늘의 한 가지 행동을 대신 결정 */}
+            <DailyAgentPanel
+              enrollmentId={enrollment.id}
+              day={selectedDay}
+              audience={audience}
+              lastCheckin={ci ?? null}
+            />
+
             {/* 사용자 고민으로 만든 맞춤 미션 (mind-track-init 결과) */}
             <PersonalizedMissionCard
               mission={dailyMissions.find((m) => m.day_number === selectedDay) ?? null}

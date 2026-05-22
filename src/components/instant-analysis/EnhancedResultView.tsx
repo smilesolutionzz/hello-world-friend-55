@@ -190,7 +190,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl mx-auto space-y-4">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl mx-auto space-y-4 pb-[120px] md:pb-8">
       {/* 1. Result Header */}
       <div className="bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-2xl md:rounded-3xl border border-white/10 p-4 md:p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-4">

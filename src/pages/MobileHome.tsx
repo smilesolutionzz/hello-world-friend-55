@@ -176,6 +176,11 @@ const MobileHome: React.FC = () => {
           </div>
         </section>
       </div>
+
+      {/* 협력 기관 슬라이드 */}
+      <div className="mt-10 -mx-0">
+        <PartnerTrustSection />
+      </div>
     </main>
   );
 };

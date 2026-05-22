@@ -612,7 +612,7 @@ const MindTrack: React.FC = () => {
         description="진단·자기관찰·전문가 1:1·회복 루틴까지 7일에 압축. ₩7,900으로 시작하는 AIHPRO 마음 변화 트랙. 무료 고민 리포트도 즉석으로 받아보세요."
         canonicalUrl="https://aihpro.app/mind-track"
       />
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
+      <div className="min-h-screen bg-white">
         <UnifiedNavigation />
 
 

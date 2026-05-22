@@ -454,20 +454,20 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           <Button
             onClick={() => {
               localStorage.setItem('instant_analysis_result', JSON.stringify(analysisResult));
               localStorage.setItem('instant_analysis_input', inputText);
               navigate(isEnglish ? '/en/report-generator' : '/report-generator');
             }}
-            className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl text-base"
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl text-base"
           >
             <FileText className="w-4 h-4 mr-1.5" />
             {isEnglish ? '7-Day Mind Track — ₩7,900' : '7일 마음 트랙 — ₩7,900'}
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
-          <Button onClick={onReset} variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 py-3 rounded-xl text-base px-4">
+          <Button onClick={onReset} variant="outline" className="w-full bg-white/5 border-white/20 text-white hover:bg-white/10 py-3 rounded-xl text-base">
             {L.analyzeAgain}
           </Button>
         </div>

@@ -818,9 +818,9 @@ const Assessment = () => {
     return (
       <div>
         <SEOHead
-          title="AI 심리검사 - AIHPRO | ADHD·우울증·스트레스 자가진단"
-          description="AI 기반 정밀 심리검사로 ADHD, 우울증, 불안장애, 스트레스를 정확하게 자가진단하세요. 영유아·아동·청소년·성인 맞춤 발달평가 제공."
-          keywords="심리검사,ADHD자가진단,우울증테스트,스트레스검사,불안장애검사,아동발달검사,성인심리검사"
+          title="AI 마음 컨디션 체크 — AIHPRO | 기분·집중력·스트레스 코칭"
+          description="AI 기반 마음 컨디션 체크로 기분·집중력·스트레스 상태를 가볍게 점검하고, 영유아·아동·청소년·성인 맞춤 발달 분석을 받아보세요."
+          keywords="마음코칭,기분체크,집중력체크,스트레스체크,컨디션체크,아동발달분석,성인심리체크"
           canonicalUrl="https://aihpro.app/assessment"
         />
         <UnifiedNavigation />

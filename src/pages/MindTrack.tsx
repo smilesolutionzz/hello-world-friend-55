@@ -1252,10 +1252,10 @@ const MindTrack: React.FC = () => {
 
                 <AccordionItem value="q4" className="border rounded-2xl px-4 bg-white">
                   <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
-                    환불 정책은 어떻게 되나요?
+                    PMF 베타 기간이 끝나면 어떻게 되나요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    결제 후 {REFUND_WINDOW_DAYS}일 이내, 워크북 진행률 20% 미만이면 전액 환불이 가능합니다. 그 외 기준은 결제 페이지 약관을 따릅니다.
+                    PMF 검증 기간 동안 시작한 7일 트랙은 끝까지 무료로 이용 가능합니다. 정식 가격 전환 시점은 사전에 안내드리며, 전환 이후에도 결제 후 {REFUND_WINDOW_DAYS}일 이내·진행률 20% 미만이면 전액 환불됩니다.
                   </AccordionContent>
                 </AccordionItem>
 

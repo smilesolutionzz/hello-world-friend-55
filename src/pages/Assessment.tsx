@@ -1374,6 +1374,7 @@ const Assessment = () => {
               results={languageResults}
               onBack={handleBack}
             />
+            <MedicalDisclaimer variant="compact" className="mt-6" />
           </div>
         </div>
       </ResultPaywall>
@@ -1623,6 +1624,7 @@ const Assessment = () => {
               result={bigfiveResults}
               onRestart={() => setCurrentStep('bigfive-test')}
             />
+            <MedicalDisclaimer variant="compact" className="mt-6" />
           </div>
         </div>
       </ResultPaywall>
@@ -1658,6 +1660,7 @@ const Assessment = () => {
               result={attachmentResults}
               onRestart={() => setCurrentStep('attachment-test')}
             />
+            <MedicalDisclaimer variant="compact" className="mt-6" />
           </div>
         </div>
       </ResultPaywall>
@@ -1906,6 +1909,7 @@ const Assessment = () => {
               result={selfesteemResults}
               onRestart={() => setCurrentStep('selfesteem-test')}
             />
+            <MedicalDisclaimer variant="compact" className="mt-6" />
           </div>
         </div>
       </ResultPaywall>

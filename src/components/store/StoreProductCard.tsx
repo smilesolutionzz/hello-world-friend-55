@@ -1,6 +1,7 @@
 import React from 'react';
 import { Heart, Star } from 'lucide-react';
 import type { StoreProduct } from '@/data/storeProducts';
+import { STORE_BASE_URL } from '@/data/storeProducts';
 
 interface Props {
   product: StoreProduct;
@@ -17,15 +18,15 @@ export const StoreProductCard: React.FC<Props> = ({ product, className, onClick 
     e.preventDefault();
     onClick?.(product);
     try {
-      // analytics hook (no-op if not wired)
       window.dispatchEvent(new CustomEvent('store_product_click', { detail: { id: product.id, name: product.name } }));
     } catch {}
-    window.open(product.url, '_blank', 'noopener,noreferrer');
+    // 개별 상품 페이지 대신 스마일ZZ솔루션 메인으로 이동
+    window.open(STORE_BASE_URL, '_blank', 'noopener,noreferrer');
   };
 
   return (
     <a
-      href={product.url}
+      href={STORE_BASE_URL}
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}

@@ -392,8 +392,16 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
             ))}
           </div>
           {reports.expertOpinion.urgency && (
-            <div className="mt-3 bg-rose-500/10 rounded-lg p-2 border border-rose-500/15">
+            <div className="mt-3 bg-rose-500/10 rounded-lg p-3 border border-rose-500/15 space-y-2">
               <p className="text-rose-300 text-base"><strong>{L.urgency}:</strong> {reports.expertOpinion.urgency}</p>
+              <Button
+                onClick={() => navigate(isEnglish ? '/en/expert-hiring' : '/expert-hiring')}
+                className="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-2.5 rounded-xl text-base"
+              >
+                <Users className="w-4 h-4 mr-1.5" />
+                {isEnglish ? 'Talk to an Expert' : '전문가와 바로 상담하기'}
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
             </div>
           )}
         </ExpandableSection>

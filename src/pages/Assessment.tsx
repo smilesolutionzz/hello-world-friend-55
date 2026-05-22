@@ -1008,10 +1008,10 @@ const Assessment = () => {
                 <Heart className="w-4 h-4" /> {t.assessment.childDevSection}
               </h3>
               {[
-                { key: 'developmental-delay', title: t.assessment.devDelayTitle, duration: t.assessment.devDelayDuration, questions: t.assessment.devDelayQuestions, description: t.assessment.devDelayDesc, features: t.assessment.devDelayFeatures, gradient: 'from-pink-500/20 to-rose-500/20', dotColor: 'bg-pink-500' },
+                // { key: 'developmental-delay', ... } — 법적 리스크(진단 뉘앙스)로 숨김
                 { key: 'language', title: t.assessment.infantLangTitle, duration: t.assessment.infantLangDuration, questions: t.assessment.infantLangQuestions, description: t.assessment.infantLangDesc, features: t.assessment.infantLangFeatures, gradient: 'from-sky-500/20 to-blue-500/20', dotColor: 'bg-sky-500' },
                 { key: 'sensory-integration', title: t.assessment.sensoryTitle, duration: t.assessment.sensoryDuration, questions: t.assessment.sensoryQuestions, description: t.assessment.sensoryDesc, features: t.assessment.sensoryFeatures, gradient: 'from-fuchsia-500/20 to-purple-500/20', dotColor: 'bg-fuchsia-500' },
-                { key: 'learning-disability', title: t.assessment.learningTitle, duration: t.assessment.learningDuration, questions: t.assessment.learningQuestions, description: t.assessment.learningDesc, features: t.assessment.learningFeatures, gradient: 'from-orange-500/20 to-amber-500/20', dotColor: 'bg-orange-500' },
+                // { key: 'learning-disability', ... } — 법적 리스크(장애명 직접 사용)로 숨김
                 { key: 'social-development', title: t.assessment.socialTitle, duration: t.assessment.socialDuration, questions: t.assessment.socialQuestions, description: t.assessment.socialDesc, features: t.assessment.socialFeatures, gradient: 'from-teal-500/20 to-green-500/20', dotColor: 'bg-teal-500' },
                 { key: 'challenging-behavior', title: t.assessment.challengingTitle, duration: t.assessment.challengingDuration, questions: t.assessment.challengingQuestions, description: t.assessment.challengingDesc, features: t.assessment.challengingFeatures, gradient: 'from-red-500/20 to-rose-500/20', dotColor: 'bg-red-500' },
                 { key: 'adaptive-behavior', title: t.assessment.adaptiveTitle, duration: t.assessment.adaptiveDuration, questions: t.assessment.adaptiveQuestions, description: t.assessment.adaptiveDesc, features: t.assessment.adaptiveFeatures, gradient: 'from-lime-500/20 to-green-500/20', dotColor: 'bg-lime-500' },

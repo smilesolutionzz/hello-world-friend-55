@@ -90,7 +90,7 @@ export default function ActionBookPreviewSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const canGenerate = (concern?.trim().length ?? 0) >= 5 || !!goalId;
+  const canGenerate = (localConcern.trim().length >= 5) || !!goalId;
 
   const handleGenerate = async () => {
     if (!canGenerate) {
@@ -99,8 +99,8 @@ export default function ActionBookPreviewSection({
     }
     setGenerating(true);
     trackWorkbookFunnel("mt_action_book_live_generate", {
-      has_nickname: !!nickname,
-      has_concern: !!(concern && concern.trim().length > 5),
+      has_nickname: !!localNickname,
+      has_concern: localConcern.trim().length > 5,
       has_goal: !!goalId,
       logged_in: loggedIn,
     });
@@ -109,10 +109,10 @@ export default function ActionBookPreviewSection({
         "personalize-action-book-preview",
         {
           body: {
-            nickname: nickname || "당신",
+            nickname: localNickname.trim() || "당신",
             goalId,
             goalLabel,
-            concern: concern || "",
+            concern: localConcern.trim(),
             ageGroup: ageGroup || "",
           },
         },

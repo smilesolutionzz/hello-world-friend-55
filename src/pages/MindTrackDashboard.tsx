@@ -297,11 +297,11 @@ export default function MindTrackDashboard() {
     );
   }
 
-  // 3일 무료 체험 게이트 — Day 4부터 결제 필요
-  const isTrial = enrollment.payment_status === 'trial';
-  if (isTrial && day >= 4) {
-    return <MindTrackTrialPaywall currentDay={day} totalDays={totalDays} />;
-  }
+  // PMF 베타 기간 — trial 사용자도 7일 전체 무료로 개방 (Day 4 페이월 일시 비활성화)
+  // const isTrial = enrollment.payment_status === 'trial';
+  // if (isTrial && day >= 4) {
+  //   return <MindTrackTrialPaywall currentDay={day} totalDays={totalDays} />;
+  // }
 
   // SEO — 트랙별 og:title/description + FAQPage 구조화 데이터
   const seoTitle = "7일 마음 트랙 · 내 대시보드 | AIHPRO";

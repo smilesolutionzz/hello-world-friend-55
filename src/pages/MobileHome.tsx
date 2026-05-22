@@ -7,6 +7,7 @@ import {
   Users,
   ClipboardCheck,
   Mic,
+  Video,
   Gamepad2,
   BookOpen,
   LineChart,

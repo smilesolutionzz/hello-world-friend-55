@@ -20,6 +20,7 @@ import {
   ShoppingBag,
 } from 'lucide-react';
 import StoreSection from '@/components/store/StoreSection';
+import PartnerTrustSection from '@/components/landing/PartnerTrustSection';
 import aihproLogo from '@/assets/aihpro-logo.png';
 
 /**
@@ -174,6 +175,11 @@ const MobileHome: React.FC = () => {
             ))}
           </div>
         </section>
+      </div>
+
+      {/* 협력 기관 슬라이드 */}
+      <div className="mt-10 -mx-0">
+        <PartnerTrustSection />
       </div>
     </main>
   );

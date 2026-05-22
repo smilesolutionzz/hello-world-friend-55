@@ -353,7 +353,7 @@ const VoiceCounselingNew = () => {
       </header>
 
       <main className="max-w-3xl mx-auto px-4 pt-8 pb-40">
-        <section className="text-center mb-10">
+        <section className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C8B88A]/15 text-[#8B7A4A] text-xs tracking-wide mb-5">
             <Sparkles className="w-3.5 h-3.5" /> 실시간 음성 상담
           </div>
@@ -363,6 +363,32 @@ const VoiceCounselingNew = () => {
           <p className="mt-3 text-neutral-500 text-sm md:text-base break-keep">
             말을 시작하면 자동으로 인식해 응답해요. 끊김 없이 자연스럽게 대화하세요.
           </p>
+        </section>
+
+        {/* 상담 모드 선택 */}
+        <section className="grid grid-cols-2 gap-3 mb-10">
+          <div className="rounded-2xl border-2 border-[#C8B88A] bg-white p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl">🐘</span>
+              <span className="text-sm font-semibold text-neutral-900">코끼리 상담사</span>
+            </div>
+            <p className="text-[11px] text-neutral-500 break-keep leading-relaxed">
+              따뜻하게 마음을 들어주는 1:1 음성 상담 (현재 모드)
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/metaverse-voice')}
+            className="text-left rounded-2xl border border-neutral-200 bg-white p-4 hover:border-[#C8B88A] hover:shadow-sm transition"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl">🎭</span>
+              <span className="text-sm font-semibold text-neutral-900">금쪽 상담소</span>
+            </div>
+            <p className="text-[11px] text-neutral-500 break-keep leading-relaxed">
+              아이 양육·행동 고민을 깊이 풀어주는 시뮬레이션 상담
+            </p>
+          </button>
         </section>
 
         <section className="flex flex-col items-center mb-10">

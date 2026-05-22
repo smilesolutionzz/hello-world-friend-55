@@ -818,9 +818,9 @@ const Assessment = () => {
     return (
       <div>
         <SEOHead
-          title="AI 심리검사 - AIHPRO | ADHD·우울증·스트레스 자가진단"
-          description="AI 기반 정밀 심리검사로 ADHD, 우울증, 불안장애, 스트레스를 정확하게 자가진단하세요. 영유아·아동·청소년·성인 맞춤 발달평가 제공."
-          keywords="심리검사,ADHD자가진단,우울증테스트,스트레스검사,불안장애검사,아동발달검사,성인심리검사"
+          title="AI 마음 컨디션 체크 — AIHPRO | 기분·집중력·스트레스 코칭"
+          description="AI 기반 마음 컨디션 체크로 기분·집중력·스트레스 상태를 가볍게 점검하고, 영유아·아동·청소년·성인 맞춤 발달 분석을 받아보세요."
+          keywords="마음코칭,기분체크,집중력체크,스트레스체크,컨디션체크,아동발달분석,성인심리체크"
           canonicalUrl="https://aihpro.app/assessment"
         />
         <UnifiedNavigation />
@@ -1374,6 +1374,7 @@ const Assessment = () => {
               results={languageResults}
               onBack={handleBack}
             />
+            <MedicalDisclaimer variant="compact" className="mt-6" />
           </div>
         </div>
       </ResultPaywall>
@@ -1421,6 +1422,7 @@ const Assessment = () => {
             onComplete={handlePanicTestComplete}
             onBack={handleBack}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1457,6 +1459,7 @@ const Assessment = () => {
             }}
           />
           <TrialUpsellBanner />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1475,6 +1478,7 @@ const Assessment = () => {
             }}
           />
           <TrialUpsellBanner />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1488,6 +1492,7 @@ const Assessment = () => {
             results={childResults}
             onBack={handleBack}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1501,6 +1506,7 @@ const Assessment = () => {
             results={infantResults}
             onBack={handleBack}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1516,6 +1522,7 @@ const Assessment = () => {
             onStartAIChat={handleStartAIChat}
             onStartRealTimeChat={handleStartRealTimeChat}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1549,6 +1556,7 @@ const Assessment = () => {
             onStartRealTimeChat={handleStartRealTimeChat}
           />
           <TrialUpsellBanner />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1583,6 +1591,7 @@ const Assessment = () => {
             />
             <TrialUpsellBanner />
           </div>
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1615,6 +1624,7 @@ const Assessment = () => {
               result={bigfiveResults}
               onRestart={() => setCurrentStep('bigfive-test')}
             />
+            <MedicalDisclaimer variant="compact" className="mt-6" />
           </div>
         </div>
       </ResultPaywall>
@@ -1634,6 +1644,7 @@ const Assessment = () => {
             onComplete={handleAttachmentTestComplete}
             onBack={handleBack}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1649,6 +1660,7 @@ const Assessment = () => {
               result={attachmentResults}
               onRestart={() => setCurrentStep('attachment-test')}
             />
+            <MedicalDisclaimer variant="compact" className="mt-6" />
           </div>
         </div>
       </ResultPaywall>
@@ -1668,6 +1680,7 @@ const Assessment = () => {
             onComplete={handleCareerTestComplete}
             onBack={handleBack}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1818,6 +1831,7 @@ const Assessment = () => {
           onBack={handleBack} 
           onRestart={() => setCurrentStep('developmental-delay-test')} 
         />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1832,6 +1846,7 @@ const Assessment = () => {
           onBack={handleBack} 
           onRestart={() => setCurrentStep('sensory-integration-test')} 
         />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1846,6 +1861,7 @@ const Assessment = () => {
           onBack={handleBack} 
           onRestart={() => setCurrentStep('learning-disability-test')} 
         />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1860,6 +1876,7 @@ const Assessment = () => {
           onBack={handleBack} 
           onRestart={() => setCurrentStep('social-development-test')} 
         />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1871,6 +1888,7 @@ const Assessment = () => {
       <SubscriptionGuard consumeAt="result" featureName="문제행동 검사" creditType="test" trialKey="CHALLENGING_BEHAVIOR_TEST">
         <ResultPaywall>
         <ChallengingBehaviorResult results={challengingBehaviorResults} />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1881,6 +1899,7 @@ const Assessment = () => {
       <SubscriptionGuard consumeAt="result" featureName="적응행동 검사" creditType="test" trialKey="ADAPTIVE_BEHAVIOR_TEST">
         <ResultPaywall>
         <AdaptiveBehaviorResult results={adaptiveBehaviorResults} />
+      <MedicalDisclaimer variant="compact" className="mt-6" />
       </ResultPaywall>
       </SubscriptionGuard>
     );
@@ -1896,6 +1915,7 @@ const Assessment = () => {
               result={selfesteemResults}
               onRestart={() => setCurrentStep('selfesteem-test')}
             />
+            <MedicalDisclaimer variant="compact" className="mt-6" />
           </div>
         </div>
       </ResultPaywall>
@@ -1914,6 +1934,7 @@ const Assessment = () => {
               result={careerResults}
               onRestart={() => setCurrentStep('career-test')}
             />
+            <MedicalDisclaimer variant="compact" className="mt-6" />
           </div>
         </div>
       </ResultPaywall>
@@ -1976,6 +1997,7 @@ const Assessment = () => {
             </div>
           </div>
         </div>
+        <MedicalDisclaimer variant="compact" className="mt-6" />
       </div>
     </div>
   );

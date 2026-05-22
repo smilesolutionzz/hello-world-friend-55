@@ -100,7 +100,8 @@ export async function fetchSelfCheckByShareId(shareId: string): Promise<SavedSel
   const { data, error } = await supabase
     .rpc("get_self_check_by_share_id", { p_share_id: shareId });
   if (error || !data || (Array.isArray(data) && data.length === 0)) return null;
-  const row = Array.isArray(data) ? data[0] : data;
+  const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown>;
+  return { ...row, user_id: null } as unknown as SavedSelfCheck;
   return row as SavedSelfCheck;
 }
 

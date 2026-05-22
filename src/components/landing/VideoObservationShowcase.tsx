@@ -5,11 +5,27 @@ import { Video, Brain, FileText, Sparkles, CheckCircle2, ArrowRight, Baby, User,
 import { motion } from "framer-motion";
 import { useTranslation } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export const VideoObservationShowcase = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { localePath } = useLanguage();
+
+  const handleVideoCTA = async () => {
+    const target = localePath('/observation?mode=video');
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      navigate(target);
+      return;
+    }
+    try { localStorage.setItem('auth_redirect_after', target); } catch {}
+    toast.info('영상 관찰은 로그인이 필요해요', {
+      description: '로그인 후 바로 영상 업로드 페이지로 이동합니다.',
+    });
+    navigate(`/auth?redirect=${encodeURIComponent(target)}`);
+  };
 
   const analysisCategories = [
     { icon: Baby, title: t.videoObservation.cat1Title, description: t.videoObservation.cat1Desc, color: "from-pink-500 to-rose-500" },

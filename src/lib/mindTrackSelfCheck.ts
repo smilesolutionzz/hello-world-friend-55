@@ -98,12 +98,10 @@ export async function saveSelfCheck(p: SelfCheckSavePayload): Promise<SavedSelfC
 
 export async function fetchSelfCheckByShareId(shareId: string): Promise<SavedSelfCheck | null> {
   const { data, error } = await supabase
-    .from("mind_track_self_checks")
-    .select("*")
-    .eq("share_id", shareId)
-    .maybeSingle();
-  if (error || !data) return null;
-  return data as SavedSelfCheck;
+    .rpc("get_self_check_by_share_id", { p_share_id: shareId });
+  if (error || !data || (Array.isArray(data) && data.length === 0)) return null;
+  const row = (Array.isArray(data) ? data[0] : data) as unknown;
+  return { ...(row as object), user_id: null } as SavedSelfCheck;
 }
 
 export const LEVEL_META: Record<SelfCheckLevel, { label: string; tone: string; color: string }> = {

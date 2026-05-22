@@ -23,7 +23,7 @@ import { getExpertImage } from '@/components/expert/ExpertImages';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import ConsultationFlowSteps from '@/components/expert/ConsultationFlowSteps';
 import ExpertTrustCards from '@/components/expert/ExpertTrustCards';
-import { ExpertPriceTag } from '@/components/expert/ExpertPriceTag';
+// ExpertPriceTag removed from card (price shown on detail page)
 import { useSubscription } from '@/hooks/useSubscription';
 import { calculateExpertPricing, formatKRW } from '@/lib/expertPricing';
 import MindTrackContextBanner, { useMindTrackPrefill } from '@/components/mind-track/MindTrackContextBanner';
@@ -524,84 +524,64 @@ const ExpertCard = ({ expert, onBook, navigate }: { expert: Expert; onBook: () =
   return (
     <div
       onClick={() => navigate(`/expert-detail/${expert.id}`)}
-      className="group relative bg-white rounded-3xl cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_hsl(var(--primary)/0.15)]"
-      style={{
-        boxShadow: '0 1px 3px hsl(var(--foreground)/0.04), 0 4px 12px hsl(var(--foreground)/0.03)',
-        border: '1px solid hsl(var(--border)/0.5)',
-      }}
+      className="group relative bg-white rounded-2xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_-12px_rgba(15,23,42,0.12)] border border-border/60 overflow-hidden"
     >
-      {/* TOP badge ribbon */}
       {expert.isTop && (
-        <div className="absolute -top-2.5 left-4 z-10">
-          <div className="px-3 py-1 text-[10px] font-black tracking-wider rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-amber-900 shadow-lg shadow-amber-200/50 uppercase">
-            ★ TOP
-          </div>
+        <div className="absolute top-3 right-3 z-10">
+          <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider rounded-full bg-[#F5EFE0] text-[#8A7647] border border-[#E5D9B8]">
+            TOP
+          </span>
         </div>
       )}
 
-      <div className="p-5 pt-6">
-        {/* Profile section */}
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="w-16 h-16 rounded-2xl overflow-hidden ring-2 ring-border/30 group-hover:ring-primary/30 transition-all shadow-sm">
-              <Avatar className="w-full h-full rounded-none">
-                <AvatarImage src={expert.image} className="object-cover w-full h-full" />
-                <AvatarFallback className="rounded-none text-lg font-bold bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
-                  {expert.name[0]}
-                </AvatarFallback>
-              </Avatar>
-            </div>
-            {expert.isOnline && (
-              <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-400 border-[2.5px] border-white rounded-full shadow-sm" />
-            )}
+      <div className="p-5 flex flex-col items-center text-center">
+        {/* Profile photo */}
+        <div className="relative mb-3">
+          <div className="w-20 h-20 rounded-full overflow-hidden ring-1 ring-border/40 bg-muted">
+            <Avatar className="w-full h-full rounded-none">
+              <AvatarImage src={expert.image} className="object-cover w-full h-full" />
+              <AvatarFallback className="rounded-none text-lg font-semibold bg-muted text-muted-foreground">
+                {expert.name[0]}
+              </AvatarFallback>
+            </Avatar>
           </div>
-
-          <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-[15px] text-foreground truncate tracking-tight">{expert.name}</h3>
-            <div className="flex items-center gap-2 mt-1">
-              <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-amber-50">
-                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                <span className="text-[11px] font-bold text-amber-700">{expert.rating}</span>
-              </div>
-              <span className="text-[11px] text-muted-foreground">{expert.experience}</span>
-              <span className="inline-flex items-center gap-0.5 text-[11px] text-emerald-600 font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                온라인
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Specialty tags */}
-        <div className="flex flex-wrap gap-1.5 mt-4">
-          {expert.specialty.slice(0, 3).map((spec, idx) => (
-            <span
-              key={idx}
-              className="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-primary/[0.06] text-primary/80 border border-primary/10"
-            >
-              {spec}
-            </span>
-          ))}
-          {expert.specialty.length > 3 && (
-            <span className="px-2 py-1 text-[11px] text-muted-foreground">+{expert.specialty.length - 3}</span>
+          {expert.isOnline && (
+            <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full" />
           )}
         </div>
 
-        {/* Divider */}
-        <div className="my-4 h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
-
-        {/* Price + CTA */}
-        <div className="flex items-center justify-between gap-3">
-          <ExpertPriceTag size="md" />
-          <Button
-            size="sm"
-            className="rounded-2xl px-5 h-9 text-xs font-bold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all"
-            onClick={(e) => { e.stopPropagation(); onBook(); }}
-          >
-            <Calendar className="w-3.5 h-3.5 mr-1.5" />
-            예약하기
-          </Button>
+        {/* Name + meta */}
+        <h3 className="font-semibold text-[15px] text-foreground tracking-tight">{expert.name}</h3>
+        <div className="flex items-center justify-center gap-1.5 mt-1 text-[11.5px] text-muted-foreground">
+          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+          <span className="font-medium text-foreground">{expert.rating}</span>
+          <span className="text-border">·</span>
+          <span>{expert.experience}</span>
         </div>
+
+        {/* Primary specialty */}
+        {expert.specialty[0] && (
+          <p className="mt-2 text-[12px] text-muted-foreground line-clamp-1">
+            {expert.specialty.slice(0, 2).join(' · ')}
+          </p>
+        )}
+
+        {/* Bio preview */}
+        {expert.description && (
+          <p className="mt-2 text-[12px] text-muted-foreground/90 leading-relaxed line-clamp-2 min-h-[32px]">
+            {expert.description}
+          </p>
+        )}
+
+        {/* CTA */}
+        <Button
+          size="sm"
+          variant="outline"
+          className="mt-4 w-full rounded-xl h-9 text-xs font-semibold border-border hover:bg-foreground hover:text-background transition-colors"
+          onClick={(e) => { e.stopPropagation(); onBook(); }}
+        >
+          상담 예약
+        </Button>
       </div>
     </div>
   );

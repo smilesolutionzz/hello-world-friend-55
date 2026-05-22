@@ -866,14 +866,14 @@ const MindTrack: React.FC = () => {
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight break-keep">
                 7일 만에<br className="md:hidden" />
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  발가벗겨진 기분, 그리고 확신
+                  마음이 정리되고, 확신이 남아요
                 </span>
               </h1>
 
               <p className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto break-keep leading-relaxed">
-                <strong className="text-slate-900">진단 · 자기관찰 · 전문가 1:1 · 회복 루틴 · 변화 리포트</strong>까지<br className="hidden md:block" />
-                AIHPRO의 모든 기능을 7일 안에 압축해서 쏟아붓습니다.<br className="hidden md:block" />
-                <span className="text-slate-500 text-sm md:text-base">매일 5분, 7일이면 충분합니다. ₩{TRACK_PRICE.toLocaleString()}으로 오늘 바로 Day 01부터.</span>
+                <strong className="text-slate-900">진단 · 자기관찰 · 전문가 1:1 · 회복 루틴</strong>까지<br className="hidden md:block" />
+                AIHPRO의 핵심을 7일에 압축했어요.<br className="hidden md:block" />
+                <span className="text-slate-500 text-sm md:text-base">매일 5분, ₩{TRACK_PRICE.toLocaleString()}으로 오늘 Day 01부터.</span>
               </p>
             </motion.div>
           </div>

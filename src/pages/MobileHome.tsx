@@ -35,7 +35,7 @@ type Tile = {
 };
 
 const tiles: Tile[] = [
-  { label: '고민 쓰기',   icon: MessageSquareHeart, to: '/ai-copilot',          badge: 'HOT',  iconBg: 'bg-violet-50',  iconColor: 'text-violet-600' },
+  { label: '고민 쓰기',   icon: MessageSquareHeart, to: '/report-generator',    badge: 'HOT',  iconBg: 'bg-violet-50',  iconColor: 'text-violet-600' },
   { label: '마음 트랙',   icon: Sparkles,           to: '/mind-track',          badge: 'HOT',  iconBg: 'bg-amber-50',   iconColor: 'text-amber-600' },
   { label: '리포트',      icon: FileText,           to: '/report-generator-pro',badge: '주요', iconBg: 'bg-sky-50',     iconColor: 'text-sky-600' },
   { label: '전문가',      icon: Users,              to: '/expert-hiring',       badge: 'ON',   iconBg: 'bg-rose-50',    iconColor: 'text-rose-500' },

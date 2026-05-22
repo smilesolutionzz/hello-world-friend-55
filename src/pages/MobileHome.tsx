@@ -20,6 +20,7 @@ import {
   ShoppingBag,
 } from 'lucide-react';
 import StoreSection from '@/components/store/StoreSection';
+import PartnerTrustSection from '@/components/landing/PartnerTrustSection';
 import aihproLogo from '@/assets/aihpro-logo.png';
 
 /**

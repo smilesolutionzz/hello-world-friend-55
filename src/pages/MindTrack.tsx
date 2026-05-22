@@ -764,7 +764,7 @@ const MindTrack: React.FC = () => {
                       onOpenSampleModal={openSamplePreview}
                       onUnlockClick={(loc) => {
                         handleStartCtaClick(loc);
-                        navigate(isLoggedIn ? '/token-subscription' : '/auth');
+                        handleStart();
                       }}
                     />
 

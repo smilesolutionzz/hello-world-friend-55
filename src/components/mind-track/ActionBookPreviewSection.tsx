@@ -203,13 +203,44 @@ export default function ActionBookPreviewSection({
         AI는 그 위에 닉네임·연령·고민에 맞춰 표현만 다듬어 드려요.
       </p>
 
+      {/* 인라인 입력 — 닉네임 + 고민 */}
+      <div className="rounded-xl bg-white border border-[#C8B88A]/30 p-3 mb-3 space-y-2">
+        <div>
+          <label className="text-[10px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
+            닉네임 (선택)
+          </label>
+          <input
+            type="text"
+            value={localNickname}
+            onChange={(e) => setLocalNickname(e.target.value.slice(0, 20))}
+            placeholder="예: 지영"
+            className="mt-1 w-full h-9 px-3 rounded-lg border border-[#C8B88A]/30 bg-[#FBF9F2]/50 text-sm focus:outline-none focus:border-[#1a1a1a] transition-colors"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
+            지금 가장 큰 고민 한 줄
+          </label>
+          <textarea
+            value={localConcern}
+            onChange={(e) => setLocalConcern(e.target.value.slice(0, 140))}
+            placeholder="예: 밤마다 잠이 안 오고, 출근하면 무기력해요"
+            rows={2}
+            className="mt-1 w-full px-3 py-2 rounded-lg border border-[#C8B88A]/30 bg-[#FBF9F2]/50 text-sm resize-none focus:outline-none focus:border-[#1a1a1a] transition-colors break-keep"
+          />
+          <p className="text-[10px] text-foreground/45 mt-1 text-right tabular-nums">
+            {localConcern.length}/140 · 5자 이상
+          </p>
+        </div>
+      </div>
+
       {/* 실시간 생성 버튼 — 단일 CTA */}
       <div className="flex items-center gap-2 flex-wrap mb-3">
         <Button
           size="sm"
           onClick={handleGenerate}
-          disabled={generating}
-          className="rounded-full bg-[#1a1a1a] text-white hover:bg-black h-9 text-xs px-4"
+          disabled={generating || !canGenerate}
+          className="rounded-full bg-[#1a1a1a] text-white hover:bg-black h-9 text-xs px-4 disabled:opacity-50"
         >
           {generating ? (
             <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> 생성 중…</>
@@ -223,6 +254,7 @@ export default function ActionBookPreviewSection({
           </span>
         )}
       </div>
+
 
       {/* PDF 캡처 대상 영역 */}
       <div ref={previewRef} className="bg-white rounded-xl p-3">

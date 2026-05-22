@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -41,6 +41,9 @@ interface QAItem {
 
 const ObservationNew = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialMode = (searchParams.get('mode') === 'video' ? 'video'
+    : searchParams.get('mode') === 'text' ? 'text' : 'voice') as 'voice' | 'text' | 'video';
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -48,7 +51,7 @@ const ObservationNew = () => {
   
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [activeMode, setActiveMode] = useState<'voice' | 'text' | 'video'>('voice');
+  const [activeMode, setActiveMode] = useState<'voice' | 'text' | 'video'>(initialMode);
   const [structuredData, setStructuredData] = useState<any>(null);
   
   // Q&A 플로우 상태

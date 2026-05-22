@@ -44,10 +44,9 @@ const tiles: Tile[] = [
   { label: '음성 상담',   icon: Mic,                to: '/voice-counseling',                   iconBg: 'bg-teal-50',    iconColor: 'text-teal-600' },
   { label: '게임 검사',   icon: Gamepad2,           to: '/metaverse-voice',     badge: 'NEW',  iconBg: 'bg-pink-50',    iconColor: 'text-pink-500' },
   { label: '나의 여정',   icon: LineChart,          to: '/my-journey',                         iconBg: 'bg-indigo-50',  iconColor: 'text-indigo-600' },
-  { label: '고민 보관함', icon: BookOpen,           to: '/concern-storage',                    iconBg: 'bg-orange-50',  iconColor: 'text-orange-500' },
+  { label: '스토어',      icon: ShoppingBag,        to: '/store',               badge: 'NEW',  iconBg: 'bg-lime-50',    iconColor: 'text-lime-600' },
   { label: '리워드',      icon: Gift,               to: '/rewards',                            iconBg: 'bg-yellow-50',  iconColor: 'text-yellow-600' },
   { label: '구독 관리',   icon: ShieldCheck,        to: '/profile?tab=subscription',           iconBg: 'bg-cyan-50',    iconColor: 'text-cyan-600' },
-  { label: '스토어',      icon: ShoppingBag,        to: '/store',               badge: 'NEW',  iconBg: 'bg-lime-50',    iconColor: 'text-lime-600' },
 ];
 
 const quickKeywords = ['#불안', '#번아웃', '#아이발달', '#수면', '#관계', '#우울'];

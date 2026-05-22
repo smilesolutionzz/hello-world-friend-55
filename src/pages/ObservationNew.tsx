@@ -348,7 +348,7 @@ const ObservationNew = () => {
                   onClick={() => setActiveMode('voice')}
                   className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
                     activeMode === 'voice'
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md'
+                      ? 'bg-slate-900 text-white shadow-sm'
                       : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
@@ -359,7 +359,7 @@ const ObservationNew = () => {
                   onClick={() => setActiveMode('text')}
                   className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
                     activeMode === 'text'
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md'
+                      ? 'bg-slate-900 text-white shadow-sm'
                       : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >

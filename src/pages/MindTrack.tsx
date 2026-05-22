@@ -497,7 +497,7 @@ const MindTrack: React.FC = () => {
       const res = await startMindTrackTrial({ goal: selectedGoal, concern }, audienceParam);
       if (!res.enrollmentId) throw new Error(res.error || '등록 실패');
       trackEvent('mind_track_trial_start', { goal: selectedGoal, audience: audienceParam });
-      toast.success('3일 무료 체험을 시작합니다');
+      toast.success('7일 마음 트랙을 시작합니다');
       navigate('/mind-track/dashboard');
     } catch (e: any) {
       toast.error(e.message || '등록 중 오류가 발생했습니다');
@@ -603,8 +603,8 @@ const MindTrack: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="7일 안에 마음이 정리되는 트랙 · ₩7,900 | AIHPRO"
-        description="진단·자기관찰·전문가 1:1·회복 루틴까지 7일에 압축. ₩7,900으로 시작하는 AIHPRO 마음 변화 트랙. 무료 고민 리포트도 즉석으로 받아보세요."
+        title="7일 마음 트랙 · PMF 베타 전액 무료 | AIHPRO"
+        description="진단·자기관찰·전문가 1:1·회복 루틴까지 7일에 압축. PMF 베타 기간 전액 무료. 완주하면 +23일 연장 옵션."
         canonicalUrl="https://aihpro.app/mind-track"
       />
       <div className="min-h-screen bg-white">
@@ -722,9 +722,9 @@ const MindTrack: React.FC = () => {
                         <Sparkles className="w-3 h-3" />
                         7일 마음 트랙
                       </div>
-                      <div className="inline-flex items-center gap-1 text-[11px] text-rose-600 font-semibold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                        3일 무료 · 카드 없이 시작
+                      <div className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-semibold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        PMF 베타 · 7일 전액 무료
                       </div>
                     </div>
 
@@ -764,31 +764,31 @@ const MindTrack: React.FC = () => {
                       onOpenSampleModal={openSamplePreview}
                       onUnlockClick={(loc) => {
                         handleStartCtaClick(loc);
-                        navigate(isLoggedIn ? '/token-subscription' : '/auth');
+                        handleStart();
                       }}
                     />
 
-                    {/* 가격 + 비교 — 한눈에 ‘싸다’ 인지 */}
-                    <div className="mt-5 mb-4 p-4 rounded-2xl bg-[#FBF8F1] border border-[#C8B88A]/30">
+                    {/* PMF 베타 — 7일 전액 무료 + 23일 연장 옵션 */}
+                    <div className="mt-5 mb-4 p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200">
                       <div className="flex items-end justify-between gap-3 flex-wrap">
                         <div>
-                          <div className="text-[11px] text-foreground/55 line-through">
-                            전문가 1:1 단회만 ₩60,000~
+                          <div className="text-[11px] text-emerald-700 font-bold tracking-wide uppercase">
+                            PMF Beta · Limited
                           </div>
-                          <div className="flex items-baseline gap-2">
+                          <div className="flex items-baseline gap-2 mt-1">
                             <span className="text-3xl md:text-4xl font-extrabold text-[#1a1a1a]">
-                              ₩{TRACK_PRICE.toLocaleString()}
+                              무료
                             </span>
                             <span className="text-sm text-foreground/60 font-semibold">/ 7일 전체</span>
                           </div>
                           <div className="text-[11px] text-foreground/55 mt-0.5">
-                            하루 ₩{Math.round(TRACK_PRICE / 7).toLocaleString()} · 커피 한 잔보다 저렴
+                            완주 시 +23일 연장은 별도 옵션 (선택)
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-1">
+                          <div className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-white border border-emerald-200 rounded-full px-2 py-1">
                             <Shield className="w-3 h-3" />
-                            14일 100% 환불 보장
+                            카드 없이 시작
                           </div>
                         </div>
                       </div>
@@ -797,19 +797,20 @@ const MindTrack: React.FC = () => {
                     <Button
                       onClick={() => {
                         handleStartCtaClick('lock_card_cta');
-                        navigate(isLoggedIn ? '/token-subscription' : '/auth');
+                        handleStart();
                       }}
+                      disabled={loading}
                       className="w-full h-14 rounded-2xl bg-[#1a1a1a] text-white hover:bg-black font-bold text-base"
                     >
                       <Sparkles className="w-4 h-4 mr-2" />
-                      3일 무료로 시작하기
+                      7일 무료로 시작하기
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
 
                     <div className="flex items-center justify-center gap-3 pt-3 text-[11px] text-foreground/55 flex-wrap">
                       <span className="inline-flex items-center gap-1">
                         <Shield className="w-3 h-3" />
-                        카드 등록 없이 즉시 시작 · 언제든 중단
+                        결제 정보 불필요 · 언제든 중단 가능
                       </span>
                     </div>
                   </div>
@@ -1251,10 +1252,10 @@ const MindTrack: React.FC = () => {
 
                 <AccordionItem value="q4" className="border rounded-2xl px-4 bg-white">
                   <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
-                    환불 정책은 어떻게 되나요?
+                    PMF 베타 기간이 끝나면 어떻게 되나요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    결제 후 {REFUND_WINDOW_DAYS}일 이내, 워크북 진행률 20% 미만이면 전액 환불이 가능합니다. 그 외 기준은 결제 페이지 약관을 따릅니다.
+                    PMF 검증 기간 동안 시작한 7일 트랙은 끝까지 무료로 이용 가능합니다. 정식 가격 전환 시점은 사전에 안내드리며, 전환 이후에도 결제 후 {REFUND_WINDOW_DAYS}일 이내·진행률 20% 미만이면 전액 환불됩니다.
                   </AccordionContent>
                 </AccordionItem>
 
@@ -1266,7 +1267,7 @@ const MindTrack: React.FC = () => {
                     전문가 개입(리뷰/상담/긴급/심화)은 별도 결제인가요?
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    네. 7일 마음 트랙(₩{TRACK_PRICE.toLocaleString()})에는 워크북과 AI 코칭 콘텐츠가 모두 포함되며, 전문가 리뷰·상담·긴급·심화 4종은 필요할 때만 단건으로 추가 결제하는 옵션입니다.
+                    네. 현재 PMF 베타 기간 동안 7일 마음 트랙은 전액 무료로 제공되며 워크북·AI 코칭 콘텐츠가 모두 포함됩니다. 전문가 리뷰·상담·긴급·심화 4종은 필요할 때만 단건으로 추가 결제하는 옵션이고, 완주 후 +23일 연장도 선택형입니다.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

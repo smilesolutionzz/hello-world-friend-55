@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Sparkles, Calendar, CheckCircle2, ArrowRight, Award, BarChart3,
+  Sparkles, CheckCircle2, ArrowRight,
   Shield, Zap, Loader2, Lightbulb, Target, Heart, MessageSquareHeart, Wand2,
-  BookOpen, Eye, FileText, Lock,
 } from 'lucide-react';
+
 import { WORKBOOK_CHAPTERS } from '@/lib/mindTrackChapters';
 import WorkbookSamplePreviewModal from '@/components/mind-track/WorkbookSamplePreviewModal';
 import ActionBookPreviewSection from '@/components/mind-track/ActionBookPreviewSection';

@@ -353,6 +353,9 @@ const ExpertHiring = () => {
               </div>
             )}
 
+            {/* 진행 흐름 — 슬라이드 형식 */}
+            <ConsultationFlowSteps />
+
             {/* 신뢰 + 가격 안내 */}
             <ExpertTrustCards />
 

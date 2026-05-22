@@ -208,7 +208,7 @@ export class RealtimeVoiceChat {
       // Get auth token for WebSocket
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData?.session?.access_token || '';
-      const wsUrl = `wss://hrcqxjetmzxoephgyjlb.functions.supabase.co/functions/v1/realtime-voice?token=${encodeURIComponent(accessToken)}`;
+      const wsUrl = `wss://hrcqxjetmzxoephgyjlb.supabase.co/functions/v1/realtime-voice?token=${encodeURIComponent(accessToken)}`;
 
       console.log("Connecting to:", wsUrl);
       this.ws = new WebSocket(wsUrl);

@@ -186,11 +186,11 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
     wantMore: isEnglish ? 'Want a more accurate analysis?' : '더 정확한 분석을 원하신다면?',
     wantMoreSub: isEnglish ? 'Get personalized solutions with 3-min onboarding' : '3분 온보딩으로 맞춤형 솔루션을 받아보세요',
     preciseAnalysis: isEnglish ? '3-Min Precision Analysis' : '3분 정밀 분석',
-    analyzeAgain: isEnglish ? 'Analyze Again' : '다시 분석',
+    analyzeAgain: isEnglish ? 'Write New Concern' : '고민 새로 작성하기',
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl mx-auto space-y-4">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl mx-auto space-y-4 pb-[120px] md:pb-8">
       {/* 1. Result Header */}
       <div className="bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-2xl md:rounded-3xl border border-white/10 p-4 md:p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
@@ -392,8 +392,16 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
             ))}
           </div>
           {reports.expertOpinion.urgency && (
-            <div className="mt-3 bg-rose-500/10 rounded-lg p-2 border border-rose-500/15">
+            <div className="mt-3 bg-rose-500/10 rounded-lg p-3 border border-rose-500/15 space-y-2">
               <p className="text-rose-300 text-base"><strong>{L.urgency}:</strong> {reports.expertOpinion.urgency}</p>
+              <Button
+                onClick={() => navigate(isEnglish ? '/en/expert-hiring' : '/expert-hiring')}
+                className="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-2.5 rounded-xl text-base"
+              >
+                <Users className="w-4 h-4 mr-1.5" />
+                {isEnglish ? 'Talk to an Expert' : '전문가와 바로 상담하기'}
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
             </div>
           )}
         </ExpandableSection>
@@ -446,20 +454,20 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           <Button
             onClick={() => {
               localStorage.setItem('instant_analysis_result', JSON.stringify(analysisResult));
               localStorage.setItem('instant_analysis_input', inputText);
               navigate(isEnglish ? '/en/report-generator' : '/report-generator');
             }}
-            className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl text-base"
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl text-base"
           >
             <FileText className="w-4 h-4 mr-1.5" />
             {isEnglish ? '7-Day Mind Track — ₩7,900' : '7일 마음 트랙 — ₩7,900'}
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
-          <Button onClick={onReset} variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 py-3 rounded-xl text-base px-4">
+          <Button onClick={onReset} variant="outline" className="w-full bg-white/5 border-white/20 text-white hover:bg-white/10 py-3 rounded-xl text-base">
             {L.analyzeAgain}
           </Button>
         </div>

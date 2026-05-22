@@ -1,6 +1,7 @@
 import { Shield, Award, Lock, CheckCircle, Building2, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/i18n';
+import { PARTNER_INSTITUTIONS } from '@/data/partnerInstitutions';
 
 const PartnerTrustSection = () => {
   const { t } = useTranslation();
@@ -12,26 +13,13 @@ const PartnerTrustSection = () => {
     { icon: CheckCircle, title: t.partnerTrust.trustAI }
   ];
 
-  // Partner names kept as-is (proper nouns)
-  const partners = [
-    "디딤돌언어사회성연구소", "APA발달센터", "디앤알운동발달센터", "한점미소발달센터",
-    "우아함발달센터 안산점", "메이플 ABA 목동센터", "엘림아동발달센터", "해웃음 심리발달센터",
-    "핌발달센터", "정관언어발달센터", "해오름 아동발달센터", "넘나들발달센터",
-    "별하 아동발달센터", "정아동심리상담소", "소리엘 언어치료센터", "이든아동발달센터",
-    "푸른솔발달센터", "해맑은발달센터", "참좋은발달센터", "아이조아발달센터",
-    "마음숲심리상담센터", "행복한마음심리센터", "열린마음상담센터", "새봄심리상담소",
-    "마음드림상담센터", "함께심리상담센터", "밝은마음상담센터", "치유의숲심리센터",
-    "언어발달치료센터", "감각통합치료센터", "놀이치료연구소", "미술치료센터",
-    "음악치료연구소", "운동발달치료센터", "인지발달치료센터", "사회성발달센터",
-    "삼성웰니스의원", "서울아동발달클리닉", "행복한소아청소년과", "마음편한정신건강의학과",
-    "아이들세상소아과", "청소년마음클리닉", "발달전문소아과", "마음건강의원",
-    "아이사랑어린이집", "푸른숲유치원", "해바라기학교", "꿈나무교육센터",
-    "미래인재학원", "창의력교육센터", "해담ABA아동발달센터", "별하언어심리상담센터 서울구로점"
-  ];
+  // 실제 협력기관 47곳 (ExpertHiring과 동일 소스)
+  const partners = PARTNER_INSTITUTIONS.map((p) => p.name);
 
-  const row1 = partners.slice(0, 17);
-  const row2 = partners.slice(17, 34);
-  const row3 = partners.slice(34, 50);
+  const third = Math.ceil(partners.length / 3);
+  const row1 = partners.slice(0, third);
+  const row2 = partners.slice(third, third * 2);
+  const row3 = partners.slice(third * 2);
 
   return (
     <section className="relative py-20 md:py-28 overflow-hidden bg-slate-900">

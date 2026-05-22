@@ -92,6 +92,68 @@ const CATEGORIES = [
 
 const TIME_SLOTS = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
 
+type DbExpert = {
+  id: string;
+  full_name: string;
+  specializations: string[] | null;
+  certifications: string[] | null;
+  average_rating: number | null;
+  total_sessions: number | null;
+  years_experience: number | null;
+  hourly_rate: number | null;
+  profile_image_url: string | null;
+  bio: string | null;
+};
+
+const PUBLIC_EXPERTS_ENDPOINT = 'https://hrcqxjetmzxoephgyjlb.supabase.co/rest/v1/experts';
+const PUBLIC_EXPERTS_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJocmNxeGpldG16eG9lcGhneWpsYiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzU1NjY1MzQwLCJleHAiOjIwNzEyNDEzNDB9.LPXwumPDk6kq5W7jRI6yx39ajYxXw15yTQvfKYtmzzg';
+
+const toExpertCardData = (expert: DbExpert): Expert => ({
+  id: expert.id,
+  name: expert.full_name,
+  specialty: Array.isArray(expert.specializations) ? expert.specializations : [],
+  credentials: Array.isArray(expert.certifications) ? expert.certifications : [],
+  rating: expert.average_rating && expert.average_rating > 0 ? expert.average_rating : 4.8,
+  reviews: expert.total_sessions || 0,
+  experience: `${expert.years_experience || 5}년`,
+  hourlyPrice: expert.hourly_rate || CONSULT_PRICE,
+  image: getExpertImage(expert.full_name) || expert.profile_image_url || '',
+  description: expert.bio || '',
+  location: '온라인',
+  isOnline: true,
+  responseTime: '평균 2시간 이내',
+  isTop: TOP_EXPERTS.includes(expert.full_name)
+});
+
+const sortExpertsForDisplay = (items: Expert[]) =>
+  [...items].sort((a, b) => {
+    if (a.isTop && !b.isTop) return -1;
+    if (!a.isTop && b.isTop) return 1;
+    if (a.isTop && b.isTop) return TOP_EXPERTS.indexOf(a.name) - TOP_EXPERTS.indexOf(b.name);
+    return a.name.localeCompare(b.name, 'ko-KR');
+  });
+
+const loadPublicExpertsDirectly = async (): Promise<DbExpert[]> => {
+  const params = new URLSearchParams({
+    select: 'id,full_name,specializations,certifications,average_rating,total_sessions,years_experience,hourly_rate,profile_image_url,bio',
+    is_verified: 'eq.true',
+    is_available: 'eq.true',
+  });
+
+  const response = await fetch(`${PUBLIC_EXPERTS_ENDPOINT}?${params.toString()}`, {
+    headers: {
+      apikey: PUBLIC_EXPERTS_ANON_KEY,
+      Authorization: `Bearer ${PUBLIC_EXPERTS_ANON_KEY}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Public experts fetch failed: ${response.status}`);
+  }
+
+  return response.json();
+};
+
 const ExpertHiring = () => {
   const navigate = useNavigate();
   const { subscription } = useSubscription();
@@ -125,42 +187,24 @@ const ExpertHiring = () => {
 
   const loadExperts = async () => {
     try {
-      const { data: dbExperts } = await supabase
+      setLoading(true);
+      const { data: dbExperts, error } = await supabase
         .from('experts')
         .select('*')
         .eq('is_verified', true)
         .eq('is_available', true);
 
-      let allExperts: Expert[] = [];
-      if (dbExperts) {
-        allExperts = dbExperts.map(expert => ({
-          id: expert.id,
-          name: expert.full_name,
-          specialty: expert.specializations || [],
-          credentials: expert.certifications || [],
-          rating: expert.average_rating || 4.5,
-          reviews: expert.total_sessions || 0,
-          experience: `${expert.years_experience}년`,
-          hourlyPrice: expert.hourly_rate,
-          image: getExpertImage(expert.full_name) || expert.profile_image_url || '',
-          description: expert.bio || '',
-          location: '온라인',
-          isOnline: true,
-          responseTime: '평균 2시간 이내',
-          isTop: TOP_EXPERTS.includes(expert.full_name)
-        }));
+      let sourceExperts = (dbExperts || []) as DbExpert[];
+      if (error || sourceExperts.length === 0) {
+        console.warn('Primary expert query failed or returned empty. Falling back to public expert feed.', error);
+        sourceExperts = await loadPublicExpertsDirectly();
       }
 
-      allExperts.sort((a, b) => {
-        if (a.isTop && !b.isTop) return -1;
-        if (!a.isTop && b.isTop) return 1;
-        if (a.isTop && b.isTop) return TOP_EXPERTS.indexOf(a.name) - TOP_EXPERTS.indexOf(b.name);
-        return 0;
-      });
-
-      setExperts(allExperts);
+      setExperts(sortExpertsForDisplay(sourceExperts.map(toExpertCardData)));
     } catch (error) {
       console.error('Error loading experts:', error);
+      toast.error('전문가 목록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.');
+      setExperts([]);
     } finally {
       setLoading(false);
     }

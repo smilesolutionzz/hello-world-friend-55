@@ -603,8 +603,8 @@ const MindTrack: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="7일 안에 마음이 정리되는 트랙 · ₩7,900 | AIHPRO"
-        description="진단·자기관찰·전문가 1:1·회복 루틴까지 7일에 압축. ₩7,900으로 시작하는 AIHPRO 마음 변화 트랙. 무료 고민 리포트도 즉석으로 받아보세요."
+        title="7일 마음 트랙 · PMF 베타 전액 무료 | AIHPRO"
+        description="진단·자기관찰·전문가 1:1·회복 루틴까지 7일에 압축. PMF 베타 기간 전액 무료. 완주하면 +23일 연장 옵션."
         canonicalUrl="https://aihpro.app/mind-track"
       />
       <div className="min-h-screen bg-white">

@@ -52,6 +52,12 @@ export default function ActionBookPreviewSection({
   const [days, setDays] = useState<DayLine[]>(DEFAULT_LINES);
   const [generating, setGenerating] = useState(false);
   const [isPersonalized, setIsPersonalized] = useState(false);
+  const [localNickname, setLocalNickname] = useState(nickname || "");
+  const [localConcern, setLocalConcern] = useState(concern || "");
+
+  useEffect(() => { if (nickname) setLocalNickname((v) => v || nickname); }, [nickname]);
+  useEffect(() => { if (concern) setLocalConcern((v) => v || concern); }, [concern]);
+
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);

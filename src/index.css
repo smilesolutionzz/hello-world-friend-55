@@ -33,6 +33,15 @@ html, body {
   padding-right: env(safe-area-inset-right);
 }
 
+/* Mobile bottom tab clearance — prevent fixed bottom nav from covering page content */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
+}
+
+
+
 @layer base {
   :root {
     /* Base System Colors - 시각적 무게감 기반 */

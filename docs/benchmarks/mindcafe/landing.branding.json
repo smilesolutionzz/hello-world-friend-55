@@ -1,0 +1,131 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Pretendard",
+      "role": "body"
+    },
+    {
+      "family": "Arial",
+      "role": "body"
+    }
+  ],
+  "colors": {
+    "primary": "#007777",
+    "secondary": "#50C9C3",
+    "accent": "#50C9C3",
+    "background": "#FFFFFF",
+    "textPrimary": "#000000",
+    "link": "#4E5760"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Pretendard",
+      "heading": "Pretendard"
+    },
+    "fontStacks": {
+      "heading": [
+        "Pretendard",
+        "sans-serif"
+      ],
+      "body": [
+        "Pretendard",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Pretendard",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "16px",
+      "h2": "16px",
+      "body": "16px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "8px"
+  },
+  "components": {
+    "buttonPrimary": {
+      "background": "#50C9C3",
+      "textColor": "#FFFFFF",
+      "borderRadius": "5px",
+      "borderRadiusCorners": {
+        "topLeft": "5px",
+        "topRight": "5px",
+        "bottomRight": "5px",
+        "bottomLeft": "5px"
+      },
+      "shadow": "rgba(0, 0, 0, 0.3) 0px 3px 6px 0px"
+    },
+    "buttonSecondary": {
+      "background": "#4E5760",
+      "textColor": "#000000",
+      "borderRadius": "999px",
+      "borderRadiusCorners": {
+        "topLeft": "999px",
+        "topRight": "999px",
+        "bottomRight": "999px",
+        "bottomLeft": "999px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "logo": "https://mindcafe.co.kr/_next/static/images/logo-pro-e061ac2a48792ed60f4decf6512dcc2b.png",
+    "favicon": "https://mindcafe.co.kr/public/favicon.ico",
+    "ogImage": "/public/open_graph_image.png?v=20250314",
+    "logoAlt": "마인드카페_로고"
+  },
+  "__llm_logo_reasoning": {
+    "selectedIndex": 5,
+    "reasoning": "Selected #5 because it matches the brand name '마인드카페', is visible, and has a logo-like appearance in the header area.",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 0,
+      "text": "더 보기",
+      "reasoning": "Button #0 has a vibrant green color (#50C9C3), which is a brand color, making it stand out as the primary call-to-action."
+    },
+    "secondary": {
+      "index": 14,
+      "text": "연애",
+      "reasoning": "Button #1 has a neutral color (#4E5760) and a different color group from the primary button, making it suitable as a secondary option."
+    },
+    "confidence": 0.95
+  },
+  "personality": {
+    "tone": "professional",
+    "energy": "medium",
+    "targetAudience": "Korean-speaking individuals seeking anonymous psychological counseling"
+  },
+  "designSystem": {
+    "framework": "custom",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0.95,
+    "colors": 0.9,
+    "overall": 0.925
+  },
+  "__llm_metadata": {
+    "logoSelection": {
+      "llmCalled": true,
+      "llmSucceeded": true,
+      "finalSource": "llm",
+      "rawLogoSelection": {
+        "selectedLogoIndex": 5,
+        "selectedLogoReasoning": "Selected #5 because it matches the brand name '마인드카페', is visible, and has a logo-like appearance in the header area.",
+        "confidence": 0.9
+      }
+    },
+    "buttonClassification": {
+      "llmCalled": true,
+      "llmSucceeded": true
+    }
+  }
+}

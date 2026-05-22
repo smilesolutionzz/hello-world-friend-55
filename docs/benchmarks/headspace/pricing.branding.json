@@ -1,0 +1,121 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Headspace Apercu",
+      "count": 90
+    },
+    {
+      "family": "sans-serif",
+      "count": 90
+    }
+  ],
+  "colors": {
+    "primary": "#0061EF",
+    "secondary": "#FFA500",
+    "accent": "#FF7300",
+    "background": "#FFFFFF",
+    "textPrimary": "#44423F",
+    "link": "#FF7300"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Headspace Apercu",
+      "heading": "Headspace Apercu"
+    },
+    "fontStacks": {
+      "body": [
+        "Headspace Apercu",
+        "sans-serif"
+      ],
+      "heading": [
+        "Headspace Apercu",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Headspace Apercu",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "16px",
+      "h2": "64px",
+      "body": "22px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "32px"
+  },
+  "components": {
+    "input": {
+      "background": "#FFFFFF",
+      "textColor": "#000000",
+      "borderColor": "#D2D5DE",
+      "borderRadius": "8px",
+      "borderRadiusCorners": {
+        "topLeft": "8px",
+        "topRight": "8px",
+        "bottomRight": "8px",
+        "bottomLeft": "8px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "favicon": "https://www.headspace.com/favicon.ico",
+    "ogImage": "https://images.ctfassets.net/v3n26e09qg2r/1ZcArCVfJz3jHN4QonqKVV/15649af74355e79cdc3eaaa1dca60ae9/Headspace_Share.png"
+  },
+  "__llm_logo_reasoning": {
+    "selectedIndex": -1,
+    "reasoning": "LLM failed",
+    "confidence": 0,
+    "rejected": true,
+    "source": "llm"
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "confidence": 0
+  },
+  "personality": {
+    "tone": "professional",
+    "energy": "medium",
+    "targetAudience": "unknown"
+  },
+  "designSystem": {
+    "framework": "unknown",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0,
+    "colors": 0,
+    "overall": 0
+  },
+  "__llm_metadata": {
+    "logoSelection": {
+      "llmCalled": true,
+      "llmSucceeded": false,
+      "finalSource": "fallback",
+      "error": "LLM failed",
+      "rawLogoSelection": {
+        "selectedLogoIndex": -1,
+        "selectedLogoReasoning": "LLM failed",
+        "confidence": 0
+      }
+    },
+    "buttonClassification": {
+      "llmCalled": true,
+      "llmSucceeded": false,
+      "error": "LLM call failed or returned fallback values"
+    }
+  }
+}

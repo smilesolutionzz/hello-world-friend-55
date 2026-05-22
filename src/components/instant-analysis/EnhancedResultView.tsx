@@ -263,7 +263,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
       )}
 
       {/* 3. Psychology Insights */}
-      <ExpandableSection icon={BookOpen} title={L.psychInsights} badge={L.academicBasis} defaultOpen={true} gradientFrom="from-indigo-900/40" gradientTo="to-blue-900/40" borderColor="border-indigo-500/20">
+      <ExpandableSection icon={BookOpen} title={L.psychInsights} badge={L.academicBasis} defaultOpen={true} gradientFrom="from-indigo-900" gradientTo="to-blue-900" borderColor="border-indigo-500/20">
         <div className="space-y-2.5">
           {psychTheories.map((theory, i) => (
             <div key={i} className="flex items-start gap-3 bg-white/5 rounded-xl p-3 border border-white/5">
@@ -279,7 +279,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
 
       {/* 4. Report TOC */}
       {tableOfContents && tableOfContents.length > 0 && (
-        <ExpandableSection icon={FileText} title={L.reportTOC} badge={`${tableOfContents.length}${isEnglish ? ' ' : ''}${L.sections}`} defaultOpen={false} gradientFrom="from-blue-900/40" gradientTo="to-cyan-900/40" borderColor="border-blue-500/20">
+        <ExpandableSection icon={FileText} title={L.reportTOC} badge={`${tableOfContents.length}${isEnglish ? ' ' : ''}${L.sections}`} defaultOpen={false} gradientFrom="from-blue-900" gradientTo="to-cyan-900" borderColor="border-blue-500/20">
           <ul className="space-y-1.5">
             {tableOfContents.map((item, i) => (
               <li key={i} className="flex items-center gap-2 text-white text-base">
@@ -292,13 +292,13 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
       )}
 
       {/* 5. Expert Advice */}
-      <ExpandableSection icon={Heart} title={L.expertAdvice} badge={analysisResult.severity} defaultOpen={true} gradientFrom="from-amber-900/30" gradientTo="to-orange-900/30" borderColor="border-amber-500/20">
+      <ExpandableSection icon={Heart} title={L.expertAdvice} badge={analysisResult.severity} defaultOpen={true} gradientFrom="from-amber-900" gradientTo="to-orange-900" borderColor="border-amber-500/20">
         <p className="text-white text-base md:text-lg leading-relaxed whitespace-pre-wrap">{analysisResult.detailedAdvice}</p>
       </ExpandableSection>
 
       {/* 6. Development Profile Scores */}
       {reports?.developmentAssessment && (
-        <ExpandableSection icon={BarChart3} title={L.multiDimProfile} badge={L.scoreDetail} defaultOpen={false} gradientFrom="from-teal-900/30" gradientTo="to-emerald-900/30" borderColor="border-teal-500/20">
+        <ExpandableSection icon={BarChart3} title={L.multiDimProfile} badge={L.scoreDetail} defaultOpen={false} gradientFrom="from-teal-900" gradientTo="to-emerald-900" borderColor="border-teal-500/20">
           <div className="grid grid-cols-5 gap-2">
             <CircularGauge value={reports.developmentAssessment.cognitive} label={radarLabels[0]} color="#2dd4bf" size={70} />
             <CircularGauge value={reports.developmentAssessment.language} label={radarLabels[1]} color="#38bdf8" size={70} />
@@ -312,7 +312,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
 
       {/* 7. Custom Solutions */}
       {analysisResult.recommendations && (
-        <ExpandableSection icon={Target} title={L.customSolutions} defaultOpen={true} gradientFrom="from-cyan-900/30" gradientTo="to-blue-900/30" borderColor="border-cyan-500/20">
+        <ExpandableSection icon={Target} title={L.customSolutions} defaultOpen={true} gradientFrom="from-cyan-900" gradientTo="to-blue-900" borderColor="border-cyan-500/20">
           <div className="space-y-2">
             {analysisResult.recommendations.map((rec: string, i: number) => (
               <div key={i} className="flex items-start gap-2 bg-white/5 rounded-xl p-3 border border-white/5">
@@ -326,7 +326,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
 
       {/* 8. Growth Roadmap */}
       {reports?.developmentRoadmap && (
-        <ExpandableSection icon={Zap} title={L.growthRoadmap} badge={isEnglish ? '3 phases' : '3단계'} defaultOpen={true} gradientFrom="from-purple-900/30" gradientTo="to-pink-900/30" borderColor="border-purple-500/20">
+        <ExpandableSection icon={Zap} title={L.growthRoadmap} badge={isEnglish ? '3 phases' : '3단계'} defaultOpen={true} gradientFrom="from-purple-900" gradientTo="to-pink-900" borderColor="border-purple-500/20">
           <div className="relative space-y-0">
             <div className="absolute left-[11px] top-3 bottom-3 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 opacity-30" />
             {[

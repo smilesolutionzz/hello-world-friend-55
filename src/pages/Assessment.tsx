@@ -1421,6 +1421,7 @@ const Assessment = () => {
             onComplete={handlePanicTestComplete}
             onBack={handleBack}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1457,6 +1458,7 @@ const Assessment = () => {
             }}
           />
           <TrialUpsellBanner />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1475,6 +1477,7 @@ const Assessment = () => {
             }}
           />
           <TrialUpsellBanner />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1488,6 +1491,7 @@ const Assessment = () => {
             results={childResults}
             onBack={handleBack}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1501,6 +1505,7 @@ const Assessment = () => {
             results={infantResults}
             onBack={handleBack}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1516,6 +1521,7 @@ const Assessment = () => {
             onStartAIChat={handleStartAIChat}
             onStartRealTimeChat={handleStartRealTimeChat}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1549,6 +1555,7 @@ const Assessment = () => {
             onStartRealTimeChat={handleStartRealTimeChat}
           />
           <TrialUpsellBanner />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1583,6 +1590,7 @@ const Assessment = () => {
             />
             <TrialUpsellBanner />
           </div>
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1634,6 +1642,7 @@ const Assessment = () => {
             onComplete={handleAttachmentTestComplete}
             onBack={handleBack}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1668,6 +1677,7 @@ const Assessment = () => {
             onComplete={handleCareerTestComplete}
             onBack={handleBack}
           />
+          <MedicalDisclaimer variant="compact" className="mt-6" />
         </div>
       </div>
     );
@@ -1976,6 +1986,7 @@ const Assessment = () => {
             </div>
           </div>
         </div>
+        <MedicalDisclaimer variant="compact" className="mt-6" />
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ import Footer from '@/components/ui/footer';
 import SEOHead from '@/components/common/SEOHead';
 import CoachingBadge from '@/components/branding/CoachingBadge';
 import { MedicalDisclaimer } from '@/components/legal/MedicalDisclaimer';
-import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
+
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';

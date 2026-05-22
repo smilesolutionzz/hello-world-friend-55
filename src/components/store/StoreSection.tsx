@@ -1,20 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { ChevronRight, ShoppingBag } from 'lucide-react';
-import { STORE_PRODUCTS } from '@/data/storeProducts';
+import { STORE_PRODUCTS, STORE_BASE_URL } from '@/data/storeProducts';
 import StoreProductCard from './StoreProductCard';
 
 /**
  * 홈에서 보여줄 큐레이션 스토어 섹션.
  * 키즈노트 '어디가지' 톤을 차용 — 가로 스크롤 카드 + 더보기.
+ * 헤더/전체보기 클릭 시 외부 Cafe24 스토어로 이동.
  */
 const StoreSection: React.FC = () => {
   const items = STORE_PRODUCTS.slice(0, 5);
 
+  const openStore = () => {
+    window.open(STORE_BASE_URL, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <section className="space-y-3">
       <div className="flex items-end justify-between">
-        <div>
+        <button
+          type="button"
+          onClick={openStore}
+          className="text-left"
+        >
           <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#8a7a4d]">
             <ShoppingBag className="h-3.5 w-3.5" />
             추천 스토어
@@ -22,14 +30,15 @@ const StoreSection: React.FC = () => {
           <h2 className="mt-1 text-[18px] font-bold text-slate-900 break-keep">
             우리 아이에게 꼭 맞는 발달 아이템
           </h2>
-        </div>
-        <Link
-          to="/store"
+        </button>
+        <button
+          type="button"
+          onClick={openStore}
           className="flex items-center gap-0.5 text-[12px] font-medium text-slate-500"
         >
           전체보기
           <ChevronRight className="h-3.5 w-3.5" />
-        </Link>
+        </button>
       </div>
 
       <div className="-mx-5 overflow-x-auto no-scrollbar">
@@ -44,3 +53,4 @@ const StoreSection: React.FC = () => {
 };
 
 export default StoreSection;
+

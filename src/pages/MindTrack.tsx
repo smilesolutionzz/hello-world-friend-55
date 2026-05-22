@@ -738,13 +738,13 @@ const MindTrack: React.FC = () => {
                         7 Day Mind Track · 매일 5분
                       </p>
                       <h2 className="text-2xl md:text-[28px] font-bold text-foreground break-keep leading-tight">
-                        7일이면, 내가 왜 이런지<br className="hidden sm:block" />
-                        <span className="bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">발가벗겨진 듯</span> 보입니다.
+                        7일이면, 내 마음이<br className="hidden sm:block" />
+                        <span className="bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">한 줄로 정리</span>됩니다.
                       </h2>
                       <p className="text-sm md:text-base text-foreground/70 break-keep leading-relaxed">
-                        진단 · 자기관찰 · 전문가 1:1 · 회복 루틴 · 변화 리포트 — AIHPRO의 모든 기능을
-                        <strong className="text-foreground"> 7일에 압축</strong>해서 쏟아붓습니다.
-                        Day 7에는 ‘이거면 충분히 좋아지겠다’는 확신만 남아요.
+                        진단 · 자기관찰 · 전문가 1:1 · 회복 루틴 — 모든 기능을
+                        <strong className="text-foreground"> 7일에 압축</strong>.
+                        Day 7엔 ‘좋아지겠다’는 확신만 남아요.
                       </p>
                     </div>
 

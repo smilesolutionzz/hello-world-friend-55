@@ -23,7 +23,7 @@ import { getExpertImage } from '@/components/expert/ExpertImages';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import ConsultationFlowSteps from '@/components/expert/ConsultationFlowSteps';
 import ExpertTrustCards from '@/components/expert/ExpertTrustCards';
-import { ExpertPriceTag } from '@/components/expert/ExpertPriceTag';
+// ExpertPriceTag removed from card (price shown on detail page)
 import { useSubscription } from '@/hooks/useSubscription';
 import { calculateExpertPricing, formatKRW } from '@/lib/expertPricing';
 import MindTrackContextBanner, { useMindTrackPrefill } from '@/components/mind-track/MindTrackContextBanner';

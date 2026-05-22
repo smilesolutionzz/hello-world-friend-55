@@ -82,7 +82,21 @@ export default function Day1DiagnosisScreen({
       );
       if (ciErr) throw ciErr;
 
-      toast.success("출발점을 기록했어요");
+      try {
+        const { syncCheckinToObservation } = await import("@/lib/mindTrackObservationBridge");
+        await syncCheckinToObservation({
+          userId,
+          enrollmentId,
+          day: 1,
+          missionTitle: "출발선 기록 (mood/energy/clarity)",
+          note,
+          payload,
+        });
+      } catch (err) {
+        console.warn("observation sync failed", err);
+      }
+
+      toast.success("출발점을 기록했어요 · 관찰일지에 저장됐어요");
       setExpanded(false);
       onCompleted();
     } catch (e: any) {

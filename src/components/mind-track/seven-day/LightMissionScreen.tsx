@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { SevenDayMission } from "@/lib/mindTrack7DayMissions";
 import MissionStepsForm, { type MissionStepsPayload } from "./MissionStepsForm";
+import { syncCheckinToObservation } from "@/lib/mindTrackObservationBridge";
 
 // Day별 보조 도구 — 미션이 무거우면 5분만 다녀와도 되는 옵션
 const HELPER_TOOL: Record<number, { label: string; href: string; icon: typeof Gamepad2; hint: string } | undefined> = {
@@ -68,7 +69,19 @@ export default function LightMissionScreen({
         { onConflict: "enrollment_id,day_number" },
       );
       if (error) throw error;
-      toast.success("오늘 미션을 완료했어요");
+      try {
+        await syncCheckinToObservation({
+          userId,
+          enrollmentId,
+          day,
+          missionTitle: mission.title,
+          note,
+          payload,
+        });
+      } catch (err) {
+        console.warn("observation sync failed", err);
+      }
+      toast.success("오늘 미션 완료 · 관찰일지에 저장됐어요");
       onCompleted();
     } catch (e: any) {
       toast.error(e?.message ?? "저장 중 문제가 발생했어요");

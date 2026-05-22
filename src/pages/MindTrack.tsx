@@ -64,13 +64,8 @@ const focusGoals = [
   { id: 'family_communication', icon: '💕', title: '아이와의 소통', desc: '훈육 갈등 줄이고 안정 애착 만들기' },
 ];
 
-const dailyFlow = [
-  { day: '1일차', title: '나의 출발점 기록', desc: '간단한 셀프 체크로 지금의 나를 정리' },
-  { day: '2~3일차', title: '하루 3분 마음 루틴', desc: '맞춤 마이크로 액션을 매일 안내' },
-  { day: '4~5일차', title: '실천하며 기록하기', desc: '매일 체크인 + 짧은 코칭 인사이트' },
-  { day: '6일차', title: '깊이 있는 코칭', desc: '맞춤 워크북과 AI 코파일럿 1:1 대화' },
-  { day: '7일차', title: '나의 변화 리포트', desc: '시작과 지금을 비교하고 다음 단계 가이드' },
-];
+
+
 
 interface ConcernReport {
   summary: string;

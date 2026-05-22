@@ -5,11 +5,27 @@ import { Video, Brain, FileText, Sparkles, CheckCircle2, ArrowRight, Baby, User,
 import { motion } from "framer-motion";
 import { useTranslation } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export const VideoObservationShowcase = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { localePath } = useLanguage();
+
+  const handleVideoCTA = async () => {
+    const target = localePath('/observation?mode=video');
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      navigate(target);
+      return;
+    }
+    try { localStorage.setItem('auth_redirect_after', target); } catch {}
+    toast.info('영상 관찰은 로그인이 필요해요', {
+      description: '로그인 후 바로 영상 업로드 페이지로 이동합니다.',
+    });
+    navigate(`/auth?redirect=${encodeURIComponent(target)}`);
+  };
 
   const analysisCategories = [
     { icon: Baby, title: t.videoObservation.cat1Title, description: t.videoObservation.cat1Desc, color: "from-pink-500 to-rose-500" },
@@ -78,7 +94,7 @@ export const VideoObservationShowcase = () => {
           </div>
           <div className="flex flex-col items-center gap-4 lg:min-w-[280px]">
             <div className="flex items-center gap-2 text-slate-400"><Clock className="w-4 h-4" /><span className="text-sm">{t.videoObservation.analysisTime}</span></div>
-            <Button onClick={() => navigate(localePath('/observation?mode=video'))} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-6 text-lg rounded-xl group">
+            <Button onClick={handleVideoCTA} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-6 text-lg rounded-xl group">
               <Video className="w-5 h-5 mr-2" />{t.videoObservation.ctaButton}<ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <p className="text-xs text-slate-500 text-center">{t.videoObservation.uploadNote}</p>

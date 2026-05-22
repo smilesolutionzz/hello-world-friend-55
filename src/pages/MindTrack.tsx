@@ -497,7 +497,7 @@ const MindTrack: React.FC = () => {
       const res = await startMindTrackTrial({ goal: selectedGoal, concern }, audienceParam);
       if (!res.enrollmentId) throw new Error(res.error || '등록 실패');
       trackEvent('mind_track_trial_start', { goal: selectedGoal, audience: audienceParam });
-      toast.success('3일 무료 체험을 시작합니다');
+      toast.success('7일 마음 트랙을 시작합니다');
       navigate('/mind-track/dashboard');
     } catch (e: any) {
       toast.error(e.message || '등록 중 오류가 발생했습니다');

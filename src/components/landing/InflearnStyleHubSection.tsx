@@ -230,7 +230,7 @@ const InflearnStyleHubSection: React.FC = () => {
                 지금 가장 인기 있는 7일 마음 트랙
               </h2>
               <p className="text-sm md:text-base text-slate-500 mt-2 break-keep">
-                매일 5분, ₩{MIND_TRACK_7_PRICE.toLocaleString()}으로 7일 안에 발가벗겨진 듯 나를 봅니다.
+                매일 5분, ₩{MIND_TRACK_7_PRICE.toLocaleString()}으로 7일 만에 나를 한 줄로 정리합니다.
               </p>
             </div>
             <button

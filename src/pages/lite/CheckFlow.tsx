@@ -234,7 +234,17 @@ const CheckFlow: React.FC = () => {
                   <button
                     key={a.code}
                     type="button"
-                    onClick={() => setArea(a.code)}
+                    onClick={() => {
+                      setArea(a.code);
+                      // 나이가 이미 선택되어 있으면 즉시 다음 단계로 진행
+                      if (age) {
+                        setTimeout(() => {
+                          void fetchQuestions(a.code);
+                          setStep(2);
+                          window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+                        }, 120);
+                      }
+                    }}
                     className={[
                       'w-full text-left rounded-2xl border px-5 py-4 transition',
                       'min-h-[88px] flex items-start gap-3',
@@ -255,6 +265,13 @@ const CheckFlow: React.FC = () => {
                 );
               })}
             </div>
+
+            {!age && area && (
+              <p className="mt-4 text-[13px] text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+                먼저 위에서 자녀 나이를 선택해 주세요.
+              </p>
+            )}
+
           </section>
         )}
 
@@ -322,8 +339,8 @@ const CheckFlow: React.FC = () => {
         )}
       </main>
 
-      {/* 하단 고정 CTA */}
-      <div className="fixed bottom-0 inset-x-0 z-20 bg-white/95 backdrop-blur border-t border-slate-100">
+      {/* 하단 고정 CTA — 모바일 탭바(64px) 위로 띄움 */}
+      <div className="fixed inset-x-0 z-20 bg-white/95 backdrop-blur border-t border-slate-100 bottom-16 md:bottom-0 pb-[env(safe-area-inset-bottom)]">
         <div className="max-w-md mx-auto px-5 py-3">
           {step === 1 ? (
             <button

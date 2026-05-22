@@ -19,6 +19,7 @@ import {
   ShoppingBag,
 } from 'lucide-react';
 import StoreSection from '@/components/store/StoreSection';
+import aihproLogo from '@/assets/aihpro-logo.png';
 
 /**
  * MobileHome — 흰 배경 모바일 홈
@@ -62,9 +63,7 @@ const MobileHome: React.FC = () => {
       {/* 헤더 */}
       <header className="px-5 pt-6 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#1a1a1a] to-[#3a3a3a] flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-[#C8B88A]" />
-          </div>
+          <img src={aihproLogo} alt="AIHPRO" className="w-8 h-8 object-contain" />
           <span className="text-[17px] font-bold tracking-tight">
             AIH<span className="text-[#8a7a4d]">PRO</span>
           </span>

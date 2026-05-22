@@ -1,95 +1,100 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Heart, Sparkles, CalendarDays, MessageSquare, FileText } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Heart, Sparkles, CalendarDays, MessageSquare, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const STEPS = [
-  {
-    n: 1,
-    icon: Heart,
-    title: '고민 선택',
-    body: '우울·불안·수면·자존감·관계·육아 중 가장 큰 고민을 선택합니다.',
-    time: '30초',
-  },
-  {
-    n: 2,
-    icon: Sparkles,
-    title: 'AI 자동 매칭',
-    body: '검사 결과·코칭 데이터를 분석해 가장 잘 맞는 전문가 3명을 추천합니다.',
-    time: '10초',
-  },
-  {
-    n: 3,
-    icon: CalendarDays,
-    title: '시간 예약',
-    body: '캘린더에서 원하는 40분 슬롯을 선택. 예약 즉시 확정 알림 발송.',
-    time: '1분',
-  },
-  {
-    n: 4,
-    icon: MessageSquare,
-    title: '1:1 상담',
-    body: '화상 또는 채팅으로 진행. 시작 5분 전 카카오톡으로 입장 링크 도착.',
-    time: '40분',
-  },
-  {
-    n: 5,
-    icon: FileText,
-    title: '후속 케어',
-    body: '상담 요약 리포트 자동 발송 + 30일 마음 트랙으로 변화 추적.',
-    time: '평생',
-  },
+  { n: 1, icon: Heart, title: '고민 선택', body: '주제 한 가지만 골라요', time: '30초' },
+  { n: 2, icon: Sparkles, title: 'AI 자동 매칭', body: '나에게 맞는 전문가 3명', time: '10초' },
+  { n: 3, icon: CalendarDays, title: '시간 예약', body: '원하는 40분 슬롯 선택', time: '1분' },
+  { n: 4, icon: MessageSquare, title: '1:1 상담', body: '화상 또는 채팅으로', time: '40분' },
+  { n: 5, icon: FileText, title: '후속 케어', body: '요약 리포트 자동 발송', time: '평생' },
 ];
 
 const ConsultationFlowSteps: React.FC = () => {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  const scrollTo = (idx: number) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const card = el.children[idx] as HTMLElement | undefined;
+    if (card) card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  };
+
+  const handleScroll = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const cardWidth = el.scrollWidth / STEPS.length;
+    const idx = Math.round(el.scrollLeft / cardWidth);
+    setActive(Math.min(STEPS.length - 1, Math.max(0, idx)));
+  };
+
   return (
-    <section className="my-10 md:my-14">
-      <div className="text-center mb-8">
-        <span className="inline-block text-[11px] font-bold tracking-[0.18em] uppercase text-muted-foreground mb-2">
-          How It Works
-        </span>
-        <h2 className="text-2xl md:text-3xl font-black text-foreground break-keep">
-          전문가 상담은 이렇게 진행됩니다
-        </h2>
-        <p className="text-sm text-muted-foreground mt-2 break-keep">
-          예약부터 후속 케어까지 평균 40분 한 번이면 끝
-        </p>
+    <section className="my-4">
+      <div className="flex items-end justify-between mb-3 px-1">
+        <div>
+          <h2 className="text-base font-bold text-foreground tracking-tight">상담은 이렇게 진행돼요</h2>
+          <p className="text-[12px] text-muted-foreground mt-0.5">평균 40분 · 한 번이면 끝</p>
+        </div>
+        <div className="hidden md:flex items-center gap-1">
+          <button
+            aria-label="이전"
+            onClick={() => scrollTo(Math.max(0, active - 1))}
+            className="w-8 h-8 rounded-full border border-border bg-white hover:bg-muted flex items-center justify-center"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            aria-label="다음"
+            onClick={() => scrollTo(Math.min(STEPS.length - 1, active + 1))}
+            className="w-8 h-8 rounded-full border border-border bg-white hover:bg-muted flex items-center justify-center"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      <div className="relative">
-        {/* 연결선 (데스크톱) */}
-        <div className="hidden lg:block absolute top-12 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      {/* Horizontal slide carousel */}
+      <div
+        ref={scrollerRef}
+        onScroll={handleScroll}
+        className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2"
+        style={{ scrollPaddingLeft: 16 }}
+      >
+        {STEPS.map((s) => {
+          const Icon = s.icon;
+          return (
+            <div
+              key={s.n}
+              className="snap-center shrink-0 w-[78%] sm:w-[44%] md:w-[28%] bg-white border border-border rounded-2xl p-5"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-[11px] font-bold text-muted-foreground tracking-widest">STEP {String(s.n).padStart(2, '0')}</span>
+                <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">{s.time}</span>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center mb-3">
+                <Icon className="w-4.5 h-4.5" />
+              </div>
+              <h3 className="font-semibold text-[15px] text-foreground tracking-tight mb-1">{s.title}</h3>
+              <p className="text-[12.5px] text-muted-foreground leading-relaxed break-keep">{s.body}</p>
+            </div>
+          );
+        })}
+      </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 relative">
-          {STEPS.map((s, i) => {
-            const Icon = s.icon;
-            return (
-              <motion.div
-                key={s.n}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
-                className="rounded-2xl border border-border bg-white dark:bg-card p-4 text-center hover:shadow-md transition-shadow"
-              >
-                <div className="relative mx-auto mb-3 w-12 h-12">
-                  <div className="w-12 h-12 rounded-full bg-foreground text-background flex items-center justify-center shadow-md">
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center">
-                    {s.n}
-                  </span>
-                </div>
-                <h3 className="font-bold text-sm text-foreground mb-1 break-keep">{s.title}</h3>
-                <p className="text-[11px] md:text-xs text-muted-foreground leading-snug break-keep mb-2">
-                  {s.body}
-                </p>
-                <div className="text-[11px] font-black text-white bg-emerald-600 dark:bg-emerald-500 inline-block px-2.5 py-1 rounded-full shadow-sm">
-                  ⏱ {s.time}
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+      {/* Dots indicator */}
+      <div className="flex items-center justify-center gap-1.5 mt-3">
+        {STEPS.map((_, i) => (
+          <button
+            key={i}
+            aria-label={`${i + 1}단계`}
+            onClick={() => scrollTo(i)}
+            className={cn(
+              'h-1.5 rounded-full transition-all',
+              i === active ? 'w-6 bg-foreground' : 'w-1.5 bg-border'
+            )}
+          />
+        ))}
       </div>
     </section>
   );

@@ -1263,24 +1263,8 @@ const MindTrack: React.FC = () => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="q5" className="border rounded-2xl px-4 bg-white">
-                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
-                    워크북 샘플을 미리 볼 수 있나요?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    네. 위 ‘워크북 샘플 {SAMPLE_CHAPTER_COUNT}장 미리보기’를 누르면 실제 워크북의 첫 {SAMPLE_CHAPTER_COUNT}장이, 입력한 닉네임·목표·체크인 데이터가 반영된 개인화 PDF 형태로 표시됩니다.
-                  </AccordionContent>
-                </AccordionItem>
 
-                <AccordionItem value="q6" className="border rounded-2xl px-4 bg-white">
-                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
-                    내 데이터는 안전하게 보관되나요?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    모든 기록은 본인 계정에서만 열람 가능하도록 행 수준 보안(RLS)으로 보호되며, 닉네임 기반으로 표시됩니다.
-                    실명·연락처는 전문가 상담을 신청한 경우에 한해 처리됩니다.
-                  </AccordionContent>
-                </AccordionItem>
+
 
                 <AccordionItem value="q7" className="border rounded-2xl px-4 bg-white">
                   <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">

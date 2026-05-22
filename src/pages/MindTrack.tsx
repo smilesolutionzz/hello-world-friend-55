@@ -823,55 +823,9 @@ const MindTrack: React.FC = () => {
           </div>
         </section>
 
-        {/* Hero — 마케팅 메시지 (헤더 아래) */}
-        <section className="relative pt-4 pb-10 px-4">
-          <div className="max-w-5xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="space-y-5"
-            >
-              <div className="flex justify-center gap-2 flex-wrap">
-                <CoachingBadge variant="pill" />
-                <Badge className="bg-amber-100 text-amber-800 border-amber-200">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  7일 ₩7,900 · 첫 15분 전문가 상담 무료
-                </Badge>
-                {(() => {
-                  const a = new URLSearchParams(location.search).get('audience');
-                  const label =
-                    a === 'adult' ? '성인 트랙'
-                    : a === 'parent' ? '부모 트랙'
-                    : a === 'teen' ? '청소년 트랙'
-                    : a === 'child' ? '아동 트랙'
-                    : null;
-                  return label ? (
-                    <Badge variant="outline" className="border-[#C8B88A]/40 text-[#8a7a4c] bg-[#C8B88A]/5">
-                      {label}
-                    </Badge>
-                  ) : null;
-                })()}
-              </div>
-
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight break-keep">
-                7일 만에<br className="md:hidden" />
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  마음이 정리되고, 확신이 남아요
-                </span>
-              </h1>
-
-              <p className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto break-keep leading-relaxed">
-                <strong className="text-slate-900">진단 · 자기관찰 · 전문가 1:1 · 회복 루틴</strong>까지<br className="hidden md:block" />
-                AIHPRO의 핵심을 7일에 압축했어요.<br className="hidden md:block" />
-                <span className="text-slate-500 text-sm md:text-base">매일 5분, ₩{TRACK_PRICE.toLocaleString()}으로 오늘 Day 01부터.</span>
-              </p>
-            </motion.div>
-          </div>
-        </section>
-
         {/* Audience Hub — 4개 트랙(child/teen/adult/parent) 진입 */}
         <AudienceHubSection />
+
 
 
 

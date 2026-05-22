@@ -10,7 +10,7 @@ export interface DayCopy {
 }
 
 const PHASES_7 = {
-  d1: 'Day 1 · 발가벗기',
+  d1: 'Day 1 · 출발선 진단',
   d2: 'Day 2 · 패턴 추적',
   d3: 'Day 3 · 뿌리 진단',
   d4: 'Day 4 · 전문가 개입',

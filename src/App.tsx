@@ -41,6 +41,7 @@ import GuardianNotice from "./pages/GuardianNotice";
 import AIAssistant from "./pages/AIAssistant";
 import AiCopilotPage from "./pages/AiCopilotPage";
 import ConcernStorage from "./pages/ConcernStorage";
+import WriteConcern from "./pages/WriteConcern";
 import ReportGenerator from "./pages/ReportGenerator";
 import ReportGeneratorPro from "./pages/ReportGeneratorPro";
 import MyJourney from "./pages/MyJourney";
@@ -251,6 +252,8 @@ const App = () => {
           <Route path="/ai-coach" element={<AIAssistant />} />
           <Route path="/ai-copilot" element={<AiCopilotPage />} />
           <Route path="/concern-storage" element={<ConcernStorage />} />
+          <Route path="/write-concern" element={<WriteConcern />} />
+          <Route path="/en/write-concern" element={<WriteConcern />} />
           <Route path="/report-generator" element={<ReportGenerator />} />
           <Route path="/report-generator-pro" element={<ReportGeneratorPro />} />
           <Route path="/my-journey" element={<MyJourney />} />

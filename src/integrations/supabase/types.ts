@@ -16029,6 +16029,23 @@ export type Database = {
         }[]
       }
       get_report_comparison: { Args: { p_user_id: string }; Returns: Json }
+      get_self_check_by_share_id: {
+        Args: { p_share_id: string }
+        Returns: {
+          answers: Json
+          created_at: string
+          goal_id: string
+          goal_title: string
+          id: string
+          is_public: boolean
+          level: string
+          max_score: number
+          questions: Json
+          score: number
+          share_id: string
+          summary: string
+        }[]
+      }
       get_teen_risk_aggregates: {
         Args: { _region_sido?: string; _since?: string; _until?: string }
         Returns: {

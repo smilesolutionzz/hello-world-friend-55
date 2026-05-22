@@ -401,23 +401,22 @@ const TokenSubscription = () => {
           </div>
         </motion.div>
 
-        {/* ─────────── 최종 CTA ─────────── */}
+        {/* ─────────── 최종 CTA — PMF 베타: 7일 트랙 무료 시작 ─────────── */}
         <motion.div {...fade(0.1)} className="rounded-3xl bg-foreground text-background p-7 md:p-10 text-center">
           <Heart className="w-10 h-10 mx-auto mb-3 text-rose-300" />
           <h2 className="text-2xl md:text-3xl font-black mb-2 break-keep">
-            오늘 결제하면, 내일 아침 8시부터 시작합니다
+            지금 시작하면, 내일 아침 8시 첫 미션이 도착합니다
           </h2>
           <p className="text-background/70 text-sm md:text-base mb-6 break-keep">
-            {planInfo.days}일 후 달라진 마음을 만나보세요. 마음에 들지 않으면 7일 안에 100% 환불.
+            PMF 베타 기간 동안 7일 마음 변화 트랙을 전액 무료로 체험할 수 있어요.
           </p>
           <Button
             size="lg"
             className="h-14 px-8 rounded-xl font-bold text-base md:text-lg bg-white text-foreground hover:bg-white/90"
-            onClick={handlePay}
-            disabled={paymentLoading || !isReady || isPremium}
+            onClick={() => navigate('/mind-track')}
           >
             <Sparkles className="w-5 h-5 mr-2" />
-            ₩{planInfo.price.toLocaleString()} 결제하기
+            7일 트랙 무료로 시작하기
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </motion.div>

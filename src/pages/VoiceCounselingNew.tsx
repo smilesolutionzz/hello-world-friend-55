@@ -443,7 +443,7 @@ const VoiceCounselingNew = () => {
         </section>
       </main>
 
-      <div className="fixed bottom-0 inset-x-0 z-30 pb-6 pt-4 bg-gradient-to-t from-white via-white/95 to-white/0">
+      <div className="fixed bottom-[72px] md:bottom-0 inset-x-0 z-30 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] pt-4 bg-gradient-to-t from-white via-white/95 to-white/0">
         <div className="max-w-3xl mx-auto px-4 flex items-center justify-center gap-4">
           {status !== 'ready' && status !== 'reconnecting' ? (
             <Button

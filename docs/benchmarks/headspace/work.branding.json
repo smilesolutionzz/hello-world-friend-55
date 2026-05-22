@@ -1,0 +1,157 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Apercu Pro",
+      "role": "body"
+    },
+    {
+      "family": "Roboto",
+      "role": "body"
+    }
+  ],
+  "colors": {
+    "primary": "#0061EF",
+    "secondary": "#00A4FF",
+    "accent": "#0C6FF9",
+    "background": "#FFFFFF",
+    "textPrimary": "#000000",
+    "link": "#0C6FF9"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Apercu Pro",
+      "heading": "Apercu Pro"
+    },
+    "fontStacks": {
+      "heading": [
+        "HS Apercu Bold",
+        "sans-serif"
+      ],
+      "body": [
+        "system-ui",
+        "-apple-system",
+        "BlinkMacSystemFont",
+        "Segoe UI",
+        "Roboto",
+        "Oxygen",
+        "Ubuntu",
+        "Cantarell",
+        "Fira Sans",
+        "Droid Sans",
+        "Helvetica Neue",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "HS Apercu Regular",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "56px",
+      "h2": "48px",
+      "body": "20.8px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "12px"
+  },
+  "components": {
+    "input": {
+      "background": "#FFFFFF",
+      "textColor": "#333333",
+      "borderColor": "#CCCCCC",
+      "borderRadius": "8px",
+      "borderRadiusCorners": {
+        "topLeft": "8px",
+        "topRight": "8px",
+        "bottomRight": "8px",
+        "bottomLeft": "8px"
+      },
+      "shadow": "none"
+    },
+    "buttonPrimary": {
+      "background": "#0061EF",
+      "textColor": "#FFFFFF",
+      "borderColor": "#0061EF",
+      "borderRadius": "800px",
+      "borderRadiusCorners": {
+        "topLeft": "800px",
+        "topRight": "800px",
+        "bottomRight": "800px",
+        "bottomLeft": "800px"
+      },
+      "shadow": "none"
+    },
+    "buttonSecondary": {
+      "background": "transparent",
+      "textColor": "#2D2C2B",
+      "borderColor": "#2D2C2B",
+      "borderRadius": "800px",
+      "borderRadiusCorners": {
+        "topLeft": "800px",
+        "topRight": "800px",
+        "bottomRight": "800px",
+        "bottomLeft": "800px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "logo": "https://cdn.prod.website-files.com/6489751d2099bd329cd95c46/64897ed59070ba7656e0a878_Group.svg",
+    "favicon": "https://cdn.prod.website-files.com/6489751d2099bd329cd95c46/6489751d2099bd329cd95c8d_favicon.png",
+    "ogImage": "https://cdn.prod.website-files.com/6489751d2099bd329cd95c46/64a6871215899abfa3859776_OG%20Image.webp",
+    "logoHref": "/",
+    "logoAlt": "a black and white logo with the word bead on it"
+  },
+  "__llm_logo_reasoning": {
+    "selectedIndex": 2,
+    "reasoning": "Selected #2 because it is visible, located in the header, links to the homepage, and matches the brand 'Headspace' as inferred from the page title and URL.",
+    "confidence": 0.9,
+    "source": "llm"
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 0,
+      "text": "Request a demo",
+      "reasoning": "Button #0 ('Request a demo') is the primary CTA due to its vibrant blue color (#0061EF), which aligns with the brand's primary color, and its action-oriented text encouraging user engagement."
+    },
+    "secondary": {
+      "index": 8,
+      "text": "Explore our solutions",
+      "reasoning": "Button #8 ('Explore our solutions') is secondary because it has a transparent background, providing a contrast to the primary button's vibrant color, and offers a less direct call to action."
+    },
+    "confidence": 0.95
+  },
+  "personality": {
+    "tone": "professional",
+    "energy": "medium",
+    "targetAudience": "corporate clients and organizations"
+  },
+  "designSystem": {
+    "framework": "custom",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0.95,
+    "colors": 0.9,
+    "overall": 0.925
+  },
+  "__llm_metadata": {
+    "logoSelection": {
+      "llmCalled": true,
+      "llmSucceeded": true,
+      "finalSource": "llm",
+      "rawLogoSelection": {
+        "selectedLogoIndex": 2,
+        "selectedLogoReasoning": "Selected #2 because it is visible, located in the header, links to the homepage, and matches the brand 'Headspace' as inferred from the page title and URL.",
+        "confidence": 0.9
+      }
+    },
+    "buttonClassification": {
+      "llmCalled": true,
+      "llmSucceeded": true
+    }
+  }
+}

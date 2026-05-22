@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Sparkles, Calendar, CheckCircle2, ArrowRight, Award, BarChart3,
+  Sparkles, CheckCircle2, ArrowRight,
   Shield, Zap, Loader2, Lightbulb, Target, Heart, MessageSquareHeart, Wand2,
-  BookOpen, Eye, FileText, Lock,
 } from 'lucide-react';
+
 import { WORKBOOK_CHAPTERS } from '@/lib/mindTrackChapters';
 import WorkbookSamplePreviewModal from '@/components/mind-track/WorkbookSamplePreviewModal';
 import ActionBookPreviewSection from '@/components/mind-track/ActionBookPreviewSection';
@@ -22,7 +22,7 @@ import Footer from '@/components/ui/footer';
 import SEOHead from '@/components/common/SEOHead';
 import CoachingBadge from '@/components/branding/CoachingBadge';
 import { MedicalDisclaimer } from '@/components/legal/MedicalDisclaimer';
-import HumanTouchManifesto from '@/components/branding/HumanTouchManifesto';
+
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -64,13 +64,8 @@ const focusGoals = [
   { id: 'family_communication', icon: '💕', title: '아이와의 소통', desc: '훈육 갈등 줄이고 안정 애착 만들기' },
 ];
 
-const dailyFlow = [
-  { day: '1일차', title: '나의 출발점 기록', desc: '간단한 셀프 체크로 지금의 나를 정리' },
-  { day: '2~3일차', title: '하루 3분 마음 루틴', desc: '맞춤 마이크로 액션을 매일 안내' },
-  { day: '4~5일차', title: '실천하며 기록하기', desc: '매일 체크인 + 짧은 코칭 인사이트' },
-  { day: '6일차', title: '깊이 있는 코칭', desc: '맞춤 워크북과 AI 코파일럿 1:1 대화' },
-  { day: '7일차', title: '나의 변화 리포트', desc: '시작과 지금을 비교하고 다음 단계 가이드' },
-];
+
+
 
 interface ConcernReport {
   summary: string;
@@ -612,7 +607,7 @@ const MindTrack: React.FC = () => {
         description="진단·자기관찰·전문가 1:1·회복 루틴까지 7일에 압축. ₩7,900으로 시작하는 AIHPRO 마음 변화 트랙. 무료 고민 리포트도 즉석으로 받아보세요."
         canonicalUrl="https://aihpro.app/mind-track"
       />
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/30">
+      <div className="min-h-screen bg-white">
         <UnifiedNavigation />
 
 
@@ -823,55 +818,9 @@ const MindTrack: React.FC = () => {
           </div>
         </section>
 
-        {/* Hero — 마케팅 메시지 (헤더 아래) */}
-        <section className="relative pt-4 pb-10 px-4">
-          <div className="max-w-5xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="space-y-5"
-            >
-              <div className="flex justify-center gap-2 flex-wrap">
-                <CoachingBadge variant="pill" />
-                <Badge className="bg-amber-100 text-amber-800 border-amber-200">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  7일 ₩7,900 · 첫 15분 전문가 상담 무료
-                </Badge>
-                {(() => {
-                  const a = new URLSearchParams(location.search).get('audience');
-                  const label =
-                    a === 'adult' ? '성인 트랙'
-                    : a === 'parent' ? '부모 트랙'
-                    : a === 'teen' ? '청소년 트랙'
-                    : a === 'child' ? '아동 트랙'
-                    : null;
-                  return label ? (
-                    <Badge variant="outline" className="border-[#C8B88A]/40 text-[#8a7a4c] bg-[#C8B88A]/5">
-                      {label}
-                    </Badge>
-                  ) : null;
-                })()}
-              </div>
-
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight break-keep">
-                7일 만에<br className="md:hidden" />
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  마음이 정리되고, 확신이 남아요
-                </span>
-              </h1>
-
-              <p className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto break-keep leading-relaxed">
-                <strong className="text-slate-900">진단 · 자기관찰 · 전문가 1:1 · 회복 루틴</strong>까지<br className="hidden md:block" />
-                AIHPRO의 핵심을 7일에 압축했어요.<br className="hidden md:block" />
-                <span className="text-slate-500 text-sm md:text-base">매일 5분, ₩{TRACK_PRICE.toLocaleString()}으로 오늘 Day 01부터.</span>
-              </p>
-            </motion.div>
-          </div>
-        </section>
-
         {/* Audience Hub — 4개 트랙(child/teen/adult/parent) 진입 */}
         <AudienceHubSection />
+
 
 
 
@@ -903,10 +852,8 @@ const MindTrack: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* 휴먼터치 매니페스토 — 따뜻형 카드 */}
-        <SmartScrollReveal kind="text" className="px-4 pb-8 block">
-          <HumanTouchManifesto variant="track" />
-        </SmartScrollReveal>
+
+
 
         {/* 무료 고민 리포트 입력 */}
         <section className="px-4 pb-12">
@@ -1257,113 +1204,8 @@ const MindTrack: React.FC = () => {
           </section>
         </SmartScrollReveal>
 
-        {/* 7 Day Flow */}
-        <section className="px-4 pb-16 bg-gradient-to-b from-white to-slate-50">
-          <div className="max-w-5xl mx-auto py-12">
-            <div className="text-center mb-10">
-              <Calendar className="w-10 h-10 text-blue-600 mx-auto mb-3" />
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">7일, 이렇게 진행돼요</h2>
-              <p className="text-slate-600">하루 3~5분, 부담 없이 누적되는 변화</p>
-            </div>
-            <div className="space-y-3">
-              {dailyFlow.map((step, i) => (
-                <motion.div
-                  key={step.day}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  className="flex items-start gap-4 bg-white p-4 md:p-5 rounded-2xl border border-slate-200"
-                >
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center font-bold flex-shrink-0">
-                    {i + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className="text-xs font-semibold text-blue-600">{step.day}</span>
-                      <h3 className="font-bold text-slate-900">{step.title}</h3>
-                    </div>
-                    <p className="text-sm text-slate-600 mt-1 break-keep">{step.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        {/* Value Pillars */}
-        <SmartScrollReveal kind="stats" className="block">
-          <section className="px-4 py-16">
-            <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">왜 이 트랙이 다를까요</h2>
-              </div>
-              <div className="grid md:grid-cols-3 gap-4">
-                <Card className="border-blue-100">
-                  <CardContent className="p-6 space-y-3">
-                    <BarChart3 className="w-8 h-8 text-blue-600" />
-                    <h3 className="font-bold text-slate-900">눈에 보이는 변화</h3>
-                    <p className="text-sm text-slate-600 break-keep">
-                      1일차와 7일차의 셀프 체크 결과를 한눈에 비교. 막연한 후기가 아닌 내 데이터로 확인.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card className="border-purple-100">
-                  <CardContent className="p-6 space-y-3">
-                    <Zap className="w-8 h-8 text-purple-600" />
-                    <h3 className="font-bold text-slate-900">매일 3분, 부담 ZERO</h3>
-                    <p className="text-sm text-slate-600 break-keep">
-                      명상 앱처럼 길지 않고, 검사처럼 무겁지 않아요. 출근길·점심시간에 끝나는 짧은 루틴.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card className="border-amber-100">
-                  <CardContent className="p-6 space-y-3">
-                    <Shield className="w-8 h-8 text-amber-600" />
-                    <h3 className="font-bold text-slate-900">의료가 아닌 코칭</h3>
-                    <p className="text-sm text-slate-600 break-keep">
-                      진단·치료가 아닌 자기이해·습관설계·웰빙 가이드. 누구나 안심하고 시작할 수 있어요.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </section>
-        </SmartScrollReveal>
 
-        {/* CTA */}
-        <SmartScrollReveal kind="cta" className="block">
-          <section className="px-4 py-16 bg-gradient-to-br from-blue-600 to-purple-600">
-            <div className="max-w-3xl mx-auto text-center text-white space-y-6">
-              <Award className="w-12 h-12 mx-auto opacity-90" />
-              <h2 className="text-3xl md:text-4xl font-bold break-keep">
-                7일 후, 한결 가벼워진 마음으로
-              </h2>
-              <p className="text-white/90 text-base md:text-lg break-keep">
-                지금 시작하면 ₩{TRACK_PRICE.toLocaleString()} (정가 ₩{TRACK_ORIGINAL_PRICE.toLocaleString()})<br />
-                7일 단건 결제 · {REFUND_WINDOW_DAYS}일 환불 보장 · 자동 갱신 없음
-              </p>
-              <div className="pt-2">
-                <Button
-                  size="lg"
-                  onClick={handleStart}
-                  disabled={loading}
-                  className="bg-white text-blue-700 hover:bg-slate-100 text-lg px-8 py-6 h-auto rounded-2xl shadow-2xl font-bold"
-                >
-                  {loading ? '등록 중...' : (
-                    <>
-                      {selectedGoal ? '7일 트랙 시작하기' : '먼저 목표를 선택해주세요'}
-                      <ArrowRight className="w-5 h-5 ml-2" />
-                    </>
-                  )}
-                </Button>
-              </div>
-              <p className="text-white/70 text-xs">
-                결제는 다음 단계에서 진행됩니다 · 안전한 토스페이먼츠 결제
-              </p>
-            </div>
-          </section>
-        </SmartScrollReveal>
 
         {/* FAQ Accordion */}
         <SmartScrollReveal kind="text" className="block">
@@ -1416,24 +1258,8 @@ const MindTrack: React.FC = () => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="q5" className="border rounded-2xl px-4 bg-white">
-                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
-                    워크북 샘플을 미리 볼 수 있나요?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    네. 위 ‘워크북 샘플 {SAMPLE_CHAPTER_COUNT}장 미리보기’를 누르면 실제 워크북의 첫 {SAMPLE_CHAPTER_COUNT}장이, 입력한 닉네임·목표·체크인 데이터가 반영된 개인화 PDF 형태로 표시됩니다.
-                  </AccordionContent>
-                </AccordionItem>
 
-                <AccordionItem value="q6" className="border rounded-2xl px-4 bg-white">
-                  <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">
-                    내 데이터는 안전하게 보관되나요?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm text-slate-600 break-keep pb-4">
-                    모든 기록은 본인 계정에서만 열람 가능하도록 행 수준 보안(RLS)으로 보호되며, 닉네임 기반으로 표시됩니다.
-                    실명·연락처는 전문가 상담을 신청한 경우에 한해 처리됩니다.
-                  </AccordionContent>
-                </AccordionItem>
+
 
                 <AccordionItem value="q7" className="border rounded-2xl px-4 bg-white">
                   <AccordionTrigger className="text-left text-sm font-semibold py-4 break-keep">

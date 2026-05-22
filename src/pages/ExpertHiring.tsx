@@ -256,10 +256,12 @@ const ExpertHiring = () => {
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-10">
         {mindTrackCtx && <MindTrackContextBanner ctx={mindTrackCtx} />}
 
-        {/* 상담 진행 흐름 안내 */}
-        <div className="mb-8">
-          <ConsultationFlowSteps />
+        {/* Page heading — minimal */}
+        <div className="mb-5">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">검증된 전문가</h1>
+          <p className="text-sm text-muted-foreground mt-1">{`AI 매칭 · 평균 40분 1:1 상담`}</p>
         </div>
+
 
         {/* Tab switcher */}
         <div className="flex items-center gap-2 mb-6 border-b border-border pb-4">
@@ -350,6 +352,9 @@ const ExpertHiring = () => {
                 ))}
               </div>
             )}
+
+            {/* 진행 흐름 — 슬라이드 형식 */}
+            <ConsultationFlowSteps />
 
             {/* 신뢰 + 가격 안내 */}
             <ExpertTrustCards />

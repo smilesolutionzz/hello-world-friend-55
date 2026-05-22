@@ -608,7 +608,7 @@ const MindTrack: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="7일 안에 발가벗겨지는 마음 트랙 · ₩7,900 | AIHPRO"
+        title="7일 안에 마음이 정리되는 트랙 · ₩7,900 | AIHPRO"
         description="진단·자기관찰·전문가 1:1·회복 루틴까지 7일에 압축. ₩7,900으로 시작하는 AIHPRO 마음 변화 트랙. 무료 고민 리포트도 즉석으로 받아보세요."
         canonicalUrl="https://aihpro.app/mind-track"
       />
@@ -738,13 +738,13 @@ const MindTrack: React.FC = () => {
                         7 Day Mind Track · 매일 5분
                       </p>
                       <h2 className="text-2xl md:text-[28px] font-bold text-foreground break-keep leading-tight">
-                        7일이면, 내가 왜 이런지<br className="hidden sm:block" />
-                        <span className="bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">발가벗겨진 듯</span> 보입니다.
+                        7일이면, 내 마음이<br className="hidden sm:block" />
+                        <span className="bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">한 줄로 정리</span>됩니다.
                       </h2>
                       <p className="text-sm md:text-base text-foreground/70 break-keep leading-relaxed">
-                        진단 · 자기관찰 · 전문가 1:1 · 회복 루틴 · 변화 리포트 — AIHPRO의 모든 기능을
-                        <strong className="text-foreground"> 7일에 압축</strong>해서 쏟아붓습니다.
-                        Day 7에는 ‘이거면 충분히 좋아지겠다’는 확신만 남아요.
+                        진단 · 자기관찰 · 전문가 1:1 · 회복 루틴 — 모든 기능을
+                        <strong className="text-foreground"> 7일에 압축</strong>.
+                        Day 7엔 ‘좋아지겠다’는 확신만 남아요.
                       </p>
                     </div>
 
@@ -866,14 +866,14 @@ const MindTrack: React.FC = () => {
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight break-keep">
                 7일 만에<br className="md:hidden" />
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  발가벗겨진 기분, 그리고 확신
+                  마음이 정리되고, 확신이 남아요
                 </span>
               </h1>
 
               <p className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto break-keep leading-relaxed">
-                <strong className="text-slate-900">진단 · 자기관찰 · 전문가 1:1 · 회복 루틴 · 변화 리포트</strong>까지<br className="hidden md:block" />
-                AIHPRO의 모든 기능을 7일 안에 압축해서 쏟아붓습니다.<br className="hidden md:block" />
-                <span className="text-slate-500 text-sm md:text-base">매일 5분, 7일이면 충분합니다. ₩{TRACK_PRICE.toLocaleString()}으로 오늘 바로 Day 01부터.</span>
+                <strong className="text-slate-900">진단 · 자기관찰 · 전문가 1:1 · 회복 루틴</strong>까지<br className="hidden md:block" />
+                AIHPRO의 핵심을 7일에 압축했어요.<br className="hidden md:block" />
+                <span className="text-slate-500 text-sm md:text-base">매일 5분, ₩{TRACK_PRICE.toLocaleString()}으로 오늘 Day 01부터.</span>
               </p>
             </motion.div>
           </div>

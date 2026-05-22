@@ -5,7 +5,7 @@ import { Mail, Clock, ClipboardCheck, Eye, Brain, Phone, Repeat, Target, Trophy 
 const SAMPLE_DAYS_7 = [
   {
     day: 1,
-    title: '발가벗기 — 5종 기초 진단으로 출발선 기록',
+    title: '출발선 진단 — 5종 자가진단으로 마음 점수 기록',
     body: '우울·불안·스트레스·수면·에너지 5축 자가진단 + 마음 점수 측정. "내가 지금 어디에 있는지"가 숫자로 또렷해집니다. 7일 후 비교의 절대 기준이 돼요.',
     icon: ClipboardCheck,
     accent: 'from-blue-500 to-indigo-500',
@@ -69,7 +69,7 @@ const DailyMissionPreview: React.FC = () => {
           Inside the 7 Days
         </span>
         <h2 className="text-2xl md:text-3xl font-black text-foreground break-keep">
-          7일 안에 진짜 발가벗겨지고, 진짜 좋아지는 압축 트랙
+          7일 만에 마음이 정리되고, 실제로 좋아지는 압축 트랙
         </h2>
         <p className="text-sm text-muted-foreground mt-2 break-keep flex items-center justify-center gap-1.5 flex-wrap">
           <Clock className="w-3.5 h-3.5" />

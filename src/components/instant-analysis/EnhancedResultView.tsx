@@ -53,7 +53,7 @@ const CircularGauge = ({ value, label, color, size = 100 }: { value: number; lab
           </motion.span>
         </div>
       </div>
-      <span className="text-[10px] text-white/50 text-center leading-tight">{label}</span>
+      <span className="text-base text-white text-center leading-tight">{label}</span>
     </div>
   );
 };
@@ -72,8 +72,8 @@ const RiskMeter = ({ level, label }: { level: string; label: string }) => {
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between items-center">
-        <span className="text-xs text-white/60">{label}</span>
-        <Badge className={`text-[10px] ${actualIdx === 2 ? 'bg-red-500/20 text-red-300' : actualIdx === 1 ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'}`}>
+        <span className="text-base text-white/85">{label}</span>
+        <Badge className={`text-base ${actualIdx === 2 ? 'bg-red-500/20 text-red-300' : actualIdx === 1 ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'}`}>
           {level}
         </Badge>
       </div>
@@ -94,10 +94,10 @@ const ExpandableSection = ({ icon: Icon, title, badge, children, defaultOpen = f
       <button onClick={() => setIsOpen(!isOpen)} className="w-full p-4 md:p-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Icon className="w-4 h-4 md:w-5 md:h-5" />
-          <h4 className="text-sm md:text-base font-bold text-white">{title}</h4>
-          {badge && <Badge className="text-[10px] bg-white/10 text-white/70">{badge}</Badge>}
+          <h4 className="text-base md:text-base font-bold text-white">{title}</h4>
+          {badge && <Badge className="text-base bg-white/10 text-white/90">{badge}</Badge>}
         </div>
-        {isOpen ? <ChevronUp className="w-4 h-4 text-white/40" /> : <ChevronDown className="w-4 h-4 text-white/40" />}
+        {isOpen ? <ChevronUp className="w-4 h-4 text-white/75" /> : <ChevronDown className="w-4 h-4 text-white/75" />}
       </button>
       <AnimatePresence>
         {isOpen && (
@@ -200,18 +200,18 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
             </motion.div>
             <div>
               <h3 className="text-base md:text-lg font-bold text-white">{L.analysisComplete}</h3>
-              <p className="text-xs text-white/50">{L.confidence} {analysisResult.confidence}% · {L.crossValidation}</p>
+              <p className="text-base text-white">{L.confidence} {analysisResult.confidence}% · {L.crossValidation}</p>
             </div>
           </div>
-          <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 text-xs shrink-0">{analysisResult.type}</Badge>
+          <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 text-base shrink-0">{analysisResult.type}</Badge>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col items-center justify-center bg-white/5 rounded-xl p-4 border border-white/5">
             <CircularGauge value={overallScore} label={L.overallScore} color={overallScore >= 70 ? '#34d399' : overallScore >= 40 ? '#fbbf24' : '#f87171'} size={110} />
             <div className="mt-2 flex items-center gap-1">
-              <Activity className="w-3 h-3 text-white/40" />
-              <span className="text-[10px] text-white/40">{L.outOf100}</span>
+              <Activity className="w-3 h-3 text-white/75" />
+              <span className="text-base text-white/75">{L.outOf100}</span>
             </div>
           </div>
           {radarData.length > 0 && (
@@ -224,7 +224,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
                   <Radar dataKey="value" stroke="#818cf8" fill="#818cf8" fillOpacity={0.3} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
-              <p className="text-center text-[10px] text-white/40">{L.devProfile}</p>
+              <p className="text-center text-base text-white/75">{L.devProfile}</p>
             </div>
           )}
         </div>
@@ -238,23 +238,23 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
       {/* 2. Deep Analysis */}
       {deepAnalysis && (
         <ExpandableSection icon={Brain} title={L.deepCause} badge={L.aiMultiLayer} defaultOpen={true} gradientFrom="from-violet-900/40" gradientTo="to-purple-900/40" borderColor="border-violet-500/20">
-          <p className="text-white/80 text-xs md:text-sm leading-relaxed mb-4">{deepAnalysis.rootCauseAnalysis}</p>
+          <p className="text-white text-base md:text-lg leading-relaxed mb-4">{deepAnalysis.rootCauseAnalysis}</p>
           {deepAnalysis.symptomPattern && (
             <div className="bg-violet-500/10 rounded-xl p-3 border border-violet-500/15 mb-3">
-              <p className="text-violet-300 text-[10px] font-bold mb-1 flex items-center gap-1"><Eye className="w-3 h-3" /> {L.symptomPattern}</p>
-              <p className="text-white/70 text-xs">{deepAnalysis.symptomPattern}</p>
+              <p className="text-violet-300 text-base font-bold mb-1 flex items-center gap-1"><Eye className="w-3 h-3" /> {L.symptomPattern}</p>
+              <p className="text-white/90 text-base">{deepAnalysis.symptomPattern}</p>
             </div>
           )}
           <div className="grid grid-cols-2 gap-2">
             <div className="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/15">
-              <p className="text-emerald-300 text-[10px] font-bold mb-1.5 flex items-center gap-1"><Shield className="w-3 h-3" /> {L.protectiveFactors}</p>
-              <ul className="text-white/70 text-[10px] md:text-xs space-y-1">
+              <p className="text-emerald-300 text-base font-bold mb-1.5 flex items-center gap-1"><Shield className="w-3 h-3" /> {L.protectiveFactors}</p>
+              <ul className="text-white/90 text-base md:text-base space-y-1">
                 {deepAnalysis.protectiveFactors?.map((f: string, i: number) => (<li key={i} className="flex items-start gap-1"><span className="text-emerald-400 mt-0.5">✓</span>{f}</li>))}
               </ul>
             </div>
             <div className="bg-red-500/10 rounded-xl p-3 border border-red-500/15">
-              <p className="text-red-300 text-[10px] font-bold mb-1.5 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> {L.riskFactors}</p>
-              <ul className="text-white/70 text-[10px] md:text-xs space-y-1">
+              <p className="text-red-300 text-base font-bold mb-1.5 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> {L.riskFactors}</p>
+              <ul className="text-white/90 text-base md:text-base space-y-1">
                 {deepAnalysis.riskFactors?.map((f: string, i: number) => (<li key={i} className="flex items-start gap-1"><span className="text-red-400 mt-0.5">⚠</span>{f}</li>))}
               </ul>
             </div>
@@ -269,8 +269,8 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
             <div key={i} className="flex items-start gap-3 bg-white/5 rounded-xl p-3 border border-white/5">
               <div className="w-7 h-7 rounded-lg bg-indigo-500/20 flex items-center justify-center shrink-0 mt-0.5"><Compass className="w-3.5 h-3.5 text-indigo-400" /></div>
               <div>
-                <p className="text-indigo-300 text-xs font-bold">{theory.name}</p>
-                <p className="text-white/60 text-[10px] md:text-xs mt-0.5">{theory.insight}</p>
+                <p className="text-indigo-300 text-base font-bold">{theory.name}</p>
+                <p className="text-white/85 text-base md:text-base mt-0.5">{theory.insight}</p>
               </div>
             </div>
           ))}
@@ -282,8 +282,8 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
         <ExpandableSection icon={FileText} title={L.reportTOC} badge={`${tableOfContents.length}${isEnglish ? ' ' : ''}${L.sections}`} defaultOpen={false} gradientFrom="from-blue-900/40" gradientTo="to-cyan-900/40" borderColor="border-blue-500/20">
           <ul className="space-y-1.5">
             {tableOfContents.map((item, i) => (
-              <li key={i} className="flex items-center gap-2 text-white/70 text-xs">
-                <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] flex items-center justify-center font-medium shrink-0">{item.index}</span>
+              <li key={i} className="flex items-center gap-2 text-white/90 text-base">
+                <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-300 text-base flex items-center justify-center font-medium shrink-0">{item.index}</span>
                 {item.title}
               </li>
             ))}
@@ -293,7 +293,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
 
       {/* 5. Expert Advice */}
       <ExpandableSection icon={Heart} title={L.expertAdvice} badge={analysisResult.severity} defaultOpen={true} gradientFrom="from-amber-900/30" gradientTo="to-orange-900/30" borderColor="border-amber-500/20">
-        <p className="text-white/80 text-xs md:text-sm leading-relaxed whitespace-pre-wrap">{analysisResult.detailedAdvice}</p>
+        <p className="text-white text-base md:text-lg leading-relaxed whitespace-pre-wrap">{analysisResult.detailedAdvice}</p>
       </ExpandableSection>
 
       {/* 6. Development Profile Scores */}
@@ -306,7 +306,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
             <CircularGauge value={reports.developmentAssessment.social} label={radarLabels[3]} color="#fb923c" size={70} />
             <CircularGauge value={reports.psychologicalAnalysis?.emotionalStability || 60} label={radarLabels[4]} color="#f472b6" size={70} />
           </div>
-          <p className="text-white/60 text-xs mt-3 leading-relaxed">{reports.developmentAssessment.summary}</p>
+          <p className="text-white/85 text-base mt-3 leading-relaxed">{reports.developmentAssessment.summary}</p>
         </ExpandableSection>
       )}
 
@@ -316,8 +316,8 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
           <div className="space-y-2">
             {analysisResult.recommendations.map((rec: string, i: number) => (
               <div key={i} className="flex items-start gap-2 bg-white/5 rounded-xl p-3 border border-white/5">
-                <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] flex items-center justify-center font-bold shrink-0 mt-0.5">{i + 1}</span>
-                <span className="text-white/80 text-xs md:text-sm">{rec}</span>
+                <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 text-base flex items-center justify-center font-bold shrink-0 mt-0.5">{i + 1}</span>
+                <span className="text-white text-base md:text-lg">{rec}</span>
               </div>
             ))}
           </div>
@@ -338,10 +338,10 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
                 <div className={`absolute left-0 top-0 w-6 h-6 rounded-full bg-${phase.color}-500/20 border-2 border-${phase.color}-500/50 flex items-center justify-center`}>
                   <phase.icon className={`w-3 h-3 text-${phase.color}-400`} />
                 </div>
-                <p className={`text-${phase.color}-300 text-xs font-bold mb-1.5`}>{phase.label}</p>
+                <p className={`text-${phase.color}-300 text-base font-bold mb-1.5`}>{phase.label}</p>
                 <ul className="space-y-1">
                   {phase.items?.map((item: string, i: number) => (
-                    <li key={i} className="text-white/70 text-xs flex items-start gap-1.5"><span className={`text-${phase.color}-400 mt-0.5`}>•</span>{item}</li>
+                    <li key={i} className="text-white/90 text-base flex items-start gap-1.5"><span className={`text-${phase.color}-400 mt-0.5`}>•</span>{item}</li>
                   ))}
                 </ul>
               </div>
@@ -355,26 +355,26 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
         <ExpandableSection icon={Layers} title={L.strengthsWeaknesses} defaultOpen={false} gradientFrom="from-emerald-900/30" gradientTo="to-teal-900/30" borderColor="border-emerald-500/20">
           <div className="grid grid-cols-2 gap-3 mb-3">
             <div>
-              <p className="text-emerald-300 text-[10px] font-bold mb-2 flex items-center gap-1"><Flame className="w-3 h-3" /> {L.strengths}</p>
+              <p className="text-emerald-300 text-base font-bold mb-2 flex items-center gap-1"><Flame className="w-3 h-3" /> {L.strengths}</p>
               <ul className="space-y-1.5">
                 {reports.strengthsWeaknesses.strengths?.map((s: string, i: number) => (
-                  <li key={i} className="text-white/70 text-[10px] md:text-xs flex items-start gap-1"><span className="text-emerald-400">✦</span>{s}</li>
+                  <li key={i} className="text-white/90 text-base md:text-base flex items-start gap-1"><span className="text-emerald-400">✦</span>{s}</li>
                 ))}
               </ul>
             </div>
             <div>
-              <p className="text-amber-300 text-[10px] font-bold mb-2 flex items-center gap-1"><Lightbulb className="w-3 h-3" /> {L.improvements}</p>
+              <p className="text-amber-300 text-base font-bold mb-2 flex items-center gap-1"><Lightbulb className="w-3 h-3" /> {L.improvements}</p>
               <ul className="space-y-1.5">
                 {reports.strengthsWeaknesses.weaknesses?.map((w: string, i: number) => (
-                  <li key={i} className="text-white/70 text-[10px] md:text-xs flex items-start gap-1"><span className="text-amber-400">◆</span>{w}</li>
+                  <li key={i} className="text-white/90 text-base md:text-base flex items-start gap-1"><span className="text-amber-400">◆</span>{w}</li>
                 ))}
               </ul>
             </div>
           </div>
           {reports.strengthsWeaknesses.growthDirection && (
             <div className="bg-white/5 rounded-xl p-3 border border-white/5">
-              <p className="text-white/50 text-[10px] font-bold mb-1">{L.growthDirection}</p>
-              <p className="text-white/70 text-xs">{reports.strengthsWeaknesses.growthDirection}</p>
+              <p className="text-white text-base font-bold mb-1">{L.growthDirection}</p>
+              <p className="text-white/90 text-base">{reports.strengthsWeaknesses.growthDirection}</p>
             </div>
           )}
         </ExpandableSection>
@@ -384,16 +384,16 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
       {reports?.expertOpinion && (
         <ExpandableSection icon={Users} title={L.expertOpinion} badge={reports.expertOpinion.urgency?.split('-')[0]?.trim()} defaultOpen={false} gradientFrom="from-rose-900/30" gradientTo="to-red-900/30" borderColor="border-rose-500/20">
           {reports.expertOpinion.clinicalImpression && (
-            <p className="text-white/80 text-xs leading-relaxed mb-3">{reports.expertOpinion.clinicalImpression}</p>
+            <p className="text-white text-base leading-relaxed mb-3">{reports.expertOpinion.clinicalImpression}</p>
           )}
           <div className="space-y-1.5">
             {reports.expertOpinion.recommendations?.map((rec: string, i: number) => (
-              <div key={i} className="flex items-start gap-2 text-xs text-white/70"><span className="text-rose-400 mt-0.5">▸</span>{rec}</div>
+              <div key={i} className="flex items-start gap-2 text-base text-white/90"><span className="text-rose-400 mt-0.5">▸</span>{rec}</div>
             ))}
           </div>
           {reports.expertOpinion.urgency && (
             <div className="mt-3 bg-rose-500/10 rounded-lg p-2 border border-rose-500/15">
-              <p className="text-rose-300 text-[10px]"><strong>{L.urgency}:</strong> {reports.expertOpinion.urgency}</p>
+              <p className="text-rose-300 text-base"><strong>{L.urgency}:</strong> {reports.expertOpinion.urgency}</p>
             </div>
           )}
         </ExpandableSection>
@@ -411,12 +411,12 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
       <div className="bg-gradient-to-br from-indigo-900/50 to-violet-900/50 backdrop-blur-xl rounded-2xl border border-indigo-500/20 p-5 space-y-4">
         {/* 감성 트리거 카피 */}
         <div className="text-center space-y-2">
-          <p className="text-white/90 text-sm font-bold leading-snug">
+          <p className="text-white/90 text-base font-bold leading-snug">
             {isEnglish 
               ? '"I thought something was seriously wrong with my child..."'
               : '"평소엔 괜찮다가, 오늘 같은 날이 오면\n진짜 정신병인가 싶거든요"'}
           </p>
-          <p className="text-white/50 text-xs">
+          <p className="text-white text-base">
             {isEnglish
               ? 'A real parent found clarity through our PhD-grade report'
               : '— 실제 사용자가 리포트를 보고 아이를 이해하기 시작했습니다'}
@@ -427,19 +427,19 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
         <div className="bg-white/5 rounded-xl p-4 space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0" />
-            <p className="text-white/60 text-xs line-through">
+            <p className="text-white/85 text-base line-through">
               {isEnglish ? '"Is my child really sick?"' : '"우리 아이 진짜 이상한 건 아닐까?"'}
             </p>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
-            <p className="text-white/90 text-xs font-semibold">
+            <p className="text-white/90 text-base font-semibold">
               {isEnglish 
                 ? '"It\'s a natural stress response at this developmental stage"'
                 : '"발달 단계상 매우 자연스러운 스트레스 반응입니다"'}
             </p>
           </div>
-          <p className="text-amber-300/80 text-[11px] text-center">
+          <p className="text-amber-300/80 text-base text-center">
             {isEnglish
               ? '→ Fear turned into understanding with one report'
               : '→ 리포트 하나로 공포가 이해로 바뀌었습니다'}
@@ -453,17 +453,17 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
               localStorage.setItem('instant_analysis_input', inputText);
               navigate(isEnglish ? '/en/report-generator' : '/report-generator');
             }}
-            className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl text-sm"
+            className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl text-base"
           >
             <FileText className="w-4 h-4 mr-1.5" />
             {isEnglish ? '7-Day Mind Track — ₩7,900' : '7일 마음 트랙 — ₩7,900'}
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
-          <Button onClick={onReset} variant="outline" className="bg-white/5 border-white/20 text-white/80 hover:bg-white/10 py-3 rounded-xl text-sm px-4">
+          <Button onClick={onReset} variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 py-3 rounded-xl text-base px-4">
             {L.analyzeAgain}
           </Button>
         </div>
-        <p className="text-center text-white/40 text-[11px]">
+        <p className="text-center text-white/75 text-base">
           {isEnglish
             ? '12-week roadmap · risk assessment · expert commentary'
             : '12주 로드맵 · 위험도 평가 · 전문가급 소견 포함'}
@@ -471,7 +471,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
       </div>
 
       {/* 면책 문구 */}
-      <p className="text-[11px] text-white/30 text-center px-4">
+      <p className="text-base text-white/90 text-center px-4">
         {isEnglish 
           ? 'This analysis is generated by an AI engine based on expert knowledge and does not replace professional diagnosis.'
           : '본 분석은 전문가 지식 기반 AI 엔진으로 작성되었으며, 전문 진단을 대체하지 않습니다.'}

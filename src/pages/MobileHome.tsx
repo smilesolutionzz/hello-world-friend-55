@@ -41,7 +41,7 @@ const tiles: Tile[] = [
   { label: '리포트',      icon: FileText,           to: '/report-generator-pro',badge: '주요', iconBg: 'bg-sky-50',     iconColor: 'text-sky-600' },
   { label: '전문가',      icon: Users,              to: '/expert-hiring',       badge: 'ON',   iconBg: 'bg-rose-50',    iconColor: 'text-rose-500' },
   { label: '검사 모음',   icon: ListChecks,         to: '/assessment',          badge: '주요', iconBg: 'bg-fuchsia-50', iconColor: 'text-fuchsia-600' },
-  { label: '발달 체크',   icon: ClipboardCheck,     to: '/check',                              iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600' },
+  { label: '영상 관찰',   icon: Video,              to: '/observation',         badge: 'HOT',  iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600' },
   { label: '음성 상담',   icon: Mic,                to: '/voice-counseling',                   iconBg: 'bg-teal-50',    iconColor: 'text-teal-600' },
   { label: '게임 검사',   icon: Gamepad2,           to: '/metaverse-voice',     badge: 'NEW',  iconBg: 'bg-pink-50',    iconColor: 'text-pink-500' },
   { label: '나의 여정',   icon: LineChart,          to: '/my-journey',                         iconBg: 'bg-indigo-50',  iconColor: 'text-indigo-600' },

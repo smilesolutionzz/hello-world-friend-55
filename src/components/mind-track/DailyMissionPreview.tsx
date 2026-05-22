@@ -69,7 +69,7 @@ const DailyMissionPreview: React.FC = () => {
           Inside the 7 Days
         </span>
         <h2 className="text-2xl md:text-3xl font-black text-foreground break-keep">
-          7일 안에 진짜 발가벗겨지고, 진짜 좋아지는 압축 트랙
+          7일 만에 마음이 정리되고, 실제로 좋아지는 압축 트랙
         </h2>
         <p className="text-sm text-muted-foreground mt-2 break-keep flex items-center justify-center gap-1.5 flex-wrap">
           <Clock className="w-3.5 h-3.5" />

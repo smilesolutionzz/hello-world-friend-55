@@ -722,9 +722,9 @@ const MindTrack: React.FC = () => {
                         <Sparkles className="w-3 h-3" />
                         7일 마음 트랙
                       </div>
-                      <div className="inline-flex items-center gap-1 text-[11px] text-rose-600 font-semibold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                        3일 무료 · 카드 없이 시작
+                      <div className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-semibold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        PMF 베타 · 7일 전액 무료
                       </div>
                     </div>
 

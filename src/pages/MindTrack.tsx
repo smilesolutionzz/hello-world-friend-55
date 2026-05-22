@@ -768,27 +768,27 @@ const MindTrack: React.FC = () => {
                       }}
                     />
 
-                    {/* 가격 + 비교 — 한눈에 ‘싸다’ 인지 */}
-                    <div className="mt-5 mb-4 p-4 rounded-2xl bg-[#FBF8F1] border border-[#C8B88A]/30">
+                    {/* PMF 베타 — 7일 전액 무료 + 23일 연장 옵션 */}
+                    <div className="mt-5 mb-4 p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200">
                       <div className="flex items-end justify-between gap-3 flex-wrap">
                         <div>
-                          <div className="text-[11px] text-foreground/55 line-through">
-                            전문가 1:1 단회만 ₩60,000~
+                          <div className="text-[11px] text-emerald-700 font-bold tracking-wide uppercase">
+                            PMF Beta · Limited
                           </div>
-                          <div className="flex items-baseline gap-2">
+                          <div className="flex items-baseline gap-2 mt-1">
                             <span className="text-3xl md:text-4xl font-extrabold text-[#1a1a1a]">
-                              ₩{TRACK_PRICE.toLocaleString()}
+                              무료
                             </span>
                             <span className="text-sm text-foreground/60 font-semibold">/ 7일 전체</span>
                           </div>
                           <div className="text-[11px] text-foreground/55 mt-0.5">
-                            하루 ₩{Math.round(TRACK_PRICE / 7).toLocaleString()} · 커피 한 잔보다 저렴
+                            완주 시 +23일 연장은 별도 옵션 (선택)
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-1">
+                          <div className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-white border border-emerald-200 rounded-full px-2 py-1">
                             <Shield className="w-3 h-3" />
-                            14일 100% 환불 보장
+                            카드 없이 시작
                           </div>
                         </div>
                       </div>
@@ -797,19 +797,20 @@ const MindTrack: React.FC = () => {
                     <Button
                       onClick={() => {
                         handleStartCtaClick('lock_card_cta');
-                        navigate(isLoggedIn ? '/token-subscription' : '/auth');
+                        handleStart();
                       }}
+                      disabled={loading}
                       className="w-full h-14 rounded-2xl bg-[#1a1a1a] text-white hover:bg-black font-bold text-base"
                     >
                       <Sparkles className="w-4 h-4 mr-2" />
-                      3일 무료로 시작하기
+                      7일 무료로 시작하기
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
 
                     <div className="flex items-center justify-center gap-3 pt-3 text-[11px] text-foreground/55 flex-wrap">
                       <span className="inline-flex items-center gap-1">
                         <Shield className="w-3 h-3" />
-                        카드 등록 없이 즉시 시작 · 언제든 중단
+                        결제 정보 불필요 · 언제든 중단 가능
                       </span>
                     </div>
                   </div>

@@ -186,7 +186,7 @@ export const EnhancedResultView = ({ analysisResult, inputText, reportImages, ta
     wantMore: isEnglish ? 'Want a more accurate analysis?' : '더 정확한 분석을 원하신다면?',
     wantMoreSub: isEnglish ? 'Get personalized solutions with 3-min onboarding' : '3분 온보딩으로 맞춤형 솔루션을 받아보세요',
     preciseAnalysis: isEnglish ? '3-Min Precision Analysis' : '3분 정밀 분석',
-    analyzeAgain: isEnglish ? 'Analyze Again' : '다시 분석',
+    analyzeAgain: isEnglish ? 'Write New Concern' : '고민 새로 작성하기',
   };
 
   return (

@@ -27,6 +27,7 @@ import { ExpertPriceTag } from '@/components/expert/ExpertPriceTag';
 import { useSubscription } from '@/hooks/useSubscription';
 import { calculateExpertPricing, formatKRW } from '@/lib/expertPricing';
 import MindTrackContextBanner, { useMindTrackPrefill } from '@/components/mind-track/MindTrackContextBanner';
+import { PARTNER_INSTITUTIONS } from '@/data/partnerInstitutions';
 
 // Facility images
 import facilityDev from '@/assets/facilities/facility-development-center.jpg';

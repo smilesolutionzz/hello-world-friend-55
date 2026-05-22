@@ -1934,6 +1934,7 @@ const Assessment = () => {
               result={careerResults}
               onRestart={() => setCurrentStep('career-test')}
             />
+            <MedicalDisclaimer variant="compact" className="mt-6" />
           </div>
         </div>
       </ResultPaywall>

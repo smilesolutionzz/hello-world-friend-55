@@ -301,10 +301,13 @@ const ExpertHiring = () => {
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-10">
         {mindTrackCtx && <MindTrackContextBanner ctx={mindTrackCtx} />}
 
+        {/* 시간 구독형 시간권 (Hero) */}
+        <ExpertHourPackHero />
+
         {/* Page heading — minimal */}
         <div className="mb-5">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">검증된 전문가</h1>
-          <p className="text-sm text-muted-foreground mt-1">{`AI 매칭 · 평균 40분 1:1 상담`}</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">검증된 전문가 둘러보기</h1>
+          <p className="text-sm text-muted-foreground mt-1">시간권으로 원하는 전문가와 자유롭게 매칭하세요</p>
         </div>
 
 

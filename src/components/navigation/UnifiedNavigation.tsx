@@ -266,6 +266,8 @@ const UnifiedNavigationInner = () => {
 
             {/* Right Side */}
             <div className="flex items-center gap-2">
+              {/* B2C ↔ B2B 모드 토글 */}
+              <AudienceModeToggle className="mr-1" />
               {/* Subscription Status — 아이콘만 (프리미엄은 라벨 유지) */}
               <Button
                 variant="ghost"

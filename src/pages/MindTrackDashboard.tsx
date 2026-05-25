@@ -20,6 +20,7 @@ import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirst
 import MindTrackFocusSwitcher from "@/components/mind-track/MindTrackFocusSwitcher";
 import { getFocus } from "@/lib/mindTrackFocusTracks";
 import { toast } from "sonner";
+import WeekProgressDashboard from "@/components/mind-track/WeekProgressDashboard";
 
 interface Enrollment {
   id: string;

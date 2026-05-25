@@ -7,11 +7,17 @@ const corsHeaders = {
 };
 
 // 상품 정의 (프론트엔드와 동기화) - SaaS 모델 v2
+const EXPERT_HOUR_RATE = 39000; // ₩/hour
 const PRODUCTS: Record<string, any> = {
   // mind_track 라인업: 7일(메인) / 30일(보조) / 23일 연장권(업셀)
   mind_track_7: { type: 'mind_track', name: '7일 마음 변화 트랙', price: 7900 },
   mind_track_30: { type: 'mind_track', name: '30일 마음 변화 트랙', price: 19900 },
   mind_track_extend_23: { type: 'mind_track', name: '마음 트랙 23일 연장권', price: 12900 },
+  // 전문가 시간권: 시간당 39,000원, 홈티는 1.5배 차감
+  expert_hours_5:  { type: 'expert_hours', name: '전문가 시간권 5시간',  price: 5  * EXPERT_HOUR_RATE, hours: 5  },
+  expert_hours_10: { type: 'expert_hours', name: '전문가 시간권 10시간', price: 10 * EXPERT_HOUR_RATE, hours: 10 },
+  expert_hours_20: { type: 'expert_hours', name: '전문가 시간권 20시간', price: 20 * EXPERT_HOUR_RATE, hours: 20 },
+  expert_hours_30: { type: 'expert_hours', name: '전문가 시간권 30시간', price: 30 * EXPERT_HOUR_RATE, hours: 30 },
 };
 
 // 🔒 인증된 사용자 확인 헬퍼

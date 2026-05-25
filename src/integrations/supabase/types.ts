@@ -5154,6 +5154,92 @@ export type Database = {
           },
         ]
       }
+      expert_hour_packs: {
+        Row: {
+          created_at: string
+          hours_remaining: number
+          hours_total: number
+          id: string
+          pack_size: number
+          payment_id: string | null
+          price_paid: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          hours_remaining: number
+          hours_total: number
+          id?: string
+          pack_size: number
+          payment_id?: string | null
+          price_paid: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          hours_remaining?: number
+          hours_total?: number
+          id?: string
+          pack_size?: number
+          payment_id?: string | null
+          price_paid?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      expert_hour_usages: {
+        Row: {
+          created_at: string
+          delivery_mode: string
+          expert_id: string | null
+          expert_name: string | null
+          hours_used: number
+          id: string
+          note: string | null
+          pack_id: string
+          session_date: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          delivery_mode?: string
+          expert_id?: string | null
+          expert_name?: string | null
+          hours_used: number
+          id?: string
+          note?: string | null
+          pack_id: string
+          session_date?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          delivery_mode?: string
+          expert_id?: string | null
+          expert_name?: string | null
+          hours_used?: number
+          id?: string
+          note?: string | null
+          pack_id?: string
+          session_date?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_hour_usages_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "expert_hour_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expert_notes: {
         Row: {
           author_id: string
@@ -15799,6 +15885,18 @@ export type Database = {
       }
       cleanup_expert_access_logs: { Args: never; Returns: undefined }
       cleanup_financial_audit_logs: { Args: never; Returns: undefined }
+      consume_expert_hours: {
+        Args: {
+          _delivery?: string
+          _expert_id?: string
+          _expert_name?: string
+          _hours: number
+          _note?: string
+          _pack_id: string
+          _session_date?: string
+        }
+        Returns: Json
+      }
       consume_tokens: {
         Args: {
           p_amount: number

@@ -14,12 +14,12 @@ import { useNavigate } from "react-router-dom";
 import { usePayment } from "@/hooks/usePayment";
 
 const HOUR_RATE = 39000;
-const PACKS = [
+const PACKS: { size: number; label: string; tagline: string; popular?: boolean }[] = [
   { size: 5,  label: "라이트",     tagline: "처음 시작하기 좋아요" },
-  { size: 10, label: "스탠다드",   tagline: "월 1~2회 정기 상담", popular: false },
+  { size: 10, label: "스탠다드",   tagline: "월 1~2회 정기 상담" },
   { size: 20, label: "프리미엄",   tagline: "주 1회 꾸준한 케어", popular: true },
   { size: 30, label: "올케어",     tagline: "장기 동행 · 가족 단위" },
-] as const;
+];
 
 const formatKRW = (n: number) => `₩${n.toLocaleString("ko-KR")}`;
 

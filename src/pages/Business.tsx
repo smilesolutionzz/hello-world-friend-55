@@ -50,6 +50,45 @@ const assets = [
   },
 ];
 
+const solutions = [
+  {
+    id: 'jobcoach',
+    tag: '기업 HR',
+    title: '직장 정신건강 잡코치',
+    desc: '번아웃 히트맵 · 익명 1:1 코칭 · 부서별 위험 신호 추적 · ROI 추정',
+    cta: '잡코치 자세히',
+    path: '/b2b-jobcoach',
+    icon: Brain,
+  },
+  {
+    id: 'institution',
+    tag: '학교 · 상담센터 · 복지기관',
+    title: '발달 코칭 리포트 SaaS',
+    desc: '월간 발달 코칭 리포트 자동 생성 · 지자체·교육청 보고 양식 변환',
+    cta: '기관용 제안 보기',
+    path: '/b2b-proposal?segment=institution',
+    icon: Building2,
+  },
+  {
+    id: 'eap',
+    tag: 'EAP · 임직원 상담',
+    title: '전문가 상담 시간 패키지',
+    desc: '5/10/20/30시간 묶음 구독 · 익명 매칭 · 홈티 1.5배 차감 옵션',
+    cta: '상담 패키지 보기',
+    path: '/expert-hiring?b2b=1',
+    icon: HeartHandshake,
+  },
+  {
+    id: 'demo',
+    tag: '화이트라벨 데모',
+    title: '30초 샘플 리포트 생성기',
+    desc: '기관 로고가 들어간 데모 PDF · 영업·검토용 즉석 출력',
+    cta: '데모 만들기',
+    path: '/b2b-demo-report',
+    icon: Sparkles,
+  },
+] as const;
+
 const steps = [
   { n: '01', t: '도입 문의', d: '직원 규모와 목표 공유, 맞춤 플랜 제안' },
   { n: '02', t: '직원 익명 코칭 시작', d: '동의 기반으로 30일 마음 트랙 가동' },

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Users, BarChart3, FileText, Building2, Lock, BookOpen, Tag } from 'lucide-react';
+import { ArrowRight, Shield, Users, BarChart3, FileText, Building2, Lock, BookOpen, Tag, Brain, HeartHandshake, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import BusinessROICalculator from '@/components/b2b/BusinessROICalculator';

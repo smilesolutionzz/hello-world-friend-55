@@ -20,6 +20,7 @@ import MindTrackFirstTimeOnboarding from "@/components/mind-track/MindTrackFirst
 import MindTrackFocusSwitcher from "@/components/mind-track/MindTrackFocusSwitcher";
 import { getFocus } from "@/lib/mindTrackFocusTracks";
 import { toast } from "sonner";
+import WeekProgressDashboard from "@/components/mind-track/WeekProgressDashboard";
 
 interface Enrollment {
   id: string;
@@ -371,6 +372,18 @@ export default function MindTrackDashboard() {
             </div>
           </div>
           <Progress value={progressPct} className="h-1 mb-6" />
+
+          {userId && (
+            <WeekProgressDashboard
+              enrollmentId={enrollment.id}
+              userId={userId}
+              startedAt={enrollment.started_at}
+              currentDay={day}
+              totalDays={totalDays}
+              checkins={allCheckins}
+              onChanged={() => loadDashboard({ silent: true })}
+            />
+          )}
 
           {/* 2) 오늘의 미션 — 단 하나의 명확한 액션 */}
           <motion.section

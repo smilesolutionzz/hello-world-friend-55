@@ -53,7 +53,7 @@ export default function ExpertHourPackHero() {
   const [logForm, setLogForm] = useState({
     pack_id: "",
     hours: "1",
-    delivery: "online" as "online" | "home_visit",
+    delivery: "online" as "online" | "home_visit" | "kakao",
     expert_name: "",
     session_date: new Date().toISOString().slice(0, 10),
     note: "",

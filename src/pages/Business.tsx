@@ -152,12 +152,52 @@ export default function Business() {
         </div>
       </section>
 
+      {/* Solution Matrix — 4개 핵심 라인업 */}
+      <section id="solutions" className="px-6 pb-20">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-xs tracking-[0.2em] text-foreground/50 mb-3 text-center">SOLUTIONS</p>
+          <h2 className="text-2xl md:text-3xl font-semibold text-center mb-3 break-keep">
+            4가지 라인업 중 우리 조직에 맞는 것을 고르세요
+          </h2>
+          <p className="text-center text-sm text-foreground/60 mb-12 break-keep">
+            기업 HR · 학교/상담/복지 · EAP 상담 · 화이트라벨 데모 — 모두 동일한 비의료 코칭 엔진 위에 구축됩니다.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {solutions.map((s) => {
+              const Icon = s.icon;
+              return (
+                <button
+                  key={s.id}
+                  id={s.id}
+                  onClick={() => { trackCTA(`solution_card_${s.id}`, s.path); navigate(s.path); }}
+                  className="group text-left rounded-3xl border bg-white p-6 hover:border-foreground/30 hover:shadow-sm transition-all flex flex-col h-full scroll-mt-24"
+                >
+                  <div
+                    className="flex h-11 w-11 items-center justify-center rounded-2xl mb-5"
+                    style={{ background: `${GOLD}1A` }}
+                  >
+                    <Icon className="h-5 w-5" style={{ color: GOLD }} />
+                  </div>
+                  <p className="text-[10px] font-semibold tracking-[0.18em] text-foreground/50 uppercase mb-2">{s.tag}</p>
+                  <h3 className="text-lg font-semibold mb-2 break-keep leading-snug">{s.title}</h3>
+                  <p className="text-sm text-foreground/60 break-keep leading-relaxed flex-1">{s.desc}</p>
+                  <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-foreground/80 group-hover:gap-2 transition-all">
+                    {s.cta} <ArrowRight className="w-4 h-4" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* ROI Calculator */}
       <section className="px-6 pb-16">
         <div className="mx-auto max-w-5xl">
           <BusinessROICalculator />
         </div>
       </section>
+
 
       {/* 3-Step Flow */}
       <section className="px-6 pb-20">

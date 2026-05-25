@@ -15885,18 +15885,31 @@ export type Database = {
       }
       cleanup_expert_access_logs: { Args: never; Returns: undefined }
       cleanup_financial_audit_logs: { Args: never; Returns: undefined }
-      consume_expert_hours: {
-        Args: {
-          _delivery?: string
-          _expert_id?: string
-          _expert_name?: string
-          _hours: number
-          _note?: string
-          _pack_id: string
-          _session_date?: string
-        }
-        Returns: Json
-      }
+      consume_expert_hours:
+        | {
+            Args: {
+              _delivery?: string
+              _expert_id?: string
+              _expert_name?: string
+              _hours: number
+              _note?: string
+              _pack_id: string
+              _session_date?: string
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              _delivery?: string
+              _expert_id?: string
+              _expert_name?: string
+              _hours: number
+              _note?: string
+              _pack_id: string
+              _session_date?: string
+            }
+            Returns: Json
+          }
       consume_tokens: {
         Args: {
           p_amount: number

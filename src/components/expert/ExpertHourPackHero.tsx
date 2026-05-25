@@ -53,7 +53,7 @@ export default function ExpertHourPackHero() {
   const [logForm, setLogForm] = useState({
     pack_id: "",
     hours: "1",
-    delivery: "online" as "online" | "home_visit",
+    delivery: "online" as "online" | "home_visit" | "kakao",
     expert_name: "",
     session_date: new Date().toISOString().slice(0, 10),
     note: "",
@@ -342,12 +342,12 @@ export default function ExpertHourPackHero() {
             </div>
             <div>
               <Label className="text-xs">진행 방식</Label>
-              <div className="grid grid-cols-2 gap-2 mt-1">
+              <div className="grid grid-cols-3 gap-2 mt-1">
                 <button
                   type="button"
                   onClick={() => setLogForm(f => ({ ...f, delivery: "online" }))}
                   className={cn(
-                    "flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm transition-all",
+                    "flex items-center justify-center gap-1.5 rounded-xl border px-2 py-2.5 text-xs sm:text-sm transition-all",
                     logForm.delivery === "online" ? "border-foreground bg-foreground text-background" : "border-border bg-background"
                   )}
                 >
@@ -355,9 +355,19 @@ export default function ExpertHourPackHero() {
                 </button>
                 <button
                   type="button"
+                  onClick={() => setLogForm(f => ({ ...f, delivery: "kakao" }))}
+                  className={cn(
+                    "flex items-center justify-center gap-1.5 rounded-xl border px-2 py-2.5 text-xs sm:text-sm transition-all",
+                    logForm.delivery === "kakao" ? "border-foreground bg-foreground text-background" : "border-border bg-background"
+                  )}
+                >
+                  <MessageCircle className="w-4 h-4" /> 카톡 (0.5배)
+                </button>
+                <button
+                  type="button"
                   onClick={() => setLogForm(f => ({ ...f, delivery: "home_visit" }))}
                   className={cn(
-                    "flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm transition-all",
+                    "flex items-center justify-center gap-1.5 rounded-xl border px-2 py-2.5 text-xs sm:text-sm transition-all",
                     logForm.delivery === "home_visit" ? "border-foreground bg-foreground text-background" : "border-border bg-background"
                   )}
                 >

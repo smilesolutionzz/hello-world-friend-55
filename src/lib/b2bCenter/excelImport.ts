@@ -320,7 +320,7 @@ function mapClientStatus(v: any): string {
   if (/등록|진행/.test(s)) return "enrolled";
   return "waiting";
 }
-function mapSessionStatus(v: any): string {
+function mapSessionStatus(v: any): "scheduled" | "completed" | "cancelled" | "cancelled_carry" | "cancelled_makeup" {
   const s = String(v ?? "").trim();
   if (/완료/.test(s)) return "completed";
   if (/취소이월|이월/.test(s)) return "cancelled_carry";
@@ -328,6 +328,7 @@ function mapSessionStatus(v: any): string {
   if (/취소/.test(s)) return "cancelled";
   return "scheduled";
 }
+
 
 // ===== AIHPRO 표준 템플릿 다운로드 =====
 export function downloadStandardTemplate() {

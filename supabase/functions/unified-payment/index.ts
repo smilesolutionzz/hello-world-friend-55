@@ -374,6 +374,27 @@ serve(async (req) => {
           }
         }
 
+      } else if (productType === 'expert_hours') {
+        // 전문가 시간권 적립
+        const orderId = payment.toss_order_id || '';
+        const match = orderId.match(/expert_hours_(\d+)/);
+        const packSize = match ? parseInt(match[1], 10) : 0;
+        if (packSize > 0) {
+          await supabaseAdmin
+            .from('expert_hour_packs')
+            .insert({
+              user_id: payment.user_id,
+              pack_size: packSize,
+              hours_total: packSize,
+              hours_remaining: packSize,
+              price_paid: payment.amount,
+              payment_id: payment.id,
+              status: 'active',
+            });
+          console.log(`✅ Added ${packSize}h expert pack for user ${payment.user_id}`);
+        } else {
+          console.error('Could not parse pack size from order', orderId);
+        }
       } else if (productType === 'cash' && payment.token_amount) {
         // 캐시(토큰) 충전 (레거시 호환)
         const { data: tokenBalance } = await supabaseAdmin

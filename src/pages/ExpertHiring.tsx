@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { getExpertImage } from '@/components/expert/ExpertImages';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import ConsultationFlowSteps from '@/components/expert/ConsultationFlowSteps';
+import ExpertHourPackHero from '@/components/expert/ExpertHourPackHero';
 import ExpertTrustCards from '@/components/expert/ExpertTrustCards';
 // ExpertPriceTag removed from card (price shown on detail page)
 import { useSubscription } from '@/hooks/useSubscription';

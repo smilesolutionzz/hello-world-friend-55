@@ -369,7 +369,9 @@ const UnifiedNavigationInner = () => {
           </div>
 
           {/* Right Side */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            {/* B2C ↔ B2B 모드 토글 (모바일 헤더) */}
+            <AudienceModeToggle size="sm" />
             {/* Language Toggle */}
             <Button
               variant="ghost"

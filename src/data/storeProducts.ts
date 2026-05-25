@@ -137,7 +137,7 @@ export const STORE_PRODUCTS: StoreProduct[] = [
     price: 49000,
     originalPrice: 69000,
     discountPercent: 29,
-    image: 'https://images.unsplash.com/photo-1518830638800-0adb09a39ce0?w=600&q=80',
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80',
     url: `${STORE_BASE_URL}/product/list.html?cate_no=24`,
     rating: 4.9,
     reviewCount: 119,

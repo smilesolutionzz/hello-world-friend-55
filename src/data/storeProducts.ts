@@ -12,7 +12,8 @@ export type StoreCategory =
   | 'sensory'
   | 'book'
   | 'parenting'
-  | 'wellness';
+  | 'wellness'
+  | 'assessment_package';
 
 export interface StoreProduct {
   id: string;
@@ -28,6 +29,8 @@ export interface StoreProduct {
   reviewCount?: number;
   tags?: string[];
   badge?: 'BEST' | 'NEW' | 'HOT' | '추천';
+  /** 한 줄 카피 — 심리검사 패키지 등에서 사용 */
+  tagline?: string;
 }
 
 export const STORE_CATEGORIES: { key: StoreCategory; label: string; emoji?: string }[] = [
@@ -36,6 +39,7 @@ export const STORE_CATEGORIES: { key: StoreCategory; label: string; emoji?: stri
   { key: 'book', label: '추천 도서' },
   { key: 'parenting', label: '부모 코칭' },
   { key: 'wellness', label: '웰니스' },
+  { key: 'assessment_package', label: '심리검사 패키지' },
 ];
 
 /**

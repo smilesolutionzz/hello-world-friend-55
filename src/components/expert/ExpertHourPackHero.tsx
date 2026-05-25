@@ -155,7 +155,7 @@ export default function ExpertHourPackHero() {
             전문가 시간권 · 필요할 때마다 차감
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 break-keep">
-            시간당 <span className="font-semibold text-foreground">{formatKRW(HOUR_RATE)}</span> · 화상/대면 자유 · 홈티(방문) 가능
+            시간당 <span className="font-semibold text-foreground">{formatKRW(HOUR_RATE)}</span> · 많이 끊을수록 <span className="font-semibold text-amber-600">보너스 시간</span> 제공
           </p>
         </div>
         {hasAny && (

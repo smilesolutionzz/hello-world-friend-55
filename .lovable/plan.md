@@ -1,74 +1,18 @@
-## 목표
-경쟁사 페이지 구조/카피/디자인을 **언제든 1줄 명령으로 캡처**해서 `docs/benchmarks/`에 표준 포맷으로 저장하는 인프라를 만든다. 매번 수동으로 스크린샷 찍던 작업을 자동화한다.
+## 변경 사항
 
-## 결과물
+### 1. `src/components/store/StoreSection.tsx`
+- 모바일 가로 스크롤 카드 영역(`-mx-5 overflow-x-auto ...`) 제거
+- PC 그리드 카드 영역(`hidden md:grid ...`) 제거
+- 헤더(추천 스토어 라벨 + "우리 아이에게 꼭 맞는 발달 아이템 · 심리검사 패키지" 제목 + 전체보기 버튼)는 그대로 유지
+- 결과: 클릭하면 외부 Cafe24 스토어로 이동하는 한 줄짜리 프로모 배너만 남음
+- 사용하지 않는 `StoreProductCard` import 및 `mobileItems`/`desktopItems` 변수 제거
 
-```text
-docs/benchmarks/
-├── README.md                          # 사용법 + 갱신 주기
-├── _scripts/
-│   └── capture.ts                     # Firecrawl 호출 → 마크다운+스크린샷 저장
-├── calm/
-│   ├── overview.md                    # URL, 캡처일, 1줄 요약
-│   ├── landing.md                     # 본문 마크다운 (Firecrawl scrape)
-│   ├── landing.png                    # 풀페이지 스크린샷
-│   ├── pricing.md / pricing.png
-│   └── branding.json                  # 색/폰트 (Firecrawl branding)
-├── wysa/        (동일 구조)
-├── headspace/   (동일 구조)
-└── mindcafe/    (마인드카페, 동일 구조)
-```
+### 2. `src/data/storeProducts.ts` — 깨진 이미지 디버깅
+- `p007 대근육 발달 점프 매트`의 Unsplash URL(`photo-1518830638800-0adb09a39ce0`)이 404 응답이라 카드에 사진이 안 뜨던 원인
+- 점프 매트/체조 매트와 어울리는 유효한 Unsplash 이미지로 교체 (예: `photo-1571019613454-1cb2f99b2d8b` 류의 키즈/플레이 매트 이미지)
+- StoreSection에서는 더 이상 카드를 렌더하지 않지만, 다른 화면(예: `/store` 페이지, `StoreProductCard`)에서 같은 데이터를 쓸 때 동일한 빈 이미지 버그가 나오지 않도록 데이터 자체를 고침
 
-## 단계
-
-### 1. Firecrawl 커넥터 연결
-- `standard_connectors--connect` (connector_id: `firecrawl`) 호출
-- 사용자가 picker에서 기존 연결 선택 또는 신규 생성
-- 연결 후 `FIRECRAWL_API_KEY`가 자동으로 환경변수로 주입됨
-
-### 2. 캡처 스크립트 작성 (`docs/benchmarks/_scripts/capture.ts`)
-Bun으로 실행하는 단일 스크립트:
-- 입력: 경쟁사 슬러그(`calm`) + URL 1~N개
-- Firecrawl REST v2 직접 호출 (`https://api.firecrawl.dev/v2/scrape`)
-- formats: `['markdown', 'screenshot', 'branding']`
-- onlyMainContent: true
-- 결과를 `docs/benchmarks/{slug}/{page}.{md,png,json}`로 자동 분기 저장
-- screenshot은 base64 → PNG 디코딩 후 저장
-
-실행 예:
-```
-bun docs/benchmarks/_scripts/capture.ts calm \
-  landing=https://www.calm.com \
-  pricing=https://www.calm.com/subscribe
-```
-
-### 3. 4사 초기 캡처 실행
-타깃 페이지(각 사 동일 패턴):
-- Calm: landing, pricing, app-page
-- Wysa: landing, pricing, for-employers
-- Headspace: landing, pricing, science
-- 마인드카페: landing, pricing, expert-list
-
-### 4. `docs/benchmarks/README.md` 작성
-- 폴더 구조 설명
-- 캡처 갱신 명령어
-- "신규 경쟁사 추가하는 법" 3줄 가이드
-- 분석 시 메모리에 어떻게 반영하는지 규칙
-
-### 5. 메모리 등록
-`mem://research/competitor-benchmarks-ko` 추가:
-- 위치(`docs/benchmarks/`), 갱신 주기(분기), 4사 슬러그
-- index.md 1줄 추가
-
-## 비포함 (이번 범위 밖)
-- React UI에서 벤치마크 보여주는 페이지 (불필요 — 개발자 참고용)
-- 자동 cron / GitHub Actions 스케줄링 (필요해지면 별도)
-- 5번째 이상 경쟁사 (구조만 만들고 사용자가 추가)
-
-## 기술 메모
-- Firecrawl은 connector gateway를 **사용하지 않는** 직접 API 타입 → `FIRECRAWL_API_KEY` 환경변수로 직접 호출
-- 스크립트는 로컬 실행 전용 (브라우저 노출 X) → API 키 안전
-- 한 페이지당 약 1~2 크레딧 소비, 4사 × 3페이지 = 약 12 크레딧
-
-## 예상 소요
-약 20분 (커넥터 연결 1분 + 스크립트 작성 10분 + 4사 캡처 5분 + README/메모리 4분)
+### 건드리지 않는 것
+- `StoreProductCard.tsx` (다른 페이지에서 그대로 사용)
+- `/store` 페이지의 전체 상품 목록
+- 가격·뱃지·평점 등 메타데이터

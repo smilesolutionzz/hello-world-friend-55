@@ -7,13 +7,15 @@ interface Props {
   product: StoreProduct;
   className?: string;
   onClick?: (p: StoreProduct) => void;
+  /** true 면 부모 그리드 폭에 맞춰 늘어남 (PC 그리드용) */
+  fullWidth?: boolean;
 }
 
 /**
  * 키즈노트 스타일 상품 카드.
  * 클릭 시 외부 Cafe24 상품 페이지를 새 창으로 연다 (rel=noopener).
  */
-export const StoreProductCard: React.FC<Props> = ({ product, className, onClick }) => {
+export const StoreProductCard: React.FC<Props> = ({ product, className, onClick, fullWidth }) => {
   const [imageFailed, setImageFailed] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
@@ -26,13 +28,15 @@ export const StoreProductCard: React.FC<Props> = ({ product, className, onClick 
     window.open(STORE_BASE_URL, '_blank', 'noopener,noreferrer');
   };
 
+  const widthClasses = fullWidth ? 'w-full' : 'w-[160px] sm:w-[180px] shrink-0';
+
   return (
     <a
       href={STORE_BASE_URL}
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}
-      className={`group block w-[160px] sm:w-[180px] shrink-0 ${className ?? ''}`}
+      className={`group block ${widthClasses} ${className ?? ''}`}
     >
       <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-100">
         {!imageFailed && product.image ? (

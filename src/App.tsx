@@ -534,6 +534,12 @@ const App = () => {
           <Route path="/b2b" element={<Navigate to="/business" replace />} />
           <Route path="/b2b/dev-center" element={<Navigate to="/b2b-proposal?segment=dev-center" replace />} />
           <Route path="/b2b/counseling" element={<Navigate to="/b2b-proposal?segment=counseling" replace />} />
+          <Route path="/eap-service" element={<Navigate to="/business#eap" replace />} />
+          <Route path="/en/eap-service" element={<Navigate to="/en/business#eap" replace />} />
+          <Route path="/b2b-consulting" element={<Navigate to="/business#solutions" replace />} />
+          <Route path="/en/b2b-consulting" element={<Navigate to="/en/business#solutions" replace />} />
+          <Route path="/for-business" element={<Navigate to="/business" replace />} />
+          <Route path="/en/business" element={<Business />} />
           <Route path="/app/parent" element={<Navigate to="/dashboard" replace />} />
           <Route path="/app/center" element={<PartnerCenterDashboard />} />
           <Route path="/app/center/referrals" element={<PartnerCenterReferrals />} />

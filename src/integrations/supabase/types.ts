@@ -2218,6 +2218,129 @@ export type Database = {
         }
         Relationships: []
       }
+      center_assessments: {
+        Row: {
+          assessment_date: string
+          assessment_type: string | null
+          center_id: string
+          client_id: string
+          content: string | null
+          created_at: string
+          id: string
+          meta: Json
+          status: string
+          therapist_id: string | null
+        }
+        Insert: {
+          assessment_date: string
+          assessment_type?: string | null
+          center_id: string
+          client_id: string
+          content?: string | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          status?: string
+          therapist_id?: string | null
+        }
+        Update: {
+          assessment_date?: string
+          assessment_type?: string | null
+          center_id?: string
+          client_id?: string
+          content?: string | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          status?: string
+          therapist_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_assessments_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_assessments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "center_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_assessments_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "center_therapists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_clients: {
+        Row: {
+          address: string | null
+          birth_date: string | null
+          center_id: string
+          created_at: string
+          disability_info: string | null
+          gender: string | null
+          guardian_phone: string | null
+          id: string
+          initial_consult_date: string | null
+          member_no: string | null
+          meta: Json
+          name: string
+          phone: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          birth_date?: string | null
+          center_id: string
+          created_at?: string
+          disability_info?: string | null
+          gender?: string | null
+          guardian_phone?: string | null
+          id?: string
+          initial_consult_date?: string | null
+          member_no?: string | null
+          meta?: Json
+          name: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          birth_date?: string | null
+          center_id?: string
+          created_at?: string
+          disability_info?: string | null
+          gender?: string | null
+          guardian_phone?: string | null
+          id?: string
+          initial_consult_date?: string | null
+          member_no?: string | null
+          meta?: Json
+          name?: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_clients_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       center_directory: {
         Row: {
           address: string | null
@@ -2266,6 +2389,53 @@ export type Database = {
         }
         Relationships: []
       }
+      center_import_jobs: {
+        Row: {
+          center_id: string
+          completed_at: string | null
+          created_at: string
+          detected_format: string | null
+          error_log: Json | null
+          filename: string
+          id: string
+          status: string
+          summary: Json
+          user_id: string
+        }
+        Insert: {
+          center_id: string
+          completed_at?: string | null
+          created_at?: string
+          detected_format?: string | null
+          error_log?: Json | null
+          filename: string
+          id?: string
+          status?: string
+          summary?: Json
+          user_id: string
+        }
+        Update: {
+          center_id?: string
+          completed_at?: string | null
+          created_at?: string
+          detected_format?: string | null
+          error_log?: Json | null
+          filename?: string
+          id?: string
+          status?: string
+          summary?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_import_jobs_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       center_inquiries: {
         Row: {
           center_id: string | null
@@ -2312,6 +2482,568 @@ export type Database = {
             columns: ["center_id"]
             isOneToOne: false
             referencedRelation: "center_directory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_members: {
+        Row: {
+          center_id: string
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["center_role"]
+          user_id: string
+        }
+        Insert: {
+          center_id: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["center_role"]
+          user_id: string
+        }
+        Update: {
+          center_id?: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["center_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_members_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_notifications_log: {
+        Row: {
+          center_id: string
+          channel: string
+          id: string
+          payload: Json
+          recipient: string
+          sent_at: string | null
+          status: string
+          template: string | null
+        }
+        Insert: {
+          center_id: string
+          channel: string
+          id?: string
+          payload?: Json
+          recipient: string
+          sent_at?: string | null
+          status?: string
+          template?: string | null
+        }
+        Update: {
+          center_id?: string
+          channel?: string
+          id?: string
+          payload?: Json
+          recipient?: string
+          sent_at?: string | null
+          status?: string
+          template?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_notifications_log_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_organizations: {
+        Row: {
+          address: string | null
+          business_no: string | null
+          contract_expires_at: string | null
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          phone: string | null
+          plan: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          business_no?: string | null
+          contract_expires_at?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          owner_id: string
+          phone?: string | null
+          plan?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          business_no?: string | null
+          contract_expires_at?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          phone?: string | null
+          plan?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      center_parent_reports: {
+        Row: {
+          center_id: string
+          client_id: string
+          created_at: string
+          html_content: string | null
+          id: string
+          issued_at: string | null
+          pdf_url: string | null
+          period_end: string
+          period_start: string
+          status: string
+        }
+        Insert: {
+          center_id: string
+          client_id: string
+          created_at?: string
+          html_content?: string | null
+          id?: string
+          issued_at?: string | null
+          pdf_url?: string | null
+          period_end: string
+          period_start: string
+          status?: string
+        }
+        Update: {
+          center_id?: string
+          client_id?: string
+          created_at?: string
+          html_content?: string | null
+          id?: string
+          issued_at?: string | null
+          pdf_url?: string | null
+          period_end?: string
+          period_start?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_parent_reports_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_parent_reports_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "center_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_payments: {
+        Row: {
+          amount_krw: number
+          center_id: string
+          client_id: string | null
+          copayment: number
+          created_at: string
+          id: string
+          meta: Json
+          method: string | null
+          paid_at: string
+          receipt_no: string | null
+          session_id: string | null
+          voucher_amount: number
+        }
+        Insert: {
+          amount_krw?: number
+          center_id: string
+          client_id?: string | null
+          copayment?: number
+          created_at?: string
+          id?: string
+          meta?: Json
+          method?: string | null
+          paid_at: string
+          receipt_no?: string | null
+          session_id?: string | null
+          voucher_amount?: number
+        }
+        Update: {
+          amount_krw?: number
+          center_id?: string
+          client_id?: string | null
+          copayment?: number
+          created_at?: string
+          id?: string
+          meta?: Json
+          method?: string | null
+          paid_at?: string
+          receipt_no?: string | null
+          session_id?: string | null
+          voucher_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_payments_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_payments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "center_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_payments_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "center_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_programs: {
+        Row: {
+          category: string
+          center_id: string
+          created_at: string
+          duration_min: number
+          id: string
+          is_voucher: boolean
+          meta: Json
+          name: string
+          price_krw: number
+        }
+        Insert: {
+          category: string
+          center_id: string
+          created_at?: string
+          duration_min?: number
+          id?: string
+          is_voucher?: boolean
+          meta?: Json
+          name: string
+          price_krw?: number
+        }
+        Update: {
+          category?: string
+          center_id?: string
+          created_at?: string
+          duration_min?: number
+          id?: string
+          is_voucher?: boolean
+          meta?: Json
+          name?: string
+          price_krw?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_programs_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_receipts: {
+        Row: {
+          center_id: string
+          id: string
+          issued_at: string
+          payment_id: string | null
+          pdf_url: string | null
+        }
+        Insert: {
+          center_id: string
+          id?: string
+          issued_at?: string
+          payment_id?: string | null
+          pdf_url?: string | null
+        }
+        Update: {
+          center_id?: string
+          id?: string
+          issued_at?: string
+          payment_id?: string | null
+          pdf_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_receipts_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_receipts_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "center_payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_sessions: {
+        Row: {
+          center_id: string
+          client_id: string
+          created_at: string
+          duration_min: number | null
+          end_time: string | null
+          id: string
+          is_voucher: boolean
+          meta: Json
+          note: string | null
+          price_krw: number
+          program_id: string | null
+          session_date: string
+          start_time: string | null
+          status: Database["public"]["Enums"]["center_session_status"]
+          therapist_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          center_id: string
+          client_id: string
+          created_at?: string
+          duration_min?: number | null
+          end_time?: string | null
+          id?: string
+          is_voucher?: boolean
+          meta?: Json
+          note?: string | null
+          price_krw?: number
+          program_id?: string | null
+          session_date: string
+          start_time?: string | null
+          status?: Database["public"]["Enums"]["center_session_status"]
+          therapist_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          center_id?: string
+          client_id?: string
+          created_at?: string
+          duration_min?: number | null
+          end_time?: string | null
+          id?: string
+          is_voucher?: boolean
+          meta?: Json
+          note?: string | null
+          price_krw?: number
+          program_id?: string | null
+          session_date?: string
+          start_time?: string | null
+          status?: Database["public"]["Enums"]["center_session_status"]
+          therapist_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_sessions_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_sessions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "center_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_sessions_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "center_programs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_sessions_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "center_therapists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_support_tickets: {
+        Row: {
+          body: string
+          category: string
+          center_id: string
+          created_at: string
+          id: string
+          status: string
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          body: string
+          category: string
+          center_id: string
+          created_at?: string
+          id?: string
+          status?: string
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string
+          category?: string
+          center_id?: string
+          created_at?: string
+          id?: string
+          status?: string
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_support_tickets_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_therapists: {
+        Row: {
+          account_status: string
+          birth_date: string | null
+          calendar_color: string | null
+          center_id: string
+          created_at: string
+          id: string
+          last_login_at: string | null
+          login_account: string | null
+          meta: Json
+          name: string
+          phone: string | null
+          specialty: string | null
+          title: string | null
+          updated_at: string
+          work_phone: string | null
+        }
+        Insert: {
+          account_status?: string
+          birth_date?: string | null
+          calendar_color?: string | null
+          center_id: string
+          created_at?: string
+          id?: string
+          last_login_at?: string | null
+          login_account?: string | null
+          meta?: Json
+          name: string
+          phone?: string | null
+          specialty?: string | null
+          title?: string | null
+          updated_at?: string
+          work_phone?: string | null
+        }
+        Update: {
+          account_status?: string
+          birth_date?: string | null
+          calendar_color?: string | null
+          center_id?: string
+          created_at?: string
+          id?: string
+          last_login_at?: string | null
+          login_account?: string | null
+          meta?: Json
+          name?: string
+          phone?: string | null
+          specialty?: string | null
+          title?: string | null
+          updated_at?: string
+          work_phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_therapists_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_vouchers: {
+        Row: {
+          center_id: string
+          client_id: string | null
+          copayment: number | null
+          created_at: string
+          id: string
+          meta: Json
+          monthly_amount: number | null
+          valid_from: string | null
+          valid_until: string | null
+          voucher_no: string | null
+          voucher_type: string
+        }
+        Insert: {
+          center_id: string
+          client_id?: string | null
+          copayment?: number | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          monthly_amount?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+          voucher_no?: string | null
+          voucher_type: string
+        }
+        Update: {
+          center_id?: string
+          client_id?: string | null
+          copayment?: number | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          monthly_amount?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+          voucher_no?: string | null
+          voucher_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_vouchers_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_vouchers_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "center_clients"
             referencedColumns: ["id"]
           },
         ]
@@ -16229,6 +16961,13 @@ export type Database = {
         Args: { p_client_user_id: string; p_institution_id: string }
         Returns: boolean
       }
+      has_center_role: {
+        Args: {
+          _center_id: string
+          _roles: Database["public"]["Enums"]["center_role"][]
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -16240,6 +16979,7 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
       }
+      is_center_member: { Args: { _center_id: string }; Returns: boolean }
       is_facility_admin: { Args: { facility_uuid: string }; Returns: boolean }
       is_institution_admin:
         | {
@@ -16312,6 +17052,13 @@ export type Database = {
     Enums: {
       account_type: "parent" | "teacher" | "therapist" | "admin"
       app_role: "admin" | "expert" | "user" | "institution_admin"
+      center_role: "owner" | "admin" | "therapist" | "viewer"
+      center_session_status:
+        | "scheduled"
+        | "completed"
+        | "cancelled"
+        | "cancelled_carry"
+        | "cancelled_makeup"
       child_dev_risk_level: "low" | "medium" | "high"
       child_mission_status: "started" | "in_progress" | "completed"
       consultation_session_status: "waiting" | "active" | "ended"
@@ -16467,6 +17214,14 @@ export const Constants = {
     Enums: {
       account_type: ["parent", "teacher", "therapist", "admin"],
       app_role: ["admin", "expert", "user", "institution_admin"],
+      center_role: ["owner", "admin", "therapist", "viewer"],
+      center_session_status: [
+        "scheduled",
+        "completed",
+        "cancelled",
+        "cancelled_carry",
+        "cancelled_makeup",
+      ],
       child_dev_risk_level: ["low", "medium", "high"],
       child_mission_status: ["started", "in_progress", "completed"],
       consultation_session_status: ["waiting", "active", "ended"],

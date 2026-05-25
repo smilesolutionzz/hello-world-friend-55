@@ -74,8 +74,8 @@ const B2BShowcaseSection: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button size="lg" onClick={() => navigate(localePath('/b2b-consulting'))} className="bg-white text-blue-700 hover:bg-white/90 font-semibold">{t.b2b.consultButton}<ArrowRight className="w-4 h-4 ml-2" /></Button>
-                  <Button size="lg" variant="outline" onClick={() => navigate(localePath('/eap-service'))} className="border-white/30 text-white hover:bg-white/10">{t.b2b.eapButton}</Button>
+                  <Button size="lg" onClick={() => navigate(localePath('/business'))} className="bg-white text-blue-700 hover:bg-white/90 font-semibold">{t.b2b.consultButton}<ArrowRight className="w-4 h-4 ml-2" /></Button>
+                  <Button size="lg" variant="outline" onClick={() => navigate(localePath('/business#eap'))} className="border-white/30 text-white hover:bg-white/10">{t.b2b.eapButton}</Button>
                 </div>
               </div>
               <div className="mt-6 pt-6 border-t border-white/20">

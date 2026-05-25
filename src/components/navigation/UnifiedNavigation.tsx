@@ -44,6 +44,7 @@ import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 
 import { useContext } from 'react';
 import { HubContext } from '@/components/assessment/HubContext';
+import { AudienceModeToggle } from '@/components/navigation/AudienceModeToggle';
 
 const UnifiedNavigationInner = () => {
   const navigate = useNavigate();

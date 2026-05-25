@@ -375,23 +375,26 @@ serve(async (req) => {
         }
 
       } else if (productType === 'expert_hours') {
-        // 전문가 시간권 적립
+        // 전문가 시간권 적립 (대용량 구매 시 보너스 시간)
         const orderId = payment.toss_order_id || '';
         const match = orderId.match(/expert_hours_(\d+)/);
         const packSize = match ? parseInt(match[1], 10) : 0;
+        const BONUS: Record<number, number> = { 5: 0, 10: 1, 20: 3, 30: 6 };
+        const bonus = BONUS[packSize] ?? 0;
+        const totalHours = packSize + bonus;
         if (packSize > 0) {
           await supabaseAdmin
             .from('expert_hour_packs')
             .insert({
               user_id: payment.user_id,
               pack_size: packSize,
-              hours_total: packSize,
-              hours_remaining: packSize,
+              hours_total: totalHours,
+              hours_remaining: totalHours,
               price_paid: payment.amount,
               payment_id: payment.id,
               status: 'active',
             });
-          console.log(`✅ Added ${packSize}h expert pack for user ${payment.user_id}`);
+          console.log(`✅ Added ${packSize}h (+${bonus} bonus) expert pack for user ${payment.user_id}`);
         } else {
           console.error('Could not parse pack size from order', orderId);
         }

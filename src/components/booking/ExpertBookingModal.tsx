@@ -18,8 +18,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const CONSULTATION_PRICE = 49000;
-const CONSULTATION_DURATION = 40;
+const CONSULTATION_PRICE = 39000; // 시간당 (시간 구독형)
+const CONSULTATION_DURATION = 60;
 
 interface ExpertBookingModalProps {
   open: boolean;

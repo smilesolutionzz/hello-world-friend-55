@@ -9,7 +9,7 @@ import {
   formatKRW,
 } from '@/lib/expertPricing';
 
-const REPORT_INTERPRETATION_BASE = 49000;
+const REPORT_INTERPRETATION_BASE = 19500; // 30분 = 시간권 0.5h (시간당 ₩39,000)
 
 interface MatchedExpert {
   id: string;

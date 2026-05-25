@@ -32,9 +32,9 @@ interface MatchedExpert {
 
 const OFFERING_PRICE: Record<string, { base: number; monthly: number; yearly: number; label: string; icon: any }> = {
   kakao_async: { base: 9900, monthly: 6900, yearly: 4900, label: '카톡 3일 비동기', icon: MessageCircle },
-  urgent_zoom_15: { base: 19900, monthly: 13900, yearly: 9900, label: '15분 긴급 줌', icon: Zap },
-  report_review_30: { base: 49000, monthly: 34300, yearly: 24500, label: '리포트 해석 30분', icon: Video },
-  monthly_coaching: { base: 159000, monthly: 119000, yearly: 79000, label: '월 정기 코칭 (4회)', icon: Video },
+  urgent_zoom_15: { base: 19900, monthly: 17910, yearly: 16915, label: '15분 긴급 줌 (시간권 0.25h)', icon: Zap },
+  report_review_30: { base: 19500, monthly: 17550, yearly: 16575, label: '리포트 해석 30분 (시간권 0.5h)', icon: Video },
+  monthly_coaching: { base: 156000, monthly: 140400, yearly: 132600, label: '월 정기 코칭 4회 (시간권 4h)', icon: Video },
 };
 
 export const SmartConsultMatcher = ({

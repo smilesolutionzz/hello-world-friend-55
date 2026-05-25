@@ -69,19 +69,19 @@ const ExpertTrustCards: React.FC = () => {
       >
         <div className="flex items-center gap-2 mb-3">
           <Crown className="w-4 h-4 text-amber-500" />
-          <span className="text-sm font-bold text-foreground">상담 가격 안내</span>
+          <span className="text-sm font-bold text-foreground">상담 가격 안내 · 시간 구독형</span>
         </div>
         <div className="grid sm:grid-cols-2 gap-3">
           <div className="rounded-xl bg-muted/40 p-4">
             <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1">기본</div>
-            <div className="text-xl font-black text-foreground">40분 ₩49,000</div>
-            <div className="text-xs text-muted-foreground mt-1">화상 또는 채팅 1:1</div>
+            <div className="text-xl font-black text-foreground break-keep">시간당 ₩39,000</div>
+            <div className="text-xs text-muted-foreground mt-1">5 / 10 / 20 / 30시간 시간권 · 만료 없음</div>
           </div>
           <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 p-4">
-            <div className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1">30일 트랙 구매자</div>
-            <div className="text-xl font-black text-emerald-700 dark:text-emerald-400">1회 무료 + 30% 할인</div>
+            <div className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1">진행 방식</div>
+            <div className="text-xl font-black text-emerald-700 dark:text-emerald-400 break-keep">화상 1배 · 홈티 1.5배</div>
             <div className="text-xs text-emerald-700 dark:text-emerald-400 mt-1 flex items-center gap-1">
-              <Check className="w-3 h-3" /> 자동 적용
+              <Check className="w-3 h-3" /> 시간 단위 자유 사용
             </div>
           </div>
         </div>

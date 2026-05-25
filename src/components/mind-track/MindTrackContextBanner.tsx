@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 const OFFERING_INFO: Record<string, { label: string; price: number; icon: any; color: string; topic: string }> = {
   text_review: { label: "Day 7 텍스트 점검 (₩9,900)", price: 9900, icon: MessageCircle, color: "from-blue-500 to-cyan-500", topic: "7일 마음 트랙 중간 점검을 받고 싶어요. 지금까지의 체크인 데이터를 검토해주세요." },
   midcheck: { label: "Day 14 미드체크 (₩29,000)", price: 29000, icon: Award, color: "from-primary to-purple-600", topic: "마음 트랙 절반 지점에서 1:1 미드체크 상담을 받고 싶어요. 변화 그래프를 함께 보고 싶습니다." },
-  urgent: { label: "Day 21 심화 케어 (₩49,000)", price: 49000, icon: ShieldCheck, color: "from-rose-500 to-orange-500", topic: "마음 트랙 후반부를 위한 심화 케어 우선 매칭이 필요해요." },
+  urgent: { label: "Day 21 심화 케어 (시간권 1h · ₩39,000)", price: 39000, icon: ShieldCheck, color: "from-rose-500 to-orange-500", topic: "마음 트랙 후반부를 위한 심화 케어 우선 매칭이 필요해요." },
   premium_60: { label: "Day 30 프리미엄 트랙 (₩99,000)", price: 99000, icon: Crown, color: "from-amber-500 to-yellow-500", topic: "마음 트랙을 완료했어요. 다음 60일 프리미엄 트랙에 등록하고 싶어요." },
 };
 

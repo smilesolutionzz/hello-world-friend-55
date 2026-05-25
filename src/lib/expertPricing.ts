@@ -1,6 +1,9 @@
 import type { UserSubscription } from '@/hooks/useSubscription';
 
-export const EXPERT_BASE_PRICE = 49000;
+// 전문가 상담은 시간 구독형 단일 체계 — 시간당 ₩39,000 (5/10/20/30시간 시간권)
+export const EXPERT_HOUR_RATE = 39000;
+// 호환용: 1시간 기준가
+export const EXPERT_BASE_PRICE = EXPERT_HOUR_RATE;
 
 export type ExpertDiscountTier = 'none' | 'monthly' | 'yearly' | 'lifetime';
 
@@ -13,9 +16,7 @@ export interface ExpertPricing {
 }
 
 /**
- * 구독 정보를 기반으로 전문가 상담 할인율을 계산합니다.
- * - 월간 구독자: 30% 할인
- * - 연간/평생 구독자: 50% 할인
+ * 구독자 시간권 추가 구매 시 할인율.
  */
 export function getExpertDiscountTier(
   subscription: UserSubscription | null | undefined
@@ -34,7 +35,6 @@ export function getExpertDiscountTier(
       : 0;
   const periodDays = periodMs / (1000 * 60 * 60 * 24);
 
-  // 연간 플랜 (이름에 yearly/연간/annual 포함되거나 기간이 180일 초과)
   const isYearly =
     /year|연간|annual|12개월/.test(planName) || periodDays > 180;
 
@@ -52,15 +52,15 @@ export function calculateExpertPricing(
   const tier = getExpertDiscountTier(subscription);
   const discountMap: Record<ExpertDiscountTier, number> = {
     none: 0,
-    monthly: 30,
-    yearly: 50,
-    lifetime: 50,
+    monthly: 10,
+    yearly: 15,
+    lifetime: 15,
   };
   const labelMap: Record<ExpertDiscountTier, string> = {
     none: '',
-    monthly: '월간 구독자 30% 할인',
-    yearly: '연간 구독자 50% 할인',
-    lifetime: '평생 이용권 50% 할인',
+    monthly: '월간 구독자 10% 할인',
+    yearly: '연간 구독자 15% 할인',
+    lifetime: '평생 이용권 15% 할인',
   };
   const discountPercent = discountMap[tier];
   const final = Math.round((basePrice * (100 - discountPercent)) / 100);

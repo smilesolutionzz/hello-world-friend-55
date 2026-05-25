@@ -59,7 +59,7 @@ const getFacilityImage = (index: number) => {
   return ALL_FACILITY_IMAGES[index % ALL_FACILITY_IMAGES.length];
 };
 
-const CONSULT_PRICE = 49000;
+const CONSULT_PRICE = 39000; // 시간당 (시간 구독형)
 
 interface Expert {
   id: string;

@@ -72,6 +72,27 @@ export const PRODUCTS = {
     originalPrice: 19900,
     discount: 35,
   },
+  // 전문가 시간권 (시간당 ₩39,000, 홈티는 1.5배 차감)
+  expert_hours_5: {
+    id: 'expert_hours_5', type: 'expert_hours',
+    name: '전문가 시간권 5시간', description: '5시간 · 시간당 ₩39,000',
+    price: 195000, originalPrice: 245000, discount: 20,
+  },
+  expert_hours_10: {
+    id: 'expert_hours_10', type: 'expert_hours',
+    name: '전문가 시간권 10시간', description: '10시간 · 시간당 ₩39,000',
+    price: 390000, originalPrice: 490000, discount: 20,
+  },
+  expert_hours_20: {
+    id: 'expert_hours_20', type: 'expert_hours',
+    name: '전문가 시간권 20시간', description: '20시간 · 시간당 ₩39,000',
+    price: 780000, originalPrice: 980000, discount: 20,
+  },
+  expert_hours_30: {
+    id: 'expert_hours_30', type: 'expert_hours',
+    name: '전문가 시간권 30시간', description: '30시간 · 시간당 ₩39,000',
+    price: 1170000, originalPrice: 1470000, discount: 20,
+  },
   // 하위 호환성
   pass_30: { 
     id: 'subscription_monthly', 

@@ -12,7 +12,8 @@ export type StoreCategory =
   | 'sensory'
   | 'book'
   | 'parenting'
-  | 'wellness';
+  | 'wellness'
+  | 'assessment_package';
 
 export interface StoreProduct {
   id: string;
@@ -28,6 +29,8 @@ export interface StoreProduct {
   reviewCount?: number;
   tags?: string[];
   badge?: 'BEST' | 'NEW' | 'HOT' | '추천';
+  /** 한 줄 카피 — 심리검사 패키지 등에서 사용 */
+  tagline?: string;
 }
 
 export const STORE_CATEGORIES: { key: StoreCategory; label: string; emoji?: string }[] = [
@@ -36,6 +39,7 @@ export const STORE_CATEGORIES: { key: StoreCategory; label: string; emoji?: stri
   { key: 'book', label: '추천 도서' },
   { key: 'parenting', label: '부모 코칭' },
   { key: 'wellness', label: '웰니스' },
+  { key: 'assessment_package', label: '심리검사 패키지' },
 ];
 
 /**
@@ -153,6 +157,66 @@ export const STORE_PRODUCTS: StoreProduct[] = [
     reviewCount: 64,
     badge: '추천',
     tags: ['정서', '48개월+'],
+  },
+  {
+    id: 'pk001',
+    name: '심리상담 패키지',
+    category: 'assessment_package',
+    price: 119000,
+    originalPrice: 150000,
+    discountPercent: 21,
+    image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80',
+    url: `${STORE_BASE_URL}/product/list.html?cate_no=30`,
+    rating: 4.9,
+    reviewCount: 82,
+    badge: '추천',
+    tags: ['상담', 'K-OCEAN', 'YSR'],
+    tagline: '"내 아이의 자존감, 지금은 몇 점인가요?"',
+  },
+  {
+    id: 'pk002',
+    name: '심리검사 패키지 - 청소년',
+    category: 'assessment_package',
+    price: 119000,
+    originalPrice: 150000,
+    discountPercent: 21,
+    image: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80',
+    url: `${STORE_BASE_URL}/product/list.html?cate_no=30`,
+    rating: 4.8,
+    reviewCount: 64,
+    badge: 'HOT',
+    tags: ['청소년', 'K-BASC-3', '학업 스트레스'],
+    tagline: '"친구 관계·학업 스트레스, 전문가 분석으로 해결"',
+  },
+  {
+    id: 'pk003',
+    name: '심리검사 패키지 - 우울/불안',
+    category: 'assessment_package',
+    price: 119000,
+    originalPrice: 150000,
+    discountPercent: 21,
+    image: 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=600&q=80',
+    url: `${STORE_BASE_URL}/product/list.html?cate_no=30`,
+    rating: 4.9,
+    reviewCount: 51,
+    badge: 'BEST',
+    tags: ['청소년', '우울', '불안'],
+    tagline: '"단순 우울이 아닌, 데이터로 확인하는 정서 건강"',
+  },
+  {
+    id: 'pk004',
+    name: '심리검사 세트 - 멘탈 배터리',
+    category: 'assessment_package',
+    price: 119000,
+    originalPrice: 150000,
+    discountPercent: 21,
+    image: 'https://images.unsplash.com/photo-1581349485608-9469926a8e5e?w=600&q=80',
+    url: `${STORE_BASE_URL}/product/list.html?cate_no=30`,
+    rating: 4.8,
+    reviewCount: 39,
+    badge: 'NEW',
+    tags: ['청소년', 'TBI', 'ASR'],
+    tagline: '"당신의 멘탈 배터리, 지금은 몇 %인가요?"',
   },
 ];
 

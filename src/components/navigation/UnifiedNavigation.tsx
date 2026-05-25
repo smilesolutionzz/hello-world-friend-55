@@ -32,7 +32,6 @@ import {
   Target,
   BookOpen,
   Lock,
-  Building2,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -44,6 +43,7 @@ import { MIND_TRACK_7_PRICE } from '@/constants/tokenCosts';
 
 import { useContext } from 'react';
 import { HubContext } from '@/components/assessment/HubContext';
+import { AudienceModeToggle } from '@/components/navigation/AudienceModeToggle';
 
 const UnifiedNavigationInner = () => {
   const navigate = useNavigate();
@@ -85,11 +85,7 @@ const UnifiedNavigationInner = () => {
         { label: t.nav.expertConsult, path: '/expert-hiring', desc: t.nav.expertConsultDesc, icon: UserCheck },
       ]
     },
-    {
-      label: '기업',
-      icon: Building2,
-      path: '/business',
-    },
+    // "기업" 메뉴는 헤더 우측의 AudienceModeToggle(개인용/기업용)로 승격
     // 마음일기·칼럼·30일 워크북은 푸터 및 각 페이지 내부 진입점으로 이동 (네비 경량화)
   ];
 
@@ -269,6 +265,8 @@ const UnifiedNavigationInner = () => {
 
             {/* Right Side */}
             <div className="flex items-center gap-2">
+              {/* B2C ↔ B2B 모드 토글 */}
+              <AudienceModeToggle className="mr-1" />
               {/* Subscription Status — 아이콘만 (프리미엄은 라벨 유지) */}
               <Button
                 variant="ghost"
@@ -370,7 +368,9 @@ const UnifiedNavigationInner = () => {
           </div>
 
           {/* Right Side */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            {/* B2C ↔ B2B 모드 토글 (모바일 헤더) */}
+            <AudienceModeToggle size="sm" />
             {/* Language Toggle */}
             <Button
               variant="ghost"

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Users, BarChart3, FileText, Building2, Lock, BookOpen, Tag } from 'lucide-react';
+import { ArrowRight, Shield, Users, BarChart3, FileText, Building2, Lock, BookOpen, Tag, Brain, HeartHandshake, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import BusinessROICalculator from '@/components/b2b/BusinessROICalculator';
@@ -49,6 +49,45 @@ const assets = [
     icon: BookOpen,
   },
 ];
+
+const solutions = [
+  {
+    id: 'jobcoach',
+    tag: '기업 HR',
+    title: '직장 정신건강 잡코치',
+    desc: '번아웃 히트맵 · 익명 1:1 코칭 · 부서별 위험 신호 추적 · ROI 추정',
+    cta: '잡코치 자세히',
+    path: '/b2b-jobcoach',
+    icon: Brain,
+  },
+  {
+    id: 'institution',
+    tag: '학교 · 상담센터 · 복지기관',
+    title: '발달 코칭 리포트 SaaS',
+    desc: '월간 발달 코칭 리포트 자동 생성 · 지자체·교육청 보고 양식 변환',
+    cta: '기관용 제안 보기',
+    path: '/b2b-proposal?segment=institution',
+    icon: Building2,
+  },
+  {
+    id: 'eap',
+    tag: 'EAP · 임직원 상담',
+    title: '전문가 상담 시간 패키지',
+    desc: '5/10/20/30시간 묶음 구독 · 익명 매칭 · 홈티 1.5배 차감 옵션',
+    cta: '상담 패키지 보기',
+    path: '/expert-hiring?b2b=1',
+    icon: HeartHandshake,
+  },
+  {
+    id: 'demo',
+    tag: '화이트라벨 데모',
+    title: '30초 샘플 리포트 생성기',
+    desc: '기관 로고가 들어간 데모 PDF · 영업·검토용 즉석 출력',
+    cta: '데모 만들기',
+    path: '/b2b-demo-report',
+    icon: Sparkles,
+  },
+] as const;
 
 const steps = [
   { n: '01', t: '도입 문의', d: '직원 규모와 목표 공유, 맞춤 플랜 제안' },
@@ -113,12 +152,52 @@ export default function Business() {
         </div>
       </section>
 
+      {/* Solution Matrix — 4개 핵심 라인업 */}
+      <section id="solutions" className="px-6 pb-20">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-xs tracking-[0.2em] text-foreground/50 mb-3 text-center">SOLUTIONS</p>
+          <h2 className="text-2xl md:text-3xl font-semibold text-center mb-3 break-keep">
+            4가지 라인업 중 우리 조직에 맞는 것을 고르세요
+          </h2>
+          <p className="text-center text-sm text-foreground/60 mb-12 break-keep">
+            기업 HR · 학교/상담/복지 · EAP 상담 · 화이트라벨 데모 — 모두 동일한 비의료 코칭 엔진 위에 구축됩니다.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {solutions.map((s) => {
+              const Icon = s.icon;
+              return (
+                <button
+                  key={s.id}
+                  id={s.id}
+                  onClick={() => { trackCTA(`solution_card_${s.id}`, s.path); navigate(s.path); }}
+                  className="group text-left rounded-3xl border bg-white p-6 hover:border-foreground/30 hover:shadow-sm transition-all flex flex-col h-full scroll-mt-24"
+                >
+                  <div
+                    className="flex h-11 w-11 items-center justify-center rounded-2xl mb-5"
+                    style={{ background: `${GOLD}1A` }}
+                  >
+                    <Icon className="h-5 w-5" style={{ color: GOLD }} />
+                  </div>
+                  <p className="text-[10px] font-semibold tracking-[0.18em] text-foreground/50 uppercase mb-2">{s.tag}</p>
+                  <h3 className="text-lg font-semibold mb-2 break-keep leading-snug">{s.title}</h3>
+                  <p className="text-sm text-foreground/60 break-keep leading-relaxed flex-1">{s.desc}</p>
+                  <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-foreground/80 group-hover:gap-2 transition-all">
+                    {s.cta} <ArrowRight className="w-4 h-4" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* ROI Calculator */}
       <section className="px-6 pb-16">
         <div className="mx-auto max-w-5xl">
           <BusinessROICalculator />
         </div>
       </section>
+
 
       {/* 3-Step Flow */}
       <section className="px-6 pb-20">

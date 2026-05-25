@@ -169,9 +169,12 @@ export default function ExpertHourPackHero() {
       </div>
 
       {/* Pack cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-4">
         {PACKS.map(p => {
           const total = p.size * HOUR_RATE;
+          const totalHours = p.size + p.bonus;
+          const effective = Math.round(total / totalHours);
+          const savePct = p.bonus > 0 ? Math.round((p.bonus / totalHours) * 100) : 0;
           return (
             <Card
               key={p.size}
@@ -181,21 +184,37 @@ export default function ExpertHourPackHero() {
               )}
             >
               {p.popular && (
-                <div className="absolute -top-2.5 left-4 px-2 py-0.5 rounded-full text-[10px] font-bold bg-foreground text-background">
+                <div className="absolute -top-2.5 left-4 px-2 py-0.5 rounded-full text-[10px] font-bold bg-foreground text-background shadow-sm z-10">
                   인기
+                </div>
+              )}
+              {p.bonus > 0 && (
+                <div className="absolute -top-2.5 right-3 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-white shadow-sm z-10">
+                  +{p.bonus}h 보너스
                 </div>
               )}
               <CardContent className="p-4 md:p-5 flex flex-col gap-3">
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">{p.label}</p>
                   <p className="text-2xl md:text-3xl font-bold mt-1 tracking-tight">
-                    {p.size}<span className="text-base font-medium text-muted-foreground ml-1">시간</span>
+                    {p.size}
+                    {p.bonus > 0 && (
+                      <span className="text-base font-bold text-amber-600 ml-1">+{p.bonus}</span>
+                    )}
+                    <span className="text-base font-medium text-muted-foreground ml-1">시간</span>
                   </p>
                   <p className="text-[11px] text-muted-foreground mt-1 break-keep">{p.tagline}</p>
                 </div>
                 <div className="border-t border-border pt-3">
                   <p className="text-lg font-bold text-foreground tabular-nums">{formatKRW(total)}</p>
-                  <p className="text-[11px] text-muted-foreground">시간당 {formatKRW(HOUR_RATE)}</p>
+                  {p.bonus > 0 ? (
+                    <p className="text-[11px] text-muted-foreground break-keep">
+                      실질 시간당 <span className="font-semibold text-amber-600 tabular-nums">{formatKRW(effective)}</span>
+                      <span className="ml-1">({savePct}% 할인)</span>
+                    </p>
+                  ) : (
+                    <p className="text-[11px] text-muted-foreground">시간당 {formatKRW(HOUR_RATE)}</p>
+                  )}
                 </div>
                 <Button
                   size="sm"

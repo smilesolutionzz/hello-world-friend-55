@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Clock, Home, Video, Sparkles, Check, ChevronRight } from "lucide-react";
+import { Clock, Home, Video, MessageCircle, Sparkles, Check, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -231,15 +231,19 @@ export default function ExpertHourPackHero() {
       </div>
 
       {/* Info row */}
-      <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-muted-foreground">
+      <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-2 rounded-xl bg-muted/40 px-3 py-2">
-          <Video className="w-3.5 h-3.5" /> 화상 상담 · 1시간 차감
+          <Video className="w-3.5 h-3.5 shrink-0" /> <span className="break-keep">화상 · 1h 차감</span>
         </div>
         <div className="flex items-center gap-2 rounded-xl bg-muted/40 px-3 py-2">
-          <Home className="w-3.5 h-3.5" /> 홈티(방문) · 1.5시간 차감
+          <MessageCircle className="w-3.5 h-3.5 shrink-0 text-[#FAE100]" />
+          <span className="break-keep">카톡 상담 · 0.5h 차감</span>
         </div>
         <div className="flex items-center gap-2 rounded-xl bg-muted/40 px-3 py-2">
-          <Check className="w-3.5 h-3.5" /> 시간 단위 자유 사용 · 만료 없음
+          <Home className="w-3.5 h-3.5 shrink-0" /> <span className="break-keep">홈티(방문) · 1.5h 차감</span>
+        </div>
+        <div className="flex items-center gap-2 rounded-xl bg-muted/40 px-3 py-2">
+          <Check className="w-3.5 h-3.5 shrink-0" /> <span className="break-keep">자유 사용 · 만료 없음</span>
         </div>
       </div>
 

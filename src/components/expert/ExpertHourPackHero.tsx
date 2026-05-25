@@ -181,7 +181,7 @@ export default function ExpertHourPackHero() {
       </div>
 
       {/* Pack cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-6">
         {PACKS.map(p => {
           const total = p.size * HOUR_RATE;
           const totalHours = p.size + p.bonus;
@@ -191,7 +191,7 @@ export default function ExpertHourPackHero() {
             <Card
               key={p.size}
               className={cn(
-                "relative rounded-2xl border bg-white transition-all hover:border-foreground/40 hover:shadow-md",
+                "relative rounded-2xl border bg-white transition-all hover:border-foreground/40 hover:shadow-md !overflow-visible",
                 p.popular ? "border-foreground" : "border-border"
               )}
             >

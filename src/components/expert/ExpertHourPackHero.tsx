@@ -144,7 +144,7 @@ export default function ExpertHourPackHero() {
   };
 
   return (
-    <section className="mb-8 overflow-hidden">
+    <section className="mb-8">
       {/* Header */}
       <div className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div className="min-w-0">

@@ -219,3 +219,6 @@ export const STORE_PRODUCTS: StoreProduct[] = [
     tagline: '"당신의 멘탈 배터리, 지금은 몇 %인가요?"',
   },
 ];
+
+export const getStoreProductsByCategory = (category?: StoreCategory) =>
+  category ? STORE_PRODUCTS.filter((p) => p.category === category) : STORE_PRODUCTS;

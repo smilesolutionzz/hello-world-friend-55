@@ -187,6 +187,18 @@ import BetaRecruitment from "./pages/BetaRecruitment";
 import Reviews from "./pages/Reviews";
 import AboutExpert from "./pages/AboutExpert";
 
+// B2B 발달치료센터
+import B2BCenterLanding from "./pages/b2b-center/B2BCenterLanding";
+import B2BCenterImport from "./pages/b2b-center/B2BCenterImport";
+import B2BCenterApp from "./pages/b2b-center/B2BCenterApp";
+import CenterClientsPage from "./pages/b2b-center/console/ClientsPage";
+import CenterByTherapistPage from "./pages/b2b-center/console/ByTherapistPage";
+import CenterAttendancePage from "./pages/b2b-center/console/AttendancePage";
+import CenterBillingStatsPage from "./pages/b2b-center/console/BillingStatsPage";
+import CenterTherapistsAdminPage from "./pages/b2b-center/console/TherapistsAdminPage";
+import CenterPlaceholderBase from "./pages/b2b-center/console/PlaceholderPage";
+const CenterPlaceholder = (props: { title: string; desc: string }) => <CenterPlaceholderBase {...props} />;
+
 // Packages (SEO landing pages)
 import StressPackage from "./pages/StressPackage";
 import DepressionPackage from "./pages/DepressionPackage";

@@ -373,6 +373,18 @@ export default function MindTrackDashboard() {
           </div>
           <Progress value={progressPct} className="h-1 mb-6" />
 
+          {userId && (
+            <WeekProgressDashboard
+              enrollmentId={enrollment.id}
+              userId={userId}
+              startedAt={enrollment.started_at}
+              currentDay={day}
+              totalDays={totalDays}
+              checkins={allCheckins}
+              onChanged={() => loadDashboard({ silent: true })}
+            />
+          )}
+
           {/* 2) 오늘의 미션 — 단 하나의 명확한 액션 */}
           <motion.section
             initial={{ opacity: 0, y: 8 }}

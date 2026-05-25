@@ -1,0 +1,77 @@
+import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+
+type Ctx = { centerId: string };
+
+export default function TherapistsAdminPage() {
+  const { centerId } = useOutletContext<Ctx>();
+  const [rows, setRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from("center_therapists").select("*").eq("center_id", centerId)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => { setRows(data ?? []); setLoading(false); });
+  }, [centerId]);
+
+  const active = rows.filter(r => r.account_status === "active").length;
+  const locked = rows.filter(r => r.account_status === "locked").length;
+  const inactive = rows.filter(r => r.account_status === "inactive").length;
+
+  return (
+    <div className="p-8">
+      <h1 className="text-2xl font-semibold mb-1">선생님 관리</h1>
+      <p className="text-sm text-neutral-500 mb-6">총 {rows.length}명</p>
+
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        <Stat label="정상" value={active} color="bg-emerald-500" />
+        <Stat label="잠금" value={locked} color="bg-amber-500" />
+        <Stat label="미사용(퇴사)" value={inactive} color="bg-neutral-300" />
+      </div>
+
+      <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-neutral-50 text-neutral-500">
+            <tr>
+              <th className="text-left p-3">색상</th>
+              <th className="text-left p-3">이름</th>
+              <th className="text-left p-3">직급</th>
+              <th className="text-left p-3">전공</th>
+              <th className="text-left p-3">전화</th>
+              <th className="text-left p-3">계정</th>
+              <th className="text-left p-3">상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? <tr><td colSpan={7} className="p-8 text-center text-neutral-400">불러오는 중…</td></tr> :
+             rows.length === 0 ? <tr><td colSpan={7} className="p-8 text-center text-neutral-400">선생님이 없습니다.</td></tr> :
+             rows.map((r) => (
+              <tr key={r.id} className="border-t border-neutral-100">
+                <td className="p-3"><div className="w-4 h-4 rounded" style={{ backgroundColor: r.calendar_color || "#94a3b8" }} /></td>
+                <td className="p-3 font-medium">{r.name}</td>
+                <td className="p-3">{r.title ?? "—"}</td>
+                <td className="p-3">{r.specialty ?? "—"}</td>
+                <td className="p-3">{r.phone ?? "—"}</td>
+                <td className="p-3 text-neutral-500">{r.login_account ?? "—"}</td>
+                <td className="p-3"><span className="px-2 py-0.5 rounded-full text-xs bg-neutral-100">{r.account_status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function Stat({ label, value, color }: { label: string; value: number; color: string }) {
+  return (
+    <div className="bg-white rounded-2xl border border-neutral-200 p-5">
+      <div className="flex items-center gap-2 mb-1">
+        <span className={`w-2 h-2 rounded-full ${color}`} />
+        <span className="text-xs text-neutral-500">{label}</span>
+      </div>
+      <div className="text-2xl font-semibold">{value}</div>
+    </div>
+  );
+}

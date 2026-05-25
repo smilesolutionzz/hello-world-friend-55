@@ -145,6 +145,18 @@ export default function ExpertHourPackHero() {
 
   return (
     <section className="mb-8">
+      {/* Top balance bar */}
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-border bg-white px-4 py-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <Clock className="w-4 h-4 text-foreground shrink-0" />
+          <span className="text-xs sm:text-sm text-muted-foreground break-keep">내 보유 시간</span>
+        </div>
+        <div className="flex items-baseline gap-1 tabular-nums shrink-0">
+          <span className="text-2xl sm:text-3xl font-bold text-foreground">{totalRemaining}</span>
+          <span className="text-sm text-muted-foreground">/ {totalBought}h</span>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div className="min-w-0">

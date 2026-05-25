@@ -55,7 +55,7 @@ const StoreSection: React.FC = () => {
       {/* PC — 빈칸 없도록 반응형 그리드(전체 노출) */}
       <div className="hidden md:grid gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {desktopItems.map((p) => (
-          <StoreProductCard key={p.id} product={p} className="w-full" />
+          <StoreProductCard key={p.id} product={p} fullWidth />
         ))}
       </div>
     </section>

@@ -127,7 +127,7 @@ const RefundPolicy = () => {
                   <section>
                     <h2 className="text-xl font-semibold mb-3">{isEnglish ? '4. Expert Consultation Refund Policy' : '4. 전문가 상담 환불 정책'}</h2>
                     <div className="space-y-2 text-muted-foreground">
-                      <p>{isEnglish ? 'Expert consultations (40 min ₩49,000 / 80 min ₩79,000) refund depends on cancellation timing:' : '전문가 상담(40분 ₩49,000 / 80분 ₩79,000)은 예약 취소 시점에 따라 환불 금액이 달라집니다:'}</p>
+                      <p>{isEnglish ? 'Expert consultations are billed via time packs (₩39,000/hr — 5/10/20/30h, home visits deduct 1.5×). Refunds depend on cancellation timing:' : '전문가 상담은 시간 구독형(시간당 ₩39,000 · 5/10/20/30시간 시간권, 홈티 1.5배 차감)으로 제공되며, 예약 취소 시점에 따라 환불 금액이 달라집니다:'}</p>
                       <ul className="list-disc pl-6 space-y-1 mt-2">
                         {isEnglish ? (
                           <>

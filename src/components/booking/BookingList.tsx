@@ -295,7 +295,7 @@ export const BookingList = ({ userView = true }: { userView?: boolean }) => {
                         {STATUS_LABELS[booking.status].label}
                       </Badge>
                       <span className="text-xs text-muted-foreground">
-                        {(booking.tokens_paid > 0 ? booking.tokens_paid * 100 : 49000).toLocaleString()}원
+                        {(booking.tokens_paid > 0 ? booking.tokens_paid * 100 : 39000).toLocaleString()}원
                       </span>
                     </div>
                   </div>

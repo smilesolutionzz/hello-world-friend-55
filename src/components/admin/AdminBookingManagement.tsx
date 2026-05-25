@@ -117,7 +117,7 @@ export const AdminBookingManagement: React.FC = () => {
     const cancelled = bookings.filter(b => b.status === 'cancelled').length;
     const revenue = bookings
       .filter(b => b.status === 'confirmed' || b.status === 'completed')
-      .reduce((sum, b) => sum + (b.tokens_paid > 0 ? b.tokens_paid * 100 : 49000), 0);
+      .reduce((sum, b) => sum + (b.tokens_paid > 0 ? b.tokens_paid * 100 : 39000), 0);
     return { total, pending, confirmed, completed, cancelled, revenue };
   }, [bookings]);
 
@@ -198,7 +198,7 @@ export const AdminBookingManagement: React.FC = () => {
   };
 
   const getPrice = (b: AdminBooking) => {
-    return b.tokens_paid > 0 ? b.tokens_paid * 100 : 49000;
+    return b.tokens_paid > 0 ? b.tokens_paid * 100 : 39000;
   };
 
   if (loading) {

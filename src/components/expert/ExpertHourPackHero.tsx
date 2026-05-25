@@ -144,22 +144,22 @@ export default function ExpertHourPackHero() {
   };
 
   return (
-    <section className="mb-8">
+    <section className="mb-8 overflow-hidden">
       {/* Header */}
-      <div className="mb-4 flex items-end justify-between gap-3 flex-wrap">
-        <div>
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div className="min-w-0">
           <Badge className="mb-2 bg-foreground text-background hover:bg-foreground/90">
             <Sparkles className="w-3 h-3 mr-1" /> 신규 · 시간 구독형
           </Badge>
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground break-keep">
             전문가 시간권 · 필요할 때마다 차감
           </h2>
-          <p className="text-sm text-muted-foreground mt-1.5">
-            시간당 <span className="font-semibold text-foreground">{formatKRW(HOUR_RATE)}</span> · 화상/대면 자유 선택 · 홈티(방문) 가능
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 break-keep">
+            시간당 <span className="font-semibold text-foreground">{formatKRW(HOUR_RATE)}</span> · 화상/대면 자유 · 홈티(방문) 가능
           </p>
         </div>
         {hasAny && (
-          <div className="rounded-2xl border border-border bg-white px-4 py-3 text-right">
+          <div className="rounded-2xl border border-border bg-white px-4 py-3 sm:text-right shrink-0">
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground">내 잔여 시간</p>
             <p className="text-2xl font-bold tabular-nums text-foreground">
               {totalRemaining}<span className="text-sm text-muted-foreground ml-1">/ {totalBought}h</span>

@@ -17,7 +17,7 @@ const MILESTONES = [
     isFree: true,
   },
   { day: 14, icon: Award, label: "절반 미드체크", price: "₩29,000", desc: "1:1 화상 상담 40분", color: "from-primary to-purple-600", route: "/expert-hiring?intervention=day14&offering=midcheck" },
-  { day: 21, icon: ShieldCheck, label: "심화 케어", price: "₩49,000", desc: "우선 매칭 60분 심화", color: "from-rose-500 to-orange-500", route: "/expert-hiring?intervention=day21&offering=urgent&urgent=true" },
+  { day: 21, icon: ShieldCheck, label: "심화 케어", price: "시간권 1h", desc: "우선 매칭 60분 (시간당 ₩39,000)", color: "from-rose-500 to-orange-500", route: "/expert-hiring?intervention=day21&offering=urgent&urgent=true" },
   { day: 30, icon: Crown, label: "졸업 프리미엄", price: "₩99,000", desc: "다음 60일 트랙", color: "from-amber-500 to-yellow-500", route: "/pricing?product=premium_60&from=mind_track_grad" },
 ];
 

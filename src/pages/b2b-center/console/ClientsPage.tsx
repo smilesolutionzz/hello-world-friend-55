@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, UserPlus, Upload } from "lucide-react";
+import { Search, UserPlus, Upload, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 import ClientRegisterDialog from "@/components/b2b-center/ClientRegisterDialog";
+import InviteParentDialog from "@/components/b2b-center/InviteParentDialog";
 import { DEMO_CLIENTS } from "@/lib/b2bCenter/demoData";
 
 type Ctx = { centerId: string; demo?: boolean };
@@ -35,6 +36,7 @@ export default function ClientsPage() {
   const [filter, setFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [inviteFor, setInviteFor] = useState<{ id: string; name: string } | null>(null);
 
   const load = useCallback(() => {
     if (demo) {
@@ -50,7 +52,16 @@ export default function ClientsPage() {
     }
     setLoading(true);
     supabase.from("center_clients").select("*").eq("center_id", centerId).order("created_at", { ascending: false })
-      .then(({ data }) => { setRows((data ?? []) as Client[]); setLoading(false); });
+      .then(({ data }) => {
+        const list = (data ?? []) as Client[];
+        setRows(list);
+        setLoading(false);
+        if (list.length > 0) {
+          supabase.from("center_onboarding_progress")
+            .upsert({ center_id: centerId, step_key: "first_client_added" }, { onConflict: "center_id,step_key" })
+            .then(() => {});
+        }
+      });
   }, [centerId, demo]);
 
   useEffect(() => { load(); }, [load]);
@@ -111,13 +122,14 @@ export default function ClientsPage() {
               <th className="text-left p-3 font-medium">보호자 연락처</th>
               <th className="text-left p-3 font-medium">장애정보</th>
               <th className="text-left p-3 font-medium">상태</th>
+              <th className="text-right p-3 font-medium">AIHPRO</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} className="p-12 text-center text-neutral-400">불러오는 중…</td></tr>
+              <tr><td colSpan={8} className="p-12 text-center text-neutral-400">불러오는 중…</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} className="p-12 text-center text-neutral-400">
+              <tr><td colSpan={8} className="p-12 text-center text-neutral-400">
                 <p className="mb-3">아직 등록된 이용자가 없습니다.</p>
                 <div className="inline-flex gap-2">
                   <button onClick={() => setRegisterOpen(true)} className="px-4 py-2 rounded-full bg-neutral-900 text-white text-sm">이용자 등록</button>
@@ -137,6 +149,12 @@ export default function ClientsPage() {
                     {statusLabel[r.status] ?? r.status}
                   </span>
                 </td>
+                <td className="p-3 text-right">
+                  <button onClick={() => setInviteFor({ id: r.id, name: r.name })}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs bg-[#FAF6E8] text-neutral-800 hover:bg-[#F0E8C8] border border-[#C8B88A]/30">
+                    <Send className="w-3 h-3" /> 초대
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -150,6 +168,16 @@ export default function ClientsPage() {
         onClose={() => setRegisterOpen(false)}
         onCreated={load}
       />
+
+      {inviteFor && (
+        <InviteParentDialog
+          open={!!inviteFor}
+          centerId={centerId}
+          client={inviteFor}
+          demo={demo}
+          onClose={() => setInviteFor(null)}
+        />
+      )}
     </div>
   );
 }

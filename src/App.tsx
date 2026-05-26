@@ -206,6 +206,8 @@ import CenterProgramsPage from "./pages/b2b-center/console/ProgramsPage";
 import CenterParentReportsPage from "./pages/b2b-center/console/ParentReportsPage";
 import CenterOpsDashboardPage from "./pages/b2b-center/console/OpsDashboardPage";
 import B2BCenterInvite from "./pages/b2b-center/B2BCenterInvite";
+import CenterInviteClaim from "./pages/CenterInviteClaim";
+import CenterGuidePage from "./pages/b2b-center/console/GuidePage";
 const CenterPlaceholder = (props: { title: string; desc: string }) => <CenterPlaceholderBase {...props} />;
 
 // Packages (SEO landing pages)
@@ -574,8 +576,10 @@ const App = () => {
           <Route path="/b2b-center" element={<B2BCenterLanding />} />
           <Route path="/b2b-center/import" element={<B2BCenterImport />} />
           <Route path="/b2b-center/invite/:token" element={<B2BCenterInvite />} />
+          <Route path="/center-invite" element={<CenterInviteClaim />} />
+          <Route path="/center-invite/:token" element={<CenterInviteClaim />} />
           <Route path="/b2b-center/app" element={<B2BCenterApp />}>
-            <Route index element={<Navigate to="clients" replace />} />
+            <Route index element={<Navigate to="intelligence/ops-dashboard" replace />} />
             <Route path="clients" element={<CenterClientsPage />} />
             <Route path="services/by-therapist" element={<CenterByTherapistPage />} />
             <Route path="services/attendance" element={<CenterAttendancePage />} />
@@ -589,6 +593,7 @@ const App = () => {
             <Route path="admin/organization" element={<CenterOrganizationPage />} />
             <Route path="intelligence/parent-reports" element={<CenterParentReportsPage />} />
             <Route path="intelligence/ops-dashboard" element={<CenterOpsDashboardPage />} />
+            <Route path="guide" element={<CenterGuidePage />} />
           </Route>
 
           {/* Catch-all */}

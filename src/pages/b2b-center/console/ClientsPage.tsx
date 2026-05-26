@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, UserPlus, Upload } from "lucide-react";
+import { Search, UserPlus, Upload, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 import ClientRegisterDialog from "@/components/b2b-center/ClientRegisterDialog";
+import InviteParentDialog from "@/components/b2b-center/InviteParentDialog";
 import { DEMO_CLIENTS } from "@/lib/b2bCenter/demoData";
 
 type Ctx = { centerId: string; demo?: boolean };

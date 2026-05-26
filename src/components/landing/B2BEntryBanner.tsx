@@ -87,10 +87,25 @@ const B2BEntryBanner = () => {
           <Button onClick={() => navigate('/b2b-jobcoach')} variant="outline" size="lg">
             기업 잡코치 자세히 보기
           </Button>
+          <Button onClick={() => navigate('/b2b-center')} variant="outline" size="lg">
+            발달치료센터 솔루션
+          </Button>
           <Button onClick={() => navigate('/b2b-proposal')} variant="ghost" size="lg">
             기관 도입 제안서 →
           </Button>
         </div>
+
+        {/* 발달치료센터 운영자 전용 한 줄 배너 */}
+        <button
+          onClick={() => navigate('/b2b-center')}
+          className="mt-6 mx-auto block w-full max-w-2xl text-center px-5 py-3 rounded-2xl bg-white border border-[#C8B88A]/40 hover:border-[#C8B88A] transition"
+        >
+          <span className="text-sm text-neutral-800">
+            <span className="font-medium">발달치료센터 운영하시나요?</span>
+            <span className="text-neutral-500 mx-2">·</span>
+            <span className="text-neutral-600">케어플 대비 더 저렴한 ERP + 임상 인텔리전스 →</span>
+          </span>
+        </button>
       </div>
     </section>
   );

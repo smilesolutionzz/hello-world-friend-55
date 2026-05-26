@@ -2486,6 +2486,53 @@ export type Database = {
           },
         ]
       }
+      center_invites: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          center_id: string
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string
+          role: string
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          center_id: string
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by: string
+          role?: string
+          token: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          center_id?: string
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string
+          role?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_invites_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       center_members: {
         Row: {
           center_id: string
@@ -16473,6 +16520,27 @@ export type Database = {
       }
     }
     Functions: {
+      accept_center_invite: {
+        Args: { _token: string }
+        Returns: {
+          address: string | null
+          business_no: string | null
+          contract_expires_at: string | null
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          phone: string | null
+          plan: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "center_organizations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       add_daily_tokens: { Args: never; Returns: undefined }
       add_reward_points: {
         Args: {
@@ -16650,6 +16718,27 @@ export type Database = {
           p_user_id: string
         }
         Returns: Json
+      }
+      create_center_invite: {
+        Args: { _center_id: string; _email: string; _role?: string }
+        Returns: {
+          accepted_at: string | null
+          accepted_by: string | null
+          center_id: string
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string
+          role: string
+          token: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "center_invites"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       create_center_org: {
         Args: { _name: string }
@@ -16999,6 +17088,10 @@ export type Database = {
       increment_user_tokens: {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
+      }
+      is_center_admin: {
+        Args: { _center_id: string; _user_id: string }
+        Returns: boolean
       }
       is_center_member: { Args: { _center_id: string }; Returns: boolean }
       is_facility_admin: { Args: { facility_uuid: string }; Returns: boolean }

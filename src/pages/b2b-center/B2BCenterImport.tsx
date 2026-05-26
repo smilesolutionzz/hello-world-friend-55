@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { parseWorkbook, commitImport, downloadStandardTemplate, type ParsedWorkbook } from "@/lib/b2bCenter/excelImport";
 import { listMyCenters, createCenter, getActiveCenterId, setActiveCenterId, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { supabase } from "@/integrations/supabase/client";
+import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
 
 export default function B2BCenterImport() {
   const navigate = useNavigate();
@@ -92,6 +93,7 @@ export default function B2BCenterImport() {
         <title>엑셀 일괄 이관 — AIHPRO 발달치료센터</title>
       </Helmet>
       <div className="max-w-3xl mx-auto px-6 py-16">
+        <div className="mb-10"><CenterOnboardingStepper step={centers.length > 0 ? 2 : 1} /></div>
         <p className="text-xs tracking-widest text-neutral-500 mb-2">B2B CENTER · IMPORT</p>
         <h1 className="text-4xl font-semibold mb-3 break-keep">엑셀 한 파일로 전체 데이터 이관</h1>
         <p className="text-neutral-600 mb-10 break-keep">케어플센터에서 다운로드한 파일을 그대로 올리거나, AIHPRO 표준 템플릿을 다운로드해 채워서 올리세요.</p>

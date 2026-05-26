@@ -1,4 +1,4 @@
-import { BookOpen, Rocket, Brain, FileText, Users, Heart, Sparkles } from "lucide-react";
+import { BookOpen, Rocket, Brain, FileText, Users, Heart, Sparkles, Building2 } from "lucide-react";
 import logo from '@/assets/logo.png';
 import { useTranslation } from '@/i18n';
 import { useLanguage } from '@/i18n';
@@ -29,6 +29,17 @@ const Footer = () => {
               <li><a href={localePath('/assessment')} className="hover:text-white transition-colors">심리 검사</a></li>
               <li><a href={localePath('/expert-hiring')} className="hover:text-white transition-colors">전문가 연결</a></li>
               <li><a href={localePath('/report-generator')} className="hover:text-white transition-colors">전문가급 리포트</a></li>
+            </ul>
+            <h4 className="font-medium mt-6 mb-3 text-white text-xs tracking-wider uppercase text-slate-400">비즈니스</h4>
+            <ul className="space-y-2 text-sm text-slate-300">
+              <li><a href="/b2b-jobcoach" className="hover:text-white transition-colors">직장 멘탈케어</a></li>
+              <li>
+                <a href="/b2b-center" className="inline-flex items-center gap-1 hover:text-white transition-colors">
+                  <Building2 className="w-3.5 h-3.5" />
+                  발달치료센터 솔루션
+                </a>
+              </li>
+              <li><a href="/b2b-demo-report" className="hover:text-white transition-colors">B2B 데모 리포트</a></li>
             </ul>
           </div>
 

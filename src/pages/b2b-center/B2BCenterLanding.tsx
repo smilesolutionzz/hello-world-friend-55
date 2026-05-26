@@ -1,7 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Check, ArrowRight, Upload, Calendar, FileText, BarChart3, Shield, Sparkles } from "lucide-react";
+import { Check, ArrowRight, Upload, Calendar, FileText, BarChart3, Shield, Sparkles, PlayCircle } from "lucide-react";
 import { B2B_CENTER_MONTHLY, B2B_CENTER_COMPETITOR_PRICE } from "@/constants/tokenCosts";
+import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
 
 const KRW = (n: number) => `₩${n.toLocaleString("ko-KR")}`;
 
@@ -49,9 +50,14 @@ export default function B2BCenterLanding() {
           <Link to="/b2b-center/import" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition">
             엑셀로 시작하기 <ArrowRight className="w-4 h-4" />
           </Link>
-          <Link to="/b2b-center/app" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-neutral-200 text-sm font-medium hover:bg-neutral-50 transition">
-            콘솔 둘러보기
+          <Link to="/b2b-center/app?demo=1" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-neutral-200 text-sm font-medium hover:bg-neutral-50 transition">
+            <PlayCircle className="w-4 h-4" /> 데모로 둘러보기
           </Link>
+        </div>
+
+        {/* 온보딩 스테퍼 */}
+        <div className="mt-16">
+          <CenterOnboardingStepper step={1} />
         </div>
       </section>
 

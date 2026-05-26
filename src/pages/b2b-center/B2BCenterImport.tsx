@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { parseWorkbook, commitImport, downloadStandardTemplate, type ParsedWorkbook } from "@/lib/b2bCenter/excelImport";
 import { listMyCenters, createCenter, getActiveCenterId, setActiveCenterId, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { supabase } from "@/integrations/supabase/client";
+import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
 
 export default function B2BCenterImport() {
   const navigate = useNavigate();

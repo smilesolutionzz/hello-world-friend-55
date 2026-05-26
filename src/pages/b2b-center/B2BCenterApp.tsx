@@ -12,6 +12,8 @@ import DemoModeBanner from "@/components/b2b-center/DemoModeBanner";
 import { DEMO_CENTER, isDemoMode } from "@/lib/b2bCenter/demoData";
 
 const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
+  { to: "intelligence/ops-dashboard", label: "대시보드", icon: Sparkles, group: "시작" },
+  { to: "guide", label: "운영 가이드", icon: Compass, group: "시작" },
   { to: "schedule", label: "일정", icon: Calendar, group: "운영" },
   { to: "clients", label: "이용자", icon: Users, group: "운영" },
   { to: "assessments", label: "상담·평가", icon: BookOpen, group: "운영" },

@@ -1,4 +1,4 @@
-import { BookOpen, Rocket, Brain, FileText, Users, Heart, Sparkles } from "lucide-react";
+import { BookOpen, Rocket, Brain, FileText, Users, Heart, Sparkles, Building2 } from "lucide-react";
 import logo from '@/assets/logo.png';
 import { useTranslation } from '@/i18n';
 import { useLanguage } from '@/i18n';

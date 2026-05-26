@@ -27,16 +27,21 @@ export default function B2BCenterImport() {
   }, []);
 
   async function handleCreateCenter() {
-    if (!newCenterName.trim()) return;
+    const name = newCenterName.trim();
+    if (!name) {
+      toast({ title: "기관 이름을 입력하세요", variant: "destructive" });
+      return;
+    }
     try {
-      const c = await createCenter(newCenterName.trim());
-      setCenters([...centers, c]);
+      const c = await createCenter(name);
+      setCenters((prev) => [...prev, c]);
       setActiveCenterId(c.id);
       setActive(c.id);
       setNewCenterName("");
       toast({ title: "기관 등록 완료", description: c.name });
     } catch (e: any) {
-      toast({ title: "오류", description: e.message, variant: "destructive" });
+      console.error("[handleCreateCenter]", e);
+      toast({ title: "기관 등록 실패", description: e?.message ?? String(e), variant: "destructive" });
     }
   }
 

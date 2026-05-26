@@ -1,183 +1,112 @@
+# B2B 센터 접근 흐름 전면 개선
 
-# AIHPRO B2B 발달치료센터 솔루션 — `/b2b-center` (V2 풀스펙)
+`/b2b-center` 진입~콘솔 사용까지의 전 여정을 자연스럽게 다듬고, 메인 홈에서 발달치료센터 운영자가 본인용 진입로를 한눈에 찾을 수 있게 CTA를 추가합니다.
 
-케어플센터(₩44,000/월) **전체 메뉴 트리 정면 대체** + AIHPRO만 가능한 **임상 인텔리전스 레이어** 탑재. 가격은 ₩39,000/월로 정면 비교.
+## 작업 범위
 
-## 1. 케어플 전체 메뉴 트리 (스크린샷 1~11 통합)
+### 01. 3스텝 온보딩 가이드 (랜딩 → import → 콘솔)
+`/b2b-center` 랜딩 하단과 `/b2b-center/import` 상단에 공통 진행 표시기 추가.
 
-```
-[게시판]     공지·자료·Q&A
-[일정]       주간 캘린더 (치료사 라인, 회기 블럭)
-[이용자 및 상담/평가]
-  ├ 이용자 관리             (대기 81 / 등록 187 / 종결 3)
-  └ 상담 및 평가 관리        (일정상태 / 기록 탭)
-[재활 서비스]
-  ├ 월 서비스 관리           (493회기 그리드)
-  ├ 일일 서비스 관리          (오늘 회기)
-  ├ 바우처 서비스 지원        (바우처 전용 처리)
-  ├ 일별 접수인원 현황        (날짜별 인원)
-  ├ 선생님별 이용자 현황      (치료사 그룹, 담당 이용자 칩)
-  └ 기록 등록 현황            (회기 메모 작성률)
-[수납]
-  ├ 수납처리·수납내역·현황
-  ├ 통계 (년간/분기/월/출석율)
-  ├ 영수내역
-  └ 부정결제 찾기 (전자바우처 대조)
-[관리자]
-  ├ 시스템 정보
-  ├ 기관 정보 및 옵션 설정
-  ├ 선생님 관리 (31명, 색상·직급·계정·로그인이력)
-  ├ 프로그램 관리
-  └ 바우처 관리
-[고객지원]
-  ├ FAQ
-  ├ 온라인문의/문자서비스신청 (서비스문의/오류/불만/제안/알림톡)
-  ├ 알림톡/문자발송 신청목록
-  └ 유료계약 신청내역
+```text
+[ 01 기관 만들기 ] ── [ 02 엑셀 이관 ] ── [ 03 콘솔 사용 ]
+       ●                    ○                  ○
 ```
 
-## 2. AIHPRO 라우트 구조 (1:1 매핑 + 차별화 레이어)
+- 컴포넌트: `src/components/b2b-center/CenterOnboardingStepper.tsx`
+- 현재 단계 prop으로 받음 (`step: 1 | 2 | 3`)
+- 화이트 미니멀, 골드 #C8B88A 액센트, 숫자 01·02·03 (메모리 톤 정책)
+- 콘솔 첫 진입 시 1회만 보이는 환영 카드 ("센터가 준비됐어요. 먼저 일정·이용자를 확인해보세요") — localStorage 플래그
 
-```
-/b2b-center                       공개 랜딩 (가격·비교·데모요청)
-/b2b-center/import                엑셀 일괄 import 마법사 (포맷 자동 감지)
-/b2b-center/app                   로그인 콘솔
-  ├ /board                        게시판
-  ├ /schedule                     주간 캘린더
-  ├ /clients                      이용자 관리
-  ├ /assessments                  상담·평가 관리
-  ├ /services
-  │   ├ /monthly                  월 서비스 관리
-  │   ├ /daily                    일일 서비스 관리
-  │   ├ /voucher                  바우처 서비스 지원
-  │   ├ /attendance               일별 접수인원 현황
-  │   ├ /by-therapist             선생님별 이용자 현황 ★
-  │   └ /records-progress         기록 등록 현황
-  ├ /billing
-  │   ├ /process                  수납처리
-  │   ├ /history                  수납내역
-  │   ├ /stats                    통계 (년/분기/월/출석율)
-  │   ├ /receipts                 영수내역
-  │   └ /voucher-audit            부정결제 찾기
-  ├ /admin
-  │   ├ /system                   시스템 정보
-  │   ├ /organization             기관 정보·옵션
-  │   ├ /therapists               선생님 관리 (색상·계정)
-  │   ├ /programs                 프로그램 관리
-  │   └ /vouchers                 바우처 관리
-  ├ /support
-  │   ├ /faq
-  │   ├ /inquiry                  온라인문의 (5종 라디오)
-  │   ├ /notifications            알림톡/문자 발송이력
-  │   └ /contract                 유료계약 신청내역
-  └ /intelligence ★★★  [AIHPRO 차별화 단독 메뉴]
-      ├ /parent-reports           이용자별 월간 부모 리포트 (PDF, Gemini 3.1)
-      ├ /therapist-coaching       치료사 코칭 리포트
-      ├ /ops-dashboard            운영 KPI 대시보드 (NSM·위험신호)
-      └ /weekly-insights          주간 인사이트 메일 (자동발송)
-```
+### 02. 초대 링크로 치료사·관리자 합류 플로우
+센터 owner가 다른 사용자를 `center_members` 에 추가할 수 있는 초대 시스템.
 
-## 3. 엑셀 일괄 Import (최우선 기능)
+**DB (마이그레이션 1개)**
+- 새 테이블 `center_invites(id, center_id, email, role, token, invited_by, expires_at, accepted_at, created_at)`
+- RLS: owner/admin만 SELECT/INSERT, 본인 이메일 INVITE는 SELECT 가능
+- RPC `create_center_invite(_center_id, _email, _role)` SECURITY DEFINER → 토큰 발급
+- RPC `accept_center_invite(_token)` SECURITY DEFINER → `center_members` upsert + 토큰 소진
 
-**1회 업로드로 전체 데이터 이관** — 2가지 포맷 자동 감지:
+**UI**
+- `/b2b-center/app/admin/organization` 안에 "구성원 초대" 섹션
+  - 이메일 + 역할(owner/admin/therapist/viewer) 입력 → 초대 링크 복사 버튼
+  - 현재 멤버 목록 + 역할 표시
+- `/b2b-center/invite/:token` 신규 페이지
+  - 로그인 안 됐으면 `/auth?redirect=...` 로
+  - 로그인 됐으면 "OO 센터에 합류" CTA → `accept_center_invite` 호출 → `/b2b-center/app`
 
-**포맷 A — 케어플 다운로드 엑셀 그대로**
-- 월 서비스 관리·이용자 관리·선생님별 이용자 현황 등 각각 다운로드한 파일을 헤더 시그니처로 자동 분류
-- 사전 정의된 케어플 컬럼 매핑 테이블
+### 03. 데모 모드 (`?demo=1`) — 로그인 없이 콘솔 미리보기
+영업 자료·스크린샷·잠재고객 체험용. DB 쓰기는 일절 없음.
 
-**포맷 B — AIHPRO 표준 템플릿 (8시트 워크북)**
-- `clients` / `therapists` / `programs` / `vouchers` / `sessions` / `payments` / `assessments` / `org_info`
-- 템플릿 다운로드 버튼 제공
+- `src/lib/b2bCenter/demoData.ts` — mock 기관 1개 + 이용자 12명 + 치료사 5명 + 회기 60건 + 수납 30건 하드코딩
+- `B2BCenterApp.tsx` 에 `useSearchParams().get('demo') === '1'` 분기:
+  - 로그인 체크 우회
+  - `listMyCenters` 대신 mock 반환
+  - 상단에 "데모 모드 — 데이터는 저장되지 않습니다" 골드 배너 + "지금 시작하기" CTA
+- 콘솔 페이지들의 데이터 hook이 데모 모드면 mock 사용 (`useCenterDemoContext`)
+- 모든 변경 버튼은 클릭 시 "데모 모드에서는 변경할 수 없어요" 토스트
 
-**플로우**: 업로드 → SheetJS 파싱 → 포맷 판정 → 매핑 미리보기(드롭다운 수정) → 검증(필수·날짜·중복) → 배치 upsert → 결과 요약(이용자 187 / 치료사 31 / 회기 493 / 수납 N 완료)
+### 04. "기관 없음" 빈 상태 개선
+현재 단순 텍스트 → 친절한 가이드 카드로 교체.
 
-## 4. 화면별 핵심 위젯
+- 3개 카드 그리드 (rounded-2xl, 화이트):
+  1. **엑셀 이관 시작** — 케어플 다운로드 파일 그대로 업로드 가능 (→ /import)
+  2. **빈 기관 만들기** — 이름만 입력해 즉시 생성 (인라인 폼, createCenter 호출)
+  3. **초대 받았나요?** — 초대 링크 입력 (→ /b2b-center/invite/:token)
+- 하단에 "먼저 둘러볼게요" 보조 링크 → `?demo=1` 진입
 
-**캘린더** — 주/일/월/4일/목록 토글, 치료사 색상 라인, 상태 패턴(예정·완료·취소·취소이월=빗금·취소보강), 회기 클릭 사이드시트, 유료계약 D-N 배너
+### 05. 메인 홈에서 B2B 진입 CTA 추가 ★
+사용자가 새로 요청한 핵심. 발달치료센터 운영자가 자연스럽게 도달하도록 진입로 노출.
 
-**이용자 관리** — 상태 칩 카운터, 통합검색, 등록·일괄등록·다운로드, 행 클릭 우측 슬라이드(회기/수납/평가/부모리포트 발행)
+**위치 전략 (메모리 [B2B navigation visibility] 준수 — 메인 nav는 깔끔하게 유지)**
 
-**선생님별 이용자 현황 ★** — 치료사 카드 + 담당 이용자 칩(이름·성별·생년월일), 인원수, 다운로드
+1. **`/expert-hiring` 페이지 하단**에 기존 B2B 영역에 "발달치료센터 운영자이신가요?" 카드 추가 → `/b2b-center`
+2. **`/find-center` 하단** "센터를 운영하고 계신가요? 운영 솔루션 보기" 텍스트 링크 → `/b2b-center`
+3. **푸터** `src/components/Footer.tsx` (또는 메인 푸터 위치) "비즈니스" 컬럼에 항목 추가:
+   - 직장 멘탈케어 (/b2b-jobcoach)
+   - **발달치료센터 솔루션 (/b2b-center)** ← 신규
+   - B2B 데모 리포트 (/b2b-demo-report)
+4. **메인 홈 `/`** 의 비즈니스/파트너 섹션 하단(존재할 경우)에 한 줄 배너:
+   > "발달치료센터 운영하시나요? 케어플 대비 ₩5,000 저렴한 운영 솔루션 보기 →"
+   클릭 시 `/b2b-center`. 가격은 `tokenCosts.ts`의 `B2B_CENTER_MONTHLY` 상수에서 읽기.
 
-**선생님 관리** — 31명 도넛차트(정상/잠금/퇴사), 캘린더색상 토글, 직급·계정·최종로그인 컬럼, 계정상태 토글
+## 기술 세부사항
 
-**수납 통계** — 년간 라인차트, 분기별 매출 4분할, 월별 출석율 탭, 영수증 PDF
+**신규 파일**
+- `src/components/b2b-center/CenterOnboardingStepper.tsx`
+- `src/components/b2b-center/EmptyCenterState.tsx`
+- `src/components/b2b-center/DemoModeBanner.tsx`
+- `src/components/b2b-center/InviteMemberPanel.tsx`
+- `src/pages/b2b-center/B2BCenterInvite.tsx`
+- `src/lib/b2bCenter/demoData.ts`
+- `src/lib/b2bCenter/inviteClient.ts`
+- `supabase/migrations/{ts}_center_invites.sql`
 
-**부정결제 찾기** — 전자바우처 엑셀(장애아동가족지원/지역사회투자사업) 업로드 → `sessions` 대조 → 불일치 리포트
+**수정 파일**
+- `src/pages/b2b-center/B2BCenterLanding.tsx` — 스테퍼 + 데모 진입 보조 CTA
+- `src/pages/b2b-center/B2BCenterImport.tsx` — 스테퍼
+- `src/pages/b2b-center/B2BCenterApp.tsx` — 데모 모드 분기 + 빈상태 컴포넌트 교체
+- `src/lib/b2bCenter/centerClient.ts` — `useCenterDemoContext` 헬퍼 추가
+- `src/pages/b2b-center/console/*` — 데모 컨텍스트 일괄 적용
+- `src/App.tsx` (또는 라우터 파일) — `/b2b-center/invite/:token` 라우트
+- `src/pages/expert-hiring/*` 또는 `/expert-hiring` 페이지 — B2B 센터 카드
+- `src/pages/FindCenter.tsx` — 운영자용 텍스트 링크
+- 메인 푸터 컴포넌트 — 비즈니스 컬럼 항목 추가
+- 메인 홈 — 한 줄 배너 (해당 섹션 존재 시)
+- `src/constants/tokenCosts.ts` — `B2B_CENTER_MONTHLY` 노출 확인
 
-**고객지원** — 라디오 5종(서비스문의/오류/불만/제안/알림톡), 알림톡 발송 이력, 유료계약 신청 트래커
+**보안**
+- `center_invites` RLS는 owner/admin만 INSERT, 토큰은 `gen_random_bytes(24)` 기반
+- RPC SECURITY DEFINER + `search_path = public`
+- 초대 만료 기본 7일, 1회 소진
 
-## 5. AIHPRO 차별화 (`/intelligence`)
+**메모리 정책 준수**
+- 가격은 항상 `tokenCosts.ts` 에서 읽기 (하드코딩 금지)
+- "AI" 단어 회피, "전문가 종합 분석" 톤 유지
+- 화이트 미니멀 + rounded-2xl + 골드 #C8B88A
+- 메인 nav 오염 금지 (푸터·관련 페이지 하단만 사용)
 
-**A. 부모 월간 리포트** — 이용자별 회기 누적 → Gemini 3.1 `reasoning.effort: medium` → PDF, 표 금지, 골드 액센트, 브랜딩 헤더. 일괄 카카오/이메일 발송, 발행 이력 보관
-**B. 치료사 코칭 리포트** — 담당 회기 패턴·취소율·시간대·프로그램 다양도 → 강점/개선/다음달 목표
-**C. 운영 KPI 대시보드** — NSM(활성/회기/매출/출석률/치료사가동률), 위험신호(취소율 급증·바우처만료 D-30), AI 요약 카드
-**D. 주간 인사이트 메일** — 화요일 자동발송 (pg_cron + 엣지함수)
+## 결과물 (사용자 시나리오)
 
-## 6. 가격·진입
-
-- 랜딩: 케어플 ₩44,000/월 vs AIHPRO **₩39,000/월** (부모리포트·치료사 코칭 무제한 포함)
-- 결제 게이트 없음 → 「데모 요청」 폼 → 영업
-- `src/constants/tokenCosts.ts`에 `B2B_CENTER_MONTHLY: 39000` 추가 (메모리 정책 준수)
-
-## 7. 기술 스펙
-
-**프론트엔드**
-- 신규 페이지: `src/pages/b2b-center/*` (Landing, Import, App 네스티드 라우트)
-- 신규 컴포넌트: `src/components/b2b-center/*` (Calendar, ClientTable, ByTherapistView, BillingChart, ImportWizard, VoucherAudit, TherapistAdmin, ProgramAdmin, ParentReportButton, OpsDashboard 등)
-- `xlsx` (SheetJS) 추가
-- 캘린더: `react-big-calendar` (또는 모바일 대응 자체 grid)
-- 디자인: 화이트 미니멀, `bg-white`/`rounded-2xl`, 골드 #C8B88A 액센트, Pretendard
-
-**백엔드 (Supabase) — 신규 테이블 14개**
-- `center_organizations` / `center_members` / `center_clients` / `center_therapists` / `center_programs` / `center_vouchers` / `center_sessions` / `center_payments` / `center_receipts` / `center_assessments` / `center_inquiries` / `center_notifications_log` / `center_import_jobs` / `center_parent_reports`
-- RLS: `has_center_role(center_id, role)` SECURITY DEFINER로 격리
-- 인덱스: `(center_id, date)`, `(center_id, client_id)`, `(center_id, therapist_id)`
-
-**엣지 함수**
-- `import-center-excel` — 포맷 감지·매핑·배치 upsert
-- `generate-parent-report` — Gemini 3.1
-- `generate-therapist-coaching`
-- `audit-voucher-mismatch`
-- `send-center-weekly-insights` — pg_cron 화요일 자동발송
-
-**스토리지** — `center-imports`(비공개), `center-reports`(PDF, 비공개)
-
-## 8. MVP 단계 (스코프가 크므로 3단계 분할)
-
-**Phase 1 — Import + 읽기 콘솔 (먼저 빌드)**
-- 랜딩 페이지 + 비교/가격
-- 엑셀 import 마법사 + `import-center-excel` 엣지
-- DB 스키마 14개 + RLS
-- 이용자·치료사·회기·수납 읽기 전용 테이블
-- 선생님별 이용자 현황 뷰
-- 일별 접수인원·기록 등록 현황
-
-**Phase 2 — 캘린더 + CRUD + 부모 리포트**
-- 캘린더 (편집)
-- 이용자·회기·치료사·프로그램·바우처 CRUD
-- 상담·평가 관리
-- 수납처리·영수증
-- 부모 월간 리포트 PDF
-
-**Phase 3 — 부정결제 + 코칭 + 운영 KPI + 고객지원**
-- 부정결제 찾기
-- 치료사 코칭 리포트
-- 운영 KPI 대시보드 + 주간 인사이트 메일
-- FAQ/문의/알림톡/유료계약 모듈
-
-## 9. 메모리 정책 준수
-
-- 가격 코드 상수에서만 읽기 (tokenCosts.ts)
-- "AI" 단어 회피 → "전문가 종합 분석"
-- Markdown 표 금지 → 카드/문단 리포트
-- 의료적 진단 표현 금지 → "발달 코칭·운영 인사이트"
-- 화이트 미니멀, 골드 액센트, Pretendard, Instrument Serif
-- 위기 신호 검출 시 `/expert-hiring?urgent=true`로 라우팅
-
-## 10. 첫 빌드 진입점 (승인 시 Phase 1)
-
-1. DB 마이그레이션 (14테이블 + RLS + 인덱스 + has_center_role)
-2. `/b2b-center` 랜딩
-3. 엑셀 import 마법사 + 엣지 함수
-4. 읽기 전용 콘솔 5종 (이용자/회기/수납/선생님별이용자/일별접수)
+- **신규 운영자**: 메인 → 푸터/배너에서 "발달치료센터 솔루션" 발견 → `/b2b-center` 랜딩 → 스테퍼 보고 흐름 이해 → "데모 둘러보기"로 콘솔 미리 체험 → "지금 시작" → import에서 기관 생성 → 콘솔 진입 시 환영 카드 + 빈상태 가이드
+- **합류 치료사**: 초대 링크 수신 → `/b2b-center/invite/:token` → 로그인 → 한 번 클릭으로 합류 완료 → 콘솔 진입
+- **잠재고객/세일즈**: `?demo=1` URL 공유만으로 로그인 없이 전체 콘솔 체험

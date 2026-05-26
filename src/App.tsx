@@ -593,6 +593,7 @@ const App = () => {
             <Route path="admin/organization" element={<CenterOrganizationPage />} />
             <Route path="intelligence/parent-reports" element={<CenterParentReportsPage />} />
             <Route path="intelligence/ops-dashboard" element={<CenterOpsDashboardPage />} />
+            <Route path="guide" element={<CenterGuidePage />} />
           </Route>
 
           {/* Catch-all */}

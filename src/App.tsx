@@ -579,7 +579,7 @@ const App = () => {
           <Route path="/center-invite" element={<CenterInviteClaim />} />
           <Route path="/center-invite/:token" element={<CenterInviteClaim />} />
           <Route path="/b2b-center/app" element={<B2BCenterApp />}>
-            <Route index element={<Navigate to="clients" replace />} />
+            <Route index element={<Navigate to="intelligence/ops-dashboard" replace />} />
             <Route path="clients" element={<CenterClientsPage />} />
             <Route path="services/by-therapist" element={<CenterByTherapistPage />} />
             <Route path="services/attendance" element={<CenterAttendancePage />} />

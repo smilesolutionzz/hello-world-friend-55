@@ -101,8 +101,8 @@ export default function SchedulePage() {
               </div>
             ))}
             {HOURS.map((h) => (
-              <>
-                <div key={`h-${h}`} className="border-b border-r border-neutral-100 text-[10px] text-neutral-400 p-1 text-right">{h}:00</div>
+              <div key={`row-${h}`} className="contents">
+                <div className="border-b border-r border-neutral-100 text-[10px] text-neutral-400 p-1 text-right">{h}:00</div>
                 {days.map((d) => {
                   const slot = sessions.filter((s) => s.session_date === d.date && parseInt(s.start_time?.slice(0, 2) ?? "0", 10) === h);
                   return (
@@ -120,7 +120,7 @@ export default function SchedulePage() {
                     </div>
                   );
                 })}
-              </>
+              </div>
             ))}
           </div>
         )}

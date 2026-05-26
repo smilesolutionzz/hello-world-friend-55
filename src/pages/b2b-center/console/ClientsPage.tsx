@@ -113,6 +113,7 @@ export default function ClientsPage() {
               <th className="text-left p-3 font-medium">보호자 연락처</th>
               <th className="text-left p-3 font-medium">장애정보</th>
               <th className="text-left p-3 font-medium">상태</th>
+              <th className="text-right p-3 font-medium">AIHPRO</th>
             </tr>
           </thead>
           <tbody>

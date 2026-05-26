@@ -52,7 +52,16 @@ export default function ClientsPage() {
     }
     setLoading(true);
     supabase.from("center_clients").select("*").eq("center_id", centerId).order("created_at", { ascending: false })
-      .then(({ data }) => { setRows((data ?? []) as Client[]); setLoading(false); });
+      .then(({ data }) => {
+        const list = (data ?? []) as Client[];
+        setRows(list);
+        setLoading(false);
+        if (list.length > 0) {
+          supabase.from("center_onboarding_progress")
+            .upsert({ center_id: centerId, step_key: "first_client_added" }, { onConflict: "center_id,step_key" })
+            .then(() => {});
+        }
+      });
   }, [centerId, demo]);
 
   useEffect(() => { load(); }, [load]);

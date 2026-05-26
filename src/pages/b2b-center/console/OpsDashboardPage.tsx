@@ -88,8 +88,10 @@ export default function OpsDashboardPage() {
 
   return (
     <div className="p-8">
+      <OnboardingChecklist centerId={centerId} demo={demo} />
       <h1 className="text-2xl font-semibold mb-1">운영 KPI 대시보드</h1>
       <p className="text-sm text-neutral-500 mb-6">North Star Metric · 위험신호 · 치료사별 가동률을 한눈에.</p>
+
 
       <div className="grid grid-cols-4 gap-4 mb-6">
         <KPI icon={TrendingUp} label="이번 달 매출" value={fmtKRW(data.revenue)} color="#C8B88A" />

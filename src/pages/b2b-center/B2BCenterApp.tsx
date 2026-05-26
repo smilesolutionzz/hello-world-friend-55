@@ -26,7 +26,6 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
   { to: "admin/programs", label: "프로그램", icon: BookOpen, group: "관리자" },
   { to: "admin/organization", label: "기관 정보", icon: Building2, group: "관리자" },
   { to: "intelligence/parent-reports", label: "부모 리포트", icon: FileText, group: "인텔리전스" },
-  { to: "intelligence/ops-dashboard", label: "운영 KPI", icon: Sparkles, group: "인텔리전스" },
 ];
 
 const WELCOME_KEY = "b2b_center_welcome_seen";

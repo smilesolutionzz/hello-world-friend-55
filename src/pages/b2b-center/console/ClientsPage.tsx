@@ -159,6 +159,16 @@ export default function ClientsPage() {
         onClose={() => setRegisterOpen(false)}
         onCreated={load}
       />
+
+      {inviteFor && (
+        <InviteParentDialog
+          open={!!inviteFor}
+          centerId={centerId}
+          client={inviteFor}
+          demo={demo}
+          onClose={() => setInviteFor(null)}
+        />
+      )}
     </div>
   );
 }

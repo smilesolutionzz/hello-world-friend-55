@@ -36,6 +36,7 @@ export default function ClientsPage() {
   const [filter, setFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [inviteFor, setInviteFor] = useState<{ id: string; name: string } | null>(null);
 
   const load = useCallback(() => {
     if (demo) {

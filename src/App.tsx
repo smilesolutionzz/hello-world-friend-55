@@ -197,6 +197,8 @@ import CenterAttendancePage from "./pages/b2b-center/console/AttendancePage";
 import CenterBillingStatsPage from "./pages/b2b-center/console/BillingStatsPage";
 import CenterTherapistsAdminPage from "./pages/b2b-center/console/TherapistsAdminPage";
 import CenterPlaceholderBase from "./pages/b2b-center/console/PlaceholderPage";
+import CenterOrganizationPage from "./pages/b2b-center/console/OrganizationPage";
+import B2BCenterInvite from "./pages/b2b-center/B2BCenterInvite";
 const CenterPlaceholder = (props: { title: string; desc: string }) => <CenterPlaceholderBase {...props} />;
 
 // Packages (SEO landing pages)

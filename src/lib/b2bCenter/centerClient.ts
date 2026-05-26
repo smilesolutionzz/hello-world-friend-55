@@ -27,14 +27,19 @@ export async function listMyCenters(): Promise<CenterOrg[]> {
 }
 
 export async function createCenter(name: string): Promise<CenterOrg> {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("로그인이 필요합니다.");
+  const { data: sessionData } = await supabase.auth.getSession();
+  const user = sessionData.session?.user;
+  if (!user) throw new Error("로그인이 필요합니다. 다시 로그인 후 시도하세요.");
   const { data, error } = await supabase
     .from("center_organizations")
     .insert({ name, owner_id: user.id })
-    .select()
-    .single();
-  if (error) throw error;
+    .select("*")
+    .maybeSingle();
+  if (error) {
+    console.error("[createCenter] insert error", error);
+    throw new Error(error.message || "기관 생성에 실패했습니다.");
+  }
+  if (!data) throw new Error("생성된 기관을 불러오지 못했습니다. 권한을 확인하세요.");
   return data as CenterOrg;
 }
 

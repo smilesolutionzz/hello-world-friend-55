@@ -94,6 +94,164 @@ function normalizeRow(row: Record<string, any>): Record<string, any> {
   return out;
 }
 
+// ===== 케어플 "월서비스관리_YYYYMM" 어댑터 =====
+// 헤더는 2행, 회기는 "예정[1] | 완료[3] | 취소(보강)[2]" 카운트 문자열.
+// 1행 × 이용자 × 프로그램 × 치료사 집계를 → clients/therapists/programs/sessions로 펼친다.
+const VOUCHER_KEYWORDS = /바우처|교육청|우리아이심리지원|장애인스포츠강좌|기관협약|발달재활/;
+
+function parseStatusCounts(s: string): Array<{ status: string; count: number }> {
+  if (!s) return [];
+  const out: Array<{ status: string; count: number }> = [];
+  const re = /(예정|완료|취소\(보강\)|취소이월|이월|취소)\s*\[(\d+)\]/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(s)) !== null) {
+    out.push({ status: m[1], count: parseInt(m[2], 10) || 0 });
+  }
+  return out;
+}
+
+function statusToCode(s: string): "scheduled" | "completed" | "cancelled" | "cancelled_carry" | "cancelled_makeup" {
+  if (s === "완료") return "completed";
+  if (s === "예정") return "scheduled";
+  if (s === "취소(보강)") return "cancelled_makeup";
+  if (s === "취소이월" || s === "이월") return "cancelled_carry";
+  return "cancelled";
+}
+
+function parseTherapistCell(v: any): { name: string; title: string | null } | null {
+  if (!v) return null;
+  const raw = String(v).trim();
+  if (!raw) return null;
+  const [namePart, titlePart] = raw.split("/").map((x) => x.trim());
+  return { name: namePart || raw, title: titlePart || null };
+}
+
+function parseProgramCell(v: any): { category: string; name: string; is_voucher: boolean; raw: string } | null {
+  if (!v) return null;
+  const raw = String(v).trim();
+  if (!raw) return null;
+  // "감각통합-일반 [개인/기관]"
+  const noBracket = raw.replace(/\s*\[.*?\]\s*$/, "").trim();
+  const dash = noBracket.indexOf("-");
+  const category = dash > 0 ? noBracket.slice(0, dash).trim() : "기타";
+  const sub = dash > 0 ? noBracket.slice(dash + 1).trim() : noBracket;
+  return { category, name: `${category}-${sub}`, is_voucher: VOUCHER_KEYWORDS.test(sub), raw };
+}
+
+function careplMonthlySheet(wb: XLSX.WorkBook): { sheetName: string; aoa: any[][] } | null {
+  for (const name of wb.SheetNames) {
+    if (!/^월서비스관리/.test(name)) continue;
+    const aoa = XLSX.utils.sheet_to_json<any[]>(wb.Sheets[name], { header: 1, defval: null, raw: false });
+    return { sheetName: name, aoa };
+  }
+  // 시트명이 다른 경우: 2행에서 시그니처 검사
+  for (const name of wb.SheetNames) {
+    const aoa = XLSX.utils.sheet_to_json<any[]>(wb.Sheets[name], { header: 1, defval: null, raw: false });
+    const header = (aoa[1] ?? []).map((x) => String(x ?? "").trim());
+    const must = ["이용자", "생년월일", "선생님", "프로그램", "총회기", "진행상태"];
+    if (must.every((k) => header.includes(k))) return { sheetName: name, aoa };
+  }
+  return null;
+}
+
+function parseCareplMonthly(sheetName: string, aoa: any[][]): DetectedSheet[] {
+  const header = (aoa[1] ?? []).map((x) => String(x ?? "").trim());
+  const idx = (k: string) => header.indexOf(k);
+  const iClient = idx("이용자");
+  const iBirth = idx("생년월일");
+  const iTherapist = idx("선생님");
+  const iProgram = idx("프로그램");
+  const iDuration = idx("1회시간(분)");
+  const iPriceOne = idx("1회 서비스 금액");
+  const iCopay = idx("본인부담금");
+  const iStatus = idx("진행상태");
+  const iCarry = idx("전월이월회기");
+  const iNote = idx("메모");
+
+  const monthMatch = sheetName.match(/(\d{4})(\d{2})/);
+  const year = monthMatch ? parseInt(monthMatch[1], 10) : new Date().getFullYear();
+  const month = monthMatch ? parseInt(monthMatch[2], 10) : new Date().getMonth() + 1;
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const monthStr = `${year}-${String(month).padStart(2, "0")}`;
+
+  const clientsMap = new Map<string, any>(); // key: name|birth
+  const therapistsMap = new Map<string, any>(); // key: name
+  const programsMap = new Map<string, any>(); // key: name|duration|price
+  const sessions: any[] = [];
+
+  for (let r = 2; r < aoa.length; r++) {
+    const row = aoa[r];
+    if (!row || row.every((c) => c == null || String(c).trim() === "")) continue;
+    const clientName = String(row[iClient] ?? "").trim();
+    if (!clientName) continue;
+    const birth = row[iBirth] ? String(row[iBirth]).trim() : null;
+    const therapist = parseTherapistCell(row[iTherapist]);
+    const program = parseProgramCell(row[iProgram]);
+    const duration = parseInt(row[iDuration]) || 45;
+    const priceOne = parseInt(row[iPriceOne]) || 0;
+    const copay = parseInt(row[iCopay]) || 0;
+    const statusStr = String(row[iStatus] ?? "").trim();
+    const carry = parseInt(row[iCarry]) || 0;
+    const note = row[iNote] ? String(row[iNote]).trim() : null;
+
+    const cKey = `${clientName}|${birth ?? ""}`;
+    if (!clientsMap.has(cKey)) {
+      clientsMap.set(cKey, { name: clientName, birth_date: birth, status: "등록" });
+    }
+    if (therapist && !therapistsMap.has(therapist.name)) {
+      therapistsMap.set(therapist.name, { name: therapist.name, title: therapist.title, specialty: therapist.title });
+    }
+    let programKey: string | null = null;
+    if (program) {
+      programKey = `${program.name}|${duration}|${priceOne}`;
+      if (!programsMap.has(programKey)) {
+        programsMap.set(programKey, {
+          name: program.name,
+          category: program.category,
+          duration_min: duration,
+          price_krw: priceOne,
+          is_voucher: program.is_voucher,
+        });
+      }
+    }
+
+    // 회기 펼치기
+    const counts = parseStatusCounts(statusStr);
+    const total = counts.reduce((s, c) => s + c.count, 0) || 0;
+    if (total === 0) continue;
+    let i = 0;
+    for (const { status, count } of counts) {
+      const code = statusToCode(status);
+      for (let k = 0; k < count; k++) {
+        const day = Math.min(daysInMonth, 1 + Math.floor((i / Math.max(total, 1)) * (daysInMonth - 1)));
+        i++;
+        sessions.push({
+          client_name: clientName,
+          client_birth_date: birth,
+          therapist_name: therapist?.name ?? null,
+          program_name: program?.name ?? null,
+          session_date: `${monthStr}-${String(day).padStart(2, "0")}`,
+          start_time: null,
+          end_time: null,
+          status: code,
+          is_voucher: program?.is_voucher ?? false,
+          price_krw: priceOne,
+          copayment: copay,
+          carry_over: carry,
+          note,
+        });
+      }
+    }
+  }
+
+  return [
+    { source: `${sheetName} → 이용자`, entity: "clients", rows: Array.from(clientsMap.values()) },
+    { source: `${sheetName} → 치료사`, entity: "therapists", rows: Array.from(therapistsMap.values()) },
+    { source: `${sheetName} → 프로그램`, entity: "programs", rows: Array.from(programsMap.values()) },
+    { source: `${sheetName} → 회기 (${sessions.length}건, ${monthStr})`, entity: "sessions", rows: sessions },
+  ];
+}
+
 // ===== 메인 파서 =====
 export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
   const buf = await file.arrayBuffer();
@@ -105,6 +263,16 @@ export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
     const headers = rows.length > 0 ? Object.keys(rows[0]) : [];
     return { name, rows, headers };
   });
+
+  // 0) 케어플 월서비스관리 우선 감지
+  const careple = careplMonthlySheet(wb);
+  if (careple) {
+    return {
+      format: "careple",
+      sheets: parseCareplMonthly(careple.sheetName, careple.aoa).filter((s) => s.rows.length > 0),
+      rawSheets,
+    };
+  }
 
   // AIHPRO 표준: 시트명이 표준 키
   const aihproSheetNames = new Set(["clients", "therapists", "programs", "vouchers", "sessions", "payments", "assessments"]);
@@ -121,7 +289,7 @@ export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
       rows: s.rows.map(normalizeRow),
     }));
   } else {
-    // 케어플 자동 감지
+    // 케어플 일반 시트 자동 감지
     for (const s of rawSheets) {
       const ent = detectEntity(s.headers);
       if (ent) {

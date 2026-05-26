@@ -48,6 +48,84 @@ export const DEMO_STATS = {
   activeClients: 9,
 };
 
+export const DEMO_PROGRAMS = [
+  { id: "p1", name: "언어치료 40분", category: "언어", duration_min: 40, price_krw: 55000, is_voucher: true },
+  { id: "p2", name: "언어치료 50분", category: "언어", duration_min: 50, price_krw: 70000, is_voucher: false },
+  { id: "p3", name: "감각통합 40분", category: "감각통합", duration_min: 40, price_krw: 60000, is_voucher: true },
+  { id: "p4", name: "놀이치료 50분", category: "놀이", duration_min: 50, price_krw: 65000, is_voucher: false },
+  { id: "p5", name: "행동치료 40분", category: "행동", duration_min: 40, price_krw: 55000, is_voucher: true },
+  { id: "p6", name: "인지치료 40분", category: "인지", duration_min: 40, price_krw: 58000, is_voucher: false },
+];
+
+// 이번 주 월요일 기준으로 데모 회기 생성
+function startOfWeek(d = new Date()): Date {
+  const x = new Date(d);
+  const day = x.getDay(); // 0=일
+  const diff = (day === 0 ? -6 : 1 - day);
+  x.setDate(x.getDate() + diff);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+
+function fmt(d: Date): string { return d.toISOString().slice(0, 10); }
+
+const WEEK0 = startOfWeek();
+
+const SESSION_SEEDS: Array<{ dow: number; start: string; end: string; cid: string; tid: string; pid: string; status?: string }> = [
+  { dow: 0, start: "10:00", end: "10:40", cid: "c1", tid: "t1", pid: "p1" },
+  { dow: 0, start: "10:00", end: "10:40", cid: "c5", tid: "t4", pid: "p5" },
+  { dow: 0, start: "11:00", end: "11:40", cid: "c3", tid: "t1", pid: "p1" },
+  { dow: 0, start: "14:00", end: "14:40", cid: "c7", tid: "t2", pid: "p3" },
+  { dow: 0, start: "15:00", end: "15:50", cid: "c8", tid: "t3", pid: "p4" },
+  { dow: 1, start: "09:30", end: "10:10", cid: "c2", tid: "t2", pid: "p3" },
+  { dow: 1, start: "10:00", end: "10:40", cid: "c10", tid: "t4", pid: "p5" },
+  { dow: 1, start: "11:00", end: "11:40", cid: "c6", tid: "t5", pid: "p6" },
+  { dow: 1, start: "14:00", end: "14:40", cid: "c1", tid: "t1", pid: "p1", status: "cancelled" },
+  { dow: 2, start: "10:00", end: "10:40", cid: "c3", tid: "t1", pid: "p1" },
+  { dow: 2, start: "10:00", end: "10:50", cid: "c12", tid: "t2", pid: "p3" },
+  { dow: 2, start: "11:00", end: "11:50", cid: "c8", tid: "t3", pid: "p4" },
+  { dow: 2, start: "15:00", end: "15:40", cid: "c10", tid: "t4", pid: "p5" },
+  { dow: 3, start: "09:30", end: "10:10", cid: "c5", tid: "t4", pid: "p5" },
+  { dow: 3, start: "10:00", end: "10:40", cid: "c7", tid: "t2", pid: "p3" },
+  { dow: 3, start: "11:00", end: "11:40", cid: "c6", tid: "t5", pid: "p6" },
+  { dow: 3, start: "14:00", end: "14:40", cid: "c1", tid: "t1", pid: "p1" },
+  { dow: 4, start: "10:00", end: "10:50", cid: "c2", tid: "t2", pid: "p3" },
+  { dow: 4, start: "10:00", end: "10:40", cid: "c10", tid: "t4", pid: "p5" },
+  { dow: 4, start: "11:00", end: "11:40", cid: "c3", tid: "t1", pid: "p1" },
+  { dow: 4, start: "14:00", end: "14:40", cid: "c8", tid: "t3", pid: "p4" },
+  { dow: 4, start: "15:00", end: "15:40", cid: "c6", tid: "t5", pid: "p6" },
+];
+
+export const DEMO_SESSIONS = SESSION_SEEDS.map((s, i) => {
+  const d = new Date(WEEK0);
+  d.setDate(d.getDate() + s.dow);
+  const program = DEMO_PROGRAMS.find((p) => p.id === s.pid)!;
+  return {
+    id: `s${i + 1}`,
+    session_date: fmt(d),
+    start_time: s.start,
+    end_time: s.end,
+    client_id: s.cid,
+    therapist_id: s.tid,
+    program_id: s.pid,
+    status: s.status ?? "completed",
+    price_krw: program.price_krw,
+    is_voucher: program.is_voucher,
+  };
+});
+
+export const DEMO_ASSESSMENTS = [
+  { id: "a1", client_id: "c1", therapist_id: "t1", assessment_date: fmt(WEEK0), assessment_type: "초기상담", status: "completed", content: "표현언어 지연 의심. 가정 환경 양호." },
+  { id: "a2", client_id: "c4", therapist_id: "t3", assessment_date: fmt(new Date(WEEK0.getTime() + 86400000 * 2)), assessment_type: "재평가", status: "scheduled", content: "" },
+  { id: "a3", client_id: "c11", therapist_id: "t5", assessment_date: fmt(new Date(WEEK0.getTime() + 86400000 * 3)), assessment_type: "초기상담", status: "scheduled", content: "" },
+];
+
+export const DEMO_PARENT_REPORTS = [
+  { id: "r1", client_id: "c1", period_start: "2026-04-01", period_end: "2026-04-30", status: "issued", issued_at: "2026-05-02" },
+  { id: "r2", client_id: "c2", period_start: "2026-04-01", period_end: "2026-04-30", status: "issued", issued_at: "2026-05-02" },
+  { id: "r3", client_id: "c3", period_start: "2026-05-01", period_end: "2026-05-31", status: "draft", issued_at: null },
+];
+
 export const isDemoMode = (): boolean => {
   if (typeof window === "undefined") return false;
   return new URLSearchParams(window.location.search).get("demo") === "1";

@@ -576,6 +576,8 @@ const App = () => {
           <Route path="/b2b-center" element={<B2BCenterLanding />} />
           <Route path="/b2b-center/import" element={<B2BCenterImport />} />
           <Route path="/b2b-center/invite/:token" element={<B2BCenterInvite />} />
+          <Route path="/center-invite" element={<CenterInviteClaim />} />
+          <Route path="/center-invite/:token" element={<CenterInviteClaim />} />
           <Route path="/b2b-center/app" element={<B2BCenterApp />}>
             <Route index element={<Navigate to="clients" replace />} />
             <Route path="clients" element={<CenterClientsPage />} />

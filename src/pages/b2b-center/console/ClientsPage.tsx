@@ -118,9 +118,9 @@ export default function ClientsPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} className="p-12 text-center text-neutral-400">불러오는 중…</td></tr>
+              <tr><td colSpan={8} className="p-12 text-center text-neutral-400">불러오는 중…</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} className="p-12 text-center text-neutral-400">
+              <tr><td colSpan={8} className="p-12 text-center text-neutral-400">
                 <p className="mb-3">아직 등록된 이용자가 없습니다.</p>
                 <div className="inline-flex gap-2">
                   <button onClick={() => setRegisterOpen(true)} className="px-4 py-2 rounded-full bg-neutral-900 text-white text-sm">이용자 등록</button>
@@ -139,6 +139,12 @@ export default function ClientsPage() {
                   <span className={`px-2 py-0.5 rounded-full text-xs border ${statusTone[r.status] ?? "bg-neutral-100"}`}>
                     {statusLabel[r.status] ?? r.status}
                   </span>
+                </td>
+                <td className="p-3 text-right">
+                  <button onClick={() => setInviteFor({ id: r.id, name: r.name })}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs bg-[#FAF6E8] text-neutral-800 hover:bg-[#F0E8C8] border border-[#C8B88A]/30">
+                    <Send className="w-3 h-3" /> 초대
+                  </button>
                 </td>
               </tr>
             ))}

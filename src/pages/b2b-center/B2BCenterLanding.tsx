@@ -1,7 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Check, ArrowRight, Upload, Calendar, FileText, BarChart3, Shield, Sparkles } from "lucide-react";
+import { Check, ArrowRight, Upload, Calendar, FileText, BarChart3, Shield, Sparkles, PlayCircle } from "lucide-react";
 import { B2B_CENTER_MONTHLY, B2B_CENTER_COMPETITOR_PRICE } from "@/constants/tokenCosts";
+import CenterOnboardingStepper from "@/components/b2b-center/CenterOnboardingStepper";
 
 const KRW = (n: number) => `₩${n.toLocaleString("ko-KR")}`;
 

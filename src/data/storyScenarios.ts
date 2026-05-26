@@ -280,5 +280,6 @@ export const dimensionMeta: Record<PsychDimension, { label: string; icon: string
 };
 
 import { villageChapter } from './villageScenarios';
+import { climbChapter, escapeChapter } from './viralGameChapters';
 
-export const allChapters: StoryChapter[] = [chapter1, villageChapter];
+export const allChapters: StoryChapter[] = [chapter1, villageChapter, climbChapter, escapeChapter];

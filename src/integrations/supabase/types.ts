@@ -16651,6 +16651,27 @@ export type Database = {
         }
         Returns: Json
       }
+      create_center_org: {
+        Args: { _name: string }
+        Returns: {
+          address: string | null
+          business_no: string | null
+          contract_expires_at: string | null
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          phone: string | null
+          plan: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "center_organizations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       create_crisis_alert: {
         Args: {
           p_alert_type: string

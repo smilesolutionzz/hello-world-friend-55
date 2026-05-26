@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_CLIENTS, DEMO_STATS, DEMO_THERAPISTS } from "@/lib/b2bCenter/demoData";
 import { TrendingUp, Users, AlertCircle, Activity, Calendar } from "lucide-react";
+import OnboardingChecklist from "@/components/b2b-center/OnboardingChecklist";
 
 type Ctx = { centerId: string; demo?: boolean };
 

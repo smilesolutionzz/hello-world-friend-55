@@ -198,6 +198,13 @@ import CenterBillingStatsPage from "./pages/b2b-center/console/BillingStatsPage"
 import CenterTherapistsAdminPage from "./pages/b2b-center/console/TherapistsAdminPage";
 import CenterPlaceholderBase from "./pages/b2b-center/console/PlaceholderPage";
 import CenterOrganizationPage from "./pages/b2b-center/console/OrganizationPage";
+import CenterSchedulePage from "./pages/b2b-center/console/SchedulePage";
+import CenterAssessmentsPage from "./pages/b2b-center/console/AssessmentsPage";
+import CenterMonthlyServicesPage from "./pages/b2b-center/console/MonthlyServicesPage";
+import CenterVoucherAuditPage from "./pages/b2b-center/console/VoucherAuditPage";
+import CenterProgramsPage from "./pages/b2b-center/console/ProgramsPage";
+import CenterParentReportsPage from "./pages/b2b-center/console/ParentReportsPage";
+import CenterOpsDashboardPage from "./pages/b2b-center/console/OpsDashboardPage";
 import B2BCenterInvite from "./pages/b2b-center/B2BCenterInvite";
 const CenterPlaceholder = (props: { title: string; desc: string }) => <CenterPlaceholderBase {...props} />;
 
@@ -574,14 +581,14 @@ const App = () => {
             <Route path="services/attendance" element={<CenterAttendancePage />} />
             <Route path="billing/stats" element={<CenterBillingStatsPage />} />
             <Route path="admin/therapists" element={<CenterTherapistsAdminPage />} />
-            <Route path="schedule" element={<CenterPlaceholder title="주간 캘린더" desc="치료사별 색상 라인, 회기 블럭, 상태 패턴" />} />
-            <Route path="assessments" element={<CenterPlaceholder title="상담·평가 관리" desc="회기 외 상담·평가 기록 관리" />} />
-            <Route path="services/monthly" element={<CenterPlaceholder title="월 서비스 관리" desc="월별 회기 그리드 (예정/완료/취소/취소보강)" />} />
-            <Route path="billing/voucher-audit" element={<CenterPlaceholder title="부정결제 찾기" desc="전자바우처 엑셀 업로드 → 회기 데이터와 자동 대조" />} />
-            <Route path="admin/programs" element={<CenterPlaceholder title="프로그램 관리" desc="치료 프로그램·단가·바우처 여부 관리" />} />
+            <Route path="schedule" element={<CenterSchedulePage />} />
+            <Route path="assessments" element={<CenterAssessmentsPage />} />
+            <Route path="services/monthly" element={<CenterMonthlyServicesPage />} />
+            <Route path="billing/voucher-audit" element={<CenterVoucherAuditPage />} />
+            <Route path="admin/programs" element={<CenterProgramsPage />} />
             <Route path="admin/organization" element={<CenterOrganizationPage />} />
-            <Route path="intelligence/parent-reports" element={<CenterPlaceholder title="부모 월간 리포트" desc="이용자별 회기 누적 → AIHPRO 전문가 종합 분석 → PDF 자동 생성" />} />
-            <Route path="intelligence/ops-dashboard" element={<CenterPlaceholder title="운영 KPI 대시보드" desc="NSM·위험신호·주간 인사이트 자동 발송" />} />
+            <Route path="intelligence/parent-reports" element={<CenterParentReportsPage />} />
+            <Route path="intelligence/ops-dashboard" element={<CenterOpsDashboardPage />} />
           </Route>
 
           {/* Catch-all */}

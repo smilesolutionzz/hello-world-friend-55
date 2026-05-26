@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { NavLink, Outlet, useNavigate, useSearchParams } from "react-router-dom";
 import {
   LayoutDashboard, Users, Calendar, BookOpen, CreditCard, Building2,
-  UserCog, FileText, Upload, Sparkles, ShieldAlert,
+  UserCog, FileText, Upload, Sparkles, ShieldAlert, Compass,
 } from "lucide-react";
 import { listMyCenters, getActiveCenterId, setActiveCenterId, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { supabase } from "@/integrations/supabase/client";

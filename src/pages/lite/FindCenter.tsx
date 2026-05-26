@@ -140,6 +140,14 @@ const FindCenter = () => {
               />
             ))}
         </div>
+
+        {/* 센터 운영자용 진입 (B2B 브릿지) */}
+        <div className="mt-10 text-center text-[12px] text-slate-500">
+          센터를 운영하고 계신가요?{" "}
+          <a href="/b2b-center" className="text-[#C8B88A] font-medium hover:underline">
+            발달치료센터 운영 솔루션 보기 →
+          </a>
+        </div>
       </div>
     </div>
   );

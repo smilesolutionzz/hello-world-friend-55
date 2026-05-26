@@ -198,6 +198,13 @@ import CenterBillingStatsPage from "./pages/b2b-center/console/BillingStatsPage"
 import CenterTherapistsAdminPage from "./pages/b2b-center/console/TherapistsAdminPage";
 import CenterPlaceholderBase from "./pages/b2b-center/console/PlaceholderPage";
 import CenterOrganizationPage from "./pages/b2b-center/console/OrganizationPage";
+import CenterSchedulePage from "./pages/b2b-center/console/SchedulePage";
+import CenterAssessmentsPage from "./pages/b2b-center/console/AssessmentsPage";
+import CenterMonthlyServicesPage from "./pages/b2b-center/console/MonthlyServicesPage";
+import CenterVoucherAuditPage from "./pages/b2b-center/console/VoucherAuditPage";
+import CenterProgramsPage from "./pages/b2b-center/console/ProgramsPage";
+import CenterParentReportsPage from "./pages/b2b-center/console/ParentReportsPage";
+import CenterOpsDashboardPage from "./pages/b2b-center/console/OpsDashboardPage";
 import B2BCenterInvite from "./pages/b2b-center/B2BCenterInvite";
 const CenterPlaceholder = (props: { title: string; desc: string }) => <CenterPlaceholderBase {...props} />;
 

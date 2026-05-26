@@ -27,19 +27,15 @@ export async function listMyCenters(): Promise<CenterOrg[]> {
 }
 
 export async function createCenter(name: string): Promise<CenterOrg> {
-  const { data: sessionData } = await supabase.auth.getSession();
-  const user = sessionData.session?.user;
-  if (!user) throw new Error("로그인이 필요합니다. 다시 로그인 후 시도하세요.");
-  const { data, error } = await supabase
-    .from("center_organizations")
-    .insert({ name, owner_id: user.id })
-    .select("*")
-    .maybeSingle();
+  const { data, error } = await supabase.rpc("create_center_org", { _name: name });
   if (error) {
-    console.error("[createCenter] insert error", error);
+    console.error("[createCenter] rpc error", error);
+    if (error.message?.includes("AUTH_REQUIRED")) {
+      throw new Error("로그인이 필요합니다. 다시 로그인 후 시도하세요.");
+    }
     throw new Error(error.message || "기관 생성에 실패했습니다.");
   }
-  if (!data) throw new Error("생성된 기관을 불러오지 못했습니다. 권한을 확인하세요.");
+  if (!data) throw new Error("생성된 기관 정보를 받지 못했습니다.");
   return data as CenterOrg;
 }
 

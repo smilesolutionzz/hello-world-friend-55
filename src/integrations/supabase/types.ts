@@ -2279,6 +2279,111 @@ export type Database = {
           },
         ]
       }
+      center_b2c_grants: {
+        Row: {
+          center_id: string
+          client_id: string | null
+          expires_at: string | null
+          granted_at: string
+          grants: Json
+          id: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          center_id: string
+          client_id?: string | null
+          expires_at?: string | null
+          granted_at?: string
+          grants?: Json
+          id?: string
+          source?: string
+          user_id: string
+        }
+        Update: {
+          center_id?: string
+          client_id?: string | null
+          expires_at?: string | null
+          granted_at?: string
+          grants?: Json
+          id?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_b2c_grants_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_b2c_grants_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "center_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_client_invites: {
+        Row: {
+          center_code: string
+          center_id: string
+          claimed_at: string | null
+          claimed_by_user_id: string | null
+          client_id: string
+          created_at: string
+          created_by: string | null
+          expires_at: string
+          id: string
+          invite_token: string
+          status: string
+        }
+        Insert: {
+          center_code: string
+          center_id: string
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string
+          id?: string
+          invite_token?: string
+          status?: string
+        }
+        Update: {
+          center_code?: string
+          center_id?: string
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string
+          id?: string
+          invite_token?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_client_invites_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "center_client_invites_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "center_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       center_clients: {
         Row: {
           address: string | null
@@ -2290,6 +2395,7 @@ export type Database = {
           guardian_phone: string | null
           id: string
           initial_consult_date: string | null
+          linked_user_id: string | null
           member_no: string | null
           meta: Json
           name: string
@@ -2307,6 +2413,7 @@ export type Database = {
           guardian_phone?: string | null
           id?: string
           initial_consult_date?: string | null
+          linked_user_id?: string | null
           member_no?: string | null
           meta?: Json
           name: string
@@ -2324,6 +2431,7 @@ export type Database = {
           guardian_phone?: string | null
           id?: string
           initial_consult_date?: string | null
+          linked_user_id?: string | null
           member_no?: string | null
           meta?: Json
           name?: string
@@ -2599,6 +2707,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "center_notifications_log_center_id_fkey"
+            columns: ["center_id"]
+            isOneToOne: false
+            referencedRelation: "center_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_onboarding_progress: {
+        Row: {
+          center_id: string
+          completed_at: string
+          id: string
+          step_key: string
+        }
+        Insert: {
+          center_id: string
+          completed_at?: string
+          id?: string
+          step_key: string
+        }
+        Update: {
+          center_id?: string
+          completed_at?: string
+          id?: string
+          step_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_onboarding_progress_center_id_fkey"
             columns: ["center_id"]
             isOneToOne: false
             referencedRelation: "center_organizations"
@@ -16771,6 +16908,7 @@ export type Database = {
         }
         Returns: string
       }
+      generate_center_code: { Args: never; Returns: string }
       generate_institution_join_code: {
         Args: { _institution_id: string }
         Returns: string

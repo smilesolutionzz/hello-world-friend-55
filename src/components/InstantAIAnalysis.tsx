@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EnhancedResultView } from '@/components/instant-analysis/EnhancedResultView';
+import { buildConcernYoutubeQuery } from '@/lib/concernYoutubeQuery';
 
 const InstantAIAnalysis = () => {
   const { t } = useTranslation();
@@ -236,7 +237,9 @@ const InstantAIAnalysis = () => {
       setShowResult(true);
 
       // YouTube 추천 영상 검색 (비동기, 결과 표시 후 로드)
-      const ytQuery = `${analysis.type || ''} ${inputText.substring(0, 60)}`.trim();
+      // 사용자 원문을 그대로 검색하면 "언어" → "영국영어 팟캐스트" 같이
+      // 엉뚱한 학습 영상이 추천돼서, 주제 매핑 기반 큐레이션 키워드만 사용.
+      const ytQuery = buildConcernYoutubeQuery(inputText, isEnglish);
       supabase.functions.invoke('youtube-search', {
         body: { query: ytQuery, language: isEnglish ? 'en' : 'ko', maxResults: 2 }
       }).then(({ data }) => {

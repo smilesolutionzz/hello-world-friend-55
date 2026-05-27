@@ -20,7 +20,7 @@ import {
   type PartnerProgram,
   type PartnerProduct,
 } from '@/lib/partnerMarket';
-import { Pencil, Plus, Trash2, ExternalLink, ImagePlus, Building2 } from 'lucide-react';
+import { Pencil, Plus, Trash2, ExternalLink, ImagePlus, Building2, Sparkles } from 'lucide-react';
 
 type Tab = 'programs' | 'products';
 
@@ -278,6 +278,39 @@ const EditDialog: React.FC<{
   );
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [aiIdea, setAiIdea] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const institution = PARTNER_INSTITUTIONS.find((p) => p.id === slug);
+
+  const handleAIDraft = async () => {
+    if (!aiIdea.trim()) return toast.error('어떤 프로그램인지 한 줄로 적어 주세요');
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('partner-program-assistant', {
+        body: {
+          kind,
+          idea: aiIdea,
+          institutionName: institution?.name,
+          institutionType: institution?.type,
+        },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      const draft = data?.draft ?? {};
+      setForm((f: any) => ({
+        ...f,
+        ...draft,
+        // 가격 입력 칸이 string이라 변환
+        price_krw: draft.price_krw ?? f.price_krw ?? '',
+      }));
+      toast.success('AI 초안이 채워졌습니다. 내용을 검토해 주세요.');
+    } catch (e: any) {
+      toast.error(e.message || 'AI 생성에 실패했습니다');
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const setField = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }));
 
@@ -330,6 +363,31 @@ const EditDialog: React.FC<{
         </DialogHeader>
 
         <div className="space-y-3">
+          {/* AI 작성 도우미 */}
+          <div className="rounded-xl border border-[#C8B88A]/40 bg-[#FBF8F1] p-3">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#A8924B]" />
+              <p className="text-xs font-bold text-foreground">AI 작성 도우미</p>
+            </div>
+            <p className="text-[11px] text-muted-foreground mb-2 break-keep">
+              {kind === 'program'
+                ? '예) "만 4~7세 대상 ABA 기반 사회성 그룹 8회기, 회당 5만원"'
+                : '예) "초등 저학년 부모를 위한 정서코칭 워크북, 15,000원"'}
+            </p>
+            <div className="flex gap-2">
+              <Input
+                value={aiIdea}
+                onChange={(e) => setAiIdea(e.target.value)}
+                placeholder="한 줄로 적어주시면 제목·설명·카테고리를 채워드려요"
+                className="text-xs"
+              />
+              <Button size="sm" onClick={handleAIDraft} disabled={aiLoading} className="shrink-0">
+                {aiLoading ? '작성 중…' : 'AI 초안'}
+              </Button>
+            </div>
+          </div>
+
+
           {/* Thumbnail */}
           <div>
             <Label>썸네일</Label>

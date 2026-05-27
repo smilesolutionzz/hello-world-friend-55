@@ -9,6 +9,7 @@ import { listMyCenters, getActiveCenterId, setActiveCenterId, type CenterOrg } f
 import { supabase } from "@/integrations/supabase/client";
 import EmptyCenterState from "@/components/b2b-center/EmptyCenterState";
 import DemoModeBanner from "@/components/b2b-center/DemoModeBanner";
+import TrialBanner from "@/components/b2b-center/TrialBanner";
 import { DEMO_CENTER, isDemoMode } from "@/lib/b2bCenter/demoData";
 
 const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [

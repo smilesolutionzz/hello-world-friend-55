@@ -12,6 +12,9 @@ export interface CenterOrg {
   contract_expires_at?: string | null;
   plan: string;
   created_at: string;
+  trial_started_at?: string | null;
+  trial_ends_at?: string | null;
+  trial_status?: string | null;
 }
 
 /** 현재 로그인한 사용자가 속한 기관 목록 */

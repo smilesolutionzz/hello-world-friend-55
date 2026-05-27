@@ -144,8 +144,14 @@ export default function B2BCenterApp() {
         </aside>
 
         <main className="flex-1 overflow-auto">
-          {showWelcome && (
-            <div className="max-w-5xl mx-auto px-6 pt-6">
+          <div className="max-w-5xl mx-auto px-6 pt-6 space-y-4">
+            {!demo && (
+              <TrialBanner
+                trialEndsAt={activeCenter.trial_ends_at}
+                trialStatus={activeCenter.trial_status}
+              />
+            )}
+            {showWelcome && (
               <div className="rounded-2xl bg-[#FAF6E8] border border-[#C8B88A]/30 p-5 flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs tracking-widest text-[#C8B88A] mb-1">WELCOME</p>
@@ -154,8 +160,8 @@ export default function B2BCenterApp() {
                 </div>
                 <button onClick={() => setShowWelcome(false)} className="text-xs text-neutral-500 hover:text-neutral-900 shrink-0">닫기</button>
               </div>
-            </div>
-          )}
+            )}
+          </div>
           <Outlet context={{ centerId: activeCenter.id, demo }} />
         </main>
       </div>

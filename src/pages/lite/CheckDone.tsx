@@ -739,15 +739,15 @@ const CheckDone: React.FC = () => {
             카드 등록 없이 · 지금 바로 시작
           </p>
 
-          {/* 메인: 3일 무료 체험 */}
+          {/* 메인: 7일 전액 무료 체험 (PMF 베타) */}
           <Link
             to={`/mind-track?audience=child&from=check&area=${result.area}&age=${encodeURIComponent(result.age)}&score=${score}`}
             className="w-full rounded-2xl bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between active:scale-[0.99] transition"
           >
             <span className="flex flex-col items-start">
-              <span className="text-[17px] font-semibold leading-tight">3일 무료 체험 시작하기</span>
+              <span className="text-[17px] font-semibold leading-tight">7일 무료 체험 시작하기</span>
               <span className="text-[11px] text-white/70 mt-0.5">
-                {copy.shortLabel} 7일 부모 코칭 · 4일차부터 ₩{MIND_TRACK_7_PRICE.toLocaleString('ko-KR')}
+                {copy.shortLabel} 7일 부모 코칭 · PMF 베타 전액 무료
               </span>
             </span>
             <span className="text-[18px]">→</span>

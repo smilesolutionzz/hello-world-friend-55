@@ -363,6 +363,31 @@ const EditDialog: React.FC<{
         </DialogHeader>
 
         <div className="space-y-3">
+          {/* AI 작성 도우미 */}
+          <div className="rounded-xl border border-[#C8B88A]/40 bg-[#FBF8F1] p-3">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#A8924B]" />
+              <p className="text-xs font-bold text-foreground">AI 작성 도우미</p>
+            </div>
+            <p className="text-[11px] text-muted-foreground mb-2 break-keep">
+              {kind === 'program'
+                ? '예) "만 4~7세 대상 ABA 기반 사회성 그룹 8회기, 회당 5만원"'
+                : '예) "초등 저학년 부모를 위한 정서코칭 워크북, 15,000원"'}
+            </p>
+            <div className="flex gap-2">
+              <Input
+                value={aiIdea}
+                onChange={(e) => setAiIdea(e.target.value)}
+                placeholder="한 줄로 적어주시면 제목·설명·카테고리를 채워드려요"
+                className="text-xs"
+              />
+              <Button size="sm" onClick={handleAIDraft} disabled={aiLoading} className="shrink-0">
+                {aiLoading ? '작성 중…' : 'AI 초안'}
+              </Button>
+            </div>
+          </div>
+
+
           {/* Thumbnail */}
           <div>
             <Label>썸네일</Label>

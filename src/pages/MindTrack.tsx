@@ -860,83 +860,87 @@ const MindTrack: React.FC = () => {
 
 
 
-        {/* 무료 고민 리포트 입력 */}
+        {/* 한 번의 탭으로 시작 — PMF 베타 7일 전액 무료 */}
         <section className="px-4 pb-12">
           <div className="max-w-3xl mx-auto">
-            <Card className="border-2 border-blue-100 shadow-xl bg-white">
+            <Card className="border border-slate-200 shadow-sm bg-white rounded-3xl">
               <CardContent className="p-6 md:p-8 space-y-5">
                 <div className="flex items-start gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center flex-shrink-0">
-                    <MessageSquareHeart className="w-5 h-5" />
+                  <div className="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-5 h-5" />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h2 className="text-lg md:text-xl font-bold text-slate-900">
-                        내 트랙 찾기
+                        지금 바로 시작하기
                       </h2>
                       <Badge variant="outline" className="text-[10px] border-emerald-300 text-emerald-700 bg-emerald-50">
-                        1분 · 무료 · 비로그인 OK
+                        PMF 베타 · 7일 전액 무료
                       </Badge>
                     </div>
-                    <p className="text-sm text-slate-500 mt-0.5">
-                      고민을 한 줄만 적어주시면, 짧은 리포트와 함께 가장 잘 맞는 7일 마음 트랙 3가지를 추천해드려요.
+                    <p className="text-sm text-slate-500 mt-1 leading-relaxed">
+                      카드 등록 없이, 한 번의 탭으로 7일 마음 트랙을 시작해요.
+                      {!selectedGoal && ' 위에서 집중 목표를 먼저 골라주세요.'}
                     </p>
                   </div>
                 </div>
 
-                <Textarea
-                  value={concern}
-                  onChange={(e) => setConcern(e.target.value)}
-                  placeholder={examplePlaceholders[placeholderIdx]}
-                  className="min-h-[120px] resize-none text-base leading-relaxed border-slate-200 focus:border-blue-400 transition-all"
-                  maxLength={500}
-                  disabled={reportLoading || polishing}
-                />
-
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <div className="flex items-center gap-3 text-xs text-slate-400">
-                    <span>{concern.length} / 500</span>
-                    <span className="hidden sm:inline">입력하신 내용은 저장되지 않아요</span>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handlePolish}
-                    disabled={polishing || reportLoading || concern.trim().length < 2}
-                    className="h-8 text-xs gap-1.5 border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800"
-                  >
-                    {polishing ? (
-                      <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        다듬는 중...
-                      </>
-                    ) : (
-                      <>
-                        <Wand2 className="w-3.5 h-3.5" />
-                        AI로 자연스럽게 다듬기
-                      </>
-                    )}
-                  </Button>
-                </div>
-
                 <Button
-                  onClick={handleGenerateReport}
-                  disabled={reportLoading || concern.trim().length < 5}
-                  className="w-full h-13 py-4 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl"
+                  onClick={handleStart}
+                  disabled={loading || !selectedGoal}
+                  className="w-full h-13 py-4 text-base font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-2xl"
                 >
-                  {reportLoading ? (
+                  {loading ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      트랙을 찾는 중...
+                      시작하는 중…
                     </>
                   ) : (
                     <>
-                      <Target className="w-5 h-5 mr-2" />
-                      내 트랙 찾기
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      7일 무료 코칭 시작하기
+                      <ArrowRight className="w-5 h-5 ml-2" />
                     </>
                   )}
                 </Button>
+
+                {/* 고민 적기 — 선택, 접힘 */}
+                <details className="group rounded-2xl border border-slate-100 bg-slate-50/60 open:bg-white open:border-slate-200 transition">
+                  <summary className="cursor-pointer list-none px-4 py-3 flex items-center justify-between text-[13px] font-medium text-slate-600 hover:text-slate-900">
+                    <span className="flex items-center gap-2">
+                      <MessageSquareHeart className="w-4 h-4 text-slate-400" />
+                      고민을 적어 맞춤 추천 받기 (선택 · 1분)
+                    </span>
+                    <span className="text-slate-400 group-open:rotate-180 transition">⌄</span>
+                  </summary>
+                  <div className="px-4 pb-4 pt-1 space-y-3">
+                    <Textarea
+                      value={concern}
+                      onChange={(e) => setConcern(e.target.value)}
+                      placeholder={examplePlaceholders[placeholderIdx]}
+                      className="min-h-[110px] resize-none text-[15px] leading-relaxed border-slate-200 focus:border-slate-400 bg-white"
+                      maxLength={500}
+                      disabled={reportLoading || polishing}
+                    />
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] text-slate-400">{concern.length} / 500 · 저장되지 않아요</span>
+                      <Button
+                        type="button"
+                        onClick={handleGenerateReport}
+                        disabled={reportLoading || concern.trim().length < 5}
+                        size="sm"
+                        variant="outline"
+                        className="h-9 text-[13px] gap-1.5 border-slate-300"
+                      >
+                        {reportLoading ? (
+                          <><Loader2 className="w-3.5 h-3.5 animate-spin" />추천 받는 중…</>
+                        ) : (
+                          <><Target className="w-3.5 h-3.5" />맞춤 트랙 추천 받기</>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </details>
               </CardContent>
             </Card>
           </div>

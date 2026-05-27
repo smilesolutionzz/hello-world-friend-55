@@ -278,8 +278,39 @@ const EditDialog: React.FC<{
   );
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [aiIdea, setAiIdea] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
 
-  const setField = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }));
+  const institution = PARTNER_INSTITUTIONS.find((p) => p.id === slug);
+
+  const handleAIDraft = async () => {
+    if (!aiIdea.trim()) return toast.error('어떤 프로그램인지 한 줄로 적어 주세요');
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('partner-program-assistant', {
+        body: {
+          kind,
+          idea: aiIdea,
+          institutionName: institution?.name,
+          institutionType: institution?.type,
+        },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      const draft = data?.draft ?? {};
+      setForm((f: any) => ({
+        ...f,
+        ...draft,
+        // 가격 입력 칸이 string이라 변환
+        price_krw: draft.price_krw ?? f.price_krw ?? '',
+      }));
+      toast.success('AI 초안이 채워졌습니다. 내용을 검토해 주세요.');
+    } catch (e: any) {
+      toast.error(e.message || 'AI 생성에 실패했습니다');
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

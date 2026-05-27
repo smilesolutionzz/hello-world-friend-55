@@ -103,6 +103,8 @@ import ExpertHiring from "./pages/ExpertHiring";
 import UrgentExpertMatch from "./pages/UrgentExpertMatch";
 import ExpertDetail from "./pages/ExpertDetail";
 import InstitutionDetailPage from "./pages/InstitutionDetailPage";
+import PartnerDetail from "./pages/PartnerDetail";
+import PartnerConsole from "./pages/PartnerConsole";
 import InstitutionApplication from "./pages/InstitutionApplication";
 import DataSharingConsent from "./pages/DataSharingConsent";
 import InstitutionClientDashboard from "./pages/InstitutionClientDashboard";
@@ -360,6 +362,8 @@ const App = () => {
 
           {/* Expert Finding */}
          <Route path="/expert-hiring" element={<ExpertHiring />} />
+         <Route path="/partner/:slug" element={<PartnerDetail />} />
+         <Route path="/partner-console" element={<PartnerConsole />} />
          <Route path="/expert-hiring/urgent-match" element={<UrgentExpertMatch />} />
          <Route path="/en/expert-hiring/urgent-match" element={<UrgentExpertMatch />} />
          <Route path="/booking-management" element={<BookingManagement />} />

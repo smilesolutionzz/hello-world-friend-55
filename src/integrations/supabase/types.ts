@@ -11440,6 +11440,33 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_content_clicks: {
+        Row: {
+          content_id: string | null
+          content_type: string
+          created_at: string
+          id: string
+          partner_slug: string
+          user_id: string | null
+        }
+        Insert: {
+          content_id?: string | null
+          content_type: string
+          created_at?: string
+          id?: string
+          partner_slug: string
+          user_id?: string | null
+        }
+        Update: {
+          content_id?: string | null
+          content_type?: string
+          created_at?: string
+          id?: string
+          partner_slug?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       partner_institutions: {
         Row: {
           accessibility_features: string[] | null
@@ -11539,6 +11566,138 @@ export type Database = {
           updated_at?: string
           voucher_types?: string[] | null
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      partner_owners: {
+        Row: {
+          created_at: string
+          id: string
+          partner_slug: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          partner_slug: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          partner_slug?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      partner_products: {
+        Row: {
+          author: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          external_buy_url: string | null
+          id: string
+          is_published: boolean
+          kind: string
+          partner_slug: string
+          price_krw: number | null
+          sort_order: number
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          external_buy_url?: string | null
+          id?: string
+          is_published?: boolean
+          kind?: string
+          partner_slug: string
+          price_krw?: number | null
+          sort_order?: number
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          external_buy_url?: string | null
+          id?: string
+          is_published?: boolean
+          kind?: string
+          partner_slug?: string
+          price_krw?: number | null
+          sort_order?: number
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      partner_programs: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          cta_label: string | null
+          cta_url: string | null
+          description: string | null
+          duration_text: string | null
+          id: string
+          is_published: boolean
+          partner_slug: string
+          price_krw: number | null
+          sort_order: number
+          target_age: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          duration_text?: string | null
+          id?: string
+          is_published?: boolean
+          partner_slug: string
+          price_krw?: number | null
+          sort_order?: number
+          target_age?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          duration_text?: string | null
+          id?: string
+          is_published?: boolean
+          partner_slug?: string
+          price_krw?: number | null
+          sort_order?: number
+          target_age?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -17254,6 +17413,10 @@ export type Database = {
             Returns: boolean
           }
         | { Args: { p_institution_id: string }; Returns: boolean }
+      is_partner_owner: {
+        Args: { _slug: string; _user_id: string }
+        Returns: boolean
+      }
       is_session_participant: {
         Args: { session_uuid: string }
         Returns: boolean

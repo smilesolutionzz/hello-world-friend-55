@@ -447,7 +447,7 @@ const ExpertHiring = () => {
               {PARTNER_INSTITUTIONS.map((inst, index) => (
                 <div
                   key={inst.id}
-                  onClick={() => (inst as any).website ? window.open((inst as any).website, '_blank') : navigate(`/institution-detail/${inst.id}`)}
+                  onClick={() => navigate(`/partner/${inst.id}`)}
                   className="group relative bg-white rounded-3xl cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_hsl(var(--primary)/0.12)] overflow-hidden"
                   style={{
                     boxShadow: '0 1px 3px hsl(var(--foreground)/0.04), 0 4px 12px hsl(var(--foreground)/0.03)',

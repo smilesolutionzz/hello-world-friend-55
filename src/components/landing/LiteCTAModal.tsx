@@ -4,26 +4,35 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Sparkles } from 'lucide-react';
 import LiteCTAContent from './LiteCTAContent';
 
-const STORAGE_KEY = 'aihpro:lite-cta-modal-shown';
+const SESSION_KEY = 'aihpro:lite-cta-modal-shown';
+const NEVER_KEY = 'aihpro:lite-cta-modal-never';
 
 /**
  * LiteCTAModal — 메인 진입 시 자동으로 뜨는 "발달체크" CTA 모달.
- * - 세션당 1회만 자동 오픈 (localStorage)
- * - ?cta=1 쿼리로 강제 오픈 가능
- * - 닫은 후에는 우하단 플로팅 버튼으로 다시 열 수 있음
+ * - 세션당 1회만 자동 오픈
+ * - "다시 보지 않기" 체크 시 영구 차단 (플로팅 버튼도 숨김)
+ * - ?cta=1 쿼리로 강제 오픈 가능 (영구 차단도 무시)
  */
 const LiteCTAModal: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
+  const [neverShow, setNeverShow] = useState(false);
 
   useEffect(() => {
     const force = searchParams.get('cta') === '1';
     let shown = false;
+    let never = false;
     try {
-      shown = localStorage.getItem(STORAGE_KEY) === '1';
+      shown = localStorage.getItem(SESSION_KEY) === '1';
+      never = localStorage.getItem(NEVER_KEY) === '1';
     } catch {}
-    if (force || !shown) {
-      // 살짝 지연시켜 첫 페인트 깜빡임 방지
+    setNeverShow(never);
+    if (force) {
+      const t = setTimeout(() => setOpen(true), 250);
+      return () => clearTimeout(t);
+    }
+    if (!shown && !never) {
       const t = setTimeout(() => setOpen(true), 250);
       return () => clearTimeout(t);
     }
@@ -32,7 +41,13 @@ const LiteCTAModal: React.FC = () => {
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
     if (!next) {
-      try { localStorage.setItem(STORAGE_KEY, '1'); } catch {}
+      try {
+        localStorage.setItem(SESSION_KEY, '1');
+        if (dontShowAgain) {
+          localStorage.setItem(NEVER_KEY, '1');
+          setNeverShow(true);
+        }
+      } catch {}
     }
   };
 
@@ -41,11 +56,20 @@ const LiteCTAModal: React.FC = () => {
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="max-w-md p-0 overflow-hidden rounded-3xl border-0 bg-white">
           <LiteCTAContent modal onDismiss={() => handleOpenChange(false)} />
+          <label className="flex items-center justify-center gap-2 py-3 px-4 text-[12px] text-slate-500 border-t border-slate-100 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={dontShowAgain}
+              onChange={(e) => setDontShowAgain(e.target.checked)}
+              className="w-3.5 h-3.5 rounded border-slate-300 accent-slate-900"
+            />
+            다시 보지 않기
+          </label>
         </DialogContent>
       </Dialog>
 
-      {/* 닫은 뒤 다시 열기 위한 플로팅 버튼 */}
-      {!open && (
+      {/* 닫은 뒤 다시 열기 위한 플로팅 버튼 (영구 차단 시 숨김) */}
+      {!open && !neverShow && (
         <button
           type="button"
           onClick={() => setOpen(true)}

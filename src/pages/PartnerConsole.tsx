@@ -20,7 +20,7 @@ import {
   type PartnerProgram,
   type PartnerProduct,
 } from '@/lib/partnerMarket';
-import { Pencil, Plus, Trash2, ExternalLink, ImagePlus, Building2 } from 'lucide-react';
+import { Pencil, Plus, Trash2, ExternalLink, ImagePlus, Building2, Sparkles } from 'lucide-react';
 
 type Tab = 'programs' | 'products';
 

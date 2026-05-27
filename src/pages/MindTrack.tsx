@@ -634,34 +634,6 @@ const MindTrack: React.FC = () => {
           </div>
         )}
 
-        {/* 개발용 디버그 토글 (우하단 floating) — 운영자/QA 확인용 */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            onClick={() => setShowDebug((v) => !v)}
-            className="text-[10px] text-slate-400 hover:text-slate-700 bg-white/80 backdrop-blur border border-slate-200 rounded-full px-2 py-1 shadow-sm"
-            aria-label="MindTrack 디버그 정보 토글"
-          >
-            {showDebug ? '× 디버그 닫기' : '🛠 MT 디버그'}
-          </button>
-          {showDebug && (
-            <div className="mt-2 bg-slate-900 text-slate-100 text-[11px] font-mono rounded-xl p-3 shadow-2xl max-w-[280px] space-y-1">
-              <div>user: {user?.id?.slice(0, 8) ?? '(none)'}</div>
-              <div>auth checking: {String(authChecking)}</div>
-              <div>enrollment: {activeEnrollment?.id?.slice(0, 8) ?? '(none)'}</div>
-              <div>payment: {activeEnrollment?.payment_status ?? '-'}</div>
-              <div>started_at: {activeEnrollment?.started_at ?? '-'}</div>
-              <div>
-                computed day:{' '}
-                {activeEnrollment?.started_at
-                  ? calcMindTrackCurrentDay(activeEnrollment.started_at)
-                  : '-'}
-              </div>
-              <div>now: {new Date().toISOString()}</div>
-              <div>workbook base: {workbookBase}</div>
-              <div>postLogin: {String(postLoginRedirecting)}</div>
-            </div>
-          )}
-        </div>
 
         {/* ────────────────────────────────────────────────────────
             진입 헤더 (Hero 위, 항상 노출) — 사용자 상태별 안내

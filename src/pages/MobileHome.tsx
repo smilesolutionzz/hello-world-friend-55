@@ -85,12 +85,12 @@ const MobileHome: React.FC = () => {
           className="block relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f1320] via-[#161b2e] to-[#1f2742] p-5 shadow-sm active:scale-[0.99] transition"
         >
           <p className="text-[12px] font-medium text-[#C8B88A] tracking-wide mb-1">
-            오늘의 핵심 프로그램
+            PMF 베타 · 한정 무료 오픈
           </p>
           <h2 className="text-[22px] font-bold text-white leading-tight">
             7일 마음 트랙
             <br />
-            3일 무료 체험
+            전액 무료 체험
           </h2>
           <div className="mt-4 inline-flex items-center gap-1 rounded-full bg-white/10 backdrop-blur px-4 py-2 text-[13px] font-semibold text-white">
             지금 시작하기 <ArrowRight className="w-4 h-4" />

@@ -78,7 +78,7 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
       const res = await startMindTrackTrial({ goal, concern }, audience);
       if (!res.enrollmentId) throw new Error(res.error || '등록 실패');
       trackEvent('mind_track_trial_start', { goal, audience, from: 'check', area });
-      toast.success('3일 무료 코칭을 시작합니다');
+      toast.success('PMF 베타 — 7일 전액 무료 코칭을 시작합니다');
       const ip = new URLSearchParams({ intake: '1', from: 'check', audience, area });
       if (age) ip.set('age', age);
       if (score != null) ip.set('score', String(score));
@@ -129,8 +129,8 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
         </h1>
         <p className="text-[17px] leading-[1.65] text-slate-600 mb-8">
           발달 14년 전문가가 설계한 부모 코칭을
-          <strong className="text-slate-900"> 카드 등록 없이 3일 무료</strong>로 체험하세요.
-          오늘 본 체크 결과가 그대로 코칭에 반영돼요.
+          <strong className="text-slate-900"> PMF 베타 기간 7일 전액 무료</strong>로 체험하세요.
+          카드 등록 없이, 오늘 본 체크 결과가 그대로 코칭에 반영돼요.
         </p>
 
         {/* 7일 흐름 — 한눈에 */}
@@ -160,8 +160,8 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
         {/* 신뢰 줄 — 작은 폰트 금지 */}
         <ul className="grid grid-cols-1 gap-2.5 mb-8">
           {[
-            '카드 등록 없이 3일 무료 · 4일차부터만 결제',
-            `이어서 결제 시 7일 전체 ₩${MIND_TRACK_7_PRICE.toLocaleString()} (커피 한 잔 값)`,
+            'PMF 베타 기간 — 7일 전액 무료, 카드 등록 없음',
+            '완주 후 +23일 연장은 별도 옵션 (선택)',
             '의료 진단/치료 아님 · 부모를 위한 발달 코칭',
           ].map((t) => (
             <li key={t} className="flex items-start gap-2 text-[15px] text-slate-700 leading-relaxed">
@@ -179,7 +179,7 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
       >
         <div className="max-w-xl mx-auto px-5 pt-3 pb-3">
           <p className="text-[13px] text-slate-500 text-center mb-2">
-            카드 등록 없이 · 지금 바로 시작 · 4일차부터 ₩{MIND_TRACK_7_PRICE.toLocaleString()}
+            PMF 베타 기간 7일 전액 무료 · 카드 등록 없음 · 지금 바로 시작
           </p>
           <button
             type="button"
@@ -195,7 +195,7 @@ const MindTrackFromCheckView: React.FC<Props> = ({ user, area, age, score, audie
             ) : (
               <>
                 <Sparkles className="w-5 h-5" />
-                3일 무료 코칭 시작하기
+                7일 무료 코칭 시작하기
                 <ArrowRight className="w-5 h-5" />
               </>
             )}

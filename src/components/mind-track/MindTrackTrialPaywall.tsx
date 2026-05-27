@@ -11,16 +11,18 @@ interface Props {
 }
 
 /**
- * 3일 무료 체험이 끝난 사용자에게 4일차 진입 시 보여주는 페이월.
- * 카드 미등록 상태에서 Day 1~3를 무료로 사용했고, Day 4부터 결제가 필요함을 안내.
+ * [DEPRECATED — PMF 베타]
+ * 과거 3일 무료 → 4일차 결제 게이트 화면. 현재 PMF 베타 기간에는
+ * 7일 전체가 전액 무료이므로 Dashboard에서 렌더링하지 않습니다.
+ * (코드는 베타 종료 후 복구를 위해 보존)
  */
 const MindTrackTrialPaywall: React.FC<Props> = ({ currentDay, totalDays }) => {
   const remainingDays = Math.max(0, totalDays - 3);
   return (
     <>
       <SEOHead
-        title="3일 무료 체험 종료 · 7일 챌린지 계속하기 | AIHPRO"
-        description="3일 무료 체험이 끝났어요. 나머지 4일 완주 코칭과 변화 리포트를 ₩7,900에 이어서 시작해 보세요."
+        title="7일 챌린지 · PMF 베타 전액 무료 | AIHPRO"
+        description="PMF 베타 기간 동안 7일 트랙 전액 무료. 카드 등록 없이 7일 완주 코칭과 변화 리포트를 받아보세요."
         canonicalUrl="https://aihpro.app/mind-track/dashboard"
       />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50/20">
@@ -30,15 +32,15 @@ const MindTrackTrialPaywall: React.FC<Props> = ({ currentDay, totalDays }) => {
             <div className="flex items-center gap-2 mb-2">
               <Lock className="w-4 h-4 text-[#8a7a4d]" />
               <span className="text-[11px] font-semibold tracking-wider text-[#8a7a4d] uppercase">
-                Day {String(currentDay).padStart(2, '0')} · 잠금
+                Day {String(currentDay).padStart(2, '0')} · PMF 베타 무료
               </span>
             </div>
             <h1 className="text-[22px] font-bold text-slate-900 leading-snug break-keep">
-              3일 무료 체험을 완주했어요
+              PMF 베타 — 7일 전액 무료
             </h1>
             <p className="mt-2 text-[14px] text-slate-600 leading-relaxed break-keep">
-              여기까지 오신 분은 상위 18%예요. 이제 나머지 {remainingDays}일 코칭과
-              <br />변화 리포트만 남았습니다.
+              베타 기간 동안 결제 없이 7일 전체를 이용할 수 있어요. 나머지 {remainingDays}일 코칭과
+              <br />변화 리포트를 그대로 이어가세요.
             </p>
 
             <div className="mt-5 space-y-2.5">

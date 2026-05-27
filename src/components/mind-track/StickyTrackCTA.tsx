@@ -38,7 +38,7 @@ const StickyTrackCTA: React.FC<StickyTrackCTAProps> = ({
           </div>
         </div>
         <div className="text-right shrink-0">
-          <div className="text-[10px] text-emerald-600 font-semibold leading-tight">3일 무료</div>
+          <div className="text-[10px] text-emerald-600 font-semibold leading-tight">베타 7일 무료</div>
           <div className="text-[10px] text-slate-400 leading-tight line-through">
             ₩{MIND_TRACK_7_PRICE.toLocaleString()}
           </div>

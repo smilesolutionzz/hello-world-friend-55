@@ -1,5 +1,5 @@
 /**
- * 3일 무료체험 인테이크 퍼널 (이탈 방지)
+ * 7일 무료체험 인테이크 퍼널 (PMF 베타 — 전액 무료)
  * 5단계: Welcome → Concern → AI Polish → Day1-3 Preview → Email Subscribe
  *
  * 진입: /mind-track/start?intake=1 (&from=check&area=&audience=&age=&score=)
@@ -276,21 +276,21 @@ export default function MindTrackIntakeFlow({ enrollment, audience, area, age, s
             className="space-y-6"
           >
             <Badge className="bg-[#FBF8F1] text-[#8a7a4d] border-[#C8B88A]/40">
-              <Sparkles className="w-3 h-3 mr-1" /> 3일 무료 체험 시작
+              <Sparkles className="w-3 h-3 mr-1" /> PMF 베타 · 7일 전액 무료
             </Badge>
             <h1 className="text-3xl font-bold text-slate-900 break-keep leading-tight">
               당신을 위한
-              <br />첫 3일을 짜드릴게요
+              <br />첫 7일을 짜드릴게요
             </h1>
             <p className="text-slate-600 break-keep leading-relaxed">
               짧게 고민을 적어주시면 AI 코치가 한 번 다듬어 보고,
-              <br /> 그 자리에서 오늘·내일·모레 미션 3개를 만들어 드려요.
+              <br /> 그 자리에서 오늘부터 7일 미션을 만들어 드려요.
               <br /> 매일 아침에는 그날의 미션과 도움 영상을 이메일로 보내드립니다.
             </p>
             <div className="grid grid-cols-3 gap-2 pt-2">
               <MiniStep icon={<Heart className="w-4 h-4" />} label="고민 적기" />
               <MiniStep icon={<Wand2 className="w-4 h-4" />} label="AI 다듬기" />
-              <MiniStep icon={<Calendar className="w-4 h-4" />} label="Day 1-3" />
+              <MiniStep icon={<Calendar className="w-4 h-4" />} label="Day 1-7" />
             </div>
             <Button onClick={goNext} className="w-full h-12 rounded-xl">
               시작하기 <ArrowRight className="w-4 h-4 ml-1" />

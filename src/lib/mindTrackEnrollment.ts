@@ -196,11 +196,11 @@ export async function ensureMindTrackEnrollment(
 }
 
 /**
- * Start a 3-day FREE trial of the 7-day Mind Track.
+ * Start the 7-day Mind Track — PMF 베타 기간 동안 전액 무료.
  * - Reuses (or creates) an enrollment for the user.
- * - Sets payment_status='trial' and started_at=now so Day 1 begins immediately.
- * - Day 4+ gates show an upgrade paywall (handled in Dashboard).
- * NO card required. Conversion happens on Day 4.
+ * - Sets payment_status='trial' (베타 무료 플래그) and started_at=now so Day 1 begins immediately.
+ * - Day 4 페이월은 비활성 (PMF 베타). 베타 종료 후 재활성 시 Dashboard 분기 복구.
+ * NO card required. 7일 전체 무료.
  */
 export async function startMindTrackTrial(
   overrides: QuizSeed = {},

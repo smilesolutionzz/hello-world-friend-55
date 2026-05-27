@@ -59,7 +59,17 @@ const PartnerConsole: React.FC = () => {
   });
 
   if (authLoading) return null;
-  if (!user) return null;
+  if (!authenticated || !user) {
+    return (
+      <div className="min-h-screen bg-white">
+        <UnifiedNavigation />
+        <div className="max-w-2xl mx-auto px-5 py-16 text-center">
+          <h1 className="text-xl font-bold text-foreground">로그인이 필요합니다</h1>
+          <Button className="mt-6" onClick={() => navigate('/auth?next=/partner-console')}>로그인</Button>
+        </div>
+      </div>
+    );
+  }
 
   if (ownedSlugs && ownedSlugs.length === 0) {
     return (

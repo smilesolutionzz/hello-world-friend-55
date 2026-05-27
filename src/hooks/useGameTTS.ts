@@ -25,6 +25,14 @@ export function useGameTTS(): UseGameTTSReturn {
       URL.revokeObjectURL(urlRef.current);
       urlRef.current = null;
     }
+    // Browser TTS fallback도 함께 중지 (페이지 이탈 시 목소리 잔존 방지)
+    try {
+      if (typeof speechSynthesis !== 'undefined') {
+        speechSynthesis.cancel();
+      }
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   useEffect(() => {

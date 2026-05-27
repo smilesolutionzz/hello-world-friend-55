@@ -26,7 +26,7 @@ type Tab = 'programs' | 'products';
 
 const PartnerConsole: React.FC = () => {
   const navigate = useNavigate();
-  const { user, isLoading: authLoading } = useAuthGuard();
+  const { user, loading: authLoading, authenticated } = useAuthGuard();
   const qc = useQueryClient();
 
   const [ownedSlugs, setOwnedSlugs] = useState<string[] | null>(null);

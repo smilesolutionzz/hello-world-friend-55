@@ -1,27 +1,113 @@
-## 배경
+# Resend Connector 기반 뉴스레터 CRM
 
-가은님 피드백: "정확히 살펴보진 않았지만 조금 더 설명이 자세했으면 좋겠어요."
-→ 첨부 이미지는 마일스톤 자가진단 리포트(이론 근거 / 가정에서 살펴볼 포인트 / 오늘부터 해볼 수 있는 일). 본문이 짧고 일반론처럼 읽혀 "내 얘기 같다"는 체감이 약함.
+## 핵심 방향
+Resend API 키를 직접 받지 않고 **Lovable Connector(게이트웨이)** 로 Resend를 연결합니다. 
+→ 토큰 관리 / 인증 갱신을 Lovable이 대신 처리, 코드에는 `LOVABLE_API_KEY` + `RESEND_API_KEY`(게이트웨이용)만 사용.
 
-## 개선 방향
+게이트웨이 URL: `https://connector-gateway.lovable.dev/resend/...`
 
-대상 파일 1개: `supabase/functions/mind-track-milestone-report/index.ts` (프롬프트만 수정, UI/스키마 변경 없음)
+---
 
-### 1. 프롬프트 규칙 강화 — "분량 2배 + 데이터 인용 + 대화체"
+## 01. 연결 절차 (사용자 1클릭)
 
-기존 "각 섹션 2~4문장"을 다음으로 교체:
+1. Lovable이 `standard_connectors--connect(connector_id="resend")` 호출
+2. 채팅에 Resend 연결 모달이 뜸 → 사용자가 Resend 계정 OAuth 또는 API Key 입력
+3. 연결 완료 시 `RESEND_API_KEY` 환경변수 자동 주입 (실제 키 아님, 게이트웨이 통과용)
+4. 발신 도메인은 기존 `news@aihpro.app` 사용 (Resend 대시보드에서 도메인 인증 필요 — 이미 했으면 스킵)
 
-- **분량**: 각 섹션 5~8문장 (현행 대비 약 2배), 전체 700~900자
-- **데이터 인용 의무**: 각 섹션에서 최소 1회는 사용자 실제 수치/메모를 따옴표나 구체 숫자로 호명
-  - 예: "Day 3에 적어주신 '아이가 잠들기 전 짜증을 자주 낸다'는 메모를 보면…"
-  - 예: "에너지 점수가 기준선 5.2 → 최근 6.8로 +1.6 올라온 흐름이 보여요."
-- **톤**: "~예요/~네요" 대화체 비율 ↑, 분석체("~이다/~된다") 금지
-- **금지**: 일반론·교과서식 문구("꾸준한 기록 자체가 가장 큰 신호예요" 같은 누구나 받을 수 있는 문장)
+---
 
-### 2. 섹션별 작성 가이드 명시
+## 02. 데이터 모델 (신규 2개 테이블)
 
-프롬프트에 섹션별 "이 데이터를 반드시 인용" 규칙 추가:
+**`newsletter_issues`** — 뉴스레터 호(號)
+- issue_number, subject, hook_line, content_html, content_json
+- status: `draft` | `approved` | `sending` | `sent`
+- scheduled_at, sent_at, sent_count, open_count, click_count
 
-- **01. 한 줄 요약** — adherence_rate %, 가장 큰 변화(가장 많이 오른/내린 점수) 1개 호명
-- **02. 변화 패턴** — baseline ↔ latest 점수 차이 3개 모두 언급, 어느 항목이 가장 인상적인지 한 줄
-- **03. 인사이트** — `reflection_notes` 중 최소 1개를 따옴표로 인용 
+**`newsletter_recipients`** — 발송 로그
+- issue_id, user_id, recipient_email
+- status: `pending` | `sent` | `failed` | `opened` | `clicked` | `unsubscribed`
+- sent_at, opened_at, clicked_at, resend_message_id
+
+RLS: admin만 issues 읽기/쓰기, 본인만 자신의 recipient 행 읽기.
+재사용: 기존 `email_unsubscribe_tokens`, `email_send_log`, `marketing_email_opt_in` 컬럼.
+
+---
+
+## 03. 엣지 함수 (신규 3개)
+
+| 함수 | 트리거 | 역할 |
+|---|---|---|
+| `generate-newsletter-draft` | pg_cron 일요일 22:00 KST | Gemini 3.1로 다음 주 초안 자동 생성 → `status='draft'` |
+| `send-newsletter-issue` | admin 수동 트리거 + pg_cron 화요일 08:00 KST | `status='approved'`인 호를 배치 200건씩 게이트웨이로 발송 |
+| `resend-webhook` | Resend webhook | open/click/bounce 이벤트 → recipients 상태 업데이트 |
+
+모든 발송은:
+```
+POST https://connector-gateway.lovable.dev/resend/emails
+Authorization: Bearer ${LOVABLE_API_KEY}
+X-Connection-Api-Key: ${RESEND_API_KEY}
+```
+
+---
+
+## 04. Admin UI (신규 탭)
+
+`AdminNewsletterPanel` → 기존 admin 대시보드에 새 탭으로 추가:
+- 초안 목록 / 미리보기 (모바일·데스크탑)
+- 후킹 문구·제목 수정, 테스트 발송 (본인에게)
+- 승인(approve) → 화요일 cron이 자동 발송
+- 즉시 발송 버튼 (긴급용)
+- 호별 통계: 발송/오픈/클릭/구독해지
+
+---
+
+## 05. 사용자 UI (신규 1페이지)
+
+`/email-preferences` — 수신 설정 페이지
+- 마케팅 이메일 on/off
+- 발송 빈도 (주 1회 / 받지 않음)
+- 푸터 unsubscribe 링크에서 진입
+
+---
+
+## 06. 뉴스레터 콘텐츠 구조 (AIHPRO WEEKLY)
+
+매주 5섹션 (Instrument Serif 헤딩 + 골드 #C8B88A 액센트 + 흰 배경):
+1. **HOOK** — 이번 주 한 줄 (예: "당신이 놓친 신호 3가지")
+2. **INSIGHT** — 멤버 데이터 기반 트렌드 1개
+3. **CASE** — 익명화된 멤버 사례 (display_name 사용)
+4. **EXPERT PICK** — 이번 주 추천 전문가 + `/expert-hiring` CTA
+5. **NEXT** — 다음 주 예고 + `/mind-track` CTA
+
+> 위기 콘텐츠 금지, 외부 핫라인 노출 금지, 의료 진단 표현 금지 (코칭 톤 유지).
+
+---
+
+## 07. 발송 정책
+
+- **대상**: `marketing_email_opt_in = true` AND `email_verified = true` 회원
+- **빈도**: 주 1회 화요일 08:00 KST (1차 MVP)
+- **배치**: 200통/배치, 배치간 2초 sleep (Resend rate limit 준수)
+- **중복방지**: `newsletter_recipients (issue_id, user_id) UNIQUE`
+- **PMF 기간**: 발송 전 admin 승인 필수 (자동 발송 X)
+
+---
+
+## 진행 순서
+
+1. `standard_connectors--connect resend` → 사용자가 연결
+2. DB 마이그레이션 (테이블 2개 + RLS + GRANT)
+3. 엣지 함수 3개 + pg_cron 2개
+4. Admin 탭 + `/email-preferences` 페이지
+5. 1호 초안 생성 → admin 검수 → 본인 테스트 발송 → 전체 발송
+
+---
+
+## 제외 (이번 범위 밖)
+
+- Resend Audiences API 동기화 (멤버 DB가 source of truth)
+- 일간 발송 (기존 daily coaching email로 대체)
+- A/B 테스트, 세그먼트 분기 (2차)
+
+승인하시면 Connector 연결부터 시작합니다.

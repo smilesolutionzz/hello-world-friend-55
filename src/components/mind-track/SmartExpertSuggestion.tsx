@@ -160,9 +160,9 @@ export default function SmartExpertSuggestion(props: SmartExpertSignals) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 80, opacity: 0 }}
           transition={{ type: "spring", stiffness: 240, damping: 28 }}
-          className="fixed left-1/2 -translate-x-1/2 bottom-[88px] z-40 w-[calc(100%-24px)] max-w-md px-2"
+          className="fixed inset-x-3 bottom-[88px] z-40 mx-auto max-w-md"
         >
-          <div className={`bg-white rounded-3xl shadow-2xl ring-1 ${accent.ring} p-4 md:p-5`}>
+          <div className={`bg-white rounded-3xl shadow-2xl ring-1 ${accent.ring} p-4 md:p-5 overflow-hidden`}>
             <div className="flex items-start gap-3">
               <div className="shrink-0 w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center">
                 <Icon className={`w-4 h-4 ${accent.iconCls}`} />

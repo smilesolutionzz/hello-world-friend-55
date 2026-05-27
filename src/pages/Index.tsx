@@ -34,7 +34,8 @@ import B2BEntryBanner from '@/components/landing/B2BEntryBanner';
 import { SmartScrollReveal } from '@/components/ui/smart-scroll-reveal';
 import DioramaIntro from '@/components/intro/DioramaIntro';
 import { LITE_MODE } from '@/config/liteMode';
-import LiteHome from '@/components/landing/LiteHome';
+import MobileHome from '@/pages/MobileHome';
+import LiteCTAModal from '@/components/landing/LiteCTAModal';
 
 
 const structuredData = {
@@ -160,7 +161,8 @@ const Index = () => {
     setShowOnboarding(false);
   }, []);
 
-  // 🚦 LITE_MODE: 부모챌린지 스타일 라이트 홈 — 단일 진입점만 노출
+  // 🚦 LITE_MODE: 대시보드(MobileHome)를 첫 화면으로 보여주고
+  // "발달체크 시작하기" CTA는 모달로 오버레이.
   if (LITE_MODE) {
     return (
       <>
@@ -173,7 +175,8 @@ const Index = () => {
         />
         <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
         <ErrorBoundary>
-          <LiteHome />
+          <MobileHome />
+          <LiteCTAModal />
         </ErrorBoundary>
       </>
     );

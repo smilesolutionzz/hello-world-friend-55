@@ -157,10 +157,10 @@ export default function MindTrackFirstTimeOnboarding({
       },
       {
         icon: Target,
-        badge: "당신을 위한 ‘첫 3일’",
+        badge: "당신을 위한 ‘첫 7일’",
         title: "내 상황에 맞춰 짜둔 1·2·3일차 미션이에요",
         body:
-          "일반론이 아니라, 방금 입력한 컨텍스트에 맞춘 미션입니다. 오늘 첫 카드부터 열어보세요.",
+          "일반론이 아니라, 방금 입력한 컨텍스트에 맞춘 미션입니다. PMF 베타 기간이라 7일 전체가 무료예요. 오늘 첫 카드부터 열어보세요.",
         bullets: [personalMissions.d1, personalMissions.d2, personalMissions.d3],
       },
     ];

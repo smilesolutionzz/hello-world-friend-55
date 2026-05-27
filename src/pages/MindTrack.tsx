@@ -549,7 +549,7 @@ const MindTrack: React.FC = () => {
   // ──────────────────────────────────────────────────────────
   // /check → /mind-track 진입 (from=check): 단순화된 전용 화면.
   // 체크 영역·연령·점수를 그대로 이어받아 큰 글씨로 보여주고
-  // 한 개의 명확한 CTA(3일 무료 코칭 시작)만 노출.
+  // 한 개의 명확한 CTA(PMF 베타 — 7일 무료 코칭 시작)만 노출.
   // ──────────────────────────────────────────────────────────
   {
     const sp = new URLSearchParams(location.search);
@@ -563,7 +563,7 @@ const MindTrack: React.FC = () => {
         <>
           <SEOHead
             title={`${age ?? ''}세 발달 체크 이후 · 7일 부모 코칭 무료 체험 | AIHPRO`}
-            description="방금 본 자녀 발달 체크 결과를 이어서 7일 부모 코칭으로. 카드 등록 없이 3일 무료 체험."
+            description="방금 본 자녀 발달 체크 결과를 이어서 7일 부모 코칭으로. PMF 베타 기간 7일 전액 무료, 카드 등록 없음."
             canonicalUrl="https://aihpro.app/mind-track"
           />
           <div className="min-h-screen bg-white">
@@ -593,8 +593,8 @@ const MindTrack: React.FC = () => {
       return (
         <>
           <SEOHead
-            title="체크 결과로 시작하는 3일 무료 부모 코칭 | AIHPRO"
-            description="방금 본 자녀 발달 체크 결과를 그대로 이어 받아, 카드 등록 없이 3일 무료로 부모 코칭을 시작하세요."
+            title="체크 결과로 시작하는 7일 무료 부모 코칭 | AIHPRO"
+            description="방금 본 자녀 발달 체크 결과를 그대로 이어 받아, PMF 베타 기간 7일 전액 무료로 부모 코칭을 시작하세요."
             canonicalUrl="https://aihpro.app/mind-track"
           />
           <UnifiedNavigation />

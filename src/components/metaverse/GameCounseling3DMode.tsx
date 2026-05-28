@@ -7,6 +7,7 @@ import { Play, RotateCcw, Eye, EyeOff, Sparkles, ArrowLeft, Volume2, VolumeX, Lo
 import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type StoryChoice, type PsychDimension } from '@/data/storyScenarios';
 import GameCounseling3DWorld from '@/components/3d/GameCounseling3DWorld';
 import VillageAdventure3DWorld from '@/components/3d/VillageAdventure3DWorld';
+import ShadowEscapeScene from './ShadowEscapeScene';
 import { useGameTTS } from '@/hooks/useGameTTS';
 import { useGameSFX } from '@/hooks/useGameSFX';
 import GameResultReport from './GameResultReport';
@@ -343,7 +344,20 @@ export default function GameCounseling3DMode() {
       </div>
 
       {/* 3D 월드 (선택지와 나레이션이 모두 화면 안에 오버레이) */}
-      {currentChapter && currentChapter.id === 'sunflower_village' ? (
+      {currentChapter && currentChapter.id === 'shadow_escape' ? (
+        <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '480px' }}>
+          <ShadowEscapeScene
+            currentScene={currentScene}
+            gameState={gameState}
+            onArrive={handleArrive}
+            sceneIndex={currentSceneIndex}
+            onChoiceSelect={makeChoice}
+            displayedText={displayedText}
+            selectedChoice={selectedChoice}
+            showParentNotes={showParentNotes}
+          />
+        </div>
+      ) : currentChapter && currentChapter.id === 'sunflower_village' ? (
         <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '400px' }}>
           <VillageAdventure3DWorld
             currentScene={currentScene}

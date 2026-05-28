@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Building2, Users, AlertTriangle, TrendingDown, TrendingUp, Shield,
-  EyeOff, FileDown, Bell, ArrowRight, CheckCircle2, Lock
+  EyeOff, FileDown, Bell, ArrowRight, CheckCircle2, Lock, Sparkles
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import BusinessBreadcrumb from '@/components/b2b/BusinessBreadcrumb';

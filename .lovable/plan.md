@@ -1,121 +1,62 @@
-# 바우처 보유기관 자동 매칭 시스템
+## 바우처 보유기관 자동 매칭 시스템 구현
 
-협력기관 47곳 + 향후 신규 기관에 대해 **사회서비스 전자바우처 제공기관 정보**를 공공데이터포털 API로 자동 매칭하고, 미매칭 기관은 운영자 자기신고 + 증빙 업로드로 보완합니다.
+odcloud.kr API 승인 완료. 5개 연도 UDDI 엔드포인트(2021/2019/2022/2023/2026)에서 사회서비스 전자바우처 제공기관 데이터를 끌고 와 협력기관과 매칭합니다.
 
----
+### 1. 시크릿 등록
+- `PUBLIC_DATA_API_KEY` — 일반 인증키 `8788d805b69734bbb56d7f023bfbd25b27c783d65dc507f4236596846fe65469`
+  (Decoding 키이므로 URL 인코딩 없이 그대로 `serviceKey` 파라미터로 전달)
 
-## 01. 데이터 소스
-
-**공공데이터포털 (data.go.kr)**
-- 후보 API:
-  - `사회보장정보원_사회서비스 제공기관 정보` (사업유형·기관명·사업자번호·주소 반환)
-  - `보건복지부_장애인활동지원기관 정보`
-  - 보조: 보건복지부 지역사회서비스투자사업 제공기관 공시
-
-**수집 대상 바우처 4종** (사용자 선택)
-1. 발달재활서비스
-2. 지역사회서비스투자사업
-3. 장애인활동지원
-4. 발달장애인 주간활동/방과후활동
-
----
-
-## 02. 동작 흐름
-
-```text
-[관리자: 동기화 버튼]
-        │
-        ▼
-edge function: voucher-sync
-  1) partner_institutions 전체 순회
-  2) 각 기관명/사업자번호로 공공데이터 API 조회
-  3) 매칭 시 voucher_programs[] 업데이트
-  4) voucher_verified_at = now()
-        │
-        ▼
-[기관 카드/상세에 배지 노출]
-"발달재활 · 지역사회 · 활동지원" chip
-
-[미매칭 기관]
-  → /partner-console 에서 운영자가 직접 체크 + 지정서 PDF 업로드
-  → 관리자 승인 시 voucher_source='self_reported_verified' 로 배지 노출
-```
-
----
-
-## 03. 데이터 모델 (변경)
-
-`partner_institutions` 컬럼 추가:
-- `voucher_programs text[]` — `['dev_rehab', 'community', 'disability_activity', 'adult_day']`
-- `voucher_source text` — `'api'` | `'self_reported_pending'` | `'self_reported_verified'`
-- `voucher_business_no text` — API 조회 키 (사업자번호 10자리)
+### 2. DB 마이그레이션
+`partner_institutions`에 컬럼 추가:
+- `voucher_programs text[]` — 매칭된 바우처 유형 (`발달재활`, `지역사회`, `장애인활동`, `발달장애인주간` 중 다중)
+- `voucher_source text` — `'api_matched' | 'self_reported_pending' | 'self_reported_verified'`
+- `voucher_business_no text` — 사업자등록번호 (매칭 키)
 - `voucher_verified_at timestamptz`
-- `voucher_evidence_url text` — 자기신고 시 지정서 PDF 경로
+- `voucher_evidence_url text` — 자기신고용 PDF (partner-media 버킷 재사용)
 
 신규 테이블 `voucher_sync_logs`:
-- `run_at`, `total`, `matched`, `unmatched`, `errors jsonb`, `triggered_by` (관리자만 INSERT/SELECT)
+- `run_at`, `total`, `matched`, `unmatched`, `errors jsonb`, `triggered_by uuid`
+- 관리자만 SELECT, service_role ALL
 
-자기신고 증빙 Storage: 기존 `partner-media` 버킷 재사용, `{slug}/voucher/` 폴더.
+신규 테이블 `voucher_directory` (캐시):
+- `business_no text`, `org_name text`, `address text`, `city text`, `voucher_type text`, `source_year text`, `raw jsonb`, `synced_at`
+- (business_no, voucher_type) UNIQUE
+- 인증 사용자 SELECT (지도/검색 노출용), service_role ALL
 
----
+### 3. Edge Functions
 
-## 04. UI 변경
+**`voucher-sync`** (admin-only):
+- 5개 UDDI 순회 → `https://api.odcloud.kr/api/3075166/v1/uddi:{ID}?serviceKey=...&perPage=1000&page=N`
+- 페이지네이션 (page 1부터 totalCount 도달까지)
+- `voucher_directory`에 upsert, 사업자번호·기관명·주소 정규화
+- `partner_institutions` 순회하며 매칭:
+  1순위: `voucher_business_no` 정확 매치
+  2순위: 정규화된 기관명 + 시/구 매치
+- 매칭 결과 `voucher_programs[]` 갱신, `voucher_source='api_matched'`, `voucher_verified_at=now()`
+- 200ms rate limit, `voucher_sync_logs`에 기록
 
-### `/partner/:slug` (기관 상세)
-- 히어로 옆에 배지 그룹: `발달재활` `지역사회` `활동지원` `주간활동/방과후`
-- API 검증 시 골드(#C8B88A) 체크 아이콘 + "공공데이터 확인 YYYY.MM.DD"
-- 자기신고 검증 시 동일 배지에 "기관 제출 자료 확인" 툴팁
+**`voucher-self-report-review`** (admin-only):
+- 자기신고 건 승인/반려 → `voucher_source='self_reported_verified'`
 
-### `/expert-hiring` 협력기관 카드
-- 기존 chip(`프로그램 N · 도서 M`) 아래 한 줄: `바우처: 발달재활, 활동지원`
-- 필터: 상단에 4개 바우처 토글, 다중 선택 가능
+### 4. UI 변경
 
-### `/partner-console` (운영자)
-- 새 탭 **바우처 등록**
-  - API 매칭 결과 표시(읽기 전용)
-  - 미매칭이면 4종 체크박스 + 지정서 PDF 업로드 → "검토 요청"
-  - 사업자번호 입력 폼(API 재매칭용)
+**`/partner-console`** — 자기신고 탭 추가:
+- 미매칭 시 표시: "API에서 우리 기관을 찾지 못했어요"
+- 4개 바우처 체크박스 + 사업자등록번호 입력 + 증빙 PDF 업로드
+- 제출 → `voucher_source='self_reported_pending'`
 
-### `/admin` 관리자
-- 새 탭 **바우처 동기화**
-  - "전체 동기화 실행" 버튼 (edge function 호출)
-  - 최근 실행 로그(매칭/미매칭/오류)
-  - 자기신고 검토 큐: 승인/반려
+**`/partner/:slug`** — 바우처 배지 그룹 + 금색 체크 (검증 시)
 
----
+**`/expert-hiring`** — 카드에 바우처 칩 + 4탭 필터 (발달재활/지역사회/장애인활동/발달장애인주간)
 
-## 05. 기술 메모
+**관리자(`/admin`)** — 바우처 탭:
+- "API 동기화 실행" 버튼 → `voucher-sync` 호출
+- 최근 sync logs (matched/unmatched/errors)
+- 자기신고 검토 큐 (PDF 미리보기 + 승인/반려)
 
-**시크릿:** `PUBLIC_DATA_API_KEY` 1개 추가 (사용자가 data.go.kr에서 발급해 전달)
+### 범위 외 (다음 PR)
+- pg_cron 자동 스케줄링 (먼저 수동 트리거로 운영)
+- 보호자용 바우처 가격 시뮬레이터
+- 카카오 알림톡 (자기신고 검토 요청)
 
-**Edge functions (신규 2개)**
-- `voucher-sync` — 관리자 트리거, JWT verify + admin 체크. 기관 순회하며 4개 API 호출, 결과 upsert. Rate limit 대응: 200ms 간격 + 재시도 1회
-- `voucher-self-report-review` — 관리자가 승인/반려 시 호출, `voucher_source` 업데이트
-
-**매칭 규칙**
-1. 1순위: `voucher_business_no` 정확 일치
-2. 2순위: 기관명 정규화(공백·괄호 제거) + 시·도 일치
-3. 미매칭은 로그 남기고 자기신고 안내
-
-**스케줄:** 수동 트리거만 (월 1회 관리자가 클릭). 추후 pg_cron 매월 1일 자동 실행 옵션은 후속.
-
-**디자인:** 화이트 미니멀 + 골드 액센트 유지, 배지는 `rounded-full border bg-white` + 골드 텍스트, 이모지 금지.
-
-**비즈니스 영향:** 단일상품 BM(`mind_track_*`) 무관, 외부 신뢰 시그널 강화 목적.
-
----
-
-## 06. 범위 / 비범위
-
-**범위(이번 PR)**
-- DB 컬럼 + 신규 로그 테이블 + Storage 폴더
-- `voucher-sync` / `voucher-self-report-review` edge function
-- 협력기관 카드 + 상세 배지 + 필터
-- 콘솔 자기신고 탭
-- 관리자 동기화 탭
-
-**비범위(후속)**
-- pg_cron 자동 스케줄
-- 바우처 단가/한도 계산기
-- 보호자가 자기 바우처로 결제 시뮬레이션
-- 카카오 알림톡으로 운영자에게 자기신고 요청 발송
+승인하시면 시크릿 등록부터 진행합니다.

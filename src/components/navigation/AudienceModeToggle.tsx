@@ -20,12 +20,13 @@ export const AudienceModeToggle = ({ size = 'md', className = '' }: Props) => {
   const isBusinessMode =
     path.startsWith('/business') ||
     path.startsWith('/b2b') ||
+    path.startsWith('/b2b-center') ||
     path.startsWith('/eap-service');
 
   const go = (mode: 'b2c' | 'b2b') => {
     if (mode === 'b2b' && !isBusinessMode) {
       trackB2BEvent('mode_toggle', path, { to: 'b2b' });
-      navigate(localePath('/b2b-hr-dashboard?demo=1'));
+      navigate(localePath('/b2b-center'));
     } else if (mode === 'b2c' && isBusinessMode) {
       trackB2BEvent('mode_toggle', path, { to: 'b2c' });
       navigate(localePath('/'));

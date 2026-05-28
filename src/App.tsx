@@ -288,6 +288,8 @@ const App = () => {
           <Route path="/en/coaching-preferences" element={<CoachingPreferences />} />
           <Route path="/verify-report/:token" element={<VerifyReport />} />
           <Route path="/en/verify-report/:token" element={<VerifyReport />} />
+          <Route path="/voucher-finder" element={<VoucherFinder />} />
+          <Route path="/en/voucher-finder" element={<VoucherFinder />} />
           <Route path="/sample-report" element={<SampleReport />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
           <Route path="/mind-track" element={<MindTrack />} />

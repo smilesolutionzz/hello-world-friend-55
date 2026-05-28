@@ -121,9 +121,12 @@ serve(async (req) => {
         let totalCount = Infinity;
         while (collected < totalCount && pageNo <= 200) {
           const xml = await fetchPage(serviceKey, sido, pageNo, numOfRows);
+          if (pageNo === 1) console.log(`[${sido}] raw sample:`, xml.slice(0, 1200));
           const { totalCount: tc, items } = parseItems(xml);
           totalCount = tc;
+          if (pageNo === 1) console.log(`[${sido}] totalCount=${tc} items=${items.length}`);
           if (items.length === 0) break;
+
           for (const it of items) {
             const org_name = it.providerName?.trim();
             if (!org_name) continue;

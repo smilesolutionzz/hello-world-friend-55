@@ -20,6 +20,7 @@ export const AudienceModeToggle = ({ size = 'md', className = '' }: Props) => {
   const isBusinessMode =
     path.startsWith('/business') ||
     path.startsWith('/b2b') ||
+    path.startsWith('/b2b-center') ||
     path.startsWith('/eap-service');
 
   const go = (mode: 'b2c' | 'b2b') => {

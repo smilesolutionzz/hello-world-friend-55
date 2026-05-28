@@ -338,7 +338,22 @@ const ExpertHiring = () => {
             <Building2 className="w-4 h-4" />
             협력기관 ({PARTNER_INSTITUTIONS.length}곳)
           </button>
+          <button
+            onClick={() => setActiveTab('vouchers')}
+            className={cn(
+              "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all",
+              activeTab === 'vouchers'
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted"
+            )}
+          >
+            <MapPin className="w-4 h-4" />
+            전국 바우처기관
+          </button>
         </div>
+
+        {/* VOUCHERS TAB */}
+        {activeTab === 'vouchers' && <VoucherFinderSection />}
 
         {/* EXPERTS TAB */}
         {activeTab === 'experts' && (

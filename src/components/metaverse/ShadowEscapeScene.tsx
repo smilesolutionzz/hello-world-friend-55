@@ -1,16 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
+import { Activity, Eye } from 'lucide-react';
 import type { StoryScene, StoryChoice } from '@/data/storyScenarios';
 
 /**
- * ShadowEscapeScene — Playable 2.5D side-scroll runner.
+ * ShadowEscapeScene — Cinematic scene + tap-based multiple choice.
  *
- * - Character (실루엣) walks left/right via keyboard (A/D, ←/→) or on-screen buttons.
- * - A shadow chaser slowly closes from the left; reaching the player resets position (no game-over).
- * - Each scene narration plays as an overlay, then 2-3 portal doors appear along the corridor.
- *   Walking the character INTO a portal selects that choice.
- * - Parallax background, vignette, footstep dust, heartbeat HUD.
+ * - 큰 캐릭터(실루엣)가 왼쪽에서 걸어 들어와 장면 중앙에 멈춘다.
+ * - 각 장면의 핵심 소품(복도/문+손잡이/갈림길/강아지/에필로그)이 캐릭터 옆에 표시된다.
+ * - 내레이션이 끝나면 다른 검사처럼 선택지 카드가 아래에서 올라온다.
+ * - 선택 시 짧은 반응 모션 후 다음 장면으로 진행한다.
  */
 interface Props {
   currentScene: StoryScene | null;
@@ -23,19 +22,16 @@ interface Props {
   showParentNotes: boolean;
 }
 
-const sceneMood: Record<string, { from: string; to: string; intensity: number; label: string; floor: string }> = {
-  first_sound: { from: '#0a0a0f', to: '#161624', intensity: 0.35, label: '01 · 첫 신호',     floor: '#1a1a26' },
-  alley:       { from: '#0b0d18', to: '#1a1430', intensity: 0.55, label: '02 · 갈림길',     floor: '#1a142a' },
-  door:        { from: '#08070c', to: '#1c0c0c', intensity: 0.85, label: '03 · 임계점',     floor: '#1a0c0c' },
-  reveal:      { from: '#1a1408', to: '#2a1f0a', intensity: 0.20, label: '04 · 해소',       floor: '#241a0c' },
-  ending:      { from: '#0a0f1a', to: '#1a2030', intensity: 0.10, label: '에필로그',       floor: '#1a2030' },
+const sceneMood: Record<
+  string,
+  { from: string; to: string; intensity: number; label: string; floor: string }
+> = {
+  first_sound: { from: '#0a0a0f', to: '#161624', intensity: 0.35, label: '01 · 첫 신호', floor: '#1a1a26' },
+  alley:       { from: '#0b0d18', to: '#1a1430', intensity: 0.55, label: '02 · 갈림길', floor: '#1a142a' },
+  door:        { from: '#08070c', to: '#1c0c0c', intensity: 0.85, label: '03 · 임계점', floor: '#1a0c0c' },
+  reveal:      { from: '#1a1408', to: '#2a1f0a', intensity: 0.20, label: '04 · 해소', floor: '#241a0c' },
+  ending:      { from: '#0a0f1a', to: '#1a2030', intensity: 0.10, label: '에필로그', floor: '#1a2030' },
 };
-
-const WORLD_WIDTH = 2400;        // logical horizontal length
-const PLAYER_SPEED = 280;        // px/sec
-const CHASER_BASE_SPEED = 60;    // px/sec
-const PLAYER_START_X = 280;
-const PORTAL_TRIGGER_DIST = 70;
 
 export default function ShadowEscapeScene({
   currentScene,
@@ -47,56 +43,35 @@ export default function ShadowEscapeScene({
   selectedChoice,
   showParentNotes,
 }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [viewport, setViewport] = useState({ w: 800, h: 480 });
-
-  const [playerX, setPlayerX] = useState(PLAYER_START_X);
-  const [chaserX, setChaserX] = useState(40);
-  const [facing, setFacing] = useState<'left' | 'right'>('right');
-  const [isWalking, setIsWalking] = useState(false);
-
+  const [arrived, setArrived] = useState(false);
   const [tension, setTension] = useState(35);
   const [heart, setHeart] = useState(74);
-
-  // input state via refs (no rerenders)
-  const keys = useRef({ left: false, right: false });
-  const rafRef = useRef<number | null>(null);
-  const lastT = useRef<number>(0);
-  const portalLockedRef = useRef(false);
+  const arrivedTimer = useRef<number | null>(null);
 
   const mood = useMemo(() => {
     if (!currentScene) return sceneMood.first_sound;
     return sceneMood[currentScene.id] ?? sceneMood.first_sound;
   }, [currentScene]);
 
-  // viewport measure
+  // 장면 바뀔 때 캐릭터 워킹 입장 → 도착 후 onArrive
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => {
-      setViewport({ w: el.clientWidth, h: el.clientHeight });
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  // reset positions on scene change
-  useEffect(() => {
-    setPlayerX(PLAYER_START_X);
-    setChaserX(40);
-    setFacing('right');
-    portalLockedRef.current = false;
+    setArrived(false);
+    if (arrivedTimer.current) window.clearTimeout(arrivedTimer.current);
+    arrivedTimer.current = window.setTimeout(() => {
+      setArrived(true);
+      if (gameState === 'exploring') onArrive(sceneIndex);
+    }, 1400);
+    return () => {
+      if (arrivedTimer.current) window.clearTimeout(arrivedTimer.current);
+    };
   }, [sceneIndex, currentScene?.id]);
 
-  // auto narration on scene mount
+  // 다른 진입(이미 narrating 상태로 들어옴)에서도 onArrive 안전망
   useEffect(() => {
-    if (gameState === 'exploring' && currentScene) {
-      const t = setTimeout(() => onArrive(sceneIndex), 400);
-      return () => clearTimeout(t);
-    }
-  }, [gameState, sceneIndex, currentScene, onArrive]);
+    if (gameState === 'exploring' && arrived) onArrive(sceneIndex);
+  }, [gameState, arrived, sceneIndex, onArrive]);
 
-  // heartbeat / tension rise
+  // 긴장도/심박
   useEffect(() => {
     if (gameState === 'narrating' || gameState === 'choice') {
       const base = 35 + Math.round(mood.intensity * 50);
@@ -110,332 +85,118 @@ export default function ShadowEscapeScene({
     }
   }, [gameState, mood.intensity, sceneIndex]);
 
-  // keyboard
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.current.left = true;
-      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.current.right = true;
-    };
-    const up = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.current.left = false;
-      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.current.right = false;
-    };
-    window.addEventListener('keydown', down);
-    window.addEventListener('keyup', up);
-    return () => {
-      window.removeEventListener('keydown', down);
-      window.removeEventListener('keyup', up);
-    };
-  }, []);
-
-  // portal positions (computed once per scene)
-  const portals = useMemo(() => {
-    if (!currentScene) return [];
-    const n = currentScene.choices.length;
-    if (n === 0) return [];
-    // distribute across the right half of the world
-    const startX = 900;
-    const span = WORLD_WIDTH - startX - 200;
-    const step = n > 1 ? span / (n - 1) : 0;
-    return currentScene.choices.map((c, i) => ({
-      choice: c,
-      x: startX + step * i,
-    }));
-  }, [currentScene]);
-
-  // main loop
-  useEffect(() => {
-    const tick = (t: number) => {
-      const dt = lastT.current ? Math.min(0.05, (t - lastT.current) / 1000) : 0;
-      lastT.current = t;
-
-      // movement allowed only in 'choice' (decision walk phase) or 'narrating' (let them roam slowly)
-      const canMove = gameState === 'choice' || gameState === 'narrating';
-      let walking = false;
-      if (canMove && !portalLockedRef.current && !selectedChoice) {
-        setPlayerX((x) => {
-          let nx = x;
-          if (keys.current.right) { nx += PLAYER_SPEED * dt; walking = true; setFacing('right'); }
-          if (keys.current.left)  { nx -= PLAYER_SPEED * dt; walking = true; setFacing('left'); }
-          nx = Math.max(80, Math.min(WORLD_WIDTH - 80, nx));
-          return nx;
-        });
-      }
-      setIsWalking(walking);
-
-      // chaser closes in only during 'choice' (tension)
-      if (gameState === 'choice' && !portalLockedRef.current) {
-        setChaserX((cx) => {
-          const speed = CHASER_BASE_SPEED + mood.intensity * 40;
-          let nx = cx + speed * dt;
-          // if catches up to player, push player forward and reset chaser
-          if (nx > playerX - 60) {
-            nx = Math.max(40, playerX - 220);
-          }
-          return nx;
-        });
-      } else if (gameState === 'narrating') {
-        setChaserX((cx) => Math.max(40, cx - 20 * dt));
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      lastT.current = 0;
-    };
-  }, [gameState, mood.intensity, playerX, selectedChoice]);
-
-  // portal collision
-  useEffect(() => {
-    if (gameState !== 'choice' || !currentScene || portalLockedRef.current || selectedChoice) return;
-    for (const p of portals) {
-      if (Math.abs(playerX - p.x) < PORTAL_TRIGGER_DIST) {
-        portalLockedRef.current = true;
-        onChoiceSelect(currentScene, p.choice);
-        break;
-      }
-    }
-  }, [playerX, portals, gameState, currentScene, onChoiceSelect, selectedChoice]);
-
   if (!currentScene) {
     return <div className="w-full h-full bg-black rounded-2xl" />;
   }
 
-  // camera follows player horizontally
-  const cameraX = Math.max(0, Math.min(WORLD_WIDTH - viewport.w, playerX - viewport.w * 0.4));
-  const isReveal = currentScene.id === 'reveal' || currentScene.id === 'ending';
-  const showPortals = gameState === 'choice' && !isReveal;
-  const groundY = viewport.h - 90;
+  const isReveal = currentScene.id === 'reveal';
+  const isEnding = currentScene.id === 'ending';
 
   return (
     <div
-      ref={containerRef}
-      className="relative w-full h-full overflow-hidden rounded-2xl select-none touch-none"
+      className="relative w-full h-full overflow-hidden rounded-2xl select-none"
       style={{ background: `linear-gradient(180deg, ${mood.from} 0%, ${mood.to} 100%)` }}
     >
-      {/* Parallax world (translated by camera) */}
-      <div
-        className="absolute top-0 left-0 h-full"
-        style={{ width: WORLD_WIDTH, transform: `translateX(${-cameraX}px)`, willChange: 'transform' }}
-      >
-        {/* far parallax — vertical pillars / corridor walls */}
-        <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateX(0)' }}>
-          {Array.from({ length: 14 }).map((_, i) => (
-            <div
-              key={`bg-${i}`}
-              className="absolute bottom-0"
-              style={{
-                left: i * 180 + 40,
-                width: 80,
-                height: viewport.h * 0.6,
-                background: `linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.04) 100%)`,
-                opacity: 0.6,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* mid parallax — ground/floor strip */}
+      {/* === 배경: 복도 원근 라인 === */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* 천장/벽 그라데이션 */}
         <div
-          className="absolute left-0 right-0"
+          className="absolute inset-0"
           style={{
-            bottom: 0,
-            height: 90,
-            background: `linear-gradient(180deg, ${mood.floor} 0%, #000 100%)`,
-            borderTop: '1px solid rgba(200,184,138,0.08)',
+            background:
+              'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(200,184,138,0.10) 0%, transparent 70%)',
           }}
         />
-        {/* floor tile marks */}
-        {Array.from({ length: Math.ceil(WORLD_WIDTH / 60) }).map((_, i) => (
+        {/* 원근 바닥 라인 */}
+        {Array.from({ length: 6 }).map((_, i) => {
+          const t = (i + 1) / 7;
+          return (
+            <div
+              key={`pl-${i}`}
+              className="absolute left-1/2 -translate-x-1/2"
+              style={{
+                bottom: 100 + i * 14,
+                width: `${100 - t * 80}%`,
+                height: 1,
+                background: 'rgba(200,184,138,0.10)',
+              }}
+            />
+          );
+        })}
+        {/* 좌우 기둥(원근) */}
+        {[0, 1, 2].map((i) => (
           <div
-            key={`tile-${i}`}
-            className="absolute"
+            key={`pillar-${i}`}
+            className="absolute bottom-[100px]"
             style={{
-              left: i * 60,
-              bottom: 88,
-              width: 1,
-              height: 6,
-              background: 'rgba(200,184,138,0.10)',
-            }}
-          />
-        ))}
-
-        {/* spotlight pools every 320px */}
-        {Array.from({ length: Math.ceil(WORLD_WIDTH / 320) }).map((_, i) => (
-          <div
-            key={`light-${i}`}
-            className="absolute pointer-events-none"
-            style={{
-              left: i * 320 + 100,
-              bottom: 30,
-              width: 220,
-              height: 140,
+              left: `${6 + i * 6}%`,
+              width: 22 - i * 4,
+              height: `${55 - i * 10}%`,
               background:
-                'radial-gradient(ellipse 50% 60% at 50% 100%, rgba(200,184,138,0.18) 0%, transparent 70%)',
+                'linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
+              borderTop: '1px solid rgba(200,184,138,0.10)',
             }}
           />
         ))}
-
-        {/* portals (choice doors) */}
-        {showPortals &&
-          portals.map((p, i) => (
-            <motion.div
-              key={p.choice.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 + i * 0.1 }}
-              className="absolute"
-              style={{ left: p.x - 60, bottom: 90, width: 120 }}
-            >
-              {/* doorframe */}
-              <div
-                className="relative mx-auto"
-                style={{
-                  width: 110,
-                  height: 170,
-                  background:
-                    'linear-gradient(180deg, rgba(200,184,138,0.0) 0%, rgba(200,184,138,0.18) 60%, rgba(200,184,138,0.45) 100%)',
-                  border: '1px solid rgba(200,184,138,0.4)',
-                  borderBottom: 'none',
-                  borderTopLeftRadius: 14,
-                  borderTopRightRadius: 14,
-                  boxShadow: '0 0 40px rgba(200,184,138,0.15), inset 0 0 30px rgba(200,184,138,0.12)',
-                }}
-              >
-                <motion.div
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 1.4, repeat: Infinity }}
-                  className="absolute inset-x-0 top-2 text-center text-[10px] font-mono tracking-widest text-[#C8B88A]"
-                >
-                  {String(i + 1).padStart(2, '0')}
-                </motion.div>
-                <div className="absolute inset-x-2 bottom-2 text-center text-[11px] text-white/85 leading-tight break-keep">
-                  <span className="mr-1">{p.choice.emoji}</span>
-                  {p.choice.text}
-                </div>
-              </div>
-              {/* light pool under door */}
-              <div
-                className="mx-auto"
-                style={{
-                  width: 140,
-                  height: 28,
-                  marginTop: -4,
-                  background:
-                    'radial-gradient(ellipse 50% 50% at 50% 0%, rgba(200,184,138,0.45) 0%, transparent 70%)',
-                  filter: 'blur(2px)',
-                }}
-              />
-              {showParentNotes && p.choice.parentNote && (
-                <div className="mt-1 text-[10px] text-amber-200/70 italic text-center break-keep px-1">
-                  → {p.choice.parentNote}
-                </div>
-              )}
-            </motion.div>
-          ))}
-
-        {/* chaser shadow (only when not reveal) */}
-        {!isReveal && (
-          <motion.div
-            className="absolute pointer-events-none"
-            style={{ left: chaserX - 80, bottom: 70 }}
-            animate={{ opacity: gameState === 'choice' ? 0.95 : 0.5 }}
-          >
-            <div
-              style={{
-                width: 160,
-                height: 220,
-                background:
-                  'radial-gradient(ellipse 55% 70% at 50% 55%, #000 0%, rgba(0,0,0,0.85) 55%, transparent 80%)',
-                filter: 'blur(6px)',
-              }}
-            />
-            <div
-              className="mx-auto"
-              style={{
-                width: 90,
-                height: 18,
-                marginTop: -10,
-                background:
-                  'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,0,0,0.7) 0%, transparent 70%)',
-                filter: 'blur(4px)',
-              }}
-            />
-          </motion.div>
-        )}
-
-        {/* reveal dog */}
-        {currentScene.id === 'reveal' && (
+        {[0, 1, 2].map((i) => (
           <div
-            className="absolute text-6xl"
-            style={{ left: chaserX - 30, bottom: 92, filter: 'drop-shadow(0 6px 20px rgba(200,184,138,0.25))' }}
-          >
-            🐕
-          </div>
-        )}
-
-        {/* player character (silhouette) */}
-        <div
-          className="absolute"
-          style={{ left: playerX - 18, bottom: 86, width: 36, height: 64 }}
-        >
-          {/* body */}
-          <motion.div
-            animate={isWalking ? { y: [0, -2, 0] } : { y: 0 }}
-            transition={{ duration: 0.32, repeat: isWalking ? Infinity : 0 }}
-            style={{ transform: `scaleX(${facing === 'left' ? -1 : 1})` }}
-            className="relative w-full h-full"
-          >
-            {/* head */}
-            <div className="absolute left-1/2 -translate-x-1/2 top-0 w-3.5 h-3.5 rounded-full bg-[#f6c08a]" />
-            {/* torso */}
-            <div className="absolute left-1/2 -translate-x-1/2 top-3.5 w-5 h-7 rounded-sm bg-[#ef4444]" />
-            {/* legs (walk animation) */}
-            <motion.div
-              animate={isWalking ? { rotate: [-25, 25, -25] } : { rotate: 0 }}
-              transition={{ duration: 0.32, repeat: isWalking ? Infinity : 0 }}
-              className="absolute left-1/2 -translate-x-1/2 top-10 w-1.5 h-5 origin-top bg-[#1a1a1a]"
-              style={{ transformOrigin: 'top center', marginLeft: -3 }}
-            />
-            <motion.div
-              animate={isWalking ? { rotate: [25, -25, 25] } : { rotate: 0 }}
-              transition={{ duration: 0.32, repeat: isWalking ? Infinity : 0 }}
-              className="absolute left-1/2 -translate-x-1/2 top-10 w-1.5 h-5 origin-top bg-[#1a1a1a]"
-              style={{ transformOrigin: 'top center', marginLeft: 1 }}
-            />
-          </motion.div>
-          {/* shadow under feet */}
-          <div
-            className="absolute left-1/2 -translate-x-1/2"
+            key={`pillar-r-${i}`}
+            className="absolute bottom-[100px]"
             style={{
-              bottom: -8,
-              width: 40,
-              height: 8,
-              background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,0,0,0.6) 0%, transparent 70%)',
+              right: `${6 + i * 6}%`,
+              width: 22 - i * 4,
+              height: `${55 - i * 10}%`,
+              background:
+                'linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
+              borderTop: '1px solid rgba(200,184,138,0.10)',
             }}
           />
-          {/* dust on walk */}
-          {isWalking && (
-            <motion.div
-              key={Math.floor(playerX / 30)}
-              initial={{ opacity: 0.6, scale: 0.5, x: facing === 'right' ? -8 : 8 }}
-              animate={{ opacity: 0, scale: 1.4, x: facing === 'right' ? -24 : 24 }}
-              transition={{ duration: 0.5 }}
-              className="absolute bottom-0 left-1/2 w-3 h-1 rounded-full bg-white/20"
-            />
-          )}
-        </div>
+        ))}
       </div>
 
-      {/* === Fixed overlays (HUD) === */}
+      {/* === 바닥 === */}
+      <div
+        className="absolute left-0 right-0 bottom-0"
+        style={{
+          height: 100,
+          background: `linear-gradient(180deg, ${mood.floor} 0%, #000 100%)`,
+          borderTop: '1px solid rgba(200,184,138,0.12)',
+        }}
+      />
+      {/* 캐릭터 발 밑 스포트라이트 */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2"
+        style={{
+          bottom: 78,
+          width: 360,
+          height: 60,
+          background:
+            'radial-gradient(ellipse 50% 50% at 50% 100%, rgba(200,184,138,0.30) 0%, transparent 70%)',
+          filter: 'blur(2px)',
+        }}
+      />
 
-      {/* Vignette */}
+      {/* === 장면 소품 (질문 내용 시각화) === */}
+      <SceneProp sceneId={currentScene.id} intensity={mood.intensity} />
+
+      {/* === 캐릭터 (대형) === */}
+      <motion.div
+        key={`char-${sceneIndex}`}
+        initial={{ x: '-60vw' }}
+        animate={{ x: arrived ? '-50%' : '-50%' }}
+        transition={{ duration: arrived ? 0.0 : 1.4, ease: 'easeOut' }}
+        className="absolute left-1/2 z-10"
+        style={{ bottom: 88 }}
+      >
+        {/* 임시 입장 애니메이션을 위해 walk 표현 */}
+        <BigCharacter walking={!arrived} facingLeft={isReveal} />
+      </motion.div>
+
+      {/* === Vignette === */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.75) 100%)',
+          background: 'radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.78) 100%)',
         }}
       />
       {/* Film grain */}
@@ -447,8 +208,8 @@ export default function ShadowEscapeScene({
         }}
       />
 
-      {/* HUD top */}
-      <div className="absolute top-3 left-3 right-3 flex items-start justify-between text-[10px] font-mono tracking-widest text-[#C8B88A]/85 z-20">
+      {/* === HUD === */}
+      <div className="absolute top-3 left-3 right-3 flex items-start justify-between text-[10px] font-mono tracking-widest text-[#C8B88A]/85 z-20 pointer-events-none">
         <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-black/45 backdrop-blur border border-white/5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#C8B88A] animate-pulse" />
           {mood.label}
@@ -456,7 +217,7 @@ export default function ShadowEscapeScene({
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-black/45 backdrop-blur border border-white/5">
             <Activity className="w-3 h-3" />
-            <div className="w-20 h-1 rounded-full bg-white/10 overflow-hidden">
+            <div className="w-16 h-1 rounded-full bg-white/10 overflow-hidden">
               <motion.div
                 className="h-full"
                 style={{
@@ -482,9 +243,9 @@ export default function ShadowEscapeScene({
         </div>
       </div>
 
-      {/* Narration (top center) */}
+      {/* === Narration (top center) === */}
       {(gameState === 'narrating' || gameState === 'choice') && (
-        <div className="absolute top-14 left-1/2 -translate-x-1/2 w-[92%] max-w-2xl z-10 pointer-events-none">
+        <div className="absolute top-14 left-1/2 -translate-x-1/2 w-[92%] max-w-xl z-20 pointer-events-none">
           <motion.div
             key={currentScene.id}
             initial={{ opacity: 0, y: -8 }}
@@ -505,20 +266,71 @@ export default function ShadowEscapeScene({
               )}
             </p>
           </motion.div>
-          {gameState === 'choice' && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="mt-2 text-center text-[11px] font-mono tracking-[0.2em] text-[#C8B88A]/80 uppercase flex items-center justify-center gap-1.5"
-            >
-              <Eye className="w-3 h-3" /> 문 안으로 걸어 들어가 선택
-            </motion.div>
-          )}
         </div>
       )}
 
-      {/* Selected choice flash */}
+      {/* === Choice cards (bottom — tap based) === */}
+      <AnimatePresence>
+        {gameState === 'choice' && !isEnding && (
+          <motion.div
+            key={`choices-${currentScene.id}`}
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 20, opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            className="absolute bottom-4 left-3 right-3 z-30"
+          >
+            <div className="mb-2 text-center text-[10px] font-mono tracking-[0.2em] text-[#C8B88A]/80 uppercase flex items-center justify-center gap-1.5">
+              <Eye className="w-3 h-3" /> 당신의 선택
+            </div>
+            <div className="flex flex-col gap-2">
+              {currentScene.choices.map((c, i) => {
+                const isSelected = selectedChoice === c.id;
+                const isDimmed = !!selectedChoice && !isSelected;
+                return (
+                  <motion.button
+                    key={c.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{
+                      opacity: isDimmed ? 0.35 : 1,
+                      y: 0,
+                      scale: isSelected ? 0.98 : 1,
+                    }}
+                    transition={{ delay: 0.05 * i }}
+                    disabled={!!selectedChoice}
+                    onClick={() => onChoiceSelect(currentScene, c)}
+                    className={[
+                      'w-full text-left rounded-xl px-4 py-3 backdrop-blur-md border transition-colors',
+                      isSelected
+                        ? 'bg-[#C8B88A]/20 border-[#C8B88A]/70 text-white'
+                        : 'bg-black/55 border-white/10 hover:bg-black/70 hover:border-[#C8B88A]/40 text-white/95',
+                    ].join(' ')}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="shrink-0 w-9 h-9 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center text-lg">
+                        {c.emoji}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[10px] font-mono tracking-widest text-[#C8B88A]/80">
+                          {String(i + 1).padStart(2, '0')}
+                        </div>
+                        <div className="text-[14px] leading-snug break-keep">{c.text}</div>
+                        {showParentNotes && c.parentNote && (
+                          <div className="mt-1 text-[11px] text-amber-200/70 italic break-keep">
+                            → {c.parentNote}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 선택 시 화면 플래시 */}
       <AnimatePresence>
         {selectedChoice && (
           <motion.div
@@ -529,36 +341,413 @@ export default function ShadowEscapeScene({
           />
         )}
       </AnimatePresence>
-
-      {/* On-screen controls (always visible, fine on desktop too) */}
-      <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between z-30 pointer-events-none">
-        <div className="flex gap-3 pointer-events-auto">
-          <button
-            onPointerDown={() => (keys.current.left = true)}
-            onPointerUp={() => (keys.current.left = false)}
-            onPointerLeave={() => (keys.current.left = false)}
-            onPointerCancel={() => (keys.current.left = false)}
-            className="w-14 h-14 rounded-full bg-black/55 backdrop-blur border border-white/10 active:bg-[#C8B88A]/25 text-white flex items-center justify-center"
-            aria-label="왼쪽 이동"
-          >
-            <ChevronLeft className="w-7 h-7" />
-          </button>
-          <button
-            onPointerDown={() => (keys.current.right = true)}
-            onPointerUp={() => (keys.current.right = false)}
-            onPointerLeave={() => (keys.current.right = false)}
-            onPointerCancel={() => (keys.current.right = false)}
-            className="w-14 h-14 rounded-full bg-black/55 backdrop-blur border border-white/10 active:bg-[#C8B88A]/25 text-white flex items-center justify-center"
-            aria-label="오른쪽 이동"
-          >
-            <ChevronRight className="w-7 h-7" />
-          </button>
-        </div>
-        <div className="text-[10px] font-mono tracking-widest text-[#C8B88A]/70 text-right">
-          A / D · ← / → 키로도 조작
-          <div className="text-white/40 mt-0.5">진행도 {Math.round((playerX / WORLD_WIDTH) * 100)}%</div>
-        </div>
-      </div>
     </div>
   );
+}
+
+/* ============================================================
+ * 대형 캐릭터 — 면적이 큰 실루엣
+ * ============================================================ */
+function BigCharacter({ walking, facingLeft }: { walking: boolean; facingLeft: boolean }) {
+  return (
+    <motion.div
+      animate={walking ? { y: [0, -3, 0] } : { y: 0 }}
+      transition={{ duration: 0.36, repeat: walking ? Infinity : 0 }}
+      style={{
+        width: 110,
+        height: 200,
+        transform: `translateX(-50%) scaleX(${facingLeft ? -1 : 1})`,
+        filter: 'drop-shadow(0 14px 18px rgba(0,0,0,0.55))',
+      }}
+      className="relative"
+    >
+      {/* 머리 */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 top-0 rounded-full"
+        style={{ width: 42, height: 42, background: '#f6c08a' }}
+      />
+      {/* 머리카락 */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 rounded-t-full"
+        style={{ top: -4, width: 46, height: 24, background: '#1a1a1a' }}
+      />
+      {/* 목 */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2"
+        style={{ top: 40, width: 14, height: 8, background: '#e0a878' }}
+      />
+      {/* 상체 (빨간 옷) */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 rounded-md"
+        style={{
+          top: 46,
+          width: 70,
+          height: 78,
+          background: 'linear-gradient(180deg,#ef4444 0%,#b91c1c 100%)',
+          boxShadow: 'inset 0 -10px 14px rgba(0,0,0,0.25)',
+        }}
+      />
+      {/* 팔 좌 */}
+      <motion.div
+        animate={walking ? { rotate: [20, -25, 20] } : { rotate: -8 }}
+        transition={{ duration: 0.36, repeat: walking ? Infinity : 0 }}
+        className="absolute rounded-md"
+        style={{
+          top: 50,
+          left: 8,
+          width: 14,
+          height: 60,
+          background: '#b91c1c',
+          transformOrigin: 'top center',
+        }}
+      />
+      {/* 팔 우 */}
+      <motion.div
+        animate={walking ? { rotate: [-20, 25, -20] } : { rotate: 8 }}
+        transition={{ duration: 0.36, repeat: walking ? Infinity : 0 }}
+        className="absolute rounded-md"
+        style={{
+          top: 50,
+          right: 8,
+          width: 14,
+          height: 60,
+          background: '#b91c1c',
+          transformOrigin: 'top center',
+        }}
+      />
+      {/* 다리 좌 */}
+      <motion.div
+        animate={walking ? { rotate: [-22, 22, -22] } : { rotate: 0 }}
+        transition={{ duration: 0.36, repeat: walking ? Infinity : 0 }}
+        className="absolute rounded-md"
+        style={{
+          top: 124,
+          left: '50%',
+          marginLeft: -16,
+          width: 14,
+          height: 64,
+          background: '#1f2937',
+          transformOrigin: 'top center',
+        }}
+      />
+      {/* 다리 우 */}
+      <motion.div
+        animate={walking ? { rotate: [22, -22, 22] } : { rotate: 0 }}
+        transition={{ duration: 0.36, repeat: walking ? Infinity : 0 }}
+        className="absolute rounded-md"
+        style={{
+          top: 124,
+          left: '50%',
+          marginLeft: 2,
+          width: 14,
+          height: 64,
+          background: '#1f2937',
+          transformOrigin: 'top center',
+        }}
+      />
+      {/* 발 밑 그림자 */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2"
+        style={{
+          bottom: -10,
+          width: 90,
+          height: 14,
+          background:
+            'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,0,0,0.65) 0%, transparent 70%)',
+          filter: 'blur(2px)',
+        }}
+      />
+    </motion.div>
+  );
+}
+
+/* ============================================================
+ * 장면별 시각 소품 — 질문 내용을 화면으로 보여준다
+ * ============================================================ */
+function SceneProp({ sceneId, intensity }: { sceneId: string; intensity: number }) {
+  if (sceneId === 'first_sound') {
+    // 복도 끝 어둠 + 발자국 + 뒤에서 다가오는 그림자
+    return (
+      <>
+        {/* 뒤쪽(왼쪽)에서 다가오는 거대 그림자 */}
+        <motion.div
+          initial={{ x: -200, opacity: 0.4 }}
+          animate={{ x: -60, opacity: 0.85 }}
+          transition={{ duration: 3.5, repeat: Infinity, repeatType: 'reverse' }}
+          className="absolute"
+          style={{ left: '15%', bottom: 90, width: 180, height: 240 }}
+        >
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              background:
+                'radial-gradient(ellipse 55% 70% at 50% 55%, #000 0%, rgba(0,0,0,0.8) 55%, transparent 80%)',
+              filter: 'blur(8px)',
+            }}
+          />
+        </motion.div>
+        {/* 발자국 마크 */}
+        {[0, 1, 2, 3].map((i) => (
+          <motion.div
+            key={`fp-${i}`}
+            className="absolute"
+            style={{ left: `${15 + i * 6}%`, bottom: 88, width: 18, height: 8 }}
+            animate={{ opacity: [0, 0.6, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.3 }}
+          >
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                background: 'rgba(200,184,138,0.35)',
+                filter: 'blur(2px)',
+              }}
+            />
+          </motion.div>
+        ))}
+      </>
+    );
+  }
+
+  if (sceneId === 'alley') {
+    // 갈림길 — 좌(어두운 지름길), 우(밝은 큰길), 가운데 편의점 간판
+    return (
+      <>
+        {/* 왼쪽 어두운 골목 */}
+        <div
+          className="absolute"
+          style={{
+            left: '8%',
+            bottom: 100,
+            width: 120,
+            height: 220,
+            background:
+              'linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(20,20,40,0.4) 100%)',
+            clipPath: 'polygon(20% 0, 80% 0, 100% 100%, 0% 100%)',
+            borderTop: '2px solid rgba(200,184,138,0.15)',
+          }}
+        />
+        {/* 오른쪽 밝은 큰길 */}
+        <div
+          className="absolute"
+          style={{
+            right: '8%',
+            bottom: 100,
+            width: 120,
+            height: 220,
+            background:
+              'linear-gradient(180deg, rgba(255,224,150,0.35) 0%, rgba(255,224,150,0.05) 100%)',
+            clipPath: 'polygon(20% 0, 80% 0, 100% 100%, 0% 100%)',
+            borderTop: '2px solid rgba(255,224,150,0.45)',
+            boxShadow: '0 -20px 60px rgba(255,224,150,0.25)',
+          }}
+        />
+        {/* 가로등 빛 (오른쪽) */}
+        <motion.div
+          animate={{ opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 2.4, repeat: Infinity }}
+          className="absolute"
+          style={{
+            right: '13%',
+            bottom: 220,
+            width: 80,
+            height: 80,
+            background:
+              'radial-gradient(circle at 50% 50%, rgba(255,224,150,0.55) 0%, transparent 70%)',
+            filter: 'blur(4px)',
+          }}
+        />
+        {/* 편의점 간판 (가운데 위) */}
+        <div
+          className="absolute left-1/2 -translate-x-1/2"
+          style={{
+            top: 30,
+            background: 'rgba(72,187,120,0.85)',
+            color: '#fff',
+            fontSize: 10,
+            letterSpacing: 4,
+            padding: '6px 14px',
+            borderRadius: 6,
+            boxShadow: '0 0 30px rgba(72,187,120,0.55)',
+            fontWeight: 700,
+          }}
+        >
+          24H STORE
+        </div>
+      </>
+    );
+  }
+
+  if (sceneId === 'door') {
+    // 잠긴 문 + 차가운 손잡이 — 캐릭터 오른쪽
+    return (
+      <>
+        {/* 문 */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="absolute"
+          style={{
+            right: '18%',
+            bottom: 100,
+            width: 130,
+            height: 230,
+            background:
+              'linear-gradient(180deg, #3a2418 0%, #2a1810 60%, #1a0f08 100%)',
+            border: '3px solid rgba(200,184,138,0.25)',
+            borderBottom: 'none',
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
+            boxShadow:
+              'inset 0 0 30px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.5)',
+          }}
+        >
+          {/* 문 패널 라인 */}
+          <div
+            className="absolute inset-3 rounded-sm"
+            style={{ border: '1.5px solid rgba(200,184,138,0.18)' }}
+          />
+          <div
+            className="absolute inset-x-3"
+            style={{
+              top: '45%',
+              height: 1,
+              background: 'rgba(200,184,138,0.18)',
+            }}
+          />
+          {/* 손잡이 — 강조 펄스 */}
+          <motion.div
+            animate={{
+              boxShadow: [
+                '0 0 0 0 rgba(200,184,138,0.6)',
+                '0 0 0 14px rgba(200,184,138,0)',
+              ],
+            }}
+            transition={{ duration: 1.6, repeat: Infinity }}
+            className="absolute"
+            style={{
+              right: 14,
+              top: '52%',
+              width: 16,
+              height: 16,
+              borderRadius: '50%',
+              background:
+                'radial-gradient(circle at 30% 30%, #e8e1c8 0%, #8a8068 60%, #4a4438 100%)',
+              border: '1px solid rgba(255,255,255,0.4)',
+            }}
+          />
+          {/* 손잡이 라벨 */}
+          <div
+            className="absolute"
+            style={{
+              right: -10,
+              top: '52%',
+              transform: 'translateY(-50%) translateX(100%)',
+              color: 'rgba(200,184,138,0.85)',
+              fontSize: 9,
+              letterSpacing: 3,
+              fontFamily: 'monospace',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            ← 차가운 손잡이
+          </div>
+        </motion.div>
+        {/* 뒤에서 다가오는 발자국 그림자 */}
+        <motion.div
+          animate={{ opacity: [0.4, 0.9, 0.4] }}
+          transition={{ duration: 1.2, repeat: Infinity }}
+          className="absolute"
+          style={{
+            left: '10%',
+            bottom: 90,
+            width: 200,
+            height: 240,
+            background:
+              'radial-gradient(ellipse 55% 70% at 50% 55%, #000 0%, rgba(0,0,0,0.85) 55%, transparent 80%)',
+            filter: `blur(${6 + intensity * 4}px)`,
+          }}
+        />
+      </>
+    );
+  }
+
+  if (sceneId === 'reveal') {
+    // 강아지 — 캐릭터 옆에서 올려다본다
+    return (
+      <>
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3, type: 'spring', stiffness: 120 }}
+          className="absolute"
+          style={{
+            left: '22%',
+            bottom: 92,
+            fontSize: 96,
+            filter: 'drop-shadow(0 8px 24px rgba(200,184,138,0.35))',
+          }}
+        >
+          🐕
+        </motion.div>
+        {/* 하트 파티클 */}
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={`heart-${i}`}
+            initial={{ y: 0, opacity: 0 }}
+            animate={{ y: -60, opacity: [0, 1, 0] }}
+            transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.7 }}
+            className="absolute"
+            style={{ left: `${24 + i * 4}%`, bottom: 200, fontSize: 18 }}
+          >
+            🫶
+          </motion.div>
+        ))}
+      </>
+    );
+  }
+
+  if (sceneId === 'ending') {
+    return (
+      <>
+        {/* 떠오르는 달 */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1.2 }}
+          className="absolute left-1/2 -translate-x-1/2"
+          style={{
+            top: 60,
+            width: 80,
+            height: 80,
+            borderRadius: '50%',
+            background:
+              'radial-gradient(circle at 35% 35%, #fef3c7 0%, #d4a84c 60%, #8a6a28 100%)',
+            boxShadow: '0 0 60px rgba(254,243,199,0.45)',
+          }}
+        />
+        {/* 별 */}
+        {Array.from({ length: 18 }).map((_, i) => (
+          <motion.div
+            key={`star-${i}`}
+            animate={{ opacity: [0.2, 1, 0.2] }}
+            transition={{ duration: 2 + (i % 4), repeat: Infinity, delay: i * 0.15 }}
+            className="absolute rounded-full"
+            style={{
+              left: `${(i * 53) % 100}%`,
+              top: `${(i * 31) % 50}%`,
+              width: 2,
+              height: 2,
+              background: '#fff',
+            }}
+          />
+        ))}
+      </>
+    );
+  }
+
+  return null;
 }

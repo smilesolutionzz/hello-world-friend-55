@@ -1,15 +1,19 @@
-## 운영키 적용 및 전국 동기화 실행
+## 엔드포인트 교체 후 전국 동기화 재시도
 
-방금 보내주신 키(`8788...5469`)를 `SOCIAL_SERVICE_API_KEY` 시크릿에 업데이트한 뒤, 같은 키로 `voucher-sync` edge function의 admin 우회 헤더(`x-admin-secret`)를 호출해 전국 17개 시도 바우처 제공기관을 전수 수집합니다.
+사용자가 알려주신 정식 엔드포인트(`http://api.socialservice.or.kr/api/service/provider/providerList`)로 `voucher-sync` edge function의 `API_BASE` 상수를 교체하고, 같은 키로 전국 17개 시도 전수 수집을 실행합니다.
+
+### 변경 사항
+- `supabase/functions/voucher-sync/index.ts`
+  - `API_BASE`를 `https://api.socialservice.or.kr:444/...` → `http://api.socialservice.or.kr/api/service/provider/providerList`로 교체
+  - 그 외 파싱·매칭·삭제·재삽입 로직은 그대로 유지
 
 ### 실행 순서
-1. `secrets--update_secret`로 `SOCIAL_SERVICE_API_KEY` 값을 새 운영키로 교체 (보안 폼에 직접 붙여넣기 — 채팅창 평문 키는 노출되므로 적용 후 폐기 권장)
-2. `supabase--curl_edge_functions`로 `/voucher-sync` 호출
-   - 헤더: `x-admin-secret: <새 운영키>`
-   - 첫 호출은 1개 시도(`sidos: ["11"]`)만 보내 인증·파싱 정상 확인
-3. 정상이면 전체 17개 시도 전수 수집 실행 (1~3분 소요)
-4. `voucher_directory` row 카운트와 `voucher_sync_logs` 마지막 row를 조회해 결과 검증
+1. 위 한 줄 수정 후 `voucher-sync` 자동 재배포
+2. 인증 검증을 위해 먼저 `sidos: ["11"]` (서울 1개 시도)만 호출 — `x-admin-secret` 헤더에 `SOCIAL_SERVICE_API_KEY` 사용
+3. 200 + `totalCount > 0` 확인되면 본 호출(17개 시도 전수, 1~3분)
+4. `voucher_directory` row 카운트 + `voucher_sync_logs` 최신 row 검증
 5. `/expert-hiring` "전국 바우처기관" 탭에서 실제 데이터 노출 확인
 
-### 보안 메모
-채팅에 평문으로 키를 붙여주셨기 때문에, 운영 안정화 후 data.go.kr에서 키 재발급(rotate)해 한 번 더 교체하는 것을 권장드립니다. 코드 변경은 없습니다.
+### 메모
+- 공공데이터포털 가이드상 http/https 모두 허용되지만 일부 운영키는 http에서만 200이 떨어지는 케이스가 있어, 사용자가 알려주신 http 경로를 그대로 사용합니다.
+- 1시도 테스트가 또 `SERVICE KEY IS NOT REGISTERED ERROR`로 떨어지면 키 자체가 미승인이라는 뜻이므로, 그때는 코드가 아니라 socialservice.or.kr 마이페이지의 "운영계정 신청" 또는 "Decoding 키" 사용 여부를 다시 확인해야 합니다.

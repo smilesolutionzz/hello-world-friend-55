@@ -12,7 +12,7 @@ const coreFeatures = [
     icon: Users,
     num: "01",
     title: "이용자 관리",
-    desc: "엑셀 한 번에 이관. 가족·바우처·계약 만료까지 한 화면. 케어플 다운로드 파일 그대로 인식.",
+    desc: "엑셀 한 번에 이관. 가족·바우처·계약 만료까지 한 화면. C사 다운로드 파일 그대로 인식.",
   },
   {
     icon: Calendar,
@@ -41,7 +41,7 @@ export default function B2BCenterLanding() {
     <div className="min-h-screen bg-white text-neutral-900">
       <Helmet>
         <title>발달치료센터 ERP · 60일 무료 — AIHPRO</title>
-        <meta name="description" content="이용자·일정·수납. 케어플 엑셀 그대로 이관, 60일 무료 체험. 카드 등록 없음." />
+        <meta name="description" content="이용자·일정·수납. 기존 ERP 엑셀 그대로 이관, 60일 무료 체험. 카드 등록 없음." />
       </Helmet>
 
       {/* Hero */}
@@ -55,7 +55,7 @@ export default function B2BCenterLanding() {
           <span className="text-[#C8B88A]">한 화면, 60일 무료.</span>
         </h1>
         <p className="text-lg text-neutral-600 max-w-2xl break-keep mb-10">
-          케어플 엑셀 파일 하나 올리면 이용자·치료사·회기·수납이 그대로 옮겨와요.
+          기존 ERP 엑셀 파일 하나 올리면 이용자·치료사·회기·수납이 그대로 옮겨와요.
           두 달 동안 모든 기능 무제한 — 그 다음에도 월 {KRW(B2B_CENTER_MONTHLY)}.
         </p>
         <div className="flex flex-wrap gap-3">
@@ -95,12 +95,12 @@ export default function B2BCenterLanding() {
 
       {/* Comparison */}
       <section id="pricing" className="px-6 py-20 max-w-5xl mx-auto">
-        <p className="text-xs tracking-widest text-neutral-500 mb-3">02 · vs 케어플센터</p>
+        <p className="text-xs tracking-widest text-neutral-500 mb-3">02 · vs C사</p>
         <h2 className="text-3xl md:text-4xl font-semibold mb-10 break-keep">같은 일을, 더 저렴하게.</h2>
         <div className="rounded-2xl border border-neutral-200 overflow-hidden">
           <div className="grid grid-cols-3 bg-neutral-100 text-sm font-medium">
             <div className="p-4">항목</div>
-            <div className="p-4 text-neutral-500">케어플센터</div>
+            <div className="p-4 text-neutral-500">C사</div>
             <div className="p-4 text-neutral-900">AIHPRO 센터</div>
           </div>
           {compare.map((row, i) => (

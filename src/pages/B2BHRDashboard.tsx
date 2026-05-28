@@ -186,6 +186,19 @@ const B2BHRDashboard = () => {
           </div>
         </div>
 
+        {demoMode && (
+          <Alert className="border-amber-200 bg-amber-50/60">
+            <Sparkles className="h-4 w-4 text-amber-700" />
+            <AlertTitle className="text-amber-900">체험 모드 · 가상 데이터</AlertTitle>
+            <AlertDescription className="text-amber-800 text-sm flex flex-wrap items-center gap-2">
+              지금 보고 있는 화면은 시연용 가상 회사 데이터입니다. 실제 도입 시 우리 회사 데이터로 즉시 채워집니다.
+              <Button size="sm" variant="outline" className="ml-1 h-7" onClick={() => navigate('/b2b-jobcoach')}>
+                도입 상담 신청 <ArrowRight className="w-3 h-3 ml-1" />
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Privacy Notice */}
         <Alert className="border-emerald-200 bg-emerald-50/50">
           <EyeOff className="h-4 w-4 text-emerald-700" />

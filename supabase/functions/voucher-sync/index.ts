@@ -1,5 +1,6 @@
-// Voucher sync: pulls voucher provider data from data.go.kr (odcloud.kr) and
-// matches against partner_institutions. Admin-only.
+// Voucher sync: 한국사회보장정보원 사회서비스 제공기관 정보 검색 API에서
+// 전국 바우처 제공기관을 끌어와 voucher_directory를 전수 갱신한다.
+// Endpoint: https://api.socialservice.or.kr:444/api/service/provider/providerList (XML)
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.55.0";
 
@@ -8,13 +9,13 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Default UDDI endpoints. Admin may override via request body `endpoints`.
-// Each entry: { uddi, type, year }
-type Endpoint = { uddi: string; type: string; year: string };
-const DEFAULT_ENDPOINTS: Endpoint[] = [
-  // Placeholder UDDIs — admin must supply real UDDIs via UI/body.
-  // Keeping these empty by default so the function fails clearly with a hint.
+// 행정표준 시도 코드 (17개 광역)
+const SIDO_CODES = [
+  '11', '26', '27', '28', '29', '30', '31', '36',
+  '41', '42', '43', '44', '45', '46', '47', '48', '50',
 ];
+
+const API_BASE = 'https://api.socialservice.or.kr:444/api/service/provider/providerList';
 
 function normalizeName(s: string | null | undefined): string {
   if (!s) return '';
@@ -25,22 +26,37 @@ function normalizeName(s: string | null | undefined): string {
     .replace(/지점|점$/g, '');
 }
 
-function extractCityDistrict(addr: string | null | undefined): { city: string; district: string } {
-  if (!addr) return { city: '', district: '' };
-  const parts = addr.trim().split(/\s+/);
-  const city = parts[0] ?? '';
-  const district = parts[1] ?? '';
-  return { city, district };
+function pick(xml: string, tag: string): string {
+  const m = xml.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`));
+  if (!m) return '';
+  return m[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim();
 }
 
-async function fetchPage(uddi: string, serviceKey: string, page: number, perPage = 1000) {
-  const url = `https://api.odcloud.kr/api/3075166/v1/uddi:${uddi}?page=${page}&perPage=${perPage}&serviceKey=${encodeURIComponent(serviceKey)}&returnType=JSON`;
+function parseItems(xml: string): { totalCount: number; items: Record<string, string>[] } {
+  const totalCount = Number(pick(xml, 'totalCount') || '0');
+  const items: Record<string, string>[] = [];
+  const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+  let m: RegExpExecArray | null;
+  while ((m = itemRegex.exec(xml)) !== null) {
+    const block = m[1];
+    const row: Record<string, string> = {};
+    const fields = ['providerId', 'providerName', 'serviceName', 'serviceTypeName',
+      'address', 'addressDetail', 'loadAddress', 'loadAddressDetail',
+      'sidoName', 'signguName', 'telNumber', 'ownerName', 'email', 'zip'];
+    for (const f of fields) row[f] = pick(block, f);
+    items.push(row);
+  }
+  return { totalCount, items };
+}
+
+async function fetchPage(serviceKey: string, sido: string, pageNo: number, numOfRows: number) {
+  const url = `${API_BASE}?serviceKey=${encodeURIComponent(serviceKey)}&sido=${sido}&pageNo=${pageNo}&numOfRows=${numOfRows}`;
   const res = await fetch(url);
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`odcloud HTTP ${res.status}: ${text.slice(0, 200)}`);
+    const t = await res.text();
+    throw new Error(`HTTP ${res.status}: ${t.slice(0, 300)}`);
   }
-  return await res.json();
+  return await res.text();
 }
 
 serve(async (req) => {
@@ -66,121 +82,94 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Admin only' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const serviceKey = Deno.env.get('PUBLIC_DATA_API_KEY');
-    if (!serviceKey) throw new Error('PUBLIC_DATA_API_KEY not configured');
+    const serviceKey = Deno.env.get('SOCIAL_SERVICE_API_KEY') || Deno.env.get('PUBLIC_DATA_API_KEY');
+    if (!serviceKey) throw new Error('SOCIAL_SERVICE_API_KEY not configured');
 
     const body = await req.json().catch(() => ({}));
-    const endpoints: Endpoint[] = Array.isArray(body?.endpoints) && body.endpoints.length > 0
-      ? body.endpoints
-      : DEFAULT_ENDPOINTS;
-
-    if (endpoints.length === 0) {
-      return new Response(
-        JSON.stringify({
-          error: 'No endpoints configured',
-          hint: 'Pass { endpoints: [{ uddi, type, year }, ...] } in body. Find UDDIs at data.go.kr → 사회서비스 전자바우처 제공기관 현황.',
-        }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const sidos: string[] = Array.isArray(body?.sidos) && body.sidos.length > 0 ? body.sidos : SIDO_CODES;
+    const numOfRows = Number(body?.numOfRows ?? 500);
 
     const startedAt = Date.now();
     const errors: any[] = [];
-    let totalRows = 0;
-    const rowsToUpsert: any[] = [];
+    const perSido: Record<string, number> = {};
+    const allRows: any[] = [];
 
-    for (const ep of endpoints) {
+    for (const sido of sidos) {
       try {
-        let page = 1;
+        let pageNo = 1;
+        let collected = 0;
         let totalCount = Infinity;
-        let fetched = 0;
-        while (fetched < totalCount && page < 50) {
-          const json = await fetchPage(ep.uddi, serviceKey, page, 1000);
-          totalCount = Number(json?.totalCount ?? 0);
-          const items: any[] = Array.isArray(json?.data) ? json.data : [];
+        while (collected < totalCount && pageNo <= 200) {
+          const xml = await fetchPage(serviceKey, sido, pageNo, numOfRows);
+          const { totalCount: tc, items } = parseItems(xml);
+          totalCount = tc;
           if (items.length === 0) break;
-
           for (const it of items) {
-            // Tolerant field extraction — Korean public APIs vary
-            const business_no = String(it['사업자등록번호'] ?? it['사업자번호'] ?? it['bizNo'] ?? '').replace(/[^0-9]/g, '') || null;
-            const org_name = String(it['제공기관명'] ?? it['기관명'] ?? it['시설명'] ?? it['업체명'] ?? '').trim();
-            const address = String(it['소재지'] ?? it['주소'] ?? it['소재지주소'] ?? it['도로명주소'] ?? '').trim();
+            const org_name = it.providerName?.trim();
             if (!org_name) continue;
-            const { city, district } = extractCityDistrict(address);
-            rowsToUpsert.push({
-              business_no,
+            const address = [it.loadAddress, it.loadAddressDetail].filter(Boolean).join(' ').trim()
+              || [it.address, it.addressDetail].filter(Boolean).join(' ').trim();
+            allRows.push({
+              business_no: it.providerId || null,
               org_name,
               org_name_normalized: normalizeName(org_name),
               address,
-              city,
-              district,
-              voucher_type: ep.type,
-              source_year: ep.year,
+              city: it.sidoName?.trim() || '',
+              district: it.signguName?.trim() || '',
+              voucher_type: it.serviceTypeName?.trim() || '기타',
+              source_year: new Date().getFullYear().toString(),
               raw: it,
               synced_at: new Date().toISOString(),
             });
           }
-
-          fetched += items.length;
-          page += 1;
-          await new Promise((r) => setTimeout(r, 200));
+          collected += items.length;
+          pageNo += 1;
+          await new Promise((r) => setTimeout(r, 100));
         }
-        totalRows += fetched;
+        perSido[sido] = collected;
       } catch (e) {
-        errors.push({ endpoint: ep, error: String(e) });
+        errors.push({ sido, error: String(e) });
       }
     }
 
-    // Batch upsert in chunks of 500
-    let upserted = 0;
-    for (let i = 0; i < rowsToUpsert.length; i += 500) {
-      const chunk = rowsToUpsert.slice(i, i + 500);
-      const { error } = await supabase
-        .from('voucher_directory')
-        .upsert(chunk, { onConflict: 'business_no,org_name_normalized,voucher_type', ignoreDuplicates: false });
-      if (error) {
-        errors.push({ phase: 'upsert', error: error.message, chunk_start: i });
-      } else {
-        upserted += chunk.length;
-      }
+    // Wipe & reinsert (expression-based unique index doesn't play well with upsert)
+    await supabase.from('voucher_directory').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+
+    let inserted = 0;
+    for (let i = 0; i < allRows.length; i += 500) {
+      const chunk = allRows.slice(i, i + 500);
+      const { error } = await supabase.from('voucher_directory').insert(chunk);
+      if (error) errors.push({ phase: 'insert', error: error.message, chunk_start: i });
+      else inserted += chunk.length;
     }
 
     // Match against partner_institutions
-    let matched = 0;
-    let unmatched = 0;
+    let matched = 0, unmatched = 0;
     const { data: partners } = await supabase
       .from('partner_institutions')
-      .select('id, name, location, voucher_business_no');
+      .select('id, name, voucher_business_no');
 
     for (const p of partners ?? []) {
       const normalized = normalizeName(p.name);
       let q = supabase.from('voucher_directory').select('voucher_type, business_no');
-      if (p.voucher_business_no) {
-        q = q.eq('business_no', p.voucher_business_no);
-      } else {
-        q = q.eq('org_name_normalized', normalized);
-      }
+      if (p.voucher_business_no) q = q.eq('business_no', p.voucher_business_no);
+      else q = q.eq('org_name_normalized', normalized);
       const { data: hits } = await q;
       const programs = Array.from(new Set((hits ?? []).map((h: any) => h.voucher_type)));
       if (programs.length > 0) {
         matched += 1;
         const bizNo = p.voucher_business_no ?? (hits as any)?.[0]?.business_no ?? null;
-        await supabase
-          .from('partner_institutions')
-          .update({
-            voucher_programs: programs,
-            voucher_source: 'api_matched',
-            voucher_business_no: bizNo,
-            voucher_verified_at: new Date().toISOString(),
-          })
-          .eq('id', p.id);
-      } else {
-        unmatched += 1;
-      }
+        await supabase.from('partner_institutions').update({
+          voucher_programs: programs,
+          voucher_source: 'api_matched',
+          voucher_business_no: bizNo,
+          voucher_verified_at: new Date().toISOString(),
+        }).eq('id', p.id);
+      } else unmatched += 1;
     }
 
     await supabase.from('voucher_sync_logs').insert({
-      total: totalRows,
+      total: allRows.length,
       matched,
       unmatched,
       duration_ms: Date.now() - startedAt,
@@ -189,7 +178,7 @@ serve(async (req) => {
     });
 
     return new Response(
-      JSON.stringify({ success: true, total: totalRows, upserted, matched, unmatched, errors }),
+      JSON.stringify({ success: true, total: allRows.length, inserted, matched, unmatched, perSido, errors }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (e) {

@@ -344,7 +344,20 @@ export default function GameCounseling3DMode() {
       </div>
 
       {/* 3D 월드 (선택지와 나레이션이 모두 화면 안에 오버레이) */}
-      {currentChapter && currentChapter.id === 'sunflower_village' ? (
+      {currentChapter && currentChapter.id === 'shadow_escape' ? (
+        <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '480px' }}>
+          <ShadowEscapeScene
+            currentScene={currentScene}
+            gameState={gameState}
+            onArrive={handleArrive}
+            sceneIndex={currentSceneIndex}
+            onChoiceSelect={makeChoice}
+            displayedText={displayedText}
+            selectedChoice={selectedChoice}
+            showParentNotes={showParentNotes}
+          />
+        </div>
+      ) : currentChapter && currentChapter.id === 'sunflower_village' ? (
         <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '400px' }}>
           <VillageAdventure3DWorld
             currentScene={currentScene}

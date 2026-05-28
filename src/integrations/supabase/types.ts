@@ -11498,7 +11498,12 @@ export type Database = {
           specializations: string[] | null
           total_experts: number | null
           updated_at: string
+          voucher_business_no: string | null
+          voucher_evidence_url: string | null
+          voucher_programs: string[] | null
+          voucher_source: string | null
           voucher_types: string[] | null
+          voucher_verified_at: string | null
           website_url: string | null
         }
         Insert: {
@@ -11531,7 +11536,12 @@ export type Database = {
           specializations?: string[] | null
           total_experts?: number | null
           updated_at?: string
+          voucher_business_no?: string | null
+          voucher_evidence_url?: string | null
+          voucher_programs?: string[] | null
+          voucher_source?: string | null
           voucher_types?: string[] | null
+          voucher_verified_at?: string | null
           website_url?: string | null
         }
         Update: {
@@ -11564,7 +11574,12 @@ export type Database = {
           specializations?: string[] | null
           total_experts?: number | null
           updated_at?: string
+          voucher_business_no?: string | null
+          voucher_evidence_url?: string | null
+          voucher_programs?: string[] | null
+          voucher_source?: string | null
           voucher_types?: string[] | null
+          voucher_verified_at?: string | null
           website_url?: string | null
         }
         Relationships: []
@@ -16140,6 +16155,87 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      voucher_directory: {
+        Row: {
+          address: string | null
+          business_no: string | null
+          city: string | null
+          created_at: string
+          district: string | null
+          id: string
+          org_name: string
+          org_name_normalized: string | null
+          raw: Json | null
+          source_year: string | null
+          synced_at: string
+          voucher_type: string
+        }
+        Insert: {
+          address?: string | null
+          business_no?: string | null
+          city?: string | null
+          created_at?: string
+          district?: string | null
+          id?: string
+          org_name: string
+          org_name_normalized?: string | null
+          raw?: Json | null
+          source_year?: string | null
+          synced_at?: string
+          voucher_type: string
+        }
+        Update: {
+          address?: string | null
+          business_no?: string | null
+          city?: string | null
+          created_at?: string
+          district?: string | null
+          id?: string
+          org_name?: string
+          org_name_normalized?: string | null
+          raw?: Json | null
+          source_year?: string | null
+          synced_at?: string
+          voucher_type?: string
+        }
+        Relationships: []
+      }
+      voucher_sync_logs: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          errors: Json | null
+          id: string
+          matched: number
+          run_at: string
+          total: number
+          triggered_by: string | null
+          unmatched: number
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          errors?: Json | null
+          id?: string
+          matched?: number
+          run_at?: string
+          total?: number
+          triggered_by?: string | null
+          unmatched?: number
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          errors?: Json | null
+          id?: string
+          matched?: number
+          run_at?: string
+          total?: number
+          triggered_by?: string | null
+          unmatched?: number
+        }
+        Relationships: []
       }
       voucher_types: {
         Row: {

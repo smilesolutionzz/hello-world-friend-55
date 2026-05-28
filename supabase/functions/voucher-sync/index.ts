@@ -184,7 +184,7 @@ serve(async (req) => {
       unmatched,
       duration_ms: Date.now() - startedAt,
       errors,
-      triggered_by: user.id,
+      triggered_by: userId,
     });
 
     return new Response(

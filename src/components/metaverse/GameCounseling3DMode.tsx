@@ -144,7 +144,7 @@ export default function GameCounseling3DMode() {
           setTimeout(() => speak('금색 빛기둥과 화살표를 따라 다음 장소로 이동해 보세요.'), 300);
         }
       }
-    }, 800);
+    }, 1100);
   }, [currentChapter, currentSceneIndex, ttsEnabled, speak, stopTTS]);
 
   const calculateResults = useCallback(() => {

@@ -34,7 +34,6 @@ type DirectoryRow = {
 type PartnerRow = {
   id: string;
   name: string;
-  slug: string | null;
   location: string | null;
   voucher_programs: string[] | null;
 };
@@ -55,12 +54,10 @@ export default function VoucherFinderSection() {
       try {
         let partnerQ = supabase
           .from('partner_institutions')
-          .select('id, name, slug, location, voucher_programs, voucher_source')
+          .select('id, name, location, voucher_programs, voucher_source')
           .not('voucher_programs', 'is', null)
           .in('voucher_source', ['api_matched', 'self_reported_verified'])
           .limit(50);
-
-        if (type !== 'all') partnerQ = partnerQ.contains('voucher_programs', [type]);
 
         let dirQ = supabase
           .from('voucher_directory')
@@ -78,7 +75,8 @@ export default function VoucherFinderSection() {
 
         const [{ data: pData }, { data: dData }] = await Promise.all([partnerQ, dirQ]);
         if (!cancelled) {
-          setPartners((pData ?? []) as PartnerRow[]);
+          const partnerRows = (pData ?? []) as PartnerRow[];
+          setPartners(type === 'all' ? partnerRows : partnerRows.filter((p) => (p.voucher_programs ?? []).some((v) => v.includes(type))));
           setDir((dData ?? []) as unknown as DirectoryRow[]);
         }
       } finally {
@@ -189,14 +187,12 @@ export default function VoucherFinderSection() {
                     </span>
                   ))}
                 </div>
-                {p.slug && (
-                  <Link
-                    to={`/partner/${p.slug}`}
-                    className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-neutral-900 hover:text-[#C8B88A]"
-                  >
-                    상세 보기 <ArrowRight className="w-3 h-3" />
-                  </Link>
-                )}
+                <Link
+                  to={`/partner/${p.id}`}
+                  className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-neutral-900 hover:text-[#C8B88A]"
+                >
+                  상세 보기 <ArrowRight className="w-3 h-3" />
+                </Link>
               </li>
             ))}
           </ul>

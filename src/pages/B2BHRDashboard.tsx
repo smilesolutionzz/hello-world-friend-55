@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import BusinessSEO from '@/components/b2b/BusinessSEO';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Building2, Users, AlertTriangle, TrendingDown, TrendingUp, Shield,
-  EyeOff, FileDown, Bell, ArrowRight, CheckCircle2, Lock
+  EyeOff, FileDown, Bell, ArrowRight, CheckCircle2, Lock, Sparkles
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import BusinessBreadcrumb from '@/components/b2b/BusinessBreadcrumb';
@@ -35,23 +35,44 @@ interface DeptStat {
 const B2BHRDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const isDemo = searchParams.get('demo') === '1';
   const [loading, setLoading] = useState(true);
   const [institution, setInstitution] = useState<Institution | null>(null);
   const [deptStats, setDeptStats] = useState<DeptStat[]>([]);
   const [period, setPeriod] = useState<7 | 30 | 90>(30);
+  const [demoMode, setDemoMode] = useState(isDemo);
 
   useEffect(() => {
     loadData();
   }, [period]);
 
+  const loadDemo = () => {
+    setInstitution({
+      id: 'demo',
+      institution_name: '(주)데모 컴퍼니',
+      institution_type: '제조업 · 300인',
+      current_residents: 312,
+    });
+    setDeptStats([
+      { department_code: '연구개발', total_employees: 64, participated_employees: 48, avg_stress_score: 58, avg_burnout_score: 62, high_risk_count: 7, is_masked: false },
+      { department_code: '영업', total_employees: 42, participated_employees: 31, avg_stress_score: 71, avg_burnout_score: 68, high_risk_count: 9, is_masked: false },
+      { department_code: '운영', total_employees: 88, participated_employees: 59, avg_stress_score: 49, avg_burnout_score: 44, high_risk_count: 4, is_masked: false },
+      { department_code: '인사·총무', total_employees: 18, participated_employees: 14, avg_stress_score: 53, avg_burnout_score: 51, high_risk_count: 2, is_masked: false },
+      { department_code: '재무', total_employees: 12, participated_employees: 9, avg_stress_score: 47, avg_burnout_score: 42, high_risk_count: 1, is_masked: false },
+      { department_code: '경영지원', total_employees: 4, participated_employees: 3, avg_stress_score: null, avg_burnout_score: null, high_risk_count: null, is_masked: true },
+    ]);
+    setDemoMode(true);
+    setLoading(false);
+  };
+
   const loadData = async () => {
     setLoading(true);
     try {
+      if (isDemo) { loadDemo(); return; }
+
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate('/auth');
-        return;
-      }
+      if (!user) { loadDemo(); return; }
 
       const { data: inst } = await supabase
         .from('b2b_partner_institutions')
@@ -59,11 +80,9 @@ const B2BHRDashboard = () => {
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (!inst) {
-        setLoading(false);
-        return;
-      }
+      if (!inst) { loadDemo(); return; }
       setInstitution(inst);
+      setDemoMode(false);
 
       const { data: stats, error } = await supabase.rpc('get_department_aggregated_stats', {
         p_institution_id: inst.id,
@@ -74,7 +93,8 @@ const B2BHRDashboard = () => {
       setDeptStats((stats as DeptStat[]) || []);
     } catch (e) {
       console.error(e);
-      toast({ title: '데이터 로딩 실패', description: '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+      toast({ title: '데이터 로딩 실패', description: '데모 데이터로 표시합니다.', variant: 'destructive' });
+      loadDemo();
     } finally {
       setLoading(false);
     }
@@ -165,6 +185,19 @@ const B2BHRDashboard = () => {
             ))}
           </div>
         </div>
+
+        {demoMode && (
+          <Alert className="border-amber-200 bg-amber-50/60">
+            <Sparkles className="h-4 w-4 text-amber-700" />
+            <AlertTitle className="text-amber-900">체험 모드 · 가상 데이터</AlertTitle>
+            <AlertDescription className="text-amber-800 text-sm flex flex-wrap items-center gap-2">
+              지금 보고 있는 화면은 시연용 가상 회사 데이터입니다. 실제 도입 시 우리 회사 데이터로 즉시 채워집니다.
+              <Button size="sm" variant="outline" className="ml-1 h-7" onClick={() => navigate('/b2b-jobcoach')}>
+                도입 상담 신청 <ArrowRight className="w-3 h-3 ml-1" />
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Privacy Notice */}
         <Alert className="border-emerald-200 bg-emerald-50/50">

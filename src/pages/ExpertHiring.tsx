@@ -165,7 +165,7 @@ const ExpertHiring = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'experts' | 'institutions'>('experts');
+  const [activeTab, setActiveTab] = useState<'experts' | 'institutions' | 'vouchers'>('experts');
   
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null);

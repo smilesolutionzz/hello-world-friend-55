@@ -52,7 +52,7 @@ export default function VoucherFinderSection() {
     (async () => {
       setLoading(true);
       try {
-        let partnerQ = supabase
+        const partnerQ = supabase
           .from('partner_institutions')
           .select('id, name, address, voucher_programs, voucher_source')
           .not('voucher_programs', 'is', null)

@@ -25,7 +25,7 @@ export const AudienceModeToggle = ({ size = 'md', className = '' }: Props) => {
   const go = (mode: 'b2c' | 'b2b') => {
     if (mode === 'b2b' && !isBusinessMode) {
       trackB2BEvent('mode_toggle', path, { to: 'b2b' });
-      navigate(localePath('/business'));
+      navigate(localePath('/b2b-hr-dashboard?demo=1'));
     } else if (mode === 'b2c' && isBusinessMode) {
       trackB2BEvent('mode_toggle', path, { to: 'b2c' });
       navigate(localePath('/'));

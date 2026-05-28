@@ -51,13 +51,23 @@ function parseItems(xml: string): { totalCount: number; items: Record<string, st
 
 async function fetchPage(serviceKey: string, sido: string, pageNo: number, numOfRows: number) {
   const url = `${API_BASE}?serviceKey=${encodeURIComponent(serviceKey)}&sido=${sido}&pageNo=${pageNo}&numOfRows=${numOfRows}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    const t = await res.text();
-    throw new Error(`HTTP ${res.status}: ${t.slice(0, 300)}`);
+  let lastErr: unknown = null;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error(`HTTP ${res.status}: ${t.slice(0, 200)}`);
+      }
+      return await res.text();
+    } catch (e) {
+      lastErr = e;
+      await new Promise((r) => setTimeout(r, 500 + attempt * 800));
+    }
   }
-  return await res.text();
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
 }
+
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
@@ -69,18 +79,28 @@ serve(async (req) => {
   );
 
   try {
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    // Admin secret bypass (for server-side/agent triggers)
+    const adminSecretHeader = req.headers.get('x-admin-secret');
+    const adminSecret = Deno.env.get('SOCIAL_SERVICE_API_KEY') || '';
+    const isSecretBypass = !!adminSecret && adminSecretHeader === adminSecret;
+
+    let userId: string | null = null;
+    if (!isSecretBypass) {
+      const authHeader = req.headers.get('Authorization');
+      if (!authHeader) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+      const { data: { user }, error: userErr } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''));
+      if (userErr || !user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+      const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+      if (!isAdmin) {
+        return new Response(JSON.stringify({ error: 'Admin only' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+      userId = user.id;
     }
-    const { data: { user }, error: userErr } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''));
-    if (userErr || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
-    const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
-    if (!isAdmin) {
-      return new Response(JSON.stringify({ error: 'Admin only' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
+
 
     const serviceKey = Deno.env.get('SOCIAL_SERVICE_API_KEY') || Deno.env.get('PUBLIC_DATA_API_KEY');
     if (!serviceKey) throw new Error('SOCIAL_SERVICE_API_KEY not configured');
@@ -101,9 +121,12 @@ serve(async (req) => {
         let totalCount = Infinity;
         while (collected < totalCount && pageNo <= 200) {
           const xml = await fetchPage(serviceKey, sido, pageNo, numOfRows);
+          if (pageNo === 1) console.log(`[${sido}] raw sample:`, xml.slice(0, 1200));
           const { totalCount: tc, items } = parseItems(xml);
           totalCount = tc;
+          if (pageNo === 1) console.log(`[${sido}] totalCount=${tc} items=${items.length}`);
           if (items.length === 0) break;
+
           for (const it of items) {
             const org_name = it.providerName?.trim();
             if (!org_name) continue;
@@ -174,7 +197,7 @@ serve(async (req) => {
       unmatched,
       duration_ms: Date.now() - startedAt,
       errors,
-      triggered_by: user.id,
+      triggered_by: userId,
     });
 
     return new Response(

@@ -49,6 +49,7 @@ import MobileHome from "./pages/MobileHome";
 import Store from "./pages/Store";
 import CoachingPreferences from "./pages/CoachingPreferences";
 import VerifyReport from "./pages/VerifyReport";
+import VoucherFinder from "./pages/VoucherFinder";
 import MetaverseVoice from "./pages/MetaverseVoice";
 import VoiceCounselingNew from "./pages/VoiceCounselingNew";
 import VoiceCounselingHistory from "./pages/VoiceCounselingHistory";

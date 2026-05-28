@@ -51,13 +51,23 @@ function parseItems(xml: string): { totalCount: number; items: Record<string, st
 
 async function fetchPage(serviceKey: string, sido: string, pageNo: number, numOfRows: number) {
   const url = `${API_BASE}?serviceKey=${encodeURIComponent(serviceKey)}&sido=${sido}&pageNo=${pageNo}&numOfRows=${numOfRows}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    const t = await res.text();
-    throw new Error(`HTTP ${res.status}: ${t.slice(0, 300)}`);
+  let lastErr: unknown = null;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error(`HTTP ${res.status}: ${t.slice(0, 200)}`);
+      }
+      return await res.text();
+    } catch (e) {
+      lastErr = e;
+      await new Promise((r) => setTimeout(r, 500 + attempt * 800));
+    }
   }
-  return await res.text();
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
 }
+
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });

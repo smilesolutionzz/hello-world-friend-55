@@ -29,6 +29,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { calculateExpertPricing, formatKRW } from '@/lib/expertPricing';
 import MindTrackContextBanner, { useMindTrackPrefill } from '@/components/mind-track/MindTrackContextBanner';
 import { PARTNER_INSTITUTIONS } from '@/data/partnerInstitutions';
+import VoucherFinderSection from '@/components/voucher/VoucherFinderSection';
 
 // Facility images
 import facilityDev from '@/assets/facilities/facility-development-center.jpg';
@@ -164,7 +165,7 @@ const ExpertHiring = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'experts' | 'institutions'>('experts');
+  const [activeTab, setActiveTab] = useState<'experts' | 'institutions' | 'vouchers'>('experts');
   
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null);
@@ -337,7 +338,22 @@ const ExpertHiring = () => {
             <Building2 className="w-4 h-4" />
             협력기관 ({PARTNER_INSTITUTIONS.length}곳)
           </button>
+          <button
+            onClick={() => setActiveTab('vouchers')}
+            className={cn(
+              "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all",
+              activeTab === 'vouchers'
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted"
+            )}
+          >
+            <MapPin className="w-4 h-4" />
+            전국 바우처기관
+          </button>
         </div>
+
+        {/* VOUCHERS TAB */}
+        {activeTab === 'vouchers' && <VoucherFinderSection />}
 
         {/* EXPERTS TAB */}
         {activeTab === 'experts' && (

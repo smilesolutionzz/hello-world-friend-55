@@ -391,6 +391,49 @@ ${scoreDetails}
           )}
         </Card>
 
+        {/* 그림자에서 도망 전용 — 성격 기질 프로파일 */}
+        {chapter.id === 'shadow_escape' && (() => {
+          const r = results;
+          const profiles = [
+            { key: 'confront', label: '직면형 기질', tag: 'CONFRONTER', score: r.self_esteem + r.independence + (100 - r.anxiety), desc: '위협 신호 앞에서 회피보다 정면 응시를 택하는 경향. 위기 상황에서 의사결정이 빠르고, 사후 자기효능감이 강화되는 패턴입니다.' },
+            { key: 'regulate', label: '안정 조율형 기질', tag: 'REGULATOR', score: r.emotional_regulation + r.creativity + (100 - r.aggression), desc: '환경(가게/거리)을 활용해 스스로 안정화하는 능력이 두드러집니다. 감정의 진폭을 좁히고 합리적 대안을 만들어내는 기질.' },
+            { key: 'connect', label: '연결 지지형 기질', tag: 'CONNECTOR', score: r.sociality + r.empathy + r.emotional_regulation, desc: '위협을 혼자 견디기보다 관계로 풀어내는 경향. 사회적 안전망을 통해 회복탄력성을 확보합니다.' },
+            { key: 'impulse', label: '돌파 행동형 기질', tag: 'BREAKER', score: r.aggression + r.independence + (100 - r.anxiety), desc: '문을 당기고, 지름길을 택하는 능동적 돌파형. 결단력은 강하나 감정 조절 코칭이 효과를 키웁니다.' },
+            { key: 'avoid', label: '경계 회피형 기질', tag: 'AVOIDER', score: r.anxiety + (100 - r.self_esteem) + (100 - r.independence), desc: '위협 신호에 민감하고 회피로 안정화하는 경향. 위험 감지 능력은 강점이며, 점진적 노출이 도움이 됩니다.' },
+          ].sort((a, b) => b.score - a.score);
+          const top = profiles[0];
+          const second = profiles[1];
+          return (
+            <Card className="p-5 bg-gradient-to-br from-zinc-900 to-slate-800 border border-[#C8B88A]/30 ring-1 ring-[#C8B88A]/10">
+              <div className="flex items-center gap-1.5 text-[10px] font-mono tracking-[0.2em] text-[#C8B88A] uppercase">
+                <span className="w-1 h-1 rounded-full bg-[#C8B88A]" /> Temperament Profile · {top.tag}
+              </div>
+              <h3 className="mt-2 text-xl font-bold text-white">{top.label}</h3>
+              <p className="mt-2 text-[13px] text-white/70 leading-relaxed break-keep">{top.desc}</p>
+              <div className="mt-4 pt-3 border-t border-white/10">
+                <div className="text-[10px] text-white/40 mb-1.5 tracking-wider">SECONDARY</div>
+                <div className="flex items-center justify-between text-[12px]">
+                  <span className="text-white/80">{second.label}</span>
+                  <span className="text-[#C8B88A]/80 font-mono text-[10px]">{second.tag}</span>
+                </div>
+              </div>
+              <div className="mt-3 grid grid-cols-5 gap-1">
+                {profiles.map((p) => (
+                  <div key={p.key} className="text-center">
+                    <div className="h-12 flex items-end justify-center">
+                      <div
+                        className={`w-full rounded-sm ${p.key === top.key ? 'bg-[#C8B88A]' : 'bg-white/15'}`}
+                        style={{ height: `${Math.max(8, (p.score / profiles[0].score) * 100)}%` }}
+                      />
+                    </div>
+                    <div className="mt-1 text-[9px] text-white/50 truncate">{p.label.replace(' 기질', '')}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          );
+        })()}
+
         {/* 심리 특성 차트 */}
         <Card className="p-5 bg-white/5 border-white/10 mt-4">
           <h3 className="font-bold mb-4 text-white">📊 심리 특성 분석</h3>

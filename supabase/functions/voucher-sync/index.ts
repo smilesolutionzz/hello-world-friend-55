@@ -15,7 +15,7 @@ const SIDO_CODES = [
   '41', '42', '43', '44', '45', '46', '47', '48', '50',
 ];
 
-const API_BASE = 'https://api.socialservice.or.kr:444/api/service/provider/providerList';
+const API_BASE = 'http://api.socialservice.or.kr/api/service/provider/providerList';
 
 function normalizeName(s: string | null | undefined): string {
   if (!s) return '';

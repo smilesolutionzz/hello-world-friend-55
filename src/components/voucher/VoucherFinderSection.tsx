@@ -8,6 +8,7 @@ import { MapPin, ShieldCheck, Search, ArrowRight, Building2 } from 'lucide-react
 import { supabase } from '@/integrations/supabase/client';
 
 const VOUCHER_TYPES = [
+  { key: 'all', label: '전체' },
   { key: '발달재활', label: '발달재활' },
   { key: '지역사회', label: '지역사회서비스' },
   { key: '장애인활동', label: '장애인활동지원' },
@@ -27,20 +28,20 @@ type DirectoryRow = {
   city: string | null;
   district: string | null;
   voucher_type: string;
+  raw?: { telNumber?: string } | null;
 };
 
 type PartnerRow = {
   id: string;
   name: string;
-  slug: string | null;
-  location: string | null;
+  address: string | null;
   voucher_programs: string[] | null;
 };
 
 export default function VoucherFinderSection() {
-  const [city, setCity] = useState('서울특별시');
+  const [city, setCity] = useState('');
   const [district, setDistrict] = useState('');
-  const [type, setType] = useState<string>('발달재활');
+  const [type, setType] = useState<string>('all');
   const [query, setQuery] = useState('');
   const [partners, setPartners] = useState<PartnerRow[]>([]);
   const [dir, setDir] = useState<DirectoryRow[]>([]);
@@ -53,26 +54,30 @@ export default function VoucherFinderSection() {
       try {
         const partnerQ = supabase
           .from('partner_institutions')
-          .select('id, name, slug, location, voucher_programs, voucher_source')
+          .select('id, name, address, voucher_programs, voucher_source')
           .not('voucher_programs', 'is', null)
-          .contains('voucher_programs', [type])
           .in('voucher_source', ['api_matched', 'self_reported_verified'])
           .limit(50);
 
         let dirQ = supabase
           .from('voucher_directory')
-          .select('id, org_name, address, city, district, voucher_type')
-          .eq('voucher_type', type)
+          .select('id, org_name, address, city, district, voucher_type, raw')
+          .order('city', { ascending: true })
+          .order('district', { ascending: true })
+          .order('org_name', { ascending: true })
           .limit(200);
 
+        if (type === '발달장애인주간') dirQ = dirQ.ilike('voucher_type', '%발달장애인%주간%');
+        else if (type !== 'all') dirQ = dirQ.ilike('voucher_type', `%${type}%`);
         if (city) dirQ = dirQ.ilike('city', `${city.slice(0, 2)}%`);
         if (district) dirQ = dirQ.ilike('district', `${district}%`);
         if (query) dirQ = dirQ.ilike('org_name', `%${query}%`);
 
         const [{ data: pData }, { data: dData }] = await Promise.all([partnerQ, dirQ]);
         if (!cancelled) {
-          setPartners((pData ?? []) as any);
-          setDir((dData ?? []) as any);
+          const partnerRows = (pData ?? []) as PartnerRow[];
+          setPartners(type === 'all' ? partnerRows : partnerRows.filter((p) => (p.voucher_programs ?? []).some((v) => v.includes(type))));
+          setDir((dData ?? []) as unknown as DirectoryRow[]);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -125,6 +130,7 @@ export default function VoucherFinderSection() {
             onChange={(e) => { setCity(e.target.value); setDistrict(''); }}
             className="px-3 py-2.5 rounded-xl border border-neutral-200 bg-white text-sm"
           >
+            <option value="">전국</option>
             {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
           <input
@@ -164,9 +170,9 @@ export default function VoucherFinderSection() {
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="min-w-0">
                     <h4 className="font-semibold text-neutral-900 truncate">{p.name}</h4>
-                    {p.location && (
+                    {p.address && (
                       <p className="mt-1 text-xs text-neutral-500 flex items-center gap-1">
-                        <MapPin className="w-3 h-3" /> {p.location}
+                        <MapPin className="w-3 h-3" /> {p.address}
                       </p>
                     )}
                   </div>
@@ -181,14 +187,12 @@ export default function VoucherFinderSection() {
                     </span>
                   ))}
                 </div>
-                {p.slug && (
-                  <Link
-                    to={`/partner/${p.slug}`}
-                    className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-neutral-900 hover:text-[#C8B88A]"
-                  >
-                    상세 보기 <ArrowRight className="w-3 h-3" />
-                  </Link>
-                )}
+                <Link
+                  to={`/partner/${p.id}`}
+                  className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-neutral-900 hover:text-[#C8B88A]"
+                >
+                  상세 보기 <ArrowRight className="w-3 h-3" />
+                </Link>
               </li>
             ))}
           </ul>
@@ -217,6 +221,9 @@ export default function VoucherFinderSection() {
                   <p className="text-sm font-medium text-neutral-900 truncate">{d.org_name}</p>
                   {d.address && (
                     <p className="text-xs text-neutral-500 mt-0.5 truncate">{d.address}</p>
+                  )}
+                  {d.raw?.telNumber && (
+                    <p className="text-xs text-neutral-400 mt-0.5">{d.raw.telNumber}</p>
                   )}
                 </div>
                 <span className="shrink-0 text-[11px] px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-600">

@@ -35,23 +35,44 @@ interface DeptStat {
 const B2BHRDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const isDemo = searchParams.get('demo') === '1';
   const [loading, setLoading] = useState(true);
   const [institution, setInstitution] = useState<Institution | null>(null);
   const [deptStats, setDeptStats] = useState<DeptStat[]>([]);
   const [period, setPeriod] = useState<7 | 30 | 90>(30);
+  const [demoMode, setDemoMode] = useState(isDemo);
 
   useEffect(() => {
     loadData();
   }, [period]);
 
+  const loadDemo = () => {
+    setInstitution({
+      id: 'demo',
+      institution_name: '(주)데모 컴퍼니',
+      institution_type: '제조업 · 300인',
+      current_residents: 312,
+    });
+    setDeptStats([
+      { department_code: '연구개발', total_employees: 64, participated_employees: 48, avg_stress_score: 58, avg_burnout_score: 62, high_risk_count: 7, is_masked: false },
+      { department_code: '영업', total_employees: 42, participated_employees: 31, avg_stress_score: 71, avg_burnout_score: 68, high_risk_count: 9, is_masked: false },
+      { department_code: '운영', total_employees: 88, participated_employees: 59, avg_stress_score: 49, avg_burnout_score: 44, high_risk_count: 4, is_masked: false },
+      { department_code: '인사·총무', total_employees: 18, participated_employees: 14, avg_stress_score: 53, avg_burnout_score: 51, high_risk_count: 2, is_masked: false },
+      { department_code: '재무', total_employees: 12, participated_employees: 9, avg_stress_score: 47, avg_burnout_score: 42, high_risk_count: 1, is_masked: false },
+      { department_code: '경영지원', total_employees: 4, participated_employees: 3, avg_stress_score: null, avg_burnout_score: null, high_risk_count: null, is_masked: true },
+    ]);
+    setDemoMode(true);
+    setLoading(false);
+  };
+
   const loadData = async () => {
     setLoading(true);
     try {
+      if (isDemo) { loadDemo(); return; }
+
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate('/auth');
-        return;
-      }
+      if (!user) { loadDemo(); return; }
 
       const { data: inst } = await supabase
         .from('b2b_partner_institutions')
@@ -59,11 +80,9 @@ const B2BHRDashboard = () => {
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (!inst) {
-        setLoading(false);
-        return;
-      }
+      if (!inst) { loadDemo(); return; }
       setInstitution(inst);
+      setDemoMode(false);
 
       const { data: stats, error } = await supabase.rpc('get_department_aggregated_stats', {
         p_institution_id: inst.id,
@@ -74,7 +93,8 @@ const B2BHRDashboard = () => {
       setDeptStats((stats as DeptStat[]) || []);
     } catch (e) {
       console.error(e);
-      toast({ title: '데이터 로딩 실패', description: '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+      toast({ title: '데이터 로딩 실패', description: '데모 데이터로 표시합니다.', variant: 'destructive' });
+      loadDemo();
     } finally {
       setLoading(false);
     }

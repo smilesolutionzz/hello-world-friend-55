@@ -34,7 +34,7 @@ type DirectoryRow = {
 type PartnerRow = {
   id: string;
   name: string;
-  location: string | null;
+  address: string | null;
   voucher_programs: string[] | null;
 };
 
@@ -54,7 +54,7 @@ export default function VoucherFinderSection() {
       try {
         let partnerQ = supabase
           .from('partner_institutions')
-          .select('id, name, location, voucher_programs, voucher_source')
+          .select('id, name, address, voucher_programs, voucher_source')
           .not('voucher_programs', 'is', null)
           .in('voucher_source', ['api_matched', 'self_reported_verified'])
           .limit(50);
@@ -170,9 +170,9 @@ export default function VoucherFinderSection() {
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="min-w-0">
                     <h4 className="font-semibold text-neutral-900 truncate">{p.name}</h4>
-                    {p.location && (
+                    {p.address && (
                       <p className="mt-1 text-xs text-neutral-500 flex items-center gap-1">
-                        <MapPin className="w-3 h-3" /> {p.location}
+                        <MapPin className="w-3 h-3" /> {p.address}
                       </p>
                     )}
                   </div>

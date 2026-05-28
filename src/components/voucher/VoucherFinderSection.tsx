@@ -78,8 +78,8 @@ export default function VoucherFinderSection() {
 
         const [{ data: pData }, { data: dData }] = await Promise.all([partnerQ, dirQ]);
         if (!cancelled) {
-          setPartners((pData ?? []) as any);
-          setDir((dData ?? []) as any);
+          setPartners((pData ?? []) as PartnerRow[]);
+          setDir((dData ?? []) as unknown as DirectoryRow[]);
         }
       } finally {
         if (!cancelled) setLoading(false);

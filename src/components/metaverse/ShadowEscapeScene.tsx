@@ -179,17 +179,28 @@ export default function ShadowEscapeScene({
       {/* === 장면 소품 (질문 내용 시각화) === */}
       <SceneProp sceneId={currentScene.id} intensity={mood.intensity} />
 
-      {/* === 캐릭터 (대형) === */}
+      {/* === 캐릭터 (대형) — 입장: 왼쪽 → 중앙, 퇴장(선택 후): 중앙 → 오른쪽 === */}
       <motion.div
         key={`char-${sceneIndex}`}
-        initial={{ x: '-60vw' }}
-        animate={{ x: arrived ? '-50%' : '-50%' }}
-        transition={{ duration: arrived ? 0.0 : 1.4, ease: 'easeOut' }}
+        initial={{ x: 'calc(-50% - 60vw)' }}
+        animate={{
+          x: selectedChoice
+            ? 'calc(-50% + 70vw)'
+            : arrived
+              ? '-50%'
+              : '-50%',
+        }}
+        transition={{
+          duration: selectedChoice ? 0.75 : arrived ? 0 : 1.4,
+          ease: selectedChoice ? 'easeIn' : 'easeOut',
+        }}
         className="absolute left-1/2 z-10"
         style={{ bottom: 88 }}
       >
-        {/* 임시 입장 애니메이션을 위해 walk 표현 */}
-        <BigCharacter walking={!arrived} facingLeft={isReveal} />
+        <BigCharacter
+          walking={!arrived || !!selectedChoice}
+          facingLeft={isReveal && !selectedChoice}
+        />
       </motion.div>
 
       {/* === Vignette === */}

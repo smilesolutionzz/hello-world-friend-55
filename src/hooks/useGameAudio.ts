@@ -144,7 +144,7 @@ interface GameAudioApi {
   hiFiStatus: 'idle' | 'loading' | 'ready' | 'error' | 'unavailable';
 }
 
-const HIFI_CACHE_PREFIX = 'aihpro_game_bgm_v1:';
+const HIFI_CACHE_PREFIX = 'aihpro_game_bgm_v2:';
 
 export function useGameAudio(opts: UseGameAudioOpts): GameAudioApi {
   const { theme, intensity = 0.6, reduceMotion = false, enableHighFi = true } = opts;
@@ -356,33 +356,43 @@ export function useGameAudio(opts: UseGameAudioOpts): GameAudioApi {
     [ensureContext, muted, profile.sfxColor]
   );
 
-  /* ---- ElevenLabs HiFi 로드 ---- */
+  /* ---- ElevenLabs HiFi 로드 (Storage 영구 캐시 우선) ---- */
   const loadHiFiMusic = useCallback(async () => {
     if (!enableHighFi) return;
     if (hiFiStatus !== 'idle') return;
 
     const cacheKey = HIFI_CACHE_PREFIX + theme;
-    let dataUri: string | null = null;
+    // 1) localStorage: 이전에 저장된 Storage public URL 또는 data URI
+    let src: string | null = null;
     try {
-      dataUri = localStorage.getItem(cacheKey);
+      src = localStorage.getItem(cacheKey);
     } catch {
       /* localStorage 미가용 */
     }
 
-    if (!dataUri) {
+    // 2) 엣지 함수: Storage 캐시 hit이면 URL, 아니면 새로 생성 후 URL
+    if (!src) {
       setHiFiStatus('loading');
       try {
         const { data, error } = await supabase.functions.invoke(
           'generate-game-bgm',
           { body: { theme, prompt: profile.musicPrompt } }
         );
-        if (error || !data?.audioContent) {
+        if (error || !data) {
           setHiFiStatus('unavailable');
           return;
         }
-        dataUri = `data:audio/mpeg;base64,${data.audioContent}`;
+        if (typeof data.url === 'string' && data.url.length > 0) {
+          src = data.url;
+        } else if (typeof data.audioContent === 'string' && data.audioContent.length > 0) {
+          // 레거시/폴백
+          src = `data:audio/mpeg;base64,${data.audioContent}`;
+        } else {
+          setHiFiStatus('unavailable');
+          return;
+        }
         try {
-          localStorage.setItem(cacheKey, dataUri);
+          localStorage.setItem(cacheKey, src);
         } catch {
           /* 용량 초과 — 캐시 실패해도 재생은 가능 */
         }
@@ -394,21 +404,21 @@ export function useGameAudio(opts: UseGameAudioOpts): GameAudioApi {
     }
 
     const ctx = ensureContext();
-    if (!ctx || !masterRef.current || !dataUri) {
+    if (!ctx || !masterRef.current || !src) {
       setHiFiStatus('error');
       return;
     }
 
-    const audio = new Audio(dataUri);
+    const audio = new Audio(src);
     audio.loop = true;
     audio.crossOrigin = 'anonymous';
     hifiElRef.current = audio;
 
     try {
-      const src = ctx.createMediaElementSource(audio);
+      const mediaSrc = ctx.createMediaElementSource(audio);
       const g = ctx.createGain();
       g.gain.value = 0;
-      src.connect(g).connect(masterRef.current);
+      mediaSrc.connect(g).connect(masterRef.current);
       hifiGainRef.current = g;
 
       await audio.play();

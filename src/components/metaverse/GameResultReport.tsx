@@ -600,7 +600,7 @@ ${scoreDetails}
 
         {/* 양육 가이드 (로컬) */}
         <Card className="p-5 bg-green-500/10 border-green-500/30 mt-4">
-          <h3 className="font-bold mb-3 text-green-300">🌱 핵심 양육 가이드</h3>
+          <h3 className="font-bold mb-3 text-green-300">🌱 {guideTitle}</h3>
           <div className="space-y-2 text-sm text-green-200">
             {topDimensions.slice(0, 2).map(([dim]) => {
               const interp = interpMap[dim];

@@ -282,6 +282,7 @@ export const dimensionMeta: Record<PsychDimension, { label: string; icon: string
 import { villageChapter } from './villageScenarios';
 import { escapeChapter } from './viralGameChapters';
 import { midnightOfficeChapter, parentNightChapter } from './adultGameChapters';
+import { cityBirdChapter } from './cityBirdChapter';
 
 export const allChapters: StoryChapter[] = [
   chapter1,
@@ -289,4 +290,5 @@ export const allChapters: StoryChapter[] = [
   escapeChapter,
   midnightOfficeChapter,
   parentNightChapter,
+  cityBirdChapter,
 ];

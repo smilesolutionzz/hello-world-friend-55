@@ -10,6 +10,7 @@ import VillageAdventure3DWorld from '@/components/3d/VillageAdventure3DWorld';
 import ShadowEscapeScene from './ShadowEscapeScene';
 import MidnightOfficeScene from './MidnightOfficeScene';
 import NurseryNightScene from './NurseryNightScene';
+import CityBirdScene from './CityBirdScene';
 import { useGameTTS } from '@/hooks/useGameTTS';
 import { useGameSFX } from '@/hooks/useGameSFX';
 import GameResultReport from './GameResultReport';
@@ -375,6 +376,19 @@ export default function GameCounseling3DMode() {
       ) : currentChapter && currentChapter.id === 'parent_night' ? (
         <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '520px' }}>
           <NurseryNightScene
+            currentScene={currentScene}
+            gameState={gameState}
+            onArrive={handleArrive}
+            sceneIndex={currentSceneIndex}
+            onChoiceSelect={makeChoice}
+            displayedText={displayedText}
+            selectedChoice={selectedChoice}
+            showParentNotes={showParentNotes}
+          />
+        </div>
+      ) : currentChapter && currentChapter.id === 'city_bird' ? (
+        <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '520px' }}>
+          <CityBirdScene
             currentScene={currentScene}
             gameState={gameState}
             onArrive={handleArrive}

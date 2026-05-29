@@ -20,6 +20,7 @@ export type GameThemeKey =
   | 'shadow_escape'    // 도주·긴장·도시 밤
   | 'midnight_office'  // 번아웃·형광등·새벽
   | 'parent_night'     // 자장가·온기·새벽 4시
+  | 'city_bird'        // 자유비행·하늘·도시 위
   | 'classic_quiet'    // 보통 게임검사 (디폴트, 따뜻한 회의실)
   | 'classic_warm';    // 아동용 따뜻한 톤
 
@@ -70,6 +71,16 @@ const THEMES: Record<GameThemeKey, ThemeProfile> = {
     sfxColor: 540,
     musicPrompt:
       'Gentle warm nursery lullaby, soft music box, tender felt piano, low cello drone, warm wooden room tone, 3am parent vigil, hopeful but exhausted, 50 bpm',
+  },
+  city_bird: {
+    chord: [174.6, 261.6, 349.2, 440],
+    breath: 0.16,
+    noise: 0.08,
+    noiseCutoff: 1400,
+    gain: 0.13,
+    sfxColor: 1320,
+    musicPrompt:
+      'Cinematic uplifting flying score, soaring strings, airy flute, soft chimes, warm orchestral pad, sense of wide open sky and freedom over a city at dawn, 70 bpm, no drums',
   },
   classic_quiet: {
     chord: [110, 164.8, 220, 277.2],

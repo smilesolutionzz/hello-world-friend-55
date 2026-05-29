@@ -643,35 +643,129 @@ function GoldenPillar({ leftPx }: { leftPx: number }) {
   );
 }
 
-function SoftSkyline({ color }: { color: string }) {
+function HomeInterior({ color, mood }: { color: string; mood: SceneCfg['ambient'] }) {
+  // 따뜻한 가정집 벽 — 도배지, 몰딩, 액자, 벽시계, 봉제인형 선반, 커튼 창
+  const warm = mood === 'dawn' || mood === 'warm';
+  const wallTop = warm ? '#3a2a1c' : '#2a1f25';
+  const wallMid = warm ? '#5a4028' : '#3a2c34';
+  const wainscot = warm ? '#6a4e30' : '#4a3a44';
+  const accent = warm ? 'rgba(255,220,170,0.22)' : 'rgba(255,200,200,0.16)';
   return (
-    <svg viewBox="0 0 1600 400" preserveAspectRatio="none" className="w-full h-full opacity-55">
+    <svg viewBox="0 0 1600 400" preserveAspectRatio="none" className="w-full h-full">
       <defs>
+        <linearGradient id="wallG" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor={wallTop} />
+          <stop offset="55%" stopColor={wallMid} />
+          <stop offset="100%" stopColor={wainscot} />
+        </linearGradient>
         <linearGradient id="hazeN" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0%" stopColor={color} />
           <stop offset="100%" stopColor="rgba(0,0,0,0)" />
         </linearGradient>
+        <pattern id="wallpaper" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          {/* 작은 별/도트 패턴 — 아동방 도배 */}
+          <circle cx="20" cy="20" r="1.2" fill="rgba(255,220,180,0.10)" />
+          <circle cx="60" cy="55" r="1" fill="rgba(255,220,180,0.08)" />
+          <path d="M40 38 l1.5 3 l3 .4 l-2.2 2.1 .6 3.1 -2.9-1.5 -2.9 1.5 .6-3.1 -2.2-2.1 3-.4z"
+            fill="rgba(255,220,180,0.07)" />
+        </pattern>
       </defs>
+
+      {/* 벽지 (그라데이션 + 패턴) */}
+      <rect width="1600" height="400" fill="url(#wallG)" />
+      <rect width="1600" height="320" fill="url(#wallpaper)" />
       <rect width="1600" height="400" fill="url(#hazeN)" />
-      {/* 멀리 산 실루엣 */}
-      <path d="M0,300 L120,250 L260,290 L420,230 L580,280 L760,240 L920,290 L1100,250 L1280,280 L1440,240 L1600,280 L1600,400 L0,400 Z"
-        fill="rgba(10,10,22,0.7)" />
-      {/* 창문 점등 */}
-      {Array.from({ length: 22 }).map((_, i) => {
-        const x = i * 73 + (i % 3) * 6;
-        const h = 60 + ((i * 47) % 130);
-        return (
-          <g key={i}>
-            <rect x={x} y={400 - h} width={42} height={h} fill="rgba(6,8,18,0.78)" />
-            {Array.from({ length: Math.floor(h / 22) }).map((_, j) => (
-              ((i + j) % 4 === 0) && (
-                <rect key={j} x={x + 5 + (j % 2) * 18} y={400 - h + 8 + j * 22}
-                  width={8} height={6} fill="rgba(255,210,150,0.55)" />
-              )
-            ))}
-          </g>
-        );
-      })}
+
+      {/* 천장 몰딩 */}
+      <rect x="0" y="22" width="1600" height="6" fill="rgba(0,0,0,0.35)" />
+      <rect x="0" y="28" width="1600" height="2" fill="rgba(255,230,200,0.10)" />
+
+      {/* 허리 몰딩 (wainscot 라인) */}
+      <rect x="0" y="300" width="1600" height="4" fill="rgba(0,0,0,0.45)" />
+      <rect x="0" y="304" width="1600" height="2" fill="rgba(255,230,200,0.08)" />
+
+      {/* 액자 3종 (가족사진 / 아이 그림 / 작은 거울) */}
+      {[
+        { x: 130,  y: 80,  w: 90,  h: 110, hue: 'rgba(220,180,140,0.55)', inner: 'rgba(255,230,200,0.18)' },
+        { x: 340,  y: 110, w: 110, h: 80,  hue: 'rgba(200,150,110,0.55)', inner: 'rgba(255,220,180,0.14)' },
+        { x: 560,  y: 90,  w: 70,  h: 70,  hue: 'rgba(230,200,160,0.55)', inner: 'rgba(255,240,220,0.20)' },
+        { x: 900,  y: 100, w: 100, h: 130, hue: 'rgba(210,170,130,0.55)', inner: 'rgba(255,225,190,0.16)' },
+        { x: 1140, y: 90,  w: 80,  h: 100, hue: 'rgba(220,180,140,0.55)', inner: 'rgba(255,230,200,0.18)' },
+        { x: 1340, y: 120, w: 120, h: 80,  hue: 'rgba(200,150,110,0.55)', inner: 'rgba(255,220,180,0.14)' },
+      ].map((f, i) => (
+        <g key={i}>
+          <rect x={f.x} y={f.y} width={f.w} height={f.h} fill={f.hue} />
+          <rect x={f.x + 4} y={f.y + 4} width={f.w - 8} height={f.h - 8} fill={f.inner} />
+          {/* 액자 안 추상 실루엣 */}
+          <circle cx={f.x + f.w / 2} cy={f.y + f.h * 0.45} r={Math.min(f.w, f.h) * 0.16} fill="rgba(60,40,40,0.35)" />
+          <rect x={f.x + f.w * 0.25} y={f.y + f.h * 0.6} width={f.w * 0.5} height={f.h * 0.25} fill="rgba(60,40,40,0.30)" />
+        </g>
+      ))}
+
+      {/* 벽시계 (라운드) */}
+      <g>
+        <circle cx="730" cy="135" r="34" fill="rgba(40,28,24,0.7)" />
+        <circle cx="730" cy="135" r="30" fill="rgba(245,230,200,0.85)" />
+        <line x1="730" y1="135" x2="730" y2="115" stroke="#1a1a22" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="730" y1="135" x2="746" y2="135" stroke="#1a1a22" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="730" cy="135" r="2.5" fill="#1a1a22" />
+      </g>
+
+      {/* 작은 야간등 (콘센트) */}
+      <g>
+        <rect x="455" y="270" width="22" height="28" rx="4" fill="rgba(255,200,140,0.55)" />
+        <ellipse cx="466" cy="288" rx="60" ry="22" fill={accent} opacity="0.7" />
+      </g>
+      <g>
+        <rect x="1215" y="270" width="22" height="28" rx="4" fill="rgba(255,200,140,0.55)" />
+        <ellipse cx="1226" cy="288" rx="60" ry="22" fill={accent} opacity="0.7" />
+      </g>
+
+      {/* 커튼 창 (도시 X — 단순 따뜻한 빛 한 장) */}
+      <g>
+        <rect x="1000" y="60" width="140" height="180" fill="rgba(20,16,22,0.55)" />
+        <rect x="1006" y="66" width="128" height="168" fill={warm ? 'rgba(255,210,160,0.45)' : 'rgba(180,200,230,0.18)'} />
+        {/* 커튼 양쪽 */}
+        <path d="M990 50 Q1000 150 990 250 L1018 250 Q1010 150 1018 50 Z" fill="rgba(120,80,90,0.6)" />
+        <path d="M1150 50 Q1140 150 1150 250 L1122 250 Q1130 150 1122 50 Z" fill="rgba(120,80,90,0.6)" />
+        {/* 커튼봉 */}
+        <rect x="985" y="48" width="170" height="5" rx="2" fill="rgba(60,40,30,0.85)" />
+      </g>
+
+      {/* 봉제인형 선반 */}
+      <g>
+        <rect x="200" y="240" width="220" height="6" fill="rgba(80,55,40,0.85)" />
+        <circle cx="230" cy="230" r="11" fill="rgba(220,180,150,0.75)" />
+        <circle cx="226" cy="228" r="2" fill="#2a1a14" />
+        <circle cx="234" cy="228" r="2" fill="#2a1a14" />
+        <rect x="260" y="218" width="22" height="22" rx="4" fill="rgba(200,140,160,0.7)" />
+        <circle cx="305" cy="230" r="10" fill="rgba(180,210,170,0.7)" />
+        <rect x="340" y="222" width="14" height="20" rx="3" fill="rgba(220,200,150,0.7)" />
+        <circle cx="385" cy="230" r="9" fill="rgba(200,170,210,0.7)" />
+      </g>
+
+      {/* 책장 (실루엣) */}
+      <g>
+        <rect x="1280" y="200" width="160" height="100" fill="rgba(50,32,24,0.85)" />
+        <rect x="1284" y="206" width="152" height="2" fill="rgba(0,0,0,0.5)" />
+        <rect x="1284" y="248" width="152" height="2" fill="rgba(0,0,0,0.5)" />
+        {Array.from({ length: 14 }).map((_, i) => (
+          <rect key={i} x={1288 + i * 11} y={210} width={9} height={36}
+            fill={`rgba(${120 + (i * 23) % 100},${80 + (i * 17) % 80},${60 + (i * 11) % 70},0.85)`} />
+        ))}
+        {Array.from({ length: 14 }).map((_, i) => (
+          <rect key={`b-${i}`} x={1288 + i * 11} y={252} width={9} height={36}
+            fill={`rgba(${100 + (i * 19) % 100},${70 + (i * 13) % 80},${50 + (i * 23) % 70},0.85)`} />
+        ))}
+      </g>
+
+      {/* 모빌 (천장에 매단 작은 형체) */}
+      <g opacity="0.85">
+        <line x1="700" y1="22" x2="700" y2="62" stroke="rgba(180,160,140,0.6)" strokeWidth="1" />
+        <circle cx="690" cy="68" r="5" fill="rgba(255,200,180,0.85)" />
+        <circle cx="710" cy="74" r="4" fill="rgba(200,220,255,0.85)" />
+        <path d="M695 66 l5 -4 l5 4 l-5 4z" fill="rgba(255,230,180,0.85)" />
+      </g>
     </svg>
   );
 }

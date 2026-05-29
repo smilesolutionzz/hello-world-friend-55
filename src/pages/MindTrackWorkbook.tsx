@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import MindTrackWelcomeModal from "@/components/mind-track/MindTrackWelcomeModal";
 import DashboardVsWorkbookHelp from "@/components/mind-track/DashboardVsWorkbookHelp";
@@ -249,10 +249,12 @@ export default function MindTrackWorkbook() {
 
       const wb = wbs[0];
       const enrollmentRow = wb.mind_track_enrollments;
+      const isTwoWeek = enrollmentRow?.track_type === 'mind_2week';
+      const maxDay = isTwoWeek ? 14 : 7;
       const normalizedEnrollment = enrollmentRow
-        ? { ...enrollmentRow, track_type: "mind_7day", current_day: Math.min(Number(enrollmentRow.current_day ?? 1), 7) }
+        ? { ...enrollmentRow, track_type: isTwoWeek ? 'mind_2week' : 'mind_7day', current_day: Math.min(Number(enrollmentRow.current_day ?? 1), maxDay) }
         : enrollmentRow;
-      if (enrollmentRow && enrollmentRow.track_type !== "mind_7day") {
+      if (enrollmentRow && !isTwoWeek && enrollmentRow.track_type !== "mind_7day") {
         supabase
           .from("mind_track_enrollments")
           .update({ track_type: "mind_7day", current_day: normalizedEnrollment.current_day })
@@ -609,9 +611,26 @@ export default function MindTrackWorkbook() {
     );
   }
 
-  // 현재 상품의 기본 워크북은 7일 트랙으로 고정한다.
-  // 기존 사용자에게 남아있는 mind_30day enrollment도 여기서는 7일 워크북으로 보여주고,
-  // 30일 확장은 Day 7 이후 제안 카드/랜딩에서만 다룬다.
+  // 2주 트랙 (mind_2week): 세션 날 vs 비세션 날 분기
+  if (enrollment?.id && enrollment.track_type === 'mind_2week') {
+    const dayParam = Number(searchParams.get('day')) || Number(enrollment.current_day) || 1;
+    const safeDay = Math.min(Math.max(dayParam, 1), 14);
+    const audience = ((enrollment as any).audience || 'child') as 'child' | 'adult' | 'parent' | 'teen';
+    const sessionDays = [1, 4, 8, 11];
+    const TwoWeekSessionView = React.lazy(() => import('@/components/mind-track/workbook/TwoWeekSessionView'));
+    const TwoWeekRestView = React.lazy(() => import('@/components/mind-track/workbook/TwoWeekRestView'));
+    return (
+      <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white text-slate-400">불러오는 중…</div>}>
+        {sessionDays.includes(safeDay) ? (
+          <TwoWeekSessionView enrollmentId={enrollment.id} day={safeDay} audience={audience} />
+        ) : (
+          <TwoWeekRestView enrollmentId={enrollment.id} day={safeDay} audience={audience} />
+        )}
+      </React.Suspense>
+    );
+  }
+
+  // 7일/30일 트랙: 기존 워크북 뷰
   if (enrollment?.id) {
     return <SevenDayWorkbookView enrollmentId={enrollment.id} />;
   }

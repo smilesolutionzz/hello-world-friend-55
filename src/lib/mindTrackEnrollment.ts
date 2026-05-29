@@ -205,7 +205,9 @@ export async function ensureMindTrackEnrollment(
 export async function startMindTrackTrial(
   overrides: QuizSeed = {},
   audience: MindTrackAudience = 'child',
+  trackType: 'mind_2week' | 'mind_7day' = 'mind_2week',
 ): Promise<EnsureResult> {
+  // 2주 트랙도 enrollment 생성/스키마는 7d 플랜과 동일 (current_day 1~14)
   const ensured = await ensureMindTrackEnrollment(overrides, '7d', audience);
   if (!ensured.enrollmentId) return ensured;
 
@@ -213,14 +215,13 @@ export async function startMindTrackTrial(
   const { error } = await supabase
     .from('mind_track_enrollments')
     .update({
-      track_type: 'mind_7day',
+      track_type: trackType,
       payment_status: 'trial',
       status: 'active',
       started_at: nowIso,
       current_day: 1,
     })
     .eq('id', ensured.enrollmentId)
-    // only flip if it isn't already paid/completed
     .in('payment_status', ['pending', 'trial']);
 
   if (error) {

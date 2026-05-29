@@ -498,11 +498,11 @@ const MindTrack: React.FC = () => {
       if (!res.enrollmentId) throw new Error(res.error || '등록 실패');
       trackEvent('mind_track_trial_start', { goal: selectedGoal, audience: audienceParam });
       const startLabel = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-      toast.success('7일 마음 트랙을 시작했어요', {
-        description: `시작일 ${startLabel} · 오늘은 Day 1 입니다`,
+      toast.success('2주 마음 트랙을 시작했어요', {
+        description: `시작일 ${startLabel} · 오늘은 Day 1 세션입니다`,
         duration: 5000,
       });
-      navigate('/mind-track/dashboard');
+      navigate('/mind-track/workbook?day=1&openMission=1');
     } catch (e: any) {
       toast.error(e.message || '등록 중 오류가 발생했습니다');
     } finally {
@@ -515,8 +515,8 @@ const MindTrack: React.FC = () => {
     : null;
 
   // ──────────────────────────────────────────────────────────
-  // 결제 완료 사용자 → /mind-track/dashboard 전용 페이지로 자동 리다이렉트
-  // 마케팅 페이지(/mind-track)는 비결제자 전용으로 완전 분리
+  // 결제/체험 활성 사용자 → 오늘의 워크북으로 즉시 이동
+  // 마케팅 페이지(/mind-track)는 비결제자 전용
   // ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (
@@ -526,10 +526,10 @@ const MindTrack: React.FC = () => {
         activeEnrollment.payment_status === 'trial') &&
       !postLoginRedirecting
     ) {
-      const search = location.search || '';
-      navigate(`/mind-track/dashboard${search}`, { replace: true });
+      const day = Math.max(1, Number(activeEnrollment.current_day) || 1);
+      navigate(buildWorkbookUrl(day, true), { replace: true });
     }
-  }, [activeEnrollment?.id, activeEnrollment?.payment_status, postLoginRedirecting, navigate]);
+  }, [activeEnrollment?.id, activeEnrollment?.payment_status, activeEnrollment?.current_day, postLoginRedirecting, navigate]);
 
   // 리다이렉트 직전 깜빡임 방지 — 결제자/체험자면 빈 화면 반환
   if (

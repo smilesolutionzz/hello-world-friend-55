@@ -49,12 +49,13 @@ interface SceneCfg {
   ambient: 'night' | 'cry' | 'rumi' | 'dawn' | 'warm';
 }
 
+// 가정집 침실 톤 — 따뜻한 베이지/모브/우디 (도시·산 실루엣 X)
 const SCENES: Record<string, SceneCfg> = {
-  pn_wake:    { stopPct: 22, startPct: 8,  prop: 'clock',        propScale: 1.20, bgA: '#0a0b1a', bgB: '#161830', haze: 'rgba(120,140,200,0.16)', intensity: 0.55, label: '01 · 03:14 알람',     ambient: 'night',  flicker: true, rain: true },
-  pn_room:    { stopPct: 60, startPct: 28, prop: 'crib',         propScale: 1.30, bgA: '#1a0e1e', bgB: '#2a1430', haze: 'rgba(255,160,180,0.18)', intensity: 0.80, label: '02 · 아이의 얼굴',    ambient: 'cry',    flicker: true },
-  pn_again:   { stopPct: 35, startPct: 64, prop: 'ceiling',      propScale: 1.45, bgA: '#0c1428', bgB: '#1a2240', haze: 'rgba(140,170,220,0.18)', intensity: 0.70, label: '03 · 다시 누워서',    ambient: 'rumi',   facingLeft: true, rain: true },
-  pn_morning: { stopPct: 78, startPct: 42, prop: 'morning_door', propScale: 1.30, bgA: '#241a14', bgB: '#3a2818', haze: 'rgba(255,210,160,0.24)', intensity: 0.30, label: '04 · 07:10 아침',     ambient: 'dawn' },
-  pn_end:     { stopPct: 50, startPct: 30, prop: 'sunrise',      propScale: 1.25, bgA: '#2a2418', bgB: '#4a3a20', haze: 'rgba(255,220,170,0.28)', intensity: 0.15, label: '에필로그',           ambient: 'warm' },
+  pn_wake:    { stopPct: 22, startPct: 8,  prop: 'clock',        propScale: 1.20, bgA: '#1a1418', bgB: '#2a2024', haze: 'rgba(255,210,170,0.16)', intensity: 0.55, label: '01 · 03:14 알람',     ambient: 'night',  flicker: true, rain: true },
+  pn_room:    { stopPct: 60, startPct: 28, prop: 'crib',         propScale: 1.30, bgA: '#241820', bgB: '#3a2630', haze: 'rgba(255,180,190,0.20)', intensity: 0.80, label: '02 · 아이의 얼굴',    ambient: 'cry',    flicker: true },
+  pn_again:   { stopPct: 35, startPct: 64, prop: 'ceiling',      propScale: 1.45, bgA: '#1a1620', bgB: '#2a2434', haze: 'rgba(210,190,230,0.18)', intensity: 0.70, label: '03 · 다시 누워서',    ambient: 'rumi',   facingLeft: true, rain: true },
+  pn_morning: { stopPct: 78, startPct: 42, prop: 'morning_door', propScale: 1.30, bgA: '#3a2a1c', bgB: '#5a4028', haze: 'rgba(255,215,165,0.28)', intensity: 0.30, label: '04 · 07:10 아침',     ambient: 'dawn' },
+  pn_end:     { stopPct: 50, startPct: 30, prop: 'sunrise',      propScale: 1.25, bgA: '#4a3624', bgB: '#6a4e30', haze: 'rgba(255,225,175,0.32)', intensity: 0.15, label: '에필로그',           ambient: 'warm' },
 };
 
 const WORLD_FACTOR = 2.2;

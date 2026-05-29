@@ -588,7 +588,7 @@ ${scoreDetails}
           {isAnalyzing ? (
             <div className="flex flex-col items-center py-8 gap-3">
               <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
-              <p className="text-sm text-white/60">아이의 선택 패턴을 분석하고 있어요...</p>
+              <p className="text-sm text-white/60">{subjectShort}의 선택 패턴을 분석하고 있어요...</p>
               <p className="text-xs text-white/40">약 10-15초 소요</p>
             </div>
           ) : (

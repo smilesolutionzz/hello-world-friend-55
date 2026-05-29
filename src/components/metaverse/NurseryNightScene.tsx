@@ -136,12 +136,20 @@ export default function NurseryNightScene({
     }
   }, [gameState, cfg.intensity, sceneIndex, prefersReducedMotion]);
 
-  /* ============== Ambient Audio Synth ============== */
-  useAmbientSynth({
-    enabled: audioOn && !prefersReducedMotion,
-    mode: cfg.ambient,
+  /* ============== 게임 오디오 (하이브리드 BGM + SFX) ============== */
+  const audio = useGameAudio({
+    theme: 'parent_night',
     intensity: cfg.intensity,
+    reduceMotion: prefersReducedMotion,
+    muted: !audioOn,
   });
+  useEffect(() => {
+    audio.setMuted(!audioOn);
+  }, [audioOn, audio]);
+  useEffect(() => {
+    if (gameState === 'playing') audio.playSfx('arrive');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneIndex, gameState]);
 
   const canMove = !selectedChoice && gameState !== 'result' && worldW > 0;
 

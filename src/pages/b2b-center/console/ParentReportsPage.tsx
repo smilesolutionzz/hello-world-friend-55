@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_PARENT_REPORTS, DEMO_CLIENTS } from "@/lib/b2bCenter/demoData";
-import { FileText, Sparkles } from "lucide-react";
+import { FileText, Sparkles, Eye } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import SampleParentReport from "@/components/b2b-center/SampleParentReport";
 
 type Ctx = { centerId: string; demo?: boolean };
 

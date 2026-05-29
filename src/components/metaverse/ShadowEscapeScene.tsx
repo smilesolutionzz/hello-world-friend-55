@@ -462,7 +462,7 @@ export default function ShadowEscapeScene({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 * i, duration: 0.3 }}
-                  onClick={() => onChoiceSelect(currentScene, c)}
+                  onClick={() => handleChoice(currentScene, c)}
                   className="w-full text-left rounded-xl px-3 py-2.5 backdrop-blur-md border transition-colors bg-black/60 border-white/10 hover:bg-black/75 hover:border-[#C8B88A]/40 text-white/95"
                 >
                   <div className="flex items-start gap-2.5">

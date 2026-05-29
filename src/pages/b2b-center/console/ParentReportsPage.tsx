@@ -14,7 +14,7 @@ export default function ParentReportsPage() {
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; });
-  const [sampleOpen, setSampleOpen] = useState<{ name: string; period: string } | null>(null);
+  const [sampleOpen, setSampleOpen] = useState<{ clientId: string; name: string; period: string; periodKey: string } | null>(null);
 
   const load = async () => {
     setLoading(true);

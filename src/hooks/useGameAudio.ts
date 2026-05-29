@@ -418,7 +418,7 @@ export function useGameAudio(opts: UseGameAudioOpts): GameAudioApi {
       const mediaSrc = ctx.createMediaElementSource(audio);
       const g = ctx.createGain();
       g.gain.value = 0;
-      src.connect(g).connect(masterRef.current);
+      mediaSrc.connect(g).connect(masterRef.current);
       hifiGainRef.current = g;
 
       await audio.play();

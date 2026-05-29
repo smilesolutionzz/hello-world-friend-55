@@ -722,98 +722,64 @@ function mapSessionStatus(v: any): "scheduled" | "completed" | "cancelled" | "ca
   return "scheduled";
 }
 
-// ===== 표준 컬럼 스펙 =====
+// ===== 표준 컬럼 스펙 (케어플 "일일서비스관리" 호환) =====
+// 헤더 순서·이름은 케어플 "일일서비스관리_YYYY-MM-DD-YYYY-MM-DD" 시트와 동일.
 export const SESSION_COLUMN_SPEC: Array<{ key: string; header: string; required: boolean; example: string; rule: string }> = [
-  { key: "session_date", header: "날짜", required: true, example: "2026-03-15", rule: "YYYY-MM-DD (필수)" },
-  { key: "start_time", header: "시작시간", required: false, example: "10:00", rule: "HH:MM 24시간 (예: 09:30, 14:00)" },
-  { key: "end_time", header: "종료시간", required: false, example: "10:40", rule: "HH:MM (시작시간 이후)" },
-  { key: "client_name", header: "이용자", required: true, example: "김민준", rule: "이용자(회원) 이름 — DB와 일치하면 자동 매칭" },
-  { key: "therapist_name", header: "치료사", required: false, example: "박지영", rule: "선생님 이름 — 없으면 미배정" },
-  { key: "program_name", header: "프로그램", required: false, example: "감각통합-일반", rule: "프로그램명 — 없으면 미지정" },
-  { key: "status", header: "상태", required: false, example: "예정", rule: "예정 / 완료 / 취소 / 취소(보강) / 취소이월" },
-  { key: "note", header: "메모", required: false, example: "결석 (병원)", rule: "자유 텍스트" },
+  { key: "client_name",        header: "이용자",     required: true,  example: "김민준",                              rule: "이용자(회원) 이름 — DB와 일치하면 자동 매칭" },
+  { key: "client_birth_date",  header: "생년월일",   required: false, example: "2018-04-12",                          rule: "YYYY-MM-DD" },
+  { key: "therapist_name",     header: "선생님",     required: false, example: "박지영치료사 / 감각통합치료사",       rule: "이름 또는 '이름 / 직급' 형식 — 슬래시(/) 뒤는 직급으로 인식" },
+  { key: "program_name",       header: "프로그램",   required: false, example: "감각통합-일반 [개인/기관]",            rule: "'카테고리-세부명 [표시]' — 대괄호 안은 자동 제거" },
+  { key: "session_date",       header: "일자",       required: true,  example: "2026-05-25",                          rule: "YYYY-MM-DD (필수)" },
+  { key: "start_time",         header: "시작시간",   required: false, example: "11:00",                               rule: "HH:MM 24시간" },
+  { key: "end_time",           header: "종료시간",   required: false, example: "11:30",                               rule: "HH:MM (시작시간 이후)" },
+  { key: "status",             header: "상태",       required: false, example: "완료",                                rule: "예정 / 완료 / 취소 / 취소(보강) / 취소이월" },
 ];
 
 // ===== AIHPRO 표준 템플릿 다운로드 =====
+// 케어플 "일일서비스관리" 한 장짜리 형식을 그대로 따라간다. (1행 요약 / 2행 헤더 / 3행~ 데이터)
 export function downloadStandardTemplate() {
   const wb = XLSX.utils.book_new();
 
-  // README 시트 — 규칙 / 필수 여부 / 예시
-  const readme: any[][] = [
-    ["AIHPRO 센터 표준 템플릿 — 입력 규칙"],
-    [],
-    ["sheet", "column", "필수", "예시", "포맷 / 규칙"],
+  const headers = SESSION_COLUMN_SPEC.map((c) => c.header);
+  const examples: any[][] = [
+    ["김민준", "2018-04-12", "박지영치료사 / 감각통합치료사",  "감각통합-일반 [개인/기관]",   "2026-05-25", "10:00", "10:45", "완료"],
+    ["김민준", "2018-04-12", "박지영치료사 / 감각통합치료사",  "감각통합-일반 [개인/기관]",   "2026-05-26", "10:00", "10:45", "예정"],
+    ["이서윤", "2017-09-03", "김재민치료사 / 언어/인지치료사", "언어-발달바우처 [개인/기관]", "2026-05-25", "14:30", "15:15", "취소"],
+    ["이서윤", "2017-09-03", "김재민치료사 / 언어/인지치료사", "언어-발달바우처 [개인/기관]", "2026-05-26", "14:30", "15:15", "취소(보강)"],
   ];
-  const sheetSpecs: Record<string, Array<typeof SESSION_COLUMN_SPEC[number]>> = {
-    sessions: SESSION_COLUMN_SPEC,
-    clients: [
-      { key: "name", header: "이름", required: true, example: "김민준", rule: "이용자 이름 (필수)" },
-      { key: "gender", header: "성별", required: false, example: "남", rule: "남 / 여" },
-      { key: "birth_date", header: "생년월일", required: false, example: "2018-04-12", rule: "YYYY-MM-DD" },
-      { key: "phone", header: "전화번호", required: false, example: "010-1234-5678", rule: "010-####-####" },
-      { key: "guardian_phone", header: "보호자전화", required: false, example: "010-9876-5432", rule: "010-####-####" },
-      { key: "address", header: "주소", required: false, example: "서울시 강남구...", rule: "" },
-      { key: "disability_info", header: "장애정보", required: false, example: "자폐스펙트럼", rule: "" },
-      { key: "status", header: "상태", required: false, example: "등록", rule: "등록 / 대기 / 종결" },
-      { key: "member_no", header: "회원번호", required: false, example: "M-0123", rule: "센터 내부 번호" },
-    ],
-    therapists: [
-      { key: "name", header: "이름", required: true, example: "박지영", rule: "치료사 이름 (필수)" },
-      { key: "title", header: "직급", required: false, example: "선임치료사", rule: "" },
-      { key: "specialty", header: "전공", required: false, example: "감각통합", rule: "전공·분야" },
-      { key: "birth_date", header: "생년월일", required: false, example: "1985-09-21", rule: "YYYY-MM-DD" },
-      { key: "phone", header: "전화번호", required: false, example: "010-1111-2222", rule: "010-####-####" },
-    ],
-    programs: [
-      { key: "program_name", header: "프로그램명", required: true, example: "감각통합-일반", rule: "프로그램 이름 (필수)" },
-      { key: "category", header: "카테고리", required: false, example: "감각통합", rule: "분류" },
-      { key: "duration_min", header: "1회시간", required: false, example: "40", rule: "분 단위 정수 (기본 45)" },
-      { key: "price_krw", header: "단가", required: false, example: "60000", rule: "원 단위 정수" },
-      { key: "is_voucher", header: "바우처여부", required: false, example: "Y", rule: "Y / N" },
-    ],
-  };
-  for (const [sheet, cols] of Object.entries(sheetSpecs)) {
-    for (const c of cols) {
-      readme.push([sheet, c.header, c.required ? "필수" : "선택", c.example, c.rule]);
-    }
-    readme.push([]);
-  }
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(readme), "_README");
+  const summary = `총 ${examples.length}회기 — 예정/완료/취소/취소(보강) 상태를 한 시트에 입력하세요. (이 행은 자동 무시됩니다)`;
+  const aoa: any[][] = [
+    [summary, ...new Array(headers.length - 1).fill(null)],
+    headers,
+    ...examples,
+  ];
 
-  // 시트별 헤더 + 예시 1행
-  const sheets: Record<string, any[][]> = {
-    clients: [
-      sheetSpecs.clients.map((c) => c.header),
-      sheetSpecs.clients.map((c) => c.example),
-    ],
-    therapists: [
-      sheetSpecs.therapists.map((c) => c.header),
-      sheetSpecs.therapists.map((c) => c.example),
-    ],
-    programs: [
-      sheetSpecs.programs.map((c) => c.header),
-      sheetSpecs.programs.map((c) => c.example),
-    ],
-    sessions: [
-      sheetSpecs.sessions.map((c) => c.header),
-      sheetSpecs.sessions.map((c) => c.example),
-    ],
-    vouchers: [
-      ["이용자", "바우처유형", "바우처번호", "시작일", "종료일", "월한도", "본인부담"],
-      ["김민준", "발달재활", "V-2026-0001", "2026-03-01", "2026-08-31", "440000", "20000"],
-    ],
-    payments: [
-      ["수납일", "이용자", "결제금액", "본인부담", "결제방법", "영수증번호"],
-      ["2026-03-05", "김민준", "20000", "20000", "카드", "R-0001"],
-    ],
-    assessments: [
-      ["상담일", "이용자", "치료사", "상담유형", "내용"],
-      ["2026-03-10", "김민준", "박지영", "월간상담", "보호자 면담 요약..."],
-    ],
-  };
-  for (const [name, rows] of Object.entries(sheets)) {
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    XLSX.utils.book_append_sheet(wb, ws, name);
-  }
-  XLSX.writeFile(wb, "AIHPRO_center_template.xlsx");
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+  (ws as any)["!cols"] = [
+    { wch: 12 }, { wch: 12 }, { wch: 28 }, { wch: 32 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 12 },
+  ];
+  XLSX.utils.book_append_sheet(wb, ws, "일정 및 상태");
+
+  // 참고 README
+  const readme: any[][] = [
+    ["AIHPRO 센터 표준 템플릿 — 케어플 '일일서비스관리' 호환"],
+    [],
+    ["1행은 요약 텍스트로 자동 무시됩니다. 2행이 헤더, 3행부터 데이터입니다."],
+    ["헤더 이름이 같으면 시트 이름·순서와 무관하게 자동 인식됩니다."],
+    [],
+    ["컬럼", "필수", "예시", "형식 / 규칙"],
+    ...SESSION_COLUMN_SPEC.map((c) => [c.header, c.required ? "필수" : "선택", c.example, c.rule]),
+    [],
+    ["상태 값", "매핑"],
+    ["예정", "scheduled"],
+    ["완료", "completed"],
+    ["취소", "cancelled"],
+    ["취소(보강)", "cancelled_makeup — 같은 회기를 다른 날 보강"],
+    ["취소이월 / 이월", "cancelled_carry — 다음 달로 이월"],
+  ];
+  const wsReadme = XLSX.utils.aoa_to_sheet(readme);
+  (wsReadme as any)["!cols"] = [{ wch: 16 }, { wch: 8 }, { wch: 36 }, { wch: 50 }];
+  XLSX.utils.book_append_sheet(wb, wsReadme, "_README");
+
+  XLSX.writeFile(wb, "AIHPRO_일일서비스관리_표준템플릿.xlsx");
 }

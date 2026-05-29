@@ -135,13 +135,18 @@ export default function SchedulePage() {
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-semibold">일정</h1>
-          <p className="text-sm text-neutral-500 mt-1">일·주·월·4일·목록 + 날짜별/선생님별/시간표 보기.</p>
+          <p className="text-sm text-neutral-500 mt-1">일·주·월·4일·목록 + 날짜별/선생님별/시간표 보기. 엑셀 한 파일로 일·주·월 일정을 한 번에 채워보세요.</p>
         </div>
-        <div className="flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-3 py-1.5">
-          <button onClick={() => nav(-1)} className="p-1 hover:bg-neutral-100 rounded-full"><ChevronLeft className="w-4 h-4" /></button>
-          <span className="text-sm font-medium px-2 min-w-[140px] text-center">{headerLabel}</span>
-          <button onClick={() => nav(1)} className="p-1 hover:bg-neutral-100 rounded-full"><ChevronRight className="w-4 h-4" /></button>
-          <button onClick={() => setCursor(new Date())} className="text-xs px-2 py-1 rounded-full bg-neutral-900 text-white ml-1">오늘</button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setImportOpen(true)} className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-full bg-white border border-neutral-200 hover:border-neutral-400 transition">
+            <Upload className="w-3.5 h-3.5" /> 엑셀 가져오기
+          </button>
+          <div className="flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-3 py-1.5">
+            <button onClick={() => nav(-1)} className="p-1 hover:bg-neutral-100 rounded-full"><ChevronLeft className="w-4 h-4" /></button>
+            <span className="text-sm font-medium px-2 min-w-[140px] text-center">{headerLabel}</span>
+            <button onClick={() => nav(1)} className="p-1 hover:bg-neutral-100 rounded-full"><ChevronRight className="w-4 h-4" /></button>
+            <button onClick={() => setCursor(new Date())} className="text-xs px-2 py-1 rounded-full bg-neutral-900 text-white ml-1">오늘</button>
+          </div>
         </div>
       </div>
 

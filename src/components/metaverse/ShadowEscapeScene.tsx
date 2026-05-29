@@ -138,6 +138,20 @@ export default function ShadowEscapeScene({
     }
   }, [gameState, mood.intensity, sceneIndex]);
 
+  /* ============== 게임 오디오 ============== */
+  const audio = useGameAudio({
+    theme: 'shadow_escape',
+    intensity: mood.intensity,
+  });
+  useEffect(() => {
+    if (gameState === 'exploring' || gameState === 'narrating') audio.playSfx('arrive');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneIndex]);
+  const handleChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
+    audio.playSfx('select');
+    onChoiceSelect(scene, choice);
+  }, [audio, onChoiceSelect]);
+
   // 조작 가능 조건: 선택 직후·결과화면 외 항상 가능 (도착 전후 모두)
   const canMove = !selectedChoice && gameState !== 'result' && containerW > 0;
 

@@ -434,7 +434,7 @@ export default function MidnightOfficeScene({
           <motion.div key={`c-${currentScene.id}`}
             initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
             exit={{ y: 16, opacity: 0, scaleY: 0.6, height: 0 }}
-            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: exitSec, ease: [0.4, 0, 0.2, 1] }}
             style={{ transformOrigin: 'bottom center', overflow: 'hidden' }}
             className="absolute bottom-3 left-2 right-2 z-30">
             <div className="mb-1.5 text-center text-[10px] font-mono tracking-[0.2em] text-[#C8B88A]/80 uppercase flex items-center justify-center gap-1.5">

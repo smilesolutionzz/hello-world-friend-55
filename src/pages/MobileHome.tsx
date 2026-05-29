@@ -79,23 +79,23 @@ const MobileHome: React.FC = () => {
       </header>
 
       <div className="px-5 space-y-6">
-        {/* 캠페인 카드 */}
+        {/* 캠페인 카드 — 모바일/PC 모두 바로 워크북으로 진입 */}
         <Link
-          to="/mind-track"
-          className="block relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f1320] via-[#161b2e] to-[#1f2742] p-5 shadow-sm active:scale-[0.99] transition"
+          to="/mind-track/workbook"
+          className="block relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f1320] via-[#161b2e] to-[#1f2742] p-5 md:p-8 shadow-sm active:scale-[0.99] hover:shadow-xl transition cursor-pointer"
         >
-          <p className="text-[12px] font-medium text-[#C8B88A] tracking-wide mb-1">
+          <p className="text-[12px] md:text-[13px] font-medium text-[#C8B88A] tracking-wide mb-1">
             PMF 베타 · 한정 무료 오픈
           </p>
-          <h2 className="text-[22px] font-bold text-white leading-tight">
+          <h2 className="text-[22px] md:text-[28px] font-bold text-white leading-tight">
             7일 마음 트랙
             <br />
-            전액 무료 체험
+            지금 바로 이어서 하기
           </h2>
           <div className="mt-4 inline-flex items-center gap-1 rounded-full bg-white/10 backdrop-blur px-4 py-2 text-[13px] font-semibold text-white">
-            지금 시작하기 <ArrowRight className="w-4 h-4" />
+            워크북 열기 <ArrowRight className="w-4 h-4" />
           </div>
-          <Sparkles className="absolute right-5 top-5 w-12 h-12 text-[#C8B88A]/30" />
+          <Sparkles className="absolute right-5 top-5 w-12 h-12 md:w-16 md:h-16 text-[#C8B88A]/30" />
         </Link>
 
         {/* 기능 그리드 */}

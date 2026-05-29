@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { StoryScene, StoryChoice } from '@/data/storyScenarios';
+import { useGameAudio } from '@/hooks/useGameAudio';
 
 /**
  * ShadowEscapeScene — Cinematic scene + tap multiple-choice with manual walking.

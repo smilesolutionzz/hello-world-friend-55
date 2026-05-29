@@ -70,6 +70,12 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
       return;
     }
     setSubmitting(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error('로그인이 필요합니다');
+      setSubmitting(false);
+      return;
+    }
     try {
       const journalText = content.journalPrompts
         .map((q, i) => `Q${i + 1}. ${q}\nA. ${answers[i]}`)
@@ -86,24 +92,28 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
       setFeedback(text);
       setStep('feedback');
 
-      // 저장
-      await supabase.from('mind_track_session_logs').upsert({
+      await supabase.from('mind_track_session_logs').upsert([{
         enrollment_id: enrollmentId,
+        user_id: user.id,
         day_number: day,
-        status: 'completed',
-        responses: { answers, feedback: text, completed_at: new Date().toISOString() },
-      }, { onConflict: 'enrollment_id,day_number' });
+        step: 'completed',
+        answers: answers as any,
+        feedback: text,
+        meta: { completed_at: new Date().toISOString() } as any,
+      }], { onConflict: 'enrollment_id,day_number' });
     } catch (e: any) {
-      // 폴백: 단순 요약 피드백
       const fallback = `오늘 기록을 잘 남기셨어요. 핵심 키워드는 "${answers[0].split(/\s|,|\./)[0] || '관찰'}" 같아요. 다음 세션까지 같은 장면을 한 번만 더 관찰해보세요.`;
       setFeedback(fallback);
       setStep('feedback');
-      await supabase.from('mind_track_session_logs').upsert({
+      await supabase.from('mind_track_session_logs').upsert([{
         enrollment_id: enrollmentId,
+        user_id: user.id,
         day_number: day,
-        status: 'completed',
-        responses: { answers, feedback: fallback, completed_at: new Date().toISOString(), fallback: true },
-      }, { onConflict: 'enrollment_id,day_number' });
+        step: 'completed',
+        answers: answers as any,
+        feedback: fallback,
+        meta: { completed_at: new Date().toISOString(), fallback: true } as any,
+      }], { onConflict: 'enrollment_id,day_number' });
     } finally {
       setSubmitting(false);
     }

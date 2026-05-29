@@ -1,175 +1,134 @@
-# Action Track 전문가화 + 큐레이션 + 아침 코칭 메일 강화 플랜
+# Mind Track Workbook 진화 계획
 
-## 목표
-
-지금의 "오늘 미션"을 **오은영·최민준·ABA 행동분석가 수준의 명확한 솔루션 카드**로 격상합니다. 카드 하나에 (1) 진단 요약 → (2) 오늘 취할 액션 → (3) 그 근거 → (4) 뾰족하게 매칭된 영상 → (5) (발달 트랙) 관찰 포인트·추천 장난감/도서까지 한 흐름으로 제공합니다. 그리고 동일한 내용을 **해당 요일 아침에 코칭 이메일**로 자동 발송합니다.
+이전 단계에서 남은 **데일리 코칭 메일**과, 이번에 요청하신 **워크북 고민 트래킹 시스템**을 한 번에 묶어서 진행합니다.
 
 ---
 
-## 01 데이터 모델 (마이그레이션 1건)
+## 01. 데일리 코칭 메일 (남은 작업 마무리)
 
-새 테이블 `mind_track_action_prescriptions` — 사용자×Day별로 생성된 전문가 솔루션 카드 캐시.
+- `supabase/functions/_shared/transactional-email-templates/daily-action-coaching.tsx` 신규 (골드 #C8B88A, 발신: AIHPRO 코칭팀)
+  - 오늘의 한 줄 진단 → 3개 액션 카드 → 근거 → 추천 영상 1개 → (발달 트랙 한정) 관찰 포인트 1줄
+- `registry.ts` 에 `daily-action-coaching` 키 추가
+- `mind-track-mission-email-cron` 확장:
+  - 매일 07:00 KST 실행 (기존 cron job 시간 조정)
+  - 활성 enrollment 순회 → `mind_track_action_prescriptions` 조회
+  - 없으면 `mind-track-action-prescribe` 호출하여 생성
+  - `email_status='pending'` 인 경우 `send-transactional-email` 호출 → 성공 시 `sent_at`/`email_status='sent'` 업데이트
+  - `user_coaching_goals.daily_email_enabled` 와 충돌 시 mind-track 메일이 우선
+
+## 02. 워크북 고민 트래킹 (`/mind-track/workbook`)
+
+### 데이터 모델 (신규)
+
+**`mind_track_concern_threads`** — enrollment 단위로 "내 고민"을 1개 보관
+- `enrollment_id` (UNIQUE), `user_id`, `audience`, `track_focus`
+- `concern_title`, `concern_detail`, `goal_statement`
+- `baseline_score` (1-10 자기평가), `current_score`, `target_score=8`
+- `status` (active/graduated), `started_at`, `graduated_at`
+
+**`mind_track_progress_snapshots`** — 매 세션 종료 시 점수/근거 기록
+- `thread_id`, `day_number`, `session_index`
+- `self_score` (1-10), `mood_delta`, `evidence_summary` (LLM 요약)
+- `actions_completed` (jsonb), `observations` (jsonb)
+- `created_at` → 그래프 X축
+
+**`mind_track_session_reports`** — 회차 리포트 (Day 1·4·8·11 세션 종료 후 생성)
+- `thread_id`, `day_number`, `report_html`, `report_json`
+- `key_wins`, `risk_flags`, `next_focus`
+
+**`mind_track_graduation_workbooks`** — 졸업 워크북 (Day 14 완주 시 1회)
+- `thread_id`, `audience`, `track_focus`
+- `narrative_html` (PDF/공유용), `score_journey` (jsonb), `keepsake_quote`
+- `pdf_url` (storage 'graduation-workbooks/{user_id}/{id}.pdf')
+
+### 흐름
 
 ```text
-mind_track_action_prescriptions
-├─ enrollment_id (FK), day_number
-├─ track_focus            (sleep / tantrum / aba_speech / adult_anxiety …)
-├─ audience               (parent / adult / teen / child_dev)
-├─ summary                전문가 한 줄 진단
-├─ actions   jsonb        [{title, how, when, why, evidence_tag}]
-├─ rationale jsonb        {framework: 'ABA'|'PCIT'|'CBT', key_principles[], citations[]}
-├─ observation_points jsonb  발달 트랙 전용 (ABC 관찰 항목)
-├─ video_picks jsonb      [{title, channel, youtube_id, why_this}]
-├─ product_picks jsonb    [{name, why, age_range, link_hint, category}]  -- 제휴 링크 X, 큐레이션만
-├─ email_status           pending / queued / sent / skipped
-└─ generated_at, sent_at
+시작(Day0)
+ └ ConcernIntakeDialog: 제목/상세/목표/현재점수(1-10) 입력
+   → mind_track_concern_threads 생성
+세션 Day (1/4/8/11)
+ ├ 상단: ConcernProgressHeader (제목·목표·현재점수)
+ ├ ActionPrescriptionCard (기존, prescribe 함수가 thread context 받음)
+ ├ 미션 수행 + 관찰일지 입력
+ └ 세션 종료 시: SessionWrapDialog
+     - 자기점수 1-10 선택
+     - 한 줄 회고
+     → progress_snapshots insert
+     → mind-track-session-report 호출 → session_reports insert
+비세션 Day (2/3/5/6/9/10/12/13)
+ ├ ProgressGraph (recharts LineChart, snapshots 시계열)
+ ├ 가벼운 회고 + 관찰
+ └ snapshots insert (session_index=null)
+Day 14 졸업
+ └ mind-track-graduate 호출
+     → graduation_workbooks 생성, PDF 렌더, 졸업 모달 → 다운로드/공유
 ```
 
-UNIQUE(enrollment_id, day_number). RLS는 본인 enrollment만. service_role 풀권한.
+### 적응형 미션
 
-기존 `mind_track_session_logs`, `aba_observations`, `user_coaching_goals` 그대로 둠.
+`mind-track-action-prescribe` 입력에 다음 추가:
+- `concern_thread` (제목/목표/baseline)
+- `recent_snapshots` (최근 3개 점수·증거·관찰)
+- `last_session_report.next_focus`
 
----
+→ LLM이 "지난번 X가 효과 있었으니 Y로 강화" 형태의 연속성 있는 처방을 생성. 점수가 정체/하락이면 framework 내 다른 기법으로 전환 지시.
 
-## 02 큐레이션 화이트리스트 (코드 상수)
+### 그래프
 
-`src/lib/mindTrackCurationCatalog.ts` 신규.
+- 컴포넌트: `ConcernProgressChart.tsx`
+- recharts `LineChart`: X=날짜, Y=self_score(1-10), 목표선=`target_score`
+- 세션 포인트는 강조, 비세션은 점선
+- 헤더 텍스트: "고민 OO이 baseline 4 → 현재 7 (목표 8)"
 
-- **채널/프로그램 화이트리스트**(메모리 정책상 외부 인물명 사용 가능 범위에서):
-  - 부모/아동 일반: `금쪽같은 내 새끼`, `우리 아이가 달라졌어요`, `요즘 가족 금쪽수업`
-  - 남아 양육: `최민준의 아들TV`
-  - 영아·언어: `베싸TV`, `아기성장보고서`
-  - ABA/발달지연: `ABA 부모교실`(국내 ABA 전문 채널), `Autism Family`
-  - 성인 번아웃/불안: `정신과의사 정우열`, `닥터프렌즈`
-  - 청소년: `오마이뉴스 청소년 코너`, `청소년 마음건강 EBS`
-- 각 항목에 `tags: ['tantrum','sleep','aba_speech','burnout',...]`, `audience`, `age_range`, `evidence_strength`.
-- 영상 추천은 **항상 이 화이트리스트에서 1순위 매칭**, 부족할 때만 YouTube Data API (`concernYoutubeQuery` 재활용)로 보강. 보강 결과는 `validate-mindtrack-videos`로 한 번 더 검증.
+### 회차 리포트
 
-**추천 장난감/도서 카탈로그** (발달 트랙)
-- 같은 파일에 `productCatalog`: 카테고리(언어자극·소근육·감각통합·정서조절·수면 루틴) × 연령대 × 근거 한 줄. 외부 구매 링크 없이 "검색 키워드"만 제공 (예: `"3세 언어자극 그림책 - 사물 카드"`).
+`mind-track-session-report` 신규 Edge Function
+- 입력: thread + day_number + 해당 회차 snapshot + 관찰일지/액션수행
+- 출력 jsonb: `summary`, `key_wins[]`, `evidence_of_change[]`, `risk_flags[]`, `next_focus`
+- UI: 세션 종료 직후 모달 + `/mind-track/workbook/report/[day]` 라우트에서 재열람
 
----
+### 졸업 워크북
 
-## 03 전문가급 솔루션 엔진 (Edge Function)
-
-새 함수 `supabase/functions/mind-track-action-prescribe/index.ts`
-
-입력: `enrollment_id`, `day_number`, `audience`, `track_focus`, `recent_journal` (최근 2개 `mind_track_session_logs`), `aba_observations`(있으면).
-
-처리:
-1. **프레임워크 선택 로직**
-   - `child_dev` + 행동 문제 → ABA(ABC 분석 + 강화/소거)
-   - `parent` 양육 → PCIT 스타일(CDI/PDI 단계 언어)
-   - `adult` 번아웃/불안 → CBT + 행동활성화
-   - `teen` → 동기면담(MI) 톤
-2. Gemini 3.1 `reasoning.effort: medium` 호출. 시스템 프롬프트에서 다음을 **JSON 강제 출력**:
-   - `summary` (1문장 진단)
-   - `actions[3]`: `{title, how(스크립트 예시 포함), when(시간/상황), why(메커니즘), evidence_tag}`
-   - `rationale.key_principles[]` + `framework`
-   - `observation_points[]` (child_dev일 때만): ABC 관찰 체크리스트
-3. 영상·상품 매칭은 **LLM이 아니라 코드**가 수행:
-   - `track_focus` + `audience` 태그로 화이트리스트 필터 → 상위 3개
-   - 발달은 `productCatalog`에서 카테고리 매칭 상위 3개
-4. 결과 전체를 `mind_track_action_prescriptions` upsert.
-
-호출 시점:
-- `/mind-track/workbook` 진입 시 오늘 Day 카드가 없으면 즉시 생성 (`supabase.functions.invoke`).
-- 아래 아침 크론에서도 미생성 시 생성.
+`mind-track-graduate` 신규 Edge Function
+- 입력: thread + 전체 snapshots + 전체 session_reports
+- 출력: HTML 스토리북 (표지 → 14일 여정 → 점수 그래프 → 핵심 변화 3가지 → 부모/본인 다짐 → 다음 30일 가이드)
+- PDF 변환: `html2pdf` (기존 PDF 인프라 재사용) → storage 업로드 → 다운로드 링크 반환
+- UI: `GraduationModal` (콘페티 + PDF 다운로드 + 카카오 공유 + 23일 연장 업셀)
 
 ---
 
-## 04 워크북 UI 카드
+## 03. 새 파일
 
-`src/components/mind-track/workbook/ActionPrescriptionCard.tsx` 신규.
+- `supabase/migrations/{ts}_concern_tracking.sql` — 4개 테이블 + RLS + GRANT
+- `supabase/functions/_shared/transactional-email-templates/daily-action-coaching.tsx`
+- `supabase/functions/mind-track-session-report/index.ts`
+- `supabase/functions/mind-track-graduate/index.ts`
+- `src/lib/mindTrackConcernThread.ts` — 헬퍼 (start/get/updateScore/listSnapshots)
+- `src/components/mind-track/workbook/ConcernIntakeDialog.tsx`
+- `src/components/mind-track/workbook/ConcernProgressHeader.tsx`
+- `src/components/mind-track/workbook/ConcernProgressChart.tsx`
+- `src/components/mind-track/workbook/SessionWrapDialog.tsx`
+- `src/components/mind-track/workbook/SessionReportCard.tsx`
+- `src/components/mind-track/workbook/GraduationModal.tsx`
 
-세션 Day(`TwoWeekSessionView`)·일반 Day 모두 상단에 노출. 구성:
-1. **전문가 진단** — `summary`, framework 배지(ABA/PCIT/CBT).
-2. **오늘의 액션 3가지** — 각 액션은 카드: `언제 / 어떻게(스크립트) / 왜` 3 섹션. 체크박스로 완료 표시 → `mind_track_session_logs.answers.actions_done`에 기록.
-3. **근거 패널** — "이 액션이 작동하는 이유" 토글, `key_principles` 불릿.
-4. **추천 영상** — 화이트리스트 우선 3개, 각 카드에 `채널명 · 왜 지금 이 영상인지` 한 줄. 썸네일은 YouTube API.
-5. **(발달 트랙 only) 관찰 체크리스트** — ABC(Antecedent-Behavior-Consequence) 입력 폼 → 기존 `aba_observations` 테이블에 저장.
-6. **(발달 트랙 only) 추천 장난감/도서** — 카탈로그 3개, "왜 도움이 되는지" + 검색 키워드. 구매 링크/제휴 없음.
+## 04. 수정 파일
 
-비세션 Day(`TwoWeekRestView`)는 액션 2개로 축소된 가벼운 버전.
+- `src/pages/MindTrackWorkbook.tsx` — thread 부트스트랩(없으면 인테이크), 헤더/그래프 노출, 세션 종료 핸들러, Day14 졸업 분기
+- `src/components/mind-track/workbook/TwoWeekSessionView.tsx` — onComplete → SessionWrapDialog
+- `src/components/mind-track/workbook/TwoWeekRestView.tsx` — 상단에 ConcernProgressChart
+- `supabase/functions/mind-track-action-prescribe/index.ts` — thread/snapshots context 반영
+- `supabase/functions/mind-track-mission-email-cron/index.ts` — 07:00 + 처방 fetch/생성 + 전송
+- `supabase/functions/_shared/transactional-email-templates/registry.ts`
+- `src/integrations/supabase/types.ts` (자동)
+- `mem://features/mind-track/two-week-session-structure-ko` 업데이트 (thread/그래프/졸업 흐름 추가)
 
----
+## 05. 정책 가드
 
-## 05 아침 코칭 이메일
-
-기존 `mind-track-mission-email-cron` 확장 (재배포).
-
-- 한국 시간 매일 **07:00**에 active enrollment 순회.
-- 각 사용자에 대해:
-  1. 오늘 `mind_track_action_prescriptions` 없으면 `mind-track-action-prescribe` 호출.
-  2. 새 템플릿 `daily-action-coaching.tsx`로 `send-transactional-email` invoke.
-     - `templateData`: summary, actions[3], rationale 1줄, video_picks(상위 2개 링크), product_picks(발달만), 워크북 딥링크.
-     - `idempotencyKey`: `action-coach-${enrollment_id}-${day_number}`.
-  3. 성공 시 `email_status='sent'`, `sent_at` 기록.
-- 비세션 Day는 "오늘은 가볍게 — 어제 관찰 회고 1줄" 변형 카피.
-
-새 React Email 템플릿: `supabase/functions/_shared/transactional-email-templates/daily-action-coaching.tsx` — 흰 배경, gold(#C8B88A) 액센트, 액션 3개 + 영상 2개 + (조건부) 장난감 2개. 등록은 `registry.ts`.
-
-이메일 거버넌스: 이미 발송 중인 `daily-coaching`과 충돌 방지 — `user_coaching_goals.daily_email_enabled=true` AND mind-track 활성이면 mind-track 액션 메일이 우선, 일반 데일리는 스킵.
+- 위기 키워드 감지 시 그래프/리포트 대신 `/expert-hiring?urgent=true` 카드 노출 (기존 정책)
+- baseline 미입력 enrollment에는 모든 화면이 인테이크 다이얼로그를 강제
+- PMF 베타 기간 동안 졸업 PDF·세션 리포트 전부 무료
 
 ---
 
-## 06 트랙별 매칭 매트릭스 (요약)
-
-```text
-audience      track_focus           framework   화이트리스트 채널 예시
-─────────────────────────────────────────────────────────────────────
-parent        tantrum/discipline    PCIT        금쪽같은 내 새끼, 최민준 아들TV
-parent        sleep                 행동수면     베싸TV, 우리 아이가 달라졌어요
-child_dev     aba_speech/play       ABA         ABA 부모교실, 베싸TV
-adult         burnout/anxiety       CBT+BA      정신과의사 정우열, 닥터프렌즈
-teen          motivation/mood       MI          EBS 청소년 마음건강
-```
-
-매칭 규칙은 `mindTrackCurationCatalog.ts` 내부 함수 `pickContent(focus, audience, n)`로 캡슐화.
-
----
-
-## 07 변경 파일 목록
-
-신규
-- `supabase/migrations/<new>.sql` (action_prescriptions 테이블 + GRANT + RLS)
-- `supabase/functions/mind-track-action-prescribe/index.ts`
-- `supabase/functions/_shared/transactional-email-templates/daily-action-coaching.tsx` + `registry.ts` 등록
-- `src/lib/mindTrackCurationCatalog.ts`
-- `src/lib/mindTrackActionPrescription.ts` (클라이언트 fetch/invoke 헬퍼)
-- `src/components/mind-track/workbook/ActionPrescriptionCard.tsx`
-
-수정
-- `src/components/mind-track/workbook/TwoWeekSessionView.tsx` — 카드 상단 삽입
-- `src/components/mind-track/workbook/TwoWeekRestView.tsx` — 라이트 버전 삽입
-- `supabase/functions/mind-track-mission-email-cron/index.ts` — 액션 메일 분기 + 처방 보장
-- `src/integrations/supabase/types.ts` — 마이그레이션 후 자동 갱신
-- 메모리: `mem://features/mind-track/action-prescription-system-ko` 추가 + `mem://index.md` 1줄
-
----
-
-## 08 정책·안전장치
-
-- 위기 키워드 감지(`useMindTrackRiskDetection`) 시 액션 처방을 **표시 전 차단**하고 `/expert-hiring?urgent=true` CTA로 대체.
-- 모든 추천 영상/상품은 외부 핫라인·의료적 단언 금지(기존 `MedicalDisclaimer` 톤 유지).
-- 상품 큐레이션은 **제휴 링크·구매 버튼 없이 검색 키워드만**.
-- LLM 출력은 `cleanMarkdown` + JSON 스키마 검증 통과 시에만 저장. 실패 시 fallback 카피("오늘은 어제 관찰을 다시 읽고 한 줄 메모만 남겨주세요").
-
----
-
-## 09 구현 순서
-
-1. 마이그레이션 작성 → 승인 → 실행.
-2. 큐레이션 카탈로그 + 매칭 함수 (`mindTrackCurationCatalog.ts`).
-3. `mind-track-action-prescribe` Edge Function + 배포.
-4. `ActionPrescriptionCard` UI + 워크북 View 통합.
-5. `daily-action-coaching` 템플릿 + 메일 크론 분기 + 배포.
-6. 메모리 갱신, 회귀 테스트(타입체크, 워크북 진입).
-
----
-
-## 10 오픈 질문
-
-승인 전 한 가지만 확인 부탁드립니다:
-
-- **상품 큐레이션 깊이**: 처음에는 발달 트랙(`child_dev`)에만 노출할까요, 아니면 부모 양육(`parent`)에도 "이번 주에 시도해볼 도구" 형태로 함께 노출할까요? (기본안은 발달 트랙 전용 / 부모는 영상만)
+진행할까요? 승인하시면 위 순서대로 한 번에 만들겠습니다.

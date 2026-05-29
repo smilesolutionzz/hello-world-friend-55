@@ -159,10 +159,17 @@ export default function GameResultReport({
   const { toast } = useToast();
   const { saveProgress } = useProgressTracking();
 
+  const isAdult = chapter.id === 'midnight_office' || /성인|adult/i.test(chapter.targetAge || '');
+  const charMap = isAdult ? adultCharacterTypes : characterTypes;
+  const interpMap = isAdult ? adultInterpretations : detailedInterpretations;
+  const subjectLabel = isAdult ? '당신은' : '우리 아이는';
+  const subjectShort = isAdult ? '당신' : '아이';
+  const guideTitle = isAdult ? '셀프 케어 가이드' : '핵심 양육 가이드';
+
   const topDimensions = Object.entries(results).sort(([, a], [, b]) => b - a).slice(0, 4);
   const bottomDimensions = Object.entries(results).sort(([, a], [, b]) => a - b).slice(0, 2);
   const top = topDimensions[0][0] as PsychDimension;
-  const character = characterTypes[top] || characterTypes.empathy;
+  const character = charMap[top] || charMap.empathy;
 
   const gradientFrom = variant === '3d' ? 'from-emerald-900/40' : 'from-purple-900/40';
   const gradientTo = variant === '3d' ? 'to-cyan-900/40' : 'to-pink-900/40';

@@ -219,6 +219,53 @@ export default function SchedulePage() {
       {selected && (
         <SessionDetail s={selected} onClose={() => setSelected(null)} therapist={therapist} clientName={clientName} programName={programName} />
       )}
+
+      {/* 엑셀 가져오기 */}
+      {importOpen && (
+        <ImportModal
+          demo={!!demo}
+          centerId={centerId}
+          onClose={() => setImportOpen(false)}
+          onMergeDemo={(extra) => {
+            // 데모 모드: 신규 client/therapist/program을 이름 기반으로 합치고 sessions 생성
+            const cMap = new Map(clients.map((c: any) => [c.name, c.id]));
+            const tMap = new Map(therapists.map((t: any) => [t.name, t.id]));
+            const pMap = new Map(programs.map((p: any) => [p.name, p.id]));
+            const newClients = [...clients];
+            const newTherapists = [...therapists];
+            const newPrograms = [...programs];
+            const newSessions = [...sessions];
+            let cidx = newClients.length, tidx = newTherapists.length, pidx = newPrograms.length, sidx = newSessions.length;
+
+            for (const row of extra) {
+              const cname = row.client_name?.toString().trim();
+              const tname = row.therapist_name?.toString().trim();
+              const pname = row.program_name?.toString().trim();
+              if (!cname || !row.session_date) continue;
+              if (!cMap.has(cname)) { const id = `ic${++cidx}`; cMap.set(cname, id); newClients.push({ id, name: cname }); }
+              if (tname && !tMap.has(tname)) { const id = `it${++tidx}`; tMap.set(tname, id); newTherapists.push({ id, name: tname, role: row.therapist_title ?? "", color: PALETTE[tidx % PALETTE.length] }); }
+              if (pname && !pMap.has(pname)) { const id = `ip${++pidx}`; pMap.set(pname, id); newPrograms.push({ id, name: pname, duration_min: 40, price_krw: row.price_krw ?? 0, is_voucher: !!row.is_voucher }); }
+              newSessions.push({
+                id: `is${++sidx}`,
+                session_date: row.session_date,
+                start_time: row.start_time ?? "10:00",
+                end_time: row.end_time ?? null,
+                client_id: cMap.get(cname),
+                therapist_id: tname ? tMap.get(tname) : null,
+                program_id: pname ? pMap.get(pname) : null,
+                status: row.status ?? "scheduled",
+                price_krw: row.price_krw ?? 0,
+                is_voucher: !!row.is_voucher,
+                note: row.note ?? null,
+              });
+            }
+            setClients(newClients);
+            setTherapists(newTherapists);
+            setPrograms(newPrograms);
+            setSessions(newSessions);
+          }}
+        />
+      )}
     </div>
   );
 }

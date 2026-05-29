@@ -10152,6 +10152,71 @@ export type Database = {
           },
         ]
       }
+      mind_track_concern_threads: {
+        Row: {
+          audience: string
+          baseline_score: number
+          concern_detail: string | null
+          concern_title: string
+          created_at: string
+          current_score: number
+          enrollment_id: string
+          goal_statement: string | null
+          graduated_at: string | null
+          id: string
+          started_at: string
+          status: string
+          target_score: number
+          track_focus: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          audience?: string
+          baseline_score?: number
+          concern_detail?: string | null
+          concern_title: string
+          created_at?: string
+          current_score?: number
+          enrollment_id: string
+          goal_statement?: string | null
+          graduated_at?: string | null
+          id?: string
+          started_at?: string
+          status?: string
+          target_score?: number
+          track_focus?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          audience?: string
+          baseline_score?: number
+          concern_detail?: string | null
+          concern_title?: string
+          created_at?: string
+          current_score?: number
+          enrollment_id?: string
+          goal_statement?: string | null
+          graduated_at?: string | null
+          id?: string
+          started_at?: string
+          status?: string
+          target_score?: number
+          track_focus?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_concern_threads_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: true
+            referencedRelation: "mind_track_enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mind_track_content_audit_log: {
         Row: {
           failed_items: Json | null
@@ -10552,6 +10617,63 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_graduation_workbooks: {
+        Row: {
+          audience: string | null
+          created_at: string
+          enrollment_id: string
+          id: string
+          keepsake_quote: string | null
+          narrative_html: string | null
+          pdf_url: string | null
+          score_journey: Json
+          thread_id: string
+          track_focus: string | null
+          user_id: string
+        }
+        Insert: {
+          audience?: string | null
+          created_at?: string
+          enrollment_id: string
+          id?: string
+          keepsake_quote?: string | null
+          narrative_html?: string | null
+          pdf_url?: string | null
+          score_journey?: Json
+          thread_id: string
+          track_focus?: string | null
+          user_id: string
+        }
+        Update: {
+          audience?: string | null
+          created_at?: string
+          enrollment_id?: string
+          id?: string
+          keepsake_quote?: string | null
+          narrative_html?: string | null
+          pdf_url?: string | null
+          score_journey?: Json
+          thread_id?: string
+          track_focus?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_graduation_workbooks_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mind_track_graduation_workbooks_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: true
+            referencedRelation: "mind_track_concern_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mind_track_interventions: {
         Row: {
           acted_at: string | null
@@ -10738,6 +10860,56 @@ export type Database = {
             columns: ["child_profile_id"]
             isOneToOne: false
             referencedRelation: "user_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mind_track_progress_snapshots: {
+        Row: {
+          actions_completed: Json
+          created_at: string
+          day_number: number
+          evidence_summary: string | null
+          id: string
+          mood_delta: number | null
+          observations: Json
+          self_score: number
+          session_index: number | null
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          actions_completed?: Json
+          created_at?: string
+          day_number: number
+          evidence_summary?: string | null
+          id?: string
+          mood_delta?: number | null
+          observations?: Json
+          self_score: number
+          session_index?: number | null
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          actions_completed?: Json
+          created_at?: string
+          day_number?: number
+          evidence_summary?: string | null
+          id?: string
+          mood_delta?: number | null
+          observations?: Json
+          self_score?: number
+          session_index?: number | null
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_progress_snapshots_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_concern_threads"
             referencedColumns: ["id"]
           },
         ]
@@ -10942,6 +11114,63 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      mind_track_session_reports: {
+        Row: {
+          created_at: string
+          day_number: number
+          enrollment_id: string
+          id: string
+          key_wins: Json
+          next_focus: string | null
+          report_html: string | null
+          report_json: Json
+          risk_flags: Json
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          day_number: number
+          enrollment_id: string
+          id?: string
+          key_wins?: Json
+          next_focus?: string | null
+          report_html?: string | null
+          report_json?: Json
+          risk_flags?: Json
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          day_number?: number
+          enrollment_id?: string
+          id?: string
+          key_wins?: Json
+          next_focus?: string | null
+          report_html?: string | null
+          report_json?: Json
+          risk_flags?: Json
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_session_reports_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mind_track_session_reports_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_concern_threads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mind_track_video_events: {
         Row: {

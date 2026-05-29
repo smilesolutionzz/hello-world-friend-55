@@ -246,6 +246,84 @@ function parseCareplMonthly(sheetName: string, aoa: any[][]): DetectedSheet[] {
   ];
 }
 
+// ===== 케어플 "일일서비스관리_YYYY-MM-DD-YYYY-MM-DD" 어댑터 =====
+function careplDailySheet(wb: XLSX.WorkBook): { sheetName: string; aoa: any[][] } | null {
+  const want = ["이용자", "생년월일", "선생님", "프로그램", "일자", "시작시간", "종료시간", "상태"];
+  for (const name of wb.SheetNames) {
+    const aoa = XLSX.utils.sheet_to_json<any[]>(wb.Sheets[name], { header: 1, defval: null, raw: false });
+    // 헤더가 row 1 또는 row 2 에 있을 수 있음
+    for (const headerRow of [0, 1]) {
+      const header = (aoa[headerRow] ?? []).map((x) => String(x ?? "").trim());
+      if (want.every((k) => header.includes(k))) {
+        return { sheetName: name, aoa: aoa.slice(headerRow) };
+      }
+    }
+  }
+  return null;
+}
+
+function parseCareplDaily(sheetName: string, aoa: any[][]): DetectedSheet[] {
+  const header = (aoa[0] ?? []).map((x) => String(x ?? "").trim());
+  const idx = (k: string) => header.indexOf(k);
+  const iClient = idx("이용자");
+  const iBirth = idx("생년월일");
+  const iTherapist = idx("선생님");
+  const iProgram = idx("프로그램");
+  const iDate = idx("일자");
+  const iStart = idx("시작시간");
+  const iEnd = idx("종료시간");
+  const iStatus = idx("상태");
+
+  const clientsMap = new Map<string, any>();
+  const therapistsMap = new Map<string, any>();
+  const programsMap = new Map<string, any>();
+  const sessions: any[] = [];
+
+  for (let r = 1; r < aoa.length; r++) {
+    const row = aoa[r];
+    if (!row || row.every((c) => c == null || String(c).trim() === "")) continue;
+    const clientName = String(row[iClient] ?? "").trim();
+    if (!clientName) continue;
+    const birth = row[iBirth] ? String(row[iBirth]).trim() : null;
+    const therapist = parseTherapistCell(row[iTherapist]);
+    const program = parseProgramCell(row[iProgram]);
+    const dateRaw = row[iDate] ? String(row[iDate]).trim() : null;
+    if (!dateRaw) continue;
+    const m = dateRaw.match(/(\d{4})[-./](\d{1,2})[-./](\d{1,2})/);
+    const sessionDate = m ? `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}` : dateRaw;
+    const start = row[iStart] ? String(row[iStart]).trim() : null;
+    const end = row[iEnd] ? String(row[iEnd]).trim() : null;
+    const statusStr = String(row[iStatus] ?? "").trim();
+
+    const cKey = `${clientName}|${birth ?? ""}`;
+    if (!clientsMap.has(cKey)) clientsMap.set(cKey, { name: clientName, birth_date: birth, status: "등록" });
+    if (therapist && !therapistsMap.has(therapist.name)) therapistsMap.set(therapist.name, { name: therapist.name, title: therapist.title, specialty: therapist.title });
+    if (program) {
+      const pKey = program.name;
+      if (!programsMap.has(pKey)) programsMap.set(pKey, { name: program.name, category: program.category, is_voucher: program.is_voucher });
+    }
+
+    sessions.push({
+      client_name: clientName,
+      client_birth_date: birth,
+      therapist_name: therapist?.name ?? null,
+      program_name: program?.name ?? null,
+      session_date: sessionDate,
+      start_time: start,
+      end_time: end,
+      status: statusToCode(statusStr),
+      is_voucher: program?.is_voucher ?? false,
+    });
+  }
+
+  return [
+    { source: `${sheetName} → 이용자`, entity: "clients", rows: Array.from(clientsMap.values()) },
+    { source: `${sheetName} → 치료사`, entity: "therapists", rows: Array.from(therapistsMap.values()) },
+    { source: `${sheetName} → 프로그램`, entity: "programs", rows: Array.from(programsMap.values()) },
+    { source: `${sheetName} → 회기 (${sessions.length}건)`, entity: "sessions", rows: sessions },
+  ];
+}
+
 // ===== 메인 파서 =====
 export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
   const buf = await file.arrayBuffer();
@@ -258,6 +336,17 @@ export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
     return { name, rows, headers };
   });
 
+  // 1) 케어플 일일서비스관리 — 시작·종료시간 포함, 가장 정확
+  const daily = careplDailySheet(wb);
+  if (daily) {
+    return {
+      format: "careple",
+      sheets: parseCareplDaily(daily.sheetName, daily.aoa).filter((s) => s.rows.length > 0),
+      rawSheets,
+    };
+  }
+
+  // 2) 케어플 월서비스관리 — 회기 수 기반 분산
   const careple = careplMonthlySheet(wb);
   if (careple) {
     return {

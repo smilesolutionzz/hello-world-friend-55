@@ -7,6 +7,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { getRestDayContent, getNextSessionDay } from '@/lib/mindTrack2WeekContent';
 import type { MindTrackAudience } from '@/lib/mindTrackDayCopy';
 import ActionPrescriptionCard from './ActionPrescriptionCard';
+import { getConcernThread, type ConcernThread } from '@/lib/mindTrackConcernThread';
+import ConcernProgressHeader from './ConcernProgressHeader';
+import ConcernProgressChart from './ConcernProgressChart';
 
 interface Props {
   enrollmentId: string;

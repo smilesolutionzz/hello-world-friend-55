@@ -537,15 +537,17 @@ function CitySkyline({ color }: { color: string }) {
   );
 }
 
-function RainLayer({ width }: { width: number }) {
+function RainLayer({ width, fxScale = 1 }: { width: number; fxScale?: number }) {
+  const count = Math.max(10, Math.round(60 * fxScale));
   const drops = useMemo(
-    () => Array.from({ length: 60 }).map((_, i) => ({
-      id: i, left: Math.random() * 100, delay: Math.random() * 1.4, dur: 0.6 + Math.random() * 0.6,
+    () => Array.from({ length: count }).map((_, i) => ({
+      id: i, left: Math.random() * 100, delay: Math.random() * 1.4,
+      dur: (0.6 + Math.random() * 0.6) / Math.max(0.5, fxScale),
     })),
-    []
+    [count, fxScale]
   );
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.6 + 0.4 * fxScale }}>
       {drops.map((d) => (
         <motion.div key={d.id} className="absolute top-[-10%]"
           style={{ left: `${d.left}%`, width: 1, height: 14, background: 'linear-gradient(180deg, rgba(180,210,255,0) 0%, rgba(180,210,255,0.85) 100%)' }}
@@ -556,16 +558,17 @@ function RainLayer({ width }: { width: number }) {
   );
 }
 
-function DustParticles({ seed }: { seed: string }) {
+function DustParticles({ seed, fxScale = 1 }: { seed: string; fxScale?: number }) {
+  const count = Math.max(4, Math.round(18 * fxScale));
   const items = useMemo(
-    () => Array.from({ length: 18 }).map((_, i) => ({
+    () => Array.from({ length: count }).map((_, i) => ({
       id: `${seed}-${i}`, left: Math.random() * 100, top: 20 + Math.random() * 60,
       dur: 6 + Math.random() * 6, delay: Math.random() * 3, size: 1 + Math.random() * 2,
     })),
-    [seed]
+    [seed, count]
   );
   return (
-    <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute inset-0 pointer-events-none" style={{ opacity: 0.5 + 0.5 * fxScale }}>
       {items.map((p) => (
         <motion.div key={p.id} className="absolute rounded-full bg-white/40"
           style={{ left: `${p.left}%`, top: `${p.top}%`, width: p.size, height: p.size }}

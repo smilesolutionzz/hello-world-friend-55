@@ -30,6 +30,29 @@ export default function GameCounselingMode() {
 
   const { speak, stop: stopTTS, isSpeaking, isLoading: ttsLoading } = useGameTTS();
 
+  // 챕터별 고유 BGM 테마 매핑
+  const audioTheme: GameThemeKey = (() => {
+    const id = currentChapter?.id;
+    if (id === 'shadow_escape') return 'shadow_escape';
+    if (id === 'midnight_office') return 'midnight_office';
+    if (id === 'parent_night') return 'parent_night';
+    if (/성인|adult|부모|parent/i.test(currentChapter?.targetAge || '')) return 'classic_quiet';
+    return 'classic_warm';
+  })();
+  const audio = useGameAudio({
+    theme: audioTheme,
+    intensity: gameState === 'playing' ? 0.65 : 0.3,
+    muted: !ttsEnabled, // 음성 OFF 시 BGM도 OFF (단일 토글)
+  });
+  useEffect(() => {
+    audio.setMuted(!ttsEnabled);
+  }, [ttsEnabled, audio]);
+  useEffect(() => {
+    if (gameState === 'playing') audio.playSfx('arrive');
+    if (gameState === 'result') audio.playSfx('success');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSceneIndex, gameState]);
+
   const currentScene = currentChapter?.scenes.find((_, i) => {
     if (choices.length === 0) return i === 0;
     const lastChoice = choices[choices.length - 1];

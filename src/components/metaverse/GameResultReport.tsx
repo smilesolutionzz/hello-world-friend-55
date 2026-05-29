@@ -487,7 +487,7 @@ ${scoreDetails}
             {character.emoji}
           </motion.div>
           <h2 className={`text-xl font-bold ${accentText}`}>{isAdult ? '여정 완료 · 당신의 유형' : '모험 완료! 우리 아이는...'}</h2>
-          <h3 className={`text-2xl font-extrabold mt-1 bg-gradient-to-r ${titleGradient} bg-clip-text text-transparent`}>
+          <h3 className={`text-2xl font-extrabold mt-1 bg-gradient-to-r ${titleGradient} bg-clip-text text-transparent drop-shadow-[0_1px_0_rgba(0,0,0,0.4)]`}>
             "{character.title}"
           </h3>
           <p className="text-sm text-white/85 mt-2">{character.desc}</p>

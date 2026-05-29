@@ -493,3 +493,121 @@ function Row({ k, v }: { k: string; v: any }) {
     </div>
   );
 }
+
+// ===== 엑셀 가져오기 모달 =====
+function ImportModal({
+  demo, centerId, onClose, onMergeDemo,
+}: {
+  demo: boolean;
+  centerId: string;
+  onClose: () => void;
+  onMergeDemo: (rows: any[]) => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [parsed, setParsed] = useState<ParsedWorkbook | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState<Record<string, number> | null>(null);
+
+  async function handleFile(f: File) {
+    setFile(f); setParsed(null); setDone(null);
+    try {
+      const p = await parseWorkbook(f);
+      setParsed(p);
+      if (p.sheets.length === 0) {
+        toast({ title: "인식된 시트가 없어요", description: "케어플 월서비스관리 파일 또는 표준 템플릿을 올려주세요.", variant: "destructive" });
+      }
+    } catch (e: any) {
+      toast({ title: "파싱 실패", description: e?.message ?? String(e), variant: "destructive" });
+    }
+  }
+
+  async function handleApply() {
+    if (!parsed) return;
+    setBusy(true);
+    try {
+      if (demo) {
+        const ses = parsed.sheets.find((s) => s.entity === "sessions");
+        const rows = ses?.rows ?? [];
+        onMergeDemo(rows);
+        const summary: Record<string, number> = {};
+        for (const s of parsed.sheets) summary[s.entity] = (summary[s.entity] ?? 0) + s.rows.length;
+        setDone(summary);
+        toast({ title: "시간표에 반영했어요", description: `${rows.length}건의 회기가 일/주/월 보기에 채워졌어요.` });
+      } else {
+        const { summary } = await commitImport(centerId, parsed, file?.name ?? "schedule.xlsx");
+        setDone(summary);
+        toast({ title: "엑셀 이관 완료", description: "일정을 새로고침합니다." });
+        setTimeout(() => { window.location.reload(); }, 800);
+      }
+    } catch (e: any) {
+      toast({ title: "이관 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const sessionsCount = parsed?.sheets.find((s) => s.entity === "sessions")?.rows.length ?? 0;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-xl p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-xs tracking-widest text-neutral-400">SCHEDULE · IMPORT</p>
+            <h3 className="text-lg font-semibold mt-1">엑셀로 일·주·월 일정 한 번에 채우기</h3>
+            <p className="text-xs text-neutral-500 mt-1 break-keep">케어플센터 <span className="font-mono">월서비스관리_YYYYMM.xlsx</span> 또는 바우처 일정표를 올리면, 시간표가 자동으로 채워집니다.</p>
+          </div>
+          <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
+        </div>
+
+        <div className="flex items-center gap-2 mb-3">
+          <button onClick={() => downloadStandardTemplate()} className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-full border border-neutral-200 hover:border-neutral-400">
+            <Download className="w-3.5 h-3.5" /> 표준 템플릿 다운로드
+          </button>
+        </div>
+
+        <div
+          onClick={() => fileRef.current?.click()}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) handleFile(f); }}
+          className="border-2 border-dashed border-neutral-300 rounded-xl p-6 text-center cursor-pointer hover:border-neutral-500 transition"
+        >
+          <FileSpreadsheet className="w-8 h-8 mx-auto text-neutral-400 mb-2" />
+          <p className="text-sm font-medium">{file ? file.name : "파일을 끌어다 놓거나 클릭"}</p>
+          <p className="text-xs text-neutral-500 mt-1">.xlsx / .xls / .csv</p>
+          <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+        </div>
+
+        {parsed && (
+          <div className="mt-4 bg-neutral-50 rounded-xl p-3">
+            <p className="text-xs text-neutral-500 mb-2">감지된 포맷: <span className="font-medium text-neutral-900">{parsed.format}</span> · 회기 {sessionsCount}건</p>
+            <ul className="space-y-1 max-h-32 overflow-auto">
+              {parsed.sheets.map((s, i) => (
+                <li key={i} className="text-xs text-neutral-700 flex justify-between">
+                  <span className="truncate mr-2">{s.source}</span>
+                  <span className="tabular-nums text-neutral-500">{s.rows.length}행</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {done && (
+          <div className="mt-3 flex items-center gap-2 text-emerald-700 text-sm">
+            <Check className="w-4 h-4" /> 적용 완료 · {Object.entries(done).map(([k, v]) => `${k} ${v}`).join(" · ")}
+          </div>
+        )}
+
+        <div className="mt-5 flex justify-end gap-2">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-neutral-600">닫기</button>
+          <button onClick={handleApply} disabled={!parsed || busy || sessionsCount === 0}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-neutral-900 text-white text-sm disabled:opacity-40">
+            {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            시간표에 반영
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

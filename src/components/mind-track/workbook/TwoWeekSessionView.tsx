@@ -14,6 +14,11 @@ import {
 } from '@/lib/mindTrack2WeekContent';
 import type { MindTrackAudience } from '@/lib/mindTrackDayCopy';
 import ActionPrescriptionCard from './ActionPrescriptionCard';
+import { getConcernThread, type ConcernThread } from '@/lib/mindTrackConcernThread';
+import ConcernIntakeDialog from './ConcernIntakeDialog';
+import ConcernProgressHeader from './ConcernProgressHeader';
+import SessionWrapDialog from './SessionWrapDialog';
+import GraduationModal from './GraduationModal';
 
 type Step = 'coaching' | 'journal' | 'feedback';
 

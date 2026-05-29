@@ -409,13 +409,13 @@ export function useGameAudio(opts: UseGameAudioOpts): GameAudioApi {
       return;
     }
 
-    const audio = new Audio(dataUri);
+    const audio = new Audio(src);
     audio.loop = true;
     audio.crossOrigin = 'anonymous';
     hifiElRef.current = audio;
 
     try {
-      const src = ctx.createMediaElementSource(audio);
+      const mediaSrc = ctx.createMediaElementSource(audio);
       const g = ctx.createGain();
       g.gain.value = 0;
       src.connect(g).connect(masterRef.current);

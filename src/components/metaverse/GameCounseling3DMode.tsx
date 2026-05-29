@@ -8,6 +8,7 @@ import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type St
 import GameCounseling3DWorld from '@/components/3d/GameCounseling3DWorld';
 import VillageAdventure3DWorld from '@/components/3d/VillageAdventure3DWorld';
 import ShadowEscapeScene from './ShadowEscapeScene';
+import MidnightOfficeScene from './MidnightOfficeScene';
 import { useGameTTS } from '@/hooks/useGameTTS';
 import { useGameSFX } from '@/hooks/useGameSFX';
 import GameResultReport from './GameResultReport';
@@ -347,6 +348,19 @@ export default function GameCounseling3DMode() {
       {currentChapter && currentChapter.id === 'shadow_escape' ? (
         <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '480px' }}>
           <ShadowEscapeScene
+            currentScene={currentScene}
+            gameState={gameState}
+            onArrive={handleArrive}
+            sceneIndex={currentSceneIndex}
+            onChoiceSelect={makeChoice}
+            displayedText={displayedText}
+            selectedChoice={selectedChoice}
+            showParentNotes={showParentNotes}
+          />
+        </div>
+      ) : currentChapter && currentChapter.id === 'midnight_office' ? (
+        <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '520px' }}>
+          <MidnightOfficeScene
             currentScene={currentScene}
             gameState={gameState}
             onArrive={handleArrive}

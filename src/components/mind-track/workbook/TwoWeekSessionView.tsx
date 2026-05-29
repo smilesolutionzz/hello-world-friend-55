@@ -39,15 +39,15 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
     (async () => {
       const { data } = await supabase
         .from('mind_track_session_logs')
-        .select('responses, status')
+        .select('answers, feedback')
         .eq('enrollment_id', enrollmentId)
         .eq('day_number', day)
         .maybeSingle();
       if (cancelled) return;
-      const r = (data?.responses as any) || {};
-      if (Array.isArray(r.answers)) setAnswers([r.answers[0] || '', r.answers[1] || '', r.answers[2] || '']);
-      if (typeof r.feedback === 'string') {
-        setFeedback(r.feedback);
+      const a = (data?.answers as any) || [];
+      if (Array.isArray(a)) setAnswers([a[0] || '', a[1] || '', a[2] || '']);
+      if (typeof data?.feedback === 'string' && data.feedback) {
+        setFeedback(data.feedback);
         setStep('feedback');
       }
     })();

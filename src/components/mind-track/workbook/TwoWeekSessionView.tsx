@@ -38,7 +38,7 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
     let cancelled = false;
     (async () => {
       const { data } = await supabase
-        .from('mind_track_workbook_progress')
+        .from('mind_track_session_logs')
         .select('responses, status')
         .eq('enrollment_id', enrollmentId)
         .eq('day_number', day)
@@ -87,7 +87,7 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
       setStep('feedback');
 
       // 저장
-      await supabase.from('mind_track_workbook_progress').upsert({
+      await supabase.from('mind_track_session_logs').upsert({
         enrollment_id: enrollmentId,
         day_number: day,
         status: 'completed',
@@ -98,7 +98,7 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
       const fallback = `오늘 기록을 잘 남기셨어요. 핵심 키워드는 "${answers[0].split(/\s|,|\./)[0] || '관찰'}" 같아요. 다음 세션까지 같은 장면을 한 번만 더 관찰해보세요.`;
       setFeedback(fallback);
       setStep('feedback');
-      await supabase.from('mind_track_workbook_progress').upsert({
+      await supabase.from('mind_track_session_logs').upsert({
         enrollment_id: enrollmentId,
         day_number: day,
         status: 'completed',

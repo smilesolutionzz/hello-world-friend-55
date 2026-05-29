@@ -28,7 +28,7 @@ export default function TwoWeekRestView({ enrollmentId, day, audience }: Props) 
     let cancelled = false;
     (async () => {
       const { data } = await supabase
-        .from('mind_track_workbook_progress')
+        .from('mind_track_session_logs')
         .select('day_number, responses')
         .eq('enrollment_id', enrollmentId)
         .lt('day_number', day)

@@ -10833,6 +10833,45 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_session_logs: {
+        Row: {
+          answers: Json
+          created_at: string
+          day_number: number
+          enrollment_id: string
+          feedback: string | null
+          id: string
+          meta: Json
+          step: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          day_number: number
+          enrollment_id: string
+          feedback?: string | null
+          id?: string
+          meta?: Json
+          step?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          day_number?: number
+          enrollment_id?: string
+          feedback?: string | null
+          id?: string
+          meta?: Json
+          step?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mind_track_video_events: {
         Row: {
           created_at: string

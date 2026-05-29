@@ -144,7 +144,7 @@ interface GameAudioApi {
   hiFiStatus: 'idle' | 'loading' | 'ready' | 'error' | 'unavailable';
 }
 
-const HIFI_CACHE_PREFIX = 'aihpro_game_bgm_v1:';
+const HIFI_CACHE_PREFIX = 'aihpro_game_bgm_v2:';
 
 export function useGameAudio(opts: UseGameAudioOpts): GameAudioApi {
   const { theme, intensity = 0.6, reduceMotion = false, enableHighFi = true } = opts;

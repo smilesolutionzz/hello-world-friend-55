@@ -42,8 +42,8 @@ interface QAItem {
 const ObservationNew = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const initialMode = (searchParams.get('mode') === 'video' ? 'video'
-    : searchParams.get('mode') === 'text' ? 'text' : 'voice') as 'voice' | 'text' | 'video';
+  const initialMode = (searchParams.get('mode') === 'voice' ? 'voice'
+    : searchParams.get('mode') === 'text' ? 'text' : 'video') as 'voice' | 'text' | 'video';
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);

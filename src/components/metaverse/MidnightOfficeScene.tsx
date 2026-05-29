@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Activity, Eye, ChevronLeft, ChevronRight, Battery } from 'lucide-react';
 import type { StoryScene, StoryChoice } from '@/data/storyScenarios';
+import { useGameAudio } from '@/hooks/useGameAudio';
 
 /** 선택 시 카드 접힘 ↔ 캐릭터 퇴장 ↔ 다음 장면 입장이 모두 동일한 프레임 윈도우 위에서 동기화되도록
  *  사용하는 단일 타임라인 상수. GameCounseling3DMode 의 1100ms 와 정확히 맞물린다. */

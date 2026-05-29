@@ -179,10 +179,10 @@ export default function GameResultReport({
   const top = topDimensions[0][0] as PsychDimension;
   const character = charMap[top] || charMap.empathy;
 
-  const gradientFrom = variant === '3d' ? 'from-emerald-900/40' : 'from-purple-900/40';
-  const gradientTo = variant === '3d' ? 'to-cyan-900/40' : 'to-pink-900/40';
-  const accentBorder = variant === '3d' ? 'border-emerald-500/30' : 'border-purple-500/30';
-  const accentText = variant === '3d' ? 'text-emerald-300' : 'text-purple-300';
+  const gradientFrom = variant === '3d' ? 'from-emerald-900/70' : 'from-purple-900/70';
+  const gradientTo = variant === '3d' ? 'to-cyan-900/70' : 'to-pink-900/70';
+  const accentBorder = variant === '3d' ? 'border-emerald-500/50' : 'border-purple-500/50';
+  const accentText = variant === '3d' ? 'text-emerald-200' : 'text-purple-200';
   const barGradient = variant === '3d' ? 'from-emerald-500 to-cyan-500' : 'from-purple-500 to-pink-500';
   const titleGradient = variant === '3d' ? 'from-emerald-400 to-cyan-400' : 'from-purple-400 to-pink-400';
 
@@ -430,18 +430,18 @@ ${scoreDetails}
       const isExpanded = expandedSections[`s-${idx}`] !== false; // default open
 
       return (
-        <div key={idx} className="border border-white/10 rounded-xl overflow-hidden">
+        <div key={idx} className="border border-white/20 rounded-xl overflow-hidden">
           <button
             onClick={() => toggleSection(`s-${idx}`)}
-            className="w-full flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 transition-colors text-left"
+            className="w-full flex items-center justify-between p-3 bg-white/10 hover:bg-white/15 transition-colors text-left"
           >
             <span className="text-sm font-semibold text-white">{title}</span>
-            {isExpanded ? <ChevronUp className="w-4 h-4 text-white/50" /> : <ChevronDown className="w-4 h-4 text-white/50" />}
+            {isExpanded ? <ChevronUp className="w-4 h-4 text-white/95" /> : <ChevronDown className="w-4 h-4 text-white/95" />}
           </button>
           {isExpanded && (
             <div className="p-3 pt-1 space-y-2">
               {content.split('\n\n').filter(Boolean).map((para, pIdx) => (
-                <p key={pIdx} className="text-[13px] leading-[1.8] text-white/80">
+                <p key={pIdx} className="text-[13px] leading-[1.8] text-white/95">
                   {para.split('**').map((part, i) =>
                     i % 2 === 1 ? <strong key={i} className="text-white font-semibold">{part}</strong> : part
                   )}
@@ -471,8 +471,8 @@ ${scoreDetails}
               ? `이번 시뮬레이션에서 당신은 「${topLabel}(${topScore}%)」이 가장 두드러졌고, 「${bottomLabel}(${bottomScore}%)」은 보강이 필요한 영역으로 나타났습니다.`
               : `이번 모험에서 아이는 「${topLabel}(${topScore}%)」가 가장 두드러졌고, 「${bottomLabel}(${bottomScore}%)」은 함께 키워가면 좋은 영역으로 나타났어요.`;
           return (
-            <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-              <div className="text-[10px] font-semibold tracking-[0.2em] text-white/50 uppercase mb-1">
+            <div className="rounded-xl border border-white/20 bg-white/10 px-4 py-3">
+              <div className="text-[10px] font-semibold tracking-[0.2em] text-white/95 uppercase mb-1">
                 Result Summary · 한 줄 해석
               </div>
               <p className="text-[14px] leading-relaxed text-white/90 break-keep">
@@ -490,8 +490,8 @@ ${scoreDetails}
           <h3 className={`text-2xl font-extrabold mt-1 bg-gradient-to-r ${titleGradient} bg-clip-text text-transparent`}>
             "{character.title}"
           </h3>
-          <p className="text-sm text-white/60 mt-2">{character.desc}</p>
-          <p className="text-[10px] text-white/40 mt-2">
+          <p className="text-sm text-white/85 mt-2">{character.desc}</p>
+          <p className="text-[10px] text-white/75 mt-2">
             {chapter.title} | {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
           {ttsEnabled && onSpeak && (
@@ -526,12 +526,12 @@ ${scoreDetails}
                 <span className="w-1 h-1 rounded-full bg-[#C8B88A]" /> Temperament Profile · {top.tag}
               </div>
               <h3 className="mt-2 text-xl font-bold text-white">{top.label}</h3>
-              <p className="mt-2 text-[13px] text-white/70 leading-relaxed break-keep">{top.desc}</p>
-              <div className="mt-4 pt-3 border-t border-white/10">
-                <div className="text-[10px] text-white/40 mb-1.5 tracking-wider">SECONDARY</div>
+              <p className="mt-2 text-[13px] text-white/90 leading-relaxed break-keep">{top.desc}</p>
+              <div className="mt-4 pt-3 border-t border-white/20">
+                <div className="text-[10px] text-white/75 mb-1.5 tracking-wider">SECONDARY</div>
                 <div className="flex items-center justify-between text-[12px]">
-                  <span className="text-white/80">{second.label}</span>
-                  <span className="text-[#C8B88A]/80 font-mono text-[10px]">{second.tag}</span>
+                  <span className="text-white/95">{second.label}</span>
+                  <span className="text-[#C8B88A] font-mono text-[10px]">{second.tag}</span>
                 </div>
               </div>
               <div className="mt-3 grid grid-cols-5 gap-1">
@@ -549,7 +549,7 @@ ${scoreDetails}
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 + i * 0.12 }}
-                      className="mt-1 text-[9px] text-white/50 truncate"
+                      className="mt-1 text-[9px] text-white/95 truncate"
                     >
                       {p.label.replace(' 기질', '')}
                     </motion.div>
@@ -562,7 +562,7 @@ ${scoreDetails}
         })()}
 
         {/* 심리 특성 차트 */}
-        <Card className="p-5 bg-white/5 border-white/10 mt-4">
+        <Card className="p-5 bg-white/10 border-white/20 mt-4">
           <h3 className="font-bold mb-4 text-white">📊 심리 특성 분석</h3>
           <div className="space-y-3">
             {Object.entries(dimensionMeta).map(([dim, meta], i) => {
@@ -576,12 +576,12 @@ ${scoreDetails}
                   className="space-y-1"
                 >
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-white/70">{meta.icon} {meta.label}</span>
+                    <span className="text-white/90">{meta.icon} {meta.label}</span>
                     <motion.span
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.7 + i * 0.07 }}
-                      className="text-xs text-white/50 tabular-nums"
+                      className="text-xs text-white/95 tabular-nums"
                     >
                       {score}%
                     </motion.span>
@@ -594,7 +594,7 @@ ${scoreDetails}
                       transition={{ duration: 0.9, delay: 0.25 + i * 0.07, ease: [0.4, 0, 0.2, 1] }}
                     />
                   </div>
-                  <div className="flex justify-between text-[10px] text-white/30">
+                  <div className="flex justify-between text-[10px] text-white/65">
                     <span>{meta.lowLabel}</span>
                     <span>{meta.highLabel}</span>
                   </div>
@@ -606,7 +606,7 @@ ${scoreDetails}
         </Card>
 
         {/* 선택 기록 */}
-        <Card className="p-5 bg-white/5 border-white/10 mt-4">
+        <Card className="p-5 bg-white/10 border-white/20 mt-4">
           <h3 className="font-bold mb-3 text-white">👁️ 선택 기록</h3>
           <div className="space-y-2">
             {choices.map((record, i) => {
@@ -617,7 +617,7 @@ ${scoreDetails}
                   <span className={`${accentText} font-bold shrink-0`}>{i + 1}.</span>
                   <div>
                     <span className="font-medium text-white">{scene?.title}</span>
-                    <span className="text-white/60"> → {choice?.text}</span>
+                    <span className="text-white/85"> → {choice?.text}</span>
                     {record.parentNote && (
                       <p className="text-amber-400 italic mt-0.5">💡 {record.parentNote}</p>
                     )}
@@ -639,13 +639,13 @@ ${scoreDetails}
         </div>
 
         {/* AI 상세 분석 */}
-        <Card className="p-5 bg-white/5 border-white/10 mt-4">
+        <Card className="p-5 bg-white/10 border-white/20 mt-4">
           <h3 className="font-bold mb-3 text-white">🧠 AI 전문가 심층 분석</h3>
           {isAnalyzing ? (
             <div className="flex flex-col items-center py-8 gap-3">
               <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
-              <p className="text-sm text-white/60">{subjectShort}의 선택 패턴을 분석하고 있어요...</p>
-              <p className="text-xs text-white/40">약 10-15초 소요</p>
+              <p className="text-sm text-white/85">{subjectShort}의 선택 패턴을 분석하고 있어요...</p>
+              <p className="text-xs text-white/75">약 10-15초 소요</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -655,9 +655,9 @@ ${scoreDetails}
         </Card>
 
         {/* 양육 가이드 (로컬) */}
-        <Card className="p-5 bg-green-500/10 border-green-500/30 mt-4">
-          <h3 className="font-bold mb-3 text-green-300">🌱 {guideTitle}</h3>
-          <div className="space-y-2 text-sm text-green-200">
+        <Card className="p-5 bg-green-500/15 border-green-500/40 mt-4">
+          <h3 className="font-bold mb-3 text-green-100">🌱 {guideTitle}</h3>
+          <div className="space-y-2 text-sm text-green-100">
             {topDimensions.slice(0, 2).map(([dim]) => {
               const interp = interpMap[dim];
               return (
@@ -679,7 +679,7 @@ ${scoreDetails}
           </div>
         </Card>
 
-        <p className="text-[9px] text-center text-white/30 mt-3 px-4">
+        <p className="text-[9px] text-center text-white/65 mt-3 px-4">
           © AIHPRO.APP | 이 결과는 놀이 기반 관찰 자료이며, 전문적인 심리 진단을 대체하지 않습니다.
         </p>
       </div>

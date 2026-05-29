@@ -176,6 +176,12 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
           <StepBadge active={step === 'feedback'} done={!!feedback && step === 'feedback'} label="피드백" icon={MessageSquareHeart} />
         </div>
 
+        {thread && (
+          <div className="mb-4">
+            <ConcernProgressHeader thread={thread} />
+          </div>
+        )}
+
         <div className="mb-6">
           <ActionPrescriptionCard
             enrollmentId={enrollmentId}

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { StoryScene, StoryChoice } from '@/data/storyScenarios';
+import { useGameAudio } from '@/hooks/useGameAudio';
 
 /**
  * ShadowEscapeScene — Cinematic scene + tap multiple-choice with manual walking.
@@ -136,6 +137,20 @@ export default function ShadowEscapeScene({
       return () => clearInterval(id);
     }
   }, [gameState, mood.intensity, sceneIndex]);
+
+  /* ============== 게임 오디오 ============== */
+  const audio = useGameAudio({
+    theme: 'shadow_escape',
+    intensity: mood.intensity,
+  });
+  useEffect(() => {
+    if (gameState === 'exploring' || gameState === 'narrating') audio.playSfx('arrive');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneIndex]);
+  const handleChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
+    audio.playSfx('select');
+    onChoiceSelect(scene, choice);
+  }, [audio, onChoiceSelect]);
 
   // 조작 가능 조건: 선택 직후·결과화면 외 항상 가능 (도착 전후 모두)
   const canMove = !selectedChoice && gameState !== 'result' && containerW > 0;
@@ -447,7 +462,7 @@ export default function ShadowEscapeScene({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 * i, duration: 0.3 }}
-                  onClick={() => onChoiceSelect(currentScene, c)}
+                  onClick={() => handleChoice(currentScene, c)}
                   className="w-full text-left rounded-xl px-3 py-2.5 backdrop-blur-md border transition-colors bg-black/60 border-white/10 hover:bg-black/75 hover:border-[#C8B88A]/40 text-white/95"
                 >
                   <div className="flex items-start gap-2.5">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import MindTrackWelcomeModal from "@/components/mind-track/MindTrackWelcomeModal";
 import DashboardVsWorkbookHelp from "@/components/mind-track/DashboardVsWorkbookHelp";

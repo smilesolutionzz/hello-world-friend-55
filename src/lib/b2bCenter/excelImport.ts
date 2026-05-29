@@ -2,7 +2,7 @@ import * as XLSX from "xlsx";
 
 /**
  * 엑셀 import — 케어플 다운로드 포맷 + AIHPRO 표준 템플릿 자동 감지
- * 모든 매핑은 헤더 시그니처 기반.
+ * 모든 매핑은 헤더 시그니처 기반. + 컬럼 매핑 오버라이드 / 중복 처리 전략 지원.
  */
 
 export type ImportSheet = {
@@ -23,6 +23,14 @@ export interface ParsedWorkbook {
   format: "careple" | "aihpro" | "unknown";
   sheets: DetectedSheet[];
   rawSheets: ImportSheet[];
+}
+
+export type DuplicateStrategy = "skip" | "overwrite" | "merge";
+
+export interface ImportOptions {
+  duplicateStrategy?: DuplicateStrategy;
+  // 사용자 정의 컬럼 매핑: { "엑셀헤더": "표준키" } — 세션 시트에 적용
+  sessionColumnMap?: Record<string, string>;
 }
 
 // ===== 헤더 시그니처 =====
@@ -85,18 +93,17 @@ const COL_MAP: Record<string, string> = {
   "내용": "content",
 };
 
-function normalizeRow(row: Record<string, any>): Record<string, any> {
+function normalizeRow(row: Record<string, any>, override?: Record<string, string>): Record<string, any> {
   const out: Record<string, any> = {};
   for (const [k, v] of Object.entries(row)) {
-    const key = COL_MAP[k.trim()] ?? k.trim();
+    const trimmed = k.trim();
+    const key = override?.[trimmed] ?? COL_MAP[trimmed] ?? trimmed;
     out[key] = v;
   }
   return out;
 }
 
 // ===== 케어플 "월서비스관리_YYYYMM" 어댑터 =====
-// 헤더는 2행, 회기는 "예정[1] | 완료[3] | 취소(보강)[2]" 카운트 문자열.
-// 1행 × 이용자 × 프로그램 × 치료사 집계를 → clients/therapists/programs/sessions로 펼친다.
 const VOUCHER_KEYWORDS = /바우처|교육청|우리아이심리지원|장애인스포츠강좌|기관협약|발달재활/;
 
 function parseStatusCounts(s: string): Array<{ status: string; count: number }> {
@@ -130,7 +137,6 @@ function parseProgramCell(v: any): { category: string; name: string; is_voucher:
   if (!v) return null;
   const raw = String(v).trim();
   if (!raw) return null;
-  // "감각통합-일반 [개인/기관]"
   const noBracket = raw.replace(/\s*\[.*?\]\s*$/, "").trim();
   const dash = noBracket.indexOf("-");
   const category = dash > 0 ? noBracket.slice(0, dash).trim() : "기타";
@@ -144,7 +150,6 @@ function careplMonthlySheet(wb: XLSX.WorkBook): { sheetName: string; aoa: any[][
     const aoa = XLSX.utils.sheet_to_json<any[]>(wb.Sheets[name], { header: 1, defval: null, raw: false });
     return { sheetName: name, aoa };
   }
-  // 시트명이 다른 경우: 2행에서 시그니처 검사
   for (const name of wb.SheetNames) {
     const aoa = XLSX.utils.sheet_to_json<any[]>(wb.Sheets[name], { header: 1, defval: null, raw: false });
     const header = (aoa[1] ?? []).map((x) => String(x ?? "").trim());
@@ -174,9 +179,9 @@ function parseCareplMonthly(sheetName: string, aoa: any[][]): DetectedSheet[] {
   const daysInMonth = new Date(year, month, 0).getDate();
   const monthStr = `${year}-${String(month).padStart(2, "0")}`;
 
-  const clientsMap = new Map<string, any>(); // key: name|birth
-  const therapistsMap = new Map<string, any>(); // key: name
-  const programsMap = new Map<string, any>(); // key: name|duration|price
+  const clientsMap = new Map<string, any>();
+  const therapistsMap = new Map<string, any>();
+  const programsMap = new Map<string, any>();
   const sessions: any[] = [];
 
   for (let r = 2; r < aoa.length; r++) {
@@ -195,27 +200,16 @@ function parseCareplMonthly(sheetName: string, aoa: any[][]): DetectedSheet[] {
     const note = row[iNote] ? String(row[iNote]).trim() : null;
 
     const cKey = `${clientName}|${birth ?? ""}`;
-    if (!clientsMap.has(cKey)) {
-      clientsMap.set(cKey, { name: clientName, birth_date: birth, status: "등록" });
-    }
-    if (therapist && !therapistsMap.has(therapist.name)) {
-      therapistsMap.set(therapist.name, { name: therapist.name, title: therapist.title, specialty: therapist.title });
-    }
+    if (!clientsMap.has(cKey)) clientsMap.set(cKey, { name: clientName, birth_date: birth, status: "등록" });
+    if (therapist && !therapistsMap.has(therapist.name)) therapistsMap.set(therapist.name, { name: therapist.name, title: therapist.title, specialty: therapist.title });
     let programKey: string | null = null;
     if (program) {
       programKey = `${program.name}|${duration}|${priceOne}`;
       if (!programsMap.has(programKey)) {
-        programsMap.set(programKey, {
-          name: program.name,
-          category: program.category,
-          duration_min: duration,
-          price_krw: priceOne,
-          is_voucher: program.is_voucher,
-        });
+        programsMap.set(programKey, { name: program.name, category: program.category, duration_min: duration, price_krw: priceOne, is_voucher: program.is_voucher });
       }
     }
 
-    // 회기 펼치기
     const counts = parseStatusCounts(statusStr);
     const total = counts.reduce((s, c) => s + c.count, 0) || 0;
     if (total === 0) continue;
@@ -264,7 +258,6 @@ export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
     return { name, rows, headers };
   });
 
-  // 0) 케어플 월서비스관리 우선 감지
   const careple = careplMonthlySheet(wb);
   if (careple) {
     return {
@@ -274,7 +267,6 @@ export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
     };
   }
 
-  // AIHPRO 표준: 시트명이 표준 키
   const aihproSheetNames = new Set(["clients", "therapists", "programs", "vouchers", "sessions", "payments", "assessments"]);
   const aihproHits = rawSheets.filter((s) => aihproSheetNames.has(s.name.toLowerCase()));
 
@@ -283,23 +275,96 @@ export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
 
   if (aihproHits.length >= 2) {
     format = "aihpro";
-    detected = aihproHits.map((s) => ({
-      source: s.name,
-      entity: s.name.toLowerCase() as ImportEntity,
-      rows: s.rows.map(normalizeRow),
-    }));
+    detected = aihproHits.map((s) => ({ source: s.name, entity: s.name.toLowerCase() as ImportEntity, rows: s.rows.map((r) => normalizeRow(r)) }));
   } else {
-    // 케어플 일반 시트 자동 감지
     for (const s of rawSheets) {
       const ent = detectEntity(s.headers);
-      if (ent) {
-        detected.push({ source: s.name, entity: ent, rows: s.rows.map(normalizeRow) });
-      }
+      if (ent) detected.push({ source: s.name, entity: ent, rows: s.rows.map((r) => normalizeRow(r)) });
     }
     if (detected.length > 0) format = "careple";
   }
 
   return { format, sheets: detected, rawSheets };
+}
+
+/** 사용자 정의 매핑을 sessions 시트에 적용 */
+export function applySessionColumnMap(parsed: ParsedWorkbook, map: Record<string, string>): ParsedWorkbook {
+  const sIdx = parsed.sheets.findIndex((s) => s.entity === "sessions");
+  if (sIdx < 0) return parsed;
+  const orig = parsed.rawSheets.find((r) => parsed.sheets[sIdx].source.startsWith(r.name));
+  const rawRows = orig?.rows ?? [];
+  const remapped = rawRows.map((r) => normalizeRow(r, map));
+  const next = { ...parsed, sheets: [...parsed.sheets] };
+  next.sheets[sIdx] = { ...next.sheets[sIdx], rows: remapped };
+  return next;
+}
+
+// ===== 미리보기 / 검증 =====
+export interface SessionPreview {
+  session_date: string;
+  start_time: string | null;
+  client_name: string;
+  therapist_name: string | null;
+  program_name: string | null;
+  status: string;
+  warnings: string[];
+}
+
+export function buildSessionPreview(parsed: ParsedWorkbook): {
+  rows: SessionPreview[];
+  byDay: Record<string, number>;
+  byWeek: Record<string, number>;
+  byMonth: Record<string, number>;
+  totals: { ok: number; warnings: number; errors: number };
+} {
+  const ss = parsed.sheets.find((s) => s.entity === "sessions");
+  const rows: SessionPreview[] = [];
+  const byDay: Record<string, number> = {};
+  const byWeek: Record<string, number> = {};
+  const byMonth: Record<string, number> = {};
+  let okCount = 0, warnCount = 0, errCount = 0;
+
+  for (const r of ss?.rows ?? []) {
+    const warnings: string[] = [];
+    const date = parseDate(r.session_date);
+    if (!date) warnings.push("날짜 형식 오류");
+    const cname = (r.client_name ?? r.name ?? "").toString().trim();
+    if (!cname) warnings.push("이용자 누락");
+    const time = parseTime(r.start_time);
+    if (r.start_time && !time) warnings.push("시간 형식 오류");
+
+    const isErr = !date || !cname;
+    if (isErr) errCount++;
+    else if (warnings.length) warnCount++;
+    else okCount++;
+
+    if (date) {
+      byDay[date] = (byDay[date] ?? 0) + 1;
+      const wk = weekKey(date);
+      byWeek[wk] = (byWeek[wk] ?? 0) + 1;
+      const mo = date.slice(0, 7);
+      byMonth[mo] = (byMonth[mo] ?? 0) + 1;
+    }
+
+    rows.push({
+      session_date: date ?? String(r.session_date ?? "—"),
+      start_time: time?.slice(0, 5) ?? null,
+      client_name: cname || "—",
+      therapist_name: r.therapist_name ? String(r.therapist_name) : null,
+      program_name: r.program_name ? String(r.program_name) : null,
+      status: String(r.status ?? "scheduled"),
+      warnings,
+    });
+  }
+  return { rows, byDay, byWeek, byMonth, totals: { ok: okCount, warnings: warnCount, errors: errCount } };
+}
+
+function weekKey(dateStr: string): string {
+  const d = new Date(dateStr);
+  const day = d.getDay();
+  const monday = new Date(d);
+  monday.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
+  return monday.toISOString().slice(0, 10);
 }
 
 // ===== Supabase 배치 업서트 =====
@@ -309,7 +374,9 @@ export async function commitImport(
   centerId: string,
   parsed: ParsedWorkbook,
   filename: string,
-): Promise<{ jobId: string; summary: Record<string, number> }> {
+  options: ImportOptions = {},
+): Promise<{ jobId: string; summary: Record<string, number>; status: "done" | "failed" }> {
+  const strategy: DuplicateStrategy = options.duplicateStrategy ?? "skip";
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("로그인이 필요합니다.");
 
@@ -321,120 +388,171 @@ export async function commitImport(
       filename,
       detected_format: parsed.format,
       status: "processing",
+      import_options: { duplicateStrategy: strategy, sessionColumnMap: options.sessionColumnMap ?? null },
     })
     .select()
     .single();
   if (jobErr) throw jobErr;
 
-  const summary: Record<string, number> = {};
+  const summary: Record<string, number> = { inserted: 0, updated: 0, skipped: 0 };
 
-  // 1) Clients
-  const clientsSheet = parsed.sheets.find((s) => s.entity === "clients");
-  const clientNameToId: Record<string, string> = {};
-  if (clientsSheet) {
-    const rows = clientsSheet.rows
-      .filter((r) => r.name)
-      .map((r) => ({
-        center_id: centerId,
-        name: String(r.name).trim(),
-        gender: r.gender ?? null,
-        birth_date: parseDate(r.birth_date),
-        phone: r.phone ?? null,
-        guardian_phone: r.guardian_phone ?? null,
-        address: r.address ?? null,
-        disability_info: r.disability_info ?? null,
-        status: mapClientStatus(r.status),
-        member_no: r.member_no ?? null,
-      }));
-    if (rows.length) {
-      const { data, error } = await supabase.from("center_clients").insert(rows).select("id,name");
-      if (error) throw error;
-      data?.forEach((c: any) => { clientNameToId[c.name] = c.id; });
-      summary.clients = data?.length ?? 0;
-    }
-  }
+  try {
+    // 0) 기존 이름 → id 매핑 미리 로드
+    const [{ data: existingClients }, { data: existingTherapists }, { data: existingPrograms }] = await Promise.all([
+      supabase.from("center_clients").select("id,name,birth_date").eq("center_id", centerId),
+      supabase.from("center_therapists").select("id,name").eq("center_id", centerId),
+      supabase.from("center_programs").select("id,name").eq("center_id", centerId),
+    ]);
+    const clientNameToId: Record<string, string> = {};
+    (existingClients ?? []).forEach((c: any) => { clientNameToId[c.name] = c.id; });
+    const therapistNameToId: Record<string, string> = {};
+    (existingTherapists ?? []).forEach((t: any) => { therapistNameToId[t.name] = t.id; });
+    const programNameToId: Record<string, string> = {};
+    (existingPrograms ?? []).forEach((p: any) => { programNameToId[p.name] = p.id; });
 
-  // 2) Therapists
-  const tSheet = parsed.sheets.find((s) => s.entity === "therapists");
-  const therapistNameToId: Record<string, string> = {};
-  if (tSheet) {
-    const rows = tSheet.rows
-      .filter((r) => r.name)
-      .map((r) => ({
-        center_id: centerId,
-        name: String(r.name).trim(),
-        title: r.title ?? null,
-        specialty: r.specialty ?? null,
-        birth_date: parseDate(r.birth_date),
-        phone: r.phone ?? null,
-      }));
-    if (rows.length) {
-      const { data, error } = await supabase.from("center_therapists").insert(rows).select("id,name");
-      if (error) throw error;
-      data?.forEach((t: any) => { therapistNameToId[t.name] = t.id; });
-      summary.therapists = data?.length ?? 0;
-    }
-  }
-
-  // 3) Programs
-  const pSheet = parsed.sheets.find((s) => s.entity === "programs");
-  const programNameToId: Record<string, string> = {};
-  if (pSheet) {
-    const rows = pSheet.rows
-      .filter((r) => r.program_name || r.name)
-      .map((r) => ({
-        center_id: centerId,
-        category: r.category ?? "기타",
-        name: String(r.program_name ?? r.name).trim(),
-        duration_min: parseInt(r.duration_min) || 45,
-        price_krw: parseInt(r.price_krw) || 0,
-        is_voucher: !!r.is_voucher,
-      }));
-    if (rows.length) {
-      const { data, error } = await supabase.from("center_programs").insert(rows).select("id,name");
-      if (error) throw error;
-      data?.forEach((p: any) => { programNameToId[p.name] = p.id; });
-      summary.programs = data?.length ?? 0;
-    }
-  }
-
-  // 4) Sessions
-  const sSheet = parsed.sheets.find((s) => s.entity === "sessions");
-  if (sSheet) {
-    const rows = sSheet.rows
-      .filter((r) => r.session_date && (r.client_name || r.name))
-      .map((r) => {
-        const clientName = String(r.client_name ?? r.name).trim();
-        const therapistName = r.therapist_name ? String(r.therapist_name).trim() : null;
-        const programName = r.program_name ? String(r.program_name).trim() : null;
-        return {
+    // 1) Clients (신규만 insert)
+    const clientsSheet = parsed.sheets.find((s) => s.entity === "clients");
+    if (clientsSheet) {
+      const rows = clientsSheet.rows
+        .filter((r) => r.name && !clientNameToId[String(r.name).trim()])
+        .map((r) => ({
           center_id: centerId,
-          client_id: clientNameToId[clientName],
-          therapist_id: therapistName ? therapistNameToId[therapistName] ?? null : null,
-          program_id: programName ? programNameToId[programName] ?? null : null,
-          session_date: parseDate(r.session_date),
-          start_time: parseTime(r.start_time),
-          end_time: parseTime(r.end_time),
-          status: mapSessionStatus(r.status),
-          is_voucher: !!r.is_voucher,
-          price_krw: parseInt(r.price_krw) || 0,
-          note: r.note ?? null,
-        };
-      })
-      .filter((r) => r.client_id);
-    if (rows.length) {
-      const { data, error } = await supabase.from("center_sessions").insert(rows).select("id");
-      if (error) throw error;
-      summary.sessions = data?.length ?? 0;
+          name: String(r.name).trim(),
+          gender: r.gender ?? null,
+          birth_date: parseDate(r.birth_date),
+          phone: r.phone ?? null,
+          guardian_phone: r.guardian_phone ?? null,
+          address: r.address ?? null,
+          disability_info: r.disability_info ?? null,
+          status: mapClientStatus(r.status),
+          member_no: r.member_no ?? null,
+        }));
+      if (rows.length) {
+        const { data, error } = await supabase.from("center_clients").insert(rows).select("id,name");
+        if (error) throw error;
+        data?.forEach((c: any) => { clientNameToId[c.name] = c.id; });
+        summary.clients = data?.length ?? 0;
+      }
     }
-  }
 
-  // 5) Payments
-  const payS = parsed.sheets.find((s) => s.entity === "payments");
-  if (payS) {
-    const rows = payS.rows
-      .filter((r) => r.paid_at)
-      .map((r) => {
+    // 2) Therapists
+    const tSheet = parsed.sheets.find((s) => s.entity === "therapists");
+    if (tSheet) {
+      const rows = tSheet.rows
+        .filter((r) => r.name && !therapistNameToId[String(r.name).trim()])
+        .map((r) => ({
+          center_id: centerId,
+          name: String(r.name).trim(),
+          title: r.title ?? null,
+          specialty: r.specialty ?? null,
+          birth_date: parseDate(r.birth_date),
+          phone: r.phone ?? null,
+        }));
+      if (rows.length) {
+        const { data, error } = await supabase.from("center_therapists").insert(rows).select("id,name");
+        if (error) throw error;
+        data?.forEach((t: any) => { therapistNameToId[t.name] = t.id; });
+        summary.therapists = data?.length ?? 0;
+      }
+    }
+
+    // 3) Programs
+    const pSheet = parsed.sheets.find((s) => s.entity === "programs");
+    if (pSheet) {
+      const rows = pSheet.rows
+        .filter((r) => (r.program_name || r.name) && !programNameToId[String(r.program_name ?? r.name).trim()])
+        .map((r) => ({
+          center_id: centerId,
+          category: r.category ?? "기타",
+          name: String(r.program_name ?? r.name).trim(),
+          duration_min: parseInt(r.duration_min) || 45,
+          price_krw: parseInt(r.price_krw) || 0,
+          is_voucher: !!r.is_voucher,
+        }));
+      if (rows.length) {
+        const { data, error } = await supabase.from("center_programs").insert(rows).select("id,name");
+        if (error) throw error;
+        data?.forEach((p: any) => { programNameToId[p.name] = p.id; });
+        summary.programs = data?.length ?? 0;
+      }
+    }
+
+    // 4) Sessions — 중복 처리
+    const sSheet = parsed.sheets.find((s) => s.entity === "sessions");
+    if (sSheet) {
+      // 기존 세션 인덱스 (date + client_id + start_time)
+      const { data: existingSessions } = await supabase
+        .from("center_sessions")
+        .select("id, session_date, client_id, start_time")
+        .eq("center_id", centerId);
+      const existingKey = new Map<string, string>(); // key → id
+      (existingSessions ?? []).forEach((s: any) => {
+        const k = `${s.session_date}|${s.client_id}|${s.start_time ?? ""}`;
+        existingKey.set(k, s.id);
+      });
+
+      const candidates = sSheet.rows
+        .map((r) => {
+          const clientName = String(r.client_name ?? r.name ?? "").trim();
+          const therapistName = r.therapist_name ? String(r.therapist_name).trim() : null;
+          const programName = r.program_name ? String(r.program_name).trim() : null;
+          const session_date = parseDate(r.session_date);
+          const start_time = parseTime(r.start_time);
+          return {
+            payload: {
+              center_id: centerId,
+              client_id: clientNameToId[clientName],
+              therapist_id: therapistName ? therapistNameToId[therapistName] ?? null : null,
+              program_id: programName ? programNameToId[programName] ?? null : null,
+              session_date,
+              start_time,
+              end_time: parseTime(r.end_time),
+              status: mapSessionStatus(r.status),
+              is_voucher: !!r.is_voucher,
+              price_krw: parseInt(r.price_krw) || 0,
+              note: r.note ?? null,
+            },
+            dupKey: session_date && clientNameToId[clientName] ? `${session_date}|${clientNameToId[clientName]}|${start_time ?? ""}` : null,
+          };
+        })
+        .filter((x) => x.payload.session_date && x.payload.client_id);
+
+      const toInsert: any[] = [];
+      const toUpdate: Array<{ id: string; payload: any }> = [];
+      let skipped = 0;
+
+      for (const c of candidates) {
+        const existingId = c.dupKey ? existingKey.get(c.dupKey) : undefined;
+        if (!existingId) { toInsert.push(c.payload); continue; }
+        if (strategy === "skip") { skipped++; continue; }
+        if (strategy === "overwrite" || strategy === "merge") {
+          toUpdate.push({ id: existingId, payload: c.payload });
+        }
+      }
+
+      if (toInsert.length) {
+        const { data, error } = await supabase.from("center_sessions").insert(toInsert).select("id");
+        if (error) throw error;
+        summary.sessions_inserted = data?.length ?? 0;
+      }
+      if (toUpdate.length) {
+        // 병합/덮어쓰기 — 개별 update (소량 가정)
+        for (const u of toUpdate) {
+          const payload = strategy === "merge"
+            ? Object.fromEntries(Object.entries(u.payload).filter(([_, v]) => v != null && v !== ""))
+            : u.payload;
+          await supabase.from("center_sessions").update(payload).eq("id", u.id);
+        }
+        summary.sessions_updated = toUpdate.length;
+      }
+      summary.sessions_skipped = skipped;
+      summary.sessions = (summary.sessions_inserted ?? 0) + (summary.sessions_updated ?? 0);
+    }
+
+    // 5) Payments (간단 insert)
+    const payS = parsed.sheets.find((s) => s.entity === "payments");
+    if (payS) {
+      const rows = payS.rows.filter((r) => r.paid_at).map((r) => {
         const clientName = r.client_name ? String(r.client_name).trim() : null;
         return {
           center_id: centerId,
@@ -447,19 +565,37 @@ export async function commitImport(
           receipt_no: r.receipt_no ?? null,
         };
       });
-    if (rows.length) {
-      const { data, error } = await supabase.from("center_payments").insert(rows).select("id");
-      if (error) throw error;
-      summary.payments = data?.length ?? 0;
+      if (rows.length) {
+        const { data, error } = await supabase.from("center_payments").insert(rows).select("id");
+        if (error) throw error;
+        summary.payments = data?.length ?? 0;
+      }
     }
+
+    await supabase
+      .from("center_import_jobs")
+      .update({ status: "done", summary, completed_at: new Date().toISOString() })
+      .eq("id", job.id);
+
+    return { jobId: job.id, summary, status: "done" };
+  } catch (e: any) {
+    await supabase
+      .from("center_import_jobs")
+      .update({ status: "failed", summary, error_log: { message: e?.message ?? String(e) }, completed_at: new Date().toISOString() })
+      .eq("id", job.id);
+    throw e;
   }
+}
 
-  await supabase
+export async function listRecentImports(centerId: string, limit = 10) {
+  const { data, error } = await supabase
     .from("center_import_jobs")
-    .update({ status: "done", summary, completed_at: new Date().toISOString() })
-    .eq("id", job.id);
-
-  return { jobId: job.id, summary };
+    .select("id, filename, detected_format, status, summary, error_log, created_at, completed_at, import_options")
+    .eq("center_id", centerId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return data ?? [];
 }
 
 function parseDate(v: any): string | null {
@@ -490,25 +626,101 @@ function mapClientStatus(v: any): string {
 }
 function mapSessionStatus(v: any): "scheduled" | "completed" | "cancelled" | "cancelled_carry" | "cancelled_makeup" {
   const s = String(v ?? "").trim();
-  if (/완료/.test(s)) return "completed";
-  if (/취소이월|이월/.test(s)) return "cancelled_carry";
-  if (/보강/.test(s)) return "cancelled_makeup";
-  if (/취소/.test(s)) return "cancelled";
+  if (/완료|completed/i.test(s)) return "completed";
+  if (/취소이월|이월|carry/i.test(s)) return "cancelled_carry";
+  if (/보강|makeup/i.test(s)) return "cancelled_makeup";
+  if (/취소|cancel/i.test(s)) return "cancelled";
   return "scheduled";
 }
 
+// ===== 표준 컬럼 스펙 =====
+export const SESSION_COLUMN_SPEC: Array<{ key: string; header: string; required: boolean; example: string; rule: string }> = [
+  { key: "session_date", header: "날짜", required: true, example: "2026-03-15", rule: "YYYY-MM-DD (필수)" },
+  { key: "start_time", header: "시작시간", required: false, example: "10:00", rule: "HH:MM 24시간 (예: 09:30, 14:00)" },
+  { key: "end_time", header: "종료시간", required: false, example: "10:40", rule: "HH:MM (시작시간 이후)" },
+  { key: "client_name", header: "이용자", required: true, example: "김민준", rule: "이용자(회원) 이름 — DB와 일치하면 자동 매칭" },
+  { key: "therapist_name", header: "치료사", required: false, example: "박지영", rule: "선생님 이름 — 없으면 미배정" },
+  { key: "program_name", header: "프로그램", required: false, example: "감각통합-일반", rule: "프로그램명 — 없으면 미지정" },
+  { key: "status", header: "상태", required: false, example: "예정", rule: "예정 / 완료 / 취소 / 취소(보강) / 취소이월" },
+  { key: "note", header: "메모", required: false, example: "결석 (병원)", rule: "자유 텍스트" },
+];
 
 // ===== AIHPRO 표준 템플릿 다운로드 =====
 export function downloadStandardTemplate() {
   const wb = XLSX.utils.book_new();
+
+  // README 시트 — 규칙 / 필수 여부 / 예시
+  const readme: any[][] = [
+    ["AIHPRO 센터 표준 템플릿 — 입력 규칙"],
+    [],
+    ["sheet", "column", "필수", "예시", "포맷 / 규칙"],
+  ];
+  const sheetSpecs: Record<string, Array<typeof SESSION_COLUMN_SPEC[number]>> = {
+    sessions: SESSION_COLUMN_SPEC,
+    clients: [
+      { key: "name", header: "이름", required: true, example: "김민준", rule: "이용자 이름 (필수)" },
+      { key: "gender", header: "성별", required: false, example: "남", rule: "남 / 여" },
+      { key: "birth_date", header: "생년월일", required: false, example: "2018-04-12", rule: "YYYY-MM-DD" },
+      { key: "phone", header: "전화번호", required: false, example: "010-1234-5678", rule: "010-####-####" },
+      { key: "guardian_phone", header: "보호자전화", required: false, example: "010-9876-5432", rule: "010-####-####" },
+      { key: "address", header: "주소", required: false, example: "서울시 강남구...", rule: "" },
+      { key: "disability_info", header: "장애정보", required: false, example: "자폐스펙트럼", rule: "" },
+      { key: "status", header: "상태", required: false, example: "등록", rule: "등록 / 대기 / 종결" },
+      { key: "member_no", header: "회원번호", required: false, example: "M-0123", rule: "센터 내부 번호" },
+    ],
+    therapists: [
+      { key: "name", header: "이름", required: true, example: "박지영", rule: "치료사 이름 (필수)" },
+      { key: "title", header: "직급", required: false, example: "선임치료사", rule: "" },
+      { key: "specialty", header: "전공", required: false, example: "감각통합", rule: "전공·분야" },
+      { key: "birth_date", header: "생년월일", required: false, example: "1985-09-21", rule: "YYYY-MM-DD" },
+      { key: "phone", header: "전화번호", required: false, example: "010-1111-2222", rule: "010-####-####" },
+    ],
+    programs: [
+      { key: "program_name", header: "프로그램명", required: true, example: "감각통합-일반", rule: "프로그램 이름 (필수)" },
+      { key: "category", header: "카테고리", required: false, example: "감각통합", rule: "분류" },
+      { key: "duration_min", header: "1회시간", required: false, example: "40", rule: "분 단위 정수 (기본 45)" },
+      { key: "price_krw", header: "단가", required: false, example: "60000", rule: "원 단위 정수" },
+      { key: "is_voucher", header: "바우처여부", required: false, example: "Y", rule: "Y / N" },
+    ],
+  };
+  for (const [sheet, cols] of Object.entries(sheetSpecs)) {
+    for (const c of cols) {
+      readme.push([sheet, c.header, c.required ? "필수" : "선택", c.example, c.rule]);
+    }
+    readme.push([]);
+  }
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(readme), "_README");
+
+  // 시트별 헤더 + 예시 1행
   const sheets: Record<string, any[][]> = {
-    clients: [["이름", "성별", "생년월일", "전화번호", "보호자전화", "주소", "장애정보", "상태", "회원번호"]],
-    therapists: [["이름", "직급", "전공", "생년월일", "전화번호"]],
-    programs: [["프로그램명", "카테고리", "1회시간", "단가", "바우처여부"]],
-    vouchers: [["이용자", "바우처유형", "바우처번호", "시작일", "종료일", "월한도", "본인부담"]],
-    sessions: [["날짜", "시작시간", "종료시간", "이용자", "치료사", "프로그램", "상태", "메모"]],
-    payments: [["수납일", "이용자", "결제금액", "본인부담", "결제방법", "영수증번호"]],
-    assessments: [["상담일", "이용자", "치료사", "상담유형", "내용"]],
+    clients: [
+      sheetSpecs.clients.map((c) => c.header),
+      sheetSpecs.clients.map((c) => c.example),
+    ],
+    therapists: [
+      sheetSpecs.therapists.map((c) => c.header),
+      sheetSpecs.therapists.map((c) => c.example),
+    ],
+    programs: [
+      sheetSpecs.programs.map((c) => c.header),
+      sheetSpecs.programs.map((c) => c.example),
+    ],
+    sessions: [
+      sheetSpecs.sessions.map((c) => c.header),
+      sheetSpecs.sessions.map((c) => c.example),
+    ],
+    vouchers: [
+      ["이용자", "바우처유형", "바우처번호", "시작일", "종료일", "월한도", "본인부담"],
+      ["김민준", "발달재활", "V-2026-0001", "2026-03-01", "2026-08-31", "440000", "20000"],
+    ],
+    payments: [
+      ["수납일", "이용자", "결제금액", "본인부담", "결제방법", "영수증번호"],
+      ["2026-03-05", "김민준", "20000", "20000", "카드", "R-0001"],
+    ],
+    assessments: [
+      ["상담일", "이용자", "치료사", "상담유형", "내용"],
+      ["2026-03-10", "김민준", "박지영", "월간상담", "보호자 면담 요약..."],
+    ],
   };
   for (const [name, rows] of Object.entries(sheets)) {
     const ws = XLSX.utils.aoa_to_sheet(rows);

@@ -430,7 +430,7 @@ ${scoreDetails}
           <motion.div className="text-6xl mb-3" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: 2 }}>
             {character.emoji}
           </motion.div>
-          <h2 className={`text-xl font-bold ${accentText}`}>모험 완료! 우리 아이는...</h2>
+          <h2 className={`text-xl font-bold ${accentText}`}>{isAdult ? '여정 완료 · 당신의 유형' : '모험 완료! 우리 아이는...'}</h2>
           <h3 className={`text-2xl font-extrabold mt-1 bg-gradient-to-r ${titleGradient} bg-clip-text text-transparent`}>
             "{character.title}"
           </h3>

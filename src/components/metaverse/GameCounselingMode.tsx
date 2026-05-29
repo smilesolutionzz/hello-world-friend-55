@@ -116,7 +116,7 @@ export default function GameCounselingMode() {
         setCurrentSceneIndex(nextIndex >= 0 ? nextIndex : currentSceneIndex + 1);
       }
     }, 600);
-  }, [currentChapter, currentSceneIndex, ttsEnabled, speak]);
+  }, [currentChapter, currentSceneIndex, ttsEnabled, speak, audio]);
 
   const calculateResults = useCallback(() => {
     const scores: Record<PsychDimension, number> = {

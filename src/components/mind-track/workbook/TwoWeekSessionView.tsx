@@ -13,6 +13,7 @@ import {
   TWO_WEEK_SESSION_DAYS,
 } from '@/lib/mindTrack2WeekContent';
 import type { MindTrackAudience } from '@/lib/mindTrackDayCopy';
+import ActionPrescriptionCard from './ActionPrescriptionCard';
 
 type Step = 'coaching' | 'journal' | 'feedback';
 
@@ -150,6 +151,14 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
           <StepBadge active={step === 'coaching'} done={step !== 'coaching'} label="코칭" icon={Sparkles} />
           <StepBadge active={step === 'journal'} done={step === 'feedback'} label="관찰 일지" icon={BookOpen} />
           <StepBadge active={step === 'feedback'} done={!!feedback && step === 'feedback'} label="피드백" icon={MessageSquareHeart} />
+        </div>
+
+        <div className="mb-6">
+          <ActionPrescriptionCard
+            enrollmentId={enrollmentId}
+            dayNumber={day}
+            audience={audience}
+          />
         </div>
 
         {step === 'coaching' && (

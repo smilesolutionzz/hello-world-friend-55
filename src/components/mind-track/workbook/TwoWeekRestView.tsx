@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { getRestDayContent, getNextSessionDay } from '@/lib/mindTrack2WeekContent';
 import type { MindTrackAudience } from '@/lib/mindTrackDayCopy';
+import ActionPrescriptionCard from './ActionPrescriptionCard';
 
 interface Props {
   enrollmentId: string;
@@ -69,6 +70,15 @@ export default function TwoWeekRestView({ enrollmentId, day, audience }: Props) 
             </div>
           </div>
         </Card>
+
+        <div className="mt-4">
+          <ActionPrescriptionCard
+            enrollmentId={enrollmentId}
+            dayNumber={day}
+            audience={audience}
+            compact
+          />
+        </div>
 
         {next && next !== day && (
           <Card className="p-5 mt-4 bg-white border border-slate-200 rounded-2xl flex items-center gap-3">

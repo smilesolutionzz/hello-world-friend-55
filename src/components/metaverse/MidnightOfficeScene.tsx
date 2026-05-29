@@ -461,7 +461,7 @@ export default function MidnightOfficeScene({
                 <motion.button key={c.id}
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 * i, duration: 0.3 }}
-                  onClick={() => onChoiceSelect(currentScene, c)}
+                  onClick={() => handleChoice(currentScene, c)}
                   className="w-full text-left rounded-xl px-3 py-2.5 backdrop-blur-md border transition-colors bg-black/65 border-white/10 hover:bg-black/80 hover:border-[#C8B88A]/45 text-white/95">
                   <div className="flex items-start gap-2.5">
                     <div className="shrink-0 w-8 h-8 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center text-base">

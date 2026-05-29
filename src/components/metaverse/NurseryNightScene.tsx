@@ -207,12 +207,12 @@ export default function NurseryNightScene({
       animate={shake && !prefersReducedMotion ? { x: [0, -3, 3, -2, 0] } : { x: 0 }}
       transition={{ duration: 0.2 }}
     >
-      {/* === Parallax 침실 외부 (커튼 너머 도시) === */}
+      {/* === Parallax 가정집 침실 벽 (도배지 + 액자 + 야간등) === */}
       <div
         className="absolute inset-y-0 pointer-events-none"
         style={{ width: worldW || '100%', transform: `translateX(${-camX * 0.22}px)` }}
       >
-        <SoftSkyline color={cfg.haze} />
+        <HomeInterior color={cfg.haze} mood={cfg.ambient} />
       </div>
 
       {/* 중간 광원/달빛 */}

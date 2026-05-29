@@ -36,6 +36,7 @@ export default function GameCounselingMode() {
     if (id === 'shadow_escape') return 'shadow_escape';
     if (id === 'midnight_office') return 'midnight_office';
     if (id === 'parent_night') return 'parent_night';
+    if (id === 'city_bird') return 'city_bird';
     if (/성인|adult|부모|parent/i.test(currentChapter?.targetAge || '')) return 'classic_quiet';
     return 'classic_warm';
   })();

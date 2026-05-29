@@ -336,7 +336,7 @@ ${scoreDetails}
       return `**${i + 1}. ${scene?.title}** → "${choice?.text}"\n${record.parentNote ? `💡 해석: ${record.parentNote}` : ''}`;
     }).join('\n\n')}`);
 
-    sections.push(`### 🏠 양육 가이드\n${strongDims.map(([dim]) => {
+    sections.push(`### 🏠 ${guideTitle}\n${strongDims.map(([dim]) => {
       const interp = interpMap[dim];
       return `✅ ${interp?.guide || ''}`;
     }).join('\n')}\n\n${bottomDimensions.map(([dim]) => {

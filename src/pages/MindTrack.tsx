@@ -498,11 +498,11 @@ const MindTrack: React.FC = () => {
       if (!res.enrollmentId) throw new Error(res.error || '등록 실패');
       trackEvent('mind_track_trial_start', { goal: selectedGoal, audience: audienceParam });
       const startLabel = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-      toast.success('7일 마음 트랙을 시작했어요', {
-        description: `시작일 ${startLabel} · 오늘은 Day 1 입니다`,
+      toast.success('2주 마음 트랙을 시작했어요', {
+        description: `시작일 ${startLabel} · 오늘은 Day 1 세션입니다`,
         duration: 5000,
       });
-      navigate('/mind-track/dashboard');
+      navigate('/mind-track/workbook?day=1&openMission=1');
     } catch (e: any) {
       toast.error(e.message || '등록 중 오류가 발생했습니다');
     } finally {

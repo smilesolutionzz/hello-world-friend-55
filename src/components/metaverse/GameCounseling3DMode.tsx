@@ -372,6 +372,19 @@ export default function GameCounseling3DMode() {
             showParentNotes={showParentNotes}
           />
         </div>
+      ) : currentChapter && currentChapter.id === 'parent_night' ? (
+        <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '520px' }}>
+          <NurseryNightScene
+            currentScene={currentScene}
+            gameState={gameState}
+            onArrive={handleArrive}
+            sceneIndex={currentSceneIndex}
+            onChoiceSelect={makeChoice}
+            displayedText={displayedText}
+            selectedChoice={selectedChoice}
+            showParentNotes={showParentNotes}
+          />
+        </div>
       ) : currentChapter && currentChapter.id === 'sunflower_village' ? (
         <div className="relative w-full" style={{ height: 'calc(100vh - 180px)', minHeight: '400px' }}>
           <VillageAdventure3DWorld

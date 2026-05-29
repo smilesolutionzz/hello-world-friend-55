@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, List as ListIcon, Grid3x3, Users, Clock } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, List as ListIcon, Grid3x3, Users, Clock, Upload, FileSpreadsheet, Download, Loader2, Check } from "lucide-react";
+import { parseWorkbook, commitImport, downloadStandardTemplate, type ParsedWorkbook } from "@/lib/b2bCenter/excelImport";
+import { toast } from "@/hooks/use-toast";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -52,6 +54,7 @@ export default function SchedulePage() {
     scheduled: true, completed: true, cancelled: true, cancelled_makeup: true, cancelled_carry: true,
   });
   const [selected, setSelected] = useState<any | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
 
   // 가시 범위 계산
   const range = useMemo(() => {
@@ -132,13 +135,18 @@ export default function SchedulePage() {
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-semibold">일정</h1>
-          <p className="text-sm text-neutral-500 mt-1">일·주·월·4일·목록 + 날짜별/선생님별/시간표 보기.</p>
+          <p className="text-sm text-neutral-500 mt-1">일·주·월·4일·목록 + 날짜별/선생님별/시간표 보기. 엑셀 한 파일로 일·주·월 일정을 한 번에 채워보세요.</p>
         </div>
-        <div className="flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-3 py-1.5">
-          <button onClick={() => nav(-1)} className="p-1 hover:bg-neutral-100 rounded-full"><ChevronLeft className="w-4 h-4" /></button>
-          <span className="text-sm font-medium px-2 min-w-[140px] text-center">{headerLabel}</span>
-          <button onClick={() => nav(1)} className="p-1 hover:bg-neutral-100 rounded-full"><ChevronRight className="w-4 h-4" /></button>
-          <button onClick={() => setCursor(new Date())} className="text-xs px-2 py-1 rounded-full bg-neutral-900 text-white ml-1">오늘</button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setImportOpen(true)} className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-full bg-white border border-neutral-200 hover:border-neutral-400 transition">
+            <Upload className="w-3.5 h-3.5" /> 엑셀 가져오기
+          </button>
+          <div className="flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-3 py-1.5">
+            <button onClick={() => nav(-1)} className="p-1 hover:bg-neutral-100 rounded-full"><ChevronLeft className="w-4 h-4" /></button>
+            <span className="text-sm font-medium px-2 min-w-[140px] text-center">{headerLabel}</span>
+            <button onClick={() => nav(1)} className="p-1 hover:bg-neutral-100 rounded-full"><ChevronRight className="w-4 h-4" /></button>
+            <button onClick={() => setCursor(new Date())} className="text-xs px-2 py-1 rounded-full bg-neutral-900 text-white ml-1">오늘</button>
+          </div>
         </div>
       </div>
 
@@ -210,6 +218,53 @@ export default function SchedulePage() {
       {/* 상세 팝업 */}
       {selected && (
         <SessionDetail s={selected} onClose={() => setSelected(null)} therapist={therapist} clientName={clientName} programName={programName} />
+      )}
+
+      {/* 엑셀 가져오기 */}
+      {importOpen && (
+        <ImportModal
+          demo={!!demo}
+          centerId={centerId}
+          onClose={() => setImportOpen(false)}
+          onMergeDemo={(extra) => {
+            // 데모 모드: 신규 client/therapist/program을 이름 기반으로 합치고 sessions 생성
+            const cMap = new Map(clients.map((c: any) => [c.name, c.id]));
+            const tMap = new Map(therapists.map((t: any) => [t.name, t.id]));
+            const pMap = new Map(programs.map((p: any) => [p.name, p.id]));
+            const newClients = [...clients];
+            const newTherapists = [...therapists];
+            const newPrograms = [...programs];
+            const newSessions = [...sessions];
+            let cidx = newClients.length, tidx = newTherapists.length, pidx = newPrograms.length, sidx = newSessions.length;
+
+            for (const row of extra) {
+              const cname = row.client_name?.toString().trim();
+              const tname = row.therapist_name?.toString().trim();
+              const pname = row.program_name?.toString().trim();
+              if (!cname || !row.session_date) continue;
+              if (!cMap.has(cname)) { const id = `ic${++cidx}`; cMap.set(cname, id); newClients.push({ id, name: cname }); }
+              if (tname && !tMap.has(tname)) { const id = `it${++tidx}`; tMap.set(tname, id); newTherapists.push({ id, name: tname, role: row.therapist_title ?? "", color: PALETTE[tidx % PALETTE.length] }); }
+              if (pname && !pMap.has(pname)) { const id = `ip${++pidx}`; pMap.set(pname, id); newPrograms.push({ id, name: pname, duration_min: 40, price_krw: row.price_krw ?? 0, is_voucher: !!row.is_voucher }); }
+              newSessions.push({
+                id: `is${++sidx}`,
+                session_date: row.session_date,
+                start_time: row.start_time ?? "10:00",
+                end_time: row.end_time ?? null,
+                client_id: cMap.get(cname),
+                therapist_id: tname ? tMap.get(tname) : null,
+                program_id: pname ? pMap.get(pname) : null,
+                status: row.status ?? "scheduled",
+                price_krw: row.price_krw ?? 0,
+                is_voucher: !!row.is_voucher,
+                note: row.note ?? null,
+              });
+            }
+            setClients(newClients);
+            setTherapists(newTherapists);
+            setPrograms(newPrograms);
+            setSessions(newSessions);
+          }}
+        />
       )}
     </div>
   );
@@ -435,6 +490,124 @@ function Row({ k, v }: { k: string; v: any }) {
     <div className="flex justify-between gap-4 py-1 border-b border-neutral-100 last:border-0">
       <dt className="text-neutral-500 text-xs w-16 shrink-0">{k}</dt>
       <dd className="text-neutral-900 text-sm text-right break-keep">{v}</dd>
+    </div>
+  );
+}
+
+// ===== 엑셀 가져오기 모달 =====
+function ImportModal({
+  demo, centerId, onClose, onMergeDemo,
+}: {
+  demo: boolean;
+  centerId: string;
+  onClose: () => void;
+  onMergeDemo: (rows: any[]) => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [parsed, setParsed] = useState<ParsedWorkbook | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState<Record<string, number> | null>(null);
+
+  async function handleFile(f: File) {
+    setFile(f); setParsed(null); setDone(null);
+    try {
+      const p = await parseWorkbook(f);
+      setParsed(p);
+      if (p.sheets.length === 0) {
+        toast({ title: "인식된 시트가 없어요", description: "케어플 월서비스관리 파일 또는 표준 템플릿을 올려주세요.", variant: "destructive" });
+      }
+    } catch (e: any) {
+      toast({ title: "파싱 실패", description: e?.message ?? String(e), variant: "destructive" });
+    }
+  }
+
+  async function handleApply() {
+    if (!parsed) return;
+    setBusy(true);
+    try {
+      if (demo) {
+        const ses = parsed.sheets.find((s) => s.entity === "sessions");
+        const rows = ses?.rows ?? [];
+        onMergeDemo(rows);
+        const summary: Record<string, number> = {};
+        for (const s of parsed.sheets) summary[s.entity] = (summary[s.entity] ?? 0) + s.rows.length;
+        setDone(summary);
+        toast({ title: "시간표에 반영했어요", description: `${rows.length}건의 회기가 일/주/월 보기에 채워졌어요.` });
+      } else {
+        const { summary } = await commitImport(centerId, parsed, file?.name ?? "schedule.xlsx");
+        setDone(summary);
+        toast({ title: "엑셀 이관 완료", description: "일정을 새로고침합니다." });
+        setTimeout(() => { window.location.reload(); }, 800);
+      }
+    } catch (e: any) {
+      toast({ title: "이관 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const sessionsCount = parsed?.sheets.find((s) => s.entity === "sessions")?.rows.length ?? 0;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-xl p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-xs tracking-widest text-neutral-400">SCHEDULE · IMPORT</p>
+            <h3 className="text-lg font-semibold mt-1">엑셀로 일·주·월 일정 한 번에 채우기</h3>
+            <p className="text-xs text-neutral-500 mt-1 break-keep">케어플센터 <span className="font-mono">월서비스관리_YYYYMM.xlsx</span> 또는 바우처 일정표를 올리면, 시간표가 자동으로 채워집니다.</p>
+          </div>
+          <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
+        </div>
+
+        <div className="flex items-center gap-2 mb-3">
+          <button onClick={() => downloadStandardTemplate()} className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-full border border-neutral-200 hover:border-neutral-400">
+            <Download className="w-3.5 h-3.5" /> 표준 템플릿 다운로드
+          </button>
+        </div>
+
+        <div
+          onClick={() => fileRef.current?.click()}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) handleFile(f); }}
+          className="border-2 border-dashed border-neutral-300 rounded-xl p-6 text-center cursor-pointer hover:border-neutral-500 transition"
+        >
+          <FileSpreadsheet className="w-8 h-8 mx-auto text-neutral-400 mb-2" />
+          <p className="text-sm font-medium">{file ? file.name : "파일을 끌어다 놓거나 클릭"}</p>
+          <p className="text-xs text-neutral-500 mt-1">.xlsx / .xls / .csv</p>
+          <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+        </div>
+
+        {parsed && (
+          <div className="mt-4 bg-neutral-50 rounded-xl p-3">
+            <p className="text-xs text-neutral-500 mb-2">감지된 포맷: <span className="font-medium text-neutral-900">{parsed.format}</span> · 회기 {sessionsCount}건</p>
+            <ul className="space-y-1 max-h-32 overflow-auto">
+              {parsed.sheets.map((s, i) => (
+                <li key={i} className="text-xs text-neutral-700 flex justify-between">
+                  <span className="truncate mr-2">{s.source}</span>
+                  <span className="tabular-nums text-neutral-500">{s.rows.length}행</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {done && (
+          <div className="mt-3 flex items-center gap-2 text-emerald-700 text-sm">
+            <Check className="w-4 h-4" /> 적용 완료 · {Object.entries(done).map(([k, v]) => `${k} ${v}`).join(" · ")}
+          </div>
+        )}
+
+        <div className="mt-5 flex justify-end gap-2">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-neutral-600">닫기</button>
+          <button onClick={handleApply} disabled={!parsed || busy || sessionsCount === 0}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-neutral-900 text-white text-sm disabled:opacity-40">
+            {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            시간표에 반영
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

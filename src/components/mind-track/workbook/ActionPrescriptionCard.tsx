@@ -10,6 +10,8 @@ import {
   fetchOrCreatePrescription,
   type ActionPrescription,
 } from "@/lib/mindTrackActionPrescription";
+import ActionFlipCard from "./ActionFlipCard";
+
 
 interface Props {
   enrollmentId: string;

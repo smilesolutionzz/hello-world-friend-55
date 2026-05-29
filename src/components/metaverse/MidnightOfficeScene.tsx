@@ -119,7 +119,7 @@ export default function MidnightOfficeScene({
     } else if (arrived) setArrived(false);
   }, [posPx, targetPx, worldW, gameState, sceneIndex, onArrive, selectedChoice, arrived]);
 
-  // 긴장 / 심박 / 셰이크
+  // 긴장 / 심박 / 셰이크 — 강도 단계화 + 모션 감소 옵션 존중
   useEffect(() => {
     if (gameState === 'narrating' || gameState === 'choice') {
       const base = 35 + Math.round(cfg.intensity * 55);
@@ -128,14 +128,18 @@ export default function MidnightOfficeScene({
       const id = setInterval(() => {
         setTension((v) => Math.min(99, v + Math.random() * 1.3));
         setHeart((v) => Math.min(155, v + (Math.random() > 0.55 ? 1 : 0)));
-        if (cfg.intensity > 0.6 && Math.random() > 0.75) {
-          setShake(1);
-          setTimeout(() => setShake(0), 180);
+        // 강도가 0.55 이상이고 모션 감소가 꺼져 있을 때만 셰이크. 강도가 높을수록 더 자주.
+        if (!prefersReducedMotion && cfg.intensity > 0.55) {
+          const trigger = 0.95 - cfg.intensity * 0.35; // intensity 0.6→0.74, 1.0→0.6
+          if (Math.random() > trigger) {
+            setShake(1);
+            setTimeout(() => setShake(0), 160);
+          }
         }
       }, 380);
       return () => clearInterval(id);
     }
-  }, [gameState, cfg.intensity, sceneIndex]);
+  }, [gameState, cfg.intensity, sceneIndex, prefersReducedMotion]);
 
   const canMove = !selectedChoice && gameState !== 'result' && worldW > 0;
 

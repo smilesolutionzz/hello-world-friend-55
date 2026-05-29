@@ -10,6 +10,8 @@ import {
   fetchOrCreatePrescription,
   type ActionPrescription,
 } from "@/lib/mindTrackActionPrescription";
+import ActionFlipCard from "./ActionFlipCard";
+
 
 interface Props {
   enrollmentId: string;
@@ -86,48 +88,32 @@ const ActionPrescriptionCard: React.FC<Props> = ({
         </p>
       </Card>
 
-      {/* 액션 카드 */}
-      <div className="space-y-3">
-        {actions.map((a, i) => {
-          const done = doneIdx.includes(i);
-          return (
-            <Card
+      {/* 액션 카드 — FIFA 선수카드 스타일 플립 */}
+      <div>
+        <div className="flex items-center justify-between mb-3 px-1">
+          <p className="text-[11px] tracking-[0.2em] text-[#8a7a4d] font-semibold">
+            TODAY'S ACTION PACK
+          </p>
+          <p className="text-[11px] text-slate-400">탭하면 솔루션이 펼쳐져요</p>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          {actions.map((a, i) => (
+            <ActionFlipCard
               key={i}
-              className={`p-5 sm:p-6 bg-white border rounded-2xl transition ${
-                done ? "border-emerald-200 bg-emerald-50/30" : "border-slate-200"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-[#C8B88A] font-bold text-sm">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h4 className="font-semibold text-slate-900 break-keep">{a.title}</h4>
-                </div>
-                <button
-                  onClick={() =>
-                    setDoneIdx((cur) =>
-                      cur.includes(i) ? cur.filter((x) => x !== i) : [...cur, i]
-                    )
-                  }
-                  className={`text-xs px-2.5 py-1 rounded-full font-medium border transition ${
-                    done
-                      ? "bg-emerald-600 text-white border-emerald-600"
-                      : "bg-white text-slate-600 border-slate-300 hover:border-slate-400"
-                  }`}
-                >
-                  {done ? "완료" : "체크"}
-                </button>
-              </div>
-              <div className="space-y-2 text-sm text-slate-700 leading-relaxed break-keep">
-                <p><span className="font-semibold text-slate-500">언제 · </span>{a.when}</p>
-                <p><span className="font-semibold text-slate-500">어떻게 · </span>{a.how}</p>
-                <p className="text-slate-500"><span className="font-semibold">왜 · </span>{a.why}</p>
-              </div>
-            </Card>
-          );
-        })}
+              index={i}
+              action={a}
+              framework={data.framework}
+              done={doneIdx.includes(i)}
+              onToggleDone={() =>
+                setDoneIdx((cur) =>
+                  cur.includes(i) ? cur.filter((x) => x !== i) : [...cur, i]
+                )
+              }
+            />
+          ))}
+        </div>
       </div>
+
 
       {/* 근거 패널 */}
       {data.rationale?.key_principles?.length ? (

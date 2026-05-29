@@ -315,7 +315,7 @@ ${scoreDetails}
   const generateLocalAnalysis = () => {
     const sections: string[] = [];
 
-    sections.push(`### 🧒 종합 심리 프로파일\n우리 아이는 "${character.title}" 유형으로, ${character.desc} 게임 속 선택 패턴을 분석한 결과, 총 ${choices.length}개의 상황에서 일관된 심리적 경향성이 관찰되었습니다.`);
+    sections.push(`### 🧭 종합 심리 프로파일\n${subjectLabel} "${character.title}" 유형으로, ${character.desc} 선택 패턴을 분석한 결과, 총 ${choices.length}개의 상황에서 일관된 심리적 경향성이 관찰되었습니다.`);
 
     const strongDims = topDimensions.slice(0, 3);
     sections.push(`### 💪 강점 영역\n${strongDims.map(([dim, score]) => {

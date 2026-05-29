@@ -420,3 +420,6 @@ verify_jwt = false
 
 [functions.partner-program-assistant]
 verify_jwt = true  # 🔒 운영자만 사용
+
+[functions.generate-game-bgm]
+verify_jwt = false

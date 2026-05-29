@@ -418,18 +418,28 @@ ${scoreDetails}
                 </div>
               </div>
               <div className="mt-3 grid grid-cols-5 gap-1">
-                {profiles.map((p) => (
+                {profiles.map((p, i) => (
                   <div key={p.key} className="text-center">
                     <div className="h-12 flex items-end justify-center">
-                      <div
+                      <motion.div
                         className={`w-full rounded-sm ${p.key === top.key ? 'bg-[#C8B88A]' : 'bg-white/15'}`}
-                        style={{ height: `${Math.max(8, (p.score / profiles[0].score) * 100)}%` }}
+                        initial={{ height: 0 }}
+                        animate={{ height: `${Math.max(8, (p.score / profiles[0].score) * 100)}%` }}
+                        transition={{ duration: 0.7, delay: 0.3 + i * 0.12, ease: [0.4, 0, 0.2, 1] }}
                       />
                     </div>
-                    <div className="mt-1 text-[9px] text-white/50 truncate">{p.label.replace(' 기질', '')}</div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 + i * 0.12 }}
+                      className="mt-1 text-[9px] text-white/50 truncate"
+                    >
+                      {p.label.replace(' 기질', '')}
+                    </motion.div>
                   </div>
                 ))}
               </div>
+
             </Card>
           );
         })()}
@@ -438,30 +448,44 @@ ${scoreDetails}
         <Card className="p-5 bg-white/5 border-white/10 mt-4">
           <h3 className="font-bold mb-4 text-white">📊 심리 특성 분석</h3>
           <div className="space-y-3">
-            {Object.entries(dimensionMeta).map(([dim, meta]) => {
+            {Object.entries(dimensionMeta).map(([dim, meta], i) => {
               const score = results[dim as PsychDimension];
               return (
-                <div key={dim} className="space-y-1">
+                <motion.div
+                  key={dim}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.15 + i * 0.07 }}
+                  className="space-y-1"
+                >
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-white/70">{meta.icon} {meta.label}</span>
-                    <span className="text-xs text-white/50">{score}%</span>
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.7 + i * 0.07 }}
+                      className="text-xs text-white/50 tabular-nums"
+                    >
+                      {score}%
+                    </motion.span>
                   </div>
                   <div className="h-2.5 bg-white/10 rounded-full overflow-hidden">
                     <motion.div
                       className={`h-full rounded-full bg-gradient-to-r ${barGradient}`}
                       initial={{ width: 0 }}
                       animate={{ width: `${score}%` }}
-                      transition={{ duration: 0.8, delay: 0.2 }}
+                      transition={{ duration: 0.9, delay: 0.25 + i * 0.07, ease: [0.4, 0, 0.2, 1] }}
                     />
                   </div>
                   <div className="flex justify-between text-[10px] text-white/30">
                     <span>{meta.lowLabel}</span>
                     <span>{meta.highLabel}</span>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
+
         </Card>
 
         {/* 선택 기록 */}

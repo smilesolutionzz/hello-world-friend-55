@@ -1,15 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, Eye } from 'lucide-react';
+import { Activity, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { StoryScene, StoryChoice } from '@/data/storyScenarios';
 
 /**
- * ShadowEscapeScene — Cinematic scene + tap-based multiple choice.
+ * ShadowEscapeScene — Cinematic scene + tap multiple-choice with live character control.
  *
- * - 큰 캐릭터(실루엣)가 왼쪽에서 걸어 들어와 장면 중앙에 멈춘다.
- * - 각 장면의 핵심 소품(복도/문+손잡이/갈림길/강아지/에필로그)이 캐릭터 옆에 표시된다.
- * - 내레이션이 끝나면 다른 검사처럼 선택지 카드가 아래에서 올라온다.
- * - 선택 시 짧은 반응 모션 후 다음 장면으로 진행한다.
+ * 업그레이드:
+ *  - 장면별 정지 위치 / 입장 시간 / 소품 스케일을 sceneConfig 로 자동 보정
+ *  - PC 키보드(←/→, A/D), 모바일 화면 좌/우 버튼으로 캐릭터를 살짝 움직여 생동감 부여
+ *  - 선택 시 카드가 자연스럽게 접히고(높이/투명도) 캐릭터가 소품 방향으로 퇴장
+ *  - 손잡이/문 같은 핵심 소품은 더 크게, 캐릭터는 더 가깝게 정지
  */
 interface Props {
   currentScene: StoryScene | null;
@@ -22,6 +23,8 @@ interface Props {
   showParentNotes: boolean;
 }
 
+type SceneId = 'first_sound' | 'alley' | 'door' | 'reveal' | 'ending' | string;
+
 const sceneMood: Record<
   string,
   { from: string; to: string; intensity: number; label: string; floor: string }
@@ -32,6 +35,27 @@ const sceneMood: Record<
   reveal:      { from: '#1a1408', to: '#2a1f0a', intensity: 0.20, label: '04 · 해소', floor: '#241a0c' },
   ending:      { from: '#0a0f1a', to: '#1a2030', intensity: 0.10, label: '에필로그', floor: '#1a2030' },
 };
+
+/**
+ * 장면별 캐릭터 정지 위치 / 입장 시간 / 소품 스케일.
+ * stopXPct: 캐릭터가 정지할 가로 위치(%) (좌측 0, 우측 100)
+ * entryMs:  입장 애니메이션 시간 (ms)
+ * propScale: SceneProp 전체 스케일 (손잡이 등 핵심 소품은 더 크게)
+ * exitDir: 선택 시 퇴장 방향
+ */
+const sceneConfig: Record<
+  string,
+  { stopXPct: number; entryMs: number; propScale: number; exitDir: 1 | -1; facingLeft?: boolean }
+> = {
+  first_sound: { stopXPct: 55, entryMs: 1500, propScale: 1.0,  exitDir: 1, facingLeft: true  }, // 그림자가 뒤에서 오므로 살짝 뒤돌아봄
+  alley:       { stopXPct: 50, entryMs: 1500, propScale: 1.05, exitDir: 1 },
+  door:        { stopXPct: 64, entryMs: 1700, propScale: 1.45, exitDir: 1 }, // 문 손잡이 앞까지 더 가깝게
+  reveal:      { stopXPct: 40, entryMs: 1300, propScale: 1.15, exitDir: 1, facingLeft: true }, // 강아지 바라봄
+  ending:      { stopXPct: 50, entryMs: 1800, propScale: 1.0,  exitDir: 1 },
+};
+
+const MANUAL_MAX = 90; // ±px 자유 이동 범위
+const MANUAL_STEP = 18;
 
 export default function ShadowEscapeScene({
   currentScene,
@@ -46,32 +70,41 @@ export default function ShadowEscapeScene({
   const [arrived, setArrived] = useState(false);
   const [tension, setTension] = useState(35);
   const [heart, setHeart] = useState(74);
+  const [manualOffset, setManualOffset] = useState(0); // px, ±MANUAL_MAX
   const arrivedTimer = useRef<number | null>(null);
+  const heldDir = useRef<0 | 1 | -1>(0);
+  const heldRaf = useRef<number | null>(null);
 
   const mood = useMemo(() => {
     if (!currentScene) return sceneMood.first_sound;
     return sceneMood[currentScene.id] ?? sceneMood.first_sound;
   }, [currentScene]);
 
-  // 장면 바뀔 때 캐릭터 워킹 입장 → 도착 후 onArrive
+  const cfg = useMemo(() => {
+    if (!currentScene) return sceneConfig.first_sound;
+    return sceneConfig[currentScene.id] ?? sceneConfig.first_sound;
+  }, [currentScene]);
+
+  // 장면 전환 시 입장 모션 + 도착 콜백 (장면별 entryMs 적용)
   useEffect(() => {
     setArrived(false);
+    setManualOffset(0);
     if (arrivedTimer.current) window.clearTimeout(arrivedTimer.current);
     arrivedTimer.current = window.setTimeout(() => {
       setArrived(true);
       if (gameState === 'exploring') onArrive(sceneIndex);
-    }, 1400);
+    }, cfg.entryMs);
     return () => {
       if (arrivedTimer.current) window.clearTimeout(arrivedTimer.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneIndex, currentScene?.id]);
 
-  // 다른 진입(이미 narrating 상태로 들어옴)에서도 onArrive 안전망
   useEffect(() => {
     if (gameState === 'exploring' && arrived) onArrive(sceneIndex);
   }, [gameState, arrived, sceneIndex, onArrive]);
 
-  // 긴장도/심박
+  // 긴장도 / 심박
   useEffect(() => {
     if (gameState === 'narrating' || gameState === 'choice') {
       const base = 35 + Math.round(mood.intensity * 50);
@@ -85,12 +118,59 @@ export default function ShadowEscapeScene({
     }
   }, [gameState, mood.intensity, sceneIndex]);
 
+  // 키보드: ←/→, A/D 로 캐릭터 좌우 이동(도착 후, 선택 전)
+  const canMove = arrived && !selectedChoice && gameState !== 'result';
+  useEffect(() => {
+    if (!canMove) return;
+    const handleKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+      const k = e.key.toLowerCase();
+      if (k === 'arrowleft' || k === 'a') {
+        e.preventDefault();
+        setManualOffset((v) => Math.max(-MANUAL_MAX, v - MANUAL_STEP));
+      } else if (k === 'arrowright' || k === 'd') {
+        e.preventDefault();
+        setManualOffset((v) => Math.min(MANUAL_MAX, v + MANUAL_STEP));
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [canMove]);
+
+  // 모바일 D-pad 길게 누르기 — 연속 이동
+  const startHold = useCallback((dir: 1 | -1) => {
+    if (!canMove) return;
+    heldDir.current = dir;
+    const loop = () => {
+      if (!heldDir.current) return;
+      setManualOffset((v) =>
+        Math.max(-MANUAL_MAX, Math.min(MANUAL_MAX, v + heldDir.current * 4))
+      );
+      heldRaf.current = requestAnimationFrame(loop);
+    };
+    loop();
+  }, [canMove]);
+  const endHold = useCallback(() => {
+    heldDir.current = 0;
+    if (heldRaf.current) cancelAnimationFrame(heldRaf.current);
+    heldRaf.current = null;
+  }, []);
+  useEffect(() => () => endHold(), [endHold]);
+
   if (!currentScene) {
     return <div className="w-full h-full bg-black rounded-2xl" />;
   }
 
   const isReveal = currentScene.id === 'reveal';
   const isEnding = currentScene.id === 'ending';
+
+  // 캐릭터의 최종 X 위치(translate -50% 기준): `${stopXPct}% + offset`
+  const characterX = arrived
+    ? `calc(${cfg.stopXPct}% - 50% + ${manualOffset}px)`
+    : `calc(-60vw)`;
+  const exitX = `calc(${cfg.stopXPct}% - 50% + ${cfg.exitDir * 75}vw)`;
+  const walking = !arrived || !!selectedChoice;
 
   return (
     <div
@@ -99,7 +179,6 @@ export default function ShadowEscapeScene({
     >
       {/* === 배경: 복도 원근 라인 === */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* 천장/벽 그라데이션 */}
         <div
           className="absolute inset-0"
           style={{
@@ -107,7 +186,6 @@ export default function ShadowEscapeScene({
               'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(200,184,138,0.10) 0%, transparent 70%)',
           }}
         />
-        {/* 원근 바닥 라인 */}
         {Array.from({ length: 6 }).map((_, i) => {
           const t = (i + 1) / 7;
           return (
@@ -123,7 +201,6 @@ export default function ShadowEscapeScene({
             />
           );
         })}
-        {/* 좌우 기둥(원근) */}
         {[0, 1, 2].map((i) => (
           <div
             key={`pillar-${i}`}
@@ -163,44 +240,41 @@ export default function ShadowEscapeScene({
           borderTop: '1px solid rgba(200,184,138,0.12)',
         }}
       />
-      {/* 캐릭터 발 밑 스포트라이트 */}
-      <div
-        className="absolute left-1/2 -translate-x-1/2"
+
+      {/* 캐릭터 발 밑 스포트라이트 — 캐릭터를 따라감 */}
+      <motion.div
+        className="absolute"
+        animate={{ left: characterX }}
+        transition={{ duration: 0.25, ease: 'linear' }}
         style={{
           bottom: 78,
           width: 360,
           height: 60,
+          marginLeft: -180,
           background:
             'radial-gradient(ellipse 50% 50% at 50% 100%, rgba(200,184,138,0.30) 0%, transparent 70%)',
           filter: 'blur(2px)',
         }}
       />
 
-      {/* === 장면 소품 (질문 내용 시각화) === */}
-      <SceneProp sceneId={currentScene.id} intensity={mood.intensity} />
+      {/* === 장면 소품 === */}
+      <SceneProp sceneId={currentScene.id} intensity={mood.intensity} scale={cfg.propScale} />
 
-      {/* === 캐릭터 (대형) — 입장: 왼쪽 → 중앙, 퇴장(선택 후): 중앙 → 오른쪽 === */}
+      {/* === 캐릭터 (대형) — 입장/퇴장/수동 이동 통합 === */}
       <motion.div
         key={`char-${sceneIndex}`}
-        initial={{ x: 'calc(-50% - 60vw)' }}
+        initial={{ left: 'calc(-60vw)' }}
         animate={{
-          x: selectedChoice
-            ? 'calc(-50% + 70vw)'
-            : arrived
-              ? '-50%'
-              : '-50%',
+          left: selectedChoice ? exitX : characterX,
         }}
         transition={{
-          duration: selectedChoice ? 0.75 : arrived ? 0 : 1.4,
-          ease: selectedChoice ? 'easeIn' : 'easeOut',
+          duration: selectedChoice ? 0.75 : arrived ? 0.28 : cfg.entryMs / 1000,
+          ease: selectedChoice ? 'easeIn' : arrived ? 'easeOut' : [0.4, 0, 0.2, 1],
         }}
-        className="absolute left-1/2 z-10"
+        className="absolute z-10"
         style={{ bottom: 88 }}
       >
-        <BigCharacter
-          walking={!arrived || !!selectedChoice}
-          facingLeft={isReveal && !selectedChoice}
-        />
+        <BigCharacter walking={walking} facingLeft={!!cfg.facingLeft && !selectedChoice} />
       </motion.div>
 
       {/* === Vignette === */}
@@ -210,7 +284,6 @@ export default function ShadowEscapeScene({
           background: 'radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.78) 100%)',
         }}
       />
-      {/* Film grain */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-overlay"
         style={{
@@ -254,7 +327,7 @@ export default function ShadowEscapeScene({
         </div>
       </div>
 
-      {/* === Narration (top center) === */}
+      {/* === Narration === */}
       {(gameState === 'narrating' || gameState === 'choice') && (
         <div className="absolute top-14 left-1/2 -translate-x-1/2 w-[92%] max-w-xl z-20 pointer-events-none">
           <motion.div
@@ -280,62 +353,75 @@ export default function ShadowEscapeScene({
         </div>
       )}
 
-      {/* === Choice cards (bottom — tap based) === */}
-      <AnimatePresence>
-        {gameState === 'choice' && !isEnding && (
+      {/* === 화면 내 좌/우 이동 버튼 (모바일·PC 공용) === */}
+      {canMove && (
+        <div className="absolute bottom-[170px] left-3 right-3 flex justify-between pointer-events-none z-20">
+          <button
+            onPointerDown={(e) => { e.preventDefault(); startHold(-1); }}
+            onPointerUp={endHold}
+            onPointerLeave={endHold}
+            onPointerCancel={endHold}
+            aria-label="왼쪽으로 이동"
+            className="pointer-events-auto w-12 h-12 rounded-full bg-black/55 backdrop-blur border border-white/15 flex items-center justify-center text-[#C8B88A] active:scale-90 active:bg-[#C8B88A]/20 transition-transform"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onPointerDown={(e) => { e.preventDefault(); startHold(1); }}
+            onPointerUp={endHold}
+            onPointerLeave={endHold}
+            onPointerCancel={endHold}
+            aria-label="오른쪽으로 이동"
+            className="pointer-events-auto w-12 h-12 rounded-full bg-black/55 backdrop-blur border border-white/15 flex items-center justify-center text-[#C8B88A] active:scale-90 active:bg-[#C8B88A]/20 transition-transform"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+      )}
+
+      {/* === Choice cards (bottom — tap based, 접기 애니메이션) === */}
+      <AnimatePresence mode="wait">
+        {gameState === 'choice' && !isEnding && !selectedChoice && (
           <motion.div
             key={`choices-${currentScene.id}`}
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 20, opacity: 0 }}
-            transition={{ duration: 0.35 }}
+            initial={{ y: 40, opacity: 0, height: 'auto' }}
+            animate={{ y: 0, opacity: 1, height: 'auto' }}
+            exit={{ y: 16, opacity: 0, scaleY: 0.6, height: 0 }}
+            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+            style={{ transformOrigin: 'bottom center', overflow: 'hidden' }}
             className="absolute bottom-4 left-3 right-3 z-30"
           >
             <div className="mb-2 text-center text-[10px] font-mono tracking-[0.2em] text-[#C8B88A]/80 uppercase flex items-center justify-center gap-1.5">
               <Eye className="w-3 h-3" /> 당신의 선택
             </div>
             <div className="flex flex-col gap-2">
-              {currentScene.choices.map((c, i) => {
-                const isSelected = selectedChoice === c.id;
-                const isDimmed = !!selectedChoice && !isSelected;
-                return (
-                  <motion.button
-                    key={c.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{
-                      opacity: isDimmed ? 0.35 : 1,
-                      y: 0,
-                      scale: isSelected ? 0.98 : 1,
-                    }}
-                    transition={{ delay: 0.05 * i }}
-                    disabled={!!selectedChoice}
-                    onClick={() => onChoiceSelect(currentScene, c)}
-                    className={[
-                      'w-full text-left rounded-xl px-4 py-3 backdrop-blur-md border transition-colors',
-                      isSelected
-                        ? 'bg-[#C8B88A]/20 border-[#C8B88A]/70 text-white'
-                        : 'bg-black/55 border-white/10 hover:bg-black/70 hover:border-[#C8B88A]/40 text-white/95',
-                    ].join(' ')}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="shrink-0 w-9 h-9 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center text-lg">
-                        {c.emoji}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[10px] font-mono tracking-widest text-[#C8B88A]/80">
-                          {String(i + 1).padStart(2, '0')}
-                        </div>
-                        <div className="text-[14px] leading-snug break-keep">{c.text}</div>
-                        {showParentNotes && c.parentNote && (
-                          <div className="mt-1 text-[11px] text-amber-200/70 italic break-keep">
-                            → {c.parentNote}
-                          </div>
-                        )}
-                      </div>
+              {currentScene.choices.map((c, i) => (
+                <motion.button
+                  key={c.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 * i, duration: 0.3 }}
+                  onClick={() => onChoiceSelect(currentScene, c)}
+                  className="w-full text-left rounded-xl px-4 py-3 backdrop-blur-md border transition-colors bg-black/55 border-white/10 hover:bg-black/70 hover:border-[#C8B88A]/40 text-white/95"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="shrink-0 w-9 h-9 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center text-lg">
+                      {c.emoji}
                     </div>
-                  </motion.button>
-                );
-              })}
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[10px] font-mono tracking-widest text-[#C8B88A]/80">
+                        {String(i + 1).padStart(2, '0')}
+                      </div>
+                      <div className="text-[14px] leading-snug break-keep">{c.text}</div>
+                      {showParentNotes && c.parentNote && (
+                        <div className="mt-1 text-[11px] text-amber-200/70 italic break-keep">
+                          → {c.parentNote}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.button>
+              ))}
             </div>
           </motion.div>
         )}
@@ -372,99 +458,46 @@ function BigCharacter({ walking, facingLeft }: { walking: boolean; facingLeft: b
       }}
       className="relative"
     >
-      {/* 머리 */}
-      <div
-        className="absolute left-1/2 -translate-x-1/2 top-0 rounded-full"
-        style={{ width: 42, height: 42, background: '#f6c08a' }}
-      />
-      {/* 머리카락 */}
-      <div
-        className="absolute left-1/2 -translate-x-1/2 rounded-t-full"
-        style={{ top: -4, width: 46, height: 24, background: '#1a1a1a' }}
-      />
-      {/* 목 */}
-      <div
-        className="absolute left-1/2 -translate-x-1/2"
-        style={{ top: 40, width: 14, height: 8, background: '#e0a878' }}
-      />
-      {/* 상체 (빨간 옷) */}
+      <div className="absolute left-1/2 -translate-x-1/2 top-0 rounded-full" style={{ width: 42, height: 42, background: '#f6c08a' }} />
+      <div className="absolute left-1/2 -translate-x-1/2 rounded-t-full" style={{ top: -4, width: 46, height: 24, background: '#1a1a1a' }} />
+      <div className="absolute left-1/2 -translate-x-1/2" style={{ top: 40, width: 14, height: 8, background: '#e0a878' }} />
       <div
         className="absolute left-1/2 -translate-x-1/2 rounded-md"
         style={{
-          top: 46,
-          width: 70,
-          height: 78,
+          top: 46, width: 70, height: 78,
           background: 'linear-gradient(180deg,#ef4444 0%,#b91c1c 100%)',
           boxShadow: 'inset 0 -10px 14px rgba(0,0,0,0.25)',
         }}
       />
-      {/* 팔 좌 */}
       <motion.div
         animate={walking ? { rotate: [20, -25, 20] } : { rotate: -8 }}
         transition={{ duration: 0.36, repeat: walking ? Infinity : 0 }}
         className="absolute rounded-md"
-        style={{
-          top: 50,
-          left: 8,
-          width: 14,
-          height: 60,
-          background: '#b91c1c',
-          transformOrigin: 'top center',
-        }}
+        style={{ top: 50, left: 8, width: 14, height: 60, background: '#b91c1c', transformOrigin: 'top center' }}
       />
-      {/* 팔 우 */}
       <motion.div
         animate={walking ? { rotate: [-20, 25, -20] } : { rotate: 8 }}
         transition={{ duration: 0.36, repeat: walking ? Infinity : 0 }}
         className="absolute rounded-md"
-        style={{
-          top: 50,
-          right: 8,
-          width: 14,
-          height: 60,
-          background: '#b91c1c',
-          transformOrigin: 'top center',
-        }}
+        style={{ top: 50, right: 8, width: 14, height: 60, background: '#b91c1c', transformOrigin: 'top center' }}
       />
-      {/* 다리 좌 */}
       <motion.div
         animate={walking ? { rotate: [-22, 22, -22] } : { rotate: 0 }}
         transition={{ duration: 0.36, repeat: walking ? Infinity : 0 }}
         className="absolute rounded-md"
-        style={{
-          top: 124,
-          left: '50%',
-          marginLeft: -16,
-          width: 14,
-          height: 64,
-          background: '#1f2937',
-          transformOrigin: 'top center',
-        }}
+        style={{ top: 124, left: '50%', marginLeft: -16, width: 14, height: 64, background: '#1f2937', transformOrigin: 'top center' }}
       />
-      {/* 다리 우 */}
       <motion.div
         animate={walking ? { rotate: [22, -22, 22] } : { rotate: 0 }}
         transition={{ duration: 0.36, repeat: walking ? Infinity : 0 }}
         className="absolute rounded-md"
-        style={{
-          top: 124,
-          left: '50%',
-          marginLeft: 2,
-          width: 14,
-          height: 64,
-          background: '#1f2937',
-          transformOrigin: 'top center',
-        }}
+        style={{ top: 124, left: '50%', marginLeft: 2, width: 14, height: 64, background: '#1f2937', transformOrigin: 'top center' }}
       />
-      {/* 발 밑 그림자 */}
       <div
         className="absolute left-1/2 -translate-x-1/2"
         style={{
-          bottom: -10,
-          width: 90,
-          height: 14,
-          background:
-            'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,0,0,0.65) 0%, transparent 70%)',
+          bottom: -10, width: 90, height: 14,
+          background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,0,0,0.65) 0%, transparent 70%)',
           filter: 'blur(2px)',
         }}
       />
@@ -473,14 +506,21 @@ function BigCharacter({ walking, facingLeft }: { walking: boolean; facingLeft: b
 }
 
 /* ============================================================
- * 장면별 시각 소품 — 질문 내용을 화면으로 보여준다
+ * 장면별 시각 소품 — 질문 내용을 화면으로 보여준다 (scale 지원)
  * ============================================================ */
-function SceneProp({ sceneId, intensity }: { sceneId: string; intensity: number }) {
+function SceneProp({ sceneId, intensity, scale = 1 }: { sceneId: string; intensity: number; scale?: number }) {
+  const wrap = (children: React.ReactNode) => (
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{ transform: `scale(${scale})`, transformOrigin: 'center bottom' }}
+    >
+      {children}
+    </div>
+  );
+
   if (sceneId === 'first_sound') {
-    // 복도 끝 어둠 + 발자국 + 뒤에서 다가오는 그림자
-    return (
+    return wrap(
       <>
-        {/* 뒤쪽(왼쪽)에서 다가오는 거대 그림자 */}
         <motion.div
           initial={{ x: -200, opacity: 0.4 }}
           animate={{ x: -60, opacity: 0.85 }}
@@ -490,15 +530,12 @@ function SceneProp({ sceneId, intensity }: { sceneId: string; intensity: number 
         >
           <div
             style={{
-              width: '100%',
-              height: '100%',
-              background:
-                'radial-gradient(ellipse 55% 70% at 50% 55%, #000 0%, rgba(0,0,0,0.8) 55%, transparent 80%)',
+              width: '100%', height: '100%',
+              background: 'radial-gradient(ellipse 55% 70% at 50% 55%, #000 0%, rgba(0,0,0,0.8) 55%, transparent 80%)',
               filter: 'blur(8px)',
             }}
           />
         </motion.div>
-        {/* 발자국 마크 */}
         {[0, 1, 2, 3].map((i) => (
           <motion.div
             key={`fp-${i}`}
@@ -507,15 +544,7 @@ function SceneProp({ sceneId, intensity }: { sceneId: string; intensity: number 
             animate={{ opacity: [0, 0.6, 0] }}
             transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.3 }}
           >
-            <div
-              style={{
-                width: '100%',
-                height: '100%',
-                borderRadius: '50%',
-                background: 'rgba(200,184,138,0.35)',
-                filter: 'blur(2px)',
-              }}
-            />
+            <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: 'rgba(200,184,138,0.35)', filter: 'blur(2px)' }} />
           </motion.div>
         ))}
       </>
@@ -523,66 +552,43 @@ function SceneProp({ sceneId, intensity }: { sceneId: string; intensity: number 
   }
 
   if (sceneId === 'alley') {
-    // 갈림길 — 좌(어두운 지름길), 우(밝은 큰길), 가운데 편의점 간판
-    return (
+    return wrap(
       <>
-        {/* 왼쪽 어두운 골목 */}
         <div
           className="absolute"
           style={{
-            left: '8%',
-            bottom: 100,
-            width: 120,
-            height: 220,
-            background:
-              'linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(20,20,40,0.4) 100%)',
+            left: '8%', bottom: 100, width: 120, height: 220,
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(20,20,40,0.4) 100%)',
             clipPath: 'polygon(20% 0, 80% 0, 100% 100%, 0% 100%)',
             borderTop: '2px solid rgba(200,184,138,0.15)',
           }}
         />
-        {/* 오른쪽 밝은 큰길 */}
         <div
           className="absolute"
           style={{
-            right: '8%',
-            bottom: 100,
-            width: 120,
-            height: 220,
-            background:
-              'linear-gradient(180deg, rgba(255,224,150,0.35) 0%, rgba(255,224,150,0.05) 100%)',
+            right: '8%', bottom: 100, width: 120, height: 220,
+            background: 'linear-gradient(180deg, rgba(255,224,150,0.35) 0%, rgba(255,224,150,0.05) 100%)',
             clipPath: 'polygon(20% 0, 80% 0, 100% 100%, 0% 100%)',
             borderTop: '2px solid rgba(255,224,150,0.45)',
             boxShadow: '0 -20px 60px rgba(255,224,150,0.25)',
           }}
         />
-        {/* 가로등 빛 (오른쪽) */}
         <motion.div
           animate={{ opacity: [0.7, 1, 0.7] }}
           transition={{ duration: 2.4, repeat: Infinity }}
           className="absolute"
           style={{
-            right: '13%',
-            bottom: 220,
-            width: 80,
-            height: 80,
-            background:
-              'radial-gradient(circle at 50% 50%, rgba(255,224,150,0.55) 0%, transparent 70%)',
+            right: '13%', bottom: 220, width: 80, height: 80,
+            background: 'radial-gradient(circle at 50% 50%, rgba(255,224,150,0.55) 0%, transparent 70%)',
             filter: 'blur(4px)',
           }}
         />
-        {/* 편의점 간판 (가운데 위) */}
         <div
           className="absolute left-1/2 -translate-x-1/2"
           style={{
-            top: 30,
-            background: 'rgba(72,187,120,0.85)',
-            color: '#fff',
-            fontSize: 10,
-            letterSpacing: 4,
-            padding: '6px 14px',
-            borderRadius: 6,
-            boxShadow: '0 0 30px rgba(72,187,120,0.55)',
-            fontWeight: 700,
+            top: 30, background: 'rgba(72,187,120,0.85)', color: '#fff',
+            fontSize: 10, letterSpacing: 4, padding: '6px 14px', borderRadius: 6,
+            boxShadow: '0 0 30px rgba(72,187,120,0.55)', fontWeight: 700,
           }}
         >
           24H STORE
@@ -592,93 +598,62 @@ function SceneProp({ sceneId, intensity }: { sceneId: string; intensity: number 
   }
 
   if (sceneId === 'door') {
-    // 잠긴 문 + 차가운 손잡이 — 캐릭터 오른쪽
-    return (
+    // 손잡이 강조: 문 크기/손잡이 크기 자체를 더 키움
+    return wrap(
       <>
-        {/* 문 */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
           className="absolute"
           style={{
-            right: '18%',
-            bottom: 100,
-            width: 130,
-            height: 230,
-            background:
-              'linear-gradient(180deg, #3a2418 0%, #2a1810 60%, #1a0f08 100%)',
-            border: '3px solid rgba(200,184,138,0.25)',
+            right: '14%', bottom: 100, width: 160, height: 270,
+            background: 'linear-gradient(180deg, #3a2418 0%, #2a1810 60%, #1a0f08 100%)',
+            border: '3px solid rgba(200,184,138,0.30)',
             borderBottom: 'none',
-            borderTopLeftRadius: 8,
-            borderTopRightRadius: 8,
-            boxShadow:
-              'inset 0 0 30px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.5)',
+            borderTopLeftRadius: 10, borderTopRightRadius: 10,
+            boxShadow: 'inset 0 0 30px rgba(0,0,0,0.6), 0 0 50px rgba(0,0,0,0.6)',
           }}
         >
-          {/* 문 패널 라인 */}
-          <div
-            className="absolute inset-3 rounded-sm"
-            style={{ border: '1.5px solid rgba(200,184,138,0.18)' }}
-          />
-          <div
-            className="absolute inset-x-3"
-            style={{
-              top: '45%',
-              height: 1,
-              background: 'rgba(200,184,138,0.18)',
-            }}
-          />
-          {/* 손잡이 — 강조 펄스 */}
+          <div className="absolute inset-3 rounded-sm" style={{ border: '1.5px solid rgba(200,184,138,0.22)' }} />
+          <div className="absolute inset-x-3" style={{ top: '45%', height: 1, background: 'rgba(200,184,138,0.22)' }} />
+          {/* 손잡이 — 더 크고 강한 펄스 */}
           <motion.div
             animate={{
               boxShadow: [
-                '0 0 0 0 rgba(200,184,138,0.6)',
-                '0 0 0 14px rgba(200,184,138,0)',
+                '0 0 0 0 rgba(200,184,138,0.75)',
+                '0 0 0 22px rgba(200,184,138,0)',
               ],
+              scale: [1, 1.08, 1],
             }}
             transition={{ duration: 1.6, repeat: Infinity }}
             className="absolute"
             style={{
-              right: 14,
-              top: '52%',
-              width: 16,
-              height: 16,
-              borderRadius: '50%',
-              background:
-                'radial-gradient(circle at 30% 30%, #e8e1c8 0%, #8a8068 60%, #4a4438 100%)',
-              border: '1px solid rgba(255,255,255,0.4)',
+              right: 16, top: '52%',
+              width: 26, height: 26, borderRadius: '50%',
+              background: 'radial-gradient(circle at 30% 30%, #f4ecd1 0%, #b8a878 55%, #4a4438 100%)',
+              border: '1.5px solid rgba(255,255,255,0.5)',
             }}
           />
-          {/* 손잡이 라벨 */}
           <div
             className="absolute"
             style={{
-              right: -10,
-              top: '52%',
+              right: -12, top: '52%',
               transform: 'translateY(-50%) translateX(100%)',
-              color: 'rgba(200,184,138,0.85)',
-              fontSize: 9,
-              letterSpacing: 3,
-              fontFamily: 'monospace',
-              whiteSpace: 'nowrap',
+              color: 'rgba(200,184,138,0.9)', fontSize: 10, letterSpacing: 3,
+              fontFamily: 'monospace', whiteSpace: 'nowrap',
             }}
           >
             ← 차가운 손잡이
           </div>
         </motion.div>
-        {/* 뒤에서 다가오는 발자국 그림자 */}
         <motion.div
           animate={{ opacity: [0.4, 0.9, 0.4] }}
           transition={{ duration: 1.2, repeat: Infinity }}
           className="absolute"
           style={{
-            left: '10%',
-            bottom: 90,
-            width: 200,
-            height: 240,
-            background:
-              'radial-gradient(ellipse 55% 70% at 50% 55%, #000 0%, rgba(0,0,0,0.85) 55%, transparent 80%)',
+            left: '8%', bottom: 90, width: 220, height: 260,
+            background: 'radial-gradient(ellipse 55% 70% at 50% 55%, #000 0%, rgba(0,0,0,0.85) 55%, transparent 80%)',
             filter: `blur(${6 + intensity * 4}px)`,
           }}
         />
@@ -687,24 +662,17 @@ function SceneProp({ sceneId, intensity }: { sceneId: string; intensity: number 
   }
 
   if (sceneId === 'reveal') {
-    // 강아지 — 캐릭터 옆에서 올려다본다
-    return (
+    return wrap(
       <>
         <motion.div
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3, type: 'spring', stiffness: 120 }}
           className="absolute"
-          style={{
-            left: '22%',
-            bottom: 92,
-            fontSize: 96,
-            filter: 'drop-shadow(0 8px 24px rgba(200,184,138,0.35))',
-          }}
+          style={{ left: '52%', bottom: 92, fontSize: 110, filter: 'drop-shadow(0 8px 24px rgba(200,184,138,0.35))' }}
         >
           🐕
         </motion.div>
-        {/* 하트 파티클 */}
         {[0, 1, 2].map((i) => (
           <motion.div
             key={`heart-${i}`}
@@ -712,7 +680,7 @@ function SceneProp({ sceneId, intensity }: { sceneId: string; intensity: number 
             animate={{ y: -60, opacity: [0, 1, 0] }}
             transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.7 }}
             className="absolute"
-            style={{ left: `${24 + i * 4}%`, bottom: 200, fontSize: 18 }}
+            style={{ left: `${54 + i * 4}%`, bottom: 200, fontSize: 18 }}
           >
             🫶
           </motion.div>
@@ -722,25 +690,19 @@ function SceneProp({ sceneId, intensity }: { sceneId: string; intensity: number 
   }
 
   if (sceneId === 'ending') {
-    return (
+    return wrap(
       <>
-        {/* 떠오르는 달 */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1.2 }}
           className="absolute left-1/2 -translate-x-1/2"
           style={{
-            top: 60,
-            width: 80,
-            height: 80,
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle at 35% 35%, #fef3c7 0%, #d4a84c 60%, #8a6a28 100%)',
+            top: 60, width: 80, height: 80, borderRadius: '50%',
+            background: 'radial-gradient(circle at 35% 35%, #fef3c7 0%, #d4a84c 60%, #8a6a28 100%)',
             boxShadow: '0 0 60px rgba(254,243,199,0.45)',
           }}
         />
-        {/* 별 */}
         {Array.from({ length: 18 }).map((_, i) => (
           <motion.div
             key={`star-${i}`}
@@ -748,11 +710,8 @@ function SceneProp({ sceneId, intensity }: { sceneId: string; intensity: number 
             transition={{ duration: 2 + (i % 4), repeat: Infinity, delay: i * 0.15 }}
             className="absolute rounded-full"
             style={{
-              left: `${(i * 53) % 100}%`,
-              top: `${(i * 31) % 50}%`,
-              width: 2,
-              height: 2,
-              background: '#fff',
+              left: `${(i * 53) % 100}%`, top: `${(i * 31) % 50}%`,
+              width: 2, height: 2, background: '#fff',
             }}
           />
         ))}

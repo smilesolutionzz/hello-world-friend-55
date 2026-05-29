@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Activity, Eye, ChevronLeft, ChevronRight, Battery } from 'lucide-react';
 import type { StoryScene, StoryChoice } from '@/data/storyScenarios';
+
+/** 선택 시 카드 접힘 ↔ 캐릭터 퇴장 ↔ 다음 장면 입장이 모두 동일한 프레임 윈도우 위에서 동기화되도록
+ *  사용하는 단일 타임라인 상수. GameCounseling3DMode 의 1100ms 와 정확히 맞물린다. */
+const EXIT_MS = 850;            // 캐릭터 퇴장 + 카드 접힘 길이
+const SCENE_HANDOFF_MS = 1100;  // 부모(GameCounseling3DMode)의 setTimeout 과 일치
 
 /**
  * MidnightOfficeScene — 성인용 시네마틱 게임 검사 (자정의 회의실)
@@ -65,6 +70,7 @@ export default function MidnightOfficeScene({
   onChoiceSelect, displayedText, selectedChoice, showParentNotes,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
   const [viewW, setViewW] = useState(0);
   const [posPx, setPosPx] = useState(0);          // 월드 좌표
   const [arrived, setArrived] = useState(false);
@@ -113,7 +119,7 @@ export default function MidnightOfficeScene({
     } else if (arrived) setArrived(false);
   }, [posPx, targetPx, worldW, gameState, sceneIndex, onArrive, selectedChoice, arrived]);
 
-  // 긴장 / 심박 / 셰이크
+  // 긴장 / 심박 / 셰이크 — 강도 단계화 + 모션 감소 옵션 존중
   useEffect(() => {
     if (gameState === 'narrating' || gameState === 'choice') {
       const base = 35 + Math.round(cfg.intensity * 55);
@@ -122,14 +128,18 @@ export default function MidnightOfficeScene({
       const id = setInterval(() => {
         setTension((v) => Math.min(99, v + Math.random() * 1.3));
         setHeart((v) => Math.min(155, v + (Math.random() > 0.55 ? 1 : 0)));
-        if (cfg.intensity > 0.6 && Math.random() > 0.75) {
-          setShake(1);
-          setTimeout(() => setShake(0), 180);
+        // 강도가 0.55 이상이고 모션 감소가 꺼져 있을 때만 셰이크. 강도가 높을수록 더 자주.
+        if (!prefersReducedMotion && cfg.intensity > 0.55) {
+          const trigger = 0.95 - cfg.intensity * 0.35; // intensity 0.6→0.74, 1.0→0.6
+          if (Math.random() > trigger) {
+            setShake(1);
+            setTimeout(() => setShake(0), 160);
+          }
         }
       }, 380);
       return () => clearInterval(id);
     }
-  }, [gameState, cfg.intensity, sceneIndex]);
+  }, [gameState, cfg.intensity, sceneIndex, prefersReducedMotion]);
 
   const canMove = !selectedChoice && gameState !== 'result' && worldW > 0;
 
@@ -185,12 +195,20 @@ export default function MidnightOfficeScene({
   const exiting = !!selectedChoice;
   const walking = heldDir.current !== 0 || exiting;
 
+  // 효과 강도 단계화: 모션 감소 시 모두 0~극저, 그 외에는 cfg.intensity 기반 보간.
+  const fxScale = prefersReducedMotion ? 0 : Math.max(0.25, cfg.intensity); // 0~1
+  const exitSec = EXIT_MS / 1000;
+
+  // 선택 카드가 열리면 소품을 살짝 위로 띄워서 카드(하단)와 시각 충돌 회피.
+  const propBottom = arrived && gameState === 'choice' && !selectedChoice ? 168 : 100;
+  const propActiveScale = arrived ? (gameState === 'choice' && !selectedChoice ? 1.04 : 1.08) : 1;
+
   return (
     <motion.div
       ref={containerRef}
       className="relative w-full h-full overflow-hidden rounded-2xl select-none"
       style={{ background: `linear-gradient(180deg, ${cfg.bgA} 0%, ${cfg.bgB} 100%)` }}
-      animate={shake ? { x: [0, -3, 3, -2, 0] } : { x: 0 }}
+      animate={shake && !prefersReducedMotion ? { x: [0, -3, 3, -2, 0] } : { x: 0 }}
       transition={{ duration: 0.2 }}
     >
       {/* === Parallax sky / 도시 실루엣 === */}
@@ -214,29 +232,29 @@ export default function MidnightOfficeScene({
         }}
       />
 
-      {/* === 비 (window 장면) === */}
-      {cfg.rain && <RainLayer width={viewW} />}
+      {/* === 비 (window 장면) — 강도에 따라 입자 밀도/속도 단계화 === */}
+      {cfg.rain && fxScale > 0 && <RainLayer width={viewW} fxScale={fxScale} />}
 
       {/* === 먼지 입자 === */}
-      <DustParticles seed={currentScene.id} />
+      {fxScale > 0 && <DustParticles seed={currentScene.id} fxScale={fxScale} />}
 
-      {/* === 형광등 깜빡임 === */}
-      {cfg.flicker && (
+      {/* === 형광등 깜빡임 — fxScale 비례 === */}
+      {cfg.flicker && fxScale > 0 && (
         <motion.div
           className="absolute inset-0 bg-white pointer-events-none"
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0, 0.05, 0, 0.02, 0] }}
+          animate={{ opacity: [0, 0, 0.05 * fxScale, 0, 0.02 * fxScale, 0] }}
           transition={{ duration: 4, repeat: Infinity, times: [0, 0.85, 0.87, 0.89, 0.91, 1] }}
         />
       )}
 
-      {/* === 번개 플래시 === */}
-      {cfg.lightning && (
+      {/* === 번개 플래시 — fxScale 비례 === */}
+      {cfg.lightning && fxScale > 0 && (
         <motion.div
           className="absolute inset-0 pointer-events-none"
           style={{ background: 'rgba(220,235,255,0.55)' }}
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0, 0.8, 0, 0.4, 0] }}
+          animate={{ opacity: [0, 0, 0.8 * fxScale, 0, 0.4 * fxScale, 0] }}
           transition={{ duration: 9, repeat: Infinity, times: [0, 0.7, 0.71, 0.73, 0.74, 1] }}
         />
       )}
@@ -264,25 +282,25 @@ export default function MidnightOfficeScene({
         <GoldenPillar leftPx={propScreenX} />
       )}
 
-      {/* === 장면 소품 (스크린 좌표) === */}
+      {/* === 장면 소품 (스크린 좌표) — 카드가 열리면 위로 살짝 들어 올림 === */}
       <div
         className="absolute pointer-events-none"
         style={{
           left: propScreenX,
-          bottom: 100,
-          transform: `translateX(-50%) scale(${cfg.propScale * (arrived ? 1.08 : 1)})`,
+          bottom: propBottom,
+          transform: `translateX(-50%) scale(${cfg.propScale * propActiveScale})`,
           transformOrigin: 'bottom center',
-          transition: 'transform 600ms cubic-bezier(0.2,0.7,0.2,1)',
+          transition: 'transform 600ms cubic-bezier(0.2,0.7,0.2,1), bottom 500ms cubic-bezier(0.2,0.7,0.2,1)',
         }}
       >
         <SceneProp kind={cfg.prop} intensity={cfg.intensity} />
       </div>
 
-      {/* === 캐릭터 발 밑 스포트라이트 === */}
+      {/* === 캐릭터 발 밑 스포트라이트 — 퇴장 듀레이션을 카드 접힘과 동일한 EXIT_MS 로 통일 === */}
       <motion.div
         className="absolute pointer-events-none"
         animate={{ left: exiting ? viewW + 220 : charScreenX }}
-        transition={{ duration: exiting ? 0.85 : 0.18, ease: exiting ? 'easeIn' : 'linear' }}
+        transition={{ duration: exiting ? exitSec : 0.18, ease: exiting ? 'easeIn' : 'linear' }}
         style={{
           bottom: 84, width: 380, height: 70, marginLeft: -190,
           background: 'radial-gradient(ellipse 50% 50% at 50% 100%, rgba(200,184,138,0.32) 0%, transparent 70%)',
@@ -290,11 +308,11 @@ export default function MidnightOfficeScene({
         }}
       />
 
-      {/* === 캐릭터 (크게) === */}
+      {/* === 캐릭터 === */}
       <motion.div
         className="absolute z-10"
         animate={{ left: exiting ? viewW + 220 : charScreenX }}
-        transition={{ duration: exiting ? 0.85 : 0.22, ease: exiting ? 'easeIn' : 'linear' }}
+        transition={{ duration: exiting ? exitSec : 0.22, ease: exiting ? 'easeIn' : 'linear' }}
         style={{ bottom: 96 }}
       >
         <AdultCharacter
@@ -303,14 +321,16 @@ export default function MidnightOfficeScene({
         />
       </motion.div>
 
-      {/* === Vignette + 스캔라인 === */}
+      {/* === Vignette + 스캔라인 (모션 감소 시 스캔라인 거의 끔) === */}
       <div className="absolute inset-0 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.82) 100%)' }} />
-      <div className="absolute inset-0 pointer-events-none opacity-[0.07] mix-blend-overlay"
+      <div className="absolute inset-0 pointer-events-none mix-blend-overlay"
         style={{
+          opacity: prefersReducedMotion ? 0.015 : 0.04 + 0.05 * fxScale,
           backgroundImage:
             "repeating-linear-gradient(0deg, rgba(255,255,255,0.6) 0 1px, transparent 1px 3px)",
         }} />
+
 
       {/* === HUD === */}
       <div className="absolute top-2 left-2 right-2 flex items-start justify-between text-[10px] font-mono tracking-widest text-[#C8B88A]/90 z-20 pointer-events-none">
@@ -414,7 +434,7 @@ export default function MidnightOfficeScene({
           <motion.div key={`c-${currentScene.id}`}
             initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
             exit={{ y: 16, opacity: 0, scaleY: 0.6, height: 0 }}
-            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: exitSec, ease: [0.4, 0, 0.2, 1] }}
             style={{ transformOrigin: 'bottom center', overflow: 'hidden' }}
             className="absolute bottom-3 left-2 right-2 z-30">
             <div className="mb-1.5 text-center text-[10px] font-mono tracking-[0.2em] text-[#C8B88A]/80 uppercase flex items-center justify-center gap-1.5">
@@ -517,15 +537,17 @@ function CitySkyline({ color }: { color: string }) {
   );
 }
 
-function RainLayer({ width }: { width: number }) {
+function RainLayer({ width, fxScale = 1 }: { width: number; fxScale?: number }) {
+  const count = Math.max(10, Math.round(60 * fxScale));
   const drops = useMemo(
-    () => Array.from({ length: 60 }).map((_, i) => ({
-      id: i, left: Math.random() * 100, delay: Math.random() * 1.4, dur: 0.6 + Math.random() * 0.6,
+    () => Array.from({ length: count }).map((_, i) => ({
+      id: i, left: Math.random() * 100, delay: Math.random() * 1.4,
+      dur: (0.6 + Math.random() * 0.6) / Math.max(0.5, fxScale),
     })),
-    []
+    [count, fxScale]
   );
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ opacity: 0.6 + 0.4 * fxScale }}>
       {drops.map((d) => (
         <motion.div key={d.id} className="absolute top-[-10%]"
           style={{ left: `${d.left}%`, width: 1, height: 14, background: 'linear-gradient(180deg, rgba(180,210,255,0) 0%, rgba(180,210,255,0.85) 100%)' }}
@@ -536,16 +558,17 @@ function RainLayer({ width }: { width: number }) {
   );
 }
 
-function DustParticles({ seed }: { seed: string }) {
+function DustParticles({ seed, fxScale = 1 }: { seed: string; fxScale?: number }) {
+  const count = Math.max(4, Math.round(18 * fxScale));
   const items = useMemo(
-    () => Array.from({ length: 18 }).map((_, i) => ({
+    () => Array.from({ length: count }).map((_, i) => ({
       id: `${seed}-${i}`, left: Math.random() * 100, top: 20 + Math.random() * 60,
       dur: 6 + Math.random() * 6, delay: Math.random() * 3, size: 1 + Math.random() * 2,
     })),
-    [seed]
+    [seed, count]
   );
   return (
-    <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute inset-0 pointer-events-none" style={{ opacity: 0.5 + 0.5 * fxScale }}>
       {items.map((p) => (
         <motion.div key={p.id} className="absolute rounded-full bg-white/40"
           style={{ left: `${p.left}%`, top: `${p.top}%`, width: p.size, height: p.size }}

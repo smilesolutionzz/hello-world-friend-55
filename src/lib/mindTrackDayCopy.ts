@@ -137,6 +137,34 @@ export function getDayCopy(
     if (audience === 'parent') return DAY_COPY_7_PARENT[safe];
     return DAY_COPY_7[safe];
   }
+  if (totalDays === 14) {
+    // 2주 트랙: 세션 날(1·4·8·11)과 비세션 날을 구분해 카피 반환
+    const safe = Math.min(Math.max(Math.round(day), 1), 14);
+    const sessionDays = [1, 4, 8, 11];
+    const sessionIdx = sessionDays.indexOf(safe);
+    if (sessionIdx >= 0) {
+      const phase = `Day ${safe} · 세션 ${sessionIdx + 1}/4`;
+      const titles = ['출발선 정렬', '반복 패턴 찾기', '새 루틴 적용', '정착과 회고'];
+      return {
+        phase,
+        title: titles[sessionIdx],
+        description: '오늘은 세션 날이에요. 코칭 → 관찰 일지 → 피드백 3단계로 진행합니다.',
+      };
+    }
+    if (safe === 14) {
+      return {
+        phase: 'Day 14 · 2주 종합 리포트',
+        title: '2주 변화 리포트',
+        description: '4번의 세션이 만든 변화를 한 장으로 정리해드려요.',
+      };
+    }
+    const next = sessionDays.find((d) => d > safe) ?? 14;
+    return {
+      phase: `Day ${safe} · 쉬는 날`,
+      title: `다음 세션 D-${next - safe}`,
+      description: '오늘은 새로운 미션이 없어요. 지난 세션의 한 장면만 가볍게 떠올려보세요.',
+    };
+  }
   const safe = Math.min(Math.max(Math.round(day), 1), 30);
   return DAY_COPY[safe];
 }

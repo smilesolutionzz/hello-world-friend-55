@@ -161,7 +161,7 @@ export default function GameResultReport({
 
   // 성인/부모 화자 검사: 미드나잇 오피스(번아웃), 새벽 3시 아이 울음(양육 스트레스)
   // 두 검사 모두 "플레이어 자신"의 심리가 측정 대상이므로 결과 문구는 본인 기준으로 출력.
-  const ADULT_CHAPTERS = new Set(['midnight_office', 'parent_night']);
+  const ADULT_CHAPTERS = new Set(['midnight_office', 'parent_night', 'city_bird']);
   const isAdult = ADULT_CHAPTERS.has(chapter.id) || /성인|부모|adult|parent/i.test(chapter.targetAge || '');
   const isParentSelf = chapter.id === 'parent_night';
   const charMap = isAdult ? adultCharacterTypes : characterTypes;

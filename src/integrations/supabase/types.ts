@@ -2506,6 +2506,7 @@ export type Database = {
           error_log: Json | null
           filename: string
           id: string
+          import_options: Json | null
           status: string
           summary: Json
           user_id: string
@@ -2518,6 +2519,7 @@ export type Database = {
           error_log?: Json | null
           filename: string
           id?: string
+          import_options?: Json | null
           status?: string
           summary?: Json
           user_id: string
@@ -2530,6 +2532,7 @@ export type Database = {
           error_log?: Json | null
           filename?: string
           id?: string
+          import_options?: Json | null
           status?: string
           summary?: Json
           user_id?: string
@@ -3131,6 +3134,7 @@ export type Database = {
           created_at: string
           id: string
           last_login_at: string | null
+          linked_user_id: string | null
           login_account: string | null
           meta: Json
           name: string
@@ -3148,6 +3152,7 @@ export type Database = {
           created_at?: string
           id?: string
           last_login_at?: string | null
+          linked_user_id?: string | null
           login_account?: string | null
           meta?: Json
           name: string
@@ -3165,6 +3170,7 @@ export type Database = {
           created_at?: string
           id?: string
           last_login_at?: string | null
+          linked_user_id?: string | null
           login_account?: string | null
           meta?: Json
           name?: string
@@ -17086,6 +17092,10 @@ export type Database = {
       claim_cross_promotion_reward: {
         Args: { p_service_name: string; p_verification_code: string }
         Returns: Json
+      }
+      claim_therapist_account: {
+        Args: { _login_account: string }
+        Returns: string
       }
       cleanup_expert_access_logs: { Args: never; Returns: undefined }
       cleanup_financial_audit_logs: { Args: never; Returns: undefined }

@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, List as ListIcon, Grid3x3, Users, Clock, Upload, FileSpreadsheet, Download, Loader2, Check } from "lucide-react";
-import { parseWorkbook, commitImport, downloadStandardTemplate, type ParsedWorkbook } from "@/lib/b2bCenter/excelImport";
-import { toast } from "@/hooks/use-toast";
+import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import ImportWizard from "@/components/b2b-center/ImportWizard";
+import ImportHistoryPanel from "@/components/b2b-center/ImportHistoryPanel";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -55,6 +56,9 @@ export default function SchedulePage() {
   });
   const [selected, setSelected] = useState<any | null>(null);
   const [importOpen, setImportOpen] = useState(false);
+  const [importRefresh, setImportRefresh] = useState(0);
+  const isMobile = useIsMobile();
+  useEffect(() => { if (isMobile) { setView("day"); setGroup("date"); } }, [isMobile]);
 
   // 가시 범위 계산
   const range = useMemo(() => {
@@ -220,14 +224,17 @@ export default function SchedulePage() {
         <SessionDetail s={selected} onClose={() => setSelected(null)} therapist={therapist} clientName={clientName} programName={programName} />
       )}
 
-      {/* 엑셀 가져오기 */}
+      {/* 가져오기 이력 (실제 기관 모드) */}
+      {!demo && <ImportHistoryPanel centerId={centerId} refreshKey={importRefresh} />}
+
+      {/* 엑셀 가져오기 위저드 */}
       {importOpen && (
-        <ImportModal
+        <ImportWizard
           demo={!!demo}
           centerId={centerId}
           onClose={() => setImportOpen(false)}
+          onImported={() => setImportRefresh((x) => x + 1)}
           onMergeDemo={(extra) => {
-            // 데모 모드: 신규 client/therapist/program을 이름 기반으로 합치고 sessions 생성
             const cMap = new Map(clients.map((c: any) => [c.name, c.id]));
             const tMap = new Map(therapists.map((t: any) => [t.name, t.id]));
             const pMap = new Map(programs.map((p: any) => [p.name, p.id]));
@@ -236,7 +243,6 @@ export default function SchedulePage() {
             const newPrograms = [...programs];
             const newSessions = [...sessions];
             let cidx = newClients.length, tidx = newTherapists.length, pidx = newPrograms.length, sidx = newSessions.length;
-
             for (const row of extra) {
               const cname = row.client_name?.toString().trim();
               const tname = row.therapist_name?.toString().trim();

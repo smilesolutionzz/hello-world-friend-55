@@ -248,11 +248,13 @@ function parseCareplMonthly(sheetName: string, aoa: any[][]): DetectedSheet[] {
 
 // ===== 케어플 "일일서비스관리_YYYY-MM-DD-YYYY-MM-DD" 어댑터 =====
 function careplDailySheet(wb: XLSX.WorkBook): { sheetName: string; aoa: any[][] } | null {
-  const want = ["이용자", "생년월일", "선생님", "프로그램", "일자", "시작시간", "종료시간", "상태"];
+  // 표준 템플릿 = 케어플 "일일서비스관리" 1시트 포맷
+  // 헤더: 이용자 / 생년월일 / 선생님 / 프로그램 / 일자 / 시작시간 / 종료시간 / 상태
+  // (시트명·1~3행의 요약 텍스트는 무시한다)
+  const want = ["이용자", "선생님", "프로그램", "일자", "시작시간", "종료시간", "상태"];
   for (const name of wb.SheetNames) {
     const aoa = XLSX.utils.sheet_to_json<any[]>(wb.Sheets[name], { header: 1, defval: null, raw: false });
-    // 헤더가 row 1 또는 row 2 에 있을 수 있음
-    for (const headerRow of [0, 1]) {
+    for (const headerRow of [0, 1, 2, 3]) {
       const header = (aoa[headerRow] ?? []).map((x) => String(x ?? "").trim());
       if (want.every((k) => header.includes(k))) {
         return { sheetName: name, aoa: aoa.slice(headerRow) };
@@ -261,6 +263,7 @@ function careplDailySheet(wb: XLSX.WorkBook): { sheetName: string; aoa: any[][] 
   }
   return null;
 }
+
 
 function parseCareplDaily(sheetName: string, aoa: any[][]): DetectedSheet[] {
   const header = (aoa[0] ?? []).map((x) => String(x ?? "").trim());

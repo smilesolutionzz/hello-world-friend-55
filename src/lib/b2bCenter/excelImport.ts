@@ -342,10 +342,22 @@ export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
   // 1) 케어플 일일서비스관리 — 시작·종료시간 포함, 가장 정확
   const daily = careplDailySheet(wb);
   if (daily) {
+    // 매핑 UI가 __EMPTY 가 아닌 실제 헤더(이용자/선생님/...)를 보도록 rawSheet 교체
+    const header = (daily.aoa[0] ?? []).map((x) => String(x ?? "").trim());
+    const rebuiltRows = daily.aoa.slice(1)
+      .filter((r) => r && r.some((c) => c != null && String(c).trim() !== ""))
+      .map((r) => {
+        const obj: Record<string, any> = {};
+        header.forEach((h, i) => { if (h) obj[h] = r[i] ?? null; });
+        return obj;
+      });
+    const fixedRawSheets = rawSheets.map((s) =>
+      s.name === daily.sheetName ? { name: s.name, rows: rebuiltRows, headers: header.filter(Boolean) } : s,
+    );
     return {
       format: "careple",
       sheets: parseCareplDaily(daily.sheetName, daily.aoa).filter((s) => s.rows.length > 0),
-      rawSheets,
+      rawSheets: fixedRawSheets,
     };
   }
 

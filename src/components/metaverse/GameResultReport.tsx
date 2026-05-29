@@ -215,7 +215,32 @@ export default function GameResultReport({
       const { data, error } = await supabase.functions.invoke('generate-visual-summary', {
         body: {
           type: 'counseling',
-          content: `## 금쪽상담소 게임 상담 결과 - 전문가급 심층 분석 요청
+          content: isAdult
+            ? `## 성인 심리 시뮬레이션 결과 - 전문가급 심층 분석 요청
+
+### 스토리: ${chapter.title}
+### 대상: 성인
+
+### 사용자의 선택 기록:
+${choiceDetails}
+
+### 심리 특성 점수:
+${scoreDetails}
+
+### 대표 성향 유형: ${character.title} - ${character.desc}
+
+위 데이터를 바탕으로 임상심리/조직심리 전문가 관점에서 다음을 포함한 **심층 분석 리포트**를 작성해주세요:
+
+1. **종합 심리 프로파일** - 성인 심리학 이론(번아웃, 자기결정성, 애착, 정서조절)에 근거한 해석
+2. **선택 패턴 해석** - 각 선택이 반영하는 내면의 욕구·방어기제·대처 전략 분석
+3. **강점 영역 심층 분석** - 일·관계·자기관리 장면에서 어떻게 활용되는지 구체적으로 설명
+4. **성장 가능 영역** - 현재 시기의 자연스러운 부분과 개입이 도움이 되는 부분 구분
+5. **맞춤형 셀프 케어 전략** - 일상에서 즉시 실천 가능한 7가지 구체적 루틴 (호흡·인지·관계·환경 포함)
+6. **추천 활동/도구** - CBT 워크북, 마음챙김, 저널링, 운동 등 구체 제안
+7. **추적 포인트** - 2주·4주·8주 후 점검할 셀프 지표
+
+한국어로 작성하고, 본인이 읽기 쉽되 전문적 깊이를 유지하세요. "우리 아이/부모/양육" 같은 아동 대상 표현은 사용하지 말고, 2인칭("당신") 또는 1인칭 시점으로 작성하세요. 최소 2500자 이상.`
+            : `## 금쪽상담소 게임 상담 결과 - 전문가급 심층 분석 요청
 
 ### 스토리: ${chapter.title}
 ### 대상 연령: ${chapter.targetAge}
@@ -239,7 +264,7 @@ ${scoreDetails}
 7. **발달 예측 및 추적 포인트** - 3개월, 6개월 후 관찰해야 할 발달 지표
 
 한국어로 작성하고, 부모가 이해하기 쉽되 전문적 깊이를 유지하세요. 최소 2500자 이상으로 상세하게 작성하세요.`,
-          therapistType: 'child_psychologist',
+          therapistType: isAdult ? 'clinical_psychologist' : 'child_psychologist',
           deepAnalysis: true
         }
       });

@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Play, RotateCcw, Eye, EyeOff, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { allChapters, dimensionMeta, type StoryChapter, type StoryScene, type StoryChoice, type PsychDimension } from '@/data/storyScenarios';
 import { useGameTTS } from '@/hooks/useGameTTS';
+import { useGameAudio, type GameThemeKey } from '@/hooks/useGameAudio';
 import GameResultReport from './GameResultReport';
 
 type GameState = 'intro' | 'playing' | 'result';

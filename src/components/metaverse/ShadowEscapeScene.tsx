@@ -1,16 +1,15 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { StoryScene, StoryChoice } from '@/data/storyScenarios';
 
 /**
- * ShadowEscapeScene — Cinematic scene + tap multiple-choice with live character control.
+ * ShadowEscapeScene — Cinematic scene + tap multiple-choice with manual walking.
  *
- * 업그레이드:
- *  - 장면별 정지 위치 / 입장 시간 / 소품 스케일을 sceneConfig 로 자동 보정
- *  - PC 키보드(←/→, A/D), 모바일 화면 좌/우 버튼으로 캐릭터를 살짝 움직여 생동감 부여
- *  - 선택 시 카드가 자연스럽게 접히고(높이/투명도) 캐릭터가 소품 방향으로 퇴장
- *  - 손잡이/문 같은 핵심 소품은 더 크게, 캐릭터는 더 가깝게 정지
+ *  - 자동 입장 제거: 사용자가 키보드(←/→·A/D) 또는 화면 좌·우 버튼으로 직접 캐릭터를 옮긴다.
+ *  - 금색 빛기둥(target pillar)과 화살표가 다음 정지 지점을 안내한다.
+ *  - 캐릭터가 빛기둥 근처에 도착하면 자동으로 도착 처리(onArrive) → 내레이션·선택지 진행
+ *  - 내레이션 카드는 슬림하게(캐릭터를 가리지 않음).
  */
 interface Props {
   currentScene: StoryScene | null;
@@ -22,8 +21,6 @@ interface Props {
   selectedChoice: string | null;
   showParentNotes: boolean;
 }
-
-type SceneId = 'first_sound' | 'alley' | 'door' | 'reveal' | 'ending' | string;
 
 const sceneMood: Record<
   string,
@@ -37,25 +34,26 @@ const sceneMood: Record<
 };
 
 /**
- * 장면별 캐릭터 정지 위치 / 입장 시간 / 소품 스케일.
- * stopXPct: 캐릭터가 정지할 가로 위치(%) (좌측 0, 우측 100)
- * entryMs:  입장 애니메이션 시간 (ms)
- * propScale: SceneProp 전체 스케일 (손잡이 등 핵심 소품은 더 크게)
- * exitDir: 선택 시 퇴장 방향
+ * 장면별 정지 위치 / 소품 스케일.
+ *  stopXPct: 캐릭터가 정지할 가로 위치(%, 좌0 ~ 우100)
+ *  startXPct: 캐릭터가 새 장면에서 시작하는 위치(%) — 진행 방향
+ *  propScale: SceneProp 전체 스케일
+ *  facingLeft: 캐릭터가 왼쪽을 바라봄
  */
 const sceneConfig: Record<
   string,
-  { stopXPct: number; entryMs: number; propScale: number; exitDir: 1 | -1; facingLeft?: boolean }
+  { stopXPct: number; startXPct: number; propScale: number; facingLeft?: boolean }
 > = {
-  first_sound: { stopXPct: 55, entryMs: 1500, propScale: 1.0,  exitDir: 1, facingLeft: true  }, // 그림자가 뒤에서 오므로 살짝 뒤돌아봄
-  alley:       { stopXPct: 50, entryMs: 1500, propScale: 1.05, exitDir: 1 },
-  door:        { stopXPct: 64, entryMs: 1700, propScale: 1.45, exitDir: 1 }, // 문 손잡이 앞까지 더 가깝게
-  reveal:      { stopXPct: 40, entryMs: 1300, propScale: 1.15, exitDir: 1, facingLeft: true }, // 강아지 바라봄
-  ending:      { stopXPct: 50, entryMs: 1800, propScale: 1.0,  exitDir: 1 },
+  first_sound: { stopXPct: 55, startXPct: 8,  propScale: 1.0,  facingLeft: true },
+  alley:       { stopXPct: 50, startXPct: 6,  propScale: 1.05 },
+  door:        { stopXPct: 64, startXPct: 6,  propScale: 1.45 },
+  reveal:      { stopXPct: 40, startXPct: 6,  propScale: 1.15, facingLeft: true },
+  ending:      { stopXPct: 50, startXPct: 6,  propScale: 1.0 },
 };
 
-const MANUAL_MAX = 90; // ±px 자유 이동 범위
-const MANUAL_STEP = 18;
+const ARRIVE_THRESHOLD = 38; // px
+const STEP_PX = 22;          // 키 1회 이동
+const HOLD_SPEED = 5;        // 길게 누를 때 px/frame
 
 export default function ShadowEscapeScene({
   currentScene,
@@ -67,13 +65,15 @@ export default function ShadowEscapeScene({
   selectedChoice,
   showParentNotes,
 }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerW, setContainerW] = useState(0);
+  const [posPx, setPosPx] = useState(0);
   const [arrived, setArrived] = useState(false);
   const [tension, setTension] = useState(35);
   const [heart, setHeart] = useState(74);
-  const [manualOffset, setManualOffset] = useState(0); // px, ±MANUAL_MAX
-  const arrivedTimer = useRef<number | null>(null);
   const heldDir = useRef<0 | 1 | -1>(0);
   const heldRaf = useRef<number | null>(null);
+  const arrivedFiredRef = useRef(false);
 
   const mood = useMemo(() => {
     if (!currentScene) return sceneMood.first_sound;
@@ -85,24 +85,43 @@ export default function ShadowEscapeScene({
     return sceneConfig[currentScene.id] ?? sceneConfig.first_sound;
   }, [currentScene]);
 
-  // 장면 전환 시 입장 모션 + 도착 콜백 (장면별 entryMs 적용)
-  useEffect(() => {
-    setArrived(false);
-    setManualOffset(0);
-    if (arrivedTimer.current) window.clearTimeout(arrivedTimer.current);
-    arrivedTimer.current = window.setTimeout(() => {
-      setArrived(true);
-      if (gameState === 'exploring') onArrive(sceneIndex);
-    }, cfg.entryMs);
-    return () => {
-      if (arrivedTimer.current) window.clearTimeout(arrivedTimer.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sceneIndex, currentScene?.id]);
+  // 컨테이너 크기 측정
+  useLayoutEffect(() => {
+    if (!containerRef.current) return;
+    const el = containerRef.current;
+    const update = () => setContainerW(el.clientWidth);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
+  const targetPx = useMemo(() => (containerW * cfg.stopXPct) / 100, [containerW, cfg.stopXPct]);
+
+  // 장면 전환: 시작 위치로 캐릭터를 옮기고 도착 플래그 리셋
   useEffect(() => {
-    if (gameState === 'exploring' && arrived) onArrive(sceneIndex);
-  }, [gameState, arrived, sceneIndex, onArrive]);
+    arrivedFiredRef.current = false;
+    setArrived(false);
+    if (containerW > 0) {
+      setPosPx((containerW * cfg.startXPct) / 100);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneIndex, currentScene?.id, containerW]);
+
+  // 도착 판정
+  useEffect(() => {
+    if (selectedChoice) return;
+    if (containerW === 0) return;
+    if (Math.abs(posPx - targetPx) <= ARRIVE_THRESHOLD) {
+      if (!arrived) setArrived(true);
+      if (gameState === 'exploring' && !arrivedFiredRef.current) {
+        arrivedFiredRef.current = true;
+        onArrive(sceneIndex);
+      }
+    } else if (arrived) {
+      setArrived(false);
+    }
+  }, [posPx, targetPx, containerW, gameState, sceneIndex, onArrive, selectedChoice, arrived]);
 
   // 긴장도 / 심박
   useEffect(() => {
@@ -118,8 +137,15 @@ export default function ShadowEscapeScene({
     }
   }, [gameState, mood.intensity, sceneIndex]);
 
-  // 키보드: ←/→, A/D 로 캐릭터 좌우 이동(도착 후, 선택 전)
-  const canMove = arrived && !selectedChoice && gameState !== 'result';
+  // 조작 가능 조건: 선택 직후·결과화면 외 항상 가능 (도착 전후 모두)
+  const canMove = !selectedChoice && gameState !== 'result' && containerW > 0;
+
+  const clampPos = useCallback(
+    (n: number) => Math.max(40, Math.min(containerW - 40, n)),
+    [containerW]
+  );
+
+  // 키보드: ←/→, A/D
   useEffect(() => {
     if (!canMove) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -128,29 +154,27 @@ export default function ShadowEscapeScene({
       const k = e.key.toLowerCase();
       if (k === 'arrowleft' || k === 'a') {
         e.preventDefault();
-        setManualOffset((v) => Math.max(-MANUAL_MAX, v - MANUAL_STEP));
+        setPosPx((v) => clampPos(v - STEP_PX));
       } else if (k === 'arrowright' || k === 'd') {
         e.preventDefault();
-        setManualOffset((v) => Math.min(MANUAL_MAX, v + MANUAL_STEP));
+        setPosPx((v) => clampPos(v + STEP_PX));
       }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [canMove]);
+  }, [canMove, clampPos]);
 
-  // 모바일 D-pad 길게 누르기 — 연속 이동
+  // D-pad 길게 누르기
   const startHold = useCallback((dir: 1 | -1) => {
     if (!canMove) return;
     heldDir.current = dir;
     const loop = () => {
       if (!heldDir.current) return;
-      setManualOffset((v) =>
-        Math.max(-MANUAL_MAX, Math.min(MANUAL_MAX, v + heldDir.current * 4))
-      );
+      setPosPx((v) => clampPos(v + heldDir.current * HOLD_SPEED));
       heldRaf.current = requestAnimationFrame(loop);
     };
     loop();
-  }, [canMove]);
+  }, [canMove, clampPos]);
   const endHold = useCallback(() => {
     heldDir.current = 0;
     if (heldRaf.current) cancelAnimationFrame(heldRaf.current);
@@ -159,21 +183,21 @@ export default function ShadowEscapeScene({
   useEffect(() => () => endHold(), [endHold]);
 
   if (!currentScene) {
-    return <div className="w-full h-full bg-black rounded-2xl" />;
+    return <div ref={containerRef} className="w-full h-full bg-black rounded-2xl" />;
   }
 
-  const isReveal = currentScene.id === 'reveal';
   const isEnding = currentScene.id === 'ending';
 
-  // 캐릭터의 최종 X 위치(translate -50% 기준): `${stopXPct}% + offset`
-  const characterX = arrived
-    ? `calc(${cfg.stopXPct}% - 50% + ${manualOffset}px)`
-    : `calc(-60vw)`;
-  const exitX = `calc(${cfg.stopXPct}% - 50% + ${cfg.exitDir * 75}vw)`;
-  const walking = !arrived || !!selectedChoice;
+  // 선택 후 퇴장: 오른쪽 바깥으로
+  const exitPx = containerW + 200;
+  const displayX = selectedChoice ? exitPx : posPx;
+  const walking = heldDir.current !== 0 || !!selectedChoice;
+  // 캐릭터가 진행해야 할 방향(가이드 화살표/캐릭터 facing 보조)
+  const goingRight = targetPx >= posPx;
 
   return (
     <div
+      ref={containerRef}
       className="relative w-full h-full overflow-hidden rounded-2xl select-none"
       style={{ background: `linear-gradient(180deg, ${mood.from} 0%, ${mood.to} 100%)` }}
     >
@@ -241,11 +265,16 @@ export default function ShadowEscapeScene({
         }}
       />
 
-      {/* 캐릭터 발 밑 스포트라이트 — 캐릭터를 따라감 */}
+      {/* === 금색 빛기둥 (도착 안내) — 도착 전·선택 전에만 === */}
+      {!arrived && !selectedChoice && containerW > 0 && (
+        <GoldenPillar leftPx={targetPx} />
+      )}
+
+      {/* === 캐릭터 발 밑 스포트라이트 === */}
       <motion.div
         className="absolute"
-        animate={{ left: characterX }}
-        transition={{ duration: 0.25, ease: 'linear' }}
+        animate={{ left: displayX }}
+        transition={{ duration: 0.18, ease: 'linear' }}
         style={{
           bottom: 78,
           width: 360,
@@ -260,21 +289,20 @@ export default function ShadowEscapeScene({
       {/* === 장면 소품 === */}
       <SceneProp sceneId={currentScene.id} intensity={mood.intensity} scale={cfg.propScale} />
 
-      {/* === 캐릭터 (대형) — 입장/퇴장/수동 이동 통합 === */}
+      {/* === 캐릭터 === */}
       <motion.div
-        key={`char-${sceneIndex}`}
-        initial={{ left: 'calc(-60vw)' }}
-        animate={{
-          left: selectedChoice ? exitX : characterX,
-        }}
-        transition={{
-          duration: selectedChoice ? 0.75 : arrived ? 0.28 : cfg.entryMs / 1000,
-          ease: selectedChoice ? 'easeIn' : arrived ? 'easeOut' : [0.4, 0, 0.2, 1],
-        }}
         className="absolute z-10"
+        animate={{ left: displayX }}
+        transition={{
+          duration: selectedChoice ? 0.75 : 0.22,
+          ease: selectedChoice ? 'easeIn' : 'linear',
+        }}
         style={{ bottom: 88 }}
       >
-        <BigCharacter walking={walking} facingLeft={!!cfg.facingLeft && !selectedChoice} />
+        <BigCharacter
+          walking={walking}
+          facingLeft={!!cfg.facingLeft && !selectedChoice ? true : !goingRight && walking}
+        />
       </motion.div>
 
       {/* === Vignette === */}
@@ -293,15 +321,15 @@ export default function ShadowEscapeScene({
       />
 
       {/* === HUD === */}
-      <div className="absolute top-3 left-3 right-3 flex items-start justify-between text-[10px] font-mono tracking-widest text-[#C8B88A]/85 z-20 pointer-events-none">
-        <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-black/45 backdrop-blur border border-white/5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#C8B88A] animate-pulse" />
+      <div className="absolute top-2 left-2 right-2 flex items-start justify-between text-[10px] font-mono tracking-widest text-[#C8B88A]/85 z-20 pointer-events-none">
+        <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-black/45 backdrop-blur border border-white/5">
+          <span className="w-1 h-1 rounded-full bg-[#C8B88A] animate-pulse" />
           {mood.label}
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-black/45 backdrop-blur border border-white/5">
-            <Activity className="w-3 h-3" />
-            <div className="w-16 h-1 rounded-full bg-white/10 overflow-hidden">
+        <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-black/45 backdrop-blur border border-white/5">
+            <Activity className="w-2.5 h-2.5" />
+            <div className="w-12 h-1 rounded-full bg-white/10 overflow-hidden">
               <motion.div
                 className="h-full"
                 style={{
@@ -316,55 +344,73 @@ export default function ShadowEscapeScene({
             </div>
             <span className="tabular-nums">{Math.round(tension)}</span>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-black/45 backdrop-blur border border-white/5">
+          <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-black/45 backdrop-blur border border-white/5">
             <motion.span
               animate={{ scale: [1, 1.35, 1] }}
               transition={{ duration: Math.max(0.4, 60 / heart), repeat: Infinity }}
-              className="inline-block w-1.5 h-1.5 rounded-full bg-rose-400"
+              className="inline-block w-1 h-1 rounded-full bg-rose-400"
             />
-            <span className="tabular-nums">{heart} bpm</span>
+            <span className="tabular-nums">{heart}</span>
           </div>
         </div>
       </div>
 
-      {/* === Narration === */}
-      {(gameState === 'narrating' || gameState === 'choice') && (
-        <div className="absolute top-14 left-1/2 -translate-x-1/2 w-[92%] max-w-xl z-20 pointer-events-none">
+      {/* === 가이드 토스트 (도착 전) === */}
+      {!arrived && !selectedChoice && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="absolute top-9 left-1/2 -translate-x-1/2 z-20 pointer-events-none"
+        >
+          <div className="px-2.5 py-1 rounded-full bg-black/55 backdrop-blur border border-[#C8B88A]/30 text-[10px] text-[#C8B88A] tracking-wider flex items-center gap-1.5">
+            <span className="animate-pulse">●</span>
+            금색 빛기둥까지 이동하세요
+            {goingRight ? <ChevronRight className="w-3 h-3" /> : <ChevronLeft className="w-3 h-3" />}
+          </div>
+        </motion.div>
+      )}
+
+      {/* === Narration (슬림) — 도착 후에만 노출 === */}
+      {arrived && (gameState === 'narrating' || gameState === 'choice') && (
+        <div className="absolute top-9 left-2 right-2 z-20 pointer-events-none">
           <motion.div
             key={currentScene.id}
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl bg-black/55 backdrop-blur-md border border-white/10 px-4 py-3"
+            className="mx-auto max-w-[440px] rounded-lg bg-black/55 backdrop-blur-md border border-white/10 px-3 py-1.5"
           >
-            <div className="text-[10px] font-semibold tracking-[0.2em] text-[#C8B88A]/80 uppercase mb-1">
-              {currentScene.title}
+            <div className="flex items-center gap-2">
+              <span className="text-[9px] font-semibold tracking-[0.18em] text-[#C8B88A]/80 uppercase shrink-0">
+                {currentScene.title}
+              </span>
+              <span className="text-white/15">·</span>
+              <p className="text-white/95 text-[12px] leading-snug break-keep flex-1 line-clamp-2">
+                {displayedText || currentScene.description}
+                {gameState === 'narrating' && (
+                  <motion.span
+                    animate={{ opacity: [1, 0] }}
+                    transition={{ duration: 0.6, repeat: Infinity }}
+                    className="inline-block w-0.5 h-3 bg-[#C8B88A] ml-1 align-middle"
+                  />
+                )}
+              </p>
             </div>
-            <p className="text-white/95 text-[13px] md:text-[14px] leading-relaxed whitespace-pre-line break-keep min-h-[2.6em]">
-              {displayedText || currentScene.description}
-              {gameState === 'narrating' && (
-                <motion.span
-                  animate={{ opacity: [1, 0] }}
-                  transition={{ duration: 0.6, repeat: Infinity }}
-                  className="inline-block w-0.5 h-4 bg-[#C8B88A] ml-1 align-middle"
-                />
-              )}
-            </p>
           </motion.div>
         </div>
       )}
 
-      {/* === 화면 내 좌/우 이동 버튼 (모바일·PC 공용) === */}
+      {/* === 화면 내 좌/우 이동 버튼 (PC·모바일 공용) === */}
       {canMove && (
-        <div className="absolute bottom-[170px] left-3 right-3 flex justify-between pointer-events-none z-20">
+        <div className="absolute bottom-[170px] left-2 right-2 flex justify-between pointer-events-none z-20">
           <button
             onPointerDown={(e) => { e.preventDefault(); startHold(-1); }}
             onPointerUp={endHold}
             onPointerLeave={endHold}
             onPointerCancel={endHold}
             aria-label="왼쪽으로 이동"
-            className="pointer-events-auto w-12 h-12 rounded-full bg-black/55 backdrop-blur border border-white/15 flex items-center justify-center text-[#C8B88A] active:scale-90 active:bg-[#C8B88A]/20 transition-transform"
+            className="pointer-events-auto w-14 h-14 rounded-full bg-black/60 backdrop-blur border border-white/15 flex items-center justify-center text-[#C8B88A] active:scale-90 active:bg-[#C8B88A]/20 transition-transform shadow-lg"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-7 h-7" />
           </button>
           <button
             onPointerDown={(e) => { e.preventDefault(); startHold(1); }}
@@ -372,16 +418,16 @@ export default function ShadowEscapeScene({
             onPointerLeave={endHold}
             onPointerCancel={endHold}
             aria-label="오른쪽으로 이동"
-            className="pointer-events-auto w-12 h-12 rounded-full bg-black/55 backdrop-blur border border-white/15 flex items-center justify-center text-[#C8B88A] active:scale-90 active:bg-[#C8B88A]/20 transition-transform"
+            className="pointer-events-auto w-14 h-14 rounded-full bg-black/60 backdrop-blur border border-white/15 flex items-center justify-center text-[#C8B88A] active:scale-90 active:bg-[#C8B88A]/20 transition-transform shadow-lg"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-7 h-7" />
           </button>
         </div>
       )}
 
-      {/* === Choice cards (bottom — tap based, 접기 애니메이션) === */}
+      {/* === Choice cards === */}
       <AnimatePresence mode="wait">
-        {gameState === 'choice' && !isEnding && !selectedChoice && (
+        {arrived && gameState === 'choice' && !isEnding && !selectedChoice && (
           <motion.div
             key={`choices-${currentScene.id}`}
             initial={{ y: 40, opacity: 0, height: 'auto' }}
@@ -389,12 +435,12 @@ export default function ShadowEscapeScene({
             exit={{ y: 16, opacity: 0, scaleY: 0.6, height: 0 }}
             transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
             style={{ transformOrigin: 'bottom center', overflow: 'hidden' }}
-            className="absolute bottom-4 left-3 right-3 z-30"
+            className="absolute bottom-3 left-2 right-2 z-30"
           >
-            <div className="mb-2 text-center text-[10px] font-mono tracking-[0.2em] text-[#C8B88A]/80 uppercase flex items-center justify-center gap-1.5">
+            <div className="mb-1.5 text-center text-[10px] font-mono tracking-[0.2em] text-[#C8B88A]/80 uppercase flex items-center justify-center gap-1.5">
               <Eye className="w-3 h-3" /> 당신의 선택
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5">
               {currentScene.choices.map((c, i) => (
                 <motion.button
                   key={c.id}
@@ -402,19 +448,19 @@ export default function ShadowEscapeScene({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 * i, duration: 0.3 }}
                   onClick={() => onChoiceSelect(currentScene, c)}
-                  className="w-full text-left rounded-xl px-4 py-3 backdrop-blur-md border transition-colors bg-black/55 border-white/10 hover:bg-black/70 hover:border-[#C8B88A]/40 text-white/95"
+                  className="w-full text-left rounded-xl px-3 py-2.5 backdrop-blur-md border transition-colors bg-black/60 border-white/10 hover:bg-black/75 hover:border-[#C8B88A]/40 text-white/95"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="shrink-0 w-9 h-9 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center text-lg">
+                  <div className="flex items-start gap-2.5">
+                    <div className="shrink-0 w-8 h-8 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center text-base">
                       {c.emoji}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[10px] font-mono tracking-widest text-[#C8B88A]/80">
+                      <div className="text-[9px] font-mono tracking-widest text-[#C8B88A]/80">
                         {String(i + 1).padStart(2, '0')}
                       </div>
-                      <div className="text-[14px] leading-snug break-keep">{c.text}</div>
+                      <div className="text-[13px] leading-snug break-keep">{c.text}</div>
                       {showParentNotes && c.parentNote && (
-                        <div className="mt-1 text-[11px] text-amber-200/70 italic break-keep">
+                        <div className="mt-0.5 text-[10px] text-amber-200/70 italic break-keep">
                           → {c.parentNote}
                         </div>
                       )}
@@ -443,7 +489,70 @@ export default function ShadowEscapeScene({
 }
 
 /* ============================================================
- * 대형 캐릭터 — 면적이 큰 실루엣
+ * 금색 빛기둥 + 화살표 가이드
+ * ============================================================ */
+function GoldenPillar({ leftPx }: { leftPx: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="absolute z-[5] pointer-events-none"
+      style={{ left: leftPx, bottom: 90, transform: 'translateX(-50%)' }}
+    >
+      {/* 빛 기둥 */}
+      <motion.div
+        animate={{ opacity: [0.55, 1, 0.55] }}
+        transition={{ duration: 1.8, repeat: Infinity }}
+        style={{
+          width: 70,
+          height: 280,
+          background:
+            'linear-gradient(180deg, rgba(200,184,138,0) 0%, rgba(200,184,138,0.55) 60%, rgba(200,184,138,0.85) 100%)',
+          filter: 'blur(6px)',
+          borderRadius: 999,
+        }}
+      />
+      {/* 중심 코어 */}
+      <motion.div
+        animate={{ opacity: [0.8, 1, 0.8] }}
+        transition={{ duration: 1.2, repeat: Infinity }}
+        className="absolute left-1/2 -translate-x-1/2 bottom-0"
+        style={{
+          width: 6,
+          height: 280,
+          background: 'linear-gradient(180deg, transparent 0%, #f4e3a8 60%, #fff5d1 100%)',
+          boxShadow: '0 0 20px rgba(244,227,168,0.8)',
+          borderRadius: 999,
+        }}
+      />
+      {/* 바닥 글로우 */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2"
+        style={{
+          bottom: -8,
+          width: 120,
+          height: 30,
+          background:
+            'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(244,227,168,0.7) 0%, transparent 70%)',
+          filter: 'blur(4px)',
+        }}
+      />
+      {/* 떠다니는 화살표 */}
+      <motion.div
+        animate={{ y: [0, -6, 0], opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 1.2, repeat: Infinity }}
+        className="absolute left-1/2 -translate-x-1/2"
+        style={{ top: -22, color: '#f4e3a8', fontSize: 22, lineHeight: 1 }}
+      >
+        ▼
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ============================================================
+ * 대형 캐릭터
  * ============================================================ */
 function BigCharacter({ walking, facingLeft }: { walking: boolean; facingLeft: boolean }) {
   return (
@@ -506,7 +615,7 @@ function BigCharacter({ walking, facingLeft }: { walking: boolean; facingLeft: b
 }
 
 /* ============================================================
- * 장면별 시각 소품 — 질문 내용을 화면으로 보여준다 (scale 지원)
+ * 장면별 시각 소품
  * ============================================================ */
 function SceneProp({ sceneId, intensity, scale = 1 }: { sceneId: string; intensity: number; scale?: number }) {
   const wrap = (children: React.ReactNode) => (
@@ -598,7 +707,6 @@ function SceneProp({ sceneId, intensity, scale = 1 }: { sceneId: string; intensi
   }
 
   if (sceneId === 'door') {
-    // 손잡이 강조: 문 크기/손잡이 크기 자체를 더 키움
     return wrap(
       <>
         <motion.div
@@ -617,7 +725,6 @@ function SceneProp({ sceneId, intensity, scale = 1 }: { sceneId: string; intensi
         >
           <div className="absolute inset-3 rounded-sm" style={{ border: '1.5px solid rgba(200,184,138,0.22)' }} />
           <div className="absolute inset-x-3" style={{ top: '45%', height: 1, background: 'rgba(200,184,138,0.22)' }} />
-          {/* 손잡이 — 더 크고 강한 펄스 */}
           <motion.div
             animate={{
               boxShadow: [

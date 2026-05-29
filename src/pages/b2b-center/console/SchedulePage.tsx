@@ -54,6 +54,7 @@ export default function SchedulePage() {
     scheduled: true, completed: true, cancelled: true, cancelled_makeup: true, cancelled_carry: true,
   });
   const [selected, setSelected] = useState<any | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
 
   // 가시 범위 계산
   const range = useMemo(() => {

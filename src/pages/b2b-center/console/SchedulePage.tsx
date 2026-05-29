@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, List as ListIcon, Grid3x3, Users, Clock, Upload, FileSpreadsheet, Download, Loader2, Check } from "lucide-react";
-import { parseWorkbook, commitImport, downloadStandardTemplate, type ParsedWorkbook } from "@/lib/b2bCenter/excelImport";
-import { toast } from "@/hooks/use-toast";
+import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import ImportWizard from "@/components/b2b-center/ImportWizard";
+import ImportHistoryPanel from "@/components/b2b-center/ImportHistoryPanel";
 
 type Ctx = { centerId: string; demo?: boolean };
 

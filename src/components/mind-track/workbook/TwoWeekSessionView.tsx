@@ -246,13 +246,50 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
               <Button variant="outline" className="flex-1 h-12 rounded-2xl" onClick={() => setStep('journal')}>
                 일지 수정
               </Button>
-              <Button className="flex-1 h-12 rounded-2xl" onClick={() => navigate('/mind-track/dashboard')}>
-                완료
+              <Button
+                className="flex-1 h-12 rounded-2xl"
+                onClick={() => {
+                  if (thread) setWrapOpen(true);
+                  else navigate('/mind-track/dashboard');
+                }}
+              >
+                오늘 점수 매기고 마치기
               </Button>
             </div>
           </motion.div>
         )}
       </div>
+
+      {threadLoaded && !thread && (
+        <ConcernIntakeDialog
+          open
+          enrollmentId={enrollmentId}
+          audience={audience}
+          onCreated={reloadThread}
+        />
+      )}
+      {thread && (
+        <SessionWrapDialog
+          open={wrapOpen}
+          onOpenChange={setWrapOpen}
+          thread={thread}
+          enrollmentId={enrollmentId}
+          dayNumber={day}
+          sessionIndex={sessionIdx}
+          onCompleted={() => {
+            reloadThread();
+            if (day >= 14) setGradOpen(true);
+          }}
+        />
+      )}
+      {thread && (
+        <GraduationModal
+          open={gradOpen}
+          onOpenChange={setGradOpen}
+          thread={thread}
+          enrollmentId={enrollmentId}
+        />
+      )}
     </div>
   );
 }

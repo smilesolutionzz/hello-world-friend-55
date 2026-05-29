@@ -87,7 +87,7 @@ export default function ParentReportsPage() {
         </table>
       </div>
 
-      <SampleParentReport open={!!sampleOpen} onClose={() => setSampleOpen(null)} clientName={sampleOpen?.name} period={sampleOpen?.period} />
+      <SampleParentReport open={!!sampleOpen} onClose={() => setSampleOpen(null)} clientId={sampleOpen?.clientId} clientName={sampleOpen?.name} period={sampleOpen?.period} periodKey={sampleOpen?.periodKey} />
     </div>
   );
 }

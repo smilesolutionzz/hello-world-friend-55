@@ -159,12 +159,20 @@ export default function GameResultReport({
   const { toast } = useToast();
   const { saveProgress } = useProgressTracking();
 
-  const isAdult = chapter.id === 'midnight_office' || /성인|adult/i.test(chapter.targetAge || '');
+  // 성인/부모 화자 검사: 미드나잇 오피스(번아웃), 새벽 3시 아이 울음(양육 스트레스)
+  // 두 검사 모두 "플레이어 자신"의 심리가 측정 대상이므로 결과 문구는 본인 기준으로 출력.
+  const ADULT_CHAPTERS = new Set(['midnight_office', 'parent_night']);
+  const isAdult = ADULT_CHAPTERS.has(chapter.id) || /성인|부모|adult|parent/i.test(chapter.targetAge || '');
+  const isParentSelf = chapter.id === 'parent_night';
   const charMap = isAdult ? adultCharacterTypes : characterTypes;
   const interpMap = isAdult ? adultInterpretations : detailedInterpretations;
   const subjectLabel = isAdult ? '당신은' : '우리 아이는';
   const subjectShort = isAdult ? '당신' : '아이';
-  const guideTitle = isAdult ? '셀프 케어 가이드' : '핵심 양육 가이드';
+  const guideTitle = isParentSelf
+    ? '부모를 위한 셀프 케어 가이드'
+    : isAdult
+      ? '셀프 케어 가이드'
+      : '핵심 양육 가이드';
 
   const topDimensions = Object.entries(results).sort(([, a], [, b]) => b - a).slice(0, 4);
   const bottomDimensions = Object.entries(results).sort(([, a], [, b]) => a - b).slice(0, 2);

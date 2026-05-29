@@ -195,12 +195,20 @@ export default function MidnightOfficeScene({
   const exiting = !!selectedChoice;
   const walking = heldDir.current !== 0 || exiting;
 
+  // 효과 강도 단계화: 모션 감소 시 모두 0~극저, 그 외에는 cfg.intensity 기반 보간.
+  const fxScale = prefersReducedMotion ? 0 : Math.max(0.25, cfg.intensity); // 0~1
+  const exitSec = EXIT_MS / 1000;
+
+  // 선택 카드가 열리면 소품을 살짝 위로 띄워서 카드(하단)와 시각 충돌 회피.
+  const propBottom = arrived && gameState === 'choice' && !selectedChoice ? 168 : 100;
+  const propActiveScale = arrived ? (gameState === 'choice' && !selectedChoice ? 1.04 : 1.08) : 1;
+
   return (
     <motion.div
       ref={containerRef}
       className="relative w-full h-full overflow-hidden rounded-2xl select-none"
       style={{ background: `linear-gradient(180deg, ${cfg.bgA} 0%, ${cfg.bgB} 100%)` }}
-      animate={shake ? { x: [0, -3, 3, -2, 0] } : { x: 0 }}
+      animate={shake && !prefersReducedMotion ? { x: [0, -3, 3, -2, 0] } : { x: 0 }}
       transition={{ duration: 0.2 }}
     >
       {/* === Parallax sky / 도시 실루엣 === */}
@@ -224,29 +232,29 @@ export default function MidnightOfficeScene({
         }}
       />
 
-      {/* === 비 (window 장면) === */}
-      {cfg.rain && <RainLayer width={viewW} />}
+      {/* === 비 (window 장면) — 강도에 따라 입자 밀도/속도 단계화 === */}
+      {cfg.rain && fxScale > 0 && <RainLayer width={viewW} fxScale={fxScale} />}
 
       {/* === 먼지 입자 === */}
-      <DustParticles seed={currentScene.id} />
+      {fxScale > 0 && <DustParticles seed={currentScene.id} fxScale={fxScale} />}
 
-      {/* === 형광등 깜빡임 === */}
-      {cfg.flicker && (
+      {/* === 형광등 깜빡임 — fxScale 비례 === */}
+      {cfg.flicker && fxScale > 0 && (
         <motion.div
           className="absolute inset-0 bg-white pointer-events-none"
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0, 0.05, 0, 0.02, 0] }}
+          animate={{ opacity: [0, 0, 0.05 * fxScale, 0, 0.02 * fxScale, 0] }}
           transition={{ duration: 4, repeat: Infinity, times: [0, 0.85, 0.87, 0.89, 0.91, 1] }}
         />
       )}
 
-      {/* === 번개 플래시 === */}
-      {cfg.lightning && (
+      {/* === 번개 플래시 — fxScale 비례 === */}
+      {cfg.lightning && fxScale > 0 && (
         <motion.div
           className="absolute inset-0 pointer-events-none"
           style={{ background: 'rgba(220,235,255,0.55)' }}
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0, 0.8, 0, 0.4, 0] }}
+          animate={{ opacity: [0, 0, 0.8 * fxScale, 0, 0.4 * fxScale, 0] }}
           transition={{ duration: 9, repeat: Infinity, times: [0, 0.7, 0.71, 0.73, 0.74, 1] }}
         />
       )}
@@ -274,25 +282,25 @@ export default function MidnightOfficeScene({
         <GoldenPillar leftPx={propScreenX} />
       )}
 
-      {/* === 장면 소품 (스크린 좌표) === */}
+      {/* === 장면 소품 (스크린 좌표) — 카드가 열리면 위로 살짝 들어 올림 === */}
       <div
         className="absolute pointer-events-none"
         style={{
           left: propScreenX,
-          bottom: 100,
-          transform: `translateX(-50%) scale(${cfg.propScale * (arrived ? 1.08 : 1)})`,
+          bottom: propBottom,
+          transform: `translateX(-50%) scale(${cfg.propScale * propActiveScale})`,
           transformOrigin: 'bottom center',
-          transition: 'transform 600ms cubic-bezier(0.2,0.7,0.2,1)',
+          transition: 'transform 600ms cubic-bezier(0.2,0.7,0.2,1), bottom 500ms cubic-bezier(0.2,0.7,0.2,1)',
         }}
       >
         <SceneProp kind={cfg.prop} intensity={cfg.intensity} />
       </div>
 
-      {/* === 캐릭터 발 밑 스포트라이트 === */}
+      {/* === 캐릭터 발 밑 스포트라이트 — 퇴장 듀레이션을 카드 접힘과 동일한 EXIT_MS 로 통일 === */}
       <motion.div
         className="absolute pointer-events-none"
         animate={{ left: exiting ? viewW + 220 : charScreenX }}
-        transition={{ duration: exiting ? 0.85 : 0.18, ease: exiting ? 'easeIn' : 'linear' }}
+        transition={{ duration: exiting ? exitSec : 0.18, ease: exiting ? 'easeIn' : 'linear' }}
         style={{
           bottom: 84, width: 380, height: 70, marginLeft: -190,
           background: 'radial-gradient(ellipse 50% 50% at 50% 100%, rgba(200,184,138,0.32) 0%, transparent 70%)',
@@ -300,11 +308,11 @@ export default function MidnightOfficeScene({
         }}
       />
 
-      {/* === 캐릭터 (크게) === */}
+      {/* === 캐릭터 === */}
       <motion.div
         className="absolute z-10"
         animate={{ left: exiting ? viewW + 220 : charScreenX }}
-        transition={{ duration: exiting ? 0.85 : 0.22, ease: exiting ? 'easeIn' : 'linear' }}
+        transition={{ duration: exiting ? exitSec : 0.22, ease: exiting ? 'easeIn' : 'linear' }}
         style={{ bottom: 96 }}
       >
         <AdultCharacter
@@ -313,14 +321,16 @@ export default function MidnightOfficeScene({
         />
       </motion.div>
 
-      {/* === Vignette + 스캔라인 === */}
+      {/* === Vignette + 스캔라인 (모션 감소 시 스캔라인 거의 끔) === */}
       <div className="absolute inset-0 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.82) 100%)' }} />
-      <div className="absolute inset-0 pointer-events-none opacity-[0.07] mix-blend-overlay"
+      <div className="absolute inset-0 pointer-events-none mix-blend-overlay"
         style={{
+          opacity: prefersReducedMotion ? 0.015 : 0.04 + 0.05 * fxScale,
           backgroundImage:
             "repeating-linear-gradient(0deg, rgba(255,255,255,0.6) 0 1px, transparent 1px 3px)",
         }} />
+
 
       {/* === HUD === */}
       <div className="absolute top-2 left-2 right-2 flex items-start justify-between text-[10px] font-mono tracking-widest text-[#C8B88A]/90 z-20 pointer-events-none">

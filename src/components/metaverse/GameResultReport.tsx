@@ -443,7 +443,7 @@ ${scoreDetails}
               variant="ghost"
               size="sm"
               className={`mt-3 ${accentText}`}
-              onClick={() => onSpeak(`우리 아이는 ${character.title}이에요! ${character.desc}`)}
+              onClick={() => onSpeak(`${subjectLabel} ${character.title} 유형이에요. ${character.desc}`)}
               disabled={isSpeaking || ttsLoading}
             >
               {isSpeaking ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Volume2 className="w-4 h-4 mr-1" />}

@@ -24,6 +24,15 @@ export default function TherapistsAdminPage() {
       <h1 className="text-2xl font-semibold mb-1">선생님 관리</h1>
       <p className="text-sm text-neutral-500 mb-6">총 {rows.length}명</p>
 
+      <div className="mb-6 rounded-2xl border border-[#C8B88A]/40 bg-[#FAF6E8]/60 p-4">
+        <p className="text-[10px] tracking-widest text-[#8B7B4A] mb-1">TIP · 치료사 본인 일정 보기</p>
+        <p className="text-sm text-neutral-800 break-keep">
+          선생님이 본인 일정을 직접 확인·완료/취소 처리하려면, 아래 <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-white border border-neutral-200">계정</span> 열에
+          AIHPRO 가입 이메일을 입력해주세요. 그 다음 선생님이 <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-white border border-neutral-200">/therapist/my-schedule</span> 에 접속해
+          "내 계정 연결" 버튼만 누르면 즉시 동기화됩니다.
+        </p>
+      </div>
+
       <div className="grid grid-cols-3 gap-3 mb-6">
         <Stat label="정상" value={active} color="bg-emerald-500" />
         <Stat label="잠금" value={locked} color="bg-amber-500" />

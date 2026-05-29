@@ -26,6 +26,7 @@ import Index from "./pages/Index";
 import CheckFlow from "./pages/lite/CheckFlow";
 import CheckDone from "./pages/lite/CheckDone";
 import TherapistSubscriptionTeaser from "./pages/lite/TherapistSubscriptionTeaser";
+import TherapistMySchedule from "./pages/TherapistMySchedule";
 import FindCenter from "./pages/lite/FindCenter";
 import HighlightAuth from "./pages/HighlightAuth";
 import ResetPassword from "./pages/ResetPassword";
@@ -265,6 +266,7 @@ const App = () => {
           <Route path="/check" element={<CheckFlow />} />
           <Route path="/check/done" element={<CheckDone />} />
           <Route path="/therapist-subscription" element={<TherapistSubscriptionTeaser />} />
+          <Route path="/therapist/my-schedule" element={<TherapistMySchedule />} />
           <Route path="/g/:token" element={<GuardianNotice />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/reset-password" element={<ResetPassword />} />

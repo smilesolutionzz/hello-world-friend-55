@@ -320,13 +320,13 @@ ${scoreDetails}
     const strongDims = topDimensions.slice(0, 3);
     sections.push(`### 💪 강점 영역\n${strongDims.map(([dim, score]) => {
       const meta = dimensionMeta[dim as PsychDimension];
-      const interp = detailedInterpretations[dim];
+      const interp = interpMap[dim];
       return `**${meta?.icon} ${meta?.label} (${score}%)**: ${interp?.high || ''}`;
     }).join('\n\n')}`);
 
     sections.push(`### 🌱 성장 가능 영역\n${bottomDimensions.map(([dim, score]) => {
       const meta = dimensionMeta[dim as PsychDimension];
-      const interp = detailedInterpretations[dim];
+      const interp = interpMap[dim];
       return `**${meta?.icon} ${meta?.label} (${score}%)**: ${interp?.low || ''}`;
     }).join('\n\n')}`);
 
@@ -337,10 +337,10 @@ ${scoreDetails}
     }).join('\n\n')}`);
 
     sections.push(`### 🏠 양육 가이드\n${strongDims.map(([dim]) => {
-      const interp = detailedInterpretations[dim];
+      const interp = interpMap[dim];
       return `✅ ${interp?.guide || ''}`;
     }).join('\n')}\n\n${bottomDimensions.map(([dim]) => {
-      const interp = detailedInterpretations[dim];
+      const interp = interpMap[dim];
       return `💡 ${interp?.guide || ''}`;
     }).join('\n')}`);
 
@@ -603,7 +603,7 @@ ${scoreDetails}
           <h3 className="font-bold mb-3 text-green-300">🌱 핵심 양육 가이드</h3>
           <div className="space-y-2 text-sm text-green-200">
             {topDimensions.slice(0, 2).map(([dim]) => {
-              const interp = detailedInterpretations[dim];
+              const interp = interpMap[dim];
               return (
                 <div key={dim} className="flex gap-2">
                   <span className="shrink-0">✅</span>
@@ -612,7 +612,7 @@ ${scoreDetails}
               );
             })}
             {bottomDimensions.map(([dim]) => {
-              const interp = detailedInterpretations[dim];
+              const interp = interpMap[dim];
               return interp?.guide ? (
                 <div key={dim} className="flex gap-2">
                   <span className="shrink-0">💡</span>

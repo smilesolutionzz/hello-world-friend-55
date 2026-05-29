@@ -109,9 +109,9 @@ export default function SampleParentReport({ open, onClose, clientName = "민준
             <SectionLabel num="03" title="이번 달 빛났던 순간" />
             <div className="grid sm:grid-cols-2 gap-4">
               {[
-                { date: "4월 8일", title: "처음으로 친구에게 \"같이 놀자\"고 말했어요", body: "블록 영역에서 도윤이에게 자발적으로 다가가 놀이 제안을 했고, 5분간 협동 놀이가 이어졌습니다." },
-                { date: "4월 15일", title: "감정 단어를 스스로 사용했습니다", body: "퍼즐을 완성한 후 \"민준이 기뻐요\"라고 표현했어요. 처음으로 \"기뻐요\"라는 단어가 자발적으로 나왔습니다." },
-                { date: "4월 22일", title: "지시 따르기 정확도가 안정화되었어요", body: "\"가방에서 책 꺼내서 책상 위에 올려놓자\" 같은 2단계 지시를 5회 중 5회 모두 성공했습니다." },
+                { date: "4월 8일", title: "처음으로 친구에게 "같이 놀자"고 말했어요", body: "블록 영역에서 도윤이에게 자발적으로 다가가 놀이 제안을 했고, 5분간 협동 놀이가 이어졌습니다." },
+                { date: "4월 15일", title: "감정 단어를 스스로 사용했습니다", body: "퍼즐을 완성한 후 "민준이 기뻐요"라고 표현했어요. 처음으로 "기뻐요"라는 단어가 자발적으로 나왔습니다." },
+                { date: "4월 22일", title: "지시 따르기 정확도가 안정화되었어요", body: ""가방에서 책 꺼내서 책상 위에 올려놓자" 같은 2단계 지시를 5회 중 5회 모두 성공했습니다." },
                 { date: "4월 29일", title: "역할놀이에서 주도성을 보였어요", body: "병원놀이 상황에서 의사 역할을 자발적으로 선택하고, 치료사에게 역할을 지정해주는 모습이 관찰되었습니다." },
               ].map((m) => (
                 <div key={m.date} className="bg-white rounded-2xl border border-neutral-200 p-5">
@@ -131,7 +131,7 @@ export default function SampleParentReport({ open, onClose, clientName = "민준
             <div className="bg-gradient-to-br from-[#FAF6E8] to-white rounded-3xl p-8 border border-[#C8B88A]/40 relative">
               <div className="absolute top-6 right-6 text-6xl text-[#C8B88A]/30 font-serif leading-none">"</div>
               <p className="text-neutral-800 leading-relaxed text-[15px] italic">
-                민준이는 이번 달 자기 표현의 폭이 눈에 띄게 넓어졌습니다. 특히 \"같이\", \"먼저\" 같은
+                민준이는 이번 달 자기 표현의 폭이 눈에 띄게 넓어졌습니다. 특히 "같이", "먼저" 같은
                 관계 단어를 자발적으로 사용하기 시작한 것은 사회성 발달의 중요한 신호입니다. 가정에서도
                 민준이가 말을 시작할 때 충분히 기다려주시고, 완성된 문장을 반복해서 들려주시면
                 문장 길이가 더 빠르게 늘 거예요. 전이 상황의 어려움은 흔한 발달 과정의 일부이니
@@ -152,9 +152,9 @@ export default function SampleParentReport({ open, onClose, clientName = "민준
             <SectionLabel num="05" title="이번 달 가정 연습 제안" />
             <div className="space-y-3">
               {[
-                { title: "식사 시간 \"무엇/누구/어디\" 질문 놀이", desc: "하루 한 끼 식사에서 \"이건 누가 만들었을까?\", \"이거 어디서 샀지?\" 같은 열린 질문을 3-5회 던져주세요. 답을 못해도 괜찮습니다.", time: "5분/회" },
+                { title: "식사 시간 "무엇/누구/어디" 질문 놀이", desc: "하루 한 끼 식사에서 "이건 누가 만들었을까?", "이거 어디서 샀지?" 같은 열린 질문을 3-5회 던져주세요. 답을 못해도 괜찮습니다.", time: "5분/회" },
                 { title: "전이 카드 만들기", desc: "다음 활동을 그림으로 보여주는 작은 카드 3장(놀이 → 정리 → 간식)을 만들어 보여주시면 전이 저항이 줄어듭니다.", time: "준비 10분, 매일 사용" },
-                { title: "잠자기 전 \"오늘 가장 좋았던 일\" 1문장 말하기", desc: "감정 단어 확장에 도움이 됩니다. 부모님이 먼저 시범을 보여주세요.", time: "3분/회" },
+                { title: "잠자기 전 "오늘 가장 좋았던 일" 1문장 말하기", desc: "감정 단어 확장에 도움이 됩니다. 부모님이 먼저 시범을 보여주세요.", time: "3분/회" },
               ].map((p, i) => (
                 <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-5 flex gap-4">
                   <div className="w-8 h-8 rounded-full bg-neutral-900 text-white text-sm font-semibold flex items-center justify-center shrink-0">{i + 1}</div>

@@ -27,6 +27,16 @@ export default function TwoWeekRestView({ enrollmentId, day, audience }: Props) 
   const content = getRestDayContent(day, audience);
   const next = getNextSessionDay(day);
   const [lastSession, setLastSession] = useState<PastSession | null>(null);
+  const [thread, setThread] = useState<ConcernThread | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const t = await getConcernThread(enrollmentId);
+      if (!cancelled) setThread(t);
+    })();
+    return () => { cancelled = true; };
+  }, [enrollmentId]);
 
   useEffect(() => {
     let cancelled = false;

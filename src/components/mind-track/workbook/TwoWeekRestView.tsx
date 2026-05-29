@@ -15,7 +15,7 @@ interface Props {
 
 interface PastSession {
   day_number: number;
-  responses: any;
+  feedback: string | null;
 }
 
 export default function TwoWeekRestView({ enrollmentId, day, audience }: Props) {
@@ -29,10 +29,10 @@ export default function TwoWeekRestView({ enrollmentId, day, audience }: Props) 
     (async () => {
       const { data } = await supabase
         .from('mind_track_session_logs')
-        .select('day_number, responses')
+        .select('day_number, feedback')
         .eq('enrollment_id', enrollmentId)
         .lt('day_number', day)
-        .eq('status', 'completed')
+        .eq('step', 'completed')
         .order('day_number', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -41,7 +41,7 @@ export default function TwoWeekRestView({ enrollmentId, day, audience }: Props) 
     return () => { cancelled = true; };
   }, [enrollmentId, day]);
 
-  const lastFeedback = lastSession?.responses?.feedback as string | undefined;
+  const lastFeedback = lastSession?.feedback || undefined;
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">

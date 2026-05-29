@@ -10,6 +10,7 @@ import VillageAdventure3DWorld from '@/components/3d/VillageAdventure3DWorld';
 import ShadowEscapeScene from './ShadowEscapeScene';
 import MidnightOfficeScene from './MidnightOfficeScene';
 import NurseryNightScene from './NurseryNightScene';
+import CityBirdScene from './CityBirdScene';
 import { useGameTTS } from '@/hooks/useGameTTS';
 import { useGameSFX } from '@/hooks/useGameSFX';
 import GameResultReport from './GameResultReport';

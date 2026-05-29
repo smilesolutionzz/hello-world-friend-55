@@ -148,9 +148,15 @@ export default function NurseryNightScene({
     audio.setMuted(!audioOn);
   }, [audioOn, audio]);
   useEffect(() => {
-    if (gameState === 'playing') audio.playSfx('arrive');
+    if (gameState === 'exploring' || gameState === 'narrating') audio.playSfx('arrive');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sceneIndex, gameState]);
+  }, [sceneIndex]);
+
+  // 선택 시 select SFX
+  const handleChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
+    audio.playSfx('select');
+    onChoiceSelect(scene, choice);
+  }, [audio, onChoiceSelect]);
 
   const canMove = !selectedChoice && gameState !== 'result' && worldW > 0;
 

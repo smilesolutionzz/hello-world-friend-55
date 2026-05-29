@@ -20,6 +20,7 @@ export type GameThemeKey =
   | 'shadow_escape'    // 도주·긴장·도시 밤
   | 'midnight_office'  // 번아웃·형광등·새벽
   | 'parent_night'     // 자장가·온기·새벽 4시
+  | 'city_bird'        // 자유비행·하늘·도시 위
   | 'classic_quiet'    // 보통 게임검사 (디폴트, 따뜻한 회의실)
   | 'classic_warm';    // 아동용 따뜻한 톤
 

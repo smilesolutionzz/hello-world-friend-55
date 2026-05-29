@@ -72,6 +72,13 @@ export default function TwoWeekRestView({ enrollmentId, day, audience }: Props) 
           <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 break-keep">{content.title}</h1>
         </div>
 
+        {thread && (
+          <div className="space-y-4 mb-4">
+            <ConcernProgressHeader thread={thread} />
+            <ConcernProgressChart thread={thread} />
+          </div>
+        )}
+
         <Card className="p-6 sm:p-8 bg-white border border-slate-200 rounded-3xl">
           <div className="flex items-start gap-3">
             <div className="p-2.5 rounded-full bg-amber-50">

@@ -26,6 +26,7 @@ import Index from "./pages/Index";
 import CheckFlow from "./pages/lite/CheckFlow";
 import CheckDone from "./pages/lite/CheckDone";
 import TherapistSubscriptionTeaser from "./pages/lite/TherapistSubscriptionTeaser";
+import TherapistMySchedule from "./pages/TherapistMySchedule";
 import FindCenter from "./pages/lite/FindCenter";
 import HighlightAuth from "./pages/HighlightAuth";
 import ResetPassword from "./pages/ResetPassword";

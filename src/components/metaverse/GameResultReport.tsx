@@ -458,6 +458,29 @@ ${scoreDetails}
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 pb-20">
       {/* PDF 영역 시작 - 다크 테마 리포트 */}
       <div id="game-result-report" className="bg-slate-900 rounded-2xl p-4 space-y-4">
+        {/* 한 줄 해석 배너 — 결과 최상단 요약 */}
+        {(() => {
+          const topLabel = dimensionMeta[top]?.label || top;
+          const topScore = Math.round(results[top]);
+          const bottomDim = bottomDimensions[0]?.[0] as PsychDimension;
+          const bottomLabel = bottomDim ? (dimensionMeta[bottomDim]?.label || bottomDim) : '';
+          const bottomScore = bottomDim ? Math.round(results[bottomDim]) : 0;
+          const headline = isParentSelf
+            ? `이번 새벽 시뮬레이션에서 당신은 「${topLabel}(${topScore}%)」이 가장 두드러졌고, 「${bottomLabel}(${bottomScore}%)」은 회복이 필요한 영역으로 나타났습니다.`
+            : isAdult
+              ? `이번 시뮬레이션에서 당신은 「${topLabel}(${topScore}%)」이 가장 두드러졌고, 「${bottomLabel}(${bottomScore}%)」은 보강이 필요한 영역으로 나타났습니다.`
+              : `이번 모험에서 아이는 「${topLabel}(${topScore}%)」가 가장 두드러졌고, 「${bottomLabel}(${bottomScore}%)」은 함께 키워가면 좋은 영역으로 나타났어요.`;
+          return (
+            <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+              <div className="text-[10px] font-semibold tracking-[0.2em] text-white/50 uppercase mb-1">
+                Result Summary · 한 줄 해석
+              </div>
+              <p className="text-[14px] leading-relaxed text-white/90 break-keep">
+                {headline}
+              </p>
+            </div>
+          );
+        })()}
         {/* 캐릭터 카드 */}
         <Card className={`p-6 bg-gradient-to-br ${gradientFrom} ${gradientTo} text-center border-2 ${accentBorder}`}>
           <motion.div className="text-6xl mb-3" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: 2 }}>

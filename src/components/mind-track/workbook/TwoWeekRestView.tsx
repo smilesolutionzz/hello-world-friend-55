@@ -7,6 +7,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { getRestDayContent, getNextSessionDay } from '@/lib/mindTrack2WeekContent';
 import type { MindTrackAudience } from '@/lib/mindTrackDayCopy';
 import ActionPrescriptionCard from './ActionPrescriptionCard';
+import { getConcernThread, type ConcernThread } from '@/lib/mindTrackConcernThread';
+import ConcernProgressHeader from './ConcernProgressHeader';
+import ConcernProgressChart from './ConcernProgressChart';
 
 interface Props {
   enrollmentId: string;
@@ -24,6 +27,16 @@ export default function TwoWeekRestView({ enrollmentId, day, audience }: Props) 
   const content = getRestDayContent(day, audience);
   const next = getNextSessionDay(day);
   const [lastSession, setLastSession] = useState<PastSession | null>(null);
+  const [thread, setThread] = useState<ConcernThread | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const t = await getConcernThread(enrollmentId);
+      if (!cancelled) setThread(t);
+    })();
+    return () => { cancelled = true; };
+  }, [enrollmentId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -58,6 +71,13 @@ export default function TwoWeekRestView({ enrollmentId, day, audience }: Props) 
           <p className="text-xs tracking-wider text-[#8a7a4d] font-semibold mb-2">DAY {day}</p>
           <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 break-keep">{content.title}</h1>
         </div>
+
+        {thread && (
+          <div className="space-y-4 mb-4">
+            <ConcernProgressHeader thread={thread} />
+            <ConcernProgressChart thread={thread} />
+          </div>
+        )}
 
         <Card className="p-6 sm:p-8 bg-white border border-slate-200 rounded-3xl">
           <div className="flex items-start gap-3">

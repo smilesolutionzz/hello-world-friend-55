@@ -14,6 +14,11 @@ import {
 } from '@/lib/mindTrack2WeekContent';
 import type { MindTrackAudience } from '@/lib/mindTrackDayCopy';
 import ActionPrescriptionCard from './ActionPrescriptionCard';
+import { getConcernThread, type ConcernThread } from '@/lib/mindTrackConcernThread';
+import ConcernIntakeDialog from './ConcernIntakeDialog';
+import ConcernProgressHeader from './ConcernProgressHeader';
+import SessionWrapDialog from './SessionWrapDialog';
+import GraduationModal from './GraduationModal';
 
 type Step = 'coaching' | 'journal' | 'feedback';
 
@@ -33,6 +38,24 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
   const [answers, setAnswers] = useState<string[]>(['', '', '']);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [thread, setThread] = useState<ConcernThread | null>(null);
+  const [threadLoaded, setThreadLoaded] = useState(false);
+  const [wrapOpen, setWrapOpen] = useState(false);
+  const [gradOpen, setGradOpen] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const t = await getConcernThread(enrollmentId);
+      if (!cancelled) { setThread(t); setThreadLoaded(true); }
+    })();
+    return () => { cancelled = true; };
+  }, [enrollmentId]);
+
+  const reloadThread = async () => {
+    const t = await getConcernThread(enrollmentId);
+    setThread(t);
+  };
 
   // 진행 상태 복원
   useEffect(() => {
@@ -153,6 +176,12 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
           <StepBadge active={step === 'feedback'} done={!!feedback && step === 'feedback'} label="피드백" icon={MessageSquareHeart} />
         </div>
 
+        {thread && (
+          <div className="mb-4">
+            <ConcernProgressHeader thread={thread} />
+          </div>
+        )}
+
         <div className="mb-6">
           <ActionPrescriptionCard
             enrollmentId={enrollmentId}
@@ -217,13 +246,50 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
               <Button variant="outline" className="flex-1 h-12 rounded-2xl" onClick={() => setStep('journal')}>
                 일지 수정
               </Button>
-              <Button className="flex-1 h-12 rounded-2xl" onClick={() => navigate('/mind-track/dashboard')}>
-                완료
+              <Button
+                className="flex-1 h-12 rounded-2xl"
+                onClick={() => {
+                  if (thread) setWrapOpen(true);
+                  else navigate('/mind-track/dashboard');
+                }}
+              >
+                오늘 점수 매기고 마치기
               </Button>
             </div>
           </motion.div>
         )}
       </div>
+
+      {threadLoaded && !thread && (
+        <ConcernIntakeDialog
+          open
+          enrollmentId={enrollmentId}
+          audience={audience}
+          onCreated={reloadThread}
+        />
+      )}
+      {thread && (
+        <SessionWrapDialog
+          open={wrapOpen}
+          onOpenChange={setWrapOpen}
+          thread={thread}
+          enrollmentId={enrollmentId}
+          dayNumber={day}
+          sessionIndex={sessionIdx}
+          onCompleted={() => {
+            reloadThread();
+            if (day >= 14) setGradOpen(true);
+          }}
+        />
+      )}
+      {thread && (
+        <GraduationModal
+          open={gradOpen}
+          onOpenChange={setGradOpen}
+          thread={thread}
+          enrollmentId={enrollmentId}
+        />
+      )}
     </div>
   );
 }

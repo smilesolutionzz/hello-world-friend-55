@@ -38,6 +38,24 @@ export default function TwoWeekSessionView({ enrollmentId, day, audience }: Prop
   const [answers, setAnswers] = useState<string[]>(['', '', '']);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [thread, setThread] = useState<ConcernThread | null>(null);
+  const [threadLoaded, setThreadLoaded] = useState(false);
+  const [wrapOpen, setWrapOpen] = useState(false);
+  const [gradOpen, setGradOpen] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const t = await getConcernThread(enrollmentId);
+      if (!cancelled) { setThread(t); setThreadLoaded(true); }
+    })();
+    return () => { cancelled = true; };
+  }, [enrollmentId]);
+
+  const reloadThread = async () => {
+    const t = await getConcernThread(enrollmentId);
+    setThread(t);
+  };
 
   // 진행 상태 복원
   useEffect(() => {

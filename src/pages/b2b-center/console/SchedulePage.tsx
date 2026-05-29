@@ -56,6 +56,9 @@ export default function SchedulePage() {
   });
   const [selected, setSelected] = useState<any | null>(null);
   const [importOpen, setImportOpen] = useState(false);
+  const [importRefresh, setImportRefresh] = useState(0);
+  const isMobile = useIsMobile();
+  useEffect(() => { if (isMobile) { setView("day"); setGroup("date"); } }, [isMobile]);
 
   // 가시 범위 계산
   const range = useMemo(() => {

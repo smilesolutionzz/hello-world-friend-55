@@ -9915,6 +9915,77 @@ export type Database = {
         }
         Relationships: []
       }
+      mind_track_action_prescriptions: {
+        Row: {
+          actions: Json
+          audience: string
+          created_at: string
+          day_number: number
+          email_status: string
+          enrollment_id: string
+          framework: string | null
+          generated_at: string
+          id: string
+          observation_points: Json
+          product_picks: Json
+          rationale: Json
+          sent_at: string | null
+          summary: string | null
+          track_focus: string | null
+          updated_at: string
+          user_id: string
+          video_picks: Json
+        }
+        Insert: {
+          actions?: Json
+          audience?: string
+          created_at?: string
+          day_number: number
+          email_status?: string
+          enrollment_id: string
+          framework?: string | null
+          generated_at?: string
+          id?: string
+          observation_points?: Json
+          product_picks?: Json
+          rationale?: Json
+          sent_at?: string | null
+          summary?: string | null
+          track_focus?: string | null
+          updated_at?: string
+          user_id: string
+          video_picks?: Json
+        }
+        Update: {
+          actions?: Json
+          audience?: string
+          created_at?: string
+          day_number?: number
+          email_status?: string
+          enrollment_id?: string
+          framework?: string | null
+          generated_at?: string
+          id?: string
+          observation_points?: Json
+          product_picks?: Json
+          rationale?: Json
+          sent_at?: string | null
+          summary?: string | null
+          track_focus?: string | null
+          updated_at?: string
+          user_id?: string
+          video_picks?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_track_action_prescriptions_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "mind_track_enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mind_track_baseline_assessments: {
         Row: {
           ai_interpretation: string | null

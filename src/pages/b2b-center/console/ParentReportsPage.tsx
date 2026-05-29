@@ -14,7 +14,7 @@ export default function ParentReportsPage() {
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; });
-  const [sampleOpen, setSampleOpen] = useState<{ name: string; period: string } | null>(null);
+  const [sampleOpen, setSampleOpen] = useState<{ clientId: string; name: string; period: string; periodKey: string } | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -60,7 +60,7 @@ export default function ParentReportsPage() {
           <p className="text-sm text-neutral-500 mt-1">이용자별 월간 회기 기록을 묶어 보호자용 리포트를 자동 생성합니다.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => setSampleOpen({ name: "민준 (5세)", period: "2026년 4월" })} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#C8B88A] text-neutral-800 text-sm hover:bg-[#FAF6E8]"><Eye className="w-4 h-4 text-[#C8B88A]" /> 샘플 리포트 보기</button>
+          <button onClick={() => setSampleOpen({ clientId: "c1", name: "민준 (5세)", period: "2026년 4월", periodKey: "2026-04" })} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#C8B88A] text-neutral-800 text-sm hover:bg-[#FAF6E8]"><Eye className="w-4 h-4 text-[#C8B88A]" /> 샘플 리포트 보기</button>
           <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="border border-neutral-200 rounded-lg px-3 py-2 text-sm" />
           <button onClick={generateBatch} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white text-sm"><Sparkles className="w-4 h-4 text-[#C8B88A]" /> 이번 달 일괄 초안 생성</button>
         </div>
@@ -80,14 +80,14 @@ export default function ParentReportsPage() {
                 <td className="p-3 font-medium">{clientName(r.client_id)}</td>
                 <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${r.status === "issued" ? "bg-emerald-50 text-emerald-700" : "bg-neutral-100 text-neutral-600"}`}>{r.status === "issued" ? "발행됨" : "초안"}</span></td>
                 <td className="p-3 text-neutral-500">{r.issued_at ?? "—"}</td>
-                <td className="p-3 text-right"><button onClick={() => setSampleOpen({ name: clientName(r.client_id), period: r.period_start?.slice(0, 7).replace("-", "년 ") + "월" })} className="inline-flex items-center gap-1 text-xs text-neutral-700 hover:text-neutral-900"><FileText className="w-3.5 h-3.5" /> 열기</button></td>
+                <td className="p-3 text-right"><button onClick={() => setSampleOpen({ clientId: r.client_id, name: clientName(r.client_id), period: (r.period_start?.slice(0, 7).replace("-", "년 ") + "월"), periodKey: r.period_start?.slice(0, 7) ?? "" })} className="inline-flex items-center gap-1 text-xs text-neutral-700 hover:text-neutral-900"><FileText className="w-3.5 h-3.5" /> 열기</button></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <SampleParentReport open={!!sampleOpen} onClose={() => setSampleOpen(null)} clientName={sampleOpen?.name} period={sampleOpen?.period} />
+      <SampleParentReport open={!!sampleOpen} onClose={() => setSampleOpen(null)} clientId={sampleOpen?.clientId} clientName={sampleOpen?.name} period={sampleOpen?.period} periodKey={sampleOpen?.periodKey} />
     </div>
   );
 }

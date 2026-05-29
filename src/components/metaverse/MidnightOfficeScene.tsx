@@ -142,6 +142,21 @@ export default function MidnightOfficeScene({
     }
   }, [gameState, cfg.intensity, sceneIndex, prefersReducedMotion]);
 
+  /* ============== 게임 오디오 (하이브리드 BGM + SFX) ============== */
+  const audio = useGameAudio({
+    theme: 'midnight_office',
+    intensity: cfg.intensity,
+    reduceMotion: !!prefersReducedMotion,
+  });
+  useEffect(() => {
+    if (gameState === 'exploring' || gameState === 'narrating') audio.playSfx('arrive');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneIndex]);
+  const handleChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
+    audio.playSfx('select');
+    onChoiceSelect(scene, choice);
+  }, [audio, onChoiceSelect]);
+
   const canMove = !selectedChoice && gameState !== 'result' && worldW > 0;
 
   const clampPos = useCallback(

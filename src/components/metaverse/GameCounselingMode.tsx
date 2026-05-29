@@ -85,7 +85,9 @@ export default function GameCounselingMode() {
   }, []);
 
   const makeChoice = useCallback((scene: StoryScene, choice: StoryChoice) => {
+    audio.playSfx('select');
     setSelectedChoice(choice.id);
+    
     
     if (ttsEnabled) {
       speak(`${choice.emoji} ${choice.text}을 선택했어요!`);

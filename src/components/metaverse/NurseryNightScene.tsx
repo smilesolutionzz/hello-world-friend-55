@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Activity, Eye, ChevronLeft, ChevronRight, Moon, Volume2, VolumeX } from 'lucide-react';
 import type { StoryScene, StoryChoice } from '@/data/storyScenarios';
+import { useGameAudio } from '@/hooks/useGameAudio';
 
 /**
  * NurseryNightScene — 부모 양육 시네마틱 (새벽 3시, 아이의 울음)

@@ -72,6 +72,16 @@ const THEMES: Record<GameThemeKey, ThemeProfile> = {
     musicPrompt:
       'Gentle warm nursery lullaby, soft music box, tender felt piano, low cello drone, warm wooden room tone, 3am parent vigil, hopeful but exhausted, 50 bpm',
   },
+  city_bird: {
+    chord: [174.6, 261.6, 349.2, 440],
+    breath: 0.16,
+    noise: 0.08,
+    noiseCutoff: 1400,
+    gain: 0.13,
+    sfxColor: 1320,
+    musicPrompt:
+      'Cinematic uplifting flying score, soaring strings, airy flute, soft chimes, warm orchestral pad, sense of wide open sky and freedom over a city at dawn, 70 bpm, no drums',
+  },
   classic_quiet: {
     chord: [110, 164.8, 220, 277.2],
     breath: 0.16,

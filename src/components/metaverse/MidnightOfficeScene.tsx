@@ -70,6 +70,7 @@ export default function MidnightOfficeScene({
   onChoiceSelect, displayedText, selectedChoice, showParentNotes,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
   const [viewW, setViewW] = useState(0);
   const [posPx, setPosPx] = useState(0);          // 월드 좌표
   const [arrived, setArrived] = useState(false);

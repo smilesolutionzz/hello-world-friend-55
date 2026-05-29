@@ -306,18 +306,18 @@ ${scoreDetails}
       const { data, error } = await supabase.functions.invoke('generate-visual-summary', {
         body: {
           type: 'counseling',
-          content: `금쪽상담소 게임 결과 비주얼 노트 생성:
+          content: `${isAdult ? '성인 심리 시뮬레이션' : '금쪽상담소'} 게임 결과 비주얼 노트 생성:
 캐릭터 유형: ${character.title} (${character.emoji})
 설명: ${character.desc}
 스토리: ${chapter.title}
 심리 점수: ${scoreDetails}
 선택 기록: ${choiceDetails}
 
-이 데이터를 바탕으로 부모가 한눈에 이해할 수 있는 비주얼 요약 노트를 만들어주세요.
+이 데이터를 바탕으로 ${isAdult ? '본인이' : '부모가'} 한눈에 이해할 수 있는 비주얼 요약 노트를 만들어주세요.
 - 제목은 "🎮 ${character.title}" 형태로
-- 아이의 심리 특성, 강점, 성장 포인트, 양육 팁을 포함
-- 따뜻하고 긍정적인 톤`,
-          therapistType: 'child_psychologist'
+- ${isAdult ? '심리 특성, 강점, 성장 포인트, 셀프 케어 팁' : '아이의 심리 특성, 강점, 성장 포인트, 양육 팁'}을 포함
+- ${isAdult ? '담담하고 전문적이되 따뜻한 톤 (2인칭 "당신" 사용, 아동 표현 금지)' : '따뜻하고 긍정적인 톤'}`,
+          therapistType: isAdult ? 'clinical_psychologist' : 'child_psychologist'
         }
       });
 

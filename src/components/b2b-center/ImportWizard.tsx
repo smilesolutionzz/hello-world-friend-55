@@ -157,7 +157,7 @@ export default function ImportWizard({ demo, centerId, onClose, onMergeDemo, onI
                 className="border-2 border-dashed border-neutral-300 rounded-xl p-8 text-center cursor-pointer hover:border-neutral-500 transition">
                 <FileSpreadsheet className="w-8 h-8 mx-auto text-neutral-400 mb-2" />
                 <p className="text-sm font-medium">파일을 끌어다 놓거나 클릭</p>
-                <p className="text-xs text-neutral-500 mt-1">.xlsx / .xls / .csv · 케어플 월서비스관리 / 표준 템플릿 자동 인식</p>
+                <p className="text-xs text-neutral-500 mt-1">.xlsx / .xls / .csv · 케어플 일일·월 서비스관리 / AIHPRO 표준 템플릿 자동 인식</p>
                 <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
               </div>
             </div>

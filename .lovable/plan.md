@@ -1,134 +1,105 @@
-# Mind Track Workbook 진화 계획
+# 공동파트너 미팅용 UI/UX 변경사항 산출물
 
-이전 단계에서 남은 **데일리 코칭 메일**과, 이번에 요청하신 **워크북 고민 트래킹 시스템**을 한 번에 묶어서 진행합니다.
-
----
-
-## 01. 데일리 코칭 메일 (남은 작업 마무리)
-
-- `supabase/functions/_shared/transactional-email-templates/daily-action-coaching.tsx` 신규 (골드 #C8B88A, 발신: AIHPRO 코칭팀)
-  - 오늘의 한 줄 진단 → 3개 액션 카드 → 근거 → 추천 영상 1개 → (발달 트랙 한정) 관찰 포인트 1줄
-- `registry.ts` 에 `daily-action-coaching` 키 추가
-- `mind-track-mission-email-cron` 확장:
-  - 매일 07:00 KST 실행 (기존 cron job 시간 조정)
-  - 활성 enrollment 순회 → `mind_track_action_prescriptions` 조회
-  - 없으면 `mind-track-action-prescribe` 호출하여 생성
-  - `email_status='pending'` 인 경우 `send-transactional-email` 호출 → 성공 시 `sent_at`/`email_status='sent'` 업데이트
-  - `user_coaching_goals.daily_email_enabled` 와 충돌 시 mind-track 메일이 우선
-
-## 02. 워크북 고민 트래킹 (`/mind-track/workbook`)
-
-### 데이터 모델 (신규)
-
-**`mind_track_concern_threads`** — enrollment 단위로 "내 고민"을 1개 보관
-- `enrollment_id` (UNIQUE), `user_id`, `audience`, `track_focus`
-- `concern_title`, `concern_detail`, `goal_statement`
-- `baseline_score` (1-10 자기평가), `current_score`, `target_score=8`
-- `status` (active/graduated), `started_at`, `graduated_at`
-
-**`mind_track_progress_snapshots`** — 매 세션 종료 시 점수/근거 기록
-- `thread_id`, `day_number`, `session_index`
-- `self_score` (1-10), `mood_delta`, `evidence_summary` (LLM 요약)
-- `actions_completed` (jsonb), `observations` (jsonb)
-- `created_at` → 그래프 X축
-
-**`mind_track_session_reports`** — 회차 리포트 (Day 1·4·8·11 세션 종료 후 생성)
-- `thread_id`, `day_number`, `report_html`, `report_json`
-- `key_wins`, `risk_flags`, `next_focus`
-
-**`mind_track_graduation_workbooks`** — 졸업 워크북 (Day 14 완주 시 1회)
-- `thread_id`, `audience`, `track_focus`
-- `narrative_html` (PDF/공유용), `score_journey` (jsonb), `keepsake_quote`
-- `pdf_url` (storage 'graduation-workbooks/{user_id}/{id}.pdf')
-
-### 흐름
-
-```text
-시작(Day0)
- └ ConcernIntakeDialog: 제목/상세/목표/현재점수(1-10) 입력
-   → mind_track_concern_threads 생성
-세션 Day (1/4/8/11)
- ├ 상단: ConcernProgressHeader (제목·목표·현재점수)
- ├ ActionPrescriptionCard (기존, prescribe 함수가 thread context 받음)
- ├ 미션 수행 + 관찰일지 입력
- └ 세션 종료 시: SessionWrapDialog
-     - 자기점수 1-10 선택
-     - 한 줄 회고
-     → progress_snapshots insert
-     → mind-track-session-report 호출 → session_reports insert
-비세션 Day (2/3/5/6/9/10/12/13)
- ├ ProgressGraph (recharts LineChart, snapshots 시계열)
- ├ 가벼운 회고 + 관찰
- └ snapshots insert (session_index=null)
-Day 14 졸업
- └ mind-track-graduate 호출
-     → graduation_workbooks 생성, PDF 렌더, 졸업 모달 → 다운로드/공유
-```
-
-### 적응형 미션
-
-`mind-track-action-prescribe` 입력에 다음 추가:
-- `concern_thread` (제목/목표/baseline)
-- `recent_snapshots` (최근 3개 점수·증거·관찰)
-- `last_session_report.next_focus`
-
-→ LLM이 "지난번 X가 효과 있었으니 Y로 강화" 형태의 연속성 있는 처방을 생성. 점수가 정체/하락이면 framework 내 다른 기법으로 전환 지시.
-
-### 그래프
-
-- 컴포넌트: `ConcernProgressChart.tsx`
-- recharts `LineChart`: X=날짜, Y=self_score(1-10), 목표선=`target_score`
-- 세션 포인트는 강조, 비세션은 점선
-- 헤더 텍스트: "고민 OO이 baseline 4 → 현재 7 (목표 8)"
-
-### 회차 리포트
-
-`mind-track-session-report` 신규 Edge Function
-- 입력: thread + day_number + 해당 회차 snapshot + 관찰일지/액션수행
-- 출력 jsonb: `summary`, `key_wins[]`, `evidence_of_change[]`, `risk_flags[]`, `next_focus`
-- UI: 세션 종료 직후 모달 + `/mind-track/workbook/report/[day]` 라우트에서 재열람
-
-### 졸업 워크북
-
-`mind-track-graduate` 신규 Edge Function
-- 입력: thread + 전체 snapshots + 전체 session_reports
-- 출력: HTML 스토리북 (표지 → 14일 여정 → 점수 그래프 → 핵심 변화 3가지 → 부모/본인 다짐 → 다음 30일 가이드)
-- PDF 변환: `html2pdf` (기존 PDF 인프라 재사용) → storage 업로드 → 다운로드 링크 반환
-- UI: `GraduationModal` (콘페티 + PDF 다운로드 + 카카오 공유 + 23일 연장 업셀)
+내일 미팅에서 사용할 3종 세트를 만듭니다. **사업 임팩트 + 제품 디테일**을 균형 있게 담고, 4개 영역(Mind Track / B2B Center / 홈 진입 / 전문가 매칭)을 모두 다룹니다.
 
 ---
 
-## 03. 새 파일
+## 산출물 1 — 앱 내 투어 페이지 `/whats-new`
 
-- `supabase/migrations/{ts}_concern_tracking.sql` — 4개 테이블 + RLS + GRANT
-- `supabase/functions/_shared/transactional-email-templates/daily-action-coaching.tsx`
-- `supabase/functions/mind-track-session-report/index.ts`
-- `supabase/functions/mind-track-graduate/index.ts`
-- `src/lib/mindTrackConcernThread.ts` — 헬퍼 (start/get/updateScore/listSnapshots)
-- `src/components/mind-track/workbook/ConcernIntakeDialog.tsx`
-- `src/components/mind-track/workbook/ConcernProgressHeader.tsx`
-- `src/components/mind-track/workbook/ConcernProgressChart.tsx`
-- `src/components/mind-track/workbook/SessionWrapDialog.tsx`
-- `src/components/mind-track/workbook/SessionReportCard.tsx`
-- `src/components/mind-track/workbook/GraduationModal.tsx`
+미팅 중 노트북·모바일로 직접 보여줄 수 있는 라이브 페이지.
 
-## 04. 수정 파일
+**구조**
+- 헤더: "2026년 5월 업데이트" + 한 줄 요약
+- 4개 섹션 카드 (클릭하면 실제 화면으로 이동)
+  1. **Mind Track** — 7일/2주 워크북, 액션 카드 플립 → `/mind-track/workbook` 바로가기
+  2. **B2B Center** — 엑셀 임포트(케어플 호환), 콘솔 8개 메뉴 → `/b2b-center/app?demo=1`
+  3. **홈 진입 동선** — 캠페인 카드 1탭 진입 → `/home`
+  4. **전문가 매칭** — 시간팩 구독(5/10/20/30h) → `/expert-hiring`
+- 각 카드에 "Before → After" 한 줄, 비즈니스 임팩트 한 줄
+- 스타일: 화이트 미니멀, 골드 액센트 #C8B88A, Pretendard/Instrument Serif
 
-- `src/pages/MindTrackWorkbook.tsx` — thread 부트스트랩(없으면 인테이크), 헤더/그래프 노출, 세션 종료 핸들러, Day14 졸업 분기
-- `src/components/mind-track/workbook/TwoWeekSessionView.tsx` — onComplete → SessionWrapDialog
-- `src/components/mind-track/workbook/TwoWeekRestView.tsx` — 상단에 ConcernProgressChart
-- `supabase/functions/mind-track-action-prescribe/index.ts` — thread/snapshots context 반영
-- `supabase/functions/mind-track-mission-email-cron/index.ts` — 07:00 + 처방 fetch/생성 + 전송
-- `supabase/functions/_shared/transactional-email-templates/registry.ts`
-- `src/integrations/supabase/types.ts` (자동)
-- `mem://features/mind-track/two-week-session-structure-ko` 업데이트 (thread/그래프/졸업 흐름 추가)
-
-## 05. 정책 가드
-
-- 위기 키워드 감지 시 그래프/리포트 대신 `/expert-hiring?urgent=true` 카드 노출 (기존 정책)
-- baseline 미입력 enrollment에는 모든 화면이 인테이크 다이얼로그를 강제
-- PMF 베타 기간 동안 졸업 PDF·세션 리포트 전부 무료
+**라우팅**: `App.tsx`에 `/whats-new` 추가, 메인 nav에는 노출 안 함(공유 링크 전용)
 
 ---
 
-진행할까요? 승인하시면 위 순서대로 한 번에 만들겠습니다.
+## 산출물 2 — PDF 변경사항 리포트 `/mnt/documents/AIHPRO_Update_2026-05.pdf`
+
+인쇄·이메일 공유용. A4 세로, 화이트 미니멀.
+
+**구성 (약 8-10 페이지)**
+1. **표지** — "AIHPRO Product Update · 2026.05" + 핵심 지표 3개
+2. **요약 1p** — 4개 영역 한눈에, 비즈니스 한 줄씩
+3. **Mind Track (2p)**
+   - 7일 트랙: PMF 베타 무료, Day별 구조(1·4·7 무거움 / 2·3·5·6 가벼움)
+   - 2주 트랙: 14일 4세션(Day 1·4·8·11), 세션 3-step 구조
+   - 액션 카드 플립 UI — FIFA 카드 메타포, 게이미피케이션
+   - 스크린샷: 워크북 메인, 액션 카드 뒷면
+4. **B2B Center (2p)**
+   - 케어플 호환 엑셀 자동 인식 (일일/월 서비스관리 템플릿)
+   - 60일 무료 트라이얼
+   - 콘솔 구조: 운영(일정·이용자·평가) / 재활 서비스 / 수납 / 관리자 / 인텔리전스
+   - 스크린샷: 임포트 마법사, 콘솔 대시보드
+5. **홈/랜딩 진입 동선 (1p)**
+   - MobileHome 캠페인 카드 → 워크북 1탭 직행
+   - 모바일·PC 공통 동작
+   - 스크린샷: 모바일 홈, 캠페인 카드
+6. **전문가 매칭·시간팩 (1p)**
+   - 시간 구독형: 5/10/20/30h, 시간당 ₩39,000
+   - 홈티 1.5배 차감, 구독자 할인
+   - 스크린샷: expert-hiring 패키지 선택
+7. **다음 분기 로드맵 1p** — 간단히
+8. **부록: 핵심 화면 캡처 모음**
+
+**제작 방식**: 헤드리스 브라우저로 실제 화면 캡처 → reportlab으로 조판 → 시각 QA(페이지별 이미지 변환 후 검증)
+
+---
+
+## 산출물 3 — PPTX 발표용 덱 `/mnt/documents/AIHPRO_Partner_Meeting_2026-05.pptx`
+
+미팅에서 스크린 띄우고 발표용. 16:9, 약 12-14 슬라이드.
+
+**구성**
+1. 타이틀 — "2026.05 Product Update · 파트너 공유"
+2. 어젠다
+3. **Section: Mind Track**
+   - PMF 베타 무료 정책 (one-product BM)
+   - 7일 vs 2주 구조 비교
+   - 액션 카드 게이미피케이션 (스크린샷)
+4. **Section: B2B Center**
+   - 60일 무료 + 케어플 대비 포지셔닝
+   - 엑셀 임포트 자동 인식 데모 (스크린샷)
+   - 콘솔 핵심 3기능 (이용자·일정·수납)
+5. **Section: 진입 동선**
+   - 홈 → 워크북 1탭 직행 (Before/After)
+6. **Section: 전문가 매칭**
+   - 시간팩 구독 모델 (가격표)
+   - 구독자 할인 + 월 무료 크레딧
+7. **종합: 비즈니스 임팩트**
+   - PMF 베타 핵심 지표 (가입→1일차→7일차 완주율)
+   - 분기 로드맵
+8. Q&A / Thank you
+
+**스타일**: 화이트 배경 + 골드 #C8B88A 액센트, 큰 타이포(Instrument Serif 헤드라인), 슬라이드당 1개 핵심 메시지
+
+---
+
+## 기술 세부
+
+- **스크린샷 캡처**: 실 프리뷰 URL에 headless playwright/puppeteer 없이, 이미 있는 화면에 대해 `browser--screenshot` 또는 사용자 제공 캡처 활용. 산출 1(앱 페이지) 빌드 후 실 화면 캡처해서 산출 2·3에 재사용.
+- **PDF 생성**: Python `reportlab` + 캡처 임베딩
+- **PPTX 생성**: `pptxgenjs` (Node) — 화이트 미니멀 템플릿, 골드 액센트
+- **QA**: PDF·PPTX 둘 다 페이지별 이미지 렌더링 후 시각 검증 (오버플로/잘림/정렬 체크)
+- **가격은 모두 `src/constants/tokenCosts.ts`에서 동적으로 읽기** (메모이즈된 가격 정책)
+- 산출물 파일은 `/mnt/documents/`에 저장, 채팅에 `<presentation-artifact>` 태그로 노출
+
+---
+
+## 작업 순서
+
+1. `/whats-new` 페이지부터 만들기 (실 라이브 데모 + 캡처 소스)
+2. 페이지 완성 후 핵심 화면들 캡처 수집
+3. 캡처 + 텍스트로 PDF 조판
+4. 같은 자산으로 PPTX 덱 구성
+5. 두 산출물 시각 QA 후 최종 전달
+
+빌드 모드 전환되면 위 순서대로 진행합니다. 추가하거나 빼야 할 영역, 다르게 강조했으면 하는 톤이 있으면 알려주세요.

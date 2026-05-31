@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles, Building2, Home, UserCog } from "lucide-react";
+import { ArrowRight, Sparkles, Building2, Home, UserCog, Calendar } from "lucide-react";
 import {
   MIND_TRACK_7_PRICE,
   MIND_TRACK_PRICE,
@@ -20,6 +20,8 @@ interface Section {
   to: string;
   cta: string;
   bullets: string[];
+  /** 미팅 시 카드 클릭 후 보여줄 라이브 데모 스크립트 (순서대로 읽으면 됨). */
+  demoScript: string[];
 }
 
 const sections: Section[] = [
@@ -39,6 +41,12 @@ const sections: Section[] = [
       "액션 처방 카드 — 탭하면 카드가 뒤집히며 솔루션 공개",
       "Day 4 페이월은 PMF 기간 비활성, 카드 없이 즉시 체험",
     ],
+    demoScript: [
+      "오늘의 Day 헤더 — 'Day N · 키워드' 와 진행 게이지 확인",
+      "상단 3-step 탭(코칭 → 일지 → 피드백) 한 바퀴 보여주기",
+      "액션 처방 카드 한 장 탭 → 뒷면 솔루션 공개(게이미피케이션 포인트)",
+      "오른쪽 상단 '트랙 전환'에서 7일 ↔ 2주 토글이 가능한 것 시연",
+    ],
   },
   {
     kicker: "02 · B2B CENTER",
@@ -56,6 +64,13 @@ const sections: Section[] = [
       "부정결제 찾기 · 부모 리포트 · 선생님별 이용자 통계",
       "60일 무료 트라이얼 배너 + 구성원 초대",
     ],
+    demoScript: [
+      "상단 트라이얼 배너 — 60일 카운트다운 노출 확인",
+      "좌측 사이드바 5개 그룹(운영/재활/수납/관리자/인텔리전스) 한 번 훑기",
+      "운영 > 일일 서비스 관리 → '엑셀 가져오기' 버튼 → 케어플 템플릿 업로드 시연",
+      "헤더가 자동 매핑되어 미리보기에 표가 채워지는 흐름 강조",
+      "수납 > 부정결제 찾기, 부모 리포트, 선생님별 통계 메뉴 가볍게 클릭",
+    ],
   },
   {
     kicker: "03 · HOME ENTRY",
@@ -71,6 +86,11 @@ const sections: Section[] = [
       "캠페인 카드 = 모바일·데스크탑 공통 직링크",
       "Sparkles 아이콘 반응형, hover shadow",
       "복귀 사용자 동선: '지금 바로 이어서 하기'",
+    ],
+    demoScript: [
+      "모바일 뷰포트로 전환 → 홈 상단 캠페인 카드 위치 확인",
+      "카드 1탭 → 중간 랜딩 없이 바로 /mind-track/workbook 로 진입하는지 시연",
+      "복귀 사용자 시나리오: 진행 중인 Day로 자동 이어가기 동선 설명",
     ],
   },
   {
@@ -88,6 +108,64 @@ const sections: Section[] = [
       "홈티 이용 시 1.5배 차감",
       "AI 매칭(`match-consultation-expert`) — 번아웃·수면·성인 상담 태깅",
     ],
+    demoScript: [
+      "/expert-hiring 진입 → 상단 4종 시간팩(5/10/20/30h) 가격표 비교",
+      "AI 매칭 입력창에 고민 한 줄 입력 → 추천 전문가 1~3명 노출 시연",
+      "구독자 가격 토글로 할인 적용가가 자동 변경되는 것 보여주기",
+      "홈티 선택 시 시간이 1.5배로 차감되는 룰 설명",
+    ],
+  },
+];
+
+interface RoadmapItem {
+  when: string;
+  area: string;
+  title: string;
+  detail: string;
+}
+
+const roadmap: RoadmapItem[] = [
+  {
+    when: "6월 1–2주",
+    area: "MAIN UI",
+    title: "메인 UI 간소화 · 통합",
+    detail:
+      "홈/랜딩 다중 진입점 → '마인드 트랙 1개 핵심 CTA + 보조 2개' 구조로 정리, 모바일 헤더·바텀바 톤 통일.",
+  },
+  {
+    when: "6월 2–3주",
+    area: "B2B CENTER",
+    title: "케어플 호환 확장 + 수납 자동화",
+    detail:
+      "월 서비스관리 템플릿 매핑, 부정결제 자동 탐지 룰셋 v2, 부모 리포트 PDF 일괄 발송, 60일 트라이얼 → 유료 전환 플로우.",
+  },
+  {
+    when: "6월 3–4주",
+    area: "STORE",
+    title: "스토어(이용권/상품) 리뉴얼",
+    detail:
+      "mind_track 단일 라인업 + 전문가 시간팩을 한 화면에서 비교·결제. 옛 단건/월·연 상품 잔재 제거, 가격은 코드 상수에서 동적 노출.",
+  },
+  {
+    when: "7월 1–2주",
+    area: "QA",
+    title: "QA 스프린트 + 회귀 테스트 셋업",
+    detail:
+      "결제·워크북·B2B 임포트 핵심 시나리오 E2E, 모바일/PC 크로스 디바이스 체크리스트, Sentry·로그 모니터링 정비.",
+  },
+  {
+    when: "7월 2–4주",
+    area: "APP",
+    title: "Capacitor 기반 모바일 앱 빌드",
+    detail:
+      "iOS/Android 앱 패키징, 소셜 로그인(외부 브라우저) 검증, 푸시 알림(워크북 Day 리마인더) 1차, 스토어 심사 자료 준비.",
+  },
+  {
+    when: "8월",
+    area: "EXPERT",
+    title: "전문가 매칭 고도화",
+    detail:
+      "AI 매칭 응답 품질 튜닝, 구독자 월 무료 크레딧 자동 지급 안정화, 홈티 1.5배 차감 규칙의 결제·정산 정합성 점검.",
   },
 ];
 
@@ -116,7 +194,8 @@ export default function WhatsNew() {
           한눈에 보기
         </h1>
         <p className="text-base md:text-lg text-neutral-600 max-w-2xl break-keep">
-          공동 파트너 공유용 라이브 투어. 각 섹션을 누르면 실제 화면으로 이동합니다.
+          공동 파트너 공유용 라이브 투어. 각 섹션을 누르면 실제 화면으로 이동하고,
+          카드 안의 <b>데모 스크립트</b>를 그대로 따라가며 보여주면 됩니다.
           PMF 베타 기간 동안 7일 마인드 트랙은 카드 없이 무료로 제공됩니다.
         </p>
 
@@ -211,6 +290,35 @@ export default function WhatsNew() {
                 ))}
               </ul>
 
+              {/* Demo script (미팅에서 그대로 따라 읽기) */}
+              <div
+                className="rounded-2xl p-5 mb-6 border"
+                style={{ borderColor: `${GOLD}55`, backgroundColor: `${GOLD}0D` }}
+              >
+                <p
+                  className="text-[10px] tracking-[0.3em] mb-3"
+                  style={{ color: GOLD }}
+                >
+                  LIVE DEMO SCRIPT — 클릭 후 이 순서대로
+                </p>
+                <ol className="space-y-2">
+                  {s.demoScript.map((step, i) => (
+                    <li
+                      key={step}
+                      className="text-sm text-neutral-800 break-keep flex gap-3"
+                    >
+                      <span
+                        className="shrink-0 w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-medium"
+                        style={{ backgroundColor: GOLD, color: "white" }}
+                      >
+                        {i + 1}
+                      </span>
+                      {step}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
               <div className="flex items-center gap-2 text-sm font-medium text-neutral-900 group-hover:gap-3 transition-all">
                 {s.cta}
                 <ArrowRight className="w-4 h-4" />
@@ -220,6 +328,49 @@ export default function WhatsNew() {
         })}
       </main>
 
+      {/* Roadmap — 앞으로 해야 할 개발 */}
+      <section className="max-w-5xl mx-auto px-6 pb-20">
+        <div className="flex items-center gap-3 mb-6">
+          <Calendar className="w-5 h-5" style={{ color: GOLD }} />
+          <p className="text-xs tracking-[0.3em]" style={{ color: GOLD }}>
+            UPCOMING · 6–8월 개발 로드맵
+          </p>
+        </div>
+        <h2
+          className="text-3xl md:text-4xl leading-snug break-keep mb-8"
+          style={{ fontFamily: "'Instrument Serif', serif" }}
+        >
+          앞으로 해야 할 것들
+        </h2>
+
+        <div className="rounded-3xl border border-neutral-200 overflow-hidden">
+          {roadmap.map((r, i) => (
+            <div
+              key={r.title}
+              className={`grid md:grid-cols-[120px_140px_1fr] gap-4 p-6 md:p-7 ${
+                i !== roadmap.length - 1 ? "border-b border-neutral-200" : ""
+              }`}
+            >
+              <div className="text-sm font-medium text-neutral-900">{r.when}</div>
+              <div
+                className="text-[10px] tracking-[0.25em] self-start px-2 py-1 rounded-full inline-block w-fit"
+                style={{ backgroundColor: `${GOLD}1F`, color: "#8a7a4a" }}
+              >
+                {r.area}
+              </div>
+              <div>
+                <p className="text-base font-medium text-neutral-900 mb-1 break-keep">
+                  {r.title}
+                </p>
+                <p className="text-sm text-neutral-600 break-keep leading-relaxed">
+                  {r.detail}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Footer note */}
       <footer className="max-w-5xl mx-auto px-6 pb-20">
         <div className="rounded-3xl border border-neutral-200 p-8 bg-neutral-50">
@@ -228,6 +379,7 @@ export default function WhatsNew() {
             본 페이지는 공동 파트너 공유용 라이브 투어로, 메인 네비게이션에는 노출되지 않습니다.
             가격·정책은 모두 코드 상수(`src/constants/tokenCosts.ts`)에서 동적으로 읽으며,
             PMF 베타 기간 동안 7일 마인드 트랙은 결제 게이트 없이 제공됩니다.
+            상단 카드 = 이미 적용된 변경, 하단 로드맵 = 앞으로 6–8월 작업 예정 사항입니다.
           </p>
         </div>
       </footer>

@@ -47,6 +47,7 @@ import ReportGenerator from "./pages/ReportGenerator";
 import ReportGeneratorPro from "./pages/ReportGeneratorPro";
 import MyJourney from "./pages/MyJourney";
 import MobileHome from "./pages/MobileHome";
+import WhatsNew from "./pages/WhatsNew";
 import Store from "./pages/Store";
 import CoachingPreferences from "./pages/CoachingPreferences";
 import VerifyReport from "./pages/VerifyReport";
@@ -261,6 +262,7 @@ const App = () => {
           {/* ===== Core Routes ===== */}
           <Route path="/" element={<Index />} />
           <Route path="/home" element={<MobileHome />} />
+          <Route path="/whats-new" element={<WhatsNew />} />
           <Route path="/store" element={<Store />} />
           {/* ===== Lite Check (Day 2) — 비회원 발달체크 ===== */}
           <Route path="/check" element={<CheckFlow />} />

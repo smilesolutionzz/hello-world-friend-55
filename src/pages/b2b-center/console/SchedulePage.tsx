@@ -57,9 +57,49 @@ export default function SchedulePage() {
     scheduled: true, completed: true, cancelled: true, cancelled_makeup: true, cancelled_carry: true,
   });
   const [selected, setSelected] = useState<any | null>(null);
+  const [createAt, setCreateAt] = useState<{ date: string; hour: number } | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [importRefresh, setImportRefresh] = useState(0);
   const isMobile = useIsMobile();
+
+  async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string }) {
+    if (!createAt) return;
+    const base = {
+      session_date: createAt.date,
+      start_time: form.start_time,
+      end_time: form.end_time || null,
+      client_id: form.client_id,
+      therapist_id: form.therapist_id || null,
+      program_id: form.program_id || null,
+      status: "scheduled" as StatusCode,
+      price_krw: programs.find((p) => p.id === form.program_id)?.price_krw ?? 0,
+      is_voucher: programs.find((p) => p.id === form.program_id)?.is_voucher ?? false,
+      note: form.note || null,
+    };
+    if (demo) {
+      setSessions((prev) => [...prev, { id: `is-${Date.now()}`, ...base }]);
+    } else {
+      const { data, error } = await supabase.from("center_sessions").insert({ ...base, center_id: centerId }).select().single();
+      if (error) { toast({ title: "일정 추가 실패", description: error.message, variant: "destructive" }); return; }
+      setSessions((prev) => [...prev, data]);
+    }
+    toast({ title: "일정이 추가됐어요" });
+    setCreateAt(null);
+  }
+
+  async function handleDelete(s: any) {
+    if (!window.confirm("이 일정을 삭제할까요?")) return;
+    if (demo) {
+      setSessions((prev) => prev.filter((x) => x.id !== s.id));
+    } else {
+      const { error } = await supabase.from("center_sessions").delete().eq("id", s.id);
+      if (error) { toast({ title: "삭제 실패", description: error.message, variant: "destructive" }); return; }
+      setSessions((prev) => prev.filter((x) => x.id !== s.id));
+    }
+    toast({ title: "일정이 삭제됐어요" });
+    setSelected(null);
+  }
+
   useEffect(() => { if (isMobile) { setView("day"); setGroup("date"); } }, [isMobile]);
 
   // 가시 범위 계산

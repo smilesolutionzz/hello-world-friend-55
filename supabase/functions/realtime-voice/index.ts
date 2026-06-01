@@ -22,23 +22,26 @@ serve(async (req) => {
 
   // Auth check via query parameter token
   const url = new URL(req.url);
+  // Auth is optional: logged-in users get session persistence on the client side.
+  // Guests are allowed so /voice-counseling works without a login wall.
   const authToken = url.searchParams.get("token");
-  if (!authToken) {
-    return new Response("Unauthorized: token required", { status: 401 });
+  if (authToken) {
+    try {
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+      const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
+        global: { headers: { Authorization: `Bearer ${authToken}` } }
+      });
+      const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(authToken);
+      if (claimsError || !claimsData?.claims) {
+        console.warn("realtime-voice: invalid token, continuing as guest");
+      }
+    } catch (e) {
+      console.warn("realtime-voice: token check failed, continuing as guest", e);
+    }
+  } else {
+    console.log("realtime-voice: no token, continuing as guest");
   }
 
-  try {
-    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-    const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
-      global: { headers: { Authorization: `Bearer ${authToken}` } }
-    });
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(authToken);
-    if (claimsError || !claimsData?.claims) {
-      return new Response("Unauthorized: invalid token", { status: 401 });
-    }
-  } catch {
-    return new Response("Unauthorized", { status: 401 });
-  }
 
   try {
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');

@@ -612,7 +612,7 @@ function SessionRow({ s, therapist, clientName, programName, onPick }: any) {
 }
 
 // ===== 상세 팝업 =====
-function SessionDetail({ s, onClose, therapist, clientName, programName }: any) {
+function SessionDetail({ s, onClose, onDelete, therapist, clientName, programName }: any) {
   const th = therapist(s.therapist_id);
   const meta = STATUS_META[s.status as StatusCode];
   return (
@@ -634,10 +634,19 @@ function SessionDetail({ s, onClose, therapist, clientName, programName }: any) 
           <Row k="바우처" v={s.is_voucher ? "Y" : "N"} />
           {s.note && <Row k="메모" v={s.note} />}
         </dl>
+        {onDelete && (
+          <div className="flex gap-2 mt-5">
+            <button onClick={onClose} className="flex-1 px-4 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">닫기</button>
+            <button onClick={onDelete} className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-rose-600 text-white text-sm font-medium hover:bg-rose-700">
+              <Trash2 className="w-3.5 h-3.5" /> 일정 삭제
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
 
 function Row({ k, v }: { k: string; v: any }) {
   return (

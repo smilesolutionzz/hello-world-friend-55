@@ -24,7 +24,19 @@ const STATUS_META: Record<StatusCode, { label: string; tone: string }> = {
 
 const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
 const HOURS = Array.from({ length: 12 }, (_, i) => 9 + i); // 09~20시
-const PALETTE = ["#FFB4A2", "#B8E0D2", "#FFD6A5", "#CAFFBF", "#A0C4FF", "#FFC8DD", "#BDB2FF", "#FDFFB6"];
+// 색각이상에도 구분되도록 채도/명도 차이를 둔 팔레트
+const PALETTE = ["#E63946", "#1D7874", "#F4A261", "#264653", "#9D4EDD", "#0077B6", "#FB8500", "#2A9D8F", "#7209B7", "#BC4749", "#3A86FF", "#8AB17D"];
+// 색 이외에 형태/테두리로도 구분 (색각이상 보조)
+const SHAPES = [Circle, Square, Triangle, Diamond];
+const BORDER_STYLES = ["solid", "dashed", "dotted", "double"] as const;
+function therapistVisual(t: any) {
+  const i = t?._idx ?? 0;
+  return {
+    Icon: SHAPES[i % SHAPES.length],
+    borderStyle: BORDER_STYLES[Math.floor(i / SHAPES.length) % BORDER_STYLES.length],
+    color: t?.color ?? "#9ca3af",
+  };
+}
 
 function startOfWeek(d: Date): Date {
   const x = new Date(d); const day = x.getDay();

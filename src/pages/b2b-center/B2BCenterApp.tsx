@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { NavLink, Outlet, useNavigate, useSearchParams } from "react-router-dom";
 import {
   LayoutDashboard, Users, Calendar, BookOpen, CreditCard, Building2,
-  UserCog, FileText, Upload, Sparkles, ShieldAlert, Compass,
+  UserCog, FileText, Upload, Sparkles, ShieldAlert, Compass, FileSpreadsheet,
 } from "lucide-react";
 import { listMyCenters, getActiveCenterId, setActiveCenterId, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { useToast } from "@/hooks/use-toast";

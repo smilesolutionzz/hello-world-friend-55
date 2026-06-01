@@ -25,6 +25,7 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
   { to: "services/attendance", label: "일별 접수인원", icon: Users, group: "재활 서비스" },
   { to: "billing/stats", label: "수납 통계", icon: CreditCard, group: "수납" },
   { to: "billing/voucher-audit", label: "부정결제 찾기", icon: ShieldAlert, group: "수납" },
+  { to: "data/voucher-excel", label: "전자바우처 엑셀 등록", icon: FileSpreadsheet, group: "데이터 연동" },
   { to: "admin/therapists", label: "선생님 관리", icon: UserCog, group: "관리자" },
   { to: "admin/programs", label: "프로그램", icon: BookOpen, group: "관리자" },
   { to: "admin/organization", label: "기관 정보", icon: Building2, group: "관리자" },

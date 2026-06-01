@@ -72,7 +72,19 @@ export default function SchedulePage() {
   const [createAt, setCreateAt] = useState<{ date: string; hour: number } | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [importRefresh, setImportRefresh] = useState(0);
+  const [therapistFilter, setTherapistFilter] = useState<Record<string, boolean>>({});
+  const [showTFilter, setShowTFilter] = useState(false);
   const isMobile = useIsMobile();
+
+  // 치료사 색상 화면에서 수정 → 저장
+  async function handleColorChange(tid: string, color: string) {
+    setTherapists((prev) => prev.map((t) => (t.id === tid ? { ...t, color } : t)));
+    if (demo) return;
+    const { error } = await supabase.from("center_therapists").update({ calendar_color: color }).eq("id", tid);
+    if (error) {
+      toast({ title: "색상 저장 실패", description: error.message, variant: "destructive" });
+    }
+  }
 
   async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string }) {
     if (!createAt) return;

@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ImportWizard from "@/components/b2b-center/ImportWizard";
 import ImportHistoryPanel from "@/components/b2b-center/ImportHistoryPanel";
@@ -42,7 +43,8 @@ export default function SchedulePage() {
   const { centerId, demo } = useOutletContext<Ctx>();
 
   const [view, setView] = useState<ViewMode>("week");
-  const [group, setGroup] = useState<GroupMode>("date");
+  const [group, setGroup] = useState<GroupMode>("timetable");
+  const { toast } = useToast();
   const [cursor, setCursor] = useState<Date>(new Date());
 
   const [sessions, setSessions] = useState<any[]>([]);
@@ -55,9 +57,49 @@ export default function SchedulePage() {
     scheduled: true, completed: true, cancelled: true, cancelled_makeup: true, cancelled_carry: true,
   });
   const [selected, setSelected] = useState<any | null>(null);
+  const [createAt, setCreateAt] = useState<{ date: string; hour: number } | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [importRefresh, setImportRefresh] = useState(0);
   const isMobile = useIsMobile();
+
+  async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string }) {
+    if (!createAt) return;
+    const base = {
+      session_date: createAt.date,
+      start_time: form.start_time,
+      end_time: form.end_time || null,
+      client_id: form.client_id,
+      therapist_id: form.therapist_id || null,
+      program_id: form.program_id || null,
+      status: "scheduled" as StatusCode,
+      price_krw: programs.find((p) => p.id === form.program_id)?.price_krw ?? 0,
+      is_voucher: programs.find((p) => p.id === form.program_id)?.is_voucher ?? false,
+      note: form.note || null,
+    };
+    if (demo) {
+      setSessions((prev) => [...prev, { id: `is-${Date.now()}`, ...base }]);
+    } else {
+      const { data, error } = await supabase.from("center_sessions").insert({ ...base, center_id: centerId }).select().single();
+      if (error) { toast({ title: "일정 추가 실패", description: error.message, variant: "destructive" }); return; }
+      setSessions((prev) => [...prev, data]);
+    }
+    toast({ title: "일정이 추가됐어요" });
+    setCreateAt(null);
+  }
+
+  async function handleDelete(s: any) {
+    if (!window.confirm("이 일정을 삭제할까요?")) return;
+    if (demo) {
+      setSessions((prev) => prev.filter((x) => x.id !== s.id));
+    } else {
+      const { error } = await supabase.from("center_sessions").delete().eq("id", s.id);
+      if (error) { toast({ title: "삭제 실패", description: error.message, variant: "destructive" }); return; }
+      setSessions((prev) => prev.filter((x) => x.id !== s.id));
+    }
+    toast({ title: "일정이 삭제됐어요" });
+    setSelected(null);
+  }
+
   useEffect(() => { if (isMobile) { setView("day"); setGroup("date"); } }, [isMobile]);
 
   // 가시 범위 계산
@@ -193,18 +235,23 @@ export default function SchedulePage() {
       <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-neutral-400">불러오는 중…</div>
-        ) : visibleSessions.length === 0 ? (
-          <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>
         ) : view === "month" ? (
           <MonthView cursor={cursor} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} />
         ) : view === "list" ? (
-          <ListView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
+          visibleSessions.length === 0
+            ? <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>
+            : <ListView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
         ) : group === "timetable" ? (
-          <TimetableView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} />
+          <TimetableView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName}
+            onCreate={(date, hour) => setCreateAt({ date, hour })} />
         ) : group === "therapist" ? (
-          <TherapistGroupView dayList={dayList} sessions={visibleSessions} therapists={therapists} onPick={setSelected} clientName={clientName} programName={programName} />
+          visibleSessions.length === 0
+            ? <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>
+            : <TherapistGroupView dayList={dayList} sessions={visibleSessions} therapists={therapists} onPick={setSelected} clientName={clientName} programName={programName} />
         ) : (
-          <DateGroupView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
+          visibleSessions.length === 0
+            ? <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>
+            : <DateGroupView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
         )}
       </div>
 
@@ -221,8 +268,21 @@ export default function SchedulePage() {
 
       {/* 상세 팝업 */}
       {selected && (
-        <SessionDetail s={selected} onClose={() => setSelected(null)} therapist={therapist} clientName={clientName} programName={programName} />
+        <SessionDetail s={selected} onClose={() => setSelected(null)} onDelete={() => handleDelete(selected)} therapist={therapist} clientName={clientName} programName={programName} />
       )}
+
+      {/* 일정 등록 다이얼로그 */}
+      {createAt && (
+        <CreateSessionDialog
+          at={createAt}
+          clients={clients}
+          therapists={therapists}
+          programs={programs}
+          onClose={() => setCreateAt(null)}
+          onSubmit={handleCreate}
+        />
+      )}
+
 
       {/* 가져오기 이력 (실제 기관 모드) */}
       {!demo && <ImportHistoryPanel centerId={centerId} refreshKey={importRefresh} />}
@@ -277,7 +337,7 @@ export default function SchedulePage() {
 }
 
 // ===== 시간표(주/일 그리드) =====
-function TimetableView({ dayList, sessions, onPick, therapist, clientName }: any) {
+function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCreate }: any) {
   const cols = dayList.length;
   return (
     <div className="grid" style={{ gridTemplateColumns: `60px repeat(${cols}, minmax(120px, 1fr))` }}>
@@ -295,7 +355,19 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName }: any
             const ds = fmt(d);
             const slot = sessions.filter((s: any) => isSameDate(s.session_date, ds) && parseInt(s.start_time?.slice(0, 2) ?? "0", 10) === h);
             return (
-              <div key={`${h}-${ds}`} className="border-b border-r border-neutral-100 min-h-[60px] p-1 space-y-1">
+              <div
+                key={`${h}-${ds}`}
+                onClick={(e) => {
+                  if ((e.target as HTMLElement).closest("button")) return;
+                  onCreate?.(ds, h);
+                }}
+                className="group relative border-b border-r border-neutral-100 min-h-[60px] p-1 space-y-1 cursor-pointer hover:bg-[#FAF6E8]/40 transition"
+              >
+                {slot.length === 0 && (
+                  <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition pointer-events-none">
+                    <Plus className="w-4 h-4 text-[#C8B88A]" />
+                  </span>
+                )}
                 {slot.map((s: any) => <SessionChip key={s.id} s={s} therapist={therapist} clientName={clientName} onPick={onPick} />)}
               </div>
             );
@@ -305,6 +377,82 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName }: any
     </div>
   );
 }
+
+// ===== 일정 등록 다이얼로그 =====
+function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSubmit }: any) {
+  const [clientId, setClientId] = useState(clients[0]?.id ?? "");
+  const [therapistId, setTherapistId] = useState(therapists[0]?.id ?? "");
+  const [programId, setProgramId] = useState(programs[0]?.id ?? "");
+  const [startTime, setStartTime] = useState(`${String(at.hour).padStart(2, "0")}:00`);
+  const [endTime, setEndTime] = useState(`${String(at.hour).padStart(2, "0")}:40`);
+  const [note, setNote] = useState("");
+  const canSubmit = !!clientId && !!startTime;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-md p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-xs tracking-widest text-[#C8B88A]">NEW SESSION</p>
+            <h3 className="text-lg font-semibold mt-1">일정 등록 · {at.date}</h3>
+          </div>
+          <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
+        </div>
+        <div className="space-y-3 text-sm">
+          <Field label="이용자">
+            <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
+              {clients.length === 0 && <option value="">이용자가 없어요. 먼저 등록하세요.</option>}
+              {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </Field>
+          <Field label="선생님">
+            <select value={therapistId} onChange={(e) => setTherapistId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
+              <option value="">— 미배정 —</option>
+              {therapists.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+            </select>
+          </Field>
+          <Field label="프로그램">
+            <select value={programId} onChange={(e) => setProgramId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
+              <option value="">— 미지정 —</option>
+              {programs.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="시작">
+              <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
+            </Field>
+            <Field label="종료">
+              <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
+            </Field>
+          </div>
+          <Field label="메모">
+            <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="선택" className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
+          </Field>
+        </div>
+        <div className="flex gap-2 mt-5">
+          <button onClick={onClose} className="flex-1 px-4 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">취소</button>
+          <button
+            onClick={() => canSubmit && onSubmit({ client_id: clientId, therapist_id: therapistId, program_id: programId, start_time: startTime, end_time: endTime, note })}
+            disabled={!canSubmit}
+            className="flex-1 px-4 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50"
+          >
+            등록
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="block text-xs text-neutral-500 mb-1">{label}</span>
+      {children}
+    </label>
+  );
+}
+
 
 // ===== 날짜별 그룹 =====
 function DateGroupView({ dayList, sessions, onPick, therapist, clientName, programName }: any) {
@@ -464,7 +612,7 @@ function SessionRow({ s, therapist, clientName, programName, onPick }: any) {
 }
 
 // ===== 상세 팝업 =====
-function SessionDetail({ s, onClose, therapist, clientName, programName }: any) {
+function SessionDetail({ s, onClose, onDelete, therapist, clientName, programName }: any) {
   const th = therapist(s.therapist_id);
   const meta = STATUS_META[s.status as StatusCode];
   return (
@@ -486,10 +634,19 @@ function SessionDetail({ s, onClose, therapist, clientName, programName }: any) 
           <Row k="바우처" v={s.is_voucher ? "Y" : "N"} />
           {s.note && <Row k="메모" v={s.note} />}
         </dl>
+        {onDelete && (
+          <div className="flex gap-2 mt-5">
+            <button onClick={onClose} className="flex-1 px-4 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">닫기</button>
+            <button onClick={onDelete} className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-rose-600 text-white text-sm font-medium hover:bg-rose-700">
+              <Trash2 className="w-3.5 h-3.5" /> 일정 삭제
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
 
 function Row({ k, v }: { k: string; v: any }) {
   return (

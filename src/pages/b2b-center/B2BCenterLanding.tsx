@@ -45,7 +45,7 @@ export default function B2BCenterLanding() {
       </Helmet>
 
       {/* Hero */}
-      <section className="px-6 pt-24 pb-20 max-w-6xl mx-auto">
+      <section className="px-6 pt-24 pb-20 max-w-6xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF6E8] text-xs text-[#8C7A3D] mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-[#C8B88A]" />
           60일 무료 · 카드 등록 없음 · 베타 모집 중
@@ -54,11 +54,11 @@ export default function B2BCenterLanding() {
           이용자·일정·수납.<br/>
           <span className="text-[#C8B88A]">한 화면, 60일 무료.</span>
         </h1>
-        <p className="text-lg text-neutral-600 max-w-2xl break-keep mb-10">
+        <p className="text-lg text-neutral-600 max-w-2xl mx-auto break-keep mb-10">
           기존 ERP 엑셀 파일 하나 올리면 이용자·치료사·회기·수납이 그대로 옮겨와요.
           두 달 동안 모든 기능 무제한 — 그 다음에도 월 {KRW(B2B_CENTER_MONTHLY)}.
         </p>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 justify-center">
           <Link to="/b2b-center/import" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition">
             60일 무료로 시작 <ArrowRight className="w-4 h-4" />
           </Link>
@@ -66,6 +66,7 @@ export default function B2BCenterLanding() {
             <PlayCircle className="w-4 h-4" /> 데모로 둘러보기
           </Link>
         </div>
+
 
         <div className="mt-16">
           <CenterOnboardingStepper step={1} />

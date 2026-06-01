@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Circle, Square, Triangle, Diamond, Filter, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ImportWizard from "@/components/b2b-center/ImportWizard";
@@ -24,7 +24,19 @@ const STATUS_META: Record<StatusCode, { label: string; tone: string }> = {
 
 const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
 const HOURS = Array.from({ length: 12 }, (_, i) => 9 + i); // 09~20시
-const PALETTE = ["#FFB4A2", "#B8E0D2", "#FFD6A5", "#CAFFBF", "#A0C4FF", "#FFC8DD", "#BDB2FF", "#FDFFB6"];
+// 색각이상에도 구분되도록 채도/명도 차이를 둔 팔레트
+const PALETTE = ["#E63946", "#1D7874", "#F4A261", "#264653", "#9D4EDD", "#0077B6", "#FB8500", "#2A9D8F", "#7209B7", "#BC4749", "#3A86FF", "#8AB17D"];
+// 색 이외에 형태/테두리로도 구분 (색각이상 보조)
+const SHAPES = [Circle, Square, Triangle, Diamond];
+const BORDER_STYLES = ["solid", "dashed", "dotted", "double"] as const;
+function therapistVisual(t: any) {
+  const i = t?._idx ?? 0;
+  return {
+    Icon: SHAPES[i % SHAPES.length],
+    borderStyle: BORDER_STYLES[Math.floor(i / SHAPES.length) % BORDER_STYLES.length],
+    color: t?.color ?? "#9ca3af",
+  };
+}
 
 function startOfWeek(d: Date): Date {
   const x = new Date(d); const day = x.getDay();
@@ -60,7 +72,19 @@ export default function SchedulePage() {
   const [createAt, setCreateAt] = useState<{ date: string; hour: number } | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [importRefresh, setImportRefresh] = useState(0);
+  const [therapistFilter, setTherapistFilter] = useState<Record<string, boolean>>({});
+  const [showTFilter, setShowTFilter] = useState(false);
   const isMobile = useIsMobile();
+
+  // 치료사 색상 화면에서 수정 → 저장
+  async function handleColorChange(tid: string, color: string) {
+    setTherapists((prev) => prev.map((t) => (t.id === tid ? { ...t, color } : t)));
+    if (demo) return;
+    const { error } = await supabase.from("center_therapists").update({ calendar_color: color }).eq("id", tid);
+    if (error) {
+      toast({ title: "색상 저장 실패", description: error.message, variant: "destructive" });
+    }
+  }
 
   async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string }) {
     if (!createAt) return;
@@ -121,7 +145,7 @@ export default function SchedulePage() {
       setLoading(true);
       if (demo) {
         setSessions(DEMO_SESSIONS);
-        setTherapists(DEMO_THERAPISTS);
+        setTherapists(DEMO_THERAPISTS.map((x: any, i: number) => ({ ...x, _idx: i, color: x.color ?? PALETTE[i % PALETTE.length] })));
         setClients(DEMO_CLIENTS.map((c) => ({ id: c.id, name: c.display_name })));
         setPrograms(DEMO_PROGRAMS);
         setLoading(false); return;
@@ -134,22 +158,37 @@ export default function SchedulePage() {
         supabase.from("center_programs").select("*").eq("center_id", centerId),
       ]);
       setSessions(s.data ?? []);
-      setTherapists((t.data ?? []).map((x: any, i: number) => ({ ...x, color: x.calendar_color ?? x.color ?? PALETTE[i % PALETTE.length] })));
+      setTherapists((t.data ?? []).map((x: any, i: number) => ({ ...x, _idx: i, color: x.calendar_color ?? x.color ?? PALETTE[i % PALETTE.length] })));
       setClients(c.data ?? []);
       setPrograms(p.data ?? []);
       setLoading(false);
     })();
   }, [centerId, demo, range.start.getTime(), range.end.getTime()]);
 
+  // 치료사 목록 바뀌면 필터 키 동기화 (새로 들어온 치료사는 기본 ON, "미배정"=__none도 포함)
+  useEffect(() => {
+    setTherapistFilter((prev) => {
+      const next: Record<string, boolean> = { __none: prev.__none ?? true };
+      for (const t of therapists) next[t.id] = prev[t.id] ?? true;
+      return next;
+    });
+  }, [therapists]);
+
   const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? "—";
   const programName = (id: string) => programs.find((p) => p.id === id)?.name ?? "—";
   const therapist = (id: string) => therapists.find((t) => t.id === id);
 
-  // 가시 세션 (날짜+상태 필터)
+  // 가시 세션 (날짜 + 상태 + 치료사 필터)
   const visibleSessions = useMemo(() => {
     const startStr = fmt(range.start); const endStr = fmt(range.end);
-    return sessions.filter((s) => s.session_date >= startStr && s.session_date <= endStr && statusFilter[s.status as StatusCode]);
-  }, [sessions, range, statusFilter]);
+    return sessions.filter((s) => {
+      if (s.session_date < startStr || s.session_date > endStr) return false;
+      if (!statusFilter[s.status as StatusCode]) return false;
+      const key = s.therapist_id ?? "__none";
+      if (therapistFilter[key] === false) return false;
+      return true;
+    });
+  }, [sessions, range, statusFilter, therapistFilter]);
 
   // 일자 배열
   const dayList = useMemo(() => {
@@ -220,8 +259,46 @@ export default function SchedulePage() {
             </button>
           ))}
         </div>
+        {/* Therapist filter */}
+        <div className="relative ml-auto">
+          <button onClick={() => setShowTFilter((v) => !v)} className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-white border border-neutral-200 hover:border-neutral-400 transition">
+            <Filter className="w-3 h-3" />
+            선생님 {Object.values(therapistFilter).filter(Boolean).length}/{Object.keys(therapistFilter).length}
+          </button>
+          {showTFilter && (
+            <>
+              <div className="fixed inset-0 z-30" onClick={() => setShowTFilter(false)} />
+              <div className="absolute right-0 mt-1 z-40 bg-white border border-neutral-200 rounded-xl shadow-lg p-2 min-w-[220px] max-h-[320px] overflow-auto">
+                <div className="flex items-center justify-between px-2 py-1 text-[10px] text-neutral-400">
+                  <span>선생님 필터</span>
+                  <div className="flex gap-2">
+                    <button onClick={() => setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, true])))} className="hover:text-neutral-700">전체</button>
+                    <button onClick={() => setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, false])))} className="hover:text-neutral-700">해제</button>
+                  </div>
+                </div>
+                {therapists.map((t) => {
+                  const { Icon, borderStyle } = therapistVisual(t);
+                  const on = therapistFilter[t.id] !== false;
+                  return (
+                    <label key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs">
+                      <input type="checkbox" checked={on} onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))} className="accent-neutral-900" />
+                      <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color, border: `2px ${borderStyle} ${t.color}` }} />
+                      <Icon className="w-3 h-3 shrink-0" style={{ color: t.color }} />
+                      <span className="flex-1 truncate">{t.name}</span>
+                    </label>
+                  );
+                })}
+                <label className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1 pt-2">
+                  <input type="checkbox" checked={therapistFilter.__none !== false} onChange={(e) => setTherapistFilter((p) => ({ ...p, __none: e.target.checked }))} className="accent-neutral-900" />
+                  <span className="w-4 h-4 rounded-sm shrink-0 border border-dashed border-neutral-400 bg-neutral-100" />
+                  <span className="flex-1 text-neutral-500">미배정</span>
+                </label>
+              </div>
+            </>
+          )}
+        </div>
         {/* Status filter */}
-        <div className="inline-flex items-center gap-2 ml-auto bg-white border border-neutral-200 rounded-full px-3 py-1.5">
+        <div className="inline-flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-3 py-1.5">
           {(Object.keys(STATUS_META) as StatusCode[]).map((s) => (
             <label key={s} className="inline-flex items-center gap-1 text-xs cursor-pointer">
               <input type="checkbox" checked={statusFilter[s]} onChange={(e) => setStatusFilter((p) => ({ ...p, [s]: e.target.checked }))} className="accent-neutral-900" />
@@ -255,15 +332,29 @@ export default function SchedulePage() {
         )}
       </div>
 
-      {/* 치료사 범례 */}
+      {/* 치료사 범례 (색상 클릭 → 컬러 피커, 형태/테두리는 색각 보조) */}
       <div className="flex flex-wrap gap-3 mt-4">
-        {therapists.map((t) => (
-          <div key={t.id} className="flex items-center gap-2 text-xs">
-            <span className="w-3 h-3 rounded-full" style={{ background: t.color }} />
-            <span className="text-neutral-700">{t.name}</span>
-            <span className="text-neutral-400">{t.role ?? t.title ?? ""}</span>
-          </div>
-        ))}
+        {therapists.map((t) => {
+          const { Icon, borderStyle } = therapistVisual(t);
+          return (
+            <div key={t.id} className="group inline-flex items-center gap-2 text-xs bg-white border border-neutral-200 rounded-full pl-1 pr-3 py-1">
+              <label className="relative w-5 h-5 rounded-full cursor-pointer shrink-0 overflow-hidden ring-1 ring-neutral-200 hover:ring-neutral-400 transition" style={{ background: t.color, borderStyle, borderWidth: 2, borderColor: t.color }} title="색상 변경">
+                <input
+                  type="color"
+                  value={t.color}
+                  onChange={(e) => handleColorChange(t.id, e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </label>
+              <Icon className="w-3 h-3 shrink-0" style={{ color: t.color }} />
+              <span className="text-neutral-800 font-medium">{t.name}</span>
+              <span className="text-neutral-400">{t.role ?? t.title ?? ""}</span>
+            </div>
+          );
+        })}
+        {therapists.length > 0 && (
+          <p className="w-full text-[10px] text-neutral-400 mt-1">색상 원을 클릭하면 색이 바뀌고 자동 저장돼요. 도형·테두리(점선/실선/이중선)는 색각이상 보조 표시예요.</p>
+        )}
       </div>
 
       {/* 상세 팝업 */}
@@ -361,14 +452,25 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCre
                   if ((e.target as HTMLElement).closest("button")) return;
                   onCreate?.(ds, h);
                 }}
-                className="group relative border-b border-r border-neutral-100 min-h-[60px] p-1 space-y-1 cursor-pointer hover:bg-[#FAF6E8]/40 transition"
+                className="group relative border-b border-r border-neutral-100 min-h-[60px] p-1 cursor-pointer hover:bg-[#FAF6E8]/40 transition"
               >
                 {slot.length === 0 && (
                   <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition pointer-events-none">
                     <Plus className="w-4 h-4 text-[#C8B88A]" />
                   </span>
                 )}
-                {slot.map((s: any) => <SessionChip key={s.id} s={s} therapist={therapist} clientName={clientName} onPick={onPick} />)}
+                {slot.length > 1 && (
+                  <span className="absolute top-0.5 right-0.5 z-10 text-[9px] font-semibold px-1 py-px rounded-full bg-neutral-900 text-white pointer-events-none">
+                    {slot.length}
+                  </span>
+                )}
+                <div className={`h-full ${slot.length > 1 ? "flex gap-0.5" : "space-y-1"}`}>
+                  {slot.map((s: any) => (
+                    <div key={s.id} className={slot.length > 1 ? "flex-1 min-w-0" : ""}>
+                      <SessionChip s={s} therapist={therapist} clientName={clientName} onPick={onPick} compact={slot.length > 1} />
+                    </div>
+                  ))}
+                </div>
               </div>
             );
           })}
@@ -380,13 +482,15 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCre
 
 // ===== 일정 등록 다이얼로그 =====
 function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSubmit }: any) {
-  const [clientId, setClientId] = useState(clients[0]?.id ?? "");
   const [therapistId, setTherapistId] = useState(therapists[0]?.id ?? "");
+  const [clientId, setClientId] = useState(clients[0]?.id ?? "");
   const [programId, setProgramId] = useState(programs[0]?.id ?? "");
   const [startTime, setStartTime] = useState(`${String(at.hour).padStart(2, "0")}:00`);
   const [endTime, setEndTime] = useState(`${String(at.hour).padStart(2, "0")}:40`);
   const [note, setNote] = useState("");
   const canSubmit = !!clientId && !!startTime;
+  const selectedTh = therapists.find((t: any) => t.id === therapistId);
+  const visual = therapistVisual(selectedTh);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4" onClick={onClose}>
@@ -399,16 +503,49 @@ function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSub
           <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
         </div>
         <div className="space-y-3 text-sm">
+          {/* 1. 선생님(색상 자동 적용) — 카드 그리드로 시각적 선택 */}
+          <Field label="선생님 (먼저 선택하면 색상이 자동 적용돼요)">
+            <div className="grid grid-cols-3 gap-1.5 mb-1.5">
+              {therapists.map((t: any) => {
+                const v = therapistVisual(t);
+                const on = therapistId === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setTherapistId(t.id)}
+                    className={`relative flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs transition ${on ? "ring-2 ring-neutral-900" : "hover:ring-1 hover:ring-neutral-300"}`}
+                    style={{
+                      background: `${v.color}1f`,
+                      borderLeft: `4px ${v.borderStyle} ${v.color}`,
+                    }}
+                  >
+                    <v.Icon className="w-3 h-3 shrink-0" style={{ color: v.color }} fill={v.color} />
+                    <span className="truncate text-neutral-800">{t.name}</span>
+                    {on && <Check className="w-3 h-3 ml-auto text-neutral-900" />}
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={() => setTherapistId("")}
+                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs border border-dashed border-neutral-300 transition ${therapistId === "" ? "ring-2 ring-neutral-900 bg-neutral-50" : "hover:bg-neutral-50"}`}
+              >
+                <span className="text-neutral-500">미배정</span>
+                {therapistId === "" && <Check className="w-3 h-3 ml-auto text-neutral-900" />}
+              </button>
+            </div>
+            {selectedTh && (
+              <div className="text-[10px] text-neutral-500 inline-flex items-center gap-1.5 px-2 py-1 rounded-full" style={{ background: `${visual.color}1f` }}>
+                <visual.Icon className="w-2.5 h-2.5" style={{ color: visual.color }} fill={visual.color} />
+                <span>{selectedTh.name} 색상으로 표시돼요</span>
+              </div>
+            )}
+          </Field>
           <Field label="이용자">
             <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
               {clients.length === 0 && <option value="">이용자가 없어요. 먼저 등록하세요.</option>}
               {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-          </Field>
-          <Field label="선생님">
-            <select value={therapistId} onChange={(e) => setTherapistId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
-              <option value="">— 미배정 —</option>
-              {therapists.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </Field>
           <Field label="프로그램">
@@ -581,17 +718,39 @@ function ListView({ dayList, sessions, onPick, therapist, clientName, programNam
 }
 
 // ===== 공통 카드 =====
-function SessionChip({ s, therapist, clientName, onPick }: any) {
+function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
   const th = therapist(s.therapist_id);
   const cancelled = s.status?.startsWith("cancelled");
+  const { Icon, borderStyle, color } = therapistVisual(th);
+  // 색각이상 대비를 위해 도형 + 두꺼운 좌측 테두리 + 테두리 스타일을 함께 표시
+  const stripe = borderStyle === "dashed" || borderStyle === "dotted"
+    ? `repeating-linear-gradient(45deg, ${color}22 0 6px, transparent 6px 12px)`
+    : "none";
   return (
-    <button onClick={() => onPick(s)} className={`w-full text-left rounded-md px-2 py-1 text-[11px] leading-tight hover:ring-1 hover:ring-neutral-300 ${cancelled ? "opacity-40 line-through" : ""}`}
-      style={{ background: (th?.color ?? "#e5e7eb") + "33", borderLeft: `4px solid ${th?.color ?? "#9ca3af"}` }}>
-      <p className="font-medium truncate">{clientName(s.client_id)}</p>
-      <p className="text-neutral-500 truncate flex items-center gap-1">
-        <span className="inline-block w-1.5 h-1.5 rounded-full shrink-0" style={{ background: th?.color ?? "#9ca3af" }} />
-        <span className="truncate">{th?.name ?? "미배정"} · {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}</span>
+    <button
+      onClick={() => onPick(s)}
+      title={`${th?.name ?? "미배정"} · ${clientName(s.client_id)}`}
+      className={`w-full h-full text-left rounded-md px-1.5 py-1 text-[11px] leading-tight hover:ring-2 hover:ring-neutral-400 transition ${cancelled ? "opacity-40 line-through" : ""}`}
+      style={{
+        background: `${stripe === "none" ? "" : stripe + ", "}${color}1f`,
+        borderLeft: `5px ${borderStyle} ${color}`,
+        borderRight: `1px solid ${color}55`,
+        borderTop: `1px solid ${color}33`,
+        borderBottom: `1px solid ${color}33`,
+      }}
+    >
+      <p className="font-medium truncate flex items-center gap-1">
+        <Icon className="w-2.5 h-2.5 shrink-0" style={{ color }} fill={color} />
+        <span className="truncate">{clientName(s.client_id)}</span>
       </p>
+      {!compact && (
+        <p className="text-neutral-500 truncate">
+          {th?.name ?? "미배정"} · {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+        </p>
+      )}
+      {compact && (
+        <p className="text-neutral-500 truncate text-[10px]">{s.start_time?.slice(0, 5) ?? ""}</p>
+      )}
     </button>
   );
 }

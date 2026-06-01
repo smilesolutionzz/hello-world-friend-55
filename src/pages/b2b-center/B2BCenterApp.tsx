@@ -5,7 +5,9 @@ import {
   LayoutDashboard, Users, Calendar, BookOpen, CreditCard, Building2,
   UserCog, FileText, Upload, Sparkles, ShieldAlert, Compass,
 } from "lucide-react";
-import { listMyCenters, getActiveCenterId, setActiveCenterId, type CenterOrg } from "@/lib/b2bCenter/centerClient";
+import { listMyCenters, getActiveCenterId, setActiveCenterId, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
+import { useToast } from "@/hooks/use-toast";
+import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import EmptyCenterState from "@/components/b2b-center/EmptyCenterState";
 import DemoModeBanner from "@/components/b2b-center/DemoModeBanner";
@@ -33,10 +35,29 @@ const WELCOME_KEY = "b2b_center_welcome_seen";
 
 export default function B2BCenterApp() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const demo = isDemoMode() || searchParams.get("demo") === "1";
 
   const [centers, setCenters] = useState<CenterOrg[]>([]);
+  const [adding, setAdding] = useState(false);
+
+  async function handleAddCenter() {
+    const name = window.prompt("새 기관 이름을 입력하세요");
+    if (!name?.trim()) return;
+    setAdding(true);
+    try {
+      const c = await createCenter(name.trim());
+      setCenters((prev) => [...prev, c]);
+      setActive(c.id);
+      setActiveCenterId(c.id);
+      toast({ title: "기관이 추가됐어요", description: c.name });
+    } catch (e: any) {
+      toast({ title: "기관 추가 실패", description: e?.message ?? String(e), variant: "destructive" });
+    } finally {
+      setAdding(false);
+    }
+  }
   const [activeId, setActive] = useState<string | null>(getActiveCenterId());
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -111,11 +132,21 @@ export default function B2BCenterApp() {
             <select
               value={activeId ?? ""}
               onChange={(e) => { setActive(e.target.value); setActiveCenterId(e.target.value); }}
-              className="w-full text-sm font-medium bg-transparent focus:outline-none"
+              className="w-full text-sm font-medium bg-transparent focus:outline-none mb-2"
               disabled={demo}
             >
               {centers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
+            {!demo && (
+              <button
+                onClick={handleAddCenter}
+                disabled={adding}
+                className="w-full inline-flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg border border-neutral-200 text-xs text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                {adding ? "추가 중…" : "새 기관 추가"}
+              </button>
+            )}
           </div>
           <nav className="flex-1 overflow-y-auto p-3 space-y-4">
             {Object.entries(grouped).map(([group, items]) => (

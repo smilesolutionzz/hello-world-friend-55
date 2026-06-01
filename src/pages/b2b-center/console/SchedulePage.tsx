@@ -235,18 +235,23 @@ export default function SchedulePage() {
       <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-neutral-400">불러오는 중…</div>
-        ) : visibleSessions.length === 0 ? (
-          <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>
         ) : view === "month" ? (
           <MonthView cursor={cursor} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} />
         ) : view === "list" ? (
-          <ListView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
+          visibleSessions.length === 0
+            ? <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>
+            : <ListView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
         ) : group === "timetable" ? (
-          <TimetableView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} />
+          <TimetableView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName}
+            onCreate={(date, hour) => setCreateAt({ date, hour })} />
         ) : group === "therapist" ? (
-          <TherapistGroupView dayList={dayList} sessions={visibleSessions} therapists={therapists} onPick={setSelected} clientName={clientName} programName={programName} />
+          visibleSessions.length === 0
+            ? <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>
+            : <TherapistGroupView dayList={dayList} sessions={visibleSessions} therapists={therapists} onPick={setSelected} clientName={clientName} programName={programName} />
         ) : (
-          <DateGroupView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
+          visibleSessions.length === 0
+            ? <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>
+            : <DateGroupView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
         )}
       </div>
 
@@ -263,8 +268,21 @@ export default function SchedulePage() {
 
       {/* 상세 팝업 */}
       {selected && (
-        <SessionDetail s={selected} onClose={() => setSelected(null)} therapist={therapist} clientName={clientName} programName={programName} />
+        <SessionDetail s={selected} onClose={() => setSelected(null)} onDelete={() => handleDelete(selected)} therapist={therapist} clientName={clientName} programName={programName} />
       )}
+
+      {/* 일정 등록 다이얼로그 */}
+      {createAt && (
+        <CreateSessionDialog
+          at={createAt}
+          clients={clients}
+          therapists={therapists}
+          programs={programs}
+          onClose={() => setCreateAt(null)}
+          onSubmit={handleCreate}
+        />
+      )}
+
 
       {/* 가져오기 이력 (실제 기관 모드) */}
       {!demo && <ImportHistoryPanel centerId={centerId} refreshKey={importRefresh} />}

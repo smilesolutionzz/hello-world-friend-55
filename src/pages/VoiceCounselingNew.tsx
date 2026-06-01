@@ -158,12 +158,21 @@ const VoiceCounselingNew = () => {
 
   // ───────── 메시지 핸들러 ─────────
   const handleMessage = useCallback((msg: any) => {
+    if (msg.type === 'upstream.closed') {
+      console.error('[voice-counseling] upstream closed', msg.code, msg.reason);
+      handleErrorInfo({
+        code: 'WS',
+        message: `음성 모델 연결이 끊겼어요. (${msg.code ?? '?'}) ${msg.reason ?? ''}`.trim(),
+      });
+      return;
+    }
     if (msg.type === 'conversation.item.input_audio_transcription.completed') {
       const text = sanitizeTranscript(msg.transcript || '');
       if (!text) return;
       setLines((prev) => [...prev, { id: `u-${Date.now()}`, role: 'user', text, ts: Date.now() }]);
       return;
     }
+
 
     if (msg.type === 'response.audio_transcript.delta' && msg.delta) {
       partialAssistantRef.current += msg.delta;
@@ -194,11 +203,12 @@ const VoiceCounselingNew = () => {
       return { ok: false, code: 'NET', message: '인터넷 연결이 끊겨 있어요. 네트워크를 확인해주세요.' };
     }
 
-    // 2) 인증
+    // 2) 인증 (선택) — 비로그인도 게스트로 진행, 다만 대화 기록은 저장되지 않음
     const { data: s } = await supabase.auth.getSession();
     if (!s?.session?.access_token) {
-      return { ok: false, code: 'AUTH', message: '로그인이 필요해요. 로그인 후 다시 시도해주세요.' };
+      console.info('[voice-counseling] guest mode: no session');
     }
+
 
     // 3) 마이크 권한
     setStatusMsg('마이크 권한을 확인하고 있어요…');

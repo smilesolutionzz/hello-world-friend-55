@@ -23,8 +23,9 @@ import StoreSection from '@/components/store/StoreSection';
 import PartnerTrustSection from '@/components/landing/PartnerTrustSection';
 import aihproLogo from '@/assets/aihpro-logo.png';
 import { AudienceModeToggle } from '@/components/navigation/AudienceModeToggle';
-import { Crown, Menu } from 'lucide-react';
+import { Crown, Menu, X } from 'lucide-react';
 import { useLanguage } from '@/i18n';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 /**
  * MobileHome — 흰 배경 모바일 홈
@@ -85,13 +86,40 @@ const MobileHome: React.FC = () => {
           >
             <Crown className="w-4 h-4 text-slate-500" />
           </button>
-          <button
-            onClick={() => navigate(localePath('/menu'))}
-            aria-label="메뉴"
-            className="h-7 w-7 rounded-full inline-flex items-center justify-center hover:bg-slate-100"
-          >
-            <Menu className="w-4 h-4 text-slate-700" />
-          </button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <button
+                aria-label="메뉴"
+                className="h-7 w-7 rounded-full inline-flex items-center justify-center hover:bg-slate-100"
+              >
+                <Menu className="w-4 h-4 text-slate-700" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[88vw] max-w-sm p-0 bg-white">
+              <SheetHeader className="px-5 pt-5 pb-3 border-b border-slate-100">
+                <SheetTitle className="text-left text-base font-bold">전체 메뉴</SheetTitle>
+              </SheetHeader>
+              <nav className="p-3 grid grid-cols-3 gap-2">
+                {tiles.map((t) => (
+                  <Link
+                    key={t.to}
+                    to={localePath(t.to)}
+                    className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-slate-100 bg-white py-4 active:scale-95 transition"
+                  >
+                    <span className={`w-9 h-9 rounded-xl inline-flex items-center justify-center ${t.iconBg}`}>
+                      <t.icon className={`w-4 h-4 ${t.iconColor}`} />
+                    </span>
+                    <span className="text-[11px] font-semibold text-slate-700 text-center break-keep">{t.label}</span>
+                  </Link>
+                ))}
+              </nav>
+              <div className="px-5 py-4 border-t border-slate-100 space-y-2">
+                <Link to={localePath('/profile')} className="block text-sm font-semibold text-slate-700 py-2">내 프로필</Link>
+                <Link to={localePath('/token-subscription')} className="block text-sm font-semibold text-slate-700 py-2">구독 관리</Link>
+                <Link to={localePath('/b2b-center')} className="block text-sm font-semibold text-slate-700 py-2">기업·기관용 (B2B)</Link>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
 

@@ -64,6 +64,10 @@ export default function B2BCenterApp() {
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const location = useLocation();
+  useEffect(() => { setMobileNavOpen(false); }, [location.pathname]);
+
 
   useEffect(() => {
     if (demo) {

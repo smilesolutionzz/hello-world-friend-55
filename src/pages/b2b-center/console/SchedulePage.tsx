@@ -337,7 +337,7 @@ export default function SchedulePage() {
 }
 
 // ===== 시간표(주/일 그리드) =====
-function TimetableView({ dayList, sessions, onPick, therapist, clientName }: any) {
+function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCreate }: any) {
   const cols = dayList.length;
   return (
     <div className="grid" style={{ gridTemplateColumns: `60px repeat(${cols}, minmax(120px, 1fr))` }}>
@@ -355,7 +355,19 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName }: any
             const ds = fmt(d);
             const slot = sessions.filter((s: any) => isSameDate(s.session_date, ds) && parseInt(s.start_time?.slice(0, 2) ?? "0", 10) === h);
             return (
-              <div key={`${h}-${ds}`} className="border-b border-r border-neutral-100 min-h-[60px] p-1 space-y-1">
+              <div
+                key={`${h}-${ds}`}
+                onClick={(e) => {
+                  if ((e.target as HTMLElement).closest("button")) return;
+                  onCreate?.(ds, h);
+                }}
+                className="group relative border-b border-r border-neutral-100 min-h-[60px] p-1 space-y-1 cursor-pointer hover:bg-[#FAF6E8]/40 transition"
+              >
+                {slot.length === 0 && (
+                  <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition pointer-events-none">
+                    <Plus className="w-4 h-4 text-[#C8B88A]" />
+                  </span>
+                )}
                 {slot.map((s: any) => <SessionChip key={s.id} s={s} therapist={therapist} clientName={clientName} onPick={onPick} />)}
               </div>
             );
@@ -365,6 +377,82 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName }: any
     </div>
   );
 }
+
+// ===== 일정 등록 다이얼로그 =====
+function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSubmit }: any) {
+  const [clientId, setClientId] = useState(clients[0]?.id ?? "");
+  const [therapistId, setTherapistId] = useState(therapists[0]?.id ?? "");
+  const [programId, setProgramId] = useState(programs[0]?.id ?? "");
+  const [startTime, setStartTime] = useState(`${String(at.hour).padStart(2, "0")}:00`);
+  const [endTime, setEndTime] = useState(`${String(at.hour).padStart(2, "0")}:40`);
+  const [note, setNote] = useState("");
+  const canSubmit = !!clientId && !!startTime;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-md p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <p className="text-xs tracking-widest text-[#C8B88A]">NEW SESSION</p>
+            <h3 className="text-lg font-semibold mt-1">일정 등록 · {at.date}</h3>
+          </div>
+          <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
+        </div>
+        <div className="space-y-3 text-sm">
+          <Field label="이용자">
+            <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
+              {clients.length === 0 && <option value="">이용자가 없어요. 먼저 등록하세요.</option>}
+              {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </Field>
+          <Field label="선생님">
+            <select value={therapistId} onChange={(e) => setTherapistId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
+              <option value="">— 미배정 —</option>
+              {therapists.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+            </select>
+          </Field>
+          <Field label="프로그램">
+            <select value={programId} onChange={(e) => setProgramId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
+              <option value="">— 미지정 —</option>
+              {programs.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="시작">
+              <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
+            </Field>
+            <Field label="종료">
+              <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
+            </Field>
+          </div>
+          <Field label="메모">
+            <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="선택" className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
+          </Field>
+        </div>
+        <div className="flex gap-2 mt-5">
+          <button onClick={onClose} className="flex-1 px-4 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">취소</button>
+          <button
+            onClick={() => canSubmit && onSubmit({ client_id: clientId, therapist_id: therapistId, program_id: programId, start_time: startTime, end_time: endTime, note })}
+            disabled={!canSubmit}
+            className="flex-1 px-4 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50"
+          >
+            등록
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="block text-xs text-neutral-500 mb-1">{label}</span>
+      {children}
+    </label>
+  );
+}
+
 
 // ===== 날짜별 그룹 =====
 function DateGroupView({ dayList, sessions, onPick, therapist, clientName, programName }: any) {

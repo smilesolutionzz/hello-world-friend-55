@@ -722,37 +722,56 @@ function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
   const th = therapist(s.therapist_id);
   const cancelled = s.status?.startsWith("cancelled");
   const { Icon, borderStyle, color } = therapistVisual(th);
-  // 색각이상 대비를 위해 도형 + 두꺼운 좌측 테두리 + 테두리 스타일을 함께 표시
-  const stripe = borderStyle === "dashed" || borderStyle === "dotted"
-    ? `repeating-linear-gradient(45deg, ${color}22 0 6px, transparent 6px 12px)`
-    : "none";
+  // 치료사 색을 강하게 노출 — 배경을 치료사 색으로 채우고 텍스트는 명도에 맞춰 자동 조정
+  const safeColor = color || "#9ca3af";
+  const textColor = readableTextColor(safeColor);
+  const subTextColor = textColor === "#ffffff" ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0.6)";
   return (
     <button
       onClick={() => onPick(s)}
       title={`${th?.name ?? "미배정"} · ${clientName(s.client_id)}`}
-      className={`w-full h-full text-left rounded-md px-1.5 py-1 text-[11px] leading-tight hover:ring-2 hover:ring-neutral-400 transition ${cancelled ? "opacity-40 line-through" : ""}`}
+      className={`w-full h-full text-left rounded-md px-1.5 py-1 text-[11px] leading-tight hover:ring-2 hover:ring-neutral-900 transition shadow-sm ${cancelled ? "opacity-40 line-through" : ""}`}
       style={{
-        background: `${stripe === "none" ? "" : stripe + ", "}${color}1f`,
-        borderLeft: `5px ${borderStyle} ${color}`,
-        borderRight: `1px solid ${color}55`,
-        borderTop: `1px solid ${color}33`,
-        borderBottom: `1px solid ${color}33`,
+        background: safeColor,
+        borderLeft: `4px ${borderStyle} ${shadeColor(safeColor, -25)}`,
+        color: textColor,
       }}
     >
-      <p className="font-medium truncate flex items-center gap-1">
-        <Icon className="w-2.5 h-2.5 shrink-0" style={{ color }} fill={color} />
+      <p className="font-semibold truncate flex items-center gap-1">
+        <Icon className="w-2.5 h-2.5 shrink-0" style={{ color: textColor }} fill={textColor} />
         <span className="truncate">{clientName(s.client_id)}</span>
       </p>
       {!compact && (
-        <p className="text-neutral-500 truncate">
+        <p className="truncate" style={{ color: subTextColor }}>
           {th?.name ?? "미배정"} · {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
         </p>
       )}
       {compact && (
-        <p className="text-neutral-500 truncate text-[10px]">{s.start_time?.slice(0, 5) ?? ""}</p>
+        <p className="truncate text-[10px]" style={{ color: subTextColor }}>{s.start_time?.slice(0, 5) ?? ""}</p>
       )}
     </button>
   );
+}
+
+function readableTextColor(hex: string): string {
+  const h = hex.replace("#", "");
+  if (h.length < 6) return "#000000";
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 150 ? "#111111" : "#ffffff";
+}
+
+function shadeColor(hex: string, percent: number): string {
+  const h = hex.replace("#", "");
+  if (h.length < 6) return hex;
+  const num = parseInt(h, 16);
+  const amt = Math.round(2.55 * percent);
+  const R = Math.max(0, Math.min(255, (num >> 16) + amt));
+  const G = Math.max(0, Math.min(255, ((num >> 8) & 0xff) + amt));
+  const B = Math.max(0, Math.min(255, (num & 0xff) + amt));
+  return `#${((R << 16) | (G << 8) | B).toString(16).padStart(6, "0")}`;
 }
 
 function SessionRow({ s, therapist, clientName, programName, onPick }: any) {

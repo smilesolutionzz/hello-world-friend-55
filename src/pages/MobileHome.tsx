@@ -22,6 +22,9 @@ import {
 import StoreSection from '@/components/store/StoreSection';
 import PartnerTrustSection from '@/components/landing/PartnerTrustSection';
 import aihproLogo from '@/assets/aihpro-logo.png';
+import { AudienceModeToggle } from '@/components/navigation/AudienceModeToggle';
+import { Crown, Menu } from 'lucide-react';
+import { useLanguage } from '@/i18n';
 
 /**
  * MobileHome — 흰 배경 모바일 홈
@@ -55,12 +58,43 @@ const quickKeywords = ['#불안', '#번아웃', '#아이발달', '#수면', '#�
 
 const MobileHome: React.FC = () => {
   const navigate = useNavigate();
+  const { language, localePath } = useLanguage();
+  const toggleLanguagePath = language === 'ko'
+    ? `/en${window.location.pathname}${window.location.search}`
+    : `${window.location.pathname.replace(/^\/en/, '') || '/'}${window.location.search}`;
 
   return (
     <main
       id="main-content"
       className="min-h-screen w-full bg-white text-slate-900 break-keep pb-28"
     >
+      {/* 상단 유틸 바: 개인용/기업용 + 언어 + 구독 + 메뉴 */}
+      <div className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-slate-100">
+        <div className="px-4 h-11 flex items-center justify-end gap-1.5">
+          <AudienceModeToggle size="sm" />
+          <button
+            onClick={() => navigate(toggleLanguagePath)}
+            className="h-7 px-2.5 rounded-full text-[11px] font-bold text-slate-600 hover:bg-slate-100"
+          >
+            {language === 'ko' ? 'EN' : '한국어'}
+          </button>
+          <button
+            onClick={() => navigate('/token-subscription')}
+            aria-label="구독"
+            className="h-7 w-7 rounded-full inline-flex items-center justify-center hover:bg-slate-100"
+          >
+            <Crown className="w-4 h-4 text-slate-500" />
+          </button>
+          <button
+            onClick={() => navigate(localePath('/menu'))}
+            aria-label="메뉴"
+            className="h-7 w-7 rounded-full inline-flex items-center justify-center hover:bg-slate-100"
+          >
+            <Menu className="w-4 h-4 text-slate-700" />
+          </button>
+        </div>
+      </div>
+
       {/* 헤더 */}
       <header className="px-5 pt-6 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">

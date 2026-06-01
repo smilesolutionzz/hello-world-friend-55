@@ -100,9 +100,17 @@ serve(async (req) => {
       openAISocket.onclose = (event) => {
         console.log("OpenAI WebSocket closed:", event.code, event.reason);
         if (clientSocket.readyState === WebSocket.OPEN) {
+          try {
+            clientSocket.send(JSON.stringify({
+              type: 'upstream.closed',
+              code: event.code,
+              reason: event.reason || 'OpenAI realtime stream ended',
+            }));
+          } catch (_) { /* ignore */ }
           clientSocket.close();
         }
       };
+
     };
 
     clientSocket.onmessage = (event) => {

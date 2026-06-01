@@ -4,16 +4,64 @@ import { supabase } from "@/integrations/supabase/client";
 
 type Ctx = { centerId: string };
 
+// 일정표와 동일한 팔레트
+const PALETTE = ["#E63946", "#1D7874", "#F4A261", "#264653", "#9D4EDD", "#0077B6", "#FB8500", "#2A9D8F", "#7209B7", "#BC4749", "#3A86FF", "#8AB17D"];
+
 export default function TherapistsAdminPage() {
   const { centerId } = useOutletContext<Ctx>();
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.from("center_therapists").select("*").eq("center_id", centerId)
-      .order("created_at", { ascending: false })
-      .then(({ data }) => { setRows(data ?? []); setLoading(false); });
+    (async () => {
+      const { data } = await supabase
+        .from("center_therapists")
+        .select("*")
+        .eq("center_id", centerId)
+        .order("created_at", { ascending: true });
+      const list = data ?? [];
+
+      // 색상이 비어 있거나 중복인 치료사에게 팔레트에서 미사용 색을 자동 배정
+      const used = new Set<string>();
+      const toUpdate: Array<{ id: string; color: string }> = [];
+      const assigned = list.map((r: any, i: number) => {
+        let c = (r.calendar_color || "").toLowerCase();
+        if (!c || used.has(c)) {
+          let pick = PALETTE[i % PALETTE.length];
+          let k = i;
+          while (used.has(pick.toLowerCase()) && k < i + PALETTE.length) {
+            k += 1;
+            pick = PALETTE[k % PALETTE.length];
+          }
+          c = pick.toLowerCase();
+          toUpdate.push({ id: r.id, color: pick });
+          r = { ...r, calendar_color: pick };
+        }
+        used.add(c);
+        return r;
+      });
+
+      setRows(assigned);
+      setLoading(false);
+
+      for (const u of toUpdate) {
+        supabase.from("center_therapists").update({ calendar_color: u.color }).eq("id", u.id);
+      }
+    })();
   }, [centerId]);
+
+  async function changeColor(id: string, color: string) {
+    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, calendar_color: color } : r)));
+    await supabase.from("center_therapists").update({ calendar_color: color }).eq("id", id);
+  }
+
+  async function shuffleAll() {
+    const next = rows.map((r, i) => ({ ...r, calendar_color: PALETTE[i % PALETTE.length] }));
+    setRows(next);
+    for (const r of next) {
+      supabase.from("center_therapists").update({ calendar_color: r.calendar_color }).eq("id", r.id);
+    }
+  }
 
   const active = rows.filter(r => r.account_status === "active").length;
   const locked = rows.filter(r => r.account_status === "locked").length;
@@ -21,8 +69,18 @@ export default function TherapistsAdminPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-semibold mb-1">선생님 관리</h1>
-      <p className="text-sm text-neutral-500 mb-6">총 {rows.length}명</p>
+      <div className="flex items-start justify-between gap-3 flex-wrap mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold">선생님 관리</h1>
+          <p className="text-sm text-neutral-500 mt-1">총 {rows.length}명 · 색상은 일정표에서 선생님 구분에 사용돼요.</p>
+        </div>
+        <button
+          onClick={shuffleAll}
+          className="text-xs px-3 py-2 rounded-full bg-white border border-neutral-200 hover:border-neutral-400 transition"
+        >
+          색상 자동 재배정
+        </button>
+      </div>
 
       <div className="mb-6 rounded-2xl border border-[#C8B88A]/40 bg-[#FAF6E8]/60 p-4">
         <p className="text-[10px] tracking-widest text-[#8B7B4A] mb-1">TIP · 치료사 본인 일정 보기</p>
@@ -68,9 +126,23 @@ export default function TherapistsAdminPage() {
              rows.length === 0 ? <tr><td colSpan={8} className="p-8 text-center text-neutral-400">선생님이 없습니다.</td></tr> :
              rows.map((r) => {
               const linked = !!r.linked_user_id;
+              const color = r.calendar_color || "#94a3b8";
               return (
                 <tr key={r.id} className="border-t border-neutral-100">
-                  <td className="p-3"><div className="w-4 h-4 rounded" style={{ backgroundColor: r.calendar_color || "#94a3b8" }} /></td>
+                  <td className="p-3">
+                    <label
+                      className="relative inline-block w-6 h-6 rounded-md cursor-pointer ring-1 ring-neutral-200 hover:ring-neutral-400 transition overflow-hidden"
+                      style={{ backgroundColor: color }}
+                      title="클릭하여 색상 변경"
+                    >
+                      <input
+                        type="color"
+                        value={color}
+                        onChange={(e) => changeColor(r.id, e.target.value)}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                    </label>
+                  </td>
                   <td className="p-3 font-medium">{r.name}</td>
                   <td className="p-3">{r.title ?? "—"}</td>
                   <td className="p-3">{r.specialty ?? "—"}</td>

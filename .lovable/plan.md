@@ -1,105 +1,49 @@
-# 공동파트너 미팅용 UI/UX 변경사항 산출물
+## 현상
 
-내일 미팅에서 사용할 3종 세트를 만듭니다. **사업 임팩트 + 제품 디테일**을 균형 있게 담고, 4개 영역(Mind Track / B2B Center / 홈 진입 / 전문가 매칭)을 모두 다룹니다.
+- `/voice-counseling` 진입 시 음성상담이 시작되지 않음.
+- 콘솔 로그: `hasSession: false` (현재 세션 미로그인 상태).
+- `supabase/functions/realtime-voice` 최근 로그 없음 → 클라이언트가 WebSocket 단계까지 도달하지 못함.
 
----
+## 원인 (2가지가 겹쳐 있음)
 
-## 산출물 1 — 앱 내 투어 페이지 `/whats-new`
+1. 로그인 게이트
+   - `src/pages/VoiceCounselingNew.tsx` 의 `runPreflight()` 가 access_token 없으면 즉시 `AUTH` 에러로 종료.
+   - 사용자가 미로그인 상태로 들어오면 "로그인이 필요해요" 토스트만 뜨고 연결 시도 자체가 안 됨.
+2. OpenAI Realtime 모델명이 만료된 별칭
+   - `supabase/functions/realtime-voice/index.ts` 에서 `wss://api.openai.com/v1/realtime?model=gpt-realtime` 사용.
+   - 현재 안정 모델명은 `gpt-4o-realtime-preview-2024-12-17` (또는 `gpt-4o-realtime-preview`). `gpt-realtime` 호출 시 OpenAI 가 즉시 끊어 클라에서 WS close 로 보임.
 
-미팅 중 노트북·모바일로 직접 보여줄 수 있는 라이브 페이지.
+## 변경 사항
 
-**구조**
-- 헤더: "2026년 5월 업데이트" + 한 줄 요약
-- 4개 섹션 카드 (클릭하면 실제 화면으로 이동)
-  1. **Mind Track** — 7일/2주 워크북, 액션 카드 플립 → `/mind-track/workbook` 바로가기
-  2. **B2B Center** — 엑셀 임포트(케어플 호환), 콘솔 8개 메뉴 → `/b2b-center/app?demo=1`
-  3. **홈 진입 동선** — 캠페인 카드 1탭 진입 → `/home`
-  4. **전문가 매칭** — 시간팩 구독(5/10/20/30h) → `/expert-hiring`
-- 각 카드에 "Before → After" 한 줄, 비즈니스 임팩트 한 줄
-- 스타일: 화이트 미니멀, 골드 액센트 #C8B88A, Pretendard/Instrument Serif
+### 1. Edge function 모델 업데이트 + 진단 로그
+- 파일: `supabase/functions/realtime-voice/index.ts`
+  - 모델 문자열을 `gpt-4o-realtime-preview-2024-12-17` 로 교체.
+  - OpenAI WS `onclose` 시 status code / reason 을 클라이언트로 한 번 forward (디버깅용 `{type:'upstream.closed', code, reason}`).
+  - OPENAI_API_KEY 미설정 시 명확한 메시지 (이미 있음, 유지).
+  - 배포(`supabase--deploy_edge_functions`).
 
-**라우팅**: `App.tsx`에 `/whats-new` 추가, 메인 nav에는 노출 안 함(공유 링크 전용)
+### 2. 미로그인 사용자 허용 (게스트 모드)
+- 파일: `supabase/functions/realtime-voice/index.ts`
+  - `token` 파라미터가 비어 있어도 게스트로 허용 (현재는 401). 단, 게스트 호출에는 IP 기반 간단 카운터로 분당 1세션 제한 메모리 안내.
+- 파일: `src/pages/VoiceCounselingNew.tsx`
+  - `runPreflight` 에서 AUTH 실패해도 게스트로 진행하되, 상단에 "로그인하면 대화 기록이 저장돼요" 안내 + `Login` 버튼 노출.
+  - `RealtimeVoiceChat.init()` 에서 토큰이 없을 때도 wss URL 을 만들도록 분기 (현재도 빈 문자열 그대로 전송됨 → 서버 401만 풀면 됨).
+  - `persistSession()` 은 로그인된 경우에만 호출 (현재 로직 유지).
 
----
+### 3. 사용자 가시적 에러 메시지 개선
+- 파일: `src/pages/VoiceCounselingNew.tsx`
+  - `onClose` 에서 `upstream.closed` 메시지 받으면 "음성 모델 연결에 실패했어요 (OpenAI)" 로 코드/이유 표시.
+  - 재연결 3회 시도 후 실패하면 `History` / `Reload` 버튼 그대로 노출 (이미 있음).
 
-## 산출물 2 — PDF 변경사항 리포트 `/mnt/documents/AIHPRO_Update_2026-05.pdf`
+## 검증
 
-인쇄·이메일 공유용. A4 세로, 화이트 미니멀.
+1. Edge function 배포 후 `supabase--curl_edge_functions` 가 아닌 브라우저에서 `/voice-counseling` 진입 → 마이크 권한 허용 → 코끼리 인사 음성 재생 확인.
+2. 콘솔 로그에서 `📨 Received: session.created` → `Session configured` 순서 확인.
+3. 미로그인 상태에서도 대화 시작이 되는지 확인.
+4. `supabase--edge_function_logs realtime-voice` 에서 `Connected to OpenAI Realtime API` 로그 확인.
 
-**구성 (약 8-10 페이지)**
-1. **표지** — "AIHPRO Product Update · 2026.05" + 핵심 지표 3개
-2. **요약 1p** — 4개 영역 한눈에, 비즈니스 한 줄씩
-3. **Mind Track (2p)**
-   - 7일 트랙: PMF 베타 무료, Day별 구조(1·4·7 무거움 / 2·3·5·6 가벼움)
-   - 2주 트랙: 14일 4세션(Day 1·4·8·11), 세션 3-step 구조
-   - 액션 카드 플립 UI — FIFA 카드 메타포, 게이미피케이션
-   - 스크린샷: 워크북 메인, 액션 카드 뒷면
-4. **B2B Center (2p)**
-   - 케어플 호환 엑셀 자동 인식 (일일/월 서비스관리 템플릿)
-   - 60일 무료 트라이얼
-   - 콘솔 구조: 운영(일정·이용자·평가) / 재활 서비스 / 수납 / 관리자 / 인텔리전스
-   - 스크린샷: 임포트 마법사, 콘솔 대시보드
-5. **홈/랜딩 진입 동선 (1p)**
-   - MobileHome 캠페인 카드 → 워크북 1탭 직행
-   - 모바일·PC 공통 동작
-   - 스크린샷: 모바일 홈, 캠페인 카드
-6. **전문가 매칭·시간팩 (1p)**
-   - 시간 구독형: 5/10/20/30h, 시간당 ₩39,000
-   - 홈티 1.5배 차감, 구독자 할인
-   - 스크린샷: expert-hiring 패키지 선택
-7. **다음 분기 로드맵 1p** — 간단히
-8. **부록: 핵심 화면 캡처 모음**
+## 범위 밖
 
-**제작 방식**: 헤드리스 브라우저로 실제 화면 캡처 → reportlab으로 조판 → 시각 QA(페이지별 이미지 변환 후 검증)
-
----
-
-## 산출물 3 — PPTX 발표용 덱 `/mnt/documents/AIHPRO_Partner_Meeting_2026-05.pptx`
-
-미팅에서 스크린 띄우고 발표용. 16:9, 약 12-14 슬라이드.
-
-**구성**
-1. 타이틀 — "2026.05 Product Update · 파트너 공유"
-2. 어젠다
-3. **Section: Mind Track**
-   - PMF 베타 무료 정책 (one-product BM)
-   - 7일 vs 2주 구조 비교
-   - 액션 카드 게이미피케이션 (스크린샷)
-4. **Section: B2B Center**
-   - 60일 무료 + 케어플 대비 포지셔닝
-   - 엑셀 임포트 자동 인식 데모 (스크린샷)
-   - 콘솔 핵심 3기능 (이용자·일정·수납)
-5. **Section: 진입 동선**
-   - 홈 → 워크북 1탭 직행 (Before/After)
-6. **Section: 전문가 매칭**
-   - 시간팩 구독 모델 (가격표)
-   - 구독자 할인 + 월 무료 크레딧
-7. **종합: 비즈니스 임팩트**
-   - PMF 베타 핵심 지표 (가입→1일차→7일차 완주율)
-   - 분기 로드맵
-8. Q&A / Thank you
-
-**스타일**: 화이트 배경 + 골드 #C8B88A 액센트, 큰 타이포(Instrument Serif 헤드라인), 슬라이드당 1개 핵심 메시지
-
----
-
-## 기술 세부
-
-- **스크린샷 캡처**: 실 프리뷰 URL에 headless playwright/puppeteer 없이, 이미 있는 화면에 대해 `browser--screenshot` 또는 사용자 제공 캡처 활용. 산출 1(앱 페이지) 빌드 후 실 화면 캡처해서 산출 2·3에 재사용.
-- **PDF 생성**: Python `reportlab` + 캡처 임베딩
-- **PPTX 생성**: `pptxgenjs` (Node) — 화이트 미니멀 템플릿, 골드 액센트
-- **QA**: PDF·PPTX 둘 다 페이지별 이미지 렌더링 후 시각 검증 (오버플로/잘림/정렬 체크)
-- **가격은 모두 `src/constants/tokenCosts.ts`에서 동적으로 읽기** (메모이즈된 가격 정책)
-- 산출물 파일은 `/mnt/documents/`에 저장, 채팅에 `<presentation-artifact>` 태그로 노출
-
----
-
-## 작업 순서
-
-1. `/whats-new` 페이지부터 만들기 (실 라이브 데모 + 캡처 소스)
-2. 페이지 완성 후 핵심 화면들 캡처 수집
-3. 캡처 + 텍스트로 PDF 조판
-4. 같은 자산으로 PPTX 덱 구성
-5. 두 산출물 시각 QA 후 최종 전달
-
-빌드 모드 전환되면 위 순서대로 진행합니다. 추가하거나 빼야 할 영역, 다르게 강조했으면 하는 톤이 있으면 알려주세요.
+- TTS 음색/감성 톤, 새 코끼리 캐릭터 디자인.
+- 대화 기록 UI 개선.
+- ElevenLabs 대체 음성 엔진 전환.

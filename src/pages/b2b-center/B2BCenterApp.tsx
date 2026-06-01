@@ -5,7 +5,9 @@ import {
   LayoutDashboard, Users, Calendar, BookOpen, CreditCard, Building2,
   UserCog, FileText, Upload, Sparkles, ShieldAlert, Compass,
 } from "lucide-react";
-import { listMyCenters, getActiveCenterId, setActiveCenterId, type CenterOrg } from "@/lib/b2bCenter/centerClient";
+import { listMyCenters, getActiveCenterId, setActiveCenterId, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
+import { useToast } from "@/hooks/use-toast";
+import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import EmptyCenterState from "@/components/b2b-center/EmptyCenterState";
 import DemoModeBanner from "@/components/b2b-center/DemoModeBanner";

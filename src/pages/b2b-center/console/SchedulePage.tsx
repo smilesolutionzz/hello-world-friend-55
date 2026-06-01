@@ -43,7 +43,8 @@ export default function SchedulePage() {
   const { centerId, demo } = useOutletContext<Ctx>();
 
   const [view, setView] = useState<ViewMode>("week");
-  const [group, setGroup] = useState<GroupMode>("date");
+  const [group, setGroup] = useState<GroupMode>("timetable");
+  const { toast } = useToast();
   const [cursor, setCursor] = useState<Date>(new Date());
 
   const [sessions, setSessions] = useState<any[]>([]);

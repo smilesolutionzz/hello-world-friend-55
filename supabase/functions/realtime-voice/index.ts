@@ -59,7 +59,8 @@ serve(async (req) => {
       console.log("Client WebSocket connected");
       
       // Connect to OpenAI Realtime API
-      const url = "wss://api.openai.com/v1/realtime?model=gpt-realtime";
+      const url = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17";
+
       console.log("Connecting to OpenAI:", url);
       
       openAISocket = new WebSocket(url, {

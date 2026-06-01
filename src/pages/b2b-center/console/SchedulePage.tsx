@@ -452,14 +452,25 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCre
                   if ((e.target as HTMLElement).closest("button")) return;
                   onCreate?.(ds, h);
                 }}
-                className="group relative border-b border-r border-neutral-100 min-h-[60px] p-1 space-y-1 cursor-pointer hover:bg-[#FAF6E8]/40 transition"
+                className="group relative border-b border-r border-neutral-100 min-h-[60px] p-1 cursor-pointer hover:bg-[#FAF6E8]/40 transition"
               >
                 {slot.length === 0 && (
                   <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition pointer-events-none">
                     <Plus className="w-4 h-4 text-[#C8B88A]" />
                   </span>
                 )}
-                {slot.map((s: any) => <SessionChip key={s.id} s={s} therapist={therapist} clientName={clientName} onPick={onPick} />)}
+                {slot.length > 1 && (
+                  <span className="absolute top-0.5 right-0.5 z-10 text-[9px] font-semibold px-1 py-px rounded-full bg-neutral-900 text-white pointer-events-none">
+                    {slot.length}
+                  </span>
+                )}
+                <div className={`h-full ${slot.length > 1 ? "flex gap-0.5" : "space-y-1"}`}>
+                  {slot.map((s: any) => (
+                    <div key={s.id} className={slot.length > 1 ? "flex-1 min-w-0" : ""}>
+                      <SessionChip s={s} therapist={therapist} clientName={clientName} onPick={onPick} compact={slot.length > 1} />
+                    </div>
+                  ))}
+                </div>
               </div>
             );
           })}

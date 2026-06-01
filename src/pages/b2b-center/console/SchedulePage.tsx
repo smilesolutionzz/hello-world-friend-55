@@ -259,8 +259,46 @@ export default function SchedulePage() {
             </button>
           ))}
         </div>
+        {/* Therapist filter */}
+        <div className="relative ml-auto">
+          <button onClick={() => setShowTFilter((v) => !v)} className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-white border border-neutral-200 hover:border-neutral-400 transition">
+            <Filter className="w-3 h-3" />
+            선생님 {Object.values(therapistFilter).filter(Boolean).length}/{Object.keys(therapistFilter).length}
+          </button>
+          {showTFilter && (
+            <>
+              <div className="fixed inset-0 z-30" onClick={() => setShowTFilter(false)} />
+              <div className="absolute right-0 mt-1 z-40 bg-white border border-neutral-200 rounded-xl shadow-lg p-2 min-w-[220px] max-h-[320px] overflow-auto">
+                <div className="flex items-center justify-between px-2 py-1 text-[10px] text-neutral-400">
+                  <span>선생님 필터</span>
+                  <div className="flex gap-2">
+                    <button onClick={() => setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, true])))} className="hover:text-neutral-700">전체</button>
+                    <button onClick={() => setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, false])))} className="hover:text-neutral-700">해제</button>
+                  </div>
+                </div>
+                {therapists.map((t) => {
+                  const { Icon, borderStyle } = therapistVisual(t);
+                  const on = therapistFilter[t.id] !== false;
+                  return (
+                    <label key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs">
+                      <input type="checkbox" checked={on} onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))} className="accent-neutral-900" />
+                      <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color, border: `2px ${borderStyle} ${t.color}` }} />
+                      <Icon className="w-3 h-3 shrink-0" style={{ color: t.color }} />
+                      <span className="flex-1 truncate">{t.name}</span>
+                    </label>
+                  );
+                })}
+                <label className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1 pt-2">
+                  <input type="checkbox" checked={therapistFilter.__none !== false} onChange={(e) => setTherapistFilter((p) => ({ ...p, __none: e.target.checked }))} className="accent-neutral-900" />
+                  <span className="w-4 h-4 rounded-sm shrink-0 border border-dashed border-neutral-400 bg-neutral-100" />
+                  <span className="flex-1 text-neutral-500">미배정</span>
+                </label>
+              </div>
+            </>
+          )}
+        </div>
         {/* Status filter */}
-        <div className="inline-flex items-center gap-2 ml-auto bg-white border border-neutral-200 rounded-full px-3 py-1.5">
+        <div className="inline-flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-3 py-1.5">
           {(Object.keys(STATUS_META) as StatusCode[]).map((s) => (
             <label key={s} className="inline-flex items-center gap-1 text-xs cursor-pointer">
               <input type="checkbox" checked={statusFilter[s]} onChange={(e) => setStatusFilter((p) => ({ ...p, [s]: e.target.checked }))} className="accent-neutral-900" />

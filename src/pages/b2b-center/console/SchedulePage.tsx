@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Circle, Square, Triangle, Diamond, Filter, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ImportWizard from "@/components/b2b-center/ImportWizard";

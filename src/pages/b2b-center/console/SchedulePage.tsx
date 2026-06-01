@@ -29,12 +29,18 @@ const PALETTE = ["#E63946", "#1D7874", "#F4A261", "#264653", "#9D4EDD", "#0077B6
 // 색 이외에 형태/테두리로도 구분 (색각이상 보조)
 const SHAPES = [Circle, Square, Triangle, Diamond];
 const BORDER_STYLES = ["solid", "dashed", "dotted", "double"] as const;
+function hashIdx(s: string): number {
+  let h = 0; for (let i = 0; i < (s ?? "").length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
 function therapistVisual(t: any) {
-  const i = t?._idx ?? 0;
+  const i = t?._idx ?? hashIdx(t?.id ?? t?.name ?? "");
+  // 절대 회색으로 떨어지지 않도록 PALETTE 인덱스로 강제 보장
+  const color = t?.color || PALETTE[i % PALETTE.length];
   return {
     Icon: SHAPES[i % SHAPES.length],
     borderStyle: BORDER_STYLES[Math.floor(i / SHAPES.length) % BORDER_STYLES.length],
-    color: t?.color ?? "#9ca3af",
+    color,
   };
 }
 

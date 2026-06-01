@@ -22,6 +22,9 @@ import {
 import StoreSection from '@/components/store/StoreSection';
 import PartnerTrustSection from '@/components/landing/PartnerTrustSection';
 import aihproLogo from '@/assets/aihpro-logo.png';
+import { AudienceModeToggle } from '@/components/navigation/AudienceModeToggle';
+import { Crown, Menu } from 'lucide-react';
+import { useLanguage } from '@/i18n';
 
 /**
  * MobileHome — 흰 배경 모바일 홈

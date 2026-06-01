@@ -482,13 +482,15 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCre
 
 // ===== 일정 등록 다이얼로그 =====
 function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSubmit }: any) {
-  const [clientId, setClientId] = useState(clients[0]?.id ?? "");
   const [therapistId, setTherapistId] = useState(therapists[0]?.id ?? "");
+  const [clientId, setClientId] = useState(clients[0]?.id ?? "");
   const [programId, setProgramId] = useState(programs[0]?.id ?? "");
   const [startTime, setStartTime] = useState(`${String(at.hour).padStart(2, "0")}:00`);
   const [endTime, setEndTime] = useState(`${String(at.hour).padStart(2, "0")}:40`);
   const [note, setNote] = useState("");
   const canSubmit = !!clientId && !!startTime;
+  const selectedTh = therapists.find((t: any) => t.id === therapistId);
+  const visual = therapistVisual(selectedTh);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4" onClick={onClose}>
@@ -501,16 +503,49 @@ function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSub
           <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
         </div>
         <div className="space-y-3 text-sm">
+          {/* 1. 선생님(색상 자동 적용) — 카드 그리드로 시각적 선택 */}
+          <Field label="선생님 (먼저 선택하면 색상이 자동 적용돼요)">
+            <div className="grid grid-cols-3 gap-1.5 mb-1.5">
+              {therapists.map((t: any) => {
+                const v = therapistVisual(t);
+                const on = therapistId === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setTherapistId(t.id)}
+                    className={`relative flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs transition ${on ? "ring-2 ring-neutral-900" : "hover:ring-1 hover:ring-neutral-300"}`}
+                    style={{
+                      background: `${v.color}1f`,
+                      borderLeft: `4px ${v.borderStyle} ${v.color}`,
+                    }}
+                  >
+                    <v.Icon className="w-3 h-3 shrink-0" style={{ color: v.color }} fill={v.color} />
+                    <span className="truncate text-neutral-800">{t.name}</span>
+                    {on && <Check className="w-3 h-3 ml-auto text-neutral-900" />}
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={() => setTherapistId("")}
+                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs border border-dashed border-neutral-300 transition ${therapistId === "" ? "ring-2 ring-neutral-900 bg-neutral-50" : "hover:bg-neutral-50"}`}
+              >
+                <span className="text-neutral-500">미배정</span>
+                {therapistId === "" && <Check className="w-3 h-3 ml-auto text-neutral-900" />}
+              </button>
+            </div>
+            {selectedTh && (
+              <div className="text-[10px] text-neutral-500 inline-flex items-center gap-1.5 px-2 py-1 rounded-full" style={{ background: `${visual.color}1f` }}>
+                <visual.Icon className="w-2.5 h-2.5" style={{ color: visual.color }} fill={visual.color} />
+                <span>{selectedTh.name} 색상으로 표시돼요</span>
+              </div>
+            )}
+          </Field>
           <Field label="이용자">
             <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
               {clients.length === 0 && <option value="">이용자가 없어요. 먼저 등록하세요.</option>}
               {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-          </Field>
-          <Field label="선생님">
-            <select value={therapistId} onChange={(e) => setTherapistId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
-              <option value="">— 미배정 —</option>
-              {therapists.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </Field>
           <Field label="프로그램">

@@ -145,7 +145,7 @@ export default function SchedulePage() {
       setLoading(true);
       if (demo) {
         setSessions(DEMO_SESSIONS);
-        setTherapists(DEMO_THERAPISTS);
+        setTherapists(DEMO_THERAPISTS.map((x: any, i: number) => ({ ...x, _idx: i, color: x.color ?? PALETTE[i % PALETTE.length] })));
         setClients(DEMO_CLIENTS.map((c) => ({ id: c.id, name: c.display_name })));
         setPrograms(DEMO_PROGRAMS);
         setLoading(false); return;
@@ -158,22 +158,37 @@ export default function SchedulePage() {
         supabase.from("center_programs").select("*").eq("center_id", centerId),
       ]);
       setSessions(s.data ?? []);
-      setTherapists((t.data ?? []).map((x: any, i: number) => ({ ...x, color: x.calendar_color ?? x.color ?? PALETTE[i % PALETTE.length] })));
+      setTherapists((t.data ?? []).map((x: any, i: number) => ({ ...x, _idx: i, color: x.calendar_color ?? x.color ?? PALETTE[i % PALETTE.length] })));
       setClients(c.data ?? []);
       setPrograms(p.data ?? []);
       setLoading(false);
     })();
   }, [centerId, demo, range.start.getTime(), range.end.getTime()]);
 
+  // 치료사 목록 바뀌면 필터 키 동기화 (새로 들어온 치료사는 기본 ON, "미배정"=__none도 포함)
+  useEffect(() => {
+    setTherapistFilter((prev) => {
+      const next: Record<string, boolean> = { __none: prev.__none ?? true };
+      for (const t of therapists) next[t.id] = prev[t.id] ?? true;
+      return next;
+    });
+  }, [therapists]);
+
   const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? "—";
   const programName = (id: string) => programs.find((p) => p.id === id)?.name ?? "—";
   const therapist = (id: string) => therapists.find((t) => t.id === id);
 
-  // 가시 세션 (날짜+상태 필터)
+  // 가시 세션 (날짜 + 상태 + 치료사 필터)
   const visibleSessions = useMemo(() => {
     const startStr = fmt(range.start); const endStr = fmt(range.end);
-    return sessions.filter((s) => s.session_date >= startStr && s.session_date <= endStr && statusFilter[s.status as StatusCode]);
-  }, [sessions, range, statusFilter]);
+    return sessions.filter((s) => {
+      if (s.session_date < startStr || s.session_date > endStr) return false;
+      if (!statusFilter[s.status as StatusCode]) return false;
+      const key = s.therapist_id ?? "__none";
+      if (therapistFilter[key] === false) return false;
+      return true;
+    });
+  }, [sessions, range, statusFilter, therapistFilter]);
 
   // 일자 배열
   const dayList = useMemo(() => {

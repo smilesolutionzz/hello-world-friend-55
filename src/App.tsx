@@ -606,6 +606,7 @@ const App = () => {
             <Route path="intelligence/parent-reports" element={<CenterParentReportsPage />} />
             <Route path="intelligence/ops-dashboard" element={<CenterOpsDashboardPage />} />
             <Route path="guide" element={<CenterGuidePage />} />
+            <Route path="data/voucher-excel" element={<CenterVoucherExcelImportPage />} />
           </Route>
 
           {/* Catch-all */}

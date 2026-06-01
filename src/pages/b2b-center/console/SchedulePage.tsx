@@ -586,9 +586,12 @@ function SessionChip({ s, therapist, clientName, onPick }: any) {
   const cancelled = s.status?.startsWith("cancelled");
   return (
     <button onClick={() => onPick(s)} className={`w-full text-left rounded-md px-2 py-1 text-[11px] leading-tight hover:ring-1 hover:ring-neutral-300 ${cancelled ? "opacity-40 line-through" : ""}`}
-      style={{ background: (th?.color ?? "#eee") + "55", borderLeft: `3px solid ${th?.color ?? "#999"}` }}>
+      style={{ background: (th?.color ?? "#e5e7eb") + "33", borderLeft: `4px solid ${th?.color ?? "#9ca3af"}` }}>
       <p className="font-medium truncate">{clientName(s.client_id)}</p>
-      <p className="text-neutral-500 truncate">{s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}</p>
+      <p className="text-neutral-500 truncate flex items-center gap-1">
+        <span className="inline-block w-1.5 h-1.5 rounded-full shrink-0" style={{ background: th?.color ?? "#9ca3af" }} />
+        <span className="truncate">{th?.name ?? "미배정"} · {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}</span>
+      </p>
     </button>
   );
 }

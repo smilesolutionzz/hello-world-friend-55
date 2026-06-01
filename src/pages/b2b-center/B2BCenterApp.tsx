@@ -130,29 +130,47 @@ export default function B2BCenterApp() {
 
       {demo && <DemoModeBanner />}
 
+      {/* Mobile top bar */}
+      <div className="md:hidden sticky top-0 z-30 bg-white border-b border-neutral-200 flex items-center justify-between px-4 py-3">
+        <button onClick={() => setMobileNavOpen(true)} className="p-2 -ml-2 rounded-lg hover:bg-neutral-100" aria-label="메뉴 열기">
+          <Menu className="w-5 h-5" />
+        </button>
+        <p className="text-sm font-semibold truncate">{activeCenter.name}</p>
+        <div className="w-9" />
+      </div>
+
       <div className="flex flex-1 min-h-0">
+        {/* Sidebar overlay (mobile) */}
+        {mobileNavOpen && (
+          <div className="md:hidden fixed inset-0 z-40 bg-black/40" onClick={() => setMobileNavOpen(false)} />
+        )}
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-neutral-200 flex flex-col">
-          <div className="p-4 border-b border-neutral-200">
-            <p className="text-xs text-neutral-500 mb-1">기관</p>
-            <select
-              value={activeId ?? ""}
-              onChange={(e) => { setActive(e.target.value); setActiveCenterId(e.target.value); }}
-              className="w-full text-sm font-medium bg-transparent focus:outline-none mb-2"
-              disabled={demo}
-            >
-              {centers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-            {!demo && (
-              <button
-                onClick={handleAddCenter}
-                disabled={adding}
-                className="w-full inline-flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg border border-neutral-200 text-xs text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+        <aside className={`${mobileNavOpen ? "fixed" : "hidden"} md:flex md:static z-50 inset-y-0 left-0 w-72 md:w-64 bg-white border-r border-neutral-200 flex-col`}>
+          <div className="p-4 border-b border-neutral-200 flex items-start justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-neutral-500 mb-1">기관</p>
+              <select
+                value={activeId ?? ""}
+                onChange={(e) => { setActive(e.target.value); setActiveCenterId(e.target.value); }}
+                className="w-full text-sm font-medium bg-transparent focus:outline-none mb-2"
+                disabled={demo}
               >
-                <Plus className="w-3.5 h-3.5" />
-                {adding ? "추가 중…" : "새 기관 추가"}
-              </button>
-            )}
+                {centers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+              {!demo && (
+                <button
+                  onClick={handleAddCenter}
+                  disabled={adding}
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg border border-neutral-200 text-xs text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  {adding ? "추가 중…" : "새 기관 추가"}
+                </button>
+              )}
+            </div>
+            <button onClick={() => setMobileNavOpen(false)} className="md:hidden p-2 -mr-2 rounded-lg hover:bg-neutral-100" aria-label="메뉴 닫기">
+              <X className="w-5 h-5" />
+            </button>
           </div>
           <nav className="flex-1 overflow-y-auto p-3 space-y-4">
             {Object.entries(grouped).map(([group, items]) => (
@@ -180,8 +198,8 @@ export default function B2BCenterApp() {
           </div>
         </aside>
 
-        <main className="flex-1 overflow-auto">
-          <div className="max-w-5xl mx-auto px-6 pt-6 space-y-4">
+        <main className="flex-1 min-w-0 overflow-auto">
+          <div className="max-w-5xl mx-auto px-4 md:px-6 pt-4 md:pt-6 space-y-4">
             {!demo && (
               <TrialBanner
                 trialEndsAt={activeCenter.trial_ends_at}

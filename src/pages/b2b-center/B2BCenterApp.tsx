@@ -132,11 +132,21 @@ export default function B2BCenterApp() {
             <select
               value={activeId ?? ""}
               onChange={(e) => { setActive(e.target.value); setActiveCenterId(e.target.value); }}
-              className="w-full text-sm font-medium bg-transparent focus:outline-none"
+              className="w-full text-sm font-medium bg-transparent focus:outline-none mb-2"
               disabled={demo}
             >
               {centers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
+            {!demo && (
+              <button
+                onClick={handleAddCenter}
+                disabled={adding}
+                className="w-full inline-flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg border border-neutral-200 text-xs text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                {adding ? "추가 중…" : "새 기관 추가"}
+              </button>
+            )}
           </div>
           <nav className="flex-1 overflow-y-auto p-3 space-y-4">
             {Object.entries(grouped).map(([group, items]) => (

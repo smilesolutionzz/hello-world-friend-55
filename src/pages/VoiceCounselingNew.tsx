@@ -158,12 +158,21 @@ const VoiceCounselingNew = () => {
 
   // ───────── 메시지 핸들러 ─────────
   const handleMessage = useCallback((msg: any) => {
+    if (msg.type === 'upstream.closed') {
+      console.error('[voice-counseling] upstream closed', msg.code, msg.reason);
+      handleErrorInfo({
+        code: 'WS',
+        message: `음성 모델 연결이 끊겼어요. (${msg.code ?? '?'}) ${msg.reason ?? ''}`.trim(),
+      });
+      return;
+    }
     if (msg.type === 'conversation.item.input_audio_transcription.completed') {
       const text = sanitizeTranscript(msg.transcript || '');
       if (!text) return;
       setLines((prev) => [...prev, { id: `u-${Date.now()}`, role: 'user', text, ts: Date.now() }]);
       return;
     }
+
 
     if (msg.type === 'response.audio_transcript.delta' && msg.delta) {
       partialAssistantRef.current += msg.delta;

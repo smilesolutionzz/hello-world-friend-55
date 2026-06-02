@@ -2327,6 +2327,42 @@ export type Database = {
           },
         ]
       }
+      center_billing_closings: {
+        Row: {
+          center_id: string
+          closed_at: string
+          closed_by: string | null
+          id: string
+          notes: string | null
+          period_yyyymm: string
+          total_ar_krw: number
+          total_charge_krw: number
+          total_payment_krw: number
+        }
+        Insert: {
+          center_id: string
+          closed_at?: string
+          closed_by?: string | null
+          id?: string
+          notes?: string | null
+          period_yyyymm: string
+          total_ar_krw?: number
+          total_charge_krw?: number
+          total_payment_krw?: number
+        }
+        Update: {
+          center_id?: string
+          closed_at?: string
+          closed_by?: string | null
+          id?: string
+          notes?: string | null
+          period_yyyymm?: string
+          total_ar_krw?: number
+          total_charge_krw?: number
+          total_payment_krw?: number
+        }
+        Relationships: []
+      }
       center_client_invites: {
         Row: {
           center_code: string
@@ -2796,40 +2832,64 @@ export type Database = {
       }
       center_parent_reports: {
         Row: {
+          ai_summary: string | null
           center_id: string
           client_id: string
+          coach_comment: string | null
           created_at: string
+          generated_at: string | null
           html_content: string | null
           id: string
           issued_at: string | null
+          metrics: Json | null
           pdf_url: string | null
           period_end: string
           period_start: string
+          period_yyyymm: string | null
+          sent_at: string | null
+          share_token: string | null
           status: string
+          viewed_at: string | null
         }
         Insert: {
+          ai_summary?: string | null
           center_id: string
           client_id: string
+          coach_comment?: string | null
           created_at?: string
+          generated_at?: string | null
           html_content?: string | null
           id?: string
           issued_at?: string | null
+          metrics?: Json | null
           pdf_url?: string | null
           period_end: string
           period_start: string
+          period_yyyymm?: string | null
+          sent_at?: string | null
+          share_token?: string | null
           status?: string
+          viewed_at?: string | null
         }
         Update: {
+          ai_summary?: string | null
           center_id?: string
           client_id?: string
+          coach_comment?: string | null
           created_at?: string
+          generated_at?: string | null
           html_content?: string | null
           id?: string
           issued_at?: string | null
+          metrics?: Json | null
           pdf_url?: string | null
           period_end?: string
           period_start?: string
+          period_yyyymm?: string | null
+          sent_at?: string | null
+          share_token?: string | null
           status?: string
+          viewed_at?: string | null
         }
         Relationships: [
           {
@@ -3189,6 +3249,110 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      center_voucher_claim_items: {
+        Row: {
+          amount_krw: number
+          claim_id: string
+          client_id: string | null
+          copayment_krw: number
+          created_at: string
+          id: string
+          service_date: string
+          session_id: string | null
+          status: string
+          subsidy_krw: number
+          therapist_id: string | null
+          voucher_no: string | null
+          warning: string | null
+        }
+        Insert: {
+          amount_krw?: number
+          claim_id: string
+          client_id?: string | null
+          copayment_krw?: number
+          created_at?: string
+          id?: string
+          service_date: string
+          session_id?: string | null
+          status?: string
+          subsidy_krw?: number
+          therapist_id?: string | null
+          voucher_no?: string | null
+          warning?: string | null
+        }
+        Update: {
+          amount_krw?: number
+          claim_id?: string
+          client_id?: string | null
+          copayment_krw?: number
+          created_at?: string
+          id?: string
+          service_date?: string
+          session_id?: string | null
+          status?: string
+          subsidy_krw?: number
+          therapist_id?: string | null
+          voucher_no?: string | null
+          warning?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "center_voucher_claim_items_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "center_voucher_claims"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      center_voucher_claims: {
+        Row: {
+          approved_at: string | null
+          center_id: string
+          created_at: string
+          created_by: string | null
+          file_url: string | null
+          id: string
+          period_yyyymm: string
+          rejected_reason: string | null
+          status: string
+          submitted_at: string | null
+          total_amount_krw: number
+          total_count: number
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          center_id: string
+          created_at?: string
+          created_by?: string | null
+          file_url?: string | null
+          id?: string
+          period_yyyymm: string
+          rejected_reason?: string | null
+          status?: string
+          submitted_at?: string | null
+          total_amount_krw?: number
+          total_count?: number
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          center_id?: string
+          created_at?: string
+          created_by?: string | null
+          file_url?: string | null
+          id?: string
+          period_yyyymm?: string
+          rejected_reason?: string | null
+          status?: string
+          submitted_at?: string | null
+          total_amount_krw?: number
+          total_count?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       center_vouchers: {
         Row: {

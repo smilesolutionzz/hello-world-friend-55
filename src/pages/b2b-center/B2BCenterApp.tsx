@@ -16,6 +16,7 @@ import TrialBanner from "@/components/b2b-center/TrialBanner";
 import { DEMO_CENTER, isDemoMode } from "@/lib/b2bCenter/demoData";
 
 const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
+  { to: "setup", label: "시작 가이드", icon: Sparkles, group: "시작" },
   { to: "intelligence/ops-dashboard", label: "대시보드", icon: Sparkles, group: "시작" },
   { to: "guide", label: "운영 가이드", icon: Compass, group: "시작" },
   { to: "schedule", label: "일정", icon: Calendar, group: "운영" },
@@ -24,7 +25,8 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
   { to: "services/monthly", label: "월 서비스", icon: LayoutDashboard, group: "재활 서비스" },
   { to: "services/by-therapist", label: "선생님별 이용자", icon: UserCog, group: "재활 서비스" },
   { to: "services/attendance", label: "일별 접수인원", icon: Users, group: "재활 서비스" },
-  { to: "billing/stats", label: "수납 통계", icon: CreditCard, group: "수납" },
+  { to: "billing/stats", label: "수납 통계·미수금", icon: CreditCard, group: "수납" },
+  { to: "billing/voucher-claims", label: "전자바우처 청구", icon: FileSpreadsheet, group: "수납" },
   { to: "billing/voucher-audit", label: "부정결제 찾기", icon: ShieldAlert, group: "수납" },
   { to: "data/voucher-excel", label: "전자바우처 엑셀 등록", icon: FileSpreadsheet, group: "데이터 연동" },
   { to: "admin/therapists", label: "선생님 관리", icon: UserCog, group: "관리자" },

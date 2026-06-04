@@ -197,14 +197,18 @@ export default function SchedulePage() {
     })();
   }, [centerId, demo, range.start.getTime(), range.end.getTime()]);
 
-  // 치료사 목록 바뀌면 필터 키 동기화 (새로 들어온 치료사는 기본 ON, "미배정"=__none도 포함)
+  // 치료사 목록/세션 바뀌면 필터 키 동기화 — 등록된 치료사 + 세션에만 있는 orphan id 도 모두 포함, 기본 ON
   useEffect(() => {
     setTherapistFilter((prev) => {
       const next: Record<string, boolean> = { __none: prev.__none ?? true };
       for (const t of therapists) next[t.id] = prev[t.id] ?? true;
+      for (const s of sessions) {
+        const key = s.therapist_id;
+        if (key && next[key] === undefined) next[key] = prev[key] ?? true;
+      }
       return next;
     });
-  }, [therapists]);
+  }, [therapists, sessions]);
 
   const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? "—";
   const programName = (id: string) => programs.find((p) => p.id === id)?.name ?? "—";

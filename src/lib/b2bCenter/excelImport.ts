@@ -35,7 +35,7 @@ export interface ImportOptions {
 
 // ===== 헤더 시그니처 =====
 const SIG: Record<ImportEntity, RegExp[]> = {
-  clients: [/이름/, /성별|남.?여/, /생년월일|생일/],
+  clients: [/이름|이용자|대상자|수혜자|성명/, /성별|남.?여/, /생년월일|생일/],
   therapists: [/(선생님|치료사|강사).*(이름|성명)|성명|이름/, /(전공|분야|구분)/],
   programs: [/(프로그램|과목)/, /(시간|분)/, /(금액|단가|비용)/],
   vouchers: [/바우처/, /(시작|유효).*(일|기간)/],
@@ -60,12 +60,21 @@ const COL_MAP: Record<string, string> = {
   "이름": "name", "성명": "name",
   "성별": "gender",
   "생년월일": "birth_date", "생일": "birth_date",
-  "전화번호": "phone", "휴대전화": "phone", "연락처": "phone",
-  "보호자전화": "guardian_phone", "보호자연락처": "guardian_phone",
+  "개월수": "age_months", "나이": "age_months", "연령": "age_months",
+  "전화번호": "phone", "휴대전화": "phone", "연락처": "phone", "본인연락처": "phone",
+  "보호자전화": "guardian_phone", "보호자연락처": "guardian_phone", "보호자": "guardian_phone",
+  "이메일": "email", "메일": "email",
   "주소": "address",
-  "장애정보": "disability_info", "장애유형": "disability_info",
+  "학교": "school", "재학중인학교": "school", "소속": "school",
+  "장애정보": "disability_info", "장애유형": "disability_info", "장애": "disability_info",
+  "장애등급": "disability_grade",
+  "중복장애내용": "disability_secondary", "중복장애": "disability_secondary",
+  "초기상담일": "initial_consult_date", "초기상담일시": "initial_consult_date",
   "상태": "status",
-  "회원번호": "member_no",
+  "회원번호": "member_no", "등록번호": "member_no",
+  "유입경로": "referral_source", "경로": "referral_source",
+  "유입경로관련참고사항": "referral_note", "유입참고": "referral_note",
+  "최종수정일시": "last_modified_at", "수정일시": "last_modified_at",
   "직급": "title", "호칭": "title",
   "전공": "specialty", "분야": "specialty", "구분": "specialty",
   "프로그램": "program_name", "프로그램명": "program_name",
@@ -82,9 +91,9 @@ const COL_MAP: Record<string, string> = {
   "날짜": "session_date", "일자": "session_date", "회기일": "session_date",
   "시작시간": "start_time",
   "종료시간": "end_time",
-  "이용자": "client_name", "회원": "client_name", "이용자명": "client_name",
+  "이용자": "client_name", "회원": "client_name", "이용자명": "client_name", "대상자": "client_name", "수혜자": "client_name",
   "치료사": "therapist_name", "선생님": "therapist_name", "담당": "therapist_name",
-  "메모": "note", "기록": "note", "특이사항": "note",
+  "메모": "note", "기록": "note", "특이사항": "note", "비고": "note",
   "수납일": "paid_at", "결제일": "paid_at",
   "결제방법": "method", "결제수단": "method",
   "영수증번호": "receipt_no",
@@ -517,20 +526,43 @@ export async function commitImport(
     // 1) Clients (신규만 insert)
     const clientsSheet = parsed.sheets.find((s) => s.entity === "clients");
     if (clientsSheet) {
+      const splitPhone = (raw: any): { phone: string | null; guardian_phone: string | null } => {
+        if (raw == null) return { phone: null, guardian_phone: null };
+        const s = String(raw).trim();
+        if (!s) return { phone: null, guardian_phone: null };
+        const num = (s.match(/(\d{2,3}-?\d{3,4}-?\d{4})/)?.[1] ?? s).replace(/[^\d-]/g, "");
+        const isGuardian = /\(?\s*(모|부|보호자|가족|조모|조부|언니|누나|형|오빠|이모|고모)\s*\)?/.test(s);
+        const isSelf = /\(?\s*(본인|자녀|아이|당사자)\s*\)?/.test(s);
+        if (isGuardian && !isSelf) return { phone: null, guardian_phone: num };
+        return { phone: num, guardian_phone: null };
+      };
+      const META_KEYS = ["age_months", "email", "school", "disability_grade", "disability_secondary", "referral_source", "referral_note", "last_modified_at"];
       const rows = clientsSheet.rows
-        .filter((r) => r.name && !clientNameToId[String(r.name).trim()])
-        .map((r) => ({
-          center_id: centerId,
-          name: String(r.name).trim(),
-          gender: r.gender ?? null,
-          birth_date: parseDate(r.birth_date),
-          phone: r.phone ?? null,
-          guardian_phone: r.guardian_phone ?? null,
-          address: r.address ?? null,
-          disability_info: r.disability_info ?? null,
-          status: mapClientStatus(r.status),
-          member_no: r.member_no ?? null,
-        }));
+        .map((r: any) => ({ ...r, name: (r.name ?? r.client_name ?? "").toString().trim() }))
+        .filter((r) => r.name && !clientNameToId[r.name])
+        .map((r: any) => {
+          const sp = splitPhone(r.phone);
+          const meta: Record<string, any> = {};
+          for (const k of META_KEYS) {
+            const v = (r as any)[k];
+            if (v != null && String(v).trim() !== "") meta[k] = typeof v === "string" ? v.trim() : v;
+          }
+          if (r.note != null && String(r.note).trim() !== "") meta.note = String(r.note).trim();
+          return {
+            center_id: centerId,
+            name: r.name,
+            gender: r.gender ?? null,
+            birth_date: parseDate(r.birth_date),
+            phone: sp.phone ?? null,
+            guardian_phone: sp.guardian_phone ?? r.guardian_phone ?? null,
+            address: r.address ?? null,
+            disability_info: r.disability_info ?? null,
+            initial_consult_date: parseDate(r.initial_consult_date),
+            status: mapClientStatus(r.status),
+            member_no: r.member_no ?? null,
+            meta: Object.keys(meta).length ? meta : null,
+          };
+        });
       if (rows.length) {
         const { data, error } = await supabase.from("center_clients").insert(rows).select("id,name");
         if (error) throw error;

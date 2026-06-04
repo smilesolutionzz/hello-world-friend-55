@@ -2793,6 +2793,7 @@ export type Database = {
           owner_id: string
           phone: string | null
           plan: string
+          storefront_slug: string | null
           trial_ends_at: string | null
           trial_started_at: string | null
           trial_status: string
@@ -2808,6 +2809,7 @@ export type Database = {
           owner_id: string
           phone?: string | null
           plan?: string
+          storefront_slug?: string | null
           trial_ends_at?: string | null
           trial_started_at?: string | null
           trial_status?: string
@@ -2823,6 +2825,7 @@ export type Database = {
           owner_id?: string
           phone?: string | null
           plan?: string
+          storefront_slug?: string | null
           trial_ends_at?: string | null
           trial_started_at?: string | null
           trial_status?: string
@@ -17442,6 +17445,7 @@ export type Database = {
           owner_id: string
           phone: string | null
           plan: string
+          storefront_slug: string | null
           trial_ends_at: string | null
           trial_started_at: string | null
           trial_status: string
@@ -17669,6 +17673,7 @@ export type Database = {
           owner_id: string
           phone: string | null
           plan: string
+          storefront_slug: string | null
           trial_ends_at: string | null
           trial_started_at: string | null
           trial_status: string
@@ -17689,6 +17694,10 @@ export type Database = {
           p_trigger_source: string
           p_user_id: string
         }
+        Returns: string
+      }
+      ensure_center_storefront: {
+        Args: { _center_id: string }
         Returns: string
       }
       generate_center_code: { Args: never; Returns: string }

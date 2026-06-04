@@ -126,29 +126,29 @@ export default function ClientsPage() {
           className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-neutral-200 bg-white focus:outline-none focus:border-neutral-400" />
       </div>
 
-      <div className="bg-white rounded-2xl border border-neutral-200 overflow-x-auto">
-        <table className="min-w-[1800px] w-full text-sm">
-          <thead className="bg-neutral-50 text-neutral-500 text-xs">
+      <div className="bg-white rounded-2xl border border-neutral-200 overflow-auto max-h-[calc(100vh-260px)]">
+        <table className="min-w-[2400px] w-full text-sm border-separate border-spacing-0">
+          <thead className="text-neutral-500 text-xs sticky top-0 z-20">
             <tr>
-              <th className="text-left p-3 font-medium">이용자</th>
-              <th className="text-left p-3 font-medium">성별</th>
-              <th className="text-left p-3 font-medium">생년월일</th>
-              <th className="text-left p-3 font-medium">개월수</th>
-              <th className="text-left p-3 font-medium">장애유형</th>
-              <th className="text-left p-3 font-medium">장애등급</th>
-              <th className="text-left p-3 font-medium">중복장애내용</th>
-              <th className="text-left p-3 font-medium">연락처</th>
-              <th className="text-left p-3 font-medium">이메일</th>
-              <th className="text-left p-3 font-medium">주소</th>
-              <th className="text-left p-3 font-medium">학교</th>
-              <th className="text-left p-3 font-medium">초기상담일시</th>
-              <th className="text-left p-3 font-medium">회원번호</th>
-              <th className="text-left p-3 font-medium">유입경로</th>
-              <th className="text-left p-3 font-medium">유입경로 관련 참고사항</th>
-              <th className="text-left p-3 font-medium">상태</th>
-              <th className="text-left p-3 font-medium">메모</th>
-              <th className="text-left p-3 font-medium">최종수정일시</th>
-              <th className="text-right p-3 font-medium">AIHPRO</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">이용자</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">성별</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">생년월일</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">개월수</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">장애유형</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">장애등급</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">중복장애내용</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">연락처</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">이메일</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">주소</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">학교</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">초기상담일시</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">회원번호</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">유입경로</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">유입경로 관련 참고사항</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">상태</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">메모</th>
+              <th className="text-left p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">최종수정일시</th>
+              <th className="text-right p-3 font-medium whitespace-nowrap border-b border-neutral-200 bg-neutral-50">AIHPRO</th>
             </tr>
           </thead>
           <tbody>

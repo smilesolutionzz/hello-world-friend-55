@@ -256,14 +256,16 @@ export const PartnerRowItem: React.FC<{
   </div>
 );
 
-const EditDialog: React.FC<{
+export const PartnerEditDialog: React.FC<{
   slug: string;
   userId: string;
   kind: 'program' | 'product';
   row?: PartnerProgram | PartnerProduct;
+  institutionName?: string;
+  institutionType?: string;
   onClose: () => void;
   onSaved: () => void;
-}> = ({ slug, userId, kind, row, onClose, onSaved }) => {
+}> = ({ slug, userId, kind, row, institutionName, institutionType, onClose, onSaved }) => {
   const [form, setForm] = useState<any>(
     row ?? {
       title: '',

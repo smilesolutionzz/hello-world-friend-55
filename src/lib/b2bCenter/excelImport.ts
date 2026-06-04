@@ -659,12 +659,20 @@ export async function commitImport(
           const programName = r.program_name ? String(r.program_name).trim() : null;
           const session_date = parseDate(r.session_date);
           const start_time = parseTime(r.start_time);
+          const client_id = clientNameToId[clientName];
+          const therapist_id = therapistName ? therapistNameToId[therapistName] ?? null : null;
+          const program_id = programName ? programNameToId[programName] ?? null : null;
+          // 요일 + 시간 + 이용자/치료사 기반 반복 키 — 다음달에도 같은 요일/시간으로 자동 반복
+          const weekday = session_date ? new Date(session_date + "T00:00:00").getDay() : null;
+          const recurrence_key = session_date && client_id
+            ? `${client_id}|${therapist_id ?? ""}|${program_id ?? ""}|${weekday}|${start_time ?? ""}`
+            : null;
           return {
             payload: {
               center_id: centerId,
-              client_id: clientNameToId[clientName],
-              therapist_id: therapistName ? therapistNameToId[therapistName] ?? null : null,
-              program_id: programName ? programNameToId[programName] ?? null : null,
+              client_id,
+              therapist_id,
+              program_id,
               session_date,
               start_time,
               end_time: parseTime(r.end_time),
@@ -672,8 +680,9 @@ export async function commitImport(
               is_voucher: !!r.is_voucher,
               price_krw: parseInt(r.price_krw) || 0,
               note: r.note ?? null,
+              recurrence_key,
             },
-            dupKey: session_date && clientNameToId[clientName] ? `${session_date}|${clientNameToId[clientName]}|${start_time ?? ""}` : null,
+            dupKey: session_date && client_id ? `${session_date}|${client_id}|${start_time ?? ""}` : null,
           };
         })
         .filter((x) => x.payload.session_date && x.payload.client_id);
@@ -686,10 +695,10 @@ export async function commitImport(
         const existingId = c.dupKey ? existingKey.get(c.dupKey) : undefined;
         if (!existingId) { toInsert.push(c.payload); continue; }
         if (strategy === "skip") {
-          // 누락된 therapist_id / program_id 만 보완 (선생님 자동 매칭 backfill)
           const fill: any = {};
           if (c.payload.therapist_id) fill.therapist_id = c.payload.therapist_id;
           if (c.payload.program_id) fill.program_id = c.payload.program_id;
+          if (c.payload.recurrence_key) fill.recurrence_key = c.payload.recurrence_key;
           if (Object.keys(fill).length) toUpdate.push({ id: existingId, payload: { __backfillOnly: true, ...fill } });
           else skipped++;
           continue;
@@ -705,7 +714,6 @@ export async function commitImport(
         summary.sessions_inserted = data?.length ?? 0;
       }
       if (toUpdate.length) {
-        // 병합/덮어쓰기 / skip-backfill — 개별 update (소량 가정)
         for (const u of toUpdate) {
           let payload: any;
           if (u.payload.__backfillOnly) {
@@ -722,7 +730,38 @@ export async function commitImport(
       }
       summary.sessions_skipped = skipped;
       summary.sessions = (summary.sessions_inserted ?? 0) + (summary.sessions_updated ?? 0);
+
+      // 5b) 반복 일정 자동 확장 — 가져온 모든 회기를 같은 요일/시간으로 다음 26주(약 6개월) 동안 자동 복제
+      const REPEAT_WEEKS = 26;
+      const baseRows = candidates.filter((c) => c.payload.recurrence_key);
+      // 중복 방지를 위한 키셋 (date|client|start_time)
+      const existingFutureKeys = new Set<string>(existingKey.keys());
+      candidates.forEach((c) => { if (c.dupKey) existingFutureKeys.add(c.dupKey); });
+      const recurRows: any[] = [];
+      for (const c of baseRows) {
+        const base = new Date(c.payload.session_date + "T00:00:00");
+        for (let w = 1; w <= REPEAT_WEEKS; w++) {
+          const d = new Date(base);
+          d.setDate(d.getDate() + w * 7);
+          const ds = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+          const k = `${ds}|${c.payload.client_id}|${c.payload.start_time ?? ""}`;
+          if (existingFutureKeys.has(k)) continue;
+          existingFutureKeys.add(k);
+          recurRows.push({ ...c.payload, session_date: ds, status: "scheduled" });
+        }
+      }
+      if (recurRows.length) {
+        // chunk insert (500개 단위)
+        for (let i = 0; i < recurRows.length; i += 500) {
+          const chunk = recurRows.slice(i, i + 500);
+          const { error } = await supabase.from("center_sessions").insert(chunk);
+          if (error) throw error;
+        }
+        summary.sessions_recurring = recurRows.length;
+        summary.sessions = (summary.sessions ?? 0) + recurRows.length;
+      }
     }
+
 
     // 5) Payments (간단 insert)
     const payS = parsed.sheets.find((s) => s.entity === "payments");

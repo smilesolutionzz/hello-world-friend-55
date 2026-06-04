@@ -3074,6 +3074,7 @@ export type Database = {
           note: string | null
           price_krw: number
           program_id: string | null
+          recurrence_key: string | null
           session_date: string
           start_time: string | null
           status: Database["public"]["Enums"]["center_session_status"]
@@ -3092,6 +3093,7 @@ export type Database = {
           note?: string | null
           price_krw?: number
           program_id?: string | null
+          recurrence_key?: string | null
           session_date: string
           start_time?: string | null
           status?: Database["public"]["Enums"]["center_session_status"]
@@ -3110,6 +3112,7 @@ export type Database = {
           note?: string | null
           price_krw?: number
           program_id?: string | null
+          recurrence_key?: string | null
           session_date?: string
           start_time?: string | null
           status?: Database["public"]["Enums"]["center_session_status"]

@@ -192,14 +192,68 @@ export default function VoucherExcelImportPage() {
         setLastImport((s) => ({ ...s, therapists: { count: payload.length, at: new Date().toISOString() } }));
         toast({ title: `선생님 ${payload.length}명 등록 완료` });
       } else if (preview.kind === "clients") {
+        // "(모) 010-1234-5678" → guardian_phone, "(본인) 010-..." → phone
+        const splitPhone = (raw: any): { phone: string | null; guardian_phone: string | null } => {
+          if (!raw) return { phone: null, guardian_phone: null };
+          const s = String(raw).trim();
+          if (!s) return { phone: null, guardian_phone: null };
+          const phoneRe = /(\d{2,3}-?\d{3,4}-?\d{4})/;
+          const num = (s.match(phoneRe)?.[1] ?? s).replace(/[^\d-]/g, "");
+          const isGuardian = /\(?\s*(모|부|보호자|가족|조모|조부|언니|누나|형|오빠|이모|고모)\s*\)?/.test(s);
+          const isSelf = /\(?\s*(본인|자녀|아이|당사자)\s*\)?/.test(s);
+          if (isGuardian && !isSelf) return { phone: null, guardian_phone: num };
+          return { phone: num, guardian_phone: null };
+        };
+
+        // 엑셀 상태 문자열 → DB 표준 (등록/대기/종결 외엔 그대로)
+        const normalizeStatus = (s: any): string => {
+          const v = String(s ?? "").trim();
+          if (!v) return "등록";
+          return v;
+        };
+
         const payload = mapped
           .filter((r) => r.name)
-          .map((r) => ({ ...r, center_id: centerId, status: r.status ?? "enrolled" }));
+          .map((r) => {
+            const { phone, guardian_phone } = splitPhone(r.phone);
+            // _ prefix 키는 모두 meta 로 모아 보관
+            const meta: Record<string, any> = {};
+            for (const [k, v] of Object.entries(r)) {
+              if (!k.startsWith("_")) continue;
+              if (v == null || String(v).trim() === "") continue;
+              meta[k.slice(1)] = typeof v === "string" ? v.trim() : v;
+            }
+            return {
+              center_id: centerId,
+              name: String(r.name).trim(),
+              gender: r.gender ?? null,
+              birth_date: r.birth_date ?? null,
+              phone: phone ?? r.phone ?? null,
+              guardian_phone: guardian_phone ?? r.guardian_phone ?? null,
+              address: r.address ?? null,
+              disability_info: r.disability_info ?? null,
+              initial_consult_date: r.initial_consult_date ?? null,
+              member_no: r.member_no ?? null,
+              status: normalizeStatus(r.status),
+              meta: Object.keys(meta).length ? meta : null,
+            };
+          });
         if (!payload.length) throw new Error("저장할 행이 없어요. 컬럼명을 확인하세요.");
-        const { error } = await supabase.from("center_clients").insert(payload as any);
-        if (error) throw error;
-        setLastImport((s) => ({ ...s, clients: { count: payload.length, at: new Date().toISOString() } }));
-        toast({ title: `이용자 ${payload.length}명 등록 완료` });
+        // 동일 센터·동명 이용자는 건너뜀
+        const { data: existing } = await supabase
+          .from("center_clients").select("name,birth_date").eq("center_id", centerId);
+        const existKey = new Set((existing ?? []).map((c: any) => `${c.name}|${c.birth_date ?? ""}`));
+        const toInsert = payload.filter((p) => !existKey.has(`${p.name}|${p.birth_date ?? ""}`));
+        const skipped = payload.length - toInsert.length;
+        if (toInsert.length) {
+          const { error } = await supabase.from("center_clients").insert(toInsert as any);
+          if (error) throw error;
+        }
+        setLastImport((s) => ({ ...s, clients: { count: toInsert.length, at: new Date().toISOString() } }));
+        toast({
+          title: `이용자 ${toInsert.length}명 등록 완료`,
+          description: skipped ? `중복 ${skipped}명은 건너뜀` : undefined,
+        });
       } else {
         // voucher_usage → center_sessions (이름 → ID 매칭 + 누락 시 자동 생성)
         const { data: clients } = await supabase.from("center_clients").select("id, name").eq("center_id", centerId);

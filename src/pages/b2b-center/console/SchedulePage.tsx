@@ -33,10 +33,19 @@ function hashIdx(s: string): number {
   let h = 0; for (let i = 0; i < (s ?? "").length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
   return Math.abs(h);
 }
-function therapistVisual(t: any) {
-  const i = t?._idx ?? hashIdx(t?.id ?? t?.name ?? "");
-  // 절대 회색으로 떨어지지 않도록 PALETTE 인덱스로 강제 보장
-  const color = t?.color || PALETTE[i % PALETTE.length];
+function therapistVisual(t: any, fallbackKey?: string) {
+  // 매칭되는 치료사가 없으면 회색(=미배정) 으로 표시 — 빨강 고정 버그 방지
+  if (!t) {
+    const fk = fallbackKey ?? "";
+    const i = hashIdx(fk);
+    return {
+      Icon: SHAPES[i % SHAPES.length],
+      borderStyle: BORDER_STYLES[Math.floor(i / SHAPES.length) % BORDER_STYLES.length],
+      color: fk ? PALETTE[i % PALETTE.length] : "#9ca3af",
+    };
+  }
+  const i = t._idx ?? hashIdx(t.id ?? t.name ?? "");
+  const color = t.calendar_color || t.color || PALETTE[i % PALETTE.length];
   return {
     Icon: SHAPES[i % SHAPES.length],
     borderStyle: BORDER_STYLES[Math.floor(i / SHAPES.length) % BORDER_STYLES.length],

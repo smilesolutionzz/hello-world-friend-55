@@ -218,6 +218,7 @@ import CenterGuidePage from "./pages/b2b-center/console/GuidePage";
 import CenterVoucherExcelImportPage from "./pages/b2b-center/console/VoucherExcelImportPage";
 import CenterVoucherClaimsPage from "./pages/b2b-center/console/VoucherClaimsPage";
 import CenterOnboardingWizardPage from "./pages/b2b-center/console/OnboardingWizardPage";
+import CenterSessionRecordsPage from "./pages/b2b-center/console/SessionRecordsPage";
 const CenterPlaceholder = (props: { title: string; desc: string }) => <CenterPlaceholderBase {...props} />;
 
 // Packages (SEO landing pages)
@@ -604,6 +605,7 @@ const App = () => {
             <Route path="schedule" element={<CenterSchedulePage />} />
             <Route path="assessments" element={<CenterAssessmentsPage />} />
             <Route path="services/monthly" element={<CenterMonthlyServicesPage />} />
+            <Route path="services/records" element={<CenterSessionRecordsPage />} />
             <Route path="billing/voucher-audit" element={<CenterVoucherAuditPage />} />
             <Route path="admin/programs" element={<CenterProgramsPage />} />
             <Route path="admin/organization" element={<CenterOrganizationPage />} />

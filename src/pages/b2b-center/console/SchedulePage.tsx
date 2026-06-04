@@ -24,33 +24,28 @@ const STATUS_META: Record<StatusCode, { label: string; tone: string }> = {
 
 const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
 const HOURS = Array.from({ length: 12 }, (_, i) => 9 + i); // 09~20시
-// 색각이상에도 구분되도록 채도/명도 차이를 둔 팔레트
-const PALETTE = ["#E63946", "#1D7874", "#F4A261", "#264653", "#9D4EDD", "#0077B6", "#FB8500", "#2A9D8F", "#7209B7", "#BC4749", "#3A86FF", "#8AB17D"];
-// 색 이외에 형태/테두리로도 구분 (색각이상 보조)
-const SHAPES = [Circle, Square, Triangle, Diamond];
-const BORDER_STYLES = ["solid", "dashed", "dotted", "double"] as const;
+// 채도/명도 차이를 둔 팔레트 (색각이상에도 구분 가능)
+const PALETTE = ["#E63946", "#1D7874", "#F4A261", "#264653", "#9D4EDD", "#0077B6", "#FB8500", "#2A9D8F", "#7209B7", "#BC4749", "#3A86FF", "#8AB17D", "#D62828", "#06A77D", "#F77F00", "#52B788", "#B5179E", "#3F88C5", "#E76F51", "#118AB2"];
+const DEFAULT_GRAY = "#94a3b8";
+function isDefaultOrEmpty(c?: string | null) {
+  if (!c) return true;
+  const v = c.trim().toLowerCase();
+  return v === "" || v === DEFAULT_GRAY.toLowerCase();
+}
 function hashIdx(s: string): number {
   let h = 0; for (let i = 0; i < (s ?? "").length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
   return Math.abs(h);
 }
 function therapistVisual(t: any, fallbackKey?: string) {
-  // 매칭되는 치료사가 없으면 회색(=미배정) 으로 표시 — 빨강 고정 버그 방지
   if (!t) {
     const fk = fallbackKey ?? "";
     const i = hashIdx(fk);
-    return {
-      Icon: SHAPES[i % SHAPES.length],
-      borderStyle: BORDER_STYLES[Math.floor(i / SHAPES.length) % BORDER_STYLES.length],
-      color: fk ? PALETTE[i % PALETTE.length] : "#9ca3af",
-    };
+    return { color: fk ? PALETTE[i % PALETTE.length] : "#9ca3af" };
   }
   const i = t._idx ?? hashIdx(t.id ?? t.name ?? "");
-  const color = t.calendar_color || t.color || PALETTE[i % PALETTE.length];
-  return {
-    Icon: SHAPES[i % SHAPES.length],
-    borderStyle: BORDER_STYLES[Math.floor(i / SHAPES.length) % BORDER_STYLES.length],
-    color,
-  };
+  const raw = t.calendar_color || t.color;
+  const color = isDefaultOrEmpty(raw) ? PALETTE[i % PALETTE.length] : raw;
+  return { color };
 }
 
 function startOfWeek(d: Date): Date {

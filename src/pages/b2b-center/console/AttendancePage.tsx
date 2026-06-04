@@ -84,7 +84,7 @@ export default function AttendancePage() {
       setLoading(true);
       if (demo) {
         setSessions(DEMO_SESSIONS as any);
-        setClients(DEMO_CLIENTS.map((c) => ({ id: c.id, name: c.display_name, gender: c.gender, birth_date: c.birth_date })));
+        setClients(DEMO_CLIENTS.map((c: any) => ({ id: c.id, name: c.display_name, gender: c.gender ?? null, birth_date: c.birth_date ?? null })));
         setTherapists(DEMO_THERAPISTS.map((t) => ({ id: t.id, name: t.name })));
         setPrograms(DEMO_PROGRAMS as any);
         setLoading(false);

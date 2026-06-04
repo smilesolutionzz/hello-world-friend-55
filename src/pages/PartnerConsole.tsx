@@ -205,7 +205,7 @@ const PartnerConsole: React.FC = () => {
       </div>
 
       {editing && (
-        <EditDialog
+        <PartnerEditDialog
           slug={activeSlug}
           userId={user.id}
           kind={editing.kind}

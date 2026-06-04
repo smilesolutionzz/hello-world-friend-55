@@ -613,7 +613,9 @@ const App = () => {
             <Route path="data/voucher-excel" element={<CenterVoucherExcelImportPage />} />
             <Route path="billing/voucher-claims" element={<CenterVoucherClaimsPage />} />
             <Route path="setup" element={<CenterOnboardingWizardPage />} />
+            <Route path="storefront" element={<CenterStorefrontPage />} />
           </Route>
+          <Route path="/center/:slug" element={<CenterStorefrontPublic />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

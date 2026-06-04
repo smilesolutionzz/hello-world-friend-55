@@ -702,12 +702,12 @@ function DateGroupView({ dayList, sessions, onPick, therapist, clientName, progr
 // ===== 선생님별 그룹 =====
 function TherapistGroupView({ dayList, sessions, therapists, onPick, clientName, programName }: any) {
   // 등록된 치료사 + orphan(세션에만 존재하는 id) + 미배정 모두 그룹으로 표시
-  const knownIds = new Set(therapists.map((t: any) => t.id));
-  const orphanIds = Array.from(
-    new Set(
+  const knownIds = new Set<string>(therapists.map((t: any) => t.id));
+  const orphanIds: string[] = Array.from(
+    new Set<string>(
       sessions
         .filter((s: any) => s.therapist_id && !knownIds.has(s.therapist_id))
-        .map((s: any) => s.therapist_id as string)
+        .map((s: any) => String(s.therapist_id))
     )
   );
   const groups: Array<{ id: string; name: string; color: string; role: string; list: any[] }> = [];

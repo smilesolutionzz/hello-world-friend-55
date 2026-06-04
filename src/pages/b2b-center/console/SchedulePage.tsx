@@ -358,13 +358,11 @@ export default function SchedulePage() {
                   </div>
                 </div>
                 {therapists.map((t) => {
-                  const { Icon, borderStyle } = therapistVisual(t);
                   const on = therapistFilter[t.id] !== false;
                   return (
                     <label key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs">
                       <input type="checkbox" checked={on} onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))} className="accent-neutral-900" />
-                      <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color, border: `2px ${borderStyle} ${t.color}` }} />
-                      <Icon className="w-3 h-3 shrink-0" style={{ color: t.color }} />
+                      <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color }} />
                       <span className="flex-1 truncate">{t.name}</span>
                     </label>
                   );

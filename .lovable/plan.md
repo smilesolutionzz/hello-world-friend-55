@@ -1,86 +1,69 @@
-# B2B 센터 콘솔 론칭 준비 — 케어플/바우처리 수준 격차 해소 플랜
+# 센터 스토어 (Center Storefront) — WAVE 1.5
 
-현재 상태 진단: 일정(846줄)·선생님 관리(478줄)는 두텁고, **수납/이용자/평가/부모리포트 등 핵심 운영 페이지가 60~180줄짜리 얕은 구현**입니다. 케어플·바우처리 수준의 "센터가 매일 실제로 켜놓고 쓰는 ERP"가 되려면 다음 6개 과제가 필요합니다.
+## 무엇을 만드는가
+B2B 센터 운영자가 콘솔 안에서:
+1. **운영 프로그램** (예: ABA 8주 코스, 부모교육 4주) 카드 등록
+2. **추천 교구·도서·자료** (외부 구매 링크 / Cafe24·쿠팡·자사몰) 카드 등록
+3. 등록된 카드는 공개 페이지 `/center/{slug}` 또는 `/partner/{slug}` 에서 학부모가 바로 신청·구매 클릭
 
----
+→ 케어플/바우처리에 없는 차별화 포인트. 케어플은 "고객/회기/수납"만, 우리는 "그 위에 센터가 자기 IP/굿즈도 팔 수 있게."
 
-## 01. 수납·매출 관리 본격화 (BillingStatsPage 62줄 → 풀 모듈)
+## 왜 새 테이블을 만들지 않는가
+이미 다음이 존재합니다 (코드 확인 완료):
+- `partner_programs`(title, category, target_age, duration_text, price_krw, cta_url, sort_order, is_published)
+- `partner_products`(title, kind, author, price_krw, external_buy_url …)
+- `partner_owners` (user_id ↔ partner_slug)
+- `partner_content_clicks` (전환 추적)
+- `src/pages/PartnerConsole.tsx` — 운영자 편집 UI 풀세트
+- `src/pages/PartnerDetail.tsx` — 공개 노출 페이지
+- 이미지 업로드 `partner-media` 버킷 + AI 카드 초안 함수 `partner-program-assistant` 까지
 
-케어플/바우처리의 핵심 BM 자리. 지금은 통계 카드 몇 개 뿐.
+**그대로 재사용**합니다. 센터마다 partner_slug 하나를 자동 발급해 묶기만 하면 됩니다.
 
-- 월별/이용자별/선생님별 매출 피벗 테이블
-- 미수금 트래킹 (이용자별 잔액·연체일수)
-- 본인부담금 영수증 발급 (PDF, 사업자 정보 포함)
-- 카드/현금/계좌이체 결제수단 분리 입력
-- 국세청 현금영수증 발급 연동 (Phase 2 OK, UI hook만)
-- 월별 정산 마감 락(closing) 기능
+## 데이터 변경 (1 migration)
+`center_organizations` 에 컬럼 1개 추가:
+- `storefront_slug TEXT UNIQUE NULL` — 발급 전엔 null, 발급 시 partner_slug 와 동일 값.
 
-## 02. 전자바우처 청구·승인 사이클 (VoucherAuditPage 106줄 확장)
+RPC `ensure_center_storefront(_center_id uuid)`:
+- 권한: 해당 센터의 owner/admin 만.
+- 동작: slug 없으면 `center-{shortid}` 로 생성 → `center_organizations.storefront_slug` 업데이트 → `partner_owners`에 호출자 user_id로 row 삽입. 멱등.
+- 결과로 slug 반환.
 
-지금은 엑셀 import + 부정결제 탐지뿐. 케어플 대비 핵심 약점.
+추가 테이블 없음. RLS는 기존 partner_* 정책 그대로 사용 (owner만 쓰기, 공개 SELECT는 is_published).
 
-- 회기별 바우처 차감 시뮬레이션 (잔여 회기 자동 계산)
-- 사회서비스 전자바우처 청구파일(.xlsx) **역방향 생성** — 한국사회보장정보원 표준 양식
-- 본인부담금 vs 정부지원금 분리 표시
-- 결제 승인/반려 이력 타임라인
-- 월말 청구 마감 워크플로우(대기→검토→제출→승인)
+## 콘솔 UI 변경
+사이드바에 신규 항목 1개:
+- **스토어** (`/b2b-center/app/storefront`) — `Store` 아이콘
 
-## 03. 이용자 종합 차트 (ClientsPage 183줄 → 360도 뷰)
+신규 페이지 `CenterStorefrontPage.tsx`:
+- 진입 시 `ensure_center_storefront` 호출 → slug 확보
+- 상단: "공개 URL: /center/{slug}" + 복사 + 새 탭 미리보기 버튼
+- 본문: 기존 `PartnerConsole` 의 두 섹션(운영 프로그램 / 도서·굿즈) 를 그대로 임베드. `PartnerConsole` 의 데이터 로직을 작은 훅(`usePartnerCatalog(slug)`)으로 1차 추출해 재사용하거나, 가장 빠른 길은 `<PartnerConsole embeddedSlug={slug} hideHeader />` 식의 props 분기.
+- AI 카드 초안 버튼은 기존 `partner-program-assistant` 그대로 사용 (기관명/유형을 센터 정보로 전달).
 
-- 이용자 상세 페이지: 인적정보·보호자·바우처 정보·진단명·목표(IEP) 탭
-- 회기 히스토리 타임라인 + 출결 통계
-- 평가 결과 추이 그래프 (AssessmentsPage 연동)
-- 부모 공유 리포트 발행 이력
-- 종결/대기/등록 상태 변경 워크플로우 + 사유 기록
-- 보호자 알림톡 발송 (회기 알림·결제 안내)
+## 공개 노출
+- 새 라우트 alias: `/center/:slug` → 내부적으로 `PartnerDetail` 재사용 (헤더 카피만 "센터" 톤으로 살짝 분기, `variant="center"`).
+- 기존 `/partner/:slug` 도 계속 동작 (외부 협력기관용).
+- 센터 공개 페이지 상단에 "상담 문의" CTA → 기존 `center_inquiries` 테이블로 인입 (이미 있음).
 
-## 04. 일정·예약 운영 완성 (SchedulePage 846줄 보강)
+## 결제 모델
+- v1: **외부 링크 방식만**. `external_buy_url` (자사몰/쿠팡/Cafe24/스마트스토어 어디든). 클릭 → `partner_content_clicks` 로깅.
+- 이유: 결제·세금·환불을 센터가 자기 채널에서 처리. 우리는 노출/리드만. 법적·운영적 부담 0.
+- v2 (선택, 이번 wave 아님): Stripe Connect 또는 토스 셀러 분배로 자체 체크아웃. 메모리에 남겨두고 PMF 후 결정.
 
-뼈대는 있으나 운영 디테일 보강 필요.
+## 작업 순서
+1. Migration: `center_organizations.storefront_slug` + `ensure_center_storefront` RPC.
+2. `src/lib/b2bCenter/centerStorefront.ts` — slug 발급/조회 헬퍼.
+3. `src/pages/b2b-center/console/CenterStorefrontPage.tsx` — slug 보장 → PartnerConsole 재사용.
+4. `PartnerConsole` 에 `embeddedSlug` / `hideChrome` props 추가 (기존 단독 사용은 유지).
+5. `App.tsx` 라우팅: `/b2b-center/app/storefront` 추가, `/center/:slug` alias 추가.
+6. `B2BCenterApp.tsx` 사이드바에 "스토어" 추가.
+7. `PartnerDetail` 에 `variant` 분기로 카피만 살짝 조정.
+8. 메모리 업데이트: `mem://features/b2b/center-storefront-ko`.
 
-- 반복 일정(매주 화 10시) 일괄 생성
-- 노쇼/지각/취소 사유 코드 입력 및 통계
-- 선생님별 휴가·휴진 관리
-- 보호자 노쇼 알림톡 자동 발송 트리거
-- 회기 종료 후 한 줄 메모 → 부모 리포트 원천 데이터로 적재
+## 빠지는 것 (의도적)
+- 결제·정산: v1 범위 외.
+- 재고관리: 외부몰이 담당.
+- 별도 CMS: AI 초안 버튼이 이미 카피라이팅을 대신함.
 
-## 05. 부모 리포트 발행 자동화 (ParentReportsPage 93줄 → 발행 엔진)
-
-AIHPRO의 차별화 무기 = AI 코칭 리포트. 이게 케어플 대비 우위 포인트.
-
-- 월말 일괄 리포트 생성 버튼 (등록 이용자 전체)
-- 회기 메모·평가 점수를 LLM에 투입해 부모용 코칭 코멘트 자동 작성
-- PDF 발행 + 알림톡/이메일 전송 + 본인인증 링크
-- 발송 상태(대기/발송/열람) 트래킹
-- 리포트 템플릿 화이트라벨(센터 로고·푸터)
-
-## 06. 운영자 셋업 & 데이터 신뢰성
-
-론칭 직후 첫 센터가 5분 안에 세팅 끝낼 수 있게.
-
-- 온보딩 위저드: 기관정보 → 선생님 등록 → 프로그램 등록 → 이용자 임포트 → 첫 일정
-- 엑셀 임포트 3종(인력/대상자/이용내역) 매핑 미리보기 정확도 ↑ & 롤백
-- 권한 분리 점검: 치료사는 본인 일정만, 관리자는 전체 — RLS 회기/이용자/수납 별로 재검토
-- 자동 백업/내보내기 (월별 전체 데이터 zip)
-- 60일 무료 체험 종료 7일 전 결제 안내 + 플랜 비교 페이지
-
----
-
-## 우선순위 (론칭 최소셋 = MUST)
-
-```text
-WAVE 1 (론칭 직전, 2-3주)  →  01 수납  +  02 바우처 청구  +  06 온보딩
-WAVE 2 (론칭 직후, 4주)    →  03 이용자 360  +  05 부모 리포트 자동화
-WAVE 3 (안정화)            →  04 일정 디테일 + 알림톡 + 영수증/청구파일
-```
-
-WAVE 1만 끝나도 "케어플 대비 더 저렴한 ERP" 약속을 지킬 수 있고, WAVE 2가 끝나면 "AI 부모 리포트가 기본 탑재된 ERP"라는 유일한 포지셔닝이 완성됩니다.
-
-## 기술 메모
-
-- 새 테이블 후보: `center_billing_entries`, `center_voucher_claims`, `center_voucher_claim_items`, `center_session_notes`, `center_parent_reports`
-- 모든 `CREATE TABLE`에 GRANT + RLS(센터 멤버십 기반) 필수
-- 가격/플랜은 코드 상수에서 읽기(메모리 룰 준수), 청구파일 양식은 한국사회보장정보원 2026 기준 확인 필요
-- 부모 리포트 LLM = Lovable AI Gateway Gemini 3.1 medium 재사용
-
-어느 WAVE부터 들어갈지, 또는 특정 모듈(예: 수납만 먼저)로 좁힐지 알려주세요.
+이렇게 가면 추가 테이블 1개도 없이, 며칠 안에 "센터가 자기 프로그램·교구를 학부모에게 직접 노출/판매하는" 모듈을 띄울 수 있습니다.

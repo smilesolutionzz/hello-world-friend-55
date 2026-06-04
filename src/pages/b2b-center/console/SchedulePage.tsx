@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Circle, Square, Triangle, Diamond, Filter, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Filter, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ImportWizard from "@/components/b2b-center/ImportWizard";
@@ -24,33 +24,28 @@ const STATUS_META: Record<StatusCode, { label: string; tone: string }> = {
 
 const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
 const HOURS = Array.from({ length: 12 }, (_, i) => 9 + i); // 09~20시
-// 색각이상에도 구분되도록 채도/명도 차이를 둔 팔레트
-const PALETTE = ["#E63946", "#1D7874", "#F4A261", "#264653", "#9D4EDD", "#0077B6", "#FB8500", "#2A9D8F", "#7209B7", "#BC4749", "#3A86FF", "#8AB17D"];
-// 색 이외에 형태/테두리로도 구분 (색각이상 보조)
-const SHAPES = [Circle, Square, Triangle, Diamond];
-const BORDER_STYLES = ["solid", "dashed", "dotted", "double"] as const;
+// 채도/명도 차이를 둔 팔레트 (색각이상에도 구분 가능)
+const PALETTE = ["#E63946", "#1D7874", "#F4A261", "#264653", "#9D4EDD", "#0077B6", "#FB8500", "#2A9D8F", "#7209B7", "#BC4749", "#3A86FF", "#8AB17D", "#D62828", "#06A77D", "#F77F00", "#52B788", "#B5179E", "#3F88C5", "#E76F51", "#118AB2"];
+const DEFAULT_GRAY = "#94a3b8";
+function isDefaultOrEmpty(c?: string | null) {
+  if (!c) return true;
+  const v = c.trim().toLowerCase();
+  return v === "" || v === DEFAULT_GRAY.toLowerCase();
+}
 function hashIdx(s: string): number {
   let h = 0; for (let i = 0; i < (s ?? "").length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
   return Math.abs(h);
 }
 function therapistVisual(t: any, fallbackKey?: string) {
-  // 매칭되는 치료사가 없으면 회색(=미배정) 으로 표시 — 빨강 고정 버그 방지
   if (!t) {
     const fk = fallbackKey ?? "";
     const i = hashIdx(fk);
-    return {
-      Icon: SHAPES[i % SHAPES.length],
-      borderStyle: BORDER_STYLES[Math.floor(i / SHAPES.length) % BORDER_STYLES.length],
-      color: fk ? PALETTE[i % PALETTE.length] : "#9ca3af",
-    };
+    return { color: fk ? PALETTE[i % PALETTE.length] : "#9ca3af" };
   }
   const i = t._idx ?? hashIdx(t.id ?? t.name ?? "");
-  const color = t.calendar_color || t.color || PALETTE[i % PALETTE.length];
-  return {
-    Icon: SHAPES[i % SHAPES.length],
-    borderStyle: BORDER_STYLES[Math.floor(i / SHAPES.length) % BORDER_STYLES.length],
-    color,
-  };
+  const raw = t.calendar_color || t.color;
+  const color = isDefaultOrEmpty(raw) ? PALETTE[i % PALETTE.length] : raw;
+  return { color };
 }
 
 function startOfWeek(d: Date): Date {
@@ -179,7 +174,7 @@ export default function SchedulePage() {
       setLoading(true);
       if (demo) {
         setSessions(DEMO_SESSIONS);
-        setTherapists(DEMO_THERAPISTS.map((x: any, i: number) => ({ ...x, _idx: i, color: x.color ?? PALETTE[i % PALETTE.length] })));
+        setTherapists(DEMO_THERAPISTS.map((x: any, i: number) => ({ ...x, _idx: i, color: isDefaultOrEmpty(x.color) ? PALETTE[i % PALETTE.length] : x.color })));
         setClients(DEMO_CLIENTS.map((c) => ({ id: c.id, name: c.display_name })));
         setPrograms(DEMO_PROGRAMS);
         setLoading(false); return;
@@ -192,21 +187,28 @@ export default function SchedulePage() {
         supabase.from("center_programs").select("*").eq("center_id", centerId),
       ]);
       setSessions(s.data ?? []);
-      setTherapists((t.data ?? []).map((x: any, i: number) => ({ ...x, _idx: i, color: x.calendar_color ?? x.color ?? PALETTE[i % PALETTE.length] })));
+      setTherapists((t.data ?? []).map((x: any, i: number) => {
+        const raw = x.calendar_color ?? x.color;
+        return { ...x, _idx: i, color: isDefaultOrEmpty(raw) ? PALETTE[i % PALETTE.length] : raw };
+      }));
       setClients(c.data ?? []);
       setPrograms(p.data ?? []);
       setLoading(false);
     })();
   }, [centerId, demo, range.start.getTime(), range.end.getTime()]);
 
-  // 치료사 목록 바뀌면 필터 키 동기화 (새로 들어온 치료사는 기본 ON, "미배정"=__none도 포함)
+  // 치료사 목록/세션 바뀌면 필터 키 동기화 — 등록된 치료사 + 세션에만 있는 orphan id 도 모두 포함, 기본 ON
   useEffect(() => {
     setTherapistFilter((prev) => {
       const next: Record<string, boolean> = { __none: prev.__none ?? true };
       for (const t of therapists) next[t.id] = prev[t.id] ?? true;
+      for (const s of sessions) {
+        const key = s.therapist_id;
+        if (key && next[key] === undefined) next[key] = prev[key] ?? true;
+      }
       return next;
     });
-  }, [therapists]);
+  }, [therapists, sessions]);
 
   const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? "—";
   const programName = (id: string) => programs.find((p) => p.id === id)?.name ?? "—";
@@ -363,13 +365,11 @@ export default function SchedulePage() {
                   </div>
                 </div>
                 {therapists.map((t) => {
-                  const { Icon, borderStyle } = therapistVisual(t);
                   const on = therapistFilter[t.id] !== false;
                   return (
                     <label key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs">
                       <input type="checkbox" checked={on} onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))} className="accent-neutral-900" />
-                      <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color, border: `2px ${borderStyle} ${t.color}` }} />
-                      <Icon className="w-3 h-3 shrink-0" style={{ color: t.color }} />
+                      <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color }} />
                       <span className="flex-1 truncate">{t.name}</span>
                     </label>
                   );
@@ -418,30 +418,27 @@ export default function SchedulePage() {
         )}
       </div>
 
-      {/* 치료사 범례 (색상 클릭 → 컬러 피커, 형태/테두리는 색각 보조) */}
-      <div className="flex flex-wrap gap-3 mt-4">
-        {therapists.map((t) => {
-          const { Icon, borderStyle } = therapistVisual(t);
-          return (
-            <div key={t.id} className="group inline-flex items-center gap-2 text-xs bg-white border border-neutral-200 rounded-full pl-1 pr-3 py-1">
-              <label className="relative w-5 h-5 rounded-full cursor-pointer shrink-0 overflow-hidden ring-1 ring-neutral-200 hover:ring-neutral-400 transition" style={{ background: t.color, borderStyle, borderWidth: 2, borderColor: t.color }} title="색상 변경">
-                <input
-                  type="color"
-                  value={t.color}
-                  onChange={(e) => handleColorChange(t.id, e.target.value)}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-              </label>
-              <Icon className="w-3 h-3 shrink-0" style={{ color: t.color }} />
-              <span className="text-neutral-800 font-medium">{t.name}</span>
-              <span className="text-neutral-400">{t.role ?? t.title ?? ""}</span>
-            </div>
-          );
-        })}
+      {/* 치료사 범례 (색상 클릭 → 컬러 피커) */}
+      <div className="flex flex-wrap gap-2 mt-4">
+        {therapists.map((t) => (
+          <div key={t.id} className="group inline-flex items-center gap-2 text-xs bg-white border border-neutral-200 rounded-full pl-1 pr-3 py-1">
+            <label className="relative w-5 h-5 rounded-full cursor-pointer shrink-0 overflow-hidden ring-1 ring-neutral-200 hover:ring-neutral-400 transition" style={{ background: t.color }} title="색상 변경">
+              <input
+                type="color"
+                value={t.color}
+                onChange={(e) => handleColorChange(t.id, e.target.value)}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+            </label>
+            <span className="text-neutral-800 font-medium">{t.name}</span>
+            <span className="text-neutral-400">{t.role ?? t.title ?? ""}</span>
+          </div>
+        ))}
         {therapists.length > 0 && (
-          <p className="w-full text-[10px] text-neutral-400 mt-1">색상 원을 클릭하면 색이 바뀌고 자동 저장돼요. 도형·테두리(점선/실선/이중선)는 색각이상 보조 표시예요.</p>
+          <p className="w-full text-[10px] text-neutral-400 mt-1">색상 원을 클릭하면 색이 바뀌고 자동 저장돼요.</p>
         )}
       </div>
+
 
       {/* 상세 팝업 */}
       {selected && (
@@ -604,10 +601,10 @@ function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSub
                     className={`relative flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs transition ${on ? "ring-2 ring-neutral-900" : "hover:ring-1 hover:ring-neutral-300"}`}
                     style={{
                       background: `${v.color}1f`,
-                      borderLeft: `4px ${v.borderStyle} ${v.color}`,
+                      borderLeft: `4px solid ${v.color}`,
                     }}
                   >
-                    <v.Icon className="w-3 h-3 shrink-0" style={{ color: v.color }} fill={v.color} />
+                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: v.color }} />
                     <span className="truncate text-neutral-800">{t.name}</span>
                     {on && <Check className="w-3 h-3 ml-auto text-neutral-900" />}
                   </button>
@@ -624,7 +621,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSub
             </div>
             {selectedTh && (
               <div className="text-[10px] text-neutral-500 inline-flex items-center gap-1.5 px-2 py-1 rounded-full" style={{ background: `${visual.color}1f` }}>
-                <visual.Icon className="w-2.5 h-2.5" style={{ color: visual.color }} fill={visual.color} />
+                <span className="w-2 h-2 rounded-full" style={{ background: visual.color }} />
                 <span>{selectedTh.name} 색상으로 표시돼요</span>
               </div>
             )}
@@ -704,24 +701,55 @@ function DateGroupView({ dayList, sessions, onPick, therapist, clientName, progr
 
 // ===== 선생님별 그룹 =====
 function TherapistGroupView({ dayList, sessions, therapists, onPick, clientName, programName }: any) {
+  // 등록된 치료사 + orphan(세션에만 존재하는 id) + 미배정 모두 그룹으로 표시
+  const knownIds = new Set<string>(therapists.map((t: any) => t.id));
+  const orphanIds: string[] = Array.from(
+    new Set<string>(
+      sessions
+        .filter((s: any) => s.therapist_id && !knownIds.has(s.therapist_id))
+        .map((s: any) => String(s.therapist_id))
+    )
+  );
+  const groups: Array<{ id: string; name: string; color: string; role: string; list: any[] }> = [];
+  for (const t of therapists) {
+    const list = sessions.filter((s: any) => s.therapist_id === t.id)
+      .sort((a: any, b: any) => (a.session_date + (a.start_time ?? "")).localeCompare(b.session_date + (b.start_time ?? "")));
+    groups.push({ id: t.id, name: t.name, color: t.color, role: t.role ?? t.title ?? "", list });
+  }
+  for (const oid of orphanIds) {
+    const sample = sessions.find((s: any) => s.therapist_id === oid);
+    const list = sessions.filter((s: any) => s.therapist_id === oid)
+      .sort((a: any, b: any) => (a.session_date + (a.start_time ?? "")).localeCompare(b.session_date + (b.start_time ?? "")));
+    const i = hashIdx(oid);
+    groups.push({
+      id: oid,
+      name: sample?.therapist_name ?? `미연결 (${String(oid).slice(0, 6)})`,
+      color: PALETTE[i % PALETTE.length],
+      role: "엑셀에서만 발견",
+      list,
+    });
+  }
+  const unassigned = sessions.filter((s: any) => !s.therapist_id)
+    .sort((a: any, b: any) => (a.session_date + (a.start_time ?? "")).localeCompare(b.session_date + (b.start_time ?? "")));
+  if (unassigned.length > 0) {
+    groups.push({ id: "__none", name: "미배정", color: "#9ca3af", role: "", list: unassigned });
+  }
   return (
     <div className="divide-y divide-neutral-100">
-      {therapists.map((t: any) => {
-        const list = sessions.filter((s: any) => s.therapist_id === t.id)
-          .sort((a: any, b: any) => (a.session_date + (a.start_time ?? "")).localeCompare(b.session_date + (b.start_time ?? "")));
-        if (list.length === 0) return null;
+      {groups.map((g) => {
+        if (g.list.length === 0) return null;
         return (
-          <div key={t.id} className="px-5 py-4">
+          <div key={g.id} className="px-5 py-4">
             <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full" style={{ background: t.color }} />
-              {t.name} <span className="text-xs text-neutral-400">{t.role ?? t.title ?? ""}</span>
-              <span className="ml-2 text-xs text-neutral-400">{list.length}건</span>
+              <span className="w-3 h-3 rounded-full" style={{ background: g.color }} />
+              {g.name} <span className="text-xs text-neutral-400">{g.role}</span>
+              <span className="ml-2 text-xs text-neutral-400">{g.list.length}건</span>
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
-              {list.map((s: any) => (
+              {g.list.map((s: any) => (
                 <button key={s.id} onClick={() => onPick(s)} className="text-left rounded-lg border border-neutral-200 p-2 hover:border-neutral-400 transition">
                   <div className={`text-xs ${s.status?.startsWith("cancelled") ? "line-through text-neutral-400" : ""}`}>
-                    <span className="font-medium">{s.session_date.slice(5)}</span> {s.start_time?.slice(0, 5) ?? ""} · {clientName(s.client_id)}
+                    <span className="font-medium">{s.session_date.slice(5)}</span> {s.start_time?.slice(0, 5) ?? ""} · <span className="font-semibold text-neutral-900">{clientName(s.client_id)}</span>
                   </div>
                   <div className="text-[11px] text-neutral-500 truncate">{programName(s.program_id)}</div>
                 </button>
@@ -808,7 +836,7 @@ function ListView({ dayList, sessions, onPick, therapist, clientName, programNam
 function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
   const th = therapist(s.therapist_id);
   const cancelled = s.status?.startsWith("cancelled");
-  const { Icon, borderStyle, color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
+  const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
   // 치료사 색을 강하게 노출 — 배경을 치료사 색으로 채우고 텍스트는 명도에 맞춰 자동 조정
   const safeColor = color || "#9ca3af";
   const textColor = readableTextColor(safeColor);
@@ -817,16 +845,15 @@ function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
     <button
       onClick={() => onPick(s)}
       title={`${th?.name ?? "미배정"} · ${clientName(s.client_id)}`}
-      className={`w-full h-full text-left rounded-md px-1.5 py-1 text-[11px] leading-tight hover:ring-2 hover:ring-neutral-900 transition shadow-sm ${cancelled ? "opacity-40 line-through" : ""}`}
+      className={`w-full h-full text-left rounded-md px-1.5 py-1 leading-tight hover:ring-2 hover:ring-neutral-900 transition shadow-sm ${cancelled ? "opacity-40 line-through" : ""}`}
       style={{
         background: safeColor,
-        borderLeft: `4px ${borderStyle} ${shadeColor(safeColor, -25)}`,
+        borderLeft: `3px solid ${shadeColor(safeColor, -25)}`,
         color: textColor,
       }}
     >
-      <p className="font-semibold truncate flex items-center gap-1">
-        <Icon className="w-2.5 h-2.5 shrink-0" style={{ color: textColor }} fill={textColor} />
-        <span className="truncate">{clientName(s.client_id)}</span>
+      <p className={`font-bold truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
+        {clientName(s.client_id)}
       </p>
       {!compact && (
         <p className="truncate" style={{ color: subTextColor }}>

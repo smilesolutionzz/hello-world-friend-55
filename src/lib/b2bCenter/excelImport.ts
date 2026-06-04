@@ -538,7 +538,7 @@ export async function commitImport(
       };
       const META_KEYS = ["age_months", "email", "school", "disability_grade", "disability_secondary", "referral_source", "referral_note", "last_modified_at"];
       const rows = clientsSheet.rows
-        .map((r) => ({ ...r, name: (r.name ?? r.client_name ?? "").toString().trim() }))
+        .map((r: any) => ({ ...r, name: (r.name ?? r.client_name ?? "").toString().trim() }))
         .filter((r) => r.name && !clientNameToId[r.name])
         .map((r) => {
           const sp = splitPhone(r.phone);

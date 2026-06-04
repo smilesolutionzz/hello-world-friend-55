@@ -196,6 +196,8 @@ import AboutExpert from "./pages/AboutExpert";
 import B2BCenterLanding from "./pages/b2b-center/B2BCenterLanding";
 import B2BCenterImport from "./pages/b2b-center/B2BCenterImport";
 import B2BCenterApp from "./pages/b2b-center/B2BCenterApp";
+import CenterStorefrontPage from "./pages/b2b-center/console/CenterStorefrontPage";
+import CenterStorefrontPublic from "./pages/b2b-center/CenterStorefrontPublic";
 import CenterClientsPage from "./pages/b2b-center/console/ClientsPage";
 import CenterByTherapistPage from "./pages/b2b-center/console/ByTherapistPage";
 import CenterAttendancePage from "./pages/b2b-center/console/AttendancePage";
@@ -611,7 +613,9 @@ const App = () => {
             <Route path="data/voucher-excel" element={<CenterVoucherExcelImportPage />} />
             <Route path="billing/voucher-claims" element={<CenterVoucherClaimsPage />} />
             <Route path="setup" element={<CenterOnboardingWizardPage />} />
+            <Route path="storefront" element={<CenterStorefrontPage />} />
           </Route>
+          <Route path="/center/:slug" element={<CenterStorefrontPublic />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

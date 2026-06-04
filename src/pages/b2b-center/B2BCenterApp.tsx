@@ -4,7 +4,7 @@ import { NavLink, Outlet, useNavigate, useSearchParams, useLocation } from "reac
 import {
   LayoutDashboard, Users, Calendar, BookOpen, CreditCard, Building2,
   UserCog, FileText, Upload, Sparkles, ShieldAlert, Compass, FileSpreadsheet,
-  Menu, X,
+  Store, Menu, X,
 } from "lucide-react";
 import { listMyCenters, getActiveCenterId, setActiveCenterId, createCenter, type CenterOrg } from "@/lib/b2bCenter/centerClient";
 import { useToast } from "@/hooks/use-toast";
@@ -33,6 +33,7 @@ const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
   { to: "admin/programs", label: "프로그램", icon: BookOpen, group: "관리자" },
   { to: "admin/organization", label: "기관 정보", icon: Building2, group: "관리자" },
   { to: "intelligence/parent-reports", label: "부모 리포트", icon: FileText, group: "인텔리전스" },
+  { to: "storefront", label: "스토어 (프로그램·교구)", icon: Store, group: "인텔리전스" },
 ];
 
 const WELCOME_KEY = "b2b_center_welcome_seen";

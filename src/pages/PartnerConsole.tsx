@@ -171,7 +171,7 @@ const PartnerConsole: React.FC = () => {
         <div className="mt-3 space-y-2">
           {tab === 'programs' &&
             (programsQ.data ?? []).map((row) => (
-              <RowItem
+              <PartnerRowItem
                 key={row.id}
                 title={row.title}
                 subtitle={[row.category, row.target_age, row.duration_text].filter(Boolean).join(' · ')}
@@ -184,7 +184,7 @@ const PartnerConsole: React.FC = () => {
             ))}
           {tab === 'products' &&
             (productsQ.data ?? []).map((row) => (
-              <RowItem
+              <PartnerRowItem
                 key={row.id}
                 title={row.title}
                 subtitle={[row.kind === 'book' ? '도서' : row.kind === 'kit' ? '키트' : '굿즈', row.author].filter(Boolean).join(' · ')}
@@ -205,7 +205,7 @@ const PartnerConsole: React.FC = () => {
       </div>
 
       {editing && (
-        <EditDialog
+        <PartnerEditDialog
           slug={activeSlug}
           userId={user.id}
           kind={editing.kind}
@@ -222,7 +222,7 @@ const PartnerConsole: React.FC = () => {
   );
 };
 
-const RowItem: React.FC<{
+export const PartnerRowItem: React.FC<{
   title: string;
   subtitle: string;
   priceLabel: string;
@@ -256,14 +256,16 @@ const RowItem: React.FC<{
   </div>
 );
 
-const EditDialog: React.FC<{
+export const PartnerEditDialog: React.FC<{
   slug: string;
   userId: string;
   kind: 'program' | 'product';
   row?: PartnerProgram | PartnerProduct;
+  institutionName?: string;
+  institutionType?: string;
   onClose: () => void;
   onSaved: () => void;
-}> = ({ slug, userId, kind, row, onClose, onSaved }) => {
+}> = ({ slug, userId, kind, row, institutionName, institutionType, onClose, onSaved }) => {
   const [form, setForm] = useState<any>(
     row ?? {
       title: '',
@@ -282,6 +284,8 @@ const EditDialog: React.FC<{
   const [aiLoading, setAiLoading] = useState(false);
 
   const institution = PARTNER_INSTITUTIONS.find((p) => p.id === slug);
+  const effectiveName = institutionName ?? institution?.name;
+  const effectiveType = institutionType ?? institution?.type;
 
   const handleAIDraft = async () => {
     if (!aiIdea.trim()) return toast.error('어떤 프로그램인지 한 줄로 적어 주세요');
@@ -291,8 +295,8 @@ const EditDialog: React.FC<{
         body: {
           kind,
           idea: aiIdea,
-          institutionName: institution?.name,
-          institutionType: institution?.type,
+          institutionName: effectiveName,
+          institutionType: effectiveType,
         },
       });
       if (error) throw error;

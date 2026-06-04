@@ -222,7 +222,7 @@ const PartnerConsole: React.FC = () => {
   );
 };
 
-const RowItem: React.FC<{
+export const PartnerRowItem: React.FC<{
   title: string;
   subtitle: string;
   priceLabel: string;

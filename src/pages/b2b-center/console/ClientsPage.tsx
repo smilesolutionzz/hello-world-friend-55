@@ -16,17 +16,31 @@ interface Client {
   birth_date: string | null;
   phone: string | null;
   guardian_phone: string | null;
+  address: string | null;
   disability_info: string | null;
+  initial_consult_date: string | null;
   member_no: string | null;
   status: string;
+  meta: Record<string, any> | null;
   created_at: string;
 }
 
-const statusLabel: Record<string, string> = { waiting: "대기", enrolled: "등록", terminated: "종결" };
+const statusLabel: Record<string, string> = { waiting: "대기", enrolled: "등록", terminated: "종결", 등록: "등록", 대기: "대기", 종결: "종결" };
 const statusTone: Record<string, string> = {
   enrolled: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  등록: "bg-emerald-50 text-emerald-700 border-emerald-200",
   waiting: "bg-amber-50 text-amber-700 border-amber-200",
+  대기: "bg-amber-50 text-amber-700 border-amber-200",
   terminated: "bg-neutral-100 text-neutral-500 border-neutral-200",
+  종결: "bg-neutral-100 text-neutral-500 border-neutral-200",
+};
+
+const v = (value: any) => (value == null || String(value).trim() === "" ? "—" : String(value));
+const statusCode = (status: string) => {
+  if (status === "등록") return "enrolled";
+  if (status === "대기") return "waiting";
+  if (status === "종결") return "terminated";
+  return status;
 };
 
 export default function ClientsPage() {
@@ -43,7 +57,8 @@ export default function ClientsPage() {
       setRows(DEMO_CLIENTS.map((c, i) => ({
         id: c.id, name: c.display_name, gender: i % 2 === 0 ? "남" : "여",
         birth_date: null, phone: null, guardian_phone: "010-****-****",
-        disability_info: null, member_no: `2026-${String(i + 1).padStart(4, "0")}`,
+        address: null, disability_info: null, initial_consult_date: null,
+        member_no: `2026-${String(i + 1).padStart(4, "0")}`, meta: null,
         status: c.status === "등록" ? "enrolled" : c.status === "대기" ? "waiting" : "terminated",
         created_at: "",
       })));
@@ -67,15 +82,15 @@ export default function ClientsPage() {
   useEffect(() => { load(); }, [load]);
 
   const filtered = rows.filter((r) => {
-    if (filter !== "all" && r.status !== filter) return false;
+    if (filter !== "all" && statusCode(r.status) !== filter) return false;
     if (q && !r.name.includes(q) && !(r.member_no ?? "").includes(q)) return false;
     return true;
   });
 
   const counts = {
-    waiting: rows.filter(r => r.status === "waiting").length,
-    enrolled: rows.filter(r => r.status === "enrolled").length,
-    terminated: rows.filter(r => r.status === "terminated").length,
+    waiting: rows.filter(r => statusCode(r.status) === "waiting").length,
+    enrolled: rows.filter(r => statusCode(r.status) === "enrolled").length,
+    terminated: rows.filter(r => statusCode(r.status) === "terminated").length,
   };
 
   return (
@@ -111,25 +126,36 @@ export default function ClientsPage() {
           className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-neutral-200 bg-white focus:outline-none focus:border-neutral-400" />
       </div>
 
-      <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-2xl border border-neutral-200 overflow-x-auto">
+        <table className="min-w-[1800px] w-full text-sm">
           <thead className="bg-neutral-50 text-neutral-500 text-xs">
             <tr>
-              <th className="text-left p-3 font-medium">이름</th>
-              <th className="text-left p-3 font-medium">회원번호</th>
+              <th className="text-left p-3 font-medium">이용자</th>
               <th className="text-left p-3 font-medium">성별</th>
               <th className="text-left p-3 font-medium">생년월일</th>
-              <th className="text-left p-3 font-medium">보호자 연락처</th>
-              <th className="text-left p-3 font-medium">장애정보</th>
+              <th className="text-left p-3 font-medium">개월수</th>
+              <th className="text-left p-3 font-medium">장애유형</th>
+              <th className="text-left p-3 font-medium">장애등급</th>
+              <th className="text-left p-3 font-medium">중복장애내용</th>
+              <th className="text-left p-3 font-medium">연락처</th>
+              <th className="text-left p-3 font-medium">이메일</th>
+              <th className="text-left p-3 font-medium">주소</th>
+              <th className="text-left p-3 font-medium">학교</th>
+              <th className="text-left p-3 font-medium">초기상담일시</th>
+              <th className="text-left p-3 font-medium">회원번호</th>
+              <th className="text-left p-3 font-medium">유입경로</th>
+              <th className="text-left p-3 font-medium">유입경로 관련 참고사항</th>
               <th className="text-left p-3 font-medium">상태</th>
+              <th className="text-left p-3 font-medium">메모</th>
+              <th className="text-left p-3 font-medium">최종수정일시</th>
               <th className="text-right p-3 font-medium">AIHPRO</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} className="p-12 text-center text-neutral-400">불러오는 중…</td></tr>
+              <tr><td colSpan={19} className="p-12 text-center text-neutral-400">불러오는 중…</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={8} className="p-12 text-center text-neutral-400">
+              <tr><td colSpan={19} className="p-12 text-center text-neutral-400">
                 <p className="mb-3">아직 등록된 이용자가 없습니다.</p>
                 <div className="inline-flex gap-2">
                   <button onClick={() => setRegisterOpen(true)} className="px-4 py-2 rounded-full bg-neutral-900 text-white text-sm">이용자 등록</button>
@@ -139,16 +165,27 @@ export default function ClientsPage() {
             ) : filtered.map((r) => (
               <tr key={r.id} className="border-t border-neutral-100 hover:bg-neutral-50/50">
                 <td className="p-3 font-medium text-neutral-900">{r.name}</td>
-                <td className="p-3 font-mono text-xs text-neutral-500">{r.member_no ?? "—"}</td>
-                <td className="p-3">{r.gender ?? "—"}</td>
-                <td className="p-3 text-neutral-600">{r.birth_date ?? "—"}</td>
-                <td className="p-3 text-neutral-600">{r.guardian_phone ?? r.phone ?? "—"}</td>
-                <td className="p-3 text-neutral-600">{r.disability_info ?? "—"}</td>
+                <td className="p-3">{v(r.gender)}</td>
+                <td className="p-3 text-neutral-600 whitespace-nowrap">{v(r.birth_date)}</td>
+                <td className="p-3 text-neutral-600">{v(r.meta?.age_months ?? r.meta?.age_text)}</td>
+                <td className="p-3 text-neutral-600">{v(r.disability_info)}</td>
+                <td className="p-3 text-neutral-600">{v(r.meta?.disability_grade)}</td>
+                <td className="p-3 text-neutral-600">{v(r.meta?.disability_secondary)}</td>
+                <td className="p-3 text-neutral-600 whitespace-nowrap">{v(r.guardian_phone ?? r.phone)}</td>
+                <td className="p-3 text-neutral-600">{v(r.meta?.email)}</td>
+                <td className="p-3 text-neutral-600 min-w-[180px]">{v(r.address)}</td>
+                <td className="p-3 text-neutral-600">{v(r.meta?.school)}</td>
+                <td className="p-3 text-neutral-600 whitespace-nowrap">{v(r.initial_consult_date)}</td>
+                <td className="p-3 font-mono text-xs text-neutral-500">{v(r.member_no)}</td>
+                <td className="p-3 text-neutral-600">{v(r.meta?.referral_source)}</td>
+                <td className="p-3 text-neutral-600 min-w-[180px]">{v(r.meta?.referral_note)}</td>
                 <td className="p-3">
                   <span className={`px-2 py-0.5 rounded-full text-xs border ${statusTone[r.status] ?? "bg-neutral-100"}`}>
                     {statusLabel[r.status] ?? r.status}
                   </span>
                 </td>
+                <td className="p-3 text-neutral-600 min-w-[180px]">{v(r.meta?.note)}</td>
+                <td className="p-3 text-neutral-600 whitespace-nowrap">{v(r.meta?.last_modified_at)}</td>
                 <td className="p-3 text-right">
                   <button onClick={() => setInviteFor({ id: r.id, name: r.name })}
                     className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs bg-[#FAF6E8] text-neutral-800 hover:bg-[#F0E8C8] border border-[#C8B88A]/30">

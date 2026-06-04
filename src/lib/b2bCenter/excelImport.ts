@@ -106,7 +106,8 @@ function normalizeRow(row: Record<string, any>, override?: Record<string, string
   const out: Record<string, any> = {};
   for (const [k, v] of Object.entries(row)) {
     const trimmed = k.trim();
-    const key = override?.[trimmed] ?? COL_MAP[trimmed] ?? trimmed;
+    const compact = trimmed.replace(/\s+/g, "").replace(/\(.*?\)/g, "").trim();
+    const key = override?.[trimmed] ?? override?.[compact] ?? COL_MAP[trimmed] ?? COL_MAP[compact] ?? trimmed;
     out[key] = v;
   }
   return out;
@@ -512,12 +513,14 @@ export async function commitImport(
   try {
     // 0) 기존 이름 → id 매핑 미리 로드
     const [{ data: existingClients }, { data: existingTherapists }, { data: existingPrograms }] = await Promise.all([
-      supabase.from("center_clients").select("id,name,birth_date").eq("center_id", centerId),
+      supabase.from("center_clients").select("id,name,birth_date,meta").eq("center_id", centerId),
       supabase.from("center_therapists").select("id,name").eq("center_id", centerId),
       supabase.from("center_programs").select("id,name").eq("center_id", centerId),
     ]);
     const clientNameToId: Record<string, string> = {};
     (existingClients ?? []).forEach((c: any) => { clientNameToId[c.name] = c.id; });
+    const clientKeyToExisting = new Map<string, any>();
+    (existingClients ?? []).forEach((c: any) => { clientKeyToExisting.set(`${c.name}|${c.birth_date ?? ""}`, c); });
     const therapistNameToId: Record<string, string> = {};
     (existingTherapists ?? []).forEach((t: any) => { therapistNameToId[t.name] = t.id; });
     const programNameToId: Record<string, string> = {};
@@ -539,7 +542,7 @@ export async function commitImport(
       const META_KEYS = ["age_months", "email", "school", "disability_grade", "disability_secondary", "referral_source", "referral_note", "last_modified_at"];
       const rows = clientsSheet.rows
         .map((r: any) => ({ ...r, name: (r.name ?? r.client_name ?? "").toString().trim() }))
-        .filter((r) => r.name && !clientNameToId[r.name])
+        .filter((r) => r.name)
         .map((r: any) => {
           const sp = splitPhone(r.phone);
           const meta: Record<string, any> = {};
@@ -558,17 +561,39 @@ export async function commitImport(
             address: r.address ?? null,
             disability_info: r.disability_info ?? null,
             initial_consult_date: parseDate(r.initial_consult_date),
-            status: mapClientStatus(r.status),
+            status: r.status != null && String(r.status).trim() !== "" ? mapClientStatus(r.status) : "enrolled",
             member_no: r.member_no ?? null,
             meta: Object.keys(meta).length ? meta : null,
           };
         });
-      if (rows.length) {
-        const { data, error } = await supabase.from("center_clients").insert(rows).select("id,name");
-        if (error) throw error;
-        data?.forEach((c: any) => { clientNameToId[c.name] = c.id; });
-        summary.clients = data?.length ?? 0;
+      const inserts: any[] = [];
+      const updates: Array<{ id: string; payload: any }> = [];
+      for (const row of rows) {
+        const existing = clientKeyToExisting.get(`${row.name}|${row.birth_date ?? ""}`) ?? (clientNameToId[row.name] ? (existingClients ?? []).find((c: any) => c.id === clientNameToId[row.name]) : null);
+        if (!existing) {
+          inserts.push(row);
+          continue;
+        }
+        const mergedMeta = row.meta ? { ...(existing.meta ?? {}), ...row.meta } : existing.meta;
+        const updatePayload = Object.fromEntries(
+          Object.entries({ ...row, center_id: undefined, meta: mergedMeta }).filter(([_, v]) => v != null && String(v).trim() !== ""),
+        );
+        if (Object.keys(updatePayload).length) updates.push({ id: existing.id, payload: updatePayload });
       }
+      if (inserts.length) {
+        const { data, error } = await supabase.from("center_clients").insert(inserts).select("id,name,birth_date,meta");
+        if (error) throw error;
+        data?.forEach((c: any) => {
+          clientNameToId[c.name] = c.id;
+          clientKeyToExisting.set(`${c.name}|${c.birth_date ?? ""}`, c);
+        });
+        summary.clients_inserted = data?.length ?? 0;
+      }
+      if (updates.length) {
+        for (const u of updates) await supabase.from("center_clients").update(u.payload).eq("id", u.id);
+        summary.clients_updated = updates.length;
+      }
+      summary.clients = (summary.clients_inserted ?? 0) + (summary.clients_updated ?? 0);
     }
 
     // 2) Therapists

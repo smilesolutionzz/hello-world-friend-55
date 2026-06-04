@@ -235,24 +235,34 @@ export default function VoucherExcelImportPage() {
               initial_consult_date: r.initial_consult_date ?? null,
               member_no: r.member_no ?? null,
               status: normalizeStatus(r.status),
-              meta: Object.keys(meta).length ? meta : null,
+              meta: Object.keys(meta).length ? meta : {},
             };
           });
         if (!payload.length) throw new Error("저장할 행이 없어요. 컬럼명을 확인하세요.");
-        // 동일 센터·동명 이용자는 건너뜀
+        // 동일 센터·동명·생년월일 이용자는 새 엑셀 값으로 보강 업데이트
         const { data: existing } = await supabase
-          .from("center_clients").select("name,birth_date").eq("center_id", centerId);
-        const existKey = new Set((existing ?? []).map((c: any) => `${c.name}|${c.birth_date ?? ""}`));
+          .from("center_clients").select("id,name,birth_date,meta").eq("center_id", centerId);
+        const existKey = new Map((existing ?? []).map((c: any) => [`${c.name}|${c.birth_date ?? ""}`, c]));
         const toInsert = payload.filter((p) => !existKey.has(`${p.name}|${p.birth_date ?? ""}`));
-        const skipped = payload.length - toInsert.length;
+        const toUpdate = payload
+          .map((p) => ({ row: p, existing: existKey.get(`${p.name}|${p.birth_date ?? ""}`) }))
+          .filter((x) => x.existing)
+          .map(({ row, existing }: any) => ({
+            id: existing.id,
+            payload: Object.fromEntries(Object.entries({ ...row, center_id: undefined, meta: { ...(existing.meta ?? {}), ...(row.meta ?? {}) } }).filter(([_, v]) => v != null && String(v).trim() !== "")),
+          }));
         if (toInsert.length) {
           const { error } = await supabase.from("center_clients").insert(toInsert as any);
           if (error) throw error;
         }
-        setLastImport((s) => ({ ...s, clients: { count: toInsert.length, at: new Date().toISOString() } }));
+        for (const u of toUpdate) {
+          const { error } = await supabase.from("center_clients").update(u.payload as any).eq("id", u.id);
+          if (error) throw error;
+        }
+        setLastImport((s) => ({ ...s, clients: { count: toInsert.length + toUpdate.length, at: new Date().toISOString() } }));
         toast({
-          title: `이용자 ${toInsert.length}명 등록 완료`,
-          description: skipped ? `중복 ${skipped}명은 건너뜀` : undefined,
+          title: `이용자 ${toInsert.length + toUpdate.length}명 반영 완료`,
+          description: toUpdate.length ? `신규 ${toInsert.length}명 · 기존 ${toUpdate.length}명 업데이트` : undefined,
         });
       } else {
         // voucher_usage → center_sessions (이름 → ID 매칭 + 누락 시 자동 생성)

@@ -736,7 +736,7 @@ function ListView({ dayList, sessions, onPick, therapist, clientName, programNam
 function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
   const th = therapist(s.therapist_id);
   const cancelled = s.status?.startsWith("cancelled");
-  const { Icon, borderStyle, color } = therapistVisual(th);
+  const { Icon, borderStyle, color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
   // 치료사 색을 강하게 노출 — 배경을 치료사 색으로 채우고 텍스트는 명도에 맞춰 자동 조정
   const safeColor = color || "#9ca3af";
   const textColor = readableTextColor(safeColor);

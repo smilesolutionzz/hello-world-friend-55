@@ -798,7 +798,7 @@ function ListView({ dayList, sessions, onPick, therapist, clientName, programNam
 function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
   const th = therapist(s.therapist_id);
   const cancelled = s.status?.startsWith("cancelled");
-  const { Icon, borderStyle, color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
+  const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
   // 치료사 색을 강하게 노출 — 배경을 치료사 색으로 채우고 텍스트는 명도에 맞춰 자동 조정
   const safeColor = color || "#9ca3af";
   const textColor = readableTextColor(safeColor);
@@ -807,16 +807,15 @@ function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
     <button
       onClick={() => onPick(s)}
       title={`${th?.name ?? "미배정"} · ${clientName(s.client_id)}`}
-      className={`w-full h-full text-left rounded-md px-1.5 py-1 text-[11px] leading-tight hover:ring-2 hover:ring-neutral-900 transition shadow-sm ${cancelled ? "opacity-40 line-through" : ""}`}
+      className={`w-full h-full text-left rounded-md px-1.5 py-1 leading-tight hover:ring-2 hover:ring-neutral-900 transition shadow-sm ${cancelled ? "opacity-40 line-through" : ""}`}
       style={{
         background: safeColor,
-        borderLeft: `4px ${borderStyle} ${shadeColor(safeColor, -25)}`,
+        borderLeft: `3px solid ${shadeColor(safeColor, -25)}`,
         color: textColor,
       }}
     >
-      <p className="font-semibold truncate flex items-center gap-1">
-        <Icon className="w-2.5 h-2.5 shrink-0" style={{ color: textColor }} fill={textColor} />
-        <span className="truncate">{clientName(s.client_id)}</span>
+      <p className={`font-bold truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
+        {clientName(s.client_id)}
       </p>
       {!compact && (
         <p className="truncate" style={{ color: subTextColor }}>

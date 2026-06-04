@@ -35,7 +35,7 @@ export interface ImportOptions {
 
 // ===== 헤더 시그니처 =====
 const SIG: Record<ImportEntity, RegExp[]> = {
-  clients: [/이름/, /성별|남.?여/, /생년월일|생일/],
+  clients: [/이름|이용자|대상자|수혜자|성명/, /성별|남.?여/, /생년월일|생일/],
   therapists: [/(선생님|치료사|강사).*(이름|성명)|성명|이름/, /(전공|분야|구분)/],
   programs: [/(프로그램|과목)/, /(시간|분)/, /(금액|단가|비용)/],
   vouchers: [/바우처/, /(시작|유효).*(일|기간)/],

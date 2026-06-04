@@ -540,7 +540,7 @@ export async function commitImport(
       const rows = clientsSheet.rows
         .map((r: any) => ({ ...r, name: (r.name ?? r.client_name ?? "").toString().trim() }))
         .filter((r) => r.name && !clientNameToId[r.name])
-        .map((r) => {
+        .map((r: any) => {
           const sp = splitPhone(r.phone);
           const meta: Record<string, any> = {};
           for (const k of META_KEYS) {

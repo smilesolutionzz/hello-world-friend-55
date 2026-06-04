@@ -594,10 +594,10 @@ function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSub
                     className={`relative flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs transition ${on ? "ring-2 ring-neutral-900" : "hover:ring-1 hover:ring-neutral-300"}`}
                     style={{
                       background: `${v.color}1f`,
-                      borderLeft: `4px ${v.borderStyle} ${v.color}`,
+                      borderLeft: `4px solid ${v.color}`,
                     }}
                   >
-                    <v.Icon className="w-3 h-3 shrink-0" style={{ color: v.color }} fill={v.color} />
+                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: v.color }} />
                     <span className="truncate text-neutral-800">{t.name}</span>
                     {on && <Check className="w-3 h-3 ml-auto text-neutral-900" />}
                   </button>

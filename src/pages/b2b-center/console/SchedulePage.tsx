@@ -614,7 +614,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSub
             </div>
             {selectedTh && (
               <div className="text-[10px] text-neutral-500 inline-flex items-center gap-1.5 px-2 py-1 rounded-full" style={{ background: `${visual.color}1f` }}>
-                <visual.Icon className="w-2.5 h-2.5" style={{ color: visual.color }} fill={visual.color} />
+                <span className="w-2 h-2 rounded-full" style={{ background: visual.color }} />
                 <span>{selectedTh.name} 색상으로 표시돼요</span>
               </div>
             )}

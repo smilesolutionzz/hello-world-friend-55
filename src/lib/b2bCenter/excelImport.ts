@@ -628,7 +628,15 @@ export async function commitImport(
       for (const c of candidates) {
         const existingId = c.dupKey ? existingKey.get(c.dupKey) : undefined;
         if (!existingId) { toInsert.push(c.payload); continue; }
-        if (strategy === "skip") { skipped++; continue; }
+        if (strategy === "skip") {
+          // 누락된 therapist_id / program_id 만 보완 (선생님 자동 매칭 backfill)
+          const fill: any = {};
+          if (c.payload.therapist_id) fill.therapist_id = c.payload.therapist_id;
+          if (c.payload.program_id) fill.program_id = c.payload.program_id;
+          if (Object.keys(fill).length) toUpdate.push({ id: existingId, payload: { __backfillOnly: true, ...fill } });
+          else skipped++;
+          continue;
+        }
         if (strategy === "overwrite" || strategy === "merge") {
           toUpdate.push({ id: existingId, payload: c.payload });
         }
@@ -640,11 +648,17 @@ export async function commitImport(
         summary.sessions_inserted = data?.length ?? 0;
       }
       if (toUpdate.length) {
-        // 병합/덮어쓰기 — 개별 update (소량 가정)
+        // 병합/덮어쓰기 / skip-backfill — 개별 update (소량 가정)
         for (const u of toUpdate) {
-          const payload = strategy === "merge"
-            ? Object.fromEntries(Object.entries(u.payload).filter(([_, v]) => v != null && v !== ""))
-            : u.payload;
+          let payload: any;
+          if (u.payload.__backfillOnly) {
+            const { __backfillOnly, ...rest } = u.payload;
+            payload = rest;
+          } else if (strategy === "merge") {
+            payload = Object.fromEntries(Object.entries(u.payload).filter(([_, v]) => v != null && v !== ""));
+          } else {
+            payload = u.payload;
+          }
           await supabase.from("center_sessions").update(payload).eq("id", u.id);
         }
         summary.sessions_updated = toUpdate.length;

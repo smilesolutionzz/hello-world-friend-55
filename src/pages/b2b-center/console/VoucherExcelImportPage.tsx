@@ -191,17 +191,41 @@ export default function VoucherExcelImportPage() {
         setLastImport((s) => ({ ...s, clients: { count: payload.length, at: new Date().toISOString() } }));
         toast({ title: `이용자 ${payload.length}명 등록 완료` });
       } else {
-        // voucher_usage → center_sessions (이름 → ID 매칭)
+        // voucher_usage → center_sessions (이름 → ID 매칭 + 누락 시 자동 생성)
         const { data: clients } = await supabase.from("center_clients").select("id, name").eq("center_id", centerId);
         const { data: therapists } = await supabase.from("center_therapists").select("id, name").eq("center_id", centerId);
         const cMap = new Map((clients ?? []).map((c: any) => [c.name, c.id]));
         const tMap = new Map((therapists ?? []).map((t: any) => [t.name, t.id]));
 
+        // "임동현치료사 / 특수체육치료사" → name="임동현치료사", title="특수체육치료사"
+        const parseTherapistCell = (v: any): { name: string; title: string | null } | null => {
+          if (!v) return null;
+          const raw = String(v).trim();
+          if (!raw) return null;
+          const [namePart, titlePart] = raw.split("/").map((x) => x.trim());
+          return { name: namePart || raw, title: titlePart || null };
+        };
+
+        // 누락된 선생님 자동 생성
+        const missingTherapists = new Map<string, { name: string; title: string | null }>();
+        for (const r of mapped) {
+          const t = parseTherapistCell(r._therapist_name);
+          if (t && !tMap.has(t.name) && !missingTherapists.has(t.name)) missingTherapists.set(t.name, t);
+        }
+        if (missingTherapists.size) {
+          const insertT = Array.from(missingTherapists.values()).map((t) => ({
+            center_id: centerId, name: t.name, title: t.title, specialty: t.title,
+          }));
+          const { data: createdT } = await supabase.from("center_therapists").insert(insertT as any).select("id,name");
+          (createdT ?? []).forEach((t: any) => tMap.set(t.name, t.id));
+        }
+
         const payload: any[] = [];
         const skipped: string[] = [];
         for (const r of mapped) {
           const cid = r._client_name ? cMap.get(String(r._client_name).trim()) : null;
-          const tid = r._therapist_name ? tMap.get(String(r._therapist_name).trim()) : null;
+          const t = parseTherapistCell(r._therapist_name);
+          const tid = t ? tMap.get(t.name) ?? null : null;
           if (!cid || !r.session_date) {
             skipped.push(`${r._client_name ?? "?"} ${r.session_date ?? "?"}`);
             continue;
@@ -220,13 +244,15 @@ export default function VoucherExcelImportPage() {
             status: "completed",
           });
         }
-        if (!payload.length) throw new Error("매칭되는 이용자/선생님이 없어요. 먼저 이용자·선생님 엑셀을 업로드하세요.");
+        if (!payload.length) throw new Error("매칭되는 이용자가 없어요. 먼저 이용자 엑셀을 업로드하세요.");
         const { error } = await supabase.from("center_sessions").insert(payload);
         if (error) throw error;
         setLastImport((s) => ({ ...s, voucher_usage: { count: payload.length, at: new Date().toISOString() } }));
         toast({
           title: `회기 ${payload.length}건 동기화 완료`,
-          description: skipped.length ? `매칭 실패 ${skipped.length}건은 건너뜀` : undefined,
+          description: skipped.length
+            ? `매칭 실패 ${skipped.length}건은 건너뜀`
+            : (missingTherapists.size ? `선생님 ${missingTherapists.size}명 자동 등록됨` : undefined),
         });
       }
       setPreview(null);

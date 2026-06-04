@@ -187,7 +187,10 @@ export default function SchedulePage() {
         supabase.from("center_programs").select("*").eq("center_id", centerId),
       ]);
       setSessions(s.data ?? []);
-      setTherapists((t.data ?? []).map((x: any, i: number) => ({ ...x, _idx: i, color: x.calendar_color ?? x.color ?? PALETTE[i % PALETTE.length] })));
+      setTherapists((t.data ?? []).map((x: any, i: number) => {
+        const raw = x.calendar_color ?? x.color;
+        return { ...x, _idx: i, color: isDefaultOrEmpty(raw) ? PALETTE[i % PALETTE.length] : raw };
+      }));
       setClients(c.data ?? []);
       setPrograms(p.data ?? []);
       setLoading(false);

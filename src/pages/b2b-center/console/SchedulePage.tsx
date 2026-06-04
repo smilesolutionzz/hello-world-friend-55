@@ -701,24 +701,55 @@ function DateGroupView({ dayList, sessions, onPick, therapist, clientName, progr
 
 // ===== 선생님별 그룹 =====
 function TherapistGroupView({ dayList, sessions, therapists, onPick, clientName, programName }: any) {
+  // 등록된 치료사 + orphan(세션에만 존재하는 id) + 미배정 모두 그룹으로 표시
+  const knownIds = new Set(therapists.map((t: any) => t.id));
+  const orphanIds = Array.from(
+    new Set(
+      sessions
+        .filter((s: any) => s.therapist_id && !knownIds.has(s.therapist_id))
+        .map((s: any) => s.therapist_id as string)
+    )
+  );
+  const groups: Array<{ id: string; name: string; color: string; role: string; list: any[] }> = [];
+  for (const t of therapists) {
+    const list = sessions.filter((s: any) => s.therapist_id === t.id)
+      .sort((a: any, b: any) => (a.session_date + (a.start_time ?? "")).localeCompare(b.session_date + (b.start_time ?? "")));
+    groups.push({ id: t.id, name: t.name, color: t.color, role: t.role ?? t.title ?? "", list });
+  }
+  for (const oid of orphanIds) {
+    const sample = sessions.find((s: any) => s.therapist_id === oid);
+    const list = sessions.filter((s: any) => s.therapist_id === oid)
+      .sort((a: any, b: any) => (a.session_date + (a.start_time ?? "")).localeCompare(b.session_date + (b.start_time ?? "")));
+    const i = hashIdx(oid);
+    groups.push({
+      id: oid,
+      name: sample?.therapist_name ?? `미연결 (${String(oid).slice(0, 6)})`,
+      color: PALETTE[i % PALETTE.length],
+      role: "엑셀에서만 발견",
+      list,
+    });
+  }
+  const unassigned = sessions.filter((s: any) => !s.therapist_id)
+    .sort((a: any, b: any) => (a.session_date + (a.start_time ?? "")).localeCompare(b.session_date + (b.start_time ?? "")));
+  if (unassigned.length > 0) {
+    groups.push({ id: "__none", name: "미배정", color: "#9ca3af", role: "", list: unassigned });
+  }
   return (
     <div className="divide-y divide-neutral-100">
-      {therapists.map((t: any) => {
-        const list = sessions.filter((s: any) => s.therapist_id === t.id)
-          .sort((a: any, b: any) => (a.session_date + (a.start_time ?? "")).localeCompare(b.session_date + (b.start_time ?? "")));
-        if (list.length === 0) return null;
+      {groups.map((g) => {
+        if (g.list.length === 0) return null;
         return (
-          <div key={t.id} className="px-5 py-4">
+          <div key={g.id} className="px-5 py-4">
             <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full" style={{ background: t.color }} />
-              {t.name} <span className="text-xs text-neutral-400">{t.role ?? t.title ?? ""}</span>
-              <span className="ml-2 text-xs text-neutral-400">{list.length}건</span>
+              <span className="w-3 h-3 rounded-full" style={{ background: g.color }} />
+              {g.name} <span className="text-xs text-neutral-400">{g.role}</span>
+              <span className="ml-2 text-xs text-neutral-400">{g.list.length}건</span>
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
-              {list.map((s: any) => (
+              {g.list.map((s: any) => (
                 <button key={s.id} onClick={() => onPick(s)} className="text-left rounded-lg border border-neutral-200 p-2 hover:border-neutral-400 transition">
                   <div className={`text-xs ${s.status?.startsWith("cancelled") ? "line-through text-neutral-400" : ""}`}>
-                    <span className="font-medium">{s.session_date.slice(5)}</span> {s.start_time?.slice(0, 5) ?? ""} · {clientName(s.client_id)}
+                    <span className="font-medium">{s.session_date.slice(5)}</span> {s.start_time?.slice(0, 5) ?? ""} · <span className="font-semibold text-neutral-900">{clientName(s.client_id)}</span>
                   </div>
                   <div className="text-[11px] text-neutral-500 truncate">{programName(s.program_id)}</div>
                 </button>

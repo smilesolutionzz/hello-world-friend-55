@@ -411,30 +411,27 @@ export default function SchedulePage() {
         )}
       </div>
 
-      {/* 치료사 범례 (색상 클릭 → 컬러 피커, 형태/테두리는 색각 보조) */}
-      <div className="flex flex-wrap gap-3 mt-4">
-        {therapists.map((t) => {
-          const { Icon, borderStyle } = therapistVisual(t);
-          return (
-            <div key={t.id} className="group inline-flex items-center gap-2 text-xs bg-white border border-neutral-200 rounded-full pl-1 pr-3 py-1">
-              <label className="relative w-5 h-5 rounded-full cursor-pointer shrink-0 overflow-hidden ring-1 ring-neutral-200 hover:ring-neutral-400 transition" style={{ background: t.color, borderStyle, borderWidth: 2, borderColor: t.color }} title="색상 변경">
-                <input
-                  type="color"
-                  value={t.color}
-                  onChange={(e) => handleColorChange(t.id, e.target.value)}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-              </label>
-              <Icon className="w-3 h-3 shrink-0" style={{ color: t.color }} />
-              <span className="text-neutral-800 font-medium">{t.name}</span>
-              <span className="text-neutral-400">{t.role ?? t.title ?? ""}</span>
-            </div>
-          );
-        })}
+      {/* 치료사 범례 (색상 클릭 → 컬러 피커) */}
+      <div className="flex flex-wrap gap-2 mt-4">
+        {therapists.map((t) => (
+          <div key={t.id} className="group inline-flex items-center gap-2 text-xs bg-white border border-neutral-200 rounded-full pl-1 pr-3 py-1">
+            <label className="relative w-5 h-5 rounded-full cursor-pointer shrink-0 overflow-hidden ring-1 ring-neutral-200 hover:ring-neutral-400 transition" style={{ background: t.color }} title="색상 변경">
+              <input
+                type="color"
+                value={t.color}
+                onChange={(e) => handleColorChange(t.id, e.target.value)}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+            </label>
+            <span className="text-neutral-800 font-medium">{t.name}</span>
+            <span className="text-neutral-400">{t.role ?? t.title ?? ""}</span>
+          </div>
+        ))}
         {therapists.length > 0 && (
-          <p className="w-full text-[10px] text-neutral-400 mt-1">색상 원을 클릭하면 색이 바뀌고 자동 저장돼요. 도형·테두리(점선/실선/이중선)는 색각이상 보조 표시예요.</p>
+          <p className="w-full text-[10px] text-neutral-400 mt-1">색상 원을 클릭하면 색이 바뀌고 자동 저장돼요.</p>
         )}
       </div>
+
 
       {/* 상세 팝업 */}
       {selected && (

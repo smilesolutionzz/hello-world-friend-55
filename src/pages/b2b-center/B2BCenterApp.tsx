@@ -16,25 +16,35 @@ import TrialBanner from "@/components/b2b-center/TrialBanner";
 import { DEMO_CENTER, isDemoMode } from "@/lib/b2bCenter/demoData";
 
 const NAV: Array<{ to: string; label: string; icon: any; group?: string }> = [
+  // 시작
   { to: "setup", label: "시작 가이드", icon: Sparkles, group: "시작" },
   { to: "intelligence/ops-dashboard", label: "대시보드", icon: Sparkles, group: "시작" },
   { to: "guide", label: "운영 가이드", icon: Compass, group: "시작" },
-  { to: "schedule", label: "일정", icon: Calendar, group: "운영" },
-  { to: "clients", label: "이용자", icon: Users, group: "운영" },
-  { to: "assessments", label: "상담·평가", icon: BookOpen, group: "운영" },
-  { to: "services/monthly", label: "월 서비스", icon: LayoutDashboard, group: "재활 서비스" },
-  { to: "services/by-therapist", label: "선생님별 이용자", icon: UserCog, group: "재활 서비스" },
-  { to: "services/attendance", label: "일별 접수인원", icon: Users, group: "재활 서비스" },
+  // 일정
+  { to: "schedule", label: "일정", icon: Calendar, group: "일정" },
+  // 이용자 및 상담/평가
+  { to: "clients", label: "이용자 관리", icon: Users, group: "이용자 및 상담/평가" },
+  { to: "assessments", label: "상담 및 평가 관리", icon: BookOpen, group: "이용자 및 상담/평가" },
+  // 재활 서비스 — 케어플 구조
+  { to: "services/monthly", label: "월 서비스 관리", icon: LayoutDashboard, group: "재활 서비스" },
+  { to: "services/records", label: "일일 서비스 관리 (회기기록)", icon: FileText, group: "재활 서비스" },
+  { to: "services/by-therapist", label: "선생님별 이용자 현황", icon: UserCog, group: "재활 서비스" },
+  { to: "services/attendance", label: "일별 접수인원 현황", icon: Users, group: "재활 서비스" },
+  // 수납
   { to: "billing/stats", label: "수납 통계·미수금", icon: CreditCard, group: "수납" },
   { to: "billing/voucher-claims", label: "전자바우처 청구", icon: FileSpreadsheet, group: "수납" },
   { to: "billing/voucher-audit", label: "부정결제 찾기", icon: ShieldAlert, group: "수납" },
-  { to: "data/voucher-excel", label: "전자바우처 엑셀 등록", icon: FileSpreadsheet, group: "데이터 연동" },
+  // 관리자
+  { to: "admin/organization", label: "기관 정보 및 옵션", icon: Building2, group: "관리자" },
   { to: "admin/therapists", label: "선생님 관리", icon: UserCog, group: "관리자" },
-  { to: "admin/programs", label: "프로그램", icon: BookOpen, group: "관리자" },
-  { to: "admin/organization", label: "기관 정보", icon: Building2, group: "관리자" },
+  { to: "admin/programs", label: "프로그램 관리", icon: BookOpen, group: "관리자" },
+  // 데이터 연동
+  { to: "data/voucher-excel", label: "전자바우처 엑셀 등록", icon: FileSpreadsheet, group: "데이터 연동" },
+  // 인텔리전스 / 스토어
   { to: "intelligence/parent-reports", label: "부모 리포트", icon: FileText, group: "인텔리전스" },
   { to: "storefront", label: "스토어 (프로그램·교구)", icon: Store, group: "인텔리전스" },
 ];
+
 
 const WELCOME_KEY = "b2b_center_welcome_seen";
 

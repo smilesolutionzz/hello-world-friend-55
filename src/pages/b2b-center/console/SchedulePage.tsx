@@ -174,7 +174,7 @@ export default function SchedulePage() {
       setLoading(true);
       if (demo) {
         setSessions(DEMO_SESSIONS);
-        setTherapists(DEMO_THERAPISTS.map((x: any, i: number) => ({ ...x, _idx: i, color: x.color ?? PALETTE[i % PALETTE.length] })));
+        setTherapists(DEMO_THERAPISTS.map((x: any, i: number) => ({ ...x, _idx: i, color: isDefaultOrEmpty(x.color) ? PALETTE[i % PALETTE.length] : x.color })));
         setClients(DEMO_CLIENTS.map((c) => ({ id: c.id, name: c.display_name })));
         setPrograms(DEMO_PROGRAMS);
         setLoading(false); return;

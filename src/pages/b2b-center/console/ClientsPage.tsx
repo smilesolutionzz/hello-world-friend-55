@@ -36,6 +36,12 @@ const statusTone: Record<string, string> = {
 };
 
 const v = (value: any) => (value == null || String(value).trim() === "" ? "—" : String(value));
+const statusCode = (status: string) => {
+  if (status === "등록") return "enrolled";
+  if (status === "대기") return "waiting";
+  if (status === "종결") return "terminated";
+  return status;
+};
 
 export default function ClientsPage() {
   const { centerId, demo } = useOutletContext<Ctx>();
@@ -76,15 +82,15 @@ export default function ClientsPage() {
   useEffect(() => { load(); }, [load]);
 
   const filtered = rows.filter((r) => {
-    if (filter !== "all" && r.status !== filter) return false;
+    if (filter !== "all" && statusCode(r.status) !== filter) return false;
     if (q && !r.name.includes(q) && !(r.member_no ?? "").includes(q)) return false;
     return true;
   });
 
   const counts = {
-    waiting: rows.filter(r => r.status === "waiting").length,
-    enrolled: rows.filter(r => r.status === "enrolled").length,
-    terminated: rows.filter(r => r.status === "terminated").length,
+    waiting: rows.filter(r => statusCode(r.status) === "waiting").length,
+    enrolled: rows.filter(r => statusCode(r.status) === "enrolled").length,
+    terminated: rows.filter(r => statusCode(r.status) === "terminated").length,
   };
 
   return (

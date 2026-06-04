@@ -284,6 +284,8 @@ export const PartnerEditDialog: React.FC<{
   const [aiLoading, setAiLoading] = useState(false);
 
   const institution = PARTNER_INSTITUTIONS.find((p) => p.id === slug);
+  const effectiveName = institutionName ?? institution?.name;
+  const effectiveType = institutionType ?? institution?.type;
 
   const handleAIDraft = async () => {
     if (!aiIdea.trim()) return toast.error('어떤 프로그램인지 한 줄로 적어 주세요');
@@ -293,8 +295,8 @@ export const PartnerEditDialog: React.FC<{
         body: {
           kind,
           idea: aiIdea,
-          institutionName: institution?.name,
-          institutionType: institution?.type,
+          institutionName: effectiveName,
+          institutionType: effectiveType,
         },
       });
       if (error) throw error;

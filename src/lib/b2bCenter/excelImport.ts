@@ -526,20 +526,43 @@ export async function commitImport(
     // 1) Clients (신규만 insert)
     const clientsSheet = parsed.sheets.find((s) => s.entity === "clients");
     if (clientsSheet) {
+      const splitPhone = (raw: any): { phone: string | null; guardian_phone: string | null } => {
+        if (raw == null) return { phone: null, guardian_phone: null };
+        const s = String(raw).trim();
+        if (!s) return { phone: null, guardian_phone: null };
+        const num = (s.match(/(\d{2,3}-?\d{3,4}-?\d{4})/)?.[1] ?? s).replace(/[^\d-]/g, "");
+        const isGuardian = /\(?\s*(모|부|보호자|가족|조모|조부|언니|누나|형|오빠|이모|고모)\s*\)?/.test(s);
+        const isSelf = /\(?\s*(본인|자녀|아이|당사자)\s*\)?/.test(s);
+        if (isGuardian && !isSelf) return { phone: null, guardian_phone: num };
+        return { phone: num, guardian_phone: null };
+      };
+      const META_KEYS = ["age_months", "email", "school", "disability_grade", "disability_secondary", "referral_source", "referral_note", "last_modified_at"];
       const rows = clientsSheet.rows
-        .filter((r) => r.name && !clientNameToId[String(r.name).trim()])
-        .map((r) => ({
-          center_id: centerId,
-          name: String(r.name).trim(),
-          gender: r.gender ?? null,
-          birth_date: parseDate(r.birth_date),
-          phone: r.phone ?? null,
-          guardian_phone: r.guardian_phone ?? null,
-          address: r.address ?? null,
-          disability_info: r.disability_info ?? null,
-          status: mapClientStatus(r.status),
-          member_no: r.member_no ?? null,
-        }));
+        .map((r) => ({ ...r, name: (r.name ?? r.client_name ?? "").toString().trim() }))
+        .filter((r) => r.name && !clientNameToId[r.name])
+        .map((r) => {
+          const sp = splitPhone(r.phone);
+          const meta: Record<string, any> = {};
+          for (const k of META_KEYS) {
+            const v = (r as any)[k];
+            if (v != null && String(v).trim() !== "") meta[k] = typeof v === "string" ? v.trim() : v;
+          }
+          if (r.note != null && String(r.note).trim() !== "") meta.note = String(r.note).trim();
+          return {
+            center_id: centerId,
+            name: r.name,
+            gender: r.gender ?? null,
+            birth_date: parseDate(r.birth_date),
+            phone: sp.phone ?? null,
+            guardian_phone: sp.guardian_phone ?? r.guardian_phone ?? null,
+            address: r.address ?? null,
+            disability_info: r.disability_info ?? null,
+            initial_consult_date: parseDate(r.initial_consult_date),
+            status: mapClientStatus(r.status),
+            member_no: r.member_no ?? null,
+            meta: Object.keys(meta).length ? meta : null,
+          };
+        });
       if (rows.length) {
         const { data, error } = await supabase.from("center_clients").insert(rows).select("id,name");
         if (error) throw error;

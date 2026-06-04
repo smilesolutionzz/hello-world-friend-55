@@ -171,7 +171,7 @@ const PartnerConsole: React.FC = () => {
         <div className="mt-3 space-y-2">
           {tab === 'programs' &&
             (programsQ.data ?? []).map((row) => (
-              <RowItem
+              <PartnerRowItem
                 key={row.id}
                 title={row.title}
                 subtitle={[row.category, row.target_age, row.duration_text].filter(Boolean).join(' · ')}
@@ -184,7 +184,7 @@ const PartnerConsole: React.FC = () => {
             ))}
           {tab === 'products' &&
             (productsQ.data ?? []).map((row) => (
-              <RowItem
+              <PartnerRowItem
                 key={row.id}
                 title={row.title}
                 subtitle={[row.kind === 'book' ? '도서' : row.kind === 'kit' ? '키트' : '굿즈', row.author].filter(Boolean).join(' · ')}

@@ -648,11 +648,17 @@ export async function commitImport(
         summary.sessions_inserted = data?.length ?? 0;
       }
       if (toUpdate.length) {
-        // 병합/덮어쓰기 — 개별 update (소량 가정)
+        // 병합/덮어쓰기 / skip-backfill — 개별 update (소량 가정)
         for (const u of toUpdate) {
-          const payload = strategy === "merge"
-            ? Object.fromEntries(Object.entries(u.payload).filter(([_, v]) => v != null && v !== ""))
-            : u.payload;
+          let payload: any;
+          if (u.payload.__backfillOnly) {
+            const { __backfillOnly, ...rest } = u.payload;
+            payload = rest;
+          } else if (strategy === "merge") {
+            payload = Object.fromEntries(Object.entries(u.payload).filter(([_, v]) => v != null && v !== ""));
+          } else {
+            payload = u.payload;
+          }
           await supabase.from("center_sessions").update(payload).eq("id", u.id);
         }
         summary.sessions_updated = toUpdate.length;

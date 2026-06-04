@@ -127,17 +127,36 @@ export default function SchedulePage() {
   }
 
   async function handleDelete(s: any) {
-    if (!window.confirm("이 일정을 삭제할까요?")) return;
+    const hasRecur = !!s.recurrence_key;
+    const msg = hasRecur
+      ? "이 일정과 이후의 모든 반복 일정을 함께 삭제할까요?"
+      : "이 일정을 삭제할까요?";
+    if (!window.confirm(msg)) return;
     if (demo) {
-      setSessions((prev) => prev.filter((x) => x.id !== s.id));
+      setSessions((prev) => prev.filter((x) =>
+        hasRecur
+          ? !(x.recurrence_key === s.recurrence_key && x.session_date >= s.session_date)
+          : x.id !== s.id
+      ));
     } else {
-      const { error } = await supabase.from("center_sessions").delete().eq("id", s.id);
+      let q = supabase.from("center_sessions").delete().eq("center_id", centerId);
+      if (hasRecur) {
+        q = q.eq("recurrence_key", s.recurrence_key).gte("session_date", s.session_date);
+      } else {
+        q = q.eq("id", s.id);
+      }
+      const { error } = await q;
       if (error) { toast({ title: "삭제 실패", description: error.message, variant: "destructive" }); return; }
-      setSessions((prev) => prev.filter((x) => x.id !== s.id));
+      setSessions((prev) => prev.filter((x) =>
+        hasRecur
+          ? !(x.recurrence_key === s.recurrence_key && x.session_date >= s.session_date)
+          : x.id !== s.id
+      ));
     }
-    toast({ title: "일정이 삭제됐어요" });
+    toast({ title: hasRecur ? "반복 일정이 삭제됐어요" : "일정이 삭제됐어요" });
     setSelected(null);
   }
+
 
   useEffect(() => { if (isMobile) { setView("day"); setGroup("date"); } }, [isMobile]);
 

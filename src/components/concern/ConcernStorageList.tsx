@@ -523,7 +523,17 @@ export const ConcernStorageList = () => {
           </Card>
         </motion.div>
       ) : (
-        <Accordion type="single" collapsible className="space-y-3 md:space-y-4">
+        <Accordion
+          type="single"
+          collapsible
+          className="space-y-3 md:space-y-4"
+          onValueChange={(val) => {
+            if (!val) return;
+            const idx = Number(val.replace('concern-', ''));
+            const target = filteredConcerns[idx];
+            if (target) fetchReportImages(target.id);
+          }}
+        >
           {filteredConcerns.map((concern, index) => {
             const severityConfig = getSeverityConfig(concern.analysis_severity);
             

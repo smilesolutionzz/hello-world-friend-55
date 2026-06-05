@@ -76,11 +76,14 @@ export const ConcernStorageList = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // report_images는 base64 이미지가 통째로 저장돼 한 행이 수 MB까지 커질 수 있어
+      // 목록 쿼리에서는 제외하고, 카드를 펼칠 때 lazy로 따로 가져온다.
       const { data, error } = await supabase
         .from('concern_storage')
-        .select('*')
+        .select('id, concern_text, analysis_type, analysis_severity, analysis_advice, recommended_tests, full_analysis, created_at')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(100);
 
       if (error) throw error;
       setConcerns((data || []) as ConcernData[]);
@@ -93,6 +96,25 @@ export const ConcernStorageList = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const [imagesLoaded, setImagesLoaded] = useState<Record<string, boolean>>({});
+  const fetchReportImages = async (id: string) => {
+    if (imagesLoaded[id]) return;
+    setImagesLoaded((prev) => ({ ...prev, [id]: true }));
+    try {
+      const { data, error } = await supabase
+        .from('concern_storage')
+        .select('report_images')
+        .eq('id', id)
+        .maybeSingle();
+      if (error) throw error;
+      const imgs = (data as any)?.report_images as string[] | null | undefined;
+      if (!imgs || imgs.length === 0) return;
+      setConcerns((prev) => prev.map((c) => (c.id === id ? { ...c, report_images: imgs } : c)));
+    } catch (e) {
+      console.error('리포트 이미지 불러오기 오류:', e);
     }
   };
 

@@ -271,18 +271,39 @@ export default function SchedulePage() {
         <div className="space-y-0.5">
           {therapists.map((t) => {
             const on = therapistFilter[t.id] !== false;
+            const isSolo = therapistFilter[t.id] === true
+              && Object.entries(therapistFilter).every(([k, v]) => k === t.id ? v === true : v === false);
             return (
-              <label key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-neutral-50 cursor-pointer text-xs">
+              <div
+                key={t.id}
+                className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs transition ${isSolo ? "bg-neutral-900/5 ring-1 ring-neutral-200" : "hover:bg-neutral-50"}`}
+              >
                 <input
                   type="checkbox"
                   checked={on}
                   onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))}
-                  className="accent-neutral-900"
+                  onClick={(e) => e.stopPropagation()}
+                  className="accent-neutral-900 cursor-pointer"
+                  aria-label={`${t.name} 표시 토글`}
                 />
-                <span className="w-3.5 h-3.5 rounded shrink-0 border" style={{ background: t.color, borderColor: t.color }} />
-                <span className="flex-1 min-w-0 truncate text-neutral-800">{t.name}</span>
-                <span className="text-[10px] text-neutral-400 truncate max-w-[60px]">{t.title ?? ""}</span>
-              </label>
+                <button
+                  type="button"
+                  onClick={() => setTherapistFilter((p) => {
+                    const onlyThis = Object.entries(p).every(([k, v]) => k === t.id ? v === true : v === false);
+                    if (onlyThis) return Object.fromEntries(Object.keys(p).map((k) => [k, true]));
+                    return Object.fromEntries(Object.keys(p).map((k) => [k, k === t.id]));
+                  })}
+                  className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
+                  title="이 선생님만 보기 (다시 누르면 전체)"
+                >
+                  <span className="w-3.5 h-3.5 rounded shrink-0 border" style={{ background: t.color, borderColor: t.color }} />
+                  <span className="flex-1 min-w-0 truncate text-neutral-800">{t.name}</span>
+                  <span className="text-[10px] text-neutral-400 truncate max-w-[60px]">{t.title ?? ""}</span>
+                  <span className="text-[9px] text-neutral-400 opacity-0 group-hover:opacity-100 transition shrink-0">
+                    {isSolo ? "전체" : "이 사람만"}
+                  </span>
+                </button>
+              </div>
             );
           })}
           <label className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1.5 pt-2">
@@ -367,11 +388,22 @@ export default function SchedulePage() {
                 {therapists.map((t) => {
                   const on = therapistFilter[t.id] !== false;
                   return (
-                    <label key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs">
-                      <input type="checkbox" checked={on} onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))} className="accent-neutral-900" />
-                      <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color }} />
-                      <span className="flex-1 truncate">{t.name}</span>
-                    </label>
+                    <div key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 text-xs">
+                      <input type="checkbox" checked={on} onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))} onClick={(e) => e.stopPropagation()} className="accent-neutral-900 cursor-pointer" />
+                      <button
+                        type="button"
+                        onClick={() => setTherapistFilter((p) => {
+                          const onlyThis = Object.entries(p).every(([k, v]) => k === t.id ? v === true : v === false);
+                          if (onlyThis) return Object.fromEntries(Object.keys(p).map((k) => [k, true]));
+                          return Object.fromEntries(Object.keys(p).map((k) => [k, k === t.id]));
+                        })}
+                        className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
+                        title="이 선생님만 보기"
+                      >
+                        <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color }} />
+                        <span className="flex-1 truncate">{t.name}</span>
+                      </button>
+                    </div>
                   );
                 })}
                 <label className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1 pt-2">

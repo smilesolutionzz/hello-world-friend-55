@@ -1,34 +1,43 @@
-## 원인
+## 문제
 
-`/concern-storage` 진입 시 콘솔 에러:
+`/b2b-center/app/schedule` 좌측 사이드바의 "선생님별 일정" 영역은 현재 단순 체크박스 그룹입니다. 사용자가 선생님 이름을 클릭해도 "해당 선생님 일정만 보기" 동작이 일어나지 않아, "눌러도 안 뜬다"고 느껴집니다.
+
+현재 동작:
+- 라벨 클릭 → 체크박스만 토글 (다른 선생님은 그대로 표시)
+- 솔로 선택 UI 없음
+
+## 수정안
+
+`src/pages/b2b-center/console/SchedulePage.tsx` 좌측 사이드바(256~302줄) 만 손봅니다. 본문 그리드/데이터 로직은 그대로.
+
+1. 각 선생님 행을 **체크박스 + 이름 버튼** 2영역으로 분리
+   - 체크박스: 기존처럼 다중 토글 (보이기/숨기기)
+   - 이름 클릭: **솔로 모드** — 해당 선생님만 `true`, 나머지(및 `__none`) 전부 `false`
+   - 이미 솔로 상태에서 같은 이름을 다시 클릭하면 → 전체 해제 복원 (전부 `true`)
+2. 행 우측에 작게 "이 선생님만" 힌트를 hover 시 표시
+3. "전체 / 해제" 토글 버튼은 그대로 유지
+4. 상단 컨트롤바의 `Filter` 드롭다운(351~385줄)에도 동일한 "솔로 클릭" 패턴 적용 (모바일 일관성)
+
+```text
+┌─ 선생님별 일정 ─────────┐
+│ ☑ ■ 김민지   언어    │ ← 이름 클릭 = 솔로
+│ ☑ ■ 박서연   감통    │
+│ ☐ ■ 이준호   놀이    │ ← 체크박스만 토글
+│ ─────────────────── │
+│ ☑ ▢ 미배정          │
+└────────────────────┘
 ```
-code: 57014  message: canceling statement due to statement timeout
-```
-
-DB 확인 결과 `public.concern_storage` 는 **148 rows / 390 MB**.
-- `report_images` 컬럼에 base64 PNG가 통째로 저장되어 한 사용자(toss@naver.com) 한 명만 29건에 **96MB**.
-- `ConcernStorageList.fetchConcerls()` 는 `select('*')` 로 모든 컬럼을 한 번에 가져오기 때문에 PostgREST가 수십 MB의 JSON을 직렬화하다가 8초 statement timeout에 걸림.
-
-즉 RLS·인덱스 문제가 아니라 **`select *` + base64 이미지 페이로드**가 문제.
-
-## 수정 방향 (프론트만 손대면 끝)
-
-1. `src/components/concern/ConcernStorageList.tsx`
-   - 목록 fetch 시 `report_images` 를 제외한 컬럼만 명시적으로 select:
-     ```
-     .select('id, concern_text, analysis_type, analysis_severity, analysis_advice, recommended_tests, full_analysis, created_at')
-     .limit(100)
-     ```
-   - 카드를 펼칠 때(`AccordionItem` open) 처음 한 번만 해당 id의 `report_images` 를 따로 fetch 해서 state에 머지하는 lazy loader 추가 (`fetchReportImages(id)`).
-   - 타입 `ConcernData.report_images` 는 그대로 두고 초기값은 `undefined`. 펼치기 전에는 "리포트 이미지" 섹션을 렌더하지 않음.
-
-2. 안전망: fetch 함수에 `AbortController` 와 사용자에게 보이는 빈 상태 fallback 유지 (기존 toast 그대로).
 
 ## 기술 메모
 
-- 단일 select 사이즈를 ~100KB 수준으로 줄여 timeout 회피.
-- DB 마이그레이션·RLS·인덱스 변경 없음 (필요시 추후 `(user_id, created_at desc)` 인덱스 별도 검토).
-- 다른 컴포넌트(`WriteConcern`, `InstantAIAnalysis`) 는 영향 없음 — insert 경로 그대로.
-
-## 변경 파일
-- `src/components/concern/ConcernStorageList.tsx` (fetch select 컬럼 축소 + lazy `report_images` 로더 추가)
+- 새 헬퍼 `soloTherapist(id: string)`:
+  ```ts
+  setTherapistFilter((p) => {
+    const onlyThis = Object.keys(p).every((k) => (k === id ? p[k] : !p[k]));
+    if (onlyThis) return Object.fromEntries(Object.keys(p).map((k) => [k, true]));
+    return Object.fromEntries(Object.keys(p).map((k) => [k, k === id]));
+  });
+  ```
+- `<label>` 안의 체크박스는 `onClick={(e) => e.stopPropagation()}` 로 솔로 트리거와 분리
+- 이름 영역은 `<button type="button">` 으로 감싸 키보드 접근 유지
+- 데이터 fetch / `visibleSessions` 필터 로직 변경 없음 (이미 `therapistFilter` 만 읽음)

@@ -2,11 +2,15 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Filter, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Filter, Check, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ImportWizard from "@/components/b2b-center/ImportWizard";
 import ImportHistoryPanel from "@/components/b2b-center/ImportHistoryPanel";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+
+const SIDEBAR_OPEN_KEY = "b2b_schedule_sidebar_open_v1";
 
 type Ctx = { centerId: string; demo?: boolean };
 
@@ -88,6 +92,16 @@ export default function SchedulePage() {
   const [showTFilter, setShowTFilter] = useState(false);
   const soloSnapshotRef = useRef<Record<string, boolean> | null>(null);
   const isMobile = useIsMobile();
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    const v = window.localStorage.getItem(SIDEBAR_OPEN_KEY);
+    return v === null ? true : v === "1";
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(SIDEBAR_OPEN_KEY, sidebarOpen ? "1" : "0");
+    }
+  }, [sidebarOpen]);
 
   // 치료사 색상 화면에서 수정 → 저장
   async function handleColorChange(tid: string, color: string) {
@@ -320,83 +334,103 @@ export default function SchedulePage() {
 
   return (
     <div className="p-4 md:p-6 lg:p-8 flex flex-col lg:flex-row gap-4 items-start">
-      {/* 좌측 사이드바: 선생님별 체크박스 — 항상 표시 (케어플 스타일) */}
-      <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-white rounded-2xl border border-neutral-200 p-3 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
-        <button
-          onClick={() => setImportOpen(true)}
-          className="w-full inline-flex items-center justify-center gap-1.5 text-sm px-3 py-2.5 rounded-xl bg-[#FAF6E8] border border-[#C8B88A]/40 text-neutral-900 hover:bg-[#F3EBD0] transition mb-3"
-        >
-          <Upload className="w-4 h-4" /> 일정 엑셀 등록
-        </button>
-        <div className="flex items-center justify-between mb-1">
-          <p className="text-xs font-semibold text-neutral-700">선생님별 일정</p>
-          <div className="flex gap-1 text-[10px]">
-            <button onClick={() => setAllTherapists(true)} className="text-neutral-500 hover:text-neutral-900">전체</button>
-            <span className="text-neutral-200">|</span>
-            <button onClick={() => setAllTherapists(false)} className="text-neutral-500 hover:text-neutral-900">해제</button>
+      {/* 좌측 사이드바: 접고/펴기 가능 (케어플 스타일) */}
+      {sidebarOpen ? (
+        <aside className="hidden lg:flex flex-col w-56 shrink-0 bg-white rounded-2xl border border-neutral-200 p-3 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs font-semibold text-neutral-700">선생님별 일정</p>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="p-1 rounded-md hover:bg-neutral-100 text-neutral-500"
+              title="사이드바 접기"
+              aria-label="사이드바 접기"
+            >
+              <PanelLeftClose className="w-4 h-4" />
+            </button>
           </div>
-        </div>
-        <p className="text-[10px] text-neutral-400 mb-2">표시 중 {visibleSessions.length}건</p>
-        <div className="space-y-0.5">
-          {therapists.map((t) => {
-            const on = therapistFilter[t.id] !== false;
-            const isSolo = therapistFilter[t.id] === true
-              && Object.entries(therapistFilter).every(([k, v]) => k === t.id ? v === true : v === false);
-            const count = on ? (countByT[t.id] ?? 0) : 0;
-            return (
-              <div
-                key={t.id}
-                className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs transition ${isSolo ? "bg-neutral-900/5 ring-1 ring-neutral-200" : "hover:bg-neutral-50"}`}
-              >
-                <input
-                  type="checkbox"
-                  checked={on}
-                  onChange={(e) => toggleTherapist(t.id, e.target.checked)}
-                  onClick={(e) => e.stopPropagation()}
-                  className="accent-neutral-900 cursor-pointer"
-                  aria-label={`${t.name} 표시 토글`}
-                />
-                <button
-                  type="button"
-                  onClick={() => soloTherapist(t.id)}
-                  className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
-                  title="이 선생님만 보기 (다시 누르면 직전 상태로 복원)"
+          <button
+            onClick={() => setImportOpen(true)}
+            className="w-full inline-flex items-center justify-center gap-1.5 text-sm px-3 py-2.5 rounded-xl bg-[#FAF6E8] border border-[#C8B88A]/40 text-neutral-900 hover:bg-[#F3EBD0] transition mb-3"
+          >
+            <Upload className="w-4 h-4" /> 일정 엑셀 등록
+          </button>
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-[10px] text-neutral-400">표시 중 {visibleSessions.length}건</p>
+            <div className="flex gap-1 text-[10px]">
+              <button onClick={() => setAllTherapists(true)} className="text-neutral-500 hover:text-neutral-900">전체</button>
+              <span className="text-neutral-200">|</span>
+              <button onClick={() => setAllTherapists(false)} className="text-neutral-500 hover:text-neutral-900">해제</button>
+            </div>
+          </div>
+          <div className="space-y-0.5 mt-1">
+            {therapists.map((t) => {
+              const on = therapistFilter[t.id] !== false;
+              const isSolo = therapistFilter[t.id] === true
+                && Object.entries(therapistFilter).every(([k, v]) => k === t.id ? v === true : v === false);
+              const count = on ? (countByT[t.id] ?? 0) : 0;
+              return (
+                <div
+                  key={t.id}
+                  className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs transition ${isSolo ? "bg-neutral-900/5 ring-1 ring-neutral-200" : "hover:bg-neutral-50"}`}
                 >
-                  <span className="w-3.5 h-3.5 rounded shrink-0 border" style={{ background: t.color, borderColor: t.color }} />
-                  <span className={`flex-1 min-w-0 truncate ${isSolo ? "font-semibold text-neutral-900" : on ? "text-neutral-800" : "text-neutral-400 line-through"}`}>{t.name}</span>
-                  <span className={`text-[10px] tabular-nums shrink-0 ${on ? "text-neutral-500" : "text-neutral-300"}`}>{count}</span>
-                  <span className="text-[9px] text-neutral-400 opacity-0 group-hover:opacity-100 transition shrink-0">
-                    {isSolo ? "복원" : "이 사람만"}
-                  </span>
-                </button>
-              </div>
-            );
-          })}
-          <label className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1.5 pt-2">
-            <input
-              type="checkbox"
-              checked={therapistFilter.__none !== false}
-              onChange={(e) => toggleTherapist("__none", e.target.checked)}
-              className="accent-neutral-900"
-            />
-            <span className="w-3.5 h-3.5 rounded shrink-0 border border-dashed border-neutral-400 bg-neutral-100" />
-            <span className="flex-1 text-neutral-500">미배정</span>
-            <span className="text-[10px] tabular-nums text-neutral-400">{therapistFilter.__none !== false ? (countByT["__none"] ?? 0) : 0}</span>
-          </label>
-        </div>
-        {loading && (
-          <p className="text-[10px] text-neutral-400 text-center py-3">불러오는 중…</p>
-        )}
-        {loadError && !loading && (
-          <div className="mt-2 text-[10px] text-rose-600 bg-rose-50 border border-rose-100 rounded-lg p-2">
-            {loadError}
-            <button onClick={() => setReloadKey((k) => k + 1)} className="ml-1 underline hover:text-rose-800">다시 시도</button>
+                  <input
+                    type="checkbox"
+                    checked={on}
+                    onChange={(e) => toggleTherapist(t.id, e.target.checked)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="accent-neutral-900 cursor-pointer"
+                    aria-label={`${t.name} 표시 토글`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => soloTherapist(t.id)}
+                    className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
+                    title="이 선생님만 보기 (다시 누르면 직전 상태로 복원)"
+                  >
+                    <span className="w-3.5 h-3.5 rounded shrink-0 border" style={{ background: t.color, borderColor: t.color }} />
+                    <span className={`flex-1 min-w-0 truncate ${isSolo ? "font-semibold text-neutral-900" : on ? "text-neutral-800" : "text-neutral-400 line-through"}`}>{t.name}</span>
+                    <span className={`text-[10px] tabular-nums shrink-0 ${on ? "text-neutral-500" : "text-neutral-300"}`}>{count}</span>
+                  </button>
+                </div>
+              );
+            })}
+            <label className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1.5 pt-2">
+              <input
+                type="checkbox"
+                checked={therapistFilter.__none !== false}
+                onChange={(e) => toggleTherapist("__none", e.target.checked)}
+                className="accent-neutral-900"
+              />
+              <span className="w-3.5 h-3.5 rounded shrink-0 border border-dashed border-neutral-400 bg-neutral-100" />
+              <span className="flex-1 text-neutral-500">미배정</span>
+              <span className="text-[10px] tabular-nums text-neutral-400">{therapistFilter.__none !== false ? (countByT["__none"] ?? 0) : 0}</span>
+            </label>
           </div>
-        )}
-        {!loading && !loadError && therapists.length === 0 && (
-          <p className="text-xs text-neutral-400 text-center py-6">선생님 등록 후 일정이 색상으로 분류돼요.</p>
-        )}
-      </aside>
+          {loading && (
+            <p className="text-[10px] text-neutral-400 text-center py-3">불러오는 중…</p>
+          )}
+          {loadError && !loading && (
+            <div className="mt-2 text-[10px] text-rose-600 bg-rose-50 border border-rose-100 rounded-lg p-2">
+              {loadError}
+              <button onClick={() => setReloadKey((k) => k + 1)} className="ml-1 underline hover:text-rose-800">다시 시도</button>
+            </div>
+          )}
+          {!loading && !loadError && therapists.length === 0 && (
+            <p className="text-xs text-neutral-400 text-center py-6">선생님 등록 후 일정이 색상으로 분류돼요.</p>
+          )}
+        </aside>
+      ) : (
+        <aside className="hidden lg:flex flex-col items-center w-10 shrink-0 bg-white rounded-2xl border border-neutral-200 p-2 sticky top-4">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-600"
+            title="선생님 사이드바 펼치기"
+            aria-label="선생님 사이드바 펼치기"
+          >
+            <PanelLeftOpen className="w-4 h-4" />
+          </button>
+        </aside>
+      )}
 
       {/* 본문 */}
       <div className="flex-1 min-w-0 w-full">
@@ -519,13 +553,13 @@ export default function SchedulePage() {
             >다시 시도</button>
           </div>
         ) : view === "month" ? (
-          <MonthView cursor={cursor} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} />
+          <MonthView cursor={cursor} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
         ) : view === "list" ? (
           visibleSessions.length === 0
             ? <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>
             : <ListView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
         ) : group === "timetable" ? (
-          <TimetableView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName}
+          <TimetableView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName}
             onCreate={(date, hour) => setCreateAt({ date, hour })} />
         ) : group === "therapist" ? (
           visibleSessions.length === 0
@@ -632,7 +666,7 @@ export default function SchedulePage() {
 }
 
 // ===== 시간표(주/일 그리드) =====
-function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCreate }: any) {
+function TimetableView({ dayList, sessions, onPick, therapist, clientName, programName, onCreate }: any) {
   const cols = dayList.length;
   return (
     <div className="grid" style={{ gridTemplateColumns: `60px repeat(${cols}, minmax(120px, 1fr))` }}>
@@ -671,7 +705,7 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCre
                 <div className={`h-full ${slot.length > 1 ? "flex gap-0.5" : "space-y-1"}`}>
                   {slot.map((s: any) => (
                     <div key={s.id} className={slot.length > 1 ? "flex-1 min-w-0" : ""}>
-                      <SessionChip s={s} therapist={therapist} clientName={clientName} onPick={onPick} compact={slot.length > 1} />
+                      <SessionChip s={s} therapist={therapist} clientName={clientName} programName={programName} onPick={onPick} compact={slot.length > 1} />
                     </div>
                   ))}
                 </div>
@@ -683,6 +717,44 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCre
     </div>
   );
 }
+
+// ===== 세션 호버 카드 내용 =====
+function SessionHoverDetail({ s, therapist, clientName, programName }: any) {
+  const th = therapist(s.therapist_id);
+  const meta = STATUS_META[s.status as StatusCode];
+  const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
+  return (
+    <div className="text-xs space-y-1.5">
+      <div className="flex items-center gap-2 pb-1.5 border-b border-neutral-100">
+        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: color }} />
+        <p className="font-semibold text-sm text-neutral-900 truncate">{clientName(s.client_id)}</p>
+        {meta && (
+          <span className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full border ${meta.tone}`}>{meta.label}</span>
+        )}
+      </div>
+      <p className="text-neutral-600">
+        <span className="text-neutral-400 mr-1">선생님</span>
+        {th?.name ?? "미배정"}{th?.role || th?.title ? ` · ${th.role ?? th.title}` : ""}
+      </p>
+      <p className="text-neutral-600">
+        <span className="text-neutral-400 mr-1">프로그램</span>
+        {programName ? programName(s.program_id) : "—"}
+      </p>
+      <p className="text-neutral-600 tabular-nums">
+        <span className="text-neutral-400 mr-1">일시</span>
+        {s.session_date} {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+      </p>
+      {s.note && (
+        <p className="text-neutral-500 pt-1 border-t border-neutral-100">
+          <span className="text-neutral-400 mr-1">메모</span>{s.note}
+        </p>
+      )}
+      <p className="text-[10px] text-neutral-400 pt-1">클릭하면 상세보기 / 삭제</p>
+    </div>
+  );
+}
+
+
 
 // ===== 일정 등록 다이얼로그 =====
 function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSubmit }: any) {
@@ -883,7 +955,7 @@ function TherapistGroupView({ dayList, sessions, therapists, onPick, clientName,
 }
 
 // ===== 월간 그리드 =====
-function MonthView({ cursor, sessions, onPick, therapist, clientName }: any) {
+function MonthView({ cursor, sessions, onPick, therapist, clientName, programName }: any) {
   const first = startOfMonth(cursor);
   const startGrid = startOfWeek(first);
   const cells: Date[] = [];
@@ -894,7 +966,9 @@ function MonthView({ cursor, sessions, onPick, therapist, clientName }: any) {
       {cells.map((d) => {
         const ds = fmt(d);
         const inMonth = d.getMonth() === cursor.getMonth();
-        const list = sessions.filter((s: any) => s.session_date === ds);
+        const list = sessions
+          .filter((s: any) => s.session_date === ds)
+          .sort((a: any, b: any) => (a.start_time ?? "").localeCompare(b.start_time ?? ""));
         return (
           <div key={ds} className={`border-b border-r border-neutral-100 min-h-[110px] p-1.5 ${inMonth ? "" : "bg-neutral-50/40"}`}>
             <p className={`text-[11px] mb-1 ${inMonth ? "text-neutral-700" : "text-neutral-300"}`}>{d.getDate()}</p>
@@ -903,13 +977,71 @@ function MonthView({ cursor, sessions, onPick, therapist, clientName }: any) {
                 const th = therapist(s.therapist_id);
                 const cancelled = s.status?.startsWith("cancelled");
                 return (
-                  <button key={s.id} onClick={() => onPick(s)} className={`w-full text-left rounded px-1 py-0.5 text-[10px] truncate ${cancelled ? "line-through opacity-50" : ""}`}
-                    style={{ background: (th?.color ?? "#eee") + "55", borderLeft: `2px solid ${th?.color ?? "#999"}` }}>
-                    {s.start_time?.slice(0, 5) ?? ""} {clientName(s.client_id)}
-                  </button>
+                  <HoverCard key={s.id} openDelay={120} closeDelay={60}>
+                    <HoverCardTrigger asChild>
+                      <button
+                        onClick={() => onPick(s)}
+                        className={`w-full text-left rounded px-1 py-0.5 text-[10px] truncate ${cancelled ? "line-through opacity-50" : ""}`}
+                        style={{ background: (th?.color ?? "#eee") + "55", borderLeft: `2px solid ${th?.color ?? "#999"}` }}
+                      >
+                        {s.start_time?.slice(0, 5) ?? ""} {clientName(s.client_id)}
+                      </button>
+                    </HoverCardTrigger>
+                    <HoverCardContent side="top" align="start" className="w-72 p-3">
+                      <SessionHoverDetail s={s} therapist={therapist} clientName={clientName} programName={programName} />
+                    </HoverCardContent>
+                  </HoverCard>
                 );
               })}
-              {list.length > 4 && <p className="text-[10px] text-neutral-400">+{list.length - 4}</p>}
+              {list.length > 4 && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      className="w-full text-left text-[10px] text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50 rounded px-1 py-0.5 font-medium"
+                      title={`이 날 일정 ${list.length}건 모두 보기`}
+                    >
+                      + {list.length - 4}건 더보기
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent side="right" align="start" className="w-80 p-0 max-h-[400px] overflow-y-auto">
+                    <div className="sticky top-0 bg-white border-b border-neutral-100 px-3 py-2">
+                      <p className="text-sm font-semibold">
+                        {d.getMonth() + 1}월 {d.getDate()}일 ({DAY_LABELS[(d.getDay() + 6) % 7]})
+                        <span className="ml-2 text-xs text-neutral-400">{list.length}건</span>
+                      </p>
+                    </div>
+                    <div className="divide-y divide-neutral-100">
+                      {list.map((s: any) => {
+                        const th = therapist(s.therapist_id);
+                        const cancelled = s.status?.startsWith("cancelled");
+                        const meta = STATUS_META[s.status as StatusCode];
+                        return (
+                          <button
+                            key={s.id}
+                            onClick={() => onPick(s)}
+                            className="w-full text-left px-3 py-2 hover:bg-neutral-50 flex items-center gap-2"
+                          >
+                            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: th?.color ?? "#999" }} />
+                            <span className="text-[11px] text-neutral-500 tabular-nums w-20 shrink-0">
+                              {s.start_time?.slice(0, 5) ?? "--:--"}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+                            </span>
+                            <span className={`text-xs flex-1 min-w-0 truncate ${cancelled ? "line-through text-neutral-400" : "text-neutral-800"}`}>
+                              <span className="font-medium">{clientName(s.client_id)}</span>
+                              <span className="text-neutral-400"> · {th?.name ?? "미배정"}</span>
+                              {programName && (
+                                <span className="text-neutral-400"> · {programName(s.program_id)}</span>
+                              )}
+                            </span>
+                            {meta && (
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded-full border shrink-0 ${meta.tone}`}>{meta.label}</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
             </div>
           </div>
         );
@@ -953,7 +1085,7 @@ function ListView({ dayList, sessions, onPick, therapist, clientName, programNam
 }
 
 // ===== 공통 카드 =====
-function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
+function SessionChip({ s, therapist, clientName, programName, onPick, compact }: any) {
   const th = therapist(s.therapist_id);
   const cancelled = s.status?.startsWith("cancelled");
   const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
@@ -962,28 +1094,34 @@ function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
   const textColor = readableTextColor(safeColor);
   const subTextColor = textColor === "#ffffff" ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0.6)";
   return (
-    <button
-      onClick={() => onPick(s)}
-      title={`${th?.name ?? "미배정"} · ${clientName(s.client_id)}`}
-      className={`w-full h-full text-left rounded-md px-1.5 py-1 leading-tight hover:ring-2 hover:ring-neutral-900 transition shadow-sm ${cancelled ? "opacity-40 line-through" : ""}`}
-      style={{
-        background: safeColor,
-        borderLeft: `3px solid ${shadeColor(safeColor, -25)}`,
-        color: textColor,
-      }}
-    >
-      <p className={`font-bold truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
-        {clientName(s.client_id)}
-      </p>
-      {!compact && (
-        <p className="truncate" style={{ color: subTextColor }}>
-          {th?.name ?? "미배정"} · {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
-        </p>
-      )}
-      {compact && (
-        <p className="truncate text-[10px]" style={{ color: subTextColor }}>{s.start_time?.slice(0, 5) ?? ""}</p>
-      )}
-    </button>
+    <HoverCard openDelay={120} closeDelay={60}>
+      <HoverCardTrigger asChild>
+        <button
+          onClick={() => onPick(s)}
+          className={`w-full h-full text-left rounded-md px-1.5 py-1 leading-tight hover:ring-2 hover:ring-neutral-900 transition shadow-sm ${cancelled ? "opacity-40 line-through" : ""}`}
+          style={{
+            background: safeColor,
+            borderLeft: `3px solid ${shadeColor(safeColor, -25)}`,
+            color: textColor,
+          }}
+        >
+          <p className={`font-bold truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
+            {clientName(s.client_id)}
+          </p>
+          {!compact && (
+            <p className="truncate" style={{ color: subTextColor }}>
+              {th?.name ?? "미배정"} · {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+            </p>
+          )}
+          {compact && (
+            <p className="truncate text-[10px]" style={{ color: subTextColor }}>{s.start_time?.slice(0, 5) ?? ""}</p>
+          )}
+        </button>
+      </HoverCardTrigger>
+      <HoverCardContent side="top" align="start" className="w-72 p-3">
+        <SessionHoverDetail s={s} therapist={therapist} clientName={clientName} programName={programName} />
+      </HoverCardContent>
+    </HoverCard>
   );
 }
 

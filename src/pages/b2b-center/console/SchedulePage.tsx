@@ -216,6 +216,7 @@ export default function SchedulePage() {
           ? !(x.recurrence_key === s.recurrence_key && x.session_date >= s.session_date)
           : x.id !== s.id
       ));
+      notifyDemoNoSave(hasRecur ? "반복 일정 삭제는" : "일정 삭제는");
     } else {
       let q = supabase.from("center_sessions").delete().eq("center_id", centerId);
       if (hasRecur) {
@@ -230,8 +231,8 @@ export default function SchedulePage() {
           ? !(x.recurrence_key === s.recurrence_key && x.session_date >= s.session_date)
           : x.id !== s.id
       ));
+      toast({ title: hasRecur ? "반복 일정이 삭제됐어요" : "일정이 삭제됐어요" });
     }
-    toast({ title: hasRecur ? "반복 일정이 삭제됐어요" : "일정이 삭제됐어요" });
     setSelected(null);
   }
 

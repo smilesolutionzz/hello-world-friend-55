@@ -86,6 +86,7 @@ export default function SchedulePage() {
   });
   const [selected, setSelected] = useState<any | null>(null);
   const [createAt, setCreateAt] = useState<{ date: string; hour: number } | null>(null);
+  const [editing, setEditing] = useState<any | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [importRefresh, setImportRefresh] = useState(0);
   const [therapistFilter, setTherapistFilter] = useState<Record<string, boolean>>({});

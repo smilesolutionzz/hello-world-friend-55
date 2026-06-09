@@ -169,12 +169,13 @@ export default function SchedulePage() {
     if (demo) {
       const added = rows.map((r, i) => ({ id: `is-${Date.now()}-${i}`, ...r }));
       setSessions((prev) => [...prev, ...added]);
+      notifyDemoNoSave(rows.length > 1 ? `${rows.length}개 반복 일정 추가는` : "일정 추가는");
     } else {
       const { data, error } = await supabase.from("center_sessions").insert(rows.map((r) => ({ ...r, center_id: centerId }))).select();
       if (error) { toast({ title: "일정 추가 실패", description: error.message, variant: "destructive" }); return; }
       setSessions((prev) => [...prev, ...(data ?? [])]);
+      toast({ title: rows.length > 1 ? `${rows.length}개 반복 일정이 추가됐어요` : "일정이 추가됐어요" });
     }
-    toast({ title: rows.length > 1 ? `${rows.length}개 반복 일정이 추가됐어요` : "일정이 추가됐어요" });
     setCreateAt(null);
   }
 

@@ -812,8 +812,8 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
       <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-md p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between mb-4">
           <div>
-            <p className="text-xs tracking-widest text-[#C8B88A]">NEW SESSION</p>
-            <h3 className="text-lg font-semibold mt-1">일정 등록 · {at.date}</h3>
+            <p className="text-xs tracking-widest text-[#C8B88A]">{isEdit ? "EDIT SESSION" : "NEW SESSION"}</p>
+            <h3 className="text-lg font-semibold mt-1">{isEdit ? "일정 수정" : "일정 등록"} · {at.date}</h3>
           </div>
           <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
         </div>

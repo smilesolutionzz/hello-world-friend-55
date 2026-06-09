@@ -92,6 +92,16 @@ export default function SchedulePage() {
   const [showTFilter, setShowTFilter] = useState(false);
   const soloSnapshotRef = useRef<Record<string, boolean> | null>(null);
   const isMobile = useIsMobile();
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    const v = window.localStorage.getItem(SIDEBAR_OPEN_KEY);
+    return v === null ? true : v === "1";
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(SIDEBAR_OPEN_KEY, sidebarOpen ? "1" : "0");
+    }
+  }, [sidebarOpen]);
 
   // 치료사 색상 화면에서 수정 → 저장
   async function handleColorChange(tid: string, color: string) {

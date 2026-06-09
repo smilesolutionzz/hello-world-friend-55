@@ -424,7 +424,7 @@ async function buildLiveData(centerId: string): Promise<DashboardData> {
   const therapists = therRes.data ?? [];
   const programs = programRes.data ?? [];
   const palette = ["#FFB4A2", "#B8E0D2", "#FFD6A5", "#CAFFBF", "#A0C4FF", "#FFC8DD"];
-  const therapistMap = new Map(therapists.map((t: any, i: number) => [t.id, { name: t.name, color: palette[i % palette.length] }]));
+  const therapistMap = new Map<string, { name: string; color: string }>(therapists.map((t: any, i: number) => [t.id, { name: t.name, color: palette[i % palette.length] }]));
   const clientMap = new Map(clients.map((c: any) => [c.id, c.display_name]));
   const programMap = new Map(programs.map((p: any) => [p.id, p.name]));
 

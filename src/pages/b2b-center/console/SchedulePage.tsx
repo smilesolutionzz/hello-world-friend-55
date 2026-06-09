@@ -114,10 +114,26 @@ export default function SchedulePage() {
     }
   }
 
-  async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string }) {
+  async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string; recurrence?: { mode: "none" | "weekly" | "biweekly" | "daily"; until?: string } }) {
     if (!createAt) return;
-    const base = {
-      session_date: createAt.date,
+    // 반복 일정 → 날짜 목록 생성
+    const baseDate = new Date(`${createAt.date}T00:00:00`);
+    const dates: string[] = [createAt.date];
+    const rec = form.recurrence;
+    let recurrenceKey: string | null = null;
+    if (rec && rec.mode !== "none" && rec.until) {
+      const end = new Date(`${rec.until}T00:00:00`);
+      const stepDays = rec.mode === "daily" ? 1 : rec.mode === "biweekly" ? 14 : 7;
+      const cur = new Date(baseDate);
+      cur.setDate(cur.getDate() + stepDays);
+      while (cur <= end) {
+        const y = cur.getFullYear(); const m = String(cur.getMonth() + 1).padStart(2, "0"); const d = String(cur.getDate()).padStart(2, "0");
+        dates.push(`${y}-${m}-${d}`);
+        cur.setDate(cur.getDate() + stepDays);
+      }
+      recurrenceKey = `rec-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    }
+    const baseFields = {
       start_time: form.start_time,
       end_time: form.end_time || null,
       client_id: form.client_id,
@@ -127,15 +143,18 @@ export default function SchedulePage() {
       price_krw: programs.find((p) => p.id === form.program_id)?.price_krw ?? 0,
       is_voucher: programs.find((p) => p.id === form.program_id)?.is_voucher ?? false,
       note: form.note || null,
+      recurrence_key: recurrenceKey,
     };
+    const rows = dates.map((d) => ({ ...baseFields, session_date: d }));
     if (demo) {
-      setSessions((prev) => [...prev, { id: `is-${Date.now()}`, ...base }]);
+      const added = rows.map((r, i) => ({ id: `is-${Date.now()}-${i}`, ...r }));
+      setSessions((prev) => [...prev, ...added]);
     } else {
-      const { data, error } = await supabase.from("center_sessions").insert({ ...base, center_id: centerId }).select().single();
+      const { data, error } = await supabase.from("center_sessions").insert(rows.map((r) => ({ ...r, center_id: centerId }))).select();
       if (error) { toast({ title: "일정 추가 실패", description: error.message, variant: "destructive" }); return; }
-      setSessions((prev) => [...prev, data]);
+      setSessions((prev) => [...prev, ...(data ?? [])]);
     }
-    toast({ title: "일정이 추가됐어요" });
+    toast({ title: rows.length > 1 ? `${rows.length}개 반복 일정이 추가됐어요` : "일정이 추가됐어요" });
     setCreateAt(null);
   }
 

@@ -795,13 +795,14 @@ function SessionHoverDetail({ s, therapist, clientName, programName }: any) {
 
 
 // ===== 일정 등록 다이얼로그 =====
-function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSubmit }: any) {
-  const [therapistId, setTherapistId] = useState(therapists[0]?.id ?? "");
-  const [clientId, setClientId] = useState(clients[0]?.id ?? "");
-  const [programId, setProgramId] = useState(programs[0]?.id ?? "");
-  const [startTime, setStartTime] = useState(`${String(at.hour).padStart(2, "0")}:00`);
-  const [endTime, setEndTime] = useState(`${String(at.hour).padStart(2, "0")}:40`);
-  const [note, setNote] = useState("");
+function CreateSessionDialog({ at, clients, therapists, programs, initial, onClose, onSubmit }: any) {
+  const isEdit = !!initial;
+  const [therapistId, setTherapistId] = useState(initial?.therapist_id ?? therapists[0]?.id ?? "");
+  const [clientId, setClientId] = useState(initial?.client_id ?? clients[0]?.id ?? "");
+  const [programId, setProgramId] = useState(initial?.program_id ?? programs[0]?.id ?? "");
+  const [startTime, setStartTime] = useState(initial?.start_time?.slice(0, 5) ?? `${String(at.hour).padStart(2, "0")}:00`);
+  const [endTime, setEndTime] = useState(initial?.end_time?.slice(0, 5) ?? `${String(at.hour).padStart(2, "0")}:40`);
+  const [note, setNote] = useState(initial?.note ?? "");
   const canSubmit = !!clientId && !!startTime;
   const selectedTh = therapists.find((t: any) => t.id === therapistId);
   const visual = therapistVisual(selectedTh);

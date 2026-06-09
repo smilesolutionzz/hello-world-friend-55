@@ -1085,7 +1085,7 @@ function ListView({ dayList, sessions, onPick, therapist, clientName, programNam
 }
 
 // ===== 공통 카드 =====
-function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
+function SessionChip({ s, therapist, clientName, programName, onPick, compact }: any) {
   const th = therapist(s.therapist_id);
   const cancelled = s.status?.startsWith("cancelled");
   const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
@@ -1094,28 +1094,34 @@ function SessionChip({ s, therapist, clientName, onPick, compact }: any) {
   const textColor = readableTextColor(safeColor);
   const subTextColor = textColor === "#ffffff" ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0.6)";
   return (
-    <button
-      onClick={() => onPick(s)}
-      title={`${th?.name ?? "미배정"} · ${clientName(s.client_id)}`}
-      className={`w-full h-full text-left rounded-md px-1.5 py-1 leading-tight hover:ring-2 hover:ring-neutral-900 transition shadow-sm ${cancelled ? "opacity-40 line-through" : ""}`}
-      style={{
-        background: safeColor,
-        borderLeft: `3px solid ${shadeColor(safeColor, -25)}`,
-        color: textColor,
-      }}
-    >
-      <p className={`font-bold truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
-        {clientName(s.client_id)}
-      </p>
-      {!compact && (
-        <p className="truncate" style={{ color: subTextColor }}>
-          {th?.name ?? "미배정"} · {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
-        </p>
-      )}
-      {compact && (
-        <p className="truncate text-[10px]" style={{ color: subTextColor }}>{s.start_time?.slice(0, 5) ?? ""}</p>
-      )}
-    </button>
+    <HoverCard openDelay={120} closeDelay={60}>
+      <HoverCardTrigger asChild>
+        <button
+          onClick={() => onPick(s)}
+          className={`w-full h-full text-left rounded-md px-1.5 py-1 leading-tight hover:ring-2 hover:ring-neutral-900 transition shadow-sm ${cancelled ? "opacity-40 line-through" : ""}`}
+          style={{
+            background: safeColor,
+            borderLeft: `3px solid ${shadeColor(safeColor, -25)}`,
+            color: textColor,
+          }}
+        >
+          <p className={`font-bold truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
+            {clientName(s.client_id)}
+          </p>
+          {!compact && (
+            <p className="truncate" style={{ color: subTextColor }}>
+              {th?.name ?? "미배정"} · {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+            </p>
+          )}
+          {compact && (
+            <p className="truncate text-[10px]" style={{ color: subTextColor }}>{s.start_time?.slice(0, 5) ?? ""}</p>
+          )}
+        </button>
+      </HoverCardTrigger>
+      <HoverCardContent side="top" align="start" className="w-72 p-3">
+        <SessionHoverDetail s={s} therapist={therapist} clientName={clientName} programName={programName} />
+      </HoverCardContent>
+    </HoverCard>
   );
 }
 

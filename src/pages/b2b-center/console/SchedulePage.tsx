@@ -334,83 +334,103 @@ export default function SchedulePage() {
 
   return (
     <div className="p-4 md:p-6 lg:p-8 flex flex-col lg:flex-row gap-4 items-start">
-      {/* 좌측 사이드바: 선생님별 체크박스 — 항상 표시 (케어플 스타일) */}
-      <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-white rounded-2xl border border-neutral-200 p-3 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
-        <button
-          onClick={() => setImportOpen(true)}
-          className="w-full inline-flex items-center justify-center gap-1.5 text-sm px-3 py-2.5 rounded-xl bg-[#FAF6E8] border border-[#C8B88A]/40 text-neutral-900 hover:bg-[#F3EBD0] transition mb-3"
-        >
-          <Upload className="w-4 h-4" /> 일정 엑셀 등록
-        </button>
-        <div className="flex items-center justify-between mb-1">
-          <p className="text-xs font-semibold text-neutral-700">선생님별 일정</p>
-          <div className="flex gap-1 text-[10px]">
-            <button onClick={() => setAllTherapists(true)} className="text-neutral-500 hover:text-neutral-900">전체</button>
-            <span className="text-neutral-200">|</span>
-            <button onClick={() => setAllTherapists(false)} className="text-neutral-500 hover:text-neutral-900">해제</button>
+      {/* 좌측 사이드바: 접고/펴기 가능 (케어플 스타일) */}
+      {sidebarOpen ? (
+        <aside className="hidden lg:flex flex-col w-56 shrink-0 bg-white rounded-2xl border border-neutral-200 p-3 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs font-semibold text-neutral-700">선생님별 일정</p>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="p-1 rounded-md hover:bg-neutral-100 text-neutral-500"
+              title="사이드바 접기"
+              aria-label="사이드바 접기"
+            >
+              <PanelLeftClose className="w-4 h-4" />
+            </button>
           </div>
-        </div>
-        <p className="text-[10px] text-neutral-400 mb-2">표시 중 {visibleSessions.length}건</p>
-        <div className="space-y-0.5">
-          {therapists.map((t) => {
-            const on = therapistFilter[t.id] !== false;
-            const isSolo = therapistFilter[t.id] === true
-              && Object.entries(therapistFilter).every(([k, v]) => k === t.id ? v === true : v === false);
-            const count = on ? (countByT[t.id] ?? 0) : 0;
-            return (
-              <div
-                key={t.id}
-                className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs transition ${isSolo ? "bg-neutral-900/5 ring-1 ring-neutral-200" : "hover:bg-neutral-50"}`}
-              >
-                <input
-                  type="checkbox"
-                  checked={on}
-                  onChange={(e) => toggleTherapist(t.id, e.target.checked)}
-                  onClick={(e) => e.stopPropagation()}
-                  className="accent-neutral-900 cursor-pointer"
-                  aria-label={`${t.name} 표시 토글`}
-                />
-                <button
-                  type="button"
-                  onClick={() => soloTherapist(t.id)}
-                  className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
-                  title="이 선생님만 보기 (다시 누르면 직전 상태로 복원)"
+          <button
+            onClick={() => setImportOpen(true)}
+            className="w-full inline-flex items-center justify-center gap-1.5 text-sm px-3 py-2.5 rounded-xl bg-[#FAF6E8] border border-[#C8B88A]/40 text-neutral-900 hover:bg-[#F3EBD0] transition mb-3"
+          >
+            <Upload className="w-4 h-4" /> 일정 엑셀 등록
+          </button>
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-[10px] text-neutral-400">표시 중 {visibleSessions.length}건</p>
+            <div className="flex gap-1 text-[10px]">
+              <button onClick={() => setAllTherapists(true)} className="text-neutral-500 hover:text-neutral-900">전체</button>
+              <span className="text-neutral-200">|</span>
+              <button onClick={() => setAllTherapists(false)} className="text-neutral-500 hover:text-neutral-900">해제</button>
+            </div>
+          </div>
+          <div className="space-y-0.5 mt-1">
+            {therapists.map((t) => {
+              const on = therapistFilter[t.id] !== false;
+              const isSolo = therapistFilter[t.id] === true
+                && Object.entries(therapistFilter).every(([k, v]) => k === t.id ? v === true : v === false);
+              const count = on ? (countByT[t.id] ?? 0) : 0;
+              return (
+                <div
+                  key={t.id}
+                  className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs transition ${isSolo ? "bg-neutral-900/5 ring-1 ring-neutral-200" : "hover:bg-neutral-50"}`}
                 >
-                  <span className="w-3.5 h-3.5 rounded shrink-0 border" style={{ background: t.color, borderColor: t.color }} />
-                  <span className={`flex-1 min-w-0 truncate ${isSolo ? "font-semibold text-neutral-900" : on ? "text-neutral-800" : "text-neutral-400 line-through"}`}>{t.name}</span>
-                  <span className={`text-[10px] tabular-nums shrink-0 ${on ? "text-neutral-500" : "text-neutral-300"}`}>{count}</span>
-                  <span className="text-[9px] text-neutral-400 opacity-0 group-hover:opacity-100 transition shrink-0">
-                    {isSolo ? "복원" : "이 사람만"}
-                  </span>
-                </button>
-              </div>
-            );
-          })}
-          <label className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1.5 pt-2">
-            <input
-              type="checkbox"
-              checked={therapistFilter.__none !== false}
-              onChange={(e) => toggleTherapist("__none", e.target.checked)}
-              className="accent-neutral-900"
-            />
-            <span className="w-3.5 h-3.5 rounded shrink-0 border border-dashed border-neutral-400 bg-neutral-100" />
-            <span className="flex-1 text-neutral-500">미배정</span>
-            <span className="text-[10px] tabular-nums text-neutral-400">{therapistFilter.__none !== false ? (countByT["__none"] ?? 0) : 0}</span>
-          </label>
-        </div>
-        {loading && (
-          <p className="text-[10px] text-neutral-400 text-center py-3">불러오는 중…</p>
-        )}
-        {loadError && !loading && (
-          <div className="mt-2 text-[10px] text-rose-600 bg-rose-50 border border-rose-100 rounded-lg p-2">
-            {loadError}
-            <button onClick={() => setReloadKey((k) => k + 1)} className="ml-1 underline hover:text-rose-800">다시 시도</button>
+                  <input
+                    type="checkbox"
+                    checked={on}
+                    onChange={(e) => toggleTherapist(t.id, e.target.checked)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="accent-neutral-900 cursor-pointer"
+                    aria-label={`${t.name} 표시 토글`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => soloTherapist(t.id)}
+                    className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
+                    title="이 선생님만 보기 (다시 누르면 직전 상태로 복원)"
+                  >
+                    <span className="w-3.5 h-3.5 rounded shrink-0 border" style={{ background: t.color, borderColor: t.color }} />
+                    <span className={`flex-1 min-w-0 truncate ${isSolo ? "font-semibold text-neutral-900" : on ? "text-neutral-800" : "text-neutral-400 line-through"}`}>{t.name}</span>
+                    <span className={`text-[10px] tabular-nums shrink-0 ${on ? "text-neutral-500" : "text-neutral-300"}`}>{count}</span>
+                  </button>
+                </div>
+              );
+            })}
+            <label className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1.5 pt-2">
+              <input
+                type="checkbox"
+                checked={therapistFilter.__none !== false}
+                onChange={(e) => toggleTherapist("__none", e.target.checked)}
+                className="accent-neutral-900"
+              />
+              <span className="w-3.5 h-3.5 rounded shrink-0 border border-dashed border-neutral-400 bg-neutral-100" />
+              <span className="flex-1 text-neutral-500">미배정</span>
+              <span className="text-[10px] tabular-nums text-neutral-400">{therapistFilter.__none !== false ? (countByT["__none"] ?? 0) : 0}</span>
+            </label>
           </div>
-        )}
-        {!loading && !loadError && therapists.length === 0 && (
-          <p className="text-xs text-neutral-400 text-center py-6">선생님 등록 후 일정이 색상으로 분류돼요.</p>
-        )}
-      </aside>
+          {loading && (
+            <p className="text-[10px] text-neutral-400 text-center py-3">불러오는 중…</p>
+          )}
+          {loadError && !loading && (
+            <div className="mt-2 text-[10px] text-rose-600 bg-rose-50 border border-rose-100 rounded-lg p-2">
+              {loadError}
+              <button onClick={() => setReloadKey((k) => k + 1)} className="ml-1 underline hover:text-rose-800">다시 시도</button>
+            </div>
+          )}
+          {!loading && !loadError && therapists.length === 0 && (
+            <p className="text-xs text-neutral-400 text-center py-6">선생님 등록 후 일정이 색상으로 분류돼요.</p>
+          )}
+        </aside>
+      ) : (
+        <aside className="hidden lg:flex flex-col items-center w-10 shrink-0 bg-white rounded-2xl border border-neutral-200 p-2 sticky top-4">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-600"
+            title="선생님 사이드바 펼치기"
+            aria-label="선생님 사이드바 펼치기"
+          >
+            <PanelLeftOpen className="w-4 h-4" />
+          </button>
+        </aside>
+      )}
 
       {/* 본문 */}
       <div className="flex-1 min-w-0 w-full">

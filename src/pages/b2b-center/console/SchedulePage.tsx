@@ -559,7 +559,7 @@ export default function SchedulePage() {
             ? <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>
             : <ListView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
         ) : group === "timetable" ? (
-          <TimetableView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName}
+          <TimetableView dayList={dayList} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName}
             onCreate={(date, hour) => setCreateAt({ date, hour })} />
         ) : group === "therapist" ? (
           visibleSessions.length === 0

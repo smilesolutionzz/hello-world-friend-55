@@ -10,6 +10,7 @@ import ImportWizard from "@/components/b2b-center/ImportWizard";
 import ImportHistoryPanel from "@/components/b2b-center/ImportHistoryPanel";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { getHoliday } from "@/lib/b2bCenter/koHolidays";
 
 const SIDEBAR_OPEN_KEY = "b2b_schedule_sidebar_open_v1";
 

@@ -2,13 +2,15 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Filter, Check, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Filter, Check, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ImportWizard from "@/components/b2b-center/ImportWizard";
 import ImportHistoryPanel from "@/components/b2b-center/ImportHistoryPanel";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { getHoliday } from "@/lib/b2bCenter/koHolidays";
 
 const SIDEBAR_OPEN_KEY = "b2b_schedule_sidebar_open_v1";
 
@@ -114,10 +116,26 @@ export default function SchedulePage() {
     }
   }
 
-  async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string }) {
+  async function handleCreate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string; recurrence?: { mode: "none" | "weekly" | "biweekly" | "daily"; until?: string } }) {
     if (!createAt) return;
-    const base = {
-      session_date: createAt.date,
+    // 반복 일정 → 날짜 목록 생성
+    const baseDate = new Date(`${createAt.date}T00:00:00`);
+    const dates: string[] = [createAt.date];
+    const rec = form.recurrence;
+    let recurrenceKey: string | null = null;
+    if (rec && rec.mode !== "none" && rec.until) {
+      const end = new Date(`${rec.until}T00:00:00`);
+      const stepDays = rec.mode === "daily" ? 1 : rec.mode === "biweekly" ? 14 : 7;
+      const cur = new Date(baseDate);
+      cur.setDate(cur.getDate() + stepDays);
+      while (cur <= end) {
+        const y = cur.getFullYear(); const m = String(cur.getMonth() + 1).padStart(2, "0"); const d = String(cur.getDate()).padStart(2, "0");
+        dates.push(`${y}-${m}-${d}`);
+        cur.setDate(cur.getDate() + stepDays);
+      }
+      recurrenceKey = `rec-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    }
+    const baseFields = {
       start_time: form.start_time,
       end_time: form.end_time || null,
       client_id: form.client_id,
@@ -127,15 +145,18 @@ export default function SchedulePage() {
       price_krw: programs.find((p) => p.id === form.program_id)?.price_krw ?? 0,
       is_voucher: programs.find((p) => p.id === form.program_id)?.is_voucher ?? false,
       note: form.note || null,
+      recurrence_key: recurrenceKey,
     };
+    const rows = dates.map((d) => ({ ...baseFields, session_date: d }));
     if (demo) {
-      setSessions((prev) => [...prev, { id: `is-${Date.now()}`, ...base }]);
+      const added = rows.map((r, i) => ({ id: `is-${Date.now()}-${i}`, ...r }));
+      setSessions((prev) => [...prev, ...added]);
     } else {
-      const { data, error } = await supabase.from("center_sessions").insert({ ...base, center_id: centerId }).select().single();
+      const { data, error } = await supabase.from("center_sessions").insert(rows.map((r) => ({ ...r, center_id: centerId }))).select();
       if (error) { toast({ title: "일정 추가 실패", description: error.message, variant: "destructive" }); return; }
-      setSessions((prev) => [...prev, data]);
+      setSessions((prev) => [...prev, ...(data ?? [])]);
     }
-    toast({ title: "일정이 추가됐어요" });
+    toast({ title: rows.length > 1 ? `${rows.length}개 반복 일정이 추가됐어요` : "일정이 추가됐어요" });
     setCreateAt(null);
   }
 
@@ -709,12 +730,20 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, progr
   return (
     <div className="grid" style={{ gridTemplateColumns: `60px repeat(${cols}, minmax(120px, 1fr))` }}>
       <div className="bg-neutral-50 border-b border-r border-neutral-200" />
-      {dayList.map((d: Date) => (
-        <div key={fmt(d)} className="bg-neutral-50 border-b border-neutral-200 p-2 text-center">
-          <p className="text-xs text-neutral-500">{DAY_LABELS[(d.getDay() + 6) % 7]}</p>
-          <p className="text-sm font-medium">{d.getMonth() + 1}.{d.getDate()}</p>
-        </div>
-      ))}
+      {dayList.map((d: Date) => {
+        const ds = fmt(d);
+        const holiday = getHoliday(ds);
+        const isSunday = d.getDay() === 0;
+        return (
+          <div key={ds} className={`bg-neutral-50 border-b border-neutral-200 p-2 text-center ${holiday || isSunday ? "bg-rose-50/60" : ""}`}>
+            <p className={`text-xs ${holiday || isSunday ? "text-rose-600 font-semibold" : "text-neutral-500"}`}>{DAY_LABELS[(d.getDay() + 6) % 7]}</p>
+            <p className={`text-sm font-medium ${holiday || isSunday ? "text-rose-700" : ""}`}>{d.getMonth() + 1}.{d.getDate()}</p>
+            {holiday && (
+              <p className="text-[9px] text-rose-600 font-semibold truncate mt-0.5" title={holiday}>{holiday}</p>
+            )}
+          </div>
+        );
+      })}
       {HOURS.map((h) => (
         <div key={`row-${h}`} className="contents">
           <div className="border-b border-r border-neutral-100 text-[10px] text-neutral-400 p-1 text-right">{h}:00</div>
@@ -800,16 +829,52 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
   const [therapistId, setTherapistId] = useState(initial?.therapist_id ?? therapists[0]?.id ?? "");
   const [clientId, setClientId] = useState(initial?.client_id ?? clients[0]?.id ?? "");
   const [programId, setProgramId] = useState(initial?.program_id ?? programs[0]?.id ?? "");
-  const [startTime, setStartTime] = useState(initial?.start_time?.slice(0, 5) ?? `${String(at.hour).padStart(2, "0")}:00`);
-  const [endTime, setEndTime] = useState(initial?.end_time?.slice(0, 5) ?? `${String(at.hour).padStart(2, "0")}:40`);
+  const initialStart = initial?.start_time?.slice(0, 5) ?? `${String(at.hour).padStart(2, "0")}:00`;
+  const initialEnd = initial?.end_time?.slice(0, 5) ?? `${String(at.hour).padStart(2, "0")}:40`;
+  const [startTime, setStartTime] = useState(initialStart);
+  const [endTime, setEndTime] = useState(initialEnd);
+  const [duration, setDuration] = useState<number>(() => diffMin(initialStart, initialEnd) || 40);
   const [note, setNote] = useState(initial?.note ?? "");
+  const [recurrenceMode, setRecurrenceMode] = useState<"none" | "weekly" | "biweekly" | "daily">("none");
+  const [recurrenceUntil, setRecurrenceUntil] = useState<string>(() => {
+    const d = new Date(`${at.date}T00:00:00`); d.setMonth(d.getMonth() + 1);
+    const y = d.getFullYear(); const m = String(d.getMonth() + 1).padStart(2, "0"); const dd = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${dd}`;
+  });
   const canSubmit = !!clientId && !!startTime;
   const selectedTh = therapists.find((t: any) => t.id === therapistId);
   const visual = therapistVisual(selectedTh);
 
+  // 시작 시간 변경 → 길이 유지하며 종료 자동 조정
+  function changeStart(v: string) {
+    setStartTime(v);
+    setEndTime(addMin(v, duration));
+  }
+  // 종료 시간 직접 변경 → 길이 재계산
+  function changeEnd(v: string) {
+    setEndTime(v);
+    const d = diffMin(startTime, v);
+    if (d > 0) setDuration(d);
+  }
+  // 길이(분) 변경 → 종료 자동 조정
+  function changeDuration(d: number) {
+    setDuration(d);
+    setEndTime(addMin(startTime, d));
+  }
+
+  // 반복 횟수 계산 (미리보기)
+  const recurrenceCount = useMemo(() => {
+    if (recurrenceMode === "none" || !recurrenceUntil) return 1;
+    const base = new Date(`${at.date}T00:00:00`);
+    const end = new Date(`${recurrenceUntil}T00:00:00`);
+    if (end < base) return 1;
+    const step = recurrenceMode === "daily" ? 1 : recurrenceMode === "biweekly" ? 14 : 7;
+    return Math.floor((end.getTime() - base.getTime()) / (86400000 * step)) + 1;
+  }, [recurrenceMode, recurrenceUntil, at.date]);
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-md p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
+      <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-md p-6 shadow-xl my-8" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between mb-4">
           <div>
             <p className="text-xs tracking-widest text-[#C8B88A]">{isEdit ? "EDIT SESSION" : "NEW SESSION"}</p>
@@ -818,7 +883,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
           <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
         </div>
         <div className="space-y-3 text-sm">
-          {/* 1. 선생님(색상 자동 적용) — 카드 그리드로 시각적 선택 */}
+          {/* 1. 선생님 */}
           <Field label="선생님 (먼저 선택하면 색상이 자동 적용돼요)">
             <div className="grid grid-cols-3 gap-1.5 mb-1.5">
               {therapists.map((t: any) => {
@@ -830,10 +895,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
                     type="button"
                     onClick={() => setTherapistId(t.id)}
                     className={`relative flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs transition ${on ? "ring-2 ring-neutral-900" : "hover:ring-1 hover:ring-neutral-300"}`}
-                    style={{
-                      background: `${v.color}1f`,
-                      borderLeft: `4px solid ${v.color}`,
-                    }}
+                    style={{ background: `${v.color}1f`, borderLeft: `4px solid ${v.color}` }}
                   >
                     <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: v.color }} />
                     <span className="truncate text-neutral-800">{t.name}</span>
@@ -857,26 +919,90 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
               </div>
             )}
           </Field>
+
+          {/* 2. 이용자 (검색 + 선택) */}
           <Field label="이용자">
-            <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
-              {clients.length === 0 && <option value="">이용자가 없어요. 먼저 등록하세요.</option>}
-              {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
+            <ComboSelect
+              value={clientId}
+              onChange={setClientId}
+              options={clients.map((c: any) => ({ value: c.id, label: c.name, hint: c.phone ?? c.disability_grade ?? "" }))}
+              placeholder={clients.length === 0 ? "이용자가 없어요. 먼저 등록하세요." : "이용자 검색·선택"}
+              emptyText="검색 결과가 없어요"
+            />
           </Field>
+
+          {/* 3. 프로그램 (검색 + 선택) */}
           <Field label="프로그램">
-            <select value={programId} onChange={(e) => setProgramId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400">
-              <option value="">— 미지정 —</option>
-              {programs.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
-            </select>
+            <ComboSelect
+              value={programId}
+              onChange={setProgramId}
+              options={programs.map((p: any) => ({ value: p.id, label: p.name, hint: p.duration_min ? `${p.duration_min}분` : "" }))}
+              placeholder="프로그램 검색·선택 (선택)"
+              emptyText="검색 결과가 없어요"
+              allowClear
+            />
           </Field>
-          <div className="grid grid-cols-2 gap-3">
+
+          {/* 4. 시간 — 길이 자동 조정 */}
+          <div className="grid grid-cols-3 gap-2">
             <Field label="시작">
-              <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
+              <input type="time" value={startTime} onChange={(e) => changeStart(e.target.value)} className="w-full px-2.5 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
+            </Field>
+            <Field label="길이(분)">
+              <select
+                value={duration}
+                onChange={(e) => changeDuration(parseInt(e.target.value, 10))}
+                className="w-full px-2.5 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 bg-white"
+              >
+                {[20, 25, 30, 40, 45, 50, 60, 70, 80, 90, 100, 120].map((m) => (
+                  <option key={m} value={m}>{m}분</option>
+                ))}
+              </select>
             </Field>
             <Field label="종료">
-              <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
+              <input type="time" value={endTime} onChange={(e) => changeEnd(e.target.value)} className="w-full px-2.5 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
             </Field>
           </div>
+          <p className="text-[10px] text-neutral-400 -mt-1">길이를 바꾸면 종료가 자동 조정돼요. 종료를 직접 바꾸면 길이가 재계산돼요.</p>
+
+          {/* 5. 반복 (등록 모드에서만) */}
+          {!isEdit && (
+            <Field label="반복 설정">
+              <div className="space-y-2">
+                <div className="grid grid-cols-4 gap-1">
+                  {([
+                    { v: "none", label: "안함" },
+                    { v: "weekly", label: "매주" },
+                    { v: "biweekly", label: "격주" },
+                    { v: "daily", label: "매일" },
+                  ] as const).map((opt) => (
+                    <button
+                      key={opt.v}
+                      type="button"
+                      onClick={() => setRecurrenceMode(opt.v)}
+                      className={`px-2 py-1.5 rounded-lg text-xs border transition ${recurrenceMode === opt.v ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-200 hover:border-neutral-400 text-neutral-700"}`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                {recurrenceMode !== "none" && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-neutral-500 shrink-0">종료일</span>
+                    <input
+                      type="date"
+                      value={recurrenceUntil}
+                      min={at.date}
+                      onChange={(e) => setRecurrenceUntil(e.target.value)}
+                      className="flex-1 px-2.5 py-1.5 rounded-lg border border-neutral-200 text-xs focus:outline-none focus:border-neutral-400"
+                    />
+                    <span className="text-[11px] text-[#C8B88A] font-semibold tabular-nums shrink-0">총 {recurrenceCount}회</span>
+                  </div>
+                )}
+              </div>
+            </Field>
+          )}
+
           <Field label="메모">
             <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="선택" className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400" />
           </Field>
@@ -884,17 +1010,97 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
         <div className="flex gap-2 mt-5">
           <button onClick={onClose} className="flex-1 px-4 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">취소</button>
           <button
-            onClick={() => canSubmit && onSubmit({ client_id: clientId, therapist_id: therapistId, program_id: programId, start_time: startTime, end_time: endTime, note })}
+            onClick={() => canSubmit && onSubmit({
+              client_id: clientId,
+              therapist_id: therapistId,
+              program_id: programId,
+              start_time: startTime,
+              end_time: endTime,
+              note,
+              recurrence: isEdit ? undefined : { mode: recurrenceMode, until: recurrenceUntil },
+            })}
             disabled={!canSubmit}
             className="flex-1 px-4 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50"
           >
-            {isEdit ? "수정 저장" : "등록"}
+            {isEdit ? "수정 저장" : (recurrenceMode !== "none" ? `${recurrenceCount}개 일정 등록` : "등록")}
           </button>
         </div>
       </div>
     </div>
   );
 }
+
+// 시간 유틸
+function toMin(t: string): number {
+  const [h, m] = t.split(":").map((x) => parseInt(x, 10));
+  if (isNaN(h) || isNaN(m)) return 0;
+  return h * 60 + m;
+}
+function fromMin(total: number): string {
+  const h = Math.floor(((total % 1440) + 1440) % 1440 / 60);
+  const m = ((total % 60) + 60) % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+function diffMin(start: string, end: string): number {
+  if (!start || !end) return 0;
+  return toMin(end) - toMin(start);
+}
+function addMin(t: string, m: number): string {
+  return fromMin(toMin(t) + m);
+}
+
+// 검색형 콤보 (Command + Popover)
+function ComboSelect({ value, onChange, options, placeholder, emptyText, allowClear }: { value: string; onChange: (v: string) => void; options: { value: string; label: string; hint?: string }[]; placeholder?: string; emptyText?: string; allowClear?: boolean }) {
+  const [open, setOpen] = useState(false);
+  const selected = options.find((o) => o.value === value);
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="w-full px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:outline-none focus:border-neutral-400 text-left flex items-center justify-between gap-2 bg-white hover:border-neutral-300"
+        >
+          <span className={`truncate ${selected ? "text-neutral-900" : "text-neutral-400"}`}>
+            {selected ? selected.label : (placeholder ?? "선택")}
+          </span>
+          <ChevronDown className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="p-0 w-[--radix-popover-trigger-width] max-h-[300px] overflow-hidden" align="start">
+        <Command>
+          <CommandInput placeholder="검색…" className="h-9" />
+          <CommandList className="max-h-[240px]">
+            <CommandEmpty>{emptyText ?? "검색 결과가 없어요"}</CommandEmpty>
+            <CommandGroup>
+              {allowClear && (
+                <CommandItem
+                  value="__clear__"
+                  onSelect={() => { onChange(""); setOpen(false); }}
+                  className="text-neutral-400"
+                >
+                  — 선택 안 함 —
+                </CommandItem>
+              )}
+              {options.map((o) => (
+                <CommandItem
+                  key={o.value}
+                  value={`${o.label} ${o.hint ?? ""}`}
+                  onSelect={() => { onChange(o.value); setOpen(false); }}
+                  className="flex items-center justify-between gap-2"
+                >
+                  <span className="truncate">{o.label}</span>
+                  {o.hint && <span className="text-[10px] text-neutral-400 shrink-0">{o.hint}</span>}
+                  {value === o.value && <Check className="w-3.5 h-3.5 text-neutral-900 ml-auto" />}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -1001,16 +1207,25 @@ function MonthView({ cursor, sessions, onPick, therapist, clientName, programNam
   for (let i = 0; i < 42; i++) cells.push(addDays(startGrid, i));
   return (
     <div className="grid grid-cols-7">
-      {DAY_LABELS.map((d) => <div key={d} className="bg-neutral-50 border-b border-neutral-200 p-2 text-center text-xs text-neutral-500">{d}</div>)}
+      {DAY_LABELS.map((d, i) => (
+        <div key={d} className={`bg-neutral-50 border-b border-neutral-200 p-2 text-center text-xs ${i === 6 ? "text-rose-600 font-semibold" : "text-neutral-500"}`}>{d}</div>
+      ))}
       {cells.map((d) => {
         const ds = fmt(d);
         const inMonth = d.getMonth() === cursor.getMonth();
+        const holiday = getHoliday(ds);
+        const isSunday = d.getDay() === 0;
         const list = sessions
           .filter((s: any) => s.session_date === ds)
           .sort((a: any, b: any) => (a.start_time ?? "").localeCompare(b.start_time ?? ""));
         return (
-          <div key={ds} className={`border-b border-r border-neutral-100 min-h-[110px] p-1.5 ${inMonth ? "" : "bg-neutral-50/40"}`}>
-            <p className={`text-[11px] mb-1 ${inMonth ? "text-neutral-700" : "text-neutral-300"}`}>{d.getDate()}</p>
+          <div key={ds} className={`border-b border-r border-neutral-100 min-h-[110px] p-1.5 ${inMonth ? "" : "bg-neutral-50/40"} ${holiday ? "bg-rose-50/40" : ""}`}>
+            <div className="flex items-baseline gap-1 mb-1">
+              <p className={`text-[11px] ${!inMonth ? "text-neutral-300" : (holiday || isSunday ? "text-rose-600 font-semibold" : "text-neutral-700")}`}>{d.getDate()}</p>
+              {holiday && inMonth && (
+                <p className="text-[9px] text-rose-600 font-semibold truncate" title={holiday}>{holiday}</p>
+              )}
+            </div>
             <div className="space-y-0.5">
               {list.slice(0, 4).map((s: any) => {
                 const th = therapist(s.therapist_id);

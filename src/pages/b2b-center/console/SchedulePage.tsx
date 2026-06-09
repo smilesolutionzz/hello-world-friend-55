@@ -193,12 +193,13 @@ export default function SchedulePage() {
     };
     if (demo) {
       setSessions((prev) => prev.map((x) => (x.id === editing.id ? { ...x, ...patch } : x)));
+      notifyDemoNoSave("일정 수정은");
     } else {
       const { data, error } = await supabase.from("center_sessions").update(patch).eq("id", editing.id).select().single();
       if (error) { toast({ title: "수정 실패", description: error.message, variant: "destructive" }); return; }
       setSessions((prev) => prev.map((x) => (x.id === editing.id ? data : x)));
+      toast({ title: "일정이 수정됐어요" });
     }
-    toast({ title: "일정이 수정됐어요" });
     setEditing(null);
     setSelected(null);
   }

@@ -1207,16 +1207,25 @@ function MonthView({ cursor, sessions, onPick, therapist, clientName, programNam
   for (let i = 0; i < 42; i++) cells.push(addDays(startGrid, i));
   return (
     <div className="grid grid-cols-7">
-      {DAY_LABELS.map((d) => <div key={d} className="bg-neutral-50 border-b border-neutral-200 p-2 text-center text-xs text-neutral-500">{d}</div>)}
+      {DAY_LABELS.map((d, i) => (
+        <div key={d} className={`bg-neutral-50 border-b border-neutral-200 p-2 text-center text-xs ${i === 6 ? "text-rose-600 font-semibold" : "text-neutral-500"}`}>{d}</div>
+      ))}
       {cells.map((d) => {
         const ds = fmt(d);
         const inMonth = d.getMonth() === cursor.getMonth();
+        const holiday = getHoliday(ds);
+        const isSunday = d.getDay() === 0;
         const list = sessions
           .filter((s: any) => s.session_date === ds)
           .sort((a: any, b: any) => (a.start_time ?? "").localeCompare(b.start_time ?? ""));
         return (
-          <div key={ds} className={`border-b border-r border-neutral-100 min-h-[110px] p-1.5 ${inMonth ? "" : "bg-neutral-50/40"}`}>
-            <p className={`text-[11px] mb-1 ${inMonth ? "text-neutral-700" : "text-neutral-300"}`}>{d.getDate()}</p>
+          <div key={ds} className={`border-b border-r border-neutral-100 min-h-[110px] p-1.5 ${inMonth ? "" : "bg-neutral-50/40"} ${holiday ? "bg-rose-50/40" : ""}`}>
+            <div className="flex items-baseline gap-1 mb-1">
+              <p className={`text-[11px] ${!inMonth ? "text-neutral-300" : (holiday || isSunday ? "text-rose-600 font-semibold" : "text-neutral-700")}`}>{d.getDate()}</p>
+              {holiday && inMonth && (
+                <p className="text-[9px] text-rose-600 font-semibold truncate" title={holiday}>{holiday}</p>
+              )}
+            </div>
             <div className="space-y-0.5">
               {list.slice(0, 4).map((s: any) => {
                 const th = therapist(s.therapist_id);

@@ -455,37 +455,38 @@ export default function SchedulePage() {
               <div className="fixed inset-0 z-30" onClick={() => setShowTFilter(false)} />
               <div className="absolute right-0 mt-1 z-40 bg-white border border-neutral-200 rounded-xl shadow-lg p-2 min-w-[220px] max-h-[320px] overflow-auto">
                 <div className="flex items-center justify-between px-2 py-1 text-[10px] text-neutral-400">
-                  <span>선생님 필터</span>
+                  <span>선생님 필터 · 표시 {visibleSessions.length}건</span>
                   <div className="flex gap-2">
-                    <button onClick={() => setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, true])))} className="hover:text-neutral-700">전체</button>
-                    <button onClick={() => setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, false])))} className="hover:text-neutral-700">해제</button>
+                    <button onClick={() => setAllTherapists(true)} className="hover:text-neutral-700">전체</button>
+                    <button onClick={() => setAllTherapists(false)} className="hover:text-neutral-700">해제</button>
                   </div>
                 </div>
                 {therapists.map((t) => {
                   const on = therapistFilter[t.id] !== false;
+                  const isSolo = therapistFilter[t.id] === true
+                    && Object.entries(therapistFilter).every(([k, v]) => k === t.id ? v === true : v === false);
+                  const count = on ? (countByT[t.id] ?? 0) : 0;
                   return (
-                    <div key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 text-xs">
-                      <input type="checkbox" checked={on} onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))} onClick={(e) => e.stopPropagation()} className="accent-neutral-900 cursor-pointer" />
+                    <div key={t.id} className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-xs ${isSolo ? "bg-neutral-900/5" : "hover:bg-neutral-50"}`}>
+                      <input type="checkbox" checked={on} onChange={(e) => toggleTherapist(t.id, e.target.checked)} onClick={(e) => e.stopPropagation()} className="accent-neutral-900 cursor-pointer" />
                       <button
                         type="button"
-                        onClick={() => setTherapistFilter((p) => {
-                          const onlyThis = Object.entries(p).every(([k, v]) => k === t.id ? v === true : v === false);
-                          if (onlyThis) return Object.fromEntries(Object.keys(p).map((k) => [k, true]));
-                          return Object.fromEntries(Object.keys(p).map((k) => [k, k === t.id]));
-                        })}
+                        onClick={() => soloTherapist(t.id)}
                         className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
-                        title="이 선생님만 보기"
+                        title="이 선생님만 보기 (다시 누르면 직전 상태로 복원)"
                       >
                         <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color }} />
-                        <span className="flex-1 truncate">{t.name}</span>
+                        <span className={`flex-1 truncate ${isSolo ? "font-semibold" : on ? "" : "text-neutral-400 line-through"}`}>{t.name}</span>
+                        <span className={`text-[10px] tabular-nums shrink-0 ${on ? "text-neutral-500" : "text-neutral-300"}`}>{count}</span>
                       </button>
                     </div>
                   );
                 })}
                 <label className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1 pt-2">
-                  <input type="checkbox" checked={therapistFilter.__none !== false} onChange={(e) => setTherapistFilter((p) => ({ ...p, __none: e.target.checked }))} className="accent-neutral-900" />
+                  <input type="checkbox" checked={therapistFilter.__none !== false} onChange={(e) => toggleTherapist("__none", e.target.checked)} className="accent-neutral-900" />
                   <span className="w-4 h-4 rounded-sm shrink-0 border border-dashed border-neutral-400 bg-neutral-100" />
                   <span className="flex-1 text-neutral-500">미배정</span>
+                  <span className="text-[10px] tabular-nums text-neutral-400">{therapistFilter.__none !== false ? (countByT["__none"] ?? 0) : 0}</span>
                 </label>
               </div>
             </>

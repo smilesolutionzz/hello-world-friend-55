@@ -139,6 +139,30 @@ export default function SchedulePage() {
     setCreateAt(null);
   }
 
+  async function handleUpdate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string }) {
+    if (!editing) return;
+    const patch = {
+      start_time: form.start_time,
+      end_time: form.end_time || null,
+      client_id: form.client_id,
+      therapist_id: form.therapist_id || null,
+      program_id: form.program_id || null,
+      price_krw: programs.find((p) => p.id === form.program_id)?.price_krw ?? editing.price_krw ?? 0,
+      is_voucher: programs.find((p) => p.id === form.program_id)?.is_voucher ?? editing.is_voucher ?? false,
+      note: form.note || null,
+    };
+    if (demo) {
+      setSessions((prev) => prev.map((x) => (x.id === editing.id ? { ...x, ...patch } : x)));
+    } else {
+      const { data, error } = await supabase.from("center_sessions").update(patch).eq("id", editing.id).select().single();
+      if (error) { toast({ title: "수정 실패", description: error.message, variant: "destructive" }); return; }
+      setSessions((prev) => prev.map((x) => (x.id === editing.id ? data : x)));
+    }
+    toast({ title: "일정이 수정됐어요" });
+    setEditing(null);
+    setSelected(null);
+  }
+
   async function handleDelete(s: any) {
     const hasRecur = !!s.recurrence_key;
     const msg = hasRecur

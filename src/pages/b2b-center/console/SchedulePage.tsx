@@ -388,11 +388,22 @@ export default function SchedulePage() {
                 {therapists.map((t) => {
                   const on = therapistFilter[t.id] !== false;
                   return (
-                    <label key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs">
-                      <input type="checkbox" checked={on} onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))} className="accent-neutral-900" />
-                      <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color }} />
-                      <span className="flex-1 truncate">{t.name}</span>
-                    </label>
+                    <div key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 text-xs">
+                      <input type="checkbox" checked={on} onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))} onClick={(e) => e.stopPropagation()} className="accent-neutral-900 cursor-pointer" />
+                      <button
+                        type="button"
+                        onClick={() => setTherapistFilter((p) => {
+                          const onlyThis = Object.entries(p).every(([k, v]) => k === t.id ? v === true : v === false);
+                          if (onlyThis) return Object.fromEntries(Object.keys(p).map((k) => [k, true]));
+                          return Object.fromEntries(Object.keys(p).map((k) => [k, k === t.id]));
+                        })}
+                        className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
+                        title="이 선생님만 보기"
+                      >
+                        <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color }} />
+                        <span className="flex-1 truncate">{t.name}</span>
+                      </button>
+                    </div>
                   );
                 })}
                 <label className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1 pt-2">

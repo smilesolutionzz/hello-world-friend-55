@@ -1226,12 +1226,19 @@ function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, pr
           <Row k="바우처" v={s.is_voucher ? "Y" : "N"} />
           {s.note && <Row k="메모" v={s.note} />}
         </dl>
-        {onDelete && (
-          <div className="flex gap-2 mt-5">
-            <button onClick={onClose} className="flex-1 px-4 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">닫기</button>
-            <button onClick={onDelete} className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-rose-600 text-white text-sm font-medium hover:bg-rose-700">
-              <Trash2 className="w-3.5 h-3.5" /> 일정 삭제
-            </button>
+        {(onDelete || onEdit) && (
+          <div className="flex flex-wrap gap-2 mt-5">
+            <button onClick={onClose} className="flex-1 min-w-[80px] px-4 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">닫기</button>
+            {onEdit && (
+              <button onClick={onEdit} className="flex-1 min-w-[80px] px-4 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-sm font-medium hover:bg-neutral-50">
+                일정 수정
+              </button>
+            )}
+            {onDelete && (
+              <button onClick={onDelete} className="flex-1 min-w-[80px] inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-rose-600 text-white text-sm font-medium hover:bg-rose-700">
+                <Trash2 className="w-3.5 h-3.5" /> 삭제
+              </button>
+            )}
           </div>
         )}
       </div>

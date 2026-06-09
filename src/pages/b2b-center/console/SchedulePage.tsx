@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
@@ -74,6 +74,8 @@ export default function SchedulePage() {
   const [clients, setClients] = useState<any[]>([]);
   const [programs, setPrograms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const [statusFilter, setStatusFilter] = useState<Record<StatusCode, boolean>>({
     scheduled: true, completed: true, cancelled: true, cancelled_makeup: true, cancelled_carry: true,
@@ -84,6 +86,7 @@ export default function SchedulePage() {
   const [importRefresh, setImportRefresh] = useState(0);
   const [therapistFilter, setTherapistFilter] = useState<Record<string, boolean>>({});
   const [showTFilter, setShowTFilter] = useState(false);
+  const soloSnapshotRef = useRef<Record<string, boolean> | null>(null);
   const isMobile = useIsMobile();
 
   // 치료사 색상 화면에서 수정 → 저장
@@ -170,8 +173,10 @@ export default function SchedulePage() {
   }, [view, cursor]);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
       setLoading(true);
+      setLoadError(null);
       if (demo) {
         setSessions(DEMO_SESSIONS);
         setTherapists(DEMO_THERAPISTS.map((x: any, i: number) => ({ ...x, _idx: i, color: isDefaultOrEmpty(x.color) ? PALETTE[i % PALETTE.length] : x.color })));
@@ -179,36 +184,89 @@ export default function SchedulePage() {
         setPrograms(DEMO_PROGRAMS);
         setLoading(false); return;
       }
-      const [s, t, c, p] = await Promise.all([
-        supabase.from("center_sessions").select("*").eq("center_id", centerId)
-          .gte("session_date", fmt(range.start)).lte("session_date", fmt(range.end)),
-        supabase.from("center_therapists").select("*").eq("center_id", centerId),
-        supabase.from("center_clients").select("id, name").eq("center_id", centerId),
-        supabase.from("center_programs").select("*").eq("center_id", centerId),
-      ]);
-      setSessions(s.data ?? []);
-      setTherapists((t.data ?? []).map((x: any, i: number) => {
-        const raw = x.calendar_color ?? x.color;
-        return { ...x, _idx: i, color: isDefaultOrEmpty(raw) ? PALETTE[i % PALETTE.length] : raw };
-      }));
-      setClients(c.data ?? []);
-      setPrograms(p.data ?? []);
-      setLoading(false);
+      try {
+        const [s, t, c, p] = await Promise.all([
+          supabase.from("center_sessions").select("*").eq("center_id", centerId)
+            .gte("session_date", fmt(range.start)).lte("session_date", fmt(range.end)),
+          supabase.from("center_therapists").select("*").eq("center_id", centerId),
+          supabase.from("center_clients").select("id, name").eq("center_id", centerId),
+          supabase.from("center_programs").select("*").eq("center_id", centerId),
+        ]);
+        if (cancelled) return;
+        const firstErr = s.error ?? t.error ?? c.error ?? p.error;
+        if (firstErr) {
+          setLoadError(firstErr.message ?? "일정을 불러오지 못했어요.");
+          setLoading(false);
+          return;
+        }
+        setSessions(s.data ?? []);
+        setTherapists((t.data ?? []).map((x: any, i: number) => {
+          const raw = x.calendar_color ?? x.color;
+          return { ...x, _idx: i, color: isDefaultOrEmpty(raw) ? PALETTE[i % PALETTE.length] : raw };
+        }));
+        setClients(c.data ?? []);
+        setPrograms(p.data ?? []);
+      } catch (err: any) {
+        if (!cancelled) setLoadError(err?.message ?? "네트워크 오류로 일정을 불러오지 못했어요.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     })();
-  }, [centerId, demo, range.start.getTime(), range.end.getTime()]);
+    return () => { cancelled = true; };
+  }, [centerId, demo, range.start.getTime(), range.end.getTime(), reloadKey]);
 
-  // 치료사 목록/세션 바뀌면 필터 키 동기화 — 등록된 치료사 + 세션에만 있는 orphan id 도 모두 포함, 기본 ON
+  // 치료사 목록/세션 바뀌면 필터 키 동기화 — 등록된 치료사 + 세션에만 있는 orphan id 모두 포함.
+  // 더 이상 존재하지 않는 키는 제거해 사이드바 상태와 표시 데이터 불일치를 방지한다.
   useEffect(() => {
     setTherapistFilter((prev) => {
       const next: Record<string, boolean> = { __none: prev.__none ?? true };
-      for (const t of therapists) next[t.id] = prev[t.id] ?? true;
-      for (const s of sessions) {
-        const key = s.therapist_id;
-        if (key && next[key] === undefined) next[key] = prev[key] ?? true;
+      const validIds = new Set<string>();
+      for (const t of therapists) validIds.add(t.id);
+      for (const s of sessions) if (s.therapist_id) validIds.add(s.therapist_id);
+      for (const id of validIds) next[id] = prev[id] ?? true;
+      // 솔로 스냅샷 키도 정리
+      if (soloSnapshotRef.current) {
+        const snap: Record<string, boolean> = { __none: soloSnapshotRef.current.__none ?? true };
+        for (const id of validIds) snap[id] = soloSnapshotRef.current[id] ?? true;
+        soloSnapshotRef.current = snap;
       }
       return next;
     });
   }, [therapists, sessions]);
+
+  // 솔로 토글: 한 명만 보이게 / 다시 누르면 직전 상태 복원
+  const soloTherapist = useCallback((id: string) => {
+    setTherapistFilter((p) => {
+      const onlyThis = p[id] === true
+        && Object.entries(p).every(([k, v]) => (k === id ? v === true : v === false));
+      if (onlyThis) {
+        // 직전 스냅샷이 있고, 그 안에 의미있는 true가 1개 이상 있으면 복원, 아니면 전부 true
+        const snap = soloSnapshotRef.current;
+        soloSnapshotRef.current = null;
+        if (snap && Object.values(snap).some(Boolean)) {
+          // 현재 키와 일치시킨다 (새 키는 true 기본)
+          const restored: Record<string, boolean> = {};
+          for (const k of Object.keys(p)) restored[k] = snap[k] ?? true;
+          return restored;
+        }
+        return Object.fromEntries(Object.keys(p).map((k) => [k, true]));
+      }
+      // 솔로 진입: 첫 진입이면 현재 상태 스냅샷
+      if (!soloSnapshotRef.current) soloSnapshotRef.current = { ...p };
+      return Object.fromEntries(Object.keys(p).map((k) => [k, k === id]));
+    });
+  }, []);
+
+  // 사용자 직접 체크박스 토글 → 스냅샷 무효화 (의도가 바뀐 것으로 간주)
+  const toggleTherapist = useCallback((id: string, value: boolean) => {
+    soloSnapshotRef.current = null;
+    setTherapistFilter((p) => ({ ...p, [id]: value }));
+  }, []);
+
+  const setAllTherapists = useCallback((value: boolean) => {
+    soloSnapshotRef.current = null;
+    setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, value])));
+  }, []);
 
   const clientName = (id: string) => clients.find((c) => c.id === id)?.name ?? "—";
   const programName = (id: string) => programs.find((p) => p.id === id)?.name ?? "—";
@@ -225,6 +283,16 @@ export default function SchedulePage() {
       return true;
     });
   }, [sessions, range, statusFilter, therapistFilter]);
+
+  // 선생님별 가시 세션 카운트 (필터 토글과 관계없이 "현재 보이는 합" 기준 — 필터 OFF 행은 0)
+  const countByT = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const s of visibleSessions) {
+      const k = s.therapist_id ?? "__none";
+      m[k] = (m[k] ?? 0) + 1;
+    }
+    return m;
+  }, [visibleSessions]);
 
   // 일자 배열
   const dayList = useMemo(() => {
@@ -260,19 +328,21 @@ export default function SchedulePage() {
         >
           <Upload className="w-4 h-4" /> 일정 엑셀 등록
         </button>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-1">
           <p className="text-xs font-semibold text-neutral-700">선생님별 일정</p>
           <div className="flex gap-1 text-[10px]">
-            <button onClick={() => setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, true])))} className="text-neutral-500 hover:text-neutral-900">전체</button>
+            <button onClick={() => setAllTherapists(true)} className="text-neutral-500 hover:text-neutral-900">전체</button>
             <span className="text-neutral-200">|</span>
-            <button onClick={() => setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, false])))} className="text-neutral-500 hover:text-neutral-900">해제</button>
+            <button onClick={() => setAllTherapists(false)} className="text-neutral-500 hover:text-neutral-900">해제</button>
           </div>
         </div>
+        <p className="text-[10px] text-neutral-400 mb-2">표시 중 {visibleSessions.length}건</p>
         <div className="space-y-0.5">
           {therapists.map((t) => {
             const on = therapistFilter[t.id] !== false;
             const isSolo = therapistFilter[t.id] === true
               && Object.entries(therapistFilter).every(([k, v]) => k === t.id ? v === true : v === false);
+            const count = on ? (countByT[t.id] ?? 0) : 0;
             return (
               <div
                 key={t.id}
@@ -281,26 +351,22 @@ export default function SchedulePage() {
                 <input
                   type="checkbox"
                   checked={on}
-                  onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))}
+                  onChange={(e) => toggleTherapist(t.id, e.target.checked)}
                   onClick={(e) => e.stopPropagation()}
                   className="accent-neutral-900 cursor-pointer"
                   aria-label={`${t.name} 표시 토글`}
                 />
                 <button
                   type="button"
-                  onClick={() => setTherapistFilter((p) => {
-                    const onlyThis = Object.entries(p).every(([k, v]) => k === t.id ? v === true : v === false);
-                    if (onlyThis) return Object.fromEntries(Object.keys(p).map((k) => [k, true]));
-                    return Object.fromEntries(Object.keys(p).map((k) => [k, k === t.id]));
-                  })}
+                  onClick={() => soloTherapist(t.id)}
                   className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
-                  title="이 선생님만 보기 (다시 누르면 전체)"
+                  title="이 선생님만 보기 (다시 누르면 직전 상태로 복원)"
                 >
                   <span className="w-3.5 h-3.5 rounded shrink-0 border" style={{ background: t.color, borderColor: t.color }} />
-                  <span className="flex-1 min-w-0 truncate text-neutral-800">{t.name}</span>
-                  <span className="text-[10px] text-neutral-400 truncate max-w-[60px]">{t.title ?? ""}</span>
+                  <span className={`flex-1 min-w-0 truncate ${isSolo ? "font-semibold text-neutral-900" : on ? "text-neutral-800" : "text-neutral-400 line-through"}`}>{t.name}</span>
+                  <span className={`text-[10px] tabular-nums shrink-0 ${on ? "text-neutral-500" : "text-neutral-300"}`}>{count}</span>
                   <span className="text-[9px] text-neutral-400 opacity-0 group-hover:opacity-100 transition shrink-0">
-                    {isSolo ? "전체" : "이 사람만"}
+                    {isSolo ? "복원" : "이 사람만"}
                   </span>
                 </button>
               </div>
@@ -310,14 +376,24 @@ export default function SchedulePage() {
             <input
               type="checkbox"
               checked={therapistFilter.__none !== false}
-              onChange={(e) => setTherapistFilter((p) => ({ ...p, __none: e.target.checked }))}
+              onChange={(e) => toggleTherapist("__none", e.target.checked)}
               className="accent-neutral-900"
             />
             <span className="w-3.5 h-3.5 rounded shrink-0 border border-dashed border-neutral-400 bg-neutral-100" />
             <span className="flex-1 text-neutral-500">미배정</span>
+            <span className="text-[10px] tabular-nums text-neutral-400">{therapistFilter.__none !== false ? (countByT["__none"] ?? 0) : 0}</span>
           </label>
         </div>
-        {therapists.length === 0 && (
+        {loading && (
+          <p className="text-[10px] text-neutral-400 text-center py-3">불러오는 중…</p>
+        )}
+        {loadError && !loading && (
+          <div className="mt-2 text-[10px] text-rose-600 bg-rose-50 border border-rose-100 rounded-lg p-2">
+            {loadError}
+            <button onClick={() => setReloadKey((k) => k + 1)} className="ml-1 underline hover:text-rose-800">다시 시도</button>
+          </div>
+        )}
+        {!loading && !loadError && therapists.length === 0 && (
           <p className="text-xs text-neutral-400 text-center py-6">선생님 등록 후 일정이 색상으로 분류돼요.</p>
         )}
       </aside>
@@ -379,37 +455,38 @@ export default function SchedulePage() {
               <div className="fixed inset-0 z-30" onClick={() => setShowTFilter(false)} />
               <div className="absolute right-0 mt-1 z-40 bg-white border border-neutral-200 rounded-xl shadow-lg p-2 min-w-[220px] max-h-[320px] overflow-auto">
                 <div className="flex items-center justify-between px-2 py-1 text-[10px] text-neutral-400">
-                  <span>선생님 필터</span>
+                  <span>선생님 필터 · 표시 {visibleSessions.length}건</span>
                   <div className="flex gap-2">
-                    <button onClick={() => setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, true])))} className="hover:text-neutral-700">전체</button>
-                    <button onClick={() => setTherapistFilter((p) => Object.fromEntries(Object.keys(p).map((k) => [k, false])))} className="hover:text-neutral-700">해제</button>
+                    <button onClick={() => setAllTherapists(true)} className="hover:text-neutral-700">전체</button>
+                    <button onClick={() => setAllTherapists(false)} className="hover:text-neutral-700">해제</button>
                   </div>
                 </div>
                 {therapists.map((t) => {
                   const on = therapistFilter[t.id] !== false;
+                  const isSolo = therapistFilter[t.id] === true
+                    && Object.entries(therapistFilter).every(([k, v]) => k === t.id ? v === true : v === false);
+                  const count = on ? (countByT[t.id] ?? 0) : 0;
                   return (
-                    <div key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 text-xs">
-                      <input type="checkbox" checked={on} onChange={(e) => setTherapistFilter((p) => ({ ...p, [t.id]: e.target.checked }))} onClick={(e) => e.stopPropagation()} className="accent-neutral-900 cursor-pointer" />
+                    <div key={t.id} className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-xs ${isSolo ? "bg-neutral-900/5" : "hover:bg-neutral-50"}`}>
+                      <input type="checkbox" checked={on} onChange={(e) => toggleTherapist(t.id, e.target.checked)} onClick={(e) => e.stopPropagation()} className="accent-neutral-900 cursor-pointer" />
                       <button
                         type="button"
-                        onClick={() => setTherapistFilter((p) => {
-                          const onlyThis = Object.entries(p).every(([k, v]) => k === t.id ? v === true : v === false);
-                          if (onlyThis) return Object.fromEntries(Object.keys(p).map((k) => [k, true]));
-                          return Object.fromEntries(Object.keys(p).map((k) => [k, k === t.id]));
-                        })}
+                        onClick={() => soloTherapist(t.id)}
                         className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
-                        title="이 선생님만 보기"
+                        title="이 선생님만 보기 (다시 누르면 직전 상태로 복원)"
                       >
                         <span className="w-4 h-4 rounded-sm shrink-0" style={{ background: t.color }} />
-                        <span className="flex-1 truncate">{t.name}</span>
+                        <span className={`flex-1 truncate ${isSolo ? "font-semibold" : on ? "" : "text-neutral-400 line-through"}`}>{t.name}</span>
+                        <span className={`text-[10px] tabular-nums shrink-0 ${on ? "text-neutral-500" : "text-neutral-300"}`}>{count}</span>
                       </button>
                     </div>
                   );
                 })}
                 <label className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-neutral-50 cursor-pointer text-xs border-t border-neutral-100 mt-1 pt-2">
-                  <input type="checkbox" checked={therapistFilter.__none !== false} onChange={(e) => setTherapistFilter((p) => ({ ...p, __none: e.target.checked }))} className="accent-neutral-900" />
+                  <input type="checkbox" checked={therapistFilter.__none !== false} onChange={(e) => toggleTherapist("__none", e.target.checked)} className="accent-neutral-900" />
                   <span className="w-4 h-4 rounded-sm shrink-0 border border-dashed border-neutral-400 bg-neutral-100" />
                   <span className="flex-1 text-neutral-500">미배정</span>
+                  <span className="text-[10px] tabular-nums text-neutral-400">{therapistFilter.__none !== false ? (countByT["__none"] ?? 0) : 0}</span>
                 </label>
               </div>
             </>
@@ -429,7 +506,18 @@ export default function SchedulePage() {
       {/* 본문 */}
       <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-neutral-400">불러오는 중…</div>
+          <div className="p-12 text-center text-neutral-400 inline-flex items-center justify-center gap-2 w-full">
+            <span className="inline-block w-3 h-3 rounded-full border-2 border-neutral-300 border-t-neutral-700 animate-spin" />
+            일정을 불러오는 중…
+          </div>
+        ) : loadError ? (
+          <div className="p-12 text-center">
+            <p className="text-sm text-rose-600 mb-3">⚠ {loadError}</p>
+            <button
+              onClick={() => setReloadKey((k) => k + 1)}
+              className="text-xs px-4 py-2 rounded-full bg-neutral-900 text-white hover:bg-neutral-700"
+            >다시 시도</button>
+          </div>
         ) : view === "month" ? (
           <MonthView cursor={cursor} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} />
         ) : view === "list" ? (

@@ -636,6 +636,19 @@ export default function SchedulePage() {
         />
       )}
 
+      {/* 일정 수정 다이얼로그 */}
+      {editing && (
+        <CreateSessionDialog
+          at={{ date: editing.session_date, hour: parseInt(editing.start_time?.slice(0, 2) ?? "10", 10) }}
+          clients={clients}
+          therapists={therapists}
+          programs={programs}
+          initial={editing}
+          onClose={() => setEditing(null)}
+          onSubmit={handleUpdate}
+        />
+      )}
+
 
       {/* 가져오기 이력 (실제 기관 모드) */}
       {!demo && <ImportHistoryPanel centerId={centerId} refreshKey={importRefresh} />}

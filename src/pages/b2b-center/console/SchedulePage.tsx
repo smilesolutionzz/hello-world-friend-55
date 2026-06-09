@@ -506,7 +506,18 @@ export default function SchedulePage() {
       {/* 본문 */}
       <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-neutral-400">불러오는 중…</div>
+          <div className="p-12 text-center text-neutral-400 inline-flex items-center justify-center gap-2 w-full">
+            <span className="inline-block w-3 h-3 rounded-full border-2 border-neutral-300 border-t-neutral-700 animate-spin" />
+            일정을 불러오는 중…
+          </div>
+        ) : loadError ? (
+          <div className="p-12 text-center">
+            <p className="text-sm text-rose-600 mb-3">⚠ {loadError}</p>
+            <button
+              onClick={() => setReloadKey((k) => k + 1)}
+              className="text-xs px-4 py-2 rounded-full bg-neutral-900 text-white hover:bg-neutral-700"
+            >다시 시도</button>
+          </div>
         ) : view === "month" ? (
           <MonthView cursor={cursor} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} />
         ) : view === "list" ? (

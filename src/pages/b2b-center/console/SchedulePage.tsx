@@ -284,6 +284,16 @@ export default function SchedulePage() {
     });
   }, [sessions, range, statusFilter, therapistFilter]);
 
+  // 선생님별 가시 세션 카운트 (필터 토글과 관계없이 "현재 보이는 합" 기준 — 필터 OFF 행은 0)
+  const countByT = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const s of visibleSessions) {
+      const k = s.therapist_id ?? "__none";
+      m[k] = (m[k] ?? 0) + 1;
+    }
+    return m;
+  }, [visibleSessions]);
+
   // 일자 배열
   const dayList = useMemo(() => {
     const days: Date[] = [];

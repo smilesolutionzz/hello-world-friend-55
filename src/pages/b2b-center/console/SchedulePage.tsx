@@ -1204,7 +1204,7 @@ function SessionRow({ s, therapist, clientName, programName, onPick }: any) {
 }
 
 // ===== 상세 팝업 =====
-function SessionDetail({ s, onClose, onDelete, therapist, clientName, programName }: any) {
+function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, programName }: any) {
   const th = therapist(s.therapist_id);
   const meta = STATUS_META[s.status as StatusCode];
   return (

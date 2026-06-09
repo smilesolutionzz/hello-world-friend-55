@@ -86,6 +86,7 @@ export default function SchedulePage() {
   });
   const [selected, setSelected] = useState<any | null>(null);
   const [createAt, setCreateAt] = useState<{ date: string; hour: number } | null>(null);
+  const [editing, setEditing] = useState<any | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [importRefresh, setImportRefresh] = useState(0);
   const [therapistFilter, setTherapistFilter] = useState<Record<string, boolean>>({});
@@ -136,6 +137,30 @@ export default function SchedulePage() {
     }
     toast({ title: "일정이 추가됐어요" });
     setCreateAt(null);
+  }
+
+  async function handleUpdate(form: { client_id: string; therapist_id: string; program_id: string; start_time: string; end_time: string; note: string }) {
+    if (!editing) return;
+    const patch = {
+      start_time: form.start_time,
+      end_time: form.end_time || null,
+      client_id: form.client_id,
+      therapist_id: form.therapist_id || null,
+      program_id: form.program_id || null,
+      price_krw: programs.find((p) => p.id === form.program_id)?.price_krw ?? editing.price_krw ?? 0,
+      is_voucher: programs.find((p) => p.id === form.program_id)?.is_voucher ?? editing.is_voucher ?? false,
+      note: form.note || null,
+    };
+    if (demo) {
+      setSessions((prev) => prev.map((x) => (x.id === editing.id ? { ...x, ...patch } : x)));
+    } else {
+      const { data, error } = await supabase.from("center_sessions").update(patch).eq("id", editing.id).select().single();
+      if (error) { toast({ title: "수정 실패", description: error.message, variant: "destructive" }); return; }
+      setSessions((prev) => prev.map((x) => (x.id === editing.id ? data : x)));
+    }
+    toast({ title: "일정이 수정됐어요" });
+    setEditing(null);
+    setSelected(null);
   }
 
   async function handleDelete(s: any) {
@@ -596,7 +621,7 @@ export default function SchedulePage() {
 
       {/* 상세 팝업 */}
       {selected && (
-        <SessionDetail s={selected} onClose={() => setSelected(null)} onDelete={() => handleDelete(selected)} therapist={therapist} clientName={clientName} programName={programName} />
+        <SessionDetail s={selected} onClose={() => setSelected(null)} onDelete={() => handleDelete(selected)} onEdit={() => { setEditing(selected); setSelected(null); }} therapist={therapist} clientName={clientName} programName={programName} />
       )}
 
       {/* 일정 등록 다이얼로그 */}
@@ -608,6 +633,19 @@ export default function SchedulePage() {
           programs={programs}
           onClose={() => setCreateAt(null)}
           onSubmit={handleCreate}
+        />
+      )}
+
+      {/* 일정 수정 다이얼로그 */}
+      {editing && (
+        <CreateSessionDialog
+          at={{ date: editing.session_date, hour: parseInt(editing.start_time?.slice(0, 2) ?? "10", 10) }}
+          clients={clients}
+          therapists={therapists}
+          programs={programs}
+          initial={editing}
+          onClose={() => setEditing(null)}
+          onSubmit={handleUpdate}
         />
       )}
 
@@ -757,13 +795,14 @@ function SessionHoverDetail({ s, therapist, clientName, programName }: any) {
 
 
 // ===== 일정 등록 다이얼로그 =====
-function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSubmit }: any) {
-  const [therapistId, setTherapistId] = useState(therapists[0]?.id ?? "");
-  const [clientId, setClientId] = useState(clients[0]?.id ?? "");
-  const [programId, setProgramId] = useState(programs[0]?.id ?? "");
-  const [startTime, setStartTime] = useState(`${String(at.hour).padStart(2, "0")}:00`);
-  const [endTime, setEndTime] = useState(`${String(at.hour).padStart(2, "0")}:40`);
-  const [note, setNote] = useState("");
+function CreateSessionDialog({ at, clients, therapists, programs, initial, onClose, onSubmit }: any) {
+  const isEdit = !!initial;
+  const [therapistId, setTherapistId] = useState(initial?.therapist_id ?? therapists[0]?.id ?? "");
+  const [clientId, setClientId] = useState(initial?.client_id ?? clients[0]?.id ?? "");
+  const [programId, setProgramId] = useState(initial?.program_id ?? programs[0]?.id ?? "");
+  const [startTime, setStartTime] = useState(initial?.start_time?.slice(0, 5) ?? `${String(at.hour).padStart(2, "0")}:00`);
+  const [endTime, setEndTime] = useState(initial?.end_time?.slice(0, 5) ?? `${String(at.hour).padStart(2, "0")}:40`);
+  const [note, setNote] = useState(initial?.note ?? "");
   const canSubmit = !!clientId && !!startTime;
   const selectedTh = therapists.find((t: any) => t.id === therapistId);
   const visual = therapistVisual(selectedTh);
@@ -773,8 +812,8 @@ function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSub
       <div className="bg-white rounded-2xl border border-neutral-200 w-full max-w-md p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between mb-4">
           <div>
-            <p className="text-xs tracking-widest text-[#C8B88A]">NEW SESSION</p>
-            <h3 className="text-lg font-semibold mt-1">일정 등록 · {at.date}</h3>
+            <p className="text-xs tracking-widest text-[#C8B88A]">{isEdit ? "EDIT SESSION" : "NEW SESSION"}</p>
+            <h3 className="text-lg font-semibold mt-1">{isEdit ? "일정 수정" : "일정 등록"} · {at.date}</h3>
           </div>
           <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-full"><X className="w-4 h-4" /></button>
         </div>
@@ -849,7 +888,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSub
             disabled={!canSubmit}
             className="flex-1 px-4 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50"
           >
-            등록
+            {isEdit ? "수정 저장" : "등록"}
           </button>
         </div>
       </div>
@@ -1105,16 +1144,19 @@ function SessionChip({ s, therapist, clientName, programName, onPick, compact }:
             color: textColor,
           }}
         >
-          <p className={`font-bold truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
+          {/* 1) 시간 (가장 잘 보이게) */}
+          <p className={`font-bold tabular-nums truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
+            {s.start_time?.slice(0, 5) ?? ""}{!compact && s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+          </p>
+          {/* 2) 이용자명 */}
+          <p className={`truncate font-medium ${compact ? "text-[11px]" : "text-[12px]"}`}>
             {clientName(s.client_id)}
           </p>
+          {/* 3) 치료사 (색깔로도 구분되지만 이름도 표기) */}
           {!compact && (
-            <p className="truncate" style={{ color: subTextColor }}>
-              {th?.name ?? "미배정"} · {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+            <p className="truncate text-[11px]" style={{ color: subTextColor }}>
+              {th?.name ?? "미배정"}
             </p>
-          )}
-          {compact && (
-            <p className="truncate text-[10px]" style={{ color: subTextColor }}>{s.start_time?.slice(0, 5) ?? ""}</p>
           )}
         </button>
       </HoverCardTrigger>
@@ -1165,7 +1207,7 @@ function SessionRow({ s, therapist, clientName, programName, onPick }: any) {
 }
 
 // ===== 상세 팝업 =====
-function SessionDetail({ s, onClose, onDelete, therapist, clientName, programName }: any) {
+function SessionDetail({ s, onClose, onDelete, onEdit, therapist, clientName, programName }: any) {
   const th = therapist(s.therapist_id);
   const meta = STATUS_META[s.status as StatusCode];
   return (
@@ -1187,12 +1229,19 @@ function SessionDetail({ s, onClose, onDelete, therapist, clientName, programNam
           <Row k="바우처" v={s.is_voucher ? "Y" : "N"} />
           {s.note && <Row k="메모" v={s.note} />}
         </dl>
-        {onDelete && (
-          <div className="flex gap-2 mt-5">
-            <button onClick={onClose} className="flex-1 px-4 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">닫기</button>
-            <button onClick={onDelete} className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-rose-600 text-white text-sm font-medium hover:bg-rose-700">
-              <Trash2 className="w-3.5 h-3.5" /> 일정 삭제
-            </button>
+        {(onDelete || onEdit) && (
+          <div className="flex flex-wrap gap-2 mt-5">
+            <button onClick={onClose} className="flex-1 min-w-[80px] px-4 py-2.5 rounded-full border border-neutral-200 text-sm hover:bg-neutral-50">닫기</button>
+            {onEdit && (
+              <button onClick={onEdit} className="flex-1 min-w-[80px] px-4 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-sm font-medium hover:bg-neutral-50">
+                일정 수정
+              </button>
+            )}
+            {onDelete && (
+              <button onClick={onDelete} className="flex-1 min-w-[80px] inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-rose-600 text-white text-sm font-medium hover:bg-rose-700">
+                <Trash2 className="w-3.5 h-3.5" /> 삭제
+              </button>
+            )}
           </div>
         )}
       </div>

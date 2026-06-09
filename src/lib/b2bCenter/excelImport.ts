@@ -337,6 +337,51 @@ function parseCareplDaily(sheetName: string, aoa: any[][]): DetectedSheet[] {
   ];
 }
 
+// 이용자관리 등 별도 시트에서 풍부한 클라이언트 행 추출
+function extractRichClientSheets(rawSheets: ImportSheet[], excludeName?: string): Record<string, any>[] {
+  const rich: Record<string, any>[] = [];
+  for (const s of rawSheets) {
+    if (excludeName && s.name === excludeName) continue;
+    if (!s.headers?.length) continue;
+    if (detectEntity(s.headers) !== "clients") continue;
+    for (const r of s.rows) {
+      const norm = normalizeRow(r);
+      const name = String(norm.name ?? norm.client_name ?? "").trim();
+      if (!name) continue;
+      rich.push({ ...norm, name });
+    }
+  }
+  return rich;
+}
+
+function mergeClientSheets(detected: DetectedSheet[], rich: Record<string, any>[]): DetectedSheet[] {
+  if (!rich.length) return detected;
+  const idx = detected.findIndex((s) => s.entity === "clients");
+  const byKey = new Map<string, any>();
+  const keyOf = (r: any) => `${String(r.name).trim()}|${r.birth_date ?? ""}`;
+  if (idx >= 0) {
+    for (const r of detected[idx].rows) byKey.set(keyOf(r), { ...r });
+  }
+  for (const r of rich) {
+    const k = keyOf(r);
+    const prev = byKey.get(k);
+    if (prev) { byKey.set(k, { ...prev, ...r }); continue; }
+    // 생년월일이 비어있는 경우 이름만 일치하는 기존 행에 병합
+    let matched = false;
+    if (!r.birth_date) {
+      for (const [pk, pv] of byKey) {
+        if (pv.name === r.name) { byKey.set(pk, { ...pv, ...r }); matched = true; break; }
+      }
+    }
+    if (!matched) byKey.set(k, r);
+  }
+  const rows = Array.from(byKey.values());
+  const next = [...detected];
+  if (idx >= 0) next[idx] = { ...next[idx], rows, source: `${next[idx].source} + 이용자관리` };
+  else next.unshift({ source: "이용자관리", entity: "clients", rows });
+  return next;
+}
+
 // ===== 메인 파서 =====
 export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
   const buf = await file.arrayBuffer();
@@ -352,7 +397,6 @@ export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
   // 1) 케어플 일일서비스관리 — 시작·종료시간 포함, 가장 정확
   const daily = careplDailySheet(wb);
   if (daily) {
-    // 매핑 UI가 __EMPTY 가 아닌 실제 헤더(이용자/선생님/...)를 보도록 rawSheet 교체
     const header = (daily.aoa[0] ?? []).map((x) => String(x ?? "").trim());
     const rebuiltRows = daily.aoa.slice(1)
       .filter((r) => r && r.some((c) => c != null && String(c).trim() !== ""))
@@ -364,9 +408,11 @@ export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
     const fixedRawSheets = rawSheets.map((s) =>
       s.name === daily.sheetName ? { name: s.name, rows: rebuiltRows, headers: header.filter(Boolean) } : s,
     );
+    const baseSheets = parseCareplDaily(daily.sheetName, daily.aoa).filter((s) => s.rows.length > 0);
+    const rich = extractRichClientSheets(fixedRawSheets, daily.sheetName);
     return {
       format: "careple",
-      sheets: parseCareplDaily(daily.sheetName, daily.aoa).filter((s) => s.rows.length > 0),
+      sheets: mergeClientSheets(baseSheets, rich),
       rawSheets: fixedRawSheets,
     };
   }
@@ -374,9 +420,11 @@ export async function parseWorkbook(file: File): Promise<ParsedWorkbook> {
   // 2) 케어플 월서비스관리 — 회기 수 기반 분산
   const careple = careplMonthlySheet(wb);
   if (careple) {
+    const baseSheets = parseCareplMonthly(careple.sheetName, careple.aoa).filter((s) => s.rows.length > 0);
+    const rich = extractRichClientSheets(rawSheets, careple.sheetName);
     return {
       format: "careple",
-      sheets: parseCareplMonthly(careple.sheetName, careple.aoa).filter((s) => s.rows.length > 0),
+      sheets: mergeClientSheets(baseSheets, rich),
       rawSheets,
     };
   }

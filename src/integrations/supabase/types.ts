@@ -17738,6 +17738,35 @@ export type Database = {
           unique_sessions: number
         }[]
       }
+      get_center_parent_report_by_token: {
+        Args: { _token: string }
+        Returns: {
+          ai_summary: string | null
+          center_id: string
+          client_id: string
+          coach_comment: string | null
+          created_at: string
+          generated_at: string | null
+          html_content: string | null
+          id: string
+          issued_at: string | null
+          metrics: Json | null
+          pdf_url: string | null
+          period_end: string
+          period_start: string
+          period_yyyymm: string | null
+          sent_at: string | null
+          share_token: string | null
+          status: string
+          viewed_at: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "center_parent_reports"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_comment_likes_count: { Args: { comment_id: string }; Returns: number }
       get_community_posts_safe: {
         Args: never

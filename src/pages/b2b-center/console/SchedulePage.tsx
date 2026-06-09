@@ -2,9 +2,10 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEMO_SESSIONS, DEMO_THERAPISTS, DEMO_CLIENTS, DEMO_PROGRAMS } from "@/lib/b2bCenter/demoData";
-import { ChevronLeft, ChevronRight, ChevronDown, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Filter, Check, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, X, Calendar as CalIcon, Grid3x3, Users, Upload, Plus, Trash2, Filter, Check, PanelLeftClose, PanelLeftOpen, AlertTriangle } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ImportWizard from "@/components/b2b-center/ImportWizard";
 import ImportHistoryPanel from "@/components/b2b-center/ImportHistoryPanel";
@@ -74,6 +75,23 @@ export default function SchedulePage() {
   const [group, setGroup] = useState<GroupMode>("timetable");
   const { toast } = useToast();
   const [cursor, setCursor] = useState<Date>(new Date());
+
+  // 데모 모드에서 "저장되지 않음" 안내 토스트 — 액션 버튼으로 실제 시작 유도
+  const notifyDemoNoSave = useCallback((actionLabel: string) => {
+    toast({
+      variant: "destructive",
+      title: "데모 모드 — 저장되지 않았습니다",
+      description: `${actionLabel} 내용은 새로고침하면 사라져요. 실제로 운영하려면 60일 무료 체험을 시작하세요.`,
+      action: (
+        <ToastAction
+          altText="무료로 시작"
+          onClick={() => { window.location.href = "/b2b-center/import"; }}
+        >
+          무료로 시작
+        </ToastAction>
+      ),
+    });
+  }, [toast]);
 
   const [sessions, setSessions] = useState<any[]>([]);
   const [therapists, setTherapists] = useState<any[]>([]);
@@ -151,12 +169,13 @@ export default function SchedulePage() {
     if (demo) {
       const added = rows.map((r, i) => ({ id: `is-${Date.now()}-${i}`, ...r }));
       setSessions((prev) => [...prev, ...added]);
+      notifyDemoNoSave(rows.length > 1 ? `${rows.length}개 반복 일정 추가는` : "일정 추가는");
     } else {
       const { data, error } = await supabase.from("center_sessions").insert(rows.map((r) => ({ ...r, center_id: centerId }))).select();
       if (error) { toast({ title: "일정 추가 실패", description: error.message, variant: "destructive" }); return; }
       setSessions((prev) => [...prev, ...(data ?? [])]);
+      toast({ title: rows.length > 1 ? `${rows.length}개 반복 일정이 추가됐어요` : "일정이 추가됐어요" });
     }
-    toast({ title: rows.length > 1 ? `${rows.length}개 반복 일정이 추가됐어요` : "일정이 추가됐어요" });
     setCreateAt(null);
   }
 
@@ -174,12 +193,13 @@ export default function SchedulePage() {
     };
     if (demo) {
       setSessions((prev) => prev.map((x) => (x.id === editing.id ? { ...x, ...patch } : x)));
+      notifyDemoNoSave("일정 수정은");
     } else {
       const { data, error } = await supabase.from("center_sessions").update(patch).eq("id", editing.id).select().single();
       if (error) { toast({ title: "수정 실패", description: error.message, variant: "destructive" }); return; }
       setSessions((prev) => prev.map((x) => (x.id === editing.id ? data : x)));
+      toast({ title: "일정이 수정됐어요" });
     }
-    toast({ title: "일정이 수정됐어요" });
     setEditing(null);
     setSelected(null);
   }
@@ -196,6 +216,7 @@ export default function SchedulePage() {
           ? !(x.recurrence_key === s.recurrence_key && x.session_date >= s.session_date)
           : x.id !== s.id
       ));
+      notifyDemoNoSave(hasRecur ? "반복 일정 삭제는" : "일정 삭제는");
     } else {
       let q = supabase.from("center_sessions").delete().eq("center_id", centerId);
       if (hasRecur) {
@@ -210,8 +231,8 @@ export default function SchedulePage() {
           ? !(x.recurrence_key === s.recurrence_key && x.session_date >= s.session_date)
           : x.id !== s.id
       ));
+      toast({ title: hasRecur ? "반복 일정이 삭제됐어요" : "일정이 삭제됐어요" });
     }
-    toast({ title: hasRecur ? "반복 일정이 삭제됐어요" : "일정이 삭제됐어요" });
     setSelected(null);
   }
 

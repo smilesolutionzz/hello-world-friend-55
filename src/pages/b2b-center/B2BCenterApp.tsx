@@ -114,11 +114,15 @@ export default function B2BCenterApp() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white px-6">
         <div className="text-center max-w-md">
-          <h1 className="text-2xl font-semibold mb-3 break-keep">로그인이 필요합니다</h1>
-          <p className="text-neutral-600 mb-6 break-keep">센터 콘솔은 기관 구성원만 사용할 수 있어요. 먼저 로그인하고 진행해주세요.</p>
-          <div className="flex gap-3 justify-center">
-            <button onClick={() => navigate("/auth?redirect=/b2b-center/app")} className="px-6 py-3 rounded-full bg-neutral-900 text-white">로그인</button>
-            <button onClick={() => navigate("/b2b-center/app?demo=1")} className="px-6 py-3 rounded-full border border-neutral-200">데모 둘러보기</button>
+          <h1 className="text-2xl font-semibold mb-3 break-keep">먼저 로그인이 필요해요</h1>
+          <p className="text-neutral-600 mb-2 break-keep">센터 콘솔은 기관 구성원만 사용할 수 있어요.</p>
+          <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-6 break-keep">
+            ⚠️ 로그인 없이 입력한 일정·이용자 정보는 <b>저장되지 않습니다.</b> 반드시 먼저 로그인해주세요.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button onClick={() => navigate("/auth?redirect=/b2b-center/app")} className="px-6 py-3 rounded-full bg-neutral-900 text-white">로그인하고 시작</button>
+            <button onClick={() => navigate("/b2b-center/import")} className="px-6 py-3 rounded-full border border-neutral-200">60일 무료 시작</button>
+            <button onClick={() => navigate("/b2b-center/app?demo=1")} className="px-6 py-3 rounded-full border border-neutral-200 text-neutral-600">데모만 둘러보기</button>
           </div>
         </div>
       </div>

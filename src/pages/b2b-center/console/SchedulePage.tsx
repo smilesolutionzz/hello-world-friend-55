@@ -553,7 +553,7 @@ export default function SchedulePage() {
             >다시 시도</button>
           </div>
         ) : view === "month" ? (
-          <MonthView cursor={cursor} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} />
+          <MonthView cursor={cursor} sessions={visibleSessions} onPick={setSelected} therapist={therapist} clientName={clientName} programName={programName} />
         ) : view === "list" ? (
           visibleSessions.length === 0
             ? <div className="p-12 text-center text-neutral-400">표시할 일정이 없습니다.</div>

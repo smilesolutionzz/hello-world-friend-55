@@ -1144,16 +1144,19 @@ function SessionChip({ s, therapist, clientName, programName, onPick, compact }:
             color: textColor,
           }}
         >
-          <p className={`font-bold truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
+          {/* 1) 시간 (가장 잘 보이게) */}
+          <p className={`font-bold tabular-nums truncate ${compact ? "text-[11px]" : "text-[13px]"}`}>
+            {s.start_time?.slice(0, 5) ?? ""}{!compact && s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+          </p>
+          {/* 2) 이용자명 */}
+          <p className={`truncate font-medium ${compact ? "text-[11px]" : "text-[12px]"}`}>
             {clientName(s.client_id)}
           </p>
+          {/* 3) 치료사 (색깔로도 구분되지만 이름도 표기) */}
           {!compact && (
-            <p className="truncate" style={{ color: subTextColor }}>
-              {th?.name ?? "미배정"} · {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+            <p className="truncate text-[11px]" style={{ color: subTextColor }}>
+              {th?.name ?? "미배정"}
             </p>
-          )}
-          {compact && (
-            <p className="truncate text-[10px]" style={{ color: subTextColor }}>{s.start_time?.slice(0, 5) ?? ""}</p>
           )}
         </button>
       </HoverCardTrigger>

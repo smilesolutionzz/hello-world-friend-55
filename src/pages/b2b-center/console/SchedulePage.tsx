@@ -955,7 +955,7 @@ function TherapistGroupView({ dayList, sessions, therapists, onPick, clientName,
 }
 
 // ===== 월간 그리드 =====
-function MonthView({ cursor, sessions, onPick, therapist, clientName }: any) {
+function MonthView({ cursor, sessions, onPick, therapist, clientName, programName }: any) {
   const first = startOfMonth(cursor);
   const startGrid = startOfWeek(first);
   const cells: Date[] = [];
@@ -966,7 +966,9 @@ function MonthView({ cursor, sessions, onPick, therapist, clientName }: any) {
       {cells.map((d) => {
         const ds = fmt(d);
         const inMonth = d.getMonth() === cursor.getMonth();
-        const list = sessions.filter((s: any) => s.session_date === ds);
+        const list = sessions
+          .filter((s: any) => s.session_date === ds)
+          .sort((a: any, b: any) => (a.start_time ?? "").localeCompare(b.start_time ?? ""));
         return (
           <div key={ds} className={`border-b border-r border-neutral-100 min-h-[110px] p-1.5 ${inMonth ? "" : "bg-neutral-50/40"}`}>
             <p className={`text-[11px] mb-1 ${inMonth ? "text-neutral-700" : "text-neutral-300"}`}>{d.getDate()}</p>
@@ -975,13 +977,71 @@ function MonthView({ cursor, sessions, onPick, therapist, clientName }: any) {
                 const th = therapist(s.therapist_id);
                 const cancelled = s.status?.startsWith("cancelled");
                 return (
-                  <button key={s.id} onClick={() => onPick(s)} className={`w-full text-left rounded px-1 py-0.5 text-[10px] truncate ${cancelled ? "line-through opacity-50" : ""}`}
-                    style={{ background: (th?.color ?? "#eee") + "55", borderLeft: `2px solid ${th?.color ?? "#999"}` }}>
-                    {s.start_time?.slice(0, 5) ?? ""} {clientName(s.client_id)}
-                  </button>
+                  <HoverCard key={s.id} openDelay={120} closeDelay={60}>
+                    <HoverCardTrigger asChild>
+                      <button
+                        onClick={() => onPick(s)}
+                        className={`w-full text-left rounded px-1 py-0.5 text-[10px] truncate ${cancelled ? "line-through opacity-50" : ""}`}
+                        style={{ background: (th?.color ?? "#eee") + "55", borderLeft: `2px solid ${th?.color ?? "#999"}` }}
+                      >
+                        {s.start_time?.slice(0, 5) ?? ""} {clientName(s.client_id)}
+                      </button>
+                    </HoverCardTrigger>
+                    <HoverCardContent side="top" align="start" className="w-72 p-3">
+                      <SessionHoverDetail s={s} therapist={therapist} clientName={clientName} programName={programName} />
+                    </HoverCardContent>
+                  </HoverCard>
                 );
               })}
-              {list.length > 4 && <p className="text-[10px] text-neutral-400">+{list.length - 4}</p>}
+              {list.length > 4 && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      className="w-full text-left text-[10px] text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50 rounded px-1 py-0.5 font-medium"
+                      title={`이 날 일정 ${list.length}건 모두 보기`}
+                    >
+                      + {list.length - 4}건 더보기
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent side="right" align="start" className="w-80 p-0 max-h-[400px] overflow-y-auto">
+                    <div className="sticky top-0 bg-white border-b border-neutral-100 px-3 py-2">
+                      <p className="text-sm font-semibold">
+                        {d.getMonth() + 1}월 {d.getDate()}일 ({DAY_LABELS[(d.getDay() + 6) % 7]})
+                        <span className="ml-2 text-xs text-neutral-400">{list.length}건</span>
+                      </p>
+                    </div>
+                    <div className="divide-y divide-neutral-100">
+                      {list.map((s: any) => {
+                        const th = therapist(s.therapist_id);
+                        const cancelled = s.status?.startsWith("cancelled");
+                        const meta = STATUS_META[s.status as StatusCode];
+                        return (
+                          <button
+                            key={s.id}
+                            onClick={() => onPick(s)}
+                            className="w-full text-left px-3 py-2 hover:bg-neutral-50 flex items-center gap-2"
+                          >
+                            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: th?.color ?? "#999" }} />
+                            <span className="text-[11px] text-neutral-500 tabular-nums w-20 shrink-0">
+                              {s.start_time?.slice(0, 5) ?? "--:--"}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+                            </span>
+                            <span className={`text-xs flex-1 min-w-0 truncate ${cancelled ? "line-through text-neutral-400" : "text-neutral-800"}`}>
+                              <span className="font-medium">{clientName(s.client_id)}</span>
+                              <span className="text-neutral-400"> · {th?.name ?? "미배정"}</span>
+                              {programName && (
+                                <span className="text-neutral-400"> · {programName(s.program_id)}</span>
+                              )}
+                            </span>
+                            {meta && (
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded-full border shrink-0 ${meta.tone}`}>{meta.label}</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
             </div>
           </div>
         );

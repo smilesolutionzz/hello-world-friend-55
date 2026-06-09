@@ -730,12 +730,20 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, progr
   return (
     <div className="grid" style={{ gridTemplateColumns: `60px repeat(${cols}, minmax(120px, 1fr))` }}>
       <div className="bg-neutral-50 border-b border-r border-neutral-200" />
-      {dayList.map((d: Date) => (
-        <div key={fmt(d)} className="bg-neutral-50 border-b border-neutral-200 p-2 text-center">
-          <p className="text-xs text-neutral-500">{DAY_LABELS[(d.getDay() + 6) % 7]}</p>
-          <p className="text-sm font-medium">{d.getMonth() + 1}.{d.getDate()}</p>
-        </div>
-      ))}
+      {dayList.map((d: Date) => {
+        const ds = fmt(d);
+        const holiday = getHoliday(ds);
+        const isSunday = d.getDay() === 0;
+        return (
+          <div key={ds} className={`bg-neutral-50 border-b border-neutral-200 p-2 text-center ${holiday || isSunday ? "bg-rose-50/60" : ""}`}>
+            <p className={`text-xs ${holiday || isSunday ? "text-rose-600 font-semibold" : "text-neutral-500"}`}>{DAY_LABELS[(d.getDay() + 6) % 7]}</p>
+            <p className={`text-sm font-medium ${holiday || isSunday ? "text-rose-700" : ""}`}>{d.getMonth() + 1}.{d.getDate()}</p>
+            {holiday && (
+              <p className="text-[9px] text-rose-600 font-semibold truncate mt-0.5" title={holiday}>{holiday}</p>
+            )}
+          </div>
+        );
+      })}
       {HOURS.map((h) => (
         <div key={`row-${h}`} className="contents">
           <div className="border-b border-r border-neutral-100 text-[10px] text-neutral-400 p-1 text-right">{h}:00</div>

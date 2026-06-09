@@ -666,7 +666,7 @@ export default function SchedulePage() {
 }
 
 // ===== 시간표(주/일 그리드) =====
-function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCreate }: any) {
+function TimetableView({ dayList, sessions, onPick, therapist, clientName, programName, onCreate }: any) {
   const cols = dayList.length;
   return (
     <div className="grid" style={{ gridTemplateColumns: `60px repeat(${cols}, minmax(120px, 1fr))` }}>
@@ -705,7 +705,7 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCre
                 <div className={`h-full ${slot.length > 1 ? "flex gap-0.5" : "space-y-1"}`}>
                   {slot.map((s: any) => (
                     <div key={s.id} className={slot.length > 1 ? "flex-1 min-w-0" : ""}>
-                      <SessionChip s={s} therapist={therapist} clientName={clientName} onPick={onPick} compact={slot.length > 1} />
+                      <SessionChip s={s} therapist={therapist} clientName={clientName} programName={programName} onPick={onPick} compact={slot.length > 1} />
                     </div>
                   ))}
                 </div>
@@ -717,6 +717,44 @@ function TimetableView({ dayList, sessions, onPick, therapist, clientName, onCre
     </div>
   );
 }
+
+// ===== 세션 호버 카드 내용 =====
+function SessionHoverDetail({ s, therapist, clientName, programName }: any) {
+  const th = therapist(s.therapist_id);
+  const meta = STATUS_META[s.status as StatusCode];
+  const { color } = therapistVisual(th, s.therapist_id ?? s.therapist_name ?? s.id);
+  return (
+    <div className="text-xs space-y-1.5">
+      <div className="flex items-center gap-2 pb-1.5 border-b border-neutral-100">
+        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: color }} />
+        <p className="font-semibold text-sm text-neutral-900 truncate">{clientName(s.client_id)}</p>
+        {meta && (
+          <span className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full border ${meta.tone}`}>{meta.label}</span>
+        )}
+      </div>
+      <p className="text-neutral-600">
+        <span className="text-neutral-400 mr-1">선생님</span>
+        {th?.name ?? "미배정"}{th?.role || th?.title ? ` · ${th.role ?? th.title}` : ""}
+      </p>
+      <p className="text-neutral-600">
+        <span className="text-neutral-400 mr-1">프로그램</span>
+        {programName ? programName(s.program_id) : "—"}
+      </p>
+      <p className="text-neutral-600 tabular-nums">
+        <span className="text-neutral-400 mr-1">일시</span>
+        {s.session_date} {s.start_time?.slice(0, 5) ?? ""}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""}
+      </p>
+      {s.note && (
+        <p className="text-neutral-500 pt-1 border-t border-neutral-100">
+          <span className="text-neutral-400 mr-1">메모</span>{s.note}
+        </p>
+      )}
+      <p className="text-[10px] text-neutral-400 pt-1">클릭하면 상세보기 / 삭제</p>
+    </div>
+  );
+}
+
+
 
 // ===== 일정 등록 다이얼로그 =====
 function CreateSessionDialog({ at, clients, therapists, programs, onClose, onSubmit }: any) {

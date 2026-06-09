@@ -888,7 +888,7 @@ function CreateSessionDialog({ at, clients, therapists, programs, initial, onClo
             disabled={!canSubmit}
             className="flex-1 px-4 py-2.5 rounded-full bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50"
           >
-            등록
+            {isEdit ? "수정 저장" : "등록"}
           </button>
         </div>
       </div>
